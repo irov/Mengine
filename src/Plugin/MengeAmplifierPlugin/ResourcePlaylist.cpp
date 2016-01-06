@@ -37,12 +37,12 @@ namespace Menge
             const Metacode::Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::TVectorMeta_Track & includes_track = meta_tracks.get_IncludesTrack();
 
             for( Metacode::Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::TVectorMeta_Track::const_iterator
-                it = includes_track.begin(),
-                it_end = includes_track.end();
-            it != it_end;
-            ++it )
+                it_track = includes_track.begin(),
+				it_track_end = includes_track.end();
+				it_track != it_track_end;
+            ++it_track)
             {
-				const Metacode::Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track & meta_track = *it;
+				const Metacode::Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track & meta_track = *it_track;
 
 				TrackDesc desc;
 

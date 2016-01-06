@@ -162,12 +162,12 @@ namespace Menge
 				const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::TVectorMeta_KeyFrame2D & includes_frame2d = meta_frames2d.get_IncludesKeyFrame2D();
 
 				for( Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::TVectorMeta_KeyFrame2D::const_iterator
-					it = includes_frame2d.begin(),
-					it_end = includes_frame2d.end();
-				it != it_end;
-				++it )
+					it_frame = includes_frame2d.begin(),
+					it_frame_end = includes_frame2d.end();
+				it_frame != it_frame_end;
+				++it_frame)
 				{
-					const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it;
+					const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it_frame;
 
 					mt::vec2f anchorPoint2d(0.f, 0.f);
 					mt::vec2f position2d(0.f, 0.f);
@@ -222,14 +222,14 @@ namespace Menge
 				const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::TVectorMeta_KeyFrame2D & includes_frame2d = meta_frames2d.get_IncludesKeyFrame2D();
 
 				for( Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::TVectorMeta_KeyFrame2D::const_iterator
-					it = includes_frame2d.begin(),
-					it_end = includes_frame2d.end();
-				it != it_end;
-				++it )
+					it_frame = includes_frame2d.begin(),
+					it_frame_end = includes_frame2d.end();
+				it_frame != it_frame_end;
+				++it_frame)
 				{
-					const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it;
+					const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it_frame;
 
-					uint32_t count = 1;
+					uint32_t count_frame = 1;
 
 					mt::vec2f anchorPoint2d(0.f, 0.f);
 					mt::vec2f position2d(0.f, 0.f);
@@ -258,7 +258,7 @@ namespace Menge
 					meta_frame2d.get_Scale( scale2d );
 					meta_frame2d.get_Rotation( angle );
 					meta_frame2d.get_Opacity( frame.opacity );
-					meta_frame2d.get_Count( count );
+					meta_frame2d.get_Count(count_frame);
 					meta_frame2d.get_Volume( volume );
 
 					frame.anchorPoint = mt::vec3f(anchorPoint2d, 0.f);
@@ -271,7 +271,7 @@ namespace Menge
 					frame.rotation.y = 0.f;
 					frame.rotation.z = 0.f;
 
-					for( uint32_t i = 0; i != count; ++i )
+					for( uint32_t i = 0; i != count_frame; ++i )
 					{
 						frameLayer.frames.push_back( frame );
 					}
@@ -317,14 +317,14 @@ namespace Menge
 			const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::TVectorMeta_KeyFrame3D & includes_frame3d = meta_frames3d.get_IncludesKeyFrame3D();
 
 			for( Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::TVectorMeta_KeyFrame3D::const_iterator
-				it = includes_frame3d.begin(),
-				it_end = includes_frame3d.end();
-			it != it_end;
-			++it )
+				it_frame= includes_frame3d.begin(),
+				it_frame_end = includes_frame3d.end();
+			it_frame != it_frame_end;
+			++it_frame)
 			{
-				const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & meta_frame3d = *it;
+				const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & meta_frame3d = *it_frame;
 
-				uint32_t count = 1;
+				uint32_t count_frame = 1;
 				
 				meta_frame3d.get_AnchorPoint( frame.anchorPoint );
 				meta_frame3d.get_Position( frame.position );
@@ -332,7 +332,7 @@ namespace Menge
 				meta_frame3d.get_Orientation( orientation );
 				meta_frame3d.get_Scale( frame.scale );
 				meta_frame3d.get_Opacity( frame.opacity );
-				meta_frame3d.get_Count( count );
+				meta_frame3d.get_Count(count_frame);
 
 				frame.volume = 1.f;
 				meta_frame3d.get_Volume( frame.volume );
@@ -350,7 +350,7 @@ namespace Menge
 			
 				if( frameLayer.immutable == 0 )
 				{
-					for( uint32_t i = 0; i != count; ++i )
+					for( uint32_t i = 0; i != count_frame; ++i )
 					{
 						frameLayer.frames.push_back( frame );
 					}
@@ -358,7 +358,7 @@ namespace Menge
 				else
 				{
 					frameLayer.source = frame;
-					frameLayer.count = count;
+					frameLayer.count = count_frame;
 				}
 			}
 		}

@@ -437,14 +437,14 @@ namespace Menge
 		ResourceCacheEntry * resourceCacheEntry;
 		if( m_resourcesCache.has( _category, _group, &resourceCacheEntry ) == false )
 		{
-			ResourceCacheEntry * entry = m_resourcesCache.create();
+			resourceCacheEntry = m_resourcesCache.create();
 
-			entry->category = _category;
-			entry->group = _group;
+			resourceCacheEntry->category = _category;
+			resourceCacheEntry->group = _group;
 
-			entry->resources.push_back( resource );
+			resourceCacheEntry->resources.push_back( resource );
 
-			m_resourcesCache.insert( entry, nullptr );
+			m_resourcesCache.insert(resourceCacheEntry, nullptr );
 		}
 		else
 		{
@@ -456,14 +456,14 @@ namespace Menge
 			const ConstString & insert_category = insert_entry->resource->getCategory();
 			const ConstString & insert_group = insert_entry->resource->getGroup();
 
-			ResourceCacheEntry * resourceCacheEntry = m_resourcesCache.find( insert_category, insert_group );
+			ResourceCacheEntry * resourceCacheEntryFound = m_resourcesCache.find( insert_category, insert_group );
 
 			TVectorResources::iterator it_found = std::remove(
-				resourceCacheEntry->resources.begin(), 
-				resourceCacheEntry->resources.end(),
+				resourceCacheEntryFound->resources.begin(),
+				resourceCacheEntryFound->resources.end(),
 				insert_entry->resource );
 
-			resourceCacheEntry->resources.erase( it_found );
+			resourceCacheEntryFound->resources.erase( it_found );
 
 			insert_entry->resource = resource;
 			insert_entry->isLocked = false;

@@ -723,8 +723,8 @@ namespace Menge
 			return false;
 		}
 
-		const MovieLayer * layer;
-		if( m_resourceMovie->hasMovieLayer( _name, &layer ) == true )
+		const MovieLayer * exist_layer;
+		if( m_resourceMovie->hasMovieLayer( _name, &exist_layer) == true )
 		{	
 			return true;
 		}
@@ -864,10 +864,10 @@ namespace Menge
 			return nullptr;
 		}
 
-		const MovieLayer * layer;
-		if( m_resourceMovie->hasMovieLayer( _name, &layer ) == true )
+		const MovieLayer * exist_layer;
+		if( m_resourceMovie->hasMovieLayer( _name, &exist_layer) == true )
 		{
-			this->setEnableLayer_( *layer, _enable );
+			this->setEnableLayer_( *exist_layer, _enable );
 
 			return true;
 		}
@@ -941,10 +941,10 @@ namespace Menge
 			return nullptr;
 		}
 
-		const MovieLayer * layer;
-		if( m_resourceMovie->hasMovieLayer( _name, &layer ) == true )
+		const MovieLayer * exist_layer;
+		if( m_resourceMovie->hasMovieLayer( _name, &exist_layer) == true )
 		{
-			_enable = this->getEnableLayer_( *layer );
+			_enable = this->getEnableLayer_( *exist_layer);
 
 			return true;
 		}
@@ -1018,10 +1018,10 @@ namespace Menge
 			return nullptr;
 		}
 
-		const MovieLayer * layer;
-		if( m_resourceMovie->hasMovieLayer( _name, &layer ) == true )
+		const MovieLayer * exist_layer;
+		if( m_resourceMovie->hasMovieLayer( _name, &exist_layer) == true )
 		{	
-			*_layer = layer;
+			*_layer = exist_layer;
 			*_movie = this;
 
 			return true;

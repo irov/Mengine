@@ -128,6 +128,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh2D::_updateBoundingBox( mt::box2f & _boundingBox ) const
 	{
+		if (m_vertexCount == 0)
+		{
+			mt::reset(_boundingBox, 0.f, 0.f);
+
+			return;
+		}
+
 		const RenderVertex2D * vertices = this->getVerticesWM();
 
 		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );

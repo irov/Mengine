@@ -1721,10 +1721,10 @@ namespace Menge
 
 			py_cb->initialize( _cb );
 
-			Scene * scene = PLAYER_SERVICE( m_serviceProvider )
+			Scene * currentScene = PLAYER_SERVICE( m_serviceProvider )
 				->getCurrentScene();
 
-			if( scene != nullptr && scene->getName() == _name )
+			if(currentScene != nullptr && currentScene->getName() == _name )
 			{
 				if( PLAYER_SERVICE( m_serviceProvider )
 					->restartCurrentScene( py_cb ) == false )

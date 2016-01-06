@@ -114,10 +114,10 @@ namespace Menge
 
 			v0.color = 0x000000FF;
 
-			for( uint32_t j = 0; j != MENGINE_RENDER_VERTEX_UV_COUNT; ++j )
+			for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index)
 			{
-				v0.uv[j].x = 0.f;
-				v0.uv[j].y = 0.f;
+				v0.uv[uv_index].x = 0.f;
+				v0.uv[uv_index].y = 0.f;
 			}
 
 			mt::vec3f trP1;
@@ -129,10 +129,10 @@ namespace Menge
 
 			v1.color = 0x000000FF;
 
-			for( uint32_t j = 0; j != MENGINE_RENDER_VERTEX_UV_COUNT; ++j )
+			for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index)
 			{
-				v1.uv[j].x = 0.f;
-				v1.uv[j].y = 0.f;
+				v1.uv[uv_index].x = 0.f;
+				v1.uv[uv_index].y = 0.f;
 			}
 		}
 

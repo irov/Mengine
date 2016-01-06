@@ -18,7 +18,7 @@ if errorlevel 1 goto error
 @popd
 
 @pushd ..\..\dependencies\build_msvc12_debug
-cmake --build .\ --config Debug
+..\..\dependencies\cmake\bin\cmake --build .\ --config Debug
 @popd
 
 @echo Done

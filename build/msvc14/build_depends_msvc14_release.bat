@@ -14,18 +14,18 @@ if errorlevel 1 goto error
 @echo Starting dependencies build release configuration...
 
 @pushd ..
-@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\Depends_WIN32" "..\dependencies\build_msvc14" "NMake Makefiles" Release
+@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\Depends_WIN32" "..\dependencies\build_msvc14_release" "NMake Makefiles" Release
 @popd
 
-@pushd ..\..\dependencies\build_msvc14\Release
-nmake
+@pushd ..\..\dependencies\build_msvc14_release
+..\..\dependencies\cmake\bin\cmake.exe --build .\ --config Release
 @popd
 
 @echo Done
 goto exit
 
 :vs_not_found
-echo Visual Studio 2012 not found. Make sure it is installed to standard directory.
+echo Visual Studio 2014 not found. Make sure it is installed to standard directory.
 :error
 if not "%1"=="batch" pause
 exit /b 1

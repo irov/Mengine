@@ -229,6 +229,7 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/PC/getpathp.c
                 ${SOURCE_DIR}/PC/msvcrtmodule.c
                 ${SOURCE_DIR}/PC/winreg.c
+                ${SOURCE_DIR}/PC/invalid_parameter_handler.c
                 
                 
                 #${MACHDEP_SRCS}

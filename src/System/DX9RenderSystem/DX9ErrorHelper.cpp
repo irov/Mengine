@@ -1,10 +1,6 @@
 #	include "DX9ErrorHelper.h"
 
-#	ifdef _MSC_VER
-#	include <dxerr.h>
-#	else
-#	include <dxerr9.h>
-#	endif
+#	include "dxerr15.h"
 
 #	include "Logger/Logger.h"
 
@@ -26,17 +22,16 @@ namespace Menge
 			return false;
 		}
 
+		WCHAR desc[1024];
+
+		DXGetErrorDescription(_hr, desc, 1024);
+
 		LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem error file %s line %d DX call '%s':\n err string: %ls\n err description: %ls"
 			, m_file
 			, m_line
 			, m_method
-#	ifdef _MSC_VER
 			, DXGetErrorString(_hr)
-			, DXGetErrorDescription(_hr)
-#	else
-			, DXGetErrorString9(_hr)
-			, DXGetErrorDescription9(_hr)
-#	endif
+			, desc
 			);
 
 		return true;

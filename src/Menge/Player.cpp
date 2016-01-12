@@ -1413,17 +1413,6 @@ namespace Menge
 	{
 		++m_showDebugText;
         m_showDebugText %= 5;
-
-		if( m_showDebugText == 2 )
-		{
-			RENDER_SERVICE(m_serviceProvider)
-				->enableDebugMode( true );
-		}
-		else if( m_showDebugText == 0 )
-		{
-			RENDER_SERVICE(m_serviceProvider)
-				->enableDebugMode( false );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 //#	endif

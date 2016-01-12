@@ -655,7 +655,7 @@ namespace Menge
 		virtual void onWindowClose() = 0;
 
 		virtual void setVSync( bool _vSync ) = 0;
-		virtual void clear( uint32_t _color ) = 0;
+		virtual void clear( uint32_t _color, bool _force ) = 0;
 
         virtual bool supportTextureFormat( PixelFormat _format ) const = 0;
 		virtual bool supportTextureNonPow2() const = 0;
@@ -745,8 +745,11 @@ namespace Menge
 	//	virtual bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder ) = 0;
 
    public:
-        virtual void enableDebugMode( bool _enable ) = 0;
-		virtual bool isDebugMode() const = 0;
+		virtual void enableDebugStepRenderMode( bool _enable ) = 0;
+		virtual bool isDebugStepRenderMode() const = 0;
+
+		virtual void enableRedAlertMode( bool _enable ) = 0;
+		virtual bool isRedAlertMode() const = 0;
 
 		virtual void endLimitRenderObjects() = 0;
 		virtual void increfLimitRenderObjects() = 0;

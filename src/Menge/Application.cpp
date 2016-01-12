@@ -774,7 +774,7 @@ namespace Menge
 					m_debugPause = false;
 
 					RENDER_SERVICE(m_serviceProvider)
-						->enableDebugMode( false );
+						->enableDebugStepRenderMode( false );
 				}				
 			}
 
@@ -786,12 +786,20 @@ namespace Menge
 				if( m_debugPause == false )
 				{
 					RENDER_SERVICE(m_serviceProvider)
-						->enableDebugMode( true );
+						->enableDebugStepRenderMode( true );
 				}
 
 				m_debugPause = true;
 			}
 
+			if( _event.key == KC_F12 && _event.isDown == true )
+			{
+				bool enable = RENDER_SERVICE( m_serviceProvider )
+					->isRedAlertMode();
+
+				RENDER_SERVICE( m_serviceProvider )
+					->enableRedAlertMode( !enable );
+			}
 
 			if( _event.key == KC_F4 && _event.isDown )
 			{
@@ -807,12 +815,6 @@ namespace Menge
 					NOTIFICATION_SERVICE( m_serviceProvider )
 						->removeObserver( NOTIFICATOR_DEBUG_OPEN_FILE, m_notifyDebugOpenFile );
 				}
-			}
-
-			if( _event.key == KC_F11 && _event.isDown == true )
-			{
-                PLAYER_SERVICE(m_serviceProvider)
-					->toggleDebugText();
 			}
 
 			if( _event.key == KC_P && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )

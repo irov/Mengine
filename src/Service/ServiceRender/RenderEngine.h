@@ -28,11 +28,13 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////	
+	const uint32_t RO_FLAG_DEBUG = 0x00000001;
 	//////////////////////////////////////////////////////////////////////////
 	struct RenderObject
     {
 		RenderMaterial * material;
-		uint32_t materialId;
+		uint32_t materialSmartHash;
 
 		RenderVertexBufferInterface * vbHandle;
 		RenderIndexBufferInterface * ibHandle;
@@ -51,8 +53,15 @@ namespace Menge
         uint32_t dipVerticesNum;
         uint32_t dipIndiciesNum;
 
-		uint32_t baseVertexIndex;		
+		uint32_t baseVertexIndex;
+
+		uint32_t flags;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline bool hasRenderObjectFlag( const RenderObject * ro, uint32_t _flag )
+	{
+		return (ro->flags & _flag) > 0;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	struct RenderPass
 	{
@@ -126,8 +135,11 @@ namespace Menge
 		void setSeparateAlphaBlendMode() override;
 
 	public:
-        void enableDebugMode( bool _enable ) override;
-		bool isDebugMode() const override;
+        void enableDebugStepRenderMode( bool _enable ) override;
+		bool isDebugStepRenderMode() const override;
+
+		void enableRedAlertMode( bool _enable ) override;
+		bool isRedAlertMode() const override;
 
 		void endLimitRenderObjects() override;
 		void increfLimitRenderObjects() override;
@@ -269,7 +281,8 @@ namespace Menge
 		bool m_depthBufferWriteEnable;
 		bool m_alphaBlendEnable;
 
-        uint32_t m_debugMode;
+        bool m_debugStepRenderMode;
+		bool m_debugRedAlertMode;
 
 		bool m_stopRenderObjects;
 		uint32_t m_limitRenderObjects;

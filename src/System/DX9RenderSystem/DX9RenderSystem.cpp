@@ -608,22 +608,6 @@ namespace Menge
 			return false;
 		}
 								
-        Viewport clear_viewport;
-
-        clear_viewport.begin.x = 0.f;
-        clear_viewport.begin.y = 0.f;
-        clear_viewport.end.x = (float)m_windowResolution.getWidth();
-        clear_viewport.end.y = (float)m_windowResolution.getHeight();
-        
-        if( m_viewport.equalViewport( clear_viewport ) == false )
-        {
-            this->updateViewport_( clear_viewport );
-
-            this->clear_( 0 );
-
-            this->updateViewport_( m_viewport );
-        }
-        
         IF_DXCALL( m_serviceProvider, m_pD3DDevice, BeginScene, () )
 		{
 			return false;
@@ -1663,9 +1647,30 @@ namespace Menge
         mt::make_lookat_m4( _viewMatrix, _eye, _dir, _up, _sign );
     }
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::clear( uint32_t _color )
+	void DX9RenderSystem::clear( uint32_t _color, bool _force )
 	{
-		this->clear_( _color );
+		if( _force == true )
+		{
+			this->clear_( _color );
+		}
+		else
+		{
+			Viewport clear_viewport;
+
+			clear_viewport.begin.x = 0.f;
+			clear_viewport.begin.y = 0.f;
+			clear_viewport.end.x = (float)m_windowResolution.getWidth();
+			clear_viewport.end.y = (float)m_windowResolution.getHeight();
+
+			if( m_viewport.equalViewport( clear_viewport ) == false )
+			{
+				this->updateViewport_( clear_viewport );
+
+				this->clear_( _color );
+
+				this->updateViewport_( m_viewport );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setSeparateAlphaBlendMode()

@@ -41,7 +41,7 @@ namespace Menge
         void makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport ) override;
         void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign ) override;
 
-		void clear( uint32_t _color ) override;
+		void clear( uint32_t _color, bool _force ) override;
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
 		bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;

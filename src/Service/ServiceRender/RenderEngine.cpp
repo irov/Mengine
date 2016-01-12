@@ -37,7 +37,8 @@ namespace Menge
 		, m_maxIndexCount( 0 )
 		, m_depthBufferWriteEnable( false )
 		, m_alphaBlendEnable( false )
-		, m_debugMode( 0 )
+		, m_debugStepRenderMode( false )
+		, m_debugRedAlertMode( false )
 		, m_currentStage( nullptr )
 		, m_nullTexture( nullptr )
 		, m_renderVertexCount( 0 )
@@ -431,6 +432,9 @@ namespace Menge
 		{
 			return false;
 		}
+
+		RENDER_SYSTEM( m_serviceProvider )
+			->clear( 0x00000000, m_debugRedAlertMode | m_debugStepRenderMode );
 		
 		//this->create2DBuffers_();
 		//m_interface->clearFrameBuffer( FBT_COLOR );
@@ -739,9 +743,14 @@ namespace Menge
 		m_currentIBHandle = nullptr;
 		m_currentProgram = nullptr;
 
-		RENDER_SYSTEM( m_serviceProvider )->setVertexBuffer( nullptr );
-		RENDER_SYSTEM( m_serviceProvider )->setIndexBuffer( nullptr );
-		RENDER_SYSTEM( m_serviceProvider )->setProgram( nullptr );
+		RENDER_SYSTEM( m_serviceProvider )
+			->setVertexBuffer( nullptr );
+
+		RENDER_SYSTEM( m_serviceProvider )			
+			->setIndexBuffer( nullptr );
+
+		RENDER_SYSTEM( m_serviceProvider )
+			->setProgram( nullptr );
 
 		mt::mat4f viewTransform;
 		mt::ident_m4( viewTransform );
@@ -1141,7 +1150,7 @@ namespace Menge
 
 		RenderMaterialPtr ro_material = _material;
 
-		if( m_debugMode > 0 && _debug == false )
+		if( m_debugStepRenderMode == true && _debug == false )
 		{
 			if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
 			{
@@ -1179,6 +1188,23 @@ namespace Menge
 			}
 		}
 
+		if( m_debugRedAlertMode == true && _debug == false )
+		{
+			RenderMaterialPtr new_material = RENDERMATERIAL_SERVICE( m_serviceProvider )
+				->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Blend" )
+				, ro_material->getPrimitiveType()
+				, 0
+				, nullptr
+				);
+
+			if( new_material == nullptr )
+			{
+				return;
+			}
+
+			ro_material = new_material;
+		}
+
 		++rp.countRenderObject;
 
 		RenderObject & ro = m_renderObjects.emplace();
@@ -1186,9 +1212,9 @@ namespace Menge
 		stdex::intrusive_ptr_setup( ro.material, ro_material );
 		
 		uint32_t materialHash = ro.material->getId();
-		ro.materialId = materialHash % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
+		ro.materialSmartHash = materialHash % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
 
-		rp.materialEnd[ro.materialId] = &ro;
+		rp.materialEnd[ro.materialSmartHash] = &ro;
 
 		stdex::intrusive_ptr_setup( ro.ibHandle, m_ibHandle2D );
 		stdex::intrusive_ptr_setup( ro.vbHandle, m_vbHandle2D );
@@ -1207,6 +1233,12 @@ namespace Menge
 
 		ro.dipVerticesNum = 0;
 		ro.dipIndiciesNum = 0;
+		ro.flags = 0;
+
+		if( _debug == true )
+		{
+			ro.flags |= RO_FLAG_DEBUG;
+		}
 		
 		m_renderVertexCount += _verticesNum;
 		m_renderIndicesCount += _indicesNum;
@@ -1531,7 +1563,7 @@ namespace Menge
 		TArrayRenderObject::iterator it_batch = _begin;
 		++it_batch;
 
-		uint32_t materialId = _ro->materialId;		
+		uint32_t materialId = _ro->materialSmartHash;		
 		TArrayRenderObject::const_iterator it_end = _renderPass->materialEnd[materialId];
 
 		if( _begin == it_end )
@@ -1657,6 +1689,16 @@ namespace Menge
 			return false;
 		}
 
+		if( m_debugRedAlertMode == true && hasRenderObjectFlag( _renderObject, RO_FLAG_DEBUG ) == false )
+		{
+			for( uint32_t i = 0; i != _renderObject->verticesNum; ++i )
+			{
+				RenderVertex2D & v = _vertexBuffer[_vbPos + i];
+
+				v.color = Helper::makeARGB( 1.f, 0.f, 0.f, 0.1f );
+			}
+		}
+		
 		if( _ibPos > _ibSize )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::insertRenderObject_ indices buffer overrlow!"
@@ -1749,7 +1791,7 @@ namespace Menge
 	void RenderEngine::clear( uint32_t _color )
 	{
 		RENDER_SYSTEM(m_serviceProvider)
-			->clear( _color );
+			->clear( _color, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setSeparateAlphaBlendMode()
@@ -1758,14 +1800,24 @@ namespace Menge
 			->setSeparateAlphaBlendMode();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::enableDebugMode( bool _enable )
+	void RenderEngine::enableDebugStepRenderMode( bool _enable )
 	{
-		m_debugMode += (_enable == true ? 1 : -1);
+		m_debugStepRenderMode = _enable;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::isDebugMode() const
+	bool RenderEngine::isDebugStepRenderMode() const
 	{
-		return m_debugMode > 0;
+		return m_debugStepRenderMode;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::enableRedAlertMode( bool _enable )
+	{
+		m_debugRedAlertMode = _enable;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::isRedAlertMode() const
+	{
+		return m_debugRedAlertMode;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endLimitRenderObjects()

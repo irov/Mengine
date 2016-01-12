@@ -6,8 +6,6 @@ SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Python3 )
 
 REMOVE_DEFINITIONS(-Doverride)
 
-include(ConfigureChecks.cmake)
-
 #option(WITH_THREAD "compile in rudimentary thread support" OFF)
 #option(WITH_DOC_STRINGS "Enable if you want documentation strings in extension modules" OFF)
 #option(Py_USING_UNICODE "Enable unicode support" ON)
@@ -80,27 +78,12 @@ set( HAVE_DEVICE_MACROS 0 )
 
 
 file(MAKE_DIRECTORY ${python32_BINARY_DIR}/Modules)
-# for now just copy the config header on Windows, the checks may have to be adapted a bit
-#if(WIN32)
-#  configure_file(PC/pyconfig.h ${python32_BINARY_DIR}/pyconfig.h COPYONLY)
-#else(WIN32)
-#  configure_file(pyconfig.h.cmake ${python32_BINARY_DIR}/pyconfig.h @ONLY)
-#endif(WIN32)
-#configure_file(pyconfig.h.cmake pyconfig.h @ONLY)
-
-#file(COPY pyconfig.h DESTINATION ${SOURCE_DIR}/PC)
-#file(COPY dl_nt.c DESTINATION ${SOURCE_DIR}/PC)
-#file(COPY getbuildinfo.c DESTINATION ${SOURCE_DIR}/Modules)
-
 
 #configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
 file(WRITE ${python32_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
 
 configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
 configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
-
-#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Modules/zipimport.c ${SOURCE_DIR}/Modules/zipimport.c COPYONLY)
-#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Include/MengeStdioWrapper.h ${SOURCE_DIR}/Include/MengeStdioWrapper.h COPYONLY)
 
 ############################## 
 
@@ -236,19 +219,9 @@ set(PYTHON_SRCS
                 ${THREAD_SRC}
                 ${DYNLOAD_SRC}
                 )
-#if( WIN32 )
-#    set( PYTHON_SRCS   
-#            ${PYTHON_SRCS}
-#            ${SOURCE_DIR}/PC/dl_nt.c
-#           )
-#endif( WIN32 )
-  
+ 
                 
-set(MODULE_SRCS 
-                #${SOURCE_DIR}/Modules/getpath.c 
-                #${SOURCE_DIR}/Modules/main.c 
-               # ${SOURCE_DIR}/Modules/gcmodule.c
-                
+set(MODULE_SRCS                
                 ${SOURCE_DIR}/Modules/_bisectmodule.c
                 ${SOURCE_DIR}/Modules/_codecsmodule.c
                 ${SOURCE_DIR}/Modules/_collectionsmodule.c
@@ -347,10 +320,7 @@ set(MODULE_SRCS
                 
                 
                 ${SOURCE_DIR}/Modules/timemodule.c
-                ${SOURCE_DIR}/Modules/selectmodule.c
-				#${SOURCE_DIR}/Modules/cStringIO.c
-				#${SOURCE_DIR}/Modules/arraymodule.c
-				#${SOURCE_DIR}/Modules/datetimemodule.c				
+                ${SOURCE_DIR}/Modules/selectmodule.c		
                 ${MOD_SRCS} )
 				
 if( NOT WIN32 )
@@ -391,21 +361,9 @@ add_definitions(-DMS_NO_COREDLL)
 add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPy_BUILD_CORE)
 
-#if(NOT HAVE_HYPOT)
- # add_definitions(-DWITHOUT_COMPLEX)
-#endif(NOT HAVE_HYPOT)
-
-# add_library(${python_LIB_NAME} ${SOURCE_DIR}/Modules/getbuildinfo.c ${SOURCE_DIR}/Modules/_typesmodule.c
-              # ${PARSER_SRCS}
-              # ${OBJECT_SRCS}
-              # ${PYTHON_SRCS}
-              # ${MODULE_SRCS}
-             #${SIGNAL_SRCS}
-              # )
 		  
 add_library( ${PROJECT_NAME}_static STATIC
 			  ${SOURCE_DIR}/Modules/getbuildinfo.c 
-			  #${SOURCE_DIR}/Modules/_typesmodule.c
               ${PARSER_SRCS}
               ${OBJECT_SRCS}
               ${PYTHON_SRCS}
@@ -415,14 +373,3 @@ add_library( ${PROJECT_NAME}_static STATIC
 
             
 target_link_libraries(${PROJECT_NAME}_static ${extraLibs})
-
-
-#set_target_properties(pythonLib PROPERTIES OUTPUT_NAME ${python_LIB_NAME})
-
-#add_executable(python Modules/python.c )
-#target_link_libraries(python pythonLib)
-
-#install(TARGETS pythonLib DESTINATION lib)
-#install(TARGETS python DESTINATION bin)
-#file(GLOB pyHeaders ${Python_SOURCE_DIR}/Include/*.h )
-#install(FILES ${python32_BINARY_DIR}/pyconfig.h ${pyHeaders} DESTINATION include/python${PY_MAJOR}.${PY_MINOR})

@@ -84,5 +84,6 @@ ADD_SUBDIRECTORY( pugixml )
 
 if( DEFINED MENGINE_TARGET_MSVC )
     ADD_SUBDIRECTORY( Python3 )
+    ADD_SUBDIRECTORY( Python3_decimal )
     ADD_SUBDIRECTORY( pybind3 )
 endif()

@@ -71,7 +71,6 @@ WIN32 is still required for the locale module.
 #else
 #include <unistd.h>
 #endif
-
 #define HAVE_HYPOT
 #define HAVE_STRFTIME
 #define DONT_HAVE_SIG_ALARM
@@ -789,5 +788,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 #ifdef _DEBUG
 #	define Py_DEBUG
 #endif
+
+//#define PYTHON_SUPPORT_GC
 
 #endif /* !Py_CONFIG_H */

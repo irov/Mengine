@@ -1,7 +1,5 @@
 #	include "DX9ErrorHelper.h"
 
-#	include "dxerr15.h"
-
 #	include "Logger/Logger.h"
 
 namespace Menge
@@ -21,17 +19,12 @@ namespace Menge
 		{
 			return false;
 		}
-
-		WCHAR desc[1024];
-
-		DXGetErrorDescription(_hr, desc, 1024);
-
-		LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem error file %s line %d DX call '%s':\n err string: %ls\n err description: %ls"
+		
+		LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem error file %s line %d DX call '%s' get error '%d'"
 			, m_file
 			, m_line
 			, m_method
-			, DXGetErrorString(_hr)
-			, desc
+			, _hr
 			);
 
 		return true;

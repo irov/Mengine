@@ -43,7 +43,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AreaOfInterest::removeActor( const AOIActorPtr & _actor )
 	{	
-		AOIActorProviderInterface * actorProvider = _actor->getProvider();
+		//AOIActorProviderInterface * actorProvider = _actor->getProvider();
 
 		for( TVectorAOITriggers::iterator
 			it_trigger = m_triggers.begin(),
@@ -58,12 +58,12 @@ namespace Menge
 				continue;
 			}
 
-			AOITriggerProviderInterface * triggerProvider = trigger->getProvider();
+			//AOITriggerProviderInterface * triggerProvider = trigger->getProvider();
 
-			if( triggerProvider->onAOIActorTest( actorProvider ) == false )
-			{
-				continue;
-			}
+			//if( triggerProvider->onAOIActorTest( actorProvider ) == false )
+			//{
+			//	continue;
+			//}
 
 			trigger->removeActor( _actor );
 		}

@@ -27,22 +27,25 @@ namespace mt
 		return _a + rf;
 	}
 
-	MENGINE_MATH_INLINE int rand( int _max )
+	MENGINE_MATH_INLINE uint32_t rand( uint32_t _max )
 	{
 		float rf = randf( static_cast<float>(_max) );
-		int ri = static_cast<int>( rf );
+
+		uint32_t ri = static_cast<uint32_t>(rf);
+
 		return ri;
 	}
 
-	MENGINE_MATH_INLINE int range_rand( int _a, int _b )
+	MENGINE_MATH_INLINE uint32_t range_rand( uint32_t _a, uint32_t _b )
 	{
 		if( _a > _b )
 		{
 			return _a;
 		}
 
-		int max = ( _b - _a );
-		int ri = mt::rand( max );
+		uint32_t max = (_b - _a);
+		uint32_t ri = mt::rand( max );
+
 		return _a + ri;
 	}
 

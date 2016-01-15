@@ -37,6 +37,11 @@ namespace Menge
 			return false;
 		}
 
+		if( _way.is_valid() == false )
+		{
+			return false;
+		}
+
 		m_node = _node;
 		m_speed = _speed;
 		m_offset = _offset;

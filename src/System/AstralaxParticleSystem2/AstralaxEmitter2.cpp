@@ -113,7 +113,7 @@ namespace Menge
 		else
 		{
 			MAGIC_VIEW view;
-			if( Magic_GetView( m_emitterId, &view ) != MAGIC_SUCCESS )
+			if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
 			{
 				return false;
 			}
@@ -207,9 +207,7 @@ namespace Menge
 	bool AstralaxEmitter2::getCamera( ParticleCamera & _camera ) const
 	{
 		MAGIC_VIEW view;
-		int user_camera = Magic_GetView( m_emitterId, &view );
-				
-		if( user_camera != MAGIC_SUCCESS )
+		if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
 		{
 			return false;
 		}
@@ -268,7 +266,7 @@ namespace Menge
 		if( is3d == true )
 		{
 			MAGIC_VIEW view;
-			if( Magic_GetView( m_emitterId, &view ) != MAGIC_SUCCESS )
+			if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
 			{
 				return false;
 			}
@@ -436,7 +434,7 @@ namespace Menge
 		else
 		{
 			MAGIC_VIEW view;
-			if( Magic_GetView( m_emitterId, &view ) != MAGIC_SUCCESS )
+			if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
 			{
 				return false;
 			}

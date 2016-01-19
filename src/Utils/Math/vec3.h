@@ -75,6 +75,8 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE void reflect_v3_v3( vec3f& _out, const vec3f& _a, const vec3f& _b );
 	MENGINE_MATH_FUNCTION_INLINE vec3f reflect_v3_v3( const vec3f& _a, const vec3f& _b );
 
+	MENGINE_MATH_FUNCTION_INLINE float project_to_line_v3_v3( vec3f& _out, const vec3f& _a, const vec3f& _b, const vec3f & _c );
+
 	MENGINE_MATH_FUNCTION_INLINE void cross_v3_v3( vec3f& _out, const vec3f& _a, const vec3f& _b );
 	MENGINE_MATH_FUNCTION_INLINE vec3f cross_v3_v3( const vec3f& _a, const vec3f& _b );
 

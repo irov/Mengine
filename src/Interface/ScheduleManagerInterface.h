@@ -22,7 +22,8 @@ namespace Menge
 	{
 	public:
 		virtual void onScheduleUpdate( uint32_t _id, uint32_t _iterate, float _timing ) = 0;
-		virtual void onScheduleStop( uint32_t _id ) = 0;
+		virtual void onScheduleComplete( uint32_t _id ) = 0;
+		virtual void onScheduleStop( uint32_t _id ) = 0;		
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ScheduleTimerInterface> ScheduleTimerInterfacePtr;
@@ -50,7 +51,7 @@ namespace Menge
 		virtual uint32_t timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimerInterfacePtr & _listener ) = 0;
 
 	public:
-		virtual bool refresh( uint32_t _id, float _timing ) = 0;
+		virtual bool refresh( uint32_t _id ) = 0;
 
 	public:
 		virtual bool exist( uint32_t _id ) const = 0;

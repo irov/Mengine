@@ -964,6 +964,25 @@ namespace Menge
 
 			return true;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		bool movie_removeAllMovieSlotNode( Movie * _movie, const ConstString & _slotName )
+		{
+			Node * node;
+			Movie * submovie;
+			if( _movie->getMovieNode( _slotName, CONST_STRING( m_serviceProvider, MovieSlot ), &node, &submovie ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::removeAllMovieSlotNode %s not found slot '%s"
+					, _movie->getName().c_str()
+					, _slotName.c_str()
+					);
+
+				return false;
+			}
+
+			node->removeChildren();
+
+			return true;
+		}
         //////////////////////////////////////////////////////////////////////////
         void Transformation3D_removeRelationTransformation( Transformation3D * _transformation )
         {
@@ -1085,18 +1104,14 @@ namespace Menge
             const mt::mat4f & right_wm = _right->getWorldMatrix();
 
             Polygon left_polygon_wm;
-
 			left_poligon.mul_wm( left_polygon_wm, left_wm );
 
             Polygon right_polygon_wm;
-
 			right_poligon.mul_wm( right_polygon_wm, right_wm );
 
             bool result = left_polygon_wm.intersects( right_polygon_wm );
 
             return result;
-
-            //return _left->testPolygon( left_wm, right_poligon, right_wm );
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_loadPlugin( const WString & _pluginName )
@@ -1182,12 +1197,17 @@ namespace Menge
 		protected:
 			void onScheduleUpdate( uint32_t _id, uint32_t _iterate, float _delay ) override
 			{
-				m_script( _id, _iterate, _delay, false );
+				m_script( _id, _iterate, _delay, false, false );
+			}
+
+			void onScheduleComplete( uint32_t _id ) override
+			{
+				m_script( _id, 0, 0.f, true, false );
 			}
 
 			void onScheduleStop( uint32_t _id ) override
 			{
-				m_script( _id, 0, 0.f, true );
+				m_script( _id, 0, 0.f, false, true );
 			}
 
 		protected:
@@ -5805,6 +5825,7 @@ namespace Menge
 					.def_proxy_static( "getMovieSlotWorldPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotWorldPosition )
 					.def_proxy_static( "getMovieSlotOffsetPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotOffsetPosition )
 					.def_proxy_static( "attachMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_attachMovieSlotNode )
+					.def_proxy_static( "removeAllMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_removeAllMovieSlotNode )
                     ;
 
                 pybind::interface_<MovieSlot, pybind::bases<Node> >("MovieSlot", false)

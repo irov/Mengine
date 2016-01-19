@@ -295,6 +295,18 @@ namespace mt
 		reflect_v3_v3(out, _a, _b);
 		return out;
 	}	
+
+	MENGINE_MATH_FUNCTION_INLINE float project_to_line_v3_v3( vec3f& _out, const vec3f& _a, const vec3f& _b, const vec3f & _c )
+	{
+		float da = mt::dot_v3_v3( _c - _a, _b - _a );
+		float db = mt::dot_v3_v3( _b - _a, _b - _a );
+
+		float dab = (da / db);
+
+		_out = _a + (_b - _a) * dab;
+		
+		return dab;
+	}
 	
 	/*	Cross Product	*/
 	MENGINE_MATH_FUNCTION_INLINE void cross_v3_v3(vec3f& _out, const vec3f& _a, const vec3f& _b)

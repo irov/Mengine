@@ -139,7 +139,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScheduleManager::refresh( uint32_t _id, float _timing )
+	bool ScheduleManager::refresh( uint32_t _id )
 	{
 		ScheduleEventDesc * desc;
 
@@ -151,8 +151,10 @@ namespace Menge
 
 			return false;
 		}
-		
-		desc->timing_delay = _timing;
+
+		desc->timing_delay = 0.f;
+		desc->iterate = 0;
+		desc->iterate_invalide = true;
 
 		return true;
 	}
@@ -317,6 +319,8 @@ namespace Menge
 							if( delay <= 0.f )
 							{
 								desc.dead = true;
+
+								desc.timer->onScheduleComplete( desc.id );
 
 								break;
 							}

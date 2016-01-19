@@ -52,7 +52,7 @@ namespace Menge
 		uint32_t timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimerInterfacePtr & _listener ) override;
 		
 	public:
-		bool refresh( uint32_t _id, float _timing ) override;
+		bool refresh( uint32_t _id ) override;
 
 	public:
 		bool exist( uint32_t _id ) const override;

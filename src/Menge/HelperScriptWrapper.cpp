@@ -84,6 +84,32 @@ namespace Menge
 			return locale;
         }
 
+		float s_isometric_length_v3_v3( const mt::vec3f & _v0, const mt::vec3f & _v1 )
+		{
+			mt::vec3f iso_v0 = _v0;
+			iso_v0.y *= 2.f;
+
+			mt::vec3f iso_v1 = _v1;
+			iso_v1.y *= 2.f;
+
+			float iso_length = mt::length_v3_v3( iso_v0, iso_v1 );
+
+			return iso_length;
+		}
+
+		float s_isometric_sqrlength_v3_v3( const mt::vec3f & _v0, const mt::vec3f & _v1 )
+		{
+			mt::vec3f iso_v0 = _v0;
+			iso_v0.y *= 2.f;
+
+			mt::vec3f iso_v1 = _v1;
+			iso_v1.y *= 2.f;
+
+			float iso_length = mt::sqrlength_v3_v3( iso_v0, iso_v1 );
+
+			return iso_length;
+		}
+
         WString s_utf8ToUnicode( const String & _utf8 )
         {
             WString unicode;
@@ -287,6 +313,96 @@ namespace Menge
 			return memoryUse;
 		}
 
+		bool s_intersectPathVsCircle( const pybind::list & _path, const mt::vec3f & _position, float _radius )
+		{
+			size_t path_count = _path.size();
+
+			if( path_count < 2 )
+			{
+				return false;
+			}
+
+			float dradius = _radius * _radius;
+
+			for( size_t i = 1; i != path_count; ++i )
+			{
+				mt::vec3f v0 = _path[i - 1];
+				mt::vec3f v1 = _path[i - 0];
+
+				mt::vec3f vt;
+				float d = mt::project_to_line_v3_v3( vt, v0, v1, _position );
+
+				if( d < 0.f )
+				{
+					if( mt::sqrlength_v3_v3( v0, _position ) < dradius )
+					{
+						return true;
+					}
+				}
+				else if( d > 1.f )
+				{
+					if( mt::sqrlength_v3_v3( v1, _position ) < dradius )
+					{
+						return true;
+					}
+				}
+				else
+				{
+					if( mt::sqrlength_v3_v3( vt, _position ) < dradius )
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		bool s_intersectPathVsCircleIsometric( const pybind::list & _path, const mt::vec3f & _position, float _radius )
+		{
+			size_t path_count = _path.size();
+
+			if( path_count < 2 )
+			{
+				return false;
+			}
+
+			float dradius = _radius * _radius;
+
+			for( size_t i = 1; i != path_count; ++i )
+			{
+				mt::vec3f v0 = _path[i - 1];
+				mt::vec3f v1 = _path[i - 0];
+
+				mt::vec3f vt;
+				float d = mt::project_to_line_v3_v3( vt, v0, v1, _position );
+
+				if( d < 0.f )
+				{					
+					if( this->s_isometric_sqrlength_v3_v3( v0, _position ) < dradius )
+					{
+						return true;
+					}
+				}
+				else if( d > 1.f )
+				{
+					if( this->s_isometric_sqrlength_v3_v3( v1, _position ) < dradius )
+					{
+						return true;
+					}
+				}
+				else
+				{
+					if( this->s_isometric_sqrlength_v3_v3( vt, _position ) < dradius )
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
             const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
@@ -340,6 +456,17 @@ namespace Menge
 			return mt::range_randf( a, b );
 		}
 
+		mt::vec2f mt_radius_randf( float _radius )
+		{
+			float rp = mt::randf( mt::m_two_pi );
+			float rr = mt::randf( _radius );
+
+			float x = mt::cosf_fast( rp );
+			float y = mt::sinf_fast( rp );
+
+			return mt::vec2f( x * rr, y * rr );
+		}
+
 		float mt_sqrtf( float a )
 		{
 			return sqrtf(a);
@@ -375,6 +502,16 @@ namespace Menge
 			return ::atanf( _x );
 		}
 
+		float mt_logf( float _x )
+		{
+			return ::logf( _x );
+		}
+
+		float mt_log10f( float _x )
+		{
+			return ::log10f( _x );
+		}
+		
 		mt::vec2f mt_direction( const mt::vec2f & _from, const mt::vec2f & _to )
 		{
 			mt::vec2f direction;
@@ -1855,6 +1992,8 @@ namespace Menge
 		pybind::def_functor( "randf", helperScriptMethod, &HelperScriptMethod::mt_randf );
 		pybind::def_functor( "range_rand", helperScriptMethod, &HelperScriptMethod::mt_range_rand );
 		pybind::def_functor( "range_randf", helperScriptMethod, &HelperScriptMethod::mt_range_randf );
+		pybind::def_functor( "radius_randf", helperScriptMethod, &HelperScriptMethod::mt_radius_randf );
+		
 			
 		pybind::def_functor( "sqrtf", helperScriptMethod, &HelperScriptMethod::mt_sqrtf );
 		pybind::def_functor( "absf", helperScriptMethod, &HelperScriptMethod::mt_absf );
@@ -1863,6 +2002,8 @@ namespace Menge
 		pybind::def_functor( "tanf", helperScriptMethod, &HelperScriptMethod::mt_tanf );
 		pybind::def_functor( "acosf", helperScriptMethod, &HelperScriptMethod::mt_acosf );
 		pybind::def_functor( "atanf", helperScriptMethod, &HelperScriptMethod::mt_atanf );
+		pybind::def_functor( "logf", helperScriptMethod, &HelperScriptMethod::mt_logf );
+		pybind::def_functor( "log10f", helperScriptMethod, &HelperScriptMethod::mt_log10f );
 		pybind::def_functor( "direction", helperScriptMethod, &HelperScriptMethod::mt_direction );
 		pybind::def_functor( "angle_from_v3_v3", helperScriptMethod, &HelperScriptMethod::my_angle_from_v3_v3 );
         pybind::def_functor( "norm_v2", helperScriptMethod, &HelperScriptMethod::mt_norm_v2 );
@@ -1995,6 +2136,9 @@ namespace Menge
 
         pybind::def_functor( "getLanguagePack", helperScriptMethod, &HelperScriptMethod::s_getLanguagePack );
 
+		pybind::def_functor( "isometric_length_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_length_v3_v3 );
+		pybind::def_functor( "isometric_sqrlength_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_sqrlength_v3_v3 );
+
         pybind::def_functor( "isValidWindowMode", helperScriptMethod, &HelperScriptMethod::s_isValidWindowMode );
 
         pybind::def_functor( "utf8ToUnicode", helperScriptMethod, &HelperScriptMethod::s_utf8ToUnicode );
@@ -2024,5 +2168,8 @@ namespace Menge
 		pybind::def_functor( "printChildren", helperScriptMethod, &HelperScriptMethod::s_printChildren );
 
 		pybind::def_functor( "getGroupResourcesMemoryUse", helperScriptMethod, &HelperScriptMethod::s_getGroupResourcesMemoryUse );
+
+		pybind::def_functor( "intersectPathVsCircle", helperScriptMethod, &HelperScriptMethod::s_intersectPathVsCircle );
+		pybind::def_functor( "intersectPathVsCircleIsometric", helperScriptMethod, &HelperScriptMethod::s_intersectPathVsCircleIsometric );
 	}
 }

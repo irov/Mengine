@@ -30,7 +30,7 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderWayAffector::initialize( Node * _node, float _offset, float _speed, const pybind::list & _way, const pybind::object & _cb )
+	bool PathFinderWayAffector::initialize( Node * _node, const pybind::list & _satellite, float _offset, float _speed, const pybind::list & _way, const pybind::object & _cb )
 	{
 		if( _cb.is_callable() == false )
 		{
@@ -43,6 +43,7 @@ namespace Menge
 		}
 
 		m_node = _node;
+		m_satellite = _satellite;
 		m_speed = _speed;
 		m_offset = _offset;
 
@@ -132,7 +133,7 @@ namespace Menge
 
 		m_iterator = 1;
 
-		m_node->setLocalPosition( wp_current );
+		this->updatePosition_( wp_current );
 
 		mt::vec3f new_pos;
 		mt::vec3f new_dir;
@@ -177,7 +178,7 @@ namespace Menge
 		uint32_t new_iterator;
 		bool newTarget = this->stepNextPoint_( lp, _length, new_pos, new_dir, new_iterator );
 
-		m_node->setLocalPosition( new_pos );
+		this->updatePosition_( new_pos );
 
 		m_length += _length;
 
@@ -204,6 +205,21 @@ namespace Menge
 		}
 
 		return way_length;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderWayAffector::updatePosition_( const mt::vec3f & _pos )
+	{
+		m_node->setLocalPosition( _pos );
+
+		for( uint32_t
+			it = 0,
+			it_end = m_satellite.size();
+		it != it_end; ++it )
+		{
+			Node * satellite = m_satellite[it];
+
+			satellite->setLocalPosition( _pos );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float PathFinderWayAffector::getLength() const

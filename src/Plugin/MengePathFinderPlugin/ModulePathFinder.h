@@ -40,7 +40,7 @@ namespace Menge
 		bool setMapWeight( PathFinderMap * _map, const ConstString & _resourceName );
 		
 	public:
-		PathFinderWayAffector * createPathFinderWayAffector( Node * _node, const pybind::list & _way, float _offset, float _speed, const pybind::object & _cb );
+		PathFinderWayAffector * createPathFinderWayAffector( Node * _node, const pybind::list & _satellite, const pybind::list & _way, float _offset, float _speed, const pybind::object & _cb );
 		void destroyPathFinderWayAffector( PathFinderWayAffector * _affector );
 
 	public:

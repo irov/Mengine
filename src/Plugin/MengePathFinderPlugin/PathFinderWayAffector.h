@@ -24,7 +24,7 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( Node * _node, float _offset, float _speed, const pybind::list & _way, const pybind::object & _cb );
+		bool initialize( Node * _node, const pybind::list & _satellite, float _offset, float _speed, const pybind::list & _way, const pybind::object & _cb );
 		
 	public:
 		Node * getNode() const;
@@ -53,9 +53,13 @@ namespace Menge
 		float calcWayLength_() const;
 
 	protected:
+		void updatePosition_( const mt::vec3f & _pos );
+
+	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
 		Node * m_node;
+		pybind::list m_satellite;
 		pybind::list m_way;
 
 		float m_speed;

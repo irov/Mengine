@@ -193,10 +193,12 @@ namespace Menge
 		mt::box2f bb_vp;
 		rp_vm.toBBox(bb_vp);
 
-		const mt::mat4f & vm = this->getCameraViewMatrix();
+		//const mt::mat4f & vm = this->getCameraViewMatrix();
 
-		mt::mul_v2_m4( m_bboxWM.minimum, bb_vp.minimum, vm );
-		mt::mul_v2_m4( m_bboxWM.maximum, bb_vp.maximum, vm );
+		//mt::mul_v2_m4( m_bboxWM.minimum, bb_vp.minimum, vm );
+		//mt::mul_v2_m4( m_bboxWM.maximum, bb_vp.maximum, vm );
+
+		m_bboxWM = bb_vp;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )

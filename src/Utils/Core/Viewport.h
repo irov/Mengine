@@ -14,7 +14,7 @@ namespace Menge
 
 	public:
 		void initialize( const mt::vec2f & _begin, const mt::vec2f & _end );
-
+		
 	public:
         bool equalViewport( const Viewport & _vp ) const;
 

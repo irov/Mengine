@@ -90,7 +90,7 @@ namespace Menge
 		mt::sub_v3_v3( dir, toWM, fromWM );
 
 		mt::vec3f dir_norm;
-		mt::norm_v3( dir_norm, dir );
+		mt::norm_v3_v3( dir_norm, dir );
 
 		mt::vec2f perp;
 		mt::perp_v2( perp, mt::vec2f(dir_norm.x, dir_norm.y) );

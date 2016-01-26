@@ -6,6 +6,7 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/ResourceInterface.h"
+#	include "Interface/ApplicationInterface.h"
 
 #	include "Player.h"
 
@@ -40,7 +41,6 @@ namespace Menge
 		m_polygon.correct();
 
 		this->invalidateBoundingBox();
-		this->invalidatePolygonWM();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Polygon & HotSpotPolygon::getPolygon() const
@@ -53,36 +53,6 @@ namespace Menge
 		m_polygon.clear();
 
 		this->invalidateBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpotPolygon::_invalidateWorldMatrix()
-	{
-		Node::_invalidateWorldMatrix();
-
-		this->invalidatePolygonWM();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpotPolygon::invalidatePolygonWM()
-	{
-		m_invalidatePolygonWM = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpotPolygon::updatePolygonWM_() const
-	{
-		m_invalidatePolygonWM = false;
-
-		if( this->isCompile() == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("HotSpotPolygon::updatePolygonWM_ %s not compile"
-				, this->getName().c_str()
-				);
-
-			return;
-		}
-
-		const mt::mat4f & wm = this->getWorldMatrix();
-
-		m_polygon.mul_wm( m_polygonWM, wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotPolygon::_updateBoundingBox( mt::box2f & _boundingBox ) const
@@ -99,9 +69,11 @@ namespace Menge
 		const mt::vec2f * ring = m_polygon.outer_points();
 
 		const mt::mat4f & wm = this->getWorldMatrix();
+				
+		const mt::vec2f & ring_point_0 = ring[0];
 
 		mt::vec2f wmp_0;
-		mt::mul_v2_m4( wmp_0, ring[0], wm );
+		mt::mul_v2_m4( wmp_0, ring_point_0, wm );
 
 		mt::reset( _boundingBox, wmp_0 );
 
@@ -111,14 +83,16 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
+			const mt::vec2f & ring_point_it = ring[it];
+
 			mt::vec2f wmp_it;
-			mt::mul_v2_m4( wmp_it, ring[it], wm );
+			mt::mul_v2_m4( wmp_it, ring_point_it, wm );
 
 			mt::add_internal_point( _boundingBox, wmp_it );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotPolygon::testPoint( const mt::vec2f & _point ) const
+	bool HotSpotPolygon::testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, const mt::vec2f & _point ) const
 	{
 		if( m_global == true )
 		{
@@ -130,16 +104,15 @@ namespace Menge
 			return m_outward;
 		}
 
-		const mt::box2f & bb = this->getBoundingBox();
-
+		mt::box2f bb;
+		this->getPolygonScreen( _camera, _viewport, _gameport, &bb, &m_polygonScreen );
+		
 		if( mt::is_intersect( bb, _point ) == false )
 		{
 			return m_outward;
 		}
 
-		const Polygon & polygonWM = this->getPolygonWM();
-
-		if( polygonWM.intersects( _point ) == false )
+		if( m_polygonScreen.intersects( _point ) == false )
 		{
 			return m_outward;
 		}
@@ -147,7 +120,7 @@ namespace Menge
 		return !m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotPolygon::testRadius( const mt::vec2f & _point, float _radius ) const
+	bool HotSpotPolygon::testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, const mt::vec2f & _point, float _radius ) const
 	{
 		if( m_global == true )
 		{
@@ -159,17 +132,16 @@ namespace Menge
 			return m_outward;
 		}
 
-		const mt::box2f & bb = this->getBoundingBox();
+		mt::box2f bb;
+		this->getPolygonScreen( _camera, _viewport, _gameport, &bb, &m_polygonScreen );
 
 		if( mt::is_intersect( bb, _point, _radius ) == false )
 		{
 			return m_outward;
 		}
 
-		const Polygon & polygonWM = this->getPolygonWM();
-
-		//TODO: check polygon and circle
-		if( polygonWM.intersects( _point ) == false )
+		//////TODO: check polygon and circle
+		if( m_polygonScreen.intersects( _point ) == false )
 		{
 			return m_outward;
 		}
@@ -177,7 +149,7 @@ namespace Menge
 		return !m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotPolygon::testPolygon( const mt::vec2f & _point, const Polygon & _polygon ) const
+	bool HotSpotPolygon::testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, const mt::vec2f & _point, const Polygon & _polygon ) const
 	{
 		if( m_global == true )
 		{
@@ -194,26 +166,78 @@ namespace Menge
 			return m_outward;
 		}
 
-		const mt::box2f & bb = this->getBoundingBox();
-
 		_polygon.transpose( m_polygonTemp, _point );
 
-		mt::box2f bb_screen;
-		m_polygonTemp.to_box2f( bb_screen );
+		mt::box2f bb_polygon;
+		m_polygonTemp.to_box2f( bb_polygon );
 
-		if( mt::is_intersect( bb, bb_screen ) == false )
+		mt::box2f bb_screen;
+		this->getPolygonScreen( _camera, _viewport, _gameport, &bb_screen, &m_polygonScreen );
+
+		if( mt::is_intersect( bb_screen, bb_polygon ) == false )
 		{
 			return m_outward;
 		}
 
-		const Polygon & polygonWM = this->getPolygonWM();
-
-		if( polygonWM.intersects( m_polygonTemp ) == false )
+		if( m_polygonScreen.intersects( m_polygonTemp ) == false )
 		{
 			return m_outward;
 		}
 
 		return !m_outward;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpotPolygon::getPolygonScreen( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, mt::box2f * _bb, Polygon * _screen ) const
+	{
+		(void)_viewport; //TODO
+
+		const mt::mat4f & wm = this->getWorldMatrix();
+
+		const mt::mat4f & vpm = _camera->getCameraViewProjectionMatrix();
+
+		mt::mat4f wvpm;
+		mt::mul_m4_m4( wvpm, wm, vpm );
+				
+		mt::vec2f gameportSize;
+		_gameport.calcSize( gameportSize );
+
+		const Polygon & polygon = this->getPolygon();
+
+		uint32_t numpoints = polygon.num_points();
+		const mt::vec2f * points = polygon.outer_points();
+
+		if( _bb != nullptr )
+		{
+			mt::ident_box( *_bb );
+		}
+
+		if( _screen != nullptr )
+		{
+			_screen->clear();
+		}
+
+		for( uint32_t it = 0; it != numpoints; ++it )
+		{
+			const mt::vec2f & v = points[it];
+
+			mt::vec3f v_wvp;
+			mt::mul_v3_v2_m4_homogenize( v_wvp, v, wvpm );
+
+			mt::vec2f v_wvpn = (v_wvp.to_vec2f() + mt::vec2f( 1.f, 1.f )) * 0.5f;
+
+			mt::vec2f v_screen;
+			v_screen = _gameport.begin + v_wvpn * gameportSize;
+
+			if( _bb != nullptr )
+			{
+				mt::add_internal_point( *_bb, v_screen.x, v_screen.y );
+			}
+
+			if( _screen != nullptr )
+			{
+				_screen->append( v_screen );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotPolygon::_debugRender( const RenderObjectState * _state, unsigned int _debugMask )

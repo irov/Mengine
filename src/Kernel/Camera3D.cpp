@@ -17,8 +17,9 @@ namespace Menge
 		, m_cameraFar(10000.f)
 		, m_cameraRightSign(1.f)
 		, m_notifyChangeWindowResolution(nullptr)
-		, m_invalidateMatrix(true)
+		, m_invalidateViewMatrix(true)
 		, m_invalidateProjectionMatrix(true)
+		, m_invalidateViewProjectionMatrix(true)
 		, m_invalidateBB(true)
 	{
 		mt::ident_m4( m_viewMatrix );
@@ -119,9 +120,9 @@ namespace Menge
 		//this->invalidateMatrix_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::updateMatrix_() const
+	void Camera3D::updateViewMatrix_() const
 	{
-		m_invalidateMatrix = false;
+		m_invalidateViewMatrix = false;
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -176,6 +177,16 @@ namespace Menge
             ->makeProjectionFrustum( m_projectionMatrix, projectViewport, m_cameraNear, m_cameraFar );
 
 		mt::inv_m4( m_projectionMatrixInv, m_projectionMatrix );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::updateViewProjectionMatrix_() const
+	{
+		m_invalidateViewProjectionMatrix = false;
+
+		const mt::mat4f & vm = this->getCameraViewMatrix();
+		const mt::mat4f & pm = this->getCameraProjectionMatrix();
+
+		mt::mul_m4_m4( m_viewProjectionMatrix, vm, pm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::updateBBoxWM_() const

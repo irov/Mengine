@@ -21,6 +21,9 @@ namespace Menge
 		const mt::mat4f & getCameraProjectionMatrix() const override;
 		const mt::mat4f & getCameraProjectionMatrixInv() const override;
 
+	protected:
+		const mt::mat4f & getCameraViewProjectionMatrix() const override;
+
 	public:
 		const mt::box2f & getCameraBBoxWM() const override; 
 
@@ -35,6 +38,8 @@ namespace Menge
 		mt::mat4f m_viewMatrixInv;
 		mt::mat4f m_projectionMatrix;
 		mt::mat4f m_projectionMatrixInv;
+
+		mt::mat4f m_viewProjectionMatrix;
 
 		mt::box2f m_bboxWM;
 
@@ -61,6 +66,11 @@ namespace Menge
 	inline const mt::mat4f & RenderCamera::getCameraViewMatrix() const
 	{
 		return m_viewMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f & RenderCamera::getCameraViewProjectionMatrix() const
+	{ 
+		return m_viewProjectionMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::box2f & RenderCamera::getCameraBBoxWM() const

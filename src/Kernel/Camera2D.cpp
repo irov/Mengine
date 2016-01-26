@@ -17,15 +17,11 @@ namespace	Menge
 		, m_observerChangeWindowResolution( nullptr )
 		, m_fixedRenderport( false )
 		, m_invalidateProjectionMatrix( true )
-		, m_invalidateMatrix( true )
+		, m_invalidateViewMatrix( true )
+		, m_invalidateViewProjectionMatrix( true )
 		, m_invalidateBB( true )
 		, m_orthogonalProjection( true )
 	{
-		mt::ident_m4( m_viewMatrix );
-		mt::ident_m4( m_viewMatrixInv );
-		mt::ident_m4( m_projectionMatrix );
-		mt::ident_m4( m_projectionMatrixInv );
-		
 		mt::ident_box( m_bboxWM );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -120,9 +116,9 @@ namespace	Menge
 		m_orthogonalProjection = _orthogonalProjection;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::updateMatrix_() const
+	void Camera2D::updateViewMatrix_() const
 	{
-		m_invalidateMatrix = false;
+		m_invalidateViewMatrix = false;
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -139,30 +135,16 @@ namespace	Menge
 			->makeViewMatrixLookAt( m_viewMatrix, wm_position, wm_direction, wm_up, m_cameraRightSign );
 
 		mt::inv_m4( m_viewMatrixInv, m_viewMatrix );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera2D::updateViewProjectionMatrix_() const
+	{
+		m_invalidateViewProjectionMatrix = false;
 
-		//mt::vec3f pos( 0.f, 0.f, 0.f );
-		//mt::vec3f dir( 0.f, 1.f, 1.f );
-		//mt::vec3f up( 0.f, 1.f, 0.f );
-		////mt::vec3f target( 1124.f, 492.f, 0.f );
-		////mt::vec3f target( 0.f, 0.f, 0.f );
-		////mt::vec3f dir;
-		////mt::dir_v3_v3( dir, target, pos );
+		const mt::mat4f & vm = this->getCameraViewMatrix();
+		const mt::mat4f & pm = this->getCameraProjectionMatrix();
 
-		//mt::mat4f vm;
-		//mt::ident_m4( vm );
-		//mt::make_lookat_m4( vm, pos, dir, up, 1.f );
-
-		//m_viewMatrix = vm;
-		//mt::inv_m4( m_viewMatrix, vm );
-
-		//mt::inv_m4( m_viewMatrixInv, m_viewMatrix );
-
-		//const mt::mat4f & wm = this->getWorldMatrix();
-		//mt::inv_m4( m_worldMatrixInv, wm );
-
-		//const mt::mat4f & wm = this->getWorldMatrix();
-
-		//mt::inv_m4( m_viewMatrix, wm );
+		mt::mul_m4_m4( m_viewProjectionMatrix, vm, pm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::updateBBoxWM_() const

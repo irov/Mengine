@@ -11,10 +11,11 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-    HotspotMousePickerVisitor::HotspotMousePickerVisitor( HotSpot * _layerspaceHotspot, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const mt::vec2f & _point, Arrow * _arrow )
+	HotspotMousePickerVisitor::HotspotMousePickerVisitor( HotSpot * _layerspaceHotspot, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Viewport & _gameViewport, const mt::vec2f & _point, Arrow * _arrow )
         : m_hotspot(_layerspaceHotspot)
 		, m_viewport(_viewport)
         , m_camera(_camera)
+		, m_gameViewport(_gameViewport)
         , m_point(_point)
         , m_arrow(_arrow)
         , m_result(false)
@@ -53,19 +54,19 @@ namespace Menge
 		{
 		case EAT_POINT:
 			{
-				m_result = m_hotspot->testPoint( wp );
+				m_result = m_hotspot->testPoint( m_camera, m_viewport, m_gameViewport, wp );
 			}break;
 		case EAT_RADIUS:
 			{
 				float radius = m_arrow->getRadius();
 
-				m_result = m_hotspot->testRadius( wp, radius );
+				m_result = m_hotspot->testRadius( m_camera, m_viewport, m_gameViewport, wp, radius );
 			}break;
 		case EAT_POLYGON:
 			{
 				const Polygon & polygon = m_arrow->getPolygon();
 
-				m_result = m_hotspot->testPolygon( wp, polygon );
+				m_result = m_hotspot->testPolygon( m_camera, m_viewport, m_gameViewport, wp, polygon );
 			}break;
 		}
     }

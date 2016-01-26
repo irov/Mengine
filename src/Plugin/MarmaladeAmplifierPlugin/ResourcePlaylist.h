@@ -8,6 +8,7 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	struct TrackDesc
 	{
 		FilePath path;
@@ -15,13 +16,13 @@ namespace Menge
 		float volume;
 		bool external;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	typedef std::vector<TrackDesc> TVectorTrackDesc;
-
+	//////////////////////////////////////////////////////////////////////////
 	class ResourcePlaylist
 		: public ResourceReference
 	{
-		RESOURCE_DECLARE( ResourcePlaylist )
+		DECLARE_VISITABLE( ResourcePlaylist )
 
 	public:
 		ResourcePlaylist();
@@ -42,4 +43,6 @@ namespace Menge
 
 		TVectorTrackDesc m_tracks;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourcePlaylist> ResourcePlaylistPtr;
 }

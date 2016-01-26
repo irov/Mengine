@@ -877,6 +877,8 @@ namespace Menge
 				mt::vec3f pos;
 				mt::mul_v3_m4( pos, frame.position, wm );
 
+				pos.y *= mt::m_sqrt2;
+
 				py_path[i] = pos;
 			}
 
@@ -1051,16 +1053,54 @@ namespace Menge
 
 			return c;
         }
-        //////////////////////////////////////////////////////////////////////////
-        mt::vec2f s_getWorldPolygonCenter( HotSpotPolygon * _hs )
-        {
-			const Polygon & polygon = _hs->getPolygonWM();
+		//////////////////////////////////////////////////////////////////////////
+		mt::vec2f s_getWorldPolygonCenter( HotSpotPolygon * _hs )
+		{
+			const Polygon & polygon = _hs->getPolygon();
 
 			mt::box2f bb;
-			polygon.to_box2f( bb );
+			mt::ident_box( bb );
+
+			const mt::mat4f & wm = _hs->getWorldMatrix();
+
+			size_t outer_count = polygon.outer_count();
+			const mt::vec2f * outer_points = polygon.outer_points();
+
+			for( const mt::vec2f
+				*it = outer_points,
+				*it_end = outer_points + outer_count;
+			it != it_end;
+			++it )
+			{
+				const mt::vec2f & v = *it;
+
+				mt::vec2f v_wm;
+				mt::mul_v2_m4( v_wm, v, wm );
+				
+				mt::add_internal_point( bb, v_wm );
+			}
 
 			mt::vec2f c;
 			mt::get_center_box( bb, c );
+
+			return c;
+		}
+        //////////////////////////////////////////////////////////////////////////
+		mt::vec2f s_getScreenPolygonCenter( HotSpotPolygon * _hs )
+        {
+			float aspect;
+			Viewport gameport;
+			APPLICATION_SERVICE( m_serviceProvider )
+				->getGameViewport( aspect, gameport );
+
+			const RenderCameraInterface * camera = _hs->getRenderCameraInheritance();
+			const RenderViewportInterface * viewport = _hs->getRenderViewportInheritance();
+
+			mt::box2f b1;
+			_hs->getPolygonScreen( camera, viewport, gameport, &b1, nullptr );
+			
+			mt::vec2f c;
+			mt::get_center_box( b1, c );
 
 			return c;
         }
@@ -1826,6 +1866,14 @@ namespace Menge
 
 			return py_arrow;
         }
+		//////////////////////////////////////////////////////////////////////////
+		void s_hideArrow( bool _hide )
+		{
+			Arrow * arrow = PLAYER_SERVICE( m_serviceProvider )
+				->getArrow();
+
+			arrow->localHide( _hide );
+		}
         //////////////////////////////////////////////////////////////////////////
         const Resolution & s_getCurrentResolution()
         {
@@ -3693,7 +3741,7 @@ namespace Menge
 					m_currentDir = dir;
 					m_targetDir = dir;
 
-					m_node->setDirection( dir, mt::vec3f( 0.f, 0.f, 1.f ) );
+					m_node->setBillboard( dir, mt::vec3f( 0.f, 1.f, 1.f ) );
 				}
 
 			protected:
@@ -3703,7 +3751,7 @@ namespace Menge
 					bool finish = m_interpolator.update( _timing, &position );
 
 					this->updateDirection_( _timing, position );
-					this->updatePosition_( position );					
+					this->updatePosition_( position );
 					
 					if( finish == false )
 					{
@@ -3743,13 +3791,13 @@ namespace Menge
 					{
 						m_currentDir = m_targetDir;
 
-						m_node->setDirection( m_currentDir, mt::vec3f( 0.f, 0.f, 1.f ) );
+						m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
 					}
 					else
 					{
 						m_currentDir = m_currentDir + (m_targetDir - m_currentDir) * t;
 
-						m_node->setDirection( m_currentDir, mt::vec3f( 0.f, 0.f, 1.f ) );
+						m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
 					}
 				}
 
@@ -5085,6 +5133,10 @@ namespace Menge
             .def( "getAngle", &Transformation3D::getOrientationX )
 
 			.def( "setDirection", &Transformation3D::setDirection )
+			.def( "setBillboard", &Transformation3D::setBillboard )
+			.def( "setAxes", &Transformation3D::setAxes )
+
+			.def( "billboardAt", &Transformation3D::billboardAt )
 			.def( "lookAt", &Transformation3D::lookAt )
 
             .def( "translate", &Transformation3D::translate )
@@ -5219,9 +5271,9 @@ namespace Menge
 			.def( "getLocalColorG", &Colorable::getLocalColorG )
 			.def( "setLocalColorB", &Colorable::setLocalColorB )
 			.def( "getLocalColorB", &Colorable::getLocalColorB )
-            .def( "setLocalAlpha", &Colorable::setLocalColorAlpha )
-            .def( "getLocalAlpha", &Colorable::getLocalColorAlpha )
 			.def( "setLocalColorRGB", &Colorable::setLocalColorRGB )
+            .def( "setLocalAlpha", &Colorable::setLocalColorAlpha )
+            .def( "getLocalAlpha", &Colorable::getLocalColorAlpha )			
             .def( "setPersonalColor", &Colorable::setPersonalColor )
             .def( "getPersonalColor", &Colorable::getPersonalColor )
             .def( "setPersonalAlpha", &Colorable::setPersonalAlpha )
@@ -5630,10 +5682,10 @@ namespace Menge
 				pybind::interface_<HotSpotPolygon, pybind::bases<HotSpot> >("HotSpotPolygon", false)					
 					.def( "setPolygon", &HotSpotPolygon::setPolygon )
 					.def( "getPolygon", &HotSpotPolygon::getPolygon )					
-					.def( "getPolygonWM", &HotSpotPolygon::getPolygonWM )
 					.def( "clearPoints", &HotSpotPolygon::clearPoints )
 					.def_proxy_static( "getLocalPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_getLocalPolygonCenter )
 					.def_proxy_static( "getWorldPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldPolygonCenter )
+					.def_proxy_static( "getScreenPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_getScreenPolygonCenter )
 					.def_proxy_static( "getWorldPolygon", nodeScriptMethod, &NodeScriptMethod::s_getWorldPolygon )
 					;			
 
@@ -5913,6 +5965,7 @@ namespace Menge
 
             pybind::def_functor( "setArrow", nodeScriptMethod, &NodeScriptMethod::s_setArrow );
             pybind::def_functor( "getArrow", nodeScriptMethod, &NodeScriptMethod::s_getArrow );
+			pybind::def_functor( "hideArrow", nodeScriptMethod, &NodeScriptMethod::s_hideArrow );
 
             pybind::def_functor( "setArrowLayer", nodeScriptMethod, &NodeScriptMethod::s_setArrowLayer );
 

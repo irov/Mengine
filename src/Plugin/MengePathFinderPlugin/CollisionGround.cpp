@@ -202,7 +202,7 @@ namespace Menge
 		float diff_distance = correct_distance - test_distance;
 
 		mt::vec3f test_dir;
-		mt::norm_v3( test_dir, position - test_position );
+		mt::norm_v3_v3( test_dir, position - test_position );
 
 		float speed_undiff = 10.f * _timing * 0.001f;
 

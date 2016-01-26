@@ -3,6 +3,7 @@
 #	include "config.h"
 
 #	include "mat3.h"
+#	include "mat4.h"
 
 namespace mt
 {
@@ -33,6 +34,7 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE bool is_intersect(const box2f & _a, const box2f & _b);
     MENGINE_MATH_FUNCTION_INLINE bool is_intersect(const box2f & _a, const vec2f & _b);
 	MENGINE_MATH_FUNCTION_INLINE bool is_intersect(const box2f & _a, const vec2f & _b, float _radius);
+	MENGINE_MATH_FUNCTION_INLINE void mul_box2_m4( box2f & _out, const box2f & _a, const mat4f & _b );
 	MENGINE_MATH_FUNCTION_INLINE vec2f box_size( const box2f& _box );
 }
 

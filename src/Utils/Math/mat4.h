@@ -63,6 +63,7 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE void mul_v4_m4(vec4f & _out, const vec4f & _v, const mat4f & _m);
 	MENGINE_MATH_FUNCTION_INLINE void mul_v4_v3_m4(vec4f & _out, const vec3f & _v, const mat4f & _m);
 	MENGINE_MATH_FUNCTION_INLINE void mul_v3_v3_m4_homogenize(vec3f & _out, const vec3f & _v, const mat4f & _m);
+	MENGINE_MATH_FUNCTION_INLINE void mul_v3_v2_m4_homogenize( vec3f & _out, const vec2f & _v, const mat4f & _m );
 
 	MENGINE_MATH_FUNCTION_INLINE void mul_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b);
 	
@@ -103,7 +104,10 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE void make_projection_frustum_m4( mat4f & _out , float _left, float _right, float _top, float _bottom, float _near, float _far );
 
 	MENGINE_MATH_FUNCTION_INLINE void make_rotate_m4_euler(mat4f & _out, float _x, float _y, float _z);
-	MENGINE_MATH_FUNCTION_INLINE void make_rotate_m4_direction(mat4f & _out, const vec3f & _direction, const vec3f & _up );
+	MENGINE_MATH_FUNCTION_INLINE void make_rotate_m4_direction( mat4f & _out, const vec3f & _direction, const vec3f & _up );
+	MENGINE_MATH_FUNCTION_INLINE void make_rotate_m4_fixed_up( mat4f & _out, const vec3f & _direction, const vec3f & _up );
+	MENGINE_MATH_FUNCTION_INLINE void make_rotate_m4_fixed_left( mat4f & _out, const vec3f & _direction, const vec3f & _left );
+	MENGINE_MATH_FUNCTION_INLINE void make_rotate_m4_axes( mat4f & _out, const vec3f & _direction, const vec3f & _left, const vec3f & _up );
 
 
 	MENGINE_MATH_FUNCTION_INLINE void make_rotate_x_axis_m4( mat4f & _out, float _angle );

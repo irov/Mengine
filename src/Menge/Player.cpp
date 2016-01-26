@@ -60,6 +60,7 @@ namespace Menge
 		, m_renderTarget(nullptr)
 		, m_switchSceneTo(nullptr)
 		, m_mousePickerSystem(nullptr)
+		, m_observerChangeWindowResolution(nullptr)
 		, m_switchScene(false)
 		, m_removeScene(false)
 		, m_destroyOldScene(false)
@@ -620,6 +621,9 @@ namespace Menge
 		m_affectorable = new Affectorable;
 		m_affectorableGlobal = new Affectorable;
 
+		m_observerChangeWindowResolution = NOTIFICATION_SERVICE( m_serviceProvider )
+			->addObserverMethod( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &Player::notifyChangeWindowResolution );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -729,6 +733,9 @@ namespace Menge
 			delete m_affectorableGlobal;
 			m_affectorableGlobal = nullptr;
 		}
+
+		NOTIFICATION_SERVICE( m_serviceProvider )
+			->removeObserver( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, m_observerChangeWindowResolution );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::initializeRenderResources()
@@ -1398,6 +1405,22 @@ namespace Menge
 		(void)_resolution;
         (void)_fixed;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Player::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )
+	{
+		(void)_fullscreen;
+		(void)_resolution;
+
+		float aspect;
+		Viewport gameport;
+		APPLICATION_SERVICE( m_serviceProvider )
+			->getGameViewport( aspect, gameport );
+
+		if( m_mousePickerSystem != nullptr )
+		{
+			m_mousePickerSystem->setGameport( gameport );
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onFocus( bool _focus )
 	{

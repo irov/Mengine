@@ -39,7 +39,7 @@ namespace mt
 		float z = dist - ::sqrtf( r * r - x );
 
 		_time = z / nSpeedLen;
-		mt::norm_v3( _normal, nPos + nSpeedDir * z );
+		mt::norm_v3_v3( _normal, nPos + nSpeedDir * z );
 
 		return true;
 	}

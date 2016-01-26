@@ -11,6 +11,7 @@ namespace mt
 	const float m_two_pi = 2.f * m_pi;
 	const float m_inv_two_pi = 1.f / m_two_pi;
 	const float m_e = 2.71828182845904523536f;
+	const float m_sqrt2 = 1.4142135623730950488016887242097f;
 	const float	m_deg2rad = m_pi / 180.f;
 	const float	m_rad2deg = 180.f / m_pi;
 	const float m_eps = 0.00001f;

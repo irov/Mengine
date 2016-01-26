@@ -1,5 +1,4 @@
 #	include "ResourcePlaylist.h"
-#	include "Kernel/ResourceImplement.h"
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/CodecInterface.h"
@@ -10,8 +9,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourcePlaylist );
 	//////////////////////////////////////////////////////////////////////////
 	ResourcePlaylist::ResourcePlaylist()
 		: m_loop(true)

@@ -157,6 +157,11 @@ namespace Menge
 		m_scene = _scene;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::setGameport( const Viewport & _gameport )
+	{
+		m_gameport = _gameport;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::setRenderViewport( const RenderViewportInterface * _viewport )
 	{
 		m_viewport = _viewport;
@@ -683,7 +688,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			PickerTrapState * state = it->state;
+			PickerTrapStateDesc & desc = *it;
+
+			PickerTrapState * state = desc.state;
 
 			if( state->dead == true )
 			{
@@ -692,9 +699,10 @@ namespace Menge
 
 			MousePickerTrapInterface * trap = state->trap;
 
-			const RenderViewportInterface * viewport = it->viewport;
-			const RenderCameraInterface * camera = it->camera;
-			bool picked = trap->pick( mt::vec2f( _x, _y ), viewport, camera, m_arrow );
+			const RenderViewportInterface * viewport = desc.viewport;
+			const RenderCameraInterface * camera = desc.camera;
+
+			bool picked = trap->pick( mt::vec2f( _x, _y ), viewport, camera, m_gameport, m_arrow );
 
 			if( ( handle == false || m_handleValue == false ) && m_block == false && picked == true )
 			{

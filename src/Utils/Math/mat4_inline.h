@@ -186,6 +186,20 @@ namespace mt
 		_out.z *= w_inv;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE void mul_v3_v2_m4_homogenize( vec3f & _out, const vec2f & _a, const mat4f & _b )
+	{
+		_out.x = _a.x * _b.v0.x + _a.y * _b.v1.x + _b.v3.x;
+		_out.y = _a.x * _b.v0.y + _a.y * _b.v1.y + _b.v3.y;
+		_out.z = _a.x * _b.v0.z + _a.y * _b.v1.z + _b.v3.z;
+
+		float w = _a.x * _b.v0.w + _a.y * _b.v1.w + _b.v3.w;
+		float w_inv = 1.f / w;
+
+		_out.x *= w_inv;
+		_out.y *= w_inv;
+		_out.z *= w_inv;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE vec4f operator* (const vec4f& v, const mat4f& m)
 	{
 		vec4f out;
@@ -703,44 +717,62 @@ namespace mt
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void make_rotate_m4_direction( mat4f & _out, const vec3f & _direction, const vec3f & _up )
 	{
-		vec3f zaxis;
-		mt::norm_v3( zaxis, _direction );
-
 		vec3f xaxis;
-		mt::cross_v3_v3_norm( xaxis, _up, zaxis );
+		mt::norm_v3_v3( xaxis, _direction );
 
 		vec3f yaxis;
-		mt::cross_v3_v3_norm( yaxis, zaxis, xaxis );
+		mt::cross_v3_v3_norm( yaxis, _up, xaxis );
 
-		_out.v0.x = xaxis.x;
-		_out.v0.y = xaxis.y;
-		_out.v0.z = xaxis.z;
+		vec3f zaxis;
+		mt::cross_v3_v3_norm( zaxis, xaxis, yaxis );
+
+		mt::make_rotate_m4_axes( _out, xaxis, yaxis, zaxis );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE void make_rotate_m4_fixed_up( mat4f & _out, const vec3f & _direction, const vec3f & _up )
+	{
+		vec3f zaxis;
+		mt::norm_v3_v3( zaxis, _up );
+
+		vec3f yaxis;
+		mt::cross_v3_v3_norm( yaxis, zaxis, _direction );
+
+		vec3f xaxis;
+		mt::cross_v3_v3_norm( xaxis, yaxis, zaxis );
+
+		mt::make_rotate_m4_axes( _out, xaxis, yaxis, zaxis );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE void make_rotate_m4_fixed_left( mat4f & _out, const vec3f & _direction, const vec3f & _left )
+	{
+		vec3f yaxis;
+		mt::norm_v3_v3( yaxis, _left );
+
+		vec3f zaxis;
+		mt::cross_v3_v3_norm( zaxis, _direction, yaxis );
+
+		vec3f xaxis;
+		mt::cross_v3_v3_norm( xaxis, yaxis, zaxis );
+
+		mt::make_rotate_m4_axes( _out, xaxis, yaxis, zaxis );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE void make_rotate_m4_axes( mat4f & _out, const vec3f & _direction, const vec3f & _left, const vec3f & _up )
+	{
+		_out.v0.x = _direction.x;
+		_out.v0.y = _direction.y;
+		_out.v0.z = _direction.z;
 		_out.v0.w = 0.f;
 
-		_out.v1.x = yaxis.x;
-		_out.v1.y = yaxis.y;
-		_out.v1.z = yaxis.z;
+		_out.v1.x = _left.x;
+		_out.v1.y = _left.y;
+		_out.v1.z = _left.z;
 		_out.v1.w = 0.f;
 
-		_out.v2.x = zaxis.x;
-		_out.v2.y = zaxis.y;
-		_out.v2.z = zaxis.z;
+		_out.v2.x = _up.x;
+		_out.v2.y = _up.y;
+		_out.v2.z = _up.z;
 		_out.v2.w = 0.f;
-
-		//_out.v0.x = xaxis.x;
-		//_out.v0.y = yaxis.x;
-		//_out.v0.z = zaxis.x;
-		//_out.v0.w = 0.f;
-
-		//_out.v1.x = xaxis.y;
-		//_out.v1.y = yaxis.y;
-		//_out.v1.z = zaxis.y;
-		//_out.v1.w = 0.f;
-
-		//_out.v2.x = xaxis.z;
-		//_out.v2.y = yaxis.z;
-		//_out.v2.z = zaxis.z;
-		//_out.v2.w = 0.f;
 
 		_out.v3.x = 0.f;
 		_out.v3.y = 0.f;
@@ -880,7 +912,7 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _dir, const vec3f & _up, float _sign )
 	{
 		vec3f zaxis;
-		norm_v3( zaxis, _dir );
+		norm_v3_v3( zaxis, _dir );
 
 		vec3f xaxis;
 		cross_v3_v3_norm( xaxis, _up, zaxis );
@@ -942,7 +974,7 @@ namespace mt
 
 		float x;
 		float y;
-		float z;
+		float z;		
 
 		if( mt::equal_f_f( fabsf( sinY ), 1.f ) == true )
 		{
@@ -950,33 +982,35 @@ namespace mt
 
 			if( mt::equal_f_f( sinY, -1.f ) == true )
 			{
-				y = m_half_pi;
-				z = x + atan2f( _rotate.v0.y, _rotate.v0.z );
+				y = x + atan2f( _rotate.v0.y, _rotate.v0.z );
+				z = m_half_pi;
+				
 			}
 			else
-			{
-				y = -m_half_pi;
-				z = -x + atan2f( -_rotate.v0.y, -_rotate.v0.z );
+			{				
+				y = -x + atan2f( -_rotate.v0.y, -_rotate.v0.z );
+				z = -m_half_pi;
 			}
 		}
 		else if( mt::equal_f_f( sinY, 0.f ) == true )
 		{			
 			x = atan2f( _rotate.v1.x, _rotate.v0.x );
-			y = atan2f( _rotate.v2.y, _rotate.v2.z );
-			z = 0.f;
+			y = 0.f;
+			z = atan2f( _rotate.v2.y, _rotate.v2.z );
+			
 		}
 		else
 		{
-			z = -asinf( sinY );
-			float cosY = cosf_fast( z );
+			y = -asinf( sinY );
+			float cosY = cosf_fast( y );
 			float one_div_cosY = 1.f / cosY;
 
 			x = atan2f( _rotate.v1.x * one_div_cosY, _rotate.v0.x * one_div_cosY );
-			y = atan2f( _rotate.v2.y * one_div_cosY, _rotate.v2.z * one_div_cosY );
+			z = atan2f( _rotate.v2.y * one_div_cosY, _rotate.v2.z * one_div_cosY );
 		}
 
 		_euler.x = x;
-		_euler.y = z;
-		_euler.z = y;
+		_euler.y = y;
+		_euler.z = z;
 	}
 }

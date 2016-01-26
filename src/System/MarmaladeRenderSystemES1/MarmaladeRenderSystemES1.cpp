@@ -773,7 +773,7 @@ namespace Menge
 		//m_windowContext->setVSync( _vSync );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystemES1::clear( uint32_t _color )
+	void MarmaladeRenderSystemES1::clear( uint32_t _color, bool _force )
 	{
 
 	}

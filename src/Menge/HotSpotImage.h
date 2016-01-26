@@ -25,9 +25,9 @@ namespace Menge
         uint32_t getHeight() const;
 
 	protected:
-		bool testPoint( const mt::vec2f & _point ) const override;
-		bool testRadius( const mt::vec2f & _point, float _radius ) const override;
-		bool testPolygon( const mt::vec2f & _point, const Polygon & _polygon ) const override;
+		bool testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point ) const override;
+		bool testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point, float _radius ) const override;
+		bool testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point, const Polygon & _polygon ) const override;
 
 	protected:
 		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;

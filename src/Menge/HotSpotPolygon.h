@@ -20,44 +20,27 @@ namespace Menge
 		const Polygon & getPolygon() const;
 
 	public:
-		bool testPoint( const mt::vec2f & _point ) const override;
-		bool testRadius( const mt::vec2f & _point, float _radius ) const override;
-		bool testPolygon( const mt::vec2f & _point, const Polygon & _polygon ) const override;
+		bool testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, const mt::vec2f & _point ) const override;
+		bool testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, const mt::vec2f & _point, float _radius ) const override;
+		bool testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, const mt::vec2f & _point, const Polygon & _polygon ) const override;
 
 	public:
 		void clearPoints();
 
+	public:
+		void getPolygonScreen( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, mt::box2f * _bb, Polygon * _screen ) const;
+
 	protected:
 		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
-
-	protected:
-		void _invalidateWorldMatrix() override;
-		
-	protected:
-		void invalidatePolygonWM();
-		void updatePolygonWM_() const;
-
-	public:
-		inline const Polygon & getPolygonWM() const;
 
 	protected:
 		void _debugRender( const RenderObjectState * _state, unsigned int _debugMask ) override;
 
 	protected:        
 		Polygon m_polygon;
-		mutable Polygon m_polygonWM;
+		mutable Polygon m_polygonScreen;
 		mutable Polygon m_polygonTemp;
 
 		mutable bool m_invalidatePolygonWM;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline const Polygon & HotSpotPolygon::getPolygonWM() const
-	{
-		if( m_invalidatePolygonWM == true )
-		{
-			this->updatePolygonWM_();
-		}
-
-		return m_polygonWM;
-	}
 }

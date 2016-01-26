@@ -29,5 +29,7 @@ namespace Menge
 
 		mt::mul_v2_m4( m_bboxWM.minimum, bb_vp.minimum, m_viewMatrix );
 		mt::mul_v2_m4( m_bboxWM.maximum, bb_vp.maximum, m_viewMatrix );
+
+		mt::mul_m4_m4( m_viewProjectionMatrix, m_viewMatrix, m_projectionMatrix );
 	}
 }

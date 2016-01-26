@@ -68,6 +68,9 @@ namespace Menge
 		inline const mt::vec3f & getOrientation() const;
 
 		void setDirection( const mt::vec3f & _direction, const mt::vec3f & _up );
+		void setBillboard( const mt::vec3f & _direction, const mt::vec3f & _normal );
+		void setAxes( const mt::vec3f & _direction, const mt::vec3f & _left, const mt::vec3f & _up );
+		void billboardAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _normal );
 		void lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up );
 
 	public:

@@ -512,24 +512,29 @@ namespace Menge
 			return ::log10f( _x );
 		}
 		
-		mt::vec2f mt_direction( const mt::vec2f & _from, const mt::vec2f & _to )
+		mt::vec2f mt_direction_v2_v2( const mt::vec2f & _from, const mt::vec2f & _to )
 		{
 			mt::vec2f direction;
-			sub_v2_v2(direction, _to, _from);
+			mt::dir_v2_v2( direction, _to, _from );
 
-			mt::vec2f direction_n;
-			norm_v2_v2(direction_n, direction);
-
-			return direction_n;
+			return direction;
 		}
 
-		float my_angle_from_v3_v3( const mt::vec2f & _from, const mt::vec2f & _to )
+		mt::vec3f mt_direction_v3_v3( const mt::vec3f & _from, const mt::vec3f & _to )
+		{
+			mt::vec3f direction;
+			mt::dir_v3_v3( direction, _to, _from );
+
+			return direction;
+		}
+
+		float my_angle_from_v2_v2( const mt::vec2f & _from, const mt::vec2f & _to )
 		{
 			mt::vec2f direction;
-			sub_v2_v2(direction, _to, _from);
+			mt::sub_v2_v2( direction, _to, _from );
 
 			mt::vec2f direction_n;
-			norm_v2_v2(direction_n, direction);
+			mt::norm_v2_v2(direction_n, direction);
 
 			float angle = mt::signed_angle( direction_n );
 
@@ -543,6 +548,15 @@ namespace Menge
 
 			return v_n;
 		}
+
+		mt::vec3f mt_norm_v3( const mt::vec3f & _vec )
+		{
+			mt::vec3f v_n;
+			mt::norm_v3_v3( v_n, _vec );
+
+			return v_n;
+		}
+
 
 		bool s_intersectsEllipseVsPoint( const mt::vec2f & _pos, float _radius, float _ellipse, const mt::vec2f & _point )
 		{
@@ -785,9 +799,30 @@ namespace Menge
 				return false;
 			}
 
-			const Polygon & p1 = shape1->getPolygonWM();
-			const Polygon & p2 = shape2->getPolygonWM();
+			float aspect;
+			Viewport gameport;
+			APPLICATION_SERVICE( m_serviceProvider )
+				->getGameViewport( aspect, gameport );
 
+			const RenderCameraInterface * shape1_camera = shape1->getRenderCameraInheritance();
+			const RenderViewportInterface * shape1_viewport = shape1->getRenderViewportInheritance();
+
+			mt::box2f b1;
+			Polygon p1;
+			shape1->getPolygonScreen( shape1_camera, shape1_viewport, gameport, &b1, &p1 );
+
+			const RenderCameraInterface * shape2_camera = shape2->getRenderCameraInheritance();
+			const RenderViewportInterface * shape2_viewport = shape2->getRenderViewportInheritance();
+
+			mt::box2f b2;
+			Polygon p2;
+			shape2->getPolygonScreen( shape2_camera, shape2_viewport, gameport, &b2, &p2 );
+
+			if( mt::is_intersect( b1, b2 ) == false )
+			{
+				return false;
+			}
+			
 			bool result = s_intersectsPolygons( p1, p2 );
 
 			return result;
@@ -838,7 +873,16 @@ namespace Menge
 				return false;
 			}
 
-			const Polygon & p1 = shape->getPolygonWM();
+			float aspect;
+			Viewport gameport;
+			APPLICATION_SERVICE( m_serviceProvider )
+				->getGameViewport( aspect, gameport );
+
+			const RenderCameraInterface * shape_camera = shape->getRenderCameraInheritance();
+			const RenderViewportInterface * shape_viewport = shape->getRenderViewportInheritance();
+
+			Polygon p1;
+			shape->getPolygonScreen( shape_camera, shape_viewport, gameport, nullptr, &p1 );
 
 			bool result = s_intersectsPolygons( p1, _polygon );
 
@@ -2004,9 +2048,11 @@ namespace Menge
 		pybind::def_functor( "atanf", helperScriptMethod, &HelperScriptMethod::mt_atanf );
 		pybind::def_functor( "logf", helperScriptMethod, &HelperScriptMethod::mt_logf );
 		pybind::def_functor( "log10f", helperScriptMethod, &HelperScriptMethod::mt_log10f );
-		pybind::def_functor( "direction", helperScriptMethod, &HelperScriptMethod::mt_direction );
-		pybind::def_functor( "angle_from_v3_v3", helperScriptMethod, &HelperScriptMethod::my_angle_from_v3_v3 );
+		pybind::def_functor( "direction_v2_v2", helperScriptMethod, &HelperScriptMethod::mt_direction_v2_v2 );
+		pybind::def_functor( "direction_v3_v3", helperScriptMethod, &HelperScriptMethod::mt_direction_v3_v3 );
+		pybind::def_functor( "angle_from_v2_v2", helperScriptMethod, &HelperScriptMethod::my_angle_from_v2_v2 );
         pybind::def_functor( "norm_v2", helperScriptMethod, &HelperScriptMethod::mt_norm_v2 );
+		pybind::def_functor( "norm_v3", helperScriptMethod, &HelperScriptMethod::mt_norm_v3 );
 
         pybind::def_functor( "angle_correct_interpolate_from_to", helperScriptMethod, &HelperScriptMethod::s_angle_correct_interpolate_from_to );
         pybind::def_functor( "angle_between_two_vectors", helperScriptMethod, &HelperScriptMethod::s_angle_between_two_vectors );

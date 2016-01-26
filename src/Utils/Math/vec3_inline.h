@@ -142,7 +142,7 @@ namespace mt
 	{
 		vec3f dir = _a - _b;
 		
-		mt::norm_v3( _out, dir );
+		mt::norm_v3_v3( _out, dir );
 	}
 
 	MENGINE_MATH_FUNCTION_INLINE float length_v3(const vec3f& _a)
@@ -329,16 +329,16 @@ namespace mt
 		_out.y = _a.z*_b.x - _a.x*_b.z;
 		_out.z = _a.x*_b.y - _a.y*_b.x;
 
-		norm_v3( _out , _out );
+		norm_v3_v3( _out, _out );
 	}
 	
 	/*	Normalize Vector*/
-	MENGINE_MATH_FUNCTION_INLINE void norm_v3(vec3f& _out, const vec3f& _rhs)
+	MENGINE_MATH_FUNCTION_INLINE void norm_v3_v3( vec3f& _out, const vec3f& _rhs )
 	{
 		_out = _rhs / _rhs.length();
 	}
 
-	MENGINE_MATH_FUNCTION_INLINE float norm_v3_f( vec3f& _out, const vec3f & _rhs )
+	MENGINE_MATH_FUNCTION_INLINE float norm_v3_v3_f( vec3f& _out, const vec3f & _rhs )
 	{
 		float l = _rhs.length();
 
@@ -350,7 +350,8 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE vec3f norm_v3(const vec3f& _rhs)
 	{
 		vec3f out;
-		norm_v3(out, _rhs);
+		norm_v3_v3( out, _rhs );
+
 		return out;
 	}
 

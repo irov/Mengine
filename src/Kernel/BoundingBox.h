@@ -14,8 +14,7 @@ namespace Menge
 
 	protected:
 		inline void invalidateBoundingBox() const;
-		inline bool isInvalidateBoundingBox() const;
-		
+
 	protected:
 		void updateBoundingBox() const;
 
@@ -32,14 +31,9 @@ namespace Menge
 		m_invalidateBoundingBox = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline bool BoundingBox::isInvalidateBoundingBox() const
-	{
-		return m_invalidateBoundingBox;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	inline const mt::box2f & BoundingBox::getBoundingBox() const
 	{
-		if( this->isInvalidateBoundingBox() == true )
+		if( m_invalidateBoundingBox == true )
 		{
 			this->updateBoundingBox();
 		}

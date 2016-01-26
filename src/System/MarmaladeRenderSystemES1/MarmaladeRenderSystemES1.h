@@ -148,7 +148,7 @@ namespace Menge
 
 		void setVSync( bool _vSync ) override;
 
-        void clear( uint32_t _color ) override;
+		void clear( uint32_t _color, bool _force ) override;
         
         void setSeparateAlphaBlendMode() override;
 

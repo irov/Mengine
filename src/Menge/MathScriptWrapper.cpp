@@ -100,25 +100,49 @@ namespace Menge
 
 			if( pybind::tuple_check( _obj ) == true )
 			{
-				if( pybind::tuple_size( _obj ) != 2 )
+				size_t size = pybind::tuple_size( _obj );
+
+				switch( size )
 				{
-					return false;
+				case 2:
+					{
+						_place->x = pybind::tuple_getitem_t( _obj, 0 );
+						_place->y = pybind::tuple_getitem_t( _obj, 1 );
+					}break;
+				case 3:
+					{
+						_place->x = pybind::tuple_getitem_t( _obj, 0 );
+						_place->y = pybind::tuple_getitem_t( _obj, 1 );
+					}break;
+				default:
+					{
+						return false;
+					}break;
 				}
-								
-				_place->x = pybind::tuple_getitem_t( _obj, 0 );
-				_place->y = pybind::tuple_getitem_t( _obj, 1 );
 
 				return true;
 			}
 			else if( pybind::list_check( _obj ) == true )
 			{
-				if( pybind::list_size( _obj ) != 2 )
-				{
-					return false;
-				}
+				size_t size = pybind::list_size( _obj );
 
-				_place->x = pybind::list_getitem_t( _obj, 0 );
-				_place->y = pybind::list_getitem_t( _obj, 1 );
+				switch( size )
+				{
+				case 2:
+					{
+						_place->x = pybind::list_getitem_t( _obj, 0 );
+						_place->y = pybind::list_getitem_t( _obj, 1 );
+					}break;
+				case 3:
+					{
+						_place->x = pybind::list_getitem_t( _obj, 0 );
+						_place->y = pybind::list_getitem_t( _obj, 1 );
+					}break;
+				default:
+					{
+						return false;
+					}break;
+				}
 
 				return true;
 			}
@@ -141,42 +165,52 @@ namespace Menge
 
 			if( pybind::tuple_check( _obj ) == true )
 			{
-				if( pybind::tuple_size( _obj ) < 2 || pybind::tuple_size( _obj ) > 3 )
+				size_t size = pybind::tuple_size( _obj );
+				
+				switch( size )
 				{
-					return false;
-				}
-
-				_place->x = pybind::tuple_getitem_t( _obj, 0 );
-				_place->y = pybind::tuple_getitem_t( _obj, 1 );
-
-				if( pybind::tuple_size( _obj ) == 3 )
-				{					
-					_place->z = pybind::tuple_getitem_t( _obj, 2 );
-				}
-				else
-				{
-					_place->z = 0.f;
+				case 2:
+					{
+						_place->x = pybind::tuple_getitem_t( _obj, 0 );
+						_place->y = pybind::tuple_getitem_t( _obj, 1 );
+						_place->z = 0.f;
+					}break;
+				case 3:
+					{
+						_place->x = pybind::tuple_getitem_t( _obj, 0 );
+						_place->y = pybind::tuple_getitem_t( _obj, 1 );
+						_place->z = pybind::tuple_getitem_t( _obj, 2 );
+					}break;
+				default:
+					{
+						return false;
+					}break;
 				}
 
 				return true;
 			}
 			else if( pybind::list_check( _obj ) == true )
 			{
-				if( pybind::list_size( _obj ) < 2 || pybind::list_size( _obj ) > 3 )
-				{
-					return false;
-				}
+				size_t size = pybind::list_size( _obj );
 
-				_place->x = pybind::list_getitem_t( _obj, 0 );
-				_place->y = pybind::list_getitem_t( _obj, 1 );
-
-				if( pybind::list_size( _obj ) == 3 )
-				{					
-					_place->z = pybind::list_getitem_t( _obj, 2 );
-				}
-				else
+				switch( size )
 				{
-					_place->z = 0.f;
+				case 2:
+					{
+						_place->x = pybind::list_getitem_t( _obj, 0 );
+						_place->y = pybind::list_getitem_t( _obj, 1 );
+						_place->z = 0.f;
+					}break;
+				case 3:
+					{
+						_place->x = pybind::list_getitem_t( _obj, 0 );
+						_place->y = pybind::list_getitem_t( _obj, 1 );
+						_place->z = pybind::list_getitem_t( _obj, 2 );
+					}break;
+				default:
+					{
+						return false;
+					}break;
 				}
 
 				return true;

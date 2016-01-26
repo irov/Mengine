@@ -546,8 +546,14 @@ namespace Menge
 			return false;
 		}
 
+#	ifdef MENGE_RENDER_TEXTURE_RGBA
+		MAGIC_ARGB_ENUM color_mode = MAGIC_ABGR;
+#	else
+		MAGIC_ARGB_ENUM color_mode = MAGIC_ABGR;
+#	endif
+
 		MAGIC_RENDERING_START start;
-		void * context = Magic_PrepareRenderArrays( m_emitterId, &start, 100, MAGIC_ABGR, sizeof( RenderIndices ) == 4 );
+		void * context = Magic_PrepareRenderArrays( m_emitterId, &start, 100, color_mode, sizeof( RenderIndices ) == 4 );
 
 		if( start.vertices == 0 || start.indexes == 0 )
 		{

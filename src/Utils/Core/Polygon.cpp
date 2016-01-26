@@ -69,7 +69,7 @@ namespace boost
 
 namespace Menge
 {
-	typedef boost::geometry::model::d2::point_xy<float> BoostPoint;
+	typedef boost::geometry::model::point<float, 2, boost::geometry::cs::cartesian> BoostPoint;
 	typedef boost::geometry::model::polygon<mt::vec2f, true, true, stdex::vector, stdex::vector, stdex::stl_allocator, stdex::stl_allocator> BoostPolygon;
 	typedef boost::geometry::model::box<mt::vec2f> BoostBox;
 	typedef boost::geometry::model::segment<mt::vec2f> BoostSegment;

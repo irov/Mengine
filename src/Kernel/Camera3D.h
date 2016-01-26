@@ -46,6 +46,9 @@ namespace Menge
 		const mt::mat4f & getCameraProjectionMatrixInv() const override;
 
 	public:
+		const mt::mat4f & getCameraViewProjectionMatrix() const override;
+
+	public:
 		const mt::box2f & getCameraBBoxWM() const override;
 
 	public:
@@ -59,8 +62,9 @@ namespace Menge
 		void invalidateProjectionMatrix_();
 		
 	protected:
-		void updateMatrix_() const;
+		void updateViewMatrix_() const;
 		void updateProjectionMatrix_() const;
+		void updateViewProjectionMatrix_() const;
 		void updateBBoxWM_() const;
 
 	protected:
@@ -87,22 +91,27 @@ namespace Menge
 		mutable mt::mat4f m_projectionMatrix;
 		mutable mt::mat4f m_projectionMatrixInv;
 
+		mutable mt::mat4f m_viewProjectionMatrix;
+
 		mutable mt::box2f m_bboxWM;
 		
-		mutable bool m_invalidateMatrix;
+		mutable bool m_invalidateViewMatrix;
 		mutable bool m_invalidateProjectionMatrix;
+		mutable bool m_invalidateViewProjectionMatrix;
 		mutable bool m_invalidateBB;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline void Camera3D::invalidateViewMatrix_()
 	{
-		m_invalidateMatrix = true;
+		m_invalidateViewMatrix = true;
+		m_invalidateViewProjectionMatrix = true;
 		m_invalidateBB = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline void Camera3D::invalidateProjectionMatrix_()
 	{
 		m_invalidateProjectionMatrix = true;
+		m_invalidateViewProjectionMatrix = true;
 		m_invalidateBB = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -133,9 +142,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & Camera3D::getCameraViewMatrix() const
 	{
-		if( m_invalidateMatrix == true )
+		if( m_invalidateViewMatrix == true )
 		{
-			this->updateMatrix_();
+			this->updateViewMatrix_();
 		}
 
 		return m_viewMatrix;
@@ -143,12 +152,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & Camera3D::getCameraViewMatrixInv() const
 	{
-		if( m_invalidateMatrix == true )
+		if( m_invalidateViewMatrix == true )
 		{
-			this->updateMatrix_();
+			this->updateViewMatrix_();
 		}
 
 		return m_viewMatrixInv;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f & Camera3D::getCameraViewProjectionMatrix() const
+	{
+		if( m_invalidateViewProjectionMatrix == true )
+		{
+			this->updateViewProjectionMatrix_();
+		}
+
+		return m_viewProjectionMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::box2f & Camera3D::getCameraBBoxWM() const

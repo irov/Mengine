@@ -133,8 +133,7 @@ namespace Menge
 			.def( "getLocalPosition", &PathFinderWayAffector::getLocalPosition )
 			.def( "getTimePosition", &PathFinderWayAffector::getTimePosition )
 			.def( "predictionLinearBullet", &PathFinderWayAffector::predictionLinearBullet )
-			.def( "predictionIsometricLinearBullet", &PathFinderWayAffector::predictionIsometricLinearBullet )
-			.def( "predictionIsometricParabolicBullet", &PathFinderWayAffector::predictionIsometricParabolicBullet )
+			.def( "predictionParabolicBullet", &PathFinderWayAffector::predictionParabolicBullet )
 			;
 
 		pybind::def_functor( "createPathFinderWayAffector", this, &ModulePathFinder::createPathFinderWayAffector );

@@ -202,12 +202,9 @@ namespace	Menge
 		const mt::mat4f & pm_inv = _camera->getCameraProjectionMatrixInv();
 
 		mt::vec2f p1 = sp * 2.f - mt::vec2f(1.f, 1.f);
-		p1.y = -p1.y;
 
 		mt::vec2f p_pm;
 		mt::mul_v2_m4( p_pm, p1, pm_inv );
-
-		const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
 		
 		EArrowType arrowType = this->getArrowType();
 
@@ -219,28 +216,29 @@ namespace	Menge
 
 				mt::vec2f p = p_pm + pc;
 
-				mt::vec2f p_vm;
-				mt::mul_v2_m4( p_vm, p, vm_inv );
+				//mt::vec2f p_vm;
+				//mt::mul_v2_m4( p_vm, p, vm_inv );
 
-				_worldPoint = p_vm;
+				_worldPoint = p;
 			}break;
 		case EAT_RADIUS:
 			{
 				mt::vec2f p = p_pm;
 
-				mt::vec2f p_vm;
-				mt::mul_v2_m4( p_vm, p, vm_inv );
+				//mt::vec2f p_vm;
+				//mt::mul_v2_m4( p_vm, p, vm_inv );
 
-				_worldPoint = p_vm;
+				//_worldPoint = p_vm;
+				_worldPoint = p;
 			}break;
 		case EAT_POLYGON:
 			{
 				mt::vec2f p = p_pm;
 
-				mt::vec2f p_vm;
-				mt::mul_v2_m4( p_vm, p, vm_inv );
+				//mt::vec2f p_vm;
+				//mt::mul_v2_m4( p_vm, p, vm_inv );
 
-				_worldPoint = p_vm;
+				_worldPoint = p;
 			}break;
 		}
 	}

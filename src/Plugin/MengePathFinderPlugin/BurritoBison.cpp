@@ -135,7 +135,7 @@ namespace Menge
 		BurritoBisonImpulse impulse;
 		
 		impulse.direction;
-		mt::norm_v3( impulse.direction, _direction );
+		mt::norm_v3_v3( impulse.direction, _direction );
 
 		impulse.value = _value;
 		impulse.time = _time;
@@ -494,7 +494,7 @@ namespace Menge
 	{ 
 		VelocityEventDesc desc;
 		desc.id = ++m_enumeratorId;		
-		desc.velocity_sqrlength = mt::norm_v3_f( desc.velocity, _velocity );
+		desc.velocity_sqrlength = mt::norm_v3_v3_f( desc.velocity, _velocity );
 		
 		desc.cb = _cb;
 

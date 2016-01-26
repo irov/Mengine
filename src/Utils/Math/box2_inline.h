@@ -1,5 +1,7 @@
 #	include <math.h>
 
+#	include <limits>
+
 namespace mt
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -24,8 +26,10 @@ namespace mt
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void ident_box( box2f & box )
 	{
-		mt::ident_v2( box.minimum );
-		mt::ident_v2( box.maximum );
+		box.minimum.x = std::numeric_limits<float>::max();
+		box.minimum.y = std::numeric_limits<float>::max();
+		box.maximum.x = -std::numeric_limits<float>::max();
+		box.maximum.y = -std::numeric_limits<float>::max();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void reset( box2f & box, const vec2f &initValue)
@@ -171,6 +175,12 @@ namespace mt
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE void mul_box2_m4( box2f & _out, const box2f & _a, const mat4f & _b )
+	{
+		mt::mul_v2_m4( _out.minimum, _a.minimum, _b );
+		mt::mul_v2_m4( _out.maximum, _a.maximum, _b );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE vec2f box_size( const box2f& _box )

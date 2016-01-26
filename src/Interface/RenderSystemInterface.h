@@ -534,6 +534,9 @@ namespace Menge
 		virtual const mt::mat4f & getCameraProjectionMatrixInv() const = 0;
 
 	public:
+		virtual const mt::mat4f & getCameraViewProjectionMatrix() const = 0;
+
+	public:
 		virtual const mt::box2f & getCameraBBoxWM() const = 0; 
 
 	public:

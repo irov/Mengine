@@ -118,7 +118,7 @@ namespace Menge
 		HotSpot::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testPoint( const mt::vec2f & _point ) const
+	bool HotSpotImage::testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point ) const
 	{
 		if( m_global == true )
 		{
@@ -145,7 +145,7 @@ namespace Menge
 		return result != m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testRadius( const mt::vec2f & _point, float _radius ) const
+	bool HotSpotImage::testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point, float _radius ) const
 	{
 		if( m_global == true )
 		{
@@ -172,7 +172,7 @@ namespace Menge
 		return result != m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testPolygon( const mt::vec2f & _point, const Polygon & _polygon ) const
+	bool HotSpotImage::testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point, const Polygon & _polygon ) const
 	{
 		if( m_global == true )
 		{

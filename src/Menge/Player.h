@@ -1,6 +1,7 @@
 #	pragma once
 
 #   include "Interface/PlayerInterface.h"
+#   include "Interface/NotificationServiceInterface.h"
 
 #	include "Core/ConstString.h"
 #	include "Core/Resolution.h"
@@ -138,6 +139,9 @@ namespace Menge
 
 		void onFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
 		void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
+
+	protected:
+		void notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution );
 	
 	protected:
 		void renderArrow_( unsigned int _debugMask );
@@ -145,6 +149,8 @@ namespace Menge
 	private:
 		Scene * m_scene;
 		Arrow * m_arrow;
+
+		ObserverInterface * m_observerChangeWindowResolution;
 		
 		Camera2D * m_camera2D;
 		RenderViewport * m_viewport2D;

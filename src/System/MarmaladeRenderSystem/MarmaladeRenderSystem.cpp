@@ -785,9 +785,10 @@ namespace Menge
 		//m_windowContext->setVSync( _vSync );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::clear( uint32_t _color )
+	void MarmaladeRenderSystem::clear( uint32_t _color, bool _force )
     {
-    
+		(void)_color;
+		(void)_force;
     }
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr MarmaladeRenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )

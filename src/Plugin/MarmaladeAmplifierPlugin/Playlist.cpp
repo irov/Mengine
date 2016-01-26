@@ -15,7 +15,6 @@ namespace Menge
 	Playlist::Playlist( ServiceProviderInterface * _serviceProvider )
 		: m_serviceProvider(_serviceProvider)
         , m_loop(false)
-		, m_playlistResource(nullptr)    
 		, m_oneTrackPlayed(false)
 		, m_oneTrackLooped(false)
 		, m_trackIndex(0)
@@ -24,17 +23,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Playlist::~Playlist()
 	{
-		if( m_playlistResource != nullptr )
-		{
-			m_playlistResource->decrementReference();
-			m_playlistResource = nullptr;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Playlist::initialize( const ConstString & _playlistResource )
 	{
         m_playlistResource = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceT<ResourcePlaylist *>( _playlistResource );
+            ->getResourceT<ResourcePlaylistPtr>( _playlistResource );
 
         if( m_playlistResource == nullptr )
         {

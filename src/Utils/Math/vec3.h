@@ -82,8 +82,8 @@ namespace mt
 
 	MENGINE_MATH_FUNCTION_INLINE void cross_v3_v3_norm( vec3f& _out, const vec3f& _a, const vec3f& _b );
 
-	MENGINE_MATH_FUNCTION_INLINE void norm_v3( vec3f& _out, const vec3f& _rhs );
-	MENGINE_MATH_FUNCTION_INLINE float norm_v3_f( vec3f& _out, const vec3f& _rhs );
+	MENGINE_MATH_FUNCTION_INLINE void norm_v3_v3( vec3f& _out, const vec3f& _rhs );
+	MENGINE_MATH_FUNCTION_INLINE float norm_v3_v3_f( vec3f& _out, const vec3f& _rhs );
 	MENGINE_MATH_FUNCTION_INLINE vec3f norm_v3( const vec3f& _rhs );
 	MENGINE_MATH_FUNCTION_INLINE void norm_safe_v3( vec3f& out, const vec3f& _rhs, float err = 1e-06 );
 	MENGINE_MATH_FUNCTION_INLINE vec3f norm_safe_v3( const vec3f& _rhs );

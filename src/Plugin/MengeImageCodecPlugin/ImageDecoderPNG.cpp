@@ -117,7 +117,7 @@ namespace Menge
 
 		if( png_sig_cmp(png_check, (png_size_t)0, PNG_BYTES_TO_CHECK) != 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Bad or not PNG file" 
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::_prepareData Bad or not PNG file" 
 				);
 
 			return false;
@@ -125,7 +125,7 @@ namespace Menge
 
 		if( setjmp( png_jmpbuf( m_png_ptr ) ) )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize" 
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::_prepareData" 
 				);
 
 			png_destroy_write_struct( &m_png_ptr, &m_info_ptr );
@@ -152,11 +152,21 @@ namespace Menge
 			m_interlace_number_of_passes = png_set_interlace_handling( m_png_ptr );
 		}
 
+#	ifdef PNG_READ_SCALE_16_TO_8_SUPPORTED
 		if( bit_depth == 16 )
 		{
 			png_set_scale_16( m_png_ptr );
 		}
+#	else
+		if( bit_depth == 16 )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ImageDecoderPNG::_prepareData not support scale 16 to 8 bit"
+				);
 
+			return false;
+		}
+#	endif
+		
 		switch( color_type )
 		{
 		case PNG_COLOR_TYPE_RGB:

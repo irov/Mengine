@@ -306,6 +306,43 @@ namespace Menge
 		this->setOrientation( orientation );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::setBillboard( const mt::vec3f & _direction, const mt::vec3f & _normal )
+	{
+		mt::mat4f mr;
+		mt::make_rotate_m4_fixed_up( mr, _direction, _normal );
+
+		mt::vec3f orientation;
+		mt::make_euler_angles( orientation, mr );
+
+		this->setOrientation( orientation );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::billboardAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _normal )
+	{
+		mt::vec3f dir = _at - _position;
+
+		mt::mat4f mr;
+		mt::make_rotate_m4_fixed_up( mr, dir, _normal );
+
+		mt::vec3f orientation;
+		mt::make_euler_angles( orientation, mr );
+
+		this->setOrientation( orientation );
+
+		this->setLocalPosition( _position );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::setAxes( const mt::vec3f & _direction, const mt::vec3f & _left, const mt::vec3f & _up )
+	{
+		mt::mat4f mr;
+		mt::make_rotate_m4_axes( mr, _direction, _left, _up );
+
+		mt::vec3f orientation;
+		mt::make_euler_angles( orientation, mr );
+
+		this->setOrientation( orientation );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up )
 	{
 		mt::vec3f dir = _at - _position;
@@ -316,8 +353,9 @@ namespace Menge
 		mt::vec3f orientation;
 		mt::make_euler_angles( orientation, mr );
 
-		this->setLocalPosition( _position );
 		this->setOrientation( orientation );
+
+		this->setLocalPosition( _position );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline static bool s_identityTransformationMatrix( const mt::mat4f & _m )

@@ -203,6 +203,8 @@ namespace	Menge
 
 		mt::vec2f p1 = sp * 2.f - mt::vec2f(1.f, 1.f);
 
+		p1.y = -p1.y;
+
 		mt::vec2f p_pm;
 		mt::mul_v2_m4( p_pm, p1, pm_inv );
 		

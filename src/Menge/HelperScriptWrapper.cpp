@@ -358,49 +358,38 @@ namespace Menge
 			return false;
 		}
 
-		bool s_intersectPathVsCircleIsometric( const pybind::list & _path, const mt::vec3f & _position, float _radius )
+		pybind::object s_selectRandomPointFromPathRadius( const pybind::list & _path, const mt::vec3f & _position, float _radius )
 		{
 			size_t path_count = _path.size();
 
-			if( path_count < 2 )
-			{
-				return false;
-			}
-
 			float dradius = _radius * _radius;
 
-			for( size_t i = 1; i != path_count; ++i )
+			std::vector<mt::vec3f> points;
+
+			for( size_t i = 0; i != path_count; ++i )
 			{
-				mt::vec3f v0 = _path[i - 1];
-				mt::vec3f v1 = _path[i - 0];
+				mt::vec3f v = _path[i];
 
-				mt::vec3f vt;
-				float d = mt::project_to_line_v3_v3( vt, v0, v1, _position );
+				if( mt::sqrlength_v3_v3( v, _position ) > dradius )
+				{
+					continue;
+				}
 
-				if( d < 0.f )
-				{					
-					if( this->s_isometric_sqrlength_v3_v3( v0, _position ) < dradius )
-					{
-						return true;
-					}
-				}
-				else if( d > 1.f )
-				{
-					if( this->s_isometric_sqrlength_v3_v3( v1, _position ) < dradius )
-					{
-						return true;
-					}
-				}
-				else
-				{
-					if( this->s_isometric_sqrlength_v3_v3( vt, _position ) < dradius )
-					{
-						return true;
-					}
-				}
+				points.push_back( v );
 			}
 
-			return false;
+			if( points.empty() == true )
+			{
+				return pybind::make_none_t();
+			}
+			
+			size_t size = points.size();
+
+			size_t index = mt::rand( size );
+
+			const mt::vec3f & vr = points[index];
+
+			return pybind::make_object_t( vr );
 		}
 
         void s_setCursorPosition( const mt::vec2f & _pos )
@@ -2216,6 +2205,6 @@ namespace Menge
 		pybind::def_functor( "getGroupResourcesMemoryUse", helperScriptMethod, &HelperScriptMethod::s_getGroupResourcesMemoryUse );
 
 		pybind::def_functor( "intersectPathVsCircle", helperScriptMethod, &HelperScriptMethod::s_intersectPathVsCircle );
-		pybind::def_functor( "intersectPathVsCircleIsometric", helperScriptMethod, &HelperScriptMethod::s_intersectPathVsCircleIsometric );
+		pybind::def_functor( "selectRandomPointFromPathRadius", helperScriptMethod, &HelperScriptMethod::s_selectRandomPointFromPathRadius );
 	}
 }

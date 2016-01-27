@@ -241,6 +241,7 @@ namespace Menge
 		float m_frameTiming;
 		uint32_t m_currentFrame;
         
+		bool m_interruptEnd;
 		bool m_parentMovie;
 	};
 	//////////////////////////////////////////////////////////////////////////

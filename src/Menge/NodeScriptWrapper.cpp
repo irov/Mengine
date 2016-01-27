@@ -3714,7 +3714,7 @@ namespace Menge
 			public:
 				AffectorCreatorInterpolateParabolic()
 					: m_node( nullptr )
-					, m_speed(2.f)
+					, m_speed(5.f)
 				{ 
 				}
 

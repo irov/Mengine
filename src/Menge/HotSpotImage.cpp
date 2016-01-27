@@ -132,15 +132,20 @@ namespace Menge
 			return m_outward;
 		}
 
+		const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
+
+		mt::vec2f pointIn1;
+		mt::mul_v2_m4( pointIn1, _point, vm_inv );
+
 		const mt::mat4f & wm = this->getWorldMatrix();
 
 		mt::mat4f invWM;
 		mt::inv_m4( invWM, wm );
 
-		mt::vec2f pointIn1;
-		mt::mul_v2_m4( pointIn1, _point, invWM );
+		mt::vec2f pointIn2;
+		mt::mul_v2_m4( pointIn2, pointIn1, invWM );
 
-		bool result = m_resourceHIT->testPoint( pointIn1, m_alphaTest );
+		bool result = m_resourceHIT->testPoint( pointIn2, m_alphaTest );
 
 		return result != m_outward;
 	}
@@ -152,9 +157,14 @@ namespace Menge
 			return !m_outward;
 		}
 
+		const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
+
+		mt::vec2f pointIn1;
+		mt::mul_v2_m4( pointIn1, _point, vm_inv );
+
 		const mt::box2f & bb = this->getBoundingBox();
 
-		if( mt::is_intersect( bb, _point, _radius ) == false )
+		if( mt::is_intersect( bb, pointIn1, _radius ) == false )
 		{
 			return m_outward;
 		}
@@ -164,10 +174,10 @@ namespace Menge
 		mt::mat4f invWM;
 		mt::inv_m4( invWM, wm );
 
-		mt::vec2f pointIn1;
-		mt::mul_v2_m4( pointIn1, _point, invWM );
+		mt::vec2f pointIn2;
+		mt::mul_v2_m4( pointIn2, pointIn1, invWM );
 		
-		bool result = m_resourceHIT->testRadius( pointIn1, _radius, m_alphaTest );
+		bool result = m_resourceHIT->testRadius( pointIn2, _radius, m_alphaTest );
 
 		return result != m_outward;
 	}
@@ -184,12 +194,17 @@ namespace Menge
 			return m_outward;
 		}
 
+		const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
+
+		mt::vec2f pointIn1;
+		mt::mul_v2_m4( pointIn1, _point, vm_inv );
+
 		const mt::box2f & bb = this->getBoundingBox();
 
 		mt::box2f bb_screen;
 		_polygon.to_box2f( bb_screen );
 
-		mt::transpose_box( bb_screen, _point );
+		mt::transpose_box( bb_screen, pointIn1 );
 
 		bool intersect = mt::is_intersect( bb, bb_screen );
 

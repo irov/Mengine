@@ -223,6 +223,8 @@ namespace Menge
 			mt::vec3f v_wvp;
 			mt::mul_v3_v2_m4_homogenize( v_wvp, v, wvpm );
 
+			v_wvp.y = -v_wvp.y;
+
 			mt::vec2f v_wvpn = (v_wvp.to_vec2f() + mt::vec2f( 1.f, 1.f )) * 0.5f;
 
 			mt::vec2f v_screen;

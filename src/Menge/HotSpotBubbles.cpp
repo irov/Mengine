@@ -47,6 +47,11 @@ namespace Menge
 			return !m_outward;
 		}
 
+		const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
+
+		mt::vec2f pointIn1;
+		mt::mul_v2_m4( pointIn1, _point, vm_inv );
+
 		this->updateBubbleWM_();
 
 		for( TVectorBubbles::const_iterator
@@ -57,7 +62,7 @@ namespace Menge
 		{
 			const Bubble & b = *it;
 
-			mt::vec2f v = _point - b.pos_wm;
+			mt::vec2f v = pointIn1 - b.pos_wm;
 
 			v.y /= b.ellipse;
 
@@ -79,6 +84,11 @@ namespace Menge
 			return !m_outward;
 		}
 
+		const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
+
+		mt::vec2f pointIn1;
+		mt::mul_v2_m4( pointIn1, _point, vm_inv );
+
 		this->updateBubbleWM_();
 
 		for( TVectorBubbles::const_iterator
@@ -89,7 +99,7 @@ namespace Menge
 		{
 			const Bubble & b = *it;
 
-			mt::vec2f v = _point - b.pos_wm;
+			mt::vec2f v = pointIn1 - b.pos_wm;
 
 			v.y /= b.ellipse;
 

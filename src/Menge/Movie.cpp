@@ -56,6 +56,7 @@ namespace Menge
 		, m_renderCamera3D(nullptr)
 		, m_renderViewport(nullptr)
 		, m_parentMovie(false)
+		, m_interruptEnd(false)
 	{	
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2542,6 +2543,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateForward_( float _time )
 	{
+		if( m_interruptEnd == true )
+		{
+			return;
+		}
+
 		float frameDuration = m_resourceMovie->getFrameDuration();
 		uint32_t frameCount = m_resourceMovie->getFrameCount();
 
@@ -2581,14 +2587,19 @@ namespace Menge
 						lastFrame = frameCount;
 						m_currentFrame = frameCount;
 
-						this->end();
+						if( interrupt == false )
+						{
+							this->end();
+						}
+						else
+						{
+							m_interruptEnd = true;
+						}
 
 						return;
 					}
 					else
 					{   
-						//this->setTiming( 0.f );
-
 						float beginTiming = m_frameTiming + loopSegment.x;
 
 						this->setTiming( beginTiming );
@@ -2604,7 +2615,16 @@ namespace Menge
 		{
 			this->updateForwardFrame_( _time, lastFrame, frameCount );
 
-			this->end();
+			bool interrupt = this->isInterrupt();
+
+			if( interrupt == false )
+			{
+				this->end();
+			}
+			else
+			{
+				m_interruptEnd = true;
+			}
 
 			return;
 		}

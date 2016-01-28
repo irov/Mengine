@@ -2550,6 +2550,29 @@ namespace Menge
 	{
 		if( m_interruptEnd == true )
 		{
+			for( TVectorNodies::const_iterator
+				it = m_nodies.begin(),
+				it_end = m_nodies.end();
+			it != it_end;
+			++it )
+			{
+				const Nodies & node = *it;
+
+				if( node.animatable == nullptr )
+				{
+					continue;
+				}
+
+				if( node.animatable->isInterrupt() == true )
+				{
+					return;
+				}
+			}
+
+			m_interruptEnd = false;
+
+			this->end();
+
 			return;
 		}
 

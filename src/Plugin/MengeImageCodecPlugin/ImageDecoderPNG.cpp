@@ -169,20 +169,27 @@ namespace Menge
 		
 		switch( color_type )
 		{
+		case  PNG_COLOR_TYPE_PALETTE:
+			{
+				png_set_palette_to_rgb( m_png_ptr );
+#   ifndef MENGE_RENDER_TEXTURE_RGBA
+				png_set_bgr( m_png_ptr );
+#   endif
+			}break;
 		case PNG_COLOR_TYPE_RGB:
 		case PNG_COLOR_TYPE_RGB_ALPHA:
+			{
 #   ifndef MENGE_RENDER_TEXTURE_RGBA
-			png_set_bgr(m_png_ptr);
+				png_set_bgr( m_png_ptr );
 #   endif
-			break;
-
+			}break;
 		case PNG_COLOR_TYPE_GRAY:
-
-			break;
+			{
+			}break;
 		case PNG_COLOR_TYPE_GRAY_ALPHA:
-
-			png_set_strip_alpha(m_png_ptr);
-			break;
+			{
+				png_set_strip_alpha( m_png_ptr );
+			}break;
 		};
 
 		png_read_update_info( m_png_ptr, m_info_ptr );

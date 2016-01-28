@@ -1211,10 +1211,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_updateBoundingBox( mt::box2f& _boundingBox ) const
 	{
-		_boundingBox.minimum.x = -std::numeric_limits<float>::max();
-		_boundingBox.minimum.y = -std::numeric_limits<float>::max();
-		_boundingBox.maximum.x = std::numeric_limits<float>::max();
-		_boundingBox.maximum.y = std::numeric_limits<float>::max();
+		_boundingBox.minimum.x = -(std::numeric_limits<float>::max)();
+		_boundingBox.minimum.y = -(std::numeric_limits<float>::max)();
+		_boundingBox.maximum.x = (std::numeric_limits<float>::max)();
+		_boundingBox.maximum.y = (std::numeric_limits<float>::max)();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateColor()

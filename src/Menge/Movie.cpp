@@ -1876,6 +1876,11 @@ namespace Menge
 		layer_text->setTextID( _layer.name ); //Name = TextID
 		layer_text->setHorizontalCenterAlign();
 
+		if( _layer.hasParam( MOVIE_LAYER_PARAM_PARTICLE_TRANSLATE ) == true )
+		{
+			layer_text->setPixelsnap( false );
+		}
+
 		if( this->addMovieNode_( _layer, layer_text, nullptr, nullptr ) == false )
 		{
 			return false;

@@ -129,16 +129,17 @@
 #	include "Core/Polygon.h"
 #	include "Core/MemoryHelper.h"
 
-#	include "Utils/Math/angle.h"
-#	include "Utils/Math/vec4.h"
-#	include "Utils/Math/mat3.h"
-#	include "Utils/Math/mat4.h"
-#	include "Utils/Math/quat.h"
-#	include "Utils/Math/utils.h"
+#	include "Math/angle.h"
+#	include "Math/vec4.h"
+#	include "Math/mat3.h"
+#	include "Math/mat4.h"
+#	include "Math/quat.h"
+#	include "Math/utils.h"
 
-#	include "Utils/Core/Rect.h"
-#	include "Utils/Core/String.h"
-#	include "Utils/Core/Polygon.h"
+#	include "Core/Rect.h"
+#	include "Core/String.h"
+#	include "Core/Polygon.h"
+#	include "Core/ValueFollower.h"
 
 #	include "pybind/stl_type_cast.hpp"
 #	include "stdex/xml_sax_parser.h"
@@ -3878,6 +3879,167 @@ namespace Menge
 
 			return id;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		class FactoryAffectorFollowTo
+		{
+		public:
+			class AffectorCreatorFollowTo
+				: public CallbackAffector
+			{
+			public:
+				AffectorCreatorFollowTo()
+					: m_node( nullptr )
+					, m_target( nullptr )
+					, m_offset(0.f, 0.f, 0.f)
+					, m_distance( 0.f )
+					, m_moveSpeed( 0.f )
+					, m_moveAcceleration( 0.f )
+					, m_rotationSpeed( 0.f )
+				{
+				}
+
+			public:
+				void initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _rotationSpeed )
+				{
+					m_node = _node;
+					m_target = _target;
+					m_offset = _offset;
+					m_distance = _distance;
+					m_moveSpeed = _moveSpeed;
+					m_moveAcceleration = _moveAcceleration;
+					m_rotationSpeed = _rotationSpeed;
+
+					const mt::vec3f & start_position = m_node->getLocalPosition();
+					
+					m_followerPosition.initialize( start_position );
+					m_followerPosition.setSpeed( m_moveSpeed );
+					m_followerPosition.setDistance( m_distance );
+					m_followerPosition.setAcceleration( m_moveAcceleration );
+
+					mt::vec3f follow_position = m_target->getLocalPosition();
+
+					follow_position += m_offset;
+										
+					m_followerPosition.follow( follow_position );
+				}
+
+			protected:
+				bool _affect( float _timing ) override
+				{	
+					float node_orientaionX = m_node->getOrientationX();
+
+					mt::vec3f node_position = m_node->getLocalPosition();
+					mt::vec3f follow_position = m_target->getLocalPosition();
+
+					mt::vec3f direction = node_position - follow_position;
+
+					mt::mat4f mr;
+					mt::make_rotate_m4_direction( mr, direction, mt::vec3f(0.f, 0.f, 1.f) );
+
+					mt::vec3f orientation;
+					mt::make_euler_angles( orientation, mr );
+
+					float target_orientaionX = orientation.x;
+
+					float correct_rotate_from;
+					float correct_rotate_to;
+					mt::angle_correct_interpolate_from_to( node_orientaionX, target_orientaionX, correct_rotate_from, correct_rotate_to );
+
+					float new_orientationX;
+					mt::linerp_f1( new_orientationX, correct_rotate_from, correct_rotate_to, 1.f );
+
+					m_node->setOrientationX( new_orientationX );
+
+					//m_followerPosition.setSpeed( m_moveSpeed );
+
+
+					//follow_position += m_offset;
+
+					//m_followerPosition.follow( follow_position );
+					//					
+					//bool finish = m_followerPosition.update( _timing );
+
+					//const mt::vec3f & new_position = m_followerPosition.getValue();
+
+					//m_node->setLocalPosition( new_position );
+
+					return false;
+				}
+
+				void stop() override
+				{
+					this->end_( false );
+				}
+
+			protected:
+				Node * m_node;
+				Node * m_target;
+
+				mt::vec3f m_offset;
+				float m_distance;
+				float m_moveSpeed;
+				float m_moveAcceleration;
+				float m_rotationSpeed;
+
+				typedef ValueFollowerAcceleration<mt::vec3f, mt::length_v3_v3> TFollowerPosition;
+				TFollowerPosition m_followerPosition;
+			};
+
+		public:
+			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+				, Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _directionSpeed, float _directionAcceleration, float _rotationSpeed )
+			{
+				AffectorCreatorFollowTo * affector = m_factory.createObject();
+
+				affector->setServiceProvider( _serviceProvider );
+				affector->setAffectorType( _type );
+
+				affector->setCallback( _cb );
+
+				affector->initialize( _node, _target, _offset, _distance, _directionSpeed, _directionAcceleration, _rotationSpeed );
+
+				return affector;
+			}
+
+		protected:
+			typedef FactoryPoolStore<AffectorCreatorFollowTo, 4> TFactoryAffector;
+			TFactoryAffector m_factory;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		FactoryAffectorFollowTo m_nodeAffectorCreatorFollowTo;
+		//////////////////////////////////////////////////////////////////////////		
+		uint32_t followTo( Node * _node
+			, Node * _target
+			, const mt::vec3f & _offset
+			, float _distance
+			, float _directionSpeed
+			, float _directionAcceleration
+			, float _rotationSpeed
+			, const pybind::object & _cb )
+		{
+			if( _node->isActivate() == false )
+			{
+				return 0;
+			}
+
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
+
+			moveStop( _node );
+
+			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+
+			Affector * affector =
+				m_nodeAffectorCreatorFollowTo.create( m_serviceProvider
+				, ETA_POSITION, callback, _node, _target, _offset, _distance, _directionSpeed, _directionAcceleration, _rotationSpeed
+				);
+
+			AFFECTOR_ID id = _node->addAffector( affector );
+
+			return id;
+		}
         //////////////////////////////////////////////////////////////////////////
         void angleStop( Node * _node )
         {
@@ -5139,6 +5301,10 @@ namespace Menge
 			.def( "billboardAt", &Transformation3D::billboardAt )
 			.def( "lookAt", &Transformation3D::lookAt )
 
+			.def( "getAxisDirection", &Transformation3D::getAxisDirection )
+			.def( "getAxisLeft", &Transformation3D::getAxisLeft )
+			.def( "getAxisUp", &Transformation3D::getAxisUp )
+
             .def( "translate", &Transformation3D::translate )
 
             .def( "resetTransformation", &Transformation3D::resetTransformation )
@@ -5340,6 +5506,7 @@ namespace Menge
             .def( "removeAllChild", &Node::removeChildren )
             .def( "removeFromParent", &Node::removeFromParent )
 			.def( "destroyAllChild", &Node::destroyAllChild )
+			.def( "isHomeless", &Node::isHomeless )
             //.def_static( "getChild", &ScriptMethod::s_getChild )
             .def( "findChildren", &Node::findChild )            
             .def( "emptyChild", &Node::emptyChildren )
@@ -5387,6 +5554,7 @@ namespace Menge
             .def_proxy_static( "bezier3To", nodeScriptMethod, &NodeScriptMethod::bezier3To )
 			.def_proxy_static( "bezier4To", nodeScriptMethod, &NodeScriptMethod::bezier4To )
 			.def_proxy_static( "parabolaTo", nodeScriptMethod, &NodeScriptMethod::parabolaTo )
+			.def_proxy_static( "followTo", nodeScriptMethod, &NodeScriptMethod::followTo )
             .def_proxy_static( "moveStop", nodeScriptMethod, &NodeScriptMethod::moveStop )
 
             .def_proxy_static( "angleTo", nodeScriptMethod, &NodeScriptMethod::angleTo )

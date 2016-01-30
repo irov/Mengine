@@ -193,9 +193,18 @@ namespace Menge
 
 		if( this->isActivate() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Movie::_play: '%s' play not activate"
-				, this->getName().c_str()
-				);
+			if( this->isHomeless() == true )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::_play: '%s' is homeless"
+					, this->getName().c_str()
+					);
+			}
+			else
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::_play: '%s' play not activate"
+					, this->getName().c_str()
+					);
+			}		
 
 			return false;
 		}
@@ -618,7 +627,7 @@ namespace Menge
 			}
 		}
 
-		LOGGER_ERROR(m_serviceProvider)("Movie::getMovieNode: %s resource %s not found node %s type %s"
+		LOGGER_ERROR(m_serviceProvider)("Movie::getMovieNode: '%s' resource '%s' not found node '%s' type '%s'"
 			, this->getName().c_str()
 			, this->getResourceMovieName().c_str()
 			, _name.c_str()

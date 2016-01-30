@@ -88,7 +88,9 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE void norm_safe_v3( vec3f& out, const vec3f& _rhs, float err = 1e-06 );
 	MENGINE_MATH_FUNCTION_INLINE vec3f norm_safe_v3( const vec3f& _rhs );
 
-	MENGINE_MATH_FUNCTION_INLINE float get_axis_angle( const vec3f & dir, int axis );		
+	MENGINE_MATH_FUNCTION_INLINE float get_axis_angle( const vec3f & dir, int axis );
+
+	MENGINE_MATH_FUNCTION_INLINE void linerp_v3( mt::vec3f & _out, const mt::vec3f & _in1, const mt::vec3f & _in2, float _scale );
 };
 
 #	if MENGINE_MATH_FORCE_INLINE == 1

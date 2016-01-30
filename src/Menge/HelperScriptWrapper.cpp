@@ -500,6 +500,43 @@ namespace Menge
 		{
 			return ::log10f( _x );
 		}
+
+		double mt_log10( double _x )
+		{
+			return ::log10( _x );
+		}
+
+		uint32_t mt_fibo( uint32_t _n )
+		{
+			if( _n == 0 )
+			{
+				return 0;
+			}
+			else if( _n == 1 )
+			{
+				return 1;
+			}
+			
+			uint32_t fn = mt_fibo( _n - 1 ) + mt_fibo( _n - 2 );
+
+			return fn;
+		}
+
+		uint64_t mt_fibo_bine( uint64_t _n )
+		{
+			const double nf = (double)_n;
+			const double fplus = (1.0 + 2.2360679774997896964091736687313) * 0.5;
+			const double fplusn = pow( fplus, nf );
+
+			const double fminus = (1.0 - 2.2360679774997896964091736687313) * 0.5;
+			const double fminusn = pow( fminus, nf );
+
+			double fbine = (fplusn - fminusn) * 0.44721359549995793928183473374626;
+
+			uint64_t fbine64 = (uint64_t)fbine;
+
+			return fbine64;
+		}
 		
 		mt::vec2f mt_direction_v2_v2( const mt::vec2f & _from, const mt::vec2f & _to )
 		{
@@ -2037,6 +2074,9 @@ namespace Menge
 		pybind::def_functor( "atanf", helperScriptMethod, &HelperScriptMethod::mt_atanf );
 		pybind::def_functor( "logf", helperScriptMethod, &HelperScriptMethod::mt_logf );
 		pybind::def_functor( "log10f", helperScriptMethod, &HelperScriptMethod::mt_log10f );
+		pybind::def_functor( "log10", helperScriptMethod, &HelperScriptMethod::mt_log10 );
+		pybind::def_functor( "fibo", helperScriptMethod, &HelperScriptMethod::mt_fibo );
+		pybind::def_functor( "fibo_bine", helperScriptMethod, &HelperScriptMethod::mt_fibo_bine );
 		pybind::def_functor( "direction_v2_v2", helperScriptMethod, &HelperScriptMethod::mt_direction_v2_v2 );
 		pybind::def_functor( "direction_v3_v3", helperScriptMethod, &HelperScriptMethod::mt_direction_v3_v3 );
 		pybind::def_functor( "angle_from_v2_v2", helperScriptMethod, &HelperScriptMethod::my_angle_from_v2_v2 );

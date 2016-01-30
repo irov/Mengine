@@ -338,6 +338,14 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Node::isHomeless() const
+	{
+		bool result = NODE_SERVICE( m_serviceProvider )
+			->isHomeless( this );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Node::addChild( Node * _node )
 	{
 		if( _node == nullptr )

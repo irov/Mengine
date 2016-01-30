@@ -147,7 +147,7 @@ namespace mt
 		return f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_INLINE float length_f( float _a, float _b )
+	MENGINE_MATH_INLINE float length_f( const float & _a, const float & _b )
 	{
 		float d = _a - _b;
 
@@ -157,5 +157,10 @@ namespace mt
 		}
 
 		return -d;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_INLINE void linerp_f1( float & _out, float _in1, float _in2, float _scale )
+	{
+		_out = _in1 + (_in2 - _in1) * _scale;
 	}
 }

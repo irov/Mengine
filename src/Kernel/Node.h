@@ -142,6 +142,8 @@ namespace Menge
 		bool removeChild( Node * _node );        
 		void removeChildren();
 		bool removeFromParent();
+
+		bool isHomeless() const;
 		
 		void destroyAllChild();
 

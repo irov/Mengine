@@ -203,22 +203,6 @@ namespace Menge
 				
 		return true;
 	}
-	////////////////////////////////////////////////////////////////////////
-	namespace Helper
-	{
-		//////////////////////////////////////////////////////////////////////////
-		static void s_linerp_f1( float & _out, float _in1, float _in2, float _scale )
-		{
-			_out = _in1 + ( _in2 - _in1 ) * _scale;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static void s_linerp_f3( mt::vec3f & _out, const mt::vec3f & _in1, const mt::vec3f & _in2, float _scale )
-		{
-			s_linerp_f1(_out.x, _in1.x, _in2.x, _scale);
-			s_linerp_f1(_out.y, _in1.y, _in2.y, _scale);
-			s_linerp_f1(_out.z, _in1.z, _in2.z, _scale);
-		}
-	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::getLayerFrameInterpolate( uint32_t _layerIndex, uint32_t _frameIndex, float _t, MovieFrameSource & _frame ) const
 	{
@@ -251,7 +235,7 @@ namespace Menge
 			const mt::vec3f & value0 = layer.Member[ _frameIndex + 0 ]; \
 			const mt::vec3f & value1 = layer.Member[ _frameIndex + 1 ]; \
 			\
-			Helper::s_linerp_f3( _frame.Member, value0, value1, _t ); \
+			mt::linerp_v3( _frame.Member, value0, value1, _t ); \
 		}
 
 		MOVIE_FRAME_SETUP_F3( anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
@@ -271,7 +255,7 @@ namespace Menge
 			float value0 = layer.Member[ _frameIndex + 0 ]; \
 			float value1 = layer.Member[ _frameIndex + 1 ]; \
 			\
-			Helper::s_linerp_f1( _frame.Member, value0, value1, _t ); \
+			mt::linerp_f1( _frame.Member, value0, value1, _t ); \
 		}
 
 		MOVIE_FRAME_SETUP_F1( opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
@@ -290,7 +274,7 @@ namespace Menge
 			float correct_rotate_to;
 			mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
 
-			Helper::s_linerp_f1( _frame.rotation.x, correct_rotate_from, correct_rotate_to, _t );
+			mt::linerp_f1( _frame.rotation.x, correct_rotate_from, correct_rotate_to, _t );
 		}
 
 		if( layer.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Y )
@@ -306,7 +290,7 @@ namespace Menge
 			float correct_rotate_to;
 			mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
 
-			Helper::s_linerp_f1( _frame.rotation.y, correct_rotate_from, correct_rotate_to, _t );
+			mt::linerp_f1( _frame.rotation.y, correct_rotate_from, correct_rotate_to, _t );
 		}
 
 		if( layer.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Z )
@@ -322,7 +306,7 @@ namespace Menge
 			float correct_rotate_to;
 			mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
 
-			Helper::s_linerp_f1( _frame.rotation.z, correct_rotate_from, correct_rotate_to, _t );
+			mt::linerp_f1( _frame.rotation.z, correct_rotate_from, correct_rotate_to, _t );
 		}
 
 		return true;

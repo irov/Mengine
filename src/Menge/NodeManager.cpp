@@ -93,7 +93,7 @@ namespace Menge
         m_homeless->addChild( _homeless );
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeManager::isHomeless( Node * _node ) const
+	bool NodeManager::isHomeless( const Node * _node ) const
 	{
 		if( _node == nullptr )
 		{

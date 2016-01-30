@@ -27,7 +27,7 @@ namespace Menge
 
     public:
         void addHomeless( Node * _homeless ) override;
-		bool isHomeless( Node * _node ) const override;
+		bool isHomeless( const Node * _node ) const override;
         void clearHomeless() override;
 
     protected:

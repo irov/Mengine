@@ -358,6 +358,36 @@ namespace Menge
 		this->setLocalPosition( _position );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	mt::vec3f Transformation3D::getAxisDirection() const
+	{
+		mt::mat4f mat_rot;
+		mt::make_rotate_m4_euler( mat_rot, m_orientation.x, m_orientation.y, m_orientation.z );
+
+		mt::vec3f axis = mat_rot.v0.to_vec3f();
+
+		return axis;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec3f Transformation3D::getAxisLeft() const
+	{
+		mt::mat4f mat_rot;
+		mt::make_rotate_m4_euler( mat_rot, m_orientation.x, m_orientation.y, m_orientation.z );
+
+		mt::vec3f axis = mat_rot.v1.to_vec3f();
+
+		return axis;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec3f Transformation3D::getAxisUp() const
+	{
+		mt::mat4f mat_rot;
+		mt::make_rotate_m4_euler( mat_rot, m_orientation.x, m_orientation.y, m_orientation.z );
+
+		mt::vec3f axis = mat_rot.v2.to_vec3f();
+
+		return axis;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	inline static bool s_identityTransformationMatrix( const mt::mat4f & _m )
 	{
 		float ident_e = _m.v0.x + _m.v1.y + _m.v2.z + _m.v3.x + _m.v3.y + _m.v3.z;

@@ -67,11 +67,15 @@ namespace Menge
 		void setOrientation( const mt::vec3f & _orientation );
 		inline const mt::vec3f & getOrientation() const;
 
-		void setDirection( const mt::vec3f & _direction, const mt::vec3f & _up );
+		void setDirection( const mt::vec3f & _direction, const mt::vec3f & _up );		
 		void setBillboard( const mt::vec3f & _direction, const mt::vec3f & _normal );
 		void setAxes( const mt::vec3f & _direction, const mt::vec3f & _left, const mt::vec3f & _up );
 		void billboardAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _normal );
 		void lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up );
+
+		mt::vec3f getAxisDirection() const;
+		mt::vec3f getAxisLeft() const;
+		mt::vec3f getAxisUp() const;
 
 	public:
 		void setCoordinate( const mt::vec3f& _coordinate );

@@ -40,6 +40,7 @@ set(MODULE_SRCS
 				
 include_directories(${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Include)
+include_directories(${SOURCE_DIR}/Modules/_decimal/libmpdec)
 
 add_definitions(-DCONFIG_32)
 add_definitions(-DANSI)

@@ -66,6 +66,7 @@ namespace Menge
         virtual bool isFreeze( uint32_t _id ) const = 0;
 
         virtual float time( uint32_t _id ) const = 0;
+		virtual float left( uint32_t _id ) const = 0;
 
 	public:
 		virtual void setSpeedFactor( float _factor ) = 0;

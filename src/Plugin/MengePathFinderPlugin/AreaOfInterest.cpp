@@ -22,12 +22,65 @@ namespace Menge
 
 		m_triggersAdd.push_back( trigger );
 
+		AOITriggerProviderInterface * triggerProvider = trigger->getProvider();
+
+		for( TVectorAOIActors::iterator
+			it_actor = m_actors.begin(),
+			it_actor_end = m_actors.end();
+		it_actor != it_actor_end;
+		++it_actor )
+		{
+			const AOIActorPtr & actor = *it_actor;
+
+			if( actor->isRemoved() == true )
+			{
+				continue;
+			}
+
+			AOIActorProviderInterface * actorProvider = actor->getProvider();
+
+			if( trigger->isRemoved() == true )
+			{
+				continue;
+			}
+
+			if( triggerProvider->onAOIActorTest( actorProvider ) == true )
+			{
+				trigger->addActor( actor );
+			}
+			else
+			{
+				trigger->removeActor( actor );
+			}
+		}
+
 		return trigger;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AreaOfInterest::removeTriger( const AOITriggerPtr & _trigger )
 	{
+		if( _trigger->isRemoved() == true )
+		{
+			return;
+		}
+
 		_trigger->remove();
+
+		for( TVectorAOIActors::iterator
+			it_actor = m_actors.begin(),
+			it_actor_end = m_actors.end();
+		it_actor != it_actor_end;
+		++it_actor )
+		{
+			const AOIActorPtr & actor = *it_actor;
+
+			if( actor->isRemoved() == true )
+			{
+				continue;
+			}
+
+			_trigger->removeActor( actor );
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	AOIActorPtr AreaOfInterest::createActor( AOIActorProviderInterface * _provider )
@@ -38,12 +91,7 @@ namespace Menge
 
 		m_actorsAdd.push_back( actor );
 
-		return actor;			 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AreaOfInterest::removeActor( const AOIActorPtr & _actor )
-	{	
-		//AOIActorProviderInterface * actorProvider = _actor->getProvider();
+		AOIActorProviderInterface * actorProvider = actor->getProvider();
 
 		for( TVectorAOITriggers::iterator
 			it_trigger = m_triggers.begin(),
@@ -58,17 +106,45 @@ namespace Menge
 				continue;
 			}
 
-			//AOITriggerProviderInterface * triggerProvider = trigger->getProvider();
+			AOITriggerProviderInterface * triggerProvider = trigger->getProvider();
 
-			//if( triggerProvider->onAOIActorTest( actorProvider ) == false )
-			//{
-			//	continue;
-			//}
+			if( triggerProvider->onAOIActorTest( actorProvider ) == true )
+			{
+				trigger->addActor( actor );
+			}
+			else
+			{
+				trigger->removeActor( actor );
+			}
+		}
 
-			trigger->removeActor( _actor );
+		return actor;			 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AreaOfInterest::removeActor( const AOIActorPtr & _actor )
+	{	
+		if( _actor->isRemoved() == true )
+		{
+			return;
 		}
 
 		_actor->remove();
+
+		for( TVectorAOITriggers::iterator
+			it_trigger = m_triggers.begin(),
+			it_trigger_end = m_triggers.end();
+		it_trigger != it_trigger_end;
+		++it_trigger )
+		{
+			const AOITriggerPtr & trigger = *it_trigger;
+
+			if( trigger->isRemoved() == true )
+			{
+				continue;
+			}
+
+			trigger->removeActor( _actor );
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AreaOfInterest::freeze( bool _freeze )

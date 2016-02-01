@@ -417,10 +417,28 @@ namespace Menge
             return 0.f;
         }
 
-		float adapt_timing = event->timing_delay;
+		float time = event->timing_delay;
 
-        return adapt_timing;
+		return time;
     }
+	//////////////////////////////////////////////////////////////////////////
+	float ScheduleManager::left( uint32_t _id ) const
+	{ 
+		const ScheduleEventDesc * event;
+
+		if( this->findScheduleEvent_( _id, event ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ScheduleManager::time not found shedule '%d'"
+				, _id
+				);
+
+			return 0.f;
+		}
+
+		float time = event->delay - event->timing_delay;
+
+		return time;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::setSpeedFactor( float _factor )
 	{

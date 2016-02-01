@@ -67,6 +67,7 @@ namespace Menge
 		bool isFreeze( uint32_t _id ) const override;
 
 		float time( uint32_t _id ) const override;
+		float left( uint32_t _id ) const override;
 
 	public:
 		void setSpeedFactor( float _factor ) override;

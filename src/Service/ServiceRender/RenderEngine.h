@@ -18,6 +18,7 @@
 #	include "math/vec4.h"
 
 #	include <stdex/stl_vector.h>
+#	include <stdex/stl_list.h>
 
 #	include "Core/ConstString.h"
 
@@ -275,8 +276,9 @@ namespace Menge
         typedef stdex::heap_array<RenderPass> TArrayRenderPass;
         TArrayRenderPass m_renderPasses;
 
-		typedef stdex::heap_array<RenderVertex2D> TArrayRenderVertex2D;
-		TArrayRenderVertex2D m_debugRenderVertex2D;
+		typedef stdex::vector<RenderVertex2D> TArrayRenderVertex2D;
+		typedef stdex::list<TArrayRenderVertex2D> TListDebugVertices;
+		TListDebugVertices m_debugVertices;
               
 		bool m_depthBufferWriteEnable;
 		bool m_alphaBlendEnable;

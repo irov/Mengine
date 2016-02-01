@@ -6098,6 +6098,7 @@ namespace Menge
 				.def( "freezeAll", &ScheduleManagerInterface::freezeAll )
 				.def( "isFreeze", &ScheduleManagerInterface::isFreeze )
 				.def( "time", &ScheduleManagerInterface::time )
+				.def( "left", &ScheduleManagerInterface::left )
 				.def( "setSpeedFactor", &ScheduleManagerInterface::setSpeedFactor )
 				.def( "getSpeedFactor", &ScheduleManagerInterface::getSpeedFactor )
 				.def( "getTiming", &ScheduleManagerInterface::getTiming )

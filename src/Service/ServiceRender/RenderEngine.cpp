@@ -557,13 +557,15 @@ namespace Menge
 		}
 
 		if( m_currentBlendSrc != m_currentStage->blendSrc ||
-			m_currentBlendDst != m_currentStage->blendDst )
+			m_currentBlendDst != m_currentStage->blendDst ||
+			m_currentBlendOp != m_currentStage->blendOp )
 		{
 			m_currentBlendSrc = m_currentStage->blendSrc;
 			m_currentBlendDst = m_currentStage->blendDst;
+			m_currentBlendOp = m_currentStage->blendOp;
 
 			RENDER_SYSTEM(m_serviceProvider)
-				->setBlendFactor( m_currentBlendSrc, m_currentBlendDst );
+				->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -725,6 +727,8 @@ namespace Menge
 
 		m_currentBlendSrc = BF_ONE;
 		m_currentBlendDst = BF_ZERO;
+		m_currentBlendOp = BOP_ADD;
+
 		m_depthBufferWriteEnable = false;
 		m_alphaBlendEnable = false;
 
@@ -766,14 +770,13 @@ namespace Menge
 		RENDER_SYSTEM( m_serviceProvider )->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
 		RENDER_SYSTEM( m_serviceProvider )->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
 		RENDER_SYSTEM( m_serviceProvider )->setAlphaBlendEnable( m_alphaBlendEnable );
-		RENDER_SYSTEM( m_serviceProvider )->setAlphaCmpFunc( CMPF_GREATER_EQUAL, 0x01 );
 		RENDER_SYSTEM( m_serviceProvider )->setLightingEnable( false );
 
 		LOGGER_INFO(m_serviceProvider)("RenderEngine::restoreRenderSystemStates_ texture stages %d"
 			, MENGE_MAX_TEXTURE_STAGES
 			);
 
-		RENDER_SYSTEM( m_serviceProvider )->setBlendFactor( m_currentBlendSrc, m_currentBlendDst );		
+		RENDER_SYSTEM( m_serviceProvider )->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport, float zn, float zf )

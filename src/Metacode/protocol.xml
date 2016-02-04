@@ -1,4 +1,4 @@
-<Protocol Version = "94">
+<Protocol Version = "96">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -28,6 +28,14 @@
     <SOURCE_ALPHA/>
     <ONE_MINUS_DEST_ALPHA/>
     <ONE_MINUS_SOURCE_ALPHA/>
+  </Enum>
+  
+  <Enum Name="Menge::EBlendOp">
+    <ADD/>
+    <SUBTRACT/>
+    <REVSUBTRACT/>
+    <MIN/>
+    <MAX/>
   </Enum>
 
   <Enum Name="Menge::ETextureOp">
@@ -96,7 +104,8 @@
 
       <Member Node="BlendFactor" Name="Source" Type="Menge::EBlendFactor"/>
       <Member Node="BlendFactor" Name="Dest" Type="Menge::EBlendFactor"/>
-      <Member Node="AlphaTest" Name="Enable" Type="bool"/>
+      <Member Node="BlendFactor" Name="Op" Type="Menge::EBlendOp"/>
+
       <Member Node="AlphaBlend" Name="Enable" Type="bool"/>
 
       <Node Name="TextureStages">
@@ -138,6 +147,7 @@
       <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
       <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
       <Member Node="File" Name="Alpha" Type="bool"/>
+      <Member Node="File" Name="Premultiply" Type="bool"/>
       
       <Member Node="File" Name="MaxSize" Type="mt::vec2f" Required="1"/>
       <Member Node="File" Name="Size" Type="mt::vec2f"/>
@@ -359,7 +369,7 @@
     <Node Name="ResourceSpine" Inheritance = "Resource">
       <Member Node="Skeleton" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="Atlas" Name="Path" Type="Menge::FilePath" Required="1"/>
-
+      
       <Node Name="Image">
         <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
         <Attribute Name="Resource" Type="Menge::ConstString" Required="1"/>

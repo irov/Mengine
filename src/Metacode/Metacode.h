@@ -6,6 +6,8 @@
 
 namespace Metacode
 {
+    uint32_t get_metacode_magic();
+    uint32_t get_metacode_version();
     bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion );
     bool readStrings( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringCount );
     const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize );
@@ -230,35 +232,6 @@ namespace Metacode
                 return true;
             }
             
-            bool has_AlphaTest_Enable() const
-            {
-                return AlphaTest_Enable_successful;
-            }
-            
-            bool get_AlphaTest_Enable( bool & _value ) const
-            {
-                if( AlphaTest_Enable_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->AlphaTest_Enable;
-            
-                return true;
-            }
-            
-            bool swap_AlphaTest_Enable( bool & _value ) const
-            {
-                if( AlphaTest_Enable_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->AlphaTest_Enable);
-            
-                return true;
-            }
-            
             bool has_BlendFactor_Dest() const
             {
                 return BlendFactor_Dest_successful;
@@ -284,6 +257,35 @@ namespace Metacode
                 }
             
                 std::swap(_value, this->BlendFactor_Dest);
+            
+                return true;
+            }
+            
+            bool has_BlendFactor_Op() const
+            {
+                return BlendFactor_Op_successful;
+            }
+            
+            bool get_BlendFactor_Op( Menge::EBlendOp & _value ) const
+            {
+                if( BlendFactor_Op_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->BlendFactor_Op;
+            
+                return true;
+            }
+            
+            bool swap_BlendFactor_Op( Menge::EBlendOp & _value ) const
+            {
+                if( BlendFactor_Op_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->BlendFactor_Op);
             
                 return true;
             }
@@ -629,10 +631,10 @@ namespace Metacode
             mutable Menge::ConstString Name;
             bool AlphaBlend_Enable_successful;
             mutable bool AlphaBlend_Enable;
-            bool AlphaTest_Enable_successful;
-            mutable bool AlphaTest_Enable;
             bool BlendFactor_Dest_successful;
             mutable Menge::EBlendFactor BlendFactor_Dest;
+            bool BlendFactor_Op_successful;
+            mutable Menge::EBlendOp BlendFactor_Op;
             bool BlendFactor_Source_successful;
             mutable Menge::EBlendFactor BlendFactor_Source;
             bool Program_Name_successful;
@@ -1531,6 +1533,35 @@ namespace Metacode
                 std::swap(_value, this->File_Path);
             }
             
+            bool has_File_Premultiply() const
+            {
+                return File_Premultiply_successful;
+            }
+            
+            bool get_File_Premultiply( bool & _value ) const
+            {
+                if( File_Premultiply_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Premultiply;
+            
+                return true;
+            }
+            
+            bool swap_File_Premultiply( bool & _value ) const
+            {
+                if( File_Premultiply_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Premultiply);
+            
+                return true;
+            }
+            
             bool has_File_Size() const
             {
                 return File_Size_successful;
@@ -1580,6 +1611,8 @@ namespace Metacode
             bool File_Offset_successful;
             mutable mt::vec2f File_Offset;
             mutable Menge::FilePath File_Path;
+            bool File_Premultiply_successful;
+            mutable bool File_Premultiply;
             bool File_Size_successful;
             mutable mt::vec2f File_Size;
         };

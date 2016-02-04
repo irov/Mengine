@@ -3981,7 +3981,7 @@ namespace Menge
 				float m_moveAcceleration;
 				float m_rotationSpeed;
 
-				typedef ValueFollowerAcceleration<mt::vec3f, mt::length_v3_v3> TFollowerPosition;
+				typedef ValueFollowerAcceleration<mt::vec3f> TFollowerPosition;
 				TFollowerPosition m_followerPosition;
 			};
 

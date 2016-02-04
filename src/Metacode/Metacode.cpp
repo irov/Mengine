@@ -3,6 +3,19 @@
 namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
+    static const uint32_t metacode_magic = 3133062829u;
+    static const uint32_t metacode_version = 96;
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t get_metacode_magic()
+    {
+        return metacode_magic;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t get_metacode_version()
+    {
+        return metacode_version;
+    }
+    //////////////////////////////////////////////////////////////////////////
     static bool readHeader2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion )
     {
         stdex::memory_reader ar(_buff, _size, _read);
@@ -10,7 +23,7 @@ namespace Metacode
         uint32_t head;
         ar.readPOD( head );
 
-        if( head != 3133062829u )
+        if( head != metacode_magic )
         {
             return false;
         }
@@ -19,9 +32,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 94;
+        _needVersion = metacode_version;
 
-        if( version != 94 )
+        if( version != metacode_version )
         {
             return false;
         }
@@ -777,8 +790,8 @@ namespace Metacode
         : Metabuf::Metadata()
         , Debug_successful(false)
         , AlphaBlend_Enable_successful(false)
-        , AlphaTest_Enable_successful(false)
         , BlendFactor_Dest_successful(false)
+        , BlendFactor_Op_successful(false)
         , BlendFactor_Source_successful(false)
         , Program_Name_successful(false)
     {
@@ -824,17 +837,6 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
-            {
-                if( this->read( _buff, _size, _read, this->AlphaTest_Enable ) == false )
-                {
-                    return false;
-                }
-    
-                this->AlphaTest_Enable_successful = true;
-    
-                return true;
-            }break;
         case 4:
             {
                 if( this->read( _buff, _size, _read, this->BlendFactor_Dest ) == false )
@@ -843,6 +845,17 @@ namespace Metacode
                 }
     
                 this->BlendFactor_Dest_successful = true;
+    
+                return true;
+            }break;
+        case 5:
+            {
+                if( this->read( _buff, _size, _read, this->BlendFactor_Op ) == false )
+                {
+                    return false;
+                }
+    
+                this->BlendFactor_Op_successful = true;
     
                 return true;
             }break;
@@ -2110,6 +2123,7 @@ namespace Metacode
         , File_Converter_successful(false)
         , File_NoExist_successful(false)
         , File_Offset_successful(false)
+        , File_Premultiply_successful(false)
         , File_Size_successful(false)
     {
     }
@@ -2161,7 +2175,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 8:
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->File_MaxSize ) == false )
                 {
@@ -2170,7 +2184,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 11:
+        case 12:
             {
                 if( this->read( _buff, _size, _read, this->File_NoExist ) == false )
                 {
@@ -2181,7 +2195,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 10:
+        case 11:
             {
                 if( this->read( _buff, _size, _read, this->File_Offset ) == false )
                 {
@@ -2201,7 +2215,18 @@ namespace Metacode
     
                 return true;
             }break;
-        case 9:
+        case 8:
+            {
+                if( this->read( _buff, _size, _read, this->File_Premultiply ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_Premultiply_successful = true;
+    
+                return true;
+            }break;
+        case 10:
             {
                 if( this->read( _buff, _size, _read, this->File_Size ) == false )
                 {

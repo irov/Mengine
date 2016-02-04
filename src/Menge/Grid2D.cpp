@@ -338,6 +338,6 @@ namespace	Menge
 		mt::vec2f maximal_wm;
 		mt::mul_v2_m4( maximal_wm, maximal, wm );
 
-		mt::set_box_from_min_max( _boundingBox, minimal_wm, maximal_wm );
+		mt::set_box_from_two_point( _boundingBox, minimal_wm, maximal_wm );
 	}
 }

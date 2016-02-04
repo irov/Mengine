@@ -19,7 +19,7 @@ namespace Menge
 	namespace Helper
 	{
 		RenderMaterialInterfacePtr makeImageMaterial( ServiceProviderInterface * _serviceProvider, const ResourceImagePtr & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blend, bool _disableTextureColor, bool _solid );
-		RenderMaterialInterfacePtr makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, const ConstString & _materialName, EMaterialBlendMode _blend, bool _disableTextureColor, bool _solid );
+		RenderMaterialInterfacePtr makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, const ConstString & _materialName, EMaterialBlendMode _blend, bool _premultiply, bool _disableTextureColor, bool _solid );
 	}
 
 	class Materialable

@@ -77,7 +77,7 @@ namespace Menge
 		void fillIndices_( RenderIndices * _vertices2D, const int * _triangles, int _count );
 		
 	protected:
-		RenderMaterialInterfacePtr makeMaterial_( spSlot * slot, ResourceImage * _resourceImage ) const;
+		RenderMaterialInterfacePtr makeMaterial_( spSlot * _slot, ResourceImage * _resourceImage ) const;
 
 	protected:		
 		void updateAnimation_();
@@ -115,7 +115,7 @@ namespace Menge
 			TArrayRenderIndices indices;
 		};
 
-		typedef stdex::vector<AttachmentMesh> TVectorAttachmentMesh;
+		typedef stdex::map<const char *, AttachmentMesh> TVectorAttachmentMesh;
 		TVectorAttachmentMesh m_attachmentMeshes;
 
 		struct AnimationEvent

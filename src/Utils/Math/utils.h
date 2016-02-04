@@ -151,12 +151,17 @@ namespace mt
 	{
 		float d = _a - _b;
 
-		if( d > 0.f )
+		if( d >= 0.f )
 		{
 			return d;
 		}
 
 		return -d;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_INLINE float length( const float & _a, const float & _b )
+	{
+		return length_f( _a, _b );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_INLINE void linerp_f1( float & _out, float _in1, float _in2, float _scale )

@@ -79,6 +79,12 @@ namespace mt
 		box.maximum = maximum;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE void set_box_from_two_point( box2f & box, const vec2f & a, const vec2f & b )
+	{
+		mt::reset( box, a );
+		mt::add_internal_point( box, b );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void set_box_from_center_and_extent( box2f & box, const vec2f &center, const vec2f &extent)
 	{
 		box.minimum = center - extent;

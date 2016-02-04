@@ -124,7 +124,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline DWORD s_toD3DBlend( EBlendFactor _blend )
+	inline DWORD s_toD3DBlendFactor( EBlendFactor _blend )
 	{
 		switch( _blend )
 		{
@@ -150,6 +150,24 @@ namespace Menge
 			return D3DBLEND_INVSRCALPHA;
 		}
 		return D3DBLEND_ZERO;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline DWORD s_toD3DBlendOp( EBlendOp _blend )
+	{
+		switch( _blend )
+		{
+		case Menge::BOP_ADD:
+			return D3DBLENDOP_ADD;
+		case Menge::BOP_SUBTRACT:
+			return D3DBLENDOP_SUBTRACT;
+		case Menge::BOP_REVSUBTRACT:
+			return D3DBLENDOP_REVSUBTRACT;
+		case Menge::BOP_MIN:
+			return D3DBLENDOP_MIN;
+		case Menge::BOP_MAX:
+			return D3DBLENDOP_MAX;
+		}
+		return D3DBLENDOP_ADD;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline D3DPRIMITIVETYPE s_toD3DPrimitiveType( EPrimitiveType _type )

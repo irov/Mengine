@@ -46,7 +46,7 @@ namespace Menge
 	public:
 		FilePath m_skeletonPath;
 		FilePath m_atlasPath;
-
+		
 		struct ImageDesc
 		{
 			ConstString name;

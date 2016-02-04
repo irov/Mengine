@@ -305,6 +305,9 @@ namespace Menge
 
 		m_isAlpha = true;
         metadata->get_File_Alpha( m_isAlpha );
+
+		m_isPremultiply = false;
+		metadata->get_File_Alpha( m_isPremultiply );
         		
 		m_maxSize = metadata->get_File_MaxSize();
 

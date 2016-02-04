@@ -65,7 +65,7 @@ namespace Menge
 		m_defaultStages[EM_DEBUG] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" );
 
 		m_defaultStages[EM_TEXTURE_SOLID] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Solid" );
-
+		
 		m_defaultStages[EM_TEXTURE_BLEND] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend" );
 		m_defaultStages[EM_TEXTURE_BLEND_WC] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_WC" );
 		m_defaultStages[EM_TEXTURE_BLEND_WW] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_WW" );
@@ -73,6 +73,9 @@ namespace Menge
 		m_defaultStages[EM_TEXTURE_INTENSIVE] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Intensive" );
 		m_defaultStages[EM_TEXTURE_MULTIPLY] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Multiply" );
 		m_defaultStages[EM_TEXTURE_SCREEN] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Screen" );
+
+		m_defaultStages[EM_TEXTURE_BLEND_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_Premultiply" );
+		m_defaultStages[EM_TEXTURE_INTENSIVE_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Intensive_Premultiply" );
 
 		m_defaultStages[EM_TEXTURE_BLEND_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_OnlyColor" );
 		m_defaultStages[EM_TEXTURE_INTENSIVE_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Intensive_OnlyColor" );
@@ -317,6 +320,7 @@ namespace Menge
 			meta_Material.get_AlphaBlend_Enable( stage.alphaBlendEnable );
 			meta_Material.get_BlendFactor_Source( stage.blendSrc );
 			meta_Material.get_BlendFactor_Dest( stage.blendDst );
+			meta_Material.get_BlendFactor_Op( stage.blendOp );
 
 			ConstString programName;
 			if( meta_Material.get_Program_Name( programName ) == true )

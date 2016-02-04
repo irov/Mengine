@@ -45,7 +45,7 @@ namespace Menge
 		T m_follow;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	template <typename T, float (*L)(const T &, const T &)>
+	template <typename T>
 	class ValueFollowerLinear
 		: public ValueFollower<T>
 	{
@@ -80,7 +80,7 @@ namespace Menge
 	protected:
 		bool _update( float _timing ) override
 		{
-			float l = L( ValueFollower<T>::m_follow, ValueFollower<T>::m_value );
+			float l = mt::length( ValueFollower<T>::m_follow, ValueFollower<T>::m_value );
 
 			if( mt::equal_f_z( l ) == true )
 			{
@@ -122,7 +122,7 @@ namespace Menge
 		float m_distance;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	template <typename T, float( *L )(const T &, const T &)>
+	template <typename T>
 	class ValueFollowerAcceleration
 		: public ValueFollower<T>
 	{
@@ -168,7 +168,7 @@ namespace Menge
 	protected:
 		bool _update( float _timing ) override
 		{
-			float l = L( ValueFollower<T>::m_follow, ValueFollower<T>::m_value );
+			float l = mt::length( ValueFollower<T>::m_follow, ValueFollower<T>::m_value );
 
 			if( mt::equal_f_z( l ) == true )
 			{

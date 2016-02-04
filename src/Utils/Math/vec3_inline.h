@@ -115,6 +115,11 @@ namespace mt
 		_a.z = 0.f;
 	}
 
+	MENGINE_MATH_FUNCTION_INLINE float length( const vec3f& _a, const vec3f& _b )
+	{
+		return length_v3_v3( _a, _b );
+	}
+
 	MENGINE_MATH_FUNCTION_INLINE float length_v3_v3(const vec3f& _a, const vec3f& _b)
 	{
 		vec3f c = _a - _b;

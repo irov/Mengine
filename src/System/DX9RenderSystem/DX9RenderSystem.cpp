@@ -163,7 +163,7 @@ namespace Menge
 		}
 	
 		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "DX9" );
-			
+					
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -388,6 +388,8 @@ namespace Menge
 		m_vertexDeclaration = D3DFVF_XYZ | D3DFVF_DIFFUSE | FVF_UV;
 
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, (m_vertexDeclaration) );
+
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, (D3DRS_ALPHATESTENABLE, FALSE) );
 
 		LOGGER_WARNING( m_serviceProvider )("DX9RenderSystem initalized successfully!");
 		
@@ -1249,7 +1251,7 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst )
+	void DX9RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -1259,11 +1261,13 @@ namespace Menge
             return;
         }
 
-		DWORD src_factor = s_toD3DBlend( _src );
-		DWORD dst_factor = s_toD3DBlend( _dst );
+		DWORD src_factor = s_toD3DBlendFactor( _src );
+		DWORD dst_factor = s_toD3DBlendFactor( _dst );
+		DWORD blend_op = s_toD3DBlendOp( _op );
 
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, (D3DRS_SRCBLEND, src_factor) );
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, (D3DRS_DESTBLEND, dst_factor) );
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, (D3DRS_BLENDOP, blend_op) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
@@ -1435,26 +1439,7 @@ namespace Menge
 
 		DWORD alphaBlend = _alphaBlend ? TRUE : FALSE;
 
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHABLENDENABLE, alphaBlend ) );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha )
-	{
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setAlphaCmpFunc device not created"
-                );
-
-            return;
-        }
-
-		D3DCMPFUNC func = s_toD3DCmpFunc( _alphaFunc );
-
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHAFUNC, func ) );
-
-		DWORD alpha = _alpha;
-
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHAREF, alpha ) );
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, (D3DRS_ALPHABLENDENABLE, alphaBlend) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setLightingEnable( bool _light )

@@ -7,9 +7,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Colorable::Colorable()
 		: m_invalidateColor(false)
-		, m_colorPersonal(1.0f, 1.0f, 1.0f, 1.0f)
-		, m_colorLocal(1.0f, 1.0f, 1.0f, 1.0f)
-		, m_colorRelation(1.0f, 1.0f, 1.0f, 1.0f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

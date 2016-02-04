@@ -255,6 +255,16 @@ namespace Metabuf
 		_value = (Menge::EBlendFactor)tmp_value;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, Menge::EBlendOp & _value, void * _userData )
+	{
+		(void)_userData;
+
+		uint32_t tmp_value;
+		ar.readPOD( tmp_value );
+
+		_value = (Menge::EBlendOp)tmp_value;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void archive_read( stdex::memory_reader & ar, Menge::ETextureOp & _value, void * _userData )
 	{
 		(void)_userData;

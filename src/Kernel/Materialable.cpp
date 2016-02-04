@@ -11,11 +11,15 @@ namespace Menge
 		{
 			uint32_t texturesNum = 0;
 			RenderTextureInterfacePtr textures[2];
+			
+			bool premultiply = false;
 
 			if( _resourceImage != nullptr )
 			{
 				textures[0] = _resourceImage->getTexture();
 				textures[1] = _resourceImage->getTextureAlpha();
+
+				premultiply = _resourceImage->isPremultiply();
 			}
 			else
 			{ 
@@ -38,7 +42,7 @@ namespace Menge
 					case EMB_NORMAL:
 						{
 							if( _disableTextureColor == true )
-							{							
+							{
 								materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA_ONLYCOLOR;
 							}
 							else
@@ -106,7 +110,14 @@ namespace Menge
 
 								if( isAlpha == true || _solid == false )
 								{
-									materialId = EM_TEXTURE_BLEND;
+									if( premultiply == false )
+									{
+										materialId = EM_TEXTURE_BLEND;
+									}
+									else
+									{
+										materialId = EM_TEXTURE_BLEND_PREMULTIPLY;
+									}
 								}
 								else
 								{
@@ -122,7 +133,14 @@ namespace Menge
 							}
 							else
 							{
-								materialId = EM_TEXTURE_INTENSIVE;
+								if( premultiply == false )
+								{
+									materialId = EM_TEXTURE_INTENSIVE;
+								}
+								else
+								{
+									materialId = EM_TEXTURE_INTENSIVE_PREMULTIPLY;
+								}
 							}
 						}break;
 					case EMB_SCREEN:
@@ -211,7 +229,7 @@ namespace Menge
 			return material;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		RenderMaterialInterfacePtr makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid )
+		RenderMaterialInterfacePtr makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _premultiply, bool _disableTextureColor, bool _solid )
 		{
 			ConstString materialName;
 
@@ -285,7 +303,14 @@ namespace Menge
 							{
 								if( _solid == false )
 								{
-									materialId = EM_TEXTURE_BLEND;
+									if( _premultiply == false )
+									{
+										materialId = EM_TEXTURE_BLEND;
+									}
+									else
+									{
+										materialId = EM_TEXTURE_BLEND_PREMULTIPLY;
+									}
 								}
 								else
 								{
@@ -301,7 +326,14 @@ namespace Menge
 							}
 							else
 							{
-								materialId = EM_TEXTURE_INTENSIVE;
+								if( _premultiply == false )
+								{
+									materialId = EM_TEXTURE_INTENSIVE;
+								}
+								else
+								{
+									materialId = EM_TEXTURE_INTENSIVE_PREMULTIPLY;
+								}
 							}
 						}break;
 					case EMB_SCREEN:
@@ -443,7 +475,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr Materialable::makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, bool _solid ) const
 	{
-		RenderMaterialInterfacePtr material = Helper::makeTextureMaterial( _serviceProvider, _textures, _textureCount, m_materialName, m_blendMode, m_disableTextureColor, _solid );
+		RenderMaterialInterfacePtr material = Helper::makeTextureMaterial( _serviceProvider, _textures, _textureCount, m_materialName, m_blendMode, false, m_disableTextureColor, _solid );
 
 		return material;
 	}

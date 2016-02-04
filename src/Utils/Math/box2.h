@@ -27,6 +27,7 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE void transpose_box( box2f & _box, const mt::vec2f & _pos );
 	MENGINE_MATH_FUNCTION_INLINE void get_center_box( const box2f & _box, mt::vec2f & _pos );
 	MENGINE_MATH_FUNCTION_INLINE void set_box_from_min_max(box2f & box, const vec2f & min, const vec2f & max);
+	MENGINE_MATH_FUNCTION_INLINE void set_box_from_two_point( box2f & box, const vec2f & a, const vec2f & b );
 	MENGINE_MATH_FUNCTION_INLINE void set_box_from_center_and_extent(box2f & box, const vec2f & center, const vec2f & extent);
 	MENGINE_MATH_FUNCTION_INLINE void set_box_from_oriented_extent( box2f & box, const mt::vec2f & _offset, const mt::vec2f & _size, const mt::mat3f & _wm );
     MENGINE_MATH_FUNCTION_INLINE bool is_exist( const vec2f & _aminimum, const vec2f & _amaximum, const vec2f & _bminimum, const vec2f & _bmaximum );

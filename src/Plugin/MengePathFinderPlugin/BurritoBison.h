@@ -159,7 +159,7 @@ namespace Menge
 		float m_cameraScale;
 		float m_cameraOffset;
 
-		ValueFollowerLinear<float, mt::length_f> m_cameraFollowerScale;
+		ValueFollowerLinear<float> m_cameraFollowerScale;
 
 		typedef stdex::vector<BurritoBisonForce> TVectorBurritoBisonForce;
 		TVectorBurritoBisonForce m_forces;

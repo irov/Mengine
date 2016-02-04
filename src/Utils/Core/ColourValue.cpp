@@ -28,11 +28,18 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::updateARGB_() const
-	{
-		m_invalidateARGB = false;
-
+	{		
 		m_argb = Helper::makeARGB( m_r, m_g, m_b, m_a );
-	}
+
+		if( m_argb == 0xFFFFFFFF )
+		{
+			m_invalidateARGB = COLOUR_VALUE_INVALIDATE_IDENTITY;
+		}
+		else
+		{
+			m_invalidateARGB = COLOUR_VALUE_INVALIDATE_FALSE;
+		}
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setARGB( float _a, float _r, float _g, float _b )
 	{
@@ -46,7 +53,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setAsARGB( const ColourValue_ARGB _val )
 	{
-		m_invalidateARGB = false;
 		m_argb = _val;
 
 		if( _val == 0xFFFFFFFF )
@@ -55,6 +61,8 @@ namespace Menge
 			m_g = 1.f;
 			m_b = 1.f;
 			m_a = 1.f;
+
+			m_invalidateARGB = COLOUR_VALUE_INVALIDATE_IDENTITY;
 
 			return;
 		}
@@ -77,6 +85,8 @@ namespace Menge
 		m_b = (float)(b8) * rgba_1_div_255;
 		m_g = (float)(g8) * rgba_1_div_255;
 		m_r = (float)(r8) * rgba_1_div_255;		
+
+		m_invalidateARGB = COLOUR_VALUE_INVALIDATE_FALSE;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setA( const float _a )

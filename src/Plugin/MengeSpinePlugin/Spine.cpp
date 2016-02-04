@@ -383,9 +383,7 @@ namespace Menge
 		spSkeleton_updateWorldTransform( skeleton );
 
 		int slotCount = skeleton->slotsCount;
-
-		m_attachmentMeshes.resize( slotCount );
-
+		
 		for( int i = 0; i < slotCount; ++i )
 		{
 			spSlot * slot = skeleton->slots[i];
@@ -395,7 +393,7 @@ namespace Menge
 				continue;
 			}
 
-			AttachmentMesh & mesh = m_attachmentMeshes[i];
+			AttachmentMesh & mesh = m_attachmentMeshes[slot->data->name];
 
 			ResourceImage * resourceImage = nullptr;
 
@@ -492,11 +490,11 @@ namespace Menge
 		m_resourceSpine.release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr Spine::makeMaterial_( spSlot * slot, ResourceImage * _resourceImage ) const
+	RenderMaterialInterfacePtr Spine::makeMaterial_( spSlot * _slot, ResourceImage * _resourceImage ) const
 	{ 
 		EMaterialBlendMode blendMode = EMB_NORMAL;
 
-		switch( slot->data->blendMode )
+		switch( _slot->data->blendMode )
 		{
 		case SP_BLEND_MODE_NORMAL:
 			{
@@ -609,6 +607,11 @@ namespace Menge
 			return;
 		}
 
+		//if( this->getResourceSpine()->getName() == "Effect_BuyUpgrade" )
+		//{
+		//	printf( "!" );
+		//}
+
 		if( m_playTime > _current )
 		{
 			float deltha = m_playTime - _current;
@@ -694,6 +697,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_render( const RenderObjectState * _state )
 	{
+		//if( this->getResourceSpine()->getName() == "Effect_BuyUpgrade" )
+		//{
+		//	printf( "!" );
+		//}
+
 		const mt::box2f & bb = this->getBoundingBox();
 
 		const mt::mat4f & wm = this->getWorldMatrix();
@@ -714,7 +722,7 @@ namespace Menge
 
 		for( int i = 0; i != slotCount; ++i )
 		{
-			spSlot * slot = m_skeleton->slots[i];
+			spSlot * slot = m_skeleton->drawOrder[i];
 			
 			if( slot->attachment == nullptr )
 			{
@@ -770,7 +778,7 @@ namespace Menge
 					spSkinnedMeshAttachment* attachment = (spSkinnedMeshAttachment*)slot->attachment;
 					
 					spSkinnedMeshAttachment_computeWorldVertices( attachment, slot, attachment_vertices );
-					
+
 					uvs = attachment->uvs;
 					verticesCount = attachment->uvsCount;
 					triangles = attachment->triangles;
@@ -792,13 +800,15 @@ namespace Menge
 
 			ColourValue_ARGB argb = Helper::makeARGB( wr, wg, wb, wa );
 
-			RenderVertex2D * vertices = m_attachmentMeshes[i].vertices.buff();
-			RenderIndices * indices = m_attachmentMeshes[i].indices.buff();
+			AttachmentMesh & mesh = m_attachmentMeshes[slot->data->name];
+
+			RenderVertex2D * vertices = mesh.vertices.buff();
+			RenderIndices * indices = mesh.indices.buff();
 				
 			this->fillVertices_( vertices, attachment_vertices, uvs, argb, verticesCount / 2, wm );
 			this->fillIndices_( indices, triangles, trianglesCount );
 
-			const RenderMaterialInterfacePtr & material = m_attachmentMeshes[i].material;
+			const RenderMaterialInterfacePtr & material = mesh.material;
 
 			RENDER_SERVICE( m_serviceProvider )
 				->addRenderObject( _state, material, vertices, verticesCount / 2, indices, trianglesCount, &bb, false );

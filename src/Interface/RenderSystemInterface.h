@@ -47,6 +47,17 @@ namespace Menge
 		BF_MAX_VALUE
 	};
 	//////////////////////////////////////////////////////////////////////////
+	enum EBlendOp
+	{
+		BOP_ADD = 0,
+		BOP_SUBTRACT,
+		BOP_REVSUBTRACT,
+		BOP_MIN,
+		BOP_MAX,
+
+		BOP_MAX_VALUE
+	};
+	//////////////////////////////////////////////////////////////////////////
 	enum EPrimitiveType
 	{
 		PT_POINTLIST = 0,
@@ -311,6 +322,7 @@ namespace Menge
 		RenderStage()
 			: blendSrc(BF_SOURCE_ALPHA)
 			, blendDst(BF_ONE_MINUS_SOURCE_ALPHA)
+			, blendOp(BOP_ADD)
 			, alphaBlendEnable(false)
 		{
 		}
@@ -319,6 +331,7 @@ namespace Menge
 		
 		EBlendFactor blendSrc;
 		EBlendFactor blendDst;
+		EBlendOp blendOp;
 
 		bool alphaBlendEnable;
 
@@ -331,10 +344,12 @@ namespace Menge
 
 		EM_TEXTURE_SOLID,
 		EM_TEXTURE_BLEND,
+		EM_TEXTURE_BLEND_PREMULTIPLY,
 		EM_TEXTURE_BLEND_WC,
 		EM_TEXTURE_BLEND_WW,
 		EM_TEXTURE_BLEND_CW,
 		EM_TEXTURE_INTENSIVE,
+		EM_TEXTURE_INTENSIVE_PREMULTIPLY,
 		EM_TEXTURE_MULTIPLY,
 		EM_TEXTURE_SCREEN,
 
@@ -608,7 +623,7 @@ namespace Menge
 		virtual void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) = 0;
 		virtual void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) = 0;
 		virtual void setTextureFactor( uint32_t _color ) = 0;
-		virtual void setBlendFactor( EBlendFactor _src, EBlendFactor _dst ) = 0;
+		virtual void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op ) = 0;
 		virtual void setCullMode( ECullMode _mode ) = 0;
 		virtual void setDepthBufferTestEnable( bool _depthTest ) = 0;
 		virtual void setDepthBufferWriteEnable( bool _depthWrite ) = 0;
@@ -617,7 +632,6 @@ namespace Menge
 		virtual void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) = 0;
 		virtual void setShadeType( EShadeType _sType ) = 0;
 		virtual void setAlphaBlendEnable( bool _alphaBlend ) = 0;
-		virtual void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha ) = 0;
 		virtual void setLightingEnable( bool _light ) = 0;
 		virtual void setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,
 												ETextureArgument _arg1, ETextureArgument _arg2 ) = 0;

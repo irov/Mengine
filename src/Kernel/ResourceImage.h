@@ -39,6 +39,9 @@ namespace Menge
 
 		inline void setAlpha( bool _alpha );
 		inline bool isAlpha() const;
+
+		inline void setPremultiply( bool _alpha );
+		inline bool isPremultiply() const;
     
     public:
 		inline const RenderTextureInterfacePtr & getTexture() const;
@@ -67,6 +70,7 @@ namespace Menge
         mt::uv4f m_uv_alpha;
 
         bool m_isAlpha;
+		bool m_isPremultiply;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ResourceImage> ResourceImagePtr;
@@ -150,4 +154,14 @@ namespace Menge
     {
         return m_isAlpha;
     }
+	//////////////////////////////////////////////////////////////////////////
+	inline void ResourceImage::setPremultiply( bool _premultiply )
+	{
+		m_isPremultiply = _premultiply;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool ResourceImage::isPremultiply() const
+	{
+		return m_isPremultiply;
+	}
 }

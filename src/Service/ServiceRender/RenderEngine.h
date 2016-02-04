@@ -254,6 +254,7 @@ namespace Menge
 
         EBlendFactor m_currentBlendSrc;
 		EBlendFactor m_currentBlendDst;
+		EBlendOp m_currentBlendOp;
 
 		const RenderViewportInterface * m_currentRenderViewport;
 		const RenderCameraInterface * m_currentRenderCamera;

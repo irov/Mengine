@@ -1,5 +1,7 @@
 #	include "ResourceParticle.h"
 
+#	include "Metacode/Metacode.h"
+
 #	include "ResourceImageDefault.h"
 
 #   include "Interface/ResourceInterface.h"
@@ -38,7 +40,6 @@ namespace Menge
 		uint32_t atlasCount = metadata->get_AtlasCount_Value();
 
 		m_resourceImageNames.resize( atlasCount );
-		m_resourceImages.reserve( atlasCount );
 
 		const Metacode::Meta_DataBlock::Meta_ResourceParticle::TVectorMeta_Atlas & includes_atlas = metadata->get_IncludesAtlas();
 
@@ -130,21 +131,21 @@ namespace Menge
 
 		if( container == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceParticle::_compile %s can't create container file '%s'"
+			LOGGER_ERROR( m_serviceProvider )("ResourceParticle::_compile %s can't create container file '%s'"
 				, m_name.c_str()
-				, m_fileName.c_str() 
+				, m_fileName.c_str()
 				);
 
 			return false;
 		}
 
-		for( TVectorResourceImageName::const_iterator
-			it = m_resourceImageNames.begin(),
-			it_end = m_resourceImageNames.end();
+		for( TVectorResourceImageName::size_type
+			it = 0,
+			it_end = m_resourceImageNames.size();
 		it != it_end;
 		++it )
 		{
-			const ConstString & resourceName = *it;
+			const ConstString & resourceName = m_resourceImageNames[it];
 
 			ResourceImagePtr resourceImage = RESOURCE_SERVICE(m_serviceProvider)
 				->getResourceT<ResourceImagePtr>( resourceName );
@@ -160,7 +161,7 @@ namespace Menge
 				return false;
 			}
 
-			m_resourceImages.push_back( resourceImage );
+			container->setAtlasResourceImage( it, resourceImage );
 		}
 
 		m_container = container;
@@ -171,53 +172,6 @@ namespace Menge
 	void ResourceParticle::_release()
 	{
 		m_container = nullptr;
-
-		for( TVectorResourceImage::const_iterator
-			it = m_resourceImages.begin(),
-			it_end = m_resourceImages.end();
-		it != it_end;
-		++it )
-		{
-			const ResourceImagePtr & resource = *it;
-
-			resource->decrementReference();
-		}
-
-		m_resourceImages.clear();		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceImagePtr ResourceParticle::getAtlasImageResource( uint32_t _atlasId ) const
-	{
-		if( this->isCompile() == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("ResourceParticle::getAtlasImageResource %s invalid get atlas image not compile"
-				, this->getName().c_str()
-				);
-
-			return nullptr;
-		}
-
-		if( _atlasId >= m_resourceImages.size() )
-		{
-			LOGGER_ERROR( m_serviceProvider )("ResourceParticle::getAtlasImageResource %s invalid get atlas image index %d count %d"
-				, this->getName().c_str()
-				, _atlasId
-				, m_resourceImages.size()
-				);
-
-			return nullptr;
-		}
-
-		const ResourceImagePtr & resource = m_resourceImages[_atlasId];
-
-		return resource;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t ResourceParticle::getAtlasImageCount() const
-	{
-		uint32_t count = m_resourceImageNames.size();
-
-		return count;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitterInterfacePtr ResourceParticle::createEmitter()

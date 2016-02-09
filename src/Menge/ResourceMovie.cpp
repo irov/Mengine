@@ -7,7 +7,8 @@
 #	include "Interface/ConfigInterface.h"
 #	include "Interface/TextInterface.h"
 
-//#	include "ResourceImageDefault.h"
+#	include "Metacode/Metacode.h"
+
 #	include "ResourceShape.h"
 
 #	include "Consts.h"

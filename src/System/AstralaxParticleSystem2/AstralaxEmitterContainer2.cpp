@@ -15,6 +15,7 @@ namespace Menge
         : m_serviceProvider(nullptr)
 		, m_particleSystem(nullptr)
 		, m_mf(0)
+		, m_id(0)
 	{
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -59,6 +60,18 @@ namespace Menge
 
 		m_memory = memory;
 
+		int atlasCount = Magic_GetStaticAtlasCount( m_mf );
+
+		if( atlasCount > 0 )
+		{
+			MAGIC_STATIC_ATLAS atlas;
+			Magic_GetStaticAtlas( m_mf, 0, &atlas );
+
+			m_id = atlas.ptc_id;
+		}
+
+		m_resourceImages.resize( atlasCount );
+
 		m_factoryPoolAstralaxEmitter.setMethodListener( this, &AstralaxEmitterContainer2::onEmitterRelease_ );
 
         return true;
@@ -82,18 +95,42 @@ namespace Menge
 			return false;
 		}
 
-		int atlasCount = Magic_GetStaticAtlasCount( m_mf );
-
-		if( atlasCount > 1 )
-		{
-			LOGGER_ERROR( m_serviceProvider )("AstralaxEmitterContainer2::isValid: particle has many static atlas, sorry need one :("
-				);
-
-			return false;
-		}
-
 		return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t AstralaxEmitterContainer2::getId() const
+	{ 
+		return m_id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxEmitterContainer2::setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage )
+	{
+		m_resourceImages[_index] = _resourceImage;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ResourceImagePtr & AstralaxEmitterContainer2::getAtlasResourceImage( const char * _file ) const
+	{
+		int atlasCount = Magic_GetStaticAtlasCount( m_mf );
+	
+		for( int i = 0; i != atlasCount; ++i )
+		{
+			MAGIC_STATIC_ATLAS atlas;
+			Magic_GetStaticAtlas( m_mf, i, &atlas );
+
+			if( strcmp( atlas.file, _file ) != 0 )
+			{
+				continue;
+			}
+		
+			return m_resourceImages[i];
+		}
+
+		LOGGER_ERROR( m_serviceProvider )("AstralaxEmitterContainer2::getAtlasResourceImage: not found atlas %s"
+			, _file
+			);
+
+		return ResourceImagePtr::none();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitterContainer2::loadContainer_( unsigned char * _buffer, size_t _size, HM_FILE & _mf ) const
 	{
@@ -184,7 +221,8 @@ namespace Menge
             return nullptr;
         }
 
-		m_particleSystem->updateMaterial();
+		m_particleSystem->updateAtlas();
+		m_particleSystem->updateMaterial();		
 
 		return emitter;
 	}
@@ -192,5 +230,7 @@ namespace Menge
 	void AstralaxEmitterContainer2::onEmitterRelease_( AstralaxEmitter2 * _emitter )
 	{
 		_emitter->finalize();
+
+		m_particleSystem->updateAtlas();
 	}
 }

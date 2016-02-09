@@ -4,6 +4,8 @@
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Metacode/Metacode.h"
+
 #	include "Core/MemoryHelper.h"
 
 #	include "Logger/Logger.h"

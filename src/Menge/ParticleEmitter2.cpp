@@ -400,11 +400,10 @@ namespace	Menge
 
 			for( uint32_t i = 0; i != mesh.textures; ++i )
 			{
-				//int textureId = mesh.texture[i];
+				int textureId = mesh.texture[i];
 
-				//ResourceImage * image = m_resourceParticle->getAtlasImageResource( textureId );
-				//TODO
-				ResourceImagePtr image = m_resourceParticle->getAtlasImageResource( 0 );
+				const ResourceImagePtr & image = PARTICLE_SYSTEM2( m_serviceProvider )
+					->getResourceImage( textureId );
 
 				if( image == nullptr )
 				{

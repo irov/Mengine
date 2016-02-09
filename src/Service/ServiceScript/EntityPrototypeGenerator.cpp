@@ -1,5 +1,7 @@
 #	include "EntityPrototypeGenerator.h"
 
+#   include "Interface/ScriptSystemInterface.h"
+
 #	include "pybind/pybind.hpp"
 
 #	include "Logger/Logger.h"

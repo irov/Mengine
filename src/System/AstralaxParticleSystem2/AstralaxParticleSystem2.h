@@ -19,6 +19,8 @@
 #	pragma warning(pop) 
 #	endif
 
+#	include "stdex/stl_map.h"
+
 namespace Menge
 {
 	class AstralaxParticleSystem2 
@@ -37,18 +39,26 @@ namespace Menge
 
 	public:
 		const RenderStage * getMaterialStage( int _index ) const override;
+		const ResourceImagePtr & getResourceImage( int _index ) const override;
 
 	public:
+		bool updateAtlas();
 		void updateMaterial();
 
 	protected:
-		void onContainerRelease_( AstralaxEmitterContainer2 * _contanier );
+		void onContainerRelease_( AstralaxEmitterContainer2 * _container );
 
     protected:
         typedef FactoryPoolStore<AstralaxEmitterContainer2, 16> TFactoryPoolAstralaxEmitterContainer;
         TFactoryPoolAstralaxEmitterContainer m_factoryPoolAstralaxEmitterContainer;
 
+		typedef stdex::map<uint32_t, AstralaxEmitterContainer2 *> TMapHashEmitterContainers;
+		TMapHashEmitterContainers m_containers;
+
 		int m_stageCount;
 		const RenderStage * m_stages[256];
+
+		typedef stdex::vector<ResourceImagePtr> TVectorAtlasDesc;
+		TVectorAtlasDesc m_atlases;
 	};
 }

@@ -2,6 +2,9 @@
 
 #   include "Interface/ResourceInterface.h"
 #	include "Interface/RenderSystemInterface.h"
+
+#	include "Metacode/Metacode.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Kernel/ResourceImage.h"

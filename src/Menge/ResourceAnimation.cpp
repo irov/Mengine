@@ -1,5 +1,7 @@
 #	include "ResourceAnimation.h"
 
+#	include "Metacode/Metacode.h"
+
 #	include "Kernel/ResourceImage.h"
 
 #	include "ResourceImageDefault.h"

@@ -39,6 +39,15 @@ namespace Menge
         bool isValid() const override;
 
 	public:
+		uint32_t getId() const;
+
+	public:
+		void setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) override;
+
+	public:
+		const ResourceImagePtr & getAtlasResourceImage( const char * _file ) const;
+
+	public:
 		ParticleEmitterInterfacePtr createEmitter() override;
 
 	protected:
@@ -55,10 +64,15 @@ namespace Menge
 
 		HM_FILE m_mf;
 
+		uint32_t m_id;
+
 		MemoryInterfacePtr m_memory;
 
 		typedef FactoryPoolStore<AstralaxEmitter2, 16> TFactoryPoolAstralaxEmitter;
 		TFactoryPoolAstralaxEmitter m_factoryPoolAstralaxEmitter;
+
+		typedef stdex::vector<ResourceImagePtr> TVectorResourceImage;
+		TVectorResourceImage m_resourceImages;
 	};
 
 	typedef stdex::intrusive_ptr<AstralaxEmitterContainer2> AstralaxEmitterContainer2Ptr;

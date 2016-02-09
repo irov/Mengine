@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Interface/PrototypeManagerInterface.h"
-#	include "Interface/ScriptSystemInterface.h"
 
 #	include "Kernel/Eventable.h"
 #	include "Kernel/Entity.h"

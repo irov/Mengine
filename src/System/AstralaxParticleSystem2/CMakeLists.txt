@@ -20,7 +20,10 @@ endif()
 
 add_definitions(-DMAGIC_3D)
 
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/astralax )
+INCLUDE_DIRECTORIES( 
+    ${THIRDPARTY_DIR}/astralax 
+    ${THIRDPARTY_DIR}/pybind/include
+    )
 
 if( DEFINED MENGINE_ASTRALAX_PARTICLE2_DLL )
     ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )

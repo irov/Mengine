@@ -5,6 +5,8 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/ConfigInterface.h"
 
+#	include "Metacode/Metacode.h"
+
 #	include "Core/MemoryHelper.h"
 
 #   include "Logger/Logger.h"

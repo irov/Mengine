@@ -104,7 +104,44 @@ namespace Menge
 			return nullptr;
 		}
 
+		uint32_t id = container->getId();
+
+		m_containers[id] = container.get();
+
 		return container;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxParticleSystem2::updateAtlas()
+	{
+		MAGIC_CHANGE_ATLAS c;
+		while( Magic_GetNextAtlasChange( &c ) == MAGIC_SUCCESS )
+		{
+			switch( c.type )
+			{
+			case MAGIC_CHANGE_ATLAS_LOAD:
+				{
+				}break;
+			case MAGIC_CHANGE_ATLAS_CLEAN:
+				{
+				}break;
+			case MAGIC_CHANGE_ATLAS_CREATE:
+				{
+					AstralaxEmitterContainer2 * container = m_containers[c.ptc_id];
+
+					const ResourceImagePtr & resourceImage = container->getAtlasResourceImage( c.file );
+
+					m_atlases.push_back( resourceImage );
+				}break;
+			case MAGIC_CHANGE_ATLAS_DELETE:
+				{
+					TVectorAtlasDesc::iterator it_remove = m_atlases.begin();
+					std::advance( it_remove, c.index );
+					m_atlases.erase( it_remove );
+				}break;
+			}
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticleSystem2::updateMaterial()
@@ -187,8 +224,31 @@ namespace Menge
 		return m_stages[_index];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticleSystem2::onContainerRelease_( AstralaxEmitterContainer2 * _contanier )
+	const ResourceImagePtr & AstralaxParticleSystem2::getResourceImage( int _index ) const
 	{
-		_contanier->finalize();
+		size_t atlases_size = m_atlases.size();
+
+		if( atlases_size <= (size_t)_index )
+		{
+			LOGGER_ERROR( m_serviceProvider )("AstralaxParticleSystem2::getResourceImage index %d but size is %d"
+				, _index
+				, atlases_size
+				);
+
+			return ResourceImagePtr::none();
+		}
+
+		const ResourceImagePtr & resourceImage = m_atlases[_index];
+
+		return resourceImage;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxParticleSystem2::onContainerRelease_( AstralaxEmitterContainer2 * _container )
+	{
+		uint32_t id = _container->getId();
+
+		m_containers.erase( id );
+
+		_container->finalize();
 	}
 }

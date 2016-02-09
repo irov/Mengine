@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Interface/PrototypeManagerInterface.h"
+#	include "BasePrototypeGenerator.h"
 
 #	include "Kernel/Node.h"
 
@@ -15,39 +15,8 @@ namespace Menge
 {
 	template<class Type, uint32_t Count>
 	class NodePrototypeGenerator
-		: public PrototypeGeneratorInterface
-		, public MemoryAllocator
+		: public BasePrototypeGenerator
 	{
-	public:
-		NodePrototypeGenerator()
-			: m_serviceProvider(nullptr)
-			, m_scriptWrapper(nullptr)
-		{
-		}
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override
-		{
-			m_serviceProvider = _serviceProvider;
-		}
-
-		ServiceProviderInterface * getServiceProvider() const override
-		{
-			return m_serviceProvider;
-		}
-
-	protected:
-		bool initialize( const ConstString & _category, const ConstString & _prototype ) override
-		{
-			m_category = _category;
-			m_prototype = _prototype;
-
-			m_scriptWrapper = SCRIPT_SERVICE( m_serviceProvider )
-				->getWrapper( m_prototype );
-
-			return true;
-		}
-
 	protected:
 		Factorable * generate() override
 		{
@@ -77,19 +46,7 @@ namespace Menge
 			return count;
 		}
 
-		void destroy() override
-		{
-			delete this;
-		}
-
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
-		ConstString m_category;
-		ConstString m_prototype;
-
-		ScriptWrapperInterface * m_scriptWrapper;
-
 		typedef FactoryPoolStore<Type, Count> TNodeFactory;
 		TNodeFactory m_factory;
 	};

@@ -1,5 +1,7 @@
 #	include "ResourceImageSolid.h"
 
+#	include "Metacode/Metacode.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Interface/RenderSystemInterface.h"

@@ -6,6 +6,8 @@
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/ConfigInterface.h"
 
+#	include "Metacode/Metacode.h"
+
 #   include "Logger/Logger.h"
 
 namespace Menge

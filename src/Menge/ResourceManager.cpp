@@ -4,6 +4,8 @@
 #	include "Interface/LoaderInterface.h"
 #   include "Interface/PrototypeManagerInterface.h"
 
+#	include "Metacode/Metacode.h"
+
 #	include "Kernel/Loadable.h"
 #	include "Kernel/ResourceReference.h"
 

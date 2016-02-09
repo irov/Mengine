@@ -23,8 +23,16 @@ Shape
 ADD_FILTER(
 Node
 	Node.cpp
-	Node.h
-    NodePrototypeGenerator.h    
+	Node.h    
+    ScriptClassWrapper.h
+)
+
+ADD_FILTER(
+PrototypeGenerator
+    BasePrototypeGenerator.cpp
+    BasePrototypeGenerator.h
+    NodePrototypeGenerator.h
+    ResourcePrototypeGenerator.h
     ScriptClassWrapper.h
 )
 
@@ -158,8 +166,7 @@ Resource
 	Resource.cpp
 	Resource.h
     ResourceCacher.h
-    ResourceHolder.h
-    ResourcePrototypeGenerator.h
+    ResourceHolder.h        
     ResourceReference.cpp
     ResourceReference.h
 )

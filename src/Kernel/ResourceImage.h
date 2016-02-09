@@ -6,6 +6,8 @@
 
 #	include "Kernel/ResourceReference.h"
 
+#	include "Core/ColourValue.h"
+
 #	include "Math/vec4.h"
 #	include "Math/uv4.h"
 

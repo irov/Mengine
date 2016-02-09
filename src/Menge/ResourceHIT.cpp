@@ -5,6 +5,8 @@
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Metacode/Metacode.h"
+
 #	include "Logger/Logger.h"
 
 #	include <math.h>

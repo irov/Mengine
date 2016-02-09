@@ -1,11 +1,11 @@
 #	pragma once
 
-#	include "Interface/ScriptSystemInterface.h"
-
 #	include "pybind/bindable.hpp"
 
 namespace Menge
 {
+	class ScriptWrapperInterface;
+
 	class Scriptable
 		: public pybind::bindable
 	{	

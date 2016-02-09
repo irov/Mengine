@@ -2,8 +2,6 @@
 
 #   include "Interface/ServiceInterface.h"
 
-#	include "Interface/ScriptSystemInterface.h"
-
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
 

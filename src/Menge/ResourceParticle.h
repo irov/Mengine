@@ -29,10 +29,6 @@ namespace Menge
 		ParticleEmitterInterfacePtr createEmitter();
 
 	public:
-		ResourceImagePtr getAtlasImageResource( uint32_t _atlasId ) const;
-		uint32_t getAtlasImageCount() const;
-
-	public:
 		bool _loader( const Metabuf::Metadata * _parser ) override;
 		bool _convert() override;
 
@@ -52,9 +48,6 @@ namespace Menge
 		TVectorResourceImageName m_resourceImageNames;
 
 		ParticleEmitterContainerInterface2Ptr m_container;
-
-		typedef stdex::vector<ResourceImagePtr> TVectorResourceImage;
-		TVectorResourceImage m_resourceImages;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ResourceParticle> ResourceParticlePtr;

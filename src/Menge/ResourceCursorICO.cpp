@@ -1,5 +1,7 @@
 #	include "ResourceCursorICO.h"
 
+#	include "Metacode/Metacode.h"
+
 #	include "Interface/FileSystemInterface.h"
 
 #	include "Core/MemoryHelper.h"

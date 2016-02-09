@@ -1,12 +1,14 @@
 #	pragma once
 
+#	include "Config/Typedef.h"
+#	include "Config/String.h"
+
 #   include "Interface/ServiceInterface.h"
 #	include "Interface/StreamInterface.h"
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/ArchiveInterface.h"
 
-#	include "Config/Typedef.h"
-#	include "Config/String.h"
+#	include "Kernel/ResourceImage.h"
 
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
@@ -147,6 +149,9 @@ namespace Menge
 		virtual bool isValid() const = 0;
 
 	public:
+		virtual void setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) = 0;
+
+	public:
 		virtual ParticleEmitterInterfacePtr createEmitter() = 0;
 	};
 
@@ -162,10 +167,11 @@ namespace Menge
 
 	public:
 		virtual const RenderStage * getMaterialStage( int _index ) const = 0;
+		virtual const ResourceImagePtr & getResourceImage( int _index ) const = 0;
 	};
 
 #   define PARTICLE_SYSTEM2( serviceProvider )\
-	SERVICE_GET(serviceProvider, Menge::ParticleSystemInterface2)
+	((ParticleSystemInterface2 *)SERVICE_GET(serviceProvider, Menge::ParticleSystemInterface2))
 
 	class ParticleServiceInterface2
 		: public ServiceInterface

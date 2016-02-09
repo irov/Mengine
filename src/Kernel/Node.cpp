@@ -3,7 +3,6 @@
 #   include "Kernel/Layer.h"
 
 #	include "Interface/RenderSystemInterface.h"
-#	include "Interface/ScriptSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 #   include "Interface/NodeInterface.h"
 

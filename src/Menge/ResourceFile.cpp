@@ -2,6 +2,8 @@
 
 #	include "Interface/FileSystemInterface.h"
 
+#	include "Metacode/Metacode.h"
+
 #	include "Logger/Logger.h"
 
 namespace Menge

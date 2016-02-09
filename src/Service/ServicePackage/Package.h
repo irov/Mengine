@@ -1,7 +1,7 @@
 #	pragma once
 
 #   include "Interface/PackageInterface.h"
-#	include "Interface/ScriptSystemInterface.h"
+#   include "Interface/ScriptSystemInterface.h"
 
 #	include "Core/String.h"
 #   include "Core/FilePath.h"

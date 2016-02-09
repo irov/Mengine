@@ -15,6 +15,11 @@ namespace Menge
 			m_follow = _value;
 		}
 
+		void setValue( const T & _value )
+		{
+			m_value = _value;
+		}
+
 		const T & getValue() const
 		{
 			return m_value;

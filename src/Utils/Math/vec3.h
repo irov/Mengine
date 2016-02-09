@@ -59,6 +59,7 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE float sqrlength_v3_v3( const vec3f& _a, const vec3f& _b );
 	MENGINE_MATH_FUNCTION_INLINE float sqrlength_v3(const vec3f& _a);
 	MENGINE_MATH_FUNCTION_INLINE void dir_v3_v3(vec3f & _out, const vec3f& _a, const vec3f& _b);
+	MENGINE_MATH_FUNCTION_INLINE float dir_v3_v3_f( vec3f & _out, const vec3f& _a, const vec3f& _b );
 
 	MENGINE_MATH_FUNCTION_INLINE bool cmp_v3_v3( const vec3f& _a, const vec3f& _b );
 
@@ -92,6 +93,7 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE float get_axis_angle( const vec3f & dir, int axis );
 
 	MENGINE_MATH_FUNCTION_INLINE void linerp_v3( mt::vec3f & _out, const mt::vec3f & _in1, const mt::vec3f & _in2, float _scale );
+	MENGINE_MATH_FUNCTION_INLINE float follow_v3( mt::vec3f & _out, const mt::vec3f & _in1, const mt::vec3f & _in2, float _step );
 };
 
 #	if MENGINE_MATH_FORCE_INLINE == 1

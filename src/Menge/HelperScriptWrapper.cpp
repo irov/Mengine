@@ -425,6 +425,15 @@ namespace Menge
         }
 
 	public:
+		uint32_t mt_enumerator()
+		{
+			static uint32_t i = 0;
+
+			++i;
+
+			return i;
+		}
+
 		int mt_rand( int a )
 		{	
 			return mt::rand( a );
@@ -454,6 +463,22 @@ namespace Menge
 			float y = mt::sinf_fast( rp );
 
 			return mt::vec2f( x * rr, y * rr );
+		}
+
+		uint32_t mt_rounding( uint32_t _value, uint32_t _round )
+		{
+			uint32_t floor_value = _value / _round;
+			uint32_t round_value = floor_value * _round;
+
+			return round_value;
+		}
+
+		float mt_roundingf( float _value, float _round )
+		{
+			float floor_value = floorf(_value / _round);
+			float round_value = floor_value * _round;
+
+			return round_value;
 		}
 
 		float mt_sqrtf( float a )
@@ -549,15 +574,15 @@ namespace Menge
 		mt::vec3f mt_direction_v3_v3( const mt::vec3f & _from, const mt::vec3f & _to )
 		{
 			mt::vec3f direction;
-			mt::dir_v3_v3( direction, _to, _from );
+			mt::dir_v3_v3( direction, _from, _to );
 
 			return direction;
 		}
 
-		float my_angle_from_v2_v2( const mt::vec2f & _from, const mt::vec2f & _to )
+		float mt_angle_from_v2_v2( const mt::vec2f & _from, const mt::vec2f & _to )
 		{
 			mt::vec2f direction;
-			mt::sub_v2_v2( direction, _to, _from );
+			mt::sub_v2_v2( direction, _from, _to );
 
 			mt::vec2f direction_n;
 			mt::norm_v2_v2(direction_n, direction);
@@ -2058,12 +2083,17 @@ namespace Menge
 		//pybind::def_functor( "addGlobalInterpolatorLinearVector", helperScriptMethod, &HelperScriptMethod::addGlobalInterpolatorLinearVector );
 		//pybind::def_functor( "addGlobalInterpolatorLinearFloat", helperScriptMethod, &HelperScriptMethod::addGlobalInterpolatorLinearFloat);		
 
+		pybind::def_functor( "enumerator", helperScriptMethod, &HelperScriptMethod::mt_enumerator );
+
         pybind::def_functor( "rand", helperScriptMethod, &HelperScriptMethod::mt_rand );
 		pybind::def_functor( "randf", helperScriptMethod, &HelperScriptMethod::mt_randf );
 		pybind::def_functor( "range_rand", helperScriptMethod, &HelperScriptMethod::mt_range_rand );
 		pybind::def_functor( "range_randf", helperScriptMethod, &HelperScriptMethod::mt_range_randf );
 		pybind::def_functor( "radius_randf", helperScriptMethod, &HelperScriptMethod::mt_radius_randf );
-		
+
+		pybind::def_functor( "rounding", helperScriptMethod, &HelperScriptMethod::mt_rounding );
+		pybind::def_functor( "roundingf", helperScriptMethod, &HelperScriptMethod::mt_roundingf );
+				
 			
 		pybind::def_functor( "sqrtf", helperScriptMethod, &HelperScriptMethod::mt_sqrtf );
 		pybind::def_functor( "absf", helperScriptMethod, &HelperScriptMethod::mt_absf );
@@ -2079,7 +2109,7 @@ namespace Menge
 		pybind::def_functor( "fibo_bine", helperScriptMethod, &HelperScriptMethod::mt_fibo_bine );
 		pybind::def_functor( "direction_v2_v2", helperScriptMethod, &HelperScriptMethod::mt_direction_v2_v2 );
 		pybind::def_functor( "direction_v3_v3", helperScriptMethod, &HelperScriptMethod::mt_direction_v3_v3 );
-		pybind::def_functor( "angle_from_v2_v2", helperScriptMethod, &HelperScriptMethod::my_angle_from_v2_v2 );
+		pybind::def_functor( "angle_from_v2_v2", helperScriptMethod, &HelperScriptMethod::mt_angle_from_v2_v2 );
         pybind::def_functor( "norm_v2", helperScriptMethod, &HelperScriptMethod::mt_norm_v2 );
 		pybind::def_functor( "norm_v3", helperScriptMethod, &HelperScriptMethod::mt_norm_v3 );
 

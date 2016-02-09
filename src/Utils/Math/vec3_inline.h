@@ -145,9 +145,18 @@ namespace mt
 
 	MENGINE_MATH_FUNCTION_INLINE void dir_v3_v3(vec3f & _out, const vec3f& _a, const vec3f& _b)
 	{
-		vec3f dir = _a - _b;
+		vec3f dir = _b - _a;
 		
 		mt::norm_v3_v3( _out, dir );
+	}
+
+	MENGINE_MATH_FUNCTION_INLINE float dir_v3_v3_f( vec3f & _out, const vec3f& _a, const vec3f& _b )
+	{
+		vec3f dir = _b - _a;
+
+		float length = mt::norm_v3_v3_f( _out, dir );
+
+		return length;
 	}
 
 	MENGINE_MATH_FUNCTION_INLINE float length_v3(const vec3f& _a)
@@ -430,5 +439,22 @@ namespace mt
 		mt::linerp_f1( _out.x, _in1.x, _in2.x, _scale );
 		mt::linerp_f1( _out.y, _in1.y, _in2.y, _scale );
 		mt::linerp_f1( _out.z, _in1.z, _in2.z, _scale );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE float follow_v3( mt::vec3f & _out, const mt::vec3f & _in1, const mt::vec3f & _in2, float _step )
+	{
+		mt::vec3f dir;
+		float length = mt::dir_v3_v3_f( dir, _in1, _in2 );
+
+		if( length - _step < 0.f )
+		{
+			_out = _in2;
+
+			return _step - length;
+		}
+
+		_out = _in1 + dir * _step;
+
+		return 0.f;
 	}
 }

@@ -53,6 +53,8 @@ namespace Menge
 		m_iterator = 0;
 		m_wayCount = m_way.size();
 
+		m_followerPurge.initialize( 1.f );
+
 		if( m_wayCount < 2 )
 		{
 			return false;
@@ -68,6 +70,42 @@ namespace Menge
 		return m_node;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void PathFinderWayAffector::purge( float _reduce, float _speed, float _acceleration, const pybind::object & _cb )
+	{
+		m_followerPurge.setValue( _reduce );
+		m_followerPurge.setSpeed( _speed );
+		m_followerPurge.setAcceleration( _acceleration );
+
+		if( m_followerPurgeCb.is_valid() == true && m_followerPurgeCb.is_callable() == true )
+		{
+			pybind::object cb = m_followerPurgeCb;
+			
+			m_followerPurgeCb = _cb;
+
+			cb(false);
+		}
+		else
+		{
+			m_followerPurgeCb = _cb;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderWayAffector::unpurge()
+	{
+		m_followerPurge.setValue( 1.f );
+		m_followerPurge.setSpeed( 0.f );
+		m_followerPurge.setAcceleration( 0.f );
+
+		if( m_followerPurgeCb.is_valid() == true && m_followerPurgeCb.is_callable() == true )
+		{
+			pybind::object cb = m_followerPurgeCb;
+
+			m_followerPurgeCb.reset();
+
+			cb( false );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderWayAffector::stepNextPoint_( const mt::vec3f & _pos, float _step, mt::vec3f & _out, mt::vec3f & _dir, uint32_t & _iterator ) const
 	{
 		_iterator = m_iterator;
@@ -79,7 +117,7 @@ namespace Menge
 		if( ll > _step * _step )
 		{
 			mt::vec3f dir;
-			mt::dir_v3_v3( dir, wp, _pos );
+			mt::dir_v3_v3( dir, _pos, wp );
 
 			_out = _pos + dir * _step;
 			_dir = dir;
@@ -101,7 +139,7 @@ namespace Menge
 			if( iter_ll > _step * _step )
 			{
 				mt::vec3f dir;
-				mt::dir_v3_v3( dir, wp_current, wp_prev );
+				mt::dir_v3_v3( dir, wp_prev, wp_current );
 
 				_out = wp_prev + dir * _step;
 				_dir = dir;
@@ -118,7 +156,7 @@ namespace Menge
 		mt::vec3f wp_current = m_way[m_wayCount - 1];
 
 		mt::vec3f dir;
-		mt::dir_v3_v3( dir, wp_current, wp_prev );
+		mt::dir_v3_v3( dir, wp_prev, wp_current );
 
 		_out = wp_current;
 		_dir = dir;
@@ -148,7 +186,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderWayAffector::_affect( float _timing )
 	{
-		float step = m_speed * _timing;
+		if( m_followerPurge.update( _timing ) == true )
+		{
+			if( m_followerPurgeCb.is_valid() == true && m_followerPurgeCb.is_callable() == true )
+			{
+				pybind::object cb = m_followerPurgeCb;
+				m_followerPurgeCb.reset();
+
+				cb(true);
+			}
+		}
+
+		float purge = m_followerPurge.getValue();
+
+		float step = m_speed * purge * _timing;
 
 		mt::vec3f new_pos;
 		mt::vec3f new_dir;
@@ -404,7 +455,7 @@ namespace Menge
 		mt::vec3f wp_current = m_way[m_wayCount - 1];
 
 		mt::vec3f dir;
-		mt::dir_v3_v3( dir, wp_current, wp_prev );
+		mt::dir_v3_v3( dir, wp_prev, wp_current );
 
 		uint32_t id = this->getId();
 
@@ -419,7 +470,7 @@ namespace Menge
 		mt::vec3f wp_current = m_way[m_iterator];
 
 		mt::vec3f dir;
-		mt::dir_v3_v3( dir, wp_current, wp_prev );
+		mt::dir_v3_v3( dir, wp_prev, wp_current );
 
 		uint32_t id = this->getId();
 

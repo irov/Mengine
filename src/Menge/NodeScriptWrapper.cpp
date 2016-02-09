@@ -3736,7 +3736,7 @@ namespace Menge
 					m_interpolator.step( 100.f, &next_position );
 
 					mt::vec3f dir;
-					mt::dir_v3_v3( dir, next_position, start_position );
+					mt::dir_v3_v3( dir, start_position, next_position );
 
 					m_prevDir = dir;
 					m_currentDir = dir;
@@ -3776,7 +3776,7 @@ namespace Menge
 
 					if( mt::sqrlength_v3_v3( prev_position, _position ) > mt::m_eps )
 					{
-						mt::dir_v3_v3( m_targetDir, _position, prev_position );
+						mt::dir_v3_v3( m_targetDir, prev_position, _position );
 					}
 					
 					float length = mt::length_v3_v3( m_targetDir, m_currentDir );
@@ -3894,74 +3894,102 @@ namespace Menge
 					, m_distance( 0.f )
 					, m_moveSpeed( 0.f )
 					, m_moveAcceleration( 0.f )
+					, m_moveLimit( 0.f )
 					, m_rotationSpeed( 0.f )
+					, m_rotationAcceleration( 0.f )
 				{
 				}
 
 			public:
-				void initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _rotationSpeed )
+				bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, float _rotationSpeed, float _rotationAcceleration )
 				{
+					if( _node == nullptr )
+					{
+						return false;
+					}
+
+					if( _target == nullptr )
+					{
+						return false;
+					}
+
 					m_node = _node;
 					m_target = _target;
 					m_offset = _offset;
 					m_distance = _distance;
 					m_moveSpeed = _moveSpeed;
 					m_moveAcceleration = _moveAcceleration;
+					m_moveLimit = _moveLimit;
 					m_rotationSpeed = _rotationSpeed;
+					m_rotationAcceleration = _rotationAcceleration;
 
-					const mt::vec3f & start_position = m_node->getLocalPosition();
-					
-					m_followerPosition.initialize( start_position );
-					m_followerPosition.setSpeed( m_moveSpeed );
-					m_followerPosition.setDistance( m_distance );
-					m_followerPosition.setAcceleration( m_moveAcceleration );
-
-					mt::vec3f follow_position = m_target->getLocalPosition();
-
-					follow_position += m_offset;
-										
-					m_followerPosition.follow( follow_position );
+					return true;
 				}
 
 			protected:
 				bool _affect( float _timing ) override
 				{	
-					float node_orientaionX = m_node->getOrientationX();
-
 					mt::vec3f node_position = m_node->getLocalPosition();
 					mt::vec3f follow_position = m_target->getLocalPosition();
 
-					mt::vec3f direction = node_position - follow_position;
+					mt::vec3f direction = follow_position - node_position;
+
+					mt::vec3f norm_direction;
+					mt::norm_v3_v3( norm_direction, direction );
 
 					mt::mat4f mr;
 					mt::make_rotate_m4_direction( mr, direction, mt::vec3f(0.f, 0.f, 1.f) );
 
-					mt::vec3f orientation;
-					mt::make_euler_angles( orientation, mr );
+					mt::vec3f target_orientation;
+					mt::make_euler_angles( target_orientation, mr );
 
-					float target_orientaionX = orientation.x;
+					const mt::vec3f & node_orientation = m_node->getOrientation();
+				
+					mt::vec3f correct_rotate_from;
+					mt::vec3f correct_rotate_to;
+					mt::angle_correct_interpolate_from_to( node_orientation.x, target_orientation.x, correct_rotate_from.x, correct_rotate_to.x );
+					mt::angle_correct_interpolate_from_to( node_orientation.y, target_orientation.y, correct_rotate_from.y, correct_rotate_to.y );
+					mt::angle_correct_interpolate_from_to( node_orientation.z, target_orientation.z, correct_rotate_from.z, correct_rotate_to.z );
 
-					float correct_rotate_from;
-					float correct_rotate_to;
-					mt::angle_correct_interpolate_from_to( node_orientaionX, target_orientaionX, correct_rotate_from, correct_rotate_to );
+					m_rotationSpeed += m_rotationAcceleration * _timing;
 
-					float new_orientationX;
-					mt::linerp_f1( new_orientationX, correct_rotate_from, correct_rotate_to, 1.f );
+					mt::vec3f new_orientation;
+					mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _timing );
 
-					m_node->setOrientationX( new_orientationX );
+					m_node->setOrientation( new_orientation );
 
-					//m_followerPosition.setSpeed( m_moveSpeed );
+					mt::vec3f current_direction = m_node->getAxisDirection();
 
+					mt::vec3f norm_current_direction;
+					mt::norm_v3_v3( norm_current_direction, current_direction );
 
-					//follow_position += m_offset;
+					float directionSpeedStep = m_moveAcceleration * _timing;
 
-					//m_followerPosition.follow( follow_position );
-					//					
-					//bool finish = m_followerPosition.update( _timing );
+					if( m_moveSpeed + directionSpeedStep > m_moveLimit )
+					{
+						m_moveSpeed = m_moveLimit;
+					}
+					else
+					{
+						m_moveSpeed += m_moveAcceleration * _timing;
+					}
 
-					//const mt::vec3f & new_position = m_followerPosition.getValue();
+					float step = m_moveSpeed * _timing;
 
-					//m_node->setLocalPosition( new_position );
+					float length = mt::length_v3_v3( node_position, follow_position );
+
+					if( length - step < m_distance )
+					{
+						mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
+
+						m_node->setLocalPosition( distance_position );
+
+						return true;
+					}
+
+					mt::vec3f new_position = node_position + current_direction * step;
+
+					m_node->setLocalPosition( new_position );
 
 					return false;
 				}
@@ -3979,15 +4007,14 @@ namespace Menge
 				float m_distance;
 				float m_moveSpeed;
 				float m_moveAcceleration;
+				float m_moveLimit;
 				float m_rotationSpeed;
-
-				typedef ValueFollowerAcceleration<mt::vec3f> TFollowerPosition;
-				TFollowerPosition m_followerPosition;
+				float m_rotationAcceleration;
 			};
 
 		public:
 			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
-				, Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _directionSpeed, float _directionAcceleration, float _rotationSpeed )
+				, Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, float _rotationSpeed, float _rotationAcceleration )
 			{
 				AffectorCreatorFollowTo * affector = m_factory.createObject();
 
@@ -3996,7 +4023,12 @@ namespace Menge
 
 				affector->setCallback( _cb );
 
-				affector->initialize( _node, _target, _offset, _distance, _directionSpeed, _directionAcceleration, _rotationSpeed );
+				if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit, _rotationSpeed, _rotationAcceleration ) == false )
+				{
+					m_factory.destroyObject( affector );
+
+					return nullptr;
+				}
 
 				return affector;
 			}
@@ -4012,9 +4044,11 @@ namespace Menge
 			, Node * _target
 			, const mt::vec3f & _offset
 			, float _distance
-			, float _directionSpeed
-			, float _directionAcceleration
+			, float _moveSpeed
+			, float _moveAcceleration
+			, float _moveLimit
 			, float _rotationSpeed
+			, float _rotationAcceleration
 			, const pybind::object & _cb )
 		{
 			if( _node->isActivate() == false )
@@ -4033,7 +4067,9 @@ namespace Menge
 
 			Affector * affector =
 				m_nodeAffectorCreatorFollowTo.create( m_serviceProvider
-				, ETA_POSITION, callback, _node, _target, _offset, _distance, _directionSpeed, _directionAcceleration, _rotationSpeed
+				, ETA_POSITION, callback, _node, _target, _offset, _distance
+				, _moveSpeed, _moveAcceleration, _moveLimit
+				, _rotationSpeed, _rotationAcceleration
 				);
 
 			AFFECTOR_ID id = _node->addAffector( affector );

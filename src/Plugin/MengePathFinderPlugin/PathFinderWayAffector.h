@@ -5,6 +5,8 @@
 
 #	include "Math/vec2.h"
 
+#	include "Core/ValueFollower.h"
+
 #	include "fastpathfinder/pathfinder.h"
 #	include "fastpathfinder/map.h"
 
@@ -35,6 +37,10 @@ namespace Menge
 		const mt::vec3f & getLocalPosition() const;
 
 	public:
+		void purge( float _reduce, float _speed, float _acceleration, const pybind::object & _cb );
+		void unpurge();
+
+	public:
 		mt::vec3f getTimePosition( float _time ) const;
 
 		pybind::tuple predictionLinearBullet( const mt::vec3f & _offset, const mt::vec3f & _position, float _speed ) const;
@@ -62,6 +68,10 @@ namespace Menge
 		pybind::list m_way;
 
 		float m_speed;
+
+		ValueFollowerAcceleration<float> m_followerPurge;
+		pybind::object m_followerPurgeCb;
+
 		float m_offset;
 		float m_length;
 		

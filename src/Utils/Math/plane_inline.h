@@ -118,7 +118,7 @@ namespace mt
 		mt::mul_v3_m4( at_wm, at, _wm );
 
 		mt::vec3f dir_wm;
-		mt::dir_v3_v3( dir_wm, at_wm, pos_wm );
+		mt::dir_v3_v3( dir_wm, pos_wm, at_wm );
 		
 		set_plane_by_point_and_normal( _out, pos_wm, dir_wm );		
 	}

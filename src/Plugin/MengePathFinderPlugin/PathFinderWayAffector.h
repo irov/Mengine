@@ -17,6 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	class PathFinderWayAffector
 		: public Affector
+		, public pybind::bindable
 	{
 	public:
 		PathFinderWayAffector();
@@ -34,7 +35,7 @@ namespace Menge
 		const mt::vec3f & getLocalPosition() const;
 
 	public:
-		void purge( float _reduce, float _speed, float _acceleration, const pybind::object & _cb );
+		bool purge( float _reduce, float _speed, float _acceleration, const pybind::object & _cb );
 		void unpurge();
 
 	public:
@@ -56,6 +57,12 @@ namespace Menge
 
 	protected:
 		void updatePosition_( const mt::vec3f & _pos );
+
+	protected:
+		void _setFreeze( bool _value ) override;
+
+	protected:
+		PyObject * _embedded() override;
 
 	protected:
 		Node * m_node;

@@ -56,6 +56,9 @@ namespace Menge
 		void setFreeze( bool _value );
 		bool getFreeze() const;
 
+	protected:
+		virtual void _setFreeze( bool _value );
+
 	public:
 		void setSpeedFactor( float _speed );
 		float getSpeedFactor() const;

@@ -64,8 +64,13 @@ namespace Menge
 		return m_node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderWayAffector::purge( float _reduce, float _speed, float _acceleration, const pybind::object & _cb )
+	bool PathFinderWayAffector::purge( float _reduce, float _speed, float _acceleration, const pybind::object & _cb )
 	{
+		if( this->getFreeze() == true )
+		{
+			return false;
+		}
+
 		m_followerPurge.setValue( _reduce );
 		m_followerPurge.setSpeed( _speed );
 		m_followerPurge.setAcceleration( _acceleration );
@@ -81,6 +86,8 @@ namespace Menge
 		{
 			m_followerPurgeCb = _cb;
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::unpurge()
@@ -443,6 +450,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::complete()
 	{
+		if( m_followerPurgeCb.is_valid() == true && m_followerPurgeCb.is_callable() == true )
+		{
+			pybind::object cb = m_followerPurgeCb;
+			m_followerPurgeCb.reset();
+
+			cb( true );
+		}
+
 		mt::vec3f wp_prev = m_way[m_wayCount - 2];
 		mt::vec3f wp_current = m_way[m_wayCount - 1];
 
@@ -456,6 +471,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::stop()
 	{
+		if( m_followerPurgeCb.is_valid() == true && m_followerPurgeCb.is_callable() == true )
+		{
+			pybind::object cb = m_followerPurgeCb;
+			m_followerPurgeCb.reset();
+
+			cb( true );
+		}
+
 		const mt::vec3f & lp = m_node->getLocalPosition();
 
 		mt::vec3f wp_prev = m_way[m_iterator - 1];
@@ -467,6 +490,29 @@ namespace Menge
 		uint32_t id = this->getId();
 
 		m_cb( id, m_node, lp, dir, false, true, false );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderWayAffector::_setFreeze( bool _value )
+	{
+		if( _value == false )
+		{
+			return;
+		}
+
+		if( m_followerPurgeCb.is_valid() == true && m_followerPurgeCb.is_callable() == true )
+		{
+			pybind::object cb = m_followerPurgeCb;
+			m_followerPurgeCb.reset();
+
+			cb( true );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * PathFinderWayAffector::_embedded()
+	{
+		PyObject * py_obj = pybind::detail::create_holder_t( this );
+
+		return py_obj;
 	}
 }
 

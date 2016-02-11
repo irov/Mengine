@@ -3491,11 +3491,13 @@ namespace Menge
 			pybind::object m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
+		typedef stdex::intrusive_ptr<ScriptableAffectorCallback> ScriptableAffectorCallbackPtr;
+		//////////////////////////////////////////////////////////////////////////
 		FactoryPoolStore<ScriptableAffectorCallback, 4> m_factoryNodeAffectorCallback;
 		//////////////////////////////////////////////////////////////////////////
-		ScriptableAffectorCallback * createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb )
+		ScriptableAffectorCallbackPtr createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb )
 		{
-			ScriptableAffectorCallback * callback = m_factoryNodeAffectorCallback.createObject();
+			ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback.createObject();
 
 			callback->initialize( m_serviceProvider, _scriptable, _cb );
 
@@ -3516,14 +3518,19 @@ namespace Menge
 				return 0;
 			}
 
-            moveStop( _node );
-
-			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );			
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );			
 
             Affector * affector = m_nodeAffectorCreatorAccumulateLinear.create( m_serviceProvider
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
 				, _node->getLocalPosition(), _dir, _speed, &mt::sqrlength_v3
                 );
+
+			if( affector == nullptr )
+			{
+				return 0;
+			}
+
+			moveStop( _node );
 
             mt::vec3f linearSpeed = _dir * _speed;
             _node->setLinearSpeed( linearSpeed );
@@ -3546,9 +3553,7 @@ namespace Menge
 				return 0;
 			}
 
-            moveStop( _node );
-
-			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
 
             Affector* affector = 
                 m_nodeAffectorCreatorInterpolateLinear.create( m_serviceProvider
@@ -3556,6 +3561,13 @@ namespace Menge
                 , _node->getLocalPosition(), _point, _time
 				, &mt::sqrlength_v3
                 );
+
+			if( affector == nullptr )
+			{
+				return 0;
+			}
+
+			moveStop( _node );
 
             float invTime = 1.0f / _time;
             const mt::vec3f & pos = _node->getLocalPosition();
@@ -3584,15 +3596,20 @@ namespace Menge
 
             mt::vec3f linearSpeed = _node->getLinearSpeed();
 
-            moveStop( _node );
-
-			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
 
             Affector* affector = m_nodeAffectorCreatorInterpolateQuadratic.create( m_serviceProvider
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _point, linearSpeed, _time
 				, &mt::sqrlength_v3
                 );
+
+			if( affector == nullptr )
+			{
+				return 0;
+			}
+
+			moveStop( _node );
 
             AFFECTOR_ID id = _node->addAffector( affector );
 
@@ -3617,9 +3634,7 @@ namespace Menge
 				return 0;
 			}
 
-            moveStop( _node );
-
-			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
 
 			mt::vec3f v[] = {_v0};
 
@@ -3627,6 +3642,13 @@ namespace Menge
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
 				, _node->getLocalPosition(), _to, v, _time
                 );
+
+			if( affector == nullptr )
+			{
+				return 0;
+			}
+
+			moveStop( _node );
 
             AFFECTOR_ID id = _node->addAffector( affector );
 
@@ -3652,9 +3674,7 @@ namespace Menge
 				return 0;
 			}
 
-            moveStop( _node );
-
-			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
 
 			mt::vec3f v[] = {_v0, _v1};
 
@@ -3663,6 +3683,13 @@ namespace Menge
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
 				, _node->getLocalPosition(), _to, v, _time
                 );
+
+			if( affector == nullptr )
+			{
+				return 0;
+			}
+
+			moveStop( _node );
 
             AFFECTOR_ID id = _node->addAffector( affector );
 
@@ -3689,9 +3716,7 @@ namespace Menge
 				return 0;
 			}
 
-			moveStop( _node );
-
-			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
 
 			mt::vec3f v[] = {_v0, _v1, _v2};
 
@@ -3700,6 +3725,13 @@ namespace Menge
 				, ETA_POSITION, callback, _node, &Node::setLocalPosition
 				, _node->getLocalPosition(), _to, v, _time
 				);
+
+			if( affector == nullptr )
+			{
+				return 0;
+			}
+
+			moveStop( _node );
 
 			AFFECTOR_ID id = _node->addAffector( affector );
 
@@ -3866,14 +3898,19 @@ namespace Menge
 				return 0;
 			}
 
-			moveStop( _node );
-
-			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
 
 			Affector* affector =
 				m_nodeAffectorCreatorInterpolateParabolic.create( m_serviceProvider
 				, ETA_POSITION, callback, _node, _end, _v0, _time				
 				);
+
+			if( affector == nullptr )
+			{
+				return 0;
+			}
+
+			moveStop( _node );
 
 			AFFECTOR_ID id = _node->addAffector( affector );
 
@@ -4025,7 +4062,7 @@ namespace Menge
 
 				if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit, _rotationSpeed, _rotationAcceleration ) == false )
 				{
-					m_factory.destroyObject( affector );
+					affector->destroy();
 
 					return nullptr;
 				}
@@ -4061,9 +4098,7 @@ namespace Menge
 				return 0;
 			}
 
-			moveStop( _node );
-
-			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
 
 			Affector * affector =
 				m_nodeAffectorCreatorFollowTo.create( m_serviceProvider
@@ -4071,6 +4106,13 @@ namespace Menge
 				, _moveSpeed, _moveAcceleration, _moveLimit
 				, _rotationSpeed, _rotationAcceleration
 				);
+
+			if( affector == nullptr )
+			{
+				return 0;
+			}
+
+			moveStop( _node );
 
 			AFFECTOR_ID id = _node->addAffector( affector );
 
@@ -4097,21 +4139,26 @@ namespace Menge
 				return 0;
 			}
 
-            angleStop( _node );
-
             float angle = _node->getOrientationZ();
 
             float correct_angle_from = angle;
             float correct_angle_to = _angle;
             //mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
 
-			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
 
             Affector* affector = m_odeAffectorCreatorInterpolateLinear.create( m_serviceProvider
                 , ETA_ANGLE, callback, _node, &Node::setOrientationX
                 , correct_angle_from, correct_angle_to, _time
                 , &fabsf 
                 );				
+
+			if( affector == nullptr )
+			{
+				return 0;
+			}
+
+			angleStop( _node );
 
             float invTime = 1.0f / _time;
             float angularSpeed = fabsf( correct_angle_from - correct_angle_to ) * invTime;
@@ -4138,15 +4185,13 @@ namespace Menge
 
             float angularSpeed = _node->getAngularSpeed();
 
-            angleStop( _node );
-
             float angle = _node->getOrientationZ();
 
             float correct_angle_from = angle;
             float correct_angle_to = _angle;
             //mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
 
-			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
 
             Affector* affector = 
                 m_nodeAffectorCreatorInterpolateQuadraticFloat.create( m_serviceProvider
@@ -4154,6 +4199,13 @@ namespace Menge
                 , correct_angle_from, correct_angle_to, angularSpeed, _time
                 , &fabsf
                 );				
+
+			if( affector == nullptr )
+			{
+				return 0;
+			}
+
+			angleStop( _node );
 
 			AFFECTOR_ID id = _node->addAffector( affector );
 
@@ -4189,15 +4241,20 @@ namespace Menge
             //    return 0;
             //}
 
-            scaleStop( _node );
-
-			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
 
             Affector* affector = m_nodeAffectorCreatorInterpolateLinear.create( m_serviceProvider
                 , ETA_SCALE, callback, _node, &Node::setScale
                 , _node->getScale(), _scale, _time
                 , &mt::length_v3
                 );
+
+			if( affector == 0 )
+			{
+				return 0;
+			}
+
+			scaleStop( _node );
 
             AFFECTOR_ID id = _node->addAffector( affector );
 
@@ -4230,9 +4287,7 @@ namespace Menge
 				return 0;
 			}
 
-            colorStop( _node );
-
-			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
 
             Affector* affector = 
                 m_nodeAffectorCreatorInterpolateLinearColour.create( m_serviceProvider
@@ -4240,6 +4295,13 @@ namespace Menge
                 , _node->getLocalColor(), _color, _time
                 , &s_length_color
                 );
+
+			if( affector == nullptr )
+			{
+				return 0;
+			}
+
+			colorStop( _node );
 
 			AFFECTOR_ID id = _node->addAffector( affector );
 
@@ -4275,15 +4337,20 @@ namespace Menge
                 return 0;
             }
 
-            _shape->stopAffectors( ETA_VISIBILITY );
-
-			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _shape, _cb );
+            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _shape, _cb );
 
             Affector* affector = m_NodeAffectorCreatorInterpolateLinearVec4.create( m_serviceProvider
                 , ETA_VISIBILITY, callback, _shape, &Shape::setPercentVisibility
                 , _shape->getPercentVisibility(), _percent, _time
                 , &mt::length_v4 
                 );
+
+			if( affector == nullptr )
+			{
+				return 0;
+			}
+
+			_shape->stopAffectors( ETA_VISIBILITY );
 
             AFFECTOR_ID id = _shape->addAffector( affector );
 

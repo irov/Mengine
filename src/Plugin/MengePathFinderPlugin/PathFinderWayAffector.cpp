@@ -10,8 +10,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderWayAffector::PathFinderWayAffector()
-		: m_serviceProvider(nullptr)
-		, m_node(nullptr)
+		: m_node(nullptr)
 		, m_speed(0.f)
 		, m_offset(0.f)
 		, m_length(0.f)
@@ -23,11 +22,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderWayAffector::~PathFinderWayAffector()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PathFinderWayAffector::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderWayAffector::initialize( Node * _node, const pybind::list & _satellite, float _offset, float _speed, const pybind::list & _way, const pybind::object & _cb )
@@ -78,11 +72,10 @@ namespace Menge
 
 		if( m_followerPurgeCb.is_valid() == true && m_followerPurgeCb.is_callable() == true )
 		{
-			pybind::object cb = m_followerPurgeCb;
-			
+			pybind::object cb = m_followerPurgeCb;			
 			m_followerPurgeCb = _cb;
 
-			cb(false);
+			cb( false );
 		}
 		else
 		{
@@ -99,7 +92,6 @@ namespace Menge
 		if( m_followerPurgeCb.is_valid() == true && m_followerPurgeCb.is_callable() == true )
 		{
 			pybind::object cb = m_followerPurgeCb;
-
 			m_followerPurgeCb.reset();
 
 			cb( false );
@@ -193,7 +185,7 @@ namespace Menge
 				pybind::object cb = m_followerPurgeCb;
 				m_followerPurgeCb.reset();
 
-				cb(true);
+				cb( true );
 			}
 		}
 

@@ -213,7 +213,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleKeyEvent( const InputKeyEvent & _event )
 	{
-		bool handle = false;
+		bool handle = m_defaultHandle;
 				
 		EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEY, handle )(this, (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat);
 
@@ -254,7 +254,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleMouseWheel( const InputMouseWheelEvent & _event )
 	{
-		bool handle = false;
+		bool handle = m_defaultHandle;
 				
 		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_WHEEL, handle )(this, _event.button, _event.x, _event.y, _event.wheel);
 

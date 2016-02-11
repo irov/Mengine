@@ -200,6 +200,8 @@ namespace Menge
 	{
 		PathFinderWayAffector * affector = m_factoryPathFinderWayAffector.createObject();
 
+		affector->setServiceProvider( m_serviceProvider );
+
 		if( affector->initialize( _node, _satellite, _offset, _speed, _way, _cb ) == false )
 		{
 			affector->destroy();

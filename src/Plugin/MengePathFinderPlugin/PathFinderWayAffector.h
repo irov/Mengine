@@ -23,9 +23,6 @@ namespace Menge
 		~PathFinderWayAffector();
 		
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-
-	public:
 		bool initialize( Node * _node, const pybind::list & _satellite, float _offset, float _speed, const pybind::list & _way, const pybind::object & _cb );
 		
 	public:
@@ -61,8 +58,6 @@ namespace Menge
 		void updatePosition_( const mt::vec3f & _pos );
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		Node * m_node;
 		pybind::list m_satellite;
 		pybind::list m_way;

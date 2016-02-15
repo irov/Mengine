@@ -14,6 +14,8 @@
 
 namespace Menge
 {
+	class AstralaxParticleSystem2;
+
 	class AstralaxEmitter2 
 		: public ParticleEmitterInterface
 	{
@@ -22,8 +24,8 @@ namespace Menge
 		~AstralaxEmitter2();
 
     public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const ParticleEmitterContainerInterface2Ptr & _container, HM_EMITTER _id );
-		void finalize();
+		bool initialize( ServiceProviderInterface * _serviceProvider, AstralaxParticleSystem2 * _particleSystem, const ParticleEmitterContainerInterface2Ptr & _container, HM_EMITTER _id );
+		void finalize(); 
 		
 	public:
 		void play() override;
@@ -89,6 +91,8 @@ namespace Menge
 		
 	protected:
         ServiceProviderInterface * m_serviceProvider;
+		
+		AstralaxParticleSystem2 * m_particleSystem;
 
 		ParticleEmitterContainerInterface2Ptr m_container;
 		

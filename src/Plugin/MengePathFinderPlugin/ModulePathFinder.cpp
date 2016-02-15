@@ -137,9 +137,11 @@ namespace Menge
 			.def( "predictionLinearBullet", &PathFinderWayAffector::predictionLinearBullet )
 			.def( "predictionParabolicBullet", &PathFinderWayAffector::predictionParabolicBullet )
 			;
-
+		
 		pybind::def_functor( "createPathFinderWayAffector", this, &ModulePathFinder::createPathFinderWayAffector );
 		pybind::def_functor( "destroyPathFinderWayAffector", this, &ModulePathFinder::destroyPathFinderWayAffector );
+
+		
 
 		SCRIPT_SERVICE(m_serviceProvider)
 			->setWrapper( Helper::stringizeString( m_serviceProvider, "PathGraphNode" ), new ClassScriptWrapper<PathGraphNode>() );

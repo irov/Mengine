@@ -47,7 +47,7 @@ namespace Menge
 			return false;
 		}
 				
-		unsigned char * binary_memory = memory->getMemory();
+		const unsigned char * binary_memory = memory->getMemory();
 		size_t binary_size = memory->getSize();
 
 		HM_FILE mf;
@@ -81,7 +81,7 @@ namespace Menge
 	{
 		Magic_CloseFile( m_mf );
 		m_mf = 0;
-
+		
 		m_memory = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -132,7 +132,7 @@ namespace Menge
 		return ResourceImagePtr::none();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitterContainer2::loadContainer_( unsigned char * _buffer, size_t _size, HM_FILE & _mf ) const
+	bool AstralaxEmitterContainer2::loadContainer_( const unsigned char * _buffer, size_t _size, HM_FILE & _mf ) const
 	{
 		(void)_size;
 
@@ -187,7 +187,7 @@ namespace Menge
 				Magic_SetCurrentFolder( m_mf, magicName );
 
 				HM_EMITTER id = this->createEmitterId_();
-				
+
 				Magic_SetCurrentFolder( m_mf, currentFolder );
 
 				if( id != 0 )
@@ -216,13 +216,12 @@ namespace Menge
 
 		AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter.createObject();
 
-        if( emitter->initialize( m_serviceProvider, this, id ) == false )
-        {
-            return nullptr;
-        }
+		if( emitter->initialize( m_serviceProvider, m_particleSystem, this, id ) == false )
+		{
+			return nullptr;
+		}
 
-		m_particleSystem->updateAtlas();
-		m_particleSystem->updateMaterial();		
+		m_particleSystem->updateMaterial();
 
 		return emitter;
 	}
@@ -230,7 +229,5 @@ namespace Menge
 	void AstralaxEmitterContainer2::onEmitterRelease_( AstralaxEmitter2 * _emitter )
 	{
 		_emitter->finalize();
-
-		m_particleSystem->updateAtlas();
 	}
 }

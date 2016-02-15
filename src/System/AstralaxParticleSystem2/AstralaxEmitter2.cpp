@@ -1,5 +1,8 @@
 #	include "AstralaxEmitter2.h"
 
+#	include "AstralaxParticleSystem2.h"
+#	include "AstralaxEmitterContainer2.h"
+
 #	include <Logger/Logger.h>
 
 #	include <limits>
@@ -28,9 +31,10 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::initialize( ServiceProviderInterface * _serviceProvider, const ParticleEmitterContainerInterface2Ptr & _container, HM_EMITTER _id )
+	bool AstralaxEmitter2::initialize( ServiceProviderInterface * _serviceProvider, AstralaxParticleSystem2 * _particleSystem, const ParticleEmitterContainerInterface2Ptr & _container, HM_EMITTER _id )
     {
         m_serviceProvider = _serviceProvider;
+		m_particleSystem = _particleSystem;
 		m_container = _container;
         m_emitterId = _id;
 
@@ -545,6 +549,8 @@ namespace Menge
 		{
 			return false;
 		}
+
+		m_particleSystem->updateAtlas();
 
 #	ifdef MENGE_RENDER_TEXTURE_RGBA
 		MAGIC_ARGB_ENUM color_mode = MAGIC_ABGR;

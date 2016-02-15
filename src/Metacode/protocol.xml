@@ -1,4 +1,4 @@
-<Protocol Version = "96">
+<Protocol Version = "98">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>

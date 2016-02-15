@@ -76,6 +76,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Spine::setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop )
 	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Spine::setStateAnimation %s invalid setup state '%s' name '%s' not compile!"
+				, this->getName().c_str()
+				, _state.c_str()
+				, _name.c_str()
+				);
+
+			return false;
+		}
+
 		TMapAnimations::iterator it_found = m_animations.find( _state );
 
 		if( it_found != m_animations.end() )

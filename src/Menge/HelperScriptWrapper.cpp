@@ -454,6 +454,16 @@ namespace Menge
 			return mt::range_randf( a, b );
 		}
 
+		float mt_around_randf( float a, float b )
+		{
+			float v_low = a - a * b;
+			float v_hight = a + a * b;
+
+			float v = mt_range_randf( v_low, v_hight );
+
+			return v;
+		}
+
 		mt::vec2f mt_radius_randf( float _radius )
 		{
 			float rp = mt::randf( mt::m_two_pi );
@@ -2089,6 +2099,7 @@ namespace Menge
 		pybind::def_functor( "randf", helperScriptMethod, &HelperScriptMethod::mt_randf );
 		pybind::def_functor( "range_rand", helperScriptMethod, &HelperScriptMethod::mt_range_rand );
 		pybind::def_functor( "range_randf", helperScriptMethod, &HelperScriptMethod::mt_range_randf );
+		pybind::def_functor( "around_randf", helperScriptMethod, &HelperScriptMethod::mt_around_randf );
 		pybind::def_functor( "radius_randf", helperScriptMethod, &HelperScriptMethod::mt_radius_randf );
 
 		pybind::def_functor( "rounding", helperScriptMethod, &HelperScriptMethod::mt_rounding );

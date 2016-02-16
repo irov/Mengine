@@ -1349,26 +1349,28 @@ namespace Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb )
+			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 			{
 				m_serviceProvider = _serviceProvider;
 				m_cb = _cb;
+				m_args = _args;
 			}
 
 		protected:
 			void onScheduleComplete( uint32_t _id ) override
 			{
-				m_cb( _id, false );
+				m_cb( _id, false, m_args );
 			}
 
 			void onScheduleStop( uint32_t _id ) override
 			{
-				m_cb( _id, true );
+				m_cb( _id, true, m_args );
 			}
 
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
 			pybind::object m_cb;
+			pybind::detail::args_operator_t m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		typedef FactoryPoolStore<PyScheduleEventInterface, 8> TFactoryPyObjectScheduleListener;
@@ -1426,25 +1428,25 @@ namespace Menge
 			return successful;
 		}
         //////////////////////////////////////////////////////////////////////////
-        uint32_t schedule( float _timing, const pybind::object & _script )
+        uint32_t schedule( float _timing, const pybind::object & _script, const pybind::detail::args_operator_t & _args )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
 
             PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener.createObject();
 
-			sl->initialize( m_serviceProvider, _script );
+			sl->initialize( m_serviceProvider, _script, _args );
 
             uint32_t id = sm->event( _timing, sl );
 
             return id;
         }
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, const pybind::object & _script )
+		uint32_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::detail::args_operator_t & _args )
 		{
 			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener.createObject();
 
-			sl->initialize( m_serviceProvider, _script );
+			sl->initialize( m_serviceProvider, _script, _args );
 
 			uint32_t id = _scheduleManager->event( _timing, sl );
 
@@ -1578,7 +1580,7 @@ namespace Menge
             return time;
         }
         //////////////////////////////////////////////////////////////////////////
-		uint32_t s_scheduleGlobal( float _timing, const pybind::object & _script )
+		uint32_t s_scheduleGlobal( float _timing, const pybind::object & _script, const pybind::detail::args_operator_t & _args )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
@@ -1590,7 +1592,7 @@ namespace Menge
 
 			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener.createObject();
 
-			sl->initialize( m_serviceProvider, _script );
+			sl->initialize( m_serviceProvider, _script, _args );
 
             uint32_t id = sm->event( _timing, sl );
 
@@ -6191,7 +6193,7 @@ namespace Menge
 					
 			pybind::interface_<ScheduleManagerInterface>("ScheduleManagerInterface", true)
 				.def_proxy_static( "timing", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_timing )
-				.def_proxy_static( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_schedule )
+				.def_proxy_args_static( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_schedule )
 				.def_proxy_static( "pipe", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_pipe )
 				.def( "refresh", &ScheduleManagerInterface::refresh )
 				.def( "exist", &ScheduleManagerInterface::exist )
@@ -6213,7 +6215,7 @@ namespace Menge
 			pybind::def_functor( "createScheduler", nodeScriptMethod, &NodeScriptMethod::createScheduler );
 			pybind::def_functor( "destroyScheduler", nodeScriptMethod, &NodeScriptMethod::destroyScheduler );				
 
-            pybind::def_functor( "schedule", nodeScriptMethod, &NodeScriptMethod::schedule );
+            pybind::def_functor_args( "schedule", nodeScriptMethod, &NodeScriptMethod::schedule );
             pybind::def_functor( "scheduleRemove", nodeScriptMethod, &NodeScriptMethod::scheduleRemove );
             pybind::def_functor( "scheduleRemoveAll", nodeScriptMethod, &NodeScriptMethod::scheduleRemoveAll );
             pybind::def_functor( "scheduleFreeze", nodeScriptMethod, &NodeScriptMethod::s_scheduleFreeze );

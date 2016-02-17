@@ -6228,7 +6228,7 @@ namespace Menge
             pybind::def_functor( "scheduleIsFreeze", nodeScriptMethod, &NodeScriptMethod::s_scheduleIsFreeze );
             pybind::def_functor( "scheduleTime", nodeScriptMethod, &NodeScriptMethod::s_scheduleTime );
 
-            pybind::def_functor( "scheduleGlobal", nodeScriptMethod, &NodeScriptMethod::s_scheduleGlobal );
+            pybind::def_functor_args( "scheduleGlobal", nodeScriptMethod, &NodeScriptMethod::s_scheduleGlobal );
             pybind::def_functor( "scheduleGlobalRemove", nodeScriptMethod, &NodeScriptMethod::s_scheduleGlobalRemove );
             pybind::def_functor( "scheduleGlobalRemoveAll", nodeScriptMethod, &NodeScriptMethod::s_scheduleGlobalRemoveAll );
             pybind::def_functor( "scheduleGlobalFreeze", nodeScriptMethod, &NodeScriptMethod::s_scheduleGlobalFreeze );

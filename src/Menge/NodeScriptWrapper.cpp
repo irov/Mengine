@@ -426,7 +426,7 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool movie_setMovieEvent( Movie * _movie, const ConstString & _name, const pybind::object & _cb )
+		bool movie_setMovieEvent( Movie * _movie, const ConstString & _name, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			Node * node;
 			Movie * submovie;
@@ -438,7 +438,24 @@ namespace Menge
 
 			MovieEvent * ev = static_node_cast<MovieEvent>(node);
 
-			ev->setEvent( _cb );
+			ev->setEvent( _cb, _args );
+
+			return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool movie_removeMovieEvent( Movie * _movie, const ConstString & _name )
+		{
+			Node * node;
+			Movie * submovie;
+
+			if( _movie->getMovieNode( _name, CONST_STRING( m_serviceProvider, MovieEvent ), &node, &submovie ) == false )
+			{
+				return false;
+			}
+
+			MovieEvent * ev = static_node_cast<MovieEvent>(node);
+
+			ev->removeEvent();
 
 			return true;
 		}
@@ -6135,7 +6152,8 @@ namespace Menge
 					.def_proxy_static( "hasSubMovie", nodeScriptMethod, &NodeScriptMethod::movie_hasSubMovie )
 					.def_proxy_static( "getSocket", nodeScriptMethod, &NodeScriptMethod::movie_getSocket )
 					.def_proxy_static( "hasSocket", nodeScriptMethod, &NodeScriptMethod::movie_hasSocket )
-					.def_proxy_static( "setMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_setMovieEvent )
+					.def_proxy_args_static( "setMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_setMovieEvent )
+					.def_proxy_static( "removeMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_removeMovieEvent )
 					.def_proxy_static( "hasMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieEvent )
                     .def_proxy_static( "getSockets", nodeScriptMethod, &NodeScriptMethod::movie_getSockets )	
 					.def_proxy_static( "getSlots", nodeScriptMethod, &NodeScriptMethod::movie_getSlots )

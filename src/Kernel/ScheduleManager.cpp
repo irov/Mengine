@@ -352,6 +352,11 @@ namespace Menge
 
 						TIMELINE_SERVICE( m_serviceProvider )
 							->endOffset();
+
+						if( desc.dead == true )
+						{
+							break;
+						}
 					}
 				}break;
 			}

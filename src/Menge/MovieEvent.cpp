@@ -6,8 +6,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     MovieEvent::MovieEvent()
-        : m_cb(nullptr)
-        , m_resourceMovie(nullptr)
+        : m_resourceMovie(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -15,10 +14,25 @@ namespace Menge
     {
 	}
     //////////////////////////////////////////////////////////////////////////
-	void MovieEvent::setEvent( const pybind::object & _cb )
+	void MovieEvent::setEvent( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
     {
         m_cb = _cb;
+		m_args = _args;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void MovieEvent::removeEvent()
+	{
+		if( m_cb.is_invalid() == false && m_cb.is_callable() == true )
+		{
+			pybind::object cb = m_cb;
+			pybind::detail::args_operator_t args = m_args;
+
+			m_cb = nullptr;
+			m_args = nullptr;
+
+			cb( 0.f, false );
+		}
+	}
     //////////////////////////////////////////////////////////////////////////
 	void MovieEvent::setResourceMovie( const ResourceMoviePtr & _resourceMovie )
     {
@@ -57,7 +71,7 @@ namespace Menge
                 return;
             }
             
-            m_cb( frame.position );
+			m_cb( frame.position, true, m_args );
         }
     }
 }

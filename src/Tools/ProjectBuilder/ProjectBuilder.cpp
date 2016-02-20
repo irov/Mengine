@@ -561,7 +561,7 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::String fileSHA1( const wchar_t * _path )
+	Menge::String pathSHA1( const wchar_t * _path )
 	{
 		String utf8_path;
 		if( Helper::unicodeToUtf8( serviceProvider, _path, utf8_path ) == false )
@@ -819,7 +819,7 @@ bool run()
 	pybind::def_function( "saveImage", &Menge::saveImage, py_tools_module );
 	pybind::def_function( "createImage", &Menge::createImage, py_tools_module );
 
-	pybind::def_function( "fileSHA1", &Menge::fileSHA1, py_tools_module );
+	pybind::def_function( "pathSHA1", &Menge::pathSHA1, py_tools_module );
 
 	PyObject * module_builtins = pybind::get_builtins();
 

@@ -5221,7 +5221,7 @@ namespace Menge
 			pybind::list m_l;
 		};
 		//////////////////////////////////////////////////////////////////////////		
-		const pybind::list & s_getResources( const ConstString & _category, const ConstString & _groupName )
+		pybind::list s_getResources( const ConstString & _category, const ConstString & _groupName )
 		{
 			GetResourceVisitor rv_gac;
 

@@ -63,6 +63,8 @@
 
 #	include <pybind/pybind.hpp>
 
+#	include "sha1.h"
+
 #	include <io.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -559,6 +561,34 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Menge::String fileSHA1( const wchar_t * _path )
+	{
+		String utf8_path;
+		if( Helper::unicodeToUtf8( serviceProvider, _path, utf8_path ) == false )
+		{
+			return NULL;
+		}
+
+		ConstString c_path = Helper::stringizeString( serviceProvider, utf8_path );
+
+		InputStreamInterfacePtr stream = FILE_SERVICE( serviceProvider )
+			->openInputFile( ConstString::none(), c_path, false );
+
+		size_t size = stream->size();
+
+		uint8_t * buf = new uint8_t[size];
+
+		stream->read( buf, size );
+
+		unsigned char hash[20];
+		sha1::calc( buf, size, hash );
+
+		char hex[41];
+		sha1::toHexString( hash, hex );
+
+		return Menge::String( hex );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	class PythonLogger
 	{
 	public:
@@ -672,25 +702,25 @@ static void s_error( const wchar_t * _msg )
 		);
 }
 //////////////////////////////////////////////////////////////////////////
-static bool getRegValue( const WCHAR * _path, WCHAR * _value, DWORD _size )
+static bool getCurrentUserRegValue( const WCHAR * _path, WCHAR * _value, DWORD _size )
 {
 	HKEY hKey;
-	LONG lRes = RegOpenKeyEx(HKEY_LOCAL_MACHINE, _path, 0, KEY_READ, &hKey);  // Check Python x32
+	LONG lRes = RegOpenKeyEx( HKEY_CURRENT_USER, _path, 0, KEY_READ, &hKey );  // Check Python x32
 	if( lRes == ERROR_FILE_NOT_FOUND )
 	{
-		lRes = RegOpenKeyEx(HKEY_LOCAL_MACHINE, _path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey);  // Check Python x64
+		lRes = RegOpenKeyEx( HKEY_CURRENT_USER, _path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey );  // Check Python x64
 	}
 
 	if( lRes != ERROR_SUCCESS )
 	{
-		LOGGER_ERROR(Menge::serviceProvider)("getRegValue %ls RegOpenKeyEx get Error %d"
+		LOGGER_ERROR( Menge::serviceProvider )("getCurrentUserRegValue %ls RegOpenKeyEx get Error %d"
 			, _path
 			, lRes
 			);
 
 		return false;
 	}
-		
+
 	DWORD dwBufferSize = _size;
 	LONG nError = ::RegQueryValueEx( hKey, L"", 0, NULL, (LPBYTE)_value, &dwBufferSize );
 
@@ -698,14 +728,14 @@ static bool getRegValue( const WCHAR * _path, WCHAR * _value, DWORD _size )
 
 	if( nError != ERROR_SUCCESS )
 	{
-		LOGGER_ERROR(Menge::serviceProvider)("getRegValue %ls RegQueryValueEx get Error %d"
+		LOGGER_ERROR( Menge::serviceProvider )("getCurrentUserRegValue %ls RegQueryValueEx get Error %d"
 			, _path
 			, nError
 			);
 
 		return false;
 	}
-	
+
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -735,12 +765,14 @@ bool run()
 
 	LOGGER_ERROR(Menge::serviceProvider)("Menge::initialize complete");
 
+	const WCHAR * szRegPath = L"SOFTWARE\\Python\\PythonCore\\3.5-32\\PythonPath";
+
 	{
 		WCHAR szPythonPath[512];
-		if( getRegValue( L"SOFTWARE\\Python\\PythonCore\\3.4\\PythonPath", szPythonPath, 512 ) == false )
+		if( getCurrentUserRegValue( szRegPath, szPythonPath, 512 ) == false )
 		{
-			LOGGER_ERROR(Menge::serviceProvider)("invalid get reg value '%ls'"
-				, L"SOFTWARE\\Python\\PythonCore\\3.4\\PythonPath"
+			LOGGER_ERROR( Menge::serviceProvider )("invalid get reg value '%ls'"
+				, szRegPath
 				);
 		}
 
@@ -787,6 +819,8 @@ bool run()
 	pybind::def_function( "saveImage", &Menge::saveImage, py_tools_module );
 	pybind::def_function( "createImage", &Menge::createImage, py_tools_module );
 
+	pybind::def_function( "fileSHA1", &Menge::fileSHA1, py_tools_module );
+
 	PyObject * module_builtins = pybind::get_builtins();
 
 	pybind::def_function( "Error", &s_error, module_builtins );
@@ -805,7 +839,12 @@ bool run()
 
 	{
 		WCHAR szPythonPath[512];
-		getRegValue( L"SOFTWARE\\Python\\PythonCore\\3.4\\PythonPath", szPythonPath, 512 );
+		if( getCurrentUserRegValue( szRegPath, szPythonPath, 512 ) == false )
+		{
+			LOGGER_ERROR( Menge::serviceProvider )("invalid get reg value '%ls'"
+				, szRegPath
+				);
+		}
 
 		WCHAR * ch = wcstok( szPythonPath, L";" );
 

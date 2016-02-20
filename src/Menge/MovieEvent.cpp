@@ -27,8 +27,8 @@ namespace Menge
 			pybind::object cb = m_cb;
 			pybind::detail::args_operator_t args = m_args;
 
-			m_cb = nullptr;
-			m_args = nullptr;
+			m_cb.reset();
+			m_args.reset();
 
 			cb( 0.f, false );
 		}

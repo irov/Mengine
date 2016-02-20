@@ -402,12 +402,14 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystemES1::setBlendFactor( EBlendFactor _src, EBlendFactor _dst )
+	void MarmaladeRenderSystemES1::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op )
 	{
 		GLenum srcBlendFactor = s_toGLBlendFactor( _src );
 		GLenum dstBlendFactor = s_toGLBlendFactor( _dst );
+		GLenum blendOp = s_toGLBlendFactor( _op );
 
 		GLCALL( m_serviceProvider, glBlendFunc, (srcBlendFactor, dstBlendFactor) );
+		GLCALL( m_serviceProvider, glBlendEquation, (blendOp) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::setCullMode( ECullMode _mode )
@@ -495,15 +497,6 @@ namespace Menge
 		{
 			GLCALL( m_serviceProvider, glDisable, (GL_BLEND) );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystemES1::setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha )
-	{
-		GLenum cmpFunc = s_toGLCmpFunc( _alphaFunc );
-
-		GLclampf ref = (GLclampf)(static_cast<float>(_alpha) / 255.0f);
-
-		GLCALL( m_serviceProvider, glAlphaFunc, (cmpFunc, ref) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::setLightingEnable( bool _light )

@@ -37,6 +37,21 @@ namespace Menge
 
 		return 0;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const GLenum s_toGLBlendFactor( EBlendOp _filter )
+	{
+		switch( _filter )
+		{
+		case BOP_ADD: return GL_FUNC_ADD;
+		case BOP_SUBTRACT: return GL_FUNC_SUBTRACT;
+		case BOP_REVSUBTRACT: return GL_FUNC_REVERSE_SUBTRACT;
+		case BOP_MIN: return GL_MIN;
+		case BOP_MAX: return GL_MAX;
+		default:;
+		}
+
+		return 0;
+	}
     //////////////////////////////////////////////////////////////////////////
 	inline const GLenum s_toGLCmpFunc( ECompareFunction _function )
     {

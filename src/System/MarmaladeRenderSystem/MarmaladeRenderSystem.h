@@ -99,7 +99,7 @@ namespace Menge
 		void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
 		void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
 		void setTextureFactor( uint32_t _color ) override;
-		void setBlendFactor( EBlendFactor _src, EBlendFactor _dst ) override;
+		void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op ) override;
 		void setCullMode( ECullMode _mode ) override;
 		void setDepthBufferTestEnable( bool _depthTest ) override;
 		void setDepthBufferWriteEnable( bool _depthWrite ) override;
@@ -108,7 +108,6 @@ namespace Menge
 		void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) override;
 		void setShadeType( EShadeType _sType ) override;
 		void setAlphaBlendEnable( bool _alphaBlend ) override;
-		void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha ) override;
 		void setLightingEnable( bool _light ) override;
 		void setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,
 			ETextureArgument _arg1, ETextureArgument _arg2 ) override;

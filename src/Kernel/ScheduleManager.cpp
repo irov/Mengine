@@ -366,7 +366,7 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::freeze( uint32_t _id, bool _freeze )
-    {
+    { 
         ScheduleEventDesc * event;
 
         if( this->findScheduleEvent_( _id, event ) == false )

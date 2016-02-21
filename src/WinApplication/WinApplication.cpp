@@ -267,8 +267,9 @@ namespace Menge
 
 		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
 		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
+		bool noroamingMode = HAS_OPTIONS( m_serviceProvider, "noroaming" );
 		
-		if( developmentMode == true && roamingMode == false )
+		if( developmentMode == true && roamingMode == false || noroamingMode == true )
 		{
 			WChar currentPath[MENGINE_MAX_PATH];
 			size_t currentPathLen = WINDOWSLAYER_SERVICE(m_serviceProvider)
@@ -389,8 +390,9 @@ namespace Menge
 
 		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
 		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
+		bool noroamingMode = HAS_OPTIONS( m_serviceProvider, "noroaming" );
 
-		if( developmentMode == true && roamingMode == false )
+		if( developmentMode == true && roamingMode == false || noroamingMode == false )
 		{
 			unicode_logFilename += L"_";
 			unicode_logFilename += date;
@@ -456,8 +458,9 @@ namespace Menge
 
 		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
 		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
+		bool noroamingMode = HAS_OPTIONS( m_serviceProvider, "noroaming" );
 
-		if( developmentMode == true && roamingMode == false )
+		if( developmentMode == true && roamingMode == false || noroamingMode == true )
 		{
 			m_logLevel = LM_LOG;
 		}
@@ -519,7 +522,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initialize()
 	{		
-		setlocale( LC_CTYPE, "" );
+		setlocale( LC_ALL, "C" );
 		//::timeBeginPeriod( 1 );
 
 		ServiceProviderInterface * serviceProvider;
@@ -611,18 +614,21 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, InputService );
 
 		SERVICE_CREATE( m_serviceProvider, TimerSystem );
-		SERVICE_CREATE( m_serviceProvider, TimerService );		
+		SERVICE_CREATE( m_serviceProvider, TimerService );
 
 #	ifdef _DEBUG
-		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
-		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
-
-		if( developmentMode == true && roamingMode == false )
 		{
-			WString userPath;
-			this->makeUserPath_( userPath );
+			bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
+			bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
+			bool noroamingMode = HAS_OPTIONS( m_serviceProvider, "noroaming" );
 
-			CriticalErrorsMonitor::run( userPath, m_serviceProvider );
+			if( developmentMode == true && roamingMode == false || noroamingMode == true )
+			{
+				WString userPath;
+				this->makeUserPath_( userPath );
+
+				CriticalErrorsMonitor::run( userPath, m_serviceProvider );
+			}
 		}
 #	endif
 
@@ -674,9 +680,16 @@ namespace Menge
 			}
 		}
 
+#	ifdef _DEBUG
+		bool devplugins = true;
+#	else
+		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
+		bool devplugins = developmentMode;
+#	endif
+						
 		bool nodevplugins = HAS_OPTIONS( m_serviceProvider, "nodevplugins" );
 
-		if( nodevplugins == false )
+		if( devplugins == true && nodevplugins == false )
 		{
 			TVectorWString devPlugins;
 			CONFIG_VALUES(m_serviceProvider, "DevPlugins", "Name", devPlugins);

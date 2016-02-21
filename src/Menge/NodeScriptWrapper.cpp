@@ -874,14 +874,21 @@ namespace Menge
 			uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
 			uint32_t indexCount = indexOut - indexIn;
 
-			const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
-
 			bool isCompile = resourceMovie->isCompile();
 
 			if( isCompile == false )
 			{
-				resourceMovie->compile();
+				if( resourceMovie->compile() == false )
+				{
+					LOGGER_ERROR( m_serviceProvider )("Movie::getLayerPathLength: '%s' invalid compile"
+						, _movie->getName().c_str()
+						);
+
+					return pybind::make_invalid_list_t();
+				}
 			}
+
+			const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
 
 			const mt::mat4f & wm = _movie->getWorldMatrix();
 

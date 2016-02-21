@@ -42,8 +42,9 @@ namespace Menge
 
 		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
 		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
+		bool noroamingMode = HAS_OPTIONS( m_serviceProvider, "noroaming" );
 
-		if( developmentMode == true && roamingMode == false )
+		if( developmentMode == true && roamingMode == false || noroamingMode == true)
 		{
 			unicode_logFilename += L"_";
 			unicode_logFilename += date;

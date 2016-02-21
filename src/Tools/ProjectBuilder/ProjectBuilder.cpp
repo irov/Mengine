@@ -381,7 +381,7 @@ namespace Menge
 		InputStreamInterfacePtr stream = FILE_SERVICE(serviceProvider)
 			->openInputFile( ConstString::none(), c_path, false );
 		
-		if( stream == false )
+		if( stream == nullptr )
 		{
 			return NULL;
 		}
@@ -561,7 +561,7 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::String pathSHA1( const wchar_t * _path )
+	Menge::WString pathSHA1( const wchar_t * _path )
 	{
 		String utf8_path;
 		if( Helper::unicodeToUtf8( serviceProvider, _path, utf8_path ) == false )
@@ -574,6 +574,16 @@ namespace Menge
 		InputStreamInterfacePtr stream = FILE_SERVICE( serviceProvider )
 			->openInputFile( ConstString::none(), c_path, false );
 
+		if( stream == nullptr )
+		{
+			LOGGER_ERROR( serviceProvider )("pathSHA1 %ls invalid open '%s'"
+				, _path
+				, c_path
+				);
+
+			return L"";
+		}
+
 		size_t size = stream->size();
 
 		uint8_t * buf = new uint8_t[size];
@@ -583,10 +593,12 @@ namespace Menge
 		unsigned char hash[20];
 		sha1::calc( buf, size, hash );
 
+		delete[] buf;
+
 		char hex[41];
 		sha1::toHexString( hash, hex );
 
-		return Menge::String( hex );
+		return Menge::WString( hex, hex + 40 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	class PythonLogger

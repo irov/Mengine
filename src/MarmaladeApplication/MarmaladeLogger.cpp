@@ -45,6 +45,8 @@ namespace Menge
 		(void)_flag;
 		
 		printf( "%s", _data );
+
+		//s3eDeviceYield( 200 );
 		
 		if( _level == LM_CRITICAL )
 		{

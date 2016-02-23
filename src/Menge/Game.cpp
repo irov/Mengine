@@ -374,13 +374,6 @@ namespace Menge
 			return false;
 		}
 
-		if( ACCOUNT_SERVICE( m_serviceProvider )
-			->loadAccounts() == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("Game::initialize failed load accounts"
-				);
-		}
-
 		m_defaultArrow = PROTOTYPE_SERVICE( m_serviceProvider )
 			->generatePrototypeT<Arrow>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Arrow" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Default" ) );
 
@@ -403,6 +396,13 @@ namespace Menge
 		if( EVENT_INITIALIZE_result == false )
 		{
 			return false;
+		}
+
+		if( ACCOUNT_SERVICE( m_serviceProvider )
+			->loadAccounts() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Game::initialize failed load accounts"
+				);
 		}
 
 		bool hasCurrentAccount = ACCOUNT_SERVICE( m_serviceProvider )

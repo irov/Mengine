@@ -95,6 +95,7 @@ namespace Menge
             .def_convert( &ConstString_convert, _serviceProvider )
             .def_repr( &s_ConstString_repr )
             .def_hash( &s_ConstString_hash )
+			.def_as_string()
             ;
 	}
 }

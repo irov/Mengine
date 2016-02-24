@@ -60,7 +60,7 @@ namespace Menge
 	protected:
 		void addResource_( const ConstString & _path );
         void addTextPath_( const ConstString & _path );
-		void addScriptPak_( const ConstString & _path, const ConstString & _module, const ConstString & _initializer );
+		void addScriptPak_( const ConstString & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer );
 		void addFontPath_( const ConstString & _font );
 		void addData_( const ConstString & _name, const ConstString & _path );
 		void addMaterial_( const ConstString & _path );

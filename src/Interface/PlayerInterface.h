@@ -33,6 +33,7 @@ namespace Menge
 		virtual bool setCurrentScene( Scene * _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) = 0;
 		virtual bool restartCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) = 0;
 		virtual bool removeCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) = 0;
+		virtual void destroyCurrentScene() = 0;
         
 		virtual Scene * getCurrentScene() = 0;
 

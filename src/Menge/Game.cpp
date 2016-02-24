@@ -295,7 +295,7 @@ namespace Menge
         this->registerEventMethod( EVENT_FOCUS, "onFocus", _embed );
 
 		this->registerEventMethod( EVENT_CREATE_DEFAULT_ACCOUNT, "onCreateDefaultAccount", _embed );
-		this->registerEventMethod( EVENT_LOAD_ACCOUNTS, "onLoadAccounts", _embed );		
+		this->registerEventMethod( EVENT_LOAD_ACCOUNTS, "onLoadAccounts", _embed );
 
         this->registerEventMethod( EVENT_CREATE_ACCOUNT, "onCreateAccount", _embed );
         this->registerEventMethod( EVENT_DELETE_ACCOUNT, "onDeleteAccount", _embed );
@@ -467,6 +467,9 @@ namespace Menge
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ACCOUNT_FINALIZE )();
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::AccountServiceInterface );
+
+		SCRIPT_SERVICE( m_serviceProvider )
+			->finalizeModules();
 
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_FINALIZE )();
 

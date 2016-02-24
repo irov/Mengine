@@ -52,6 +52,7 @@ namespace Menge
 	public:
 		bool bootstrapModules() override;
 		bool initializeModules() override;
+		bool finalizeModules() override;
 
 	public:
 		bool addEntityPrototype( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator ) override;

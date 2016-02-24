@@ -413,16 +413,6 @@ namespace Menge
 
 			pybind::object module_function = module.get_attr( pak.initializer );
 
-			if( module_function.is_invalid() == true )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules module %s invalid get initializer %s"
-					, pak.module.c_str()
-					, pak.initializer.c_str()
-					);
-
-				return false;
-			}
-
 			pybind::object py_result = module_function();
 
 			if( py_result.is_invalid() == true )
@@ -452,6 +442,55 @@ namespace Menge
 			{
 				return false;
 			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ScriptEngine::finalizeModules()
+	{
+		for( TVectorScriptModulePack::const_reverse_iterator
+			it = m_bootstrapperModules.rbegin(),
+			it_end = m_bootstrapperModules.rend();
+		it != it_end;
+		++it )
+		{
+			const ScriptModulePack & pak = *it;
+
+			if( pak.module.empty() == true )
+			{
+				continue;
+			}
+
+			if( pak.finalizer.empty() == true )
+			{
+				continue;
+			}
+
+			pybind::object module = this->importModule( pak.module );
+
+			if( module.is_invalid() == true )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ScriptEngine::finalizeModules invalid import module %s"
+					, pak.module.c_str()
+					);
+
+				return false;
+			}
+
+			if( module.has_attr( pak.finalizer ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ScriptEngine::finalizeModules invalid has module %s finalizer %s"
+					, pak.module.c_str()
+					, pak.finalizer.c_str()
+					);
+
+				return false;
+			}
+
+			pybind::object module_function = module.get_attr( pak.finalizer );
+
+			module_function();
 		}
 
 		return true;

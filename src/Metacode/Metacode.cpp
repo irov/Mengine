@@ -4,7 +4,7 @@ namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
-    static const uint32_t metacode_version = 98;
+    static const uint32_t metacode_version = 99;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -4047,6 +4047,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_Pak::Meta_Scripts::Meta_Scripts()
         : Metabuf::Metadata()
+        , Finalizer_successful(false)
         , Initializer_successful(false)
         , Module_successful(false)
     {
@@ -4066,6 +4067,13 @@ namespace Metacode
     {
         switch( _id )
         {
+        case 4:
+            {
+                this->read( _buff, _size, _read, this->Finalizer );
+    
+                this->Finalizer_successful = true;
+    
+            }break;
         case 3:
             {
                 this->read( _buff, _size, _read, this->Initializer );

@@ -1,4 +1,4 @@
-<Protocol Version = "98">
+<Protocol Version = "99">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -385,6 +385,7 @@
       <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
       <Attribute Name="Module" Type="Menge::ConstString"/>
       <Attribute Name="Initializer" Type="Menge::ConstString"/>
+      <Attribute Name="Finalizer" Type="Menge::ConstString"/>
     </Node>
 
     <Node Name="Fonts">

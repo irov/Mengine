@@ -5881,6 +5881,35 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
+            bool has_Finalizer() const
+            {
+                return Finalizer_successful;
+            }
+            
+            bool get_Finalizer( Menge::ConstString & _value ) const
+            {
+                if( Finalizer_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Finalizer;
+            
+                return true;
+            }
+            
+            bool swap_Finalizer( Menge::ConstString & _value ) const
+            {
+                if( Finalizer_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Finalizer);
+            
+                return true;
+            }
+            
             bool has_Initializer() const
             {
                 return Initializer_successful;
@@ -5958,6 +5987,8 @@ namespace Metacode
         public:
         protected:
         protected:
+            bool Finalizer_successful;
+            mutable Menge::ConstString Finalizer;
             bool Initializer_successful;
             mutable Menge::ConstString Initializer;
             bool Module_successful;

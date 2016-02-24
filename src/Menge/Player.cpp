@@ -140,6 +140,15 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Player::destroyCurrentScene()
+	{
+		if( m_scene != nullptr )
+		{
+			m_scene->destroy();
+			m_scene = nullptr;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Scene * Player::getCurrentScene()
 	{
 		return m_scene;

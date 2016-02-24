@@ -175,7 +175,10 @@ namespace Menge
 			ConstString Initializer;
 			scripts.swap_Initializer( Initializer );
 
-			this->addScriptPak_( Path, Module, Initializer );
+			ConstString Finalizer;
+			scripts.swap_Finalizer( Finalizer );
+
+			this->addScriptPak_( Path, Module, Initializer, Finalizer );
 		}
 
 		const Metacode::Meta_Pak::TVectorMeta_Fonts & includes_fonts = pak.get_IncludesFonts();
@@ -553,12 +556,13 @@ namespace Menge
 		m_pathTexts.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::addScriptPak_( const ConstString & _path, const ConstString & _module, const ConstString & _initializer )
+	void Package::addScriptPak_( const ConstString & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer )
 	{
 		ScriptModulePack pak;
 		pak.path = _path;
 		pak.module = _module;
 		pak.initializer = _initializer;
+		pak.finalizer = _finalizer;
 
 		m_scriptsPackages.push_back( pak );
 	}

@@ -48,6 +48,7 @@ namespace Menge
 		ConstString path;
 		ConstString module;
 		ConstString initializer;
+		ConstString finalizer;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<ScriptModulePack> TVectorScriptModulePack;
@@ -64,6 +65,7 @@ namespace Menge
 	public:
 		virtual bool bootstrapModules() = 0;
 		virtual bool initializeModules() = 0;
+		virtual bool finalizeModules() = 0;
 
 	public:
 		virtual void addModulePath( const ConstString & _pack, const TVectorScriptModulePack & _modules ) = 0;

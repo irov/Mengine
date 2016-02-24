@@ -52,6 +52,7 @@ namespace Menge
 		bool setCurrentScene( Scene * _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) override;
 		bool restartCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) override;
 		bool removeCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) override;
+		void destroyCurrentScene() override;
 
 		Scene * getCurrentScene() override;
 

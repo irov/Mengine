@@ -1297,8 +1297,11 @@ namespace Menge
 				->finalizeRenderResources();
 		}
 
+		PLAYER_SERVICE( m_serviceProvider )
+			->destroyCurrentScene();
+
 		SERVICE_FINALIZE( m_serviceProvider, Menge::GameServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::PlayerServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::PlayerServiceInterface );		
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PackageServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::UserdataServiceInterface );
 

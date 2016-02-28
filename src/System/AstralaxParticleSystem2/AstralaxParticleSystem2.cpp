@@ -43,6 +43,8 @@ namespace Menge
 
 		Magic_SetRenderStateFilter( states, false );
 
+		Magic_EnableZBuffer( false );
+
 		Magic_SetAxis( MAGIC_pXpYpZ );
 
 		const char * version = Magic_GetVersion();

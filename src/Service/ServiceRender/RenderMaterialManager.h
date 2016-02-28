@@ -17,7 +17,7 @@ namespace Menge
 #	endif
 
 #	ifndef MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE
-#	define MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE 128
+#	define MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE 127
 #	endif
 	//////////////////////////////////////////////////////////////////////////
     class RenderMaterialManager

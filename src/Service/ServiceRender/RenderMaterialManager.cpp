@@ -882,7 +882,7 @@ namespace Menge
 		{
 			uint32_t texture_id = _textures[i]->getId();
 
-			material_hash += texture_id;
+			material_hash += texture_id + i * 3571;
 		}
 
 		return material_hash;

@@ -51,6 +51,7 @@ namespace Menge
 	Player::Player()
         : m_scene(nullptr)
 		, m_arrow(nullptr)
+		, m_globalScene(nullptr)
 		, m_scheduleManager(nullptr)
 		, m_scheduleManagerGlobal(nullptr)
 		, m_arrowCamera2D(nullptr)
@@ -428,6 +429,11 @@ namespace Menge
 		return m_switchScene == true || m_restartScene == true || m_removeScene == true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Scene * Player::getGlobalScene()
+	{
+		return m_globalScene;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Player::setArrow(Arrow * _arrow)
 	{
 		if( m_arrow != nullptr )
@@ -630,6 +636,9 @@ namespace Menge
 		m_affectorable = new Affectorable;
 		m_affectorableGlobal = new Affectorable;
 
+		m_globalScene = PROTOTYPE_SERVICE( m_serviceProvider )
+			->generatePrototypeT<Scene>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ) );
+
 		m_observerChangeWindowResolution = NOTIFICATION_SERVICE( m_serviceProvider )
 			->addObserverMethod( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &Player::notifyChangeWindowResolution );
 
@@ -643,6 +652,12 @@ namespace Menge
             m_scene->destroy();
             m_scene = nullptr;
         }
+
+		if( m_globalScene != nullptr )
+		{
+			m_globalScene->destroy();
+			m_globalScene = nullptr;
+		}
 
 		m_removeSceneCb = nullptr;
 		m_changeSceneCb = nullptr;
@@ -992,6 +1007,11 @@ namespace Menge
 		if( m_arrow != nullptr )
 		{
 			m_arrow->update( time, _timing );
+		}
+
+		if( m_globalScene != nullptr )
+		{
+			m_globalScene->update( time, _timing );
 		}
 
 		if( m_scene != nullptr )

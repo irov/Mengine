@@ -40,6 +40,9 @@ namespace Menge
 		virtual bool isChangedScene() const = 0;
 
 	public:
+		virtual Scene * getGlobalScene() = 0;
+
+	public:
 		virtual void onFocus( bool _focus ) = 0;
 
 		virtual void onAppMouseLeave( const InputMousePositionEvent & _event ) = 0;

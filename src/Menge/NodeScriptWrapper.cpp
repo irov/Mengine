@@ -1882,6 +1882,14 @@ namespace Menge
 
             return scene;
         }
+		//////////////////////////////////////////////////////////////////////////
+		Scene * getGlobalScene()
+		{
+			Scene * scene = PLAYER_SERVICE( m_serviceProvider )
+				->getGlobalScene();
+
+			return scene;
+		}
         //////////////////////////////////////////////////////////////////////////
         void s_setArrow( const ConstString & _prototype )
         {
@@ -6240,6 +6248,7 @@ namespace Menge
 
             pybind::def_functor( "setCurrentScene", nodeScriptMethod, &NodeScriptMethod::setCurrentScene );
             pybind::def_functor( "getCurrentScene", nodeScriptMethod, &NodeScriptMethod::getCurrentScene );
+			pybind::def_functor( "getGlobalScene", nodeScriptMethod, &NodeScriptMethod::getGlobalScene );			
 
             pybind::def_functor( "createScene", nodeScriptMethod, &NodeScriptMethod::s_createScene );
 

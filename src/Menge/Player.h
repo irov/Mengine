@@ -59,6 +59,9 @@ namespace Menge
 		bool isChangedScene() const override;
 
 	public:
+		Scene * getGlobalScene() override;
+
+	public:
 		void updateChangeScene() override;
 
     protected:        
@@ -150,6 +153,8 @@ namespace Menge
 	private:
 		Scene * m_scene;
 		Arrow * m_arrow;
+
+		Scene * m_globalScene;
 
 		ObserverInterface * m_observerChangeWindowResolution;
 		

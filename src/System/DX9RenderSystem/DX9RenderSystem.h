@@ -124,11 +124,15 @@ namespace Menge
 		bool supportTextureFormat( PixelFormat _format ) const override;
 		bool supportTextureNonPow2() const override;
 
+		uint32_t getMaxCombinedTextureImageUnits() const override;
+
 		void onWindowMovedOrResized() override;
 		void onWindowClose() override;
 
 		void setVSync( bool _vSync ) override;
 		void setSeparateAlphaBlendMode() override;
+
+		
 
 	public:
 		bool lockRenderTarget( const RenderImageInterfacePtr & _renderTarget ) override;
@@ -196,13 +200,15 @@ namespace Menge
 		typedef FactoryDefaultStore<DX9RenderIndexBuffer> TFactoryRenderIndexBuffer;
 		TFactoryRenderIndexBuffer m_factoryIndexBuffer;
 
+		typedef FactoryPoolStore<DX9RenderImage, 128> TFactoryDX9Texture;
+		TFactoryDX9Texture m_factoryDX9Texture;
+
+		uint32_t m_dxMaxCombinedTextureImageUnits;
+
 		bool m_vertexBufferEnable;
 		bool m_indexBufferEnable;
 
         bool m_textureEnable[MENGE_MAX_TEXTURE_STAGES];
-
-        typedef FactoryPoolStore<DX9RenderImage, 128> TFactoryDX9Texture;
-        TFactoryDX9Texture m_factoryDX9Texture;
 		
         bool m_waitForVSync;
 	};

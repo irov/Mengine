@@ -27,6 +27,8 @@ namespace Menge
 		: m_activeTextureStage( 0 )
 		, m_activeTexture( 0 )
 		, m_depthMask( false )
+		, m_glMaxClipPlanes(0)
+		, m_glMaxCombinedTextureImageUnits(0)
 	{
 		mt::ident_m4( m_worldMatrix );
 		mt::ident_m4( m_viewMatrix );
@@ -81,6 +83,16 @@ namespace Menge
 		GLCALL( m_serviceProvider, glDisable, ( GL_DITHER ) );
 
 		GLCALL( m_serviceProvider, glDepthMask, ( GL_FALSE ) );
+
+		GLint maxClipPlanes;
+		glGetIntegerv( GL_MAX_CLIP_PLANES, &maxClipPlanes );
+
+		m_glMaxClipPlanes = maxClipPlanes;
+
+		GLint maxCombinedTextureImageUnits;
+		glGetIntegerv( GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits );
+
+		m_glMaxCombinedTextureImageUnits = maxCombinedTextureImageUnits;
 
 		//m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Marmalade OpenGL ES2" );
 		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Marmalade" );
@@ -762,6 +774,11 @@ namespace Menge
 	bool MarmaladeRenderSystem::supportTextureNonPow2() const
 	{
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t MarmaladeRenderSystem::getMaxCombinedTextureImageUnits() const
+	{
+		return m_glMaxCombinedTextureImageUnits;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::onWindowMovedOrResized()

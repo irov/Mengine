@@ -35,7 +35,7 @@ namespace Menge
 		const mt::vec3f & getLocalPosition() const;
 
 	public:
-		bool purge( float _reduce, float _speed, float _acceleration, const pybind::object & _cb );
+		bool purge( float _reduce, float _speed, float _acceleration );
 		void unpurge();
 
 	public:
@@ -72,7 +72,6 @@ namespace Menge
 		float m_speed;
 
 		ValueFollowerAcceleration<float> m_followerPurge;
-		pybind::object m_followerPurgeCb;
 
 		float m_offset;
 		float m_length;

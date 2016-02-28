@@ -21,7 +21,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeRenderSystemES1::MarmaladeRenderSystemES1()
-		: m_glMaxClipPlanes(0)
+		: m_glMaxClipPlanes( 0 )
+		, m_glMaxCombinedTextureImageUnits(0)
 		, m_depthMask( false )
 	{
 	}
@@ -57,7 +58,7 @@ namespace Menge
 
 		MARMALADE_RENDER_CHECK_ERROR( m_serviceProvider );
 
-		for( uint32_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
+		for( uint32_t i = 0; i < m_glMaxCombinedTextureImageUnits; ++i )
 		{
 			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE) );
@@ -95,6 +96,16 @@ namespace Menge
 		glGetIntegerv( GL_MAX_CLIP_PLANES, &maxClipPlanes );
 
 		m_glMaxClipPlanes = maxClipPlanes;
+
+		GLint maxCombinedTextureImageUnits;
+		glGetIntegerv( GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits );
+
+		m_glMaxCombinedTextureImageUnits = maxCombinedTextureImageUnits;
+
+		if( m_glMaxCombinedTextureImageUnits > MENGE_MAX_TEXTURE_STAGES )
+		{
+			m_glMaxCombinedTextureImageUnits = MENGE_MAX_TEXTURE_STAGES;
+		}
 
 		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Marmalade OpenGL ES1" );
 
@@ -291,7 +302,7 @@ namespace Menge
 			return;
 		}
 
-		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
+		for( uint32_t i = 0; i != m_glMaxCombinedTextureImageUnits; ++i )
 		{
 			const TextureStage & textureStage = m_textureStage[i];
 
@@ -344,7 +355,7 @@ namespace Menge
 		GLCALL( m_serviceProvider, glEnableClientState, (GL_COLOR_ARRAY) );
 		GLCALL( m_serviceProvider, glColorPointer, (4, GL_UNSIGNED_BYTE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, color ))) );
 
-		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
+		for( uint32_t i = 0; i != m_glMaxCombinedTextureImageUnits; ++i )
 		{
 			GLCALL( m_serviceProvider, glClientActiveTexture, (GL_TEXTURE0 + i) );
 			GLCALL( m_serviceProvider, glEnableClientState, (GL_TEXTURE_COORD_ARRAY) );
@@ -661,7 +672,7 @@ namespace Menge
 		m_currentIndexBuffer = nullptr;
 		m_currentVertexBuffer = nullptr;
 
-		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		for( uint32_t i = 0; i != m_glMaxCombinedTextureImageUnits; ++i )
 		{
 			TextureStage & stage = m_textureStage[i];
 
@@ -749,6 +760,11 @@ namespace Menge
 	bool MarmaladeRenderSystemES1::supportTextureNonPow2() const
 	{
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t MarmaladeRenderSystemES1::getMaxCombinedTextureImageUnits() const
+	{
+		return m_glMaxCombinedTextureImageUnits;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::onWindowMovedOrResized()

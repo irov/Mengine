@@ -35,6 +35,7 @@ namespace Menge
 		, m_indexBufferEnable(false)
 		, m_vertexDeclaration(0)
 		, m_frames(0)
+		, m_dxMaxCombinedTextureImageUnits(0)
 	{
 		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
@@ -152,14 +153,21 @@ namespace Menge
 			return false;
 		}
 
-		if( caps.MaxSimultaneousTextures < MENGE_MAX_TEXTURE_STAGES )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Render dont't support %d texture stages (%d support)"
-				, MENGE_MAX_TEXTURE_STAGES
-				, caps.MaxSimultaneousTextures
-				);
+		//if( caps.MaxSimultaneousTextures < MENGE_MAX_TEXTURE_STAGES )
+		//{
+		//	LOGGER_ERROR(m_serviceProvider)("Render dont't support %d texture stages (%d support)"
+		//		, MENGE_MAX_TEXTURE_STAGES
+		//		, caps.MaxSimultaneousTextures
+		//		);
 
-			return false;
+		//	return false;
+		//}
+
+		m_dxMaxCombinedTextureImageUnits = caps.MaxSimultaneousTextures;
+
+		if( m_dxMaxCombinedTextureImageUnits > MENGE_MAX_TEXTURE_STAGES )
+		{
+			m_dxMaxCombinedTextureImageUnits = MENGE_MAX_TEXTURE_STAGES;
 		}
 	
 		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "DX9" );
@@ -896,6 +904,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	uint32_t DX9RenderSystem::getMaxCombinedTextureImageUnits() const
+	{
+		return m_dxMaxCombinedTextureImageUnits;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::onWindowMovedOrResized()
 	{
 
@@ -952,6 +965,16 @@ namespace Menge
 
             return;
         }
+
+		if( _stage >= m_dxMaxCombinedTextureImageUnits )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::setTextureMatrix no support stage %d (max %d)"
+				, _stage
+				, m_dxMaxCombinedTextureImageUnits
+				);
+
+			return;
+		}
 
 		if( _texture != nullptr )
 		{
@@ -1233,6 +1256,16 @@ namespace Menge
             return;
         }
 
+		if( _stage >= m_dxMaxCombinedTextureImageUnits )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::setTexture no support stage %d (max %d)"
+				, _stage
+				, m_dxMaxCombinedTextureImageUnits
+				);
+
+			return;
+		}
+
 		if( _texture != nullptr )
         {
 			DX9RenderImage * image = _texture.getT<DX9RenderImage *>();
@@ -1279,6 +1312,16 @@ namespace Menge
 
             return;
         }
+
+		if( _stage >= m_dxMaxCombinedTextureImageUnits )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::setTextureAddressing no support stage %d (max %d)"
+				, _stage
+				, m_dxMaxCombinedTextureImageUnits
+				);
+
+			return;
+		}
 
 		D3DTEXTUREADDRESS adrU = s_toD3DTextureAddress( _modeU );	
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, ( _stage, D3DSAMP_ADDRESSU, adrU ) );
@@ -1466,6 +1509,16 @@ namespace Menge
 
             return;
         }
+
+		if( _stage >= m_dxMaxCombinedTextureImageUnits )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::setTextureStageColorOp no support stage %d (max %d)"
+				, _stage
+				, m_dxMaxCombinedTextureImageUnits
+				);
+
+			return;
+		}
 				
 		D3DTEXTUREOP colorOp = s_toD3DTextureOp( _textrueOp );
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_COLOROP, colorOp ) );
@@ -1487,6 +1540,16 @@ namespace Menge
             return;
         }
 
+		if( _stage >= m_dxMaxCombinedTextureImageUnits )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::setTextureStageAlphaOp no support stage %d (max %d)"
+				, _stage
+				, m_dxMaxCombinedTextureImageUnits
+				);
+
+			return;
+		}
+
 		D3DTEXTUREOP alphaOp = s_toD3DTextureOp( _textrueOp );
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_ALPHAOP, alphaOp ) );
 
@@ -1506,6 +1569,16 @@ namespace Menge
 
             return;
         }
+
+		if( _stage >= m_dxMaxCombinedTextureImageUnits )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::setTextureStageTexCoordIndex no support stage %d (max %d)"
+				, _stage
+				, m_dxMaxCombinedTextureImageUnits
+				);
+
+			return;
+		}
 		
 		DWORD index = _index;
 
@@ -1521,6 +1594,16 @@ namespace Menge
 
             return;
         }
+
+		if( _stage >= m_dxMaxCombinedTextureImageUnits )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::setTextureStageFilter no support stage %d (max %d)"
+				, _stage
+				, m_dxMaxCombinedTextureImageUnits
+				);
+
+			return;
+		}
 		
 		D3DTEXTUREFILTERTYPE dx_minification = s_toD3DTextureFilter( _minification );
 		D3DTEXTUREFILTERTYPE dx_mipmap = s_toD3DTextureFilter( _mipmap );

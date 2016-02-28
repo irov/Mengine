@@ -676,6 +676,7 @@ namespace Menge
 
         virtual bool supportTextureFormat( PixelFormat _format ) const = 0;
 		virtual bool supportTextureNonPow2() const = 0;
+		virtual uint32_t getMaxCombinedTextureImageUnits() const = 0;
 
 		virtual void setSeparateAlphaBlendMode() = 0;
 	};

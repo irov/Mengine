@@ -146,6 +146,7 @@ namespace Menge
 
 		bool supportTextureFormat( PixelFormat _format ) const override;
 		bool supportTextureNonPow2() const override;
+		uint32_t getMaxCombinedTextureImageUnits() const override;
 
 		void onWindowMovedOrResized() override;
 		void onWindowClose() override;
@@ -193,6 +194,9 @@ namespace Menge
 		TFactoryProgram m_factoryProgram;
 
 		MarmaladeProgramPtr m_currentProgram;
+
+		uint32_t m_glMaxClipPlanes;
+		uint32_t m_glMaxCombinedTextureImageUnits;
 
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
 

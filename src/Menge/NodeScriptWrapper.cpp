@@ -1050,6 +1050,24 @@ namespace Menge
 			return layer->position;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		float ResourceMovie_getLayerIn( ResourceMovie * _movie, const ConstString & _name )
+		{
+			const MovieLayer * layer;
+			bool successful = _movie->hasMovieLayer( _name, &layer );
+
+			if( successful == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ResourceMovie::getLayerIn %s not found layer '%s'"
+					, _movie->getName().c_str()
+					, _name.c_str()
+					);
+
+				return 0.f;
+			}
+
+			return layer->in;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		bool ResourceMovie_hasLayer( ResourceMovie * _movie, const ConstString & _name )
 		{
 			const MovieLayer * layer;
@@ -3964,11 +3982,12 @@ namespace Menge
 					, m_moveLimit( 0.f )
 					, m_rotationSpeed( 0.f )
 					, m_rotationAcceleration( 0.f )
+					, m_rotationLimit( 0.f )
 				{
 				}
 
 			public:
-				bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, float _rotationSpeed, float _rotationAcceleration )
+				bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
 				{
 					if( _node == nullptr )
 					{
@@ -3989,6 +4008,7 @@ namespace Menge
 					m_moveLimit = _moveLimit;
 					m_rotationSpeed = _rotationSpeed;
 					m_rotationAcceleration = _rotationAcceleration;
+					m_rotationLimit = _rotationLimit;
 
 					return true;
 				}
@@ -4018,7 +4038,16 @@ namespace Menge
 					mt::angle_correct_interpolate_from_to( node_orientation.y, target_orientation.y, correct_rotate_from.y, correct_rotate_to.y );
 					mt::angle_correct_interpolate_from_to( node_orientation.z, target_orientation.z, correct_rotate_from.z, correct_rotate_to.z );
 
-					m_rotationSpeed += m_rotationAcceleration * _timing;
+					float roatationSpeedStep = m_rotationAcceleration * _timing;
+
+					if( m_rotationSpeed + roatationSpeedStep > m_rotationLimit )
+					{
+						m_rotationSpeed = m_rotationLimit;						
+					}
+					else
+					{
+						m_rotationSpeed += m_rotationAcceleration * _timing;
+					}
 
 					mt::vec3f new_orientation;
 					mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _timing );
@@ -4077,11 +4106,12 @@ namespace Menge
 				float m_moveLimit;
 				float m_rotationSpeed;
 				float m_rotationAcceleration;
+				float m_rotationLimit;
 			};
 
 		public:
 			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
-				, Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, float _rotationSpeed, float _rotationAcceleration )
+				, Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
 			{
 				AffectorCreatorFollowTo * affector = m_factory.createObject();
 
@@ -4090,7 +4120,7 @@ namespace Menge
 
 				affector->setCallback( _cb );
 
-				if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit, _rotationSpeed, _rotationAcceleration ) == false )
+				if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit, _rotationSpeed, _rotationAcceleration, _rotationLimit ) == false )
 				{
 					affector->destroy();
 
@@ -4116,6 +4146,7 @@ namespace Menge
 			, float _moveLimit
 			, float _rotationSpeed
 			, float _rotationAcceleration
+			, float _rotationLimit
 			, const pybind::object & _cb )
 		{
 			if( _node->isActivate() == false )
@@ -4134,7 +4165,7 @@ namespace Menge
 				m_nodeAffectorCreatorFollowTo.create( m_serviceProvider
 				, ETA_POSITION, callback, _node, _target, _offset, _distance
 				, _moveSpeed, _moveAcceleration, _moveLimit
-				, _rotationSpeed, _rotationAcceleration
+				, _rotationSpeed, _rotationAcceleration, _rotationLimit
 				);
 
 			if( affector == nullptr )
@@ -5527,6 +5558,7 @@ namespace Menge
 			.def_proxy_static("hasLayer", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_hasLayer)
 			.def_proxy_static("hasLayerType", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_hasLayerType)
 			.def_proxy_static("getLayerPosition", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_getLayerPosition)
+			.def_proxy_static( "getLayerIn", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_getLayerIn )
             ;        
 
         pybind::interface_<ResourceAnimation, pybind::bases<ResourceReference> >("ResourceAnimation", false)

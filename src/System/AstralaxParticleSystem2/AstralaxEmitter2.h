@@ -71,6 +71,7 @@ namespace Menge
 		
 	public:
 		bool setPositionProvider( ParticlePositionProviderInterface * _positionProvider ) override;
+		bool setCameraProvider( ParticleCameraProviderInterface * _cameraProvider ) override;
 
 		void setScale( float _scale ) override;
 
@@ -99,6 +100,7 @@ namespace Menge
 		HM_EMITTER m_emitterId;
 
 		ParticlePositionProviderInterface * m_positionProvider;
+		ParticleCameraProviderInterface * m_cameraProvider;
 
 		float m_updateSpeed;
 		double m_leftBorder;

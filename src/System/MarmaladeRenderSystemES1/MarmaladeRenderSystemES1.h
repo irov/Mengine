@@ -174,8 +174,8 @@ namespace Menge
 
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
 
-		uint32_t m_glMaxCombinedTextureImageUnits;
-		uint32_t m_glMaxClipPlanes;
+		uint32_t m_maxTextureUnits;
+		uint32_t m_maxClipPlanes;
 
 		bool m_depthMask;
 	};

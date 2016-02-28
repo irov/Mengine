@@ -158,12 +158,34 @@ namespace	Menge
 
 				return false;
 			}
+
+			if( emitter->setCameraProvider( this ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup camera provider"
+					, this->getName().c_str()
+					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getName().c_str()
+					);
+
+				return false;
+			}
 		}
 		else
 		{
 			if( emitter->setPositionProvider( nullptr ) == false )
 			{
 				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
+					, this->getName().c_str()
+					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getName().c_str()
+					);
+
+				return false;
+			}
+
+			if( emitter->setCameraProvider( nullptr ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup camera provider"
 					, this->getName().c_str()
 					, m_resourceParticle->getGroup().c_str()
 					, m_resourceParticle->getName().c_str()
@@ -739,5 +761,10 @@ namespace	Menge
 		this->calcWorldMatrix( wm, position, origin - mt::vec3f( 1024.f, 1024.f, 0.f ), coordinate, scale, orientation );
 
 		_position = wm.v3.to_vec3f();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter2::onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction )
+	{
+		this->getRenderCameraInheritance();
 	}
 }

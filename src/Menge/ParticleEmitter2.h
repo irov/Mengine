@@ -27,6 +27,7 @@ namespace Menge
 		: public Node
 		, public Animatable
 		, public ParticlePositionProviderInterface
+		, public ParticleCameraProviderInterface
 	{
 	public:
 		ParticleEmitter2();
@@ -86,6 +87,7 @@ namespace Menge
 
 	protected:
 		void onProviderEmitterPosition( mt::vec3f & _position ) override;
+		void onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction ) override;
 
 	protected:
 		ResourceHolder<ResourceParticle> m_resourceParticle;

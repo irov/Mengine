@@ -14,6 +14,7 @@ namespace Menge
 		: m_serviceProvider( nullptr )
 		, m_emitterId( 0 )
 		, m_positionProvider( nullptr )
+		, m_cameraProvider( nullptr )
 		, m_updateSpeed( 0.f )
 		, m_leftBorder( 0.0 )
 		, m_rightBorder( 0.0 )
@@ -72,60 +73,40 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter2::setupBasePosition_()
     {
-		bool is3d = Magic_Is3d( m_emitterId );
+		MAGIC_RECT rect;
+		float backgroundScale = Magic_GetBackgroundRect( m_emitterId, &rect );
 
-		if( is3d == false )
+		if( rect.left == rect.right || rect.bottom == rect.top )
 		{
-			MAGIC_RECT rect;
-			float backgroundScale = Magic_GetBackgroundRect( m_emitterId, &rect );
+			m_rect.x = -1024.f;
+			m_rect.y = -1024.f;
+			m_rect.z = 1024.f;
+			m_rect.w = 1024.f;
 
-			if( rect.left == rect.right || rect.bottom == rect.top )
-			{
-				m_rect.x = -1024.f;
-				m_rect.y = -1024.f;
-				m_rect.z = 1024.f;
-				m_rect.w = 1024.f;
+			MAGIC_POSITION pos;
+			pos.x = 0.f;
+			pos.y = 0.f;
+			pos.z = 0.f;
 
-				MAGIC_POSITION pos;
-				pos.x = 0.f;
-				pos.y = 0.f;
-				pos.z = 0.f;
+			Magic_SetEmitterPosition( m_emitterId, &pos );
 
-				Magic_SetEmitterPosition( m_emitterId, &pos );
-
-				m_background = false;
-			}
-			else
-			{
-				if( mt::equal_f_f( backgroundScale, 1.f ) == false )
-				{
-					LOGGER_ERROR(m_serviceProvider)("AstralaxEmitter::setupBasePosition_ background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
-						, backgroundScale
-						);
-
-					return false;
-				}
-
-				m_rect.x = (float)rect.left;
-				m_rect.y = (float)rect.top;
-				m_rect.z = (float)rect.right;
-				m_rect.w = (float)rect.bottom;
-
-				m_background = true;
-			}
+			m_background = false;
 		}
 		else
 		{
-			MAGIC_VIEW view;
-			if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
+			if( mt::equal_f_f( backgroundScale, 1.f ) == false )
 			{
+				LOGGER_ERROR( m_serviceProvider )("AstralaxEmitter::setupBasePosition_ background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
+					, backgroundScale
+					);
+
 				return false;
 			}
-			
-			m_rect.x = (float)0.f;
-			m_rect.y = (float)0.f;
-			m_rect.z = (float)view.viewport_width;
-			m_rect.w = (float)view.viewport_height;
+
+			m_rect.x = (float)rect.left;
+			m_rect.y = (float)rect.top;
+			m_rect.z = (float)rect.right;
+			m_rect.w = (float)rect.bottom;
 
 			m_background = true;
 		}
@@ -265,36 +246,66 @@ namespace Menge
 
         m_time += _timing;
 
-		bool is3d = this->is3d();
-
-		if( is3d == true )
+		if( m_cameraProvider != nullptr )
 		{
-			MAGIC_VIEW view;
-			if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
-			{
-				return false;
-			}
+			bool orthogonality;
+			mt::vec3f position;
+			mt::vec3f direction;
+
+			m_cameraProvider->onProviderEmitterCamera( orthogonality, position, direction );
 
 			MAGIC_CAMERA camera;
-			camera.mode = MAGIC_CAMERA_FREE;
-			camera.pos = view.pos;
-			camera.dir = view.dir;
 
-			Magic_SetCamera( &camera );
+			if( orthogonality == true )
+			{
+				camera.mode = MAGIC_CAMERA_ORTHO;
+			}
+			else
+			{
+				camera.mode = MAGIC_CAMERA_FREE;
+			}
+
+			camera.pos.x = position.x;
+			camera.pos.y = position.y;
+			camera.pos.z = position.z;
+
+			camera.dir.x = direction.x;
+			camera.dir.y = direction.y;
+			camera.dir.z = direction.z;
 		}
 		else
 		{
-			MAGIC_CAMERA camera;
-			camera.mode = MAGIC_CAMERA_ORTHO;
-			camera.pos.x = 0.f;
-			camera.pos.y = 0.f;
-			camera.pos.z = 0.f;
+			bool is3d = this->is3d();
 
-			camera.dir.x = 0.f;
-			camera.dir.y = 0.f;
-			camera.dir.z = 1.f;
+			if( is3d == true )
+			{
+				MAGIC_VIEW view;
+				if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
+				{
+					return false;
+				}
 
-			Magic_SetCamera( &camera );
+				MAGIC_CAMERA camera;
+				camera.mode = MAGIC_CAMERA_FREE;
+				camera.pos = view.pos;
+				camera.dir = view.dir;
+
+				Magic_SetCamera( &camera );
+			}
+			else
+			{
+				MAGIC_CAMERA camera;
+				camera.mode = MAGIC_CAMERA_ORTHO;
+				camera.pos.x = 0.f;
+				camera.pos.y = 0.f;
+				camera.pos.z = 0.f;
+
+				camera.dir.x = 0.f;
+				camera.dir.y = 0.f;
+				camera.dir.z = 1.f;
+
+				Magic_SetCamera( &camera );
+			}
 		}
 
 		if( m_positionProvider != nullptr )
@@ -383,6 +394,21 @@ namespace Menge
 		}
 
 		m_positionProvider = _positionProvider;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxEmitter2::setCameraProvider( ParticleCameraProviderInterface * _cameraProvider )
+	{
+		if( m_background == true && _cameraProvider != nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("AstralaxEmitter2::setCameraProvider this particle is background mode!"
+				);
+
+			return false;
+		}
+
+		m_cameraProvider = _cameraProvider;
 
 		return true;
 	}

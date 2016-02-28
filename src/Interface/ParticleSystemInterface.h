@@ -74,6 +74,12 @@ namespace Menge
 		virtual void onProviderEmitterPosition( mt::vec3f & _position ) = 0;
 	};
 
+	class ParticleCameraProviderInterface
+	{
+	public:
+		virtual void onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction ) = 0;
+	};
+
 	class ParticleEmitterInterface
         : public FactorablePtr
 	{
@@ -121,6 +127,7 @@ namespace Menge
 		virtual bool changeEmitterModel( float * _points, uint32_t _count ) = 0;
 
     public:
+		virtual bool setCameraProvider( ParticleCameraProviderInterface * _cameraProvider ) = 0;
 		virtual bool setPositionProvider( ParticlePositionProviderInterface * _positionProvider ) = 0;
 
 		virtual void setScale( float _scale ) = 0;

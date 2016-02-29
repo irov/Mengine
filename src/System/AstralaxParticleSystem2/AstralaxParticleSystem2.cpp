@@ -45,7 +45,7 @@ namespace Menge
 
 		Magic_EnableZBuffer( false );
 
-		Magic_SetAxis( MAGIC_pXpYpZ );
+		Magic_SetAxis( MAGIC_pXnYpZ );
 
 		const char * version = Magic_GetVersion();
 

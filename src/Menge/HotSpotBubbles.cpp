@@ -42,6 +42,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotBubbles::testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point ) const
 	{
+		(void)_gameViewport;
+		(void)_viewport;
+		
 		if( m_global == true )
 		{
 			return !m_outward;
@@ -79,6 +82,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotBubbles::testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point, float _radius ) const
 	{
+		(void)_gameViewport;
+		(void)_viewport;
+		
 		if( m_global == true )
 		{
 			return !m_outward;

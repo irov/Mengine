@@ -1245,6 +1245,10 @@ namespace Menge
 					return false;
 				}
 			}
+			else if( layer.type == CONST_STRING( m_serviceProvider, MovieParticle ) )
+			{
+				//Empty
+			}
 			else if( layer.type == CONST_STRING(m_serviceProvider, MovieEvent) )
 			{
 				if( this->createMovieEvent_( layer ) == false )
@@ -2039,14 +2043,18 @@ namespace Menge
 		layer_particles->setStretch( _layer.stretch );
 		layer_particles->setLoop( _layer.loop );
 
+		layer_particles->setEmitterPositionProviderOriginOffset( -mt::vec3f( 1024.f, 1024.f, 0.f ) );
+
 		if( _layer.hasParam( MOVIE_LAYER_PARAM_PARTICLE_TRANSLATE ) == true )
 		{
-			layer_particles->setEmitterRelative( true );
+			layer_particles->setEmitterPositionRelative( true );
+			layer_particles->setEmitterCameraRelative( false );
 			layer_particles->setEmitterTranslateWithParticle( false );
 		}
 		else
 		{
-			layer_particles->setEmitterRelative( false );
+			layer_particles->setEmitterPositionRelative( false );
+			layer_particles->setEmitterCameraRelative( false );
 			layer_particles->setEmitterTranslateWithParticle( true );
 		}
 

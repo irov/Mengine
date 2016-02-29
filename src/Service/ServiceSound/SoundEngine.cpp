@@ -134,7 +134,7 @@ namespace Menge
 				continue;
 			}
 
-			this->updateSourceVolume_( source, source->volume );
+			this->updateSourceVolume_( source );
 									
 			if( source->source->play() == false )
 			{
@@ -259,23 +259,23 @@ namespace Menge
         source->bufferId = 0;
 		
         source->timing = 0.f;
-		source->volume = 1.f;
+		source->volume.setVolume( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Generic" ), 1.f );
 
-		source->state = ESS_STOP;      
+		source->state = ESS_STOP;
 		source->type = _type;
 
         source->streamable = _streamable;
 		source->looped = false;
 		source->turn = _streamable ? m_turnStream : m_turnSound;
 
-		this->updateSourceVolume_( source, 1.f );
+		this->updateSourceVolume_( source );
 
 		m_soundSourceMap.insert( std::make_pair( soundId, source ) );
         
 		return soundId;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void SoundEngine::updateSourceVolume_( SoundSourceDesc * _source, float _volume )
+	void SoundEngine::updateSourceVolume_( SoundSourceDesc * _source )
     {
         const SoundSourceInterfacePtr & sourceInterface = _source->source;
         
@@ -289,6 +289,8 @@ namespace Menge
         {
             ESoundSourceType type = _source->type;
 
+			const MixerVolume & generalVolume = _source->volume;
+
             switch( type )
             {
             case ESST_SOUND:
@@ -296,7 +298,7 @@ namespace Menge
 					float mixVolume = 1.f;
 					mixVolume *= m_commonVolume.mixVolume();
 					mixVolume *= m_soundVolume.mixVolume();
-					mixVolume *= _volume;
+					mixVolume *= generalVolume.mixVolume();
 
                     sourceInterface->setVolume( mixVolume );
                 }break;
@@ -305,7 +307,7 @@ namespace Menge
 					float mixVolume = 1.f;
 					mixVolume *= m_commonVolume.mixVolume();
 					mixVolume *= m_musicVolume.mixVolume();
-					mixVolume *= _volume;
+					mixVolume *= generalVolume.mixVolume();
 
                     sourceInterface->setVolume( mixVolume );
                 }break;
@@ -314,7 +316,7 @@ namespace Menge
 					float mixVolume = 1.f;
 					mixVolume *= m_commonVolume.mixVolume();
 					mixVolume *= m_voiceVolume.mixVolume();
-					mixVolume *= _volume;
+					mixVolume *= generalVolume.mixVolume();
 
 					sourceInterface->setVolume( mixVolume );
                 }break;
@@ -654,7 +656,7 @@ namespace Menge
 			return false;
 		}
 
-		this->updateSourceVolume_( source, source->volume );
+		this->updateSourceVolume_( source );
 
 		switch( source->state )
 		{
@@ -834,6 +836,23 @@ namespace Menge
 		source->source->setLoop( _looped );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool SoundEngine::getLoop( uint32_t _emitterId ) const
+	{
+		const SoundSourceDesc * source;
+		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("SoundEngine:getLoop not found emitter id %d"
+				, _emitterId
+				);
+
+			return false;
+		}
+
+		bool looped = source->looped;
+
+		return looped;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setSourceListener( uint32_t _emitter, SoundListenerInterface* _listener )
 	{
         SoundSourceDesc * source;
@@ -859,7 +878,7 @@ namespace Menge
 		{
             SoundSourceDesc * source = it->second;
 
-            this->updateSourceVolume_( source, source->volume );
+            this->updateSourceVolume_( source );
 		}
 
 		for( TVectorSoundVolumeProviders::iterator
@@ -898,28 +917,11 @@ namespace Menge
 			return false;
 		}
                 
-		source->volume = _volume;
+		source->volume.setVolume( STRINGIZE_STRING_LOCAL( m_serviceProvider, "General" ), _volume );
 
-        this->updateSourceVolume_( source, _volume );
+        this->updateSourceVolume_( source );
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::getLoop( uint32_t _emitterId ) const
-	{
-        const SoundSourceDesc * source;
-        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
-        {
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine:getLoop not found emitter id %d"
-				, _emitterId
-				);
-
-			return false;
-		}
-
-        bool looped = source->looped;
-
-		return looped;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getSourceVolume( uint32_t _emitterId ) const
@@ -934,7 +936,43 @@ namespace Menge
 			return 0.f;
 		}
 
-        float volume = source->volume;
+        float volume = source->volume.mixVolume();
+
+		return volume;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SoundEngine::setSourceMixerVolume( uint32_t _emitterId, const ConstString & _mixer, float _volume )
+	{
+		SoundSourceDesc * source;
+		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("SoundEngine:setVolume not found emitter id %d"
+				, _emitterId
+				);
+
+			return false;
+		}
+
+		source->volume.setVolume( _mixer, _volume );
+
+		this->updateSourceVolume_( source );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float SoundEngine::getSourceMixerVolume( uint32_t _emitterId, const ConstString & _mixer ) const
+	{
+		const SoundSourceDesc * source;
+		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("SoundEngine:getVolume not found emitter id %d"
+				, _emitterId
+				);
+
+			return 0.f;
+		}
+
+		float volume = source->volume.getVolume( _mixer );
 
 		return volume;
 	}
@@ -1026,7 +1064,7 @@ namespace Menge
 
         if( playing == true && pausing == false )
         {
-			this->updateSourceVolume_( source, source->volume );
+			this->updateSourceVolume_( source );
 
             if( source->source->play() == false )
             {

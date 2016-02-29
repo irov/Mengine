@@ -40,13 +40,14 @@ namespace	Menge
 			}
 
 		public:
-			bool initialize( ServiceProviderInterface * _serviceProvider, const ResourceSoundPtr & _resource, const SoundBufferInterfacePtr & _soundBuffer, const pybind::object & _cb )
+			bool initialize( ServiceProviderInterface * _serviceProvider, const ResourceSoundPtr & _resource, const SoundBufferInterfacePtr & _soundBuffer, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 			{
 				m_serviceProvider = _serviceProvider;
 				m_resource = _resource;
 				m_soundBuffer = _soundBuffer;
 
 				m_cb = _cb;				
+				m_args = _args;
 
 				return true;
 			}
@@ -62,8 +63,8 @@ namespace	Menge
 			{	
 				if( m_cb.is_callable() == true )
 				{
-					m_cb( _id );
-				}				
+					m_cb( _id, m_args );
+				}
 
 				if( SOUND_SERVICE(m_serviceProvider)
 					->releaseSoundSource( _id ) == false )
@@ -87,6 +88,7 @@ namespace	Menge
 			ResourceSoundPtr m_resource;
             SoundBufferInterfacePtr m_soundBuffer;
 			pybind::object m_cb;
+			pybind::detail::args_operator_t m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		bool s_hasSound( const ConstString & _resourceName )
@@ -100,7 +102,7 @@ namespace	Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceType _type, const pybind::object & _cb )
+		uint32_t s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceType _type, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			ResourceSoundPtr resource = RESOURCE_SERVICE(m_serviceProvider)
 				->getResourceT<ResourceSoundPtr>( _resourceName );
@@ -152,7 +154,7 @@ namespace	Menge
 
 			MySoundNodeListenerInterface * snlistener = new MySoundNodeListenerInterface();
 
-			if( snlistener->initialize( m_serviceProvider, resource, soundBuffer, _cb ) == false )
+			if( snlistener->initialize( m_serviceProvider, resource, soundBuffer, _cb, _args ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ScriptWrapper::createSoundSource invalid %s intialize listener"
 					, _resourceName.c_str()
@@ -172,9 +174,9 @@ namespace	Menge
 			return sourceID;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_soundPlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb )
+		uint32_t s_soundPlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
-			uint32_t sourceID = s_createSoundSource( _resourceName, _loop, ESST_SOUND, _cb );
+			uint32_t sourceID = s_createSoundSource( _resourceName, _loop, ESST_SOUND, _cb, _args );
 
 			if( sourceID == 0 )
 			{
@@ -198,9 +200,9 @@ namespace	Menge
 			return sourceID;
 		}
         //////////////////////////////////////////////////////////////////////////
-		uint32_t s_voicePlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb )
+		uint32_t s_voicePlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
-            uint32_t sourceID = s_createSoundSource( _resourceName, _loop, ESST_VOICE, _cb );
+            uint32_t sourceID = s_createSoundSource( _resourceName, _loop, ESST_VOICE, _cb, _args );
 
             if( sourceID == 0 )
             {
@@ -224,9 +226,9 @@ namespace	Menge
             return sourceID;
         }
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, const pybind::object & _cb )
+		uint32_t s_soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
-			uint32_t sourceID = s_createSoundSource(_resourceName, _loop, ESST_SOUND, _cb);
+			uint32_t sourceID = s_createSoundSource( _resourceName, _loop, ESST_SOUND, _cb, _args );
 
 			if( sourceID == 0 )
 			{
@@ -274,6 +276,123 @@ namespace	Menge
 		{
 			SOUND_SERVICE(m_serviceProvider)
 				->setPosMs( _sourceID, _pos );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		class SoundAffectorCallback
+			: public AffectorCallback
+		{
+		public:
+			SoundAffectorCallback()
+				: m_serviceProvider( nullptr )
+			{
+			}
+
+			~SoundAffectorCallback()
+			{
+			}
+
+		public:
+			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+			{
+				m_serviceProvider = _serviceProvider;
+				m_cb = _cb;
+				m_args = _args;
+			}
+
+		protected:
+			void onAffectorEnd( uint32_t _id, bool _isEnd ) override
+			{
+				if( m_cb.is_invalid() == true )
+				{
+					return;
+				}
+
+				if( m_cb.is_none() == true )
+				{
+					return;
+				}
+
+				m_cb( _id, _isEnd, m_args );
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+			pybind::object m_cb;
+			pybind::detail::args_operator_t m_args;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		FactoryPoolStore<SoundAffectorCallback, 4> m_factorySoundAffectorCallback;
+		//////////////////////////////////////////////////////////////////////////
+		SoundAffectorCallback * createSoundAffectorCallback( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		{
+			SoundAffectorCallback * callback = m_factorySoundAffectorCallback.createObject();
+
+			callback->initialize( m_serviceProvider, _cb, _args );
+
+			return callback;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void ___soundFade( uint32_t _sourceId, float _volume )
+		{
+			SOUND_SERVICE( m_serviceProvider )
+				->setSourceMixerVolume( _sourceId, CONST_STRING( m_serviceProvider, Fade ), _volume );
+		}
+		//////////////////////////////////////////////////////////////////////////		
+		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<SoundScriptMethod, void (SoundScriptMethod::*)(uint32_t, float), float, uint32_t> m_affectorCreatorSound;
+		//////////////////////////////////////////////////////////////////////////
+		void s_soundFadeIn( uint32_t _sourceId, float _time, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		{
+			SoundAffectorCallback * callback = createSoundAffectorCallback( _cb, _args );
+
+			Affector* affector =
+				m_affectorCreatorSound.create( m_serviceProvider
+				, ETA_POSITION, callback, this, &SoundScriptMethod::___soundFade, _sourceId
+				, 1.f, 0.f, _time
+				, &fabsf
+				);
+
+			Affectorable * affectorable = PLAYER_SERVICE( m_serviceProvider )
+				->getAffectorableGlobal();
+
+			affectorable->addAffector( affector );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		uint32_t s_soundFadeOut( const ConstString & _resourceName, bool _loop, float _time, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		{
+			uint32_t sourceId = s_createSoundSource( _resourceName, _loop, ESST_SOUND, _cb, _args );
+
+			if( sourceId == 0 )
+			{
+				LOGGER_ERROR( m_serviceProvider )("soundPlay: can't get resource '%s'"
+					, _resourceName.c_str()
+					);
+
+				return 0;
+			}
+
+			if( SOUND_SERVICE( m_serviceProvider )
+				->play( sourceId ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("soundPlay: invalid play '%s'"
+					, _resourceName.c_str()
+					);
+
+				return 0;
+			}
+
+			Affector* affector =
+				m_affectorCreatorSound.create( m_serviceProvider
+				, ETA_POSITION, nullptr, this, &SoundScriptMethod::___soundFade, sourceId
+				, 0.f, 1.f, _time
+				, &fabsf
+				);
+
+			Affectorable * affectorable = PLAYER_SERVICE( m_serviceProvider )
+				->getAffectorableGlobal();
+
+			affectorable->addAffector( affector );
+
+			return sourceId;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_soundStop( uint32_t _sourceID )
@@ -455,10 +574,11 @@ namespace	Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb )
+			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 			{
 				m_serviceProvider = _serviceProvider;
 				m_cb = _cb;
+				m_args = _args;
 			}
 
 		protected:
@@ -474,30 +594,31 @@ namespace	Menge
 					return;
 				}
 
-				m_cb( _id, _isEnd );
+				m_cb( _id, _isEnd, m_args );
 			}
 
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
 			pybind::object m_cb;
+			pybind::detail::args_operator_t m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPoolStore<MusicAffectorCallback, 4> m_factoryMusicAffectorCallback;
 		//////////////////////////////////////////////////////////////////////////
-		MusicAffectorCallback * createMusicAffectorCallback( const pybind::object & _cb )
+		MusicAffectorCallback * createMusicAffectorCallback( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			MusicAffectorCallback * callback = m_factoryMusicAffectorCallback.createObject();
 
-			callback->initialize( m_serviceProvider, _cb );
+			callback->initialize( m_serviceProvider, _cb, _args );
 
 			return callback; 
 		}
 		//////////////////////////////////////////////////////////////////////////		
 		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<SoundScriptMethod, void (SoundScriptMethod::*)(float), float> m_affectorCreatorMusic;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_musicFadeIn( float _time, const pybind::object & _cb )
+		uint32_t s_musicFadeIn( float _time, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
-			MusicAffectorCallback * callback = createMusicAffectorCallback( _cb );
+			MusicAffectorCallback * callback = createMusicAffectorCallback( _cb, _args );
 
 			Affector* affector = 
 				m_affectorCreatorMusic.create( m_serviceProvider
@@ -514,9 +635,9 @@ namespace	Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_musicFadeOut( float _time, const pybind::object & _cb )
+		uint32_t s_musicFadeOut( float _time, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
-			MusicAffectorCallback * callback = createMusicAffectorCallback( _cb );
+			MusicAffectorCallback * callback = createMusicAffectorCallback( _cb, _args );
 
 			Affector* affector = 
 				m_affectorCreatorMusic.create( m_serviceProvider
@@ -573,8 +694,8 @@ namespace	Menge
         pybind::def_functor( "commonSetVolume", soundScriptMethod, &SoundScriptMethod::s_commonSetVolume );
         pybind::def_functor( "commonGetVolume", soundScriptMethod, &SoundScriptMethod::commonGetVolume );
                 
-        pybind::def_functor( "soundPlay", soundScriptMethod, &SoundScriptMethod::s_soundPlay );
-		pybind::def_functor( "soundPlayFromPosition", soundScriptMethod, &SoundScriptMethod::s_soundPlayFromPosition );
+        pybind::def_functor_args( "soundPlay", soundScriptMethod, &SoundScriptMethod::s_soundPlay );
+		pybind::def_functor_args( "soundPlayFromPosition", soundScriptMethod, &SoundScriptMethod::s_soundPlayFromPosition );
 		pybind::def_functor( "soundStop", soundScriptMethod, &SoundScriptMethod::s_soundStop );
 		pybind::def_functor( "soundSourceSetVolume", soundScriptMethod, &SoundScriptMethod::s_soundSourceSetVolume );
 		pybind::def_functor( "soundSourceGetVolume", soundScriptMethod, &SoundScriptMethod::s_soundSourceGetVolume );
@@ -582,6 +703,8 @@ namespace	Menge
 		pybind::def_functor( "soundGetVolume", soundScriptMethod, &SoundScriptMethod::s_soundGetVolume );
 		pybind::def_functor( "soundGetPosition", soundScriptMethod, &SoundScriptMethod::s_soundGetPosMs );
 		pybind::def_functor( "soundSetPosition", soundScriptMethod, &SoundScriptMethod::s_soundSetPosMs );
+		pybind::def_functor_args( "soundFadeIn", soundScriptMethod, &SoundScriptMethod::s_soundFadeIn );
+		pybind::def_functor_args( "soundFadeOut", soundScriptMethod, &SoundScriptMethod::s_soundFadeOut );
 				
 		pybind::def_functor( "musicPlayTrack", soundScriptMethod, &SoundScriptMethod::musicPlayTrack );
 		pybind::def_functor( "musicGetNumTracks", soundScriptMethod, &SoundScriptMethod::musicGetNumTracks );
@@ -595,8 +718,8 @@ namespace	Menge
 		pybind::def_functor( "musicGetPlayingTrackIndex", soundScriptMethod, &SoundScriptMethod::s_musicGetPlayingTrackIndex );
 		pybind::def_functor( "musicGetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicGetPosMs );
 		pybind::def_functor( "musicSetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicSetPosMs );
-		pybind::def_functor( "musicFadeIn", soundScriptMethod, &SoundScriptMethod::s_musicFadeIn );
-		pybind::def_functor( "musicFadeOut", soundScriptMethod, &SoundScriptMethod::s_musicFadeOut );
+		pybind::def_functor_args( "musicFadeIn", soundScriptMethod, &SoundScriptMethod::s_musicFadeIn );
+		pybind::def_functor_args( "musicFadeOut", soundScriptMethod, &SoundScriptMethod::s_musicFadeOut );
 
 
         pybind::def_functor( "voicePlay", soundScriptMethod, &SoundScriptMethod::s_voicePlay );

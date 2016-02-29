@@ -120,6 +120,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotImage::testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point ) const
 	{
+		(void)_gameViewport;
+		(void)_viewport;
+
 		if( m_global == true )
 		{
 			return !m_outward;
@@ -152,6 +155,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotImage::testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point, float _radius ) const
 	{
+		(void)_gameViewport;
+		(void)_viewport;
+		
 		if( m_global == true )
 		{
 			return !m_outward;
@@ -184,6 +190,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotImage::testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point, const Polygon & _polygon ) const
 	{
+		(void)_gameViewport;
+		(void)_viewport;
+		
 		if( m_global == true )
 		{
 			return !m_outward;

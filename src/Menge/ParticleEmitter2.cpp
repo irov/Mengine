@@ -38,7 +38,9 @@ namespace	Menge
 		, m_vertexCount(0)
 		, m_indicies(nullptr)
 		, m_indexCount(0)
-        , m_emitterRelative(false)
+		, m_positionProviderOriginOffset(0.f, 0.f, 0.f)
+        , m_emitterPositionRelative(false)
+		, m_emitterCameraRelative( false )
         , m_emitterTranslateWithParticle(true)
 	{
 	}
@@ -146,22 +148,11 @@ namespace	Menge
             }
         }
 
-		if( m_emitterRelative == true )
+		if( m_emitterPositionRelative == true )
 		{
 			if( emitter->setPositionProvider( this ) == false )
 			{
 				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
-					, this->getName().c_str()
-					, m_resourceParticle->getGroup().c_str()
-					, m_resourceParticle->getName().c_str()
-					);
-
-				return false;
-			}
-
-			if( emitter->setCameraProvider( this ) == false )
-			{
-				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup camera provider"
 					, this->getName().c_str()
 					, m_resourceParticle->getGroup().c_str()
 					, m_resourceParticle->getName().c_str()
@@ -182,10 +173,26 @@ namespace	Menge
 
 				return false;
 			}
+		}
 
+		if( m_emitterCameraRelative == true )
+		{
+			if( emitter->setCameraProvider( this ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
+					, this->getName().c_str()
+					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getName().c_str()
+					);
+
+				return false;
+			}
+		}
+		else
+		{
 			if( emitter->setCameraProvider( nullptr ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup camera provider"
+				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
 					, m_resourceParticle->getGroup().c_str()
 					, m_resourceParticle->getName().c_str()
@@ -403,7 +410,7 @@ namespace	Menge
 
 		this->updateVertexColor_( m_vertices, flush.vertexCount );
 
-		if( m_emitterRelative == false )
+		if( m_emitterPositionRelative == false )
 		{
 			this->updateVertexWM_( m_vertices, flush.vertexCount );
 		}
@@ -534,20 +541,20 @@ namespace	Menge
 		m_emitter->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::setEmitterRelative( bool _relative )
+	void ParticleEmitter2::setEmitterPositionRelative( bool _positionRelative )
 	{
-        m_emitterRelative = _relative;
+		m_emitterPositionRelative = _positionRelative;
 
 		if( this->isCompile() == false )
 		{
 			return;
 		}
 
-		if( m_emitterRelative == true )
+		if( m_emitterPositionRelative == true )
 		{
 			if( m_emitter->setPositionProvider( this ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::setEmitterRelative '%s' group '%s' resource '%s' invalid setup position provider"
+				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::setEmitterPositionRelative '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
 					, m_resourceParticle->getGroup().c_str()
 					, m_resourceParticle->getName().c_str()
@@ -560,7 +567,7 @@ namespace	Menge
 		{ 
 			if( m_emitter->setPositionProvider( nullptr ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::setEmitterRelative '%s' group '%s' resource '%s' invalid setup position provider"
+				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::setEmitterPositionRelative '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
 					, m_resourceParticle->getGroup().c_str()
 					, m_resourceParticle->getName().c_str()
@@ -569,6 +576,48 @@ namespace	Menge
 				return;
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter2::setEmitterCameraRelative( bool _cameraRelative )
+	{
+		m_emitterCameraRelative = _cameraRelative;
+
+		if( this->isCompile() == false )
+		{
+			return;
+		}
+
+		if( m_emitterCameraRelative == true )
+		{
+			if( m_emitter->setCameraProvider( this ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::setEmitterCameraRelative '%s' group '%s' resource '%s' invalid setup position provider"
+					, this->getName().c_str()
+					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getName().c_str()
+					);
+
+				return;
+			}
+		}
+		else
+		{
+			if( m_emitter->setCameraProvider( nullptr ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::setEmitterCameraRelative '%s' group '%s' resource '%s' invalid setup position provider"
+					, this->getName().c_str()
+					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getName().c_str()
+					);
+
+				return;
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter2::setEmitterPositionProviderOriginOffset( const mt::vec3f & _originOffset )
+	{
+		m_positionProviderOriginOffset = _originOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::changeEmitterImage( const ConstString & _emitterImageName )
@@ -758,13 +807,26 @@ namespace	Menge
 		this->getTransformation( position, origin, coordinate, scale, orientation );
 
 		mt::mat4f wm;
-		this->calcWorldMatrix( wm, position, origin - mt::vec3f( 1024.f, 1024.f, 0.f ), coordinate, scale, orientation );
+		this->calcWorldMatrix( wm, position, origin + m_positionProviderOriginOffset, coordinate, scale, orientation );
 
 		_position = wm.v3.to_vec3f();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction )
 	{
-		this->getRenderCameraInheritance();
+		const RenderCameraInterface * camera = this->getRenderCameraInheritance();
+
+		if( camera == nullptr )
+		{
+			camera = PLAYER_SERVICE( m_serviceProvider )
+				->getRenderCamera();
+		}
+
+		_orthogonality = camera->isOrthogonalProjection();
+
+		const mt::mat4f & vmi = camera->getCameraViewMatrixInv();
+
+		_position = vmi.v3.to_vec3f();
+		_direction = vmi.v0.to_vec3f();
 	}
 }

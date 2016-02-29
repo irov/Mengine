@@ -73,42 +73,62 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter2::setupBasePosition_()
     {
-		MAGIC_RECT rect;
-		float backgroundScale = Magic_GetBackgroundRect( m_emitterId, &rect );
+		bool is3d = Magic_Is3d( m_emitterId );
 
-		if( rect.left == rect.right || rect.bottom == rect.top )
+		if( is3d == false )
 		{
-			m_rect.x = -1024.f;
-			m_rect.y = -1024.f;
-			m_rect.z = 1024.f;
-			m_rect.w = 1024.f;
+			MAGIC_RECT rect;
+			float backgroundScale = Magic_GetBackgroundRect( m_emitterId, &rect );
 
-			MAGIC_POSITION pos;
-			pos.x = 0.f;
-			pos.y = 0.f;
-			pos.z = 0.f;
+			if( rect.left == rect.right || rect.bottom == rect.top )
+			{
+				m_rect.x = -1024.f;
+				m_rect.y = -1024.f;
+				m_rect.z = 1024.f;
+				m_rect.w = 1024.f;
 
-			Magic_SetEmitterPosition( m_emitterId, &pos );
+				MAGIC_POSITION pos;
+				pos.x = 0.f;
+				pos.y = 0.f;
+				pos.z = 0.f;
 
-			m_background = false;
+				Magic_SetEmitterPosition( m_emitterId, &pos );
+
+				m_background = false;
+			}
+			else
+			{
+				if( mt::equal_f_f( backgroundScale, 1.f ) == false )
+				{
+					LOGGER_ERROR( m_serviceProvider )("AstralaxEmitter::setupBasePosition_ background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
+						, backgroundScale
+						);
+
+					return false;
+				}
+
+				m_rect.x = (float)rect.left;
+				m_rect.y = (float)rect.top;
+				m_rect.z = (float)rect.right;
+				m_rect.w = (float)rect.bottom;
+
+				m_background = true;
+			}
 		}
 		else
 		{
-			if( mt::equal_f_f( backgroundScale, 1.f ) == false )
+			MAGIC_VIEW view;
+			if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
 			{
-				LOGGER_ERROR( m_serviceProvider )("AstralaxEmitter::setupBasePosition_ background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
-					, backgroundScale
-					);
-
 				return false;
 			}
 
-			m_rect.x = (float)rect.left;
-			m_rect.y = (float)rect.top;
-			m_rect.z = (float)rect.right;
-			m_rect.w = (float)rect.bottom;
+			m_rect.x = (float)0.f;
+			m_rect.y = (float)0.f;
+			m_rect.z = (float)view.viewport_width;
+			m_rect.w = (float)view.viewport_height;
 
-			m_background = true;
+			m_background = false;
 		}
 
         return true;
@@ -255,6 +275,12 @@ namespace Menge
 			m_cameraProvider->onProviderEmitterCamera( orthogonality, position, direction );
 
 			MAGIC_CAMERA camera;
+
+			MAGIC_VIEW view;
+			if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
+			{
+				return false;
+			}
 
 			if( orthogonality == true )
 			{
@@ -761,7 +787,7 @@ namespace Menge
 				mt::mul_v3_v3_m4_homogenize( v_vpm, v.pos, vpm );
 
 				v.pos.x = (1.f + v_vpm.x) * half_width;
-				v.pos.y = (1.f + v_vpm.y) * half_height;
+				v.pos.y = (1.f - v_vpm.y) * half_height;
 				v.pos.z = v_vpm.z;
 			}
 		}

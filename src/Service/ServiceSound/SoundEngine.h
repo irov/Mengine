@@ -36,7 +36,7 @@ namespace Menge
         uint32_t bufferId;
 
 		float timing;
-		float volume;
+		MixerVolume volume;
 
 		ESoundSourceState state;
 		ESoundSourceType type;
@@ -98,6 +98,11 @@ namespace Menge
 		bool setSourceVolume( uint32_t _emitterId, float _volume ) override;
 		float getSourceVolume( uint32_t _emitterId ) const override;
 
+	public:
+		bool setSourceMixerVolume( uint32_t _emitter, const ConstString & _mixer, float _volume ) override;
+		float getSourceMixerVolume( uint32_t _emitter, const ConstString & _mixer ) const override;
+
+	public:
 		bool releaseSoundSource( uint32_t _sourceID ) override;
 
 		bool validSoundSource( uint32_t _sourceID ) const override;
@@ -128,7 +133,7 @@ namespace Menge
 		void updateVolume() override;
 
     protected:
-        void updateSourceVolume_( SoundSourceDesc * _source, float _volume );
+		void updateSourceVolume_( SoundSourceDesc * _source );
 
     protected:
         bool getSoundSourceDesc_( uint32_t _emitterId, SoundSourceDesc ** _desc );

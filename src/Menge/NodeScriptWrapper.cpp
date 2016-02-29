@@ -5857,7 +5857,9 @@ namespace Menge
 					.def( "getResourceParticle", &ParticleEmitter2::getResourceParticle )
 
 					.def( "setEmitterTranslateWithParticle", &ParticleEmitter2::setEmitterTranslateWithParticle )
-					.def( "setEmitterRelative", &ParticleEmitter2::setEmitterRelative )
+					.def( "setEmitterPositionRelative", &ParticleEmitter2::setEmitterPositionRelative )
+					.def( "setEmitterCameraRelative", &ParticleEmitter2::setEmitterCameraRelative )
+					.def( "setEmitterPositionProviderOriginOffset", &ParticleEmitter2::setEmitterPositionProviderOriginOffset )
 
 					.def( "changeEmitterImage", &ParticleEmitter2::changeEmitterImage )
 					.def( "removeEmitterImage", &ParticleEmitter2::removeEmitterImage )

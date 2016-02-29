@@ -116,7 +116,8 @@ namespace Menge
         DECL_CONST( MovieText );
 		DECL_CONST( MovieTextCenter );
 		DECL_CONST( MovieSprite );
-		DECL_CONST( MovieNullObject );		
+		DECL_CONST( MovieNullObject );
+		DECL_CONST( MovieParticle );
         DECL_CONST( MovieEvent );
 		DECL_CONST( SolidSprite );
 		DECL_CONST( SoundId );

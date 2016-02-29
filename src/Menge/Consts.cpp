@@ -95,6 +95,7 @@ namespace Menge
 		INIT_CONST( MovieSprite );
         INIT_CONST( MovieSceneEffect );
         INIT_CONST( MovieNullObject );
+		INIT_CONST( MovieParticle );
         INIT_CONST( MovieEvent );
 		INIT_CONST( SolidSprite );
 		INIT_CONST( SoundId );

@@ -155,6 +155,11 @@ namespace Menge
 		virtual bool setSourceVolume( uint32_t _emitter, float _volume ) = 0;
 		virtual float getSourceVolume( uint32_t _emitter ) const = 0;
 
+	public:
+		virtual bool setSourceMixerVolume( uint32_t _emitter, const ConstString & _mixer, float _volume ) = 0;
+		virtual float getSourceMixerVolume( uint32_t _emitter, const ConstString & _mixer ) const = 0;
+
+	public:
 		virtual bool releaseSoundSource( uint32_t _sourceID ) = 0;
 		virtual bool validSoundSource( uint32_t _sourceID ) const = 0;
 

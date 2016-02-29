@@ -44,7 +44,10 @@ namespace Menge
 
 	public:
 		void setEmitterTranslateWithParticle( bool _translateWithParticle );
-		void setEmitterRelative( bool _relative );
+		void setEmitterPositionRelative( bool _positionRelative );
+		void setEmitterCameraRelative( bool _cameraRelative );
+
+		void setEmitterPositionProviderOriginOffset( const mt::vec3f & _originOffset );
 
 		void changeEmitterImage( const ConstString & _emitterImageName );
         void removeEmitterImage();
@@ -98,7 +101,10 @@ namespace Menge
 
         Polygon m_polygon;
 
-        bool m_emitterRelative;
+		mt::vec3f m_positionProviderOriginOffset;
+
+        bool m_emitterPositionRelative;
+		bool m_emitterCameraRelative;
 
         bool m_randomMode;
 				

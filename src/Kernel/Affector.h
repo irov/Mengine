@@ -111,7 +111,7 @@ namespace Menge
 		AffectorCallbackPtr m_cb;
 	};
     //////////////////////////////////////////////////////////////////////////
-	template<class C, class M>
+	template<class C, class M, class MA>
 	class MemeberAffector
 		: public CallbackAffector
 	{
@@ -122,16 +122,46 @@ namespace Menge
 		{
 		}
 
-        void initialize( C * _self, M _method )
+		void initialize( C * _self, M _method, const MA & _argument )
         {			
             m_self = _self;
             m_method = _method;
+			m_argument = _argument;
         }
 
 		template<class T>
 		void update( T _value )
 		{
-			(m_self->*m_method)( _value );
+			(m_self->*m_method)(m_argument, _value);
+		}
+
+	protected:
+		C * m_self;
+		M m_method;
+		MA m_argument;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	template<class C, class M>
+	class MemeberAffector<C, M, void>
+		: public CallbackAffector
+	{
+	public:
+		MemeberAffector()
+			: m_self( nullptr )
+			, m_method( nullptr )
+		{
+		}
+
+		void initialize( C * _self, M _method )
+		{
+			m_self = _self;
+			m_method = _method;
+		}
+
+		template<class T>
+		void update( T _value )
+		{
+			(m_self->*m_method)(_value);
 		}
 
 	protected:
@@ -139,9 +169,9 @@ namespace Menge
 		M m_method;
 	};
     //////////////////////////////////////////////////////////////////////////
-	template<class C, class M, class T, template<class> class Accumulator>
+	template<class C, class M, class MA, class T, template<class> class Accumulator>
 	class MemberAffectorAccumulate
-		: public MemeberAffector<C,M>
+		: public MemeberAffector<C, M, MA>
 	{
 	protected:
 		bool _affect( float _timing ) override
@@ -170,9 +200,9 @@ namespace Menge
 		Accumulator<T> m_accumulator;
 	};
     //////////////////////////////////////////////////////////////////////////
-	template<class C, class M, class T, class Interpolator>
+	template<class C, class M, class MA, class T, class Interpolator>
 	class MemberAffectorInterpolate
-		: public MemeberAffector<C,M>
+		: public MemeberAffector<C,M, MA>
 	{
 	protected:
 		bool _affect( float _timing ) override
@@ -201,54 +231,80 @@ namespace Menge
 		Interpolator m_interpolator;
 	};
     //////////////////////////////////////////////////////////////////////////
-	template<class C, class M, class T>
+	template<class C, class M, class T, class MA>
 	class MemberAffectorAccumulateLinear
-		: public MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>
+		: public MemberAffectorAccumulate<C, M, MA, T, ValueAccumulateLinear>
 	{
 	public:
 		template<class ABS>
-		void initialize( C * _self, M _method, const T & _start, const T & _dir, float _speed, ABS _abs)
+		void initialize( C * _self, M _method, const MA & _argument, const T & _start, const T & _dir, float _speed, ABS _abs )
 		{
-            MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>::initialize( _self, _method );
-			MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>::m_accumulator.start( _start, _dir, _speed, _abs );
+			MemberAffectorAccumulate<C, M, MA, T, ValueAccumulateLinear>::initialize( _self, _method, _argument );
+			MemberAffectorAccumulate<C, M, MA, T, ValueAccumulateLinear>::m_accumulator.start( _start, _dir, _speed, _abs );
 		}        
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class T>
-	class MemberAffectorInterpolateLinear
-		: public MemberAffectorInterpolate<C,M,T, ValueInterpolatorLinear<T> >
+	class MemberAffectorAccumulateLinear<C,M,T,void>
+		: public MemberAffectorAccumulate<C, M, void, T, ValueAccumulateLinear>
 	{
 	public:
 		template<class ABS>
-		void initialize( C * _self, M _method, const T & _start, const T & _end, float _time, ABS _abs)
+		void initialize( C * _self, M _method, const T & _start, const T & _dir, float _speed, ABS _abs )
 		{
-			MemberAffectorInterpolate<C, M, T, ValueInterpolatorLinear<T> >::initialize( _self, _method );
-			MemberAffectorInterpolate<C, M, T, ValueInterpolatorLinear<T> >::m_interpolator.start( _start, _end, _time, _abs );
+			MemberAffectorAccumulate<C, M, void, T, ValueAccumulateLinear>::initialize( _self, _method );
+			MemberAffectorAccumulate<C, M, void, T, ValueAccumulateLinear>::m_accumulator.start( _start, _dir, _speed, _abs );
+		}
+	};
+	//////////////////////////////////////////////////////////////////////////
+	template<class C, class M, class T, class MA>
+	class MemberAffectorInterpolateLinear
+		: public MemberAffectorInterpolate<C, M, MA, T, ValueInterpolatorLinear<T> >
+	{
+	public:
+		template<class ABS>
+		void initialize( C * _self, M _method, const MA & _argument, const T & _start, const T & _end, float _time, ABS _abs )
+		{
+			MemberAffectorInterpolate<C, M, MA, T, ValueInterpolatorLinear<T> >::initialize( _self, _method, _argument );
+			MemberAffectorInterpolate<C, M, MA, T, ValueInterpolatorLinear<T> >::m_interpolator.start( _start, _end, _time, _abs );
+		}
+	};
+	//////////////////////////////////////////////////////////////////////////
+	template<class C, class M, class T>
+	class MemberAffectorInterpolateLinear<C, M, T, void>
+		: public MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorLinear<T> >
+	{
+	public:
+		template<class ABS>
+		void initialize( C * _self, M _method, const T & _start, const T & _end, float _time, ABS _abs )
+		{
+			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorLinear<T> >::initialize( _self, _method );
+			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorLinear<T> >::m_interpolator.start( _start, _end, _time, _abs );
 		}
 	};
     //////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class T>
 	class MemberAffectorInterpolateQuadratic
-		: public MemberAffectorInterpolate<C,M,T, ValueInterpolatorQuadratic<T> >
+		: public MemberAffectorInterpolate<C,M, void, T, ValueInterpolatorQuadratic<T> >
 	{
 	public:
 		template< typename ABS >
 		void initialize( C * _self, M _method, const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		{
-			MemberAffectorInterpolate<C, M, T, ValueInterpolatorQuadratic<T> >::initialize( _self, _method );
-			MemberAffectorInterpolate<C, M, T, ValueInterpolatorQuadratic<T> >::m_interpolator.start( _start, _end, _v0, _time, _abs );
+			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorQuadratic<T> >::initialize( _self, _method );
+			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorQuadratic<T> >::m_interpolator.start( _start, _end, _v0, _time, _abs );
 		}
 	};
     //////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class T, size_t N>
 	class MemberAffectorInterpolateBezier
-		: public MemberAffectorInterpolate<C,M,T, ValueInterpolatorBezier<T, N> >
+		: public MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorBezier<T, N> >
 	{
 	public:
 		void initialize( C * _self, M _method, const T & _start, const T & _end, const T * _v, float _time)
 		{
-			MemberAffectorInterpolate<C, M, T, ValueInterpolatorBezier<T, N> >::initialize( _self, _method );
-			MemberAffectorInterpolate<C, M, T, ValueInterpolatorBezier<T, N> >::m_interpolator.start( _start, _end, _v, _time );
+			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorBezier<T, N> >::initialize( _self, _method );
+			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorBezier<T, N> >::m_interpolator.start( _start, _end, _v, _time );
 		}
 	};
     //////////////////////////////////////////////////////////////////////////
@@ -258,7 +314,7 @@ namespace Menge
         class NodeAffectorCreatorAccumulateLinear
         {
         public:
-            typedef MemberAffectorAccumulateLinear<C, M, T> AffectorType;
+			typedef MemberAffectorAccumulateLinear<C, M, T, void> AffectorType;
 
         public:
             template<class ABS>
@@ -283,16 +339,16 @@ namespace Menge
             TFactoryAffector m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
-		template<class C, class M, class T>
+		template<class C, class M, class T, class MA = void>
         class NodeAffectorCreatorInterpolateLinear
         {
         public:
-            typedef MemberAffectorInterpolateLinear<C, M, T> AffectorType;
+			typedef MemberAffectorInterpolateLinear<C, M, T, MA> AffectorType;
 
         public:
             template<class ABS>
 			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
-                , C * _self, M _method
+				, C * _self, M _method, const MA & _argument
                 , const T & _start, const T & _end, float _time, ABS _abs )
             {
                 AffectorType * affector = m_factory.createObject();
@@ -302,7 +358,7 @@ namespace Menge
 
 				affector->setCallback( _cb );
 
-                affector->initialize( _self, _method, _start, _end, _time, _abs );
+				affector->initialize( _self, _method, _argument, _start, _end, _time, _abs );
 				affector->update( _start );
 
                 return affector;
@@ -312,6 +368,36 @@ namespace Menge
             typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
             TFactoryAffector m_factory;
         };
+		//////////////////////////////////////////////////////////////////////////
+		template<class C, class M, class T>
+		class NodeAffectorCreatorInterpolateLinear<C, M, T, void>
+		{
+		public:
+			typedef MemberAffectorInterpolateLinear<C, M, T, void> AffectorType;
+
+		public:
+			template<class ABS>
+			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+				, C * _self, M _method
+				, const T & _start, const T & _end, float _time, ABS _abs )
+			{
+				AffectorType * affector = m_factory.createObject();
+
+				affector->setServiceProvider( _serviceProvider );
+				affector->setAffectorType( _type );
+
+				affector->setCallback( _cb );
+
+				affector->initialize( _self, _method, _start, _end, _time, _abs );
+				affector->update( _start );
+
+				return affector;
+			}
+
+		protected:
+			typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
+			TFactoryAffector m_factory;
+		};
         //////////////////////////////////////////////////////////////////////////
 		template<class C, class M, class T>
         class NodeAffectorCreatorInterpolateQuadratic

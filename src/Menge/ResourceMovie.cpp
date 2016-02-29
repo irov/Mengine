@@ -730,6 +730,10 @@ namespace Menge
 			{
 				layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
 			}
+			else if( layer.type == CONST_STRING( m_serviceProvider, MovieParticle ) )
+			{
+				//Empty
+			}
             else if( layer.type == CONST_STRING(m_serviceProvider, Movie) )
             {
                 layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE;

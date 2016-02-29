@@ -207,6 +207,11 @@ files
 	"*.h"
 	"*.cpp"    
     
+    [Service/ServiceTimer]
+    ("../src/Service/ServiceTimer")	
+	"*.h"
+	"*.cpp"        
+    
     [Service/ServiceThread]
     ("../src/Service/ServiceThread")	
 	"*.h"
@@ -267,6 +272,11 @@ files
     ("../src/Service/ServiceInput")	
 	"*.h"
 	"*.cpp"      
+
+    [Service/ServiceTimeline]
+    ("../src/Service/ServiceTimeline")	
+	"*.h"
+	"*.cpp"   
     
     [Service/ServiceGraveyard]
     ("../src/Service/ServiceGraveyard")	

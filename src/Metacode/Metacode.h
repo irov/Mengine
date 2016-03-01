@@ -3699,6 +3699,35 @@ namespace Metacode
                         return true;
                     }
                     
+                    bool has_Delay() const
+                    {
+                        return Delay_successful;
+                    }
+                    
+                    bool get_Delay( float & _value ) const
+                    {
+                        if( Delay_successful == false )
+                        {
+                            return false;
+                        }
+                    
+                        _value = this->Delay;
+                    
+                        return true;
+                    }
+                    
+                    bool swap_Delay( float & _value ) const
+                    {
+                        if( Delay_successful == false )
+                        {
+                            return false;
+                        }
+                    
+                        std::swap( _value, this->Delay);
+                    
+                        return true;
+                    }
+                    
                     bool has_External() const
                     {
                         return External_successful;
@@ -3728,14 +3757,33 @@ namespace Metacode
                         return true;
                     }
                     
-                    const Menge::FilePath & get_File() const
+                    bool has_File() const
                     {
-                        return this->File;
+                        return File_successful;
                     }
                     
-                    void swap_File( Menge::FilePath & _value ) const
+                    bool get_File( Menge::FilePath & _value ) const
                     {
+                        if( File_successful == false )
+                        {
+                            return false;
+                        }
+                    
+                        _value = this->File;
+                    
+                        return true;
+                    }
+                    
+                    bool swap_File( Menge::FilePath & _value ) const
+                    {
+                        if( File_successful == false )
+                        {
+                            return false;
+                        }
+                    
                         std::swap( _value, this->File);
+                    
+                        return true;
                     }
                     
                 protected:
@@ -3749,8 +3797,11 @@ namespace Metacode
                 protected:
                     bool Codec_successful;
                     mutable Menge::ConstString Codec;
+                    bool Delay_successful;
+                    mutable float Delay;
                     bool External_successful;
                     mutable bool External;
+                    bool File_successful;
                     mutable Menge::FilePath File;
                 };
                 

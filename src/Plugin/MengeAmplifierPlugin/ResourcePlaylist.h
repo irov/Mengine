@@ -11,6 +11,7 @@ namespace Menge
 	{
 		ConstString path;
 		ConstString codec;
+		float delay;
 		float volume;
 		bool external;
 	};

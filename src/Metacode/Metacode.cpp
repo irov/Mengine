@@ -4,7 +4,7 @@ namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
-    static const uint32_t metacode_version = 99;
+    static const uint32_t metacode_version = 100;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -2445,7 +2445,9 @@ namespace Metacode
     Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::Meta_Track()
         : Metabuf::Metadata()
         , Codec_successful(false)
+        , Delay_successful(false)
         , External_successful(false)
+        , File_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2456,25 +2458,42 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
     {
-        this->read( _buff, _size, _read, this->File );
+        (void)_buff;
+        (void)_size;
+        (void)_read;
     }
+    
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
-        case 2:
+        case 3:
             {
                 this->read( _buff, _size, _read, this->Codec );
     
                 this->Codec_successful = true;
     
             }break;
-        case 3:
+        case 2:
+            {
+                this->read( _buff, _size, _read, this->Delay );
+    
+                this->Delay_successful = true;
+    
+            }break;
+        case 4:
             {
                 this->read( _buff, _size, _read, this->External );
     
                 this->External_successful = true;
+    
+            }break;
+        case 1:
+            {
+                this->read( _buff, _size, _read, this->File );
+    
+                this->File_successful = true;
     
             }break;
         }

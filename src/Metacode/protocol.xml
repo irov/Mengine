@@ -1,4 +1,4 @@
-<Protocol Version = "99">
+<Protocol Version = "100">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -215,7 +215,8 @@
       <Member Node="Shuffle" Name="Value" Type="bool"/>
       <Node Name="Tracks">
         <Node Name="Track">
-          <Attribute Name="File" Type="Menge::FilePath" Required="1"/>
+          <Attribute Name="File" Type="Menge::FilePath"/>
+          <Attribute Name="Delay" Type="float"/>
           <Attribute Name="Codec" Type="Menge::ConstString"/>
           <Attribute Name="External" Type="bool"/>
         </Node>

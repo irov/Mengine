@@ -23,11 +23,14 @@ namespace Menge
 		virtual void stop() = 0;
 		virtual bool pause() = 0;
 		virtual bool resume() = 0;
+
+	public:
+		virtual float getLengthMs() const = 0;
 		
 		virtual void setPosMs( float _posMs ) = 0;
 		virtual float getPosMs() const = 0;
 	};
 
 #   define AMPLIFIER_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::AmplifierInterface)
+    ((Menge::AmplifierInterface *)SERVICE_GET(serviceProvider, Menge::AmplifierInterface))
 }

@@ -121,18 +121,33 @@ namespace Menge
 
         const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
-		float limitNoStreamSoundDuration = CONFIG_VALUE(m_serviceProvider, "Limit", "NoStreamSoundDuration", 2000.f ); //4kb
+		float limitNoStreamSoundDurationWarning = CONFIG_VALUE( m_serviceProvider, "Limit", "NoStreamSoundDurationWarning", 2000.f ); //4kb
+						
+		if( (dataInfo->length > limitNoStreamSoundDurationWarning && limitNoStreamSoundDurationWarning != 0.f) && m_isStreamable == false )
+		{
+			LOGGER_WARNING( m_serviceProvider )("SoundEngine::_isValid: %s setup to stream (time %.4f > %.4f ms)\nfile - %s:%s\nAdd <IsStreamable Value=\"1\"/>"
+				, m_name.c_str()
+				, dataInfo->length
+				, limitNoStreamSoundDurationWarning
+				, category.c_str()
+				, m_filePath.c_str()
+				);
+		}
 
-		if( (dataInfo->length > limitNoStreamSoundDuration && limitNoStreamSoundDuration != 0.f) && m_isStreamable == false )
-        {
-            LOGGER_WARNING(m_serviceProvider)("SoundEngine::_isValid: %s setup to stream (time %.4f > %.4f ms)\nfile - %s:%s"
-                , m_name.c_str()
-                , dataInfo->length
-				, limitNoStreamSoundDuration
-                , category.c_str()
-                , m_filePath.c_str() 
-                );
-        }
+		float limitNoStreamSoundDurationError = CONFIG_VALUE( m_serviceProvider, "Limit", "NoStreamSoundDurationError", 10000.f ); //4kb
+		
+		if( (dataInfo->length > limitNoStreamSoundDurationError && limitNoStreamSoundDurationError != 0.f) && m_isStreamable == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("SoundEngine::_isValid: %s setup to stream (time %.4f > %.4f ms)\nfile - %s:%s\nAdd <IsStreamable Value=\"1\"/>"
+				, m_name.c_str()
+				, dataInfo->length
+				, limitNoStreamSoundDurationError
+				, category.c_str()
+				, m_filePath.c_str()
+				);
+
+			return false;
+		}
 
         decoder = nullptr;
         stream = nullptr;

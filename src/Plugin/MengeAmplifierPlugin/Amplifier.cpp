@@ -340,8 +340,6 @@ namespace Menge
 
         if( m_sourceID != 0 )
         {
-            //Holder<SoundEngine>::get()
-            //	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
             this->play_();
         }
 		//}
@@ -412,6 +410,19 @@ namespace Menge
 	const ConstString& Amplifier::getPlayTrack() const
 	{
 		return m_currentPlaylistName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Amplifier::getLengthMs() const
+	{
+		if( m_sourceID == 0 )
+		{
+			return 0.f;
+		}
+
+		float pos = SOUND_SERVICE( m_serviceProvider )
+			->getLengthMs( m_sourceID );
+
+		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Amplifier::getPosMs() const

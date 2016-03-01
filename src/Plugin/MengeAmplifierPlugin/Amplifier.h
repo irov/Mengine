@@ -38,8 +38,9 @@ namespace	Menge
 		
 		uint32_t getNumTracks() const override;
 		uint32_t getCurrentTrack() const override;
-
-		//void onTurnSound( bool _turn ) override;
+		
+	public:
+		float getLengthMs() const override;
 		
 		void setPosMs( float _posMs ) override;
 		float getPosMs() const override;

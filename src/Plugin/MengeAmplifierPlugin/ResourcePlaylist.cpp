@@ -48,10 +48,13 @@ namespace Menge
 
 				TrackDesc desc;
 
+				desc.delay = 0.f;
 				desc.volume = 1.f;
 
-				meta_track.swap_File( desc.path );
+				meta_track.get_Delay( desc.delay );
 
+				meta_track.swap_File( desc.path );
+				
 				desc.external = false;
 				meta_track.get_External( desc.external );
 

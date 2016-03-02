@@ -551,6 +551,20 @@ namespace Menge
 		return points;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & Polygon::inner_point( uint32_t _index, uint32_t _v ) const
+	{
+		const mt::vec2f * v = this->inner_points( _index );
+
+		return v[_v];
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f & Polygon::inner_point( uint32_t _index, uint32_t _v )
+	{
+		mt::vec2f * v = this->inner_points( _index );
+
+		return v[_v];
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Polygon::outer_point( uint32_t _index ) const
 	{
 		const BoostPolygon::ring_type & ring = THIS_IMPL.outer();

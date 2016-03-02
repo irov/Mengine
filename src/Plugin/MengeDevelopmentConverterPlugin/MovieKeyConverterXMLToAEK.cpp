@@ -16,6 +16,8 @@
 
 #	include "Math/quat.h"
 
+#	include "poly2tri/poly2tri.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -485,8 +487,19 @@ namespace Menge
 
 			aw << layerIndex;
 
-			float width = meta_imageshape.get_Width();
-			float height = meta_imageshape.get_Height();
+			const mt::vec2f & imageMaxSize = meta_imageshape.get_ImageMaxSize();
+
+			mt::vec2f imageSize;
+			if( meta_imageshape.get_ImageSize( imageSize ) == false )
+			{
+				imageSize = imageMaxSize;
+			}
+
+			mt::vec2f imageOffset( 0.f, 0.f );
+			meta_imageshape.get_ImageOffset( imageOffset );
+			
+			bool subtract = false;
+			meta_imageshape.get_Subtract( subtract );
 
 			const Metacode::Meta_KeyFramesPack::Meta_ImageShape::TVectorMeta_Shape & includes_shapes = meta_imageshape.get_IncludesShape();
 
@@ -503,10 +516,10 @@ namespace Menge
 				Menge::Polygon polygon = meta_shape.get_Polygon();
 				polygon.correct();
 
-				mt::vec2f v0(0.f, 0.f);
-				mt::vec2f v1(width, 0.f);
-				mt::vec2f v2(width, height);
-				mt::vec2f v3(0.f, height);
+				mt::vec2f v0( 0.f, 0.f );
+				mt::vec2f v1( imageMaxSize.x, 0.f );
+				mt::vec2f v2( imageMaxSize.x, imageMaxSize.y );
+				mt::vec2f v3( 0.f, imageMaxSize.y );
 
 				Polygon imagePolygon;
 				imagePolygon.append( v0 );
@@ -516,13 +529,27 @@ namespace Menge
 				imagePolygon.correct();
 
 				TVectorPolygon output;
-				if( polygon.intersection( imagePolygon, output ) == false )
+				if( subtract == false )
 				{
-					LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
-						, layerIndex
-						);
+					if( polygon.intersection( imagePolygon, output ) == false )
+					{
+						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
+							, layerIndex
+							);
 
-					return false;
+						return false;
+					}
+				}
+				else
+				{
+					if( imagePolygon.difference( polygon, output ) == false )
+					{
+						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
+							, layerIndex
+							);
+
+						return false;
+					}
 				}
 
 				MovieFrameShape shape;
@@ -537,38 +564,128 @@ namespace Menge
 				}
 				else
 				{
-					Menge::Polygon shape_vertex = output[0];
+					std::vector<p2t::Point> p2t_points;
 
-					shape_vertex.correct();
+					uint32_t max_points = 0;
 
-					size_t shapeVertexCount = shape_vertex.num_points() - 1;
-
-					if( shapeVertexCount >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
+					for( TVectorPolygon::const_iterator
+						it = output.begin(),
+						it_end = output.end();
+					it != it_end;
+					++it )
 					{
-						LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d vertex overflow %d (max %d)"
+						const Menge::Polygon & shape_vertex = *it;
+
+						uint32_t outer_count = shape_vertex.outer_count();
+
+						max_points += outer_count - 1;
+
+						uint32_t inners_count = shape_vertex.inners_count();
+
+						for( uint32_t index = 0; index != inners_count; ++index )
+						{
+							uint32_t inner_count = shape_vertex.inner_count( index );
+
+							max_points += inner_count - 1;
+						}
+					}
+
+					if( max_points >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
+					{
+						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d vertex overflow %d (max %d)"
 							, layerIndex
-							, shapeVertexCount
+							, max_points
 							, MENGINE_MOVIE_SHAPE_MAX_VERTEX
 							);
 
 						return false;
 					}
 
+					p2t_points.reserve( max_points );
+					
 					Menge::TVectorIndices shape_indices;
-					if( shape_vertex.triangulate_indices( shape_indices ) == false )
+					
+					for( TVectorPolygon::const_iterator
+						it = output.begin(),
+						it_end = output.end();
+					it != it_end;
+					++it )
 					{
-						LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d invalid triangulate"
-							, layerIndex
-							);
+						const Menge::Polygon & shape_vertex = *it;
 
-						return false;
+						std::vector<p2t::Point*> p2t_polygon;
+
+						uint32_t outer_count = shape_vertex.outer_count();
+
+						for( uint32_t index = 0; index != outer_count - 1; ++index )
+						{
+							const mt::vec2f & v = shape_vertex.outer_point( index );
+
+							p2t_points.push_back( p2t::Point( v.x, v.y ) );
+							p2t::Point * p = &p2t_points.back();
+
+							p2t_polygon.push_back( p );
+						}
+
+						p2t::CDT * cdt = new p2t::CDT( p2t_polygon );
+
+						uint32_t inners_count = shape_vertex.inners_count();
+
+						for( uint32_t index_inners = 0; index_inners != inners_count; ++index_inners )
+						{
+							std::vector<p2t::Point*> p2t_hole;
+
+							uint32_t inner_count = shape_vertex.inner_count( index_inners );
+
+							for( uint32_t index_inner = 0; index_inner != inner_count - 1; ++index_inner )
+							{
+								const mt::vec2f & v = shape_vertex.inner_point( index_inners, index_inner );
+
+								p2t_points.push_back( p2t::Point( v.x, v.y ) );
+								p2t::Point * p = &p2t_points.back();
+
+								p2t_hole.push_back( p );
+							}
+
+							cdt->AddHole( p2t_hole );
+						}
+
+						cdt->Triangulate();
+
+						std::vector<p2t::Triangle*> triangles = cdt->GetTriangles();
+
+						for( std::vector<p2t::Triangle*>::iterator
+							it = triangles.begin(),
+							it_end = triangles.end();
+						it != it_end;
+						++it )
+						{
+							p2t::Triangle* tr = *it;
+
+							p2t::Point * p0 = tr->GetPoint( 0 );
+							p2t::Point * p1 = tr->GetPoint( 1 );
+							p2t::Point * p2 = tr->GetPoint( 2 );
+
+							p2t::Point * pb = &p2t_points[0];
+
+							uint32_t i0 = std::distance( pb, p0 );
+							uint32_t i1 = std::distance( pb, p1 );
+							uint32_t i2 = std::distance( pb, p2 );
+
+							shape_indices.push_back( i0 );
+							shape_indices.push_back( i1 );
+							shape_indices.push_back( i2 );
+						}
+
+						delete cdt;
 					}
 
-					size_t shapeIndicesCount = shape_indices.size();
+					uint32_t shapeVertexCount = p2t_points.size();
+					uint32_t shapeIndicesCount = shape_indices.size();
 
 					if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
 					{
-						LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d index overflow %d (max $d)"
+						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d index overflow %d (max $d)"
 							, layerIndex
 							, shapeIndicesCount
 							, MENGINE_MOVIE_SHAPE_MAX_INDICES
@@ -587,36 +704,36 @@ namespace Menge
 
 					for( size_t i = 0; i != shapeVertexCount; ++i )
 					{
-						const mt::vec2f & shape_pos = shape_vertex.outer_point( i );
+						const p2t::Point & shape_pos = p2t_points[i];
 
-						shape.pos[i].x = shape_pos.x;
-						shape.pos[i].y = shape_pos.y;
+						shape.pos[i].x = (float)shape_pos.x;
+						shape.pos[i].y = (float)shape_pos.y;
 
-						shape.uv[i].x = shape_pos.x / width;
-						shape.uv[i].y = shape_pos.y / height;
+						shape.uv[i].x = ((float)shape_pos.x - imageOffset.x) / imageSize.x;
+						shape.uv[i].y = ((float)shape_pos.y - imageOffset.y) / imageSize.y;
 					}
 
 					for( size_t i = 0; i != shapeIndicesCount; ++i )
 					{
 						shape.indices[i] = (RenderIndices)shape_indices[i];
 					}
+
+					aw << shape.vertexCount;
+
+					if( shape.vertexCount > 0 )
+					{
+						aw.writePODs( shape.pos, shape.vertexCount );
+						aw.writePODs( shape.uv, shape.vertexCount );
+
+						aw << shape.indexCount;
+
+						aw.writePODs( shape.indices, shape.indexCount );
+					}
+
+					Helper::freeMemory( shape.pos );
+					Helper::freeMemory( shape.uv );
+					Helper::freeMemory( shape.indices );
 				}
-
-				aw << shape.vertexCount;
-
-				if( shape.vertexCount > 0 )
-				{
-					aw.writePODs( shape.pos, shape.vertexCount );
-					aw.writePODs( shape.uv, shape.vertexCount );
-
-					aw << shape.indexCount;
-
-					aw.writePODs( shape.indices, shape.indexCount );
-				}
-
-				Helper::freeMemory( shape.pos );
-				Helper::freeMemory( shape.uv );
-				Helper::freeMemory( shape.indices );
 			}
 		}
 

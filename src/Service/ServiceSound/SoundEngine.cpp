@@ -820,7 +820,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setLoop( uint32_t _emitterId, bool _looped )
+	bool SoundEngine::setLoop( uint32_t _emitterId, bool _looped )
 	{
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
@@ -829,11 +829,13 @@ namespace Menge
 				, _emitterId
 				);
 
-			return;
+			return false;
 		}
 
 		source->looped = _looped;
 		source->source->setLoop( _looped );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::getLoop( uint32_t _emitterId ) const

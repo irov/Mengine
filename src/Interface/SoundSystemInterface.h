@@ -173,7 +173,7 @@ namespace Menge
 		virtual bool stop( uint32_t _emitter ) = 0;
 
 	public:
-		virtual void setLoop( uint32_t _emitter, bool _looped ) = 0;
+		virtual bool setLoop( uint32_t _emitter, bool _looped ) = 0;
 		virtual bool getLoop( uint32_t _emitter ) const = 0;
 
 	public:

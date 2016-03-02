@@ -1,4 +1,4 @@
-<Protocol Version = "100">
+<Protocol Version = "103">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -210,17 +210,11 @@
       <Member Node="IsStreamable" Name="Value" Type="bool"/>
     </Node>
 
-    <Node Name="ResourcePlaylist" Inheritance = "Resource">
-      <Member Node="Loop" Name="Value" Type="bool"/>
-      <Member Node="Shuffle" Name="Value" Type="bool"/>
-      <Node Name="Tracks">
-        <Node Name="Track">
-          <Attribute Name="File" Type="Menge::FilePath"/>
-          <Attribute Name="Delay" Type="float"/>
-          <Attribute Name="Codec" Type="Menge::ConstString"/>
-          <Attribute Name="External" Type="bool"/>
-        </Node>
-      </Node>
+    <Node Name="ResourceMusic" Inheritance = "Resource">
+        <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
+        <Member Node="File" Name="Codec" Type="Menge::ConstString"/>        
+        <Member Node="File" Name="External" Type="bool"/>
+        <Member Node="DefaultVolume" Name="Value" Type="float"/>
     </Node>
 
     <Node Name="ResourceWindow" Inheritance = "Resource">
@@ -444,9 +438,11 @@
 
     <Node Name="ImageShape">
       <Attribute Name="LayerIndex" Type="uint32_t" Required="1"/>
-      <Attribute Name="Width" Type="float" Required="1"/>
-      <Attribute Name="Height" Type="float" Required="1"/>
+      <Attribute Name="ImageMaxSize" Type="mt::vec2f" Required="1"/>
+      <Attribute Name="ImageSize" Type="mt::vec2f"/>
+      <Attribute Name="ImageOffset" Type="mt::vec2f"/>
       <Attribute Name="Immutable" Type="bool"/>
+      <Attribute Name="Subtract" Type="bool"/>
       <Attribute Name="Count" Type="uint32_t"/>
       <Node Name="Shape">
         <Attribute Name="Polygon" Type="Menge::Polygon" Required="1"/>

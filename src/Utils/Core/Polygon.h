@@ -25,6 +25,9 @@ namespace Menge
 		Polygon( const void * _impl );
 
 	public:
+		typedef uint32_t size_type;
+
+	public:
 		void operator = (const Polygon & _polygon);
 		
 	public:
@@ -58,6 +61,8 @@ namespace Menge
 		uint32_t inner_count( uint32_t _index ) const;
 		const mt::vec2f * inner_points( uint32_t _index ) const;
 		mt::vec2f * inner_points( uint32_t _index );
+		const mt::vec2f & inner_point( uint32_t _index, uint32_t _v ) const;
+		mt::vec2f & inner_point( uint32_t _index, uint32_t _v );
 		
 	public:
 		bool intersects( const Polygon & _polygon ) const;

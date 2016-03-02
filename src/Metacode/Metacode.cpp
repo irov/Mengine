@@ -4,7 +4,7 @@ namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
-    static const uint32_t metacode_version = 100;
+    static const uint32_t metacode_version = 103;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -318,16 +318,16 @@ namespace Metacode
     
                 includes_Meta_Resource.push_back(metadata);
             }break;
-        case 12:
+        case 17:
             {
-                Meta_DataBlock::Meta_ResourceParticle * metadata = new Meta_DataBlock::Meta_ResourceParticle ();
+                Meta_DataBlock::Meta_ResourceMusic * metadata = new Meta_DataBlock::Meta_ResourceMusic ();
                 metadata->parse( _buff, _size, _read, m_userData );
     
                 includes_Meta_Resource.push_back(metadata);
             }break;
-        case 17:
+        case 12:
             {
-                Meta_DataBlock::Meta_ResourcePlaylist * metadata = new Meta_DataBlock::Meta_ResourcePlaylist ();
+                Meta_DataBlock::Meta_ResourceParticle * metadata = new Meta_DataBlock::Meta_ResourceParticle ();
                 metadata->parse( _buff, _size, _read, m_userData );
     
                 includes_Meta_Resource.push_back(metadata);
@@ -2188,6 +2188,71 @@ namespace Metacode
     
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceMusic::Meta_ResourceMusic()
+        : Meta_Resource()
+        , DefaultVolume_Value_successful(false)
+        , File_Codec_successful(false)
+        , File_External_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Meta_DataBlock::Meta_ResourceMusic::getId() const
+    {
+        return 17;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meta_DataBlock::Meta_ResourceMusic::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
+    {
+        Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read );
+    
+        this->read( _buff, _size, _read, this->File_Path );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meta_DataBlock::Meta_ResourceMusic::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
+    {
+        Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id );
+    
+        switch( _id )
+        {
+        case 7:
+            {
+                this->read( _buff, _size, _read, this->DefaultVolume_Value );
+    
+                this->DefaultVolume_Value_successful = true;
+    
+            }break;
+        case 5:
+            {
+                this->read( _buff, _size, _read, this->File_Codec );
+    
+                this->File_Codec_successful = true;
+    
+            }break;
+        case 6:
+            {
+                this->read( _buff, _size, _read, this->File_External );
+    
+                this->File_External_successful = true;
+    
+            }break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meta_DataBlock::Meta_ResourceMusic::_preparationIncludes( uint32_t _includes, uint32_t _count )
+    {
+        Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meta_DataBlock::Meta_ResourceMusic::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
+    {
+        Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meta_DataBlock::Meta_ResourceMusic::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
+    {
+        Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators );
+    }
+    //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_ResourceParticle::Meta_ResourceParticle()
         : Meta_Resource()
         , File_Converter_successful(false)
@@ -2299,223 +2364,6 @@ namespace Metacode
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
-    {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_generators;
-    
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Meta_DataBlock::Meta_ResourcePlaylist::Meta_ResourcePlaylist()
-        : Meta_Resource()
-        , Loop_Value_successful(false)
-        , Shuffle_Value_successful(false)
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Meta_DataBlock::Meta_ResourcePlaylist::getId() const
-    {
-        return 17;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
-    {
-        Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read );
-    
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
-    {
-        Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id );
-    
-        switch( _id )
-        {
-        case 4:
-            {
-                this->read( _buff, _size, _read, this->Loop_Value );
-    
-                this->Loop_Value_successful = true;
-    
-            }break;
-        case 5:
-            {
-                this->read( _buff, _size, _read, this->Shuffle_Value );
-    
-                this->Shuffle_Value_successful = true;
-    
-            }break;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::_preparationIncludes( uint32_t _includes, uint32_t _count )
-    {
-        Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count );
-    
-        switch( _includes )
-        {
-        case 6:
-            {
-                includes_Meta_Tracks.reserve( _count );
-            }break;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
-    {
-        Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes );
-    
-        switch( _includes )
-        {
-        case 6:
-            {
-                Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks & metadata = includes_Meta_Tracks.emplace_back();
-    
-                metadata.parse( _buff, _size, _read, m_userData );
-            }break;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
-    {
-        Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators );
-    
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Tracks()
-        : Metabuf::Metadata()
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::getId() const
-    {
-        return 6;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
-    {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-    }
-    
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
-    {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_id;
-    }
-    
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_preparationIncludes( uint32_t _includes, uint32_t _count )
-    {
-        switch( _includes )
-        {
-        case 1:
-            {
-                includes_Meta_Track.reserve( _count );
-            }break;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
-    {
-        switch( _includes )
-        {
-        case 1:
-            {
-                Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track & metadata = includes_Meta_Track.emplace_back();
-    
-                metadata.parse( _buff, _size, _read, m_userData );
-            }break;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
-    {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_generators;
-    
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::Meta_Track()
-        : Metabuf::Metadata()
-        , Codec_successful(false)
-        , Delay_successful(false)
-        , External_successful(false)
-        , File_successful(false)
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::getId() const
-    {
-        return 1;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
-    {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-    }
-    
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
-    {
-        switch( _id )
-        {
-        case 3:
-            {
-                this->read( _buff, _size, _read, this->Codec );
-    
-                this->Codec_successful = true;
-    
-            }break;
-        case 2:
-            {
-                this->read( _buff, _size, _read, this->Delay );
-    
-                this->Delay_successful = true;
-    
-            }break;
-        case 4:
-            {
-                this->read( _buff, _size, _read, this->External );
-    
-                this->External_successful = true;
-    
-            }break;
-        case 1:
-            {
-                this->read( _buff, _size, _read, this->File );
-    
-                this->File_successful = true;
-    
-            }break;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_preparationIncludes( uint32_t _includes, uint32_t _count )
-    {
-        (void)_includes;
-        (void)_count;
-    
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
-    {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_includes;
-    
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -2996,7 +2844,10 @@ namespace Metacode
     Meta_KeyFramesPack::Meta_ImageShape::Meta_ImageShape()
         : Metabuf::Metadata()
         , Count_successful(false)
+        , ImageOffset_successful(false)
+        , ImageSize_successful(false)
         , Immutable_successful(false)
+        , Subtract_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3007,16 +2858,15 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     void Meta_KeyFramesPack::Meta_ImageShape::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
     {
-        this->read( _buff, _size, _read, this->Height );
+        this->read( _buff, _size, _read, this->ImageMaxSize );
         this->read( _buff, _size, _read, this->LayerIndex );
-        this->read( _buff, _size, _read, this->Width );
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_KeyFramesPack::Meta_ImageShape::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
-        case 5:
+        case 7:
             {
                 this->read( _buff, _size, _read, this->Count );
     
@@ -3025,9 +2875,30 @@ namespace Metacode
             }break;
         case 4:
             {
+                this->read( _buff, _size, _read, this->ImageOffset );
+    
+                this->ImageOffset_successful = true;
+    
+            }break;
+        case 3:
+            {
+                this->read( _buff, _size, _read, this->ImageSize );
+    
+                this->ImageSize_successful = true;
+    
+            }break;
+        case 5:
+            {
                 this->read( _buff, _size, _read, this->Immutable );
     
                 this->Immutable_successful = true;
+    
+            }break;
+        case 6:
+            {
+                this->read( _buff, _size, _read, this->Subtract );
+    
+                this->Subtract_successful = true;
     
             }break;
         }
@@ -3037,7 +2908,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 6:
+        case 8:
             {
                 includes_Meta_Shape.reserve( _count );
             }break;
@@ -3048,7 +2919,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 6:
+        case 8:
             {
                 Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & metadata = includes_Meta_Shape.emplace_back();
     
@@ -3073,7 +2944,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::getId() const
     {
-        return 6;
+        return 8;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )

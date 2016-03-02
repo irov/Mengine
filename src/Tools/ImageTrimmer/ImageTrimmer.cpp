@@ -395,81 +395,87 @@ namespace Menge
 			}
 		}
 
-		String utf8_out;
-		Helper::unicodeToUtf8(serviceProvider, out, utf8_out);
-
-		ConstString c_out = Helper::stringizeString(serviceProvider, utf8_out);
-
-		OutputStreamInterfacePtr output_stream = FILE_SERVICE(serviceProvider)
-			->openOutputFile( ConstString::none(), c_out );
-
-		if( output_stream == nullptr )
+		if( out.empty() == false )
 		{
-			return false;
+			String utf8_out;
+			Helper::unicodeToUtf8( serviceProvider, out, utf8_out );
+
+			ConstString c_out = Helper::stringizeString( serviceProvider, utf8_out );
+
+			OutputStreamInterfacePtr output_stream = FILE_SERVICE( serviceProvider )
+				->openOutputFile( ConstString::none(), c_out );
+
+			if( output_stream == nullptr )
+			{
+				return false;
+			}
+
+			ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE( serviceProvider )
+				->createEncoderT<ImageEncoderInterfacePtr>( codecType );
+
+			if( imageEncoder == nullptr )
+			{
+				return false;
+			}
+
+			if( imageEncoder->initialize( output_stream ) == false )
+			{
+				return false;
+			}
+
+			ImageCodecOptions encode_options;
+
+			encode_options.pitch = new_width * decode_dataInfo->channels;
+			encode_options.channels = decode_dataInfo->channels;
+
+			imageEncoder->setOptions( &encode_options );
+
+			ImageCodecDataInfo encode_dataInfo;
+			//dataInfo.format = _image->getHWPixelFormat();
+			encode_dataInfo.width = new_width;
+			encode_dataInfo.height = new_height;
+			encode_dataInfo.channels = decode_dataInfo->channels;
+			encode_dataInfo.depth = 1;
+			encode_dataInfo.mipmaps = 1;
+
+			if( imageEncoder->encode( new_textureBuffer, new_bufferSize, &encode_dataInfo ) == 0 )
+			{
+				return false;
+			}
 		}
 
-		ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE(serviceProvider)
-			->createEncoderT<ImageEncoderInterfacePtr>( codecType );
-
-		if( imageEncoder == nullptr )
+		if( info.empty() == false )
 		{
-			return false;
-		}
+			String utf8_info;
+			Helper::unicodeToUtf8( serviceProvider, info, utf8_info );
 
-		if( imageEncoder->initialize( output_stream ) == false )
-		{
-			return false;
-		}
+			ConstString c_info = Helper::stringizeString( serviceProvider, utf8_info );
 
-		ImageCodecOptions encode_options;
+			OutputStreamInterfacePtr info_stream = FILE_SERVICE( serviceProvider )
+				->openOutputFile( ConstString::none(), c_info );
 
-		encode_options.pitch = new_width * decode_dataInfo->channels;
-		encode_options.channels = decode_dataInfo->channels;
+			if( info_stream == nullptr )
+			{
+				return false;
+			}
 
-		imageEncoder->setOptions( &encode_options );
+			char info_buffer[1024];
 
-		ImageCodecDataInfo encode_dataInfo;
-		//dataInfo.format = _image->getHWPixelFormat();
-		encode_dataInfo.width = new_width;
-		encode_dataInfo.height = new_height;
-		encode_dataInfo.channels = decode_dataInfo->channels;
-		encode_dataInfo.depth = 1;
-		encode_dataInfo.mipmaps = 1;
+			sprintf( info_buffer, "%u\n%u\n%u\n%u\n%u\n%u\n"
+				, width
+				, height
+				, new_width
+				, new_height
+				, min_i
+				, min_j
+				);
 
-		if( imageEncoder->encode( new_textureBuffer, new_bufferSize, &encode_dataInfo ) == 0 )
-		{
-			return false;
-		}
+			size_t info_buffer_size = strlen( info_buffer );
 
-		String utf8_info;
-		Helper::unicodeToUtf8(serviceProvider, info, utf8_info);
-
-		ConstString c_info = Helper::stringizeString(serviceProvider, utf8_info);
-
-		OutputStreamInterfacePtr info_stream = FILE_SERVICE(serviceProvider)
-			->openOutputFile( ConstString::none(), c_info );
-
-		if( info_stream == nullptr )
-		{
-			return false;
-		}
-
-		char info_buffer[1024];
-
-		sprintf(info_buffer, "%u\n%u\n%u\n%u\n%u\n%u\n"
-			, width
-			, height
-			, new_width
-			, new_height
-			, min_i
-			, min_j
-			);
-
-		size_t info_buffer_size = strlen( info_buffer );
-
-		if( info_stream->write( info_buffer, info_buffer_size + 1 ) == false )
-		{
-			return false;
+			if( info_stream->write( info_buffer, info_buffer_size + 1 ) == false )
+			{
+				return false;
+			}
 		}
 
 		return true;
@@ -788,14 +794,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	if( in.empty() == true )
 	{
 		message_error("not found 'in' param"
-			);
-
-		return 0;
-	}
-
-	if( out.empty() == true )
-	{
-		message_error("not found 'out' param"
 			);
 
 		return 0;

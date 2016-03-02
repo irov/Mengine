@@ -461,7 +461,7 @@ namespace	Menge
 				->getCommonVolume( CONST_STRING(m_serviceProvider, Generic) );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void musicPlayTrack( const ConstString & _list, uint32_t _index, float _pos, bool _isLooped )
+		void musicPlay( const ConstString & _resourceMusic, float _pos, bool _isLooped )
 		{
 			if( SERVICE_EXIST( m_serviceProvider, AmplifierInterface ) == false )
 			{
@@ -469,18 +469,7 @@ namespace	Menge
 			}
 
 			AMPLIFIER_SERVICE(m_serviceProvider)
-				->playTrack( _list, _index, _pos, _isLooped );
-		}
-		//////////////////////////////////////////////////////////////////////////
-		uint32_t musicGetNumTracks()
-		{
-			if( SERVICE_EXIST( m_serviceProvider, AmplifierInterface ) == false )
-			{
-				return 0;
-			}
-
-			return AMPLIFIER_SERVICE(m_serviceProvider)
-				->getNumTracks();
+				->playMusic( _resourceMusic, _pos, _isLooped );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void musicSetVolume( float _volume )
@@ -528,26 +517,6 @@ namespace	Menge
 
 			return successful;
         }
-		//////////////////////////////////////////////////////////////////////////
-		bool musicShuffle( const ConstString & _list )
-		{
-			bool successful = AMPLIFIER_SERVICE(m_serviceProvider)
-				->shuffle( _list );
-
-			return successful;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		const ConstString & s_musicGetPlaying()
-		{
-			return AMPLIFIER_SERVICE(m_serviceProvider)
-				->getPlayTrack();
-		}
-		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_musicGetPlayingTrackIndex()
-		{
-			return AMPLIFIER_SERVICE(m_serviceProvider)
-				->getCurrentTrack();
-		}
 		//////////////////////////////////////////////////////////////////////////
 		float s_musicGetLengthMs()
 		{
@@ -660,7 +629,7 @@ namespace	Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_musicFadeOut( const ConstString & _list, uint32_t _index, float _pos, bool _isLooped, float _time )
+		uint32_t s_musicFadeOut( const ConstString & _resourceMusic, float _pos, bool _isLooped, float _time )
 		{
 			if( SERVICE_EXIST( m_serviceProvider, AmplifierInterface ) == false )
 			{
@@ -668,7 +637,7 @@ namespace	Menge
 			}
 
 			AMPLIFIER_SERVICE( m_serviceProvider )
-				->playTrack( _list, _index, _pos, _isLooped );
+				->playMusic( _resourceMusic, _pos, _isLooped );
 
 			Affector* affector = 
 				m_affectorCreatorMusic.create( m_serviceProvider
@@ -737,16 +706,12 @@ namespace	Menge
 		pybind::def_functor_args( "soundFadeIn", soundScriptMethod, &SoundScriptMethod::s_soundFadeIn );
 		pybind::def_functor_args( "soundFadeOut", soundScriptMethod, &SoundScriptMethod::s_soundFadeOut );
 				
-		pybind::def_functor( "musicPlayTrack", soundScriptMethod, &SoundScriptMethod::musicPlayTrack );
-		pybind::def_functor( "musicGetNumTracks", soundScriptMethod, &SoundScriptMethod::musicGetNumTracks );
+		pybind::def_functor( "musicPlay", soundScriptMethod, &SoundScriptMethod::musicPlay );
 		pybind::def_functor( "musicSetVolume", soundScriptMethod, &SoundScriptMethod::musicSetVolume );
 		pybind::def_functor( "musicGetVolume", soundScriptMethod, &SoundScriptMethod::musicGetVolume );
 		pybind::def_functor( "musicStop", soundScriptMethod, &SoundScriptMethod::musicStop );
         pybind::def_functor( "musicPause", soundScriptMethod, &SoundScriptMethod::musicPause );
         pybind::def_functor( "musicResume", soundScriptMethod, &SoundScriptMethod::musicResume );
-		pybind::def_functor( "musicShuffle", soundScriptMethod, &SoundScriptMethod::musicShuffle );
-		pybind::def_functor( "musicGetPlaying", soundScriptMethod, &SoundScriptMethod::s_musicGetPlaying );
-		pybind::def_functor( "musicGetPlayingTrackIndex", soundScriptMethod, &SoundScriptMethod::s_musicGetPlayingTrackIndex );
 		pybind::def_functor( "musicGetLengthMs", soundScriptMethod, &SoundScriptMethod::s_musicGetLengthMs );
 		pybind::def_functor( "musicGetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicGetPosMs );
 		pybind::def_functor( "musicSetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicSetPosMs );

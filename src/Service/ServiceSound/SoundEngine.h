@@ -114,7 +114,7 @@ namespace Menge
 		bool stop( uint32_t _emitterId ) override;
 
 	public:
-		void setLoop( uint32_t _emitterId, bool _looped ) override;
+		bool setLoop( uint32_t _emitterId, bool _looped ) override;
 		bool getLoop( uint32_t _emitterId ) const override;
 
 	public:

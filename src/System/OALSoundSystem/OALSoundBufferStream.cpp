@@ -163,10 +163,10 @@ namespace Menge
 
 		//ALint al_loop = _looped ? AL_TRUE : AL_FALSE;
 		//alSourcei( m_sourceId, AL_LOOPING, al_loop );
-		//OAL_CHECK_ERROR(m_serviceProvider);
+		//OAL_CHECK_ERROR( m_serviceProvider );
 
 		alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
-		OAL_CHECK_ERROR(m_serviceProvider);
+		OAL_CHECK_ERROR( m_serviceProvider );
 
 		if( m_soundDecoder->seek( _pos ) == false )
         {
@@ -253,16 +253,6 @@ namespace Menge
             OAL_CHECK_ERROR(m_serviceProvider);
         }
 
-		{
-			ALint val;
-
-			do 
-			{
-				alGetSourcei( _source, AL_SOURCE_STATE, &val );
-			} 
-			while( val == AL_PLAYING );
-		}
-
         alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
         
         alSourceRewind( _source );
@@ -317,12 +307,6 @@ namespace Menge
 			return true;
 		}
 
-        //// Check the status of the Source.  If it is not playing, then playback was completed,
-        //// or the Source was starved of audio data, and needs to be restarted.
-        ALint state;
-        alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
-        OAL_CHECK_ERROR(m_serviceProvider);
-
 		//alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
   //      OAL_CHECK_ERROR(m_serviceProvider);
 
@@ -352,29 +336,54 @@ namespace Menge
 			}
 		}
 
+		//// Check the status of the Source.  If it is not playing, then playback was completed,
+		//// or the Source was starved of audio data, and needs to be restarted.
+		ALint state;
+		alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
+		OAL_CHECK_ERROR( m_serviceProvider );
+
 		if( state != AL_PLAYING && state != AL_PAUSED )
 		{
-			if( m_looped == true )
-			{
-				m_soundDecoder->rewind();
-			
-				alSourceStop( m_sourceId );
-				OAL_CHECK_ERROR(m_serviceProvider);
-			}
+			//if( m_looped == true )
+			//{
+			//	m_soundDecoder->rewind();
+			//
+			//	alSourceStop( m_sourceId );
+			//	OAL_CHECK_ERROR(m_serviceProvider);
+			//}
 
 			// If there are Buffers in the Source Queue then the Source was starved of audio
 			// data, so needs to be restarted (because there is more audio data to play)
-			ALint queuedBuffers;
-			alGetSourcei( m_sourceId, AL_BUFFERS_QUEUED, &queuedBuffers );
-			OAL_CHECK_ERROR(m_serviceProvider);
+			//ALint queuedBuffers;
+			//alGetSourcei( m_sourceId, AL_BUFFERS_QUEUED, &queuedBuffers );
+			//OAL_CHECK_ERROR(m_serviceProvider);
 
-			if( queuedBuffers == 0 )
+			//if( queuedBuffers == 0 )
+			//{
+			//	return false;
+			//}
+
+			if( m_looped == true )
 			{
-				return false;
-			}
+				m_soundDecoder->rewind();
 
-			alSourcePlay( m_sourceId );
-			OAL_CHECK_ERROR(m_serviceProvider);			
+				alSourceRewind( m_sourceId );
+				OAL_CHECK_ERROR( m_serviceProvider );
+
+				for( uint32_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
+				{
+					ALuint id = m_alBuffersId[i];
+
+					size_t bytesWritten;
+					if( this->bufferData_( id, bytesWritten ) == false )
+					{
+						return false;
+					}
+				}
+
+				alSourcePlay( m_sourceId );
+				OAL_CHECK_ERROR( m_serviceProvider );
+			}
 		}	
 
 		return true;

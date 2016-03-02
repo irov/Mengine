@@ -44,6 +44,11 @@ namespace Menge
 	{
 		STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::open" );
 
+#	ifdef _DEBUG
+		m_folder = _folder.c_str();
+		m_fileName = _fileName.c_str();
+#	endif
+
 		WChar filePath[MENGINE_MAX_PATH];
 		if( this->openFile_( _folder, _fileName, filePath ) == false )
 		{

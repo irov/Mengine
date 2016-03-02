@@ -60,5 +60,10 @@ namespace Menge
 		uint8_t m_readCache[MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE];
 
 		STDEX_THREAD_GUARD_INIT;
+
+#	ifdef _DEBUG
+		String m_folder;
+		String m_fileName;
+#	endif
 	};
 }	// namespace Menge

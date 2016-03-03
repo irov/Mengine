@@ -44,7 +44,7 @@ namespace Menge
 
     public:
 		float getLength() const;
-		int getCharsDataSize() const;
+		uint32_t getCharsDataSize() const;
 
 	private:
 		void updateRenderLine_( mt::vec2f & _offset ) const;

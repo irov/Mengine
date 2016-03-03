@@ -89,7 +89,6 @@ PLUGIN_EXPORT( MengeZip );
 PLUGIN_EXPORT( MengeLZ4 );
 PLUGIN_EXPORT( MengeSpine );
 PLUGIN_EXPORT( MengeOggVorbis );
-PLUGIN_EXPORT( MengeSpine );
 PLUGIN_EXPORT( MengeWin32FileGroup );
 
 PLUGIN_EXPORT( PathFinder );

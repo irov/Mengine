@@ -156,9 +156,9 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int TextLine::getCharsDataSize() const
+	uint32_t TextLine::getCharsDataSize() const
 	{
-		return m_charsData.size();
+		return (uint32_t)m_charsData.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextLine::getLength() const

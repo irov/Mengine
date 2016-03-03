@@ -32,7 +32,7 @@ namespace Menge
 		uint32_t magic = FOURCC( 'D', 'D', 'S', ' ' );
 		m_stream->write( &magic, sizeof(magic) );
 
-		size_t ddsSize = Helper::getTextureMemorySize( imageInfo->width, imageInfo->height, imageInfo->channels, imageInfo->depth, imageInfo->format );
+		uint32_t ddsSize = Helper::getTextureMemorySize( imageInfo->width, imageInfo->height, imageInfo->channels, imageInfo->depth, imageInfo->format );
 
 		DDS_HEADER header;
 		memset( &header, 0, sizeof( header ) );

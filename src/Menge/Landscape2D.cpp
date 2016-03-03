@@ -168,7 +168,7 @@ namespace	Menge
 		uint32_t i = 0;
 		uint32_t j = 0;
 
-		uint32_t elementCount = m_images.size();
+		size_t elementCount = m_images.size();
 		m_elements.reserve( elementCount );
 		m_verticesWM.resize( elementCount * 4 );
 

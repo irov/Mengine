@@ -82,24 +82,24 @@ namespace Menge
 		SoundDecoderInterfacePtr createSoundDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _streamable );
 
     public:
-		void setSoundVolume( const ConstString & _type, float _volume ) override;
+		void setSoundVolume( const ConstString & _type, float _volume, float _default ) override;
 		float getSoundVolume( const ConstString & _type ) const override;
 
-		void setCommonVolume( const ConstString & _type, float _volume ) override;
+		void setCommonVolume( const ConstString & _type, float _volume, float _default ) override;
 		float getCommonVolume( const ConstString & _type ) const override;
 
-		void setMusicVolume( const ConstString & _type, float _volume ) override;
+		void setMusicVolume( const ConstString & _type, float _volume, float _default ) override;
 		float getMusicVolume( const ConstString & _type ) const override;
 
-        void setVoiceVolume( const ConstString & _type, float _volume ) override;
+		void setVoiceVolume( const ConstString & _type, float _volume, float _default ) override;
         float getVoiceVolume( const ConstString & _type ) const override;
 
 	public:
-		bool setSourceVolume( uint32_t _emitterId, float _volume ) override;
+		bool setSourceVolume( uint32_t _emitterId, float _volume, float _default ) override;
 		float getSourceVolume( uint32_t _emitterId ) const override;
 
 	public:
-		bool setSourceMixerVolume( uint32_t _emitter, const ConstString & _mixer, float _volume ) override;
+		bool setSourceMixerVolume( uint32_t _emitter, const ConstString & _mixer, float _volume, float _default ) override;
 		float getSourceMixerVolume( uint32_t _emitter, const ConstString & _mixer ) const override;
 
 	public:

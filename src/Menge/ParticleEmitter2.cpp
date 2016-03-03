@@ -138,7 +138,7 @@ namespace	Menge
         bool loop = this->getLoop();
 		emitter->setLoop( loop );
 
-		uint32_t polygon_count = m_polygon.num_points();
+		size_t polygon_count = m_polygon.num_points();
 
         if( polygon_count != 0 )
         {
@@ -704,7 +704,7 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter2::compilePolygon_( const ParticleEmitterInterfacePtr & _emitter )
     {
-		uint32_t n = m_polygon.num_points();
+		size_t n = m_polygon.num_points();
 
         if( n == 0 )
         {
@@ -731,7 +731,7 @@ namespace	Menge
 		}
         
         float * triangles_ptr = points.front().buff();
-        uint32_t triangles_size = points.size() / 3;
+		size_t triangles_size = points.size() / 3;
 
 		if( _emitter->changeEmitterModel( triangles_ptr, triangles_size ) == false )
 		{

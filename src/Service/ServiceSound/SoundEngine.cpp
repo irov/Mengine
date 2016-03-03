@@ -48,16 +48,16 @@ namespace Menge
 		}
 
 		float commonVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "CommonVolume", 1.f);
-		this->setCommonVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), commonVolume );
+		this->setCommonVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), commonVolume, 0.f );
 
 		float soundVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "SoundVolume", 1.f);
-		this->setSoundVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), soundVolume );
+		this->setSoundVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), soundVolume, 0.f );
 
 		float musicVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "MusicVolume", 1.f);
-		this->setMusicVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), musicVolume );
+		this->setMusicVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), musicVolume, 0.f );
 
 		float voiceVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "VoiceVolume", 1.f);
-		this->setVoiceVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), voiceVolume );
+		this->setVoiceVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), voiceVolume, 0.f );
 
 		return true;
 	}
@@ -259,7 +259,7 @@ namespace Menge
         source->bufferId = 0;
 		
         source->timing = 0.f;
-		source->volume.setVolume( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Generic" ), 1.f );
+		source->volume.setVolume( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Generic" ), 1.f, 1.f );
 
 		source->state = ESS_STOP;
 		source->type = _type;
@@ -471,9 +471,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setSoundVolume( const ConstString & _type, float _volume )
+	void SoundEngine::setSoundVolume( const ConstString & _type, float _volume, float _default )
 	{
-		m_soundVolume.setVolume( _type, _volume );
+		m_soundVolume.setVolume( _type, _volume, _default );
 
 		this->updateVolume();
 	}
@@ -485,9 +485,9 @@ namespace Menge
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	void SoundEngine::setCommonVolume( const ConstString & _type, float _volume )
+	void SoundEngine::setCommonVolume( const ConstString & _type, float _volume, float _default )
 	{
-		m_commonVolume.setVolume( _type, _volume );
+		m_commonVolume.setVolume( _type, _volume, _default );
 
 		this->updateVolume();
 	}
@@ -499,9 +499,9 @@ namespace Menge
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setMusicVolume( const ConstString & _type, float _volume )
+	void SoundEngine::setMusicVolume( const ConstString & _type, float _volume, float _default )
 	{
-		m_musicVolume.setVolume( _type, _volume );
+		m_musicVolume.setVolume( _type, _volume, _default );
 
 		this->updateVolume();
 	}
@@ -513,9 +513,9 @@ namespace Menge
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setVoiceVolume( const ConstString & _type, float _volume )
+	void SoundEngine::setVoiceVolume( const ConstString & _type, float _volume, float _default )
 	{
-		m_voiceVolume.setVolume( _type, _volume );
+		m_voiceVolume.setVolume( _type, _volume, _default );
 
 		this->updateVolume();
 	}
@@ -543,6 +543,28 @@ namespace Menge
 		SOUND_SYSTEM(m_serviceProvider)
 			->update();
 
+		bool process = false;
+
+		if( m_commonVolume.update( _timing ) == true )
+		{
+			process = true;
+		}
+
+		if( m_soundVolume.update( _timing ) == true )
+		{
+			process = true;
+		}
+
+		if( m_musicVolume.update( _timing ) == true )
+		{
+			process = true;
+		}
+		
+		if( m_voiceVolume.update( _timing ) == true )
+		{
+			process = true;
+		}
+
 		TVectorSoundListeners m_listeners;
 
 		for( TMapSoundSource::iterator 
@@ -556,6 +578,18 @@ namespace Menge
 			if( source->state != ESS_PLAY )
 			{
 				continue;
+			}
+
+			bool source_process = process;
+
+			if( source->volume.update( _timing ) == true )
+			{
+				source_process = true;
+			}
+
+			if( source_process == true )
+			{
+				this->updateSourceVolume_( source );
 			}
 
 			if( source->looped == true )
@@ -907,7 +941,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::setSourceVolume( uint32_t _emitterId, float _volume )
+	bool SoundEngine::setSourceVolume( uint32_t _emitterId, float _volume, float _default )
 	{
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
@@ -919,7 +953,7 @@ namespace Menge
 			return false;
 		}
                 
-		source->volume.setVolume( STRINGIZE_STRING_LOCAL( m_serviceProvider, "General" ), _volume );
+		source->volume.setVolume( STRINGIZE_STRING_LOCAL( m_serviceProvider, "General" ), _volume, _default );
 
         this->updateSourceVolume_( source );
 
@@ -943,7 +977,7 @@ namespace Menge
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::setSourceMixerVolume( uint32_t _emitterId, const ConstString & _mixer, float _volume )
+	bool SoundEngine::setSourceMixerVolume( uint32_t _emitterId, const ConstString & _mixer, float _volume, float _default )
 	{
 		SoundSourceDesc * source;
 		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
@@ -955,7 +989,7 @@ namespace Menge
 			return false;
 		}
 
-		source->volume.setVolume( _mixer, _volume );
+		source->volume.setVolume( _mixer, _volume, _default );
 
 		this->updateSourceVolume_( source );
 

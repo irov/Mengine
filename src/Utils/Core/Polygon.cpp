@@ -100,7 +100,7 @@ namespace Menge
 			return ((aCROSSbp >= 0.0f) && (bCROSScp >= 0.0f) && (cCROSSap >= 0.0f));
 		}
 
-		static bool s_snip( const BoostPolygon::ring_type & _ring, uint32_t u, uint32_t v, uint32_t w, uint32_t n, uint32_t * V )
+		static bool s_snip( const BoostPolygon::ring_type & _ring, size_t u, size_t v, size_t w, size_t n, uint32_t * V )
 		{
 			uint32_t Vu = V[u];
 			uint32_t Vv = V[v];
@@ -120,7 +120,7 @@ namespace Menge
 				return false;
 			}
 
-			for( uint32_t p = 0; p < n; p++ )
+			for( size_t p = 0; p < n; p++ )
 			{
 				if( (p == u) || (p == v) || (p == w) )
 				{
@@ -177,7 +177,7 @@ namespace Menge
 	bool Polygon::triangulate_indices( TVectorIndices & _result ) const
 	{
 		/* allocate and initialize list of Vertices in polygon */
-		uint32_t n = boost::geometry::num_points( THIS_IMPL );
+		size_t n = boost::geometry::num_points( THIS_IMPL );
 
 		--n; // for correct polygon
 
@@ -192,25 +192,25 @@ namespace Menge
 
 		if( area_polygon < 0.0 )
 		{
-			for( uint32_t v = 0; v < n; v++ )
+			for( size_t v = 0; v < n; v++ )
 			{
-				V[v] = v;
+				V[v] = (uint32_t)v;
 			}
 		}
 		else
 		{
-			for( uint32_t v = 0; v < n; v++ )
+			for( size_t v = 0; v < n; v++ )
 			{
-				V[v] = (n - 1) - v;
+				V[v] = (uint32_t)((n - 1) - v);
 			}
 		}
 
-		uint32_t nv = n;  /*  remove nv-2 Vertices, creating 1 triangle every time */
-		uint32_t count = 2 * nv;   /* error detection */
+		size_t nv = n;  /*  remove nv-2 Vertices, creating 1 triangle every time */
+		size_t count = 2 * nv;   /* error detection */
 
 		const BoostPolygon::ring_type & countour = THIS_IMPL.outer();
 
-		for( uint32_t m = 0, v = nv - 1; nv > 2; )
+		for( size_t m = 0, v = nv - 1; nv > 2; )
 		{
 			/* if we loop, it is probably a non-simple polygon */
 			if( 0 == (count--) )
@@ -232,7 +232,7 @@ namespace Menge
 				v = 0;     /* new v    */
 			}
 
-			uint32_t w = v + 1;
+			size_t w = v + 1;
 			if( nv <= w )
 			{
 				w = 0;     /* next     */
@@ -250,7 +250,7 @@ namespace Menge
 
 				m++;
 
-				for( uint32_t s = v, t = v + 1; t < nv; s++, t++ )
+				for( size_t s = v, t = v + 1; t < nv; s++, t++ )
 				{
 					V[s] = V[t];
 				}
@@ -269,7 +269,7 @@ namespace Menge
 	bool Polygon::triangulate( TVectorPoints & _result ) const
 	{
 		/* allocate and initialize list of Vertices in polygon */
-		uint32_t n = boost::geometry::num_points( THIS_IMPL );
+		size_t n = boost::geometry::num_points( THIS_IMPL );
 
 		--n; // for correct polygon
 
@@ -284,25 +284,25 @@ namespace Menge
 
 		if( area_polygon < 0.0 )
 		{
-			for( uint32_t v = 0; v < n; v++ )
+			for( size_t v = 0; v < n; v++ )
 			{
-				V[v] = v;
+				V[v] = (uint32_t)v;
 			}
 		}
 		else
 		{
-			for( uint32_t v = 0; v < n; v++ )
+			for( size_t v = 0; v < n; v++ )
 			{
-				V[v] = (n - 1) - v;
+				V[v] = (uint32_t)((n - 1) - v);
 			}
 		}
 
-		uint32_t nv = n;  /*  remove nv-2 Vertices, creating 1 triangle every time */
-		uint32_t count = 2 * nv;   /* error detection */
+		size_t nv = n;  /*  remove nv-2 Vertices, creating 1 triangle every time */
+		size_t count = 2 * nv;   /* error detection */
 
 		const BoostPolygon::ring_type & countour = THIS_IMPL.outer();
 
-		for( uint32_t m = 0, v = nv - 1; nv > 2; )
+		for( size_t m = 0, v = nv - 1; nv > 2; )
 		{
 			/* if we loop, it is probably a non-simple polygon */
 			if( 0 == (count--) )
@@ -311,7 +311,7 @@ namespace Menge
 				return false;
 			}    /* three consecutive vertices in current polygon, <u,v,w> */
 
-			TVectorPoints::size_type u = v;
+			size_t u = v;
 			if( nv <= u )
 			{
 				u = 0;     /* previous */
@@ -324,7 +324,7 @@ namespace Menge
 				v = 0;     /* new v    */
 			}
 
-			uint32_t w = v + 1;
+			size_t w = v + 1;
 			if( nv <= w )
 			{
 				w = 0;     /* next     */
@@ -346,7 +346,7 @@ namespace Menge
 
 				m++;
 
-				for( uint32_t s = v, t = v + 1; t < nv; s++, t++ )
+				for( size_t s = v, t = v + 1; t < nv; s++, t++ )
 				{
 					V[s] = V[t];
 				}
@@ -472,21 +472,21 @@ namespace Menge
 	{
 		const BoostPolygon::ring_type & ring = THIS_IMPL.outer();
 
-		uint32_t ring_size = ring.size();
+		size_t ring_size = ring.size();
 
 		return ring_size == 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t Polygon::num_points() const
+	size_t Polygon::num_points() const
 	{
-		return (uint32_t)boost::geometry::num_points( THIS_IMPL );
+		return boost::geometry::num_points( THIS_IMPL );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t Polygon::outer_count() const
+	size_t Polygon::outer_count() const
 	{
 		const BoostPolygon::ring_type & ring = THIS_IMPL.outer();
 
-		uint32_t ring_size = ring.size();
+		size_t ring_size = ring.size();
 
 		return ring_size;
 	}
@@ -509,27 +509,27 @@ namespace Menge
 		return points;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t Polygon::inners_count() const
+	size_t Polygon::inners_count() const
 	{
 		const BoostPolygon::inner_container_type & inners = THIS_IMPL.inners();
 
-		uint32_t inners_count = inners.size();
+		size_t inners_count = inners.size();
 
 		return inners_count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t Polygon::inner_count( uint32_t _index ) const
+	size_t Polygon::inner_count( size_t _index ) const
 	{
 		const BoostPolygon::inner_container_type & inners = THIS_IMPL.inners();
 
 		const BoostPolygon::ring_type & ring = inners[_index];
 
-		uint32_t ring_size = ring.size();
+		size_t ring_size = ring.size();
 
 		return ring_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f * Polygon::inner_points( uint32_t _index ) const
+	const mt::vec2f * Polygon::inner_points( size_t _index ) const
 	{
 		const BoostPolygon::inner_container_type & inners = THIS_IMPL.inners();
 
@@ -540,7 +540,7 @@ namespace Menge
 		return points;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f * Polygon::inner_points( uint32_t _index )
+	mt::vec2f * Polygon::inner_points( size_t _index )
 	{
 		BoostPolygon::inner_container_type & inners = THIS_IMPL.inners();
 
@@ -551,21 +551,21 @@ namespace Menge
 		return points;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Polygon::inner_point( uint32_t _index, uint32_t _v ) const
+	const mt::vec2f & Polygon::inner_point( size_t _index, size_t _v ) const
 	{
 		const mt::vec2f * v = this->inner_points( _index );
 
 		return v[_v];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f & Polygon::inner_point( uint32_t _index, uint32_t _v )
+	mt::vec2f & Polygon::inner_point( size_t _index, size_t _v )
 	{
 		mt::vec2f * v = this->inner_points( _index );
 
 		return v[_v];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Polygon::outer_point( uint32_t _index ) const
+	const mt::vec2f & Polygon::outer_point( size_t _index ) const
 	{
 		const BoostPolygon::ring_type & ring = THIS_IMPL.outer();
 
@@ -574,7 +574,7 @@ namespace Menge
 		return point;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f & Polygon::outer_point( uint32_t _index )
+	mt::vec2f & Polygon::outer_point( size_t _index )
 	{
 		BoostPolygon::ring_type & ring = THIS_IMPL.outer();
 

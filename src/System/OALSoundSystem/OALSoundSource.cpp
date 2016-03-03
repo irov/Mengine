@@ -153,8 +153,9 @@ namespace Menge
         	
         if( m_playing == true && m_sourceId != 0 )
 		{
-			alSourcef( m_sourceId, AL_GAIN, m_volume );
-			//OAL_CHECK_ERROR(m_serviceProvider);
+			float gain = ::powf( m_volume, 2.f );
+			alSourcef( m_sourceId, AL_GAIN, gain );
+			OAL_CHECK_ERROR(m_serviceProvider);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -347,7 +348,8 @@ namespace Menge
         alSourcef( _source, AL_PITCH, 1.f);
         OAL_CHECK_ERROR(m_serviceProvider);
 
-		alSourcef( _source, AL_GAIN, m_volume );
+		float gain = ::powf( m_volume, 2.f );
+		alSourcef( _source, AL_GAIN, gain );
 		OAL_CHECK_ERROR(m_serviceProvider);
 	}
 	//////////////////////////////////////////////////////////////////////////

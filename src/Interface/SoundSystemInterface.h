@@ -139,24 +139,24 @@ namespace Menge
 		virtual SoundBufferInterfacePtr createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _isStream ) = 0; 
 
 	public:
-		virtual void setSoundVolume( const ConstString & _type, float _volume ) = 0;
+		virtual void setSoundVolume( const ConstString & _type, float _volume, float _default ) = 0;
 		virtual float getSoundVolume( const ConstString & _type ) const = 0;
 
-		virtual void setCommonVolume( const ConstString & _type, float _volume ) = 0;
+		virtual void setCommonVolume( const ConstString & _type, float _volume, float _default ) = 0;
 		virtual float getCommonVolume( const ConstString & _type ) const = 0;
 
-		virtual void setMusicVolume( const ConstString & _type, float _volume ) = 0;
+		virtual void setMusicVolume( const ConstString & _type, float _volume, float _default ) = 0;
 		virtual float getMusicVolume( const ConstString & _type ) const = 0;
 
-        virtual void setVoiceVolume( const ConstString & _type, float _volume ) = 0;
+		virtual void setVoiceVolume( const ConstString & _type, float _volume, float _default ) = 0;
         virtual float getVoiceVolume( const ConstString & _type ) const = 0;
 
     public:
-		virtual bool setSourceVolume( uint32_t _emitter, float _volume ) = 0;
+		virtual bool setSourceVolume( uint32_t _emitter, float _volume, float _default ) = 0;
 		virtual float getSourceVolume( uint32_t _emitter ) const = 0;
 
 	public:
-		virtual bool setSourceMixerVolume( uint32_t _emitter, const ConstString & _mixer, float _volume ) = 0;
+		virtual bool setSourceMixerVolume( uint32_t _emitter, const ConstString & _mixer, float _volume, float _default ) = 0;
 		virtual float getSourceMixerVolume( uint32_t _emitter, const ConstString & _mixer ) const = 0;
 
 	public:

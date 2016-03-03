@@ -459,14 +459,14 @@ namespace	Menge
 			}break;
 		case EAT_POLYGON:
 			{
-				uint32_t numpoints = m_polygon.num_points();
+				size_t numpoints = m_polygon.num_points();
 
 				if( numpoints == 0 )
 				{
 					return;
 				}
 
-				uint32_t vertexCount = numpoints * 2;
+				size_t vertexCount = numpoints * 2;
 
 				RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
 					->getDebugRenderVertex2D( vertexCount );
@@ -480,9 +480,9 @@ namespace	Menge
 
 				const mt::vec2f * ring = m_polygon.outer_points();
 
-				for( uint32_t i = 0; i != numpoints; ++i )
+				for( size_t i = 0; i != numpoints; ++i )
 				{
-					uint32_t j = (i + 1) % numpoints;
+					size_t j = (i + 1) % numpoints;
 
 					mt::vec3f trP0;
 					mt::mul_v3_v2_m4( trP0, ring[i], worldMat );
@@ -493,7 +493,7 @@ namespace	Menge
 
 					v0.color = 0x8080FFFF;
 
-					for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index)
+					for( size_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
 					{
 						v0.uv[uv_index].x = 0.f;
 						v0.uv[uv_index].y = 0.f;
@@ -508,7 +508,7 @@ namespace	Menge
 
 					v1.color = 0x8080FFFF;
 
-					for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index)
+					for( size_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
 					{
 						v1.uv[uv_index].x = 0.f;
 						v1.uv[uv_index].y = 0.f;
@@ -520,7 +520,7 @@ namespace	Menge
 
 				RENDER_SERVICE( m_serviceProvider )->addRenderLine( _state, debugMaterial
 					, vertices
-					, vertexCount
+					, (uint32_t)vertexCount
 					, nullptr
 					, true
 					);

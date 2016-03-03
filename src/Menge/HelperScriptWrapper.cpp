@@ -130,7 +130,7 @@ namespace Menge
 		{
 			printf("debug!\n");
 
-#	if defined(_MSC_VER) && !defined(I3D_ARCH_ARM)
+#	if defined(_MSC_VER) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
 			_asm int 3;
 #	endif			
 		}
@@ -383,9 +383,9 @@ namespace Menge
 				return pybind::make_none_t();
 			}
 			
-			size_t size = points.size();
+			uint32_t size = (uint32_t)points.size();
 
-			size_t index = mt::rand( size );
+			uint32_t index = mt::rand( size );
 
 			const mt::vec3f & vr = points[index];
 
@@ -707,7 +707,7 @@ namespace Menge
 			pybind::list py_list;
 
 			const mt::vec2f * ring = _polygon.outer_points();
-			uint32_t ring_count = _polygon.outer_count();
+			size_t ring_count = _polygon.outer_count();
 
 			py_list.append( ring, ring + ring_count );
 
@@ -1798,7 +1798,7 @@ namespace Menge
 				return false;
 			}
 
-			uint32_t data_size = _data.size();
+			size_t data_size = _data.size();
 
 			MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE( m_serviceProvider )
 				->compressBuffer( archivator, &_data[0], data_size );
@@ -1826,7 +1826,8 @@ namespace Menge
 				return false;
 			}
 
-			if( stream->write( &data_size, sizeof(data_size) ) == false )
+			uint32_t write_data_size = (uint32_t)data_size;
+			if( stream->write( &write_data_size, sizeof( write_data_size ) ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid write 'data size' %ls"
 					, _fileName.c_str()
@@ -2035,7 +2036,7 @@ namespace Menge
 
 			const ConstString & text = entry->getValue();
 
-			uint32_t count = text.size();
+			uint32_t count = (uint32_t)text.size();
 
 			return count;
 		}

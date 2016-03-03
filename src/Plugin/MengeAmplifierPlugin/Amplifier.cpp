@@ -107,7 +107,7 @@ namespace Menge
 		}
 
 		if( SOUND_SERVICE( m_serviceProvider )
-			->setSourceVolume( m_sourceID, volume ) == false )
+			->setSourceVolume( m_sourceID, volume, 0.f ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("Amplifier::playMusic can't set sound '%s' volume '%f'"
 				, path.c_str()

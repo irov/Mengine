@@ -54,7 +54,7 @@ namespace Menge
 		uint32_t m_width;
 		uint32_t m_height;
         uint32_t m_mipmaplevel;
-        uint32_t m_mipmapsize;
+		size_t m_mipmapsize;
 
 		mutable Blobject m_mipmap;
 	};

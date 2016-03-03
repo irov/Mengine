@@ -5,6 +5,8 @@
 #	include "Core/Magic.h"
 #	include "Logger/Logger.h"
 
+#	include "Math/utils.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -152,7 +154,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundDecoderWAV::_seek( float _timing )
 	{         
-        if( _timing > m_dataInfo.length )
+		if( _timing > m_dataInfo.length && mt::equal_f_f_e( _timing, m_dataInfo.length, 0.01f ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::seek timing %f > total %f"
                 , _timing

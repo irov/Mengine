@@ -266,12 +266,12 @@ namespace	Menge
 		Node::_render( _state );
 
 		const RenderIndices * indices = &m_indices[0];
-		size_t indicesCount = m_indices.size();
+		uint32_t indicesCount = (uint32_t)m_indices.size();
 		
 		const RenderVertex2D * vertices = this->getVerticesWM();
 		const RenderMaterialInterfacePtr & material = this->getMaterial();
 
-		size_t verticesCount = m_verticesWM.size();
+		uint32_t verticesCount = (uint32_t)m_verticesWM.size();
 
 		const mt::box2f & bb = this->getBoundingBox();
 		

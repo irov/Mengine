@@ -1,7 +1,5 @@
 #	include "AEIO.h"
 
-#	include "AELogger.h"
-
 #	include <stdio.h>
 #	include <stdlib.h>
 #	include <stdarg.h>

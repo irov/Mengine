@@ -1012,7 +1012,7 @@ namespace Menge
 	{
 		RenderPass & pass = m_renderPasses.emplace();
 
-		pass.beginRenderObject = m_renderObjects.size();
+		pass.beginRenderObject = (uint32_t)m_renderObjects.size();
 		pass.countRenderObject = 0U;
 		pass.viewport = m_currentRenderViewport;
 		pass.camera = m_currentRenderCamera;

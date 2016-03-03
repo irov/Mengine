@@ -3,7 +3,11 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	void MixerVolume::setVolume( const ConstString & _type, float _value )
+	MixerVolume::MixerVolume()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MixerVolume::setVolume( const ConstString & _type, float _value, float _default )
 	{
 		for( TMixerVolume::iterator
 			it = m_mixer.begin(),
@@ -18,14 +22,16 @@ namespace Menge
 				continue;
 			}
 
-			mixer.value = _value;
+			mixer.follower.follow( _value );
 
 			return;
 		}
 
 		Mixer mx;
 		mx.type = _type;
-		mx.value = _value;
+		mx.follower.setValue( _default );
+		mx.follower.follow( _value );
+		mx.follower.setSpeed( 0.0005f );
 
 		m_mixer.push_back( mx );
 	}
@@ -45,7 +51,9 @@ namespace Menge
 				continue;
 			}
 
-			return mixer.value;
+			float value = mixer.follower.getValue();
+
+			return value;
 		}
 
 		return 1.f;
@@ -63,9 +71,32 @@ namespace Menge
 		{
 			const Mixer & mixer = *it;
 
-			volume *= mixer.value;
+			float value = mixer.follower.getValue();
+
+			volume *= value;
 		}
 
 		return volume;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MixerVolume::update( float _timing )
+	{
+		bool process = false;
+
+		for( TMixerVolume::iterator
+			it = m_mixer.begin(),
+			it_end = m_mixer.end();
+		it != it_end;
+		++it )
+		{
+			Mixer & m = *it;
+
+			if( m.follower.update( _timing ) == false )
+			{
+				process = true;
+			}
+		}
+
+		return process;
 	}
 }

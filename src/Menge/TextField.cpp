@@ -232,7 +232,7 @@ namespace Menge
 		
 		if( m_maxCharCount == (uint32_t)-1 )
 		{
-			countVertex = textVertices.size();
+			countVertex = (uint32_t)textVertices.size();
 		}
 		else
 		{
@@ -279,7 +279,7 @@ namespace Menge
 
 		if( m_maxCharCount == (uint32_t)-1 )
 		{
-			countVertex = outlineVertices.size();
+			countVertex = (uint32_t)outlineVertices.size();
 		}
 		else
 		{
@@ -606,7 +606,7 @@ namespace Menge
 			float length = it->getLength();
 			maxlen = (std::max)( maxlen, length );
 
-			int chars = it->getCharsDataSize();
+			uint32_t chars = it->getCharsDataSize();
 			m_charCount += chars;
 		}
 

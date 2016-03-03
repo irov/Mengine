@@ -31,7 +31,7 @@ namespace Menge
 			pybind::list py_list_vec2f;
 						
 			const mt::vec2f * ring = _polygon->outer_points();
-			uint32_t ring_count = _polygon->outer_count();
+			size_t ring_count = _polygon->outer_count();
 
 			py_list_vec2f.append( ring, ring + ring_count );
 

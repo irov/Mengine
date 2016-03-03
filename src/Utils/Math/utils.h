@@ -2,6 +2,8 @@
 
 #	include "config.h"
 
+#	include <stdint.h>
+
 namespace mt
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -90,7 +92,7 @@ namespace mt
 		return _f >= mt::m_neps;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_INLINE unsigned int factorial( unsigned int _value )
+	MENGINE_MATH_INLINE uint32_t factorial( uint32_t _value )
 	{
 		if( _value == 0 )
 		{
@@ -100,7 +102,7 @@ namespace mt
 		unsigned int f = 1;
 		unsigned int d = 0;
 		
-		for( unsigned int i = 0; i != _value; ++i )
+		for( uint32_t i = 0; i != _value; ++i )
 		{			
 			++d;
 
@@ -110,7 +112,7 @@ namespace mt
 		return f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_INLINE float factorialf( unsigned int _value )
+	MENGINE_MATH_INLINE float factorialf( uint32_t _value )
 	{
 		if( _value == 0 )
 		{
@@ -120,7 +122,7 @@ namespace mt
 		float f = 1.f;
 		float d = 0.f;
 
-		for( unsigned int i = 0; i != _value; ++i )
+		for( uint32_t i = 0; i != _value; ++i )
 		{
 			d += 1.f;
 
@@ -130,7 +132,7 @@ namespace mt
 		return f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_INLINE float integral_powf( float _value, unsigned int _count )
+	MENGINE_MATH_INLINE float integral_powf( float _value, uint32_t _count )
 	{
 		if( _count == 0 )
 		{
@@ -139,7 +141,7 @@ namespace mt
 
 		float f = _value;
 
-		for( unsigned int i = 1; i != _count; ++i )
+		for( uint32_t i = 1; i != _count; ++i )
 		{
 			f *= _value;
 		}

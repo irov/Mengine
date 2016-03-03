@@ -25,7 +25,7 @@ namespace Menge
 		Polygon( const void * _impl );
 
 	public:
-		typedef uint32_t size_type;
+		typedef size_t size_type;
 
 	public:
 		void operator = (const Polygon & _polygon);
@@ -49,20 +49,20 @@ namespace Menge
 		bool to_box2f( mt::box2f & _box2f ) const;
 		bool empty() const;
 
-		uint32_t num_points() const;
+		size_t num_points() const;
 
-		uint32_t outer_count() const;
+		size_t outer_count() const;
 		const mt::vec2f * outer_points() const;
 		mt::vec2f * outer_points();
-		const mt::vec2f & outer_point( uint32_t _index ) const;
-		mt::vec2f & outer_point( uint32_t _index );
+		const mt::vec2f & outer_point( size_t _index ) const;
+		mt::vec2f & outer_point( size_t _index );
 
-		uint32_t inners_count() const;
-		uint32_t inner_count( uint32_t _index ) const;
-		const mt::vec2f * inner_points( uint32_t _index ) const;
-		mt::vec2f * inner_points( uint32_t _index );
-		const mt::vec2f & inner_point( uint32_t _index, uint32_t _v ) const;
-		mt::vec2f & inner_point( uint32_t _index, uint32_t _v );
+		size_t inners_count() const;
+		size_t inner_count( size_t _index ) const;
+		const mt::vec2f * inner_points( size_t _index ) const;
+		mt::vec2f * inner_points( size_t _index );
+		const mt::vec2f & inner_point( size_t _index, size_t _v ) const;
+		mt::vec2f & inner_point( size_t _index, size_t _v );
 		
 	public:
 		bool intersects( const Polygon & _polygon ) const;

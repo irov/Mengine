@@ -57,7 +57,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotPolygon::_updateBoundingBox( mt::box2f & _boundingBox ) const
 	{
-		uint32_t numPoints = m_polygon.num_points();
+		size_t numPoints = m_polygon.num_points();
 
 		if( numPoints == 0 )
 		{
@@ -77,7 +77,7 @@ namespace Menge
 
 		mt::reset( _boundingBox, wmp_0 );
 
-		for( uint32_t
+		for( size_t
 			it = 1,
 			it_end = numPoints;
 		it != it_end;
@@ -203,7 +203,7 @@ namespace Menge
 
 		const Polygon & polygon = this->getPolygon();
 
-		uint32_t numpoints = polygon.num_points();
+		size_t numpoints = polygon.num_points();
 		const mt::vec2f * points = polygon.outer_points();
 
 		if( _bb != nullptr )
@@ -216,7 +216,7 @@ namespace Menge
 			_screen->clear();
 		}
 
-		for( uint32_t it = 0; it != numpoints; ++it )
+		for( size_t it = 0; it != numpoints; ++it )
 		{
 			const mt::vec2f & v = points[it];
 
@@ -256,14 +256,14 @@ namespace Menge
 
 		const Polygon & polygon = this->getPolygon();
 
-		uint32_t numpoints = polygon.num_points();
+		size_t numpoints = polygon.num_points();
 
 		if( numpoints == 0 )
 		{
 			return;
 		}
 
-		uint32_t vertexCount = numpoints * 2;
+		size_t vertexCount = numpoints * 2;
 
 		RenderVertex2D * vertices = RENDER_SERVICE( m_serviceProvider )
 			->getDebugRenderVertex2D( vertexCount );
@@ -277,9 +277,9 @@ namespace Menge
 
 		const mt::vec2f * ring = polygon.outer_points();
 
-		for( uint32_t i = 0; i != numpoints; ++i )
+		for( size_t i = 0; i != numpoints; ++i )
 		{
-			uint32_t j = (i + 1) % numpoints;
+			size_t j = (i + 1) % numpoints;
 
 			mt::vec3f trP0;
 			mt::mul_v3_v2_m4( trP0, ring[i], wm );
@@ -290,7 +290,7 @@ namespace Menge
 			
 			v0.color = m_debugColor;
 
-			for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index)
+			for( size_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
 			{
 				v0.uv[uv_index].x = 0.f;
 				v0.uv[uv_index].y = 0.f;
@@ -305,7 +305,7 @@ namespace Menge
 			
 			v1.color = m_debugColor;
 
-			for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index)
+			for( size_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
 			{
 				v1.uv[uv_index].x = 0.f;
 				v1.uv[uv_index].y = 0.f;
@@ -317,7 +317,7 @@ namespace Menge
 
 		RENDER_SERVICE( m_serviceProvider )->addRenderLine( _state, debugMaterial
 			, vertices
-			, vertexCount
+			, (uint32_t)vertexCount
 			, nullptr
 			, true
 			);

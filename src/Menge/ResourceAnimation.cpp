@@ -231,9 +231,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t ResourceAnimation::getSequenceCount() const
 	{
-        uint32_t size = m_sequence.size();
+        size_t size = m_sequence.size();
 
-		return size;
+		return (uint32_t)size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float ResourceAnimation::getSequenceDelay( uint32_t _index ) const
@@ -256,10 +256,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t ResourceAnimation::getLastFrameIndex() const
 	{
-        uint32_t size = m_sequence.size();
-        uint32_t lastIndex = size - 1;
+		size_t size = m_sequence.size();
+		size_t lastIndex = size - 1;
 
-		return lastIndex;	
+		return (uint32_t)lastIndex;	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimation::setSequences( const TVectorAnimationSequence & _sequence )

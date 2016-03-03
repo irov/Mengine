@@ -298,6 +298,8 @@ namespace Menge
 			camera.dir.x = direction.x;
 			camera.dir.y = direction.y;
 			camera.dir.z = direction.z;
+
+			Magic_SetCamera( &camera );
 		}
 		else
 		{
@@ -397,11 +399,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::changeEmitterModel( float * _points, uint32_t _count )
+	bool AstralaxEmitter2::changeEmitterModel( float * _points, size_t _count )
 	{
 		MAGIC_TRIANGLE * triangle = reinterpret_cast<MAGIC_TRIANGLE *>(_points);
 
-		if( Magic_ChangeModel( m_emitterId, -1, _count, triangle ) == MAGIC_ERROR )
+		if( Magic_ChangeModel( m_emitterId, -1, (int)_count, triangle ) == MAGIC_ERROR )
 		{
 			return false;
 		}

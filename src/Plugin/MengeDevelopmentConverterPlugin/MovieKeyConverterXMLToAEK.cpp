@@ -566,7 +566,7 @@ namespace Menge
 				{
 					std::vector<p2t::Point> p2t_points;
 
-					uint32_t max_points = 0;
+					size_t max_points = 0;
 
 					for( TVectorPolygon::const_iterator
 						it = output.begin(),
@@ -576,15 +576,15 @@ namespace Menge
 					{
 						const Menge::Polygon & shape_vertex = *it;
 
-						uint32_t outer_count = shape_vertex.outer_count();
+						size_t outer_count = shape_vertex.outer_count();
 
 						max_points += outer_count - 1;
 
-						uint32_t inners_count = shape_vertex.inners_count();
+						size_t inners_count = shape_vertex.inners_count();
 
-						for( uint32_t index = 0; index != inners_count; ++index )
+						for( size_t index = 0; index != inners_count; ++index )
 						{
-							uint32_t inner_count = shape_vertex.inner_count( index );
+							size_t inner_count = shape_vertex.inner_count( index );
 
 							max_points += inner_count - 1;
 						}
@@ -615,9 +615,9 @@ namespace Menge
 
 						std::vector<p2t::Point*> p2t_polygon;
 
-						uint32_t outer_count = shape_vertex.outer_count();
+						size_t outer_count = shape_vertex.outer_count();
 
-						for( uint32_t index = 0; index != outer_count - 1; ++index )
+						for( size_t index = 0; index != outer_count - 1; ++index )
 						{
 							const mt::vec2f & v = shape_vertex.outer_point( index );
 
@@ -629,15 +629,15 @@ namespace Menge
 
 						p2t::CDT * cdt = new p2t::CDT( p2t_polygon );
 
-						uint32_t inners_count = shape_vertex.inners_count();
+						size_t inners_count = shape_vertex.inners_count();
 
-						for( uint32_t index_inners = 0; index_inners != inners_count; ++index_inners )
+						for( size_t index_inners = 0; index_inners != inners_count; ++index_inners )
 						{
 							std::vector<p2t::Point*> p2t_hole;
 
-							uint32_t inner_count = shape_vertex.inner_count( index_inners );
+							size_t inner_count = shape_vertex.inner_count( index_inners );
 
-							for( uint32_t index_inner = 0; index_inner != inner_count - 1; ++index_inner )
+							for( size_t index_inner = 0; index_inner != inner_count - 1; ++index_inner )
 							{
 								const mt::vec2f & v = shape_vertex.inner_point( index_inners, index_inner );
 
@@ -668,9 +668,9 @@ namespace Menge
 
 							p2t::Point * pb = &p2t_points[0];
 
-							uint32_t i0 = std::distance( pb, p0 );
-							uint32_t i1 = std::distance( pb, p1 );
-							uint32_t i2 = std::distance( pb, p2 );
+							uint32_t i0 = (uint32_t)std::distance( pb, p0 );
+							uint32_t i1 = (uint32_t)std::distance( pb, p1 );
+							uint32_t i2 = (uint32_t)std::distance( pb, p2 );
 
 							shape_indices.push_back( i0 );
 							shape_indices.push_back( i1 );
@@ -680,8 +680,8 @@ namespace Menge
 						delete cdt;
 					}
 
-					uint32_t shapeVertexCount = p2t_points.size();
-					uint32_t shapeIndicesCount = shape_indices.size();
+					size_t shapeVertexCount = p2t_points.size();
+					size_t shapeIndicesCount = shape_indices.size();
 
 					if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
 					{
@@ -756,7 +756,7 @@ namespace Menge
 
 			const Menge::Polygon & polygon = meta_polygon.get_Value();
 
-			uint32_t polygon_size = polygon.num_points();
+			size_t polygon_size = polygon.num_points();
 
 			if( polygon_size >= MENGINE_MOVIE_POLYGON_MAX_VERTEX )
 			{

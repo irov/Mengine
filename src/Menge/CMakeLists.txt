@@ -11,12 +11,6 @@ Application
 SOURCE_GROUP( Engine )
 
 ADD_FILTER(
-Service\\\\Notification
-	NotificationService.cpp
-	NotificationService.h
-)
-
-ADD_FILTER(
 Service\\\\Watchdog
 	Watchdog.cpp
 	Watchdog.h
@@ -350,11 +344,11 @@ SET( APPLICATION_DEPENDENCIES
  ServiceText
  ServiceGraveyard
  ServiceRender
- ServiceRender
  ServicePackage
  ServiceProfiler
  ServiceUserdata
  ServiceTimeline
+ ServiceNotification
 )
 
 SET( APPLICATION_DEPENDENCIES

@@ -370,6 +370,9 @@ namespace Menge
 				alSourceRewind( m_sourceId );
 				OAL_CHECK_ERROR( m_serviceProvider );
 
+				alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
+				OAL_CHECK_ERROR( m_serviceProvider );
+
 				for( uint32_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
 				{
 					ALuint id = m_alBuffersId[i];

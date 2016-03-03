@@ -124,7 +124,7 @@ namespace Menge
 
 	public:
 		virtual bool changeEmitterImage( uint32_t _width, uint32_t _height, unsigned char * _data, size_t _bytes ) = 0;
-		virtual bool changeEmitterModel( float * _points, uint32_t _count ) = 0;
+		virtual bool changeEmitterModel( float * _points, size_t _count ) = 0;
 
     public:
 		virtual bool setCameraProvider( ParticleCameraProviderInterface * _cameraProvider ) = 0;
@@ -156,7 +156,7 @@ namespace Menge
 		virtual bool isValid() const = 0;
 
 	public:
-		virtual void setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) = 0;
+		virtual void setAtlasResourceImage( size_t _index, const ResourceImagePtr & _resourceImage ) = 0;
 
 	public:
 		virtual ParticleEmitterInterfacePtr createEmitter() = 0;

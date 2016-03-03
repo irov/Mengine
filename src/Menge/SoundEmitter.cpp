@@ -271,7 +271,7 @@ namespace Menge
 		}        
 
 		if( SOUND_SERVICE(m_serviceProvider)
-			->setSourceVolume( m_sourceID, m_volume ) == false )
+			->setSourceVolume( m_sourceID, m_volume, 0.f ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("SoundEmitter::setVolume invalid %s:%d %f"
 				, m_resourceSound->getName().c_str()

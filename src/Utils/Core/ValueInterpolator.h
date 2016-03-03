@@ -239,7 +239,7 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	template<class T>
-	void calculateBezierPosition( T & _out, const T & _begin, const T & _end, size_t _count, const T * _v, float _time )
+	void calculateBezierPosition( T & _out, const T & _begin, const T & _end, uint32_t _count, const T * _v, float _time )
 	{
 		if( _count == 0 )
 		{
@@ -255,7 +255,7 @@ namespace Menge
 
 		float f_count = mt::factorialf( n );
 
-		for( size_t i = 1; i != n; ++i )
+		for( uint32_t i = 1; i != n; ++i )
 		{
 			float c = f_count / (mt::factorialf( i ) * mt::factorialf( n - i ));
 			float t = mt::integral_powf( _time, i ) * mt::integral_powf( 1.f - _time, n - i );
@@ -268,7 +268,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	template<class T, class LENGTH>
-	float calculateBezierLength( const T & _begin, const T & _end, size_t _count, const T * _v, LENGTH _length )
+	float calculateBezierLength( const T & _begin, const T & _end, uint32_t _count, const T * _v, LENGTH _length )
 	{
 		const uint32_t max_iterator = 10;
 
@@ -301,7 +301,7 @@ namespace Menge
 		return total_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	template <typename T, size_t N>
+	template <typename T, uint32_t N>
 	class ValueInterpolatorBezier
 		: public ValueInterpolator<T>
 	{
@@ -317,7 +317,7 @@ namespace Menge
 			ValueInterpolator<T>::m_time = _time;
 			ValueInterpolator<T>::m_timing = 0.f;
 
-			for( size_t i = 0; i != N; ++i )
+			for( uint32_t i = 0; i != N; ++i )
 			{
 				m_v[i] = _v[i];
 			}			

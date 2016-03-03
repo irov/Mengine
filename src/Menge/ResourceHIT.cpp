@@ -99,7 +99,7 @@ namespace Menge
         m_height = dataInfo->height;
         m_mipmaplevel = dataInfo->mipmaplevel;
         
-        uint32_t mipmapsize = dataInfo->mipmapsize;
+		size_t mipmapsize = dataInfo->mipmapsize;
         m_mipmap.resize( mipmapsize );
         
         m_mipmapsize = decoder->decode( &m_mipmap[0], mipmapsize );

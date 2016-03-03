@@ -139,7 +139,7 @@ namespace	Menge
 			float volume = resource->getDefaultVolume();
 
 			if( SOUND_SERVICE(m_serviceProvider)
-				->setSourceVolume( sourceID, volume ) == false )
+				->setSourceVolume( sourceID, volume, volume ) == false )
 			{                
 				LOGGER_ERROR(m_serviceProvider)("ScriptWrapper::createSoundSource invalid %s setSourceVolume %f"
 					, _resourceName.c_str()
@@ -344,7 +344,7 @@ namespace	Menge
 		void ___soundFade( uint32_t _sourceId, float _volume )
 		{
 			SOUND_SERVICE( m_serviceProvider )
-				->setSourceMixerVolume( _sourceId, CONST_STRING( m_serviceProvider, Fade ), _volume );
+				->setSourceMixerVolume( _sourceId, CONST_STRING( m_serviceProvider, Fade ), _volume, _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////		
 		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<SoundScriptMethod, void (SoundScriptMethod::*)(uint32_t, float), float, uint32_t> m_affectorCreatorSound;
@@ -419,7 +419,7 @@ namespace	Menge
 		void s_soundSourceSetVolume( uint32_t _sourceID, float _volume )
 		{
 			if( SOUND_SERVICE(m_serviceProvider)
-				->setSourceVolume( _sourceID, _volume ) == false )
+				->setSourceVolume( _sourceID, _volume, _volume ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("SoundScriptWrapper::s_soundSourceSetVolume invalid source volume %d"
 					, _sourceID
@@ -438,7 +438,7 @@ namespace	Menge
 		void s_soundSetVolume( float _volume )
 		{
 			SOUND_SERVICE(m_serviceProvider)
-				->setSoundVolume( CONST_STRING(m_serviceProvider, Generic), _volume );
+				->setSoundVolume( CONST_STRING(m_serviceProvider, Generic), _volume, 0.f );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		float s_soundGetVolume()
@@ -452,7 +452,7 @@ namespace	Menge
 		void s_commonSetVolume( float _volume )
 		{
 			SOUND_SERVICE(m_serviceProvider)
-				->setCommonVolume( CONST_STRING(m_serviceProvider, Generic), _volume );
+				->setCommonVolume( CONST_STRING( m_serviceProvider, Generic ), _volume, _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		float commonGetVolume()
@@ -475,7 +475,7 @@ namespace	Menge
 		void musicSetVolume( float _volume )
 		{
 			SOUND_SERVICE(m_serviceProvider)
-				->setMusicVolume( CONST_STRING(m_serviceProvider, Generic), _volume );
+				->setMusicVolume( CONST_STRING(m_serviceProvider, Generic), _volume, _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		float musicGetVolume()
@@ -483,11 +483,23 @@ namespace	Menge
 			return SOUND_SERVICE(m_serviceProvider)
 				->getMusicVolume( CONST_STRING(m_serviceProvider, Generic) );
 		}
+		//////////////////////////////////////////////////////////////////////////
+		void musicSetVolumeTag( const ConstString & _tag, float _volume, float _default )
+		{
+			SOUND_SERVICE( m_serviceProvider )
+				->setMusicVolume( _tag, _volume, _default );
+		}		
+		//////////////////////////////////////////////////////////////////////////
+		float musicGetVolumeTag( const ConstString & _tag )
+		{
+			return SOUND_SERVICE( m_serviceProvider )
+				->getMusicVolume( _tag );
+		}
         //////////////////////////////////////////////////////////////////////////
         void voiceSetVolume( float _volume )
         {
             SOUND_SERVICE(m_serviceProvider)
-                ->setVoiceVolume( CONST_STRING(m_serviceProvider, Generic), _volume );
+				->setVoiceVolume( CONST_STRING( m_serviceProvider, Generic ), _volume, _volume );
         }
         //////////////////////////////////////////////////////////////////////////
         float voiceGetVolume()
@@ -543,7 +555,7 @@ namespace	Menge
 		void ___musicFade( float _volume )
 		{
 			SOUND_SERVICE(m_serviceProvider)
-				->setMusicVolume( CONST_STRING(m_serviceProvider, Fade), _volume );
+				->setMusicVolume( CONST_STRING( m_serviceProvider, Fade ), _volume, _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class MusicAffectorCallback
@@ -709,6 +721,8 @@ namespace	Menge
 		pybind::def_functor( "musicPlay", soundScriptMethod, &SoundScriptMethod::musicPlay );
 		pybind::def_functor( "musicSetVolume", soundScriptMethod, &SoundScriptMethod::musicSetVolume );
 		pybind::def_functor( "musicGetVolume", soundScriptMethod, &SoundScriptMethod::musicGetVolume );
+		pybind::def_functor( "musicSetVolumeTag", soundScriptMethod, &SoundScriptMethod::musicSetVolumeTag );
+		pybind::def_functor( "musicGetVolumeTag", soundScriptMethod, &SoundScriptMethod::musicGetVolumeTag );
 		pybind::def_functor( "musicStop", soundScriptMethod, &SoundScriptMethod::musicStop );
         pybind::def_functor( "musicPause", soundScriptMethod, &SoundScriptMethod::musicPause );
         pybind::def_functor( "musicResume", soundScriptMethod, &SoundScriptMethod::musicResume );

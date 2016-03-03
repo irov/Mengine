@@ -29,21 +29,19 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     size_t ArchivatorZip::compressBound( size_t _size ) const
     {
-        uLong size = ::compressBound( _size );
+		uLong size = ::compressBound( (uLong)_size );
 
-		size_t total_size = size;
-
-        return total_size;
+		return (size_t)size;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ArchivatorZip::compress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _compressSize )
     {
-        uLongf compressSize = _bufferSize;
+		uLong compressSize = (uLong)_bufferSize;
 
         Bytef * dst_buffer = (Bytef *)_distance;
         const Bytef * src_buffer = (const Bytef *)_source;
 
-        int zerr = ::compress( dst_buffer, &compressSize, src_buffer, _sourceSize );
+		int zerr = ::compress( dst_buffer, &compressSize, src_buffer, (uLong)_sourceSize);
 
         if( zerr != Z_OK )
         {
@@ -73,7 +71,7 @@ namespace Menge
 		stdex_free( address );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static int my_uncompress( Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourceLen )
+	static int my_uncompress( Bytef *dest, uLong *destLen, const Bytef *source, uLong sourceLen )
 	{
 		z_stream stream;
 		int err;
@@ -110,12 +108,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ArchivatorZip::decompress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _decompressSize )
     {
-        uLongf destLen = _bufferSize;
+		uLong destLen = (uLong)_bufferSize;
 
         Bytef * dst_buffer = (Bytef *)_distance;
         const Bytef * src_buffer = (const Bytef *)_source;
 
-		int zerr = my_uncompress( dst_buffer, &destLen, src_buffer, _sourceSize );
+		int zerr = my_uncompress( dst_buffer, &destLen, src_buffer, (uLong)_sourceSize);
 
         if( zerr != Z_OK )
         {

@@ -21,7 +21,7 @@ namespace Menge
 		uint32_t height;		
 		
         uint32_t mipmaplevel;
-        uint32_t mipmapsize;
+        size_t mipmapsize;
 	};
 
 	struct PickCodecOptions

@@ -503,7 +503,9 @@ namespace Menge
 
 			const Metacode::Meta_KeyFramesPack::Meta_ImageShape::TVectorMeta_Shape & includes_shapes = meta_imageshape.get_IncludesShape();
 
-			aw << (uint32_t)includes_shapes.size();
+			uint32_t includes_shapes_size = (uint32_t)includes_shapes.size();
+
+			aw << includes_shapes_size;
 
 			for( Metacode::Meta_KeyFramesPack::Meta_ImageShape::TVectorMeta_Shape::const_iterator
 				it_shape = includes_shapes.begin(),
@@ -561,6 +563,8 @@ namespace Menge
 
 					shape.vertexCount = 0;
 					shape.indexCount = 0;
+
+					aw << shape.vertexCount;
 				}
 				else
 				{

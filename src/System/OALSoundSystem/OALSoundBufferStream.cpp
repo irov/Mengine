@@ -160,11 +160,6 @@ namespace Menge
 		alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
 		OAL_CHECK_ERROR( m_serviceProvider );
 
-
-		//ALint al_loop = _looped ? AL_TRUE : AL_FALSE;
-		//alSourcei( m_sourceId, AL_LOOPING, al_loop );
-		//OAL_CHECK_ERROR( m_serviceProvider );
-
 		alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
 		OAL_CHECK_ERROR( m_serviceProvider );
 
@@ -179,13 +174,16 @@ namespace Menge
 
 		for( uint32_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
 		{
-			ALuint id = m_alBuffersId[i];
+			ALuint bufferId = m_alBuffersId[i];
 
 			size_t bytesWritten;
-			if( this->bufferData_( id, bytesWritten ) == false )
+			if( this->bufferData_( bufferId, bytesWritten ) == false )
 			{
 				return false;
 			}
+
+			alSourceQueueBuffers( m_sourceId, 1, &bufferId );
+			OAL_CHECK_ERROR( m_serviceProvider );
 		}
 
 		alSourcePlay( m_sourceId );
@@ -307,6 +305,8 @@ namespace Menge
 			return true;
 		}
 
+		//// Check the status of the Source.  If it is not playing, then playback was completed,
+		//// or the Source was starved of audio data, and needs to be restarted.
 		//alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
 		//      OAL_CHECK_ERROR(m_serviceProvider);
 
@@ -332,61 +332,37 @@ namespace Menge
 
 			if( bytesWritten == 0 )
 			{
-				end = true;
+				if( m_looped == true )
+				{
+					m_soundDecoder->rewind();
+
+					this->bufferData_( bufferId, bytesWritten );
+				}
+				else
+				{
+					end = true;
+
+					continue;
+				}
 			}
+
+			alSourceQueueBuffers( m_sourceId, 1, &bufferId );
+			OAL_CHECK_ERROR( m_serviceProvider );
 		}
 
-		//// Check the status of the Source.  If it is not playing, then playback was completed,
-		//// or the Source was starved of audio data, and needs to be restarted.
+		if( end == true )
+		{
+			return false;
+		}
+
 		ALint state;
 		alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
 		OAL_CHECK_ERROR( m_serviceProvider );
 
 		if( state != AL_PLAYING && state != AL_PAUSED )
 		{
-			//if( m_looped == true )
-			//{
-			//	m_soundDecoder->rewind();
-			//
-			//	alSourceStop( m_sourceId );
-			//	OAL_CHECK_ERROR(m_serviceProvider);
-			//}
-
-			// If there are Buffers in the Source Queue then the Source was starved of audio
-			// data, so needs to be restarted (because there is more audio data to play)
-			//ALint queuedBuffers;
-			//alGetSourcei( m_sourceId, AL_BUFFERS_QUEUED, &queuedBuffers );
-			//OAL_CHECK_ERROR(m_serviceProvider);
-
-			//if( queuedBuffers == 0 )
-			//{
-			//	return false;
-			//}
-
-			if( m_looped == true )
-			{
-				m_soundDecoder->rewind();
-
-				alSourceRewind( m_sourceId );
-				OAL_CHECK_ERROR( m_serviceProvider );
-
-				alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
-				OAL_CHECK_ERROR( m_serviceProvider );
-
-				for( uint32_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
-				{
-					ALuint id = m_alBuffersId[i];
-
-					size_t bytesWritten;
-					if( this->bufferData_( id, bytesWritten ) == false )
-					{
-						return false;
-					}
-				}
-
-				alSourcePlay( m_sourceId );
-				OAL_CHECK_ERROR( m_serviceProvider );
-			}
+			alSourcePlay( m_sourceId );
+			OAL_CHECK_ERROR( m_serviceProvider );
 		}
 
 		return true;
@@ -418,9 +394,6 @@ namespace Menge
 
 			return false;
 		}
-
-		alSourceQueueBuffers( m_sourceId, 1, &_alBufferId );
-		OAL_CHECK_ERROR( m_serviceProvider );
 
 		return true;
 	}

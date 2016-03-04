@@ -84,6 +84,7 @@ file(WRITE ${python32_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\
 
 configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
 configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
+configure_file(Modified/pylifecycle.c ${SOURCE_DIR}/Python/pylifecycle.c COPYONLY)
 
 ############################## 
 

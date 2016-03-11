@@ -22,8 +22,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMaterial::initialize( uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage )
+	void RenderMaterial::initialize( const ConstString & _name, uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage )
 	{
+		m_name = _name;
+
 		m_id = _id;
 		m_hash = _hash;
 		m_primitiveType = _primitiveType;

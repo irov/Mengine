@@ -456,7 +456,8 @@ namespace Menge
 			, uint32_t _textureCount
 			, const RenderTextureInterfacePtr * _textures ) = 0;
 
-		virtual RenderMaterialInterfacePtr getMaterial2( const RenderStage * _stage
+		virtual RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
+			, const RenderStage * _stage
 			, EPrimitiveType _primitiveType
 			, uint32_t _textureCount
 			, const RenderTextureInterfacePtr * _textures ) = 0;

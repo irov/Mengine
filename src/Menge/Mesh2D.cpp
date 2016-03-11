@@ -217,6 +217,9 @@ namespace Menge
 		ColourValue color;
 		this->calcTotalColor(color);
 
+		const ColourValue & textureColour = m_resourceImage->getColor();
+		color *= textureColour;
+
 		uint32_t argb = color.getAsARGB();
 
 		for( RenderVertex2D

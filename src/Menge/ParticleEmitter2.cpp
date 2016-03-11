@@ -4,6 +4,7 @@
 
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/ApplicationInterface.h"
+#   include "Interface/StringizeInterface.h"
 
 #	include "Player.h"
 
@@ -448,7 +449,7 @@ namespace	Menge
 				->getMaterialStage( mesh.material );
 
 			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( m_serviceProvider )
-				->getMaterial2( stage, PT_TRIANGLELIST, mesh.textures, textures );
+				->getMaterial2( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ParticleEmitter2"), stage, PT_TRIANGLELIST, mesh.textures, textures );
 
 			RENDER_SERVICE( m_serviceProvider )
 				->addRenderObject( _state, material, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, &bb, false );

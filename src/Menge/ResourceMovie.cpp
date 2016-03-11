@@ -693,6 +693,11 @@ namespace Menge
             else if( layer.type == CONST_STRING(m_serviceProvider, SolidSprite) )
             {
                 layer.state |= MOVIE_LAYER_NODE;
+
+				if( layer.shape == true )
+				{
+					layer.state |= MOVIE_LAYER_MESH_2D;
+				}
             }
             else if( layer.type == CONST_STRING(m_serviceProvider, MovieSocketImage) )
             {

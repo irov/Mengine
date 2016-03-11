@@ -159,6 +159,7 @@ namespace Menge
 		bool createMovieNullObject_( const MovieLayer & _layer );
 		bool createMovieImage_( const MovieLayer & _layer );
 		bool createMovieMesh2D_( const MovieLayer & _layer );
+		bool createMovieMesh2DSolid_( const MovieLayer & _layer );
 		bool createMovieImageSolid_( const MovieLayer & _layer );
         bool createMovieSocketImage_( const MovieLayer & _layer );
         bool createMovieSocketShape_( const MovieLayer & _layer );

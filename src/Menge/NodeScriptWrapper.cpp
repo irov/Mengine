@@ -1778,9 +1778,10 @@ namespace Menge
 			: public SceneChangeCallbackInterface
 		{
 		public:
-			void initialize( const pybind::object & _cb )				
+			void initialize( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 			{
 				m_cb = _cb;
+				m_args = _args;
 			}
 			
 		public:
@@ -1790,23 +1791,24 @@ namespace Menge
 				{
 					if( _scene == nullptr )
 					{
-						m_cb( pybind::ret_none(), _enable );
+						m_cb( pybind::ret_none(), _enable, m_args );
 					}
 					else
 					{
 						const pybind::object & py_scene = _scene->getScriptObject();
 
-						m_cb( py_scene, _enable );
+						m_cb( py_scene, _enable, m_args );
 					}
 				}
 				else
 				{
-					m_cb();
+					m_cb( m_args );
 				}
 			}
 
 		public:
 			pybind::object m_cb;
+			pybind::detail::args_operator_t m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		typedef stdex::intrusive_ptr<PythonSceneChangeCallback> PythonSceneChangeCallbackPtr;
@@ -1814,7 +1816,7 @@ namespace Menge
 		typedef FactoryPoolStore<PythonSceneChangeCallback, 8> TFactoryPythonSceneChangeCallback;
 		TFactoryPythonSceneChangeCallback m_factoryPythonSceneChangeCallback;
         //////////////////////////////////////////////////////////////////////////
-        bool setCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _destroyOld, const pybind::object & _cb )
+        bool setCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _destroyOld, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
             LOGGER_INFO(m_serviceProvider)( "set current scene '%s'"
                 , _name.c_str()
@@ -1828,7 +1830,7 @@ namespace Menge
 
 			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback.createObject();
 
-			py_cb->initialize( _cb );
+			py_cb->initialize( _cb, _args );
 
 			Scene * currentScene = PLAYER_SERVICE( m_serviceProvider )
 				->getCurrentScene();
@@ -3517,11 +3519,12 @@ namespace Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, Scriptable * _scriptable, const pybind::object & _cb )
+			void initialize( ServiceProviderInterface * _serviceProvider, Scriptable * _scriptable, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 			{
 				m_serviceProvider = _serviceProvider;
 				m_scriptable = _scriptable;
 				m_cb = _cb;
+				m_args = _args;
 			}
 
 		protected:
@@ -3537,7 +3540,7 @@ namespace Menge
 					return;
 				}
 
-				m_cb( m_scriptable, _id, _isEnd );
+				m_cb( m_scriptable, _id, _isEnd, m_args );
 			}
 
 		protected:
@@ -3545,24 +3548,25 @@ namespace Menge
 			Scriptable * m_scriptable;
 
 			pybind::object m_cb;
+			pybind::detail::args_operator_t m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		typedef stdex::intrusive_ptr<ScriptableAffectorCallback> ScriptableAffectorCallbackPtr;
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPoolStore<ScriptableAffectorCallback, 4> m_factoryNodeAffectorCallback;
 		//////////////////////////////////////////////////////////////////////////
-		ScriptableAffectorCallbackPtr createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb )
+		ScriptableAffectorCallbackPtr createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback.createObject();
 
-			callback->initialize( m_serviceProvider, _scriptable, _cb );
+			callback->initialize( m_serviceProvider, _scriptable, _cb, _args );
 
 			return callback; 
 		}
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<Node, void (Node::*)( const mt::vec3f & ), mt::vec3f> m_nodeAffectorCreatorAccumulateLinear;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, const pybind::object & _cb )
+		uint32_t velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -3574,7 +3578,7 @@ namespace Menge
 				return 0;
 			}
 
-			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );			
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );			
 
             Affector * affector = m_nodeAffectorCreatorAccumulateLinear.create( m_serviceProvider
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
@@ -3597,7 +3601,7 @@ namespace Menge
         }
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)( const mt::vec3f & ), mt::vec3f> m_nodeAffectorCreatorInterpolateLinear;
         //////////////////////////////////////////////////////////////////////////
-		uint32_t moveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb )
+		uint32_t moveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -3609,7 +3613,7 @@ namespace Menge
 				return 0;
 			}
 
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             Affector* affector = 
                 m_nodeAffectorCreatorInterpolateLinear.create( m_serviceProvider
@@ -3638,7 +3642,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<Node, void (Node::*)( const mt::vec3f & ), mt::vec3f> m_nodeAffectorCreatorInterpolateQuadratic;
         //////////////////////////////////////////////////////////////////////////
-		uint32_t accMoveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb )
+		uint32_t accMoveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -3652,7 +3656,7 @@ namespace Menge
 
             mt::vec3f linearSpeed = _node->getLinearSpeed();
 
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
+            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             Affector* affector = m_nodeAffectorCreatorInterpolateQuadratic.create( m_serviceProvider
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
@@ -3678,7 +3682,8 @@ namespace Menge
             , float _time
 			, const mt::vec3f& _to
             , const mt::vec3f& _v0            
-			, const pybind::object & _cb )
+			, const pybind::object & _cb
+			, const pybind::detail::args_operator_t & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -3690,7 +3695,7 @@ namespace Menge
 				return 0;
 			}
 
-			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			mt::vec3f v[] = {_v0};
 
@@ -3718,7 +3723,8 @@ namespace Menge
 			, const mt::vec3f& _to
             , const mt::vec3f& _v0
             , const mt::vec3f& _v1            
-			, const pybind::object & _cb )
+			, const pybind::object & _cb
+			, const pybind::detail::args_operator_t & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -3730,7 +3736,7 @@ namespace Menge
 				return 0;
 			}
 
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
+            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			mt::vec3f v[] = {_v0, _v1};
 
@@ -3760,7 +3766,8 @@ namespace Menge
 			, const mt::vec3f& _v0
 			, const mt::vec3f& _v1
 			, const mt::vec3f& _v2			
-			, const pybind::object & _cb )
+			, const pybind::object & _cb
+			, const pybind::detail::args_operator_t & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -3772,7 +3779,7 @@ namespace Menge
 				return 0;
 			}
 
-			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			mt::vec3f v[] = {_v0, _v1, _v2};
 
@@ -3942,7 +3949,8 @@ namespace Menge
 			, float _time
 			, const mt::vec3f& _end
 			, const mt::vec3f& _v0
-			, const pybind::object & _cb )
+			, const pybind::object & _cb
+			, const pybind::detail::args_operator_t & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -3954,7 +3962,7 @@ namespace Menge
 				return 0;
 			}
 
-			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			Affector* affector =
 				m_nodeAffectorCreatorInterpolateParabolic.create( m_serviceProvider
@@ -4155,7 +4163,8 @@ namespace Menge
 			, float _rotationSpeed
 			, float _rotationAcceleration
 			, float _rotationLimit
-			, const pybind::object & _cb )
+			, const pybind::object & _cb
+			, const pybind::detail::args_operator_t & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -4167,7 +4176,7 @@ namespace Menge
 				return 0;
 			}
 
-			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			Affector * affector =
 				m_nodeAffectorCreatorFollowTo.create( m_serviceProvider
@@ -4196,7 +4205,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)( float ), float> m_odeAffectorCreatorInterpolateLinear;
         //////////////////////////////////////////////////////////////////////////
-		uint32_t angleTo( Node * _node, float _time, float _angle, const pybind::object & _cb )
+		uint32_t angleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -4214,7 +4223,7 @@ namespace Menge
             float correct_angle_to = _angle;
             //mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
 
-			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             Affector* affector = m_odeAffectorCreatorInterpolateLinear.create( m_serviceProvider
                 , ETA_ANGLE, callback, _node, &Node::setOrientationX
@@ -4240,7 +4249,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<Node, void (Node::*)( float ), float> m_nodeAffectorCreatorInterpolateQuadraticFloat;
         //////////////////////////////////////////////////////////////////////////
-		uint32_t accAngleTo( Node * _node, float _time, float _angle, const pybind::object & _cb )
+		uint32_t accAngleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -4260,7 +4269,7 @@ namespace Menge
             float correct_angle_to = _angle;
             //mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
 
-			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             Affector* affector = 
                 m_nodeAffectorCreatorInterpolateQuadraticFloat.create( m_serviceProvider
@@ -4286,7 +4295,7 @@ namespace Menge
             _node->stopAffectors( ETA_SCALE );
         }	
         //////////////////////////////////////////////////////////////////////////
-		uint32_t scaleTo( Node * _node, float _time, const mt::vec3f& _scale, const pybind::object & _cb )
+		uint32_t scaleTo( Node * _node, float _time, const mt::vec3f& _scale, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -4310,7 +4319,7 @@ namespace Menge
             //    return 0;
             //}
 
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
+            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             Affector* affector = m_nodeAffectorCreatorInterpolateLinear.create( m_serviceProvider
                 , ETA_SCALE, callback, _node, &Node::setScale
@@ -4344,7 +4353,7 @@ namespace Menge
 			return 1.0f;
 		}
         //////////////////////////////////////////////////////////////////////////
-		uint32_t colorTo( Node * _node, float _time, const ColourValue& _color, const pybind::object & _cb )
+		uint32_t colorTo( Node * _node, float _time, const ColourValue& _color, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -4356,7 +4365,7 @@ namespace Menge
 				return 0;
 			}
 
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb );
+            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             Affector* affector = 
                 m_nodeAffectorCreatorInterpolateLinearColour.create( m_serviceProvider
@@ -4377,7 +4386,7 @@ namespace Menge
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t alphaTo( Node * _node, float _time, float _alpha, const pybind::object & _cb )
+		uint32_t alphaTo( Node * _node, float _time, float _alpha, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -4392,21 +4401,21 @@ namespace Menge
             ColourValue color = _node->getLocalColor();
             color.setA( _alpha );
 
-            uint32_t id = colorTo( _node, _time, color, _cb );
+			uint32_t id = colorTo( _node, _time, color, _cb, _args );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Shape, void (Shape::*)( const mt::vec4f & ), mt::vec4f> m_NodeAffectorCreatorInterpolateLinearVec4;
         //////////////////////////////////////////////////////////////////////////
-		uint32_t setPercentVisibilityTo( Shape * _shape, float _time, const mt::vec4f& _percent, const pybind::object & _cb )
+		uint32_t setPercentVisibilityTo( Shape * _shape, float _time, const mt::vec4f& _percent, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
             if( _shape->isActivate() == false )
             {
                 return 0;
             }
 
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _shape, _cb );
+            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _shape, _cb, _args );
 
             Affector* affector = m_NodeAffectorCreatorInterpolateLinearVec4.create( m_serviceProvider
                 , ETA_VISIBILITY, callback, _shape, &Shape::setPercentVisibility
@@ -4483,11 +4492,11 @@ namespace Menge
                 ->hasResource( _name, nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
-        void removeCurrentScene( const pybind::object & _cb )
+		void removeCurrentScene( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
 			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback.createObject();
 
-			py_cb->initialize( _cb );
+			py_cb->initialize( _cb, _args );
 
             PLAYER_SERVICE(m_serviceProvider)
 				->removeCurrentScene( py_cb );
@@ -4508,10 +4517,11 @@ namespace Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb )
+			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 			{
 				m_serviceProvider = _serviceProvider;
 				m_cb = _cb;
+				m_args = _args;
 			}
 
 			void finalize()
@@ -4565,6 +4575,7 @@ namespace Menge
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
 			pybind::object m_cb;
+			pybind::detail::args_operator_t m_args;
 		};
         //////////////////////////////////////////////////////////////////////////
         class PyGlobalMouseMoveHandler
@@ -4573,7 +4584,7 @@ namespace Menge
         protected:
 			bool handleMouseMove( const InputMouseMoveEvent & _event ) override
             {
-				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.dx, _event.dy );
+				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.dx, _event.dy, m_args );
 
 				if( py_result.is_none() == false )
                 {
@@ -4590,14 +4601,14 @@ namespace Menge
 		typedef FactoryPoolStore<PyGlobalMouseMoveHandler, 32> TFactoryPyGlobalMouseMoveHandlers;
 		TFactoryPyGlobalMouseMoveHandlers m_factoryPyGlobalMouseMoveHandlers;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_addMouseMoveHandler( const pybind::object & _cb )
+		uint32_t s_addMouseMoveHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
 
 			PyGlobalMouseMoveHandler * handler = m_factoryPyGlobalMouseMoveHandlers.createObject();
 
-			handler->initialize( m_serviceProvider, _cb );
+			handler->initialize( m_serviceProvider, _cb, _args );
             
             uint32_t id = globalHandleSystem->addGlobalHandler( handler );
 
@@ -4610,7 +4621,7 @@ namespace Menge
         protected:
 			bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
             {
-				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown );
+				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, m_args );
 
 				if( py_result.is_none() == false )
                 {
@@ -4627,14 +4638,14 @@ namespace Menge
 		typedef FactoryPoolStore<PyGlobalMouseHandlerButton, 32> TFactoryPyGlobalMouseHandlerButtons;
 		TFactoryPyGlobalMouseHandlerButtons m_factoryPyGlobalMouseHandlerButtons;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_addMouseButtonHandler( const pybind::object & _cb )
+        uint32_t s_addMouseButtonHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
 
             PyGlobalMouseHandlerButton * handler = m_factoryPyGlobalMouseHandlerButtons.createObject();
 			
-			handler->initialize( m_serviceProvider, _cb );
+			handler->initialize( m_serviceProvider, _cb, _args );
 
             uint32_t id = globalHandleSystem->addGlobalHandler( handler );
 
@@ -4648,7 +4659,7 @@ namespace Menge
             //////////////////////////////////////////////////////////////////////////
 			bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override
             {
-				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown );
+				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, m_args );
 
 				if( py_result.is_none() == false )
 				{
@@ -4665,14 +4676,14 @@ namespace Menge
 		typedef FactoryPoolStore<PyGlobalMouseHandlerButtonEnd, 32> TFactoryPyGlobalMouseHandlerButtonEnds;
 		TFactoryPyGlobalMouseHandlerButtonEnds m_factoryPyGlobalMouseHandlerButtonEnds;
         //////////////////////////////////////////////////////////////////////////
-		uint32_t s_addMouseButtonHandlerEnd( const pybind::object & _cb )
+		uint32_t s_addMouseButtonHandlerEnd( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
 
             PyGlobalMouseHandlerButtonEnd * handler = m_factoryPyGlobalMouseHandlerButtonEnds.createObject();
 
-			handler->initialize( m_serviceProvider, _cb );
+			handler->initialize( m_serviceProvider, _cb, _args );
 
             uint32_t id = globalHandleSystem->addGlobalHandler( handler );
 
@@ -4686,7 +4697,7 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
 			{
-				pybind::object py_result = m_cb( _event.button, _event.x, _event.y, _event.wheel );
+				pybind::object py_result = m_cb( _event.button, _event.x, _event.y, _event.wheel, m_args );
 
 				if( py_result.is_none() == false )
 				{
@@ -4703,14 +4714,14 @@ namespace Menge
 		typedef FactoryPoolStore<PyGlobalMouseHandlerWheel, 32> TFactoryPyGlobalMouseHandlerWheels;
 		TFactoryPyGlobalMouseHandlerWheels m_factoryPyGlobalMouseHandlerWheels;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_addMouseWheelHandler( const pybind::object & _cb )
+		uint32_t s_addMouseWheelHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
 
 			PyGlobalMouseHandlerWheel * handler = m_factoryPyGlobalMouseHandlerWheels.createObject();
 
-			handler->initialize( m_serviceProvider, _cb );
+			handler->initialize( m_serviceProvider, _cb, _args );
 
 			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
 
@@ -4724,7 +4735,7 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override
 			{
-				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown );
+				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, m_args );
 
 				if( py_result.is_none() == false )
 				{
@@ -4741,14 +4752,14 @@ namespace Menge
 		typedef FactoryPoolStore<PyGlobalMouseHandlerButtonBegin, 32> TFactoryPyGlobalMouseHandlerButtonBegins;
 		TFactoryPyGlobalMouseHandlerButtonBegins m_factoryPyGlobalMouseHandlerButtonBegins;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_addMouseButtonHandlerBegin( const pybind::object & _cb )
+		uint32_t s_addMouseButtonHandlerBegin( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
 				->getGlobalHandleSystem();
 
 			PyGlobalMouseHandlerButtonBegin * handler = m_factoryPyGlobalMouseHandlerButtonBegins.createObject();
 			
-			handler->initialize( m_serviceProvider, _cb );
+			handler->initialize( m_serviceProvider, _cb, _args );
 			
 			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
 
@@ -4761,7 +4772,7 @@ namespace Menge
 		protected:
 			bool handleKeyEvent( const InputKeyEvent & _event ) override
 			{				
-				pybind::object py_result = m_cb( (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat );
+				pybind::object py_result = m_cb( (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat, m_args );
 
 				if( py_result.is_none() == false )
 				{
@@ -4778,14 +4789,14 @@ namespace Menge
 		typedef FactoryPoolStore<PyGlobalKeyHandler, 32> TFactoryPyGlobalKeyHandler;
 		TFactoryPyGlobalKeyHandler m_poolPyGlobalKeyHandler;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_addKeyHandler( const pybind::object & _cb )
+		uint32_t s_addKeyHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
 				->getGlobalHandleSystem();
 
 			PyGlobalKeyHandler * handler = m_poolPyGlobalKeyHandler.createObject();
 
-			handler->initialize( m_serviceProvider, _cb );
+			handler->initialize( m_serviceProvider, _cb, _args );
 
 			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
 
@@ -5716,27 +5727,27 @@ namespace Menge
             .def_proxy_static( "createChildren", nodeScriptMethod, &NodeScriptMethod::createChildren )
 			.def_proxy_static( "getAllChildren", nodeScriptMethod, &NodeScriptMethod::getAllChildren )
 
-            .def_proxy_static( "colorTo", nodeScriptMethod, &NodeScriptMethod::colorTo )
-            .def_proxy_static( "alphaTo", nodeScriptMethod, &NodeScriptMethod::alphaTo )
+			.def_proxy_args_static( "colorTo", nodeScriptMethod, &NodeScriptMethod::colorTo )
+			.def_proxy_args_static( "alphaTo", nodeScriptMethod, &NodeScriptMethod::alphaTo )
             .def_proxy_static( "colorStop", nodeScriptMethod, &NodeScriptMethod::colorStop )
 
-            .def_proxy_static( "velocityTo", nodeScriptMethod, &NodeScriptMethod::velocityTo )
+			.def_proxy_args_static( "velocityTo", nodeScriptMethod, &NodeScriptMethod::velocityTo )
 
-            .def_proxy_static( "moveTo", nodeScriptMethod, &NodeScriptMethod::moveTo )
-            .def_proxy_static( "bezier2To", nodeScriptMethod, &NodeScriptMethod::bezier2To )
-            .def_proxy_static( "bezier3To", nodeScriptMethod, &NodeScriptMethod::bezier3To )
-			.def_proxy_static( "bezier4To", nodeScriptMethod, &NodeScriptMethod::bezier4To )
-			.def_proxy_static( "parabolaTo", nodeScriptMethod, &NodeScriptMethod::parabolaTo )
-			.def_proxy_static( "followTo", nodeScriptMethod, &NodeScriptMethod::followTo )
+			.def_proxy_args_static( "moveTo", nodeScriptMethod, &NodeScriptMethod::moveTo )
+			.def_proxy_args_static( "bezier2To", nodeScriptMethod, &NodeScriptMethod::bezier2To )
+			.def_proxy_args_static( "bezier3To", nodeScriptMethod, &NodeScriptMethod::bezier3To )
+			.def_proxy_args_static( "bezier4To", nodeScriptMethod, &NodeScriptMethod::bezier4To )
+			.def_proxy_args_static( "parabolaTo", nodeScriptMethod, &NodeScriptMethod::parabolaTo )
+			.def_proxy_args_static( "followTo", nodeScriptMethod, &NodeScriptMethod::followTo )
             .def_proxy_static( "moveStop", nodeScriptMethod, &NodeScriptMethod::moveStop )
 
-            .def_proxy_static( "angleTo", nodeScriptMethod, &NodeScriptMethod::angleTo )
-            .def_proxy_static( "angleStop", nodeScriptMethod, &NodeScriptMethod::angleStop )
-            .def_proxy_static( "scaleTo", nodeScriptMethod, &NodeScriptMethod::scaleTo )
+			.def_proxy_args_static( "angleTo", nodeScriptMethod, &NodeScriptMethod::angleTo )
+			.def_proxy_args_static( "angleStop", nodeScriptMethod, &NodeScriptMethod::angleStop )
+			.def_proxy_args_static( "scaleTo", nodeScriptMethod, &NodeScriptMethod::scaleTo )
             .def_proxy_static( "scaleStop", nodeScriptMethod, &NodeScriptMethod::scaleStop )
 
-            .def_proxy_static( "accMoveTo", nodeScriptMethod, &NodeScriptMethod::accMoveTo )
-            .def_proxy_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::accAngleTo )			
+			.def_proxy_args_static( "accMoveTo", nodeScriptMethod, &NodeScriptMethod::accMoveTo )
+			.def_proxy_args_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::accAngleTo )
             ;
 
         pybind::interface_<ThreadTask>("Task")
@@ -6248,7 +6259,7 @@ namespace Menge
 
             }		
 
-            pybind::def_functor( "setCurrentScene", nodeScriptMethod, &NodeScriptMethod::setCurrentScene );
+            pybind::def_functor_args( "setCurrentScene", nodeScriptMethod, &NodeScriptMethod::setCurrentScene );
             pybind::def_functor( "getCurrentScene", nodeScriptMethod, &NodeScriptMethod::getCurrentScene );
 			pybind::def_functor( "getGlobalScene", nodeScriptMethod, &NodeScriptMethod::getGlobalScene );			
 
@@ -6384,14 +6395,14 @@ namespace Menge
 
             pybind::def_functor( "hasResource", nodeScriptMethod, &NodeScriptMethod::hasResource );
 
-            pybind::def_functor( "removeCurrentScene", nodeScriptMethod, &NodeScriptMethod::removeCurrentScene );
+            pybind::def_functor_args( "removeCurrentScene", nodeScriptMethod, &NodeScriptMethod::removeCurrentScene );
 
-            pybind::def_functor( "addMouseMoveHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseMoveHandler );
-            pybind::def_functor( "addMouseButtonHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandler );
-			pybind::def_functor( "addMouseButtonHandlerBegin", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerBegin );
-			pybind::def_functor( "addMouseButtonHandlerEnd", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerEnd );
-			pybind::def_functor( "addMouseWheelHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseWheelHandler );
-			pybind::def_functor( "addKeyHandler", nodeScriptMethod, &NodeScriptMethod::s_addKeyHandler );
+			pybind::def_functor_args( "addMouseMoveHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseMoveHandler );
+			pybind::def_functor_args( "addMouseButtonHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandler );
+			pybind::def_functor_args( "addMouseButtonHandlerBegin", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerBegin );
+			pybind::def_functor_args( "addMouseButtonHandlerEnd", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerEnd );
+			pybind::def_functor_args( "addMouseWheelHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseWheelHandler );
+			pybind::def_functor_args( "addKeyHandler", nodeScriptMethod, &NodeScriptMethod::s_addKeyHandler );
 			
 			pybind::def_functor( "removeGlobalHandler", nodeScriptMethod, &NodeScriptMethod::s_removeGlobalHandler );
 			pybind::def_functor( "enableGlobalHandler", nodeScriptMethod, &NodeScriptMethod::s_enableGlobalHandler );

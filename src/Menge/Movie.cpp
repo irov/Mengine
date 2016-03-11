@@ -1170,9 +1170,19 @@ namespace Menge
 			}
 			else if( layer.type == CONST_STRING(m_serviceProvider, SolidSprite) )
 			{
-				if( this->createMovieImageSolid_( layer ) == false )
+				if( layer.shape == false )
 				{
-					return false;
+					if( this->createMovieImageSolid_( layer ) == false )
+					{
+						return false;
+					}
+				}
+				else
+				{
+					if( this->createMovieMesh2DSolid_( layer ) == false )
+					{
+						return false;
+					}
 				}
 			}
 			else if( layer.type == CONST_STRING(m_serviceProvider, MovieSocketImage) )
@@ -1471,18 +1481,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieMesh2D_( const MovieLayer & _layer )
 	{
-		Mesh2D * layer_mesh = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Mesh2D>( CONST_STRING(m_serviceProvider, Mesh2D) );
-
-		if( layer_mesh == nullptr )
-		{
-			return false;
-		}
-
 		ResourceImagePtr resourceImage = RESOURCE_SERVICE( m_serviceProvider )
 			->getResourceReferenceT<ResourceImagePtr>( _layer.source );
 
 		if( resourceImage == nullptr )
+		{
+			return false;
+		}
+
+		Mesh2D * layer_mesh = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<Mesh2D>( CONST_STRING(m_serviceProvider, Mesh2D) );
+
+		if( layer_mesh == nullptr )
 		{
 			return false;
 		}
@@ -1534,6 +1544,39 @@ namespace Menge
 		}
 
 		if( this->addMovieNode_( _layer, layer_sprite, nullptr, nullptr ) == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieMesh2DSolid_( const MovieLayer & _layer )
+	{
+		ResourceImageSolidPtr resourceImage = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceReferenceT<ResourceImageSolidPtr>( _layer.source );
+
+		if( resourceImage == nullptr )
+		{
+			return false;
+		}
+
+		Mesh2D * layer_mesh = NODE_SERVICE( m_serviceProvider )
+			->createNodeT<Mesh2D>( CONST_STRING( m_serviceProvider, Mesh2D ) );
+
+		if( layer_mesh == nullptr )
+		{
+			return false;
+		}
+
+		layer_mesh->setResourceImage( resourceImage );
+
+		if( this->setupBlendingMode_( _layer, layer_mesh ) == false )
+		{
+			return false;
+		}
+
+		if( this->addMovieNode_( _layer, layer_mesh, nullptr, nullptr ) == false )
 		{
 			return false;
 		}

@@ -50,7 +50,8 @@ namespace Menge
 			, uint32_t _textureCount
 			, const RenderTextureInterfacePtr * _textures ) override;       
 
-		RenderMaterialInterfacePtr getMaterial2( const RenderStage * _stage
+		RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
+			, const RenderStage * _stage
 			, EPrimitiveType _primitiveType
 			, uint32_t _textureCount
 			, const RenderTextureInterfacePtr * _textures ) override;
@@ -72,7 +73,7 @@ namespace Menge
 
 	protected:
 		uint32_t makeMaterialIndex_();
-		uint32_t makeMaterialHash( uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const;
+		uint32_t makeMaterialHash( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const;
 
 	protected:
 		RenderShaderInterfacePtr createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile );		

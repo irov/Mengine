@@ -724,17 +724,18 @@ namespace Menge
 			}
 		}
 
-		RenderMaterialInterfacePtr material = this->getMaterial2( stage, _primitiveType, _textureCount, _textures );
+		RenderMaterialInterfacePtr material = this->getMaterial2( _materialName, stage, _primitiveType, _textureCount, _textures );
 
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr RenderMaterialManager::getMaterial2( const RenderStage * _stage
+	RenderMaterialInterfacePtr RenderMaterialManager::getMaterial2( const ConstString & _materialName
+		, const RenderStage * _stage
 		, EPrimitiveType _primitiveType
 		, uint32_t _textureCount
 		, const RenderTextureInterfacePtr * _textures )
 	{
-		uint32_t material_hash = this->makeMaterialHash( _textureCount, _textures );
+		uint32_t material_hash = this->makeMaterialHash( _materialName, _textureCount, _textures );
 
 		uint32_t material_table_index = material_hash % MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
@@ -764,7 +765,7 @@ namespace Menge
 		RenderMaterial * material = m_factoryMaterial.createObject();
 
 		uint32_t id = this->makeMaterialIndex_();
-		material->initialize( id, material_hash, _primitiveType, _textureCount, _textures, _stage );
+		material->initialize( _materialName, id, material_hash, _primitiveType, _textureCount, _textures, _stage );
 		
 		materials.push_back( material );
 
@@ -875,9 +876,10 @@ namespace Menge
 		return ++m_materialEnumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t RenderMaterialManager::makeMaterialHash( uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const
+	uint32_t RenderMaterialManager::makeMaterialHash( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const
 	{
-		uint32_t material_hash = 0U;
+		uint32_t material_hash = (uint32_t)_materialName.hash();
+
 		for( uint32_t i = 0; i != _textureCount; ++i )
 		{
 			uint32_t texture_id = _textures[i]->getId();

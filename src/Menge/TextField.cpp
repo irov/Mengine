@@ -471,14 +471,14 @@ namespace Menge
 		m_textSize.y = 0.f;
 		m_charCount = 0;
 
-		const TextFontInterfacePtr & font = this->getFont();
-
-		if( font == nullptr )
+		if( m_key.empty() == true )
 		{
 			return;
 		}
 
-		if( m_key.empty() == true )
+		const TextFontInterfacePtr & font = this->getFont();
+
+		if( font == nullptr )
 		{
 			return;
 		}
@@ -495,8 +495,18 @@ namespace Menge
 
 		String space_delim = " ";
 
+		TVectorString line_delims;
+		line_delims.push_back( "\n" );
+		line_delims.push_back( "\r\n" );
+		line_delims.push_back( "\n\r" );
+		line_delims.push_back( "\n\r\t" );
+
+		TVectorString space_delims;
+		space_delims.push_back( " " );
+		space_delims.push_back( "\r" );
+
 		TVectorString lines;
-		Utils::split2( lines, m_cacheText, false, "\n", "\r\n" );
+		Utils::split2( lines, m_cacheText, false, line_delims );
 
 		float charOffset = this->calcCharOffset();
 		
@@ -526,7 +536,7 @@ namespace Menge
 				if( textLength > maxLength )
 				{
 					TVectorString words;
-					Utils::split2( words, *it, false, " ", "\r" );
+					Utils::split2( words, *it, false, space_delims );
 
 					String newLine = words.front();
 					words.erase( words.begin() );

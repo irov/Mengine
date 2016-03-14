@@ -4,10 +4,6 @@
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "Kernel/ResourcePrototypeGenerator.h"
-
-#	include "Kernel/ResourceMusic.h"
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( Amplifier );
 //////////////////////////////////////////////////////////////////////////

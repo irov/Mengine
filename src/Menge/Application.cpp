@@ -99,6 +99,7 @@
 #	include "ResourceAnimation.h"
 
 #	include "Kernel/ResourceImageData.h"
+#	include "Kernel/ResourceMusic.h"
 
 #	include "ResourceImageSolid.h"
 #	include "ResourceImageDefault.h"
@@ -492,6 +493,8 @@ namespace Menge
 		{\
 			return false;\
 		}
+
+		RESOURCE_FACTORY( m_serviceProvider, ResourceMusic );
 		
 		RESOURCE_FACTORY( m_serviceProvider, ResourceAnimation );
 

@@ -3,8 +3,6 @@
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "Kernel/ResourcePrototypeGenerator.h"
-
 extern "C" // only required if using g++
 {
     //////////////////////////////////////////////////////////////////////////
@@ -36,10 +34,7 @@ namespace Menge
 	{		
 		SERVICE_CREATE( m_serviceProvider, Amplifier );
 
-		PROTOTYPE_SERVICE(m_serviceProvider)
-			->addPrototype( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Resource"), STRINGIZE_STRING_LOCAL(m_serviceProvider, "ResourcePlaylist"), new ResourcePrototypeGenerator<ResourcePlaylist, 8> );
-
-        return true;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PluginAmplifier::_finalize()

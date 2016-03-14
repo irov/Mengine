@@ -121,9 +121,9 @@ namespace Menge
 		{
 			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WP" );
 		}
-		else if( HAS_OPTIONS( m_serviceProvider, "mac" ) )
+		else if( HAS_OPTIONS( m_serviceProvider, "osx" ) )
 		{
-			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "MAC" );
+			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "OSX" );
 		}
 
 		return true;

@@ -230,10 +230,10 @@ namespace Menge
 	{
 		if( m_supportStream == false && _streamable == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundSource: unsupport stream sound %s:%s"
+			LOGGER_WARNING(m_serviceProvider)("SoundEngine::createSoundSource: unsupport stream sound"
 				);
 
-			return 0;
+			_streamable = false;
 		}
 
 		SoundSourceInterfacePtr sourceInterface = SOUND_SYSTEM(m_serviceProvider)
@@ -369,12 +369,12 @@ namespace Menge
 	{
 		if( m_supportStream == false && _streamable == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: unsupport stream sound %s:%s"
+			LOGGER_WARNING(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: unsupport stream sound %s:%s"
 				, _pakName.c_str()
 				, _fileName.c_str() 
 				);
 
-			return nullptr;
+			_streamable = false;
 		}
 
 		SoundDecoderInterfacePtr soundDecoder;

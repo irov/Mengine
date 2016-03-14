@@ -49,7 +49,7 @@ namespace Menge
 		m_protocolPath = _protocolPath;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist )
+	bool LoaderEngine::load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const
 	{
         LOGGER_INFO(m_serviceProvider)( "LoaderEngine::load pak '%s:%s'"
             , _pak.c_str()
@@ -119,7 +119,48 @@ namespace Menge
 		return done;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metadata * _metadata, bool * _reimport )
+	bool LoaderEngine::validation( const ConstString & _pak, const FilePath & _path ) const
+	{
+		InputStreamInterfacePtr stream =
+			FILE_SERVICE( m_serviceProvider )->openInputFile( _pak, _path, false );
+
+		if( stream == nullptr )
+		{
+			return false;
+		}
+
+		size_t size = stream->size();
+
+		if( size == 0 )
+		{
+			return false;
+		}
+
+		Blobject::value_type header_buff[Metabuf::header_size];
+
+		stream->read( header_buff, Metabuf::header_size );
+
+		size_t header_read = 0;
+		uint32_t readVersion;
+		uint32_t needVersion;
+
+		if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion ) == false )
+		{
+			return false;
+		}
+
+		uint32_t format_version;
+		stream->read( &format_version, sizeof( format_version ) );
+
+		if( format_version != FORMAT_VERSION_BIN )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool LoaderEngine::importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metadata * _metadata, bool * _reimport ) const
 	{
 		size_t size = _stream->size();
 
@@ -260,7 +301,7 @@ namespace Menge
 	}
 #	ifndef MENGINE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist )
+	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const
 	{
 		PathString cache_path_xml;
 		
@@ -351,7 +392,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::makeBin_( const ConstString & _pak, const FilePath & _pathXml, const FilePath & _pathBin )
+	bool LoaderEngine::makeBin_( const ConstString & _pak, const FilePath & _pathXml, const FilePath & _pathBin ) const
 	{
 		XmlDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
             ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "xml2bin") );
@@ -418,7 +459,7 @@ namespace Menge
 	}
 #	else
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist )
+	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const
 	{
 		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr ) == false )
 		{

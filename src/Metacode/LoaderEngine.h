@@ -29,17 +29,15 @@ namespace Menge
 		void setProtocolPath( const ConstString & _protocolPath ) override;
 
 	public:
-		bool load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) override;
-
-	public:
-		bool import( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist );
+		bool load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const override;
+		bool validation( const ConstString & _pak, const FilePath & _path ) const override;
 
 	private:
-		bool importBin_( const InputStreamInterfacePtr & _bin, Metabuf::Metadata * _metadata, bool * _reimport );
-		bool openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist );
+		bool importBin_( const InputStreamInterfacePtr & _bin, Metabuf::Metadata * _metadata, bool * _reimport ) const;
+		bool openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const;
 
 #	ifndef MENGINE_MASTER_RELEASE
-		bool makeBin_( const ConstString & _pak, const FilePath & _pathXml, const FilePath & _pathBin );
+		bool makeBin_( const ConstString & _pak, const FilePath & _pathXml, const FilePath & _pathBin ) const;
 #	endif
 
     public:
@@ -47,9 +45,9 @@ namespace Menge
 
 	protected:
 		ArchivatorInterfacePtr m_archivator;
-			        
-        TVectorConstString m_bufferConstString;
-
+		
 		ConstString m_protocolPath;
+
+		mutable TVectorConstString m_bufferConstString;
 	};
 }

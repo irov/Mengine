@@ -23,9 +23,10 @@ namespace Menge
 		virtual void setProtocolPath( const ConstString & _protocolPath ) = 0;
 
     public:
-        virtual bool load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) = 0;
+        virtual bool load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const = 0;
+		virtual bool validation( const ConstString & _pak, const FilePath & _path ) const = 0;
     };
 
 #   define LOADER_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::LoaderServiceInterface)
+    ((LoaderServiceInterface *)SERVICE_GET(serviceProvider, Menge::LoaderServiceInterface))
 }

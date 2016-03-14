@@ -12,6 +12,8 @@
 #	include "Core/Stream.h"
 #	include "Core/MemoryAllocator.h"
 
+#	include "Metacode/Metacode.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Math/quat.h"
@@ -99,7 +101,8 @@ namespace Menge
 
 		FilePath path_bin = Helper::stringizeString( m_serviceProvider, binPath );
 
-		if( LOADER_SERVICE(m_serviceProvider)->load( m_options.pakName, path_bin, &keyFramesPack, exist ) == false )
+		if( LOADER_SERVICE(m_serviceProvider)
+			->load( m_options.pakName, path_bin, &keyFramesPack, exist ) == false )
 		{
 			if( exist == false )
 			{
@@ -120,6 +123,10 @@ namespace Menge
 		
 
 		ArchiveWrite aw(_buffer);
+
+		uint32_t true_metacode_version = Metacode::get_metacode_version();
+
+		aw << true_metacode_version;
 
 		uint32_t maxIndex = keyFramesPack.get_MaxIndex();
 

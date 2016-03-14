@@ -7,6 +7,8 @@
 #	include "Core/Stream.h"
 #	include "Core/MemoryHelper.h"
 
+#	include "Metacode/Metacode.h"
+
 #	include "stdex/memory_reader.h"
 
 #	include "Logger/Logger.h"
@@ -91,6 +93,21 @@ namespace Menge
 		{
 			size_t binary_read = 0;
 			stdex::memory_reader ar( _buffer, _size, binary_read );
+
+			uint32_t metacode_version;
+			ar << metacode_version;
+						
+			uint32_t true_metacode_version = Metacode::get_metacode_version();
+
+			if( true_metacode_version != metacode_version )
+			{
+				LOGGER_ERROR( m_serviceProvider )("DataflowAEK::loadBuffer_: invalid metacode version %d (need %d)"
+					, metacode_version
+					, true_metacode_version
+					);
+
+				return false;
+			}
 
 			uint32_t maxIndex;
 			ar << maxIndex;

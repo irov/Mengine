@@ -75,7 +75,8 @@ INCLUDE_DIRECTORIES(
         #${THIRDPARTY_DIR}/theora/include
         ${THIRDPARTY_DIR}/zlib
         ${THIRDPARTY_DIR}/libpng
-        ${THIRDPARTY_DIR}/libjpeg        
+        ${THIRDPARTY_DIR}/libjpeg
+        ${THIRDPARTY_DIR}/metabuf
 					
         #${THIRDPARTY_DIR}/libWEBP/Include
         #${THIRDPARTY_DIR}/libWEBPLL

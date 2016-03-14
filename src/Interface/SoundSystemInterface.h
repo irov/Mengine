@@ -141,15 +141,19 @@ namespace Menge
 	public:
 		virtual void setSoundVolume( const ConstString & _type, float _volume, float _default ) = 0;
 		virtual float getSoundVolume( const ConstString & _type ) const = 0;
+		virtual float mixSoundVolume() const = 0;
 
 		virtual void setCommonVolume( const ConstString & _type, float _volume, float _default ) = 0;
 		virtual float getCommonVolume( const ConstString & _type ) const = 0;
+		virtual float mixCommonVolume() const = 0;
 
 		virtual void setMusicVolume( const ConstString & _type, float _volume, float _default ) = 0;
 		virtual float getMusicVolume( const ConstString & _type ) const = 0;
+		virtual float mixMusicVolume() const = 0;
 
 		virtual void setVoiceVolume( const ConstString & _type, float _volume, float _default ) = 0;
         virtual float getVoiceVolume( const ConstString & _type ) const = 0;
+		virtual float mixVoiceVolume() const = 0;
 
     public:
 		virtual bool setSourceVolume( uint32_t _emitter, float _volume, float _default ) = 0;

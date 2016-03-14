@@ -6,8 +6,6 @@ src
     PluginAmplifier.cpp
     Amplifier.h
     Amplifier.cpp
-    ResourceMusic.h
-    ResourceMusic.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

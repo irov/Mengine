@@ -103,7 +103,7 @@ namespace Menge
 		return m_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitterContainer2::setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage )
+	void AstralaxEmitterContainer2::setAtlasResourceImage( size_t _index, const ResourceImagePtr & _resourceImage )
 	{
 		m_resourceImages[_index] = _resourceImage;
 	}

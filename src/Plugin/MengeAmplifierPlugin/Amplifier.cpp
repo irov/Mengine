@@ -3,7 +3,7 @@
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-#	include "ResourceMusic.h"
+#	include "Kernel/ResourceMusic.h"
 
 #   include "Logger/Logger.h"
 
@@ -105,6 +105,14 @@ namespace Menge
 
 			return false;
 		}
+
+		float commonVolume = SOUND_SERVICE( m_serviceProvider )
+			->mixCommonVolume();
+
+		float musicVolume = SOUND_SERVICE( m_serviceProvider )
+			->mixMusicVolume();
+
+		float total_volume = volume * commonVolume * musicVolume;
 
 		if( SOUND_SERVICE( m_serviceProvider )
 			->setSourceVolume( m_sourceID, volume, 0.f ) == false )

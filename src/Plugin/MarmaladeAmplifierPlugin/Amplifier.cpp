@@ -4,9 +4,7 @@
 #   include "Interface/StringizeInterface.h"
 #	include "Interface/MemoryInterface.h"
 
-#	include "Playlist.h"
-
-#	include "ResourcePlaylist.h"
+#	include "Kernel/ResourceMusic.h"
 
 #	include "Core/MemoryHelper.h"
 
@@ -24,12 +22,9 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::Amplifier()
-		: m_currentPlayList(nullptr)
-		, m_volume(1.f)
-		, m_volumeOverride(1.f)
+		: m_volume(1.f)
 		, m_play(false)
-        , m_turn(true)
-		, m_currentSoundPosition(0.f)
+		, m_loop(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -105,140 +100,6 @@ namespace Menge
 		s3eAudioUnRegister( S3E_AUDIO_STOP, (s3eCallback)&s_Amplifier_AudioCallback_Stop );
 
 		this->stop();
-
-		for( TMapPlayList::iterator
-			it = m_mapPlayLists.begin(),
-			it_end = m_mapPlayLists.end();
-		it != it_end;
-		++it )
-		{
-			Playlist * playlist = it->second;
-
-			delete playlist;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::loadPlayList_( const ConstString& _playlistResource )
-	{
-		TMapPlayList::iterator it = m_mapPlayLists.find( _playlistResource );
-
-		if( it == m_mapPlayLists.end() )
-		{			
-			Playlist * playlist = new Playlist( m_serviceProvider );
-
-            if( playlist->initialize( _playlistResource ) == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("Amplifier: no found playlist with name '%s'"
-                    , _playlistResource.c_str()
-                    );
-
-                delete playlist;
-
-                return false;
-            }
-
-			it = m_mapPlayLists.insert( std::make_pair( _playlistResource, playlist ) ).first;
-		}
-
-		m_currentPlaylistName = _playlistResource;
-		m_currentPlayList = it->second;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::playTrack( const ConstString& _playlistResource, uint32_t _index, float _pos, bool _looped )
-	{
-		if( this->loadPlayList_( _playlistResource ) == false )
-		{
-			return false;
-		}
-
-		if( m_currentPlayList == nullptr )
-		{
-			return false;
-		}
-
-		m_currentPlayList->setLooped1( _looped );
-		m_currentPlayList->setTrack( _index );
-
-		if( m_play == true )
-		{
-			return true;
-		}
-
-		if( this->preparePlay_( _pos ) == false )
-		{
-			return false;
-		}
-
-		m_play = true;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t Amplifier::getNumTracks() const
-	{
-		if( m_currentPlayList == nullptr )
-		{
-			return 0;
-		}
-
-        uint32_t numTracks = m_currentPlayList->numTracks();
-
-		return numTracks;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t Amplifier::getCurrentTrack() const
-	{
-		if( m_currentPlayList == nullptr )
-		{
-			return 0;
-		}
-
-		uint32_t index = m_currentPlayList->currentTrackIndex();
-
-		return index;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::preparePlay_( float _pos )
-	{
-		if( m_currentPlayList == nullptr )
-		{
-			return false;
-		}
-
-		const TrackDesc * track = m_currentPlayList->getTrack();
-
-		if( track == nullptr )
-		{
-			return false;
-		}
-
-		const ConstString & category = m_currentPlayList->getCategory();
-
-		if( this->play_( category, track->path, track->codec, track->external, _pos ) == false )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::shuffle( const ConstString & _playlist )
-	{
-		if( this->loadPlayList_( _playlist ) == false )
-		{
-			return false;
-		}
-
-		if( m_currentPlayList == nullptr )
-		{
-			return false;
-		}
-
-		m_currentPlayList->shuffle();
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::stop()
@@ -353,38 +214,44 @@ namespace Menge
 		}
 
 		m_audioMemory = nullptr;
-
-        m_currentPlayList->next();
-
-		const TrackDesc * track = m_currentPlayList->getTrack();
-		
-        if( track != nullptr )
-        {
-            const ConstString & category = m_currentPlayList->getCategory();
-            
-			if( this->play_( category, track->path, track->codec, track->external, 0.f ) == false )
-			{
-				return;
-			}
-
-			m_play = true;
-        }		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::play_( const ConstString& _pakName, const FilePath& _filePath, const ConstString& _codec, bool _external, float _pos )
+	bool Amplifier::playMusic( const ConstString & _resourceMusic, float _pos, bool _looped )
 	{
 		this->stop();
 
-		if( _external == false )
+		m_loop = _looped;
+
+		ResourceMusicPtr resourceMusic = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceReferenceT<ResourceMusicPtr>( _resourceMusic );
+
+		if( resourceMusic == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Amplifier::playMusic can't found resource '%s'"
+				, _resourceMusic.c_str()
+				);
+
+			return false;
+		}
+
+		const ConstString & category = resourceMusic->getCategory();
+		const FilePath & path = resourceMusic->getPath();
+		const ConstString & codec = resourceMusic->getCodec();
+		bool external = resourceMusic->isExternal();
+		float volume = resourceMusic->getVolume();
+
+		m_volume = volume;
+
+		if( external == false )
 		{
 			InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-				->openInputFile( _pakName, _filePath, false );
+				->openInputFile( category, path, false );
 
 			if( stream == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: invalid open sound '%s:%s'"
-					, _pakName.c_str()
-					, _filePath.c_str()
+					, category.c_str()
+					, path.c_str()
 					);
 
 				return false;
@@ -396,8 +263,8 @@ namespace Menge
 			if( m_audioMemory == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: invalid create memory '%s:%s'"
-					, _pakName.c_str()
-					, _filePath.c_str()
+					, category.c_str()
+					, path.c_str()
 					);
 
 				return false;
@@ -414,8 +281,8 @@ namespace Menge
 				const char * s3eAudio_string = s3eAudioGetErrorString();
 
 				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't play internal audio '%s:%s' error %d [%s]"
-					, _pakName.c_str()
-					, _filePath.c_str()
+					, category.c_str()
+					, path.c_str()
 					, s3eAudio_error
 					, s3eAudio_string
 					);
@@ -435,8 +302,10 @@ namespace Menge
 
 			//	return false;
 			//}
+
+			const Char * str_path = path.c_str();
 						
-			s3eResult result_play = s3eAudioPlay( _filePath.c_str(), 1 );
+			s3eResult result_play = s3eAudioPlay( str_path, 1 );
 
 			if( result_play == S3E_RESULT_ERROR )
 			{
@@ -444,8 +313,8 @@ namespace Menge
 				const char * s3eAudio_string = s3eAudioGetErrorString();
 
 				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't play external audio '%s:%s' error %d [%s]"
-					, _pakName.c_str()
-					, _filePath.c_str()
+					, category.c_str()
+					, path.c_str()
 					, s3eAudio_error
 					, s3eAudio_string
 					);
@@ -469,8 +338,8 @@ namespace Menge
 				const char * s3eAudio_string = s3eAudioGetErrorString();
 
 				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't '%s:%s' set pos %d error %d [%s]"
-					, _pakName.c_str()
-					, _filePath.c_str()
+					, category.c_str()
+					, path.c_str()
 					, s3e_pos
 					, s3eAudio_error
 					, s3eAudio_string
@@ -478,12 +347,29 @@ namespace Menge
 			}
 		}
 
+		float commonVolume = SOUND_SERVICE( m_serviceProvider )
+			->mixCommonVolume();
+
+		float musicVolume = SOUND_SERVICE( m_serviceProvider )
+			->mixMusicVolume();
+		
+		int32 s3e_volume = (int32)(m_volume * commonVolume * musicVolume * float( S3E_AUDIO_MAX_VOLUME ));
+
+		s3eResult result = s3eAudioSetInt( S3E_AUDIO_VOLUME, s3e_volume );
+
+		if( result == S3E_RESULT_ERROR )
+		{
+			s3eAudioError s3eAudio_error = s3eAudioGetError();
+			const char * s3eAudio_string = s3eAudioGetErrorString();
+
+			LOGGER_ERROR( m_serviceProvider )("Amplifier::onSoundChangeVolume invalid set S3E_AUDIO_VOLUME %d error %d [%s]"
+				, s3e_volume
+				, s3eAudio_error
+				, s3eAudio_string
+				);
+		}
+
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Amplifier::getPlayTrack() const
-	{
-		return m_currentPlaylistName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Amplifier::getPosMs() const
@@ -508,6 +394,15 @@ namespace Menge
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float Amplifier::getLengthMs() const
+	{
+		int32 s3e_duration = s3eAudioGetInt( S3E_AUDIO_DURATION );
+
+		float duration = (float)s3e_duration;
+
+		return duration;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::setPosMs( float _posMs )
 	{
 		int32 s3e_pos = (int32)_posMs;
@@ -529,7 +424,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::onSoundChangeVolume( float _sound, float _music, float _voice )
 	{
-		int32 s3e_volume = (int32)(_music * float(S3E_AUDIO_MAX_VOLUME));
+		int32 s3e_volume = (int32)(m_volume * _music * float( S3E_AUDIO_MAX_VOLUME ));
 
 		s3eResult result = s3eAudioSetInt( S3E_AUDIO_VOLUME, s3e_volume );
 

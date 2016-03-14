@@ -180,6 +180,13 @@ Resource\\\\Image
 )
 
 ADD_FILTER(
+Resource\\\\Music
+    ResourceMusic.cpp
+    ResourceMusic.h
+)
+
+
+ADD_FILTER(
 Vertices
 	FixedVertices.h
 	VectorVertices.cpp

@@ -84,15 +84,19 @@ namespace Menge
     public:
 		void setSoundVolume( const ConstString & _type, float _volume, float _default ) override;
 		float getSoundVolume( const ConstString & _type ) const override;
+		float mixSoundVolume() const override;
 
 		void setCommonVolume( const ConstString & _type, float _volume, float _default ) override;
 		float getCommonVolume( const ConstString & _type ) const override;
+		float mixCommonVolume() const override;
 
 		void setMusicVolume( const ConstString & _type, float _volume, float _default ) override;
 		float getMusicVolume( const ConstString & _type ) const override;
+		float mixMusicVolume() const override;
 
 		void setVoiceVolume( const ConstString & _type, float _volume, float _default ) override;
         float getVoiceVolume( const ConstString & _type ) const override;
+		float mixVoiceVolume() const override;
 
 	public:
 		bool setSourceVolume( uint32_t _emitterId, float _volume, float _default ) override;

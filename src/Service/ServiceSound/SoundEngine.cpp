@@ -484,6 +484,13 @@ namespace Menge
 
 		return volume;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	float SoundEngine::mixSoundVolume() const
+	{
+		float volume = m_soundVolume.mixVolume();
+
+		return volume;
+	}
 	//////////////////////////////////////////////////////////////////////////	
 	void SoundEngine::setCommonVolume( const ConstString & _type, float _volume, float _default )
 	{
@@ -495,6 +502,13 @@ namespace Menge
 	float SoundEngine::getCommonVolume( const ConstString & _type ) const
 	{
 		float volume = m_commonVolume.getVolume( _type );
+
+		return volume;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float SoundEngine::mixCommonVolume() const
+	{
+		float volume = m_commonVolume.mixVolume();
 
 		return volume;
 	}
@@ -513,6 +527,13 @@ namespace Menge
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float SoundEngine::mixMusicVolume() const
+	{
+		float volume = m_musicVolume.mixVolume();
+
+		return volume;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setVoiceVolume( const ConstString & _type, float _volume, float _default )
 	{
 		m_voiceVolume.setVolume( _type, _volume, _default );
@@ -523,6 +544,13 @@ namespace Menge
 	float SoundEngine::getVoiceVolume( const ConstString & _type ) const
 	{
 		float volume = m_voiceVolume.getVolume( _type );
+
+		return volume;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float SoundEngine::mixVoiceVolume() const
+	{
+		float volume = m_voiceVolume.mixVolume();
 
 		return volume;
 	}

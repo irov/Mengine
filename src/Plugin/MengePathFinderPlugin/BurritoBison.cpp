@@ -256,13 +256,6 @@ namespace Menge
 
 		m_cameraFollowerScale.update( _timing );
 
-		if( m_neutron == true )
-		{
-			_velocity = mt::vec3f( m_velocity.x, 0.f, m_velocity.z );
-
-			return;
-		}
-
 		if( _iterate == 0 )
 		{
 			mt::vec3f force_velocity( 0.f, 0.f, 0.f );
@@ -302,6 +295,13 @@ namespace Menge
 
 			TVectorBurritoBisonImpulse::iterator it_erase = std::remove_if( m_impulses.begin(), m_impulses.end(), FBurritoBisonImpulseDead() );
 			m_impulses.erase( it_erase, m_impulses.end() );
+
+			if( m_neutron == true )
+			{
+				force_velocity.y = 0.f;
+
+				return;
+			}
 
 			m_velocity += force_velocity;
 

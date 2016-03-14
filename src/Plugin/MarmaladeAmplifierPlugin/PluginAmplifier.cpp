@@ -5,8 +5,6 @@
 
 #	include "Kernel/ResourcePrototypeGenerator.h"
 
-#	include "ResourcePlaylist.h"
-
 extern "C" // only required if using g++
 {
     //////////////////////////////////////////////////////////////////////////

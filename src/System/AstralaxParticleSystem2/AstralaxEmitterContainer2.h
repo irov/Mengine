@@ -42,7 +42,7 @@ namespace Menge
 		uint32_t getId() const;
 
 	public:
-		void setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) override;
+		void setAtlasResourceImage( size_t _index, const ResourceImagePtr & _resourceImage ) override;
 
 	public:
 		const ResourceImagePtr & getAtlasResourceImage( const char * _file ) const;

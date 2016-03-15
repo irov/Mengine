@@ -1281,17 +1281,17 @@ namespace Menge
 		protected:
 			void onScheduleUpdate( uint32_t _id, uint32_t _iterate, float _delay ) override
 			{
-				m_cb( _id, _iterate, _delay, false, false, m_args );
+				m_cb.call_args( _id, _iterate, _delay, false, false, m_args );
 			}
 
 			void onScheduleComplete( uint32_t _id ) override
 			{
-				m_cb( _id, 0, 0.f, true, false, m_args );
+				m_cb.call_args( _id, 0, 0.f, true, false, m_args );
 			}
 
 			void onScheduleStop( uint32_t _id ) override
 			{
-				m_cb( _id, 0, 0.f, false, true, m_args );
+				m_cb.call_args( _id, 0, 0.f, false, true, m_args );
 			}
 
 		protected:
@@ -1327,7 +1327,7 @@ namespace Menge
 		protected:
 			float onSchedulePipe( uint32_t _id, uint32_t _index ) override
 			{
-				float delay = m_cb( _id, _index, m_args );
+				float delay = m_cb.call_args( _id, _index, m_args );
 
 				return delay;
 			}
@@ -1405,12 +1405,12 @@ namespace Menge
 		protected:
 			void onScheduleComplete( uint32_t _id ) override
 			{
-				m_cb( _id, false, m_args );
+				m_cb.call_args( _id, false, m_args );
 			}
 
 			void onScheduleStop( uint32_t _id ) override
 			{
-				m_cb( _id, true, m_args );
+				m_cb.call_args( _id, true, m_args );
 			}
 
 		protected:
@@ -1778,8 +1778,10 @@ namespace Menge
 			: public SceneChangeCallbackInterface
 		{
 		public:
-			void initialize( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 			{
+				m_serviceProvider = _serviceProvider;
+
 				m_cb = _cb;
 				m_args = _args;
 			}
@@ -1791,22 +1793,24 @@ namespace Menge
 				{
 					if( _scene == nullptr )
 					{
-						m_cb( pybind::ret_none(), _enable, m_args );
+						m_cb.call_args( pybind::ret_none(), _enable, m_args );
 					}
 					else
 					{
 						const pybind::object & py_scene = _scene->getScriptObject();
 
-						m_cb( py_scene, _enable, m_args );
+						m_cb.call_args( py_scene, _enable, m_args );
 					}
 				}
 				else
 				{
-					m_cb( m_args );
+					m_cb.call_args( m_args );
 				}
 			}
 
 		public:
+			ServiceProviderInterface * m_serviceProvider;
+
 			pybind::object m_cb;
 			pybind::detail::args_operator_t m_args;
 		};
@@ -1818,7 +1822,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         bool setCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _destroyOld, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
         {
-            LOGGER_INFO(m_serviceProvider)( "set current scene '%s'"
+            LOGGER_WARNING(m_serviceProvider)( "set current scene '%s'"
                 , _name.c_str()
                 );
 
@@ -1830,7 +1834,7 @@ namespace Menge
 
 			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback.createObject();
 
-			py_cb->initialize( _cb, _args );
+			py_cb->initialize( m_serviceProvider, _cb, _args );
 
 			Scene * currentScene = PLAYER_SERVICE( m_serviceProvider )
 				->getCurrentScene();
@@ -2373,7 +2377,7 @@ namespace Menge
 		protected:
 			void onDownloadAssetComplete( uint32_t _id, bool _successful ) override
 			{
-				m_cb( _id, _successful );
+				m_cb.call( _id, _successful );
 			}
 
 		protected:
@@ -2456,7 +2460,7 @@ namespace Menge
 			{
 				pybind::object py_cb_begin = m_cb.get_attr( "begin" );
 
-				py_cb_begin( _node );
+				py_cb_begin.call( _node );
 			}
 
 			void callback_node_attributes( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
@@ -2475,7 +2479,7 @@ namespace Menge
 
 				pybind::object py_cb_attr = m_cb.get_attr( "attr" );
 
-				py_cb_attr( py_attr );
+				py_cb_attr.call( py_attr );
 			}
 
 			void callback_end_node( const char * _node )
@@ -2484,7 +2488,7 @@ namespace Menge
 
 				pybind::object py_cb_end = m_cb.get_attr( "end" );
 
-				py_cb_end();
+				py_cb_end.call();
 			}
 
 		protected:
@@ -2526,7 +2530,7 @@ namespace Menge
 			{
 				const ConstString & name = _font->getName();
 
-				m_cb( name );
+				m_cb.call( name );
 			}
 
 		protected:
@@ -2622,7 +2626,7 @@ namespace Menge
 				if( UNICODE_SERVICE(m_serviceProvider)
 					->unicodeToUtf8( ws_str.c_str(), ws_str.size(), text_utf8, 8, &text_utf8_len ) == false )
 				{
-					_cb( "invalid utf8 ", 0, ws_str );
+					_cb.call( "invalid utf8 ", 0, ws_str );
 					
 					continue;
 				}
@@ -2633,7 +2637,7 @@ namespace Menge
 				
 				if( err != utf8::internal::UTF8_OK )
 				{
-					_cb( "validate utf8 ", code, ws_str );
+					_cb.call( "validate utf8 ", code, ws_str );
 
 					continue;
 				}
@@ -2643,7 +2647,7 @@ namespace Menge
 
 				if( font->hasGlyph( glyphChar ) == false )
 				{					
-					_cb( "not found glyph ", code, ws_str );
+					_cb.call( "not found glyph ", code, ws_str );
 
 					continue;
 				}
@@ -3278,7 +3282,7 @@ namespace Menge
 			{
 				if( m_cb.is_callable() == true )
 				{
-					m_cb( true );
+					m_cb.call( true );
 				}
 			}
 
@@ -3286,7 +3290,7 @@ namespace Menge
 			{
 				if( m_cb.is_callable() == true )
 				{
-					m_cb( false );
+					m_cb.call( false );
 				}
 			}
 
@@ -3540,7 +3544,7 @@ namespace Menge
 					return;
 				}
 
-				m_cb( m_scriptable, _id, _isEnd, m_args );
+				m_cb.call_args( m_scriptable, _id, _isEnd, m_args );
 			}
 
 		protected:
@@ -4496,7 +4500,7 @@ namespace Menge
         {
 			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback.createObject();
 
-			py_cb->initialize( _cb, _args );
+			py_cb->initialize( m_serviceProvider, _cb, _args );
 
             PLAYER_SERVICE(m_serviceProvider)
 				->removeCurrentScene( py_cb );
@@ -4584,7 +4588,7 @@ namespace Menge
         protected:
 			bool handleMouseMove( const InputMouseMoveEvent & _event ) override
             {
-				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.dx, _event.dy, m_args );
+				pybind::object py_result = m_cb.call_args( _event.touchId, _event.x, _event.y, _event.dx, _event.dy, m_args );
 
 				if( py_result.is_none() == false )
                 {
@@ -4621,7 +4625,7 @@ namespace Menge
         protected:
 			bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
             {
-				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, m_args );
+				pybind::object py_result = m_cb.call_args( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, m_args );
 
 				if( py_result.is_none() == false )
                 {
@@ -4659,7 +4663,7 @@ namespace Menge
             //////////////////////////////////////////////////////////////////////////
 			bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override
             {
-				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, m_args );
+				pybind::object py_result = m_cb.call_args( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, m_args );
 
 				if( py_result.is_none() == false )
 				{
@@ -4697,7 +4701,7 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
 			{
-				pybind::object py_result = m_cb( _event.button, _event.x, _event.y, _event.wheel, m_args );
+				pybind::object py_result = m_cb.call_args( _event.button, _event.x, _event.y, _event.wheel, m_args );
 
 				if( py_result.is_none() == false )
 				{
@@ -4735,7 +4739,7 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override
 			{
-				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, m_args );
+				pybind::object py_result = m_cb.call_args( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, m_args );
 
 				if( py_result.is_none() == false )
 				{
@@ -4772,7 +4776,7 @@ namespace Menge
 		protected:
 			bool handleKeyEvent( const InputKeyEvent & _event ) override
 			{				
-				pybind::object py_result = m_cb( (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat, m_args );
+				pybind::object py_result = m_cb.call_args( (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat, m_args );
 
 				if( py_result.is_none() == false )
 				{
@@ -5165,7 +5169,7 @@ namespace Menge
 					return;
 				}
 
-				m_cb( _resource );
+				m_cb.call( _resource );
 			}
 
 		protected:
@@ -5197,7 +5201,7 @@ namespace Menge
 		protected:
 			void accept( ResourceReference* _resource ) override
 			{
-				m_cb( _resource );
+				m_cb.call( _resource );
 			}
 
 		protected:
@@ -5742,7 +5746,7 @@ namespace Menge
             .def_proxy_static( "moveStop", nodeScriptMethod, &NodeScriptMethod::moveStop )
 
 			.def_proxy_args_static( "angleTo", nodeScriptMethod, &NodeScriptMethod::angleTo )
-			.def_proxy_args_static( "angleStop", nodeScriptMethod, &NodeScriptMethod::angleStop )
+			.def_proxy_static( "angleStop", nodeScriptMethod, &NodeScriptMethod::angleStop )
 			.def_proxy_args_static( "scaleTo", nodeScriptMethod, &NodeScriptMethod::scaleTo )
             .def_proxy_static( "scaleStop", nodeScriptMethod, &NodeScriptMethod::scaleStop )
 

@@ -105,7 +105,7 @@ namespace Menge
 
 			Node * unit_node = _unit->getNode();
 
-			_bound.cb( unit_node );
+			_bound.cb.call( unit_node );
 		}
 	}	
 	//////////////////////////////////////////////////////////////////////////

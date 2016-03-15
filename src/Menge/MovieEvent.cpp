@@ -30,7 +30,7 @@ namespace Menge
 			m_cb.reset();
 			m_args.reset();
 
-			cb( 0.f, false );
+			cb.call_args( 0.f, false, args );
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ namespace Menge
                 return;
             }
             
-			m_cb( frame.position, true, m_args );
+			m_cb.call_args( frame.position, true, m_args );
         }
     }
 }

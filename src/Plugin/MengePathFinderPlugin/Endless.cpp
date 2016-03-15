@@ -61,7 +61,7 @@ namespace	Menge
 
 			m_elements.push_back( el );
 
-			m_elementCb( true, ED_ALL, i, el.node, el.id );
+			m_elementCb.call( true, ED_ALL, i, el.node, el.id );
 		}
 
 		return true;
@@ -75,7 +75,7 @@ namespace	Menge
 
 			Element & el = m_elements[index];
 
-			m_elementCb( false, ED_ALL, i, el.node, el.id );
+			m_elementCb.call( false, ED_ALL, i, el.node, el.id );
 
 			el.node->destroy();
 		}
@@ -141,7 +141,7 @@ namespace	Menge
 
 		Element elPop = m_elements[indexPop];
 
-		m_elementCb( false, ED_RIGHT, indexPop, elPop.node, elPop.id );
+		m_elementCb.call( false, ED_RIGHT, indexPop, elPop.node, elPop.id );
 
 		for( uint32_t i = 0; i != m_elementCount - 1; ++i )
 		{
@@ -155,7 +155,7 @@ namespace	Menge
 
 		m_elements[indexPush] = elPop;
 
-		m_elementCb( true, ED_RIGHT, indexPush, elPop.node, elPop.id );
+		m_elementCb.call( true, ED_RIGHT, indexPush, elPop.node, elPop.id );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Endless::slideLeft_()
@@ -164,7 +164,7 @@ namespace	Menge
 
 		Element elPop = m_elements[indexPop];
 
-		m_elementCb( false, ED_LEFT, m_elementCount - 1, elPop.node, elPop.id );
+		m_elementCb.call( false, ED_LEFT, m_elementCount - 1, elPop.node, elPop.id );
 
 		for( uint32_t i = m_elementCount - 1; i != 0; --i )
 		{
@@ -178,6 +178,6 @@ namespace	Menge
 
 		m_elements[indexPush] = elPop;
 
-		m_elementCb( true, ED_LEFT, indexPush, elPop.node, elPop.id );
+		m_elementCb.call( true, ED_LEFT, indexPush, elPop.node, elPop.id );
 	}
 }

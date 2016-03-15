@@ -63,7 +63,7 @@ namespace	Menge
 			{	
 				if( m_cb.is_callable() == true )
 				{
-					m_cb( _id, m_args );
+					m_cb.call_args( _id, m_args );
 				}
 
 				if( SOUND_SERVICE(m_serviceProvider)
@@ -320,7 +320,7 @@ namespace	Menge
 					return;
 				}
 
-				m_cb( _id, _isEnd, m_args );
+				m_cb.call_args( _id, _isEnd, m_args );
 			}
 
 		protected:
@@ -595,7 +595,7 @@ namespace	Menge
 				AMPLIFIER_SERVICE( m_serviceProvider )
 					->stop();
 
-				m_cb( _id, _isEnd, m_args );
+				m_cb.call_args( _id, _isEnd, m_args );
 			}
 
 		protected:

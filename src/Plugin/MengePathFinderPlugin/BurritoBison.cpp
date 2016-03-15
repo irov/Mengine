@@ -335,7 +335,7 @@ namespace Menge
 
 				if( test == false && desc.test == true )
 				{
-					bool result = desc.cb();
+					bool result = desc.cb.call();
 
 					desc.dead = result;
 				}
@@ -378,7 +378,7 @@ namespace Menge
 						break;
 					}
 
-					bool result = desc.cb();
+					bool result = desc.cb.call();
 
 					if( result == true )
 					{
@@ -430,7 +430,7 @@ namespace Menge
 
 			if( test == false && desc.test == true )
 			{
-				bool result = desc.cb();
+				bool result = desc.cb.call();
 
 				desc.dead = result;
 			}

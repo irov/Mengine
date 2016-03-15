@@ -521,13 +521,13 @@ namespace Menge
 
 			if( desc.finder->isSuccessful() == false )
 			{
-				desc.cb( desc.id, false, pybind::ret_none() );
+				desc.cb.call( desc.id, false, pybind::ret_none() );
 			}
 			else
 			{
 				const pybind::list & way = desc.finder->getWay();
 
-				desc.cb( desc.id, true, way );
+				desc.cb.call( desc.id, true, way );
 			}
 
 			desc.cb.reset();

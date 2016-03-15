@@ -111,7 +111,7 @@ namespace Menge
 
 		_collisionTiming = _timing - ccd_timing;
 		
-		m_cb();
+		m_cb.call();
 
 		return true;			 
 	}

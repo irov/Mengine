@@ -137,6 +137,6 @@ namespace Menge
 		float angle = _object->getOrientationX();
 		uint32_t rotateState = s_rotateToState( angle );
 
-		m_cb( _object, rotateState, m_rotating, m_transiting, m_finish );
+		m_cb.call( _object, rotateState, m_rotating, m_transiting, m_finish );
 	}
 }

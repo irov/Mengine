@@ -54,7 +54,7 @@ namespace Menge
 			return m_type;
 		}
 				
-		pybind::object py_type = m_generator( m_prototype );
+		pybind::object py_type = m_generator.call( m_prototype );
 
 		if( py_type.is_invalid() == true || py_type.is_none() == true )
 		{

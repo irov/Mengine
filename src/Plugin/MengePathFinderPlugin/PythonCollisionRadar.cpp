@@ -47,7 +47,7 @@ namespace Menge
 			PythonCollisionObject * obj = static_cast<PythonCollisionObject *>(desc.object);
 
 			
-			if( _filter( obj ) == false )
+			if( _filter.call( obj ) == false )
 			{
 				continue;
 			}
@@ -74,7 +74,7 @@ namespace Menge
 		PythonCollisionObject * py_object = static_cast<PythonCollisionObject *>(_object);
 		const pybind::object & py_user = py_object->getPythonUser();
 		
-		bool result = m_pyFilter( this, py_object, py_user );
+		bool result = m_pyFilter.call( this, py_object, py_user );
 				
 		return result;
 	}
@@ -84,7 +84,7 @@ namespace Menge
 		PythonCollisionObject * py_object = static_cast<PythonCollisionObject *>(_object);
 		const pybind::object & py_user = py_object->getPythonUser();
 
-		m_pyEnter( this, py_object, py_user );
+		m_pyEnter.call( this, py_object, py_user );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PythonCollisionRadar::onRadarObjectLeave( CollisionObject * _object )
@@ -92,6 +92,6 @@ namespace Menge
 		PythonCollisionObject * py_object = static_cast<PythonCollisionObject *>(_object);
 		const pybind::object & py_user = py_object->getPythonUser();
 
-		m_pyLeave( this, py_object, py_user );
+		m_pyLeave.call( this, py_object, py_user );
 	}
 }

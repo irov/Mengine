@@ -158,7 +158,7 @@ namespace Menge
 				
 		uint32_t id = this->getId();
 
-		m_cb( id, m_node, new_pos, new_dir, true, false, false );
+		m_cb.call( id, m_node, new_pos, new_dir, true, false, false );
 
 		return true;
 	}
@@ -179,7 +179,7 @@ namespace Menge
 		{
 			uint32_t id = this->getId();
 
-			m_cb( id, m_node, new_pos, new_dir, false, false, false );
+			m_cb.call( id, m_node, new_pos, new_dir, false, false, false );
 		}
 
 		if( m_iterator == m_wayCount )
@@ -429,7 +429,7 @@ namespace Menge
 
 		uint32_t id = this->getId();
 
-		m_cb( id, m_node, wp_current, dir, false, false, true );
+		m_cb.call( id, m_node, wp_current, dir, false, false, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::stop()
@@ -444,7 +444,7 @@ namespace Menge
 
 		uint32_t id = this->getId();
 
-		m_cb( id, m_node, lp, dir, false, true, false );
+		m_cb.call( id, m_node, lp, dir, false, true, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::_setFreeze( bool _value )

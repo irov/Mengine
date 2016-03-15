@@ -75,10 +75,10 @@ namespace Menge
 #	define EVENTABLE_CALL(serviceProvider, Self, Event)\
 	for( bool EVENTABLE_CALL_self = false; Self != nullptr && EVENTABLE_CALL_self == false; EVENTABLE_CALL_self = true )\
 	for( const pybind::object & EVENTABLE_CALL_pyevent = Self->getEvent(Event); EVENTABLE_CALL_pyevent.is_invalid() == false && EVENTABLE_CALL_self == false; EVENTABLE_CALL_self = true )\
-	EventableCallOperator(serviceProvider, Event, EVENTABLE_CALL_pyevent ).getEvent()
+	EventableCallOperator(serviceProvider, Event, EVENTABLE_CALL_pyevent ).getEvent().call
 
 #	define EVENTABLE_ASK(serviceProvider, Self, Event, Value)\
 	for( bool EVENTABLE_CALL_self = false; Self != nullptr && EVENTABLE_CALL_self == false; EVENTABLE_CALL_self = true )\
 	for( const pybind::object & EVENTABLE_CALL_pyevent = Self->getEvent(Event); EVENTABLE_CALL_pyevent.is_invalid() == false && EVENTABLE_CALL_self == false; EVENTABLE_CALL_self = true )\
-	Value = EventableCallOperator(serviceProvider, Event, EVENTABLE_CALL_pyevent).getEvent()
+	Value = EventableCallOperator(serviceProvider, Event, EVENTABLE_CALL_pyevent).getEvent().call
 

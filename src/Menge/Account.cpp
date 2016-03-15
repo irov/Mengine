@@ -108,7 +108,7 @@ namespace Menge
 
 		if( st.cb.is_none() == false )
 		{
-			st.cb( _value );
+			st.cb.call( _value );
 		}
 
 		return true;
@@ -294,7 +294,7 @@ namespace Menge
 				continue;
 			}
 
-			st.cb( st.value );
+			st.cb.call( st.value );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

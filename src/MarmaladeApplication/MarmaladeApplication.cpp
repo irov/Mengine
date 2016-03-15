@@ -284,7 +284,7 @@ namespace Menge
 
         EMessageLevel m_logLevel;
 
-        m_logLevel = LM_LOG;
+		m_logLevel = LM_ERROR;
 
         if( HAS_OPTIONS(m_serviceProvider, "log:0" ) == true )
         {
@@ -459,7 +459,7 @@ namespace Menge
         }
 
 		SERVICE_CREATE( m_serviceProvider, NotificationService );
-		SERVICE_CREATE( m_serviceProvider, UnicodeSystem );		
+		SERVICE_CREATE( m_serviceProvider, UnicodeSystem );
 		SERVICE_CREATE( m_serviceProvider, UnicodeService );
 
 		SERVICE_CREATE( m_serviceProvider, Platform );

@@ -34,7 +34,7 @@ namespace Menge
 
 		_collisionTiming = ccd_timing;
 		
-		m_cb( _velocity );
+		m_cb.call( _velocity );
 
 		return true;
 	}

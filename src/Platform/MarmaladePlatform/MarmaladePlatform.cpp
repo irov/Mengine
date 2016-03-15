@@ -488,24 +488,27 @@ namespace Menge
 	bool MarmaladePlatform::concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity )
 	{
 		size_t folderSize = _folder.size();
-		size_t fileNameSize = _fileName.size();
+		size_t dirSize = _fileName.size();
 
-		if( folderSize + fileNameSize > _capacity )
+		size_t filePathSize = folderSize + dirSize;
+
+		if( filePathSize >= MENGINE_MAX_PATH )
 		{
 			return false;
 		}
 
-		WChar unicode_filePath[MENGINE_MAX_PATH];
-		UNICODE_SERVICE( m_serviceProvider )
-			->utf8ToUnicode( _folder.c_str(), _folder.size(), unicode_filePath, MENGINE_MAX_PATH, nullptr );
+		Char filePath[MENGINE_MAX_PATH];
+		stdex::memorycopy( filePath, 0, _folder.c_str(), folderSize );
+		stdex::memorycopy( filePath, folderSize, _fileName.c_str(), dirSize );
 
-		wcscpy( _filePath, unicode_filePath );
+		filePath[filePathSize] = '\0';
+		//filePathSize += 1; //Null
 
-		WChar unicode_fileName[MENGINE_MAX_PATH];
-		UNICODE_SERVICE( m_serviceProvider )
-			->utf8ToUnicode( _fileName.c_str(), _fileName.size(), unicode_fileName, MENGINE_MAX_PATH, nullptr );
-
-		wcscat( _filePath, unicode_fileName );
+		if( UNICODE_SERVICE( m_serviceProvider )
+			->utf8ToUnicode( filePath, filePathSize, _filePath, _capacity, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}

@@ -559,7 +559,7 @@ namespace Menge
         stdex::memorycopy(filePath, 0, _folder.c_str(), folderSize);
 		stdex::memorycopy(filePath, folderSize, _fileName.c_str(), dirSize);
 
-        filePath[filePathSize] = L'\0';
+        filePath[filePathSize] = '\0';
         filePathSize += 1; //Null
 
 		WChar filePathW[MENGINE_MAX_PATH];

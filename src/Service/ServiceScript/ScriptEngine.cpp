@@ -413,7 +413,7 @@ namespace Menge
 
 			pybind::object module_function = module.get_attr( pak.initializer );
 
-			pybind::object py_result = module_function();
+			pybind::object py_result = module_function.call();
 
 			if( py_result.is_invalid() == true )
 			{
@@ -490,7 +490,7 @@ namespace Menge
 
 			pybind::object module_function = module.get_attr( pak.finalizer );
 
-			module_function();
+			module_function.call();
 		}
 
 		return true;
@@ -657,7 +657,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		pybind::object py_entity = _generator();
+		pybind::object py_entity = _generator.call();
 
 		if( py_entity.is_invalid() == true )
 		{

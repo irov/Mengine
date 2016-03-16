@@ -2,12 +2,12 @@ assets
 {
 	[Burritos_Android]
 	("d:/Projects/BurritosBuild_ETC1")
+    External
     Locale_RU    
     app.config.txt
     application.ini    
     Framework.pak
 	Framework2.pak
-    Framework3.pak    
     Game.ini
     Game.pak
     ResourcePack.ini
@@ -15,12 +15,12 @@ assets
     
 	[Burritos_IOS]
 	("d:/Projects/BurritosBuild_PVRTC")
+    External
     Locale_RU    
     app.config.txt
     application.ini    
     Framework.pak
 	Framework2.pak
-    Framework3.pak    
     Game.ini
     Game.pak
     ResourcePack.ini
@@ -43,7 +43,7 @@ assets
     [Zombieland_IOS]
 	("d:/Projects/ZombielandBuild_PVRTC")
     External
-    Locale_RU
+    Localization
     app.config.txt
     application.ini  
     Framework.pak    
@@ -79,4 +79,28 @@ assets
     Game.pak
     ResourcePack.ini
     Resources.pak 
+    
+	[GhostsAndTowers_IOS]
+	("d:/Projects/GhostsAndTowersBuild_PVRTC")
+    Locale_RU
+    app.config.txt
+    application.ini
+    Framework.pak
+	Framework2.pak
+    Game.ini
+    Game.pak
+    ResourcePack.ini
+    Resources.pak     
+    
+	[GhostsAndTowers_Android]
+	("d:/Projects/GhostsAndTowersBuild_ETC1")
+    Locale_RU
+    app.config.txt
+    application.ini
+    Framework.pak
+	Framework2.pak
+    Game.ini
+    Game.pak
+    ResourcePack.ini
+    Resources.pak
 }

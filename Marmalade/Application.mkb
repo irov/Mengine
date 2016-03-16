@@ -9,10 +9,16 @@ options
     buildenv=VC12
     
     app-icf="app.icf"
+    
+    
+    #s3e-data-dir="d:/Projects/GhostsAndTowersBuild_ETC1"
+    
+    #s3e-data-dir="d:/Projects/GhostsAndTowersBuild_PVRTC"
     #s3e-data-dir="d:/Projects/ZombielandBuild_PVRTC"
     #s3e-data-dir="d:/Projects/ZombielandBuild_ETC1"
     #s3e-data-dir="d:/Projects/BurritosBuild_ETC1"
     s3e-data-dir="d:/Projects/BurritosBuild_PVRTC"
+    #s3e-data-dir="d:/Projects/HolidayFunBuild_PVRTC"    
     #s3e-data-dir="d:/Projects/BurritosBuild_ETC1"
     #s3e-data-dir="d:/Projects/MarshmallowBuild_PVRTC"
     #s3e-data-dir="/Users/admin/Desktop/ZombielandBuild_PVRTC"
@@ -124,7 +130,7 @@ files
     ("../src/System/MarmaladeOptionsSystem")	
 	"*.h"
 	"*.cpp"
-    
+        
     [System/MarmaladeTimerSystem]
     ("../src/System/MarmaladeTimerSystem")
 	"*.h"
@@ -159,15 +165,45 @@ deployments
 	assets='Burritos_IOS'
 	caption='Splash Of Zombies'
 	iphone-appid='com.IROV.IROV'
-	iphone-provisioning-profile='SplashOfZombiesBeta.mobileprovision'
+	iphone-provisioning-profile='Argali.mobileprovision'
 	iphone-sign-for-distribution=1
 	iphone-signing-identity='iPhone Distribution'
-	iphone-testflight=1
+	iphone-testflight=0
+    iphone-icon="d:/Projects/Burritos_Work/Icons/iphone-icon.png"
+    iphone-icon-high-res="d:/Projects/Burritos_Work/Icons/iphone-icon-high-res.png"
+    iphone-icon-ipad="d:/Projects/Burritos_Work/Icons/iphone-icon-ipad.png"
+    iphone-icon-ipad-high-res="d:/Projects/Burritos_Work/Icons/iphone-icon-ipad-high-res.png"
+    itunes-artwork="d:/Projects/Burritos_Work/Icons/itunes-artwork.png"    
 	name='Splash Of Zombies'
 	version-major=1
 	version-minor=6
-	version-revision=3
+	version-revision=4
 	["Default"]
+	["GhostsAndTowers_Android"]
+	app-icf='d:/Projects/GhostsAndTowersBuild_ETC1/app.icf'
+	assets='GhostsAndTowers_Android'
+	caption='Ghosts And Towers'
+	copyright='IROV'
+	name='Ghosts And Towers'
+	provider='Argali'
+	version-major=1
+	version-minor=6
+	version-revision=6
+	["GhostsAndTowers_IOS"]
+	app-icf='d:/Projects/GhostsAndTowersBuild_PVRTC/app.icf'
+	assets='GhostsAndTowers_IOS'
+	caption='Ghosts And Towers'
+	copyright='IROV'
+	iphone-appid='com.IROV.IROV'
+	iphone-provisioning-profile='Argali.mobileprovision'
+	iphone-sign-for-distribution=1
+	iphone-signing-identity='iPhone Distribution'
+	iphone-testflight=0
+	name='Ghosts And Towers'
+	provider='Argali'
+	version-major=1
+	version-minor=6
+	version-revision=6
 	["HolidayFun_Android"]
 	app-icf='d:/Projects/HolidayFunBuild_ETC1/app.icf'
 	assets='HolidayFun_Android'
@@ -180,12 +216,15 @@ deployments
 	assets='HolidayFun_IOS'
 	caption='CandyStorm'
 	icon='d:/Projects/HolidayFunBuild_PVRTC/logo.png'
-	iphone-appid='com.Argali.boo'
+	iphone-appid='com.IROV.IROV'
 	iphone-provisioning-profile='Argali.mobileprovision'
 	iphone-sign-for-distribution=1
 	iphone-signing-identity='iPhone Distribution'
 	name='CandyStorm'
 	provider='Argali'
+	version-major=1
+	version-minor=0
+	version-revision=0
 	["Zombieland_Android"]
 	app-icf='d:/Projects/ZombielandBuild_ETC1/app.icf'
 	assets='Zombieland_Android'
@@ -196,9 +235,12 @@ deployments
 	assets='Zombieland_IOS'
 	caption='Zombieland'
 	iphone-appid='com.IROV.IROV'
-	iphone-provisioning-profile='IROV.mobileprovision'
+	iphone-provisioning-profile='Argali.mobileprovision'
 	iphone-sign-for-distribution=1
 	iphone-signing-identity='iPhone Distribution'
-	iphone-testflight=1
+	iphone-testflight=0
 	name='Zombieland'
+	version-major=0
+	version-minor=0
+	version-revision=1
 }

@@ -49,6 +49,7 @@ includepaths
 	"../dependencies/utf8/source"
     "../dependencies/fastpathfinder/include"
     "../dependencies/spine-c/include"
+    "../dependencies/poly2tri"
 
     "../dependencies/libogg/include"
     "../dependencies/libvorbis/include"
@@ -156,6 +157,10 @@ files
 	"*.h"
 	"*.cpp"        
     
+    [Service/ServiceNotification]
+    ("../src/Service/ServiceNotification")	
+	"*.h"
+	"*.cpp"  
     
     [Service/ServiceData]
     ("../src/Service/ServiceData")	

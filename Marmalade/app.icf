@@ -17,17 +17,17 @@
 # S3E documentation for details.
 
 [S3E]
-SysGlesVersion=2
+SysGlesVersion=1
 SysGlesDirectory=pvr
 SoundStereo=1
 DispFixRot=Landscape
-MemSize=100000000
+MemSize=150000000
 #MemSize=75000000
 SysStackSize=35000000 # TODO: fix, should be ~500K
 
 IOSDispScaleFactor=200
 
-WinWidth=1424
+WinWidth=1024
 WinHeight=768
 
 [GL]
@@ -45,4 +45,4 @@ MENGINE = 1
 MemMgrMaxAllocWarning=0
 
 [MENGINE]
-CommandLine = -dev -nopause
+#CommandLine = -dev -nopause

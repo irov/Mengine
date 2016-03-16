@@ -47,6 +47,7 @@ includepaths
     "../dependencies/libtheora/include"
     
     "../dependencies/spine-c/include"
+    "../dependencies/poly2tri"
     
     "../dependencies/stdex/include"
 }
@@ -74,6 +75,14 @@ files
     "*.hpp"
     ("../dependencies/pybind/src")
 	"*.cpp"
+    
+    [poly2tri]
+    ("../dependencies/poly2tri/poly2tri")
+    common/shapes.cc
+    sweep/advancing_front.cc
+    sweep/cdt.cc
+    sweep/sweep.cc
+    sweep/sweep_context.cc
         
     [zlib]
     ("../dependencies/zlib")

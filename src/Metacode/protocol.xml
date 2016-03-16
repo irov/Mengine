@@ -1,4 +1,4 @@
-<Protocol Version = "103">
+<Protocol Version = "104">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -212,7 +212,8 @@
 
     <Node Name="ResourceMusic" Inheritance = "Resource">
         <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
-        <Member Node="File" Name="Codec" Type="Menge::ConstString"/>        
+        <Member Node="File" Name="Codec" Type="Menge::ConstString"/>      
+        <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
         <Member Node="File" Name="External" Type="bool"/>
         <Member Node="DefaultVolume" Name="Value" Type="float"/>
     </Node>

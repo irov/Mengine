@@ -126,14 +126,15 @@ namespace Menge
 	MousePickerSystem::MousePickerSystem( ServiceProviderInterface * _serviceProvider )
 		: m_serviceProvider(_serviceProvider)
         , m_enumerator(0)
-		, m_block(false)
-        , m_handleValue(true)
 		, m_arrow(nullptr)
 		, m_scene(nullptr)
 		, m_viewport(nullptr)
 		, m_camera(nullptr)
 		, m_clipplane(nullptr)
 		, m_pickerTrapCount(0)
+		, m_block( false )
+		, m_handleValue( true )
+		, m_invalidateTraps( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -214,6 +215,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update()
 	{
+		if( m_invalidateTraps == true )
+		{
+			this->updateTraps();
+
+			m_invalidateTraps = false;
+		}
+
 		this->updateDead_();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -243,7 +251,7 @@ namespace Menge
 		return &refState;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::updateTrap()
+	void MousePickerSystem::updateTraps()
 	{
 		const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
 			->getCursorPosition( 0 );
@@ -252,6 +260,11 @@ namespace Menge
 		states.reserve(m_pickerTrapCount);
 
 		this->proccesTraps_( pos.x, pos.y, states );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::invalidateTraps()
+	{
+		m_invalidateTraps = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::unregTrap( PickerTrapState * _ref )

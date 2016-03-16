@@ -56,6 +56,7 @@ namespace Menge
 		, m_lastMouse( false )
 		, m_lastMouseX( 0 )
 		, m_lastMouseY( 0 )
+		, m_touchpad( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -104,26 +105,37 @@ namespace Menge
 		m_cursors[STRINGIZE_STRING_LOCAL( m_serviceProvider, "IDC_HELP" )] = LoadCursor( NULL, IDC_HELP );
 
 		m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN32" );
+		m_touchpad = false;
 
 		if( HAS_OPTIONS( m_serviceProvider, "win32" ) )
 		{
 			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN32" );
+			m_touchpad = false;
 		}
 		else if( HAS_OPTIONS(m_serviceProvider, "ios") )
 		{ 
 			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "IOS" );
+			m_touchpad = true;
 		}
 		else if( HAS_OPTIONS( m_serviceProvider, "android" ) )
 		{
 			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "ANDROID" );
+			m_touchpad = true;
 		}
 		else if( HAS_OPTIONS( m_serviceProvider, "wp" ) )
 		{
 			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WP" );
+			m_touchpad = true;
 		}
 		else if( HAS_OPTIONS( m_serviceProvider, "osx" ) )
 		{
 			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "OSX" );
+			m_touchpad = false;
+		}
+
+		if( HAS_OPTIONS( m_serviceProvider, "touchpad" ) )
+		{
+			m_touchpad = true;
 		}
 
 		return true;
@@ -271,6 +283,11 @@ namespace Menge
 	const ConstString & Win32Platform::getPlatformName() const
 	{
 		return m_platformName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32Platform::isTouchpad() const
+	{
+		return m_touchpad;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static LRESULT CALLBACK s_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )

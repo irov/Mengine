@@ -148,7 +148,7 @@ namespace Menge
 
 		m_picker = mousePickerSystem->regTrap( this );
 
-		mousePickerSystem->updateTrap();
+		mousePickerSystem->updateTraps();
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACTIVATE)();
 	}
@@ -176,10 +176,12 @@ namespace Menge
 			return;
 		}
 
-		mousePickerSystem->unregTrap( m_picker );
+		PickerTrapState * picker = m_picker;
 		m_picker = nullptr;
 
-		mousePickerSystem->updateTrap();
+		mousePickerSystem->unregTrap( picker );
+		
+		mousePickerSystem->updateTraps();
 
 		m_debugColor = 0x00000000;
 
@@ -299,6 +301,30 @@ namespace Menge
 				this->activatePicker_();
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_invalidateWorldMatrix()
+	{
+		Node::_invalidateWorldMatrix();
+
+		if( m_picker == nullptr )
+		{
+			return;
+		}
+
+		MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE( m_serviceProvider )
+			->getMousePickerSystem();
+
+		if( mousePickerSystem == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("HotSpot::activatePicker_ '%s' invalid get mouse picker system"
+				, this->getName().c_str()
+				);
+
+			return;
+		}
+
+		mousePickerSystem->invalidateTraps();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_activate()

@@ -314,10 +314,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseMoveEvent_( const InputMouseMoveEvent & _params )
 	{
-		this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
+		if( PLATFORM_SERVICE( m_serviceProvider )
+			->isTouchpad() == true )
+		{
+			if( this->isAnyKeyDown() == true )
+			{
+				this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
 
-		APPLICATION_SERVICE(m_serviceProvider)
-			->mouseMove( _params );
+				APPLICATION_SERVICE( m_serviceProvider )
+					->mouseMove( _params );
+			}
+		}
+		else
+		{
+			this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
+
+			APPLICATION_SERVICE( m_serviceProvider )
+				->mouseMove( _params );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseWheelEvent_( const InputMouseWheelEvent& _params )

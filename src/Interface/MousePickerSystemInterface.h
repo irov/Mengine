@@ -66,7 +66,8 @@ namespace Menge
         virtual PickerTrapState * regTrap( MousePickerTrapInterface * _trap ) = 0;
         virtual void unregTrap( PickerTrapState * _id ) = 0;
 
-		virtual void updateTrap() = 0;
+		virtual void updateTraps() = 0;
+		virtual void invalidateTraps() = 0;
 
     public:
         virtual uint32_t getPickerTrapCount() const = 0;

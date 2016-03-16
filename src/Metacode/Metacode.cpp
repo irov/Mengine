@@ -4,7 +4,7 @@ namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
-    static const uint32_t metacode_version = 103;
+    static const uint32_t metacode_version = 104;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -2192,6 +2192,7 @@ namespace Metacode
         : Meta_Resource()
         , DefaultVolume_Value_successful(false)
         , File_Codec_successful(false)
+        , File_Converter_successful(false)
         , File_External_successful(false)
     {
     }
@@ -2214,7 +2215,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 7:
+        case 8:
             {
                 this->read( _buff, _size, _read, this->DefaultVolume_Value );
     
@@ -2229,6 +2230,13 @@ namespace Metacode
     
             }break;
         case 6:
+            {
+                this->read( _buff, _size, _read, this->File_Converter );
+    
+                this->File_Converter_successful = true;
+    
+            }break;
+        case 7:
             {
                 this->read( _buff, _size, _read, this->File_External );
     

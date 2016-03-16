@@ -3509,6 +3509,35 @@ namespace Metacode
                 return true;
             }
             
+            bool has_File_Converter() const
+            {
+                return File_Converter_successful;
+            }
+            
+            bool get_File_Converter( Menge::ConstString & _value ) const
+            {
+                if( File_Converter_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Converter;
+            
+                return true;
+            }
+            
+            bool swap_File_Converter( Menge::ConstString & _value ) const
+            {
+                if( File_Converter_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Converter);
+            
+                return true;
+            }
+            
             bool has_File_External() const
             {
                 return File_External_successful;
@@ -3561,6 +3590,8 @@ namespace Metacode
             mutable float DefaultVolume_Value;
             bool File_Codec_successful;
             mutable Menge::ConstString File_Codec;
+            bool File_Converter_successful;
+            mutable Menge::ConstString File_Converter;
             bool File_External_successful;
             mutable bool File_External;
             mutable Menge::FilePath File_Path;

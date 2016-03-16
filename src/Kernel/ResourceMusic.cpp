@@ -43,13 +43,15 @@ namespace Menge
         const Metacode::Meta_DataBlock::Meta_ResourceMusic * metadata 
 			= static_cast<const Metacode::Meta_DataBlock::Meta_ResourceMusic *>(_meta);
 
-		m_path = metadata->get_File_Path();
+		metadata->swap_File_Path( m_path );
 
 		if( metadata->swap_File_Codec( m_codec ) == false )
 		{
 			m_codec = CODEC_SERVICE( m_serviceProvider )
 				->findCodecType( m_path );
 		}
+
+		metadata->swap_File_Converter( m_converter );
 
 		metadata->swap_File_External( m_external );
 
@@ -79,5 +81,12 @@ namespace Menge
 		}
 		
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceMusic::_convert()
+	{
+		bool result = this->convertDefault_( m_converter, m_path, m_path, m_codec );
+
+		return result;
 	}
 }

@@ -29,6 +29,7 @@ namespace Menge
 
 	public:
 		const ConstString & getPlatformName() const override;
+		bool isTouchpad() const override;
 
 	public:
 		void getDesktopResolution( Resolution & _resolution ) const override;
@@ -118,5 +119,6 @@ namespace Menge
 		int m_lastMouseY;
 
 		bool m_isDoubleClick;
+		bool m_touchpad;
 	};
 }

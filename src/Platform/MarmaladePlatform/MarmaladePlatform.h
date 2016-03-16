@@ -50,6 +50,9 @@ namespace Menge
 	public:
 		const ConstString & getPlatformName() const override;
 
+	public:
+		bool isTouchpad() const override;
+
     public:
         void getDesktopResolution( Resolution & _resolution ) const override;
 
@@ -109,5 +112,7 @@ namespace Menge
 
 		bool m_running;
 		bool m_pause;
+
+		bool m_touchpad;
     };
 }

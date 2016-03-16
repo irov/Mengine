@@ -43,6 +43,7 @@ namespace Menge
         : m_marmaladeInput(nullptr)
 		, m_running(false)
 		, m_pause(false)
+		, m_touchpad(true)
 	{
     }
     //////////////////////////////////////////////////////////////////////////
@@ -84,24 +85,30 @@ namespace Menge
 	bool MarmaladePlatform::_initialize()
     {
 		int32 deviceClassID = s3eDeviceGetInt( S3E_DEVICE_CLASS );
+
+		m_touchpad = true;
 		
 		switch( deviceClassID )
 		{
 		case  S3E_DEVICE_CLASS_WINDOWS_GENERIC:
 			{
 				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "SIMULATOR");
+				m_touchpad = true;
 			}break;
 		case S3E_DEVICE_CLASS_OSX_DESKTOP:
 			{
 				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "OSX");
+				m_touchpad = false;
 			}break;
 		case S3E_DEVICE_CLASS_IPHONE:
 			{
 				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "IOS");
+				m_touchpad = true;
 			}break;
 		case S3E_DEVICE_CLASS_ANDROID_GENERIC:
 			{
 				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "ANDROID");
+				m_touchpad = true;
 			}break;
 		default:
 			break;
@@ -406,6 +413,11 @@ namespace Menge
 	const ConstString & MarmaladePlatform::getPlatformName() const
 	{
 		return m_platformName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladePlatform::isTouchpad() const
+	{
+		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
 	void MarmaladePlatform::getDesktopResolution( Resolution & _resolution ) const

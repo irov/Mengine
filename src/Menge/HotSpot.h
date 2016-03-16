@@ -55,6 +55,9 @@ namespace Menge
 		void _freeze( bool _value ) override;
 
 	protected:
+		void _invalidateWorldMatrix() override;
+
+	protected:
 		void activatePicker_();
 		void deactivatePicker_();
 

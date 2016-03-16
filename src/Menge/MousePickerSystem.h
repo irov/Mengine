@@ -47,7 +47,8 @@ namespace Menge
 		PickerTrapState * regTrap( MousePickerTrapInterface * _trap ) override;		
 		void unregTrap( PickerTrapState * _id ) override;
 
-		void updateTrap() override;
+		void updateTraps() override;
+		void invalidateTraps() override;
 
 	public:
 		bool handleKeyEvent( const InputKeyEvent & _event ) override;
@@ -75,9 +76,6 @@ namespace Menge
 
 		uint32_t m_enumerator;
 
-		bool m_block;
-        bool m_handleValue;
-
 		Arrow * m_arrow;
 		Scene * m_scene;
 		Viewport m_gameport;
@@ -92,5 +90,10 @@ namespace Menge
 		TVectorPickerTrapStates m_states;
 
 		uint32_t m_pickerTrapCount;
+
+		bool m_block;
+		bool m_handleValue;
+
+		bool m_invalidateTraps;
 	};
 }

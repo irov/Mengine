@@ -46,8 +46,6 @@ namespace Menge
 		
 		printf( "%s", _data );
 
-		//s3eDeviceYield( 200 );
-		
 		if( _level == LM_CRITICAL )
 		{
 			s3eDebugErrorShow( S3E_MESSAGE_CONTINUE_STOP, _data );
@@ -55,6 +53,10 @@ namespace Menge
 		else if( _level == LM_FATAL )
 		{
 			s3eDebugErrorShow( S3E_MESSAGE_CONTINUE_STOP, _data );
+		}
+		else if( _level == LM_ERROR )
+		{
+			s3eDeviceYield( 200 );
 		}
 	}
     //////////////////////////////////////////////////////////////////////////

@@ -218,7 +218,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::playMusic( const ConstString & _resourceMusic, float _pos, bool _looped )
 	{
-		this->stop();
+		if( m_play == true )
+		{
+			this->stop();
+		}
 
 		m_loop = _looped;
 
@@ -292,17 +295,6 @@ namespace Menge
 		}
 		else
 		{
-			//ConstString fullPath;
-			//if( Helper::makeFullPath( m_serviceProvider, _pakName, _filePath, fullPath ) == false )
-			//{
-			//	LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't make full path for external audio '%s:%s'"
-			//		, _pakName.c_str()
-			//		, _filePath.c_str()
-			//		);
-
-			//	return false;
-			//}
-
 			const Char * str_path = path.c_str();
 						
 			s3eResult result_play = s3eAudioPlay( str_path, 1 );
@@ -312,8 +304,7 @@ namespace Menge
 				s3eAudioError s3eAudio_error = s3eAudioGetError();
 				const char * s3eAudio_string = s3eAudioGetErrorString();
 
-				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't play external audio '%s:%s' error %d [%s]"
-					, category.c_str()
+				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't play external audio '%s' error %d [%s]"
 					, path.c_str()
 					, s3eAudio_error
 					, s3eAudio_string
@@ -397,7 +388,7 @@ namespace Menge
 	float Amplifier::getLengthMs() const
 	{
 		int32 s3e_duration = s3eAudioGetInt( S3E_AUDIO_DURATION );
-
+		
 		float duration = (float)s3e_duration;
 
 		return duration;

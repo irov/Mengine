@@ -256,6 +256,11 @@ namespace Menge
 
 		m_cameraFollowerScale.update( _timing );
 
+		if( m_neutron == true )
+		{
+			m_velocity.y = 0.f;
+		}
+
 		if( _iterate == 0 )
 		{
 			mt::vec3f force_velocity( 0.f, 0.f, 0.f );
@@ -397,7 +402,7 @@ namespace Menge
 				, m_distanceEvents.end() 
 				);
 		}
-
+		
 		_velocity = m_velocity;
 
 		const mt::vec3f & position = m_node->getLocalPosition();

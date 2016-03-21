@@ -3338,7 +3338,7 @@ namespace Menge
 		protected:
 			bool _affect( float _timing ) override
 			{
-				bool complete = m_cb.call( true, _timing, m_args );
+				bool complete = m_cb.call_args( _timing, m_args );
 
 				return complete;
 			}
@@ -3349,7 +3349,6 @@ namespace Menge
 
 			void stop() override
 			{
-				m_cb.call( false, 0.f, m_args );
 			}
 
 		protected:			
@@ -3650,7 +3649,7 @@ namespace Menge
 
             Affector * affector = m_nodeAffectorCreatorAccumulateLinear.create( m_serviceProvider
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
-				, _node->getLocalPosition(), _dir, _speed, &mt::sqrlength_v3
+				, _node->getLocalPosition(), _dir, _speed
                 );
 
 			if( affector == nullptr )
@@ -3687,7 +3686,6 @@ namespace Menge
                 m_nodeAffectorCreatorInterpolateLinear.create( m_serviceProvider
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _point, _time
-				, &mt::sqrlength_v3
                 );
 
 			if( affector == nullptr )
@@ -3722,14 +3720,13 @@ namespace Menge
 				return 0;
 			}
 
-            mt::vec3f linearSpeed = _node->getLinearSpeed();
+            const mt::vec3f & linearSpeed = _node->getLinearSpeed();
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             Affector* affector = m_nodeAffectorCreatorInterpolateQuadratic.create( m_serviceProvider
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _point, linearSpeed, _time
-				, &mt::sqrlength_v3
                 );
 
 			if( affector == nullptr )
@@ -4296,7 +4293,6 @@ namespace Menge
             Affector* affector = m_odeAffectorCreatorInterpolateLinear.create( m_serviceProvider
                 , ETA_ANGLE, callback, _node, &Node::setOrientationX
                 , correct_angle_from, correct_angle_to, _time
-                , &fabsf 
                 );				
 
 			if( affector == nullptr )
@@ -4343,7 +4339,6 @@ namespace Menge
                 m_nodeAffectorCreatorInterpolateQuadraticFloat.create( m_serviceProvider
                 , ETA_ANGLE, callback, _node, &Node::setOrientationX
                 , correct_angle_from, correct_angle_to, angularSpeed, _time
-                , &fabsf
                 );				
 
 			if( affector == nullptr )
@@ -4392,7 +4387,6 @@ namespace Menge
             Affector* affector = m_nodeAffectorCreatorInterpolateLinear.create( m_serviceProvider
                 , ETA_SCALE, callback, _node, &Node::setScale
                 , _node->getScale(), _scale, _time
-                , &mt::length_v3
                 );
 
 			if( affector == 0 )
@@ -4439,7 +4433,6 @@ namespace Menge
                 m_nodeAffectorCreatorInterpolateLinearColour.create( m_serviceProvider
                 , ETA_COLOR, callback, _node, &Colorable::setLocalColor
                 , _node->getLocalColor(), _color, _time
-                , &s_length_color
                 );
 
 			if( affector == nullptr )
@@ -4488,7 +4481,6 @@ namespace Menge
             Affector* affector = m_NodeAffectorCreatorInterpolateLinearVec4.create( m_serviceProvider
                 , ETA_VISIBILITY, callback, _shape, &Shape::setPercentVisibility
                 , _shape->getPercentVisibility(), _percent, _time
-                , &mt::length_v4 
                 );
 
 			if( affector == nullptr )
@@ -6590,7 +6582,7 @@ namespace Menge
 
 			pybind::def_functor( "setLocale", nodeScriptMethod, &NodeScriptMethod::s_setLocale );
 
-			pybind::def_functor( "addAffector", nodeScriptMethod, &NodeScriptMethod::s_addAffector );
+			pybind::def_functor_args( "addAffector", nodeScriptMethod, &NodeScriptMethod::s_addAffector );
 			pybind::def_functor( "removeAffector", nodeScriptMethod, &NodeScriptMethod::s_removeAffector );
         }
     }

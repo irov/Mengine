@@ -357,7 +357,6 @@ namespace	Menge
 				m_affectorCreatorSound.create( m_serviceProvider
 				, ETA_POSITION, callback, this, &SoundScriptMethod::___soundFade, _sourceId
 				, 1.f, 0.f, _time
-				, &fabsf
 				);
 
 			Affectorable * affectorable = PLAYER_SERVICE( m_serviceProvider )
@@ -393,7 +392,6 @@ namespace	Menge
 				m_affectorCreatorSound.create( m_serviceProvider
 				, ETA_POSITION, nullptr, this, &SoundScriptMethod::___soundFade, sourceId
 				, 0.f, 1.f, _time
-				, &fabsf
 				);
 
 			Affectorable * affectorable = PLAYER_SERVICE( m_serviceProvider )
@@ -630,7 +628,6 @@ namespace	Menge
 				m_affectorCreatorMusic.create( m_serviceProvider
 				, ETA_POSITION, callback, this, &SoundScriptMethod::___musicFade
 				, 1.f, 0.f, _time
-				, &fabsf
 				);
 
 			Affectorable * affectorable = PLAYER_SERVICE(m_serviceProvider)
@@ -655,7 +652,6 @@ namespace	Menge
 				m_affectorCreatorMusic.create( m_serviceProvider
 				, ETA_POSITION, nullptr, this, &SoundScriptMethod::___musicFade
 				, 0.f, 1.f, _time
-				, &fabsf
 				);
 
 			Affectorable * affectorable = PLAYER_SERVICE(m_serviceProvider)

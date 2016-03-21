@@ -40,8 +40,7 @@ namespace Menge
 		: public ValueAccumulator<T>
 	{
 	public:
-		template<class ABS>
-		bool start( const T & _pos, const T & _acc, float _speed, ABS _abs )
+		bool start( const T & _pos, const T & _acc, float _speed )
 		{
 			ValueAccumulator<T>::m_started = false;
 
@@ -49,7 +48,7 @@ namespace Menge
 			ValueAccumulator<T>::m_delta = _acc * _speed;
 			ValueAccumulator<T>::m_timing = 0.f;
 
-			if( _speed < 0.00001f || _abs( _acc ) < 0.00001f ) 
+			if( _speed < mt::m_eps ) 
 			{
 				return false;
 			}
@@ -150,8 +149,8 @@ namespace Menge
 			return false;
 		}
 
+	protected:
 		virtual void _update( float _dt, T * _out ) = 0;
-
 
 	protected:
 		bool m_started;
@@ -169,8 +168,7 @@ namespace Menge
 		: public ValueInterpolator<T>
 	{
 	public:
-		template<class ABS>
-		bool start( const T& _value1, const T& _value2, float _time, ABS _abs )
+		bool start( const T & _value1, const T & _value2, float _time )
 		{
 			ValueInterpolator<T>::m_started = false;
 
@@ -180,7 +178,8 @@ namespace Menge
 			ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
 			ValueInterpolator<T>::m_time = _time;
 			ValueInterpolator<T>::m_timing = 0.f;
-			if( _time < 0.00001f || _abs( _value2 - _value1 ) < 0.00001f ) 
+
+			if( _time < mt::m_eps )
 			{
 				return false;
 			}
@@ -201,8 +200,7 @@ namespace Menge
 		: public ValueInterpolator<T>
 	{
 	public:
-		template<class ABS>
-		bool start( const T& _value1, const T& _value2, const T& _v0, float _time, ABS _abs )
+		bool start( const T& _value1, const T& _value2, const T& _v0, float _time )
 		{
 			ValueInterpolator<T>::m_started = false;
 
@@ -214,14 +212,15 @@ namespace Menge
 			ValueInterpolator<T>::m_timing = 0.f;
 			
 			m_v0 = _v0;
-			if( _time < 0.00001f || _abs( _value2 - _value1 ) < 0.00001f ) 
+
+			if( _time < mt::m_eps )
 			{
 				return false;
 			}
 
 			ValueInterpolator<T>::m_started = true;
 			float invTime = 1.0f / ValueInterpolator<T>::m_time;
-			m_a = ( ValueInterpolator<T>::m_value2 - ValueInterpolator<T>::m_value1 - m_v0 * ValueInterpolator<T>::m_time ) * 2.0f * invTime * invTime;
+			m_a = (ValueInterpolator<T>::m_value2 - ValueInterpolator<T>::m_value1 - m_v0 * ValueInterpolator<T>::m_time) * 2.0f * invTime * invTime;
 
 			return true;
 		}
@@ -317,15 +316,15 @@ namespace Menge
 			ValueInterpolator<T>::m_time = _time;
 			ValueInterpolator<T>::m_timing = 0.f;
 
-			for( uint32_t i = 0; i != N; ++i )
-			{
-				m_v[i] = _v[i];
-			}			
-
 			if( _time < 0.00001f )
 			{
 				return false;
 			}
+
+			for( uint32_t i = 0; i != N; ++i )
+			{
+				m_v[i] = _v[i];
+			}			
 
 			ValueInterpolator<T>::m_started = true;
 

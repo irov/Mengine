@@ -317,7 +317,7 @@ namespace Menge
 		if( PLATFORM_SERVICE( m_serviceProvider )
 			->isTouchpad() == true )
 		{
-			if( this->isAnyKeyDown() == true )
+			if( this->isAnyMouseButtonDown() == true )
 			{
 				this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
 

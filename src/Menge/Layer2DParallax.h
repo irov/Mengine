@@ -2,7 +2,7 @@
 
 #	include "Kernel/Layer.h"
 
-#	include "Kernel/RenderCamera.h"
+#	include "Kernel/RenderCameraProxy.h"
 
 namespace Menge
 {
@@ -35,8 +35,8 @@ namespace Menge
 	protected:
 		mt::vec2f m_parallax;
 
-		RenderCamera m_cameraNorm;
-		RenderCamera m_cameraLoop[4];
+		RenderCameraProxy m_cameraNorm;
+		RenderCameraProxy m_cameraLoop[4];
 
 		bool m_parallaxLoop;
 	};

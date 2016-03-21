@@ -1,35 +1,65 @@
 #	include "RenderCamera.h"
 
-namespace Menge
+#	include "Logger/Logger.h"
+
+namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderCamera::RenderCamera()
-		: m_isOrthonalProjection(false)
+		: m_observerChangeWindowResolution( nullptr )		
+		, m_invalidateProjectionMatrix( true )
+		, m_invalidateViewMatrix( true )
+		, m_invalidateViewProjectionMatrix( true )	
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderCamera::initialize( const mt::mat4f & _pm, const mt::mat4f & _vm, const Viewport & _renderport, bool _isOrthogonalProjection )
+	bool RenderCamera::_activate()
 	{
-		m_projectionMatrix = _pm;
-		mt::inv_m4( m_projectionMatrixInv, m_projectionMatrix );
+        if( Node::_activate() == false )
+		{
+			return true;
+		}
 
-		m_viewMatrix = _vm;
-		mt::inv_m4( m_viewMatrixInv, m_viewMatrix );
+		m_observerChangeWindowResolution = NOTIFICATION_SERVICE(m_serviceProvider)
+			->addObserverMethod( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &RenderCamera::notifyChangeWindowResolution );
 
-		m_renderport = _renderport;
-				
-		m_isOrthonalProjection = _isOrthogonalProjection;
+		this->invalidateViewMatrix_();
+		this->invalidateProjectionMatrix_();
 
-		Viewport rp_vm;
-		mt::mul_v2_m4( rp_vm.begin, m_renderport.begin, m_viewMatrixInv );
-		mt::mul_v2_m4( rp_vm.end, m_renderport.end, m_viewMatrixInv );
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderCamera::_deactivate()
+	{
+        Node::_deactivate();
 
-		mt::box2f bb_vp;
-		rp_vm.toBBox(bb_vp);
+		NOTIFICATION_SERVICE(m_serviceProvider)
+			->removeObserver( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, m_observerChangeWindowResolution );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderCamera::_invalidateWorldMatrix()
+	{
+		Node::_invalidateWorldMatrix();
 
-		mt::mul_v2_m4( m_bboxWM.minimum, bb_vp.minimum, m_viewMatrix );
-		mt::mul_v2_m4( m_bboxWM.maximum, bb_vp.maximum, m_viewMatrix );
+		this->invalidateViewMatrix_();
+		this->invalidateProjectionMatrix_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderCamera::updateViewProjectionMatrix_() const
+	{
+		m_invalidateViewProjectionMatrix = false;
 
-		mt::mul_m4_m4( m_viewProjectionMatrix, m_viewMatrix, m_projectionMatrix );
+		const mt::mat4f & vm = this->getCameraViewMatrix();
+		const mt::mat4f & pm = this->getCameraProjectionMatrix();
+
+		mt::mul_m4_m4( m_viewProjectionMatrix, vm, pm );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderCamera::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )
+	{
+        (void)_fullscreen;
+        (void)_resolution;
+
+		this->invalidateProjectionMatrix_();
 	}
 }

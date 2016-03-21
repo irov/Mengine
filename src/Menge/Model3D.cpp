@@ -4,7 +4,7 @@
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/NodeInterface.h"
 
-#	include "Kernel/Camera3D.h"
+#	include "Kernel/RenderCameraProjection.h"
 
 #	include "Consts.h"
 
@@ -72,7 +72,7 @@ namespace Menge
 		const Model3DInterfacePtr & model = m_resourceModel->getModel();
 
 		m_camera = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Camera3D>( CONST_STRING(m_serviceProvider, Camera3D) );
+			->createNodeT<RenderCameraProjection>( CONST_STRING( m_serviceProvider, RenderCameraProjection ) );
 
 		const ConstString & name = this->getName();
 		m_camera->setName( name );
@@ -199,11 +199,11 @@ namespace Menge
 	{
 		const RenderVertex2D * vertices = this->getVerticesWM();
 
-		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );
+		mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
 		for( uint32_t i = 1; i != m_vertexCount; ++i )
 		{
-			mt::add_internal_point( _boundingBox, vertices[i].pos[0], vertices[i].pos[1] );
+			mt::add_internal_point( _boundingBox, vertices[i].position.x, vertices[i].position.y );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -299,10 +299,10 @@ namespace Menge
 
 		for( uint32_t i = 0; i != m_vertexCount; ++i )
 		{
-			const mt::vec3f & pos = m_frame->pos[i];
+			const mt::vec3f & position = m_frame->position[i];
 
-			mt::vec3f & wm_pos = m_verticesWM[i].pos;
-			mt::mul_v3_m4( wm_pos, pos, wm);
+			mt::vec3f & wm_pos = m_verticesWM[i].position;
+			mt::mul_v3_m4( wm_pos, position, wm );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -382,8 +382,8 @@ namespace Menge
 
 		m_frame = model->getFrame( m_currentFrame );
 
-		m_camera->setCameraPosition( m_frame->cameraPos );
-		m_camera->setCameraDir( m_frame->cameraDir );
+		m_camera->setCameraPosition( m_frame->cameraPosition );
+		m_camera->setCameraDirection( m_frame->cameraDirection );
 		m_camera->setCameraUp( m_frame->cameraUp );
 
 		this->invalidateVertices();

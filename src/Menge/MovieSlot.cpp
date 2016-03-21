@@ -110,7 +110,7 @@ namespace Menge
 
 			RenderVertex2D & v0 = vertices[i * 2 + 0];
 
-			v0.pos = trP0;
+			v0.position = trP0;
 
 			v0.color = 0x000000FF;
 
@@ -125,7 +125,7 @@ namespace Menge
 
 			RenderVertex2D & v1 = vertices[i * 2 + 1];
 
-			v1.pos = trP1;
+			v1.position = trP1;
 
 			v1.color = 0x000000FF;
 

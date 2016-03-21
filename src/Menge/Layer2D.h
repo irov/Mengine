@@ -1,11 +1,12 @@
 #	pragma once
 
 #	include "Kernel/Layer.h"
+
 #	include "Core/Viewport.h"
 
 namespace Menge
 {
-	class Camera2D;
+	class RenderCameraOrthogonal;
 	class RenderViewport;
 
 	class Layer2D
@@ -35,7 +36,7 @@ namespace Menge
 	protected:
 		Viewport m_viewport;
 		
-		Camera2D * m_renderCamera;
+		RenderCameraOrthogonal * m_renderCamera;
 		RenderViewport * m_renderViewport;
 
 		bool m_hasViewport;

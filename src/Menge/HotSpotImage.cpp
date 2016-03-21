@@ -261,34 +261,34 @@ namespace Menge
 			return;
 		}
 
-		vertices[0].pos.x = box.minimum.x;
-		vertices[0].pos.y = box.minimum.y;
+		vertices[0].position.x = box.minimum.x;
+		vertices[0].position.y = box.minimum.y;
 
-		vertices[1].pos.x = box.maximum.x;
-		vertices[1].pos.y = box.minimum.y;
+		vertices[1].position.x = box.maximum.x;
+		vertices[1].position.y = box.minimum.y;
 
-		vertices[2].pos.x = box.maximum.x;
-		vertices[2].pos.y = box.minimum.y;
+		vertices[2].position.x = box.maximum.x;
+		vertices[2].position.y = box.minimum.y;
 
-		vertices[3].pos.x = box.maximum.x;
-		vertices[3].pos.y = box.maximum.y;
+		vertices[3].position.x = box.maximum.x;
+		vertices[3].position.y = box.maximum.y;
 
-		vertices[4].pos.x = box.maximum.x;
-		vertices[4].pos.y = box.maximum.y;
+		vertices[4].position.x = box.maximum.x;
+		vertices[4].position.y = box.maximum.y;
 
-		vertices[5].pos.x = box.minimum.x;
-		vertices[5].pos.y = box.maximum.y;
+		vertices[5].position.x = box.minimum.x;
+		vertices[5].position.y = box.maximum.y;
 
-		vertices[6].pos.x = box.minimum.x;
-		vertices[6].pos.y = box.maximum.y;
+		vertices[6].position.x = box.minimum.x;
+		vertices[6].position.y = box.maximum.y;
 
-		vertices[7].pos.x = box.minimum.x;
-		vertices[7].pos.y = box.minimum.y;
+		vertices[7].position.x = box.minimum.x;
+		vertices[7].position.y = box.minimum.y;
 
 
 		for( uint32_t i = 0; i != 8; ++i )
 		{
-			vertices[i].pos.z = 0.f;
+			vertices[i].position.z = 0.f;
 
 			vertices[i].color = m_debugColor;
 			vertices[i].uv[0].x = 0.f;

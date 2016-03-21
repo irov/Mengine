@@ -77,15 +77,16 @@
 #	include "SoundEmitter.h"
 #	include "Point.h"
 #	include "Line.h"
-#	include "Kernel/Camera3D.h"
+#	include "Kernel/RenderCameraProjection.h"
 //#	include "RigidBody3D.h"
 //#	include "CapsuleController.h"
 //#	include "Skeleton.h"
 #	include "Kernel/Isometric.h"
 #	include "Kernel/Parallax.h"
 #	include "Kernel/RenderViewport.h"
-#	include "Kernel/Camera2D.h"
-#	include "Kernel/CameraTarget2D.h"
+#	include "Kernel/RenderCameraOrthogonal.h"
+#	include "Kernel/RenderCameraProjection.h"
+#	include "Kernel/RenderCameraOrthogonalTarget.h"
 
 #	include "Layer2D.h"
 #	include "Layer2DParallax.h"
@@ -119,8 +120,6 @@
 #	include "Kernel/Identity.h"
 
 #	include "Kernel/Affector.h"
-
-#	include "Kernel/Camera3D.h"
 
 #   include "Kernel/ThreadTask.h"
 
@@ -3324,6 +3323,71 @@ namespace Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		class AffectorUser
+			: public Affector
+		{
+		public:
+			bool initialize( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+			{
+				m_cb = _cb;
+				m_args = _args;
+
+				return true;
+			}
+
+		protected:
+			bool _affect( float _timing ) override
+			{
+				bool complete = m_cb.call( true, _timing, m_args );
+
+				return complete;
+			}
+
+			void complete() override
+			{				
+			}
+
+			void stop() override
+			{
+				m_cb.call( false, 0.f, m_args );
+			}
+
+		protected:			
+			pybind::object m_cb;
+			pybind::detail::args_operator_t m_args;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		FactoryPoolStore<AffectorUser, 4> m_factoryAffectorUser;
+		//////////////////////////////////////////////////////////////////////////
+		AFFECTOR_ID s_addAffector( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		{			
+			AffectorUser * affector = m_factoryAffectorUser.createObject();
+
+			if( affector->initialize( _cb, _args ) == false )
+			{
+				affector->destroy();
+
+				return 0;
+			}
+
+			Affectorable * affectorable = PLAYER_SERVICE( m_serviceProvider )
+				->getAffectorableGlobal();
+
+			AFFECTOR_ID id = affectorable->addAffector( affector );
+
+			return id;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_removeAffector( AFFECTOR_ID _id )
+		{
+			Affectorable * affectorable = PLAYER_SERVICE( m_serviceProvider )
+				->getAffectorableGlobal();
+
+			bool successful = affectorable->stopAffector( _id );
+
+			return successful;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		void s_setLocale( const ConstString & _locale )
 		{
 			APPLICATION_SERVICE( m_serviceProvider )
@@ -5356,8 +5420,9 @@ namespace Menge
 
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Parallax );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, RenderViewport );
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, Camera2D );		
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, CameraTarget2D );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, RenderCameraOrthogonal );		
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, RenderCameraProjection );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, RenderCameraOrthogonalTarget );
         //SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceReference );
@@ -5767,31 +5832,42 @@ namespace Menge
 			;
 
         pybind::interface_<RenderCameraInterface>("RenderCameraInterface")
-            .def( "getCameraRenderport", &RenderCameraInterface::getCameraRenderport )
-			.def( "isOrthogonalProjection", &RenderCameraInterface::isOrthogonalProjection )			
             ;
 
-        pybind::interface_<Camera2D, pybind::bases<Node, RenderCameraInterface> >("Camera2D", false)
-			.def( "setCameraPosition", &Camera2D::setCameraPosition )
-			.def( "setCameraDirection", &Camera2D::setCameraDirection )
-			.def( "setCameraUp", &Camera2D::setCameraUp )
-			.def( "setCameraRightSign", &Camera2D::setCameraRightSign )
-            .def( "setRenderport", &Camera2D::setRenderport )
-			.def( "getRenderport", &Camera2D::getRenderport )
-			.def( "setFixedRenderport", &Camera2D::setFixedRenderport )
-			.def( "getFixedRenderport", &Camera2D::getFixedRenderport )
-			.def( "setOrthogonalProjection", &Camera2D::setOrthogonalProjection )
-			.def( "isOrthogonalProjection", &Camera2D::isOrthogonalProjection )
+        pybind::interface_<RenderCameraOrthogonal, pybind::bases<Node, RenderCameraInterface> >("RenderCameraOrthogonal", false)
+			.def( "setCameraPosition", &RenderCameraOrthogonal::setCameraPosition )
+			.def( "setCameraDirection", &RenderCameraOrthogonal::setCameraDirection )
+			.def( "setCameraUp", &RenderCameraOrthogonal::setCameraUp )
+			.def( "setCameraRightSign", &RenderCameraOrthogonal::setCameraRightSign )
+			.def( "setCameraNear", &RenderCameraOrthogonal::setCameraNear )
+			.def( "setCameraFar", &RenderCameraOrthogonal::setCameraFar )
+			.def( "setOrthogonalViewport", &RenderCameraOrthogonal::setOrthogonalViewport )
+			.def( "getOrthogonalViewport", &RenderCameraOrthogonal::getOrthogonalViewport )
+			.def( "setFixedOrthogonalViewport", &RenderCameraOrthogonal::setFixedOrthogonalViewport )
+			.def( "getFixedOrthogonalViewport", &RenderCameraOrthogonal::getFixedOrthogonalViewport )
+			.def( "setProxyViewMatrix", &RenderCameraOrthogonal::setProxyViewMatrix )
+			.def( "getProxyViewMatrix", &RenderCameraOrthogonal::getProxyViewMatrix )
             ;		
 
-		pybind::interface_<CameraTarget2D, pybind::bases<Node> >("CameraTarget2D", false)
-			.def( "setCamera2D", &CameraTarget2D::setCamera2D )
-			.def( "getCamera2D", &CameraTarget2D::getCamera2D )
-			.def( "setSpeed", &CameraTarget2D::setSpeed )
-			.def( "getSpeed", &CameraTarget2D::getSpeed )
-			.def( "setFixedHorizont", &CameraTarget2D::setFixedHorizont )
-			.def( "getFixedHorizont", &CameraTarget2D::getFixedHorizont )
-			.def( "isFixedHorizont", &CameraTarget2D::isFixedHorizont )
+		pybind::interface_<RenderCameraProjection, pybind::bases<Node, RenderCameraInterface> >( "RenderCameraProjection", false )
+			.def( "setCameraPosition", &RenderCameraProjection::setCameraPosition )
+			.def( "setCameraDirection", &RenderCameraProjection::setCameraDirection )
+			.def( "setCameraUp", &RenderCameraProjection::setCameraUp )
+			.def( "setCameraRightSign", &RenderCameraProjection::setCameraRightSign )
+			.def( "setCameraFOV", &RenderCameraProjection::setCameraFOV )
+			.def( "setCameraAspect", &RenderCameraProjection::setCameraAspect )
+			.def( "setCameraNear", &RenderCameraProjection::setCameraNear )
+			.def( "setCameraFar", &RenderCameraProjection::setCameraFar )
+			;
+
+		pybind::interface_<RenderCameraOrthogonalTarget, pybind::bases<Node> >( "RenderCameraOrthogonalTarget", false )
+			.def( "setRenderCameraOrthogonal", &RenderCameraOrthogonalTarget::setRenderCameraOrthogonal )
+			.def( "getRenderCameraOrthogonal", &RenderCameraOrthogonalTarget::getRenderCameraOrthogonal )
+			.def( "setSpeed", &RenderCameraOrthogonalTarget::setSpeed )
+			.def( "getSpeed", &RenderCameraOrthogonalTarget::getSpeed )
+			.def( "setFixedHorizont", &RenderCameraOrthogonalTarget::setFixedHorizont )
+			.def( "getFixedHorizont", &RenderCameraOrthogonalTarget::getFixedHorizont )
+			.def( "isFixedHorizont", &RenderCameraOrthogonalTarget::isFixedHorizont )
 			;
         {
 
@@ -6513,6 +6589,9 @@ namespace Menge
 			pybind::def_functor( "gridBurnTransparency", nodeScriptMethod, &NodeScriptMethod::s_gridBurnTransparency );
 
 			pybind::def_functor( "setLocale", nodeScriptMethod, &NodeScriptMethod::s_setLocale );
+
+			pybind::def_functor( "addAffector", nodeScriptMethod, &NodeScriptMethod::s_addAffector );
+			pybind::def_functor( "removeAffector", nodeScriptMethod, &NodeScriptMethod::s_removeAffector );
         }
     }
 }

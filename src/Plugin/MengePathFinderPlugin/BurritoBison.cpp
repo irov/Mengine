@@ -82,7 +82,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::initialize( Node * _node, Camera2D * _camera, const Viewport & _renderport, const mt::vec3f & _position, float _radius )
+	void BurritoBison::initialize( Node * _node, RenderCameraOrthogonal * _camera, const Viewport & _renderport, const mt::vec3f & _position, float _radius )
 	{		
 		m_node = _node;
 		m_camera = _camera;
@@ -299,8 +299,6 @@ namespace Menge
 			if( m_neutron == true )
 			{
 				force_velocity.y = 0.f;
-
-				return;
 			}
 
 			m_velocity += force_velocity;
@@ -474,7 +472,7 @@ namespace Menge
 			new_camera_lp.z = 0.f;
 		}
 		
-		m_camera->setRenderport( new_camera_renderport );
+		m_camera->setOrthogonalViewport( new_camera_renderport );
 		m_camera->setLocalPosition( new_camera_lp );
 	}
 	//////////////////////////////////////////////////////////////////////////

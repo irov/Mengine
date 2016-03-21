@@ -8,9 +8,6 @@
 
 #	include "Utils/Core/Polygon.h"
 
-#	include "Kernel/Camera3D.h"
-#	include "Kernel/RenderViewport.h"
-
 namespace Menge
 {
 	class ResourceParticle

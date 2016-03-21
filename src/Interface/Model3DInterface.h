@@ -21,11 +21,11 @@ namespace Menge
 
 	struct Model3DFrame
 	{
-		mt::vec3f cameraPos;
-		mt::vec3f cameraDir;
+		mt::vec3f cameraPosition;
+		mt::vec3f cameraDirection;
 		mt::vec3f cameraUp;
 
-		mt::vec3f * pos;
+		mt::vec3f * position;
 		mt::vec2f * uv;
 		RenderIndices * indecies;
 	};

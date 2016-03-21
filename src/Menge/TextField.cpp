@@ -1300,7 +1300,7 @@ namespace Menge
             
             RenderVertex2D & vertex_w = *it_w;
             
-            mt::mul_v3_m4( vertex_w.pos, vertex.pos, wm );
+			mt::mul_v3_m4( vertex_w.position, vertex.position, wm );
         }
     }
 	//////////////////////////////////////////////////////////////////////////

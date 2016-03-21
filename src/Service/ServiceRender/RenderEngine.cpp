@@ -1023,15 +1023,6 @@ namespace Menge
 		{
 			pass.materialEnd[i] = nullptr;
 		}
-
-		if( m_currentRenderCamera != nullptr )
-		{
-			pass.orthogonalProjection = pass.camera->isOrthogonalProjection();
-		}
-		else
-		{
-			pass.orthogonalProjection = true;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderObject( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
@@ -1124,28 +1115,19 @@ namespace Menge
 
 		mt::box2f bb;
 
-		if( rp.orthogonalProjection == true && rp.camera != nullptr )
+		if( _bb != nullptr )
 		{
-			if( _bb != nullptr )
-			{
-				bb = *_bb;
-			}
-			else
-			{
-				Helper::makeRenderBoundingBox( bb, _vertices, _verticesNum );
-			}
-
-			const mt::box2f & cameraBBWM = rp.camera->getCameraBBoxWM();
-
-			if( mt::is_intersect( cameraBBWM, bb ) == false )
-			{
-				return;
-			}
+			bb = *_bb;
 		}
 		else
 		{
-			mt::reset( bb, 0.f, 0.f );
+			Helper::makeRenderBoundingBox( bb, _vertices, _verticesNum );
 		}
+		
+		const mt::mat4f & vpm = rp.camera->getCameraViewProjectionMatrix();
+
+		mt::box2f bb_homogenize;
+		mt::set_box_homogenize( bb_homogenize, bb.minimum, bb.maximum, vpm );
 
 		RenderMaterialPtr ro_material = _material;
 
@@ -1224,7 +1206,7 @@ namespace Menge
 		ro.indicesData = _indices;
 		ro.indicesNum = _indicesNum;
 
-		ro.bb = bb;
+		ro.bb = bb_homogenize;
 
 		ro.minIndex = 0;
 		ro.startIndex = 0;
@@ -1662,10 +1644,7 @@ namespace Menge
 				{
 					this->batchRenderObjectNormal_( it, it_end, ro, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
 
-					if( _renderPass->orthogonalProjection == true )
-					{
-						this->batchRenderObjectSmart_( _renderPass, it, ro, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
-					}
+					this->batchRenderObjectSmart_( _renderPass, it, ro, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
 				}break;
 			}	
 		}
@@ -1844,9 +1823,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static double s_calcTriangleSquare( const RenderVertex2D & _v1, const RenderVertex2D & _v2, const RenderVertex2D & _v3 )
 	{
-		const mt::vec3f & p1 = _v1.pos;
-		const mt::vec3f & p2 = _v2.pos;
-		const mt::vec3f & p3 = _v3.pos;
+		const mt::vec3f & p1 = _v1.position;
+		const mt::vec3f & p2 = _v2.position;
+		const mt::vec3f & p3 = _v3.position;
 
 		double a = (double)mt::length_v3_v3( p1, p2 );
 		double b = (double)mt::length_v3_v3( p2, p3 );

@@ -504,12 +504,12 @@ namespace	Menge
 		it != it_end;
 		++it )
 		{
-			mt::vec3f & pos = _vertices[it].pos;
+			mt::vec3f & pos = _vertices[it].position;
 
 			mt::vec3f wm_pos;
 			mt::mul_v3_m4( wm_pos, pos, wm );
 
-			_vertices[it].pos = wm_pos;
+			_vertices[it].position = wm_pos;
 		}
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -823,7 +823,7 @@ namespace	Menge
 				->getRenderCamera();
 		}
 
-		_orthogonality = camera->isOrthogonalProjection();
+		_orthogonality = true;
 
 		const mt::mat4f & vmi = camera->getCameraViewMatrixInv();
 

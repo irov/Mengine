@@ -1,20 +1,21 @@
 #	pragma once
 
 #	include "Kernel/Node.h"
-#	include "Kernel/Camera2D.h"
+
+#	include "Kernel/RenderCameraOrthogonal.h"
 
 namespace Menge
 {
-	class CameraTarget2D
+	class RenderCameraOrthogonalTarget
 		: public Node
 	{
 	public:
-		CameraTarget2D();
-		~CameraTarget2D();
+		RenderCameraOrthogonalTarget();
+		~RenderCameraOrthogonalTarget();
 
 	public:
-		void setCamera2D( Camera2D * _camera );
-		Camera2D * getCamera2D() const;
+		void setRenderCameraOrthogonal( RenderCameraOrthogonal * _camera );
+		RenderCameraOrthogonal * getRenderCameraOrthogonal() const;
 
 	public:
 		void setSpeed( float _speed );
@@ -29,7 +30,7 @@ namespace Menge
 		void _update( float _current, float _timing ) override;
 
 	protected:
-		Camera2D * m_camera;
+		RenderCameraOrthogonal * m_camera;
 		float m_speed;
 
 		bool m_fixedHorizont;

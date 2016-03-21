@@ -13,14 +13,14 @@
 #	include "Core/ColourValue.h"
 #	include "Core/ValueInterpolator.h"
 
-#	include "Kernel/Camera3D.h"
-
 #	include "math/mat3.h"
 #	include "math/vec4.h"
 #	include "math/mat4.h"
 
 namespace Menge
 {
+	class RenderCameraProjection;
+
 	class Model3D
 		: public Node
 		, public Animatable
@@ -99,7 +99,7 @@ namespace Menge
 		float m_frameTiming;
 		uint32_t m_currentFrame;
 
-		Camera3D * m_camera;
+		RenderCameraProjection * m_camera;
 
 		const Model3DFrame * m_frame;
 		

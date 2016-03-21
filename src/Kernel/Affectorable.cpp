@@ -31,7 +31,7 @@ namespace Menge
 		return id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affectorable::stopAffector( uint32_t _id )
+	bool Affectorable::stopAffector( uint32_t _id )
 	{
 		for( TSlugAffector it(m_affectors); it.eof() == false; )
 		{
@@ -45,8 +45,12 @@ namespace Menge
 
 				affector->stop();
 				affector->destroy();
+
+				return true;
 			}
 		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Affectorable::stopAffectors( EAffectorType _type )

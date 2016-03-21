@@ -28,7 +28,7 @@ namespace Menge
 	class Join;
 
 	class RenderViewport;
-	class Camera2D;
+	class RenderCameraOrthogonal;
 
 	class MousePickerSystemInterface;
 	class GlobalHandleSystem;
@@ -158,10 +158,10 @@ namespace Menge
 
 		ObserverInterface * m_observerChangeWindowResolution;
 		
-		Camera2D * m_camera2D;
+		RenderCameraOrthogonal * m_camera2D;
 		RenderViewport * m_viewport2D;
 
-		Camera2D * m_arrowCamera2D;
+		RenderCameraOrthogonal * m_arrowCamera2D;
 		
 		RenderViewportInterface * m_renderViewport;
 		RenderCameraInterface * m_renderCamera;		
@@ -212,7 +212,7 @@ namespace Menge
 	protected:
 		uint32_t m_showDebugText;
 		TextField * m_debugText;
-		Camera2D * m_debugCamera2D;
+		RenderCameraOrthogonal * m_debugCamera2D;
 //#	endif
 	};
 }

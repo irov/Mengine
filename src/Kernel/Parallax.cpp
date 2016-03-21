@@ -26,9 +26,6 @@ namespace	Menge
 	{
 		const mt::mat4f & camera_vm = _state->camera->getCameraViewMatrix();
 		const mt::mat4f & camera_pm = _state->camera->getCameraProjectionMatrix();
-		const Viewport & renderport = _state->camera->getCameraRenderport();
-
-		bool isOrthogonalProjection = _state->camera->isOrthogonalProjection();
 
 		mt::mat4f vm;
 		vm = camera_vm;
@@ -36,7 +33,7 @@ namespace	Menge
 		vm.v3.y *= m_parallaxFactor.y;
 		vm.v3.z *= m_parallaxFactor.z;
 
-		m_parallaxCamera.initialize( camera_pm, vm, renderport, isOrthogonalProjection );
+		m_parallaxCamera.initialize( camera_pm, vm );
 
 		RenderObjectState state;
 		state.viewport = _state->viewport;

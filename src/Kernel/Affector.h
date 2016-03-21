@@ -122,7 +122,7 @@ namespace Menge
 		{
 		}
 
-		void initialize( C * _self, M _method, const MA & _argument )
+		void setup( C * _self, M _method, const MA & _argument )
         {			
             m_self = _self;
             m_method = _method;
@@ -152,7 +152,7 @@ namespace Menge
 		{
 		}
 
-		void initialize( C * _self, M _method )
+		void setup( C * _self, M _method )
 		{
 			m_self = _self;
 			m_method = _method;
@@ -237,10 +237,16 @@ namespace Menge
 	{
 	public:
 		template<class ABS>
-		void initialize( C * _self, M _method, const MA & _argument, const T & _start, const T & _dir, float _speed, ABS _abs )
+		bool initialize( C * _self, M _method, const MA & _argument, const T & _start, const T & _dir, float _speed, ABS _abs )
 		{
-			MemberAffectorAccumulate<C, M, MA, T, ValueAccumulateLinear>::initialize( _self, _method, _argument );
-			MemberAffectorAccumulate<C, M, MA, T, ValueAccumulateLinear>::m_accumulator.start( _start, _dir, _speed, _abs );
+			MemberAffectorAccumulate<C, M, MA, T, ValueAccumulateLinear>::setup( _self, _method, _argument );
+
+			if( MemberAffectorAccumulate<C, M, MA, T, ValueAccumulateLinear>::m_accumulator.start( _start, _dir, _speed, _abs ) == false )
+			{
+				return false;
+			}
+
+			return true;
 		}        
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -250,10 +256,16 @@ namespace Menge
 	{
 	public:
 		template<class ABS>
-		void initialize( C * _self, M _method, const T & _start, const T & _dir, float _speed, ABS _abs )
+		bool initialize( C * _self, M _method, const T & _start, const T & _dir, float _speed, ABS _abs )
 		{
-			MemberAffectorAccumulate<C, M, void, T, ValueAccumulateLinear>::initialize( _self, _method );
-			MemberAffectorAccumulate<C, M, void, T, ValueAccumulateLinear>::m_accumulator.start( _start, _dir, _speed, _abs );
+			MemberAffectorAccumulate<C, M, void, T, ValueAccumulateLinear>::setup( _self, _method );
+
+			if( MemberAffectorAccumulate<C, M, void, T, ValueAccumulateLinear>::m_accumulator.start( _start, _dir, _speed, _abs ) == false )
+			{
+				return false;
+			}
+
+			return true;
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -263,10 +275,16 @@ namespace Menge
 	{
 	public:
 		template<class ABS>
-		void initialize( C * _self, M _method, const MA & _argument, const T & _start, const T & _end, float _time, ABS _abs )
+		bool initialize( C * _self, M _method, const MA & _argument, const T & _start, const T & _end, float _time, ABS _abs )
 		{
-			MemberAffectorInterpolate<C, M, MA, T, ValueInterpolatorLinear<T> >::initialize( _self, _method, _argument );
-			MemberAffectorInterpolate<C, M, MA, T, ValueInterpolatorLinear<T> >::m_interpolator.start( _start, _end, _time, _abs );
+			MemberAffectorInterpolate<C, M, MA, T, ValueInterpolatorLinear<T> >::setup( _self, _method, _argument );
+			
+			if( MemberAffectorInterpolate<C, M, MA, T, ValueInterpolatorLinear<T> >::m_interpolator.start( _start, _end, _time, _abs ) == false )
+			{
+				return false;
+			}
+
+			return true;
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -276,10 +294,16 @@ namespace Menge
 	{
 	public:
 		template<class ABS>
-		void initialize( C * _self, M _method, const T & _start, const T & _end, float _time, ABS _abs )
+		bool initialize( C * _self, M _method, const T & _start, const T & _end, float _time, ABS _abs )
 		{
-			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorLinear<T> >::initialize( _self, _method );
-			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorLinear<T> >::m_interpolator.start( _start, _end, _time, _abs );
+			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorLinear<T> >::setup( _self, _method );
+
+			if( MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorLinear<T> >::m_interpolator.start( _start, _end, _time, _abs ) == false )
+			{
+				return false;
+			}
+
+			return true;
 		}
 	};
     //////////////////////////////////////////////////////////////////////////
@@ -289,10 +313,16 @@ namespace Menge
 	{
 	public:
 		template< typename ABS >
-		void initialize( C * _self, M _method, const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
+		bool initialize( C * _self, M _method, const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		{
-			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorQuadratic<T> >::initialize( _self, _method );
-			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorQuadratic<T> >::m_interpolator.start( _start, _end, _v0, _time, _abs );
+			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorQuadratic<T> >::setup( _self, _method );
+			
+			if( MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorQuadratic<T> >::m_interpolator.start( _start, _end, _v0, _time, _abs ) == false )
+			{
+				return false;
+			}
+
+			return true;
 		}
 	};
     //////////////////////////////////////////////////////////////////////////
@@ -301,10 +331,16 @@ namespace Menge
 		: public MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorBezier<T, N> >
 	{
 	public:
-		void initialize( C * _self, M _method, const T & _start, const T & _end, const T * _v, float _time)
+		bool initialize( C * _self, M _method, const T & _start, const T & _end, const T * _v, float _time)
 		{
-			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorBezier<T, N> >::initialize( _self, _method );
-			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorBezier<T, N> >::m_interpolator.start( _start, _end, _v, _time );
+			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorBezier<T, N> >::setup( _self, _method );
+			
+			if( MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorBezier<T, N> >::m_interpolator.start( _start, _end, _v, _time ) == false )
+			{
+				return false;
+			}
+
+			return true;
 		}
 	};
     //////////////////////////////////////////////////////////////////////////
@@ -329,7 +365,11 @@ namespace Menge
 
 				affector->setCallback( _cb );
 
-                affector->initialize( _self, _method, _pos, _dir, _speed, _abs );
+				if( affector->initialize( _self, _method, _pos, _dir, _speed, _abs ) == false )
+				{
+					return nullptr;
+				}
+
 				affector->update( _pos );
 
                 return affector;
@@ -358,7 +398,11 @@ namespace Menge
 
 				affector->setCallback( _cb );
 
-				affector->initialize( _self, _method, _argument, _start, _end, _time, _abs );
+				if( affector->initialize( _self, _method, _argument, _start, _end, _time, _abs ) == false )
+				{
+					return nullptr;
+				}
+
 				affector->update( _start );
 
                 return affector;
@@ -388,7 +432,11 @@ namespace Menge
 
 				affector->setCallback( _cb );
 
-				affector->initialize( _self, _method, _start, _end, _time, _abs );
+				if( affector->initialize( _self, _method, _start, _end, _time, _abs ) == false )
+				{
+					return nullptr;
+				}
+
 				affector->update( _start );
 
 				return affector;
@@ -418,7 +466,11 @@ namespace Menge
 
 				affector->setCallback( _cb );
 
-                affector->initialize( _self, _method, _start, _end, _v0, _time, _abs );
+				if( affector->initialize( _self, _method, _start, _end, _v0, _time, _abs ) == false )
+				{
+					return nullptr;
+				}
+
 				affector->update( _start );
 
                 return affector;
@@ -447,7 +499,11 @@ namespace Menge
 
 				affector->setCallback( _cb );
 
-                affector->initialize( _self, _method, _start, _end, _v, _time );
+				if( affector->initialize( _self, _method, _start, _end, _v, _time ) == false )
+				{
+					return nullptr;
+				}
+
 				affector->update( _start );
 
                 return affector;

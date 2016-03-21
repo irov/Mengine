@@ -78,8 +78,8 @@ namespace Menge
 		DECL_CONST( Animation );
 		DECL_CONST( RenderViewport );
 		DECL_CONST( RenderClipplane );
-		DECL_CONST( Camera2D );
-		DECL_CONST( Camera3D );
+		DECL_CONST( RenderCameraOrthogonal );
+		DECL_CONST( RenderCameraProjection );
 		DECL_CONST( TextField );
 		DECL_CONST( __CONSOLE_FONT__ );		
 		DECL_CONST( SoundEmitter );

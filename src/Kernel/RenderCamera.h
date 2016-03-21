@@ -1,90 +1,137 @@
 #	pragma once
 
 #	include "Interface/RenderSystemInterface.h"
+#	include "Interface/NotificationServiceInterface.h"
+
+#	include "Kernel/Node.h"
+
+#	include "Core/Viewport.h"
 
 namespace Menge
 {
-	class Viewport;
-	
 	class RenderCamera
-        : public RenderCameraInterface
+		: public Node
+        , public RenderCameraInterface
 	{
 	public:
 		RenderCamera();
 		
-	public:
-		void initialize( const mt::mat4f & _pm, const mt::mat4f & _vm, const Viewport & _renderport, bool _isOrthogonalProjection );
-
 	protected:
+		bool _activate() override;
+		void _deactivate() override;
+	
+	public:
 		const mt::mat4f & getCameraViewMatrix() const override;
 		const mt::mat4f & getCameraViewMatrixInv() const override;
+
 		const mt::mat4f & getCameraProjectionMatrix() const override;
 		const mt::mat4f & getCameraProjectionMatrixInv() const override;
 
-	protected:
+	public:
 		const mt::mat4f & getCameraViewProjectionMatrix() const override;
 
-	public:
-		const mt::box2f & getCameraBBoxWM() const override; 
-
 	protected:
-		const Viewport & getCameraRenderport() const override;
+		void _invalidateWorldMatrix() override;
 		
 	protected:
-		bool isOrthogonalProjection() const override;
+		void invalidateViewMatrix_();
+		void invalidateProjectionMatrix_();
 
-	protected:		
-		mt::mat4f m_viewMatrix;
-		mt::mat4f m_viewMatrixInv;
-		mt::mat4f m_projectionMatrix;
-		mt::mat4f m_projectionMatrixInv;
+	protected:
+		virtual void _updateViewMatrix() const = 0;
+		virtual void _updateProjectionMatrix() const = 0;
 
-		mt::mat4f m_viewProjectionMatrix;
+	protected:
+		void updateViewProjectionMatrix_() const;
 
-		mt::box2f m_bboxWM;
+	protected:
+		void notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution );
 
-		Viewport m_renderport;
+	protected:
+		ObserverInterface * m_observerChangeWindowResolution;
 
-		bool m_isOrthonalProjection;
+		mutable mt::mat4f m_viewMatrix;
+		mutable mt::mat4f m_viewMatrixInv;
+
+		mutable mt::mat4f m_projectionMatrix;
+		mutable mt::mat4f m_projectionMatrixInv;
+
+		mutable mt::mat4f m_viewProjectionMatrix;
+
+		mutable bool m_invalidateProjectionMatrix;
+		mutable bool m_invalidateViewMatrix;
+		mutable bool m_invalidateViewProjectionMatrix;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline const mt::mat4f & RenderCamera::getCameraViewMatrixInv() const
-	{
-		return m_viewMatrixInv;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & RenderCamera::getCameraProjectionMatrix() const
 	{
+		if( m_invalidateProjectionMatrix == true )
+		{
+			m_invalidateProjectionMatrix = false;
+
+			this->_updateProjectionMatrix();
+		}
+
 		return m_projectionMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & RenderCamera::getCameraProjectionMatrixInv() const
 	{
+		if( m_invalidateProjectionMatrix == true )
+		{
+			m_invalidateProjectionMatrix = false;
+
+			this->_updateProjectionMatrix();
+		}
+
 		return m_projectionMatrixInv;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & RenderCamera::getCameraViewMatrix() const
 	{
+		if( m_invalidateViewMatrix == true )
+		{
+			m_invalidateViewMatrix = false;
+
+			this->_updateViewMatrix();
+		}
+
 		return m_viewMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f & RenderCamera::getCameraViewMatrixInv() const
+	{
+		if( m_invalidateViewMatrix == true )
+		{
+			m_invalidateViewMatrix = false;
+
+			this->_updateViewMatrix();
+		}
+
+		return m_viewMatrixInv;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & RenderCamera::getCameraViewProjectionMatrix() const
-	{ 
+	{
+		if( m_invalidateViewProjectionMatrix == true )
+		{
+			m_invalidateViewProjectionMatrix = false;
+
+			this->updateViewProjectionMatrix_();
+		}
+
 		return m_viewProjectionMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::box2f & RenderCamera::getCameraBBoxWM() const
+	inline void RenderCamera::invalidateViewMatrix_()
 	{
-		return m_bboxWM;
+		m_invalidateViewMatrix = true;
+		m_invalidateViewProjectionMatrix = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const Viewport & RenderCamera::getCameraRenderport() const
+	inline void RenderCamera::invalidateProjectionMatrix_()
 	{
-		return m_renderport;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline bool RenderCamera::isOrthogonalProjection() const
-	{
-		return m_isOrthonalProjection;
+		m_invalidateProjectionMatrix = true;
+		m_invalidateViewProjectionMatrix = true;
 	}
 }

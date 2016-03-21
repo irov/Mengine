@@ -64,21 +64,21 @@ namespace Menge
 		mt::vec2f perp;
 		mt::perp_v2( perp, mt::vec2f(dir_norm.x, dir_norm.y) );
 				
-		m_vertices[0].pos.x = fromWM.x + perp.x * m_width;
-		m_vertices[0].pos.y = fromWM.y + perp.y * m_width;
-		m_vertices[0].pos.z = fromWM.z;
+		m_vertices[0].position.x = fromWM.x + perp.x * m_width;
+		m_vertices[0].position.y = fromWM.y + perp.y * m_width;
+		m_vertices[0].position.z = fromWM.z;
 
-		m_vertices[1].pos.x = toWM.x + perp.x * m_width;
-		m_vertices[1].pos.y = toWM.y + perp.y * m_width;
-		m_vertices[1].pos.z = toWM.z;
+		m_vertices[1].position.x = toWM.x + perp.x * m_width;
+		m_vertices[1].position.y = toWM.y + perp.y * m_width;
+		m_vertices[1].position.z = toWM.z;
 
-		m_vertices[2].pos.x = toWM.x - perp.x * m_width;
-		m_vertices[2].pos.y = toWM.y - perp.y * m_width;
-		m_vertices[2].pos.z = toWM.z;
+		m_vertices[2].position.x = toWM.x - perp.x * m_width;
+		m_vertices[2].position.y = toWM.y - perp.y * m_width;
+		m_vertices[2].position.z = toWM.z;
 
-		m_vertices[3].pos.x = fromWM.x - perp.x * m_width;
-		m_vertices[3].pos.y = fromWM.y - perp.y * m_width;
-		m_vertices[3].pos.z = fromWM.z;
+		m_vertices[3].position.x = fromWM.x - perp.x * m_width;
+		m_vertices[3].position.y = fromWM.y - perp.y * m_width;
+		m_vertices[3].position.z = fromWM.z;
 		
 		ColourValue color;
 		this->calcTotalColor(color);

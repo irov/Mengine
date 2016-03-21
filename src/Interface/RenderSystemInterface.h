@@ -405,7 +405,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	struct RenderVertex2D
 	{
-		mt::vec3f pos;
+		mt::vec3f position;
 		uint32_t color;
 		mt::vec2f uv[MENGINE_RENDER_VERTEX_UV_COUNT];
 	};
@@ -551,15 +551,6 @@ namespace Menge
 
 	public:
 		virtual const mt::mat4f & getCameraViewProjectionMatrix() const = 0;
-
-	public:
-		virtual const mt::box2f & getCameraBBoxWM() const = 0; 
-
-	public:
-		virtual const Viewport & getCameraRenderport() const = 0;
-
-	public:
-		virtual bool isOrthogonalProjection() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderTargetInterface

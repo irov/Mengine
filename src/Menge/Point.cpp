@@ -95,21 +95,21 @@ namespace Menge
 		mt::vec2f perp;
 		mt::perp_v2( perp, mt::vec2f(dir_norm.x, dir_norm.y) );
 
-		m_vertices[0].pos.x = fromWM.x + perp.x * m_width;
-		m_vertices[0].pos.y = fromWM.y + perp.y * m_width;
-		m_vertices[0].pos.z = fromWM.z;
+		m_vertices[0].position.x = fromWM.x + perp.x * m_width;
+		m_vertices[0].position.y = fromWM.y + perp.y * m_width;
+		m_vertices[0].position.z = fromWM.z;
 
-		m_vertices[1].pos.x = toWM.x + perp.x * m_width;
-		m_vertices[1].pos.y = toWM.y + perp.y * m_width;
-		m_vertices[1].pos.z = toWM.z;
+		m_vertices[1].position.x = toWM.x + perp.x * m_width;
+		m_vertices[1].position.y = toWM.y + perp.y * m_width;
+		m_vertices[1].position.z = toWM.z;
 
-		m_vertices[2].pos.x = toWM.x - perp.x * m_width;
-		m_vertices[2].pos.y = toWM.y - perp.y * m_width;
-		m_vertices[2].pos.z = toWM.z;
+		m_vertices[2].position.x = toWM.x - perp.x * m_width;
+		m_vertices[2].position.y = toWM.y - perp.y * m_width;
+		m_vertices[2].position.z = toWM.z;
 
-		m_vertices[3].pos.x = fromWM.x - perp.x * m_width;
-		m_vertices[3].pos.y = fromWM.y - perp.y * m_width;
-		m_vertices[3].pos.z = fromWM.z;
+		m_vertices[3].position.x = fromWM.x - perp.x * m_width;
+		m_vertices[3].position.y = fromWM.y - perp.y * m_width;
+		m_vertices[3].position.z = fromWM.z;
 
 		ColourValue color;
 		this->calcTotalColor(color);
@@ -151,37 +151,37 @@ namespace Menge
 
 		float debugWidth = 5.f;
 
-		vertices[0].pos.x = pos.x - debugWidth;
-		vertices[0].pos.y = pos.y - debugWidth;
-		vertices[0].pos.z = pos.z;
+		vertices[0].position.x = pos.x - debugWidth;
+		vertices[0].position.y = pos.y - debugWidth;
+		vertices[0].position.z = pos.z;
 
-		vertices[1].pos.x = pos.x + debugWidth;
-		vertices[1].pos.y = pos.y - debugWidth;
-		vertices[1].pos.z = pos.z;
+		vertices[1].position.x = pos.x + debugWidth;
+		vertices[1].position.y = pos.y - debugWidth;
+		vertices[1].position.z = pos.z;
 
-		vertices[2].pos.x = pos.x + debugWidth;
-		vertices[2].pos.y = pos.y - debugWidth;
-		vertices[2].pos.z = pos.z;
+		vertices[2].position.x = pos.x + debugWidth;
+		vertices[2].position.y = pos.y - debugWidth;
+		vertices[2].position.z = pos.z;
 
-		vertices[3].pos.x = pos.x + debugWidth;
-		vertices[3].pos.y = pos.y + debugWidth;
-		vertices[3].pos.z = pos.z;
+		vertices[3].position.x = pos.x + debugWidth;
+		vertices[3].position.y = pos.y + debugWidth;
+		vertices[3].position.z = pos.z;
 
-		vertices[4].pos.x = pos.x + debugWidth;
-		vertices[4].pos.y = pos.y + debugWidth;
-		vertices[4].pos.z = pos.z;
+		vertices[4].position.x = pos.x + debugWidth;
+		vertices[4].position.y = pos.y + debugWidth;
+		vertices[4].position.z = pos.z;
 
-		vertices[5].pos.x = pos.x - debugWidth;
-		vertices[5].pos.y = pos.y + debugWidth;
-		vertices[5].pos.z = pos.z;
+		vertices[5].position.x = pos.x - debugWidth;
+		vertices[5].position.y = pos.y + debugWidth;
+		vertices[5].position.z = pos.z;
 
-		vertices[6].pos.x = pos.x - debugWidth;
-		vertices[6].pos.y = pos.y + debugWidth;
-		vertices[6].pos.z = pos.z;
+		vertices[6].position.x = pos.x - debugWidth;
+		vertices[6].position.y = pos.y + debugWidth;
+		vertices[6].position.z = pos.z;
 
-		vertices[7].pos.x = pos.x - debugWidth;
-		vertices[7].pos.y = pos.y - debugWidth;
-		vertices[7].pos.z = pos.z;
+		vertices[7].position.x = pos.x - debugWidth;
+		vertices[7].position.y = pos.y - debugWidth;
+		vertices[7].position.z = pos.z;
 
 
 		for( uint32_t i = 0; i != 8; ++i )

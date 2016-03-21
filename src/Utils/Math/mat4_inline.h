@@ -186,6 +186,18 @@ namespace mt
 		_out.z *= w_inv;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE void mul_v2_v2_m4_homogenize( vec2f & _out, const vec2f & _a, const mat4f & _b )
+	{
+		_out.x = _a.x * _b.v0.x + _a.y * _b.v1.x + _b.v3.x;
+		_out.y = _a.x * _b.v0.y + _a.y * _b.v1.y + _b.v3.y;
+
+		float w = _a.x * _b.v0.w + _a.y * _b.v1.w + _b.v3.w;
+		float w_inv = 1.f / w;
+
+		_out.x *= w_inv;
+		_out.y *= w_inv;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void mul_v3_v2_m4_homogenize( vec3f & _out, const vec2f & _a, const mat4f & _b )
 	{
 		_out.x = _a.x * _b.v0.x + _a.y * _b.v1.x + _b.v3.x;

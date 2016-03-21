@@ -359,10 +359,10 @@ namespace Menge
 		mt::mul_v3_m4_r( transformX, mt::vec3f( m_frameSize.x, 0.f, 0.f ), wm );
 		mt::mul_v3_m4_r( transformY, mt::vec3f( 0.f, m_frameSize.y, 0.f ), wm );
 
-		_vertices[0].pos = wm.v3.to_vec3f();
-		_vertices[1].pos = _vertices[0].pos + transformX;
-		_vertices[2].pos = _vertices[1].pos + transformY;
-		_vertices[3].pos = _vertices[0].pos + transformY;
+		_vertices[0].position = wm.v3.to_vec3f();
+		_vertices[1].position = _vertices[0].position + transformX;
+		_vertices[2].position = _vertices[1].position + transformY;
+		_vertices[3].position = _vertices[0].position + transformY;
 
 		_vertices[0].uv[0].x = m_uv.x;
 		_vertices[0].uv[0].y = m_uv.y;
@@ -410,11 +410,11 @@ namespace Menge
 	{
 		const RenderVertex2D * vertcies = this->getVertices();
 
-		mt::reset( _boundingBox, vertcies[0].pos.x, vertcies[0].pos.y );
+		mt::reset( _boundingBox, vertcies[0].position.x, vertcies[0].position.y );
 
-		mt::add_internal_point( _boundingBox, vertcies[1].pos.x, vertcies[1].pos.y );
-		mt::add_internal_point( _boundingBox, vertcies[2].pos.x, vertcies[2].pos.y );
-		mt::add_internal_point( _boundingBox, vertcies[3].pos.x, vertcies[3].pos.y );
+		mt::add_internal_point( _boundingBox, vertcies[1].position.x, vertcies[1].position.y );
+		mt::add_internal_point( _boundingBox, vertcies[2].position.x, vertcies[2].position.y );
+		mt::add_internal_point( _boundingBox, vertcies[3].position.x, vertcies[3].position.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_invalidateColor()

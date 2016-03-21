@@ -69,7 +69,7 @@ namespace Menge
 		bool getFreeze() const;
 
 	public:
-		BurritoBison * createBison( Node * _node, Camera2D * _camera, const Viewport & _renderport, const mt::vec3f & _position, float _radius );
+		BurritoBison * createBison( Node * _node, RenderCameraOrthogonal * _camera, const Viewport & _renderport, const mt::vec3f & _position, float _radius );
 
 	public:
 		BurritoGround * createGround( float _x, float _y, float _z, float _d, const pybind::object & _cb );

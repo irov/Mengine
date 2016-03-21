@@ -839,7 +839,7 @@ namespace Menge
 
 			RenderVertex2D & vertex = _vertices2D[i];
 
-			mt::mul_v3_v2_m4( vertex.pos, v, _wm );
+			mt::mul_v3_v2_m4( vertex.position, v, _wm );
 
 			float uv_x = _uv[index_x];
 			float uv_y = _uv[index_y];

@@ -107,15 +107,15 @@ namespace Menge
 		{
 			Model3DFrame & frame = pack->mutableFrame( i );
 						
-			ar << frame.cameraPos;
-			ar << frame.cameraDir;
+			ar << frame.cameraPosition;
+			ar << frame.cameraDirection;
 			ar << frame.cameraUp;
 
-			frame.pos = _data->allocateMemoryT<mt::vec3f>( vertexCount );
+			frame.position = _data->allocateMemoryT<mt::vec3f>( vertexCount );
 			frame.uv = _data->allocateMemoryT<mt::vec2f>( vertexCount );
 			frame.indecies = _data->allocateMemoryT<RenderIndices>( indicesCount );
 
-			ar.readPODs( frame.pos, vertexCount );
+			ar.readPODs( frame.position, vertexCount );
 			ar.readPODs( frame.uv, vertexCount );
 			ar.readPODs( frame.indecies, indicesCount );
 		}

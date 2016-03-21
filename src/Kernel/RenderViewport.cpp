@@ -115,6 +115,9 @@ namespace Menge
 		{
 			m_viewportWM.end.y = contentResolutionSize.y;
 		}
+
+		Viewport contentResolutionViewport( mt::vec2f( 0.f, 0.f ), contentResolutionSize );
+		m_viewportWM.clamp( contentResolutionViewport );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderViewport::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )

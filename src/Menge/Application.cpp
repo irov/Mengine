@@ -85,9 +85,10 @@
 #	include "Kernel/Parallax.h"
 #	include "Kernel/RenderViewport.h"
 #	include "Kernel/RenderClipplane.h"
-#	include "Kernel/Camera2D.h"
-#	include "Kernel/CameraTarget2D.h"
-#	include "Kernel/Camera3D.h"
+#	include "Kernel/RenderCameraOrthogonal.h"
+#	include "Kernel/RenderCameraProjection.h"
+#	include "Kernel/RenderCameraOrthogonalTarget.h"
+
 #	include "Layer2DAccumulator.h"
 #	include "Layer3D.h"
 #	include "Window.h"
@@ -389,9 +390,9 @@ namespace Menge
 		//NODE_FACTORY( RenderMesh );
 		NODE_FACTORY( m_serviceProvider, RenderViewport );
 		NODE_FACTORY( m_serviceProvider, RenderClipplane );
-		NODE_FACTORY( m_serviceProvider, Camera2D );
-		NODE_FACTORY( m_serviceProvider, CameraTarget2D );
-		NODE_FACTORY( m_serviceProvider, Camera3D );
+		NODE_FACTORY( m_serviceProvider, RenderCameraOrthogonal );
+		NODE_FACTORY( m_serviceProvider, RenderCameraProjection );
+		NODE_FACTORY( m_serviceProvider, RenderCameraOrthogonalTarget );
 		//NODE_FACTORY( SceneNode3D );
 		NODE_FACTORY( m_serviceProvider, Window );
 		

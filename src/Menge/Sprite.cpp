@@ -73,11 +73,11 @@ namespace Menge
 	{
 		const RenderVertex2D * vertices = this->getVerticesWM();
 
-		mt::reset( _boundingBox, vertices[0].pos.x, vertices[0].pos.y );
+		mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
-		mt::add_internal_point( _boundingBox, vertices[1].pos.x, vertices[1].pos.y );
-		mt::add_internal_point( _boundingBox, vertices[2].pos.x, vertices[2].pos.y );
-		mt::add_internal_point( _boundingBox, vertices[3].pos.x, vertices[3].pos.y );
+		mt::add_internal_point( _boundingBox, vertices[1].position.x, vertices[1].position.y );
+		mt::add_internal_point( _boundingBox, vertices[2].position.x, vertices[2].position.y );
+		mt::add_internal_point( _boundingBox, vertices[3].position.x, vertices[3].position.y );
 	}
     //////////////////////////////////////////////////////////////////////////
     void Sprite::_invalidateColor()

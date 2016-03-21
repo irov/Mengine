@@ -125,6 +125,31 @@ namespace mt
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE void set_box_homogenize( box2f & box, const mt::vec2f & _begin, const mt::vec2f & _end, const mt::mat4f & _wm )
+	{
+		mt::vec2f begin_wm_homogenize;
+		mt::mul_v2_v2_m4_homogenize( begin_wm_homogenize, _begin, _wm );
+
+		begin_wm_homogenize.y = -begin_wm_homogenize.y;
+		
+		begin_wm_homogenize.x += 1.f;
+		begin_wm_homogenize.y += 1.f;
+		begin_wm_homogenize.x *= 0.5f;
+		begin_wm_homogenize.y *= 0.5f;
+
+		mt::vec2f end_wm_homogenize;
+		mt::mul_v2_v2_m4_homogenize( end_wm_homogenize, _end, _wm );
+
+		end_wm_homogenize.y = -end_wm_homogenize.y;
+
+		end_wm_homogenize.x += 1.f;
+		end_wm_homogenize.y += 1.f;
+		end_wm_homogenize.x *= 0.5f;
+		end_wm_homogenize.y *= 0.5f;
+
+		mt::set_box_from_min_max( box, begin_wm_homogenize, end_wm_homogenize );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE bool is_intersect( const vec2f & _aminimum, const vec2f & _amaximum, const vec2f & _bminimum, const vec2f & _bmaximum )
 	{
         if( _amaximum.x < _bminimum.x || _aminimum.x > _bmaximum.x )

@@ -10,7 +10,7 @@
 
 namespace Menge
 {
-	class Camera3D;
+	class RenderCameraProjection;
 	class RenderViewport;
 	class RenderClipplane;
 
@@ -210,7 +210,7 @@ namespace Menge
 	protected:
 		ResourceHolder<ResourceMovie> m_resourceMovie;
 
-		Camera3D * m_renderCamera3D;
+		RenderCameraProjection * m_renderCameraProjection;
 		RenderViewport * m_renderViewport;
 
 		typedef std::vector<RenderClipplane *> TVectorClipplane;

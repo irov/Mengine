@@ -1,10 +1,9 @@
-#	include "CameraTarget2D.h"
-#	include "Camera2D.h"
+#	include "RenderCameraOrthogonalTarget.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	CameraTarget2D::CameraTarget2D()
+	RenderCameraOrthogonalTarget::RenderCameraOrthogonalTarget()
 		: m_camera(nullptr)
 		, m_speed(0.f)
 		, m_fixedHorizont(false)
@@ -12,31 +11,31 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CameraTarget2D::~CameraTarget2D()
+	RenderCameraOrthogonalTarget::~RenderCameraOrthogonalTarget()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CameraTarget2D::setCamera2D( Camera2D * _camera )
+	void RenderCameraOrthogonalTarget::setRenderCameraOrthogonal( RenderCameraOrthogonal * _camera )
 	{
 		m_camera = _camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Camera2D * CameraTarget2D::getCamera2D() const
+	RenderCameraOrthogonal * RenderCameraOrthogonalTarget::getRenderCameraOrthogonal() const
 	{
 		return m_camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CameraTarget2D::setSpeed( float _speed )
+	void RenderCameraOrthogonalTarget::setSpeed( float _speed )
 	{
 		m_speed = _speed;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float CameraTarget2D::getSpeed() const
+	float RenderCameraOrthogonalTarget::getSpeed() const
 	{
 		return m_speed;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CameraTarget2D::_update( float _current, float _timing )
+	void RenderCameraOrthogonalTarget::_update( float _current, float _timing )
 	{
 		(void)_current;
 
@@ -46,7 +45,7 @@ namespace Menge
 		}
 
 		const mt::mat4f & camera_wm = m_camera->getWorldMatrix();
-		const Viewport & camera_vp = m_camera->getCameraRenderport();
+		const Viewport & camera_vp = m_camera->getOrthogonalViewport();
 		
 		Viewport camera_vpwm;
 		mt::mul_v2_m4( camera_vpwm.begin, camera_vp.begin, camera_wm );
@@ -95,18 +94,18 @@ namespace Menge
 		m_camera->setLocalPosition( new_lp );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CameraTarget2D::setFixedHorizont( float _horizont )
+	void RenderCameraOrthogonalTarget::setFixedHorizont( float _horizont )
 	{
 		m_fixedHorizont = true;
 		m_horizont = _horizont;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float CameraTarget2D::getFixedHorizont() const
+	float RenderCameraOrthogonalTarget::getFixedHorizont() const
 	{
 		return m_horizont;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool CameraTarget2D::isFixedHorizont() const
+	bool RenderCameraOrthogonalTarget::isFixedHorizont() const
 	{
 		return m_fixedHorizont;
 	}

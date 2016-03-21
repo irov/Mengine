@@ -24,8 +24,8 @@
 
 #	include "Kernel/RenderViewport.h"
 #	include "Kernel/RenderClipplane.h"
+#	include "Kernel/RenderCameraOrthogonal.h"
 
-#	include "Kernel/Camera2D.h"
 #	include "Consts.h"
 
 #	include "Arrow.h"
@@ -780,16 +780,13 @@ namespace Menge
 		Viewport vp( 0.f, 0.f, cr.x, cr.y );
 
 		m_camera2D = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<Camera2D>( CONST_STRING( m_serviceProvider, Camera2D ) );
+			->createNodeT<RenderCameraOrthogonal>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
 
-		m_camera2D->setRenderport( vp );
+		m_camera2D->setOrthogonalViewport( vp );
 				
-		//mt::vec2f vp_pos(crx * 0.5f, cry * 0.5f);
-		//camera->setLocalPosition(vp_pos);
-
 		m_camera2D->enable();
-		this->setRenderCamera( m_camera2D );
 
+		this->setRenderCamera( m_camera2D );
 
 		m_viewport2D = NODE_SERVICE( m_serviceProvider )
 			->createNodeT<RenderViewport>( CONST_STRING( m_serviceProvider, RenderViewport ) );
@@ -800,9 +797,9 @@ namespace Menge
 		this->setRenderViewport( m_viewport2D );
 
 		m_arrowCamera2D = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<Camera2D>( CONST_STRING( m_serviceProvider, Camera2D ) );
+			->createNodeT<RenderCameraOrthogonal>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
 
-		m_arrowCamera2D->setRenderport( vp );
+		m_arrowCamera2D->setOrthogonalViewport( vp );
 		m_arrowCamera2D->enable();
 
 		if( m_arrow != nullptr )
@@ -811,12 +808,11 @@ namespace Menge
 			m_arrow->setRenderViewport( m_renderViewport );
 			m_arrow->setRenderClipplane( m_renderClipplane );
 		}
-
-
+		
 		m_debugCamera2D = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<Camera2D>( CONST_STRING( m_serviceProvider, Camera2D ) );
+			->createNodeT<RenderCameraOrthogonal>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
 
-		m_debugCamera2D->setRenderport( vp );
+		m_debugCamera2D->setOrthogonalViewport( vp );
 
 		m_debugCamera2D->enable();
 	}

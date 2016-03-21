@@ -196,10 +196,10 @@ namespace Menge
 
 				const mt::vec2f & charVertex = data.vertex[i];
 
-				renderVertex.pos.x = charVertex.x;
-				renderVertex.pos.y = charVertex.y;
+				renderVertex.position.x = charVertex.x;
+				renderVertex.position.y = charVertex.y;
 
-				renderVertex.pos.z = 0.f;
+				renderVertex.position.z = 0.f;
 
 				renderVertex.color = _argb;
 			}

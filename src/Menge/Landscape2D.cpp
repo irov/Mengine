@@ -83,8 +83,6 @@ namespace	Menge
 	{
 		Node::_render( _state );
 		
-		const mt::box2f & cameraBBWM = _state->camera->getCameraBBoxWM();
-
 		TVectorLandscape2DElements & elementsWM = this->getElementWM();
 
 		for( TVectorLandscape2DElements::iterator
@@ -95,7 +93,15 @@ namespace	Menge
 		{
 			Landscape2DElement & el = *it;
 
-			if( mt::is_intersect( el.bb_wm, cameraBBWM ) == false )
+			const mt::mat4f & vpm = _state->camera->getCameraViewProjectionMatrix();
+
+			mt::vec2f v_wvp_minimum;
+			mt::mul_v2_v2_m4_homogenize( v_wvp_minimum, el.bb_wm.minimum, vpm );
+
+			mt::vec2f v_wvp_maximum;
+			mt::mul_v2_v2_m4_homogenize( v_wvp_maximum, el.bb_wm.maximum, vpm );
+
+			if( mt::is_intersect( v_wvp_minimum, v_wvp_maximum, mt::vec2f(-1.f, -1.f), mt::vec2f(1.f, 1.f) ) == false )
 			{
 				if( el.material != nullptr )
 				{
@@ -270,7 +276,7 @@ namespace	Menge
 				p.y = (el.j + coeff_y[i]) * m_elementHeight;
 				p.z = 0.f;
 
-				mt::mul_v3_m4( v.pos, p, wm );
+				mt::mul_v3_m4( v.position, p, wm );
 			}
 			
 			vertex_offset += 4;

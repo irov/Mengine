@@ -2,7 +2,7 @@
 
 #	include "Kernel/Node.h"
 
-#	include "Kernel/RenderCamera.h"
+#	include "Kernel/RenderCameraProxy.h"
 
 namespace Menge
 {
@@ -23,6 +23,7 @@ namespace Menge
 
 	protected:
 		mt::vec3f m_parallaxFactor;
-		RenderCamera m_parallaxCamera;
+
+		RenderCameraProxy m_parallaxCamera;
 	};
 }

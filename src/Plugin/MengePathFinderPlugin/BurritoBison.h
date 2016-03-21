@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Kernel/Node.h"
-#	include "Kernel/Camera2D.h"
+#	include "Kernel/RenderCameraOrthogonal.h"
 
 #	include "Core/ConstString.h"
 
@@ -75,7 +75,7 @@ namespace Menge
 		~BurritoBison();
 
 	public:
-		void initialize( Node * _node, Camera2D * _camera, const Viewport & _renderport, const mt::vec3f & _position, float _radius );
+		void initialize( Node * _node, RenderCameraOrthogonal * _camera, const Viewport & _renderport, const mt::vec3f & _position, float _radius );
 		void finalize();
 
 	public:
@@ -144,7 +144,7 @@ namespace Menge
 
 	protected:		
 		Node * m_node;
-		Camera2D * m_camera;
+		RenderCameraOrthogonal * m_camera;
 
 		Viewport m_renderport;
 

@@ -171,9 +171,9 @@ namespace	Menge
 			{
 				RenderVertex2D & vertex = *vertices_iterator++;
 
-				vertex.pos.x = pos_step_x * i;
-				vertex.pos.y = pos_step_y * j;
-				vertex.pos.z = 0.f;
+				vertex.position.x = pos_step_x * i;
+				vertex.position.y = pos_step_y * j;
+				vertex.position.z = 0.f;
 
 				vertex.color = 0xFFFFFFFF;
 
@@ -305,7 +305,7 @@ namespace	Menge
 
 			RenderVertex2D & vertex_w = *it_w;
 
-			mt::mul_v3_m4( vertex_w.pos, vertex.pos, wm );
+			mt::mul_v3_m4( vertex_w.position, vertex.position, wm );
 
 			ColourValue vertex_color(color);
 			vertex_color *= ColourValue(vertex.color);

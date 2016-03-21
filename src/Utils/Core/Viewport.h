@@ -37,6 +37,7 @@ namespace Menge
 		void scale( const mt::vec2f & _value );
 		void inflate( const mt::vec2f & _value );
 		void translate( const mt::vec2f & _value );
+		void clamp( const mt::vec2f & _begin, const mt::vec2f & _right );
 		void clamp( const Viewport & _vp );
 
 	public:

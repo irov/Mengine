@@ -1,6 +1,6 @@
 #	include "Layer2D.h"
 
-#	include "Kernel/Camera2D.h"
+#	include "Kernel/RenderCameraOrthogonal.h"
 
 #	include "Kernel/Scene.h"
 
@@ -51,9 +51,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Layer2D::cameraToLocal( const RenderCameraInterface * _camera2D, const mt::vec2f& _point )
 	{
-		const Viewport & viewport = _camera2D->getCameraRenderport();
+		const mt::mat4f & vm = _camera2D->getCameraViewMatrix();
 
-		return _point + viewport.begin;
+		mt::vec2f p;
+		mt::mul_v2_m4( p, _point, vm );
+		
+		return p;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node * _node ) const
@@ -83,7 +86,7 @@ namespace	Menge
 		if( m_renderCamera == nullptr )
 		{
 			m_renderCamera = NODE_SERVICE( m_serviceProvider )
-				->createNodeT<Camera2D>( CONST_STRING( m_serviceProvider, Camera2D ) );
+				->createNodeT<RenderCameraOrthogonal>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
 
 			if( m_renderCamera == nullptr )
 			{
@@ -114,9 +117,10 @@ namespace	Menge
 			this->addChild( m_renderViewport );
 		}
 
-		m_renderCamera->setRenderport( m_viewport );
+		m_renderCamera->setProxyViewMatrix( true );
+		m_renderCamera->setOrthogonalViewport( m_viewport );
         m_renderViewport->setViewport( m_viewport );
-
+				
 		Node::setRenderCamera( m_renderCamera );
 		Node::setRenderViewport( m_renderViewport );
     }

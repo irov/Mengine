@@ -1349,34 +1349,34 @@ namespace Menge
 
 		const mt::box2f & bbox = this->getBoundingBox();
 			
-		vertices[0].pos.x = bbox.minimum.x;
-		vertices[0].pos.y = bbox.minimum.y;
+		vertices[0].position.x = bbox.minimum.x;
+		vertices[0].position.y = bbox.minimum.y;
 
-		vertices[1].pos.x = bbox.maximum.x;
-		vertices[1].pos.y = bbox.minimum.y;
+		vertices[1].position.x = bbox.maximum.x;
+		vertices[1].position.y = bbox.minimum.y;
 
-		vertices[2].pos.x = bbox.maximum.x;
-		vertices[2].pos.y = bbox.minimum.y;
+		vertices[2].position.x = bbox.maximum.x;
+		vertices[2].position.y = bbox.minimum.y;
 
-		vertices[3].pos.x = bbox.maximum.x;
-		vertices[3].pos.y = bbox.maximum.y;
+		vertices[3].position.x = bbox.maximum.x;
+		vertices[3].position.y = bbox.maximum.y;
 
-		vertices[4].pos.x = bbox.maximum.x;
-		vertices[4].pos.y = bbox.maximum.y;
+		vertices[4].position.x = bbox.maximum.x;
+		vertices[4].position.y = bbox.maximum.y;
 
-		vertices[5].pos.x = bbox.minimum.x;
-		vertices[5].pos.y = bbox.maximum.y;
+		vertices[5].position.x = bbox.minimum.x;
+		vertices[5].position.y = bbox.maximum.y;
 
-		vertices[6].pos.x = bbox.minimum.x;
-		vertices[6].pos.y = bbox.maximum.y;
+		vertices[6].position.x = bbox.minimum.x;
+		vertices[6].position.y = bbox.maximum.y;
 
-		vertices[7].pos.x = bbox.minimum.x;
-		vertices[7].pos.y = bbox.minimum.y;
+		vertices[7].position.x = bbox.minimum.x;
+		vertices[7].position.y = bbox.minimum.y;
 
 
 		for( uint32_t i = 0; i != 8; ++i )
 		{
-			vertices[i].pos.z = 0.f;
+			vertices[i].position.z = 0.f;
 
 			vertices[i].color = 0xFF00FF00;
 			vertices[i].uv[0].x = 0.f;

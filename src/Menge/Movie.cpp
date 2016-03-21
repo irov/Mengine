@@ -16,7 +16,8 @@
 
 
 #	include "Kernel/Layer.h"
-#	include "Kernel/Camera3D.h"
+
+#	include "Kernel/RenderCameraProjection.h"
 #	include "Kernel/RenderViewport.h"
 #	include "Kernel/RenderClipplane.h"
 
@@ -53,7 +54,7 @@ namespace Menge
 	Movie::Movie()
 		: m_frameTiming(0.f)
 		, m_currentFrame(0)        
-		, m_renderCamera3D(nullptr)
+		, m_renderCameraProjection(nullptr)
 		, m_renderViewport(nullptr)
 		, m_parentMovie(false)
 		, m_interruptEnd(false)
@@ -2197,7 +2198,7 @@ namespace Menge
 
 			if( layer.isThreeD() == true )
 			{
-				node->setRenderCamera( m_renderCamera3D );
+				node->setRenderCamera( m_renderCameraProjection );
 				node->setRenderViewport( m_renderViewport );
 			}
 		}
@@ -3276,29 +3277,29 @@ namespace Menge
 			return;
 		}
 
-		m_renderCamera3D = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Camera3D>( CONST_STRING(m_serviceProvider, Camera3D) );
+		m_renderCameraProjection = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<RenderCameraProjection>( CONST_STRING( m_serviceProvider, RenderCameraProjection ) );
 
 		const ConstString & name = this->getName();
-		m_renderCamera3D->setName( name );
+		m_renderCameraProjection->setName( name );
 
 		const MovieLayerCamera3D & camera3D = m_resourceMovie->getCamera3D();
 
-		m_renderCamera3D->setCameraPosition( camera3D.cameraPosition );
-		m_renderCamera3D->setCameraDir( camera3D.cameraInterest - camera3D.cameraPosition );
-		m_renderCamera3D->setCameraFOV( camera3D.cameraFOV );
-		m_renderCamera3D->setCameraAspect( camera3D.cameraAspect );
+		m_renderCameraProjection->setCameraPosition( camera3D.cameraPosition );
+		m_renderCameraProjection->setCameraDirection( camera3D.cameraInterest - camera3D.cameraPosition );
+		m_renderCameraProjection->setCameraFOV( camera3D.cameraFOV );
+		m_renderCameraProjection->setCameraAspect( camera3D.cameraAspect );
 
-		Viewport rp;
-		rp.begin.x = 0.f;
-		rp.begin.y = 0.f;
+		//Viewport rp;
+		//rp.begin.x = 0.f;
+		//rp.begin.y = 0.f;
 
-		rp.end.x = camera3D.width;
-		rp.end.y = camera3D.height;
+		//rp.end.x = camera3D.width;
+		//rp.end.y = camera3D.height;
 
-		m_renderCamera3D->setRenderport( rp );
+		//m_renderCameraProjection->setRenderport( rp );
 
-		this->addChild( m_renderCamera3D );
+		this->addChild( m_renderCameraProjection );
 
 		m_renderViewport = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<RenderViewport>( CONST_STRING(m_serviceProvider, RenderViewport) );
@@ -3319,10 +3320,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::destroyCamera3D_()
 	{
-		if( m_renderCamera3D != nullptr )
+		if( m_renderCameraProjection != nullptr )
 		{
-			m_renderCamera3D->destroy();
-			m_renderCamera3D = nullptr;
+			m_renderCameraProjection->destroy();
+			m_renderCameraProjection = nullptr;
 		}
 
 		if( m_renderViewport != nullptr )

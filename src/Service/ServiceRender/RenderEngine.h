@@ -75,8 +75,6 @@ namespace Menge
 		const RenderTargetInterface * target;
 				
 		const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];
-
-		bool orthogonalProjection;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderEngine

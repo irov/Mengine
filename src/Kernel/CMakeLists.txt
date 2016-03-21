@@ -141,16 +141,18 @@ Isometric
 
 ADD_FILTER(
 Camera
-	Camera2D.cpp
-	Camera2D.h
-	CameraTarget2D.cpp
-	CameraTarget2D.h
-	Camera3D.cpp
-	Camera3D.h
+	RenderCamera.cpp
+	RenderCamera.h
+    RenderCameraProxy.h
+    RenderCameraProxy.cpp    
+    RenderCameraOrthogonal.cpp
+    RenderCameraOrthogonal.h
+    RenderCameraProjection.cpp
+    RenderCameraProjection.h
+	RenderCameraOrthogonalTarget.cpp
+	RenderCameraOrthogonalTarget.h
     RenderViewport.h
     RenderViewport.cpp
-    RenderCamera.h
-    RenderCamera.cpp
     RenderClipplane.h
     RenderClipplane.cpp
 )

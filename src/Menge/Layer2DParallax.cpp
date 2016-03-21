@@ -66,10 +66,7 @@ namespace	Menge
 		const mt::mat4f & camera_vm = _state->camera->getCameraViewMatrix();
 		const mt::mat4f & camera_vm_inv = _state->camera->getCameraViewMatrixInv();
 		const mt::mat4f & camera_pm = _state->camera->getCameraProjectionMatrix();
-		const Viewport & renderport = _state->camera->getCameraRenderport();
 
-		bool isOrthogonalProjection = _state->camera->isOrthogonalProjection();
-				
 		if( m_parallaxLoop == true )
 		{
 			const mt::vec2f & size = this->getSize();
@@ -79,7 +76,7 @@ namespace	Menge
 
 			for( uint32_t i = 0; i != 4; ++i )
 			{
-				RenderCamera & rc = m_cameraLoop[i];
+				RenderCameraProxy & rc = m_cameraLoop[i];
 
 				float layer_x = base_x * size.x;
 				float layer_y = base_y * size.y;
@@ -92,7 +89,7 @@ namespace	Menge
 				vm.v3.x = (vm.v3.x + layer_x) * m_parallax.x;
 				vm.v3.y = (vm.v3.y + layer_y) * m_parallax.y;				
 
-				rc.initialize( camera_pm, vm, renderport, isOrthogonalProjection );
+				rc.initialize( camera_pm, vm );
 
 				RenderObjectState state;
 				state.viewport = _state->viewport;
@@ -105,14 +102,14 @@ namespace	Menge
 		}
 		else
 		{
-			RenderCamera & rc = m_cameraNorm;
+			RenderCameraProxy & rc = m_cameraNorm;
 
 			mt::mat4f vm;
 			vm = camera_vm;
 			vm.v3.x *= m_parallax.x;
 			vm.v3.y *= m_parallax.y;
 
-			rc.initialize( camera_pm, vm, renderport, isOrthogonalProjection );
+			rc.initialize( camera_pm, vm );
 
 			RenderObjectState state;
 			state.viewport = _state->viewport;

@@ -18,13 +18,13 @@ namespace Menge
 			}
 
 			const RenderVertex2D & v0 = _vertices[0];
-			mt::reset( _bb, v0.pos.x, v0.pos.y );
+			mt::reset( _bb, v0.position.x, v0.position.y );
 
 			for( uint32_t i = 1; i != _verticesCount; ++i )
 			{
 				const RenderVertex2D & v = _vertices[i];
 
-				mt::add_internal_point( _bb, v.pos.x, v.pos.y );
+				mt::add_internal_point( _bb, v.position.x, v.position.y );
 			}
 		}
 	}

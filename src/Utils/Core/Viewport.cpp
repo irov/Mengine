@@ -67,12 +67,17 @@ namespace Menge
 		end += _value;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Viewport::clamp( const mt::vec2f & _begin, const mt::vec2f & _end )
+	{
+		begin.x = mt::clamp( _begin.x, begin.x, _end.x );
+		begin.y = mt::clamp( _begin.y, begin.y, _end.y );
+		end.x = mt::clamp( _begin.x, end.x, _end.x );
+		end.y = mt::clamp( _begin.y, end.y, _end.y );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Viewport::clamp( const Viewport & _vp )
 	{
-		begin.x = mt::clamp( _vp.begin.x, begin.x, _vp.end.x );
-		begin.y = mt::clamp( _vp.begin.y, begin.y, _vp.end.y );
-		end.x = mt::clamp( _vp.begin.x, end.x, _vp.end.x );
-		end.y = mt::clamp( _vp.begin.y, end.y, _vp.end.y );
+		this->clamp( _vp.begin, _vp.end );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Viewport::getWidth() const

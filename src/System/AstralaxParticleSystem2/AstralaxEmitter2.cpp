@@ -646,7 +646,7 @@ namespace Menge
 				}break;
 			case MAGIC_VERTEX_FORMAT_POSITION:
 				{
-					if( Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, pos ), sizeof( RenderVertex2D ) ) == MAGIC_ERROR )
+					if( Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, position ), sizeof( RenderVertex2D ) ) == MAGIC_ERROR )
 					{
 						return false;
 					}
@@ -786,11 +786,11 @@ namespace Menge
 				RenderVertex2D & v = _vertices[i];
 
 				mt::vec3f v_vpm;
-				mt::mul_v3_v3_m4_homogenize( v_vpm, v.pos, vpm );
+				mt::mul_v3_v3_m4_homogenize( v_vpm, v.position, vpm );
 
-				v.pos.x = (1.f + v_vpm.x) * half_width;
-				v.pos.y = (1.f - v_vpm.y) * half_height;
-				v.pos.z = v_vpm.z;
+				v.position.x = (1.f + v_vpm.x) * half_width;
+				v.position.y = (1.f - v_vpm.y) * half_height;
+				v.position.z = v_vpm.z;
 			}
 		}
 

@@ -71,8 +71,8 @@ namespace Menge
 		INIT_CONST( Mesh2D );
 		INIT_CONST( Grid2D );
         INIT_CONST( Animation );
-        INIT_CONST( Camera2D );
-        INIT_CONST( Camera3D );
+		INIT_CONST( RenderCameraOrthogonal );
+		INIT_CONST( RenderCameraProjection );
 		INIT_CONST( RenderViewport );
 		INIT_CONST( RenderClipplane );
         INIT_CONST( TextField );

@@ -385,11 +385,6 @@ namespace Menge
 				continue;
 			}
 
-			if( pak.initializer.empty() == true )
-			{
-				continue;
-			}
-
 			pybind::object module = this->importModule( pak.module );
 
 			if( module.is_invalid() == true )
@@ -399,6 +394,11 @@ namespace Menge
 					);
 
 				return false;
+			}
+
+			if( pak.initializer.empty() == true )
+			{
+				continue;
 			}
 			
 			if( module.has_attr( pak.initializer ) == false )

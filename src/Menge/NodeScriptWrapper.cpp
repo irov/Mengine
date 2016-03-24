@@ -151,6 +151,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::vector<ResourceImage *> TVectorResourceImage;
+	typedef stdex::vector<HotSpotPolygon *> TVectorHotSpotPolygon;
+	//////////////////////////////////////////////////////////////////////////
 	class NodeScriptMethod
 	{
 	public:
@@ -2910,9 +2913,7 @@ namespace Menge
 			uint32_t trimetric = s_rotateToTrimetric( _to - _from, _vx, _vy );
 
 			return trimetric;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		typedef stdex::vector<HotSpotPolygon *> TVectorHotSpotPolygon;
+		}				
 		//////////////////////////////////////////////////////////////////////////
 		Polygon s_hotspotCorrect( HotSpotPolygon * _base, const TVectorHotSpotPolygon & _overlap )
 		{
@@ -5535,18 +5536,16 @@ namespace Menge
 		}
 	};
 
-	typedef stdex::vector<ResourceImage *> TVectorResourceImage;
-
 	void ScriptWrapper::nodeWrap( ServiceProviderInterface * _serviceProvider )
 	{
 		NodeScriptMethod * nodeScriptMethod = new NodeScriptMethod( _serviceProvider );
 
 		pybind::registration_type_cast<Blobject>(new extract_TBlobject_type);
 
-		pybind::registration_stl_vector_type_cast<ResourceImage *, stdex::vector<ResourceImage *>>();
-		pybind::registration_stl_vector_type_cast<HotSpotPolygon *, stdex::vector<HotSpotPolygon *>>();
+		pybind::registration_stl_vector_type_cast<ResourceImage *, TVectorResourceImage>();
+		pybind::registration_stl_vector_type_cast<HotSpotPolygon *, TVectorHotSpotPolygon>();
 
-		pybind::registration_stl_map_type_cast<ConstString, WString, stdex::map<ConstString, WString>>();
+		pybind::registration_stl_map_type_cast<ConstString, WString, TMapParams>();
 
 		classWrapping( _serviceProvider );
 

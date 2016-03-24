@@ -92,7 +92,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotPolygon::testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, const mt::vec2f & _point ) const
+	bool HotSpotPolygon::testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
 	{
 		if( m_global == true )
 		{
@@ -105,7 +105,7 @@ namespace Menge
 		}
 
 		mt::box2f bb;
-		this->getPolygonScreen( _camera, _viewport, _gameport, &bb, &m_polygonScreen );
+		this->getPolygonScreen( _camera, _viewport, _contentResolution, &bb, &m_polygonScreen );
 		
 		if( mt::is_intersect( bb, _point ) == false )
 		{
@@ -120,7 +120,7 @@ namespace Menge
 		return !m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotPolygon::testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, const mt::vec2f & _point, float _radius ) const
+	bool HotSpotPolygon::testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
 	{
 		if( m_global == true )
 		{
@@ -130,10 +130,10 @@ namespace Menge
 		if( m_polygon.empty() == true )
 		{
 			return m_outward;
-		}
+		}	
 
 		mt::box2f bb;
-		this->getPolygonScreen( _camera, _viewport, _gameport, &bb, &m_polygonScreen );
+		this->getPolygonScreen( _camera, _viewport, _contentResolution, &bb, &m_polygonScreen );
 
 		if( mt::is_intersect( bb, _point, _radius ) == false )
 		{
@@ -149,7 +149,7 @@ namespace Menge
 		return !m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotPolygon::testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, const mt::vec2f & _point, const Polygon & _polygon ) const
+	bool HotSpotPolygon::testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
 	{
 		if( m_global == true )
 		{
@@ -172,7 +172,7 @@ namespace Menge
 		m_polygonTemp.to_box2f( bb_polygon );
 
 		mt::box2f bb_screen;
-		this->getPolygonScreen( _camera, _viewport, _gameport, &bb_screen, &m_polygonScreen );
+		this->getPolygonScreen( _camera, _viewport, _contentResolution, &bb_screen, &m_polygonScreen );
 
 		if( mt::is_intersect( bb_screen, bb_polygon ) == false )
 		{
@@ -187,25 +187,8 @@ namespace Menge
 		return !m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotPolygon::getPolygonScreen( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, mt::box2f * _bb, Polygon * _screen ) const
+	void HotSpotPolygon::getPolygonScreen( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, mt::box2f * _bb, Polygon * _screen ) const
 	{
-		(void)_viewport; //TODO
-
-		const mt::mat4f & wm = this->getWorldMatrix();
-
-		const mt::mat4f & vpm = _camera->getCameraViewProjectionMatrix();
-
-		mt::mat4f wvpm;
-		mt::mul_m4_m4( wvpm, wm, vpm );
-				
-		mt::vec2f gameportSize;
-		_gameport.calcSize( gameportSize );
-
-		const Polygon & polygon = this->getPolygon();
-
-		size_t numpoints = polygon.num_points();
-		const mt::vec2f * points = polygon.outer_points();
-
 		if( _bb != nullptr )
 		{
 			mt::ident_box( *_bb );
@@ -216,23 +199,42 @@ namespace Menge
 			_screen->clear();
 		}
 
+		const mt::mat4f & wm = this->getWorldMatrix();
+
+		const mt::mat4f & vpm = _camera->getCameraViewProjectionMatrix();
+
+		mt::mat4f wvpm;
+		mt::mul_m4_m4( wvpm, wm, vpm );
+
+		const Viewport & vp = _viewport->getViewport();
+
+		mt::vec2f vp_size;
+		vp.calcSize( vp_size );
+
+		mt::vec2f contentResolutionInvSize;
+		_contentResolution.calcInvSize( contentResolutionInvSize );
+
+		const Polygon & polygon = this->getPolygon();
+
+		size_t numpoints = polygon.num_points();
+		const mt::vec2f * points = polygon.outer_points();
+
 		for( size_t it = 0; it != numpoints; ++it )
 		{
 			const mt::vec2f & v = points[it];
 
-			mt::vec3f v_wvp;
-			mt::mul_v3_v2_m4_homogenize( v_wvp, v, wvpm );
+			mt::vec2f v_wvp;
+			mt::mul_v2_v2_m4_homogenize( v_wvp, v, wvpm );
+			
+			mt::vec2f v_wvpn;
+			v_wvpn.x = (1.f + v_wvp.x) * 0.5f;
+			v_wvpn.y = (1.f - v_wvp.y) * 0.5f;
 
-			v_wvp.y = -v_wvp.y;
-
-			mt::vec2f v_wvpn = (v_wvp.to_vec2f() + mt::vec2f( 1.f, 1.f )) * 0.5f;
-
-			mt::vec2f v_screen;
-			v_screen = _gameport.begin + v_wvpn * gameportSize;
-
+			mt::vec2f v_screen = (vp.begin + v_wvpn * vp_size) * contentResolutionInvSize;
+			
 			if( _bb != nullptr )
 			{
-				mt::add_internal_point( *_bb, v_screen.x, v_screen.y );
+				mt::add_internal_point( *_bb, v_screen );
 			}
 
 			if( _screen != nullptr )

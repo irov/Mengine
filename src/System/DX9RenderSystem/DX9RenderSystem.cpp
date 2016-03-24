@@ -1707,7 +1707,7 @@ namespace Menge
         mt::mat4f wm;
         mt::ident_m4( wm );
 
-        mt::inv_m4( _viewMatrix, wm );
+		mt::inv_m4_m4( _viewMatrix, wm );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )

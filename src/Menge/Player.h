@@ -145,9 +145,6 @@ namespace Menge
 		void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
 
 	protected:
-		void notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution );
-	
-	protected:
 		void renderArrow_( unsigned int _debugMask );
 
 	private:
@@ -156,8 +153,6 @@ namespace Menge
 
 		Scene * m_globalScene;
 
-		ObserverInterface * m_observerChangeWindowResolution;
-		
 		RenderCameraOrthogonal * m_camera2D;
 		RenderViewport * m_viewport2D;
 

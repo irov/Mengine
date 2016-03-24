@@ -1130,16 +1130,14 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		mt::vec2f s_getScreenPolygonCenter( HotSpotPolygon * _hs )
 		{
-			float aspect;
-			Viewport gameport;
-			APPLICATION_SERVICE( m_serviceProvider )
-				->getGameViewport( aspect, gameport );
+			const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
+				->getContentResolution();
 
 			const RenderCameraInterface * camera = _hs->getRenderCameraInheritance();
 			const RenderViewportInterface * viewport = _hs->getRenderViewportInheritance();
 
 			mt::box2f b1;
-			_hs->getPolygonScreen( camera, viewport, gameport, &b1, nullptr );
+			_hs->getPolygonScreen( camera, viewport, contentResolution, &b1, nullptr );
 
 			mt::vec2f c;
 			mt::get_center_box( b1, c );

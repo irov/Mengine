@@ -78,6 +78,7 @@ namespace Menge
 		mt::vec2f m_pointClick;
 		float m_radius;
 		Polygon m_polygon;
+		mutable Polygon m_polygonScreen;
 
 		bool m_hided;
 	};

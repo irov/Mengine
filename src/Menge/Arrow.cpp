@@ -179,35 +179,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::calcPointClick( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const
 	{
-		mt::vec2f adaptScreenPoint;
-		this->adaptScreenPosition_( _screenPoint, adaptScreenPoint );
-
-		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
-			->getContentResolution();
-
-		mt::vec2f contentResolutionSize;
-		contentResolution.calcSize( contentResolutionSize );
-
-		const Viewport & viewport = _viewport->getViewport();
-
-		mt::vec2f viewportSize;
-		viewport.calcSize( viewportSize );
-
-		mt::vec2f vp_begin = viewport.begin / contentResolutionSize;
-		//mt::vec2f vp_end = viewport.end / contentResolutionSize;
-		mt::vec2f vp_size = viewportSize / contentResolutionSize;
-
-		mt::vec2f sp = (adaptScreenPoint - vp_begin) / vp_size;
-
-		const mt::mat4f & pm_inv = _camera->getCameraProjectionMatrixInv();
-
-		mt::vec2f p1 = sp * 2.f - mt::vec2f(1.f, 1.f);
+		mt::vec2f p1 = _screenPoint * 2.f - mt::vec2f( 1.f, 1.f );
 
 		p1.y = -p1.y;
 
-		mt::vec2f p_pm;
-		mt::mul_v2_m4( p_pm, p1, pm_inv );
-		
 		EArrowType arrowType = this->getArrowType();
 
 		switch( arrowType )
@@ -216,29 +191,19 @@ namespace	Menge
 			{
 				const mt::vec2f & pc = this->getOffsetClick();
 
-				mt::vec2f p = p_pm + pc;
-
-				//mt::vec2f p_vm;
-				//mt::mul_v2_m4( p_vm, p, vm_inv );
+				mt::vec2f p = p1 + pc;
 
 				_worldPoint = p;
 			}break;
 		case EAT_RADIUS:
 			{
-				mt::vec2f p = p_pm;
+				mt::vec2f p = p1;
 
-				//mt::vec2f p_vm;
-				//mt::mul_v2_m4( p_vm, p, vm_inv );
-
-				//_worldPoint = p_vm;
 				_worldPoint = p;
 			}break;
 		case EAT_POLYGON:
 			{
-				mt::vec2f p = p_pm;
-
-				//mt::vec2f p_vm;
-				//mt::mul_v2_m4( p_vm, p, vm_inv );
+				mt::vec2f p = p1;
 
 				_worldPoint = p;
 			}break;

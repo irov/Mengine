@@ -20,15 +20,15 @@ namespace Menge
 		const Polygon & getPolygon() const;
 
 	public:
-		bool testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, const mt::vec2f & _point ) const override;
-		bool testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, const mt::vec2f & _point, float _radius ) const override;
-		bool testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, const mt::vec2f & _point, const Polygon & _polygon ) const override;
+		bool testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const override;
+		bool testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const override;
+		bool testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const override;
 
 	public:
 		void clearPoints();
 
 	public:
-		void getPolygonScreen( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, mt::box2f * _bb, Polygon * _screen ) const;
+		void getPolygonScreen( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, mt::box2f * _bb, Polygon * _screen ) const;
 
 	protected:
 		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;

@@ -51,7 +51,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Layer2D::cameraToLocal( const RenderCameraInterface * _camera2D, const mt::vec2f& _point )
 	{
-		const mt::mat4f & vm = _camera2D->getCameraViewMatrix();
+		const mt::mat4f & vm = _camera2D->getCameraViewMatrixInv();
 
 		mt::vec2f p;
 		mt::mul_v2_m4( p, _point, vm );

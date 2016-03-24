@@ -629,13 +629,6 @@ namespace Menge
 				float fdx = (float)dx;
 				float fdy = (float)dy;
 
-
-				//const Resolution & contentResolution = m_application->getContentResolution();
-				//mt::vec2f resolutionScale = contentResolution.getScale( m_windowResolution );
-
-				//float fdx_scale = fdx * resolutionScale.x;
-				//float fdy_scale = fdy * resolutionScale.y;
-
 				RECT rect;
 				if( GetClientRect( m_hWnd, &rect ) == FALSE )
 				{
@@ -647,6 +640,13 @@ namespace Menge
 
 				fdx /= width;
 				fdy /= height;
+
+				//printf( "%f %f %d %d\n"
+				//	, point.x
+				//	, point.y
+				//	, int( point.x * 1024.f )
+				//	, int( point.y * 768.f )
+				//	);
 
 				INPUT_SERVICE( m_serviceProvider )
 					->pushMouseMoveEvent( 0, point.x, point.y, fdx, fdy, 0.f );

@@ -31,7 +31,8 @@ namespace Menge
 	public:
 		void setArrow( Arrow * _arrow ) override;
 		void setScene( Scene * _scene ) override;
-		void setGameport( const Viewport & _gameport ) override;
+
+	public:
 		void setRenderViewport( const RenderViewportInterface * _viewport ) override;
 		void setRenderCamera( const RenderCameraInterface * _camera ) override;
 		void setRenderClipplane( const RenderClipplaneInterface * _clipplane ) override;
@@ -78,7 +79,6 @@ namespace Menge
 
 		Arrow * m_arrow;
 		Scene * m_scene;
-		Viewport m_gameport;
 
 		const RenderViewportInterface * m_viewport;
 		const RenderCameraInterface * m_camera;

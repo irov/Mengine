@@ -860,24 +860,22 @@ namespace Menge
 				return false;
 			}
 
-			float aspect;
-			Viewport gameport;
-			APPLICATION_SERVICE( m_serviceProvider )
-				->getGameViewport( aspect, gameport );
-
+			const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
+				->getContentResolution();
+			
 			const RenderCameraInterface * shape1_camera = shape1->getRenderCameraInheritance();
 			const RenderViewportInterface * shape1_viewport = shape1->getRenderViewportInheritance();
 
 			mt::box2f b1;
 			Polygon p1;
-			shape1->getPolygonScreen( shape1_camera, shape1_viewport, gameport, &b1, &p1 );
+			shape1->getPolygonScreen( shape1_camera, shape1_viewport, contentResolution, &b1, &p1 );
 
 			const RenderCameraInterface * shape2_camera = shape2->getRenderCameraInheritance();
 			const RenderViewportInterface * shape2_viewport = shape2->getRenderViewportInheritance();
 
 			mt::box2f b2;
 			Polygon p2;
-			shape2->getPolygonScreen( shape2_camera, shape2_viewport, gameport, &b2, &p2 );
+			shape2->getPolygonScreen( shape2_camera, shape2_viewport, contentResolution, &b2, &p2 );
 
 			if( mt::is_intersect( b1, b2 ) == false )
 			{
@@ -934,16 +932,14 @@ namespace Menge
 				return false;
 			}
 
-			float aspect;
-			Viewport gameport;
-			APPLICATION_SERVICE( m_serviceProvider )
-				->getGameViewport( aspect, gameport );
+			const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
+				->getContentResolution();
 
 			const RenderCameraInterface * shape_camera = shape->getRenderCameraInheritance();
 			const RenderViewportInterface * shape_viewport = shape->getRenderViewportInheritance();
 
 			Polygon p1;
-			shape->getPolygonScreen( shape_camera, shape_viewport, gameport, nullptr, &p1 );
+			shape->getPolygonScreen( shape_camera, shape_viewport, contentResolution, nullptr, &p1 );
 
 			bool result = s_intersectsPolygons( p1, _polygon );
 

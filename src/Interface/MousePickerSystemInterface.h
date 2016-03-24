@@ -26,7 +26,7 @@ namespace Menge
         : public InputSystemHandler
     {
     public:
-		virtual bool pick( const mt::vec2f& _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Viewport & _gameport, Arrow * _arrow ) = 0;
+		virtual bool pick( const mt::vec2f& _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Resolution & _contentResolution, Arrow * _arrow ) = 0;
 
     public:
 		virtual bool onHandleMouseEnter( float _x, float _y ) = 0;
@@ -50,7 +50,8 @@ namespace Menge
     public:
         virtual void setArrow( Arrow * _arrow ) = 0;
 		virtual void setScene( Scene * _scene ) = 0;
-		virtual void setGameport( const Viewport & _gameport ) = 0;
+
+	public:
 		virtual void setRenderViewport( const RenderViewportInterface * _viewport ) = 0;
 		virtual void setRenderCamera( const RenderCameraInterface * _camera ) = 0;
 		virtual void setRenderClipplane( const RenderClipplaneInterface * _viewport ) = 0;

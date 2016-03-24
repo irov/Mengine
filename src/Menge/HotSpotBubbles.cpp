@@ -40,9 +40,9 @@ namespace Menge
 		return new_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotBubbles::testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point ) const
+	bool HotSpotBubbles::testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
 	{
-		(void)_gameViewport;
+		(void)_contentResolution;
 		(void)_viewport;
 		
 		if( m_global == true )
@@ -80,9 +80,9 @@ namespace Menge
 		return m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotBubbles::testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point, float _radius ) const
+	bool HotSpotBubbles::testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
 	{
-		(void)_gameViewport;
+		(void)_contentResolution;
 		(void)_viewport;
 		
 		if( m_global == true )
@@ -120,7 +120,7 @@ namespace Menge
 		return m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotBubbles::testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameport, const mt::vec2f & _point, const Polygon & _polygon ) const
+	bool HotSpotBubbles::testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
 	{
 		if( m_global == true )
 		{
@@ -130,7 +130,7 @@ namespace Menge
 		//TODO:
 		(void)_polygon;
 
-		bool test = this->testPoint( _camera, _viewport, _gameport, _point );
+		bool test = this->testPoint( _camera, _viewport, _contentResolution, _point );
 
 		return test;
 	}

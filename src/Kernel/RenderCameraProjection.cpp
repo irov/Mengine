@@ -91,7 +91,7 @@ namespace Menge
 		RENDER_SERVICE( m_serviceProvider )
 			->makeViewMatrixLookAt( m_viewMatrix, wm_position, wm_direction, wm_up, m_cameraRightSign );
 
-		mt::inv_m4( m_viewMatrixInv, m_viewMatrix );
+		mt::inv_m4_m4( m_viewMatrixInv, m_viewMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderCameraProjection::_updateProjectionMatrix() const
@@ -127,6 +127,6 @@ namespace Menge
         RENDER_SERVICE(m_serviceProvider)
             ->makeProjectionFrustum( m_projectionMatrix, projectViewport, m_cameraNear, m_cameraFar );
 
-		mt::inv_m4( m_projectionMatrixInv, m_projectionMatrix );
+		mt::inv_m4_m4( m_projectionMatrixInv, m_projectionMatrix );
 	}
 }

@@ -436,6 +436,27 @@ namespace Menge
 		{
 			mt::vec2f v;
 			mt::add_v2_v2( v, *it, _pos );
+
+			_out.append( v );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Polygon::transpose_and_scale( Polygon & _out, const mt::vec2f & _pos, const mt::vec2f & _scale ) const
+	{
+		_out.clear();
+
+		const BoostPolygon::ring_type & ring = THIS_IMPL.outer();
+
+		for( BoostPolygon::ring_type::const_iterator
+			it = ring.begin(),
+			it_end = ring.end();
+		it != it_end;
+		++it )
+		{
+			mt::vec2f v;
+			mt::add_v2_v2( v, *it, _pos );
+			mt::mul_v2_v2( v, *it, _scale );
+
 			_out.append( v );
 		}
 	}

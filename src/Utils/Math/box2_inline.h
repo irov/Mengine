@@ -68,6 +68,12 @@ namespace mt
 		_box.maximum += _pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE void scale_box( box2f & _box, const mt::vec2f & _scale )
+	{
+		_box.minimum *= _scale;
+		_box.maximum *= _scale;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void get_center_box( const box2f & _box, mt::vec2f & _pos )
 	{
 		_pos = (_box.minimum + _box.maximum) * 0.5f;
@@ -127,27 +133,21 @@ namespace mt
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void set_box_homogenize( box2f & box, const mt::vec2f & _begin, const mt::vec2f & _end, const mt::mat4f & _wm )
 	{
-		mt::vec2f begin_wm_homogenize;
-		mt::mul_v2_v2_m4_homogenize( begin_wm_homogenize, _begin, _wm );
+		mt::vec2f bb_minimum_homogenize;
+		mt::mul_v2_v2_m4_homogenize( bb_minimum_homogenize, _begin, _wm );
 
-		begin_wm_homogenize.y = -begin_wm_homogenize.y;
+		mt::vec2f bb_minimum_homogenize_n;
+		bb_minimum_homogenize_n.x = (1.f + bb_minimum_homogenize.x) * 0.5f;
+		bb_minimum_homogenize_n.y = (1.f - bb_minimum_homogenize.y) * 0.5f;
+
+		mt::vec2f bb_maximum_homogenize;
+		mt::mul_v2_v2_m4_homogenize( bb_maximum_homogenize, _end, _wm );
+
+		mt::vec2f bb_maximum_homogenize_n;
+		bb_maximum_homogenize_n.x = (1.f + bb_maximum_homogenize.x) * 0.5f;
+		bb_maximum_homogenize_n.y = (1.f - bb_maximum_homogenize.y) * 0.5f;
 		
-		begin_wm_homogenize.x += 1.f;
-		begin_wm_homogenize.y += 1.f;
-		begin_wm_homogenize.x *= 0.5f;
-		begin_wm_homogenize.y *= 0.5f;
-
-		mt::vec2f end_wm_homogenize;
-		mt::mul_v2_v2_m4_homogenize( end_wm_homogenize, _end, _wm );
-
-		end_wm_homogenize.y = -end_wm_homogenize.y;
-
-		end_wm_homogenize.x += 1.f;
-		end_wm_homogenize.y += 1.f;
-		end_wm_homogenize.x *= 0.5f;
-		end_wm_homogenize.y *= 0.5f;
-
-		mt::set_box_from_min_max( box, begin_wm_homogenize, end_wm_homogenize );
+		mt::set_box_from_min_max( box, bb_minimum_homogenize_n, bb_maximum_homogenize_n );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE bool is_intersect( const vec2f & _aminimum, const vec2f & _amaximum, const vec2f & _bminimum, const vec2f & _bmaximum )
@@ -169,6 +169,11 @@ namespace mt
 	{
 		return (_aminimum.x >= _bminimum.x && _amaximum.x <= _bmaximum.x) 
 			&& (_aminimum.y >= _bminimum.y && _amaximum.y <= _bmaximum.y);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE bool is_intersect( const vec2f & _minimum, const vec2f & _maximum, const vec2f & _p )
+	{
+		return is_intersect( _minimum, _maximum, _p, _p );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE bool is_intersect( const box2f & _a, const box2f & _b )

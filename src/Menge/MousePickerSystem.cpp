@@ -1,6 +1,7 @@
 #	include "MousePickerSystem.h"
 
 #   include "Interface/InputSystemInterface.h"
+#   include "Interface/ApplicationInterface.h"
 
 #	include "Arrow.h"
 #	include "Kernel/Scene.h"
@@ -156,11 +157,6 @@ namespace Menge
 	void MousePickerSystem::setScene( Scene * _scene )
 	{
 		m_scene = _scene;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::setGameport( const Viewport & _gameport )
-	{
-		m_gameport = _gameport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::setRenderViewport( const RenderViewportInterface * _viewport )
@@ -692,6 +688,9 @@ namespace Menge
 				
 		PickerVisitor pv(_states);
 		pv.visit( m_viewport, m_camera, m_scene );
+
+		const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
+			->getContentResolution();
         
 		bool handle = false;
 
@@ -715,21 +714,32 @@ namespace Menge
 			const RenderViewportInterface * viewport = desc.viewport;
 			const RenderCameraInterface * camera = desc.camera;
 
-			bool picked = trap->pick( mt::vec2f( _x, _y ), viewport, camera, m_gameport, m_arrow );
-
-			if( ( handle == false || m_handleValue == false ) && m_block == false && picked == true )
+			if( handle == false || m_handleValue == false )
 			{
-				if( state->picked == false )
-				{
-					state->picked = true;
+				bool picked = trap->pick( mt::vec2f( _x, _y ), viewport, camera, contentResolution, m_arrow );
 
-					handle = trap->onHandleMouseEnter( _x, _y );
-									
-					state->handle = handle;
+				if( m_block == false && picked == true )
+				{
+					if( state->picked == false )
+					{
+						state->picked = true;
+
+						handle = trap->onHandleMouseEnter( _x, _y );
+
+						state->handle = handle;
+					}
+					else
+					{
+						handle = state->handle;
+					}
 				}
 				else
 				{
-					handle = state->handle;
+					if( state->picked == true )
+					{
+						state->picked = false;
+						trap->onHandleMouseLeave();
+					}
 				}
 			}
 			else
@@ -740,6 +750,7 @@ namespace Menge
 					trap->onHandleMouseLeave();
 				}
 			}
+
 		}		
 
 		return true;

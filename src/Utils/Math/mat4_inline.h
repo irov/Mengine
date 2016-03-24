@@ -186,6 +186,18 @@ namespace mt
 		_out.z *= w_inv;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE void mul_v2_v3_m4_homogenize( vec2f & _out, const vec3f & _a, const mat4f & _b )
+	{
+		_out.x = _a.x * _b.v0.x + _a.y * _b.v1.x + _a.z * _b.v2.x + _b.v3.x;
+		_out.y = _a.x * _b.v0.y + _a.y * _b.v1.y + _a.z * _b.v2.y + _b.v3.y;
+
+		float w = _a.x * _b.v0.w + _a.y * _b.v1.w + _a.z * _b.v2.w + _b.v3.w;
+		float w_inv = 1.f / w;
+
+		_out.x *= w_inv;
+		_out.y *= w_inv;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void mul_v2_v2_m4_homogenize( vec2f & _out, const vec2f & _a, const mat4f & _b )
 	{
 		_out.x = _a.x * _b.v0.x + _a.y * _b.v1.x + _b.v3.x;
@@ -421,7 +433,7 @@ namespace mt
 		extract_v4_v3( _out.v2, _rhs.v2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_FUNCTION_INLINE void inv_m4( mat4f & _out, const mat4f & _in )
+	MENGINE_MATH_FUNCTION_INLINE void inv_m4_m4( mat4f & _out, const mat4f & _in )
 	{
 		_out.v0.x = _in.v1.y  * _in.v2.z * _in.v3.w -
 			_in.v1.y  * _in.v2.w * _in.v3.z -
@@ -560,7 +572,7 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE mat4f inv_m4( const mat4f& _rhs )
 	{
 		mat4f out;
-		inv_m4( out, _rhs );
+		inv_m4_m4( out, _rhs );
 		return out;
 	}
 

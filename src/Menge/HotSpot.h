@@ -39,9 +39,9 @@ namespace Menge
 		bool getDefaultHandle() const;
 		    
 	public:
-		virtual bool testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point ) const = 0;
-		virtual bool testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point, float _radius ) const = 0;
-		virtual bool testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point, const Polygon & _polygon ) const = 0;
+		virtual bool testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const = 0;
+		virtual bool testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const = 0;
+		virtual bool testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const = 0;
 
 	protected:
 		bool _activate() override;
@@ -62,7 +62,7 @@ namespace Menge
 		void deactivatePicker_();
 
 	protected:
-		bool pick( const mt::vec2f& _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Viewport & _gameport, Arrow * _arrow ) override;
+		bool pick( const mt::vec2f& _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Resolution & _contentResolution, Arrow * _arrow ) override;
 		
 	protected:
 		PickerTrapState * propagatePickerTrapState() const override;

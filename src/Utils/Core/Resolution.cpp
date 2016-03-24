@@ -54,6 +54,12 @@ namespace Menge
 		_size.y = float(m_height);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Resolution::calcInvSize( mt::vec2f & _size ) const
+	{
+		_size.x = 1.f / float( m_width );
+		_size.y = 1.f / float( m_height );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Resolution::calcScale( const Resolution & _resolution, mt::vec2f & _scale ) const
 	{
 		mt::vec2f self_size;

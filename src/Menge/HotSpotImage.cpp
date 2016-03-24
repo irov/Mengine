@@ -118,9 +118,9 @@ namespace Menge
 		HotSpot::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point ) const
+	bool HotSpotImage::testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
 	{
-		(void)_gameViewport;
+		(void)_contentResolution;
 		(void)_viewport;
 
 		if( m_global == true )
@@ -130,20 +130,51 @@ namespace Menge
 
 		const mt::box2f & bb = this->getBoundingBox();
 
-		if( mt::is_intersect( bb, _point ) == false )
+		const mt::mat4f & vpm = _camera->getCameraViewProjectionMatrix();
+
+		const Viewport & vp = _viewport->getViewport();
+
+		mt::vec2f vp_size;
+		vp.calcSize( vp_size );
+
+		mt::vec2f contentResolutionInvSize;
+		_contentResolution.calcInvSize( contentResolutionInvSize );
+
+		mt::box2f bb_screen;
+		mt::set_box_homogenize( bb_screen, bb.minimum, bb.maximum, vpm );
+
+		mt::scale_box( bb_screen, vp_size );
+		mt::transpose_box( bb_screen, vp.begin );
+		mt::scale_box( bb_screen, contentResolutionInvSize );
+
+		if( mt::is_intersect( bb_screen, _point ) == false )
 		{
 			return m_outward;
 		}
 
-		const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
+		mt::mat4f vpm_inv;
+		mt::inv_m4_m4( vpm_inv, vpm );
+
+		mt::vec2f contentResolutionSize;
+		_contentResolution.calcSize( contentResolutionSize );
+
+		mt::vec2f point_vp;
+		point_vp = _point * contentResolutionSize;
+
+		point_vp -= vp.begin;
+		point_vp /= vp.size();
+
+		mt::vec2f point_norm;
+		point_norm.x = point_vp.x * 2.f - 1.f;
+		point_norm.y = 1.f - point_vp.y * 2.f;
 
 		mt::vec2f pointIn1;
-		mt::mul_v2_m4( pointIn1, _point, vm_inv );
+		mt::mul_v2_m4( pointIn1, point_norm, vpm_inv );
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
 		mt::mat4f invWM;
-		mt::inv_m4( invWM, wm );
+		mt::inv_m4_m4( invWM, wm );
 
 		mt::vec2f pointIn2;
 		mt::mul_v2_m4( pointIn2, pointIn1, invWM );
@@ -153,9 +184,9 @@ namespace Menge
 		return result != m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point, float _radius ) const
+	bool HotSpotImage::testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
 	{
-		(void)_gameViewport;
+		(void)_contentResolution;
 		(void)_viewport;
 		
 		if( m_global == true )
@@ -178,7 +209,7 @@ namespace Menge
 		const mt::mat4f & wm = this->getWorldMatrix();
 
 		mt::mat4f invWM;
-		mt::inv_m4( invWM, wm );
+		mt::inv_m4_m4( invWM, wm );
 
 		mt::vec2f pointIn2;
 		mt::mul_v2_m4( pointIn2, pointIn1, invWM );
@@ -188,9 +219,9 @@ namespace Menge
 		return result != m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Viewport & _gameViewport, const mt::vec2f & _point, const Polygon & _polygon ) const
+	bool HotSpotImage::testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
 	{
-		(void)_gameViewport;
+		(void)_contentResolution;
 		(void)_viewport;
 		
 		if( m_global == true )

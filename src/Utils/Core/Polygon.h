@@ -45,6 +45,7 @@ namespace Menge
 		void mul_wm( Polygon & _out, const mt::mat4f & _wm ) const;
 		void mul_wm_and_transpose( Polygon & _out, const mt::mat4f & _wm, const mt::vec2f & _pos ) const;
 		void transpose( Polygon & _out, const mt::vec2f & _pos ) const;
+		void transpose_and_scale( Polygon & _out, const mt::vec2f & _pos, const mt::vec2f & _scale ) const;
 
 		bool to_box2f( mt::box2f & _box2f ) const;
 		bool empty() const;

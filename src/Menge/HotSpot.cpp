@@ -355,7 +355,7 @@ namespace Menge
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::pick( const mt::vec2f & _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Viewport & _gameport, Arrow * _arrow )
+	bool HotSpot::pick( const mt::vec2f & _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Resolution & _contentResolution, Arrow * _arrow )
 	{
 		if( this->isActivate() == false )
 		{
@@ -369,7 +369,7 @@ namespace Menge
 			return false;
 		}
 
-		HotspotMousePickerVisitor mp(this, _viewport, _camera, _gameport, _point, _arrow);
+		HotspotMousePickerVisitor mp(this, _viewport, _camera, _contentResolution, _point, _arrow);
 		bool result = mp.test( layer );
 
 		return result;

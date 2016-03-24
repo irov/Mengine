@@ -1,7 +1,7 @@
 #   pragma once
 
 #   include "Core/Visitor.h"
-#	include "Core/Viewport.h"
+#	include "Core/Resolution.h"
 
 #	include "Math/vec2.h"
 
@@ -22,7 +22,7 @@ namespace Menge
 		, public ConcreteVisitor<Layer2DIsometric>
     {
     public:
-		HotspotMousePickerVisitor( HotSpot * _layerspaceHotspot, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Viewport & _gameViewport, const mt::vec2f & _point, Arrow * _arrow );
+		HotspotMousePickerVisitor( HotSpot * _layerspaceHotspot, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Resolution & _contentResolution, const mt::vec2f & _point, Arrow * _arrow );
 
     public:
         bool test( Layer * _layer );
@@ -43,7 +43,7 @@ namespace Menge
         HotSpot * m_hotspot;
 		const RenderViewportInterface * m_viewport;
         const RenderCameraInterface * m_camera;
-		const Viewport & m_gameViewport;
+		const Resolution & m_contentResolution;
         mt::vec2f m_point;
         Arrow * m_arrow;
 

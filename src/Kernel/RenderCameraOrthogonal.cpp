@@ -113,11 +113,11 @@ namespace	Menge
 			RENDER_SERVICE( m_serviceProvider )
 				->makeViewMatrixLookAt( m_viewMatrix, wm_position, wm_direction, wm_up, m_cameraRightSign );
 
-			mt::inv_m4( m_viewMatrixInv, m_viewMatrix );
+			mt::inv_m4_m4( m_viewMatrixInv, m_viewMatrix );
 		}
 		else
 		{
-			mt::inv_m4( m_viewMatrix, wm );
+			mt::inv_m4_m4( m_viewMatrix, wm );
 
 			m_viewMatrixInv = wm;
 		}
@@ -145,7 +145,7 @@ namespace	Menge
 			renderViewportWM.clamp( gameViewport );
 
 			mt::mat4f wm_inv;
-			mt::inv_m4( wm_inv, wm );
+			mt::inv_m4_m4( wm_inv, wm );
 
 			mt::mul_v2_m4( renderViewport.begin, renderViewportWM.begin, wm_inv );
 			mt::mul_v2_m4( renderViewport.end, renderViewportWM.end, wm_inv );
@@ -158,6 +158,6 @@ namespace	Menge
 		RENDER_SERVICE( m_serviceProvider )
 			->makeProjectionOrthogonal( m_projectionMatrix, renderViewport, m_cameraNear, m_cameraFar );
 
-		mt::inv_m4( m_projectionMatrixInv, m_projectionMatrix );
+		mt::inv_m4_m4( m_projectionMatrixInv, m_projectionMatrix );
 	}
 }

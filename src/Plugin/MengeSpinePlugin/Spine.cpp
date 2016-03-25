@@ -552,6 +552,8 @@ namespace Menge
 
 		ev.trackIndex = _trackIndex;
 		ev.type = _type;
+
+		bool event_valid = false;
 		
 		switch( _type )
 		{
@@ -589,6 +591,8 @@ namespace Menge
 
 					ev.state = key;
 					ev.animation = an.name;
+
+					event_valid = true;
 					break;
 				}
 			}break;
@@ -598,11 +602,18 @@ namespace Menge
 				ev.eventIntValue = _event->intValue;
 				ev.eventFloatValue = _event->floatValue;
 				ev.eventStringValue = _event->stringValue != nullptr ? _event->stringValue : "";
+
+				event_valid = true;
 			}break;
 		}
 
 		ev.loopCount = _loopCount;
 		
+		if( event_valid == false )
+		{
+			return;
+		}
+
 		m_events.push_back( ev );
 	}
 	//////////////////////////////////////////////////////////////////////////

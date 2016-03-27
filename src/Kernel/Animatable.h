@@ -31,9 +31,6 @@ namespace Menge
 		void setTiming( float _timing );
 		float getTiming() const;
 
-		void setReverse( bool _value);
-		inline bool getReverse() const;
-
         void setPlayCount( uint32_t _count );
         inline uint32_t getPlayCount() const;
 
@@ -50,11 +47,9 @@ namespace Menge
 		virtual void _setTiming( float _timing );
 		virtual float _getTiming() const;
 
-		virtual void _setSpeedFactor( float _factor );
+		virtual void _setAnimationSpeedFactor( float _factor );
 		virtual void _setFirstFrame();
 		virtual void _setLastFrame();
-
-		virtual void _setReverse( bool _value );
 
 	public:
 		uint32_t play( float _time );
@@ -72,6 +67,9 @@ namespace Menge
 
 	public:
 		inline bool isInterrupt() const;
+		
+	public:
+		inline bool isLastCicle() const;
 
 	protected:
 		void end();
@@ -110,7 +108,6 @@ namespace Menge
 		bool m_interrupt;
 
 		bool m_loop;
-		bool m_reverse;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Animatable::isPlay() const
@@ -133,11 +130,6 @@ namespace Menge
 		return m_animationSpeedFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline bool Animatable::getReverse() const
-	{
-		return m_reverse;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	inline uint32_t Animatable::getPlayCount() const
 	{
 		return m_playCount;
@@ -156,6 +148,26 @@ namespace Menge
 	inline bool Animatable::isInterrupt() const
 	{
 		return m_interrupt;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Animatable::isLastCicle() const
+	{
+		if( m_interrupt == true )
+		{
+			return true;
+		}
+
+		if( m_loop == true )
+		{
+			return false;
+		}
+
+		if( m_playIterator > 1 )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline uint32_t Animatable::getPlayId() const

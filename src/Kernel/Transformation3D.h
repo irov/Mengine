@@ -78,18 +78,14 @@ namespace Menge
 		mt::vec3f getAxisUp() const;
 
 	public:
-		void setCoordinate( const mt::vec3f& _coordinate );
-		inline const mt::vec3f& getCoordinate() const;
-
-	public:
-		void setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f & _coordinate, const mt::vec3f& _scale, const mt::vec3f& _orientation );
-        void getTransformation( mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f & _coordinate, mt::vec3f& _scale, mt::vec3f& _orientation ) const;
+		void setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f& _orientation );
+        void getTransformation( mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f& _scale, mt::vec3f& _orientation ) const;
 
 	public:
 		void resetTransformation();
 
 	public:
-		void calcWorldMatrix( mt::mat4f & _wm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f & _coordinate, const mt::vec3f& _scale, const mt::vec3f& _orientation ) const;
+		void calcWorldMatrix( mt::mat4f & _wm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f& _orientation ) const;
 		
 	public:
 		void translate( const mt::vec3f & _delta );				
@@ -109,7 +105,7 @@ namespace Menge
 		virtual void updateWorldMatrix() const;
 
 	protected:
-		static bool makeLocalMatrix_( mt::mat4f & _lm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f & _coordinate, const mt::vec3f& _scale, const mt::vec3f& _orientation );
+		static bool makeLocalMatrix_( mt::mat4f & _lm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f& _orientation );
 
 	protected:
 		Transformation3D * m_relationTransformation;
@@ -120,8 +116,6 @@ namespace Menge
 
 		mt::vec3f m_position;
 		mt::vec3f m_origin;
-		mt::vec3f m_coordinate;
-
 		mt::vec3f m_scale;
 		mt::vec3f m_orientation;
 				
@@ -146,11 +140,6 @@ namespace Menge
 	inline const mt::vec3f& Transformation3D::getOrigin() const
 	{
 		return m_origin;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const mt::vec3f& Transformation3D::getCoordinate() const
-	{
-		return m_coordinate;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::vec3f& Transformation3D::getScale() const

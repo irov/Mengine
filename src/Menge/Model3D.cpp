@@ -568,11 +568,6 @@ namespace Menge
 		this->setCurrentFrame_( lastFrame );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::_setReverse( bool _value )
-	{
-		(void)_value;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Model3D::_setTiming( float _timing )
 	{
 		if( this->isCompile() == false )

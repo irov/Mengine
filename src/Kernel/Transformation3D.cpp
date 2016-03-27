@@ -10,7 +10,6 @@ namespace Menge
 	Transformation3D::Transformation3D()
 		: m_relationTransformation(nullptr)
 		, m_origin(0.f, 0.f, 0.f)
-		, m_coordinate(0.f, 0.f, 0.f)
 		, m_position(0.f, 0.f, 0.f)
 		, m_scale(1.f, 1.f, 1.f)
 		, m_orientation(0.f, 0.f, 0.f)
@@ -217,30 +216,28 @@ namespace Menge
         this->invalidateLocalMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f & _coordinate, const mt::vec3f& _scale, const mt::vec3f& _orientation )
+	void Transformation3D::setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f& _orientation )
 	{
 		m_position = _position;
 		m_origin = _origin;
-        m_coordinate = _coordinate;
 		m_scale = _scale;
 		m_orientation = _orientation;
 
 		this->invalidateLocalMatrix();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Transformation3D::getTransformation( mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f & _coordinate, mt::vec3f& _scale, mt::vec3f& _orientation ) const
+    void Transformation3D::getTransformation( mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f& _scale, mt::vec3f& _orientation ) const
     {
         _position = m_position;
         _origin = m_origin;
-        _coordinate = m_coordinate;
-        _scale = m_scale;
+		_scale = m_scale;
         _orientation = m_orientation;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::calcWorldMatrix( mt::mat4f & _wm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f & _coordinate, const mt::vec3f& _scale, const mt::vec3f& _orientation ) const
+	void Transformation3D::calcWorldMatrix( mt::mat4f & _wm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f& _orientation ) const
 	{
 		mt::mat4f localMatrix;
-		bool identityLocalMatrix = Transformation3D::makeLocalMatrix_( localMatrix, _position, _origin, _coordinate, _scale, _orientation );
+		bool identityLocalMatrix = Transformation3D::makeLocalMatrix_( localMatrix, _position, _origin, _scale, _orientation );
 
 		if( m_relationTransformation == nullptr )
 		{
@@ -280,7 +277,6 @@ namespace Menge
 	void Transformation3D::resetTransformation()
 	{
 		m_origin = mt::vec3f(0.f, 0.f, 0.f);
-		m_coordinate = mt::vec3f(0.f, 0.f, 0.f);
 		m_position = mt::vec3f(0.f, 0.f, 0.f);
 		m_scale = mt::vec3f(1.f, 1.f, 1.f);
 		m_orientation = mt::vec3f(0.f, 0.f, 0.f);
@@ -409,18 +405,18 @@ namespace Menge
 	{
 		m_invalidateLocalMatrix = false;
 		
-		bool identityLocalMatrix = this->makeLocalMatrix_( m_localMatrix, m_position, m_origin, m_coordinate, m_scale, m_orientation );
+		bool identityLocalMatrix = this->makeLocalMatrix_( m_localMatrix, m_position, m_origin, m_scale, m_orientation );
 
 		m_identityLocalMatrix = identityLocalMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Transformation3D::makeLocalMatrix_( mt::mat4f & _lm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f & _coordinate, const mt::vec3f& _scale, const mt::vec3f& _orientation )
+	bool Transformation3D::makeLocalMatrix_( mt::mat4f & _lm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f& _orientation )
 	{
 		mt::mat4f mat_scale;
 		mt::ident_m4( mat_scale );
-		mat_scale.v3.x = -(_origin.x + _coordinate.x) * _scale.x;
-		mat_scale.v3.y = -(_origin.y + _coordinate.y) * _scale.y;
-		mat_scale.v3.z = -(_origin.z + _coordinate.z) * _scale.z;
+		mat_scale.v3.x = -_origin.x * _scale.x;
+		mat_scale.v3.y = -_origin.y * _scale.y;
+		mat_scale.v3.z = -_origin.z * _scale.z;
 		mat_scale.v0.x = _scale.x;
 		mat_scale.v1.y = _scale.y;
 		mat_scale.v2.z = _scale.z;
@@ -448,9 +444,9 @@ namespace Menge
 			mt::mul_m4_m4( _lm, mat_scale, mat_rot );
 		}
 
-		_lm.v3.x += _position.x + _coordinate.x;
-		_lm.v3.y += _position.y + _coordinate.y;
-		_lm.v3.z += _position.z + _coordinate.z;
+		_lm.v3.x += _position.x;
+		_lm.v3.y += _position.y;
+		_lm.v3.z += _position.z;
 
 		bool identityLocalMatrix = s_identityTransformationMatrix( _lm );
 
@@ -532,18 +528,6 @@ namespace Menge
 		}
 		
 		m_origin = _origin;
-
-		this->invalidateLocalMatrix();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setCoordinate( const mt::vec3f& _coordinate )
-	{
-		if( mt::cmp_v3_v3( m_coordinate, _coordinate ) == true )
-		{
-			return;
-		}
-
-		m_coordinate = _coordinate;
 
 		this->invalidateLocalMatrix();
 	}

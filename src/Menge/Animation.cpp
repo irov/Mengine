@@ -404,11 +404,6 @@ namespace	Menge
 		this->setCurrentFrame( lastFrame );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_setReverse( bool _value )
-	{
-        (void)_value;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setTiming( float _timing )
 	{
 		if( this->isCompile() == false )

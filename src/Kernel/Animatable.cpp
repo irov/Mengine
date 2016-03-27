@@ -20,7 +20,6 @@ namespace Menge
 		, m_pause(false)
 		, m_interrupt(false)
 		, m_loop(false)
-		, m_reverse(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -45,7 +44,7 @@ namespace Menge
 
 		m_animationSpeedFactor = _factor;
 
-		this->_setSpeedFactor( _factor );
+		this->_setAnimationSpeedFactor( _factor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::setTiming( float _timing )
@@ -63,14 +62,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::setLastFrame()
 	{		
-        if( this->getReverse() == false )
-        {
-            this->_setLastFrame();            
-        }
-        else
-        {
-            this->_setFirstFrame();
-        }		
+        this->_setLastFrame();            	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::_setLastFrame()
@@ -80,14 +72,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::setFirstFrame()
 	{		
-        if( this->getReverse() == false )
-        {
-		    this->_setFirstFrame();
-        }
-        else
-        {
-            this->_setLastFrame();
-        }
+		this->_setFirstFrame();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::_setFirstFrame()
@@ -106,18 +91,6 @@ namespace Menge
 	{
 		return 0.f;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animatable::setReverse( bool _value)
-	{
-		if( m_reverse == _value )
-		{
-			return;
-		}
-
-		m_reverse = _value;
-
-		this->_setReverse( _value );
-	}
     //////////////////////////////////////////////////////////////////////////
     void Animatable::setPlayCount( uint32_t _count )
     {
@@ -127,12 +100,6 @@ namespace Menge
 	void Animatable::setAutoPlay( bool _autoPlay )
 	{
 		m_autoPlay = _autoPlay;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animatable::_setReverse( bool _value )
-	{
-        (void)_value;
-		//Empty
 	}
     //////////////////////////////////////////////////////////////////////////
     void Animatable::setStretch( float _scretch )
@@ -268,7 +235,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animatable::_setSpeedFactor( float _factor )
+	void Animatable::_setAnimationSpeedFactor( float _factor )
 	{
         (void)_factor;
 		//Empty

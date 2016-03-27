@@ -109,6 +109,19 @@ namespace Menge
 				return false;
 			}
 
+			uint32_t format_version;
+			ar << format_version;
+
+			if( format_version != MOVIE_KEY_FRAME_FORMAT_VERSION )
+			{
+				LOGGER_ERROR( m_serviceProvider )("DataflowAEK::loadBuffer_: invalid format version %d (need %d)"
+					, format_version
+					, MOVIE_KEY_FRAME_FORMAT_VERSION
+					);
+
+				return false;
+			}
+
 			uint32_t maxIndex;
 			ar << maxIndex;
 			

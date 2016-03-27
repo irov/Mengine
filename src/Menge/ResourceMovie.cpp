@@ -789,7 +789,7 @@ namespace Menge
 			}
 		}
 
-        m_frameCount = (uint32_t)((m_duration / m_frameDuration) + 0.5f) - 1;
+        m_frameCount = (uint32_t)((m_duration / m_frameDuration) + 0.5f) + 1;
 
         return true;
 	}

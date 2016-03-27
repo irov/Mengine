@@ -128,6 +128,10 @@ namespace Menge
 
 		aw << true_metacode_version;
 
+		uint32_t keyframes_version = keyFramesPack.get_Version();
+
+		aw << keyframes_version;
+
 		uint32_t maxIndex = keyFramesPack.get_MaxIndex();
 
 		aw << maxIndex;

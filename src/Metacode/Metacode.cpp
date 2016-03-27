@@ -4,7 +4,7 @@ namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
-    static const uint32_t metacode_version = 104;
+    static const uint32_t metacode_version = 105;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -2765,6 +2765,7 @@ namespace Metacode
     void Meta_KeyFramesPack::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
     {
         this->read( _buff, _size, _read, this->MaxIndex );
+        this->read( _buff, _size, _read, this->Version );
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_KeyFramesPack::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -2780,23 +2781,23 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 4:
+        case 5:
             {
                 includes_Meta_ImageShape.reserve( _count );
             }break;
-        case 5:
+        case 6:
             {
                 includes_Meta_KeyFrames2D.reserve( _count );
             }break;
-        case 6:
+        case 7:
             {
                 includes_Meta_KeyFrames3D.reserve( _count );
             }break;
-        case 3:
+        case 4:
             {
                 includes_Meta_Polygon.reserve( _count );
             }break;
-        case 2:
+        case 3:
             {
                 includes_Meta_TimeRemap.reserve( _count );
             }break;
@@ -2807,31 +2808,31 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 4:
+        case 5:
             {
                 Meta_KeyFramesPack::Meta_ImageShape & metadata = includes_Meta_ImageShape.emplace_back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
-        case 5:
+        case 6:
             {
                 Meta_KeyFramesPack::Meta_KeyFrames2D & metadata = includes_Meta_KeyFrames2D.emplace_back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
-        case 6:
+        case 7:
             {
                 Meta_KeyFramesPack::Meta_KeyFrames3D & metadata = includes_Meta_KeyFrames3D.emplace_back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
-        case 3:
+        case 4:
             {
                 Meta_KeyFramesPack::Meta_Polygon & metadata = includes_Meta_Polygon.emplace_back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
-        case 2:
+        case 3:
             {
                 Meta_KeyFramesPack::Meta_TimeRemap & metadata = includes_Meta_TimeRemap.emplace_back();
     
@@ -2861,7 +2862,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_KeyFramesPack::Meta_ImageShape::getId() const
     {
-        return 4;
+        return 5;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_KeyFramesPack::Meta_ImageShape::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -3003,7 +3004,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_KeyFramesPack::Meta_KeyFrames2D::getId() const
     {
-        return 5;
+        return 6;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_KeyFramesPack::Meta_KeyFrames2D::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -3180,7 +3181,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_KeyFramesPack::Meta_KeyFrames3D::getId() const
     {
-        return 6;
+        return 7;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_KeyFramesPack::Meta_KeyFrames3D::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -3363,7 +3364,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_KeyFramesPack::Meta_Polygon::getId() const
     {
-        return 3;
+        return 4;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_KeyFramesPack::Meta_Polygon::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -3413,7 +3414,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_KeyFramesPack::Meta_TimeRemap::getId() const
     {
-        return 2;
+        return 3;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_KeyFramesPack::Meta_TimeRemap::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )

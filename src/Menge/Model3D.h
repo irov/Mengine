@@ -41,8 +41,6 @@ namespace Menge
 		void _setFirstFrame() override;
 		void _setLastFrame() override;
 
-		void _setReverse( bool _value ) override;
-
 	protected:
 		bool _play( float _time ) override;
 		bool _restart( float _time, uint32_t _enumerator ) override;

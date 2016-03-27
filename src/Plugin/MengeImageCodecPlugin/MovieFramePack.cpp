@@ -187,7 +187,7 @@ namespace Menge
 		} \
 		else \
 		{ \
-			_frame.Member1 = layer.Member2[_frameIndex]; \
+			_frame.Member1 = layer.Member2[_frameIndex + 1]; \
 		}
 		
 		MOVIE_FRAME_SETUP( anchorPoint, anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
@@ -213,7 +213,7 @@ namespace Menge
 
 		const MovieLayerFrame & layer = m_layers[_layerIndex - 1];
 
-		if( _frameIndex + 1 >= layer.count )
+		if( _frameIndex >= layer.count )
 		{
 			return false;
 		}

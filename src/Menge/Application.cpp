@@ -742,14 +742,8 @@ namespace Menge
 
 			if( _event.key == KC_F9 && _event.isDown )
 			{
-				if( ( m_debugMask & MENGE_DEBUG_PHYSICS ) != 0 )
-				{
-					m_debugMask ^= MENGE_DEBUG_PHYSICS;
-				}
-				else
-				{
-					m_debugMask |= MENGE_DEBUG_PHYSICS;
-				}
+				PLAYER_SERVICE( m_serviceProvider )
+					->toggleDebugText();
 			}
 
 			if( _event.key == KC_F8 && _event.isDown )

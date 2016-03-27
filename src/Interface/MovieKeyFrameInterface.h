@@ -15,7 +15,9 @@
 
 namespace Menge
 {
-	DECLARE_MAGIC_NUMBER(MAGIC_AEK, 'A', 'E', 'K', '1', 35);
+	DECLARE_MAGIC_NUMBER(MAGIC_AEK, 'A', 'E', 'K', '1', 37);
+
+	const uint32_t MOVIE_KEY_FRAME_FORMAT_VERSION = 1;
 
     struct MovieFrameSource
     {

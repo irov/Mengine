@@ -4539,6 +4539,16 @@ namespace Metacode
             std::swap( _value, this->MaxIndex);
         }
         
+        uint32_t get_Version() const
+        {
+            return this->Version;
+        }
+        
+        void swap_Version( uint32_t & _value ) const
+        {
+            std::swap( _value, this->Version);
+        }
+        
     protected:
         void _parseData( const unsigned char * _buff, size_t _size, size_t & _read ) override;
         void _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
@@ -5590,6 +5600,7 @@ namespace Metacode
     protected:
     protected:
         mutable uint32_t MaxIndex;
+        mutable uint32_t Version;
     public:
         typedef stdex::auto_array<Meta_ImageShape> TVectorMeta_ImageShape;
     

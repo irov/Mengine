@@ -1361,6 +1361,17 @@ namespace Menge
 
             m_debugText->setLocalPosition( mt::vec3f(gameViewport.begin, 0.f) );
 
+			const Resolution & resolution = APPLICATION_SERVICE( m_serviceProvider )
+				->getCurrentResolution();
+
+			const Resolution & content = APPLICATION_SERVICE( m_serviceProvider )
+				->getContentResolution();
+
+			mt::vec2f scale;
+			content.calcScale( resolution, scale );
+
+			m_debugText->setScale( mt::vec3f( scale, 1.f ) );
+
 			m_debugText->render( &state, debugMask );
 		}
 //#	endif

@@ -1,4 +1,4 @@
-<Protocol Version = "104">
+<Protocol Version = "105">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -425,6 +425,7 @@
   </Node>
 
   <Node Name="KeyFramesPack">
+    <Attribute Name="Version" Type="uint32_t" Required="1"/>
     <Attribute Name="MaxIndex" Type="uint32_t" Required="1"/>
 
     <Node Name="TimeRemap">

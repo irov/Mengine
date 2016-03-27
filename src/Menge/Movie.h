@@ -78,19 +78,18 @@ namespace Menge
 		void setEnableMovieLayers( const ConstString & _name, bool _enable );
 
 	protected:
-		void _setReverse( bool _reverse ) override;
-
-	protected:
-		void updateReverse_( bool _reverse );
-
-	protected:
 		void _setTiming( float _timing ) override;
 		float _getTiming() const override;
 				
 		void _setFirstFrame() override;
 		void _setLastFrame() override;
 
-		void _setSpeedFactor( float _factor ) override;
+		void _setLoop( bool _value ) override;
+		void _setAnimationSpeedFactor( float _factor ) override;
+
+	protected:
+		void updateLoop_( bool _value );
+		void updateAnimationSpeedFactor_( float _factor );
 
 	protected:
 		bool _play( float _time ) override;
@@ -118,15 +117,13 @@ namespace Menge
     protected:
         void _localHide( bool _value ) override;
         void _setPersonalColor( const ColourValue& _color ) override;
-        void _setPersonalAlpha( float _alpha ) override;
+        void _setPersonalAlpha( float _alpha ) override;		
 
     protected:
         void updateForward_( float _time );
         void updateBackward_();
         
         void updateForwardFrame_( float _time, uint32_t _beginFrame, uint32_t _endFrame );
-        void updateBackwardFrame_( uint32_t _beginFrame, uint32_t _endFrame );
-
         void updateForwardFrameNode_( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer &, Node * _node );
 
 	protected:
@@ -180,13 +177,17 @@ namespace Menge
 		bool compileMovieText_( const MovieLayer & _layer );  
 
 	protected:
-		bool addMovieNode_( const MovieLayer & _layer, Node * _node, Animatable * _animatable, Soundable * _soundable );
+		bool addMovieNode_( const MovieLayer & _layer, Node * _node, Animatable * _animatable, Soundable * _soundable, Movie * _movie );
 
 	protected:
 		inline Node * getLayerNode_( const MovieLayer & _layer ) const;
 		inline Animatable * getLayerAnimatable_( const MovieLayer & _layer ) const;
 		inline Soundable * getLayerSoundable_( const MovieLayer & _layer ) const;
+		inline Movie * getLayerMovie_( const MovieLayer & _layer ) const;
 		inline Node * getLayerParent_( const MovieLayer & _layer ) const;
+
+	protected:
+		void getFrameTiming_( float _time, uint32_t & _frame, float & _timing ) const;
 
 	protected:		
 		void updateTiming_();
@@ -230,6 +231,7 @@ namespace Menge
             Node * node;
 			Animatable * animatable;
 			Soundable * soundable;
+			Movie * movie;
 
 			bool visible;
 			bool enable;
@@ -265,6 +267,13 @@ namespace Menge
 		const Nodies & ns = m_nodies[_layer.index - 1];
 
 		return ns.soundable;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline Movie * Movie::getLayerMovie_( const MovieLayer & _layer ) const
+	{
+		const Nodies & ns = m_nodies[_layer.index - 1];
+
+		return ns.movie;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline Node * Movie::getLayerParent_( const MovieLayer & _layer ) const

@@ -1018,7 +1018,7 @@ namespace Menge
 			_transformation->setRelationTransformation( nullptr );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void Transformation3D_setCoordinate( Transformation3D * _transformation, const mt::vec3f & _coordinate )
+		void Transformation3D_coordinate( Transformation3D * _transformation, const mt::vec3f & _coordinate )
 		{
 			const mt::vec3f & origin = _transformation->getOrigin();
 			_transformation->setOrigin( origin + _coordinate );
@@ -5590,8 +5590,7 @@ namespace Menge
 			//.def( "getLocalDirection", &Transformation3D::getLocalDirection )
 			//.def( "setLocalDirection", &Transformation3D::setLocalDirection )
 			.def( "setOrigin", &Transformation3D::setOrigin )
-			.def( "getOrigin", &Transformation3D::getOrigin )
-			.def_proxy_static( "setCoordinate", nodeScriptMethod, &NodeScriptMethod::Transformation3D_setCoordinate )
+			.def( "getOrigin", &Transformation3D::getOrigin )			
 			.def( "setScale", &Transformation3D::setScale )
 			.def( "getScale", &Transformation3D::getScale )
 			.def( "setOrientationX", &Transformation3D::setOrientationX )
@@ -5618,6 +5617,7 @@ namespace Menge
 			.def( "getAxisUp", &Transformation3D::getAxisUp )
 
 			.def( "translate", &Transformation3D::translate )
+			.def( "coordinate", &Transformation3D::coordinate )
 
 			.def( "resetTransformation", &Transformation3D::resetTransformation )
 			.def( "setRelationTransformation", &Transformation3D::setRelationTransformation )

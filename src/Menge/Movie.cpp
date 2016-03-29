@@ -2476,15 +2476,13 @@ namespace Menge
 				}
 				else
 				{
-					//float beginTiming = m_frameTiming + loopSegment.x;
+					float beginTiming = m_frameTiming + loopSegment.x;
 
-					//this->setTiming( beginTiming );
+					this->setTiming( beginTiming );
 
-					//m_frameTiming
-					m_currentFrame = 0;
 					lastFrame = m_currentFrame;
 
-					//this->updateAnimatablePlay_();
+					this->updateAnimatablePlay_();
 				}
 			}
 		}
@@ -2663,7 +2661,7 @@ namespace Menge
 			{
 				uint32_t frameId = _endFrame - indexIn;
 
-				this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut, false );
+				this->updateFrameNode_( _layer, _node, frameId, (m_currentFrame + 1) < indexOut, false );
 
 				if( _layer.isAnimatable() == true )
 				{
@@ -2735,14 +2733,14 @@ namespace Menge
 			{            
 				uint32_t frameId = m_currentFrame - indexIn;
 
-				this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut, true );
-
 				if( layer.switcher == true && m_currentFrame + 1 == indexOut )
 				{
 					this->setVisibleLayer_( layer, false );
 				}
 				else
 				{
+					this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut, true );
+
 					this->setVisibleLayer_( layer, true );
 				}
 
@@ -2811,10 +2809,17 @@ namespace Menge
 			if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
 			{                
 				uint32_t frameId = m_currentFrame - indexIn;
+				
+				if( layer.switcher == true && m_currentFrame + 1 == indexOut )
+				{
+					this->setVisibleLayer_( layer, false );
+				}
+				else
+				{
+					this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut, true );
 
-				this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut, true );
-
-				this->setVisibleLayer_( layer, true );
+					this->setVisibleLayer_( layer, true );
+				}
 
 				if( layer.isAnimatable() == true && layer.isSubMovie() == false )
 				{

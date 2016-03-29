@@ -10,19 +10,19 @@
 #	include "sha1.h"
 
 //////////////////////////////////////////////////////////////////////////
-static void message_error( const wchar_t * _format, ... )
+static void message_error( const char * _format, ... )
 {
 	va_list argList;
 
 	va_start( argList, _format );
 
-	wchar_t str[2048];
+	char str[2048];
 
-	_vsnwprintf( str, 2048 - 1, _format, argList );
+	vsnprintf( str, 2048 - 1, _format, argList );
 
 	va_end( argList );
 
-	MessageBoxW( NULL, str, L"FileSHA1", MB_OK );
+	printf( str );
 }
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
@@ -54,7 +54,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( file.empty() == true )
 	{
-		message_error( L"not found 'file' param"
+		message_error( "not found 'file' param"
 			);
 
 		return 0;
@@ -62,7 +62,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( sha1.empty() == true )
 	{
-		message_error( L"not found 'sha1' param"
+		message_error( "not found 'sha1' param"
 			);
 
 		return 0;
@@ -73,8 +73,11 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	
 	if( hFile == INVALID_HANDLE_VALUE )
 	{
-		message_error( L"file '%ls' not open"
+		DWORD er = GetLastError();
+
+		message_error( "file '%ls' not open '%d'"
 			, file.c_str()
+			, er
 			);
 
 		return 0;
@@ -88,7 +91,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	DWORD bytesRead = 0;
 	if( ::ReadFile( hFile, buff_memory, size, &bytesRead, NULL ) == FALSE )
 	{
-		message_error( L"file '%ls' invalid read"
+		message_error( "file '%ls' invalid read"
 			, file.c_str()
 			);
 
@@ -109,7 +112,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( hSHA1 == INVALID_HANDLE_VALUE )
 	{
-		message_error( L"sha1 '%ls' not open"
+		message_error( "sha1 '%ls' not open"
 			, sha1.c_str()
 			);
 
@@ -119,7 +122,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	DWORD bytesWritten = 0;
 	if( ::WriteFile( hSHA1, hex, 40, &bytesWritten, NULL ) == FALSE )
 	{
-		message_error( L"sha1 '%ls' invalid write"
+		message_error( "sha1 '%ls' invalid write"
 			, sha1.c_str()
 			);
 

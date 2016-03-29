@@ -44,7 +44,7 @@ static void message_error( const char * _format, ... )
 
 	va_end(argList);
 
-	MessageBoxA( NULL, str, "ImageTrimmer", MB_OK );
+	printf( str );
 }
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider )
@@ -812,7 +812,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	}
 	catch( const std::exception & se )
 	{		
-		MessageBoxA( NULL, se.what(), "Mengine exception", MB_OK );
+		message_error( "Mengine exception %s"
+			, se.what()
+			);
 
 		return 0;
 	}

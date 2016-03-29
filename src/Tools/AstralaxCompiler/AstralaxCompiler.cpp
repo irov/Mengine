@@ -32,7 +32,7 @@ static void message_error( const char * _format, ... )
 
 	va_end(argList);
 
-	MessageBoxA( NULL, str, "AstralaxCompiler", MB_OK );
+	printf( str );
 }
 
 static void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )

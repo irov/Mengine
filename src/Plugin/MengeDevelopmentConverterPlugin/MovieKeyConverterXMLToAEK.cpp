@@ -289,6 +289,11 @@ namespace Menge
 						frameLayer.frames.push_back( frame );
 					}
 				}
+
+				if( frameLayer.frames.size() != frameLayer.count )
+				{
+					return false;
+				}
 			}
 		}
 
@@ -372,6 +377,14 @@ namespace Menge
 				{
 					frameLayer.source = frame;
 					frameLayer.count = count_frame;
+				}
+			}
+
+			if( frameLayer.immutable == 0 )
+			{
+				if( frameLayer.frames.size() != frameLayer.count )
+				{
+					return false;
 				}
 			}
 		}

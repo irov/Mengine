@@ -89,6 +89,7 @@ namespace Menge
 		
 	public:
 		void translate( const mt::vec3f & _delta );				
+		void coordinate( const mt::vec3f & _delta );
 		
 	public:
 		void invalidateWorldMatrix();

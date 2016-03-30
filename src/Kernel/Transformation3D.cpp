@@ -291,6 +291,15 @@ namespace Menge
 		this->setLocalPosition( new_pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::coordinate( const mt::vec3f & _delta )
+	{
+		mt::vec3f new_pos = m_position + _delta;
+		mt::vec3f new_origin = m_origin + _delta;
+
+		this->setLocalPosition( new_pos );
+		this->setOrigin( new_origin );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setDirection( const mt::vec3f & _direction, const mt::vec3f & _up )
 	{
 		mt::mat4f mr;

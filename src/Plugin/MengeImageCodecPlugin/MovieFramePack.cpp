@@ -213,7 +213,7 @@ namespace Menge
 
 		const MovieLayerFrame & layer = m_layers[_layerIndex - 1];
 
-		if( _frameIndex >= layer.count )
+		if( _frameIndex + 1 >= layer.count )
 		{
 			return false;
 		}

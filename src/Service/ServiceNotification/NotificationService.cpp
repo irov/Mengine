@@ -11,6 +11,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     NotificationService::NotificationService()
+		: m_visiting(0)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -18,8 +19,32 @@ namespace Menge
     {
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool NotificationService::_initialize()
+	{
+		m_mutex = THREAD_SERVICE( m_serviceProvider )
+			->createMutex( "NotificationService" );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NotificationService::_finalize()
+	{
+		m_mutex = nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void NotificationService::addObserver( uint32_t _id, ObserverInterface * _observer )
 	{
+		if( m_visiting != 0 )
+		{
+			AddObserverDesc desc;
+			desc.id = _id;
+			desc.observer = _observer;
+
+			m_add.push_back( desc );
+
+			return;
+		}
+
 		TMapObservers::iterator it_find = m_mapObserves.find( _id );
 
 		if( it_find == m_mapObserves.end() )
@@ -36,6 +61,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void NotificationService::removeObserver( uint32_t _id, ObserverInterface * _observer )
 	{
+		if( m_visiting != 0 )
+		{
+			AddObserverDesc desc;
+			desc.id = _id;
+			desc.observer = _observer;
+
+			m_remove.push_back( desc );
+
+			return;
+		}
+
 		TMapObservers::iterator it_find = m_mapObserves.find( _id );
 
 		if( it_find == m_mapObserves.end() )
@@ -69,6 +105,10 @@ namespace Menge
 		}
 
 		TVectorObservers & observers = it_find->second;
+
+		m_mutex->lock();
+
+		++m_visiting;
 		
 		for( TVectorObservers::iterator
 			it = observers.begin(),
@@ -83,6 +123,39 @@ namespace Menge
 				this->invalidObserver_( _id );
 			}
 		}
+
+		--m_visiting;
+
+		if( m_visiting == 0 )
+		{
+			for( TVectorAddObservers::iterator
+				it = m_add.begin(),
+				it_end = m_add.end();
+			it != it_end;
+			++it )
+			{
+				const AddObserverDesc & desc = *it;
+
+				this->addObserver( desc.id, desc.observer );
+			}
+
+			m_add.clear();
+
+			for( TVectorAddObservers::iterator
+				it = m_remove.begin(),
+				it_end = m_remove.end();
+			it != it_end;
+			++it )
+			{
+				const AddObserverDesc & desc = *it;
+
+				this->removeObserver( desc.id, desc.observer );
+			}
+
+			m_remove.clear();
+		}
+
+		m_mutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NotificationService::invalidObserver_( uint32_t _id )

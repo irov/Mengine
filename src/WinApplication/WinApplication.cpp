@@ -543,8 +543,6 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, WindowsLayer );
 		SERVICE_CREATE( m_serviceProvider, Platform );
 
-		SERVICE_CREATE( m_serviceProvider, NotificationService );
-
 		SERVICE_CREATE( m_serviceProvider, UnicodeSystem );
 		SERVICE_CREATE( m_serviceProvider, UnicodeService );
 
@@ -588,6 +586,8 @@ namespace Menge
 		
 		SERVICE_CREATE( m_serviceProvider, ThreadSystem );
 		SERVICE_CREATE( m_serviceProvider, ThreadService );		
+
+		SERVICE_CREATE( m_serviceProvider, NotificationService );
 
 		SERVICE_CREATE( m_serviceProvider, RenderSystem );
 		

@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/NotificationServiceInterface.h"
+#	include "Interface/ThreadSystemInterface.h"
 
 #	include <stdex/stl_vector.h>
 #	include <stdex/stl_map.h>
@@ -13,6 +14,10 @@ namespace Menge
     public:
         NotificationService();
         ~NotificationService();
+
+	public:
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		void addObserver( uint32_t _id, ObserverInterface * _observer ) override;
@@ -28,5 +33,19 @@ namespace Menge
 		typedef stdex::vector<ObserverInterface *> TVectorObservers;
 		typedef stdex::map<uint32_t, TVectorObservers> TMapObservers;
 		TMapObservers m_mapObserves;
+
+		struct AddObserverDesc
+		{
+			uint32_t id;
+			ObserverInterface * observer;
+		};
+
+		typedef stdex::vector<AddObserverDesc> TVectorAddObservers;
+		TVectorAddObservers m_add;
+		TVectorAddObservers m_remove;
+
+		uint32_t m_visiting;
+
+		ThreadMutexInterfacePtr m_mutex;
 	};
 }

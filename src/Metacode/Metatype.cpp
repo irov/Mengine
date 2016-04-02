@@ -194,6 +194,120 @@ namespace Metabuf
         ar.readPODs( &_value[0], count );
     }
 	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, Menge::Int8s & _value, void * _userData )
+	{
+		(void)_userData;
+
+		uint32_t count;
+		ar.readSize( count );
+
+		if( count == 0 )
+		{
+			_value.clear();
+
+			return;
+		}
+
+		_value.resize( count );
+
+		ar.readPODs( &_value[0], count );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, Menge::Int16s & _value, void * _userData )
+	{
+		(void)_userData;
+
+		uint32_t count;
+		ar.readSize( count );
+
+		if( count == 0 )
+		{
+			_value.clear();
+
+			return;
+		}
+
+		_value.resize( count );
+
+		ar.readPODs( &_value[0], count );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, Menge::Int32s & _value, void * _userData )
+	{
+		(void)_userData;
+
+		uint32_t count;
+		ar.readSize( count );
+
+		if( count == 0 )
+		{
+			_value.clear();
+
+			return;
+		}
+
+		_value.resize( count );
+
+		ar.readPODs( &_value[0], count );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, Menge::UInt8s & _value, void * _userData )
+	{
+		(void)_userData;
+
+		uint32_t count;
+		ar.readSize( count );
+
+		if( count == 0 )
+		{
+			_value.clear();
+
+			return;
+		}
+
+		_value.resize( count );
+
+		ar.readPODs( &_value[0], count );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, Menge::UInt16s & _value, void * _userData )
+	{
+		(void)_userData;
+
+		uint32_t count;
+		ar.readSize( count );
+
+		if( count == 0 )
+		{
+			_value.clear();
+
+			return;
+		}
+
+		_value.resize( count );
+
+		ar.readPODs( &_value[0], count );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, Menge::UInt32s & _value, void * _userData )
+	{
+		(void)_userData;
+
+		uint32_t count;
+		ar.readSize( count );
+
+		if( count == 0 )
+		{
+			_value.clear();
+
+			return;
+		}
+
+		_value.resize( count );
+
+		ar.readPODs( &_value[0], count );
+	}
+	//////////////////////////////////////////////////////////////////////////
     void archive_read( stdex::memory_reader & ar, mt::vec2f & _value, void * _userData )
 	{
         (void)_userData;

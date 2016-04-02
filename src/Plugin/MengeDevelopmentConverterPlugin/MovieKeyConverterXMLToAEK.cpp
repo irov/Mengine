@@ -494,273 +494,63 @@ namespace Menge
 			}
 		}
 
-		const Metacode::Meta_KeyFramesPack::TVectorMeta_ImageShape & includes_imageshapes = keyFramesPack.get_IncludesImageShape();
+		const Metacode::Meta_KeyFramesPack::TVectorMeta_ImageMesh & includes_imagemeshes = keyFramesPack.get_IncludesImageMesh();
 
-		uint32_t shapesSize = (uint32_t)includes_imageshapes.size();
-		aw << shapesSize;
+		uint32_t meshesSize = (uint32_t)includes_imagemeshes.size();
+		aw << meshesSize;
 
-		for( Metacode::Meta_KeyFramesPack::TVectorMeta_ImageShape::const_iterator 
-			it = includes_imageshapes.begin(),
-			it_end = includes_imageshapes.end();
+		for( Metacode::Meta_KeyFramesPack::TVectorMeta_ImageMesh::const_iterator
+			it = includes_imagemeshes.begin(),
+			it_end = includes_imagemeshes.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_KeyFramesPack::Meta_ImageShape & meta_imageshape = *it;
+			const Metacode::Meta_KeyFramesPack::Meta_ImageMesh & meta_imagemesh = *it;
 
-			uint32_t layerIndex = meta_imageshape.get_LayerIndex();
+			uint32_t layerIndex = meta_imagemesh.get_LayerIndex();
 
 			aw << layerIndex;
 
-			const mt::vec2f & imageMaxSize = meta_imageshape.get_ImageMaxSize();
+			uint32_t count = meta_imagemesh.get_Count();
 
-			mt::vec2f imageSize;
-			if( meta_imageshape.get_ImageSize( imageSize ) == false )
-			{
-				imageSize = imageMaxSize;
-			}
+			aw << count;
 
-			mt::vec2f imageOffset( 0.f, 0.f );
-			meta_imageshape.get_ImageOffset( imageOffset );
+			bool immutable = meta_imagemesh.get_Immutable();
+
+			aw << immutable;
 			
-			bool subtract = false;
-			meta_imageshape.get_Subtract( subtract );
+			const Metacode::Meta_KeyFramesPack::Meta_ImageMesh::TVectorMeta_Mesh & includes_meshes = meta_imagemesh.get_IncludesMesh();
 
-			const Metacode::Meta_KeyFramesPack::Meta_ImageShape::TVectorMeta_Shape & includes_shapes = meta_imageshape.get_IncludesShape();
+			uint32_t includes_meshes_size = (uint32_t)includes_meshes.size();
 
-			uint32_t includes_shapes_size = (uint32_t)includes_shapes.size();
+			aw << includes_meshes_size;
 
-			aw << includes_shapes_size;
-
-			for( Metacode::Meta_KeyFramesPack::Meta_ImageShape::TVectorMeta_Shape::const_iterator
-				it_shape = includes_shapes.begin(),
-				it_shape_end = includes_shapes.end();
+			for( Metacode::Meta_KeyFramesPack::Meta_ImageMesh::TVectorMeta_Mesh::const_iterator
+				it_shape = includes_meshes.begin(),
+				it_shape_end = includes_meshes.end();
 			it_shape != it_shape_end;
 			++it_shape )
 			{
-				const Metacode::Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & meta_shape = *it_shape;
+				const Metacode::Meta_KeyFramesPack::Meta_ImageMesh::Meta_Mesh & meta_mesh = *it_shape;
 
-				Menge::Polygon polygon = meta_shape.get_Polygon();
-				polygon.correct();
+				const Menge::Floats & positions = meta_mesh.get_VertexPositions();
+				const Menge::Floats & uvs = meta_mesh.get_VertexUVs();
+				const Menge::UInt16s & indices = meta_mesh.get_Indices();
+				
+				uint32_t vertexCount = (uint32_t)positions.size();
 
-				mt::vec2f v0( 0.f, 0.f );
-				mt::vec2f v1( imageMaxSize.x, 0.f );
-				mt::vec2f v2( imageMaxSize.x, imageMaxSize.y );
-				mt::vec2f v3( 0.f, imageMaxSize.y );
+				aw << vertexCount;
 
-				Polygon imagePolygon;
-				imagePolygon.append( v0 );
-				imagePolygon.append( v1 );
-				imagePolygon.append( v2 );
-				imagePolygon.append( v3 );
-				imagePolygon.correct();
-
-				TVectorPolygon output;
-				if( subtract == false )
+				if( vertexCount != 0 )
 				{
-					if( polygon.intersection( imagePolygon, output ) == false )
-					{
-						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
-							, layerIndex
-							);
+					aw.writePODs( &positions[0], vertexCount );
+					aw.writePODs( &uvs[0], vertexCount );
 
-						return false;
-					}
-				}
-				else
-				{
-					if( imagePolygon.difference( polygon, output ) == false )
-					{
-						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
-							, layerIndex
-							);
+					uint32_t indexCount = (uint32_t)indices.size();
 
-						return false;
-					}
-				}
+					aw << indexCount;
 
-				MovieFrameShape shape;
-				if( output.empty() == true )
-				{	
-					shape.pos = nullptr;
-					shape.uv = nullptr;
-					shape.indices = nullptr;
-
-					shape.vertexCount = 0;
-					shape.indexCount = 0;
-
-					aw << shape.vertexCount;
-				}
-				else
-				{
-					std::vector<p2t::Point> p2t_points;
-
-					size_t max_points = 0;
-
-					for( TVectorPolygon::const_iterator
-						it = output.begin(),
-						it_end = output.end();
-					it != it_end;
-					++it )
-					{
-						const Menge::Polygon & shape_vertex = *it;
-
-						size_t outer_count = shape_vertex.outer_count();
-
-						max_points += outer_count - 1;
-
-						size_t inners_count = shape_vertex.inners_count();
-
-						for( size_t index = 0; index != inners_count; ++index )
-						{
-							size_t inner_count = shape_vertex.inner_count( index );
-
-							max_points += inner_count - 1;
-						}
-					}
-
-					if( max_points >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
-					{
-						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d vertex overflow %d (max %d)"
-							, layerIndex
-							, max_points
-							, MENGINE_MOVIE_SHAPE_MAX_VERTEX
-							);
-
-						return false;
-					}
-
-					p2t_points.reserve( max_points );
-					
-					Menge::TVectorIndices shape_indices;
-					
-					for( TVectorPolygon::const_iterator
-						it = output.begin(),
-						it_end = output.end();
-					it != it_end;
-					++it )
-					{
-						const Menge::Polygon & shape_vertex = *it;
-
-						std::vector<p2t::Point*> p2t_polygon;
-
-						size_t outer_count = shape_vertex.outer_count();
-
-						for( size_t index = 0; index != outer_count - 1; ++index )
-						{
-							const mt::vec2f & v = shape_vertex.outer_point( index );
-
-							p2t_points.push_back( p2t::Point( v.x, v.y ) );
-							p2t::Point * p = &p2t_points.back();
-
-							p2t_polygon.push_back( p );
-						}
-
-						p2t::CDT * cdt = new p2t::CDT( p2t_polygon );
-
-						size_t inners_count = shape_vertex.inners_count();
-
-						for( size_t index_inners = 0; index_inners != inners_count; ++index_inners )
-						{
-							std::vector<p2t::Point*> p2t_hole;
-
-							size_t inner_count = shape_vertex.inner_count( index_inners );
-
-							for( size_t index_inner = 0; index_inner != inner_count - 1; ++index_inner )
-							{
-								const mt::vec2f & v = shape_vertex.inner_point( index_inners, index_inner );
-
-								p2t_points.push_back( p2t::Point( v.x, v.y ) );
-								p2t::Point * p = &p2t_points.back();
-
-								p2t_hole.push_back( p );
-							}
-
-							cdt->AddHole( p2t_hole );
-						}
-
-						cdt->Triangulate();
-
-						std::vector<p2t::Triangle*> triangles = cdt->GetTriangles();
-
-						for( std::vector<p2t::Triangle*>::iterator
-							it = triangles.begin(),
-							it_end = triangles.end();
-						it != it_end;
-						++it )
-						{
-							p2t::Triangle* tr = *it;
-
-							p2t::Point * p0 = tr->GetPoint( 0 );
-							p2t::Point * p1 = tr->GetPoint( 1 );
-							p2t::Point * p2 = tr->GetPoint( 2 );
-
-							p2t::Point * pb = &p2t_points[0];
-
-							uint32_t i0 = (uint32_t)std::distance( pb, p0 );
-							uint32_t i1 = (uint32_t)std::distance( pb, p1 );
-							uint32_t i2 = (uint32_t)std::distance( pb, p2 );
-
-							shape_indices.push_back( i0 );
-							shape_indices.push_back( i1 );
-							shape_indices.push_back( i2 );
-						}
-
-						delete cdt;
-					}
-
-					size_t shapeVertexCount = p2t_points.size();
-					size_t shapeIndicesCount = shape_indices.size();
-
-					if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
-					{
-						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d index overflow %d (max $d)"
-							, layerIndex
-							, shapeIndicesCount
-							, MENGINE_MOVIE_SHAPE_MAX_INDICES
-							);
-
-						return false;
-					}
-
-					shape.vertexCount = (uint16_t)shapeVertexCount;
-					shape.indexCount = (uint16_t)shapeIndicesCount;
-
-					shape.pos = Helper::allocateMemory<mt::vec2f>( shapeVertexCount );
-					shape.uv = Helper::allocateMemory<mt::vec2f>( shapeVertexCount );
-
-					shape.indices = Helper::allocateMemory<RenderIndices>( shapeIndicesCount );
-
-					for( size_t i = 0; i != shapeVertexCount; ++i )
-					{
-						const p2t::Point & shape_pos = p2t_points[i];
-
-						shape.pos[i].x = (float)shape_pos.x;
-						shape.pos[i].y = (float)shape_pos.y;
-
-						shape.uv[i].x = ((float)shape_pos.x - imageOffset.x) / imageSize.x;
-						shape.uv[i].y = ((float)shape_pos.y - imageOffset.y) / imageSize.y;
-					}
-
-					for( size_t i = 0; i != shapeIndicesCount; ++i )
-					{
-						shape.indices[i] = (RenderIndices)shape_indices[i];
-					}
-
-					aw << shape.vertexCount;
-
-					if( shape.vertexCount > 0 )
-					{
-						aw.writePODs( shape.pos, shape.vertexCount );
-						aw.writePODs( shape.uv, shape.vertexCount );
-
-						aw << shape.indexCount;
-
-						aw.writePODs( shape.indices, shape.indexCount );
-					}
-
-					Helper::freeMemory( shape.pos );
-					Helper::freeMemory( shape.uv );
-					Helper::freeMemory( shape.indices );
+					aw.writePODs( &indices[0], indexCount );
 				}
 			}
 		}

@@ -38,7 +38,13 @@ namespace Metabuf
     void archive_read( stdex::memory_reader & ar, Menge::Polygon & _value, void * _userData );
 	void archive_read( stdex::memory_reader & ar, Menge::Viewport & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, Menge::Floats & _value, void * _userData );
-    void archive_read( stdex::memory_reader & ar, mt::vec2f & _value, void * _userData );
+	void archive_read( stdex::memory_reader & ar, Menge::Int8s & _value, void * _userData );
+	void archive_read( stdex::memory_reader & ar, Menge::Int16s & _value, void * _userData );
+	void archive_read( stdex::memory_reader & ar, Menge::Int32s & _value, void * _userData );
+	void archive_read( stdex::memory_reader & ar, Menge::UInt8s & _value, void * _userData );
+	void archive_read( stdex::memory_reader & ar, Menge::UInt16s & _value, void * _userData );
+	void archive_read( stdex::memory_reader & ar, Menge::UInt32s & _value, void * _userData );
+	void archive_read( stdex::memory_reader & ar, mt::vec2f & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, mt::vec3f & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, mt::vec4f & _value, void * _userData );
 	void archive_read( stdex::memory_reader & ar, mt::box2f & _value, void * _userData );

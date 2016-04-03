@@ -146,7 +146,7 @@ namespace Menge
 						float value = 0.f;
 						if( sscanf( str_value, "%f", &value ) != 1 )
 						{
-							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text %s charOffset %s"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' charOffset '%s'"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -163,7 +163,7 @@ namespace Menge
 						float value = 0.f;
 						if( sscanf( str_value, "%f", &value ) != 1 )
 						{
-							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text '%s' lineOffset '%s'"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -183,7 +183,7 @@ namespace Menge
 						float a;
 						if( sscanf( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
 						{
-							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' lineOffset '%s'"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -203,7 +203,7 @@ namespace Menge
 						float a;
 						if( sscanf( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
 						{
-							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' lineOffset '%s'"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -220,7 +220,7 @@ namespace Menge
 						float value = 0.f;
 						if( sscanf( str_value, "%f", &value ) != 1 )
 						{
-							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text %s Override %s"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' Override '%s'"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -237,7 +237,7 @@ namespace Menge
 						uint32_t value = 0;
 						if( sscanf( str_value, "%d", &value ) != 1 )
 						{
-							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text %s tag 'Override' %s"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' tag 'Override' '%s'"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -252,7 +252,7 @@ namespace Menge
 						uint32_t value = 0;
 						if( sscanf( str_value, "%d", &value ) != 1 )
 						{
-							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text %s tag 'Empty' %s"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' tag 'Empty' '%s'"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -264,7 +264,7 @@ namespace Menge
 					}
 					else
 					{
-						LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid tag %s for text %s"
+						LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid tag '%s' for text '%s'"
 							, m_pakName.c_str()
 							, m_path.c_str()
 							, str_key
@@ -275,7 +275,7 @@ namespace Menge
 
 				if( text.empty() == true && isEmpty == false )
 				{
-					LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid text key %s value is empty"
+					LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid text key '%s' value is empty"
 						, m_pakName.c_str()
 						, m_path.c_str()
 						, text_key.c_str()

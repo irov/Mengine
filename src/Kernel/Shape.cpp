@@ -251,19 +251,15 @@ namespace Menge
 
         m_verticesLocal[0].x = visOffset.x + 0.f;
         m_verticesLocal[0].y = visOffset.y + 0.f;
-        m_verticesLocal[0].z = 0.f;
 
         m_verticesLocal[1].x = visOffset.x + percent_size.z;
         m_verticesLocal[1].y = visOffset.y + 0.f;
-        m_verticesLocal[1].z = 0.f;
 
         m_verticesLocal[2].x = visOffset.x + percent_size.z;
         m_verticesLocal[2].y = visOffset.y + percent_size.w;
-        m_verticesLocal[2].z = 0.f;
 
         m_verticesLocal[3].x = visOffset.x + 0.f;
         m_verticesLocal[3].y = visOffset.y + percent_size.w;
-        m_verticesLocal[3].z = 0.f;
 
 		const mt::uv4f & uv_image = m_resourceImage->getUVImage();
 		const mt::uv4f & uv_alpha = m_resourceImage->getUVAlpha();
@@ -364,10 +360,10 @@ namespace Menge
 
         for( uint32_t i = 0; i != 4; ++i )
         {
-            const mt::vec3f & pos = m_verticesLocal[i];
+            const mt::vec2f & pos = m_verticesLocal[i];
 
 			mt::vec3f & wm_pos = m_verticesWM[i].position;
-            mt::mul_v3_m4( wm_pos, pos, wm);
+            mt::mul_v3_v2_m4( wm_pos, pos, wm);
         }
     }
 }

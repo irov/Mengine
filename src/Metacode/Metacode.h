@@ -4556,34 +4556,140 @@ namespace Metacode
         void _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
         void _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
     public:
-        class Meta_ImageMesh
+        class Meta_ImageShape
             : public Metabuf::Metadata
         { 
         public:
-            Meta_ImageMesh();
+            Meta_ImageShape();
         
         public:
             uint32_t getId() const override;
         
         public:
-            uint32_t get_Count() const
+            bool has_Count() const
             {
-                return this->Count;
+                return Count_successful;
             }
             
-            void swap_Count( uint32_t & _value ) const
+            bool get_Count( uint32_t & _value ) const
             {
+                if( Count_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Count;
+            
+                return true;
+            }
+            
+            bool swap_Count( uint32_t & _value ) const
+            {
+                if( Count_successful == false )
+                {
+                    return false;
+                }
+            
                 std::swap( _value, this->Count);
+            
+                return true;
             }
             
-            bool get_Immutable() const
+            const mt::vec2f & get_ImageMaxSize() const
             {
-                return this->Immutable;
+                return this->ImageMaxSize;
             }
             
-            void swap_Immutable( bool & _value ) const
+            void swap_ImageMaxSize( mt::vec2f & _value ) const
             {
+                std::swap( _value, this->ImageMaxSize);
+            }
+            
+            bool has_ImageOffset() const
+            {
+                return ImageOffset_successful;
+            }
+            
+            bool get_ImageOffset( mt::vec2f & _value ) const
+            {
+                if( ImageOffset_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->ImageOffset;
+            
+                return true;
+            }
+            
+            bool swap_ImageOffset( mt::vec2f & _value ) const
+            {
+                if( ImageOffset_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->ImageOffset);
+            
+                return true;
+            }
+            
+            bool has_ImageSize() const
+            {
+                return ImageSize_successful;
+            }
+            
+            bool get_ImageSize( mt::vec2f & _value ) const
+            {
+                if( ImageSize_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->ImageSize;
+            
+                return true;
+            }
+            
+            bool swap_ImageSize( mt::vec2f & _value ) const
+            {
+                if( ImageSize_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->ImageSize);
+            
+                return true;
+            }
+            
+            bool has_Immutable() const
+            {
+                return Immutable_successful;
+            }
+            
+            bool get_Immutable( bool & _value ) const
+            {
+                if( Immutable_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Immutable;
+            
+                return true;
+            }
+            
+            bool swap_Immutable( bool & _value ) const
+            {
+                if( Immutable_successful == false )
+                {
+                    return false;
+                }
+            
                 std::swap( _value, this->Immutable);
+            
+                return true;
             }
             
             uint32_t get_LayerIndex() const
@@ -4596,6 +4702,35 @@ namespace Metacode
                 std::swap( _value, this->LayerIndex);
             }
             
+            bool has_Subtract() const
+            {
+                return Subtract_successful;
+            }
+            
+            bool get_Subtract( bool & _value ) const
+            {
+                if( Subtract_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Subtract;
+            
+                return true;
+            }
+            
+            bool swap_Subtract( bool & _value ) const
+            {
+                if( Subtract_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Subtract);
+            
+                return true;
+            }
+            
         protected:
             void _parseData( const unsigned char * _buff, size_t _size, size_t & _read ) override;
             void _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
@@ -4603,44 +4738,24 @@ namespace Metacode
             void _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
             void _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
         public:
-            class Meta_Mesh
+            class Meta_Shape
                 : public Metabuf::Metadata
             { 
             public:
-                Meta_Mesh();
+                Meta_Shape();
             
             public:
                 uint32_t getId() const override;
             
             public:
-                const Menge::UInt16s & get_Indices() const
+                const Menge::Polygon & get_Polygon() const
                 {
-                    return this->Indices;
+                    return this->Polygon;
                 }
                 
-                void swap_Indices( Menge::UInt16s & _value ) const
+                void swap_Polygon( Menge::Polygon & _value ) const
                 {
-                    std::swap( _value, this->Indices);
-                }
-                
-                const Menge::Floats & get_VertexPositions() const
-                {
-                    return this->VertexPositions;
-                }
-                
-                void swap_VertexPositions( Menge::Floats & _value ) const
-                {
-                    std::swap( _value, this->VertexPositions);
-                }
-                
-                const Menge::Floats & get_VertexUVs() const
-                {
-                    return this->VertexUVs;
-                }
-                
-                void swap_VertexUVs( Menge::Floats & _value ) const
-                {
-                    std::swap( _value, this->VertexUVs);
+                    std::swap( _value, this->Polygon);
                 }
                 
             protected:
@@ -4652,26 +4767,33 @@ namespace Metacode
             public:
             protected:
             protected:
-                mutable Menge::UInt16s Indices;
-                mutable Menge::Floats VertexPositions;
-                mutable Menge::Floats VertexUVs;
+                mutable Menge::Polygon Polygon;
             };
             
         protected:
         protected:
+            bool Count_successful;
             mutable uint32_t Count;
+            mutable mt::vec2f ImageMaxSize;
+            bool ImageOffset_successful;
+            mutable mt::vec2f ImageOffset;
+            bool ImageSize_successful;
+            mutable mt::vec2f ImageSize;
+            bool Immutable_successful;
             mutable bool Immutable;
             mutable uint32_t LayerIndex;
+            bool Subtract_successful;
+            mutable bool Subtract;
         public:
-            typedef stdex::auto_array<Meta_Mesh> TVectorMeta_Mesh;
+            typedef stdex::auto_array<Meta_Shape> TVectorMeta_Shape;
         
-            const TVectorMeta_Mesh & get_IncludesMesh() const
+            const TVectorMeta_Shape & get_IncludesShape() const
             {
-                return this->includes_Meta_Mesh;
+                return this->includes_Meta_Shape;
             }
         
         protected:
-            TVectorMeta_Mesh includes_Meta_Mesh;
+            TVectorMeta_Shape includes_Meta_Shape;
         };
         
         class Meta_KeyFrames2D
@@ -5480,15 +5602,15 @@ namespace Metacode
         mutable uint32_t MaxIndex;
         mutable uint32_t Version;
     public:
-        typedef stdex::auto_array<Meta_ImageMesh> TVectorMeta_ImageMesh;
+        typedef stdex::auto_array<Meta_ImageShape> TVectorMeta_ImageShape;
     
-        const TVectorMeta_ImageMesh & get_IncludesImageMesh() const
+        const TVectorMeta_ImageShape & get_IncludesImageShape() const
         {
-            return this->includes_Meta_ImageMesh;
+            return this->includes_Meta_ImageShape;
         }
     
     protected:
-        TVectorMeta_ImageMesh includes_Meta_ImageMesh;
+        TVectorMeta_ImageShape includes_Meta_ImageShape;
     public:
         typedef stdex::auto_array<Meta_KeyFrames2D> TVectorMeta_KeyFrames2D;
     

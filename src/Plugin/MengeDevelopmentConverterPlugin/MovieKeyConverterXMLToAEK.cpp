@@ -48,8 +48,8 @@ namespace Menge
 	{
 		m_convertExt = ".aek";
 
-		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
+		m_archivator = ARCHIVE_SERVICE( m_serviceProvider )
+			->getArchivator( STRINGIZE_STRING_LOCAL( m_serviceProvider, "lz4" ) );
 
 		if( m_archivator == nullptr )
 		{
@@ -65,8 +65,8 @@ namespace Menge
 		if( this->loadFramePak_( buffer ) == false )
 		{
 			return false;
-		}		
-		
+		}
+
 		if( this->writeFramePak_( buffer ) == false )
 		{
 			return false;
@@ -77,8 +77,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieKeyConverterXMLToAEK::validateVersion( const InputStreamInterfacePtr & _stream ) const
 	{
-		MovieFramePackInterfacePtr framePack = DATA_SERVICE(m_serviceProvider)
-			->dataflowT<MovieFramePackInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "aekMovie"), _stream );
+		MovieFramePackInterfacePtr framePack = DATA_SERVICE( m_serviceProvider )
+			->dataflowT<MovieFramePackInterfacePtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "aekMovie" ), _stream );
 
 		if( framePack == nullptr )
 		{
@@ -101,18 +101,18 @@ namespace Menge
 
 		FilePath path_bin = Helper::stringizeString( m_serviceProvider, binPath );
 
-		if( LOADER_SERVICE(m_serviceProvider)
+		if( LOADER_SERVICE( m_serviceProvider )
 			->load( m_options.pakName, path_bin, &keyFramesPack, exist ) == false )
 		{
 			if( exist == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("MovieKeyConverter::convert: KeyFramesFile '%s' not found"
+				LOGGER_ERROR( m_serviceProvider )("MovieKeyConverter::convert: KeyFramesFile '%s' not found"
 					, m_options.inputFileName.c_str()
 					);
 			}
 			else
 			{
-				LOGGER_ERROR(m_serviceProvider)("MovieKeyConverter::convert: KeyFramesFile invalid parse '%s' "
+				LOGGER_ERROR( m_serviceProvider )("MovieKeyConverter::convert: KeyFramesFile invalid parse '%s' "
 					, m_options.inputFileName.c_str()
 					);
 			}
@@ -120,9 +120,9 @@ namespace Menge
 			return false;
 		}
 
-		
 
-		ArchiveWrite aw(_buffer);
+
+		ArchiveWrite aw( _buffer );
 
 		uint32_t true_metacode_version = Metacode::get_metacode_version();
 
@@ -152,7 +152,7 @@ namespace Menge
 		}
 
 		const Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames2D & includes_frames2d = keyFramesPack.get_IncludesKeyFrames2D();
-		
+
 		for( Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames2D::const_iterator
 			it = includes_frames2d.begin(),
 			it_end = includes_frames2d.end();
@@ -178,13 +178,13 @@ namespace Menge
 					it_frame = includes_frame2d.begin(),
 					it_frame_end = includes_frame2d.end();
 				it_frame != it_frame_end;
-				++it_frame)
+				++it_frame )
 				{
 					const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it_frame;
 
-					mt::vec2f anchorPoint2d(0.f, 0.f);
-					mt::vec2f position2d(0.f, 0.f);
-					mt::vec2f scale2d(0.f, 0.f);
+					mt::vec2f anchorPoint2d( 0.f, 0.f );
+					mt::vec2f position2d( 0.f, 0.f );
+					mt::vec2f scale2d( 0.f, 0.f );
 					float angle = 0.f;
 					float opacity = 1.f;
 
@@ -201,9 +201,9 @@ namespace Menge
 					meta_frame2d.get_Volume( volume );
 
 					MovieFrameSource frame;
-					frame.anchorPoint = mt::vec3f(anchorPoint2d, 0.f);
-					frame.position = mt::vec3f(position2d, 0.f);
-					frame.scale = mt::vec3f(scale2d, 1.f);
+					frame.anchorPoint = mt::vec3f( anchorPoint2d, 0.f );
+					frame.position = mt::vec3f( position2d, 0.f );
+					frame.scale = mt::vec3f( scale2d, 1.f );
 					frame.opacity = opacity;
 					frame.volume = volume;
 
@@ -223,10 +223,10 @@ namespace Menge
 				frameLayer.count = count;
 
 				MovieFrameSource frame;
-				frame.anchorPoint = mt::vec3f(0.f, 0.f, 0.f);
-				frame.position = mt::vec3f(0.f, 0.f, 0.f);
-				frame.rotation = mt::vec3f(0.f, 0.f, 0.f);
-				frame.scale = mt::vec3f(1.f, 1.f, 1.f);
+				frame.anchorPoint = mt::vec3f( 0.f, 0.f, 0.f );
+				frame.position = mt::vec3f( 0.f, 0.f, 0.f );
+				frame.rotation = mt::vec3f( 0.f, 0.f, 0.f );
+				frame.scale = mt::vec3f( 1.f, 1.f, 1.f );
 				frame.opacity = 0.f;
 				frame.volume = 0.f;
 
@@ -238,15 +238,15 @@ namespace Menge
 					it_frame = includes_frame2d.begin(),
 					it_frame_end = includes_frame2d.end();
 				it_frame != it_frame_end;
-				++it_frame)
+				++it_frame )
 				{
 					const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it_frame;
 
 					uint32_t count_frame = 1;
 
-					mt::vec2f anchorPoint2d(0.f, 0.f);
-					mt::vec2f position2d(0.f, 0.f);
-					mt::vec2f scale2d(1.f, 1.f);
+					mt::vec2f anchorPoint2d( 0.f, 0.f );
+					mt::vec2f position2d( 0.f, 0.f );
+					mt::vec2f scale2d( 1.f, 1.f );
 
 					float angle = 0.f;
 
@@ -264,19 +264,19 @@ namespace Menge
 					else
 					{
 						frameLast = true;
-					}					
+					}
 
 					meta_frame2d.get_AnchorPoint( anchorPoint2d );
 					meta_frame2d.get_Position( position2d );
 					meta_frame2d.get_Scale( scale2d );
 					meta_frame2d.get_Rotation( angle );
 					meta_frame2d.get_Opacity( frame.opacity );
-					meta_frame2d.get_Count(count_frame);
+					meta_frame2d.get_Count( count_frame );
 					meta_frame2d.get_Volume( volume );
 
-					frame.anchorPoint = mt::vec3f(anchorPoint2d, 0.f);
-					frame.position = mt::vec3f(position2d, 0.f);
-					frame.scale = mt::vec3f(scale2d, 1.f);
+					frame.anchorPoint = mt::vec3f( anchorPoint2d, 0.f );
+					frame.position = mt::vec3f( position2d, 0.f );
+					frame.scale = mt::vec3f( scale2d, 1.f );
 
 					frame.volume = volume;
 
@@ -322,35 +322,35 @@ namespace Menge
 			frameLayer.immutable = immutable ? 1 : 0;
 
 			MovieFrameSource frame;
-			frame.anchorPoint = mt::vec3f(0.f, 0.f, 0.f);
-			frame.position = mt::vec3f(0.f, 0.f, 0.f);
-			frame.rotation = mt::vec3f(0.f, 0.f, 0.f);
-			frame.scale = mt::vec3f(1.f, 1.f, 1.f);
+			frame.anchorPoint = mt::vec3f( 0.f, 0.f, 0.f );
+			frame.position = mt::vec3f( 0.f, 0.f, 0.f );
+			frame.rotation = mt::vec3f( 0.f, 0.f, 0.f );
+			frame.scale = mt::vec3f( 1.f, 1.f, 1.f );
 			frame.opacity = 0.f;
-			frame.volume = 0.f;	
+			frame.volume = 0.f;
 
-			mt::vec3f rotation(0.f, 0.f, 0.f);
-			mt::vec3f orientation(0.f, 0.f, 0.f);
-			
+			mt::vec3f rotation( 0.f, 0.f, 0.f );
+			mt::vec3f orientation( 0.f, 0.f, 0.f );
+
 			const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::TVectorMeta_KeyFrame3D & includes_frame3d = meta_frames3d.get_IncludesKeyFrame3D();
 
 			for( Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::TVectorMeta_KeyFrame3D::const_iterator
-				it_frame= includes_frame3d.begin(),
+				it_frame = includes_frame3d.begin(),
 				it_frame_end = includes_frame3d.end();
 			it_frame != it_frame_end;
-			++it_frame)
+			++it_frame )
 			{
 				const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & meta_frame3d = *it_frame;
 
 				uint32_t count_frame = 1;
-				
+
 				meta_frame3d.get_AnchorPoint( frame.anchorPoint );
 				meta_frame3d.get_Position( frame.position );
 				meta_frame3d.get_Rotation( rotation );
 				meta_frame3d.get_Orientation( orientation );
 				meta_frame3d.get_Scale( frame.scale );
 				meta_frame3d.get_Opacity( frame.opacity );
-				meta_frame3d.get_Count(count_frame);
+				meta_frame3d.get_Count( count_frame );
 
 				frame.volume = 1.f;
 				meta_frame3d.get_Volume( frame.volume );
@@ -365,7 +365,7 @@ namespace Menge
 				mt::mul_q_q( qor, qo, qr );
 
 				mt::quat_to_euler( qor, frame.rotation );
-			
+
 				if( frameLayer.immutable == 0 )
 				{
 					for( uint32_t i = 0; i != count_frame; ++i )
@@ -396,7 +396,7 @@ namespace Menge
 		++it )
 		{
 			const ConverterMovieLayerFrame & frame = (*it);
-						
+
 			aw << frame.count;
 			aw << frame.immutable;
 
@@ -404,7 +404,7 @@ namespace Menge
 			{
 				continue;
 			}
-			
+
 			if( frame.immutable == 1 )
 			{
 				aw << frame.source.anchorPoint;
@@ -419,39 +419,39 @@ namespace Menge
 				const TVectorMovieFrameSource & frames = frame.frames;
 
 #	define WRITE_FRAME_SOURCE( Type, Member )\
-				{ \
+												{ \
 					Type value = frames[0].Member; \
 					\
 					uint8_t value_immutable = 1; \
 					for( uint32_t i = 1; i != frame.count; ++i ) \
-					{ \
+															{ \
 						const MovieFrameSource & source = frames[i]; \
 						\
 						if( source.Member == value ) \
-						{ \
+																		{ \
 							continue; \
-						} \
+																		} \
 						\
 						value_immutable = 0; \
 						break; \
-					} \
+															} \
 					\
 					aw << value_immutable; \
 					\
 					if( value_immutable == 1 ) \
-					{ \
+															{ \
 						aw << value; \
-					} \
-					else \
-					{ \
+															} \
+											else \
+													{ \
 						for( uint32_t i = 0; i != frame.count; ++i ) \
-						{ \
+																		{ \
 							const MovieFrameSource & source = frames[i]; \
 							\
 							aw << source.Member; \
-						} \
-					} \
-				}
+																		} \
+													} \
+												}
 
 				WRITE_FRAME_SOURCE( mt::vec3f, anchorPoint );
 				WRITE_FRAME_SOURCE( mt::vec3f, position );
@@ -461,7 +461,7 @@ namespace Menge
 				WRITE_FRAME_SOURCE( mt::vec3f, scale );
 				WRITE_FRAME_SOURCE( float, opacity );
 				WRITE_FRAME_SOURCE( float, volume );
-				
+
 #	undef WRITE_FRAME_SOURCE
 			}
 		}
@@ -471,7 +471,7 @@ namespace Menge
 		uint32_t remapsSize = (uint32_t)includes_timeremaps.size();
 		aw << remapsSize;
 
-		for( Metacode::Meta_KeyFramesPack::TVectorMeta_TimeRemap::const_iterator 
+		for( Metacode::Meta_KeyFramesPack::TVectorMeta_TimeRemap::const_iterator
 			it = includes_timeremaps.begin(),
 			it_end = includes_timeremaps.end();
 		it != it_end;
@@ -494,63 +494,273 @@ namespace Menge
 			}
 		}
 
-		const Metacode::Meta_KeyFramesPack::TVectorMeta_ImageMesh & includes_imagemeshes = keyFramesPack.get_IncludesImageMesh();
+		const Metacode::Meta_KeyFramesPack::TVectorMeta_ImageShape & includes_imageshapes = keyFramesPack.get_IncludesImageShape();
 
-		uint32_t meshesSize = (uint32_t)includes_imagemeshes.size();
-		aw << meshesSize;
+		uint32_t shapesSize = (uint32_t)includes_imageshapes.size();
+		aw << shapesSize;
 
-		for( Metacode::Meta_KeyFramesPack::TVectorMeta_ImageMesh::const_iterator
-			it = includes_imagemeshes.begin(),
-			it_end = includes_imagemeshes.end();
+		for( Metacode::Meta_KeyFramesPack::TVectorMeta_ImageShape::const_iterator
+			it = includes_imageshapes.begin(),
+			it_end = includes_imageshapes.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_KeyFramesPack::Meta_ImageMesh & meta_imagemesh = *it;
+			const Metacode::Meta_KeyFramesPack::Meta_ImageShape & meta_imageshape = *it;
 
-			uint32_t layerIndex = meta_imagemesh.get_LayerIndex();
+			uint32_t layerIndex = meta_imageshape.get_LayerIndex();
 
 			aw << layerIndex;
 
-			uint32_t count = meta_imagemesh.get_Count();
+			const mt::vec2f & imageMaxSize = meta_imageshape.get_ImageMaxSize();
 
-			aw << count;
+			mt::vec2f imageSize;
+			if( meta_imageshape.get_ImageSize( imageSize ) == false )
+			{
+				imageSize = imageMaxSize;
+			}
 
-			bool immutable = meta_imagemesh.get_Immutable();
+			mt::vec2f imageOffset( 0.f, 0.f );
+			meta_imageshape.get_ImageOffset( imageOffset );
 
-			aw << immutable;
-			
-			const Metacode::Meta_KeyFramesPack::Meta_ImageMesh::TVectorMeta_Mesh & includes_meshes = meta_imagemesh.get_IncludesMesh();
+			bool subtract = false;
+			meta_imageshape.get_Subtract( subtract );
 
-			uint32_t includes_meshes_size = (uint32_t)includes_meshes.size();
+			const Metacode::Meta_KeyFramesPack::Meta_ImageShape::TVectorMeta_Shape & includes_shapes = meta_imageshape.get_IncludesShape();
 
-			aw << includes_meshes_size;
+			uint32_t includes_shapes_size = (uint32_t)includes_shapes.size();
 
-			for( Metacode::Meta_KeyFramesPack::Meta_ImageMesh::TVectorMeta_Mesh::const_iterator
-				it_shape = includes_meshes.begin(),
-				it_shape_end = includes_meshes.end();
+			aw << includes_shapes_size;
+
+			for( Metacode::Meta_KeyFramesPack::Meta_ImageShape::TVectorMeta_Shape::const_iterator
+				it_shape = includes_shapes.begin(),
+				it_shape_end = includes_shapes.end();
 			it_shape != it_shape_end;
 			++it_shape )
 			{
-				const Metacode::Meta_KeyFramesPack::Meta_ImageMesh::Meta_Mesh & meta_mesh = *it_shape;
+				const Metacode::Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & meta_shape = *it_shape;
 
-				const Menge::Floats & positions = meta_mesh.get_VertexPositions();
-				const Menge::Floats & uvs = meta_mesh.get_VertexUVs();
-				const Menge::UInt16s & indices = meta_mesh.get_Indices();
-				
-				uint32_t vertexCount = (uint32_t)positions.size();
+				Menge::Polygon polygon = meta_shape.get_Polygon();
+				polygon.correct();
 
-				aw << vertexCount;
+				mt::vec2f v0( 0.f, 0.f );
+				mt::vec2f v1( imageMaxSize.x, 0.f );
+				mt::vec2f v2( imageMaxSize.x, imageMaxSize.y );
+				mt::vec2f v3( 0.f, imageMaxSize.y );
 
-				if( vertexCount != 0 )
+				Polygon imagePolygon;
+				imagePolygon.append( v0 );
+				imagePolygon.append( v1 );
+				imagePolygon.append( v2 );
+				imagePolygon.append( v3 );
+				imagePolygon.correct();
+
+				TVectorPolygon output;
+				if( subtract == false )
 				{
-					aw.writePODs( &positions[0], vertexCount );
-					aw.writePODs( &uvs[0], vertexCount );
+					if( polygon.intersection( imagePolygon, output ) == false )
+					{
+						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
+							, layerIndex
+							);
 
-					uint32_t indexCount = (uint32_t)indices.size();
+						return false;
+					}
+				}
+				else
+				{
+					if( imagePolygon.difference( polygon, output ) == false )
+					{
+						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
+							, layerIndex
+							);
 
-					aw << indexCount;
+						return false;
+					}
+				}
 
-					aw.writePODs( &indices[0], indexCount );
+				MovieFrameShape shape;
+				if( output.empty() == true )
+				{
+					shape.pos = nullptr;
+					shape.uv = nullptr;
+					shape.indices = nullptr;
+
+					shape.vertexCount = 0;
+					shape.indexCount = 0;
+
+					aw << shape.vertexCount;
+				}
+				else
+				{
+					std::vector<p2t::Point> p2t_points;
+
+					size_t max_points = 0;
+
+					for( TVectorPolygon::const_iterator
+						it = output.begin(),
+						it_end = output.end();
+					it != it_end;
+					++it )
+					{
+						const Menge::Polygon & shape_vertex = *it;
+
+						size_t outer_count = shape_vertex.outer_count();
+
+						max_points += outer_count - 1;
+
+						size_t inners_count = shape_vertex.inners_count();
+
+						for( size_t index = 0; index != inners_count; ++index )
+						{
+							size_t inner_count = shape_vertex.inner_count( index );
+
+							max_points += inner_count - 1;
+						}
+					}
+
+					if( max_points >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
+					{
+						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d vertex overflow %d (max %d)"
+							, layerIndex
+							, max_points
+							, MENGINE_MOVIE_SHAPE_MAX_VERTEX
+							);
+
+						return false;
+					}
+
+					p2t_points.reserve( max_points );
+
+					Menge::TVectorIndices shape_indices;
+
+					for( TVectorPolygon::const_iterator
+						it = output.begin(),
+						it_end = output.end();
+					it != it_end;
+					++it )
+					{
+						const Menge::Polygon & shape_vertex = *it;
+
+						std::vector<p2t::Point*> p2t_polygon;
+
+						size_t outer_count = shape_vertex.outer_count();
+
+						for( size_t index = 0; index != outer_count - 1; ++index )
+						{
+							const mt::vec2f & v = shape_vertex.outer_point( index );
+
+							p2t_points.push_back( p2t::Point( v.x, v.y ) );
+							p2t::Point * p = &p2t_points.back();
+
+							p2t_polygon.push_back( p );
+						}
+
+						p2t::CDT * cdt = new p2t::CDT( p2t_polygon );
+
+						size_t inners_count = shape_vertex.inners_count();
+
+						for( size_t index_inners = 0; index_inners != inners_count; ++index_inners )
+						{
+							std::vector<p2t::Point*> p2t_hole;
+
+							size_t inner_count = shape_vertex.inner_count( index_inners );
+
+							for( size_t index_inner = 0; index_inner != inner_count - 1; ++index_inner )
+							{
+								const mt::vec2f & v = shape_vertex.inner_point( index_inners, index_inner );
+
+								p2t_points.push_back( p2t::Point( v.x, v.y ) );
+								p2t::Point * p = &p2t_points.back();
+
+								p2t_hole.push_back( p );
+							}
+
+							cdt->AddHole( p2t_hole );
+						}
+
+						cdt->Triangulate();
+
+						std::vector<p2t::Triangle*> triangles = cdt->GetTriangles();
+
+						for( std::vector<p2t::Triangle*>::iterator
+							it = triangles.begin(),
+							it_end = triangles.end();
+						it != it_end;
+						++it )
+						{
+							p2t::Triangle* tr = *it;
+
+							p2t::Point * p0 = tr->GetPoint( 0 );
+							p2t::Point * p1 = tr->GetPoint( 1 );
+							p2t::Point * p2 = tr->GetPoint( 2 );
+
+							p2t::Point * pb = &p2t_points[0];
+
+							uint32_t i0 = (uint32_t)std::distance( pb, p0 );
+							uint32_t i1 = (uint32_t)std::distance( pb, p1 );
+							uint32_t i2 = (uint32_t)std::distance( pb, p2 );
+
+							shape_indices.push_back( i0 );
+							shape_indices.push_back( i1 );
+							shape_indices.push_back( i2 );
+						}
+
+						delete cdt;
+					}
+
+					size_t shapeVertexCount = p2t_points.size();
+					size_t shapeIndicesCount = shape_indices.size();
+
+					if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
+					{
+						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d index overflow %d (max $d)"
+							, layerIndex
+							, shapeIndicesCount
+							, MENGINE_MOVIE_SHAPE_MAX_INDICES
+							);
+
+						return false;
+					}
+
+					shape.vertexCount = (uint16_t)shapeVertexCount;
+					shape.indexCount = (uint16_t)shapeIndicesCount;
+
+					shape.pos = Helper::allocateMemory<mt::vec2f>( shapeVertexCount );
+					shape.uv = Helper::allocateMemory<mt::vec2f>( shapeVertexCount );
+
+					shape.indices = Helper::allocateMemory<RenderIndices>( shapeIndicesCount );
+
+					for( size_t i = 0; i != shapeVertexCount; ++i )
+					{
+						const p2t::Point & shape_pos = p2t_points[i];
+
+						shape.pos[i].x = (float)shape_pos.x;
+						shape.pos[i].y = (float)shape_pos.y;
+
+						shape.uv[i].x = ((float)shape_pos.x - imageOffset.x) / imageSize.x;
+						shape.uv[i].y = ((float)shape_pos.y - imageOffset.y) / imageSize.y;
+					}
+
+					for( size_t i = 0; i != shapeIndicesCount; ++i )
+					{
+						shape.indices[i] = (RenderIndices)shape_indices[i];
+					}
+
+					aw << shape.vertexCount;
+
+					if( shape.vertexCount > 0 )
+					{
+						aw.writePODs( shape.pos, shape.vertexCount );
+						aw.writePODs( shape.uv, shape.vertexCount );
+
+						aw << shape.indexCount;
+
+						aw.writePODs( shape.indices, shape.indexCount );
+					}
+
+					Helper::freeMemory( shape.pos );
+					Helper::freeMemory( shape.uv );
+					Helper::freeMemory( shape.indices );
 				}
 			}
 		}
@@ -560,7 +770,7 @@ namespace Menge
 		uint32_t polygonsSize = (uint32_t)includes_polygons.size();
 		aw << polygonsSize;
 
-		for( Metacode::Meta_KeyFramesPack::TVectorMeta_Polygon::const_iterator 
+		for( Metacode::Meta_KeyFramesPack::TVectorMeta_Polygon::const_iterator
 			it = includes_polygons.begin(),
 			it_end = includes_polygons.end();
 		it != it_end;
@@ -578,7 +788,7 @@ namespace Menge
 
 			if( polygon_size >= MENGINE_MOVIE_POLYGON_MAX_VERTEX )
 			{
-				LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d polygon vertex overflow %d (max $d)"
+				LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d polygon vertex overflow %d (max $d)"
 					, layerIndex
 					, polygon_size
 					, MENGINE_MOVIE_POLYGON_MAX_VERTEX
@@ -606,13 +816,13 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieKeyConverterXMLToAEK::writeFramePak_( const Blobject & _buffer )
-	{	
-		OutputStreamInterfacePtr output_stream = FILE_SERVICE(m_serviceProvider)
+	{
+		OutputStreamInterfacePtr output_stream = FILE_SERVICE( m_serviceProvider )
 			->openOutputFile( m_options.pakName, m_options.outputFileName );
 
 		if( output_stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::writeFramePak_ invalid open file %s:%s"
+			LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::writeFramePak_ invalid open file %s:%s"
 				, m_options.pakName.c_str()
 				, m_options.outputFileName.c_str()
 				);
@@ -623,9 +833,9 @@ namespace Menge
 		const void * buffer_memory = &_buffer[0];
 		size_t buffer_size = _buffer.size();
 
-		if( Helper::writeStreamArchiveData( m_serviceProvider, output_stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_AEK), GET_MAGIC_VERSION(MAGIC_AEK), false, buffer_memory, buffer_size ) == false )
+		if( Helper::writeStreamArchiveData( m_serviceProvider, output_stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), false, buffer_memory, buffer_size ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::writeFramePak_ invalid write stream %s:%s"
+			LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::writeFramePak_ invalid write stream %s:%s"
 				, m_options.pakName.c_str()
 				, m_options.outputFileName.c_str()
 				);

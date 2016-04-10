@@ -95,7 +95,7 @@ namespace Menge
 			{
 				DWORD dwError = ::GetLastError();
 
-				LOGGER_ERROR( m_serviceProvider )("Win32InputStream::open seek offset %d size %d get error '%d'"
+				LOGGER_ERROR( m_serviceProvider )("Win32InputStream::open seek offset %d size %d get error '%u'"
 					, m_offset
 					, m_size
 					, dwError
@@ -244,7 +244,7 @@ namespace Menge
 		{
 			DWORD dwError = GetLastError();
 
-			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read %d:%d get error '%d'"
+			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read %d:%d get error '%u'"
 				, _size
 				, m_size
 				, dwError
@@ -281,7 +281,7 @@ namespace Menge
             {
                 DWORD dwError = ::GetLastError();
 
-                LOGGER_ERROR(m_serviceProvider)("Win32InputStream::seek %d:%d get error '%d'"
+                LOGGER_ERROR(m_serviceProvider)("Win32InputStream::seek %d:%d get error '%u'"
                     , _pos
                     , m_size
                     , dwError

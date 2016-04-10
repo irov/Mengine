@@ -117,10 +117,6 @@ namespace Menge
 
 		pybind::object py_event = _dict[_method];
 
-#	ifdef _DEBUG
-		_dict.remove( _method );
-#	endif
-
 		return py_event;
 	}
 	//////////////////////////////////////////////////////////////////////////

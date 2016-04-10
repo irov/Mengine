@@ -92,6 +92,8 @@ namespace mt
 
 	MENGINE_MATH_FUNCTION_INLINE void make_quat_from_euler( quatf & _out, const mt::vec3f & _euler );
 	MENGINE_MATH_FUNCTION_INLINE void quat_to_euler( const quatf & _q, mt::vec3f & _euler );
+
+	MENGINE_MATH_FUNCTION_INLINE void make_quat_from_angle( quatf & _out, float _angle );
 };
 
 #	if MENGINE_MATH_FORCE_INLINE == 1

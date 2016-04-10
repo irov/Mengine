@@ -226,6 +226,22 @@ namespace	Menge
             return sourceID;
         }
 		//////////////////////////////////////////////////////////////////////////
+		bool s_voicePause( uint32_t _soundId )
+		{
+			bool successful = SOUND_SERVICE( m_serviceProvider )
+				->pause( _soundId );
+
+			return successful;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_voiceResume( uint32_t _soundId )
+		{
+			bool successful = SOUND_SERVICE( m_serviceProvider )
+				->resume( _soundId );
+
+			return successful;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			uint32_t sourceID = s_createSoundSource( _resourceName, _loop, ESST_SOUND, _cb, _args );
@@ -407,7 +423,19 @@ namespace	Menge
 			SOUND_SERVICE(m_serviceProvider)
 				->stop( _sourceID );
 		}
-        //////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////
+		void s_soundPause( uint32_t _sourceID )
+		{
+			SOUND_SERVICE( m_serviceProvider )
+				->pause( _sourceID );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_soundResume( uint32_t _sourceID )
+		{
+			SOUND_SERVICE( m_serviceProvider )
+				->resume( _sourceID );
+		}
+		//////////////////////////////////////////////////////////////////////////
         void s_voiceStop( uint32_t _sourceID )
         {
             SOUND_SERVICE(m_serviceProvider)
@@ -705,6 +733,8 @@ namespace	Menge
         pybind::def_functor_args( "soundPlay", soundScriptMethod, &SoundScriptMethod::s_soundPlay );
 		pybind::def_functor_args( "soundPlayFromPosition", soundScriptMethod, &SoundScriptMethod::s_soundPlayFromPosition );
 		pybind::def_functor( "soundStop", soundScriptMethod, &SoundScriptMethod::s_soundStop );
+		pybind::def_functor( "soundPause", soundScriptMethod, &SoundScriptMethod::s_soundPause );
+		pybind::def_functor( "soundResume", soundScriptMethod, &SoundScriptMethod::s_soundResume );
 		pybind::def_functor( "soundSourceSetVolume", soundScriptMethod, &SoundScriptMethod::s_soundSourceSetVolume );
 		pybind::def_functor( "soundSourceGetVolume", soundScriptMethod, &SoundScriptMethod::s_soundSourceGetVolume );
 		pybind::def_functor( "soundSetVolume", soundScriptMethod, &SoundScriptMethod::s_soundSetVolume );
@@ -731,6 +761,8 @@ namespace	Menge
 
         pybind::def_functor( "voicePlay", soundScriptMethod, &SoundScriptMethod::s_voicePlay );
         pybind::def_functor( "voiceStop", soundScriptMethod, &SoundScriptMethod::s_voiceStop );
+		pybind::def_functor( "voicePause", soundScriptMethod, &SoundScriptMethod::s_voicePause );
+		pybind::def_functor( "voiceResume", soundScriptMethod, &SoundScriptMethod::s_voiceResume );
         pybind::def_functor( "voiceSetVolume", soundScriptMethod, &SoundScriptMethod::voiceSetVolume );
         pybind::def_functor( "voiceGetVolume", soundScriptMethod, &SoundScriptMethod::voiceGetVolume );
 	}

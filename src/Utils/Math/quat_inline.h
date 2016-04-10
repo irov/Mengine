@@ -602,6 +602,17 @@ namespace mt
 		_out.w = c1 * c2 * c3 + s1 * s2 * s3;
 	}
 
+	MENGINE_MATH_FUNCTION_INLINE void make_quat_from_angle( quatf & _out, float _angle )
+	{
+		float c = cosf_fast( _angle * 0.5f );
+		float s = sinf_fast( _angle * 0.5f );
+
+		_out.x = 0.f;
+		_out.y = 0.f;
+		_out.z = s;
+		_out.w = c;
+	}
+
 	MENGINE_MATH_FUNCTION_INLINE void quat_to_euler( const quatf & _q, mt::vec3f & _euler )
 	{
 		float sqw = _q.w * _q.w;

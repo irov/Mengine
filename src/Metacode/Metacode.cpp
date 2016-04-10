@@ -2783,7 +2783,7 @@ namespace Metacode
         {
         case 5:
             {
-                includes_Meta_ImageMesh.reserve( _count );
+                includes_Meta_ImageShape.reserve( _count );
             }break;
         case 6:
             {
@@ -2810,7 +2810,7 @@ namespace Metacode
         {
         case 5:
             {
-                Meta_KeyFramesPack::Meta_ImageMesh & metadata = includes_Meta_ImageMesh.emplace_back();
+                Meta_KeyFramesPack::Meta_ImageShape & metadata = includes_Meta_ImageShape.emplace_back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -2850,57 +2850,94 @@ namespace Metacode
     
     }
     //////////////////////////////////////////////////////////////////////////
-    Meta_KeyFramesPack::Meta_ImageMesh::Meta_ImageMesh()
+    Meta_KeyFramesPack::Meta_ImageShape::Meta_ImageShape()
         : Metabuf::Metadata()
+        , Count_successful(false)
+        , ImageOffset_successful(false)
+        , ImageSize_successful(false)
+        , Immutable_successful(false)
+        , Subtract_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Meta_KeyFramesPack::Meta_ImageMesh::getId() const
+    uint32_t Meta_KeyFramesPack::Meta_ImageShape::getId() const
     {
         return 5;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meta_KeyFramesPack::Meta_ImageMesh::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
+    void Meta_KeyFramesPack::Meta_ImageShape::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
     {
-        this->read( _buff, _size, _read, this->Count );
-        this->read( _buff, _size, _read, this->Immutable );
+        this->read( _buff, _size, _read, this->ImageMaxSize );
         this->read( _buff, _size, _read, this->LayerIndex );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meta_KeyFramesPack::Meta_ImageMesh::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
+    void Meta_KeyFramesPack::Meta_ImageShape::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_id;
-    }
-    
-    //////////////////////////////////////////////////////////////////////////
-    void Meta_KeyFramesPack::Meta_ImageMesh::_preparationIncludes( uint32_t _includes, uint32_t _count )
-    {
-        switch( _includes )
+        switch( _id )
         {
+        case 7:
+            {
+                this->read( _buff, _size, _read, this->Count );
+    
+                this->Count_successful = true;
+    
+            }break;
         case 4:
             {
-                includes_Meta_Mesh.reserve( _count );
+                this->read( _buff, _size, _read, this->ImageOffset );
+    
+                this->ImageOffset_successful = true;
+    
+            }break;
+        case 3:
+            {
+                this->read( _buff, _size, _read, this->ImageSize );
+    
+                this->ImageSize_successful = true;
+    
+            }break;
+        case 5:
+            {
+                this->read( _buff, _size, _read, this->Immutable );
+    
+                this->Immutable_successful = true;
+    
+            }break;
+        case 6:
+            {
+                this->read( _buff, _size, _read, this->Subtract );
+    
+                this->Subtract_successful = true;
+    
             }break;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meta_KeyFramesPack::Meta_ImageMesh::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
+    void Meta_KeyFramesPack::Meta_ImageShape::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
-        case 4:
+        case 8:
             {
-                Meta_KeyFramesPack::Meta_ImageMesh::Meta_Mesh & metadata = includes_Meta_Mesh.emplace_back();
+                includes_Meta_Shape.reserve( _count );
+            }break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meta_KeyFramesPack::Meta_ImageShape::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
+    {
+        switch( _includes )
+        {
+        case 8:
+            {
+                Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & metadata = includes_Meta_Shape.emplace_back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meta_KeyFramesPack::Meta_ImageMesh::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
+    void Meta_KeyFramesPack::Meta_ImageShape::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -2909,24 +2946,22 @@ namespace Metacode
     
     }
     //////////////////////////////////////////////////////////////////////////
-    Meta_KeyFramesPack::Meta_ImageMesh::Meta_Mesh::Meta_Mesh()
+    Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::Meta_Shape()
         : Metabuf::Metadata()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Meta_KeyFramesPack::Meta_ImageMesh::Meta_Mesh::getId() const
+    uint32_t Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::getId() const
     {
-        return 4;
+        return 8;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meta_KeyFramesPack::Meta_ImageMesh::Meta_Mesh::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
+    void Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
     {
-        this->read( _buff, _size, _read, this->Indices );
-        this->read( _buff, _size, _read, this->VertexPositions );
-        this->read( _buff, _size, _read, this->VertexUVs );
+        this->read( _buff, _size, _read, this->Polygon );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meta_KeyFramesPack::Meta_ImageMesh::Meta_Mesh::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
+    void Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         (void)_buff;
         (void)_size;
@@ -2935,14 +2970,14 @@ namespace Metacode
     }
     
     //////////////////////////////////////////////////////////////////////////
-    void Meta_KeyFramesPack::Meta_ImageMesh::Meta_Mesh::_preparationIncludes( uint32_t _includes, uint32_t _count )
+    void Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
     
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meta_KeyFramesPack::Meta_ImageMesh::Meta_Mesh::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
+    void Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -2951,7 +2986,7 @@ namespace Metacode
     
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meta_KeyFramesPack::Meta_ImageMesh::Meta_Mesh::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
+    void Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;

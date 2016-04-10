@@ -33,7 +33,7 @@ namespace mt
 		return angle2;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_FUNCTION_INLINE void angle_correct_interpolate_from_to(float _from, float _to, float & _correct_from, float & _correct_to)
+	MENGINE_MATH_FUNCTION_INLINE void angle_correct_interpolate_from_to( float _from, float _to, float & _correct_from, float & _correct_to)
 	{
 		float norm_angle_from = mt::angle_norm(_from);
 		float norm_angle_to = mt::angle_norm(_to);

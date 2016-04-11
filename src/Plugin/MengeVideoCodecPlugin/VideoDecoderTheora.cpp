@@ -136,7 +136,7 @@ namespace Menge
 
 				// да, это страница заголовков
 				ogg_stream_state oggStreamStateTest;
-				memset( &oggStreamStateTest, 0x00, sizeof( ogg_stream_state ) );
+				//memset( &oggStreamStateTest, 0x00, sizeof( ogg_stream_state ) );
 
 				// тестовый логический поток
 				// инициализируем тестовый поток на тот же поток с таким же
@@ -340,6 +340,35 @@ namespace Menge
 		theora_clear( &m_theoraState );
 		theora_comment_clear( &m_theoraComment );
 		theora_info_clear( &m_theoraInfo );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool VideoDecoderTheora::_rewind()
+	{
+		ogg_stream_clear( &m_oggStreamState );
+		ogg_sync_clear( &m_oggSyncState );
+		//ogg_packet_clear( &m_oggPacket );
+
+		theora_clear( &m_theoraState );
+		theora_comment_clear( &m_theoraComment );
+		theora_info_clear( &m_theoraInfo );
+
+		ogg_sync_init( &m_oggSyncState );
+
+		// init supporting Theora structures needed in header parsing
+		theora_comment_init( &m_theoraComment );
+		theora_info_init( &m_theoraInfo );
+
+		if( m_stream->seek( 0 ) == false )
+		{
+			return false;
+		}
+
+		if( this->_prepareData() == false )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t VideoDecoderTheora::_decode( void * _buffer, size_t _bufferSize )

@@ -295,7 +295,10 @@ namespace Menge
 			Mesh2D * mesh2D = static_cast<Mesh2D *>( _node );
 
 			const MovieFrameShape * shape;
-			framePack->getLayerShape( _layer.index, _frameId, &shape );
+			if( framePack->getLayerShape( _layer.index, _frameId, &shape ) == false )
+			{
+				return false;
+			}
 
 			mesh2D->setFrameShape( shape );
 		}
@@ -2065,7 +2068,10 @@ namespace Menge
 				continue;
 			}
 
-			this->updateFrameNode_( layer, node, 0, false, true );
+			if( this->updateFrameNode_( layer, node, 0, false, true ) == false )
+			{
+				return false;
+			}
 
 			if( layer.parent != 0 && layer.parent != movie_layer_parent_none )
 			{

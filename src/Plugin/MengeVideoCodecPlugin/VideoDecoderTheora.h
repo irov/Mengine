@@ -19,6 +19,9 @@ namespace Menge
 		void _finalize() override;
 
 	public:
+		bool _rewind() override;
+
+	public:
 		bool _prepareData() override;
 
 	public:

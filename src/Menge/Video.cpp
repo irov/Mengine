@@ -21,14 +21,14 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Video::Video()
-		: m_autoStart(false)
-		, m_frameSize(0.f, 0.f)
-		, m_uv(0.f, 0.f, 1.f, 1.f)
-		, m_videoDecoder(nullptr)
-		, m_timing(0.f)
-        , m_needUpdate(false)
-		, m_invalidVideoTexture(true)
-		, m_invalidFirstFrame(true)
+		: m_autoStart( false )
+		, m_frameSize( 0.f, 0.f )
+		, m_uv( 0.f, 0.f, 1.f, 1.f )
+		, m_videoDecoder( nullptr )
+		, m_timing( 0.f )
+		, m_needUpdate( false )
+		, m_invalidVideoTexture( true )
+		, m_invalidFirstFrame( true )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -478,6 +478,8 @@ namespace Menge
                             , time
                             );
                     }
+
+					m_invalidFirstFrame = true;
 				}
 			}
 			else if( state == VDRS_FAILURE )
@@ -618,7 +620,12 @@ namespace Menge
 			m_playIterator -= skipIterator;
 		}
 
-		m_timing = 0.f;
+		m_timing = _timing;
+
+		while( m_timing > frameTiming )
+		{
+			m_timing -= frameTiming;
+		}
 
 		m_invalidVideoTexture = true;
 		m_invalidFirstFrame = true;
@@ -633,6 +640,8 @@ namespace Menge
 
 			return;
         }
+
+		m_invalidFirstFrame = true;
     }
 	////////////////////////////////////////////////////////////////////
 	float Video::_getTiming() const

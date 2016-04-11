@@ -6409,7 +6409,7 @@ namespace Menge
 			//pybind::def_function( "createNodeFromBinary", &ScriptMethod::createNodeFromBinary );
 			pybind::def_functor( "destroyNode", nodeScriptMethod, &NodeScriptMethod::destroyNode );
 
-			pybind::def_functor( "timing", nodeScriptMethod, &NodeScriptMethod::timing );
+			pybind::def_functor_args( "timing", nodeScriptMethod, &NodeScriptMethod::timing );
 			pybind::def_functor( "timingRemove", nodeScriptMethod, &NodeScriptMethod::timingRemove );
 
 			pybind::interface_<ScheduleManagerInterface>( "ScheduleManagerInterface", true )

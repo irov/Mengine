@@ -2561,8 +2561,6 @@ namespace Menge
 
 			if( _layer.isAnimatable() == true )
 			{
-				Animatable * animatable = this->getLayerAnimatable_( _layer );
-
 				if( _layer.timeRemap == false )
 				{
 				}
@@ -2575,6 +2573,8 @@ namespace Menge
 					{
 						return;
 					}
+
+					Animatable * animatable = this->getLayerAnimatable_( _layer );
 
 					animatable->setTiming( timing );
 				}
@@ -2661,7 +2661,7 @@ namespace Menge
 			{
 				uint32_t frameId = _endFrame - indexIn;
 
-				this->updateFrameNode_( _layer, _node, frameId, (m_currentFrame + 1) < indexOut, false );
+				this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut, false );
 
 				if( _layer.isAnimatable() == true )
 				{

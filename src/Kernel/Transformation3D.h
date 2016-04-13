@@ -129,7 +129,7 @@ namespace Menge
 		mutable bool m_identityLocalMatrix;
 		mutable bool m_identityWorldMatrix;
 		mutable bool m_invalidateLocalMatrix;
-		mutable bool m_invalidateWorldMatrix;		
+		mutable bool m_invalidateWorldMatrix;
 	};
     //////////////////////////////////////////////////////////////////////////
     inline Transformation3D * Transformation3D::getRelationTransformation() const

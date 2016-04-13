@@ -35,6 +35,7 @@
 
 #	include "ResourceFile.h"
 #	include "ResourceMovie.h"
+#	include "ResourceMovie2.h"
 #	include "ResourceAnimation.h"
 #	include "ResourceModel3D.h"
 #	include "ResourceVideo.h"
@@ -101,6 +102,7 @@
 #	include "TilePolygon.h"
 
 #	include "Movie.h"
+#	include "Movie2.h"
 #	include "Video.h"
 
 #	include "Window.h"
@@ -1023,22 +1025,6 @@ namespace Menge
 			const mt::vec3f & origin = _transformation->getOrigin();
 			_transformation->setOrigin( origin + _coordinate );
 			_transformation->translate( _coordinate );
-		}
-		//////////////////////////////////////////////////////////////////////////
-		void Transformation3D_setScale( Transformation3D * _transformation, const mt::vec3f & _scale )
-		{
-			//if( mt::equal_f_z( _scale.x ) == true || mt::equal_f_z( _scale.y ) == true || mt::equal_f_z( _scale.z ) == true )
-			//{
-			//	pybind::throw_exception("Transformation3D::setScale scale xyz not zero! (%f %f %f)"
-			//		, _scale.x
-			//		, _scale.y
-			//		, _scale.z
-			//		);
-
-			//	return;
-			//}
-
-			_transformation->setScale( _scale );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		mt::vec3f ResourceMovie_getLayerPosition( ResourceMovie * _movie, const ConstString & _name )
@@ -5462,6 +5448,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Movie );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieSlot );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieInternalObject );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, Movie2 );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Model3D );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Point );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Line );
@@ -5494,6 +5481,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageDefault );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceAnimation );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceMovie );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceMovie2 );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceModel3D );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceVideo );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceSound );
@@ -5593,6 +5581,8 @@ namespace Menge
 			.def( "getOrigin", &Transformation3D::getOrigin )			
 			.def( "setScale", &Transformation3D::setScale )
 			.def( "getScale", &Transformation3D::getScale )
+			.def( "setSkew", &Transformation3D::setSkew )
+			.def( "getSkew", &Transformation3D::getSkew )
 			.def( "setOrientationX", &Transformation3D::setOrientationX )
 			.def( "getOrientationX", &Transformation3D::getOrientationX )
 			.def( "setOrientationY", &Transformation3D::setOrientationY )
@@ -5707,6 +5697,9 @@ namespace Menge
 			.def_proxy_static( "hasLayerType", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_hasLayerType )
 			.def_proxy_static( "getLayerPosition", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_getLayerPosition )
 			.def_proxy_static( "getLayerIn", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_getLayerIn )
+			;
+
+		pybind::interface_<ResourceMovie2, pybind::bases<ResourceReference> >( "ResourceMovie2", false )
 			;
 
 		pybind::interface_<ResourceAnimation, pybind::bases<ResourceReference> >( "ResourceAnimation", false )
@@ -6371,6 +6364,13 @@ namespace Menge
 					.def_proxy_static( "getMovieSlotOffsetPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotOffsetPosition )
 					.def_proxy_static( "attachMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_attachMovieSlotNode )
 					.def_proxy_static( "removeAllMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_removeAllMovieSlotNode )
+					;
+
+				pybind::interface_<Movie2, pybind::bases<Node, Animatable> >( "Movie2", false )
+					.def( "setResourceMovie2", &Movie2::setResourceMovie2 )
+					.def( "getResourceMovie2", &Movie2::getResourceMovie2 )
+					.def( "setCompositionName", &Movie2::setCompositionName )
+					.def( "getCompositionName", &Movie2::getCompositionName )
 					;
 
 				pybind::interface_<MovieSlot, pybind::bases<Node> >( "MovieSlot", false )

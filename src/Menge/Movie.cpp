@@ -334,10 +334,13 @@ namespace Menge
 			}
 		}
 
+		mt::vec3f skew( 0.f, 0.f, 0.f );
+
 		_node->setTransformation(
 			frame.position,
 			frame.anchorPoint,
 			frame.scale,
+			skew,
 			frame.rotation
 			);
 

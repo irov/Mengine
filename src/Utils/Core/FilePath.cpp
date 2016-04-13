@@ -44,5 +44,24 @@ namespace Menge
 
 			return true;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		ConstString getPathFolder( ServiceProviderInterface * _serviceProvider, const FilePath & _fullpath )
+		{
+			const Char * str_fullpath = _fullpath.c_str();
+
+			const Char * folder_delimiter_1 = strrchr( str_fullpath, '\\');
+			const Char * folder_delimiter_2 = strrchr( str_fullpath, '/' );
+
+			const Char * folder_delimiter = (folder_delimiter_1 > folder_delimiter_2) ? folder_delimiter_1 : folder_delimiter_2;
+
+			if( folder_delimiter == nullptr )
+			{
+				return ConstString::none();
+			}
+
+			ConstString c_folder = Helper::stringizeStringSize( _serviceProvider, str_fullpath, folder_delimiter - str_fullpath + 1 );
+
+			return c_folder;
+		}
 	}
 }  

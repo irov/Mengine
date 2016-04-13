@@ -40,6 +40,8 @@ namespace mt
 		MENGINE_MATH_METHOD_INLINE vec2f& operator/=(const vec2f & _rhs);
 		MENGINE_MATH_METHOD_INLINE vec2f& operator*=(const vec2f & _rhs);
 
+		MENGINE_MATH_METHOD_INLINE void from_f2( const float * _v );
+
 		MENGINE_MATH_METHOD_INLINE float sqrlength() const;
 		MENGINE_MATH_METHOD_INLINE float length() const;
 

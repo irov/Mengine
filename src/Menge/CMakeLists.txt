@@ -143,6 +143,14 @@ Object2D\\\\Movie
 )
 
 ADD_FILTER(
+Object2D\\\\Movie2
+	Movie2.cpp
+	Movie2.h	
+    ResourceMovie2.cpp
+    ResourceMovie2.h
+)
+
+ADD_FILTER(
 Object2D\\\\TextField
 	TextField.cpp
 	TextField.h
@@ -323,6 +331,7 @@ INCLUDE_DIRECTORIES(
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/boost
     ${THIRDPARTY_DIR}/metabuf
+    ${THIRDPARTY_DIR}/libmovie/include
     ${THIRDPARTY_DIR}/stdex/include
     ${THIRDPARTY_DIR}/utf8/source
 )
@@ -362,6 +371,7 @@ SET( APPLICATION_LIBS
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}python_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}stdex_static${MENGINE_LIB_SUFFIX}
+    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}movie_static${MENGINE_LIB_SUFFIX}
     )
     
 SET( APPLICATION_LIBS

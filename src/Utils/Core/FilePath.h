@@ -27,8 +27,9 @@ namespace Menge
 
 	namespace Helper
 	{
-		ConstString concatenationFilePath( ServiceProviderInterface * _serviceProvider, const ConstString & _left, const ConstString & _right );
+		ConstString concatenationFilePath( ServiceProviderInterface * _serviceProvider, const FilePath & _left, const FilePath & _right );
 		
-		bool makeFullPath( ServiceProviderInterface * _serviceProvider, const ConstString & _fileGroupName, const ConstString & _fileName, ConstString & _fullPath );
+		bool makeFullPath( ServiceProviderInterface * _serviceProvider, const ConstString & _fileGroupName, const ConstString & _fileName, FilePath & _fullPath );
+		ConstString getPathFolder( ServiceProviderInterface * _serviceProvider, const FilePath & _fullpath );
 	}
 }  

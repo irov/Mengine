@@ -36,10 +36,11 @@ namespace Menge
         mt::vec3f origin;
 
         mt::vec3f scale;
+		mt::vec3f skew;
         mt::vec3f rotation;
 
-        this->getTransformation( position, origin, scale, rotation );
+		this->getTransformation( position, origin, scale, skew, rotation );
 
-        m_propagate->setTransformation( position, origin, scale, rotation );
+		m_propagate->setTransformation( position, origin, scale, skew, rotation );
     }
 }

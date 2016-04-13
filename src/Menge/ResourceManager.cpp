@@ -408,6 +408,11 @@ namespace Menge
 		resource->setGroup( _group );
 		resource->setName( _name );
 
+		if( resource->initialize() == false )
+		{
+			return nullptr;
+		}
+
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////

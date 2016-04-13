@@ -47,6 +47,18 @@ namespace Menge
 		m_group = _group;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceReference::initialize()
+	{
+		bool successful = this->_initialize();
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceReference::_initialize()
+	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceReference::isValid() const
 	{
         bool result = this->_isValid();

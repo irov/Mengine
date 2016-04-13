@@ -1,4 +1,4 @@
-<Protocol Version = "106">
+<Protocol Version = "107">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -246,6 +246,10 @@
       <Member Node="WindowLeft" Name="Offset" Type="mt::vec2f" Required="1"/>
     </Node>
 
+    <Node Name="ResourceMovie2" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
+    </Node>
+
     <Node Name="ResourceMovie" Inheritance = "Resource">
       <Member Node="FrameDuration" Name="Value" Type="float" Required="1"/>
       <Member Node="Duration" Name="Value" Type="float" Required="1"/>
@@ -254,9 +258,9 @@
       <Member Node="KeyFramesPackPath" Name="Path" Type="Menge::ConstString" Required="1"/>
       <Member Node="KeyFramesPackPath" Name="Codec" Type="Menge::ConstString"/>
       <Member Node="KeyFramesPackPath" Name="Converter" Type="Menge::ConstString"/>
-      <Member Node="Loop" Name="Segment" Type="mt::vec2f"/>      
+      <Member Node="Loop" Name="Segment" Type="mt::vec2f"/>
       <Member Node="Anchor" Name="Point" Type="mt::vec3f"/>
-      <Member Node="Offset" Name="Point" Type="mt::vec3f"/>      
+      <Member Node="Offset" Name="Point" Type="mt::vec3f"/>
       <Member Node="Bounds" Name="Box" Type="mt::box2f"/>
 
       <Node Name="MovieLayer2D">
@@ -444,14 +448,16 @@
       <Attribute Name="Value" Type="Menge::Polygon" Required="1"/>
     </Node>    
 
-    <Node Name="ImageMesh">
+    <Node Name="ImageShape">
       <Attribute Name="LayerIndex" Type="uint32_t" Required="1"/>
-      <Attribute Name="Count" Type="uint32_t" Required="1"/>
-      <Attribute Name="Immutable" Type="bool" Required="1"/>
-      <Node Name="Mesh">
-        <Attribute Name="VertexPositions" Type="Menge::Floats" Required="1"/>
-        <Attribute Name="VertexUVs" Type="Menge::Floats" Required="1"/>
-        <Attribute Name="Indices" Type="Menge::UInt16s" Required="1"/>
+      <Attribute Name="ImageMaxSize" Type="mt::vec2f" Required="1"/>
+      <Attribute Name="ImageSize" Type="mt::vec2f"/>
+      <Attribute Name="ImageOffset" Type="mt::vec2f"/>
+      <Attribute Name="Immutable" Type="bool"/>
+      <Attribute Name="Subtract" Type="bool"/>
+      <Attribute Name="Count" Type="uint32_t"/>
+      <Node Name="Shape">
+        <Attribute Name="Polygon" Type="Menge::Polygon" Required="1"/>
       </Node>
     </Node>
 

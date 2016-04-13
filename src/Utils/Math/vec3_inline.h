@@ -98,6 +98,13 @@ namespace mt
 		return mt::vec2f(x, y);
 	}
 
+	MENGINE_MATH_METHOD_INLINE void vec3f::from_f3( const float * _v )
+	{
+		x = _v[0];
+		y = _v[1];
+		z = _v[2];
+	}
+
 	MENGINE_MATH_METHOD_INLINE float * vec3f::buff()
 	{
 		return &x;

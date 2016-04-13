@@ -4,7 +4,7 @@ namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
-    static const uint32_t metacode_version = 106;
+    static const uint32_t metacode_version = 107;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -199,28 +199,28 @@ namespace Metacode
     {
         switch( _generators )
         {
-        case 21:
+        case 22:
             {
                 Meta_DataBlock::Meta_ResourceAnimation * metadata = new Meta_DataBlock::Meta_ResourceAnimation ();
                 metadata->parse( _buff, _size, _read, m_userData );
     
                 includes_Meta_Resource.push_back(metadata);
             }break;
-        case 28:
+        case 29:
             {
                 Meta_DataBlock::Meta_ResourceCal3dAnimation * metadata = new Meta_DataBlock::Meta_ResourceCal3dAnimation ();
                 metadata->parse( _buff, _size, _read, m_userData );
     
                 includes_Meta_Resource.push_back(metadata);
             }break;
-        case 29:
+        case 30:
             {
                 Meta_DataBlock::Meta_ResourceCal3dMesh * metadata = new Meta_DataBlock::Meta_ResourceCal3dMesh ();
                 metadata->parse( _buff, _size, _read, m_userData );
     
                 includes_Meta_Resource.push_back(metadata);
             }break;
-        case 27:
+        case 28:
             {
                 Meta_DataBlock::Meta_ResourceCal3dSkeleton * metadata = new Meta_DataBlock::Meta_ResourceCal3dSkeleton ();
                 metadata->parse( _buff, _size, _read, m_userData );
@@ -241,7 +241,7 @@ namespace Metacode
     
                 includes_Meta_Resource.push_back(metadata);
             }break;
-        case 31:
+        case 32:
             {
                 Meta_DataBlock::Meta_ResourceExternal * metadata = new Meta_DataBlock::Meta_ResourceExternal ();
                 metadata->parse( _buff, _size, _read, m_userData );
@@ -255,7 +255,7 @@ namespace Metacode
     
                 includes_Meta_Resource.push_back(metadata);
             }break;
-        case 22:
+        case 23:
             {
                 Meta_DataBlock::Meta_ResourceHIT * metadata = new Meta_DataBlock::Meta_ResourceHIT ();
                 metadata->parse( _buff, _size, _read, m_userData );
@@ -276,7 +276,7 @@ namespace Metacode
     
                 includes_Meta_Resource.push_back(metadata);
             }break;
-        case 24:
+        case 25:
             {
                 Meta_DataBlock::Meta_ResourceImageSolid * metadata = new Meta_DataBlock::Meta_ResourceImageSolid ();
                 metadata->parse( _buff, _size, _read, m_userData );
@@ -297,23 +297,30 @@ namespace Metacode
     
                 includes_Meta_Resource.push_back(metadata);
             }break;
-        case 25:
+        case 26:
             {
                 Meta_DataBlock::Meta_ResourceInternalObject * metadata = new Meta_DataBlock::Meta_ResourceInternalObject ();
                 metadata->parse( _buff, _size, _read, m_userData );
     
                 includes_Meta_Resource.push_back(metadata);
             }break;
-        case 23:
+        case 24:
             {
                 Meta_DataBlock::Meta_ResourceModel3D * metadata = new Meta_DataBlock::Meta_ResourceModel3D ();
                 metadata->parse( _buff, _size, _read, m_userData );
     
                 includes_Meta_Resource.push_back(metadata);
             }break;
-        case 19:
+        case 20:
             {
                 Meta_DataBlock::Meta_ResourceMovie * metadata = new Meta_DataBlock::Meta_ResourceMovie ();
+                metadata->parse( _buff, _size, _read, m_userData );
+    
+                includes_Meta_Resource.push_back(metadata);
+            }break;
+        case 19:
+            {
+                Meta_DataBlock::Meta_ResourceMovie2 * metadata = new Meta_DataBlock::Meta_ResourceMovie2 ();
                 metadata->parse( _buff, _size, _read, m_userData );
     
                 includes_Meta_Resource.push_back(metadata);
@@ -332,7 +339,7 @@ namespace Metacode
     
                 includes_Meta_Resource.push_back(metadata);
             }break;
-        case 26:
+        case 27:
             {
                 Meta_DataBlock::Meta_ResourceShape * metadata = new Meta_DataBlock::Meta_ResourceShape ();
                 metadata->parse( _buff, _size, _read, m_userData );
@@ -346,14 +353,14 @@ namespace Metacode
     
                 includes_Meta_Resource.push_back(metadata);
             }break;
-        case 30:
+        case 31:
             {
                 Meta_DataBlock::Meta_ResourceSpine * metadata = new Meta_DataBlock::Meta_ResourceSpine ();
                 metadata->parse( _buff, _size, _read, m_userData );
     
                 includes_Meta_Resource.push_back(metadata);
             }break;
-        case 20:
+        case 21:
             {
                 Meta_DataBlock::Meta_ResourceVideo * metadata = new Meta_DataBlock::Meta_ResourceVideo ();
                 metadata->parse( _buff, _size, _read, m_userData );
@@ -857,7 +864,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceAnimation::getId() const
     {
-        return 21;
+        return 22;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceAnimation::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -963,7 +970,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceCal3dAnimation::getId() const
     {
-        return 28;
+        return 29;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceCal3dAnimation::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -1001,7 +1008,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceCal3dMesh::getId() const
     {
-        return 29;
+        return 30;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceCal3dMesh::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -1039,7 +1046,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceCal3dSkeleton::getId() const
     {
-        return 27;
+        return 28;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceCal3dSkeleton::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -1153,7 +1160,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceExternal::getId() const
     {
-        return 31;
+        return 32;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceExternal::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -1230,7 +1237,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceHIT::getId() const
     {
-        return 22;
+        return 23;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceHIT::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -1441,7 +1448,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceImageSolid::getId() const
     {
-        return 24;
+        return 25;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceImageSolid::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -1608,7 +1615,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceInternalObject::getId() const
     {
-        return 25;
+        return 26;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceInternalObject::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -1649,7 +1656,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceModel3D::getId() const
     {
-        return 23;
+        return 24;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceModel3D::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -1711,7 +1718,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceMovie::getId() const
     {
-        return 19;
+        return 20;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceMovie::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -2188,6 +2195,44 @@ namespace Metacode
     
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceMovie2::Meta_ResourceMovie2()
+        : Meta_Resource()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Meta_DataBlock::Meta_ResourceMovie2::getId() const
+    {
+        return 19;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meta_DataBlock::Meta_ResourceMovie2::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
+    {
+        Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read );
+    
+        this->read( _buff, _size, _read, this->File_Path );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meta_DataBlock::Meta_ResourceMovie2::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
+    {
+        Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id );
+    
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meta_DataBlock::Meta_ResourceMovie2::_preparationIncludes( uint32_t _includes, uint32_t _count )
+    {
+        Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meta_DataBlock::Meta_ResourceMovie2::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
+    {
+        Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meta_DataBlock::Meta_ResourceMovie2::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
+    {
+        Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators );
+    }
+    //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_ResourceMusic::Meta_ResourceMusic()
         : Meta_Resource()
         , DefaultVolume_Value_successful(false)
@@ -2387,7 +2432,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceShape::getId() const
     {
-        return 26;
+        return 27;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceShape::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -2498,7 +2543,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceSpine::getId() const
     {
-        return 30;
+        return 31;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceSpine::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -2612,7 +2657,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceVideo::getId() const
     {
-        return 20;
+        return 21;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceVideo::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )

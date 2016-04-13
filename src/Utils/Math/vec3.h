@@ -34,6 +34,7 @@ namespace mt
 		MENGINE_MATH_METHOD_INLINE float length() const;
 
 		MENGINE_MATH_METHOD_INLINE vec2f to_vec2f() const;
+		MENGINE_MATH_METHOD_INLINE void from_f3( const float * _v );
 
 		MENGINE_MATH_METHOD_INLINE float * buff();
 		MENGINE_MATH_METHOD_INLINE const float * buff() const;

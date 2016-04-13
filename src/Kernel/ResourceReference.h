@@ -53,6 +53,12 @@ namespace Menge
 		inline const ConstString & getGroup() const;
 
 	public:
+		bool initialize();
+
+	protected:
+		virtual bool _initialize();
+
+	public:
 		bool isValid() const;
 
     protected:

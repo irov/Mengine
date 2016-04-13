@@ -803,11 +803,12 @@ namespace	Menge
 		mt::vec3f position;
 		mt::vec3f origin;
 		mt::vec3f scale; 
+		mt::vec3f skew;
 		mt::vec3f orientation;
-		this->getTransformation( position, origin, scale, orientation );
+		this->getTransformation( position, origin, scale, skew, orientation );
 
 		mt::mat4f wm;
-		this->calcWorldMatrix( wm, position, origin + m_positionProviderOriginOffset, scale, orientation );
+		this->calcWorldMatrix( wm, position, origin + m_positionProviderOriginOffset, scale, skew, orientation );
 
 		_position = wm.v3.to_vec3f();
 	}

@@ -50,10 +50,13 @@ namespace Menge
 
 	public:
 		void setOrigin( const mt::vec3f& _origin );
-		inline const mt::vec3f& getOrigin() const;
+		inline const mt::vec3f & getOrigin() const;
 
 		void setScale( const mt::vec3f& _scale );
-		inline const mt::vec3f& getScale() const;
+		inline const mt::vec3f & getScale() const;
+
+		void setSkew( const mt::vec3f& _skew );
+		inline const mt::vec3f & getSkew() const;
 
 		void setOrientationX( float _angle );
 		inline float getOrientationX() const;
@@ -78,14 +81,14 @@ namespace Menge
 		mt::vec3f getAxisUp() const;
 
 	public:
-		void setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f& _orientation );
-        void getTransformation( mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f& _scale, mt::vec3f& _orientation ) const;
+		void setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f & _skew, const mt::vec3f& _orientation );
+		void getTransformation( mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f& _scale, mt::vec3f & _skew, mt::vec3f& _orientation ) const;
 
 	public:
 		void resetTransformation();
 
 	public:
-		void calcWorldMatrix( mt::mat4f & _wm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f& _orientation ) const;
+		void calcWorldMatrix( mt::mat4f & _wm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f & _skew, const mt::vec3f& _orientation ) const;
 		
 	public:
 		void translate( const mt::vec3f & _delta );				
@@ -106,7 +109,7 @@ namespace Menge
 		virtual void updateWorldMatrix() const;
 
 	protected:
-		static bool makeLocalMatrix_( mt::mat4f & _lm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f& _orientation );
+		static bool makeLocalMatrix_( mt::mat4f & _lm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f & _skew, const mt::vec3f& _orientation );
 
 	protected:
 		Transformation3D * m_relationTransformation;
@@ -117,6 +120,7 @@ namespace Menge
 
 		mt::vec3f m_position;
 		mt::vec3f m_origin;
+		mt::vec3f m_skew;
 		mt::vec3f m_scale;
 		mt::vec3f m_orientation;
 				
@@ -146,6 +150,11 @@ namespace Menge
 	inline const mt::vec3f& Transformation3D::getScale() const
 	{
 		return m_scale;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::vec3f & Transformation3D::getSkew() const
+	{
+		return m_skew;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline float Transformation3D::getOrientationX() const

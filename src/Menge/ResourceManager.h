@@ -10,8 +10,6 @@
 #	include "Core/IntrusiveTree.h"
 #	include "Core/IntrusiveDuplexTree.h"
 
-#   include "stdex/binary_vector.h"
-
 namespace Menge
 {
 	class ResourceVisitor;

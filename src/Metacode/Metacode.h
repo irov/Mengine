@@ -3441,6 +3441,38 @@ namespace Metacode
             TVectorMeta_MovieLayer3D includes_Meta_MovieLayer3D;
         };
         
+        class Meta_ResourceMovie2
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceMovie2();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            const Menge::FilePath & get_File_Path() const
+            {
+                return this->File_Path;
+            }
+            
+            void swap_File_Path( Menge::FilePath & _value ) const
+            {
+                std::swap(_value, this->File_Path);
+            }
+            
+        protected:
+            void _parseData( const unsigned char * _buff, size_t _size, size_t & _read ) override;
+            void _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            void _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            void _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            void _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable Menge::FilePath File_Path;
+        };
+        
         class Meta_ResourceMusic
             : public Meta_Resource
         { 

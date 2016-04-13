@@ -85,8 +85,9 @@ namespace Menge
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceSound::_isValid: %s can't open sound file %s:%s"
-                , m_name.c_str()
+            LOGGER_ERROR(m_serviceProvider)("ResourceSound::_isValid: '%s' group %s can't open sound file '%s:%s'"
+				, this->getName().c_str()
+				, this->getGroup().c_str()
                 , category.c_str()
                 , m_filePath.c_str() 
                 );
@@ -99,8 +100,9 @@ namespace Menge
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: %s can't create sound decoder for file %s:%s"
-                , m_name.c_str()
+            LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: '%s' group '%s' can't create sound decoder for file '%s:%s'"
+				, this->getName().c_str()
+				, this->getGroup().c_str()
                 , category.c_str()
                 , m_filePath.c_str() 
                 );
@@ -110,8 +112,9 @@ namespace Menge
 
 		if( decoder->prepareData( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: %s can't initialize sound decoder for file %s:%s"
-				, m_name.c_str()
+			LOGGER_ERROR( m_serviceProvider )("SoundEngine::_isValid: '%s' group '%s' can't initialize sound decoder for file '%s:%s'"
+				, this->getName().c_str()
+				, this->getGroup().c_str()
 				, category.c_str()
 				, m_filePath.c_str() 
 				);
@@ -125,8 +128,9 @@ namespace Menge
 						
 		if( (dataInfo->length > limitNoStreamSoundDurationWarning && limitNoStreamSoundDurationWarning != 0.f) && m_isStreamable == false )
 		{
-			LOGGER_WARNING( m_serviceProvider )("SoundEngine::_isValid: %s setup to stream (time %.4f > %.4f ms)\nfile - %s:%s\nAdd <IsStreamable Value=\"1\"/>"
-				, m_name.c_str()
+			LOGGER_WARNING( m_serviceProvider )("SoundEngine::_isValid: '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
+				, this->getName().c_str()
+				, this->getGroup().c_str()
 				, dataInfo->length
 				, limitNoStreamSoundDurationWarning
 				, category.c_str()
@@ -138,8 +142,9 @@ namespace Menge
 		
 		if( (dataInfo->length > limitNoStreamSoundDurationError && limitNoStreamSoundDurationError != 0.f) && m_isStreamable == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("SoundEngine::_isValid: %s setup to stream (time %.4f > %.4f ms)\nfile - %s:%s\nAdd <IsStreamable Value=\"1\"/>"
-				, m_name.c_str()
+			LOGGER_ERROR( m_serviceProvider )("SoundEngine::_isValid: '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
+				, this->getName().c_str()
+				, this->getGroup().c_str()
 				, dataInfo->length
 				, limitNoStreamSoundDurationError
 				, category.c_str()
@@ -156,8 +161,9 @@ namespace Menge
 
         if( buffer == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundEngine::isValid '%s' can't create buffer '%s'"
+            LOGGER_ERROR(m_serviceProvider)("SoundEngine::isValid '%s' group '%s' can't create buffer '%s'"
                 , this->getName().c_str()
+				, this->getGroup().c_str()
                 , m_filePath.c_str()
                 );
 
@@ -202,8 +208,9 @@ namespace Menge
 
 		if( soundBuffer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceSound::createSoundBuffer: '%s' can't load sound '%s'"
-				, this->getName().c_str() 
+			LOGGER_ERROR(m_serviceProvider)("ResourceSound::createSoundBuffer: '%s' group '%s' can't load sound '%s'"
+				, this->getName().c_str()
+				, this->getGroup().c_str()
 				, m_filePath.c_str()
 				);
 

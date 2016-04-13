@@ -11,6 +11,7 @@ namespace Menge
 		: m_relationTransformation(nullptr)
 		, m_origin(0.f, 0.f, 0.f)
 		, m_position(0.f, 0.f, 0.f)
+		, m_skew(0.f, 0.f, 0.f)
 		, m_scale(1.f, 1.f, 1.f)
 		, m_orientation(0.f, 0.f, 0.f)
 		, m_identityLocalMatrix(true)
@@ -216,28 +217,30 @@ namespace Menge
         this->invalidateLocalMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f& _orientation )
+	void Transformation3D::setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f & _skew, const mt::vec3f& _orientation )
 	{
 		m_position = _position;
 		m_origin = _origin;
 		m_scale = _scale;
+		m_skew = _skew;
 		m_orientation = _orientation;
 
 		this->invalidateLocalMatrix();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Transformation3D::getTransformation( mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f& _scale, mt::vec3f& _orientation ) const
+	void Transformation3D::getTransformation( mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f& _scale, mt::vec3f& _skew, mt::vec3f& _orientation ) const
     {
         _position = m_position;
         _origin = m_origin;
 		_scale = m_scale;
+		_skew = m_skew;
         _orientation = m_orientation;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::calcWorldMatrix( mt::mat4f & _wm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f& _orientation ) const
+	void Transformation3D::calcWorldMatrix( mt::mat4f & _wm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f & _skew, const mt::vec3f& _orientation ) const
 	{
 		mt::mat4f localMatrix;
-		bool identityLocalMatrix = Transformation3D::makeLocalMatrix_( localMatrix, _position, _origin, _scale, _orientation );
+		bool identityLocalMatrix = Transformation3D::makeLocalMatrix_( localMatrix, _position, _origin, _scale, _skew, _orientation );
 
 		if( m_relationTransformation == nullptr )
 		{
@@ -414,35 +417,42 @@ namespace Menge
 	{
 		m_invalidateLocalMatrix = false;
 		
-		bool identityLocalMatrix = this->makeLocalMatrix_( m_localMatrix, m_position, m_origin, m_scale, m_orientation );
+		bool identityLocalMatrix = this->makeLocalMatrix_( m_localMatrix, m_position, m_origin, m_scale, m_skew, m_orientation );
 
 		m_identityLocalMatrix = identityLocalMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Transformation3D::makeLocalMatrix_( mt::mat4f & _lm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f& _orientation )
+	bool Transformation3D::makeLocalMatrix_( mt::mat4f & _lm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f & _skew, const mt::vec3f& _orientation )
 	{
-		mt::mat4f mat_scale;
-		mt::ident_m4( mat_scale );
-		mat_scale.v3.x = -_origin.x * _scale.x;
-		mat_scale.v3.y = -_origin.y * _scale.y;
-		mat_scale.v3.z = -_origin.z * _scale.z;
-		mat_scale.v0.x = _scale.x;
-		mat_scale.v1.y = _scale.y;
-		mat_scale.v2.z = _scale.z;
+		mt::mat4f mat_base;
+		mt::ident_m4( mat_base );
+		mat_base.v0.x = _scale.x;
+		mat_base.v0.y = -_skew.z;
+		mat_base.v0.z = _skew.y;
+		mat_base.v1.x = _skew.z;
+		mat_base.v1.y = _scale.y;
+		mat_base.v1.z = -_skew.x;
+		mat_base.v2.x = -_skew.y;
+		mat_base.v2.y = _skew.x;
+		mat_base.v2.z = _scale.z;
+		mat_base.v3.x = -_origin.x * _scale.x;
+		mat_base.v3.y = -_origin.y * _scale.y;
+		mat_base.v3.z = -_origin.z * _scale.z;
+
 
 		if( mt::equal_f_z( _orientation.y ) == true &&
 			mt::equal_f_z( _orientation.z ) == true )
 		{
 			if( mt::equal_f_z( _orientation.x ) == true )
 			{
-				_lm = mat_scale;
+				_lm = mat_base;
 			}
 			else
 			{
 				mt::mat4f mat_rot;
 				mt::make_rotate_z_axis_m4( mat_rot, _orientation.x );
 
-				mt::mul_m4_m4( _lm, mat_scale, mat_rot );
+				mt::mul_m4_m4( _lm, mat_base, mat_rot );
 			}
 		}
 		else
@@ -450,7 +460,7 @@ namespace Menge
 			mt::mat4f mat_rot;
 			mt::make_rotate_m4_euler( mat_rot, _orientation.x, _orientation.y, _orientation.z );
 
-			mt::mul_m4_m4( _lm, mat_scale, mat_rot );
+			mt::mul_m4_m4( _lm, mat_base, mat_rot );
 		}
 
 		_lm.v3.x += _position.x;
@@ -553,4 +563,15 @@ namespace Menge
 		this->invalidateLocalMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::setSkew( const mt::vec3f& _skew )
+	{
+		if( mt::cmp_v3_v3( m_skew, _skew ) == true )
+		{
+			return;
+		}
+
+		m_skew = _skew;
+
+		this->invalidateLocalMatrix();
+	}
 }

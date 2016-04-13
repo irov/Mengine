@@ -112,10 +112,10 @@ namespace mt
 		mt::vec3f at = pos + dir;
 
 		mt::vec3f pos_wm;
-		mt::mul_v3_m4( pos_wm, pos, _wm );
+		mt::mul_v3_v3_m4( pos_wm, pos, _wm );
 
 		mt::vec3f at_wm;
-		mt::mul_v3_m4( at_wm, at, _wm );
+		mt::mul_v3_v3_m4( at_wm, at, _wm );
 
 		mt::vec3f dir_wm;
 		mt::dir_v3_v3( dir_wm, pos_wm, at_wm );

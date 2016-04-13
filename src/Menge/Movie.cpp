@@ -334,7 +334,7 @@ namespace Menge
 			}
 		}
 
-		mt::vec3f skew( 0.f, 0.f, 0.f );
+		mt::vec2f skew( 0.f, 0.f );
 
 		_node->setTransformation(
 			frame.position,

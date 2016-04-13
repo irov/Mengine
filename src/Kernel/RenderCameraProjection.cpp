@@ -80,13 +80,13 @@ namespace Menge
 		const mt::mat4f & wm = this->getWorldMatrix();
 
 		mt::vec3f wm_position;
-		mt::mul_v3_m4( wm_position, m_cameraPosition, wm );
+		mt::mul_v3_v3_m4( wm_position, m_cameraPosition, wm );
 
 		mt::vec3f wm_direction;
-		mt::mul_v3_m4_r( wm_direction, m_cameraDirection, wm );
+		mt::mul_v3_v3_m4_r( wm_direction, m_cameraDirection, wm );
 
 		mt::vec3f wm_up;
-		mt::mul_v3_m4_r( wm_up, m_cameraUp, wm );
+		mt::mul_v3_v3_m4_r( wm_up, m_cameraUp, wm );
 
 		RENDER_SERVICE( m_serviceProvider )
 			->makeViewMatrixLookAt( m_viewMatrix, wm_position, wm_direction, wm_up, m_cameraRightSign );

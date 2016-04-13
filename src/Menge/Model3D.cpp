@@ -302,7 +302,7 @@ namespace Menge
 			const mt::vec3f & position = m_frame->position[i];
 
 			mt::vec3f & wm_pos = m_verticesWM[i].position;
-			mt::mul_v3_m4( wm_pos, position, wm );
+			mt::mul_v3_v3_m4( wm_pos, position, wm );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

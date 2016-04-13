@@ -78,25 +78,25 @@ namespace mt
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_FUNCTION_INLINE void mul_v3_m4( vec3f& _out, const vec3f& _v, const mat4f& _m )
+	MENGINE_MATH_FUNCTION_INLINE void mul_v3_v3_m4( vec3f& _out, const vec3f& _v, const mat4f& _m )
 	{
-		mul_v3_m4_r( _out, _v, _m );
+		mul_v3_v3_m4_r( _out, _v, _m );
 
 		_out.x += _m.v3.x;
 		_out.y += _m.v3.y;
 		_out.z += _m.v3.z;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_FUNCTION_INLINE void mul_v3_m4_r( vec3f& _out, const vec3f& _v, const mat4f& _m )
+	MENGINE_MATH_FUNCTION_INLINE void mul_v3_v3_m4_r( vec3f& _out, const vec3f& _v, const mat4f& _m )
 	{
 		_out.x = _m.v0.x * _v.x + _m.v1.x * _v.y + _m.v2.x * _v.z;
 		_out.y = _m.v0.y * _v.x + _m.v1.y * _v.y + _m.v2.y * _v.z;
 		_out.z = _m.v0.z * _v.x + _m.v1.z * _v.y + _m.v2.z * _v.z;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_FUNCTION_INLINE float mul_v3_m4_proj( vec3f& _out, const vec3f& _v, const mat4f& _m )
+	MENGINE_MATH_FUNCTION_INLINE float mul_v3_v3_m4_proj( vec3f& _out, const vec3f& _v, const mat4f& _m )
 	{
-		mul_v3_m4( _out, _v, _m );
+		mul_v3_v3_m4( _out, _v, _m );
 
 		float w = 1.f / _out.z;
 		_out *= w;
@@ -137,7 +137,7 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE vec3f operator*(const vec3f& v, const mat4f& m)
 	{
 		vec3f out;
-		mul_v3_m4( out, v, m );
+		mul_v3_v3_m4( out, v, m );
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -985,7 +985,7 @@ namespace mt
 
 		mul_m4_m4( m1, _world, _view );
 		mul_m4_m4( m2, m1, _projection );
-		mul_v3_m4_proj( vec, _vertex, m2 );
+		mul_v3_v3_m4_proj( vec, _vertex, m2 );
 
 		_out.x = (1.0f + vec.x) * _width * 0.5f;
 		_out.y = (1.0f + vec.y) * _height * 0.5f;

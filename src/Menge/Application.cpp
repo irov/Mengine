@@ -69,6 +69,7 @@
 #	include "TextField.h"
 #	include "TileMap.h"
 #	include "Track.h"
+#	include "Kernel/Meshget.h"
 #	include "Movie.h"
 #	include "MovieSlot.h"
 #	include "MovieSceneEffect.h"
@@ -378,6 +379,8 @@ namespace Menge
         NODE_FACTORY( m_serviceProvider, MovieEvent );
 
 		NODE_FACTORY( m_serviceProvider, Movie2 );
+
+		NODE_FACTORY( m_serviceProvider, Meshget );
 
 		NODE_FACTORY( m_serviceProvider, Model3D );
 		//NODE_FACTORY( Model );

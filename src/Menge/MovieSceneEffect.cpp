@@ -36,7 +36,7 @@ namespace Menge
         mt::vec3f origin;
 
         mt::vec3f scale;
-		mt::vec3f skew;
+		mt::vec2f skew;
         mt::vec3f rotation;
 
 		this->getTransformation( position, origin, scale, skew, rotation );

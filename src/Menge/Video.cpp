@@ -356,8 +356,8 @@ namespace Menge
 		mt::vec3f transformX;
 		mt::vec3f transformY;
 
-		mt::mul_v3_m4_r( transformX, mt::vec3f( m_frameSize.x, 0.f, 0.f ), wm );
-		mt::mul_v3_m4_r( transformY, mt::vec3f( 0.f, m_frameSize.y, 0.f ), wm );
+		mt::mul_v3_v3_m4_r( transformX, mt::vec3f( m_frameSize.x, 0.f, 0.f ), wm );
+		mt::mul_v3_v3_m4_r( transformY, mt::vec3f( 0.f, m_frameSize.y, 0.f ), wm );
 
 		_vertices[0].position = wm.v3.to_vec3f();
 		_vertices[1].position = _vertices[0].position + transformX;

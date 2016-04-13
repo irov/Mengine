@@ -276,7 +276,7 @@ namespace	Menge
 				p.y = (el.j + coeff_y[i]) * m_elementHeight;
 				p.z = 0.f;
 
-				mt::mul_v3_m4( v.position, p, wm );
+				mt::mul_v3_v3_m4( v.position, p, wm );
 			}
 			
 			vertex_offset += 4;

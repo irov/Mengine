@@ -103,6 +103,7 @@
 
 #	include "Movie.h"
 #	include "Movie2.h"
+#	include "Kernel/Meshget.h"
 #	include "Video.h"
 
 #	include "Window.h"
@@ -307,7 +308,7 @@ namespace Menge
 			const mt::mat4f & wm = _movie->getWorldMatrix();
 
 			mt::vec3f wap;
-			mt::mul_v3_m4( wap, ap, wm );
+			mt::mul_v3_v3_m4( wap, ap, wm );
 
 			return wap;
 		}
@@ -904,7 +905,7 @@ namespace Menge
 				framePack->getLayerFrame( layer->index, i, frame );
 
 				mt::vec3f pos;
-				mt::mul_v3_m4( pos, frame.position, wm );
+				mt::mul_v3_v3_m4( pos, frame.position, wm );
 
 				pos.y *= mt::m_sqrt2;
 
@@ -968,7 +969,7 @@ namespace Menge
 			const mt::mat4f & wm = _movie->getWorldMatrix();
 
 			mt::vec3f wap;
-			mt::mul_v3_m4( wap, ap, wm );
+			mt::mul_v3_v3_m4( wap, ap, wm );
 
 			const mt::vec3f & wp = node->getWorldPosition();
 
@@ -5449,6 +5450,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieSlot );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieInternalObject );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Movie2 );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, Meshget );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Model3D );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Point );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Line );
@@ -6371,6 +6373,12 @@ namespace Menge
 					.def( "getResourceMovie2", &Movie2::getResourceMovie2 )
 					.def( "setCompositionName", &Movie2::setCompositionName )
 					.def( "getCompositionName", &Movie2::getCompositionName )
+					;
+
+				pybind::interface_<Meshget, pybind::bases<Node, Materialable> >( "Meshget", false )
+					.def( "setResourceImage", &Meshget::setResourceImage )
+					.def( "getResourceImage", &Meshget::getResourceImage )
+					.def( "setVertices", &Meshget::setVertices )
 					;
 
 				pybind::interface_<MovieSlot, pybind::bases<Node> >( "MovieSlot", false )

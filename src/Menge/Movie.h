@@ -32,7 +32,7 @@ namespace Menge
 		virtual void visitMovieNode( Movie * _movie, Node * _node ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	enum MovieSpotEventFlag
+	enum MovieEventFlag
 	{
 		EVENT_MOVIE_GET_INTERNAL = 0,
 		EVENT_MOVIE_ACTIVATE_INTERNAL,

@@ -17,7 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Mesh2D::Mesh2D()
 		: m_shape( nullptr )
-		, m_solid(false)		
+		, m_solid(false)
 		, m_invalidateVerticesLocal(true)
 		, m_invalidateVerticesWM(true)
 		, m_invalidateVerticesColor(true)

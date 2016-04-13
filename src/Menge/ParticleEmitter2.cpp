@@ -507,7 +507,7 @@ namespace	Menge
 			mt::vec3f & pos = _vertices[it].position;
 
 			mt::vec3f wm_pos;
-			mt::mul_v3_m4( wm_pos, pos, wm );
+			mt::mul_v3_v3_m4( wm_pos, pos, wm );
 
 			_vertices[it].position = wm_pos;
 		}
@@ -803,7 +803,7 @@ namespace	Menge
 		mt::vec3f position;
 		mt::vec3f origin;
 		mt::vec3f scale; 
-		mt::vec3f skew;
+		mt::vec2f skew;
 		mt::vec3f orientation;
 		this->getTransformation( position, origin, scale, skew, orientation );
 

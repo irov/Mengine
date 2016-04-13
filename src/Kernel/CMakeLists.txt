@@ -138,6 +138,11 @@ Isometric
 	Isometric.h
 )
 
+ADD_FILTER(
+Meshget
+	Meshget.cpp
+	Meshget.h
+)
 
 ADD_FILTER(
 Camera

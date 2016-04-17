@@ -121,6 +121,7 @@ namespace Menge
 
 		INIT_CONST( ogvVideo );
 		INIT_CONST( ogvaVideo );
+		INIT_CONST( oggSound );
 
 #	undef INIT_CONST
 

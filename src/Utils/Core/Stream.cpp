@@ -180,7 +180,7 @@ namespace Menge
 
 			if( binary_size != _size )
 			{
-				LOGGER_ERROR(_serviceProvider)("loadStreamArchiveInplace: invalid buffer size %d need %d"
+				LOGGER_ERROR(_serviceProvider)("loadStreamArchiveInplace: invalid buffer size %u need %u"
 					, _size
 					, binary_size
 					);
@@ -192,7 +192,7 @@ namespace Menge
 			
 			if( compress_buffer == nullptr )
 			{
-				LOGGER_ERROR( _serviceProvider )("loadStreamArchiveInplace: invalid get memory %d (compress)"
+				LOGGER_ERROR( _serviceProvider )("loadStreamArchiveInplace: invalid get memory %u (compress)"
 					, compress_size
 					);
 
@@ -207,7 +207,7 @@ namespace Menge
 
 				if( check_crc32 != crc32 )
 				{
-					LOGGER_ERROR(_serviceProvider)("loadStreamArchiveInplace: invalid crc32 %d need %d"
+					LOGGER_ERROR(_serviceProvider)("loadStreamArchiveInplace: invalid crc32 %u need %u"
 						, check_crc32
 						, crc32
 						);
@@ -227,7 +227,7 @@ namespace Menge
 
 			if( uncompressSize != _size )
 			{
-				LOGGER_ERROR(_serviceProvider)("loadStreamArchiveInplace: invalid decompress size %d need %d"
+				LOGGER_ERROR(_serviceProvider)("loadStreamArchiveInplace: invalid decompress size %u need %u"
 					, uncompressSize
 					, _size
 					);

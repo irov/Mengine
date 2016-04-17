@@ -6,8 +6,6 @@
 #	include "Kernel/RenderCameraProjection.h"
 #	include "Kernel/RenderViewport.h"
 
-#	include "Video.h"
-
 #   include "ResourceMovie2.h"
 
 

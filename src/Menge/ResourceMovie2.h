@@ -33,6 +33,7 @@ namespace Menge
 	public:
 		ResourceReference * createResourceImage_( const aeMovieResourceImage * _resource );
 		ResourceReference * createResourceVideo_( const aeMovieResourceVideo * _resource );
+		ResourceReference * createResourceSound_( const aeMovieResourceSound * _resource );
 
 	protected:
 		aeMovieInstance m_instance;

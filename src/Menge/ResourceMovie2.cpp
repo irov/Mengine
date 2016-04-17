@@ -5,6 +5,7 @@
 
 #	include "ResourceImageDefault.h"
 #	include "ResourceVideo.h"
+#	include "ResourceSound.h"
 
 #	include "Metacode/Metacode.h"
 
@@ -75,6 +76,14 @@ namespace Menge
 				ResourceReference * data_resource = resourceMovie2->createResourceVideo_( resource_video );
 
 				return data_resource;				
+			}
+		case AE_MOVIE_RESOURCE_SOUND:
+			{
+				const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
+
+				ResourceReference * data_resource = resourceMovie2->createResourceSound_( resource_sound );
+
+				return data_resource;
 			}
 		}		
 
@@ -267,5 +276,32 @@ namespace Menge
 		m_resources.push_back( video );
 
 		return video.get();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceReference * ResourceMovie2::createResourceSound_( const aeMovieResourceSound * _resource )
+	{
+		const ConstString & locale = this->getLocale();
+		const ConstString & category = this->getCategory();
+		const ConstString & group = this->getGroup();
+
+		ResourceSoundPtr sound = RESOURCE_SERVICE( m_serviceProvider )
+			->generateResourceT<ResourceSoundPtr>( locale, category, group, ConstString::none(), CONST_STRING( m_serviceProvider, ResourceSound ) );
+
+		PathString full_path;
+
+		ConstString folder = Helper::getPathFolder( m_serviceProvider, m_filePath );
+
+		full_path += folder.c_str();
+		full_path += _resource->path;
+
+		FilePath c_path = Helper::stringizeString( m_serviceProvider, full_path );
+		
+		sound->setFilePath( c_path );
+		
+		sound->setCodecType( CONST_STRING( m_serviceProvider, oggSound ) );
+
+		m_resources.push_back( sound );
+
+		return sound.get();
 	}
 }

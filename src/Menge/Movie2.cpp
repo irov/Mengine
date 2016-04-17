@@ -4,6 +4,9 @@
 #   include "Interface/NodeInterface.h"
 #   include "Interface/StringizeInterface.h"
 
+#	include "Video.h"
+#	include "SoundEmitter.h"
+
 #	include "Consts.h"
 
 #	include "Kernel/Materialable.h"
@@ -166,6 +169,30 @@ namespace Menge
 		return video;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void * ae_movie_composition_node_sound( const aeMovieLayerData * _layerData, const aeMovieResourceSound * _resource, void * _data )
+	{
+		Movie2 * movie2 = (Movie2 *)_data;
+
+		ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+
+		ConstString c_name = Helper::stringizeString( serviceProvider, _layerData->name );
+
+		SoundEmitter * sound = NODE_SERVICE( serviceProvider )
+			->createNodeT<SoundEmitter>( CONST_STRING( serviceProvider, SoundEmitter ) );
+
+		sound->setName( c_name );
+
+		ResourceSound * resourceSound = (ResourceSound *)(_resource->base.data);
+
+		sound->setResourceSound( resourceSound );
+
+		sound->enable();
+
+		movie2->addChild( sound );
+
+		return sound;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Movie2::Camera * Movie2::addCamera( const ConstString & _name, RenderCameraProjection * _projection, RenderViewport * _viewport )
 	{
 		this->addChild( _projection );
@@ -239,8 +266,10 @@ namespace Menge
 		}
 
 		aeMovieCompositionNodeProvider provider;
-		provider.video_provider = &ae_movie_composition_node_video;
 		provider.camera_provider = &ae_movie_composition_node_camera;
+		provider.video_provider = &ae_movie_composition_node_video;
+		provider.sound_provider = &ae_movie_composition_node_sound;
+		
 
 		create_movie_composition_element( m_composition, &provider, this );
 				
@@ -305,7 +334,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void begin_movie_node_animate( const void * _element, uint32_t _type, void * _data )
+	static void begin_movie_node_animate( const void * _element, uint32_t _type, float _offset, void * _data )
 	{
 		(void)_element;
 		(void)_type;
@@ -317,8 +346,6 @@ namespace Menge
 			{
 				Video * video = (Video *)_element;
 
-				//video->hide( false );
-				
 				Movie2 * movie2 = (Movie2 *)_data;
 
 				ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
@@ -326,9 +353,27 @@ namespace Menge
 				float time = TIMELINE_SERVICE( serviceProvider )
 					->getTime();
 
-				video->setFirstFrame();
+				video->setTiming( _offset );
 
 				if( video->play( time ) == 0 )
+				{
+					return;
+				}
+			}break;
+		case AE_MOVIE_LAYER_TYPE_SOUND:
+			{
+				SoundEmitter * sound = (SoundEmitter *)_element;
+
+				Movie2 * movie2 = (Movie2 *)_data;
+
+				ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+
+				float time = TIMELINE_SERVICE( serviceProvider )
+					->getTime();
+
+				sound->setTiming( _offset );
+
+				if( sound->play( time ) == 0 )
 				{
 					return;
 				}
@@ -349,8 +394,12 @@ namespace Menge
 				Video * video = (Video *)_element;
 
 				video->stop();
+			}break;
+		case AE_MOVIE_LAYER_TYPE_SOUND:
+			{
+				SoundEmitter * sound = (SoundEmitter *)_element;
 
-				//video->hide( true );
+				sound->stop();
 			}break;
 		}
 	}

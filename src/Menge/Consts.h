@@ -144,6 +144,7 @@ namespace Menge
 
 		DECL_CONST( ogvVideo );
 		DECL_CONST( ogvaVideo );
+		DECL_CONST( oggSound );
 
 #	undef DECL_CONST
 	};

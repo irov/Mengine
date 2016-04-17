@@ -39,6 +39,12 @@ namespace Menge
 		const ResourceVideoPtr & getResourceVideo() const;
 
 	public:
+		void updateVideoBuffer();
+
+	public:
+		inline const mt::vec4f & getUV();
+
+	public:
 		void _setTiming( float _timing ) override;
 		float _getTiming() const override;
 
@@ -78,7 +84,7 @@ namespace Menge
 
 	protected:
 		void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) const override;
-
+		
 	protected:
 		RenderMaterialInterfacePtr _updateMaterial() const override;
 
@@ -98,4 +104,9 @@ namespace Menge
 		bool m_invalidFirstFrame;
         bool m_invalidVideoTexture;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::vec4f & Video::getUV()
+	{
+		return m_uv;
+	}
 }

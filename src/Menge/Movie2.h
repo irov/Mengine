@@ -3,7 +3,13 @@
 #	include "Kernel/Node.h"
 #	include "Kernel/Animatable.h"
 
+#	include "Kernel/RenderCameraProjection.h"
+#	include "Kernel/RenderViewport.h"
+
+#	include "Video.h"
+
 #   include "ResourceMovie2.h"
+
 
 namespace Menge
 {
@@ -48,6 +54,18 @@ namespace Menge
 	protected:
 		void _render( const RenderObjectState * _state ) override;
 
+	public:
+		struct Camera
+		{
+			RenderCameraProjection * projection;
+			RenderViewport * viewport;
+		};
+
+		Camera * addCamera( const ConstString & _name, RenderCameraProjection * _projection, RenderViewport * _viewport );
+		bool hasCamera( const ConstString & _name ) const;
+
+		bool getCamera( const ConstString & _name, Camera ** _camera );
+
 	protected:
 		ResourceHolder<ResourceMovie2> m_resourceMovie2;
 
@@ -65,5 +83,8 @@ namespace Menge
 
 		typedef stdex::vector<Mesh> TVectorMesh;
 		TVectorMesh m_meshes;
+
+		typedef stdex::map<ConstString, Camera> TMapCamera;
+		TMapCamera m_cameras;
 	};
 }

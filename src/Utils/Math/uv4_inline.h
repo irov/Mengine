@@ -23,6 +23,14 @@ namespace mt
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_METHOD_INLINE uv4f::uv4f( const vec4f & _mask )
+		: p0( _mask.x, _mask.y )
+		, p1( _mask.z, _mask.y )
+		, p2( _mask.z, _mask.w )
+		, p3( _mask.x, _mask.w )
+	{ 
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_METHOD_INLINE uv4f::uv4f( const uv4f & _uv )
 		: p0(_uv.p0)
 		, p1(_uv.p1)

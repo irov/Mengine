@@ -91,7 +91,8 @@ namespace Menge
 		void calcWorldMatrix( mt::mat4f & _wm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec2f & _skew, const mt::vec3f& _orientation ) const;
 		
 	public:
-		void translate( const mt::vec3f & _delta );				
+		void translate( const mt::vec3f & _delta );
+		void rotate( const mt::vec3f & _euler );
 		void coordinate( const mt::vec3f & _delta );
 		
 	public:

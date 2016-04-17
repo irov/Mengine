@@ -31,7 +31,8 @@ namespace Menge
 		void _release() override;
 
 	public:
-		ResourceReference * createImageResource_( const aeMovieResourceImage * _resource );
+		ResourceReference * createResourceImage_( const aeMovieResourceImage * _resource );
+		ResourceReference * createResourceVideo_( const aeMovieResourceVideo * _resource );
 
 	protected:
 		aeMovieInstance m_instance;

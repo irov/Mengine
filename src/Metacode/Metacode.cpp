@@ -4,7 +4,7 @@ namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
-    static const uint32_t metacode_version = 107;
+    static const uint32_t metacode_version = 108;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {

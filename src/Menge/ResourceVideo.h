@@ -23,10 +23,14 @@ namespace Menge
         bool _convert() override;
 
     public:
-        uint32_t getFrameRate() const;
+		void setFrameRate( float _frameRate );
+		float getFrameRate() const;
 
 	public:
+		void setFilePath( const FilePath & _path );
 		const FilePath & getFilePath() const;
+
+		void setCodecType( const ConstString & _type );
 		const ConstString & getCodecType() const;
 
     public:
@@ -38,8 +42,11 @@ namespace Menge
 		void _uncache() override;
 
 	public:
-		const mt::vec2f& getFrameSize() const;
+		void setAlpha( bool _alpha );
 		bool isAlpha() const;
+
+	public:
+		const mt::vec2f& getFrameSize() const;
         bool isNoSkeep() const;
 
     protected:
@@ -58,7 +65,7 @@ namespace Menge
         ConstString m_converterType;
 		ConstString m_codecType;
 
-        uint32_t m_frameRate;
+        float m_frameRate;
 		float m_duration;
 
 		typedef ResourceCacher<VideoDecoderInterfacePtr> TCacherVideoDecoder;

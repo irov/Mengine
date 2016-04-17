@@ -5609,29 +5609,13 @@ namespace Menge
 			.def( "getAxisUp", &Transformation3D::getAxisUp )
 
 			.def( "translate", &Transformation3D::translate )
+			.def( "rotate", &Transformation3D::rotate )
 			.def( "coordinate", &Transformation3D::coordinate )
 
 			.def( "resetTransformation", &Transformation3D::resetTransformation )
 			.def( "setRelationTransformation", &Transformation3D::setRelationTransformation )
 			.def_proxy_static( "removeRelationTransformation", nodeScriptMethod, &NodeScriptMethod::Transformation3D_removeRelationTransformation )
-			//.def( "setRotate", &Transformation3D::setAngle ) //depricated
 			;
-
-		//pybind::class_<FFCamera3D>("FFCamera3D")
-		//	.def( pybind::init<>() )
-		//	.def( "update", &FFCamera3D::update )
-		//	.def( "activate", &FFCamera3D::activate )
-		//	.def( "forward", &FFCamera3D::forward )
-		//	.def( "left", &FFCamera3D::left )
-		//	.def( "setActor", &FFCamera3D::setActor )
-		//	.def( "yaw", &FFCamera3D::yaw )
-		//	.def( "pitch", &FFCamera3D::pitch )
-		//	.def( "zoom", &FFCamera3D::zoom )
-		//	;
-
-		//pybind::interface_<NodeRenderable>("NodeRenderable", false)
-		//	.def( "hide", &NodeRenderable::hide )
-		//	;
 
 		pybind::interface_<Resource>( "Resource" )
 			.def( "compile", &Resource::compile )

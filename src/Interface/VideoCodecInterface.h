@@ -19,7 +19,7 @@ namespace Menge
 		VideoCodecDataInfo()
 			: frameWidth(0)
 			, frameHeight(0)
-			, fps(0)
+			, fps(0.f)
 			, duration(0.f)
 			, format(PF_UNKNOWN)
 			, clamp(true)
@@ -28,7 +28,7 @@ namespace Menge
 
 		uint32_t frameWidth;
 		uint32_t frameHeight;
-		uint32_t fps;
+		float fps;
 		uint32_t channel;
 
 		float duration;
@@ -38,7 +38,7 @@ namespace Menge
 
 		float getFrameTiming() const
 		{
-			return 1000.f / float(fps);
+			return 1000.f / fps;
 		}
 	};
 	
@@ -49,7 +49,7 @@ namespace Menge
         VideoCodecOptions()
             : pixelFormat(PF_UNKNOWN)
 			, duration(0.f)
-			, fps(0)
+			, fps(0.f)
 			, alpha(false)
 			, mock(false)
             , noSeek(false)
@@ -58,7 +58,7 @@ namespace Menge
 		PixelFormat pixelFormat;
 		
 		float duration;
-		uint32_t fps;
+		float fps;
 		bool alpha;
 
 		bool mock;

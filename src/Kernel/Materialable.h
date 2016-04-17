@@ -53,7 +53,7 @@ namespace Menge
 		RenderMaterialInterfacePtr makeImageMaterial( ServiceProviderInterface * _serviceProvider, const ResourceImagePtr & _resourceImage, bool _solid ) const;
 		RenderMaterialInterfacePtr makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, bool _solid ) const;
 
-	protected:
+	public:
 		inline const RenderMaterialInterfacePtr & getMaterial();
 
 	protected:

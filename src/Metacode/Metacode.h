@@ -4171,7 +4171,7 @@ namespace Metacode
                 return File_FrameRate_successful;
             }
             
-            bool get_File_FrameRate( uint32_t & _value ) const
+            bool get_File_FrameRate( float & _value ) const
             {
                 if( File_FrameRate_successful == false )
                 {
@@ -4183,7 +4183,7 @@ namespace Metacode
                 return true;
             }
             
-            bool swap_File_FrameRate( uint32_t & _value ) const
+            bool swap_File_FrameRate( float & _value ) const
             {
                 if( File_FrameRate_successful == false )
                 {
@@ -4252,7 +4252,7 @@ namespace Metacode
             bool File_Duration_successful;
             mutable float File_Duration;
             bool File_FrameRate_successful;
-            mutable uint32_t File_FrameRate;
+            mutable float File_FrameRate;
             bool File_NoSeek_successful;
             mutable bool File_NoSeek;
             mutable Menge::FilePath File_Path;

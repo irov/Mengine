@@ -299,18 +299,18 @@ namespace Menge
 			return false;
 		}
 
-		if( m_theoraInfo.width != m_theoraInfo.frame_width ||
-			m_theoraInfo.height != m_theoraInfo.frame_height )
-		{
-			LOGGER_ERROR( m_serviceProvider )("VideoDecoderTheora::_prepareData invalid width or heigth '%d:%d' need '%d:%d' maybe div 16"
-				, m_theoraInfo.width
-				, m_theoraInfo.height
-				, m_theoraInfo.frame_width
-				, m_theoraInfo.frame_height
-				);
+		//if( m_theoraInfo.width != m_theoraInfo.frame_width ||
+		//	m_theoraInfo.height != m_theoraInfo.frame_height )
+		//{
+		//	LOGGER_ERROR( m_serviceProvider )("VideoDecoderTheora::_prepareData invalid width or heigth '%d:%d' need '%d:%d' maybe div 16"
+		//		, m_theoraInfo.frame_width
+		//		, m_theoraInfo.frame_height
+		//		, m_theoraInfo.width
+		//		, m_theoraInfo.height
+		//		);
 
-			return false;
-		}
+		//	return false;
+		//}
 
 		if( m_options.alpha == true )
 		{

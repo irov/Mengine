@@ -18,16 +18,21 @@ namespace Menge
 	ResourceVideo::ResourceVideo()
 		: m_alpha(false)
         , m_noSeek(false)
-        , m_frameRate(0)
-		, m_duration(0)		
+        , m_frameRate(0.f)
+		, m_duration(0.f)		
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceVideo::~ResourceVideo()
 	{
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceVideo::setFrameRate( float _frameRate )
+	{
+		m_frameRate = _frameRate;
+	}
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ResourceVideo::getFrameRate() const
+	float ResourceVideo::getFrameRate() const
     {
         return m_frameRate;
     }
@@ -81,6 +86,19 @@ namespace Menge
         }
 
 		const VideoCodecDataInfo * dataInfo = _decoder->getCodecDataInfo();
+
+		if( dataInfo->frameWidth % 16 != 0 ||
+			dataInfo->frameHeight % 16 != 0 )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ResourceVideo::checkValidVideoDecoder_ invalid width or heigth '%d:%d' need '%d:%d' maybe div 16"
+				, dataInfo->frameWidth
+				, dataInfo->frameHeight
+				, (dataInfo->frameWidth / 16 + 1) * 16
+				, (dataInfo->frameHeight / 16 + 1) * 16
+				);
+
+			return false;
+		}
 
 		uint32_t limitVideoWidth = CONFIG_VALUE( m_serviceProvider, "Limit", "VideoWidth", 2048U );
 		uint32_t limitVideoHeight = CONFIG_VALUE( m_serviceProvider, "Limit", "VideoHeight", 2048U );
@@ -236,6 +254,11 @@ namespace Menge
 		m_videoDecoderCacher.unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ResourceVideo::setAlpha( bool _alpha )
+	{ 
+		m_alpha = _alpha;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceVideo::isAlpha() const
 	{
 		return m_alpha;
@@ -246,12 +269,22 @@ namespace Menge
         return m_noSeek;
     }
 	//////////////////////////////////////////////////////////////////////////
+	void ResourceVideo::setFilePath( const FilePath & _path )
+	{
+		m_path = _path;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const FilePath & ResourceVideo::getFilePath() const
 	{
 		return m_path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString& ResourceVideo::getCodecType() const
+	void ResourceVideo::setCodecType( const ConstString & _type )
+	{
+		m_codecType = _type;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & ResourceVideo::getCodecType() const
 	{
 		return m_codecType;
 	}

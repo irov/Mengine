@@ -398,6 +398,7 @@ namespace Menge
 
 		m_maxSize = _maxSize;
 		m_size = m_maxSize;
+		m_offset = mt::vec2f( 0.f, 0.f );
 
 		m_texture = nullptr;
 		m_textureAlpha = nullptr;

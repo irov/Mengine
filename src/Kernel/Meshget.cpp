@@ -105,6 +105,9 @@ namespace Menge
 
 		m_verticesWM.resize( positions_count );
 
+		this->invalidateVerticesColor();
+		this->invalidateVerticesWM();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

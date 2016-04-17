@@ -119,6 +119,9 @@ namespace Menge
 		INIT_CONST( memoryImage );
 		INIT_CONST( archiveImage );
 
+		INIT_CONST( ogvVideo );
+		INIT_CONST( ogvaVideo );
+
 #	undef INIT_CONST
 
         return true;

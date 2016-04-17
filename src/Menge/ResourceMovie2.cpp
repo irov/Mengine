@@ -4,6 +4,7 @@
 #	include "Interface/StringizeInterface.h"
 
 #	include "ResourceImageDefault.h"
+#	include "ResourceVideo.h"
 
 #	include "Metacode/Metacode.h"
 
@@ -63,10 +64,18 @@ namespace Menge
 			{
 				const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
 
-				ResourceReference * data_resource = resourceMovie2->createImageResource_( resource_image );
+				ResourceReference * data_resource = resourceMovie2->createResourceImage_( resource_image );
 
 				return data_resource;
 			}break;
+		case AE_MOVIE_RESOURCE_VIDEO:
+			{
+				const aeMovieResourceVideo * resource_video = (const aeMovieResourceVideo *)_resource;
+
+				ResourceReference * data_resource = resourceMovie2->createResourceVideo_( resource_video );
+
+				return data_resource;				
+			}
 		}		
 
 		return AE_NULL;
@@ -78,7 +87,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceMovie2::~ResourceMovie2()
 	{
-	}
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	aeMovieComposition * ResourceMovie2::createComposition( const ConstString & _name )
 	{
@@ -93,7 +102,7 @@ namespace Menge
 		{
 			return nullptr;
 		}
-
+		
 		aeMovieComposition * composition = create_movie_composition( &m_instance, m_movieData, compositionData );
 
 		return composition;
@@ -191,7 +200,7 @@ namespace Menge
 		ResourceReference::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceMovie2::createImageResource_( const aeMovieResourceImage * _resource )
+	ResourceReference * ResourceMovie2::createResourceImage_( const aeMovieResourceImage * _resource )
 	{
 		const ConstString & locale = this->getLocale();
 		const ConstString & category = this->getCategory();
@@ -220,5 +229,43 @@ namespace Menge
 
 		return image.get();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceReference * ResourceMovie2::createResourceVideo_( const aeMovieResourceVideo * _resource )
+	{
+		const ConstString & locale = this->getLocale();
+		const ConstString & category = this->getCategory();
+		const ConstString & group = this->getGroup();
 
+		ResourceVideoPtr video = RESOURCE_SERVICE( m_serviceProvider )
+			->generateResourceT<ResourceVideoPtr>( locale, category, group, ConstString::none(), CONST_STRING( m_serviceProvider, ResourceVideo ) );
+
+		PathString full_path;
+
+		ConstString folder = Helper::getPathFolder( m_serviceProvider, m_filePath );
+
+		full_path += folder.c_str();
+		full_path += _resource->path;
+
+		FilePath c_path = Helper::stringizeString( m_serviceProvider, full_path );
+
+
+		video->setFilePath( c_path );
+
+		video->setFrameRate( _resource->frameRate );
+
+		if( _resource->alpha == AE_TRUE )
+		{
+			video->setAlpha( true );
+			video->setCodecType( CONST_STRING( m_serviceProvider, ogvaVideo ) );
+		}
+		else
+		{
+			video->setAlpha( false );
+			video->setCodecType( CONST_STRING( m_serviceProvider, ogvVideo ) );
+		}
+
+		m_resources.push_back( video );
+
+		return video.get();
+	}
 }

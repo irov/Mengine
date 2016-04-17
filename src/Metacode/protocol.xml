@@ -1,4 +1,4 @@
-<Protocol Version = "107">
+<Protocol Version = "108">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -322,7 +322,7 @@
       <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
       <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
       <Member Node="File" Name="NoSeek" Type="bool"/>
-      <Member Node="File" Name="FrameRate" Type="uint32_t"/>
+      <Member Node="File" Name="FrameRate" Type="float"/>
       <Member Node="File" Name="Duration" Type="float"/>
     </Node>
 

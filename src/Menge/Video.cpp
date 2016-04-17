@@ -297,9 +297,12 @@ namespace Menge
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_render( const RenderObjectState * _state )
+	void Video::updateVideoBuffer()
 	{
-		Node::_render( _state );
+		if( this->isActivate() == false )
+		{
+			return;
+		}
 
 		if( m_invalidFirstFrame == true )
 		{
@@ -316,7 +319,7 @@ namespace Menge
 		{
 			if( this->fillVideoBuffer_() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Video::_render %s invalid fill video buffer (%s)"
+				LOGGER_ERROR( m_serviceProvider )("Video::_render %s invalid fill video buffer (%s)"
 					, this->getName().c_str()
 					, m_resourceVideo->getName().c_str()
 					);
@@ -324,8 +327,15 @@ namespace Menge
 				return;
 			}
 
-            m_needUpdate = false;
+			m_needUpdate = false;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Video::_render( const RenderObjectState * _state )
+	{
+		Node::_render( _state );
+
+		this->updateVideoBuffer();
 
 		if( m_invalidVideoTexture == true )
 		{
@@ -348,10 +358,8 @@ namespace Menge
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
-		//mt::mul_v2_m3( m_vertices[0], m_offset, wm );
-		//mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
-		//mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
-		//mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
+		ColourValue color;
+		this->calcTotalColor( color );
 
 		mt::vec3f transformX;
 		mt::vec3f transformY;
@@ -373,19 +381,16 @@ namespace Menge
 		_vertices[3].uv[0].x = m_uv.x;
 		_vertices[3].uv[0].y = m_uv.w;
 
-		_vertices[0].uv[1].x = 0.f;
-		_vertices[0].uv[1].y = 0.f;
-		_vertices[1].uv[1].x = 0.f;
-		_vertices[1].uv[1].y = 0.f;
-		_vertices[2].uv[1].x = 0.f;
-		_vertices[2].uv[1].y = 0.f;
-		_vertices[3].uv[1].x = 0.f;
-		_vertices[3].uv[1].y = 0.f;
+		_vertices[0].uv[1].x = m_uv.x;
+		_vertices[0].uv[1].y = m_uv.y;
+		_vertices[1].uv[1].x = m_uv.z;
+		_vertices[1].uv[1].y = m_uv.y;
+		_vertices[2].uv[1].x = m_uv.z;
+		_vertices[2].uv[1].y = m_uv.w;
+		_vertices[3].uv[1].x = m_uv.x;
+		_vertices[3].uv[1].y = m_uv.w;
 
-		ColourValue color;
-		this->calcTotalColor(color);
-
-		uint32_t argb = color.getAsARGB();
+		ColourValue_ARGB argb = color.getAsARGB();
 
 		for( RenderVertex2D
 			*it = _vertices,
@@ -595,11 +600,11 @@ namespace Menge
 
         float frameTiming = dataInfo->getFrameTiming();
 
-        uint32_t frameRate = m_resourceVideo->getFrameRate();
+        float frameRate = m_resourceVideo->getFrameRate();
 
-        if( frameRate > 0 )
+        if( frameRate > 0.f )
         {
-            frameTiming = 1000.f / float(frameRate);
+            frameTiming = 1000.f / frameRate;
         }
 
 		float seek_timing = _timing;

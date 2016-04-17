@@ -15,8 +15,9 @@ namespace mt
 		vec2f p3;
 
 		MENGINE_MATH_METHOD_INLINE uv4f();
-		MENGINE_MATH_METHOD_INLINE uv4f( const vec2f & _p0, const vec2f & _p1, const vec2f & _p2, const vec2f & _p3 );
 		MENGINE_MATH_METHOD_INLINE uv4f( const uv4f & _uv );
+		MENGINE_MATH_METHOD_INLINE explicit uv4f( const vec2f & _p0, const vec2f & _p1, const vec2f & _p2, const vec2f & _p3 );
+		MENGINE_MATH_METHOD_INLINE explicit uv4f( const vec4f & _mask );
 		MENGINE_MATH_METHOD_INLINE const mt::vec2f & operator [] ( size_t i ) const;
 		MENGINE_MATH_METHOD_INLINE mt::vec2f & operator [] ( size_t i );
 		MENGINE_MATH_METHOD_INLINE uv4f & operator = ( const uv4f & _rhs );

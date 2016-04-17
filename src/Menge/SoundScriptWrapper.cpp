@@ -759,7 +759,7 @@ namespace	Menge
 		pybind::def_functor( "musicFadeOut", soundScriptMethod, &SoundScriptMethod::s_musicFadeOut );
 
 
-        pybind::def_functor( "voicePlay", soundScriptMethod, &SoundScriptMethod::s_voicePlay );
+        pybind::def_functor_args( "voicePlay", soundScriptMethod, &SoundScriptMethod::s_voicePlay );
         pybind::def_functor( "voiceStop", soundScriptMethod, &SoundScriptMethod::s_voiceStop );
 		pybind::def_functor( "voicePause", soundScriptMethod, &SoundScriptMethod::s_voicePause );
 		pybind::def_functor( "voiceResume", soundScriptMethod, &SoundScriptMethod::s_voiceResume );

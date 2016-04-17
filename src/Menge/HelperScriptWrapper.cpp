@@ -392,6 +392,11 @@ namespace Menge
 			return pybind::make_object_t( vr );
 		}
 
+		PyObject * s_reloadModule( PyObject * _module )
+		{
+			return pybind::module_reload( _module );
+		}
+
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
             const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
@@ -2284,5 +2289,7 @@ namespace Menge
 
 		pybind::def_functor( "intersectPathVsCircle", helperScriptMethod, &HelperScriptMethod::s_intersectPathVsCircle );
 		pybind::def_functor( "selectRandomPointFromPathRadius", helperScriptMethod, &HelperScriptMethod::s_selectRandomPointFromPathRadius );
+
+		pybind::def_functor( "reloadModule", helperScriptMethod, &HelperScriptMethod::s_reloadModule );
 	}
 }

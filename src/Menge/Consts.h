@@ -142,6 +142,9 @@ namespace Menge
 		DECL_CONST( memoryImage );
 		DECL_CONST( archiveImage );
 
+		DECL_CONST( ogvVideo );
+		DECL_CONST( ogvaVideo );
+
 #	undef DECL_CONST
 	};
 

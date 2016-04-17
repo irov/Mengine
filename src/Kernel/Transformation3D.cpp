@@ -294,6 +294,13 @@ namespace Menge
 		this->setLocalPosition( new_pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::rotate( const mt::vec3f & _euler )
+	{ 
+		mt::vec3f new_euler = m_orientation + _euler;
+
+		this->setOrientation( new_euler );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::coordinate( const mt::vec3f & _delta )
 	{
 		mt::vec3f new_pos = m_position + _delta;

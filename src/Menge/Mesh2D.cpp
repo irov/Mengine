@@ -176,7 +176,7 @@ namespace Menge
 		{
 			const mt::vec2f & uv = m_shape->uv[i];
 
-			multiply_tetragon_uv4_v2( m_verticesWM[i].uv[0], uv_image, uv );
+			mt::multiply_tetragon_uv4_v2( m_verticesWM[i].uv[0], uv_image, uv );
 		}
 
 		const mt::uv4f & uv_alpha = m_resourceImage->getUVAlpha();
@@ -185,7 +185,7 @@ namespace Menge
 		{
 			const mt::vec2f & uv = m_shape->uv[i];
 
-			multiply_tetragon_uv4_v2( m_verticesWM[i].uv[1], uv_alpha, uv );
+			mt::multiply_tetragon_uv4_v2( m_verticesWM[i].uv[1], uv_alpha, uv );
 		}
 	}
     //////////////////////////////////////////////////////////////////////////

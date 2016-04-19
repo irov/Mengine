@@ -17,8 +17,8 @@ namespace Menge
 		~ResourceMovie2();
 
 	public:
-		aeMovieComposition * createComposition( const ConstString & _name );
-		void destroyComposition( aeMovieComposition * _composition );
+		const aeMovieData * getMovieData() const;
+		const aeMovieCompositionData * getCompositionData( const ConstString & _name ) const;
 
 	protected:
 		bool _initialize() override;

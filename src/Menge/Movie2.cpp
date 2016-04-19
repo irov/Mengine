@@ -146,7 +146,7 @@ namespace Menge
 
 		video->setName( c_name );
 
-		ResourceVideo * resourceVideo = (ResourceVideo *)(_resource->base.data);
+		ResourceVideo * resourceVideo = (ResourceVideo *)(_resource->data);
 
 		video->setResourceVideo( resourceVideo );
 
@@ -182,7 +182,7 @@ namespace Menge
 
 		sound->setName( c_name );
 
-		ResourceSound * resourceSound = (ResourceSound *)(_resource->base.data);
+		ResourceSound * resourceSound = (ResourceSound *)(_resource->data);
 
 		sound->setResourceSound( resourceSound );
 
@@ -191,6 +191,95 @@ namespace Menge
 		movie2->addChild( sound );
 
 		return sound;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void * ae_movie_composition_node_slot( const aeMovieLayerData * _layerData, void * _data )
+	{
+		return AE_NULL;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void ae_movie_node_animate_update( const void * _element, uint32_t _type, const ae_matrix4_t _matrix, float _opacity, void * _data )
+	{
+		switch( _type )
+		{
+		case AE_MOVIE_LAYER_TYPE_SLOT:
+			{
+				printf( "slot %f %f\n"
+					, _matrix[12]
+					, _matrix[13]
+					);
+			}break;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void ae_movie_node_animate_begin( const void * _element, uint32_t _type, float _offset, void * _data )
+	{
+		(void)_element;
+		(void)_type;
+		(void)_data;
+
+		switch( _type )
+		{
+		case AE_MOVIE_LAYER_TYPE_VIDEO:
+			{
+				Video * video = (Video *)_element;
+
+				Movie2 * movie2 = (Movie2 *)_data;
+
+				ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+
+				float time = TIMELINE_SERVICE( serviceProvider )
+					->getTime();
+
+				video->setTiming( _offset );
+
+				if( video->play( time ) == 0 )
+				{
+					return;
+				}
+			}break;
+		case AE_MOVIE_LAYER_TYPE_SOUND:
+			{
+				SoundEmitter * sound = (SoundEmitter *)_element;
+
+				Movie2 * movie2 = (Movie2 *)_data;
+
+				ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+
+				float time = TIMELINE_SERVICE( serviceProvider )
+					->getTime();
+
+				sound->setTiming( _offset );
+
+				if( sound->play( time ) == 0 )
+				{
+					return;
+				}
+			}break;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void ae_movie_node_animate_end( const void * _element, uint32_t _type, void * _data )
+	{
+		(void)_element;
+		(void)_type;
+		(void)_data;
+
+		switch( _type )
+		{
+		case AE_MOVIE_LAYER_TYPE_VIDEO:
+			{
+				Video * video = (Video *)_element;
+
+				video->stop();
+			}break;
+		case AE_MOVIE_LAYER_TYPE_SOUND:
+			{
+				SoundEmitter * sound = (SoundEmitter *)_element;
+
+				sound->stop();
+			}break;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Movie2::Camera * Movie2::addCamera( const ConstString & _name, RenderCameraProjection * _projection, RenderViewport * _viewport )
@@ -258,27 +347,39 @@ namespace Menge
 			return false;
 		}
 
-		m_composition = m_resourceMovie2->createComposition( m_compositionName );
+		const aeMovieData * movieData = m_resourceMovie2->getMovieData();
+
+		const aeMovieCompositionData * compositionData = m_resourceMovie2->getCompositionData( m_compositionName );
+
+		aeMovieCompositionProviders providers;
+		providers.camera_provider = &ae_movie_composition_node_camera;
+		providers.video_provider = &ae_movie_composition_node_video;
+		providers.sound_provider = &ae_movie_composition_node_sound;
+		providers.slot_provider = &ae_movie_composition_node_slot;
+
+		providers.animate_update = &ae_movie_node_animate_update;
+		providers.animate_begin = &ae_movie_node_animate_begin;
+		providers.animate_end = &ae_movie_node_animate_end;
+
+		aeMovieComposition * composition = create_movie_composition( movieData, compositionData, &providers, this );
 
 		if( m_composition == nullptr )
 		{
 			return false;
 		}
 
-		aeMovieCompositionNodeProvider provider;
-		provider.camera_provider = &ae_movie_composition_node_camera;
-		provider.video_provider = &ae_movie_composition_node_video;
-		provider.sound_provider = &ae_movie_composition_node_sound;
-		
+		m_composition = composition;
 
-		create_movie_composition_element( m_composition, &provider, this );
 				
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie2::_release()
 	{	
-		m_resourceMovie2->destroyComposition( m_composition );
+		const aeMovieData * movieData = m_resourceMovie2->getMovieData();
+
+		destroy_movie_composition( movieData, m_composition );
+		m_composition = nullptr;
 
 		m_resourceMovie2.release();
 	}
@@ -334,76 +435,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void begin_movie_node_animate( const void * _element, uint32_t _type, float _offset, void * _data )
-	{
-		(void)_element;
-		(void)_type;
-		(void)_data;
-
-		switch( _type )
-		{
-		case AE_MOVIE_LAYER_TYPE_VIDEO:
-			{
-				Video * video = (Video *)_element;
-
-				Movie2 * movie2 = (Movie2 *)_data;
-
-				ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
-
-				float time = TIMELINE_SERVICE( serviceProvider )
-					->getTime();
-
-				video->setTiming( _offset );
-
-				if( video->play( time ) == 0 )
-				{
-					return;
-				}
-			}break;
-		case AE_MOVIE_LAYER_TYPE_SOUND:
-			{
-				SoundEmitter * sound = (SoundEmitter *)_element;
-
-				Movie2 * movie2 = (Movie2 *)_data;
-
-				ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
-
-				float time = TIMELINE_SERVICE( serviceProvider )
-					->getTime();
-
-				sound->setTiming( _offset );
-
-				if( sound->play( time ) == 0 )
-				{
-					return;
-				}
-			}break;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void end_movie_node_animate( const void * _element, uint32_t _type, void * _data )
-	{
-		(void)_element;
-		(void)_type;
-		(void)_data;
-
-		switch( _type )
-		{
-		case AE_MOVIE_LAYER_TYPE_VIDEO:
-			{
-				Video * video = (Video *)_element;
-
-				video->stop();
-			}break;
-		case AE_MOVIE_LAYER_TYPE_SOUND:
-			{
-				SoundEmitter * sound = (SoundEmitter *)_element;
-
-				sound->stop();
-			}break;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Movie2::_update( float _current, float _timing )
 	{
 		(void)_current;
@@ -414,7 +445,15 @@ namespace Menge
 			return;
 		}
 
-		update_movie_composition( m_composition, _timing, &begin_movie_node_animate, &end_movie_node_animate, this );
+		static float a = 0.f;
+
+		if( a < 1000.f )
+		{
+			a += _timing;
+			return;
+		}
+
+		update_movie_composition( m_composition, _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie2::_render( const RenderObjectState * _state )
@@ -440,9 +479,9 @@ namespace Menge
 
 			ResourceReference * resource_reference = (ResourceReference *)mesh.resource_data;
 
-			switch( mesh.resource_type )
+			switch( mesh.layer_type )
 			{
-			case AE_MOVIE_RESOURCE_SOLID:
+			case AE_MOVIE_LAYER_TYPE_SOLID:
 				{
 					m_meshes.push_back( Mesh() );
 					Mesh & m = m_meshes.back();
@@ -503,7 +542,8 @@ namespace Menge
 					RENDER_SERVICE( m_serviceProvider )
 						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
 				}break;
-			case AE_MOVIE_RESOURCE_IMAGE:
+			case AE_MOVIE_LAYER_TYPE_SEQUENCE:
+			case AE_MOVIE_LAYER_TYPE_IMAGE:
 				{
 					ResourceImage * resource_image = static_cast<ResourceImage *>(resource_reference);
 
@@ -571,7 +611,7 @@ namespace Menge
 					RENDER_SERVICE( m_serviceProvider )
 						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
 				}break;
-			case AE_MOVIE_RESOURCE_VIDEO:
+			case AE_MOVIE_LAYER_TYPE_VIDEO:
 				{
 					//ResourceVideo * resource_video = static_cast<ResourceVideo *>(resource_reference);
 					Video * video = static_cast<Video *>(mesh.element_data);

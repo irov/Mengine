@@ -98,7 +98,12 @@ namespace Menge
 	{
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	aeMovieComposition * ResourceMovie2::createComposition( const ConstString & _name )
+	const aeMovieData * ResourceMovie2::getMovieData() const
+	{
+		return m_movieData;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const aeMovieCompositionData * ResourceMovie2::getCompositionData( const ConstString & _name ) const
 	{
 		if( this->isCompile() == false )
 		{
@@ -111,15 +116,8 @@ namespace Menge
 		{
 			return nullptr;
 		}
-		
-		aeMovieComposition * composition = create_movie_composition( &m_instance, m_movieData, compositionData );
-
-		return composition;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceMovie2::destroyComposition( aeMovieComposition * _composition )
-	{
-		destroy_movie_composition( &m_instance, _composition );
+				
+		return compositionData;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie2::_initialize()
@@ -178,7 +176,7 @@ namespace Menge
 		movie_stream.read = &Mengine_read_stream;
 		movie_stream.data = stream.get();
 
-		if( load_movie_data( &m_instance, &movie_stream, m_movieData, &Mengine_resource_provider, this ) == AE_MOVIE_FAILED )
+		if( load_movie_data( m_movieData, &movie_stream, &Mengine_resource_provider, this ) == AE_MOVIE_FAILED )
 		{
 			return 0;
 		}

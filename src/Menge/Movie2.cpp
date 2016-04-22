@@ -135,7 +135,7 @@ namespace Menge
 		return new_camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_node_video( const aeMovieLayerData * _layerData, const aeMovieResourceVideo * _resource, void * _data )
+	static void * ae_movie_composition_node_provider( const aeMovieLayerData * _layerData, const aeMovieResource * _resource, void * _data )
 	{
 		Movie2 * movie2 = (Movie2 *)_data;
 
@@ -143,75 +143,58 @@ namespace Menge
 
 		ConstString c_name = Helper::stringizeString( serviceProvider, _layerData->name );
 
-		Video * video = NODE_SERVICE( serviceProvider )
-			->createNodeT<Video>( CONST_STRING( serviceProvider, Video ) );
+		uint8_t type = _layerData->type;
 
-		video->setName( c_name );
-
-		ResourceVideo * resourceVideo = (ResourceVideo *)(_resource->data);
-
-		video->setResourceVideo( resourceVideo );
-
-		EMaterialBlendMode blend_mode = EMB_NORMAL;
-
-		switch( _layerData->blend_mode )
+		switch( type )
 		{
-		case AE_MOVIE_BLEND_ADD:
-			blend_mode = EMB_ADD;
-			break;
-		};
+		case AE_MOVIE_LAYER_TYPE_VIDEO:
+			{
+				Video * video = NODE_SERVICE( serviceProvider )
+					->createNodeT<Video>( CONST_STRING( serviceProvider, Video ) );
 
-		video->setBlendMode( blend_mode );
+				video->setName( c_name );
 
-		video->hide( true );
-		video->enable();
-		
-		movie2->addChild( video );
-		
-		return video;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_node_sound( const aeMovieLayerData * _layerData, const aeMovieResourceSound * _resource, void * _data )
-	{
-		Movie2 * movie2 = (Movie2 *)_data;
+				ResourceVideo * resourceVideo = (ResourceVideo *)(_resource->data);
 
-		ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+				video->setResourceVideo( resourceVideo );
 
-		ConstString c_name = Helper::stringizeString( serviceProvider, _layerData->name );
+				EMaterialBlendMode blend_mode = EMB_NORMAL;
 
-		SoundEmitter * sound = NODE_SERVICE( serviceProvider )
-			->createNodeT<SoundEmitter>( CONST_STRING( serviceProvider, SoundEmitter ) );
+				switch( _layerData->blend_mode )
+				{
+				case AE_MOVIE_BLEND_ADD:
+					blend_mode = EMB_ADD;
+					break;
+				};
 
-		sound->setName( c_name );
+				video->setBlendMode( blend_mode );
 
-		ResourceSound * resourceSound = (ResourceSound *)(_resource->data);
+				video->hide( true );
+				video->enable();
 
-		sound->setResourceSound( resourceSound );
+				movie2->addChild( video );
 
-		sound->enable();
+				return video;
+			}break;
+		case AE_MOVIE_LAYER_TYPE_SOUND:
+			{
+				SoundEmitter * sound = NODE_SERVICE( serviceProvider )
+					->createNodeT<SoundEmitter>( CONST_STRING( serviceProvider, SoundEmitter ) );
 
-		movie2->addChild( sound );
+				sound->setName( c_name );
 
-		return sound;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_node_particle( const aeMovieLayerData * _layerData, const aeMovieResourceParticle * _resource, void * _data )
-	{
-		return AE_NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_node_socket( const aeMovieLayerData * _layerData, const aeMovieResourceSocket * _resource, void * _data )
-	{
-		return AE_NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_node_slot( const aeMovieLayerData * _layerData, void * _data )
-	{
-		return AE_NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_node_event( const aeMovieLayerData * _layerData, void * _data )
-	{
+				ResourceSound * resourceSound = (ResourceSound *)(_resource->data);
+
+				sound->setResourceSound( resourceSound );
+
+				sound->enable();
+
+				movie2->addChild( sound );
+
+				return sound;
+			}break;
+		}
+				
 		return AE_NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -221,17 +204,17 @@ namespace Menge
 		{
 		case AE_MOVIE_LAYER_TYPE_PARTICLE:
 			{
-				printf( "AE_MOVIE_LAYER_TYPE_PARTICLE %f %f\n"
-					, _matrix[12]
-					, _matrix[13]
-					);
+				//printf( "AE_MOVIE_LAYER_TYPE_PARTICLE %f %f\n"
+				//	, _matrix[12]
+				//	, _matrix[13]
+				//	);
 			}break;
 		case AE_MOVIE_LAYER_TYPE_SLOT:
 			{
-				printf( "AE_MOVIE_LAYER_TYPE_SLOT %f %f\n"
-					, _matrix[12]
-					, _matrix[13]
-					);
+				//printf( "AE_MOVIE_LAYER_TYPE_SLOT %f %f\n"
+				//	, _matrix[12]
+				//	, _matrix[13]
+				//	);
 			}break;
 		}
 	}
@@ -306,6 +289,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ae_movie_composition_state( struct aeMovieComposition * _composition, aeMovieCompositionStateFlag _state, void * _data )
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Movie2::Camera * Movie2::addCamera( const ConstString & _name, RenderCameraProjection * _projection, RenderViewport * _viewport )
 	{
 		this->addChild( _projection );
@@ -377,16 +365,13 @@ namespace Menge
 
 		aeMovieCompositionProviders providers;
 		providers.camera_provider = &ae_movie_composition_node_camera;
-		providers.video_provider = &ae_movie_composition_node_video;
-		providers.sound_provider = &ae_movie_composition_node_sound;
-		providers.particle_provider = &ae_movie_composition_node_particle;
-		providers.socket_provider = &ae_movie_composition_node_socket;
-		providers.slot_provider = &ae_movie_composition_node_slot;
-		providers.event_provider = &ae_movie_composition_node_event;
+		providers.node_provider = &ae_movie_composition_node_provider;
 
 		providers.animate_update = &ae_movie_node_animate_update;
 		providers.animate_begin = &ae_movie_node_animate_begin;
 		providers.animate_end = &ae_movie_node_animate_end;
+
+		providers.composition_state = &ae_movie_composition_state;
 
 		aeMovieComposition * composition = create_movie_composition( movieData, compositionData, &providers, this );
 

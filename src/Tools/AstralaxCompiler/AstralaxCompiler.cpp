@@ -64,7 +64,7 @@ static void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path
 		_quotePath[pathSize + 2] = 0;
 	}
 };
-
+//////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
 	(void)hInstance;
@@ -278,6 +278,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			return 0;
 		}
 
+		//std::string emitterName = getEmitterName( mf );
+
 		int atlasCount = Magic_GetStaticAtlasCount( mf );
 
 		struct AtlasDesc
@@ -330,6 +332,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		//fputs( s_atlasCount, f_info );
 		//fputs( "\n", f_info );
+		//fprintf_s( f_info, "%s\n", emitterName );
 		fprintf_s( f_info, "%d\n", atlasCount );
 
 		for( TVectorAtlas::const_iterator

@@ -87,18 +87,18 @@ namespace Menge
 
 		const VideoCodecDataInfo * dataInfo = _decoder->getCodecDataInfo();
 
-		if( dataInfo->frameWidth % 16 != 0 ||
-			dataInfo->frameHeight % 16 != 0 )
-		{
-			LOGGER_ERROR( m_serviceProvider )("ResourceVideo::checkValidVideoDecoder_ invalid width or heigth '%d:%d' need '%d:%d' maybe div 16"
-				, dataInfo->frameWidth
-				, dataInfo->frameHeight
-				, (dataInfo->frameWidth / 16 + 1) * 16
-				, (dataInfo->frameHeight / 16 + 1) * 16
-				);
+		//if( dataInfo->frameWidth % 16 != 0 ||
+		//	dataInfo->frameHeight % 16 != 0 )
+		//{
+		//	LOGGER_ERROR( m_serviceProvider )("ResourceVideo::checkValidVideoDecoder_ invalid width or heigth '%d:%d' need '%d:%d' maybe div 16"
+		//		, dataInfo->frameWidth
+		//		, dataInfo->frameHeight
+		//		, (dataInfo->frameWidth / 16 + 1) * 16
+		//		, (dataInfo->frameHeight / 16 + 1) * 16
+		//		);
 
-			return false;
-		}
+		//	return false;
+		//}
 
 		uint32_t limitVideoWidth = CONFIG_VALUE( m_serviceProvider, "Limit", "VideoWidth", 2048U );
 		uint32_t limitVideoHeight = CONFIG_VALUE( m_serviceProvider, "Limit", "VideoHeight", 2048U );

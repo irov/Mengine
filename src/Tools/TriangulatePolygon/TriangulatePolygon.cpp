@@ -47,36 +47,36 @@ struct vec2f
 		return *this;
 	}
 
-	vec2f( float _x, float _y )
+	vec2f( double _x, double _y )
 		: x( _x )
 		, y( _y )
 	{
 	};
 
-	float operator [] ( size_t i ) const
+	double operator [] ( size_t i ) const
 	{
 		return (&x)[i];
 	}
 
-	float & operator [] ( size_t i )
+	double & operator [] ( size_t i )
 	{
 		return (&x)[i];
 	}
 
 	template <int K>
-	float get() const
+	double get() const
 	{
 		return this->operator [] ( K );
 	}
 
 	template <int K>
-	void set( float _value )
+	void set( double _value )
 	{
 		this->operator [] ( K ) = _value;
 	}
 
-	float x;
-	float y;
+	double x;
+	double y;
 };
 
 namespace boost
@@ -94,7 +94,7 @@ namespace boost
 			template<>
 			struct coordinate_type<vec2f>
 			{
-				typedef float type;
+				typedef double type;
 			};
 
 			template<>
@@ -111,12 +111,12 @@ namespace boost
 			template<size_t Dimension>
 			struct access<vec2f, Dimension >
 			{
-				static inline float get( vec2f const& p )
+				static inline double get( vec2f const& p )
 				{
 					return p.template get<Dimension>();
 				}
 
-				static inline void set( vec2f & p, float const& value )
+				static inline void set( vec2f & p, double const& value )
 				{
 					p.template set<Dimension>( value );
 				}
@@ -180,12 +180,12 @@ public:
 		return value;
 	}
 
-	float read_f()
+	double read_f()
 	{
 		LPWSTR arg = m_cmd_args[m_cmd_index++];
 
-		float value;
-		swscanf( arg, L"%f", &value );
+		double value;
+		swscanf( arg, L"%lf", &value );
 
 		return value;
 	}
@@ -194,13 +194,13 @@ public:
 	{
 		LPWSTR arg_x = m_cmd_args[m_cmd_index++];
 
-		float value_x;
-		swscanf( arg_x, L"%f", &value_x );
+		double value_x;
+		swscanf( arg_x, L"%lf", &value_x );
 
 		LPWSTR arg_y = m_cmd_args[m_cmd_index++];
 
-		float value_y;
-		swscanf( arg_y, L"%f", &value_y );
+		double value_y;
+		swscanf( arg_y, L"%lf", &value_y );
 
 		return vec2f( value_x, value_y );
 	}

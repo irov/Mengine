@@ -51,6 +51,8 @@ namespace Menge
 	{
 		(void)_time;
 
+		play_movie_composition( m_composition, 0.f );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -193,7 +195,22 @@ namespace Menge
 		return sound;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void * ae_movie_composition_node_particle( const aeMovieLayerData * _layerData, const aeMovieResourceParticle * _resource, void * _data )
+	{
+		return AE_NULL;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void * ae_movie_composition_node_socket( const aeMovieLayerData * _layerData, const aeMovieResourceSocket * _resource, void * _data )
+	{
+		return AE_NULL;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static void * ae_movie_composition_node_slot( const aeMovieLayerData * _layerData, void * _data )
+	{
+		return AE_NULL;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void * ae_movie_composition_node_event( const aeMovieLayerData * _layerData, void * _data )
 	{
 		return AE_NULL;
 	}
@@ -202,9 +219,16 @@ namespace Menge
 	{
 		switch( _type )
 		{
+		case AE_MOVIE_LAYER_TYPE_PARTICLE:
+			{
+				printf( "AE_MOVIE_LAYER_TYPE_PARTICLE %f %f\n"
+					, _matrix[12]
+					, _matrix[13]
+					);
+			}break;
 		case AE_MOVIE_LAYER_TYPE_SLOT:
 			{
-				printf( "slot %f %f\n"
+				printf( "AE_MOVIE_LAYER_TYPE_SLOT %f %f\n"
 					, _matrix[12]
 					, _matrix[13]
 					);
@@ -355,7 +379,10 @@ namespace Menge
 		providers.camera_provider = &ae_movie_composition_node_camera;
 		providers.video_provider = &ae_movie_composition_node_video;
 		providers.sound_provider = &ae_movie_composition_node_sound;
+		providers.particle_provider = &ae_movie_composition_node_particle;
+		providers.socket_provider = &ae_movie_composition_node_socket;
 		providers.slot_provider = &ae_movie_composition_node_slot;
+		providers.event_provider = &ae_movie_composition_node_event;
 
 		providers.animate_update = &ae_movie_node_animate_update;
 		providers.animate_begin = &ae_movie_node_animate_begin;
@@ -376,9 +403,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie2::_release()
 	{	
-		const aeMovieData * movieData = m_resourceMovie2->getMovieData();
-
-		destroy_movie_composition( movieData, m_composition );
+		destroy_movie_composition( m_composition );
 		m_composition = nullptr;
 
 		m_resourceMovie2.release();

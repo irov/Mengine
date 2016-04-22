@@ -202,7 +202,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie2::_release()
 	{
-		delete_movie_data( &m_instance, m_movieData );
+		delete_movie_data( m_movieData );
 
 		ResourceReference::_release();
 	}
@@ -228,7 +228,7 @@ namespace Menge
 		mt::uv4f uv_image;
 		mt::uv4f uv_alpha;
 
-		mt::vec2f size( _resource->width, _resource->height );
+		mt::vec2f size( _resource->trim_width, _resource->trim_height );
 
 		image->setup( c_path, ConstString::none(), uv_image, uv_alpha, size );
 

@@ -32,6 +32,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Factorable::setImmortal( bool _value )
 	{
+		(void)_value;
+
 #   ifdef MENGINE_FACTORABLE_DEBUG
 		m_immortal = _value;
 #	endif

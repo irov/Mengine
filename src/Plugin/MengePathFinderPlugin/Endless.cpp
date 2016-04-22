@@ -49,6 +49,8 @@ namespace	Menge
 		{
 			Parallax * parallax = NODE_SERVICE( m_serviceProvider )
 				->createNodeT<Parallax>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Parallax" ) );
+
+			parallax->setImmortal( true );
 			
 			float x = float( i ) * m_elementWidth;
 			
@@ -77,6 +79,7 @@ namespace	Menge
 
 			m_elementCb.call( false, ED_ALL, i, el.node, el.id );
 
+			el.node->setImmortal( false );
 			el.node->destroy();
 		}
 

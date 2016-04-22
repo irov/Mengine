@@ -9,6 +9,7 @@ namespace Menge
     Factorable::Factorable()
 	    : m_factory(nullptr)
 #   ifdef MENGINE_FACTORABLE_DEBUG
+		, m_immortal(false)
         , m_destroy(false)
 #   endif
     {
@@ -28,9 +29,23 @@ namespace Menge
     {
 	    m_factory = _factory;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Factorable::setImmortal( bool _value )
+	{
+#   ifdef MENGINE_FACTORABLE_DEBUG
+		m_immortal = _value;
+#	endif
+	}
     //////////////////////////////////////////////////////////////////////////
     void Factorable::destroy()
     {
+#   ifdef MENGINE_FACTORABLE_DEBUG
+		if( m_immortal == true )
+		{
+			MENGINE_THROW_EXCEPTION( "m_immortal == true" );
+		}
+#	endif
+
 #   ifdef MENGINE_FACTORABLE_DEBUG
         if( m_destroy == true )
         {

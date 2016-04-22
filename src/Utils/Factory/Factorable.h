@@ -23,6 +23,9 @@ namespace Menge
 		inline Factory * getFactory() const;
 
 	public:
+		void setImmortal( bool _value );
+
+	public:
 		virtual void destroy();
 
 	protected:
@@ -41,6 +44,7 @@ namespace Menge
 
 #   ifdef MENGINE_FACTORABLE_DEBUG
         bool m_destroy;
+		bool m_immortal;
 #   endif
 	};
 	//////////////////////////////////////////////////////////////////////////

@@ -135,9 +135,11 @@ namespace Menge
 
 	protected:
 		void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
+		void notifyDebugMode( bool _mode );
 
 	protected:
 		ObserverInterface * m_observerChangeLocale;
+		ObserverInterface * m_observerDebugMode;
 
 	protected:
 		float getHorizontAlignOffset_( const TextLine & _line );
@@ -223,7 +225,9 @@ namespace Menge
 
 		bool m_wrap;
 		bool m_outline;
-		bool m_pixelsnap;				
+		bool m_pixelsnap;
+
+		bool m_debugMode;
 				
 		mutable TVectorTextLine m_lines;
 

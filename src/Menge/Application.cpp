@@ -843,6 +843,25 @@ namespace Menge
 					->setTextEnable( s_text_enable );
 			}
 
+			if( _event.key == KC_R && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
+			{
+				static bool s_text_debug = true;
+
+				s_text_debug = !s_text_debug;
+
+				NOTIFICATION_SERVICE( m_serviceProvider )
+					->notify( NOTIFICATOR_DEBUG_TEXT_MODE, s_text_debug );
+			}
+
+			if( _event.key == KC_E && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
+			{
+				const ConstString & locale = APPLICATION_SERVICE( m_serviceProvider )
+					->getLocale();
+
+				APPLICATION_SERVICE( m_serviceProvider )
+					->setLocale( locale );
+			}
+
 			if( _event.key == KC_0 && _event.isDown == true )
 			{
 				static uint32_t batchMode = RENDER_SERVICE(m_serviceProvider)

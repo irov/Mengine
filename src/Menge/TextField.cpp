@@ -41,6 +41,7 @@ namespace Menge
 		, m_wrap(true)
 		, m_outline(true)
 		, m_pixelsnap(true)
+		, m_debugMode( false )
 		, m_materialFont(nullptr)
 		, m_materialOutline(nullptr)
 		, m_invalidateVertices(true)
@@ -49,6 +50,7 @@ namespace Menge
 		, m_invalidateTextEntry(true)
 		, m_textEntry(nullptr)
 		, m_observerChangeLocale(nullptr)
+		, m_observerDebugMode(nullptr)		
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -79,6 +81,9 @@ namespace Menge
 
 		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
 			->addObserverMethod( NOTIFICATOR_UPDATE_LOCALE_NODE, this, &TextField::notifyChangeLocale );
+
+		m_observerDebugMode = NOTIFICATION_SERVICE( m_serviceProvider )
+			->addObserverMethod( NOTIFICATOR_DEBUG_TEXT_MODE, this, &TextField::notifyDebugMode );
 		
 		return true;
 	}
@@ -87,6 +92,9 @@ namespace Menge
 	{
 		NOTIFICATION_SERVICE( m_serviceProvider )
 			->removeObserver( NOTIFICATOR_UPDATE_LOCALE_NODE, m_observerChangeLocale );
+
+		NOTIFICATION_SERVICE( m_serviceProvider )
+			->removeObserver( NOTIFICATOR_DEBUG_TEXT_MODE, m_observerDebugMode );
 
 		TEXT_SERVICE(m_serviceProvider)
 			->releaseFont( m_font );
@@ -120,6 +128,13 @@ namespace Menge
 	{
 		(void)_prevLocale;
 		(void)_currentlocale;
+
+		this->invalidateTextEntry();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::notifyDebugMode( bool _mode )
+	{
+		m_debugMode = _mode;
 
 		this->invalidateTextEntry();
 	}
@@ -507,6 +522,11 @@ namespace Menge
 
 		TVectorString lines;
 		Utils::split2( lines, m_cacheText, false, line_delims );
+
+		if( m_debugMode == true )
+		{
+			lines.insert( lines.begin(), m_key.c_str() );
+		}
 
 		float charOffset = this->calcCharOffset();
 		

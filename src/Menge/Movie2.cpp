@@ -491,6 +491,67 @@ namespace Menge
 
 			switch( mesh.layer_type )
 			{
+			case AE_MOVIE_LAYER_TYPE_SHAPE:
+				{
+					m_meshes.push_back( Mesh() );
+					Mesh & m = m_meshes.back();
+
+					m.vertices.resize( mesh.vertexCount );
+
+					ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+
+					for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+					{
+						RenderVertex2D & v = m.vertices[index];
+
+						mt::vec3f vp;
+						vp.from_f3( mesh.position + index * 3 );
+
+						mt::mul_v3_v3_m4( v.position, vp, wm );
+
+						mt::vec2f uv;
+						uv.from_f2( mesh.uv + index * 2 );
+
+						v.uv[0] = uv;
+						v.uv[1] = uv;
+
+						v.color = color;
+					}
+
+					m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+
+					EMaterialBlendMode blend_mode = EMB_NORMAL;
+
+					switch( mesh.blend_mode )
+					{
+					case AE_MOVIE_BLEND_ADD:
+						blend_mode = EMB_ADD;
+						break;
+					};
+
+					m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
+
+					RenderObjectState state;
+					if( mesh.camera_data != nullptr )
+					{
+						Movie2::Camera * camera = (Movie2::Camera *)mesh.camera_data;
+
+						state.camera = camera->projection;
+						state.viewport = camera->viewport;
+						state.clipplane = _state->clipplane;
+						state.target = _state->target;
+					}
+					else
+					{
+						state.camera = _state->camera;
+						state.viewport = _state->viewport;
+						state.clipplane = _state->clipplane;
+						state.target = _state->target;
+					}
+
+					RENDER_SERVICE( m_serviceProvider )
+						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+				}break;
 			case AE_MOVIE_LAYER_TYPE_SOLID:
 				{
 					m_meshes.push_back( Mesh() );

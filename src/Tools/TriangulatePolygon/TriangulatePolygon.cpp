@@ -217,7 +217,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	(void)nShowCmd;
 
 	CommandLineStream stream( lpCmdLine );
-		
+	
+	bool image_bb = stream.read_b();
+
 	vec2f image_base_size = stream.read_v2();
 	vec2f image_trim_size = stream.read_v2();
 	vec2f image_trim_offset = stream.read_v2();
@@ -226,79 +228,87 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	uint32_t points_count = stream.read_u();
 
-	BoostPolygon polygon;
+	BoostPolygon polygon_input;
 	
 	for( uint32_t points_index = 0; points_index != points_count; ++points_index )
 	{
 		vec2f v = stream.read_v2();
 
-		boost::geometry::append( polygon, v );
+		boost::geometry::append( polygon_input, v );
 	}
 
-	boost::geometry::correct( polygon );
-
-	vec2f v0( 0.f, 0.f );
-	vec2f v1( image_base_size.x, 0.f );
-	vec2f v2( image_base_size.x, image_base_size.y );
-	vec2f v3( 0.f, image_base_size.y );
-
-	BoostPolygon imagePolygon;
-	boost::geometry::append( imagePolygon, v0 );
-	boost::geometry::append( imagePolygon, v1 );
-	boost::geometry::append( imagePolygon, v2 );
-	boost::geometry::append( imagePolygon, v3 );
-	boost::geometry::correct( imagePolygon );
-
+	boost::geometry::correct( polygon_input );
+	
 	TVectorPolygon output;
-	if( subtract == false )
+
+	if( image_bb == true )
 	{
-		std::deque<BoostPolygon> result;
+		vec2f v0( 0.f, 0.f );
+		vec2f v1( image_base_size.x, 0.f );
+		vec2f v2( image_base_size.x, image_base_size.y );
+		vec2f v3( 0.f, image_base_size.y );
 
-		try
+		BoostPolygon imagePolygon;
+		boost::geometry::append( imagePolygon, v0 );
+		boost::geometry::append( imagePolygon, v1 );
+		boost::geometry::append( imagePolygon, v2 );
+		boost::geometry::append( imagePolygon, v3 );
+		boost::geometry::correct( imagePolygon );
+
+		if( subtract == false )
 		{
-			boost::geometry::intersection( polygon, imagePolygon, result );
+			std::deque<BoostPolygon> result;
+
+			try
+			{
+				boost::geometry::intersection( polygon_input, imagePolygon, result );
+			}
+			catch( const std::exception & )
+			{
+				message_error( "# " );
+
+				return 0;
+			}
+
+			for( std::deque<BoostPolygon>::const_iterator
+				it = result.begin(),
+				it_end = result.end();
+			it != it_end;
+			++it )
+			{
+				const BoostPolygon & polygon = *it;
+
+				output.push_back( polygon );
+			}
 		}
-		catch( const std::exception & )
+		else
 		{
-			message_error( "# " );
+			std::deque<BoostPolygon> result;
 
-			return 0;
-		}
+			try
+			{
+				boost::geometry::difference( imagePolygon, polygon_input, result );
+			}
+			catch( const std::exception & )
+			{
+				return false;
+			}
 
-		for( std::deque<BoostPolygon>::const_iterator
-			it = result.begin(),
-			it_end = result.end();
-		it != it_end;
-		++it )
-		{
-			const BoostPolygon & polygon = *it;
+			for( std::deque<BoostPolygon>::const_iterator
+				it = result.begin(),
+				it_end = result.end();
+			it != it_end;
+			++it )
+			{
+				const BoostPolygon & polygon = *it;
 
-			output.push_back( polygon );
+				output.push_back( polygon );
+			}
 		}
 	}
 	else
 	{
-		std::deque<BoostPolygon> result;
-
-		try
-		{
-			boost::geometry::difference( imagePolygon, polygon, result );
-		}
-		catch( const std::exception & )
-		{
-			return false;
-		}
-
-		for( std::deque<BoostPolygon>::const_iterator
-			it = result.begin(),
-			it_end = result.end();
-		it != it_end;
-		++it )
-		{
-			const BoostPolygon & polygon = *it;
-
-			output.push_back( polygon );
-		}
+		output.push_back( polygon_input );
 	}
 
 	if( output.empty() == true )

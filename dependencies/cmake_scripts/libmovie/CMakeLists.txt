@@ -9,12 +9,9 @@ set( sources
 ${SOURCE_DIR}/src/movie_utils.c
 ${SOURCE_DIR}/src/movie_math.c
 ${SOURCE_DIR}/src/movie_node.c
-${SOURCE_DIR}/src/movie_math.h
 ${SOURCE_DIR}/src/movie_data.c
-${SOURCE_DIR}/src/movie_utils.h
-${SOURCE_DIR}/src/movie_memory.h
 ${SOURCE_DIR}/src/movie_instance.c
-${SOURCE_DIR}/src/movie_stream.h
+${SOURCE_DIR}/src/movie_transformation.c
 )
 
 include_directories(${SOURCE_DIR}/include)

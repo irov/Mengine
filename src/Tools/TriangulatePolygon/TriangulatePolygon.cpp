@@ -154,9 +154,9 @@ class CommandLineStream
 public:
 	CommandLineStream( PWSTR _lpCmdLine )
 		: m_cmd_index(0)
-	{
-		int cmd_num;
-		m_cmd_args = CommandLineToArgvW( _lpCmdLine, &cmd_num );
+		, m_cmd_num(0)
+	{		
+		m_cmd_args = CommandLineToArgvW( _lpCmdLine, &m_cmd_num );
 	}
 
 public:
@@ -207,6 +207,8 @@ public:
 
 protected:
 	uint32_t m_cmd_index;
+	
+	int m_cmd_num;
 	LPWSTR * m_cmd_args;
 };
 //////////////////////////////////////////////////////////////////////////

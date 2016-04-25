@@ -165,6 +165,9 @@ namespace Menge
 				case AE_MOVIE_BLEND_ADD:
 					blend_mode = EMB_ADD;
 					break;
+				case AE_MOVIE_BLEND_SCREEN:
+					blend_mode = EMB_SCREEN;
+					break;
 				};
 
 				video->setBlendMode( blend_mode );
@@ -489,6 +492,24 @@ namespace Menge
 
 			ResourceReference * resource_reference = (ResourceReference *)mesh.resource_data;
 
+			RenderObjectState state;
+			//if( mesh.camera_data != nullptr )
+			//{
+			//	Movie2::Camera * camera = (Movie2::Camera *)mesh.camera_data;
+
+			//	state.camera = camera->projection;
+			//	state.viewport = camera->viewport;
+			//	state.clipplane = _state->clipplane;
+			//	state.target = _state->target;
+			//}
+			//else
+			{
+				state.camera = _state->camera;
+				state.viewport = _state->viewport;
+				state.clipplane = _state->clipplane;
+				state.target = _state->target;
+			}
+
 			switch( mesh.layer_type )
 			{
 			case AE_MOVIE_LAYER_TYPE_SHAPE:
@@ -530,24 +551,6 @@ namespace Menge
 					};
 
 					m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
-
-					RenderObjectState state;
-					if( mesh.camera_data != nullptr )
-					{
-						Movie2::Camera * camera = (Movie2::Camera *)mesh.camera_data;
-
-						state.camera = camera->projection;
-						state.viewport = camera->viewport;
-						state.clipplane = _state->clipplane;
-						state.target = _state->target;
-					}
-					else
-					{
-						state.camera = _state->camera;
-						state.viewport = _state->viewport;
-						state.clipplane = _state->clipplane;
-						state.target = _state->target;
-					}
 
 					RENDER_SERVICE( m_serviceProvider )
 						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
@@ -591,24 +594,6 @@ namespace Menge
 					};
 
 					m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
-
-					RenderObjectState state;
-					if( mesh.camera_data != nullptr )
-					{
-						Movie2::Camera * camera = (Movie2::Camera *)mesh.camera_data;
-
-						state.camera = camera->projection;
-						state.viewport = camera->viewport;
-						state.clipplane = _state->clipplane;
-						state.target = _state->target;
-					}
-					else
-					{
-						state.camera = _state->camera;
-						state.viewport = _state->viewport;
-						state.clipplane = _state->clipplane;
-						state.target = _state->target;
-					}
 
 					RENDER_SERVICE( m_serviceProvider )
 						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
@@ -661,24 +646,6 @@ namespace Menge
 
 					m.material = Helper::makeImageMaterial( m_serviceProvider, resource_image, ConstString::none(), blend_mode, false, false );
 					
-					RenderObjectState state;
-					if( mesh.camera_data != nullptr )
-					{
-						Movie2::Camera * camera = (Movie2::Camera *)mesh.camera_data;
-
-						state.camera = camera->projection;
-						state.viewport = camera->viewport;
-						state.clipplane = _state->clipplane;
-						state.target = _state->target;
-					}
-					else
-					{						
-						state.camera = _state->camera;
-						state.viewport = _state->viewport;
-						state.clipplane = _state->clipplane;
-						state.target = _state->target;
-					}
-
 					RENDER_SERVICE( m_serviceProvider )
 						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
 				}break;
@@ -719,24 +686,6 @@ namespace Menge
 					m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
 
 					m.material = video->getMaterial();
-
-					RenderObjectState state;
-					if( mesh.camera_data != nullptr )
-					{
-						Movie2::Camera * camera = (Movie2::Camera *)mesh.camera_data;
-
-						state.camera = camera->projection;
-						state.viewport = camera->viewport;
-						state.clipplane = _state->clipplane;
-						state.target = _state->target;
-					}
-					else
-					{
-						state.camera = _state->camera;
-						state.viewport = _state->viewport;
-						state.clipplane = _state->clipplane;
-						state.target = _state->target;
-					}
 
 					video->updateVideoBuffer();
 

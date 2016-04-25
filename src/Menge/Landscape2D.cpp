@@ -85,6 +85,9 @@ namespace	Menge
 		
 		TVectorLandscape2DElements & elementsWM = this->getElementWM();
 
+		mt::vec2f min_screen( 0.f, 0.f );
+		mt::vec2f max_screen( 1.f, 1.f );
+
 		for( TVectorLandscape2DElements::iterator
 			it = elementsWM.begin(),
 			it_end = elementsWM.end();
@@ -98,10 +101,18 @@ namespace	Menge
 			mt::vec2f v_wvp_minimum;
 			mt::mul_v2_v2_m4_homogenize( v_wvp_minimum, el.bb_wm.minimum, vpm );
 
+			mt::vec2f v_wvp_minimum_norm;
+			v_wvp_minimum_norm.x = (1.f + v_wvp_minimum.x) * 0.5f;
+			v_wvp_minimum_norm.y = (1.f - v_wvp_minimum.y) * 0.5f;
+
 			mt::vec2f v_wvp_maximum;
 			mt::mul_v2_v2_m4_homogenize( v_wvp_maximum, el.bb_wm.maximum, vpm );
 
-			if( mt::is_intersect( v_wvp_minimum, v_wvp_maximum, mt::vec2f(-1.f, -1.f), mt::vec2f(1.f, 1.f) ) == false )
+			mt::vec2f v_wvp_maximum_norm;
+			v_wvp_maximum_norm.x = (1.f + v_wvp_maximum.x) * 0.5f;
+			v_wvp_maximum_norm.y = (1.f - v_wvp_maximum.y) * 0.5f;
+
+			if( mt::is_intersect( v_wvp_minimum_norm, v_wvp_maximum_norm, min_screen, max_screen ) == false )
 			{
 				if( el.material != nullptr )
 				{

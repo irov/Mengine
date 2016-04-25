@@ -693,10 +693,14 @@ namespace Menge
 
 			it.next_shuffle();
 
-			printf( "%.*s%s%s [%s] (%.2f, %.2f) %d\n"
+			if( child->isEnable() == false )
+			{
+				continue;
+			}
+
+			printf( "%.*s-%s [%s] (%.2f, %.2f) %d\n"
 				, _tab
 				, "                                         "
-				, child->isEnable() ? "+" : "-"
 				, child->getName().c_str() 
 				, child->getType().c_str()
 				, child->getWorldPosition().x

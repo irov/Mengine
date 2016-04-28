@@ -378,10 +378,12 @@ namespace Menge
 
 		aeMovieComposition * composition = create_movie_composition( movieData, compositionData, &providers, this );
 
-		if( m_composition == nullptr )
+		if( composition == nullptr )
 		{
 			return false;
 		}
+
+		//set_movie_composition_loop( composition, AE_TRUE );
 
 		m_composition = composition;
 
@@ -472,6 +474,7 @@ namespace Menge
 	void Movie2::_render( const RenderObjectState * _state )
 	{
 		aeMovieRenderContext context;
+
 		if( begin_movie_render_context( m_composition, &context ) == AE_MOVIE_FAILED )
 		{
 			return;

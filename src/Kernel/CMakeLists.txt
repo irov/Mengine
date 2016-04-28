@@ -226,11 +226,6 @@ Manager\\\\Schedule
 	ScheduleManager.cpp
 	ScheduleManager.h
 )
-
-ADD_FILTER(
-Module
-    ModuleFactory.h
-)
    
 INCLUDE_DIRECTORIES( 
     ${Mengine_SOURCE_DIR} 

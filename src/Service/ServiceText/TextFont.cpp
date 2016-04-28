@@ -82,10 +82,12 @@ namespace Menge
 		}
 
 		_glyph->uv = ch->getUV();
-		_glyph->offset = ch->getOffset();
-		_glyph->advance = ch->getAdvance();
+		_glyph->offset = ch->getOffset();		
 		_glyph->size = ch->getSize();		
-		_glyph->kerning = ch->getKerning( _next );
+		_glyph->advance = ch->getAdvance();
+
+		float kerning = ch->getKerning( _next );
+		_glyph->advance += kerning;
 
 		return true;
 	}

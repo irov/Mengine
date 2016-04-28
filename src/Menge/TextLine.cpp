@@ -24,9 +24,7 @@ namespace Menge
 	{
 		WString::size_type text_size = _text.length();
 		m_charsData.reserve( text_size );
-
-		float totalKerning = 0.0f;
-		
+				
         const char * text_str = _text.c_str();
         size_t text_len = _text.size();
 
@@ -115,7 +113,6 @@ namespace Menge
 				glyph.offset = mt::vec2f( 0.f, 0.f );
 				glyph.advance = 0.f;
 				glyph.size = mt::vec2f( 0.f, 0.f );
-				glyph.kerning = 0.f;
 
 				successful = false;
 
@@ -142,10 +139,7 @@ namespace Menge
 			charData.offset = glyph.offset;
 			
 			charData.size = glyph.size;
-			
-			totalKerning += glyph.kerning;
-			
-			charData.offset.x += totalKerning;
+
 			m_charsData.push_back( charData );
 
 			m_length += charData.advance + m_charOffset;

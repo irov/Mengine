@@ -1,0 +1,43 @@
+#	pragma once
+
+#	include "Interface/ModuleInterface.h"
+
+namespace Menge
+{
+	class ModuleBase
+		: public ModuleInterface
+	{
+	public:
+		ModuleBase();
+		~ModuleBase();
+
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
+
+	public:
+		void setName( const ConstString & _name ) override;
+		const ConstString & getName() const override;
+
+	private:
+		bool initialize() override;
+		void finalize() override;
+
+	protected:
+		virtual bool _initialize();
+		virtual void _finalize();
+
+	public:
+		void update( float _time, float _timing ) override;
+		void render( const RenderObjectState * _state, unsigned int _debugMask ) override;
+
+	protected:
+		virtual void _update( float _time, float _timing );
+		virtual void _render( const RenderObjectState * _state, unsigned int _debugMask );
+		
+	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
+		ConstString m_name;
+	};
+}

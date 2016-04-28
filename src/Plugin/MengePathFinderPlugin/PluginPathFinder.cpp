@@ -3,7 +3,7 @@
 #	include "Interface/StringizeInterface.h"
 
 #	include "Factory/FactoryDefault.h"
-#	include "Kernel/ModuleFactory.h"
+#	include "Core/ModuleFactory.h"
 
 #	include "ModulePathFinder.h"
 #	include "ModuleAreaOfInterest.h"

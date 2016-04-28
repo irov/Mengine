@@ -127,7 +127,7 @@ namespace Menge
 			coninfo.dwSize.Y = 1000;
 			SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
 		}
-		
+
 		// redirect unbuffered STDOUT to the console
 		fgetpos( stdout, &m_pOldHandle[0] );
 		m_hOldHandle[0] = _dup( _fileno( stdout ) );

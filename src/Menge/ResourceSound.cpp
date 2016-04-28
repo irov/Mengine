@@ -124,6 +124,22 @@ namespace Menge
 
         const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
+		float limitMinimalStreamSoundDuration = CONFIG_VALUE( m_serviceProvider, "Limit", "MinimalStreamSoundDuration", 500.f ); //4kb
+
+		if( (dataInfo->length <= limitMinimalStreamSoundDuration && limitMinimalStreamSoundDuration != 0.f) && m_isStreamable == true )
+		{
+			LOGGER_ERROR( m_serviceProvider )("SoundEngine::_isValid: '%s' group '%s' remove stream (time %.4f <= %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"0\"/>"
+				, this->getName().c_str()
+				, this->getGroup().c_str()
+				, dataInfo->length
+				, limitMinimalStreamSoundDuration
+				, category.c_str()
+				, m_filePath.c_str()
+				);
+
+			return false;
+		}
+
 		float limitNoStreamSoundDurationWarning = CONFIG_VALUE( m_serviceProvider, "Limit", "NoStreamSoundDurationWarning", 2000.f ); //4kb
 						
 		if( (dataInfo->length > limitNoStreamSoundDurationWarning && limitNoStreamSoundDurationWarning != 0.f) && m_isStreamable == false )

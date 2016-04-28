@@ -30,11 +30,10 @@ namespace Menge
 	struct Glyph
 	{
 		mt::vec4f uv;
-		mt::vec2f offset;
-		float advance;
+		mt::vec2f offset;		
 		mt::vec2f size;
 
-		float kerning;
+		float advance;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class TextFontInterface

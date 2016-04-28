@@ -76,6 +76,11 @@ src
     
     PluginBase.h
     PluginBase.cpp
+    
+    ModuleBase.h
+    ModuleBase.cpp
+    
+    ModuleFactory.h
    
     Magic.h    
 )

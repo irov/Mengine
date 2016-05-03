@@ -1336,6 +1336,8 @@ namespace Menge
 		PLAYER_SERVICE( m_serviceProvider )
 			->destroyCurrentScene();
 
+		m_cursorResource = nullptr;
+
 		SERVICE_FINALIZE( m_serviceProvider, Menge::GameServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PlayerServiceInterface );		
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PackageServiceInterface );

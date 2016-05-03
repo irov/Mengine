@@ -109,6 +109,8 @@ namespace Menge
 
 		delete m_warninglogger;
 		delete m_errorLogger;
+
+		m_observerChangeLocale = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XlsExportPlugin::notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale )

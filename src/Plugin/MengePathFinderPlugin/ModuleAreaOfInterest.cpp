@@ -54,6 +54,8 @@ namespace Menge
 			.def( "getIFF", &NodeAOITrigger::getIFF )
 			.def( "setAOI", &NodeAOITrigger::setAOI )
 			.def( "getAOI", &NodeAOITrigger::getAOI )
+			.def( "setTriggerUserData", &NodeAOITrigger::setTriggerUserData )
+			.def( "getTriggerUserData", &NodeAOITrigger::getTriggerUserData )
 			;
 
 		pybind::interface_<NodeAOIActor, pybind::bases<Node> >( "NodeAOIActor", false )

@@ -26,6 +26,10 @@ namespace Menge
 		void setAOI( AreaOfInterest * _aoi );
 		AreaOfInterest * getAOI() const;
 
+	public:
+		void setTriggerUserData( const pybind::object & _data );
+		const pybind::object & getTriggerUserData() const;
+
 	protected:
 		bool onAOIActorTest( AOIActorProviderInterface * _actor ) const override;
 		void onAOIActorEnter( AOIActorProviderInterface * _actor ) override;
@@ -41,6 +45,8 @@ namespace Menge
 	protected:
 		AreaOfInterest * m_aoi;
 		AOITriggerPtr m_trigger;
+
+		pybind::object m_data;
 		
 		float m_radius;
 		

@@ -38,7 +38,7 @@ namespace Menge
 		void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
 
 	protected:
-		ObserverInterface * m_observerChangeLocale;
+		ObserverInterfacePtr m_observerChangeLocale;
 
 	protected:
 		typedef stdex::vector<PackagePtr> TVectorPackage;

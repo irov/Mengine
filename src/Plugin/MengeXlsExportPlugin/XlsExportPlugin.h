@@ -1,8 +1,11 @@
 #	pragma once
 
-#	include "Interface/CodecInterface.h"
+#	include "Interface/NotificationServiceInterface.h"
 
 #	include "Core/PluginBase.h"
+#	include "Core/ConstString.h"
+
+#   include "XlsScriptLogger.h"
 
 namespace Menge
 {
@@ -19,9 +22,18 @@ namespace Menge
 		void _finalize() override;
 
 	protected:
-		bool proccess_( const char * _projectName );
+		void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
+
+	protected:
+		bool proccess_();
 
 	protected:
 		void error_( const wchar_t * _msg );
+
+	protected:
+		XlsScriptLogger * m_warninglogger;
+		XlsScriptLogger * m_errorLogger;
+
+		ObserverInterfacePtr m_observerChangeLocale;
 	};
 }

@@ -206,7 +206,6 @@ namespace Menge
 		, m_projectVersion(0)
 		, m_debugPause(false)
 		, m_debugFileOpen(false)
-		, m_notifyDebugOpenFile(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -822,8 +821,7 @@ namespace Menge
 				}
 				else
 				{
-					NOTIFICATION_SERVICE( m_serviceProvider )
-						->removeObserver( NOTIFICATOR_DEBUG_OPEN_FILE, m_notifyDebugOpenFile );
+					m_notifyDebugOpenFile = nullptr;
 				}
 			}
 
@@ -859,6 +857,15 @@ namespace Menge
 
 			if( _event.key == KC_E && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
 			{
+				NOTIFICATION_SERVICE( m_serviceProvider )
+					->notify( NOTIFICATOR_RELOAD_LOCALE_PREPARE );
+
+				NOTIFICATION_SERVICE( m_serviceProvider )
+					->notify( NOTIFICATOR_RELOAD_LOCALE );
+
+				NOTIFICATION_SERVICE( m_serviceProvider )
+					->notify( NOTIFICATOR_RELOAD_LOCALE_POST );
+				
 				const ConstString & locale = APPLICATION_SERVICE( m_serviceProvider )
 					->getLocale();
 
@@ -1791,10 +1798,13 @@ namespace Menge
 		m_locale = _locale;
 
 		NOTIFICATION_SERVICE( m_serviceProvider )
+			->notify( NOTIFICATOR_CHANGE_LOCALE_PREPARE, prevLocale, m_locale );
+
+		NOTIFICATION_SERVICE( m_serviceProvider )
 			->notify( NOTIFICATOR_CHANGE_LOCALE, prevLocale, m_locale );
 
 		NOTIFICATION_SERVICE( m_serviceProvider )
-			->notify( NOTIFICATOR_UPDATE_LOCALE_NODE, prevLocale, m_locale );
+			->notify( NOTIFICATOR_CHANGE_LOCALE_POST, prevLocale, m_locale );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Application::getLocale() const

@@ -75,7 +75,7 @@ namespace Menge
 
 				ResourceReference * data_resource = resourceMovie2->createResourceVideo_( resource_video );
 
-				return data_resource;				
+				return data_resource;
 			}
 		case AE_MOVIE_RESOURCE_SOUND:
 			{

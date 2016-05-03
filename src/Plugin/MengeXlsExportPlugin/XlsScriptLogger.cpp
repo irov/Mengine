@@ -7,8 +7,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	XlsScriptLogger::XlsScriptLogger( ServiceProviderInterface * _serviceProvider )
+	XlsScriptLogger::XlsScriptLogger( ServiceProviderInterface * _serviceProvider, EMessageLevel _level )
 		: m_serviceProvider(_serviceProvider)
+		, m_level(_level)
 		, m_softspace(0)
 	{
 	}
@@ -63,7 +64,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void XlsScriptLogger::write( const char * _msg, size_t _size )
 	{
-		LOGGER_WARNING(m_serviceProvider).logMessage( _msg, _size );
+		LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE( m_serviceProvider ), m_level ).logMessage( _msg, _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XlsScriptLogger::setSoftspace( int _softspace )
@@ -76,32 +77,9 @@ namespace Menge
 		return m_softspace;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * XlsScriptLogger::embedding()
+	PyObject * XlsScriptLogger::embedding( PyObject * _module )
 	{
-		pybind::interface_<XlsScriptLogger>("XlsScriptLogger", true )
-			.def_native("write", &XlsScriptLogger::py_write )
-            .def_native("flush", &XlsScriptLogger::py_flush )
-			.def_property("softspace", &XlsScriptLogger::getSoftspace, &XlsScriptLogger::setSoftspace )
-			;
-
-		PyObject * embedded = pybind::ptr(this);
-
-		return embedded;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	XlsScriptLoggerError::XlsScriptLoggerError( ServiceProviderInterface * _serviceProvider )
-		: XlsScriptLogger(_serviceProvider)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void XlsScriptLoggerError::write( const char * _msg, size_t _size )
-	{
-		LOGGER_ERROR(m_serviceProvider).logMessage( _msg, _size );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * XlsScriptLoggerError::embedding()
-	{
-		pybind::interface_<XlsScriptLoggerError>("XlsScriptLoggerError", true )
+		pybind::interface_<XlsScriptLogger>( "XlsScriptLogger", true, _module )
 			.def_native("write", &XlsScriptLogger::py_write )
             .def_native("flush", &XlsScriptLogger::py_flush )
 			.def_property("softspace", &XlsScriptLogger::getSoftspace, &XlsScriptLogger::setSoftspace )

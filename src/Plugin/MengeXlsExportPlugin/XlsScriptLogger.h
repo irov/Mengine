@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Interface/LoggerInterface.h"
+
 #	include "Config/Typedef.h"
 
 #	include "pybind/types.hpp"
@@ -11,7 +13,7 @@ namespace Menge
 	class XlsScriptLogger
 	{
 	public:
-		XlsScriptLogger( ServiceProviderInterface * _serviceProvider );
+		XlsScriptLogger( ServiceProviderInterface * _serviceProvider, EMessageLevel _level );
         virtual ~XlsScriptLogger();
 
 	public:
@@ -26,24 +28,13 @@ namespace Menge
 		int getSoftspace() const;
 
 	public:
-		virtual PyObject * embedding();
+		virtual PyObject * embedding( PyObject * _module );
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
+		EMessageLevel m_level;
+
 		int m_softspace;
-	};
-
-	class XlsScriptLoggerError
-		: public XlsScriptLogger
-	{
-	public:
-		XlsScriptLoggerError( ServiceProviderInterface * _serviceProvider );
-
-	public:
-		void write( const char * _msg, size_t _size ) override;
-		
-	public:
-		PyObject * embedding() override;
 	};
 }

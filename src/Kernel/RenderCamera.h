@@ -48,7 +48,7 @@ namespace Menge
 		void notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution );
 
 	protected:
-		ObserverInterface * m_observerChangeWindowResolution;
+		ObserverInterfacePtr m_observerChangeWindowResolution;
 
 		mutable mt::mat4f m_viewMatrix;
 		mutable mt::mat4f m_viewMatrixInv;

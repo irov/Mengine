@@ -55,28 +55,7 @@ namespace Menge
 			return false;
 		}
 
-		ServiceProviderInterface * serviceProvider;
-		SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
 
-		SERVICE_CREATE( m_serviceProvider, OptionsSystem );
-		SERVICE_CREATE( m_serviceProvider, OptionsService );
-
-		SERVICE_CREATE( m_serviceProvider, StringizeService );
-
-		SERVICE_CREATE( m_serviceProvider, LoggerService );
-
-		SERVICE_CREATE( m_serviceProvider, WindowsLayer );
-
-		SERVICE_CREATE( m_serviceProvider, NotificationService );
-
-		SERVICE_CREATE( m_serviceProvider, UnicodeSystem );
-		SERVICE_CREATE( m_serviceProvider, UnicodeService );
-
-		SERVICE_CREATE( m_serviceProvider, FileService );
-
-		SERVICE_CREATE( m_serviceProvider, ConfigService );
-
-		m_serviceProvider = serviceProvider;
 
 		return true;
 	}

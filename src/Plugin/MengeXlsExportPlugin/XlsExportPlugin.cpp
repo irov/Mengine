@@ -5,8 +5,6 @@
 #	include "Interface/ApplicationInterface.h"
 #	include "Interface/UnicodeInterface.h"
 
-#   include "XlsScriptLogger.h"
-
 #   include "WindowsLayer/WindowsIncluder.h"
 
 #	include <pybind\pybind.hpp>
@@ -26,14 +24,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool XlsExportPlugin::_initialize()
 	{
-		const ConstString & projectCodename = APPLICATION_SERVICE(m_serviceProvider)
-            ->getProjectCodename();
-
-        if( projectCodename.empty() == true )
-        {
-            return false;
-        }
-	
 		//Py_IgnoreEnvironmentFlag = 1;
 		//Py_VerboseFlag = 1;
 		//Py_NoUserSiteDirectory = 1;
@@ -57,18 +47,20 @@ namespace Menge
 
 		pybind::initialize( false, false, true );
 
-        PyObject * xls_module = pybind::module_init( "Xls" );
+        //PyObject * xls_module = pybind::module_init( "Xls" );
 		
-        pybind::set_currentmodule( xls_module );
+        //pybind::set_currentmodule( xls_module );
 
-        XlsScriptLogger * logger = new XlsScriptLogger(m_serviceProvider);
+		PyObject * module_builtins = pybind::get_builtins();
 
-        PyObject * pyLogger = logger->embedding();
-        pybind::setStdOutHandle( pyLogger );
+		m_warninglogger = new XlsScriptLogger( m_serviceProvider, LM_WARNING );
 
-        XlsScriptLoggerError * errorLogger = new XlsScriptLoggerError(m_serviceProvider);
+		PyObject * pyWarningLogger = m_warninglogger->embedding( module_builtins );
+        pybind::setStdOutHandle( pyWarningLogger );
 
-        PyObject * pyErrorLogger = errorLogger->embedding();
+		m_errorLogger = new XlsScriptLogger( m_serviceProvider, LM_ERROR );
+
+		PyObject * pyErrorLogger = m_errorLogger->embedding( module_builtins );
         pybind::setStdErrorHandle( pyErrorLogger );
 
         PyObject * py_syspath = pybind::list_new(0);
@@ -100,26 +92,42 @@ namespace Menge
 		pybind::set_syspath( py_syspath );
 
 		pybind::decref( py_syspath );
-		
-		this->proccess_( projectCodename.c_str() );
 
-		pybind::finalize();
+		pybind::def_functor( "Error", this, &XlsExportPlugin::error_, module_builtins );
 
-        delete logger;
-        delete errorLogger;
+		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
+			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE_PREPARE, this, &XlsExportPlugin::notifyChangeLocale );
+				
+		this->proccess_();
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XlsExportPlugin::_finalize()
 	{
+		pybind::finalize();
+
+		delete m_warninglogger;
+		delete m_errorLogger;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XlsExportPlugin::proccess_( const char * _projectName )
+	void XlsExportPlugin::notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale )
 	{
-		PyObject * module_builtins = pybind::get_builtins();
+		(void)_prevLocale;
+		(void)_currentlocale;
 
-		pybind::def_functor( "Error", this, &XlsExportPlugin::error_, module_builtins );
+		this->proccess_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool XlsExportPlugin::proccess_()
+	{
+		const ConstString & projectCodename = APPLICATION_SERVICE( m_serviceProvider )
+			->getProjectCodename();
+
+		if( projectCodename.empty() == true )
+		{
+			return false;
+		}
 
 		bool exist = false;
 		PyObject * py_xlsxExporter = pybind::module_import( "xlsxExporter", exist );
@@ -130,7 +138,7 @@ namespace Menge
 		}
 
 		pybind::call_method( py_xlsxExporter, "export", "(s)"
-			, _projectName
+			, projectCodename.c_str()
 			);
 
         pybind::decref( py_xlsxExporter );
@@ -142,7 +150,7 @@ namespace Menge
 	{
 		Char utf8_msg[2048];
 		UNICODE_SERVICE( m_serviceProvider )
-			->unicodeToUtf8( _msg, -1, utf8_msg, 2048, nullptr );
+			->unicodeToUtf8( _msg, (size_t)-1, utf8_msg, 2048, nullptr );
 
 		LOGGER_ERROR(m_serviceProvider)("%s"
 			, utf8_msg

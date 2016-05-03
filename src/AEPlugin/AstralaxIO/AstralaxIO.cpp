@@ -1,5 +1,10 @@
 #	include "AstralaxIO.h"
 
+#	include "Interface/PrototypeManagerInterface.h"
+
+#	include "Kernel/NodePrototypeGenerator.h"
+#	include "Kernel/ResourcePrototypeGenerator.h"
+
 #	include "AstralaxOptions.h"
 
 #	include "AstralaxRender.h"
@@ -36,16 +41,17 @@ namespace Menge
 			return false;
 		}
 
-		AstralaxRender * render = new AstralaxRender();
-
-		if( render->initialize() == false )
+        if( PROTOTYPE_SERVICE(m_serviceProvider)
+			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "ParticleEmitter2" ), new NodePrototypeGenerator<ParticleEmitter2, 8> ) == false )
 		{
-			delete render;
-
 			return false;
 		}
 
-		m_render = render;
+		if( PROTOTYPE_SERVICE( m_serviceProvider )
+			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Resource" ), STRINGIZE_STRING_LOCAL( serviceProvider, "ResourceParticle" ), new ResourcePrototypeGenerator<ResourceParticle, 8> ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -82,8 +88,18 @@ namespace Menge
 	static bool s_InitInSpecFromFile( 
 		Menge::AstralaxOptions * _headerP
 		, Menge::AstralaxRender * _render
-		, const std::wstring & _ptcFile )
+		, const WChar * _ptcFile )
 	{
+		Char utf8_ptcFile[MAX_PATH];
+
+		UNICODE_SERVICE( m_serviceProvider )
+			->unicodeToUtf8( _ptcFile, -1, utf8_ptcFile, MAX_PATH, nullptr );
+
+		FilePath ptcFile = Helper::stringizeString( m_serviceProvider, utf8_ptcFile );
+
+		InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
+			->openInputFile( ConstString::none(), ptcFile, false );
+		
 		Menge::Emitter * emitter = _render->createEmitter( _ptcFile );
 
 		if( emitter == nullptr )
@@ -172,8 +188,9 @@ namespace Menge
 
 		bool successful = true;
 
-		std::wstring ptc = (const wchar_t *)file_pathZ;
-		successful = s_InitInSpecFromFile( headerP, m_render, ptc );
+		const WChar * wc_file_pathZ = (const WChar *)file_pathZ;
+		
+		successful = s_InitInSpecFromFile( headerP, m_render, wc_file_pathZ );
 
 		if( successful == true )
 		{

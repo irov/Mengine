@@ -138,8 +138,8 @@ namespace Menge
 		void notifyDebugMode( bool _mode );
 
 	protected:
-		ObserverInterface * m_observerChangeLocale;
-		ObserverInterface * m_observerDebugMode;
+		ObserverInterfacePtr m_observerChangeLocale;
+		ObserverInterfacePtr m_observerDebugMode;
 
 	protected:
 		float getHorizontAlignOffset_( const TextLine & _line );

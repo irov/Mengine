@@ -135,7 +135,7 @@ namespace Menge
 		return new_camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_node_provider( const aeMovieLayerData * _layerData, const aeMovieResource * _resource, void * _data )
+	static void * ae_movie_composition_node_provider( const aeMovieLayerData * _layerData, const aeMovieResource * _resource, const ae_matrix4_t _matrix, void * _data )
 	{
 		Movie2 * movie2 = (Movie2 *)_data;
 
@@ -386,7 +386,6 @@ namespace Menge
 		//set_movie_composition_loop( composition, AE_TRUE );
 
 		m_composition = composition;
-
 				
 		return true;
 	}

@@ -80,7 +80,7 @@ namespace Menge
 		this->invalidateTextEntry();
 
 		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
-			->addObserverMethod( NOTIFICATOR_UPDATE_LOCALE_NODE, this, &TextField::notifyChangeLocale );
+			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE_POST, this, &TextField::notifyChangeLocale );
 
 		m_observerDebugMode = NOTIFICATION_SERVICE( m_serviceProvider )
 			->addObserverMethod( NOTIFICATOR_DEBUG_TEXT_MODE, this, &TextField::notifyDebugMode );
@@ -90,11 +90,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_release()
 	{
-		NOTIFICATION_SERVICE( m_serviceProvider )
-			->removeObserver( NOTIFICATOR_UPDATE_LOCALE_NODE, m_observerChangeLocale );
-
-		NOTIFICATION_SERVICE( m_serviceProvider )
-			->removeObserver( NOTIFICATOR_DEBUG_TEXT_MODE, m_observerDebugMode );
+		m_observerChangeLocale = nullptr;
+		m_observerDebugMode = nullptr;
 
 		TEXT_SERVICE(m_serviceProvider)
 			->releaseFont( m_font );

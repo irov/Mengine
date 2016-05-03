@@ -7,31 +7,59 @@
 
 #	include "Core/MemoryAllocator.h"
 
+#   include "stdex/intrusive_ptr_base.h"
 #	include "stdex/mpl.h"
 
 namespace Menge
 {
+	class NotificationServiceInterface;
 	//////////////////////////////////////////////////////////////////////////
 	class ObserverInterface
 		: public MemoryAllocator
+		, public stdex::intrusive_ptr_base<ObserverInterface>
 	{
 	public:
 		ObserverInterface()
+			: m_notification(nullptr)
+			, m_id(0)
 		{
 		};
+
 		virtual ~ObserverInterface()
 		{
 		};
 
 	public:
+		void initialize( NotificationServiceInterface * _notification, uint32_t _id )
+		{
+			m_notification = _notification;
+			m_id = _id;
+		}
+
+	public:
+		uint32_t getId() const
+		{
+			return m_id;
+		}
+
+	public:
 		virtual void destroy() = 0;
+
+	public:
+		inline static void intrusive_ptr_destroy( ObserverInterface * _ptr );
+
+#	ifdef STDEX_INTRUSIVE_PTR_DEBUG
+	public:
+		inline static bool intrusive_ptr_check_ref( ObserverInterface * _ptr );
+#	endif
+
+	protected:
+		NotificationServiceInterface * m_notification;
+
+		uint32_t m_id;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	template<class M>
-	class GeneratorObserverMethod
-		: public ObserverInterface
-	{
-	};
+	typedef stdex::intrusive_ptr<ObserverInterface> ObserverInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class Observer0
 		: public ObserverInterface
@@ -61,6 +89,9 @@ namespace Menge
 		C * m_self;
 		M m_method;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	template<class M>
+	class GeneratorObserverMethod;
 	//////////////////////////////////////////////////////////////////////////
 	template<class C>
 	class GeneratorObserverMethod<void (C::*)()>
@@ -279,21 +310,23 @@ namespace Menge
 	{
 		SERVICE_DECLARE( "NotificationService" )
 
-	public:
-		virtual void addObserver( uint32_t _id, ObserverInterface * _observer ) = 0;
-		virtual void removeObserver( uint32_t _id, ObserverInterface * _observer ) = 0;
+	protected:
+		virtual void addObserver( ObserverInterface * _observer ) = 0;
+		virtual void removeObserver( ObserverInterface * _observer ) = 0;
 
 	protected:
 		virtual void visitObservers( uint32_t _id, VisitorObserver * _visitor ) = 0;
 
 	public:
 		template<class C, class M>
-		inline ObserverInterface * addObserverMethod( uint32_t _id, C * _self, M _method )
+		inline ObserverInterfacePtr addObserverMethod( uint32_t _id, C * _self, M _method )
 		{
 			ObserverInterface * observer =
 				new GeneratorObserverMethod<M>( _self, _method );
 
-			this->addObserver( _id, observer );
+			observer->initialize( this, _id );
+			
+			this->addObserver( observer );
 
 			return observer;
 		}
@@ -321,7 +354,24 @@ namespace Menge
 
 			this->visitObservers( _id, &caller );
 		}
+
+	public:
+		friend class ObserverInterface;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline void ObserverInterface::intrusive_ptr_destroy( ObserverInterface * _ptr )
+	{
+		_ptr->m_notification->removeObserver( _ptr );
+	}
+	//////////////////////////////////////////////////////////////////////////
+#	ifdef STDEX_INTRUSIVE_PTR_DEBUG
+	inline bool ObserverInterface::intrusive_ptr_check_ref( ObserverInterface * _ptr )
+	{
+		(void)_ptr;
+
+		return true;
+	}
+#	endif
 	//////////////////////////////////////////////////////////////////////////
 #   define NOTIFICATION_SERVICE( serviceProvider )\
     SERVICE_GET(serviceProvider, Menge::NotificationServiceInterface)

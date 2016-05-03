@@ -32,26 +32,24 @@ namespace Menge
 		m_mutex = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NotificationService::addObserver( uint32_t _id, ObserverInterface * _observer )
+	void NotificationService::addObserver( ObserverInterface * _observer )
 	{
 		if( m_visiting != 0 )
 		{
-			AddObserverDesc desc;
-			desc.id = _id;
-			desc.observer = _observer;
-
-			m_add.push_back( desc );
+			m_add.push_back( _observer );
 
 			return;
 		}
 
-		TMapObservers::iterator it_find = m_mapObserves.find( _id );
+		uint32_t id = _observer->getId();
+
+		TMapObservers::iterator it_find = m_mapObserves.find( id );
 
 		if( it_find == m_mapObserves.end() )
 		{
 			TVectorObservers new_observers;
 
-			it_find = m_mapObserves.insert( std::make_pair(_id, new_observers) ).first;
+			it_find = m_mapObserves.insert( std::make_pair(id, new_observers) ).first;
 		}
 
 		TVectorObservers & observers = it_find->second;
@@ -59,20 +57,18 @@ namespace Menge
 		observers.push_back( _observer );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NotificationService::removeObserver( uint32_t _id, ObserverInterface * _observer )
+	void NotificationService::removeObserver( ObserverInterface * _observer )
 	{
 		if( m_visiting != 0 )
 		{
-			AddObserverDesc desc;
-			desc.id = _id;
-			desc.observer = _observer;
-
-			m_remove.push_back( desc );
+			m_remove.push_back( _observer );
 
 			return;
 		}
 
-		TMapObservers::iterator it_find = m_mapObserves.find( _id );
+		uint32_t id = _observer->getId();
+
+		TMapObservers::iterator it_find = m_mapObserves.find( id );
 
 		if( it_find == m_mapObserves.end() )
 		{
@@ -134,9 +130,9 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				const AddObserverDesc & desc = *it;
+				ObserverInterface * observer = *it;
 
-				this->addObserver( desc.id, desc.observer );
+				this->addObserver( observer );
 			}
 
 			m_add.clear();
@@ -147,9 +143,9 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				const AddObserverDesc & desc = *it;
+				ObserverInterface * observer = *it;
 
-				this->removeObserver( desc.id, desc.observer );
+				this->removeObserver( observer );
 			}
 
 			m_remove.clear();

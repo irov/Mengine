@@ -8,6 +8,11 @@
 
 #	include "AEGP_SuiteHandler.h"
 
+#   include "Interface/ServiceInterface.h"
+
+#	include "STDIOLogger.h"
+#	include "AEIOLogger.h"
+
 namespace Menge
 {
 	class AEIO
@@ -250,19 +255,24 @@ namespace Menge
 			AEIO_OutSpecH	outH,
 			AEIO_Handle		*optionsPH );
 
-	public:
-		void message( const char * _format, ... );
+		virtual A_Err IO_DeathHook( 
+			AEGP_GlobalRefcon unused1 
+			);
 
-	public:
-		virtual A_Err DeathHook( AEGP_GlobalRefcon unused1 );
-		
+	protected:
+		bool initializeLogEngine_();
+		bool initializeFileEngine_();
+
 	protected:		
 		struct SPBasicSuite * pica_basicP;
 		AEGP_PluginID aegp_plugin_id;
 
 		AEGP_SuiteHandler suites;
+
+		ServiceProviderInterface * m_serviceProvider;
+
+		AEIOLogger * m_aeioLogger;
+		STDIOLogger * m_stdioLogger;
 	};
-
-
 }
 

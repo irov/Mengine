@@ -26,7 +26,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::_initialize()
 	{
-		//Empty
 		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
 			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale );
 
@@ -35,8 +34,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PackageService::_finalize()
 	{
-		NOTIFICATION_SERVICE( m_serviceProvider )
-			->removeObserver( NOTIFICATOR_CHANGE_LOCALE, m_observerChangeLocale );
+		m_observerChangeLocale = nullptr;
 
 		m_packages.clear();
 	}

@@ -20,8 +20,8 @@ namespace Menge
 		void _finalize() override;
 
 	public:
-		void addObserver( uint32_t _id, ObserverInterface * _observer ) override;
-		void removeObserver( uint32_t _id, ObserverInterface * _observer ) override;
+		void addObserver( ObserverInterface * _observer ) override;
+		void removeObserver( ObserverInterface * _observer ) override;
 
 	protected:
 		void visitObservers( uint32_t _id, VisitorObserver * _visitor ) override;
@@ -34,13 +34,7 @@ namespace Menge
 		typedef stdex::map<uint32_t, TVectorObservers> TMapObservers;
 		TMapObservers m_mapObserves;
 
-		struct AddObserverDesc
-		{
-			uint32_t id;
-			ObserverInterface * observer;
-		};
-
-		typedef stdex::vector<AddObserverDesc> TVectorAddObservers;
+		typedef stdex::vector<ObserverInterface *> TVectorAddObservers;
 		TVectorAddObservers m_add;
 		TVectorAddObservers m_remove;
 

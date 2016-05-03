@@ -1,8 +1,41 @@
 #	include "AEIO.h"
 
+#   include "Interface/PluginInterface.h"
+#   include "Interface/FileSystemInterface.h"
+#   include "Interface/StringizeInterface.h"
+
+#	include "Logger/Logger.h"
+
 #	include <stdio.h>
 #	include <stdlib.h>
 #	include <stdarg.h>
+
+SERVICE_PROVIDER_EXTERN( ServiceProvider );
+
+SERVICE_EXTERN( OptionsSystem );
+SERVICE_EXTERN( OptionsService );
+SERVICE_EXTERN( StringizeService );
+SERVICE_EXTERN( LoggerService );
+SERVICE_EXTERN( RenderSystem );
+SERVICE_EXTERN( RenderService );
+SERVICE_EXTERN( RenderMaterialService );
+SERVICE_EXTERN( RenderTextureService );
+SERVICE_EXTERN( ParticleService );
+SERVICE_EXTERN( NotificationService );
+SERVICE_EXTERN( UnicodeSystem );
+SERVICE_EXTERN( UnicodeService );
+SERVICE_EXTERN( FileService );
+SERVICE_EXTERN( ConfigService );
+SERVICE_EXTERN( CodecService );
+SERVICE_EXTERN( MemoryService );
+SERVICE_EXTERN( PrototypeService );
+SERVICE_EXTERN( NodeService );
+
+SERVICE_EXTERN( WindowsLayer );
+
+PLUGIN_EXPORT( MengeWin32FileGroup );
+PLUGIN_EXPORT( MengeImageCodec );
+PLUGIN_EXPORT( AstralaxParticlePlugin2 );
 
 namespace Menge
 {
@@ -16,359 +49,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AEIO::~AEIO()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_InitInSpecFromFile(
-		AEIO_BasicData		*,
-		const A_UTF16Char	*,
-		AEIO_InSpecH		 )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_InitInSpecInteractive( AEIO_BasicData * 
-		, AEIO_InSpecH  )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_DisposeInSpec( AEIO_BasicData * 
-		, AEIO_InSpecH  )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_FlattenOptions( AEIO_BasicData * 
-		, AEIO_InSpecH 
-		, AEIO_Handle *  )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_InflateOptions( AEIO_BasicData * 
-		, AEIO_InSpecH 
-		, AEIO_Handle  )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_SynchInSpec( AEIO_BasicData * 
-		, AEIO_InSpecH 
-		, A_Boolean *  )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_GetActiveExtent( AEIO_BasicData	* 
-		, AEIO_InSpecH 
-		, const A_Time * 
-		, A_LRect *  )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_GetInSpecInfo( AEIO_BasicData * 
-		, AEIO_InSpecH 
-		, AEIO_Verbiage	*  )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_DrawSparseFrame( AEIO_BasicData * 
-		, AEIO_InSpecH 
-		, const AEIO_DrawSparseFramePB * 
-		, PF_EffectWorld * 
-		, AEIO_DrawingFlags *  )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_GetDimensions( AEIO_BasicData * 
-		, AEIO_InSpecH 
-		, const AEIO_RationalScale * 
-		, A_long * 
-		, A_long *  )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_GetDuration( AEIO_BasicData	*
-		, AEIO_InSpecH 
-		, A_Time *  )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_GetTime( AEIO_BasicData	* 
-		, AEIO_InSpecH 
-		, A_Time *  )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_GetSound( 
-		AEIO_BasicData *, 
-		AEIO_InSpecH ,
-		AEIO_SndQuality				,
-		const AEIO_InterruptFuncs	*,
-		const A_Time				*,
-		const A_Time				*,
-		A_u_long					,
-		A_u_long					,
-		void						* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_InqNextFrameTime(
-		AEIO_BasicData			*,
-		AEIO_InSpecH			,
-		const A_Time			*,
-		AEIO_TimeDir			,
-		A_Boolean				*,
-		A_Time					* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_DisposeOutputOptions(
-		AEIO_BasicData	*,
-		void			* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_UserOptionsDialog(
-		AEIO_BasicData			*,
-		AEIO_OutSpecH			,
-		const PF_EffectWorld	*,
-		A_Boolean				* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_GetOutputInfo(
-		AEIO_BasicData		*,
-		AEIO_OutSpecH		,
-		AEIO_Verbiage		* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_SetOutputFile(
-		AEIO_BasicData		*,
-		AEIO_OutSpecH		,
-		const A_UTF16Char	* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_StartAdding(
-		AEIO_BasicData		*,
-		AEIO_OutSpecH		,
-		A_long				 )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_AddFrame(
-		AEIO_BasicData			*,
-		AEIO_OutSpecH			,
-		A_long					,
-		A_long					,
-		const PF_EffectWorld	*,
-		const A_LPoint			*,
-		A_Boolean				,
-		AEIO_InterruptFuncs		* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_EndAdding(
-		AEIO_BasicData	*,
-		AEIO_OutSpecH			,
-		A_long					 )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_OutputFrame(
-		AEIO_BasicData			*,
-		AEIO_OutSpecH			,
-		const PF_EffectWorld	* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_WriteLabels(
-		AEIO_BasicData	*,
-		AEIO_OutSpecH	,
-		AEIO_LabelFlags	* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_GetSizes(
-		AEIO_BasicData	*,
-		AEIO_OutSpecH	,
-		A_u_longlong	*,
-		A_u_longlong	* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_Flush(
-		AEIO_BasicData	*,
-		AEIO_OutSpecH	 )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_Idle(
-		AEIO_BasicData			*,
-		AEIO_ModuleSignature	,
-		AEIO_IdleFlags			* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_NumAuxFiles(
-		AEIO_BasicData			*,
-		AEIO_InSpecH			,
-		A_long					* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_GetDepths(
-		AEIO_BasicData			*,
-		AEIO_OutSpecH			,
-		AEIO_SupportedDepthFlags		* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_GetOutputSuffix(
-		AEIO_BasicData	*,
-		AEIO_OutSpecH	,
-		A_char			* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_SeqOptionsDlg(
-		AEIO_BasicData	*,
-		AEIO_InSpecH	,
-		A_Boolean		* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_CloseSourceFiles(
-		AEIO_BasicData	*,
-		AEIO_InSpecH			 )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_CountUserData(
-		AEIO_BasicData	*,
-		AEIO_InSpecH			,
-		A_u_long 				,
-		A_u_long				,
-		A_u_long				* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_SetUserData(
-		AEIO_BasicData	*,
-		AEIO_OutSpecH			,
-		A_u_long				,
-		A_u_long				,
-		const AEIO_Handle		 )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_GetUserData(
-		AEIO_BasicData	*,
-		AEIO_InSpecH			,
-		A_u_long 				,
-		A_u_long				,
-		A_u_long				,
-		AEIO_Handle				* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_AddMarker(
-		AEIO_BasicData	*,
-		AEIO_OutSpecH 			,
-		A_long 					,
-		AEIO_MarkerType 		,
-		void					*,
-		AEIO_InterruptFuncs		* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_VerifyFileImportable(
-		AEIO_BasicData			*,
-		AEIO_ModuleSignature	,
-		const A_UTF16Char		*,
-		A_Boolean				* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_InitOutputSpec(
-		AEIO_BasicData			*,
-		AEIO_OutSpecH			,
-		A_Boolean				* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_OutputInfoChanged(
-		AEIO_BasicData		*,
-		AEIO_OutSpecH		 )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::IO_GetFlatOutputOptions(
-		AEIO_BasicData	*,
-		AEIO_OutSpecH	,
-		AEIO_Handle		* )
-	{
-		return AEIO_Err_USE_DFLT_CALLBACK;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AEIO::message( const char * _format, ... )
-	{
-		va_list argList;
-
-		va_start( argList, _format );
-
-		char msg[2048];
-		int size = vsnprintf_s( msg, 2048 - 1, _format, argList );
-
-		va_end( argList );
-
-		if( size < 0 )
-		{
-			return;
-		}
-
-		suites.UtilitySuite5()->AEGP_ReportInfo( aegp_plugin_id, msg );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	A_Err AEIO::DeathHook( AEGP_GlobalRefcon )
-	{
-		delete this;
-
-		return A_Err_NONE;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static A_Err IO_InitInSpecFromFile(
@@ -1007,7 +687,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static A_Err s_DeathHook(
+	static A_Err s_deathHook(
 		AEGP_GlobalRefcon unused1,
 		AEGP_DeathRefcon unused2 )
 	{
@@ -1015,7 +695,7 @@ namespace Menge
 
 		aeio->finalize();
 
-		A_Err err = aeio->DeathHook( unused1 );
+		A_Err err = aeio->IO_DeathHook( unused1 );
 
 		return err;
 	}
@@ -1028,7 +708,7 @@ namespace Menge
 		, AEIO_ModuleFlags _flag
 		)
 	{
-		suites.RegisterSuite5()->AEGP_RegisterDeathHook( aegp_plugin_id, s_DeathHook, (AEGP_DeathRefcon)this );
+		suites.RegisterSuite5()->AEGP_RegisterDeathHook( aegp_plugin_id, &s_deathHook, (AEGP_DeathRefcon)this );
 
 		AEIO_ModuleInfo info;
 		AEFX_CLR_STRUCT( info );
@@ -1042,12 +722,447 @@ namespace Menge
 			(AEGP_IORefcon)this,
 			&info,
 			&funcs );
+
+		ServiceProviderInterface * serviceProvider;
+		SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
+
+		m_serviceProvider = serviceProvider;
+
+		SERVICE_CREATE( m_serviceProvider, OptionsSystem );
+		SERVICE_CREATE( m_serviceProvider, OptionsService );
+
+		if( this->initializeLogEngine_() == false )
+		{
+			return false;
+		}
+
+		SERVICE_CREATE( m_serviceProvider, StringizeService );
+		SERVICE_CREATE( m_serviceProvider, LoggerService );
+
+		SERVICE_CREATE( m_serviceProvider, WindowsLayer );
+
+		SERVICE_CREATE( m_serviceProvider, NotificationService );
+
+		SERVICE_CREATE( m_serviceProvider, UnicodeSystem );
+		SERVICE_CREATE( m_serviceProvider, UnicodeService );
+
+		SERVICE_CREATE( m_serviceProvider, FileService );
+
+		if( this->initializeFileEngine_() == false )
+		{
+			return false;
+		}
+
+		SERVICE_CREATE( m_serviceProvider, ConfigService );
+
+
+		SERVICE_CREATE( m_serviceProvider, RenderSystem );
+
+		SERVICE_CREATE( m_serviceProvider, RenderService );
+		SERVICE_CREATE( m_serviceProvider, RenderMaterialService );
+		SERVICE_CREATE( m_serviceProvider, RenderTextureService );
+
+		SERVICE_CREATE( m_serviceProvider, CodecService );
+		SERVICE_CREATE( m_serviceProvider, MemoryService );
+
+		SERVICE_CREATE( m_serviceProvider, ParticleService );
+
+#	define MENGINE_ADD_PLUGIN( Name, Info )\
+		do{LOGGER_INFO(m_serviceProvider)( Info );\
+		if(	PLUGIN_CREATE(m_serviceProvider, Name) == false ){\
+		LOGGER_ERROR(m_serviceProvider)( "Invalid %s", Info );}else{\
+		LOGGER_WARNING(m_serviceProvider)( "Successful %s", Info );}}while(false, false)
+
+		MENGINE_ADD_PLUGIN( MengeImageCodec, "initialize Plugin Image Codec..." );
+		MENGINE_ADD_PLUGIN( AstralaxParticlePlugin2, "initialize Plugin Astralax Particle..." );
+
+		SERVICE_CREATE( m_serviceProvider, PrototypeService );
+		SERVICE_CREATE( m_serviceProvider, NodeService );
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AEIO::finalize()
-	{ 
+	{
 		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_InitInSpecFromFile(
+		AEIO_BasicData		*,
+		const A_UTF16Char	*,
+		AEIO_InSpecH )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_InitInSpecInteractive( AEIO_BasicData *
+		, AEIO_InSpecH )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_DisposeInSpec( AEIO_BasicData *
+		, AEIO_InSpecH )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_FlattenOptions( AEIO_BasicData *
+		, AEIO_InSpecH
+		, AEIO_Handle * )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_InflateOptions( AEIO_BasicData *
+		, AEIO_InSpecH
+		, AEIO_Handle )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_SynchInSpec( AEIO_BasicData *
+		, AEIO_InSpecH
+		, A_Boolean * )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_GetActiveExtent( AEIO_BasicData	*
+		, AEIO_InSpecH
+		, const A_Time *
+		, A_LRect * )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_GetInSpecInfo( AEIO_BasicData *
+		, AEIO_InSpecH
+		, AEIO_Verbiage	* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_DrawSparseFrame( AEIO_BasicData *
+		, AEIO_InSpecH
+		, const AEIO_DrawSparseFramePB *
+		, PF_EffectWorld *
+		, AEIO_DrawingFlags * )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_GetDimensions( AEIO_BasicData *
+		, AEIO_InSpecH
+		, const AEIO_RationalScale *
+		, A_long *
+		, A_long * )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_GetDuration( AEIO_BasicData	*
+		, AEIO_InSpecH
+		, A_Time * )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_GetTime( AEIO_BasicData	*
+		, AEIO_InSpecH
+		, A_Time * )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_GetSound(
+		AEIO_BasicData *,
+		AEIO_InSpecH,
+		AEIO_SndQuality,
+		const AEIO_InterruptFuncs	*,
+		const A_Time				*,
+		const A_Time				*,
+		A_u_long,
+		A_u_long,
+		void						* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_InqNextFrameTime(
+		AEIO_BasicData			*,
+		AEIO_InSpecH,
+		const A_Time			*,
+		AEIO_TimeDir,
+		A_Boolean				*,
+		A_Time					* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_DisposeOutputOptions(
+		AEIO_BasicData	*,
+		void			* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_UserOptionsDialog(
+		AEIO_BasicData			*,
+		AEIO_OutSpecH,
+		const PF_EffectWorld	*,
+		A_Boolean				* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_GetOutputInfo(
+		AEIO_BasicData		*,
+		AEIO_OutSpecH,
+		AEIO_Verbiage		* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_SetOutputFile(
+		AEIO_BasicData		*,
+		AEIO_OutSpecH,
+		const A_UTF16Char	* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_StartAdding(
+		AEIO_BasicData		*,
+		AEIO_OutSpecH,
+		A_long )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_AddFrame(
+		AEIO_BasicData			*,
+		AEIO_OutSpecH,
+		A_long,
+		A_long,
+		const PF_EffectWorld	*,
+		const A_LPoint			*,
+		A_Boolean,
+		AEIO_InterruptFuncs		* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_EndAdding(
+		AEIO_BasicData	*,
+		AEIO_OutSpecH,
+		A_long )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_OutputFrame(
+		AEIO_BasicData			*,
+		AEIO_OutSpecH,
+		const PF_EffectWorld	* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_WriteLabels(
+		AEIO_BasicData	*,
+		AEIO_OutSpecH,
+		AEIO_LabelFlags	* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_GetSizes(
+		AEIO_BasicData	*,
+		AEIO_OutSpecH,
+		A_u_longlong	*,
+		A_u_longlong	* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_Flush(
+		AEIO_BasicData	*,
+		AEIO_OutSpecH )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_Idle(
+		AEIO_BasicData			*,
+		AEIO_ModuleSignature,
+		AEIO_IdleFlags			* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_NumAuxFiles(
+		AEIO_BasicData			*,
+		AEIO_InSpecH,
+		A_long					* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_GetDepths(
+		AEIO_BasicData			*,
+		AEIO_OutSpecH,
+		AEIO_SupportedDepthFlags		* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_GetOutputSuffix(
+		AEIO_BasicData	*,
+		AEIO_OutSpecH,
+		A_char			* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_SeqOptionsDlg(
+		AEIO_BasicData	*,
+		AEIO_InSpecH,
+		A_Boolean		* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_CloseSourceFiles(
+		AEIO_BasicData	*,
+		AEIO_InSpecH )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_CountUserData(
+		AEIO_BasicData	*,
+		AEIO_InSpecH,
+		A_u_long,
+		A_u_long,
+		A_u_long				* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_SetUserData(
+		AEIO_BasicData	*,
+		AEIO_OutSpecH,
+		A_u_long,
+		A_u_long,
+		const AEIO_Handle )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_GetUserData(
+		AEIO_BasicData	*,
+		AEIO_InSpecH,
+		A_u_long,
+		A_u_long,
+		A_u_long,
+		AEIO_Handle				* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_AddMarker(
+		AEIO_BasicData	*,
+		AEIO_OutSpecH,
+		A_long,
+		AEIO_MarkerType,
+		void					*,
+		AEIO_InterruptFuncs		* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_VerifyFileImportable(
+		AEIO_BasicData			*,
+		AEIO_ModuleSignature,
+		const A_UTF16Char		*,
+		A_Boolean				* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_InitOutputSpec(
+		AEIO_BasicData			*,
+		AEIO_OutSpecH,
+		A_Boolean				* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_OutputInfoChanged(
+		AEIO_BasicData		*,
+		AEIO_OutSpecH )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_GetFlatOutputOptions(
+		AEIO_BasicData	*,
+		AEIO_OutSpecH,
+		AEIO_Handle		* )
+	{
+		return AEIO_Err_USE_DFLT_CALLBACK;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	A_Err AEIO::IO_DeathHook( AEGP_GlobalRefcon )
+	{
+		delete this;
+
+		return A_Err_NONE;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AEIO::initializeLogEngine_()
+	{
+#	ifdef _DEBUG
+		{
+			m_stdioLogger = new STDIOLogger();
+
+			LOGGER_SERVICE( m_serviceProvider )
+				->registerLogger( m_stdioLogger );
+		}
+#	endif
+
+		m_aeioLogger = new AEIOLogger( suites, aegp_plugin_id );
+
+		m_aeioLogger->setVerboseLevel( LM_ERROR );
+
+		LOGGER_SERVICE( m_serviceProvider )
+			->registerLogger( m_aeioLogger );
+
+		LOGGER_SERVICE( m_serviceProvider )
+			->setVerboseLevel( LM_MAX );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AEIO::initializeFileEngine_()
+	{
+		LOGGER_INFO( m_serviceProvider )("Inititalizing File Service...");
+
+		{
+			LOGGER_INFO( m_serviceProvider )("Initialize Win32 file group...");
+			PLUGIN_CREATE( m_serviceProvider, MengeWin32FileGroup );
+		}
+
+		// mount root		
+		if( FILE_SERVICE( m_serviceProvider )->mountFileGroup( ConstString::none(), ConstString::none(), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("WinApplication::setupFileService: failed to mount application directory"
+				);
+
+			return false;
+		}
+
+		return true;
 	}
 }

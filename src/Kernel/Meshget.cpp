@@ -141,8 +141,8 @@ namespace Menge
 			return;
 		}
 
-		size_t vertexCount = m_positions.size();
-		size_t indicesCount = m_indices.size();
+		uint32_t vertexCount = (uint32_t)m_positions.size();
+		uint32_t indicesCount = (uint32_t)m_indices.size();
 
 		const TVectorRenderVertex2D & vertices = this->getVerticesWM();
 		const RenderMaterialInterfacePtr & material = this->getMaterial();

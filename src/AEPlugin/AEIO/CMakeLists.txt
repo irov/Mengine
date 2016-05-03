@@ -5,6 +5,11 @@ src
     AEIO.h
     AEIO.cpp
     
+    STDIOLogger.h
+    STDIOLogger.cpp
+    AEIOLogger.h
+    AEIOLogger.cpp
+    
     Render.h
     Render.cpp
     

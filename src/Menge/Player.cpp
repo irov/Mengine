@@ -193,8 +193,11 @@ namespace Menge
 			NODE_SERVICE(m_serviceProvider)
 				->clearHomeless();
 
-			GRAVEYARD_SERVICE(m_serviceProvider)
-				->clearTextures();
+			if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+			{
+				GRAVEYARD_SERVICE( m_serviceProvider )
+					->clearTextures();
+			}
 
 			m_scene = nullptr;
 		}
@@ -239,11 +242,8 @@ namespace Menge
 
             void end()
             {
-                NOTIFICATION_SERVICE(m_serviceProvider)
-                    ->removeObserver( NOTIFICATOR_RESOURCE_COMPILE, m_observerResourceCompile );
-
-                NOTIFICATION_SERVICE(m_serviceProvider)
-                    ->removeObserver( NOTIFICATOR_RESOURCE_RELEASE, m_observerResourceRelease );
+				m_observerResourceCompile = nullptr;
+				m_observerResourceRelease = nullptr;
             }
 
         protected:
@@ -274,8 +274,8 @@ namespace Menge
         protected:
             ServiceProviderInterface * m_serviceProvider;
 
-            ObserverInterface * m_observerResourceCompile;
-			ObserverInterface * m_observerResourceRelease;
+            ObserverInterfacePtr m_observerResourceCompile;
+			ObserverInterfacePtr m_observerResourceRelease;
 
             typedef stdex::vector<ResourceReference *> TVectorResourceDesc;
             TVectorResourceDesc m_resources;
@@ -313,8 +313,11 @@ namespace Menge
 			NODE_SERVICE( m_serviceProvider )
 				->clearHomeless();
 
-			GRAVEYARD_SERVICE( m_serviceProvider )
-				->clearTextures();
+			if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+			{
+				GRAVEYARD_SERVICE( m_serviceProvider )
+					->clearTextures();
+			}
 		}
 		
 		//m_globalHandleSystem->clear();
@@ -381,8 +384,11 @@ namespace Menge
 		NODE_SERVICE( m_serviceProvider )
 			->clearHomeless();
 
-		GRAVEYARD_SERVICE( m_serviceProvider )
-			->clearTextures();
+		if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+		{
+			GRAVEYARD_SERVICE( m_serviceProvider )
+				->clearTextures();
+		}
 
 		SceneChangeCallbackInterfacePtr cb = m_changeSceneCb;
 		m_changeSceneCb = nullptr;

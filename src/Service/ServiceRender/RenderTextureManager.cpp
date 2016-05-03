@@ -287,14 +287,17 @@ namespace Menge
             return texture;
         }
 
-		RenderTextureInterfacePtr resurrect_texture = GRAVEYARD_SERVICE(m_serviceProvider)
-			->resurrectTexture( _pakName, _fileName );
+		if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+		{
+			RenderTextureInterfacePtr resurrect_texture = GRAVEYARD_SERVICE( m_serviceProvider )
+				->resurrectTexture( _pakName, _fileName );
 
-		if( resurrect_texture != nullptr )
-		{			
-			this->cacheFileTexture( _pakName, _fileName, resurrect_texture );
+			if( resurrect_texture != nullptr )
+			{
+				this->cacheFileTexture( _pakName, _fileName, resurrect_texture );
 
-			return resurrect_texture;
+				return resurrect_texture;
+			}
 		}
 			
 		ImageDecoderInterfacePtr imageDecoder;
@@ -494,8 +497,11 @@ namespace Menge
 
 		m_textures.erase_node( texture_t );
 				
-		GRAVEYARD_SERVICE( m_serviceProvider )
-			->buryTexture( _texture );
+		if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+		{
+			GRAVEYARD_SERVICE( m_serviceProvider )
+				->buryTexture( _texture );
+		}
 
 		this->releaseRenderTexture_( _texture );
 

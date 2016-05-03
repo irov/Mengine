@@ -233,6 +233,6 @@ namespace Menge
 		bool m_debugPause;
 
 		bool m_debugFileOpen;
-		ObserverInterface * m_notifyDebugOpenFile;
+		ObserverInterfacePtr m_notifyDebugOpenFile;
 	};
 }

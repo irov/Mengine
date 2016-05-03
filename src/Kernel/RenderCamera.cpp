@@ -33,8 +33,7 @@ namespace	Menge
 	{
         Node::_deactivate();
 
-		NOTIFICATION_SERVICE(m_serviceProvider)
-			->removeObserver( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, m_observerChangeWindowResolution );
+		m_observerChangeWindowResolution = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderCamera::_invalidateWorldMatrix()

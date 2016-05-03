@@ -1,7 +1,5 @@
 #	include "ConsoleLogger.h"
 
-#   include "Interface/UnicodeInterface.h"
-
 #	include <io.h>
 #	include <cstdio>
 #	include <locale.h>

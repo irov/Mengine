@@ -393,72 +393,6 @@ namespace Menge
 
 		spSkeleton_updateWorldTransform( skeleton );
 
-		int slotCount = skeleton->slotsCount;
-		
-		for( int i = 0; i < slotCount; ++i )
-		{
-			spSlot * slot = skeleton->slots[i];
-
-			if( slot->attachment == nullptr )
-			{
-				continue;
-			}
-
-			AttachmentMesh & mesh = m_attachmentMeshes[slot->data->name];
-
-			ResourceImage * resourceImage = nullptr;
-
-			const spAttachmentType attachment_type = slot->attachment->type;
-
-			switch( attachment_type )
-			{
-			case SP_ATTACHMENT_REGION:
-				{
-					spRegionAttachment * attachment = (spRegionAttachment *)slot->attachment;
-
-					resourceImage = (ResourceImage*)(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
-								
-					mesh.vertices.resize( 4 );
-					mesh.indices.resize( 6 );
-				}break;
-			case SP_ATTACHMENT_MESH:
-				{
-					spMeshAttachment * attachment = (spMeshAttachment *)slot->attachment;
-
-					resourceImage = (ResourceImage*)(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
-
-					mesh.vertices.resize( attachment->verticesCount / 2 );
-					mesh.indices.resize( attachment->trianglesCount );
-				}break;
-			case SP_ATTACHMENT_SKINNED_MESH:
-				{
-					spSkinnedMeshAttachment* attachment = (spSkinnedMeshAttachment*)slot->attachment;
-
-					resourceImage = (ResourceImage*)(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
-
-					mesh.vertices.resize( attachment->uvsCount / 2 );
-					mesh.indices.resize( attachment->trianglesCount );
-				}break;
-			default:
-				continue;
-				break;
-			}
-
-			if( resourceImage == nullptr )
-			{
-				LOGGER_ERROR( m_serviceProvider )("Spine::_compile: '%s' resource '%s' image not setup for attachment '%d' type '%d'"
-					, m_name.c_str()
-					, m_resourceSpine->getName().c_str()
-					, i
-					, attachment_type
-					);
-
-				return false;
-			}
-
-			mesh.material = this->makeMaterial_( slot, resourceImage );
-		}
-
 		m_skeleton = skeleton;
 		m_animationStateData = animationStateData;
 
@@ -750,6 +684,8 @@ namespace Menge
 			{
 				continue;
 			}
+		
+			AttachmentMesh & mesh = m_attachmentMeshes[slot->data->name];
 
 			const float * uvs = nullptr;
 			int verticesCount;
@@ -762,6 +698,8 @@ namespace Menge
 			float aa = 1.f;
 
 			const spAttachmentType attachment_type = slot->attachment->type;
+
+			ResourceImage * resourceImage = nullptr;
 
 			switch( attachment_type )
 			{
@@ -779,6 +717,11 @@ namespace Menge
 					ag = attachment->g;
 					ab = attachment->b;
 					aa = attachment->a;
+
+					resourceImage = (ResourceImage*)(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
+
+					mesh.vertices.resize( 4 );
+					mesh.indices.resize( 6 );
 				}break;
 			case SP_ATTACHMENT_MESH:
 				{
@@ -794,6 +737,11 @@ namespace Menge
 					ag = attachment->g;
 					ab = attachment->b;
 					aa = attachment->a;
+
+					resourceImage = (ResourceImage*)(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
+
+					mesh.vertices.resize( attachment->verticesCount / 2 );
+					mesh.indices.resize( attachment->trianglesCount );
 				}break;
 			case SP_ATTACHMENT_SKINNED_MESH:
 				{
@@ -809,12 +757,24 @@ namespace Menge
 					ag = attachment->g;
 					ab = attachment->b;
 					aa = attachment->a;
+
+					resourceImage = (ResourceImage*)(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
+
+					mesh.vertices.resize( attachment->uvsCount / 2 );
+					mesh.indices.resize( attachment->trianglesCount );
 				}break;
 			default:
 				continue;
 				break;
 			}
 
+			if( mesh.image != resourceImage )
+			{
+				mesh.image = resourceImage;
+
+				mesh.material = this->makeMaterial_( slot, resourceImage );
+			}
+			
 			float wr = nr * m_skeleton->r * slot->r * ar;
 			float wg = ng * m_skeleton->g * slot->g * ag;
 			float wb = nb * m_skeleton->b * slot->b * ab;
@@ -822,11 +782,9 @@ namespace Menge
 
 			ColourValue_ARGB argb = Helper::makeARGB( wr, wg, wb, wa );
 
-			AttachmentMesh & mesh = m_attachmentMeshes[slot->data->name];
-
 			RenderVertex2D * vertices = mesh.vertices.buff();
 			RenderIndices * indices = mesh.indices.buff();
-				
+							
 			this->fillVertices_( vertices, attachment_vertices, uvs, argb, verticesCount / 2, wm );
 			this->fillIndices_( indices, triangles, trianglesCount );
 

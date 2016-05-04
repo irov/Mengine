@@ -106,6 +106,7 @@ namespace Menge
 
 		struct AttachmentMesh
 		{
+			ResourceImagePtr image;
 			RenderMaterialInterfacePtr material;
 
 			typedef stdex::heap_array<RenderVertex2D> TArrayRenderVertex2D;

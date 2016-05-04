@@ -292,7 +292,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ae_movie_composition_state( struct aeMovieComposition * _composition, aeMovieCompositionStateFlag _state, void * _data )
+	static void ae_movie_composition_state( aeMovieCompositionStateFlag _state, void * _data )
 	{
 
 	}

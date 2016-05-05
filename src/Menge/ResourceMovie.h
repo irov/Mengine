@@ -48,6 +48,9 @@ namespace Menge
 			, startInterval(0.f)
             , state(0)
 			, position(0.f, 0.f, 0.f)
+			, anchorPoint( 0.f, 0.f, 0.f )
+			, scale( 1.f, 1.f, 1.f )
+			, rotation( 0.f, 0.f, 0.f )
 			, viewport(0.f, 0.f, 0.f, 0.f)
 			, params(0)
 			, switcher(false)
@@ -79,6 +82,10 @@ namespace Menge
 		ConstString source;
 
 		mt::vec3f position;
+		mt::vec3f anchorPoint;
+		mt::vec3f scale;
+		mt::vec3f rotation;
+
 		Viewport viewport;
 
 		uint32_t params;

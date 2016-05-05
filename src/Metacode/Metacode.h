@@ -2451,6 +2451,35 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
+                bool has_AnchorPoint() const
+                {
+                    return AnchorPoint_successful;
+                }
+                
+                bool get_AnchorPoint( mt::vec3f & _value ) const
+                {
+                    if( AnchorPoint_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->AnchorPoint;
+                
+                    return true;
+                }
+                
+                bool swap_AnchorPoint( mt::vec3f & _value ) const
+                {
+                    if( AnchorPoint_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->AnchorPoint);
+                
+                    return true;
+                }
+                
                 bool has_BlendingMode() const
                 {
                     return BlendingMode_successful;
@@ -2690,6 +2719,64 @@ namespace Metacode
                     }
                 
                     std::swap( _value, this->Position);
+                
+                    return true;
+                }
+                
+                bool has_Rotation() const
+                {
+                    return Rotation_successful;
+                }
+                
+                bool get_Rotation( mt::vec3f & _value ) const
+                {
+                    if( Rotation_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Rotation;
+                
+                    return true;
+                }
+                
+                bool swap_Rotation( mt::vec3f & _value ) const
+                {
+                    if( Rotation_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Rotation);
+                
+                    return true;
+                }
+                
+                bool has_Scale() const
+                {
+                    return Scale_successful;
+                }
+                
+                bool get_Scale( mt::vec3f & _value ) const
+                {
+                    if( Scale_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Scale;
+                
+                    return true;
+                }
+                
+                bool swap_Scale( mt::vec3f & _value ) const
+                {
+                    if( Scale_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Scale);
                 
                     return true;
                 }
@@ -2897,6 +2984,8 @@ namespace Metacode
             public:
             protected:
             protected:
+                bool AnchorPoint_successful;
+                mutable mt::vec3f AnchorPoint;
                 bool BlendingMode_successful;
                 mutable Menge::ConstString BlendingMode;
                 mutable float In;
@@ -2915,6 +3004,10 @@ namespace Metacode
                 mutable bool Polygon;
                 bool Position_successful;
                 mutable mt::vec3f Position;
+                bool Rotation_successful;
+                mutable mt::vec3f Rotation;
+                bool Scale_successful;
+                mutable mt::vec3f Scale;
                 bool Shape_successful;
                 mutable bool Shape;
                 mutable Menge::ConstString Source;
@@ -2941,6 +3034,35 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
+                bool has_AnchorPoint() const
+                {
+                    return AnchorPoint_successful;
+                }
+                
+                bool get_AnchorPoint( mt::vec3f & _value ) const
+                {
+                    if( AnchorPoint_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->AnchorPoint;
+                
+                    return true;
+                }
+                
+                bool swap_AnchorPoint( mt::vec3f & _value ) const
+                {
+                    if( AnchorPoint_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->AnchorPoint);
+                
+                    return true;
+                }
+                
                 bool has_BlendingMode() const
                 {
                     return BlendingMode_successful;
@@ -3184,6 +3306,64 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_Rotation() const
+                {
+                    return Rotation_successful;
+                }
+                
+                bool get_Rotation( mt::vec3f & _value ) const
+                {
+                    if( Rotation_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Rotation;
+                
+                    return true;
+                }
+                
+                bool swap_Rotation( mt::vec3f & _value ) const
+                {
+                    if( Rotation_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Rotation);
+                
+                    return true;
+                }
+                
+                bool has_Scale() const
+                {
+                    return Scale_successful;
+                }
+                
+                bool get_Scale( mt::vec3f & _value ) const
+                {
+                    if( Scale_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Scale;
+                
+                    return true;
+                }
+                
+                bool swap_Scale( mt::vec3f & _value ) const
+                {
+                    if( Scale_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Scale);
+                
+                    return true;
+                }
+                
                 bool has_Shape() const
                 {
                     return Shape_successful;
@@ -3358,6 +3538,8 @@ namespace Metacode
             public:
             protected:
             protected:
+                bool AnchorPoint_successful;
+                mutable mt::vec3f AnchorPoint;
                 bool BlendingMode_successful;
                 mutable Menge::ConstString BlendingMode;
                 mutable float In;
@@ -3376,6 +3558,10 @@ namespace Metacode
                 mutable bool Polygon;
                 bool Position_successful;
                 mutable mt::vec3f Position;
+                bool Rotation_successful;
+                mutable mt::vec3f Rotation;
+                bool Scale_successful;
+                mutable mt::vec3f Scale;
                 bool Shape_successful;
                 mutable bool Shape;
                 mutable Menge::ConstString Source;

@@ -16,19 +16,6 @@
 
 namespace Menge
 {
-	enum ETextFieldHorizontAlign
-	{
-		ETFHA_RIGHT = 0,
-		ETFHA_CENTER = 1,
-		ETFHA_LEFT = 2
-	};
-
-	enum ETextFieldVerticalAlign
-	{
-		ETFVA_NONE = 0,
-		ETFVA_CENTER = 1,
-	};
-
 	typedef stdex::vector<TextLine> TVectorTextLine;
 	
 	class TextField
@@ -88,6 +75,9 @@ namespace Menge
 		void setCharOffset( float _offset );
 		float getCharOffset() const;
 
+		void setCharScale( float _value );
+		float getCharScale() const;
+
 	public:
 		void setHorizontalCenterAlign();
 		bool isHorizontalCenterAlign() const;
@@ -98,12 +88,12 @@ namespace Menge
 		void setHorizontalLeftAlign();
 		bool isHorizontalLeftAlign() const;
 
-		void setVerticalTopAlign();
-		bool isVerticalTopAlign() const;
+		void setVerticalBottomAlign();
+		bool isVerticalBottomAlign() const;
 
 		void setVerticalCenterAlign();
 		bool isVerticalCenterAlign() const;
-		
+				
 	public:
 		void setMaxCharCount( uint32_t _maxCharCount );
 		uint32_t getMaxCharCount() const;		
@@ -195,6 +185,11 @@ namespace Menge
 		const ColourValue & calcColorFont() const;
 		const ColourValue & calcColorOutline() const;
 
+		ETextHorizontAlign calcHorizontalAlign() const;
+		ETextVerticalAlign calcVerticalAlign() const;
+
+		float calcCharScale() const;
+
 	protected:
 		ConstString m_key;
 
@@ -203,8 +198,10 @@ namespace Menge
 		
 		mutable String m_cacheText;
 				
-		ETextFieldHorizontAlign m_horizontAlign;
-		ETextFieldVerticalAlign m_verticalAlign;
+		ETextHorizontAlign m_horizontAlign;
+		ETextVerticalAlign m_verticalAlign;
+
+		float m_charScale;
 		
 		float m_maxLength;
 

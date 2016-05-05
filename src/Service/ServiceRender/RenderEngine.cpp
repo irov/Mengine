@@ -1082,8 +1082,8 @@ namespace Menge
 
 		if( m_renderObjects.full() == true )
 		{
-			LOGGER_ERROR( m_serviceProvider )("RenderEngine::renderObject2D max render objects %d"
-				, m_maxObjects
+			LOGGER_ERROR( m_serviceProvider )("RenderEngine::renderObject2D max render objects %u"
+				, m_renderObjects.size()
 				);
 
 			return;
@@ -1096,8 +1096,8 @@ namespace Menge
 		{
 			if( m_renderPasses.full() == true )
 			{
-				LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D max render passes %d"
-					, m_maxPasses
+				LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D max render passes %u"
+					, m_renderPasses.size()
 					);
 
 				return;

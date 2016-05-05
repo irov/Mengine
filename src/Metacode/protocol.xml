@@ -1,4 +1,4 @@
-<Protocol Version = "108">
+<Protocol Version = "110">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -280,7 +280,10 @@
         <Attribute Name="Stretch" Type="float"/>
         <Attribute Name="Switch" Type="bool"/>
         <Attribute Name="Loop" Type="bool"/>
+        <Attribute Name="AnchorPoint" Type="mt::vec3f"/>
         <Attribute Name="Position" Type="mt::vec3f"/>
+        <Attribute Name="Scale" Type="mt::vec3f"/>
+        <Attribute Name="Rotation" Type="mt::vec3f"/>
         <Attribute Name="Viewport" Type="Menge::Viewport"/>
         <Attribute Name="Params" Type="uint32_t"/>
       </Node>
@@ -302,7 +305,10 @@
         <Attribute Name="Stretch" Type="float"/>
         <Attribute Name="Switch" Type="bool"/>
         <Attribute Name="Loop" Type="bool"/>
-        <Attribute Name="Position" Type="mt::vec3f"/>
+        <Attribute Name="AnchorPoint" Type="mt::vec3f"/>
+        <Attribute Name="Position" Type="mt::vec3f"/>        
+        <Attribute Name="Scale" Type="mt::vec3f"/>
+        <Attribute Name="Rotation" Type="mt::vec3f"/>
         <Attribute Name="Params" Type="uint32_t"/>
       </Node>
 

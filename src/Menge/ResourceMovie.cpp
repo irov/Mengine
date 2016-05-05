@@ -540,7 +540,10 @@ namespace Menge
             meta_layer2d.get_Stretch( ml.stretch );
 			meta_layer2d.get_Switch( ml.switcher );
 			meta_layer2d.get_Loop( ml.loop );
-			meta_layer2d.get_Position( ml.position );
+			meta_layer2d.get_AnchorPoint( ml.anchorPoint );
+			meta_layer2d.get_Position( ml.position );			
+			meta_layer2d.get_Scale( ml.scale );
+			meta_layer2d.get_Rotation( ml.rotation );
 			ml.hasViewport = meta_layer2d.get_Viewport( ml.viewport );
 			meta_layer2d.get_Params( ml.params );
 
@@ -603,7 +606,10 @@ namespace Menge
             meta_layer3d.get_Stretch( ml.stretch );
 			meta_layer3d.get_Switch( ml.switcher );
 			meta_layer3d.get_Loop( ml.loop );
-			meta_layer3d.get_Position( ml.position );
+			meta_layer3d.get_AnchorPoint( ml.anchorPoint );
+			meta_layer3d.get_Position( ml.position );			
+			meta_layer3d.get_Scale( ml.scale );
+			meta_layer3d.get_Rotation( ml.rotation );
 			meta_layer3d.get_Params( ml.params );
 				
 			if( ml.loop == false )

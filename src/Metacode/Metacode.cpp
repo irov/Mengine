@@ -4,7 +4,7 @@ namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
-    static const uint32_t metacode_version = 108;
+    static const uint32_t metacode_version = 110;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -1893,6 +1893,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::Meta_MovieLayer2D()
         : Metabuf::Metadata()
+        , AnchorPoint_successful(false)
         , BlendingMode_successful(false)
         , Loop_successful(false)
         , Params_successful(false)
@@ -1900,6 +1901,8 @@ namespace Metacode
         , PlayCount_successful(false)
         , Polygon_successful(false)
         , Position_successful(false)
+        , Rotation_successful(false)
+        , Scale_successful(false)
         , Shape_successful(false)
         , StartInterval_successful(false)
         , Stretch_successful(false)
@@ -1928,6 +1931,13 @@ namespace Metacode
     {
         switch( _id )
         {
+        case 17:
+            {
+                this->read( _buff, _size, _read, this->AnchorPoint );
+    
+                this->AnchorPoint_successful = true;
+    
+            }break;
         case 9:
             {
                 this->read( _buff, _size, _read, this->BlendingMode );
@@ -1942,7 +1952,7 @@ namespace Metacode
                 this->Loop_successful = true;
     
             }break;
-        case 19:
+        case 22:
             {
                 this->read( _buff, _size, _read, this->Params );
     
@@ -1970,11 +1980,25 @@ namespace Metacode
                 this->Polygon_successful = true;
     
             }break;
-        case 17:
+        case 18:
             {
                 this->read( _buff, _size, _read, this->Position );
     
                 this->Position_successful = true;
+    
+            }break;
+        case 20:
+            {
+                this->read( _buff, _size, _read, this->Rotation );
+    
+                this->Rotation_successful = true;
+    
+            }break;
+        case 19:
+            {
+                this->read( _buff, _size, _read, this->Scale );
+    
+                this->Scale_successful = true;
     
             }break;
         case 11:
@@ -2012,7 +2036,7 @@ namespace Metacode
                 this->TimeRemap_successful = true;
     
             }break;
-        case 18:
+        case 21:
             {
                 this->read( _buff, _size, _read, this->Viewport );
     
@@ -2049,6 +2073,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::Meta_MovieLayer3D()
         : Metabuf::Metadata()
+        , AnchorPoint_successful(false)
         , BlendingMode_successful(false)
         , Loop_successful(false)
         , Params_successful(false)
@@ -2056,6 +2081,8 @@ namespace Metacode
         , PlayCount_successful(false)
         , Polygon_successful(false)
         , Position_successful(false)
+        , Rotation_successful(false)
+        , Scale_successful(false)
         , Shape_successful(false)
         , StartInterval_successful(false)
         , Stretch_successful(false)
@@ -2083,6 +2110,13 @@ namespace Metacode
     {
         switch( _id )
         {
+        case 17:
+            {
+                this->read( _buff, _size, _read, this->AnchorPoint );
+    
+                this->AnchorPoint_successful = true;
+    
+            }break;
         case 9:
             {
                 this->read( _buff, _size, _read, this->BlendingMode );
@@ -2097,7 +2131,7 @@ namespace Metacode
                 this->Loop_successful = true;
     
             }break;
-        case 18:
+        case 21:
             {
                 this->read( _buff, _size, _read, this->Params );
     
@@ -2125,11 +2159,25 @@ namespace Metacode
                 this->Polygon_successful = true;
     
             }break;
-        case 17:
+        case 18:
             {
                 this->read( _buff, _size, _read, this->Position );
     
                 this->Position_successful = true;
+    
+            }break;
+        case 20:
+            {
+                this->read( _buff, _size, _read, this->Rotation );
+    
+                this->Rotation_successful = true;
+    
+            }break;
+        case 19:
+            {
+                this->read( _buff, _size, _read, this->Scale );
+    
+                this->Scale_successful = true;
     
             }break;
         case 11:

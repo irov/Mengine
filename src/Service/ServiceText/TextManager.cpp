@@ -86,6 +86,11 @@ namespace Menge
 				float lineOffset = 0.f;
 				float maxLength = 0.f;
 
+				ETextHorizontAlign horizontAlign = ETFHA_LEFT;
+				ETextVerticalAlign verticalAlign = ETFVA_BOTTOM;
+
+				float charScale = 1.f;
+
 				ColourValue colorFont;
 				ColourValue colorOutline;
 
@@ -247,6 +252,75 @@ namespace Menge
 
 						isOverride = (value != 0);
 					}
+					else if( strcmp( str_key, "VerticalAlign" ) == 0 )
+					{
+						if( strcmp( str_value, "Bottom" ) == 0 )
+						{
+							verticalAlign = ETFVA_BOTTOM;
+						}
+						else if( strcmp( str_value, "Center" ) == 0 )
+						{
+							verticalAlign = ETFVA_CENTER;
+						}
+						else if( strcmp( str_value, "Top" ) == 0 )
+						{
+							verticalAlign = ETFVA_TOP;
+						}
+						else
+						{
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' VerticalAlign '%s' [Bottom, Center, Top]"
+								, m_pakName.c_str()
+								, m_path.c_str()
+								, text_key.c_str()
+								, str_value
+								);
+						}
+
+						params |= EFP_VERTICAL_ALIGN;
+					}
+					else if( strcmp( str_key, "HorizontAlign" ) == 0 )
+					{
+						if( strcmp( str_value, "Left" ) == 0 )
+						{
+							horizontAlign = ETFHA_LEFT;
+						}
+						else if( strcmp( str_value, "Center" ) == 0 )
+						{
+							horizontAlign = ETFHA_CENTER;
+						}
+						else if( strcmp( str_value, "Right" ) == 0 )
+						{
+							horizontAlign = ETFHA_RIGHT;
+						}
+						else
+						{
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' VerticalAlign '%s' [Left, Center, Right]"
+								, m_pakName.c_str()
+								, m_path.c_str()
+								, text_key.c_str()
+								, str_value
+								);
+						}
+
+						params |= EFP_HORIZONTAL_ALIGN;
+					}
+					else if( strcmp( str_key, "CharScale" ) == 0 )
+					{
+						float value = 0;
+						if( sscanf( str_value, "%f", &value ) != 1 )
+						{
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' Scale '%s'"
+								, m_pakName.c_str()
+								, m_path.c_str()
+								, text_key.c_str()
+								, str_value
+								);
+						}
+
+						charScale = value;
+
+						params |= EFP_CHAR_SCALE;
+					}
 					else if( strcmp( str_key, "Empty" ) == 0 )
 					{
 						uint32_t value = 0;
@@ -282,7 +356,7 @@ namespace Menge
 						);
 				}
 
-				m_textManager->addTextEntry( text_key, text, fontName, colorFont, colorOutline, lineOffset, charOffset, maxLength, params, isOverride );
+				m_textManager->addTextEntry( text_key, text, fontName, colorFont, colorOutline, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride );
 			}
 
 			void callback_end_node( const char * _node )
@@ -663,7 +737,19 @@ namespace Menge
 		return glyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride )
+	bool TextManager::addTextEntry( const ConstString& _key
+		, const ConstString & _text
+		, const ConstString & _font
+		, const ColourValue & _colorFont
+		, const ColourValue & _colorOutline
+		, float _lineOffset
+		, float _charOffset
+		, float _maxLength
+		, ETextHorizontAlign _horizontAlign
+		, ETextVerticalAlign _verticalAlign
+		, float _scale
+		, uint32_t _params
+		, bool _isOverride )
 	{
 		TMapTextEntry::iterator it_found = m_texts.find( _key );
 
@@ -689,14 +775,14 @@ namespace Menge
 				return false;
 			}
 
-			textEntry_has.initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _params );
+			textEntry_has.initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params );
 
 			return true;
 		}
 
 		TextEntry textEntry;
 
-		textEntry.initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _params );
+		textEntry.initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params );
 
 		m_texts.insert( std::make_pair( _key, textEntry ) );
 

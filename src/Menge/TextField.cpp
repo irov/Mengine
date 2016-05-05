@@ -32,7 +32,8 @@ namespace Menge
 		, m_invalidateFont(true)
 		, m_fontParams(EFP_NONE)
 		, m_horizontAlign(ETFHA_LEFT)
-		, m_verticalAlign(ETFVA_NONE)
+		, m_verticalAlign(ETFVA_BOTTOM)
+		, m_charScale(1.f)
 		, m_maxLength(2048.f)
 		, m_maxCharCount((uint32_t)-1)
 		, m_charCount(0)
@@ -168,9 +169,12 @@ namespace Menge
 		const TVectorTextLine & lines = this->getTextLines();
 
 		mt::vec2f offset(0.f, 0.f);
-		switch( m_verticalAlign )
+
+		ETextVerticalAlign verticalAlign = this->calcVerticalAlign();
+
+		switch( verticalAlign )
 		{
-		case ETFVA_NONE:
+		case ETFVA_BOTTOM:
 			{
 				offset.y = 0.f;
 			}break;
@@ -181,6 +185,8 @@ namespace Menge
 				offset.y = -(fontHeght + lineOffset) * line_count * 0.5f;
 			}break;
 		}
+
+		float charScale = this->calcCharScale();
 
 		ColourValue_ARGB argb = _color.getAsARGB();
 
@@ -195,7 +201,7 @@ namespace Menge
             float alignOffsetX = this->getHorizontAlignOffset_( line );
 			offset.x = alignOffsetX;
 
-			line.prepareRenderObject( offset, uv, argb, _vertexData );
+			line.prepareRenderObject( offset, charScale, uv, argb, _vertexData );
 
             offset.y += fontHeght;
 			offset.y += lineOffset;
@@ -462,6 +468,20 @@ namespace Menge
 	float TextField::getCharOffset() const
 	{
 		return m_charOffset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setCharScale( float _value )
+	{
+		m_charScale = _value;
+
+		m_fontParams |= EFP_CHAR_SCALE;
+
+		this->invalidateTextLines();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float TextField::getCharScale() const
+	{
+		return m_charScale;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& TextField::getTextSize() const
@@ -935,6 +955,78 @@ namespace Menge
 		return m_colorOutline;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ETextHorizontAlign TextField::calcHorizontalAlign() const
+	{
+		const TextEntryInterface * textEntry = this->getTextEntry();
+
+		if( textEntry != nullptr )
+		{
+			uint32_t params = textEntry->getFontParams();
+
+			if( params & EFP_HORIZONTAL_ALIGN )
+			{
+				ETextHorizontAlign value = textEntry->getHorizontAlign();
+
+				return value;
+			}
+		}
+
+		if( m_fontParams & EFP_HORIZONTAL_ALIGN )
+		{
+			return m_horizontAlign;
+		}
+
+		return ETFHA_LEFT;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ETextVerticalAlign TextField::calcVerticalAlign() const
+	{
+		const TextEntryInterface * textEntry = this->getTextEntry();
+
+		if( textEntry != nullptr )
+		{
+			uint32_t params = textEntry->getFontParams();
+
+			if( params & EFP_VERTICAL_ALIGN )
+			{
+				ETextVerticalAlign value = textEntry->getVerticalAlign();
+
+				return value;
+			}
+		}
+
+		if( m_fontParams & EFP_VERTICAL_ALIGN )
+		{
+			return m_verticalAlign;
+		}
+
+		return ETFVA_BOTTOM;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float TextField::calcCharScale() const
+	{
+		const TextEntryInterface * textEntry = this->getTextEntry();
+
+		if( textEntry != nullptr )
+		{
+			uint32_t params = textEntry->getFontParams();
+
+			if( params & EFP_CHAR_SCALE )
+			{
+				float value = textEntry->getCharScale();
+
+				return value;
+			}
+		}
+
+		if( m_fontParams & EFP_CHAR_SCALE )
+		{
+			return m_charScale;
+		}
+
+		return 1.f;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void TextField::_updateBoundingBox( mt::box2f & _boundingBox ) const
 	{
 		Node::_updateBoundingBox( _boundingBox );
@@ -968,7 +1060,9 @@ namespace Menge
 	{
         float offset = 0.f;
 
-		switch( m_horizontAlign )
+		ETextHorizontAlign horizontAlign = this->calcHorizontalAlign();
+
+		switch( horizontAlign )
 		{
 		case ETFHA_LEFT:
 			{
@@ -1176,13 +1270,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setVerticalTopAlign()
-	{
-		m_verticalAlign = ETFVA_NONE;
-
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void TextField::setPixelsnap( bool _pixelsnap )
 	{
 		m_pixelsnap = _pixelsnap;
@@ -1195,14 +1282,25 @@ namespace Menge
 		return m_pixelsnap;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextField::isVerticalTopAlign() const
+	void TextField::setVerticalBottomAlign()
 	{
-		return m_verticalAlign == ETFVA_NONE;
+		m_verticalAlign = ETFVA_BOTTOM;
+
+		m_fontParams |= EFP_VERTICAL_ALIGN;
+
+		this->invalidateTextLines();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextField::isVerticalBottomAlign() const
+	{
+		return m_verticalAlign == ETFVA_BOTTOM;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setVerticalCenterAlign()
 	{
 		m_verticalAlign = ETFVA_CENTER;
+
+		m_fontParams |= EFP_VERTICAL_ALIGN;
 
 		this->invalidateTextLines();
 	}
@@ -1216,6 +1314,8 @@ namespace Menge
 	{
 		m_horizontAlign = ETFHA_CENTER;
 
+		m_fontParams |= EFP_HORIZONTAL_ALIGN;
+
 		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1228,6 +1328,8 @@ namespace Menge
 	{
 		m_horizontAlign = ETFHA_RIGHT;
 
+		m_fontParams |= EFP_HORIZONTAL_ALIGN;
+
 		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1239,6 +1341,8 @@ namespace Menge
 	void TextField::setHorizontalLeftAlign()
 	{
 		m_horizontAlign = ETFHA_LEFT;
+
+		m_fontParams |= EFP_HORIZONTAL_ALIGN;
 
 		this->invalidateTextLines();
 	}
@@ -1310,6 +1414,21 @@ namespace Menge
 			wm.v3.x = ::floorf( wm.v3.x + 0.5f );
 			wm.v3.y = ::floorf( wm.v3.y + 0.5f );
 		}
+
+		//float charScale = this->getCharScale();
+
+		//if( mt::equal_f_1( charScale ) == false )
+		//{
+		//	mt::vec3f position;
+		//	mt::vec3f origin;
+		//	mt::vec3f scale;
+		//	mt::vec2f skew;
+		//	mt::vec3f orientation;
+		//	this->getTransformation( position, origin, scale, skew, orientation );
+
+		//	mt::mat4f wm;
+		//	this->calcWorldMatrix( wm, position, origin, scale + charScale, skew, orientation );
+		//}
 
         for( ; it != it_end; ++it, ++it_w )
         {

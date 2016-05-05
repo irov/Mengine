@@ -20,7 +20,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextLine::initialize( const TextFontInterfacePtr & _font, const String& _text )
+	bool TextLine::initialize( const TextFontInterfacePtr & _font, const String & _text )
 	{
 		WString::size_type text_size = _text.length();
 		m_charsData.reserve( text_size );
@@ -161,13 +161,14 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::prepareRenderObject(	mt::vec2f & _offset		
+		, float _charScale
 		, const mt::uv4f & _uv
 		, ColourValue_ARGB _argb
 		, TVectorRenderVertex2D & _renderObject ) const
 	{
 		if( m_invalidateTextLine == true )
 		{
-			this->updateRenderLine_( _offset );
+			this->updateRenderLine_( _offset, _charScale );
 		}
 
 		size_t renderObjectNum = _renderObject.size();
@@ -217,8 +218,10 @@ namespace Menge
 		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::updateRenderLine_( mt::vec2f & _offset ) const
+	void TextLine::updateRenderLine_( mt::vec2f & _offset, float _charScale ) const
 	{
+		m_invalidateTextLine = false;
+
 		for( TVectorCharData::iterator
 			it_char = m_charsData.begin(), 
 			it_char_end = m_charsData.end();
@@ -227,22 +230,19 @@ namespace Menge
 		{
 			CharData & cd = *it_char;
 
-			mt::vec2f size = cd.size;
+			mt::vec2f size = cd.size * _charScale;
 
-			mt::vec2f offset = _offset + cd.offset;
-			mt::vec2f v3_offset = offset;
+			mt::vec2f offset = _offset + cd.offset * _charScale;
 			
-			cd.vertex[0] = v3_offset + mt::vec2f( 0.f, 0.f );
-			cd.vertex[1] = v3_offset + mt::vec2f( size.x, 0.f );
-			cd.vertex[2] = v3_offset + mt::vec2f( size.x, size.y );
-			cd.vertex[3] = v3_offset + mt::vec2f( 0.f, size.y );
+			cd.vertex[0] = offset + mt::vec2f( 0.f, 0.f );
+			cd.vertex[1] = offset + mt::vec2f( size.x, 0.f );
+			cd.vertex[2] = offset + mt::vec2f( size.x, size.y );
+			cd.vertex[3] = offset + mt::vec2f( 0.f, size.y );
 
-			_offset.x += cd.advance + m_charOffset;
+			_offset.x += (cd.advance + m_charOffset) * _charScale;
 		}
 
-		m_offset = _offset.x;
-
-		m_invalidateTextLine = false;
+		m_offset = _offset.x;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

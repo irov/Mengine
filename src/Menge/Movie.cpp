@@ -439,7 +439,21 @@ namespace Menge
 		nd.child = (_layer.parent != movie_layer_parent_none);
 
 		_node->setName( _layer.name );
-		_node->setLocalPosition( _layer.position );
+
+		mt::vec2f skew( 0.f, 0.f );
+
+		if( _layer.scale.x < 1.f )
+		{
+			skew.x = 0.f;
+		}
+		
+		_node->setTransformation(
+			_layer.position,
+			_layer.anchorPoint,
+			_layer.scale,
+			skew,
+			_layer.rotation
+			);
 
 		m_nodies[_layer.index - 1] = nd;
 

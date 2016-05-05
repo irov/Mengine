@@ -34,10 +34,11 @@ namespace Menge
 		TextLine( ServiceProviderInterface * _serviceProvider, float _charOffset );
 
 	public:
-		bool initialize( const TextFontInterfacePtr & _font, const String& _text );
+		bool initialize( const TextFontInterfacePtr & _font, const String & _text );
 
 	public:
 		void prepareRenderObject( mt::vec2f & _offset
+			, float _charScale
 			, const mt::uv4f & _uv
 			, ColourValue_ARGB _argb
 			, TVectorRenderVertex2D & _renderObject ) const;
@@ -47,7 +48,7 @@ namespace Menge
 		uint32_t getCharsDataSize() const;
 
 	private:
-		void updateRenderLine_( mt::vec2f & _offset ) const;
+		void updateRenderLine_( mt::vec2f & _offset, float _charScale ) const;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;

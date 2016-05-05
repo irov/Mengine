@@ -474,12 +474,9 @@ namespace Menge
 	{
 		aeMovieRenderContext context;
 
-		if( begin_movie_render_context( m_composition, &context ) == AE_MOVIE_FAILED )
-		{
-			return;
-		}
-				
-		m_meshes.reserve( context.render_count );
+		uint32_t render_count = begin_movie_render_context( m_composition, &context );
+
+		m_meshes.reserve( render_count );
 		m_meshes.clear();
 
 		const mt::mat4f & wm = this->getWorldMatrix();
@@ -487,7 +484,7 @@ namespace Menge
 		//printf( "mesh --\n"
 		//	);
 
-		for( uint32_t i = 0; i != context.render_count; ++i )
+		for( uint32_t i = 0; i != render_count; ++i )
 		{
 			aeMovieRenderMesh mesh;
 			compute_movie_mesh( &context, i, &mesh );

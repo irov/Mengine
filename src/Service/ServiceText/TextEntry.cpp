@@ -7,11 +7,25 @@ namespace Menge
 		: m_lineOffset(0.f)
 		, m_charOffset(0.f)
 		, m_maxLength(0.f)
-		, m_params(EFP_NONE)
+		, m_horizontAlign( ETFHA_LEFT )
+		, m_verticalAlign( ETFVA_BOTTOM )
+		, m_charScale(1.f)
+		, m_params( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextEntry::initialize( const ConstString & _key, const ConstString & _text, const ConstString & _fontName, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, size_t _params )
+	void TextEntry::initialize( const ConstString & _key
+		, const ConstString & _text
+		, const ConstString & _fontName
+		, const ColourValue & _colorFont
+		, const ColourValue & _colorOutline
+		, float _lineOffset
+		, float _charOffset
+		, float _maxLength
+		, ETextHorizontAlign _horizontAlign
+		, ETextVerticalAlign _verticalAlign
+		, float _charScale
+		, size_t _params )
 	{
 		m_key = _key;
 		m_text = _text;
@@ -24,6 +38,11 @@ namespace Menge
 		m_lineOffset = _lineOffset;
 		m_charOffset = _charOffset;
 		m_maxLength = _maxLength;
+
+		m_horizontAlign = _horizontAlign;
+		m_verticalAlign = _verticalAlign;
+
+		m_charScale = _charScale;
 
 		m_params = _params;
 	}
@@ -66,6 +85,21 @@ namespace Menge
 	float TextEntry::getMaxLength() const
 	{
 		return m_maxLength;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ETextHorizontAlign TextEntry::getHorizontAlign() const
+	{
+		return m_horizontAlign;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ETextVerticalAlign TextEntry::getVerticalAlign() const
+	{
+		return m_verticalAlign;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float TextEntry::getCharScale() const
+	{
+		return m_charScale;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t TextEntry::getFontParams() const

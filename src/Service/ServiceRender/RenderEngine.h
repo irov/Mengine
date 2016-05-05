@@ -234,8 +234,6 @@ namespace Menge
 
 		uint32_t m_maxVertexCount;
 		uint32_t m_maxIndexCount;
-		uint32_t m_maxObjects;
-		uint32_t m_maxPasses;
 						
 		RenderVertexBufferInterfacePtr m_currentVBHandle;
 		RenderIndexBufferInterfacePtr m_currentIBHandle;

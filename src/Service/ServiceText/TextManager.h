@@ -61,7 +61,20 @@ namespace Menge
 		const ConstString & getDefaultFontName() const override;
 
 	public:
-		bool addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) override;
+		bool addTextEntry( const ConstString& _key
+			, const ConstString & _text
+			, const ConstString & _font
+			, const ColourValue & _colorFont
+			, const ColourValue & _colorOutline
+			, float _lineOffset
+			, float _charOffset
+			, float _maxLength
+			, ETextHorizontAlign _horizontAlign
+			, ETextVerticalAlign _verticalAlign
+			, float _scale
+			, uint32_t _params
+			, bool _isOverride ) override;
+
 		bool removeTextEntry( const ConstString& _key );
 
 	protected:

@@ -400,6 +400,36 @@ namespace Menge
 			mt::mul_v2_m4( v, *it, _wm );
 			_out.append( v );
 		}
+
+		BoostPolygon::inner_container_type & inners = THIS_IMPL.inners();
+
+		for( BoostPolygon::inner_container_type::const_iterator
+			it_inner = inners.begin(),
+			it_inner_end = inners.end();
+		it_inner != it_inner_end;
+		++it_inner )
+		{
+			const BoostPolygon::ring_type & ring = *it_inner;
+
+			Polygon polygon_inner_wm;
+
+			for( BoostPolygon::ring_type::const_iterator
+				it = ring.begin(),
+				it_end = ring.end();
+			it != it_end;
+			++it )
+			{
+				mt::vec2f v;
+				mt::mul_v2_m4( v, *it, _wm );
+				polygon_inner_wm.append( v );
+			}
+
+			polygon_inner_wm.correct();
+
+			_out.append_inner( polygon_inner_wm );
+		}
+
+		_out.correct();		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Polygon::mul_wm_and_transpose( Polygon & _out, const mt::mat4f & _wm, const mt::vec2f & _pos ) const
@@ -420,6 +450,36 @@ namespace Menge
 
 			_out.append( v );
 		}
+
+		BoostPolygon::inner_container_type & inners = THIS_IMPL.inners();
+
+		for( BoostPolygon::inner_container_type::const_iterator
+			it_inner = inners.begin(),
+			it_inner_end = inners.end();
+		it_inner != it_inner_end;
+		++it_inner )
+		{
+			const BoostPolygon::ring_type & ring = *it_inner;
+
+			Polygon polygon_inner_wm;
+
+			for( BoostPolygon::ring_type::const_iterator
+				it = ring.begin(),
+				it_end = ring.end();
+			it != it_end;
+			++it )
+			{
+				mt::vec2f v;
+				mt::mul_v2_m4( v, *it, _wm );
+				v += _pos;
+
+				polygon_inner_wm.append( v );
+			}
+
+			polygon_inner_wm.correct();
+
+			_out.append_inner( polygon_inner_wm );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Polygon::transpose( Polygon & _out, const mt::vec2f & _pos ) const
@@ -438,6 +498,35 @@ namespace Menge
 			mt::add_v2_v2( v, *it, _pos );
 
 			_out.append( v );
+		}
+
+		BoostPolygon::inner_container_type & inners = THIS_IMPL.inners();
+
+		for( BoostPolygon::inner_container_type::const_iterator
+			it_inner = inners.begin(),
+			it_inner_end = inners.end();
+		it_inner != it_inner_end;
+		++it_inner )
+		{
+			const BoostPolygon::ring_type & ring = *it_inner;
+
+			Polygon polygon_inner_wm;
+
+			for( BoostPolygon::ring_type::const_iterator
+				it = ring.begin(),
+				it_end = ring.end();
+			it != it_end;
+			++it )
+			{
+				mt::vec2f v;
+				mt::add_v2_v2( v, *it, _pos );
+
+				polygon_inner_wm.append( v );
+			}
+
+			polygon_inner_wm.correct();
+
+			_out.append_inner( polygon_inner_wm );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -458,6 +547,36 @@ namespace Menge
 			mt::mul_v2_v2( v, *it, _scale );
 
 			_out.append( v );
+		}
+
+		BoostPolygon::inner_container_type & inners = THIS_IMPL.inners();
+
+		for( BoostPolygon::inner_container_type::const_iterator
+			it_inner = inners.begin(),
+			it_inner_end = inners.end();
+		it_inner != it_inner_end;
+		++it_inner )
+		{
+			const BoostPolygon::ring_type & ring = *it_inner;
+
+			Polygon polygon_inner_wm;
+
+			for( BoostPolygon::ring_type::const_iterator
+				it = ring.begin(),
+				it_end = ring.end();
+			it != it_end;
+			++it )
+			{
+				mt::vec2f v;
+				mt::add_v2_v2( v, *it, _pos );
+				mt::mul_v2_v2( v, *it, _scale );
+
+				polygon_inner_wm.append( v );
+			}
+
+			polygon_inner_wm.correct();
+
+			_out.append_inner( polygon_inner_wm );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

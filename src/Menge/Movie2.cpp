@@ -201,94 +201,87 @@ namespace Menge
 		return AE_NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void ae_movie_node_animate_update( const void * _element, uint32_t _type, const ae_matrix4_t _matrix, float _opacity, void * _data )
+	static void ae_movie_composition_node_update( const void * _element, uint32_t _type, aeMovieNodeUpdateState _state, float _offset, const ae_matrix4_t _matrix, float _opacity, void * _data )
 	{
-		switch( _type )
+		if( _state == AE_MOVIE_NODE_UPDATE_UPDATE )
 		{
-		case AE_MOVIE_LAYER_TYPE_PARTICLE:
+			switch( _type )
 			{
-				//printf( "AE_MOVIE_LAYER_TYPE_PARTICLE %f %f\n"
-				//	, _matrix[12]
-				//	, _matrix[13]
-				//	);
-			}break;
-		case AE_MOVIE_LAYER_TYPE_SLOT:
-			{
-				//printf( "AE_MOVIE_LAYER_TYPE_SLOT %f %f\n"
-				//	, _matrix[12]
-				//	, _matrix[13]
-				//	);
-			}break;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void ae_movie_node_animate_begin( const void * _element, uint32_t _type, float _offset, void * _data )
-	{
-		(void)_element;
-		(void)_type;
-		(void)_data;
-
-		switch( _type )
-		{
-		case AE_MOVIE_LAYER_TYPE_VIDEO:
-			{
-				Video * video = (Video *)_element;
-
-				Movie2 * movie2 = (Movie2 *)_data;
-
-				ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
-
-				float time = TIMELINE_SERVICE( serviceProvider )
-					->getTime();
-
-				video->setTiming( _offset );
-
-				if( video->play( time ) == 0 )
+			case AE_MOVIE_LAYER_TYPE_PARTICLE:
 				{
-					return;
-				}
-			}break;
-		case AE_MOVIE_LAYER_TYPE_SOUND:
-			{
-				SoundEmitter * sound = (SoundEmitter *)_element;
-
-				Movie2 * movie2 = (Movie2 *)_data;
-
-				ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
-
-				float time = TIMELINE_SERVICE( serviceProvider )
-					->getTime();
-
-				sound->setTiming( _offset );
-
-				if( sound->play( time ) == 0 )
+					//printf( "AE_MOVIE_LAYER_TYPE_PARTICLE %f %f\n"
+					//	, _matrix[12]
+					//	, _matrix[13]
+					//	);
+				}break;
+			case AE_MOVIE_LAYER_TYPE_SLOT:
 				{
-					return;
-				}
-			}break;
+					//printf( "AE_MOVIE_LAYER_TYPE_SLOT %f %f\n"
+					//	, _matrix[12]
+					//	, _matrix[13]
+					//	);
+				}break;
+			}
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void ae_movie_node_animate_end( const void * _element, uint32_t _type, void * _data )
-	{
-		(void)_element;
-		(void)_type;
-		(void)_data;
-
-		switch( _type )
+		else if( _state == AE_MOVIE_NODE_UPDATE_BEGIN )
 		{
-		case AE_MOVIE_LAYER_TYPE_VIDEO:
+			switch( _type )
 			{
-				Video * video = (Video *)_element;
+			case AE_MOVIE_LAYER_TYPE_VIDEO:
+				{
+					Video * video = (Video *)_element;
 
-				video->stop();
-			}break;
-		case AE_MOVIE_LAYER_TYPE_SOUND:
+					Movie2 * movie2 = (Movie2 *)_data;
+
+					ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+
+					float time = TIMELINE_SERVICE( serviceProvider )
+						->getTime();
+
+					video->setTiming( _offset );
+
+					if( video->play( time ) == 0 )
+					{
+						return;
+					}
+				}break;
+			case AE_MOVIE_LAYER_TYPE_SOUND:
+				{
+					SoundEmitter * sound = (SoundEmitter *)_element;
+
+					Movie2 * movie2 = (Movie2 *)_data;
+
+					ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+
+					float time = TIMELINE_SERVICE( serviceProvider )
+						->getTime();
+
+					sound->setTiming( _offset );
+
+					if( sound->play( time ) == 0 )
+					{
+						return;
+					}
+				}break;
+			}
+		}
+		else if( _state == AE_MOVIE_NODE_UPDATE_END )
+		{
+			switch( _type )
 			{
-				SoundEmitter * sound = (SoundEmitter *)_element;
+			case AE_MOVIE_LAYER_TYPE_VIDEO:
+				{
+					Video * video = (Video *)_element;
 
-				sound->stop();
-			}break;
+					video->stop();
+				}break;
+			case AE_MOVIE_LAYER_TYPE_SOUND:
+				{
+					SoundEmitter * sound = (SoundEmitter *)_element;
+
+					sound->stop();
+				}break;
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -370,9 +363,7 @@ namespace Menge
 		providers.camera_provider = &ae_movie_composition_node_camera;
 		providers.node_provider = &ae_movie_composition_node_provider;
 
-		providers.animate_update = &ae_movie_node_animate_update;
-		providers.animate_begin = &ae_movie_node_animate_begin;
-		providers.animate_end = &ae_movie_node_animate_end;
+		providers.node_update = &ae_movie_composition_node_update;
 
 		providers.composition_state = &ae_movie_composition_state;
 

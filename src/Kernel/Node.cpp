@@ -285,19 +285,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::destroyAllChild()
 	{
-		for( TSlugChild it(m_children); it.eof() == false; )
+		for( TSlugChild it( m_children ); it.eof() == false; )
 		{
 			Node * node = (*it);
 
 			node->setParent_( nullptr );
 
-			TListNodeChild::iterator it_node(node);
+			TListNodeChild::iterator it_node( node );
 
 			it.next_shuffle();
 
 			m_children.erase( it_node );
 
-            node->destroy();
+			node->destroy();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -306,6 +306,8 @@ namespace Menge
 		for( TSlugChild it(m_children); it.eof() == false; )
 		{
             Node * node = (*it);
+
+			TListNodeChild::iterator it_node( node );
 
 			it.next_shuffle();
 
@@ -320,9 +322,9 @@ namespace Menge
 
             node->setParent_( nullptr );
             node->setLayer( nullptr );
-		}
 
-		m_children.clear();
+			m_children.erase( it_node );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::removeFromParent()

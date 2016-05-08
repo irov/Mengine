@@ -4089,6 +4089,7 @@ namespace Menge
 					, m_moveSpeed( 0.f )
 					, m_moveAcceleration( 0.f )
 					, m_moveLimit( 0.f )
+					, m_rotate( false )
 					, m_rotationSpeed( 0.f )
 					, m_rotationAcceleration( 0.f )
 					, m_rotationLimit( 0.f )
@@ -4096,7 +4097,7 @@ namespace Menge
 				}
 
 			public:
-				bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
+				bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, bool _rotate, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
 				{
 					if( _node == nullptr )
 					{
@@ -4115,6 +4116,7 @@ namespace Menge
 					m_moveSpeed = _moveSpeed;
 					m_moveAcceleration = _moveAcceleration;
 					m_moveLimit = _moveLimit;
+					m_rotate = _rotate;
 					m_rotationSpeed = _rotationSpeed;
 					m_rotationAcceleration = _rotationAcceleration;
 					m_rotationLimit = _rotationLimit;
@@ -4128,40 +4130,40 @@ namespace Menge
 					mt::vec3f node_position = m_node->getLocalPosition();
 					mt::vec3f follow_position = m_target->getLocalPosition();
 
-					mt::vec3f direction = follow_position - node_position;
-
-					mt::vec3f norm_direction;
-					mt::norm_v3_v3( norm_direction, direction );
-
-					mt::mat4f mr;
-					mt::make_rotate_m4_direction( mr, direction, mt::vec3f( 0.f, 0.f, 1.f ) );
-
-					mt::vec3f target_orientation;
-					mt::make_euler_angles( target_orientation, mr );
-
-					const mt::vec3f & node_orientation = m_node->getOrientation();
-
-					mt::vec3f correct_rotate_from;
-					mt::vec3f correct_rotate_to;
-					mt::angle_correct_interpolate_from_to( node_orientation.x, target_orientation.x, correct_rotate_from.x, correct_rotate_to.x );
-					mt::angle_correct_interpolate_from_to( node_orientation.y, target_orientation.y, correct_rotate_from.y, correct_rotate_to.y );
-					mt::angle_correct_interpolate_from_to( node_orientation.z, target_orientation.z, correct_rotate_from.z, correct_rotate_to.z );
-
-					float roatationSpeedStep = m_rotationAcceleration * _timing;
-
-					if( m_rotationSpeed + roatationSpeedStep > m_rotationLimit )
+					if( m_rotate == true )
 					{
-						m_rotationSpeed = m_rotationLimit;
-					}
-					else
-					{
-						m_rotationSpeed += m_rotationAcceleration * _timing;
-					}
+						mt::vec3f direction = follow_position - node_position;
 
-					mt::vec3f new_orientation;
-					mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _timing );
+						mt::mat4f mr;
+						mt::make_rotate_m4_direction( mr, direction, mt::vec3f( 0.f, 0.f, 1.f ) );
 
-					m_node->setOrientation( new_orientation );
+						mt::vec3f target_orientation;
+						mt::make_euler_angles( target_orientation, mr );
+
+						const mt::vec3f & node_orientation = m_node->getOrientation();
+
+						mt::vec3f correct_rotate_from;
+						mt::vec3f correct_rotate_to;
+						mt::angle_correct_interpolate_from_to( node_orientation.x, target_orientation.x, correct_rotate_from.x, correct_rotate_to.x );
+						mt::angle_correct_interpolate_from_to( node_orientation.y, target_orientation.y, correct_rotate_from.y, correct_rotate_to.y );
+						mt::angle_correct_interpolate_from_to( node_orientation.z, target_orientation.z, correct_rotate_from.z, correct_rotate_to.z );
+
+						float roatationSpeedStep = m_rotationAcceleration * _timing;
+
+						if( m_rotationSpeed + roatationSpeedStep > m_rotationLimit )
+						{
+							m_rotationSpeed = m_rotationLimit;
+						}
+						else
+						{
+							m_rotationSpeed += m_rotationAcceleration * _timing;
+						}
+
+						mt::vec3f new_orientation;
+						mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _timing );
+
+						m_node->setOrientation( new_orientation );
+					}
 
 					mt::vec3f current_direction = m_node->getAxisDirection();
 
@@ -4213,6 +4215,7 @@ namespace Menge
 				float m_moveSpeed;
 				float m_moveAcceleration;
 				float m_moveLimit;
+				bool m_rotate;
 				float m_rotationSpeed;
 				float m_rotationAcceleration;
 				float m_rotationLimit;
@@ -4220,7 +4223,9 @@ namespace Menge
 
 		public:
 			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
-				, Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
+				, Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit
+				, bool _rotate
+				, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
 			{
 				AffectorCreatorFollowTo * affector = m_factory.createObject();
 
@@ -4229,7 +4234,7 @@ namespace Menge
 
 				affector->setCallback( _cb );
 
-				if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit, _rotationSpeed, _rotationAcceleration, _rotationLimit ) == false )
+				if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit, _rotate, _rotationSpeed, _rotationAcceleration, _rotationLimit ) == false )
 				{
 					affector->destroy();
 
@@ -4253,6 +4258,7 @@ namespace Menge
 			, float _moveSpeed
 			, float _moveAcceleration
 			, float _moveLimit
+			, bool _rotate
 			, float _rotationSpeed
 			, float _rotationAcceleration
 			, float _rotationLimit
@@ -4275,6 +4281,7 @@ namespace Menge
 				m_nodeAffectorCreatorFollowTo.create( m_serviceProvider
 				, ETA_POSITION, callback, _node, _target, _offset, _distance
 				, _moveSpeed, _moveAcceleration, _moveLimit
+				, _rotate
 				, _rotationSpeed, _rotationAcceleration, _rotationLimit
 				);
 

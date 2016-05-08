@@ -58,25 +58,16 @@ ModuleAreaOfInterest
 )
 
 ADD_FILTER(
-Collision
-    ModuleCollisionGround.cpp
-    ModuleCollisionGround.h
-    PythonCollisionRadar.cpp
-    PythonCollisionRadar.h
-    PythonCollisionObject.cpp
-    PythonCollisionObject.h
-    CollisionGround.cpp
-    CollisionGround.h
-    CollisionObject.cpp
-    CollisionObject.h
-    CollisionRadar.cpp
-    CollisionRadar.h
-    CollisionMotor.cpp
-    CollisionMotor.h
-    CollisionMotorFollow.cpp
-    CollisionMotorFollow.h
-    CollisionMotorPosition.cpp
-    CollisionMotorPosition.h
+ModuleCollision
+    ModuleCollision.cpp
+    ModuleCollision.h
+    CollisionInterface.h
+    CollisionWorld.cpp
+    CollisionWorld.h
+    CollisionActor.cpp
+    CollisionActor.h
+    NodeCollisionActor.cpp
+    NodeCollisionActor.h
 )
 
 INCLUDE_DIRECTORIES(    

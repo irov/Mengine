@@ -46,6 +46,20 @@ line2
 )
 
 ADD_FILTER(
+segment2
+	segment2.cpp
+	segment2.h
+	segment2_inline.h
+)
+
+ADD_FILTER(
+capsule2
+	capsule2.cpp
+	capsule2.h
+	capsule2_inline.h
+)
+
+ADD_FILTER(
 triangle
 	triangle.cpp
 	triangle.h

@@ -2,20 +2,18 @@
 
 #	include "Interface/ModuleInterface.h"
 
-#	include "CollisionGround.h"
-#	include "PythonCollisionObject.h"		
-#	include "CollisionMotorPosition.h"
-#	include "CollisionMotorFollow.h"
-#	include "PythonCollisionRadar.h"
+#	include "CollisionWorld.h"
+#	include "CollisionActor.h"
+#	include "NodeCollisionActor.h"
 
 namespace Menge
 {
-	class ModuleCollisionGround
+	class ModuleCollision
 		: public ModuleInterface
 	{
 	public:
-		ModuleCollisionGround();
-		~ModuleCollisionGround();
+		ModuleCollision();
+		~ModuleCollision();
 
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
@@ -30,11 +28,8 @@ namespace Menge
 		const ConstString & getName() const override;
 
 	public:
-		CollisionGround * createCollisionGround();
-
-	public:		
-		CollisionMotorPosition * createCollisionMotorPosition( const pybind::object & _cb );
-		CollisionMotorFollow * createCollisionMotorFollow( const pybind::object & _cb );
+		CollisionWorldPtr createCollisionWorld();
+		void removeCollisionWorld( const CollisionWorldPtr & _collision );
 
 	public:
 		void update( float _time, float _timing ) override;
@@ -44,7 +39,10 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 		ConstString m_name;
 
-		typedef stdex::vector<CollisionGround *> TVectorCollisionGrounds;
-		TVectorCollisionGrounds m_grounds;
+		typedef FactoryPoolStore<CollisionWorld, 4> TFactoryCollisionWorld;
+		TFactoryCollisionWorld m_factoryCollisionWorld;
+
+		typedef stdex::vector<CollisionWorldPtr> TVectorCollisionWorlds;
+		TVectorCollisionWorlds m_collisionWorlds;
 	};
 }

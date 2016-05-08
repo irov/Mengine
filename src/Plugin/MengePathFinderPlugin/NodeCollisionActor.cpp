@@ -88,13 +88,25 @@ namespace Menge
 		this->registerEvent( EVENT_COLLISION_TEST, ("onCollisionTest"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCollisionActor::onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec2f & _point, const mt::vec2f & _normal, float _penetration )
+	void NodeCollisionActor::onCollisionPositionProvider( mt::vec2f & _position ) const
+	{
+		const mt::vec3f & wp = this->getWorldPosition();
+
+		_position.x = wp.x;
+		_position.y = wp.y;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool NodeCollisionActor::onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec2f & _point, const mt::vec2f & _normal, float _penetration )
 	{
 		NodeCollisionActor * actor = static_cast<NodeCollisionActor *>(_actor);
 
 		uint32_t actor_iff = actor->getCollisionIFF();
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_COLLISION_TEST )(this, actor, m_collisionIFF, actor_iff, _point, _normal, _penetration );
+		bool handle = true;
+
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_COLLISION_TEST, handle )(this, actor, m_collisionIFF, actor_iff, _point, _normal, _penetration );
+
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeCollisionActor::_activate()
@@ -130,20 +142,30 @@ namespace Menge
 		v[16] = v[0];
 
 		RenderVertex2D * vertices = RENDER_SERVICE( m_serviceProvider )
-			->getDebugRenderVertex2D( 17 );
+			->getDebugRenderVertex2D( 17 * 2 );
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
-		for( uint32_t i = 0; i != 17; ++i )
+		for( uint32_t i = 0; i != 16; ++i )
 		{
-			mt::mul_v3_v2_m4( vertices[i].position, v[i], wm );
+			size_t j = (i + 1) % 16;
 
-			vertices[i].color = 0x8080FFFF;
+			RenderVertex2D & v0 = vertices[i * 2 + 0];
+			RenderVertex2D & v1 = vertices[i * 2 + 1];
+
+			mt::mul_v3_v2_m4( v0.position, v[i], wm );
+			mt::mul_v3_v2_m4( v1.position, v[j], wm );
+
+			v0.color = 0x8080FFFF;
+			v1.color = 0x8080FFFF;
 			
 			for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
 			{
-				vertices[i].uv[uv_index].x = 0.f;
-				vertices[i].uv[uv_index].y = 0.f;
+				v0.uv[uv_index].x = 0.f;
+				v0.uv[uv_index].y = 0.f;
+
+				v1.uv[uv_index].x = 0.f;
+				v1.uv[uv_index].y = 0.f;
 			}
 		}
 
@@ -152,7 +174,7 @@ namespace Menge
 
 		RENDER_SERVICE( m_serviceProvider )->addRenderLine( _state, debugMaterial
 			, vertices
-			, 17
+			, 17 * 2
 			, nullptr
 			, true
 			);

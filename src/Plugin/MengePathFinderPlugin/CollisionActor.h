@@ -34,10 +34,10 @@ namespace Menge
 		bool isActive() const;
 
 	public:
-		void initialize( const mt::vec2f & _position );
+		void initialize();
 
 	public:
-		void update( const mt::vec2f & _position );
+		void update();
 
 	public:
 		void makeCapsule( mt::capsule2 & _capsule );

@@ -19,6 +19,7 @@ namespace Menge
 	class CollisionActorProviderInterface
 	{
 	public:
-		virtual void onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec2f & _point, const mt::vec2f & _normal, float _penetration ) = 0;
+		virtual void onCollisionPositionProvider( mt::vec2f & _position ) const = 0;
+		virtual bool onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec2f & _point, const mt::vec2f & _normal, float _penetration ) = 0;
 	};
 }

@@ -55,6 +55,8 @@ namespace Menge
 		actor->setRadius( _radius );
 		actor->setIFF( _iff );
 		actor->setActiove( _active );
+		
+		actor->initialize();
 
 		m_actors.push_back( actor );
 
@@ -66,8 +68,38 @@ namespace Menge
 		_actor->remove();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		struct collision_desc
+		{
+			CollisionActorProviderInterface * actor_provider;
+			mt::vec2f collision_point;
+			mt::vec2f collision_normal;
+			float collision_penetration;
+		};
+
+		struct collision_pred
+		{
+			bool operator()( const collision_desc & a, const collision_desc & b ) const
+			{
+				return a.collision_penetration < b.collision_penetration;
+			}
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void CollisionWorld::update()
 	{
+		for( TVectorCollisionActor::iterator
+			it = m_actors.begin(),
+			it_end = m_actors.end();
+		it != it_end;
+		++it )
+		{
+			const CollisionActorPtr & actor = *it;
+
+			actor->update();
+		}
+
 		for( TVectorCollisionActor::iterator
 			it = m_actors.begin(),
 			it_end = m_actors.end();
@@ -93,11 +125,9 @@ namespace Menge
 
 			CollisionActorProviderInterface * actor_provider = actor->getCollisionActorProvider();
 
-			CollisionActorProviderInterface * actor_test_provider = nullptr;
-			mt::vec2f collision_point;
-			mt::vec2f collision_normal;
-			float collision_penetration = 10000.f;
-
+			uint32_t collision_count = 0;
+			collision_desc collisions[16];
+			
 			for( TVectorCollisionActor::iterator
 				it_test = m_actors.begin(),
 				it_test_end = m_actors.end();
@@ -134,19 +164,29 @@ namespace Menge
 					continue;
 				}
 
-				if( test_collision_penetration < collision_penetration )
-				{
-					collision_point = test_collision_point;
-					collision_normal = test_collision_normal;
-					collision_penetration = test_collision_penetration;
+				collision_desc & desc = collisions[collision_count++];
 
-					actor_test_provider = actor_test->getCollisionActorProvider();
-				}				
+				desc.actor_provider = actor_test->getCollisionActorProvider();
+				desc.collision_point = test_collision_point;
+				desc.collision_normal = test_collision_normal;
+				desc.collision_penetration = test_collision_penetration;
+
+				if( collision_count == 16 )
+				{
+					break;
+				}
 			}
 
-			if( actor_test_provider != nullptr )
+			std::sort( collisions, collisions + collision_count, collision_pred() );
+
+			for( uint32_t i = 0; i != collision_count; ++i )
 			{
-				actor_provider->onCollisionTest( actor_test_provider, collision_point, collision_normal, collision_penetration );
+				collision_desc & desc = collisions[i];
+
+				if( actor_provider->onCollisionTest( desc.actor_provider, desc.collision_point, desc.collision_normal, desc.collision_penetration ) == true )
+				{
+					break;
+				}
 			}
 		}
 

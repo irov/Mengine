@@ -52,16 +52,22 @@ namespace Menge
 		return m_active;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CollisionActor::initialize( const mt::vec2f & _position )
+	void CollisionActor::initialize()
 	{
-		m_currentPosition = _position;
-		m_prevPosition = _position;
+		mt::vec2f position;
+		m_provider->onCollisionPositionProvider( position );
+
+		m_currentPosition = position;
+		m_prevPosition = position;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CollisionActor::update( const mt::vec2f & _position )
+	void CollisionActor::update()
 	{
+		mt::vec2f position;
+		m_provider->onCollisionPositionProvider( position );
+
 		m_prevPosition = m_currentPosition;
-		m_currentPosition = _position;
+		m_currentPosition = position;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionActor::makeCapsule( mt::capsule2 & _capsule )

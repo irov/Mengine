@@ -4130,6 +4130,8 @@ namespace Menge
 					mt::vec3f node_position = m_node->getLocalPosition();
 					mt::vec3f follow_position = m_target->getLocalPosition();
 
+					mt::vec3f current_direction;
+
 					if( m_rotate == true )
 					{
 						mt::vec3f direction = follow_position - node_position;
@@ -4163,12 +4165,17 @@ namespace Menge
 						mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _timing );
 
 						m_node->setOrientation( new_orientation );
+
+						current_direction = m_node->getAxisDirection();
 					}
+					else
+					{
+						//mt::vec3f direction; = follow_position - node_position;
+						mt::dir_v3_v3( current_direction, node_position, follow_position );
+					}					
 
-					mt::vec3f current_direction = m_node->getAxisDirection();
-
-					mt::vec3f norm_current_direction;
-					mt::norm_v3_v3( norm_current_direction, current_direction );
+					//mt::vec3f norm_current_direction;
+					//mt::norm_v3_v3( norm_current_direction, current_direction );
 
 					float directionSpeedStep = m_moveAcceleration * _timing;
 
@@ -4185,7 +4192,7 @@ namespace Menge
 
 					float length = mt::length_v3_v3( node_position, follow_position );
 
-					if( length - step < m_distance )
+					if( length - step < m_distance && m_distance > 0.0 )
 					{
 						mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
 

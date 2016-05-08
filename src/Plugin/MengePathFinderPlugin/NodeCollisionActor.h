@@ -38,7 +38,8 @@ namespace Menge
 		const pybind::object & getCollisionUserData() const;
 
 	protected:
-		void onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec2f & _point, const mt::vec2f & _normal, float _penetration ) override;
+		void onCollisionPositionProvider( mt::vec2f & _position ) const override;
+		bool onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec2f & _point, const mt::vec2f & _normal, float _penetration ) override;
 
 	protected:
 		bool _activate() override;

@@ -70,6 +70,14 @@ ModuleCollision
     NodeCollisionActor.h
 )
 
+ADD_FILTER(
+ModuleInvader   
+    ModuleInvader.cpp
+    ModuleInvader.h
+    InvaderFollowAffector.cpp
+    InvaderFollowAffector.h
+)
+
 INCLUDE_DIRECTORIES(    
     ${Mengine_SOURCE_DIR}/Utils     
     ${THIRDPARTY_DIR}/metabuf

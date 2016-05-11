@@ -187,7 +187,7 @@ namespace Menge
 		} \
 		else \
 		{ \
-			_frame.Member1 = layer.Member2[_frameIndex + 1]; \
+			_frame.Member1 = layer.Member2[_frameIndex]; \
 		}
 		
 		MOVIE_FRAME_SETUP( anchorPoint, anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );

@@ -1,0 +1,101 @@
+#	include "InvaderFollowAffector.h"
+
+#	include "Math/angle.h"
+
+namespace Menge
+{
+	//////////////////////////////////////////////////////////////////////////
+	InvaderFollowAffector::InvaderFollowAffector()
+		: m_node( nullptr )
+		, m_target( nullptr )
+		, m_moveSpeed( 0.f )
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	InvaderFollowAffector::~InvaderFollowAffector()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * InvaderFollowAffector::getNode() const
+	{
+		return m_node;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * InvaderFollowAffector::getTarget() const
+	{
+		return m_target;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InvaderFollowAffector::setMoveSpeed( float _moveSpeed )
+	{
+		m_moveSpeed = _moveSpeed;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float InvaderFollowAffector::getMoveSpeed() const
+	{
+		return m_moveSpeed;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool InvaderFollowAffector::initialize( Node * _node, Node * _target, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+	{
+		if( _node == nullptr )
+		{
+			return false;
+		}
+
+		if( _target == nullptr )
+		{
+			return false;
+		}
+
+		m_node = _node;
+		m_target = _target;
+
+		m_cb = _cb;
+		m_args = _args;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool InvaderFollowAffector::_affect( float _timing )
+	{
+		mt::vec3f node_position = m_node->getLocalPosition();
+		mt::vec3f follow_position = m_target->getLocalPosition();
+				
+		mt::vec3f current_direction;
+		mt::dir_v3_v3( current_direction, node_position, follow_position );
+
+		float step = m_moveSpeed * _timing;
+
+		float length = mt::length_v3_v3( node_position, follow_position );
+
+		if( length - step < 0.f )
+		{
+			m_node->setLocalPosition( follow_position );
+		}
+		else
+		{
+			mt::vec3f new_position = node_position + current_direction * step;
+
+			m_node->setLocalPosition( new_position );
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InvaderFollowAffector::complete()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InvaderFollowAffector::stop()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * InvaderFollowAffector::_embedded()
+	{
+		PyObject * py_obj = pybind::detail::create_holder_t( this );
+
+		return py_obj;
+	}
+}
+

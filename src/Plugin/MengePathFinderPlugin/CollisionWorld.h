@@ -20,7 +20,7 @@ namespace Menge
 		~CollisionWorld();
 
 	public:
-		void initialize();
+		bool initialize();
 
 	public:
 		void setIFFs( uint32_t _iff1, uint32_t _iff2, bool _value );

@@ -789,7 +789,7 @@ namespace Menge
 				mt::mul_v3_v3_m4_homogenize( v_vpm, v.position, vpm );
 
 				v.position.x = (1.f + v_vpm.x) * half_width;
-				v.position.y = (1.f - v_vpm.y) * half_height;
+				v.position.y = (1.f + v_vpm.y) * half_height;
 				v.position.z = v_vpm.z;
 			}
 		}

@@ -83,6 +83,11 @@ namespace Menge
 	{
 		CollisionWorldPtr collision = m_factoryCollisionWorld.createObject();
 
+		if( collision->initialize() == false )
+		{
+			return nullptr;
+		}
+
 		m_collisionWorlds.push_back( collision );
 
 		return collision;

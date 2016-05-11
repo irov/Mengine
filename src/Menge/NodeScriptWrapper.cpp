@@ -920,6 +920,66 @@ namespace Menge
 			return py_path;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		pybind::list movie_getLayerPath4( Movie * _movie, const ConstString & _name )
+		{
+			const MovieLayer * layer;
+			Movie * sub_movie;
+			if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::getLayerPathLength: '%s' not found layer '%s'"
+					, _movie->getName().c_str()
+					, _name.c_str()
+					);
+
+				return pybind::make_invalid_list_t();
+			}
+
+			const ResourceMoviePtr & resourceMovie = sub_movie->getResourceMovie();
+
+			float frameDuration = resourceMovie->getFrameDuration();
+			uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
+			uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
+			uint32_t indexCount = indexOut - indexIn;
+
+			bool isCompile = resourceMovie->isCompile();
+
+			if( isCompile == false )
+			{
+				if( resourceMovie->compile() == false )
+				{
+					LOGGER_ERROR( m_serviceProvider )("Movie::getLayerPathLength: '%s' invalid compile"
+						, _movie->getName().c_str()
+						);
+
+					return pybind::make_invalid_list_t();
+				}
+			}
+
+			const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
+
+			const mt::mat4f & wm = _movie->getWorldMatrix();
+
+			pybind::list py_path( indexCount );
+
+			for( uint32_t i = 0; i != indexCount; ++i )
+			{
+				MovieFrameSource frame;
+				framePack->getLayerFrame( layer->index, i, frame );
+
+				mt::vec3f pos;
+				mt::mul_v3_v3_m4( pos, frame.position, wm );
+
+				py_path[i] = pos;
+			}
+
+			if( isCompile == false )
+			{
+				resourceMovie->release();
+			}
+
+			return py_path;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		mt::vec3f movie_getMovieSlotWorldPosition( Movie * _movie, const ConstString & _slotName )
 		{
 			Node * node;
@@ -4192,13 +4252,25 @@ namespace Menge
 
 					float length = mt::length_v3_v3( node_position, follow_position );
 
-					if( length - step < m_distance && m_distance > 0.0 )
+					if( m_distance > 0.0 )
 					{
-						mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
+						if( length - step < m_distance )
+						{
+							mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
 
-						m_node->setLocalPosition( distance_position );
+							m_node->setLocalPosition( distance_position );
 
-						return true;
+							return true;
+						}
+					}
+					else
+					{
+						if( length - step < 0.f )
+						{
+							m_node->setLocalPosition( follow_position );
+
+							return false;
+						}
 					}
 
 					mt::vec3f new_position = node_position + current_direction * step;
@@ -6360,6 +6432,7 @@ namespace Menge
 					.def_proxy_static( "getLayerPath", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath )
 					.def_proxy_static( "getLayerPath2", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath2 )
 					.def_proxy_static( "getLayerPath3", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath3 )
+					.def_proxy_static( "getLayerPath4", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath4 )
 					.def_proxy_static( "getMovieSlotWorldPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotWorldPosition )
 					.def_proxy_static( "getMovieSlotOffsetPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotOffsetPosition )
 					.def_proxy_static( "attachMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_attachMovieSlotNode )

@@ -53,6 +53,14 @@ segment2
 )
 
 ADD_FILTER(
+sphere2
+	sphere2.cpp
+	sphere2.h
+	sphere2_inline.h
+)
+
+
+ADD_FILTER(
 capsule2
 	capsule2.cpp
 	capsule2.h

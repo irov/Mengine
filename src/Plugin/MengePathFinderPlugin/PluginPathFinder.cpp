@@ -8,6 +8,7 @@
 #	include "ModulePathFinder.h"
 #	include "ModuleAreaOfInterest.h"
 #	include "ModuleCollision.h"
+#	include "ModuleInvader.h"
 #	include "ModuleBurritoWorld.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -34,6 +35,10 @@ namespace Menge
 			->registerModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleCollision" )
 			, new ModuleFactory<ModuleCollision>( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleCollision" ) ) );
 
+		MODULE_SERVICE( m_serviceProvider )
+			->registerModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleInvader" )
+			, new ModuleFactory<ModuleInvader>( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleInvader" ) ) );		
+
 		MODULE_SERVICE(m_serviceProvider)
 			->registerModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBurritoWorld" )
 			, new ModuleFactory<ModuleBurritoWorld>( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBurritoWorld" ) ) );
@@ -51,6 +56,9 @@ namespace Menge
 
 		MODULE_SERVICE(m_serviceProvider)
 			->unregisterModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleCollision") );
+
+		MODULE_SERVICE( m_serviceProvider )
+			->unregisterModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleInvader" ) );		
 
 		MODULE_SERVICE(m_serviceProvider)
 			->unregisterModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleBurritoWorld") );

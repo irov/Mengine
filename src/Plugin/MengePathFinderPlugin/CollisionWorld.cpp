@@ -26,7 +26,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CollisionWorld::initialize()
+	bool CollisionWorld::initialize()
 	{
 		for( uint32_t i = 0; i != 8; ++i )
 		{
@@ -35,6 +35,8 @@ namespace Menge
 				m_iffs[i][j] = false;
 			}
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionWorld::setIFFs( uint32_t _iff1, uint32_t _iff2, bool _value )
@@ -72,7 +74,7 @@ namespace Menge
 	{
 		struct collision_desc
 		{
-			CollisionActorProviderInterface * actor_provider;
+			CollisionActor * actor_provider;
 			mt::vec2f collision_point;
 			mt::vec2f collision_normal;
 			float collision_penetration;
@@ -146,13 +148,6 @@ namespace Menge
 					continue;
 				}
 
-				uint32_t actor_test_iff = actor_test->getIFF();
-
-				if( m_iffs[actor_iff][actor_test_iff] == false )
-				{
-					continue;
-				}
-
 				mt::capsule2 actor_test_capsule;
 				actor_test->makeCapsule( actor_test_capsule );
 
@@ -164,9 +159,16 @@ namespace Menge
 					continue;
 				}
 
+				uint32_t actor_test_iff = actor_test->getIFF();
+				
+				if( m_iffs[actor_iff][actor_test_iff] == false )
+				{
+					continue;
+				}
+
 				collision_desc & desc = collisions[collision_count++];
 
-				desc.actor_provider = actor_test->getCollisionActorProvider();
+				desc.actor_provider = actor_test.get();
 				desc.collision_point = test_collision_point;
 				desc.collision_normal = test_collision_normal;
 				desc.collision_penetration = test_collision_penetration;
@@ -183,7 +185,19 @@ namespace Menge
 			{
 				collision_desc & desc = collisions[i];
 
-				if( actor_provider->onCollisionTest( desc.actor_provider, desc.collision_point, desc.collision_normal, desc.collision_penetration ) == true )
+				if( actor->isRemoved() == true )
+				{
+					break;
+				}
+
+				if( desc.actor_provider->isRemoved() == true )
+				{
+					continue;
+				}
+
+				CollisionActorProviderInterface * actor_collision_provider = desc.actor_provider->getCollisionActorProvider();
+
+				if( actor_provider->onCollisionTest( actor_collision_provider, desc.collision_point, desc.collision_normal, desc.collision_penetration ) == true )
 				{
 					break;
 				}

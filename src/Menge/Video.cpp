@@ -627,11 +627,6 @@ namespace Menge
 			m_timing -= duration;
 		}
 
-		if( seek_timing > duration - frameTiming && mt::equal_f_f( seek_timing, duration - frameTiming ) == false )
-		{
-			seek_timing -= frameTiming;
-		}
-
 		m_invalidVideoTexture = true;
 		m_invalidFirstFrame = true;
 		

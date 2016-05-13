@@ -47,6 +47,8 @@ namespace Menge
 
 		size_t m_pitch;
 
+		float m_time;
+
 	private:
 		bool readHeader_();
 		size_t read_buffer_data_();

@@ -328,6 +328,8 @@ namespace Menge
 		m_dataInfo.duration = m_options.duration;
 		m_dataInfo.fps = m_options.fps;
 
+		m_time = 0.0;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -786,12 +788,17 @@ namespace Menge
 
 		// удачно декодировали. в пакете содержится декодированная ogg-информация
 		// (то бишь закодированная theora-информация)
-
 		// загружаем пакет в декодер theora
 		if( theora_decode_packetin( &m_theoraState, &packet ) == OC_BADPACKET )
 		{
 			return VDRS_FAILURE;
 		}
+
+		double time = theora_granule_time( &m_theoraState, m_theoraState.granulepos );
+
+		m_time = (float)(time * 1000.0);
+
+		_pts = m_time;
 
 		return VDRS_SUCCESS;
 	}
@@ -810,31 +817,54 @@ namespace Menge
 		//	return false;
 		//}
 
-		if( this->_rewind() == false )
+		float frameTiming = m_dataInfo.getFrameTiming();
+
+		uint32_t frame_end = (uint32_t)(m_dataInfo.duration / frameTiming);
+		uint32_t frame_time = (uint32_t)(m_time / frameTiming);
+		uint32_t frame_seek = (uint32_t)(_timing / frameTiming);
+
+		if( frame_seek == frame_time || frame_seek + 1 == frame_time )
 		{
-			return false;
+			return true;
 		}
-		
-		//for( ;; )
-		//{
-		//	ogg_page page;
-		//	long seek = ogg_sync_pageseek( &m_oggSyncState, &page );
 
-		//	if( seek != 0 )
-		//	{
-		//		ogg_int64_t granulepos = ogg_page_granulepos( &page );
+		//uint32_t frame_last = (uint32_t)((m_dataInfo.duration - frameTiming) / frameTiming);
 
-		//		double time = theora_granule_time( &m_theoraState, granulepos );
+		//float test_timing = _timing + frameTiming;
 
-		//		printf( "%f", (float)time );
-		//	}
-		//	else
-		//	{
-		//		char* buffer = ogg_sync_buffer( &m_oggSyncState, OGG_BUFFER_SIZE );
-		//		size_t bytes = m_stream->read( buffer, OGG_BUFFER_SIZE );
-		//		ogg_sync_wrote( &m_oggSyncState, bytes );
-		//	}
-		//}
+		if( frame_time > frame_seek )
+		{
+			if( this->_rewind() == false )
+			{
+				return false;
+			}
+
+			if( frame_seek == 0 )
+			{
+				return true;
+			}
+		}
+
+		for( ;; )
+		{
+			float time;
+
+			EVideoDecoderReadState state = this->readNextFrame( time );
+
+			if( state == VDRS_FAILURE )
+			{
+				return false;
+			}			
+			else if( state == VDRS_END_STREAM )
+			{
+				break;
+			}
+			
+			if( time >= _timing )
+			{
+				break;
+			}
+		}
 
 		return true;
 	}

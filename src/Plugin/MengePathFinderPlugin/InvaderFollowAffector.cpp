@@ -61,13 +61,16 @@ namespace Menge
 	{
 		mt::vec3f node_position = m_node->getLocalPosition();
 		mt::vec3f follow_position = m_target->getLocalPosition();
-				
+
 		mt::vec3f current_direction;
-		mt::dir_v3_v3( current_direction, node_position, follow_position );
+		float length = mt::dir_v3_v3_f( current_direction, node_position, follow_position );
+
+		if( length < mt::m_eps )
+		{
+			return false;
+		}
 
 		float step = m_moveSpeed * _timing;
-
-		float length = mt::length_v3_v3( node_position, follow_position );
 
 		if( length - step < 0.f )
 		{

@@ -179,6 +179,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::calcPointClick( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const
 	{
+		(void)_viewport;
+		(void)_camera;
+
 		mt::vec2f p1 = _screenPoint * 2.f - mt::vec2f( 1.f, 1.f );
 
 		p1.y = -p1.y;

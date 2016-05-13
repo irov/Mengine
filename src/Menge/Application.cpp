@@ -1321,6 +1321,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::_finalize()
 	{		
+		m_notifyDebugOpenFile = nullptr;
+
 		if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == true )
 		{
 			GAME_SERVICE( m_serviceProvider )

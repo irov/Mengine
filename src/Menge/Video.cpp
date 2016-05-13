@@ -609,11 +609,6 @@ namespace Menge
 
 		float seek_timing = _timing;
 
-		if( seek_timing >= frameTiming )
-		{		
-			seek_timing -= frameTiming;
-		}
-
 		float duration = dataInfo->duration;
 
 		m_playIterator = this->getPlayCount();
@@ -627,9 +622,14 @@ namespace Menge
 
 		m_timing = _timing;
 
-		while( m_timing > frameTiming )
+		while( m_timing > duration )
 		{
-			m_timing -= frameTiming;
+			m_timing -= duration;
+		}
+
+		if( seek_timing > duration - frameTiming && mt::equal_f_f( seek_timing, duration - frameTiming ) == false )
+		{
+			seek_timing -= frameTiming;
 		}
 
 		m_invalidVideoTexture = true;

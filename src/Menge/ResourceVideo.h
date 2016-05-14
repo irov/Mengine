@@ -27,6 +27,10 @@ namespace Menge
 		float getFrameRate() const;
 
 	public:
+		void setDuration( float _duration );
+		float getDuration() const;
+
+	public:
 		void setFilePath( const FilePath & _path );
 		const FilePath & getFilePath() const;
 

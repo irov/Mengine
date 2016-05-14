@@ -285,7 +285,16 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void * ae_movie_composition_track_matte_update( const void * _element, uint32_t _type, aeMovieNodeUpdateState _state, float _offset, const aeMovieRenderMesh * _mesh, void * _track_matte_data, void * _data )
+	{
+		return (void *)666;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static void ae_movie_composition_state( aeMovieCompositionStateFlag _state, void * _data )
+	{
+
+	}
+	static void ae_movie_node_event_t( const void * _element, const char * _name, const ae_matrix4_t _matrix, float _opacity, ae_bool_t _begin, void * _data )
 	{
 
 	}
@@ -364,8 +373,11 @@ namespace Menge
 		providers.node_provider = &ae_movie_composition_node_provider;
 
 		providers.node_update = &ae_movie_composition_node_update;
+		providers.track_matte_update = &ae_movie_composition_track_matte_update;
 
+		providers.event = &ae_movie_node_event_t;
 		providers.composition_state = &ae_movie_composition_state;
+		
 
 		aeMovieComposition * composition = create_movie_composition( movieData, compositionData, &providers, this );
 
@@ -374,7 +386,7 @@ namespace Menge
 			return false;
 		}
 
-		//set_movie_composition_loop( composition, AE_TRUE );
+		set_movie_composition_loop( composition, AE_TRUE );
 
 		m_composition = composition;
 				
@@ -479,6 +491,12 @@ namespace Menge
 		{
 			aeMovieRenderMesh mesh;
 			compute_movie_mesh( &context, i, &mesh );
+
+			if( mesh.track_matte_data != nullptr )
+			{
+				printf( "fds" );
+				continue;
+			}
 
 			ResourceReference * resource_reference = (ResourceReference *)mesh.resource_data;
 

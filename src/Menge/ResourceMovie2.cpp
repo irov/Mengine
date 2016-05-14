@@ -259,6 +259,7 @@ namespace Menge
 		video->setFilePath( c_path );
 
 		video->setFrameRate( _resource->frameRate );
+		video->setDuration( _resource->duration );
 
 		if( _resource->alpha == AE_TRUE )
 		{

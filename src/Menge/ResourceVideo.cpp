@@ -37,6 +37,16 @@ namespace Menge
         return m_frameRate;
     }
 	//////////////////////////////////////////////////////////////////////////
+	void ResourceVideo::setDuration( float _duration )
+	{
+		m_duration = _duration;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float ResourceVideo::getDuration() const
+	{
+		return m_duration;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceVideo::_loader( const Metabuf::Metadata * _meta )
 	{
         const Metacode::Meta_DataBlock::Meta_ResourceVideo * metadata 

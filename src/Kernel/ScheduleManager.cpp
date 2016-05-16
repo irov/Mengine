@@ -83,7 +83,7 @@ namespace Menge
 
 		desc.type = EST_EVENT;
 		desc.dead = false;
-		desc.freeze = m_freezeAll;
+		desc.freeze = false;
 		desc.iterate_invalide = true;
 
 		m_schedulesAdd.push_back( desc );
@@ -110,7 +110,7 @@ namespace Menge
 
 		desc.type = EST_TIMER;
 		desc.dead = false;
-		desc.freeze = m_freezeAll;		
+		desc.freeze = false;		
 		desc.iterate_invalide = true;
 
 		m_schedulesAdd.push_back( desc );

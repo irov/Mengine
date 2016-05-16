@@ -36,7 +36,7 @@ namespace Menge
 		ResourceReference * createResourceSound_( const aeMovieResourceSound * _resource );
 
 	protected:
-		aeMovieInstance m_instance;
+		aeMovieInstance * m_instance;
 
 		aeMovieData * m_movieData;
 

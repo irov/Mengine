@@ -51,7 +51,7 @@ namespace Menge
 	{
 		(void)_time;
 
-		play_movie_composition( m_composition, 0.f );
+		ae_play_movie_composition( m_composition, 0.f );
 
 		return true;
 	}
@@ -201,6 +201,11 @@ namespace Menge
 		return AE_NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void ae_movie_composition_node_destroyer( const void * _element, uint32_t _type, void * _data )
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static void ae_movie_composition_node_update( const void * _element, uint32_t _type, aeMovieNodeUpdateState _state, float _offset, const ae_matrix4_t _matrix, float _opacity, void * _data )
 	{
 		if( _state == AE_MOVIE_NODE_UPDATE_UPDATE )
@@ -292,7 +297,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void ae_movie_composition_state( aeMovieCompositionStateFlag _state, void * _data )
 	{
-
+		if( _state == AE_MOVIE_COMPOSITION_END )
+		{
+			Movie2 * m2 = (Movie2 *)(_data);
+			ae_destroy_movie_composition( m2->m_composition );
+			m2->m_composition = nullptr;
+		}
 	}
 	static void ae_movie_node_event_t( const void * _element, const char * _name, const ae_matrix4_t _matrix, float _opacity, ae_bool_t _begin, void * _data )
 	{
@@ -371,6 +381,7 @@ namespace Menge
 		aeMovieCompositionProviders providers;
 		providers.camera_provider = &ae_movie_composition_node_camera;
 		providers.node_provider = &ae_movie_composition_node_provider;
+		providers.node_destroyer = &ae_movie_composition_node_destroyer;
 
 		providers.node_update = &ae_movie_composition_node_update;
 		providers.track_matte_update = &ae_movie_composition_track_matte_update;
@@ -379,14 +390,18 @@ namespace Menge
 		providers.composition_state = &ae_movie_composition_state;
 		
 
-		aeMovieComposition * composition = create_movie_composition( movieData, compositionData, &providers, this );
+		aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, &providers, this );
 
 		if( composition == nullptr )
 		{
 			return false;
 		}
 
-		set_movie_composition_loop( composition, AE_TRUE );
+		ae_set_movie_composition_loop( composition, AE_TRUE );
+
+		uint32_t max_render_node = ae_get_movie_composition_max_render_node( composition );
+
+		m_meshes.reserve( max_render_node );
 
 		m_composition = composition;
 				
@@ -395,7 +410,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie2::_release()
 	{	
-		destroy_movie_composition( m_composition );
+		ae_destroy_movie_composition( m_composition );
 		m_composition = nullptr;
 
 		m_resourceMovie2.release();
@@ -408,11 +423,10 @@ namespace Menge
 			return false;
 		}
 
-		if( m_composition->composition_data->flags & AE_MOVIE_COMPOSITION_ANCHOR_POINT )
+		ae_vector3_t anchorPoint;
+		if( ae_get_movie_composition_anchor_point( m_composition, anchorPoint ) == AE_TRUE )
 		{	
 			mt::vec3f origin;
-
-			const float * anchorPoint = m_composition->composition_data->anchorPoint;
 
 			origin.from_f3( anchorPoint );
 
@@ -449,7 +463,7 @@ namespace Menge
 
 				return;
 			}
-		}
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie2::_update( float _current, float _timing )
@@ -464,34 +478,38 @@ namespace Menge
 
 		static float a = 0.f;
 
-		if( a < 1000.f )
+		if( a < 500.f )
 		{
 			a += _timing;
 			return;
 		}
 
-		update_movie_composition( m_composition, _timing );
+		ae_update_movie_composition( m_composition, _timing );
+
+		printf( "%f\n", ae_get_movie_composition_time( m_composition ) );
+
+		//if( a < 10000.f )
+		//{
+		//	a += _timing;
+		//}
+
+		//if( a > 10000.f )
+		//{
+		//	set_movie_composition_timing( m_composition, 6000.f );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie2::_render( const RenderObjectState * _state )
 	{
-		aeMovieRenderContext context;
-
-		uint32_t render_count = begin_movie_render_context( m_composition, &context );
-
-		m_meshes.reserve( render_count );
 		m_meshes.clear();
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
-		//printf( "mesh --\n"
-		//	);
+		uint32_t mesh_iterator = 0;
 
-		for( uint32_t i = 0; i != render_count; ++i )
-		{
-			aeMovieRenderMesh mesh;
-			compute_movie_mesh( &context, i, &mesh );
-
+		aeMovieRenderMesh mesh;
+		while( ae_compute_movie_mesh( m_composition, &mesh_iterator, &mesh ) == AE_TRUE )
+		{			
 			if( mesh.track_matte_data != nullptr )
 			{
 				printf( "fds" );
@@ -707,6 +725,8 @@ namespace Menge
 	bool Movie2::_interrupt( uint32_t _enumerator )
 	{
 		(void)_enumerator;
+
+		ae_interrupt_movie_composition( m_composition, AE_TRUE );
 
 		return true;
 	}

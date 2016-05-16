@@ -64,7 +64,7 @@ namespace Menge
 
 		bool getCamera( const ConstString & _name, Camera ** _camera );
 
-	protected:
+	public:
 		ResourceHolder<ResourceMovie2> m_resourceMovie2;
 
 		ConstString m_compositionName;

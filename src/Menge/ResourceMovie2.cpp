@@ -110,7 +110,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		const aeMovieCompositionData * compositionData = get_movie_composition_data( m_movieData, _name.c_str() );
+		const aeMovieCompositionData * compositionData = ae_get_movie_composition_data( m_movieData, _name.c_str() );
 
 		if( compositionData == nullptr )
 		{
@@ -122,7 +122,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie2::_initialize()
 	{		
-		make_movie_instance( &m_instance, &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, AE_NULL );
+		m_instance = ae_create_movie_instance( &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, AE_NULL );
 
 		return true;
 	}
@@ -170,13 +170,13 @@ namespace Menge
 			return false;
 		}
 
-		m_movieData = create_movie_data( &m_instance );
+		m_movieData = ae_create_movie_data( m_instance );
 
 		aeMovieStream movie_stream;
 		movie_stream.read = &Mengine_read_stream;
 		movie_stream.data = stream.get();
 
-		if( load_movie_data( m_movieData, &movie_stream, &Mengine_resource_provider, this ) == AE_MOVIE_FAILED )
+		if( ae_load_movie_data( m_movieData, &movie_stream, &Mengine_resource_provider, this ) == AE_MOVIE_FAILED )
 		{
 			return 0;
 		}
@@ -202,7 +202,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie2::_release()
 	{
-		delete_movie_data( m_movieData );
+		ae_delete_movie_data( m_movieData );
 
 		ResourceReference::_release();
 	}

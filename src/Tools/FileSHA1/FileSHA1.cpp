@@ -85,6 +85,15 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	DWORD size = ::GetFileSize( hFile, NULL );
 
+	if( size == INVALID_FILE_SIZE )
+	{
+		message_error( "file '%ls' invalid get file size"
+			, file.c_str()
+			);
+
+		return 0;
+	}
+
 	std::vector<unsigned char> buff(size);
 	void * buff_memory = &buff[0];
 
@@ -94,7 +103,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		message_error( "file '%ls' invalid read"
 			, file.c_str()
 			);
-
+				
 		return 0;
 	}
 

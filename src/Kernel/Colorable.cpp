@@ -95,7 +95,7 @@ namespace Menge
 		this->invalidateColor();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Colorable::setLocalColorAlpha( float _value )
+	void Colorable::setLocalAlpha( float _value )
 	{
 		if( mt::equal_f_f( m_colorLocal.getA(), _value ) == true )
 		{

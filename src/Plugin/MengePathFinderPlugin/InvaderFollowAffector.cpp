@@ -74,10 +74,20 @@ namespace Menge
 
 		if( length - step < 0.f )
 		{
+			if( m_cb.is_callable() == true )
+			{
+				m_cb.call_args( this, current_direction, length, true, m_args );
+			}
+
 			m_node->setLocalPosition( follow_position );
 		}
 		else
 		{
+			if( m_cb.is_callable() == true )
+			{
+				m_cb.call_args( this, current_direction, step, false, m_args );
+			}
+			
 			mt::vec3f new_position = node_position + current_direction * step;
 
 			m_node->setLocalPosition( new_position );

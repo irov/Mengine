@@ -194,6 +194,7 @@ namespace Menge
 	public:
 		inline bool isActivate() const;
 		inline bool isAfterActive() const;
+		inline bool isDeactivating() const;
 
 	protected:
 		virtual bool _activate();
@@ -305,6 +306,11 @@ namespace Menge
 	inline bool Node::isAfterActive() const
 	{
 		return m_afterActive;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Node::isDeactivating() const
+	{
+		return m_deactivating;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::isFreeze() const

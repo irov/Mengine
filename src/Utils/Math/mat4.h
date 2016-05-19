@@ -55,6 +55,8 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE float mul_v3_v3_m4_proj( vec3f& _out, const vec3f& _v, const mat4f& _m );
 
 	MENGINE_MATH_FUNCTION_INLINE void mul_v2_m4( vec2f& _out, const vec2f& _v, const mat4f& _m );
+	MENGINE_MATH_FUNCTION_INLINE void mul_v2_v3_m4( vec2f& _out, const vec3f& _v, const mat4f& _m );
+	MENGINE_MATH_FUNCTION_INLINE void mul_v2_v3_m4_r( vec2f& _out, const vec3f& _v, const mat4f& _m );
 	MENGINE_MATH_FUNCTION_INLINE void mul_v3_v2_m4( vec3f& _out, const vec2f& _v, const mat4f& _m );
 	MENGINE_MATH_FUNCTION_INLINE void mul_v2_m4_r( vec2f& _out, const vec2f& _v, const mat4f& _m );
 	MENGINE_MATH_FUNCTION_INLINE void mul_v3_v2_m4_r( vec3f& _out, const vec2f& _v, const mat4f& _m );

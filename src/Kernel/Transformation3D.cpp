@@ -445,8 +445,7 @@ namespace Menge
 		mat_base.v3.x = -_origin.x * _scale.x;
 		mat_base.v3.y = -_origin.y * _scale.y;
 		mat_base.v3.z = -_origin.z * _scale.z;
-
-
+		
 		if( mt::equal_f_z( _orientation.y ) == true &&
 			mt::equal_f_z( _orientation.z ) == true )
 		{

@@ -323,6 +323,14 @@ namespace mt
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE void perp_v2_v2( vec2f& _out, const vec2f& _a, const vec2f& _b )
+	{
+		vec2f d;
+		dir_v2_v2( d, _a, _b );
+
+		perp_v2( _out, d );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void perp_v2( vec2f&	_out, const vec2f& _rhs )
 	{
 		_out = vec2f( -_rhs.y, _rhs.x );

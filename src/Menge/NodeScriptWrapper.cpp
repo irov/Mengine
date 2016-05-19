@@ -5816,8 +5816,8 @@ namespace Menge
 			.def( "setLocalColorB", &Colorable::setLocalColorB )
 			.def( "getLocalColorB", &Colorable::getLocalColorB )
 			.def( "setLocalColorRGB", &Colorable::setLocalColorRGB )
-			.def( "setLocalAlpha", &Colorable::setLocalColorAlpha )
-			.def( "getLocalAlpha", &Colorable::getLocalColorAlpha )
+			.def( "setLocalAlpha", &Colorable::setLocalAlpha )
+			.def( "getLocalAlpha", &Colorable::getLocalAlpha )
 			.def( "setPersonalColor", &Colorable::setPersonalColor )
 			.def( "getPersonalColor", &Colorable::getPersonalColor )
 			.def( "setPersonalAlpha", &Colorable::setPersonalAlpha )
@@ -5855,6 +5855,8 @@ namespace Menge
 			.def( "addAffector", &Affectorable::addAffector )
 			.def( "stopAffector", &Affectorable::stopAffector )
 			.def( "stopAllAffectors", &Affectorable::stopAllAffectors )
+			.def( "setLinearSpeed", &Affectorable::setLinearSpeed )
+			.def( "getLinearSpeed", &Affectorable::getLinearSpeed )
 			;
 
 		pybind::interface_<Materialable>( "Materialable", false )

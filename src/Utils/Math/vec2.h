@@ -86,6 +86,7 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE void norm_safe_v2(vec2f& out, const vec2f& _rhs, float err = 0.00001f);
 	MENGINE_MATH_FUNCTION_INLINE vec2f norm_safe(const vec2f& _rhs);
 
+	MENGINE_MATH_FUNCTION_INLINE void perp_v2_v2( vec2f& _out, const vec2f& _a, const vec2f& _b );
 	MENGINE_MATH_FUNCTION_INLINE void perp_v2(vec2f& out, const vec2f& in);
 	MENGINE_MATH_FUNCTION_INLINE vec2f perp(const vec2f&	in);
 

@@ -46,11 +46,6 @@ namespace Menge
         return m_id;
     }
 	//////////////////////////////////////////////////////////////////////////
-	EAffectorType Affector::getType() const
-	{
-		return m_type;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Affector::setSpeedFactor( float _speedAffector )
 	{
 		m_speedFactor = _speedAffector;

@@ -24,7 +24,7 @@ namespace Menge
 		~PathFinderWayAffector();
 		
 	public:
-		bool initialize( Node * _node, const pybind::list & _satellite, float _offset, float _speed, const pybind::list & _way, const pybind::object & _cb );
+		bool initialize( Node * _node, const pybind::list & _satellite, float _offset, float _speed, const pybind::list & _way, const pybind::object & _cb, const pybind::detail::args_operator_t & _args );
 		
 	public:
 		Node * getNode() const;
@@ -79,6 +79,7 @@ namespace Menge
 		float m_wayLength;
 
 		pybind::object m_cb;
+		pybind::detail::args_operator_t m_args;
 
 		uint32_t m_iterator;
 		uint32_t m_wayCount;

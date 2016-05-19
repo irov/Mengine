@@ -134,6 +134,7 @@ namespace Menge
 
 	protected:
 		bool setupSceneEffect_();
+		void enableSceneEffect_( bool _value );
 
 		bool setupParent_();
 		void removeParent_();

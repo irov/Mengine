@@ -165,6 +165,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::_setPersonalAlpha( float _alpha )
 	{
-		this->setLocalColorAlpha( _alpha );
+		this->setLocalAlpha( _alpha );
 	}
 }

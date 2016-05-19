@@ -354,7 +354,7 @@ namespace Menge
 			}
 			else
 			{
-				_node->setLocalColorAlpha( frame.opacity );
+				_node->setLocalAlpha( frame.opacity );
 			}
 		}
 		else		
@@ -2044,7 +2044,7 @@ namespace Menge
 #   ifdef _DEBUG
 			if( dynamic_cast<MovieSceneEffect *>(node) == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie::compileMovieText_ %s resource %s layer %s must be 'MovieSceneEffect' but node is %s type %s"
+				LOGGER_ERROR( m_serviceProvider )("Movie::compileMovieText_ %s resource %s layer %s must be 'MovieSceneEffect' but node is %s type %s"
 					, this->getName().c_str()
 					, this->getResourceMovieName().c_str()
 					, l.name.c_str()
@@ -2062,6 +2062,31 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::enableSceneEffect_( bool _value )
+	{
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & l = *it;
+
+			if( l.isSceneEffect() == false )
+			{
+				continue;
+			}
+
+			Node * node = this->getLayerNode_( l );
+
+			MovieSceneEffect * sceneEffect = static_cast<MovieSceneEffect *>(node);
+
+			sceneEffect->enablePropagate( _value );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::setupParent_()
@@ -2338,6 +2363,7 @@ namespace Menge
 		}
 
 		this->updateCamera_();
+		this->enableSceneEffect_( true );
 
 		return true;
 	}
@@ -2345,6 +2371,7 @@ namespace Menge
 	void Movie::_deactivate()
 	{
 		this->stopAnimation_();
+		this->enableSceneEffect_( false );
 
 		Node::_deactivate();
 	}
@@ -2722,7 +2749,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setPersonalAlpha( float _alpha )
 	{
-		this->setLocalColorAlpha( _alpha );
+		this->setLocalAlpha( _alpha );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateTiming_()

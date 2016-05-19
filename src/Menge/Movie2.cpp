@@ -206,7 +206,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void ae_movie_composition_node_update( const void * _element, uint32_t _type, aeMovieNodeUpdateState _state, float _offset, const ae_matrix4_t _matrix, float _opacity, void * _data )
+	static void ae_movie_composition_node_update( const void * _element, uint32_t _type, ae_bool_t _loop, aeMovieNodeUpdateState _state, float _offset, const ae_matrix4_t _matrix, float _opacity, void * _data )
 	{
 		if( _state == AE_MOVIE_NODE_UPDATE_UPDATE )
 		{
@@ -290,18 +290,24 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_track_matte_update( const void * _element, uint32_t _type, aeMovieNodeUpdateState _state, float _offset, const aeMovieRenderMesh * _mesh, void * _track_matte_data, void * _data )
+	static void * ae_movie_composition_track_matte_update( const void * _element, uint32_t _type, ae_bool_t _loop, aeMovieNodeUpdateState _state, float _offset, const aeMovieRenderMesh * _mesh, void * _track_matte_data, void * _data )
 	{
-		return (void *)666;
+		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void ae_movie_composition_state( aeMovieCompositionStateFlag _state, void * _data )
 	{
 		if( _state == AE_MOVIE_COMPOSITION_END )
 		{
+			printf( "AE_MOVIE_COMPOSITION_END\n" );
+
 			Movie2 * m2 = (Movie2 *)(_data);
-			ae_destroy_movie_composition( m2->m_composition );
-			m2->m_composition = nullptr;
+			m2->stop();
+			//ae_destroy_movie_composition( m2->m_composition );
+			//m2->m_composition = nullptr;
+			
+
+
 		}
 	}
 	static void ae_movie_node_event_t( const void * _element, const char * _name, const ae_matrix4_t _matrix, float _opacity, ae_bool_t _begin, void * _data )
@@ -397,7 +403,7 @@ namespace Menge
 			return false;
 		}
 
-		ae_set_movie_composition_loop( composition, AE_TRUE );
+		//ae_set_movie_composition_loop( composition, AE_TRUE );
 
 		uint32_t max_render_node = ae_get_movie_composition_max_render_node( composition );
 

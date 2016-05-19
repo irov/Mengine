@@ -61,7 +61,7 @@ namespace Menge
 
 			it.next_shuffle();
 
-            if( affector->getType() == _type )
+            if( affector->getAffectorType() == _type )
             {
 				m_affectors.remove( affector );
 

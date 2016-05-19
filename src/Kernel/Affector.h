@@ -50,9 +50,6 @@ namespace Menge
 		AFFECTOR_ID getId() const;
 
 	public:
-		EAffectorType getType() const;
-
-	public:
 		void setFreeze( bool _value );
 		bool getFreeze() const;
 

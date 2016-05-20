@@ -368,24 +368,11 @@ namespace mt
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE bool is_ident_m34( const mat4f& _out )
 	{
-		if( _out.v0.x != 1.f || _out.v0.y != 0.f || _out.v0.z != 0.f )
-		{
-			return false;
-		}
-		else if( _out.v1.x != 0.f || _out.v1.y != 1.f || _out.v1.z != 0.f )
-		{
-			return false;
-		}
-		else if( _out.v2.x != 0.f || _out.v2.y != 0.f || _out.v2.z != 1.f )
-		{
-			return false;
-		}
-		else if( _out.v3.x != 0.f || _out.v3.y != 0.f || _out.v3.z != 0.f )
-		{
-			return false;
-		}
-
-		return true;
+		return 
+			equal_f_1( _out.v0.x ) == true && equal_f_z( _out.v0.y ) == true && equal_f_z( _out.v0.z ) == true &&
+			equal_f_z( _out.v1.x ) == true && equal_f_1( _out.v1.y ) == true && equal_f_z( _out.v1.z ) == true &&
+			equal_f_z( _out.v2.x ) == true && equal_f_z( _out.v2.y ) == true && equal_f_1( _out.v2.z ) == true &&
+			equal_f_z( _out.v3.x ) == true && equal_f_z( _out.v3.y ) == true && equal_f_z( _out.v3.z ) == true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void get_col_m4( vec4f& out, const mat4f& _rhs, int _index )

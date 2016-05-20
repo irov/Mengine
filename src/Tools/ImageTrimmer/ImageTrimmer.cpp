@@ -733,7 +733,7 @@ namespace Menge
 			return false;
 		}
 		
-		if( output_stream->write( compressBuffer, compressSize ) == 0 )
+		if( output_stream->write( compressBuffer, compressSize ) == false )
 		{
 			return false;
 		}

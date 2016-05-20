@@ -412,12 +412,17 @@ namespace Menge
 			return false;
 		}
 
-		return mt::equal_f_f( _m.v0.x, 1.f ) == true &&
-			mt::equal_f_f( _m.v1.y, 1.f ) == true &&
-			mt::equal_f_f( _m.v2.z, 1.f ) == true &&
-			mt::equal_f_z( _m.v3.x ) == true &&
-			mt::equal_f_z( _m.v3.y ) == true &&
-			mt::equal_f_z( _m.v3.z ) == true;
+		if( mt::equal_f_1( _m.v0.x ) == false ||
+			mt::equal_f_1( _m.v1.y ) == false ||
+			mt::equal_f_1( _m.v2.z ) == false ||
+			mt::equal_f_z( _m.v3.x ) == false ||
+			mt::equal_f_z( _m.v3.y ) == false ||
+			mt::equal_f_z( _m.v3.z ) == false )
+		{
+			return false;
+		}
+
+		return mt::is_ident_m34( _m );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::updateLocalMatrix() const
@@ -432,19 +437,23 @@ namespace Menge
 	bool Transformation3D::makeLocalMatrix_( mt::mat4f & _lm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec2f & _skew, const mt::vec3f& _orientation )
 	{
 		mt::mat4f mat_base;
-		mt::ident_m4( mat_base );
+
 		mat_base.v0.x = _scale.x;
 		mat_base.v0.y = _skew.y;
 		mat_base.v0.z = 0.f;
+		mat_base.v0.w = 0.f;
 		mat_base.v1.x = _skew.x;
 		mat_base.v1.y = _scale.y;
 		mat_base.v1.z = 0.f;
+		mat_base.v1.w = 0.f;
 		mat_base.v2.x = 0.f;
 		mat_base.v2.y = 0.f;
 		mat_base.v2.z = _scale.z;
+		mat_base.v2.w = 0.f;
 		mat_base.v3.x = -_origin.x * _scale.x;
 		mat_base.v3.y = -_origin.y * _scale.y;
 		mat_base.v3.z = -_origin.z * _scale.z;
+		mat_base.v3.w = 1.f;
 		
 		if( mt::equal_f_z( _orientation.y ) == true &&
 			mt::equal_f_z( _orientation.z ) == true )

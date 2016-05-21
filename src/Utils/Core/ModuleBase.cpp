@@ -78,4 +78,17 @@ namespace Menge
 
 		//Empty
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ModuleBase::message( const ConstString & _messageName, const TMapParams & _params )
+	{
+		this->_message( _messageName, _params );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ModuleBase::_message( const ConstString & _messageName, const TMapParams & _params )
+	{
+		(void)_messageName;
+		(void)_params;
+
+		//Empty
+	}
 }

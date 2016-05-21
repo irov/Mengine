@@ -18,22 +18,11 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ModulePathFinder::ModulePathFinder()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ModulePathFinder::~ModulePathFinder()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ModulePathFinder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * ModulePathFinder::getServiceProvider() const
-	{
-		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	class superclass_new_PathGraphNode
@@ -82,7 +71,7 @@ namespace Menge
 		return py_path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ModulePathFinder::initialize()
+	bool ModulePathFinder::_initialize()
 	{
 		pybind::interface_<fastpathfinder::graph_node>("fastpathfinder::graph_node", true)
 			;
@@ -149,18 +138,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModulePathFinder::finalize()
+	void ModulePathFinder::_finalize()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ModulePathFinder::setName( const ConstString & _name )
-	{
-		m_name = _name;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ModulePathFinder::getName() const
-	{
-		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderMap * ModulePathFinder::createMap()
@@ -253,7 +232,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModulePathFinder::update( float _time, float _timing )
+	void ModulePathFinder::_update( float _time, float _timing )
 	{
 		(void)_time;
 		(void)_timing;
@@ -270,7 +249,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModulePathFinder::render( const RenderObjectState * _state, unsigned int _debugMask )
+	void ModulePathFinder::_render( const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		for( TPathFinderMaps::iterator 
 			it = m_maps.begin(),

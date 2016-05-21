@@ -11,11 +11,11 @@ namespace Menge
 		ModuleBase();
 		~ModuleBase();
 
-	public:
+	protected:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
 		ServiceProviderInterface * getServiceProvider() const override;
 
-	public:
+	protected:
 		void setName( const ConstString & _name ) override;
 		const ConstString & getName() const override;
 
@@ -27,7 +27,7 @@ namespace Menge
 		virtual bool _initialize();
 		virtual void _finalize();
 
-	public:
+	protected:
 		void update( float _time, float _timing ) override;
 		void render( const RenderObjectState * _state, unsigned int _debugMask ) override;
 
@@ -35,6 +35,12 @@ namespace Menge
 		virtual void _update( float _time, float _timing );
 		virtual void _render( const RenderObjectState * _state, unsigned int _debugMask );
 		
+	protected:
+		void message( const ConstString & _messageName, const TMapParams & _params ) override;
+
+	protected:
+		virtual void _message( const ConstString & _messageName, const TMapParams & _params );
+
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 

@@ -72,14 +72,17 @@ namespace Menge
 
 		m_userStats = m_client->GetISteamUserStats( hSteamUser, hSteamPipe, STEAMUSERSTATS_INTERFACE_VERSION );
 
-		SteamAPI_RunCallbacks();
-
-		// mark it down
-		//if( m_userStats->SetAchievement( "Winner" ) == false )
-		//{
-		//	return false;
-		//}
-
+		m_userStats->RequestCurrentStats();
+				
+		if( m_userStats->SetAchievement( "ach_stage_green" ) == false )
+		{
+			//return false;
+		}
+		
+		if( m_userStats->SetStat( "complete_3_star", 50 ) == false )
+		{
+			//return false;
+		}
 		//if( m_userStats->GetStat() == false )
 		//{
 		//	return false;

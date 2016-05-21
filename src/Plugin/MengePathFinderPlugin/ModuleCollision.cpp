@@ -14,7 +14,6 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ModuleCollision::ModuleCollision()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -22,17 +21,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleCollision::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * ModuleCollision::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ModuleCollision::initialize()
+	bool ModuleCollision::_initialize()
 	{
 		pybind::interface_<CollisionWorld>( "CollisionWorld" )
 			.def_smart_pointer()
@@ -65,18 +54,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleCollision::finalize()
+	void ModuleCollision::_finalize()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ModuleCollision::setName( const ConstString & _name )
-	{
-		m_name = _name;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ModuleCollision::getName() const
-	{
-		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CollisionWorldPtr ModuleCollision::createCollisionWorld()
@@ -115,7 +94,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleCollision::update( float _time, float _timing )
+	void ModuleCollision::_update( float _time, float _timing )
 	{
 		(void)_time;
 		(void)_timing;
@@ -135,7 +114,7 @@ namespace Menge
 		m_collisionWorlds.erase( it_erase, m_collisionWorlds.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleCollision::render( const RenderObjectState * _state, unsigned int _debugMask )
+	void ModuleCollision::_render( const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		(void)_state;
 		(void)_debugMask;

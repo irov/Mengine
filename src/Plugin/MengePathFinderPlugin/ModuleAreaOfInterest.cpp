@@ -19,7 +19,6 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ModuleAreaOfInterest::ModuleAreaOfInterest()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -27,17 +26,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleAreaOfInterest::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * ModuleAreaOfInterest::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ModuleAreaOfInterest::initialize()
+	bool ModuleAreaOfInterest::_initialize()
 	{
 		pybind::interface_<AreaOfInterest>("AreaOfInterest")
 			.def( "freeze", &AreaOfInterest::freeze )
@@ -84,18 +73,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleAreaOfInterest::finalize()
+	void ModuleAreaOfInterest::_finalize()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ModuleAreaOfInterest::setName( const ConstString & _name )
-	{
-		m_name = _name;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ModuleAreaOfInterest::getName() const
-	{
-		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	AreaOfInterest * ModuleAreaOfInterest::createAOI()
@@ -122,7 +101,7 @@ namespace Menge
 		delete _aoi;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleAreaOfInterest::update( float _time, float _timing )
+	void ModuleAreaOfInterest::_update( float _time, float _timing )
 	{
 		(void)_time;
 		(void)_timing;
@@ -139,7 +118,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleAreaOfInterest::render( const RenderObjectState * _state, unsigned int _debugMask )
+	void ModuleAreaOfInterest::_render( const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		(void)_state;
 		(void)_debugMask;

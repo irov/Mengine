@@ -41,7 +41,6 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ModuleBurritoWorld::ModuleBurritoWorld()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -49,17 +48,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBurritoWorld::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * ModuleBurritoWorld::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ModuleBurritoWorld::initialize()
+	bool ModuleBurritoWorld::_initialize()
 	{
 		pybind::interface_<BurritoBison>("BurritoBison")
 			.def( "addForce", &BurritoBison::addForce )
@@ -131,18 +120,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBurritoWorld::finalize()
+	void ModuleBurritoWorld::_finalize()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ModuleBurritoWorld::setName( const ConstString & _name )
-	{
-		m_name = _name;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ModuleBurritoWorld::getName() const
-	{
-		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BurritoWorld * ModuleBurritoWorld::createBurritoWorld()
@@ -164,7 +143,7 @@ namespace Menge
 		_world->setDead();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBurritoWorld::update( float _time, float _timing )
+	void ModuleBurritoWorld::_update( float _time, float _timing )
 	{
 		m_worlds.insert( m_worlds.end(), m_worldsAdd.begin(), m_worldsAdd.end() );
 		m_worldsAdd.clear();
@@ -184,7 +163,7 @@ namespace Menge
 		m_worlds.erase( it_erase, m_worlds.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBurritoWorld::render( const RenderObjectState * _state, unsigned int _debugMask )
+	void ModuleBurritoWorld::_render( const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		(void)_state;
 		(void)_debugMask;

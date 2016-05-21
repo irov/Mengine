@@ -131,4 +131,37 @@ namespace Menge
 			module->render( _state, _debugMask );
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ModuleService::message( const ConstString & _moduleName, const ConstString & _messageName, const TMapParams & _params )
+	{
+		const ModuleInterfacePtr & module = this->findModule( _moduleName );
+
+		if( module == nullptr )
+		{
+			return;
+		}
+
+		module->message( _messageName, _params );
+	}
+	//////////////////////////////////////////////////////////////////////////		
+	const ModuleInterfacePtr & ModuleService::findModule( const ConstString & _moduleName ) const
+	{
+		for( TVectorModules::const_iterator
+			it = m_modules.begin(),
+			it_end = m_modules.end();
+		it != it_end;
+		++it )
+		{
+			const ModuleInterfacePtr & module = *it;
+
+			if( module->getName() != _moduleName )
+			{
+				continue;
+			}
+
+			return module;
+		}
+
+		return ModuleInterfacePtr::none();
+	}
 }

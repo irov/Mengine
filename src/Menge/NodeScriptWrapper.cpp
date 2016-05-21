@@ -130,6 +130,7 @@
 
 #	include "Core/Polygon.h"
 #	include "Core/MemoryHelper.h"
+#	include "Core/ValueFollower.h"
 
 #	include "Math/angle.h"
 #	include "Math/vec4.h"
@@ -3440,6 +3441,128 @@ namespace Menge
 			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		class AffectorFollower
+			: public Affector
+			, public pybind::bindable
+		{
+		public:
+			AffectorFollower()
+				: m_node( nullptr )
+			{
+			}
+
+		public:
+			Node * getNode() const
+			{
+				return m_node;
+			}
+
+		protected:
+			void complete() override
+			{
+				//Empty
+			}
+
+			void stop() override
+			{
+				//Empty
+			}
+
+		protected:
+			Node * m_node;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		class AffectorFollowerLocalAlpha
+			: public AffectorFollower
+		{
+		public:
+			AffectorFollowerLocalAlpha()
+			{
+			}
+
+		public:
+			bool initialize( Node * _node, float _valueAlpha, float _targetAlpha, float _speed )
+			{
+				if( _node == nullptr )
+				{
+					return false;
+				}
+
+				m_node = _node;
+				
+				m_follower.setValue( _valueAlpha );
+				m_follower.setSpeed( _speed );
+
+				m_follower.follow( _targetAlpha );
+
+				m_node->setLocalAlpha( _valueAlpha );
+
+				return true;
+			}
+			
+		public:
+			void follow( float _targetAlpha )
+			{
+				m_follower.follow( _targetAlpha );
+			}
+
+		protected:
+			bool _affect( float _timing ) override
+			{
+				m_follower.update( _timing );
+
+				float value = m_follower.getValue();
+
+				m_node->setLocalAlpha( value );
+
+				return false;
+			}
+			
+		protected:
+			PyObject * _embedded() override
+			{
+				PyObject * py_obj = pybind::detail::create_holder_t( this );
+
+				return py_obj;
+			}
+
+		protected:
+			ValueFollowerLinear<float> m_follower;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		FactoryPoolStore<AffectorFollowerLocalAlpha, 4> m_factoryAffectorFollowerLocalAlpha;
+		//////////////////////////////////////////////////////////////////////////
+		AffectorFollowerLocalAlpha * s_addFollowerLocalAlpha( Node * _node, float _valueAlpha, float _targetAlpha, float _speed )
+		{
+			AffectorFollowerLocalAlpha * affector = m_factoryAffectorFollowerLocalAlpha.createObject();
+
+			if( affector->initialize( _node, _valueAlpha, _targetAlpha, _speed ) == false )
+			{
+				affector->destroy();
+
+				return nullptr;
+			}
+			
+			if( _node->addAffector( affector ) == INVALID_AFFECTOR_ID )
+			{
+				affector->destroy();
+
+				return nullptr;
+			}
+
+			return affector;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_removeFollower( AffectorFollower * _affector )
+		{
+			Node * node = _affector->getNode();
+			AFFECTOR_ID id = _affector->getId();
+
+			bool successful = node->stopAffector( id );
+			
+			return successful;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		void s_setLocale( const ConstString & _locale )
 		{
 			APPLICATION_SERVICE( m_serviceProvider )
@@ -6731,6 +6854,16 @@ namespace Menge
 
 			pybind::def_functor_args( "addAffector", nodeScriptMethod, &NodeScriptMethod::s_addAffector );
 			pybind::def_functor( "removeAffector", nodeScriptMethod, &NodeScriptMethod::s_removeAffector );
+
+			pybind::interface_<NodeScriptMethod::AffectorFollower, pybind::bases<Affector> >( "AffectorFollower" )
+				;
+
+			pybind::interface_<NodeScriptMethod::AffectorFollowerLocalAlpha, pybind::bases<NodeScriptMethod::AffectorFollower> >( "AffectorFollowerLocalAlpha" )
+				.def( "follow", &NodeScriptMethod::AffectorFollowerLocalAlpha::follow )
+				;
+
+			pybind::def_functor( "addFollowerLocalAlpha", nodeScriptMethod, &NodeScriptMethod::s_addFollowerLocalAlpha );
+			pybind::def_functor( "removeFollower", nodeScriptMethod, &NodeScriptMethod::s_removeFollower );
 		}
 	}
 }

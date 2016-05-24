@@ -61,10 +61,10 @@ namespace Menge
 		}
 
 	protected:
-		PyObject * wrap( Scriptable * _node ) override
+		PyObject * wrap( Scriptable * _scriptable ) override
 		{
 #   ifdef _DEBUG
-			if( dynamic_cast<T *>( _node ) == nullptr )
+			if( dynamic_cast<T *>( _scriptable ) == nullptr )
             {
 				LOGGER_ERROR( m_serviceProvider )("ScriptClassWrapper::wrap invalid type"
 					);
@@ -73,7 +73,7 @@ namespace Menge
             }
 #   endif
 
-            T * obj = static_cast<T *>( _node );
+            T * obj = static_cast<T *>( _scriptable );
 
 			const pybind::class_type_scope_ptr & scope = pybind::detail::class_scope<T>();
 

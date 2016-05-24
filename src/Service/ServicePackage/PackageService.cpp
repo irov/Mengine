@@ -356,6 +356,29 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool PackageService::validatePackages() const
+	{
+		bool successful = true;
+
+		for( TVectorPackage::const_iterator
+			it = m_packages.begin(),
+			it_end = m_packages.end();
+		it != it_end;
+		++it )
+		{
+			const PackagePtr & package = *it;
+
+			if( package->validate() == false )
+			{
+				successful = false;
+
+				continue;
+			}
+		}
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::enableLocalePackage( const ConstString & _locale, const ConstString & _platformName )
 	{ 
 		TVectorPackage packages;

@@ -14,12 +14,15 @@ namespace Menge
 		ModuleSteam();
 		~ModuleSteam();
 
-	public:
+	protected:
 		bool _initialize() override;
 		void _finalize() override;
 
-	public:
+	protected:
 		void _update( float _time, float _timing ) override;
+
+	protected:
+		void _message( const ConstString & _messageName, const TMapParams & _params ) override;
 
 	protected:
 		ISteamClient * m_client;
@@ -27,9 +30,9 @@ namespace Menge
 		ISteamUserStats	* m_userStats;
 		ISteamFriends * m_friends;
 
-	public:
-		STEAM_CALLBACK( ModuleSteam, OnUserStatsReceived, UserStatsReceived_t, m_steamCallbackUserStatsReceived );
-		STEAM_CALLBACK( ModuleSteam, OnUserStatsStored, UserStatsStored_t, m_steamCallbackUserStatsStored );
-		STEAM_CALLBACK( ModuleSteam, OnAchievementStored, UserAchievementStored_t, m_steamCallbackAchievementStored );
+	//public:
+	//	STEAM_CALLBACK( ModuleSteam, OnUserStatsReceived, UserStatsReceived_t, m_steamCallbackUserStatsReceived );
+	//	STEAM_CALLBACK( ModuleSteam, OnUserStatsStored, UserStatsStored_t, m_steamCallbackUserStatsStored );
+	//	STEAM_CALLBACK( ModuleSteam, OnAchievementStored, UserAchievementStored_t, m_steamCallbackAchievementStored );
 	};
 }

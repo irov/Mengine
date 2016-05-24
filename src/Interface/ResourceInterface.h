@@ -26,15 +26,15 @@ namespace Menge
 		virtual void finalize() = 0;
 
     public:
-		virtual bool loadResource( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
-		virtual bool unloadResource( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
+		virtual bool loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
+		virtual bool unloadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
 
 	public:
-		virtual ResourceReferencePtr generateResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) = 0;
+		virtual ResourceReferencePtr generateResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) const = 0;
 
 	public:
 		template<class T>
-		T generateResourceT( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
+		T generateResourceT( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) const
 		{
 			ResourceReferencePtr resource = this->generateResource( _locale, _category, _group, _name, _type );
 
@@ -146,7 +146,7 @@ namespace Menge
 		virtual size_t getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group ) const = 0;
 
     public:
-        virtual bool validationResources() const = 0; 
+		virtual bool validateResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) const = 0;
 
     public:
         virtual void dumpResources( const String & _tag ) = 0;

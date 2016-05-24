@@ -79,11 +79,11 @@ namespace Menge
 		void _finalize() override;
 
 	public:
-		bool loadResource( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
-		bool unloadResource( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
+		bool loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
+		bool unloadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
 
 	public:
-		ResourceReferencePtr generateResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
+		ResourceReferencePtr generateResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) const override;
 
 		ResourceReferencePtr createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
 		bool removeResource( const ResourceReferencePtr & _resource ) override;
@@ -103,7 +103,7 @@ namespace Menge
 		const ConstString & getResourceType( const ConstString & _name ) const;
 
     public:
-        bool validationResources() const override;
+		bool validateResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) const override;
 
 	public:
 		void visitResources( Visitor * _visitor ) const override;

@@ -226,13 +226,20 @@ namespace Menge
 			static bool s_initialize = false;
 			static bool s_exist = false;
 
-			if( s_initialize == false )
-			{
-				s_initialize = true;
-
+			if( s_exist == false )
+			{				
 				const Char * serviceName = T::getStaticServiceID();
 
-				s_exist = _serviceProvider->existService( serviceName );
+				if( _serviceProvider->existService( serviceName ) == false )
+				{
+					s_exist = false;
+					s_initialize = false;
+				}
+				else
+				{
+					s_exist = true;
+					s_initialize = true;
+				}
 			}
 
 			return s_exist;

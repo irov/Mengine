@@ -60,7 +60,7 @@ namespace Menge
 		
 		actor->initialize();
 
-		m_actors.push_back( actor );
+		m_actorsAdd.push_back( actor );
 
 		return actor;
 	}
@@ -91,6 +91,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionWorld::update()
 	{
+		m_actors.insert( m_actors.end(), m_actorsAdd.begin(), m_actorsAdd.end() );
+		m_actorsAdd.clear();
+
 		for( TVectorCollisionActor::iterator
 			it = m_actors.begin(),
 			it_end = m_actors.end();

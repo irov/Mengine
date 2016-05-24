@@ -316,7 +316,7 @@ namespace Menge
 						{
 							float delay = desc.pipe->onSchedulePipe( desc.id, desc.iterate );
 
-							if( delay <= 0.f )
+							if( delay < 0.f )
 							{
 								desc.dead = true;
 

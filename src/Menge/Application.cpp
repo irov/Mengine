@@ -638,9 +638,9 @@ namespace Menge
 		}
 
 		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
-		bool resourceCheck = APSENT_OPTIONS( m_serviceProvider, "noresourcecheck" );
+		bool noresourceCheck = HAS_OPTIONS( m_serviceProvider, "noresourcecheck" );
 
-		if( developmentMode == true && resourceCheck == true )
+		if( developmentMode == true && noresourceCheck == false )
 		{
 			if( TEXT_SERVICE(m_serviceProvider)
 				->validate() == false )
@@ -649,8 +649,8 @@ namespace Menge
 					);
 			}
 
-			if( RESOURCE_SERVICE(m_serviceProvider)
-				->validationResources() == false )
+			if( PACKAGE_SERVICE( m_serviceProvider )
+				->validatePackages() == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Resources validation is invalid!!!!!!!!!!!!!"
 					);

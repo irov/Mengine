@@ -39,6 +39,7 @@ namespace Menge
 
 	protected:
 		TVectorCollisionActor m_actors;
+		TVectorCollisionActor m_actorsAdd;
 		
 		typedef FactoryPoolStore<CollisionActor, 32> TFactoryCollisionActor;
 		TFactoryCollisionActor m_factoryCollisionActor;

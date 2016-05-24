@@ -321,7 +321,7 @@ namespace Menge
             const ConstString & path = *it;
 
 			if( RESOURCE_SERVICE(m_serviceProvider)
-				->loadResource( m_locale, m_name, path ) == false )
+				->loadResources( m_locale, m_name, path ) == false )
             {
                 return false;
             }
@@ -396,6 +396,28 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Package::validate()
+	{
+		bool successful = true;
+
+		for( TVectorConstString::const_iterator
+			it = m_resourcesDesc.begin(),
+			it_end = m_resourcesDesc.end();
+		it != it_end;
+		++it )
+		{
+			const ConstString & path = *it;
+
+			if( RESOURCE_SERVICE( m_serviceProvider )
+				->validateResources( m_locale, m_name, path ) == false )
+			{
+				successful = false;
+			}
+		}
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Package::disable()
 	{
 		m_enable = false;
@@ -412,7 +434,7 @@ namespace Menge
 			const ConstString & path = *it;
 
 			if( RESOURCE_SERVICE( m_serviceProvider )
-				->unloadResource( m_locale, m_name, path ) == false )
+				->unloadResources( m_locale, m_name, path ) == false )
 			{
 				return false;
 			}

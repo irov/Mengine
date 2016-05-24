@@ -79,7 +79,7 @@ namespace Menge
 		m_resources.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::loadResource( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	bool ResourceManager::loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
 	{
 		Metacode::Meta_DataBlock datablock;
 
@@ -119,7 +119,7 @@ namespace Menge
 
             const FilePath & path = meta_include.get_Path();
 
-			if( this->loadResource( _locale, _pakName, path ) == false )
+			if( this->loadResources( _locale, _pakName, path ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource load %s:%s resource invalid load include %s"
                     , _pakName.c_str()
@@ -216,7 +216,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::unloadResource( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	bool ResourceManager::unloadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
 	{
 		Metacode::Meta_DataBlock datablock;
 
@@ -256,7 +256,7 @@ namespace Menge
 
 			const FilePath & path = meta_include.get_Path();
 
-			if( this->unloadResource( _locale, _pakName, path ) == false )
+			if( this->unloadResources( _locale, _pakName, path ) == false )
 			{
 				LOGGER_ERROR( m_serviceProvider )("ResourceManager::unloadResource load %s:%s resource invalid load include %s"
 					, _pakName.c_str()
@@ -316,73 +316,143 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		class FResourcesForeachValidation
-		{
-		public:
-			FResourcesForeachValidation( ServiceProviderInterface * _serviceProvider, bool & _successful )
-				: m_serviceProvider(_serviceProvider)
-				, m_successful(_successful)
-			{
-			}
-
-		private:
-			void operator = ( const FResourcesForeachValidation & )
-			{
-			}
-
-		public:
-			void operator () ( ResourceEntry * _entry )
-			{
-				const ResourceReferencePtr & resource = _entry->resource;
-
-				bool successful = resource->isValid();
-
-				if( successful == false )
-				{
-					LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource name '%s' type '%s' category '%s' group '%s' invalid validation"
-						, resource->getName().c_str()
-						, resource->getType().c_str()
-						, resource->getCategory().c_str()
-						, resource->getGroup().c_str()
-						);
-
-					LOGGER_WARNING(m_serviceProvider)("======================================================================");
-					LOGGER_WARNING(m_serviceProvider)("");
-
-					m_successful = false;
-				}
-			}
-
-		protected:
-			ServiceProviderInterface * m_serviceProvider;
-
-			bool & m_successful;
-		};
-	}
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceManager::validationResources() const
+	bool ResourceManager::validateResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) const
     {
-        LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource validation resource begin (PLEASE WAIT):");
-        LOGGER_WARNING(m_serviceProvider)("----------------------------------------------------------------------");
+		Metacode::Meta_DataBlock datablock;
 
-		bool total_successful = true;
+		bool exist = false;
+		if( LOADER_SERVICE( m_serviceProvider )->load( _pakName, _path, &datablock, exist ) == false )
+		{
+			if( exist == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ResourceManager::validateResources resource '%s:%s' not found"
+					, _pakName.c_str()
+					, _path.c_str()
+					);
+			}
+			else
+			{
+				LOGGER_ERROR( m_serviceProvider )("ResourceManager::validateResources Invalid parse resource '%s:%s'"
+					, _pakName.c_str()
+					, _path.c_str()
+					);
+			}
 
+			return false;
+		}
 
-		FResourcesForeachValidation rfv(m_serviceProvider, total_successful);
-		m_resources.foreach( rfv );
+		bool successful = true;
 
-        LOGGER_SERVICE(m_serviceProvider)->logMessage( Menge::LM_WARNING, 0, "\n", 2 );
+		ConstString groupName;
+		datablock.swap_Name( groupName );
 
-        LOGGER_WARNING(m_serviceProvider)("----------------------------------------------------------------------");
-        LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource validation resource complete!");
+		const Metacode::Meta_DataBlock::TVectorMeta_Include & includes_include = datablock.get_IncludesInclude();
 
-		return total_successful;
+		for( Metacode::Meta_DataBlock::TVectorMeta_Include::const_iterator
+			it = includes_include.begin(),
+			it_end = includes_include.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_DataBlock::Meta_Include & meta_include = *it;
+
+			const FilePath & path = meta_include.get_Path();
+
+			if( this->validateResources( _locale, _pakName, path ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ResourceManager::validateResources load %s:%s resource invalid load include %s"
+					, _pakName.c_str()
+					, _path.c_str()
+					, path.c_str()
+					);
+
+				successful = false;
+
+				continue;
+			}
+		}
+
+		const Metacode::Meta_DataBlock::TVectorMeta_Resource & includes_resource = datablock.get_IncludesResource();
+
+		for( Metacode::Meta_DataBlock::TVectorMeta_Resource::const_iterator
+			it = includes_resource.begin(),
+			it_end = includes_resource.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_DataBlock::Meta_Resource * meta_resource = *it;
+
+			const ConstString & name = meta_resource->get_Name();
+			const ConstString & type = meta_resource->get_Type();
+
+			bool unique = true;
+			meta_resource->get_Unique( unique );
+
+			ResourceReferencePtr resource =
+				this->generateResource( _locale, _pakName, groupName, name, type );
+
+			if( resource == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ResourceManager::validateResources '%s' invalid create resource '%s:%s' name %s type %s"
+					, _path.c_str()
+					, _pakName.c_str()
+					, groupName.c_str()
+					, name.c_str()
+					, type.c_str()
+					);
+
+				successful = false;
+
+				continue;
+			}
+
+			if( resource->loader( meta_resource ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ResourceManager::validateResources '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
+					, _path.c_str()
+					, _pakName.c_str()
+					, groupName.c_str()
+					, name.c_str()
+					, type.c_str()
+					);
+
+				successful = false;
+
+				continue;
+			}
+
+#	ifndef MENGINE_MASTER_RELEASE
+			if( resource->convert() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ResourceManager::validateResources %s type [%s] invalid convert"
+					, name.c_str()
+					, type.c_str()
+					);
+
+				successful = false;
+
+				continue;
+			}
+#	endif
+
+			if( resource->isValid() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ResourceManager::validateResources %s type [%s] invalidate"
+					, name.c_str()
+					, type.c_str()
+					);
+
+				successful = false;
+
+				continue;
+			}
+		}
+
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReferencePtr ResourceManager::generateResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
+	ResourceReferencePtr ResourceManager::generateResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) const
 	{
 		ResourceReferencePtr resource = PROTOTYPE_SERVICE( m_serviceProvider )
 			->generatePrototypeT<ResourceReference>( CONST_STRING( m_serviceProvider, Resource ), _type );

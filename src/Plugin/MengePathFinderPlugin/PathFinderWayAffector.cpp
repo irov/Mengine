@@ -26,11 +26,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderWayAffector::initialize( Node * _node, const pybind::list & _satellite, float _offset, float _speed, const pybind::list & _way, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 	{
-		if( _cb.is_callable() == false )
-		{
-			return false;
-		}
-
 		if( _way.is_valid() == false )
 		{
 			return false;
@@ -156,10 +151,13 @@ namespace Menge
 		mt::vec3f new_pos;
 		mt::vec3f new_dir;
 		this->step_( m_offset, new_pos, new_dir );
-				
-		uint32_t id = this->getId();
+		
+		if( m_cb.is_callable() == true )
+		{
+			uint32_t id = this->getId();
 
-		m_cb.call_args( id, m_node, new_pos, new_dir, true, false, false, m_args );
+			m_cb.call_args( id, m_node, new_pos, new_dir, true, false, false, m_args );
+		}
 
 		return true;
 	}
@@ -178,9 +176,12 @@ namespace Menge
 
 		if( newTarget == true )
 		{
-			uint32_t id = this->getId();
+			if( m_cb.is_callable() == true )
+			{
+				uint32_t id = this->getId();
 
-			m_cb.call_args( id, m_node, new_pos, new_dir, false, false, false, m_args );
+				m_cb.call_args( id, m_node, new_pos, new_dir, false, false, false, m_args );
+			}
 		}
 
 		if( m_iterator == m_wayCount )
@@ -422,30 +423,37 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::complete()
 	{
-		mt::vec3f wp_prev = m_way[m_wayCount - 2];
-		mt::vec3f wp_current = m_way[m_wayCount - 1];
+		if( m_cb.is_callable() == true )
+		{
+			mt::vec3f wp_prev = m_way[m_wayCount - 2];
+			mt::vec3f wp_current = m_way[m_wayCount - 1];
 
-		mt::vec3f dir;
-		mt::dir_v3_v3( dir, wp_prev, wp_current );
+			mt::vec3f dir;
+			mt::dir_v3_v3( dir, wp_prev, wp_current );
 
-		uint32_t id = this->getId();
 
-		m_cb.call_args( id, m_node, wp_current, dir, false, false, true, m_args );
+			uint32_t id = this->getId();
+
+			m_cb.call_args( id, m_node, wp_current, dir, false, false, true, m_args );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::stop()
 	{
-		const mt::vec3f & lp = m_node->getLocalPosition();
+		if( m_cb.is_callable() == true )
+		{
+			const mt::vec3f & lp = m_node->getLocalPosition();
 
-		mt::vec3f wp_prev = m_way[m_iterator - 1];
-		mt::vec3f wp_current = m_way[m_iterator];
+			mt::vec3f wp_prev = m_way[m_iterator - 1];
+			mt::vec3f wp_current = m_way[m_iterator];
 
-		mt::vec3f dir;
-		mt::dir_v3_v3( dir, wp_prev, wp_current );
+			mt::vec3f dir;
+			mt::dir_v3_v3( dir, wp_prev, wp_current );
 
-		uint32_t id = this->getId();
+			uint32_t id = this->getId();
 
-		m_cb.call_args( id, m_node, lp, dir, false, true, false, m_args );
+			m_cb.call_args( id, m_node, lp, dir, false, true, false, m_args );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::_setFreeze( bool _value )

@@ -29,6 +29,7 @@ namespace Menge
 
 	public:
 		bool enablePackages( const ConstString & _locale, const ConstString & _platformName ) override;
+		bool validatePackages() const override;
 
 	public:
 		bool enableLocalePackage( const ConstString & _locale, const ConstString & _platformName );

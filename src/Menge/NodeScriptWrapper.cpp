@@ -3441,12 +3441,12 @@ namespace Menge
 			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		class AffectorFollower
+		class AffectorNodeFollower
 			: public Affector
 			, public pybind::bindable
 		{
 		public:
-			AffectorFollower()
+			AffectorNodeFollower()
 				: m_node( nullptr )
 			{
 			}
@@ -3472,11 +3472,11 @@ namespace Menge
 			Node * m_node;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		class AffectorFollowerLocalAlpha
-			: public AffectorFollower
+		class AffectorNodeFollowerLocalAlpha
+			: public AffectorNodeFollower
 		{
 		public:
-			AffectorFollowerLocalAlpha()
+			AffectorNodeFollowerLocalAlpha()
 			{
 			}
 
@@ -3530,11 +3530,11 @@ namespace Menge
 			ValueFollowerLinear<float> m_follower;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		FactoryPoolStore<AffectorFollowerLocalAlpha, 4> m_factoryAffectorFollowerLocalAlpha;
+		FactoryPoolStore<AffectorNodeFollowerLocalAlpha, 4> m_factoryAffectorFollowerLocalAlpha;
 		//////////////////////////////////////////////////////////////////////////
-		AffectorFollowerLocalAlpha * s_addFollowerLocalAlpha( Node * _node, float _valueAlpha, float _targetAlpha, float _speed )
+		AffectorNodeFollowerLocalAlpha * s_addNodeFollowerLocalAlpha( Node * _node, float _valueAlpha, float _targetAlpha, float _speed )
 		{
-			AffectorFollowerLocalAlpha * affector = m_factoryAffectorFollowerLocalAlpha.createObject();
+			AffectorNodeFollowerLocalAlpha * affector = m_factoryAffectorFollowerLocalAlpha.createObject();
 
 			if( affector->initialize( _node, _valueAlpha, _targetAlpha, _speed ) == false )
 			{
@@ -3553,7 +3553,7 @@ namespace Menge
 			return affector;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool s_removeFollower( AffectorFollower * _affector )
+		bool s_removeNodeFollower( AffectorNodeFollower * _affector )
 		{
 			Node * node = _affector->getNode();
 			AFFECTOR_ID id = _affector->getId();
@@ -3561,6 +3561,12 @@ namespace Menge
 			bool successful = node->stopAffector( id );
 			
 			return successful;
+		}
+		//////////////////////////////////////////////////////////////////////////		
+		void s_moduleMessage( const ConstString & _moduleName, const ConstString & _messageName, const TMapParams & _params )
+		{
+			MODULE_SERVICE( m_serviceProvider )
+				->message( _moduleName, _messageName, _params );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_setLocale( const ConstString & _locale )
@@ -4353,12 +4359,8 @@ namespace Menge
 					}
 					else
 					{
-						//mt::vec3f direction; = follow_position - node_position;
 						mt::dir_v3_v3( current_direction, node_position, follow_position );
 					}					
-
-					//mt::vec3f norm_current_direction;
-					//mt::norm_v3_v3( norm_current_direction, current_direction );
 
 					float directionSpeedStep = m_moveAcceleration * _timing;
 
@@ -4485,6 +4487,190 @@ namespace Menge
 				, _moveSpeed, _moveAcceleration, _moveLimit
 				, _rotate
 				, _rotationSpeed, _rotationAcceleration, _rotationLimit
+				);
+
+			if( affector == nullptr )
+			{
+				return 0;
+			}
+
+			moveStop( _node );
+
+			if( _node->isActivate() == false )
+			{
+				return 0;
+			}
+
+			AFFECTOR_ID id = _node->addAffector( affector );
+
+			return id;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		class FactoryAffectorFollowToW
+		{
+		public:
+			class AffectorCreatorFollowToW
+				: public CallbackAffector
+			{
+			public:
+				AffectorCreatorFollowToW()
+					: m_node( nullptr )
+					, m_target( nullptr )
+					, m_offset( 0.f, 0.f, 0.f )
+					, m_distance( 0.f )
+					, m_moveSpeed( 0.f )
+					, m_moveAcceleration( 0.f )
+					, m_moveLimit( 0.f )
+				{
+				}
+
+			public:
+				bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
+				{
+					if( _node == nullptr )
+					{
+						return false;
+					}
+
+					if( _target == nullptr )
+					{
+						return false;
+					}
+
+					m_node = _node;
+					m_target = _target;
+					m_offset = _offset;
+					m_distance = _distance;
+					m_moveSpeed = _moveSpeed;
+					m_moveAcceleration = _moveAcceleration;
+					m_moveLimit = _moveLimit;
+
+					return true;
+				}
+
+			protected:
+				bool _affect( float _timing ) override
+				{
+					mt::vec3f node_position = m_node->getWorldPosition();
+					mt::vec3f follow_position = m_target->getWorldPosition();
+
+					mt::vec3f current_direction;
+
+					mt::dir_v3_v3( current_direction, node_position, follow_position );
+
+					float directionSpeedStep = m_moveAcceleration * _timing;
+
+					if( m_moveSpeed + directionSpeedStep > m_moveLimit )
+					{
+						m_moveSpeed = m_moveLimit;
+					}
+					else
+					{
+						m_moveSpeed += m_moveAcceleration * _timing;
+					}
+
+					float step = m_moveSpeed * _timing;
+
+					float length = mt::length_v3_v3( node_position, follow_position );
+
+					if( m_distance > 0.0 )
+					{
+						if( length - step < m_distance )
+						{
+							mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
+
+							m_node->setWorldPosition( distance_position );
+
+							return true;
+						}
+					}
+					else
+					{
+						if( length - step < 0.f )
+						{
+							m_node->setWorldPosition( follow_position );
+
+							return false;
+						}
+					}
+
+					mt::vec3f new_position = node_position + current_direction * step;
+
+					m_node->setWorldPosition( new_position );
+
+					return false;
+				}
+
+				void stop() override
+				{
+					this->end_( false );
+				}
+
+			protected:
+				Node * m_node;
+				Node * m_target;
+
+				mt::vec3f m_offset;
+				float m_distance;
+				float m_moveSpeed;
+				float m_moveAcceleration;
+				float m_moveLimit;
+			};
+
+		public:
+			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+				, Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
+			{
+				AffectorCreatorFollowToW * affector = m_factory.createObject();
+
+				affector->setServiceProvider( _serviceProvider );
+				affector->setAffectorType( _type );
+
+				affector->setCallback( _cb );
+
+				if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit ) == false )
+				{
+					affector->destroy();
+
+					return nullptr;
+				}
+
+				return affector;
+			}
+
+		protected:
+			typedef FactoryPoolStore<AffectorCreatorFollowToW, 4> TFactoryAffector;
+			TFactoryAffector m_factory;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		FactoryAffectorFollowToW m_nodeAffectorCreatorFollowToW;
+		//////////////////////////////////////////////////////////////////////////		
+		uint32_t followToW( Node * _node
+			, Node * _target
+			, const mt::vec3f & _offset
+			, float _distance
+			, float _moveSpeed
+			, float _moveAcceleration
+			, float _moveLimit
+			, const pybind::object & _cb
+			, const pybind::detail::args_operator_t & _args )
+		{
+			if( _node->isActivate() == false )
+			{
+				return 0;
+			}
+
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
+
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+			Affector * affector =
+				m_nodeAffectorCreatorFollowToW.create( m_serviceProvider
+				, ETA_POSITION, callback, _node, _target, _offset, _distance
+				, _moveSpeed, _moveAcceleration, _moveLimit
 				);
 
 			if( affector == nullptr )
@@ -6058,6 +6244,7 @@ namespace Menge
 			.def_proxy_args_static( "bezier4To", nodeScriptMethod, &NodeScriptMethod::bezier4To )
 			.def_proxy_args_static( "parabolaTo", nodeScriptMethod, &NodeScriptMethod::parabolaTo )
 			.def_proxy_args_static( "followTo", nodeScriptMethod, &NodeScriptMethod::followTo )
+			.def_proxy_args_static( "followToW", nodeScriptMethod, &NodeScriptMethod::followToW )
 			.def_proxy_static( "moveStop", nodeScriptMethod, &NodeScriptMethod::moveStop )
 
 			.def_proxy_args_static( "angleTo", nodeScriptMethod, &NodeScriptMethod::angleTo )
@@ -6855,15 +7042,17 @@ namespace Menge
 			pybind::def_functor_args( "addAffector", nodeScriptMethod, &NodeScriptMethod::s_addAffector );
 			pybind::def_functor( "removeAffector", nodeScriptMethod, &NodeScriptMethod::s_removeAffector );
 
-			pybind::interface_<NodeScriptMethod::AffectorFollower, pybind::bases<Affector> >( "AffectorFollower" )
+			pybind::interface_<NodeScriptMethod::AffectorNodeFollower, pybind::bases<Affector> >( "AffectorNodeFollower" )
 				;
 
-			pybind::interface_<NodeScriptMethod::AffectorFollowerLocalAlpha, pybind::bases<NodeScriptMethod::AffectorFollower> >( "AffectorFollowerLocalAlpha" )
-				.def( "follow", &NodeScriptMethod::AffectorFollowerLocalAlpha::follow )
+			pybind::interface_<NodeScriptMethod::AffectorNodeFollowerLocalAlpha, pybind::bases<NodeScriptMethod::AffectorNodeFollower> >( "AffectorNodeFollowerLocalAlpha" )
+				.def( "follow", &NodeScriptMethod::AffectorNodeFollowerLocalAlpha::follow )
 				;
 
-			pybind::def_functor( "addFollowerLocalAlpha", nodeScriptMethod, &NodeScriptMethod::s_addFollowerLocalAlpha );
-			pybind::def_functor( "removeFollower", nodeScriptMethod, &NodeScriptMethod::s_removeFollower );
+			pybind::def_functor( "addNodeFollowerLocalAlpha", nodeScriptMethod, &NodeScriptMethod::s_addNodeFollowerLocalAlpha );
+			pybind::def_functor( "removeNodeFollower", nodeScriptMethod, &NodeScriptMethod::s_removeNodeFollower );
+
+			pybind::def_functor( "moduleMessage", nodeScriptMethod, &NodeScriptMethod::s_moduleMessage );
 		}
 	}
 }

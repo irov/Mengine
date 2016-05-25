@@ -15,10 +15,6 @@ namespace Menge
         ~ModuleService();
 
 	public:
-		bool _initialize() override;
-		void _finalize() override;
-
-	public:
 		bool registerModule( const ConstString & _name, const ModuleFactoryInterfacePtr & _module ) override;
 		void unregisterModule( const ConstString & _name ) override;
 

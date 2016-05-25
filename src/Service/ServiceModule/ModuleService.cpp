@@ -16,22 +16,6 @@ namespace Menge
     {
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ModuleService::_initialize()
-	{
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ModuleService::_finalize()
-	{
-		if( m_modules.empty() == false )
-		{
-			return;
-		}
-
-		m_modules.clear();
-		m_moduleFactory.clear();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool ModuleService::registerModule( const ConstString & _name, const ModuleFactoryInterfacePtr & _module )
 	{
 		m_moduleFactory.insert( std::make_pair(_name, _module) );

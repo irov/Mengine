@@ -730,8 +730,6 @@ namespace Menge
 				LOGGER_ERROR(m_serviceProvider)("Application Failed to run module %s"
 					, moduleName.c_str()
 					);
-
-				return false;
 			}
 		}
 

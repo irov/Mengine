@@ -53,12 +53,18 @@ namespace Menge
 
 		if( SteamAPI_RestartAppIfNecessary( appId ) == true )
 		{
+			LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_initialize invalid SteamAPI_RestartAppIfNecessary"
+				);
+
 			return false;
 		}
 #	endif
 
 		if( SteamAPI_Init() == false )
 		{
+			LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_initialize invalid SteamAPI_Init"
+				);
+
 			return false;
 		}
 
@@ -70,16 +76,19 @@ namespace Menge
 
 		HSteamUser hSteamUser = m_client->ConnectToGlobalUser( hSteamPipe );
 
-		m_user = m_client->GetISteamUser( hSteamUser, hSteamPipe, STEAMUSER_INTERFACE_VERSION );
-		
-		if( m_user->BLoggedOn() == false )
-		{
-			return false;
-		}
+		//m_user = m_client->GetISteamUser( hSteamUser, hSteamPipe, STEAMUSER_INTERFACE_VERSION );
+		//
+		//if( m_user->BLoggedOn() == false )
+		//{
+		//	LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_initialize invalid BLoggedOn"
+		//		);
+
+		//	return false;
+		//}
 
 		m_userStats = m_client->GetISteamUserStats( hSteamUser, hSteamPipe, STEAMUSERSTATS_INTERFACE_VERSION );
 
-		m_userStats->RequestCurrentStats();
+		//m_userStats->RequestCurrentStats();
 		//m_userStats->RequestCurrentStats();
 				
 		//if( m_userStats->GetStat() == false )

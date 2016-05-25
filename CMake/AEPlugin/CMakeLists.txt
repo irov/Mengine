@@ -34,10 +34,11 @@ SET( SOURCE_DIR ${MENGINE_REPOSITORY}/src )
 SET( CMAKE_TEMP_DIR ${MENGINE_REPOSITORY}/CMakeTemp/AEPlugin/${CMAKE_BUILD_TYPE} )
 
 # implementation
-
 SET( MENGE_DEPENDENCIES )
 SET( APPLICATION_DEPENDENCIES )
-SET( APPLICATION_LIBS )
+SET( APPLICATION_LIBS ) 
+
+SET(MENGINE_ASTRALAX_PARTICLE2_DLL OFF)
 
 INCLUDE_DIRECTORIES( ${SOURCE_DIR} )
 INCLUDE_DIRECTORIES( ${SOURCE_DIR}/Utils )
@@ -55,6 +56,7 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/Win32UnicodeSystem ${CMAKE_TEMP_DIR}/Syst
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/Win32ThreadSystem ${CMAKE_TEMP_DIR}/System/Win32ThreadSystem )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/DX9RenderSystem ${CMAKE_TEMP_DIR}/System/DX9RenderSystem )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/MockupOptionsSystem ${CMAKE_TEMP_DIR}/System/MockupOptionsSystem )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/AstralaxParticleSystem2 ${CMAKE_TEMP_DIR}/System/AstralaxParticleSystem2 )
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceProvider ${CMAKE_TEMP_DIR}/Service/ServiceProvider )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceOptions ${CMAKE_TEMP_DIR}/Service/ServiceOptions )
@@ -68,12 +70,12 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceConverter ${CMAKE_TEMP_DIR}/Servi
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceLogger ${CMAKE_TEMP_DIR}/Service/ServiceLogger )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServicePlugin ${CMAKE_TEMP_DIR}/Service/ServicePlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceRender ${CMAKE_TEMP_DIR}/Service/ServiceRender )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceParticle2 ${CMAKE_TEMP_DIR}/Service/ServiceParticle2 )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceUnicode ${CMAKE_TEMP_DIR}/Service/ServiceUnicode )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceThread ${CMAKE_TEMP_DIR}/Service/ServiceThread )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceConfig ${CMAKE_TEMP_DIR}/Service/ServiceConfig )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceNotification ${CMAKE_TEMP_DIR}/Service/ServiceNotification )
 
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeDevelopmentConverterPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeDevelopmentConverterPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeImageCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeImageCodecPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeZipPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeZipPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeLZ4Plugin ${CMAKE_TEMP_DIR}/Plugin/MengeLZ4Plugin )

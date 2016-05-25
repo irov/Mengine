@@ -59,6 +59,9 @@ namespace Menge
 		virtual void stopModule( const ConstString & _name ) = 0;
 
 	public:
+		virtual void stopModules() = 0;
+
+	public:
 		virtual void update( float _time, float _timing ) = 0;
 		virtual void render( const RenderObjectState * _state, unsigned int _debugMask ) = 0;
 

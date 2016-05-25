@@ -16,6 +16,22 @@ namespace Menge
     {
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool ModuleService::_initialize()
+	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ModuleService::_finalize()
+	{
+		if( m_modules.empty() == false )
+		{
+			return;
+		}
+
+		m_modules.clear();
+		m_moduleFactory.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ModuleService::registerModule( const ConstString & _name, const ModuleFactoryInterfacePtr & _module )
 	{
 		m_moduleFactory.insert( std::make_pair(_name, _module) );
@@ -102,6 +118,20 @@ namespace Menge
 		module->finalize();
 		
 		m_modules.erase( it_found );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ModuleService::stopModules()
+	{
+		for( TVectorModules::iterator
+			it = m_modules.begin(),
+			it_end = m_modules.end();
+		it != it_end;
+		++it )
+		{
+			const ModuleInterfacePtr & module = *it;
+
+			module->finalize();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleService::update( float _time, float _timing )

@@ -15,12 +15,19 @@ namespace Menge
         ~ModuleService();
 
 	public:
+		bool _initialize() override;
+		void _finalize() override;
+
+	public:
 		bool registerModule( const ConstString & _name, const ModuleFactoryInterfacePtr & _module ) override;
 		void unregisterModule( const ConstString & _name ) override;
 
 	public:
 		bool runModule( const ConstString & _name ) override;
 		void stopModule( const ConstString & _name ) override;
+
+	public:
+		void stopModules() override;
 
 	public:
 		void update( float _time, float _timing ) override;

@@ -35,12 +35,6 @@ namespace Menge
 
 	public:
 		SoundBufferInterfacePtr createSoundBuffer() const;
-		SoundBufferInterfacePtr createSoundBufferNoCache() const;
-		void destroySoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) const;
-
-	protected:
-		void _cache() override;
-		void _uncache() override;
 
 	protected:
 		bool _compile() override;
@@ -53,8 +47,7 @@ namespace Menge
 		ConstString m_converter;
 		float m_defaultVolume;
 
-		typedef ResourceCacher<SoundBufferInterfacePtr> TCacherSoundBuffer;
-		mutable TCacherSoundBuffer m_soundBufferCacher;
+		SoundBufferInterfacePtr m_soundBufferNoStreamableCache;
 
 		bool m_isStreamable;
 	};

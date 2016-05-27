@@ -430,13 +430,7 @@ namespace Menge
 		}
 
 		RENDER_SYSTEM( m_serviceProvider )
-			->clear( 0x00000000, m_debugRedAlertMode | m_debugStepRenderMode );
-		
-		//this->create2DBuffers_();
-		//m_interface->clearFrameBuffer( FBT_COLOR );
-		//m_interface->setRenderViewport( m_currentRenderViewport );
-
-		//RENDER_SYSTEM(m_serviceProvider)->setShader( m_shader );
+			->clear( 0x00000000, true );
 
 		return true;
 	}

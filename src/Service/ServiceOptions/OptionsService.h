@@ -10,6 +10,10 @@ namespace Menge
 #	define MENGINE_OPTIONS_KEY_SIZE 32
 #	endif
 
+#	ifndef MENGINE_OPTIONS_VALUE_SIZE
+#	define MENGINE_OPTIONS_VALUE_SIZE 32
+#	endif
+
 	class OptionsService
 		: public ServiceBase<OptionsServiceInterface>
 	{
@@ -19,11 +23,13 @@ namespace Menge
 
 	public:
 		bool hasOption( const Char * _key ) const override;
+		const Char * getOptionValue( const Char * _key ) const override;
 
 	protected:
 		struct Option
 		{
 			Char key[MENGINE_OPTIONS_KEY_SIZE];
+			Char value[MENGINE_OPTIONS_VALUE_SIZE];
 		};
 
 		typedef stdex::vector<Option> TVectorOptions;

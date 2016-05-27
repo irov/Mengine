@@ -23,8 +23,6 @@ namespace Menge
 			return false;
 		}
 		
-		//const Char * option_next = commandLine;
-
 		const Char * option_begin = strstr( commandLine, "-" );
 
 		while( option_begin != nullptr )
@@ -61,6 +59,21 @@ namespace Menge
 				option_begin = nullptr;
 			}
 
+			const char * option_value = strstr( op.key, ":" );
+
+			if( option_value != nullptr )
+			{
+				size_t len = option_value - op.key;
+
+				op.key[len] = 0;
+
+				strcpy( op.value, option_value + 1 );
+			}
+			else
+			{
+				op.value[0] = 0;
+			}
+
 			m_options.push_back( op );			
 		}
 
@@ -90,5 +103,26 @@ namespace Menge
 		}
 
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Char * OptionsService::getOptionValue( const Char * _key ) const
+	{
+		for( TVectorOptions::const_iterator
+			it = m_options.begin(),
+			it_end = m_options.end();
+		it != it_end;
+		++it )
+		{
+			const Option & op = *it;
+
+			if( strcmp( op.key, _key ) != 0 )
+			{
+				continue;
+			}
+
+			return op.value;
+		}
+
+		return nullptr;
 	}
 }

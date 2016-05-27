@@ -110,11 +110,7 @@ namespace Menge
 
 		m_sourceID = 0;
 
-		if( m_soundBuffer != nullptr )
-		{
-			m_resourceSound->destroySoundBuffer( m_soundBuffer );
-			m_soundBuffer = nullptr;
-		}
+		m_soundBuffer = nullptr;
 
         m_resourceSound.release();
 	}

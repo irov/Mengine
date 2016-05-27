@@ -27,6 +27,7 @@ namespace Menge
 
 	public:
 		virtual bool hasOption( const Char * _key ) const = 0;
+		virtual const Char * getOptionValue( const Char * _key ) const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define OPTIONS_SERVICE( serviceProvider )\

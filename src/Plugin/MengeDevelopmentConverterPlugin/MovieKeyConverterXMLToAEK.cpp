@@ -357,7 +357,7 @@ namespace Menge
 
 				mt::quatf qo;
 				mt::make_quat_from_euler( qo, orientation );
-
+				
 				mt::quatf qr;
 				mt::make_quat_from_euler( qr, rotation );
 

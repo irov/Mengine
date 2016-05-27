@@ -9,8 +9,7 @@
 namespace mt
 {
 	struct quatf
-	{
-	
+	{	
 		float x;
 		float y;
 		float z;
@@ -28,7 +27,8 @@ namespace mt
 
 		MENGINE_MATH_METHOD_INLINE quatf& operator=(const quatf &q);
 
-		MENGINE_MATH_METHOD_INLINE float norm() const;
+		MENGINE_MATH_METHOD_INLINE float length() const;
+		MENGINE_MATH_METHOD_INLINE void normalize();
 
 		MENGINE_MATH_METHOD_INLINE float getYaw(bool _reprojectAxis = true) const;
 		MENGINE_MATH_METHOD_INLINE float getPitch(bool _reprojectAxis = true) const;
@@ -53,11 +53,13 @@ namespace mt
 
 	MENGINE_MATH_FUNCTION_INLINE float dot_q_q(const quatf& _a, const quatf& _b);
 
-	MENGINE_MATH_FUNCTION_INLINE void norm_q(quatf& _out, const quatf& _rhs);
+	MENGINE_MATH_FUNCTION_INLINE void norm_q_q(quatf& _out, const quatf& _rhs);
 	MENGINE_MATH_FUNCTION_INLINE quatf norm_q(const quatf& _rhs);
 	MENGINE_MATH_FUNCTION_INLINE void norm_safe_q(quatf& out, const quatf& _rhs);
 	MENGINE_MATH_FUNCTION_INLINE quatf norm_safe_q(const quatf& _rhs);
 
+	MENGINE_MATH_FUNCTION_INLINE void lerp_q_q( quatf & _q, const quatf & _q1, const quatf& _q2, float _t );
+	
 	MENGINE_MATH_FUNCTION_INLINE void q_from_angle_axis(quatf& out, const vec3f& _rhs, float _val);
 	MENGINE_MATH_FUNCTION_INLINE quatf q_from_angle_axis(const vec3f& _rhs, float _val);
 

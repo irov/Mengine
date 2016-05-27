@@ -68,12 +68,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceSound::_compile()
 	{   
+		if( m_isStreamable == false )
+		{			
+			SoundBufferInterfacePtr soundBuffer = this->createSoundBuffer();
+
+			if( soundBuffer == nullptr )
+			{
+				return false;
+			}
+
+			m_soundBufferNoStreamableCache = soundBuffer;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::_release()
 	{
-		m_soundBufferCacher.clear();
+		m_soundBufferNoStreamableCache = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSound::_isValid() const
@@ -173,7 +185,7 @@ namespace Menge
         decoder = nullptr;
         stream = nullptr;
 		
-        SoundBufferInterfacePtr buffer = this->createSoundBufferNoCache();
+        SoundBufferInterfacePtr buffer = this->createSoundBuffer();
 
         if( buffer == nullptr )
         {
@@ -191,32 +203,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterfacePtr ResourceSound::createSoundBuffer() const
 	{
-		SoundBufferInterfacePtr cacheSoundBuffer = m_soundBufferCacher.findCache();
-
-		if( cacheSoundBuffer != nullptr )
+		if( m_isStreamable == false && m_soundBufferNoStreamableCache != nullptr )
 		{
-			const SoundDecoderInterfacePtr & decode = cacheSoundBuffer->getDecoder();
-
-			if( decode != nullptr )
-			{
-				if( decode->rewind() == false )
-				{
-					return nullptr;
-				}
-			}
-
-			return cacheSoundBuffer;
+			return m_soundBufferNoStreamableCache;
 		}
 
-        SoundBufferInterfacePtr soundBuffer = this->createSoundBufferNoCache();
-
-		m_soundBufferCacher.addCache( soundBuffer );
-
-        return soundBuffer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterfacePtr ResourceSound::createSoundBufferNoCache() const
-	{
 		const ConstString & category = this->getCategory();
 
 		SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE(m_serviceProvider)
@@ -234,21 +225,6 @@ namespace Menge
 		}
 
 		return soundBuffer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::destroySoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) const
-	{
-		m_soundBufferCacher.removeCache( _soundBuffer );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::_cache()
-	{
-		m_soundBufferCacher.lock();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::_uncache()
-	{
-		m_soundBufferCacher.unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float ResourceSound::getDefaultVolume() const

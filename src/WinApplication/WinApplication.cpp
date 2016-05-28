@@ -264,9 +264,9 @@ namespace Menge
 	{ 
 		_wstring.clear();
 
-		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
-		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
-		bool noroamingMode = HAS_OPTIONS( m_serviceProvider, "noroaming" );
+		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+		bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
+		bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );
 		
 		if( developmentMode == true && roamingMode == false || noroamingMode == true )
 		{
@@ -374,7 +374,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeLogFile_()
 	{
-		bool nologs = HAS_OPTIONS( m_serviceProvider, "nologs" );
+		bool nologs = HAS_OPTION( m_serviceProvider, "nologs" );
 		
 		if( nologs == true )
 		{
@@ -387,9 +387,9 @@ namespace Menge
 		WString unicode_logFilename;
 		unicode_logFilename += L"Game";
 
-		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
-		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
-		bool noroamingMode = HAS_OPTIONS( m_serviceProvider, "noroaming" );
+		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+		bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
+		bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );
 
 		if( developmentMode == true && roamingMode == false || noroamingMode == false )
 		{
@@ -431,9 +431,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeLogEngine_()
 	{
-		bool nologs = HAS_OPTIONS( m_serviceProvider, "nologs" );
+		bool nologs = HAS_OPTION( m_serviceProvider, "nologs" );
 
-		bool console = HAS_OPTIONS( m_serviceProvider, "console" );
+		bool console = HAS_OPTION( m_serviceProvider, "console" );
 
 		if( console == true && nologs == false )
 		{
@@ -455,9 +455,9 @@ namespace Menge
 				
 		EMessageLevel m_logLevel;
 
-		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
-		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
-		bool noroamingMode = HAS_OPTIONS( m_serviceProvider, "noroaming" );
+		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+		bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
+		bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );
 
 		if( developmentMode == true && roamingMode == false || noroamingMode == true )
 		{
@@ -468,27 +468,27 @@ namespace Menge
 			m_logLevel = LM_ERROR;
 		}
 
-		if( HAS_OPTIONS( m_serviceProvider, "log:0" ) == true )
+		if( HAS_OPTION( m_serviceProvider, "log:0" ) == true )
 		{
 			m_logLevel = LM_INFO;
 		}
-		else if( HAS_OPTIONS( m_serviceProvider, "log:1" ) == true )
+		else if( HAS_OPTION( m_serviceProvider, "log:1" ) == true )
 		{
 			m_logLevel = LM_LOG;
 		}
-		else if( HAS_OPTIONS( m_serviceProvider, "log:2" ) == true )
+		else if( HAS_OPTION( m_serviceProvider, "log:2" ) == true )
 		{
 			m_logLevel = LM_WARNING;
 		}
-		else if( HAS_OPTIONS( m_serviceProvider, "log:3" ) == true )
+		else if( HAS_OPTION( m_serviceProvider, "log:3" ) == true )
 		{
 			m_logLevel = LM_ERROR;
 		}
-		else if( HAS_OPTIONS( m_serviceProvider, "log:4" ) == true )
+		else if( HAS_OPTION( m_serviceProvider, "log:4" ) == true )
 		{
 			m_logLevel = LM_CRITICAL;
 		}
-		else if( HAS_OPTIONS( m_serviceProvider, "log:5" ) == true )
+		else if( HAS_OPTION( m_serviceProvider, "log:5" ) == true )
 		{
 			m_logLevel = LM_FATAL;
 		}
@@ -498,7 +498,7 @@ namespace Menge
 
 		uint32_t verboseFlag = 0;
 
-		bool profiler = HAS_OPTIONS( m_serviceProvider, "profiler" );
+		bool profiler = HAS_OPTION( m_serviceProvider, "profiler" );
 
 		if( profiler == true )
 		{
@@ -508,7 +508,7 @@ namespace Menge
 		LOGGER_SERVICE( m_serviceProvider )
 			->setVerboseFlag( verboseFlag );
 
-		if( HAS_OPTIONS( m_serviceProvider, "verbose" ) == true )
+		if( HAS_OPTION( m_serviceProvider, "verbose" ) == true )
 		{
 			LOGGER_SERVICE( m_serviceProvider )
 				->setVerboseLevel( LM_MAX );
@@ -594,7 +594,7 @@ namespace Menge
 
 		SERVICE_CREATE( m_serviceProvider, SoundSystem );
 		
-		bool muteMode = HAS_OPTIONS( m_serviceProvider, "mute" );
+		bool muteMode = HAS_OPTION( m_serviceProvider, "mute" );
 		
 		if( muteMode == true || SERVICE_EXIST( m_serviceProvider, Menge::SoundSystemInterface ) == false )
 		{
@@ -617,9 +617,9 @@ namespace Menge
 
 #	ifdef _DEBUG
 		{
-			bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
-			bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
-			bool noroamingMode = HAS_OPTIONS( m_serviceProvider, "noroaming" );
+			bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+			bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
+			bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );
 
 			if( developmentMode == true && roamingMode == false || noroamingMode == true )
 			{
@@ -682,11 +682,11 @@ namespace Menge
 #	ifdef _DEBUG
 		bool devplugins = true;
 #	else
-		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
+		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
 		bool devplugins = developmentMode;
 #	endif
 						
-		bool nodevplugins = HAS_OPTIONS( m_serviceProvider, "nodevplugins" );
+		bool nodevplugins = HAS_OPTION( m_serviceProvider, "nodevplugins" );
 
 		if( devplugins == true && nodevplugins == false )
 		{
@@ -818,7 +818,7 @@ namespace Menge
 		bool vsync = APPLICATION_SERVICE( m_serviceProvider )
 			->getVSync();
 
-		bool maxfps = HAS_OPTIONS( m_serviceProvider, "maxfps" );
+		bool maxfps = HAS_OPTION( m_serviceProvider, "maxfps" );
 	
 		if( maxfps == true && vsync == true )
 		{

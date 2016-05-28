@@ -116,6 +116,8 @@ namespace Menge
 
 			module->finalize();
 		}
+
+		m_modules.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleService::update( float _time, float _timing )

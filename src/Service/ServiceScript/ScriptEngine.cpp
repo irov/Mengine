@@ -127,7 +127,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::_initialize()
 	{
-		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
+		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
 
 		if( developmentMode == true )
         {

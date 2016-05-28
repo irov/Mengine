@@ -219,7 +219,7 @@ namespace Menge
 		videoCodecOptions.fps = m_frameRate;
 		videoCodecOptions.alpha = m_alpha;
 
-		videoCodecOptions.mock = HAS_OPTIONS( m_serviceProvider, "novideo" );
+		videoCodecOptions.mock = HAS_OPTION( m_serviceProvider, "novideo" );
         videoCodecOptions.noSeek = m_noSeek;
 
         if( videoDecoder->setOptions( &videoCodecOptions ) == false )

@@ -33,10 +33,10 @@ namespace Menge
 #   define OPTIONS_SERVICE( serviceProvider )\
     ((Menge::OptionsServiceInterface *)SERVICE_GET(serviceProvider, Menge::OptionsServiceInterface))
 	//////////////////////////////////////////////////////////////////////////
-#	define HAS_OPTIONS( serviceProvider, key )\
-	(OPTIONS_SERVICE( serviceProvider )->hasOption( key ) == true)
+#	define HAS_OPTION( serviceProvider, key )\
+	OPTIONS_SERVICE( serviceProvider )->hasOption( key )
 	//////////////////////////////////////////////////////////////////////////
-#	define APSENT_OPTIONS( serviceProvider, key )\
-	(OPTIONS_SERVICE( serviceProvider )->hasOption( key ) == false)
+#	define GET_OPTION_VALUE( serviceProvider, key )\
+	OPTIONS_SERVICE( serviceProvider )->getOptionValue( key )
 }
 

@@ -292,7 +292,14 @@ namespace Menge
 
 		m_locale = CONFIG_VALUE( m_serviceProvider, "Locale", "Default", STRINGIZE_STRING_LOCAL( m_serviceProvider, "en" ) );
 
-		LOGGER_WARNING( m_serviceProvider )("Locale %s"
+		if( HAS_OPTION( m_serviceProvider, "locale" ) == true )
+		{
+			const char * option_locale = GET_OPTION_VALUE( m_serviceProvider, "locale" );
+
+			m_locale = Helper::stringizeString( m_serviceProvider, option_locale );
+		}
+
+		LOGGER_WARNING( m_serviceProvider )("Application::_initialize locale %s"
 			, m_locale.c_str()
 			);
 
@@ -301,7 +308,7 @@ namespace Menge
 		m_fullscreen = CONFIG_VALUE( m_serviceProvider, "Window", "Fullscreen", true );
 		m_vsync = CONFIG_VALUE( m_serviceProvider, "Window", "VSync", true );
 
-		if( HAS_OPTIONS( m_serviceProvider, "author" ) == true )
+		if( HAS_OPTION( m_serviceProvider, "author" ) == true || HAS_OPTION( m_serviceProvider, "support" ) == true )
 		{
 			LOGGER_CRITICAL( m_serviceProvider )("Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru");
 		}
@@ -637,8 +644,8 @@ namespace Menge
 			return false;
 		}
 
-		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
-		bool noresourceCheck = HAS_OPTIONS( m_serviceProvider, "noresourcecheck" );
+		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+		bool noresourceCheck = HAS_OPTION( m_serviceProvider, "noresourcecheck" );
 
 		if( developmentMode == true && noresourceCheck == false )
 		{
@@ -655,7 +662,7 @@ namespace Menge
 				LOGGER_ERROR(m_serviceProvider)("Resources validation is invalid!!!!!!!!!!!!!"
 					);
 
-				bool resourceCheckCritical = HAS_OPTIONS( m_serviceProvider, "noresourcecheckcritical" );
+				bool resourceCheckCritical = HAS_OPTION( m_serviceProvider, "noresourcecheckcritical" );
 
 				if( resourceCheckCritical == false )
 				{
@@ -723,7 +730,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::keyEvent( const InputKeyEvent & _event )
 	{
-		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
+		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
 
 		if( developmentMode == true )
 		{
@@ -1681,7 +1688,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFullscreenMode() const
 	{
-		bool nofullscreen = HAS_OPTIONS( m_serviceProvider, "nofullscreen" );
+		bool nofullscreen = HAS_OPTION( m_serviceProvider, "nofullscreen" );
         
 		if( nofullscreen == true )
         {
@@ -1800,6 +1807,11 @@ namespace Menge
 		ConstString prevLocale = m_locale;
 
 		m_locale = _locale;
+
+		LOGGER_WARNING( m_serviceProvider )("Application::setLocale new locale '%s' old '%s'"
+			, m_locale.c_str()
+			, prevLocale.c_str()
+			);
 
 		NOTIFICATION_SERVICE( m_serviceProvider )
 			->notify( NOTIFICATOR_CHANGE_LOCALE_PREPARE, prevLocale, m_locale );

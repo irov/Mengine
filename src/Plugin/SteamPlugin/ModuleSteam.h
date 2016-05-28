@@ -30,9 +30,7 @@ namespace Menge
 		ISteamUserStats	* m_userStats;
 		ISteamFriends * m_friends;
 
-	//public:
-	//	STEAM_CALLBACK( ModuleSteam, OnUserStatsReceived, UserStatsReceived_t, m_steamCallbackUserStatsReceived );
-	//	STEAM_CALLBACK( ModuleSteam, OnUserStatsStored, UserStatsStored_t, m_steamCallbackUserStatsStored );
-	//	STEAM_CALLBACK( ModuleSteam, OnAchievementStored, UserAchievementStored_t, m_steamCallbackAchievementStored );
+		typedef stdex::map<String, ConstString> TMapISO639_1;
+		TMapISO639_1 m_iso639_1;
 	};
 }

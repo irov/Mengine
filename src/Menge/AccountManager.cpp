@@ -409,7 +409,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::loadAccounts()
 	{        
-		bool noLoadAccount = HAS_OPTIONS( m_serviceProvider, "noaccounts" );
+		bool noLoadAccount = HAS_OPTION( m_serviceProvider, "noaccounts" );
 
 		if( noLoadAccount == true )
 		{

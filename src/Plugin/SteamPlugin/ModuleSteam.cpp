@@ -6,8 +6,10 @@
 #	include "ModuleSteam.h"
 
 #	include "Interface/ConfigInterface.h"
+#	include "Interface/OptionsInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/UnicodeInterface.h"
+#	include "Interface/ApplicationInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -47,16 +49,55 @@ namespace Menge
 	bool ModuleSteam::_initialize()
 	{
 		s_serviceProvider = m_serviceProvider;
+
+		//danish, dutch, english, finnish, french, german, italian, korean,
+		//norwegian, polish, portuguese, russian, schinese, spanish, swedish, tchinese, ukrainian
+
+		m_iso639_1["danish"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "da" );
+		m_iso639_1["dutch"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "nl" );
+		m_iso639_1["english"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "en" );
+		m_iso639_1["finnish"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "fi" );
+		m_iso639_1["french"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "fr" );
+		m_iso639_1["german"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "de" );
+		m_iso639_1["italian"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "it" );
+		m_iso639_1["korean"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "ko" );
+		m_iso639_1["russian"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "ru" );
+		m_iso639_1["norwegian"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "no" );
+		m_iso639_1["polish"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "pl" );
+		m_iso639_1["portuguese"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "pt" );
+		m_iso639_1["schinese"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "zh" );
+		m_iso639_1["spanish"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "es" );
+		m_iso639_1["swedish"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "sv" );
+		m_iso639_1["tchinese"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "zh" );
+		m_iso639_1["ukrainian"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "uk" );
 		
 #	ifndef _DEBUG
 		int32_t appId = CONFIG_VALUE( m_serviceProvider, "Steam", "AppId", k_uAppIdInvalid );
 
-		if( SteamAPI_RestartAppIfNecessary( appId ) == true )
+		if( HAS_OPTION( m_serviceProvider, "steamappid" ) == true )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_initialize invalid SteamAPI_RestartAppIfNecessary"
-				);
+			const Char * str_steamappid = GET_OPTION_VALUE( m_serviceProvider, "steamappid" );
 
-			return false;
+			if( sscanf( str_steamappid, "%d", &appId ) != 0 )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_initialize invalid option steamappid '%s'"
+					, str_steamappid
+					);
+
+				return false;
+			}
+		}
+
+		if( HAS_OPTION( m_serviceProvider, "norestartsteamapp" ) == false )
+		{
+			if( SteamAPI_RestartAppIfNecessary( appId ) == true )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_initialize invalid SteamAPI_RestartAppIfNecessary [Id = %d]"
+					, appId
+					);
+
+				return false;
+			}
 		}
 #	endif
 
@@ -68,6 +109,37 @@ namespace Menge
 			return false;
 		}
 
+		const char * AvailableGameLanguages = SteamApps()->GetAvailableGameLanguages();
+
+		LOGGER_INFO( m_serviceProvider )("ModuleSteam::initialize available game languages '%s'"
+			, AvailableGameLanguages
+			);
+
+		const char * CurrentGameLanguage = SteamApps()->GetCurrentGameLanguage();
+
+		LOGGER_WARNING( m_serviceProvider )("ModuleSteam::initialize game language '%s'"
+			, CurrentGameLanguage
+			);
+		
+		TMapISO639_1::const_iterator it_locale_found = m_iso639_1.find( CurrentGameLanguage );
+		
+		if( it_locale_found != m_iso639_1.end() )
+		{
+			const ConstString & steam_locale = it_locale_found->second;
+
+			APPLICATION_SERVICE( m_serviceProvider )
+				->setLocale( steam_locale );
+		}
+		else
+		{
+			LOGGER_ERROR( m_serviceProvider )("ModuleSteam::initialize not found game localization for language '%s' setup 'en'"
+				, CurrentGameLanguage
+				);
+
+			APPLICATION_SERVICE( m_serviceProvider )
+				->setLocale( STRINGIZE_STRING_LOCAL( m_serviceProvider, "en" ) );
+		}
+		
 		m_client = SteamClient();
 
 		m_client->SetWarningMessageHook( &s_SteamAPIWarningMessageHook );
@@ -87,7 +159,7 @@ namespace Menge
 		//}
 
 		m_userStats = m_client->GetISteamUserStats( hSteamUser, hSteamPipe, STEAMUSERSTATS_INTERFACE_VERSION );
-
+		
 		//m_userStats->RequestCurrentStats();
 		//m_userStats->RequestCurrentStats();
 				
@@ -121,6 +193,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleSteam::_finalize()
 	{
+		m_userStats->StoreStats();
+
+		SteamAPI_Shutdown();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleSteam::_update( float _time, float _timing )
@@ -271,6 +346,8 @@ namespace Menge
 				return;
 			}
 		}
+
+		m_userStats->StoreStats();
 	}
 	////////////////////////////////////////////////////////////////////////////
 	//void ModuleSteam::OnUserStatsReceived( UserStatsReceived_t * _pCallback )

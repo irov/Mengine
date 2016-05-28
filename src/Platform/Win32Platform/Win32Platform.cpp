@@ -107,33 +107,33 @@ namespace Menge
 		m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN32" );
 		m_touchpad = false;
 
-		if( HAS_OPTIONS( m_serviceProvider, "win32" ) )
+		if( HAS_OPTION( m_serviceProvider, "win32" ) )
 		{
 			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN32" );
 			m_touchpad = false;
 		}
-		else if( HAS_OPTIONS(m_serviceProvider, "ios") )
+		else if( HAS_OPTION(m_serviceProvider, "ios") )
 		{ 
 			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "IOS" );
 			m_touchpad = true;
 		}
-		else if( HAS_OPTIONS( m_serviceProvider, "android" ) )
+		else if( HAS_OPTION( m_serviceProvider, "android" ) )
 		{
 			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "ANDROID" );
 			m_touchpad = true;
 		}
-		else if( HAS_OPTIONS( m_serviceProvider, "wp" ) )
+		else if( HAS_OPTION( m_serviceProvider, "wp" ) )
 		{
 			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WP" );
 			m_touchpad = true;
 		}
-		else if( HAS_OPTIONS( m_serviceProvider, "osx" ) )
+		else if( HAS_OPTION( m_serviceProvider, "osx" ) )
 		{
 			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "OSX" );
 			m_touchpad = false;
 		}
 
-		if( HAS_OPTIONS( m_serviceProvider, "touchpad" ) )
+		if( HAS_OPTION( m_serviceProvider, "touchpad" ) )
 		{
 			m_touchpad = true;
 		}
@@ -153,7 +153,7 @@ namespace Menge
 		TIMER_SERVICE( m_serviceProvider )
 			->resetDeltaTime();
 
-		bool nopause = HAS_OPTIONS( m_serviceProvider, "nopause" );
+		bool nopause = HAS_OPTION( m_serviceProvider, "nopause" );
 
 #	ifndef _DEBUG
 		try
@@ -892,7 +892,7 @@ namespace Menge
 		bool vsync = APPLICATION_SERVICE( m_serviceProvider )
 			->getVSync();
 
-		bool maxfps = HAS_OPTIONS( m_serviceProvider, "maxfps" );
+		bool maxfps = HAS_OPTION( m_serviceProvider, "maxfps" );
 
 		if( maxfps == false && vsync == false )
 		{
@@ -1399,7 +1399,7 @@ namespace Menge
 				->pushMouseEnterEvent( 0, point.x, point.y, 0.f );
 		}
 
-		bool nopause = HAS_OPTIONS( m_serviceProvider, "nopause" );
+		bool nopause = HAS_OPTION( m_serviceProvider, "nopause" );
 
 		if( nopause == false )
 		{

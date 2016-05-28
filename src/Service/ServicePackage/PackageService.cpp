@@ -201,7 +201,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::addPackage( const PackageDesc & _desc )
 	{
-		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
+		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
 
 		if( developmentMode == false && _desc.dev == true )
 		{

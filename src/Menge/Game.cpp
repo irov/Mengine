@@ -312,7 +312,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality()
 	{
-		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
+		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
 
         SCRIPT_SERVICE(m_serviceProvider)
 			->addGlobalModule( "_DEVELOPMENT", pybind::get_bool( developmentMode ) );

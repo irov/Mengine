@@ -40,9 +40,9 @@ namespace Menge
 		WString unicode_logFilename;
 		unicode_logFilename += L"Game";
 
-		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
-		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
-		bool noroamingMode = HAS_OPTIONS( m_serviceProvider, "noroaming" );
+		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+		bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
+		bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );
 
 		if( developmentMode == true && roamingMode == false || noroamingMode == true)
 		{

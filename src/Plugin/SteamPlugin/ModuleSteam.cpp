@@ -53,22 +53,58 @@ namespace Menge
 		//danish, dutch, english, finnish, french, german, italian, korean,
 		//norwegian, polish, portuguese, russian, schinese, spanish, swedish, tchinese, ukrainian
 
+		//  brazilian
+		//	bulgarian
+		//	czech
+		//	danish
+		//	dutch
+		//	english
+		//	finnish
+		//	french
+		//	german
+		//	greek
+		//	hungarian
+		//	italian
+		//	japanese
+		//	koreana
+		//	norwegian
+		//	polish
+		//	portuguese
+		//	romanian
+		//	russian
+		//	schinese
+		//	spanish
+		//	swedish
+		//	tchinese
+		//	thai
+		//	turkish
+		//	ukrainian
+				
+		m_iso639_1["brazilian"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "pt-br" );
+		m_iso639_1["bulgarian"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "bg" );
+		m_iso639_1["czech"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "cs" );
 		m_iso639_1["danish"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "da" );
 		m_iso639_1["dutch"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "nl" );
 		m_iso639_1["english"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "en" );
 		m_iso639_1["finnish"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "fi" );
 		m_iso639_1["french"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "fr" );
 		m_iso639_1["german"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "de" );
+		m_iso639_1["greek"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "el" );
+		m_iso639_1["hungarian"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "hu" );
 		m_iso639_1["italian"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "it" );
-		m_iso639_1["korean"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "ko" );
-		m_iso639_1["russian"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "ru" );
+		m_iso639_1["japanese"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "ja" );
+		m_iso639_1["koreana"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "ko" );
 		m_iso639_1["norwegian"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "no" );
 		m_iso639_1["polish"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "pl" );
 		m_iso639_1["portuguese"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "pt" );
+		m_iso639_1["romanian"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "ro" );
+		m_iso639_1["russian"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "ru" );
 		m_iso639_1["schinese"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "zh" );
 		m_iso639_1["spanish"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "es" );
 		m_iso639_1["swedish"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "sv" );
-		m_iso639_1["tchinese"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "zh" );
+		m_iso639_1["tchinese"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "zh-tr" );
+		m_iso639_1["thai"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "th" );
+		m_iso639_1["turkish"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "tr" );
 		m_iso639_1["ukrainian"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "uk" );
 		
 #	ifndef _DEBUG

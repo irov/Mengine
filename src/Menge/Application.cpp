@@ -292,13 +292,6 @@ namespace Menge
 
 		m_locale = CONFIG_VALUE( m_serviceProvider, "Locale", "Default", STRINGIZE_STRING_LOCAL( m_serviceProvider, "en" ) );
 
-		if( HAS_OPTION( m_serviceProvider, "locale" ) == true )
-		{
-			const char * option_locale = GET_OPTION_VALUE( m_serviceProvider, "locale" );
-
-			m_locale = Helper::stringizeString( m_serviceProvider, option_locale );
-		}
-
 		LOGGER_WARNING( m_serviceProvider )("Application::_initialize locale %s"
 			, m_locale.c_str()
 			);
@@ -630,6 +623,13 @@ namespace Menge
 				);
 
 			return false;
+		}
+
+		if( HAS_OPTION( m_serviceProvider, "locale" ) == true )
+		{
+			const char * option_locale = GET_OPTION_VALUE( m_serviceProvider, "locale" );
+
+			m_locale = Helper::stringizeString( m_serviceProvider, option_locale );
 		}
 
 		LOGGER_INFO(m_serviceProvider)( "Application:initializeGame load game resource"

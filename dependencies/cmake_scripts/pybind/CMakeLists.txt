@@ -30,6 +30,7 @@ ${SOURCE_DIR}/src/list.cpp
 ${SOURCE_DIR}/src/tuple.cpp
 ${SOURCE_DIR}/src/dict.cpp
 ${SOURCE_DIR}/src/linked.cpp
+${SOURCE_DIR}/src/bindable.cpp
 )
 
 if( CMAKE_BUILD_TYPE MATCHES Debug )

@@ -267,6 +267,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::addModulePath( const ConstString & _pak, const TVectorScriptModulePack & _modules )
 	{
+		if( _modules.empty() == true )
+		{
+			return;
+		}
+
 		TVectorConstString pathes;
 		
 		for( TVectorScriptModulePack::const_iterator

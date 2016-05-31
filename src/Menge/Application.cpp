@@ -630,6 +630,10 @@ namespace Menge
 			const char * option_locale = GET_OPTION_VALUE( m_serviceProvider, "locale" );
 
 			m_locale = Helper::stringizeString( m_serviceProvider, option_locale );
+
+			LOGGER_WARNING( m_serviceProvider )("Application:initializeGame setup locale '%s'"
+				, m_locale.c_str()
+				);
 		}
 
 		LOGGER_INFO(m_serviceProvider)( "Application:initializeGame load game resource"

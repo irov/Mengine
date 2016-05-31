@@ -516,6 +516,16 @@ namespace Menge
 			return mt::sinf_fast(a);
 		}
 
+		float mt_cosf_deg( float a )
+		{
+			return mt::cosf_fast( a * mt::m_deg2rad );
+		}
+
+		float mt_sinf_deg( float a )
+		{
+			return mt::sinf_fast( a * mt::m_deg2rad );
+		}
+
 		float mt_tanf( float a )
 		{
 			return tanf( a );
@@ -2113,6 +2123,8 @@ namespace Menge
 		pybind::def_functor( "cosf", helperScriptMethod, &HelperScriptMethod::mt_cosf );
 		pybind::def_functor( "sinf", helperScriptMethod, &HelperScriptMethod::mt_sinf );
 		pybind::def_functor( "tanf", helperScriptMethod, &HelperScriptMethod::mt_tanf );
+		pybind::def_functor( "cosf_deg", helperScriptMethod, &HelperScriptMethod::mt_cosf_deg );
+		pybind::def_functor( "sinf_deg", helperScriptMethod, &HelperScriptMethod::mt_sinf_deg );
 		pybind::def_functor( "acosf", helperScriptMethod, &HelperScriptMethod::mt_acosf );
 		pybind::def_functor( "atanf", helperScriptMethod, &HelperScriptMethod::mt_atanf );
 		pybind::def_functor( "logf", helperScriptMethod, &HelperScriptMethod::mt_logf );

@@ -31,6 +31,21 @@ namespace Menge
 		return m_collisionRadius;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void NodeCollisionActor::setCollisionRaycast( const mt::vec2f & _raycastDirection )
+	{
+		m_raycastDirection = _raycastDirection;
+
+		if( m_actor != nullptr )
+		{
+			m_actor->setRaycastDirection( m_raycastDirection );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & NodeCollisionActor::getCollisionRaycast() const
+	{
+		return m_raycastDirection;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void NodeCollisionActor::setCollisionIFF( uint32_t _collisionIFF )
 	{
 		m_collisionIFF = _collisionIFF;
@@ -54,6 +69,18 @@ namespace Menge
 	bool NodeCollisionActor::getCollisionActive() const
 	{
 		return m_collisionActive;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeCollisionActor::addCollisionException( NodeCollisionActor * _actor )
+	{
+		if( _actor->isActivate() == false )
+		{
+			return;
+		}
+
+		const CollisionActorPtr & exception_actor = _actor->m_actor;
+
+		m_exceptions.push_back( exception_actor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCollisionActor::setCollisionWorld( const CollisionWorldPtr & _collision )
@@ -116,7 +143,22 @@ namespace Menge
 			return false;
 		}
 
-		m_actor = m_collisionWorld->createActor( this, m_collisionRadius, m_collisionIFF, m_collisionActive );
+		const CollisionActorPtr & actor = m_collisionWorld->createActor( this, m_collisionRadius, m_raycastDirection, m_collisionIFF, m_collisionActive );
+
+		for( TVectorActorException::iterator
+			it = m_exceptions.begin(),
+			it_end = m_exceptions.end();
+		it != it_end;
+		++it )
+		{
+			const CollisionActorPtr & exception = *it;
+
+			actor->addException( exception );
+		}
+
+		m_exceptions.clear();
+
+		m_actor = actor;
 
 		return true;
 	}

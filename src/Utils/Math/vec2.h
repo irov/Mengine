@@ -62,7 +62,8 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE vec2f operator-(vec2f _rhs);
 	MENGINE_MATH_FUNCTION_INLINE vec2f operator+(vec2f _rhs);
 
-	MENGINE_MATH_FUNCTION_INLINE void ident_v2(vec2f& _a);
+	MENGINE_MATH_FUNCTION_INLINE void ident_v2(vec2f& _a);	
+
 	MENGINE_MATH_FUNCTION_INLINE float length_v2(const vec2f& _a);
 	MENGINE_MATH_FUNCTION_INLINE float sqrlength_v2_v2(const vec2f& _a, const vec2f& _b);
 	MENGINE_MATH_FUNCTION_INLINE float length_v2_v2(const vec2f& _a, const vec2f& _b);
@@ -78,7 +79,8 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE void inv_v2(vec2f& _out, const vec2f & _in);
 	MENGINE_MATH_FUNCTION_INLINE void neg_v2(vec2f& _out);
 
-	MENGINE_MATH_FUNCTION_INLINE float dot_v2_v2(const vec2f& a, const vec2f& b);
+	MENGINE_MATH_FUNCTION_INLINE float dot_v2( const vec2f & a );
+	MENGINE_MATH_FUNCTION_INLINE float dot_v2_v2( const vec2f& a, const vec2f& b );
 	
 	MENGINE_MATH_FUNCTION_INLINE float norm_v2_f(vec2f& _out, const vec2f& _rhs);
 	MENGINE_MATH_FUNCTION_INLINE void norm_v2_v2(vec2f& _out, const vec2f& _rhs);

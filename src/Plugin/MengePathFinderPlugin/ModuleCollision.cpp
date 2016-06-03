@@ -35,6 +35,8 @@ namespace Menge
 		pybind::interface_<NodeCollisionActor, pybind::bases<Node> >( "NodeCollisionActor", false )
 			.def( "setCollisionRadius", &NodeCollisionActor::setCollisionRadius )
 			.def( "getCollisionRadius", &NodeCollisionActor::getCollisionRadius )
+			.def( "setCollisionRaycast", &NodeCollisionActor::setCollisionRaycast )
+			.def( "getCollisionRaycast", &NodeCollisionActor::getCollisionRaycast )
 			.def( "setCollisionIFF", &NodeCollisionActor::setCollisionIFF )
 			.def( "getCollisionIFF", &NodeCollisionActor::getCollisionIFF )
 			.def( "setCollisionActive", &NodeCollisionActor::setCollisionActive )
@@ -43,6 +45,7 @@ namespace Menge
 			.def( "getCollisionWorld", &NodeCollisionActor::getCollisionWorld )
 			.def( "setCollisionUserData", &NodeCollisionActor::setCollisionUserData )
 			.def( "getCollisionUserData", &NodeCollisionActor::getCollisionUserData )
+			.def( "addCollisionException", &NodeCollisionActor::addCollisionException )
 			;
 
 		SCRIPT_SERVICE( m_serviceProvider )

@@ -1,5 +1,7 @@
 #	include "Animation.h"
 
+#   include "Interface/TimelineInterface.h"
+
 #	include "ResourceManager.h"
 
 #	include "ResourceAnimation.h"
@@ -149,6 +151,29 @@ namespace	Menge
 		}
 		
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_afterActivate()
+	{
+		Node::_afterActivate();
+
+		bool autoPlay = this->getAutoPlay();
+
+		if( autoPlay == true )
+		{
+			float time = TIMELINE_SERVICE( m_serviceProvider )
+				->getTime();
+
+			if( this->play( time ) == 0 )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Animation::_afterActivate '%s' resource '%s' auto play return 0"
+					, this->getName().c_str()
+					, this->m_resourceAnimation->getName().c_str()
+					);
+
+				return;
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_deactivate()

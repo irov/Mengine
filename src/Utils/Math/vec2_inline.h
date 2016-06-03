@@ -273,6 +273,11 @@ namespace mt
 		return _rhs;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE float dot_v2( const vec2f & a )
+	{
+		return a.x * a.x + a.y * a.y;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE float dot_v2_v2( const vec2f &a, const vec2f &b )
 	{
 		return a.x * b.x + a.y * b.y;

@@ -8,9 +8,13 @@
 #	include "Math/vec2.h"
 
 #   include "stdex/intrusive_ptr.h"
+#	include "stdex/stl_vector.h"
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<class CollisionActor> CollisionActorPtr;
+	//////////////////////////////////////////////////////////////////////////
 	class CollisionActor
 		: public FactorablePtr
 	{
@@ -26,8 +30,17 @@ namespace Menge
 		float getRadius() const;
 
 	public:
+		void setRaycastDirection( const mt::vec2f & _raycastDirection );
+		const mt::vec2f & getRaycastDirection() const;
+		
+	public:
 		void setIFF( uint32_t _iff );
-		uint32_t getIFF() const;		
+		uint32_t getIFF() const;
+
+	public:
+		void addException( const CollisionActorPtr & _actor );
+		void removeException( const CollisionActorPtr & _actor );
+		bool isException( const CollisionActorPtr & _actor ) const;
 
 	public:
 		void setActiove( bool _active );
@@ -53,12 +66,15 @@ namespace Menge
 
 		uint32_t m_iff;
 
+		typedef stdex::vector<CollisionActorPtr> TVectorActorException;
+		TVectorActorException m_exceptions;
+
+		mt::vec2f m_raycastDirection;
+
 		mt::vec2f m_currentPosition;
 		mt::vec2f m_prevPosition;
 
 		bool m_active;
 		bool m_remove;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<CollisionActor> CollisionActorPtr;
 }

@@ -22,12 +22,19 @@ namespace Menge
 		float getCollisionRadius() const;
 
 	public:
+		void setCollisionRaycast( const mt::vec2f & _raycastDirection );
+		const mt::vec2f & getCollisionRaycast() const;
+
+	public:
 		void setCollisionIFF( uint32_t _collisionIFF );
 		uint32_t getCollisionIFF() const;
 
 	public:
 		void setCollisionActive( bool _collisionActive );
 		bool getCollisionActive() const;
+
+	public:
+		void addCollisionException( NodeCollisionActor * _actor );
 
 	public:
 		void setCollisionWorld( const CollisionWorldPtr & _collision );
@@ -56,9 +63,13 @@ namespace Menge
 
 		CollisionActorPtr m_actor;
 
+		typedef stdex::vector<CollisionActorPtr> TVectorActorException;
+		TVectorActorException m_exceptions;
+
 		pybind::object m_data;
 
 		float m_collisionRadius;
+		mt::vec2f m_raycastDirection;
 		uint32_t m_collisionIFF;
 		bool m_collisionActive;
 	};

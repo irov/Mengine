@@ -23,7 +23,8 @@ namespace Menge
 
 	public:
 		uint32_t getFrameCount() const;
-		float getFrameDelay( uint32_t  _frame ) const;
+		
+		float getFrameDelay( uint32_t  _frame ) const;		
 
 		void setCurrentFrame( uint32_t _frame );
 		uint32_t getCurrentFrame() const;
@@ -49,6 +50,7 @@ namespace Menge
 		void _render( const RenderObjectState * _state ) override;
 
 		bool _activate() override;
+		void _afterActivate() override;
 		void _deactivate() override;
 
 		bool _compile() override;

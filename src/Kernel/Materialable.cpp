@@ -220,6 +220,15 @@ namespace Menge
 			}
 			else
 			{
+				if( textures[0] != nullptr )
+				{
+					texturesNum = 1;
+				}
+				else if( textures[1] != nullptr )
+				{
+					texturesNum = 2;
+				}
+
 				materialName = _materialName;
 			}		
 

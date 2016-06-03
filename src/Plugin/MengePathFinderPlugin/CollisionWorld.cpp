@@ -2,6 +2,10 @@
 
 #	include "Math/capsule2.h"
 
+#	ifndef MENGINE_COLLISION_WORLD_PENETRATION_COUNT
+#	define MENGINE_COLLISION_WORLD_PENETRATION_COUNT 64
+#	endif
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -49,12 +53,13 @@ namespace Menge
 		return m_iffs[_iff1][_iff2];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CollisionActorPtr CollisionWorld::createActor( CollisionActorProviderInterface * _provider, float _radius, uint32_t _iff, bool _active )
+	CollisionActorPtr CollisionWorld::createActor( CollisionActorProviderInterface * _provider, float _radius, const mt::vec2f & _raycastDirection, uint32_t _iff, bool _active )
 	{
 		CollisionActorPtr actor = m_factoryCollisionActor.createObject();
 
 		actor->setCollisionActorProvider( _provider );
 		actor->setRadius( _radius );
+		actor->setRaycastDirection( _raycastDirection );
 		actor->setIFF( _iff );
 		actor->setActiove( _active );
 		
@@ -131,7 +136,7 @@ namespace Menge
 			CollisionActorProviderInterface * actor_provider = actor->getCollisionActorProvider();
 
 			uint32_t collision_count = 0;
-			collision_desc collisions[16];
+			collision_desc collisions[MENGINE_COLLISION_WORLD_PENETRATION_COUNT];
 			
 			for( TVectorCollisionActor::iterator
 				it_test = m_actors.begin(),
@@ -146,7 +151,12 @@ namespace Menge
 					continue;
 				}
 
-				if( actor == actor_test )
+				if( actor_test == actor )
+				{
+					continue;
+				}
+
+				if( actor->isException( actor_test ) == true )
 				{
 					continue;
 				}
@@ -176,7 +186,7 @@ namespace Menge
 				desc.collision_normal = test_collision_normal;
 				desc.collision_penetration = test_collision_penetration;
 
-				if( collision_count == 16 )
+				if( collision_count == MENGINE_COLLISION_WORLD_PENETRATION_COUNT )
 				{
 					break;
 				}

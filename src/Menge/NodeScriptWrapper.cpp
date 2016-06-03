@@ -1077,6 +1077,13 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		void Transformation3D_setAngleDeg( Transformation3D * _transformation, float _angle )
+		{
+			float rad = _angle * mt::m_deg2rad;
+
+			_transformation->setOrientationX( rad );
+		}
+		//////////////////////////////////////////////////////////////////////////
 		void Transformation3D_removeRelationTransformation( Transformation3D * _transformation )
 		{
 			_transformation->setRelationTransformation( nullptr );
@@ -5991,6 +5998,7 @@ namespace Menge
 
 			.def( "setAngle", &Transformation3D::setOrientationX )
 			.def( "getAngle", &Transformation3D::getOrientationX )
+			.def_proxy_static( "setAngleDeg", nodeScriptMethod, &NodeScriptMethod::Transformation3D_setAngleDeg )
 
 			.def( "setDirection", &Transformation3D::setDirection )
 			.def( "setBillboard", &Transformation3D::setBillboard )
@@ -6640,8 +6648,8 @@ namespace Menge
 
 				{
 					pybind::interface_<Animation, pybind::bases<Sprite, Animatable> >( "Animation", false )
-						.def( "setAnimationResource", &Animation::setResourceAnimation )
-						.def( "getAnimationResource", &Animation::getResourceAnimation )
+						.def( "setResourceAnimation", &Animation::setResourceAnimation )
+						.def( "getResourceAnimation", &Animation::getResourceAnimation )
 						.def( "getFrameCount", &Animation::getFrameCount )
 						.def( "getFrameDelay", &Animation::getFrameDelay )
 						.def( "setCurrentFrame", &Animation::setCurrentFrame )

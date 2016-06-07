@@ -30,8 +30,8 @@ namespace Menge
 		float getRadius() const;
 
 	public:
-		void setRaycastDirection( const mt::vec2f & _raycastDirection );
-		const mt::vec2f & getRaycastDirection() const;
+		void setRaycastDirection( const mt::vec3f & _raycastDirection );
+		const mt::vec3f & getRaycastDirection() const;
 		
 	public:
 		void setIFF( uint32_t _iff );
@@ -53,7 +53,7 @@ namespace Menge
 		void update();
 
 	public:
-		void makeCapsule( mt::capsule2 & _capsule );
+		void getSphereCCD( mt::vec3f & _position, float & _radius, mt::vec3f & _velocity ) const;
 
 	public:
 		void remove();
@@ -69,10 +69,10 @@ namespace Menge
 		typedef stdex::vector<CollisionActorPtr> TVectorActorException;
 		TVectorActorException m_exceptions;
 
-		mt::vec2f m_raycastDirection;
+		mt::vec3f m_raycastDirection;
 
-		mt::vec2f m_currentPosition;
-		mt::vec2f m_prevPosition;
+		mt::vec3f m_currentPosition;
+		mt::vec3f m_prevPosition;
 
 		bool m_active;
 		bool m_remove;

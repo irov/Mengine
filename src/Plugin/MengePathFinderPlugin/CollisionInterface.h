@@ -2,7 +2,7 @@
 
 #	include "Factory/FactorablePtr.h"
 
-#	include "Math/vec2.h"
+#	include "Math/vec3.h"
 
 #   include "stdex/intrusive_ptr.h"
 
@@ -19,7 +19,7 @@ namespace Menge
 	class CollisionActorProviderInterface
 	{
 	public:
-		virtual void onCollisionPositionProvider( mt::vec2f & _position ) const = 0;
-		virtual bool onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec2f & _point, const mt::vec2f & _normal, float _penetration ) = 0;
+		virtual void onCollisionPositionProvider( mt::vec3f & _position ) const = 0;
+		virtual bool onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec3f & _point, const mt::vec3f & _normal, float _penetration ) = 0;
 	};
 }

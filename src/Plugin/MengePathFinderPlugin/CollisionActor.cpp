@@ -2,15 +2,17 @@
 
 #	include "Math/utils.h"
 
+#	include <algorithm>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	CollisionActor::CollisionActor()
 		: m_radius( 0.f )
 		, m_iff(0)
-		, m_raycastDirection(0.f, 0.f)
-		, m_currentPosition(0.f, 0.f)
-		, m_prevPosition(0.f, 0.f)
+		, m_raycastDirection( 0.f, 0.f, 0.f )
+		, m_currentPosition( 0.f, 0.f, 0.f )
+		, m_prevPosition( 0.f, 0.f, 0.f )
 		, m_active(false)
 		, m_remove(false)
 	{
@@ -36,12 +38,12 @@ namespace Menge
 		return m_radius;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CollisionActor::setRaycastDirection( const mt::vec2f & _raycastDirection )
+	void CollisionActor::setRaycastDirection( const mt::vec3f & _raycastDirection )
 	{
 		m_raycastDirection = _raycastDirection;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & CollisionActor::getRaycastDirection() const
+	const mt::vec3f & CollisionActor::getRaycastDirection() const
 	{
 		return m_raycastDirection;
 	}
@@ -101,7 +103,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionActor::initialize()
 	{
-		mt::vec2f position;
+		mt::vec3f position;
 		m_provider->onCollisionPositionProvider( position );
 
 		m_currentPosition = position;
@@ -110,10 +112,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionActor::update()
 	{
-		mt::vec2f position;
+		mt::vec3f position;
 		m_provider->onCollisionPositionProvider( position );
 
-		float dot_raycastDirection = mt::dot_v2( m_raycastDirection );
+		float dot_raycastDirection = mt::dot_v3( m_raycastDirection );
 
 		if( mt::equal_f_z( dot_raycastDirection ) == false )
 		{
@@ -127,11 +129,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CollisionActor::makeCapsule( mt::capsule2 & _capsule )
+	void CollisionActor::getSphereCCD( mt::vec3f & _position, float & _radius, mt::vec3f & _velocity ) const
 	{
-		_capsule.segment.a = m_prevPosition;
-		_capsule.segment.b = m_currentPosition;
-		_capsule.radius = m_radius;
+		_position = m_prevPosition;
+		_radius = m_radius;
+		_velocity = m_currentPosition - m_prevPosition;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionActor::remove()

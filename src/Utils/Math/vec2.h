@@ -68,6 +68,8 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE float sqrlength_v2_v2(const vec2f& _a, const vec2f& _b);
 	MENGINE_MATH_FUNCTION_INLINE float length_v2_v2(const vec2f& _a, const vec2f& _b);
 
+	MENGINE_MATH_FUNCTION_INLINE float length( const vec2f & _a, const vec2f & _b );
+
 	MENGINE_MATH_FUNCTION_INLINE bool cmp_v2_v2( const vec2f& _a, const vec2f& _b );
 
 	MENGINE_MATH_FUNCTION_INLINE void add_v2_v2(vec2f& _out,const vec2f& _a, const vec2f& _b);

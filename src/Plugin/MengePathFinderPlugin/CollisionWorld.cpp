@@ -1,6 +1,6 @@
 #	include "CollisionWorld.h"
 
-#	include "Math/capsule2.h"
+#	include "Math/ccd.h"
 
 #	ifndef MENGINE_COLLISION_WORLD_PENETRATION_COUNT
 #	define MENGINE_COLLISION_WORLD_PENETRATION_COUNT 64
@@ -53,7 +53,7 @@ namespace Menge
 		return m_iffs[_iff1][_iff2];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CollisionActorPtr CollisionWorld::createActor( CollisionActorProviderInterface * _provider, float _radius, const mt::vec2f & _raycastDirection, uint32_t _iff, bool _active )
+	CollisionActorPtr CollisionWorld::createActor( CollisionActorProviderInterface * _provider, float _radius, const mt::vec3f & _raycastDirection, uint32_t _iff, bool _active )
 	{
 		CollisionActorPtr actor = m_factoryCollisionActor.createObject();
 
@@ -79,17 +79,18 @@ namespace Menge
 	{
 		struct collision_desc
 		{
-			CollisionActor * actor_provider;
-			mt::vec2f collision_point;
-			mt::vec2f collision_normal;
-			float collision_penetration;
+			CollisionActor * collision_actor;
+			mt::vec3f collision_point;
+			mt::vec3f collision_normal;
+			float collision_time;
+			float hit_time;
 		};
 
 		struct collision_pred
 		{
 			bool operator()( const collision_desc & a, const collision_desc & b ) const
 			{
-				return a.collision_penetration < b.collision_penetration;
+				return a.collision_time < b.collision_time;
 			}
 		};
 	}
@@ -130,8 +131,10 @@ namespace Menge
 
 			uint32_t actor_iff = actor->getIFF();
 
-			mt::capsule2 actor_capsule;
-			actor->makeCapsule( actor_capsule );
+			mt::vec3f actor_position;
+			float actor_radius;
+			mt::vec3f actor_velocity;
+			actor->getSphereCCD( actor_position, actor_radius, actor_velocity );
 
 			CollisionActorProviderInterface * actor_provider = actor->getCollisionActorProvider();
 
@@ -161,13 +164,20 @@ namespace Menge
 					continue;
 				}
 
-				mt::capsule2 actor_test_capsule;
-				actor_test->makeCapsule( actor_test_capsule );
+				mt::vec3f actor_test_position;
+				float actor_test_radius;
+				mt::vec3f actor_test_velocity;
+				actor_test->getSphereCCD( actor_test_position, actor_test_radius, actor_test_velocity );
 
-				mt::vec2f test_collision_point;
-				mt::vec2f test_collision_normal;
-				float test_collision_penetration;
-				if( mt::capsule2_intersect_capsule2( actor_capsule, actor_test_capsule, test_collision_point, test_collision_normal, test_collision_penetration ) == false )
+				float test_collision_time;
+				mt::vec3f test_collision_normal;
+
+				if( mt::ccd_sphere_sphere( actor_position, actor_radius, actor_velocity, actor_test_position, actor_test_radius, actor_test_velocity, test_collision_time, test_collision_normal ) == false )
+				{
+					continue;
+				}
+
+				if( test_collision_time > 1.f )
 				{
 					continue;
 				}
@@ -179,12 +189,19 @@ namespace Menge
 					continue;
 				}
 
+				mt::vec3f test_collision_point = actor_position + actor_velocity * test_collision_time;
+
+				float length_actor_velocity = mt::length_v3( actor_velocity );
+
+				float hit_time = test_collision_time + actor_radius / length_actor_velocity;
+
 				collision_desc & desc = collisions[collision_count++];
 
-				desc.actor_provider = actor_test.get();
+				desc.collision_actor = actor_test.get();
 				desc.collision_point = test_collision_point;
 				desc.collision_normal = test_collision_normal;
-				desc.collision_penetration = test_collision_penetration;
+				desc.collision_time = test_collision_time;
+				desc.hit_time = hit_time;
 
 				if( collision_count == MENGINE_COLLISION_WORLD_PENETRATION_COUNT )
 				{
@@ -196,21 +213,23 @@ namespace Menge
 
 			for( uint32_t i = 0; i != collision_count; ++i )
 			{
-				collision_desc & desc = collisions[i];
+				const collision_desc & desc = collisions[i];
 
 				if( actor->isRemoved() == true )
 				{
 					break;
 				}
 
-				if( desc.actor_provider->isRemoved() == true )
+				CollisionActor * collision_actor = desc.collision_actor;
+
+				if( collision_actor->isRemoved() == true )
 				{
 					continue;
 				}
 
-				CollisionActorProviderInterface * actor_collision_provider = desc.actor_provider->getCollisionActorProvider();
+				CollisionActorProviderInterface * actor_collision_provider = collision_actor->getCollisionActorProvider();
 
-				if( actor_provider->onCollisionTest( actor_collision_provider, desc.collision_point, desc.collision_normal, desc.collision_penetration ) == true )
+				if( actor_provider->onCollisionTest( actor_collision_provider, desc.collision_point, desc.collision_normal, desc.hit_time ) == true )
 				{
 					break;
 				}

@@ -7,6 +7,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	NodeCollisionActor::NodeCollisionActor()
 		: m_collisionRadius( 0.f )
+		, m_collisionRaycastDirection(0.f, 0.f, 0.f)
 		, m_collisionIFF( 0 )
 		, m_collisionActive( false )
 	{
@@ -31,19 +32,19 @@ namespace Menge
 		return m_collisionRadius;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCollisionActor::setCollisionRaycast( const mt::vec2f & _raycastDirection )
+	void NodeCollisionActor::setCollisionRaycast( const mt::vec3f & _raycastDirection )
 	{
-		m_raycastDirection = _raycastDirection;
+		m_collisionRaycastDirection = _raycastDirection;
 
 		if( m_actor != nullptr )
 		{
-			m_actor->setRaycastDirection( m_raycastDirection );
+			m_actor->setRaycastDirection( m_collisionRaycastDirection );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & NodeCollisionActor::getCollisionRaycast() const
+	const mt::vec3f & NodeCollisionActor::getCollisionRaycast() const
 	{
-		return m_raycastDirection;
+		return m_collisionRaycastDirection;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCollisionActor::setCollisionIFF( uint32_t _collisionIFF )
@@ -115,15 +116,14 @@ namespace Menge
 		this->registerEvent( EVENT_COLLISION_TEST, ("onCollisionTest"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCollisionActor::onCollisionPositionProvider( mt::vec2f & _position ) const
+	void NodeCollisionActor::onCollisionPositionProvider( mt::vec3f & _position ) const
 	{
 		const mt::vec3f & wp = this->getWorldPosition();
 
-		_position.x = wp.x;
-		_position.y = wp.y;
+		_position = wp;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeCollisionActor::onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec2f & _point, const mt::vec2f & _normal, float _penetration )
+	bool NodeCollisionActor::onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec3f & _point, const mt::vec3f & _normal, float _penetration )
 	{
 		NodeCollisionActor * actor = static_cast<NodeCollisionActor *>(_actor);
 
@@ -143,7 +143,7 @@ namespace Menge
 			return false;
 		}
 
-		const CollisionActorPtr & actor = m_collisionWorld->createActor( this, m_collisionRadius, m_raycastDirection, m_collisionIFF, m_collisionActive );
+		const CollisionActorPtr & actor = m_collisionWorld->createActor( this, m_collisionRadius, m_collisionRaycastDirection, m_collisionIFF, m_collisionActive );
 
 		for( TVectorActorException::iterator
 			it = m_exceptions.begin(),

@@ -98,8 +98,13 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	static void classWrapping( ServiceProviderInterface * _serviceProvider )
 	{
+# define SCRIPT_CLASS_WRAPPING( serviceProvider, Class )\
+    SCRIPT_SERVICE(serviceProvider)->setWrapper( Helper::stringizeString(serviceProvider, #Class), new ClassScriptWrapper<Class>() )
+
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Entity );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Scene );
+
+#	undef SCRIPT_CLASS_WRAPPING
 	}
     //////////////////////////////////////////////////////////////////////////
 	class superclass_new_Entity

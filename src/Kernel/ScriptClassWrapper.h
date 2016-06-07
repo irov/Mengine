@@ -96,6 +96,3 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 	};
 }
-
-# define SCRIPT_CLASS_WRAPPING( serviceProvider, Class )\
-    SCRIPT_SERVICE(serviceProvider)->setWrapper( Helper::stringizeString(serviceProvider, #Class), new ClassScriptWrapper<Class>() )

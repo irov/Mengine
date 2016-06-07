@@ -121,6 +121,10 @@ namespace mt
 		_a.x = 0.f;
 		_a.y = 0.f;
 	}
+	MENGINE_MATH_FUNCTION_INLINE float length( const vec2f & _a, const vec2f & _b )
+	{
+		return length_v2_v2( _a, _b );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE float length_v2( const vec2f& _a )
 	{

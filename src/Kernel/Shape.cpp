@@ -120,11 +120,11 @@ namespace Menge
 
         this->invalidateVertices();
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool Shape::getFlipY() const
-    {
-        return m_flipY;
-    }
+	//////////////////////////////////////////////////////////////////////////
+	bool Shape::getFlipX() const
+	{
+		return m_flipX;
+	}
     //////////////////////////////////////////////////////////////////////////
     void Shape::setFlipY( bool _flipY )
     {
@@ -132,11 +132,11 @@ namespace Menge
 
         this->invalidateVertices();
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool Shape::getFlipX() const
-    {
-        return m_flipX;
-    }
+	//////////////////////////////////////////////////////////////////////////
+	bool Shape::getFlipY() const
+	{
+		return m_flipY;
+	}
     ///////////////////////////////////////////////////////////////////////////
     void Shape::setPercentVisibility( const mt::vec4f& _percent )
     {
@@ -263,7 +263,7 @@ namespace Menge
 
 		const mt::uv4f & uv_image = m_resourceImage->getUVImage();
 		const mt::uv4f & uv_alpha = m_resourceImage->getUVAlpha();
-
+				
 		// RGB(A)
 		{
 			mt::uv4f uv;
@@ -279,7 +279,7 @@ namespace Menge
 				mt::uv4_swap_v( uv );
 			}
 
-			for( size_t i = 0; i != 4; ++i )
+			for( uint32_t i = 0; i != 4; ++i )
 			{
 				m_verticesWM[i].uv[0] = uv[i] * m_textureUVScale + m_textureUVOffset;
 			}
@@ -301,7 +301,7 @@ namespace Menge
 				mt::uv4_swap_v( uv );
 			}
 
-			for( size_t i = 0; i != 4; ++i )
+			for( uint32_t i = 0; i != 4; ++i )
 			{
 				m_verticesWM[i].uv[1] = uv[i] * m_textureUVScale + m_textureUVOffset;
 			}

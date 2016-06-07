@@ -22,8 +22,8 @@ namespace Menge
 		float getCollisionRadius() const;
 
 	public:
-		void setCollisionRaycast( const mt::vec2f & _raycastDirection );
-		const mt::vec2f & getCollisionRaycast() const;
+		void setCollisionRaycast( const mt::vec3f & _raycastDirection );
+		const mt::vec3f & getCollisionRaycast() const;
 
 	public:
 		void setCollisionIFF( uint32_t _collisionIFF );
@@ -45,8 +45,8 @@ namespace Menge
 		const pybind::object & getCollisionUserData() const;
 
 	protected:
-		void onCollisionPositionProvider( mt::vec2f & _position ) const override;
-		bool onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec2f & _point, const mt::vec2f & _normal, float _penetration ) override;
+		void onCollisionPositionProvider( mt::vec3f & _position ) const override;
+		bool onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec3f & _point, const mt::vec3f & _normal, float _penetration ) override;
 
 	protected:
 		bool _activate() override;
@@ -69,7 +69,7 @@ namespace Menge
 		pybind::object m_data;
 
 		float m_collisionRadius;
-		mt::vec2f m_raycastDirection;
+		mt::vec3f m_collisionRaycastDirection;
 		uint32_t m_collisionIFF;
 		bool m_collisionActive;
 	};

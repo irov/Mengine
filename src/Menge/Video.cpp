@@ -628,7 +628,8 @@ namespace Menge
 		}
 
 		m_invalidVideoTexture = true;
-		m_invalidFirstFrame = true;
+		m_invalidFirstFrame = true; 
+		m_needUpdate = true;
 		
 		if( m_videoDecoder->seek( seek_timing ) == false )
         {
@@ -640,8 +641,6 @@ namespace Menge
 
 			return;
         }
-
-		m_invalidFirstFrame = true;
     }
 	////////////////////////////////////////////////////////////////////
 	float Video::_getTiming() const

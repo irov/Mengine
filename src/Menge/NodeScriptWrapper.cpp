@@ -3448,9 +3448,25 @@ namespace Menge
 			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		class AffectorNodeFollower
+		class AffectorFollower
 			: public Affector
 			, public pybind::bindable
+		{
+		public:
+			virtual void follow( const pybind::object & _target ) = 0;
+
+		protected:
+			PyObject * _embedded() override
+			{
+				PyObject * py_obj = pybind::detail::create_holder_t( this );
+
+				return py_obj;
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////
+		template<class T>
+		class AffectorNodeFollower
+			: public AffectorFollower
 		{
 		public:
 			AffectorNodeFollower()
@@ -3458,8 +3474,12 @@ namespace Menge
 			{
 			}
 
+			~AffectorNodeFollower()
+			{
+			}
+
 		public:
-			Node * getNode() const
+			T * getNode() const
 			{
 				return m_node;
 			}
@@ -3472,23 +3492,30 @@ namespace Menge
 
 			void stop() override
 			{
-				//Empty
+				AFFECTOR_ID id = this->getId();
+
+				m_node->stopAffector( id );
 			}
 
 		protected:
-			Node * m_node;
+			T * m_node;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		class AffectorNodeFollowerLocalAlpha
-			: public AffectorNodeFollower
+		template<class T_Node, class T_Value, class T_Setter, class T_Getter>
+		class AffectorNodeFollowerMethod
+			: public AffectorNodeFollower<T_Node>
 		{
 		public:
-			AffectorNodeFollowerLocalAlpha()
+			AffectorNodeFollowerMethod()
+			{
+			}
+
+			~AffectorNodeFollowerMethod()
 			{
 			}
 
 		public:
-			bool initialize( Node * _node, float _valueAlpha, float _targetAlpha, float _speed )
+			bool initialize( T_Node * _node, T_Setter _setter, T_Getter _getter, const T_Value & _value, const T_Value & _target, float _speed )
 			{
 				if( _node == nullptr )
 				{
@@ -3496,78 +3523,113 @@ namespace Menge
 				}
 
 				m_node = _node;
-				
-				m_follower.setValue( _valueAlpha );
+				m_setter = _setter;
+				m_getter = _getter;
+
+				m_follower.setValue( _value );
 				m_follower.setSpeed( _speed );
 
-				m_follower.follow( _targetAlpha );
+				m_follower.follow( _target );
 
-				m_node->setLocalAlpha( _valueAlpha );
+				(m_node->*m_setter)(_value);
 
 				return true;
 			}
-			
+
 		public:
-			void follow( float _targetAlpha )
+			void follow( const pybind::object & _target ) override
 			{
-				m_follower.follow( _targetAlpha );
+				T_Value value_target = _target.extract();
+
+				m_follower.follow( value_target );
 			}
 
 		protected:
 			bool _affect( float _timing ) override
 			{
+				T_Value current_value = (m_node->*m_getter)();
+
+				m_follower.setValue( current_value );
+
 				m_follower.update( _timing );
 
-				float value = m_follower.getValue();
+				T_Value value = m_follower.getValue();
 
-				m_node->setLocalAlpha( value );
+				(m_node->*m_setter)(value);
 
 				return false;
 			}
-			
-		protected:
-			PyObject * _embedded() override
-			{
-				PyObject * py_obj = pybind::detail::create_holder_t( this );
-
-				return py_obj;
-			}
 
 		protected:
-			ValueFollowerLinear<float> m_follower;
+			ValueFollowerLinear<T_Value> m_follower;
+
+			T_Setter m_setter;
+			T_Getter m_getter;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		FactoryPoolStore<AffectorNodeFollowerLocalAlpha, 4> m_factoryAffectorFollowerLocalAlpha;
-		//////////////////////////////////////////////////////////////////////////
-		AffectorNodeFollowerLocalAlpha * s_addNodeFollowerLocalAlpha( Node * _node, float _valueAlpha, float _targetAlpha, float _speed )
+		template<class T_Node, class T_Value, class T_Setter, class T_Getter>
+		class AffectorNodeFollowerCreator
 		{
-			AffectorNodeFollowerLocalAlpha * affector = m_factoryAffectorFollowerLocalAlpha.createObject();
+		protected:
+			typedef AffectorNodeFollowerMethod<T_Node, T_Value, T_Setter, T_Getter> TAffectorNodeFollowerMethod;
 
-			if( affector->initialize( _node, _valueAlpha, _targetAlpha, _speed ) == false )
+		public:
+			AffectorFollower * create( T_Node * _node, T_Setter _setter, T_Getter _getter, const T_Value & _value, const T_Value & _target, float _speed )
 			{
-				affector->destroy();
+				TAffectorNodeFollowerMethod * affector = m_factory.createObject();
 
-				return nullptr;
-			}
-			
-			if( _node->addAffector( affector ) == INVALID_AFFECTOR_ID )
-			{
-				affector->destroy();
+				if( affector->initialize( _node, _setter, _getter, _value, _target, _speed ) == false )
+				{
+					affector->destroy();
 
-				return nullptr;
+					return nullptr;
+				}
+
+				if( _node->addAffector( affector ) == INVALID_AFFECTOR_ID )
+				{
+					affector->destroy();
+
+					return nullptr;
+				}
+
+				return affector;
 			}
+
+		protected:			
+			typedef FactoryPoolStore<TAffectorNodeFollowerMethod, 4> TFactoryAffectorNodeFollowerMethod;
+			TFactoryAffectorNodeFollowerMethod m_factory;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		AffectorNodeFollowerCreator<Node, float, void(Node::*)(float), float(Node::*)()const> m_creatorAffectorNodeFollowerLocalAlpha;
+		//////////////////////////////////////////////////////////////////////////
+		AffectorFollower * s_addNodeFollowerLocalAlpha( Node * _node, float _value, float _target, float _speed )
+		{
+			AffectorFollower * affector = m_creatorAffectorNodeFollowerLocalAlpha.create( _node, &Node::setLocalAlpha, &Node::getLocalAlpha, _value, _target, _speed );
 
 			return affector;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool s_removeNodeFollower( AffectorNodeFollower * _affector )
+		AffectorNodeFollowerCreator<Shape, mt::vec2f, void(Shape::*)(const mt::vec2f &), const mt::vec2f &(Shape::*)()const> m_creatorAffectorNodeFollowerCustomSize;
+		//////////////////////////////////////////////////////////////////////////
+		AffectorFollower * s_addShapeFollowerCustomSize( Shape * _node, const mt::vec2f & _value, const mt::vec2f & _target, float _speed )
 		{
-			Node * node = _affector->getNode();
-			AFFECTOR_ID id = _affector->getId();
+			AffectorFollower * affector = m_creatorAffectorNodeFollowerCustomSize.create( _node, &Shape::setCustomSize, &Shape::getCustomSize, _value, _target, _speed );
 
-			bool successful = node->stopAffector( id );
-			
-			return successful;
+			return affector;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		AffectorNodeFollowerCreator<Shape, mt::vec2f, void(Shape::*)(const mt::vec2f &), const mt::vec2f &(Shape::*)()const> m_creatorAffectorNodeFollowerTextureUVScale;
+		//////////////////////////////////////////////////////////////////////////
+		AffectorFollower * s_addShapeFollowerTextureUVScale( Shape * _node, const mt::vec2f & _value, const mt::vec2f & _target, float _speed )
+		{
+			AffectorFollower * affector = m_creatorAffectorNodeFollowerTextureUVScale.create( _node, &Shape::setTextureUVScale, &Shape::getTextureUVScale, _value, _target, _speed );
+
+			return affector;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_removeNodeFollower( AffectorFollower * _affector )
+		{
+			_affector->stop();
 		}
 		//////////////////////////////////////////////////////////////////////////		
 		void s_moduleMessage( const ConstString & _moduleName, const ConstString & _messageName, const TMapParams & _params )
@@ -5824,6 +5886,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void classWrapping( ServiceProviderInterface * _serviceProvider )
 	{
+# define SCRIPT_CLASS_WRAPPING( serviceProvider, Class )\
+    SCRIPT_SERVICE(serviceProvider)->setWrapper( Helper::stringizeString(serviceProvider, #Class), new ClassScriptWrapper<Class>() )
+
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Node );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2D );
@@ -5840,6 +5905,7 @@ namespace Menge
 
 		//SCRIPT_CLASS_WRAPPING( Light2D );
 		//SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, Shape );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Sprite );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Animation );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Gyroscope );
@@ -5898,6 +5964,8 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSubstract );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceInternalObject );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceHIT );
+
+# undef SCRIPT_CLASS_WRAPPING
 	}
 
 	struct extract_TBlobject_type
@@ -7050,16 +7118,15 @@ namespace Menge
 			pybind::def_functor_args( "addAffector", nodeScriptMethod, &NodeScriptMethod::s_addAffector );
 			pybind::def_functor( "removeAffector", nodeScriptMethod, &NodeScriptMethod::s_removeAffector );
 
-			pybind::interface_<NodeScriptMethod::AffectorNodeFollower, pybind::bases<Affector> >( "AffectorNodeFollower" )
-				;
-
-			pybind::interface_<NodeScriptMethod::AffectorNodeFollowerLocalAlpha, pybind::bases<NodeScriptMethod::AffectorNodeFollower> >( "AffectorNodeFollowerLocalAlpha" )
-				.def( "follow", &NodeScriptMethod::AffectorNodeFollowerLocalAlpha::follow )
+			pybind::interface_<NodeScriptMethod::AffectorFollower, pybind::bases<Affector> >( "AffectorFollower" )
+				.def( "follow", &NodeScriptMethod::AffectorFollower::follow )
 				;
 
 			pybind::def_functor( "addNodeFollowerLocalAlpha", nodeScriptMethod, &NodeScriptMethod::s_addNodeFollowerLocalAlpha );
+			pybind::def_functor( "addShapeFollowerCustomSize", nodeScriptMethod, &NodeScriptMethod::s_addShapeFollowerCustomSize );
+			pybind::def_functor( "addShapeFollowerTextureUVScale", nodeScriptMethod, &NodeScriptMethod::s_addShapeFollowerTextureUVScale );
 			pybind::def_functor( "removeNodeFollower", nodeScriptMethod, &NodeScriptMethod::s_removeNodeFollower );
-
+			
 			pybind::def_functor( "moduleMessage", nodeScriptMethod, &NodeScriptMethod::s_moduleMessage );
 		}
 	}

@@ -30,10 +30,7 @@ namespace mt
 
 	MENGINE_MATH_FUNCTION_INLINE bool capsule2_intersect_capsule2(
 		const mt::capsule2 & _capsule0,
-		const mt::capsule2 & _capsule1,
-		mt::vec2f & _point,
-		mt::vec2f & _normal,
-		float & _penetration );
+		const mt::capsule2 & _capsule1 );
 }
 
 #	if MENGINE_MATH_FORCE_INLINE == 1

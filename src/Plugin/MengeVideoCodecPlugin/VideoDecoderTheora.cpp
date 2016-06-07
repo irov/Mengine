@@ -337,7 +337,6 @@ namespace Menge
 	{
 		ogg_stream_clear( &m_oggStreamState );
 		ogg_sync_clear( &m_oggSyncState );
-		//ogg_packet_clear( &m_oggPacket );
 
 		theora_clear( &m_theoraState );
 		theora_comment_clear( &m_theoraComment );
@@ -348,7 +347,6 @@ namespace Menge
 	{
 		ogg_stream_clear( &m_oggStreamState );
 		ogg_sync_clear( &m_oggSyncState );
-		//ogg_packet_clear( &m_oggPacket );
 
 		theora_clear( &m_theoraState );
 		theora_comment_clear( &m_theoraComment );
@@ -805,21 +803,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderTheora::_seek( float _timing )
 	{
-		(void)_timing;
-
-		//if( ogg_sync_reset( &m_oggSyncState ) == -1 )
-		//{
-		//	return false;
-		//}
-
-		//if( ogg_stream_reset( &m_oggStreamState ) == -1 )
-		//{
-		//	return false;
-		//}
-
 		float frameTiming = m_dataInfo.getFrameTiming();
 
-		uint32_t frame_end = (uint32_t)(m_dataInfo.duration / frameTiming);
+		//uint32_t frame_end = (uint32_t)(m_dataInfo.duration / frameTiming);
 		uint32_t frame_time = (uint32_t)(m_time / frameTiming);
 		uint32_t frame_seek = (uint32_t)(_timing / frameTiming);
 
@@ -854,13 +840,13 @@ namespace Menge
 			if( state == VDRS_FAILURE )
 			{
 				return false;
-			}			
+			}
 			else if( state == VDRS_END_STREAM )
 			{
 				break;
 			}
 			
-			if( time >= _timing )
+			if( time + frameTiming >= _timing )
 			{
 				break;
 			}

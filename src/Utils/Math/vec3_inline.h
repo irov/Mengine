@@ -285,6 +285,11 @@ namespace mt
 		return _rhs;
 	}
 
+	MENGINE_MATH_FUNCTION_INLINE float dot_v3( const vec3f &a )
+	{
+		return a.x * a.x + a.y * a.y + a.z * a.z;
+	}
+
 	/*	Dot	Product			*/
 	MENGINE_MATH_FUNCTION_INLINE float dot_v3_v3(const vec3f &a, const vec3f &b)
 	{

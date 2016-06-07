@@ -27,7 +27,7 @@ namespace Menge
 		bool getIFFs( uint32_t _iff1, uint32_t _iff2 ) const;
 
 	public:
-		CollisionActorPtr createActor( CollisionActorProviderInterface * _provider, float _radius, const mt::vec2f & _raycastDirection, uint32_t _iff, bool _active );
+		CollisionActorPtr createActor( CollisionActorProviderInterface * _provider, float _radius, const mt::vec3f & _raycastDirection, uint32_t _iff, bool _active );
 		void removeActor( const CollisionActorPtr & _actor );
 
 	public:

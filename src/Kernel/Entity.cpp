@@ -64,9 +64,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Entity::_deactivate()
     {
-        Node::_deactivate();
-
 		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_PREPARATION_DEACTIVATE )(m_object);
+
+        Node::_deactivate();		
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_afterDeactivate()

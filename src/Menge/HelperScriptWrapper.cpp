@@ -472,12 +472,17 @@ namespace Menge
 		mt::vec2f mt_radius_randf( float _radius )
 		{
 			float rp = mt::randf( mt::m_two_pi );
-			float rr = mt::randf( _radius );
+			float rr = mt::randf( 1.f );
+
+			float rr2 = (1.f - rr * rr) * _radius;
 
 			float x = mt::cosf_fast( rp );
 			float y = mt::sinf_fast( rp );
 
-			return mt::vec2f( x * rr, y * rr );
+			float xr = x * rr2;
+			float yr = y * rr2;
+
+			return mt::vec2f( xr, yr );
 		}
 
 		uint32_t mt_rounding( uint32_t _value, uint32_t _round )

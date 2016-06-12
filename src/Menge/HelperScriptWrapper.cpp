@@ -474,7 +474,7 @@ namespace Menge
 			float rp = mt::randf( mt::m_two_pi );
 			float rr = mt::randf( 1.f );
 
-			float rr2 = (1.f - rr * rr) * _radius;
+			float rr2 = sqrtf(rr) * _radius;
 
 			float x = mt::cosf_fast( rp );
 			float y = mt::sinf_fast( rp );

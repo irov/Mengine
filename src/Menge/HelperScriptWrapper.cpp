@@ -2250,6 +2250,8 @@ namespace Menge
         pybind::def_function( "angle_norm", &mt::angle_norm );
         pybind::def_function( "angle_delta_deg", &mt::angle_delta_deg );
 
+		pybind::def_function( "length_v2", &mt::length_v2 );
+
         pybind::def_function( "length_v2_v2", &mt::length_v2_v2 );
         pybind::def_function( "sqrlength_v2_v2", &mt::sqrlength_v2_v2 );
 

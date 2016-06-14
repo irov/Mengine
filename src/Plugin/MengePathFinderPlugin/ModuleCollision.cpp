@@ -83,7 +83,7 @@ namespace Menge
 	namespace
 	{
 		//////////////////////////////////////////////////////////////////////////
-		struct FCollisionDead
+		struct FMagnetDead
 		{
 			bool operator()( const CollisionWorldPtr & _collision ) const
 			{
@@ -113,7 +113,7 @@ namespace Menge
 			collision->update();
 		}
 
-		TVectorCollisionWorlds::iterator it_erase = std::remove_if( m_collisionWorlds.begin(), m_collisionWorlds.end(), FCollisionDead() );
+		TVectorCollisionWorlds::iterator it_erase = std::remove_if( m_collisionWorlds.begin(), m_collisionWorlds.end(), FMagnetDead() );
 		m_collisionWorlds.erase( it_erase, m_collisionWorlds.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////

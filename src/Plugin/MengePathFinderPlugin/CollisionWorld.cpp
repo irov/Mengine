@@ -61,7 +61,7 @@ namespace Menge
 		actor->setRadius( _radius );
 		actor->setRaycastDirection( _raycastDirection );
 		actor->setIFF( _iff );
-		actor->setActiove( _active );
+		actor->setActive( _active );
 		
 		actor->initialize();
 
@@ -164,6 +164,13 @@ namespace Menge
 					continue;
 				}
 
+				uint32_t actor_test_iff = actor_test->getIFF();
+
+				if( m_iffs[actor_iff][actor_test_iff] == false )
+				{
+					continue;
+				}
+
 				mt::vec3f actor_test_position;
 				float actor_test_radius;
 				mt::vec3f actor_test_velocity;
@@ -178,13 +185,6 @@ namespace Menge
 				}
 
 				if( test_collision_time > 1.f )
-				{
-					continue;
-				}
-
-				uint32_t actor_test_iff = actor_test->getIFF();
-				
-				if( m_iffs[actor_iff][actor_test_iff] == false )
 				{
 					continue;
 				}

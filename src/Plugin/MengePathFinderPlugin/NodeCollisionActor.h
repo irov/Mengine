@@ -2,8 +2,6 @@
 
 #	include "Kernel/Node.h"
 
-#	include "CollisionInterface.h"
-
 #	include "CollisionWorld.h"
 #	include "CollisionActor.h"
 

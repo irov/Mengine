@@ -246,6 +246,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_end( uint32_t _enumerator )
 	{
+		m_needUpdate = false;
+
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_VIDEO_END )(this, _enumerator, true);
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}

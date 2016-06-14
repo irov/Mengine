@@ -3,19 +3,19 @@
 #	include "Factory/Factorable.h"
 #	include "Factory/FactoryStore.h"
 
-#	include "CollisionActor.h"
+#	include "MagnetActor.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<CollisionActorPtr> TVectorCollisionActor;
+	typedef stdex::vector<MagnetActorPtr> TVectorMagnetActor;
 	//////////////////////////////////////////////////////////////////////////
-	class CollisionWorld
+	class MagnetWorld
 		: public FactorablePtr
 	{
 	public:
-		CollisionWorld();
-		~CollisionWorld();
+		MagnetWorld();
+		~MagnetWorld();
 
 	public:
 		bool initialize();
@@ -25,21 +25,21 @@ namespace Menge
 		bool getIFFs( uint32_t _iff1, uint32_t _iff2 ) const;
 
 	public:
-		CollisionActorPtr createActor( CollisionActorProviderInterface * _provider, float _radius, const mt::vec3f & _raycastDirection, uint32_t _iff, bool _active );
-		void removeActor( const CollisionActorPtr & _actor );
+		MagnetActorPtr createActor( MagnetActorProviderInterface * _provider, float _radius, float _force, uint32_t _iff, bool _active );
+		void removeActor( const MagnetActorPtr & _actor );
 
 	public:
-		void update();
+		void update( float _time, float _timing );
 
 	public:
 		void remove();
 		bool isRemoved() const;
 
 	protected:
-		TVectorCollisionActor m_actors;
-		TVectorCollisionActor m_actorsAdd;
+		TVectorMagnetActor m_actors;
+		TVectorMagnetActor m_actorsAdd;
 		
-		typedef FactoryPoolStore<CollisionActor, 32> TFactoryCollisionActor;
+		typedef FactoryPoolStore<MagnetActor, 32> TFactoryCollisionActor;
 		TFactoryCollisionActor m_factoryCollisionActor;
 
 		bool m_iffs[16][16];
@@ -47,5 +47,5 @@ namespace Menge
 		bool m_remove;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<CollisionWorld> CollisionWorldPtr;
+	typedef stdex::intrusive_ptr<MagnetWorld> MagnetWorldPtr;
 }

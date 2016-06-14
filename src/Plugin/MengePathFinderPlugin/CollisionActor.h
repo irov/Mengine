@@ -1,17 +1,21 @@
 #	pragma once
 
-#	include "CollisionInterface.h"
-
 #	include "Factory/FactorablePtr.h"
 
-#	include "Math/capsule2.h"
-#	include "Math/vec2.h"
+#	include "Math/vec3.h"
 
 #   include "stdex/intrusive_ptr.h"
 #	include "stdex/stl_vector.h"
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	class CollisionActorProviderInterface
+	{
+	public:
+		virtual void onCollisionPositionProvider( mt::vec3f & _position ) const = 0;
+		virtual bool onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec3f & _point, const mt::vec3f & _normal, float _penetration ) = 0;
+	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<class CollisionActor> CollisionActorPtr;
 	//////////////////////////////////////////////////////////////////////////
@@ -43,7 +47,7 @@ namespace Menge
 		bool isException( const CollisionActorPtr & _actor ) const;
 
 	public:
-		void setActiove( bool _active );
+		void setActive( bool _active );
 		bool isActive() const;
 
 	public:

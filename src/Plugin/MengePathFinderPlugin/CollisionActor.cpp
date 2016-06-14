@@ -92,10 +92,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CollisionActor::setActiove( bool _active )
+	void CollisionActor::setActive( bool _active )
 	{
 		m_active = _active;
 	}
+	//////////////////////////////////////////////////////////////////////////
 	bool CollisionActor::isActive() const
 	{
 		return m_active;

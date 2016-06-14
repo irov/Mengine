@@ -61,13 +61,24 @@ ADD_FILTER(
 ModuleCollision
     ModuleCollision.cpp
     ModuleCollision.h
-    CollisionInterface.h
     CollisionWorld.cpp
     CollisionWorld.h
     CollisionActor.cpp
     CollisionActor.h
     NodeCollisionActor.cpp
     NodeCollisionActor.h
+)
+
+ADD_FILTER(
+ModuleMagnet
+    ModuleMagnet.cpp
+    ModuleMagnet.h    
+    MagnetWorld.cpp
+    MagnetWorld.h
+    MagnetActor.cpp
+    MagnetActor.h
+    NodeMagnetActor.cpp
+    NodeMagnetActor.h
 )
 
 ADD_FILTER(

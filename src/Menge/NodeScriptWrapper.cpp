@@ -3464,7 +3464,7 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		template<class T>
+		template<class T_Node>
 		class AffectorNodeFollower
 			: public AffectorFollower
 		{
@@ -3479,7 +3479,12 @@ namespace Menge
 			}
 
 		public:
-			T * getNode() const
+			void setNode( T_Node * _node )
+			{
+				m_node = _node;
+			}
+
+			T_Node * getNode() const
 			{
 				return m_node;
 			}
@@ -3498,7 +3503,7 @@ namespace Menge
 			}
 
 		protected:
-			T * m_node;
+			T_Node * m_node;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		template<class T_Node, class T_Value, class T_Setter, class T_Getter>
@@ -3522,7 +3527,8 @@ namespace Menge
 					return false;
 				}
 
-				m_node = _node;
+				this->setNode( _node );
+
 				m_setter = _setter;
 				m_getter = _getter;
 
@@ -3531,7 +3537,7 @@ namespace Menge
 
 				m_follower.follow( _target );
 
-				(m_node->*m_setter)(_value);
+				(_node->*m_setter)(_value);
 
 				return true;
 			}
@@ -3547,7 +3553,9 @@ namespace Menge
 		protected:
 			bool _affect( float _timing ) override
 			{
-				T_Value current_value = (m_node->*m_getter)();
+				T_Node * node = this->getNode();
+
+				T_Value current_value = (node->*m_getter)();
 
 				m_follower.setValue( current_value );
 
@@ -3555,7 +3563,7 @@ namespace Menge
 
 				T_Value value = m_follower.getValue();
 
-				(m_node->*m_setter)(value);
+				(node->*m_setter)(value);
 
 				return false;
 			}
@@ -3922,6 +3930,125 @@ namespace Menge
 
 			return id;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		class FactoryAffectorVelocity2
+		{
+		public:
+			class AffectorVelocity2
+				: public CallbackAffector
+			{
+			public:
+				AffectorVelocity2()
+					: m_node( nullptr )
+					, m_velocity( 0.f, 0.f, 0.f )
+					, m_time( 0.f )
+				{
+				}
+
+			public:
+				void setNode( Node * _node )
+				{
+					m_node = _node;
+				}
+
+			public:
+				void initialize( const mt::vec3f & _velocity, float _time )
+				{
+					m_velocity = _velocity;
+					m_time = _time;
+				}
+
+			protected:
+				bool _affect( float _timing ) override
+				{
+					m_time -= _timing;
+
+					if( m_time > 0.f )
+					{
+						m_node->translate( m_velocity * _timing );
+
+						return false;
+					}
+
+					m_node->translate( m_velocity * (m_time + _timing) );
+
+					return true;
+				}
+
+				void stop() override
+				{
+					this->end_( false );
+				}
+
+			protected:
+				Node * m_node;
+
+				mt::vec3f m_velocity;
+				float m_time;
+			};
+
+		public:
+			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+				, Node * _node, const mt::vec3f & _velocity, float _time )
+			{
+				AffectorVelocity2 * affector = m_factory.createObject();
+
+				affector->setServiceProvider( _serviceProvider );
+				affector->setAffectorType( _type );
+
+				affector->setCallback( _cb );
+
+				affector->setNode( _node );
+
+				affector->initialize( _velocity, _time );
+
+				return affector;
+			}
+
+		protected:
+			typedef FactoryPoolStore<AffectorVelocity2, 4> TFactoryAffector;
+			TFactoryAffector m_factory;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		FactoryAffectorVelocity2 m_factoryAffectorVelocity2;
+		//////////////////////////////////////////////////////////////////////////
+		uint32_t velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		{
+			if( _node->isActivate() == false )
+			{
+				return 0;
+			}
+
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
+
+			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+			Affector * affector = m_factoryAffectorVelocity2.create( m_serviceProvider
+				, ETA_POSITION, callback, _node, _velocity, _time
+				);
+
+			if( affector == nullptr )
+			{
+				return 0;
+			}
+
+			moveStop( _node );
+
+			if( _node->isActivate() == false )
+			{
+				return 0;
+			}
+
+			_node->setLinearSpeed( _velocity );
+
+			AFFECTOR_ID id = _node->addAffector( affector );
+
+			return id;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)(const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateLinear;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t moveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
@@ -6313,6 +6440,7 @@ namespace Menge
 			.def_proxy_static( "colorStop", nodeScriptMethod, &NodeScriptMethod::colorStop )
 
 			.def_proxy_args_static( "velocityTo", nodeScriptMethod, &NodeScriptMethod::velocityTo )
+			.def_proxy_args_static( "velocityTo2", nodeScriptMethod, &NodeScriptMethod::velocityTo2 )
 
 			.def_proxy_args_static( "moveTo", nodeScriptMethod, &NodeScriptMethod::moveTo )
 			.def_proxy_args_static( "bezier2To", nodeScriptMethod, &NodeScriptMethod::bezier2To )

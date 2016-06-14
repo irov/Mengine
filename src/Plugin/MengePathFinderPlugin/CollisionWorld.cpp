@@ -107,6 +107,11 @@ namespace Menge
 		++it )
 		{
 			const CollisionActorPtr & actor = *it;
+			
+			if( actor->isRemoved() == true )
+			{
+				continue;
+			}
 
 			actor->update();
 		}

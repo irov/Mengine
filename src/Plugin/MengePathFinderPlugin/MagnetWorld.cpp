@@ -186,6 +186,11 @@ namespace Menge
 		{
 			const MagnetActorPtr & actor = *it;
 
+			if( actor->isRemoved() == true )
+			{
+				continue;
+			}
+
 			actor->updateVelocity();
 		}
 

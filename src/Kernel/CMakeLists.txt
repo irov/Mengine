@@ -148,8 +148,10 @@ ADD_FILTER(
 Camera
 	RenderCamera.cpp
 	RenderCamera.h
+    RenderCameraHelper.cpp
+    RenderCameraHelper.h
+    RenderCameraProxy.cpp
     RenderCameraProxy.h
-    RenderCameraProxy.cpp    
     RenderCameraOrthogonal.cpp
     RenderCameraOrthogonal.h
     RenderCameraProjection.cpp

@@ -3659,6 +3659,18 @@ namespace Menge
 			return wp;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		mt::vec2f s_TouchPosition( uint32_t _touchId )
+		{
+			const mt::vec2f & pos = INPUT_SERVICE( m_serviceProvider )
+				->getCursorPosition( _touchId );
+
+			mt::vec2f wp;
+			PLAYER_SERVICE( m_serviceProvider )
+				->calcGlobalMouseWorldPosition( pos, wp );
+
+			return wp;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		mt::vec2f s_getTouchPosition( uint32_t _touchId )
 		{
 			const mt::vec2f & pos = INPUT_SERVICE( m_serviceProvider )
@@ -5293,7 +5305,18 @@ namespace Menge
 		protected:
 			bool handleMouseMove( const InputMouseMoveEvent & _event ) override
 			{
-				pybind::object py_result = m_cb.call_args( _event.touchId, _event.x, _event.y, _event.dx, _event.dy, m_args );
+				mt::vec2f point( _event.x, _event.y );
+				mt::vec2f delta( _event.dx, _event.dy );
+
+				mt::vec2f wp;
+				PLAYER_SERVICE(m_serviceProvider)
+					->calcGlobalMouseWorldPosition( point, wp );
+
+				mt::vec2f wd;
+				PLAYER_SERVICE( m_serviceProvider )
+					->calcGlobalMouseWorldDelta( point, delta, wd );
+
+				pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, wd.x, wd.y, m_args );
 
 				if( py_result.is_none() == false )
 				{
@@ -5330,7 +5353,13 @@ namespace Menge
 		protected:
 			bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
 			{
-				pybind::object py_result = m_cb.call_args( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, m_args );
+				mt::vec2f point( _event.x, _event.y );
+
+				mt::vec2f wp;
+				PLAYER_SERVICE( m_serviceProvider )
+					->calcGlobalMouseWorldPosition( point, wp );
+
+				pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.isDown, m_args );
 
 				if( py_result.is_none() == false )
 				{
@@ -5368,7 +5397,13 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override
 			{
-				pybind::object py_result = m_cb.call_args( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, m_args );
+				mt::vec2f point( _event.x, _event.y );
+
+				mt::vec2f wp;
+				PLAYER_SERVICE( m_serviceProvider )
+					->calcGlobalMouseWorldPosition( point, wp );
+
+				pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.isDown, m_args );
 
 				if( py_result.is_none() == false )
 				{
@@ -5444,7 +5479,13 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override
 			{
-				pybind::object py_result = m_cb.call_args( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, m_args );
+				mt::vec2f point( _event.x, _event.y );
+
+				mt::vec2f wp;
+				PLAYER_SERVICE( m_serviceProvider )
+					->calcGlobalMouseWorldPosition( point, wp );
+
+				pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.isDown, m_args );
 
 				if( py_result.is_none() == false )
 				{

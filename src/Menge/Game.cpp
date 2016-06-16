@@ -127,7 +127,13 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEY, handle )((uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat);
+			mt::vec2f point( _event.x, _event.y );
+
+			mt::vec2f wp;
+			PLAYER_SERVICE( m_serviceProvider )
+				->calcGlobalMouseWorldPosition( point, wp );
+
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEY, handle )((uint32_t)_event.key, wp.x, wp.y, _event.code, _event.isDown, _event.isRepeat);
 		}
 
 		if( handle == false )
@@ -145,7 +151,13 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON, handle )(_event.touchId, _event.x, _event.y, _event.button, _event.isDown);
+			mt::vec2f point( _event.x, _event.y );
+
+			mt::vec2f wp;
+			PLAYER_SERVICE( m_serviceProvider )
+				->calcGlobalMouseWorldPosition( point, wp );
+
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
@@ -163,7 +175,13 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN, handle )(_event.touchId, _event.x, _event.y, _event.button, _event.isDown);
+			mt::vec2f point( _event.x, _event.y );
+
+			mt::vec2f wp;
+			PLAYER_SERVICE( m_serviceProvider )
+				->calcGlobalMouseWorldPosition( point, wp );
+
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
@@ -181,7 +199,13 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON_END, handle )(_event.touchId, _event.x, _event.y, _event.button, _event.isDown);
+			mt::vec2f point( _event.x, _event.y );
+
+			mt::vec2f wp;
+			PLAYER_SERVICE( m_serviceProvider )
+				->calcGlobalMouseWorldPosition( point, wp );
+
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON_END, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
@@ -199,7 +223,18 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_MOVE, handle )(_event.touchId, _event.x, _event.y, _event.dx, _event.dy);
+			mt::vec2f point( _event.x, _event.y );
+			mt::vec2f delta( _event.dx, _event.dy );
+
+			mt::vec2f wp;
+			PLAYER_SERVICE(m_serviceProvider)
+				->calcGlobalMouseWorldPosition( point, wp );
+
+			mt::vec2f wd;
+			PLAYER_SERVICE( m_serviceProvider )
+				->calcGlobalMouseWorldDelta( point, delta, wd );
+
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_MOVE, handle )(_event.touchId, wp.x, wp.y, wd.x, wd.y);
 		}
 
 		if( handle == false )

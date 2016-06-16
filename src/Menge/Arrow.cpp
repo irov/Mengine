@@ -3,6 +3,8 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/InputSystemInterface.h"
 
+#	include "Kernel/RenderCameraHelper.h"
+
 #	include "Game.h"
 #	include "Player.h"
 
@@ -182,9 +184,8 @@ namespace	Menge
 		(void)_viewport;
 		(void)_camera;
 
-		mt::vec2f p1 = _screenPoint * 2.f - mt::vec2f( 1.f, 1.f );
-
-		p1.y = -p1.y;
+		mt::vec2f p1;
+		Helper::screenToWorldPosition( _camera, _screenPoint, p1 );
 
 		EArrowType arrowType = this->getArrowType();
 
@@ -215,29 +216,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::calcPointDeltha( const RenderCameraInterface * _camera, const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) const
 	{
-		mt::vec2f adaptScreenPoint;
-		this->adaptScreenPosition_( _screenPoint, adaptScreenPoint );
-
-		mt::vec2f adaptScreenDeltha;
-		this->adaptScreenDeltha_( _screenDeltha, adaptScreenDeltha );
-		
-		mt::vec2f p1 = (adaptScreenPoint + adaptScreenDeltha) * 2.f - mt::vec2f(1.f, 1.f);
-		p1.y = -p1.y;
-
-		const mt::mat4f & pm_inv = _camera->getCameraProjectionMatrixInv();
-
-		mt::vec2f p_pm;
-		mt::mul_v2_m4( p_pm, p1, pm_inv );
-
-		mt::vec2f p2 = (adaptScreenPoint) * 2.f - mt::vec2f(1.f, 1.f);
-		p2.y = -p2.y;
-
-		mt::vec2f p_pm_base;
-		mt::mul_v2_m4( p_pm_base, p2, pm_inv );
-
-		mt::vec2f deltha = p_pm - p_pm_base;
-
-		_worldDeltha = deltha;
+		Helper::screenToWorldDelta( _camera, _screenPoint, _screenDeltha, _worldDeltha );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::calcMouseScreenPosition( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _worldPoint, mt::vec2f & _screenPoint ) const

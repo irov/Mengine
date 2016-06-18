@@ -294,6 +294,7 @@ namespace Menge
 	bool MousePickerSystem::handleKeyEvent( const InputKeyEvent & _event )
 	{
 		m_states.clear();
+
 		if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
 		{
 			return false;
@@ -328,6 +329,7 @@ namespace Menge
 	bool MousePickerSystem::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
 	{
 		m_states.clear();
+
 		if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
 		{
 			return false;
@@ -385,6 +387,7 @@ namespace Menge
 	bool MousePickerSystem::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
 	{
 		m_states.clear();
+
 		if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
 		{
 			return false;
@@ -446,6 +449,7 @@ namespace Menge
 	bool MousePickerSystem::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
 	{
 		m_states.clear();
+
 		if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
 		{
 			return false;
@@ -510,6 +514,7 @@ namespace Menge
 	bool MousePickerSystem::handleMouseMove( const InputMouseMoveEvent & _event )
 	{
 		m_states.clear();
+
 		if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
 		{
 			return false;
@@ -566,6 +571,7 @@ namespace Menge
 	bool MousePickerSystem::handleMouseWheel( const InputMouseWheelEvent & _event )
 	{
 		m_states.clear();
+
 		if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
 		{
 			return false;
@@ -617,6 +623,7 @@ namespace Menge
 	void MousePickerSystem::handleMouseEnter( const InputMousePositionEvent & _event )
 	{
 		m_states.clear();
+
 		this->proccesTraps_( _event.x, _event.y, m_states );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -750,7 +757,6 @@ namespace Menge
 					trap->onHandleMouseLeave();
 				}
 			}
-
 		}		
 
 		return true;

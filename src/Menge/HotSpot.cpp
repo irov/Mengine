@@ -239,7 +239,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
-	{		
+	{
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_BUTTON_END )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
 
 		return false;

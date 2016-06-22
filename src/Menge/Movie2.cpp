@@ -294,6 +294,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void * ae_movie_composition_track_matte_update( const void * _element, uint32_t _type, ae_bool_t _loop, aeMovieNodeUpdateState _state, float _offset, const aeMovieRenderMesh * _mesh, void * _track_matte_data, void * _data )
 	{
+		switch( _state )
+		{
+		case AE_MOVIE_NODE_UPDATE_BEGIN:
+			{
+				printf( "11" );
+			}break;
+		case AE_MOVIE_NODE_UPDATE_UPDATE:
+			{
+				printf( "22" );
+			}break;
+		case AE_MOVIE_NODE_UPDATE_END:
+			{
+				printf( "33" );
+			}break;
+		}
+
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -521,7 +537,7 @@ namespace Menge
 			if( mesh.track_matte_data != nullptr )
 			{
 				printf( "fds" );
-				continue;
+				//continue;
 			}
 
 			ResourceReference * resource_reference = (ResourceReference *)mesh.resource_data;

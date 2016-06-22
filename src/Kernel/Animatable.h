@@ -19,7 +19,7 @@ namespace Menge
 		inline float getAnimationSpeedFactor() const;
 
 		void setIntervalStart( float _startInterval );
-		inline float getStartInterval() const;
+		inline float getIntervalStart() const;
 
         void setInterval( float _begin, float _end );
         inline float getIntervalBegin() const;
@@ -180,7 +180,7 @@ namespace Menge
 		return m_playTime;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline float Animatable::getStartInterval() const
+	inline float Animatable::getIntervalStart() const
 	{
 		return m_intervalStart;
 	}

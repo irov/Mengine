@@ -2481,9 +2481,13 @@ namespace Menge
 
 		const mt::vec2f & loopSegment = m_resourceMovie->getLoopSegment();
 
-		if( m_intervalEnd > 0.f )
+		float intervalStart = this->getIntervalStart();
+		float intervalBegin = this->getIntervalBegin();
+		float intervalEnd = this->getIntervalEnd();
+
+		if( intervalEnd > 0.f )
 		{
-			frameCount = (uint32_t)((m_intervalStart + m_intervalEnd) / frameDuration + 0.5f);
+			frameCount = (uint32_t)((intervalEnd - intervalBegin - intervalStart) / frameDuration + 0.5f);
 		}
 		else
 		{   

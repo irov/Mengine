@@ -122,7 +122,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie2::_initialize()
 	{		
-		m_instance = ae_create_movie_instance( &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, AE_NULL );
+		m_instance = ae_create_movie_instance( &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, AE_NULL );
 
 		return true;
 	}

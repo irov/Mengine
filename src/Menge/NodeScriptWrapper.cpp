@@ -6402,6 +6402,8 @@ namespace Menge
 			.def( "setInterval", &Animatable::setInterval )
 			.def( "getIntervalBegin", &Animatable::getIntervalBegin )
 			.def( "getIntervalEnd", &Animatable::getIntervalEnd )
+			.def( "setIntervalStart", &Animatable::setIntervalStart )
+			.def( "getIntervalStart", &Animatable::getIntervalStart )
 			;
 
 		pybind::interface_<Affectorable>( "Affectorable" )

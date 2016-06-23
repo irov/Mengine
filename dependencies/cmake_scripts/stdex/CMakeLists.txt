@@ -18,6 +18,7 @@ ${SOURCE_DIR}/src/xml_sax_parser.cpp
 ${SOURCE_DIR}/src/ini.cpp
 ${SOURCE_DIR}/src/thread_guard.cpp
 ${SOURCE_DIR}/src/stack.cpp
+${SOURCE_DIR}/src/sha1.cpp
 )
 
 if(NOT MSVC)

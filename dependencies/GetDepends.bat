@@ -10,11 +10,11 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 :: extracting 7za.exe
 unzip -o 7za465.zip 7za.exe
 
-call:getdepend http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.7z boost_1_60_0.7z boost_1_60_0 boost
+call:getdepend http://downloads.sourceforge.net/project/boost/boost/1.61.0/boost_1_61_0.7z boost_1_61_0.7z boost_1_61_0 boost
 
-call:getdepend http://www.cmake.org/files/v3.4/cmake-3.4.1-win32-x86.zip cmake-3.4.1-win32-x86.zip cmake-3.4.1-win32-x86 cmake
-call:getdepend http://download.sourceforge.net/libpng/lpng1616.zip lpng1616.zip lpng1616 libpng
-call:getdepend http://www.ijg.org/files/jpegsr9a.zip jpegsr9a.zip jpeg-9a libjpeg
+call:getdepend https://cmake.org/files/v3.5/cmake-3.5.2-win32-x86.zip cmake-3.5.2-win32-x86 cmake
+call:getdepend http://download.sourceforge.net/libpng/lpng1623.zip lpng1623.zip lpng1623 libpng
+call:getdepend http://www.ijg.org/files/jpegsr9b.zip jpegsr9b.zip jpeg-9b libjpeg
 call:getdepend http://zlib.net/zlib128.zip zlib128.zip zlib-1.2.8 zlib
 call:getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.2.zip libogg-1.3.2.zip libogg-1.3.2 libogg
 call:getdepend http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.zip libvorbis-1.3.5.zip libvorbis-1.3.5 libvorbis
@@ -26,15 +26,15 @@ call:getdepend_2 https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz Python
 
 call:getdepend http://www.astralax.ru/download/programm/magic_win_160105.zip magic_win_160105.zip win astralax
 
-call:svndepend http://pugixml.googlecode.com/svn/trunk pugixml
+call:svndepend https://github.com/zeux/pugixml.git/trunk pugixml
 call:svndepend https://github.com/irov/pybind.git/trunk pybind
 call:svndepend https://github.com/irov/metabuf.git/trunk metabuf
 call:svndepend https://github.com/irov/stdex.git/trunk stdex
+call:svndepend https://github.com/irov/movie.git/trunk libmovie
 call:svndepend http://svn.code.sf.net/p/utfcpp/code/v2_0 utf8
-call:svndepend http://lz4.googlecode.com/svn/trunk lz4
+call:svndepend https://github.com/Cyan4973/lz4.git/trunk lz4
 call:svndepend https://github.com/irov/fastpathfinder.git/trunk fastpathfinder
-call:svndepend https://github.com/EsotericSoftware/spine-runtimes.git/trunk/spine-c spine-c
-call:svndepend http://smallsha1.googlecode.com/svn/trunk/ sha1
+call:svndependr https://github.com/EsotericSoftware/spine-runtimes.git/trunk/spine-c spine-c 1587
 
 echo.&pause&goto:eof
 
@@ -43,6 +43,14 @@ echo.&pause&goto:eof
 @echo svn: %~1
 
 svn checkout -q %~1 %~2
+
+goto:eof
+
+:svndependr
+
+@echo svn: %~1
+
+svn checkout -q -r %3 %~1 %~2
 
 goto:eof
 

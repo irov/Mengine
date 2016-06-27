@@ -35,6 +35,7 @@ call:svndepend http://svn.code.sf.net/p/utfcpp/code/v2_0 utf8
 call:svndepend https://github.com/Cyan4973/lz4.git/trunk lz4
 call:svndepend https://github.com/irov/fastpathfinder.git/trunk fastpathfinder
 call:svndependr https://github.com/EsotericSoftware/spine-runtimes.git/trunk/spine-c spine-c 1587
+call:svndepend https://github.com/zzzzrrr/poly2tri/trunk poly2tri
 
 echo.&pause&goto:eof
 

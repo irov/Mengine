@@ -354,7 +354,7 @@ namespace Menge
 		vb->enable();
 
 		GLCALL( m_serviceProvider, glEnableClientState, (GL_VERTEX_ARRAY) );
-		GLCALL( m_serviceProvider, glVertexPointer, (3, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, pos ))) );
+		GLCALL( m_serviceProvider, glVertexPointer, (3, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, position ))) );
 
 		GLCALL( m_serviceProvider, glEnableClientState, (GL_COLOR_ARRAY) );
 		GLCALL( m_serviceProvider, glColorPointer, (4, GL_UNSIGNED_BYTE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, color ))) );
@@ -914,7 +914,7 @@ namespace Menge
 		mt::mat4f wm;
 		mt::ident_m4( wm );
 
-		mt::inv_m4( _viewMatrix, wm );
+		mt::inv_m4_m4( _viewMatrix, wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )

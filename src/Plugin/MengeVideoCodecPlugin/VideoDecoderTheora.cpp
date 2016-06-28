@@ -65,6 +65,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderTheora::_initialize()
 	{
+		memset( &m_oggStreamState, 0, sizeof( m_oggStreamState ) );
+		memset( &m_oggSyncState, 0, sizeof( m_oggSyncState ) );
+		memset( &m_theoraState, 0, sizeof( m_theoraState ) );
+		memset( &m_theoraComment, 0, sizeof( m_theoraComment ) );
+		memset( &m_theoraInfo, 0, sizeof( m_theoraInfo ) );
+
 		// start up Ogg stream synchronization layer
 		ogg_sync_init( &m_oggSyncState );
 
@@ -801,15 +807,71 @@ namespace Menge
 		return VDRS_SUCCESS;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderTheora::_seek( float _timing )
+	bool VideoDecoderTheora::seekNextFrame( float _time )
 	{
 		float frameTiming = m_dataInfo.getFrameTiming();
 
-		//uint32_t frame_end = (uint32_t)(m_dataInfo.duration / frameTiming);
-		uint32_t frame_time = (uint32_t)(m_time / frameTiming);
-		uint32_t frame_seek = (uint32_t)(_timing / frameTiming);
+		ogg_packet packet;
 
-		if( frame_seek == frame_time || frame_seek + 1 == frame_time )
+		for( ;; )
+		{
+			// theora processing...			
+			while( ogg_stream_packetout( &m_oggStreamState, &packet ) <= 0 )
+			{
+				// не хватает данных в логическом потоке theora
+				// надо надергать данных из физического потока и затолкать их в логический поток
+
+				// читаем данные из файла
+				size_t bytes = this->read_buffer_data_();
+
+				if( bytes == 0 )
+				{
+					return false;
+				}
+
+				ogg_page page;
+				while( ogg_sync_pageout( &m_oggSyncState, &page ) > 0 )
+					// декодируем данные из буфера в страницы (ogg_page)
+					// пока они не кончатся в буфере
+				{
+					// пихаем эти страницы в соотв. логические потоки
+					ogg_stream_pagein( &m_oggStreamState, &page );
+				}
+			}
+
+			double theora_time = theora_granule_time( &m_theoraState, packet.granulepos );
+
+			float time = (float)(theora_time * 1000.0);
+
+			if( time + frameTiming < _time )
+			{
+				continue;
+			}
+
+			m_time = time;
+
+			break;
+		}
+
+		// удачно декодировали. в пакете содержится декодированная ogg-информация
+		// (то бишь закодированная theora-информация)
+		// загружаем пакет в декодер theora
+		if( theora_decode_packetin( &m_theoraState, &packet ) == OC_BADPACKET )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool VideoDecoderTheora::_seek( float _time )
+	{
+		float frameTiming = m_dataInfo.getFrameTiming();
+
+		uint32_t frame_time = (uint32_t)(m_time / frameTiming);
+		uint32_t frame_seek = (uint32_t)(_time / frameTiming);
+
+		if( frame_time == frame_seek || frame_time == frame_seek + 1 )
 		{
 			return true;
 		}
@@ -831,28 +893,9 @@ namespace Menge
 			}
 		}
 
-		for( ;; )
-		{
-			float time;
+		bool successful = this->seekNextFrame( _time );
 
-			EVideoDecoderReadState state = this->readNextFrame( time );
-
-			if( state == VDRS_FAILURE )
-			{
-				return false;
-			}
-			else if( state == VDRS_END_STREAM )
-			{
-				break;
-			}
-			
-			if( time + frameTiming >= _timing )
-			{
-				break;
-			}
-		}
-
-		return true;
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float VideoDecoderTheora::_tell() const

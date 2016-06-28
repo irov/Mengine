@@ -9,7 +9,6 @@ namespace Menge
 	{
 		VDRS_FAILURE = 0,
 		VDRS_SUCCESS = 1,
-		VDRS_SKIP = 2,
 		VDRS_END_STREAM = 3
 	};
 

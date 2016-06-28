@@ -283,7 +283,7 @@ namespace Menge
 		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, _indexId) );
 
 		GLCALL( m_serviceProvider, glEnableClientState, (GL_VERTEX_ARRAY) );
-		GLCALL( m_serviceProvider, glVertexPointer, (3, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, pos ))) );
+		GLCALL( m_serviceProvider, glVertexPointer, (3, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, position ))) );
 
 		GLCALL( m_serviceProvider, glEnableClientState, (GL_COLOR_ARRAY) );
 		GLCALL( m_serviceProvider, glColorPointer, (4, GL_UNSIGNED_BYTE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, color ))) );
@@ -355,7 +355,7 @@ namespace Menge
 			GLCALL( m_serviceProvider, glEnableVertexAttribArray, (VERTEX_UV0_ARRAY + i) );
 		}
 		
-		GLCALL( m_serviceProvider, glVertexAttribPointer, (VERTEX_POSITION_ARRAY, 3, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, pos ))) );
+		GLCALL( m_serviceProvider, glVertexAttribPointer, (VERTEX_POSITION_ARRAY, 3, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, position ))) );
 		GLCALL( m_serviceProvider, glVertexAttribPointer, (VERTEX_COLOR_ARRAY, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, color ))) );
 
 		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
@@ -925,7 +925,7 @@ namespace Menge
         mt::mat4f wm;
         mt::ident_m4( wm );
 
-        mt::inv_m4( _viewMatrix, wm );
+        mt::inv_m4_m4( _viewMatrix, wm );
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )

@@ -501,12 +501,6 @@ namespace Menge
 
 				break;	
 			}
-			else if( state == VDRS_SKIP )
-			{
-                needUpdate = false;
-
-				continue;	
-			}
 
             m_timing -= frameTiming;
 		}
@@ -575,10 +569,6 @@ namespace Menge
 
 					m_timing += frameTiming;
 				}
-			}
-			else if( state == VDRS_SKIP )
-			{
-				continue;	
 			}
 
 			break;

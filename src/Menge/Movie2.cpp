@@ -298,15 +298,12 @@ namespace Menge
 		{
 		case AE_MOVIE_NODE_UPDATE_BEGIN:
 			{
-				printf( "11" );
 			}break;
 		case AE_MOVIE_NODE_UPDATE_UPDATE:
 			{
-				printf( "22" );
 			}break;
 		case AE_MOVIE_NODE_UPDATE_END:
 			{
-				printf( "33" );
 			}break;
 		}
 
@@ -421,7 +418,7 @@ namespace Menge
 			return false;
 		}
 
-		//ae_set_movie_composition_loop( composition, AE_TRUE );
+		ae_set_movie_composition_loop( composition, AE_TRUE );
 
 		uint32_t max_render_node = ae_get_movie_composition_max_render_node( composition );
 
@@ -509,9 +506,7 @@ namespace Menge
 		}
 
 		ae_update_movie_composition( m_composition, _timing );
-
-		printf( "%f\n", ae_get_movie_composition_time( m_composition ) );
-
+		
 		//if( a < 10000.f )
 		//{
 		//	a += _timing;
@@ -537,7 +532,7 @@ namespace Menge
 			if( mesh.track_matte_data != nullptr )
 			{
 				printf( "fds" );
-				//continue;
+				continue;
 			}
 
 			ResourceReference * resource_reference = (ResourceReference *)mesh.resource_data;
@@ -695,6 +690,8 @@ namespace Menge
 					};
 
 					m.material = Helper::makeImageMaterial( m_serviceProvider, resource_image, ConstString::none(), blend_mode, false, false );
+
+					//printf( "%f %f\n", ae_get_movie_composition_time( m_composition ), mesh.a );
 					
 					RENDER_SERVICE( m_serviceProvider )
 						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );

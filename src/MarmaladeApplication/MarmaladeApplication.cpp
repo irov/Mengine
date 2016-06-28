@@ -286,27 +286,36 @@ namespace Menge
 
 		m_logLevel = LM_ERROR;
 
-        if( HAS_OPTIONS(m_serviceProvider, "log:0" ) == true )
-        {
-            m_logLevel = LM_INFO;
-        }
-		else if( HAS_OPTIONS( m_serviceProvider, "log:1" ) == true )
-        {
-            m_logLevel = LM_LOG;
-        }
-		else if( HAS_OPTIONS( m_serviceProvider, "log:2" ) == true )
-        {
-            m_logLevel = LM_WARNING;
-        }
-		else if( HAS_OPTIONS( m_serviceProvider, "log:3" ) == true )
-        {
-            m_logLevel = LM_ERROR;
-        }
+		const Char * option_log = GET_OPTION_VALUE( m_serviceProvider, "log" );
+
+		uint32_t option_log_value;
+		if( sscanf( option_log, "%u", &option_log_value ) == 1 )
+		{
+			switch( option_log_value )
+			{
+			case 0:
+				{
+					m_logLevel = LM_INFO;
+				}break;
+			case 1:
+				{
+					m_logLevel = LM_LOG;
+				}break;
+			case 2:
+				{
+					m_logLevel = LM_WARNING;
+				}break;
+			case 3:
+				{
+					m_logLevel = LM_ERROR;
+				}break;
+			}
+		}
 
         LOGGER_SERVICE(m_serviceProvider)
 			->setVerboseLevel( m_logLevel );
 
-		if( HAS_OPTIONS( m_serviceProvider, "verbose" ) == true )
+		if( HAS_OPTION( m_serviceProvider, "verbose" ) == true )
         {
             LOGGER_SERVICE(m_serviceProvider)
 				->setVerboseLevel( LM_MAX );
@@ -416,7 +425,7 @@ namespace Menge
 
 		SERVICE_CREATE( m_serviceProvider, SoundSystem );
 
-		bool muteMode = HAS_OPTIONS( m_serviceProvider, "mute" );
+		bool muteMode = HAS_OPTION( m_serviceProvider, "mute" );
 
 		if( muteMode == true || SERVICE_EXIST( m_serviceProvider, Menge::SoundSystemInterface ) == false )
 		{

@@ -7,7 +7,7 @@
 #	include <string>
 #	include <vector>
 
-#	include "sha1.h"
+#	include "stdex/sha1.h"
 
 //////////////////////////////////////////////////////////////////////////
 static void message_error( const char * _format, ... )
@@ -111,10 +111,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	hFile = INVALID_HANDLE_VALUE;
 	
 	unsigned char hash[20];
-	sha1::calc( buff_memory, size, hash );
+	stdex::sha1_calc( buff_memory, size, hash );
 
 	char hex[41];
-	sha1::toHexString( hash, hex );
+	stdex::sha1_hex( hash, hex );
 	
 	HANDLE hSHA1 = ::CreateFile( sha1.c_str(), GENERIC_WRITE, FILE_SHARE_WRITE, NULL,
 		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );

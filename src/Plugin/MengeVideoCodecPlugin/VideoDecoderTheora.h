@@ -36,6 +36,9 @@ namespace Menge
 
 	public:		
 		void setPitch( size_t _pitch ) override;
+
+	protected:
+		bool seekNextFrame( float _timing );
 		
 	protected:
 		ogg_stream_state m_oggStreamState;

@@ -7,7 +7,10 @@ ADD_SUBDIRECTORY( MengeOggVorbisPlugin )
 ADD_SUBDIRECTORY( MengePathFinderPlugin )
 ADD_SUBDIRECTORY( MengeSpinePlugin )
 #ADD_SUBDIRECTORY( MengeCal3dPlugin )
-ADD_SUBDIRECTORY( SteamPlugin )
+
+if( DEFINED MENGINE_STEAM_PLUGIN )
+    ADD_SUBDIRECTORY( SteamPlugin )
+endif()
 
 if( DEFINED MENGINE_TARGET_MSVC )    
 	ADD_SUBDIRECTORY( MengeVideoCodecPlugin )

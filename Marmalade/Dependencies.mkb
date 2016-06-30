@@ -47,7 +47,7 @@ includepaths
     "../dependencies/libtheora/include"
     
     "../dependencies/spine-c/include"
-    "../dependencies/poly2tri"
+    "../dependencies/libmovie/include"
     
     "../dependencies/stdex/include"
 }
@@ -208,4 +208,8 @@ files
     AnimationStateData.c
     AnimationState.c
     Animation.c    
+    
+    [movie]
+    ("../dependencies/libmovie/src")
+    "*.c"
 }

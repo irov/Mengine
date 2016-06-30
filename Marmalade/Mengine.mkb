@@ -50,6 +50,7 @@ includepaths
     "../dependencies/fastpathfinder/include"
     "../dependencies/spine-c/include"
     "../dependencies/poly2tri"
+    "../dependencies/libmovie/include"
 
     "../dependencies/libogg/include"
     "../dependencies/libvorbis/include"
@@ -121,12 +122,8 @@ files
     
     [Plugin/MengeSpinePlugin]
     ("../src/Plugin/MengeSpinePlugin")
-    PluginSpine.cpp
-    PluginSpine.h
-    ResourceSpine.cpp
-    ResourceSpine.h
-    Spine.cpp
-    Spine.h
+	"*.cpp"
+	"*.h"   
 
     [Plugin/MengeVideoCodecPlugin]
     ("../src/Plugin/MengeVideoCodecPlugin")
@@ -142,10 +139,14 @@ files
 
     [Plugin/MengeDevelopmentConverterPlugin]
     ("../src/Plugin/MengeDevelopmentConverterPlugin")	
-	"HotspotImageConverterPNGToHIT.*"
-	"MovieKeyConverterXMLToAEK.*"
-	"DevelopmentConverter.*"
-	"DevelopmentConverterPlugin.*"
+	"HotspotImageConverterPNGToHIT.h"
+    "HotspotImageConverterPNGToHIT.cpp"
+	"MovieKeyConverterXMLToAEK.h"
+    "MovieKeyConverterXMLToAEK.cpp"
+	"DevelopmentConverter.h"
+    "DevelopmentConverter.cpp"
+	"DevelopmentConverterPlugin.h"
+    "DevelopmentConverterPlugin.cpp"
     
     [Service/ServiceCodec]
     ("../src/Service/ServiceCodec")	

@@ -12,7 +12,7 @@ unzip -o 7za465.zip 7za.exe
 
 call:getdepend http://downloads.sourceforge.net/project/boost/boost/1.61.0/boost_1_61_0.7z boost_1_61_0.7z boost_1_61_0 boost
 
-call:getdepend https://cmake.org/files/v3.5/cmake-3.5.2-win32-x86.zip cmake-3.5.2-win32-x86 cmake
+call:getdepend https://cmake.org/files/v3.5/cmake-3.5.2-win32-x86.zip cmake-3.5.2-win32-x86.zip cmake-3.5.2-win32-x86 cmake
 call:getdepend http://download.sourceforge.net/libpng/lpng1623.zip lpng1623.zip lpng1623 libpng
 call:getdepend http://www.ijg.org/files/jpegsr9b.zip jpegsr9b.zip jpeg-9b libjpeg
 call:getdepend http://zlib.net/zlib128.zip zlib128.zip zlib-1.2.8 zlib

@@ -3458,7 +3458,9 @@ namespace Menge
 		protected:
 			PyObject * _embedded() override
 			{
-				PyObject * py_obj = pybind::detail::create_holder_t( this );
+				pybind::kernel_interface * kernel = pybind::get_kernel();
+
+				PyObject * py_obj = kernel->create_holder_t( this );
 
 				return py_obj;
 			}
@@ -6007,7 +6009,9 @@ namespace Menge
 		public:
 			GetResourceVisitor()
 			{
-				m_scope = pybind::detail::class_scope<ResourceReference>();
+				pybind::kernel_interface * kernel = pybind::get_kernel();
+
+				m_scope = kernel->class_scope<ResourceReference>();
 			}
 
 			const pybind::list & getResult() const

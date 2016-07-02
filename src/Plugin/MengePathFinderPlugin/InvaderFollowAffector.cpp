@@ -106,7 +106,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * InvaderFollowAffector::_embedded()
 	{
-		PyObject * py_obj = pybind::detail::create_holder_t( this );
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		PyObject * py_obj = kernel->create_holder_t( this );
 
 		return py_obj;
 	}

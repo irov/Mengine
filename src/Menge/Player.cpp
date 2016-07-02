@@ -1291,9 +1291,10 @@ namespace Menge
                     uint32_t m_count;
                 };
 
-                MyVisitorClassTypeScope mvcts(ss);
+				pybind::kernel_interface * kernel = pybind::get_kernel();
 
-				pybind::detail::visit_types_scope( &mvcts );
+                MyVisitorClassTypeScope mvcts(ss);
+				kernel->visit_types_scope( &mvcts );
             }
             
 			String text = ss.str();

@@ -75,7 +75,9 @@ namespace Menge
 
             T * obj = static_cast<T *>( _scriptable );
 
-			const pybind::class_type_scope_ptr & scope = pybind::detail::class_scope<T>();
+			pybind::kernel_interface * kernel = pybind::get_kernel();
+
+			const pybind::class_type_scope_ptr & scope = kernel->class_scope<T>();
 
 			PyObject * py_obj = scope->create_holder( (void *)obj );
 

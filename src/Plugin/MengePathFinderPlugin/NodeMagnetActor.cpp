@@ -144,6 +144,10 @@ namespace Menge
 			actor->addException( exception );
 		}
 
+		actor->setActive( m_magnetActive );
+		actor->setRadius( m_magnetRadius );
+		actor->setForce( m_magnetForce );
+		
 		m_exceptions.clear();
 
 		m_actor = actor;

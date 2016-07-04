@@ -110,7 +110,8 @@ namespace Menge
 		: m_moduleFinder(nullptr)
         , m_moduleMenge(nullptr)
 		, m_loggerWarning(nullptr)
-        , m_loggerError(nullptr)        
+        , m_loggerError(nullptr)
+		, m_initializeModules(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -377,6 +378,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::initializeModules()
 	{
+		if( m_initializeModules == true )
+		{
+			return false;
+		}
+
 		for( TVectorScriptModulePack::const_iterator
 			it = m_bootstrapperModules.begin(),
 			it_end = m_bootstrapperModules.end();
@@ -449,11 +455,20 @@ namespace Menge
 			}
 		}
 
+		m_initializeModules = true;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::finalizeModules()
 	{
+		if( m_initializeModules == false )
+		{
+			return true;
+		}
+
+		m_initializeModules = false;
+
 		for( TVectorScriptModulePack::const_reverse_iterator
 			it = m_bootstrapperModules.rbegin(),
 			it_end = m_bootstrapperModules.rend();

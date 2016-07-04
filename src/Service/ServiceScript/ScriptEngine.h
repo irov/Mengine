@@ -93,5 +93,7 @@ namespace Menge
 
 		typedef FactoryPoolStore<EntityPrototypeGenerator, 64> FactoryEntityPrototypeGenerator;
 		FactoryEntityPrototypeGenerator m_factoryEntityPrototypeGenerator;
+
+		bool m_initializeModules;
 	};
 }

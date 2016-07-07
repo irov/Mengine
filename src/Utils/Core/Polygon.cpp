@@ -397,7 +397,7 @@ namespace Menge
 		++it )
 		{
 			mt::vec2f v;
-			mt::mul_v2_m4( v, *it, _wm );
+			mt::mul_v2_v2_m4( v, *it, _wm );
 			_out.append( v );
 		}
 
@@ -420,7 +420,7 @@ namespace Menge
 			++it )
 			{
 				mt::vec2f v;
-				mt::mul_v2_m4( v, *it, _wm );
+				mt::mul_v2_v2_m4( v, *it, _wm );
 				polygon_inner_wm.append( v );
 			}
 
@@ -445,7 +445,7 @@ namespace Menge
 		++it )
 		{
 			mt::vec2f v;
-			mt::mul_v2_m4( v, *it, _wm );
+			mt::mul_v2_v2_m4( v, *it, _wm );
 			v += _pos;
 
 			_out.append( v );
@@ -470,7 +470,7 @@ namespace Menge
 			++it )
 			{
 				mt::vec2f v;
-				mt::mul_v2_m4( v, *it, _wm );
+				mt::mul_v2_v2_m4( v, *it, _wm );
 				v += _pos;
 
 				polygon_inner_wm.append( v );

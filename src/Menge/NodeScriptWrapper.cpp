@@ -65,6 +65,7 @@
 #	include "Model3D.h"
 #	include "HotSpot.h"
 #	include "HotSpotPolygon.h"
+#	include "HotSpotCircle.h"
 #	include "HotSpotBubbles.h"
 #	include "HotSpotImage.h"
 #   include "HotSpotShape.h"
@@ -1182,7 +1183,7 @@ namespace Menge
 				const mt::vec2f & v = *it;
 
 				mt::vec2f v_wm;
-				mt::mul_v2_m4( v_wm, v, wm );
+				mt::mul_v2_v2_m4( v_wm, v, wm );
 
 				mt::add_internal_point( bb, v_wm );
 			}
@@ -3661,14 +3662,9 @@ namespace Menge
 			return wp;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		mt::vec2f s_TouchPosition( uint32_t _touchId )
+		mt::vec2f s_getMousePosition()
 		{
-			const mt::vec2f & pos = INPUT_SERVICE( m_serviceProvider )
-				->getCursorPosition( _touchId );
-
-			mt::vec2f wp;
-			PLAYER_SERVICE( m_serviceProvider )
-				->calcGlobalMouseWorldPosition( pos, wp );
+			mt::vec2f wp = this->s_getTouchPosition( 0 );
 
 			return wp;
 		}
@@ -3791,7 +3787,7 @@ namespace Menge
 			const mt::mat4f & wm = _sprite->getWorldMatrix();
 
 			mt::vec2f imageCenter_wm;
-			mt::mul_v2_m4( imageCenter_wm, imageCenter, wm );
+			mt::mul_v2_v2_m4( imageCenter_wm, imageCenter, wm );
 
 			return imageCenter_wm;
 		}
@@ -6069,6 +6065,7 @@ namespace Menge
 		//SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DPhysic );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpot );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotPolygon );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotCircle );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotBubbles );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotImage );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotShape );
@@ -6824,6 +6821,13 @@ namespace Menge
 					.def( "getWidth", &HotSpotImage::getWidth )
 					.def( "getHeight", &HotSpotImage::getHeight )
 					;
+				
+				pybind::interface_<HotSpotCircle, pybind::bases<HotSpot> >( "HotSpotCircle", false )
+					.def( "setRadius", &HotSpotCircle::setRadius )
+					.def( "getRadius", &HotSpotCircle::getRadius )
+					.def( "setEllipse", &HotSpotCircle::setEllipse )
+					.def( "getEllipse", &HotSpotCircle::getEllipse )
+					;
 
 				pybind::interface_<HotSpotBubbles, pybind::bases<HotSpot> >( "HotSpotBubbles", false )
 					.def( "addBubble", &HotSpotBubbles::addBubble )
@@ -7099,6 +7103,7 @@ namespace Menge
 
 			pybind::def_functor( "getCursorPosition", nodeScriptMethod, &NodeScriptMethod::s_getCursorPosition );
 			pybind::def_functor( "getTouchPosition", nodeScriptMethod, &NodeScriptMethod::s_getTouchPosition );
+			pybind::def_functor( "getMousePosition", nodeScriptMethod, &NodeScriptMethod::s_getMousePosition );
 
 			pybind::def_functor( "setArrow", nodeScriptMethod, &NodeScriptMethod::s_setArrow );
 			pybind::def_functor( "getArrow", nodeScriptMethod, &NodeScriptMethod::s_getArrow );

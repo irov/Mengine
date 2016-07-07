@@ -308,8 +308,8 @@ namespace	Menge
 		{
 			Landscape2DElement & el = *it;
 
-			mt::mul_v2_m4( el.bb_wm.minimum, el.bb.minimum, wm );
-			mt::mul_v2_m4( el.bb_wm.maximum, el.bb.maximum, wm );
+			mt::mul_v2_v2_m4( el.bb_wm.minimum, el.bb.minimum, wm );
+			mt::mul_v2_v2_m4( el.bb_wm.maximum, el.bb.maximum, wm );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

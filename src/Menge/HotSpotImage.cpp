@@ -169,7 +169,7 @@ namespace Menge
 		point_norm.y = 1.f - point_vp.y * 2.f;
 
 		mt::vec2f pointIn1;
-		mt::mul_v2_m4( pointIn1, point_norm, vpm_inv );
+		mt::mul_v2_v2_m4( pointIn1, point_norm, vpm_inv );
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -177,7 +177,7 @@ namespace Menge
 		mt::inv_m4_m4( invWM, wm );
 
 		mt::vec2f pointIn2;
-		mt::mul_v2_m4( pointIn2, pointIn1, invWM );
+		mt::mul_v2_v2_m4( pointIn2, pointIn1, invWM );
 
 		bool result = m_resourceHIT->testPoint( pointIn2, m_alphaTest );
 
@@ -197,7 +197,7 @@ namespace Menge
 		const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
 
 		mt::vec2f pointIn1;
-		mt::mul_v2_m4( pointIn1, _point, vm_inv );
+		mt::mul_v2_v2_m4( pointIn1, _point, vm_inv );
 
 		const mt::box2f & bb = this->getBoundingBox();
 
@@ -212,7 +212,7 @@ namespace Menge
 		mt::inv_m4_m4( invWM, wm );
 
 		mt::vec2f pointIn2;
-		mt::mul_v2_m4( pointIn2, pointIn1, invWM );
+		mt::mul_v2_v2_m4( pointIn2, pointIn1, invWM );
 		
 		bool result = m_resourceHIT->testRadius( pointIn2, _radius, m_alphaTest );
 
@@ -237,7 +237,7 @@ namespace Menge
 		const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
 
 		mt::vec2f pointIn1;
-		mt::mul_v2_m4( pointIn1, _point, vm_inv );
+		mt::mul_v2_v2_m4( pointIn1, _point, vm_inv );
 
 		const mt::box2f & bb = this->getBoundingBox();
 
@@ -262,10 +262,10 @@ namespace Menge
 		mt::vec2f maximal(hs_width, hs_height);
 
 		mt::vec2f minimal_wm;
-		mt::mul_v2_m4( minimal_wm, minimal, wm );
+		mt::mul_v2_v2_m4( minimal_wm, minimal, wm );
 
 		mt::vec2f maximal_wm;
-		mt::mul_v2_m4( maximal_wm, maximal, wm );
+		mt::mul_v2_v2_m4( maximal_wm, maximal, wm );
 
 		mt::set_box_from_two_point( _boundingBox, minimal_wm, maximal_wm );
 	}

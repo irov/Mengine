@@ -54,7 +54,7 @@ namespace	Menge
 		const mt::mat4f & vm = _camera2D->getCameraViewMatrixInv();
 
 		mt::vec2f p;
-		mt::mul_v2_m4( p, _point, vm );
+		mt::mul_v2_v2_m4( p, _point, vm );
 		
 		return p;
 	}

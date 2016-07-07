@@ -73,7 +73,7 @@ namespace Menge
 		const mt::vec2f & ring_point_0 = ring[0];
 
 		mt::vec2f wmp_0;
-		mt::mul_v2_m4( wmp_0, ring_point_0, wm );
+		mt::mul_v2_v2_m4( wmp_0, ring_point_0, wm );
 
 		mt::reset( _boundingBox, wmp_0 );
 
@@ -86,7 +86,7 @@ namespace Menge
 			const mt::vec2f & ring_point_it = ring[it];
 
 			mt::vec2f wmp_it;
-			mt::mul_v2_m4( wmp_it, ring_point_it, wm );
+			mt::mul_v2_v2_m4( wmp_it, ring_point_it, wm );
 
 			mt::add_internal_point( _boundingBox, wmp_it );
 		}

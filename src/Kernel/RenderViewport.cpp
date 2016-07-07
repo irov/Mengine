@@ -86,8 +86,8 @@ namespace Menge
 		const mt::mat4f & wm = this->getWorldMatrix();
 
 		Viewport viewportWM;
-		mt::mul_v2_m4( viewportWM.begin, m_viewport.begin, wm );
-		mt::mul_v2_m4( viewportWM.end, m_viewport.end, wm );
+		mt::mul_v2_v2_m4( viewportWM.begin, m_viewport.begin, wm );
+		mt::mul_v2_v2_m4( viewportWM.end, m_viewport.end, wm );
 
 		viewportWM.begin /= contentResolutionSize;
 		viewportWM.end /= contentResolutionSize;

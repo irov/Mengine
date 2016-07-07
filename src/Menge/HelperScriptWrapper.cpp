@@ -425,7 +425,7 @@ namespace Menge
             return true;
         }
 
-        void s_addGlobalModule( const String & _name, PyObject * _module )
+		void s_addGlobalModule( const Char * _name, PyObject * _module )
         {
             SCRIPT_SERVICE(m_serviceProvider)
                 ->addGlobalModule( _name, _module );
@@ -506,6 +506,11 @@ namespace Menge
 		float mt_sqrtf( float a )
 		{
 			return sqrtf(a);
+		}
+
+		float mt_powf( float a, float b )
+		{
+			return powf( a, b );
 		}
 
 		float mt_absf( float a )
@@ -593,6 +598,13 @@ namespace Menge
 			uint64_t fbine64 = (uint64_t)fbine;
 
 			return fbine64;
+		}
+
+		float mt_dot_v2_v2( const mt::vec2f & _a, const mt::vec2f & _b )
+		{
+			float d = mt::dot_v2_v2( _a, _b );
+
+			return d;
 		}
 		
 		mt::vec2f mt_direction_v2_v2( const mt::vec2f & _from, const mt::vec2f & _to )
@@ -2126,6 +2138,7 @@ namespace Menge
 				
 			
 		pybind::def_functor( "sqrtf", helperScriptMethod, &HelperScriptMethod::mt_sqrtf );
+		pybind::def_functor( "powf", helperScriptMethod, &HelperScriptMethod::mt_powf );
 		pybind::def_functor( "absf", helperScriptMethod, &HelperScriptMethod::mt_absf );
 		pybind::def_functor( "cosf", helperScriptMethod, &HelperScriptMethod::mt_cosf );
 		pybind::def_functor( "sinf", helperScriptMethod, &HelperScriptMethod::mt_sinf );
@@ -2138,7 +2151,8 @@ namespace Menge
 		pybind::def_functor( "log10f", helperScriptMethod, &HelperScriptMethod::mt_log10f );
 		pybind::def_functor( "log10", helperScriptMethod, &HelperScriptMethod::mt_log10 );
 		pybind::def_functor( "fibo", helperScriptMethod, &HelperScriptMethod::mt_fibo );
-		pybind::def_functor( "fibo_bine", helperScriptMethod, &HelperScriptMethod::mt_fibo_bine );
+		pybind::def_functor( "fibo_bine", helperScriptMethod, &HelperScriptMethod::mt_fibo_bine );		
+		pybind::def_functor( "dot_v2_v2", helperScriptMethod, &HelperScriptMethod::mt_dot_v2_v2 );
 		pybind::def_functor( "direction_v2_v2", helperScriptMethod, &HelperScriptMethod::mt_direction_v2_v2 );
 		pybind::def_functor( "direction_v3_v3", helperScriptMethod, &HelperScriptMethod::mt_direction_v3_v3 );
 		pybind::def_functor( "angle_from_v2_v2", helperScriptMethod, &HelperScriptMethod::mt_angle_from_v2_v2 );

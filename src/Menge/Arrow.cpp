@@ -167,14 +167,14 @@ namespace	Menge
 		p1.y = -p1.y;
 
 		mt::vec2f p_pm;
-		mt::mul_v2_m4( p_pm, p1, pm_inv );
+		mt::mul_v2_v2_m4( p_pm, p1, pm_inv );
 
 		const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
 
 		mt::vec2f p = p_pm;
 
 		mt::vec2f p_vm;
-		mt::mul_v2_m4( p_vm, p, vm_inv );
+		mt::mul_v2_v2_m4( p_vm, p, vm_inv );
 
 		_worldPoint = p_vm;
 	}
@@ -226,7 +226,7 @@ namespace	Menge
 		mt::vec2f p = _worldPoint;
 
 		mt::vec2f p_vm;
-		mt::mul_v2_m4( p_vm, p, vm );
+		mt::mul_v2_v2_m4( p_vm, p, vm );
 
 		const Viewport & viewport = _viewport->getViewport();
 		p_vm += viewport.begin;
@@ -234,7 +234,7 @@ namespace	Menge
 		const mt::mat4f & pm = _camera->getCameraProjectionMatrix();
 
 		mt::vec2f p_vm_pm;
-		mt::mul_v2_m4( p_vm_pm, p_vm, pm );
+		mt::mul_v2_v2_m4( p_vm_pm, p_vm, pm );
 
 		p_vm_pm.y = -p_vm_pm.y;
 

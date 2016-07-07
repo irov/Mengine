@@ -66,6 +66,8 @@ Object2D\\\\HotSpot
 	HotSpotBubbles.h
 	HotSpotShape.cpp
 	HotSpotShape.h
+    HotSpotCircle.cpp
+    HotSpotCircle.h
     
     HotspotMousePickerVisitor.h
     HotspotMousePickerVisitor.cpp

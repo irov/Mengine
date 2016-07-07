@@ -52,7 +52,7 @@ namespace Menge
 			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeCollisionActor" ), new ClassScriptWrapper<NodeCollisionActor>() );
 
 		PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeCollisionActor" ), new NodePrototypeGenerator<NodeCollisionActor, 32> );
+			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeCollisionActor" ), new NodePrototypeGenerator<NodeCollisionActor, 32>() );
 
 		return true;
 	}

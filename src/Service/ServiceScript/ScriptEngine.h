@@ -42,8 +42,8 @@ namespace Menge
 
 		void setCurrentModule( PyObject * _module ) override;
         
-        void addGlobalModule( const String & _name, PyObject * _module ) override;
-        void removeGlobalModule( const String & _name ) override;
+		void addGlobalModule( const Char * _name, PyObject * _module ) override;
+		void removeGlobalModule( const Char * _name ) override;
 
 	public:
         void addModulePath( const ConstString & _pak, const TVectorScriptModulePack & _modules ) override;

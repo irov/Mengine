@@ -213,8 +213,8 @@ namespace mt
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void mul_box2_m4( box2f & _out, const box2f & _a, const mat4f & _b )
 	{
-		mt::mul_v2_m4( _out.minimum, _a.minimum, _b );
-		mt::mul_v2_m4( _out.maximum, _a.maximum, _b );
+		mt::mul_v2_v2_m4( _out.minimum, _a.minimum, _b );
+		mt::mul_v2_v2_m4( _out.maximum, _a.maximum, _b );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE vec2f box_size( const box2f& _box )

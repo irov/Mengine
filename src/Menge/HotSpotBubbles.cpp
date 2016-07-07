@@ -1,14 +1,6 @@
 #	include "HotSpotBubbles.h"
 
-#	include "Interface/ResourceInterface.h"
-#   include "Interface/StringizeInterface.h"
-
-#   include "ResourceHIT.h"
-
 #	include "Logger/Logger.h"
-
-#	include "Core/String.h"
-#	include "Consts.h"
 
 namespace Menge
 {
@@ -53,7 +45,7 @@ namespace Menge
 		const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
 
 		mt::vec2f pointIn1;
-		mt::mul_v2_m4( pointIn1, _point, vm_inv );
+		mt::mul_v2_v2_m4( pointIn1, _point, vm_inv );
 
 		this->updateBubbleWM_();
 
@@ -93,7 +85,7 @@ namespace Menge
 		const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
 
 		mt::vec2f pointIn1;
-		mt::mul_v2_m4( pointIn1, _point, vm_inv );
+		mt::mul_v2_v2_m4( pointIn1, _point, vm_inv );
 
 		this->updateBubbleWM_();
 
@@ -166,7 +158,7 @@ namespace Menge
 		{
 			const Bubble & b = *it;
 
-			mt::mul_v2_m4( b.pos_wm, b.pos, wm );
+			mt::mul_v2_v2_m4( b.pos_wm, b.pos, wm );
 		}
 	}
 

@@ -48,8 +48,8 @@ namespace Menge
 		const Viewport & camera_vp = m_camera->getOrthogonalViewport();
 		
 		Viewport camera_vpwm;
-		mt::mul_v2_m4( camera_vpwm.begin, camera_vp.begin, camera_wm );
-		mt::mul_v2_m4( camera_vpwm.end, camera_vp.end, camera_wm );
+		mt::mul_v2_v2_m4( camera_vpwm.begin, camera_vp.begin, camera_wm );
+		mt::mul_v2_v2_m4( camera_vpwm.end, camera_vp.end, camera_wm );
 		
 		mt::vec2f camera_vpwm_center;
 		camera_vpwm.getCenter( camera_vpwm_center );

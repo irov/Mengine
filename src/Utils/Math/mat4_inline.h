@@ -104,9 +104,9 @@ namespace mt
 		return w;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_FUNCTION_INLINE void mul_v2_m4( vec2f& _out, const vec2f& _v, const mat4f& _m )
+	MENGINE_MATH_FUNCTION_INLINE void mul_v2_v2_m4( vec2f& _out, const vec2f& _v, const mat4f& _m )
 	{
-		mul_v2_m4_r( _out, _v, _m );
+		mul_v2_v2_m4_r( _out, _v, _m );
 
 		_out.x += _m.v3.x;
 		_out.y += _m.v3.y;
@@ -135,7 +135,7 @@ namespace mt
 		_out.z += _m.v3.z;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_FUNCTION_INLINE void mul_v2_m4_r( vec2f& _out, const vec2f& _v, const mat4f& _m )
+	MENGINE_MATH_FUNCTION_INLINE void mul_v2_v2_m4_r( vec2f& _out, const vec2f& _v, const mat4f& _m )
 	{
 		_out.x = _m.v0.x * _v.x + _m.v1.x * _v.y;
 		_out.y = _m.v0.y * _v.x + _m.v1.y * _v.y;

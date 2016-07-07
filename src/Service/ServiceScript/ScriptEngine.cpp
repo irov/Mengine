@@ -582,7 +582,7 @@ namespace Menge
 		pybind::set_currentmodule( _module );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ScriptEngine::addGlobalModule( const String & _name, PyObject * _module )
+	void ScriptEngine::addGlobalModule( const Char * _name, PyObject * _module )
     {        
         PyObject * builtins = pybind::get_builtins();
 
@@ -591,7 +591,7 @@ namespace Menge
         pybind::dict_set_t( dir_bltin, _name, _module );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptEngine::removeGlobalModule( const String & _name )
+	void ScriptEngine::removeGlobalModule( const Char * _name )
     {
         PyObject * builtins = pybind::get_builtins();
 

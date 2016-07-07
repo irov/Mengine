@@ -139,16 +139,16 @@ namespace	Menge
 
 			const mt::mat4f & wm = this->getWorldMatrix();
 
-			mt::mul_v2_m4( renderViewportWM.begin, m_orthogonalViewport.begin, wm );
-			mt::mul_v2_m4( renderViewportWM.end, m_orthogonalViewport.end, wm );
+			mt::mul_v2_v2_m4( renderViewportWM.begin, m_orthogonalViewport.begin, wm );
+			mt::mul_v2_v2_m4( renderViewportWM.end, m_orthogonalViewport.end, wm );
 
 			renderViewportWM.clamp( gameViewport );
 
 			mt::mat4f wm_inv;
 			mt::inv_m4_m4( wm_inv, wm );
 
-			mt::mul_v2_m4( renderViewport.begin, renderViewportWM.begin, wm_inv );
-			mt::mul_v2_m4( renderViewport.end, renderViewportWM.end, wm_inv );
+			mt::mul_v2_v2_m4( renderViewport.begin, renderViewportWM.begin, wm_inv );
+			mt::mul_v2_v2_m4( renderViewport.end, renderViewportWM.end, wm_inv );
 		}
 		else
 		{

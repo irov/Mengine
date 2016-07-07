@@ -74,8 +74,8 @@ namespace Menge
 		virtual pybind::object importModule( const ConstString& _name ) = 0;
 
 		virtual void setCurrentModule( PyObject * _module ) = 0;
-        virtual void addGlobalModule( const String & _name, PyObject * _module ) = 0;
-        virtual void removeGlobalModule( const String & _name ) = 0;
+		virtual void addGlobalModule( const Char * _name, PyObject * _module ) = 0;
+		virtual void removeGlobalModule( const Char * _name ) = 0;
 
 	public:
 		virtual bool addEntityPrototype( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator ) = 0;

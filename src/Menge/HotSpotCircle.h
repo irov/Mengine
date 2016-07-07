@@ -4,15 +4,19 @@
 
 namespace Menge
 {
-	class HotSpotBubbles
+	class HotSpotCircle
 		: public HotSpot
 	{
 	public:
-		HotSpotBubbles();
-		~HotSpotBubbles();
+		HotSpotCircle();
+		~HotSpotCircle();
 
 	public:
-		uint32_t addBubble( const mt::vec2f & _pos, float _radius, float _ellipse, bool _outward );
+		void setRadius( float _radius );
+		float getRadius() const;
+		
+		void setEllipse( float _ellipse );
+		float getEllipse() const;
 
 	protected:
 		bool testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const override;
@@ -20,28 +24,12 @@ namespace Menge
 		bool testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const override;
 
 	protected:
-		void _invalidateWorldMatrix() override;
+		void _debugRender( const RenderObjectState * _state, unsigned int _debugMask ) override;
 
 	protected:
-		void invalidatemBubbleWM_();
-		void updateBubbleWM_() const;
-
-	protected:
-		struct Bubble
-		{
-			uint32_t id;
-			mt::vec2f pos;
-			mutable mt::vec2f pos_wm;
-			float radius;
-			float ellipse;
-			bool outward;
-		};
-
-		typedef stdex::vector<Bubble> TVectorBubbles;
-		TVectorBubbles m_bubbles;
+		float m_radius;
+		float m_ellipse;
 
 		uint32_t m_enumerator;
-
-		mutable bool m_invalidateBubbleWM;
 	};
 }	// namespace Menge

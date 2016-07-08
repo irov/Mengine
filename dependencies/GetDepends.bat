@@ -24,7 +24,7 @@ call:getdepend_2 http://kcat.strangesoft.net/openal-releases/openal-soft-1.17.2.
 call:getdepend_2 https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz Python-2.7.11.tgz Python-2.7.11.tar Python-2.7.11 Python
 call:getdepend_2 https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz Python-3.5.1.tgz Python-3.5.1.tar Python-3.5.1 Python3
 
-call:getdepend http://www.astralax.ru/download/programm/magic_win_160105.zip magic_win_160105.zip win astralax
+call:getdepend http://www.astralax.ru/download/programm/dev/magic_win.zip magic_win.zip win astralax
 
 call:svndepend https://github.com/zeux/pugixml.git/trunk pugixml
 call:svndepend https://github.com/irov/pybind.git/trunk pybind

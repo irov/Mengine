@@ -6,6 +6,8 @@ ADD_SUBDIRECTORY( MengeLZ4Plugin )
 ADD_SUBDIRECTORY( MengeOggVorbisPlugin )
 ADD_SUBDIRECTORY( MengePathFinderPlugin )
 ADD_SUBDIRECTORY( MengeSpinePlugin )
+ADD_SUBDIRECTORY( MengeWin32SocketPlugin )
+ADD_SUBDIRECTORY( AstralaxParticlePlugin )
 #ADD_SUBDIRECTORY( MengeCal3dPlugin )
 
 if( DEFINED MENGINE_STEAM_PLUGIN )

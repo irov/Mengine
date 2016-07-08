@@ -373,11 +373,11 @@ namespace Menge
 			mt::vec3f test_target_position = this->getTimePosition( test_time );
 			test_target_position += _offset;
 
-			mt::vec3f parabolic_begin = _position;
-			mt::vec3f parabolic_end = target_position;
-			mt::vec3f parabolic_height = (_position + test_target_position) * 0.5f + _height;
+			mt::vec3f parabolic_begin_dt = _position;
+			mt::vec3f parabolic_end_dt = target_position;
+			mt::vec3f parabolic_height_dt = (_position + test_target_position) * 0.5f + _height;
 
-			float dlength = calculateParabolicLength( parabolic_begin, parabolic_end, parabolic_height, mt::length_v3_v3 );
+			float dlength = calculateParabolicLength( parabolic_begin_dt, parabolic_end_dt, parabolic_height_dt, mt::length_v3_v3 );
 			float test_bullet_time = (dlength / _speed) * 1000.f;
 
 			if( test_time >= test_bullet_time )

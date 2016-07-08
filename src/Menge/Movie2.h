@@ -18,6 +18,7 @@ namespace Menge
 	{
 	public:
 		Movie2();
+		~Movie2();
 
     public:
 		void setResourceMovie2( const ResourceMovie2Ptr & _resourceMovie );
@@ -51,6 +52,11 @@ namespace Menge
 
 	protected:
 		void _render( const RenderObjectState * _state ) override;
+
+	protected:
+		void _changeParent( Node * _oldParent, Node * _newParent ) override;
+		void _addChild( Node * _node ) override;
+		void _removeChild( Node * _node ) override;
 
 	public:
 		struct Camera

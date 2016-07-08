@@ -55,6 +55,7 @@ src
     UserdataInterface.h    
     OptionsInterface.h
     TimelineInterface.h
+    SocketInterface.h
     
 	dummy.cpp
 )

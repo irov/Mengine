@@ -20,7 +20,8 @@ namespace Menge
 	{
 		(void)_data;
 
-		return stdex_malloc( _size );
+		//return stdex_malloc( _size );
+		return new uint8_t[_size];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void * stdex_movie_alloc_n( void * _data, uint32_t _size, uint32_t _count )
@@ -29,21 +30,24 @@ namespace Menge
 
 		uint32_t total = _size * _count;
 
-		return stdex_malloc( total );
+		//return stdex_malloc( total );
+		return new uint8_t[total];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void stdex_movie_free( void * _data, const void * _ptr )
 	{
 		(void)_data;
 
-		stdex_free( (void *)_ptr );
+		//stdex_free( (void *)_ptr );
+		delete[] _ptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void stdex_movie_free_n( void * _data, const void * _ptr )
 	{
 		(void)_data;
 
-		stdex_free( (void *)_ptr );
+		//stdex_free( (void *)_ptr );
+		delete[] _ptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void Mengine_read_stream( void * _data, void * _buff, uint32_t _size )

@@ -17,7 +17,7 @@ namespace Menge
         {
             if( _node == nullptr )
             {
-                return nullptr;
+                return pybind::ret_none();
             }
 
             PyObject * py_obj = _node->getEmbed();

@@ -1,8 +1,6 @@
 ADD_SUBDIRECTORY( SilentSoundSystem )
 
 if( DEFINED MENGINE_TARGET_MSVC )
-    ADD_SUBDIRECTORY( AstralaxParticleSystem2 )
-    
     ADD_SUBDIRECTORY( OALSoundSystem )
     ADD_SUBDIRECTORY( Win32UnicodeSystem )
     ADD_SUBDIRECTORY( Win32ThreadSystem )
@@ -14,8 +12,6 @@ if( DEFINED MENGINE_TARGET_MSVC )
 endif()
 
 if( DEFINED MENGINE_TARGET_MINGW )
-    ADD_SUBDIRECTORY( AstralaxParticleSystem2 )
-    
     ADD_SUBDIRECTORY( OALSoundSystem )
     ADD_SUBDIRECTORY( Win32UnicodeSystem )
     ADD_SUBDIRECTORY( Win32ThreadSystem )
@@ -27,8 +23,6 @@ if( DEFINED MENGINE_TARGET_MINGW )
 endif()
 
 if( DEFINED MENGINE_TARGET_SDL )
-    ADD_SUBDIRECTORY( AstralaxParticleSystem2 )
-    
     ADD_SUBDIRECTORY( SDLSoundSystem )
     ADD_SUBDIRECTORY( PosixUnicodeSystem )
     ADD_SUBDIRECTORY( SDLThreadSystem )

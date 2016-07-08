@@ -320,6 +320,8 @@ namespace Menge
                 continue;
             }
 
+			node->release();
+
             node->setParent_( nullptr );
             node->setLayer( nullptr );
 

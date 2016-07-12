@@ -177,13 +177,13 @@ namespace Menge
 		delete _graph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PathFinderWayAffector * ModulePathFinder::createPathFinderWayAffector( Node * _node, const pybind::list & _satellite, const pybind::list & _way, float _offset, float _speed, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+	PathFinderWayAffector * ModulePathFinder::createPathFinderWayAffector( Node * _node, const pybind::list & _satellite, const pybind::list & _way, float _offset, float _speed, bool _preparePosition, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 	{
 		PathFinderWayAffector * affector = m_factoryPathFinderWayAffector.createObject();
 
 		affector->setServiceProvider( m_serviceProvider );
 
-		if( affector->initialize( _node, _satellite, _offset, _speed, _way, _cb, _args ) == false )
+		if( affector->initialize( _node, _satellite, _offset, _speed, _way, _preparePosition, _cb, _args ) == false )
 		{
 			affector->destroy();
 

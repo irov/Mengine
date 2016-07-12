@@ -24,7 +24,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderWayAffector::initialize( Node * _node, const pybind::list & _satellite, float _offset, float _speed, const pybind::list & _way, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+	bool PathFinderWayAffector::initialize( Node * _node, const pybind::list & _satellite, float _offset, float _speed, const pybind::list & _way, bool _preparePosition, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 	{
 		if( _way.is_valid() == false )
 		{
@@ -37,6 +37,7 @@ namespace Menge
 		m_offset = _offset;
 
 		m_way = _way;
+		m_preparePosition = _preparePosition;
 		m_cb = _cb;
 		m_args = _args;
 
@@ -146,7 +147,10 @@ namespace Menge
 
 		m_iterator = 1;
 
-		this->updatePosition_( wp_current );
+		if( m_preparePosition == true )
+		{
+			this->updatePosition_( wp_current );
+		}
 
 		mt::vec3f new_pos;
 		mt::vec3f new_dir;
@@ -232,7 +236,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::updatePosition_( const mt::vec3f & _pos )
 	{
-		m_node->setLocalPosition( _pos );
+		const mt::vec3f & current_pos = m_node->getLocalPosition();
+
+		mt::vec3f velocity = _pos - current_pos;
+
+		m_node->translate( velocity );
 
 		for( uint32_t
 			it = 0,
@@ -241,7 +249,7 @@ namespace Menge
 		{
 			Node * satellite = m_satellite[it];
 
-			satellite->setLocalPosition( _pos );
+			satellite->translate( velocity );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

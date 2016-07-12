@@ -82,6 +82,16 @@ ModuleMagnet
 )
 
 ADD_FILTER(
+ModuleBounce
+    ModuleBounce.cpp
+    ModuleBounce.h    
+    BounceWorld.cpp
+    BounceWorld.h
+    BounceActor.cpp
+    BounceActor.h
+)
+
+ADD_FILTER(
 ModuleInvader   
     ModuleInvader.cpp
     ModuleInvader.h

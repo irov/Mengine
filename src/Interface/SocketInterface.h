@@ -16,7 +16,7 @@ namespace Menge
 
 	public:
 		virtual bool send( const void * _buffer, size_t _len ) = 0;
-		virtual bool receiv( void * _buffer, size_t _capacity, size_t & _receiv ) = 0;
+		virtual bool receive( void * _buffer, size_t _capacity, size_t & _receiv ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<SocketInterface> SocketInterfacePtr;

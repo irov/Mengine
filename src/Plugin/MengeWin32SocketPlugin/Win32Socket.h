@@ -20,7 +20,7 @@ namespace Menge
 		
 	public:
 		bool send( const void * _buffer, size_t _len );
-		bool receiv( void * _buffer, size_t _capacity, size_t & _receiv );
+		bool receive( void * _buffer, size_t _capacity, size_t & _receiv );
 
 	protected:
 		SOCKET m_socket;		

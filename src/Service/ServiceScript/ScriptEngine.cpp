@@ -725,7 +725,7 @@ namespace Menge
 		return entity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::setWrapper( const ConstString& _type, ScriptWrapperInterface * _wrapper )
+	void ScriptEngine::setWrapper( const ConstString & _type, ScriptWrapperInterface * _wrapper )
 	{
 		_wrapper->setServiceProvider( m_serviceProvider );
 

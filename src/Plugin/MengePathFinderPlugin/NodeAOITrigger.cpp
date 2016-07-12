@@ -86,22 +86,22 @@ namespace Menge
 		return sqrlength <= sqrradius;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeAOITrigger::onAOIActorEnter( AOIActorProviderInterface * _actor )
+	void NodeAOITrigger::onAOIActorEnter( AOIActorProviderInterface * _enemy )
 	{
-		NodeAOIActor * actor = static_cast<NodeAOIActor *>(_actor);
+		NodeAOIActor * enemy = static_cast<NodeAOIActor *>(_enemy);
 
-		uint32_t actor_iff = actor->getIFF();
+		uint32_t enemy_iff = enemy->getIFF();
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_TRIGGER_ENTER )(this, actor, m_iff, actor_iff);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_TRIGGER_ENTER )(this, enemy, m_iff, enemy_iff);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeAOITrigger::onAOIActorLeave( AOIActorProviderInterface * _actor )
+	void NodeAOITrigger::onAOIActorLeave( AOIActorProviderInterface * _enemy )
 	{
-		NodeAOIActor * actor = static_cast<NodeAOIActor *>(_actor);
+		NodeAOIActor * enemy = static_cast<NodeAOIActor *>(_enemy);
 
-		uint32_t actor_iff = actor->getIFF();
+		uint32_t enemy_iff = enemy->getIFF();
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_TRIGGER_LEAVE )(this, actor, m_iff, actor_iff);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_TRIGGER_LEAVE )(this, enemy, m_iff, enemy_iff);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeAOITrigger::_activate()

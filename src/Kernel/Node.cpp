@@ -826,7 +826,6 @@ namespace Menge
 		{
 			this->updateWorldMatrix();
 		}
-		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::compile()

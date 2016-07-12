@@ -20,7 +20,7 @@ namespace Menge
 	protected:
 		Factorable * generate() override
 		{
-			Node * node = m_factory.createObject();
+			Type * node = m_factory.createObject();
 
 			if( node == nullptr )
 			{

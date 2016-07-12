@@ -64,7 +64,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32Socket::receiv( void * _buffer, size_t _capacity, size_t & _receiv )
+	bool Win32Socket::receive( void * _buffer, size_t _capacity, size_t & _receiv )
 	{
 		char * receiv_buffer = (char *)_buffer;
 

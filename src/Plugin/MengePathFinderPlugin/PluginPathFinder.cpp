@@ -11,6 +11,7 @@
 #	include "ModuleMagnet.h"
 #	include "ModuleInvader.h"
 #	include "ModuleBurritoWorld.h"
+#	include "ModuleBounce.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( PathFinder, Menge::PluginPathFinder )
@@ -48,6 +49,11 @@ namespace Menge
 			->registerModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBurritoWorld" )
 			, new ModuleFactory<ModuleBurritoWorld>( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBurritoWorld" ) ) );
 
+		MODULE_SERVICE( m_serviceProvider )
+			->registerModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBounce" )
+			, new ModuleFactory<ModuleBounce>( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBounce" ) ) );
+		
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -70,5 +76,8 @@ namespace Menge
 
 		MODULE_SERVICE(m_serviceProvider)
 			->unregisterModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleBurritoWorld") );
+
+		MODULE_SERVICE( m_serviceProvider )
+			->unregisterModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBounce" ) );		
 	}
 }

@@ -6,6 +6,7 @@ SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../pybind )
 
 # OUR SOURCES
 set( sources
+${SOURCE_DIR}/src/kernel.cpp
 ${SOURCE_DIR}/src/kernel_python.cpp
 ${SOURCE_DIR}/src/adapter_interface.cpp
 ${SOURCE_DIR}/src/class_type_scope.cpp

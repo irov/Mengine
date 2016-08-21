@@ -117,10 +117,10 @@ namespace Menge
 		void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;
 
 	public:
-		RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
-		RenderShaderInterfacePtr createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
+		RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
+		RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
 
-		RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex, uint32_t _samplerCount ) override;
+		RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexShaderInterfacePtr & _vertex, uint32_t _samplerCount ) override;
 		void setProgram( const RenderProgramInterfacePtr & _program ) override;
 
 	public:
@@ -178,8 +178,11 @@ namespace Menge
 		RenderIndexBufferInterfacePtr m_currentIndexBuffer;
 		RenderVertexBufferInterfacePtr m_currentVertexBuffer;
 
-		typedef stdex::map<ConstString, RenderShaderInterface *> TMapRenderShaders;
-		TMapRenderShaders m_shaders;
+		typedef stdex::map<ConstString, RenderFragmentShaderInterface *> TMapRenderFragmentShaders;
+		TMapRenderFragmentShaders m_fragmentShaders;
+
+		typedef stdex::map<ConstString, RenderVertexShaderInterface *> TMapRenderVertexShaders;
+		TMapRenderVertexShaders m_vertexShaders;
 
 		uint32_t m_activeTextureStage;
 		GLuint m_activeTexture;
@@ -187,8 +190,11 @@ namespace Menge
         typedef FactoryPoolStore<MarmaladeRenderTexture, 128> TFactoryTexture;
         TFactoryTexture m_factoryTexture;
 
-		typedef FactoryPoolStore<MarmaladeRenderShader, 16> TFactoryShader;
-		TFactoryShader m_factoryShader;
+		typedef FactoryPoolStore<MarmaladeRenderFragmentShader, 16> TFactoryRenderFragmentShader;
+		TFactoryRenderFragmentShader m_factoryRenderFragmentShader;
+
+		typedef FactoryPoolStore<MarmaladeRenderVertexShader, 16> TFactoryRenderVertexShader;
+		TFactoryRenderVertexShader m_factoryRenderVertexShader;
 
 		typedef FactoryPoolStore<MarmaladeRenderProgram, 16> TFactoryProgram;
 		TFactoryProgram m_factoryProgram;

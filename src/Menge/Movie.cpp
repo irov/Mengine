@@ -1,6 +1,7 @@
 #	include "Movie.h"
 
 #	include "Interface/ResourceInterface.h"
+#	include "Interface/PrototypeManagerInterface.h"
 #   include "Interface/TimelineInterface.h"
 
 #	include "ResourceMovie.h"
@@ -401,7 +402,7 @@ namespace Menge
 		if( _layer.hasViewport == true )
 		{
 			RenderClipplane * clippane = NODE_SERVICE( m_serviceProvider )
-				->createNodeT<RenderClipplane>( CONST_STRING( m_serviceProvider, RenderClipplane ) );
+				->createNodeT<RenderClipplane *>( CONST_STRING( m_serviceProvider, RenderClipplane ) );
 
 			if( clippane == nullptr )
 			{
@@ -1207,7 +1208,7 @@ namespace Menge
 	bool Movie::createMovieSlot_( const MovieLayer & _layer )
 	{
 		MovieSlot * layer_slot = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<MovieSlot>( CONST_STRING(m_serviceProvider, MovieSlot) );
+			->createNodeT<MovieSlot *>( CONST_STRING( m_serviceProvider, MovieSlot ) );
 
 		if( layer_slot == nullptr )
 		{
@@ -1227,7 +1228,7 @@ namespace Menge
 	bool Movie::createMovieSceneEffect_( const MovieLayer & _layer )
 	{
 		MovieSceneEffect * sceneeffect_slot = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<MovieSceneEffect>( CONST_STRING(m_serviceProvider, MovieSceneEffect) );
+			->createNodeT<MovieSceneEffect *>( CONST_STRING( m_serviceProvider, MovieSceneEffect ) );
 
 		if( sceneeffect_slot == nullptr )
 		{
@@ -1245,7 +1246,7 @@ namespace Menge
 	bool Movie::createMovieNullObject_( const MovieLayer & _layer )
 	{
 		Node * layer_slot = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Node>( CONST_STRING(m_serviceProvider, Node) );
+			->createNodeT<Node *>( CONST_STRING( m_serviceProvider, Node ) );
 
 		if( layer_slot == nullptr )
 		{
@@ -1263,7 +1264,7 @@ namespace Menge
 	bool Movie::createMovieImage_( const MovieLayer & _layer )
 	{
 		Sprite * layer_sprite = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Sprite>( CONST_STRING(m_serviceProvider, Sprite) );
+			->createNodeT<Sprite *>( CONST_STRING( m_serviceProvider, Sprite ) );
 
 		if( layer_sprite == nullptr )
 		{
@@ -1304,7 +1305,7 @@ namespace Menge
 		}
 
 		Mesh2D * layer_mesh = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Mesh2D>( CONST_STRING(m_serviceProvider, Mesh2D) );
+			->createNodeT<Mesh2D *>( CONST_STRING( m_serviceProvider, Mesh2D ) );
 
 		if( layer_mesh == nullptr )
 		{
@@ -1343,7 +1344,7 @@ namespace Menge
 		}
 
 		Sprite * layer_sprite = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<Sprite>( CONST_STRING( m_serviceProvider, Sprite ) );
+			->createNodeT<Sprite *>( CONST_STRING( m_serviceProvider, Sprite ) );
 
 		if( layer_sprite == nullptr )
 		{
@@ -1376,7 +1377,7 @@ namespace Menge
 		}
 
 		Mesh2D * layer_mesh = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<Mesh2D>( CONST_STRING( m_serviceProvider, Mesh2D ) );
+			->createNodeT<Mesh2D *>( CONST_STRING( m_serviceProvider, Mesh2D ) );
 
 		if( layer_mesh == nullptr )
 		{
@@ -1401,7 +1402,7 @@ namespace Menge
 	bool Movie::createMovieSocketImage_( const MovieLayer & _layer )
 	{
 		HotSpotImage * layer_hotspotimage = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<HotSpotImage>( CONST_STRING(m_serviceProvider, HotSpotImage) );
+			->createNodeT<HotSpotImage *>( CONST_STRING( m_serviceProvider, HotSpotImage ) );
 
 		if( layer_hotspotimage == nullptr )
 		{
@@ -1429,7 +1430,7 @@ namespace Menge
 	bool Movie::createMovieSocketShape_( const MovieLayer & _layer )
 	{
 		HotSpotShape * layer_hotspotshape = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<HotSpotShape>( CONST_STRING(m_serviceProvider, HotSpotShape) );
+			->createNodeT<HotSpotShape *>( CONST_STRING( m_serviceProvider, HotSpotShape ) );
 
 		if( layer_hotspotshape == nullptr )
 		{
@@ -1457,7 +1458,7 @@ namespace Menge
 	bool Movie::createMovieAnimation_( const MovieLayer & _layer )
 	{
 		Animation * layer_animation = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Animation>( CONST_STRING(m_serviceProvider, Animation) );
+			->createNodeT<Animation *>( CONST_STRING( m_serviceProvider, Animation ) );
 
 		if( layer_animation == nullptr )
 		{
@@ -1495,7 +1496,7 @@ namespace Menge
 	bool Movie::createMovieMovie_( const MovieLayer & _layer )
 	{
 		Movie * layer_movie = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Movie>( CONST_STRING(m_serviceProvider, Movie) );
+			->createNodeT<Movie *>( CONST_STRING( m_serviceProvider, Movie ) );
 
 		if( layer_movie == nullptr )
 		{
@@ -1531,7 +1532,7 @@ namespace Menge
 	bool Movie::createMovieSubMovie_( const MovieLayer & _layer )
 	{
 		Movie * layer_movie = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Movie>( CONST_STRING(m_serviceProvider, Movie) );
+			->createNodeT<Movie *>( CONST_STRING( m_serviceProvider, Movie ) );
 
 		if( layer_movie == nullptr )
 		{
@@ -1567,7 +1568,7 @@ namespace Menge
 	bool Movie::createMovieInternalObject_( const MovieLayer & _layer )
 	{
 		MovieInternalObject * movie_internal = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<MovieInternalObject>( CONST_STRING(m_serviceProvider, MovieInternalObject) );
+			->createNodeT<MovieInternalObject *>( CONST_STRING( m_serviceProvider, MovieInternalObject ) );
 
 		if( movie_internal == nullptr )
 		{
@@ -1596,7 +1597,7 @@ namespace Menge
 	bool Movie::createMovieVideo_( const MovieLayer & _layer )
 	{
 		Video * layer_video = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Video>( CONST_STRING(m_serviceProvider, Video) );
+			->createNodeT<Video *>( CONST_STRING( m_serviceProvider, Video ) );
 
 		if( layer_video == nullptr )
 		{
@@ -1611,19 +1612,24 @@ namespace Menge
 			return false;
 		}
 
-		layer_video->setResourceVideo( resourceVideo );
+		SurfaceVideoPtr surfaceVideo = PROTOTYPE_SERVICE( m_serviceProvider )
+			->generatePrototypeT<SurfaceVideo>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceVideo ) );
 
-		layer_video->setIntervalStart( _layer.startInterval );
-		layer_video->setPlayCount( _layer.playCount );
-		layer_video->setStretch( _layer.stretch );
-		layer_video->setLoop( _layer.loop );
+		surfaceVideo->setResourceVideo( resourceVideo );
 
-		if( this->setupBlendingMode_( _layer, layer_video ) == false )
+		surfaceVideo->setIntervalStart( _layer.startInterval );
+		surfaceVideo->setPlayCount( _layer.playCount );
+		surfaceVideo->setStretch( _layer.stretch );
+		surfaceVideo->setLoop( _layer.loop );
+
+		if( this->setupBlendingMode_( _layer, surfaceVideo.get() ) == false )
 		{
 			return false;
 		}
 
-		if( this->addMovieNode_( _layer, layer_video, layer_video, nullptr, nullptr ) == false )
+		layer_video->setSurfaceVideo( surfaceVideo );
+
+		if( this->addMovieNode_( _layer, layer_video, surfaceVideo.get(), nullptr, nullptr ) == false )
 		{
 			return false;
 		}
@@ -1634,7 +1640,7 @@ namespace Menge
 	bool Movie::createMovieSound_( const MovieLayer & _layer )
 	{
 		SoundEmitter * layer_sound = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<SoundEmitter>( CONST_STRING(m_serviceProvider, SoundEmitter) );
+			->createNodeT<SoundEmitter *>( CONST_STRING( m_serviceProvider, SoundEmitter ) );
 
 		if( layer_sound == nullptr )
 		{
@@ -1668,7 +1674,7 @@ namespace Menge
 	bool Movie::createMovieSoundId_( const MovieLayer & _layer )
 	{
 		SoundEmitter * layer_sound = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<SoundEmitter>( CONST_STRING(m_serviceProvider, SoundEmitter) );
+			->createNodeT<SoundEmitter *>( CONST_STRING( m_serviceProvider, SoundEmitter ) );
 
 		if( layer_sound == nullptr )
 		{
@@ -1701,7 +1707,7 @@ namespace Menge
 	bool Movie::createMovieText_( const MovieLayer & _layer )
 	{
 		TextField * layer_text = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
+			->createNodeT<TextField *>( CONST_STRING( m_serviceProvider, TextField ) );
 
 		if( layer_text == nullptr )
 		{
@@ -1736,7 +1742,7 @@ namespace Menge
 	bool Movie::createMovieTextCenter_( const MovieLayer & _layer )
 	{
 		TextField * layer_text = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
+			->createNodeT<TextField *>( CONST_STRING( m_serviceProvider, TextField ) );
 
 		if( layer_text == nullptr )
 		{
@@ -1762,7 +1768,7 @@ namespace Menge
 	bool Movie::createMovieExtraSprite_( const MovieLayer & _layer )
 	{
 		Sprite * layer_sprite = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Sprite>( CONST_STRING(m_serviceProvider, Sprite) );
+			->createNodeT<Sprite *>( CONST_STRING( m_serviceProvider, Sprite ) );
 
 		if( layer_sprite == nullptr )
 		{
@@ -1863,7 +1869,7 @@ namespace Menge
 	bool Movie::createMovieEvent_( const MovieLayer & _layer )
 	{
 		MovieEvent * layer_event = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<MovieEvent>( CONST_STRING(m_serviceProvider, MovieEvent) );
+			->createNodeT<MovieEvent *>( CONST_STRING( m_serviceProvider, MovieEvent ) );
 
 		layer_event->setResourceMovie( m_resourceMovie );
 
@@ -1878,7 +1884,7 @@ namespace Menge
 	bool Movie::createMovieParticleEmitter2_( const MovieLayer & _layer )
 	{
 		ParticleEmitter2 * layer_particles = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<ParticleEmitter2>( CONST_STRING(m_serviceProvider, ParticleEmitter2) );
+			->createNodeT<ParticleEmitter2 *>( CONST_STRING( m_serviceProvider, ParticleEmitter2 ) );
 
 		if( layer_particles == nullptr )
 		{
@@ -2999,7 +3005,7 @@ namespace Menge
 		}
 
 		m_renderCameraProjection = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<RenderCameraProjection>( CONST_STRING( m_serviceProvider, RenderCameraProjection ) );
+			->createNodeT<RenderCameraProjection *>( CONST_STRING( m_serviceProvider, RenderCameraProjection ) );
 
 		const ConstString & name = this->getName();
 		m_renderCameraProjection->setName( name );
@@ -3023,7 +3029,7 @@ namespace Menge
 		this->addChild( m_renderCameraProjection );
 
 		m_renderViewport = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<RenderViewport>( CONST_STRING(m_serviceProvider, RenderViewport) );
+			->createNodeT<RenderViewport *>( CONST_STRING( m_serviceProvider, RenderViewport ) );
 
 		m_renderViewport->setName( name );
 

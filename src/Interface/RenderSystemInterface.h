@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Interface/ServiceInterface.h"
-#	include "Interface/ImageCodecInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #	include "Config/Typedef.h"
 
@@ -291,52 +291,36 @@ namespace Menge
         uint32_t texCoordIndex;
     };
 	//////////////////////////////////////////////////////////////////////////
-	class RenderShaderInterface
+	class RenderFragmentShaderInterface
 		: public FactorablePtr
 	{
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() = 0;
-
 	public:
 		virtual const ConstString & getName() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<RenderShaderInterface> RenderShaderInterfacePtr;
+	typedef stdex::intrusive_ptr<RenderFragmentShaderInterface> RenderFragmentShaderInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
+	class RenderVertexShaderInterface
+		: public FactorablePtr
+	{
+	public:
+		virtual const ConstString & getName() const = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<RenderVertexShaderInterface> RenderVertexShaderInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderProgramInterface
 		: public FactorablePtr
 	{
 	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() = 0;
-	
-	public:
 		virtual const ConstString & getName() const = 0;
+
+	public:
+		virtual RenderVertexShaderInterfacePtr getVertexShader() const = 0;
+		virtual RenderFragmentShaderInterfacePtr getFragmentShader() const = 0;		
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderProgramInterface> RenderProgramInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	struct RenderStage
-	{	
-		RenderStage()
-			: blendSrc(BF_SOURCE_ALPHA)
-			, blendDst(BF_ONE_MINUS_SOURCE_ALPHA)
-			, blendOp(BOP_ADD)
-			, alphaBlendEnable(false)
-		{
-		}
-
-		RenderTextureStage textureStage[MENGE_MAX_TEXTURE_STAGES];
-		
-		EBlendFactor blendSrc;
-		EBlendFactor blendDst;
-		EBlendOp blendOp;
-
-		bool alphaBlendEnable;
-
-		RenderProgramInterfacePtr program;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	enum EMaterial
 	{
@@ -378,6 +362,30 @@ namespace Menge
 		EM_COLOR_SCREEN,
 		EM_MATERIAL_COUNT
 	};
+	//////////////////////////////////////////////////////////////////////////
+	struct RenderMaterialStage
+	{
+		RenderMaterialStage()
+			: id(0)
+			, blendSrc( BF_SOURCE_ALPHA )
+			, blendDst( BF_ONE_MINUS_SOURCE_ALPHA )
+			, blendOp( BOP_ADD )
+			, alphaBlendEnable( false )
+		{
+		}
+
+		uint32_t id;
+
+		RenderTextureStage textureStage[MENGE_MAX_TEXTURE_STAGES];
+
+		RenderProgramInterfacePtr program;
+
+		EBlendFactor blendSrc;
+		EBlendFactor blendDst;
+		EBlendOp blendOp;
+
+		bool alphaBlendEnable;
+	};
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterialInterface
 		: public FactorablePtr
@@ -385,6 +393,15 @@ namespace Menge
 	public:
 		virtual const ConstString & getName() const = 0;
 		virtual uint32_t getId() const = 0;
+
+	public:
+		virtual void update( float _time, float _timing ) = 0;
+
+	public:
+		virtual inline EPrimitiveType getPrimitiveType() const = 0;
+		virtual inline uint32_t getTextureCount() const = 0;
+		virtual inline const RenderTextureInterfacePtr & getTexture( uint32_t _index ) const = 0;
+		virtual inline const RenderMaterialStage * getStage() const = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderMaterialInterface> RenderMaterialInterfacePtr;
@@ -448,7 +465,7 @@ namespace Menge
 		virtual const ConstString & getMaterialName( EMaterial _materialId ) const = 0;
 
 	public:
-		virtual const RenderStage * cacheStage( const RenderStage & _other ) = 0;
+		virtual const RenderMaterialStage * cacheStage( const RenderMaterialStage & _other ) = 0;
 
 	public:
 		virtual RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
@@ -457,7 +474,7 @@ namespace Menge
 			, const RenderTextureInterfacePtr * _textures ) = 0;
 
 		virtual RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
-			, const RenderStage * _stage
+			, const RenderMaterialStage * _stage
 			, EPrimitiveType _primitiveType
 			, uint32_t _textureCount
 			, const RenderTextureInterfacePtr * _textures ) = 0;
@@ -589,7 +606,7 @@ namespace Menge
 	public:
 		// входные данные: матрица 4 на 4
 		virtual	void setProjectionMatrix( const mt::mat4f & _projection ) = 0;
-		virtual	void setModelViewMatrix( const mt::mat4f & _view ) = 0;
+		virtual	void setViewMatrix( const mt::mat4f & _view ) = 0;
 		virtual	void setWorldMatrix( const mt::mat4f & _view ) = 0;
 
 		virtual void setTextureMatrix( uint32_t _stage, const float * _texture ) = 0;
@@ -602,10 +619,10 @@ namespace Menge
 		virtual bool setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer ) = 0;
 		
 	public:
-		virtual RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) = 0;
-		virtual RenderShaderInterfacePtr createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) = 0;
+		virtual RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) = 0;
+		virtual RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) = 0;
 						
-		virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex, uint32_t _samplerCount ) = 0;
+		virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount ) = 0;
 		virtual void setProgram( const RenderProgramInterfacePtr & _program ) = 0;
         
 	public:

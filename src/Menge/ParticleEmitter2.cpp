@@ -445,7 +445,7 @@ namespace	Menge
 				textures[i] = texture;
 			}
 
-			const RenderStage * stage = PARTICLE_SYSTEM2( m_serviceProvider )
+			const RenderMaterialStage * stage = PARTICLE_SYSTEM2( m_serviceProvider )
 				->getMaterialStage( mesh.material );
 
 			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( m_serviceProvider )

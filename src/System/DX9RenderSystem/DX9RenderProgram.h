@@ -2,6 +2,9 @@
 
 #   include "Interface/RenderSystemInterface.h"
 
+#	include "DX9RenderVertexShader.h"
+#	include "DX9RenderFragmentShader.h"
+
 #	include <d3d9.h>
 
 namespace Menge
@@ -14,16 +17,32 @@ namespace Menge
 		~DX9RenderProgram();
 
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() override;
+		const ConstString & getName() const override;
 
 	public:
-		bool initialize( const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader );
+		RenderVertexShaderInterfacePtr getVertexShader() const override;
+		RenderFragmentShaderInterfacePtr getFragmentShader() const override;
 
+	public:
+		bool initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _name, const DX9RenderVertexShaderPtr & _vertexShader, const DX9RenderFragmentShaderPtr & _fragmentShader );
+
+	public:
+		bool compile( IDirect3DDevice9 * _pD3DDevice );
+
+	public:
+		bool enable( IDirect3DDevice9 * _pD3DDevice );
+
+	public:
+		void bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix );
+		
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		RenderShaderInterfacePtr m_vertexShader;
-		RenderShaderInterfacePtr m_fragmentShader;
+		ConstString m_name;
+
+		DX9RenderVertexShaderPtr m_vertexShader;
+		DX9RenderFragmentShaderPtr m_fragmentShader;
     };
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<DX9RenderProgram> DX9RenderProgramPtr;
 }

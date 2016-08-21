@@ -42,7 +42,7 @@ namespace Menge
 		const ConstString & getMaterialName( EMaterial _materialId ) const override;
 
 	public:
-		const RenderStage * cacheStage( const RenderStage & _other ) override;
+		const RenderMaterialStage * cacheStage( const RenderMaterialStage & _other ) override;
 
 	public:
 		RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
@@ -51,7 +51,7 @@ namespace Menge
 			, const RenderTextureInterfacePtr * _textures ) override;       
 
 		RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
-			, const RenderStage * _stage
+			, const RenderMaterialStage * _stage
 			, EPrimitiveType _primitiveType
 			, uint32_t _textureCount
 			, const RenderTextureInterfacePtr * _textures ) override;
@@ -69,19 +69,19 @@ namespace Menge
 		void onRenderMaterialDestroy_( RenderMaterial * _material );
 
     protected:
-		const RenderStage * createRenderStageGroup( const ConstString & _name, const RenderStage & _stage );
+		const RenderMaterialStage * createRenderStageGroup( const ConstString & _name, const RenderMaterialStage & _stage );
 
 	protected:
 		uint32_t makeMaterialIndex_();
 		uint32_t makeMaterialHash( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const;
 
 	protected:
-		RenderShaderInterfacePtr createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile );		
-		RenderShaderInterfacePtr createVertexShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile );
-			
+		RenderVertexShaderInterfacePtr createVertexShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile );
+		RenderFragmentShaderInterfacePtr createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile );
+
 	protected:
-		const RenderShaderInterfacePtr & getVertexShader_( const ConstString & _name ) const;
-		const RenderShaderInterfacePtr & getFragmentShader_( const ConstString & _name ) const;
+		const RenderVertexShaderInterfacePtr & getVertexShader_( const ConstString & _name ) const;
+		const RenderFragmentShaderInterfacePtr & getFragmentShader_( const ConstString & _name ) const;
 
 		const RenderProgramInterfacePtr & getProgram_( const ConstString & _name ) const;
 
@@ -92,10 +92,10 @@ namespace Menge
 		ETextureFilter m_defaultTextureFilterMagnification;
 		ETextureFilter m_defaultTextureFilterMinification;		
 
-		typedef stdex::map<ConstString, const RenderStage *> TMapRenderStage;
-        TMapRenderStage m_stageIndexer;
+		typedef stdex::map<ConstString, const RenderMaterialStage *> TMapRenderStage;
+        TMapRenderStage m_materialStageIndexer;
 
-		RenderStage m_stages[MENGINE_MATERIAL_RENDER_STAGE_MAX];
+		RenderMaterialStage m_stages[MENGINE_MATERIAL_RENDER_STAGE_MAX];
 		uint32_t m_stageCount;
 
 		typedef stdex::vector<RenderMaterial *> TVectorRenderMaterial;
@@ -105,13 +105,15 @@ namespace Menge
 		TFactoryRenderMaterial m_factoryMaterial;
 
 		typedef stdex::vector<uint32_t> TVectorMaterialIndexer;
-		TVectorMaterialIndexer m_materialIndexer;
+		TVectorMaterialIndexer m_materialEnumerators;
 
 		RenderMaterialInterfacePtr m_debugMaterial;
 
-		typedef stdex::map<ConstString, RenderShaderInterfacePtr> TMapRenderShaders;
-		TMapRenderShaders m_vertexShaders;
-		TMapRenderShaders m_fragmentShaders;
+		typedef stdex::map<ConstString, RenderVertexShaderInterfacePtr> TMapRenderVertexShaders;
+		TMapRenderVertexShaders m_vertexShaders;
+
+		typedef stdex::map<ConstString, RenderFragmentShaderInterfacePtr> TMapRenderFragmentShaders;
+		TMapRenderFragmentShaders m_fragmentShaders;
 
 		typedef stdex::map<ConstString, RenderProgramInterfacePtr> TMapRenderPrograms;
 		TMapRenderPrograms m_programs;

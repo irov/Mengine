@@ -224,12 +224,10 @@ namespace Menge
 		{
 			return false;
 		}
-
-		if( _desc.immediately == false )
-		{
-			m_packages.push_back( package );
-		}
-		else
+				
+		m_packages.push_back( package );
+		
+		if( _desc.immediately == true )
 		{
 			if( package->enable() == false )
 			{
@@ -347,6 +345,11 @@ namespace Menge
 				continue;
 			}
 
+			if( package->isEnable() == true )
+			{
+				continue;
+			}
+
 			if( package->enable() == false )
 			{
 				return false;
@@ -389,23 +392,23 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const PackagePtr & pack = *it;
+			const PackagePtr & package = *it;
 
-			const ConstString & packPlatform = pack->getPlatfrom();
+			const ConstString & packPlatform = package->getPlatfrom();
 
 			if( packPlatform.empty() == false && packPlatform != _platformName )
 			{
 				continue;
 			}
 
-			const ConstString & locale = pack->getLocale();
+			const ConstString & locale = package->getLocale();
 
 			if( locale != _locale )
 			{
 				continue;
 			}
 
-			packages.push_back( pack );
+			packages.push_back( package );
 		}
 
 		for( TVectorPackage::const_iterator
@@ -435,23 +438,23 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const PackagePtr & pack = *it;
+			const PackagePtr & package = *it;
 
-			const ConstString & packPlatform = pack->getPlatfrom();
+			const ConstString & packPlatform = package->getPlatfrom();
 
 			if( packPlatform.empty() == false && packPlatform != _platformName )
 			{
 				continue;
 			}
 
-			const ConstString & locale = pack->getLocale();
+			const ConstString & locale = package->getLocale();
 
 			if( locale != _locale )
 			{
 				continue;
 			}
 
-			packages.push_back( pack );
+			packages.push_back( package );
 		}
 
 		for( TVectorPackage::const_iterator

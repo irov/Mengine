@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Kernel/Node.h"
-#	include "Kernel/Shape.h"
 #	include "Kernel/Materialable.h"
 
 #   include "Kernel/ResourceImage.h"

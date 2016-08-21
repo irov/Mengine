@@ -3,9 +3,10 @@
 #   include "Interface/TimelineInterface.h"
 #   include "Interface/NodeInterface.h"
 #   include "Interface/StringizeInterface.h"
+#   include "Interface/PrototypeManagerInterface.h"
 
-#	include "Video.h"
-#	include "SoundEmitter.h"
+#	include "SurfaceVideo.h"
+#	include "SurfaceSound.h"
 
 #	include "Consts.h"
 
@@ -53,11 +54,36 @@ namespace Menge
 		return m_compositionName;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float Movie2::getDuration() const
+	{
+		float duration = ae_get_movie_composition_duration( m_composition );
+
+		return duration;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie2::setWorkAreaFromEvent( const ConstString & _eventName )
+	{
+		float a, b;
+		ae_bool_t ok = ae_get_movie_composition_node_in_out_time( m_composition, _eventName.c_str(), AE_MOVIE_LAYER_TYPE_EVENT, &a, &b );
+
+		if( ok == AE_FALSE )
+		{
+			return;
+		}
+
+		ae_set_movie_composition_work_area( m_composition, a, b );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie2::removeWorkArea()
+	{
+		ae_remove_movie_composition_work_area( m_composition );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Movie2::_play( float _time )
 	{
 		(void)_time;
 
-		ae_play_movie_composition( m_composition, 0.f );
+		ae_play_movie_composition( m_composition, _time );
 
 		return true;
 	}
@@ -106,7 +132,7 @@ namespace Menge
 		}
 		
 		RenderCameraProjection * renderCameraProjection = NODE_SERVICE( serviceProvider )
-			->createNodeT<RenderCameraProjection>( CONST_STRING( serviceProvider, RenderCameraProjection ) );
+			->createNodeT<RenderCameraProjection *>( CONST_STRING( serviceProvider, RenderCameraProjection ) );
 
 		renderCameraProjection->setName( c_name );
 
@@ -123,7 +149,7 @@ namespace Menge
 		renderCameraProjection->setCameraAspect( aspect );
 		
 		RenderViewport * renderViewport = NODE_SERVICE( serviceProvider )
-			->createNodeT<RenderViewport>( CONST_STRING( serviceProvider, RenderViewport ) );
+			->createNodeT<RenderViewport *>( CONST_STRING( serviceProvider, RenderViewport ) );
 
 		renderViewport->setName( c_name );
 
@@ -155,14 +181,14 @@ namespace Menge
 		{
 		case AE_MOVIE_LAYER_TYPE_VIDEO:
 			{
-				Video * video = NODE_SERVICE( serviceProvider )
-					->createNodeT<Video>( CONST_STRING( serviceProvider, Video ) );
+				SurfaceVideo * surfaceVideo = PROTOTYPE_SERVICE( serviceProvider )
+					->generatePrototypeT<SurfaceVideo>( CONST_STRING( serviceProvider, Surface ), CONST_STRING( serviceProvider, SurfaceVideo ) );
 
-				video->setName( c_name );
+				surfaceVideo->setName( c_name );
 
 				ResourceVideo * resourceVideo = (ResourceVideo *)(_resource->data);
 
-				video->setResourceVideo( resourceVideo );
+				surfaceVideo->setResourceVideo( resourceVideo );
 
 				EMaterialBlendMode blend_mode = EMB_NORMAL;
 
@@ -176,31 +202,22 @@ namespace Menge
 					break;
 				};
 
-				video->setBlendMode( blend_mode );
+				surfaceVideo->setBlendMode( blend_mode );
 
-				video->hide( true );
-				video->enable();
-
-				movie2->addChild( video );
-
-				return video;
+				return surfaceVideo;
 			}break;
 		case AE_MOVIE_LAYER_TYPE_SOUND:
 			{
-				SoundEmitter * sound = NODE_SERVICE( serviceProvider )
-					->createNodeT<SoundEmitter>( CONST_STRING( serviceProvider, SoundEmitter ) );
+				SurfaceSound * surfaceSound = PROTOTYPE_SERVICE( serviceProvider )
+					->generatePrototypeT<SurfaceSound>( CONST_STRING( serviceProvider, Surface ), CONST_STRING( serviceProvider, SurfaceSound ) );
 
-				sound->setName( c_name );
+				surfaceSound->setName( c_name );
 
 				ResourceSound * resourceSound = (ResourceSound *)(_resource->data);
 
-				sound->setResourceSound( resourceSound );
-
-				sound->enable();
-
-				movie2->addChild( sound );
-
-				return sound;
+				surfaceSound->setResourceSound( resourceSound );
+				
+				return surfaceSound;
 			}break;
 		}
 				
@@ -240,7 +257,7 @@ namespace Menge
 			{
 			case AE_MOVIE_LAYER_TYPE_VIDEO:
 				{
-					Video * video = (Video *)_element;
+					SurfaceVideo * surfaceVide = (SurfaceVideo *)_element;
 
 					Movie2 * movie2 = (Movie2 *)_data;
 
@@ -249,16 +266,16 @@ namespace Menge
 					float time = TIMELINE_SERVICE( serviceProvider )
 						->getTime();
 
-					video->setTiming( _offset );
+					surfaceVide->setTiming( _offset );
 
-					if( video->play( time ) == 0 )
+					if( surfaceVide->play( time ) == 0 )
 					{
 						return;
 					}
 				}break;
 			case AE_MOVIE_LAYER_TYPE_SOUND:
 				{
-					SoundEmitter * sound = (SoundEmitter *)_element;
+					SurfaceSound * surfaceSound = (SurfaceSound *)_element;
 
 					Movie2 * movie2 = (Movie2 *)_data;
 
@@ -267,9 +284,9 @@ namespace Menge
 					float time = TIMELINE_SERVICE( serviceProvider )
 						->getTime();
 
-					sound->setTiming( _offset );
+					surfaceSound->setTiming( _offset );
 
-					if( sound->play( time ) == 0 )
+					if( surfaceSound->play( time ) == 0 )
 					{
 						return;
 					}
@@ -282,15 +299,15 @@ namespace Menge
 			{
 			case AE_MOVIE_LAYER_TYPE_VIDEO:
 				{
-					Video * video = (Video *)_element;
+					SurfaceVideo * surfaceVide = (SurfaceVideo *)_element;
 
-					video->stop();
+					surfaceVide->stop();
 				}break;
 			case AE_MOVIE_LAYER_TYPE_SOUND:
 				{
-					SoundEmitter * sound = (SoundEmitter *)_element;
+					SurfaceSound * surfaceSound = (SurfaceSound *)_element;
 
-					sound->stop();
+					surfaceSound->stop();
 				}break;
 			}
 		}
@@ -403,6 +420,17 @@ namespace Menge
 
 		const aeMovieCompositionData * compositionData = m_resourceMovie2->getCompositionData( m_compositionName );
 
+		if( compositionData == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Movie2::_compile '%s' resource %s not found composition '%s'"
+				, m_name.c_str()
+				, m_resourceMovie2->getName().c_str()
+				, m_compositionName.c_str()
+				);
+
+			return false;
+		}
+
 		aeMovieCompositionProviders providers;
 		providers.camera_provider = &ae_movie_composition_node_camera;
 		providers.node_provider = &ae_movie_composition_node_provider;
@@ -423,6 +451,11 @@ namespace Menge
 		}
 
 		ae_set_movie_composition_loop( composition, AE_TRUE );
+
+		//float a, b;
+		//bool ok = ae_get_movie_composition_node_in_out_time( composition, "freespins_win", AE_MOVIE_LAYER_TYPE_EVENT, &a, &b );
+
+		//ae_set_movie_composition_work_area( composition, a, b );
 
 		uint32_t max_render_node = ae_get_movie_composition_max_render_node( composition );
 
@@ -503,6 +536,33 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie2::_setLoop( bool _value )
+	{
+		if( m_composition == nullptr )
+		{
+			return;
+		}
+
+		ae_set_movie_composition_loop( m_composition, _value );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie2::_setTiming( float _timing )
+	{
+		if( m_composition == nullptr )
+		{
+			return;
+		}
+
+		ae_set_movie_composition_time( m_composition, _timing );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Movie2::_getTiming() const
+	{
+		float timing = ae_get_movie_composition_time( m_composition );
+
+		return timing;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Movie2::_update( float _current, float _timing )
 	{
 		(void)_current;
@@ -520,8 +580,12 @@ namespace Menge
 			a += _timing;
 			return;
 		}
-
+				
 		ae_update_movie_composition( m_composition, _timing );
+
+		printf( "time %f\n"
+				, ae_get_movie_composition_time(m_composition)
+				);
 		
 		//if( a < 10000.f )
 		//{
@@ -547,7 +611,6 @@ namespace Menge
 		{			
 			if( mesh.track_matte_data != nullptr )
 			{
-				printf( "fds" );
 				continue;
 			}
 
@@ -715,7 +778,7 @@ namespace Menge
 			case AE_MOVIE_LAYER_TYPE_VIDEO:
 				{
 					//ResourceVideo * resource_video = static_cast<ResourceVideo *>(resource_reference);
-					Video * video = static_cast<Video *>(mesh.element_data);
+					SurfaceVideo * surfaceVideo = static_cast<SurfaceVideo *>(mesh.element_data);
 
 					m_meshes.push_back( Mesh() );
 					Mesh & m = m_meshes.back();
@@ -736,7 +799,7 @@ namespace Menge
 						mt::vec2f uv;
 						uv.from_f2( mesh.uv + index * 2 );
 
-						const mt::vec4f & uv_video_mask = video->getUV();
+						const mt::vec4f & uv_video_mask = surfaceVideo->getUV();
 
 						mt::uv4f uv_video( uv_video_mask );
 
@@ -748,9 +811,7 @@ namespace Menge
 
 					m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
 
-					m.material = video->getMaterial();
-
-					video->updateVideoBuffer();
+					m.material = surfaceVideo->getMaterial();
 
 					RENDER_SERVICE( m_serviceProvider )
 						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );

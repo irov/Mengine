@@ -33,7 +33,7 @@ namespace Menge
 		, m_oldRenderTarget(nullptr)
 		, m_vertexBufferEnable(false)
 		, m_indexBufferEnable(false)
-		, m_vertexDeclaration(0)
+		, m_fvf(0)
 		, m_frames(0)
 		, m_dxMaxCombinedTextureImageUnits(0)
 	{
@@ -41,6 +41,10 @@ namespace Menge
 		{
 			m_textureEnable[i] = false;
 		}
+
+		mt::ident_m4( m_projectionMatrix );
+		mt::ident_m4( m_viewMatrix );
+		mt::ident_m4( m_worldMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderSystem::~DX9RenderSystem()
@@ -171,7 +175,7 @@ namespace Menge
 		}
 	
 		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "DX9" );
-					
+							
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -393,13 +397,77 @@ namespace Menge
 
 		DWORD FVF_UV = (MENGINE_RENDER_VERTEX_UV_COUNT << D3DFVF_TEXCOUNT_SHIFT) & D3DFVF_TEXCOUNT_MASK;
 
-		m_vertexDeclaration = D3DFVF_XYZ | D3DFVF_DIFFUSE | FVF_UV;
+		m_fvf = D3DFVF_XYZ | D3DFVF_DIFFUSE | FVF_UV;
 
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, (m_vertexDeclaration) );
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, (m_fvf) );
+
+		D3DVERTEXELEMENT9 declaration[2 + MENGINE_RENDER_VERTEX_UV_COUNT + 1];
+
+		declaration[0] = {0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0};
+		declaration[1] = {0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0};
+
+		for( BYTE i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
+		{
+			declaration[2 + i] = {0, 16 + 8 * i, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, i};
+		}
+
+		declaration[2 + MENGINE_RENDER_VERTEX_UV_COUNT] = D3DDECL_END();
+
+		DXCALL( m_serviceProvider, m_pD3DDevice, CreateVertexDeclaration, ( declaration, &m_vertexDeclaration ) );
+
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetVertexDeclaration, (m_vertexDeclaration) );
 
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, (D3DRS_ALPHATESTENABLE, FALSE) );
 
 		LOGGER_WARNING( m_serviceProvider )("DX9RenderSystem initalized successfully!");
+
+		for( TVectorRenderVertexShaders::iterator
+			it = m_vertexShaders.begin(),
+			it_end = m_vertexShaders.end();
+		it != it_end;
+		++it )
+		{
+			const DX9RenderVertexShaderPtr & shader = *it;
+
+			if( shader->compile( m_pD3DDevice ) == false )
+			{
+				return false;
+			}
+		}
+
+		m_vertexShaders.clear();
+
+		for( TVectorRenderFragmentShaders::iterator
+			it = m_fragmentShaders.begin(),
+			it_end = m_fragmentShaders.end();
+		it != it_end;
+		++it )
+		{
+			const DX9RenderFragmentShaderPtr & shader = *it;
+
+			if( shader->compile( m_pD3DDevice ) == false )
+			{
+				return false;
+			}
+		}
+
+		m_fragmentShaders.clear();
+
+		for( TVectorRenderPrograms::iterator
+			it = m_programs.begin(),
+			it_end = m_programs.end();
+		it != it_end;
+		++it )
+		{
+			const DX9RenderProgramPtr & program = *it;
+
+			if( program->compile( m_pD3DDevice ) == false )
+			{
+				return false;
+			}
+		}
+
+		m_programs.clear();
 		
 		return true;
 	}
@@ -412,7 +480,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setProjectionMatrix( const mt::mat4f & _projection )
+	void DX9RenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -422,10 +490,12 @@ namespace Menge
             return;
         }
 
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, ( D3DTS_PROJECTION, (D3DMATRIX*)_projection.buff() ) );
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, (D3DTS_PROJECTION, (D3DMATRIX*)_projectionMatrix.buff()) );
+
+		m_projectionMatrix = _projectionMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setModelViewMatrix( const mt::mat4f & _modelview )
+	void DX9RenderSystem::setViewMatrix( const mt::mat4f & _viewMatrix )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -435,7 +505,24 @@ namespace Menge
             return;
         }
 
- 		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, ( D3DTS_VIEW, (D3DMATRIX*)_modelview.buff() ) );
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, (D3DTS_VIEW, (D3DMATRIX*)_viewMatrix.buff()) );
+
+		m_viewMatrix = _viewMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderSystem::setWorldMatrix( const mt::mat4f & _worldMatrix )
+	{
+		if( m_pD3DDevice == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::setWorldMatrix device not created"
+				);
+
+			return;
+		}
+
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, (D3DTS_WORLD, (D3DMATRIX*)_worldMatrix.buff()) );
+
+		m_worldMatrix = _worldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
@@ -1001,19 +1088,6 @@ namespace Menge
 			}
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setWorldMatrix( const mt::mat4f & _view )
-	{
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setWorldMatrix device not created"
-                );
-
-            return;
-        }
-
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, ( D3DTS_WORLD, (D3DMATRIX*)_view.buff() ) );
-	}
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::releaseResources_()
     {
@@ -1110,9 +1184,9 @@ namespace Menge
 
 		DWORD FVF_UV = (MENGINE_RENDER_VERTEX_UV_COUNT << D3DFVF_TEXCOUNT_SHIFT) & D3DFVF_TEXCOUNT_MASK;
 
-		m_vertexDeclaration = D3DFVF_XYZ | D3DFVF_DIFFUSE | FVF_UV;
+		m_fvf = D3DFVF_XYZ | D3DFVF_DIFFUSE | FVF_UV;
 
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, (m_vertexDeclaration) );
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, (m_fvf) );
 
 		return true;
 	}
@@ -1154,7 +1228,7 @@ namespace Menge
 	{
 		DX9RenderVertexBufferPtr buffer = m_factoryVertexBuffer.createObject();
 
-		if( buffer->initialize( m_serviceProvider, m_pD3DDevice, m_vertexDeclaration, _verticesNum, _dynamic ) == false )
+		if( buffer->initialize( m_serviceProvider, m_pD3DDevice, m_fvf, _verticesNum, _dynamic ) == false )
 		{
 			return nullptr;
 		}
@@ -1614,39 +1688,131 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
+	RenderFragmentShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
-		(void)_name;
-		(void)_buffer;
-		(void)_size;
-		(void)_isCompile;
+		DX9RenderFragmentShaderPtr shader = m_factoryRenderFragmentShader.createObject();
 
-		return nullptr;
+		MemoryInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
+			->createMemory();
+
+		memory->setMemory( _buffer, _size );
+				
+		if( shader->initialize( m_serviceProvider, _name, memory, _isCompile ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createFragmentShader invalid initialize shader %s"
+				, _name.c_str()
+				);
+
+			return nullptr;
+		}
+
+		if( m_pD3DDevice != nullptr )
+		{
+			if( shader->compile( m_pD3DDevice ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createFragmentShader invalid compile shader %s"
+					, _name.c_str()
+					);
+
+				return nullptr;
+			}
+		}
+		else
+		{
+			m_fragmentShaders.push_back( shader );
+		}
+
+		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderShaderInterfacePtr DX9RenderSystem::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
+	RenderVertexShaderInterfacePtr DX9RenderSystem::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
-		(void)_name;
-		(void)_buffer;
-		(void)_size;
-		(void)_isCompile;
+		DX9RenderVertexShaderPtr shader = m_factoryRenderVertexShader.createObject();
 
-		return nullptr;
+		MemoryInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
+			->createMemory();
+
+		memory->setMemory( _buffer, _size );
+
+		if( shader->initialize( m_serviceProvider, _name, memory, _isCompile ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createVertexShader invalid initialize shader %s"
+				, _name.c_str()
+				);
+
+			return nullptr;
+		}
+
+		if( m_pD3DDevice != nullptr )
+		{
+			if( shader->compile( m_pD3DDevice ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createVertexShader invalid compile shader %s"
+					, _name.c_str()
+					);
+
+				return nullptr;
+			}
+		}
+		else
+		{
+			m_vertexShaders.push_back( shader );
+		}
+
+		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex, uint32_t _samplerCount )
+	RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount )
 	{
-		(void)_name;
-		(void)_fragment;
-		(void)_vertex;
-		(void)_samplerCount;
+		DX9RenderProgramPtr program = m_factoryProgram.createObject();
 
-		return nullptr;
+		if( program->initialize( m_serviceProvider, _name, _vertex, _fragment ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createProgram invalid initialize program %s"
+				, _name.c_str()
+				);
+
+			return nullptr;
+		}
+
+		if( m_pD3DDevice != nullptr )
+		{
+			if( program->compile( m_pD3DDevice ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createProgram invalid compile program %s"
+					, _name.c_str()
+					);
+
+				return nullptr;
+			}
+		}
+		else
+		{
+			m_programs.push_back( program );
+		}
+
+		return program;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setProgram( const RenderProgramInterfacePtr & _program )
 	{
-		(void)_program;
+		if( _program != nullptr )
+		{
+			DX9RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX9RenderProgramPtr>(_program);
+
+			if( dx9_program->enable( m_pD3DDevice ) == false )
+			{
+				return;
+			}
+
+			dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_viewMatrix, m_projectionMatrix );
+		}
+		else
+		{
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetVertexShader, (nullptr) );
+
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetPixelShader, (nullptr) );
+		}
 		//None
 	}
 	//////////////////////////////////////////////////////////////////////////

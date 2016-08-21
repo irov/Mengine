@@ -56,6 +56,8 @@ namespace Menge
 	VideoDecoderTheora::VideoDecoderTheora()
 		: VideoDecoder()
 		, m_pitch( 0 )
+		, m_time( 0.f )
+		, m_readyFrame( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -142,7 +144,7 @@ namespace Menge
 
 				// да, это страница заголовков
 				ogg_stream_state oggStreamStateTest;
-				//memset( &oggStreamStateTest, 0x00, sizeof( ogg_stream_state ) );
+				memset( &oggStreamStateTest, 0x00, sizeof( ogg_stream_state ) );
 
 				// тестовый логический поток
 				// инициализируем тестовый поток на тот же поток с таким же
@@ -334,7 +336,8 @@ namespace Menge
 		m_dataInfo.duration = m_options.duration;
 		m_dataInfo.fps = m_options.fps;
 
-		m_time = 0.0;
+		m_time = 0.f;
+		m_readyFrame = false;
 
 		return true;
 	}
@@ -358,8 +361,14 @@ namespace Menge
 		theora_comment_clear( &m_theoraComment );
 		theora_info_clear( &m_theoraInfo );
 
-		ogg_sync_init( &m_oggSyncState );
+		memset( &m_oggStreamState, 0, sizeof( m_oggStreamState ) );
+		memset( &m_oggSyncState, 0, sizeof( m_oggSyncState ) );
+		memset( &m_theoraState, 0, sizeof( m_theoraState ) );
+		memset( &m_theoraComment, 0, sizeof( m_theoraComment ) );
+		memset( &m_theoraInfo, 0, sizeof( m_theoraInfo ) );
 
+		ogg_sync_init( &m_oggSyncState );
+		
 		// init supporting Theora structures needed in header parsing
 		theora_comment_init( &m_theoraComment );
 		theora_info_init( &m_theoraInfo );
@@ -379,12 +388,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t VideoDecoderTheora::_decode( void * _buffer, size_t _bufferSize )
 	{
+		if( m_readyFrame == false )
+		{
+			float time;
+			if( this->readNextFrame( time ) == VDRS_FAILURE )
+			{
+				return 0;
+			}
+
+			m_readyFrame = true;
+		}
+
 		yuv_buffer yuvBuffer;
 		// декодируем страничку в YUV-виде в спец. структуру yuv_buffer
-		if( theora_decode_YUVout( &m_theoraState, &yuvBuffer ) != 0 )
+		int error_code = theora_decode_YUVout( &m_theoraState, &yuvBuffer );
+		
+		if( error_code < 0 )
 		{
 			// ошибка декодирования
-			LOGGER_ERROR( m_serviceProvider )("error during theora_decode_YUVout...");
+			LOGGER_ERROR( m_serviceProvider )("error during theora_decode_YUVout '%d'"
+											   , error_code
+											   );
 
 			return 0;
 		}
@@ -765,10 +789,24 @@ namespace Menge
 	{
 		(void)_pts;
 
+		EVideoDecoderReadState state = VDRS_SUCCESS;
+
 		// theora processing...
 		ogg_packet packet;
-		while( ogg_stream_packetout( &m_oggStreamState, &packet ) <= 0 )
+		
+		for( ;; )
 		{
+			int error_packetout = ogg_stream_packetout( &m_oggStreamState, &packet );
+			
+			if( error_packetout > 0 )
+			{
+				break;
+			}
+			else if( error_packetout < 0 )
+			{
+				return VDRS_FAILURE;
+			}
+
 			// не хватает данных в логическом потоке theora
 			// надо надергать данных из физического потока и затолкать их в логический поток
 
@@ -804,10 +842,10 @@ namespace Menge
 
 		_pts = m_time;
 
-		return VDRS_SUCCESS;
+		return state;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderTheora::seekNextFrame( float _time )
+	bool VideoDecoderTheora::seekToFrame( float _time )
 	{
 		float frameTiming = m_dataInfo.getFrameTiming();
 
@@ -816,8 +854,19 @@ namespace Menge
 		for( ;; )
 		{
 			// theora processing...			
-			while( ogg_stream_packetout( &m_oggStreamState, &packet ) <= 0 )
+			for( ;; )
 			{
+				int error_packetout = ogg_stream_packetout( &m_oggStreamState, &packet );
+
+				if( error_packetout > 0 )
+				{
+					break;
+				}
+				else if( error_packetout < 0 )
+				{
+					return VDRS_FAILURE;
+				}
+
 				// не хватает данных в логическом потоке theora
 				// надо надергать данных из физического потока и затолкать их в логический поток
 
@@ -893,9 +942,11 @@ namespace Menge
 			}
 		}
 
-		bool successful = this->seekNextFrame( _time );
+		//bool successful = this->seekToFrame( _time );
 
-		return successful;
+		//return successful;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float VideoDecoderTheora::_tell() const

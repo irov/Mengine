@@ -120,7 +120,7 @@ namespace Menge
 			ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
 
 			Entity * entity = NODE_SERVICE( serviceProvider )
-				->createNodeT<Entity>( CONST_STRING( serviceProvider, Entity ) );
+				->createNodeT<Entity *>( CONST_STRING( serviceProvider, Entity ) );
 
 			entity->setEmbed( _obj );
 
@@ -143,7 +143,7 @@ namespace Menge
 			ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
 
 			Arrow * arrow = NODE_SERVICE( serviceProvider )
-				->createNodeT<Arrow>( CONST_STRING( serviceProvider, Arrow ) );
+				->createNodeT<Arrow *>( CONST_STRING( serviceProvider, Arrow ) );
 
 			arrow->setEmbed( _obj );
 
@@ -166,7 +166,7 @@ namespace Menge
 			ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
 
 			Scene * scene = NODE_SERVICE( serviceProvider )
-				->createNodeT<Scene>( CONST_STRING( serviceProvider, Scene ) );
+				->createNodeT<Scene *>( CONST_STRING( serviceProvider, Scene ) );
 
 			scene->setEmbed( _obj );
 

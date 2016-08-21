@@ -102,7 +102,7 @@ namespace Menge
 	protected:
 		virtual void _invalidateWorldMatrix();
 
-    protected:
+	public:
         void invalidateLocalMatrix();
 
 	public:

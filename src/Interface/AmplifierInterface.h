@@ -19,7 +19,7 @@ namespace Menge
 		virtual bool resume() = 0;
 
 	public:
-		virtual float getLengthMs() const = 0;
+		virtual float getDuration() const = 0;
 		
 		virtual void setPosMs( float _posMs ) = 0;
 		virtual float getPosMs() const = 0;

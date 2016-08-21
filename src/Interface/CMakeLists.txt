@@ -56,6 +56,8 @@ src
     OptionsInterface.h
     TimelineInterface.h
     SocketInterface.h
+    COMInterface.h
+    COMMengineInterface.h
     
 	dummy.cpp
 )

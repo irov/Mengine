@@ -20,7 +20,7 @@ namespace Menge
 			return false;
 		}
 		
-		LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem error file %s line %d DX call '%s' get error '%u'"
+		LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem error file %s line %d DX call '%s' get error '%p'"
 			, m_file
 			, m_line
 			, m_method

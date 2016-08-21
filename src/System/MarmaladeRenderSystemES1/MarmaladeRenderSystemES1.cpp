@@ -262,7 +262,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderShaderInterfacePtr MarmaladeRenderSystemES1::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
+	RenderFragmentShaderInterfacePtr MarmaladeRenderSystemES1::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
 		(void)_name;
 		(void)_buffer;
@@ -272,7 +272,7 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderShaderInterfacePtr MarmaladeRenderSystemES1::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
+	RenderVertexShaderInterfacePtr MarmaladeRenderSystemES1::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
 		(void)_name;
 		(void)_buffer;
@@ -282,7 +282,7 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderProgramInterfacePtr MarmaladeRenderSystemES1::createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex, uint32_t _samplerCount )
+	RenderProgramInterfacePtr MarmaladeRenderSystemES1::createProgram( const ConstString & _name, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexShaderInterfacePtr & _vertex, uint32_t _samplerCount )
 	{
 		(void)_name;
 		(void)_fragment;

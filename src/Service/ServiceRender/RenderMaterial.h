@@ -13,20 +13,21 @@ namespace Menge
 		~RenderMaterial();
 
 	public:
-		void initialize( const ConstString & _name, uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage );
+		void initialize( const ConstString & _name, uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderMaterialStage * _stage );
 		
 	public:
 		const ConstString & getName() const override;
 		uint32_t getId() const override;
 
 	public:
-		inline uint32_t getHash() const;
-		inline EPrimitiveType getPrimitiveType() const;
-		inline uint32_t getTextureCount() const;
-		inline const RenderTextureInterfacePtr & getTexture( uint32_t _index ) const;
-		inline const RenderTextureInterfacePtr * getTextures() const;
+		void update( float _time, float _timing ) override;
 
-		inline const RenderStage * getStage() const;
+	public:
+		inline uint32_t getHash() const;
+		inline EPrimitiveType getPrimitiveType() const override;
+		inline uint32_t getTextureCount() const override;
+		inline const RenderTextureInterfacePtr & getTexture( uint32_t _index ) const override;
+		inline const RenderMaterialStage * getStage() const override;
 
 	protected:
 		ConstString m_name;
@@ -39,7 +40,7 @@ namespace Menge
 		uint32_t m_textureCount;
 		RenderTextureInterfacePtr m_textures[MENGE_MAX_TEXTURE_STAGES];
 
-		const RenderStage * m_stage;
+		const RenderMaterialStage * m_stage;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const ConstString & RenderMaterial::getName() const
@@ -72,12 +73,7 @@ namespace Menge
 		return m_textures[_index];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const RenderTextureInterfacePtr * RenderMaterial::getTextures() const
-	{
-		return m_textures;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const RenderStage * RenderMaterial::getStage() const
+	inline const RenderMaterialStage * RenderMaterial::getStage() const
 	{
 		return m_stage;
 	}

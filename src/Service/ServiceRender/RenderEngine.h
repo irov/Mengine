@@ -34,17 +34,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	struct RenderObject
     {
-		RenderMaterial * material;
-		uint32_t materialSmartHash;
+		RenderMaterialInterface * material;
+		uint32_t materialSmartId;
 
 		RenderVertexBufferInterface * vbHandle;
 		RenderIndexBufferInterface * ibHandle;
 
 		const RenderVertex2D * vertexData;
-		uint32_t verticesNum;
+		uint32_t vertexCount;
 
         const RenderIndices * indicesData;
-        uint32_t indicesNum;
+        uint32_t indicesCount;
 
 		mt::box2f bb;
 				
@@ -210,8 +210,8 @@ namespace Menge
 
 	protected:
 		void updateTexture_( uint32_t _stageId, const RenderTextureInterfacePtr & _texture );
-		void updateMaterial_( RenderMaterial * _material );
-		void updateStage_( const RenderStage * _stage );
+		void updateMaterial_( RenderMaterialInterface * _material );
+		void updateStage_( const RenderMaterialStage * _stage );
 
 	protected:
 		bool m_windowCreated;
@@ -242,9 +242,7 @@ namespace Menge
 		RenderTextureStage m_currentTextureStage[MENGE_MAX_TEXTURE_STAGES];
 		
 		uint32_t m_currentMaterialId;
-		const RenderStage * m_currentStage;
-		mt::mat4f m_mvpMat;
-		
+		const RenderMaterialStage * m_currentStage;
 
 		uint32_t m_currentTexturesID[MENGE_MAX_TEXTURE_STAGES];
 

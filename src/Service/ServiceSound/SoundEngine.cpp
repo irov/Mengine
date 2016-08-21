@@ -727,8 +727,8 @@ namespace Menge
             {
                 this->stopSoundBufferUpdate_( source );
    
-                float length_ms = source->source->getLengthMs();
-                float pos_ms = source->source->getPosMs();
+                float length_ms = source->source->getDuration();
+                float pos_ms = source->source->getPosition();
 
                 source->timing = length_ms - pos_ms;
 
@@ -780,7 +780,7 @@ namespace Menge
 				}
 
 				source->source->pause();
-				source->timing = source->source->getPosMs();
+				source->timing = source->source->getPosition();
 
 				if( source->listener != nullptr )
 				{
@@ -813,8 +813,8 @@ namespace Menge
 			{
 				this->stopSoundBufferUpdate_( source );
 
-				float length_ms = source->source->getLengthMs();
-				float pos_ms = source->source->getPosMs();
+				float length_ms = source->source->getDuration();
+				float pos_ms = source->source->getPosition();
 
 				source->timing = length_ms - pos_ms;
 
@@ -867,7 +867,7 @@ namespace Menge
 				}
 
 				source->source->stop();
-				source->timing = source->source->getPosMs();
+				source->timing = source->source->getPosition();
 
 				if( source->listener != nullptr )
 				{
@@ -1041,7 +1041,7 @@ namespace Menge
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getLengthMs( uint32_t _emitter ) const
+	float SoundEngine::getDuration( uint32_t _emitter ) const
 	{
         const SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitter, &source ) == false )
@@ -1053,7 +1053,7 @@ namespace Menge
 			return 0.0f;
 		}
 
-        float ms = source->source->getLengthMs();
+        float ms = source->source->getDuration();
 		
 		return ms;
 	}
@@ -1079,7 +1079,7 @@ namespace Menge
 			return false;
         }
 
-        float lengthMs = source->source->getLengthMs();
+        float lengthMs = source->source->getDuration();
         
         if( _pos > lengthMs )
         {
@@ -1101,7 +1101,7 @@ namespace Menge
             this->stopSoundBufferUpdate_( source );
         }
 
-		float current_pos = source->source->getPosMs();
+		float current_pos = source->source->getPosition();
 
 		if( mt::equal_f_f( current_pos, _pos ) == true )
 		{
@@ -1121,7 +1121,7 @@ namespace Menge
             source->source->pause();
         }
         
-		if( source->source->setPosMs( _pos ) == false )
+		if( source->source->setPosition( _pos ) == false )
         {
             return false;
         }
@@ -1230,7 +1230,7 @@ namespace Menge
 			this->stopSoundBufferUpdate_( source );
 		}
 
-        float pos = source->source->getPosMs();
+        float pos = source->source->getPosition();
 
 		if( hasBufferUpdate == true )				
 		{

@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Interface/COMInterface.h"
+
 #	include "Kernel/Loadable.h"
 
 #	include "Kernel/Resource.h"
@@ -8,6 +10,7 @@
 
 #	include "Kernel/Scriptable.h"
 #	include "Kernel/Visitable.h"
+#	include "Kernel/Comable.h"
 
 #	include "Kernel/ResourceHolder.h"
 
@@ -31,6 +34,7 @@ namespace Menge
 		, public Loadable
         , public Scriptable
 		, public Visitable
+		, public Comable
 	{
 		DECLARE_VISITABLE_BASE();
 

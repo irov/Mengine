@@ -149,7 +149,7 @@ namespace Menge
 		return m_loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SilentSoundSource::getLengthMs() const
+	float SilentSoundSource::getDuration() const
 	{
 		if( m_soundBuffer == nullptr )
 		{
@@ -161,7 +161,7 @@ namespace Menge
 		return ms;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SilentSoundSource::getPosMs() const
+	float SilentSoundSource::getPosition() const
 	{
 		if( m_soundBuffer == nullptr )
 		{
@@ -189,7 +189,7 @@ namespace Menge
 		return posms;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SilentSoundSource::setPosMs( float _posMs )
+	bool SilentSoundSource::setPosition( float _posMs )
 	{
 		if( m_playing == true )
 		{

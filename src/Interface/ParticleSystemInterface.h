@@ -173,7 +173,7 @@ namespace Menge
 		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
 
 	public:
-		virtual const RenderStage * getMaterialStage( int _index ) const = 0;
+		virtual const RenderMaterialStage * getMaterialStage( int _index ) const = 0;
 		virtual const ResourceImagePtr & getResourceImage( int _index ) const = 0;
 	};
 

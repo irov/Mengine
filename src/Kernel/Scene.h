@@ -1,10 +1,7 @@
 #	pragma once
 
 #	include "Kernel/Entity.h"
-//#	include "Reference.h"
-
 #	include "Kernel/Scriptable.h"
-
 #	include "Kernel/Layer.h"
 
 #	include "math/vec3.h"

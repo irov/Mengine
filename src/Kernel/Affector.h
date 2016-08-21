@@ -67,7 +67,7 @@ namespace Menge
 		virtual bool _prepare();
 
 	public:
-		bool affect( float _timing );
+		virtual bool affect( float _timing );
 
 	protected:
 		virtual bool _affect( float _timing ) = 0;

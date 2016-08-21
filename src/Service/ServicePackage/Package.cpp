@@ -306,6 +306,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::enable()
 	{
+		if( m_enable == true )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Package::enable already enable '%s:%s' '%s'"
+				, m_path.c_str()
+				, m_name.c_str()
+				, m_descriptionPath.c_str()
+				);
+
+			return false;
+		}
+
 		SCRIPT_SERVICE( m_serviceProvider )
 			->addModulePath( m_name, m_scriptsPackages );
 
@@ -420,6 +431,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::disable()
 	{
+		if( m_enable == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Package::disable already disable '%s:%s' '%s'"
+				, m_path.c_str()
+				, m_name.c_str()
+				, m_descriptionPath.c_str()
+				);
+
+			return false;
+		}
+
 		m_enable = false;
 
 		SCRIPT_SERVICE( m_serviceProvider )

@@ -22,7 +22,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMaterial::initialize( const ConstString & _name, uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage )
+	void RenderMaterial::initialize( const ConstString & _name, uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderMaterialStage * _stage )
 	{
 		m_name = _name;
 
@@ -37,5 +37,10 @@ namespace Menge
 		{
 			m_textures[i] = _textures[i];
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderMaterial::update( float _time, float _timing )
+	{
+		//Empty
 	}
 }

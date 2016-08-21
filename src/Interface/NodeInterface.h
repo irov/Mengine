@@ -18,18 +18,18 @@ namespace Menge
         virtual Node * createNode( const ConstString& _type ) = 0;
 
         template<class T>
-        T * createNodeT( const ConstString& _type )
+        T createNodeT( const ConstString& _type )
         {
             Node * node = this->createNode( _type );
 
 #   ifdef _DEBUG
-            if( dynamic_cast<T *>(node) == nullptr )
+            if( dynamic_cast<T>(node) == nullptr )
             {
                 return nullptr;
             }
 #   endif
 
-            T * t = static_cast<T*>(node);
+            T t = static_cast<T>(node);
 
             return t;
         }

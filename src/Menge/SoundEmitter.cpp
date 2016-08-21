@@ -303,7 +303,7 @@ namespace Menge
 		}
 
 		float lengthMs = SOUND_SERVICE(m_serviceProvider)
-			->getLengthMs( m_sourceID );
+			->getDuration( m_sourceID );
 	
 		return lengthMs;
 	}
@@ -328,7 +328,7 @@ namespace Menge
 		}
 
         float lengthMs = SOUND_SERVICE(m_serviceProvider)
-            ->getLengthMs( m_sourceID );
+            ->getDuration( m_sourceID );
 
         float pos = _timing;
         if( _timing > lengthMs )

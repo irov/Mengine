@@ -6,6 +6,19 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	class AnimatableListener
+	{
+	public:
+		virtual bool onAnimatablePlay( uint32_t _enumerator, float _time ) = 0;
+		virtual bool onAnimatableRestart( uint32_t _enumerator, float _time ) = 0;
+		virtual void onAnimatablePause( uint32_t _enumerator ) = 0;
+		virtual void onAnimatableResume( uint32_t _enumerator, float _time ) = 0;
+		virtual void onAnimatableStop( uint32_t _enumerator ) = 0;
+		virtual void onAnimatableEnd( uint32_t _enumerator ) = 0;
+		virtual bool onAnimatableInterrupt( uint32_t _enumerator ) = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class Animatable
 	{
 	public:
@@ -48,8 +61,13 @@ namespace Menge
 		virtual float _getTiming() const;
 
 		virtual void _setAnimationSpeedFactor( float _factor );
+		virtual void _setIntervalStart( float _startInterval );
+		virtual void _setInterval( float _begin, float _end );
 		virtual void _setFirstFrame();
 		virtual void _setLastFrame();
+		virtual void _setPlayCount( uint32_t _count );
+		virtual void _setAutoPlay( bool _autoPlay );
+		virtual void _setStretch( float _scretch );
 
 	public:
 		uint32_t play( float _time );
@@ -57,9 +75,6 @@ namespace Menge
 		bool pause();
 		void resume( float _time );
 		bool interrupt();
-
-	public:
-		void update( float _timing );
 
 	public:
 		inline bool isPlay() const;

@@ -31,6 +31,7 @@ namespace Menge
         DECL_CONST( Main );
 		DECL_CONST( Homeless );
 		DECL_CONST( Node );
+		DECL_CONST( Surface );
 		DECL_CONST( Game );
 		DECL_CONST( Default );
 		DECL_CONST( Entity );
@@ -69,6 +70,9 @@ namespace Menge
         DECL_CONST( ResourceHIT );
 		//DECL_CONST( ResourceSequence );
 		DECL_CONST( ResourceVideo );
+		DECL_CONST( SurfaceVideo );
+		DECL_CONST( SurfaceSound );
+		DECL_CONST( SurfaceImageSequence );
 		DECL_CONST( CreateImage );
 		DECL_CONST( CreateTarget );
 		DECL_CONST( CreateTexture );

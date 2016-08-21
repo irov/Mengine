@@ -98,6 +98,13 @@
 #	include "Layer2DTexture.h"
 #	include "PhysicalBody2D.h"
 #	include "Landscape2D.h"
+
+
+#	include "SurfaceVideo.h"
+#	include "SurfaceSound.h"
+#	include "SurfaceImageSequence.h"
+
+
 // All Resource type
 //#	include "ResourceSequence.h"
 #	include "ResourceAnimation.h"
@@ -135,6 +142,7 @@
 
 #	include "Kernel/NodePrototypeGenerator.h"
 #	include "Kernel/ResourcePrototypeGenerator.h"
+#	include "Kernel/SurfacePrototypeGenerator.h"
 
 #	include "Codec/ImageDecoderMemory.h"
 #	include "Codec/ImageDecoderArchive.h"
@@ -406,6 +414,19 @@ namespace Menge
 		
 #	undef NODE_FACTORY
 
+#	define SURFACE_FACTORY( serviceProvider, Type )\
+        if( PROTOTYPE_SERVICE(serviceProvider)\
+            ->addPrototype( STRINGIZE_STRING_LOCAL(serviceProvider, "Surface"), STRINGIZE_STRING_LOCAL( serviceProvider, #Type), new SurfacePrototypeGenerator<Type, 128> ) == false )\
+						{\
+			return false;\
+						}
+		
+		SURFACE_FACTORY( m_serviceProvider, SurfaceVideo );
+		SURFACE_FACTORY( m_serviceProvider, SurfaceSound );
+		SURFACE_FACTORY( m_serviceProvider, SurfaceImageSequence );
+
+#	undef SURFACE_FACTORY
+
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -444,7 +465,7 @@ namespace Menge
             Factorable * generate() override
             {
                 Scene * scene = NODE_SERVICE(m_serviceProvider)
-                    ->createNodeT<Scene>( CONST_STRING(m_serviceProvider, Scene) );
+                    ->createNodeT<Scene *>( CONST_STRING(m_serviceProvider, Scene) );
 
                 if( scene == nullptr )
                 {

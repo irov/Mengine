@@ -86,7 +86,7 @@ namespace	Menge
 		if( m_renderCamera == nullptr )
 		{
 			m_renderCamera = NODE_SERVICE( m_serviceProvider )
-				->createNodeT<RenderCameraOrthogonal>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
+				->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
 
 			if( m_renderCamera == nullptr )
 			{
@@ -103,7 +103,7 @@ namespace	Menge
 		if( m_renderViewport == nullptr )
 		{
 			m_renderViewport = NODE_SERVICE( m_serviceProvider )
-				->createNodeT<RenderViewport>( CONST_STRING( m_serviceProvider, RenderViewport ) );
+				->createNodeT<RenderViewport *>( CONST_STRING( m_serviceProvider, RenderViewport ) );
 
 			if( m_renderViewport == nullptr )
 			{

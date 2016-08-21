@@ -5,8 +5,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Affector::Affector()
 		: m_serviceProvider(nullptr)
-		, m_type(ETA_POSITION)	
-        , m_id(0)
+		, m_type(ETA_POSITION)
+		, m_id(0)
 		, m_speedFactor(1.f)
 		, m_freeze(false)
 	{

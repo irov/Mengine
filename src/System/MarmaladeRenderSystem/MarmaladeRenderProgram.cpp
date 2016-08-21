@@ -42,8 +42,18 @@ namespace Menge
 	{ 
 		return m_name;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderFragmentShaderInterfacePtr MarmaladeRenderProgram::getFragmentShader() const
+	{
+		return m_fragmentShader;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderVertexShaderInterfacePtr MarmaladeRenderProgram::getVertexShader() const
+	{
+		return m_vertexShader;
+	}
     //////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderProgram::initialize( const ConstString & _name, const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader, uint32_t _samplerCount )
+	bool MarmaladeRenderProgram::initialize( const ConstString & _name, const MarmaladeRenderVertexShaderPtr & _vertexShader, const MarmaladeRenderFragmentShaderPtr & _fragmentShader, uint32_t _samplerCount )
 	{
 		m_name = _name;
 		m_samplerCount = _samplerCount;
@@ -73,14 +83,14 @@ namespace Menge
 
 		if( _vertexShader != nullptr )
 		{
-			m_vertexShader = stdex::intrusive_static_cast<MarmaladeShaderPtr>(_vertexShader);
+			m_vertexShader = _vertexShader;
 
 			m_vertexShader->attach( program );
 		}
 
 		if( _fragmentShader != nullptr )
 		{
-			m_fragmentShader = stdex::intrusive_static_cast<MarmaladeShaderPtr>(_fragmentShader);
+			m_fragmentShader = _fragmentShader;
 
 			m_fragmentShader->attach( program );
 		}

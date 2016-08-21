@@ -12,12 +12,8 @@
 #	include "pybind/object.hpp"
 #	include "pybind/dict.hpp"
 
-#	include <string>
-#	include <stdarg.h>
-
 namespace Menge
 {
-	class Scriptable;
 	//////////////////////////////////////////////////////////////////////////
 	class Eventable
 	{

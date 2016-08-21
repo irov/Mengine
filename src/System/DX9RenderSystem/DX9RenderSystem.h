@@ -3,7 +3,9 @@
 #	include "Interface/RenderSystemInterface.h"
 
 #   include "DX9RenderImage.h"
-#   include "DX9RenderShader.h"
+#   include "DX9RenderVertexShader.h"
+#   include "DX9RenderFragmentShader.h"
+#   include "DX9RenderProgram.h"
 #   include "DX9RenderVertexBuffer.h"
 #   include "DX9RenderIndexBuffer.h"
 
@@ -47,7 +49,7 @@ namespace Menge
 		bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;
 		// входные данные: матрица 4 на 4
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
-		void setModelViewMatrix( const mt::mat4f & _modelview ) override;
+		void setViewMatrix( const mt::mat4f & _viewMatrix ) override;
 		void setTextureMatrix( uint32_t _stage, const float* _texture ) override;
 		void setWorldMatrix( const mt::mat4f & _world ) override;
 
@@ -59,10 +61,10 @@ namespace Menge
 		bool setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer ) override;
 
 	public:
-		RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
-		RenderShaderInterfacePtr createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
+		RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
+		RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
 		
-		RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex, uint32_t _samplerCount ) override;
+		RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount ) override;
 		void setProgram( const RenderProgramInterfacePtr & _program ) override;
 
 	public:
@@ -192,7 +194,26 @@ namespace Menge
 
         Viewport m_viewport;
 
-		DWORD m_vertexDeclaration;
+		DWORD m_fvf;
+		IDirect3DVertexDeclaration9 * m_vertexDeclaration;
+
+		typedef FactoryPoolStore<DX9RenderVertexShader, 16> TFactoryRenderVertexShader;
+		TFactoryRenderVertexShader m_factoryRenderVertexShader;
+
+		typedef FactoryPoolStore<DX9RenderFragmentShader, 16> TFactoryRenderFragmentShader;
+		TFactoryRenderFragmentShader m_factoryRenderFragmentShader;
+
+		typedef FactoryPoolStore<DX9RenderProgram, 16> TFactoryProgram;
+		TFactoryProgram m_factoryProgram;
+
+		typedef stdex::vector<DX9RenderVertexShaderPtr> TVectorRenderVertexShaders;
+		TVectorRenderVertexShaders m_vertexShaders;
+
+		typedef stdex::vector<DX9RenderFragmentShaderPtr> TVectorRenderFragmentShaders;
+		TVectorRenderFragmentShaders m_fragmentShaders;
+
+		typedef stdex::vector<DX9RenderProgramPtr> TVectorRenderPrograms;
+		TVectorRenderPrograms m_programs;
 
 		typedef FactoryDefaultStore<DX9RenderVertexBuffer> TFactoryRenderVertexBuffer;
 		TFactoryRenderVertexBuffer m_factoryVertexBuffer;
@@ -202,6 +223,10 @@ namespace Menge
 
 		typedef FactoryPoolStore<DX9RenderImage, 128> TFactoryDX9Texture;
 		TFactoryDX9Texture m_factoryDX9Texture;
+
+		mt::mat4f m_projectionMatrix;
+		mt::mat4f m_viewMatrix;
+		mt::mat4f m_worldMatrix;
 
 		uint32_t m_dxMaxCombinedTextureImageUnits;
 

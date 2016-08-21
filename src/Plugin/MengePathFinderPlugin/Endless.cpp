@@ -48,7 +48,7 @@ namespace	Menge
 		for( uint32_t i = 0; i != m_elementCount; ++i )
 		{
 			Parallax * parallax = NODE_SERVICE( m_serviceProvider )
-				->createNodeT<Parallax>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Parallax" ) );
+				->createNodeT<Parallax *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Parallax" ) );
 
 			parallax->setImmortal( true );
 			

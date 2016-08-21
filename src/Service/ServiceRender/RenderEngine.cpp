@@ -456,7 +456,7 @@ namespace Menge
 		return m_windowCreated;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::updateStage_( const RenderStage * _stage )
+	void RenderEngine::updateStage_( const RenderMaterialStage * _stage )
 	{
 		if( m_currentStage == _stage )
 		{
@@ -579,7 +579,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::updateMaterial_( RenderMaterial * _material )
+	void RenderEngine::updateMaterial_( RenderMaterialInterface * _material )
 	{		
 		uint32_t materialId = _material->getId();
 
@@ -616,7 +616,7 @@ namespace Menge
 			}
 		}
 
-		const RenderStage * stage = _material->getStage();
+		const RenderMaterialStage * stage = _material->getStage();
 
 		this->updateStage_( stage );
 	}
@@ -628,7 +628,7 @@ namespace Menge
 			return;
 		}
 
-		RenderMaterial * material = _renderObject->material;
+		RenderMaterialInterface * material = _renderObject->material;
 
 		this->updateMaterial_( material );		
 
@@ -756,7 +756,7 @@ namespace Menge
 		mt::ident_m4( worldTransform );
 
 		RENDER_SYSTEM( m_serviceProvider )->setProjectionMatrix( projTransform );
-		RENDER_SYSTEM( m_serviceProvider )->setModelViewMatrix( viewTransform );
+		RENDER_SYSTEM( m_serviceProvider )->setViewMatrix( viewTransform );
 		RENDER_SYSTEM( m_serviceProvider )->setWorldMatrix( worldTransform );
 		RENDER_SYSTEM( m_serviceProvider )->setCullMode( CM_CULL_NONE );
 		RENDER_SYSTEM( m_serviceProvider )->setFillMode( FM_SOLID );
@@ -958,7 +958,7 @@ namespace Menge
 			const mt::mat4f & viewMatrix = _renderPass.camera->getCameraViewMatrix();
 
 			RENDER_SYSTEM( m_serviceProvider )
-				->setModelViewMatrix( viewMatrix );
+				->setViewMatrix( viewMatrix );
 
 			const mt::mat4f & projectionMatrix = _renderPass.camera->getCameraProjectionMatrix();
 
@@ -977,7 +977,7 @@ namespace Menge
 			mt::ident_m4( viewMatrix );
 
 			RENDER_SYSTEM( m_serviceProvider )
-				->setModelViewMatrix( viewMatrix );
+				->setViewMatrix( viewMatrix );
 
 			mt::mat4f projectionMatrix;
 			mt::ident_m4( projectionMatrix );
@@ -1131,7 +1131,7 @@ namespace Menge
 		mt::scale_box( bb_homogenize, vp_scale );
 		mt::transpose_box( bb_homogenize, vp.begin );
 
-		RenderMaterialPtr ro_material = _material;
+		RenderMaterialInterfacePtr ro_material = _material;
 
 		if( m_debugStepRenderMode == true && _debug == false )
 		{
@@ -1173,7 +1173,7 @@ namespace Menge
 
 		if( m_debugRedAlertMode == true && _debug == false )
 		{
-			RenderMaterialPtr new_material = RENDERMATERIAL_SERVICE( m_serviceProvider )
+			RenderMaterialInterfacePtr new_material = RENDERMATERIAL_SERVICE( m_serviceProvider )
 				->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Blend" )
 				, ro_material->getPrimitiveType()
 				, 0
@@ -1194,19 +1194,19 @@ namespace Menge
 
 		stdex::intrusive_ptr_setup( ro.material, ro_material );
 		
-		uint32_t materialHash = ro.material->getId();
-		ro.materialSmartHash = materialHash % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
+		uint32_t materialId = ro.material->getId();
+		ro.materialSmartId = materialId % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
 
-		rp.materialEnd[ro.materialSmartHash] = &ro;
+		rp.materialEnd[ro.materialSmartId] = &ro;
 
 		stdex::intrusive_ptr_setup( ro.ibHandle, m_ibHandle2D );
 		stdex::intrusive_ptr_setup( ro.vbHandle, m_vbHandle2D );
 
 		ro.vertexData = _vertices;
-		ro.verticesNum = _verticesNum;
+		ro.vertexCount = _verticesNum;
 
 		ro.indicesData = _indices;
-		ro.indicesNum = _indicesNum;
+		ro.indicesCount = _indicesNum;
 
 		ro.bb = bb_homogenize;
 
@@ -1464,18 +1464,18 @@ namespace Menge
 		TArrayRenderObject::iterator it_batch_begin = _begin;
 		++it_batch_begin;
 
-		RenderMaterial * ro_material = _ro->material;
+		RenderMaterialInterface * ro_material = _ro->material;
 
 		for( ; it_batch_begin != _end; ++it_batch_begin )
 		{
 			RenderObject * ro_bath_begin = it_batch_begin;
 
-			if( ro_bath_begin->indicesNum == 0 )
+			if( ro_bath_begin->indicesCount == 0 )
 			{
 				continue;
 			}
 
-			RenderMaterial * batch_material = ro_bath_begin->material;
+			RenderMaterialInterface * batch_material = ro_bath_begin->material;
 
 			if( ro_material != batch_material )
 			{
@@ -1487,11 +1487,11 @@ namespace Menge
 				break;
 			}
 
-			vbPos += ro_bath_begin->verticesNum;
-			ibPos += ro_bath_begin->indicesNum;
+			vbPos += ro_bath_begin->vertexCount;
+			ibPos += ro_bath_begin->indicesCount;
 
-			_ro->dipVerticesNum += ro_bath_begin->verticesNum;
-			_ro->dipIndiciesNum += ro_bath_begin->indicesNum;
+			_ro->dipVerticesNum += ro_bath_begin->vertexCount;
+			_ro->dipIndiciesNum += ro_bath_begin->indicesCount;
 
 			stdex::intrusive_ptr_release( ro_bath_begin->material );
 			stdex::intrusive_ptr_release( ro_bath_begin->vbHandle );
@@ -1499,8 +1499,8 @@ namespace Menge
 
 			ro_bath_begin->dipVerticesNum = 0;
 			ro_bath_begin->dipIndiciesNum = 0;
-			ro_bath_begin->verticesNum = 0;
-			ro_bath_begin->indicesNum = 0;
+			ro_bath_begin->vertexCount = 0;
+			ro_bath_begin->indicesCount = 0;
 
 			++m_debugInfo.batch;
 		}
@@ -1515,7 +1515,7 @@ namespace Menge
 		{
 			const RenderObject * ro_bath = it;
 
-			if( ro_bath->verticesNum == 0 )
+			if( ro_bath->vertexCount == 0 )
 			{
 				continue;
 			}
@@ -1534,32 +1534,32 @@ namespace Menge
 		uint32_t vbPos = _vbPos;
 		uint32_t ibPos = _ibPos;
 
-		const RenderMaterial * ro_material = _ro->material;
-		
 		TArrayRenderObject::iterator it_batch_start_end = _begin;
 		++it_batch_start_end;
 
 		TArrayRenderObject::iterator it_batch = _begin;
 		++it_batch;
 
-		uint32_t materialId = _ro->materialSmartHash;		
-		TArrayRenderObject::const_iterator it_end = _renderPass->materialEnd[materialId];
+		uint32_t materialSmartId = _ro->materialSmartId;
+		TArrayRenderObject::const_iterator it_end = _renderPass->materialEnd[materialSmartId];
 
 		if( _begin == it_end )
 		{
 			return;
 		}
 
+		const RenderMaterialInterface * ro_material = _ro->material;
+
 		for( ; it_batch != it_end; ++it_batch )
 		{
 			RenderObject * ro_bath = it_batch;
 
-			if( ro_bath->verticesNum == 0 )
+			if( ro_bath->vertexCount == 0 )
 			{
 				continue;
 			}
 
-			const RenderMaterial * ro_bath_material = ro_bath->material;
+			const RenderMaterialInterface * ro_bath_material = ro_bath->material;
 
 			if( ro_material != ro_bath_material )
 			{
@@ -1576,8 +1576,8 @@ namespace Menge
 				break;
 			}
 
-			_ro->dipVerticesNum += ro_bath->verticesNum;
-			_ro->dipIndiciesNum += ro_bath->indicesNum;
+			_ro->dipVerticesNum += ro_bath->vertexCount;
+			_ro->dipIndiciesNum += ro_bath->indicesCount;
 
 			stdex::intrusive_ptr_release( ro_bath->material );
 			stdex::intrusive_ptr_release( ro_bath->vbHandle );
@@ -1586,11 +1586,11 @@ namespace Menge
 			ro_bath->dipVerticesNum = 0;
 			ro_bath->dipIndiciesNum = 0;
 
-			vbPos += ro_bath->verticesNum;
-			ibPos += ro_bath->indicesNum;
+			vbPos += ro_bath->vertexCount;
+			ibPos += ro_bath->indicesCount;
 
-			ro_bath->verticesNum = 0;
-			ro_bath->indicesNum = 0;
+			ro_bath->vertexCount = 0;
+			ro_bath->indicesCount = 0;
 
 			++m_debugInfo.batch;
 		}
@@ -1611,7 +1611,7 @@ namespace Menge
 		{
 			RenderObject * ro = it;
 
-			if( ro->verticesNum == 0 )
+			if( ro->vertexCount == 0 )
 			{
 				continue;
 			}
@@ -1624,14 +1624,14 @@ namespace Menge
 				break;
 			}
 			
-			ro->dipVerticesNum = ro->verticesNum;
-			ro->dipIndiciesNum = ro->indicesNum;
+			ro->dipVerticesNum = ro->vertexCount;
+			ro->dipIndiciesNum = ro->indicesCount;
 
-			vbPos += ro->verticesNum;
-			ibPos += ro->indicesNum;
+			vbPos += ro->vertexCount;
+			ibPos += ro->indicesCount;
 
-			ro->verticesNum = 0;
-			ro->indicesNum = 0;
+			ro->vertexCount = 0;
+			ro->indicesCount = 0;
 
 			switch( m_batchMode )
 			{
@@ -1657,7 +1657,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t _vbPos, uint32_t _ibPos ) const
 	{   
-		if( stdex::memorycopy_safe_pod( _vertexBuffer, _vbPos, _vbSize, _renderObject->vertexData, _renderObject->verticesNum ) == false )
+		if( stdex::memorycopy_safe_pod( _vertexBuffer, _vbPos, _vbSize, _renderObject->vertexData, _renderObject->vertexCount ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::insertRenderObject_ vertex buffer overrlow!"
 				);
@@ -1667,7 +1667,7 @@ namespace Menge
 
 		if( m_debugRedAlertMode == true && hasRenderObjectFlag( _renderObject, RO_FLAG_DEBUG ) == false )
 		{
-			for( uint32_t i = 0; i != _renderObject->verticesNum; ++i )
+			for( uint32_t i = 0; i != _renderObject->vertexCount; ++i )
 			{
 				RenderVertex2D & v = _vertexBuffer[_vbPos + i];
 
@@ -1686,7 +1686,7 @@ namespace Menge
 		RenderIndices * offsetIndicesBuffer = _indicesBuffer + _ibPos;
 
 		RenderIndices * src = offsetIndicesBuffer;
-		RenderIndices * src_end = offsetIndicesBuffer + _renderObject->indicesNum;
+		RenderIndices * src_end = offsetIndicesBuffer + _renderObject->indicesCount;
 		const RenderIndices * dst = _renderObject->indicesData;
 
 		RenderIndices indices_offset = (RenderIndices)_vbPos;

@@ -52,7 +52,7 @@ namespace Menge
         const Metacode::Meta_DataBlock::Meta_ResourceVideo * metadata 
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceVideo *>(_meta);
 
-        metadata->swap_File_Path( m_path );
+        metadata->swap_File_Path( m_filePath );
         metadata->swap_File_Codec( m_codecType );
         metadata->swap_File_Converter( m_converterType );        
 
@@ -66,7 +66,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ResourceVideo::_convert()
     {
-		bool result = this->convertDefault_( m_converterType, m_path, m_path, m_codecType );
+		bool result = this->convertDefault_( m_converterType, m_filePath, m_filePath, m_codecType );
 
         return result;
     }
@@ -89,7 +89,7 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)("ResourceVideo::isValid: group '%s' name '%s' can't create decoder '%s'"
 				, this->getGroup().c_str()
                 , this->getName().c_str()
-                , m_path.c_str()
+                , m_filePath.c_str()
                 );
 
             return false;
@@ -118,7 +118,7 @@ namespace Menge
 			LOGGER_ERROR( m_serviceProvider )("ResourceVideo.isValid: group '%s' name '%s' path '%s' invalid size %d:%d limit %d:%d"
 				, this->getGroup().c_str()
 				, this->getName().c_str()
-				, m_path.c_str()
+				, m_filePath.c_str()
 				, dataInfo->frameWidth
 				, dataInfo->frameHeight
 				, limitVideoWidth
@@ -135,7 +135,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("ResourceVideo.isValid: group '%s' name '%s' path '%s' invalid Frame rate %u more that %u"
 				, this->getGroup().c_str()
 				, this->getName().c_str()
-				, m_path.c_str()
+				, m_filePath.c_str()
 				, dataInfo->fps
 				, Limit_VideoFrameRate
 				);
@@ -170,14 +170,14 @@ namespace Menge
         const ConstString & category = this->getCategory();
 
         InputStreamInterfacePtr videoStream = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( category, m_path, true );
+			->openInputFile( category, m_filePath, true );
 
         if( videoStream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder group '%s' name '%s' can't open video file '%s'"
 				, this->getGroup().c_str()
                 , this->getName().c_str()
-                , m_path.c_str()
+                , m_filePath.c_str()
                 );
 
             return nullptr;
@@ -191,7 +191,7 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder group '%s' name '%s' can't create video decoder for file '%s'"
 				, this->getGroup().c_str()
                 , this->getName().c_str()
-                , m_path.c_str()
+                , m_filePath.c_str()
                 );
 
             return nullptr;
@@ -227,7 +227,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder group '%s' name '%s' can't setup options for file '%s'"
 				, this->getGroup().c_str()
 				, this->getName().c_str()
-				, m_path.c_str()
+				, m_filePath.c_str()
 				);
 
             return nullptr;
@@ -238,7 +238,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder group '%s' name '%s' can't initialize video decoder for file '%s'"
 				, this->getGroup().c_str()
 				, this->getName().c_str()
-				, m_path.c_str()
+				, m_filePath.c_str()
 				);
 
 			return nullptr;
@@ -281,12 +281,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceVideo::setFilePath( const FilePath & _path )
 	{
-		m_path = _path;
+		m_filePath = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const FilePath & ResourceVideo::getFilePath() const
 	{
-		return m_path;
+		return m_filePath;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceVideo::setCodecType( const ConstString & _type )

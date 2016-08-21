@@ -24,15 +24,22 @@ ADD_FILTER(
 Node
 	Node.cpp
 	Node.h    
-    ScriptClassWrapper.h
+)
+
+ADD_FILTER(
+Surface
+	Surface.cpp
+	Surface.h
 )
 
 ADD_FILTER(
 PrototypeGenerator
     BasePrototypeGenerator.cpp
-    BasePrototypeGenerator.h
+    BasePrototypeGenerator.h    
+    DefaultPrototypeGenerator.h
     NodePrototypeGenerator.h
     ResourcePrototypeGenerator.h
+    SurfacePrototypeGenerator.h
     ScriptClassWrapper.h
 )
 
@@ -88,6 +95,11 @@ ADD_FILTER(
 Node\\\\Soundable
 	Soundable.cpp
 	Soundable.h
+)
+
+ADD_FILTER(
+Node\\\\Comable
+    Comable.h
 )
 
 ADD_FILTER(

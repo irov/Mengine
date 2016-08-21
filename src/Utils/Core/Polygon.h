@@ -47,6 +47,8 @@ namespace Menge
 		void transpose( Polygon & _out, const mt::vec2f & _pos ) const;
 		void transpose_and_scale( Polygon & _out, const mt::vec2f & _pos, const mt::vec2f & _scale ) const;
 
+		void centroid( mt::vec2f & _center ) const;
+
 		bool to_box2f( mt::box2f & _box2f ) const;
 		bool empty() const;
 

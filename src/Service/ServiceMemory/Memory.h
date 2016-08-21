@@ -18,6 +18,7 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
+		void setMemory( const void * _ptr, size_t _size ) override;
 		Pointer newMemory( size_t _size ) override;
 
 	public:

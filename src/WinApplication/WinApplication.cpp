@@ -90,6 +90,7 @@ PLUGIN_EXPORT( MengeLZ4 );
 PLUGIN_EXPORT( MengeSpine );
 PLUGIN_EXPORT( MengeOggVorbis );
 PLUGIN_EXPORT( MengeWin32FileGroup );
+PLUGIN_EXPORT( Box2D );
 
 PLUGIN_EXPORT( PathFinder );
 
@@ -652,6 +653,9 @@ namespace Menge
 		MENGINE_ADD_PLUGIN( MengeAmplifier, "initialize Plugin Amplifier..." );
 		MENGINE_ADD_PLUGIN( MengeVideoCodec, "initialize Plugin Video Codec..." );
 		MENGINE_ADD_PLUGIN( MengeSpine, "initialize Plugin Spine..." );
+		//MENGINE_ADD_PLUGIN(Motor, "initialize Plugin Motor...");
+		MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
+		
 		MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
 
 

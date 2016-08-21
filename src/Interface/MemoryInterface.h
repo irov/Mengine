@@ -32,6 +32,7 @@ namespace Menge
 		: public MemoryGetterBufferInterface
 	{
 	public:
+		virtual void setMemory( const void * _ptr, size_t _size ) = 0;
 		virtual Pointer newMemory( size_t _size ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -66,7 +67,7 @@ namespace Menge
 	class MemoryInputInterface
 		: public MemoryGetterStreamInterface
 	{
-	public:
+	public:		
 		virtual Pointer newMemory( size_t _size ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////

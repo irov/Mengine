@@ -6,7 +6,7 @@
 
 #	include "stdex/memorycopy.h"
 
-#	include <memory.h>
+//#	include <memory.h>
 
 namespace Menge
 {

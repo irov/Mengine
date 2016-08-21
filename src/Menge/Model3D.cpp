@@ -72,7 +72,7 @@ namespace Menge
 		const Model3DInterfacePtr & model = m_resourceModel->getModel();
 
 		m_camera = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<RenderCameraProjection>( CONST_STRING( m_serviceProvider, RenderCameraProjection ) );
+			->createNodeT<RenderCameraProjection *>( CONST_STRING( m_serviceProvider, RenderCameraProjection ) );
 
 		const ConstString & name = this->getName();
 		m_camera->setName( name );

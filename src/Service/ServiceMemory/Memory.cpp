@@ -2,6 +2,8 @@
 
 #	include "Core/MemoryAllocator.h"
 
+#	include "stdex/memorycopy.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -21,6 +23,13 @@ namespace Menge
 	void Memory::setServiceProvider( ServiceProviderInterface * _serviceProvider )
 	{
 		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Memory::setMemory( const void * _ptr, size_t _size )
+	{
+		void * buffer = this->newMemory( _size );
+
+		stdex::memorycopy( buffer, 0, _ptr, _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Pointer Memory::newMemory( size_t _size )

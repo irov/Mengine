@@ -27,6 +27,8 @@ namespace Menge
         INIT_CONST( Main );
         INIT_CONST( Homeless );
         INIT_CONST( Node );
+		INIT_CONST( Node );
+		INIT_CONST( Surface );
         INIT_CONST( Game );
         INIT_CONST( Entity );
         INIT_CONST( Arrow );
@@ -64,6 +66,9 @@ namespace Menge
         INIT_CONST( ResourceHIT );
             //, c_ResourceSequence = Helper::StringizeString(m_serviceProvider, "ResourceSequence");
         INIT_CONST( ResourceVideo );
+		INIT_CONST( SurfaceVideo );
+		INIT_CONST( SurfaceSound );
+		INIT_CONST( SurfaceImageSequence );
         INIT_CONST( CreateImage );
         INIT_CONST( CreateTarget );
         INIT_CONST( CreateTexture );

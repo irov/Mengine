@@ -3,6 +3,8 @@
 #	include "Interface/RenderSystemInterface.h"
 
 #	include "MarmaladeRenderShader.h"
+#	include "MarmaladeRenderVertexShader.h"
+#	include "MarmaladeRenderFragmentShader.h"
 
 #   include "IwGL.h"
 #   include "s3e.h"
@@ -23,8 +25,12 @@ namespace Menge
 	public:
 		const ConstString & getName() const override;
 
+	public:
+		RenderFragmentShaderInterfacePtr getFragmentShader() const override;
+		RenderVertexShaderInterfacePtr getVertexShader() const override;
+
     public:
-		bool initialize( const ConstString & _name, const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader, uint32_t _samplerCount );
+		bool initialize( const ConstString & _name, const MarmaladeRenderVertexShaderPtr & _vertexShader, const MarmaladeRenderFragmentShaderPtr & _fragmentShader, uint32_t _samplerCount );
 
 	public:
 		void enable() const;
@@ -43,8 +49,8 @@ namespace Menge
 
 		GLuint m_program;
 
-		MarmaladeShaderPtr m_vertexShader;
-		MarmaladeShaderPtr m_fragmentShader;
+		MarmaladeRenderVertexShaderPtr m_vertexShader;
+		MarmaladeRenderFragmentShaderPtr m_fragmentShader;
 
 		uint32_t m_samplerCount;
 		

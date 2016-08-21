@@ -21,6 +21,7 @@ namespace Menge
 
     public:
         virtual Factorable * generate() = 0;
+
         virtual uint32_t count() const = 0;
     };
 	//////////////////////////////////////////////////////////////////////////

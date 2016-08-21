@@ -13,14 +13,16 @@ namespace Menge
     struct ScriptClassExtract
         : public pybind::interface_<T>::extract_type_ptr
     {
-        PyObject * wrap( typename pybind::interface_<T>::extract_type_ptr::TCastRef _node ) override
+		PyObject * wrap( typename pybind::interface_<T>::extract_type_ptr::TCastRef _self ) override
         {
-            if( _node == nullptr )
-            {
-                return pybind::ret_none();
-            }
+			if( _self == nullptr )
+			{
+				return pybind::ret_none();
+			}
 
-            PyObject * py_obj = _node->getEmbed();
+			pybind::bindable * bindable = static_cast<pybind::bindable *>(_self);
+			            
+			PyObject * py_obj = bindable->getEmbed();
 
 			return py_obj;
         }

@@ -83,6 +83,11 @@
 //#	include "RigidBody3D.h"
 //#	include "CapsuleController.h"
 //#	include "Skeleton.h"
+
+#	include "SurfaceVideo.h"
+#	include "SurfaceSound.h"
+#	include "SurfaceImageSequence.h"
+
 #	include "Kernel/Isometric.h"
 #	include "Kernel/Parallax.h"
 #	include "Kernel/RenderViewport.h"
@@ -3419,6 +3424,20 @@ namespace Menge
 		};
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPoolStore<AffectorUser, 4> m_factoryAffectorUser;
+		//////////////////////////////////////////////////////////////////////////		
+		Affector * s_createAffector( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		{
+			AffectorUser * affector = m_factoryAffectorUser.createObject();
+
+			if( affector->initialize( _cb, _args ) == false )
+			{
+				affector->destroy();
+
+				return nullptr;
+			}
+
+			return affector;
+		}
 		//////////////////////////////////////////////////////////////////////////
 		AFFECTOR_ID s_addAffector( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
@@ -6134,6 +6153,10 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceInternalObject );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceHIT );
 
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceVideo );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceSound );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceImageSequence );
+
 # undef SCRIPT_CLASS_WRAPPING
 	}
 
@@ -6502,6 +6525,34 @@ namespace Menge
 
 			.def_proxy_args_static( "accMoveTo", nodeScriptMethod, &NodeScriptMethod::accMoveTo )
 			.def_proxy_args_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::accAngleTo )
+			;
+
+		pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Materialable> >( "Surface", false )
+			.def_native( "setEventListener", &Surface::setEventListener )
+			.def( "removeEventListener", &Surface::removeEventListener )
+			;
+
+		pybind::interface_<SurfaceVideo, pybind::bases<Surface, Resource, Animatable> >( "SurfaceVideo", false )
+			.def( "setResourceVideo", &SurfaceVideo::setResourceVideo )
+			.def( "getResourceVideo", &SurfaceVideo::getResourceVideo )
+			.def( "getWidth", &SurfaceVideo::getWidth )
+			.def( "getHeight", &SurfaceVideo::getHeight )
+			.def( "getDuration", &SurfaceVideo::getDuration )
+			;
+
+		pybind::interface_<SurfaceSound, pybind::bases<Surface, Resource, Animatable> >( "SurfaceSound", false )
+			.def( "setResourceSound", &SurfaceSound::setResourceSound )
+			.def( "getResourceSound", &SurfaceSound::getResourceSound )
+			.def( "getDuration", &SurfaceSound::getDuration )
+			;
+
+		pybind::interface_<SurfaceImageSequence, pybind::bases<Surface, Resource, Animatable> >( "SurfaceImageSequence", false )
+			.def( "setResourceAnimation", &SurfaceImageSequence::setResourceAnimation )
+			.def( "getResourceAnimation", &SurfaceImageSequence::getResourceAnimation )
+			.def( "getFrameCount", &SurfaceImageSequence::getFrameCount )
+			.def( "getFrameDelay", &SurfaceImageSequence::getFrameDelay )
+			.def( "setCurrentFrame", &SurfaceImageSequence::setCurrentFrame )
+			.def( "getCurrentFrame", &SurfaceImageSequence::getCurrentFrame )
 			;
 
 		pybind::interface_<ThreadTask>( "Task" )
@@ -7011,6 +7062,9 @@ namespace Menge
 					.def( "getResourceMovie2", &Movie2::getResourceMovie2 )
 					.def( "setCompositionName", &Movie2::setCompositionName )
 					.def( "getCompositionName", &Movie2::getCompositionName )
+					.def( "getDuration", &Movie2::getDuration )
+					.def( "setWorkAreaFromEvent", &Movie2::setWorkAreaFromEvent )
+					.def( "removeWorkArea", &Movie2::removeWorkArea )
 					;
 
 				pybind::interface_<Meshget, pybind::bases<Node, Materialable> >( "Meshget", false )
@@ -7025,9 +7079,9 @@ namespace Menge
 				pybind::interface_<MovieInternalObject, pybind::bases<Node> >( "MovieInternalObject", false )
 					;
 
-				pybind::interface_<Video, pybind::bases<Node, Animatable, Materialable> >( "Video", false )
-					.def( "setResourceVideo", &Video::setResourceVideo )
-					.def( "getResourceVideo", &Video::getResourceVideo )
+				pybind::interface_<Video, pybind::bases<Node> >( "Video", false )
+					.def( "setSurfaceVideo", &Video::setSurfaceVideo )
+					.def( "getSurfaceVideo", &Video::getSurfaceVideo )
 					;
 
 				pybind::interface_<Window, pybind::bases<Node> >( "Window", false )
@@ -7294,6 +7348,8 @@ namespace Menge
 			pybind::def_functor( "gridBurnTransparency", nodeScriptMethod, &NodeScriptMethod::s_gridBurnTransparency );
 
 			pybind::def_functor( "setLocale", nodeScriptMethod, &NodeScriptMethod::s_setLocale );
+
+			pybind::def_functor_args( "createAffector", nodeScriptMethod, &NodeScriptMethod::s_createAffector );
 
 			pybind::def_functor_args( "addAffector", nodeScriptMethod, &NodeScriptMethod::s_addAffector );
 			pybind::def_functor( "removeAffector", nodeScriptMethod, &NodeScriptMethod::s_removeAffector );

@@ -556,10 +556,10 @@ namespace	Menge
 			return successful;
         }
 		//////////////////////////////////////////////////////////////////////////
-		float s_musicGetLengthMs()
+		float s_musicGetDuration()
 		{
 			float posMs = AMPLIFIER_SERVICE( m_serviceProvider )
-				->getLengthMs();
+				->getDuration();
 
 			return posMs;
 		}
@@ -752,7 +752,8 @@ namespace	Menge
 		pybind::def_functor( "musicStop", soundScriptMethod, &SoundScriptMethod::musicStop );
         pybind::def_functor( "musicPause", soundScriptMethod, &SoundScriptMethod::musicPause );
         pybind::def_functor( "musicResume", soundScriptMethod, &SoundScriptMethod::musicResume );
-		pybind::def_functor( "musicGetLengthMs", soundScriptMethod, &SoundScriptMethod::s_musicGetLengthMs );
+		pybind::def_functor( "musicGetDuration", soundScriptMethod, &SoundScriptMethod::s_musicGetDuration );
+		pybind::def_functor( "musicGetLengthMs", soundScriptMethod, &SoundScriptMethod::s_musicGetDuration );
 		pybind::def_functor( "musicGetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicGetPosMs );
 		pybind::def_functor( "musicSetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicSetPosMs );
 		pybind::def_functor_args( "musicFadeIn", soundScriptMethod, &SoundScriptMethod::s_musicFadeIn );

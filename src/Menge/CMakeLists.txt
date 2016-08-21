@@ -35,27 +35,53 @@ Consts
 )
 
 ADD_FILTER(
+Motor\\\\Motor
+	Motor.cpp
+	Motor.h
+)
+
+ADD_FILTER(
 MousePickerTrap
 	MousePickerSystem.cpp
 	MousePickerSystem.h
 )
 
-SOURCE_GROUP( Object2D )
+SOURCE_GROUP( Surface )
 
 ADD_FILTER(
-Object2D\\\\Animation
+Surface\\\\SurfaceVideo
+	SurfaceVideo.cpp
+	SurfaceVideo.h
+)
+
+ADD_FILTER(
+Surface\\\\SurfaceSound
+	SurfaceSound.cpp
+	SurfaceSound.h
+)
+
+ADD_FILTER(
+Surface\\\\SurfaceImageSequence
+	SurfaceImageSequence.cpp
+	SurfaceImageSequence.h
+)
+
+SOURCE_GROUP( Object )
+
+ADD_FILTER(
+Object\\\\Animation
 	Animation.cpp
 	Animation.h
 )
 
 ADD_FILTER(
-Object2D\\\\ParticleEmitter2
+Object\\\\ParticleEmitter2
 	ParticleEmitter2.cpp
 	ParticleEmitter2.h
 )
 
 ADD_FILTER(
-Object2D\\\\HotSpot
+Object\\\\HotSpot
 	HotSpot.cpp
 	HotSpot.h
 	HotSpotPolygon.cpp
@@ -74,62 +100,62 @@ Object2D\\\\HotSpot
 )
 
 ADD_FILTER(
-Object2D\\\\Point
+Object\\\\Point
 	Point.cpp
 	Point.h
 )
 
 ADD_FILTER(
-Object2D\\\\Line
+Object\\\\Line
 	Line.cpp
 	Line.h
 )
 
 
 ADD_FILTER(
-Object2D\\\\SoundEmitter
+Object\\\\SoundEmitter
 	SoundEmitter.cpp
 	SoundEmitter.h
 )
 
 ADD_FILTER(
-Object2D\\\\Sprite
+Object\\\\Sprite
 	Sprite.cpp
 	Sprite.h
 )
 
 ADD_FILTER(
-Object2D\\\\Landscape2D
+Object\\\\Landscape2D
 	Landscape2D.cpp
 	Landscape2D.h
 )
 
 ADD_FILTER(
-Object2D\\\\Grid2D
+Object\\\\Grid2D
 	Grid2D.cpp
 	Grid2D.h
 )
 
 ADD_FILTER(
-Object2D\\\\Mesh2D
+Object\\\\Mesh2D
 	Mesh2D.cpp
 	Mesh2D.h
 )
 
 ADD_FILTER(
-Object2D\\\\Model3D
+Object\\\\Model3D
 	Model3D.cpp
 	Model3D.h
 )
 
 ADD_FILTER(
-Object2D\\\\Gyroscope
+Object\\\\Gyroscope
 	Gyroscope.cpp
 	Gyroscope.h
 )
 
 ADD_FILTER(
-Object2D\\\\Movie
+Object\\\\Movie
 	Movie.cpp
 	Movie.h	
     MovieSlot.cpp
@@ -145,7 +171,7 @@ Object2D\\\\Movie
 )
 
 ADD_FILTER(
-Object2D\\\\Movie2
+Object\\\\Movie2
 	Movie2.cpp
 	Movie2.h	
     ResourceMovie2.cpp
@@ -153,7 +179,7 @@ Object2D\\\\Movie2
 )
 
 ADD_FILTER(
-Object2D\\\\TextField
+Object\\\\TextField
 	TextField.cpp
 	TextField.h
 	TextLine.cpp
@@ -161,13 +187,13 @@ Object2D\\\\TextField
 )
 
 ADD_FILTER(
-Object2D\\\\Video
+Object\\\\Video
 	Video.cpp
 	Video.h
 )
 
 ADD_FILTER(
-Object2D\\\\Window
+Object\\\\Window
 	Window.cpp
 	Window.h
 )

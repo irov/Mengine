@@ -17,6 +17,9 @@ namespace Menge
 		~ResourceMovie2();
 
 	public:
+		float getDuration() const;
+
+	public:
 		const aeMovieData * getMovieData() const;
 		const aeMovieCompositionData * getCompositionData( const ConstString & _name ) const;
 

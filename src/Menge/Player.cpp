@@ -725,7 +725,7 @@ namespace Menge
 	void Player::initializeRenderResources()
 	{
 		m_debugText = NODE_SERVICE(m_serviceProvider)->
-			createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
+			createNodeT<TextField *>( CONST_STRING( m_serviceProvider, TextField ) );
 
 		m_debugText->setFontName( STRINGIZE_STRING_LOCAL(m_serviceProvider, "__CONSOLE_FONT__") );
 		m_debugText->setTextID( STRINGIZE_STRING_LOCAL(m_serviceProvider, "__ID_TEXT_CONSOLE") );
@@ -740,7 +740,7 @@ namespace Menge
 		Viewport vp( 0.f, 0.f, cr.x, cr.y );
 
 		m_camera2D = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<RenderCameraOrthogonal>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
+			->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
 
 		m_camera2D->setOrthogonalViewport( vp );
 				
@@ -749,7 +749,7 @@ namespace Menge
 		this->setRenderCamera( m_camera2D );
 
 		m_viewport2D = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<RenderViewport>( CONST_STRING( m_serviceProvider, RenderViewport ) );
+			->createNodeT<RenderViewport *>( CONST_STRING( m_serviceProvider, RenderViewport ) );
 
 		m_viewport2D->setViewport( vp );
 		m_viewport2D->enable();
@@ -757,7 +757,7 @@ namespace Menge
 		this->setRenderViewport( m_viewport2D );
 
 		m_arrowCamera2D = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<RenderCameraOrthogonal>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
+			->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
 
 		m_arrowCamera2D->setOrthogonalViewport( vp );
 		m_arrowCamera2D->enable();
@@ -770,7 +770,7 @@ namespace Menge
 		}
 		
 		m_debugCamera2D = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<RenderCameraOrthogonal>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
+			->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
 
 		m_debugCamera2D->setOrthogonalViewport( vp );
 

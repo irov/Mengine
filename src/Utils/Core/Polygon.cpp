@@ -580,6 +580,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Polygon::centroid( mt::vec2f & _center ) const
+	{ 
+		boost::geometry::centroid( THIS_IMPL, _center );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Polygon::to_box2f( mt::box2f & _box2f ) const
 	{
 		const BoostPolygon::ring_type & ring = THIS_IMPL.outer();

@@ -201,7 +201,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Amplifier::getLengthMs() const
+	float Amplifier::getDuration() const
 	{
 		if( m_sourceID == 0 )
 		{
@@ -209,7 +209,7 @@ namespace Menge
 		}
 
 		float pos = SOUND_SERVICE( m_serviceProvider )
-			->getLengthMs( m_sourceID );
+			->getDuration( m_sourceID );
 
 		return pos;
 	}

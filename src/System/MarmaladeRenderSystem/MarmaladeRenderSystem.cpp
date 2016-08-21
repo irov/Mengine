@@ -218,13 +218,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderShaderInterfacePtr MarmaladeRenderSystem::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
+	RenderFragmentShaderInterfacePtr MarmaladeRenderSystem::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
-		MarmaladeShaderPtr shader = m_factoryShader.createObject();
+		MarmaladeRenderFragmentShaderPtr shader = m_factoryRenderFragmentShader.createObject();
 
 		shader->setServiceProvider( m_serviceProvider );
 
-		if( shader->initialize( _name, GL_FRAGMENT_SHADER, _buffer, _size, _isCompile ) == false )
+		if( shader->initialize( _name, _buffer, _size, _isCompile ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createFragmentShader invalid initialize shader %s"
 				, _name.c_str()
@@ -236,13 +236,13 @@ namespace Menge
 		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderShaderInterfacePtr MarmaladeRenderSystem::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
+	RenderVertexShaderInterfacePtr MarmaladeRenderSystem::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
-		MarmaladeShaderPtr shader = m_factoryShader.createObject();
+		MarmaladeRenderVertexShaderPtr shader = m_factoryRenderVertexShader.createObject();
 
 		shader->setServiceProvider( m_serviceProvider );
 
-		if( shader->initialize( _name, GL_VERTEX_SHADER, _buffer, _size, _isCompile ) == false )
+		if( shader->initialize( _name, _buffer, _size, _isCompile ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createVertexShader invalid initialize shader %s"
 				, _name.c_str()
@@ -254,13 +254,13 @@ namespace Menge
 		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderProgramInterfacePtr MarmaladeRenderSystem::createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex, uint32_t _samplerCount )
+	RenderProgramInterfacePtr MarmaladeRenderSystem::createProgram( const ConstString & _name, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexShaderInterfacePtr & _vertex, uint32_t _samplerCount )
 	{
 		MarmaladeProgramPtr program = m_factoryProgram.createObject();
 
 		program->setServiceProvider( m_serviceProvider );
-		
-		if( program->initialize( _name, _fragment, _vertex, _samplerCount ) == false )
+				
+		if( program->initialize( _name, _vertex, _fragment, _samplerCount ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createProgram invalid initialize program %s"
 				, _name.c_str()

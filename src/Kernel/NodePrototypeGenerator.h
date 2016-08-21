@@ -36,7 +36,20 @@ namespace Menge
 			node->setType( m_prototype );
 			node->setScriptWrapper( m_scriptWrapper );
 
+			if( this->setup( node ) == false )
+			{
+				return nullptr;
+			}
+
 			return node;
+		}
+
+		virtual bool setup( Type * _node )
+		{
+			(void)_node;
+			//Empty
+
+			return true;
 		}
 
 		uint32_t count() const override

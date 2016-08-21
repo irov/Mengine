@@ -122,6 +122,17 @@ namespace Menge
 
 			material.clear();
 		}
+
+		for( uint32_t i = 0; i != MENGINE_MATERIAL_RENDER_STAGE_MAX; ++i )
+		{
+			RenderMaterialStage & stage = m_stages[i];
+
+			stage.program = nullptr;
+		}
+		
+		m_vertexShaders.clear();
+		m_fragmentShaders.clear();
+		m_programs.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::loadMaterials( const ConstString& _pakName, const FilePath& _fileName )
@@ -176,7 +187,7 @@ namespace Menge
 			bool isCompile = false;
 			meta_FragmentShader.get_File_Compile( isCompile );
 
-			RenderShaderInterfacePtr shader = this->createFragmentShader_( name, _pakName, filePath, isCompile );
+			RenderFragmentShaderInterfacePtr shader = this->createFragmentShader_( name, _pakName, filePath, isCompile );
 
 			if( shader == nullptr )
 			{
@@ -216,7 +227,7 @@ namespace Menge
 			bool isCompile = false;
 			meta_VertexShader.get_File_Compile( isCompile );
 
-			RenderShaderInterfacePtr shader = this->createVertexShader_( name, _pakName, filePath, isCompile );
+			RenderVertexShaderInterfacePtr shader = this->createVertexShader_( name, _pakName, filePath, isCompile );
 
 			if( shader == nullptr )
 			{
@@ -255,7 +266,7 @@ namespace Menge
 			const ConstString & fragmentShaderName = meta_Program.get_FragmentShader_Name();
 			uint32_t samplerCount = meta_Program.get_Sampler_Count();
 
-			const RenderShaderInterfacePtr & vertexShader = this->getVertexShader_( vertexShaderName );
+			const RenderVertexShaderInterfacePtr & vertexShader = this->getVertexShader_( vertexShaderName );
 			
 			if( vertexShader == nullptr )
 			{
@@ -269,7 +280,7 @@ namespace Menge
 				return false;
 			}
 
-			const RenderShaderInterfacePtr & fragmentShader = this->getFragmentShader_( fragmentShaderName );
+			const RenderFragmentShaderInterfacePtr & fragmentShader = this->getFragmentShader_( fragmentShaderName );
 				
 			if( fragmentShader == nullptr )
 			{
@@ -316,7 +327,7 @@ namespace Menge
 			bool is_debug = false;
 			meta_Material.get_Debug( is_debug );
 
-			RenderStage stage;
+			RenderMaterialStage stage;
 			meta_Material.get_AlphaBlend_Enable( stage.alphaBlendEnable );
 			meta_Material.get_BlendFactor_Source( stage.blendSrc );
 			meta_Material.get_BlendFactor_Dest( stage.blendDst );
@@ -373,7 +384,7 @@ namespace Menge
 				meta_TextureStages.get_TextureCoord_Index( textureStage.texCoordIndex );
 			}
 
-			const RenderStage * cache_stage = this->createRenderStageGroup( name, stage );
+			const RenderMaterialStage * cache_stage = this->createRenderStageGroup( name, stage );
 			
 			if( cache_stage == nullptr )
 			{
@@ -386,7 +397,7 @@ namespace Menge
 				return false;
 			}
 
-			m_stageIndexer.insert( std::make_pair( name, cache_stage ) );
+			m_materialStageIndexer.insert( std::make_pair( name, cache_stage ) );
 
 			if( is_debug == true )
 			{
@@ -504,7 +515,7 @@ namespace Menge
 
 			const Menge::ConstString & name = meta_Material.get_Name();
 
-			m_stageIndexer.erase( name );
+			m_materialStageIndexer.erase( name );
 		}
 
 		return true;
@@ -514,7 +525,7 @@ namespace Menge
 		, EPrimitiveType _primitiveType
 		, uint32_t _textureCount 
 		, const RenderTextureInterfacePtr * _textures
-		, const RenderStage * _stage
+		, const RenderMaterialStage * _stage
 		)
 	{
 		if( _material->getPrimitiveType() != _primitiveType )
@@ -629,7 +640,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_equalRenderStage( const RenderStage & _src, const RenderStage & _dst )
+	static bool s_equalRenderStage( const RenderMaterialStage & _src, const RenderMaterialStage & _dst )
 	{
 		if( _src.alphaBlendEnable != _dst.alphaBlendEnable )
 		{
@@ -665,11 +676,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderStage * RenderMaterialManager::cacheStage( const RenderStage & _other )
+	const RenderMaterialStage * RenderMaterialManager::cacheStage( const RenderMaterialStage & _other )
 	{
 		for( uint32_t it = 0; it != m_stageCount; ++it )
 		{
-			const RenderStage & self = m_stages[it];
+			const RenderMaterialStage & self = m_stages[it];
 
 			if( s_equalRenderStage( self, _other ) == false )
 			{
@@ -686,10 +697,12 @@ namespace Menge
 
 		m_stages[m_stageCount] = _other;
 
-		const RenderStage & cache_other = m_stages[m_stageCount];
+		RenderMaterialStage & cache_other = m_stages[m_stageCount];
 
 		m_stageCount++;
 
+		cache_other.id = m_stageCount;
+		
 		return &cache_other;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -698,9 +711,9 @@ namespace Menge
 		, uint32_t _textureCount
 		, const RenderTextureInterfacePtr * _textures )
 	{
-		TMapRenderStage::const_iterator it_found = m_stageIndexer.find( _materialName );
+		TMapRenderStage::const_iterator it_found = m_materialStageIndexer.find( _materialName );
 
-		if( it_found == m_stageIndexer.end() )
+		if( it_found == m_materialStageIndexer.end() )
 		{
 			LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::getMaterial stage %s not found"
 				, _materialName.c_str()
@@ -709,7 +722,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		const RenderStage * stage = it_found->second;
+		const RenderMaterialStage * stage = it_found->second;
 
 		for( uint32_t i = 0; i != _textureCount; ++i )
 		{
@@ -730,7 +743,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr RenderMaterialManager::getMaterial2( const ConstString & _materialName
-		, const RenderStage * _stage
+		, const RenderMaterialStage * _stage
 		, EPrimitiveType _primitiveType
 		, uint32_t _textureCount
 		, const RenderTextureInterfacePtr * _textures )
@@ -833,14 +846,14 @@ namespace Menge
 		}
 
 		uint32_t materialId = _material->getId();
-		m_materialIndexer.push_back( materialId );
+		m_materialEnumerators.push_back( materialId );
 	}
     //////////////////////////////////////////////////////////////////////////
-	const RenderStage * RenderMaterialManager::createRenderStageGroup( const ConstString & _name, const RenderStage & _stage )
+	const RenderMaterialStage * RenderMaterialManager::createRenderStageGroup( const ConstString & _name, const RenderMaterialStage & _stage )
     {
-		TMapRenderStage::const_iterator it_found = m_stageIndexer.find( _name );
+		TMapRenderStage::const_iterator it_found = m_materialStageIndexer.find( _name );
 
-		if( it_found != m_stageIndexer.end() )
+		if( it_found != m_materialStageIndexer.end() )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderMaterialManager::createRenderStageGroup '%s' is already created"
                 , _name.c_str()
@@ -849,7 +862,7 @@ namespace Menge
             return nullptr;
         }
 
-		const RenderStage * cache_stage = this->cacheStage( _stage );
+		const RenderMaterialStage * cache_stage = this->cacheStage( _stage );
 
 		if( cache_stage == nullptr )
 		{
@@ -865,10 +878,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t RenderMaterialManager::makeMaterialIndex_()
 	{
-		if( m_materialIndexer.empty() == false )
+		if( m_materialEnumerators.empty() == false )
 		{
-			uint32_t id = m_materialIndexer.back();
-			m_materialIndexer.pop_back();
+			uint32_t id = m_materialEnumerators.back();
+			m_materialEnumerators.pop_back();
 
 			return id;
 		}
@@ -890,7 +903,25 @@ namespace Menge
 		return material_hash;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderShaderInterfacePtr RenderMaterialManager::createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
+	RenderVertexShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
+	{
+		MemoryCacheBufferInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, _pakName, _filePath, false, "loadVertexShader" );
+
+		if( data_cache == nullptr )
+		{
+			return nullptr;
+		}
+
+		const void * buffer = data_cache->getMemory();
+		size_t size = data_cache->getSize();
+
+		RenderVertexShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
+			->createVertexShader( _name, buffer, size, isCompile );
+
+		return shader;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderFragmentShaderInterfacePtr RenderMaterialManager::createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
 	{ 
 		MemoryCacheBufferInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, _pakName, _filePath, false, "loadFragmentShader" );
 		
@@ -902,54 +933,36 @@ namespace Menge
 		const void * buffer = data_cache->getMemory();
 		size_t size = data_cache->getSize();
 
-		RenderShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
+		RenderFragmentShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
 			->createFragmentShader( _name, buffer, size, isCompile );
 
 		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
-	{ 
-		MemoryCacheBufferInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, _pakName, _filePath, false, "loadVertexShader" );
-
-		if( data_cache == nullptr )
-		{
-			return nullptr;
-		}
-
-		const void * buffer = data_cache->getMemory();
-		size_t size = data_cache->getSize();
-
-		RenderShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
-			->createVertexShader( _name, buffer, size, isCompile );
-
-		return shader;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const RenderShaderInterfacePtr & RenderMaterialManager::getVertexShader_( const ConstString & _name ) const
+	const RenderVertexShaderInterfacePtr & RenderMaterialManager::getVertexShader_( const ConstString & _name ) const
 	{
-		TMapRenderShaders::const_iterator it_found = m_vertexShaders.find( _name );
+		TMapRenderVertexShaders::const_iterator it_found = m_vertexShaders.find( _name );
 
 		if( it_found == m_vertexShaders.end() )
 		{
-			return RenderShaderInterfacePtr::none();
+			return RenderVertexShaderInterfacePtr::none();
 		}
 
-		const RenderShaderInterfacePtr & shader = it_found->second;
+		const RenderVertexShaderInterfacePtr & shader = it_found->second;
 
 		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderShaderInterfacePtr & RenderMaterialManager::getFragmentShader_( const ConstString & _name ) const
+	const RenderFragmentShaderInterfacePtr & RenderMaterialManager::getFragmentShader_( const ConstString & _name ) const
 	{
-		TMapRenderShaders::const_iterator it_found = m_fragmentShaders.find( _name );
+		TMapRenderFragmentShaders::const_iterator it_found = m_fragmentShaders.find( _name );
 
 		if( it_found == m_fragmentShaders.end() )
 		{
-			return RenderShaderInterfacePtr::none();
+			return RenderFragmentShaderInterfacePtr::none();
 		}
 
-		const RenderShaderInterfacePtr & shader = it_found->second;
+		const RenderFragmentShaderInterfacePtr & shader = it_found->second;
 
 		return shader;
 	}

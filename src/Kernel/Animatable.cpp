@@ -94,18 +94,57 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Animatable::setPlayCount( uint32_t _count )
     {
+		if( m_playCount == _count )
+		{
+			return;
+		}
+
         m_playCount = _count;
+
+		this->_setPlayCount( _count );
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Animatable::_setPlayCount( uint32_t _count )
+	{
+		(void)_count;
+		//Empty
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::setAutoPlay( bool _autoPlay )
 	{
+		if( m_autoPlay == _autoPlay )
+		{
+			return;
+		}
+
 		m_autoPlay = _autoPlay;
+
+		this->_setAutoPlay( _autoPlay );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animatable::_setAutoPlay( bool _autoPlay )
+	{
+		(void)_autoPlay;
+		//Empty
 	}
     //////////////////////////////////////////////////////////////////////////
     void Animatable::setStretch( float _scretch )
     {
+		if( mt::equal_f_f( m_stretch, _scretch ) == true )
+		{
+			return;
+		}
+
         m_stretch = _scretch;
+
+		this->_setStretch( _scretch );
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Animatable::_setStretch( float _scretch )
+	{
+		(void)_scretch;
+		//Empty
+	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t Animatable::play( float _time )
 	{
@@ -243,13 +282,40 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::setIntervalStart( float _startInterval )
 	{
+		if( mt::equal_f_f( m_intervalStart, _startInterval ) == true )
+		{
+			return;
+		}
+
 		m_intervalStart = _startInterval;
+
+		this->_setIntervalStart( _startInterval );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animatable::_setIntervalStart( float _startInterval )
+	{
+		(void)_startInterval;
+		//Empty
 	}
     //////////////////////////////////////////////////////////////////////////
     void Animatable::setInterval( float _begin, float _end )
     {
+		if( mt::equal_f_f( m_intervalBegin, _begin ) == true && mt::equal_f_f( m_intervalEnd, _end ) == true )
+		{
+			return;
+		}
+
         m_intervalBegin = _begin;
         m_intervalEnd = _end;
+
+		this->_setInterval( _begin, _end );
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Animatable::_setInterval( float _begin, float _end )
+	{
+		(void)_begin;
+		(void)_end;
+		//Empty
+	}
 	//////////////////////////////////////////////////////////////////////////
 }

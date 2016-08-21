@@ -162,7 +162,7 @@ namespace Menge
 				return;
 			}
 
-			RenderStage rs;
+			RenderMaterialStage rs;
 						
 			switch( m.blending )
 			{
@@ -207,7 +207,7 @@ namespace Menge
 				textureStage.alphaArg2 = dx_arg[state.argument_alpha2];
 			}
 
-			const RenderStage * cache_stage = RENDERMATERIAL_SERVICE( m_serviceProvider )
+			const RenderMaterialStage * cache_stage = RENDERMATERIAL_SERVICE( m_serviceProvider )
 				->cacheStage( rs );
 
 			m_stages[i] = cache_stage;
@@ -216,7 +216,7 @@ namespace Menge
 		m_stageCount = materialCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderStage * AstralaxParticleSystem2::getMaterialStage( int _index ) const
+	const RenderMaterialStage * AstralaxParticleSystem2::getMaterialStage( int _index ) const
 	{
 		if( _index >= m_stageCount )
 		{

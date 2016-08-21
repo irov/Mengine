@@ -38,7 +38,7 @@ namespace Menge
 		ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) override;
 
 	public:
-		const RenderStage * getMaterialStage( int _index ) const override;
+		const RenderMaterialStage * getMaterialStage( int _index ) const override;
 		const ResourceImagePtr & getResourceImage( int _index ) const override;
 
 	public:
@@ -56,7 +56,7 @@ namespace Menge
 		TMapHashEmitterContainers m_containers;
 
 		int m_stageCount;
-		const RenderStage * m_stages[256];
+		const RenderMaterialStage * m_stages[256];
 
 		typedef stdex::vector<ResourceImagePtr> TVectorAtlasDesc;
 		TVectorAtlasDesc m_atlases;

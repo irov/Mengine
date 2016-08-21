@@ -174,7 +174,7 @@ namespace Menge
 		return m_loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float OALSoundSource::getLengthMs() const
+	float OALSoundSource::getDuration() const
 	{
 		if( m_soundBuffer == nullptr )
 		{
@@ -189,7 +189,7 @@ namespace Menge
 		return time_sound;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float OALSoundSource::getPosMs() const
+	float OALSoundSource::getPosition() const
 	{
 		if( m_soundBuffer == nullptr )
 		{
@@ -226,7 +226,7 @@ namespace Menge
 		return posms;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundSource::setPosMs( float _posMs )
+	bool OALSoundSource::setPosition( float _posMs )
 	{
 		if( m_playing == true )
 		{

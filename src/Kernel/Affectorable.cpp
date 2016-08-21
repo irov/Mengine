@@ -17,6 +17,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AFFECTOR_ID Affectorable::addAffector( Affector * _affector )
 	{
+		if( _affector == nullptr )
+		{
+			return INVALID_AFFECTOR_ID;
+		}
+
 		AFFECTOR_ID id = ++m_enumerator;
 
 		_affector->setId( id );

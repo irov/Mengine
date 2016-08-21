@@ -61,9 +61,9 @@ namespace Menge
 		virtual void setLoop( bool _loop ) = 0;
 		virtual bool getLoop() const = 0;
 
-		virtual float getLengthMs() const = 0;
-		virtual float getPosMs() const = 0;
-		virtual bool setPosMs( float _posMs ) = 0;
+		virtual float getDuration() const = 0;
+		virtual float getPosition() const = 0;
+		virtual bool setPosition( float _posMs ) = 0;
 
 		virtual void setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) = 0;
 		virtual SoundBufferInterfacePtr getSoundBuffer() const = 0;
@@ -181,7 +181,7 @@ namespace Menge
 		virtual bool getLoop( uint32_t _emitter ) const = 0;
 
 	public:
-		virtual float getLengthMs( uint32_t _emitter ) const = 0;
+		virtual float getDuration( uint32_t _emitter ) const = 0;
 		
 		virtual bool setPosMs( uint32_t _emitter, float _pos ) = 0;
 		virtual float getPosMs( uint32_t _emitter ) = 0;

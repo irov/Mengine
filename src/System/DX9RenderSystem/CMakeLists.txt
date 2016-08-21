@@ -12,8 +12,10 @@ src
     DX9RenderVertexBuffer.cpp
     DX9RenderIndexBuffer.h
     DX9RenderIndexBuffer.cpp    
-    DX9RenderShader.h
-    DX9RenderShader.cpp
+    DX9RenderFragmentShader.h
+    DX9RenderFragmentShader.cpp
+    DX9RenderVertexShader.h
+    DX9RenderVertexShader.cpp
     DX9RenderProgram.h
     DX9RenderProgram.cpp
     DX9RenderEnum.h

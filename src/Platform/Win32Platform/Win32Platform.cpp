@@ -8,6 +8,7 @@
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/TimerInterface.h"
+#	include "Interface/FileSystemInterface.h"
 
 #	include "Logger/Logger.h"
 

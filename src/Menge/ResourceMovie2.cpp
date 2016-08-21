@@ -50,6 +50,20 @@ namespace Menge
 		delete[] _ptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void stdex_movie_logerror( void * _data, aeMovieErrorCode _code, const char * _compositionName, const char * _layerName, const char * _message )
+	{
+ 		ResourceMovie2 * resource = static_cast<ResourceMovie2 *>(_data);
+		ServiceProviderInterface * serviceProvider = resource->getServiceProvider();
+
+		LOGGER_ERROR( serviceProvider )("ResourceMovie2 '%s' movie error code '%d' composition '%s' layer '%s' message '%s'"
+			, resource->getName().c_str()
+			, _code
+			, _compositionName
+			, _layerName
+			, _message
+			);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static void Mengine_read_stream( void * _data, void * _buff, uint32_t _size )
 	{
 		InputStreamInterface * stream = (InputStreamInterface *)_data;
@@ -125,8 +139,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie2::_initialize()
-	{		
-		m_instance = ae_create_movie_instance( &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, AE_NULL );
+	{
+		m_instance = ae_create_movie_instance( &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, &stdex_movie_logerror, this );
 
 		return true;
 	}
@@ -174,16 +188,18 @@ namespace Menge
 			return false;
 		}
 
-		m_movieData = ae_create_movie_data( m_instance );
+		aeMovieData * movieData = ae_create_movie_data( m_instance );
 
 		aeMovieStream movie_stream;
 		movie_stream.read = &Mengine_read_stream;
 		movie_stream.data = stream.get();
 
-		if( ae_load_movie_data( m_movieData, &movie_stream, &Mengine_resource_provider, this ) == AE_MOVIE_FAILED )
+		if( ae_load_movie_data( movieData, &movie_stream, &Mengine_resource_provider, this ) == AE_MOVIE_FAILED )
 		{
 			return 0;
 		}
+
+		m_movieData = movieData;
 
 		stream = nullptr;
 

@@ -125,7 +125,7 @@ namespace Menge
 		void setSourceListener( uint32_t _emitterId, SoundListenerInterface* _listener ) override;
 		
 	public:
-		float getLengthMs( uint32_t _emitterId ) const override;
+		float getDuration( uint32_t _emitterId ) const override;
 		
 		bool setPosMs( uint32_t _emitterId, float _pos ) override;
 		float getPosMs( uint32_t _emitterId ) override;

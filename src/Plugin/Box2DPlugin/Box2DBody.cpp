@@ -18,7 +18,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Box2DBody::setBox2dWorld( b2World * _world )
+	void Box2DBody::setWorld( b2World * _world )
 	{
 		m_world = _world;
 	}

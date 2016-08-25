@@ -3,9 +3,6 @@
 #	include "Interface/PrototypeManagerInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "Kernel/NodePrototypeGenerator.h"
-#	include "Kernel/ResourcePrototypeGenerator.h"
-
 #	include "Box2DBody.h"
 #	include "Box2DModule.h"
 
@@ -28,12 +25,6 @@ namespace Menge
 		MODULE_SERVICE( m_serviceProvider )
 			->registerModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBox2D" )
 			, new ModuleFactory<Box2DModule>( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBox2D" ) ) );
-
-		if( PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DBody" ), new NodePrototypeGenerator<Box2DBody, 128> ) == false )
-		{
-			return false;
-		}
 
 		return true;
 	}

@@ -117,7 +117,7 @@ namespace Menge
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_node_camera( const ae_string_t _name, const ae_vector3_t _position, const ae_vector3_t _direction, float _fov, float _width, float _height, void * _data )
+	static void * ae_movie_composition_node_camera( const ae_char_t * _name, const ae_vector3_t _position, const ae_vector3_t _direction, float _fov, float _width, float _height, void * _data )
 	{
 		Movie2 * movie2 = (Movie2 *)_data;
 

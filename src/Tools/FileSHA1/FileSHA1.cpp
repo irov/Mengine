@@ -54,7 +54,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( file.empty() == true )
 	{
-		message_error( "not found 'file' param"
+		message_error( "FileSHA1 not found 'file' param"
 			);
 
 		return 0;
@@ -62,7 +62,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( sha1.empty() == true )
 	{
-		message_error( "not found 'sha1' param"
+		message_error( "FileSHA1 not found 'sha1' param"
 			);
 
 		return 0;
@@ -75,7 +75,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	{
 		DWORD er = GetLastError();
 
-		message_error( "file '%ls' not open '%d'"
+		message_error( "FileSHA1 file '%ls' not open '%d'"
 			, file.c_str()
 			, er
 			);
@@ -87,7 +87,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( size == INVALID_FILE_SIZE )
 	{
-		message_error( "file '%ls' invalid get file size"
+		message_error( "FileSHA1 file '%ls' invalid get file size"
 			, file.c_str()
 			);
 
@@ -100,7 +100,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	DWORD bytesRead = 0;
 	if( ::ReadFile( hFile, buff_memory, size, &bytesRead, NULL ) == FALSE )
 	{
-		message_error( "file '%ls' invalid read"
+		message_error( "FileSHA1 file '%ls' invalid read"
 			, file.c_str()
 			);
 				
@@ -121,7 +121,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( hSHA1 == INVALID_HANDLE_VALUE )
 	{
-		message_error( "sha1 '%ls' not open"
+		message_error( "FileSHA1 sha1 '%ls' not open"
 			, sha1.c_str()
 			);
 
@@ -131,7 +131,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	DWORD bytesWritten = 0;
 	if( ::WriteFile( hSHA1, hex, 40, &bytesWritten, NULL ) == FALSE )
 	{
-		message_error( "sha1 '%ls' invalid write"
+		message_error( "FileSHA1 sha1 '%ls' invalid write"
 			, sha1.c_str()
 			);
 

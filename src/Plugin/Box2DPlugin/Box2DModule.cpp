@@ -2,6 +2,7 @@
 #	include "Box2DWorld.h"
 #	include "Box2DBody.h"
 
+#	include "Kernel/NodePrototypeGenerator.h"
 #	include "Kernel/ScriptClassWrapper.h"
 
 #	include "pybind/pybind.hpp"
@@ -72,6 +73,12 @@ namespace Menge
 
 		SCRIPT_SERVICE( m_serviceProvider )
 			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DBody" ), new ClassScriptWrapper<Box2DBody>() );
+
+		if( PROTOTYPE_SERVICE( m_serviceProvider )
+			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DBody" ), new NodePrototypeGenerator<Box2DBody, 128> ) == false )
+		{
+			return false;
+		}
 
         return true;
     }

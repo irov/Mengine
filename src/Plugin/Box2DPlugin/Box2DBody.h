@@ -15,7 +15,7 @@ namespace Menge
 		~Box2DBody();
 
 	public:
-		void setBox2dWorld( b2World * _world );
+		void setWorld( b2World * _world );
 		b2World * getBox2dWorld() const;
 
 	public:

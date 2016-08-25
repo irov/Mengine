@@ -57,7 +57,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			delete (*it);
+			Box2DBody * body = *it;
+
+			body->destroy();
 		}
 
 		m_deletingBodies.clear();
@@ -97,6 +99,7 @@ namespace Menge
 			return nullptr;
 		}
 
+		node->setWorld( m_world );
 		node->setBody( body );
 
 		m_bodies.push_back( node );

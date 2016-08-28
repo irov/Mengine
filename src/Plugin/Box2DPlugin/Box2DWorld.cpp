@@ -14,6 +14,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	Box2DWorld::Box2DWorld()
         : m_world(nullptr)
+		, m_dead(false)
 		, m_timing(0.f)
 		, m_timeStep(1.f / 60.f)
 		, m_velocityIterations(10)
@@ -25,6 +26,16 @@ namespace Menge
     {
         m_world = NULL;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Box2DWorld::setDead()
+	{
+		m_dead = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Box2DWorld::isDead() const
+	{
+		return m_dead;
+	}
     //////////////////////////////////////////////////////////////////////////
 	bool Box2DWorld::initialize( const mt::vec2f& _gravity )
     {
@@ -51,24 +62,11 @@ namespace Menge
     {
 		m_contacts.clear();
 
-		for( TVectorBodies::iterator
-			it = m_deletingBodies.begin(),
-			it_end = m_deletingBodies.end();
-		it != it_end;
-		++it )
-		{
-			Box2DBody * body = *it;
-
-			body->destroy();
-		}
-
-		m_deletingBodies.clear();
-
 		delete m_world;
 		m_world = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-	Box2DBody * Box2DWorld::createBody( bool _static, const mt::vec2f& _pos, float _angle, float _linearDamping, float _angularDamping,
+	Box2DBodyPtr Box2DWorld::createBody( bool _static, const mt::vec2f& _pos, float _angle, float _linearDamping, float _angularDamping,
         bool _allowSleep, bool _isBullet, bool _fixedRotation )
     {
         b2BodyDef bodyDef;
@@ -81,45 +79,32 @@ namespace Menge
         bodyDef.bullet = _isBullet;
         bodyDef.fixedRotation = _fixedRotation;
 		bodyDef.type = _static ? b2_staticBody : b2_dynamicBody;
+
+		Box2DBody * body = m_factoryBox2DBody.createObject();
         
-		Box2DBody * node = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<Box2DBody *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DBody" ) );
-
-		if( node == nullptr )
-		{
-			return nullptr;
-		}
-
-        bodyDef.userData = node;
-
-		b2Body * body = m_world->CreateBody( &bodyDef );
-
 		if( body == nullptr )
 		{
 			return nullptr;
 		}
 
-		node->setWorld( m_world );
-		node->setBody( body );
+		bodyDef.userData = body;
 
-		m_bodies.push_back( node );
+		b2Body * b2_body = m_world->CreateBody( &bodyDef );
 
-		return node;
+		if( b2_body == nullptr )
+		{
+			return nullptr;
+		}
+
+		body->setWorld( m_world );
+		body->setBody( b2_body );
+		
+		return body;
     }
     //////////////////////////////////////////////////////////////////////////
 	void Box2DWorld::update( float _time, float _timing )
     {
 		(void)_time;
-
-		for( TVectorBodies::iterator
-            it = m_deletingBodies.begin(), 
-            it_end = m_deletingBodies.end();
-        it != it_end;
-        ++it )
-        {
-            delete (*it);
-        }
-        m_deletingBodies.clear();
 
 		m_timing += _timing;
 
@@ -154,22 +139,6 @@ namespace Menge
         }
 		
         m_contacts.clear();
-
-		for( TVectorBodies::iterator
-			it = m_bodies.begin(),
-			it_end = m_bodies.end();
-		it != it_end;
-		++it )
-		{
-			Box2DBody * body = *it;
-
-			body->invalidateLocalMatrix();
-		}
-    }
-    //////////////////////////////////////////////////////////////////////////
-	void Box2DWorld::destroyBody( Box2DBody * _body )
-    {
-		m_deletingBodies.push_back( _body );
     }
     //////////////////////////////////////////////////////////////////////////
 	void Box2DWorld::SayGoodbye( b2Joint* _joint )
@@ -199,10 +168,12 @@ namespace Menge
         TVectorContact::iterator it_find 
             = std::find( m_contacts.begin(), m_contacts.end(), _contact );
 
-        if( it_find != m_contacts.end() )
-        {
-            m_contacts.erase( it_find );
-        }
+		if( it_find == m_contacts.end() )
+		{
+			return;
+		}
+
+		m_contacts.erase( it_find );        
     }
     //////////////////////////////////////////////////////////////////////////
 	void Box2DWorld::PreSolve( b2Contact* _contact, const b2Manifold* _oldManifold )
@@ -217,12 +188,7 @@ namespace Menge
         (void)_impulse;
     }
     //////////////////////////////////////////////////////////////////////////
-	void Box2DWorld::destroyJoint( Box2DJoint * _joint )
-    {		
-		delete _joint;
-    }    
-    //////////////////////////////////////////////////////////////////////////
-	Box2DJoint * Box2DWorld::createDistanceJoint( Box2DBody* _body1, Box2DBody * _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2, bool _collideBodies )
+	Box2DJointPtr Box2DWorld::createDistanceJoint( const Box2DBodyPtr & _body1, const Box2DBodyPtr & _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2, bool _collideBodies )
     {
         b2DistanceJointDef* jointDef = new b2DistanceJointDef();
 		b2Body* body1 = _body1->getBody();
@@ -240,12 +206,12 @@ namespace Menge
 
         jointDef->Initialize( body1, body2, anchor1, anchor2 );
 
-		Box2DJoint* joint = this->createJoint_( jointDef );
+		Box2DJointPtr joint = this->createJoint_( jointDef );
 
 		return joint;
     }
     //////////////////////////////////////////////////////////////////////////
-	Box2DJoint * Box2DWorld::createHingeJoint( Box2DBody* _body1, Box2DBody* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _limits, bool _collideBodies )
+	Box2DJointPtr Box2DWorld::createHingeJoint( const Box2DBodyPtr & _body1, const Box2DBodyPtr & _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _limits, bool _collideBodies )
     {
         b2RevoluteJointDef* jointDef = new b2RevoluteJointDef();
         b2Body* body1 = _body1->getBody();
@@ -267,12 +233,12 @@ namespace Menge
 
         jointDef->Initialize( body1, body2, anchor1 );
 
-		Box2DJoint* joint = this->createJoint_( jointDef );
+		Box2DJointPtr joint = this->createJoint_( jointDef );
 
         return joint;
     }
     //////////////////////////////////////////////////////////////////////////
-	Box2DJoint * Box2DWorld::createPrismaticJoint( Box2DBody* _body1, Box2DBody* _body2
+	Box2DJointPtr Box2DWorld::createPrismaticJoint( const Box2DBodyPtr & _body1, const Box2DBodyPtr & _body2
         ,const mt::vec2f& _unitsWorldAxis ,bool _collideConnected 
         ,bool _enableLimit, const mt::vec2f& _translation 
         ,bool _enableMotor ,float _maxMotorForce, float _motorSpeed)
@@ -303,12 +269,12 @@ namespace Menge
             jointDef->enableMotor = true;
         }
 
-		Box2DJoint* joint = this->createJoint_( jointDef );
+		Box2DJointPtr joint = this->createJoint_( jointDef );
 
         return joint;
     }
     //////////////////////////////////////////////////////////////////////////
-	Box2DJoint * Box2DWorld::createPulleyJoint( Box2DBody* _body1, Box2DBody* _body2
+	Box2DJointPtr Box2DWorld::createPulleyJoint( const Box2DBodyPtr & _body1, const Box2DBodyPtr & _body2
         ,const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2
         ,const mt::vec2f& _offsetGroundBody1, const mt::vec2f& _offsetGroundBody2, float _ratio, bool _collideConnected  )
     {
@@ -332,13 +298,13 @@ namespace Menge
         jointDef->Initialize(body1,  body2,  groundAnchor1,  groundAnchor2,  anchor1, anchor2, _ratio);
         jointDef->collideConnected = _collideConnected;
 
-		Box2DJoint* joint = this->createJoint_( jointDef );
+		Box2DJointPtr joint = this->createJoint_( jointDef );
 
         return joint;
     }
     //////////////////////////////////////////////////////////////////////////
-	Box2DJoint * Box2DWorld::createGearJoint( Box2DBody * _body1, Box2DBody * _body2
-        , Box2DJoint * _joint1, Box2DJoint * _joint2
+	Box2DJointPtr Box2DWorld::createGearJoint( const Box2DBodyPtr & _body1, const Box2DBodyPtr & _body2
+		, const Box2DJointPtr & _joint1, const Box2DJointPtr & _joint2
         , float _ratio, bool _collideConnected )
     {
         b2Body* body1 = _body1->getBody();
@@ -354,14 +320,14 @@ namespace Menge
         jointDef->ratio = _ratio;
         jointDef->collideConnected = _collideConnected;
 
-		Box2DJoint* joint = this->createJoint_( jointDef );
+		Box2DJointPtr joint = this->createJoint_( jointDef );
 
 		return joint;
     }	
     //////////////////////////////////////////////////////////////////////////
-	Box2DJoint * Box2DWorld::createRopeJoint( Box2DBody * _body1, Box2DBody * _body2
-        ,const mt::vec2f & _offsetBody1 ,const mt::vec2f & _offsetBody2 ,float _maxlength
-        ,bool _collideConnected )
+	Box2DJointPtr Box2DWorld::createRopeJoint( const Box2DBodyPtr & _body1, const Box2DBodyPtr & _body2
+        , const mt::vec2f & _offsetBody1, const mt::vec2f & _offsetBody2, float _maxlength
+        , bool _collideConnected )
     {
         b2Body* body1 = _body1->getBody();
         b2Body* body2 = _body2->getBody();
@@ -378,15 +344,15 @@ namespace Menge
         jointDef->bodyA = body1;
         jointDef->bodyB = body2;
 
-		Box2DJoint* joint = this->createJoint_( jointDef );
+		Box2DJointPtr joint = this->createJoint_( jointDef );
 
 		return joint;
     }	
     //////////////////////////////////////////////////////////////////////////
-	Box2DJoint * Box2DWorld::createWheelJoint( Box2DBody * _body1, Box2DBody * _body2
-        ,const mt::vec2f & _offsetBody1 ,const mt::vec2f & _offsetBody2 
-        ,const mt::vec2f & _localAxis1 ,float _frequencyHz ,float _dampingRatio ,bool _collideConnected
-        ,float _maxMotorTorque ,float _motorSpeed )
+	Box2DJointPtr Box2DWorld::createWheelJoint( const Box2DBodyPtr & _body1, const Box2DBodyPtr & _body2
+        , const mt::vec2f & _offsetBody1, const mt::vec2f & _offsetBody2 
+        , const mt::vec2f & _localAxis1, float _frequencyHz, float _dampingRatio, bool _collideConnected
+        , float _maxMotorTorque, float _motorSpeed )
     {
         (void)_offsetBody2;
 
@@ -415,14 +381,14 @@ namespace Menge
             jointDef->enableMotor = true;
         }
 
-		Box2DJoint* joint = this->createJoint_( jointDef );
+		Box2DJointPtr joint = this->createJoint_( jointDef );
 
 		return joint;
     }	
 	//////////////////////////////////////////////////////////////////////////
-	Box2DJoint * Box2DWorld::createJoint_( const b2JointDef * _jointDef )
+	Box2DJointPtr Box2DWorld::createJoint_( const b2JointDef * _jointDef )
 	{ 
-		Box2DJoint * join = new Box2DJoint;
+		Box2DJointPtr join = new Box2DJoint;
 
 		if( join->initialize( m_world, _jointDef ) == false )
 		{

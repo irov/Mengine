@@ -1,6 +1,8 @@
 #	include "Box2DModule.h"
 #	include "Box2DWorld.h"
 #	include "Box2DBody.h"
+#	include "Box2DJoint.h"
+#	include "NodeBox2DBody.h"
 
 #	include "Kernel/NodePrototypeGenerator.h"
 #	include "Kernel/ScriptClassWrapper.h"
@@ -27,9 +29,9 @@ namespace Menge
 		pybind::def_functor( "destroyBox2DWorld", this, &Box2DModule::destroyWorld );
 
 		pybind::interface_<Box2DWorld>( "Box2DWorld" )
+			.def_smart_pointer()
 			.def( "setTimeStep", &Box2DWorld::setTimeStep )
 			.def( "createBody", &Box2DWorld::createBody )
-			.def( "destroyBody", &Box2DWorld::destroyBody )
 			.def( "createDistanceJoint", &Box2DWorld::createDistanceJoint )
 			.def( "createHingeJoint", &Box2DWorld::createHingeJoint )
 			.def( "createPrismaticJoint", &Box2DWorld::createPrismaticJoint )
@@ -37,10 +39,10 @@ namespace Menge
 			.def( "createGearJoint", &Box2DWorld::createGearJoint )
 			.def( "createRopeJoint", &Box2DWorld::createRopeJoint )
 			.def( "createWheelJoint", &Box2DWorld::createWheelJoint )
-			.def( "destroyJoint", &Box2DWorld::destroyJoint )
 			;
 			
 		pybind::interface_<Box2DBody>( "Box2DBody" )
+			.def_smart_pointer()
 			.def( "addShapeConvex", &Box2DBody::addShapeConvex )
 			.def( "addShapeCircle", &Box2DBody::addShapeCircle )
 			.def( "addShapeBox", &Box2DBody::addShapeBox )
@@ -69,13 +71,19 @@ namespace Menge
 			;
 
 		pybind::interface_<Box2DJoint>( "Box2DJoint" )
+			.def_smart_pointer()
+			;
+
+		pybind::interface_<NodeBox2DBody, pybind::bases<Node> >( "NodeBox2DBody" )
+			.def( "setBox2DBody", &NodeBox2DBody::setBox2DBody )
+			.def( "getBox2DBody", &NodeBox2DBody::getBox2DBody )
 			;
 
 		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DBody" ), new ClassScriptWrapper<Box2DBody>() );
+			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeBox2DBody" ), new ClassScriptWrapper<NodeBox2DBody>() );
 
 		if( PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DBody" ), new NodePrototypeGenerator<Box2DBody, 128> ) == false )
+			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeBox2DBody" ), new NodePrototypeGenerator<NodeBox2DBody, 128> ) == false )
 		{
 			return false;
 		}
@@ -110,23 +118,32 @@ namespace Menge
 			return nullptr;
 		}
 
-		m_worlds.push_back( world );
+		m_worldsAdd.push_back( world );
 
 		return world;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Box2DModule::destroyWorld( Box2DWorld * _world )
 	{
-		TVectorWorlds::iterator it_erase = std::find( m_worlds.begin(), m_worlds.end(), _world );
-		m_worlds.erase( it_erase );
-
-		_world->finalize();
-
-		delete _world;
+		_world->setDead();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		struct FWorldDead
+		{
+			bool operator ()( Box2DWorld * _event ) const
+			{
+				return _event->isDead();
+			}
+		};
 	}
     //////////////////////////////////////////////////////////////////////////
 	void Box2DModule::_update( float _time, float _timing )
     {
+		m_worlds.insert( m_worlds.end(), m_worldsAdd.begin(), m_worldsAdd.end() );
+		m_worldsAdd.clear();
+
 		for( TVectorWorlds::iterator
 			it = m_worlds.begin(),
 			it_end = m_worlds.end();
@@ -135,8 +152,16 @@ namespace Menge
 		{
 			Box2DWorld * world = *it;
 
+			if( world->isDead() == true )
+			{
+				continue;
+			}
+
 			world->update( _time, _timing );
 		}
+
+		TVectorWorlds::iterator it_erase = std::remove_if( m_worlds.begin(), m_worlds.end(), FWorldDead() );
+		m_worlds.erase( it_erase, m_worlds.end() );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Box2DModule::_render( const RenderObjectState * _state, unsigned int _debugMask )

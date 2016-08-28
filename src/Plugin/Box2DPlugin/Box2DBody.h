@@ -1,6 +1,7 @@
 #	pragma once
 
-#	include "Kernel/Node.h"
+#	include "Factory/FactorablePtr.h"
+
 #	include "Core/Polygon.h"
 
 #	include "Box2D/Box2D.h"
@@ -8,7 +9,7 @@
 namespace Menge
 {
     class Box2DBody
-        : public Node
+        : public FactorablePtr
     {
     public:
 		Box2DBody();
@@ -34,6 +35,10 @@ namespace Menge
 		bool addShapeBox( float _width, float _height, const mt::vec2f& _localPos, float _angle,
             float _density, float _friction, float _restitution, bool _isSensor,
             unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex );
+
+	public:
+		mt::vec2f GetPosition() const;
+		float GetAngle() const;
 
     public:
         float getMass() const;
@@ -68,11 +73,10 @@ namespace Menge
 
 		void updateFilterData( uint16_t _categoryBits, uint16_t _collisionMask, int16_t _groupIndex );
 
-	public:
-		void updateLocalMatrix() const;
-        
 	protected:
         b2World* m_world;
         b2Body* m_body;		
     };
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<Box2DBody> Box2DBodyPtr;
 }

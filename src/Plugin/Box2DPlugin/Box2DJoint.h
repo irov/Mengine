@@ -1,10 +1,13 @@
 #	pragma once
 
+#	include "Factory/FactorablePtr.h"
+
 #	include "Box2D/Box2D.h"
 
 namespace Menge
 {
 	class Box2DJoint
+		: public FactorablePtr
 	{
 	public:
 		Box2DJoint();
@@ -20,4 +23,6 @@ namespace Menge
 		b2World* m_world;
 		b2Joint* m_joint;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<Box2DJoint> Box2DJointPtr;
 }

@@ -36,7 +36,6 @@ namespace Menge
 	{
 		return m_body;
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	bool Box2DBody::addShapeConvex( const Menge::Polygon & _vertices, float _density, float _friction, float _restitution, bool _isSensor,
 		unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
@@ -141,6 +140,24 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f Box2DBody::GetPosition() const
+	{
+		const b2Vec2 & b2_position = m_body->GetPosition();
+
+		mt::vec2f position = Box2DScalerFromWorld( b2_position );
+
+		return position;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Box2DBody::GetAngle() const
+	{
+		float32 b2_angle = m_body->GetAngle();
+
+		float angle = (float)b2_angle;
+
+		return angle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Box2DBody::getMass() const
@@ -301,25 +318,5 @@ namespace Menge
 			//may be not need : m_world->Refilter( shape );
 			fixture = fixture->GetNext();
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////	
-	void Box2DBody::updateLocalMatrix() const
-	{
-		m_invalidateLocalMatrix = false;
-
-		b2Vec2 b2_position = m_body->GetPosition();
-		mt::vec2f position = Box2DScalerFromWorld( b2_position );
-
-		float32 b2_angle = m_body->GetAngle();
-
-		mt::vec3f new_position = m_position + mt::vec3f( position, 0.f );
-		mt::vec3f new_origin = m_origin;
-		mt::vec3f new_scale = m_scale;
-		mt::vec2f new_skew = m_skew;
-		mt::vec3f new_orientation = m_orientation + mt::vec3f( 0.f, 0.f, b2_angle );
-						
-		bool identityLocalMatrix = this->makeLocalMatrix_( m_localMatrix, new_position, new_origin, new_scale, new_skew, new_orientation );
-
-		m_identityLocalMatrix = identityLocalMatrix;
-	}
+	}	
 }

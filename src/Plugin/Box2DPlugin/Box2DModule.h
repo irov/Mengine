@@ -32,6 +32,7 @@ namespace Menge
 
     private:
 		typedef std::vector<Box2DWorld *> TVectorWorlds;
-		TVectorWorlds m_worlds;        
+		TVectorWorlds m_worlds;
+		TVectorWorlds m_worldsAdd;
     };
 }

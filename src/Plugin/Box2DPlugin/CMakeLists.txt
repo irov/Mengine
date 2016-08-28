@@ -13,6 +13,8 @@ src
     Box2DWorld.h
 	Box2DPlugin.cpp
 	Box2DPlugin.h	
+    NodeBox2DBody.cpp    
+    NodeBox2DBody.h
 )
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils     )

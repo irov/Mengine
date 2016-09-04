@@ -390,7 +390,7 @@ namespace Menge
 			meta_resource->get_Unique( unique );
 
 			ResourceReferencePtr resource =
-				this->generateResource( _locale, _pakName, groupName, name, type );
+				this->generateResource( type );
 
 			if( resource == nullptr )
 			{
@@ -406,6 +406,11 @@ namespace Menge
 
 				continue;
 			}
+
+			resource->setLocale( _locale );
+			resource->setCategory( _pakName );
+			resource->setGroup( groupName );
+			resource->setName( name );
 
 			if( resource->loader( meta_resource ) == false )
 			{
@@ -452,10 +457,10 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReferencePtr ResourceManager::generateResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) const
+	ResourceReferencePtr ResourceManager::generateResource( const ConstString& _type ) const
 	{
 		ResourceReferencePtr resource = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototypeT<ResourceReference>( CONST_STRING( m_serviceProvider, Resource ), _type );
+			->generatePrototypeT<ResourceReference *>( CONST_STRING( m_serviceProvider, Resource ), _type );
 
 		if( resource == nullptr )
 		{
@@ -466,17 +471,9 @@ namespace Menge
 			return nullptr;
 		}
 
-		LOGGER_INFO( m_serviceProvider )("ResourceManager::generateResource category %s group %s name %s type %s"
-			, _category.c_str()
-			, _group.c_str()
-			, _name.c_str()
+		LOGGER_INFO( m_serviceProvider )("ResourceManager::generateResource type %s"
 			, _type.c_str()
 			);
-
-		resource->setLocale( _locale );
-		resource->setCategory( _category );
-		resource->setGroup( _group );
-		resource->setName( _name );
 
 		if( resource->initialize() == false )
 		{
@@ -488,7 +485,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReferencePtr ResourceManager::createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
 	{
-		ResourceReferencePtr resource = this->generateResource( _locale, _category, _group, _name, _type );
+		ResourceReferencePtr resource = this->generateResource( _type );
 
 		if( resource == nullptr )
 		{
@@ -502,6 +499,11 @@ namespace Menge
 
 			return nullptr;
 		}
+
+		resource->setLocale( _locale );
+		resource->setCategory( _category );
+		resource->setGroup( _group );
+		resource->setName( _name );
 
 		ResourceEntry * entry = m_resources.create();
 				

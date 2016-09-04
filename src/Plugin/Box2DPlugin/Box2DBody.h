@@ -2,6 +2,9 @@
 
 #	include "Factory/FactorablePtr.h"
 
+#	include "Kernel/Scriptable.h"
+#	include "Kernel/Servant.h"
+
 #	include "Core/Polygon.h"
 
 #	include "Box2D/Box2D.h"
@@ -10,6 +13,8 @@ namespace Menge
 {
     class Box2DBody
         : public FactorablePtr
+		, public Scriptable
+		, public Servant
     {
     public:
 		Box2DBody();

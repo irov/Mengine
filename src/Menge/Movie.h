@@ -117,7 +117,7 @@ namespace Menge
     protected:
         void _localHide( bool _value ) override;
         void _setPersonalColor( const ColourValue& _color ) override;
-        void _setPersonalAlpha( float _alpha ) override;		
+        void _setPersonalAlpha( float _alpha ) override;
 
     protected:
         void updateForward_( float _time );

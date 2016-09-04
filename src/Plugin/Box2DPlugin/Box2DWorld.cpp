@@ -3,7 +3,7 @@
 #	include "Box2DJoint.h"
 #	include "Box2DScaler.h"
 
-#	include "Interface/NodeInterface.h"
+#	include "Interface/PrototypeManagerInterface.h"
 #	include "Interface/StringizeInterface.h"
 
 #	include <algorithm>
@@ -13,10 +13,10 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
 	Box2DWorld::Box2DWorld()
-        : m_world(nullptr)
+		: m_world(nullptr)
 		, m_dead(false)
 		, m_timing(0.f)
-		, m_timeStep(1.f / 60.f)
+		, m_timeStep(1000.f / 60.f)
 		, m_velocityIterations(10)
 		, m_positionIterations(10)
     {
@@ -80,14 +80,15 @@ namespace Menge
         bodyDef.fixedRotation = _fixedRotation;
 		bodyDef.type = _static ? b2_staticBody : b2_dynamicBody;
 
-		Box2DBody * body = m_factoryBox2DBody.createObject();
+		Box2DBodyPtr body = PROTOTYPE_SERVICE( m_serviceProvider )
+			->generatePrototypeT<Box2DBody *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2D" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DBody" ) );
         
 		if( body == nullptr )
 		{
 			return nullptr;
 		}
 
-		bodyDef.userData = body;
+		bodyDef.userData = body.get();
 
 		b2Body * b2_body = m_world->CreateBody( &bodyDef );
 
@@ -110,7 +111,7 @@ namespace Menge
 
 		while( m_timing > m_timeStep )
 		{
-			m_world->Step( m_timeStep, m_velocityIterations, m_positionIterations );
+			m_world->Step( m_timeStep * 0.001f, m_velocityIterations, m_positionIterations );
 
 			m_timing -= m_timeStep;
 		}
@@ -388,7 +389,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Box2DJointPtr Box2DWorld::createJoint_( const b2JointDef * _jointDef )
 	{ 
-		Box2DJointPtr join = new Box2DJoint;
+		Box2DJointPtr join = PROTOTYPE_SERVICE( m_serviceProvider )
+			->generatePrototypeT<Box2DJoint *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2D" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DJoint" ) );
+
+		if( join == nullptr )
+		{
+			return nullptr;
+		}
 
 		if( join->initialize( m_world, _jointDef ) == false )
 		{

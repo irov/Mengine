@@ -603,7 +603,7 @@ namespace Menge
 		m_affectorableGlobal = new Affectorable;
 
 		m_globalScene = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototypeT<Scene>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ) );
+			->generatePrototypeT<Scene *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ) );
 
 		return true;
 	}

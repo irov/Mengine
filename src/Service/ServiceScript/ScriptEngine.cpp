@@ -697,7 +697,7 @@ namespace Menge
 		else
 		{
 			entity = PROTOTYPE_SERVICE( m_serviceProvider )
-				->generatePrototypeT<Entity>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), _type );
+				->generatePrototypeT<Entity *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), _type );
 		}
 
         if( entity == nullptr )

@@ -182,7 +182,7 @@ namespace Menge
 		case AE_MOVIE_LAYER_TYPE_VIDEO:
 			{
 				SurfaceVideo * surfaceVideo = PROTOTYPE_SERVICE( serviceProvider )
-					->generatePrototypeT<SurfaceVideo>( CONST_STRING( serviceProvider, Surface ), CONST_STRING( serviceProvider, SurfaceVideo ) );
+					->generatePrototypeT<SurfaceVideo *>( CONST_STRING( serviceProvider, Surface ), CONST_STRING( serviceProvider, SurfaceVideo ) );
 
 				surfaceVideo->setName( c_name );
 
@@ -209,7 +209,7 @@ namespace Menge
 		case AE_MOVIE_LAYER_TYPE_SOUND:
 			{
 				SurfaceSound * surfaceSound = PROTOTYPE_SERVICE( serviceProvider )
-					->generatePrototypeT<SurfaceSound>( CONST_STRING( serviceProvider, Surface ), CONST_STRING( serviceProvider, SurfaceSound ) );
+					->generatePrototypeT<SurfaceSound *>( CONST_STRING( serviceProvider, Surface ), CONST_STRING( serviceProvider, SurfaceSound ) );
 
 				surfaceSound->setName( c_name );
 

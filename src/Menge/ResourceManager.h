@@ -83,7 +83,7 @@ namespace Menge
 		bool unloadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
 
 	public:
-		ResourceReferencePtr generateResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) const override;
+		ResourceReferencePtr generateResource( const ConstString& _type ) const override;
 
 		ResourceReferencePtr createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
 		bool removeResource( const ResourceReferencePtr & _resource ) override;

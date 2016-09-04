@@ -2,6 +2,9 @@
 
 #	include "Factory/FactorablePtr.h"
 
+#	include "Kernel/Scriptable.h"
+#	include "Kernel/Servant.h"
+
 #	include "Core/ModuleBase.h"
 
 #   include "Factory/FactoryStore.h"
@@ -17,9 +20,11 @@ namespace Menge
 
 	class Box2DWorld
 		: public FactorablePtr
+		, public Scriptable
+		, public Servant
 		, public b2DestructionListener
 		, public b2ContactFilter
-		, public b2ContactListener
+		, public b2ContactListener		
     {
     public:
 		Box2DWorld();
@@ -119,8 +124,6 @@ namespace Menge
 		Box2DJointPtr createJoint_( const b2JointDef * _jointDef );
 
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		bool m_dead;
 
 		float m_timing;
@@ -142,8 +145,5 @@ namespace Menge
 
         typedef std::vector<JoinDef> TVectorJoints;
         TVectorJoints m_joints;
-
-		typedef FactoryPoolStore<Box2DBody, 16> TFactoryBox2DBody;
-		TFactoryBox2DBody m_factoryBox2DBody;
     };
 }

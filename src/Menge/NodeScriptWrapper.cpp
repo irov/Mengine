@@ -1918,7 +1918,7 @@ namespace Menge
 			else
 			{
 				Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
-					->generatePrototypeT<Scene>( CONST_STRING( m_serviceProvider, Scene ), _prototype );
+					->generatePrototypeT<Scene *>( CONST_STRING( m_serviceProvider, Scene ), _prototype );
 
 				if( scene == nullptr )
 				{
@@ -1950,7 +1950,7 @@ namespace Menge
 		Scene * s_createScene( const ConstString & _prototype, const ConstString & _name )
 		{
 			Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
-				->generatePrototypeT<Scene>( CONST_STRING( m_serviceProvider, Scene ), _prototype );
+				->generatePrototypeT<Scene *>( CONST_STRING( m_serviceProvider, Scene ), _prototype );
 
 			scene->setName( _name );
 
@@ -1968,7 +1968,7 @@ namespace Menge
 		void s_setArrow( const ConstString & _prototype )
 		{
 			Arrow * arrow = PROTOTYPE_SERVICE( m_serviceProvider )
-				->generatePrototypeT<Arrow>( CONST_STRING( m_serviceProvider, Arrow ), _prototype );
+				->generatePrototypeT<Arrow *>( CONST_STRING( m_serviceProvider, Arrow ), _prototype );
 
 			if( arrow == nullptr )
 			{
@@ -2128,6 +2128,23 @@ namespace Menge
 		{
 			APPLICATION_SERVICE( m_serviceProvider )
 				->quit();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		ResourceReferencePtr createResource( const ConstString& _type )
+		{
+			ResourceReferencePtr resource = RESOURCE_SERVICE( m_serviceProvider )
+				->generateResource( _type );
+
+			if( resource == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("createResource: invalid create resource '%s'"
+					, _type.c_str()
+					);
+
+				return nullptr;
+			}
+
+			return resource;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool directResourceCompile( const ConstString & _nameResource )
@@ -2329,12 +2346,14 @@ namespace Menge
 			}
 
 			ResourceImageDefaultPtr resource = RESOURCE_SERVICE( m_serviceProvider )
-				->generateResourceT<ResourceImageDefaultPtr>( ConstString::none(), ConstString::none(), ConstString::none(), _resourceName, CONST_STRING( m_serviceProvider, ResourceImageDefault ) );
+				->generateResourceT<ResourceImageDefaultPtr>( CONST_STRING( m_serviceProvider, ResourceImageDefault ) );
 
 			if( resource == nullptr )
 			{
 				return nullptr;
 			}
+
+			resource->setName( _resourceName );
 
 			mt::uv4f uv_image;
 			mt::uv4f uv_alpha;
@@ -2347,12 +2366,14 @@ namespace Menge
 		ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const ColourValue & _colour, const mt::vec2f & _maxSize )
 		{
 			ResourceImageSolidPtr resource = RESOURCE_SERVICE( m_serviceProvider )
-				->generateResourceT<ResourceImageSolidPtr>( ConstString::none(), ConstString::none(), ConstString::none(), _resourceName, CONST_STRING( m_serviceProvider, ResourceImageSolid ) );
+				->generateResourceT<ResourceImageSolidPtr>( CONST_STRING( m_serviceProvider, ResourceImageSolid ) );
 
 			if( resource == nullptr )
 			{
 				return nullptr;
 			}
+
+			resource->setName( _resourceName );
 
 			resource->setColor( _colour );
 
@@ -6301,11 +6322,17 @@ namespace Menge
 			;
 
 		pybind::interface_<ResourceImage, pybind::bases<ResourceReference> >( "ResourceImage", false )
+			.def( "setMaxSize", &ResourceImage::setMaxSize )
 			.def( "getMaxSize", &ResourceImage::getMaxSize )
+			.def( "setSize", &ResourceImage::setSize )
 			.def( "getSize", &ResourceImage::getSize )
+			.def( "setOffset", &ResourceImage::setOffset )
 			.def( "getOffset", &ResourceImage::getOffset )
+			.def( "setUVImage", &ResourceImage::setUVImage )
 			.def( "getUVImage", &ResourceImage::getUVImage )
+			.def( "setUVAlpha", &ResourceImage::setUVAlpha )
 			.def( "getUVAlpha", &ResourceImage::getUVAlpha )
+			.def( "setAlpha", &ResourceImage::setAlpha )
 			.def( "isAlpha", &ResourceImage::isAlpha )
 			.def( "setColor", &ResourceImage::setColor )
 			.def( "getColor", &ResourceImage::getColor )
@@ -7165,6 +7192,7 @@ namespace Menge
 
 			pybind::def_functor( "setArrowLayer", nodeScriptMethod, &NodeScriptMethod::s_setArrowLayer );
 
+			pybind::def_functor( "createResource", nodeScriptMethod, &NodeScriptMethod::createResource );
 			pybind::def_functor( "directResourceCompile", nodeScriptMethod, &NodeScriptMethod::directResourceCompile );
 			pybind::def_functor( "directResourceRelease", nodeScriptMethod, &NodeScriptMethod::directResourceRelease );
 			//pybind::def_function( "directResourceFileCompile", &ScriptMethod::s_directResourceFileCompile );

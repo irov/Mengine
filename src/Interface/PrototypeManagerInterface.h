@@ -47,18 +47,18 @@ namespace Menge
 
     public:
         template<class T>
-        T * generatePrototypeT( const ConstString & _category, const ConstString & _prototype )
+        T generatePrototypeT( const ConstString & _category, const ConstString & _prototype )
         {
             Factorable * prototype = this->generatePrototype( _category, _prototype );
 
 #   ifdef _DEBUG
-            if( dynamic_cast<T *>(prototype) == nullptr )
+            if( dynamic_cast<T>(prototype) == nullptr )
             {
                 return nullptr;
             }
 #   endif
 
-            T * t = static_cast<T *>(prototype);
+            T t = static_cast<T>(prototype);
 
             return t;
         }
@@ -69,6 +69,6 @@ namespace Menge
 }
 
 #   define PROTOTYPE_SERVICE( serviceProvider )\
-	SERVICE_GET(serviceProvider, Menge::PrototypeServiceInterface)
+	((PrototypeServiceInterface *)SERVICE_GET(serviceProvider, Menge::PrototypeServiceInterface))
     
 

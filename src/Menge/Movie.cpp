@@ -1613,7 +1613,7 @@ namespace Menge
 		}
 
 		SurfaceVideoPtr surfaceVideo = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototypeT<SurfaceVideo>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceVideo ) );
+			->generatePrototypeT<SurfaceVideo *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceVideo ) );
 
 		surfaceVideo->setResourceVideo( resourceVideo );
 

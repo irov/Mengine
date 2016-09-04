@@ -229,12 +229,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceMovie2::createResourceImage_( const aeMovieResourceImage * _resource )
 	{
-		const ConstString & locale = this->getLocale();
-		const ConstString & category = this->getCategory();
-		const ConstString & group = this->getGroup();
-
 		ResourceImageDefaultPtr image = RESOURCE_SERVICE( m_serviceProvider )
-			->generateResourceT<ResourceImageDefaultPtr>( locale, category, group, ConstString::none(), CONST_STRING( m_serviceProvider, ResourceImageDefault ) );
+			->generateResourceT<ResourceImageDefaultPtr>( CONST_STRING( m_serviceProvider, ResourceImageDefault ) );
 
 		PathString full_path;
 
@@ -259,12 +255,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceMovie2::createResourceVideo_( const aeMovieResourceVideo * _resource )
 	{
-		const ConstString & locale = this->getLocale();
-		const ConstString & category = this->getCategory();
-		const ConstString & group = this->getGroup();
-
 		ResourceVideoPtr video = RESOURCE_SERVICE( m_serviceProvider )
-			->generateResourceT<ResourceVideoPtr>( locale, category, group, ConstString::none(), CONST_STRING( m_serviceProvider, ResourceVideo ) );
+			->generateResourceT<ResourceVideoPtr>( CONST_STRING( m_serviceProvider, ResourceVideo ) );
 
 		PathString full_path;
 
@@ -299,12 +291,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceMovie2::createResourceSound_( const aeMovieResourceSound * _resource )
 	{
-		const ConstString & locale = this->getLocale();
-		const ConstString & category = this->getCategory();
-		const ConstString & group = this->getGroup();
-
 		ResourceSoundPtr sound = RESOURCE_SERVICE( m_serviceProvider )
-			->generateResourceT<ResourceSoundPtr>( locale, category, group, ConstString::none(), CONST_STRING( m_serviceProvider, ResourceSound ) );
+			->generateResourceT<ResourceSoundPtr>( CONST_STRING( m_serviceProvider, ResourceSound ) );
 
 		PathString full_path;
 

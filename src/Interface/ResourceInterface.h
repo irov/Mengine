@@ -30,13 +30,13 @@ namespace Menge
 		virtual bool unloadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
 
 	public:
-		virtual ResourceReferencePtr generateResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) const = 0;
+		virtual ResourceReferencePtr generateResource( const ConstString& _type ) const = 0;
 
 	public:
 		template<class T>
-		T generateResourceT( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) const
+		T generateResourceT( const ConstString& _type ) const
 		{
-			ResourceReferencePtr resource = this->generateResource( _locale, _category, _group, _name, _type );
+			ResourceReferencePtr resource = this->generateResource( _type );
 
 #   ifdef _DEBUG
 			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )

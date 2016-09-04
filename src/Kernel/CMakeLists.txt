@@ -1,6 +1,12 @@
 set( MY_LIB_NAME Kernel )
 
 ADD_FILTER(
+Servant
+    Servant.h
+    Servant.cpp
+)
+
+ADD_FILTER(
 Eventable
 	Eventable.cpp
 	Eventable.h
@@ -38,6 +44,7 @@ PrototypeGenerator
     BasePrototypeGenerator.h    
     DefaultPrototypeGenerator.h
     NodePrototypeGenerator.h
+    ScriptablePrototypeGenerator.h
     ResourcePrototypeGenerator.h
     SurfacePrototypeGenerator.h
     ScriptClassWrapper.h

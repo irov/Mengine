@@ -2,12 +2,17 @@
 
 #	include "Factory/FactorablePtr.h"
 
+#	include "Kernel/Scriptable.h"
+#	include "Kernel/Servant.h"
+
 #	include "Box2D/Box2D.h"
 
 namespace Menge
 {
 	class Box2DJoint
 		: public FactorablePtr
+		, public Scriptable
+		, public Servant
 	{
 	public:
 		Box2DJoint();
@@ -19,7 +24,7 @@ namespace Menge
 		b2World* getWorld() const;
 		b2Joint* getJoint() const;
 
-	private:
+	protected:
 		b2World* m_world;
 		b2Joint* m_joint;
 	};

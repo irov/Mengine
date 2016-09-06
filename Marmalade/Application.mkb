@@ -96,6 +96,11 @@ files
 	"*.h"
 	"*.cpp"    
     
+    [Plugin/AstralaxParticlePlugin]
+    ("../src/Plugin/AstralaxParticlePlugin")	
+	"*.h"
+	"*.cpp"    
+    
     [System/MarmaladeThreadSystem]
     ("../src/System/MarmaladeThreadSystem")
 	"*.h"
@@ -120,11 +125,6 @@ files
     ("../src/System/MarmaladeSoundSystem")
 	"*.h"
 	"*.cpp"    
-   
-    [System/AstralaxParticleSystem2]
-    ("../src/System/AstralaxParticleSystem2")	
-	"*.h"
-	"*.cpp"
     
     [System/MarmaladeOptionsSystem]
     ("../src/System/MarmaladeOptionsSystem")	

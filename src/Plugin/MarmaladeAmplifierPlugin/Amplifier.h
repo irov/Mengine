@@ -31,7 +31,7 @@ namespace	Menge
 		bool pause() override;
 		bool resume() override;
 
-		float getLengthMs() const override;
+		float getDuration() const override;
 		
 		void setPosMs( float _posMs ) override;
 		float getPosMs() const override;

@@ -92,7 +92,7 @@ namespace Menge
 		RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
 		RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
 
-		RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexShaderInterfacePtr & _vertex, uint32_t _samplerCount ) override;
+		RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount ) override;
 		void setProgram( const RenderProgramInterfacePtr & _program ) override;
 
 

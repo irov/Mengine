@@ -254,7 +254,7 @@ namespace Menge
 		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderProgramInterfacePtr MarmaladeRenderSystem::createProgram( const ConstString & _name, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexShaderInterfacePtr & _vertex, uint32_t _samplerCount )
+	RenderProgramInterfacePtr MarmaladeRenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount )
 	{
 		MarmaladeProgramPtr program = m_factoryProgram.createObject();
 

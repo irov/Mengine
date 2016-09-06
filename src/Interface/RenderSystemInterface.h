@@ -295,6 +295,10 @@ namespace Menge
 		: public FactorablePtr
 	{
 	public:
+		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
+		virtual ServiceProviderInterface * getServiceProvider() = 0;
+
+	public:
 		virtual const ConstString & getName() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -304,6 +308,10 @@ namespace Menge
 		: public FactorablePtr
 	{
 	public:
+		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
+		virtual ServiceProviderInterface * getServiceProvider() = 0;
+
+	public:
 		virtual const ConstString & getName() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -312,6 +320,10 @@ namespace Menge
 	class RenderProgramInterface
 		: public FactorablePtr
 	{
+	public:
+		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
+		virtual ServiceProviderInterface * getServiceProvider() = 0;
+
 	public:
 		virtual const ConstString & getName() const = 0;
 
@@ -606,7 +618,7 @@ namespace Menge
 	public:
 		// входные данные: матрица 4 на 4
 		virtual	void setProjectionMatrix( const mt::mat4f & _projection ) = 0;
-		virtual	void setViewMatrix( const mt::mat4f & _view ) = 0;
+		virtual	void setModelViewMatrix( const mt::mat4f & _view ) = 0;
 		virtual	void setWorldMatrix( const mt::mat4f & _view ) = 0;
 
 		virtual void setTextureMatrix( uint32_t _stage, const float * _texture ) = 0;

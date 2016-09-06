@@ -162,7 +162,7 @@ namespace Menge
 				return;
 			}
 
-			RenderStage rs;
+			RenderMaterialStage rs;
 						
 			switch( m.blending )
 			{
@@ -216,7 +216,7 @@ namespace Menge
 		m_stageCount = materialCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderStage * AstralaxParticleSystem2::getMaterialStage( int _index ) const
+	const RenderMaterialStage * AstralaxParticleSystem2::getMaterialStage( int _index ) const
 	{
 		if( _index >= m_stageCount )
 		{

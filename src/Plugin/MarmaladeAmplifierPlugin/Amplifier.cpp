@@ -385,7 +385,7 @@ namespace Menge
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Amplifier::getLengthMs() const
+	float Amplifier::getDuration() const
 	{
 		int32 s3e_duration = s3eAudioGetInt( S3E_AUDIO_DURATION );
 		

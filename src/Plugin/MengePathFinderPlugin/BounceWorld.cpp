@@ -3,6 +3,8 @@
 #	include "Interface/ScriptSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include <math.h>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

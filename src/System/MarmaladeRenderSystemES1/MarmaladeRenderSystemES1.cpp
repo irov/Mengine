@@ -282,7 +282,7 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderProgramInterfacePtr MarmaladeRenderSystemES1::createProgram( const ConstString & _name, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexShaderInterfacePtr & _vertex, uint32_t _samplerCount )
+	RenderProgramInterfacePtr MarmaladeRenderSystemES1::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount )
 	{
 		(void)_name;
 		(void)_fragment;

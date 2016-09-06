@@ -77,9 +77,10 @@ namespace Menge
 		bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;
 
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
-		void setModelViewMatrix( const mt::mat4f & _view ) override;
-		void setTextureMatrix( uint32_t _stage, const float* _texture ) override;
+		void setModelViewMatrix( const mt::mat4f & _view ) override;		
         void setWorldMatrix( const mt::mat4f & _view ) override;
+
+		void setTextureMatrix( uint32_t _stage, const float* _texture ) override;
 
 	public:
 		RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _verticesNum, bool _dynamic ) override;
@@ -120,7 +121,7 @@ namespace Menge
 		RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
 		RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
 
-		RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexShaderInterfacePtr & _vertex, uint32_t _samplerCount ) override;
+		RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount ) override;
 		void setProgram( const RenderProgramInterfacePtr & _program ) override;
 
 	public:

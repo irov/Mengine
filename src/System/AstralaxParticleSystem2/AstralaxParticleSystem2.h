@@ -38,7 +38,7 @@ namespace Menge
 		ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) override;
 
 	public:
-		const RenderStage * getMaterialStage( int _index ) const override;
+		const RenderMaterialStage * getMaterialStage( int _index ) const override;
 		const ResourceImagePtr & getResourceImage( int _index ) const override;
 
 	public:

@@ -35,9 +35,9 @@ namespace Menge
 		void setLoop( bool _loop ) override;
 		bool getLoop() const override;
 
-		float getLengthMs() const override;
-		float getPosMs() const override;
-		bool setPosMs( float _posMs ) override;
+		float getDuration() const override;
+		float getPosition() const override;
+		bool setPosition( float _posMs ) override;
 
 		void setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) override;
 		SoundBufferInterfacePtr getSoundBuffer() const override;

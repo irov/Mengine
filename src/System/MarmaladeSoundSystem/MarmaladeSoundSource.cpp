@@ -162,7 +162,7 @@ namespace Menge
 		return m_loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float MarmaladeSoundSource::getLengthMs() const
+	float MarmaladeSoundSource::getDuration() const
 	{
 		if( m_soundBuffer == nullptr )
 		{
@@ -186,7 +186,7 @@ namespace Menge
 		return time_sound;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float MarmaladeSoundSource::getPosMs() const
+	float MarmaladeSoundSource::getPosition() const
 	{
 		if( m_playing == false )
 		{
@@ -208,7 +208,7 @@ namespace Menge
 		return posMs;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSource::setPosMs( float _posMs )
+	bool MarmaladeSoundSource::setPosition( float _posMs )
 	{
 		if( m_playing == true )
 		{

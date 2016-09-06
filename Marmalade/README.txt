@@ -1,0 +1,1 @@
+fix boost::math::isfinite - open C:\Marmalade\8.5\s3e\h\std\math.h line 334 - comment

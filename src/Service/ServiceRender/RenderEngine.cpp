@@ -756,7 +756,7 @@ namespace Menge
 		mt::ident_m4( worldTransform );
 
 		RENDER_SYSTEM( m_serviceProvider )->setProjectionMatrix( projTransform );
-		RENDER_SYSTEM( m_serviceProvider )->setViewMatrix( viewTransform );
+		RENDER_SYSTEM( m_serviceProvider )->setModelViewMatrix( viewTransform );
 		RENDER_SYSTEM( m_serviceProvider )->setWorldMatrix( worldTransform );
 		RENDER_SYSTEM( m_serviceProvider )->setCullMode( CM_CULL_NONE );
 		RENDER_SYSTEM( m_serviceProvider )->setFillMode( FM_SOLID );
@@ -958,7 +958,7 @@ namespace Menge
 			const mt::mat4f & viewMatrix = _renderPass.camera->getCameraViewMatrix();
 
 			RENDER_SYSTEM( m_serviceProvider )
-				->setViewMatrix( viewMatrix );
+				->setModelViewMatrix( viewMatrix );
 
 			const mt::mat4f & projectionMatrix = _renderPass.camera->getCameraProjectionMatrix();
 
@@ -977,7 +977,7 @@ namespace Menge
 			mt::ident_m4( viewMatrix );
 
 			RENDER_SYSTEM( m_serviceProvider )
-				->setViewMatrix( viewMatrix );
+				->setModelViewMatrix( viewMatrix );
 
 			mt::mat4f projectionMatrix;
 			mt::ident_m4( projectionMatrix );

@@ -14,6 +14,16 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderProgram::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * DX9RenderProgram::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const ConstString & DX9RenderProgram::getName() const
 	{
 		return m_name;
@@ -29,10 +39,8 @@ namespace Menge
 		return m_fragmentShader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderProgram::initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _name, const DX9RenderVertexShaderPtr & _vertexShader, const DX9RenderFragmentShaderPtr & _fragmentShader )
+	bool DX9RenderProgram::initialize( const ConstString & _name, const DX9RenderVertexShaderPtr & _vertexShader, const DX9RenderFragmentShaderPtr & _fragmentShader )
 	{ 
-		m_serviceProvider = _serviceProvider;
-
 		m_name = _name;
 
 		m_vertexShader = _vertexShader;

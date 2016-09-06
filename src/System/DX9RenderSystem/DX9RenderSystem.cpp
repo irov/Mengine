@@ -43,7 +43,7 @@ namespace Menge
 		}
 
 		mt::ident_m4( m_projectionMatrix );
-		mt::ident_m4( m_viewMatrix );
+		mt::ident_m4( m_modelViewMatrix );
 		mt::ident_m4( m_worldMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -495,7 +495,7 @@ namespace Menge
 		m_projectionMatrix = _projectionMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setViewMatrix( const mt::mat4f & _viewMatrix )
+	void DX9RenderSystem::setModelViewMatrix( const mt::mat4f & _modelViewMatrix )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -505,9 +505,9 @@ namespace Menge
             return;
         }
 
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, (D3DTS_VIEW, (D3DMATRIX*)_viewMatrix.buff()) );
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, (D3DTS_VIEW, (D3DMATRIX*)_modelViewMatrix.buff()) );
 
-		m_viewMatrix = _viewMatrix;
+		m_modelViewMatrix = _modelViewMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setWorldMatrix( const mt::mat4f & _worldMatrix )
@@ -1043,7 +1043,7 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, Clear, ( 0, NULL, D3DCLEAR_TARGET, _color, 0.f, 0 ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setTextureMatrix( uint32_t _stage, const float* _texture )
+	void DX9RenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -1063,29 +1063,17 @@ namespace Menge
 			return;
 		}
 
-		if( _texture != nullptr )
+		DWORD state = D3DTTFF_COUNT2;
+
+		IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, (_stage, D3DTSS_TEXTURETRANSFORMFLAGS, state) )
 		{
-			DWORD state = D3DTTFF_COUNT2;
-
-			IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_TEXTURETRANSFORMFLAGS, state ) )
-			{
-				return;
-			}
-
-			D3DTRANSFORMSTATETYPE level = static_cast<D3DTRANSFORMSTATETYPE>( static_cast<DWORD>( D3DTS_TEXTURE0 ) + _stage );
-			IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, ( level, (const D3DMATRIX*)_texture ) )
-			{
-				return;
-			}
+			return;
 		}
-		else
-		{
-			DWORD state = D3DTTFF_DISABLE;
 
-			IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_TEXTURETRANSFORMFLAGS, state ) )
-			{
-				return;
-			}
+		D3DTRANSFORMSTATETYPE level = static_cast<D3DTRANSFORMSTATETYPE>(static_cast<DWORD>(D3DTS_TEXTURE0)+_stage);
+		IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, (level, (const D3DMATRIX*)_texture.buff()) )
+		{
+			return;
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -1692,12 +1680,23 @@ namespace Menge
 	{
 		DX9RenderFragmentShaderPtr shader = m_factoryRenderFragmentShader.createObject();
 
+		if( shader == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createFragmentShader invalid create shader %s"
+				, _name.c_str()
+				);
+
+			return nullptr;
+		}
+
+		shader->setServiceProvider( m_serviceProvider );
+
 		MemoryInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
 			->createMemory();
 
 		memory->setMemory( _buffer, _size );
 				
-		if( shader->initialize( m_serviceProvider, _name, memory, _isCompile ) == false )
+		if( shader->initialize( _name, memory, _isCompile ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createFragmentShader invalid initialize shader %s"
 				, _name.c_str()
@@ -1729,12 +1728,23 @@ namespace Menge
 	{
 		DX9RenderVertexShaderPtr shader = m_factoryRenderVertexShader.createObject();
 
+		if( shader == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createVertexShader invalid create shader %s"
+				, _name.c_str()
+				);
+
+			return nullptr;
+		}
+
+		shader->setServiceProvider( m_serviceProvider );
+
 		MemoryInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
 			->createMemory();
 
 		memory->setMemory( _buffer, _size );
 
-		if( shader->initialize( m_serviceProvider, _name, memory, _isCompile ) == false )
+		if( shader->initialize( _name, memory, _isCompile ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createVertexShader invalid initialize shader %s"
 				, _name.c_str()
@@ -1764,9 +1774,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount )
 	{
+		(void)_samplerCount;
+
 		DX9RenderProgramPtr program = m_factoryProgram.createObject();
 
-		if( program->initialize( m_serviceProvider, _name, _vertex, _fragment ) == false )
+		if( program == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createProgram invalid create program %s"
+				, _name.c_str()
+				);
+
+			return nullptr;
+		}
+
+		program->setServiceProvider( m_serviceProvider );
+
+		if( program->initialize( _name, _vertex, _fragment ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createProgram invalid initialize program %s"
 				, _name.c_str()
@@ -1805,7 +1828,7 @@ namespace Menge
 				return;
 			}
 
-			dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_viewMatrix, m_projectionMatrix );
+			dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix );
 		}
 		else
 		{

@@ -49,8 +49,8 @@ namespace Menge
 		bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;
 		// входные данные: матрица 4 на 4
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
-		void setViewMatrix( const mt::mat4f & _viewMatrix ) override;
-		void setTextureMatrix( uint32_t _stage, const float* _texture ) override;
+		void setModelViewMatrix( const mt::mat4f & _modelView ) override;
+		void setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture ) override;
 		void setWorldMatrix( const mt::mat4f & _world ) override;
 
 	public:
@@ -225,7 +225,7 @@ namespace Menge
 		TFactoryDX9Texture m_factoryDX9Texture;
 
 		mt::mat4f m_projectionMatrix;
-		mt::mat4f m_viewMatrix;
+		mt::mat4f m_modelViewMatrix;
 		mt::mat4f m_worldMatrix;
 
 		uint32_t m_dxMaxCombinedTextureImageUnits;

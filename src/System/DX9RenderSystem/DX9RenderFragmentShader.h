@@ -13,10 +13,14 @@ namespace Menge
 		DX9RenderFragmentShader();
 
 	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
+
+	public:
 		const ConstString & getName() const override;
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _name, const MemoryInterfacePtr & _memory, bool _isCompile );
+		bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _isCompile );
 
 	public:
 		bool compile( IDirect3DDevice9 * _pD3DDevice );

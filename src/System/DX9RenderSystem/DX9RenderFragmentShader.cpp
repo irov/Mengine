@@ -11,17 +11,25 @@ namespace Menge
     {
     }
 	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderFragmentShader::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * DX9RenderFragmentShader::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const ConstString & DX9RenderFragmentShader::getName() const
 	{
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderFragmentShader::initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _name, const MemoryInterfacePtr & _memory, bool _isCompile )
+	bool DX9RenderFragmentShader::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _isCompile )
 	{
 		(void)_isCompile;
 
-		m_serviceProvider = _serviceProvider;
-		
 		m_name = _name;
 
 		m_memory = _memory;

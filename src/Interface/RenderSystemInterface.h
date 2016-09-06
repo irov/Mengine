@@ -296,7 +296,7 @@ namespace Menge
 	{
 	public:
 		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() = 0;
+		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
 	public:
 		virtual const ConstString & getName() const = 0;
@@ -309,7 +309,7 @@ namespace Menge
 	{
 	public:
 		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() = 0;
+		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
 	public:
 		virtual const ConstString & getName() const = 0;
@@ -322,7 +322,7 @@ namespace Menge
 	{
 	public:
 		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() = 0;
+		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
 	public:
 		virtual const ConstString & getName() const = 0;
@@ -621,7 +621,7 @@ namespace Menge
 		virtual	void setModelViewMatrix( const mt::mat4f & _view ) = 0;
 		virtual	void setWorldMatrix( const mt::mat4f & _view ) = 0;
 
-		virtual void setTextureMatrix( uint32_t _stage, const float * _texture ) = 0;
+		virtual void setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture ) = 0;
 
 	public:
 		virtual RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _verticesNum, bool _dynamic ) = 0;

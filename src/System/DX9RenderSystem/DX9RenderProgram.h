@@ -17,6 +17,10 @@ namespace Menge
 		~DX9RenderProgram();
 
 	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
+
+	public:
 		const ConstString & getName() const override;
 
 	public:
@@ -24,7 +28,7 @@ namespace Menge
 		RenderFragmentShaderInterfacePtr getFragmentShader() const override;
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _name, const DX9RenderVertexShaderPtr & _vertexShader, const DX9RenderFragmentShaderPtr & _fragmentShader );
+		bool initialize( const ConstString & _name, const DX9RenderVertexShaderPtr & _vertexShader, const DX9RenderFragmentShaderPtr & _fragmentShader );
 
 	public:
 		bool compile( IDirect3DDevice9 * _pD3DDevice );

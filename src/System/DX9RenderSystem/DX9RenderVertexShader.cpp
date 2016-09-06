@@ -11,16 +11,23 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderVertexShader::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	ServiceProviderInterface * DX9RenderVertexShader::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const ConstString & DX9RenderVertexShader::getName() const
 	{
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderVertexShader::initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _name, const MemoryInterfacePtr & _memory, bool _isCompile )
+	bool DX9RenderVertexShader::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _isCompile )
 	{
 		(void)_isCompile;
-
-		m_serviceProvider = _serviceProvider;
 
 		m_name = _name;
 

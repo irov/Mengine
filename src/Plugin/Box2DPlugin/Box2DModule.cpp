@@ -40,10 +40,13 @@ namespace Menge
 			.def( "createGearJoint", &Box2DWorld::createGearJoint )
 			.def( "createRopeJoint", &Box2DWorld::createRopeJoint )
 			.def( "createWheelJoint", &Box2DWorld::createWheelJoint )
+			.def( "rayCast", &Box2DWorld::rayCast )
 			;
 			
-		pybind::interface_<Box2DBody>( "Box2DBody" )
+		pybind::interface_<Box2DBody, pybind::bases<Eventable> >( "Box2DBody" )
 			.def_smart_pointer()
+			.def( "setUserData", &Box2DBody::setUserData )
+			.def( "getUserData", &Box2DBody::getUserData )
 			.def( "addShapeConvex", &Box2DBody::addShapeConvex )
 			.def( "addShapeCircle", &Box2DBody::addShapeCircle )
 			.def( "addShapeBox", &Box2DBody::addShapeBox )

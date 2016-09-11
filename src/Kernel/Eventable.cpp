@@ -161,4 +161,31 @@ namespace Menge
 		m_mapEvent.clear();
 	}
     //////////////////////////////////////////////////////////////////////////
+	PyObject * Eventable::setEventListener( PyObject * _args, PyObject * _kwds )
+	{
+		(void)_args;
+
+		if( _kwds == nullptr )
+		{
+			return pybind::ret_none();
+		}
+
+		pybind::dict py_kwds( _kwds );
+		this->_setEventListener( py_kwds );
+
+		PyObject * py_none = pybind::ret_none();
+
+		return py_none;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Eventable::removeEventListener()
+	{
+		pybind::dict py_invalid = pybind::make_invalid_dict_t();
+		this->_setEventListener( py_invalid );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Eventable::_setEventListener( const pybind::dict & _listener )
+	{
+		(void)_listener;
+	}
 }

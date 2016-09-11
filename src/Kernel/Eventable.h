@@ -28,6 +28,13 @@ namespace Menge
 		pybind::object getEvent( uint32_t _event ) const;
 		bool hasEvent( uint32_t _event ) const;
 
+	public:
+		PyObject * setEventListener( PyObject * _args, PyObject * _kwds );
+		void removeEventListener();
+
+	protected:
+		virtual void _setEventListener( const pybind::dict & _listener );
+
 	protected:
 		void unregisterEvents_();
 

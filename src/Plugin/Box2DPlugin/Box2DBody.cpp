@@ -4,6 +4,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	enum Box2DBodyEventFlag
+	{
+		EVENT_BOX2DBODY_BEGIN_COLLIDE,
+		EVENT_BOX2DBODY_UPDATE_COLLIDE,
+		EVENT_BOX2DBODY_END_COLLIDE,
+	};
+	//////////////////////////////////////////////////////////////////////////
 	Box2DBody::Box2DBody()
 		: m_world( nullptr )
 		, m_body( nullptr )
@@ -22,9 +29,19 @@ namespace Menge
 	{
 		m_world = _world;
 	}
-	b2World * Box2DBody::getBox2dWorld() const
+	b2World * Box2DBody::getWorld() const
 	{
 		return m_world;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Box2DBody::setUserData( const pybind::object & _userData )
+	{
+		m_userData = _userData;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const pybind::object & Box2DBody::getUserData() const
+	{
+		return m_userData;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Box2DBody::setBody( b2Body * _body )
@@ -221,16 +238,49 @@ namespace Menge
 		m_body->ApplyLinearImpulse( b2_impulse, b2_world_center, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Box2DBody::onCollide( Box2DBody * _body, b2Contact* _contact )
+	void Box2DBody::onBeginCollide( Box2DBody * _body, b2Contact * _contact )
 	{
-		b2Vec2 b2_contact_position = _contact->GetManifold()->localPoint;
-		mt::vec2f contact_position = Box2DScalerFromWorld( b2_contact_position );
+		if( this->hasEvent( EVENT_BOX2DBODY_BEGIN_COLLIDE ) == false )
+		{
+			return;
+		}
 
-		b2Vec2 b2_contact_normal = _contact->GetManifold()->localNormal;
-		mt::vec2f contact_normal = Box2DScalerFromWorld( b2_contact_normal );
+		b2WorldManifold worldManifold;
+		_contact->GetWorldManifold( &worldManifold );
 
-		//m_listener->onCollide( _otherObj, contact_position.x, contact_position.y, normal.x, normal.y );
+		mt::vec2f contact_position = Box2DScalerFromWorld( worldManifold.points[0] );	
+		mt::vec2f contact_normal = Box2DScalerFromWorld( worldManifold.normal );
+
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_BEGIN_COLLIDE )(this, _body, contact_position, contact_normal );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Box2DBody::onUpdateCollide( Box2DBody * _body, b2Contact * _contact )
+	{
+		if( this->hasEvent( EVENT_BOX2DBODY_UPDATE_COLLIDE ) == false )
+		{
+			return;
+		}
+
+		b2WorldManifold worldManifold;
+		_contact->GetWorldManifold( &worldManifold );
+
+		mt::vec2f contact_position = Box2DScalerFromWorld( worldManifold.points[0] );
+		mt::vec2f contact_normal = Box2DScalerFromWorld( worldManifold.normal );
+
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_UPDATE_COLLIDE )(this, _body, contact_position, contact_normal);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Box2DBody::onEndCollide( Box2DBody * _body, b2Contact * _contact )
+	{
+		(void)_contact;
+
+		if( this->hasEvent( EVENT_BOX2DBODY_END_COLLIDE ) == false )
+		{
+			return;
+		}
+
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_END_COLLIDE )(this, _body);
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	void Box2DBody::setLinearDumping( float _dumping )
 	{
@@ -319,4 +369,12 @@ namespace Menge
 			fixture = fixture->GetNext();
 		}
 	}	
+
+	//////////////////////////////////////////////////////////////////////////
+	void Box2DBody::_setEventListener( const pybind::dict & _listener )
+	{
+		this->registerEvent( EVENT_BOX2DBODY_BEGIN_COLLIDE, ("onBeginCollide"), _listener );
+		this->registerEvent( EVENT_BOX2DBODY_UPDATE_COLLIDE, ("onUpdateCollide"), _listener );
+		this->registerEvent( EVENT_BOX2DBODY_END_COLLIDE, ("onEndCollide"), _listener );
+	}
 }

@@ -410,10 +410,10 @@ namespace Menge
 		virtual void update( float _time, float _timing ) = 0;
 
 	public:
-		virtual inline EPrimitiveType getPrimitiveType() const = 0;
-		virtual inline uint32_t getTextureCount() const = 0;
-		virtual inline const RenderTextureInterfacePtr & getTexture( uint32_t _index ) const = 0;
-		virtual inline const RenderMaterialStage * getStage() const = 0;
+		virtual EPrimitiveType getPrimitiveType() const = 0;
+		virtual uint32_t getTextureCount() const = 0;
+		virtual const RenderTextureInterfacePtr & getTexture( uint32_t _index ) const = 0;
+		virtual const RenderMaterialStage * getStage() const = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderMaterialInterface> RenderMaterialInterfacePtr;

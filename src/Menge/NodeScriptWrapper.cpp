@@ -6457,6 +6457,11 @@ namespace Menge
 			.def( "getIntervalStart", &Animatable::getIntervalStart )
 			;
 
+		pybind::interface_<Eventable>( "Eventable" )
+			.def_native( "setEventListener", &Eventable::setEventListener )
+			.def( "removeEventListener", &Eventable::removeEventListener )
+			;
+
 		pybind::interface_<Affectorable>( "Affectorable" )
 			.def( "addAffector", &Affectorable::addAffector )
 			.def( "stopAffector", &Affectorable::stopAffector )
@@ -6474,7 +6479,7 @@ namespace Menge
 			.def( "getBlendMode", &Materialable::getBlendMode )
 			;
 
-		pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, BoundingBox, Colorable, Resource, Renderable, Affectorable> >( "Node", false )
+		pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, BoundingBox, Colorable, Resource, Renderable, Affectorable, Eventable> >( "Node", false )
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isEnable", &Node::isEnable )
@@ -6502,9 +6507,6 @@ namespace Menge
 			.def( "hasParent", &Node::hasParent )
 			.def( "getScene", &Node::getScene )
 			.def( "getLayer", &Node::getLayer )
-			.def_native( "setEventListener", &Node::setEventListener )
-			.def( "removeEventListener", &Node::removeEventListener )
-			//.def( "getListener", &Node::getListener )
 
 			.def( "getWorldPosition", &Node::getWorldPosition )
 			.def( "setWorldPosition", &Node::setWorldPosition )

@@ -17,12 +17,13 @@ if( DEFINED MENGINE_STEAM_PLUGIN )
 endif()
 
 if( DEFINED MENGINE_TARGET_MSVC )    
+    ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )        
 	ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
     ADD_SUBDIRECTORY( MengeWin32FileGroupPlugin )
+    
+    
     #ADD_SUBDIRECTORY( FFMPEGVideoCodecPlugin )
     
-    
-    ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )        
     #ADD_SUBDIRECTORY( MengeVideoConverterPlugin )
     #ADD_SUBDIRECTORY( MengeSoundConverterPlugin )        
     #ADD_SUBDIRECTORY( MengeHotspotImageConverterPlugin )

@@ -11,6 +11,7 @@
 #	include "Kernel/Scriptable.h"
 #	include "Kernel/Animatable.h"
 #	include "Kernel/Comable.h"
+#	include "Kernel/Servant.h"
 
 namespace Menge
 {
@@ -23,24 +24,11 @@ namespace Menge
 		, public Scriptable
 		, public Animatable
 		, public Comable
+		, public Servant
 	{
 	public:
 		Surface();
 		~Surface();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-		ServiceProviderInterface * getServiceProvider() const;
-
-	public:
-		PyObject * setEventListener( PyObject * _args, PyObject * _kwds );
-		void removeEventListener();
-
-	protected:
-		virtual void _setEventListener( const pybind::dict & _listener );
-
-	protected:
-		ServiceProviderInterface * m_serviceProvider;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<Surface> SurfacePtr;

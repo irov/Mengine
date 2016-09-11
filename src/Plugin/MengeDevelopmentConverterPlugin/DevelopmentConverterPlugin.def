@@ -1,2 +1,2 @@
-LIBRARY		"DevelopmentConverterPlugin"
+LIBRARY		"MengeDevelopmentConverterPlugin"
 EXPORTS 	dllCreatePlugin 	@1

@@ -250,13 +250,6 @@ namespace Menge
 		mt::vec3f m_isometricOffset;
 		
 	public:
-		PyObject * setEventListener( PyObject * _args, PyObject * _kwds );
-		void removeEventListener();
-
-	protected:
-		virtual void _setEventListener( const pybind::dict & _listener );
-
-	public:
 		virtual void visitResource( VisitorResource * _visitor );
 
 	public:

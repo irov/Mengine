@@ -11,6 +11,8 @@
 
 #	include "Box2D/Box2D.h"
 
+#	include "pybind/object.hpp"
+
 #	include <vector>
 
 namespace Menge
@@ -107,6 +109,9 @@ namespace Menge
             , float _motorSpeed		
             );	
 
+	public:
+		void rayCast( const mt::vec2f & _point1, const mt::vec2f & _point2, const pybind::object & _cb, const pybind::detail::args_operator_t & _args ) const;
+
 	protected:
 		void SayGoodbye( b2Joint * joint ) override;
 		void SayGoodbye( b2Fixture * fixture ) override;
@@ -134,7 +139,13 @@ namespace Menge
 		uint32_t m_velocityIterations;
 		uint32_t m_positionIterations;
 
-        typedef std::vector<b2Contact *> TVectorContact;
+		struct ContactDef
+		{
+			b2Contact * contact;
+			uint32_t mode;
+		};
+
+		typedef std::vector<ContactDef> TVectorContact;
         TVectorContact m_contacts;
         
         struct JoinDef

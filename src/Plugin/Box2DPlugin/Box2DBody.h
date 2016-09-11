@@ -3,6 +3,7 @@
 #	include "Factory/FactorablePtr.h"
 
 #	include "Kernel/Scriptable.h"
+#	include "Kernel/Eventable.h"
 #	include "Kernel/Servant.h"
 
 #	include "Core/Polygon.h"
@@ -14,6 +15,7 @@ namespace Menge
     class Box2DBody
         : public FactorablePtr
 		, public Scriptable
+		, public Eventable
 		, public Servant
     {
     public:
@@ -22,10 +24,16 @@ namespace Menge
 
 	public:
 		void setWorld( b2World * _world );
-		b2World * getBox2dWorld() const;
+		b2World * getWorld() const;
 
 	public:
-		void onCollide( Box2DBody * _body, b2Contact* _contact );
+		void setUserData( const pybind::object & _userData );
+		const pybind::object & getUserData() const;
+
+	public:
+		void onBeginCollide( Box2DBody * _body, b2Contact * _contact );
+		void onUpdateCollide( Box2DBody * _body, b2Contact * _contact );
+		void onEndCollide( Box2DBody * _body, b2Contact * _contact );
 
     public:
 		void setBody( b2Body * _body );
@@ -79,8 +87,13 @@ namespace Menge
 		void updateFilterData( uint16_t _categoryBits, uint16_t _collisionMask, int16_t _groupIndex );
 
 	protected:
+		void _setEventListener( const pybind::dict & _embed ) override;
+
+	protected:
         b2World* m_world;
         b2Body* m_body;		
+
+		pybind::object m_userData;
     };
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<Box2DBody> Box2DBodyPtr;

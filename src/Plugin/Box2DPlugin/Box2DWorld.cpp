@@ -122,7 +122,9 @@ namespace Menge
         it != it_end; 
         ++it )
         {
-			b2Contact * contact = *it;
+			ContactDef & def = *it;
+
+			b2Contact * contact = def.contact;
 
 			b2Body * body1 = contact->GetFixtureA()->GetBody();
 			b2Body * body2 = contact->GetFixtureB()->GetBody();
@@ -135,12 +137,77 @@ namespace Menge
             Box2DBody * mBody1 = static_cast<Box2DBody*>( body1->GetUserData() );
             Box2DBody * mBody2 = static_cast<Box2DBody*>( body2->GetUserData() );
 
-			mBody1->onCollide( mBody2, contact );
-			mBody2->onCollide( mBody1, contact );
+			switch( def.mode )
+			{
+			case 0:
+				{
+					mBody1->onBeginCollide( mBody2, contact );
+					mBody2->onBeginCollide( mBody1, contact );
+				}break;
+			case 1:
+				{
+					mBody1->onUpdateCollide( mBody2, contact );
+					mBody2->onUpdateCollide( mBody1, contact );
+				}break;
+			case 2:
+				{
+					mBody1->onEndCollide( mBody2, contact );
+					mBody2->onEndCollide( mBody1, contact );
+				}break;
+			}
         }
 		
         m_contacts.clear();
     }
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class MyRayCastCallback
+			: public b2RayCastCallback
+		{
+		public:
+			MyRayCastCallback( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+				: m_cb( _cb )
+				, m_args( _args )
+				, m_index( 0 )
+			{
+			}
+
+		protected:
+			float32 ReportFixture( b2Fixture* fixture, const b2Vec2& b2_point,
+				const b2Vec2& b2_normal, float32 b2_fraction ) override
+			{
+				const b2Body * b2_body = fixture->GetBody();
+
+				const Box2DBody * body = static_cast<const Box2DBody *>(b2_body->GetUserData());
+
+				mt::vec2f contact_point = Box2DScalerFromWorld( b2_point );
+				mt::vec2f contact_normal = Box2DScalerFromWorld( b2_normal );
+				float fraction = (float)b2_fraction;
+
+				float result = m_cb.call_args( m_index, body, contact_point, contact_normal, fraction, m_args );
+
+				++m_index;
+
+				return (float32)result;
+			}
+
+		protected:
+			pybind::object m_cb;
+			pybind::detail::args_operator_t m_args;
+
+			uint32_t m_index;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Box2DWorld::rayCast( const mt::vec2f & _point1, const mt::vec2f & _point2, const pybind::object & _cb, const pybind::detail::args_operator_t & _args ) const
+	{
+		b2Vec2 b2_point1 = Box2DScalerToWorld( _point1 );
+		b2Vec2 b2_point2 = Box2DScalerToWorld( _point2 );
+
+		MyRayCastCallback rayCast_cb( _cb, _args );
+		m_world->RayCast( &rayCast_cb, b2_point1, b2_point2 );
+	}
     //////////////////////////////////////////////////////////////////////////
 	void Box2DWorld::SayGoodbye( b2Joint* _joint )
 	{
@@ -161,32 +228,39 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	void Box2DWorld::BeginContact( b2Contact* _contact )
     {
-		m_contacts.push_back( _contact );
+		ContactDef def;
+		def.contact = _contact;
+		def.mode = 0;
+
+		m_contacts.push_back( def );
     }
     //////////////////////////////////////////////////////////////////////////
 	void Box2DWorld::EndContact( b2Contact* _contact )
     {
-        TVectorContact::iterator it_find 
-            = std::find( m_contacts.begin(), m_contacts.end(), _contact );
+		ContactDef def;
+		def.contact = _contact;
+		def.mode = 2;
 
-		if( it_find == m_contacts.end() )
-		{
-			return;
-		}
-
-		m_contacts.erase( it_find );        
+		m_contacts.push_back( def );
     }
     //////////////////////////////////////////////////////////////////////////
 	void Box2DWorld::PreSolve( b2Contact* _contact, const b2Manifold* _oldManifold )
     {
-        (void)_contact;
         (void)_oldManifold;
+
+		ContactDef def;
+		def.contact = _contact;
+		def.mode = 1;
+
+		m_contacts.push_back( def );
     }
     //////////////////////////////////////////////////////////////////////////
 	void Box2DWorld::PostSolve( b2Contact* _contact, const b2ContactImpulse* _impulse )
     {
         (void)_contact;
         (void)_impulse;
+
+		//printf( "PostSolve" );
     }
     //////////////////////////////////////////////////////////////////////////
 	Box2DJointPtr Box2DWorld::createDistanceJoint( const Box2DBodyPtr & _body1, const Box2DBodyPtr & _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2, bool _collideBodies )

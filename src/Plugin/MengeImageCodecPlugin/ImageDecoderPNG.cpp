@@ -133,6 +133,8 @@ namespace Menge
 			return false;
 		}
 
+		//png_set_crc_action( m_png_ptr, PNG_CRC_WARN_USE, PNG_CRC_WARN_USE );
+
 		png_set_read_fn( m_png_ptr, m_stream.get(), &s_readProc );
 
 		png_set_sig_bytes( m_png_ptr, PNG_BYTES_TO_CHECK );
@@ -205,7 +207,7 @@ namespace Menge
 		m_dataInfo.depth = 1;		
 		m_dataInfo.mipmaps = 1;
 		m_dataInfo.channels = channels;
-		
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

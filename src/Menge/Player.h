@@ -59,6 +59,8 @@ namespace Menge
 		bool isChangedScene() const override;
 
 	public:
+		bool createGlobalScene() override;
+		void removeGlobalScene() override;
 		Scene * getGlobalScene() override;
 
 	public:

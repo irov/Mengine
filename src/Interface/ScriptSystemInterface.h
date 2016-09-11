@@ -19,8 +19,6 @@ namespace Menge
 {	    
     class Scriptable;
 	class Eventable;
-
-    class Entity;
 	//////////////////////////////////////////////////////////////////////////
     class ScriptWrapperInterface
     {
@@ -53,6 +51,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<ScriptModulePack> TVectorScriptModulePack;
 	//////////////////////////////////////////////////////////////////////////
+	class ScriptModuleInterface
+		: public FactorablePtr
+	{
+	public:
+		virtual bool onInitialize( const ConstString & _method ) = 0;
+		virtual bool onFinalize( const ConstString & _method ) = 0;
+
+	public:
+		virtual bool registerEventMethod( Eventable * _event, uint32_t _id, const char * _method ) = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ScriptModuleInterface> ScriptModuleInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
 	class ScriptServiceInterface
 		: public ServiceInterface
 	{
@@ -71,38 +82,18 @@ namespace Menge
 		virtual void addModulePath( const ConstString & _pack, const TVectorScriptModulePack & _modules ) = 0;
 		virtual void removeModulePath( const ConstString & _pack, const TVectorScriptModulePack & _modules ) = 0;
 
-		virtual pybind::object importModule( const ConstString& _name ) = 0;
+		virtual ScriptModuleInterfacePtr importModule( const ConstString& _name ) = 0;
 
 		virtual void setCurrentModule( PyObject * _module ) = 0;
 		virtual void addGlobalModule( const Char * _name, PyObject * _module ) = 0;
 		virtual void removeGlobalModule( const Char * _name ) = 0;
 
+    public:
+        virtual bool stringize( PyObject * _object, ConstString & _str ) = 0;
+
 	public:
 		virtual bool addEntityPrototype( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator ) = 0;
 		virtual pybind::object importEntity( const ConstString & _category, const ConstString & _prototype ) = 0;
-
-	public:
-		virtual Entity * createEntity( const ConstString& _type, const ConstString & _prototype, const pybind::object & _generator, Eventable * _eventable ) = 0;
-
-        template<class T>
-		T * createEntityT( const ConstString& _type, const ConstString & _prototype, const pybind::object & _generator, Eventable * _eventable )
-        {
-            Entity * entity = this->createEntity( _type, _prototype, _generator, _eventable );
-
-#   ifdef _DEBUG
-            if( dynamic_cast<T*>(entity) == nullptr )
-            {
-                return nullptr;
-            }
-#   endif
-
-            T * t = static_cast<T*>(entity);
-
-            return t;
-        }
-
-    public:
-        virtual bool stringize( PyObject * _object, ConstString & _str ) = 0;
 	};
 
 #   define SCRIPT_SERVICE( serviceProvider )\

@@ -1,16 +1,18 @@
 #   pragma once
 
 #   include "Interface/ServiceInterface.h"
-#   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/StreamInterface.h"
 #   include "Interface/MemoryInterface.h"
 
 #   include "Core/ConstString.h"
 #	include "Factory/FactorablePtr.h"
 
-#   include "Config/Blobject.h"
+#   include "Config/String.h"
 
+#	include "Core/FilePath.h"
 #	include "Core/Magic.h"
+
+#	include "pybind/object.hpp"
 
 namespace Menge
 {

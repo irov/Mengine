@@ -300,49 +300,49 @@ namespace Menge
 			->render();
 	}
     //////////////////////////////////////////////////////////////////////////
-	void Game::registerEventMethods_( const pybind::object & _embed )
+	void Game::registerEventMethods_( const ScriptModuleInterfacePtr & _module )
     {	
-        this->registerEventMethod( EVENT_FULLSCREEN, "onFullscreen", _embed );
-        this->registerEventMethod( EVENT_FIXED_CONTENT_RESOLUTION, "onFixedContentResolution", _embed );
-        this->registerEventMethod( EVENT_RENDER_VIEWPORT, "onRenderViewport", _embed );
-		this->registerEventMethod( EVENT_GAME_VIEWPORT, "onGameViewport", _embed );
+        _module->registerEventMethod( this, EVENT_FULLSCREEN, "onFullscreen" );
+		_module->registerEventMethod( this, EVENT_FIXED_CONTENT_RESOLUTION, "onFixedContentResolution" );
+		_module->registerEventMethod( this, EVENT_RENDER_VIEWPORT, "onRenderViewport" );
+		_module->registerEventMethod( this, EVENT_GAME_VIEWPORT, "onGameViewport" );
 		
-        this->registerEventMethod( EVENT_KEY, "onHandleKeyEvent", _embed );
-        this->registerEventMethod( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", _embed );
-        this->registerEventMethod( EVENT_MOUSE_BUTTON_BEGIN, "onHandleMouseButtonEventBegin", _embed );
-        this->registerEventMethod( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", _embed );
-        this->registerEventMethod( EVENT_MOUSE_MOVE, "onHandleMouseMove", _embed );
-		this->registerEventMethod( EVENT_MOUSE_WHEEL, "onHandleMouseWheel", _embed );
+		_module->registerEventMethod( this, EVENT_KEY, "onHandleKeyEvent" );
+		_module->registerEventMethod( this, EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent" );
+		_module->registerEventMethod( this, EVENT_MOUSE_BUTTON_BEGIN, "onHandleMouseButtonEventBegin" );
+		_module->registerEventMethod( this, EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd" );
+		_module->registerEventMethod( this, EVENT_MOUSE_MOVE, "onHandleMouseMove" );
+		_module->registerEventMethod( this, EVENT_MOUSE_WHEEL, "onHandleMouseWheel" );
 
-        this->registerEventMethod( EVENT_APP_MOUSE_ENTER, "onAppMouseEnter", _embed );
-        this->registerEventMethod( EVENT_APP_MOUSE_LEAVE, "onAppMouseLeave", _embed );
+		_module->registerEventMethod( this, EVENT_APP_MOUSE_ENTER, "onAppMouseEnter" );
+		_module->registerEventMethod( this, EVENT_APP_MOUSE_LEAVE, "onAppMouseLeave" );
 
-        this->registerEventMethod( EVENT_ON_TIMING_FACTOR, "onTimingFactor", _embed );
+		_module->registerEventMethod( this, EVENT_ON_TIMING_FACTOR, "onTimingFactor" );
 
-        this->registerEventMethod( EVENT_PREPARATION, "onPreparation", _embed );
-		this->registerEventMethod( EVENT_RUN, "onRun", _embed );
-        this->registerEventMethod( EVENT_INITIALIZE, "onInitialize", _embed );
-        this->registerEventMethod( EVENT_INITIALIZE_RENDER_RESOURCES, "onInitializeRenderResources", _embed );
-        this->registerEventMethod( EVENT_ACCOUNT_FINALIZE, "onAccountFinalize", _embed );
-        this->registerEventMethod( EVENT_FINALIZE, "onFinalize", _embed );
-        this->registerEventMethod( EVENT_DESTROY, "onDestroy", _embed );
+		_module->registerEventMethod( this, EVENT_PREPARATION, "onPreparation" );
+		_module->registerEventMethod( this, EVENT_RUN, "onRun" );
+		_module->registerEventMethod( this, EVENT_INITIALIZE, "onInitialize" );
+		_module->registerEventMethod( this, EVENT_INITIALIZE_RENDER_RESOURCES, "onInitializeRenderResources" );
+		_module->registerEventMethod( this, EVENT_ACCOUNT_FINALIZE, "onAccountFinalize" );
+		_module->registerEventMethod( this, EVENT_FINALIZE, "onFinalize" );
+		_module->registerEventMethod( this, EVENT_DESTROY, "onDestroy" );
 
-        this->registerEventMethod( EVENT_FOCUS, "onFocus", _embed );
+		_module->registerEventMethod( this, EVENT_FOCUS, "onFocus" );
 
-		this->registerEventMethod( EVENT_CREATE_DEFAULT_ACCOUNT, "onCreateDefaultAccount", _embed );
-		this->registerEventMethod( EVENT_LOAD_ACCOUNTS, "onLoadAccounts", _embed );
+		_module->registerEventMethod( this, EVENT_CREATE_DEFAULT_ACCOUNT, "onCreateDefaultAccount" );
+		_module->registerEventMethod( this, EVENT_LOAD_ACCOUNTS, "onLoadAccounts" );
 
-        this->registerEventMethod( EVENT_CREATE_ACCOUNT, "onCreateAccount", _embed );
-        this->registerEventMethod( EVENT_DELETE_ACCOUNT, "onDeleteAccount", _embed );
-        this->registerEventMethod( EVENT_SELECT_ACCOUNT, "onSelectAccount", _embed );
-        this->registerEventMethod( EVENT_UNSELECT_ACCOUNT, "onUnselectAccount", _embed );
+		_module->registerEventMethod( this, EVENT_CREATE_ACCOUNT, "onCreateAccount" );
+		_module->registerEventMethod( this, EVENT_DELETE_ACCOUNT, "onDeleteAccount" );
+		_module->registerEventMethod( this, EVENT_SELECT_ACCOUNT, "onSelectAccount" );
+		_module->registerEventMethod( this, EVENT_UNSELECT_ACCOUNT, "onUnselectAccount" );
 
-		this->registerEventMethod( EVENT_CHANGE_SOUND_VOLUME, "onChangeSoundVolume", _embed );
+		_module->registerEventMethod( this, EVENT_CHANGE_SOUND_VOLUME, "onChangeSoundVolume" );
 
-        this->registerEventMethod( EVENT_CURSOR_MODE, "onCursorMode", _embed );
+		_module->registerEventMethod( this, EVENT_CURSOR_MODE, "onCursorMode" );
 
-        this->registerEventMethod( EVENT_USER, "onUserEvent", _embed );
-        this->registerEventMethod( EVENT_CLOSE, "onCloseWindow", _embed );
+		_module->registerEventMethod( this, EVENT_USER, "onUserEvent" );
+		_module->registerEventMethod( this, EVENT_CLOSE, "onCloseWindow" );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality()
@@ -371,10 +371,10 @@ namespace Menge
 
 		ConstString personality = CONFIG_VALUE( m_serviceProvider, "Game", "PersonalityModule", STRINGIZE_STRING_LOCAL( m_serviceProvider, "Personality" ) );
 
-		pybind::object module = SCRIPT_SERVICE( m_serviceProvider )
+		ScriptModuleInterfacePtr module = SCRIPT_SERVICE( m_serviceProvider )
 			->importModule( personality );
 
-		if( module.is_invalid() == true )
+		if( module == nullptr )
 		{
 			LOGGER_ERROR( m_serviceProvider )("Game::loadPersonality invalid import module '%s'"
 				, personality.c_str()

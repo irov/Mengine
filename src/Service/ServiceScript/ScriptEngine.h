@@ -8,6 +8,7 @@
 #   include "ConstStringHolderPythonString.h"
 
 #	include "ScriptLogger.h"
+#	include "ScriptModule.h"
 #	include "ScriptModuleFinder.h"
 
 #	include "Kernel/Entity.h"
@@ -38,7 +39,7 @@ namespace Menge
 	public:
 		PyObject * initModule( const char * _name );
 
-		pybind::object importModule( const ConstString& _name ) override;
+		ScriptModuleInterfacePtr importModule( const ConstString& _name ) override;
 
 		void setCurrentModule( PyObject * _module ) override;
         
@@ -53,16 +54,13 @@ namespace Menge
 		bool bootstrapModules() override;
 		bool initializeModules() override;
 		bool finalizeModules() override;
+		
+    public:
+        bool stringize( PyObject * _object, ConstString & _str ) override;
 
 	public:
 		bool addEntityPrototype( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator ) override;
 		pybind::object importEntity( const ConstString & _category, const ConstString & _prototype ) override;
-
-	public:
-		Entity * createEntity( const ConstString& _type, const ConstString & _prototype, const pybind::object & _generator, Eventable * _eventable ) override;
-
-    public:
-        bool stringize( PyObject * _object, ConstString & _str ) override;
 
 	public:
 		void setWrapper( const ConstString& _type, ScriptWrapperInterface * _wrapper ) override;
@@ -89,11 +87,14 @@ namespace Menge
 		TMapScriptWrapper m_scriptWrapper;
 
         typedef FactoryPoolStore<ConstStringHolderPythonString, 256> FactoryConstStringHolderPythonString;
-        FactoryConstStringHolderPythonString m_factoryPythonString;			
+        FactoryConstStringHolderPythonString m_factoryPythonString;		
+
+		typedef FactoryPoolStore<ScriptModule, 8> FactoryScriptModuleInterface;
+		FactoryScriptModuleInterface m_factoryScriptModule;
 
 		typedef FactoryPoolStore<EntityPrototypeGenerator, 64> FactoryEntityPrototypeGenerator;
 		FactoryEntityPrototypeGenerator m_factoryEntityPrototypeGenerator;
-
+		
 		bool m_initializeModules;
 	};
 }

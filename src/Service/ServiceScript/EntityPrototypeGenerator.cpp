@@ -1,6 +1,6 @@
 #	include "EntityPrototypeGenerator.h"
 
-#   include "Interface/ScriptSystemInterface.h"
+#   include "Interface/StringizeInterface.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -105,18 +105,48 @@ namespace Menge
 			return nullptr;
 		}
 
-		Entity * entity = SCRIPT_SERVICE(m_serviceProvider)
-			->createEntityT<Entity>( m_category, m_prototype, py_type, this );
+		pybind::object py_entity = py_type.call();
 
-		if( entity == nullptr )
+		if( py_entity.is_invalid() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("EntityPrototypeGenerator can't generate %s %s"
+			LOGGER_ERROR( m_serviceProvider )("EntityPrototypeGenerator.generate: can't create object '%s' '%s' (invalid create)"
 				, m_category.c_str()
 				, m_prototype.c_str()
 				);
 
 			return nullptr;
 		}
+
+		Entity * entity = nullptr;
+
+		if( py_entity.is_class() == true )
+		{
+			entity = py_entity.extract();
+		}
+		else
+		{
+			entity = PROTOTYPE_SERVICE( m_serviceProvider )
+				->generatePrototypeT<Entity *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), m_category );
+		}
+
+		if( entity == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("EntityPrototypeGenerator can't generate '%s' '%s'"
+				, m_category.c_str()
+				, m_prototype.c_str()
+				);
+
+			return nullptr;
+		}
+
+		entity->setServiceProvider( m_serviceProvider );
+		entity->setType( m_category );
+		entity->setPrototype( m_prototype );
+
+		entity->setScriptEventable( this );
+		entity->setScriptObject( py_entity );
+
+		entity->onCreate();
 
 		++m_count;
 

@@ -40,6 +40,8 @@ namespace Menge
 		virtual bool isChangedScene() const = 0;
 
 	public:
+		virtual bool createGlobalScene() = 0;
+		virtual void removeGlobalScene() = 0;
 		virtual Scene * getGlobalScene() = 0;
 
 	public:

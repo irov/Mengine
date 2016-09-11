@@ -1957,6 +1957,20 @@ namespace Menge
 			return scene;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		bool createGlobalScene()
+		{
+			bool successful = PLAYER_SERVICE( m_serviceProvider )
+				->createGlobalScene();
+
+			return successful;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void removeGlobalScene()
+		{
+			PLAYER_SERVICE( m_serviceProvider )
+				->removeGlobalScene();
+		}
+		//////////////////////////////////////////////////////////////////////////
 		Scene * getGlobalScene()
 		{
 			Scene * scene = PLAYER_SERVICE( m_serviceProvider )
@@ -7128,6 +7142,9 @@ namespace Menge
 
 			pybind::def_functor_args( "setCurrentScene", nodeScriptMethod, &NodeScriptMethod::setCurrentScene );
 			pybind::def_functor( "getCurrentScene", nodeScriptMethod, &NodeScriptMethod::getCurrentScene );
+
+			pybind::def_functor( "createGlobalScene", nodeScriptMethod, &NodeScriptMethod::createGlobalScene );
+			pybind::def_functor( "removeGlobalScene", nodeScriptMethod, &NodeScriptMethod::removeGlobalScene );
 			pybind::def_functor( "getGlobalScene", nodeScriptMethod, &NodeScriptMethod::getGlobalScene );
 
 			pybind::def_functor( "createScene", nodeScriptMethod, &NodeScriptMethod::s_createScene );

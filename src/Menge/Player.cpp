@@ -435,6 +435,30 @@ namespace Menge
 		return m_switchScene == true || m_restartScene == true || m_removeScene == true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Player::createGlobalScene()
+	{
+		Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
+			->generatePrototypeT<Scene *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ) );
+
+		if( scene == nullptr )
+		{
+			return false;
+		}
+
+		m_globalScene = scene;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::removeGlobalScene()
+	{
+		if( m_globalScene != nullptr )
+		{
+			m_globalScene->destroy();
+			m_globalScene = nullptr;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Scene * Player::getGlobalScene()
 	{
 		return m_globalScene;
@@ -601,9 +625,6 @@ namespace Menge
 
 		m_affectorable = new Affectorable;
 		m_affectorableGlobal = new Affectorable;
-
-		m_globalScene = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototypeT<Scene *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ) );
 
 		return true;
 	}

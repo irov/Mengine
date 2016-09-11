@@ -6,6 +6,8 @@ src
 	ScriptEngine.h
 	ScriptLogger.h
 	ScriptLogger.cpp
+    ScriptModule.h
+    ScriptModule.cpp
     ScriptModuleFinder.h
     ScriptModuleFinder.cpp
     ScriptModuleLoader.h

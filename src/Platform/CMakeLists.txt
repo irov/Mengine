@@ -1,5 +1,6 @@
 if( WIN32 )
     ADD_SUBDIRECTORY( Win32Platform )
+    #ADD_SUBDIRECTORY( SDLPlatform )
 endif( WIN32 )
 
 SET( MENGE_DEPENDENCIES

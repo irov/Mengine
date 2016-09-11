@@ -8,6 +8,7 @@
 #   include "Interface/InputSystemInterface.h"
 #	include "Interface/AccountInterface.h"
 #	include "Interface/SoundSystemInterface.h"
+#	include "Interface/ScriptSystemInterface.h"
 
 #	include "Account.h"
 
@@ -148,6 +149,6 @@ namespace Menge
 		ArchivatorInterfacePtr m_archivator;
 		
     protected:
-		void registerEventMethods_( const pybind::object & _embed );
+		void registerEventMethods_( const ScriptModuleInterfacePtr & _module );
 	};	
 }

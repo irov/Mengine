@@ -79,7 +79,7 @@ namespace Menge
 		m_resources.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	bool ResourceManager::loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path, bool _ignored )
 	{
 		Metacode::Meta_DataBlock datablock;
 
@@ -119,7 +119,7 @@ namespace Menge
 
             const FilePath & path = meta_include.get_Path();
 
-			if( this->loadResources( _locale, _pakName, path ) == false )
+			if( this->loadResources( _locale, _pakName, path, _ignored ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource load %s:%s resource invalid load include %s"
                     , _pakName.c_str()
@@ -201,7 +201,7 @@ namespace Menge
             }
             
 #	ifndef MENGINE_MASTER_RELEASE
-			if( resource->convert() == false )
+			if( _ignored == false && resource->convert() == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid convert"
 					, name.c_str()

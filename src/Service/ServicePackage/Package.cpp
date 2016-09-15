@@ -164,19 +164,18 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_Pak::Meta_Scripts & scripts = *it;
+			const Metacode::Meta_Pak::Meta_Scripts & meta_scripts = *it;
 
-			ConstString Path;
-			scripts.swap_Path( Path );
-
+			const FilePath & Path = meta_scripts.get_Path();
+			
 			ConstString Module;
-			scripts.swap_Module( Module );
+			meta_scripts.swap_Module( Module );
 
 			ConstString Initializer;
-			scripts.swap_Initializer( Initializer );
+			meta_scripts.swap_Initializer( Initializer );
 
 			ConstString Finalizer;
-			scripts.swap_Finalizer( Finalizer );
+			meta_scripts.swap_Finalizer( Finalizer );
 
 			this->addScriptPak_( Path, Module, Initializer, Finalizer );
 		}
@@ -189,10 +188,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_Pak::Meta_Fonts & fonts = *it;
+			const Metacode::Meta_Pak::Meta_Fonts & meta_fonts = *it;
 
-			ConstString Path;
-			fonts.swap_Path( Path );
+			const FilePath & Path = meta_fonts.get_Path();
 			this->addFontPath_( Path );
 		}
 
@@ -206,6 +204,9 @@ namespace Menge
 		{
 			const Metacode::Meta_Pak::Meta_Resources & meta_resources = *it;
 
+			bool ignored = false;
+			meta_resources.get_Ignored( ignored );
+
 			const Metacode::Meta_Pak::Meta_Resources::TVectorMeta_Resource & includes_resource = meta_resources.get_IncludesResource();
             
 			for( Metacode::Meta_Pak::Meta_Resources::TVectorMeta_Resource::const_iterator
@@ -216,9 +217,8 @@ namespace Menge
 			{
 				const Metacode::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource = *it_include;
 
-				ConstString Path;
-				meta_resource.swap_Path( Path );
-				this->addResource_( Path );
+				const FilePath & Path = meta_resource.get_Path();
+				this->addResource_( Path, ignored );
 			}
 		}
 
@@ -242,8 +242,7 @@ namespace Menge
 			{
 				const Metacode::Meta_Pak::Meta_Texts::Meta_Text & meta_text = *it_include;
 
-				ConstString Path;
-                meta_text.swap_Path( Path );
+				const FilePath & Path = meta_text.get_Path();
 				this->addTextPath_( Path );
 			}
 		}
@@ -295,7 +294,7 @@ namespace Menge
 			{
 				const Metacode::Meta_Pak::Meta_Materials::Meta_Material & meta_material = *it_include;
 
-				const ConstString & path = meta_material.get_Path();
+				const FilePath & path = meta_material.get_Path();
 
 				this->addMaterial_( path );
 			}
@@ -320,7 +319,7 @@ namespace Menge
 		SCRIPT_SERVICE( m_serviceProvider )
 			->addModulePath( m_name, m_scriptsPackages );
 
-		for( TVectorConstString::const_iterator
+		for( TVectorPakResourceDesc::const_iterator
 			it = m_resourcesDesc.begin(),
 			it_end = m_resourcesDesc.end();
 		it != it_end;
@@ -329,10 +328,10 @@ namespace Menge
             //PROFILER_SERVICE(m_serviceProvider)
             //    ->memoryBegin();
 
-            const ConstString & path = *it;
+			const PakResourceDesc & desc = *it;
 
 			if( RESOURCE_SERVICE(m_serviceProvider)
-				->loadResources( m_locale, m_name, path ) == false )
+				->loadResources( m_locale, m_name, desc.path, desc.ignored ) == false )
             {
                 return false;
             }
@@ -346,13 +345,13 @@ namespace Menge
             //    );
 		}
 
-		for( TVectorConstString::iterator
+		for( TVectorFilePath::iterator
 			it = m_pathFonts.begin(),
 			it_end = m_pathFonts.end();
 		it != it_end;
 		++it )
 		{
-			const ConstString & path = *it;
+			const FilePath & path = *it;
 
 			if( this->loadFont_( m_name, path ) == false )
 			{
@@ -360,7 +359,7 @@ namespace Menge
 			}
 		}
 
-		for( TVectorConstString::iterator
+		for( TVectorFilePath::iterator
 			it = m_pathTexts.begin(),
 			it_end = m_pathTexts.end();
 		it != it_end;
@@ -388,9 +387,9 @@ namespace Menge
 			}
 		}
 
-		for( TVectorConstString::iterator
-			it = m_materials.begin(),
-			it_end = m_materials.end();
+		for( TVectorFilePath::iterator
+			it = m_pathMaterials.begin(),
+			it_end = m_pathMaterials.end();
 		it != it_end;
 		++it )
 		{
@@ -411,16 +410,21 @@ namespace Menge
 	{
 		bool successful = true;
 
-		for( TVectorConstString::const_iterator
+		for( TVectorPakResourceDesc::const_iterator
 			it = m_resourcesDesc.begin(),
 			it_end = m_resourcesDesc.end();
 		it != it_end;
 		++it )
 		{
-			const ConstString & path = *it;
+			const PakResourceDesc & desc = *it;
+
+			if( desc.ignored == true )
+			{
+				continue;
+			}
 
 			if( RESOURCE_SERVICE( m_serviceProvider )
-				->validateResources( m_locale, m_name, path ) == false )
+				->validateResources( m_locale, m_name, desc.path ) == false )
 			{
 				successful = false;
 			}
@@ -447,22 +451,22 @@ namespace Menge
 		SCRIPT_SERVICE( m_serviceProvider )
 			->removeModulePath( m_name, m_scriptsPackages );
 
-		for( TVectorConstString::const_iterator
+		for( TVectorPakResourceDesc::const_iterator
 			it = m_resourcesDesc.begin(),
 			it_end = m_resourcesDesc.end();
 		it != it_end;
 		++it )
 		{
-			const ConstString & path = *it;
+			const PakResourceDesc & desc = *it;
 
 			if( RESOURCE_SERVICE( m_serviceProvider )
-				->unloadResources( m_locale, m_name, path ) == false )
+				->unloadResources( m_locale, m_name, desc.path ) == false )
 			{
 				return false;
 			}
 		}
 
-		for( TVectorConstString::iterator
+		for( TVectorFilePath::iterator
 			it = m_pathFonts.begin(),
 			it_end = m_pathFonts.end();
 		it != it_end;
@@ -476,7 +480,7 @@ namespace Menge
 			}
 		}
 
-		for( TVectorConstString::iterator
+		for( TVectorFilePath::iterator
 			it = m_pathTexts.begin(),
 			it_end = m_pathTexts.end();
 		it != it_end;
@@ -504,9 +508,9 @@ namespace Menge
 			}
 		}
 
-		for( TVectorConstString::iterator
-			it = m_materials.begin(),
-			it_end = m_materials.end();
+		for( TVectorFilePath::iterator
+			it = m_pathMaterials.begin(),
+			it_end = m_pathMaterials.end();
 		it != it_end;
 		++it )
 		{
@@ -590,17 +594,21 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::addResource_( const ConstString & _path )
+	void Package::addResource_( const FilePath & _path, bool _ignored )
 	{
-		m_resourcesDesc.push_back( _path );
+		PakResourceDesc desc;
+		desc.path = _path;
+		desc.ignored = _ignored;
+
+		m_resourcesDesc.push_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::addTextPath_( const ConstString & _path )
+	void Package::addTextPath_( const FilePath & _path )
 	{
 		m_pathTexts.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::addScriptPak_( const ConstString & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer )
+	void Package::addScriptPak_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer )
 	{
 		ScriptModulePack pak;
 		pak.path = _path;
@@ -616,7 +624,7 @@ namespace Menge
 		m_pathFonts.push_back( _font );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::addData_( const ConstString & _name, const ConstString & _path )
+	void Package::addData_( const ConstString & _name, const FilePath & _path )
 	{
 		PakDataDesc desc;
 		desc.name = _name;
@@ -625,8 +633,8 @@ namespace Menge
 		m_datas.push_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::addMaterial_( const ConstString & _path )
+	void Package::addMaterial_( const FilePath & _path )
 	{ 
-		m_materials.push_back( _path );
+		m_pathMaterials.push_back( _path );
 	}
 }

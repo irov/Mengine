@@ -232,6 +232,10 @@ namespace Menge
 		ResourceImageDefaultPtr image = RESOURCE_SERVICE( m_serviceProvider )
 			->generateResourceT<ResourceImageDefaultPtr>( CONST_STRING( m_serviceProvider, ResourceImageDefault ) );
 
+		const ConstString & category = this->getCategory();
+
+		image->setCategory( category );
+
 		PathString full_path;
 
 		ConstString folder = Helper::getPathFolder( m_serviceProvider, m_filePath );
@@ -257,6 +261,10 @@ namespace Menge
 	{
 		ResourceVideoPtr video = RESOURCE_SERVICE( m_serviceProvider )
 			->generateResourceT<ResourceVideoPtr>( CONST_STRING( m_serviceProvider, ResourceVideo ) );
+
+		const ConstString & category = this->getCategory();
+
+		video->setCategory( category );
 
 		PathString full_path;
 
@@ -293,6 +301,10 @@ namespace Menge
 	{
 		ResourceSoundPtr sound = RESOURCE_SERVICE( m_serviceProvider )
 			->generateResourceT<ResourceSoundPtr>( CONST_STRING( m_serviceProvider, ResourceSound ) );
+
+		const ConstString & category = this->getCategory();
+
+		sound->setCategory( category );
 
 		PathString full_path;
 

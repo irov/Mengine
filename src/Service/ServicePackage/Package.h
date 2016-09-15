@@ -61,18 +61,18 @@ namespace Menge
 		void addModulePath_( const String & _path );
 
 	protected:
-		void addResource_( const ConstString & _path );
-        void addTextPath_( const ConstString & _path );
-		void addScriptPak_( const ConstString & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer );
+		void addResource_( const FilePath & _path, bool _ignored );
+		void addTextPath_( const FilePath & _path );
+		void addScriptPak_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer );
 		void addFontPath_( const ConstString & _font );
-		void addData_( const ConstString & _name, const ConstString & _path );
+		void addData_( const ConstString & _name, const FilePath & _path );
 		void addMaterial_( const ConstString & _path );
 
     protected:
-        bool loadText_( const ConstString & _pakName, const ConstString & _path );
-		bool unloadText_( const ConstString & _pakName, const ConstString & _path );
-		bool loadFont_( const ConstString & _pakName, const ConstString & _path );
-		bool unloadFont_( const ConstString & _pakName, const ConstString & _path );
+		bool loadText_( const ConstString & _pakName, const FilePath & _path );
+		bool unloadText_( const ConstString & _pakName, const FilePath & _path );
+		bool loadFont_( const ConstString & _pakName, const FilePath & _path );
+		bool unloadFont_( const ConstString & _pakName, const FilePath & _path );
 		bool addUserData_( const ConstString & _pakName, const ConstString & _name, const FilePath & _path );
 		bool removeUserData_( const ConstString & _name );
 		bool loadMaterials_( const ConstString & _pakName, const FilePath & _path );
@@ -81,7 +81,14 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		TVectorConstString m_resourcesDesc;
+		struct PakResourceDesc
+		{			
+			FilePath path;
+			bool ignored;
+		};
+
+		typedef stdex::vector<PakResourceDesc> TVectorPakResourceDesc;
+		TVectorPakResourceDesc m_resourcesDesc;
 				
 		ConstString m_name;
 		ConstString m_type;
@@ -94,8 +101,8 @@ namespace Menge
 
 		TVectorScriptModulePack m_scriptsPackages;
 
-		TVectorConstString m_pathFonts;
-		TVectorConstString m_pathTexts;
+		TVectorFilePath m_pathFonts;
+		TVectorFilePath m_pathTexts;
 
 		struct PakDataDesc
 		{
@@ -106,7 +113,7 @@ namespace Menge
 		typedef stdex::vector<PakDataDesc> TVectorPakDataDesc;
 		TVectorPakDataDesc m_datas;
 
-		TVectorConstString m_materials;
+		TVectorFilePath m_pathMaterials;
 
         bool m_preload;
 		bool m_load;

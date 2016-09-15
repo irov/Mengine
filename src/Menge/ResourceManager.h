@@ -79,7 +79,7 @@ namespace Menge
 		void _finalize() override;
 
 	public:
-		bool loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
+		bool loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path, bool _ignored ) override;
 		bool unloadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
 
 	public:

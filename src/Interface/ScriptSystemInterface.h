@@ -43,7 +43,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	struct ScriptModulePack
 	{
-		ConstString path;
+		FilePath path;
 		ConstString module;
 		ConstString initializer;
 		ConstString finalizer;

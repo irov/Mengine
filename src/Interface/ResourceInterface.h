@@ -26,7 +26,7 @@ namespace Menge
 		virtual void finalize() = 0;
 
     public:
-		virtual bool loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
+		virtual bool loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path, bool _ignored ) = 0;
 		virtual bool unloadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
 
 	public:

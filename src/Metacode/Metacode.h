@@ -6067,6 +6067,35 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
+            bool has_Ignored() const
+            {
+                return Ignored_successful;
+            }
+            
+            bool get_Ignored( bool & _value ) const
+            {
+                if( Ignored_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Ignored;
+            
+                return true;
+            }
+            
+            bool swap_Ignored( bool & _value ) const
+            {
+                if( Ignored_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Ignored);
+            
+                return true;
+            }
+            
         protected:
             void _parseData( const unsigned char * _buff, size_t _size, size_t & _read ) override;
             void _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
@@ -6108,6 +6137,8 @@ namespace Metacode
             
         protected:
         protected:
+            bool Ignored_successful;
+            mutable bool Ignored;
         public:
             typedef stdex::auto_array<Meta_Resource> TVectorMeta_Resource;
         

@@ -4,7 +4,7 @@ namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
-    static const uint32_t metacode_version = 110;
+    static const uint32_t metacode_version = 111;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -3930,6 +3930,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_Pak::Meta_Resources::Meta_Resources()
         : Metabuf::Metadata()
+        , Ignored_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3948,18 +3949,23 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Resources::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_id;
-    }
+        switch( _id )
+        {
+        case 1:
+            {
+                this->read( _buff, _size, _read, this->Ignored );
     
+                this->Ignored_successful = true;
+    
+            }break;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Resources::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
-        case 1:
+        case 2:
             {
                 includes_Meta_Resource.reserve( _count );
             }break;
@@ -3970,7 +3976,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 1:
+        case 2:
             {
                 Meta_Pak::Meta_Resources::Meta_Resource & metadata = includes_Meta_Resource.emplace_back();
     
@@ -3995,7 +4001,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_Pak::Meta_Resources::Meta_Resource::getId() const
     {
-        return 1;
+        return 2;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Resources::Meta_Resource::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )

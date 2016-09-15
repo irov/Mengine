@@ -1,4 +1,4 @@
-<Protocol Version = "110">
+<Protocol Version = "111">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -405,6 +405,8 @@
     </Node>
 
     <Node Name="Resources">
+      <Attribute Name="Ignored" Type="bool"/>
+      
       <Node Name="Resource">
         <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
       </Node>

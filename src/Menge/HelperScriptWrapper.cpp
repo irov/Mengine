@@ -1163,6 +1163,26 @@ namespace Menge
 			return result;
 		}
 
+		bool s_addAccountSetting( const WString & _accountID, const ConstString & _setting, const WString & _defaultValue, const pybind::object & _applyFunc )
+		{
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("addAccountSetting: account not found '%ls'"
+					, _accountID.c_str()
+					);
+
+				return false;
+			}
+
+			bool result = account->addSetting( _setting, _defaultValue, _applyFunc );
+
+			return result;
+		}
+		
+
 		bool s_changeSetting( const ConstString & _setting, const WString & _value )
 		{
             AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
@@ -1180,6 +1200,35 @@ namespace Menge
             bool result = currentAccount->changeSetting( _setting, _value );
 
             return result;
+		}
+
+		bool s_changeAccountSetting( const WString & _accountID, const ConstString & _setting, const WString & _value )
+		{
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSetting: account not found '%ls'"
+					, _accountID.c_str()
+					);
+
+				return false;
+			}
+
+			if( account->hasSetting( _setting ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSetting: account '%ls' not found setting '%s'"
+					, _accountID.c_str()
+					, _setting.c_str()
+					);
+
+				return false;
+			}
+
+			bool result = account->changeSetting( _setting, _value );
+
+			return result;
 		}
 
 		bool s_changeSettingBool( const ConstString & _setting, bool _value )
@@ -1210,6 +1259,45 @@ namespace Menge
 
 			return result;
 		}
+
+		bool s_changeAccountSettingBool( const WString & _accountID, const ConstString & _setting, bool _value )
+		{
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSettingBool: account not found '%ls'"
+					, _accountID.c_str()
+					);
+
+				return false;
+			}
+
+			if( account->hasSetting( _setting ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSettingBool: account '%ls' not found setting '%s'"
+					, _accountID.c_str()
+					, _setting.c_str()
+					);
+
+				return false;
+			}
+
+			WString setting_value;
+			if( _value == true )
+			{
+				setting_value = L"True";
+			}
+			else
+			{
+				setting_value = L"False";
+			}
+
+			bool result = account->changeSetting( _setting, setting_value );
+
+			return result;
+		}		
 
         bool s_hasSetting( const ConstString & _setting )
         {
@@ -2194,8 +2282,10 @@ namespace Menge
 		pybind::def_functor( "getAccountSetting", helperScriptMethod, &HelperScriptMethod::s_getAccountSetting );
 		pybind::def_functor( "getAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingBool );
 		pybind::def_functor( "getAccountSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingUInt );
-		
-				
+
+		pybind::def_functor( "addAccountSetting", helperScriptMethod, &HelperScriptMethod::s_addAccountSetting );
+		pybind::def_functor( "changeAccountSetting", helperScriptMethod, &HelperScriptMethod::s_changeAccountSetting );
+		pybind::def_functor( "changeAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingBool );
 
 		pybind::def_functor( "createAccount", helperScriptMethod, &HelperScriptMethod::s_createAccount );
 		pybind::def_functor( "selectAccount", helperScriptMethod, &HelperScriptMethod::s_selectAccount );

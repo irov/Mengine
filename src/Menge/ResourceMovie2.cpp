@@ -196,6 +196,12 @@ namespace Menge
 
 		if( ae_load_movie_data( movieData, &movie_stream, &Mengine_resource_provider, this ) == AE_MOVIE_FAILED )
 		{
+			LOGGER_ERROR( m_serviceProvider )("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s'"
+				, this->getName().c_str()
+				, this->getGroup().c_str()
+				, m_filePath.c_str()
+				);
+
 			return 0;
 		}
 

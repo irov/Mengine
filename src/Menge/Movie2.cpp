@@ -20,6 +20,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Movie2::Movie2()
+		: m_composition(nullptr)
 	{	
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -451,6 +452,7 @@ namespace Menge
 		}
 
 		ae_set_movie_composition_loop( composition, AE_TRUE );
+		ae_set_movie_composition_interpolate( composition, AE_TRUE );
 
 		//float a, b;
 		//bool ok = ae_get_movie_composition_node_in_out_time( composition, "freespins_win", AE_MOVIE_LAYER_TYPE_EVENT, &a, &b );
@@ -582,6 +584,7 @@ namespace Menge
 		}
 				
 		ae_update_movie_composition( m_composition, _timing );
+		
 
 		printf( "time %f\n"
 				, ae_get_movie_composition_time(m_composition)

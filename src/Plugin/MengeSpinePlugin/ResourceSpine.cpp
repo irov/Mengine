@@ -195,6 +195,24 @@ namespace Menge
 
 		spSkeletonJson_dispose( skeletonJson );
 
+		if( skeletonData == nullptr )
+		{
+			spAtlas_dispose( atlas );
+
+			for( TVectorImageDesc::iterator
+				it = m_images.begin(),
+				it_end = m_images.end();
+			it != it_end;
+			++it )
+			{
+				const ResourceImagePtr & image = it->image;
+
+				image->decrementReference();
+			}
+
+			return false;
+		}
+
 		m_atlas = atlas;
 		m_skeletonData = skeletonData;
 		

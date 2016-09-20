@@ -389,9 +389,9 @@ namespace Menge
 
 		spAnimationStateData * animationStateData = spAnimationStateData_create( skeletonData );		
 
-		spSkeleton_update( skeleton, 0.f );
+		//spSkeleton_update( skeleton, 0.f );
 
-		spSkeleton_updateWorldTransform( skeleton );
+		//spSkeleton_updateWorldTransform( skeleton );
 
 		m_skeleton = skeleton;
 		m_animationStateData = animationStateData;

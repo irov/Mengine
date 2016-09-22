@@ -214,7 +214,7 @@ namespace Menge
 		GLCALL( m_serviceProvider, glLoadMatrixf, (matrix) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystemES1::setTextureMatrix( uint32_t _stage, const float* _texture )
+	void MarmaladeRenderSystemES1::setTextureMatrix( uint32_t _stage, const  mt::mat4f & _texture )
 	{
 		// To Do
 	}

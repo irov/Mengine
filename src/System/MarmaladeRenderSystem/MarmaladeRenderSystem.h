@@ -80,7 +80,7 @@ namespace Menge
 		void setModelViewMatrix( const mt::mat4f & _view ) override;		
         void setWorldMatrix( const mt::mat4f & _view ) override;
 
-		void setTextureMatrix( uint32_t _stage, const float* _texture ) override;
+		void setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture ) override;
 
 	public:
 		RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _verticesNum, bool _dynamic ) override;

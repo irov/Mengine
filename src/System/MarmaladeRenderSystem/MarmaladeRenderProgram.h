@@ -20,7 +20,7 @@ namespace Menge
 
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() override;
+		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		const ConstString & getName() const override;

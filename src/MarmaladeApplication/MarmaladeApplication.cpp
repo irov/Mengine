@@ -287,28 +287,31 @@ namespace Menge
 		m_logLevel = LM_ERROR;
 
 		const Char * option_log = GET_OPTION_VALUE( m_serviceProvider, "log" );
-
-		uint32_t option_log_value;
-		if( sscanf( option_log, "%u", &option_log_value ) == 1 )
+		
+		if( option_log != nullptr )
 		{
-			switch( option_log_value )
+			uint32_t option_log_value;
+			if( sscanf( option_log, "%u", &option_log_value ) == 1 )
 			{
-			case 0:
+				switch( option_log_value )
 				{
-					m_logLevel = LM_INFO;
-				}break;
-			case 1:
-				{
-					m_logLevel = LM_LOG;
-				}break;
-			case 2:
-				{
-					m_logLevel = LM_WARNING;
-				}break;
-			case 3:
-				{
-					m_logLevel = LM_ERROR;
-				}break;
+				case 0:
+					{
+						m_logLevel = LM_INFO;
+					}break;
+				case 1:
+					{
+						m_logLevel = LM_LOG;
+					}break;
+				case 2:
+					{
+						m_logLevel = LM_WARNING;
+					}break;
+				case 3:
+					{
+						m_logLevel = LM_ERROR;
+					}break;
+				}
 			}
 		}
 
@@ -466,8 +469,7 @@ namespace Menge
         {
             return false;
         }
-
-		SERVICE_CREATE( m_serviceProvider, NotificationService );
+				
 		SERVICE_CREATE( m_serviceProvider, UnicodeSystem );
 		SERVICE_CREATE( m_serviceProvider, UnicodeService );
 
@@ -499,6 +501,8 @@ namespace Menge
 
 		SERVICE_CREATE( m_serviceProvider, ThreadSystem );
 		SERVICE_CREATE( m_serviceProvider, ThreadService );
+
+		SERVICE_CREATE( m_serviceProvider, NotificationService );
 		
 		SERVICE_CREATE( m_serviceProvider, ParticleSystem );
 		SERVICE_CREATE( m_serviceProvider, ParticleService );

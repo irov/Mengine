@@ -27,7 +27,7 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * MarmaladeRenderVertexShader::getServiceProvider()
+	ServiceProviderInterface * MarmaladeRenderVertexShader::getServiceProvider() const
 	{
 		return m_serviceProvider;
 	}

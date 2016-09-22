@@ -170,7 +170,7 @@ namespace Menge
 		m_viewMatrix = _view;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setTextureMatrix( uint32_t _stage, const float* _texture )
+	void MarmaladeRenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture )
 	{
         // To Do
 	}

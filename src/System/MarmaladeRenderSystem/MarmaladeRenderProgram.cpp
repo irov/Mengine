@@ -33,7 +33,7 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * MarmaladeRenderProgram::getServiceProvider()
+	ServiceProviderInterface * MarmaladeRenderProgram::getServiceProvider() const
 	{ 
 		return m_serviceProvider;
 	}

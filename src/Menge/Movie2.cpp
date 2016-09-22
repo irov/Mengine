@@ -452,7 +452,7 @@ namespace Menge
 		}
 
 		ae_set_movie_composition_loop( composition, AE_TRUE );
-		ae_set_movie_composition_interpolate( composition, AE_TRUE );
+		ae_set_movie_composition_interpolate( composition, AE_FALSE );
 
 		//float a, b;
 		//bool ok = ae_get_movie_composition_node_in_out_time( composition, "freespins_win", AE_MOVIE_LAYER_TYPE_EVENT, &a, &b );

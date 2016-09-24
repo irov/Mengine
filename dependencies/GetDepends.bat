@@ -25,6 +25,7 @@ call:getdepend_2 https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz Pyth
 call:getdepend_2 https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz Python-3.5.1.tgz Python-3.5.1.tar Python-3.5.1 Python3
 
 call:getdepend http://www.astralax.ru/download/programm/dev/magic_win.zip magic_win.zip win astralax
+call:getdepend https://www.libsdl.org/release/SDL2-2.0.4.zip SDL2-2.0.4.zip SDL2-2.0.4 SDL2
 
 call:svndepend https://github.com/zeux/pugixml.git/trunk pugixml
 call:svndepend https://github.com/irov/pybind.git/trunk pybind
@@ -36,6 +37,7 @@ call:svndepend https://github.com/Cyan4973/lz4.git/trunk lz4
 call:svndepend https://github.com/irov/fastpathfinder.git/trunk fastpathfinder
 call:svndependr https://github.com/EsotericSoftware/spine-runtimes.git/trunk/spine-c spine-c 1587
 call:svndepend https://github.com/zzzzrrr/poly2tri/trunk poly2tri
+call:svndepend https://github.com/erincatto/Box2D.git/trunk/Box2D Box2D
 
 echo.&pause&goto:eof
 

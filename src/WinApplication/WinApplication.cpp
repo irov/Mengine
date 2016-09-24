@@ -841,8 +841,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::finalize()
 	{
-		MODULE_SERVICE( m_serviceProvider )
-			->stopModules();
+		if( SERVICE_EXIST(m_serviceProvider, Menge::ModuleServiceInterface) == true )
+		{
+			MODULE_SERVICE(m_serviceProvider)
+				->stopModules();
+		}
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PlatformInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ApplicationInterface );

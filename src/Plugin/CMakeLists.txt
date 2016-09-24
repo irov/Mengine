@@ -12,7 +12,9 @@ ADD_SUBDIRECTORY( Box2DPlugin )
 #ADD_SUBDIRECTORY( MoviePlugin )
 #ADD_SUBDIRECTORY( MengeCal3dPlugin )
 
-if( DEFINED MENGINE_STEAM_PLUGIN )
+option(MENGINE_STEAM_PLUGIN "Steam Plugin" ON)
+
+if(MENGINE_STEAM_PLUGIN )
     ADD_SUBDIRECTORY( SteamPlugin )
 endif()
 

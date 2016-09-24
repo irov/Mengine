@@ -408,7 +408,13 @@ namespace Menge
 
 		for( BYTE i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
 		{
-			declaration[2 + i] = {0, 16 + 8 * i, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, i};
+			declaration[2 + i] = {
+				0U, 
+				16U + 8U * i,
+				D3DDECLTYPE_FLOAT2, 
+				D3DDECLMETHOD_DEFAULT, 
+				D3DDECLUSAGE_TEXCOORD, 
+				i};
 		}
 
 		declaration[2 + MENGINE_RENDER_VERTEX_UV_COUNT] = D3DDECL_END();

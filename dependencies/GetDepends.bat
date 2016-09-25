@@ -37,6 +37,7 @@ call:svndepend https://github.com/Cyan4973/lz4.git/trunk lz4
 call:svndepend https://github.com/irov/fastpathfinder.git/trunk fastpathfinder
 call:svndependr https://github.com/EsotericSoftware/spine-runtimes.git/trunk/spine-c spine-c 1587
 call:svndepend https://github.com/zzzzrrr/poly2tri/trunk poly2tri
+call:svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
 call:svndepend https://github.com/erincatto/Box2D.git/trunk/Box2D Box2D
 
 echo.&pause&goto:eof

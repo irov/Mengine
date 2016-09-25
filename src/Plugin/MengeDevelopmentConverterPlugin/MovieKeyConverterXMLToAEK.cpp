@@ -597,12 +597,12 @@ namespace Menge
 					size_t max_points = 0;
 
 					for( TVectorPolygon::const_iterator
-						it = output.begin(),
-						it_end = output.end();
-					it != it_end;
-					++it )
+						it_polygon = output.begin(),
+						it_polygon_end = output.end();
+					it_polygon != it_polygon_end;
+					++it_polygon)
 					{
-						const Menge::Polygon & shape_vertex = *it;
+						const Menge::Polygon & shape_vertex = *it_polygon;
 
 						size_t outer_count = shape_vertex.outer_count();
 
@@ -634,12 +634,12 @@ namespace Menge
 					Menge::TVectorIndices shape_indices;
 
 					for( TVectorPolygon::const_iterator
-						it = output.begin(),
-						it_end = output.end();
-					it != it_end;
-					++it )
+						it_polygon = output.begin(),
+						it_polygon_end = output.end();
+					it_polygon != it_polygon_end;
+					++it_polygon)
 					{
-						const Menge::Polygon & shape_vertex = *it;
+						const Menge::Polygon & shape_vertex = *it_polygon;
 
 						std::vector<p2t::Point*> p2t_polygon;
 
@@ -683,12 +683,12 @@ namespace Menge
 						std::vector<p2t::Triangle*> triangles = cdt->GetTriangles();
 
 						for( std::vector<p2t::Triangle*>::iterator
-							it = triangles.begin(),
-							it_end = triangles.end();
-						it != it_end;
-						++it )
+							it_triangle = triangles.begin(),
+							it_triangle_end = triangles.end();
+						it_triangle != it_triangle_end;
+						++it_triangle)
 						{
-							p2t::Triangle* tr = *it;
+							p2t::Triangle* tr = *it_triangle;
 
 							p2t::Point * p0 = tr->GetPoint( 0 );
 							p2t::Point * p1 = tr->GetPoint( 1 );

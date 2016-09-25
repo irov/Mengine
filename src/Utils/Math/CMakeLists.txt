@@ -6,6 +6,13 @@ utils
 )
 
 ADD_FILTER(
+rect
+    rect.cpp
+	rect.h
+    rect_inline.h
+)
+
+ADD_FILTER(
 uv4
     uv4.cpp
 	uv4.h

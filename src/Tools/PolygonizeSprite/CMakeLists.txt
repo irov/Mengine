@@ -1,13 +1,18 @@
-set( MY_LIB_NAME ImageTrimmer )
+set( MY_LIB_NAME PolygonizeSprite )
 
 ADD_FILTER(
 src
-    ImageTrimmer.cpp
+    PolygonizeSprite.cpp
+	AutoPolygon.h
+	AutoPolygon.cpp
 )
 
 add_definitions(-DUNICODE)
 
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils			         
+INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
+					${THIRDPARTY_DIR}/poly2tri
+					${THIRDPARTY_DIR}/polyclipping
+					${THIRDPARTY_DIR}/clipper
                     )
 
 LINK_DIRECTORIES( ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
@@ -51,6 +56,8 @@ TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}stdex_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}lz4_static${MENGINE_LIB_SUFFIX}
+	${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}poly2tri_static${MENGINE_LIB_SUFFIX}
+	${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}polyclipping_static${MENGINE_LIB_SUFFIX}
     Shlwapi.lib
     )   
     

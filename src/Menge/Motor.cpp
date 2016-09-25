@@ -71,6 +71,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Motor::_update(float _current, float _timing)
 	{
+		(void)_current;
+
 		if(m_node == nullptr)
 		{
 			return;

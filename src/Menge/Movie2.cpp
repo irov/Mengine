@@ -653,12 +653,12 @@ namespace Menge
 						RenderVertex2D & v = m.vertices[index];
 
 						mt::vec3f vp;
-						vp.from_f3( mesh.position + index * 3 );
+						vp.from_f3( &mesh.position[index][0] );
 
 						mt::mul_v3_v3_m4( v.position, vp, wm );
 
 						mt::vec2f uv;
-						uv.from_f2( mesh.uv + index * 2 );
+						uv.from_f2( &mesh.uv[index][0] );
 
 						v.uv[0] = uv;
 						v.uv[1] = uv;
@@ -696,12 +696,12 @@ namespace Menge
 						RenderVertex2D & v = m.vertices[index];
 
 						mt::vec3f vp;
-						vp.from_f3( mesh.position + index * 3 );
+						vp.from_f3( &mesh.position[index][0] );
 
 						mt::mul_v3_v3_m4( v.position, vp, wm );
 
 						mt::vec2f uv;
-						uv.from_f2( mesh.uv + index * 2 );
+						uv.from_f2( &mesh.uv[index][0] );
 
 						v.uv[0] = uv;
 						v.uv[1] = uv;
@@ -742,12 +742,12 @@ namespace Menge
 						RenderVertex2D & v = m.vertices[index];
 
 						mt::vec3f vp;
-						vp.from_f3( mesh.position + index * 3 );
+						vp.from_f3( &mesh.position[index][0] );
 
 						mt::mul_v3_v3_m4( v.position, vp, wm );
 
 						mt::vec2f uv;
-						uv.from_f2( mesh.uv + index * 2 );
+						uv.from_f2( &mesh.uv[index][0] );
 
 						const mt::uv4f & uv_image = resource_image->getUVImage();
 
@@ -795,12 +795,12 @@ namespace Menge
 						RenderVertex2D & v = m.vertices[index];
 
 						mt::vec3f vp;
-						vp.from_f3( mesh.position + index * 3 );
+						vp.from_f3( &mesh.position[index][0] );
 
 						mt::mul_v3_v3_m4( v.position, vp, wm );
 
 						mt::vec2f uv;
-						uv.from_f2( mesh.uv + index * 2 );
+						uv.from_f2( &mesh.uv[index][0] );
 
 						const mt::vec4f & uv_video_mask = surfaceVideo->getUV();
 

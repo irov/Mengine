@@ -31,14 +31,14 @@ public:
     ~AutoPolygon();
     
 	Points trace(const mt::rectf & rect, float threshold = 0.0);
-	Points reduce(const Points & points, const mt::rectf& rect, float epsilon = 2.0);
+	Points reduce(const Points & points, const mt::rectf& rect, float epsilon);
 	Points expand(const Points & points, const mt::rectf& rect, float epsilon);
     
     Triangles triangulate(const Points& points);
     
     void calculateUV(const mt::rectf & rect, Vertex * verts, size_t count);
 
-	Triangles generateTriangles(const mt::rectf & rect, float epsilon = 2.0, float threshold = 0.05);
+	Triangles generateTriangles(const mt::rectf & rect, float epsilon, float threshold);
     
 protected:
     mt::vec2f findFirstNoneTransparentPixel(const mt::rectf & rect, float threshold) const;
@@ -62,5 +62,4 @@ protected:
     uint32_t m_width;
 	uint32_t m_height;
     float m_scaleFactor;
-	uint32_t m_threshold;
 };

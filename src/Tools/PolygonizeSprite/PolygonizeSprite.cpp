@@ -213,7 +213,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool polygonizeSprite(Menge::ServiceProviderInterface * serviceProvider, const WString & in, const WString & info)
+	bool polygonizeSprite( Menge::ServiceProviderInterface * serviceProvider, const WString & in, const WString & epsilon, const WString & threshold )
     {
         String utf8_in;
         Helper::unicodeToUtf8(serviceProvider, in, utf8_in);
@@ -292,55 +292,50 @@ namespace Menge
         }
 
         AutoPolygon ap(textureBuffer, width, height);
+		
+		float f_epsilon = 2.f;
+		Utils::wstringToFloat( epsilon, f_epsilon );
 
-        Triangles tri = ap.generateTriangles(mt::rectf(0.f, 0.f, (float)width, (float)height));
+		float f_threshold = 0.05f;
+		Utils::wstringToFloat( threshold, f_threshold );
 
-        if( info.empty() == false )
-        {
-            String utf8_info;
-            Helper::unicodeToUtf8(serviceProvider, info, utf8_info);
+		Triangles tri = ap.generateTriangles( mt::rectf( 0.f, 0.f, (float)width, (float)height ), f_epsilon, f_threshold );
 
-            ConstString c_info = Helper::stringizeString(serviceProvider, utf8_info);
+		std::stringstream ss;
 
-            OutputStreamInterfacePtr info_stream = FILE_SERVICE(serviceProvider)
-                ->openOutputFile(ConstString::none(), c_info);
+		ss << tri.vertCount << " ";
+		ss << tri.indexCount << " ";
 
-            if( info_stream == nullptr )
-            {
-                return false;
-            }
+		for( size_t i = 0; i != tri.vertCount; ++i )
+		{
+			Vertex * v = tri.verts + i;
 
-            std::stringstream ss;
+			ss << v->pos.x << " ";
+			ss << height - v->pos.y << " ";
+		}
 
-            ss << tri.vertCount << std::endl;
-            ss << tri.indexCount << std::endl;
+		for( size_t i = 0; i != tri.vertCount; ++i )
+		{
+			Vertex * v = tri.verts + i;
 
-            for( size_t i = 0; i != tri.vertCount; ++i )
-            {
-                Vertex * v = tri.verts + i;
+			ss << v->uv.x << " ";
+			ss << v->uv.y << " ";
+		}
 
-                ss << v->pos.x << std::endl;
-                ss << v->pos.y << std::endl;
-                ss << v->uv.x << std::endl;
-                ss << v->uv.y << std::endl;
-            }
+		for( size_t i = 0; i != tri.indexCount; ++i )
+		{
+			uint16_t index = tri.indices[i];
 
-            for( size_t i = 0; i != tri.indexCount; ++i )
-            {
-                uint16_t index = tri.indices[i];
+			ss << index << " ";
+		}
 
-                ss << index << std::endl;
-            }
+		ss << std::endl;
 
-            ss << std::endl;
+		std::string str = ss.str();
 
-            std::string str = ss.str();
-
-            if( info_stream->write(str.c_str(), str.size()) == false )
-            {
-                return false;
-            }
-        }
+		printf(
+			str.c_str()
+			);
 
         return true;
     }
@@ -357,27 +352,27 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdL
     int cmd_num;
     LPWSTR * cmd_args = CommandLineToArgvW(lpCmdLine, &cmd_num);
 
-    Menge::WString command;
     Menge::WString in;
-    Menge::WString info;
+	Menge::WString epsilon;
+	Menge::WString threshold;
 
     for( int i = 0; i < cmd_num; i += 2 )
     {
         LPWSTR arg = cmd_args[i + 0];
         LPWSTR value = cmd_args[i + 1];
 
-        if( wcscmp(arg, L"-command") == 0 )
-        {
-            command = value;
-        }
-        else if( wcscmp(arg, L"-in") == 0 )
+        if( wcscmp(arg, L"-in") == 0 )
         {
             in = value;
         }
-        else if( wcscmp(arg, L"-info") == 0 )
-        {
-            info = value;
-        }
+		else if( wcscmp( arg, L"-epsilon" ) == 0 )
+		{
+			epsilon = value;
+		}
+		else if( wcscmp( arg, L"-threshold" ) == 0 )
+		{
+			threshold = value;
+		}		
     }
 
     if( in.empty() == true )
@@ -408,7 +403,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdL
         return 0;
     }
 
-    if( Menge::polygonizeSprite(serviceProvider, in, info) == false )
+	if( Menge::polygonizeSprite( serviceProvider, in, epsilon, threshold ) == false )
     {
         message_error("ImageTrimmer invalid trim %ls"
             , in.c_str()

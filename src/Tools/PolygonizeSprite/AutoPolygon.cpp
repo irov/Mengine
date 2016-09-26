@@ -15,7 +15,6 @@ AutoPolygon::AutoPolygon( const uint8_t * _data, uint32_t _width, uint32_t _heig
     , m_width( _width )
     , m_height( _height )
     , m_scaleFactor( 1.f )
-    , m_threshold( 0 )
 {
 }
 //////////////////////////////////////////////////////////////////////////

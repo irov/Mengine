@@ -62,8 +62,7 @@
 #   include "Logger\Logger.h"
 
 #	include <pybind/pybind.hpp>
-
-#	include "sha1.h"
+#	include "stdex/sha1.h"
 
 #	include <io.h>
 
@@ -591,12 +590,12 @@ namespace Menge
 		stream->read( buf, size );
 
 		unsigned char hash[20];
-		sha1::calc( buf, size, hash );
+		stdex::sha1_calc( buf, size, hash );
 
 		delete[] buf;
 
 		char hex[41];
-		sha1::toHexString( hash, hex );
+		stdex::sha1_hex( hash, hex );
 
 		return Menge::WString( hex, hex + 40 );
 	}

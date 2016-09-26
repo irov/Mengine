@@ -6,6 +6,7 @@
 #	include "Math\vec2.h"
 #	include "Math\rect.h"
 
+#	include <stdint.h>
 
 struct Vertex
 {

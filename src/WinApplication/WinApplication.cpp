@@ -12,6 +12,7 @@
 #	include "Interface/PackageInterface.h"
 
 #	include "WindowsLayer/VistaWindowsLayer.h"
+#   include "PythonScriptWrapper/PythonScriptWrapper.h"
 
 #	include "Factory/FactorableUnique.h"
 #	include "Factory/FactoryDefault.h"
@@ -640,7 +641,14 @@ namespace Menge
 		srand( randomSeed.LowPart );
 
 		LOGGER_WARNING( m_serviceProvider )("initialize Application...");
-
+                 
+        PythonScriptWrapper::constsWrap(m_serviceProvider);
+        PythonScriptWrapper::mathWrap(m_serviceProvider);
+        PythonScriptWrapper::nodeWrap(m_serviceProvider);
+        PythonScriptWrapper::helperWrap(m_serviceProvider);
+        PythonScriptWrapper::soundWrap(m_serviceProvider);
+        PythonScriptWrapper::entityWrap(m_serviceProvider);
+        
 #	define MENGINE_ADD_PLUGIN( Name, Info )\
 		do{LOGGER_INFO(m_serviceProvider)( Info );\
 		if(	PLUGIN_CREATE(m_serviceProvider, Name) == false ){\

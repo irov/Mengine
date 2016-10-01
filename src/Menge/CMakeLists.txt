@@ -336,18 +336,6 @@ Scene\\\\Layer2D
 )
 
 ADD_FILTER(
-ScriptWrapper
-    ScriptWrapper.h
-    EntityScriptWrapper.cpp
-	HelperScriptWrapper.cpp
-    ConstsScriptWrapper.cpp
-    NodeScriptWrapper.cpp	
-    MathScriptWrapper.cpp
-    SoundScriptWrapper.cpp
-)
-
-
-ADD_FILTER(
 Utils
 	VersionInfo.h
 )
@@ -363,8 +351,6 @@ INCLUDE_DIRECTORIES(
     ${THIRDPARTY_DIR}/stdex/include
     ${THIRDPARTY_DIR}/utf8/source
 )
-
-add_definitions(-D_UNICODE)
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 

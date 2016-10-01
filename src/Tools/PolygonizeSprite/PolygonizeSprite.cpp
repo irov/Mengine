@@ -389,7 +389,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdL
     {
         if( Menge::initializeEngine(&serviceProvider) == false )
         {
-            message_error("ImageTrimmer invalid initialize");
+            message_error("PolygonizeSprite invalid initialize");
 
             return 0;
         }
@@ -405,7 +405,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdL
 
 	if( Menge::polygonizeSprite( serviceProvider, in, epsilon, threshold ) == false )
     {
-        message_error("ImageTrimmer invalid trim %ls"
+        message_error("PolygonizeSprite invalid polygonize %ls"
             , in.c_str()
         );
 

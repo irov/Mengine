@@ -96,7 +96,6 @@
 #	include "Layer3D.h"
 #	include "Window.h"
 #	include "Layer2DTexture.h"
-#	include "PhysicalBody2D.h"
 #	include "Landscape2D.h"
 
 
@@ -243,13 +242,6 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, PlayerService );
 		SERVICE_CREATE( m_serviceProvider, GameService );
 		SERVICE_CREATE( m_serviceProvider, TimelineService );
-
-		ScriptWrapper::constsWrap( m_serviceProvider );
-		ScriptWrapper::mathWrap( m_serviceProvider );
-		ScriptWrapper::nodeWrap( m_serviceProvider );
-		ScriptWrapper::helperWrap( m_serviceProvider );
-		ScriptWrapper::soundWrap( m_serviceProvider );
-		ScriptWrapper::entityWrap( m_serviceProvider );
 
 		if( this->registerBaseNodeTypes_() == false )
 		{

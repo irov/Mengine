@@ -409,13 +409,13 @@ namespace Menge
 		it_inner != it_inner_end;
 		++it_inner )
 		{
-			const BoostPolygon::ring_type & ring = *it_inner;
+			const BoostPolygon::ring_type & ring_inner = *it_inner;
 
 			Polygon polygon_inner_wm;
 
 			for( BoostPolygon::ring_type::const_iterator
-				it = ring.begin(),
-				it_end = ring.end();
+				it = ring_inner.begin(),
+				it_end = ring_inner.end();
 			it != it_end;
 			++it )
 			{
@@ -459,13 +459,13 @@ namespace Menge
 		it_inner != it_inner_end;
 		++it_inner )
 		{
-			const BoostPolygon::ring_type & ring = *it_inner;
+			const BoostPolygon::ring_type & ring_inner = *it_inner;
 
 			Polygon polygon_inner_wm;
 
 			for( BoostPolygon::ring_type::const_iterator
-				it = ring.begin(),
-				it_end = ring.end();
+				it = ring_inner.begin(),
+				it_end = ring_inner.end();
 			it != it_end;
 			++it )
 			{
@@ -508,13 +508,13 @@ namespace Menge
 		it_inner != it_inner_end;
 		++it_inner )
 		{
-			const BoostPolygon::ring_type & ring = *it_inner;
+			const BoostPolygon::ring_type & ring_inner = *it_inner;
 
 			Polygon polygon_inner_wm;
 
 			for( BoostPolygon::ring_type::const_iterator
-				it = ring.begin(),
-				it_end = ring.end();
+				it = ring_inner.begin(),
+				it_end = ring_inner.end();
 			it != it_end;
 			++it )
 			{
@@ -557,13 +557,13 @@ namespace Menge
 		it_inner != it_inner_end;
 		++it_inner )
 		{
-			const BoostPolygon::ring_type & ring = *it_inner;
+			const BoostPolygon::ring_type & ring_inner = *it_inner;
 
 			Polygon polygon_inner_wm;
 
 			for( BoostPolygon::ring_type::const_iterator
-				it = ring.begin(),
-				it_end = ring.end();
+				it = ring_inner.begin(),
+				it_end = ring_inner.end();
 			it != it_end;
 			++it )
 			{

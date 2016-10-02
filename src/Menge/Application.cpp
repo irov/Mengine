@@ -76,7 +76,6 @@
 #	include "MovieSceneEffect.h"
 #	include "MovieInternalObject.h"
 #   include "MovieEvent.h"
-#   include "Movie2.h"
 #	include "Model3D.h"
 #	include "Video.h"
 #	include "Layer2D.h"
@@ -119,7 +118,6 @@
 //#	include "ResourceBinary.h"
 #	include "ResourceFile.h"
 #	include "ResourceMovie.h"
-#	include "ResourceMovie2.h"
 #	include "ResourceVideo.h"
 #	include "ResourceMesh.h"
 #	include "ResourceSkeleton.h"
@@ -379,8 +377,6 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, MovieInternalObject );
         NODE_FACTORY( m_serviceProvider, MovieEvent );
 
-		NODE_FACTORY( m_serviceProvider, Movie2 );
-
 		NODE_FACTORY( m_serviceProvider, Meshget );
 
 		NODE_FACTORY( m_serviceProvider, Model3D );
@@ -531,7 +527,6 @@ namespace Menge
         RESOURCE_FACTORY( m_serviceProvider, ResourceImageSubstractRGBAndAlpha );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceImageSolid );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceMovie );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceMovie2 );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceModel3D );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceVideo );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceSound );		

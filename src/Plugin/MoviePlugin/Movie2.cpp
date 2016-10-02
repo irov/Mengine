@@ -18,6 +18,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Movie2::Movie2()
+		: m_composition(nullptr)
 	{	
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -81,7 +82,7 @@ namespace Menge
 	{
 		(void)_time;
 
-		ae_play_movie_composition( m_composition, 16550.f );
+		ae_play_movie_composition( m_composition, _time );
 
 		return true;
 	}
@@ -115,7 +116,7 @@ namespace Menge
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_node_camera( const ae_string_t _name, const ae_vector3_t _position, const ae_vector3_t _direction, float _fov, float _width, float _height, void * _data )
+	static void * ae_movie_composition_node_camera( const ae_char_t * _name, const ae_vector3_t _position, const ae_vector3_t _direction, float _fov, float _width, float _height, void * _data )
 	{
 		Movie2 * movie2 = (Movie2 *)_data;
 
@@ -130,7 +131,7 @@ namespace Menge
 		}
 		
 		RenderCameraProjection * renderCameraProjection = NODE_SERVICE( serviceProvider )
-			->createNodeT<RenderCameraProjection>( STRINGIZE_STRING_LOCAL( serviceProvider, "RenderCameraProjection" ) );
+			->createNodeT<RenderCameraProjection *>( STRINGIZE_STRING_LOCAL( serviceProvider, "RenderCameraProjection" ) );
 
 		renderCameraProjection->setName( c_name );
 
@@ -147,7 +148,7 @@ namespace Menge
 		renderCameraProjection->setCameraAspect( aspect );
 		
 		RenderViewport * renderViewport = NODE_SERVICE( serviceProvider )
-			->createNodeT<RenderViewport>( STRINGIZE_STRING_LOCAL( serviceProvider, "RenderViewport" ) );
+			->createNodeT<RenderViewport *>( STRINGIZE_STRING_LOCAL( serviceProvider, "RenderViewport" ) );
 
 		renderViewport->setName( c_name );
 
@@ -180,11 +181,11 @@ namespace Menge
 		case AE_MOVIE_LAYER_TYPE_VIDEO:
 			{
 				SurfaceVideo * surfaceVideo = PROTOTYPE_SERVICE( serviceProvider )
-					->generatePrototypeT<SurfaceVideo>( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceVideo" ) );
+					->generatePrototypeT<SurfaceVideo *>( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceVideo" ) );
 
 				surfaceVideo->setName( c_name );
 
-				ResourceReference * resourceVideo = (ResourceReference *)(_resource->data);
+				ResourceVideo * resourceVideo = (ResourceVideo *)(_resource->data);
 
 				surfaceVideo->setResourceVideo( resourceVideo );
 
@@ -207,7 +208,7 @@ namespace Menge
 		case AE_MOVIE_LAYER_TYPE_SOUND:
 			{
 				SurfaceSound * surfaceSound = PROTOTYPE_SERVICE( serviceProvider )
-					->generatePrototypeT<SurfaceSound>( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceSound" ) );
+					->generatePrototypeT<SurfaceSound *>( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceSound" ) );
 
 				surfaceSound->setName( c_name );
 
@@ -449,6 +450,7 @@ namespace Menge
 		}
 
 		ae_set_movie_composition_loop( composition, AE_TRUE );
+		ae_set_movie_composition_interpolate( composition, AE_FALSE );
 
 		//float a, b;
 		//bool ok = ae_get_movie_composition_node_in_out_time( composition, "freespins_win", AE_MOVIE_LAYER_TYPE_EVENT, &a, &b );
@@ -578,8 +580,13 @@ namespace Menge
 			a += _timing;
 			return;
 		}
-
+				
 		ae_update_movie_composition( m_composition, _timing );
+		
+
+		printf( "time %f\n"
+				, ae_get_movie_composition_time(m_composition)
+				);
 		
 		//if( a < 10000.f )
 		//{
@@ -644,12 +651,12 @@ namespace Menge
 						RenderVertex2D & v = m.vertices[index];
 
 						mt::vec3f vp;
-						vp.from_f3( mesh.position + index * 3 );
+						vp.from_f3( &mesh.position[index][0] );
 
 						mt::mul_v3_v3_m4( v.position, vp, wm );
 
 						mt::vec2f uv;
-						uv.from_f2( mesh.uv + index * 2 );
+						uv.from_f2( &mesh.uv[index][0] );
 
 						v.uv[0] = uv;
 						v.uv[1] = uv;
@@ -687,12 +694,12 @@ namespace Menge
 						RenderVertex2D & v = m.vertices[index];
 
 						mt::vec3f vp;
-						vp.from_f3( mesh.position + index * 3 );
+						vp.from_f3( &mesh.position[index][0] );
 
 						mt::mul_v3_v3_m4( v.position, vp, wm );
 
 						mt::vec2f uv;
-						uv.from_f2( mesh.uv + index * 2 );
+						uv.from_f2( &mesh.uv[index][0] );
 
 						v.uv[0] = uv;
 						v.uv[1] = uv;
@@ -733,12 +740,12 @@ namespace Menge
 						RenderVertex2D & v = m.vertices[index];
 
 						mt::vec3f vp;
-						vp.from_f3( mesh.position + index * 3 );
+						vp.from_f3( &mesh.position[index][0] );
 
 						mt::mul_v3_v3_m4( v.position, vp, wm );
 
 						mt::vec2f uv;
-						uv.from_f2( mesh.uv + index * 2 );
+						uv.from_f2( &mesh.uv[index][0] );
 
 						const mt::uv4f & uv_image = resource_image->getUVImage();
 
@@ -786,12 +793,12 @@ namespace Menge
 						RenderVertex2D & v = m.vertices[index];
 
 						mt::vec3f vp;
-						vp.from_f3( mesh.position + index * 3 );
+						vp.from_f3( &mesh.position[index][0] );
 
 						mt::mul_v3_v3_m4( v.position, vp, wm );
 
 						mt::vec2f uv;
-						uv.from_f2( mesh.uv + index * 2 );
+						uv.from_f2( &mesh.uv[index][0] );
 
 						const mt::vec4f & uv_video_mask = surfaceVideo->getUV();
 

@@ -210,7 +210,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool trimImage( Menge::ServiceProviderInterface * serviceProvider, const WString & in, const WString & out, const WString & info )
+	static bool trimImage( Menge::ServiceProviderInterface * serviceProvider, const WString & in, const WString & out )
 	{
 		String utf8_in;
 		Helper::unicodeToUtf8(serviceProvider, in, utf8_in);
@@ -444,304 +444,33 @@ namespace Menge
 			}
 		}
 
-		if( info.empty() == false )
-		{
-			String utf8_info;
-			Helper::unicodeToUtf8( serviceProvider, info, utf8_info );
-
-			ConstString c_info = Helper::stringizeString( serviceProvider, utf8_info );
-
-			OutputStreamInterfacePtr info_stream = FILE_SERVICE( serviceProvider )
-				->openOutputFile( ConstString::none(), c_info );
-
-			if( info_stream == nullptr )
-			{
-				return false;
-			}
-
-			char info_buffer[1024];
-
-			sprintf( info_buffer, "%u\n%u\n%u\n%u\n%u\n%u\n"
-				, width
-				, height
-				, new_width
-				, new_height
-				, min_i
-				, min_j
-				);
-
-			size_t info_buffer_size = strlen( info_buffer );
-
-			if( info_stream->write( info_buffer, info_buffer_size + 1 ) == false )
-			{
-				return false;
-			}
-		}
+		printf( "base_width=%u\n", width );
+		printf( "base_height=%u\n", height );
+		printf( "trim_width=%u\n", new_width );
+		printf( "trim_height=%u\n", new_height );
+		printf( "offset_x=%u\n", min_i );
+		printf( "offset_y=%u\n", min_j );
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool recanvasImage( Menge::ServiceProviderInterface * serviceProvider, const WString & in, const WString & out, const WString & params )
-	{
-		String utf8_in;
-		Helper::unicodeToUtf8(serviceProvider, in, utf8_in);
-
-		ConstString c_in = Helper::stringizeString(serviceProvider, utf8_in);
-
-		InputStreamInterfacePtr input_stream = 
-			FILE_SERVICE(serviceProvider)->openInputFile( ConstString::none(), c_in, false );
-
-		if( input_stream == nullptr )
-		{
-			return false;
-		}
-
-		const ConstString & codecType = CODEC_SERVICE(serviceProvider)
-			->findCodecType( c_in );
-
-		if( codecType.empty() == true )
-		{
-			return false;
-		}
-
-		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(serviceProvider)
-			->createDecoderT<ImageDecoderInterfacePtr>( codecType );
-
-		if( imageDecoder == nullptr )
-		{
-			return false;
-		}
-
-		if( imageDecoder->prepareData( input_stream ) == false )
-		{
-			return false;
-		}
-
-		const ImageCodecDataInfo* decode_dataInfo = imageDecoder->getCodecDataInfo();
-
-		if( decode_dataInfo->width == 0 ||
-			decode_dataInfo->height == 0 )
-		{
-			return false;
-		}
-
-		ImageCodecOptions decode_options;
-
-		decode_options.channels = decode_dataInfo->channels;
-		decode_options.pitch = decode_dataInfo->width * decode_dataInfo->channels;
-
-		imageDecoder->setOptions( &decode_options );
-
-		size_t width = decode_dataInfo->width;
-		size_t height = decode_dataInfo->height;
-
-		size_t bufferSize = width * height * decode_dataInfo->channels;
-
-		MemoryInterfacePtr memory_textureBuffer = MEMORY_SERVICE( serviceProvider )
-			->createMemory();
-		
-		if( memory_textureBuffer == nullptr )
-		{
-			return false;
-		}
-
-		unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize );
-
-		if( imageDecoder->decode( textureBuffer, bufferSize ) == 0U )
-		{
-			return false;
-		}
-
-		uint32_t new_width;
-		uint32_t new_height;
-
-		if( params == L"pow2" )
-		{
-			new_width = Helper::getTexturePOW2( width );
-			new_height = Helper::getTexturePOW2( height );
-		}
-		else
-		{
-			if( swscanf( params.c_str(), L"%d;%d", &new_width, &new_height ) != 2 )
-			{
-				return false;
-			}
-		}
-
-		if( new_width < width || new_height < height )
-		{
-			return false;
-		}
-		
-		size_t new_bufferSize = new_width * new_height * decode_dataInfo->channels;
-
-		MemoryInterfacePtr memory_new_textureBuffer = MEMORY_SERVICE( serviceProvider )
-			->createMemory();
-
-		if( memory_new_textureBuffer == nullptr )
-		{
-			return false;
-		}
-
-		unsigned char * new_textureBuffer = memory_new_textureBuffer->newMemory( new_bufferSize );
-
-		if( new_textureBuffer == nullptr )
-		{
-			return false;
-		}
-		
-		uint32_t channels = decode_dataInfo->channels;
-
-		for( size_t i = 0; i != width; ++i )
-		{
-			for( size_t j = 0; j != height; ++j )
-			{
-				size_t old_index = i + j * width;
-				size_t new_index = i + j * new_width;
-
-				for( size_t k = 0; k != channels; ++k )
-				{
-					new_textureBuffer[new_index * channels + k] = textureBuffer[old_index * channels + k];
-				}
-			}
-		}
-
-		String utf8_out;
-		Helper::unicodeToUtf8(serviceProvider, out, utf8_out);
-
-		ConstString c_out = Helper::stringizeString(serviceProvider, utf8_out);
-
-		OutputStreamInterfacePtr output_stream = FILE_SERVICE(serviceProvider)
-			->openOutputFile( ConstString::none(), c_out );
-
-		if( output_stream == nullptr )
-		{
-			return false;
-		}
-
-		ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE(serviceProvider)
-			->createEncoderT<ImageEncoderInterfacePtr>( codecType );
-
-		if( imageEncoder == nullptr )
-		{
-			return false;
-		}
-
-		if( imageEncoder->initialize( output_stream ) == false )
-		{
-			return false;
-		}
-
-		ImageCodecOptions encode_options;
-
-		encode_options.pitch = new_width * decode_dataInfo->channels;
-		encode_options.channels = decode_dataInfo->channels;
-
-		imageEncoder->setOptions( &encode_options );
-
-		ImageCodecDataInfo encode_dataInfo;
-		//dataInfo.format = _image->getHWPixelFormat();
-		encode_dataInfo.width = new_width;
-		encode_dataInfo.height = new_height;
-		encode_dataInfo.channels = decode_dataInfo->channels;
-		encode_dataInfo.depth = 1;
-		encode_dataInfo.mipmaps = 1;
-
-		if( imageEncoder->encode( new_textureBuffer, new_bufferSize, &encode_dataInfo ) == 0 )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool lz4hcImage( Menge::ServiceProviderInterface * serviceProvider, const WString & in, const WString & out )
-	{
-		String utf8_in;
-		Helper::unicodeToUtf8(serviceProvider, in, utf8_in);
-
-		ConstString c_in = Helper::stringizeString(serviceProvider, utf8_in);
-
-		InputStreamInterfacePtr input_stream = 
-			FILE_SERVICE(serviceProvider)->openInputFile( ConstString::none(), c_in, false );
-
-		if( input_stream == nullptr )
-		{
-			return false;
-		}
-
-		size_t bufferSize = input_stream->size();
-
-		MemoryInterfacePtr memory_textureBuffer = MEMORY_SERVICE( serviceProvider )
-			->createMemory();
-
-		if( memory_textureBuffer == nullptr )
-		{
-			return false;
-		}
-
-		unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize );
-
-		if( textureBuffer == nullptr )
-		{
-			return false;
-		}
-
-		if( input_stream->read( textureBuffer, bufferSize ) == 0U )
-		{
-			return false;
-		}
-
-		ArchivatorInterfacePtr archivator = ARCHIVE_SERVICE(serviceProvider)
-			->getArchivator( STRINGIZE_STRING_LOCAL(serviceProvider, "lz4") );
-
-		if( archivator == nullptr )
-		{
-			return false;
-		}
-
-		size_t compressBound = archivator->compressBound( bufferSize );
-
-		MemoryInterfacePtr memory_compressBuffer = MEMORY_SERVICE( serviceProvider )
-			->createMemory();
-
-		if( memory_compressBuffer == nullptr )
-		{
-			return false;
-		}
-
-		unsigned char * compressBuffer = memory_compressBuffer->newMemory( compressBound );
-
-		if( compressBuffer == nullptr )
-		{
-			return false;
-		}
-
-		size_t compressSize = 0;
-		archivator->compress( compressBuffer, compressBound, textureBuffer, bufferSize, compressSize );
-		
-		String utf8_out;
-		Helper::unicodeToUtf8(serviceProvider, out, utf8_out);
-
-		ConstString c_out = Helper::stringizeString(serviceProvider, utf8_out);
-
-		OutputStreamInterfacePtr output_stream = FILE_SERVICE(serviceProvider)
-			->openOutputFile( ConstString::none(), c_out );
-
-		if( output_stream == nullptr )
-		{
-			return false;
-		}
-		
-		if( output_stream->write( compressBuffer, compressSize ) == false )
-		{
-			return false;
-		}
-
-		return true;
-	}	
 }
+//////////////////////////////////////////////////////////////////////////
+static bool parse_arg( wchar_t * _arg, const wchar_t * _key, Menge::WString & _value )
+{
+	wchar_t * str = wcsstr( _arg, _key );
 
+	if( str == nullptr )
+	{
+		return false;
+	}
+
+	size_t key_size = wcslen( _key );
+
+	_value = str + key_size;
+
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
 	(void)hInstance;
@@ -753,42 +482,15 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	int cmd_num;
 	LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
 
-	Menge::WString command;	
 	Menge::WString in;
 	Menge::WString out;
-	Menge::WString params;
-	Menge::WString info;
 
-	for( int i = 0; i < cmd_num; i += 2 )
+	for( int i = 0; i != cmd_num; ++i )
 	{
 		LPWSTR arg = cmd_args[i + 0];
-		LPWSTR value = cmd_args[i + 1];
 
-		if( wcscmp( arg, L"-command" ) == 0 )
-		{
-			command = value;
-		}
-		else if( wcscmp( arg, L"-in" ) == 0 )
-		{
-			in = value;
-		}
-		else if( wcscmp( arg, L"-out" ) == 0 )
-		{
-			out = value;
-		}
-		else if( wcscmp( arg, L"-params" ) == 0 )
-		{
-			params = value;
-		}
-		else if( wcscmp( arg, L"-info" ) == 0 )
-		{
-			info = value;
-		}
-	}
-
-	if( command.empty() == true )
-	{
-		command = L"trim";
+		parse_arg( arg, L"--in=", in );
+		parse_arg( arg, L"--out=", out );
 	}
 
 	if( in.empty() == true )
@@ -797,6 +499,16 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			);
 
 		return 0;
+	}
+
+	if( in.front() == L'\"' && in.back() == L'\"' )
+	{
+		in = in.substr( 1, in.size() - 2 );
+	}
+
+	if( out.front() == L'\"' && out.back() == L'\"' )
+	{
+		out = out.substr( 1, out.size() - 2 );
 	}
 
 	Menge::ServiceProviderInterface * serviceProvider;
@@ -818,41 +530,15 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		return 0;
 	}
-	
-	if( command == L"trim" )
+
+	if( Menge::trimImage( serviceProvider, in, out ) == false )
 	{
-		if( Menge::trimImage( serviceProvider, in, out, info ) == false )
-		{
-			message_error( "ImageTrimmer invalid trim %ls"
-				, in.c_str()
-				);
+		message_error( "ImageTrimmer invalid trim %ls"
+			, in.c_str()
+			);
 
-			return 0;
-		}
-	}
-	else if( command == L"recanvas" )
-	{
-		if( Menge::recanvasImage( serviceProvider, in, out, params ) == false )
-		{
-			message_error( "ImageTrimmer invalid recanvas %ls"
-				, in.c_str()
-				);
-
-			return 0;
-		}		
-	}
-	else if( command == L"lz4hc" )
-	{
-		if( Menge::lz4hcImage( serviceProvider, in, out ) == false )
-		{
-			message_error( "ImageTrimmer invalid lz4hc %ls"
-				, in.c_str()
-				);
-
-			return 0;
-		}		
-	}
-
+		return 0;
+	}	
 
 	return 0;
 }

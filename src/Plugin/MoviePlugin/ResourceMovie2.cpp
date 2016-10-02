@@ -1,16 +1,15 @@
 #	include "ResourceMovie2.h"
 
 #	include "Interface/ResourceInterface.h"
-#	include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "Kernel/ResourceImage.h"
+#	include "Menge/ResourceImageDefault.h"
+#	include "Menge/ResourceVideo.h"
+#	include "Menge/ResourceSound.h"
 
 #	include "Metacode/Metacode.h"
 
 #	include "Logger/Logger.h"
-
-#	include "pybind/pybind.hpp"
 
 namespace Menge
 {
@@ -34,7 +33,7 @@ namespace Menge
 			{
 				const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
 
-				ResourceReference * data_resource = resourceMovie2->createResourceImage_( resource_image );
+				ResourceReference * data_resource = resourceMovie2->createResourceImage_( resource_image->path, resource_image->trim_width, resource_image->trim_height );
 
 				return data_resource;
 			}break;
@@ -54,24 +53,26 @@ namespace Menge
 
 				return data_resource;
 			}
+		case AE_MOVIE_RESOURCE_MESH:
+			{
+				const aeMovieResourceMesh * resource_mesh = (const aeMovieResourceMesh *)_resource;
+
+				ResourceReference * data_resource = resourceMovie2->createResourceImage_( resource_mesh->path, resource_mesh->width, resource_mesh->height );
+
+				return data_resource;
+			}break;
 		}		
 
 		return AE_NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceMovie2::ResourceMovie2()
-		: m_instance(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceMovie2::~ResourceMovie2()
 	{
 	}	
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceMovie2::setMovieInstance( const aeMovieInstance * _instance )
-	{
-		m_instance = _instance;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	const aeMovieData * ResourceMovie2::getMovieData() const
 	{
@@ -93,6 +94,11 @@ namespace Menge
 		}
 				
 		return compositionData;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceMovie2::setMovieInstance( aeMovieInstance * _instance )
+	{
+		m_instance = _instance;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie2::_loader( const Metabuf::Metadata * _meta )
@@ -138,16 +144,24 @@ namespace Menge
 			return false;
 		}
 
-		m_movieData = ae_create_movie_data( m_instance );
+		aeMovieData * movieData = ae_create_movie_data( m_instance );
 
 		aeMovieStream movie_stream;
 		movie_stream.read = &Mengine_read_stream;
 		movie_stream.data = stream.get();
 
-		if( ae_load_movie_data( m_movieData, &movie_stream, &Mengine_resource_provider, this ) == AE_MOVIE_FAILED )
+		if( ae_load_movie_data( movieData, &movie_stream, &Mengine_resource_provider, this ) == AE_MOVIE_FAILED )
 		{
+			LOGGER_ERROR( m_serviceProvider )("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s'"
+				, this->getName().c_str()
+				, this->getGroup().c_str()
+				, m_filePath.c_str()
+				);
+
 			return 0;
 		}
+
+		m_movieData = movieData;
 
 		stream = nullptr;
 
@@ -175,31 +189,28 @@ namespace Menge
 		ResourceReference::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceMovie2::createResourceImage_( const aeMovieResourceImage * _resource )
+	ResourceReference * ResourceMovie2::createResourceImage_( const ae_string_t _path, float _width, float _height )
 	{
-		const ConstString & locale = this->getLocale();
+		ResourceImageDefaultPtr image = RESOURCE_SERVICE( m_serviceProvider )
+			->generateResourceT<ResourceImageDefaultPtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceImageDefault" ) );
+
 		const ConstString & category = this->getCategory();
-		const ConstString & group = this->getGroup();
-		const ConstString & name = this->getName();
 
-		ResourceImagePtr image = RESOURCE_SERVICE(m_serviceProvider)
-			->generateResourceT<ResourceImagePtr>( locale, category, group, name, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceImageDefault" ) );
+		image->setCategory( category );
 
-		COMResourceImageDefaultInterface * com_image = image->getCOMInterfaceT<COMResourceImageDefaultInterface *>();
-		
 		PathString full_path;
 
 		ConstString folder = Helper::getPathFolder( m_serviceProvider, m_filePath );
 
 		full_path += folder.c_str();
-		full_path += _resource->path;
+		full_path += _path;
 
 		FilePath c_path = Helper::stringizeString( m_serviceProvider, full_path );
 
 		mt::uv4f uv_image;
 		mt::uv4f uv_alpha;
 
-		mt::vec2f size( _resource->trim_width, _resource->trim_height );
+		mt::vec2f size( _width, _height );
 
 		image->setup( c_path, ConstString::none(), uv_image, uv_alpha, size );
 
@@ -210,12 +221,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceMovie2::createResourceVideo_( const aeMovieResourceVideo * _resource )
 	{
-		const ConstString & locale = this->getLocale();
-		const ConstString & category = this->getCategory();
-		const ConstString & group = this->getGroup();
-
 		ResourceVideoPtr video = RESOURCE_SERVICE( m_serviceProvider )
-			->generateResourceT<ResourceVideoPtr>( locale, category, group, ConstString::none(), STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceVideo" ) );
+			->generateResourceT<ResourceVideoPtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceVideo" ) );
+
+		const ConstString & category = this->getCategory();
+
+		video->setCategory( category );
 
 		PathString full_path;
 
@@ -250,12 +261,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceMovie2::createResourceSound_( const aeMovieResourceSound * _resource )
 	{
-		const ConstString & locale = this->getLocale();
-		const ConstString & category = this->getCategory();
-		const ConstString & group = this->getGroup();
-
 		ResourceSoundPtr sound = RESOURCE_SERVICE( m_serviceProvider )
-			->generateResourceT<ResourceSoundPtr>( locale, category, group, ConstString::none(), STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceSound" ) );
+			->generateResourceT<ResourceSoundPtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceSound" ) );
+
+		const ConstString & category = this->getCategory();
+
+		sound->setCategory( category );
 
 		PathString full_path;
 

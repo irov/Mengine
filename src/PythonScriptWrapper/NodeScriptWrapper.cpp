@@ -6386,9 +6386,6 @@ namespace Menge
 			.def_proxy_static( "getLayerIn", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_getLayerIn )
 			;
 
-		pybind::interface_<ResourceMovie2, pybind::bases<ResourceReference> >( "ResourceMovie2", false )
-			;
-
 		pybind::interface_<ResourceAnimation, pybind::bases<ResourceReference> >( "ResourceAnimation", false )
 			;
 
@@ -7095,16 +7092,6 @@ namespace Menge
 					.def_proxy_static( "getMovieSlotOffsetPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotOffsetPosition )
 					.def_proxy_static( "attachMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_attachMovieSlotNode )
 					.def_proxy_static( "removeAllMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_removeAllMovieSlotNode )
-					;
-
-				pybind::interface_<Movie2, pybind::bases<Node, Animatable> >( "Movie2", false )
-					.def( "setResourceMovie2", &Movie2::setResourceMovie2 )
-					.def( "getResourceMovie2", &Movie2::getResourceMovie2 )
-					.def( "setCompositionName", &Movie2::setCompositionName )
-					.def( "getCompositionName", &Movie2::getCompositionName )
-					.def( "getDuration", &Movie2::getDuration )
-					.def( "setWorkAreaFromEvent", &Movie2::setWorkAreaFromEvent )
-					.def( "removeWorkArea", &Movie2::removeWorkArea )
 					;
 
 				pybind::interface_<Meshget, pybind::bases<Node, Materialable> >( "Meshget", false )

@@ -13,6 +13,8 @@
 
 #	include "Logger/Logger.h"
 
+#	include "pybind/pybind.hpp"
+
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Movie, Menge::MoviePlugin )
 //////////////////////////////////////////////////////////////////////////
@@ -99,6 +101,19 @@ namespace Menge
 	bool MoviePlugin::_initialize()
 	{
 		m_instance = ae_create_movie_instance( &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, &stdex_movie_logerror, this );
+
+		pybind::interface_<Movie2, pybind::bases<Node, Animatable> >( "Movie2", false )
+			.def( "setResourceMovie2", &Movie2::setResourceMovie2 )
+			.def( "getResourceMovie2", &Movie2::getResourceMovie2 )
+			.def( "setCompositionName", &Movie2::setCompositionName )
+			.def( "getCompositionName", &Movie2::getCompositionName )
+			.def( "getDuration", &Movie2::getDuration )
+			.def( "setWorkAreaFromEvent", &Movie2::setWorkAreaFromEvent )
+			.def( "removeWorkArea", &Movie2::removeWorkArea )
+			;
+
+		pybind::interface_<ResourceMovie2, pybind::bases<ResourceReference> >( "ResourceMovie2", false )
+			;
 
 		if( PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2" ), new NodePrototypeGenerator<Movie2, 128> ) == false )

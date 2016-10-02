@@ -88,9 +88,10 @@ PLUGIN_EXPORT( MengeVideoCodec );
 PLUGIN_EXPORT( MengeAmplifier );
 PLUGIN_EXPORT( MengeZip );
 PLUGIN_EXPORT( MengeLZ4 );
-PLUGIN_EXPORT( MengeSpine );
 PLUGIN_EXPORT( MengeOggVorbis );
 PLUGIN_EXPORT( MengeWin32FileGroup );
+PLUGIN_EXPORT( Spine );
+PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( Box2D );
 
 PLUGIN_EXPORT( PathFinder );
@@ -633,6 +634,13 @@ namespace Menge
 		}
 #	endif
 
+		PythonScriptWrapper::constsWrap( m_serviceProvider );
+		PythonScriptWrapper::mathWrap( m_serviceProvider );
+		PythonScriptWrapper::nodeWrap( m_serviceProvider );
+		PythonScriptWrapper::helperWrap( m_serviceProvider );
+		PythonScriptWrapper::soundWrap( m_serviceProvider );
+		PythonScriptWrapper::entityWrap( m_serviceProvider );
+
 		SERVICE_CREATE( m_serviceProvider, Application );
 
 		// seed randomizer
@@ -641,13 +649,6 @@ namespace Menge
 		srand( randomSeed.LowPart );
 
 		LOGGER_WARNING( m_serviceProvider )("initialize Application...");
-                 
-        PythonScriptWrapper::constsWrap(m_serviceProvider);
-        PythonScriptWrapper::mathWrap(m_serviceProvider);
-        PythonScriptWrapper::nodeWrap(m_serviceProvider);
-        PythonScriptWrapper::helperWrap(m_serviceProvider);
-        PythonScriptWrapper::soundWrap(m_serviceProvider);
-        PythonScriptWrapper::entityWrap(m_serviceProvider);
         
 #	define MENGINE_ADD_PLUGIN( Name, Info )\
 		do{LOGGER_INFO(m_serviceProvider)( Info );\
@@ -660,7 +661,8 @@ namespace Menge
 		MENGINE_ADD_PLUGIN( MengeOggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
 		MENGINE_ADD_PLUGIN( MengeAmplifier, "initialize Plugin Amplifier..." );
 		MENGINE_ADD_PLUGIN( MengeVideoCodec, "initialize Plugin Video Codec..." );
-		MENGINE_ADD_PLUGIN( MengeSpine, "initialize Plugin Spine..." );
+		MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine..." );
+		MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie..." );
 		//MENGINE_ADD_PLUGIN(Motor, "initialize Plugin Motor...");
 		MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
 		

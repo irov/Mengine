@@ -17,7 +17,7 @@ namespace Menge
 		~ResourceMovie2();
 
 	public:
-		void setMovieInstance( const aeMovieInstance * _instance );
+		void setMovieInstance( aeMovieInstance * _instance );
 
 	public:
 		float getDuration() const;
@@ -34,12 +34,12 @@ namespace Menge
 		void _release() override;
 
 	public:
-		ResourceReference * createResourceImage_( const aeMovieResourceImage * _resource );
+		ResourceReference * createResourceImage_( const ae_string_t _path, float _width, float _height );
 		ResourceReference * createResourceVideo_( const aeMovieResourceVideo * _resource );
 		ResourceReference * createResourceSound_( const aeMovieResourceSound * _resource );
 
 	protected:
-		const aeMovieInstance * m_instance;
+		aeMovieInstance * m_instance;
 
 		aeMovieData * m_movieData;
 

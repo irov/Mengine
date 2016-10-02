@@ -9,7 +9,7 @@ ADD_SUBDIRECTORY( MengeSpinePlugin )
 ADD_SUBDIRECTORY( MengeWin32SocketPlugin )
 ADD_SUBDIRECTORY( AstralaxParticlePlugin )
 ADD_SUBDIRECTORY( Box2DPlugin )
-#ADD_SUBDIRECTORY( MoviePlugin )
+ADD_SUBDIRECTORY( MoviePlugin )
 #ADD_SUBDIRECTORY( MengeCal3dPlugin )
 
 option(MENGINE_STEAM_PLUGIN "Steam Plugin" ON)

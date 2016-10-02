@@ -10,12 +10,10 @@ namespace Menge
 	Scriptable::Scriptable()
 		: m_scriptWrapper(nullptr)
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable::~Scriptable()
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scriptable::setScriptWrapper( ScriptWrapperInterface * _scriptWrapper )

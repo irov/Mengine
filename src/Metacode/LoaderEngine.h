@@ -5,6 +5,7 @@
 #   include "Interface/ArchiveInterface.h"
 
 #	include "Core/ConstString.h"
+#	include "Core/ConstStringTypes.h"
 #   include "Core/String.h"
 
 #	include "Utils/Archive/Archive.hpp"

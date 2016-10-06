@@ -100,10 +100,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     Factorable * PrototypeManager::generatePrototype( const ConstString & _category, const ConstString & _prototype )
     {
-        CategoryKey key;
-        key.category = _category;
-        key.prototype = _prototype;
-
         PrototypeGeneratorInterfacePtr generator;
         if( this->hasPrototype( _category, _prototype, generator ) == false )
         {

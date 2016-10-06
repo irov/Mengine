@@ -1,14 +1,13 @@
 #   pragma once
 
-#   include "stdex/const_string_holder.h"
+#   include "stdex/const_string2_holder.h"
 
-#	include "Factory/Factorable.h"
+#	include "Core/ConstStringHolder.h"
 
 namespace Menge
 {
     class ConstStringHolderMemory
-        : public stdex::const_string_holder
-        , public Factorable
+        : public ConstStringHolder
     {
 	public:
 		ConstStringHolderMemory();
@@ -17,10 +16,11 @@ namespace Menge
 		void setValue( const char * _value, size_t _size, hash_type _hash );
 
     protected:
-		void _releaseString() override;
-		void _destroyString() override;
+		void destroyString() override;
 
     protected:			
 		char * m_buff;
     };
+
+    typedef stdex::intrusive_ptr<ConstStringHolderMemory> ConstStringHolderMemoryPtr;
 }

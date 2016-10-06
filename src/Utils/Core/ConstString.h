@@ -1,14 +1,10 @@
 #   pragma once
 
-#   include "stdex/const_string.h"
-#	include "stdex/const_string_holder_local.h"
-
-#	include <stdex/stl_vector.h>
+#   include "stdex/const_string2.h"
 
 namespace Menge
 {
-    typedef stdex::const_string ConstString;
-	typedef stdex::const_string_holder_local ConstStringHolderLocal;
-
-	typedef stdex::vector<ConstString> TVectorConstString;
+    typedef stdex::const_string2 ConstString;
+	
+	//typedef stdex::vector<ConstString> TVectorConstString;
 } 

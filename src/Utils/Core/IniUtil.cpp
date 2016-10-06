@@ -116,13 +116,7 @@ namespace Menge
                 return false;
             }
 
-            size_t len = strlen(ini_value);
-
-            if( STRINGIZE_SERVICE(_serviceProvider)
-                ->stringize( ini_value, len, false, _value ) == false )
-            {
-                return false;
-            }
+            _value = Helper::stringizeString( _serviceProvider, ini_value );
 
             return true;
         }
@@ -375,16 +369,8 @@ namespace Menge
                 const char * value;
                 _ini.getSettings( _section, index, &key, &value );
 
-
-                size_t len = strlen(key);
-
-                ConstString c_key;
-                if( STRINGIZE_SERVICE(_serviceProvider)
-                    ->stringize( key, len, false, c_key ) == false )
-                {
-                    return false;
-                }
-
+                ConstString c_key = Helper::stringizeString( _serviceProvider, key );
+                
                 WString w_value;
                 if( Helper::utf8ToUnicodeSize( _serviceProvider, value, UNICODE_UNSIZE, w_value ) == false )
                 {

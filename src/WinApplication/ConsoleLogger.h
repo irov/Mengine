@@ -2,8 +2,6 @@
 
 #	include "Interface/LoggerInterface.h"
 
-#	include "WindowsLayer/WindowsIncluder.h"
-
 #	include "Config/String.h"
 
 namespace Menge
@@ -48,13 +46,5 @@ namespace Menge
 		
 		TVectorWChar m_wBuffer;
 		TVectorChar m_aBuffer;
-
-		HANDLE m_ConsoleHandle;
-		
-		FILE * m_fp[3];
-		HANDLE m_lStdHandle[3];
-		int m_hConHandle[3];
-		fpos_t m_pOldHandle[3];
-		int m_hOldHandle[3];
 	};
 }

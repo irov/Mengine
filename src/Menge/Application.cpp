@@ -655,6 +655,11 @@ namespace Menge
 		if( PACKAGE_SERVICE( m_serviceProvider )
 			->enablePackages( m_locale, platformName ) == false )
 		{
+            LOGGER_ERROR( m_serviceProvider )("PackageService invalid enable for locale '%s' platform '%s'!"
+                , m_locale.c_str()
+                , platformName.c_str()
+                );
+
 			return false;
 		}
 

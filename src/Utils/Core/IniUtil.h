@@ -8,6 +8,7 @@
 #	include "Core/Params.h"
 #	include "Core/String.h"
 #	include "Core/ConstString.h"
+#	include "Core/ConstStringTypes.h"
 #   include "Core/FilePath.h"
 #	include "Core/Resolution.h"
 #	include "Core/Viewport.h"

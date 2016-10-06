@@ -10,6 +10,7 @@
 #   include "Factory/FactoryStore.h"
 
 #   include "Core/ConstString.h"
+#   include "Core/ConstStringTypes.h"
 #   include "Core/FilePath.h"
 
 #	include "pybind/pybind.hpp"

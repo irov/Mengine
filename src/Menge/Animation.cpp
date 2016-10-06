@@ -12,8 +12,6 @@
 
 #	include "Math/rand.h"
 
-#	include "pybind/system.hpp"
-
 #	include <math.h>
 
 namespace	Menge

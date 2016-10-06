@@ -16,12 +16,6 @@ namespace Menge
 		{
 			return this->weight;
 		}
-
-	protected:
-		PyObject * _embedded() override
-		{
-			return nullptr;
-		}
 	};
 }
 

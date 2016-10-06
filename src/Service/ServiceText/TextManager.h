@@ -9,6 +9,7 @@
 #	include "TextGlyph.h"
 
 #	include "Core/ConstString.h"
+#   include "Core/ConstStringHolderLocalString.h"
 
 #   include "stdex/stl_map.h"
 
@@ -104,7 +105,14 @@ namespace Menge
 		typedef FactoryPoolStore<TextLocalePack, 4> TFactoryTextLocalePak;
 		TFactoryTextLocalePak m_factoryTextLocalePak;
 
+        typedef FactoryPoolStore<ConstStringHolderLocalString, 128> FactoryPoolLocalString;
+        FactoryPoolLocalString m_factoryLocalString;
+
 	protected:
+        class TextManagerLoadSaxCallback;
+        class TextManagerUnloadSaxCallback;
+
 		const TMapTextEntry * getLocaleTextEntries_( const ConstString & _locale, ConstString & _correctLocale ) const;
+        void createLocalString_( const Char * _text, size_t _size, ConstString & _cstr );
 	};
 }

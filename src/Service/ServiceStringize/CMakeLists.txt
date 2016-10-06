@@ -6,7 +6,8 @@ src
 	StringizeService.cpp
     ConstStringHolderMemory.h
     ConstStringHolderMemory.cpp
-    ConstStringHolderStringExternal.h
+    #ConstStringHolderStringExternal.h
+	#ConstStringHolderStringExternal.cpp
     #ConstStringHolderStringSTL.h
     #ConstStringHolderStringSTL.cpp
     #ConstStringHolderStringSize.h 
@@ -17,7 +18,6 @@ ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 INCLUDE_DIRECTORIES( 
     ${Mengine_SOURCE_DIR} 
     ${Mengine_SOURCE_DIR}/Utils 
-    ${THIRDPARTY_DIR}/pybind/include
     ) 
 
 SET( MENGE_DEPENDENCIES

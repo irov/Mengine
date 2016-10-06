@@ -10,6 +10,7 @@
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/NodeInterface.h"
+#	include "EntityPrototypeGenerator.h"
 
 #	include "Logger/Logger.h"
 
@@ -27,10 +28,14 @@ namespace Menge
 
     public:
         //////////////////////////////////////////////////////////////////////////
-        bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _module )
+        bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator)
         {
-			bool successful = SCRIPT_SERVICE( m_serviceProvider )
-				->addEntityPrototype( _category, _prototype, _module );
+            EntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator.createObject();
+
+            generator->setScriptGenerator(_generator);
+
+			bool successful = PROTOTYPE_SERVICE( m_serviceProvider )
+				->addPrototype( _category, _prototype, generator);
 
             return successful;
         }
@@ -80,18 +85,29 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
 		pybind::object s_importEntity( const ConstString & _prototype )
         {
-			pybind::object py_type = SCRIPT_SERVICE( m_serviceProvider )
-				->importEntity(STRINGIZE_STRING_LOCAL(m_serviceProvider, "Entity"), _prototype );
-			
-			if( py_type.is_invalid() == true )
-			{
-				return pybind::make_none_t();
-			}
+            PrototypeGeneratorInterfacePtr generator;
+            if( PROTOTYPE_SERVICE( m_serviceProvider )
+                ->hasPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Entity" ), _prototype, generator ) == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("importEntity: can't import 'Entity' '%s'"                    
+                    , _prototype.c_str()
+                    );
+
+                return pybind::make_none_t();
+            }
+
+            EntityPrototypeGeneratorPtr entityGenerator =
+                stdex::intrusive_static_cast<EntityPrototypeGeneratorPtr>(generator);
+
+            pybind::object py_type = entityGenerator->preparePythonType();
 			
 			return py_type;
         }
 
     protected:
+        typedef FactoryPoolStore<EntityPrototypeGenerator, 64> FactoryEntityPrototypeGenerator;
+        FactoryEntityPrototypeGenerator m_factoryEntityPrototypeGenerator;
+
         ServiceProviderInterface * m_serviceProvider;
 	};
     //////////////////////////////////////////////////////////////////////////

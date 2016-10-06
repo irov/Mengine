@@ -4,7 +4,8 @@ namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
-    static const uint32_t metacode_version = 111;
+    static const uint32_t metacode_version = 3;
+    static const uint32_t metacode_protocol = 111;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -16,7 +17,12 @@ namespace Metacode
         return metacode_version;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool readHeader2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion )
+    uint32_t get_metacode_protocol()
+    {
+        return metacode_protocol;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static bool readHeader2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, uint32_t & _readProtocol, uint32_t & _needProtocol )
     {
         stdex::memory_reader ar(_buff, _size, _read);
 
@@ -31,10 +37,20 @@ namespace Metacode
         uint32_t version;
         ar.readPOD( version );
 
+        uint32_t protocol;
+        ar.readPOD( protocol );
+
         _readVersion = version;
         _needVersion = metacode_version;
+        _readProtocol = protocol;
+        _needProtocol = metacode_protocol;
 
         if( version != metacode_version )
+        {
+            return false;
+        }
+
+        if( protocol != metacode_protocol )
         {
             return false;
         }
@@ -42,9 +58,9 @@ namespace Metacode
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion )
+    bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, uint32_t & _readProtocol, uint32_t & _needProtocol )
     {
-        bool successful = readHeader2( _buff, _size, _read, _readVersion, _needVersion );
+        bool successful = readHeader2( _buff, _size, _read, _readVersion, _needVersion, _readProtocol, _needProtocol );
 
         return successful;
     }
@@ -68,24 +84,28 @@ namespace Metacode
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    static const char * readString2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize )
+    static const char * readString2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, int32_t & _stringHash )
     {
         stdex::memory_reader ar(_buff, _size, _read);
 
         uint32_t size;
         ar.readSize( size );
 
+        int32_t hash;
+        ar.readPOD( hash );
+
         const char * value = ar.current_buff<char>();
         ar.skip( size );
 
         _stringSize = size;
+        _stringHash = hash;
 
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
-    const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize )
+    const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, int32_t & _stringHash )
     {
-        const char * value = readString2( _buff, _size, _read, _stringSize );
+        const char * value = readString2( _buff, _size, _read, _stringSize, _stringHash );
 
         return value;
     }

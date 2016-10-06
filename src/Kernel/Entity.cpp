@@ -135,7 +135,9 @@ namespace Menge
 		this->destroyAllChild();
 		this->removeFromParent();
 
+#   ifdef MENGINE_SCRIPTABLE
 		this->unwrap();
+#   endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_unshallowGrave()

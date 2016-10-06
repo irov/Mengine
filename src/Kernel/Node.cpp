@@ -109,7 +109,9 @@ namespace Menge
         this->destroyAllChild();
 		this->removeFromParent();
 
+#   ifdef MENGINE_SCRIPTABLE
         this->unwrap();
+#   endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::activate()

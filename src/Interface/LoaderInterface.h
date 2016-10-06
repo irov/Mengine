@@ -12,8 +12,6 @@ namespace Metabuf
 
 namespace Menge
 {
-	const uint32_t FORMAT_VERSION_BIN = 2;
-
     class LoaderServiceInterface
         : public ServiceInterface
     {

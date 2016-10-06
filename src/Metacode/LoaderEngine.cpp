@@ -89,21 +89,17 @@ namespace Menge
 		{
             file_bin = nullptr;
 			
-			PathString cache_path_xml;
-			
+			PathString cache_path_xml;			
 			cache_path_xml += _path;			
 			cache_path_xml.replace_last( "xml" );
+            			
+            ConstString c_cache_path_xml = Helper::stringizeString( m_serviceProvider, cache_path_xml );
 
-			ConstStringHolderLocal holder_path_xml_local;
-			ConstString c_path_xml_local;
-			STRINGIZE_SERVICE(m_serviceProvider)
-				->stringizeLocal( cache_path_xml.c_str(), cache_path_xml.size(), c_path_xml_local, holder_path_xml_local );
-			
-			if( this->makeBin_( _pak, c_path_xml_local, _path ) == false )
+			if( this->makeBin_( _pak, c_cache_path_xml, _path ) == false )
 			{
                 LOGGER_ERROR(m_serviceProvider)("LoaderEngine::import invlid rebild bin %s from xml %s"
                     , _path.c_str()
-                    , c_path_xml_local.c_str()
+                    , c_cache_path_xml.c_str()
                     );
 
 				return false;
@@ -143,16 +139,10 @@ namespace Menge
 		size_t header_read = 0;
 		uint32_t readVersion;
 		uint32_t needVersion;
+        uint32_t readProtocol;
+        uint32_t needProtocol;
 
-		if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion ) == false )
-		{
-			return false;
-		}
-
-		uint32_t format_version;
-		stream->read( &format_version, sizeof( format_version ) );
-
-		if( format_version != FORMAT_VERSION_BIN )
+		if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol ) == false )
 		{
 			return false;
 		}
@@ -179,14 +169,18 @@ namespace Menge
         size_t header_read = 0;
         uint32_t readVersion;
         uint32_t needVersion;
+        uint32_t readProtocol;
+        uint32_t needProtocol;
 
-        if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion ) == false )
+        if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol ) == false )
         {
             if( _reimport == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invalid version read %d need %d (Update you protocol file)"
+                LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invalid version read %d need %d or protocol %d need %d (Update you protocol file)"
                     , readVersion
                     , needVersion
+                    , readProtocol
+                    , needProtocol
                     );
             }
             else
@@ -196,26 +190,6 @@ namespace Menge
 
             return false;
         }
-
-		uint32_t format_version;
-		_stream->read( &format_version, sizeof(format_version) );
-
-		if( format_version != FORMAT_VERSION_BIN )
-		{
-			if( _reimport == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("LoaderEngine::importBin_ invalid format version read %d need %d"
-					, format_version
-					, FORMAT_VERSION_BIN
-					);
-			}
-			else
-			{
-				*_reimport = true;
-			}   
-
-			return false;
-		}
 
         uint32_t bin_size;
         _stream->read( &bin_size, sizeof(bin_size) );
@@ -266,7 +240,8 @@ namespace Menge
         ++it )
         {
             uint32_t stringSize;
-            const char * str = Metacode::readString( binary_memory, bin_size, read_size, stringSize );
+            int32_t stringHash;
+            const char * str = Metacode::readString( binary_memory, bin_size, read_size, stringSize, stringHash );
 
             if( str == nullptr )
             {
@@ -276,7 +251,7 @@ namespace Menge
                 return false;
             }
 
-            *it = Helper::stringizeStringSize(m_serviceProvider, str, stringSize);
+            *it = Helper::stringizeStringSizeHash(m_serviceProvider, str, stringSize, stringHash);
         }
 
         if( _metadata->parseRoot( binary_memory, bin_size, read_size, (void *)this ) == false )
@@ -303,17 +278,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const
 	{
-		PathString cache_path_xml;
-		
+		PathString cache_path_xml;		
 		cache_path_xml += _path;
 		cache_path_xml.replace_last( "xml" );
-
-		ConstStringHolderLocal holder_path_xml_local;
-		ConstString c_path_xml_local;
-		STRINGIZE_SERVICE(m_serviceProvider)
-			->stringizeLocal( cache_path_xml.c_str(), cache_path_xml.size(), c_path_xml_local, holder_path_xml_local );
+        		
+        ConstString c_cache_path_xml = Helper::stringizeString( m_serviceProvider, cache_path_xml );
         
-		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, c_path_xml_local, nullptr ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, c_cache_path_xml, nullptr ) == false )
 		{
 			if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr ) == false )
 			{
@@ -339,7 +310,7 @@ namespace Menge
 
 		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr ) == false )
 		{
-			if( this->makeBin_( _pak, c_path_xml_local, _path ) == false )
+			if( this->makeBin_( _pak, c_cache_path_xml, _path ) == false )
 			{
 				_file = nullptr;
 
@@ -356,7 +327,7 @@ namespace Menge
 		}
 
 		InputStreamInterfacePtr file_xml = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, c_path_xml_local, false );
+            FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, c_cache_path_xml, false );
 
 		if( file_xml == nullptr )
 		{
@@ -376,7 +347,7 @@ namespace Menge
 			//Rebild bin file from xml
             file_bin = nullptr;
 
-			if( this->makeBin_( _pak, c_path_xml_local, _path ) == false )
+			if( this->makeBin_( _pak, c_cache_path_xml, _path ) == false )
 			{
 				_file = nullptr;
 

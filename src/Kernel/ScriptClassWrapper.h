@@ -20,11 +20,15 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
+#   ifdef MENGINE_SCRIPTABLE
 			pybind::bindable * bindable = static_cast<pybind::bindable *>(_self);
-			            
-			PyObject * py_obj = bindable->getEmbed();
 
-			return py_obj;
+            PyObject * py_obj = bindable->getEmbed();
+
+            return py_obj;
+#   else
+            return pybind::ret_none();
+#   endif			
         }
     };
 
@@ -63,7 +67,7 @@ namespace Menge
 		}
 
 	protected:
-		PyObject * wrap( Scriptable * _scriptable ) override
+        ScriptObject * wrap( Scriptable * _scriptable ) override
 		{
 #   ifdef _DEBUG
 			if( dynamic_cast<T *>( _scriptable ) == nullptr )
@@ -81,7 +85,7 @@ namespace Menge
 
 			const pybind::class_type_scope_ptr & scope = kernel->class_scope<T>();
 
-			PyObject * py_obj = scope->create_holder( (void *)obj );
+            ScriptObject * py_obj = (ScriptObject *)scope->create_holder( (void *)obj );
 
 			//pybind::set_attr( py_embedded, "Menge_name", pybind::ptr(_node->getName()) );
 			//pybind::set_attr( py_embedded, "Menge_type", pybind::ptr(_node->getType()) );

@@ -41,9 +41,9 @@ namespace Menge
 
 		ScriptModuleInterfacePtr importModule( const ConstString& _name ) override;
 
-		void setCurrentModule( PyObject * _module ) override;
+		void setCurrentModule( ScriptObject * _module ) override;
         
-		void addGlobalModule( const Char * _name, PyObject * _module ) override;
+		void addGlobalModule( const Char * _name, ScriptObject * _module ) override;
 		void removeGlobalModule( const Char * _name ) override;
 
 	public:
@@ -56,11 +56,7 @@ namespace Menge
 		bool finalizeModules() override;
 		
     public:
-        bool stringize( PyObject * _object, ConstString & _str ) override;
-
-	public:
-		bool addEntityPrototype( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator ) override;
-		pybind::object importEntity( const ConstString & _category, const ConstString & _prototype ) override;
+        bool stringize( ScriptObject * _object, ConstString & _str ) override;
 
 	public:
 		void setWrapper( const ConstString& _type, ScriptWrapperInterface * _wrapper ) override;

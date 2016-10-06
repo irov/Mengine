@@ -427,7 +427,7 @@ namespace Menge
 		void s_addGlobalModule( const Char * _name, PyObject * _module )
         {
             SCRIPT_SERVICE(m_serviceProvider)
-                ->addGlobalModule( _name, _module );
+                ->addGlobalModule( _name, (ScriptObject *)_module );
         }
 
 	public:

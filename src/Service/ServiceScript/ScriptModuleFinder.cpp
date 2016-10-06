@@ -257,13 +257,9 @@ namespace Menge
 				fullPath += path;
 				fullPath.append( _modulePath, _modulePathLen );
 
-				//ConstString c_fullPath = Helper::stringizeString( m_serviceProvider, fullPath );
-				ConstStringHolderLocal holder_fullPath_local;
-				ConstString c_fullPath_local;
-				STRINGIZE_SERVICE(m_serviceProvider)
-					->stringizeLocal( fullPath.c_str(), fullPath.size(), c_fullPath_local, holder_fullPath_local );
-
-                if( fileGroup->existFile( c_fullPath_local ) == false )
+				ConstString c_fullPath = Helper::stringizeString( m_serviceProvider, fullPath );
+				
+                if( fileGroup->existFile( c_fullPath ) == false )
                 {
                     continue;
                 }

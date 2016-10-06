@@ -65,6 +65,10 @@ src
     Pointer.h
 	
     ConstString.h
+	ConstStringHolder.h
+	ConstStringHolderLocalString.h
+	ConstStringHolderLocalString.cpp
+	ConstStringTypes.h
         
     RenderUtil.h
     

@@ -2,6 +2,8 @@
 
 #	include "Math/ccd.h"
 
+#   include <algorithm>
+
 #	ifndef MENGINE_COLLISION_WORLD_PENETRATION_COUNT
 #	define MENGINE_COLLISION_WORLD_PENETRATION_COUNT 64
 #	endif

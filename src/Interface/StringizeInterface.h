@@ -3,6 +3,7 @@
 #	include "Interface/ServiceInterface.h"
 
 #	include "Core/ConstString.h"
+#	include "Core/ConstStringHolder.h"
 #	include "Core/FilePath.h"
 
 #	include "Config/Typedef.h"
@@ -18,36 +19,33 @@ namespace Menge
         SERVICE_DECLARE("StringizeService")
 			
 	public:
-		virtual bool stringize( const char * _str, size_t _size, bool _external, ConstString & _cstr ) = 0;
-		virtual void stringizeLocal( const char * _str, size_t _size, ConstString & _cstr, ConstStringHolderLocal & _holder ) = 0;
-	};
+		virtual void stringize( const Char * _str, ConstString::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) = 0;
 
+    public:
+        virtual bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) = 0;
+	};
 
 #   define STRINGIZE_SERVICE( serviceProvider )\
     ((Menge::StringizeServiceInterface*)SERVICE_GET(serviceProvider, Menge::StringizeServiceInterface))
 
     namespace Helper
     {
-		//////////////////////////////////////////////////////////////////////////
-		inline ConstString stringizeStringExternal( ServiceProviderInterface * _serviceProvider, const char * _value, size_t _size )
-		{
-			ConstString cstr;
-			STRINGIZE_SERVICE(_serviceProvider)
-				->stringize( _value, _size, true, cstr );
-
-			return cstr;
-		}
         //////////////////////////////////////////////////////////////////////////
-        inline ConstString stringizeStringSize( ServiceProviderInterface * _serviceProvider, const char * _value, size_t _size )
+        inline ConstString stringizeStringSizeHash( ServiceProviderInterface * _serviceProvider, const Char * _value, ConstString::size_type _size, ConstString::hash_type _hash )
         {
             ConstString cstr;
-            STRINGIZE_SERVICE(_serviceProvider)
-                ->stringize( _value, _size, false, cstr );
+            STRINGIZE_SERVICE( _serviceProvider )
+                ->stringize( _value, _size, _hash, cstr );
 
             return cstr;
         }
+        //////////////////////////////////////////////////////////////////////////
+        inline ConstString stringizeStringSize( ServiceProviderInterface * _serviceProvider, const Char * _value, ConstString::size_type _size )
+        {
+            return stringizeStringSizeHash( _serviceProvider, _value, _size, ((size_t)-1));
+        }
 		//////////////////////////////////////////////////////////////////////////
-		inline ConstString stringizeString( ServiceProviderInterface * _serviceProvider, const char * _value )
+		inline ConstString stringizeString( ServiceProviderInterface * _serviceProvider, const Char * _value )
 		{
 			ConstString cstr = stringizeStringSize( _serviceProvider, _value, ((size_t)-1) );
 

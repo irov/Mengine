@@ -19,19 +19,16 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptModuleLoaderSource::load_module( PyObject * _module )
     {   
-		ConstStringHolderLocal holder_fullPath_local;
-		ConstString c_fullPath_local;
-		STRINGIZE_SERVICE(m_serviceProvider)
-			->stringizeLocal( m_path.c_str(), m_path.size(), c_fullPath_local, holder_fullPath_local );
-
-		InputStreamInterfacePtr stream = m_group->createInputFile( c_fullPath_local, false );
+        ConstString c_fullPath = Helper::stringizeString( m_serviceProvider, m_path );
+        
+		InputStreamInterfacePtr stream = m_group->createInputFile( c_fullPath, false );
 
 		if( stream == nullptr )
 		{
 			return nullptr;
 		}
 
-		if( m_group->openInputFile( c_fullPath_local, stream, 0, 0, false ) == false )
+		if( m_group->openInputFile( c_fullPath, stream, 0, 0, false ) == false )
 		{
 			return nullptr;
 		}

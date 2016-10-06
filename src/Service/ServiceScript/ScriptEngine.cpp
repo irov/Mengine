@@ -158,13 +158,13 @@ namespace Menge
 		m_moduleMenge = this->initModule( "Menge" );
 
         this->addGlobalModule( "Menge"
-			, m_moduleMenge 
+			, (ScriptObject *)m_moduleMenge
 			);
 
         uint32_t python_version = pybind::get_python_version();
 
 		this->addGlobalModule( "_PYTHON_VERSION"
-			, pybind::ptr( python_version ) 
+			, (ScriptObject *)pybind::ptr( python_version )
 			);
 		
 		pybind::set_currentmodule( m_moduleMenge );
@@ -550,18 +550,18 @@ namespace Menge
 		return module;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::setCurrentModule( PyObject * _module )
+	void ScriptEngine::setCurrentModule( ScriptObject * _module )
 	{
-		pybind::set_currentmodule( _module );
+		pybind::set_currentmodule( (PyObject*)_module );
 	}
     //////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::addGlobalModule( const Char * _name, PyObject * _module )
+	void ScriptEngine::addGlobalModule( const Char * _name, ScriptObject * _module )
     {        
         PyObject * builtins = pybind::get_builtins();
 
         PyObject * dir_bltin = pybind::module_dict( builtins );
 
-        pybind::dict_set_t( dir_bltin, _name, _module );
+        pybind::dict_set_t( dir_bltin, _name, (PyObject*)_module );
     }
     //////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::removeGlobalModule( const Char * _name )
@@ -573,12 +573,12 @@ namespace Menge
         pybind::dict_remove_t( dir_bltin, _name );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptEngine::stringize( PyObject * _object, ConstString & _str )
+    bool ScriptEngine::stringize( ScriptObject * _object, ConstString & _str )
     {
-        if( pybind::string_check( _object ) == false )
+        if( pybind::string_check( (PyObject*)_object ) == false )
         {            
             LOGGER_ERROR(m_serviceProvider)("ScriptEngine::stringize invalid stringize object %s"
-                , pybind::object_repr( _object )
+                , pybind::object_repr( (PyObject*)_object )
                 );
 
             return false;
@@ -586,58 +586,12 @@ namespace Menge
 
         ConstStringHolderPythonString * stlString = m_factoryPythonString.createObject();
 
-        stlString->setPythonObject( _object );
+        stlString->setPythonObject( (PyObject*)_object );
 
         _str = ConstString(stlString);
 
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::addEntityPrototype( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
-	{
-		EntityPrototypeGeneratorPtr generator =	m_factoryEntityPrototypeGenerator.createObject();
-
-		generator->setScriptGenerator( _generator );
-
-		bool successful = PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( _category, _prototype, generator );
-
-		return successful;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	pybind::object ScriptEngine::importEntity( const ConstString & _category, const ConstString & _prototype )
-	{
-		PrototypeGeneratorInterfacePtr generator;
-		if( PROTOTYPE_SERVICE(m_serviceProvider)
-			->hasPrototype( _category, _prototype, generator ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ScriptEngine::importEntity: can't import '%s' '%s'"
-				, _category.c_str()
-				, _prototype.c_str()
-				);
-
-			return pybind::make_none_t();
-		}
-
-#	ifdef _DEBUG
-		if( stdex::intrusive_dynamic_cast<EntityPrototypeGeneratorPtr>(generator) == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ScriptEngine::importEntity: can't cast to EntityPrototypeGenerator '%s' '%s'"
-				, _category.c_str()
-				, _prototype.c_str()
-				);
-
-			return pybind::make_none_t();
-		}
-#	endif
-
-		EntityPrototypeGeneratorPtr entityGenerator = 
-			stdex::intrusive_static_cast<EntityPrototypeGeneratorPtr>(generator);
-
-		pybind::object py_type = entityGenerator->preparePythonType();
-
-		return py_type;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::setWrapper( const ConstString & _type, ScriptWrapperInterface * _wrapper )
 	{

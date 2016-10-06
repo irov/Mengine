@@ -8,9 +8,10 @@ namespace Metacode
 {
     uint32_t get_metacode_magic();
     uint32_t get_metacode_version();
-    bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion );
+    uint32_t get_metacode_protocol();
+    bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, uint32_t & _readProtocol, uint32_t & _needProtocol );
     bool readStrings( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringCount );
-    const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize );
+    const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, int32_t & _stringHash );
 
     class Meta_DataBlock
         : public Metabuf::Metadata

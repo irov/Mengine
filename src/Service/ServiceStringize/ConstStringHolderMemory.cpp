@@ -18,20 +18,14 @@ namespace Menge
 		stdex::memorycopy( m_buff, 0, _value, _size );
 		m_buff[_size] = '\0';
 
-		this->setup( m_buff, _size, _hash, true );
+		this->setup( m_buff, _size, _hash );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConstStringHolderMemory::_releaseString()
-	{
-		Helper::freeMemory( m_buff );
-		m_buff = nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ConstStringHolderMemory::_destroyString()
+	void ConstStringHolderMemory::destroyString()
 	{
 		Helper::freeMemory( m_buff );
 		m_buff = nullptr;
 
-		this->destroy();
+        this->destroy();
 	}
 }

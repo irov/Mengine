@@ -4,8 +4,9 @@
 
 #   include "Factory/FactoryStore.h"
 
-#   include "ConstStringHolderStringExternal.h"
 #   include "ConstStringHolderMemory.h"
+
+#   include "stdex/intrusive_list.h"
 
 namespace Menge
 {	
@@ -18,16 +19,20 @@ namespace Menge
         ~StringizeService();
 
 	public:
-		bool stringize( const char * _str, size_t _size, bool _external, ConstString & _cstr ) override;
-		void stringizeLocal( const char * _str, size_t _size, ConstString & _cstr, ConstStringHolderLocal & _holder ) override;
+		void stringize( const char * _str, size_t _size, ConstString::hash_type _hash, ConstString & _cstr ) override;
+
+        bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) override;
 
     protected:	
 		typedef FactoryPoolStore<ConstStringHolderMemory, 512> FactoryConstStringHolderMemory;
 		FactoryConstStringHolderMemory m_poolHolderStringMemory;
 
-		typedef FactoryPoolStore<ConstStringHolderStringExternal, 128> FactoryPoolStringExternal;
-		FactoryPoolStringExternal m_poolStringExternal;
-
-		size_t m_memory;
+        typedef stdex::intrusive_list<ConstStringHolder> TIntrusiveListConstStringHolder;
+        TIntrusiveListConstStringHolder m_holdres[4096];
+        
+    protected:
+        ConstStringHolder * testHolder_( const char * _str, ConstString::size_type _size, ConstString::hash_type _hash );
+        void addHolder_( ConstStringHolder * _holder, ConstString & _cstr );
+        TIntrusiveListConstStringHolder & getList_( ConstStringHolder::hash_type _hash );
 	};
 }

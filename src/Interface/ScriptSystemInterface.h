@@ -9,8 +9,6 @@
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
 
-#	include "pybind/object.hpp"
-
 #	include <stdex/stl_vector.h>
 
 #	include <stdarg.h>
@@ -19,6 +17,8 @@ namespace Menge
 {	    
     class Scriptable;
 	class Eventable;
+    //////////////////////////////////////////////////////////////////////////
+    typedef void * ScriptObject;
 	//////////////////////////////////////////////////////////////////////////
     class ScriptWrapperInterface
     {
@@ -35,7 +35,7 @@ namespace Menge
 		virtual void finalize() = 0;
 
     public:
-		virtual PyObject * wrap( Scriptable * _node ) = 0;
+		virtual ScriptObject * wrap( Scriptable * _node ) = 0;
 
     public:
         virtual void destroy() = 0;
@@ -63,7 +63,7 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ScriptModuleInterface> ScriptModuleInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 	class ScriptServiceInterface
 		: public ServiceInterface
 	{
@@ -84,16 +84,12 @@ namespace Menge
 
 		virtual ScriptModuleInterfacePtr importModule( const ConstString& _name ) = 0;
 
-		virtual void setCurrentModule( PyObject * _module ) = 0;
-		virtual void addGlobalModule( const Char * _name, PyObject * _module ) = 0;
+		virtual void setCurrentModule( ScriptObject * _module ) = 0;
+        virtual void addGlobalModule( const Char * _name, ScriptObject * _module ) = 0;
 		virtual void removeGlobalModule( const Char * _name ) = 0;
 
     public:
-        virtual bool stringize( PyObject * _object, ConstString & _str ) = 0;
-
-	public:
-		virtual bool addEntityPrototype( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator ) = 0;
-		virtual pybind::object importEntity( const ConstString & _category, const ConstString & _prototype ) = 0;
+        virtual bool stringize( ScriptObject * _object, ConstString & _str ) = 0;
 	};
 
 #   define SCRIPT_SERVICE( serviceProvider )\

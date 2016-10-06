@@ -67,7 +67,7 @@ namespace Menge
 
 			do
 			{
-				String::size_type pos = String::npos;
+				pos = String::npos;
 
 				for( TVectorString::const_iterator
 					it = _delims.begin(),

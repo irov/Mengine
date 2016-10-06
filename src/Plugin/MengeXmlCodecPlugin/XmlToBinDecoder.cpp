@@ -267,7 +267,6 @@ namespace Menge
         }
 
         bin_stream->write( &header_buf[0], Metabuf::header_size );
-		bin_stream->write( &FORMAT_VERSION_BIN, sizeof(FORMAT_VERSION_BIN) );
 
 		uint32_t write_bin_size = (uint32_t)bin_size;
         bin_stream->write( &write_bin_size, sizeof(write_bin_size) );

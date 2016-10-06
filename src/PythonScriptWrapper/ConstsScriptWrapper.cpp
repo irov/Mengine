@@ -71,7 +71,7 @@ namespace Menge
 		if( pybind::string_check( _obj ) == true )
 		{
 			if( SCRIPT_SERVICE( serviceProvider )
-				->stringize( _obj, cstr ) == false )
+				->stringize( (ScriptObject *)_obj, cstr ) == false )
 			{
 				return false;
 			}

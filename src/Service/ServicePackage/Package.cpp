@@ -333,6 +333,12 @@ namespace Menge
 			if( RESOURCE_SERVICE(m_serviceProvider)
 				->loadResources( m_locale, m_name, desc.path, desc.ignored ) == false )
             {
+                LOGGER_ERROR( m_serviceProvider )("Package::enable '%s:%s' invalid load resource '%s'"
+                    , m_path.c_str()
+                    , m_name.c_str()
+                    , desc.path.c_str()
+                    );
+
                 return false;
             }
 
@@ -355,6 +361,12 @@ namespace Menge
 
 			if( this->loadFont_( m_name, path ) == false )
 			{
+                LOGGER_ERROR( m_serviceProvider )("Package::enable '%s:%s' invalid load font '%s'"
+                    , m_path.c_str()
+                    , m_name.c_str()
+                    , path.c_str()
+                    );
+
 				return false;
 			}
 		}
@@ -369,6 +381,12 @@ namespace Menge
 
 			if( this->loadText_( m_name, path ) == false )
             {
+                LOGGER_ERROR( m_serviceProvider )("Package::enable '%s:%s' invalid load text '%s'"
+                    , m_path.c_str()
+                    , m_name.c_str()
+                    , path.c_str()
+                    );
+
                 return false;
             }
 		}
@@ -383,6 +401,13 @@ namespace Menge
 
 			if( this->addUserData_( m_name, desc.name, desc.path ) == false )
 			{
+                LOGGER_ERROR( m_serviceProvider )("Package::enable '%s:%s' invalid load userdata '%s' path '%s'"
+                    , m_path.c_str()
+                    , m_name.c_str()
+                    , desc.name.c_str()
+                    , desc.path.c_str()
+                    );
+
 				return false;
 			}
 		}
@@ -397,6 +422,12 @@ namespace Menge
 
 			if( this->loadMaterials_( m_name, path ) == false )
 			{
+                LOGGER_ERROR( m_serviceProvider )("Package::enable '%s:%s' invalid load material '%s'"
+                    , m_path.c_str()
+                    , m_name.c_str()
+                    , path.c_str()
+                    );
+
 				return false;
 			}
 		}

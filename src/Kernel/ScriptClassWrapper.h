@@ -20,15 +20,11 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-#   ifdef MENGINE_SCRIPTABLE
 			pybind::bindable * bindable = static_cast<pybind::bindable *>(_self);
 
             PyObject * py_obj = bindable->getEmbed();
 
-            return py_obj;
-#   else
-            return pybind::ret_none();
-#   endif			
+            return py_obj;		
         }
     };
 

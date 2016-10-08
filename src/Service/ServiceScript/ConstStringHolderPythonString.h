@@ -2,14 +2,14 @@
 
 #   include "Factory/Factorable.h"
 #   include "Core/ConstString.h"
+#   include "Core/ConstStringHolder.h"
 
 #   include <pybind/pybind.hpp>
 
 namespace Menge
 {
     class ConstStringHolderPythonString
-        : public stdex::const_string2_holder
-        , public Factorable
+        : public ConstStringHolder
     {
     public:
         ConstStringHolderPythonString();

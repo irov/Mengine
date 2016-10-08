@@ -573,7 +573,7 @@ namespace Menge
         pybind::dict_remove_t( dir_bltin, _name );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptEngine::stringize( ScriptObject * _object, ConstString & _str )
+    bool ScriptEngine::stringize( ScriptObject * _object, ConstString & _cstr )
     {
         if( pybind::string_check( (PyObject*)_object ) == false )
         {            
@@ -584,11 +584,15 @@ namespace Menge
             return false;
         }
 
-        ConstStringHolderPythonString * stlString = m_factoryPythonString.createObject();
+        ConstStringHolderPythonString * holder = m_factoryPythonString.createObject();
 
-        stlString->setPythonObject( (PyObject*)_object );
+        holder->setPythonObject( (PyObject*)_object );
 
-        _str = ConstString(stlString);
+        if( STRINGIZE_SERVICE( m_serviceProvider )
+            ->stringizeExternal( holder, _cstr ) == false )
+        {
+            holder->destroy();
+        }
 
         return true;
     }

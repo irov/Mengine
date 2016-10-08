@@ -16,7 +16,7 @@ namespace Menge
 
         const char * data = pybind::string_to_char( m_value );
         size_t size = pybind::string_size( m_value );
-        ConstString::hash_type hash = pybind::object_hash( m_value );
+        ConstString::hash_type hash = pybind::string_hash( m_value );
 		
         this->setup( data, size, hash );
     }

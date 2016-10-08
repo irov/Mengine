@@ -117,17 +117,8 @@ namespace Menge
 			return nullptr;
 		}
 
-		Entity * entity = nullptr;
-
-		if( py_entity.is_class() == true )
-		{
-			entity = py_entity.extract();
-		}
-		else
-		{
-			entity = PROTOTYPE_SERVICE( m_serviceProvider )
-				->generatePrototypeT<Entity *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), m_category );
-		}
+		Entity * entity = PROTOTYPE_SERVICE( m_serviceProvider )
+            ->generatePrototypeT<Entity *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), m_category );
 
 		if( entity == nullptr )
 		{
@@ -139,8 +130,6 @@ namespace Menge
 			return nullptr;
 		}
 
-		entity->setServiceProvider( m_serviceProvider );
-		entity->setType( m_category );
 		entity->setPrototype( m_prototype );
 
 		entity->setScriptEventable( this );

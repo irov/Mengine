@@ -24,7 +24,6 @@ namespace Menge
 		return m_scriptWrapper;
 	}
 	//////////////////////////////////////////////////////////////////////////
-#   ifdef MENGINE_SCRIPTABLE
     PyObject * Scriptable::_embedded()
 	{
 		if( m_scriptWrapper == nullptr )
@@ -32,14 +31,8 @@ namespace Menge
 			return nullptr;
 		}
 
-		PyObject * embedding = m_scriptWrapper->wrap( this );
+		PyObject * embedding = (PyObject *)m_scriptWrapper->wrap( this );
 
 		return embedding;
 	}
-#   else
-    void Scriptable::setEmbed(void * _dummy)
-    {
-        (void)_dummy;
-    }
-#   endif
 }

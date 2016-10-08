@@ -63,84 +63,84 @@ Scene
 )
 
 ADD_FILTER(
-Node\\\\ScriptHolder
+ScriptHolder
 	ScriptHolder.cpp
 	ScriptHolder.h
 )
 
 ADD_FILTER(
-Node\\\\BoundingBox
+BoundingBox
 	BoundingBox.cpp
 	BoundingBox.h
 )
 
 ADD_FILTER(
-Node\\\\Identity
+Identity
 	Identity.cpp
 	Identity.h
 )
 
 ADD_FILTER(
-Node\\\\Entity
+Entity
 	Entity.cpp
 	Entity.h
 )
 
 ADD_FILTER(
-Node\\\\Scriptable
+Scriptable
 	Scriptable.cpp
 	Scriptable.h
 )
 
 ADD_FILTER(
-Node\\\\Animatable
+Animatable
 	Animatable.cpp
 	Animatable.h
 )
 
 ADD_FILTER(
-Node\\\\Soundable
+Soundable
 	Soundable.cpp
 	Soundable.h
 )
 
 ADD_FILTER(
-Node\\\\Comable
+Comable
     Comable.h
 )
 
 ADD_FILTER(
-Node\\\\Updatable
+Updatable
 	Updatable.cpp
 	Updatable.h
 )
 
 ADD_FILTER(
-Node\\\\Renderable
+Renderable
 	Renderable.cpp
 	Renderable.h
 )
 
 ADD_FILTER(
-Node\\\\Transformation3D
+Transformation3D
 	Transformation3D.cpp
 	Transformation3D.h
 )
 
 ADD_FILTER(
-Node\\\\Colorable
+Colorable
 	Colorable.cpp
 	Colorable.h
 )
 
 ADD_FILTER(
-Node\\\\Affectorable
+Affectorable
 	Affectorable.cpp
 	Affectorable.h
 )
 
 ADD_FILTER(
-Node\\\\Materialable
+Materialable
 	Materialable.cpp
 	Materialable.h
 )
@@ -243,7 +243,7 @@ Visitable
 )
 
 ADD_FILTER(
-Manager\\\\Schedule
+ScheduleManager
 	ScheduleManager.cpp
 	ScheduleManager.h
 )

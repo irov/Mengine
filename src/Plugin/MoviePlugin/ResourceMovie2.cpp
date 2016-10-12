@@ -53,14 +53,6 @@ namespace Menge
 
 				return data_resource;
 			}
-		case AE_MOVIE_RESOURCE_MESH:
-			{
-				const aeMovieResourceMesh * resource_mesh = (const aeMovieResourceMesh *)_resource;
-
-				ResourceReference * data_resource = resourceMovie2->createResourceImage_( resource_mesh->path, resource_mesh->width, resource_mesh->height );
-
-				return data_resource;
-			}break;
 		}		
 
 		return AE_NULL;
@@ -135,7 +127,7 @@ namespace Menge
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie2::_compile: '%s' group '%s' can`t open file '%s'"
+			LOGGER_ERROR( m_serviceProvider )("ResourceMovie2::_compile: '%s' group '%s' can`t open file '%s'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, m_filePath.c_str()
@@ -162,9 +154,8 @@ namespace Menge
 		}
 
 		m_movieData = movieData;
-
 		stream = nullptr;
-
+	
 		for( TVectorResources::const_iterator
 			it = m_resources.begin(),
 			it_end = m_resources.end();

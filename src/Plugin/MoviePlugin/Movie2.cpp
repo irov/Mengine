@@ -442,26 +442,25 @@ namespace Menge
 		providers.composition_state = &ae_movie_composition_state;
 		
 
-		aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, &providers, this );
+		//while( true )
+		//{
+			aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, &providers, this );
 
-		if( composition == nullptr )
-		{
-			return false;
-		}
+			if( composition == nullptr )
+			{
+				return false;
+			}
 
-		ae_set_movie_composition_loop( composition, AE_TRUE );
-		ae_set_movie_composition_interpolate( composition, AE_FALSE );
+			ae_set_movie_composition_loop( composition, AE_TRUE );
+			ae_set_movie_composition_interpolate( composition, AE_FALSE );
 
-		//float a, b;
-		//bool ok = ae_get_movie_composition_node_in_out_time( composition, "freespins_win", AE_MOVIE_LAYER_TYPE_EVENT, &a, &b );
+			uint32_t max_render_node = ae_get_movie_composition_max_render_node( composition );
 
-		//ae_set_movie_composition_work_area( composition, a, b );
+			m_meshes.reserve( max_render_node );
 
-		uint32_t max_render_node = ae_get_movie_composition_max_render_node( composition );
-
-		m_meshes.reserve( max_render_node );
-
-		m_composition = composition;
+			//ae_destroy_movie_composition( composition );
+			m_composition = composition;
+		//}		
 				
 		return true;
 	}

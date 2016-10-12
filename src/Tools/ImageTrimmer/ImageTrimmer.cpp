@@ -455,18 +455,20 @@ namespace Menge
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-static bool parse_arg( wchar_t * _arg, const wchar_t * _key, Menge::WString & _value )
+static bool parse_kwds( wchar_t ** _kwds, int & _index, const wchar_t * _key, Menge::WString & _value )
 {
-	wchar_t * str = wcsstr( _arg, _key );
+	wchar_t * arg = _kwds[_index + 0];
 
-	if( str == nullptr )
+	if( wcscmp( arg, _key ) != 0 )
 	{
 		return false;
 	}
 
-	size_t key_size = wcslen( _key );
+	wchar_t * value = _kwds[_index + 1];
 
-	_value = str + key_size;
+	_value = value;
+
+	_index += 2;
 
 	return true;
 }
@@ -476,7 +478,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	(void)hInstance;
 	(void)hPrevInstance;
 	(void)nShowCmd;
-
+	
 	stdex_allocator_initialize();
 
 	int cmd_num;
@@ -485,12 +487,21 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	Menge::WString in;
 	Menge::WString out;
 
-	for( int i = 0; i != cmd_num; ++i )
+	for( int i = 0; i != cmd_num; )
 	{
-		LPWSTR arg = cmd_args[i + 0];
+		int index = i;
 
-		parse_arg( arg, L"--in=", in );
-		parse_arg( arg, L"--out=", out );
+		parse_kwds( cmd_args, index, L"--in", in );
+		parse_kwds( cmd_args, index, L"--out", out );
+
+		if( index == i )
+		{
+			++i;
+		}
+		else
+		{
+			i = index;
+		}
 	}
 
 	if( in.empty() == true )

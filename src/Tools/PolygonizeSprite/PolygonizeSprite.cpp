@@ -303,44 +303,88 @@ namespace Menge
 
 		std::stringstream ss;
 
-		ss << tri.vertCount << " ";
-		ss << tri.indexCount << " ";
+		printf( "vertex_count=%d\n", tri.vertCount );
+		printf( "indices_count=%d\n", tri.indexCount );
 
+		//ss << tri.vertCount << " ";
+		//ss << tri.indexCount << " ";
+
+		printf( "positions=" );
 		for( size_t i = 0; i != tri.vertCount; ++i )
 		{
 			Vertex * v = tri.verts + i;
 
-			ss << v->pos.x << " ";
-			ss << height - v->pos.y << " ";
-		}
+			float x = v->pos.x;
+			float y = height - v->pos.y;
 
+			printf( "%16f %16f ", x, y );
+
+			//ss << v->pos.x << " ";
+			//ss << height - v->pos.y << " ";
+		}
+		printf( "\n" );
+
+		printf( "uvs=" );
 		for( size_t i = 0; i != tri.vertCount; ++i )
 		{
 			Vertex * v = tri.verts + i;
 
-			ss << v->uv.x << " ";
-			ss << v->uv.y << " ";
+			float x = v->uv.x;
+			float y = v->uv.y;
+
+			printf( "%16f %16f ", x, y );
+			//ss << v->uv.x << " ";
+			//ss << v->uv.y << " ";
 		}
 
+		printf( "\n" );
+
+		printf( "indices=" );
 		for( size_t i = 0; i != tri.indexCount; ++i )
 		{
 			uint16_t index = tri.indices[i];
 
-			ss << index << " ";
+			printf( "%u ", index );
+
+			//ss << index << " ";
 		}
+		printf( "\n" );
 
-		ss << std::endl;
+		//ss << std::endl;
 
-		std::string str = ss.str();
+		//std::string str = ss.str();
 
-		printf(
-			str.c_str()
-			);
+		//printf(
+		//	str.c_str()
+		//	);
 
         return true;
     }
 }
+//////////////////////////////////////////////////////////////////////////
+static bool parse_kwds( wchar_t ** _kwds, int & _index, const wchar_t * _key, Menge::WString & _value )
+{
+	wchar_t * arg = _kwds[_index + 0];
 
+	if( wcscmp( arg, _key ) != 0 )
+	{
+		return false;
+	}
+
+	wchar_t * value = _kwds[_index + 1];
+
+	_value = value;
+
+	if( _value.front() == L'\"' && _value.back() == L'\"' )
+	{
+		_value = _value.substr( 1, _value.size() - 2 );
+	}
+
+	_index += 2;
+
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd)
 {
     (void)hInstance;
@@ -356,24 +400,23 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdL
 	Menge::WString epsilon;
 	Menge::WString threshold;
 
-    for( int i = 0; i < cmd_num; i += 2 )
-    {
-        LPWSTR arg = cmd_args[i + 0];
-        LPWSTR value = cmd_args[i + 1];
+	for( int i = 0; i != cmd_num; )
+	{
+		int index = i;
 
-        if( wcscmp(arg, L"-in") == 0 )
-        {
-            in = value;
-        }
-		else if( wcscmp( arg, L"-epsilon" ) == 0 )
+		parse_kwds( cmd_args, index, L"--in", in );
+		parse_kwds( cmd_args, index, L"--epsilon", epsilon );
+		parse_kwds( cmd_args, index, L"--threshold", threshold );
+
+		if( index == i )
 		{
-			epsilon = value;
+			++i;
 		}
-		else if( wcscmp( arg, L"-threshold" ) == 0 )
+		else
 		{
-			threshold = value;
-		}		
-    }
+			i = index;
+		}
+	}
 
     if( in.empty() == true )
     {

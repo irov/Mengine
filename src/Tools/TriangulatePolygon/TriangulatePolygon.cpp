@@ -149,68 +149,91 @@ static void message_error( const char * _format, ... )
 	printf( str );
 }
 //////////////////////////////////////////////////////////////////////////
-class CommandLineStream
+static void parse_arg( const std::wstring & _str, bool & _value )
 {
-public:
-	CommandLineStream( PWSTR _lpCmdLine )
-		: m_cmd_index(0)
-		, m_cmd_num(0)
-	{		
-		m_cmd_args = CommandLineToArgvW( _lpCmdLine, &m_cmd_num );
+	uint32_t value;
+	swscanf( _str.c_str(), L"%u", &value );
+
+	_value = (value != 0);
+}
+//////////////////////////////////////////////////////////////////////////
+static void parse_arg( const std::wstring & _str, double & _value )
+{
+	double value;
+	swscanf( _str.c_str(), L"%lf", &value );
+
+	_value = value;
+}
+//////////////////////////////////////////////////////////////////////////
+static void parse_arg( const std::wstring & _str, vec2f & _value )
+{
+	double value_x;
+	double value_y;
+	swscanf( _str.c_str(), L"%lf %lf", &value_x, &value_y );
+
+	_value.x = value_x;
+	_value.y = value_y;
+}
+//////////////////////////////////////////////////////////////////////////
+static void parse_arg( const std::wstring & _str, TVectorPoints & _value )
+{
+	std::vector<std::wstring> tokens;
+
+	std::wstringstream wss(_str);
+	
+	std::wstring buf;
+	while( wss >> buf )
+	{
+		tokens.push_back( buf );
 	}
 
-public:
-	bool read_b()
+	uint32_t count;
+	swscanf( tokens[0].c_str(), L"%u", &count );
+
+	for( uint32_t i = 0; i != count; ++i )
 	{
-		LPWSTR arg = m_cmd_args[m_cmd_index++];
-
-		uint32_t value;
-		swscanf( arg, L"%u", &value );
-
-		return value != 0;
-	}
-
-	uint32_t read_u()
-	{
-		LPWSTR arg = m_cmd_args[m_cmd_index++];
-
-		uint32_t value;
-		swscanf( arg, L"%u", &value );
-
-		return value;
-	}
-
-	double read_f()
-	{
-		LPWSTR arg = m_cmd_args[m_cmd_index++];
-
-		double value;
-		swscanf( arg, L"%lf", &value );
-
-		return value;
-	}
-
-	vec2f read_v2()
-	{
-		LPWSTR arg_x = m_cmd_args[m_cmd_index++];
-
 		double value_x;
-		swscanf( arg_x, L"%lf", &value_x );
-
-		LPWSTR arg_y = m_cmd_args[m_cmd_index++];
+		swscanf( tokens[1 + i * 2 + 0].c_str(), L"%lf", &value_x );
 
 		double value_y;
-		swscanf( arg_y, L"%lf", &value_y );
+		swscanf( tokens[1 + i * 2 + 1].c_str(), L"%lf", &value_y );
 
-		return vec2f( value_x, value_y );
+		_value.push_back( vec2f( value_x, value_x ) );
 	}
+}
+//////////////////////////////////////////////////////////////////////////
+template<class T>
+static T parse_kwds( PWSTR lpCmdLine, const wchar_t * _key, const T & _default )
+{	
+	int cmd_num;
+	LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
 
-protected:
-	uint32_t m_cmd_index;
+	for( int i = 0; i != cmd_num; ++i )
+	{
+		wchar_t * arg = cmd_args[i + 0];
+
+		if( wcscmp( arg, _key ) != 0 )
+		{
+			continue;
+		}
+
+		wchar_t * arg_value = cmd_args[i + 1];
+
+		std::wstring wstr_value = arg_value;
+
+		if( wstr_value.front() == L'\"' && wstr_value.back() == L'\"' )
+		{
+			wstr_value = wstr_value.substr( 1, wstr_value.size() - 2 );
+		}
+
+		T value;
+		parse_arg( wstr_value, value );
+
+		return value;
+	}
 	
-	int m_cmd_num;
-	LPWSTR * m_cmd_args;
-};
+	return _default;
+}
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
@@ -218,23 +241,26 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	(void)hPrevInstance;
 	(void)nShowCmd;
 
-	CommandLineStream stream( lpCmdLine );
-	
-	bool image_bb = stream.read_b();
+	std::wstring arg_image_bb;
+	std::wstring arg_image_base_size;
+	std::wstring arg_image_trim_size;
+	std::wstring arg_image_trim_offset;
+	std::wstring arg_polygon_input;
 
-	vec2f image_base_size = stream.read_v2();
-	vec2f image_trim_size = stream.read_v2();
-	vec2f image_trim_offset = stream.read_v2();
-	
-	bool subtract = stream.read_b();
+	bool image_bb = parse_kwds( lpCmdLine, L"--bb", false );
+	vec2f image_base_size = parse_kwds( lpCmdLine, L"--base_size", vec2f(0.0, 0.0) );
+	vec2f image_trim_size = parse_kwds( lpCmdLine, L"--trim_size", vec2f( 0.0, 0.0 ) );
+	vec2f image_trim_offset = parse_kwds( lpCmdLine, L"--trim_offset", vec2f( 0.0, 0.0 ) );
+	bool image_subtract = parse_kwds( lpCmdLine, L"--subtract", false );	
+	TVectorPoints points = parse_kwds( lpCmdLine, L"--points", TVectorPoints() );
 
-	uint32_t points_count = stream.read_u();
+	size_t points_count = points.size();
 
 	BoostPolygon polygon_input;
 	
-	for( uint32_t points_index = 0; points_index != points_count; ++points_index )
+	for( size_t points_index = 0; points_index != points_count; ++points_index )
 	{
-		vec2f v = stream.read_v2();
+		const vec2f & v = points[points_index];
 
 		boost::geometry::append( polygon_input, v );
 	}
@@ -257,7 +283,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		boost::geometry::append( imagePolygon, v3 );
 		boost::geometry::correct( imagePolygon );
 
-		if( subtract == false )
+		if( image_subtract == false )
 		{
 			std::deque<BoostPolygon> result;
 

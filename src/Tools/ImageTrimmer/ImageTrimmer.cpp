@@ -468,6 +468,11 @@ static bool parse_kwds( wchar_t ** _kwds, int & _index, const wchar_t * _key, Me
 
 	_value = value;
 
+	if( _value.front() == L'\"' && _value.back() == L'\"' )
+	{
+		_value = _value.substr( 1, _value.size() - 2 );
+	}
+
 	_index += 2;
 
 	return true;

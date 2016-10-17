@@ -1340,7 +1340,17 @@ namespace Menge
 			
 			IDirect3DTexture9 * dx_texture = image->getDXTextureInterface();
 
+#	ifdef _DEBUG
+			DWORD fillmode;
+			DXCALL( m_serviceProvider, m_pD3DDevice, GetRenderState, (D3DRS_FILLMODE, &fillmode) );
+
+			if( fillmode != D3DFILL_WIREFRAME )
+			{
+				DXCALL( m_serviceProvider, m_pD3DDevice, SetTexture, (_stage, dx_texture) );
+			}
+#	else
 			DXCALL( m_serviceProvider, m_pD3DDevice, SetTexture, (_stage, dx_texture) );
+#	endif			
 
 			m_textureEnable[_stage] = true;
         }

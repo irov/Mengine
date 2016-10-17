@@ -760,6 +760,7 @@ namespace Menge
 		RENDER_SYSTEM( m_serviceProvider )->setWorldMatrix( worldTransform );
 		RENDER_SYSTEM( m_serviceProvider )->setCullMode( CM_CULL_NONE );
 		RENDER_SYSTEM( m_serviceProvider )->setFillMode( FM_SOLID );
+		//RENDER_SYSTEM( m_serviceProvider )->setFillMode( FM_WIREFRAME );
 		RENDER_SYSTEM( m_serviceProvider )->setDepthBufferTestEnable( false );
 		RENDER_SYSTEM( m_serviceProvider )->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
 		RENDER_SYSTEM( m_serviceProvider )->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );

@@ -771,6 +771,11 @@ namespace Menge
 					m.material = Helper::makeImageMaterial( m_serviceProvider, resource_image, ConstString::none(), blend_mode, false, false );
 
 					//printf( "%f %f\n", ae_get_movie_composition_time( m_composition ), mesh.a );
+
+					if( m.vertices.size() == 0 )
+					{
+						continue;
+					}
 					
 					RENDER_SERVICE( m_serviceProvider )
 						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );

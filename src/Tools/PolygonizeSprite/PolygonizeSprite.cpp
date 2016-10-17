@@ -291,15 +291,22 @@ namespace Menge
             return false;
         }
 
+		imageDecoder = nullptr;
+		input_stream = nullptr;
+
         AutoPolygon ap(textureBuffer, width, height);
 		
 		float f_epsilon = 2.f;
 		Utils::wstringToFloat( epsilon, f_epsilon );
 
-		float f_threshold = 0.05f;
-		Utils::wstringToFloat( threshold, f_threshold );
+		uint32_t u_threshold = 0;
+		Utils::wstringToUnsigned( threshold, u_threshold );
 
-		Triangles tri = ap.generateTriangles( mt::rectf( 0.f, 0.f, (float)width, (float)height ), f_epsilon, f_threshold );
+		//Sleep( 10000 );
+
+		bool overlap;
+
+		Triangles tri = ap.generateTriangles( Rect( 0, 0, width, height ), f_epsilon, overlap, ( uint8_t )u_threshold );
 
 		std::stringstream ss;
 
@@ -390,6 +397,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdL
     (void)hInstance;
     (void)hPrevInstance;
     (void)nShowCmd;
+
+	//Sleep( 10000 );
 
     stdex_allocator_initialize();
 

@@ -145,10 +145,10 @@ namespace mt
 			mt::vec2f AD = A + (D - A) * uv.y;
 			mt::vec2f BC = B + (C - B) * uv.y;
 
-			mt::line uv_l1;
+			mt::line2f uv_l1;
 			mt::line_from_two_point_v2( uv_l1, AB, DC );
 
-			mt::line uv_l2;
+			mt::line2f uv_l2;
 			mt::line_from_two_point_v2( uv_l2, AD, BC );
 
 			mt::vec2f new_uv;
@@ -175,10 +175,10 @@ namespace mt
 			mt::vec2f AD = A + (D - A) * uv.y;
 			mt::vec2f BC = B + (C - B) * uv.y;
 
-			mt::line uv_l1;
+			mt::line2f uv_l1;
 			mt::line_from_two_point_v2( uv_l1, AB, DC );
 
-			mt::line uv_l2;
+			mt::line2f uv_l2;
 			mt::line_from_two_point_v2( uv_l2, AD, BC );
 
 			mt::vec2f new_uv;
@@ -201,10 +201,10 @@ namespace mt
 		mt::vec2f AD = A + (D - A) * _p.y;
 		mt::vec2f BC = B + (C - B) * _p.y;
 
-		mt::line uv_l1;
+		mt::line2f uv_l1;
 		mt::line_from_two_point_v2( uv_l1, AB, DC );
 
-		mt::line uv_l2;
+		mt::line2f uv_l2;
 		mt::line_from_two_point_v2( uv_l2, AD, BC );
 
 		mt::vec2f new_uv;

@@ -31,6 +31,11 @@ namespace Menge
 			return;
 		}
 
+		if( _resourceImage == nullptr )
+		{
+			return;
+		}
+
 		m_resourceImage = _resourceImage;
 
 		this->recompile();

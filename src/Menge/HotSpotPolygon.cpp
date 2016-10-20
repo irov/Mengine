@@ -289,7 +289,7 @@ namespace Menge
 			RenderVertex2D & v0 = vertices[i * 2 + 0];
 
 			v0.position = trP0;
-			
+
 			v0.color = m_debugColor;
 
 			for( size_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
@@ -304,7 +304,7 @@ namespace Menge
 			RenderVertex2D & v1 = vertices[i * 2 + 1];
 
 			v1.position = trP1;
-			
+
 			v1.color = m_debugColor;
 
 			for( size_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )

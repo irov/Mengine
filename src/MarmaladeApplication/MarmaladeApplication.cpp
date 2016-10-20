@@ -11,6 +11,8 @@
 #	include "Interface/TimerInterface.h"
 #	include "Interface/OptionsInterface.h"
 
+#   include "PythonScriptWrapper/PythonScriptWrapper.h"
+
 #	include <cstdio>
 #	include <clocale>
 
@@ -95,7 +97,7 @@ PLUGIN_EXPORT( MengeVideoCodec );
 PLUGIN_EXPORT( MengeAmplifier );
 PLUGIN_EXPORT( MengeZip );
 PLUGIN_EXPORT( MengeLZ4 );
-PLUGIN_EXPORT( MengeSpine );
+PLUGIN_EXPORT( Spine );
 PLUGIN_EXPORT( MengeOggVorbis );
 PLUGIN_EXPORT( PathFinder );
 PLUGIN_EXPORT( MarmaladeFileGroup );
@@ -531,11 +533,17 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, CodecService );
 		
 		SERVICE_CREATE( m_serviceProvider, InputService );
+
+		PythonScriptWrapper::constsWrap( m_serviceProvider );
+		PythonScriptWrapper::mathWrap( m_serviceProvider );
+		PythonScriptWrapper::nodeWrap( m_serviceProvider );
+		PythonScriptWrapper::helperWrap( m_serviceProvider );
+		PythonScriptWrapper::soundWrap( m_serviceProvider );
+		PythonScriptWrapper::entityWrap( m_serviceProvider );
 		
 		SERVICE_CREATE( m_serviceProvider, Application );
 
 		SERVICE_CREATE( m_serviceProvider, PrefetcherService );
-
 
 		PLUGIN_CREATE( m_serviceProvider, MengeImageCodec );
 		PLUGIN_CREATE( m_serviceProvider, MengeSoundCodec );
@@ -543,7 +551,7 @@ namespace Menge
 		PLUGIN_CREATE( m_serviceProvider, MengeVideoCodec );
 		PLUGIN_CREATE( m_serviceProvider, MengeAmplifier );
 		PLUGIN_CREATE( m_serviceProvider, PathFinder );
-		PLUGIN_CREATE( m_serviceProvider, MengeSpine );
+		PLUGIN_CREATE( m_serviceProvider, Spine );
 
 		TVectorString modules;
 		CONFIG_VALUES(m_serviceProvider, "Modules", "Name", modules);

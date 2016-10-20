@@ -1842,9 +1842,7 @@ namespace Menge
 			if( dx9_program->enable( m_pD3DDevice ) == false )
 			{
 				return;
-			}
-
-			dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix );
+			}			
 		}
 		else
 		{
@@ -1853,6 +1851,13 @@ namespace Menge
 			DXCALL( m_serviceProvider, m_pD3DDevice, SetPixelShader, (nullptr) );
 		}
 		//None
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderSystem::updateProgram( const RenderProgramInterfacePtr & _program )
+	{
+		DX9RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX9RenderProgramPtr>(_program);
+
+		dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setVSync( bool _vSync )

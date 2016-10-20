@@ -102,9 +102,6 @@
 
 #   include "Kernel/ResourceImage.h"
 
-//#	include "RigidBody2D.h"
-
-#	include "PhysicalBody2D.h"
 #	include "TilePolygon.h"
 
 #	include "Movie.h"

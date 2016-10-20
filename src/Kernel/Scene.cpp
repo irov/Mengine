@@ -21,14 +21,6 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	enum SceneEventFlag
-	{
-		EVENT_APP_MOUSE_LEAVE = 0,
-		EVENT_APP_MOUSE_ENTER,
-		EVENT_FOCUS,
-		EVENT_ON_SUB_SCENE,
-	};
-	//////////////////////////////////////////////////////////////////////////
 	void Scene::_setEventListener( const pybind::dict & _embed )
 	{
 		Entity::_setEventListener( _embed );

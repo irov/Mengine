@@ -33,7 +33,6 @@ namespace Menge
 	public:
 		My_observer_bind_call( ServiceProviderInterface * _serviceProvider )
 			: m_serviceProvider(_serviceProvider)
-			, m_count(0)
 		{
 		}
 
@@ -53,7 +52,7 @@ namespace Menge
 			size_t count = LOGGER_SERVICE(m_serviceProvider)
 				->getCountMessage( LM_ERROR );
 
-			m_count = count;
+			m_counts.push_back( count );
 		}
 
 		void end_bind_call( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
@@ -69,7 +68,9 @@ namespace Menge
 			size_t count = LOGGER_SERVICE(m_serviceProvider)
 				->getCountMessage( LM_ERROR );
 
-			if( m_count == count )
+			size_t last_count = m_counts.back();
+
+			if( last_count == count )
 			{
 				return;
 			}
@@ -103,7 +104,8 @@ namespace Menge
 	protected:		
 		ServiceProviderInterface * m_serviceProvider;
 
-		size_t m_count;
+		typedef std::vector<size_t> TVectorStackMsgCount;
+		TVectorStackMsgCount m_counts;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::ScriptEngine()

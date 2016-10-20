@@ -636,6 +636,7 @@ namespace Menge
 						
 		virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount ) = 0;
 		virtual void setProgram( const RenderProgramInterfacePtr & _program ) = 0;
+		virtual void updateProgram( const RenderProgramInterfacePtr & _program ) = 0;
         
 	public:
 		virtual void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,

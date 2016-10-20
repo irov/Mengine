@@ -619,6 +619,12 @@ namespace Menge
 		const RenderMaterialStage * stage = _material->getStage();
 
 		this->updateStage_( stage );
+
+		if( m_currentProgram != nullptr )
+		{
+			RENDER_SYSTEM( m_serviceProvider )
+				->updateProgram( m_currentProgram );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderObject_( RenderObject * _renderObject )

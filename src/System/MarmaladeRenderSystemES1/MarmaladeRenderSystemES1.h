@@ -94,6 +94,7 @@ namespace Menge
 
 		RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount ) override;
 		void setProgram( const RenderProgramInterfacePtr & _program ) override;
+		void updateProgram( const RenderProgramInterfacePtr & _program ) override;
 
 
 	public:

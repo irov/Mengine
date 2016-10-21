@@ -277,6 +277,11 @@ namespace Menge
 		m_currentProgram = stdex::intrusive_static_cast<MarmaladeProgramPtr>(_program);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeRenderSystem::updateProgram( const RenderProgramInterfacePtr & _program )
+	{
+		(void)_program;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::bindBuffer_( GLuint _vertexId, GLuint _indexId )
 	{
 		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, _vertexId) );

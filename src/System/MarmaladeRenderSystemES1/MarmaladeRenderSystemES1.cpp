@@ -297,6 +297,11 @@ namespace Menge
 		(void)_program;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeRenderSystemES1::updateProgram( const RenderProgramInterfacePtr & _program )
+	{
+		(void)_program;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::drawIndexedPrimitive( EPrimitiveType _type,
 		uint32_t _baseVertexIndex, uint32_t _minIndex,
 		uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount )

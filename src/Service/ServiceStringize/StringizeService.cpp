@@ -43,7 +43,7 @@ namespace Menge
 
         holder->setValue( _str, _size, _hash );
 
-        this->addHolder_( holder, _cstr );
+		this->addHolder_( holder, _hash, _cstr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool StringizeService::stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr )
@@ -52,16 +52,18 @@ namespace Menge
         ConstStringHolder::size_type holder_size = _holder->size();
         ConstStringHolder::hash_type holder_hash = _holder->hash();
 
-        if( holder_size == (size_t)-1 )
+		if( holder_size == (ConstStringHolder::size_type)(-1) )
         {
             holder_size = strlen( holder_str );
         }
 
-        if( holder_hash == (size_t)-1 )
+		if( holder_hash == (ConstStringHolder::hash_type) (-1) )
         {
             holder_hash = Helper::makeHash( holder_str, holder_size );
         }
 
+		_holder->setup( holder_str, holder_size, holder_hash );
+		
         ConstStringHolder * test = this->testHolder_( holder_str, holder_size, holder_hash );
         
         if( test != nullptr )
@@ -71,7 +73,7 @@ namespace Menge
             return false;
         }
 
-        this->addHolder_( _holder, _cstr );
+		this->addHolder_( _holder, holder_hash, _cstr );
 
         return true;
     }
@@ -108,11 +110,9 @@ namespace Menge
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::addHolder_( ConstStringHolder * _holder, ConstString & _cstr )
+    void StringizeService::addHolder_( ConstStringHolder * _holder, ConstString::hash_type _hash, ConstString & _cstr )
     {
-        ConstStringHolder::hash_type holder_hash = _holder->hash();
-
-        TIntrusiveListConstStringHolder & list = this->getList_( holder_hash );
+		TIntrusiveListConstStringHolder & list = this->getList_( _hash );
 
         list.push_back( _holder );
 

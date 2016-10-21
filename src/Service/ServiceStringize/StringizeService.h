@@ -32,7 +32,7 @@ namespace Menge
         
     protected:
         ConstStringHolder * testHolder_( const char * _str, ConstString::size_type _size, ConstString::hash_type _hash );
-        void addHolder_( ConstStringHolder * _holder, ConstString & _cstr );
+		void addHolder_( ConstStringHolder * _holder, ConstString::hash_type _hash, ConstString & _cstr );
         TIntrusiveListConstStringHolder & getList_( ConstStringHolder::hash_type _hash );
 	};
 }

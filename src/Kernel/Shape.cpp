@@ -26,12 +26,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Shape::setResourceImage( const ResourceImagePtr & _resourceImage )
 	{
-		if( m_resourceImage == _resourceImage )
+		if( _resourceImage == nullptr )
 		{
+			LOGGER_ERROR( m_serviceProvider )("Shape::setResourceImage name '%s' type '%s' set NULL resource image"
+				, this->getName().c_str()
+				, this->getType().c_str()
+				);
+
 			return;
 		}
 
-		if( _resourceImage == nullptr )
+		if( m_resourceImage == _resourceImage )
 		{
 			return;
 		}
@@ -50,8 +55,9 @@ namespace Menge
 	{
 		if( m_resourceImage == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Shape::compileResource_ '%s' image resource null"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Shape::compileResource_ '%s' type '%s' image resource null"
+				, this->getName().c_str()
+				, this->getType().c_str()
 				);
 
 			return false;
@@ -59,8 +65,9 @@ namespace Menge
 
 		if( m_resourceImage.compile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Shape::compileResource_ '%s' image resource %s not compile"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Shape::compileResource_ '%s' type '%s' image resource %s not compile"
+				, this->getName().c_str()
+				, this->getType().c_str()
 				, m_resourceImage->getName().c_str()
 				);
 

@@ -27,86 +27,90 @@ SERVICE_FACTORY( ScriptService, Menge::ScriptEngine );
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class My_observer_bind_call
-		: public pybind::observer_bind_call
+	namespace
 	{
-	public:
-		My_observer_bind_call( ServiceProviderInterface * _serviceProvider )
-			: m_serviceProvider(_serviceProvider)
+		class My_observer_bind_call
+			: public pybind::observer_bind_call
 		{
-		}
-
-	public:
-		void begin_bind_call( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
-		{
-			(void)_kwds;
-			(void)_args;
-			(void)_functionName;
-			(void)_className;
-
-			LOGGER_INFO( m_serviceProvider )("pybind call begin %s %s"
-				, _className
-				, _functionName
-				);
-
-			size_t count = LOGGER_SERVICE(m_serviceProvider)
-				->getCountMessage( LM_ERROR );
-
-			m_counts.push_back( count );
-		}
-
-		void end_bind_call( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
-		{
-			(void)_kwds;
-			(void)_args;
-
-			LOGGER_INFO( m_serviceProvider )("pybind call end %s %s"
-				, _className
-				, _functionName
-				);
-
-			size_t count = LOGGER_SERVICE(m_serviceProvider)
-				->getCountMessage( LM_ERROR );
-
-			size_t last_count = m_counts.back();
-
-			if( last_count == count )
+		public:
+			My_observer_bind_call( ServiceProviderInterface * _serviceProvider )
+				: m_serviceProvider( _serviceProvider )
 			{
-				return;
 			}
 
-			if( strcmp( _className, "ScriptLogger" ) == 0 )
+		public:
+			void begin_bind_call( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
 			{
-				return;
+				(void)_kwds;
+				(void)_args;
+				(void)_functionName;
+				(void)_className;
+
+				LOGGER_INFO( m_serviceProvider )("pybind call begin %s %s"
+					, _className
+					, _functionName
+					);
+
+				size_t count = LOGGER_SERVICE( m_serviceProvider )
+					->getCountMessage( LM_ERROR );
+
+				m_counts.push_back( count );
 			}
 
-			if( strcmp( _className, "ErrorScriptLogger" ) == 0 )
+			void end_bind_call( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
 			{
-				return;
+				(void)_kwds;
+				(void)_args;
+
+				LOGGER_INFO( m_serviceProvider )("pybind call end %s %s"
+					, _className
+					, _functionName
+					);
+
+				size_t count = LOGGER_SERVICE( m_serviceProvider )
+					->getCountMessage( LM_ERROR );
+
+				size_t last_count = m_counts.back();
+				m_counts.pop_back();
+
+				if( last_count == count )
+				{
+					return;
+				}
+
+				if( strcmp( _className, "ScriptLogger" ) == 0 )
+				{
+					return;
+				}
+
+				if( strcmp( _className, "ErrorScriptLogger" ) == 0 )
+				{
+					return;
+				}
+
+				LOGGER_ERROR( m_serviceProvider )("script call %s::%s and get error!"
+					, _className
+					, _functionName
+					);
+
+				bool exist;
+				PyObject * module_traceback = pybind::module_import( "traceback", exist );
+
+				if( module_traceback == nullptr )
+				{
+					return;
+				}
+
+				pybind::call_method( module_traceback, "print_stack", "()" );
 			}
-			
-			LOGGER_ERROR(m_serviceProvider)("script call %s::%s and get error!"
-				, _className
-				, _functionName
-				);
 
-			bool exist;
-			PyObject * module_traceback = pybind::module_import("traceback", exist );
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
 
-			if( module_traceback == nullptr )
-			{
-				return;
-			}
-
-			pybind::call_method( module_traceback, "print_stack", "()" );
-		}
-
-	protected:		
-		ServiceProviderInterface * m_serviceProvider;
-
-		typedef std::vector<size_t> TVectorStackMsgCount;
-		TVectorStackMsgCount m_counts;
-	};
+			typedef std::vector<size_t> TVectorStackMsgCount;
+			TVectorStackMsgCount m_counts;
+		};
+	}
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::ScriptEngine()
 		: m_moduleFinder(nullptr)

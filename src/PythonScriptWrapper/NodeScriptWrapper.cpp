@@ -3691,6 +3691,14 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_removeNodeFollower( AffectorFollower * _affector )
 		{
+			if( _affector == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("removeNodeFollower take NULL affector"
+					);
+
+				return;
+			}
+
 			_affector->stop();
 		}
 		//////////////////////////////////////////////////////////////////////////		

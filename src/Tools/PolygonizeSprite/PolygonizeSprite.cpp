@@ -310,19 +310,19 @@ namespace Menge
 
 		std::stringstream ss;
 
-		printf( "vertex_count=%d\n", tri.vertCount );
-		printf( "indices_count=%d\n", tri.indexCount );
+		printf( "vertex_count=%d\n", tri.verts.size() );
+		printf( "indices_count=%d\n", tri.indices.size() );
 
 		//ss << tri.vertCount << " ";
 		//ss << tri.indexCount << " ";
 
 		printf( "positions=" );
-		for( size_t i = 0; i != tri.vertCount; ++i )
+		for( size_t i = 0; i != tri.verts.size(); ++i )
 		{
-			Vertex * v = tri.verts + i;
+			Vertex & v = tri.verts[i];
 
-			float x = v->pos.x;
-			float y = height - v->pos.y;
+			float x = v.pos.x;
+			float y = height - v.pos.y;
 
 			printf( "%16f %16f ", x, y );
 
@@ -332,12 +332,12 @@ namespace Menge
 		printf( "\n" );
 
 		printf( "uvs=" );
-		for( size_t i = 0; i != tri.vertCount; ++i )
+		for( size_t i = 0; i != tri.verts.size(); ++i )
 		{
-			Vertex * v = tri.verts + i;
+			Vertex & v = tri.verts[i];
 
-			float x = v->uv.x;
-			float y = v->uv.y;
+			float x = v.uv.x;
+			float y = v.uv.y;
 
 			printf( "%16f %16f ", x, y );
 			//ss << v->uv.x << " ";
@@ -347,7 +347,7 @@ namespace Menge
 		printf( "\n" );
 
 		printf( "indices=" );
-		for( size_t i = 0; i != tri.indexCount; ++i )
+		for( size_t i = 0; i != tri.indices.size(); ++i )
 		{
 			uint16_t index = tri.indices[i];
 
@@ -369,9 +369,19 @@ namespace Menge
     }
 }
 //////////////////////////////////////////////////////////////////////////
-static bool parse_kwds( wchar_t ** _kwds, int & _index, const wchar_t * _key, Menge::WString & _value )
+static bool parse_kwds( wchar_t ** _kwds, int & _index, int _max, const wchar_t * _key, Menge::WString & _value )
 {
+	if( _index == _max )
+	{
+		return false;
+	}
+
 	wchar_t * arg = _kwds[_index + 0];
+
+	if( arg == nullptr )
+	{
+		return false;
+	}
 
 	if( wcscmp( arg, _key ) != 0 )
 	{
@@ -413,9 +423,9 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdL
 	{
 		int index = i;
 
-		parse_kwds( cmd_args, index, L"--in", in );
-		parse_kwds( cmd_args, index, L"--epsilon", epsilon );
-		parse_kwds( cmd_args, index, L"--threshold", threshold );
+		parse_kwds( cmd_args, index, cmd_num, L"--in", in );
+		parse_kwds( cmd_args, index, cmd_num, L"--epsilon", epsilon );
+		parse_kwds( cmd_args, index, cmd_num, L"--threshold", threshold );
 
 		if( index == i )
 		{

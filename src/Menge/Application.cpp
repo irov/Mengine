@@ -765,6 +765,24 @@ namespace Menge
 				}
 			}
 
+			if( _event.key == KC_F11 && _event.isDown )
+			{
+				static bool wireframeMode = false;
+
+				wireframeMode = !wireframeMode;
+
+				if( wireframeMode )
+				{
+					RENDER_SYSTEM( m_serviceProvider )
+						->setFillMode( FM_WIREFRAME );
+				}
+				else
+				{
+					RENDER_SYSTEM( m_serviceProvider )
+						->setFillMode( FM_SOLID );
+				}
+			}
+
 			if( _event.key == KC_F10 && _event.isDown )
 			{
 				if( ( m_debugMask & MENGE_DEBUG_NODES ) != 0 )

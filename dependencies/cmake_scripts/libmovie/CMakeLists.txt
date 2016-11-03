@@ -4,6 +4,8 @@ project(movie)
 
 SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../libmovie )
 
+add_definitions(-DAE_MOVIE_STREAM_NO_CACHE)
+
 # OUR SOURCES
 set( sources
 ${SOURCE_DIR}/src/movie_math.c

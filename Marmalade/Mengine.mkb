@@ -84,6 +84,11 @@ files
 	"*.h"
 	"*.cpp"
     
+    [PythonScriptWrapper]
+    ("../src/PythonScriptWrapper")
+	"*.h"
+	"*.cpp"
+    
     [Plugin/MengeZipPlugin]
     ("../src/Plugin/MengeZipPlugin")	
 	"*.h"

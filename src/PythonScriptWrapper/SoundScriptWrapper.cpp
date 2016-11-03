@@ -5,7 +5,8 @@
 #	include "Interface/PlayerInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "Menge/SoundEmitter.h"
+#	include "Kernel/Affectorable.h"
+
 #	include "Menge/ResourceSound.h"
 
 #	include "Logger/Logger.h"
@@ -68,7 +69,7 @@ namespace	Menge
 				if( SOUND_SERVICE(m_serviceProvider)
 					->releaseSoundSource( _id ) == false )
 				{
-					LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_release %s emitter invalid release sound %d"
+					LOGGER_ERROR(m_serviceProvider)("MySoundNodeListenerInterface %s emitter invalid release sound %d"
 						, m_resource->getName().c_str()
 						, _id
 						);

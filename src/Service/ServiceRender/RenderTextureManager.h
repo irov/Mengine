@@ -7,13 +7,15 @@
 
 #	include "Core/ConstString.h"
 
-#	include "stdex/intrusive_duplex_tree.h"
-
 #   include "Factory/FactoryStore.h"
 #	include "Factory/FactoryDefault.h"
 
+#	include "stdex/stl_map.h"
+
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+#	define MENGINE_TEXTURE_MANAGER_HASH_SIZE 4096
 	//////////////////////////////////////////////////////////////////////////
     class RenderTextureManager
         : public ServiceBase<RenderTextureServiceInterface>
@@ -70,8 +72,9 @@ namespace Menge
 		void updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, PixelFormat & _format ) const;
 
     protected:
-		typedef stdex::intrusive_duplex_tree<RenderTexture> TMapRenderTextureEntry;
-        TMapRenderTextureEntry m_textures;
+		typedef std::pair<ConstString, FilePath> TMapRenderTextureKey;
+		typedef stdex::map<TMapRenderTextureKey, RenderTexturePtr> TMapRenderTextureEntry;
+		TMapRenderTextureEntry m_textures[MENGINE_TEXTURE_MANAGER_HASH_SIZE];
 
         typedef FactoryPoolStore<RenderTexture, 128> TFactoryRenderTexture;
         TFactoryRenderTexture m_factoryRenderTexture;

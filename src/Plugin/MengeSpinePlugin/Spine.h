@@ -17,6 +17,7 @@ namespace Menge
 {
 	class Spine
 		: public Node
+		, public Eventable
 		, public Animatable
 	{
 	public:

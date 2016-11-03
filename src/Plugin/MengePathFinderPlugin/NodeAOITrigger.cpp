@@ -62,9 +62,7 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	void NodeAOITrigger::_setEventListener( const pybind::dict & _listener )
-	{
-		Node::_setEventListener( _listener );
-
+	{		
 		this->registerEvent( EVENT_TRIGGER_ENTER, ("onTriggerEnter"), _listener );
 		this->registerEvent( EVENT_TRIGGER_LEAVE, ("onTriggerLeave"), _listener );
 	}

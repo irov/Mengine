@@ -5,37 +5,11 @@
 
 #	include "Core/ConstString.h"
 
-#	include "stdex/intrusive_duplex_tree.h"
-
 namespace Menge
 {
 	class RenderTexture
 		: public RenderTextureInterface
-		, public stdex::intrusive_duplex_tree_node<RenderTexture>
 	{
-	public:
-		typedef FilePath key_first_type;
-		typedef FilePath::less_type less_first_type;
-
-		typedef ConstString key_second_type;
-		typedef ConstString::less_type less_second_type;
-
-		struct key_first_getter_type
-		{
-			const ConstString & operator()( const RenderTexture * _node ) const
-			{
-				return _node->m_category;
-			}
-		};
-
-		struct key_second_getter_type
-		{
-			const FilePath & operator()( const RenderTexture * _node ) const
-			{
-				return _node->m_fileName;
-			}
-		};
-
 	public:
 		RenderTexture();
 		~RenderTexture();
@@ -102,6 +76,8 @@ namespace Menge
 
 		uint32_t m_id;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<RenderTexture> RenderTexturePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline const ConstString & RenderTexture::getCategory() const
 	{

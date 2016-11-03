@@ -12,6 +12,8 @@ src
     ResourceMovie2.h
 )
 
+add_definitions(-DAE_MOVIE_STREAM_NO_CACHE)
+
 INCLUDE_DIRECTORIES( 
         ${Mengine_SOURCE_DIR}/Utils
         ${THIRDPARTY_DIR}/libmovie/include

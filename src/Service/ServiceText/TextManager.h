@@ -11,6 +11,8 @@
 #	include "Core/ConstString.h"
 #   include "Core/ConstStringHolderLocalString.h"
 
+#	include "Core/FilePath.h"
+
 #   include "stdex/stl_map.h"
 
 #	include "Config/Typedef.h"

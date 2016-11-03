@@ -6,8 +6,6 @@
 
 #	include "Factory/FactoryStore.h"
 
-#	include "Core/IntrusiveDuplexTree.h"
-
 #	ifndef MENGINE_PREFETCHER_THREAD_COUNT
 #	define MENGINE_PREFETCHER_THREAD_COUNT 2
 #	endif

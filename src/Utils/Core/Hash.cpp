@@ -4,7 +4,7 @@ namespace Menge
 {
 	namespace Helper
 	{
-		long makeHash( const void * _data, size_t _len )
+		HashType makeHash( const void * _data, size_t _len )
 		{
 			if( _len == 0 )
 			{
@@ -13,14 +13,14 @@ namespace Menge
 
 			const unsigned char * p = (const unsigned char *)_data;
 
-			long x = *p << 7;
+			HashType x = *p << 7;
 
 			for( size_t i = 0; i != _len; ++i )
 			{
 				x = (1000003 * x) ^ *p++;
 			}
 
-			x ^= (long)_len;
+			x ^= (HashType)_len;
 
 			if( x == -1 )
 			{

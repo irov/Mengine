@@ -99,8 +99,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_setEventListener( const pybind::dict & _listener )
 	{
-		Node::_setEventListener( _listener );
-
 		this->registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _listener );
 		this->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );
 		this->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, ("onHandleMouseButtonEventBegin"), _listener );

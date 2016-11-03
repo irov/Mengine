@@ -12,6 +12,7 @@ namespace Menge
 	class Animation
 		: public Sprite
 		, public Animatable
+		, public Eventable
 	{
 	public:
 		Animation();

@@ -24,7 +24,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PluginSpine::_initialize()
 	{
-		pybind::interface_<Spine, pybind::bases<Node, Animatable> >( "Spine", false )
+		pybind::interface_<Spine, pybind::bases<Node, Eventable, Animatable> >( "Spine", false )
 			.def( "setResourceSpine", &Spine::setResourceSpine )
 			.def( "getResourceSpine", &Spine::getResourceSpine )
 			.def( "mixAnimation", &Spine::mixAnimation )

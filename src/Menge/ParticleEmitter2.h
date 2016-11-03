@@ -25,6 +25,7 @@ namespace Menge
 	
 	class ParticleEmitter2
 		: public Node
+		, public Eventable
 		, public Animatable
 		, public ParticlePositionProviderInterface
 		, public ParticleCameraProviderInterface

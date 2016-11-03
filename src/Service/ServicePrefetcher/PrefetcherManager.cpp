@@ -72,12 +72,19 @@ namespace Menge
 		{
 			bool operator ()( const PrefetchReceiver & _receiver ) const
 			{
-				if( _receiver.prefetcher->isComplete() == false )
+				if( _receiver.refcount != 0 )
 				{
 					return false;
 				}
 
-				if( _receiver.prefetcher->isSuccessful() == false )
+				const ThreadTaskPrefetchPtr & prefetcher = _receiver.prefetcher;
+
+				if( prefetcher->isComplete() == false )
+				{
+					return false;
+				}
+
+				if( prefetcher->isSuccessful() == false )
 				{
 					return false;
 				}

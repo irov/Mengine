@@ -5,8 +5,10 @@
 
 namespace Menge
 {
+	typedef long HashType;
+
 	namespace Helper
 	{
-		long makeHash( const void * _data, size_t _len );	
+		HashType makeHash( const void * _data, size_t _len );
 	}
 }

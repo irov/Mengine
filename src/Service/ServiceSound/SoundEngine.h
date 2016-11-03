@@ -178,6 +178,6 @@ namespace Menge
 		bool m_muted;
 
 		bool m_turnStream;
-		bool m_turnSound;
+		bool m_turnSound;		
 	};
 };

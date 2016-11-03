@@ -54,8 +54,7 @@ namespace Menge
 		, public Transformation3D
 		, public Colorable
 		, public Affectorable
-        , public Visitable
-        , public Eventable
+        , public Visitable        
 		, public Scriptable
 	{
 		DECLARE_VISITABLE_BASE();

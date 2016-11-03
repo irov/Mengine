@@ -50,25 +50,35 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::_finalize()
     {   
-		for( TMapRenderTextureEntry::iterator
-			it = m_textures.begin(),
-			it_end = m_textures.end();
-		it != it_end;
-		++it )
+		for( uint32_t i = 0; i != MENGINE_TEXTURE_MANAGER_HASH_SIZE; ++i )
 		{
-			RenderTexture * texture = *it;
+			TMapRenderTextureEntry & textures = m_textures[i];
 
-			texture->release();
+			for( TMapRenderTextureEntry::iterator
+				it = textures.begin(),
+				it_end = textures.end();
+			it != it_end;
+			++it )
+			{
+				RenderTexturePtr & texture = it->second;
+
+				texture->release();
+			}
+
+			textures.clear();
 		}
-		
-		m_textures.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::hasTexture( const ConstString& _pakName, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const
     {
-		const RenderTexture * texture;
-		if( m_textures.has( _fileName, _pakName, &texture ) == false )
-		{				
+		ConstString::hash_type hash = _fileName.hash();
+		uint32_t table = (uint32_t)hash % MENGINE_TEXTURE_MANAGER_HASH_SIZE;
+		const TMapRenderTextureEntry & textures = m_textures[table];
+
+		TMapRenderTextureEntry::const_iterator it_found = textures.find( std::make_pair( _pakName, _fileName ) );
+
+		if( it_found == textures.end() )
+		{
 			if( _texture != nullptr )
 			{
 				*_texture = nullptr;
@@ -76,6 +86,8 @@ namespace Menge
 
 			return false;
 		}
+
+		const RenderTexturePtr & texture = it_found->second;
 
 		if( _texture != nullptr )
 		{
@@ -87,13 +99,19 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureManager::getTexture( const ConstString & _pakName, const FilePath & _fileName ) const
     {
-        const RenderTexture * texture = m_textures.find( _fileName, _pakName );
+		ConstString::hash_type hash = _fileName.hash();
+		uint32_t table = (uint32_t)hash % MENGINE_TEXTURE_MANAGER_HASH_SIZE;
+		const TMapRenderTextureEntry & textures = m_textures[table];
 
-        if( texture == nullptr )
+		TMapRenderTextureEntry::const_iterator it_found = textures.find( std::make_pair( _pakName, _fileName ) );
+
+        if( it_found == textures.end() )
         {
             return nullptr;
         }
-		
+
+		const RenderTexturePtr & texture = it_found->second;
+				
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -252,26 +270,37 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::visitTexture( VisitorRenderTextureInterface * _visitor ) const
     {
-		for( TMapRenderTextureEntry::const_iterator
-			it = m_textures.begin(),
-			it_end = m_textures.end();
-		it != it_end;
-		++it )
+		for( uint32_t i = 0; i != MENGINE_TEXTURE_MANAGER_HASH_SIZE; ++i )
 		{
-			const RenderTexture * texture = *it;
+			const TMapRenderTextureEntry & textures = m_textures[i];
 
-			_visitor->visitRenderTexture( texture );
+			for( TMapRenderTextureEntry::const_iterator
+				it = textures.begin(),
+				it_end = textures.end();
+			it != it_end;
+			++it )
+			{
+				const RenderTexturePtr & texture = it->second;
+
+				const RenderTexture * texture_ptr = texture.get();
+
+				_visitor->visitRenderTexture( texture_ptr );
+			}
 		}
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::cacheFileTexture( const ConstString& _pakName, const FilePath& _fileName, const RenderTextureInterfacePtr & _texture )
     {
-		_texture->setCategory( _pakName );
-        _texture->setFileName( _fileName );
+		//_texture->setCategory( _pakName );
+        //_texture->setFileName( _fileName );
 
-        RenderTexture * texture = _texture.getT<RenderTexture *>();
+        //RenderTexture * texture = _texture.getT<RenderTexture *>();
+
+		ConstString::hash_type hash = _fileName.hash();
+		uint32_t table = (uint32_t)hash % MENGINE_TEXTURE_MANAGER_HASH_SIZE;
+		TMapRenderTextureEntry & textures = m_textures[table];
 		
-        m_textures.insert( texture, nullptr );
+		textures.insert( std::make_pair( std::make_pair(_pakName, _fileName), _texture ) );
 
         LOGGER_INFO(m_serviceProvider)( "RenderTextureManager::cacheFileTexture cache texture %s:%s"
 			, _pakName.c_str()
@@ -281,9 +310,16 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureManager::loadTexture( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
     {
-        RenderTexture * texture = nullptr;
-        if( m_textures.has( _fileName, _pakName, &texture ) == true )
+		ConstString::hash_type hash = _fileName.hash();
+		uint32_t table = (uint32_t)hash % MENGINE_TEXTURE_MANAGER_HASH_SIZE;
+		const TMapRenderTextureEntry & textures = m_textures[table];
+
+		TMapRenderTextureEntry::const_iterator it_found = textures.find( std::make_pair( _pakName, _fileName ) );
+
+		if( it_found != textures.end() )
         {
+			const RenderTexturePtr & texture = it_found->second;
+
             return texture;
         }
 
@@ -493,9 +529,14 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::onRenderTextureDestroy_( RenderTextureInterface * _texture )
     {
-        RenderTexture * texture_t = static_cast<RenderTexture *>(_texture);
+		const ConstString & category = _texture->getCategory();
+		const FilePath & fileName = _texture->getFileName();
 
-		m_textures.erase_node( texture_t );
+		ConstString::hash_type hash = fileName.hash();
+		uint32_t table = (uint32_t)hash % MENGINE_TEXTURE_MANAGER_HASH_SIZE;
+		TMapRenderTextureEntry & textures = m_textures[table];
+
+		textures.erase( std::make_pair( category, fileName ) );
 				
 		if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
 		{

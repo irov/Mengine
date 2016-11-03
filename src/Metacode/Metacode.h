@@ -838,6 +838,35 @@ namespace Metacode
                 std::swap( _value, this->Name);
             }
             
+            bool has_Precompile() const
+            {
+                return Precompile_successful;
+            }
+            
+            bool get_Precompile( bool & _value ) const
+            {
+                if( Precompile_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Precompile;
+            
+                return true;
+            }
+            
+            bool swap_Precompile( bool & _value ) const
+            {
+                if( Precompile_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Precompile);
+            
+                return true;
+            }
+            
             const Menge::ConstString & get_Type() const
             {
                 return this->Type;
@@ -887,6 +916,8 @@ namespace Metacode
         protected:
         protected:
             mutable Menge::ConstString Name;
+            bool Precompile_successful;
+            mutable bool Precompile;
             mutable Menge::ConstString Type;
             bool Unique_successful;
             mutable bool Unique;

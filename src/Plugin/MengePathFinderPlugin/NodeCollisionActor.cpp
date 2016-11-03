@@ -110,9 +110,7 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCollisionActor::_setEventListener( const pybind::dict & _listener )
-	{
-		Node::_setEventListener( _listener );
-
+	{		
 		this->registerEvent( EVENT_COLLISION_TEST, ("onCollisionTest"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////

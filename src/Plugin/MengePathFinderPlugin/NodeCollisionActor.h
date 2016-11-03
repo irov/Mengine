@@ -9,6 +9,7 @@ namespace Menge
 {
 	class NodeCollisionActor
 		: public Node
+		, public Eventable
 		, public CollisionActorProviderInterface
 	{
 	public:

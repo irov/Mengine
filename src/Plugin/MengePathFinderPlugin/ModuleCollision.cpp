@@ -32,7 +32,7 @@ namespace Menge
 		pybind::def_functor( "createCollisionWorld", this, &ModuleCollision::createCollisionWorld );
 		pybind::def_functor( "removeCollisionWorld", this, &ModuleCollision::removeCollisionWorld );
 
-		pybind::interface_<NodeCollisionActor, pybind::bases<Node> >( "NodeCollisionActor", false )
+		pybind::interface_<NodeCollisionActor, pybind::bases<Node, Eventable> >( "NodeCollisionActor", false )
 			.def( "setCollisionRadius", &NodeCollisionActor::setCollisionRadius )
 			.def( "getCollisionRadius", &NodeCollisionActor::getCollisionRadius )
 			.def( "setCollisionRaycast", &NodeCollisionActor::setCollisionRaycast )

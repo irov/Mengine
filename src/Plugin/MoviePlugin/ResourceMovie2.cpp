@@ -14,11 +14,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static void Mengine_read_stream( void * _data, void * _buff, uint32_t _size )
+	static size_t Mengine_read_stream( void * _data, void * _buff, size_t _size )
 	{
 		InputStreamInterface * stream = (InputStreamInterface *)_data;
 
-		stream->read( _buff, _size );
+		size_t bytes = stream->read( _buff, _size );
+
+		return bytes;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void * Mengine_resource_provider( const aeMovieResource * _resource, void * _data )
@@ -139,7 +141,7 @@ namespace Menge
 		aeMovieData * movieData = ae_create_movie_data( m_instance );
 
 		aeMovieStream movie_stream;
-		movie_stream.read = &Mengine_read_stream;
+		movie_stream.memory_read = &Mengine_read_stream;
 		movie_stream.data = stream.get();
 
 		if( ae_load_movie_data( movieData, &movie_stream, &Mengine_resource_provider, this ) == AE_MOVIE_FAILED )

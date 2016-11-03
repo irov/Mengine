@@ -12,6 +12,7 @@ namespace Menge
 
 	class HotSpot
 		: public Node
+		, public Eventable
 		, public MousePickerTrapInterface
 	{
 		DECLARE_VISITABLE( Node );

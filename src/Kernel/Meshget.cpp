@@ -158,8 +158,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Meshget::_setEventListener( const pybind::dict & _listener )
 	{
-		Node::_setEventListener( _listener );
-
 		this->registerEvent( EVENT_MESHGET_UPDATE, ("onUpdate"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -74,4 +74,6 @@ namespace Menge
 
         float m_volume;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<SurfaceSound> SurfaceSoundPtr;
 };

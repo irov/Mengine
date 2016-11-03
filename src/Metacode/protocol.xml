@@ -1,4 +1,4 @@
-<Protocol Version = "111">
+<Protocol Version = "112">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -138,6 +138,7 @@
       <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
       <Attribute Name="Type" Type="Menge::ConstString" Required="1"/>
       <Attribute Name="Unique" Type="bool"/> 
+      <Attribute Name="Precompile" Type="bool"/> 
     </Node>
 
     <Node Name="ResourceImageData" Inheritance = "Resource">

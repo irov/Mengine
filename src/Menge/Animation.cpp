@@ -54,8 +54,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setEventListener( const pybind::dict & _listener )
 	{
-		Sprite::_setEventListener( _listener );
-
 		this->registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener );
 		this->registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener );
 		this->registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener );

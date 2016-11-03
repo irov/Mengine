@@ -22,6 +22,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	class Entity
 		: public Node
+		, public Eventable
 	{
     public:
         Entity();

@@ -2,8 +2,6 @@
 
 #	include "Interface/GraveyardInterface.h"
 
-#	include "Core/IntrusiveDuplexTree.h"
-
 namespace Menge
 {
 	struct RenderTextureGraveEntry

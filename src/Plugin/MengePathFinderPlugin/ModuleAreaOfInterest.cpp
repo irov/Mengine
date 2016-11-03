@@ -36,7 +36,7 @@ namespace Menge
 		pybind::def_functor( "createAOI", this, &ModuleAreaOfInterest::createAOI );
 		pybind::def_functor( "removeAOI", this, &ModuleAreaOfInterest::removeAOI );
 
-		pybind::interface_<NodeAOITrigger, pybind::bases<Node> >("NodeAOITrigger", false)
+		pybind::interface_<NodeAOITrigger, pybind::bases<Node, Eventable> >( "NodeAOITrigger", false )
 			.def( "setRadius", &NodeAOITrigger::setRadius )
 			.def( "getRadius", &NodeAOITrigger::getRadius )
 			.def( "setIFF", &NodeAOITrigger::setIFF )

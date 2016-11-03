@@ -1615,6 +1615,11 @@ namespace Menge
 		SurfaceVideoPtr surfaceVideo = PROTOTYPE_SERVICE( m_serviceProvider )
 			->generatePrototypeT<SurfaceVideo *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceVideo ) );
 
+		if( surfaceVideo == nullptr )
+		{
+			return false;
+		}
+
 		surfaceVideo->setResourceVideo( resourceVideo );
 
 		surfaceVideo->setIntervalStart( _layer.startInterval );
@@ -1655,15 +1660,25 @@ namespace Menge
 			return false;
 		}
 
-		layer_sound->setResourceSound( resourceSound );
+		SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE( m_serviceProvider )
+			->generatePrototypeT<SurfaceSound *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceSound ) );
 
-		layer_sound->setIntervalStart( _layer.startInterval );
+		if( surfaceSound == nullptr )
+		{
+			return false;
+		}
 
-		layer_sound->setPlayCount( _layer.playCount );
-		layer_sound->setStretch( _layer.stretch );
-		layer_sound->setLoop( _layer.loop );
+		surfaceSound->setResourceSound( resourceSound );
 
-		if( this->addMovieNode_( _layer, layer_sound, layer_sound, layer_sound, nullptr ) == false )
+		surfaceSound->setIntervalStart( _layer.startInterval );
+
+		surfaceSound->setPlayCount( _layer.playCount );
+		surfaceSound->setStretch( _layer.stretch );
+		surfaceSound->setLoop( _layer.loop );
+
+		layer_sound->setSurfaceSound( surfaceSound );
+
+		if( this->addMovieNode_( _layer, layer_sound, surfaceSound.get(), surfaceSound.get(), nullptr ) == false )
 		{
 			return false;
 		}
@@ -1689,14 +1704,24 @@ namespace Menge
 			return false;
 		}
 
-		layer_sound->setResourceSound( resourceSound );
-		layer_sound->setIntervalStart( _layer.startInterval );
+		SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE( m_serviceProvider )
+			->generatePrototypeT<SurfaceSound *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceSound ) );
 
-		layer_sound->setPlayCount( 1 );
-		layer_sound->setStretch( _layer.stretch );
-		layer_sound->setLoop( _layer.loop );
+		if( surfaceSound == nullptr )
+		{
+			return false;
+		}
 
-		if( this->addMovieNode_( _layer, layer_sound, layer_sound, layer_sound, nullptr ) == false )
+		surfaceSound->setResourceSound( resourceSound );
+		surfaceSound->setIntervalStart( _layer.startInterval );
+
+		surfaceSound->setPlayCount( 1 );
+		surfaceSound->setStretch( _layer.stretch );
+		surfaceSound->setLoop( _layer.loop );
+
+		layer_sound->setSurfaceSound( surfaceSound );
+
+		if( this->addMovieNode_( _layer, layer_sound, surfaceSound.get(), surfaceSound.get(), nullptr ) == false )
 		{
 			return false;
 		}
@@ -2411,8 +2436,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setEventListener( const pybind::dict & _listener )
 	{
-		Node::_setEventListener( _listener );
-
 		this->registerEvent( EVENT_MOVIE_GET_INTERNAL, ("onMovieGetInternal"), _listener );
 		this->registerEvent( EVENT_MOVIE_ACTIVATE_INTERNAL, ("onMovieActivateInternal"), _listener );
 		this->registerEvent( EVENT_MOVIE_DEACTIVATE_INTERNAL, ("onMovieDeactivateInternal"), _listener );

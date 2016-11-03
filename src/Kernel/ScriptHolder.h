@@ -6,6 +6,7 @@ namespace Menge
 {
 	class ScriptHolder
 		: public Node
+		, public Eventable
 	{
 	public:
 		ScriptHolder();

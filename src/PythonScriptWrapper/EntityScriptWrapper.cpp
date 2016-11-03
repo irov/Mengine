@@ -195,7 +195,7 @@ namespace Menge
 	{
 		classWrapping( _serviceProvider );
 
-		pybind::superclass_<Entity, pybind::bases<Node> >("Entity", (void *)_serviceProvider, new superclass_new_Entity, nullptr, false)
+		pybind::superclass_<Entity, pybind::bases<Node, Eventable> >( "Entity", (void *)_serviceProvider, new superclass_new_Entity, nullptr, false )
             .def_constructor( pybind::init<>() )
 			.def( "getPrototype", &Entity::getPrototype )
 			;

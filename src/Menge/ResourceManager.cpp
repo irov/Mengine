@@ -32,51 +32,44 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		class FResourcesForeachDestroy
-		{
-		public:
-			FResourcesForeachDestroy( ServiceProviderInterface * _serviceProvider )
-				: m_serviceProvider(_serviceProvider)
-			{
-			}
-
-		private:
-			void operator = ( const FResourcesForeachDestroy & )
-			{
-			}
-
-		public:
-			void operator() ( ResourceEntry * _entry )
-			{
-				const ResourceReferencePtr & resource = _entry->resource;
-
-#   ifndef MENGINE_MASTER_RELEASE
-				uint32_t refcount = resource->countReference();
-				if ( refcount != 0 )
-				{
-					LOGGER_WARNING(m_serviceProvider)("ResourceManager::~ResourceManager resource %s refcount %d"
-						, resource->getName().c_str()
-						, refcount
-						);
-				}
-#   endif
-			}
-
-		protected:
-			ServiceProviderInterface * m_serviceProvider;
-		};
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::_finalize()
 	{
 		m_resourcesCache.clear();
 
-		FResourcesForeachDestroy rfd(m_serviceProvider);
-		m_resources.foreach( rfd );
+#   ifndef MENGINE_MASTER_RELEASE
+		for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
+		{
+			const TMapResource & resources = m_resources[i];
 
-		m_resources.clear();
+			for( TMapResource::const_iterator
+				it = resources.begin(),
+				it_end = resources.end();
+			it != it_end;
+			++it )
+			{
+				const ResourceEntry & entry = it->second;
+
+				const ResourceReferencePtr & resource = entry.resource;
+
+				uint32_t refcount = resource->countReference();
+
+				if( refcount != 0 )
+				{
+					LOGGER_WARNING( m_serviceProvider )("ResourceManager::~ResourceManager resource %s refcount %d"
+						, resource->getName().c_str()
+						, refcount
+						);
+				}
+			}		
+		}
+#   endif
+
+		for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
+		{
+			TMapResource & resources = m_resources[i];
+
+			resources.clear();
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path, bool _ignored )
@@ -199,6 +192,14 @@ namespace Menge
 
                 continue;
             }
+
+			bool precompile = false;
+			meta_resource->get_Precompile( precompile );
+
+			if( precompile == true )
+			{
+				resource->incrementReference();
+			}
             
 #	ifndef MENGINE_MASTER_RELEASE
 			if( _ignored == false && resource->convert() == false )
@@ -505,49 +506,51 @@ namespace Menge
 		resource->setGroup( _group );
 		resource->setName( _name );
 
-		ResourceEntry * entry = m_resources.create();
+		ResourceEntry entry;
 				
-		entry->resource = resource;
-		entry->isLocked = false;
+		entry.resource = resource;
+		entry.isLocked = false;
 
-		ResourceEntry * insert_entry;
-		bool successful = m_resources.insert( entry, &insert_entry );
+		ConstString::hash_type hash = _name.hash();
+		uint32_t table = (uint32_t)hash % MENGINE_RESOURCE_MANAGER_HASH_SIZE;
+		TMapResource & resources = m_resources[table];
 
-		ResourceCacheEntry * resourceCacheEntry;
-		if( m_resourcesCache.has( _category, _group, &resourceCacheEntry ) == false )
+		std::pair<TMapResource::iterator, bool> insert_result = resources.insert( std::make_pair( _name, entry ) );
+
+		TResourceCacheKey cache_key = std::make_pair( _category, _group );
+
+		TMapResourceCache::iterator it_cache_found = m_resourcesCache.find( cache_key );
+
+		if( it_cache_found == m_resourcesCache.end() )
 		{
-			resourceCacheEntry = m_resourcesCache.create();
-
-			resourceCacheEntry->category = _category;
-			resourceCacheEntry->group = _group;
-
-			resourceCacheEntry->resources.push_back( resource );
-
-			m_resourcesCache.insert(resourceCacheEntry, nullptr );
+			TVectorResources resources;
+			
+			it_cache_found = m_resourcesCache.insert( it_cache_found, std::make_pair( cache_key, resources ) );
 		}
-		else
+		
+		TVectorResources & cahce_resources = it_cache_found->second;
+
+		cahce_resources.push_back( resource );
+
+		if( insert_result.second == false )
 		{
-			resourceCacheEntry->resources.push_back( resource );
-		}
+			ResourceEntry & insert_entry = insert_result.first->second;
 
-		if( successful == false )
-		{
-			const ConstString & insert_category = insert_entry->resource->getCategory();
-			const ConstString & insert_group = insert_entry->resource->getGroup();
+			const ConstString & insert_category = insert_entry.resource->getCategory();
+			const ConstString & insert_group = insert_entry.resource->getGroup();
 
-			ResourceCacheEntry * resourceCacheEntryFound = m_resourcesCache.find( insert_category, insert_group );
+			TResourceCacheKey remove_cache_key = std::make_pair( insert_category, insert_group );
 
-			TVectorResources::iterator it_found = std::remove(
-				resourceCacheEntryFound->resources.begin(),
-				resourceCacheEntryFound->resources.end(),
-				insert_entry->resource );
+			TMapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( remove_cache_key );
 
-			resourceCacheEntryFound->resources.erase( it_found );
+			TVectorResources::iterator it_remove_found = std::remove(
+				it_remove_cache_found->second.begin(),
+				it_remove_cache_found->second.end(),
+				insert_entry.resource );
 
-			insert_entry->resource = resource;
-			insert_entry->isLocked = false;
+			it_remove_cache_found->second.erase( it_remove_found );
 
-			entry->destroy();
+			resources[_name] = entry;
 		}
         
 		return resource;
@@ -562,7 +565,9 @@ namespace Menge
 		
 		const ConstString & name = _resource->getName();
 
-		if( m_resources.erase( name ) == false )
+		ConstString::hash_type hash = name.hash();
+		TMapResource & resources = m_resources[hash % MENGINE_RESOURCE_MANAGER_HASH_SIZE];
+		if( resources.erase( name ) == false )
 		{
 			return false;
 		}
@@ -570,31 +575,34 @@ namespace Menge
 		const ConstString & category = _resource->getCategory();
 		const ConstString & group = _resource->getGroup();
 
-		ResourceCacheEntry * resourceCacheEntry;
-		if( m_resourcesCache.has( category, group, &resourceCacheEntry ) == false )
+		TResourceCacheKey remove_cache_key = std::make_pair( category, group );
+
+		TMapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( remove_cache_key );
+				
+		if( it_remove_cache_found == m_resourcesCache.end() )
 		{
 			return false;
 		}
 
 		TVectorResources::iterator it_found = std::remove(
-			resourceCacheEntry->resources.begin(),
-			resourceCacheEntry->resources.end(),
+			it_remove_cache_found->second.begin(),
+			it_remove_cache_found->second.end(),
 			_resource );
 
-		resourceCacheEntry->resources.erase( it_found );
+		it_remove_cache_found->second.erase( it_found );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::hasResource( const ConstString& _name, ResourceReferencePtr * _resource ) const
 	{
-		const ResourceEntry * entry = m_resources.find( _name );
-		
+		const ResourceEntry * entry = this->findResource_( _name );
+
 		if( entry == nullptr )
 		{
 			return false;
 		}
-		
+				
 		if( _resource != nullptr )
 		{
 			*_resource = entry->resource;
@@ -605,7 +613,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::validResourceType( const ConstString& _name, const ConstString& _type ) const
 	{
-		const ResourceEntry * entry = m_resources.find( _name );
+		const ResourceEntry * entry = this->findResource_( _name );
 		
 		if( entry == nullptr )
 		{
@@ -624,7 +632,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::validResource( const ConstString & _name ) const
 	{
-		const ResourceEntry * entry = m_resources.find( _name );
+		const ResourceEntry * entry = this->findResource_( _name );
 
 		if( entry == nullptr )
 		{
@@ -640,7 +648,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::lockResource( const ConstString& _name )
 	{
-		ResourceEntry * entry = m_resources.find( _name );
+		ResourceEntry * entry = this->findResource_( _name );
 		
 		if( entry == nullptr )
 		{
@@ -663,7 +671,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::unlockResource( const ConstString& _name )
 	{
-		ResourceEntry * entry = m_resources.find( _name );
+		ResourceEntry * entry = this->findResource_( _name );
 
 		if( entry == nullptr )
 		{
@@ -686,7 +694,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReferencePtr ResourceManager::getResource( const ConstString& _name ) const
 	{
-		const ResourceEntry * entry = m_resources.find( _name );
+		const ResourceEntry * entry = this->findResource_( _name );
 
 		if( entry == nullptr )
 		{
@@ -723,7 +731,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReferencePtr ResourceManager::getResourceReference( const ConstString & _name ) const
 	{
-		const ResourceEntry * entry = m_resources.find( _name );
+		const ResourceEntry * entry = this->findResource_( _name );
 
 		if( entry == nullptr )
 		{
@@ -750,7 +758,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourceManager::getResourceType( const ConstString & _name ) const
 	{
-		const ResourceEntry * entry = m_resources.find( _name );
+		const ResourceEntry * entry = this->findResource_( _name );
 
 		if( entry == nullptr )
 		{
@@ -768,49 +776,39 @@ namespace Menge
 		return type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		class FResourcesForeachVisit
-		{
-		public:
-			FResourcesForeachVisit( Visitor * _visitor )
-				: m_visitor(_visitor)
-			{
-			}
-
-		private:
-			void operator = ( const FResourcesForeachVisit & )
-			{
-			}
-
-		public:
-			void operator () ( ResourceEntry * _entry )
-			{
-				const ResourceReferencePtr & resource = _entry->resource;
-
-				resource->visit( m_visitor );
-			}
-
-		protected:
-			Visitor * m_visitor;
-		};
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::visitResources( Visitor * _visitor ) const
 	{
-		FResourcesForeachVisit rfv(_visitor);
-		m_resources.foreach( rfv );
+		for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
+		{
+			const TMapResource & resources = m_resources[i];
+
+			for( TMapResource::const_iterator
+				it = resources.begin(),
+				it_end = resources.end();
+			it != it_end;
+			++it )
+			{
+				const ResourceEntry & entry = it->second;
+
+				const ResourceReferencePtr & resource = entry.resource;
+
+				resource->visit( _visitor );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::visitGroupResources( const ConstString & _category, const ConstString & _group, Visitor * _visitor ) const
 	{		
-		const ResourceCacheEntry * resourceCacheEntry;
-		if( m_resourcesCache.has( _category, _group, &resourceCacheEntry ) == false )
+		TResourceCacheKey cache_key = std::make_pair( _category, _group );
+
+		TMapResourceCache::const_iterator it_cache_found = m_resourcesCache.find( cache_key );
+
+		if( it_cache_found == m_resourcesCache.end() )
 		{
 			return;
 		}
 
-		const TVectorResources & resources = resourceCacheEntry->resources;
+		const TVectorResources & resources = it_cache_found->second;
 
 		for( TVectorResources::const_iterator
 			it = resources.begin(),
@@ -826,16 +824,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ResourceManager::getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group ) const
 	{
-		const ResourceCacheEntry * resourceCacheEntry;
-		if( m_resourcesCache.has( _category, _group, &resourceCacheEntry ) == false )
+		TResourceCacheKey cache_key = std::make_pair( _category, _group );
+
+		TMapResourceCache::const_iterator it_cache_found = m_resourcesCache.find( cache_key );
+
+		if( it_cache_found == m_resourcesCache.end() )
 		{
 			return 0U;
 		}
 
 		size_t groupMemoryUse = 0U;
 
-		const TVectorResources & resources = resourceCacheEntry->resources;
-
+		const TVectorResources & resources = it_cache_found->second;
+		
 		for( TVectorResources::const_iterator
 			it = resources.begin(),
 			it_end = resources.end();
@@ -910,8 +911,80 @@ namespace Menge
 			, _tag.c_str()
 			);
 
-		FResourcesForeachDump rfd(m_serviceProvider);
-		m_resources.foreach( rfd );
+		for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
+		{
+			const TMapResource & resources = m_resources[i];
+
+			for( TMapResource::const_iterator
+				it = resources.begin(),
+				it_end = resources.end();
+			it != it_end;
+			++it )
+			{
+				const ResourceEntry & entry = it->second;
+
+				const ResourceReferencePtr & resource = entry.resource;
+
+				uint32_t count = resource->countReference();
+
+				if( count == 0 )
+				{
+					return;
+				}
+
+				if( resource->isCompile() == false )
+				{
+					return;
+				}
+
+				size_t memoryUse = resource->memoryUse();
+				float memoryUseMb = (float)(memoryUse) / (1024.f);
+
+				const ConstString & name = entry.resource->getName();
+
+				LOGGER_ERROR( m_serviceProvider )("Resource %s\n: count - %u memory - %f"
+					, name.c_str()
+					, count
+					, memoryUseMb
+					);
+			}
+		}
 #	endif
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceEntry * ResourceManager::findResource_( const ConstString & _name )
+	{
+		ConstString::hash_type hash = _name.hash();
+		uint32_t table = (uint32_t)hash % MENGINE_RESOURCE_MANAGER_HASH_SIZE;
+		TMapResource & resources = m_resources[table];
+
+		TMapResource::iterator it_found = resources.find( _name );
+
+		if( it_found == resources.end() )
+		{
+			return nullptr;
+		}
+
+		ResourceEntry & entry = it_found->second;
+
+		return &entry;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ResourceEntry * ResourceManager::findResource_( const ConstString & _name ) const
+	{
+		ConstString::hash_type hash = _name.hash();
+		uint32_t table = (uint32_t)hash % MENGINE_RESOURCE_MANAGER_HASH_SIZE;
+		const TMapResource & resources = m_resources[table];
+
+		TMapResource::const_iterator it_found = resources.find( _name );
+
+		if( it_found == resources.end() )
+		{
+			return nullptr;
+		}
+
+		const ResourceEntry & entry = it_found->second;
+
+		return &entry;
 	}
 }

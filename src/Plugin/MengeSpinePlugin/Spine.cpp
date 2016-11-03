@@ -349,9 +349,7 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_setEventListener( const pybind::dict & _listener )
-	{
-		Node::_setEventListener( _listener );
-
+	{		
 		this->registerEvent( EVENT_SPINE_END, ("onSpineEnd"), _listener );
 		this->registerEvent( EVENT_SPINE_STOP, ("onSpineStop"), _listener );
 		this->registerEvent( EVENT_SPINE_PAUSE, ("onSpinePause"), _listener );

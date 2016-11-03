@@ -27,6 +27,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	class Meshget
 		: public Node
+		, public Eventable
 		, public Materialable
 	{
 	public:

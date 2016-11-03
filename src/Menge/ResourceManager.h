@@ -7,65 +7,21 @@
 
 #	include "Config/Typedef.h"
 
-#	include "Core/IntrusiveTree.h"
-#	include "Core/IntrusiveDuplexTree.h"
+#	include <stdex/stl_map.h>
 
 namespace Menge
 {
 	class ResourceVisitor;
 	//////////////////////////////////////////////////////////////////////////
+#	define MENGINE_RESOURCE_MANAGER_HASH_SIZE 4096
+	//////////////////////////////////////////////////////////////////////////
 	struct ResourceEntry
-		: public Factorable
-		, public stdex::intrusive_tree_node<ResourceEntry>
 	{
-		typedef ConstString key_type;
-		typedef ConstString::less_type less_type;
-
-		struct key_getter_type
-		{
-			const ConstString & operator()( const ResourceEntry * _node ) const
-			{
-				return _node->resource->getName();
-			}
-		};
-
 		ResourceReferencePtr resource;
 		bool isLocked;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<ResourceReferencePtr> TVectorResources;
-	//////////////////////////////////////////////////////////////////////////
-	struct ResourceCacheEntry
-		: public Factorable
-		, public stdex::intrusive_duplex_tree_node<ResourceCacheEntry>
-	{
-		typedef ConstString key_first_type;
-		typedef ConstString::less_type less_first_type;
-
-		typedef ConstString key_second_type;
-		typedef ConstString::less_type less_second_type;
-
-		struct key_first_getter_type
-		{
-			const ConstString & operator()( const ResourceCacheEntry * _node ) const
-			{
-				return _node->category;
-			}
-		};
-
-		struct key_second_getter_type
-		{
-			const ConstString & operator()( const ResourceCacheEntry * _node ) const
-			{
-				return _node->group;
-			}
-		};
-
-		ConstString category;
-		ConstString group;
-				
-		TVectorResources resources;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceManager
 		: public ServiceBase<ResourceServiceInterface>
@@ -116,10 +72,15 @@ namespace Menge
 		void dumpResources( const String & _tag );
 
 	protected:
-		typedef IntrusiveTree<ResourceEntry, 512> TMapResource;
-		TMapResource m_resources;
+		ResourceEntry * findResource_( const ConstString & _name );
+		const ResourceEntry * findResource_( const ConstString & _name ) const;
 
-		typedef IntrusiveDuplexTree<ResourceCacheEntry, 32> TMapResourceCache;
+	protected:
+		typedef stdex::map<ConstString, ResourceEntry> TMapResource;
+		TMapResource m_resources[MENGINE_RESOURCE_MANAGER_HASH_SIZE];
+
+		typedef std::pair<ConstString, ConstString> TResourceCacheKey;
+		typedef stdex::map<TResourceCacheKey, TVectorResources> TMapResourceCache;
 		TMapResourceCache m_resourcesCache;
 	};
 }

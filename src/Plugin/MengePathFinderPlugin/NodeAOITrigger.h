@@ -8,6 +8,7 @@ namespace Menge
 {
 	class NodeAOITrigger
 		: public Node
+		, public Eventable
 		, public AOITriggerProviderInterface
 	{
 	public:

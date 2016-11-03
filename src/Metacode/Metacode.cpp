@@ -5,7 +5,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
     static const uint32_t metacode_version = 3;
-    static const uint32_t metacode_protocol = 111;
+    static const uint32_t metacode_protocol = 112;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -823,6 +823,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_Resource::Meta_Resource()
         : Metabuf::Metadata()
+        , Precompile_successful(false)
         , Unique_successful(false)
     {
     }
@@ -842,6 +843,13 @@ namespace Metacode
     {
         switch( _id )
         {
+        case 4:
+            {
+                this->read( _buff, _size, _read, this->Precompile );
+    
+                this->Precompile_successful = true;
+    
+            }break;
         case 3:
             {
                 this->read( _buff, _size, _read, this->Unique );
@@ -905,7 +913,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 4:
+        case 5:
             {
                 includes_Meta_Sequence.reserve( _count );
             }break;
@@ -918,7 +926,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 4:
+        case 5:
             {
                 Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence & metadata = includes_Meta_Sequence.emplace_back();
     
@@ -940,7 +948,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::getId() const
     {
-        return 4;
+        return 5;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -1273,14 +1281,14 @@ namespace Metacode
     
         switch( _id )
         {
-        case 5:
+        case 6:
             {
                 this->read( _buff, _size, _read, this->File_Codec );
     
                 this->File_Codec_successful = true;
     
             }break;
-        case 6:
+        case 7:
             {
                 this->read( _buff, _size, _read, this->File_Converter );
     
@@ -1331,14 +1339,14 @@ namespace Metacode
     
         switch( _id )
         {
-        case 5:
+        case 6:
             {
                 this->read( _buff, _size, _read, this->File_Codec );
     
                 this->File_Codec_successful = true;
     
             }break;
-        case 7:
+        case 8:
             {
                 this->read( _buff, _size, _read, this->File_NoExist );
     
@@ -1394,49 +1402,49 @@ namespace Metacode
     
         switch( _id )
         {
-        case 7:
+        case 8:
             {
                 this->read( _buff, _size, _read, this->File_Alpha );
     
                 this->File_Alpha_successful = true;
     
             }break;
-        case 5:
+        case 6:
             {
                 this->read( _buff, _size, _read, this->File_Codec );
     
                 this->File_Codec_successful = true;
     
             }break;
-        case 6:
+        case 7:
             {
                 this->read( _buff, _size, _read, this->File_Converter );
     
                 this->File_Converter_successful = true;
     
             }break;
-        case 12:
+        case 13:
             {
                 this->read( _buff, _size, _read, this->File_NoExist );
     
                 this->File_NoExist_successful = true;
     
             }break;
-        case 11:
+        case 12:
             {
                 this->read( _buff, _size, _read, this->File_Offset );
     
                 this->File_Offset_successful = true;
     
             }break;
-        case 8:
+        case 9:
             {
                 this->read( _buff, _size, _read, this->File_Premultiply );
     
                 this->File_Premultiply_successful = true;
     
             }break;
-        case 10:
+        case 11:
             {
                 this->read( _buff, _size, _read, this->File_Size );
     
@@ -1528,21 +1536,21 @@ namespace Metacode
     
         switch( _id )
         {
-        case 6:
+        case 7:
             {
                 this->read( _buff, _size, _read, this->Image_Alpha );
     
                 this->Image_Alpha_successful = true;
     
             }break;
-        case 9:
+        case 10:
             {
                 this->read( _buff, _size, _read, this->Image_Offset );
     
                 this->Image_Offset_successful = true;
     
             }break;
-        case 8:
+        case 9:
             {
                 this->read( _buff, _size, _read, this->Image_Size );
     
@@ -1596,14 +1604,14 @@ namespace Metacode
     
         switch( _id )
         {
-        case 10:
+        case 11:
             {
                 this->read( _buff, _size, _read, this->Image_Offset );
     
                 this->Image_Offset_successful = true;
     
             }break;
-        case 9:
+        case 10:
             {
                 this->read( _buff, _size, _read, this->Image_Size );
     
@@ -1693,14 +1701,14 @@ namespace Metacode
     
         switch( _id )
         {
-        case 6:
+        case 7:
             {
                 this->read( _buff, _size, _read, this->File_Converter );
     
                 this->File_Converter_successful = true;
     
             }break;
-        case 5:
+        case 6:
             {
                 this->read( _buff, _size, _read, this->File_Dataflow );
     
@@ -1758,42 +1766,42 @@ namespace Metacode
     
         switch( _id )
         {
-        case 12:
+        case 13:
             {
                 this->read( _buff, _size, _read, this->Anchor_Point );
     
                 this->Anchor_Point_successful = true;
     
             }break;
-        case 14:
+        case 15:
             {
                 this->read( _buff, _size, _read, this->Bounds_Box );
     
                 this->Bounds_Box_successful = true;
     
             }break;
-        case 9:
+        case 10:
             {
                 this->read( _buff, _size, _read, this->KeyFramesPackPath_Codec );
     
                 this->KeyFramesPackPath_Codec_successful = true;
     
             }break;
-        case 10:
+        case 11:
             {
                 this->read( _buff, _size, _read, this->KeyFramesPackPath_Converter );
     
                 this->KeyFramesPackPath_Converter_successful = true;
     
             }break;
-        case 11:
+        case 12:
             {
                 this->read( _buff, _size, _read, this->Loop_Segment );
     
                 this->Loop_Segment_successful = true;
     
             }break;
-        case 13:
+        case 14:
             {
                 this->read( _buff, _size, _read, this->Offset_Point );
     
@@ -1809,15 +1817,15 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 17:
+        case 18:
             {
                 includes_Meta_MovieCamera3D.reserve( _count );
             }break;
-        case 15:
+        case 16:
             {
                 includes_Meta_MovieLayer2D.reserve( _count );
             }break;
-        case 16:
+        case 17:
             {
                 includes_Meta_MovieLayer3D.reserve( _count );
             }break;
@@ -1830,19 +1838,19 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 17:
+        case 18:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & metadata = includes_Meta_MovieCamera3D.emplace_back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
-        case 15:
+        case 16:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & metadata = includes_Meta_MovieLayer2D.emplace_back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
-        case 16:
+        case 17:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & metadata = includes_Meta_MovieLayer3D.emplace_back();
     
@@ -1864,7 +1872,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::getId() const
     {
-        return 17;
+        return 18;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -1934,7 +1942,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::getId() const
     {
-        return 15;
+        return 16;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -2113,7 +2121,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::getId() const
     {
-        return 16;
+        return 17;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -2328,28 +2336,28 @@ namespace Metacode
     
         switch( _id )
         {
-        case 8:
+        case 9:
             {
                 this->read( _buff, _size, _read, this->DefaultVolume_Value );
     
                 this->DefaultVolume_Value_successful = true;
     
             }break;
-        case 5:
+        case 6:
             {
                 this->read( _buff, _size, _read, this->File_Codec );
     
                 this->File_Codec_successful = true;
     
             }break;
-        case 6:
+        case 7:
             {
                 this->read( _buff, _size, _read, this->File_Converter );
     
                 this->File_Converter_successful = true;
     
             }break;
-        case 7:
+        case 8:
             {
                 this->read( _buff, _size, _read, this->File_External );
     
@@ -2399,7 +2407,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 5:
+        case 6:
             {
                 this->read( _buff, _size, _read, this->File_Converter );
     
@@ -2415,7 +2423,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 7:
+        case 8:
             {
                 includes_Meta_Atlas.reserve( _count );
             }break;
@@ -2428,7 +2436,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 7:
+        case 8:
             {
                 Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas & metadata = includes_Meta_Atlas.emplace_back();
     
@@ -2450,7 +2458,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas::getId() const
     {
-        return 7;
+        return 8;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -2558,28 +2566,28 @@ namespace Metacode
     
         switch( _id )
         {
-        case 7:
+        case 8:
             {
                 this->read( _buff, _size, _read, this->DefaultVolume_Value );
     
                 this->DefaultVolume_Value_successful = true;
     
             }break;
-        case 5:
+        case 6:
             {
                 this->read( _buff, _size, _read, this->File_Codec );
     
                 this->File_Codec_successful = true;
     
             }break;
-        case 6:
+        case 7:
             {
                 this->read( _buff, _size, _read, this->File_Converter );
     
                 this->File_Converter_successful = true;
     
             }break;
-        case 8:
+        case 9:
             {
                 this->read( _buff, _size, _read, this->IsStreamable_Value );
     
@@ -2634,7 +2642,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 6:
+        case 7:
             {
                 includes_Meta_Image.reserve( _count );
             }break;
@@ -2647,7 +2655,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 6:
+        case 7:
             {
                 Meta_DataBlock::Meta_ResourceSpine::Meta_Image & metadata = includes_Meta_Image.emplace_back();
     
@@ -2669,7 +2677,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceSpine::Meta_Image::getId() const
     {
-        return 6;
+        return 7;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_ResourceSpine::Meta_Image::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -2741,42 +2749,42 @@ namespace Metacode
     
         switch( _id )
         {
-        case 5:
+        case 6:
             {
                 this->read( _buff, _size, _read, this->File_Alpha );
     
                 this->File_Alpha_successful = true;
     
             }break;
-        case 6:
+        case 7:
             {
                 this->read( _buff, _size, _read, this->File_Codec );
     
                 this->File_Codec_successful = true;
     
             }break;
-        case 7:
+        case 8:
             {
                 this->read( _buff, _size, _read, this->File_Converter );
     
                 this->File_Converter_successful = true;
     
             }break;
-        case 10:
+        case 11:
             {
                 this->read( _buff, _size, _read, this->File_Duration );
     
                 this->File_Duration_successful = true;
     
             }break;
-        case 9:
+        case 10:
             {
                 this->read( _buff, _size, _read, this->File_FrameRate );
     
                 this->File_FrameRate_successful = true;
     
             }break;
-        case 8:
+        case 9:
             {
                 this->read( _buff, _size, _read, this->File_NoSeek );
     
@@ -2840,7 +2848,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 4:
+        case 5:
             {
                 this->read( _buff, _size, _read, this->WindowBackground_ResourceImageName );
     

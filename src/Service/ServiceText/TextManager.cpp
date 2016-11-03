@@ -48,7 +48,7 @@ namespace Menge
     class TextManager::TextManagerLoadSaxCallback
     {
     public:
-        TextManager::TextManagerLoadSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _pakName, const FilePath & _path )
+		TextManagerLoadSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _pakName, const FilePath & _path )
             : m_serviceProvider( _serviceProvider )
             , m_textManager( _textManager )
             , m_pakName( _pakName )
@@ -414,7 +414,7 @@ namespace Menge
     class TextManager::TextManagerUnloadSaxCallback
     {
     public:
-        TextManager::TextManagerUnloadSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _pakName, const FilePath & _path )
+        TextManagerUnloadSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _pakName, const FilePath & _path )
             : m_serviceProvider( _serviceProvider )
             , m_textManager( _textManager )
             , m_pakName( _pakName )

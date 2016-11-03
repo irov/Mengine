@@ -2759,6 +2759,7 @@ namespace Menge
 		class PrefetchResourceVisitor
 			: public Visitor
 			, public ConcreteVisitor<ResourceImageDefault>
+			, public ConcreteVisitor<ResourceHIT>
 			, public ConcreteVisitor<ResourceSound>
 			, public ConcreteVisitor<ResourceMovie>
 		{
@@ -2781,6 +2782,11 @@ namespace Menge
 
 				PREFETCHER_SERVICE( m_serviceProvider )
 					->prefetchImageDecoder( m_category, fileName, codecType );
+			}
+
+			void accept( ResourceHIT * _resource ) override
+			{
+				_resource->incrementReference();
 			}
 
 			void accept( ResourceSound * _resource ) override
@@ -2817,6 +2823,7 @@ namespace Menge
 		class UnfetchResourceVisitor
 			: public Visitor
 			, public ConcreteVisitor<ResourceImageDefault>
+			, public ConcreteVisitor<ResourceHIT>
 			, public ConcreteVisitor<ResourceSound>
 			, public ConcreteVisitor<ResourceMovie>
 		{
@@ -2838,6 +2845,11 @@ namespace Menge
 
 				PREFETCHER_SERVICE( m_serviceProvider )
 					->unfetch( category, fileName );
+			}
+
+			void accept( ResourceHIT * _resource ) override
+			{
+				_resource->decrementReference();
 			}
 
 			void accept( ResourceSound * _resource ) override
@@ -6495,7 +6507,7 @@ namespace Menge
 			.def( "getBlendMode", &Materialable::getBlendMode )
 			;
 
-		pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, BoundingBox, Colorable, Resource, Renderable, Affectorable, Eventable> >( "Node", false )
+		pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, BoundingBox, Colorable, Resource, Renderable, Affectorable> >( "Node", false )
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isEnable", &Node::isEnable )
@@ -6572,7 +6584,7 @@ namespace Menge
 			.def_proxy_args_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::accAngleTo )
 			;
 
-		pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Materialable> >( "Surface", false )
+		pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Eventable, Materialable> >( "Surface", false )
 			.def_native( "setEventListener", &Surface::setEventListener )
 			.def( "removeEventListener", &Surface::removeEventListener )
 			;
@@ -6724,7 +6736,7 @@ namespace Menge
 			}
 
 			{
-				pybind::interface_<ParticleEmitter2, pybind::bases<Node, Animatable> >( "ParticleEmitter2", false )
+				pybind::interface_<ParticleEmitter2, pybind::bases<Node, Eventable, Animatable> >( "ParticleEmitter2", false )
 					.def( "setResourceParticle", &ParticleEmitter2::setResourceParticle )
 					.def( "getResourceParticle", &ParticleEmitter2::getResourceParticle )
 
@@ -6744,13 +6756,9 @@ namespace Menge
 					.def( "getEmitterRandomMode", &ParticleEmitter2::getEmitterRandomMode )
 					;
 
-				pybind::interface_<SoundEmitter, pybind::bases<Node, Animatable> >( "SoundEmitter", false )
-					.def( "setResourceSound", &SoundEmitter::setResourceSound )
-					.def( "getResourceSound", &SoundEmitter::getResourceSound )
-					.def( "setVolume", &SoundEmitter::setVolume )
-					.def( "getVolume", &SoundEmitter::getVolume )
-					.def( "setLoop", &SoundEmitter::setLoop )
-					.def( "isLooping", &SoundEmitter::getLoop )
+				pybind::interface_<SoundEmitter, pybind::bases<Node> >( "SoundEmitter", false )
+					.def( "setSurfaceSound", &SoundEmitter::setSurfaceSound )
+					.def( "getSurfaceSound", &SoundEmitter::getSurfaceSound )
 					;
 
 				pybind::interface_<TextField, pybind::bases<Node> >( "TextField", false )
@@ -6820,7 +6828,7 @@ namespace Menge
 					.def( "getCharCount", &TextField::getCharCount )
 					;
 
-				pybind::interface_<ScriptHolder, pybind::bases<Node> >( "ScriptHolder", false )
+				pybind::interface_<ScriptHolder, pybind::bases<Node, Eventable> >( "ScriptHolder", false )
 					;
 
 				pybind::interface_<Point, pybind::bases<Node> >( "Point", false )
@@ -6883,7 +6891,7 @@ namespace Menge
 					.def( "pick", &MousePickerTrapInterface::pick )
 					;
 
-				pybind::interface_<HotSpot, pybind::bases<Node> >( "HotSpot", false )
+				pybind::interface_<HotSpot, pybind::bases<Node, Eventable> >( "HotSpot", false )
 					.def( "testPoint", &HotSpot::testPoint )
 					.def( "setOutward", &HotSpot::setOutward )
 					.def( "getOutward", &HotSpot::getOutward )
@@ -6990,7 +6998,7 @@ namespace Menge
 					;
 
 				{
-					pybind::interface_<Animation, pybind::bases<Sprite, Animatable> >( "Animation", false )
+					pybind::interface_<Animation, pybind::bases<Sprite, Eventable, Animatable> >( "Animation", false )
 						.def( "setResourceAnimation", &Animation::setResourceAnimation )
 						.def( "getResourceAnimation", &Animation::getResourceAnimation )
 						.def( "getFrameCount", &Animation::getFrameCount )
@@ -7062,7 +7070,7 @@ namespace Menge
 				//pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D> >("TilePolygon", false)
 				//	;
 
-				pybind::interface_<Movie, pybind::bases<Node, Animatable> >( "Movie", false )
+				pybind::interface_<Movie, pybind::bases<Node, Eventable, Animatable> >( "Movie", false )
 					.def( "setResourceMovie", &Movie::setResourceMovie )
 					.def( "getResourceMovie", &Movie::getResourceMovie )
 					.def( "hasMovieLayer", &Movie::hasMovieLayer )
@@ -7102,7 +7110,7 @@ namespace Menge
 					.def_proxy_static( "removeAllMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_removeAllMovieSlotNode )
 					;
 
-				pybind::interface_<Meshget, pybind::bases<Node, Materialable> >( "Meshget", false )
+				pybind::interface_<Meshget, pybind::bases<Node, Eventable, Materialable> >( "Meshget", false )
 					.def( "setResourceImage", &Meshget::setResourceImage )
 					.def( "getResourceImage", &Meshget::getResourceImage )
 					.def( "setVertices", &Meshget::setVertices )

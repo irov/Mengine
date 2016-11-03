@@ -17,8 +17,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptHolder::_setEventListener( const pybind::dict & _listener )
 	{
-		Node::_setEventListener( _listener );
-
 		this->registerEvent( EVENT_KEEP_SCRIPT, ("onKeepScript"), _listener );
 		this->registerEvent( EVENT_RELEASE_SCRIPT, ("onReleaseScript"), _listener );
 	}

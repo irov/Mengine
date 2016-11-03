@@ -43,6 +43,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	class Movie
 		: public Node
+		, public Eventable
 		, public Animatable
 	{
 	public:

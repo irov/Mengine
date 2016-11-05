@@ -4,7 +4,6 @@
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/PrototypeManagerInterface.h"
 
-#	include "EntityPrototypeGenerator.h"
 #   include "ConstStringHolderPythonString.h"
 
 #	include "ScriptLogger.h"
@@ -87,9 +86,6 @@ namespace Menge
 
 		typedef FactoryPoolStore<ScriptModule, 8> FactoryScriptModuleInterface;
 		FactoryScriptModuleInterface m_factoryScriptModule;
-
-		typedef FactoryPoolStore<EntityPrototypeGenerator, 64> FactoryEntityPrototypeGenerator;
-		FactoryEntityPrototypeGenerator m_factoryEntityPrototypeGenerator;
 		
 		bool m_initializeModules;
 	};

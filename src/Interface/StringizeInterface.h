@@ -42,12 +42,12 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         inline ConstString stringizeStringSize( ServiceProviderInterface * _serviceProvider, const Char * _value, ConstString::size_type _size )
         {
-            return stringizeStringSizeHash( _serviceProvider, _value, _size, ((size_t)-1));
+			return stringizeStringSizeHash( _serviceProvider, _value, _size, ((ConstString::hash_type)-1) );
         }
 		//////////////////////////////////////////////////////////////////////////
 		inline ConstString stringizeString( ServiceProviderInterface * _serviceProvider, const Char * _value )
 		{
-			ConstString cstr = stringizeStringSize( _serviceProvider, _value, ((size_t)-1) );
+			ConstString cstr = stringizeStringSize( _serviceProvider, _value, ((ConstString::hash_type)-1) );
 
 			return cstr;
 		}

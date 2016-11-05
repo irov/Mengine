@@ -33,7 +33,6 @@
 
 #	include "Menge/ResourceFile.h"
 #	include "Menge/ResourceMovie.h"
-#	include "Menge/ResourceMovie2.h"
 #	include "Menge/ResourceAnimation.h"
 #	include "Menge/ResourceModel3D.h"
 #	include "Menge/ResourceVideo.h"
@@ -105,7 +104,6 @@
 #	include "Menge/TilePolygon.h"
 
 #	include "Menge/Movie.h"
-#	include "Menge/Movie2.h"
 #	include "Kernel/Meshget.h"
 #	include "Menge/Video.h"
 
@@ -6157,7 +6155,6 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Movie );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieSlot );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieInternalObject );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Movie2 );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Meshget );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Model3D );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Point );
@@ -6191,7 +6188,6 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageDefault );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceAnimation );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceMovie );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceMovie2 );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceModel3D );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceVideo );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceSound );

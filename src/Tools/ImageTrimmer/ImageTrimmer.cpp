@@ -25,27 +25,13 @@
 #   include "WindowsLayer/VistaWindowsLayer.h"
 
 #	include "Logger/Logger.h"
+#	include "ToolUtils/ToolUtils.h"
 	
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( MengeWin32FileGroup );
 PLUGIN_EXPORT( MengeImageCodec );
 PLUGIN_EXPORT( MengeZip );
 PLUGIN_EXPORT( MengeLZ4 );
-//////////////////////////////////////////////////////////////////////////
-static void message_error( const char * _format, ... )
-{
-	va_list argList;
-
-	va_start(argList, _format);
-
-	char str[2048];
-
-	vsnprintf( str, 2048 - 1, _format, argList );	
-
-	va_end(argList);
-
-	printf( str );
-}
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider )
 
@@ -455,27 +441,9 @@ namespace Menge
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-static bool parse_kwds( wchar_t ** _kwds, int & _index, const wchar_t * _key, Menge::WString & _value )
+void parse_arg( const std::wstring & _str, Menge::WString & _value )
 {
-	wchar_t * arg = _kwds[_index + 0];
-
-	if( wcscmp( arg, _key ) != 0 )
-	{
-		return false;
-	}
-
-	wchar_t * value = _kwds[_index + 1];
-
-	_value = value;
-
-	if( _value.front() == L'\"' && _value.back() == L'\"' )
-	{
-		_value = _value.substr( 1, _value.size() - 2 );
-	}
-
-	_index += 2;
-
-	return true;
+	_value = Menge::WString( _str.begin(), _str.end() );
 }
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
@@ -486,28 +454,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	
 	stdex_allocator_initialize();
 
-	int cmd_num;
-	LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
-
-	Menge::WString in;
-	Menge::WString out;
-
-	for( int i = 0; i != cmd_num; )
-	{
-		int index = i;
-
-		parse_kwds( cmd_args, index, L"--in", in );
-		parse_kwds( cmd_args, index, L"--out", out );
-
-		if( index == i )
-		{
-			++i;
-		}
-		else
-		{
-			i = index;
-		}
-	}
+	Menge::WString in = parse_kwds( lpCmdLine, L"--in", Menge::WString() );
+	Menge::WString out = parse_kwds( lpCmdLine, L"--out", Menge::WString() );
 
 	if( in.empty() == true )
 	{

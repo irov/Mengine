@@ -1,18 +1,4 @@
-#	ifdef _WIN32_WINNT	
-#       undef _WIN32_WINNT
-#       define _WIN32_WINNT 0x0500
-#   endif
-
-#   ifdef _WIN32_WINDOWS
-#       undef _WIN32_WINDOWS
-#       define _WIN32_WINDOWS 0x0500
-#   endif
-
-#	define WIN32_LEAN_AND_MEAN
-#	include <Windows.h>
-
-#	include <Shlwapi.h>
-#	include <shellapi.h>
+#	include "ToolUtils/ToolUtils.h"
 
 #	include "magic.h"
 
@@ -20,50 +6,6 @@
 #	include <string>
 #	include <sstream>
 
-static void message_error( const char * _format, ... )
-{
-	va_list argList;
-
-	va_start(argList, _format);
-
-	char str[2048];
-
-	vsnprintf( str, 2048 - 1, _format, argList );
-
-	va_end(argList);
-
-	printf( str );
-}
-
-static void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )
-{
-	if( _path.empty() == true )
-	{
-		wcscpy_s( _quotePath, 2, L"" );
-
-		return;
-	}
-
-	std::wstring true_path = _path;
-
-	if( _path[0] == L'/' )
-	{
-		true_path[0] = true_path[1];
-		true_path[1] = L':';
-	}
-
-	const WCHAR * pathBuffer = true_path.c_str();
-	size_t pathSize = true_path.size();
-
-	PathCanonicalize( _quotePath, pathBuffer );
-	if( PathQuoteSpaces( _quotePath ) == FALSE )
-	{
-		wmemmove( _quotePath + 1, _quotePath, pathSize );
-		_quotePath[0] = '\"';
-		_quotePath[pathSize + 1] = '\"';
-		_quotePath[pathSize + 2] = 0;
-	}
-};
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
@@ -71,41 +13,11 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	(void)hPrevInstance;
 	(void)nShowCmd;
 
-	int cmd_num;
-	LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
-
-	std::wstring astralax;
-	std::wstring in;
-	std::wstring out;
-	std::wstring csa;
-	std::wstring info;
-
-	for( int i = 0; i < cmd_num; i += 2 )
-	{
-		LPWSTR arg = cmd_args[i + 0];
-		LPWSTR value = cmd_args[i + 1];
-
-		if( wcscmp( arg, L"-astralax") == 0 )
-		{
-			astralax = value;
-		}
-		else if( wcscmp( arg, L"-in" ) == 0 )
-		{
-			in = value;
-		}
-		else if( wcscmp( arg, L"-out" ) == 0 )
-		{
-			out = value;
-		}
-		else if( wcscmp( arg, L"-csa" ) == 0 )
-		{
-			csa = value;
-		}
-		else if( wcscmp( arg, L"-info" ) == 0 )
-		{
-			info = value;
-		}
-	}
+	std::wstring astralax = parse_kwds( lpCmdLine, L"--astralax", std::wstring() );
+	std::wstring in = parse_kwds( lpCmdLine, L"--in", std::wstring() );;
+	std::wstring out = parse_kwds( lpCmdLine, L"--out", std::wstring() );;
+	std::wstring csa = parse_kwds( lpCmdLine, L"--csa", std::wstring() );;
+	std::wstring info = parse_kwds( lpCmdLine, L"--info", std::wstring() );;
 
 	if( in.empty() == true )
 	{

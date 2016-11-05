@@ -9,6 +9,8 @@
 
 #	include <sstream>
 
+#	include "ToolUtils/ToolUtils.h"
+
 #	define BOOST_NO_IOSTREAM
 
 #   pragma warning(push, 0) 
@@ -134,37 +136,6 @@ typedef std::vector<vec2f> TVectorPoints;
 typedef std::vector<uint32_t> TVectorIndices;
 
 //////////////////////////////////////////////////////////////////////////
-static void message_error( const char * _format, ... )
-{
-	va_list argList;
-
-	va_start( argList, _format );
-
-	char str[2048];
-
-	vsnprintf( str, 2048 - 1, _format, argList );
-
-	va_end( argList );
-
-	printf( str );
-}
-//////////////////////////////////////////////////////////////////////////
-static void parse_arg( const std::wstring & _str, bool & _value )
-{
-	uint32_t value;
-	swscanf( _str.c_str(), L"%u", &value );
-
-	_value = (value != 0);
-}
-//////////////////////////////////////////////////////////////////////////
-static void parse_arg( const std::wstring & _str, double & _value )
-{
-	double value;
-	swscanf( _str.c_str(), L"%lf", &value );
-
-	_value = value;
-}
-//////////////////////////////////////////////////////////////////////////
 static void parse_arg( const std::wstring & _str, vec2f & _value )
 {
 	double value_x;
@@ -179,8 +150,8 @@ static void parse_arg( const std::wstring & _str, TVectorPoints & _value )
 {
 	std::vector<std::wstring> tokens;
 
-	std::wstringstream wss(_str);
-	
+	std::wstringstream wss( _str );
+
 	std::wstring buf;
 	while( wss >> buf )
 	{
@@ -200,39 +171,6 @@ static void parse_arg( const std::wstring & _str, TVectorPoints & _value )
 
 		_value.push_back( vec2f( value_x, value_x ) );
 	}
-}
-//////////////////////////////////////////////////////////////////////////
-template<class T>
-static T parse_kwds( PWSTR lpCmdLine, const wchar_t * _key, const T & _default )
-{	
-	int cmd_num;
-	LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
-
-	for( int i = 0; i != cmd_num; ++i )
-	{
-		wchar_t * arg = cmd_args[i + 0];
-
-		if( wcscmp( arg, _key ) != 0 )
-		{
-			continue;
-		}
-
-		wchar_t * arg_value = cmd_args[i + 1];
-
-		std::wstring wstr_value = arg_value;
-
-		if( wstr_value.front() == L'\"' && wstr_value.back() == L'\"' )
-		{
-			wstr_value = wstr_value.substr( 1, wstr_value.size() - 2 );
-		}
-
-		T value;
-		parse_arg( wstr_value, value );
-
-		return value;
-	}
-	
-	return _default;
 }
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )

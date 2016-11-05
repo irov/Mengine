@@ -5,7 +5,7 @@ options
 	#strict-mkb
     #strict-compile
 	enable-exceptions    
-	preinclude=preinclude_application.h
+	preinclude="preinclude_application.h"
     buildenv=VC12
     
     app-icf="app.icf"

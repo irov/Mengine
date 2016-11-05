@@ -7,6 +7,7 @@
 #		pragma warning (disable:4700)
 #	endif
 
+#	define AE_MOVIE_STREAM_NO_CACHE
 
 #   define BOOST_UBLAS_UNSUPPORTED_COMPILER 0
 #   define BOOST_NO_CXX11_RVALUE_REFERENCES

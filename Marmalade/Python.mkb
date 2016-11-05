@@ -5,7 +5,7 @@ options
     strict-mkb
     #strict-compile
     enable-exceptions
-	preinclude=preinclude_python.h    
+	preinclude="preinclude_python.h"
     buildenv=VC12
 }
 

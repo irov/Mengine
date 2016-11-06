@@ -25,7 +25,7 @@ namespace Menge
 			_size = strlen(_str);
 		}
 
-        if( _hash == (size_t)-1 )
+		if( _hash == (ConstString::hash_type)(-1) )
         {
             _hash = Helper::makeHash( _str, _size );
         }
@@ -92,7 +92,7 @@ namespace Menge
 
             ConstStringHolder::hash_type holder_hash = holder->hash();
 
-            if( holder_hash != _hash )
+			if( (int32_t)holder_hash != (int32_t)_hash )
             {
                 continue;
             }

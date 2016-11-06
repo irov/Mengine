@@ -79,9 +79,7 @@ namespace Menge
 
 			pybind::kernel_interface * kernel = pybind::get_kernel();
 
-			const pybind::class_type_scope_ptr & scope = kernel->class_scope<T>();
-
-            ScriptObject * py_obj = (ScriptObject *)scope->create_holder( (void *)obj );
+			ScriptObject * py_obj = (ScriptObject *)kernel->scope_create_holder_t( obj );
 
 			//pybind::set_attr( py_embedded, "Menge_name", pybind::ptr(_node->getName()) );
 			//pybind::set_attr( py_embedded, "Menge_type", pybind::ptr(_node->getType()) );

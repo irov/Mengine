@@ -5,9 +5,11 @@
 
 #	include "stdex/stl_map.h"
 
+#	ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning (disable:4510)
 #	pragma warning (disable:4512)
 #	pragma warning (disable:4610)
+#	endif
 
 #	include "spine/spine.h"
 

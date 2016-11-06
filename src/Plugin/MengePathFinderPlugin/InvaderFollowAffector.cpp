@@ -108,7 +108,7 @@ namespace Menge
 	{
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 
-		PyObject * py_obj = kernel->create_holder_t( this );
+		PyObject * py_obj = kernel->scope_create_holder_t( this );
 
 		return py_obj;
 	}

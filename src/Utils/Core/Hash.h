@@ -5,7 +5,7 @@
 
 namespace Menge
 {
-	typedef long HashType;
+	typedef int64_t HashType;
 
 	namespace Helper
 	{

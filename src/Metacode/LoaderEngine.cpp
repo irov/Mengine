@@ -240,7 +240,7 @@ namespace Menge
         ++it )
         {
             uint32_t stringSize;
-            int32_t stringHash;
+            int64_t stringHash;
             const char * str = Metacode::readString( binary_memory, bin_size, read_size, stringSize, stringHash );
 
             if( str == nullptr )

@@ -4,7 +4,7 @@ namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
-    static const uint32_t metacode_version = 3;
+    static const uint32_t metacode_version = 4;
     static const uint32_t metacode_protocol = 112;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
@@ -84,14 +84,14 @@ namespace Metacode
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    static const char * readString2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, int32_t & _stringHash )
+    static const char * readString2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, int64_t & _stringHash )
     {
         stdex::memory_reader ar(_buff, _size, _read);
 
         uint32_t size;
         ar.readSize( size );
 
-        int32_t hash;
+        int64_t hash;
         ar.readPOD( hash );
 
         const char * value = ar.current_buff<char>();
@@ -103,7 +103,7 @@ namespace Metacode
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
-    const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, int32_t & _stringHash )
+    const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, int64_t & _stringHash )
     {
         const char * value = readString2( _buff, _size, _read, _stringSize, _stringHash );
 

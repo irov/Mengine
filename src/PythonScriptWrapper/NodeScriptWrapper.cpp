@@ -3522,7 +3522,7 @@ namespace Menge
 			{
 				pybind::kernel_interface * kernel = pybind::get_kernel();
 
-				PyObject * py_obj = kernel->create_holder_t( this );
+				PyObject * py_obj = kernel->scope_create_holder_t( this );
 
 				return py_obj;
 			}
@@ -6087,7 +6087,9 @@ namespace Menge
 		protected:
 			void accept( ResourceReference* _resource ) override
 			{
-				PyObject * py_obj = m_scope->create_holder( (void *)_resource );
+				pybind::kernel_interface * kernel = pybind::get_kernel();
+
+				PyObject * py_obj = m_scope->create_holder( kernel, ( void * )_resource );
 
 				m_l.append( py_obj );
 			}

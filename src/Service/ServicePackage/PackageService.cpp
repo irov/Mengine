@@ -222,6 +222,11 @@ namespace Menge
 
 		if( package->load() == false )
 		{
+			LOGGER_ERROR( m_serviceProvider )("PackageService::addPackage invalid load package '%s' path '%s'"
+				, package->getName().c_str()
+				, package->getPath().c_str()
+				);
+
 			return false;
 		}
 				

@@ -6,7 +6,7 @@ options
     #strict-compile
 	enable-exceptions    
 	preinclude="preinclude_application.h"
-    buildenv=VC12
+    buildenv=VC12    
     
     app-icf="app.icf"
     
@@ -18,7 +18,8 @@ options
     #s3e-data-dir="d:/Projects/ZombielandBuild_ETC1"
     #s3e-data-dir="d:/Projects/BurritosBuild_ETC1"
     #s3e-data-dir="d:/Projects/BurritosBuild_PVRTC"
-    s3e-data-dir="d:/Projects/MECHBuild_IOS"
+    #s3e-data-dir="d:/Projects/MECHBuild_PVRTC"
+    s3e-data-dir="d:/Projects/MECHBuild_ETC1_Debug"
     #s3e-data-dir="d:/Projects/HolidayFunBuild_PVRTC"    
     #s3e-data-dir="d:/Projects/BurritosBuild_ETC1"
     #s3e-data-dir="d:/Projects/MarshmallowBuild_PVRTC"
@@ -166,15 +167,15 @@ deployments
 	assets='Burritos_IOS'
 	caption='Splash Of Zombies'
 	iphone-appid='com.IROV.IROV'
+	iphone-icon='d:/Projects/Burritos_Work/Icons/iphone-icon.png'
+	iphone-icon-high-res='d:/Projects/Burritos_Work/Icons/iphone-icon-high-res.png'
+	iphone-icon-ipad='d:/Projects/Burritos_Work/Icons/iphone-icon-ipad.png'
+	iphone-icon-ipad-high-res='d:/Projects/Burritos_Work/Icons/iphone-icon-ipad-high-res.png'
 	iphone-provisioning-profile='Argali.mobileprovision'
 	iphone-sign-for-distribution=1
 	iphone-signing-identity='iPhone Distribution'
 	iphone-testflight=0
-    iphone-icon="d:/Projects/Burritos_Work/Icons/iphone-icon.png"
-    iphone-icon-high-res="d:/Projects/Burritos_Work/Icons/iphone-icon-high-res.png"
-    iphone-icon-ipad="d:/Projects/Burritos_Work/Icons/iphone-icon-ipad.png"
-    iphone-icon-ipad-high-res="d:/Projects/Burritos_Work/Icons/iphone-icon-ipad-high-res.png"
-    itunes-artwork="d:/Projects/Burritos_Work/Icons/itunes-artwork.png"    
+	itunes-artwork='d:/Projects/Burritos_Work/Icons/itunes-artwork.png'
 	name='Splash Of Zombies'
 	version-major=1
 	version-minor=6
@@ -226,6 +227,41 @@ deployments
 	version-major=1
 	version-minor=0
 	version-revision=0
+	["MECH_Android"]
+	app-icf='d:/Projects/MECHBuild_ETC1/app.icf'
+	assets='MECH_Android'
+	caption='MECH'
+	name='MECH'
+	version-major=1
+	version-minor=0
+	version-revision=0
+	["MECH_Android_Debug"]
+	app-icf='d:/Projects/MECHBuild_ETC1_Debug/app.icf'
+	assets='MECH_Android_Debug'
+	caption='MECH'
+	name='MECH'
+	version-major=1
+	version-minor=0
+	version-revision=0
+	["MECH_IOS"]
+	app-icf='d:/Projects/MECHBuild_PVRTC/app.icf'
+	assets='MECH_IOS'
+	caption='MECH'
+	iphone-appid='com.IROV.IROV'
+	iphone-icon='d:/Projects/Burritos_Work/Icons/iphone-icon.png'
+	iphone-icon-high-res='d:/Projects/Burritos_Work/Icons/iphone-icon-high-res.png'
+	iphone-icon-ipad='d:/Projects/Burritos_Work/Icons/iphone-icon-ipad.png'
+	iphone-icon-ipad-high-res='d:/Projects/Burritos_Work/Icons/iphone-icon-ipad-high-res.png'
+	iphone-minimum-ios-version='8.2'
+	iphone-provisioning-profile='Argali.mobileprovision'
+	iphone-sign-for-distribution=1
+	iphone-signing-identity='iPhone Distribution'
+	iphone-testflight=0
+	itunes-artwork='d:/Projects/Burritos_Work/Icons/itunes-artwork.png'
+	name='MECH'
+	version-major=1
+	version-minor=6
+	version-revision=4
 	["Zombieland_Android"]
 	app-icf='d:/Projects/ZombielandBuild_ETC1/app.icf'
 	assets='Zombieland_Android'

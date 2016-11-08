@@ -1,8 +1,7 @@
 assets
 {
 	[MECH_IOS]
-	("d:/Projects/MECHBuild_IOS")
-    External
+	("d:/Projects/MECHBuild_PVRTC")    
     Locale_RU    
     app.config.txt
     application.ini    
@@ -12,6 +11,30 @@ assets
     Game.pak
     ResourcePack.ini
     Resources.pak   
+    
+	[MECH_Android]
+	("d:/Projects/MECHBuild_ETC1")    
+    Locale_RU    
+    app.config.txt
+    application.ini    
+    Framework.pak
+	Framework2.pak
+    Game.ini
+    Game.pak
+    ResourcePack.ini
+    Resources.pak   
+    
+	[MECH_Android_Debug]
+	("d:/Projects/MECHBuild_ETC1_Debug")
+    Locale_RU    
+    app.config.txt
+    application.ini    
+    Framework.pak
+	Framework2.pak
+    Game.ini
+    Game.pak
+    ResourcePack.ini
+    Resources.pak     
 
 	[Burritos_Android]
 	("d:/Projects/BurritosBuild_ETC1")

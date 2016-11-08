@@ -2,7 +2,9 @@
 
 #	include "Interface/PrototypeManagerInterface.h"
 #	include "Interface/StringizeInterface.h"
+#	include "Interface/ScriptSystemInterface.h"
 
+#	include "Kernel/ScriptClassWrapper.h"
 #	include "Kernel/NodePrototypeGenerator.h"
 #	include "Kernel/ResourcePrototypeGenerator.h"
 
@@ -114,6 +116,12 @@ namespace Menge
 
 		pybind::interface_<ResourceMovie2, pybind::bases<ResourceReference> >( "ResourceMovie2", false )
 			;
+		
+		SCRIPT_SERVICE( m_serviceProvider )
+			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2" ), new ClassScriptWrapper<Movie2>() );
+
+		SCRIPT_SERVICE( m_serviceProvider )
+			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceMovie2" ), new ClassScriptWrapper<ResourceMovie2>() );
 
 		if( PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2" ), new NodePrototypeGenerator<Movie2, 128> ) == false )

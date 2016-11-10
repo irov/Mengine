@@ -2775,11 +2775,11 @@ namespace Menge
 		protected:
 			void accept( ResourceImageDefault * _resource ) override
 			{
-				const FilePath & fileName = _resource->getFilePath();
+				const FilePath & filePath = _resource->getFilePath();
 				const ConstString & codecType = _resource->getCodecType();
 
 				PREFETCHER_SERVICE( m_serviceProvider )
-					->prefetchImageDecoder( m_category, fileName, codecType );
+					->prefetchImageDecoder( m_category, filePath, codecType );
 			}
 
 			void accept( ResourceHIT * _resource ) override
@@ -2839,10 +2839,10 @@ namespace Menge
 			void accept( ResourceImageDefault * _resource ) override
 			{
 				const ConstString & category = _resource->getCategory();
-				const FilePath & fileName = _resource->getFilePath();
+				const FilePath & filePath = _resource->getFilePath();
 
 				PREFETCHER_SERVICE( m_serviceProvider )
-					->unfetch( category, fileName );
+					->unfetch( category, filePath );
 			}
 
 			void accept( ResourceHIT * _resource ) override
@@ -2862,10 +2862,10 @@ namespace Menge
 			void accept( ResourceMovie * _resource ) override
 			{
 				const ConstString & category = _resource->getCategory();
-				const FilePath & fileName = _resource->getFilePath();
+				const FilePath & filePath = _resource->getFilePath();
 
 				PREFETCHER_SERVICE( m_serviceProvider )
-					->unfetch( category, fileName );
+					->unfetch( category, filePath );
 			}
 
 		protected:
@@ -2874,6 +2874,11 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_unfetchResources( const ConstString & _category, const ConstString & _groupName )
 		{
+			if( _groupName == "01_MailBoxZoom" )
+			{
+				printf( "fdfsd" );
+			}
+
 			UnfetchResourceVisitor rv_gac( m_serviceProvider );
 
 			RESOURCE_SERVICE( m_serviceProvider )

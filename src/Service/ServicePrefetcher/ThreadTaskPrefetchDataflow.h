@@ -26,13 +26,9 @@ namespace Menge
 		
 	protected:
 		ConstString m_dataflowType;
-		
-	protected:
-		FileGroupInterfacePtr m_group;
-		InputStreamInterfacePtr m_stream;
 		DataflowInterfacePtr m_dataflow;
 		
-	protected:
+	protected:		
 		DataInterfacePtr m_data;
 	};
 	//////////////////////////////////////////////////////////////////////////

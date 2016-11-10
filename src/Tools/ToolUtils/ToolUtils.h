@@ -47,6 +47,22 @@ void parse_arg( const std::wstring & _str, bool & _value )
 	_value = (value != 0);
 }
 //////////////////////////////////////////////////////////////////////////
+void parse_arg( const std::wstring & _str, uint32_t & _value )
+{
+	uint32_t value;
+	swscanf( _str.c_str(), L"%u", &value );
+
+	_value = value;
+}
+//////////////////////////////////////////////////////////////////////////
+void parse_arg( const std::wstring & _str, float & _value )
+{
+	float value;
+	swscanf( _str.c_str(), L"%f", &value );
+
+	_value = value;
+}
+//////////////////////////////////////////////////////////////////////////
 void parse_arg( const std::wstring & _str, double & _value )
 {
 	double value;

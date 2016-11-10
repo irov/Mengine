@@ -29,8 +29,6 @@ namespace Menge
 		ConstString m_codec;
 				
 	protected:
-		FileGroupInterfacePtr m_group;
-		InputStreamInterfacePtr m_stream;
 		SoundDecoderInterfacePtr m_soundDecoder;
 	};
 	//////////////////////////////////////////////////////////////////////////

@@ -60,7 +60,7 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				RenderTexturePtr & texture = it->second;
+				RenderTextureInterface * texture = it->second;
 
 				texture->release();
 			}
@@ -291,8 +291,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::cacheFileTexture( const ConstString& _pakName, const FilePath& _fileName, const RenderTextureInterfacePtr & _texture )
     {
-		//_texture->setCategory( _pakName );
-        //_texture->setFileName( _fileName );
+		_texture->setCategory( _pakName );
+        _texture->setFileName( _fileName );
 
         //RenderTexture * texture = _texture.getT<RenderTexture *>();
 
@@ -300,7 +300,9 @@ namespace Menge
 		uint32_t table = (uint32_t)hash % MENGINE_TEXTURE_MANAGER_HASH_SIZE;
 		TMapRenderTextureEntry & textures = m_textures[table];
 		
-		textures.insert( std::make_pair( std::make_pair(_pakName, _fileName), _texture ) );
+		RenderTextureInterface * texture_ptr = _texture.get();
+
+		textures.insert( std::make_pair( std::make_pair( _pakName, _fileName ), texture_ptr ) );
 
         LOGGER_INFO(m_serviceProvider)( "RenderTextureManager::cacheFileTexture cache texture %s:%s"
 			, _pakName.c_str()

@@ -15,6 +15,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker", std::wstring() );
 	std::wstring image_path = parse_kwds( lpCmdLine, L"--image", std::wstring() );
+	uint32_t offset_x = parse_kwds( lpCmdLine, L"--offset_x", 0U );
+	uint32_t offset_y = parse_kwds( lpCmdLine, L"--offset_y", 0U );
+	float width = parse_kwds( lpCmdLine, L"--width", -1.f );
+	float height = parse_kwds( lpCmdLine, L"--height", -1.f );
 
 	if( texturepacker_path.empty() == true )
 	{
@@ -38,9 +42,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	system_cmd += L" --border-padding 0 ";
 	system_cmd += L" --padding 0 ";
 	system_cmd += L" --disable-rotation ";	
+	system_cmd += L" --extrude 0 ";
 	system_cmd += L" --trim-mode Polygon ";
-	system_cmd += L" --trim-threshold 0 ";
-	
+	system_cmd += L" --trim-threshold 0 ";	
 
 	WCHAR ImagePathCanonicalizeQuote[MAX_PATH];
 	ForcePathQuoteSpaces( ImagePathCanonicalizeQuote, image_path );
@@ -162,6 +166,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	std::stringstream ss_vertices( vertices );
 
+	//Sleep( 10000 );
+
 	std::vector<float> positions;
 
 	for( ;; )
@@ -172,6 +178,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		{
 			pos_x -= x;
 			pos_y -= y;
+
+			pos_x += offset_x;
+			pos_y += offset_y;
 
 			float xf = (float)pos_x;
 			float yf = (float)pos_y;
@@ -189,6 +198,16 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	const char * verticesUV = xml_verticesUV.child_value();
 
+	if( width < 0.f )
+	{
+		width = (float)w;
+	}
+
+	if( height < 0.f )
+	{
+		height = (float)h;
+	}
+
 	std::stringstream ss_verticesUV( verticesUV );
 
 	std::vector<float> uvs;
@@ -204,8 +223,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			uv_x += oX;
 			uv_y += oY;
 
-			float xf = (float)uv_x / (float)oW;
-			float yf = (float)uv_y / (float)oH;
+			float xf = (float)uv_x / (float)width;
+			float yf = (float)uv_y / (float)height;
 
 			uvs.push_back( xf );
 			uvs.push_back( yf );

@@ -77,18 +77,6 @@ namespace Menge
 					return false;
 				}
 
-				const ThreadTaskPrefetchPtr & prefetcher = _receiver.prefetcher;
-
-				if( prefetcher->isComplete() == false )
-				{
-					return false;
-				}
-
-				if( prefetcher->isSuccessful() == false )
-				{
-					return false;
-				}
-
 				return true;
 			}
 		};
@@ -96,11 +84,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PrefetcherManager::update()
 	{
-		TVectorPrefetchReceiver::iterator it_erase = std::remove_if( m_prefetchReceiver.begin(), m_prefetchReceiver.end(), FReceiverComplete() );
+		TVectorPrefetchReceiver::const_iterator it_erase = std::remove_if( m_prefetchReceiver.begin(), m_prefetchReceiver.end(), FReceiverComplete() );
 		m_prefetchReceiver.erase( it_erase, m_prefetchReceiver.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::prefetchImageDecoder( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
+	bool PrefetcherManager::prefetchImageDecoder( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codec )
 	{
 		if( m_threadQueue == nullptr )
 		{
@@ -108,7 +96,7 @@ namespace Menge
 		}
 
 		PrefetchReceiver * receiver;
-		if( this->hasPrefetch( _pakName, _fileName, &receiver ) == true )
+		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == true )
 		{
 			++receiver->refcount;
 
@@ -122,7 +110,7 @@ namespace Menge
 		ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder.createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( _pakName, _fileName );
+		task->initialize( _pakName, _filePath );
 		task->setImageCodec( _codec );
 
 		new_receiver.prefetcher = task;
@@ -134,10 +122,10 @@ namespace Menge
 		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::getImageDecoder( const ConstString & _pakName, const FilePath & _fileName, ImageDecoderInterfacePtr & _decoder ) const
+	bool PrefetcherManager::getImageDecoder( const ConstString & _pakName, const FilePath & _filePath, ImageDecoderInterfacePtr & _decoder ) const
 	{
 		PrefetchReceiver * receiver;
-		if( this->hasPrefetch( _pakName, _fileName, &receiver ) == false )
+		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == false )
 		{
 			return false;
 		}
@@ -166,7 +154,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::prefetchSoundDecoder( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
+	bool PrefetcherManager::prefetchSoundDecoder( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codec )
 	{
 		if( m_threadQueue == nullptr )
 		{
@@ -174,7 +162,7 @@ namespace Menge
 		}
 
 		PrefetchReceiver * receiver;
-		if( this->hasPrefetch( _pakName, _fileName, &receiver ) == true )
+		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == true )
 		{
 			++receiver->refcount;
 
@@ -188,7 +176,7 @@ namespace Menge
 		ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder.createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( _pakName, _fileName );
+		task->initialize( _pakName, _filePath );
 		task->setSoundCodec( _codec );
 
 		new_receiver.prefetcher = task;
@@ -200,10 +188,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::getSoundDecoder( const ConstString& _pakName, const FilePath & _fileName, SoundDecoderInterfacePtr & _decoder ) const
+	bool PrefetcherManager::getSoundDecoder( const ConstString& _pakName, const FilePath & _filePath, SoundDecoderInterfacePtr & _decoder ) const
 	{
 		PrefetchReceiver * receiver;
-		if( this->hasPrefetch( _pakName, _fileName, &receiver ) == false )
+		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == false )
 		{
 			return false;
 		}
@@ -232,7 +220,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::prefetchData( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _dataflowType )
+	bool PrefetcherManager::prefetchData( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _dataflowType )
 	{
 		if( m_threadQueue == nullptr )
 		{
@@ -240,7 +228,7 @@ namespace Menge
 		}
 
 		PrefetchReceiver * receiver;
-		if( this->hasPrefetch( _pakName, _fileName, &receiver ) == true )
+		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == true )
 		{
 			++receiver->refcount;
 
@@ -254,7 +242,7 @@ namespace Menge
 		ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow.createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( _pakName, _fileName );
+		task->initialize( _pakName, _filePath );
 		task->setDataflowType( _dataflowType );
 
 		new_receiver.prefetcher = task;
@@ -266,10 +254,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////			
-	bool PrefetcherManager::getData( const ConstString& _pakName, const FilePath & _fileName, DataInterfacePtr & _data ) const
+	bool PrefetcherManager::getData( const ConstString& _pakName, const FilePath & _filePath, DataInterfacePtr & _data ) const
 	{
 		PrefetchReceiver * receiver;
-		if( this->hasPrefetch( _pakName, _fileName, &receiver ) == false )
+		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == false )
 		{
 			return false;
 		}
@@ -298,10 +286,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PrefetcherManager::unfetch( const ConstString& _pakName, const FilePath& _fileName )
+	void PrefetcherManager::unfetch( const ConstString& _pakName, const FilePath& _filePath )
 	{
 		PrefetchReceiver * receiver;
-		if( this->hasPrefetch( _pakName, _fileName, &receiver ) == false )
+		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == false )
 		{
 			return;
 		}
@@ -339,7 +327,7 @@ namespace Menge
 		return info;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::hasPrefetch( const ConstString& _pakName, const FilePath & _fileName, PrefetchReceiver ** _receiver ) const
+	bool PrefetcherManager::hasPrefetch( const ConstString& _pakName, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
 	{ 
 		for( TVectorPrefetchReceiver::const_iterator
 			it = m_prefetchReceiver.begin(),
@@ -358,7 +346,7 @@ namespace Menge
 
 			const FilePath & filePath = receiver.prefetcher->getFilePath();
 
-			if( filePath != _fileName )
+			if( filePath != _filePath )
 			{
 				continue;
 			}

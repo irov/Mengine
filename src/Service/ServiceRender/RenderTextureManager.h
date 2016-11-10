@@ -73,7 +73,7 @@ namespace Menge
 
     protected:
 		typedef std::pair<ConstString, FilePath> TMapRenderTextureKey;
-		typedef stdex::map<TMapRenderTextureKey, RenderTexturePtr> TMapRenderTextureEntry;
+		typedef stdex::map<TMapRenderTextureKey, RenderTextureInterface *> TMapRenderTextureEntry;
 		TMapRenderTextureEntry m_textures[MENGINE_TEXTURE_MANAGER_HASH_SIZE];
 
         typedef FactoryPoolStore<RenderTexture, 128> TFactoryRenderTexture;

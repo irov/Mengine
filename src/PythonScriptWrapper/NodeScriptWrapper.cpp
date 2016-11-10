@@ -3827,6 +3827,15 @@ namespace Menge
 			return platformName;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		bool s_hasTouchpad()
+		{
+			bool touchpad = PLATFORM_SERVICE( m_serviceProvider )
+				->hasTouchpad();
+
+			return touchpad;
+
+		}
+		//////////////////////////////////////////////////////////////////////////
 		mt::vec2f s_getImageSize( Sprite * _sprite )
 		{
 			const ResourceImagePtr & resourceImage = _sprite->getResourceImage();
@@ -7321,6 +7330,7 @@ namespace Menge
 			//pybind::def_function( "physicsMouseMove", &ScriptMethod::s_physicsMouseMove );
 
 			pybind::def_functor( "getPlatformName", nodeScriptMethod, &NodeScriptMethod::s_getPlatformName );
+			pybind::def_functor( "hasTouchpad", nodeScriptMethod, &NodeScriptMethod::s_hasTouchpad );
 			pybind::def_functor( "getTimingFactor", nodeScriptMethod, &NodeScriptMethod::s_getTimingFactor );
 			pybind::def_functor( "setTimingFactor", nodeScriptMethod, &NodeScriptMethod::s_setTimingFactor );
 

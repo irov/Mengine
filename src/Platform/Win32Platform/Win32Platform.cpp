@@ -286,7 +286,7 @@ namespace Menge
 		return m_platformName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32Platform::isTouchpad() const
+	bool Win32Platform::hasTouchpad() const
 	{
 		return m_touchpad;
 	}

@@ -183,7 +183,7 @@ namespace Menge
 		this->updateUV_();
 
 		m_timing = 0.f;
-		m_needUpdate = false;
+		m_needUpdate = true;
 
 		m_invalidVideoTexture = true;
 
@@ -260,6 +260,7 @@ namespace Menge
 		(void)_time;
 
 		m_timing = 0.f;
+		m_needUpdate = true;		
 
 		return true;
 	}
@@ -396,6 +397,11 @@ namespace Menge
 		if( frameRate > 0.f )
 		{
 			frameTiming = 1000.f / frameRate;
+		}
+
+		if( fabsf( m_timing - _timing ) < frameTiming )
+		{
+			return;
 		}
 
 		float seek_timing = _timing;

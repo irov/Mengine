@@ -33,24 +33,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PrefetcherManager::_finalize()
 	{
-		for( TVectorPrefetchReceiver::const_iterator
+		for( TMapPrefetchReceiver::const_iterator
 			it = m_prefetchReceiver.begin(),
 			it_end = m_prefetchReceiver.end();
 		it != it_end;
 		++it )
 		{
-			const PrefetchReceiver & receiver = *it;
+			const PrefetchReceiver & receiver = it->second;
 
 			receiver.prefetcher->cancel();
 		}
 
-		for( TVectorPrefetchReceiver::const_iterator
+		for( TMapPrefetchReceiver::const_iterator
 			it = m_prefetchReceiver.begin(),
 			it_end = m_prefetchReceiver.end();
 		it != it_end;
 		++it )
 		{
-			const PrefetchReceiver & receiver = *it;
+			const PrefetchReceiver & receiver = it->second;
 
 			THREAD_SERVICE( m_serviceProvider )
 				->joinTask( receiver.prefetcher );
@@ -84,8 +84,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PrefetcherManager::update()
 	{
-		TVectorPrefetchReceiver::const_iterator it_erase = std::remove_if( m_prefetchReceiver.begin(), m_prefetchReceiver.end(), FReceiverComplete() );
-		m_prefetchReceiver.erase( it_erase, m_prefetchReceiver.end() );
+		//TMapPrefetchReceiver::iterator it_erase = std::remove_if( m_prefetchReceiver.begin(), m_prefetchReceiver.end(), FReceiverComplete() );
+		//m_prefetchReceiver.erase( it_erase, m_prefetchReceiver.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::prefetchImageDecoder( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codec )
@@ -115,7 +115,7 @@ namespace Menge
 
 		new_receiver.prefetcher = task;
 
-		m_prefetchReceiver.push_back( new_receiver );
+		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _pakName, _filePath ), new_receiver ) );
 
 		m_threadQueue->addTask( task );
 
@@ -180,8 +180,8 @@ namespace Menge
 		task->setSoundCodec( _codec );
 
 		new_receiver.prefetcher = task;
-
-		m_prefetchReceiver.push_back( new_receiver );
+				
+		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _pakName, _filePath ), new_receiver ) );
 
 		m_threadQueue->addTask( task );
 
@@ -247,7 +247,7 @@ namespace Menge
 
 		new_receiver.prefetcher = task;
 
-		m_prefetchReceiver.push_back( new_receiver );
+		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _pakName, _filePath ), new_receiver ) );
 
 		m_threadQueue->addTask( task );
 
@@ -288,18 +288,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PrefetcherManager::unfetch( const ConstString& _pakName, const FilePath& _filePath )
 	{
-		PrefetchReceiver * receiver;
-		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == false )
+		TMapPrefetchReceiver::iterator it_found = m_prefetchReceiver.find( std::make_pair( _pakName, _filePath ) );
+
+		if( it_found == m_prefetchReceiver.end() )
 		{
 			return;
 		}
 
-		if( --receiver->refcount > 0 )
+		PrefetchReceiver & receiver = it_found->second;
+
+		if( --receiver.refcount > 0 )
 		{
 			return;
 		}
 
-		receiver->prefetcher->cancel();
+		receiver.prefetcher->cancel();
+
+		m_prefetchReceiver.erase( it_found );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PrefetcherDebugInfo PrefetcherManager::getDebugInfo() const
@@ -308,13 +313,13 @@ namespace Menge
 
 		info.receiverCount = 0;
 
-		for( TVectorPrefetchReceiver::const_iterator
+		for( TMapPrefetchReceiver::const_iterator
 			it = m_prefetchReceiver.begin(),
 			it_end = m_prefetchReceiver.end();
 		it != it_end;
 		++it )
 		{
-			const PrefetchReceiver & receiver = *it;
+			const PrefetchReceiver & receiver = it->second;
 
 			if( receiver.prefetcher->isComplete() == false )
 			{
@@ -329,33 +334,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::hasPrefetch( const ConstString& _pakName, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
 	{ 
-		for( TVectorPrefetchReceiver::const_iterator
-			it = m_prefetchReceiver.begin(),
-			it_end = m_prefetchReceiver.end();
-		it != it_end;
-		++it )
+		TMapPrefetchReceiver::const_iterator it_found = m_prefetchReceiver.find( std::make_pair( _pakName, _filePath ) );
+
+		if( it_found == m_prefetchReceiver.end() )
 		{
-			const PrefetchReceiver & receiver = *it;
-
-			const ConstString & pakName = receiver.prefetcher->getPakName();
-
-			if( pakName != _pakName )
-			{
-				continue;
-			}
-
-			const FilePath & filePath = receiver.prefetcher->getFilePath();
-
-			if( filePath != _filePath )
-			{
-				continue;
-			}
-
-			*_receiver = const_cast<PrefetchReceiver *>(&receiver);
-
-			return true;
+			return false;
 		}
-		
-		return false;
+
+		const PrefetchReceiver & receiver = it_found->second;
+
+		*_receiver = const_cast<PrefetchReceiver *>(&receiver);
+
+		return true;
 	}
 }

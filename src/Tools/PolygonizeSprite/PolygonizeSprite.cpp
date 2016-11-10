@@ -19,6 +19,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	uint32_t offset_y = parse_kwds( lpCmdLine, L"--offset_y", 0U );
 	float width = parse_kwds( lpCmdLine, L"--width", -1.f );
 	float height = parse_kwds( lpCmdLine, L"--height", -1.f );
+	uint32_t tolerance = parse_kwds( lpCmdLine, L"--tolerance", 200U );
 
 	if( texturepacker_path.empty() == true )
 	{
@@ -45,6 +46,12 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	system_cmd += L" --extrude 0 ";
 	system_cmd += L" --trim-mode Polygon ";
 	system_cmd += L" --trim-threshold 0 ";	
+	system_cmd += L" --tracer-tolerance ";
+
+	std::wstringstream ss;
+	ss << tolerance;
+	system_cmd += ss.str();
+	system_cmd += L" ";
 
 	WCHAR ImagePathCanonicalizeQuote[MAX_PATH];
 	ForcePathQuoteSpaces( ImagePathCanonicalizeQuote, image_path );

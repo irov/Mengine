@@ -315,7 +315,7 @@ namespace Menge
 	void InputEngine::mouseMoveEvent_( const InputMouseMoveEvent & _params )
 	{
 		if( PLATFORM_SERVICE( m_serviceProvider )
-			->isTouchpad() == true )
+			->hasTouchpad() == true )
 		{
 			if( this->isAnyMouseButtonDown() == true )
 			{

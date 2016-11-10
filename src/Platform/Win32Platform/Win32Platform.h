@@ -29,7 +29,7 @@ namespace Menge
 
 	public:
 		const ConstString & getPlatformName() const override;
-		bool isTouchpad() const override;
+		bool hasTouchpad() const override;
 
 	public:
 		void getDesktopResolution( Resolution & _resolution ) const override;

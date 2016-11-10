@@ -34,7 +34,7 @@ namespace Menge
 		virtual const ConstString & getPlatformName() const = 0;
 
 	public:
-		virtual bool isTouchpad() const = 0;
+		virtual bool hasTouchpad() const = 0;
 
     public:
         virtual void getDesktopResolution( Resolution & _resolution ) const = 0;

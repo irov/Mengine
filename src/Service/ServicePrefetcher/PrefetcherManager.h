@@ -6,6 +6,8 @@
 
 #	include "Factory/FactoryStore.h"
 
+#	include "stdex/stl_map.h"
+
 #	ifndef MENGINE_PREFETCHER_THREAD_COUNT
 #	define MENGINE_PREFETCHER_THREAD_COUNT 2
 #	endif
@@ -69,7 +71,8 @@ namespace Menge
 		typedef FactoryPoolStore<ThreadTaskPrefetchDataflow, 16> TFactoryThreadTaskPrefetchDataflow;
 		TFactoryThreadTaskPrefetchDataflow m_factoryThreadTaskPrefetchDataflow;
 		
-		typedef stdex::vector<PrefetchReceiver> TVectorPrefetchReceiver;
-		TVectorPrefetchReceiver m_prefetchReceiver;
+		typedef std::pair<ConstString, FilePath> TKeyPrefetchReceiver;
+		typedef stdex::map<TKeyPrefetchReceiver, PrefetchReceiver> TMapPrefetchReceiver;
+		TMapPrefetchReceiver m_prefetchReceiver;
 	};
 }

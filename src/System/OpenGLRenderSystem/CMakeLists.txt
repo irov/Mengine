@@ -4,14 +4,26 @@ include_directories( ${THIRDPARTY_DIR}/SDL2/include ${Mengine_SOURCE_DIR}/Utils)
 
 ADD_FILTER(
 src
-	OpenGLRenderSystem.cpp
-	OpenGLRenderSystem.h
-	OpenGLTexture.cpp
-	OpenGLTexture.h
-    OpenGLRenderError.cpp
-    OpenGLRenderError.h
     OpenGL.cpp
     OpenGL.h
+    OpenGLRenderSystem.cpp
+    OpenGLRenderSystem.h
+    OpenGLRenderError.cpp
+    OpenGLRenderError.h
+    OpenGLRenderEnum.h
+    OpenGLRenderFragmentShader.cpp
+    OpenGLRenderFragmentShader.h
+    OpenGLRenderIndexBuffer.cpp
+    OpenGLRenderIndexBuffer.h
+    OpenGLRenderProgram.cpp
+    OpenGLRenderProgram.h
+    OpenGLRenderShader.h
+    OpenGLRenderVertexBuffer.cpp
+    OpenGLRenderVertexBuffer.h
+    OpenGLRenderVertexShader.cpp
+    OpenGLRenderVertexShader.h
+    OpenGLTexture.cpp
+    OpenGLTexture.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

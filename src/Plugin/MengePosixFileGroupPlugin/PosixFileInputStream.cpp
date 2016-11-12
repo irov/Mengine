@@ -36,8 +36,7 @@ namespace Menge
 		m_filename = _fileName;
 
 		Char filePath[MENGINE_MAX_PATH];
-		if( SDLLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( _folder, _fileName, filePath, MENGINE_MAX_PATH ) == false )
+		if( this->concatenateFilePath( _folder, _fileName, filePath, MENGINE_MAX_PATH ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("PosixFileGroupDirectory::open invalid concatenate '%s':'%s'"
 				, m_folder.c_str()
@@ -261,8 +260,7 @@ namespace Menge
 		}
 
 		char filePath[MENGINE_MAX_PATH];
-		if( SDLLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( m_folder, m_filename, filePath, MENGINE_MAX_PATH ) == false )
+		if( this->concatenateFilePath( m_folder, m_filename, filePath, MENGINE_MAX_PATH ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("PosixFileGroupDirectory::time invalid concatenate '%s':'%s'"
 				, m_folder.c_str()
@@ -292,4 +290,20 @@ namespace Menge
 
 		return false;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool PosixFileInputStream::concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, Char * _filePath, size_t _capacity ) const
+    {
+        size_t folderSize = _folder.size();
+        size_t fileNameSize = _fileName.size();
+
+        if( folderSize + fileNameSize > _capacity )
+        {
+            return false;
+        }
+
+        strcpy( _filePath, _folder.c_str() );
+        strcat( _filePath, _fileName.c_str() );
+
+        return true;
+    }
 }	// namespace Menge

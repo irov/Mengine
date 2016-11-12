@@ -1,5 +1,11 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
+MACRO( ADD_FILTER group_name )
+    SOURCE_GROUP( ${group_name} FILES ${ARGN} )
+    SET( SRC_FILES ${SRC_FILES} ${ARGN} )
+    #MESSAGE( ${ARGN} )
+ENDMACRO( ADD_FILTER group_name files )
+
 ADD_SUBDIRECTORY( Config )
 
 ADD_SUBDIRECTORY( Kernel )

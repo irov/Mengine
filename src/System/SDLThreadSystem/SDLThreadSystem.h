@@ -11,43 +11,37 @@
 
 namespace Menge
 {
-	class SDLThreadSystem
-		: public ThreadSystemInterface
-	{
-	public:
-		SDLThreadSystem();
-		~SDLThreadSystem();
+    class SDLThreadSystem
+        : public ServiceBase<ThreadSystemInterface>
+    {
+    public:
+        SDLThreadSystem();
+        ~SDLThreadSystem();
 
     public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
-	public:
-		bool initialize() override;
-		void finalize() override;
-
-	public:
-		bool avaliable() const override;
-
-	public:
-		ThreadIdentityPtr createThread( int _priority ) override;
-		
-	public:
-		void sleep( unsigned int _ms ) override;
+        bool _initialize() override;
+        void _finalize() override;
 
     public:
-        ThreadMutexInterfacePtr createMutex() override;
+        bool avaliable() const override;
 
-	public:
-		ptrdiff_t getCurrentThreadId() const override;
-	
-	protected:
-		ServiceProviderInterface * m_serviceProvider;
+    public:
+        ThreadIdentityPtr createThread(int _priority, const char * _doc) override;
+        
+    public:
+        void sleep( unsigned int _ms ) override;
 
+    public:
+        ThreadMutexInterfacePtr createMutex(const char * _doc) override;
+
+    public:
+        ptrdiff_t getCurrentThreadId() const override;
+    
+    protected:
         typedef FactoryPoolStore<SDLThreadIdentity, 16> TPoolThreadIdentity;
-		TPoolThreadIdentity m_poolThreadIdentity;
+        TPoolThreadIdentity m_poolThreadIdentity;
 
-		typedef FactoryPoolStore<SDLThreadMutex, 16> TPoolThreadMutex;
-		TPoolThreadMutex m_poolThreadMutex;
-	};
+        typedef FactoryPoolStore<SDLThreadMutex, 16> TPoolThreadMutex;
+        TPoolThreadMutex m_poolThreadMutex;
+    };
 }

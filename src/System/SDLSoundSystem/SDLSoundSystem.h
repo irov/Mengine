@@ -1,70 +1,66 @@
-#	pragma once
+#   pragma once
 
-#	include "Interface/SoundSystemInterface.h"
+#   include "Interface/SoundSystemInterface.h"
 
-#	include "SDLSoundBufferMemory.h"
-#	include "SDLSoundBufferStream.h"
-#	include "SDLSoundSource.h"
+#   include "SDLSoundBufferMemory.h"
+#   include "SDLSoundBufferStream.h"
+#   include "SDLSoundSource.h"
 
-#	include "SDLSoundFilter.h"
+#   include "SDLSoundFilter.h"
 
 #   include "Factory/FactoryStore.h"
 
-#	include "SDL.h"
-
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	static const uint32_t INVALID_SOUND_ID = (uint32_t)-1;
-	//////////////////////////////////////////////////////////////////////////
-	class SDLSoundSystem
-		: public SoundSystemInterface
-	{
-	public:
-		SDLSoundSystem();
-		~SDLSoundSystem();
+    //////////////////////////////////////////////////////////////////////////
+#   ifndef MENGINE_SDL_SOUND_MAX_COUNT
+#   define MENGINE_SDL_SOUND_MAX_COUNT 32
+#   endif
+    //////////////////////////////////////////////////////////////////////////
+    static const uint32_t INVALID_SOUND_ID = (uint32_t)-1;
+    //////////////////////////////////////////////////////////////////////////
+    class SDLSoundSystem
+        : public ServiceBase<SoundSystemInterface>
+    {
+    public:
+        SDLSoundSystem();
+        ~SDLSoundSystem();
 
     public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
+        bool _initialize() override;
+        void _finalize() override;
 
-	public:
-		uint32_t playSoundDesc( SDLSoundSource * _source, float _position, float _volume, int32_t _count );
-		void removeSoundDesc( uint32_t _id );
-		bool stopSoundDesc( uint32_t _id );
+    public:
+        void update() override;
 
-		bool pauseSoundDesc( uint32_t _id, float & _position );
-		bool resumeSoundDesc( uint32_t _id, float _position );
+    public:
+        bool isSilent() const override;
+        
+    public:
+        void onTurnSound( bool _turn ) override;
 
-		bool setSoundDescVolume( uint32_t _id, float _volume );
+    public:
+        SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) override;
 
-		bool getSoundDescPosition( uint32_t _id, float & _position );
+    public:
+        SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer ) override;
 
-	public:
-		bool initialize() override;
-        void finalize() override;
+    public:
+        int findFreeChannel();
+        void freeChannel(int channel);
 
-		void update() override;
-		
-	public:
-		void onTurnSound( bool _turn ) override;
+    protected:
+        ServiceProviderInterface * m_serviceProvider;
 
-	public:		
-		SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) override;
-
-	public:
-		SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer ) override;
-
-	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
-        typedef FactoryPoolStore<SDLSoundBufferMemory, 32> TPoolSoundBuffer;
+        typedef FactoryPoolStore<SDLSoundBufferMemory, MENGINE_SDL_SOUND_MAX_COUNT> TPoolSoundBuffer;
         TPoolSoundBuffer m_poolSoundBuffer;
 
-		typedef FactoryPoolStore<SDLSoundBufferStream, 32> TPoolSoundBufferStream;
+        typedef FactoryPoolStore<SDLSoundBufferStream, MENGINE_SDL_SOUND_MAX_COUNT> TPoolSoundBufferStream;
         TPoolSoundBufferStream m_poolSoundBufferStream;
 
-		typedef FactoryPoolStore<SDLSoundSource, 32> TPoolSoundSource;
+        typedef FactoryPoolStore<SDLSoundSource, MENGINE_SDL_SOUND_MAX_COUNT> TPoolSoundSource;
         TPoolSoundSource m_poolSoundSource;
+
+        bool m_freeChannels[MENGINE_SDL_SOUND_MAX_COUNT];
     };
 }	// namespace Menge

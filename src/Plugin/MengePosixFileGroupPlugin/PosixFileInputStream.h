@@ -41,6 +41,9 @@ namespace Menge
 	protected:
 		bool read_( void * _buf, size_t _size, size_t & _read );
 
+    private:
+        bool concatenateFilePath(const FilePath & _folder, const FilePath & _fileName, Char * _filePath, size_t _capacity) const;
+
 	private:
         ServiceProviderInterface * m_serviceProvider;
 

@@ -1,6 +1,6 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ApplicationInterface.h"
+#   include "Interface/ApplicationInterface.h"
 
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/NotificationServiceInterface.h"
@@ -8,96 +8,43 @@
 #   include "Interface/ThreadSystemInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/SoundSystemInterface.h"
-#	include "Interface/PhysicSystemInterface.h"
+#   include "Interface/PhysicSystemInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
-#   include "Interface/ParticleSystemInterface2.h"
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/PluginInterface.h"
-#	include "Interface/ArchiveInterface.h"
-#   include "Interface/SDLLayerInterface.h"
-#	include "Interface/ModuleInterface.h"
-#	include "Interface/DataInterface.h"
-#	include "Interface/CacheInterface.h"
-#	include "Interface/ConfigInterface.h"
-#	include "Interface/PrefetcherInterface.h"
+#   include "Interface/ArchiveInterface.h"
+#   include "Interface/ModuleInterface.h"
+#   include "Interface/DataInterface.h"
+#   include "Interface/MemoryInterface.h"
+#   include "Interface/ConfigInterface.h"
+#   include "Interface/PrefetcherInterface.h"
 
-#	include "Core/FileLogger.h"
+#   include "SDLLogger.h"
 
-#	include "SDLLogger.h"
-#   include "SDLTimer.h"
-#   include "SDLInput.h"
-
-#	include "SDL.h"
-
-#	include <map>
+#   include "Core/FileLogger.h"
 
 namespace Menge
 {
-	class SDLApplication
-        : public PlatformInterface
+
+    class SDLApplication
     {
     public:
-		SDLApplication();
-		~SDLApplication();
+        SDLApplication();
+        ~SDLApplication();
 
     public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
-    public:
-		bool initialize( int argc, char * argv[] );
+        bool initialize(const int argc, char** argv);
         void finalize();
 
-        void loop();
-        void stop()	override;
-
-	public:
-		const ConstString & getPlatformName() const override;
-
     public:
-        void getDesktopResolution( Resolution & _resolution ) const override;
+        void loop();
+        void stop();
 
-        const String & getCurrentPath() const override;
-
-        void minimizeWindow() override;
-
-        void setHandleMouse( bool _handle ) override;
-        void setCursorPosition( const mt::vec2f & _pos ) override;
-
-        TimerInterface * getTimer() const override;
-
-        size_t getShortPathName( const String & _name, char * _shortpath, size_t _shortpathlen ) override;
-        void getMaxClientResolution( Resolution & _resolution ) const override;
-
-        void showKeyboard() override;
-        void hideKeyboard() override;
-
-        void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
-        void notifyVsyncChanged( bool _vsync ) override;
-        void notifyCursorModeChanged( bool _mode ) override;
-        bool notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const Blobject & _buffer ) override;
-
-        void notifyCursorClipping( const Viewport & _viewport ) override;
-        void notifyCursorUnClipping() override;
-
-        bool openUrlInDefaultBrowser( const WString & _url ) override;
-
-        bool isDevelopmentMode() const override;
-
-        void onEvent( const ConstString & _event, const TMapParams & _params ) override;
-
-	public:
-		bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
-		bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
-
-	public:
-		uint32_t getProcessHandleCount() const override;
-
-	protected:
-		bool getApplicationPath_( const char * _section, const char * _key, ConstString & _path );
+    protected:
+        bool getApplicationPath_(const char * _section, const char * _key, ConstString & _path);
 
     protected:
         bool initializeStringizeService_();
@@ -105,11 +52,10 @@ namespace Menge
         bool initializeNotificationService_();
         bool initializeThreadEngine_();
         bool initializeFileEngine_();
-		bool initializeConfigEngine_();
-        bool initializeLogEngine_();
-		bool initializeSDLLayerService_();
+        bool initializeConfigEngine_();
+        bool initializeLoggerEngine_();
         bool initializeUnicodeEngine_();
-		bool initializeParticleEngine2_();
+        bool initializeParticleEngine2_();
         bool initializePhysicEngine2D_();
         bool initializeRenderEngine_();
         bool initializeSoundEngine_();
@@ -117,41 +63,24 @@ namespace Menge
         bool initializeNodeManager_();
         bool initializeScriptEngine_();
         bool initializeCodecEngine_();
-        bool initializeInputEngine_();        
+        bool initializeInputEngine_();
         bool initializePluginService_();
         bool initializeArchiveService_();
-		bool initializeModuleEngine_();		
-		bool initializeDataManager_();
-		bool initializeCacheManager_();
-		bool initializePrefetcherService_();
+        bool initializeModuleEngine_();
+        bool initializeDataManager_();
+        bool initializeMemoryManager_();
+        bool initializePrefetcherService_();
 
-	public:
-		void setActivate( bool _value );
+    public:
+        void setActivate(bool _value);
 
-	protected:
-		void initializeMarmaladePauseCallback_();
-
-	protected:
-		void handleEvent( const SDL_Event & _event );
-				
-	protected:
-		ServiceProviderInterface * m_serviceProvider;
-		ApplicationInterface * m_application;
-
-		SDL_Window * m_window;
-		SDL_GLContext m_context;
-		
-		SDLLayerInterface * m_layer;
+    protected:
+        ServiceProviderInterface * m_serviceProvider;
 
         SDLLogger * m_loggerConsole;
-		FileLogger * m_fileLog;
+        FileLogger * m_fileLog;
 
-		SDLTimer * m_timer;
-		SDLInput * m_input;
-
-		String m_commandLine;
-		
-		ConstString m_platformName;
+        ConstString m_platformName;
 
         FilePath m_currentPath;
         WString m_userPath;
@@ -159,41 +88,13 @@ namespace Menge
 
         WString m_projectName;
         WString m_companyName;
-		
-        InputServiceInterface * m_inputService;
-		UnicodeSystemInterface * m_unicodeSystem;
-        UnicodeServiceInterface * m_unicodeService;
-        LogServiceInterface * m_logService;
-        FileServiceInterface * m_fileService;
-        CodecServiceInterface * m_codecService;
-		ThreadSystemInterface * m_threadSystem;
-        ThreadServiceInterface * m_threadService;
-        ParticleServiceInterface * m_particleService;
-		ParticleServiceInterface2 * m_particleService2;
-		RenderSystemInterface * m_renderSystem;
-        RenderServiceInterface * m_renderService;
-		RenderTextureServiceInterface * m_renderTextureManager;
-		RenderMaterialServiceInterface * m_renderMaterialManager;
-		SoundSystemInterface * m_soundSystem;
-        SoundServiceInterface * m_soundService;
-        ScriptServiceInterface * m_scriptService;
-        ArchiveServiceInterface * m_archiveService;
-		ModuleServiceInterface * m_moduleService;
-		DataServiceInterface * m_dataService;
-		CacheServiceInterface * m_cacheService;
-		ConfigServiceInterface * m_configService;
-		PrefetcherServiceInterface * m_prefetcherService;
-		NotificationServiceInterface * m_notificationService;
-		StringizeServiceInterface * m_stringizeService;
 
-		typedef stdex::vector<PluginInterface *> TVectorPlugins;
-		TVectorPlugins m_plugins;	
+        typedef stdex::vector<PluginInterface *> TVectorPlugins;
+        TVectorPlugins m_plugins;
 
-		bool m_running;
-		bool m_active;
+        bool m_running;
+        bool m_active;
 
-		bool m_focus;
-
-		bool m_developmentMode;
+        bool m_developmentMode;
     };
 }

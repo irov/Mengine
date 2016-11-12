@@ -64,7 +64,7 @@ namespace Menge
             {
                 _utf8.clear();
 
-                return false;                 
+                return false;
             }
 
             return true;

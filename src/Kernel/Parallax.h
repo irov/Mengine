@@ -19,7 +19,7 @@ namespace Menge
 		const mt::vec3f & getParallaxFactor() const;
 
 	protected:
-		void render( const RenderObjectState * _state, unsigned int _debugMask ) override;
+		void render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask ) override;
 
 	protected:
 		mt::vec3f m_parallaxFactor;

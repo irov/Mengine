@@ -22,7 +22,7 @@ namespace	Menge
 		return m_parallaxFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Parallax::render( const RenderObjectState * _state, unsigned int _debugMask )
+	void Parallax::render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		const mt::mat4f & camera_vm = _state->camera->getCameraViewMatrix();
 		const mt::mat4f & camera_pm = _state->camera->getCameraProjectionMatrix();
@@ -41,6 +41,6 @@ namespace	Menge
 		state.clipplane = _state->clipplane;
 		state.target = _state->target;
 
-		Node::render( &state, _debugMask );
+		Node::render( _renderService, &state, _debugMask );
 	}
 }

@@ -162,7 +162,7 @@ namespace Menge
 		m_actor = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeMagnetActor::_debugRender( const RenderObjectState * _state, unsigned int _debugMask )
+	void NodeMagnetActor::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		(void)_debugMask;
 
@@ -176,7 +176,7 @@ namespace Menge
 
 		v[16] = v[0];
 
-		RenderVertex2D * vertices = RENDER_SERVICE( m_serviceProvider )
+		RenderVertex2D * vertices = _renderService
 			->getDebugRenderVertex2D( 17 * 2 );
 
 		const mt::mat4f & wm = this->getWorldMatrix();
@@ -207,7 +207,7 @@ namespace Menge
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
 			->getDebugMaterial();
 
-		RENDER_SERVICE( m_serviceProvider )->addRenderLine( _state, debugMaterial
+		_renderService->addRenderLine( _state, debugMaterial
 			, vertices
 			, 17 * 2
 			, nullptr

@@ -76,6 +76,7 @@ namespace Menge
 		float m_timing;
 
 		bool m_needUpdate;
+		bool m_updateFirstFrame;
 		bool m_invalidVideoTexture;
 
 		mt::vec4f m_uv;

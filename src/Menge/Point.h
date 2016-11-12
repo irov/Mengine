@@ -23,10 +23,10 @@ namespace Menge
 		void _destroy() override;
 
 	protected:
-		void _render( const RenderObjectState * _state ) override;
+		void _render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
 
 	protected:
-		void _debugRender( const RenderObjectState * _state, unsigned int _debugMask ) override;
+		void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask ) override;
 
 	protected:
 		Point * m_linked;

@@ -598,7 +598,7 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_render( const RenderObjectState * _state )
+	void Movie2::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
 		m_meshes.clear();
 
@@ -676,7 +676,7 @@ namespace Menge
 
 					m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
-					RENDER_SERVICE( m_serviceProvider )
+					_renderService
 						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
 				}break;
 			case AE_MOVIE_LAYER_TYPE_SOLID:
@@ -719,7 +719,7 @@ namespace Menge
 
 					m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
-					RENDER_SERVICE( m_serviceProvider )
+					_renderService
 						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
 				}break;
 			case AE_MOVIE_LAYER_TYPE_SEQUENCE:
@@ -777,7 +777,7 @@ namespace Menge
 						continue;
 					}
 					
-					RENDER_SERVICE( m_serviceProvider )
+					_renderService
 						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
 				}break;
 			case AE_MOVIE_LAYER_TYPE_VIDEO:
@@ -818,7 +818,7 @@ namespace Menge
 
 					m.material = surfaceVideo->getMaterial();
 
-					RENDER_SERVICE( m_serviceProvider )
+					_renderService
 						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
 				}break;
 			}

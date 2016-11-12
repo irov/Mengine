@@ -21,7 +21,7 @@ namespace Menge
 		float getWidth() const;
 
 	protected:
-		void _render( const RenderObjectState * _state ) override;
+		void _render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
 
 	protected:
 		mt::vec3f m_from;

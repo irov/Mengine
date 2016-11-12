@@ -132,9 +132,9 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_render( const RenderObjectState * _state )
+	void Animation::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
-		Sprite::_render( _state );
+		Sprite::_render( _renderService, _state );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_activate()

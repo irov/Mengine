@@ -34,7 +34,7 @@ namespace Menge
 	protected:
 		bool _compile() override;
 		void _release() override;
-		void _render( const RenderObjectState * _state ) override;
+		void _render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
 		void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
 		void _invalidateWorldMatrix() override;
 		void _invalidateColor() override;

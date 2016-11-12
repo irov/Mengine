@@ -108,10 +108,8 @@ namespace Menge
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::_render( const RenderObjectState * _state )
+	void Mesh2D::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
-		Node::_render( _state );
-
 		if( m_vertexCount == 0 )
 		{
 			return;
@@ -122,7 +120,7 @@ namespace Menge
 
 		const mt::box2f & bb = this->getBoundingBox();
 
-		RENDER_SERVICE(m_serviceProvider)
+		_renderService
 			->addRenderObject( _state, material, vertices, m_vertexCount, m_shape->indices, m_indicesCount, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////

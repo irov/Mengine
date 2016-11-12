@@ -10,14 +10,16 @@ namespace Menge
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable::_render( const RenderObjectState * _state )
+	void Renderable::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
+		(void)_renderService;
 		(void)_state;
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable::_debugRender( const RenderObjectState * _state, unsigned int _debugMask )
+	void Renderable::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
 	{
+		(void)_renderService;
 		(void)_state;
 		(void)_debugMask;
 		//Empty

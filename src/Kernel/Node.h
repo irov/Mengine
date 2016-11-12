@@ -81,7 +81,7 @@ namespace Menge
 		Layer * m_layer;
 
 	public:
-		void render( const RenderObjectState * _state, unsigned int _debugMask ) override;
+		void render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask ) override;
 		inline bool isRenderable() const;
 		
 	public:
@@ -109,7 +109,7 @@ namespace Menge
 		void _hide( bool _value ) override;
 			
 	protected:
-		void _debugRender( const RenderObjectState * _state, unsigned int _debugMask ) override;
+		void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask ) override;
 	
 	protected:
 		const RenderViewportInterface * m_renderViewport;
@@ -118,7 +118,7 @@ namespace Menge
 		const RenderTargetInterface * m_renderTarget;
 
 	protected:
-		void renderChild_( const RenderObjectState * _state, unsigned int _debugMask );
+		void renderChild_( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask );
 
 	public:
 		void getScreenPosition( const RenderCameraInterface * _camera, mt::vec2f & _position );

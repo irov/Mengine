@@ -158,10 +158,8 @@ namespace Menge
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::_render( const RenderObjectState * _state )
-	{
-		Node::_render( _state );
-
+	void Model3D::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
+	{		
 		if( m_frame == nullptr )
 		{
 			return;
@@ -172,7 +170,7 @@ namespace Menge
 
 		const mt::box2f & bb = this->getBoundingBox();
 
-		RENDER_SERVICE(m_serviceProvider)
+		_renderService
 			->addRenderObject( _state, material, vertices, m_vertexCount, m_frame->indecies, m_indicesCount, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -48,7 +48,7 @@ namespace Menge
 		void _deactivate() override;
 
 	protected:
-		void _debugRender( const RenderObjectState * _state, unsigned int _debugMask ) override;
+		void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask ) override;
 
 	protected:
 		MagnetWorldPtr m_magnetWorld;

@@ -649,7 +649,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Spine::_render( const RenderObjectState * _state )
+	void Spine::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
 		//if( this->getResourceSpine()->getName() == "Effect_BuyUpgrade" )
 		//{
@@ -788,7 +788,7 @@ namespace Menge
 
 			const RenderMaterialInterfacePtr & material = mesh.material;
 
-			RENDER_SERVICE( m_serviceProvider )
+			_renderService
 				->addRenderObject( _state, material, vertices, verticesCount / 2, indices, trianglesCount, &bb, false );
 		}
 	}

@@ -78,17 +78,15 @@ namespace Menge
 		m_surfaceVideo->update( _current, _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_render( const RenderObjectState * _state )
+	void Video::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
-		Node::_render( _state );
-		
 		const RenderVertex2D * vertices = this->getVertices();
 
 		const RenderMaterialInterfacePtr & material = m_surfaceVideo->getMaterial(); 
 
 		const mt::box2f & bb = this->getBoundingBox();
 
-		RENDER_SERVICE(m_serviceProvider)
+		_renderService
 			->addRenderQuad( _state, material, vertices, 4, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////

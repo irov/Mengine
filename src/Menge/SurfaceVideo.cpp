@@ -12,6 +12,7 @@ namespace Menge
 	SurfaceVideo::SurfaceVideo()
 		: m_timing( 0.f )
 		, m_needUpdate( false )
+		, m_updateFirstFrame(false)
 		, m_invalidVideoTexture( true )
 	{
 		mt::ident_v4( m_uv );
@@ -184,6 +185,7 @@ namespace Menge
 
 		m_timing = 0.f;
 		m_needUpdate = true;
+		m_updateFirstFrame = true;
 
 		m_invalidVideoTexture = true;
 
@@ -260,7 +262,7 @@ namespace Menge
 		(void)_time;
 
 		m_timing = 0.f;
-		m_needUpdate = true;		
+		m_needUpdate = true;
 
 		return true;
 	}
@@ -313,7 +315,14 @@ namespace Menge
 		float frameTiming = dataInfo->getFrameTiming();
 		float duration = dataInfo->duration;
 
-		while( m_timing >= frameTiming )
+		if( m_updateFirstFrame == true )
+		{
+			m_videoDecoder->updateFrame();
+
+			m_updateFirstFrame = false;
+		}
+
+		while( m_timing >= frameTiming || m_updateFirstFrame == true )
 		{
 			float pts;
 			EVideoDecoderReadState state = m_videoDecoder->readNextFrame( pts );

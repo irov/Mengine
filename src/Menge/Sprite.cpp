@@ -56,16 +56,14 @@ namespace Menge
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_render( const RenderObjectState * _state )
+	void Sprite::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
-		Node::_render( _state );
-
 		const RenderMaterialInterfacePtr & material = this->getMaterial();
 		const RenderVertex2D * vertices = this->getVerticesWM();
 
 		const mt::box2f & bb = this->getBoundingBox();
 
-		RENDER_SERVICE( m_serviceProvider )
+		_renderService
 			->addRenderQuad( _state, material, vertices, 4, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////

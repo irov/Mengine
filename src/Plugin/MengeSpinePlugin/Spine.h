@@ -59,7 +59,7 @@ namespace Menge
 
 	protected:
 		void _update( float _current, float _timing ) override;
-		void _render( const RenderObjectState * _state ) override;
+		void _render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
 
 	protected:
 		bool _play( float _time ) override;

@@ -208,10 +208,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_render( const RenderObjectState * _state )
+	void TextField::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{	
-		Node::_render( _state );
-
 		if( m_key.empty() == true )
 		{
 			return;
@@ -261,7 +259,7 @@ namespace Menge
 
 		const mt::box2f & bb = this->getBoundingBox();
 
-		RENDER_SERVICE( m_serviceProvider )
+		_renderService
 			->addRenderQuad( _state, material, vertices, countVertex, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -79,10 +79,8 @@ namespace	Menge
 		m_verticesWM.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Landscape2D::_render( const RenderObjectState * _state )
+	void Landscape2D::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
-		Node::_render( _state );
-		
 		TVectorLandscape2DElements & elementsWM = this->getElementWM();
 
 		mt::vec2f min_screen( 0.f, 0.f );
@@ -165,7 +163,7 @@ namespace	Menge
 			{
 				const RenderVertex2D * vertices = this->getVerticesWM( elementVertexOffset );
 
-				RENDER_SERVICE( m_serviceProvider )
+				_renderService
 					->addRenderQuad( _state, el.material, vertices, 4, &el.bb_wm, false );
 			}
 

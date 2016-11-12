@@ -183,10 +183,8 @@ namespace Menge
         m_resourceWindow.release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Window::_render( const RenderObjectState * _state )
+	void Window::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
-		Node::_render( _state );
-
 		const RenderVertex2D * vertices = this->getVertices();
 
 		const mt::box2f & bb = this->getBoundingBox();
@@ -195,7 +193,7 @@ namespace Menge
         {
             const WindowEdge & edge = m_edge[ResourceWindow_Background];
 
-            RENDER_SERVICE(m_serviceProvider)
+            _renderService
 				->addRenderQuad( _state, edge.material, &vertices[0 * 4], 4, &bb, false );
         }
 
@@ -203,7 +201,7 @@ namespace Menge
         {
             const WindowEdge & edge = m_edge[i];
 
-            RENDER_SERVICE(m_serviceProvider)
+            _renderService
 				->addRenderQuad( _state, edge.material, &vertices[i * 4], 4, &bb, false );
         }
 	}

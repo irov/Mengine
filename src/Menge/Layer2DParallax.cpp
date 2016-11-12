@@ -61,7 +61,7 @@ namespace	Menge
 		_screen.y = sp.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DParallax::render( const RenderObjectState * _state, unsigned int _debugMask )
+	void Layer2DParallax::render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		const mt::mat4f & camera_vm = _state->camera->getCameraViewMatrix();
 		const mt::mat4f & camera_vm_inv = _state->camera->getCameraViewMatrixInv();
@@ -97,7 +97,7 @@ namespace	Menge
 				state.clipplane = _state->clipplane;
 				state.target = _state->target;
 
-				Layer::render( &state, _debugMask );
+				Layer::render( _renderService, &state, _debugMask );
 			}
 		}
 		else
@@ -117,7 +117,7 @@ namespace	Menge
 			state.clipplane = _state->clipplane;
 			state.target = _state->target;
 
-			Layer::render( &state, _debugMask );
+			Layer::render( _renderService, &state, _debugMask );
 		}
 	}
 }

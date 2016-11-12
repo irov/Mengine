@@ -363,10 +363,8 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::_render( const RenderObjectState * _state )
+	void ParticleEmitter2::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
-		Node::_render( _state );
-
 		if( this->isPlay() == false )
 		{
 			return;
@@ -449,7 +447,7 @@ namespace	Menge
 			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( m_serviceProvider )
 				->getMaterial2( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ParticleEmitter2"), stage, PT_TRIANGLELIST, mesh.textures, textures );
 
-			RENDER_SERVICE( m_serviceProvider )
+			_renderService
 				->addRenderObject( _state, material, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, &bb, false );
 		}
 	}

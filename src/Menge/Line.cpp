@@ -43,10 +43,8 @@ namespace Menge
 		return m_width;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Line::_render( const RenderObjectState * _state )
+	void Line::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
-		Node::_render( _state );
-
 		const mt::mat4f & wm = this->getWorldMatrix();
 
 		mt::vec3f fromWM;
@@ -97,7 +95,7 @@ namespace Menge
 		RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE(m_serviceProvider)
 			->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" ), PT_TRIANGLELIST, 0, nullptr );
 
-		RENDER_SERVICE(m_serviceProvider)
+		_renderService
 			->addRenderQuad( _state, material, m_vertices, 4, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////

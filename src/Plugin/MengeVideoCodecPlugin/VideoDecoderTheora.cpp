@@ -785,6 +785,30 @@ namespace Menge
 		return bytes;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void VideoDecoderTheora::updateFrame()
+	{
+		ogg_packet packet;
+
+		int error_packetout = ogg_stream_packetout( &m_oggStreamState, &packet );
+
+		if( error_packetout <= 0 )
+		{
+			return;
+		}
+
+		// удачно декодировали. в пакете содержится декодированная ogg-информация
+		// (то бишь закодированная theora-информация)
+		// загружаем пакет в декодер theora
+		if( theora_decode_packetin( &m_theoraState, &packet ) == OC_BADPACKET )
+		{
+			return;
+		}
+
+		double time = theora_granule_time( &m_theoraState, m_theoraState.granulepos );
+
+		m_time = (float)(time * 1000.0);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	EVideoDecoderReadState VideoDecoderTheora::readNextFrame( float & _pts )
 	{
 		(void)_pts;

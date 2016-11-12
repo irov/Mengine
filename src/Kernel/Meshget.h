@@ -47,7 +47,7 @@ namespace Menge
 
 	protected:
 		void _update( float _current, float _timing ) override;
-		void _render( const RenderObjectState * _state ) override;
+		void _render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
 
 	protected:
 		void _setEventListener( const pybind::dict & _embed ) override;

@@ -135,7 +135,7 @@ namespace Menge
 		return test;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotCircle::_debugRender( const RenderObjectState * _state, unsigned int _debugMask )
+	void HotSpotCircle::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
 		{
@@ -151,7 +151,7 @@ namespace Menge
 
 		size_t vertexCount = numpoints * 2;
 
-		RenderVertex2D * vertices = RENDER_SERVICE( m_serviceProvider )
+		RenderVertex2D * vertices = _renderService
 			->getDebugRenderVertex2D( vertexCount );
 
 		if( vertices == nullptr )
@@ -204,7 +204,8 @@ namespace Menge
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
 			->getDebugMaterial();
 
-		RENDER_SERVICE( m_serviceProvider )->addRenderLine( _state, debugMaterial
+		_renderService
+			->addRenderLine( _state, debugMaterial
 			, vertices
 			, (uint32_t)vertexCount
 			, nullptr

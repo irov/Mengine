@@ -270,7 +270,7 @@ namespace Menge
 		mt::set_box_from_two_point( _boundingBox, minimal_wm, maximal_wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::_debugRender( const RenderObjectState * _state, unsigned int _debugMask )
+	void HotSpotImage::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
 		{
@@ -284,7 +284,7 @@ namespace Menge
 
 		const mt::box2f & box = this->getBoundingBox();
 
-		RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
+		RenderVertex2D * vertices = _renderService
 			->getDebugRenderVertex2D( 4 * 2 );
 
 		if( vertices == nullptr )
@@ -331,7 +331,7 @@ namespace Menge
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
 			->getDebugMaterial();
 
-		RENDER_SERVICE(m_serviceProvider)
+		_renderService
 			->addRenderLine( _state, debugMaterial, vertices, 8, nullptr, true );
 	}
 }	// namespace Menge

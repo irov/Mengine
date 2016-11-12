@@ -905,7 +905,7 @@ namespace Menge
         this->deactivate();
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::render( const RenderObjectState * _state, unsigned int _debugMask )
+	void Node::render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		if( this->isRenderable() == false )
 		{
@@ -965,10 +965,10 @@ namespace Menge
 		{
 			if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
 			{
-				this->_render( &state );
+				this->_render( _renderService, &state );
 			}
 
-			this->renderChild_( &state, _debugMask );
+			this->renderChild_( _renderService, &state, _debugMask );
 		}
 		//}
 
@@ -976,7 +976,7 @@ namespace Menge
         {
 			if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
 			{
-				this->_debugRender( &state, _debugMask );
+				this->_debugRender( _renderService, &state, _debugMask );
 			}
         }
 	}
@@ -1081,7 +1081,7 @@ namespace Menge
 		m_invalidateRendering = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::renderChild_( const RenderObjectState * _state, unsigned int _debugMask )
+	void Node::renderChild_( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		for( TListNodeChild::unslug_iterator
 			it = m_children.ubegin(),
@@ -1091,7 +1091,7 @@ namespace Menge
 		{
 			Node * node = (*it);
 
-			node->render( _state, _debugMask );
+			node->render( _renderService, _state, _debugMask );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1283,7 +1283,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_debugRender( const RenderObjectState * _state, unsigned int _debugMask )
+	void Node::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		if( (_debugMask & MENGE_DEBUG_NODES) == 0 )
 		{
@@ -1343,7 +1343,8 @@ namespace Menge
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE(m_serviceProvider)
 			->getDebugMaterial();
 		
-		RENDER_SERVICE( m_serviceProvider )->addRenderLine( _state, debugMaterial
+		_renderService
+			->addRenderLine( _state, debugMaterial
 			, vertices
 			, 8
 			, nullptr

@@ -261,10 +261,8 @@ namespace	Menge
 		m_invalidateVerticesWM = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Grid2D::_render( const RenderObjectState * _state )
+	void Grid2D::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
-		Node::_render( _state );
-
 		const RenderIndices * indices = &m_indices[0];
 		uint32_t indicesCount = (uint32_t)m_indices.size();
 		
@@ -275,7 +273,7 @@ namespace	Menge
 
 		const mt::box2f & bb = this->getBoundingBox();
 		
-		RENDER_SERVICE(m_serviceProvider)
+		_renderService
 			->addRenderObject( _state, material, vertices, verticesCount, indices, indicesCount, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////

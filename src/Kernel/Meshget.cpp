@@ -132,10 +132,8 @@ namespace Menge
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MESHGET_UPDATE )(this, _current, _timing);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Meshget::_render( const RenderObjectState * _state )
+	void Meshget::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
-		Node::_render( _state );
-
 		if( m_positions.empty() == true )
 		{
 			return;
@@ -152,7 +150,7 @@ namespace Menge
 
 		const mt::box2f & bb = this->getBoundingBox();
 
-		RENDER_SERVICE( m_serviceProvider )
+		_renderService
 			->addRenderObject( _state, material, vertices_buff, vertexCount, indices_buff, indicesCount, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////

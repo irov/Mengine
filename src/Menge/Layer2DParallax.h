@@ -30,7 +30,7 @@ namespace Menge
 		void calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node* _node ) const override;
 
 	protected:
-		void render( const RenderObjectState * _state, unsigned int _debugMask ) override;
+		void render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask ) override;
 
 	protected:
 		mt::vec2f m_parallax;

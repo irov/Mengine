@@ -63,10 +63,8 @@ namespace Menge
 		Node::_destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Point::_render( const RenderObjectState * _state )
+	void Point::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
-		Node::_render( _state );
-
 		if( m_linked == nullptr )
 		{
 			return;
@@ -128,11 +126,10 @@ namespace Menge
 		RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE(m_serviceProvider)
 			->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" ), PT_TRIANGLELIST, 0, nullptr );
 
-		RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _state, material, m_vertices, 4, nullptr, false );
+		_renderService->addRenderQuad( _state, material, m_vertices, 4, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Point::_debugRender( const RenderObjectState * _state, unsigned int _debugMask )
+	void Point::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
 		{
@@ -141,7 +138,7 @@ namespace Menge
 
 		const mt::vec3f & pos = this->getWorldPosition();
 
-		RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
+		RenderVertex2D * vertices = _renderService
 			->getDebugRenderVertex2D( 4 * 2 );
 
 		if( vertices == nullptr )
@@ -196,7 +193,7 @@ namespace Menge
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
 			->getDebugMaterial();
 
-		RENDER_SERVICE(m_serviceProvider)
+		_renderService
 			->addRenderLine( _state, debugMaterial, vertices, 8, nullptr, true );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -1149,9 +1149,11 @@ namespace Menge
 		state.clipplane = m_renderClipplane;
 		state.target = m_renderTarget;
 
+		RenderServiceInterface * renderService = RENDER_SERVICE( m_serviceProvider );
+
 		if( m_scene != nullptr )
 		{
-			m_scene->render( &state, debugMask );
+			m_scene->render( renderService, &state, debugMask );
 		}
 
 		MODULE_SERVICE(m_serviceProvider)
@@ -1162,7 +1164,7 @@ namespace Menge
 
 		if( m_arrow != nullptr )
 		{
-			m_arrow->render( &state, debugMask );
+			m_arrow->render( renderService, &state, debugMask );
 		}
 
 //#	ifndef MENGINE_MASTER_RELEASE
@@ -1343,7 +1345,7 @@ namespace Menge
 
 			m_debugText->setScale( mt::vec3f( scale, 1.f ) );
 
-			m_debugText->render( &state, debugMask );
+			m_debugText->render( renderService, &state, debugMask );
 		}
 //#	endif
 		//m_renderCamera2D->setLocalPosition( pos );

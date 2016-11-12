@@ -46,10 +46,10 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DIsometric::render( const RenderObjectState * _state, unsigned int _debugMask )
+	void Layer2DIsometric::render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		stdex::intrusive_sort_stable( m_children, FIsometricSortY() );
 
-		Layer::render( _state, _debugMask );
+		Layer::render( _renderService, _state, _debugMask );
 	}
 }

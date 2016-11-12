@@ -1841,6 +1841,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setLocale( const ConstString & _locale )
 	{
+		if( m_locale == _locale )
+		{
+			LOGGER_WARNING( m_serviceProvider )("Application::setLocale alredy set locale '%s'"
+				, _locale.c_str()
+				);
+
+			return;
+		}
+
 		ConstString prevLocale = m_locale;
 
 		m_locale = _locale;

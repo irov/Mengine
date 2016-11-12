@@ -163,6 +163,11 @@ namespace Menge
 		{
 			const ConstString & steam_locale = it_locale_found->second;
 
+			LOGGER_WARNING( m_serviceProvider )("ModuleSteam::initialize found locale '%s' for language '%s'"
+				, steam_locale.c_str()
+				, CurrentGameLanguage
+				);
+
 			APPLICATION_SERVICE( m_serviceProvider )
 				->setLocale( steam_locale );
 		}

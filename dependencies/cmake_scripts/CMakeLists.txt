@@ -134,3 +134,6 @@ if( DEFINED MENGINE_TARGET_MSVC )
     ADD_SUBDIRECTORY( Python3_decimal )
     ADD_SUBDIRECTORY( pybind3 )
 endif()
+
+ADD_SUBDIRECTORY( sdl2_net )
+ADD_SUBDIRECTORY( sdl2_mixer )

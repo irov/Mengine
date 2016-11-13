@@ -6,34 +6,26 @@
 #	include "PosixFileGroupDirectory.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_DECLARE( MengePosixFileGroup, Menge::PosixFileGroupPlugin )
+PLUGIN_FACTORY( MengePosixFileGroup, Menge::PosixFileGroupPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	PosixFileGroupPlugin::PosixFileGroupPlugin()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PosixFileGroupPlugin::initialize( ServiceProviderInterface * _provider )
+	bool PosixFileGroupPlugin::_initialize()
 	{
-        m_serviceProvider = _provider;
-	
-		FILE_SERVICE(m_serviceProvider)
-			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ), new FactorableUnique<FactoryDefault<PosixFileGroupDirectory> >() );
+        FILE_SERVICE(m_serviceProvider)
+            ->registerFileGroupFactory(STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir"), new FactorableUnique<FactoryDefault<PosixFileGroupDirectory> >());
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PosixFileGroupPlugin::finalize()
+	void PosixFileGroupPlugin::_finalize()
 	{
-		FILE_SERVICE(m_serviceProvider)
-			->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir") );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PosixFileGroupPlugin::destroy()
-	{
-		delete this;
+        FILE_SERVICE(m_serviceProvider)
+            ->unregisterFileGroupFactory(STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir"));
 	}
 }

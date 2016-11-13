@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Interface/RenderSystemInterface.h"
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #	include "OpenGL.h"
 
@@ -15,7 +15,7 @@ namespace Menge
 		~OpenGLTexture();
 
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type );
+        bool initialize(ServiceProviderInterface * _serviceProvider, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type);
 
 	public:
         void * lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly ) override;
@@ -73,8 +73,7 @@ namespace Menge
 		GLenum m_format;
 		GLenum m_type;
 
-		void * m_lockMemory;
-		CacheBufferID m_lockBufferId;
+        MemoryCacheBufferInterfacePtr m_lockMemory;
 		uint32_t m_lockLevel;
 	};
 

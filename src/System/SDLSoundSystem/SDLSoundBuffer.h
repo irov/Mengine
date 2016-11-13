@@ -7,29 +7,30 @@
 
 namespace Menge
 {
-	class SDLSoundBuffer
-		: public SoundBufferInterface
-	{
-	public:
-		SDLSoundBuffer();
-		virtual ~SDLSoundBuffer();
+    class SDLSoundBuffer
+        : public SoundBufferInterface
+    {
+    public:
+        SDLSoundBuffer();
+        virtual ~SDLSoundBuffer();
 
-	public:
-		void setServiceProvider( ServiceProviderInterface * m_serviceProvider );
+    public:
+        void setServiceProvider( ServiceProviderInterface * m_serviceProvider );
 
-	public:
-		bool load( const SoundDecoderInterfacePtr & _soundDecoder );
+    public:
+        virtual bool load( const SoundDecoderInterfacePtr & _soundDecoder );
+        virtual void play( int _channel, bool _loop );
 
-	public:
-		bool update() override;
+    public:
+        virtual bool update() override;
 
-	public:
-		const SoundDecoderInterfacePtr & getDecoder() const override;
+    public:
+        virtual const SoundDecoderInterfacePtr & getDecoder() const override;
         
-	protected:
-		ServiceProviderInterface * m_serviceProvider;
-		SoundDecoderInterfacePtr m_soundDecoder;
-	};
+    protected:
+        ServiceProviderInterface * m_serviceProvider;
+        SoundDecoderInterfacePtr m_soundDecoder;
+    };
 
-	typedef stdex::intrusive_ptr<SDLSoundBuffer> SDLSoundBufferPtr;
-}	// namespace Menge
+    typedef stdex::intrusive_ptr<SDLSoundBuffer> SDLSoundBufferPtr;
+}   // namespace Menge

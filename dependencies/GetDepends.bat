@@ -26,6 +26,8 @@ call:getdepend_2 https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz Python
 
 call:getdepend http://www.astralax.ru/download/programm/dev/magic_win.zip magic_win.zip win astralax
 call:getdepend https://www.libsdl.org/release/SDL2-2.0.4.zip SDL2-2.0.4.zip SDL2-2.0.4 SDL2
+call:getdepend https://www.libsdl.org/projects/SDL_net/release/SDL2_net-2.0.1.zip SDL2_net-2.0.1.zip SDL2_net-2.0.1 SDL2_net
+call:getdepend https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.1.zip SDL2_mixer-2.0.1.zip SDL2_mixer-2.0.1 SDL2_mixer
 
 call:svndepend https://github.com/zeux/pugixml.git/trunk pugixml
 call:svndepend https://github.com/irov/pybind.git/trunk pybind

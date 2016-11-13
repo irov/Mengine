@@ -5,69 +5,72 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-	SDLThreadMutex::SDLThreadMutex()
+    SDLThreadMutex::SDLThreadMutex()
         : m_serviceProvider(nullptr)
         , m_cs(nullptr)
+        , m_doc(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	bool SDLThreadMutex::initialize( ServiceProviderInterface * _serviceProvider )
+    bool SDLThreadMutex::initialize( ServiceProviderInterface * _serviceProvider, const char * _doc)
     {
         m_serviceProvider = _serviceProvider;
 
-		SDL_mutex * cs = SDL_CreateMutex();
+        m_doc = _doc;
 
-		if( cs == nullptr )
-		{
-			return false;
-		}
+        SDL_mutex * cs = SDL_CreateMutex();
 
-		m_cs = cs;
+        if( cs == nullptr )
+        {
+            return false;
+        }
 
-		return true;
+        m_cs = cs;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-	void SDLThreadMutex::lock()
+    void SDLThreadMutex::lock()
     {
-		int err = SDL_LockMutex( m_cs );
+        const int err = SDL_LockMutex( m_cs );
 
-		if( err != 0 )
-		{
-			LOGGER_ERROR(m_serviceProvider)("SDLThreadMutex::lock invalid lock"
-				);
-		}
+        if( err != 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)("SDLThreadMutex::lock invalid lock"
+                );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-	void SDLThreadMutex::unlock()
+    void SDLThreadMutex::unlock()
     {
-		int err = SDL_UnlockMutex( m_cs );
+        const int err = SDL_UnlockMutex( m_cs );
 
-		if( err != 0 )
-		{
-			LOGGER_ERROR(m_serviceProvider)("SDLThreadMutex::unlock invalid unlock"
-				);
-		}
+        if( err != 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)("SDLThreadMutex::unlock invalid unlock"
+                );
+        }
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool SDLThreadMutex::try_lock()
-	{
-		int err = SDL_TryLockMutex( m_cs );
-
-		if( err == 0 )
-		{
-			return true;
-		}
-		else if( err == -1 )
-		{
-			LOGGER_ERROR( m_serviceProvider )("SDLThreadMutex::lock invalid try lock"
-				);
-		}
-
-		return false;
-	}
     //////////////////////////////////////////////////////////////////////////
-	void SDLThreadMutex::_destroy()
+    bool SDLThreadMutex::try_lock()
     {
-		SDL_DestroyMutex( m_cs );
+        const int err = SDL_TryLockMutex( m_cs );
+
+        if( err == 0 )
+        {
+            return true;
+        }
+        else if( err == -1 )
+        {
+            LOGGER_ERROR( m_serviceProvider )("SDLThreadMutex::lock invalid try lock"
+                );
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLThreadMutex::_destroy()
+    {
+        SDL_DestroyMutex( m_cs );
     }
 }

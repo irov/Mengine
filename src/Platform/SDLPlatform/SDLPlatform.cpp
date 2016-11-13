@@ -1,32 +1,34 @@
-#	include "Config/Config.h"
+#   include "Config/Config.h"
 
-#	include "SDLPlatform.h"
+#   include "SDLPlatform.h"
 
-#	include "Interface/LoggerInterface.h"
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/UnicodeInterface.h"
-#	include "Interface/InputSystemInterface.h"
-#	include "Interface/OptionsInterface.h"
-#	include "Interface/TimerInterface.h"
+#   include "Interface/LoggerInterface.h"
+#   include "Interface/FileSystemInterface.h"
+#   include "Interface/UnicodeInterface.h"
+#   include "Interface/InputSystemInterface.h"
+#   include "Interface/OptionsInterface.h"
+#   include "Interface/TimerInterface.h"
 
-#	include <cstdio>
-#	include <clocale>
+#   include <cstdio>
+#   include <clocale>
 
-#	include "Core/FileLogger.h"
-#	include "Core/IniUtil.h"
+#   include "Core/FileLogger.h"
+#   include "Core/IniUtil.h"
 
-#	include "Factory/FactorableUnique.h"
-#	include "Factory/FactoryDefault.h"
+#   include "Factory/FactorableUnique.h"
+#   include "Factory/FactoryDefault.h"
 
-#	include "Logger/Logger.h"
+#   include "Logger/Logger.h"
 
 //#	include "resource.h"
 
-#	include <ctime>
-#	include <algorithm>
+#   include <ctime>
+#   include <algorithm>
 
-#	include <sstream>
-#	include <iomanip>
+#   include <sstream>
+#   include <iomanip>
+
+#   define PARAM_UNUSED(x) ((void)x)
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Menge::SDLPlatform );
@@ -34,333 +36,366 @@ SERVICE_FACTORY( Platform, Menge::SDLPlatform );
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-	SDLPlatform::SDLPlatform()
-        : m_running(false)
-		, m_pause(false)
-		, m_touchpad(true)
-	{
+    SDLPlatform::SDLPlatform()
+        : m_window(nullptr)
+        , m_glContext(nullptr)
+        , m_sdlInput(nullptr)
+        , m_width(0)
+        , m_height(0)
+        , m_shouldQuit(false)
+        , m_running(false)
+        , m_pause(false)
+        , m_touchpad(true)
+    {
     }
     //////////////////////////////////////////////////////////////////////////
-	SDLPlatform::~SDLPlatform()
+    SDLPlatform::~SDLPlatform()
     {
     }
     //////////////////////////////////////////////////////////////////////////    
-	size_t SDLPlatform::getCurrentPath( WChar * _path, size_t _len ) const
+    size_t SDLPlatform::getCurrentPath( WChar * _path, size_t _len ) const
     {
-		if( _len > 0 )
-		{
-			wcscpy( _path, L"" );
-		}
+        if( _len > 0 )
+        {
+            wcscpy( _path, L"" );
+        }
 
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-	size_t SDLPlatform::getShortPathName( const WString & _path, WChar * _short, size_t _len ) const
+    size_t SDLPlatform::getShortPathName( const WString & _path, WChar * _short, size_t _len ) const
     {
-		size_t pathSize = _path.size();
+        size_t pathSize = _path.size();
 
-		if( _len == pathSize )
-		{
-			wcscpy( _short, _path.c_str() );
-		}
-		
-		return _path.size();
-    }
-    //////////////////////////////////////////////////////////////////////////
-	void SDLPlatform::getMaxClientResolution( Resolution & _resolution ) const
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-	bool SDLPlatform::_initialize()
-    {
-		int32 deviceClassID = s3eDeviceGetInt( S3E_DEVICE_CLASS );
-
-		m_touchpad = true;
-		
-		switch( deviceClassID )
-		{
-		case  S3E_DEVICE_CLASS_WINDOWS_GENERIC:
-			{
-				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "SIMULATOR");
-				m_touchpad = true;
-			}break;
-		case S3E_DEVICE_CLASS_OSX_DESKTOP:
-			{
-				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "OSX");
-				m_touchpad = false;
-			}break;
-		case S3E_DEVICE_CLASS_IPHONE:
-			{
-				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "IOS");
-				m_touchpad = true;
-			}break;
-		case S3E_DEVICE_CLASS_ANDROID_GENERIC:
-			{
-				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "ANDROID");
-				m_touchpad = true;
-			}break;
-		default:
-			break;
-		};
-				
-		LOGGER_WARNING(m_serviceProvider)("Device info:"
-			);
-
-		const char * deviceID = s3eDeviceGetString( S3E_DEVICE_ID );
-
-		LOGGER_WARNING(m_serviceProvider)("ID: %s"
-			, deviceID
-			);
-
-		const char * deviceOS = s3eDeviceGetString( S3E_DEVICE_OS );
-
-		LOGGER_WARNING(m_serviceProvider)("OS: %s"
-			, deviceOS
-			);
-
-		const char * deviceOSVersion= s3eDeviceGetString( S3E_DEVICE_OS_VERSION );
-
-		LOGGER_WARNING(m_serviceProvider)("OS Version: %s"
-			, deviceOSVersion
-			);
-
-		const char * deviceClass = s3eDeviceGetString( S3E_DEVICE_CLASS );
-
-		LOGGER_WARNING(m_serviceProvider)("Class: %s"
-			, deviceClass
-			);
-
-		const char * deviceArchitecture = s3eDeviceGetString( S3E_DEVICE_ARCHITECTURE );
-
-		LOGGER_WARNING(m_serviceProvider)("Architecture: %s"
-			, deviceArchitecture
-			);
-
-		const char * deviceName = s3eDeviceGetString( S3E_DEVICE_NAME );
-
-		LOGGER_WARNING(m_serviceProvider)("Name: %s"
-			, deviceName
-			);		
+        if( _len == pathSize )
+        {
+            wcscpy( _short, _path.c_str() );
+        }
         
-		m_marmaladeInput = new MarmaladeInput;
-		m_marmaladeInput->setServiceProvider( m_serviceProvider );
-		
-		if( m_marmaladeInput->initialize() == false )
-		{
-			return false;
-		}
+        return _path.size();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::getMaxClientResolution( Resolution & _resolution ) const
+    {
+        this->getDesktopResolution(_resolution);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::_initialize()
+    {
+        m_touchpad = false;
 
-#	ifndef _DEBUG		
-		s3ePointerSetInt( S3E_POINTER_HIDE_CURSOR, 1 );
-#	endif
+        if( SDL_Init(SDL_INIT_EVERYTHING) < 0 )
+        {
+            LOGGER_CRITICAL(m_serviceProvider)("SDL initialization failed");
+            return false;
+        }
 
-		this->initializeMarmaladePauseCallback_();
-		this->initializeMarmaladeSurfaceScreenSizeCallback_();
+        const Char* sdlPlatform = SDL_GetPlatform();
+        const int sdlRam = SDL_GetSystemRAM();
+
+        m_platformName = Helper::stringizeString(m_serviceProvider, sdlPlatform);
+
+        LOGGER_WARNING(m_serviceProvider)("Device info:"
+            );
+
+        LOGGER_WARNING(m_serviceProvider)("Platform: %s"
+            , sdlPlatform
+            );
+
+        LOGGER_WARNING(m_serviceProvider)("RAM: %d MB"
+            , sdlRam
+            );
+
+        m_sdlInput = new SDLInput();
+        m_sdlInput->setServiceProvider(m_serviceProvider);
+        if( !m_sdlInput->initialize() )
+        {
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-	void SDLPlatform::update()
+    void SDLPlatform::update()
     {
-		TIMER_SERVICE( m_serviceProvider )
-			->resetDeltaTime();
+        TIMER_SERVICE( m_serviceProvider )
+            ->resetDeltaTime();
 
         while( true )
         {
-            s3eBool quit = s3eDeviceCheckQuitRequest();
+            float frameTime = TIMER_SERVICE(m_serviceProvider)
+                ->getDeltaTime();
 
-            if( quit == S3E_TRUE )
+            if( m_pause == true )
+            {
+                SDL_Delay( 100 );
+
+                continue;
+            }
+            
+            const bool quitRequest = this->processEvents();
+            if( quitRequest )
             {
                 break;
             }
 
-			float frameTime = TIMER_SERVICE(m_serviceProvider)
-				->getDeltaTime();
-
-			if( m_pause == true )
-			{
-				s3eDeviceYield( 100 );
-
-				continue;
-			}
-            
-            if( APPLICATION_SERVICE(m_serviceProvider)
-				->isFocus() == true )
-            {
-                s3eDeviceBacklightOn();
-            }
-
-            m_marmaladeInput->update();
-            
-			bool updating = APPLICATION_SERVICE( m_serviceProvider )
-				->beginUpdate();
+            bool updating = APPLICATION_SERVICE( m_serviceProvider )
+                ->beginUpdate();
 
             if( updating == true )
             {                
-				APPLICATION_SERVICE( m_serviceProvider )
-					->tick( frameTime );
+                APPLICATION_SERVICE( m_serviceProvider )
+                    ->tick( frameTime );
             }
             else
             {
-                s3eDeviceYield( 20 );
+                SDL_Delay( 20 );
             }
 
-			if( APPLICATION_SERVICE( m_serviceProvider )
-				->isFocus() == true )
-			{
-				if( APPLICATION_SERVICE( m_serviceProvider )
-					->render() == true )
-				{
-					APPLICATION_SERVICE( m_serviceProvider )
-						->flush();
-				}
-			}
+            if( APPLICATION_SERVICE( m_serviceProvider )
+                ->isFocus() == true )
+            {
+                if( APPLICATION_SERVICE( m_serviceProvider )
+                    ->render() == true )
+                {
+                    APPLICATION_SERVICE( m_serviceProvider )
+                        ->flush();
+                }
+            }
 
-			APPLICATION_SERVICE( m_serviceProvider )
-				->endUpdate();
+            APPLICATION_SERVICE( m_serviceProvider )
+                ->endUpdate();
 
-			s3eDeviceYield( 0 );
+            SDL_Delay( 0 );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-	bool SDLPlatform::openUrlInDefaultBrowser( const WString & _url )
+    bool SDLPlatform::openUrlInDefaultBrowser( const WString & _url )
     {
+        PARAM_UNUSED(_url);
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-	void SDLPlatform::_finalize()
-	{
+    void SDLPlatform::_finalize()
+    {
+        SDL_DestroyWindow(reinterpret_cast<SDL_Window*>(m_window));
+        SDL_GL_DeleteContext(reinterpret_cast<SDL_GLContext>(m_glContext));
+        SDL_Quit();
 
+        delete m_sdlInput;
+
+        m_sdlInput = nullptr;
+        m_window = nullptr;
+        m_glContext = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-	void SDLPlatform::stop()
+    void SDLPlatform::stop()
     {
         m_running = false;
-        s3eDeviceRequestQuit();
+        m_shouldQuit = true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool SDLPlatform::createWindow( uint32_t _icon, const Menge::WString & _projectTitle, const Resolution & _resolution, bool _fullscreen )
-	{
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	WindowHandle SDLPlatform::getWindowHandle() const
-	{
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & SDLPlatform::getPlatformName() const
-	{
-		return m_platformName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SDLPlatform::isTouchpad() const
-	{
-		return true;
-	}
     //////////////////////////////////////////////////////////////////////////
-	void SDLPlatform::getDesktopResolution( Resolution & _resolution ) const
+    bool SDLPlatform::createWindow( uint32_t _icon, const Menge::WString & _projectTitle, const Resolution & _resolution, bool _fullscreen )
     {
-        int32 width = s3eSurfaceGetInt( S3E_SURFACE_WIDTH );
-        int32 height = s3eSurfaceGetInt( S3E_SURFACE_HEIGHT );
+        PARAM_UNUSED(_icon);
+        PARAM_UNUSED(_fullscreen);
 
-        _resolution.setWidth( width );
-        _resolution.setHeight( height );
-    }
-    //////////////////////////////////////////////////////////////////////////
-	void SDLPlatform::minimizeWindow()
-    {
+        Menge::Char utf8Title[1024] = { 0 };
+        size_t utf8Size = 0;
+        UNICODE_SERVICE( m_serviceProvider )->unicodeToUtf8(_projectTitle.c_str(), _projectTitle.size(),
+                                                            utf8Title, sizeof(utf8Title) - 1, &utf8Size);
 
-    }
-    //////////////////////////////////////////////////////////////////////////
-	void SDLPlatform::setCursorPosition( const mt::vec2f & _pos )
-    {
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-    }
-    //////////////////////////////////////////////////////////////////////////
-	void SDLPlatform::showKeyboard()
-    {
-		if( m_marmaladeInput != nullptr )
-		{
-			m_marmaladeInput->showKeyboard( true );
-		}
-    }
-    //////////////////////////////////////////////////////////////////////////
-	void SDLPlatform::hideKeyboard()
-    {
-		if( m_marmaladeInput != nullptr )
-		{
-			m_marmaladeInput->showKeyboard( false );
-		}
-    }
-    //////////////////////////////////////////////////////////////////////////
-	void SDLPlatform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
-    {
-		
-    }
-    //////////////////////////////////////////////////////////////////////////
-	void SDLPlatform::notifyVsyncChanged( bool _vsync )
-    {
+        Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+        if( _fullscreen )
+        {
+            windowFlags |= SDL_WINDOW_FULLSCREEN;
+        }
 
+        m_width = static_cast<int>(_resolution.getWidth());
+        m_height = static_cast<int>(_resolution.getHeight());
+
+        m_window = reinterpret_cast<WindowHandle>(SDL_CreateWindow(utf8Title,
+                                                                   SDL_WINDOWPOS_CENTERED,
+                                                                   SDL_WINDOWPOS_CENTERED,
+                                                                   m_width, m_height,
+                                                                   windowFlags));
+        if( m_window == nullptr )
+        {
+            return false;
+        }
+
+        m_glContext = SDL_GL_CreateContext(reinterpret_cast<SDL_Window*>(m_window));
+
+        if( m_glContext == nullptr )
+        {
+            SDL_DestroyWindow(reinterpret_cast<SDL_Window*>(m_window));
+            return false;
+        }
+
+        m_sdlInput->updateSurfaceResolution(static_cast<float>(m_width),
+                                            static_cast<float>(m_height));
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-	void SDLPlatform::notifyCursorModeChanged( bool _mode )
+    WindowHandle SDLPlatform::getWindowHandle() const
     {
-		if( _mode == true )
-		{
-			s3ePointerSetInt( S3E_POINTER_HIDE_CURSOR, 0 );
-		}
-		else
-		{
-			s3ePointerSetInt( S3E_POINTER_HIDE_CURSOR, 1 );
-		}		
+        return m_window;
     }
     //////////////////////////////////////////////////////////////////////////
-	bool SDLPlatform::notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const MemoryInterfacePtr & _buffer )
+    const ConstString & SDLPlatform::getPlatformName() const
     {
-		return true;
+        return m_platformName;
     }
     //////////////////////////////////////////////////////////////////////////
-	void SDLPlatform::onEvent( const ConstString & _event, const TMapParams & _params )
+    bool SDLPlatform::isTouchpad() const
+    {
+        return m_touchpad;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::getDesktopResolution( Resolution & _resolution ) const
+    {
+        SDL_DisplayMode dm;
+        if (SDL_GetDesktopDisplayMode(0, &dm) == 0)
+        {
+            _resolution.setWidth(static_cast<uint32_t>(dm.w));
+            _resolution.setHeight(static_cast<uint32_t>(dm.h));
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::minimizeWindow()
     {
 
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool SDLPlatform::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SDLPlatform::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SDLPlatform::concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity )
-	{
-		size_t folderSize = _folder.size();
-		size_t dirSize = _fileName.size();
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::setCursorPosition( const mt::vec2f & _pos )
+    {
+        const int wndPosX = static_cast<int>(_pos.x * m_width);
+        const int wndPosY = static_cast<int>(_pos.y * m_width);
+        // ! This function generates a mouse motion event !
+        SDL_WarpMouseInWindow(reinterpret_cast<SDL_Window*>(m_window), wndPosX, wndPosY);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::showKeyboard()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::hideKeyboard()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
+    {
+        PARAM_UNUSED(_resolution);
+        PARAM_UNUSED(_fullscreen);
 
-		size_t filePathSize = folderSize + dirSize;
+        // SDL can't toggle this without recreating the window!
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::notifyVsyncChanged( bool _vsync )
+    {
+        PARAM_UNUSED(_vsync);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::notifyCursorModeChanged( bool _mode )
+    {
+        if( _mode == true )
+        {
+            SDL_ShowCursor(SDL_ENABLE);
+        }
+        else
+        {
+            SDL_ShowCursor(SDL_DISABLE);
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const MemoryInterfacePtr & _buffer )
+    {
+        PARAM_UNUSED(_name);
+        PARAM_UNUSED(_path);
+        PARAM_UNUSED(_buffer);
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::onEvent( const ConstString & _event, const TMapParams & _params )
+    {
+        PARAM_UNUSED(_event);
+        PARAM_UNUSED(_params);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
+    {
+        PARAM_UNUSED(_path);
+        PARAM_UNUSED(_file);
+        PARAM_UNUSED(_data);
+        PARAM_UNUSED(_size);
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
+    {
+        PARAM_UNUSED(_path);
+        PARAM_UNUSED(_file);
+        PARAM_UNUSED(_data);
+        PARAM_UNUSED(_size);
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity )
+    {
+        size_t folderSize = _folder.size();
+        size_t dirSize = _fileName.size();
 
-		if( filePathSize >= MENGINE_MAX_PATH )
-		{
-			return false;
-		}
+        size_t filePathSize = folderSize + dirSize;
 
-		Char filePath[MENGINE_MAX_PATH];
-		stdex::memorycopy( filePath, 0, _folder.c_str(), folderSize );
-		stdex::memorycopy( filePath, folderSize, _fileName.c_str(), dirSize );
+        if( filePathSize >= MENGINE_MAX_PATH )
+        {
+            return false;
+        }
 
-		filePath[filePathSize] = '\0';
-		//filePathSize += 1; //Null
+        Char filePath[MENGINE_MAX_PATH];
+        stdex::memorycopy( filePath, 0, _folder.c_str(), folderSize );
+        stdex::memorycopy( filePath, folderSize, _fileName.c_str(), dirSize );
 
-		if( UNICODE_SERVICE( m_serviceProvider )
-			->utf8ToUnicode( filePath, filePathSize, _filePath, _capacity, nullptr ) == false )
-		{
-			return false;
-		}
+        filePath[filePathSize] = '\0';
+        //filePathSize += 1; //Null
 
-		return true;
-	}
+        if( UNICODE_SERVICE( m_serviceProvider )
+            ->utf8ToUnicode( filePath, filePathSize, _filePath, _capacity, nullptr ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::processEvents()
+    {
+        bool quitRequest = m_shouldQuit;
+
+        if( !quitRequest )
+        {
+            SDL_Event sdlEvent;
+            while( SDL_PollEvent(&sdlEvent) != 0 && !quitRequest )
+            {
+                m_sdlInput->handleEvent(sdlEvent);
+
+                switch( sdlEvent.type )
+                {
+                    case SDL_QUIT:
+                        quitRequest = true;
+                        break;
+                }
+            }
+        }
+
+        return quitRequest;
+    }
 }

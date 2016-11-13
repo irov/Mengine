@@ -98,6 +98,7 @@ PLUGIN_EXPORT( MengeAmplifier );
 PLUGIN_EXPORT( MengeZip );
 PLUGIN_EXPORT( MengeLZ4 );
 PLUGIN_EXPORT( Spine );
+PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( MengeOggVorbis );
 PLUGIN_EXPORT( PathFinder );
 PLUGIN_EXPORT( MarmaladeFileGroup );
@@ -552,6 +553,7 @@ namespace Menge
 		PLUGIN_CREATE( m_serviceProvider, MengeAmplifier );
 		PLUGIN_CREATE( m_serviceProvider, PathFinder );
 		PLUGIN_CREATE( m_serviceProvider, Spine );
+		PLUGIN_CREATE( m_serviceProvider, Movie );
 
 		TVectorString modules;
 		CONFIG_VALUES(m_serviceProvider, "Modules", "Name", modules);

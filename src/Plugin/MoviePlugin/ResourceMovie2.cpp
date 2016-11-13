@@ -140,11 +140,9 @@ namespace Menge
 
 		aeMovieData * movieData = ae_create_movie_data( m_instance );
 
-		aeMovieStream movie_stream;
-		movie_stream.memory_read = &Mengine_read_stream;
-		movie_stream.data = stream.get();
+		aeMovieStream * movie_stream = ae_create_movie_stream( m_instance, &Mengine_read_stream, nullptr, stream.get() );
 
-		if( ae_load_movie_data( movieData, &movie_stream, &Mengine_resource_provider, this ) == AE_MOVIE_FAILED )
+		if( ae_load_movie_data( movieData, movie_stream, &Mengine_resource_provider, this ) == AE_MOVIE_FAILED )
 		{
 			LOGGER_ERROR( m_serviceProvider )("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s'"
 				, this->getName().c_str()
@@ -154,6 +152,8 @@ namespace Menge
 
 			return 0;
 		}
+
+		ae_delete_movie_stream( movie_stream );
 
 		m_movieData = movieData;
 		stream = nullptr;

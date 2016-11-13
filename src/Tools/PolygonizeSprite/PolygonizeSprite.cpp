@@ -47,6 +47,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	system_cmd += L" --trim-mode Polygon ";
 	system_cmd += L" --trim-threshold 0 ";	
 	system_cmd += L" --tracer-tolerance ";
+	system_cmd += L" --max-width 8192 ";
+	system_cmd += L" --max-height 8192 ";
+	system_cmd += L" --max-size 8192 ";
 
 	std::wstringstream ss;
 	ss << tolerance;
@@ -85,7 +88,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	WCHAR TexturePathCanonicalizeQuote[MAX_PATH];
 	ForcePathQuoteSpaces( TexturePathCanonicalizeQuote, texturepacker_path );
 	PathUnquoteSpaces( TexturePathCanonicalizeQuote );
-
+	
 	if( CreateProcess( TexturePathCanonicalizeQuote
 		, lpCommandLine
 		, NULL

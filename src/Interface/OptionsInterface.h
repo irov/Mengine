@@ -14,7 +14,7 @@ namespace Menge
 		SERVICE_DECLARE( "OptionsSystem" )
 
 	public:
-		virtual bool getOptions( Char * _options, size_t _capacity ) const = 0;
+		virtual bool getOptions( TVectorString & _options ) const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define OPTIONS_SYSTEM( serviceProvider )\

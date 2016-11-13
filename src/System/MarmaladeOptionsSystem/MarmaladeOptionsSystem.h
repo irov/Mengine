@@ -14,7 +14,7 @@ namespace Menge
 		: public ServiceBase<OptionsSystemInterface>
 	{
 	public:
-		bool getOptions( Char * _options, size_t _capacity ) const override;
+		bool getOptions( TVectorString & _options ) const override;
 	};
 }
 

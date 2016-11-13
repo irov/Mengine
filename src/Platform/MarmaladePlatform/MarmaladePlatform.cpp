@@ -415,7 +415,7 @@ namespace Menge
 		return m_platformName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladePlatform::isTouchpad() const
+	bool MarmaladePlatform::hasTouchpad() const
 	{
 		return true;
 	}

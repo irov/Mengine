@@ -28,7 +28,8 @@ namespace Menge
 		(void)_data;
 
 		//return stdex_malloc( _size );
-		return new uint8_t[_size];
+		//return new uint8_t[_size];
+		return malloc( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void * stdex_movie_alloc_n( void * _data, uint32_t _size, uint32_t _count )
@@ -38,7 +39,8 @@ namespace Menge
 		uint32_t total = _size * _count;
 
 		//return stdex_malloc( total );
-		return new uint8_t[total];
+		//return new uint8_t[total];
+		return malloc( total );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void stdex_movie_free( void * _data, const void * _ptr )
@@ -46,7 +48,8 @@ namespace Menge
 		(void)_data;
 
 		//stdex_free( (void *)_ptr );
-		delete[] _ptr;
+		//delete[] _ptr;
+		free( (void *)_ptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void stdex_movie_free_n( void * _data, const void * _ptr )
@@ -54,19 +57,25 @@ namespace Menge
 		(void)_data;
 
 		//stdex_free( (void *)_ptr );
-		delete[] _ptr;
+		//delete[] _ptr;
+		free( (void *)_ptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void stdex_movie_logerror( void * _data, aeMovieErrorCode _code, const char * _compositionName, const char * _layerName, const char * _message )
+	static void stdex_movie_logerror( void * _data, aeMovieErrorCode _code, const char * _format, ... )
 	{
+		va_list argList;
+
+		va_start( argList, _format );
+		char msg[4096];
+		vsprintf( msg, _format, argList );
+		va_end( argList );
+
 		MoviePlugin * plugin = static_cast<MoviePlugin *>(_data);
 		ServiceProviderInterface * serviceProvider = plugin->getServiceProvider();
 
 		LOGGER_ERROR( serviceProvider )("MoviePlugin movie error code '%d' composition '%s' layer '%s' message '%s'"
 			, _code
-			, _compositionName
-			, _layerName
-			, _message
+			, msg
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////

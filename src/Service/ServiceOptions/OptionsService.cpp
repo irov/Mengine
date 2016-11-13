@@ -2,6 +2,7 @@
 
 #	include <string.h>
 
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( OptionsService, Menge::OptionsService );
 //////////////////////////////////////////////////////////////////////////
@@ -15,66 +16,54 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OptionsService::_initialize()
 	{
-		Char commandLine[MENGINE_OPTIONS_COMMAND_LINE_MAX] = {0};
+		TVectorString options;
 
 		if( OPTIONS_SYSTEM( m_serviceProvider )
-			->getOptions( commandLine, MENGINE_OPTIONS_COMMAND_LINE_MAX ) == false )
+			->getOptions( options ) == false )
 		{
-			return false;
+			return true;
 		}
 		
-		const Char * option_begin = strstr( commandLine, "-" );
-
-		while( option_begin != nullptr )
+		for( TVectorString::const_iterator
+			it = options.begin(),
+			it_end = options.end();
+		it != it_end;
+		++it )
 		{
-			const Char * option_end = strstr( option_begin + 1, " " );
-			
+			const String & option = *it;
+
+			const Char * option_str = option.c_str();
+
+			const Char * option_key_str = strchr( option_str, '-' );
+
+			if( option_key_str == nullptr )
+			{
+				continue;
+			}
+
+			option_key_str += 1;
+
+			const Char * option_value_str = strchr( option_key_str, ':' );
+
 			Option op;
 
-			if( option_end != nullptr )
+			if( option_value_str == nullptr )
 			{
-				size_t len = option_end - option_begin - 1;
+				strcpy( op.key, option_key_str );
 
-				if( len >= MENGINE_OPTIONS_KEY_SIZE )
-				{
-					return false;
-				}
-								
-				strncpy( op.key, option_begin + 1, len );
-				op.key[len] = 0;
-
-				option_begin = strstr( option_end, "-" );
+				op.value[0] = '\0';
 			}
 			else
 			{
-				size_t len = strlen( option_begin + 1 );
+				size_t key_size = option_value_str - option_key_str;
+				
+				strncpy( op.key, option_key_str, key_size );
+				op.key[key_size] = '\0';
 
-				if( len >= MENGINE_OPTIONS_KEY_SIZE )
-				{
-					return false;
-				}
-
-				strcpy( op.key, option_begin + 1 );
-
-				option_begin = nullptr;
+				strcpy( op.value, option_value_str + 1 );
 			}
-
-			const char * option_value = strstr( op.key, ":" );
-
-			if( option_value != nullptr )
-			{
-				size_t len = option_value - op.key;
-
-				op.key[len] = 0;
-
-				strcpy( op.value, option_value + 1 );
-			}
-			else
-			{
-				op.value[0] = 0;
-			}
-
-			m_options.push_back( op );			
+			
+			m_options.push_back( op );
 		}
 
 		return true;

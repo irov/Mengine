@@ -32,7 +32,6 @@ namespace Menge
 		float _tell() const override;
 
 	public:
-		void updateFrame() override;
 		EVideoDecoderReadState readNextFrame( float & _pts ) override;
 
 	public:		

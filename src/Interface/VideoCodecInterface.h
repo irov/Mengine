@@ -74,7 +74,6 @@ namespace Menge
         virtual void setPitch( size_t _pitch ) = 0;
 
     public:
-		virtual void updateFrame() = 0;
 		virtual EVideoDecoderReadState readNextFrame( float & _pts ) = 0;
 	};
 

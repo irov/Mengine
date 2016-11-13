@@ -84,19 +84,20 @@ namespace Menge
 		
         HMODULE hKernel32 = ::LoadLibraryW( L"Kernel32.dll" );
 
-		if( hKernel32 != nullptr )
+		if( hKernel32 == nullptr )
 		{
-            FARPROC proc = GetProcAddress( hKernel32, "AttachConsole" );
-
-			pAttachConsole = reinterpret_cast<PATTACHCONSOLE>(proc);
-
-			if( pAttachConsole == nullptr )
-			{
-				FreeLibrary( hKernel32 );
-				return;
-			}
+			return;
 		}
+         
+		FARPROC proc = GetProcAddress( hKernel32, "AttachConsole" );
 
+		pAttachConsole = reinterpret_cast<PATTACHCONSOLE>(proc);
+
+		if( pAttachConsole == nullptr )
+		{
+			FreeLibrary( hKernel32 );
+			return;
+		}
 		
 		CONSOLE_SCREEN_BUFFER_INFO coninfo;
 	

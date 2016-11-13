@@ -6,6 +6,8 @@
 
 #	include "Consts.h"
 
+#	include <math.h>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -315,15 +317,10 @@ namespace Menge
 		float frameTiming = dataInfo->getFrameTiming();
 		float duration = dataInfo->duration;
 
-		if( m_updateFirstFrame == true )
-		{
-			m_videoDecoder->updateFrame();
-
-			m_updateFirstFrame = false;
-		}
-
 		while( m_timing >= frameTiming || m_updateFirstFrame == true )
 		{
+			m_updateFirstFrame = false;
+
 			float pts;
 			EVideoDecoderReadState state = m_videoDecoder->readNextFrame( pts );
 
@@ -408,7 +405,7 @@ namespace Menge
 			frameTiming = 1000.f / frameRate;
 		}
 
-		if( fabsf( m_timing - _timing ) < frameTiming )
+		if( ::fabsf( m_timing - _timing ) < frameTiming )
 		{
 			return;
 		}

@@ -6,6 +6,8 @@ src
     SDLInput.cpp
     SDLPlatform.h
     SDLPlatform.cpp
+    SDLLayer.h
+    SDLLayer.cpp
 )
 
 add_definitions(-DUNICODE)

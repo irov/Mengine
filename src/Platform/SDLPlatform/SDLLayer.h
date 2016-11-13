@@ -5,7 +5,7 @@
 namespace Menge
 {
     class SDLLayer
-        : public SDLLayerInterface
+        : public ServiceBase<SDLLayerInterface>
     {
     public:
         SDLLayer();

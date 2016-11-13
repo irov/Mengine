@@ -47,7 +47,7 @@ endif()
 
 if( DEFINED MENGINE_TARGET_SDL )
     ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
-    ADD_SUBDIRECTORY( MengePosixFileGroupPlugin )
+    ADD_SUBDIRECTORY( SDLFileGroupPlugin )
 endif()
 
 SET( APPLICATION_DEPENDENCIES

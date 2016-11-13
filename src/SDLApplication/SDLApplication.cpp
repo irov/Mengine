@@ -39,6 +39,7 @@
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( SDLLayer );
 SERVICE_EXTERN( Platform );
 SERVICE_EXTERN( Application );
 SERVICE_EXTERN( StringizeService );
@@ -96,7 +97,7 @@ PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( Box2D );
 PLUGIN_EXPORT( MengeOggVorbis );
 PLUGIN_EXPORT( PathFinder );
-PLUGIN_EXPORT( MengePosixFileGroup );
+PLUGIN_EXPORT( MengeSDLFileGroup );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -120,8 +121,8 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Inititalizing File Service..." );
 
         {
-            LOGGER_INFO( m_serviceProvider )("Initialize Posix file group...");
-            PLUGIN_CREATE( m_serviceProvider, MengePosixFileGroup);
+            LOGGER_INFO( m_serviceProvider )("Initialize SDL file group...");
+            PLUGIN_CREATE( m_serviceProvider, MengeSDLFileGroup );
         }
 
         // mount root		
@@ -421,6 +422,7 @@ namespace Menge
         SERVICE_CREATE( m_serviceProvider, UnicodeSystem );
         SERVICE_CREATE( m_serviceProvider, UnicodeService );
 
+        SERVICE_CREATE( m_serviceProvider, SDLLayer );
         SERVICE_CREATE( m_serviceProvider, Platform );
 
         SERVICE_CREATE( m_serviceProvider, PluginSystem );

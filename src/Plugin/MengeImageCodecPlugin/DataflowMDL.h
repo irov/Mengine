@@ -6,8 +6,6 @@
 
 #	include "Model3DPack.h"
 
-#	include "Config/Blobject.h"
-
 #	include "Factory/FactoryStore.h"
 
 namespace Menge

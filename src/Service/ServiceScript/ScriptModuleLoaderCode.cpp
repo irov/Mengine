@@ -6,14 +6,12 @@
 
 #	include "Core/MemoryHelper.h"
 
-#   include "Config/Blobject.h"
-
 #   include "Logger/Logger.h"
 
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    static int s_get_int( unsigned char * _buff )
+    static int s_get_int( const uint8_t * _buff )
     {
         int x;
         x =  (int)_buff[0];
@@ -104,7 +102,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		Blobject::value_type * code_memory = code_buffer->getMemory();
+		uint8_t * code_memory = code_buffer->getMemory();
 
         size_t uncompress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)
@@ -117,7 +115,7 @@ namespace Menge
             return nullptr;
         }
                 
-        long file_magic = s_get_int( &code_memory[0] );
+        long file_magic = s_get_int( code_memory );
         long py_magic = pybind::marshal_magic_number();
 
         if( file_magic != py_magic )

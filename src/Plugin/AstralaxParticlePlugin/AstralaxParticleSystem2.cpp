@@ -78,10 +78,9 @@ namespace Menge
 				, count
 				);
 		}
-		else
-		{
-			Magic_UnloadAllEmitters();
-		}				
+
+		m_atlases.clear();
+		m_containers.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitterContainerInterface2Ptr AstralaxParticleSystem2::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )

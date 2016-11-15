@@ -8,8 +8,6 @@
 #	include "Core/Stream.h"
 #	include "Core/MemoryHelper.h"
 
-#   include "Config/Blobject.h"
-
 #	include "stdex/memorycopy.h"
 
 #	include "Logger/Logger.h"

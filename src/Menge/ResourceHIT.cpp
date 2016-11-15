@@ -18,6 +18,7 @@ namespace Menge
 		: m_width(0)
 		, m_height(0)
         , m_mipmaplevel(0)
+		, m_mipmapsize(0)
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -100,9 +101,23 @@ namespace Menge
         m_mipmaplevel = dataInfo->mipmaplevel;
         
 		size_t mipmapsize = dataInfo->mipmapsize;
-        m_mipmap.resize( mipmapsize );
+		m_mipmap = MEMORY_SERVICE( m_serviceProvider )
+			->createMemory();
+		
+		void * buffer = m_mipmap->newMemory( mipmapsize );
+
+		if( buffer == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ResourceHIT::_compile: '%s' - hit file '%s' invalid new memory '%u'"
+				, this->getName().c_str()
+				, m_filePath.c_str()
+				, mipmapsize
+				);
+
+			return false;
+		}
         
-        m_mipmapsize = decoder->decode( &m_mipmap[0], mipmapsize );
+		m_mipmapsize = decoder->decode( buffer, mipmapsize );
 
         if( m_mipmapsize != mipmapsize )
         {
@@ -121,8 +136,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceHIT::_release()
 	{
-		Blobject deleter;
-		m_mipmap.swap( deleter );
+		m_mipmap = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_isValid() const
@@ -333,7 +347,9 @@ namespace Menge
             return nullptr;
         }
 
-		unsigned char * buffer = &m_mipmap[bufferOffset];
+		unsigned char * buffer_memory = m_mipmap->getMemory();
+
+		unsigned char * buffer = buffer_memory + bufferOffset;
         
         return buffer;
     }

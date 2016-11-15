@@ -47,4 +47,6 @@ namespace Menge
 	{
 		return m_size == 0;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<Memory> MemoryPtr;
 }

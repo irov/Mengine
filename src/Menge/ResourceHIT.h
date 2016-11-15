@@ -1,8 +1,8 @@
 #	pragma once
 
-#	include "ResourceTestPick.h"
+#	include "Interface/MemoryInterface.h"
 
-#	include "Config/Blobject.h"
+#	include "ResourceTestPick.h"
 
 namespace Menge
 {
@@ -56,7 +56,7 @@ namespace Menge
         uint32_t m_mipmaplevel;
 		size_t m_mipmapsize;
 
-		mutable Blobject m_mipmap;
+		MemoryInterfacePtr m_mipmap;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ResourceHIT> ResourceHITPtr;

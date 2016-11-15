@@ -2,8 +2,6 @@
 
 #	include "Interface/MemoryInterface.h"
 
-#   include "Config/Blobject.h"
-
 #	include "Core/MemoryHelper.h"
 
 #	include "Logger/Logger.h"

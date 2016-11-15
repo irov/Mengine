@@ -6,8 +6,6 @@
 
 #	include "MovieFramePack.h"
 
-#	include "Config/Blobject.h"
-
 #	include "Factory/FactoryStore.h"
 
 namespace Menge

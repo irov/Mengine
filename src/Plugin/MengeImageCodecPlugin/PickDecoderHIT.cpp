@@ -7,8 +7,6 @@
 
 #	include "Core/Stream.h"
 
-#   include "Config/Blobject.h"
-
 #	include "Logger/Logger.h"
 
 namespace Menge

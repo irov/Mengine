@@ -4,8 +4,6 @@
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/ConfigInterface.h"
 
-#   include "Config/Blobject.h"
-
 #	include "Logger/Logger.h"
 
 #	include "Core/Viewport.h"

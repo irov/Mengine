@@ -1,5 +1,7 @@
 #	include "PythonScriptWrapper.h"
 
+#	include "Config/Blobject.h"
+
 #   include "Interface/ApplicationInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/TimelineInterface.h"

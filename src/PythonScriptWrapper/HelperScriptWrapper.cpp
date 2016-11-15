@@ -2,6 +2,7 @@
 
 #	include "Config/Typedef.h"
 #   include "Config/Stringstream.h"
+#	include "Config/Blobject.h"
 
 #	include "Kernel/Node.h"
 

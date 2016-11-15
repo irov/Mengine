@@ -4,8 +4,6 @@
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/MemoryInterface.h"
 
-#   include "Config/Blobject.h"
-
 #   include "Logger/Logger.h"
 
 namespace Menge

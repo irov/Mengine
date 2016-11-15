@@ -41,10 +41,10 @@ namespace Menge
         uint32_t getHeight() const override;
 
     public:
-        unsigned char * getBuffer() const override;
+		uint8_t * getBuffer() const override;
 
     protected:
-        unsigned char * getHitBuffer_( uint32_t _level ) const;
+		uint8_t * getHitBuffer_( uint32_t _level ) const;
 
     protected:
 		FilePath m_filePath;

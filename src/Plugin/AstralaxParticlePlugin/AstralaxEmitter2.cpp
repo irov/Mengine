@@ -389,7 +389,7 @@ namespace Menge
 		Magic_SetEmitterPositionMode( m_emitterId, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::changeEmitterImage( uint32_t _width, uint32_t _height, unsigned char * _data, size_t _bytes )
+	bool AstralaxEmitter2::changeEmitterImage( uint32_t _width, uint32_t _height, uint8_t * _data, size_t _bytes )
 	{
 		if( Magic_ChangeImage( m_emitterId, -1, (int)_width, (int)_height, _data, (int)_bytes ) == MAGIC_ERROR )
 		{

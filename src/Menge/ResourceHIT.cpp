@@ -220,11 +220,11 @@ namespace Menge
 			return false;
 		}
 
-		unsigned char minAlpha = (unsigned char)(_minAlpha * 255.0f);
+		uint8_t minAlpha = (uint8_t)(_minAlpha * 255.0f);
 		uint32_t index = j * m_width + i;
 		
-        unsigned char * alphaBuffer = this->getHitBuffer_( 0 );
-		unsigned char alpha = alphaBuffer[index];
+		uint8_t * alphaBuffer = this->getHitBuffer_( 0 );
+		uint8_t alpha = alphaBuffer[index];
 
 		if( alpha <= minAlpha )
 		{
@@ -282,7 +282,7 @@ namespace Menge
             level = m_mipmaplevel - 1;
         }
 
-        unsigned char * alphaBuffer = this->getHitBuffer_( level );
+		uint8_t * alphaBuffer = this->getHitBuffer_( level );
 
         if( alphaBuffer == nullptr )
         {
@@ -312,10 +312,10 @@ namespace Menge
             --j;
         }
 		
-		unsigned char minAlpha = (unsigned char)(_minAlpha * 255.0f);
+		uint8_t minAlpha = (uint8_t)(_minAlpha * 255.0f);
 		uint32_t index = i + j * alphaWidth;
 				
-        unsigned char alpha = alphaBuffer[index];
+		uint8_t alpha = alphaBuffer[index];
 
 		if( alpha > minAlpha )
 		{
@@ -325,7 +325,7 @@ namespace Menge
 		return false;
 	}
     //////////////////////////////////////////////////////////////////////////
-    unsigned char * ResourceHIT::getHitBuffer_( uint32_t _level ) const
+	uint8_t * ResourceHIT::getHitBuffer_( uint32_t _level ) const
     {
         uint32_t bufferOffset = 0;
 
@@ -347,9 +347,9 @@ namespace Menge
             return nullptr;
         }
 
-		unsigned char * buffer_memory = m_mipmap->getMemory();
+		uint8_t * buffer_memory = m_mipmap->getMemory();
 
-		unsigned char * buffer = buffer_memory + bufferOffset;
+		uint8_t * buffer = buffer_memory + bufferOffset;
         
         return buffer;
     }
@@ -364,9 +364,9 @@ namespace Menge
         return m_height;
     }
 	//////////////////////////////////////////////////////////////////////////
-    unsigned char * ResourceHIT::getBuffer() const
+	uint8_t * ResourceHIT::getBuffer() const
     {
-        unsigned char * buffer = this->getHitBuffer_( 0 );
+		uint8_t * buffer = this->getHitBuffer_( 0 );
 
         return buffer;
     }

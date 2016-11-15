@@ -132,7 +132,7 @@ namespace Menge
 			return false;
 		}
 
-		Blobject::value_type header_buff[Metabuf::header_size];
+		uint8_t header_buff[Metabuf::header_size];
 
 		stream->read( header_buff, Metabuf::header_size );
 
@@ -162,7 +162,7 @@ namespace Menge
 			return false;
 		}
 
-        Blobject::value_type header_buff[Metabuf::header_size];
+		uint8_t header_buff[Metabuf::header_size];
 
         _stream->read( header_buff, Metabuf::header_size );
 
@@ -204,7 +204,7 @@ namespace Menge
 			return false;
 		}
 
-		Blobject::value_type * binary_memory = binary_buffer->getMemory();
+		uint8_t * binary_memory = binary_buffer->getMemory();
 		
         size_t uncompress_size = 0;
         if( ARCHIVE_SERVICE(m_serviceProvider)

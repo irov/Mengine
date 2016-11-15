@@ -20,6 +20,6 @@ namespace Menge
         virtual uint32_t getHeight() const = 0;
 
     public:
-        virtual unsigned char * getBuffer() const = 0;
+		virtual uint8_t * getBuffer() const = 0;
 	};
 }	// namespace Menge

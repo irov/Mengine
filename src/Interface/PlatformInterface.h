@@ -2,7 +2,6 @@
 
 #	include "Config/Typedef.h"
 #   include "Config/String.h"
-#   include "Config/Blobject.h"
 
 #	include "Core/ConstString.h"
 #   include "Core/FilePath.h"

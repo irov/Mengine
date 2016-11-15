@@ -661,7 +661,7 @@ namespace	Menge
 		uint32_t alphaWidth = resourceHIT->getWidth();
 		uint32_t alphaHeight = resourceHIT->getHeight();
 
-        unsigned char * alphaBuffer = resourceHIT->getBuffer();
+		uint8_t * alphaBuffer = resourceHIT->getBuffer();
         
 		if( _emitter->changeEmitterImage( alphaWidth, alphaHeight, alphaBuffer, 1 ) == false )
 		{

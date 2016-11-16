@@ -73,7 +73,7 @@ namespace Menge
 		}
 
 		b2PolygonShape shape;
-		shape.Set( vertices, num_points );
+		shape.Set( vertices, (int32)num_points);
 
 		b2FixtureDef fd;
 

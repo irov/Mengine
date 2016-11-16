@@ -23,8 +23,6 @@ namespace Menge
 		LOGGER_ERROR(serviceProvider)("ImageDecoderPNG::s_handlerError '%s'"
 			, _error 
 			);
-
-		longjmp(png_jmpbuf(png_ptr), 1);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void PNGAPI s_handlerWarning( png_structp png_ptr, const char * _error )
@@ -121,16 +119,6 @@ namespace Menge
 			return false;
 		}
 
-		if( setjmp( png_jmpbuf( m_png_ptr ) ) )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::_prepareData" 
-				);
-
-			png_destroy_write_struct( &m_png_ptr, &m_info_ptr );
-
-			return false;
-		}
-
 		//png_set_crc_action( m_png_ptr, PNG_CRC_WARN_USE, PNG_CRC_WARN_USE );
 
 		png_set_read_fn( m_png_ptr, m_stream.get(), &s_readProc );
@@ -218,13 +206,6 @@ namespace Menge
 				, m_options.pitch
 				, m_dataInfo.height 
 				);
-
-			return 0;
-		}
-
-		if( setjmp( png_jmpbuf( m_png_ptr ) ) )  
-		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode" );
 
 			return 0;
 		}

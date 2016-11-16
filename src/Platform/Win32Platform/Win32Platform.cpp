@@ -105,12 +105,22 @@ namespace Menge
 		m_cursors[STRINGIZE_STRING_LOCAL( m_serviceProvider, "IDC_HAND" )] = LoadCursor( NULL, IDC_HAND );
 		m_cursors[STRINGIZE_STRING_LOCAL( m_serviceProvider, "IDC_HELP" )] = LoadCursor( NULL, IDC_HELP );
 
+#	ifndef _WIN64
 		m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN32" );
+#	else
+		m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN64" );
+#	endif
+
 		m_touchpad = false;
 
 		if( HAS_OPTION( m_serviceProvider, "win32" ) )
 		{
 			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN32" );
+			m_touchpad = false;
+		}
+		else if( HAS_OPTION( m_serviceProvider, "win64" ) )
+		{
+			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN64" );
 			m_touchpad = false;
 		}
 		else if( HAS_OPTION(m_serviceProvider, "ios") )
@@ -302,14 +312,14 @@ namespace Menge
 
 				Win32Platform * app = (Win32Platform *)createStruct->lpCreateParams;
 
-				::SetWindowLongPtr( hWnd, GWL_USERDATA, (LONG_PTR)app );
+				::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG_PTR)app );
 
 				return (LRESULT)NULL;
 			}
 			break;
 		}
 
-		LONG_PTR value = ::GetWindowLongPtr( hWnd, GWL_USERDATA );
+		LONG_PTR value = ::GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
 		Win32Platform * platform = (Win32Platform *)value;
 

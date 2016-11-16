@@ -174,7 +174,9 @@ namespace Menge
 		const char * atlas_memory = atlas_buffer->getMemory();
 		size_t atlas_size = atlas_buffer->getSize();
 
-		spAtlas * atlas = spAtlas_create( atlas_memory, atlas_size, "", this );
+		int spine_atlas_size = (int)atlas_size;
+
+		spAtlas * atlas = spAtlas_create( atlas_memory, spine_atlas_size, "", this );
 
 		atlas_buffer = nullptr;
 

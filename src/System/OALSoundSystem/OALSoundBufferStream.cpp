@@ -381,7 +381,8 @@ namespace Menge
 			return true;
 		}
 
-		alBufferData( _alBufferId, m_format, dataBuffer, bytesWritten, m_frequency );
+		ALsizei al_bytesWritten = (ALsizei)bytesWritten;
+		alBufferData( _alBufferId, m_format, dataBuffer, al_bytesWritten, m_frequency );
 
 		if( OAL_CHECK_ERROR( m_serviceProvider ) == false )
 		{

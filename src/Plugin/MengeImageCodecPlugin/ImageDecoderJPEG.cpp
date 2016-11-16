@@ -19,8 +19,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void	s_jpegErrorExit( j_common_ptr _cinfo ) 
 	{
-		DecoderJPEGErrorManager * mErr = (DecoderJPEGErrorManager *)_cinfo->err;
-
 		{
 			char buffer[JMSG_LENGTH_MAX];
 
@@ -35,11 +33,9 @@ namespace Menge
 				);
 		}
 
-		if( mErr->pub.msg_parm.i[0] != 13 )
+		if( _cinfo->err->msg_parm.i[0] != 13 )
 		{
 			jpeg_destroy( _cinfo );
-
-			longjmp( mErr->setjmp_buffer, 1 );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -182,11 +178,11 @@ namespace Menge
 	bool ImageDecoderJPEG::_initialize()
 	{
 		// step 1: allocate and initialize JPEG decompression object
-		m_jpegObject.err = jpeg_std_error(&m_errorMgr.pub);
+		m_jpegObject.err = jpeg_std_error(&m_errorMgr);
 		m_jpegObject.client_data = this;
 
-		m_errorMgr.pub.error_exit = &s_jpegErrorExit;
-		m_errorMgr.pub.output_message = &s_jpegOutputMessage;
+		m_errorMgr.error_exit = &s_jpegErrorExit;
+		m_errorMgr.output_message = &s_jpegOutputMessage;
 
 		jpeg_create_decompress( &m_jpegObject );
 
@@ -200,11 +196,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderJPEG::_prepareData()
 	{
-		if( setjmp( m_errorMgr.setjmp_buffer ) ) 
-		{
-			return false;
-		}
-
 		// step 2a: specify data source (eg, a handle)
 		s_jpeg_menge_src( &m_jpegObject, m_stream.get() );
 
@@ -267,14 +258,6 @@ namespace Menge
 
             return 0;
         }
-
-		if( setjmp( m_errorMgr.setjmp_buffer ) ) 
-		{
-			// If we get here, the JPEG code has signaled an error.
-			// We need to clean up the JPEG object and return.
-
-			return false;
-		}
 
 		jpeg_start_decompress( &m_jpegObject );
 		
@@ -348,18 +331,13 @@ namespace Menge
 	{
 		jpeg_destroy_decompress( &m_jpegObject );
 
-		m_jpegObject.err = jpeg_std_error(&m_errorMgr.pub);
+		m_jpegObject.err = jpeg_std_error(&m_errorMgr);
 		m_jpegObject.client_data = this;
 
-		m_errorMgr.pub.error_exit = &s_jpegErrorExit;
-		m_errorMgr.pub.output_message = &s_jpegOutputMessage;
+		m_errorMgr.error_exit = &s_jpegErrorExit;
+		m_errorMgr.output_message = &s_jpegOutputMessage;
 
 		jpeg_create_decompress( &m_jpegObject );
-
-		if( setjmp( m_errorMgr.setjmp_buffer ) ) 
-		{
-			return false;
-		}
 
 		if( m_stream->seek( 0 ) == false )
 		{

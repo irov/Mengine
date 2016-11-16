@@ -30,7 +30,7 @@ namespace Menge
 
 		SOCKET socket = ::socket( addrinfo->ai_family, addrinfo->ai_socktype, addrinfo->ai_protocol );
 
-		int connect_result = ::connect( socket, addrinfo->ai_addr, addrinfo->ai_addrlen );
+		int connect_result = ::connect( socket, addrinfo->ai_addr, (int)addrinfo->ai_addrlen );
 
 		freeaddrinfo( addrinfo );
 
@@ -54,7 +54,7 @@ namespace Menge
 	{
 		const char * send_buffer = (const char *)_buffer;
 
-		int send_result = ::send( m_socket, send_buffer, _len, 0 );
+		int send_result = ::send( m_socket, send_buffer, (int)_len, 0 );
 
 		if( send_result != 0 )
 		{
@@ -68,7 +68,7 @@ namespace Menge
 	{
 		char * receiv_buffer = (char *)_buffer;
 
-		int result = ::recv( m_socket, receiv_buffer, _capacity, 0 );
+		int result = ::recv( m_socket, receiv_buffer, (int)_capacity, 0 );
 
 		if( result < 0 )
 		{

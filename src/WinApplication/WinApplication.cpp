@@ -685,7 +685,7 @@ namespace Menge
 			if( PLUGIN_SERVICE(m_serviceProvider)
 				->loadPlugin( pluginName ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Application Failed to load plugin %ls"
+				LOGGER_CRITICAL(m_serviceProvider)("Application Failed to load plugin %ls"
 					, pluginName.c_str()
 					);
 
@@ -741,7 +741,7 @@ namespace Menge
 			if( MODULE_SERVICE(m_serviceProvider)
 				->runModule( Helper::stringizeString(m_serviceProvider, moduleName) ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Application Failed to run module %s"
+				LOGGER_CRITICAL(m_serviceProvider)("Application Failed to run module %s"
 					, moduleName.c_str()
 					);
 			}

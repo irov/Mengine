@@ -99,12 +99,22 @@ namespace Menge
         m_width = dataInfo->width;
         m_height = dataInfo->height;
         m_mipmaplevel = dataInfo->mipmaplevel;
-        
-		size_t mipmapsize = dataInfo->mipmapsize;
-		m_mipmap = MEMORY_SERVICE( m_serviceProvider )
+        		
+		MemoryInterfacePtr mipmap = MEMORY_SERVICE( m_serviceProvider )
 			->createMemory();
+
+		if( mipmap == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ResourceHIT::_compile: '%s' - hit file '%s' invalid create memory"
+				, this->getName().c_str()
+				, m_filePath.c_str()
+				);
+
+			return false;
+		}
 		
-		void * buffer = m_mipmap->newMemory( mipmapsize );
+		size_t mipmapsize = (size_t)dataInfo->mipmapsize;
+		void * buffer = mipmap->newMemory( mipmapsize );
 
 		if( buffer == nullptr )
 		{
@@ -117,19 +127,22 @@ namespace Menge
 			return false;
 		}
         
-		m_mipmapsize = decoder->decode( buffer, mipmapsize );
+		size_t test_mipmapsize = decoder->decode( buffer, mipmapsize );
 
-        if( m_mipmapsize != mipmapsize )
+		if( test_mipmapsize != mipmapsize )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile %s invalid decode hit %s size %d (%d)"
                 , this->getName().c_str()
                 , m_filePath.c_str()
-                , m_mipmapsize
-                , mipmapsize
+                , (uint32_t)m_mipmapsize
+				, (uint32_t)mipmapsize
                 );
 
             return false;                
         }
+
+		m_mipmap = mipmap;
+		m_mipmapsize = (uint32_t)mipmapsize;
 
 		return true;
 	}

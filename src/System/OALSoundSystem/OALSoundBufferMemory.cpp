@@ -89,7 +89,8 @@ namespace Menge
 			m_isStereo = true;
 		}
 
-		alBufferData( m_alBufferId, m_format, binary_memory, decode_size, m_frequency );
+		ALsizei al_decode_size = (ALsizei)decode_size;
+		alBufferData( m_alBufferId, m_format, binary_memory, al_decode_size, m_frequency );
 		
 		if( OAL_CHECK_ERROR(m_serviceProvider) == false )
 		{

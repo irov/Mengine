@@ -169,7 +169,7 @@ namespace Menge
 	size_t SoundDecoderOGGVorbis::_decode( void * _buffer, size_t _bufferSize )
 	{
 		long bytesDone = 0;
-        long bytesReading = _bufferSize;
+		long bytesReading = (long)_bufferSize;
         
 		for(;;)
 		{            

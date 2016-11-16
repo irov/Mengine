@@ -54,9 +54,9 @@ namespace Menge
 		uint32_t m_width;
 		uint32_t m_height;
         uint32_t m_mipmaplevel;
-		size_t m_mipmapsize;
 
 		MemoryInterfacePtr m_mipmap;
+		uint32_t m_mipmapsize;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ResourceHIT> ResourceHITPtr;

@@ -37,7 +37,7 @@ namespace Menge
 
 			CHAR utf_arg[1024];
 
-			int utf8_size = ::WideCharToMultiByte(
+			::WideCharToMultiByte(
 				CP_UTF8
 				, dwConversionFlags
 				, arg

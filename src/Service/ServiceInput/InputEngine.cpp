@@ -168,7 +168,7 @@ namespace Menge
 			return false;
 		}
 
-		uint32_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + 256, true );
+		std::ptrdiff_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + 256, true );
 		
 		if( keyDownCount != 1 )
 		{
@@ -180,7 +180,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isAnyKeyDown() const
 	{
-		uint32_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + 256, true );
+		std::ptrdiff_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + 256, true );
 
 		return keyDownCount != 0;
 	}

@@ -41,6 +41,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMaterial::update( float _time, float _timing )
 	{
+		(void)_time;
+		(void)_timing;
 		//Empty
 	}
 }

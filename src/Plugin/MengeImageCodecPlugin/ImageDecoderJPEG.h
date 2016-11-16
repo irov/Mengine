@@ -17,12 +17,6 @@ extern "C"
 
 namespace Menge
 {
-	struct DecoderJPEGErrorManager
-	{
-		struct jpeg_error_mgr pub;
-		jmp_buf setjmp_buffer;
-	};
-
 	class ImageDecoderJPEG
 		: public ImageDecoder
 	{
@@ -45,8 +39,6 @@ namespace Menge
 
 	private:
 		jpeg_decompress_struct m_jpegObject;
-		DecoderJPEGErrorManager m_errorMgr;
-
-		bool m_initialize;
+		jpeg_error_mgr m_errorMgr;
 	};
 }	// namespace Menge

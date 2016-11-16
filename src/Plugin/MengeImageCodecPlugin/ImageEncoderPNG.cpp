@@ -14,9 +14,7 @@ namespace Menge
 
 		LOGGER_ERROR(serviceProvider)("ImageEncoderPNG::s_handlerError %s"
 			, _error 
-			);
-        
-        longjmp( png_jmpbuf( png_ptr ), 1);
+			);        
 	}
     //////////////////////////////////////////////////////////////////////////
     static void s_handlerWarning( png_structp _png_ptr, const char * _error )
@@ -74,16 +72,6 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)("PNG encoder error: Can't create info structure" 
 				);
-
-			return 0;
-		}
-
-		// Set error handling.  REQUIRED if you aren't supplying your own
-		// error handling functions in the png_create_write_struct() call.
-		if( setjmp( png_jmpbuf( m_png_ptr ) ) )  
-		{
-			// if we get here, we had a problem reading the file
-			png_destroy_info_struct( m_png_ptr, &info_ptr );
 
 			return 0;
 		}

@@ -27,7 +27,7 @@ namespace Menge
 			, ETextHorizontAlign _horizontAlign
 			, ETextVerticalAlign _verticalAlign
 			, float _charScale
-			, size_t _params );
+			, uint32_t _params );
 
 	public:
 		const ConstString & getKey() const override;

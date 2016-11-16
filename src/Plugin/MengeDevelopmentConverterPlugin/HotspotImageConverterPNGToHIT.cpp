@@ -48,7 +48,7 @@ namespace Menge
 
 		const PickCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
-		size_t bufferSize = dataInfo->mipmapsize;
+		uint32_t bufferSize = (uint32_t)dataInfo->mipmapsize;
 
 		MemoryCacheBufferInterfacePtr memory = Helper::createMemoryCacheBuffer( m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::validateVersion" );
 
@@ -57,7 +57,7 @@ namespace Menge
 			return false;
 		}
 
-		unsigned char * buffer = memory->getMemory();
+		uint8_t * buffer = memory->getMemory();
 
 		size_t decode_mipmapsize = decoder->decode( buffer, bufferSize );
 				
@@ -130,7 +130,7 @@ namespace Menge
 			return false;
 		}
 
-		unsigned char * buffer = memory->getMemory();
+		uint8_t * buffer = memory->getMemory();
 
         if( imageDecoder->decode( buffer, bufferSize ) == 0 )
         {
@@ -212,18 +212,18 @@ namespace Menge
         return bufferOffset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotspotImageConverterPNGToHIT::makeMipMapLevel_( unsigned char * _buffer, uint32_t _width, uint32_t _height, uint32_t _level )
+    void HotspotImageConverterPNGToHIT::makeMipMapLevel_( uint8_t * _buffer, uint32_t _width, uint32_t _height, uint32_t _level )
     {
-        unsigned char * mipmap[32];
+        uint8_t * mipmap[32];
         
         mipmap[0] = _buffer;
 
-        size_t bufferOffset = _width * _height;
+		uint32_t bufferOffset = _width * _height;
         for( uint32_t i = 1; i != _level; ++i )
         {
             mipmap[i] = _buffer + bufferOffset;
 
-            size_t offset = (_width >> i) * (_height >> i);
+			uint32_t offset = (_width >> i) * (_height >> i);
             bufferOffset += offset;
         }
 
@@ -242,8 +242,8 @@ namespace Menge
             uint32_t cur_width = mipmap_width >> it;
             uint32_t cur_height = mipmap_height >> it;
 
-            unsigned char * prev_buff = mipmap[it - 1];
-            unsigned char * cur_buff = mipmap[it];
+			uint8_t * prev_buff = mipmap[it - 1];
+			uint8_t * cur_buff = mipmap[it];
 
             for( uint32_t i = 0; i != cur_width; ++i )
             {
@@ -254,25 +254,25 @@ namespace Menge
                     uint32_t i2 = (i * 2 + 0) + (j * 2 + 1) * prev_width;
                     uint32_t i3 = (i * 2 + 1) + (j * 2 + 1) * prev_width;
 
-                    unsigned char v0 = prev_buff[i0];
-                    unsigned char v1 = prev_buff[i1];
-                    unsigned char v2 = prev_buff[i2];
-                    unsigned char v3 = prev_buff[i3];
+                    uint8_t v0 = prev_buff[i0];
+                    uint8_t v1 = prev_buff[i1];
+                    uint8_t v2 = prev_buff[i2];
+                    uint8_t v3 = prev_buff[i3];
 
-                    unsigned char b0 = (std::max)( v0, v1 );
-                    unsigned char b1 = (std::max)( v2, v3 );
+                    uint8_t b0 = (std::max)( v0, v1 );
+                    uint8_t b1 = (std::max)( v2, v3 );
 
-                    unsigned char b_max = (std::max)( b0, b1 );
+                    uint8_t b_max = (std::max)( b0, b1 );
 
 					if( i == (cur_width - 1) && (prev_width % 2) == 1 )
 					{
 						uint32_t i4 = (i * 2 + 2) + (j * 2 + 0) * prev_width;
 						uint32_t i5 = (i * 2 + 2) + (j * 2 + 1) * prev_width;
 
-						unsigned char v4 = prev_buff[i4];
-						unsigned char v5 = prev_buff[i5];
+						uint8_t v4 = prev_buff[i4];
+						uint8_t v5 = prev_buff[i5];
 
-						unsigned char b3 = (std::max)( v4, v5 );
+						uint8_t b3 = (std::max)( v4, v5 );
 
 						b_max = (std::max)( b_max, b3 );
 					}
@@ -282,10 +282,10 @@ namespace Menge
 						uint32_t i4 = (i * 2 + 0) + (j * 2 + 2) * prev_width;
 						uint32_t i5 = (i * 2 + 1) + (j * 2 + 2) * prev_width;
 
-						unsigned char v4 = prev_buff[i4];
-						unsigned char v5 = prev_buff[i5];
+						uint8_t v4 = prev_buff[i4];
+						uint8_t v5 = prev_buff[i5];
 
-						unsigned char b3 = (std::max)( v4, v5 );
+						uint8_t b3 = (std::max)( v4, v5 );
 
 						b_max = (std::max)( b_max, b3 );
 					}
@@ -295,7 +295,7 @@ namespace Menge
 					{
 						uint32_t i4 = (i * 2 + 2) + (j * 2 + 2) * prev_width;
 
-						unsigned char v4 = prev_buff[i4];
+						uint8_t v4 = prev_buff[i4];
 
 						b_max = (std::max)( b_max, v4 );
 					}

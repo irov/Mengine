@@ -87,22 +87,22 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_enlargePolygonRingFromLow( mt::vec2f * _ring, uint32_t _numpoints, float _radius )
+	static void s_enlargePolygonRingFromLow( mt::vec2f * _ring, size_t _numpoints, float _radius )
 	{
 		if( _numpoints == 0 )
 		{
 			return;
 		}
 
-		uint32_t numpoints = _numpoints;
+		size_t numpoints = _numpoints;
 
 		--numpoints;
 
-		for( uint32_t i = 0; i != numpoints; ++i )
+		for( size_t i = 0; i != numpoints; ++i )
 		{
-			uint32_t i0 = (i + numpoints - 1) % numpoints;
-			uint32_t i1 = (i + numpoints + 0) % numpoints;
-			uint32_t i2 = (i + numpoints + 1) % numpoints;
+			size_t i0 = (i + numpoints - 1) % numpoints;
+			size_t i1 = (i + numpoints + 0) % numpoints;
+			size_t i2 = (i + numpoints + 1) % numpoints;
 
 			const mt::vec2f & p0 = _ring[i0];
 			const mt::vec2f & p1 = _ring[i1];
@@ -133,22 +133,22 @@ namespace Menge
 		_ring[numpoints] = _ring[0];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_reducePolygonRingFromLow( mt::vec2f * _ring, uint32_t _numpoints, float _radius )
+	static void s_reducePolygonRingFromLow( mt::vec2f * _ring, size_t _numpoints, float _radius )
 	{
 		if( _numpoints == 0 )
 		{
 			return;
 		}
 
-		uint32_t numpoints = _numpoints;
+		size_t numpoints = _numpoints;
 
 		--numpoints;
 
-		for( uint32_t i = 0; i != numpoints; ++i )
+		for( size_t i = 0; i != numpoints; ++i )
 		{
-			uint32_t i0 = (i + numpoints - 1) % numpoints;
-			uint32_t i1 = (i + numpoints + 0) % numpoints;
-			uint32_t i2 = (i + numpoints + 1) % numpoints;
+			size_t i0 = (i + numpoints - 1) % numpoints;
+			size_t i1 = (i + numpoints + 0) % numpoints;
+			size_t i2 = (i + numpoints + 1) % numpoints;
 			
 			const mt::vec2f & p0 = _ring[i0];
 			const mt::vec2f & p1 = _ring[i1];
@@ -182,16 +182,16 @@ namespace Menge
 	static void s_enlargePolygonFromLow( Polygon & _big, float _radius )
 	{
 		mt::vec2f * ring = _big.outer_points();
-		uint32_t ring_points = _big.outer_count();
+		size_t ring_points = _big.outer_count();
 
 		s_enlargePolygonRingFromLow( ring, ring_points, _radius );
 
-		uint32_t inners_count = _big.inners_count();
+		size_t inners_count = _big.inners_count();
 
-		for( uint32_t i = 0; i != inners_count; ++i )
+		for( size_t i = 0; i != inners_count; ++i )
 		{			
 			mt::vec2f * inner_ring = _big.inner_points( i );
-			uint32_t inner_ring_points = _big.inner_count( i );
+			size_t inner_ring_points = _big.inner_count( i );
 
 			s_reducePolygonRingFromLow( inner_ring, inner_ring_points, _radius );
 		}

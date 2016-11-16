@@ -42,7 +42,7 @@ namespace Menge
 		m_args = _args;
 
 		m_iterator = 0;
-		m_wayCount = m_way.size();
+		m_wayCount = (uint32_t)m_way.size();
 
 		m_followerPurge.initialize( 1.f );
 
@@ -242,7 +242,7 @@ namespace Menge
 
 		m_node->translate( velocity );
 
-		for( uint32_t
+		for( size_t
 			it = 0,
 			it_end = m_satellite.size();
 		it != it_end; ++it )

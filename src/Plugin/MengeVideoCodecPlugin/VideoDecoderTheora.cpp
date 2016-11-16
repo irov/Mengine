@@ -280,7 +280,7 @@ namespace Menge
 			else
 			{
 				// ничего мы в буфере не нашли
-				int ret = this->read_buffer_data_();
+				size_t ret = this->read_buffer_data_();
 				// надо больше данных! читаем их из файла
 				if( ret == 0 )
 				{
@@ -777,7 +777,9 @@ namespace Menge
 
 		size_t bytes = m_stream->read( buffer, OGG_BUFFER_SIZE );
 
-		if( ogg_sync_wrote( &m_oggSyncState, bytes ) == -1 )
+		long ogg_bytes = (long)bytes;
+
+		if( ogg_sync_wrote( &m_oggSyncState, ogg_bytes ) == -1 )
 		{
 			return 0;
 		}

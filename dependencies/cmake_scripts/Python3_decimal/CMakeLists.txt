@@ -42,7 +42,14 @@ include_directories(${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Include)
 include_directories(${SOURCE_DIR}/Modules/_decimal/libmpdec)
 
-add_definitions(-DCONFIG_32)
+if( DEFINED MENGINE_PLATFORM_WIN32 )
+    add_definitions(-DCONFIG_32)
+endif()
+
+if( DEFINED MENGINE_PLATFORM_WIN64 )
+    add_definitions(-DCONFIG_64)
+endif()
+
 add_definitions(-DANSI)
 
 if(WIN32)

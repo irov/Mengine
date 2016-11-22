@@ -86,7 +86,6 @@ SERVICE_EXTERN( DataService );
 SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( ConfigService );
 SERVICE_EXTERN( PrefetcherService );
-SERVICE_EXTERN( OptionsSystem );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( TimerSystem );
 SERVICE_EXTERN( TimerService );
@@ -460,8 +459,7 @@ namespace Menge
         }
 
 		m_serviceProvider = serviceProvider;
-
-		SERVICE_CREATE( m_serviceProvider, OptionsSystem );
+				
 		SERVICE_CREATE( m_serviceProvider, OptionsService );
 
 		SERVICE_CREATE( m_serviceProvider, StringizeService );

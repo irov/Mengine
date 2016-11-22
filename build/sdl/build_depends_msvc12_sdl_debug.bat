@@ -14,10 +14,10 @@ if errorlevel 1 goto error
 @echo Starting dependencies build debug configuration...
 
 @pushd ..
-@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\Depends_SDL" "..\dependencies\build_msvc12_sdl_debug" "Visual Studio 12 2013" "" "-DCMAKE_CONFIGURATION_TYPES:STRING='Debug'" "-DCMAKE_BUILD_TYPE:STRING='Debug'"
+@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\Depends_SDL32" "..\dependencies\build_msvc12_sdl32_debug" "Visual Studio 12 2013" "" "-DCMAKE_CONFIGURATION_TYPES:STRING='Debug'" "-DCMAKE_BUILD_TYPE:STRING='Debug'"
 @popd
 
-@pushd ..\..\dependencies\build_msvc12_sdl_debug
+@pushd ..\..\dependencies\build_msvc12_sdl32_debug
 ..\..\dependencies\cmake\bin\cmake.exe --build .\ --config Debug
 @popd
 

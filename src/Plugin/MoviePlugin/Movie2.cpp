@@ -452,7 +452,7 @@ namespace Menge
 			}
 
 			ae_set_movie_composition_loop( composition, AE_TRUE );
-			ae_set_movie_composition_interpolate( composition, AE_FALSE );
+			//ae_set_movie_composition_interpolate( composition, AE_FALSE );
 
 			uint32_t max_render_node = ae_get_movie_composition_max_render_node( composition );
 

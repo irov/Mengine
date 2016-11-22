@@ -8,22 +8,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class OptionsSystemInterface
-		: public ServiceInterface
-	{ 
-		SERVICE_DECLARE( "OptionsSystem" )
-
-	public:
-		virtual bool getOptions( TVectorString & _options ) const = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-#   define OPTIONS_SYSTEM( serviceProvider )\
-    ((Menge::OptionsSystemInterface *)SERVICE_GET(serviceProvider, Menge::OptionsSystemInterface))
-	//////////////////////////////////////////////////////////////////////////
 	class OptionsServiceInterface
 		: public ServiceInterface
 	{
         SERVICE_DECLARE("OptionsService")
+
+	public:
+		virtual void setArgs( const TVectorString & _args ) = 0;
 
 	public:
 		virtual bool hasOption( const Char * _key ) const = 0;

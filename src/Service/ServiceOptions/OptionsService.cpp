@@ -9,30 +9,17 @@ SERVICE_FACTORY( OptionsService, Menge::OptionsService );
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-#	ifndef MENGINE_OPTIONS_COMMAND_LINE_MAX
-#	define MENGINE_OPTIONS_COMMAND_LINE_MAX 1024
-#	endif
-
-	//////////////////////////////////////////////////////////////////////////
-	bool OptionsService::_initialize()
+	void OptionsService::setArgs( const TVectorString & _args )
 	{
-		TVectorString options;
-
-		if( OPTIONS_SYSTEM( m_serviceProvider )
-			->getOptions( options ) == false )
-		{
-			return true;
-		}
-		
 		for( TVectorString::const_iterator
-			it = options.begin(),
-			it_end = options.end();
+			it = _args.begin(),
+			it_end = _args.end();
 		it != it_end;
 		++it )
 		{
-			const String & option = *it;
+			const String & arg = *it;
 
-			const Char * option_str = option.c_str();
+			const Char * option_str = arg.c_str();
 
 			const Char * option_key_str = strchr( option_str, '-' );
 
@@ -56,16 +43,19 @@ namespace Menge
 			else
 			{
 				size_t key_size = option_value_str - option_key_str;
-				
+
 				strncpy( op.key, option_key_str, key_size );
 				op.key[key_size] = '\0';
 
 				strcpy( op.value, option_value_str + 1 );
 			}
-			
+
 			m_options.push_back( op );
 		}
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool OptionsService::_initialize()
+	{
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

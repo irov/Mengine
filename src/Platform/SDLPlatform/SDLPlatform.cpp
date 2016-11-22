@@ -255,7 +255,7 @@ namespace Menge
         return m_platformName;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::isTouchpad() const
+    bool SDLPlatform::hasTouchpad() const
     {
         return m_touchpad;
     }

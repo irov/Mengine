@@ -50,7 +50,6 @@
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
 SERVICE_EXTERN( OptionsService );
-SERVICE_EXTERN( OptionsSystem );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( LoggerService );
 SERVICE_EXTERN( WindowsLayer );
@@ -532,8 +531,55 @@ namespace Menge
 
 		m_serviceProvider = serviceProvider;
 
-		SERVICE_CREATE( m_serviceProvider, OptionsSystem );
 		SERVICE_CREATE( m_serviceProvider, OptionsService );
+
+		LPCWSTR lpCmdLine = GetCommandLineW();
+
+		if( lpCmdLine == NULL )
+		{
+			return false;
+		}
+
+		int pNumArgs;
+		LPWSTR * szArglist = CommandLineToArgvW( lpCmdLine, &pNumArgs );
+
+		if( szArglist == NULL )
+		{
+			return false;
+		}
+
+#   if (WINVER >= 0x0600)
+		DWORD dwConversionFlags = WC_ERR_INVALID_CHARS;
+#   else
+		DWORD dwConversionFlags = 0;
+#   endif
+
+		TVectorString args;
+		for( int i = 1; i != pNumArgs; ++i )
+		{
+			PWSTR arg = szArglist[i];
+
+			CHAR utf_arg[1024];
+
+			::WideCharToMultiByte(
+				CP_UTF8
+				, dwConversionFlags
+				, arg
+				, -1
+				, utf_arg
+				, 1024
+				, NULL
+				, NULL
+				);
+
+			args.push_back( utf_arg );
+		}
+
+		LocalFree( szArglist );
+
+		OPTIONS_SERVICE( m_serviceProvider )
+			->setArgs( args );
+
 
 		SERVICE_CREATE( m_serviceProvider, StringizeService );
 		SERVICE_CREATE( m_serviceProvider, LoggerService );

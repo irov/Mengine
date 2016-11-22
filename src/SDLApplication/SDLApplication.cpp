@@ -405,10 +405,19 @@ namespace Menge
 
         m_serviceProvider = serviceProvider;
 
-        SERVICE_CREATE( m_serviceProvider, OptionsSystem );
-        SDLOPTIONS_SERVICE(serviceProvider)->setArgs(argv, argc);
-
         SERVICE_CREATE( m_serviceProvider, OptionsService );
+
+		TVectorString options;
+
+		for( int i = 1; i < argc; ++i )
+		{
+			const char * arg = argv[i];
+
+			options.push_back( arg );
+		}
+
+		OPTIONS_SERVICE( m_serviceProvider )
+			->setArgs( options );
 
         SERVICE_CREATE( m_serviceProvider, StringizeService );
 

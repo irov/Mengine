@@ -22,6 +22,9 @@ namespace Menge
 		void _finalize() override;
 
 	public:
+		void setArgs( const TVectorString & _args ) override;
+
+	public:
 		bool hasOption( const Char * _key ) const override;
 		const Char * getOptionValue( const Char * _key ) const override;
 

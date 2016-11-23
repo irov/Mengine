@@ -11,8 +11,6 @@
 #	include "Interface/TimerInterface.h"
 #	include "Interface/OptionsInterface.h"
 
-#   include  "System/SDLOptionsSystem/SDLOptionsSystem.h"
-
 #   include "PythonScriptWrapper/PythonScriptWrapper.h"
 
 #	include <cstdio>

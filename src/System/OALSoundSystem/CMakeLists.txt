@@ -18,7 +18,7 @@ src
 
 add_definitions(-DAL_LIBTYPE_STATIC)
 
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/openal-soft/include/AL )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/openal-soft/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/openal-soft/OpenAL32/include )
 
 

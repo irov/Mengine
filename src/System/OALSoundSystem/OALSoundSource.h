@@ -4,7 +4,7 @@
 
 #	include "OALSoundBufferBase.h"
 
-#	include <al.h>
+#	include "AL/al.h"
 
 namespace Menge
 {

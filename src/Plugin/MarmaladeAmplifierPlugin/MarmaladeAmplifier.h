@@ -12,13 +12,13 @@
 
 namespace	Menge
 {
-	class Amplifier
+	class MarmaladeAmplifier
 		: public ServiceBase<AmplifierInterface>
 		, public SoundVolumeProviderInterface
 	{
 	public:
-		Amplifier();
-		~Amplifier();
+		MarmaladeAmplifier();
+		~MarmaladeAmplifier();
 		
 	public:
 		bool _initialize() override;

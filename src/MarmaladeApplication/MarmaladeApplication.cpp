@@ -10,6 +10,7 @@
 #	include "Interface/InputSystemInterface.h"
 #	include "Interface/TimerInterface.h"
 #	include "Interface/OptionsInterface.h"
+#	include "Interface/AmplifierInterface.h"
 
 #   include "PythonScriptWrapper/PythonScriptWrapper.h"
 
@@ -89,11 +90,11 @@ SERVICE_EXTERN( PrefetcherService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( TimerSystem );
 SERVICE_EXTERN( TimerService );
+SERVICE_EXTERN( Amplifier );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( MengeImageCodec );
 PLUGIN_EXPORT( MengeSoundCodec );
 PLUGIN_EXPORT( MengeVideoCodec );
-PLUGIN_EXPORT( MengeAmplifier );
 PLUGIN_EXPORT( MengeZip );
 PLUGIN_EXPORT( MengeLZ4 );
 PLUGIN_EXPORT( Spine );
@@ -101,6 +102,7 @@ PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( MengeOggVorbis );
 PLUGIN_EXPORT( PathFinder );
 PLUGIN_EXPORT( MarmaladeFileGroup );
+PLUGIN_EXPORT( MarmaladeGoogleAdMob );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -543,15 +545,17 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, Application );
 
 		SERVICE_CREATE( m_serviceProvider, PrefetcherService );
+		SERVICE_CREATE( m_serviceProvider, Amplifier );
 
 		PLUGIN_CREATE( m_serviceProvider, MengeImageCodec );
 		PLUGIN_CREATE( m_serviceProvider, MengeSoundCodec );
 		PLUGIN_CREATE( m_serviceProvider, MengeOggVorbis );
-		PLUGIN_CREATE( m_serviceProvider, MengeVideoCodec );
-		PLUGIN_CREATE( m_serviceProvider, MengeAmplifier );
+		PLUGIN_CREATE( m_serviceProvider, MengeVideoCodec );		
 		PLUGIN_CREATE( m_serviceProvider, PathFinder );
 		PLUGIN_CREATE( m_serviceProvider, Spine );
 		PLUGIN_CREATE( m_serviceProvider, Movie );
+
+		PLUGIN_CREATE( m_serviceProvider, MarmaladeGoogleAdMob );
 
 		TVectorString modules;
 		CONFIG_VALUES(m_serviceProvider, "Modules", "Name", modules);
@@ -624,7 +628,7 @@ namespace Menge
 
 		APPLICATION_SERVICE( m_serviceProvider )
 			->turnSound( true );
-		
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -644,6 +648,7 @@ namespace Menge
 		SERVICE_FINALIZE( m_serviceProvider, Menge::InputServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeSystemInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::AmplifierInterface );
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::FileServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::CodecServiceInterface );

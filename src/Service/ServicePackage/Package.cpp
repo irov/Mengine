@@ -342,13 +342,13 @@ namespace Menge
                 return false;
             }
 
-            //size_t memory = PROFILER_SERVICE(m_serviceProvider)
-            //    ->memoryEnd();
+			//size_t memory = PROFILER_SERVICE( m_serviceProvider )
+			//	->memoryEnd();
 
-            //LOGGER_ERROR(m_serviceProvider)("resource desc %.04f -- %s"
-            //    , float(memory) / (1024.f)
-            //    , desc.path.c_str()                
-            //    );
+			//LOGGER_ERROR( m_serviceProvider )("resource desc %.04f -- %s"
+			//	, float( memory ) / (1024.f)
+			//	, desc.path.c_str()
+			//	);
 		}
 
 		for( TVectorFilePath::iterator

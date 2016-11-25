@@ -78,6 +78,25 @@ namespace Menge
 
 			return _default;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		template<class T>
+		static void s_calcValueT( ServiceProviderInterface * _serviceProvider, const IniUtil::IniStore & _ini, const ConstString & _platform, const Char * _section, const Char * _key, T & _value )
+		{
+			stdex::array_string<64> platform_section;
+			platform_section.append( _section );
+			platform_section.append( '-' );
+			platform_section.append( _platform );
+						
+			if( IniUtil::getIniValue( _ini, platform_section.c_str(), _key, _value, _serviceProvider ) == true )
+			{
+				return;
+			}
+
+			if( IniUtil::getIniValue( _ini, _section, _key, _value, _serviceProvider ) == true )
+			{
+				return;
+			}		
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ConfigManager::getValue( const Char * _section, const Char * _key, bool _default ) const
@@ -122,17 +141,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ConfigManager::getValues( const Char * _section, const Char * _key, TVectorAspectRatioViewports & _value ) const
 	{
-		IniUtil::getIniValue( m_ini, _section, _key, _value, m_serviceProvider );
+		Helper::s_calcValueT( m_serviceProvider, m_ini, m_platformName, _section, _key, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ConfigManager::getValues( const Char * _section, const Char * _key, TVectorWString & _value ) const
 	{
-		IniUtil::getIniValue( m_ini, _section, _key, _value, m_serviceProvider );
+		Helper::s_calcValueT( m_serviceProvider, m_ini, m_platformName, _section, _key, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ConfigManager::getValues( const Char * _section, const Char * _key, TVectorString & _value ) const
 	{
-		IniUtil::getIniValue( m_ini, _section, _key, _value, m_serviceProvider );
+		Helper::s_calcValueT( m_serviceProvider, m_ini, m_platformName, _section, _key, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ConfigManager::getSection( const Char * _section, TMapParams & _params ) const

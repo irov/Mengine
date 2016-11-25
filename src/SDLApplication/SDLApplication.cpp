@@ -77,6 +77,7 @@ SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( ModuleService );
 SERVICE_EXTERN( DataService );
 SERVICE_EXTERN( MemoryService );
+SERVICE_EXTERN( ConverterService );
 SERVICE_EXTERN( ConfigService );
 SERVICE_EXTERN( PrefetcherService );
 SERVICE_EXTERN( OptionsSystem );
@@ -475,15 +476,12 @@ namespace Menge
         SERVICE_CREATE( m_serviceProvider, TimerService );
         
         SERVICE_CREATE( m_serviceProvider, ScriptService );
-
         SERVICE_CREATE( m_serviceProvider, ModuleService );
-
+		SERVICE_CREATE( m_serviceProvider, CodecService );
         SERVICE_CREATE( m_serviceProvider, DataService );
-
+		SERVICE_CREATE( m_serviceProvider, PrefetcherService );
         SERVICE_CREATE( m_serviceProvider, MemoryService );
-
-        SERVICE_CREATE( m_serviceProvider, CodecService );
-        
+		SERVICE_CREATE( m_serviceProvider, ConverterService );                
         SERVICE_CREATE( m_serviceProvider, InputService );
 
         PythonScriptWrapper::constsWrap( m_serviceProvider );

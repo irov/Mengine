@@ -6,19 +6,16 @@
 
 namespace Menge
 {
-	class PluginAmplifier
+	class MarmaladeGoogleAdMobPlugin
 		: public PluginBase
 	{
-		PLUGIN_DECLARE( "Amplifier" )
+		PLUGIN_DECLARE( "MarmaladeGoogleAdMob" )
 
 	public:
-		PluginAmplifier();
+		MarmaladeGoogleAdMobPlugin();
 
 	public:
 		bool _initialize() override;
 		void _finalize() override;
-
-	protected:
-		void _destroy() override;
 	};
 }

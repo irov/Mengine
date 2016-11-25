@@ -1,4 +1,4 @@
-#	include "Amplifier.h"
+#	include "MarmaladeAmplifier.h"
 
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/StringizeInterface.h"
@@ -16,23 +16,23 @@
 #	include <cmath>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY(Amplifier, Menge::Amplifier);
+SERVICE_FACTORY( Amplifier, Menge::MarmaladeAmplifier );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Amplifier::Amplifier()
+	MarmaladeAmplifier::MarmaladeAmplifier()
 		: m_volume(1.f)
 		, m_play(false)
 		, m_loop(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Amplifier::~Amplifier()
+	MarmaladeAmplifier::~MarmaladeAmplifier()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static int32 s_Amplifier_AudioCallback_Stop( s3eAudioCallbackData * _data, Amplifier * _amplifier )
+	static int32 s_Amplifier_AudioCallback_Stop( s3eAudioCallbackData * _data, MarmaladeAmplifier * _amplifier )
 	{
 		(void)_data;
 
@@ -41,7 +41,7 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::_initialize()
+	bool MarmaladeAmplifier::_initialize()
 	{
 		LOGGER_INFO(m_serviceProvider)( "Starting Marmalade Amplifier..." );
 
@@ -92,7 +92,7 @@ namespace Menge
 		return true;			
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::_finalize()
+	void MarmaladeAmplifier::_finalize()
 	{
 		SOUND_SERVICE(m_serviceProvider)
 			->removeSoundVolumeProvider( this );
@@ -102,7 +102,7 @@ namespace Menge
 		this->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::stop()
+	void MarmaladeAmplifier::stop()
 	{
 		m_play = false;
 
@@ -114,7 +114,7 @@ namespace Menge
 		s3eAudioStop();				
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::pause()
+	bool MarmaladeAmplifier::pause()
 	{
 		m_play = false;
 
@@ -160,7 +160,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::resume()
+	bool MarmaladeAmplifier::resume()
 	{
         m_play = true;
 
@@ -206,7 +206,7 @@ namespace Menge
 		return true; 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::onSoundStop()
+	void MarmaladeAmplifier::onSoundStop()
 	{
 		if( m_play == false )
 		{
@@ -216,7 +216,7 @@ namespace Menge
 		m_audioMemory = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::playMusic( const ConstString & _resourceMusic, float _pos, bool _looped )
+	bool MarmaladeAmplifier::playMusic( const ConstString & _resourceMusic, float _pos, bool _looped )
 	{
 		if( m_play == true )
 		{
@@ -363,7 +363,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Amplifier::getPosMs() const
+	float MarmaladeAmplifier::getPosMs() const
 	{
 		int32 s3e_pos = s3eAudioGetInt( S3E_AUDIO_POSITION );
 
@@ -385,7 +385,7 @@ namespace Menge
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Amplifier::getDuration() const
+	float MarmaladeAmplifier::getDuration() const
 	{
 		int32 s3e_duration = s3eAudioGetInt( S3E_AUDIO_DURATION );
 		
@@ -394,7 +394,7 @@ namespace Menge
 		return duration;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::setPosMs( float _posMs )
+	void MarmaladeAmplifier::setPosMs( float _posMs )
 	{
 		int32 s3e_pos = (int32)_posMs;
 		 
@@ -413,7 +413,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::onSoundChangeVolume( float _sound, float _music, float _voice )
+	void MarmaladeAmplifier::onSoundChangeVolume( float _sound, float _music, float _voice )
 	{
 		int32 s3e_volume = (int32)(m_volume * _music * float( S3E_AUDIO_MAX_VOLUME ));
 

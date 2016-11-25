@@ -5,9 +5,7 @@
 #   include "s3eDebug.h"
 #   include "s3eConfig.h"
 
-#   include <IwGL.h>
-
-#   include <s3eGL.h>
+#	include <s3eDevice.h>
 
 int main()
 {
@@ -16,6 +14,8 @@ int main()
 	printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 
 	stdex_allocator_initialize();
+
+	//s3eDeviceYield( 10000 );
 
 	try
 	{

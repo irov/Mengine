@@ -1,6 +1,6 @@
 #	include "OALSoundError.h"
 
-#   include <al.h>
+#   include "AL/al.h"
 
 #	include "Logger/Logger.h"
 

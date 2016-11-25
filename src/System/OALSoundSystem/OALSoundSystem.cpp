@@ -62,29 +62,6 @@ namespace Menge
             }
 		}
 
-		ALCint majorVersion;
-		alcGetIntegerv( m_device, ALC_MAJOR_VERSION, 1, &majorVersion );
-
-		ALCint minorVersion;
-		alcGetIntegerv( m_device, ALC_MINOR_VERSION, 1, &minorVersion );
-
-		LOGGER_WARNING( m_serviceProvider )("OpenAL version %d.%d"
-			, majorVersion
-			, minorVersion
-			);
-
-		const ALCchar* defaultDeviceSprcifier = alcGetString( m_device, ALC_DEVICE_SPECIFIER );
-
-		LOGGER_WARNING( m_serviceProvider )("OpenAL default device specifier [%s]"
-			, defaultDeviceSprcifier
-			);
-
-		const ALCchar* captureDeviceSpecifier = alcGetString( m_device, ALC_CAPTURE_DEVICE_SPECIFIER );
-
-		LOGGER_WARNING(m_serviceProvider)("OpenAL capture device specifier [%s]"
-			, captureDeviceSpecifier
-			);		
-
 		m_context = alcCreateContext( m_device, nullptr );
 
 		if( m_context == nullptr )
@@ -116,7 +93,30 @@ namespace Menge
 
             return false;
         }
-        		
+        
+
+		ALCint majorVersion;
+		alcGetIntegerv( m_device, ALC_MAJOR_VERSION, 1, &majorVersion );
+
+		ALCint minorVersion;
+		alcGetIntegerv( m_device, ALC_MINOR_VERSION, 1, &minorVersion );
+
+		LOGGER_WARNING( m_serviceProvider )("OpenAL version %d.%d"
+			, majorVersion
+			, minorVersion
+			);
+
+		const ALCchar* defaultDeviceSprcifier = alcGetString( m_device, ALC_DEVICE_SPECIFIER );
+
+		LOGGER_WARNING( m_serviceProvider )("OpenAL default device specifier [%s]"
+			, defaultDeviceSprcifier
+			);
+
+		const ALCchar* captureDeviceSpecifier = alcGetString( m_device, ALC_CAPTURE_DEVICE_SPECIFIER );
+
+		LOGGER_WARNING( m_serviceProvider )("OpenAL capture device specifier [%s]"
+			, captureDeviceSpecifier
+			);
 
 		LOGGER_WARNING(m_serviceProvider)( "OpenAL driver properties" );
 

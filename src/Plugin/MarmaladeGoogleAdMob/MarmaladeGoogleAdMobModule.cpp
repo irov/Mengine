@@ -126,7 +126,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeGoogleAdMobModule::_message( const ConstString & _messageName, const TMapParams & _params )
 	{
-		if( _messageName == "GoogleAdMobShow" )
+		if( _messageName == "Show" )
 		{
 			s3eGoogleAdMobShowAd( m_Id );
 			s3eGoogleAdMobDestroyAd( m_Id );

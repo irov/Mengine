@@ -73,9 +73,9 @@ namespace Menge
 		MoviePlugin * plugin = static_cast<MoviePlugin *>(_data);
 		ServiceProviderInterface * serviceProvider = plugin->getServiceProvider();
 
-		LOGGER_ERROR( serviceProvider )("MoviePlugin movie error code '%d' composition '%s' layer '%s' message '%s'"
-			, _code
+		LOGGER_ERROR( serviceProvider )("MoviePlugin error '%s' code '%d'"
 			, msg
+			, _code			
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////

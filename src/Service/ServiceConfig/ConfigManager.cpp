@@ -87,15 +87,15 @@ namespace Menge
 			platform_section.append( '-' );
 			platform_section.append( _platform );
 						
-			if( IniUtil::getIniValue( _ini, platform_section.c_str(), _key, _value, _serviceProvider ) == true )
+			if( IniUtil::getIniValue( _ini, platform_section.c_str(), _key, _value, _serviceProvider ) == false )
 			{
 				return;
 			}
 
-			if( IniUtil::getIniValue( _ini, _section, _key, _value, _serviceProvider ) == true )
+			if( IniUtil::getIniValue( _ini, _section, _key, _value, _serviceProvider ) == false )
 			{
 				return;
-			}		
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

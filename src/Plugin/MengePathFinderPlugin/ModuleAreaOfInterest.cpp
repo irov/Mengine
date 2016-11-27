@@ -101,7 +101,7 @@ namespace Menge
 		delete _aoi;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleAreaOfInterest::_update( float _time, float _timing )
+	void ModuleAreaOfInterest::_tick( float _time, float _timing )
 	{
 		(void)_time;
 		(void)_timing;

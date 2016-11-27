@@ -55,7 +55,7 @@ namespace Menge
 		virtual void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) = 0;
 
 	public:
-		virtual void tick( float _timing ) = 0;
+		virtual void tick( float _time, float _timing ) = 0;
 		virtual bool update() = 0;
 		virtual void render() = 0;
 

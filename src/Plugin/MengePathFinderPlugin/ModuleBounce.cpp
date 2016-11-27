@@ -81,7 +81,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBounce::_update( float _time, float _timing )
+	void ModuleBounce::_tick( float _time, float _timing )
 	{
 		(void)_time;
 		(void)_timing;

@@ -143,7 +143,7 @@ namespace Menge
 		_world->setDead();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBurritoWorld::_update( float _time, float _timing )
+	void ModuleBurritoWorld::_tick( float _time, float _timing )
 	{
 		m_worlds.insert( m_worlds.end(), m_worldsAdd.begin(), m_worldsAdd.end() );
 		m_worldsAdd.clear();

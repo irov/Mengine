@@ -191,6 +191,7 @@ namespace Menge
 		, m_resetTiming(false)
 		, m_maxTiming(100.f)
         , m_focus(true)
+		, m_freeze(false)
         , m_update(true)				
 		, m_nopause(false)
 		, m_createRenderWindow(false)
@@ -1162,16 +1163,47 @@ namespace Menge
 		
 		m_focus = _focus;
 
-		LOGGER_INFO(m_serviceProvider)("Application::onFocus from %d to %d"
+		LOGGER_INFO(m_serviceProvider)("Application::setFocus %d (freeze %d)"
 			, m_focus
-			, _focus
+			, m_freeze
 			);
+
+		if( m_freeze == true )
+		{
+			return;
+		}
 
 		if( SERVICE_EXIST(m_serviceProvider, Menge::GameServiceInterface) == true )
 		{
 			GAME_SERVICE( m_serviceProvider )
 				->setFocus( m_focus );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setFreeze( bool _freeze )
+	{
+		if( m_freeze == _freeze )
+		{
+			return;
+		}
+
+		m_freeze = _freeze;
+
+		LOGGER_INFO( m_serviceProvider )("Application::setFreeze %d (focus %d)"
+			, m_freeze
+			, m_focus
+			);
+
+		if( m_focus == false )
+		{
+			return;
+		}
+
+		if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == true )
+		{
+			GAME_SERVICE( m_serviceProvider )
+				->setFocus( !m_freeze );
+		}	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setNopause( bool _nopause )
@@ -1204,10 +1236,19 @@ namespace Menge
 				->update();
 		}
 
+		if( SERVICE_EXIST( m_serviceProvider, Menge::ModuleServiceInterface ) == true )
+		{
+			MODULE_SERVICE( m_serviceProvider )
+				->update( m_focus );
+		}
+
 		if( m_update == false && m_focus == false && m_nopause == false )
 		{						
 			return false;
 		}
+
+		GAME_SERVICE( m_serviceProvider )
+			->update();
 
 		INPUT_SERVICE(m_serviceProvider)
 			->update();
@@ -1249,20 +1290,29 @@ namespace Menge
 			timing = m_maxTiming;
 		}
 
+		float time = TIMELINE_SERVICE( m_serviceProvider )
+			->getTime();
+
 		GAME_SERVICE( m_serviceProvider )
-			->tick( timing );
+			->tick( time, timing );
+
+		MODULE_SERVICE( m_serviceProvider )
+			->tick( time, timing );
 
 		if( SERVICE_EXIST(m_serviceProvider, Menge::SoundServiceInterface) == true )
 		{
 			SOUND_SERVICE(m_serviceProvider)
-				->update( timing );
+				->tick( time, timing );
 		}
 
 		if( SERVICE_EXIST(m_serviceProvider, Menge::GraveyardInterface) == true )
 		{
 			GRAVEYARD_SERVICE(m_serviceProvider)
-				->update( timing );
+				->tick( time, timing );
 		}
+
+		TIMELINE_SERVICE( m_serviceProvider )
+			->tick( timing );
 		
 		//if( m_physicEngine )
 		//{
@@ -1779,23 +1829,6 @@ namespace Menge
 				->swapBuffers();
 		}
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool Application::userEvent( const ConstString & _event, const TMapParams & _params )
-    {
-        if( SERVICE_EXIST(m_serviceProvider, Menge::GameServiceInterface) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Application::onUserEvent %s game not create"
-                , _event.c_str()
-                );
-
-            return false;
-        }
-
-		GAME_SERVICE( m_serviceProvider )
-			->userEvent( _event, _params );
-
-        return true;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	const WString & Application::getCompanyName() const
 	{

@@ -171,7 +171,7 @@ namespace Menge
 		};
 	}
     //////////////////////////////////////////////////////////////////////////
-	void Box2DModule::_update( float _time, float _timing )
+	void Box2DModule::_tick( float _time, float _timing )
     {
 		m_worlds.insert( m_worlds.end(), m_worldsAdd.begin(), m_worldsAdd.end() );
 		m_worldsAdd.clear();

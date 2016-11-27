@@ -22,7 +22,7 @@ namespace Menge
 		float getTime() const override;	
 
 	public:
-		void update( float _offset ) override;
+		void tick( float _offset ) override;
 
 	protected:
 		float m_time;

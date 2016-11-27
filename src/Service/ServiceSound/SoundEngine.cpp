@@ -566,8 +566,10 @@ namespace Menge
 		typedef stdex::vector<SoundListenerStopDesc> TVectorSoundListeners;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::update( float _timing )
+	void SoundEngine::tick( float _time, float _timing )
 	{
+		(void)_time;
+
 		SOUND_SYSTEM(m_serviceProvider)
 			->update();
 

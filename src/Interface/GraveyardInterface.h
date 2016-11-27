@@ -14,7 +14,7 @@ namespace Menge
         SERVICE_DECLARE("Graveyard")
 
 	public:
-		virtual void update( float _timing ) = 0;
+		virtual void tick( float _time, float _timing ) = 0;
 
 	public:
 		virtual void clearTextures() = 0;

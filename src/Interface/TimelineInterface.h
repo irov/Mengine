@@ -18,7 +18,7 @@ namespace Menge
 		virtual float getTime() const = 0;		
 
 	public:
-		virtual void update( float _offset ) = 0;
+		virtual void tick( float _timing ) = 0;
 	};
 
 #   define TIMELINE_SERVICE( serviceProvider )\

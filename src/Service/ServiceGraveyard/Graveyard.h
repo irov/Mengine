@@ -29,7 +29,7 @@ namespace Menge
 		void _finalize() override;
 
 	public:
-		void update( float _timing ) override;
+		void tick( float _time, float _timing ) override;
 
 	public:
 		void clearTextures() override;

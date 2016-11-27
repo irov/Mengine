@@ -286,12 +286,31 @@ namespace Menge
 			->onAppMousePosition( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::tick( float _timing )
+	void Game::update()
+	{
+		m_events.insert( m_events.end(), m_eventsAdd.begin(), m_eventsAdd.end() );
+		m_eventsAdd.clear();
+
+		for( TVectorUserEvents::const_iterator
+			it = m_events.begin(),
+			it_end = m_events.end();
+		it != it_end;
+		++it )
+		{
+			const UserEvent & ev = *it;
+
+			EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_USER )(ev.id, ev.params);
+		}
+
+		m_events.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::tick( float _time, float _timing )
 	{
 		float timing = _timing * m_timingFactor;
 		
 		PLAYER_SERVICE( m_serviceProvider )
-			->tick( timing );
+			->tick( _time, timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render()
@@ -598,9 +617,13 @@ namespace Menge
 		return needQuit;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Game::userEvent( const ConstString & _event, const TMapParams & _params )
+    void Game::userEvent( const ConstString & _id, const TMapParams & _params )
     {
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_USER )(_event, _params);
+		UserEvent ev;
+		ev.id = _id;
+		ev.params = _params;
+
+		m_events.push_back( ev );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setCursorMode( bool _mode )

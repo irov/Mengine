@@ -97,7 +97,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleCollision::_update( float _time, float _timing )
+	void ModuleCollision::_tick( float _time, float _timing )
 	{
 		(void)_time;
 		(void)_timing;

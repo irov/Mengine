@@ -53,7 +53,7 @@ namespace Menge
 		return totalTime;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TimelineService::update( float _timing )
+	void TimelineService::tick( float _timing )
 	{
 		if( m_offsets.empty() == false )
 		{

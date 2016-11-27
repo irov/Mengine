@@ -239,10 +239,9 @@ namespace Menge
 		SteamAPI_Shutdown();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleSteam::_update( float _time, float _timing )
+	void ModuleSteam::_update( bool _focus )
 	{
-		(void)_time;
-		(void)_timing;
+		(void)_focus;
 
 		//bool status = m_userStats->RequestCurrentStats();
 	}

@@ -61,7 +61,7 @@ namespace Menge
 		bool supportStreamSound() const override;
 
 	public:
-		void update( float _timing ) override;
+		void tick( float _time, float _timing ) override;
 
 	public:
 		void addSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider ) override;

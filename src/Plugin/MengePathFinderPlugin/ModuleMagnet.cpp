@@ -96,7 +96,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleMagnet::_update( float _time, float _timing )
+	void ModuleMagnet::_tick( float _time, float _timing )
 	{
 		(void)_time;
 		(void)_timing;

@@ -31,6 +31,7 @@ namespace Menge
 		virtual void tick( float _timing ) = 0;
 		virtual void endUpdate() = 0;
 		virtual void setFocus( bool _focus ) = 0;
+		virtual void setFreeze( bool _freeze ) = 0;
 		virtual void close() = 0;
 
 		virtual void turnSound( bool _turn ) = 0;
@@ -47,7 +48,6 @@ namespace Menge
         
 	public:
 		virtual void paint() = 0;
-        virtual bool userEvent( const ConstString & _event, const TMapParams & _params ) = 0;
 
 	public:
 		virtual bool initializeGame( const ConstString & _category, const FilePath & _resourceIniPath ) = 0;

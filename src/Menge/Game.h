@@ -75,7 +75,8 @@ namespace Menge
 		void run() override;
 
 	public:
-		void tick( float _timing ) override;
+		void update() override;
+		void tick( float _time, float _timing ) override;
 
     public:
 		void render() override;
@@ -114,7 +115,7 @@ namespace Menge
 
 		bool close() override;
 
-        void userEvent( const ConstString & _event, const TMapParams & _params ) override;
+		void userEvent( const ConstString & _id, const TMapParams & _params ) override;
 
 		void turnSound( bool _turn ) override;
 
@@ -147,6 +148,16 @@ namespace Menge
 		TMapParams m_params;
 
 		ArchivatorInterfacePtr m_archivator;
+
+		struct UserEvent
+		{
+			ConstString id;
+			TMapParams params;
+		};
+
+		typedef std::vector<UserEvent> TVectorUserEvents;
+		TVectorUserEvents m_eventsAdd;
+		TVectorUserEvents m_events;
 		
     protected:
 		void registerEventMethods_( const ScriptModuleInterfacePtr & _module );

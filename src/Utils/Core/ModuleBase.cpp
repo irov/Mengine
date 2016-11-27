@@ -53,9 +53,21 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::update( float _time, float _timing )
+	void ModuleBase::update( bool _focus )
 	{
-		this->_update( _time, _timing );
+		this->_update( _focus );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ModuleBase::_update( bool _focus )
+	{
+		(void)_focus;
+
+		//Empty;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ModuleBase::tick( float _time, float _timing )
+	{
+		this->_tick( _time, _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleBase::render( const RenderObjectState * _state, unsigned int _debugMask )
@@ -63,7 +75,7 @@ namespace Menge
 		this->_render( _state, _debugMask );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::_update( float _time, float _timing )
+	void ModuleBase::_tick( float _time, float _timing )
 	{
 		(void)_time;
 		(void)_timing;
@@ -84,7 +96,20 @@ namespace Menge
 		this->_message( _messageName, _params );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ModuleBase::messageAll( const ConstString & _messageName, const TMapParams & _params )
+	{
+		this->_messageAll( _messageName, _params );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ModuleBase::_message( const ConstString & _messageName, const TMapParams & _params )
+	{
+		(void)_messageName;
+		(void)_params;
+
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ModuleBase::_messageAll( const ConstString & _messageName, const TMapParams & _params )
 	{
 		(void)_messageName;
 		(void)_params;

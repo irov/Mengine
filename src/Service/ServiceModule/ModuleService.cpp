@@ -120,7 +120,7 @@ namespace Menge
 		m_modules.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleService::update( float _time, float _timing )
+	void ModuleService::update( bool _focus )
 	{
 		for( TVectorModules::iterator
 			it = m_modules.begin(),
@@ -130,7 +130,21 @@ namespace Menge
 		{
 			const ModuleInterfacePtr & module = *it;
 
-			module->update( _time, _timing );
+			module->update( _focus );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ModuleService::tick( float _time, float _timing )
+	{
+		for( TVectorModules::iterator
+			it = m_modules.begin(),
+			it_end = m_modules.end();
+		it != it_end;
+		++it )
+		{
+			const ModuleInterfacePtr & module = *it;
+
+			module->tick( _time, _timing );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -158,6 +172,20 @@ namespace Menge
 		}
 
 		module->message( _messageName, _params );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ModuleService::messageAll( const ConstString & _messageName, const TMapParams & _params )
+	{
+		for( TVectorModules::const_iterator
+			it = m_modules.begin(),
+			it_end = m_modules.end();
+		it != it_end;
+		++it )
+		{
+			const ModuleInterfacePtr & module = *it;
+
+			module->messageAll( _messageName, _params );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////		
 	const ModuleInterfacePtr & ModuleService::findModule( const ConstString & _moduleName ) const

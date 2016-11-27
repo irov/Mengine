@@ -117,7 +117,7 @@ namespace Menge
         SERVICE_DECLARE("SoundService")
 
 	public:
-		virtual void update( float _timing ) = 0;
+		virtual void tick( float _time, float _timing ) = 0;
 
 	public:
 		virtual bool supportStreamSound() const = 0;

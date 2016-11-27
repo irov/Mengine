@@ -21,7 +21,8 @@ namespace Menge
 		virtual void run() = 0;
 
     public:
-        virtual void tick( float _timing ) = 0;
+		virtual void update() = 0;
+		virtual void tick( float _time, float _timing ) = 0;
 
 	public:
         virtual void render() = 0;

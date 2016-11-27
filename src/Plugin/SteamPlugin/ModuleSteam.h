@@ -19,7 +19,7 @@ namespace Menge
 		void _finalize() override;
 
 	protected:
-		void _update( float _time, float _timing ) override;
+		void _update( bool _focus ) override;
 
 	protected:
 		void _message( const ConstString & _messageName, const TMapParams & _params ) override;

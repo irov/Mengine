@@ -120,7 +120,7 @@ namespace Menge
 		void finalizeRenderResources() override;
 
     public:
-		void tick( float _timing );
+		void tick( float _time, float _timing );
 		bool update() override;
 
 	public:
@@ -188,10 +188,13 @@ namespace Menge
 		Affectorable * m_affectorableGlobal;
 
 		bool m_arrowHided;
+		bool m_focus;
 		
 		Scene * m_switchSceneTo;
 
-		bool m_switchScene;		
+		bool m_switchScene2;
+		bool m_switchBlock;
+		bool m_switchScene;
 		bool m_restartScene;
 		bool m_removeScene;
 

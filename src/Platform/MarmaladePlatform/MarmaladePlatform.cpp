@@ -175,6 +175,8 @@ namespace Menge
 	{
 		(void)_systemData;
 
+		s3eDebugErrorShow( S3E_MESSAGE_CONTINUE, "s3eCallback_UnPause" );
+
 		MarmaladePlatform * platform = static_cast<MarmaladePlatform *>(_userData);
 
 		platform->changePause_( false );
@@ -185,6 +187,8 @@ namespace Menge
 	static int32 s3eCallback_Pause( void * _systemData, void * _userData )
 	{
 		(void)_systemData;
+
+		s3eDebugErrorShow( S3E_MESSAGE_CONTINUE, "s3eCallback_Pause" );
 
 		MarmaladePlatform * platform = static_cast<MarmaladePlatform *>(_userData);
 
@@ -368,7 +372,7 @@ namespace Menge
 			APPLICATION_SERVICE( m_serviceProvider )
 				->endUpdate();
 
-			s3eDeviceYield( 0 );
+			s3eDeviceYield( 1 );
         }
     }
     //////////////////////////////////////////////////////////////////////////

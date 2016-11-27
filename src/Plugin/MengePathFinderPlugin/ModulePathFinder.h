@@ -37,7 +37,7 @@ namespace Menge
 		void destroyPathFinderWayAffector( PathFinderWayAffector * _affector );
 
 	public:
-		void _update( float _time, float _timing ) override;
+		void _tick( float _time, float _timing ) override;
 		void _render( const RenderObjectState * _state, unsigned int _debugMask ) override;
 		
 	protected:

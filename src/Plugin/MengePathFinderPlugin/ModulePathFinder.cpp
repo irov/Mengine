@@ -232,7 +232,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModulePathFinder::_update( float _time, float _timing )
+	void ModulePathFinder::_tick( float _time, float _timing )
 	{
 		(void)_time;
 		(void)_timing;

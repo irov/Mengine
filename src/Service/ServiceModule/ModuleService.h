@@ -26,11 +26,15 @@ namespace Menge
 		void stopModules() override;
 
 	public:
-		void update( float _time, float _timing ) override;
+		void update( bool _focus ) override;
+
+	public:
+		void tick( float _time, float _timing ) override;
 		void render( const RenderObjectState * _state, uint32_t _debugMask ) override;
 
 	public:
 		void message( const ConstString & _moduleName, const ConstString & _messageName, const TMapParams & _params ) override;
+		void messageAll( const ConstString & _messageName, const TMapParams & _params ) override;
 
 	protected:
 		const ModuleInterfacePtr & findModule( const ConstString & _moduleName ) const;

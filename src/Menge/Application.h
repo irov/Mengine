@@ -83,6 +83,7 @@ namespace Menge
 		void tick( float _timing ) override;
 		void endUpdate() override;
 		void setFocus( bool _focus ) override;
+		void setFreeze( bool _freeze ) override;
 		void close() override;
 
 		void turnSound( bool _turn ) override;
@@ -99,8 +100,6 @@ namespace Menge
 
 	public:
 		void paint() override;
-
-		bool userEvent( const ConstString & _event, const TMapParams & _params ) override;
 
 	public:
 		void setParticleEnable( bool _enabled ) override;
@@ -180,6 +179,7 @@ namespace Menge
 		bool m_textEnable;
 
 		bool m_focus;
+		bool m_freeze;
 		bool m_update;
 		bool m_nopause;
 

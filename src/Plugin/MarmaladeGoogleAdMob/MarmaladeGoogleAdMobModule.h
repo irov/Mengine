@@ -6,6 +6,17 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	enum MarmaladeGoogleAdMobState
+	{
+		ADMOB_PREPARE,		
+		ADMOB_LOAD,
+		ADMOB_SHOW,
+		ADMOB_DISMISSED,
+		ADMOB_CLOSE,
+		ADMOB_DESTROY
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class MarmaladeGoogleAdMobModule
 		: public ModuleBase
 	{
@@ -18,10 +29,17 @@ namespace Menge
 		void _finalize() override;
 
 	protected:
-		void _update( float _time, float _timing ) override;
+		void _update( bool _focus ) override;
 
 	protected:
 		void _message( const ConstString & _messageName, const TMapParams & _params ) override;
+		void _messageAll( const ConstString & _messageName, const TMapParams & _params ) override;
+
+	protected:
+		void prepareAd_();
+		void showAd_();
+		void closeAd_();
+		void destroyAd_();
 
 	protected:
 		void onAdLoad( s3eGoogleAdMobCallbackLoadedData * _data );
@@ -35,6 +53,10 @@ namespace Menge
 
 
 	protected:
+		MarmaladeGoogleAdMobState m_state;
+
+		uint64_t m_timeShow;
+
 		s3eGoogleAdMobId m_Id;
 	};
 }

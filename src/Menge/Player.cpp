@@ -50,31 +50,33 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Player::Player()
-        : m_scene(nullptr)
-		, m_arrow(nullptr)
-		, m_globalScene(nullptr)
-		, m_scheduleManager(nullptr)
-		, m_scheduleManagerGlobal(nullptr)
-		, m_arrowCamera2D(nullptr)
-		, m_renderCamera(nullptr)
-		, m_renderViewport(nullptr)
-		, m_renderClipplane(nullptr)
-		, m_renderTarget(nullptr)
-		, m_switchSceneTo(nullptr)
-		, m_mousePickerSystem(nullptr)
-		, m_switchScene(false)
-		, m_removeScene(false)
-		, m_destroyOldScene(false)
-		, m_restartScene(false)
-		, m_arrowHided(false)
-		, m_fps(0)	
-		, m_affectorable(nullptr)
-		, m_affectorableGlobal(nullptr)
-		, m_showDebugText(0)
-		, m_debugText(nullptr)
-		, m_camera2D(nullptr)
-		, m_viewport2D(nullptr)
-		, m_debugCamera2D(nullptr)
+		: m_scene( nullptr )
+		, m_arrow( nullptr )
+		, m_globalScene( nullptr )
+		, m_scheduleManager( nullptr )
+		, m_scheduleManagerGlobal( nullptr )
+		, m_arrowCamera2D( nullptr )
+		, m_renderCamera( nullptr )
+		, m_renderViewport( nullptr )
+		, m_renderClipplane( nullptr )
+		, m_renderTarget( nullptr )
+		, m_switchSceneTo( nullptr )
+		, m_mousePickerSystem( nullptr )
+		, m_switchScene2( true )
+		, m_switchScene( false )
+		, m_removeScene( false )
+		, m_destroyOldScene( false )
+		, m_restartScene( false )
+		, m_arrowHided( false )
+		, m_fps( 0 )
+		, m_affectorable( nullptr )
+		, m_affectorableGlobal( nullptr )
+		, m_showDebugText( 0 )
+		, m_debugText( nullptr )
+		, m_camera2D( nullptr )
+		, m_viewport2D( nullptr )
+		, m_debugCamera2D( nullptr )
+		, m_focus( true )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -159,7 +161,18 @@ namespace Menge
 	{
 		if( m_switchScene == true )
 		{
-			this->updateSwitchScene_();
+			if( m_switchScene2 == true )
+			{
+				m_switchScene2 = false;
+
+				MODULE_SERVICE( m_serviceProvider )
+					->messageAll( STRINGIZE_STRING_LOCAL( m_serviceProvider, "onSceneChange" ), TMapParams() );
+			}
+
+			if( m_focus == true )
+			{
+				this->updateSwitchScene_();
+			}
 		}
 		else if( m_removeScene == true )
 		{
@@ -286,6 +299,7 @@ namespace Menge
 	void Player::updateSwitchScene_()
 	{
 		m_switchScene = false;
+		m_switchScene2 = true;
 
 		Scene * oldScene = m_scene;
 		m_scene = nullptr;
@@ -305,8 +319,7 @@ namespace Menge
 		m_scheduleManager->removeAll();
 		m_timingManager->removeAll();
 		m_affectorable->stopAllAffectors();
-
-
+		
 		if( oldScene != nullptr && destroyOldScene == true )
 		{
 			oldScene->destroy();
@@ -927,7 +940,7 @@ namespace Menge
 		return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::tick( float _timing )
+	void Player::tick( float _time, float _timing )
 	{
 		static float fpsTiming = 0.0f;
 		fpsTiming += _timing;
@@ -941,9 +954,6 @@ namespace Menge
 			}
 		}
 
-		float time = TIMELINE_SERVICE( m_serviceProvider )
-			->getTime();
-
 		//if( PhysicEngine2D::get()->isWorldCreate() )
 		//{
 		//	const mt::vec2f & arrowPos = 
@@ -955,37 +965,37 @@ namespace Menge
 
 		if( m_camera2D != nullptr )
 		{
-			m_camera2D->update( time, _timing );
+			m_camera2D->update( _time, _timing );
 		}
 
 		if( m_arrowCamera2D != nullptr )
 		{
-			m_arrowCamera2D->update( time, _timing );
+			m_arrowCamera2D->update( _time, _timing );
 		}
 
 		if( m_arrow != nullptr )
 		{
-			m_arrow->update( time, _timing );
+			m_arrow->update( _time, _timing );
 		}
 
 		if( m_globalScene != nullptr )
 		{
-			m_globalScene->update( time, _timing );
+			m_globalScene->update( _time, _timing );
 		}
 
 		if( m_scene != nullptr )
 		{
-			m_scene->update( time, _timing );
+			m_scene->update( _time, _timing );
 		}
 
 		if( m_scheduleManager != nullptr )
 		{
-			m_scheduleManager->update( time, _timing );
+			m_scheduleManager->update( _time, _timing );
 		}
 
 		if( m_scheduleManagerGlobal != nullptr )
 		{
-			m_scheduleManagerGlobal->update( time, _timing );
+			m_scheduleManagerGlobal->update( _time, _timing );
 		}
 
 		for( TVectorUserScheduler::iterator
@@ -996,21 +1006,21 @@ namespace Menge
 		{
 			ScheduleManagerInterface * sm = *it;
 
-			sm->update( time, _timing );
+			sm->update( _time, _timing );
 		}
 
 		if( m_affectorable != nullptr )
 		{
-			m_affectorable->updateAffectors( time, _timing );
+			m_affectorable->updateAffectors( _time, _timing );
 		}
 
 		if( m_affectorableGlobal != nullptr )
 		{
-			m_affectorableGlobal->updateAffectors( time, _timing );
+			m_affectorableGlobal->updateAffectors( _time, _timing );
 		}
 
-		m_timingManager->update( time, _timing );
-		m_timingManagerGlobal->update( time, _timing );
+		m_timingManager->update( _time, _timing );
+		m_timingManagerGlobal->update( _time, _timing );
 
 		for( TVectorUserTiming::iterator
 			it = m_timingers.begin(),
@@ -1020,14 +1030,8 @@ namespace Menge
 		{
 			ScheduleManagerInterface * tm = *it;
 
-			tm->update( time, _timing );
+			tm->update( _time, _timing );
 		}
-
-		MODULE_SERVICE(m_serviceProvider)
-			->update( time, _timing );
-
-		TIMELINE_SERVICE( m_serviceProvider )
-			->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::update()
@@ -1410,6 +1414,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onFocus( bool _focus )
 	{
+		m_focus = _focus;
+
 		if( m_scene != nullptr && m_scene->isActivate() == true )
 		{
 			m_scene->onFocus( _focus );

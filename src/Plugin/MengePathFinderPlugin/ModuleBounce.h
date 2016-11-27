@@ -23,7 +23,7 @@ namespace Menge
 		void removeBounceWorld( const BounceWorldPtr & _collision );
 
 	public:
-		void _update( float _time, float _timing ) override;
+		void _tick( float _time, float _timing ) override;
 		void _render( const RenderObjectState * _state, unsigned int _debugMask ) override;
 
 	protected:

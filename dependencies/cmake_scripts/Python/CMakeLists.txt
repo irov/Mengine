@@ -94,7 +94,6 @@ configure_file(Modified/errors.c ${SOURCE_DIR}/Python/errors.c COPYONLY)
 configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
 configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
 
-configure_file(Modified/stringobject.c ${SOURCE_DIR}/Objects/stringobject.c COPYONLY)
 
 ############################## 
 

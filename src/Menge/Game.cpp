@@ -559,10 +559,21 @@ namespace Menge
 	void Game::turnSound( bool _turn )
 	{
         (void)_turn;
-		//if( AMPLIFIER_SERVICE(m_serviceProvider) )
-		//{
-		//	AMPLIFIER_SERVICE(m_serviceProvider)->onTurnSound( _turn );
-		//}
+		
+		if( _turn == true )
+		{
+			if( AMPLIFIER_SERVICE( m_serviceProvider ) )
+			{
+				AMPLIFIER_SERVICE( m_serviceProvider )->resume();
+			}
+		}
+		else
+		{
+			if( AMPLIFIER_SERVICE( m_serviceProvider ) )
+			{
+				AMPLIFIER_SERVICE( m_serviceProvider )->pause();
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setFocus( bool _focus )

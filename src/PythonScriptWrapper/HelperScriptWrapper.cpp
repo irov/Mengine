@@ -1,5 +1,14 @@
 #	include "PythonScriptWrapper.h"
 
+#	include "Interface/ThreadSystemInterface.h"
+#   include "Interface/UnicodeInterface.h"
+#	include "Interface/ResourceInterface.h"
+#	include "Interface/StringizeInterface.h"
+#	include "Interface/TextInterface.h"
+#	include "Interface/TimerInterface.h"
+#	include "Interface/UserdataInterface.h"
+#	include "Interface/ConfigInterface.h"
+
 #	include "Config/Typedef.h"
 #   include "Config/Stringstream.h"
 #	include "Config/Blobject.h"
@@ -22,14 +31,6 @@
 #	include "Menge/HotSpotShape.h"
 
 #	include "Logger/Logger.h"
-
-#	include "Interface/ThreadSystemInterface.h"
-#   include "Interface/UnicodeInterface.h"
-#	include "Interface/ResourceInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/TextInterface.h"
-#	include "Interface/TimerInterface.h"
-#	include "Interface/UserdataInterface.h"
 
 #	include "Menge/ResourceAnimation.h"
 
@@ -1496,6 +1497,46 @@ namespace Menge
 			return value;
 		}
 
+		bool s_getConfigBool( const Char * _section, const Char * _key, bool _default )
+		{
+			bool result = CONFIG_SERVICE( m_serviceProvider )
+				->getValue( _section, _key, _default );
+
+			return result;
+		}
+
+		int32_t s_getConfigInt( const Char * _section, const Char * _key, int _default )
+		{
+			int32_t result = CONFIG_SERVICE( m_serviceProvider )
+				->getValue( _section, _key, _default );
+
+			return result;
+		}
+
+		uint32_t s_getConfigUInt( const Char * _section, const Char * _key, int _default )
+		{
+			uint32_t result = CONFIG_SERVICE( m_serviceProvider )
+				->getValue( _section, _key, _default );
+
+			return result;
+		}
+
+		float s_getConfigFloat( const Char * _section, const Char * _key, float _default )
+		{
+			float result = CONFIG_SERVICE( m_serviceProvider )
+				->getValue( _section, _key, _default );
+
+			return result;
+		}
+
+		String s_getConfigString( const Char * _section, const Char * _key, const char * _default )
+		{
+			String result = CONFIG_SERVICE( m_serviceProvider )
+				->getValue( _section, _key, _default );
+
+			return result;
+		}
+
 		PyObject * s_getAccountSetting( const WString & _accountID, const ConstString & _setting )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
@@ -2272,7 +2313,12 @@ namespace Menge
 		pybind::def_functor( "getSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getSettingUInt );
 		pybind::def_functor( "getSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getSettingFloat );
 		pybind::def_functor( "getSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getSettingFloatDefault );		
-		
+
+		pybind::def_functor( "getConfigBool", helperScriptMethod, &HelperScriptMethod::s_getConfigBool );
+		pybind::def_functor( "getConfigInt", helperScriptMethod, &HelperScriptMethod::s_getConfigInt );
+		pybind::def_functor( "getConfigUInt", helperScriptMethod, &HelperScriptMethod::s_getConfigUInt );
+		pybind::def_functor( "getConfigFloat", helperScriptMethod, &HelperScriptMethod::s_getConfigFloat );
+		pybind::def_functor( "getConfigString", helperScriptMethod, &HelperScriptMethod::s_getConfigString );
 
 		pybind::def_functor( "changeSetting", helperScriptMethod, &HelperScriptMethod::s_changeSetting );
 		pybind::def_functor( "changeSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeSettingBool );

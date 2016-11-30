@@ -2876,11 +2876,6 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_unfetchResources( const ConstString & _category, const ConstString & _groupName )
 		{
-			if( _groupName == "01_MailBoxZoom" )
-			{
-				printf( "fdfsd" );
-			}
-
 			UnfetchResourceVisitor rv_gac( m_serviceProvider );
 
 			RESOURCE_SERVICE( m_serviceProvider )

@@ -72,11 +72,12 @@ namespace Menge
 		DECL_CONST( ResourceVideo );
 		DECL_CONST( SurfaceVideo );
 		DECL_CONST( SurfaceSound );
+        DECL_CONST( SurfaceImage );
 		DECL_CONST( SurfaceImageSequence );
 		DECL_CONST( CreateImage );
 		DECL_CONST( CreateTarget );
 		DECL_CONST( CreateTexture );
-		DECL_CONST( Sprite );
+		DECL_CONST( ShapeQuadFixed );
 		DECL_CONST( Mesh2D );
 		DECL_CONST( Grid2D );
 		DECL_CONST( Animation );

@@ -85,7 +85,7 @@ namespace Menge
 #   ifdef _DEBUG
 			if( stdex::intrusive_dynamic_cast<T>(data) == nullptr )
 			{
-				return nullptr;
+                throw;
 			}
 #   endif
 

@@ -22,10 +22,8 @@
 #	include "Kernel/RenderViewport.h"
 #	include "Kernel/RenderClipplane.h"
 
-#	include "Sprite.h"
+#   include "ShapeQuadFixed.h"
 #	include "Mesh2D.h"
-#	include "Animation.h"
-#	include "Video.h"
 #   include "TextField.h"
 #	include "ParticleEmitter2.h"
 #   include "MovieSlot.h"
@@ -35,6 +33,11 @@
 #   include "HotSpotShape.h"
 #   include "MovieSceneEffect.h"
 #	include "MovieInternalObject.h"
+
+#   include "SurfaceImage.h"
+#   include "SurfaceImageSequence.h"
+#   include "SurfaceVideo.h"
+#   include "SurfaceSound.h"
 
 #	include "SoundEmitter.h"
 
@@ -226,7 +229,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::_restart( float _time, uint32_t _enumerator )
+	bool Movie::_restart( uint32_t _enumerator, float _time )
 	{
 		(void)_time;
 		(void)_enumerator;
@@ -248,7 +251,7 @@ namespace Menge
 		this->pauseAnimation_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_resume( float _time, uint32_t _enumerator )
+	void Movie::_resume( uint32_t _enumerator, float _time )
 	{
 		(void)_time;
 		(void)_enumerator;
@@ -259,17 +262,21 @@ namespace Menge
 	void Movie::_stop( uint32_t _enumerator )
 	{
 		this->stopAnimation_();
-
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOVIE_END )(this, _enumerator, false);
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
+        
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
+            ->onAnimatableStop( _enumerator );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOVIE_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_end( uint32_t _enumerator )
 	{
 		this->stopAnimation_();
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOVIE_END )(this, _enumerator, true);
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
+            ->onAnimatableEnd( _enumerator );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOVIE_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, uint32_t _frameId, bool _interpolate, bool _first )
@@ -1263,14 +1270,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieImage_( const MovieLayer & _layer )
 	{
-		Sprite * layer_sprite = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Sprite *>( CONST_STRING( m_serviceProvider, Sprite ) );
-
-		if( layer_sprite == nullptr )
-		{
-			return false;
-		}
-
 		ResourceImagePtr resourceImage = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceImagePtr>( _layer.source );
 
@@ -1279,12 +1278,30 @@ namespace Menge
 			return false;
 		}
 
-		layer_sprite->setResourceImage( resourceImage );
+        SurfaceImagePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
+            ->generatePrototypeT<SurfaceImage *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceVideo ) );
 
-		if( this->setupBlendingMode_( _layer, layer_sprite ) == false )
+        if( surface == nullptr )
+        {
+            return false;
+        }
+
+        surface->setResourceImage( resourceImage );
+
+		if( this->setupBlendingMode_( _layer, surface.get() ) == false )
 		{
 			return false;
 		}
+
+        ShapeQuadFixed * layer_sprite = NODE_SERVICE( m_serviceProvider )
+            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( m_serviceProvider, ShapeQuadFixed ) );
+
+        if( layer_sprite == nullptr )
+        {
+            return false;
+        }
+
+        layer_sprite->setSurface( surface );
 
 		if( this->addMovieNode_( _layer, layer_sprite, nullptr, nullptr, nullptr ) == false )
 		{
@@ -1343,20 +1360,30 @@ namespace Menge
 			return false;
 		}
 
-		Sprite * layer_sprite = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<Sprite *>( CONST_STRING( m_serviceProvider, Sprite ) );
+        SurfaceImagePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
+            ->generatePrototypeT<SurfaceImage *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceVideo ) );
+
+        if( surface == nullptr )
+        {
+            return false;
+        }
+
+        surface->setResourceImage( resource );
+
+        if( this->setupBlendingMode_( _layer, surface.get() ) == false )
+        {
+            return false;
+        }
+
+		ShapeQuadFixed * layer_sprite = NODE_SERVICE( m_serviceProvider )
+			->createNodeT<ShapeQuadFixed *>( CONST_STRING( m_serviceProvider, ShapeQuadFixed ) );
 
 		if( layer_sprite == nullptr )
 		{
 			return false;
 		}
 
-		layer_sprite->setResourceImage( resource );
-
-		if( this->setupBlendingMode_( _layer, layer_sprite ) == false )
-		{
-			return false;
-		}
+        layer_sprite->setSurface( surface );
 
 		if( this->addMovieNode_( _layer, layer_sprite, nullptr, nullptr, nullptr ) == false )
 		{
@@ -1401,14 +1428,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieSocketImage_( const MovieLayer & _layer )
 	{
-		HotSpotImage * layer_hotspotimage = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<HotSpotImage *>( CONST_STRING( m_serviceProvider, HotSpotImage ) );
-
-		if( layer_hotspotimage == nullptr )
-		{
-			return false;
-		}
-
 		ResourceHITPtr resourceHIT = RESOURCE_SERVICE( m_serviceProvider )
 			->getResourceReferenceT<ResourceHITPtr>( _layer.source );
 
@@ -1416,6 +1435,14 @@ namespace Menge
 		{
 			return false;
 		}
+
+        HotSpotImage * layer_hotspotimage = NODE_SERVICE( m_serviceProvider )
+            ->createNodeT<HotSpotImage *>( CONST_STRING( m_serviceProvider, HotSpotImage ) );
+
+        if( layer_hotspotimage == nullptr )
+        {
+            return false;
+        }
 		
 		layer_hotspotimage->setResourceHIT( resourceHIT );
 
@@ -1457,15 +1484,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieAnimation_( const MovieLayer & _layer )
 	{
-		Animation * layer_animation = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Animation *>( CONST_STRING( m_serviceProvider, Animation ) );
-
-		if( layer_animation == nullptr )
-		{
-			return false;
-		}
-
-		ResourceAnimationPtr resourceAnimation = RESOURCE_SERVICE( m_serviceProvider )
+        ResourceAnimationPtr resourceAnimation = RESOURCE_SERVICE( m_serviceProvider )
 			->getResourceReferenceT<ResourceAnimationPtr>( _layer.source );
 
 		if( resourceAnimation == nullptr )
@@ -1473,19 +1492,35 @@ namespace Menge
 			return false;
 		}
 
-		layer_animation->setResourceAnimation( resourceAnimation );
+        SurfaceImageSequencePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
+            ->generatePrototypeT<SurfaceImageSequence *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceImageSequence ) );
 
-		layer_animation->setIntervalStart( _layer.startInterval );
-		layer_animation->setPlayCount( _layer.playCount );
-		layer_animation->setStretch( _layer.stretch );
-		layer_animation->setLoop( _layer.loop );
+        if( surface == nullptr )
+        {
+            return false;
+        }
 
-		if( this->setupBlendingMode_( _layer, layer_animation ) == false )
+        surface->setResourceAnimation( resourceAnimation );
+
+        surface->setIntervalStart( _layer.startInterval );
+        surface->setPlayCount( _layer.playCount );
+        surface->setStretch( _layer.stretch );
+        surface->setLoop( _layer.loop );
+
+		if( this->setupBlendingMode_( _layer, surface.get() ) == false )
 		{
 			return false;
 		}
 
-		if( this->addMovieNode_( _layer, layer_animation, layer_animation, nullptr, nullptr ) == false )
+        ShapeQuadFixed * layer_animation = NODE_SERVICE( m_serviceProvider )
+            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( m_serviceProvider, ShapeQuadFixed ) );
+
+        if( layer_animation == nullptr )
+        {
+            return false;
+        }
+
+		if( this->addMovieNode_( _layer, layer_animation, surface.get(), nullptr, nullptr ) == false )
 		{
 			return false;
 		}
@@ -1596,14 +1631,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieVideo_( const MovieLayer & _layer )
 	{
-		Video * layer_video = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Video *>( CONST_STRING( m_serviceProvider, Video ) );
-
-		if( layer_video == nullptr )
-		{
-			return false;
-		}
-
 		ResourceVideoPtr resourceVideo = RESOURCE_SERVICE( m_serviceProvider )
 			->getResourceReferenceT<ResourceVideoPtr>( _layer.source );
 
@@ -1612,29 +1639,37 @@ namespace Menge
 			return false;
 		}
 
-		SurfaceVideoPtr surfaceVideo = PROTOTYPE_SERVICE( m_serviceProvider )
+		SurfaceVideoPtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
 			->generatePrototypeT<SurfaceVideo *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceVideo ) );
 
-		if( surfaceVideo == nullptr )
+		if( surface == nullptr )
 		{
 			return false;
 		}
 
-		surfaceVideo->setResourceVideo( resourceVideo );
+        surface->setResourceVideo( resourceVideo );
 
-		surfaceVideo->setIntervalStart( _layer.startInterval );
-		surfaceVideo->setPlayCount( _layer.playCount );
-		surfaceVideo->setStretch( _layer.stretch );
-		surfaceVideo->setLoop( _layer.loop );
+        surface->setIntervalStart( _layer.startInterval );
+        surface->setPlayCount( _layer.playCount );
+        surface->setStretch( _layer.stretch );
+        surface->setLoop( _layer.loop );
 
-		if( this->setupBlendingMode_( _layer, surfaceVideo.get() ) == false )
+		if( this->setupBlendingMode_( _layer, surface.get() ) == false )
 		{
 			return false;
 		}
 
-		layer_video->setSurfaceVideo( surfaceVideo );
+        ShapeQuadFixed * layer_video = NODE_SERVICE( m_serviceProvider )
+            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( m_serviceProvider, ShapeQuadFixed ) );
 
-		if( this->addMovieNode_( _layer, layer_video, surfaceVideo.get(), nullptr, nullptr ) == false )
+        if( layer_video == nullptr )
+        {
+            return false;
+        }
+
+		layer_video->setSurface( surface );
+
+		if( this->addMovieNode_( _layer, layer_video, surface.get(), nullptr, nullptr ) == false )
 		{
 			return false;
 		}
@@ -1792,20 +1827,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieExtraSprite_( const MovieLayer & _layer )
 	{
-		Sprite * layer_sprite = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Sprite *>( CONST_STRING( m_serviceProvider, Sprite ) );
-
-		if( layer_sprite == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::createMovieSprite_ %s resource %s layer %s invalid create 'Sprite'"
-				, this->getName().c_str()
-				, this->getResourceMovieName().c_str()
-				, _layer.name.c_str()
-				);
-
-			return false;
-		}
-
 		ResourceImagePtr resourceImage = RESOURCE_SERVICE( m_serviceProvider )
 			->getResourceReferenceT<ResourceImagePtr>( _layer.name );
 
@@ -1821,12 +1842,34 @@ namespace Menge
 			return false;
 		}
 
-		layer_sprite->setResourceImage( resourceImage );
+        SurfaceImagePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
+            ->generatePrototypeT<SurfaceImage *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceImage ) );
 
-		if( this->setupBlendingMode_( _layer, layer_sprite ) == false )
+        if( surface == nullptr )
+        {
+            return false;
+        }
+
+        surface->setResourceImage( resourceImage );
+
+		if( this->setupBlendingMode_( _layer, surface.get() ) == false )
 		{
 			return false;
 		}
+
+        ShapeQuadFixed * layer_sprite = NODE_SERVICE( m_serviceProvider )
+            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( m_serviceProvider, ShapeQuadFixed ) );
+
+        if( layer_sprite == nullptr )
+        {
+            LOGGER_ERROR( m_serviceProvider )("Movie::createMovieSprite_ %s resource %s layer %s invalid create 'Sprite'"
+                , this->getName().c_str()
+                , this->getResourceMovieName().c_str()
+                , _layer.name.c_str()
+                );
+
+            return false;
+        }
 
 		if( this->addMovieNode_( _layer, layer_sprite, nullptr, nullptr, nullptr ) == false )
 		{
@@ -2436,13 +2479,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setEventListener( const pybind::dict & _listener )
 	{
-		this->registerEvent( EVENT_MOVIE_GET_INTERNAL, ("onMovieGetInternal"), _listener );
-		this->registerEvent( EVENT_MOVIE_ACTIVATE_INTERNAL, ("onMovieActivateInternal"), _listener );
-		this->registerEvent( EVENT_MOVIE_DEACTIVATE_INTERNAL, ("onMovieDeactivateInternal"), _listener );
+		//this->registerEvent( EVENT_MOVIE_GET_INTERNAL, ("onMovieGetInternal"), _listener );
+		//this->registerEvent( EVENT_MOVIE_ACTIVATE_INTERNAL, ("onMovieActivateInternal"), _listener );
+		//this->registerEvent( EVENT_MOVIE_DEACTIVATE_INTERNAL, ("onMovieDeactivateInternal"), _listener );
 
-		this->registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _listener );
+		//this->registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _listener );
 
-		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
+		//this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_update( float _current, float _timing )

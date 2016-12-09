@@ -6,8 +6,6 @@
 
 #	include "Logger/Logger.h"
 
-#	include <pybind/pybind.hpp>
-
 #	include <math.h>
 
 namespace Menge
@@ -100,11 +98,13 @@ namespace Menge
         m_resourceSound.release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSound::_update( float _time, float _timing )
+    bool SurfaceSound::update( float _time, float _timing )
 	{
 		(void)_time;
 		(void)_timing;
 		//Empty
+
+        return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceSound::setResourceSound( const ResourceSoundPtr & _resourceSound )
@@ -123,29 +123,54 @@ namespace Menge
     {
         return m_resourceSound;
     }
-	//////////////////////////////////////////////////////////////////////////
-	enum SoundEmitterEventFlag
-	{
-		EVENT_SOUND_PAUSE = 0,
-		EVENT_SOUND_END,
-		EVENT_ANIMATABLE_END
-	};
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & SurfaceSound::getMaxSize() const
+    {
+        return mt::vec2f::identity();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & SurfaceSound::getSize() const
+    {
+        return mt::vec2f::identity();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & SurfaceSound::getOffset() const
+    {
+        return mt::vec2f::identity();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SurfaceSound::getUVCount() const
+    {
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::uv4f & SurfaceSound::getUV( uint32_t _index ) const
+    {
+        (void)_index;
+
+        return mt::uv4f::identity();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ColourValue & SurfaceSound::getColour() const
+    {
+        return ColourValue::identity();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceSound::_setEventListener( const pybind::dict & _listener )
 	{
-		Surface::_setEventListener( _listener );
+		//this->registerEvent( EVENT_SOUND_PAUSE, ("onSoundPause"), _listener );
+		//this->registerEvent( EVENT_SOUND_END, ("onSoundEnd"), _listener );
 
-		this->registerEvent( EVENT_SOUND_PAUSE, ("onSoundPause"), _listener );
-		this->registerEvent( EVENT_SOUND_END, ("onSoundEnd"), _listener );
-
-		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
+		//this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceSound::onSoundPause( uint32_t _soundId )
 	{
 		(void)_soundId;
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SOUND_PAUSE )(this);
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_PAUSE )
+            ->onAnimatablePause( m_enumerator );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_SOUND_PAUSE )(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceSound::onSoundStop( uint32_t _soundId )
@@ -184,7 +209,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceSound::_restart( float _time, uint32_t _enumerator )
+	bool SurfaceSound::_restart( uint32_t _enumerator, float _time )
 	{
         (void)_time;
         (void)_enumerator;
@@ -206,7 +231,7 @@ namespace Menge
 			->pause( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSound::_resume( float _time, uint32_t _enumerator )
+	void SurfaceSound::_resume( uint32_t _enumerator, float _time )
 	{
 		(void)_time;
 		(void)_enumerator;
@@ -228,8 +253,10 @@ namespace Menge
 				->stop( m_sourceID );
 		}
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SOUND_END )(this, _enumerator, false);
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
+            ->onAnimatableStop( _enumerator );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_SOUND_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceSound::_end( uint32_t _enumerator )
@@ -240,8 +267,10 @@ namespace Menge
 				->stop( m_sourceID );
 		}
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SOUND_END )(this, _enumerator, true);
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
+            ->onAnimatableEnd( _enumerator );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_SOUND_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceSound::_setVolume( float _volume )

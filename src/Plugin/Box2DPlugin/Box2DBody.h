@@ -12,12 +12,26 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    class Box2DBodyEventReceiver
+        : public EventReceiver
+    {
+    public:
+        virtual void onBox2DBodyBeginCollide( class Box2DBody * _self, class Box2DBody * _other, const mt::vec2f & _position, const mt::vec2f & _normal ) = 0;
+        virtual void onBox2DBodyUpdateCollide( class Box2DBody * _self, class Box2DBody * _other, const mt::vec2f & _position, const mt::vec2f & _normal ) = 0;
+        virtual void onBox2DBodyEndCollide( class Box2DBody * _self, class Box2DBody * _other ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<Box2DBodyEventReceiver> Box2DBodyEventReceiverPtr;
+    //////////////////////////////////////////////////////////////////////////
     class Box2DBody
         : public FactorablePtr
 		, public Scriptable
 		, public Eventable
 		, public Servant
     {
+        EVENT_RECEIVER( Box2DBodyEventReceiver );
+
     public:
 		Box2DBody();
 		~Box2DBody();

@@ -10,6 +10,7 @@ ADD_FILTER(
 Eventable
 	Eventable.cpp
 	Eventable.h
+	EventReceiver.h
 )
 
 ADD_FILTER(
@@ -155,12 +156,6 @@ ADD_FILTER(
 Isometric
 	Isometric.cpp
 	Isometric.h
-)
-
-ADD_FILTER(
-Meshget
-	Meshget.cpp
-	Meshget.h
 )
 
 ADD_FILTER(

@@ -16,8 +16,8 @@ namespace Menge
 		, m_needUpdate( false )
 		, m_updateFirstFrame(false)
 		, m_invalidVideoTexture( true )
+        , m_size(0.f, 0.f)
 	{
-		mt::ident_v4( m_uv );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SurfaceVideo::~SurfaceVideo()
@@ -67,11 +67,17 @@ namespace Menge
 
 		return duration;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & SurfaceVideo::getUV() const
-	{
-		return m_uv;
-	}
+    ////////////////////////////////////////////////////////////////////
+    void SurfaceVideo::updateSize_()
+    {
+        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
+
+        float width = (float)dataInfo->frameWidth;
+        float height = (float)dataInfo->frameHeight;
+
+        m_size.x = width;
+        m_size.y = height;
+    }
 	////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::updateUV_()
 	{
@@ -89,17 +95,17 @@ namespace Menge
 		float scaleRight = float( rect.right ) / float( hwWidth );
 		float scaleBottom = float( rect.bottom ) / float( hwHeight );
 
-		m_uv.x = scaleLeft;
-		m_uv.y = scaleTop;
-		m_uv.z = scaleLeft + (scaleRight - scaleLeft);
-		m_uv.w = scaleTop + (scaleBottom - scaleTop);
+		m_uv.p0 = mt::vec2f(scaleLeft, scaleTop);
+        m_uv.p1 = mt::vec2f( scaleRight, scaleTop );
+        m_uv.p2 = mt::vec2f( scaleRight, scaleBottom );
+        m_uv.p3 = mt::vec2f( scaleLeft, scaleBottom );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SurfaceVideo::_update( float _current, float _timing )
+    bool SurfaceVideo::update( float _current, float _timing )
 	{
 		if( this->isPlay() == false )
 		{
-			return;
+			return false;
 		}
 
 		if( m_playTime > _current )
@@ -118,6 +124,8 @@ namespace Menge
 		m_needUpdate = this->sync_( totalTiming );
 
 		this->updateVideoBuffer_();
+
+        return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SurfaceVideo::_compile()
@@ -183,6 +191,7 @@ namespace Menge
 		m_textures[0] = dynamicTexture;
 
 		this->invalidateMaterial();
+        this->updateSize_();
 		this->updateUV_();
 
 		m_timing = 0.f;
@@ -224,19 +233,43 @@ namespace Menge
 
 		this->releaseMaterial();
 	}
-	//////////////////////////////////////////////////////////////////////////
-	enum SurfaceVideoEventFlag
-	{
-		EVENT_VIDEO_END = 0,
-		EVENT_ANIMATABLE_END
-	};
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & SurfaceVideo::getMaxSize() const
+    {
+        return m_size;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & SurfaceVideo::getSize() const
+    {
+        return m_size;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & SurfaceVideo::getOffset() const
+    {
+        return mt::vec2f::identity();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SurfaceVideo::getUVCount() const
+    {
+        return 1;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::uv4f & SurfaceVideo::getUV( uint32_t _index ) const
+    {
+        (void)_index;
+
+        return m_uv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ColourValue & SurfaceVideo::getColour() const
+    {
+        return ColourValue::identity();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::_setEventListener( const pybind::dict & _listener )
 	{
-		Surface::_setEventListener( _listener );
-
-		this->registerEvent( EVENT_VIDEO_END, ("onVideoEnd"), _listener );
-		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
+		//this->registerEvent( EVENT_VIDEO_END, ("onVideoEnd"), _listener );
+		//this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::_stop( uint32_t _enumerator )
@@ -245,8 +278,10 @@ namespace Menge
 
 		m_needUpdate = false;
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_VIDEO_END )(this, _enumerator, false);
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
+            ->onAnimatableStop( _enumerator );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_VIDEO_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::_end( uint32_t _enumerator )
@@ -255,8 +290,10 @@ namespace Menge
 
 		m_needUpdate = false;
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_VIDEO_END )(this, _enumerator, true);
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
+            ->onAnimatableEnd( _enumerator );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_VIDEO_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SurfaceVideo::_play( float _time )
@@ -269,7 +306,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceVideo::_restart( float _time, uint32_t _enumerator )
+	bool SurfaceVideo::_restart( uint32_t _enumerator, float _time )
 	{
 		(void)_time;
 		(void)_enumerator;
@@ -282,7 +319,7 @@ namespace Menge
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SurfaceVideo::_resume( float _time, uint32_t _enumerator )
+	void SurfaceVideo::_resume( uint32_t _enumerator, float _time )
 	{
 		(void)_time;
 		(void)_enumerator;

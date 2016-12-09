@@ -211,6 +211,8 @@ namespace Menge
 						, serviceName
 						, typeid(T).name()
 						);
+
+                    throw;
                 }
 #   endif
 

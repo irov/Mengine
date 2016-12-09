@@ -12,8 +12,7 @@
 #	include "Kernel/Colorable.h"
 #	include "Kernel/Affectorable.h"
 #	include "Kernel/Visitable.h"
-
-#	include "Core/ValueInterpolator.h"
+#	include "Kernel/Servant.h"
 
 #	include "Factory/Factorable.h"
 
@@ -27,17 +26,7 @@ namespace Menge
 	class Layer;
 	class Scene;
 	class MousePickerTrapInterface;
-
-	struct RenderMaterial;
-
-	class ResourceReference;
 	
-	class VisitorResource
-	{
-	public:
-		virtual void visitResource( ResourceReference * _resource ) = 0;
-	};
-
 	class Node;
 
     typedef stdex::intrusive_slug_list_size<Node> TListNodeChild;
@@ -46,7 +35,8 @@ namespace Menge
 	class Node
         : public stdex::intrusive_slug_linked<Node>
 		, public Factorable
-		, public Identity
+        , public Servant
+        , public Identity
 		, public Resource
 		, public Updatable
 		, public Renderable
@@ -54,7 +44,7 @@ namespace Menge
 		, public Transformation3D
 		, public Colorable
 		, public Affectorable
-        , public Visitable        
+        , public Visitable
 		, public Scriptable
 	{
 		DECLARE_VISITABLE_BASE();
@@ -62,13 +52,6 @@ namespace Menge
 	public:
 		Node();
 		~Node();
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-        ServiceProviderInterface * getServiceProvider() const;
-
-    protected:
-        ServiceProviderInterface * m_serviceProvider;
 
 	public:
 		virtual void setLayer( Layer * _layer );
@@ -135,6 +118,7 @@ namespace Menge
 		inline Node * getParent() const;
 		inline bool hasParent() const;
 
+    public:
 		void addChild( Node * _node );
 		void addChildFront( Node* _node );
 		bool addChildAfter( Node* _node, Node * _after );
@@ -240,17 +224,7 @@ namespace Menge
 
 	protected:
 		void updateChildren_( float _current, float _timing );
-
-	public:
-		void setIsometricOffset( const mt::vec3f & _isometricOffset );
-		const mt::vec3f & getIsometricOffset() const;
-
-	protected:
-		mt::vec3f m_isometricOffset;
 		
-	public:
-		virtual void visitResource( VisitorResource * _visitor );
-
 	public:
 		virtual MousePickerTrapInterface * getPickerTrap();
 
@@ -351,7 +325,7 @@ namespace Menge
 #	ifdef _DEBUG
 		if( dynamic_cast<T *>(_node) == nullptr )
 		{
-			return nullptr;
+            throw;
 		}
 #	endif
 
@@ -364,7 +338,7 @@ namespace Menge
 #	ifdef _DEBUG
 		if( dynamic_cast<const T *>(_node) == nullptr )
 		{
-			return nullptr;
+            throw;
 		}
 #	endif
 

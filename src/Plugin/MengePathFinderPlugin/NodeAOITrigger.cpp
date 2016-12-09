@@ -55,16 +55,10 @@ namespace Menge
 		return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	enum TriggerEventFlag
-	{
-		EVENT_TRIGGER_ENTER = 0,
-		EVENT_TRIGGER_LEAVE
-	};
-	//////////////////////////////////////////////////////////////////////////
 	void NodeAOITrigger::_setEventListener( const pybind::dict & _listener )
 	{		
-		this->registerEvent( EVENT_TRIGGER_ENTER, ("onTriggerEnter"), _listener );
-		this->registerEvent( EVENT_TRIGGER_LEAVE, ("onTriggerLeave"), _listener );
+		//this->registerEvent( EVENT_TRIGGER_ENTER, ("onTriggerEnter"), _listener );
+		//this->registerEvent( EVENT_TRIGGER_LEAVE, ("onTriggerLeave"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeAOITrigger::onAOIActorTest( AOIActorProviderInterface * _actor ) const
@@ -90,7 +84,9 @@ namespace Menge
 
 		uint32_t enemy_iff = enemy->getIFF();
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_TRIGGER_ENTER )(this, enemy, m_iff, enemy_iff);
+        EVENTABLE_METHOD( this, EVENT_NODE_AOI_TRIGGER_ENTER )
+            ->onNodeAOITriggerEnter( enemy, m_iff, enemy_iff );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_TRIGGER_ENTER )(this, enemy, m_iff, enemy_iff);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeAOITrigger::onAOIActorLeave( AOIActorProviderInterface * _enemy )
@@ -99,7 +95,9 @@ namespace Menge
 
 		uint32_t enemy_iff = enemy->getIFF();
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_TRIGGER_LEAVE )(this, enemy, m_iff, enemy_iff);
+        EVENTABLE_METHOD( this, EVENT_NODE_AOI_TRIGGER_ENTER )
+            ->onNodeAOITriggerLeave( enemy, m_iff, enemy_iff );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_TRIGGER_LEAVE )(this, enemy, m_iff, enemy_iff);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeAOITrigger::_activate()

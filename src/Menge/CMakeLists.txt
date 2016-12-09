@@ -61,18 +61,31 @@ Surface\\\\SurfaceSound
 )
 
 ADD_FILTER(
+Surface\\\\SurfaceImage
+	SurfaceImage.cpp
+	SurfaceImage.h
+)
+
+ADD_FILTER(
 Surface\\\\SurfaceImageSequence
 	SurfaceImageSequence.cpp
 	SurfaceImageSequence.h
 )
 
-SOURCE_GROUP( Object )
+SOURCE_GROUP( Shape )
 
 ADD_FILTER(
-Object\\\\Animation
-	Animation.cpp
-	Animation.h
+Shape\\\\ShapeQuad
+	ShapeQuad.cpp
+	ShapeQuad.h
+	ShapeQuadFixed.cpp
+	ShapeQuadFixed.h
+	ShapeQuadFlex.cpp
+	ShapeQuadFlex.h
 )
+
+
+SOURCE_GROUP( Object )
 
 ADD_FILTER(
 Object\\\\ParticleEmitter2
@@ -119,16 +132,17 @@ Object\\\\SoundEmitter
 )
 
 ADD_FILTER(
-Object\\\\Sprite
-	Sprite.cpp
-	Sprite.h
-)
-
-ADD_FILTER(
 Object\\\\Landscape2D
 	Landscape2D.cpp
 	Landscape2D.h
 )
+
+ADD_FILTER(
+Object\\\\Meshget
+	Meshget.cpp
+	Meshget.h
+)
+
 
 ADD_FILTER(
 Object\\\\Grid2D
@@ -176,12 +190,6 @@ Object\\\\TextField
 	TextField.h
 	TextLine.cpp
 	TextLine.h
-)
-
-ADD_FILTER(
-Object\\\\Video
-	Video.cpp
-	Video.h
 )
 
 ADD_FILTER(

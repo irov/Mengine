@@ -25,7 +25,7 @@ namespace Menge
 #   ifdef _DEBUG
             if( dynamic_cast<T>(node) == nullptr )
             {
-                return nullptr;
+                throw;
             }
 #   endif
 

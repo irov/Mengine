@@ -55,8 +55,8 @@ namespace Menge
     protected:
         void _release() override;
 
-	protected:
-		size_t memoryUse() const override;
+    public:
+		size_t getMemoryUse() const override;
 		
 	protected:        
         RenderTextureInterfacePtr m_texture;

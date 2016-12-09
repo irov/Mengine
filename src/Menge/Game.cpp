@@ -26,8 +26,6 @@
 #	include "Core/String.h"
 #	include "Core/Stream.h"
 
-#   include "pybind/pybind.hpp"
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AccountService );
 //////////////////////////////////////////////////////////////////////////
@@ -35,42 +33,6 @@ SERVICE_FACTORY( GameService, Menge::Game );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	enum GameEventFlags
-	{
-		EVENT_GAME_FULLSCREEN = 0,
-		EVENT_GAME_FIXED_CONTENT_RESOLUTION,
-		EVENT_GAME_RENDER_VIEWPORT,
-		EVENT_GAME_VIEWPORT,
-		EVENT_GAME_KEY,
-		EVENT_GAME_MOUSE_BUTTON,
-		EVENT_GAME_MOUSE_BUTTON_BEGIN,
-		EVENT_GAME_MOUSE_BUTTON_END,
-		EVENT_GAME_MOUSE_MOVE,
-		EVENT_GAME_MOUSE_WHEEL,
-		EVENT_GAME_APP_MOUSE_ENTER,
-		EVENT_GAME_APP_MOUSE_LEAVE,
-		EVENT_GAME_ON_TIMING_FACTOR,
-		EVENT_GAME_PREPARATION,
-		EVENT_GAME_RUN,
-		EVENT_GAME_INITIALIZE,
-		EVENT_GAME_INITIALIZE_RENDER_RESOURCES,
-		EVENT_GAME_FINALIZE_RENDER_RESOURCES,
-		EVENT_GAME_ACCOUNT_FINALIZE,
-		EVENT_GAME_FINALIZE,
-		EVENT_GAME_DESTROY,
-		EVENT_GAME_FOCUS,
-		EVENT_GAME_CREATE_DEFAULT_ACCOUNT,
-		EVENT_GAME_LOAD_ACCOUNTS,
-		EVENT_GAME_CREATE_ACCOUNT,
-		EVENT_GAME_DELETE_ACCOUNT,
-		EVENT_GAME_SELECT_ACCOUNT,
-		EVENT_GAME_UNSELECT_ACCOUNT,
-		EVENT_GAME_CHANGE_SOUND_VOLUME,
-		EVENT_GAME_CURSOR_MODE,
-		EVENT_GAME_USER,
-		EVENT_GAME_CLOSE
-	};
 	//////////////////////////////////////////////////////////////////////////
 	GameAccountProvider::GameAccountProvider( ServiceProviderInterface * _serviceProvider, Game * _game )
 		: m_serviceProvider(_serviceProvider)
@@ -80,22 +42,30 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void GameAccountProvider::onCreateAccount( const WString & _accountID )
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_CREATE_ACCOUNT)( _accountID );
+        EVENTABLE_METHOD( m_game, EVENT_GAME_CREATE_ACCOUNT )
+            ->onGameCreateAccount( _accountID );
+		//EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_CREATE_ACCOUNT)( _accountID );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GameAccountProvider::onDeleteAccount( const WString & _accountID )
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_DELETE_ACCOUNT)( _accountID );
+        EVENTABLE_METHOD( m_game, EVENT_GAME_DELETE_ACCOUNT )
+            ->onGameDeleteAccount( _accountID );
+		//EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_DELETE_ACCOUNT)( _accountID );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GameAccountProvider::onSelectAccount( const WString & _accountID )
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_SELECT_ACCOUNT)( _accountID );
+        EVENTABLE_METHOD( m_game, EVENT_GAME_SELECT_ACCOUNT )
+            ->onGameSelectAccount( _accountID );
+		//EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_SELECT_ACCOUNT)( _accountID );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GameAccountProvider::onUnselectAccount( const WString & _accountID )
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_UNSELECT_ACCOUNT)( _accountID );
+        EVENTABLE_METHOD( m_game, EVENT_GAME_UNSELECT_ACCOUNT )
+            ->onGameUselectAccount( _accountID );
+		//EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_UNSELECT_ACCOUNT)( _accountID );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	GameSoundVolumeProvider::GameSoundVolumeProvider( ServiceProviderInterface * _serviceProvider, Game * _game )
@@ -106,7 +76,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void GameSoundVolumeProvider::onSoundChangeVolume( float _sound, float _music, float _voice )
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_CHANGE_SOUND_VOLUME)( _sound, _music, _voice );
+        EVENTABLE_METHOD( m_game, EVENT_GAME_CHANGE_SOUND_VOLUME )
+            ->onGameChangeSoundVolume( _sound, _music, _voice );
+		//EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_CHANGE_SOUND_VOLUME)( _sound, _music, _voice );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
@@ -133,7 +105,9 @@ namespace Menge
 			PLAYER_SERVICE( m_serviceProvider )
 				->calcGlobalMouseWorldPosition( point, wp );
 
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_KEY, handle )((uint32_t)_event.key, wp.x, wp.y, _event.code, _event.isDown, _event.isRepeat);
+            handle = EVENTABLE_METHODR( this, EVENT_GAME_KEY, handle )
+                ->onGameKey( _event.key, wp.x, wp.y, _event.code, _event.isDown, _event.isRepeat );
+			//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_KEY, handle )((uint32_t)_event.key, wp.x, wp.y, _event.code, _event.isDown, _event.isRepeat);
 		}
 
 		if( handle == false )
@@ -157,7 +131,9 @@ namespace Menge
 			PLAYER_SERVICE( m_serviceProvider )
 				->calcGlobalMouseWorldPosition( point, wp );
 
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_BUTTON, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
+            handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON, handle )
+                ->onGameMouseButton( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
+			//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_BUTTON, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
@@ -181,7 +157,9 @@ namespace Menge
 			PLAYER_SERVICE( m_serviceProvider )
 				->calcGlobalMouseWorldPosition( point, wp );
 
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_BUTTON_BEGIN, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
+            handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON_BEGIN, handle )
+                ->onGameMouseButtonBegin( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
+			//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_BUTTON_BEGIN, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
@@ -205,7 +183,9 @@ namespace Menge
 			PLAYER_SERVICE( m_serviceProvider )
 				->calcGlobalMouseWorldPosition( point, wp );
 
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_BUTTON_END, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
+            handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON_END, handle )
+                ->onGameMouseButtonEnd( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
+			//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_BUTTON_END, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
@@ -234,7 +214,9 @@ namespace Menge
 			PLAYER_SERVICE( m_serviceProvider )
 				->calcGlobalMouseWorldDelta( point, delta, wd );
 
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_MOVE, handle )(_event.touchId, wp.x, wp.y, wd.x, wd.y);
+            handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_MOVE, handle )
+                ->onGameMouseMove( _event.touchId, wp.x, wp.y, wd.x, wd.y );
+			//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_MOVE, handle )(_event.touchId, wp.x, wp.y, wd.x, wd.y);
 		}
 
 		if( handle == false )
@@ -252,7 +234,9 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_WHEEL, handle )(_event.button, _event.x, _event.y, _event.wheel);
+            handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_WHEEL, handle )
+                ->onGameMouseWheel( _event.button, _event.x, _event.y, _event.wheel );
+			//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_WHEEL, handle )(_event.button, _event.x, _event.y, _event.wheel);
 		}
 
 		if( handle == false )
@@ -266,7 +250,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::mouseLeave( const InputMousePositionEvent & _event )
 	{		
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_GAME_APP_MOUSE_LEAVE)();
+        EVENTABLE_METHOD( this, EVENT_GAME_APP_MOUSE_LEAVE )
+            ->onGameAppMouseLeave();
+		//EVENTABLE_CALL(m_serviceProvider, this, EVENT_GAME_APP_MOUSE_LEAVE)();
 
 		PLAYER_SERVICE( m_serviceProvider )
 			->onAppMouseLeave( _event );
@@ -274,7 +260,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::mouseEnter( const InputMousePositionEvent & _event )
 	{
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_APP_MOUSE_ENTER )(_event.x, _event.y);
+        EVENTABLE_METHOD( this, EVENT_GAME_APP_MOUSE_ENTER )
+            ->onGameAppMouseEnter( _event.x, _event.y );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_APP_MOUSE_ENTER )(_event.x, _event.y);
 
 		PLAYER_SERVICE( m_serviceProvider )
 			->onAppMouseEnter( _event );
@@ -414,8 +402,10 @@ namespace Menge
             , is_debug
             );
 
-		bool result = true;
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_PREPARATION, result )( is_debug );
+        bool result = EVENTABLE_METHODR( this, EVENT_GAME_PREPARATION, true )
+            ->onGamePreparation( is_debug );
+		//bool result = true;
+		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_PREPARATION, result )( is_debug );
 
 		if( result == false )
 		{
@@ -444,8 +434,11 @@ namespace Menge
 				->setArrow( m_defaultArrow );
 		}
 
-		bool EVENT_INITIALIZE_result = true;
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_INITIALIZE, EVENT_INITIALIZE_result )();
+        bool EVENT_INITIALIZE_result = EVENTABLE_METHODR( this, EVENT_GAME_INITIALIZE, true )
+            ->onGameInitialize();
+
+		//bool EVENT_INITIALIZE_result = true;
+		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_INITIALIZE, EVENT_INITIALIZE_result )();
 
 		if( EVENT_INITIALIZE_result == false )
 		{
@@ -464,24 +457,20 @@ namespace Menge
 
 		if( hasCurrentAccount == false )
 		{
-			EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_CREATE_DEFAULT_ACCOUNT )();
+            EVENTABLE_METHOD( this, EVENT_GAME_CREATE_DEFAULT_ACCOUNT )
+                ->onGameCreateDefaultAccount();
+			//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_CREATE_DEFAULT_ACCOUNT )();
 		}
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_LOAD_ACCOUNTS )();
+        EVENTABLE_METHOD( this, EVENT_GAME_LOAD_ACCOUNTS )
+            ->onGameLoadAccounts();
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_LOAD_ACCOUNTS )();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::_initialize()
 	{
-		m_archivator = ARCHIVE_SERVICE( m_serviceProvider )
-			->getArchivator( STRINGIZE_STRING_LOCAL( m_serviceProvider, "lz4" ) );
-
-		if( m_archivator == nullptr )
-		{
-			return false;
-		}
-
 		CONFIG_SECTION( m_serviceProvider, "Params", m_params );
 
 		SERVICE_CREATE( m_serviceProvider, AccountService );
@@ -504,7 +493,9 @@ namespace Menge
 		LOGGER_WARNING(m_serviceProvider)("Run game"
 			);
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_RUN )();
+        EVENTABLE_METHOD( this, EVENT_GAME_RUN )
+            ->onGameRun();
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_RUN )();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::destroyArrow()
@@ -518,14 +509,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::_finalize()
 	{	
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_ACCOUNT_FINALIZE )();
+        EVENTABLE_METHOD( this, EVENT_GAME_ACCOUNT_FINALIZE )
+            ->onGameAccountFinalize();
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_ACCOUNT_FINALIZE )();
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::AccountServiceInterface );
 
 		SCRIPT_SERVICE( m_serviceProvider )
 			->finalizeModules();
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_FINALIZE )();
+        EVENTABLE_METHOD( this, EVENT_GAME_FINALIZE )
+            ->onGameFinalize();
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_FINALIZE )();
 
         if( m_accountProvider != nullptr )
         {
@@ -541,19 +536,25 @@ namespace Menge
 
 		this->destroyArrow();		      
 				
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_DESTROY )();
+        EVENTABLE_METHOD( this, EVENT_GAME_DESTROY )
+            ->onGameDestroy();
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_DESTROY )();
 
 		this->unregisterEvents_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initializeRenderResources()
 	{
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_INITIALIZE_RENDER_RESOURCES )();
+        EVENTABLE_METHOD( this, EVENT_GAME_INITIALIZE_RENDER_RESOURCES )
+            ->onGameInitializeRenderResources();
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_INITIALIZE_RENDER_RESOURCES )();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::finalizeRenderResources()
 	{
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_FINALIZE_RENDER_RESOURCES )();
+        EVENTABLE_METHOD( this, EVENT_GAME_FINALIZE_RENDER_RESOURCES )
+            ->onGameFinalizeRenderResources();
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_FINALIZE_RENDER_RESOURCES )();
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	void Game::turnSound( bool _turn )
@@ -584,7 +585,9 @@ namespace Menge
 				->onFocus( _focus );
 		}				
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_GAME_FOCUS)( _focus );
+        EVENTABLE_METHOD( this, EVENT_GAME_FOCUS )
+            ->onGameFocus( _focus );
+		//EVENTABLE_CALL(m_serviceProvider, this, EVENT_GAME_FOCUS)( _focus );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setFullscreen( const Resolution & _resolution, bool _fullscreen )
@@ -595,7 +598,9 @@ namespace Menge
 				->onFullscreen( _resolution, _fullscreen );
 		}
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_GAME_FULLSCREEN)( _fullscreen );
+        EVENTABLE_METHOD( this, EVENT_GAME_FULLSCREEN )
+            ->onGameFullscreen( _fullscreen );
+		//EVENTABLE_CALL(m_serviceProvider, this, EVENT_GAME_FULLSCREEN)( _fullscreen );
 	}
     //////////////////////////////////////////////////////////////////////////
     void Game::setFixedContentResolution( const Resolution & _resolution, bool _fixed )
@@ -606,24 +611,31 @@ namespace Menge
 				->onFixedContentResolution( _resolution, _fixed );
 		}
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_FIXED_CONTENT_RESOLUTION )(_fixed);
+        EVENTABLE_METHOD( this, EVENT_GAME_FIXED_CONTENT_RESOLUTION )
+            ->onGameFixedContentResolution( _fixed );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_FIXED_CONTENT_RESOLUTION )(_fixed);
     }
     //////////////////////////////////////////////////////////////////////////
     void Game::setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )
     {
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_RENDER_VIEWPORT )(_viewport, _contentResolution);
+        EVENTABLE_METHOD( this, EVENT_GAME_RENDER_VIEWPORT )
+            ->onGameRenderViewport( _viewport, _contentResolution );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_RENDER_VIEWPORT )(_viewport, _contentResolution);
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setGameViewport( const Viewport & _viewport, float _aspect )
 	{
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_VIEWPORT )(_viewport, _aspect);
+        EVENTABLE_METHOD( this, EVENT_GAME_VIEWPORT )
+            ->onGameViewport( _viewport, _aspect );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_VIEWPORT )(_viewport, _aspect);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::close()
 	{
-		bool needQuit = true;
+		bool needQuit = EVENTABLE_METHODR( this, EVENT_GAME_VIEWPORT, true )
+            ->onGameClose();
 
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_CLOSE, needQuit )();
+		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_CLOSE, needQuit )();
 	
 		return needQuit;
 	}
@@ -639,7 +651,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setCursorMode( bool _mode )
 	{
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_CURSOR_MODE )(_mode);
+        EVENTABLE_METHOD( this, EVENT_GAME_CURSOR_MODE )
+            ->onGameCursorMode( _mode );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_CURSOR_MODE )(_mode);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Game::getTimingFactor() const
@@ -651,7 +665,9 @@ namespace Menge
 	{
 		m_timingFactor = _timingFactor;
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_ON_TIMING_FACTOR )(m_timingFactor);
+        EVENTABLE_METHOD( this, EVENT_GAME_ON_TIMING_FACTOR )
+            ->onGameTimingFactor( _timingFactor );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_ON_TIMING_FACTOR )(m_timingFactor);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString & Game::getParam( const ConstString & _paramName ) const

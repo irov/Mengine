@@ -47,6 +47,8 @@ namespace mt
 
 		MENGINE_MATH_METHOD_INLINE float * buff();
 		MENGINE_MATH_METHOD_INLINE const float * buff() const;
+
+        static MENGINE_MATH_METHOD_INLINE const vec2f & identity();
 	};
 
 	MENGINE_MATH_FUNCTION_INLINE bool operator==(const vec2f& _a, const vec2f& _b);

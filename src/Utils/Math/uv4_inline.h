@@ -58,6 +58,30 @@ namespace mt
 
 		return *this;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_MATH_METHOD_INLINE const uv4f & uv4f::identity()
+    {
+        static mt::uv4f uv;
+
+        return uv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_MATH_FUNCTION_INLINE bool operator==( const uv4f& _a, const uv4f& _b )
+    {
+        return cmp_uv4_uv4( _a, _b );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_MATH_FUNCTION_INLINE bool operator!=( const uv4f& _a, const uv4f& _b )
+    {
+        return !operator==( _a, _b );
+    }
+    MENGINE_MATH_FUNCTION_INLINE bool cmp_uv4_uv4( const mt::uv4f& _a, const mt::uv4f& _b )
+    {
+        return	mt::cmp_v2_v2( _a.p0, _b.p0 ) == true &&
+            mt::cmp_v2_v2( _a.p1, _b.p1 ) == true &&
+            mt::cmp_v2_v2( _a.p2, _b.p2 ) == true &&
+            mt::cmp_v2_v2( _a.p3, _b.p3 ) == true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE bool uv4_identity( const mt::uv4f & _uv )
 	{ 

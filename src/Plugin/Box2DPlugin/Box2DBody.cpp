@@ -251,7 +251,9 @@ namespace Menge
 		mt::vec2f contact_position = Box2DScalerFromWorld( worldManifold.points[0] );	
 		mt::vec2f contact_normal = Box2DScalerFromWorld( worldManifold.normal );
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_BEGIN_COLLIDE )(this, _body, contact_position, contact_normal );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_BEGIN_COLLIDE )(this, _body, contact_position, contact_normal );
+        EVENTABLE_METHOD( this, EVENT_BOX2DBODY_BEGIN_COLLIDE )
+            ->onBox2DBodyBeginCollide( this, _body, contact_position, contact_normal );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Box2DBody::onUpdateCollide( Box2DBody * _body, b2Contact * _contact )
@@ -267,7 +269,9 @@ namespace Menge
 		mt::vec2f contact_position = Box2DScalerFromWorld( worldManifold.points[0] );
 		mt::vec2f contact_normal = Box2DScalerFromWorld( worldManifold.normal );
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_UPDATE_COLLIDE )(this, _body, contact_position, contact_normal);
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_UPDATE_COLLIDE )(this, _body, contact_position, contact_normal);
+        EVENTABLE_METHOD( this, EVENT_BOX2DBODY_UPDATE_COLLIDE )
+            ->onBox2DBodyBeginCollide( this, _body, contact_position, contact_normal );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Box2DBody::onEndCollide( Box2DBody * _body, b2Contact * _contact )
@@ -279,7 +283,9 @@ namespace Menge
 			return;
 		}
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_END_COLLIDE )(this, _body);
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_END_COLLIDE )(this, _body);
+        EVENTABLE_METHOD( this, EVENT_BOX2DBODY_END_COLLIDE )
+            ->onBox2DBodyEndCollide( this, _body );
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	void Box2DBody::setLinearDumping( float _dumping )

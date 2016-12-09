@@ -7,11 +7,26 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    enum CollisionEventFlag
+    {
+        EVENT_COLLISION_TEST = 0
+    };
+    //////////////////////////////////////////////////////////////////////////
+    class NodeCollisionActorEventReceiver
+        : public EventReceiver
+    {
+    public:
+        virtual bool onNodeCollisionActorCollisionTest( class NodeCollisionActor * _other, uint32_t _iff, uint32_t _other_iff, const mt::vec3f & _point, const mt::vec3f & _normal, float _penetration ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
 	class NodeCollisionActor
 		: public Node
 		, public Eventable
 		, public CollisionActorProviderInterface
 	{
+        EVENT_RECEIVER( NodeCollisionActorEventReceiver );
+
 	public:
 		NodeCollisionActor();
 		~NodeCollisionActor();

@@ -142,7 +142,7 @@ namespace Menge
 #   ifdef _DEBUG
 			if( stdex::intrusive_dynamic_cast<T>(decoder) == nullptr )
 			{
-				return nullptr;
+                throw;
 			}
 #   endif
 
@@ -162,7 +162,7 @@ namespace Menge
 #   ifdef _DEBUG
             if( stdex::intrusive_dynamic_cast<T>(encoder) == nullptr )
             {
-                return nullptr;
+                throw;
             }
 #   endif
 

@@ -181,6 +181,9 @@ namespace Menge
 		void setB( const float _b );
 		inline float getB() const;
 
+    public:
+        inline static const ColourValue & identity();
+
 	public:
 		inline bool isSolid() const;
 
@@ -261,4 +264,11 @@ namespace Menge
 
 		return m_argb;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    inline const ColourValue & ColourValue::identity()
+    {
+        static ColourValue c;
+
+        return c;
+    }
 } // namespace

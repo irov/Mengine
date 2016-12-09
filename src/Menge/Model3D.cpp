@@ -403,7 +403,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Model3D::_restart( float _time, uint32_t _enumerator )
+	bool Model3D::_restart( uint32_t _enumerator, float _time )
 	{
 		(void)_time;
 		(void)_enumerator;
@@ -421,7 +421,7 @@ namespace Menge
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::_resume( float _time, uint32_t _enumerator )
+	void Model3D::_resume( uint32_t _enumerator, float _time )
 	{
 		(void)_time;
 		(void)_enumerator;

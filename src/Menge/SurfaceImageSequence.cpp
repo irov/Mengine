@@ -2,19 +2,11 @@
 
 #   include "Interface/TimelineInterface.h"
 
-#	include "ResourceManager.h"
+#	include "Kernel/ResourceImage.h"
 
 #	include "ResourceAnimation.h"
 
-#	include "Kernel/ResourceImage.h"
-
 #	include "Logger/Logger.h"
-
-#	include "Math/rand.h"
-
-#	include "pybind/system.hpp"
-
-#	include <math.h>
 
 namespace	Menge
 {
@@ -46,30 +38,20 @@ namespace	Menge
 		return m_resourceAnimation;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	enum AnimationEventFlag
-	{
-		EVENT_FRAME_END = 0,
-		EVENT_FRAME_TICK,
-		EVENT_ANIMATION_END,
-		EVENT_ANIMATABLE_END
-	};
-	//////////////////////////////////////////////////////////////////////////
 	void SurfaceImageSequence::_setEventListener( const pybind::dict & _listener )
 	{
-		Surface::_setEventListener( _listener );
+		//this->registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener );
+		//this->registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener );
+		//this->registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener );
 
-		this->registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener );
-		this->registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener );
-		this->registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener );
-
-		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
+		//this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SurfaceImageSequence::_update( float _current, float _timing )
+	bool SurfaceImageSequence::update( float _current, float _timing )
 	{
 		if( this->isPlay() == false )
 		{
-			return; 
+			return false; 
 		}
 
 		if( m_playTime > _current )
@@ -94,11 +76,15 @@ namespace	Menge
             {
                 m_frameTiming -= frameDelay;
 
-				EVENTABLE_CALL( m_serviceProvider, this, EVENT_FRAME_END )(this, m_currentFrame);
+                EVENTABLE_METHOD( this, EVENT_SURFACE_IMAGESEQUENCE_FRAME_END )
+                    ->onSurfaceImageSequenceFrameEnd( m_currentFrame );
+				//EVENTABLE_CALL( m_serviceProvider, this, EVENT_FRAME_END )(this, m_currentFrame);
 				
 				++m_currentFrame;
 
-				EVENTABLE_CALL( m_serviceProvider, this, EVENT_FRAME_TICK )(this, m_currentFrame, frameCount);
+                EVENTABLE_METHOD( this, EVENT_SURFACE_IMAGESEQUENCE_FRAME_TICK )
+                    ->onSurfaceImageSequenceFrameTick( m_currentFrame, frameCount );
+				//EVENTABLE_CALL( m_serviceProvider, this, EVENT_FRAME_TICK )(this, m_currentFrame, frameCount);
 
                 if( m_currentFrame == frameCount )
                 {
@@ -128,17 +114,21 @@ namespace	Menge
             }
         }
 
-		if( lastFrame != m_currentFrame )
-		{
-			this->invalidateMaterial();
-		}
+        if( lastFrame == m_currentFrame )
+        {
+            return false;
+        }
+		
+        this->invalidateMaterial();
+		
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SurfaceImageSequence::_compile()
 	{
 		if( m_resourceAnimation == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Animation::_compile: '%s' resource is null"
+			LOGGER_ERROR(m_serviceProvider)("SurfaceImageSequence::_compile: '%s' resource is null"
 				, m_name.c_str()
 				);
 
@@ -187,7 +177,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceImageSequence::_restart( float _time, uint32_t _enumerator )
+	bool SurfaceImageSequence::_restart( uint32_t _enumerator, float _time )
 	{
         (void)_time;
         (void)_enumerator;
@@ -200,7 +190,7 @@ namespace	Menge
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SurfaceImageSequence::_resume( float _time, uint32_t _enumerator )
+	void SurfaceImageSequence::_resume( uint32_t _enumerator, float _time )
 	{
 		(void)_time;
 		(void)_enumerator;
@@ -217,8 +207,10 @@ namespace	Menge
 			return;
 		}
         
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATION_END )(this, _enumerator, false);
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
+            ->onAnimatableStop( _enumerator );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATION_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceImageSequence::_end( uint32_t _enumerator )
@@ -232,8 +224,10 @@ namespace	Menge
 			return;
 		}
         
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATION_END )(this, _enumerator, true);
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
+            ->onAnimatableEnd( _enumerator );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATION_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t SurfaceImageSequence::getFrame_( float _timing, float & _delthaTiming ) const
@@ -285,15 +279,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t SurfaceImageSequence::getFrameCount() const
 	{
-		if( this->isCompile() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Animation.getFrameCount: '%s' not compiled resource"
-				, m_name.c_str()
-				);
-
-			return 0;
-		}
-
         uint32_t count = m_resourceAnimation->getSequenceCount();
 
 		return count;
@@ -301,15 +286,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	float SurfaceImageSequence::getFrameDelay( uint32_t _frame ) const
 	{
-		if( this->isCompile() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Animation.getFrameDelay: '%s' not compiled resource"
-				, m_name.c_str()
-				);
-
-			return 0.f;
-		}
-
 		float delay = m_resourceAnimation->getSequenceDelay( _frame );
 
         return delay;
@@ -320,26 +296,163 @@ namespace	Menge
 		m_currentFrame = _frame;
 		m_frameTiming = 0.f;
 
-		if( this->isCompile() == false )
-		{
-			return;
-		}
+#       ifdef _DEBUG
+        if( this->isCompile() == true )
+        {
+            uint32_t sequenceCount = m_resourceAnimation->getSequenceCount();
 
-		uint32_t sequenceCount = m_resourceAnimation->getSequenceCount();
+            if( _frame >= sequenceCount )
+            {
+                LOGGER_ERROR( m_serviceProvider )("Animation.setCurrentFrame: '%s' _frame(%d) >= sequenceCount(%d)"
+                    , m_name.c_str()
+                    , _frame
+                    , sequenceCount
+                    );
 
-		if( _frame >= sequenceCount )	
-		{
-			LOGGER_ERROR(m_serviceProvider)("Animation.setCurrentFrame: '%s' _frame(%d) >= sequenceCount(%d)"
-				, m_name.c_str()
-				, _frame
-				, sequenceCount
-				);
-
-			return;
-		}
+                return;
+            }
+        }
+#   endif
 
 		this->invalidateMaterial();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & SurfaceImageSequence::getMaxSize() const
+    {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence.getMaxSize: '%s' not compile"
+                , this->getName().c_str()
+                );
+
+            return mt::vec2f::identity();
+        }
+
+        const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
+
+        const mt::vec2f & maxSize = resourceImage->getMaxSize();
+
+        return maxSize;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & SurfaceImageSequence::getSize() const
+    {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence.getSize: '%s' not compile"
+                , this->getName().c_str()
+                );
+
+            return mt::vec2f::identity();
+        }
+
+        const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
+
+        const mt::vec2f & size = resourceImage->getSize();
+
+        return size;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & SurfaceImageSequence::getOffset() const
+    {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence.getOffset: '%s' not compile"
+                , this->getName().c_str()
+                );
+
+            return mt::vec2f::identity();
+        }
+
+        const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
+
+        const mt::vec2f & offset = resourceImage->getOffset();
+
+        return offset;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SurfaceImageSequence::getUVCount() const
+    {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence.getUVCount: '%s' not compile"
+                , this->getName().c_str()
+                );
+
+            return 0;
+        }
+
+        const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
+
+        const RenderTextureInterfacePtr & texture = resourceImage->getTexture();
+
+        if( texture == nullptr )
+        {
+            return 0;
+        }
+
+        const RenderTextureInterfacePtr & textureAlpha = resourceImage->getTextureAlpha();
+
+        if( textureAlpha == nullptr )
+        {
+            return 1;
+        }
+
+        return 2;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::uv4f & SurfaceImageSequence::getUV( uint32_t _index ) const
+    {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence.getUV: '%s' not compile"
+                , this->getName().c_str()
+                );
+
+            return mt::uv4f::identity();
+        }
+
+        const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
+
+        switch( _index )
+        {
+        case 0:
+            {
+                const mt::uv4f & uv = resourceImage->getUVImage();
+
+                return uv;
+            } break;
+        case 1:
+            {
+                const mt::uv4f & uv = resourceImage->getUVAlpha();
+
+                return uv;
+            } break;
+        default:
+            {
+            }break;
+        }
+
+        return mt::uv4f::identity();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ColourValue & SurfaceImageSequence::getColour() const
+    {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence.getColour: '%s' not compile"
+                , this->getName().c_str()
+                );
+
+            return ColourValue::identity();
+        }
+
+        const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
+
+        const ColourValue & color = resourceImage->getColor();
+
+        return color;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceImageSequence::_setFirstFrame()
 	{

@@ -24,12 +24,23 @@ namespace Menge
 	{
 		EVENT_MESHGET_UPDATE = 0
 	};
+    //////////////////////////////////////////////////////////////////////////
+    class MeshgetEventReceiver
+        : public EventReceiver
+    {
+    public:
+        virtual void onMeshgetUpdate( float _current, float _timing ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<MeshgetEventReceiver> MeshgetEventReceiverPtr;
 	//////////////////////////////////////////////////////////////////////////
 	class Meshget
 		: public Node
 		, public Eventable
 		, public Materialable
 	{
+        EVENT_RECEIVER( MeshgetEventReceiver );
+
 	public:
 		Meshget();
 		~Meshget();

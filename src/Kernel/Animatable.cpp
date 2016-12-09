@@ -157,7 +157,7 @@ namespace Menge
 
 		if( m_play == true )
 		{
-			if( this->_restart( _time, m_enumerator ) == false )
+			if( this->_restart( m_enumerator, _time ) == false )
 			{
 				return 0;
 			}
@@ -226,7 +226,7 @@ namespace Menge
 
 		m_pause = false;
 
-		this->_resume( _time, m_enumerator );
+		this->_resume( m_enumerator, _time );
 
 		m_playTime = _time;
 	}

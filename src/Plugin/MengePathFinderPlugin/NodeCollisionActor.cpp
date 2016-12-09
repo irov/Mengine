@@ -104,11 +104,6 @@ namespace Menge
 		return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	enum CollisionEventFlag
-	{
-		EVENT_COLLISION_TEST = 0
-	};
-	//////////////////////////////////////////////////////////////////////////
 	void NodeCollisionActor::_setEventListener( const pybind::dict & _listener )
 	{		
 		this->registerEvent( EVENT_COLLISION_TEST, ("onCollisionTest"), _listener );
@@ -121,15 +116,15 @@ namespace Menge
 		_position = wp;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeCollisionActor::onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec3f & _point, const mt::vec3f & _normal, float _penetration )
+	bool NodeCollisionActor::onCollisionTest( CollisionActorProviderInterface * _other, const mt::vec3f & _point, const mt::vec3f & _normal, float _penetration )
 	{
-		NodeCollisionActor * actor = static_cast<NodeCollisionActor *>(_actor);
+		NodeCollisionActor * other = static_cast<NodeCollisionActor *>(_other);
 
-		uint32_t actor_iff = actor->getCollisionIFF();
+		uint32_t other_iff = other->getCollisionIFF();
 
-		bool handle = true;
-
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_COLLISION_TEST, handle )(this, actor, m_collisionIFF, actor_iff, _point, _normal, _penetration );
+         bool handle = EVENTABLE_METHODR( this, EVENT_COLLISION_TEST, true )
+             ->onNodeCollisionActorCollisionTest( other, m_collisionIFF, other_iff, _point, _normal, _penetration );
+		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_COLLISION_TEST, handle )(this, actor, m_collisionIFF, actor_iff, _point, _normal, _penetration );
 
 		return handle;
 	}

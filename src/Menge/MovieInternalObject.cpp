@@ -82,8 +82,10 @@ namespace Menge
         const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
         const ConstString & internalName = m_resourceInternalObject->getInternalName();
 
-		pybind::object py_object;
-		EVENTABLE_ASK( m_serviceProvider, m_movie, EVENT_MOVIE_GET_INTERNAL, py_object )(internalGroup, internalName);
+        pybind::object py_object = EVENTABLE_METHODR( m_movie, EVENT_MOVIE_GET_INTERNAL, pybind::object() )
+            ->onMovieGetInternal( internalGroup, internalName );
+		//pybind::object py_object;
+		//EVENTABLE_ASK( m_serviceProvider, m_movie, EVENT_MOVIE_GET_INTERNAL, py_object )(internalGroup, internalName);
 
 		if( py_object.is_invalid() == true )
         {
@@ -116,8 +118,9 @@ namespace Menge
 			return false;
 		}
 
-		Node * node = nullptr;
-		EVENTABLE_ASK( m_serviceProvider, m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, node )(m_internalObject);
+		Node * node = EVENTABLE_METHODR( m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, nullptr )
+            ->onMovieActivateInternal( m_internalObject );
+		//EVENTABLE_ASK( m_serviceProvider, m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, node )(m_internalObject);
 
 		if( node == nullptr )
 		{
@@ -150,7 +153,9 @@ namespace Menge
 		m_internalNode->removeFromParent();
 		m_internalNode = nullptr;
 				
-		EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL)( m_internalObject );
+        EVENTABLE_METHOD( m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL )
+            ->onMovieDeactivateInternal( m_internalObject );
+		//EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL)( m_internalObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::_localHide( bool _hide )

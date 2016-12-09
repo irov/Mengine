@@ -6,8 +6,6 @@
 
 #	include "Logger/Logger.h"
 
-#   include "pybind/pybind.hpp"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -53,7 +51,9 @@ namespace Menge
 			return;
 		}
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ON_SUB_SCENE)( m_parentScene );
+        EVENTABLE_METHOD( this, EVENT_ON_SUB_SCENE )
+            ->onSceneSubScene( m_parentScene );
+		//EVENTABLE_CALL(m_serviceProvider, this, EVENT_ON_SUB_SCENE)( m_parentScene );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Scene::getParentScene() const
@@ -108,9 +108,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onAppMouseLeave()
 	{
-		bool handle = false;
-
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_APP_MOUSE_LEAVE, handle )();
+        bool handle = EVENTABLE_METHODR( this, EVENT_APP_MOUSE_LEAVE, false )
+            ->onSceneAppMouseLeave();
+		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_APP_MOUSE_LEAVE, handle )();
 
 		if( handle == false )
 		{
@@ -130,9 +130,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onAppMouseEnter()
 	{
-		bool handle = false;
-
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_APP_MOUSE_ENTER, handle )();
+        bool handle = EVENTABLE_METHODR( this, EVENT_APP_MOUSE_ENTER, false )
+            ->onSceneAppMouseEnter();
+		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_APP_MOUSE_ENTER, handle )();
 
 		if( handle == false )
 		{
@@ -152,9 +152,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onFocus( bool _focus )
 	{
-		bool handle = false;
-
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_FOCUS, handle )(_focus);
+        bool handle = EVENTABLE_METHODR( this, EVENT_FOCUS, false )
+            ->onSceneAppFocus( _focus );
+		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_FOCUS, handle )(_focus);
 
 		if( handle == false )
 		{

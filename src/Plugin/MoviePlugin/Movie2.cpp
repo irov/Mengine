@@ -87,7 +87,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie2::_restart( float _time, uint32_t _enumerator )
+	bool Movie2::_restart( uint32_t _enumerator, float _time )
 	{
 		(void)_time;
 		(void)_enumerator;
@@ -100,7 +100,7 @@ namespace Menge
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_resume( float _time, uint32_t _enumerator )
+	void Movie2::_resume( uint32_t _enumerator, float _time )
 	{
 		(void)_time;
 		(void)_enumerator;
@@ -783,7 +783,7 @@ namespace Menge
 			case AE_MOVIE_LAYER_TYPE_VIDEO:
 				{
 					//ResourceVideo * resource_video = static_cast<ResourceVideo *>(resource_reference);
-					SurfaceVideo * surfaceVideo = static_cast<SurfaceVideo *>(mesh.element_data);
+					Surface * surfaceVideo = static_cast<Surface *>(mesh.element_data);
 
 					m_meshes.push_back( Mesh() );
 					Mesh & m = m_meshes.back();
@@ -804,12 +804,10 @@ namespace Menge
 						mt::vec2f uv;
 						uv.from_f2( &mesh.uv[index][0] );
 
-						const mt::vec4f & uv_video_mask = surfaceVideo->getUV();
+						const mt::uv4f & uv_video_mask = surfaceVideo->getUV( 0 );
 
-						mt::uv4f uv_video( uv_video_mask );
-
-						mt::multiply_tetragon_uv4_v2( v.uv[0], uv_video, uv );
-						mt::multiply_tetragon_uv4_v2( v.uv[1], uv_video, uv );
+						mt::multiply_tetragon_uv4_v2( v.uv[0], uv_video_mask, uv );
+						mt::multiply_tetragon_uv4_v2( v.uv[1], uv_video_mask, uv );
 
 						v.color = color;
 					}

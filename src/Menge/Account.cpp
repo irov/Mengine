@@ -14,8 +14,6 @@
 #	include "Core/String.h"
 #	include "Core/Stream.h"
 
-#	include "pybind/pybind.hpp"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

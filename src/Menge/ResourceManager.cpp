@@ -523,9 +523,9 @@ namespace Menge
 
 		if( it_cache_found == m_resourcesCache.end() )
 		{
-			TVectorResources resources;
+			TVectorResources new_resources;
 			
-			it_cache_found = m_resourcesCache.insert( it_cache_found, std::make_pair( cache_key, resources ) );
+			it_cache_found = m_resourcesCache.insert( it_cache_found, std::make_pair( cache_key, new_resources ) );
 		}
 		
 		TVectorResources & cahce_resources = it_cache_found->second;
@@ -845,7 +845,7 @@ namespace Menge
 		{
 			const ResourceReferencePtr & resource = *it;
 
-			size_t memoryUse = resource->memoryUse();
+			size_t memoryUse = resource->getMemoryUse();
 
 			groupMemoryUse += memoryUse;
 		}
@@ -885,7 +885,7 @@ namespace Menge
 					return;
 				}
 
-				size_t memoryUse = resource->memoryUse();
+				size_t memoryUse = resource->getMemoryUse();
 				float memoryUseMb = (float)(memoryUse)/(1024.f);
 
 				const ConstString & name = _entry->resource->getName();
@@ -937,7 +937,7 @@ namespace Menge
 					return;
 				}
 
-				size_t memoryUse = resource->memoryUse();
+				size_t memoryUse = resource->getMemoryUse();
 				float memoryUseMb = (float)(memoryUse) / (1024.f);
 
 				const ConstString & name = entry.resource->getName();

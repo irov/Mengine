@@ -47,9 +47,9 @@ namespace Menge
         }
     }
 	/////////////////////////////////////////////////////////////////////////
-	size_t ResourceImage::memoryUse() const
+	size_t ResourceImage::getMemoryUse() const
 	{
-		size_t memory = ResourceReference::memoryUse();
+		size_t memory = ResourceReference::getMemoryUse();
 
 		if( m_texture != nullptr )
 		{

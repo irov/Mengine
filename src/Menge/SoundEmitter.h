@@ -1,17 +1,14 @@
 #	pragma once
 
-#	include "Interface/SoundSystemInterface.h"
-
 #	include "Kernel/Node.h"
 
-#	include "Kernel/Animatable.h"
 #	include "Kernel/Soundable.h"
-
-#   include "ResourceSound.h"
-#	include "SurfaceSound.h"
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<class SurfaceSound> SurfaceSoundPtr;
+    //////////////////////////////////////////////////////////////////////////
 	class SoundEmitter
 		: public Node
 	{

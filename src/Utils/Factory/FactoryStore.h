@@ -80,7 +80,7 @@ namespace Menge
 #	ifdef _DEBUG
 			if( dynamic_cast<T *>(factorable) == nullptr )
 			{
-				return nullptr;
+                throw;
 			}
 #	endif
 
@@ -146,7 +146,7 @@ namespace Menge
 #	ifdef _DEBUG
 			if( dynamic_cast<T *>(factorable) == nullptr )
 			{
-				return nullptr;
+                throw;
 			}
 #	endif
 

@@ -45,7 +45,7 @@ namespace Menge
 #	ifdef _DEBUG
 			if( dynamic_cast<T>(obj) == nullptr )
 			{
-				return nullptr;
+                throw;
 			}
 #	endif
 

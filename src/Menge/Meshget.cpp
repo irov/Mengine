@@ -129,7 +129,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Meshget::_update( float _current, float _timing )
 	{
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MESHGET_UPDATE )(this, _current, _timing);
+        EVENTABLE_METHOD( this, EVENT_MESHGET_UPDATE )
+            ->onMeshgetUpdate( _current, _timing );
+        
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_MESHGET_UPDATE )(this, _current, _timing);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Meshget::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )

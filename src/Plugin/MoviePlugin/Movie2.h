@@ -34,9 +34,9 @@ namespace Menge
 
 	protected:
 		bool _play( float _time ) override;
-		bool _restart( float _time, uint32_t _enumerator ) override;
+		bool _restart( uint32_t _enumerator, float _time ) override;
 		void _pause( uint32_t _enumerator ) override;
-		void _resume( float _time, uint32_t _enumerator ) override;
+		void _resume( uint32_t _enumerator, float _time ) override;
 		void _stop( uint32_t _enumerator ) override;
 		void _end( uint32_t _enumerator ) override;
 		bool _interrupt( uint32_t _enumerator ) override;

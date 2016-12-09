@@ -21,9 +21,15 @@ namespace mt
 		MENGINE_MATH_METHOD_INLINE const mt::vec2f & operator [] ( size_t i ) const;
 		MENGINE_MATH_METHOD_INLINE mt::vec2f & operator [] ( size_t i );
 		MENGINE_MATH_METHOD_INLINE uv4f & operator = ( const uv4f & _rhs );
+
+        static MENGINE_MATH_METHOD_INLINE const uv4f & identity();
 	};
 
+    MENGINE_MATH_FUNCTION_INLINE bool operator==( const uv4f& _a, const uv4f & _b );
+    MENGINE_MATH_FUNCTION_INLINE bool operator!=( const uv4f& _a, const uv4f & _b );
+
 	MENGINE_MATH_FUNCTION_INLINE bool uv4_identity( const mt::uv4f & _uv );
+    MENGINE_MATH_FUNCTION_INLINE bool cmp_uv4_uv4( const mt::uv4f& _a, const mt::uv4f& _b );
 	MENGINE_MATH_FUNCTION_INLINE void uv4_from_mask( mt::uv4f & _out, const mt::vec4f & _mask );
 	MENGINE_MATH_FUNCTION_INLINE void uv4_rotate( mt::uv4f & _out );
 	MENGINE_MATH_FUNCTION_INLINE void uv4_swap_u( mt::uv4f & _out );

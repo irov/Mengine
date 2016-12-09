@@ -1,21 +1,16 @@
 #	pragma once
 
 #	include "Kernel/ResourceReference.h"
-#	include "Kernel/ResourceImage.h"
 
 #	include <stdex/stl_vector.h>
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-    class ResourceImage;
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<class ResourceImage> ResourceImagePtr;
 	//////////////////////////////////////////////////////////////////////////
 	struct AnimationSequence
 	{
-		AnimationSequence()
-			: delay(0.f)
-		{}
-		
 		ResourceImagePtr resource;
 		float delay;
 		ConstString resourceName;

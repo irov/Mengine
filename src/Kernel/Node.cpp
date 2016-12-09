@@ -3,21 +3,15 @@
 #   include "Kernel/Layer.h"
 
 #	include "Interface/RenderSystemInterface.h"
-#	include "Interface/StringizeInterface.h"
 #   include "Interface/NodeInterface.h"
 
-#	include "Interface/ResourceInterface.h"
-
 #   include "Logger/Logger.h"
-
-#	include "pybind/pybind.hpp"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Node::Node()
-		: m_serviceProvider(nullptr)
-        , m_active(false)
+		: m_active(false)
 		, m_deactivating(false)
 		, m_afterActive(false)
 		, m_enable(true)
@@ -33,23 +27,12 @@ namespace Menge
 		, m_renderTarget(nullptr)
 		, m_shallowGrave(0)
 		, m_shallowGravePropagate(false)
-		, m_isometricOffset(0.f, 0.f, 0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node::~Node()
 	{		
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Node::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * Node::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
     //////////////////////////////////////////////////////////////////////////
     void Node::setShallowGrave()
     {
@@ -1095,16 +1078,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setIsometricOffset( const mt::vec3f & _isometricOffset )
-	{
-		m_isometricOffset = _isometricOffset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & Node::getIsometricOffset() const
-	{
-		return m_isometricOffset;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateWorldMatrix()
 	{
 		this->invalidateBoundingBox();
@@ -1245,12 +1218,6 @@ namespace Menge
 
         return solid;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Node::visitResource( VisitorResource * _visitor )
-	{
-        (void)_visitor;
-		//Empty
-	}
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerTrapInterface * Node::getPickerTrap()
 	{

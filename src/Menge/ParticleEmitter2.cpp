@@ -18,14 +18,10 @@
 
 #   include "Interface/ResourceInterface.h"
 
-#	include "Sprite.h"
 #	include "Consts.h"
 
 #	include "math/box2.h"
 #	include "math/angle.h"
-//#	include "math/triangulation.h"
-
-#   include "pybind/pybind.hpp"
 
 #	include "Core/RenderUtil.h"
 
@@ -50,19 +46,12 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	enum ParticleEmitter2EventFlag
-	{
-		EVENT_PARTICLE_EMITTER_END = 0,
-		EVENT_PARTICLE_EMITTER_RESTART,
-		EVENT_ANIMATABLE_END
-	};
-	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_setEventListener( const pybind::dict & _listener )
 	{
-		this->registerEvent( EVENT_PARTICLE_EMITTER_END, ("onParticleEmitterEnd"), _listener );
-		this->registerEvent( EVENT_PARTICLE_EMITTER_RESTART, ("onParticleEmitterRestart"), _listener );
+		//this->registerEvent( EVENT_PARTICLE_EMITTER_END, ("onParticleEmitterEnd"), _listener );
+		//this->registerEvent( EVENT_PARTICLE_EMITTER_RESTART, ("onParticleEmitterRestart"), _listener );
 
-		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
+		//this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
 	///////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter2::_activate()
@@ -235,7 +224,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter2::_restart( float _time, uint32_t _enumerator )
+	bool ParticleEmitter2::_restart( uint32_t _enumerator, float _time )
 	{
         (void)_time;
         (void)_enumerator;
@@ -245,7 +234,9 @@ namespace	Menge
 			return false;
 		}
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_PARTICLE_EMITTER_RESTART)( this, _enumerator, false );
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_RESTART )
+            ->onAnimatableRestart( _enumerator, _time );
+		//EVENTABLE_CALL(m_serviceProvider, this, EVENT_PARTICLE_EMITTER_RESTART)( this, _enumerator, false );
 
 		m_emitter->restart();
 
@@ -264,7 +255,7 @@ namespace	Menge
 		m_emitter->pause();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::_resume( float _time, uint32_t _enumerator )
+	void ParticleEmitter2::_resume( uint32_t _enumerator, float _time )
 	{
 		(void)_time;
 		(void)_enumerator;
@@ -286,14 +277,20 @@ namespace	Menge
 
 		m_emitter->stop();
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END )(this, _enumerator, false);
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
+            ->onAnimatableStop( _enumerator );
+
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_end( uint32_t _enumerator )
 	{
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END )(this, _enumerator, true);
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
+            ->onAnimatableEnd( _enumerator );
+        
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_setLoop( bool _value )

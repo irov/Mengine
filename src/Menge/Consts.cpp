@@ -68,11 +68,12 @@ namespace Menge
         INIT_CONST( ResourceVideo );
 		INIT_CONST( SurfaceVideo );
 		INIT_CONST( SurfaceSound );
+        INIT_CONST( SurfaceImage );
 		INIT_CONST( SurfaceImageSequence );
         INIT_CONST( CreateImage );
         INIT_CONST( CreateTarget );
         INIT_CONST( CreateTexture );
-        INIT_CONST( Sprite );
+        INIT_CONST( ShapeQuadFixed );
 		INIT_CONST( Mesh2D );
 		INIT_CONST( Grid2D );
         INIT_CONST( Animation );

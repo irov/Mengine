@@ -12,8 +12,6 @@ src
     FactoryPool.h
     FactorablePtr.h
     FactorablePtr.cpp
-    FactorableLinked.h
-    FactorableLinkedPtr.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

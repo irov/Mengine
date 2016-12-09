@@ -55,11 +55,9 @@
 #   include "Interface/ApplicationInterface.h"
 #   include "Interface/MousePickerSystemInterface.h"
 
-#	include "Menge/Sprite.h"
 #   include "Menge/MovieSlot.h"
 #	include "Menge/MovieInternalObject.h"
 #   include "Menge/MovieEvent.h"
-#	include "Menge/Animation.h"
 #	include "Menge/ParticleEmitter2.h"
 #	include "Menge/Model3D.h"
 #	include "Menge/HotSpot.h"
@@ -70,6 +68,10 @@
 #   include "Menge/HotSpotShape.h"
 #	include "Menge/Landscape2D.h"
 #	include "Menge/Grid2D.h"
+
+#   include "Menge/ShapeQuadFixed.h"
+#   include "Menge/ShapeQuadFlex.h"
+
 //#	include "Light2D.h"
 #	include "Menge/ShadowCaster2D.h"
 #	include "Menge/Gyroscope.h"
@@ -85,7 +87,9 @@
 
 #	include "Menge/SurfaceVideo.h"
 #	include "Menge/SurfaceSound.h"
+#	include "Menge/SurfaceImage.h"
 #	include "Menge/SurfaceImageSequence.h"
+
 
 #	include "Kernel/Isometric.h"
 #	include "Kernel/Parallax.h"
@@ -106,8 +110,7 @@
 #	include "Menge/TilePolygon.h"
 
 #	include "Menge/Movie.h"
-#	include "Kernel/Meshget.h"
-#	include "Menge/Video.h"
+#	include "Menge/Meshget.h"
 
 #	include "Menge/Window.h"
 
@@ -2096,6 +2099,383 @@ namespace Menge
 
 			return id;
 		}
+        //////////////////////////////////////////////////////////////////////////
+        template<class T_Receiver>
+        void registerEventReceiver( const pybind::dict & _kwds, Eventable * _eventable, const char * _method, uint32_t _event )
+        {
+            if( _kwds.exist( _method ) == true )
+            {
+                pybind::object py_event = _kwds[_method];
+
+                if( py_event.is_none() == true )
+                {
+                    _eventable->removeEventReceiver( _event );
+                }
+                else
+                {
+                    static FactoryPoolStore<T_Receiver, 32> factory;
+
+                    T_Receiver * receiver = factory.createObject();
+
+                    receiver->initialize( py_event );
+
+                    _eventable->registerEventReceiver( _event, receiver );
+                }
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        class PythonEventReceiver
+        {
+        public:
+            void initialize( const pybind::object & _cb )
+            {
+                m_cb = _cb;
+            }
+
+        protected:
+            pybind::object m_cb;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        class PythonAnimatableEventReceiver
+            : public PythonEventReceiver
+            , public AnimatableEventReceiver
+        {
+        public:
+            void onAnimatablePlay( uint32_t _enumerator, float _time ) override
+            {
+                m_cb.call( _enumerator, _time );
+            }
+
+            void onAnimatableRestart( uint32_t _enumerator, float _time ) override
+            {
+                m_cb.call( _enumerator, _time );
+            }
+
+            void onAnimatablePause( uint32_t _enumerator ) override
+            {
+                m_cb.call( _enumerator );
+            }
+
+            void onAnimatableResume( uint32_t _enumerator, float _time ) override
+            {
+                m_cb.call( _enumerator, _time );
+            }
+
+            void onAnimatableStop( uint32_t _enumerator ) override
+            {
+                m_cb.call( _enumerator );
+            }
+
+            void onAnimatableEnd( uint32_t _enumerator ) override
+            {
+                m_cb.call( _enumerator );
+            }
+
+            void onAnimatableInterrupt( uint32_t _enumerator ) override
+            {
+                m_cb.call( _enumerator );
+            }
+        };
+        //////////////////////////////////////////////////////////////////////////
+        template<class T_AnimatableReceiver = PythonAnimatableEventReceiver>
+        void registerAnimatableEventReceiver( const pybind::dict & _kwds, Eventable * _eventable )
+        {
+            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatablePlay", EVENT_ANIMATABLE_PLAY );
+            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableRestart", EVENT_ANIMATABLE_RESTART );
+            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatablePause", EVENT_ANIMATABLE_PAUSE );
+            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableResume", EVENT_ANIMATABLE_RESUME );
+            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableStop", EVENT_ANIMATABLE_STOP );
+            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableEnd", EVENT_ANIMATABLE_END );
+            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableInterrupt", EVENT_ANIMATABLE_INTERRUPT );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        PyObject * s_SurfaceVideo_setEventListener( SurfaceVideo * _surface, PyObject * _args, PyObject * _kwds )
+        {
+            if( _kwds == nullptr )
+            {
+                return pybind::ret_none();
+            }
+                        
+            pybind::dict py_kwds( _kwds );
+            registerAnimatableEventReceiver<>( py_kwds, _surface );
+
+            return pybind::ret_none();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        PyObject * s_SurfaceImageSequence_setEventListener( SurfaceImageSequence * _surface, PyObject * _args, PyObject * _kwds )
+        {
+            if( _kwds == nullptr )
+            {
+                return pybind::ret_none();
+            }
+
+            pybind::dict py_kwds( _kwds );
+            registerAnimatableEventReceiver<>( py_kwds, _surface );
+
+            return pybind::ret_none();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        PyObject * s_SurfaceSound_setEventListener( SurfaceSound * _surface, PyObject * _args, PyObject * _kwds )
+        {
+            if( _kwds == nullptr )
+            {
+                return pybind::ret_none();
+            }
+
+            pybind::dict py_kwds( _kwds );
+            registerAnimatableEventReceiver<>( py_kwds, _surface );
+
+            return pybind::ret_none();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        class PythonMeshEventReceiver
+            : public PythonEventReceiver
+            , public MeshgetEventReceiver
+        {
+        public:
+            void onMeshgetUpdate( float _current, float _timing ) override
+            {
+                m_cb.call( _current, _timing );
+            }
+        };
+        //////////////////////////////////////////////////////////////////////////
+        PyObject * s_Meshget_setEventListener( Meshget * _node, PyObject * _args, PyObject * _kwds )
+        {
+            if( _kwds == nullptr )
+            {
+                return pybind::ret_none();
+            }
+
+            pybind::dict py_kwds( _kwds );
+            registerEventReceiver<PythonMeshEventReceiver>( py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
+            
+            return pybind::ret_none();
+        }        
+        ////////////////////////////////////////////////////////////////////////////        
+        PyObject * s_ParticleEmitter2_setEventListener( ParticleEmitter2 * _node, PyObject * _args, PyObject * _kwds )
+        {
+            if( _kwds == nullptr )
+            {
+                return pybind::ret_none();
+            }
+
+            pybind::dict py_kwds( _kwds );
+            registerAnimatableEventReceiver<>( py_kwds, _node );
+
+            return pybind::ret_none();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        class PythonScriptHolderEventReceiver
+            : public PythonEventReceiver
+            , public ScriptHolderEventReceiver
+        {
+        public:
+            pybind::object onScriptHolderKeepScript() override
+            {
+                return m_cb.call();
+            }
+
+            void onScriptHolderReleaseScript(const pybind::object & _script) override
+            {
+                m_cb.call( _script );
+            }
+        };
+        //////////////////////////////////////////////////////////////////////////
+        PyObject * s_ScriptHolder_setEventListener( ScriptHolder * _node, PyObject * _args, PyObject * _kwds )
+        {
+            if( _kwds == nullptr )
+            {
+                return pybind::ret_none();
+            }
+
+            pybind::dict py_kwds( _kwds );
+            registerEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
+            registerEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
+
+            return pybind::ret_none();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        class PythonHotSpotEventReceiver
+            : public PythonEventReceiver
+            , public HotSpotEventReceiver
+        {
+        public:
+            void onHotSpotActivate() override
+            {
+                m_cb.call();
+            }
+            
+            void onHotSpotDeactivate() override
+            { 
+                m_cb.call();
+            }
+            
+            void onHotSpotMouseLeave() override
+            {
+                m_cb.call();
+            }
+
+            bool onHotSpotMouseEnter( float _x, float _y ) override
+            {
+                return m_cb.call( _x, _y );
+            }
+
+            bool onHotSpotKey( const InputKeyEvent & _event ) override
+            {
+                return m_cb.call( _event.x, _event.y, _event.key, _event.code, _event.isDown, _event.isRepeat );
+            }
+
+            bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override
+            {
+                return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
+            }
+            
+            bool onHotSpotMouseButtonBegin( const InputMouseButtonEvent & _event ) override
+            {
+                return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
+            }
+            
+            bool onHotSpotMouseButtonEnd( const InputMouseButtonEvent & _event ) override
+            {
+                return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
+            }
+            
+            bool onHotSpotMouseMove( const InputMouseMoveEvent & _event ) override
+            {
+                return m_cb.call( _event.touchId, _event.x, _event.y, _event.dx, _event.dy, _event.pressure );
+            }
+
+            bool onHotSpotMouseWheel( const InputMouseWheelEvent & _event ) override
+            {
+                return m_cb.call( _event.x, _event.y, _event.button, _event.wheel );
+            }
+
+            void onHotSpotMouseOverDestroy() override
+            {
+                m_cb.call();
+            }
+
+            void onHotSpotMouseButtonBegin( uint32_t _enumerator, bool _isEnd ) override
+            {
+                m_cb.call( _enumerator, _isEnd );
+            }
+
+            void onHotSpotMouseButtonEnd( uint32_t _enumerator, bool _isEnd ) override
+            {
+                m_cb.call( _enumerator, _isEnd );
+            }
+        };
+        //////////////////////////////////////////////////////////////////////////
+        PyObject * s_HotSpot_setEventListener( HotSpot * _node, PyObject * _args, PyObject * _kwds )
+        {
+            if( _kwds == nullptr )
+            {
+                return pybind::ret_none();
+            }
+
+            pybind::dict py_kwds( _kwds );
+
+            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleKeyEvent", EVENT_KEY );
+            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEvent", EVENT_MOUSE_BUTTON );
+            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_MOUSE_BUTTON_BEGIN );
+            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_MOUSE_BUTTON_END );
+            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseMove", EVENT_MOUSE_MOVE );
+            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseWheel", EVENT_MOUSE_WHEEL );
+            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseEnter", EVENT_MOUSE_ENTER );
+            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseLeave", EVENT_MOUSE_LEAVE );
+            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseOverDestroy", EVENT_MOUSE_OVER_DESTROY );
+            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onActivate", EVENT_ACTIVATE );
+            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
+
+            return pybind::ret_none();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        class PythonMovieEventReceiver
+            : public PythonEventReceiver
+            , public MovieEventReceiver
+        {
+        public:
+            void onAnimatablePlay( uint32_t _enumerator, float _time ) override
+            {
+                m_cb.call( _enumerator, _time );
+            }
+
+            void onAnimatableRestart( uint32_t _enumerator, float _time ) override
+            {
+                m_cb.call( _enumerator, _time );
+            }
+
+            void onAnimatablePause( uint32_t _enumerator ) override
+            {
+                m_cb.call( _enumerator );
+            }
+
+            void onAnimatableResume( uint32_t _enumerator, float _time ) override
+            {
+                m_cb.call( _enumerator, _time );
+            }
+
+            void onAnimatableStop( uint32_t _enumerator ) override
+            {
+                m_cb.call( _enumerator );
+            }
+
+            void onAnimatableEnd( uint32_t _enumerator ) override
+            {
+                m_cb.call( _enumerator );
+            }
+
+            void onAnimatableInterrupt( uint32_t _enumerator ) override
+            {
+                m_cb.call( _enumerator );
+            }
+
+            pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) override
+            {
+                return m_cb.call( _group, _name );
+            }
+
+            Node * onMovieActivateInternal( const pybind::object & _internal ) override
+            {
+                return m_cb.call( _internal );
+            }
+
+            void onMovieDeactivateInternal( const pybind::object & _internal ) override
+            {
+                m_cb.call( _internal );
+            }
+        };
+        //////////////////////////////////////////////////////////////////////////
+        PyObject * s_Movie_setEventListener( Movie * _node, PyObject * _args, PyObject * _kwds )
+        {
+            if( _kwds == nullptr )
+            {
+                return pybind::ret_none();
+            }
+
+            pybind::dict py_kwds( _kwds );
+            registerAnimatableEventReceiver<PythonMovieEventReceiver>( py_kwds, _node );
+
+            registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL );
+            registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL );
+            registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL );
+
+            return pybind::ret_none();
+        }
+        ////////////////////////////////////////////////////////////////////////////
+        //PyObject * s_Node_setEventListener( Node * _node, PyObject * _args, PyObject * _kwds )
+        //{
+        //    if( _kwds == nullptr )
+        //    {
+        //        return pybind::ret_none();
+        //    }
+
+        //    pybind::dict py_kwds( _kwds );
+        //    NodeEventVisitor visitor( py_kwds );
+        //    _node->visit( &visitor );
+
+        //    return pybind::ret_none();
+        //}        
 		//////////////////////////////////////////////////////////////////////////
 		void s_Animatable_resume( Animatable * _animatable )
 		{
@@ -3683,20 +4063,20 @@ namespace Menge
 			return affector;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		AffectorNodeFollowerCreator<Shape, mt::vec2f, void(Shape::*)(const mt::vec2f &), const mt::vec2f &(Shape::*)()const> m_creatorAffectorNodeFollowerCustomSize;
+		AffectorNodeFollowerCreator<ShapeQuadFlex, mt::vec2f, void(ShapeQuadFlex::*)(const mt::vec2f &), const mt::vec2f &(ShapeQuadFlex::*)()const> m_creatorAffectorNodeFollowerCustomSize;
 		//////////////////////////////////////////////////////////////////////////
-		AffectorFollower * s_addShapeFollowerCustomSize( Shape * _node, const mt::vec2f & _value, const mt::vec2f & _target, float _speed )
+		AffectorFollower * s_addShapeFollowerCustomSize( ShapeQuadFlex * _node, const mt::vec2f & _value, const mt::vec2f & _target, float _speed )
 		{
-			AffectorFollower * affector = m_creatorAffectorNodeFollowerCustomSize.create( _node, &Shape::setCustomSize, &Shape::getCustomSize, _value, _target, _speed );
+			AffectorFollower * affector = m_creatorAffectorNodeFollowerCustomSize.create( _node, &ShapeQuadFlex::setCustomSize, &ShapeQuadFlex::getCustomSize, _value, _target, _speed );
 
 			return affector;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		AffectorNodeFollowerCreator<Shape, mt::vec2f, void(Shape::*)(const mt::vec2f &), const mt::vec2f &(Shape::*)()const> m_creatorAffectorNodeFollowerTextureUVScale;
+		AffectorNodeFollowerCreator<ShapeQuadFlex, mt::vec2f, void(ShapeQuadFlex::*)(const mt::vec2f &), const mt::vec2f &(ShapeQuadFlex::*)()const> m_creatorAffectorNodeFollowerTextureUVScale;
 		//////////////////////////////////////////////////////////////////////////
-		AffectorFollower * s_addShapeFollowerTextureUVScale( Shape * _node, const mt::vec2f & _value, const mt::vec2f & _target, float _speed )
+		AffectorFollower * s_addShapeFollowerTextureUVScale( ShapeQuadFlex * _node, const mt::vec2f & _value, const mt::vec2f & _target, float _speed )
 		{
-			AffectorFollower * affector = m_creatorAffectorNodeFollowerTextureUVScale.create( _node, &Shape::setTextureUVScale, &Shape::getTextureUVScale, _value, _target, _speed );
+			AffectorFollower * affector = m_creatorAffectorNodeFollowerTextureUVScale.create( _node, &ShapeQuadFlex::setTextureUVScale, &ShapeQuadFlex::getTextureUVScale, _value, _target, _speed );
 
 			return affector;
 		}
@@ -3833,38 +4213,51 @@ namespace Menge
 
 		}
 		//////////////////////////////////////////////////////////////////////////
-		mt::vec2f s_getImageSize( Sprite * _sprite )
+		const mt::vec2f & s_getImageSize( Shape * _shape )
 		{
-			const ResourceImagePtr & resourceImage = _sprite->getResourceImage();
+			const SurfacePtr & surface = _shape->getSurface();
 
-			if( resourceImage == nullptr )
+			if( surface == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_getImageSize sprite %s not setup resource"
-					, _sprite->getName().c_str()
+				LOGGER_ERROR( m_serviceProvider )("s_getImageSize shape %s not setup surface"
+					, _shape->getName().c_str()
 					);
 
-				return  mt::vec2f( 0.f, 0.f );
+				return mt::vec2f::identity();
 			}
 
-			const mt::vec2f & size = resourceImage->getSize();
+			const mt::vec2f & size = surface->getSize();
 
 			return size;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		mt::vec2f s_getLocalImageCenter( Sprite * _sprite )
+		mt::vec2f s_getLocalImageCenter( Shape * _shape )
 		{
-			const mt::vec2f & imageSize = s_getImageSize( _sprite );
+            const SurfacePtr & surface = _shape->getSurface();
 
-			mt::vec2f imageCenter( imageSize.x * 0.5f, imageSize.y * 0.5f );
+            if( surface == nullptr )
+            {
+                LOGGER_ERROR( m_serviceProvider )("s_getLocalImageCenter shape %s not setup surface"
+                    , _shape->getName().c_str()
+                    );
 
-			return imageCenter;
+                return mt::vec2f::identity();
+            }
+
+            const mt::vec2f & offset = surface->getOffset();
+
+            const mt::vec2f & size = surface->getSize();
+
+            mt::vec2f center = offset + size * 0.5f;
+
+			return center;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		mt::vec2f s_getWorldImageCenter( Sprite * _sprite )
+		mt::vec2f s_getWorldImageCenter( Shape * _shape )
 		{
-			mt::vec2f imageCenter = s_getLocalImageCenter( _sprite );
+			mt::vec2f imageCenter = s_getLocalImageCenter( _shape );
 
-			const mt::mat4f & wm = _sprite->getWorldMatrix();
+			const mt::mat4f & wm = _shape->getWorldMatrix();
 
 			mt::vec2f imageCenter_wm;
 			mt::mul_v2_v2_m4( imageCenter_wm, imageCenter, wm );
@@ -5201,9 +5594,9 @@ namespace Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Shape, void (Shape::*)(const mt::vec4f &), mt::vec4f> m_NodeAffectorCreatorInterpolateLinearVec4;
+		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<ShapeQuadFlex, void (ShapeQuadFlex::*)(const mt::vec4f &), mt::vec4f> m_NodeAffectorCreatorInterpolateLinearVec4;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t setPercentVisibilityTo( Shape * _shape, float _time, const mt::vec4f& _percent, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t setPercentVisibilityTo( ShapeQuadFlex * _shape, float _time, const mt::vec4f& _percent, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			if( _shape->isActivate() == false )
 			{
@@ -5213,7 +5606,7 @@ namespace Menge
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _shape, _cb, _args );
 
 			Affector* affector = m_NodeAffectorCreatorInterpolateLinearVec4.create( m_serviceProvider
-				, ETA_VISIBILITY, callback, _shape, &Shape::setPercentVisibility
+				, ETA_VISIBILITY, callback, _shape, &ShapeQuadFlex::setPercentVisibility
 				, _shape->getPercentVisibility(), _percent, _time
 				);
 
@@ -5234,7 +5627,7 @@ namespace Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void setPercentVisibilityStop( Shape * _shape )
+		void setPercentVisibilityStop( ShapeQuadFlex * _shape )
 		{
 			_shape->stopAffectors( ETA_VISIBILITY );
 		}
@@ -6156,9 +6549,6 @@ namespace Menge
 
 		//SCRIPT_CLASS_WRAPPING( Light2D );
 		//SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Shape );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Sprite );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Animation );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Gyroscope );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Isometric );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Arrow );
@@ -6174,8 +6564,10 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Line );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Landscape2D );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Grid2D );
-		//SCRIPT_CLASS_WRAPPING( TilePolygon );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Video );
+
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ShapeQuadFixed );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ShapeQuadFlex );
+        
 		//SCRIPT_CLASS_WRAPPING( FFCamera3D );
 		//SCRIPT_CLASS_WRAPPING( DiscreteEntity );
 		//SCRIPT_CLASS_WRAPPING( RigidBody3D );
@@ -6216,6 +6608,7 @@ namespace Menge
 
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceVideo );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceSound );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceImage );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceImageSequence );
 
 # undef SCRIPT_CLASS_WRAPPING
@@ -6277,10 +6670,7 @@ namespace Menge
 			.def( "setSpeedFactor", &Affector::setSpeedFactor )
 			.def( "getSpeedFactor", &Affector::getSpeedFactor )
 			;
-
-		pybind::interface_<Scriptable>( "Scriptable" )
-			;
-
+        
 		pybind::interface_<Identity>( "Identity" )
 			.def( "setName", &Identity::setName )
 			.def( "getName", &Identity::getName )
@@ -6495,8 +6885,8 @@ namespace Menge
 			;
 
 		pybind::interface_<Eventable>( "Eventable" )
-			.def_native( "setEventListener", &Eventable::setEventListener )
-			.def( "removeEventListener", &Eventable::removeEventListener )
+			//.def_native( "setEventListener", &Eventable::setEventListener )
+			//.def( "removeEventListener", &Eventable::removeEventListener )
 			;
 
 		pybind::interface_<Affectorable>( "Affectorable" )
@@ -6516,7 +6906,7 @@ namespace Menge
 			.def( "getBlendMode", &Materialable::getBlendMode )
 			;
 
-		pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, BoundingBox, Colorable, Resource, Renderable, Affectorable> >( "Node", false )
+		pybind::interface_<Node, pybind::bases<Identity, Transformation3D, BoundingBox, Colorable, Resource, Renderable, Affectorable> >( "Node", false )
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isEnable", &Node::isEnable )
@@ -6554,9 +6944,6 @@ namespace Menge
 
 			.def( "getWorldColor", &Node::getWorldColor )
 
-			.def( "setIsometricOffset", &Node::setIsometricOffset )
-			.def( "getIsometricOffset", &Node::getIsometricOffset )
-
 			.def( "setRenderViewport", &Node::setRenderViewport )
 			.def( "getRenderViewport", &Node::getRenderViewport )
 			.def( "getRenderViewportInheritance", &Node::getRenderViewportInheritance )
@@ -6593,32 +6980,46 @@ namespace Menge
 			.def_proxy_args_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::accAngleTo )
 			;
 
-		pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Eventable, Materialable> >( "Surface", false )
-			.def_native( "setEventListener", &Surface::setEventListener )
-			.def( "removeEventListener", &Surface::removeEventListener )
+		pybind::interface_<Surface, pybind::bases<Identity, Materialable, Resource> >( "Surface", false )            
+            .def( "getMaxSize", &Surface::getMaxSize )
+            .def( "getSize", &Surface::getSize )
+            .def( "getOffset", &Surface::getOffset )
+
+            .def( "getUVCount", &Surface::getUVCount )
+            .def( "getUV", &Surface::getUV )
+
+            .def( "getColour", &Surface::getColour )
 			;
 
-		pybind::interface_<SurfaceVideo, pybind::bases<Surface, Resource, Animatable> >( "SurfaceVideo", false )
+		pybind::interface_<SurfaceVideo, pybind::bases<Surface, Eventable,  Animatable> >( "SurfaceVideo", false )
 			.def( "setResourceVideo", &SurfaceVideo::setResourceVideo )
 			.def( "getResourceVideo", &SurfaceVideo::getResourceVideo )
 			.def( "getWidth", &SurfaceVideo::getWidth )
 			.def( "getHeight", &SurfaceVideo::getHeight )
 			.def( "getDuration", &SurfaceVideo::getDuration )
+            .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceVideo_setEventListener )
 			;
 
-		pybind::interface_<SurfaceSound, pybind::bases<Surface, Resource, Animatable> >( "SurfaceSound", false )
+		pybind::interface_<SurfaceSound, pybind::bases<Surface, Eventable, Animatable, Soundable> >( "SurfaceSound", false )
 			.def( "setResourceSound", &SurfaceSound::setResourceSound )
 			.def( "getResourceSound", &SurfaceSound::getResourceSound )
 			.def( "getDuration", &SurfaceSound::getDuration )
+            .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceSound_setEventListener )
 			;
 
-		pybind::interface_<SurfaceImageSequence, pybind::bases<Surface, Resource, Animatable> >( "SurfaceImageSequence", false )
+        pybind::interface_<SurfaceImage, pybind::bases<Surface> >( "SurfaceImage", false )
+            .def( "setResourceImage", &SurfaceImage::setResourceImage )
+            .def( "getResourceImage", &SurfaceImage::getResourceImage )
+            ;
+
+		pybind::interface_<SurfaceImageSequence, pybind::bases<Surface, Eventable, Animatable> >( "SurfaceImageSequence", false )
 			.def( "setResourceAnimation", &SurfaceImageSequence::setResourceAnimation )
 			.def( "getResourceAnimation", &SurfaceImageSequence::getResourceAnimation )
 			.def( "getFrameCount", &SurfaceImageSequence::getFrameCount )
 			.def( "getFrameDelay", &SurfaceImageSequence::getFrameDelay )
 			.def( "setCurrentFrame", &SurfaceImageSequence::setCurrentFrame )
 			.def( "getCurrentFrame", &SurfaceImageSequence::getCurrentFrame )
+            .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceImageSequence_setEventListener )
 			;
 
 		pybind::interface_<ThreadTask>( "Task" )
@@ -6763,6 +7164,7 @@ namespace Menge
 
 					.def( "setEmitterRandomMode", &ParticleEmitter2::setEmitterRandomMode )
 					.def( "getEmitterRandomMode", &ParticleEmitter2::getEmitterRandomMode )
+                    .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_ParticleEmitter2_setEventListener )
 					;
 
 				pybind::interface_<SoundEmitter, pybind::bases<Node> >( "SoundEmitter", false )
@@ -6838,6 +7240,7 @@ namespace Menge
 					;
 
 				pybind::interface_<ScriptHolder, pybind::bases<Node, Eventable> >( "ScriptHolder", false )
+                    .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_ScriptHolder_setEventListener )
 					;
 
 				pybind::interface_<Point, pybind::bases<Node> >( "Point", false )
@@ -6909,6 +7312,7 @@ namespace Menge
 					.def( "setDefaultHandle", &HotSpot::setDefaultHandle )
 					.def( "getDefaultHandle", &HotSpot::getDefaultHandle )
 					.def( "isMousePickerOver", &HotSpot::isMousePickerOver )
+                    .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_setEventListener )
 					;
 
 				pybind::interface_<HotSpotPolygon, pybind::bases<HotSpot> >( "HotSpotPolygon", false )
@@ -6946,26 +7350,42 @@ namespace Menge
 					.def( "addBubble", &HotSpotBubbles::addBubble )
 					;
 
-				pybind::interface_<Shape, pybind::bases<Node, Materialable> >( "Shape", false )
-					.def( "setCenterAlign", &Shape::setCenterAlign )
-					.def( "getCenterAlign", &Shape::getCenterAlign )
-					.def( "setFlipX", &Shape::setFlipX )
-					.def( "getFlipX", &Shape::getFlipX )
-					.def( "setFlipY", &Shape::setFlipY )
-					.def( "getFlipY", &Shape::getFlipY )
-					.def( "setPercentVisibility", &Shape::setPercentVisibility )
-					.def( "getPercentVisibility", &Shape::getPercentVisibility )
-					.def( "setCustomSize", &Shape::setCustomSize )
-					.def( "getCustomSize", &Shape::getCustomSize )
-					.def( "removeCustomSize", &Shape::removeCustomSize )
-					.def( "hasCustomSize", &Shape::hasCustomSize )
-					.def_proxy_static( "setPercentVisibilityTo", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityTo )
-					.def_proxy_static( "setPercentVisibilityStop", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityStop )
-					.def( "setTextureUVOffset", &Shape::setTextureUVOffset )
-					.def( "getTextureUVOffset", &Shape::getTextureUVOffset )
-					.def( "setTextureUVScale", &Shape::setTextureUVScale )
-					.def( "getTextureUVScale", &Shape::getTextureUVScale )
+				pybind::interface_<Shape, pybind::bases<Node> >( "Shape", false )
+					.def( "setSurface", &Shape::setSurface )
+					.def( "getSurface", &Shape::getSurface )
+
+                    .def_proxy_static( "getImageSize", nodeScriptMethod, &NodeScriptMethod::s_getImageSize )
+                    .def_proxy_static( "getLocalImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getLocalImageCenter )
+                    .def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldImageCenter )
 					;
+
+                pybind::interface_<ShapeQuad, pybind::bases<Shape> >( "ShapeQuad", false )
+                    ;
+                
+
+                pybind::interface_<ShapeQuadFixed, pybind::bases<ShapeQuad> >( "ShapeQuadFixed", false )
+                    ;
+
+                pybind::interface_<ShapeQuadFlex, pybind::bases<ShapeQuad> >( "ShapeQuadFlex", false )
+                    .def( "setCenterAlign", &ShapeQuadFlex::setCenterAlign )
+                    .def( "getCenterAlign", &ShapeQuadFlex::getCenterAlign )
+                    .def( "setFlipX", &ShapeQuadFlex::setFlipX )
+                    .def( "getFlipX", &ShapeQuadFlex::getFlipX )
+                    .def( "setFlipY", &ShapeQuadFlex::setFlipY )
+                    .def( "getFlipY", &ShapeQuadFlex::getFlipY )
+                    .def( "setPercentVisibility", &ShapeQuadFlex::setPercentVisibility )
+                    .def( "getPercentVisibility", &ShapeQuadFlex::getPercentVisibility )
+                    .def( "setCustomSize", &ShapeQuadFlex::setCustomSize )
+                    .def( "getCustomSize", &ShapeQuadFlex::getCustomSize )
+                    .def( "removeCustomSize", &ShapeQuadFlex::removeCustomSize )
+                    .def( "hasCustomSize", &ShapeQuadFlex::hasCustomSize )
+                    .def_proxy_static( "setPercentVisibilityTo", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityTo )
+                    .def_proxy_static( "setPercentVisibilityStop", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityStop )
+                    .def( "setTextureUVOffset", &ShapeQuadFlex::setTextureUVOffset )
+                    .def( "getTextureUVOffset", &ShapeQuadFlex::getTextureUVOffset )
+                    .def( "setTextureUVScale", &ShapeQuadFlex::setTextureUVScale )
+                    .def( "getTextureUVScale", &ShapeQuadFlex::getTextureUVScale )
+                    ;
 
 				pybind::interface_<Landscape2D, pybind::bases<Node, Materialable> >( "Landscape2D", false )
 					.def( "setBackParts", &Landscape2D::setBackParts )
@@ -6985,37 +7405,12 @@ namespace Menge
 					.def( "setAngle", &Grid2D::setAngle )
 					;
 
-				pybind::interface_<Sprite, pybind::bases<Shape> >( "Sprite", false )
-					.def_depricated( "setImageResource", &Sprite::setResourceImage, "Use setResourceImage" )
-					.def_depricated( "getImageResource", &Sprite::getResourceImage, "Use getResourceImage" )
-					.def( "setResourceImage", &Sprite::setResourceImage )
-					.def( "getResourceImage", &Sprite::getResourceImage )
-
-					.def( "setMaterialName", &Sprite::setMaterialName )
-					.def( "getMaterialName", &Sprite::getMaterialName )
-
-					.def_proxy_static( "getImageSize", nodeScriptMethod, &NodeScriptMethod::s_getImageSize )
-
-					.def_proxy_static( "getLocalImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getLocalImageCenter )
-					.def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldImageCenter )
-					;
-
 				pybind::interface_<Gyroscope, pybind::bases<Node> >( "Gyroscope", false )
 					;
 
 				pybind::interface_<Isometric, pybind::bases<Node> >( "Isometric", false )
 					;
 
-				{
-					pybind::interface_<Animation, pybind::bases<Sprite, Eventable, Animatable> >( "Animation", false )
-						.def( "setResourceAnimation", &Animation::setResourceAnimation )
-						.def( "getResourceAnimation", &Animation::getResourceAnimation )
-						.def( "getFrameCount", &Animation::getFrameCount )
-						.def( "getFrameDelay", &Animation::getFrameDelay )
-						.def( "setCurrentFrame", &Animation::setCurrentFrame )
-						.def( "getCurrentFrame", &Animation::getCurrentFrame )
-						;
-				}
 
 				{
 					pybind::interface_<Model3D, pybind::bases<Node, Animatable, Materialable> >( "Model3D", false )
@@ -7117,23 +7512,20 @@ namespace Menge
 					.def_proxy_static( "getMovieSlotOffsetPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotOffsetPosition )
 					.def_proxy_static( "attachMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_attachMovieSlotNode )
 					.def_proxy_static( "removeAllMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_removeAllMovieSlotNode )
+                    .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Movie_setEventListener )
 					;
 
 				pybind::interface_<Meshget, pybind::bases<Node, Eventable, Materialable> >( "Meshget", false )
 					.def( "setResourceImage", &Meshget::setResourceImage )
 					.def( "getResourceImage", &Meshget::getResourceImage )
 					.def( "setVertices", &Meshget::setVertices )
+                    .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Meshget_setEventListener )
 					;
 
 				pybind::interface_<MovieSlot, pybind::bases<Node> >( "MovieSlot", false )
 					;
 
 				pybind::interface_<MovieInternalObject, pybind::bases<Node> >( "MovieInternalObject", false )
-					;
-
-				pybind::interface_<Video, pybind::bases<Node> >( "Video", false )
-					.def( "setSurfaceVideo", &Video::setSurfaceVideo )
-					.def( "getSurfaceVideo", &Video::getSurfaceVideo )
 					;
 
 				pybind::interface_<Window, pybind::bases<Node> >( "Window", false )

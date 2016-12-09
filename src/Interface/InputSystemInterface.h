@@ -269,10 +269,10 @@ namespace Menge
 	{
 		InputEventType type;
 
-		unsigned int touchId;
+		uint32_t touchId;
 		float x;
 		float y;
-		unsigned int button;
+        uint32_t button;
 		float pressure;
 		bool isDown;
 		bool isPressed;
@@ -284,15 +284,15 @@ namespace Menge
 
 		float x;
 		float y;
-		unsigned int button;
-		int wheel;
+        uint32_t button;
+        int32_t wheel;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	struct InputMouseMoveEvent
 	{
 		InputEventType type;
 
-		unsigned int touchId;
+        uint32_t touchId;
 		float x;
 		float y;
 		float dx;
@@ -304,7 +304,7 @@ namespace Menge
 	{
 		InputEventType type;
 
-		unsigned int touchId;
+        uint32_t touchId;
 		float x;
 		float y;
 		float pressure;
@@ -384,7 +384,7 @@ namespace Menge
 		virtual void pushEvent( const InputUnionEvent & _event ) = 0;
 
 	public:
-		inline void pushMouseMoveEvent( unsigned int _touchId, float _x, float _y, float _dx, float _dy, float _pressure )
+		inline void pushMouseMoveEvent( uint32_t _touchId, float _x, float _y, float _dx, float _dy, float _pressure )
 		{
 			InputUnionEvent event;
 			event.move.type = IET_MOUSE_MOVE;
@@ -399,7 +399,7 @@ namespace Menge
 			this->pushEvent( event );
 		}
 
-		inline void pushMouseButtonEvent( unsigned int _touchId, float _x, float _y, unsigned int _button, float _pressure, bool _isDown )
+		inline void pushMouseButtonEvent( uint32_t _touchId, float _x, float _y, uint32_t _button, float _pressure, bool _isDown )
 		{
 			InputUnionEvent event;
 			event.button.type = IET_MOUSE_BUTTON;
@@ -444,7 +444,7 @@ namespace Menge
 		}
 
 		//////////////////////////////////////////////////////////////////////////
-		inline void pushMouseEnterEvent( unsigned int _touchId, float _x, float _y, float _pressure )
+		inline void pushMouseEnterEvent( uint32_t _touchId, float _x, float _y, float _pressure )
 		{
 			InputUnionEvent event;
 			event.position.type = IET_MOUSE_ENTER;
@@ -457,7 +457,7 @@ namespace Menge
 			this->pushEvent( event );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		inline void pushMouseWheelEvent( float _x, float _y, unsigned int _button, int _whell )
+		inline void pushMouseWheelEvent( float _x, float _y, uint32_t _button, int _whell )
 		{
 			InputUnionEvent event;
 			event.wheel.type = IET_MOUSE_WHELL;
@@ -470,7 +470,7 @@ namespace Menge
 			this->pushEvent( event );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		inline void pushMousePositionEvent( unsigned int _touchId, float _x, float _y, float _pressure )
+		inline void pushMousePositionEvent( uint32_t _touchId, float _x, float _y, float _pressure )
 		{
 			InputUnionEvent event;
 			event.position.type = IET_MOUSE_POSITION;

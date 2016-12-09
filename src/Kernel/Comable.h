@@ -17,7 +17,7 @@ namespace Menge
 #	ifdef _DEBUG
 			if(dynamic_cast<T *>(com) == nullptr)
 			{
-				return nullptr;
+                throw;
 			}
 #	endif
 

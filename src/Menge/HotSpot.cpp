@@ -82,21 +82,6 @@ namespace Menge
 		return m_global;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	enum HotSpotEventFlag
-	{
-		EVENT_KEY = 0,
-		EVENT_MOUSE_BUTTON,
-		EVENT_MOUSE_BUTTON_BEGIN,
-		EVENT_MOUSE_BUTTON_END,
-		EVENT_MOUSE_WHEEL,
-		EVENT_MOUSE_MOVE,
-		EVENT_MOUSE_ENTER,
-		EVENT_MOUSE_LEAVE,
-		EVENT_MOUSE_OVER_DESTROY,
-		EVENT_ACTIVATE,
-		EVENT_DEACTIVATE
-	};
-	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_setEventListener( const pybind::dict & _listener )
 	{
 		this->registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _listener );
@@ -148,7 +133,9 @@ namespace Menge
 
 		mousePickerSystem->updateTraps();
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACTIVATE)();
+        EVENTABLE_METHOD( this, EVENT_ACTIVATE )
+            ->onHotSpotActivate();
+		//EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACTIVATE)();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::deactivatePicker_()
@@ -182,81 +169,99 @@ namespace Menge
 		mousePickerSystem->updateTraps();
 
 		m_debugColor = 0x00000000;
-
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_DEACTIVATE )();
+        
+        EVENTABLE_METHOD( this, EVENT_DEACTIVATE )
+            ->onHotSpotDeactivate();
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_DEACTIVATE )();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onHandleMouseLeave()
 	{
 		m_debugColor = 0xFFFFFFFF;
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_LEAVE )(this);
+        EVENTABLE_METHOD( this, EVENT_MOUSE_LEAVE )
+            ->onHotSpotMouseLeave();
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_LEAVE )(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onHandleMouseOverDestroy()
 	{
 		m_debugColor = 0xFFFFFFFF;
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_OVER_DESTROY )(this);
+        EVENTABLE_METHOD( this, EVENT_MOUSE_OVER_DESTROY )
+            ->onHotSpotMouseOverDestroy();
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_OVER_DESTROY )(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::onHandleMouseEnter( float _x, float _y )
 	{
 		m_debugColor = 0xFFFF0000;
 
-		bool handle = m_defaultHandle;
-
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_ENTER, handle )(this, _x, _y);
+		bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_ENTER, m_defaultHandle )
+            ->onHotSpotMouseEnter( _x, _y );
+		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_ENTER, handle )(this, _x, _y);
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleKeyEvent( const InputKeyEvent & _event )
 	{
-		bool handle = m_defaultHandle;
+		//bool handle = m_defaultHandle;
 				
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEY, handle )(this, (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat);
+        bool handle = EVENTABLE_METHODR( this, EVENT_KEY, m_defaultHandle )
+            ->onHotSpotKey( _event );
+		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEY, handle )(this, (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat);
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
 	{
-		bool handle = m_defaultHandle;
+		//bool handle = m_defaultHandle;
 
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON, handle )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
+        bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_BUTTON, m_defaultHandle )
+            ->onHotSpotMouseButton( _event );
+		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON, handle )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////	
 	bool HotSpot::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
 	{
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
+        bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_BUTTON_BEGIN, false )
+            ->onHotSpotMouseButtonBegin( _event );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
 
-		return false;
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
 	{
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_BUTTON_END )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
+        bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_BUTTON_END, false )
+            ->onHotSpotMouseButtonEnd( _event );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_BUTTON_END )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
 
-		return false;
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleMouseMove( const InputMouseMoveEvent & _event )
 	{
-		bool handle = m_defaultHandle;
+        bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_MOVE, m_defaultHandle )
+            ->onHotSpotMouseMove( _event );
+		//bool handle = m_defaultHandle;
 
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_MOVE, handle )(this, _event.touchId, _event.x, _event.y, _event.dx, _event.dy);
+		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_MOVE, handle )(this, _event.touchId, _event.x, _event.y, _event.dx, _event.dy);
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleMouseWheel( const InputMouseWheelEvent & _event )
 	{
-		bool handle = m_defaultHandle;
+        bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_MOVE, m_defaultHandle )
+            ->onHotSpotMouseWheel( _event );
+		//bool handle = m_defaultHandle;
 				
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_WHEEL, handle )(this, _event.button, _event.x, _event.y, _event.wheel);
+		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_WHEEL, handle )(this, _event.button, _event.x, _event.y, _event.wheel);
 
 		return handle;
 	}

@@ -1,13 +1,11 @@
 #	include "ResourceAnimation.h"
 
+#   include "Interface/ResourceInterface.h"
+#   include "Interface/ConfigInterface.h"
+
 #	include "Metacode/Metacode.h"
 
 #	include "Kernel/ResourceImage.h"
-
-#	include "ResourceImageDefault.h"
-
-#   include "Interface/ResourceInterface.h"
-#   include "Interface/ConfigInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -37,7 +35,11 @@ namespace Menge
             AnimationSequence sq;
 
             meta_sequence.swap_ResourceImageName( sq.resourceName );
-            sq.delay = meta_sequence.get_Delay();
+            float delay = meta_sequence.get_Delay();
+
+            sq.delay = delay;
+
+            m_duration += delay;
 
             m_sequence.push_back( sq );
         }
@@ -79,9 +81,7 @@ namespace Menge
 				return false;
 			}
 
-			sequence.resource = resource;
-
-			m_duration += sequence.delay;
+			sequence.resource = resource;			
 		}
 
 		return true;
@@ -139,77 +139,19 @@ namespace Menge
 				return false;
 			}
 
-			ResourceImageDefaultPtr resourceImageDefault = stdex::intrusive_dynamic_cast<ResourceImageDefaultPtr>(resourceImage);
+            if( resourceImage->isValid() == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("ResourceAnimation::_isValid %s invalid validate sequence resource '%s'"
+                    , this->getName().c_str()
+                    , resourceImage->getName().c_str()
+                    );
 
-			if( resourceImageDefault != nullptr )
-			{
-				const FilePath & fileName = resourceImageDefault->getFilePath();
-				const ConstString & category = resourceImageDefault->getCategory();
+                return false;
+            }
 
-				bool exist = FILE_SERVICE(m_serviceProvider)
-					->existFile( category, fileName, nullptr );
+            uint32_t resource_memory = resourceImage->getMemoryUse();
 
-				if( exist == false )
-				{
-					LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid %s not exist file %s:%s"
-						, m_name.c_str()
-						, category.c_str()
-						, fileName.c_str()
-						);
-
-					return false;
-				}
-
-				InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-					->openInputFile( category, fileName, false );
-
-				if( stream == nullptr )
-				{
-					LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid %s invalid open file %s:%s"
-						, m_name.c_str()
-						, category.c_str()
-						, fileName.c_str()
-						);
-
-					return false;
-				}
-
-				const ConstString & codecType = resourceImageDefault->getCodecType();
-
-				ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-					->createDecoderT<ImageDecoderInterfacePtr>( codecType );
-
-				if( imageDecoder == nullptr )
-				{
-					LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid %s file %s:%s invalid decoder %s"
-						, m_name.c_str()
-						, category.c_str()
-						, fileName.c_str()
-						, codecType.c_str()
-						);
-
-					return false;
-				}
-
-				if( imageDecoder->prepareData( stream ) == false )
-				{
-					LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid %s file %s:%s decoder initialize failed %s"
-						, m_name.c_str()
-						, category.c_str()
-						, fileName.c_str()
-						, codecType.c_str()
-						);
-
-					return false;
-				}
-
-				const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
-				
-				size_t texture_memory = RENDERTEXTURE_SERVICE(m_serviceProvider)
-					->getImageMemoryUse( dataInfo->width, dataInfo->height, dataInfo->channels, dataInfo->depth, dataInfo->format );
-
-				total_memory += texture_memory;						
-			}
+			total_memory += resource_memory;
 		}
 
 		uint32_t animationMemoryLimit = CONFIG_VALUE(m_serviceProvider, "Limit", "AnimationMemoryLimit", 4194304U ); //4kb
@@ -231,13 +173,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t ResourceAnimation::getSequenceCount() const
 	{
-        size_t size = m_sequence.size();
+        TVectorAnimationSequence::size_type sequenceCount = m_sequence.size();
 
-		return (uint32_t)size;
+		return (uint32_t)sequenceCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float ResourceAnimation::getSequenceDelay( uint32_t _index ) const
 	{
+#   ifdef _DEBUG
+        uint32_t sequenceCount = this->getSequenceCount();
+
+        if( _index >= sequenceCount )
+        {
+            LOGGER_ERROR( m_serviceProvider )("ResourceAnimation::getSequenceDelay: '%s' sequence '%u' out of range '%u'"
+                , this->getName().c_str()
+                , _index
+                , sequenceCount
+                );
+
+            return 0.f;
+        }
+#   endif
+
         const AnimationSequence & sequence = m_sequence[_index];
 
         float delay = sequence.delay;
@@ -247,6 +204,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourceAnimation::getSequenceResourceName( uint32_t _index ) const
 	{
+#   ifdef _DEBUG
+        uint32_t sequenceCount = this->getSequenceCount();
+
+        if( _index >= sequenceCount )
+        {
+            LOGGER_ERROR( m_serviceProvider )("ResourceAnimation::getSequenceResourceName: '%s' sequence '%u' out of range '%u'"
+                , this->getName().c_str()
+                , _index
+                , sequenceCount
+                );
+
+            return ConstString::none();
+        }
+#   endif
+
         const AnimationSequence & sequence = m_sequence[_index];
 
         const ConstString & resourceName = sequence.resourceName;
@@ -256,10 +228,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t ResourceAnimation::getLastFrameIndex() const
 	{
-		size_t size = m_sequence.size();
-		size_t lastIndex = size - 1;
+        uint32_t sequenceCount = this->getSequenceCount();
 
-		return (uint32_t)lastIndex;	
+#   ifdef _DEBUG
+        if( sequenceCount == 0 )
+        {
+            LOGGER_ERROR( m_serviceProvider )("ResourceAnimation::getLastFrameIndex: '%s' invalid get last frame on empty sequences"
+                , this->getName().c_str()
+                );
+
+            return 0;
+        }
+#   endif
+
+		uint32_t lastIndex = sequenceCount - 1;
+
+		return lastIndex;	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimation::setSequences( const TVectorAnimationSequence & _sequence )
@@ -274,6 +258,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const ResourceImagePtr & ResourceAnimation::getSequenceResource( uint32_t _index ) const
 	{
+#   ifdef _DEBUG
+        uint32_t sequenceCount = this->getSequenceCount();
+
+        if( _index >= sequenceCount )
+        {
+            LOGGER_ERROR( m_serviceProvider )("ResourceAnimation::getSequenceResource: '%s' sequence '%u' out of range '%u'"
+                , this->getName().c_str()
+                , _index
+                , sequenceCount
+                );
+
+            return ResourceImagePtr::none();
+        }
+#   endif
+
         const AnimationSequence & sequence = m_sequence[_index];
 
 		const ResourceImagePtr & resource = sequence.resource;

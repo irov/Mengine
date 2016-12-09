@@ -1,14 +1,8 @@
 #	include "SoundEmitter.h"
 
-#	include "ResourceSound.h"
-
-#	include "Interface/ResourceInterface.h"
+#	include "SurfaceSound.h"
 
 #	include "Logger/Logger.h"
-
-#	include <pybind/pybind.hpp>
-
-#	include <math.h>
 
 namespace Menge
 {
@@ -23,7 +17,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setSurfaceSound( const SurfaceSoundPtr & _surfaceSound )
 	{
-		m_surfaceSound = _surfaceSound;
+        if( m_surfaceSound == _surfaceSound )
+        {
+            return;
+        }
+
+        m_surfaceSound = _surfaceSound;
+
+        this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const SurfaceSoundPtr & SoundEmitter::getSurfaceSound() const

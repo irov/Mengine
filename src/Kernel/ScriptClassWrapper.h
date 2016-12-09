@@ -71,7 +71,7 @@ namespace Menge
 				LOGGER_ERROR( m_serviceProvider )("ScriptClassWrapper::wrap invalid type"
 					);
 
-                return nullptr;
+                throw;
             }
 #   endif
 

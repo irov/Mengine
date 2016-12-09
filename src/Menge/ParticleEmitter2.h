@@ -18,11 +18,17 @@
 
 namespace Menge
 {
-	class ParticleEmitterInterface;
-	class ResourceImage;
-	class ResourceImageDefault;
-	struct RenderMaterial;
-	
+    //////////////////////////////////////////////////////////////////////////
+    enum ParticleEmitter2EventFlag
+    {
+    };
+    //////////////////////////////////////////////////////////////////////////
+    class ParticleEmitter2EventReceiver
+        : public AnimatableEventReceiver
+    {
+    public:
+    };
+    //////////////////////////////////////////////////////////////////////////
 	class ParticleEmitter2
 		: public Node
 		, public Eventable
@@ -30,15 +36,17 @@ namespace Menge
 		, public ParticlePositionProviderInterface
 		, public ParticleCameraProviderInterface
 	{
+        EVENT_RECEIVER( ParticleEmitter2EventReceiver );
+
 	public:
 		ParticleEmitter2();
 		~ParticleEmitter2();
 
 	public:
 		bool _play( float _time ) override;
-		bool _restart( float _time, uint32_t _enumerator ) override;
+		bool _restart( uint32_t _enumerator, float _time ) override;
 		void _pause( uint32_t _enumerator ) override;
-		void _resume( float _time, uint32_t _enumerator ) override;
+		void _resume( uint32_t _enumerator, float _time ) override;
 		void _stop( uint32_t _enumerator ) override;
 		void _end( uint32_t _enumerator ) override;
 		bool _interrupt( uint32_t _enumerator ) override;

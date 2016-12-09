@@ -27,7 +27,7 @@ namespace Menge
         virtual void _uncompile();
 
 	public:
-		virtual size_t memoryUse() const;
+		virtual size_t getMemoryUse() const;
 
 	protected:
 		bool m_compile;

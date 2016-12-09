@@ -24,7 +24,7 @@ namespace Menge
 #	ifdef _DEBUG
 			if( stdex::mpl::is_dynamic_cast<U>::test( m_pointer ) == false )
 			{
-				return nullptr;
+                throw;
 			}
 #	endif
 
@@ -58,7 +58,7 @@ namespace Menge
 #	ifdef _DEBUG
 			if( stdex::is_dynamic_cast<U>::test( m_pointer ) == false )
 			{
-				return nullptr;
+                throw;
 			}
 #	endif
 

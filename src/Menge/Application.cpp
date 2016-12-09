@@ -48,7 +48,6 @@
 #	include "Kernel/Entity.h"
 #	include "Kernel/ScriptHolder.h"
 
-#	include "Animation.h"
 #	include "Arrow.h"
 #	include "ParticleEmitter2.h"
 #	include "HotSpot.h"
@@ -64,20 +63,18 @@
 #	include "Point.h"
 #	include "Line.h"
 #	include "SoundEmitter.h"
-#	include "Sprite.h"
 #	include "Mesh2D.h"
 #	include "Grid2D.h"
 #	include "TextField.h"
 #	include "TileMap.h"
 #	include "Track.h"
-#	include "Kernel/Meshget.h"
+#	include "Meshget.h"
 #	include "Movie.h"
 #	include "MovieSlot.h"
 #	include "MovieSceneEffect.h"
 #	include "MovieInternalObject.h"
 #   include "MovieEvent.h"
 #	include "Model3D.h"
-#	include "Video.h"
 #	include "Layer2D.h"
 #	include "Layer2DParallax.h"
 #	include "Layer2DIsometric.h"
@@ -97,9 +94,13 @@
 #	include "Layer2DTexture.h"
 #	include "Landscape2D.h"
 
+#   include "ShapeQuadFixed.h"
+#   include "ShapeQuadFlex.h"
+
 
 #	include "SurfaceVideo.h"
 #	include "SurfaceSound.h"
+#	include "SurfaceImage.h"
 #	include "SurfaceImageSequence.h"
 
 
@@ -345,7 +346,6 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, Arrow );
 		NODE_FACTORY( m_serviceProvider, Scene );
 
-		NODE_FACTORY( m_serviceProvider, Animation );
 		NODE_FACTORY( m_serviceProvider, Gyroscope );
 		NODE_FACTORY( m_serviceProvider, Isometric );
 		NODE_FACTORY( m_serviceProvider, Parallax );
@@ -366,7 +366,6 @@ namespace Menge
 		//NODE_FACTORY( RigidBody2D );
 		//NODE_FACTORY( PhysicalBody2D );
 		NODE_FACTORY( m_serviceProvider, SoundEmitter );
-		NODE_FACTORY( m_serviceProvider, Sprite );
 		NODE_FACTORY( m_serviceProvider, Mesh2D );
 		NODE_FACTORY( m_serviceProvider, Grid2D );
 		NODE_FACTORY( m_serviceProvider, TextField );
@@ -382,7 +381,6 @@ namespace Menge
 
 		NODE_FACTORY( m_serviceProvider, Model3D );
 		//NODE_FACTORY( Model );
-		NODE_FACTORY( m_serviceProvider, Video );
 		NODE_FACTORY( m_serviceProvider, Layer2D );
 		NODE_FACTORY( m_serviceProvider, Landscape2D );
 		NODE_FACTORY( m_serviceProvider, Layer2DParallax );
@@ -400,6 +398,9 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, RenderCameraOrthogonalTarget );
 		//NODE_FACTORY( SceneNode3D );
 		NODE_FACTORY( m_serviceProvider, Window );
+
+        NODE_FACTORY( m_serviceProvider, ShapeQuadFixed );
+        NODE_FACTORY( m_serviceProvider, ShapeQuadFlex );
 		
 #	undef NODE_FACTORY
 
@@ -412,6 +413,7 @@ namespace Menge
 		
 		SURFACE_FACTORY( m_serviceProvider, SurfaceVideo );
 		SURFACE_FACTORY( m_serviceProvider, SurfaceSound );
+        SURFACE_FACTORY( m_serviceProvider, SurfaceImage );
 		SURFACE_FACTORY( m_serviceProvider, SurfaceImageSequence );
 
 #	undef SURFACE_FACTORY

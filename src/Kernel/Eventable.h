@@ -2,15 +2,11 @@
 
 #   include "Interface/ServiceInterface.h"
 
-#	include "Config/Typedef.h"
-
+#   include "Factory/FactorablePtr.h"
+#	include "Kernel/EventReceiver.h"
 #	include "Core/ConstString.h"
 
-#   include "stdex/stl_map.h"
-
-#	include "pybind/types.hpp"
-#	include "pybind/object.hpp"
-#	include "pybind/dict.hpp"
+#   include "stdex/stl_vector.h"
 
 namespace Menge
 {
@@ -21,67 +17,78 @@ namespace Menge
 		Eventable();
 		~Eventable();
 
-	public:
-		bool registerEvent( uint32_t _event, const char * _method, const pybind::dict & _dict );
-		bool registerEventMethod( uint32_t _event, const char * _method, const pybind::object & _module );
+    public:
+        bool registerEventReceiver( uint32_t _event, const EventReceiverPtr & _receiver );
+        void removeEventReceiver( uint32_t _event );
 
-		pybind::object getEvent( uint32_t _event ) const;
-		bool hasEvent( uint32_t _event ) const;
+    public:
+        const EventReceiverPtr & getEventReciever( uint32_t _event ) const;
+        bool hasEventReceiver( uint32_t _event ) const;
 
-	public:
-		PyObject * setEventListener( PyObject * _args, PyObject * _kwds );
-		void removeEventListener();
+    public:
+        void removeEvents();
+
+    public:
+        template<class T>
+        T getEventRecieverT( uint32_t _event ) const
+        {   
+            const EventReceiverPtr & reciever = this->getEventReciever( _event );
+
+            if( reciever == nullptr )
+            {
+                return nullptr;
+            }
+
+            EventReceiver * r = reciever.get();
+            
+#   ifdef _DEBUG            
+            if( dynamic_cast<T>(r) == nullptr )
+            {
+                throw;
+            }
+#   endif
+
+            T t = static_cast<T>(r);
+
+            return t;
+        }
+
 
 	protected:
-		virtual void _setEventListener( const pybind::dict & _listener );
+        struct EventReceiverDesc
+        {
+            uint32_t event;
+            EventReceiverPtr receiver;
+        };
 
-	protected:
-		void unregisterEvents_();
-
-	protected:
-		pybind::object getEvent_( const pybind::dict & _dict, const char * _method ) const;
-		pybind::object getEventMethod_( const pybind::object & _module, const char * _method ) const;
-		void insertEvent_( uint32_t _event, const pybind::object & _cb );
-		void removeEvent_( uint32_t _event );
-
-	private:
-		typedef stdex::map<uint32_t, pybind::object> TMapEvent;
-		TMapEvent m_mapEvent;
+        typedef stdex::vector<EventReceiverDesc> TMapEventReceivers;
+        TMapEventReceivers m_receivers;
 
 		uint32_t m_flag;
+
+    private:
+        class FEventReciver;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	class EventableCallOperator
-	{
-	public:
-		EventableCallOperator( ServiceProviderInterface * _serviceProvider, uint32_t _event, const pybind::object & _pyevent )
-			: m_serviceProvider( _serviceProvider )
-			, m_event( _event )
-			, m_pyevent( _pyevent )
-		{
-		}
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        template<class T>
+        static typename T::EventReceiverType * getThisEventRecieverT( T * _self, uint32_t _event )
+        {
+            typename T::EventReceiverType * reciever = _self->getEventRecieverT<typename T::EventReceiverType *>( _event );
 
-	public:
-		const pybind::object & getEvent() const
-		{
-			return m_pyevent;
-		}
-
-	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
-		uint32_t m_event;
-		pybind::object m_pyevent;		
-	};
+            return reciever;
+        }
+    }
 }
 
-#	define EVENTABLE_CALL(serviceProvider, Self, Event)\
-	for( bool EVENTABLE_CALL_self = false; Self != nullptr && EVENTABLE_CALL_self == false; EVENTABLE_CALL_self = true )\
-	for( const pybind::object & EVENTABLE_CALL_pyevent = Self->getEvent(Event); EVENTABLE_CALL_pyevent.is_invalid() == false && EVENTABLE_CALL_self == false; EVENTABLE_CALL_self = true )\
-	EventableCallOperator(serviceProvider, Event, EVENTABLE_CALL_pyevent ).getEvent().call
+#   define EVENT_RECEIVER(Type)\
+public:\
+    typedef Type EventReceiverType
 
-#	define EVENTABLE_ASK(serviceProvider, Self, Event, Value)\
-	for( bool EVENTABLE_CALL_self = false; Self != nullptr && EVENTABLE_CALL_self == false; EVENTABLE_CALL_self = true )\
-	for( const pybind::object & EVENTABLE_CALL_pyevent = Self->getEvent(Event); EVENTABLE_CALL_pyevent.is_invalid() == false && EVENTABLE_CALL_self == false; EVENTABLE_CALL_self = true )\
-	Value = EventableCallOperator(serviceProvider, Event, EVENTABLE_CALL_pyevent).getEvent().call
+#   define EVENTABLE_METHOD(Self, Event)\
+    Self->hasEvent( Event ) == false ? (void)0 : Helper::getThisEventRecieverT( Self, Event )
+
+#   define EVENTABLE_METHODR(Self, Event, R)\
+    Self->hasEvent( Event ) == false ? R : Helper::getThisEventRecieverT( Self, Event )
 

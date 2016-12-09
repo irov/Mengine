@@ -9,12 +9,6 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	enum ScriptHolderEventFlag
-	{
-		EVENT_KEEP_SCRIPT = 0,
-		EVENT_RELEASE_SCRIPT
-	};
-	//////////////////////////////////////////////////////////////////////////
 	void ScriptHolder::_setEventListener( const pybind::dict & _listener )
 	{
 		this->registerEvent( EVENT_KEEP_SCRIPT, ("onKeepScript"), _listener );
@@ -28,7 +22,9 @@ namespace Menge
 			return false;
 		}
 
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEEP_SCRIPT, m_script )();
+        m_script = EVENTABLE_METHODR( this, EVENT_KEEP_SCRIPT, pybind::object() )
+            ->onScriptHolderKeepScript();
+		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEEP_SCRIPT, m_script )();
 
 		bool successful = m_script.is_valid();
 		
@@ -39,7 +35,9 @@ namespace Menge
 	{
 		Node::_deactivate();
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_RELEASE_SCRIPT)( m_script	);
+        EVENTABLE_METHOD( this, EVENT_RELEASE_SCRIPT )
+            ->onScriptHolderReleaseScript( m_script );
+		//EVENTABLE_CALL(m_serviceProvider, this, EVENT_RELEASE_SCRIPT)( m_script	);
 
 		m_script.reset();
 	}

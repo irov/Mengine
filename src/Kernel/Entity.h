@@ -6,24 +6,42 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	enum EntityEventFlag
-	{
-		EVENT_ENTITY_CREATE = 0,
-		EVENT_ENTITY_DESTROY,
-		EVENT_ENTITY_PREPARATION,
-		EVENT_ENTITY_ACTIVATE,
-		EVENT_ENTITY_PREPARATION_DEACTIVATE,
-		EVENT_ENTITY_DEACTIVATE,
-		EVENT_ENTITY_COMPILE,
-		EVENT_ENTITY_RELEASE,
-		__EVENT_ENTITY_LAST__
-	};
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    enum EntityEventFlag
+    {
+        EVENT_ENTITY_CREATE = 0,
+        EVENT_ENTITY_DESTROY,
+        EVENT_ENTITY_PREPARATION,
+        EVENT_ENTITY_ACTIVATE,
+        EVENT_ENTITY_PREPARATION_DEACTIVATE,
+        EVENT_ENTITY_DEACTIVATE,
+        EVENT_ENTITY_COMPILE,
+        EVENT_ENTITY_RELEASE,
+        __EVENT_ENTITY_LAST__
+    };
+    //////////////////////////////////////////////////////////////////////////
+    class EntityEventReceiver
+        : public EventReceiver
+    {
+    public:
+        virtual void onEntityPreparation() = 0;
+        virtual void onEntityActivate() = 0;
+        virtual void onEntityPreparationDeactivate() = 0;
+        virtual void onEntityDeactivate() = 0;
+        virtual void onEntityCompile() = 0;
+        virtual void onEntityRelease() = 0;
+        virtual void onEntityCreate() = 0;
+        virtual void onEntityDestroy() = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<EntityEventReceiver> EntityEventReceiverPtr;
+    //////////////////////////////////////////////////////////////////////////
 	class Entity
 		: public Node
 		, public Eventable
 	{
+        EVENT_RECEIVER( EntityEventReceiver );
+
     public:
         Entity();
         ~Entity();

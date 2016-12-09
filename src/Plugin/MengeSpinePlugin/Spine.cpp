@@ -336,28 +336,16 @@ namespace Menge
 		return duration;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	enum SpineEventFlag
-	{
-		EVENT_SPINE_END = 0,
-		EVENT_SPINE_STOP,
-		EVENT_SPINE_PAUSE,
-		EVENT_SPINE_RESUME,
-		EVENT_SPINE_EVENT,
-		EVENT_SPINE_STATE_ANIMATION_END,
-
-		EVENT_ANIMATABLE_END
-	};
-	//////////////////////////////////////////////////////////////////////////
 	void Spine::_setEventListener( const pybind::dict & _listener )
 	{		
-		this->registerEvent( EVENT_SPINE_END, ("onSpineEnd"), _listener );
-		this->registerEvent( EVENT_SPINE_STOP, ("onSpineStop"), _listener );
-		this->registerEvent( EVENT_SPINE_PAUSE, ("onSpinePause"), _listener );
-		this->registerEvent( EVENT_SPINE_RESUME, ("onSpineResume"), _listener );
-		this->registerEvent( EVENT_SPINE_EVENT, ("onSpineEvent"), _listener );
-		this->registerEvent( EVENT_SPINE_STATE_ANIMATION_END, ("onSpineStateAnimationEnd"), _listener );
+		//this->registerEvent( EVENT_SPINE_END, ("onSpineEnd"), _listener );
+		//this->registerEvent( EVENT_SPINE_STOP, ("onSpineStop"), _listener );
+		//this->registerEvent( EVENT_SPINE_PAUSE, ("onSpinePause"), _listener );
+		//this->registerEvent( EVENT_SPINE_RESUME, ("onSpineResume"), _listener );
+		//this->registerEvent( EVENT_SPINE_EVENT, ("onSpineEvent"), _listener );
+		//this->registerEvent( EVENT_SPINE_STATE_ANIMATION_END, ("onSpineStateAnimationEnd"), _listener );
 
-		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
+		//this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Spine::_compile()
@@ -634,7 +622,9 @@ namespace Menge
 			{
 			case SP_ANIMATION_COMPLETE:
 				{
-					EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_STATE_ANIMATION_END )(this, ev.state, ev.animation, true);
+                    EVENTABLE_METHOD( this, EVENT_SPINE_STATE_ANIMATION_END )
+                        ->onSpineStateAnimationEnd( ev.state, ev.animation, true );
+					//EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_STATE_ANIMATION_END )(this, ev.state, ev.animation, true);
 
 					if( loop == false )
 					{
@@ -643,7 +633,9 @@ namespace Menge
 				}break;
 			case SP_ANIMATION_EVENT:
 				{
-					EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_EVENT )(this, ev.eventName, ev.eventIntValue, ev.eventFloatValue, ev.eventStringValue);
+                    EVENTABLE_METHOD( this, EVENT_SPINE_EVENT )
+                        ->onSpineEvent( ev.eventName, ev.eventIntValue, ev.eventFloatValue, ev.eventStringValue );
+					//EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_EVENT )(this, ev.eventName, ev.eventIntValue, ev.eventFloatValue, ev.eventStringValue);
 				}break;
 			}
 		}
@@ -849,7 +841,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Spine::_restart( float _time, uint32_t _enumerator )
+	bool Spine::_restart( uint32_t _enumerator, float _time )
 	{ 
 		(void)_time;
 		(void)_enumerator;
@@ -860,28 +852,38 @@ namespace Menge
 	void Spine::_pause( uint32_t _enumerator )
 	{ 
 		(void)_enumerator;
+
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_PAUSE )
+            ->onAnimatablePause( _enumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Spine::_resume( float _time, uint32_t _enumerator )
+	void Spine::_resume( uint32_t _enumerator, float _time )
 	{
-		(void)_time;
-		(void)_enumerator;
+        (void)_enumerator;
+		(void)_time;		
+
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_RESUME )
+            ->onAnimatableResume( _enumerator, _time );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_stop( uint32_t _enumerator )
 	{ 
 		(void)_enumerator;
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, _enumerator, false);
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
+            ->onAnimatableStop( _enumerator );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_end( uint32_t _enumerator )
 	{ 
 		(void)_enumerator;
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, _enumerator, true);
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
+            ->onAnimatableEnd( _enumerator );
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Spine::_interrupt( uint32_t _enumerator )

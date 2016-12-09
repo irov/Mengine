@@ -34,18 +34,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	enum MovieEventFlag
 	{
-		EVENT_MOVIE_GET_INTERNAL = 0,
+		EVENT_MOVIE_GET_INTERNAL = __EVENT_ANIMATABLE_LAST__,
 		EVENT_MOVIE_ACTIVATE_INTERNAL,
-		EVENT_MOVIE_DEACTIVATE_INTERNAL,
-		EVENT_MOVIE_END,
-		EVENT_ANIMATABLE_END,
+		EVENT_MOVIE_DEACTIVATE_INTERNAL
 	};
+    //////////////////////////////////////////////////////////////////////////
+    class MovieEventReceiver
+        : public AnimatableEventReceiver
+    {
+    public:
+        virtual pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) = 0;
+        virtual Node * onMovieActivateInternal( const pybind::object & _internal ) = 0;
+        virtual void onMovieDeactivateInternal( const pybind::object & _internal ) = 0;
+    };
 	//////////////////////////////////////////////////////////////////////////
 	class Movie
 		: public Node
 		, public Eventable
 		, public Animatable
 	{
+        EVENT_RECEIVER( MovieEventReceiver );
+
 	public:
 		Movie();
 
@@ -94,9 +103,9 @@ namespace Menge
 
 	protected:
 		bool _play( float _time ) override;
-		bool _restart( float _time, uint32_t _enumerator ) override;
+		bool _restart( uint32_t _enumerator, float _time ) override;
 		void _pause( uint32_t _enumerator ) override;
-		void _resume( float _time, uint32_t _enumerator ) override;
+		void _resume( uint32_t _enumerator, float _time ) override;
 		void _stop( uint32_t _enumerator ) override;
 		void _end( uint32_t _enumerator ) override;
 		bool _interrupt( uint32_t _enumerator ) override;

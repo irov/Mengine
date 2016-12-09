@@ -1,22 +1,36 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
+#   include "Kernel/EventReceiver.h"
 
 #   include "Math/vec2.h"
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    enum AnimatableEventFlag
+    {
+        EVENT_ANIMATABLE_PLAY = 0,
+        EVENT_ANIMATABLE_RESTART,
+        EVENT_ANIMATABLE_PAUSE,
+        EVENT_ANIMATABLE_RESUME,
+        EVENT_ANIMATABLE_STOP,
+        EVENT_ANIMATABLE_END,
+        EVENT_ANIMATABLE_INTERRUPT,
+        __EVENT_ANIMATABLE_LAST__
+    };
 	//////////////////////////////////////////////////////////////////////////
-	class AnimatableListener
+	class AnimatableEventReceiver
+        : public EventReceiver
 	{
 	public:
-		virtual bool onAnimatablePlay( uint32_t _enumerator, float _time ) = 0;
-		virtual bool onAnimatableRestart( uint32_t _enumerator, float _time ) = 0;
+		virtual void onAnimatablePlay( uint32_t _enumerator, float _time ) = 0;
+		virtual void onAnimatableRestart( uint32_t _enumerator, float _time ) = 0;
 		virtual void onAnimatablePause( uint32_t _enumerator ) = 0;
 		virtual void onAnimatableResume( uint32_t _enumerator, float _time ) = 0;
 		virtual void onAnimatableStop( uint32_t _enumerator ) = 0;
 		virtual void onAnimatableEnd( uint32_t _enumerator ) = 0;
-		virtual bool onAnimatableInterrupt( uint32_t _enumerator ) = 0;
+		virtual void onAnimatableInterrupt( uint32_t _enumerator ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class Animatable
@@ -95,9 +109,9 @@ namespace Menge
 
 	protected:
 		virtual bool _play( float _time ) = 0;
-		virtual bool _restart( float _time, uint32_t _enumerator ) = 0;
+		virtual bool _restart( uint32_t _enumerator, float _time ) = 0;
 		virtual void _pause( uint32_t _enumerator ) = 0;
-		virtual void _resume( float _time, uint32_t _enumerator ) = 0;
+		virtual void _resume( uint32_t _enumerator, float _time ) = 0;
 		virtual void _stop( uint32_t _enumerator ) = 0;
 		virtual void _end( uint32_t _enumerator ) = 0;
 		virtual bool _interrupt( uint32_t _enumerator ) = 0;

@@ -6,11 +6,28 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    enum NodeAOITriggerEventFlag
+    {
+        EVENT_NODE_AOI_TRIGGER_ENTER = 0,
+        EVENT_NODE_AOI_TRIGGER_LEAVE
+    };
+    //////////////////////////////////////////////////////////////////////////
+    class NodeAOITriggerEventReceiver
+        : public EventReceiver
+    {
+    public:
+        virtual void onNodeAOITriggerEnter( AOIActorProviderInterface * _enemy, uint32_t _iff1, uint32_t _iff2 ) = 0;
+        virtual void onNodeAOITriggerLeave( AOIActorProviderInterface * _enemy, uint32_t _iff1, uint32_t _iff2 ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
 	class NodeAOITrigger
 		: public Node
 		, public Eventable
 		, public AOITriggerProviderInterface
 	{
+        EVENT_RECEIVER( NodeAOITriggerEventReceiver );
+
 	public:
 		NodeAOITrigger();
 		~NodeAOITrigger();

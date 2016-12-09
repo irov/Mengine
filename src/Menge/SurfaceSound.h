@@ -1,7 +1,8 @@
 #	pragma once
 
 #	include "Kernel/Surface.h"
-#	include "Kernel/Resource.h"
+#	include "Kernel/Eventable.h"
+#	include "Kernel/Animatable.h"
 #	include "Kernel/Soundable.h"
 
 #   include "ResourceSound.h"
@@ -10,12 +11,26 @@
 
 namespace Menge
 {
-	class SurfaceSound
-		: public Surface
-		, public Resource
+    //////////////////////////////////////////////////////////////////////////
+    enum SurfaceSoundEventFlag
+    {
+    };
+    //////////////////////////////////////////////////////////////////////////
+    class SurfaceSoundEventReceiver
+        : public AnimatableEventReceiver
+    {
+    public:
+    };
+    //////////////////////////////////////////////////////////////////////////
+    class SurfaceSound
+		: public Surface        
+        , public Eventable
+        , public Animatable
 		, public SoundListenerInterface
 		, public Soundable
 	{
+        EVENT_RECEIVER( SurfaceSoundEventReceiver );
+
 	public:
 		SurfaceSound();
 		~SurfaceSound();
@@ -24,11 +39,21 @@ namespace Menge
 		void setResourceSound( const ResourceSoundPtr & _resourceSound );
 		const ResourceSoundPtr & getResourceSound() const;
 
+    protected:
+        const mt::vec2f & getMaxSize() const override;
+        const mt::vec2f & getSize() const override;
+        const mt::vec2f & getOffset() const override;
+
+        uint32_t getUVCount() const override;
+        const mt::uv4f & getUV( uint32_t _index ) const override;
+
+        const ColourValue & getColour() const override;
+
 	protected:
 		bool _play( float _time ) override;
-		bool _restart( float _time, uint32_t _enumerator ) override;
+		bool _restart( uint32_t _enumerator, float _time ) override;
 		void _pause( uint32_t _enumerator ) override;
-		void _resume( float _time, uint32_t _enumerator ) override;
+		void _resume( uint32_t _enumerator, float _time ) override;
 		void _stop( uint32_t _id ) override;
 		void _end( uint32_t _id ) override;
 		bool _interrupt( uint32_t _id ) override;
@@ -52,7 +77,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		void _update( float _time, float _timing ) override;
+        bool update( float _time, float _timing ) override;
 
 	protected:
 		void _setEventListener( const pybind::dict & _listener ) override;

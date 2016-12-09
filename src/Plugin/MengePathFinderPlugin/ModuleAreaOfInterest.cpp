@@ -10,8 +10,6 @@
 #	include "Kernel/ScriptClassWrapper.h"
 #	include "Kernel/NodePrototypeGenerator.h"
 
-#	include "pybind/pybind.hpp"
-
 #	include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////

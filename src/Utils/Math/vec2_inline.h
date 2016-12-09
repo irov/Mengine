@@ -115,6 +115,13 @@ namespace mt
 	{
 		return &x;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_MATH_METHOD_INLINE const vec2f & vec2f::identity()
+    {
+        static mt::vec2f v( 0.f, 0.f );
+
+        return v;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void ident_v2( vec2f& _a )
 	{

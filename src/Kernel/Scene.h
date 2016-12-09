@@ -9,18 +9,32 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	enum SceneEventFlag
-	{
-		EVENT_APP_MOUSE_LEAVE = 0,
-		EVENT_APP_MOUSE_ENTER,
-		EVENT_FOCUS,
-		EVENT_ON_SUB_SCENE
-	};
-	//////////////////////////////////////////////////////////////////////////
-	class Scene
+    //////////////////////////////////////////////////////////////////////////
+    enum SceneEventFlag
+    {
+        EVENT_APP_MOUSE_LEAVE = __EVENT_ENTITY_LAST__,
+        EVENT_APP_MOUSE_ENTER,
+        EVENT_FOCUS,
+        EVENT_ON_SUB_SCENE,
+    };
+    //////////////////////////////////////////////////////////////////////////
+    class SceneEventReceiver
+        : public EventReceiver
+    {
+    public:
+        virtual bool onSceneAppMouseLeave() = 0;
+        virtual bool onSceneAppMouseEnter() = 0;
+        virtual bool onSceneAppFocus( bool _focus ) = 0;
+        virtual void onSceneSubScene( class Scene * _parent ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<SceneEventReceiver> SceneEventReceiverPtr;
+    //////////////////////////////////////////////////////////////////////////
+    class Scene
 		: public Entity
 	{
+        EVENT_RECEIVER( SceneEventReceiver );
+
 	public:
 		Scene();
 		~Scene();

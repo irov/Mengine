@@ -4,6 +4,7 @@
 #   include "Config/String.h"
 
 #	include "Core/ConstString.h"
+#	include "Core/Tags.h"
 #   include "Core/FilePath.h"
 #	include "Core/Viewport.h"
 #	include "Core/Resolution.h"
@@ -30,7 +31,7 @@ namespace Menge
 		virtual WindowHandle getWindowHandle() const = 0;
 
 	public:
-		virtual const ConstString & getPlatformName() const = 0;
+		virtual const Tags & getPlatformTags() const = 0;
 
 	public:
 		virtual bool hasTouchpad() const = 0;

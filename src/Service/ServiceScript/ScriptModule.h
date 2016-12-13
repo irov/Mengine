@@ -18,7 +18,7 @@ namespace Menge
 		ScriptModule();
 
 	public:
-		bool initialize( const pybind::object & _module );
+		bool initialize( const pybind::module & _module );
 
 	protected:
 		bool onInitialize( const ConstString & _method ) override;
@@ -28,7 +28,7 @@ namespace Menge
 		bool registerEventMethod( Eventable * _event, uint32_t _id, const char * _method ) override;
 
 	protected:
-		pybind::object m_module;
+		pybind::module m_module;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ScriptModule> ScriptModulePtr;

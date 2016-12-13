@@ -1,8 +1,9 @@
-<Protocol Version = "112">
+<Protocol Version = "114">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
   <Type Name="Menge::FilePath" Evict="string"/>
+  <Type Name="Menge::Tags" Evict="strings"/>
   <Type Name="bool" Evict="bool" NCR="1"/>
   <Type Name="uint32_t" Evict="uint32_t" NCR="1"/>
   <Type Name="Menge::WChar" Evict="wchar_t" NCR="1"/>
@@ -72,7 +73,7 @@
   </Enum>  
 
   <Node Name="DataBlock">    
-    <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
+    <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>    
 
     <Node Name="Include">
       <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
@@ -80,7 +81,7 @@
 
     <Node Name="VertexShader">
       <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
-      <Attribute Name="Platform" Type="Menge::ConstString" Required="1"/>
+      <Attribute Name="RenderPlatform" Type="Menge::ConstString" Required="1"/>
 
       <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="File" Name="Compile" Type="bool"/>
@@ -88,7 +89,7 @@
 
     <Node Name="FragmentShader">
       <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
-      <Attribute Name="Platform" Type="Menge::ConstString" Required="1"/>
+      <Attribute Name="RenderPlatform" Type="Menge::ConstString" Required="1"/>
 
       <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="File" Name="Compile" Type="bool"/>
@@ -96,7 +97,7 @@
 
     <Node Name="Program">
       <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
-      <Attribute Name="Platform" Type="Menge::ConstString" Required="1"/>
+      <Attribute Name="RenderPlatform" Type="Menge::ConstString"/>
 
       <Member Node="VertexShader" Name="Name" Type="Menge::ConstString" Required="1"/>
       <Member Node="FragmentShader" Name="Name" Type="Menge::ConstString" Required="1"/>
@@ -106,6 +107,7 @@
 
     <Node Name="Material">
       <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
+      <Attribute Name="RenderPlatform" Type="Menge::ConstString"/>
       <Attribute Name="Debug" Type="bool"/>
 
       <Member Node="BlendFactor" Name="Source" Type="Menge::EBlendFactor"/>
@@ -399,14 +401,17 @@
       <Attribute Name="Module" Type="Menge::ConstString"/>
       <Attribute Name="Initializer" Type="Menge::ConstString"/>
       <Attribute Name="Finalizer" Type="Menge::ConstString"/>
+      <Attribute Name="Platform" Type="Menge::Tags"/>
     </Node>
 
     <Node Name="Fonts">
       <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
+      <Attribute Name="Platform" Type="Menge::Tags"/>
     </Node>
 
     <Node Name="Resources">
       <Attribute Name="Ignored" Type="bool"/>
+      <Attribute Name="Platform" Type="Menge::Tags"/>
       
       <Node Name="Resource">
         <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
@@ -414,12 +419,16 @@
     </Node>
 
     <Node Name="Texts">
+      <Attribute Name="Platform" Type="Menge::Tags"/>
+
       <Node Name="Text">
         <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
       </Node>
     </Node>
 
     <Node Name="Datas">
+      <Attribute Name="Platform" Type="Menge::Tags"/>
+      
       <Node Name="Data">
         <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
         <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
@@ -427,6 +436,8 @@
     </Node>
 
     <Node Name="Materials">
+      <Attribute Name="Platform" Type="Menge::Tags"/>
+      
       <Node Name="Material">
         <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
       </Node>

@@ -110,7 +110,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	pybind::object Eventable::getEvent_( const pybind::dict & _dict, const char * _method ) const
 	{		
-		if( _dict.contains( _method ) == false )
+		if( _dict.exist( _method ) == false )
 		{
 			return pybind::make_invalid_object_t();
 		}

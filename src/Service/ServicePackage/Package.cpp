@@ -30,7 +30,7 @@ namespace Menge
 		, const ConstString & _name
 		, const ConstString & _type
 		, const ConstString & _locale
-		, const ConstString & _platform
+		, const Tags & _platform
 		, const ConstString & _descriptionPath
 		, const ConstString & _path
 		, bool _preload	)
@@ -70,12 +70,12 @@ namespace Menge
 		return m_locale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::setPlatfrom( const ConstString & _platform )
+	void Package::setPlatfromTags( const Tags & _platform )
 	{
 		m_platform = _platform;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Package::getPlatfrom() const
+	const Tags & Package::getPlatfromTags() const
 	{
 		return m_platform;
 	}
@@ -177,7 +177,10 @@ namespace Menge
 			ConstString Finalizer;
 			meta_scripts.swap_Finalizer( Finalizer );
 
-			this->addScriptPak_( Path, Module, Initializer, Finalizer );
+			Tags Platform;
+			meta_scripts.swap_Platform( Platform );
+
+			this->addScriptPak_( Path, Module, Initializer, Finalizer, Platform );
 		}
 
 		const Metacode::Meta_Pak::TVectorMeta_Fonts & includes_fonts = pak.get_IncludesFonts();
@@ -191,7 +194,11 @@ namespace Menge
 			const Metacode::Meta_Pak::Meta_Fonts & meta_fonts = *it;
 
 			const FilePath & Path = meta_fonts.get_Path();
-			this->addFontPath_( Path );
+
+			Tags Platform;
+			meta_fonts.swap_Platform( Platform );
+
+			this->addFontPath_( Path, Platform );
 		}
 
 		const Metacode::Meta_Pak::TVectorMeta_Resources & includes_resources = pak.get_IncludesResources();
@@ -207,6 +214,9 @@ namespace Menge
 			bool ignored = false;
 			meta_resources.get_Ignored( ignored );
 
+			Tags platform;
+			meta_resources.get_Platform( platform );
+
 			const Metacode::Meta_Pak::Meta_Resources::TVectorMeta_Resource & includes_resource = meta_resources.get_IncludesResource();
             
 			for( Metacode::Meta_Pak::Meta_Resources::TVectorMeta_Resource::const_iterator
@@ -218,7 +228,7 @@ namespace Menge
 				const Metacode::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource = *it_include;
 
 				const FilePath & Path = meta_resource.get_Path();
-				this->addResource_( Path, ignored );
+				this->addResource_( Path, platform, ignored );
 			}
 		}
 
@@ -232,6 +242,9 @@ namespace Menge
 		{
 			const Metacode::Meta_Pak::Meta_Texts & meta_texts = *it;
 
+			Tags platform;
+			meta_texts.get_Platform( platform );
+
 			const Metacode::Meta_Pak::Meta_Texts::TVectorMeta_Text & includes_text = meta_texts.get_IncludesText();
 
 			for( Metacode::Meta_Pak::Meta_Texts::TVectorMeta_Text::const_iterator
@@ -243,7 +256,7 @@ namespace Menge
 				const Metacode::Meta_Pak::Meta_Texts::Meta_Text & meta_text = *it_include;
 
 				const FilePath & Path = meta_text.get_Path();
-				this->addTextPath_( Path );
+				this->addTextPath_( Path, platform );
 			}
 		}
 
@@ -256,6 +269,9 @@ namespace Menge
 		++it )
 		{
 			const Metacode::Meta_Pak::Meta_Datas & meta_datas = *it;
+
+			Tags platform;
+			meta_datas.get_Platform( platform );
 
 			const Metacode::Meta_Pak::Meta_Datas::TVectorMeta_Data & includes_data = meta_datas.get_IncludesData();
 
@@ -270,7 +286,7 @@ namespace Menge
 				const ConstString & name = meta_data.get_Name();
 				const ConstString & path = meta_data.get_Path();
 
-				this->addData_( name, path );
+				this->addData_( name, path, platform );
 			}
 		}
 
@@ -284,6 +300,9 @@ namespace Menge
 		{
 			const Metacode::Meta_Pak::Meta_Materials & meta_materials = *it;
 
+			Tags platform;
+			meta_materials.get_Platform( platform );
+
 			const Metacode::Meta_Pak::Meta_Materials::TVectorMeta_Material & includes_material = meta_materials.get_IncludesMaterial();
 
 			for( Metacode::Meta_Pak::Meta_Materials::TVectorMeta_Material::const_iterator
@@ -296,7 +315,7 @@ namespace Menge
 
 				const FilePath & path = meta_material.get_Path();
 
-				this->addMaterial_( path );
+				this->addMaterial_( path, platform );
 			}
 		}
 
@@ -351,40 +370,40 @@ namespace Menge
 			//	);
 		}
 
-		for( TVectorFilePath::iterator
+		for( TVectorPakFontDesc::const_iterator
 			it = m_pathFonts.begin(),
 			it_end = m_pathFonts.end();
 		it != it_end;
 		++it )
 		{
-			const FilePath & path = *it;
+			const PakFontDesc & desc = *it;
 
-			if( this->loadFont_( m_name, path ) == false )
+			if( this->loadFont_( m_name, desc.path ) == false )
 			{
                 LOGGER_ERROR( m_serviceProvider )("Package::enable '%s:%s' invalid load font '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
-                    , path.c_str()
+					, desc.path.c_str()
                     );
 
 				return false;
 			}
 		}
 
-		for( TVectorFilePath::iterator
+		for( TVectorPakTextDesc::iterator
 			it = m_pathTexts.begin(),
 			it_end = m_pathTexts.end();
 		it != it_end;
 		++it )
 		{
-            const ConstString & path = *it;
+			const PakTextDesc & desc = *it;
 
-			if( this->loadText_( m_name, path ) == false )
+			if( this->loadText_( m_name, desc.path ) == false )
             {
                 LOGGER_ERROR( m_serviceProvider )("Package::enable '%s:%s' invalid load text '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
-                    , path.c_str()
+					, desc.path.c_str()
                     );
 
                 return false;
@@ -412,20 +431,20 @@ namespace Menge
 			}
 		}
 
-		for( TVectorFilePath::iterator
+		for( TVectorPakMaterialDesc::iterator
 			it = m_pathMaterials.begin(),
 			it_end = m_pathMaterials.end();
 		it != it_end;
 		++it )
 		{
-			const ConstString & path = *it;
+			const PakMaterialDesc & desc = *it;
 
-			if( this->loadMaterials_( m_name, path ) == false )
+			if( this->loadMaterials_( m_name, desc.path ) == false )
 			{
                 LOGGER_ERROR( m_serviceProvider )("Package::enable '%s:%s' invalid load material '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
-                    , path.c_str()
+					, desc.path.c_str()
                     );
 
 				return false;
@@ -497,29 +516,29 @@ namespace Menge
 			}
 		}
 
-		for( TVectorFilePath::iterator
+		for( TVectorPakFontDesc::iterator
 			it = m_pathFonts.begin(),
 			it_end = m_pathFonts.end();
 		it != it_end;
 		++it )
 		{
-			const ConstString & path = *it;
+			const PakFontDesc & desc = *it;
 
-			if( this->unloadFont_( m_name, path ) == false )
+			if( this->unloadFont_( m_name, desc.path ) == false )
 			{
 				return false;
 			}
 		}
 
-		for( TVectorFilePath::iterator
+		for( TVectorPakTextDesc::iterator
 			it = m_pathTexts.begin(),
 			it_end = m_pathTexts.end();
 		it != it_end;
 		++it )
 		{
-			const ConstString & path = *it;
+			const PakTextDesc & desc = *it;
 
-			if( this->unloadText_( m_name, path ) == false )
+			if( this->unloadText_( m_name, desc.path ) == false )
 			{
 				return false;
 			}
@@ -539,15 +558,15 @@ namespace Menge
 			}
 		}
 
-		for( TVectorFilePath::iterator
+		for( TVectorPakMaterialDesc::iterator
 			it = m_pathMaterials.begin(),
 			it_end = m_pathMaterials.end();
 		it != it_end;
 		++it )
 		{
-			const ConstString & path = *it;
+			const PakMaterialDesc & desc = *it;
 
-			if( this->unloadMaterials_( m_name, path ) == false )
+			if( this->unloadMaterials_( m_name, desc.path ) == false )
 			{
 				return false;
 			}
@@ -625,47 +644,62 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::addResource_( const FilePath & _path, bool _ignored )
+	void Package::addResource_( const FilePath & _path, const Tags & _platform, bool _ignored )
 	{
 		PakResourceDesc desc;
 		desc.path = _path;
+		desc.platform = _platform;
 		desc.ignored = _ignored;
 
 		m_resourcesDesc.push_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::addTextPath_( const FilePath & _path )
+	void Package::addTextPath_( const FilePath & _path, const Tags & _platform )
 	{
-		m_pathTexts.push_back( _path );
+		PakTextDesc desc;
+		desc.path = _path;
+		desc.platform = _platform;
+
+		m_pathTexts.push_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::addScriptPak_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer )
+	void Package::addScriptPak_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform )
 	{
 		ScriptModulePack pak;
 		pak.path = _path;
 		pak.module = _module;
 		pak.initializer = _initializer;
 		pak.finalizer = _finalizer;
+		pak.platform = _platform;
 
 		m_scriptsPackages.push_back( pak );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::addFontPath_( const ConstString & _font )
+	void Package::addFontPath_( const FilePath & _path, const Tags & _platform )
 	{
-		m_pathFonts.push_back( _font );
+		PakFontDesc desc;
+		desc.path = _path;
+		desc.platform = _platform;
+
+		m_pathFonts.push_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::addData_( const ConstString & _name, const FilePath & _path )
+	void Package::addData_( const ConstString & _name, const FilePath & _path, const Tags & _platform )
 	{
 		PakDataDesc desc;
 		desc.name = _name;
 		desc.path = _path;
+		desc.platform = _platform;
 
 		m_datas.push_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::addMaterial_( const FilePath & _path )
+	void Package::addMaterial_( const FilePath & _path, const Tags & _platform )
 	{ 
-		m_pathMaterials.push_back( _path );
+		PakMaterialDesc desc;
+		desc.path = _path;
+		desc.platform = _platform;
+
+		m_pathMaterials.push_back( desc );
 	}
 }

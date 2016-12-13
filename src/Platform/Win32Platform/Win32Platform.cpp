@@ -105,42 +105,61 @@ namespace Menge
 		m_cursors[STRINGIZE_STRING_LOCAL( m_serviceProvider, "IDC_HAND" )] = LoadCursor( NULL, IDC_HAND );
 		m_cursors[STRINGIZE_STRING_LOCAL( m_serviceProvider, "IDC_HELP" )] = LoadCursor( NULL, IDC_HELP );
 
+		m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "PC" ) );
+
 #	ifndef _WIN64
-		m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN32" );
+		m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN32" ) );
 #	else
-		m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN64" );
+		m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN64" ) );
 #	endif
 
 		m_touchpad = false;
 
 		if( HAS_OPTION( m_serviceProvider, "win32" ) )
 		{
-			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN32" );
+			m_platformTags.clear();
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "PC" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN32" ) );
+			
 			m_touchpad = false;
 		}
 		else if( HAS_OPTION( m_serviceProvider, "win64" ) )
 		{
-			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN64" );
+			m_platformTags.clear();
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "PC" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN64" ) );
+
 			m_touchpad = false;
 		}
 		else if( HAS_OPTION(m_serviceProvider, "ios") )
 		{ 
-			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "IOS" );
+			m_platformTags.clear();
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MOBILE" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "IOS" ) );
+			
 			m_touchpad = true;
 		}
 		else if( HAS_OPTION( m_serviceProvider, "android" ) )
 		{
-			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "ANDROID" );
+			m_platformTags.clear();
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MOBILE" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ANDROID" ) );
+
 			m_touchpad = true;
 		}
 		else if( HAS_OPTION( m_serviceProvider, "wp" ) )
 		{
-			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WP" );
+			m_platformTags.clear();
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MOBILE" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "WP" ) );
+						
 			m_touchpad = true;
 		}
 		else if( HAS_OPTION( m_serviceProvider, "osx" ) )
 		{
-			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "OSX" );
+			m_platformTags.clear();
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "OSX" ) );
+
 			m_touchpad = false;
 		}
 
@@ -291,9 +310,9 @@ namespace Menge
 		_resolution.setHeight( maxClientHeight );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Win32Platform::getPlatformName() const
+	const Tags & Win32Platform::getPlatformTags() const
 	{
-		return m_platformName;
+		return m_platformTags;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::hasTouchpad() const

@@ -19,7 +19,7 @@ namespace Menge
 			, const ConstString & _name
 			, const ConstString & _type
 			, const ConstString & _locale
-			, const ConstString & _platform
+			, const Tags & _platform
 			, const ConstString & _descriptionPath
 			, const ConstString & _path
 			, bool _preload
@@ -35,8 +35,8 @@ namespace Menge
 		void setLocale( const ConstString & _locale ) override;
 		const ConstString & getLocale() const override;
 
-		void setPlatfrom( const ConstString & _platform ) override;
-		const ConstString & getPlatfrom() const override;
+		void setPlatfromTags( const Tags & _tags ) override;
+		const Tags & getPlatfromTags() const override;
 
 		void setPath( const ConstString & _path ) override;
 		const ConstString & getPath() const override;
@@ -61,12 +61,12 @@ namespace Menge
 		void addModulePath_( const String & _path );
 
 	protected:
-		void addResource_( const FilePath & _path, bool _ignored );
-		void addTextPath_( const FilePath & _path );
-		void addScriptPak_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer );
-		void addFontPath_( const ConstString & _font );
-		void addData_( const ConstString & _name, const FilePath & _path );
-		void addMaterial_( const ConstString & _path );
+		void addResource_( const FilePath & _path, const Tags & _platform, bool _ignored );
+		void addTextPath_( const FilePath & _path, const Tags & _platform );
+		void addScriptPak_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform );
+		void addFontPath_( const FilePath & _path, const Tags & _tags );
+		void addData_( const ConstString & _name, const FilePath & _path, const Tags & _platform );
+		void addMaterial_( const ConstString & _path, const Tags & _platform );
 
     protected:
 		bool loadText_( const ConstString & _pakName, const FilePath & _path );
@@ -84,6 +84,7 @@ namespace Menge
 		struct PakResourceDesc
 		{			
 			FilePath path;
+			Tags platform;
 			bool ignored;
 		};
 
@@ -94,26 +95,49 @@ namespace Menge
 		ConstString m_type;
 		ConstString m_locale;
 
-		ConstString m_platform;		
+		Tags m_platform;
 		FilePath m_descriptionPath;
 
 		ConstString m_path;
 
 		TVectorScriptModulePack m_scriptsPackages;
 
-		TVectorFilePath m_pathFonts;
-		TVectorFilePath m_pathTexts;
+		struct PakFontDesc
+		{
+			FilePath path;
+			Tags platform;
+		};
+
+		typedef std::vector<PakFontDesc> TVectorPakFontDesc;
+		TVectorPakFontDesc m_pathFonts;
+
+		struct PakTextDesc
+		{
+			FilePath path;
+			Tags platform;
+		};
+
+		typedef std::vector<PakTextDesc> TVectorPakTextDesc;
+		TVectorPakTextDesc m_pathTexts;
 
 		struct PakDataDesc
 		{
 			ConstString name;
 			FilePath path;
+			Tags platform;
 		};
 
 		typedef stdex::vector<PakDataDesc> TVectorPakDataDesc;
 		TVectorPakDataDesc m_datas;
 
-		TVectorFilePath m_pathMaterials;
+		struct PakMaterialDesc
+		{			
+			FilePath path;
+			Tags platform;
+		};
+
+		typedef stdex::vector<PakMaterialDesc> TVectorPakMaterialDesc;
+		TVectorPakMaterialDesc m_pathMaterials;
 
         bool m_preload;
 		bool m_load;

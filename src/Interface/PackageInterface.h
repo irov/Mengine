@@ -3,6 +3,7 @@
 #	include "Interface/ServiceInterface.h"
 
 #	include "Core/ConstString.h"
+#	include "Core/Tags.h"
 #	include "Core/FilePath.h"
 
 #	include "Factory/FactorablePtr.h"
@@ -16,7 +17,7 @@ namespace Menge
 		ConstString type;
 
 		ConstString locale;
-		ConstString platform;
+		Tags platform;
 
 		ConstString path;
 		ConstString descriptionPath;
@@ -39,8 +40,8 @@ namespace Menge
 		virtual void setLocale( const ConstString & _locale ) = 0;
 		virtual const ConstString & getLocale() const = 0;
 
-		virtual void setPlatfrom( const ConstString & _platform ) = 0;
-		virtual const ConstString & getPlatfrom() const = 0;
+		virtual void setPlatfromTags( const Tags & _platform ) = 0;
+		virtual const Tags & getPlatfromTags() const = 0;
 
 		virtual void setPath( const ConstString & _path ) = 0;
 		virtual const ConstString & getPath() const = 0;
@@ -73,7 +74,7 @@ namespace Menge
 		virtual PackageInterfacePtr getPackage( const ConstString & _name ) const = 0;
 
 	public:
-		virtual bool enablePackages( const ConstString & _locale, const ConstString & _platformName ) = 0;
+		virtual bool enablePackages( const ConstString & _locale, const Tags & _platformTags ) = 0;
 
 	public:
 		virtual bool validatePackages() const = 0;

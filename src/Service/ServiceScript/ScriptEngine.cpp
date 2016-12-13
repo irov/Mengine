@@ -544,7 +544,7 @@ namespace Menge
 
 		ScriptModulePtr module = m_factoryScriptModule.createObject();
 
-		if( module->initialize( pybind::object(py_module) ) == false )
+		if( module->initialize( pybind::module(py_module) ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("ScriptEngine: invalid import initialize '%s'(script)"
 				, _name.c_str()

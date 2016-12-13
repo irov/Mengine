@@ -28,7 +28,7 @@ namespace Menge
 		WindowHandle getWindowHandle() const override;
 
 	public:
-		const ConstString & getPlatformName() const override;
+		const Tags & getPlatformTags() const override;
 		bool hasTouchpad() const override;
 
 	public:
@@ -94,7 +94,7 @@ namespace Menge
 
 		Win32MouseEvent m_mouseEvent;
 
-		ConstString m_platformName;
+		Tags m_platformTags;
 		Resolution m_windowResolution;
 
 		bool m_active;

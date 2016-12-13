@@ -8,6 +8,7 @@
 
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
+#	include "Core/Tags.h"
 
 #	include <stdex/stl_vector.h>
 
@@ -47,6 +48,7 @@ namespace Menge
 		ConstString module;
 		ConstString initializer;
 		ConstString finalizer;
+		Tags platform;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<ScriptModulePack> TVectorScriptModulePack;

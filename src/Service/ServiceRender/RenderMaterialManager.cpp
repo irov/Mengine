@@ -175,9 +175,9 @@ namespace Menge
 			const Metacode::Meta_DataBlock::Meta_FragmentShader & meta_FragmentShader = *it;
 
 			const ConstString & name = meta_FragmentShader.get_Name();
-			const ConstString & platform = meta_FragmentShader.get_Platform();
+			const ConstString & renderPlatform = meta_FragmentShader.get_RenderPlatform();
 
-			if( platform != renderPlatformName )
+			if( renderPlatform != renderPlatformName )
 			{
 				continue;
 			}
@@ -214,13 +214,14 @@ namespace Menge
 		{
 			const Metacode::Meta_DataBlock::Meta_VertexShader & meta_VertexShader = *it;
 
-			const ConstString & name = meta_VertexShader.get_Name();
-			const ConstString & platform = meta_VertexShader.get_Platform();
+			const ConstString & renderPlatform = meta_VertexShader.get_RenderPlatform();
 
-			if( platform != renderPlatformName )
+			if( renderPlatform != renderPlatformName )
 			{
 				continue;
 			}
+
+			const ConstString & name = meta_VertexShader.get_Name();
 
 			const ConstString & filePath = meta_VertexShader.get_File_Path();
 
@@ -254,13 +255,16 @@ namespace Menge
 		{
 			const Metacode::Meta_DataBlock::Meta_Program & meta_Program = *it;
 
-			const ConstString & name = meta_Program.get_Name();
-			const ConstString & platform = meta_Program.get_Platform();
-
-			if( platform != renderPlatformName )
+			ConstString renderPlatform;
+			if( meta_Program.get_RenderPlatform( renderPlatform ) == true )
 			{
-				continue;
+				if( renderPlatform != renderPlatformName )
+				{
+					continue;
+				}
 			}
+
+			const ConstString & name = meta_Program.get_Name();
 
 			const ConstString & vertexShaderName = meta_Program.get_VertexShader_Name();
 			const ConstString & fragmentShaderName = meta_Program.get_FragmentShader_Name();
@@ -323,6 +327,15 @@ namespace Menge
 			const Metacode::Meta_DataBlock::Meta_Material & meta_Material = *it;
 
 			const Menge::ConstString & name = meta_Material.get_Name();
+
+			ConstString renderPlatform;
+			if( meta_Material.get_RenderPlatform( renderPlatform ) == true )
+			{
+				if( renderPlatform != renderPlatformName )
+				{
+					continue;
+				}
+			}
 
 			bool is_debug = false;
 			meta_Material.get_Debug( is_debug );
@@ -450,13 +463,14 @@ namespace Menge
 		{
 			const Metacode::Meta_DataBlock::Meta_FragmentShader & meta_FragmentShader = *it;
 
-			const ConstString & name = meta_FragmentShader.get_Name();
-			const ConstString & platform = meta_FragmentShader.get_Platform();
+			const ConstString & renderPlatform = meta_FragmentShader.get_RenderPlatform();
 
-			if( platform != renderPlatformName )
+			if( renderPlatform != renderPlatformName )
 			{
 				continue;
 			}
+
+			const ConstString & name = meta_FragmentShader.get_Name();
 
 			m_fragmentShaders.erase( name );
 		}
@@ -471,13 +485,14 @@ namespace Menge
 		{
 			const Metacode::Meta_DataBlock::Meta_VertexShader & meta_VertexShader = *it;
 
-			const ConstString & name = meta_VertexShader.get_Name();
-			const ConstString & platform = meta_VertexShader.get_Platform();
+			const ConstString & renderPlatform = meta_VertexShader.get_RenderPlatform();
 
-			if( platform != renderPlatformName )
+			if( renderPlatform != renderPlatformName )
 			{
 				continue;
 			}
+
+			const ConstString & name = meta_VertexShader.get_Name();
 
 			m_vertexShaders.erase( name );
 		}
@@ -492,13 +507,16 @@ namespace Menge
 		{
 			const Metacode::Meta_DataBlock::Meta_Program & meta_Program = *it;
 
-			const ConstString & name = meta_Program.get_Name();
-			const ConstString & platform = meta_Program.get_Platform();
-
-			if( platform != renderPlatformName )
+			ConstString renderPlatform;
+			if( meta_Program.get_RenderPlatform( renderPlatform ) == true )
 			{
-				continue;
+				if( renderPlatform != renderPlatformName )
+				{
+					continue;
+				}
 			}
+
+			const ConstString & name = meta_Program.get_Name();
 
 			m_programs.erase( name );
 		}

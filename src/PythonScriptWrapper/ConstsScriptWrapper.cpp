@@ -90,7 +90,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	void PythonScriptWrapper::constsWrap( ServiceProviderInterface * _serviceProvider )
 	{
-        pybind::struct_<ConstString>("ConstString")
+		pybind::structhash_<ConstString>( "ConstString" )
             .def_compare( &s_ConstString_compare )
             .def_convert( &ConstString_convert, _serviceProvider )
             .def_repr( &s_ConstString_repr )

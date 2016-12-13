@@ -19,7 +19,13 @@ namespace Menge
 		void setName( const ConstString & _name ) override;
 		const ConstString & getName() const override;
 
-	private:
+	protected:
+		bool avaliable() override;
+
+	protected:
+		virtual bool _avaliable();
+
+	protected:
 		bool initialize() override;
 		void finalize() override;
 

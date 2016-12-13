@@ -5,7 +5,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
     static const uint32_t metacode_version = 4;
-    static const uint32_t metacode_protocol = 112;
+    static const uint32_t metacode_protocol = 114;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -411,7 +411,7 @@ namespace Metacode
     void Meta_DataBlock::Meta_FragmentShader::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
     {
         this->read( _buff, _size, _read, this->Name );
-        this->read( _buff, _size, _read, this->Platform );
+        this->read( _buff, _size, _read, this->RenderPlatform );
         this->read( _buff, _size, _read, this->File_Path );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -506,6 +506,7 @@ namespace Metacode
     Meta_DataBlock::Meta_Material::Meta_Material()
         : Metabuf::Metadata()
         , Debug_successful(false)
+        , RenderPlatform_successful(false)
         , AlphaBlend_Enable_successful(false)
         , BlendFactor_Dest_successful(false)
         , BlendFactor_Op_successful(false)
@@ -528,42 +529,49 @@ namespace Metacode
     {
         switch( _id )
         {
-        case 2:
+        case 3:
             {
                 this->read( _buff, _size, _read, this->Debug );
     
                 this->Debug_successful = true;
     
             }break;
-        case 6:
+        case 2:
+            {
+                this->read( _buff, _size, _read, this->RenderPlatform );
+    
+                this->RenderPlatform_successful = true;
+    
+            }break;
+        case 7:
             {
                 this->read( _buff, _size, _read, this->AlphaBlend_Enable );
     
                 this->AlphaBlend_Enable_successful = true;
     
             }break;
-        case 4:
+        case 5:
             {
                 this->read( _buff, _size, _read, this->BlendFactor_Dest );
     
                 this->BlendFactor_Dest_successful = true;
     
             }break;
-        case 5:
+        case 6:
             {
                 this->read( _buff, _size, _read, this->BlendFactor_Op );
     
                 this->BlendFactor_Op_successful = true;
     
             }break;
-        case 3:
+        case 4:
             {
                 this->read( _buff, _size, _read, this->BlendFactor_Source );
     
                 this->BlendFactor_Source_successful = true;
     
             }break;
-        case 8:
+        case 9:
             {
                 this->read( _buff, _size, _read, this->Program_Name );
     
@@ -577,7 +585,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 7:
+        case 8:
             {
                 includes_Meta_TextureStages.reserve( _count );
             }break;
@@ -588,7 +596,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 7:
+        case 8:
             {
                 Meta_DataBlock::Meta_Material::Meta_TextureStages & metadata = includes_Meta_TextureStages.emplace_back();
     
@@ -620,7 +628,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_Material::Meta_TextureStages::getId() const
     {
-        return 7;
+        return 8;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_Material::Meta_TextureStages::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -713,6 +721,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_Program::Meta_Program()
         : Metabuf::Metadata()
+        , RenderPlatform_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -724,7 +733,6 @@ namespace Metacode
     void Meta_DataBlock::Meta_Program::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
     {
         this->read( _buff, _size, _read, this->Name );
-        this->read( _buff, _size, _read, this->Platform );
         this->read( _buff, _size, _read, this->FragmentShader_Name );
         this->read( _buff, _size, _read, this->Sampler_Count );
         this->read( _buff, _size, _read, this->VertexShader_Name );
@@ -732,12 +740,17 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_Program::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_id;
-    }
+        switch( _id )
+        {
+        case 2:
+            {
+                this->read( _buff, _size, _read, this->RenderPlatform );
     
+                this->RenderPlatform_successful = true;
+    
+            }break;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_Program::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
@@ -778,7 +791,7 @@ namespace Metacode
     void Meta_DataBlock::Meta_VertexShader::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
     {
         this->read( _buff, _size, _read, this->Name );
-        this->read( _buff, _size, _read, this->Platform );
+        this->read( _buff, _size, _read, this->RenderPlatform );
         this->read( _buff, _size, _read, this->File_Path );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3690,6 +3703,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_Pak::Meta_Datas::Meta_Datas()
         : Metabuf::Metadata()
+        , Platform_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3708,18 +3722,23 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Datas::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_id;
-    }
+        switch( _id )
+        {
+        case 1:
+            {
+                this->read( _buff, _size, _read, this->Platform );
     
+                this->Platform_successful = true;
+    
+            }break;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Datas::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
-        case 1:
+        case 2:
             {
                 includes_Meta_Data.reserve( _count );
             }break;
@@ -3730,7 +3749,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 1:
+        case 2:
             {
                 Meta_Pak::Meta_Datas::Meta_Data & metadata = includes_Meta_Data.emplace_back();
     
@@ -3755,7 +3774,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_Pak::Meta_Datas::Meta_Data::getId() const
     {
-        return 1;
+        return 2;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Datas::Meta_Data::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -3800,6 +3819,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_Pak::Meta_Fonts::Meta_Fonts()
         : Metabuf::Metadata()
+        , Platform_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3815,12 +3835,17 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Fonts::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_id;
-    }
+        switch( _id )
+        {
+        case 2:
+            {
+                this->read( _buff, _size, _read, this->Platform );
     
+                this->Platform_successful = true;
+    
+            }break;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Fonts::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
@@ -3849,6 +3874,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_Pak::Meta_Materials::Meta_Materials()
         : Metabuf::Metadata()
+        , Platform_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3867,18 +3893,23 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Materials::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_id;
-    }
+        switch( _id )
+        {
+        case 1:
+            {
+                this->read( _buff, _size, _read, this->Platform );
     
+                this->Platform_successful = true;
+    
+            }break;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Materials::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
-        case 1:
+        case 2:
             {
                 includes_Meta_Material.reserve( _count );
             }break;
@@ -3889,7 +3920,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 1:
+        case 2:
             {
                 Meta_Pak::Meta_Materials::Meta_Material & metadata = includes_Meta_Material.emplace_back();
     
@@ -3914,7 +3945,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_Pak::Meta_Materials::Meta_Material::getId() const
     {
-        return 1;
+        return 2;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Materials::Meta_Material::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -3959,6 +3990,7 @@ namespace Metacode
     Meta_Pak::Meta_Resources::Meta_Resources()
         : Metabuf::Metadata()
         , Ignored_successful(false)
+        , Platform_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3986,6 +4018,13 @@ namespace Metacode
                 this->Ignored_successful = true;
     
             }break;
+        case 2:
+            {
+                this->read( _buff, _size, _read, this->Platform );
+    
+                this->Platform_successful = true;
+    
+            }break;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3993,7 +4032,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 2:
+        case 3:
             {
                 includes_Meta_Resource.reserve( _count );
             }break;
@@ -4004,7 +4043,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 2:
+        case 3:
             {
                 Meta_Pak::Meta_Resources::Meta_Resource & metadata = includes_Meta_Resource.emplace_back();
     
@@ -4029,7 +4068,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_Pak::Meta_Resources::Meta_Resource::getId() const
     {
-        return 2;
+        return 3;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Resources::Meta_Resource::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
@@ -4076,6 +4115,7 @@ namespace Metacode
         , Finalizer_successful(false)
         , Initializer_successful(false)
         , Module_successful(false)
+        , Platform_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -4114,6 +4154,13 @@ namespace Metacode
                 this->Module_successful = true;
     
             }break;
+        case 5:
+            {
+                this->read( _buff, _size, _read, this->Platform );
+    
+                this->Platform_successful = true;
+    
+            }break;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -4144,6 +4191,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_Pak::Meta_Texts::Meta_Texts()
         : Metabuf::Metadata()
+        , Platform_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -4162,18 +4210,23 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Texts::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_id;
-    }
+        switch( _id )
+        {
+        case 1:
+            {
+                this->read( _buff, _size, _read, this->Platform );
     
+                this->Platform_successful = true;
+    
+            }break;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Texts::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
-        case 1:
+        case 2:
             {
                 includes_Meta_Text.reserve( _count );
             }break;
@@ -4184,7 +4237,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 1:
+        case 2:
             {
                 Meta_Pak::Meta_Texts::Meta_Text & metadata = includes_Meta_Text.emplace_back();
     
@@ -4209,7 +4262,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_Pak::Meta_Texts::Meta_Text::getId() const
     {
-        return 1;
+        return 2;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_Pak::Meta_Texts::Meta_Text::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )

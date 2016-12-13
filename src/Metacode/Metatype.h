@@ -5,6 +5,7 @@
 #   include "stdex/memory_reader.h"
 
 #	include "Core/ConstString.h"
+#	include "Core/Tags.h"
 #	include "Core/FilePath.h"
 #	include "Core/ColourValue.h"
 #	include "Core/Polygon.h"
@@ -32,6 +33,7 @@ namespace Metabuf
 	//////////////////////////////////////////////////////////////////////////
     void archive_read( stdex::memory_reader & ar, Menge::String & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, Menge::ConstString & _value, void * _userData );
+	void archive_read( stdex::memory_reader & ar, Menge::Tags & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, Menge::WChar & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, Menge::WString & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, Menge::ColourValue & _value, void * _userData );    

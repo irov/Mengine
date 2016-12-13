@@ -92,22 +92,30 @@ namespace Menge
 		{
 		case  S3E_DEVICE_CLASS_WINDOWS_GENERIC:
 			{
-				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "SIMULATOR");
+				m_platformTags.clear();				
+				m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "SIMULATOR" ) );
+
 				m_touchpad = true;
 			}break;
 		case S3E_DEVICE_CLASS_OSX_DESKTOP:
 			{
-				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "OSX");
+				m_platformTags.clear();
+				m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "OSX" ) );
+
 				m_touchpad = false;
 			}break;
 		case S3E_DEVICE_CLASS_IPHONE:
 			{
-				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "IOS");
+				m_platformTags.clear();				
+				m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "IOS" ) );
+
 				m_touchpad = true;
 			}break;
 		case S3E_DEVICE_CLASS_ANDROID_GENERIC:
 			{
-				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "ANDROID");
+				m_platformTags.clear();				
+				m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ANDROID" ) );
+
 				m_touchpad = true;
 			}break;
 		default:
@@ -414,9 +422,9 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & MarmaladePlatform::getPlatformName() const
+	const Tags & MarmaladePlatform::getPlatformTags() const
 	{
-		return m_platformName;
+		return m_platformTags;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladePlatform::hasTouchpad() const

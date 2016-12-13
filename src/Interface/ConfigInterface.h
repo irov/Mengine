@@ -21,9 +21,6 @@ namespace Menge
         SERVICE_DECLARE("ConfigService")
 
 	public:
-		virtual void setPlatformName( const ConstString & _platformName ) = 0;
-
-	public:
 		virtual bool loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath ) = 0;
 
 	public:

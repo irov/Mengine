@@ -13,7 +13,7 @@
 #	include "Kernel/Scene.h"
 #	include "Layer2D.h"
 
-#	include "Arrow.h"
+//#	include "Arrow.h"
 
 #	include "Kernel/ResourceImage.h"
 

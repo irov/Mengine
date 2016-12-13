@@ -38,15 +38,6 @@ namespace	Menge
 		return m_resourceAnimation;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SurfaceImageSequence::_setEventListener( const pybind::dict & _listener )
-	{
-		//this->registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener );
-		//this->registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener );
-		//this->registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener );
-
-		//this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool SurfaceImageSequence::update( float _current, float _timing )
 	{
 		if( this->isPlay() == false )

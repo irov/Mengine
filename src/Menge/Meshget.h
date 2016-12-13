@@ -61,9 +61,6 @@ namespace Menge
 		void _render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
 
 	protected:
-		void _setEventListener( const pybind::dict & _embed ) override;
-
-	protected:
 		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
 
 	protected:

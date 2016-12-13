@@ -21,6 +21,7 @@ namespace Menge
         ServiceInterface * getService( const char * _name ) const override;
 
 	protected:
+        ServiceInterface * generateService( TServiceProviderGenerator _generator ) override;
 		bool initializeService( TServiceProviderGenerator _generator ) override;
 		bool finalizeService( const char * _name ) override;
 

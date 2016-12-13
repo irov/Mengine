@@ -79,8 +79,6 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-		void _setEventListener( const pybind::dict & _listener ) override;
-
 	protected:
 		uint32_t getFrame_( float _timing, float & _delthaTiming ) const;
 

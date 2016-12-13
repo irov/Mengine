@@ -17,10 +17,10 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class GlobalHandleSystem
-		: public GlobalHandleSystemInterface
+		: public ServiceBase<GlobalHandleSystemInterface>
 	{
     public:
-        GlobalHandleSystem( ServiceProviderInterface * _serviceProvider );
+        GlobalHandleSystem();
 
 	public:
 		uint32_t addGlobalHandler( InputSystemHandler * _handler ) override;

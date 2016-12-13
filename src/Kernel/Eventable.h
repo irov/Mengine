@@ -79,6 +79,14 @@ namespace Menge
 
             return reciever;
         }
+
+        template<class T>
+        static typename T * getThisEventReciever( Eventable * _self, uint32_t _event )
+        {
+            typename T * reciever = _self->getEventRecieverT<T *>( _event );
+
+            return reciever;
+        }
     }
 }
 
@@ -86,9 +94,15 @@ namespace Menge
 public:\
     typedef Type EventReceiverType
 
-#   define EVENTABLE_METHOD(Self, Event)\
-    Self->hasEvent( Event ) == false ? (void)0 : Helper::getThisEventRecieverT( Self, Event )
-
 #   define EVENTABLE_METHODR(Self, Event, R)\
-    Self->hasEvent( Event ) == false ? R : Helper::getThisEventRecieverT( Self, Event )
+    Self->hasEventReceiver( Event ) == false ? R : Helper::getThisEventRecieverT( Self, Event )
+
+#   define EVENTABLE_METHOD(Self, Event)\
+    EVENTABLE_METHODR(Self, Event, ((void)0))
+
+#   define EVENTABLE_METHODRT(Self, Event, R, Type)\
+    Self->hasEventReceiver( Event ) == false ? R : Helper::getThisEventReciever<Type>( Self, Event )
+
+#   define EVENTABLE_METHODT(Self, Event, Type)\
+    EVENTABLE_METHODRT(Self, Event, ((void)0), Type)
 

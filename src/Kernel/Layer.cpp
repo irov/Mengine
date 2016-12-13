@@ -91,15 +91,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node* _node ) const
 	{
-		const mt::vec3f & wp = _node->getWorldPosition();
 
-		const mt::mat4f & vm = _camera->getCameraViewMatrix();
-
-		mt::vec3f sc;
-		mt::mul_m4_v3( sc, vm, wp );
-
-		_screen.x = sc.x;
-		_screen.y = sc.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::_addChild( Node * _node )

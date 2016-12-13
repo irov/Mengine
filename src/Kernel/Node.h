@@ -23,8 +23,6 @@
 
 namespace Menge
 {		
-	class Layer;
-	class Scene;
 	class MousePickerTrapInterface;
 	
 	class Node;
@@ -52,16 +50,6 @@ namespace Menge
 	public:
 		Node();
 		~Node();
-
-	public:
-		virtual void setLayer( Layer * _layer );
-		Layer * getLayer() const;
-
-	public:
-		virtual Scene * getScene();
-
-	protected:
-		Layer * m_layer;
 
 	public:
 		void render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask ) override;
@@ -104,7 +92,7 @@ namespace Menge
 		void renderChild_( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask );
 
 	public:
-		void getScreenPosition( const RenderCameraInterface * _camera, mt::vec2f & _position );
+		void calcScreenPosition( const RenderCameraInterface * _camera, mt::vec2f & _screen );
 		
 	public:
 		const ColourValue & getWorldColor() const;

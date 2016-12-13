@@ -3,14 +3,16 @@
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/ApplicationInterface.h"
 
-#	include "Arrow.h"
+#	include "Kernel/Arrow.h"
 #	include "Kernel/Scene.h"
-#	include "Player.h"
 
 #	include "Logger/Logger.h"
 
 #	include <algorithm>
 
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( MousePickerSystem, Menge::MousePickerSystem );
+//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	namespace
@@ -124,8 +126,8 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MousePickerSystem::MousePickerSystem( ServiceProviderInterface * _serviceProvider )
-		: m_serviceProvider(_serviceProvider)
+	MousePickerSystem::MousePickerSystem()
+		: m_serviceProvider(nullptr)
         , m_enumerator(0)
 		, m_arrow(nullptr)
 		, m_scene(nullptr)

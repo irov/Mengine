@@ -150,6 +150,39 @@ namespace Menge
 		virtual ServiceInterface * getService( const Char * _name ) const = 0;
 
     public:
+        virtual ServiceInterface * generateService( TServiceProviderGenerator _generator ) = 0;
+
+        template<class T>
+        T * generateServiceT( TServiceProviderGenerator _generator, const Char * _file, uint32_t _line )
+        {
+            ServiceInterface * service = this->generateService( _generator );
+
+#   ifdef _DEBUG
+            const Char * serviceName = T::getStaticServiceID();
+
+            if( service == nullptr )
+            {
+                MENGINE_THROW_EXCEPTION_FL( _file, _line )("Generate service %s not found"
+                    , serviceName
+                    );
+            }
+
+            if( dynamic_cast<T *>(service) == nullptr )
+            {
+                MENGINE_THROW_EXCEPTION_FL( _file, _line )("Genereate service %s invalid cast to '%s'"
+                    , serviceName
+                    , typeid(T).name()
+                    );
+
+                throw;
+            }
+#   endif
+            T * t = static_cast<T *>(service);
+
+            return t;
+        }
+
+    public:
 		virtual bool initializeService( TServiceProviderGenerator _generator ) = 0;
 		virtual bool finalizeService( const Char * _name ) = 0;
 		virtual bool destroyService( const Char * _name ) = 0;
@@ -183,12 +216,11 @@ namespace Menge
     {
 		//////////////////////////////////////////////////////////////////////////
         template<class T>
-#   ifdef _DEBUG
 		inline T * getService( ServiceProviderInterface * _serviceProvider, const Char * _file, uint32_t _line )
-#	else
-		inline T * getService( ServiceProviderInterface * _serviceProvider )
-#	endif
         {
+            (void)_file;
+            (void)_line;
+
             static T * s_service = nullptr;
 
             if( s_service == nullptr )
@@ -246,15 +278,10 @@ namespace Menge
 
 			return s_exist;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-#	ifdef _DEBUG
+    }
+    //////////////////////////////////////////////////////////////////////////
 #	define SERVICE_GET( serviceProvider, Type )\
 	(Menge::Helper::getService<Type>(serviceProvider, __FILE__, __LINE__))
-#	else
-#	define SERVICE_GET( serviceProvider, Type )\
-	(Menge::Helper::getService<Type>(serviceProvider))
-#	endif
 
 #	define SERVICE_EXIST( serviceProvider, Type )\
 	(Menge::Helper::existService<Type>(serviceProvider))
@@ -299,6 +326,9 @@ namespace Menge
 
 #   define SERVICE_CREATE( Provider, Name )\
 	( Provider != nullptr ? Provider->initializeService(&SERVICE_NAME_CREATE(Name)) : false )
+
+#   define SERVICE_GENERATE( Provider, Name, Type )\
+	( Provider != nullptr ? Provider->generateServiceT<Type>(&SERVICE_NAME_CREATE(Name), __FILE__, __LINE__) : nullptr )
 
 #   define SERVICE_FINALIZE( Provider, Type )\
 	( Provider != nullptr ? Provider->finalizeServiceT<Type>() : false )

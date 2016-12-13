@@ -48,8 +48,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_activate()
 	{
-        EVENTABLE_METHOD( this, EVENT_ENTITY_PREPARATION )
-            ->onEntityPreparation();
+        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_PREPARATION, EntityEventReceiver )
+            ->onEntityPreparation( m_object );
 		//EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_PREPARATION )(m_object);
 
 		bool successful = Node::_activate();
@@ -61,15 +61,15 @@ namespace Menge
 	{
 		Node::_afterActivate();
 
-        EVENTABLE_METHOD( this, EVENT_ENTITY_ACTIVATE )
-            ->onEntityActivate();
+        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_ACTIVATE, EntityEventReceiver )
+            ->onEntityActivate(m_object);
 		//EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_ACTIVATE )(m_object);
 	}
     //////////////////////////////////////////////////////////////////////////
     void Entity::_deactivate()
     {
-        EVENTABLE_METHOD( this, EVENT_ENTITY_PREPARATION_DEACTIVATE )
-            ->onEntityPreparationDeactivate();
+        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_PREPARATION_DEACTIVATE, EntityEventReceiver )
+            ->onEntityPreparationDeactivate( m_object );
 		//EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_PREPARATION_DEACTIVATE )(m_object);
 
         Node::_deactivate();		
@@ -79,15 +79,15 @@ namespace Menge
 	{
 		Node::_afterDeactivate();
 
-        EVENTABLE_METHOD( this, EVENT_ENTITY_DEACTIVATE )
-            ->onEntityDeactivate();
+        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_DEACTIVATE, EntityEventReceiver )
+            ->onEntityDeactivate( m_object );
 		//EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_DEACTIVATE )(m_object);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_compile()
 	{
-        EVENTABLE_METHOD( this, EVENT_ENTITY_COMPILE )
-            ->onEntityCompile();
+        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_COMPILE, EntityEventReceiver )
+            ->onEntityCompile( m_object );
 		//EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_COMPILE )(m_object);
 		
 		return true;
@@ -95,15 +95,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_release()
 	{
-        EVENTABLE_METHOD( this, EVENT_ENTITY_RELEASE )
-            ->onEntityRelease();
+        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_RELEASE, EntityEventReceiver )
+            ->onEntityRelease( m_object );
 		//EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_RELEASE )(m_object);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::onCreate()
 	{
-        EVENTABLE_METHOD( this, EVENT_ENTITY_CREATE )
-            ->onEntityCreate();
+        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_CREATE, EntityEventReceiver )
+            ->onEntityCreate( m_object );
 		//EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_CREATE )(m_object, this);
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -130,8 +130,8 @@ namespace Menge
 
 		Node * old_parent = this->getParent();
 
-        EVENTABLE_METHOD( this, EVENT_ENTITY_DESTROY )
-            ->onEntityDestroy();
+        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_DESTROY, EntityEventReceiver )
+            ->onEntityDestroy( m_object );
 		//EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_DESTROY )(m_object);
 
 		m_object.reset();
@@ -160,9 +160,11 @@ namespace Menge
 
 		this->removeFromParent();
 
-        EVENTABLE_METHOD( this, EVENT_ENTITY_DESTROY )
-            ->onEntityDestroy();
+        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_DESTROY, EntityEventReceiver )
+            ->onEntityDestroy( m_object );
 		//EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_DESTROY )(m_object);
+
+        m_object.reset();
 
 		Factorable::destroy();
 	}

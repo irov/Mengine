@@ -5,8 +5,11 @@
 namespace Menge
 {    
     class GlobalHandleSystemInterface
-		: public InputSystemHandler
+        : public ServiceInterface
+		, public InputSystemHandler
     {
+        SERVICE_DECLARE( "GlobalHandleSystem" )
+
     public:
 		virtual uint32_t addGlobalHandler( InputSystemHandler * _handler ) = 0;
 		virtual InputSystemHandler * removeGlobalHandler (uint32_t _id) = 0;

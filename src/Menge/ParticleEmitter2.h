@@ -76,8 +76,6 @@ namespace Menge
         void _setLoop( bool _value ) override;
 
 	protected:
-		void _setEventListener( const pybind::dict & _listener ) override;
-
 		bool _activate() override;
 		void _deactivate() override;
 

@@ -2,6 +2,8 @@
 
 #   include "Interface/PlayerInterface.h"
 #   include "Interface/NotificationServiceInterface.h"
+#   include "Interface/MousePickerSystemInterface.h"
+#   include "Interface/GlobalHandleSystemInterface.h"
 
 #	include "Core/ConstString.h"
 #	include "Core/Resolution.h"
@@ -12,8 +14,6 @@
 
 #	include "pybind/types.hpp"
 
-#   include "MousePickerSystem.h"
-#   include "GlobalHandleSystem.h"
 #   include "Kernel/ScheduleManager.h"
 
 
@@ -165,8 +165,8 @@ namespace Menge
 		RenderClipplaneInterface * m_renderClipplane;
 		RenderTargetInterface * m_renderTarget;
 
-        MousePickerSystem * m_mousePickerSystem;
-        GlobalHandleSystem * m_globalHandleSystem;
+        MousePickerSystemInterface * m_mousePickerSystem;
+        GlobalHandleSystemInterface * m_globalHandleSystem;
 
 		ScheduleManagerInterface * m_scheduleManager;
 		ScheduleManagerInterface * m_scheduleManagerGlobal;

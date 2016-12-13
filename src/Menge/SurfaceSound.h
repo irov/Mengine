@@ -80,9 +80,6 @@ namespace Menge
         bool update( float _time, float _timing ) override;
 
 	protected:
-		void _setEventListener( const pybind::dict & _listener ) override;
-
-	protected:
 		void _setLoop( bool _value ) override;
 
 	protected:

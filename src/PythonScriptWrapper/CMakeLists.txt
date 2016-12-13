@@ -1,7 +1,15 @@
 set( MY_LIB_NAME PythonScriptWrapper )
 
 ADD_FILTER(
-src
+ScriptHolder
+	ScriptHolder.cpp
+	ScriptHolder.h
+)
+
+ADD_FILTER(
+Wrapper
+	ScriptWrapper.h
+	ScriptClassWrapper.h
 	PythonScriptWrapper.cpp
 	PythonScriptWrapper.h
     HelperScriptWrapper.cpp
@@ -10,6 +18,10 @@ src
 	MathScriptWrapper.cpp
 	EntityScriptWrapper.cpp
 	ConstsScriptWrapper.cpp
+)
+
+ADD_FILTER(
+Generator
 	EntityPrototypeGenerator.h
 	EntityPrototypeGenerator.cpp
 )

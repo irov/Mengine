@@ -22,16 +22,35 @@ namespace Menge
 	ServiceProvider::~ServiceProvider()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ServiceInterface * ServiceProvider::generateService( TServiceProviderGenerator _generator )
+    {
+        if( _generator == nullptr )
+        {
+            return nullptr;
+        }
+
+        ServiceInterface * service;
+        if( (*_generator)(&service) == false )
+        {
+            return nullptr;
+        }
+
+        service->setServiceProvider( this );
+
+        if( service->initialize() == false )
+        {
+            return nullptr;
+        }
+
+        return service;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ServiceProvider::initializeService( TServiceProviderGenerator _generator )
 	{
-		if( _generator == nullptr )
-		{
-			return false;
-		}
-
-		ServiceInterface * service;
-		if( (*_generator)(&service) == false )
+		ServiceInterface * service = this->generateService( _generator );
+		
+        if( service == nullptr )
 		{
 			return false;
 		}
@@ -39,13 +58,6 @@ namespace Menge
 		const char * name = service->getServiceID();
 
 		if( strlen( name ) + 1 > SERVICE_PROVIDER_NAME_SIZE )
-		{
-			return false;
-		}
-
-		service->setServiceProvider( this );
-
-		if( service->initialize() == false )
 		{
 			return false;
 		}

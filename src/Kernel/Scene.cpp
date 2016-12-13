@@ -10,8 +10,6 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Scene::Scene()
-		: m_mainLayer(nullptr)
-		, m_parentScene(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -19,97 +17,21 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::_setEventListener( const pybind::dict & _embed )
-	{
-		Entity::_setEventListener( _embed );
+	//void Scene::_setEventListener( const pybind::dict & _embed )
+	//{
+	//	Entity::_setEventListener( _embed );
 
-		this->registerEvent( EVENT_APP_MOUSE_LEAVE, ("onAppMouseLeave"), _embed );
-		this->registerEvent( EVENT_APP_MOUSE_ENTER, ("onAppMouseEnter"), _embed );
-		this->registerEvent( EVENT_FOCUS, ("onFocus"), _embed );
+	//	this->registerEvent( EVENT_APP_MOUSE_LEAVE, ("onAppMouseLeave"), _embed );
+	//	this->registerEvent( EVENT_APP_MOUSE_ENTER, ("onAppMouseEnter"), _embed );
+	//	this->registerEvent( EVENT_FOCUS, ("onFocus"), _embed );
 
-		this->registerEvent( EVENT_ON_SUB_SCENE, ("onSubScene"), _embed );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::setMainLayer( Layer * _layer )
-	{
-		m_mainLayer = _layer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::_changeParent( Node * _oldParent, Node * _newParent )
-	{
-        (void)_oldParent;        
-
-		if( _newParent == nullptr )
-		{
-			return;
-		}
-
-		m_parentScene = _newParent->getScene();
-
-		if( m_parentScene == nullptr )
-		{
-			return;
-		}
-
-        EVENTABLE_METHOD( this, EVENT_ON_SUB_SCENE )
-            ->onSceneSubScene( m_parentScene );
-		//EVENTABLE_CALL(m_serviceProvider, this, EVENT_ON_SUB_SCENE)( m_parentScene );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Scene * Scene::getParentScene() const
-	{
-		return m_parentScene;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::isSubScene() const
-	{
-		return m_parentScene != nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Scene * Scene::getScene()
-	{
-		return this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Layer * Scene::getMainLayer() const
-	{
-		return m_mainLayer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::_addChild( Node * _node )
-	{
-		Layer * layer = dynamic_cast<Layer *>(_node);
-
-		if( layer != nullptr )
-		{
-			layer->setScene( this );
-
-			if( layer->isMain() == true )
-			{
-				this->setMainLayer( layer ); 
-			}
-		}
-	}
-    //////////////////////////////////////////////////////////////////////////
-    void Scene::_removeChild( Node * _node )
-    {
-		Layer * layer = dynamic_cast<Layer *>(_node);
-
-        if( layer != nullptr )
-        {   
-			layer->setScene( nullptr );
-
-            if( layer->isMain() == true )
-            {
-                this->setMainLayer( nullptr );
-            }
-        }
-    }
+	//	this->registerEvent( EVENT_ON_SUB_SCENE, ("onSubScene"), _embed );
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onAppMouseLeave()
 	{
-        bool handle = EVENTABLE_METHODR( this, EVENT_APP_MOUSE_LEAVE, false )
-            ->onSceneAppMouseLeave();
+        bool handle = EVENTABLE_METHODRT( m_scriptEventable, EVENT_APP_MOUSE_LEAVE, false, SceneEventReceiver )
+            ->onSceneAppMouseLeave( m_object );
 		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_APP_MOUSE_LEAVE, handle )();
 
 		if( handle == false )
@@ -130,8 +52,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onAppMouseEnter()
 	{
-        bool handle = EVENTABLE_METHODR( this, EVENT_APP_MOUSE_ENTER, false )
-            ->onSceneAppMouseEnter();
+        bool handle = EVENTABLE_METHODRT( m_scriptEventable, EVENT_APP_MOUSE_ENTER, false, SceneEventReceiver )
+            ->onSceneAppMouseEnter( m_object );
 		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_APP_MOUSE_ENTER, handle )();
 
 		if( handle == false )
@@ -152,8 +74,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onFocus( bool _focus )
 	{
-        bool handle = EVENTABLE_METHODR( this, EVENT_FOCUS, false )
-            ->onSceneAppFocus( _focus );
+        bool handle = EVENTABLE_METHODRT( m_scriptEventable, EVENT_FOCUS, false, SceneEventReceiver )
+            ->onSceneAppFocus( m_object, _focus );
 		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_FOCUS, handle )(_focus);
 
 		if( handle == false )

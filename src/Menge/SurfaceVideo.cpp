@@ -266,12 +266,6 @@ namespace Menge
         return ColourValue::identity();
     }
 	//////////////////////////////////////////////////////////////////////////
-	void SurfaceVideo::_setEventListener( const pybind::dict & _listener )
-	{
-		//this->registerEvent( EVENT_VIDEO_END, ("onVideoEnd"), _listener );
-		//this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::_stop( uint32_t _enumerator )
 	{
 		(void)_enumerator;

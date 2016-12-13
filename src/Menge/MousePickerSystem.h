@@ -19,10 +19,10 @@ namespace Menge
 	typedef stdex::vector<PickerTrapStateDesc> TVectorPickerTrapStates;
 	
 	class MousePickerSystem
-		: public MousePickerSystemInterface
+		: public ServiceBase<MousePickerSystemInterface>
 	{
 	public:
-		MousePickerSystem( ServiceProviderInterface * _serviceProvider );
+		MousePickerSystem();
 
 	public:
 		void setBlock( bool _value ) override;

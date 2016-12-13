@@ -6,6 +6,8 @@
 
 #   include "ResourceMovie.h"
 
+#   include "pybind/pybind.hpp"
+
 #   include "stdex/binary_vector.h"
 
 namespace Menge
@@ -135,9 +137,6 @@ namespace Menge
         
         void updateForwardFrame_( float _time, uint32_t _beginFrame, uint32_t _endFrame );
         void updateForwardFrameNode_( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer &, Node * _node );
-
-	protected:
-		void _setEventListener( const pybind::dict & _embed ) override;
 
 	protected:
 		bool updateFrameNode_( const MovieLayer & layer, Node * _node, uint32_t _frameId, bool _interpolate, bool _start );

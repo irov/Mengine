@@ -2,11 +2,9 @@
 
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/InputSystemInterface.h"
+#	include "Interface/ApplicationInterface.h"
 
 #	include "Kernel/RenderCameraHelper.h"
-
-#	include "Game.h"
-#	include "Player.h"
 
 namespace	Menge
 {
@@ -17,14 +15,6 @@ namespace	Menge
 		, m_radius(0.f)
 		, m_hided(false)
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Scene * Arrow::getScene()
-	{
-		Scene * scene = PLAYER_SERVICE(m_serviceProvider)
-			->getCurrentScene();
-
-		return scene;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EArrowType Arrow::getArrowType() const

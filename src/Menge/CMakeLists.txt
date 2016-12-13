@@ -17,12 +17,6 @@ Service\\\\Watchdog
 )
 
 ADD_FILTER(
-Arrow
-	Arrow.cpp
-	Arrow.h
-)
-
-ADD_FILTER(
 Game
 	Game.cpp
 	Game.h
@@ -323,16 +317,6 @@ Manager\\\\Account
 	AccountManager.h
   	Account.cpp
 	Account.h
-)
-
-ADD_FILTER(
-Scene\\\\Layer2D
-	Layer2D.cpp
-	Layer2D.h
-	Layer2DParallax.cpp
-	Layer2DParallax.h
-    Layer2DIsometric.cpp
-    Layer2DIsometric.h
 )
 
 ADD_FILTER(

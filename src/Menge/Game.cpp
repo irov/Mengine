@@ -1,10 +1,5 @@
 #	include "Game.h"
 
-#	include "Kernel/Scene.h"
-
-#	include "Player.h"
-#	include "Arrow.h"
-
 #	include "Interface/AmplifierInterface.h"
 #	include "Interface/OptionsInterface.h"
 #	include "Interface/WatchdogInterface.h"
@@ -18,6 +13,9 @@
 #   include "Interface/TextInterface.h"
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/ConfigInterface.h"
+#   include "Interface/PlayerInterface.h"
+
+#   include "Kernel/Arrow.h"
 
 #	include "Logger/Logger.h"
 
@@ -287,7 +285,8 @@ namespace Menge
 		{
 			const UserEvent & ev = *it;
 
-			EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_USER )(ev.id, ev.params);
+            EVENTABLE_METHOD( this, EVENT_GAME_USER )
+                ->onGameUser( ev.id, ev.params );
 		}
 
 		m_events.clear();
@@ -540,7 +539,7 @@ namespace Menge
             ->onGameDestroy();
 		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_DESTROY )();
 
-		this->unregisterEvents_();
+		this->removeEvents();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initializeRenderResources()

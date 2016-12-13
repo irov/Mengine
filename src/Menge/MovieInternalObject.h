@@ -4,6 +4,8 @@
 
 #   include "ResourceInternalObject.h"
 
+#   include "pybind/pybind.hpp"
+
 namespace Menge
 {
 	class Movie;

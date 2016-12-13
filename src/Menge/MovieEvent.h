@@ -1,8 +1,8 @@
 #	pragma once
 
-#	include "Kernel/Node.h"
-
 #   include "MovieNodeExtra.h"
+
+#   include "pybind/pybind.hpp"
 
 namespace Menge
 {

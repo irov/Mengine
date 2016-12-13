@@ -2,7 +2,10 @@
 
 #   include "Interface/PrototypeManagerInterface.h"
 
-#	include "Node.h"
+#	include "Kernel/Node.h"
+#	include "Kernel/Eventable.h"
+
+#   include "pybind/object.hpp"
 
 namespace Menge
 {
@@ -24,24 +27,21 @@ namespace Menge
         : public EventReceiver
     {
     public:
-        virtual void onEntityPreparation() = 0;
-        virtual void onEntityActivate() = 0;
-        virtual void onEntityPreparationDeactivate() = 0;
-        virtual void onEntityDeactivate() = 0;
-        virtual void onEntityCompile() = 0;
-        virtual void onEntityRelease() = 0;
-        virtual void onEntityCreate() = 0;
-        virtual void onEntityDestroy() = 0;
+        virtual void onEntityPreparation( const pybind::object & _self ) = 0;
+        virtual void onEntityActivate( const pybind::object & _self ) = 0;
+        virtual void onEntityPreparationDeactivate( const pybind::object & _self ) = 0;
+        virtual void onEntityDeactivate( const pybind::object & _self ) = 0;
+        virtual void onEntityCompile( const pybind::object & _self ) = 0;
+        virtual void onEntityRelease( const pybind::object & _self ) = 0;
+        virtual void onEntityCreate( const pybind::object & _self ) = 0;
+        virtual void onEntityDestroy( const pybind::object & _self ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<EntityEventReceiver> EntityEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
 	class Entity
 		: public Node
-		, public Eventable
 	{
-        EVENT_RECEIVER( EntityEventReceiver );
-
     public:
         Entity();
         ~Entity();

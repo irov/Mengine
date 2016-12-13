@@ -45,9 +45,6 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-	protected:
-		void _setEventListener( const pybind::dict & _listener ) override;
-        
     protected:
         const mt::vec2f & getMaxSize() const override;
         const mt::vec2f & getSize() const override;

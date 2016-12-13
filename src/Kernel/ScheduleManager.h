@@ -2,8 +2,6 @@
 
 #   include "Interface/ScheduleManagerInterface.h"
 
-#	include "pybind/types.hpp"
-
 #	include <stdex/stl_vector.h>
 
 namespace Menge

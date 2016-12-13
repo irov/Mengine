@@ -156,14 +156,6 @@ namespace Menge
         return ColourValue::identity();
     }
 	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSound::_setEventListener( const pybind::dict & _listener )
-	{
-		//this->registerEvent( EVENT_SOUND_PAUSE, ("onSoundPause"), _listener );
-		//this->registerEvent( EVENT_SOUND_END, ("onSoundEnd"), _listener );
-
-		//this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void SurfaceSound::onSoundPause( uint32_t _soundId )
 	{
 		(void)_soundId;

@@ -157,11 +157,6 @@ namespace Menge
 			->addRenderObject( _state, material, vertices_buff, vertexCount, indices_buff, indicesCount, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Meshget::_setEventListener( const pybind::dict & _listener )
-	{
-		this->registerEvent( EVENT_MESHGET_UPDATE, ("onUpdate"), _listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Meshget::_updateBoundingBox( mt::box2f & _boundingBox ) const
 	{
 		if( m_positions.empty() == true )

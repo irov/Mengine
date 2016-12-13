@@ -4,6 +4,9 @@
 
 #	include <algorithm>
 
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( GlobalHandleSystem, Menge::GlobalHandleSystem );
+//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
     namespace
@@ -33,8 +36,8 @@ namespace Menge
         };	
     }
     //////////////////////////////////////////////////////////////////////////
-    GlobalHandleSystem::GlobalHandleSystem( ServiceProviderInterface * _serviceProvider )
-        : m_serviceProvider(_serviceProvider)
+    GlobalHandleSystem::GlobalHandleSystem()
+        : m_serviceProvider(nullptr)
         , m_handlersEnumerator(0)
     {
     }

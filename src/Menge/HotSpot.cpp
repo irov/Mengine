@@ -3,12 +3,12 @@
 #   include "HotspotMousePickerVisitor.h"
 
 #	include "Interface/MousePickerSystemInterface.h"
+#	include "Interface/PlayerInterface.h"
 
 #	include "Kernel/Scene.h"
 #	include "Layer2D.h"
 
-#	include "Player.h"
-#	include "Arrow.h"
+#	include "Kernel/Arrow.h"
 
 #	include "pybind/system.hpp"
 #	include "pybind/extract.hpp"
@@ -80,23 +80,6 @@ namespace Menge
 	bool HotSpot::getGlobal() const
 	{
 		return m_global;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_setEventListener( const pybind::dict & _listener )
-	{
-		this->registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _listener );
-		this->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );
-		this->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, ("onHandleMouseButtonEventBegin"), _listener );
-		this->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );
-		this->registerEvent( EVENT_MOUSE_WHEEL, ("onHandleMouseWheel"), _listener );
-
-		this->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
-		this->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener );
-		this->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener );		
-		this->registerEvent( EVENT_MOUSE_OVER_DESTROY, ("onHandleMouseOverDestroy"), _listener );
-
-		this->registerEvent( EVENT_ACTIVATE, ("onActivate"), _listener );
-		this->registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PickerTrapState * HotSpot::propagatePickerTrapState() const
@@ -365,17 +348,37 @@ namespace Menge
 			return false;
 		}
 
-		Layer * layer = this->getLayer();
+        EArrowType arrowType = _arrow->getArrowType();
 
-		if( layer == nullptr )
-		{
-			return false;
-		}
+        switch( arrowType )
+        {
+        case EAT_POINT:
+            {
+                bool result = this->testPoint( _camera, _viewport, _contentResolution, _point );
 
-		HotspotMousePickerVisitor mp(this, _viewport, _camera, _contentResolution, _point, _arrow);
-		bool result = mp.test( layer );
+                return result;
+            }break;
+        case EAT_RADIUS:
+            {
+                float radius = _arrow->getRadius();
 
-		return result;
+                //m_result = m_hotspot->testRadius( m_camera, m_viewport, m_gameViewport, m_point, radius );
+                bool result = this->testRadius( _camera, _viewport, _contentResolution, _point, radius );
+
+                return result;
+            }break;
+        case EAT_POLYGON:
+            {
+                const Polygon & polygon = _arrow->getPolygon();
+
+                //m_result = m_hotspot->testPolygon( m_camera, m_viewport, m_gameViewport, m_point, polygon );
+                bool result = this->testPolygon( _camera, _viewport, _contentResolution, _point, polygon );
+
+                return result;
+            }break;
+        }
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable * HotSpot::propagatePickerScriptable()

@@ -2098,7 +2098,7 @@ namespace Menge
 	{
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		Layer * layer = this->getLayer();
+		Node * parent = this->getParent();
 
 		for( TVectorMovieLayers::const_iterator
 			it = layers.begin(),
@@ -2132,7 +2132,7 @@ namespace Menge
 
 			MovieSceneEffect * sceneEffect = static_cast<MovieSceneEffect *>(node);
 
-			sceneEffect->setPropagateNode( layer );
+			sceneEffect->setPropagateNode( parent );
 		}
 
 		return true;
@@ -2475,17 +2475,6 @@ namespace Menge
 		{
 			this->updateTiming_();
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie::_setEventListener( const pybind::dict & _listener )
-	{
-		//this->registerEvent( EVENT_MOVIE_GET_INTERNAL, ("onMovieGetInternal"), _listener );
-		//this->registerEvent( EVENT_MOVIE_ACTIVATE_INTERNAL, ("onMovieActivateInternal"), _listener );
-		//this->registerEvent( EVENT_MOVIE_DEACTIVATE_INTERNAL, ("onMovieDeactivateInternal"), _listener );
-
-		//this->registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _listener );
-
-		//this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_update( float _current, float _timing )

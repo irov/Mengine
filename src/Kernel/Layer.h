@@ -21,21 +21,6 @@ namespace Menge
 		Layer();
 		~Layer();
 
-	public:
-		void setMain( bool value );
-		bool isMain() const;
-
-	public:
-		void setScene( Scene * _scene );
-		Scene * getScene() override;
-	
-	public:
-		void setSize( const mt::vec2f & _size );
-		const mt::vec2f & getSize() const;
-
-	public:
-		void setLayer( Layer * _layer ) override;
-
 	protected:
 		bool _activate() override;
 		
@@ -48,11 +33,5 @@ namespace Menge
 
 	public:
 		virtual void calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node* _node ) const;
-
-	protected:
-		bool m_main;
-		mt::vec2f m_size;
-
-		Scene * m_scene;
 	};
 }

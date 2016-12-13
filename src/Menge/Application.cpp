@@ -44,11 +44,12 @@
 #	include "Factory/FactoryDefault.h"
 #	include "Factory/FactoryPool.h"
 
-// All Node type
-#	include "Kernel/Entity.h"
-#	include "Kernel/ScriptHolder.h"
 
-#	include "Arrow.h"
+#	include "Kernel/Entity.h"
+#	include "Kernel/Arrow.h"
+//#	include "ScriptHolder.h"
+
+// All Node type
 #	include "ParticleEmitter2.h"
 #	include "HotSpot.h"
 #	include "HotSpotPolygon.h"
@@ -136,7 +137,7 @@
 #	include "ResourceCursorSystem.h"
 #	include "ResourceInternalObject.h"
 
-#	include "ScriptWrapper.h"
+//#	include "ScriptWrapper.h"
 
 #	include "Kernel/NodePrototypeGenerator.h"
 #	include "Kernel/ResourcePrototypeGenerator.h"
@@ -342,7 +343,7 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, Node );
 
 		NODE_FACTORY( m_serviceProvider, Entity );
-		NODE_FACTORY( m_serviceProvider, ScriptHolder );
+		//NODE_FACTORY( m_serviceProvider, ScriptHolder );
 		NODE_FACTORY( m_serviceProvider, Arrow );
 		NODE_FACTORY( m_serviceProvider, Scene );
 

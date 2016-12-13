@@ -40,21 +40,9 @@ Surface
 )
 
 ADD_FILTER(
-PrototypeGenerator
-    BasePrototypeGenerator.cpp
-    BasePrototypeGenerator.h    
-    DefaultPrototypeGenerator.h
-    NodePrototypeGenerator.h
-    ScriptablePrototypeGenerator.h
-    ResourcePrototypeGenerator.h
-    SurfacePrototypeGenerator.h
-    ScriptClassWrapper.h
-)
-
-ADD_FILTER(
-Layer
-	Layer.cpp
-	Layer.h
+Entity
+	Entity.cpp
+	Entity.h
 )
 
 ADD_FILTER(
@@ -64,9 +52,20 @@ Scene
 )
 
 ADD_FILTER(
-ScriptHolder
-	ScriptHolder.cpp
-	ScriptHolder.h
+Arrow
+	Arrow.cpp
+	Arrow.h
+)
+
+ADD_FILTER(
+PrototypeGenerator
+    BasePrototypeGenerator.cpp
+    BasePrototypeGenerator.h    
+    DefaultPrototypeGenerator.h
+    NodePrototypeGenerator.h
+    ScriptablePrototypeGenerator.h
+    ResourcePrototypeGenerator.h
+    SurfacePrototypeGenerator.h    
 )
 
 ADD_FILTER(
@@ -79,12 +78,6 @@ ADD_FILTER(
 Identity
 	Identity.cpp
 	Identity.h
-)
-
-ADD_FILTER(
-Entity
-	Entity.cpp
-	Entity.h
 )
 
 ADD_FILTER(
@@ -248,7 +241,6 @@ INCLUDE_DIRECTORIES(
     ${Mengine_SOURCE_DIR}/Utils 
     ${THIRDPARTY_DIR}/metabuf
     ${THIRDPARTY_DIR}/pybind/include
-    ${THIRDPARTY_DIR}/python/include
     )     
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

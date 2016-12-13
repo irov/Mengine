@@ -12,13 +12,10 @@
 #	include "Interface/NotificationServiceInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/PrefetcherInterface.h"
+#	include "Interface/ModuleInterface.h"
+#	include "Interface/ApplicationInterface.h"
 
 #   include "Config/Stringstream.h"
-
-#	include "NodeManager.h"
-
-#	include "Game.h"
-#	include "Application.h"
 
 #	include "Kernel/Scene.h"
 
@@ -26,10 +23,9 @@
 #	include "Kernel/RenderClipplane.h"
 #	include "Kernel/RenderCameraOrthogonal.h"
 #	include "Kernel/RenderCameraHelper.h"
+#	include "Kernel/Arrow.h"
 
 #	include "Consts.h"
-
-#	include "Arrow.h"
 
 #	include "Logger/Logger.h"
 
@@ -43,6 +39,9 @@
 
 #   include <iomanip>
 
+//////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( MousePickerSystem );
+SERVICE_EXTERN( GlobalHandleSystem );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PlayerService, Menge::Player );
 //////////////////////////////////////////////////////////////////////////
@@ -621,8 +620,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::_initialize()
 	{
-		m_mousePickerSystem = new MousePickerSystem(m_serviceProvider);
-		m_globalHandleSystem = new GlobalHandleSystem(m_serviceProvider);
+		m_mousePickerSystem = SERVICE_GENERATE( m_serviceProvider, MousePickerSystem, MousePickerSystemInterface );
+        m_globalHandleSystem = SERVICE_GENERATE( m_serviceProvider, GlobalHandleSystem, GlobalHandleSystemInterface );
 		
         m_scheduleManager = m_factoryScheduleManager.createObject();
         m_scheduleManager->setServiceProvider( m_serviceProvider );

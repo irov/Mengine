@@ -1,7 +1,5 @@
 #	include "Kernel/Node.h"
 
-#   include "Kernel/Layer.h"
-
 #	include "Interface/RenderSystemInterface.h"
 #   include "Interface/NodeInterface.h"
 
@@ -20,7 +18,6 @@ namespace Menge
 		, m_rendering(false)
 		, m_invalidateRendering(true)
 		, m_parent(nullptr)
-		, m_layer(nullptr)
 		, m_renderCamera(nullptr)
 		, m_renderViewport(nullptr)
 		, m_renderClipplane(nullptr)
@@ -306,7 +303,6 @@ namespace Menge
 			node->release();
 
             node->setParent_( nullptr );
-            node->setLayer( nullptr );
 
 			m_children.erase( it_node );
 		}
@@ -427,7 +423,6 @@ namespace Menge
 
 			this->insertChild_( _insert, _node );
 
-            _node->setLayer( m_layer );
 			_node->setParent_( this );
 		}
 
@@ -533,7 +528,6 @@ namespace Menge
         this->_removeChild( _node );
 		
 		_node->setParent_( nullptr );
-		_node->setLayer( nullptr );
 
         this->eraseChild_( _node );
     }
@@ -1084,64 +1078,17 @@ namespace Menge
 		//invalidateBoundingBox();add
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setLayer( Layer * _layer )
+	void Node::calcScreenPosition( const RenderCameraInterface * _camera, mt::vec2f & _screen )
 	{
-		if( m_layer == _layer )
-		{
-			return;
-		}
+        const mt::vec3f & wp = this->getWorldPosition();
 
-		m_layer = _layer;
+        const mt::mat4f & vm = _camera->getCameraViewMatrix();
 
-		Node * single = m_children.single();
+        mt::vec3f sc;
+        mt::mul_m4_v3( sc, vm, wp );
 
-		if( single != nullptr )
-		{
-			single->setLayer( _layer );
-		}
-		else
-		{
-			for( TSlugChild it(m_children); it.eof() == false; )
-			{
-				Node * node = (*it);
-
-				it.next_shuffle();
-
-				node->setLayer( _layer );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Layer * Node::getLayer() const
-	{
-		return m_layer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Scene * Node::getScene()
-	{
-		if( m_layer == nullptr )
-		{
-			return nullptr;
-		}
-
-		Scene * scene = m_layer->getScene();
-
-		return scene;			 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::getScreenPosition( const RenderCameraInterface * _camera, mt::vec2f & _position )
-	{
-        if( m_layer == nullptr )
-        {
-            const mt::vec3f & wp = this->getWorldPosition();
-
-            _position.x = wp.x;
-			_position.y = wp.y;
-        }
-        else
-        {
-			m_layer->calcScreenPosition( _position, _camera, this );
-		}
+        _screen.x = sc.x;
+        _screen.y = sc.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_updateBoundingBox( mt::box2f& _boundingBox ) const

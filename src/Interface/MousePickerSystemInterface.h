@@ -41,8 +41,11 @@ namespace Menge
     typedef stdex::vector<MousePickerTrapInterface *> TVectorPickerTraps;
 
     class MousePickerSystemInterface
-        : public InputSystemHandler
+        : public ServiceInterface
+        , public InputSystemHandler
     {
+        SERVICE_DECLARE( "MousePickerSystem" )
+
     public:
         virtual void setBlock( bool _value ) = 0;
         virtual void setHandleValue( bool _value ) = 0;

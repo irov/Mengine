@@ -30,9 +30,6 @@ namespace Menge
 		void hide( bool _value ) override;
 
 	public:
-		Scene * getScene() override;
-
-	public:
 		EArrowType getArrowType() const;
 
 	public:

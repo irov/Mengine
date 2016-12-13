@@ -19,8 +19,10 @@ options
     #s3e-data-dir="d:/Projects/BurritosBuild_ETC1"
     #s3e-data-dir="d:/Projects/BurritosBuild_PVRTC"
     #s3e-data-dir="d:/Projects/MECHBuild_PVRTC"
-    s3e-data-dir="d:/Projects/MECHBuild_ETC1_Debug"
-    #s3e-data-dir="d:/Projects/HolidayFunBuild_PVRTC"    
+    #s3e-data-dir="d:/Projects/MECHBuild_ETC1_Debug"
+    #s3e-data-dir="d:/Projects/HolidayFunBuild_PVRTC"
+    #s3e-data-dir="d:/Projects/HolidayFunBuild_PVRTC_Debug"
+    s3e-data-dir="d:/Projects/HolidayFunBuild_Mobile_WEBP"
     #s3e-data-dir="d:/Projects/BurritosBuild_ETC1"
     #s3e-data-dir="d:/Projects/MarshmallowBuild_PVRTC"
     #s3e-data-dir="/Users/admin/Desktop/ZombielandBuild_PVRTC"
@@ -31,18 +33,19 @@ library
     ".,Python"
     ".,Dependencies"
     ".,Mengine"
-    
+
     "./dependencies/marmalade-astralax,mmagic3d"
 }
 
 defines
-{
+{    
 }
 
 subprojects 
 {
     iwutil
-    iwgl
+    iwgl  
+    s3eGoogleAdMob
 }
 
 includepaths
@@ -70,10 +73,9 @@ includepaths
 }
 
 files
-{    
-    [MarmaladeSettings]
-    app.icf
-    app.config.txt
+{   
+    [MarmaladePreinclude]
+    preinclude_application.h
 
     [Config]
 	("../src/Config")	
@@ -103,6 +105,11 @@ files
 	"*.h"
 	"*.cpp"    
     
+    [Plugin/MarmaladeGoogleAdMob]
+    ("../src/Plugin/MarmaladeGoogleAdMob")	
+	"*.h"
+	"*.cpp"        
+    
     [System/MarmaladeThreadSystem]
     ("../src/System/MarmaladeThreadSystem")
 	"*.h"
@@ -128,10 +135,10 @@ files
 	"*.h"
 	"*.cpp"    
     
-    [System/MarmaladeOptionsSystem]
-    ("../src/System/MarmaladeOptionsSystem")	
-	"*.h"
-	"*.cpp"
+    #[System/OALSoundSystem]
+    #("../src/System/OALSoundSystem")
+	#"*.h"
+	#"*.cpp"    
         
     [System/MarmaladeTimerSystem]
     ("../src/System/MarmaladeTimerSystem")
@@ -207,23 +214,88 @@ deployments
 	version-minor=6
 	version-revision=6
 	["HolidayFun_Android"]
-	app-icf='d:/Projects/HolidayFunBuild_ETC1/app.icf'
+	android-extra-strings='(gps_app_id,151019)'
+	android-icon-nonstandard=0
+	app-icf='d:/Projects/HolidayFun/Startup/app.icf'
 	assets='HolidayFun_Android'
 	caption='CandyStorm'
-	icon='d:/Projects/HolidayFunBuild_ETC1/logo.png'
+	icon='d:/Projects/HolidayFun_Work/Art/Marketing/android/Icons/icon High Res 512.png'
 	name='CandyStorm'
 	provider='Argali'
+	version-major=1
+	version-minor=0
+	version-revision=0
+	["HolidayFun_Android_Debug"]
+	android-icon-nonstandard=0
+	app-icf='d:/Projects/HolidayFun/Startup/app.icf'
+	assets='HolidayFun_Android_Debug'
+	caption='CandyStorm'
+	icon='d:/Projects/HolidayFun_Work/Art/Marketing/android/Icons/icon High Res 512.png'
+	name='CandyStorm'
+	provider='Argali'
+	version-major=1
+	version-minor=0
+	version-revision=0
 	["HolidayFun_IOS"]
-	app-icf='d:/Projects/HolidayFunBuild_PVRTC/app.icf'
+	app-icf='d:/Projects/HolidayFun/Startup/app.icf'
 	assets='HolidayFun_IOS'
 	caption='CandyStorm'
-	icon='d:/Projects/HolidayFunBuild_PVRTC/logo.png'
+	icon='d:/Projects/HolidayFun_Work/Art/Marketing/android/Icons/icon High Res 512.png'
 	iphone-appid='com.IROV.IROV'
+	iphone-nosign=1
+	iphone-provisioning-profile='Argali.mobileprovision'
+	iphone-sign-for-distribution=0
+	iphone-signing-identity='iPhone Distribution'
+	iphone-testflight=1
+	name='CandyStorm'
+	provider='Argali'
+	version-major=1
+	version-minor=0
+	version-revision=0
+	["HolidayFun_IOS_Debug"]
+	app-icf='d:/Projects/HolidayFun/Startup/app.icf'
+	assets='HolidayFun_IOS_Debug'
+	caption='CandyStorm'
+	icon='d:/Projects/HolidayFun_Work/Art/Marketing/android/Icons/icon High Res 512.png'
+	iphone-appid='com.IROV.IROV'
+	iphone-nosign=0
 	iphone-provisioning-profile='Argali.mobileprovision'
 	iphone-sign-for-distribution=1
 	iphone-signing-identity='iPhone Distribution'
 	name='CandyStorm'
 	provider='Argali'
+	version-major=1
+	version-minor=0
+	version-revision=0
+	["HolidayFun_IOS_WEBP"]
+	app-icf='d:/Projects/HolidayFun/Startup/app.icf'
+	assets='HolidayFun_WEBP'
+	caption='CandyStorm'
+	icon='d:/Projects/HolidayFun_Work/Art/Marketing/android/Icons/icon High Res 512.png'
+	iphone-appid='net.runserver.christmas'
+	iphone-nosign=0
+	iphone-provisioning-profile='CandyStorm.mobileprovision'
+	iphone-sign-for-distribution=1
+	iphone-signing-identity='iPhone Distribution'
+	iphone-testflight=0
+	name='Christmas Adventure - Candy Storm'
+	provider='runserver'
+	version-major=1
+	version-minor=0
+	version-revision=0
+	["HolidayFun_IOS_WEBP_ADMOB"]
+	app-icf='d:/Projects/HolidayFun/Startup/app-admob.icf'
+	assets='HolidayFun_WEBP'
+	caption='CandyStormFree'
+	icon='d:/Projects/HolidayFun_Work/Art/Marketing/android/Icons/icon High Res 512.png'
+	iphone-appid='net.runserver.christmas-free'
+	iphone-nosign=0
+	iphone-provisioning-profile='CandyStormFree.mobileprovision'
+	iphone-sign-for-distribution=1
+	iphone-signing-identity='iPhone Distribution'
+	iphone-testflight=0
+	name='Christmas Adventure - Candy Storm Free'
+	provider='runserver'
 	version-major=1
 	version-minor=0
 	version-revision=0
@@ -262,6 +334,22 @@ deployments
 	version-major=1
 	version-minor=6
 	version-revision=4
+	["WisbeyMystery_IOS"]
+	app-icf='d:/Projects/WisbeyMystery/Startup/app.icf'
+	assets='WisbeyMystery_IOS'
+	caption='WisbeyMystery'
+	icon='d:/Projects/WisbeyMystery_Work/Marketing/All_Resources/300x250.png'
+	iphone-appid='com.IROV.IROV'
+	iphone-nosign=0
+	iphone-provisioning-profile='Argali.mobileprovision'
+	iphone-sign-for-distribution=1
+	iphone-signing-identity='iPhone Distribution'
+	iphone-testflight=0
+	name='WisbeyMystery'
+	provider='Argali'
+	version-major=1
+	version-minor=0
+	version-revision=0
 	["Zombieland_Android"]
 	app-icf='d:/Projects/ZombielandBuild_ETC1/app.icf'
 	assets='Zombieland_Android'

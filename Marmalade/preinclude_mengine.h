@@ -1,7 +1,5 @@
 #   pragma once
 
-#   define AE_MOVIE_STREAM_NO_CACHE
-
 #   define BOOST_UBLAS_UNSUPPORTED_COMPILER 0
 #   define BOOST_NO_CXX11_RVALUE_REFERENCES
 #   define BOOST_NO_CXX11_NULLPTR
@@ -40,6 +38,8 @@ typedef void * nullptr_t;
 #	endif
 
 #   define MENGE_RENDER_TEXTURE_RGBA
+
+#	define MENGINE_SUPPORT_DECODER_WEBP
 
 #   define STDEX_UNSUPPOT_NULLPTR_T
 

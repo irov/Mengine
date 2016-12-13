@@ -32,6 +32,7 @@ includepaths
     "./Modified/ogg"
     "./Modified/png"
     "./Modified/jpeg"
+    "./Modified/libwebp"
     
 	"../src"
 	"../src/Utils"
@@ -56,6 +57,7 @@ includepaths
     "../dependencies/libvorbis/include"
     "../dependencies/libvorbis/lib"
     "../dependencies/libtheora/include"    
+    "../dependencies/libwebp/src"
 }
 
 files
@@ -129,6 +131,11 @@ files
     ("../src/Plugin/MengeSpinePlugin")
 	"*.cpp"
 	"*.h"   
+    
+    [Plugin/MoviePlugin]
+    ("../src/Plugin/MoviePlugin")
+	"*.cpp"
+	"*.h"       
 
     [Plugin/MengeVideoCodecPlugin]
     ("../src/Plugin/MengeVideoCodecPlugin")

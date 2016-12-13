@@ -92,8 +92,7 @@ assets
     
 	[HolidayFun_Android]
 	("d:/Projects/HolidayFunBuild_ETC1")
-    Localization
-    app.config.txt
+    Localization    
     application.ini    
     Framework.pak
 	Framework2.pak
@@ -103,10 +102,21 @@ assets
     ResourcePack.ini
     Resources.pak
     
+	[HolidayFun_Android_Debug]
+	("d:/Projects/HolidayFunBuild_ETC1_Debug")
+    Localization    
+    application.ini    
+    Framework.pak
+	Framework2.pak
+    Framework3.pak    
+    Game.ini
+    Game.pak
+    ResourcePack.ini
+    Resources.pak    
+    
 	[HolidayFun_IOS]
 	("d:/Projects/HolidayFunBuild_PVRTC")
-    Localization
-    app.config.txt
+    Localization    
     application.ini
     Framework.pak
 	Framework2.pak
@@ -115,6 +125,42 @@ assets
     Game.pak
     ResourcePack.ini
     Resources.pak 
+    
+	[HolidayFun_WEBP]
+	("d:/Projects/HolidayFunBuild_Mobile_WEBP")
+    Localization    
+    application.ini
+    Framework.pak
+	Framework2.pak
+    Framework3.pak
+    Game.ini
+    Game.pak
+    ResourcePack.ini
+    Resources.pak     
+    
+    [WisbeyMystery_IOS]
+    ("d:/Projects/WisbeyMysteryBuild_PVRTC")
+    Localization    
+    application.ini
+    Framework.pak
+	Framework2.pak
+    Framework3.pak
+    Game.ini
+    Game.pak
+    ResourcePack.ini
+    Resources.pak
+    
+	[HolidayFun_IOS_Debug]
+	("d:/Projects/HolidayFunBuild_PVRTC_Debug")
+    Localization    
+    application.ini
+    Framework.pak
+	Framework2.pak
+    Framework3.pak
+    Game.ini
+    Game.pak
+    ResourcePack.ini
+    Resources.pak     
     
 	[GhostsAndTowers_IOS]
 	("d:/Projects/GhostsAndTowersBuild_PVRTC")

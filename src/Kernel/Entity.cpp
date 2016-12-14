@@ -143,11 +143,7 @@ namespace Menge
 		this->setShallowGravePropagate( false );
 
 		this->removeFromParent();
-
-		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_DESTROY )(m_object);
-
-		m_object.reset();
-
+		
 		Factorable::destroy();
 	}
 }

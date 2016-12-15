@@ -31,6 +31,7 @@ ${SOURCE_DIR}/src/list.cpp
 ${SOURCE_DIR}/src/tuple.cpp
 ${SOURCE_DIR}/src/dict.cpp
 ${SOURCE_DIR}/src/bindable.cpp
+${SOURCE_DIR}/src/module.cpp
 )
 
 if( CMAKE_BUILD_TYPE EQUAL "DEBUG" )

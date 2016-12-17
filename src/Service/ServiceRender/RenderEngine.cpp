@@ -151,6 +151,8 @@ namespace Menge
 
 		m_currentVBHandle = nullptr;
 		m_currentIBHandle = nullptr;
+
+		m_currentProgram = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,

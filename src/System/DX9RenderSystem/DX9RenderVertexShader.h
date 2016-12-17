@@ -11,6 +11,7 @@ namespace Menge
 	{
 	public:
 		DX9RenderVertexShader();
+		~DX9RenderVertexShader();
 
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;

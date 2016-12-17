@@ -11,6 +11,7 @@ namespace Menge
     {
     public:
 		DX9RenderFragmentShader();
+		~DX9RenderFragmentShader();
 
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;

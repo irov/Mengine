@@ -94,6 +94,7 @@ namespace Menge
 			{
 				m_platformTags.clear();				
 				m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "SIMULATOR" ) );
+				m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MOBILE" ) );
 
 				m_touchpad = true;
 			}break;
@@ -108,6 +109,7 @@ namespace Menge
 			{
 				m_platformTags.clear();				
 				m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "IOS" ) );
+				m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MOBILE" ) );
 
 				m_touchpad = true;
 			}break;
@@ -115,6 +117,7 @@ namespace Menge
 			{
 				m_platformTags.clear();				
 				m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ANDROID" ) );
+				m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MOBILE" ) );
 
 				m_touchpad = true;
 			}break;

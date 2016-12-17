@@ -8,6 +8,7 @@
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/ProfilerInterface.h"
 #	include "Interface/UserdataInterface.h"
+#	include "Interface/PlatformInterface.h"
 
 #	include "Metacode/Metacode.h"
 
@@ -334,6 +335,9 @@ namespace Menge
 
 			return false;
 		}
+
+		const Tags & platformTags = PLATFORM_SERVICE( m_serviceProvider )
+			->getPlatformTags();
 
 		SCRIPT_SERVICE( m_serviceProvider )
 			->addModulePath( m_name, m_scriptsPackages );

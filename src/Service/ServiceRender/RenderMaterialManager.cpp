@@ -129,7 +129,7 @@ namespace Menge
 
 			stage.program = nullptr;
 		}
-		
+
 		m_vertexShaders.clear();
 		m_fragmentShaders.clear();
 		m_programs.clear();

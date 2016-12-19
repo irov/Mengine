@@ -101,6 +101,7 @@
 #	include "SurfaceVideo.h"
 #	include "SurfaceSound.h"
 #	include "SurfaceImageSequence.h"
+#	include "SurfaceTrackMatte.h"
 
 
 // All Resource type
@@ -413,6 +414,7 @@ namespace Menge
 		SURFACE_FACTORY( m_serviceProvider, SurfaceVideo );
 		SURFACE_FACTORY( m_serviceProvider, SurfaceSound );
 		SURFACE_FACTORY( m_serviceProvider, SurfaceImageSequence );
+		SURFACE_FACTORY( m_serviceProvider, SurfaceTrackMatte );
 
 #	undef SURFACE_FACTORY
 

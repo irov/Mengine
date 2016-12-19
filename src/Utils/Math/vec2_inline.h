@@ -23,6 +23,12 @@ namespace mt
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_METHOD_INLINE vec2f::vec2f( const float * _v )
+		: x( _v[0] )
+		, y( _v[1] )
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_METHOD_INLINE vec2f & vec2f::operator = (const vec2f & _rhs)
 	{
 		x = _rhs.x;

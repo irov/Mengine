@@ -13,8 +13,9 @@ namespace mt
 		float y;
 
 		MENGINE_MATH_METHOD_INLINE vec2f();
-		MENGINE_MATH_METHOD_INLINE vec2f(float _x, float _y);
+		MENGINE_MATH_METHOD_INLINE vec2f(float _x, float _y);		
 		MENGINE_MATH_METHOD_INLINE vec2f(const vec2f & _v);
+		MENGINE_MATH_METHOD_INLINE explicit vec2f( const float * _v );
 
 		MENGINE_MATH_METHOD_INLINE vec2f & operator = (const vec2f & _rhs);
 		

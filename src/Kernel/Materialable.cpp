@@ -461,7 +461,7 @@ namespace Menge
 		return m_blendMode;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Materialable::updateMaterial_()
+	void Materialable::updateMaterial_() const
 	{
 		m_invalidateMaterial = false;
 

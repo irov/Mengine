@@ -66,6 +66,12 @@ Surface\\\\SurfaceImageSequence
 	SurfaceImageSequence.h
 )
 
+ADD_FILTER(
+Surface\\\\SurfaceTrackMatte
+	SurfaceTrackMatte.cpp
+	SurfaceTrackMatte.h
+)
+
 SOURCE_GROUP( Object )
 
 ADD_FILTER(

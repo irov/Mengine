@@ -595,31 +595,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_equalTextureStage( const RenderTextureStage & _src, const RenderTextureStage & _dst )
 	{
-		if( _src.mipmap != _dst.mipmap )
-		{
-			return false;
-		}
-
-		if( _src.magnification != _dst.magnification )
-		{
-			return false;
-		}
-
-		if( _src.minification != _dst.minification )
-		{
-			return false;
-		}
-
-		if( _src.addressU != _dst.addressU )
-		{
-			return false;
-		}
-
-		if( _src.addressV != _dst.addressV )
-		{
-			return false;
-		}
-
 		if( _src.colorOp != _dst.colorOp )
 		{
 			return false;
@@ -649,8 +624,33 @@ namespace Menge
 		{
 			return false;
 		}
-
+		
 		if( _src.texCoordIndex != _dst.texCoordIndex )
+		{
+			return false;
+		}
+
+		if( _src.mipmap != _dst.mipmap )
+		{
+			return false;
+		}
+
+		if( _src.magnification != _dst.magnification )
+		{
+			return false;
+		}
+
+		if( _src.minification != _dst.minification )
+		{
+			return false;
+		}
+
+		if( _src.addressU != _dst.addressU )
+		{
+			return false;
+		}
+
+		if( _src.addressV != _dst.addressV )
 		{
 			return false;
 		}
@@ -660,21 +660,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_equalRenderStage( const RenderMaterialStage & _src, const RenderMaterialStage & _dst )
 	{
-		if( _src.alphaBlendEnable != _dst.alphaBlendEnable )
-		{
-			return false;
-		}
-
-		if( _src.blendDst != _dst.blendDst )
-		{
-			return false;
-		}
-
-		if( _src.blendSrc != _dst.blendSrc )
-		{
-			return false;
-		}
-
 		if( _src.program != _dst.program )
 		{
 			return false;
@@ -689,6 +674,21 @@ namespace Menge
 			{
 				return false;
 			}
+		}
+
+		if( _src.alphaBlendEnable != _dst.alphaBlendEnable )
+		{
+			return false;
+		}
+
+		if( _src.blendDst != _dst.blendDst )
+		{
+			return false;
+		}
+
+		if( _src.blendSrc != _dst.blendSrc )
+		{
+			return false;
 		}
 
 		return true;

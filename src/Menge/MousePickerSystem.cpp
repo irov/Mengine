@@ -698,6 +698,9 @@ namespace Menge
 
 		const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
 			->getContentResolution();
+
+		mt::vec2f adapt_screen_position;
+		m_arrow->adaptScreenPosition_( mt::vec2f( _x, _y ), adapt_screen_position );
         
 		bool handle = false;
 
@@ -723,7 +726,7 @@ namespace Menge
 
 			if( handle == false || m_handleValue == false )
 			{
-				bool picked = trap->pick( mt::vec2f( _x, _y ), viewport, camera, contentResolution, m_arrow );
+				bool picked = trap->pick( adapt_screen_position, viewport, camera, contentResolution, m_arrow );
 
 				if( m_block == false && picked == true )
 				{
@@ -731,7 +734,7 @@ namespace Menge
 					{
 						state->picked = true;
 
-						handle = trap->onHandleMouseEnter( _x, _y );
+						handle = trap->onHandleMouseEnter( adapt_screen_position.x, adapt_screen_position.y );
 
 						state->handle = handle;
 					}

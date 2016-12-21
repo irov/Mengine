@@ -551,6 +551,27 @@ namespace Menge
 
 		PLUGIN_CREATE( m_serviceProvider, MarmaladeGoogleAdMob );
 
+		int32 marmalade_language = s3eDeviceGetInt( S3E_DEVICE_LANGUAGE );
+				
+		switch( marmalade_language )
+		{
+		case S3E_DEVICE_LANGUAGE_ENGLISH:
+			{
+				APPLICATION_SERVICE( m_serviceProvider )
+					->setLocale( STRINGIZE_STRING_LOCAL( m_serviceProvider, "en" ) );
+			}break;
+		case S3E_DEVICE_LANGUAGE_RUSSIAN:
+			{
+				APPLICATION_SERVICE( m_serviceProvider )
+					->setLocale( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ru" ) );
+			}break;
+		default:
+			{
+				APPLICATION_SERVICE( m_serviceProvider )
+					->setLocale( STRINGIZE_STRING_LOCAL( m_serviceProvider, "en" ) );
+			}break;
+		}
+
 		TVectorString modules;
 		CONFIG_VALUES(m_serviceProvider, "Modules", "Name", modules);
 

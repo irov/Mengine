@@ -77,7 +77,7 @@ namespace Menge
 			, uint32_t _indexCount ) override;
 
 		void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
-		void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
+		void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) override;
 		void setTextureFactor( uint32_t _color ) override;
 
 		void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op ) override;

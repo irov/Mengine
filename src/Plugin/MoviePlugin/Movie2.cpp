@@ -167,7 +167,7 @@ namespace Menge
 		return new_camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_node_provider( const aeMovieLayerData * _layerData, const aeMovieResource * _resource, const ae_matrix4_t _matrix, void * _data )
+	static void * ae_movie_composition_node_provider( const aeMovieLayerData * _layerData, const ae_matrix4_t _matrix, const aeMovieLayerData * _trackmatte, void * _data )
 	{
 		Movie2 * movie2 = (Movie2 *)_data;
 
@@ -180,39 +180,49 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( _layerData->has_track_matte == AE_TRUE )
+		uint8_t type = _layerData->type;
+
+		if( _trackmatte != AE_NULL )
 		{
-			SurfaceTrackMatte * surfaceTrackMatte = PROTOTYPE_SERVICE( serviceProvider )
-				->generatePrototypeT<SurfaceTrackMatte *>( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceTrackMatte" ) );
-
-			surfaceTrackMatte->setName( c_name );
-
-			ResourceImage * resourceImage = (ResourceImage *)(_resource->data);
-			ResourceImage * resourceTrackMatteImage = (ResourceImage *)(_layerData->track_matte->resource->data);
-
-			surfaceTrackMatte->setResourceImage( resourceImage );
-			surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
-
-			EMaterialBlendMode blend_mode = EMB_NORMAL;
-
-			switch( _layerData->blend_mode )
+			switch( type )
 			{
-			case AE_MOVIE_BLEND_ADD:
-				blend_mode = EMB_ADD;
-				break;
-			case AE_MOVIE_BLEND_SCREEN:
-				blend_mode = EMB_SCREEN;
-				break;
-			};
+			case AE_MOVIE_LAYER_TYPE_IMAGE:
+				{
+					SurfaceTrackMatte * surfaceTrackMatte = PROTOTYPE_SERVICE( serviceProvider )
+						->generatePrototypeT<SurfaceTrackMatte *>( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceTrackMatte" ) );
 
-			surfaceTrackMatte->setBlendMode( blend_mode );
+					surfaceTrackMatte->setName( c_name );
 
-			return surfaceTrackMatte;
+					ResourceImage * resourceImage = (ResourceImage *)(_layerData->resource->data);
+					ResourceImage * resourceTrackMatteImage = (ResourceImage *)(_trackmatte->resource->data);
+
+					surfaceTrackMatte->setResourceImage( resourceImage );
+					surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
+
+					EMaterialBlendMode blend_mode = EMB_NORMAL;
+
+					switch( _layerData->blend_mode )
+					{
+					case AE_MOVIE_BLEND_ADD:
+						blend_mode = EMB_ADD;
+						break;
+					case AE_MOVIE_BLEND_SCREEN:
+						blend_mode = EMB_SCREEN;
+						break;
+					};
+
+					surfaceTrackMatte->setBlendMode( blend_mode );
+
+					return surfaceTrackMatte;
+				}break;
+			default:
+				{
+					printf( "fdsfs" );
+				}break;
+			}
 		}
 		else
 		{
-			uint8_t type = _layerData->type;
-
 			switch( type )
 			{
 			case AE_MOVIE_LAYER_TYPE_VIDEO:
@@ -222,7 +232,7 @@ namespace Menge
 
 					surfaceVideo->setName( c_name );
 
-					ResourceVideo * resourceVideo = (ResourceVideo *)(_resource->data);
+					ResourceVideo * resourceVideo = (ResourceVideo *)(_layerData->resource->data);
 
 					surfaceVideo->setResourceVideo( resourceVideo );
 
@@ -249,7 +259,7 @@ namespace Menge
 
 					surfaceSound->setName( c_name );
 
-					ResourceSound * resourceSound = (ResourceSound *)(_resource->data);
+					ResourceSound * resourceSound = (ResourceSound *)(_layerData->resource->data);
 
 					surfaceSound->setResourceSound( resourceSound );
 
@@ -644,9 +654,9 @@ namespace Menge
 		ae_update_movie_composition( m_composition, _timing );
 		
 
-		printf( "time %f\n"
-				, ae_get_movie_composition_time(m_composition)
-				);
+		//printf( "time %f\n"
+		//		, ae_get_movie_composition_time(m_composition)
+		//		);
 		
 		//if( a < 10000.f )
 		//{
@@ -895,6 +905,11 @@ namespace Menge
 					{
 						const SurfaceTrackMatte * surfaceTrackMatte = static_cast<const SurfaceTrackMatte *>(mesh.element_data);
 
+						if( surfaceTrackMatte == nullptr )
+						{
+							return;
+						}
+
 						m_meshes.push_back( Mesh() );
 						Mesh & m = m_meshes.back();
 
@@ -903,7 +918,7 @@ namespace Menge
 						ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
 
 						const ResourceImagePtr & resourceImage = surfaceTrackMatte->getResourceImage();
-						const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceImage();
+						const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceTrackMatteImage();
 
 						const TrackMatteDesc * track_matte_desc = static_cast<const TrackMatteDesc *>(mesh.track_matte_data);
 
@@ -923,7 +938,12 @@ namespace Menge
 							
 							const mt::uv4f & uv_image = resourceImage->getUVImage();
 
-							mt::multiply_tetragon_uv4_v2( v.uv[0], uv_image, uv );
+							const RenderTextureInterfacePtr & texture_image = resourceImage->getTexture();
+
+							const const mt::uv4f & texture_image_uv = texture_image->getUV();
+
+							mt::multiply_tetragon_uv4_v2( v.uv[0], texture_image_uv, uv );
+							//mt::multiply_tetragon_uv4_v2( v.uv[0], texture_image_uv, v.uv[0] );
 
 							mt::vec2f uv_track_matte;
 							uv_track_matte = calc_point_uv(
@@ -933,8 +953,13 @@ namespace Menge
 								);
 
 							const mt::uv4f & uv_alpha = resourceTrackMatteImage->getUVImage();
+							const RenderTextureInterfacePtr & texture_trackmatte = resourceTrackMatteImage->getTexture();
 
-							mt::multiply_tetragon_uv4_v2( v.uv[1], uv_alpha, uv_track_matte );
+							const const mt::uv4f & texture_trackmatte_uv = texture_trackmatte->getUV();
+
+							//mt::multiply_tetragon_uv4_v2( v.uv[1], uv_alpha, uv_track_matte );
+							mt::multiply_tetragon_uv4_v2( v.uv[1], texture_trackmatte_uv, uv_track_matte );
+							//mt::multiply_tetragon_uv4_v2( v.uv[1], , v.uv[1] );
 
 							v.color = color;
 						}

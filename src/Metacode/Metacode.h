@@ -408,6 +408,35 @@ namespace Metacode
                     std::swap( _value, this->Stage);
                 }
                 
+                bool has_AddressMode_Border() const
+                {
+                    return AddressMode_Border_successful;
+                }
+                
+                bool get_AddressMode_Border( uint32_t & _value ) const
+                {
+                    if( AddressMode_Border_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->AddressMode_Border;
+                
+                    return true;
+                }
+                
+                bool swap_AddressMode_Border( uint32_t & _value ) const
+                {
+                    if( AddressMode_Border_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap(_value, this->AddressMode_Border);
+                
+                    return true;
+                }
+                
                 bool has_AddressMode_U() const
                 {
                     return AddressMode_U_successful;
@@ -524,14 +553,33 @@ namespace Metacode
                     return true;
                 }
                 
-                Menge::ETextureOp get_Alpha_Operator() const
+                bool has_Alpha_Operator() const
                 {
-                    return this->Alpha_Operator;
+                    return Alpha_Operator_successful;
                 }
                 
-                void swap_Alpha_Operator( Menge::ETextureOp & _value ) const
+                bool get_Alpha_Operator( Menge::ETextureOp & _value ) const
                 {
+                    if( Alpha_Operator_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Alpha_Operator;
+                
+                    return true;
+                }
+                
+                bool swap_Alpha_Operator( Menge::ETextureOp & _value ) const
+                {
+                    if( Alpha_Operator_successful == false )
+                    {
+                        return false;
+                    }
+                
                     std::swap(_value, this->Alpha_Operator);
+                
+                    return true;
                 }
                 
                 bool has_Color_Arg1() const
@@ -592,14 +640,33 @@ namespace Metacode
                     return true;
                 }
                 
-                Menge::ETextureOp get_Color_Operator() const
+                bool has_Color_Operator() const
                 {
-                    return this->Color_Operator;
+                    return Color_Operator_successful;
                 }
                 
-                void swap_Color_Operator( Menge::ETextureOp & _value ) const
+                bool get_Color_Operator( Menge::ETextureOp & _value ) const
                 {
+                    if( Color_Operator_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Color_Operator;
+                
+                    return true;
+                }
+                
+                bool swap_Color_Operator( Menge::ETextureOp & _value ) const
+                {
+                    if( Color_Operator_successful == false )
+                    {
+                        return false;
+                    }
+                
                     std::swap(_value, this->Color_Operator);
+                
+                    return true;
                 }
                 
                 bool has_TextureCoord_Index() const
@@ -641,6 +708,8 @@ namespace Metacode
             protected:
             protected:
                 mutable uint32_t Stage;
+                bool AddressMode_Border_successful;
+                mutable uint32_t AddressMode_Border;
                 bool AddressMode_U_successful;
                 mutable Menge::ETextureAddressMode AddressMode_U;
                 bool AddressMode_V_successful;
@@ -649,11 +718,13 @@ namespace Metacode
                 mutable Menge::ETextureArgument Alpha_Arg1;
                 bool Alpha_Arg2_successful;
                 mutable Menge::ETextureArgument Alpha_Arg2;
+                bool Alpha_Operator_successful;
                 mutable Menge::ETextureOp Alpha_Operator;
                 bool Color_Arg1_successful;
                 mutable Menge::ETextureArgument Color_Arg1;
                 bool Color_Arg2_successful;
                 mutable Menge::ETextureArgument Color_Arg2;
+                bool Color_Operator_successful;
                 mutable Menge::ETextureOp Color_Operator;
                 bool TextureCoord_Index_successful;
                 mutable uint32_t TextureCoord_Index;

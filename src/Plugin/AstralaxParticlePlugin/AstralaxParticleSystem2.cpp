@@ -193,6 +193,7 @@ namespace Menge
 
 				textureStage.addressU = dx_address[state.address_u];
 				textureStage.addressV = dx_address[state.address_v];
+				textureStage.addressBorder = 0x00000000;
 
 				const ETextureOp dx_operation[] = {TOP_SELECTARG1, TOP_ADD, TOP_SUBTRACT, TOP_MODULATE, TOP_MODULATE2X, TOP_MODULATE4X};
 				const ETextureArgument dx_arg[] = {TARG_CURRENT, TARG_DIFFUSE, TARG_TEXTURE};

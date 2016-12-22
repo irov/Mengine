@@ -5,7 +5,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
     static const uint32_t metacode_version = 4;
-    static const uint32_t metacode_protocol = 114;
+    static const uint32_t metacode_protocol = 115;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -616,12 +616,15 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_Material::Meta_TextureStages::Meta_TextureStages()
         : Metabuf::Metadata()
+        , AddressMode_Border_successful(false)
         , AddressMode_U_successful(false)
         , AddressMode_V_successful(false)
         , Alpha_Arg1_successful(false)
         , Alpha_Arg2_successful(false)
+        , Alpha_Operator_successful(false)
         , Color_Arg1_successful(false)
         , Color_Arg2_successful(false)
+        , Color_Operator_successful(false)
         , TextureCoord_Index_successful(false)
     {
     }
@@ -634,14 +637,19 @@ namespace Metacode
     void Meta_DataBlock::Meta_Material::Meta_TextureStages::_parseData( const unsigned char * _buff, size_t _size, size_t & _read )
     {
         this->read( _buff, _size, _read, this->Stage );
-        this->read( _buff, _size, _read, this->Alpha_Operator );
-        this->read( _buff, _size, _read, this->Color_Operator );
     }
     //////////////////////////////////////////////////////////////////////////
     void Meta_DataBlock::Meta_Material::Meta_TextureStages::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
+        case 4:
+            {
+                this->read( _buff, _size, _read, this->AddressMode_Border );
+    
+                this->AddressMode_Border_successful = true;
+    
+            }break;
         case 2:
             {
                 this->read( _buff, _size, _read, this->AddressMode_U );
@@ -656,35 +664,49 @@ namespace Metacode
                 this->AddressMode_V_successful = true;
     
             }break;
-        case 8:
+        case 9:
             {
                 this->read( _buff, _size, _read, this->Alpha_Arg1 );
     
                 this->Alpha_Arg1_successful = true;
     
             }break;
-        case 9:
+        case 10:
             {
                 this->read( _buff, _size, _read, this->Alpha_Arg2 );
     
                 this->Alpha_Arg2_successful = true;
     
             }break;
-        case 5:
+        case 8:
+            {
+                this->read( _buff, _size, _read, this->Alpha_Operator );
+    
+                this->Alpha_Operator_successful = true;
+    
+            }break;
+        case 6:
             {
                 this->read( _buff, _size, _read, this->Color_Arg1 );
     
                 this->Color_Arg1_successful = true;
     
             }break;
-        case 6:
+        case 7:
             {
                 this->read( _buff, _size, _read, this->Color_Arg2 );
     
                 this->Color_Arg2_successful = true;
     
             }break;
-        case 10:
+        case 5:
+            {
+                this->read( _buff, _size, _read, this->Color_Operator );
+    
+                this->Color_Operator_successful = true;
+    
+            }break;
+        case 11:
             {
                 this->read( _buff, _size, _read, this->TextureCoord_Index );
     

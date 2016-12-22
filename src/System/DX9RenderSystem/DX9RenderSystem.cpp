@@ -1381,7 +1381,7 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, (D3DRS_BLENDOP, blend_op) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
+	void DX9RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
 	{	
         if( m_pD3DDevice == nullptr )
         {
@@ -1406,6 +1406,8 @@ namespace Menge
 
         D3DTEXTUREADDRESS adrV = s_toD3DTextureAddress( _modeV );
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, ( _stage, D3DSAMP_ADDRESSV, adrV ) );
+
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_BORDERCOLOR, _border) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureFactor( uint32_t _color )

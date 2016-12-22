@@ -264,6 +264,7 @@ namespace Menge
 			, minification( TF_LINEAR )
 			, addressU(TAM_CLAMP)
 			, addressV(TAM_CLAMP)
+			, addressBorder(0x00000000)
             , colorOp(TOP_DISABLE)
             , colorArg1(TARG_TEXTURE)
             , colorArg2(TARG_DIFFUSE)
@@ -280,6 +281,7 @@ namespace Menge
 
 		ETextureAddressMode addressU;
 		ETextureAddressMode addressV;
+		uint32_t addressBorder;
 
         ETextureOp colorOp;
         ETextureArgument colorArg1;
@@ -643,7 +645,7 @@ namespace Menge
 			uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount ) = 0;
 
 		virtual void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) = 0;
-		virtual void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) = 0;
+		virtual void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) = 0;
 		virtual void setTextureFactor( uint32_t _color ) = 0;
 		virtual void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op ) = 0;
 		virtual void setCullMode( ECullMode _mode ) = 0;

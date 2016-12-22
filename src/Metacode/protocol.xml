@@ -1,4 +1,4 @@
-<Protocol Version = "114">
+<Protocol Version = "115">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -121,12 +121,13 @@
         
         <Member Node="AddressMode" Name="U" Type="Menge::ETextureAddressMode"/>
         <Member Node="AddressMode" Name="V" Type="Menge::ETextureAddressMode"/>
+        <Member Node="AddressMode" Name="Border" Type="uint32_t"/>
 
-        <Member Node="Color" Name="Operator" Type="Menge::ETextureOp" Required="1"/>
+        <Member Node="Color" Name="Operator" Type="Menge::ETextureOp"/>
         <Member Node="Color" Name="Arg1" Type="Menge::ETextureArgument"/>
         <Member Node="Color" Name="Arg2" Type="Menge::ETextureArgument"/>
 
-        <Member Node="Alpha" Name="Operator" Type="Menge::ETextureOp" Required="1"/>
+        <Member Node="Alpha" Name="Operator" Type="Menge::ETextureOp"/>
         <Member Node="Alpha" Name="Arg1" Type="Menge::ETextureArgument"/>
         <Member Node="Alpha" Name="Arg2" Type="Menge::ETextureArgument"/>
 

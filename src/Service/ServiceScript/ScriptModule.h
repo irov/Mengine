@@ -25,9 +25,6 @@ namespace Menge
 		bool onFinalize( const ConstString & _method ) override;
 
 	protected:
-		bool registerEventMethod( Eventable * _event, uint32_t _id, const char * _method ) override;
-
-	protected:
 		pybind::object m_module;
 	};
 	//////////////////////////////////////////////////////////////////////////

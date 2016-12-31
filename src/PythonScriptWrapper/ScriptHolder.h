@@ -2,6 +2,8 @@
 
 #	include "Kernel/Node.h"
 
+#   include "pybind/pybind.hpp"
+
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -29,9 +31,6 @@ namespace Menge
 
 	public:
 		ScriptHolder();
-
-	protected:
-		void _setEventListener( const pybind::dict & _listener ) override;
 
 	protected:
 		bool _activate() override;

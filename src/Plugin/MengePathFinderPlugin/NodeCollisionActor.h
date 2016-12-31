@@ -8,6 +8,13 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
+    class NodeCollisionActorUserData
+        : public FactorablePtr
+    {
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<NodeCollisionActorUserData> NodeCollisionActorUserDataPtr;
+    //////////////////////////////////////////////////////////////////////////
     enum CollisionEventFlag
     {
         EVENT_COLLISION_TEST = 0
@@ -55,8 +62,8 @@ namespace Menge
 		const CollisionWorldPtr & getCollisionWorld() const;
 
 	public:
-		void setCollisionUserData( const pybind::object & _data );
-		const pybind::object & getCollisionUserData() const;
+		void setCollisionUserData( const NodeCollisionActorUserDataPtr & _data );
+		const NodeCollisionActorUserDataPtr & getCollisionUserData() const;
 
 	protected:
 		void onCollisionPositionProvider( mt::vec3f & _position ) const override;
@@ -67,7 +74,7 @@ namespace Menge
 		void _deactivate() override;
 
 	protected:
-		void _setEventListener( const pybind::dict & _listener ) override;
+		//void _setEventListener( const pybind::dict & _listener ) override;
 
 	protected:
 		void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask ) override;
@@ -80,7 +87,7 @@ namespace Menge
 		typedef stdex::vector<CollisionActorPtr> TVectorActorException;
 		TVectorActorException m_exceptions;
 
-		pybind::object m_data;
+        NodeCollisionActorUserDataPtr m_data;
 
 		float m_collisionRadius;
 		mt::vec3f m_collisionRaycastDirection;

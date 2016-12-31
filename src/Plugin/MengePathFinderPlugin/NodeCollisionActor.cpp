@@ -94,20 +94,20 @@ namespace Menge
 		return m_collisionWorld;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCollisionActor::setCollisionUserData( const pybind::object & _data )
+	void NodeCollisionActor::setCollisionUserData( const NodeCollisionActorUserDataPtr & _data )
 	{
 		m_data = _data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const pybind::object & NodeCollisionActor::getCollisionUserData() const
+	const NodeCollisionActorUserDataPtr & NodeCollisionActor::getCollisionUserData() const
 	{
 		return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCollisionActor::_setEventListener( const pybind::dict & _listener )
-	{		
-		this->registerEvent( EVENT_COLLISION_TEST, ("onCollisionTest"), _listener );
-	}
+	//void NodeCollisionActor::_setEventListener( const pybind::dict & _listener )
+	//{		
+	//	this->registerEvent( EVENT_COLLISION_TEST, ("onCollisionTest"), _listener );
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCollisionActor::onCollisionPositionProvider( mt::vec3f & _position ) const
 	{

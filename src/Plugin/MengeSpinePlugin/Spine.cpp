@@ -336,8 +336,8 @@ namespace Menge
 		return duration;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Spine::_setEventListener( const pybind::dict & _listener )
-	{		
+	//void Spine::_setEventListener( const pybind::dict & _listener )
+	//{		
 		//this->registerEvent( EVENT_SPINE_END, ("onSpineEnd"), _listener );
 		//this->registerEvent( EVENT_SPINE_STOP, ("onSpineStop"), _listener );
 		//this->registerEvent( EVENT_SPINE_PAUSE, ("onSpinePause"), _listener );
@@ -346,7 +346,7 @@ namespace Menge
 		//this->registerEvent( EVENT_SPINE_STATE_ANIMATION_END, ("onSpineStateAnimationEnd"), _listener );
 
 		//this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
-	}
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool Spine::_compile()
 	{

@@ -45,21 +45,21 @@ namespace Menge
 		return m_aoi;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeAOITrigger::setTriggerUserData( const pybind::object & _data )
+	void NodeAOITrigger::setTriggerUserData( const NodeAOITriggerUserDataPtr & _data )
 	{
 		m_data = _data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const pybind::object & NodeAOITrigger::getTriggerUserData() const
+	const NodeAOITriggerUserDataPtr & NodeAOITrigger::getTriggerUserData() const
 	{
 		return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeAOITrigger::_setEventListener( const pybind::dict & _listener )
-	{		
+	//void NodeAOITrigger::_setEventListener( const pybind::dict & _listener )
+	//{		
 		//this->registerEvent( EVENT_TRIGGER_ENTER, ("onTriggerEnter"), _listener );
 		//this->registerEvent( EVENT_TRIGGER_LEAVE, ("onTriggerLeave"), _listener );
-	}
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeAOITrigger::onAOIActorTest( AOIActorProviderInterface * _actor ) const
 	{

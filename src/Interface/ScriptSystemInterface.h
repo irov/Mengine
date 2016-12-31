@@ -57,9 +57,6 @@ namespace Menge
 	public:
 		virtual bool onInitialize( const ConstString & _method ) = 0;
 		virtual bool onFinalize( const ConstString & _method ) = 0;
-
-	public:
-		virtual bool registerEventMethod( Eventable * _event, uint32_t _id, const char * _method ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ScriptModuleInterface> ScriptModuleInterfacePtr;

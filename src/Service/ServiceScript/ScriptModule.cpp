@@ -74,11 +74,4 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptModule::registerEventMethod( Eventable * _event, uint32_t _id, const char * _method )
-	{
-		bool result = _event->registerEventMethod( _id, _method, m_module );
-
-		return result;
-	}
 }

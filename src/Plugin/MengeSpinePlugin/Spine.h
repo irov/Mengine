@@ -68,9 +68,6 @@ namespace Menge
 		float getAnimationDuration( const ConstString & _name );
 
 	protected:
-		void _setEventListener( const pybind::dict & _listener ) override;
-
-	protected:
 		bool _compile() override;
 		void _release() override;
 

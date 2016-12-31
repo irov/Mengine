@@ -308,47 +308,47 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	void Game::registerEventMethods_( const ScriptModuleInterfacePtr & _module )
     {	
-        _module->registerEventMethod( this, EVENT_GAME_FULLSCREEN, "onFullscreen" );
-		_module->registerEventMethod( this, EVENT_GAME_FIXED_CONTENT_RESOLUTION, "onFixedContentResolution" );
-		_module->registerEventMethod( this, EVENT_GAME_RENDER_VIEWPORT, "onRenderViewport" );
-		_module->registerEventMethod( this, EVENT_GAME_VIEWPORT, "onGameViewport" );
-		
-		_module->registerEventMethod( this, EVENT_GAME_KEY, "onHandleKeyEvent" );
-		_module->registerEventMethod( this, EVENT_GAME_MOUSE_BUTTON, "onHandleMouseButtonEvent" );
-		_module->registerEventMethod( this, EVENT_GAME_MOUSE_BUTTON_BEGIN, "onHandleMouseButtonEventBegin" );
-		_module->registerEventMethod( this, EVENT_GAME_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd" );
-		_module->registerEventMethod( this, EVENT_GAME_MOUSE_MOVE, "onHandleMouseMove" );
-		_module->registerEventMethod( this, EVENT_GAME_MOUSE_WHEEL, "onHandleMouseWheel" );
+  //      _module->registerEventMethod( this, EVENT_GAME_FULLSCREEN, "onFullscreen" );
+		//_module->registerEventMethod( this, EVENT_GAME_FIXED_CONTENT_RESOLUTION, "onFixedContentResolution" );
+		//_module->registerEventMethod( this, EVENT_GAME_RENDER_VIEWPORT, "onRenderViewport" );
+		//_module->registerEventMethod( this, EVENT_GAME_VIEWPORT, "onGameViewport" );
+		//
+		//_module->registerEventMethod( this, EVENT_GAME_KEY, "onHandleKeyEvent" );
+		//_module->registerEventMethod( this, EVENT_GAME_MOUSE_BUTTON, "onHandleMouseButtonEvent" );
+		//_module->registerEventMethod( this, EVENT_GAME_MOUSE_BUTTON_BEGIN, "onHandleMouseButtonEventBegin" );
+		//_module->registerEventMethod( this, EVENT_GAME_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd" );
+		//_module->registerEventMethod( this, EVENT_GAME_MOUSE_MOVE, "onHandleMouseMove" );
+		//_module->registerEventMethod( this, EVENT_GAME_MOUSE_WHEEL, "onHandleMouseWheel" );
 
-		_module->registerEventMethod( this, EVENT_GAME_APP_MOUSE_ENTER, "onAppMouseEnter" );
-		_module->registerEventMethod( this, EVENT_GAME_APP_MOUSE_LEAVE, "onAppMouseLeave" );
+		//_module->registerEventMethod( this, EVENT_GAME_APP_MOUSE_ENTER, "onAppMouseEnter" );
+		//_module->registerEventMethod( this, EVENT_GAME_APP_MOUSE_LEAVE, "onAppMouseLeave" );
 
-		_module->registerEventMethod( this, EVENT_GAME_ON_TIMING_FACTOR, "onTimingFactor" );
+		//_module->registerEventMethod( this, EVENT_GAME_ON_TIMING_FACTOR, "onTimingFactor" );
 
-		_module->registerEventMethod( this, EVENT_GAME_PREPARATION, "onPreparation" );
-		_module->registerEventMethod( this, EVENT_GAME_RUN, "onRun" );
-		_module->registerEventMethod( this, EVENT_GAME_INITIALIZE, "onInitialize" );
-		_module->registerEventMethod( this, EVENT_GAME_INITIALIZE_RENDER_RESOURCES, "onInitializeRenderResources" );
-		_module->registerEventMethod( this, EVENT_GAME_ACCOUNT_FINALIZE, "onAccountFinalize" );
-		_module->registerEventMethod( this, EVENT_GAME_FINALIZE, "onFinalize" );
-		_module->registerEventMethod( this, EVENT_GAME_DESTROY, "onDestroy" );
+		//_module->registerEventMethod( this, EVENT_GAME_PREPARATION, "onPreparation" );
+		//_module->registerEventMethod( this, EVENT_GAME_RUN, "onRun" );
+		//_module->registerEventMethod( this, EVENT_GAME_INITIALIZE, "onInitialize" );
+		//_module->registerEventMethod( this, EVENT_GAME_INITIALIZE_RENDER_RESOURCES, "onInitializeRenderResources" );
+		//_module->registerEventMethod( this, EVENT_GAME_ACCOUNT_FINALIZE, "onAccountFinalize" );
+		//_module->registerEventMethod( this, EVENT_GAME_FINALIZE, "onFinalize" );
+		//_module->registerEventMethod( this, EVENT_GAME_DESTROY, "onDestroy" );
 
-		_module->registerEventMethod( this, EVENT_GAME_FOCUS, "onFocus" );
+		//_module->registerEventMethod( this, EVENT_GAME_FOCUS, "onFocus" );
 
-		_module->registerEventMethod( this, EVENT_GAME_CREATE_DEFAULT_ACCOUNT, "onCreateDefaultAccount" );
-		_module->registerEventMethod( this, EVENT_GAME_LOAD_ACCOUNTS, "onLoadAccounts" );
+		//_module->registerEventMethod( this, EVENT_GAME_CREATE_DEFAULT_ACCOUNT, "onCreateDefaultAccount" );
+		//_module->registerEventMethod( this, EVENT_GAME_LOAD_ACCOUNTS, "onLoadAccounts" );
 
-		_module->registerEventMethod( this, EVENT_GAME_CREATE_ACCOUNT, "onCreateAccount" );
-		_module->registerEventMethod( this, EVENT_GAME_DELETE_ACCOUNT, "onDeleteAccount" );
-		_module->registerEventMethod( this, EVENT_GAME_SELECT_ACCOUNT, "onSelectAccount" );
-		_module->registerEventMethod( this, EVENT_GAME_UNSELECT_ACCOUNT, "onUnselectAccount" );
+		//_module->registerEventMethod( this, EVENT_GAME_CREATE_ACCOUNT, "onCreateAccount" );
+		//_module->registerEventMethod( this, EVENT_GAME_DELETE_ACCOUNT, "onDeleteAccount" );
+		//_module->registerEventMethod( this, EVENT_GAME_SELECT_ACCOUNT, "onSelectAccount" );
+		//_module->registerEventMethod( this, EVENT_GAME_UNSELECT_ACCOUNT, "onUnselectAccount" );
 
-		_module->registerEventMethod( this, EVENT_GAME_CHANGE_SOUND_VOLUME, "onChangeSoundVolume" );
+		//_module->registerEventMethod( this, EVENT_GAME_CHANGE_SOUND_VOLUME, "onChangeSoundVolume" );
 
-		_module->registerEventMethod( this, EVENT_GAME_CURSOR_MODE, "onCursorMode" );
+		//_module->registerEventMethod( this, EVENT_GAME_CURSOR_MODE, "onCursorMode" );
 
-		_module->registerEventMethod( this, EVENT_GAME_USER, "onUserEvent" );
-		_module->registerEventMethod( this, EVENT_GAME_CLOSE, "onCloseWindow" );
+		//_module->registerEventMethod( this, EVENT_GAME_USER, "onUserEvent" );
+		//_module->registerEventMethod( this, EVENT_GAME_CLOSE, "onCloseWindow" );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality()

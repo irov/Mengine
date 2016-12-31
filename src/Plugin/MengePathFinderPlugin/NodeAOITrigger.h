@@ -7,6 +7,13 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
+    class NodeAOITriggerUserData
+        : public FactorablePtr
+    {
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<NodeAOITriggerUserData> NodeAOITriggerUserDataPtr;
+    //////////////////////////////////////////////////////////////////////////
     enum NodeAOITriggerEventFlag
     {
         EVENT_NODE_AOI_TRIGGER_ENTER = 0,
@@ -45,8 +52,8 @@ namespace Menge
 		AreaOfInterest * getAOI() const;
 
 	public:
-		void setTriggerUserData( const pybind::object & _data );
-		const pybind::object & getTriggerUserData() const;
+		void setTriggerUserData( const NodeAOITriggerUserDataPtr & _data );
+		const NodeAOITriggerUserDataPtr & getTriggerUserData() const;
 
 	protected:
 		bool onAOIActorTest( AOIActorProviderInterface * _actor ) const override;
@@ -57,14 +64,14 @@ namespace Menge
 		bool _activate() override;
 		void _deactivate() override;
 
-	protected:
-		void _setEventListener( const pybind::dict & _listener ) override;
+	//protected:
+		//void _setEventListener( const pybind::dict & _listener ) override;
 
 	protected:
 		AreaOfInterest * m_aoi;
 		AOITriggerPtr m_trigger;
 
-		pybind::object m_data;
+        NodeAOITriggerUserDataPtr m_data;
 		
 		float m_radius;
 		

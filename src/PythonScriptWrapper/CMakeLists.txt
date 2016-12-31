@@ -8,6 +8,8 @@ ScriptHolder
 
 ADD_FILTER(
 Wrapper
+	PythonEventReceiver.h
+	PythonAnimatableEventReceiver.h
 	ScriptWrapper.h
 	ScriptClassWrapper.h
 	PythonScriptWrapper.cpp

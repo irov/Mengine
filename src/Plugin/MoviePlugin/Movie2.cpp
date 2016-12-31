@@ -166,7 +166,7 @@ namespace Menge
 		return new_camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_node_provider( const aeMovieLayerData * _layerData, const aeMovieResource * _resource, const ae_matrix4_t _matrix, void * _data )
+    static void * ae_movie_composition_node_provider( const aeMovieLayerData * _layerData, const ae_matrix4_t _matrix, float _opacity, const aeMovieLayerData * _trackmatte, void * _data )
 	{
 		Movie2 * movie2 = (Movie2 *)_data;
 
@@ -175,6 +175,7 @@ namespace Menge
 		ConstString c_name = Helper::stringizeString( serviceProvider, _layerData->name );
 
 		uint8_t type = _layerData->type;
+        const aeMovieResource * resource = _layerData->resource;
 
 		switch( type )
 		{
@@ -185,7 +186,7 @@ namespace Menge
 
 				surfaceVideo->setName( c_name );
 
-				ResourceVideo * resourceVideo = (ResourceVideo *)(_resource->data);
+				ResourceVideo * resourceVideo = (ResourceVideo *)(resource->data);
 
 				surfaceVideo->setResourceVideo( resourceVideo );
 
@@ -212,7 +213,7 @@ namespace Menge
 
 				surfaceSound->setName( c_name );
 
-				ResourceSound * resourceSound = (ResourceSound *)(_resource->data);
+				ResourceSound * resourceSound = (ResourceSound *)(resource->data);
 
 				surfaceSound->setResourceSound( resourceSound );
 				
@@ -312,7 +313,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_track_matte_update( const void * _element, uint32_t _type, ae_bool_t _loop, aeMovieNodeUpdateState _state, float _offset, const aeMovieRenderMesh * _mesh, void * _track_matte_data, void * _data )
+	static void * ae_movie_composition_track_matte_update( void * _element, uint32_t _type, ae_bool_t _loop, aeMovieNodeUpdateState _state, float _offset, const ae_matrix4_t _matrix, const aeMovieRenderMesh * _mesh, void * _track_matte_data, void * _data )
 	{
 		switch( _state )
 		{
@@ -827,7 +828,7 @@ namespace Menge
 	{
 		(void)_enumerator;
 
-		ae_interrupt_movie_composition( m_composition, AE_TRUE );
+		ae_interrupt_movie_composition( m_composition, AE_TRUE, AE_TRUE );
 
 		return true;
 	}

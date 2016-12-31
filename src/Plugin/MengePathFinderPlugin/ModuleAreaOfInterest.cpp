@@ -7,7 +7,8 @@
 #	include "NodeAOITrigger.h"
 #	include "NodeAOIActor.h"
 
-#	include "Kernel/ScriptClassWrapper.h"
+#	include "PythonScriptWrapper/ScriptClassWrapper.h"
+
 #	include "Kernel/NodePrototypeGenerator.h"
 
 #	include <algorithm>

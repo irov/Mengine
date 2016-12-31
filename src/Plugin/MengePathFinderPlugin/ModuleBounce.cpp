@@ -1,7 +1,8 @@
 #	include "ModuleBounce.h"
 
 #	include "Kernel/DefaultPrototypeGenerator.h"
-#	include "Kernel/ScriptClassWrapper.h"
+
+#	include "PythonScriptWrapper/ScriptClassWrapper.h"
 
 #	include "pybind/pybind.hpp"
 

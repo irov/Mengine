@@ -4,7 +4,8 @@
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/ScriptSystemInterface.h"
 
-#	include "Kernel/ScriptClassWrapper.h"
+#	include "PythonScriptWrapper/ScriptClassWrapper.h"
+
 #	include "Kernel/NodePrototypeGenerator.h"
 #	include "Kernel/ResourcePrototypeGenerator.h"
 

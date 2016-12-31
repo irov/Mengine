@@ -1,18 +1,12 @@
 #	include "ScriptHolder.h"
 
 #	include "pybind/pybind.hpp"
-
+    
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ScriptHolder::ScriptHolder()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptHolder::_setEventListener( const pybind::dict & _listener )
-	{
-		this->registerEvent( EVENT_KEEP_SCRIPT, ("onKeepScript"), _listener );
-		this->registerEvent( EVENT_RELEASE_SCRIPT, ("onReleaseScript"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptHolder::_activate()

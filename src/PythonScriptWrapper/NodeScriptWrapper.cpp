@@ -5,6 +5,7 @@
 #   include "Interface/ApplicationInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/TimelineInterface.h"
+#   include "Interface/StringizeInterface.h"
 
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/NodeInterface.h"
@@ -14,9 +15,9 @@
 #	include "Interface/PlatformInterface.h"
 #	include "Interface/PackageInterface.h"
 
-#	include "Kernel/ScriptClassWrapper.h"
 #	include "Kernel/ThreadTask.h"
 #	include "Kernel/Scene.h"
+#	include "Kernel/Arrow.h"
 
 #	include "Menge/Game.h"
 
@@ -31,7 +32,6 @@
 #   include "Interface/ResourceInterface.h"
 
 #	include "Kernel/ResourceImageData.h"
-#	include "Kernel/ScriptHolder.h"
 
 #	include "Menge/ResourceFile.h"
 #	include "Menge/ResourceMovie.h"
@@ -75,7 +75,6 @@
 //#	include "Light2D.h"
 #	include "Menge/ShadowCaster2D.h"
 #	include "Menge/Gyroscope.h"
-#	include "Menge/Arrow.h"
 #	include "Menge/TextField.h"
 #	include "Menge/SoundEmitter.h"
 #	include "Menge/Point.h"
@@ -84,6 +83,8 @@
 //#	include "RigidBody3D.h"
 //#	include "CapsuleController.h"
 //#	include "Skeleton.h"
+
+#	include "ScriptHolder.h"
 
 #	include "Menge/SurfaceVideo.h"
 #	include "Menge/SurfaceSound.h"
@@ -133,6 +134,11 @@
 #   include "Kernel/ThreadTask.h"
 
 #   include "Interface/ThreadSystemInterface.h"
+
+#   include "PythonEventReceiver.h"
+#   include "PythonAnimatableEventReceiver.h"
+
+#   include "ScriptClassWrapper.h"
 
 #	include "Core/Polygon.h"
 #	include "Core/MemoryHelper.h"
@@ -2100,95 +2106,6 @@ namespace Menge
 			return id;
 		}
         //////////////////////////////////////////////////////////////////////////
-        template<class T_Receiver>
-        void registerEventReceiver( const pybind::dict & _kwds, Eventable * _eventable, const char * _method, uint32_t _event )
-        {
-            if( _kwds.exist( _method ) == true )
-            {
-                pybind::object py_event = _kwds[_method];
-
-                if( py_event.is_none() == true )
-                {
-                    _eventable->removeEventReceiver( _event );
-                }
-                else
-                {
-                    static FactoryPoolStore<T_Receiver, 32> factory;
-
-                    T_Receiver * receiver = factory.createObject();
-
-                    receiver->initialize( py_event );
-
-                    _eventable->registerEventReceiver( _event, receiver );
-                }
-            }
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonEventReceiver
-        {
-        public:
-            void initialize( const pybind::object & _cb )
-            {
-                m_cb = _cb;
-            }
-
-        protected:
-            pybind::object m_cb;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        class PythonAnimatableEventReceiver
-            : public PythonEventReceiver
-            , public AnimatableEventReceiver
-        {
-        public:
-            void onAnimatablePlay( uint32_t _enumerator, float _time ) override
-            {
-                m_cb.call( _enumerator, _time );
-            }
-
-            void onAnimatableRestart( uint32_t _enumerator, float _time ) override
-            {
-                m_cb.call( _enumerator, _time );
-            }
-
-            void onAnimatablePause( uint32_t _enumerator ) override
-            {
-                m_cb.call( _enumerator );
-            }
-
-            void onAnimatableResume( uint32_t _enumerator, float _time ) override
-            {
-                m_cb.call( _enumerator, _time );
-            }
-
-            void onAnimatableStop( uint32_t _enumerator ) override
-            {
-                m_cb.call( _enumerator );
-            }
-
-            void onAnimatableEnd( uint32_t _enumerator ) override
-            {
-                m_cb.call( _enumerator );
-            }
-
-            void onAnimatableInterrupt( uint32_t _enumerator ) override
-            {
-                m_cb.call( _enumerator );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        template<class T_AnimatableReceiver = PythonAnimatableEventReceiver>
-        void registerAnimatableEventReceiver( const pybind::dict & _kwds, Eventable * _eventable )
-        {
-            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatablePlay", EVENT_ANIMATABLE_PLAY );
-            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableRestart", EVENT_ANIMATABLE_RESTART );
-            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatablePause", EVENT_ANIMATABLE_PAUSE );
-            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableResume", EVENT_ANIMATABLE_RESUME );
-            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableStop", EVENT_ANIMATABLE_STOP );
-            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableEnd", EVENT_ANIMATABLE_END );
-            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableInterrupt", EVENT_ANIMATABLE_INTERRUPT );
-        }
-        //////////////////////////////////////////////////////////////////////////
         PyObject * s_SurfaceVideo_setEventListener( SurfaceVideo * _surface, PyObject * _args, PyObject * _kwds )
         {
             if( _kwds == nullptr )
@@ -2391,45 +2308,9 @@ namespace Menge
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonMovieEventReceiver
-            : public PythonEventReceiver
-            , public MovieEventReceiver
+            : public PythonAnimatableEventReceiver<MovieEventReceiver>
         {
         public:
-            void onAnimatablePlay( uint32_t _enumerator, float _time ) override
-            {
-                m_cb.call( _enumerator, _time );
-            }
-
-            void onAnimatableRestart( uint32_t _enumerator, float _time ) override
-            {
-                m_cb.call( _enumerator, _time );
-            }
-
-            void onAnimatablePause( uint32_t _enumerator ) override
-            {
-                m_cb.call( _enumerator );
-            }
-
-            void onAnimatableResume( uint32_t _enumerator, float _time ) override
-            {
-                m_cb.call( _enumerator, _time );
-            }
-
-            void onAnimatableStop( uint32_t _enumerator ) override
-            {
-                m_cb.call( _enumerator );
-            }
-
-            void onAnimatableEnd( uint32_t _enumerator ) override
-            {
-                m_cb.call( _enumerator );
-            }
-
-            void onAnimatableInterrupt( uint32_t _enumerator ) override
-            {
-                m_cb.call( _enumerator );
-            }
-
             pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) override
             {
                 return m_cb.call( _group, _name );
@@ -5632,14 +5513,6 @@ namespace Menge
 			_shape->stopAffectors( ETA_VISIBILITY );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		mt::vec2f s_getCameraPosition( Node * _node, const RenderCameraInterface * _renderCamera )
-		{
-			mt::vec2f position;
-			_node->getScreenPosition( _renderCamera, position );
-
-			return position;
-		}
-		//////////////////////////////////////////////////////////////////////////
 		mt::vec3f s_getWorldOffsetPosition( Node * _node, const mt::vec3f & _position )
 		{
 			const mt::vec3f & wp = _node->getWorldPosition();
@@ -6932,13 +6805,10 @@ namespace Menge
 			.def( "update", &Node::update )
 			.def( "getParent", &Node::getParent )
 			.def( "hasParent", &Node::hasParent )
-			.def( "getScene", &Node::getScene )
-			.def( "getLayer", &Node::getLayer )
 
 			.def( "getWorldPosition", &Node::getWorldPosition )
 			.def( "setWorldPosition", &Node::setWorldPosition )
 			//.def( "getWorldDirection", &Node::getWorldDirection )
-			.def_proxy_static( "getCameraPosition", nodeScriptMethod, &NodeScriptMethod::s_getCameraPosition )
 			.def_proxy_static( "getWorldOffsetPosition", nodeScriptMethod, &NodeScriptMethod::s_getWorldOffsetPosition )
 			.def_proxy_static( "getLengthTo", nodeScriptMethod, &NodeScriptMethod::s_getLengthTo )
 
@@ -7261,10 +7131,6 @@ namespace Menge
 					;
 
 				pybind::interface_<Layer, pybind::bases<Node> >( "Layer", false )
-					.def( "setMain", &Layer::setMain )
-					.def( "isMain", &Layer::isMain )
-					.def( "setSize", &Layer::setSize )
-					.def( "getSize", &Layer::getSize )
 					;
 
 				pybind::interface_<Layer2D, pybind::bases<Layer> >( "Layer2D", false )

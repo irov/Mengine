@@ -9,7 +9,7 @@
 
 #	include "Kernel/ResourceImageData.h"
 
-#	include "Kernel/ScriptClassWrapper.h"
+#	include "PythonScriptWrapper/ScriptClassWrapper.h"
 
 #	include "pybind/pybind.hpp"
 

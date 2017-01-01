@@ -14,8 +14,6 @@
 #   include "stdex/stl_map.h"
 
 #	include <d3d9.h>
-#	include <d3dx9math.h>
-#   include <D3DX9Shader.h>
 
 namespace Menge
 {

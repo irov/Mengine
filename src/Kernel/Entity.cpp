@@ -103,7 +103,7 @@ namespace Menge
 	void Entity::onCreate()
 	{
         EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_CREATE, EntityEventReceiver )
-            ->onEntityCreate( m_object );
+            ->onEntityCreate( m_object, this );
 		//EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_CREATE )(m_object, this);
 	}
 	//////////////////////////////////////////////////////////////////////////

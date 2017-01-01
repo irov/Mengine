@@ -48,9 +48,9 @@ namespace Menge
                 m_cb.call( _self );
             }
 
-            void onEntityCreate( const pybind::object & _self ) override
+            void onEntityCreate( const pybind::object & _self, Node * _node ) override
             {
-                m_cb.call( _self );
+                m_cb.call( _self, _node );
             }
 
             void onEntityDestroy( const pybind::object & _self ) override

@@ -386,11 +386,11 @@ namespace Menge
 				meta_TextureStages.get_AddressMode_U( textureStage.addressU );
 				meta_TextureStages.get_AddressMode_V( textureStage.addressV );
 
-				textureStage.colorOp = meta_TextureStages.get_Color_Operator();
+				meta_TextureStages.get_Color_Operator( textureStage.colorOp );
 				meta_TextureStages.get_Color_Arg1( textureStage.colorArg1 );
 				meta_TextureStages.get_Color_Arg2( textureStage.colorArg2 );
 
-				textureStage.alphaOp = meta_TextureStages.get_Alpha_Operator();
+				meta_TextureStages.get_Alpha_Operator( textureStage.alphaOp );
 				meta_TextureStages.get_Alpha_Arg1( textureStage.alphaArg1 );
 				meta_TextureStages.get_Alpha_Arg2( textureStage.alphaArg2 );
 

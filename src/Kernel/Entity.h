@@ -33,7 +33,7 @@ namespace Menge
         virtual void onEntityDeactivate( const pybind::object & _self ) = 0;
         virtual void onEntityCompile( const pybind::object & _self ) = 0;
         virtual void onEntityRelease( const pybind::object & _self ) = 0;
-        virtual void onEntityCreate( const pybind::object & _self ) = 0;
+        virtual void onEntityCreate( const pybind::object & _self, Node * _node ) = 0;
         virtual void onEntityDestroy( const pybind::object & _self ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////

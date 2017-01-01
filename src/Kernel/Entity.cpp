@@ -164,8 +164,6 @@ namespace Menge
             ->onEntityDestroy( m_object );
 		//EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_DESTROY )(m_object);
 
-        m_object.reset();
-
 		Factorable::destroy();
 	}
 }

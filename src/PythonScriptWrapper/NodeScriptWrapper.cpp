@@ -4077,12 +4077,14 @@ namespace Menge
 			return pyret;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		const ConstString & s_getPlatformName()
+		bool s_testPlatformTags( const Tags & _tags )
 		{
-			const ConstString & platformName = PLATFORM_SERVICE( m_serviceProvider )
-				->getPlatformName();
+			const Tags & platformTags = PLATFORM_SERVICE( m_serviceProvider )
+				->getPlatformTags();
 
-			return platformName;
+			bool successful = platformTags.inTags( _tags );
+
+			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool s_hasTouchpad()
@@ -6522,11 +6524,65 @@ namespace Menge
 		}
 	};
 
+	struct extract_Tags_type
+		: public pybind::type_cast_result<Tags>
+	{
+		bool apply( PyObject * _obj, Tags & _tags, bool _nothrow ) override
+		{
+			(void)_nothrow;
+
+			if( pybind::list_check( _obj ) == true )
+			{
+				pybind::list l( _obj, pybind::borrowed() );
+
+				size_t tags_size = l.size();
+
+				for( size_t i = 0; i != tags_size; ++i )
+				{
+					ConstString tag = l[i];
+
+					_tags.addTag( tag );
+				}				
+			}
+			else
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		PyObject * wrap( pybind::type_cast_result<Tags>::TCastRef _value ) override
+		{
+			const TVectorConstString & tags = _value.getTags();
+			
+			PyObject * py_tags = pybind::list_new( 0 );
+			
+			for( TVectorConstString::const_iterator
+				it = tags.begin(),
+				it_end = tags.end();
+			it != it_end;
+			++it )
+			{
+				const ConstString & tag = *it;
+
+				PyObject * py_tag = pybind::ptr( tag );
+
+				pybind::list_appenditem( py_tags, py_tag );
+
+				pybind::decref( py_tag );
+			}
+			
+			return py_tags;
+		}
+	};
+
 	void PythonScriptWrapper::nodeWrap( ServiceProviderInterface * _serviceProvider )
 	{
 		NodeScriptMethod * nodeScriptMethod = new NodeScriptMethod( _serviceProvider );
 
 		pybind::registration_type_cast<Blobject>(new extract_TBlobject_type);
+		pybind::registration_type_cast<Tags>(new extract_Tags_type);
 
 		pybind::registration_stl_vector_type_cast<ResourceImage *, TVectorResourceImage>();
 		pybind::registration_stl_vector_type_cast<HotSpotPolygon *, TVectorHotSpotPolygon>();
@@ -7588,7 +7644,7 @@ namespace Menge
 			//pybind::def_function( "destroyJoint", &ScriptMethod::s_destroyJoint );
 			//pybind::def_function( "physicsMouseMove", &ScriptMethod::s_physicsMouseMove );
 
-			pybind::def_functor( "getPlatformName", nodeScriptMethod, &NodeScriptMethod::s_getPlatformName );
+			pybind::def_functor( "testPlatformTags", nodeScriptMethod, &NodeScriptMethod::s_testPlatformTags );
 			pybind::def_functor( "hasTouchpad", nodeScriptMethod, &NodeScriptMethod::s_hasTouchpad );
 			pybind::def_functor( "getTimingFactor", nodeScriptMethod, &NodeScriptMethod::s_getTimingFactor );
 			pybind::def_functor( "setTimingFactor", nodeScriptMethod, &NodeScriptMethod::s_setTimingFactor );

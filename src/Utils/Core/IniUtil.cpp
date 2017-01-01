@@ -5,6 +5,8 @@
 
 #   include "Logger/Logger.h"
 
+#	include <sstream>
+
 #   include <stdio.h>
 #   include <string.h>
 
@@ -120,6 +122,30 @@ namespace Menge
 
             return true;
         }
+		//////////////////////////////////////////////////////////////////////////
+		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags & _value, ServiceProviderInterface * _serviceProvider )
+		{
+			const Char * ini_value = _ini.getSettingValue( _section, _key );
+
+			if( ini_value == nullptr )
+			{
+				return false;
+			}
+			
+			std::stringstream ss( ini_value );
+
+			std::string single_string;
+			while( ss >> single_string )
+			{
+				const char * str_single_string = single_string.c_str();
+
+				ConstString cstr_value = Helper::stringizeString( _serviceProvider, str_single_string );
+
+				_value.addTag( cstr_value );
+			}
+
+			return true;
+		}
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Resolution & _value, ServiceProviderInterface * _serviceProvider )
         {

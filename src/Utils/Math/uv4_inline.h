@@ -1,6 +1,7 @@
 #	include "uv4.h"
 
 #	include "line2.h"
+#	include "vec3.h"
 
 #	include "utils.h"
 
@@ -243,5 +244,36 @@ namespace mt
 		uv4_from_mask( uv2, _mask );
 
 		multiply_tetragon_uv4( _out, _uv1, uv2 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE mt::vec2f calc_point_uv( const mt::vec2f & _a, const mt::vec2f & _b, const mt::vec2f & _c, const mt::vec2f & _auv, const mt::vec2f & _buv, const mt::vec2f & _cuv, const mt::vec2f & _point )
+	{
+		mt::vec2f _uvA = _auv;
+		mt::vec2f _dAB = _b - _a;
+		mt::vec2f _dAC = _c - _a;
+
+		float inv_v = 1.f / (_dAB.x * _dAC.y - _dAB.y * _dAC.x);
+		_dAB *= inv_v;
+		_dAC *= inv_v;
+
+		mt::vec2f _dac;
+		_dac.x = _dAC.x * _a.y - _dAC.y * _a.x;
+		_dac.y = -(_dAB.x * _a.y - _dAB.y * _a.x);
+
+		_dAB *= -1.f;
+
+		_dAB.x *= -1.f;
+		_dAC.x *= -1.f;
+
+		mt::vec2f _duvAB = _buv - _uvA;
+		mt::vec2f _duvAC = _cuv - _uvA;
+
+		float a = mt::dot_v3_v3( mt::vec3f( _dac.x, _dAC.y, _dAC.x ), mt::vec3f( 1.f, _point.x, _point.y ) );
+		float b = mt::dot_v3_v3( mt::vec3f( _dac.y, _dAB.y, _dAB.x ), mt::vec3f( 1.f, _point.x, _point.y ) );
+
+		float u = mt::dot_v3_v3( mt::vec3f( _uvA.x, _duvAB.x, _duvAC.x ), mt::vec3f( 1.f, a, b ) );
+		float v = mt::dot_v3_v3( mt::vec3f( _uvA.y, _duvAB.y, _duvAC.y ), mt::vec3f( 1.f, a, b ) );
+		
+		return mt::vec2f( u, v );
 	}
 }

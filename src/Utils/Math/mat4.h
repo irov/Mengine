@@ -27,6 +27,8 @@ namespace mt
 
 		MENGINE_MATH_METHOD_INLINE mat4f& operator = (const mat4f& _rhs);
 
+		MENGINE_MATH_METHOD_INLINE void from_f16( const float * _v );
+
 		MENGINE_MATH_METHOD_INLINE float * buff();
 		MENGINE_MATH_METHOD_INLINE const float * buff() const;
 	};

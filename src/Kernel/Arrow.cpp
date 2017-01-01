@@ -175,7 +175,7 @@ namespace	Menge
 		(void)_camera;
 
 		mt::vec2f p1;
-		Helper::screenToWorldPosition( _camera, _screenPoint, p1 );
+		this->calcMouseWorldPosition( _camera, _viewport, _screenPoint, p1 );
 
 		EArrowType arrowType = this->getArrowType();
 

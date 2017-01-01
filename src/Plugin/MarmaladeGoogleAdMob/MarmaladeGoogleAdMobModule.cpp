@@ -7,6 +7,7 @@
 #	include "Interface/TimerInterface.h"
 
 #	include "s3eDebug.h"
+#	include "s3eConfig.h"
 
 #	include "Logger/Logger.h"
 
@@ -65,7 +66,7 @@ namespace Menge
 	MarmaladeGoogleAdMobModule::MarmaladeGoogleAdMobModule()
 		: m_state(ADMOB_PREPARE)
 		, m_Id(0)
-		, m_timeShow(0.f)
+		, m_timeShow(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -73,13 +74,28 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeGoogleAdMobModule::_initialize()
+	bool MarmaladeGoogleAdMobModule::_avaliable()
 	{
 		if( s3eGoogleAdMobAvailable() == S3E_FALSE )
 		{
 			return false;
 		}
 
+		int32 AdMobEnable = 0;
+
+		if( s3eConfigGetInt( "MENGINE", "AdMob", &AdMobEnable ) == S3E_RESULT_SUCCESS )
+		{
+			if( AdMobEnable == 0 )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeGoogleAdMobModule::_initialize()
+	{
 		s3eGoogleAdMobRegister( S3E_GOOGLEADMOB_CALLBACK_AD_LOADED, s_onAdLoad, this );
 		s3eGoogleAdMobRegister( S3E_GOOGLEADMOB_CALLBACK_AD_ACTION, s_onAdAction, this );
 		s3eGoogleAdMobRegister( S3E_GOOGLEADMOB_CALLBACK_AD_ERROR, s_onAdError, this );

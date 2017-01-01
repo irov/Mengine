@@ -28,12 +28,12 @@ namespace Menge
 		PackageInterfacePtr getPackage( const ConstString & _name ) const override;
 
 	public:
-		bool enablePackages( const ConstString & _locale, const ConstString & _platformName ) override;
+		bool enablePackages( const ConstString & _locale, const Tags & _platformTags ) override;
 		bool validatePackages() const override;
 
 	public:
-		bool enableLocalePackage( const ConstString & _locale, const ConstString & _platformName );
-		bool disableLocalePackage( const ConstString & _locale, const ConstString & _platformName );
+		bool enableLocalePackage( const ConstString & _locale, const Tags & _platformTag );
+		bool disableLocalePackage( const ConstString & _locale, const Tags & _platformTag );
 
 	protected:
 		void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
@@ -49,6 +49,6 @@ namespace Menge
 		TFactoryPackage m_factoryPackage;
 
 	protected:
-		bool loadLocalePacksByName_( TVectorPackage & _packs, const ConstString & _locale, const ConstString & _platform ) const;
+		bool loadLocalePacksByName_( TVectorPackage & _packs, const ConstString & _locale, const Tags & _platformTags ) const;
     };
 }

@@ -5,27 +5,27 @@
 if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 
 %toolsdir%\wget\wget.exe --no-clobber http://stahlworks.com/dev/unzip.exe
-%toolsdir%\wget\wget.exe --no-clobber http://downloads.sourceforge.net/sevenzip/7za465.zip
+%toolsdir%\wget\wget.exe --no-clobber http://www.7-zip.org/a/7za920.zip
 
 :: extracting 7za.exe
-unzip -o 7za465.zip 7za.exe
+unzip -o 7za920.zip 7za.exe
 
-call:getdepend http://downloads.sourceforge.net/project/boost/boost/1.61.0/boost_1_61_0.7z boost_1_61_0.7z boost_1_61_0 boost
+call:getdepend http://downloads.sourceforge.net/project/boost/boost/1.62.0/boost_1_62_0.7z boost_1_62_0.7z boost_1_62_0 boost
 
-call:getdepend https://cmake.org/files/v3.5/cmake-3.5.2-win32-x86.zip cmake-3.5.2-win32-x86.zip cmake-3.5.2-win32-x86 cmake
+call:getdepend https://cmake.org/files/v3.7/cmake-3.7.1-win64-x64.zip cmake-3.7.1-win64-x64.zip cmake-3.7.1-win64-x64 cmake
 call:getdepend http://download.sourceforge.net/libpng/lpng1623.zip lpng1623.zip lpng1623 libpng
 call:getdepend http://www.ijg.org/files/jpegsr9b.zip jpegsr9b.zip jpeg-9b libjpeg
-call:getdepend http://zlib.net/zlib128.zip zlib128.zip zlib-1.2.8 zlib
+call:getdepend http://zlib.net/zlib129.zip zlib129.zip zlib-1.2.9 zlib
 call:getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.2.zip libogg-1.3.2.zip libogg-1.3.2 libogg
 call:getdepend http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.zip libvorbis-1.3.5.zip libvorbis-1.3.5 libvorbis
 call:getdepend http://downloads.xiph.org/releases/theora/libtheora-1.1.1.zip libtheora-1.1.1.zip libtheora-1.1.1 libtheora
 call:getdepend_2 http://kcat.strangesoft.net/openal-releases/openal-soft-1.17.2.tar.bz2 openal-soft-1.17.2.tar.bz2 openal-soft-1.17.2.tar openal-soft-1.17.2 openal-soft
 
-call:getdepend_2 https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz Python-2.7.11.tgz Python-2.7.11.tar Python-2.7.11 Python
+call:getdepend_2 https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz Python-2.7.13.tgz Python-2.7.13.tar Python-2.7.13 Python
 call:getdepend_2 https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz Python-3.5.1.tgz Python-3.5.1.tar Python-3.5.1 Python3
 
 call:getdepend http://www.astralax.ru/download/programm/dev/magic_win.zip magic_win.zip win astralax
-call:getdepend https://www.libsdl.org/release/SDL2-2.0.4.zip SDL2-2.0.4.zip SDL2-2.0.4 SDL2
+call:getdepend https://www.libsdl.org/release/SDL2-2.0.5.zip SDL2-2.0.5.zip SDL2-2.0.5 SDL2
 call:getdepend https://www.libsdl.org/projects/SDL_net/release/SDL2_net-2.0.1.zip SDL2_net-2.0.1.zip SDL2_net-2.0.1 SDL2_net
 call:getdepend https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.1.zip SDL2_mixer-2.0.1.zip SDL2_mixer-2.0.1 SDL2_mixer
 

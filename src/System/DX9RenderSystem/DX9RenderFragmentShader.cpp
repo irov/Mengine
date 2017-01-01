@@ -11,6 +11,14 @@ namespace Menge
     {
     }
 	//////////////////////////////////////////////////////////////////////////
+	DX9RenderFragmentShader::~DX9RenderFragmentShader()
+	{
+		if( m_shader != nullptr )
+		{
+			m_shader->Release();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderFragmentShader::setServiceProvider( ServiceProviderInterface * _serviceProvider )
 	{
 		m_serviceProvider = _serviceProvider;

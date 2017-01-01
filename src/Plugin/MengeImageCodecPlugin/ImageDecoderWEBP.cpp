@@ -1,12 +1,8 @@
-#	ifdef MENGINE_SUPPORT_DECODER_WEBP
-
 #	include "ImageDecoderWEBP.h"
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 
-#	include "Core/CacheMemoryBuffer.h"
-#	include "Core/CacheMemoryStream.h"
+#	include "Core/MemoryHelper.h"
 
 #	include "Logger/Logger.h"
 
@@ -37,8 +33,14 @@ namespace Menge
 			{
 				featuresBufferSize += MENGINE_FILE_STREAM_BUFFER_SIZE;
 
-				CacheMemoryBuffer buffer(m_serviceProvider, featuresBufferSize, "ImageDecoderWEBP::_prepareData");
-				uint8_t * featuresMemory = buffer.getMemoryT<uint8_t>();
+				MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, featuresBufferSize, "ImageDecoderWEBP::_prepareData" );
+				
+				if( buffer == nullptr )
+				{
+					return false;
+				}
+
+				uint8_t * featuresMemory = buffer->getMemory();
 
 				if( featuresMemory == nullptr )
 				{
@@ -103,7 +105,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ImageDecoderWEBP::decode( void * _buffer, size_t _bufferSize )
+	size_t ImageDecoderWEBP::_decode( void * _buffer, size_t _bufferSize )
 	{			
 		uint8_t * webp_buffer = static_cast<uint8_t *>(_buffer);
 		size_t webp_buffer_size = _bufferSize;
@@ -112,17 +114,24 @@ namespace Menge
 		size_t streamSize;
 		if( m_stream->memory( &streamMemory, &streamSize ) == false )
 		{
-			CacheMemoryStream buffer(m_serviceProvider, m_stream, "ImageDecoderWEBP::decode");
-			const uint8_t * buffer_memory = buffer.getMemoryT<uint8_t>();
-			size_t buffer_size = buffer.getSize();
+			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryCacheStream( m_serviceProvider, m_stream, "ImageDecoderWEBP::decode" );
 
-			if( buffer_memory == nullptr )
+			if( buffer == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ImageDecoderWEBP::decode invalid get memory"
+				LOGGER_ERROR( m_serviceProvider )("ImageDecoderWEBP::decode invalid create memory for stream"
 					);
 
 				return false;
 			}
+
+			const uint8_t * buffer_memory = buffer->getMemory();
+
+			if( buffer_memory == nullptr )
+			{
+				return false;
+			}
+
+			size_t buffer_size = buffer->getSize();
 			
 			if( this->decodeWEBP_( buffer_memory, buffer_size, webp_buffer, webp_buffer_size ) == false )
 			{
@@ -182,5 +191,3 @@ namespace Menge
 		return true;
 	}
 }	// namespace Menge
-
-#	endif

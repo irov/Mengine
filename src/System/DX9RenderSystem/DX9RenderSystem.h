@@ -204,17 +204,17 @@ namespace Menge
 		typedef FactoryPoolStore<DX9RenderFragmentShader, 16> TFactoryRenderFragmentShader;
 		TFactoryRenderFragmentShader m_factoryRenderFragmentShader;
 
-		typedef FactoryPoolStore<DX9RenderProgram, 16> TFactoryProgram;
-		TFactoryProgram m_factoryProgram;
+		typedef FactoryPoolStore<DX9RenderProgram, 16> TFactoryRenderProgram;
+		TFactoryRenderProgram m_factoryRenderProgram;
 
 		typedef stdex::vector<DX9RenderVertexShaderPtr> TVectorRenderVertexShaders;
-		TVectorRenderVertexShaders m_vertexShaders;
+		TVectorRenderVertexShaders m_deferredCompileVertexShaders;
 
 		typedef stdex::vector<DX9RenderFragmentShaderPtr> TVectorRenderFragmentShaders;
-		TVectorRenderFragmentShaders m_fragmentShaders;
+		TVectorRenderFragmentShaders m_deferredCompileFragmentShaders;
 
 		typedef stdex::vector<DX9RenderProgramPtr> TVectorRenderPrograms;
-		TVectorRenderPrograms m_programs;
+		TVectorRenderPrograms m_deferredCompilePrograms;
 
 		typedef FactoryDefaultStore<DX9RenderVertexBuffer> TFactoryRenderVertexBuffer;
 		TFactoryRenderVertexBuffer m_factoryVertexBuffer;

@@ -18,14 +18,14 @@ namespace Menge
 		ScriptModule();
 
 	public:
-		bool initialize( const pybind::object & _module );
+		bool initialize( const pybind::module & _module );
 
 	protected:
 		bool onInitialize( const ConstString & _method ) override;
 		bool onFinalize( const ConstString & _method ) override;
 
 	protected:
-		pybind::object m_module;
+		pybind::module m_module;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ScriptModule> ScriptModulePtr;

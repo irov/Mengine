@@ -62,7 +62,7 @@ namespace Menge
         const RenderTextureDebugInfo & getDebugInfo() override;
 
 	protected:
-        bool onRenderTextureDestroy_( RenderTextureInterface * _texture );				
+		bool onRenderTextureDestroy_( RenderTextureInterface * _texture );
 		void releaseRenderTexture_( RenderTextureInterface * _texture );
 
     protected:

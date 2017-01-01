@@ -61,14 +61,14 @@ namespace Metacode
                 std::swap( _value, this->Name);
             }
             
-            const Menge::ConstString & get_Platform() const
+            const Menge::ConstString & get_RenderPlatform() const
             {
-                return this->Platform;
+                return this->RenderPlatform;
             }
             
-            void swap_Platform( Menge::ConstString & _value ) const
+            void swap_RenderPlatform( Menge::ConstString & _value ) const
             {
-                std::swap( _value, this->Platform);
+                std::swap( _value, this->RenderPlatform);
             }
             
             bool has_File_Compile() const
@@ -120,7 +120,7 @@ namespace Metacode
         protected:
         protected:
             mutable Menge::ConstString Name;
-            mutable Menge::ConstString Platform;
+            mutable Menge::ConstString RenderPlatform;
             bool File_Compile_successful;
             mutable bool File_Compile;
             mutable Menge::FilePath File_Path;
@@ -205,6 +205,35 @@ namespace Metacode
             void swap_Name( Menge::ConstString & _value ) const
             {
                 std::swap( _value, this->Name);
+            }
+            
+            bool has_RenderPlatform() const
+            {
+                return RenderPlatform_successful;
+            }
+            
+            bool get_RenderPlatform( Menge::ConstString & _value ) const
+            {
+                if( RenderPlatform_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->RenderPlatform;
+            
+                return true;
+            }
+            
+            bool swap_RenderPlatform( Menge::ConstString & _value ) const
+            {
+                if( RenderPlatform_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->RenderPlatform);
+            
+                return true;
             }
             
             bool has_AlphaBlend_Enable() const
@@ -379,6 +408,35 @@ namespace Metacode
                     std::swap( _value, this->Stage);
                 }
                 
+                bool has_AddressMode_Border() const
+                {
+                    return AddressMode_Border_successful;
+                }
+                
+                bool get_AddressMode_Border( uint32_t & _value ) const
+                {
+                    if( AddressMode_Border_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->AddressMode_Border;
+                
+                    return true;
+                }
+                
+                bool swap_AddressMode_Border( uint32_t & _value ) const
+                {
+                    if( AddressMode_Border_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap(_value, this->AddressMode_Border);
+                
+                    return true;
+                }
+                
                 bool has_AddressMode_U() const
                 {
                     return AddressMode_U_successful;
@@ -495,14 +553,33 @@ namespace Metacode
                     return true;
                 }
                 
-                Menge::ETextureOp get_Alpha_Operator() const
+                bool has_Alpha_Operator() const
                 {
-                    return this->Alpha_Operator;
+                    return Alpha_Operator_successful;
                 }
                 
-                void swap_Alpha_Operator( Menge::ETextureOp & _value ) const
+                bool get_Alpha_Operator( Menge::ETextureOp & _value ) const
                 {
+                    if( Alpha_Operator_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Alpha_Operator;
+                
+                    return true;
+                }
+                
+                bool swap_Alpha_Operator( Menge::ETextureOp & _value ) const
+                {
+                    if( Alpha_Operator_successful == false )
+                    {
+                        return false;
+                    }
+                
                     std::swap(_value, this->Alpha_Operator);
+                
+                    return true;
                 }
                 
                 bool has_Color_Arg1() const
@@ -563,14 +640,33 @@ namespace Metacode
                     return true;
                 }
                 
-                Menge::ETextureOp get_Color_Operator() const
+                bool has_Color_Operator() const
                 {
-                    return this->Color_Operator;
+                    return Color_Operator_successful;
                 }
                 
-                void swap_Color_Operator( Menge::ETextureOp & _value ) const
+                bool get_Color_Operator( Menge::ETextureOp & _value ) const
                 {
+                    if( Color_Operator_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Color_Operator;
+                
+                    return true;
+                }
+                
+                bool swap_Color_Operator( Menge::ETextureOp & _value ) const
+                {
+                    if( Color_Operator_successful == false )
+                    {
+                        return false;
+                    }
+                
                     std::swap(_value, this->Color_Operator);
+                
+                    return true;
                 }
                 
                 bool has_TextureCoord_Index() const
@@ -612,6 +708,8 @@ namespace Metacode
             protected:
             protected:
                 mutable uint32_t Stage;
+                bool AddressMode_Border_successful;
+                mutable uint32_t AddressMode_Border;
                 bool AddressMode_U_successful;
                 mutable Menge::ETextureAddressMode AddressMode_U;
                 bool AddressMode_V_successful;
@@ -620,11 +718,13 @@ namespace Metacode
                 mutable Menge::ETextureArgument Alpha_Arg1;
                 bool Alpha_Arg2_successful;
                 mutable Menge::ETextureArgument Alpha_Arg2;
+                bool Alpha_Operator_successful;
                 mutable Menge::ETextureOp Alpha_Operator;
                 bool Color_Arg1_successful;
                 mutable Menge::ETextureArgument Color_Arg1;
                 bool Color_Arg2_successful;
                 mutable Menge::ETextureArgument Color_Arg2;
+                bool Color_Operator_successful;
                 mutable Menge::ETextureOp Color_Operator;
                 bool TextureCoord_Index_successful;
                 mutable uint32_t TextureCoord_Index;
@@ -635,6 +735,8 @@ namespace Metacode
             bool Debug_successful;
             mutable bool Debug;
             mutable Menge::ConstString Name;
+            bool RenderPlatform_successful;
+            mutable Menge::ConstString RenderPlatform;
             bool AlphaBlend_Enable_successful;
             mutable bool AlphaBlend_Enable;
             bool BlendFactor_Dest_successful;
@@ -677,14 +779,33 @@ namespace Metacode
                 std::swap( _value, this->Name);
             }
             
-            const Menge::ConstString & get_Platform() const
+            bool has_RenderPlatform() const
             {
-                return this->Platform;
+                return RenderPlatform_successful;
             }
             
-            void swap_Platform( Menge::ConstString & _value ) const
+            bool get_RenderPlatform( Menge::ConstString & _value ) const
             {
-                std::swap( _value, this->Platform);
+                if( RenderPlatform_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->RenderPlatform;
+            
+                return true;
+            }
+            
+            bool swap_RenderPlatform( Menge::ConstString & _value ) const
+            {
+                if( RenderPlatform_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->RenderPlatform);
+            
+                return true;
             }
             
             const Menge::ConstString & get_FragmentShader_Name() const
@@ -727,7 +848,8 @@ namespace Metacode
         protected:
         protected:
             mutable Menge::ConstString Name;
-            mutable Menge::ConstString Platform;
+            bool RenderPlatform_successful;
+            mutable Menge::ConstString RenderPlatform;
             mutable Menge::ConstString FragmentShader_Name;
             mutable uint32_t Sampler_Count;
             mutable Menge::ConstString VertexShader_Name;
@@ -753,14 +875,14 @@ namespace Metacode
                 std::swap( _value, this->Name);
             }
             
-            const Menge::ConstString & get_Platform() const
+            const Menge::ConstString & get_RenderPlatform() const
             {
-                return this->Platform;
+                return this->RenderPlatform;
             }
             
-            void swap_Platform( Menge::ConstString & _value ) const
+            void swap_RenderPlatform( Menge::ConstString & _value ) const
             {
-                std::swap( _value, this->Platform);
+                std::swap( _value, this->RenderPlatform);
             }
             
             bool has_File_Compile() const
@@ -812,7 +934,7 @@ namespace Metacode
         protected:
         protected:
             mutable Menge::ConstString Name;
-            mutable Menge::ConstString Platform;
+            mutable Menge::ConstString RenderPlatform;
             bool File_Compile_successful;
             mutable bool File_Compile;
             mutable Menge::FilePath File_Path;
@@ -5930,6 +6052,35 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
+            bool has_Platform() const
+            {
+                return Platform_successful;
+            }
+            
+            bool get_Platform( Menge::Tags & _value ) const
+            {
+                if( Platform_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Platform;
+            
+                return true;
+            }
+            
+            bool swap_Platform( Menge::Tags & _value ) const
+            {
+                if( Platform_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Platform);
+            
+                return true;
+            }
+            
         protected:
             void _parseData( const unsigned char * _buff, size_t _size, size_t & _read ) override;
             void _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
@@ -5982,6 +6133,8 @@ namespace Metacode
             
         protected:
         protected:
+            bool Platform_successful;
+            mutable Menge::Tags Platform;
         public:
             typedef stdex::auto_array<Meta_Data> TVectorMeta_Data;
         
@@ -6014,6 +6167,35 @@ namespace Metacode
                 std::swap( _value, this->Path);
             }
             
+            bool has_Platform() const
+            {
+                return Platform_successful;
+            }
+            
+            bool get_Platform( Menge::Tags & _value ) const
+            {
+                if( Platform_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Platform;
+            
+                return true;
+            }
+            
+            bool swap_Platform( Menge::Tags & _value ) const
+            {
+                if( Platform_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Platform);
+            
+                return true;
+            }
+            
         protected:
             void _parseData( const unsigned char * _buff, size_t _size, size_t & _read ) override;
             void _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
@@ -6024,6 +6206,8 @@ namespace Metacode
         protected:
         protected:
             mutable Menge::FilePath Path;
+            bool Platform_successful;
+            mutable Menge::Tags Platform;
         };
         
         class Meta_Materials
@@ -6036,6 +6220,35 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
+            bool has_Platform() const
+            {
+                return Platform_successful;
+            }
+            
+            bool get_Platform( Menge::Tags & _value ) const
+            {
+                if( Platform_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Platform;
+            
+                return true;
+            }
+            
+            bool swap_Platform( Menge::Tags & _value ) const
+            {
+                if( Platform_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Platform);
+            
+                return true;
+            }
+            
         protected:
             void _parseData( const unsigned char * _buff, size_t _size, size_t & _read ) override;
             void _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
@@ -6077,6 +6290,8 @@ namespace Metacode
             
         protected:
         protected:
+            bool Platform_successful;
+            mutable Menge::Tags Platform;
         public:
             typedef stdex::auto_array<Meta_Material> TVectorMeta_Material;
         
@@ -6128,6 +6343,35 @@ namespace Metacode
                 return true;
             }
             
+            bool has_Platform() const
+            {
+                return Platform_successful;
+            }
+            
+            bool get_Platform( Menge::Tags & _value ) const
+            {
+                if( Platform_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Platform;
+            
+                return true;
+            }
+            
+            bool swap_Platform( Menge::Tags & _value ) const
+            {
+                if( Platform_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Platform);
+            
+                return true;
+            }
+            
         protected:
             void _parseData( const unsigned char * _buff, size_t _size, size_t & _read ) override;
             void _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
@@ -6171,6 +6415,8 @@ namespace Metacode
         protected:
             bool Ignored_successful;
             mutable bool Ignored;
+            bool Platform_successful;
+            mutable Menge::Tags Platform;
         public:
             typedef stdex::auto_array<Meta_Resource> TVectorMeta_Resource;
         
@@ -6290,6 +6536,35 @@ namespace Metacode
                 std::swap( _value, this->Path);
             }
             
+            bool has_Platform() const
+            {
+                return Platform_successful;
+            }
+            
+            bool get_Platform( Menge::Tags & _value ) const
+            {
+                if( Platform_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Platform;
+            
+                return true;
+            }
+            
+            bool swap_Platform( Menge::Tags & _value ) const
+            {
+                if( Platform_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Platform);
+            
+                return true;
+            }
+            
         protected:
             void _parseData( const unsigned char * _buff, size_t _size, size_t & _read ) override;
             void _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
@@ -6306,6 +6581,8 @@ namespace Metacode
             bool Module_successful;
             mutable Menge::ConstString Module;
             mutable Menge::FilePath Path;
+            bool Platform_successful;
+            mutable Menge::Tags Platform;
         };
         
         class Meta_Texts
@@ -6318,6 +6595,35 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
+            bool has_Platform() const
+            {
+                return Platform_successful;
+            }
+            
+            bool get_Platform( Menge::Tags & _value ) const
+            {
+                if( Platform_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Platform;
+            
+                return true;
+            }
+            
+            bool swap_Platform( Menge::Tags & _value ) const
+            {
+                if( Platform_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Platform);
+            
+                return true;
+            }
+            
         protected:
             void _parseData( const unsigned char * _buff, size_t _size, size_t & _read ) override;
             void _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
@@ -6359,6 +6665,8 @@ namespace Metacode
             
         protected:
         protected:
+            bool Platform_successful;
+            mutable Menge::Tags Platform;
         public:
             typedef stdex::auto_array<Meta_Text> TVectorMeta_Text;
         

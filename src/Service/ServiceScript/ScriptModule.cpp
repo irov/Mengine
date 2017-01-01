@@ -11,7 +11,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptModule::initialize( const pybind::object & _module )
+	bool ScriptModule::initialize( const pybind::module & _module )
 	{
 		m_module = _module;
 

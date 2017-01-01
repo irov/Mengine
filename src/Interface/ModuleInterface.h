@@ -19,6 +19,9 @@ namespace Menge
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
 	public:
+		virtual bool avaliable() = 0;
+
+	public:
 		virtual void setName( const ConstString & _name ) = 0;
 		virtual const ConstString & getName() const = 0;
 

@@ -79,6 +79,11 @@ namespace Menge
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "jpeg", STRINGIZE_STRING_LOCAL(m_serviceProvider, "jpegImage") );
 
+#	ifdef MENGINE_SUPPORT_DECODER_WEBP
+		CODEC_SERVICE( m_serviceProvider )
+			->registerCodecExt( "webp", STRINGIZE_STRING_LOCAL( m_serviceProvider, "webpImage" ) );
+#	endif
+
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "pvr", STRINGIZE_STRING_LOCAL(m_serviceProvider, "pvrImage") );
 

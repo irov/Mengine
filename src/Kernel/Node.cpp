@@ -58,8 +58,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_unshallowGrave()
 	{
-		this->removeFromParent();
-
 		this->setShallowGravePropagate( false );
 
 		Factorable::destroy();

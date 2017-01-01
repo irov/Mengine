@@ -48,7 +48,7 @@ namespace Menge
 		WindowHandle getWindowHandle() const override;
 
 	public:
-		const ConstString & getPlatformName() const override;
+		const Tags & getPlatformTags() const override;
 
 	public:
 		bool hasTouchpad() const override;
@@ -108,7 +108,7 @@ namespace Menge
 	protected:
 		MarmaladeInput * m_marmaladeInput;
 				
-		ConstString m_platformName;
+		Tags m_platformTags;
 
 		bool m_running;
 		bool m_pause;

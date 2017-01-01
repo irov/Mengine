@@ -76,6 +76,11 @@ namespace Menge
 		const ModuleFactoryInterfacePtr & factory = it_found->second;
 
 		ModuleInterfacePtr module = factory->createModule();
+
+		if( module->avaliable() == false )
+		{
+			return true;
+		}
 		
 		if( module->initialize() == false )
 		{

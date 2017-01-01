@@ -29,6 +29,7 @@ includepaths
     "./Modified/Python"
     "./Modified/lz4"
     "./Modified/ogg"
+    "./Modified/libwebp"
     
 	"../src"
 	"../src/Utils"
@@ -45,6 +46,7 @@ includepaths
     "../dependencies/libvorbis/include"
     "../dependencies/libvorbis/lib"
     "../dependencies/libtheora/include"
+    "../dependencies/libwebp/src"
     
     "../dependencies/spine-c/include"
     "../dependencies/libmovie/include"
@@ -83,7 +85,18 @@ files
     sweep/cdt.cc
     sweep/sweep.cc
     sweep/sweep_context.cc
-        
+    
+    [libwebp]
+    ("../dependencies/libwebp/src")
+    "dec/*.h"
+    "dec/*.c"
+    "demux/*.c"
+    "dsp/*.h"
+    "dsp/*.c"
+    "utils/*.h"
+    "utils/*.c"
+    "webp/*.h"
+    
     [zlib]
     ("../dependencies/zlib")
     crc32.h

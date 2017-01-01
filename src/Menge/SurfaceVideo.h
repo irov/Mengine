@@ -45,7 +45,7 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-    protected:
+    public:
         const mt::vec2f & getMaxSize() const override;
         const mt::vec2f & getSize() const override;
         const mt::vec2f & getOffset() const override;

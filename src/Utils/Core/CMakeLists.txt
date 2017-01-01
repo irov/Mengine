@@ -52,6 +52,9 @@ src
     String.h
 	String.cpp
     
+    Tags.h
+    Tags.cpp
+    
     StringFormat.h
     
     Params.h

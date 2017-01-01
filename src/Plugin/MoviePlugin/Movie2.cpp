@@ -7,6 +7,7 @@
 
 #	include "Menge/SurfaceVideo.h"
 #	include "Menge/SurfaceSound.h"
+#	include "Menge/SurfaceTrackMatte.h"
 
 #	include "Kernel/Materialable.h"
 
@@ -173,52 +174,91 @@ namespace Menge
 		ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
 
 		ConstString c_name = Helper::stringizeString( serviceProvider, _layerData->name );
-
-		uint8_t type = _layerData->type;
-        const aeMovieResource * resource = _layerData->resource;
-
-		switch( type )
+		
+		if( _layerData->is_track_matte == AE_TRUE )
 		{
-		case AE_MOVIE_LAYER_TYPE_VIDEO:
+			return nullptr;
+		}
+
+		if( _layerData->has_track_matte == AE_TRUE )
+		{
+			SurfaceTrackMatte * surfaceTrackMatte = PROTOTYPE_SERVICE( serviceProvider )
+				->generatePrototypeT<SurfaceTrackMatte *>( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceTrackMatte" ) );
+            
+			surfaceTrackMatte->setName( c_name );
+
+			ResourceImage * resourceImage = (ResourceImage *)(_layerData->resource->data);
+			ResourceImage * resourceTrackMatteImage = (ResourceImage *)(_layerData->track_matte->resource->data);
+
+			surfaceTrackMatte->setResourceImage( resourceImage );
+			surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
+
+			EMaterialBlendMode blend_mode = EMB_NORMAL;
+
+			switch( _layerData->blend_mode )
 			{
-				SurfaceVideo * surfaceVideo = PROTOTYPE_SERVICE( serviceProvider )
-					->generatePrototypeT<SurfaceVideo *>( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceVideo" ) );
+			case AE_MOVIE_BLEND_ADD:
+				blend_mode = EMB_ADD;
+				break;
+			case AE_MOVIE_BLEND_SCREEN:
+				blend_mode = EMB_SCREEN;
+				break;
+			};
 
-				surfaceVideo->setName( c_name );
+			surfaceTrackMatte->setBlendMode( blend_mode );
 
-				ResourceVideo * resourceVideo = (ResourceVideo *)(resource->data);
+			return surfaceTrackMatte;
+		}
+		else
+		{
+			uint8_t type = _layerData->type;
 
-				surfaceVideo->setResourceVideo( resourceVideo );
+            switch( type )
+            {
+            case AE_MOVIE_LAYER_TYPE_VIDEO:
+                {
+                    SurfaceVideo * surfaceVideo = PROTOTYPE_SERVICE( serviceProvider )
+                        ->generatePrototypeT<SurfaceVideo *>( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceVideo" ) );
 
-				EMaterialBlendMode blend_mode = EMB_NORMAL;
+                    surfaceVideo->setName( c_name );
 
-				switch( _layerData->blend_mode )
-				{
-				case AE_MOVIE_BLEND_ADD:
-					blend_mode = EMB_ADD;
-					break;
-				case AE_MOVIE_BLEND_SCREEN:
-					blend_mode = EMB_SCREEN;
-					break;
-				};
+                    ResourceVideo * resourceVideo = (ResourceVideo *)(_layerData->resource->data);
 
-				surfaceVideo->setBlendMode( blend_mode );
+                    surfaceVideo->setResourceVideo( resourceVideo );
 
-				return surfaceVideo;
-			}break;
-		case AE_MOVIE_LAYER_TYPE_SOUND:
-			{
-				SurfaceSound * surfaceSound = PROTOTYPE_SERVICE( serviceProvider )
-					->generatePrototypeT<SurfaceSound *>( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceSound" ) );
+                    EMaterialBlendMode blend_mode = EMB_NORMAL;
 
-				surfaceSound->setName( c_name );
+                    switch( _layerData->blend_mode )
+                    {
+                    case AE_MOVIE_BLEND_ADD:
+                        blend_mode = EMB_ADD;
+                        break;
+                    case AE_MOVIE_BLEND_SCREEN:
+                        blend_mode = EMB_SCREEN;
+                        break;
+                    };
 
-				ResourceSound * resourceSound = (ResourceSound *)(resource->data);
+                    surfaceVideo->setBlendMode( blend_mode );
 
-				surfaceSound->setResourceSound( resourceSound );
-				
-				return surfaceSound;
-			}break;
+                    return surfaceVideo;
+                }break;
+            case AE_MOVIE_LAYER_TYPE_SOUND:
+                {
+                    SurfaceSound * surfaceSound = PROTOTYPE_SERVICE( serviceProvider )
+                        ->generatePrototypeT<SurfaceSound *>( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceSound" ) );
+
+                    surfaceSound->setName( c_name );
+
+                    ResourceSound * resourceSound = (ResourceSound *)(_layerData->resource->data);
+
+                    surfaceSound->setResourceSound( resourceSound );
+
+                    return surfaceSound;
+                }break;
+            default:
+                {
+                }break;
+            }
 		}
 				
 		return AE_NULL;
@@ -313,15 +353,38 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	struct TrackMatteDesc
+	{
+		mt::mat4f matrix;
+		aeMovieRenderMesh mesh;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	static void * ae_movie_composition_track_matte_update( void * _element, uint32_t _type, ae_bool_t _loop, aeMovieNodeUpdateState _state, float _offset, const ae_matrix4_t _matrix, const aeMovieRenderMesh * _mesh, void * _track_matte_data, void * _data )
 	{
 		switch( _state )
 		{
+		case AE_MOVIE_NODE_UPDATE_CREATE:
+			{
+				TrackMatteDesc * desc = new TrackMatteDesc;
+
+				desc->matrix.from_f16( _matrix );
+				desc->mesh = *_mesh;
+				
+				return desc;
+			}break;
 		case AE_MOVIE_NODE_UPDATE_BEGIN:
 			{
+				TrackMatteDesc * desc = static_cast<TrackMatteDesc *>(_track_matte_data);
+
+				desc->matrix.from_f16( _matrix );
+				desc->mesh = *_mesh;
 			}break;
 		case AE_MOVIE_NODE_UPDATE_UPDATE:
 			{
+				TrackMatteDesc * desc = static_cast<TrackMatteDesc *>(_track_matte_data);
+
+				desc->matrix.from_f16( _matrix );
+				desc->mesh = *_mesh;
 			}break;
 		case AE_MOVIE_NODE_UPDATE_END:
 			{
@@ -610,10 +673,10 @@ namespace Menge
 		aeMovieRenderMesh mesh;
 		while( ae_compute_movie_mesh( m_composition, &mesh_iterator, &mesh ) == AE_TRUE )
 		{			
-			if( mesh.track_matte_data != nullptr )
-			{
-				continue;
-			}
+			//if( mesh.track_matte_data != nullptr )
+			//{
+			//	continue;
+			//}
 
 			ResourceReference * resource_reference = (ResourceReference *)mesh.resource_data;
 
@@ -635,191 +698,272 @@ namespace Menge
 				state.target = _state->target;
 			}
 
-			switch( mesh.layer_type )
+			//if( mesh. )
+			if( mesh.track_matte_data == nullptr )
 			{
-			case AE_MOVIE_LAYER_TYPE_SHAPE:
+				switch( mesh.layer_type )
 				{
-					m_meshes.push_back( Mesh() );
-					Mesh & m = m_meshes.back();
-
-					m.vertices.resize( mesh.vertexCount );
-
-					ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
-
-					for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+				case AE_MOVIE_LAYER_TYPE_SHAPE:
 					{
-						RenderVertex2D & v = m.vertices[index];
+						m_meshes.push_back( Mesh() );
+						Mesh & m = m_meshes.back();
 
-						mt::vec3f vp;
-						vp.from_f3( &mesh.position[index][0] );
+						m.vertices.resize( mesh.vertexCount );
 
-						mt::mul_v3_v3_m4( v.position, vp, wm );
+						ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
 
-						mt::vec2f uv;
-						uv.from_f2( &mesh.uv[index][0] );
+						for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+						{
+							RenderVertex2D & v = m.vertices[index];
 
-						v.uv[0] = uv;
-						v.uv[1] = uv;
+							mt::vec3f vp;
+							vp.from_f3( &mesh.position[index][0] );
 
-						v.color = color;
-					}
+							mt::mul_v3_v3_m4( v.position, vp, wm );
 
-					m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+							mt::vec2f uv;
+							uv.from_f2( &mesh.uv[index][0] );
 
-					EMaterialBlendMode blend_mode = EMB_NORMAL;
+							v.uv[0] = uv;
+							v.uv[1] = uv;
 
-					switch( mesh.blend_mode )
+							v.color = color;
+						}
+
+						m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+
+						EMaterialBlendMode blend_mode = EMB_NORMAL;
+
+						switch( mesh.blend_mode )
+						{
+						case AE_MOVIE_BLEND_ADD:
+							blend_mode = EMB_ADD;
+							break;
+						};
+
+						m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
+
+						_renderService
+							->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+					}break;
+				case AE_MOVIE_LAYER_TYPE_SOLID:
 					{
-					case AE_MOVIE_BLEND_ADD:
-						blend_mode = EMB_ADD;
-						break;
-					};
+						m_meshes.push_back( Mesh() );
+						Mesh & m = m_meshes.back();
 
-					m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
+						m.vertices.resize( mesh.vertexCount );
 
-					_renderService
-						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
-				}break;
-			case AE_MOVIE_LAYER_TYPE_SOLID:
+						ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+
+						for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+						{
+							RenderVertex2D & v = m.vertices[index];
+
+							mt::vec3f vp;
+							vp.from_f3( &mesh.position[index][0] );
+
+							mt::mul_v3_v3_m4( v.position, vp, wm );
+
+							mt::vec2f uv;
+							uv.from_f2( &mesh.uv[index][0] );
+
+							v.uv[0] = uv;
+							v.uv[1] = uv;
+
+							v.color = color;
+						}
+
+						m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+
+						EMaterialBlendMode blend_mode = EMB_NORMAL;
+
+						switch( mesh.blend_mode )
+						{
+						case AE_MOVIE_BLEND_ADD:
+							blend_mode = EMB_ADD;
+							break;
+						};
+
+						m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
+
+						_renderService
+							->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+					}break;
+				case AE_MOVIE_LAYER_TYPE_SEQUENCE:
+				case AE_MOVIE_LAYER_TYPE_IMAGE:
+					{
+						ResourceImage * resource_image = static_cast<ResourceImage *>(resource_reference);
+
+						m_meshes.push_back( Mesh() );
+						Mesh & m = m_meshes.back();
+
+						m.vertices.resize( mesh.vertexCount );
+
+						ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+
+						for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+						{
+							RenderVertex2D & v = m.vertices[index];
+
+							mt::vec3f vp;
+							vp.from_f3( &mesh.position[index][0] );
+
+							mt::mul_v3_v3_m4( v.position, vp, wm );
+
+							mt::vec2f uv;
+							uv.from_f2( &mesh.uv[index][0] );
+
+							const mt::uv4f & uv_image = resource_image->getUVImage();
+
+							mt::multiply_tetragon_uv4_v2( v.uv[0], uv_image, uv );
+
+							const mt::uv4f & uv_alpha = resource_image->getUVAlpha();
+
+							mt::multiply_tetragon_uv4_v2( v.uv[1], uv_alpha, uv );
+
+							v.color = color;
+						}
+
+						m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+
+						EMaterialBlendMode blend_mode = EMB_NORMAL;
+
+						switch( mesh.blend_mode )
+						{
+						case AE_MOVIE_BLEND_ADD:
+							blend_mode = EMB_ADD;
+							break;
+						};
+
+						m.material = Helper::makeImageMaterial( m_serviceProvider, resource_image, ConstString::none(), blend_mode, false, false );
+
+						//printf( "%f %f\n", ae_get_movie_composition_time( m_composition ), mesh.a );
+
+						if( m.vertices.size() == 0 )
+						{
+							continue;
+						}
+
+						_renderService
+							->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+					}break;
+				case AE_MOVIE_LAYER_TYPE_VIDEO:
+					{
+						//ResourceVideo * resource_video = static_cast<ResourceVideo *>(resource_reference);
+						SurfaceVideo * surfaceVideo = static_cast<SurfaceVideo *>(mesh.element_data);
+
+						m_meshes.push_back( Mesh() );
+						Mesh & m = m_meshes.back();
+
+						m.vertices.resize( mesh.vertexCount );
+
+						ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+
+						for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+						{
+							RenderVertex2D & v = m.vertices[index];
+
+							mt::vec3f vp;
+							vp.from_f3( &mesh.position[index][0] );
+
+							mt::mul_v3_v3_m4( v.position, vp, wm );
+
+							mt::vec2f uv;
+							uv.from_f2( &mesh.uv[index][0] );
+
+                            const mt::uv4f & uv_video = surfaceVideo->getUV( 0 );
+                            
+							mt::multiply_tetragon_uv4_v2( v.uv[0], uv_video, uv );
+							mt::multiply_tetragon_uv4_v2( v.uv[1], uv_video, uv );
+
+							v.color = color;
+						}
+
+						m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+
+						m.material = surfaceVideo->getMaterial();
+
+						_renderService
+							->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+					}break;
+				}
+			}
+			else
+			{
+				switch( mesh.layer_type )
 				{
-					m_meshes.push_back( Mesh() );
-					Mesh & m = m_meshes.back();
-
-					m.vertices.resize( mesh.vertexCount );
-
-					ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
-
-					for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+				case AE_MOVIE_LAYER_TYPE_IMAGE:
 					{
-						RenderVertex2D & v = m.vertices[index];
+						const SurfaceTrackMatte * surfaceTrackMatte = static_cast<const SurfaceTrackMatte *>(mesh.element_data);
 
-						mt::vec3f vp;
-						vp.from_f3( &mesh.position[index][0] );
+						m_meshes.push_back( Mesh() );
+						Mesh & m = m_meshes.back();
 
-						mt::mul_v3_v3_m4( v.position, vp, wm );
+						m.vertices.resize( mesh.vertexCount );
 
-						mt::vec2f uv;
-						uv.from_f2( &mesh.uv[index][0] );
+						ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
 
-						v.uv[0] = uv;
-						v.uv[1] = uv;
+						const ResourceImagePtr & resourceImage = surfaceTrackMatte->getResourceImage();
+						const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceImage();
 
-						v.color = color;
+						const TrackMatteDesc * track_matte_desc = static_cast<const TrackMatteDesc *>(mesh.track_matte_data);
+
+						const aeMovieRenderMesh * track_matte_mesh = &track_matte_desc->mesh;
+
+						for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+						{
+							RenderVertex2D & v = m.vertices[index];
+
+							mt::vec3f vp;
+							vp.from_f3( mesh.position[index] );
+
+							mt::mul_v3_v3_m4( v.position, vp, wm );
+
+							mt::vec2f uv;
+							uv.from_f2( &mesh.uv[index][0] );
+							
+							const mt::uv4f & uv_image = resourceImage->getUVImage();
+
+							mt::multiply_tetragon_uv4_v2( v.uv[0], uv_image, uv );
+
+							mt::vec2f uv_track_matte;
+							uv_track_matte = calc_point_uv(
+								mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
+								mt::vec2f( track_matte_mesh->uv[0] ), mt::vec2f( track_matte_mesh->uv[1] ), mt::vec2f( track_matte_mesh->uv[2] ),
+								vp.to_vec2f()
+								);
+
+							const mt::uv4f & uv_alpha = resourceTrackMatteImage->getUVImage();
+
+							mt::multiply_tetragon_uv4_v2( v.uv[1], uv_alpha, uv_track_matte );
+
+							v.color = color;
+						}
+
+						m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+
+						EMaterialBlendMode blend_mode = EMB_NORMAL;
+
+						switch( mesh.blend_mode )
+						{
+						case AE_MOVIE_BLEND_ADD:
+							blend_mode = EMB_ADD;
+							break;
+						};
+
+						m.material = surfaceTrackMatte->getMaterial();
+
+						//printf( "%f %f\n", ae_get_movie_composition_time( m_composition ), mesh.a );
+
+						if( m.vertices.size() == 0 )
+						{
+							continue;
+						}
+
+						_renderService
+							->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
 					}
-
-					m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
-
-					EMaterialBlendMode blend_mode = EMB_NORMAL;
-
-					switch( mesh.blend_mode )
-					{
-					case AE_MOVIE_BLEND_ADD:
-						blend_mode = EMB_ADD;
-						break;
-					};
-
-					m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
-
-					_renderService
-						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
-				}break;
-			case AE_MOVIE_LAYER_TYPE_SEQUENCE:
-			case AE_MOVIE_LAYER_TYPE_IMAGE:
-				{
-					ResourceImage * resource_image = static_cast<ResourceImage *>(resource_reference);
-
-					m_meshes.push_back( Mesh() );
-					Mesh & m = m_meshes.back();
-
-					m.vertices.resize( mesh.vertexCount );
-
-					ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
-
-					for( uint32_t index = 0; index != mesh.vertexCount; ++index )
-					{
-						RenderVertex2D & v = m.vertices[index];
-
-						mt::vec3f vp;
-						vp.from_f3( &mesh.position[index][0] );
-
-						mt::mul_v3_v3_m4( v.position, vp, wm );
-
-						mt::vec2f uv;
-						uv.from_f2( &mesh.uv[index][0] );
-
-						const mt::uv4f & uv_image = resource_image->getUVImage();
-
-						mt::multiply_tetragon_uv4_v2( v.uv[0], uv_image, uv );
-
-						const mt::uv4f & uv_alpha = resource_image->getUVAlpha();
-						
-						mt::multiply_tetragon_uv4_v2( v.uv[1], uv_alpha, uv );
-
-						v.color = color;
-					}					
-
-					m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
-
-					EMaterialBlendMode blend_mode = EMB_NORMAL;
-
-					switch( mesh.blend_mode )
-					{
-					case AE_MOVIE_BLEND_ADD:
-						blend_mode = EMB_ADD;
-						break;
-					};
-
-					m.material = Helper::makeImageMaterial( m_serviceProvider, resource_image, ConstString::none(), blend_mode, false, false );
-
-					//printf( "%f %f\n", ae_get_movie_composition_time( m_composition ), mesh.a );
-
-					if( m.vertices.size() == 0 )
-					{
-						continue;
-					}
-					
-					_renderService
-						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
-				}break;
-			case AE_MOVIE_LAYER_TYPE_VIDEO:
-				{
-					//ResourceVideo * resource_video = static_cast<ResourceVideo *>(resource_reference);
-					Surface * surfaceVideo = static_cast<Surface *>(mesh.element_data);
-
-					m_meshes.push_back( Mesh() );
-					Mesh & m = m_meshes.back();
-
-					m.vertices.resize( mesh.vertexCount );
-
-					ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
-
-					for( uint32_t index = 0; index != mesh.vertexCount; ++index )
-					{
-						RenderVertex2D & v = m.vertices[index];
-
-						mt::vec3f vp;
-						vp.from_f3( &mesh.position[index][0] );
-
-						mt::mul_v3_v3_m4( v.position, vp, wm );
-
-						mt::vec2f uv;
-						uv.from_f2( &mesh.uv[index][0] );
-
-						const mt::uv4f & uv_video_mask = surfaceVideo->getUV( 0 );
-
-						mt::multiply_tetragon_uv4_v2( v.uv[0], uv_video_mask, uv );
-						mt::multiply_tetragon_uv4_v2( v.uv[1], uv_video_mask, uv );
-
-						v.color = color;
-					}
-
-					m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
-
-					m.material = surfaceVideo->getMaterial();
-
-					_renderService
-						->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
-				}break;
+				}
 			}
 		}
 	}

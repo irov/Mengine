@@ -428,8 +428,8 @@ namespace Menge
 		LOGGER_WARNING( m_serviceProvider )("DX9RenderSystem initalized successfully!");
 
 		for( TVectorRenderVertexShaders::iterator
-			it = m_vertexShaders.begin(),
-			it_end = m_vertexShaders.end();
+			it = m_deferredCompileVertexShaders.begin(),
+			it_end = m_deferredCompileVertexShaders.end();
 		it != it_end;
 		++it )
 		{
@@ -441,11 +441,11 @@ namespace Menge
 			}
 		}
 
-		m_vertexShaders.clear();
+		m_deferredCompileVertexShaders.clear();
 
 		for( TVectorRenderFragmentShaders::iterator
-			it = m_fragmentShaders.begin(),
-			it_end = m_fragmentShaders.end();
+			it = m_deferredCompileFragmentShaders.begin(),
+			it_end = m_deferredCompileFragmentShaders.end();
 		it != it_end;
 		++it )
 		{
@@ -457,11 +457,11 @@ namespace Menge
 			}
 		}
 
-		m_fragmentShaders.clear();
+		m_deferredCompileFragmentShaders.clear();
 
 		for( TVectorRenderPrograms::iterator
-			it = m_programs.begin(),
-			it_end = m_programs.end();
+			it = m_deferredCompilePrograms.begin(),
+			it_end = m_deferredCompilePrograms.end();
 		it != it_end;
 		++it )
 		{
@@ -473,7 +473,7 @@ namespace Menge
 			}
 		}
 
-		m_programs.clear();
+		m_deferredCompilePrograms.clear();
 		
 		return true;
 	}
@@ -1710,6 +1710,15 @@ namespace Menge
 		MemoryInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
 			->createMemory();
 
+		if( memory == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createFragmentShader invalid create memory for shader %s"
+				, _name.c_str()
+				);
+
+			return nullptr;
+		}
+
 		memory->setMemory( _buffer, _size );
 				
 		if( shader->initialize( _name, memory, _isCompile ) == false )
@@ -1734,7 +1743,7 @@ namespace Menge
 		}
 		else
 		{
-			m_fragmentShaders.push_back( shader );
+			m_deferredCompileFragmentShaders.push_back( shader );
 		}
 
 		return shader;
@@ -1757,6 +1766,15 @@ namespace Menge
 
 		MemoryInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
 			->createMemory();
+
+		if( memory == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createVertexShader invalid create memory for shader %s"
+				, _name.c_str()
+				);
+
+			return nullptr;
+		}
 
 		memory->setMemory( _buffer, _size );
 
@@ -1782,7 +1800,7 @@ namespace Menge
 		}
 		else
 		{
-			m_vertexShaders.push_back( shader );
+			m_deferredCompileVertexShaders.push_back( shader );
 		}
 
 		return shader;
@@ -1792,7 +1810,7 @@ namespace Menge
 	{
 		(void)_samplerCount;
 
-		DX9RenderProgramPtr program = m_factoryProgram.createObject();
+		DX9RenderProgramPtr program = m_factoryRenderProgram.createObject();
 
 		if( program == nullptr )
 		{
@@ -1827,7 +1845,7 @@ namespace Menge
 		}
 		else
 		{
-			m_programs.push_back( program );
+			m_deferredCompilePrograms.push_back( program );
 		}
 
 		return program;

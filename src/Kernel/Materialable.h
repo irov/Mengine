@@ -44,7 +44,7 @@ namespace Menge
 		void releaseMaterial();
 		
 	protected:
-		void updateMaterial_();
+		void updateMaterial_() const;
 		
 	protected:
 		virtual RenderMaterialInterfacePtr _updateMaterial() const = 0;
@@ -54,21 +54,20 @@ namespace Menge
 		RenderMaterialInterfacePtr makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, bool _solid ) const;
 
 	public:
-		inline const RenderMaterialInterfacePtr & getMaterial();
+		inline const RenderMaterialInterfacePtr & getMaterial() const;
 
 	protected:
 		inline void invalidateMaterial();
 		inline bool isInvalidateMaterial() const;
 
-	private:
-		RenderMaterialInterfacePtr m_material;
-
+	protected:
 		ConstString m_materialName;
 
 		EMaterialBlendMode m_blendMode;
 
 		bool m_disableTextureColor;
 
+		mutable RenderMaterialInterfacePtr m_material;
 		mutable bool m_invalidateMaterial;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -82,7 +81,7 @@ namespace Menge
 		return m_invalidateMaterial;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const RenderMaterialInterfacePtr & Materialable::getMaterial()
+	inline const RenderMaterialInterfacePtr & Materialable::getMaterial() const
 	{
 		if( this->isInvalidateMaterial() == true )
 		{

@@ -2,6 +2,7 @@
 
 #	include "Interface/ConfigInterface.h"
 
+#   include "Core/Tags.h"
 #   include "Core/IniUtil.h"
 
 namespace Menge
@@ -13,7 +14,7 @@ namespace Menge
 		ConfigManager();
 
 	public:
-		void setPlatformName( const ConstString & _platformName ) override;
+		bool _initialize() override;
 
 	public:
 		bool loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath ) override;
@@ -41,7 +42,7 @@ namespace Menge
 		void getSection( const Char * _section, TMapParams & _params ) const override;
 
 	protected:
-		ConstString m_platformName;
+		Tags m_platformTags;
 
 		IniUtil::IniStore m_ini;
 	};

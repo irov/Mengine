@@ -151,6 +151,8 @@ namespace Menge
 
 		m_currentVBHandle = nullptr;
 		m_currentIBHandle = nullptr;
+
+		m_currentProgram = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
@@ -465,14 +467,6 @@ namespace Menge
 		
 		m_currentStage = _stage;
 		
-		if( m_currentProgram != m_currentStage->program )
-		{
-			m_currentProgram = m_currentStage->program;
-			
-			RENDER_SYSTEM( m_serviceProvider )
-				->setProgram( m_currentProgram );
-		}
-
 		for( uint32_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
 		{
 			RenderTextureStage & current_texture_stage = m_currentTextureStage[stageId];
@@ -501,44 +495,60 @@ namespace Menge
 				RENDER_SYSTEM( m_serviceProvider )
 					->setTextureStageFilter( stageId, current_texture_stage.minification, current_texture_stage.mipmap, current_texture_stage.magnification );
 			}
+		}
 
-			if( current_texture_stage.colorOp != texture_stage.colorOp
-				|| current_texture_stage.colorArg1 != texture_stage.colorArg1
-				|| current_texture_stage.colorArg2 != texture_stage.colorArg2 )
+		if( m_currentProgram != m_currentStage->program )
+		{
+			m_currentProgram = m_currentStage->program;
+			
+			RENDER_SYSTEM( m_serviceProvider )
+				->setProgram( m_currentProgram );
+		}
+		else
+		{
+			for( uint32_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
 			{
-				current_texture_stage.colorOp = texture_stage.colorOp;
-				current_texture_stage.colorArg1 = texture_stage.colorArg1;
-				current_texture_stage.colorArg2 = texture_stage.colorArg2;
+				RenderTextureStage & current_texture_stage = m_currentTextureStage[stageId];
+				const RenderTextureStage & texture_stage = m_currentStage->textureStage[stageId];
 
-				RENDER_SYSTEM(m_serviceProvider)->setTextureStageColorOp( stageId
-					, current_texture_stage.colorOp
-					, current_texture_stage.colorArg1
-					, current_texture_stage.colorArg2 
-					);
-			}
+				if( current_texture_stage.colorOp != texture_stage.colorOp
+					|| current_texture_stage.colorArg1 != texture_stage.colorArg1
+					|| current_texture_stage.colorArg2 != texture_stage.colorArg2 )
+				{
+					current_texture_stage.colorOp = texture_stage.colorOp;
+					current_texture_stage.colorArg1 = texture_stage.colorArg1;
+					current_texture_stage.colorArg2 = texture_stage.colorArg2;
 
-			if( current_texture_stage.alphaOp != texture_stage.alphaOp
-				|| current_texture_stage.alphaArg1 != texture_stage.alphaArg1
-				|| current_texture_stage.alphaArg2 != texture_stage.alphaArg2 )
-			{
-				current_texture_stage.alphaOp = texture_stage.alphaOp;
-				current_texture_stage.alphaArg1 = texture_stage.alphaArg1;
-				current_texture_stage.alphaArg2 = texture_stage.alphaArg2;
+					RENDER_SYSTEM( m_serviceProvider )->setTextureStageColorOp( stageId
+						, current_texture_stage.colorOp
+						, current_texture_stage.colorArg1
+						, current_texture_stage.colorArg2
+						);
+				}
 
-				RENDER_SYSTEM(m_serviceProvider)->setTextureStageAlphaOp( stageId
-					, current_texture_stage.alphaOp
-					, current_texture_stage.alphaArg1
-					, current_texture_stage.alphaArg2
-					);
-			}
+				if( current_texture_stage.alphaOp != texture_stage.alphaOp
+					|| current_texture_stage.alphaArg1 != texture_stage.alphaArg1
+					|| current_texture_stage.alphaArg2 != texture_stage.alphaArg2 )
+				{
+					current_texture_stage.alphaOp = texture_stage.alphaOp;
+					current_texture_stage.alphaArg1 = texture_stage.alphaArg1;
+					current_texture_stage.alphaArg2 = texture_stage.alphaArg2;
 
-			if( current_texture_stage.texCoordIndex != texture_stage.texCoordIndex )
-			{
-				current_texture_stage.texCoordIndex = texture_stage.texCoordIndex;
+					RENDER_SYSTEM( m_serviceProvider )->setTextureStageAlphaOp( stageId
+						, current_texture_stage.alphaOp
+						, current_texture_stage.alphaArg1
+						, current_texture_stage.alphaArg2
+						);
+				}
 
-				RENDER_SYSTEM(m_serviceProvider)->setTextureStageTexCoordIndex( stageId
-					, current_texture_stage.texCoordIndex
-					);
+				if( current_texture_stage.texCoordIndex != texture_stage.texCoordIndex )
+				{
+					current_texture_stage.texCoordIndex = texture_stage.texCoordIndex;
+
+					RENDER_SYSTEM( m_serviceProvider )->setTextureStageTexCoordIndex( stageId
+						, current_texture_stage.texCoordIndex
+						);
+				}
 			}
 		}
 

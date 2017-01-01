@@ -2,31 +2,71 @@
 
 #   include "Interface/StringizeInterface.h"
 
+#   include "PythonEventReceiver.h"
+
 #	include "pybind/pybind.hpp"
 
 #	include "Logger/Logger.h"
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    namespace
+    {
+        class PythonEntityEventReceiver
+            : public PythonEventReceiver
+            , public EntityEventReceiver
+        {
+        public:
+            void onEntityPreparation( const pybind::object & _self ) override
+            {
+                m_cb.call( _self );
+            }
+
+            void onEntityActivate( const pybind::object & _self ) override
+            {
+                m_cb.call( _self );
+            }
+
+            void onEntityPreparationDeactivate( const pybind::object & _self ) override
+            {
+                m_cb.call( _self );
+            }
+
+            void onEntityDeactivate( const pybind::object & _self ) override
+            {
+                m_cb.call( _self );
+            }
+
+            void onEntityCompile( const pybind::object & _self ) override
+            {
+                m_cb.call( _self );
+            }
+
+            void onEntityRelease( const pybind::object & _self ) override
+            {
+                m_cb.call( _self );
+            }
+
+            void onEntityCreate( const pybind::object & _self ) override
+            {
+                m_cb.call( _self );
+            }
+
+            void onEntityDestroy( const pybind::object & _self ) override
+            {
+                m_cb.call( _self );
+            }
+        };
+    }
 	//////////////////////////////////////////////////////////////////////////
 	EntityPrototypeGenerator::EntityPrototypeGenerator()
-		: m_serviceProvider(nullptr)
-		, m_count(0)
+		: m_count(0)
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EntityPrototypeGenerator::~EntityPrototypeGenerator()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void EntityPrototypeGenerator::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * EntityPrototypeGenerator::getServiceProvider() const
-	{
-		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void EntityPrototypeGenerator::setScriptGenerator( const pybind::object & _generator )
@@ -81,15 +121,23 @@ namespace Menge
 			}
 		}
 
-		this->registerEventMethod( EVENT_ENTITY_CREATE, "onCreate", py_type );
-		this->registerEventMethod( EVENT_ENTITY_DESTROY, "onDestroy", py_type );
+		Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onCreate", EVENT_ENTITY_CREATE );
+        Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onDestroy", EVENT_ENTITY_DESTROY );
+        Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onPreparation", EVENT_ENTITY_PREPARATION );
+        Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onActivate", EVENT_ENTITY_ACTIVATE );
+        Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onPreparationDeactivate", EVENT_ENTITY_PREPARATION_DEACTIVATE );
+        Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onDeactivate", EVENT_ENTITY_DEACTIVATE );
+        Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onCompile", EVENT_ENTITY_COMPILE );
+        Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onRelease", EVENT_ENTITY_RELEASE );
 
-		this->registerEventMethod( EVENT_ENTITY_PREPARATION, "onPreparation", py_type );
-		this->registerEventMethod( EVENT_ENTITY_ACTIVATE, "onActivate", py_type );
-		this->registerEventMethod( EVENT_ENTITY_PREPARATION_DEACTIVATE, "onPreparationDeactivate", py_type );
-		this->registerEventMethod( EVENT_ENTITY_DEACTIVATE, "onDeactivate", py_type );
-		this->registerEventMethod( EVENT_ENTITY_COMPILE, "onCompile", py_type );
-		this->registerEventMethod( EVENT_ENTITY_RELEASE, "onRelease", py_type );
+		//this->registerEventMethod( EVENT_ENTITY_DESTROY, "onDestroy", py_type );
+
+		//this->registerEventMethod( EVENT_ENTITY_PREPARATION, "onPreparation", py_type );
+		//this->registerEventMethod( EVENT_ENTITY_ACTIVATE, "onActivate", py_type );
+		//this->registerEventMethod( EVENT_ENTITY_PREPARATION_DEACTIVATE, "onPreparationDeactivate", py_type );
+		//this->registerEventMethod( EVENT_ENTITY_DEACTIVATE, "onDeactivate", py_type );
+		//this->registerEventMethod( EVENT_ENTITY_COMPILE, "onCompile", py_type );
+		//this->registerEventMethod( EVENT_ENTITY_RELEASE, "onRelease", py_type );
 
 		m_type = py_type;
 

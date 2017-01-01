@@ -43,10 +43,10 @@ namespace Menge
         }
 
         pybind::dict py_kwds( _kwds );
-        registerAnimatableEventReceiver<PythonSpineEventReceiver>( py_kwds, _spine );
+        Helper::registerAnimatableEventReceiver<PythonSpineEventReceiver>( py_kwds, _spine );
         
-        registerEventReceiver<PythonSpineEventReceiver>( py_kwds, _spine, "onSpineEvent", EVENT_SPINE_EVENT );
-        registerEventReceiver<PythonSpineEventReceiver>( py_kwds, _spine, "onSpineStateAnimationEnd", EVENT_SPINE_STATE_ANIMATION_END );
+        Helper::registerEventReceiver<PythonSpineEventReceiver>( py_kwds, _spine, "onSpineEvent", EVENT_SPINE_EVENT );
+        Helper::registerEventReceiver<PythonSpineEventReceiver>( py_kwds, _spine, "onSpineStateAnimationEnd", EVENT_SPINE_STATE_ANIMATION_END );
 
         return pybind::ret_none();
     }

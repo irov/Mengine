@@ -102,8 +102,8 @@ namespace Menge
 
 		void updateFilterData( uint16_t _categoryBits, uint16_t _collisionMask, int16_t _groupIndex );
 
-	protected:
-		void _setEventListener( const pybind::dict & _embed ) override;
+	//protected:
+	//	void _setEventListener( const pybind::dict & _embed ) override;
 
 	protected:
         b2World* m_world;

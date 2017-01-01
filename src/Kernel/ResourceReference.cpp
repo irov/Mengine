@@ -13,23 +13,12 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference::ResourceReference()
-        : m_serviceProvider(nullptr)
-		, m_cache(false)
+        : m_cache(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference::~ResourceReference()
 	{
-	}
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceReference::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * ResourceReference::getServiceProvider() const
-	{
-		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceReference::setLocale( const ConstString & _locale )

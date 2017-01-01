@@ -39,7 +39,7 @@ namespace Menge
 
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-		ServiceProviderInterface * setServiceProvider() const;
+		ServiceProviderInterface * getServiceProvider() const;
 
 	public:
 		void setAffectorType( EAffectorType _type );

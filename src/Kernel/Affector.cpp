@@ -21,7 +21,7 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * Affector::setServiceProvider() const
+	ServiceProviderInterface * Affector::getServiceProvider() const
 	{
 		return m_serviceProvider;
 	}

@@ -4,6 +4,7 @@
 
 #	include "Kernel/Loadable.h"
 
+#	include "Kernel/Servant.h"
 #	include "Kernel/Resource.h"
 #	include "Kernel/Identity.h"
 #	include "Kernel/Reference.h"
@@ -28,6 +29,7 @@ namespace Menge
 	
 	class ResourceReference
 		: public FactorablePtr
+        , public Servant
 		, public Resource
 		, public Identity
 		, public Reference
@@ -41,10 +43,6 @@ namespace Menge
 	public:
 		ResourceReference();
 		~ResourceReference();
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-		ServiceProviderInterface * getServiceProvider() const;
 
 	public:
 		void setLocale( const ConstString & _locale );
@@ -96,9 +94,7 @@ namespace Menge
 		bool _incrementZero() override;
 		void _decrementZero() override;
 
-	protected:
-        ServiceProviderInterface * m_serviceProvider;
-        
+	protected:       
 		ConstString m_locale;
 		ConstString m_category;
 		ConstString m_group;

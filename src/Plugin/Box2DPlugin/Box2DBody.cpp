@@ -240,7 +240,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Box2DBody::onBeginCollide( Box2DBody * _body, b2Contact * _contact )
 	{
-		if( this->hasEvent( EVENT_BOX2DBODY_BEGIN_COLLIDE ) == false )
+		if( this->hasEventReceiver( EVENT_BOX2DBODY_BEGIN_COLLIDE ) == false )
 		{
 			return;
 		}
@@ -258,7 +258,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Box2DBody::onUpdateCollide( Box2DBody * _body, b2Contact * _contact )
 	{
-		if( this->hasEvent( EVENT_BOX2DBODY_UPDATE_COLLIDE ) == false )
+		if( this->hasEventReceiver( EVENT_BOX2DBODY_UPDATE_COLLIDE ) == false )
 		{
 			return;
 		}
@@ -278,7 +278,7 @@ namespace Menge
 	{
 		(void)_contact;
 
-		if( this->hasEvent( EVENT_BOX2DBODY_END_COLLIDE ) == false )
+		if( this->hasEventReceiver( EVENT_BOX2DBODY_END_COLLIDE ) == false )
 		{
 			return;
 		}
@@ -375,12 +375,11 @@ namespace Menge
 			fixture = fixture->GetNext();
 		}
 	}	
-
 	//////////////////////////////////////////////////////////////////////////
-	void Box2DBody::_setEventListener( const pybind::dict & _listener )
-	{
-		this->registerEvent( EVENT_BOX2DBODY_BEGIN_COLLIDE, ("onBeginCollide"), _listener );
-		this->registerEvent( EVENT_BOX2DBODY_UPDATE_COLLIDE, ("onUpdateCollide"), _listener );
-		this->registerEvent( EVENT_BOX2DBODY_END_COLLIDE, ("onEndCollide"), _listener );
-	}
+	//void Box2DBody::_setEventListener( const pybind::dict & _listener )
+	//{
+	//	this->registerEvent( EVENT_BOX2DBODY_BEGIN_COLLIDE, ("onBeginCollide"), _listener );
+	//	this->registerEvent( EVENT_BOX2DBODY_UPDATE_COLLIDE, ("onUpdateCollide"), _listener );
+	//	this->registerEvent( EVENT_BOX2DBODY_END_COLLIDE, ("onEndCollide"), _listener );
+	//}
 }

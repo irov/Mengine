@@ -6,7 +6,8 @@
 
 #	include "Kernel/NodePrototypeGenerator.h"
 #	include "Kernel/ScriptablePrototypeGenerator.h"
-#	include "Kernel/ScriptClassWrapper.h"
+
+#	include "PythonScriptWrapper/ScriptClassWrapper.h"
 
 #	include "pybind/pybind.hpp"
 

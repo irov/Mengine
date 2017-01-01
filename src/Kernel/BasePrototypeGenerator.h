@@ -21,8 +21,8 @@ namespace Menge
 		BasePrototypeGenerator();
 
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-		ServiceProviderInterface * getServiceProvider() const;
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
 
 	protected:
 		bool initialize( const ConstString & _category, const ConstString & _prototype ) override;

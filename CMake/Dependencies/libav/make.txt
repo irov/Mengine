@@ -1,0 +1,62 @@
+LDFLAGS='-mwindows' ./configure \
+--prefix=/usr/ffmpeg-install \
+--enable-memalign-hack \
+--disable-static \
+--enable-shared \
+--enable-version3 \
+--enable-runtime-cpudetect \
+--disable-pthreads \
+--disable-doc \
+--disable-ffmpeg \
+--disable-ffplay \
+--disable-ffprobe \
+--disable-ffserver \
+--disable-postproc \
+--disable-yasm \
+--enable-bzlib \
+--enable-zlib \
+--enable-libvorbis \
+--enable-swscale \
+--disable-encoders \
+--disable-muxers \
+--disable-decoders \
+--enable-decoder=vp6 \
+--enable-decoder=vp6a \
+--enable-decoder=vp6f \
+--disable-encoders \
+--disable-muxers \
+--disable-demuxers \
+--enable-demuxer=flv \
+--enable-cross-compile \
+--arch=x86 \
+--target-os=mingw32 \
+--disable-debug
+
+LDFLAGS='-mwindows' ./configure \
+--prefix=/usr/ffmpeg-install \
+--enable-memalign-hack \
+--enable-cross-compile \
+--enable-w32threads \
+--arch=i686 \
+--disable-yasm \
+--target-os=mingw32 \
+--sysroot=/usr/mingw32/ \
+--disable-static \
+--enable-shared \
+--enable-version3 \
+--enable-avisynth \
+--enable-libvorbis \
+--disable-debug
+
+
+
+
+
+LDFLAGS='-mwindows' ./configure --enable-static --disable-shared --prefix=$LOCALDESTDIR && make && make install
+LDFLAGS='-mwindows' ./configure --enable-static --disable-shared --prefix=$LOCALDESTDIR && make && make install
+
+make install -fwin32/Makefile.gcc SHARED_MODE=0 BINARY_PATH=$LOCALDESTDIR/bin INCLUDE_PATH=$LOCALDESTDIR/include LIBRARY_PATH=$LOCALDESTDIR/lib
+
+sed 's/-O3/-O3 -mms-bitfields -mthreads/' && make IMPLIB='libz.dll.a' -fMakefile.gcc && install zlib1.dll $LOCALDESTDIR/bin && install libz.dll.a $LOCALDESTDIR/lib && install libz.a $LOCALDESTDIR/lib && install zlib.h $LOCALDESTDIR/include && install zconf.h $LOCALDESTDIR/include
+
+LDFLAGS='-mwindows' ./configure --static --prefix=$LOCALDESTDIR

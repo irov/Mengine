@@ -100,9 +100,9 @@
 #	include "Kernel/RenderCameraOrthogonalTarget.h"
 
 #	include "Menge/Layer2D.h"
-#	include "Menge/Layer2DParallax.h"
-#	include "Menge/Layer2DIsometric.h"
-#	include "Menge/Layer2DTexture.h"
+//#	include "Menge/Layer2DParallax.h"
+//#	include "Menge/Layer2DIsometric.h"
+//#	include "Menge/Layer2DTexture.h"
 
 #   include "Kernel/ResourceImage.h"
 
@@ -2114,7 +2114,7 @@ namespace Menge
             }
                         
             pybind::dict py_kwds( _kwds );
-            registerAnimatableEventReceiver<>( py_kwds, _surface );
+            Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
 
             return pybind::ret_none();
         }
@@ -2127,7 +2127,7 @@ namespace Menge
             }
 
             pybind::dict py_kwds( _kwds );
-            registerAnimatableEventReceiver<>( py_kwds, _surface );
+            Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
 
             return pybind::ret_none();
         }
@@ -2140,7 +2140,7 @@ namespace Menge
             }
 
             pybind::dict py_kwds( _kwds );
-            registerAnimatableEventReceiver<>( py_kwds, _surface );
+            Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
 
             return pybind::ret_none();
         }
@@ -2164,7 +2164,7 @@ namespace Menge
             }
 
             pybind::dict py_kwds( _kwds );
-            registerEventReceiver<PythonMeshEventReceiver>( py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
+            Helper::registerEventReceiver<PythonMeshEventReceiver>( py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
             
             return pybind::ret_none();
         }        
@@ -2177,7 +2177,7 @@ namespace Menge
             }
 
             pybind::dict py_kwds( _kwds );
-            registerAnimatableEventReceiver<>( py_kwds, _node );
+            Helper::registerAnimatableEventReceiver<>( py_kwds, _node );
 
             return pybind::ret_none();
         }
@@ -2206,8 +2206,8 @@ namespace Menge
             }
 
             pybind::dict py_kwds( _kwds );
-            registerEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
-            registerEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
+            Helper::registerEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
+            Helper::registerEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
 
             return pybind::ret_none();
         }
@@ -2292,17 +2292,17 @@ namespace Menge
 
             pybind::dict py_kwds( _kwds );
 
-            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleKeyEvent", EVENT_KEY );
-            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEvent", EVENT_MOUSE_BUTTON );
-            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_MOUSE_BUTTON_BEGIN );
-            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_MOUSE_BUTTON_END );
-            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseMove", EVENT_MOUSE_MOVE );
-            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseWheel", EVENT_MOUSE_WHEEL );
-            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseEnter", EVENT_MOUSE_ENTER );
-            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseLeave", EVENT_MOUSE_LEAVE );
-            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseOverDestroy", EVENT_MOUSE_OVER_DESTROY );
-            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onActivate", EVENT_ACTIVATE );
-            registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
+            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleKeyEvent", EVENT_KEY );
+            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEvent", EVENT_MOUSE_BUTTON );
+            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_MOUSE_BUTTON_BEGIN );
+            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_MOUSE_BUTTON_END );
+            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseMove", EVENT_MOUSE_MOVE );
+            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseWheel", EVENT_MOUSE_WHEEL );
+            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseEnter", EVENT_MOUSE_ENTER );
+            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseLeave", EVENT_MOUSE_LEAVE );
+            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseOverDestroy", EVENT_MOUSE_OVER_DESTROY );
+            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onActivate", EVENT_ACTIVATE );
+            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
 
             return pybind::ret_none();
         }
@@ -2335,11 +2335,11 @@ namespace Menge
             }
 
             pybind::dict py_kwds( _kwds );
-            registerAnimatableEventReceiver<PythonMovieEventReceiver>( py_kwds, _node );
+            Helper::registerAnimatableEventReceiver<PythonMovieEventReceiver>( py_kwds, _node );
 
-            registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL );
-            registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL );
-            registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL );
+            Helper::registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL );
+            Helper::registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL );
+            Helper::registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL );
 
             return pybind::ret_none();
         }
@@ -6408,8 +6408,8 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Node );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2D );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DParallax );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DIsometric );
+		//SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DParallax );
+		//SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DIsometric );
 		//SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DPhysic );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpot );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotPolygon );
@@ -7136,15 +7136,14 @@ namespace Menge
 				pybind::interface_<Layer2D, pybind::bases<Layer> >( "Layer2D", false )
 					.def( "setViewport", &Layer2D::setViewport )
 					.def( "removeViewport", &Layer2D::removeViewport )
-					.def( "cameraToLocal", &Layer2D::cameraToLocal )
 					;
 
-				pybind::interface_<Layer2DParallax, pybind::bases<Layer> >( "Layer2DParallax", false )
-					.def( "setParallaxFactor", &Layer2DParallax::setParallaxFactor )
-					.def( "getParallaxFactor", &Layer2DParallax::getParallaxFactor )
-					.def( "setParallaxLoop", &Layer2DParallax::setParallaxLoop )
-					.def( "getParallaxLoop", &Layer2DParallax::getParallaxLoop )
-					;
+				//pybind::interface_<Layer2DParallax, pybind::bases<Layer> >( "Layer2DParallax", false )
+				//	.def( "setParallaxFactor", &Layer2DParallax::setParallaxFactor )
+				//	.def( "getParallaxFactor", &Layer2DParallax::getParallaxFactor )
+				//	.def( "setParallaxLoop", &Layer2DParallax::setParallaxLoop )
+				//	.def( "getParallaxLoop", &Layer2DParallax::getParallaxLoop )
+				//	;
 
 				pybind::interface_<Parallax, pybind::bases<Node> >( "Parallax", false )
 					.def( "setParallaxFactor", &Parallax::setParallaxFactor )
@@ -7152,8 +7151,8 @@ namespace Menge
 					;
 
 
-				pybind::interface_<Layer2DIsometric, pybind::bases<Layer> >( "Layer2DIsometric", false )
-					;
+				//pybind::interface_<Layer2DIsometric, pybind::bases<Layer> >( "Layer2DIsometric", false )
+				//	;
 
 				//pybind::interface_<Layer2DPhysic, pybind::bases<Layer2D> >("Layer2DPhysic", false)
 				//    ;

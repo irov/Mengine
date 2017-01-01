@@ -1,11 +1,11 @@
 #	include "PythonScriptWrapper.h"
 
-#	include "Kernel/ScriptClassWrapper.h"
+#	include "PythonScriptWrapper/ScriptClassWrapper.h"
 
 #	include "Kernel/Entity.h"
 #	include "Kernel/Scene.h"
 
-#	include "Menge/Arrow.h"
+#	include "Kernel/Arrow.h"
 
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
@@ -195,7 +195,7 @@ namespace Menge
 	{
 		classWrapping( _serviceProvider );
 
-		pybind::superclass_<Entity, pybind::bases<Node, Eventable> >( "Entity", (void *)_serviceProvider, new superclass_new_Entity, nullptr, false )
+		pybind::superclass_<Entity, pybind::bases<Node> >( "Entity", (void *)_serviceProvider, new superclass_new_Entity, nullptr, false )
             .def_constructor( pybind::init<>() )
 			.def( "getPrototype", &Entity::getPrototype )
 			;
@@ -212,14 +212,14 @@ namespace Menge
 
 		pybind::superclass_<Scene, pybind::bases<Entity> >("Scene", (void *)_serviceProvider, new superclass_new_Scene, nullptr, false)
             .def_constructor( pybind::init<>() )
-			.def( "isSubScene", &Scene::isSubScene )
-			.def( "getParentScene", &Scene::getParentScene )
+			//.def( "isSubScene", &Scene::isSubScene )
+			//.def( "getParentScene", &Scene::getParentScene )
 			//.def( "setRenderTarget", &Scene::setRenderTarget )
 			//.def( "renderSelf", &Scene::renderSelf )
 			//.def( "blockInput", &Scene::blockInput )
 			//.def( "getBlockInput", &Scene::getBlockInput )
-			.def( "getMainLayer", &Scene::getMainLayer )
-			.def( "setMainLayer", &Scene::setMainLayer )
+			//.def( "getMainLayer", &Scene::getMainLayer )
+			//.def( "setMainLayer", &Scene::setMainLayer )
 			;
 
         EntityScriptMethod * entityScriptMethod = new EntityScriptMethod(_serviceProvider);

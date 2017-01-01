@@ -49,29 +49,6 @@ namespace	Menge
         Node::_deactivate();
     }
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Layer2D::cameraToLocal( const RenderCameraInterface * _camera2D, const mt::vec2f& _point )
-	{
-		const mt::mat4f & vm = _camera2D->getCameraViewMatrixInv();
-
-		mt::vec2f p;
-		mt::mul_v2_v2_m4( p, _point, vm );
-		
-		return p;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node * _node ) const
-	{
-		const mt::vec3f & wp = _node->getWorldPosition();
-
-		const mt::mat4f & vm = _camera->getCameraViewMatrix();
-
-		mt::vec3f sp;
-		mt::mul_m4_v3( sp, vm, wp );
-
-		_screen.x = sp.x;
-		_screen.y = sp.y;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::setViewport( const Viewport & _viewport )
 	{
 		m_viewport = _viewport;

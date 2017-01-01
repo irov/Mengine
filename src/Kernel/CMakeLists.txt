@@ -58,6 +58,12 @@ Arrow
 )
 
 ADD_FILTER(
+Layer
+	Layer.cpp
+	Layer.h
+)
+
+ADD_FILTER(
 PrototypeGenerator
     BasePrototypeGenerator.cpp
     BasePrototypeGenerator.h    

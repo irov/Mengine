@@ -23,6 +23,12 @@ Game
 )
 
 ADD_FILTER(
+Layer2D
+	Layer2D.cpp
+	Layer2D.h
+)
+
+ADD_FILTER(
 Consts
 	Consts.h
 	Consts.cpp

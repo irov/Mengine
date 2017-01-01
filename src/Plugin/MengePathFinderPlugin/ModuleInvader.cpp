@@ -4,8 +4,9 @@
 #	include "Interface/PlayerInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "PythonScriptWrapper/ScriptClassWrapper.h"
+
 #	include "Kernel/NodePrototypeGenerator.h"
-#	include "Kernel/ScriptClassWrapper.h"
 
 #	include "pybind/pybind.hpp"
 

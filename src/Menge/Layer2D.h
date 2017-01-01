@@ -25,10 +25,6 @@ namespace Menge
         void createViewport_();
         void clearViewport_();
 
-	public:
-		mt::vec2f cameraToLocal( const RenderCameraInterface * _camera2D, const mt::vec2f& _point );				
-		void calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node* _node ) const override;
-
     protected:
         bool _activate() override;
         void _deactivate() override;

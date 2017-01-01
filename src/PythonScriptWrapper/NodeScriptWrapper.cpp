@@ -6762,6 +6762,11 @@ namespace Menge
 			//.def( "removeEventListener", &Eventable::removeEventListener )
 			;
 
+        pybind::interface_<Soundable>( "Soundable" )
+            .def( "setVolume", &Soundable::setVolume )
+            .def( "getVolume", &Soundable::getVolume )
+            ;
+
 		pybind::interface_<Affectorable>( "Affectorable" )
 			.def( "addAffector", &Affectorable::addAffector )
 			.def( "stopAffector", &Affectorable::stopAffector )

@@ -13,14 +13,13 @@ namespace Menge
 	class MemoryManager;
 
 	class MemoryCacheBuffer
-		: public MemoryCacheBufferInterface
+		: public ServantBase<MemoryCacheBufferInterface>
 	{
 	public:
 		MemoryCacheBuffer();
 		~MemoryCacheBuffer();
 		
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 		void setMemoryManager( MemoryManager * _memoryManager );
 
     public:
@@ -35,7 +34,6 @@ namespace Menge
 		void uncache_();
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
 		MemoryManager * m_memoryManager;
 
 		uint32_t m_bufferId;

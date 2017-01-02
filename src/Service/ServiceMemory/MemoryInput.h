@@ -8,14 +8,11 @@
 namespace Menge
 {
 	class MemoryInput
-		: public MemoryInputInterface
+		: public ServantBase<MemoryInputInterface>
 	{
 	public:
 		MemoryInput();
 		~MemoryInput();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
     public:
         Pointer newMemory( size_t _size ) override;
@@ -39,8 +36,6 @@ namespace Menge
 		bool memory( void ** _memory, size_t * _size ) override;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		unsigned char * m_data;
 		size_t m_size;
 

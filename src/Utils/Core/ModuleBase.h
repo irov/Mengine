@@ -5,15 +5,11 @@
 namespace Menge
 {
 	class ModuleBase
-		: public ModuleInterface
+		: public ServantBase<ModuleInterface>
 	{
 	public:
 		ModuleBase();
 		~ModuleBase();
-
-	protected:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
 
 	protected:
 		void setName( const ConstString & _name ) override;
@@ -56,8 +52,6 @@ namespace Menge
 		virtual void _messageAll( const ConstString & _messageName, const TMapParams & _params );
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		ConstString m_name;
 	};
 }

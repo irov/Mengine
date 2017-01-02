@@ -40,8 +40,7 @@ namespace Menge
     }	
     //////////////////////////////////////////////////////////////////////////
     ScheduleManager::ScheduleManager()
-        : m_serviceProvider(nullptr)
-		, m_speedFactor(1.f)
+        : m_speedFactor(1.f)
 		, m_timing(0.f)
         , m_enumerator(0)
         , m_freezeAll(false)
@@ -52,16 +51,6 @@ namespace Menge
     ScheduleManager::~ScheduleManager()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * ScheduleManager::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
     //////////////////////////////////////////////////////////////////////////
 	uint32_t ScheduleManager::event( float _delay, const ScheduleEventInterfacePtr & _listener )
     {

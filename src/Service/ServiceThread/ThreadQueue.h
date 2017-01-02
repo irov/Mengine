@@ -10,14 +10,11 @@
 namespace Menge 
 {
 	class ThreadQueue
-		: public ThreadQueueInterface
+		: public ServantBase<ThreadQueueInterface>
 	{
 	public:
 		ThreadQueue();
 		~ThreadQueue();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
 		void setThreadName( const ConstString & _threadName );
@@ -36,9 +33,7 @@ namespace Menge
 	protected:
 		void updateCurrentTask_( ThreadTaskInterfacePtr & _currentTask );
 
-	private:
-		ServiceProviderInterface * m_serviceProvider;
-		
+    protected:
 		ConstString m_threadName;
 		uint32_t m_packetSize;
 

@@ -292,12 +292,8 @@ namespace Menge
     };
 	//////////////////////////////////////////////////////////////////////////
 	class RenderFragmentShaderInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() const = 0;
-
 	public:
 		virtual const ConstString & getName() const = 0;
 	};
@@ -305,12 +301,8 @@ namespace Menge
 	typedef stdex::intrusive_ptr<RenderFragmentShaderInterface> RenderFragmentShaderInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderVertexShaderInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() const = 0;
-
 	public:
 		virtual const ConstString & getName() const = 0;
 	};
@@ -318,12 +310,8 @@ namespace Menge
 	typedef stdex::intrusive_ptr<RenderVertexShaderInterface> RenderVertexShaderInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderProgramInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() const = 0;
-
 	public:
 		virtual const ConstString & getName() const = 0;
 

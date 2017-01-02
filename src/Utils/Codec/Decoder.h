@@ -11,25 +11,13 @@ namespace Menge
 {
 	template<class TDecoderInterface>
 	class Decoder
-		: public TDecoderInterface
+		: public ServantBase<TDecoderInterface>
 	{
 	public:
 		Decoder()
-			: m_serviceProvider(nullptr)
-			, m_rewindPos(0)
+			: m_rewindPos(0)
 			, m_initialize(false)
 		{
-		}
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override
-		{
-			m_serviceProvider = _serviceProvider;
-		}
-
-		ServiceProviderInterface * getServiceProvider() const override
-		{
-			return m_serviceProvider;
 		}
 
 	public:
@@ -181,7 +169,6 @@ namespace Menge
 		}
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
 		InputStreamInterfacePtr m_stream;
 
 		size_t m_rewindPos;

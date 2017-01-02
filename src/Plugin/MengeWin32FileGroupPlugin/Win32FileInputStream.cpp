@@ -11,8 +11,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32FileInputStream::Win32FileInputStream()
-        : m_serviceProvider(nullptr)
-        , m_hFile(INVALID_HANDLE_VALUE)
+        : m_hFile(INVALID_HANDLE_VALUE)
 		, m_size(0)
 		, m_offset(0)
         , m_carriage(0)
@@ -25,11 +24,6 @@ namespace Menge
 	{
         this->close_();
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Win32FileInputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
     //////////////////////////////////////////////////////////////////////////
     void Win32FileInputStream::close_()
     {

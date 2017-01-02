@@ -8,8 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MemoryProxyInput::MemoryProxyInput()
-		: m_serviceProvider(nullptr)
-		, m_data(nullptr)
+		: m_data(nullptr)
 		, m_size(0)
 		, m_pos(nullptr)
 		, m_end(nullptr)		
@@ -18,11 +17,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryProxyInput::~MemoryProxyInput()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MemoryProxyInput::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Pointer MemoryProxyInput::setMemory( void * _memory, size_t _offset, size_t _size )

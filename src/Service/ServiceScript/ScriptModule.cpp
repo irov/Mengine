@@ -74,4 +74,9 @@ namespace Menge
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    const pybind::base & ScriptModule::getModule() const
+    {
+        return m_module;
+    }
 }

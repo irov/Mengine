@@ -48,12 +48,8 @@ namespace Menge
     typedef stdex::intrusive_ptr<FileOutputStreamInterface> FileOutputStreamInterfacePtr;
 	
     class FileGroupInterface
-        : public FactorablePtr
-    {
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() const = 0;
-		
+        : public ServantInterface
+    {	
     public:
         virtual bool initialize( const ConstString & _path ) = 0;
         virtual void finalize() = 0;

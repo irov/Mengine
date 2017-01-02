@@ -10,15 +10,11 @@
 namespace Menge
 {
 	class DX9RenderProgram
-		: public RenderProgramInterface
+		: public ServantBase<RenderProgramInterface>
 	{
 	public:
 		DX9RenderProgram();
 		~DX9RenderProgram();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		const ConstString & getName() const override;
@@ -40,8 +36,6 @@ namespace Menge
 		void bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix );
 		
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		ConstString m_name;
 
 		DX9RenderVertexShaderPtr m_vertexShader;

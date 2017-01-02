@@ -1,6 +1,7 @@
 #   pragma once
 
 #   include <pybind/object.hpp>
+#   include <pybind/module.hpp>
 
 namespace Menge
 {
@@ -41,6 +42,32 @@ namespace Menge
                 T_Receiver * receiver = factory.createObject();
 
                 receiver->initialize( py_event );
+
+                _eventable->registerEventReceiver( _event, receiver );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T_Receiver>
+        void registerEventReceiverModule( const pybind::module & _module, Eventable * _eventable, const char * _method, uint32_t _event )
+        {
+            if( _module.has_attr( _method ) == false )
+            {
+                return;
+            }
+
+            pybind::object py_method = _module.get_attr( _method );
+
+            if( py_method.is_none() == true )
+            {
+                _eventable->removeEventReceiver( _event );
+            }
+            else
+            {
+                static FactoryPoolStore<T_Receiver, 32> factory;
+
+                T_Receiver * receiver = factory.createObject();
+
+                receiver->initialize( py_method );
 
                 _eventable->registerEventReceiver( _event, receiver );
             }

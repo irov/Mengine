@@ -7,15 +7,11 @@
 namespace Menge
 {
     class DX9RenderFragmentShader
-        : public RenderFragmentShaderInterface
+        : public ServantBase<RenderFragmentShaderInterface>
     {
     public:
 		DX9RenderFragmentShader();
 		~DX9RenderFragmentShader();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		const ConstString & getName() const override;
@@ -30,8 +26,6 @@ namespace Menge
 		bool enable( IDirect3DDevice9 * _pD3DDevice );
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		ConstString m_name;
 
 		MemoryInterfacePtr m_memory;

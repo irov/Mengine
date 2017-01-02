@@ -10,12 +10,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
     class PrototypeGeneratorInterface
-		: public FactorablePtr		
+		: public ServantInterface
     {
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() const = 0;
-
 	public:
 		virtual bool initialize( const ConstString & _category, const ConstString & _prototype ) = 0;
 

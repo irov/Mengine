@@ -9,15 +9,11 @@
 namespace Menge
 {
 	class Win32FileGroupDirectory
-		: public FileGroupInterface
+		: public ServantBase<FileGroupInterface>
 	{
 	public:
 		Win32FileGroupDirectory();
 		~Win32FileGroupDirectory();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		bool initialize( const FilePath & _path ) override;
@@ -54,8 +50,6 @@ namespace Menge
         bool initializeDirectory_( bool _create );
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		FilePath m_path;
 
 		typedef FactoryPoolStore<Win32FileInputStream, 8> TFactoryFileInputStream;

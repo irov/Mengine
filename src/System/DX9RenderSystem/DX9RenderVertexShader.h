@@ -7,15 +7,11 @@
 namespace Menge
 {
 	class DX9RenderVertexShader
-		: public RenderVertexShaderInterface
+		: public ServantBase<RenderVertexShaderInterface>
 	{
 	public:
 		DX9RenderVertexShader();
 		~DX9RenderVertexShader();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		const ConstString & getName() const override;
@@ -30,8 +26,6 @@ namespace Menge
 		bool enable( IDirect3DDevice9 * _pD3DDevice );
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		ConstString m_name;
 
 		MemoryInterfacePtr m_memory;

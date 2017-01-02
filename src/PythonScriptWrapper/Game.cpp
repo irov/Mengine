@@ -18,6 +18,8 @@
 #   include "GameAccountProvider.h"
 #   include "GameSoundVolumeProvider.h"
 
+#   include "PythonEventReceiver.h"
+
 #   include "Kernel/Arrow.h"
 
 #	include "Logger/Logger.h"
@@ -261,8 +263,183 @@ namespace Menge
 			->render();
 	}
     //////////////////////////////////////////////////////////////////////////
+    namespace
+    {
+        class PythonGameEventReceiver
+            : public GameEventReceiver
+            , public PythonEventReceiver
+        {
+        protected:
+            void onGameFullscreen( bool _fullscreen ) override
+            {
+                m_cb.call( _fullscreen );
+            }
+
+            void onGameFixedContentResolution( bool _fixed ) override
+            {
+                m_cb.call( _fixed );
+            }
+
+            void onGameRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) override
+            {
+                m_cb.call( _viewport, _contentResolution );
+            }
+
+            void onGameViewport( const Viewport & _viewport, float _aspect ) override
+            {
+                m_cb.call( _viewport, _aspect );
+            }
+
+            bool onGameKey( KeyCode _key, float _x, float _y, WChar _code, bool _isDown, bool _isRepeat ) override
+            {
+                m_cb.call( _key, _x, _y, _code, _isDown, _isRepeat );
+            }
+
+            bool onGameMouseButton( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) override
+            {
+                m_cb.call( _touchId, _x, _y, _button, _isDown );
+            }
+
+            bool onGameMouseButtonBegin( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) override
+            {
+                m_cb.call( _touchId, _x, _y, _button, _isDown );
+            }
+
+            bool onGameMouseButtonEnd( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) override
+            {
+                m_cb.call( _touchId, _x, _y, _button, _isDown );
+            }
+
+            bool onGameMouseMove( uint32_t _touchId, float _x, float _y, float _dx, float _dy ) override
+            {
+                m_cb.call( _touchId, _x, _y, _dx, _dy );
+            }
+
+            bool onGameMouseWheel( uint32_t _button, float _x, float _y, int32_t _wheel ) override
+            {
+                m_cb.call( _button, _x, _y, _wheel );
+            }
+
+            void onGameAppMouseEnter( float _x, float _y ) override
+            {
+                m_cb.call( _x, _y );
+            }
+
+            void onGameAppMouseLeave() override
+            {
+                m_cb.call();
+            }
+
+            void onGameTimingFactor( float _timingFactor ) override
+            {
+                m_cb.call( _timingFactor );
+            }
+
+            bool onGamePreparation( bool _debug ) override
+            {
+                m_cb.call( _debug );
+            }
+
+            void onGameRun() override
+            {
+                m_cb.call();
+            }
+
+            bool onGameInitialize() override
+            {
+                m_cb.call();
+            }
+
+            void onGameInitializeRenderResources() override
+            {
+                m_cb.call();
+            }
+
+            void onGameFinalizeRenderResources() override
+            {
+                m_cb.call();
+            }
+
+            void onGameAccountFinalize() override
+            {
+                m_cb.call();
+            }
+
+            void onGameFinalize() override
+            {
+                m_cb.call();
+            }
+
+            void onGameDestroy() override
+            {
+                m_cb.call();
+            }
+
+            void onGameFocus( bool _focus ) override
+            {
+                m_cb.call( _focus );
+            }
+
+            void onGameCreateDefaultAccount() override
+            {
+                m_cb.call();
+            }
+
+            void onGameLoadAccounts() override
+            {
+                m_cb.call();
+            }
+
+            void onGameCreateAccount( const WString & _accountID ) override
+            {
+                m_cb.call( _accountID);
+            }
+
+            void onGameDeleteAccount( const WString & _accountID ) override
+            {
+                m_cb.call( _accountID );
+            }
+
+            void onGameSelectAccount( const WString & _accountID ) override
+            {
+                m_cb.call( _accountID );
+            }
+
+            void onGameUselectAccount( const WString & _accountID ) override
+            {
+                m_cb.call( _accountID );
+            }
+
+            void onGameChangeSoundVolume( float _sound, float _music, float _voice ) override
+            {
+                m_cb.call( _sound, _music, _voice );
+            }
+
+            void onGameCursorMode( bool _mode ) override
+            {
+                m_cb.call( _mode );
+            }
+
+            void onGameUser( const ConstString & _event, const TMapParams & _params ) override
+            {
+                m_cb.call( _event, _params );
+            }
+
+            bool onGameClose() override
+            {
+                m_cb.call();
+            }
+        };
+    }
+    //////////////////////////////////////////////////////////////////////////
 	void Game::registerEventMethods_( const ScriptModuleInterfacePtr & _module )
     {	
+        ScriptObject * script_object = _module->getScriptObject();
+
+        pybind::module py_module( script_object );
+
+        Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFullscreen", EVENT_GAME_FULLSCREEN );
+
   //      _module->registerEventMethod( this, EVENT_GAME_FULLSCREEN, "onFullscreen" );
 		//_module->registerEventMethod( this, EVENT_GAME_FIXED_CONTENT_RESOLUTION, "onFixedContentResolution" );
 		//_module->registerEventMethod( this, EVENT_GAME_RENDER_VIEWPORT, "onRenderViewport" );

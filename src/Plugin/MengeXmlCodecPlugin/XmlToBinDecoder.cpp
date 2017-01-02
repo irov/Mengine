@@ -60,18 +60,7 @@ namespace Menge
     }
 	//////////////////////////////////////////////////////////////////////////
 	XmlToBinDecoder::XmlToBinDecoder()
-        : m_serviceProvider(nullptr)
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void XmlToBinDecoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * XmlToBinDecoder::getServiceProvider() const
-	{
-		return m_serviceProvider;
 	}
     //////////////////////////////////////////////////////////////////////////
     const InputStreamInterfacePtr & XmlToBinDecoder::getStream() const

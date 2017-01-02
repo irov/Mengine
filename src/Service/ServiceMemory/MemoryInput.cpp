@@ -12,8 +12,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInput::MemoryInput()
-		: m_serviceProvider(nullptr)
-		, m_data(nullptr)
+		: m_data(nullptr)
 		, m_size(0)
 		, m_pos(nullptr)
 		, m_end(nullptr)		
@@ -24,11 +23,6 @@ namespace Menge
 	{
 		Helper::freeMemory( m_data );
         m_data = nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MemoryInput::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Pointer MemoryInput::newMemory( size_t _size )

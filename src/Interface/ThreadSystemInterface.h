@@ -11,7 +11,7 @@
 namespace Menge
 {
     class ThreadTaskInterface
-        : public FactorablePtr
+        : public ServiceInterface
     {
 	public:
 		virtual bool isRun() const = 0;
@@ -31,7 +31,7 @@ namespace Menge
 	typedef stdex::intrusive_ptr<ThreadTaskInterface> ThreadTaskInterfacePtr;
 
 	class ThreadQueueInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
 	public:
 		virtual void addTask( const ThreadTaskInterfacePtr & _task ) = 0;
@@ -43,7 +43,7 @@ namespace Menge
 	typedef stdex::intrusive_ptr<ThreadQueueInterface> ThreadQueueInterfacePtr;
 
 	class ThreadIdentity
-		: public FactorablePtr
+		: public ServantInterface
 	{
 	public:
 		virtual bool processTask( ThreadTaskInterface * _task ) = 0;

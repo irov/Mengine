@@ -9,8 +9,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MemoryCacheBuffer::MemoryCacheBuffer()
-		: m_serviceProvider(nullptr)
-		, m_memoryManager(nullptr)
+		: m_memoryManager(nullptr)
 		, m_bufferId(0)
 		, m_data(nullptr)
 		, m_size(0)
@@ -20,11 +19,6 @@ namespace Menge
 	MemoryCacheBuffer::~MemoryCacheBuffer()
 	{
 		this->uncache_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MemoryCacheBuffer::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MemoryCacheBuffer::setMemoryManager( MemoryManager * _memoryManager )

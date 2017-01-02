@@ -4,13 +4,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTaskPrefetch::ThreadTaskPrefetch()
-		: m_serviceProvider(nullptr)
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetch::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskPrefetch::initialize( const ConstString& _pakName, const FilePath & _fileName )

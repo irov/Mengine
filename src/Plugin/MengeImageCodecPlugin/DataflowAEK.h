@@ -11,15 +11,11 @@
 namespace Menge
 {
 	class DataflowAEK
-		: public DataflowInterface
+		: public ServantBase<DataflowInterface>
 	{
 	public:
 		DataflowAEK();
 		~DataflowAEK();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		bool initialize() override;
@@ -33,8 +29,6 @@ namespace Menge
 		bool loadBuffer_( MovieFramePack * _pack, const void * _buffer, size_t _size );
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		ArchivatorInterfacePtr m_archivator;
 
 		typedef FactoryPoolStore<MovieFramePack, 32> TFactoryPoolMovieFramePack;

@@ -4,7 +4,7 @@ namespace Menge
 {
 	template<class TEncoderInterface>
 	class Encoder
-		: public TEncoderInterface
+		: public ServantBase<TEncoderInterface>
 	{
 	public:
 		Encoder()
@@ -16,17 +16,6 @@ namespace Menge
 		~Encoder()
 		{
 			this->finalize();
-		}
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override
-		{
-			m_serviceProvider = _serviceProvider;
-		}
-
-		ServiceProviderInterface * getServiceProvider() const override
-		{
-			return m_serviceProvider;
 		}
 
 	public:
@@ -74,7 +63,6 @@ namespace Menge
 		}
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
 		OutputStreamInterfacePtr m_stream;
 
 		bool m_initialize;

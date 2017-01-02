@@ -33,15 +33,11 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class ScheduleManager
-        : public ScheduleManagerInterface
+        : public ServantBase<ScheduleManagerInterface>
 	{
 	public:
 		ScheduleManager();
 		~ScheduleManager();
-
-	public:        
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		uint32_t event( float _delay, const ScheduleEventInterfacePtr & _listener ) override;

@@ -8,24 +8,13 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MessageBoxLogger::MessageBoxLogger()
-		: m_serviceProvider(nullptr)
-		, m_verboseLevel( LM_INFO )
+		: m_verboseLevel( LM_INFO )
 		, m_verboseFlag(0xFFFFFFFF)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MessageBoxLogger::~MessageBoxLogger()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MessageBoxLogger::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * MessageBoxLogger::getServiceProvider() const
-	{
-		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MessageBoxLogger::initialize()

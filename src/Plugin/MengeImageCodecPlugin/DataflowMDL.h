@@ -11,15 +11,11 @@
 namespace Menge
 {
 	class DataflowMDL
-		: public DataflowInterface
+		: public ServantBase<DataflowInterface>
 	{
 	public:
 		DataflowMDL();
 		~DataflowMDL();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		bool initialize() override;
@@ -30,8 +26,6 @@ namespace Menge
 		bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream ) override;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		ArchivatorInterfacePtr m_archivator;
 
 		typedef FactoryPoolStore<Model3DPack, 32> TFactoryPoolModel3DPack;

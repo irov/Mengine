@@ -14,9 +14,6 @@ namespace Menge
 		ThreadTaskPrefetch();
 	
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-
-	public:
 		void initialize( const ConstString& _pakName, const FilePath & _fileName );
 
 	protected:
@@ -27,8 +24,6 @@ namespace Menge
 		inline const FilePath & getFilePath() const;
 		
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		ConstString m_pakName;
 		FilePath m_filePath; 
 				

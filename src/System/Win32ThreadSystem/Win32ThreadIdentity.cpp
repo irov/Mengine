@@ -8,23 +8,12 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32ThreadIdentity::Win32ThreadIdentity()
-        : m_serviceProvider(nullptr)
-		, m_doc(nullptr)
+        : m_doc(nullptr)
 		, m_handle(INVALID_HANDLE_VALUE)
         , m_task(nullptr)
 		, m_complete(true)
 		, m_exit(false)
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Win32ThreadIdentity::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * Win32ThreadIdentity::getServiceProvider() const
-	{
-		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static unsigned int __stdcall s_tread_job( void * _userData )

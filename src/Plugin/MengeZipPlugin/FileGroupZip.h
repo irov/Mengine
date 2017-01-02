@@ -10,15 +10,11 @@
 namespace Menge
 {
 	class FileGroupZip
-		: public FileGroupInterface
+		: public ServantBase<FileGroupInterface>
 	{
 	public:
 		FileGroupZip();
 		~FileGroupZip();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		bool initialize( const ConstString & _path ) override;
@@ -53,8 +49,6 @@ namespace Menge
 		bool loadHeader_();
 
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		ConstString m_path;
 
 		FileGroupInterfacePtr m_zipFileGroup;

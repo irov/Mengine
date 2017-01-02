@@ -5,15 +5,11 @@
 namespace Menge
 {
 	class MessageBoxLogger
-		: public LoggerInterface
+		: public ServantBase<LoggerInterface>
 	{
 	public:
 		MessageBoxLogger();
 		~MessageBoxLogger();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		bool initialize() override;
@@ -30,9 +26,7 @@ namespace Menge
 		void log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _count ) override;
 		void flush() override;
 
-	private:
-		ServiceProviderInterface * m_serviceProvider;
-
+    protected:
 		EMessageLevel m_verboseLevel;
 		uint32_t m_verboseFlag;
 	};

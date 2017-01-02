@@ -21,6 +21,7 @@ namespace Menge
 	};
 
 	class LoggerInterface
+        : public ServantInterface
 	{
 	public:
 		LoggerInterface()
@@ -30,10 +31,6 @@ namespace Menge
 		virtual ~LoggerInterface()
 		{
 		};
-
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
 	public:
 		virtual bool initialize() = 0;

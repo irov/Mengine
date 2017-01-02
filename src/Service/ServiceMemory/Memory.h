@@ -8,16 +8,13 @@
 namespace Menge
 {
 	class Memory
-		: public MemoryInterface
+		: public ServantBase<MemoryInterface>
 	{
 	public:
 		Memory();
 		~Memory();
 
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-
-	public:
+    public:
 		void setMemory( const void * _ptr, size_t _size ) override;
 		Pointer newMemory( size_t _size ) override;
 
@@ -27,8 +24,6 @@ namespace Menge
 		inline bool empty() const override;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		void * m_memory;
 		size_t m_size;
 	};

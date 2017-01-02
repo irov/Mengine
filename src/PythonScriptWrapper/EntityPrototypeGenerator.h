@@ -9,16 +9,12 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	class EntityPrototypeGenerator
-		: public PrototypeGeneratorInterface
+		: public ServantBase<PrototypeGeneratorInterface>
 		, public Eventable
 	{
 	public:
 		EntityPrototypeGenerator();
 		~EntityPrototypeGenerator();
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		void setScriptGenerator( const pybind::object & _generator );
@@ -39,8 +35,6 @@ namespace Menge
 		uint32_t count() const override;
 
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		ConstString m_category;
 		ConstString m_prototype;
 		pybind::object m_generator;

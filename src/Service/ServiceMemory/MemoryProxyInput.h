@@ -8,14 +8,11 @@
 namespace Menge
 {
 	class MemoryProxyInput
-		: public MemoryProxyInputInterface
+		: public ServantBase<MemoryProxyInputInterface>
 	{
 	public:
 		MemoryProxyInput();
 		~MemoryProxyInput();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
     public:
 		Pointer setMemory( void * _memory, size_t _offset, size_t _size ) override;
@@ -39,8 +36,6 @@ namespace Menge
 		bool memory( void ** _memory, size_t * _size ) override;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		unsigned char * m_data;
 		size_t m_size;
 

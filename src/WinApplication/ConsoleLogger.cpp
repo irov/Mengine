@@ -15,8 +15,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ConsoleLogger::ConsoleLogger()
-		: m_serviceProvider( nullptr )
-		, m_verboseLevel( LM_INFO )
+		: m_verboseLevel( LM_INFO )
 		, m_verboseFlag(0xFFFFFFFF)
 		, m_createConsole(false)
 	{
@@ -24,16 +23,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ConsoleLogger::~ConsoleLogger()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ConsoleLogger::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * ConsoleLogger::getServiceProvider() const
-	{
-		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ConsoleLogger::initialize()

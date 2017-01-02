@@ -5,15 +5,11 @@
 namespace Menge
 {
 	class DevelopmentConverter
-        : public ConverterInterface
+        : public ServantBase<ConverterInterface>
 	{
 	public:
 		DevelopmentConverter();
 		~DevelopmentConverter();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		const String & getConvertExt() const override;
@@ -25,8 +21,6 @@ namespace Menge
 		bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
 
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		ConverterOptions m_options;
 
 		String m_convertExt;

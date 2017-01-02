@@ -8,8 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32FileOutputStream::Win32FileOutputStream()		
-        : m_serviceProvider(nullptr)
-        , m_hFile(INVALID_HANDLE_VALUE)
+        : m_hFile(INVALID_HANDLE_VALUE)
 		, m_size(0)
 	{
 	}
@@ -22,11 +21,6 @@ namespace Menge
             m_hFile = INVALID_HANDLE_VALUE;
         }
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Win32FileOutputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileOutputStream::open( const FilePath & _folder, const FilePath& _fileName )
 	{        

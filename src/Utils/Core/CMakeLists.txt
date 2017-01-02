@@ -5,6 +5,9 @@ ADD_FILTER(
 src
     CRC32.h
     CRC32.cpp
+	
+	ServantBase.h
+	ServiceBase.h
     
     Date.h
     Date.cpp

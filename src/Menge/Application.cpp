@@ -424,24 +424,12 @@ namespace Menge
     namespace
     {
         class SceneCategoryGenerator
-            : public PrototypeGeneratorInterface
+            : public ServantBase<PrototypeGeneratorInterface>
         {
         public:
             SceneCategoryGenerator()
-                : m_serviceProvider(nullptr)
             {
             }
-
-		protected:
-			void setServiceProvider( ServiceProviderInterface * _serviceProvider )
-			{
-				m_serviceProvider = _serviceProvider;
-			}
-
-			ServiceProviderInterface * getServiceProvider() const override
-			{
-				return m_serviceProvider;
-			}
 
 		protected:
 			bool initialize( const ConstString & _category, const ConstString & _prototype ) override
@@ -482,8 +470,6 @@ namespace Menge
             }
 
         protected:
-            ServiceProviderInterface * m_serviceProvider;
-
 			ConstString m_category;
 			ConstString m_prototype;
         };

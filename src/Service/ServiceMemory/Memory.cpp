@@ -8,8 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Memory::Memory()
-		: m_serviceProvider(nullptr)
-		, m_memory(nullptr)
+		: m_memory(nullptr)
 		, m_size(0)
 	{
 	}
@@ -18,11 +17,6 @@ namespace Menge
 	{
 		Helper::freeMemory( m_memory );
 		m_memory = nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Memory::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Memory::setMemory( const void * _ptr, size_t _size )

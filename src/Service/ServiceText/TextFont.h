@@ -20,6 +20,8 @@ namespace Menge
 
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+
+    public:
 		void setName( const ConstString & _name );
 		
 		void setGlyph( const TextGlyphPtr & _glyph );

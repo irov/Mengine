@@ -6,8 +6,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderVertexShader::DX9RenderVertexShader()
-		: m_serviceProvider( nullptr )
-		, m_shader( nullptr )
+		: m_shader( nullptr )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -17,16 +16,6 @@ namespace Menge
 		{
 			m_shader->Release();
 		}		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderVertexShader::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * DX9RenderVertexShader::getServiceProvider() const
-	{
-		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & DX9RenderVertexShader::getName() const

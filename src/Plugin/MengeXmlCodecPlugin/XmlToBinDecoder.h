@@ -7,15 +7,11 @@
 namespace Menge
 {
 	class XmlToBinDecoder
-        : public XmlDecoderInterface
+        : public ServantBase<XmlDecoderInterface>
 	{
 	public:
 		XmlToBinDecoder();
 	
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
-
     public:
         bool initialize() override;
 		void finalize() override;
@@ -42,8 +38,6 @@ namespace Menge
 		float tell() const override;
 
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		ArchivatorInterfacePtr m_archivator;
 
         InputStreamInterfacePtr m_stream;

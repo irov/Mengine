@@ -38,12 +38,8 @@ namespace Menge
 	typedef stdex::intrusive_ptr<SchedulePipeInterface> SchedulePipeInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
     class ScheduleManagerInterface
-        : public Factorable
+        : public ServantInterface
     {
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() const = 0;
-
     public:
 		virtual uint32_t event( float _delay, const ScheduleEventInterfacePtr & _listener ) = 0;
 

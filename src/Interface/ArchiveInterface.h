@@ -12,12 +12,8 @@
 namespace Menge
 {
 	class ArchivatorInterface
-		: public FactorablePtr
+		: public ServiceInterface
 	{
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() const = 0;
-
 	public:
 		virtual size_t compressBound( size_t _size ) const = 0;
 

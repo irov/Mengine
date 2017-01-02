@@ -9,8 +9,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32FileMapped::Win32FileMapped()
-		: m_serviceProvider(nullptr)
-        , m_hFile(INVALID_HANDLE_VALUE)
+		: m_hFile(INVALID_HANDLE_VALUE)
 		, m_hMapping(INVALID_HANDLE_VALUE)
 		, m_memory(NULL)
 	{
@@ -45,11 +44,6 @@ namespace Menge
             m_hFile = INVALID_HANDLE_VALUE;
         }
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Win32FileMapped::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileMapped::open( const FilePath & _folder, const FilePath & _fileName )
 	{

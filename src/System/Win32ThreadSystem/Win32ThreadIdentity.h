@@ -7,14 +7,10 @@
 namespace Menge
 {
 	class Win32ThreadIdentity
-		: public ThreadIdentity
+		: public ServantBase<ThreadIdentity>
 	{
 	public:
 		Win32ThreadIdentity();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-		ServiceProviderInterface * getServiceProvider() const;
 
 	public:
         bool initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _doc );
@@ -30,8 +26,6 @@ namespace Menge
 		void join() override;
 
     protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		ThreadMutexInterfacePtr m_mutex;
 
 		HANDLE m_handle;

@@ -7,17 +7,13 @@
 namespace Menge
 {
 	class ConsoleLogger
-		: public LoggerInterface
+		: public ServantBase<LoggerInterface>
 	{
 	public:
 		ConsoleLogger();
 		~ConsoleLogger();
 
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
-
-	public:
+    public:
 		bool initialize() override;
 		void finalize() override;
 
@@ -36,9 +32,7 @@ namespace Menge
 		void createConsole_();
 		void removeConsole_();
 
-	private:
-		ServiceProviderInterface * m_serviceProvider;
-
+    protected:
 		EMessageLevel m_verboseLevel;
         uint32_t m_verboseFlag;
 

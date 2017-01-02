@@ -11,7 +11,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	class MemoryGetterBufferInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{ 
 	public:
 		virtual Pointer getMemory() const = 0;

@@ -5,7 +5,7 @@
 namespace Menge 
 {
 	class ThreadTask
-		: public ThreadTaskInterface
+		: public ServantBase<ThreadTaskInterface>
 	{
 	public:
 		ThreadTask();

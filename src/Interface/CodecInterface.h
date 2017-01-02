@@ -33,12 +33,8 @@ namespace Menge
 	typedef stdex::intrusive_ptr<CodecFactoryInterface> CodecFactoryInterfacePtr;
 
 	class DecoderInterface
-        : public FactorablePtr
+        : public ServantInterface
 	{
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() const = 0;
-
     public:
         virtual bool initialize() = 0;
 		virtual void finalize() = 0;
@@ -82,12 +78,8 @@ namespace Menge
 	typedef stdex::intrusive_ptr<DecoderFactoryInterface> DecoderFactoryInterfacePtr;
 
 	class EncoderInterface
-        : public FactorablePtr
+        : public ServantInterface
 	{
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() const = 0;
-
     public:
         virtual bool initialize( const OutputStreamInterfacePtr & _stream ) = 0;
 		virtual void finalize() = 0;

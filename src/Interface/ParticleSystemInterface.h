@@ -146,12 +146,8 @@ namespace Menge
 	DECLARE_MAGIC_NUMBER( MAGIC_PTZ, 'P', 'T', 'Z', '2', 2 );
 
 	class ParticleEmitterContainerInterface2
-		: public FactorablePtr
+		: public ServantInterface
 	{
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() const = 0;
-
 	public:
 		virtual bool isValid() const = 0;
 

@@ -11,7 +11,7 @@ namespace Menge
 	static const size_t UNKNOWN_SIZE = (size_t)-1;
 	//////////////////////////////////////////////////////////////////////////
 	class InputStreamInterface        
-        : public FactorablePtr
+        : public ServantInterface
 	{
 	public:
 		virtual size_t read( void * _buf, size_t _size ) = 0;

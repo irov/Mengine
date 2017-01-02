@@ -12,12 +12,8 @@
 namespace Menge
 {
 	class ModuleInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() const = 0;
-
 	public:
 		virtual bool avaliable() = 0;
 

@@ -14,15 +14,11 @@
 namespace Menge
 {
 	class BasePrototypeGenerator
-		: public PrototypeGeneratorInterface
+		: public ServantBase<PrototypeGeneratorInterface>
 		, public MemoryAllocator
 	{
 	public:
 		BasePrototypeGenerator();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
 
 	protected:
 		bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
@@ -30,8 +26,6 @@ namespace Menge
 		void destroy() override;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		ConstString m_category;
 		ConstString m_prototype;
 

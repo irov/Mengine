@@ -35,12 +35,8 @@ namespace Menge
 	typedef stdex::intrusive_ptr<DataInterface> DataInterfacePtr;
 
 	class DataflowInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() const = 0;
-
 	public:
 		virtual bool initialize() = 0;
 		virtual void finalize() = 0;

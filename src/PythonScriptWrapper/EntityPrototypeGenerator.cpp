@@ -61,24 +61,13 @@ namespace Menge
     }
 	//////////////////////////////////////////////////////////////////////////
 	EntityPrototypeGenerator::EntityPrototypeGenerator()
-		: m_serviceProvider(nullptr)
-        , m_count(0)
+		: m_count(0)
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EntityPrototypeGenerator::~EntityPrototypeGenerator()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void EntityPrototypeGenerator::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * EntityPrototypeGenerator::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	void EntityPrototypeGenerator::setScriptGenerator( const pybind::object & _generator )
 	{

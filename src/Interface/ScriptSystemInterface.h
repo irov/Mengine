@@ -10,6 +10,8 @@
 #	include "Core/FilePath.h"
 #	include "Core/Tags.h"
 
+#   include "pybind/base.hpp"
+
 #	include <stdex/stl_vector.h>
 
 #	include <stdarg.h>
@@ -59,6 +61,9 @@ namespace Menge
 	public:
 		virtual bool onInitialize( const ConstString & _method ) = 0;
 		virtual bool onFinalize( const ConstString & _method ) = 0;
+
+    public:
+        virtual const pybind::base & getModule() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ScriptModuleInterface> ScriptModuleInterfacePtr;

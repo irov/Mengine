@@ -13,14 +13,11 @@ namespace Menge
 #	endif
 
 	class Win32FileInputStream
-		: public FileInputStreamInterface
+		: public ServantBase<FileInputStreamInterface>
 	{
 	public:
 		Win32FileInputStream();
 		~Win32FileInputStream();
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
 		bool open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size ) override;
@@ -46,8 +43,6 @@ namespace Menge
 		bool seek_( size_t _pos );
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-		
 		HANDLE m_hFile;
 
 		size_t m_size;

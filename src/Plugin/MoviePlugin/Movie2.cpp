@@ -167,7 +167,7 @@ namespace Menge
 		return new_camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_node_provider( const aeMovieLayerData * _layerData, const ae_matrix4_t _matrix, const aeMovieLayerData * _trackmatte, void * _data )
+	static void * ae_movie_composition_node_provider( const aeMovieLayerData * _layerData, const ae_matrix4_t _matrix, float _opacity, const aeMovieLayerData * _trackmatte, void * _data )
 	{
 		Movie2 * movie2 = (Movie2 *)_data;
 
@@ -523,7 +523,7 @@ namespace Menge
 			}
 
 			ae_set_movie_composition_loop( composition, AE_TRUE );
-			//ae_set_movie_composition_interpolate( composition, AE_FALSE );
+			ae_set_movie_composition_interpolate( composition, AE_FALSE );
 
 			uint32_t max_render_node = ae_get_movie_composition_max_render_node( composition );
 
@@ -651,12 +651,17 @@ namespace Menge
 			return;
 		}
 				
-		ae_update_movie_composition( m_composition, _timing );
+		static int i = 0;
+		
+		//if( (i++) % 10 == 0 && _timing > 0.f )
+		{
+			ae_update_movie_composition( m_composition, _timing );
+		}
 		
 
-		//printf( "time %f\n"
-		//		, ae_get_movie_composition_time(m_composition)
-		//		);
+		printf( "time %f\n"
+			, ae_get_movie_composition_time( m_composition )
+			);
 		
 		//if( a < 10000.f )
 		//{
@@ -676,6 +681,8 @@ namespace Menge
 		const mt::mat4f & wm = this->getWorldMatrix();
 
 		uint32_t mesh_iterator = 0;
+
+		//ae_get_movie_composition_slot( m_composition, "minbet" );
 
 		aeMovieRenderMesh mesh;
 		while( ae_compute_movie_mesh( m_composition, &mesh_iterator, &mesh ) == AE_TRUE )
@@ -940,7 +947,7 @@ namespace Menge
 
 							const RenderTextureInterfacePtr & texture_image = resourceImage->getTexture();
 
-							const const mt::uv4f & texture_image_uv = texture_image->getUV();
+							const mt::uv4f & texture_image_uv = texture_image->getUV();
 
 							mt::multiply_tetragon_uv4_v2( v.uv[0], texture_image_uv, uv );
 							//mt::multiply_tetragon_uv4_v2( v.uv[0], texture_image_uv, v.uv[0] );
@@ -955,7 +962,7 @@ namespace Menge
 							const mt::uv4f & uv_alpha = resourceTrackMatteImage->getUVImage();
 							const RenderTextureInterfacePtr & texture_trackmatte = resourceTrackMatteImage->getTexture();
 
-							const const mt::uv4f & texture_trackmatte_uv = texture_trackmatte->getUV();
+							const mt::uv4f & texture_trackmatte_uv = texture_trackmatte->getUV();
 
 							//mt::multiply_tetragon_uv4_v2( v.uv[1], uv_alpha, uv_track_matte );
 							mt::multiply_tetragon_uv4_v2( v.uv[1], texture_trackmatte_uv, uv_track_matte );
@@ -996,7 +1003,7 @@ namespace Menge
 	{
 		(void)_enumerator;
 
-		ae_interrupt_movie_composition( m_composition, AE_TRUE );
+		ae_interrupt_movie_composition( m_composition, AE_TRUE, AE_FALSE );
 
 		return true;
 	}

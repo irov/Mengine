@@ -276,7 +276,7 @@ namespace Menge
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool writeStreamArchiveBuffer( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, bool _crc32, const void * _data, size_t _size )
-		{
+		{ 
 			MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE( _serviceProvider )
 				->compressBuffer( _archivator, _data, _size );
 

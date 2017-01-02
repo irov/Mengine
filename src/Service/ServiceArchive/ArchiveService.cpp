@@ -43,6 +43,18 @@ namespace Menge
 		m_archivators.erase( it_found );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ArchiveService::hasArchivator( const ConstString & _type ) const
+	{
+		TMapArchivators::const_iterator it_found = m_archivators.find( _type );
+
+		if( it_found == m_archivators.end() )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	ArchivatorInterfacePtr ArchiveService::getArchivator( const ConstString & _type ) const
 	{
 		TMapArchivators::const_iterator it_found = m_archivators.find( _type );

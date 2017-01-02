@@ -408,13 +408,15 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystemES1::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
+	void MarmaladeRenderSystemES1::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
 	{
 		GLenum modeUGL = s_getGLAddressMode( _modeU );
 		GLenum modeVGL = s_getGLAddressMode( _modeV );
 
 		m_textureStage[_stage].wrapS = modeUGL;
 		m_textureStage[_stage].wrapT = modeVGL;
+
+		m_textureStage[_stage].border = _border;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::setTextureFactor( uint32_t _color )

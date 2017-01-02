@@ -42,7 +42,7 @@ namespace Menge
 		char * dst_buffer = (char *)_distance;
 		const char * src_buffer = (const char *)_source;
 
-		int compressSize = ::LZ4_compressHC2_limitedOutput( src_buffer, dst_buffer, (int)_sourceSize, (int)_bufferSize, 16 );
+		int compressSize = ::LZ4_compress_HC( src_buffer, dst_buffer, (int)_sourceSize, (int)_bufferSize, LZ4HC_CLEVEL_MAX );
 
 		if( compressSize < 0 )
 		{

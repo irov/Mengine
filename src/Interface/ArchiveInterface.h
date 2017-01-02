@@ -38,6 +38,7 @@ namespace Menge
 		virtual void unregisterArchivator( const ConstString & _type ) = 0;
 
     public:
+		virtual bool hasArchivator( const ConstString & _type ) const = 0;
         virtual ArchivatorInterfacePtr getArchivator( const ConstString & _type ) const = 0;
 
 	public:

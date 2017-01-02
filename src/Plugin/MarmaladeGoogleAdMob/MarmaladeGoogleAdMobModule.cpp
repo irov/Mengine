@@ -96,9 +96,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeGoogleAdMobModule::_initialize()
 	{
-		s3eGoogleAdMobRegister( S3E_GOOGLEADMOB_CALLBACK_AD_LOADED, s_onAdLoad, this );
-		s3eGoogleAdMobRegister( S3E_GOOGLEADMOB_CALLBACK_AD_ACTION, s_onAdAction, this );
-		s3eGoogleAdMobRegister( S3E_GOOGLEADMOB_CALLBACK_AD_ERROR, s_onAdError, this );
+		s3eGoogleAdMobRegister( S3E_GOOGLEADMOB_CALLBACK_AD_LOADED, &s_onAdLoad, this );
+		s3eGoogleAdMobRegister( S3E_GOOGLEADMOB_CALLBACK_AD_ACTION, &s_onAdAction, this );
+		s3eGoogleAdMobRegister( S3E_GOOGLEADMOB_CALLBACK_AD_ERROR, &s_onAdError, this );
 
 		m_timeShow = TIMER_SERVICE( m_serviceProvider )
 			->getMilliseconds();
@@ -108,6 +108,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeGoogleAdMobModule::_finalize()
 	{
+		s3eGoogleAdMobUnRegister( S3E_GOOGLEADMOB_CALLBACK_AD_LOADED, &s_onAdLoad );
+		s3eGoogleAdMobUnRegister( S3E_GOOGLEADMOB_CALLBACK_AD_ACTION, &s_onAdAction );
+		s3eGoogleAdMobUnRegister( S3E_GOOGLEADMOB_CALLBACK_AD_ERROR, &s_onAdError );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeGoogleAdMobModule::_update( bool _focus )
@@ -234,6 +237,8 @@ namespace Menge
 				, adMobErrorMsg
 				);
 
+			m_state = ADMOB_DESTROY;
+
 			return;
 		}
 
@@ -254,6 +259,8 @@ namespace Menge
 				, m_Id
 				, adMobErrorMsg
 				);
+
+			m_state = ADMOB_DESTROY;
 
 			return;
 		}		
@@ -308,10 +315,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeGoogleAdMobModule::onAdAction( s3eGoogleAdMobCallbackActionData * _data )
 	{
-		//if( m_Id != _data->m_Id )
-		//{
-		//	return;
-		//}
+		if( m_Id != _data->m_Id )
+		{
+			return;
+		}
 
 		s3eGoogleAdMobActionType actionType = _data->m_Type;
 
@@ -324,6 +331,14 @@ namespace Menge
 		{
 		case S3E_GOOGLEADMOB_ACTION_EXPANDED:
 			{				
+				TMapParams params;
+				WString wstr_actionType;
+				Utils::unsignedToWString( actionType, wstr_actionType );
+
+				params[STRINGIZE_STRING_LOCAL( m_serviceProvider, "type" )] = wstr_actionType;
+
+				GAME_SERVICE( m_serviceProvider )
+					->userEvent( STRINGIZE_STRING_LOCAL( m_serviceProvider, "GoogleAdMobAction" ), params );
 			} break;
 		case S3E_GOOGLEADMOB_ACTION_DISMISSED:
 			{
@@ -331,18 +346,9 @@ namespace Menge
 			} break;
 		case S3E_GOOGLEADMOB_ACTION_LEFTAP:
 			{
-				//m_state = ADMOB_CLOSE;
+				m_state = ADMOB_CLOSE;
 			}break;
 		}
-
-		TMapParams params;
-		WString wstr_actionType;
-		Utils::unsignedToWString( actionType, wstr_actionType );
-
-		params[STRINGIZE_STRING_LOCAL( m_serviceProvider, "type" )] = wstr_actionType;
-
-		GAME_SERVICE( m_serviceProvider )
-			->userEvent( STRINGIZE_STRING_LOCAL( m_serviceProvider, "GoogleAdMobAction" ), params );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeGoogleAdMobModule::onAdError( s3eGoogleAdMobCallbackErrorData * _data )
@@ -368,5 +374,7 @@ namespace Menge
 
 		GAME_SERVICE( m_serviceProvider )
 			->userEvent( STRINGIZE_STRING_LOCAL( m_serviceProvider, "GoogleAdMobError" ), params );
+
+		m_state = ADMOB_CLOSE;
 	}
 }

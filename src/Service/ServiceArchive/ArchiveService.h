@@ -20,6 +20,7 @@ namespace Menge
 		void unregisterArchivator( const ConstString & _type ) override;
 
 	public:		
+		bool hasArchivator( const ConstString & _type ) const override;
 		ArchivatorInterfacePtr getArchivator( const ConstString & _type ) const override;
 
 	public:

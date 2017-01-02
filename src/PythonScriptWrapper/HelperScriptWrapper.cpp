@@ -6,6 +6,7 @@
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/TextInterface.h"
 #	include "Interface/TimerInterface.h"
+#	include "Interface/ApplicationInterface.h"
 #	include "Interface/UserdataInterface.h"
 #	include "Interface/ConfigInterface.h"
 
@@ -24,8 +25,6 @@
 #	include "Core/MemoryHelper.h"
 
 #	include "Menge/Account.h"
-#	include "Menge/Game.h"
-#	include "Menge/Application.h"
 
 #	include "Menge/Movie.h"
 #	include "Menge/HotSpotShape.h"
@@ -33,8 +32,6 @@
 #	include "Logger/Logger.h"
 
 #	include "Menge/ResourceAnimation.h"
-
-#	include "Menge/Player.h"
 
 #	include "Menge/Watchdog.h"
 
@@ -848,7 +845,7 @@ namespace Menge
 			Node * node1;
 			Movie * submovie1;
 
-			if( _movie1->hasMovieNode( _socket1, CONST_STRING( m_serviceProvider, MovieSocketShape ), &node1, &submovie1 ) == false )
+			if( _movie1->hasMovieNode( _socket1, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketShape" ), &node1, &submovie1 ) == false )
 			{
 				LOGGER_ERROR( m_serviceProvider )("s_intersectsMoviesHotspot movie1 %s not found socket shape %s"
 					, _movie1->getName().c_str()
@@ -861,7 +858,7 @@ namespace Menge
 			Node * node2;
 			Movie * submovie2;
 
-			if( _movie2->hasMovieNode( _socket2, CONST_STRING( m_serviceProvider, MovieSocketShape ), &node2, &submovie2 ) == false )
+			if( _movie2->hasMovieNode( _socket2, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketShape" ), &node2, &submovie2 ) == false )
 			{
 				LOGGER_ERROR( m_serviceProvider )("s_intersectsMoviesHotspot movie2 %s not found socket shape %s"
 					, _movie2->getName().c_str()
@@ -945,7 +942,7 @@ namespace Menge
 			Node * node;
 			Movie * submovie;
 
-			if( _movie->hasMovieNode( _socket, CONST_STRING( m_serviceProvider, MovieSocketShape ), &node, &submovie ) == false )
+			if( _movie->hasMovieNode( _socket, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketShape" ), &node, &submovie ) == false )
 			{
 				LOGGER_ERROR( m_serviceProvider )("s_intersectMoviesHotspotVsPolygon movie %s not found socket shape %s"
 					, _movie->getName().c_str()

@@ -19,8 +19,6 @@
 #	include "Kernel/Scene.h"
 #	include "Kernel/Arrow.h"
 
-#	include "Menge/Game.h"
-
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/ScheduleManagerInterface.h"
 
@@ -49,8 +47,6 @@
 
 #   include "Menge/ResourceImageSubstractRGBAndAlpha.h"
 #   include "Menge/ResourceImageSubstract.h"
-
-#	include "Menge/Player.h"
 
 #   include "Interface/ApplicationInterface.h"
 #   include "Interface/MousePickerSystemInterface.h"

@@ -6,8 +6,6 @@
 #   include "Interface/ApplicationInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-#	include "Player.h"
-
 #	include "Kernel/Scene.h"
 #	include "Kernel/Layer.h"
 

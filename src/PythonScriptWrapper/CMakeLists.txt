@@ -7,6 +7,16 @@ ScriptHolder
 )
 
 ADD_FILTER(
+Game
+	Game.cpp
+	Game.h
+	GameAccountProvider.cpp
+	GameAccountProvider.h
+	GameSoundVolumeProvider.cpp
+	GameSoundVolumeProvider.h	
+)
+
+ADD_FILTER(
 Wrapper
 	PythonEventReceiver.h
 	PythonAnimatableEventReceiver.h

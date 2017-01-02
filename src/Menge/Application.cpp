@@ -31,14 +31,11 @@
 #	include "Interface/UserdataInterface.h"
 #	include "Interface/TimelineInterface.h"
 
-#	include "Game.h"
-
 #	include "Logger/Logger.h"
 
 #	include "Watchdog.h"
 
 
-#	include "Player.h"
 #	include "Kernel/Scene.h"
 
 #	include "Factory/FactoryDefault.h"

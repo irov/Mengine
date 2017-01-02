@@ -8,8 +8,6 @@
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/ApplicationInterface.h"
 
-#	include "Player.h"
-
 #	include "Kernel/Scene.h"
 #	include "Layer2D.h"
 

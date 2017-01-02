@@ -1,7 +1,5 @@
 #	include "TextField.h" 
 
-//#	include "Application.h"
-
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/TextInterface.h"

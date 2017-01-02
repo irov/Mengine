@@ -17,12 +17,6 @@ Service\\\\Watchdog
 )
 
 ADD_FILTER(
-Game
-	Game.cpp
-	Game.h
-)
-
-ADD_FILTER(
 Layer2D
 	Layer2D.cpp
 	Layer2D.h

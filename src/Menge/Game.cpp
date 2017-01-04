@@ -104,8 +104,10 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GameSoundVolumeProvider::onSoundChangeVolume( float _sound, float _music, float _voice )
+	void GameSoundVolumeProvider::onSoundChangeVolume( float _sound, float _music, float _voice, bool _mute )
 	{
+		(void)_mute;
+
 		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_CHANGE_SOUND_VOLUME)( _sound, _music, _voice );
 	}
 	//////////////////////////////////////////////////////////////////////////

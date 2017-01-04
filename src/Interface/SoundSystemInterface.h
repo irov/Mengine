@@ -108,7 +108,7 @@ namespace Menge
 		virtual ~SoundVolumeProviderInterface(){};
 
 	public:
-		virtual void onSoundChangeVolume( float _sound, float _music, float _voice ) = 0;
+		virtual void onSoundChangeVolume( float _sound, float _music, float _voice, bool _mute ) = 0;
 	};
 
 	class SoundServiceInterface

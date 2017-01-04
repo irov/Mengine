@@ -137,6 +137,7 @@ namespace Menge
 		void updateVolume() override;
 
     protected:
+		void updateSoundVolumeProvider_( SoundVolumeProviderInterface * _provider );
 		void updateSourceVolume_( SoundSourceDesc * _source );
 
     protected:

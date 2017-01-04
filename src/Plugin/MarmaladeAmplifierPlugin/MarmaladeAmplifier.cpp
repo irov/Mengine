@@ -413,9 +413,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeAmplifier::onSoundChangeVolume( float _sound, float _music, float _voice )
+	void MarmaladeAmplifier::onSoundChangeVolume( float _sound, float _music, float _voice, bool _mute )
 	{
-		int32 s3e_volume = (int32)(m_volume * _music * float( S3E_AUDIO_MAX_VOLUME ));
+		int32 s3e_volume = _mute ? 0 : ( int32 )(m_volume * _music * float( S3E_AUDIO_MAX_VOLUME ));
 
 		s3eResult result = s3eAudioSetInt( S3E_AUDIO_VOLUME, s3e_volume );
 

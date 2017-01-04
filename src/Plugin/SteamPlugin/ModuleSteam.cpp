@@ -56,7 +56,7 @@ namespace Menge
 
 			if( sscanf( str_steamappid, "%d", &appId ) != 0 )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_initialize invalid option steamappid '%s'"
+				LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_avaliable invalid option steamappid '%s'"
 					, str_steamappid
 					);
 
@@ -68,7 +68,7 @@ namespace Menge
 		{
 			if( SteamAPI_RestartAppIfNecessary( appId ) == true )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_initialize invalid SteamAPI_RestartAppIfNecessary [Id = %d]"
+				LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_avaliable invalid SteamAPI_RestartAppIfNecessary [Id = %d]"
 					, appId
 					);
 

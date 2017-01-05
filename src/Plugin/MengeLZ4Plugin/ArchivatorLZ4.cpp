@@ -37,12 +37,30 @@ namespace Menge
 		return total_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchivatorLZ4::compress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _compressSize )
+	bool ArchivatorLZ4::compress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _compressSize, EArchivatorCompress _compress )
     {
 		char * dst_buffer = (char *)_distance;
 		const char * src_buffer = (const char *)_source;
 
-		int compressSize = ::LZ4_compress_HC( src_buffer, dst_buffer, (int)_sourceSize, (int)_bufferSize, LZ4HC_CLEVEL_MAX );
+		int compress_method = 0;
+
+		switch( _compress )
+		{
+		case EAC_FAST:
+			{
+				compress_method = LZ4HC_CLEVEL_MIN;
+			}break;
+		case EAC_NORMAL:
+			{
+				compress_method = LZ4HC_CLEVEL_DEFAULT;
+			}break;
+		case EAC_BEST:
+			{
+				compress_method = LZ4HC_CLEVEL_MAX;
+			}
+		};
+
+		int compressSize = ::LZ4_compress_HC( src_buffer, dst_buffer, (int)_sourceSize, (int)_bufferSize, compress_method );
 
 		if( compressSize < 0 )
 		{

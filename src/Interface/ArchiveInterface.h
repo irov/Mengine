@@ -11,6 +11,13 @@
 
 namespace Menge
 {
+	enum EArchivatorCompress
+	{
+		EAC_FAST,
+		EAC_NORMAL,
+		EAC_BEST
+	};
+
 	class ArchivatorInterface
 		: public FactorablePtr
 	{
@@ -22,7 +29,7 @@ namespace Menge
 		virtual size_t compressBound( size_t _size ) const = 0;
 
 	public:
-		virtual bool compress( void * _buffer, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _compressSize ) = 0;
+		virtual bool compress( void * _buffer, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _compressSize, EArchivatorCompress _compress ) = 0;
 		virtual bool decompress( void * _buffer, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _uncompressSize ) = 0;
 	};
 
@@ -43,10 +50,10 @@ namespace Menge
 
 	public:
 		virtual bool decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress ) = 0;
-		virtual MemoryInputInterfacePtr compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream ) = 0;
+		virtual MemoryInputInterfacePtr compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, EArchivatorCompress _compress ) = 0;
 
 	public:
-		virtual MemoryInputInterfacePtr compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size ) = 0;
+		virtual MemoryInputInterfacePtr compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress ) = 0;
     };
 
 #   define ARCHIVE_SERVICE( serviceProvider )\

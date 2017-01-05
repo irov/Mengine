@@ -36,14 +36,32 @@ namespace Menge
 		return (size_t)size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchivatorZip::compress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _compressSize )
+	bool ArchivatorZip::compress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _compressSize, EArchivatorCompress _compress )
     {
 		uLong compressSize = (uLong)_bufferSize;
 
         Bytef * dst_buffer = (Bytef *)_distance;
         const Bytef * src_buffer = (const Bytef *)_source;
 
-		int zerr = ::compress( dst_buffer, &compressSize, src_buffer, (uLong)_sourceSize);
+		int compress_method = 0;
+
+		switch( _compress )
+		{
+		case EAC_FAST:
+			{
+				compress_method = 1;
+			}break;
+		case EAC_NORMAL:
+			{
+				compress_method = 6;
+			}break;
+		case EAC_BEST:
+			{
+				compress_method = 9;
+			}
+		};
+
+		int zerr = ::compress2( dst_buffer, &compressSize, src_buffer, (uLong)_sourceSize, compress_method );
 
         if( zerr != Z_OK )
         {

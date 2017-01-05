@@ -833,7 +833,7 @@ namespace Menge
 		const void * buffer_memory = &_buffer[0];
 		size_t buffer_size = _buffer.size();
 
-		if( Helper::writeStreamArchiveData( m_serviceProvider, output_stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), false, buffer_memory, buffer_size ) == false )
+		if( Helper::writeStreamArchiveData( m_serviceProvider, output_stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), false, buffer_memory, buffer_size, EAC_BEST ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::writeFramePak_ invalid write stream %s:%s"
 				, m_options.pakName.c_str()

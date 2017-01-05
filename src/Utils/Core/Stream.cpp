@@ -275,10 +275,10 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool writeStreamArchiveBuffer( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, bool _crc32, const void * _data, size_t _size )
+		bool writeStreamArchiveBuffer( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, bool _crc32, const void * _data, size_t _size, EArchivatorCompress _compress )
 		{ 
 			MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE( _serviceProvider )
-				->compressBuffer( _archivator, _data, _size );
+				->compressBuffer( _archivator, _data, _size, _compress );
 
 			if( compress_memory == nullptr )
 			{
@@ -354,14 +354,14 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool writeStreamArchiveData( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, bool _crc32, const void * _data, size_t _size )
+		bool writeStreamArchiveData( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, bool _crc32, const void * _data, size_t _size, EArchivatorCompress _compress )
 		{
 			if( Helper::writeStreamMagicHeader( _serviceProvider, _stream, _magic, _version ) == false )
 			{
 				return false;
 			}
 
-			if( Helper::writeStreamArchiveBuffer( _serviceProvider, _stream, _archivator, _crc32, _data, _size ) == false )
+			if( Helper::writeStreamArchiveBuffer( _serviceProvider, _stream, _archivator, _crc32, _data, _size, _compress ) == false )
 			{
 				return false;
 			}

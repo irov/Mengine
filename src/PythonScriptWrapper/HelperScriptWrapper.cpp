@@ -1960,7 +1960,7 @@ namespace Menge
 			size_t data_size = _data.size();
 
 			MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE( m_serviceProvider )
-				->compressBuffer( archivator, &_data[0], data_size );
+				->compressBuffer( archivator, &_data[0], data_size, EAC_NORMAL );
 
 			if( compress_memory == nullptr )
 			{

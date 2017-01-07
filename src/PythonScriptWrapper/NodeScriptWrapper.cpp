@@ -4011,6 +4011,25 @@ namespace Menge
 			MODULE_SERVICE( m_serviceProvider )
 				->message( _moduleName, _messageName, _params );
 		}
+        //////////////////////////////////////////////////////////////////////////
+        Scene * s_findNodeScene( Node * _node )
+        {
+            Node * node_iterator = _node;
+
+            while( node_iterator )
+            {
+                Scene * node_scene = dynamic_cast<Scene *>(node_iterator);
+
+                if( node_scene != nullptr )
+                {
+                    return node_scene;
+                }
+
+                node_iterator = node_iterator->getParent();                
+            }
+
+            return nullptr;
+        }
 		//////////////////////////////////////////////////////////////////////////
 		void s_setLocale( const ConstString & _locale )
 		{
@@ -7783,6 +7802,8 @@ namespace Menge
 			pybind::def_functor( "removeNodeFollower", nodeScriptMethod, &NodeScriptMethod::s_removeNodeFollower );
 			
 			pybind::def_functor( "moduleMessage", nodeScriptMethod, &NodeScriptMethod::s_moduleMessage );
+
+            pybind::def_functor( "findNodeScene", nodeScriptMethod, &NodeScriptMethod::s_findNodeScene );
 		}
 	}
 }

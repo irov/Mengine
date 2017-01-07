@@ -55,6 +55,12 @@ Surface\\\\SurfaceSound
 )
 
 ADD_FILTER(
+Surface\\\\SurfaceSolidColor
+	SurfaceSolidColor.cpp
+	SurfaceSolidColor.h
+)
+
+ADD_FILTER(
 Surface\\\\SurfaceImage
 	SurfaceImage.cpp
 	SurfaceImage.h

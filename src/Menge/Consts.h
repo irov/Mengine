@@ -76,6 +76,7 @@ namespace Menge
 		DECL_CONST( SurfaceSound );
         DECL_CONST( SurfaceImage );
 		DECL_CONST( SurfaceImageSequence );
+        DECL_CONST( SurfaceSolidColor );
 		DECL_CONST( CreateImage );
 		DECL_CONST( CreateTarget );
 		DECL_CONST( CreateTexture );

@@ -40,8 +40,6 @@ namespace Menge
         void updateVerticesLocal() const override;
 
 	protected:
-        SurfacePtr m_surface;
-
 		mt::vec2f m_customSize;
 
         mt::vec4f m_percentVisibility;

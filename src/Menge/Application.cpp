@@ -101,6 +101,7 @@
 #	include "SurfaceImage.h"
 #	include "SurfaceImageSequence.h"
 #	include "SurfaceTrackMatte.h"
+#   include "SurfaceSolidColor.h"
 
 
 // All Resource type
@@ -415,6 +416,7 @@ namespace Menge
         SURFACE_FACTORY( m_serviceProvider, SurfaceImage );
 		SURFACE_FACTORY( m_serviceProvider, SurfaceImageSequence );
 		SURFACE_FACTORY( m_serviceProvider, SurfaceTrackMatte );
+        SURFACE_FACTORY( m_serviceProvider, SurfaceSolidColor );
 
 #	undef SURFACE_FACTORY
 

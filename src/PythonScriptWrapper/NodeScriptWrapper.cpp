@@ -86,6 +86,7 @@
 #	include "Menge/SurfaceSound.h"
 #	include "Menge/SurfaceImage.h"
 #	include "Menge/SurfaceImageSequence.h"
+#	include "Menge/SurfaceSolidColor.h"
 
 
 #	include "Kernel/Isometric.h"
@@ -2367,6 +2368,64 @@ namespace Menge
 
 			return node;
 		}
+        //////////////////////////////////////////////////////////////////////////
+        SurfacePtr createSurface( const ConstString & _type )
+        {
+            SurfacePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Surface" ), _type );
+
+            return surface;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        ShapeQuadFixed * createSprite( const ConstString & _name, const ConstString & _resourceName )
+        {
+            const ResourceReferencePtr & resource = RESOURCE_SERVICE( m_serviceProvider )
+                ->getResourceReference( _resourceName );
+
+            if( resource == nullptr )
+            {
+                LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' not exist resource '%s'"
+                    , _name.c_str()
+                    , _resourceName.c_str()
+                    );
+                
+                return nullptr;
+            }
+
+            SurfaceImagePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
+                ->generatePrototypeT<SurfaceImage *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "SurfaceImage" ) );
+
+            if( surface == nullptr )
+            {
+                LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' resource '%s' invalid create surface 'SurfaceImage'"
+                    , _name.c_str()
+                    , _resourceName.c_str()
+                    );
+
+                return nullptr;
+            }
+
+            surface->setResourceImage( resource );
+
+            ShapeQuadFixed * shape = NODE_SERVICE( m_serviceProvider )
+                ->createNodeT<ShapeQuadFixed *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ShapeQuadFixed" ) );
+
+            if( shape == nullptr )
+            {
+                LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' resource '%s' invalid create shape 'ShapeQuadFixed'"
+                    , _name.c_str()
+                    , _resourceName.c_str()
+                    );
+
+                return nullptr;
+            }
+
+            shape->setName( _name );
+
+            shape->setSurface( surface );
+
+            return shape;
+        }
 		//////////////////////////////////////////////////////////////////////////
 		void quitApplication()
 		{
@@ -6453,10 +6512,12 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceInternalObject );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceHIT );
 
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, Surface );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceVideo );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceSound );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceImage );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceImageSequence );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceSolidColor );
 
 # undef SCRIPT_CLASS_WRAPPING
 	}
@@ -6883,7 +6944,8 @@ namespace Menge
 			.def_proxy_args_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::accAngleTo )
 			;
 
-		pybind::interface_<Surface, pybind::bases<Identity, Materialable, Resource> >( "Surface", false )            
+        pybind::interface_<Surface, pybind::bases<Identity, Materialable, Resource> >( "Surface", false )
+            .def_smart_pointer()
             .def( "getMaxSize", &Surface::getMaxSize )
             .def( "getSize", &Surface::getSize )
             .def( "getOffset", &Surface::getOffset )
@@ -6924,6 +6986,14 @@ namespace Menge
 			.def( "getCurrentFrame", &SurfaceImageSequence::getCurrentFrame )
             .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceImageSequence_setEventListener )
 			;
+
+        pybind::interface_<SurfaceSolidColor, pybind::bases<Surface> >( "SurfaceSolidColor", false )
+            .def( "setSolidColor", &SurfaceSolidColor::setSolidColor )
+            .def( "getSolidColor", &SurfaceSolidColor::getSolidColor )
+            .def( "setSolidSize", &SurfaceSolidColor::setSolidSize )
+            .def( "getSolidSize", &SurfaceSolidColor::getSolidSize )
+            ;
+        
 
 		pybind::interface_<ThreadTask>( "Task" )
 			;
@@ -7453,6 +7523,10 @@ namespace Menge
 			pybind::def_functor( "createNode", nodeScriptMethod, &NodeScriptMethod::createNode );
 			//pybind::def_function( "createNodeFromBinary", &ScriptMethod::createNodeFromBinary );
 			pybind::def_functor( "destroyNode", nodeScriptMethod, &NodeScriptMethod::destroyNode );
+
+            pybind::def_functor( "createSurface", nodeScriptMethod, &NodeScriptMethod::createSurface );
+
+            pybind::def_functor( "createSprite", nodeScriptMethod, &NodeScriptMethod::createSprite );
 
 			pybind::def_functor_args( "timing", nodeScriptMethod, &NodeScriptMethod::timing );
 			pybind::def_functor( "timingRemove", nodeScriptMethod, &NodeScriptMethod::timingRemove );

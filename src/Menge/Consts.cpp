@@ -69,6 +69,7 @@ namespace Menge
 		INIT_CONST( SurfaceVideo );
 		INIT_CONST( SurfaceSound );
         INIT_CONST( SurfaceImage );
+        INIT_CONST( SurfaceSolidColor );
 		INIT_CONST( SurfaceImageSequence );
         INIT_CONST( CreateImage );
         INIT_CONST( CreateTarget );

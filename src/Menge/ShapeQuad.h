@@ -29,8 +29,6 @@ namespace Menge
         inline const RenderVertex2D * getVerticesWM() const;
 
 	protected:
-        SurfacePtr m_surface;
-
         mutable mt::vec2f m_verticesLocal[4];
         mutable RenderVertex2D m_verticesWM[4];
     };

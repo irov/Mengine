@@ -7,6 +7,55 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	namespace Helper
 	{
+        //////////////////////////////////////////////////////////////////////////
+        RenderMaterialInterfacePtr makeSolidMaterial( ServiceProviderInterface * _serviceProvider, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _solid )
+        {
+            if( _materialName.empty() == false )
+            {
+                RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( _serviceProvider )
+                    ->getMaterial( _materialName, PT_TRIANGLELIST, 0, nullptr );
+
+                return material;
+            }
+
+            EMaterial materialId = EM_DEBUG;
+
+            switch( _blendMode )
+            {
+            case EMB_NORMAL:
+                {
+                    if( _solid == false )
+                    {
+                        materialId = EM_COLOR_BLEND;
+                    }
+                    else
+                    {
+                        materialId = EM_COLOR_SOLID;
+                    }
+                }break;
+            case EMB_ADD:
+                {
+                    materialId = EM_COLOR_INTENSIVE;
+                }break;
+            case EMB_SCREEN:
+                {
+                    materialId = EM_COLOR_SCREEN;
+                }break;
+            case EMB_MULTIPLY:
+                {
+                    materialId = EM_COLOR_MULTIPLY;
+                }break;
+            }
+
+            const ConstString & materialName = RENDERMATERIAL_SERVICE( _serviceProvider )
+                ->getMaterialName( materialId );
+
+            RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( _serviceProvider )
+                ->getMaterial( materialName, PT_TRIANGLELIST, 0, nullptr );
+
+            return material;
+        }
+        //////////////////////////////////////////////////////////////////////////
 		RenderMaterialInterfacePtr makeImageMaterial( ServiceProviderInterface * _serviceProvider, const ResourceImagePtr & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid )
 		{
 			uint32_t texturesNum = 0;
@@ -474,6 +523,13 @@ namespace Menge
 
 		this->invalidateMaterial();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    RenderMaterialInterfacePtr Materialable::makeSolidMaterial( ServiceProviderInterface * _serviceProvider, bool _solid ) const
+    {
+        RenderMaterialInterfacePtr material = Helper::makeSolidMaterial( _serviceProvider, m_materialName, m_blendMode, _solid );
+
+        return material;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr Materialable::makeImageMaterial( ServiceProviderInterface * _serviceProvider, const ResourceImagePtr & _resourceImage, bool _solid ) const
 	{

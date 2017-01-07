@@ -5,6 +5,8 @@
 #	include "Kernel/ResourceReference.h"
 #	include "Factory/FactoryStore.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "Config/Typedef.h"
 
 #	include <stdex/stl_map.h>

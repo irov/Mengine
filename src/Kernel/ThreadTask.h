@@ -2,6 +2,8 @@
 
 #	include "Interface/ThreadSystemInterface.h"
 
+#   include "Core/ServantBase.h"
+
 namespace Menge 
 {
 	class ThreadTask

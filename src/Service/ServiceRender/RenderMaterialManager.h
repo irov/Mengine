@@ -2,6 +2,8 @@
 
 #   include "Interface/RenderSystemInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "RenderMaterial.h"
 
 #	include "Factory/FactoryStore.h"

@@ -2,6 +2,8 @@
 
 #	include "Interface/GraveyardInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 namespace Menge
 {
 	struct RenderTextureGraveEntry

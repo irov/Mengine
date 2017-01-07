@@ -3,6 +3,8 @@
 #	include "Interface/LoggerInterface.h"
 #	include "Interface/StreamInterface.h"
 
+#   include "Core/ServantBase.h"
+
 namespace Menge
 {
 	class FileLogger

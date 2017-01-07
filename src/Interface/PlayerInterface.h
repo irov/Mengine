@@ -76,8 +76,8 @@ namespace Menge
 		virtual void calcGlobalMouseWorldDelta( const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) = 0;
 
 	public:
-		virtual ScheduleManagerInterface * createSchedulerManager() = 0;
-		virtual bool destroySchedulerManager( ScheduleManagerInterface * _scheduler ) = 0;
+		virtual ScheduleManagerInterfacePtr createSchedulerManager() = 0;
+		virtual bool destroySchedulerManager( const ScheduleManagerInterfacePtr & _scheduler ) = 0;
 
     public:
         virtual void setRenderCamera( RenderCameraInterface * _camera) = 0;
@@ -96,16 +96,8 @@ namespace Menge
         virtual GlobalHandleSystemInterface * getGlobalHandleSystem() const = 0;
 
     public:
-        virtual ScheduleManagerInterface * getScheduleManager() const = 0;
-        virtual ScheduleManagerInterface * getScheduleManagerGlobal() const = 0;
-
-	public:
-		virtual ScheduleManagerInterface * createTimingManager() = 0;
-		virtual bool destroyTimingManager( ScheduleManagerInterface * _timing ) = 0;
-
-    public:
-		virtual ScheduleManagerInterface * getTimingManager() const = 0;
-		virtual ScheduleManagerInterface * getTimingManagerGlobal() const = 0;
+        virtual const ScheduleManagerInterfacePtr & getScheduleManager() const = 0;
+        virtual const ScheduleManagerInterfacePtr & getScheduleManagerGlobal() const = 0;
 
 	public:
 		virtual Affectorable * getAffectorable() const = 0;

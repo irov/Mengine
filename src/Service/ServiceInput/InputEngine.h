@@ -2,6 +2,8 @@
 
 #	include "Interface/InputSystemInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "Core/Resolution.h"
 #	include "Core/Viewport.h"
 

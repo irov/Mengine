@@ -2,6 +2,8 @@
 
 #	include "Interface/ArchiveInterface.h"
 
+#   include "Core/ServantBase.h"
+
 namespace Menge
 {
 	class ArchivatorLZ4

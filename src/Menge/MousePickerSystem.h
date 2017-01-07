@@ -2,6 +2,8 @@
 
 #   include "Interface/MousePickerSystemInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "Core/Viewport.h"
 
 #	include <stdex/stl_list.h>

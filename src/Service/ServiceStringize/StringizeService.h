@@ -2,6 +2,8 @@
 
 #	include "Interface/StringizeInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #   include "Factory/FactoryStore.h"
 
 #   include "ConstStringHolderMemory.h"

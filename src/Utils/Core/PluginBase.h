@@ -2,6 +2,8 @@
 
 #	include "Interface/PluginInterface.h"
 
+#   include "Core/ServantBase.h"
+
 namespace Menge
 {
 	class PluginBase

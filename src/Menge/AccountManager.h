@@ -2,6 +2,8 @@
 
 #   include "Interface/AccountInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "Factory/FactoryStore.h"
 
 #	include "pybind/types.hpp"

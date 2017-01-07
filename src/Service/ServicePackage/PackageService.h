@@ -3,6 +3,8 @@
 #   include "Interface/PackageInterface.h"
 #   include "Interface/NotificationServiceInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "Package.h"
 
 #	include "Factory/FactoryStore.h"

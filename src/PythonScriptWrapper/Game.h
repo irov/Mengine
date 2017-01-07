@@ -10,6 +10,8 @@
 #	include "Interface/SoundSystemInterface.h"
 #	include "Interface/ScriptSystemInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "Core/Resolution.h"
 #   include "Core/String.h"
 

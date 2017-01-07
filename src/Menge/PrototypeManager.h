@@ -2,6 +2,7 @@
 
 #   include "Interface/PrototypeManagerInterface.h"
 
+#   include "Core/ServiceBase.h"
 #	include "Core/ConstString.h"
 
 #   include "stdex/stl_map.h"

@@ -6,6 +6,7 @@ SET( SOURCE_DIR ${THIRDPARTY_DIR}/pybind )
 
 # OUR SOURCES
 set( sources
+${SOURCE_DIR}/src/base.cpp
 ${SOURCE_DIR}/src/kernel.cpp
 ${SOURCE_DIR}/src/kernel_python.cpp
 ${SOURCE_DIR}/src/adapter_interface.cpp

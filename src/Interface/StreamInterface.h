@@ -2,7 +2,7 @@
 
 #	include "Config/Typedef.h"
 
-#   include "Factory/FactorablePtr.h"
+#	include "Interface/ServantInterface.h"
 
 namespace Menge
 {
@@ -31,7 +31,7 @@ namespace Menge
     typedef stdex::intrusive_ptr<InputStreamInterface> InputStreamInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class OutputStreamInterface
-        : public FactorablePtr
+        : public ServantInterface
 	{
 	public:
 		virtual bool write( const void * _data, size_t _size ) = 0;

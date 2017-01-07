@@ -2,6 +2,8 @@
 
 #   include "Interface/ProfilerInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 namespace Menge
 {
     class ProfilerService

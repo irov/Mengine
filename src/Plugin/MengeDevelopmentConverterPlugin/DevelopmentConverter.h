@@ -2,6 +2,8 @@
 
 #	include "Interface/ConverterInterface.h"
 
+#   include "Core/ServantBase.h"
+
 namespace Menge
 {
 	class DevelopmentConverter

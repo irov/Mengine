@@ -1303,30 +1303,6 @@ namespace Menge
 				->getInputMouseButtonEventBlock();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		ScheduleManagerInterface * createTiming()
-		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
-				->createTimingManager();
-
-			return sm;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		bool destroyTiming( ScheduleManagerInterface * _tm )
-		{
-			if( _tm == nullptr )
-			{
-				LOGGER_ERROR( m_serviceProvider )("Menge.destroyTiming destroy is NULL"
-					);
-
-				return false;
-			}
-
-			bool successful = PLAYER_SERVICE( m_serviceProvider )
-				->destroyTimingManager( _tm );
-
-			return successful;
-		}
-		//////////////////////////////////////////////////////////////////////////
 		class PyScheduleTimerInterface
 			: public ScheduleTimerInterface
 		{
@@ -1494,8 +1470,8 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t timing( float _delay, const pybind::object & _listener, const pybind::detail::args_operator_t & _args )
 		{
-			ScheduleManagerInterface * tm = PLAYER_SERVICE( m_serviceProvider )
-				->getTimingManager();
+			const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE( m_serviceProvider )
+				->getScheduleManager();
 
 			DelaySchedulePipeInterface * pipe = m_factoryDelaySchedulePipeInterface.createObject();
 
@@ -1512,23 +1488,23 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool timingRemove( uint32_t _id )
 		{
-			ScheduleManagerInterface * tm = PLAYER_SERVICE( m_serviceProvider )
-				->getTimingManager();
+            const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE( m_serviceProvider )
+				->getScheduleManager();
 
 			bool successful = tm->remove( _id );
 
 			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		ScheduleManagerInterface * createScheduler()
+		ScheduleManagerInterfacePtr createScheduler()
 		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->createSchedulerManager();
 
 			return sm;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool destroyScheduler( ScheduleManagerInterface * _sm )
+		bool destroyScheduler( const ScheduleManagerInterfacePtr & _sm )
 		{
 			if( _sm == nullptr )
 			{
@@ -1546,7 +1522,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t schedule( float _timing, const pybind::object & _script, const pybind::detail::args_operator_t & _args )
 		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener.createObject();
@@ -1601,7 +1577,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool scheduleRemove( uint32_t _id )
 		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1616,7 +1592,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void scheduleRemoveAll()
 		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1629,7 +1605,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleFreeze( uint32_t _id, bool _freeze )
 		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1644,7 +1620,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_scheduleFreezeAll()
 		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1657,7 +1633,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void scheduleResumeAll()
 		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1670,7 +1646,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleIsFreeze( uint32_t _id )
 		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1683,7 +1659,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		float s_scheduleTime( uint32_t _id )
 		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1698,7 +1674,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_scheduleGlobal( float _timing, const pybind::object & _script, const pybind::detail::args_operator_t & _args )
 		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1717,7 +1693,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleGlobalRemove( uint32_t _id )
 		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1732,7 +1708,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_scheduleGlobalRemoveAll()
 		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1745,7 +1721,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleGlobalFreeze( uint32_t _id, bool _freeze )
 		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1760,7 +1736,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_scheduleGlobalFreezeAll()
 		{
-			ScheduleManagerInterface* sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1773,7 +1749,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_scheduleGlobalResumeAll()
 		{
-			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1786,7 +1762,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleGlobalIsFreeze( uint32_t _id )
 		{
-			ScheduleManagerInterface* sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1801,7 +1777,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		float s_scheduleGlobalTime( uint32_t _id )
 		{
-			ScheduleManagerInterface* sm = PLAYER_SERVICE( m_serviceProvider )
+            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -7482,6 +7458,7 @@ namespace Menge
 			pybind::def_functor( "timingRemove", nodeScriptMethod, &NodeScriptMethod::timingRemove );
 
 			pybind::interface_<ScheduleManagerInterface>( "ScheduleManagerInterface", true )
+                .def_smart_pointer()
 				.def_proxy_args_static( "timing", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_timing )
 				.def_proxy_args_static( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_schedule )
 				.def_proxy_args_static( "pipe", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_pipe )
@@ -7498,9 +7475,6 @@ namespace Menge
 				.def( "getSpeedFactor", &ScheduleManagerInterface::getSpeedFactor )
 				.def( "getTiming", &ScheduleManagerInterface::getTiming )
 				;
-
-			pybind::def_functor( "createTiming", nodeScriptMethod, &NodeScriptMethod::createTiming );
-			pybind::def_functor( "destroyTiming", nodeScriptMethod, &NodeScriptMethod::destroyTiming );
 
 			pybind::def_functor( "createScheduler", nodeScriptMethod, &NodeScriptMethod::createScheduler );
 			pybind::def_functor( "destroyScheduler", nodeScriptMethod, &NodeScriptMethod::destroyScheduler );

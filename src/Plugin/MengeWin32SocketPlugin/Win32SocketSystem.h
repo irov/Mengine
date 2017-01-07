@@ -2,6 +2,8 @@
 
 #	include "Interface/SocketInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #   include "Factory/FactoryStore.h"
 
 #	include "Win32Socket.h"

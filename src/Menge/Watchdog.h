@@ -4,6 +4,8 @@
 
 #	include "Config/Typedef.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include <stdex/stl_map.h>
 
 namespace Menge

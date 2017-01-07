@@ -2,6 +2,8 @@
 
 #	include "Interface/TimerInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 namespace Menge
 {
 	class TimerService

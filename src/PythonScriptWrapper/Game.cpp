@@ -292,32 +292,32 @@ namespace Menge
 
             bool onGameKey( KeyCode _key, float _x, float _y, WChar _code, bool _isDown, bool _isRepeat ) override
             {
-                m_cb.call( _key, _x, _y, _code, _isDown, _isRepeat );
+                return m_cb.call( _key, _x, _y, _code, _isDown, _isRepeat );
             }
 
             bool onGameMouseButton( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) override
             {
-                m_cb.call( _touchId, _x, _y, _button, _isDown );
+                return m_cb.call( _touchId, _x, _y, _button, _isDown );
             }
 
             bool onGameMouseButtonBegin( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) override
             {
-                m_cb.call( _touchId, _x, _y, _button, _isDown );
+                return m_cb.call( _touchId, _x, _y, _button, _isDown );
             }
 
             bool onGameMouseButtonEnd( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) override
             {
-                m_cb.call( _touchId, _x, _y, _button, _isDown );
+                return m_cb.call( _touchId, _x, _y, _button, _isDown );
             }
 
             bool onGameMouseMove( uint32_t _touchId, float _x, float _y, float _dx, float _dy ) override
             {
-                m_cb.call( _touchId, _x, _y, _dx, _dy );
+                return m_cb.call( _touchId, _x, _y, _dx, _dy );
             }
 
             bool onGameMouseWheel( uint32_t _button, float _x, float _y, int32_t _wheel ) override
             {
-                m_cb.call( _button, _x, _y, _wheel );
+                return m_cb.call( _button, _x, _y, _wheel );
             }
 
             void onGameAppMouseEnter( float _x, float _y ) override
@@ -337,7 +337,7 @@ namespace Menge
 
             bool onGamePreparation( bool _debug ) override
             {
-                m_cb.call( _debug );
+                return m_cb.call( _debug );
             }
 
             void onGameRun() override
@@ -347,7 +347,7 @@ namespace Menge
 
             bool onGameInitialize() override
             {
-                m_cb.call();
+                return m_cb.call();
             }
 
             void onGameInitializeRenderResources() override
@@ -427,16 +427,16 @@ namespace Menge
 
             bool onGameClose() override
             {
-                m_cb.call();
+                return m_cb.call();
             }
         };
     }
     //////////////////////////////////////////////////////////////////////////
 	void Game::registerEventMethods_( const ScriptModuleInterfacePtr & _module )
     {	
-        ScriptObject * script_object = _module->getScriptObject();
+        const pybind::base & base_module = _module->getModule();
 
-        pybind::module py_module( script_object );
+        pybind::module py_module( base_module );
 
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFullscreen", EVENT_GAME_FULLSCREEN );
 

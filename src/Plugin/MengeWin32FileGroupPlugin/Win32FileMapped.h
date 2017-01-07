@@ -3,6 +3,8 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/WindowsLayerInterface.h"
 
+#   include "Core/ServantBase.h"
+
 #   include "Factory/FactoryStore.h"
 
 namespace Menge

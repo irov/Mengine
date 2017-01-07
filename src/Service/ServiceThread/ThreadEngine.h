@@ -2,6 +2,8 @@
 
 #	include "Interface/ThreadSystemInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "ThreadQueue.h"
 #	include "ThreadMutexDummy.h"
 

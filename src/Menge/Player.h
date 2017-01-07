@@ -5,6 +5,7 @@
 #   include "Interface/MousePickerSystemInterface.h"
 #   include "Interface/GlobalHandleSystemInterface.h"
 
+#   include "Core/ServiceBase.h"
 #	include "Core/ConstString.h"
 #	include "Core/Resolution.h"
 
@@ -80,24 +81,16 @@ namespace Menge
 		void calcGlobalMouseWorldDelta( const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) override;
 
 	public:
-		ScheduleManagerInterface * createSchedulerManager() override;
-		bool destroySchedulerManager( ScheduleManagerInterface * _scheduler ) override;
+		ScheduleManagerInterfacePtr createSchedulerManager() override;
+		bool destroySchedulerManager( const ScheduleManagerInterfacePtr & _scheduler ) override;
 
     public:
         MousePickerSystemInterface * getMousePickerSystem() const override;
         GlobalHandleSystemInterface * getGlobalHandleSystem() const override;
 
     public:
-		ScheduleManagerInterface * getScheduleManager() const override;
-		ScheduleManagerInterface * getScheduleManagerGlobal() const override;
-
-	public:
-		ScheduleManagerInterface * createTimingManager() override;
-		bool destroyTimingManager( ScheduleManagerInterface * _timing ) override;
-
-    public:
-		ScheduleManagerInterface * getTimingManager() const override;
-		ScheduleManagerInterface * getTimingManagerGlobal() const override;
+        const ScheduleManagerInterfacePtr & getScheduleManager() const override;
+        const ScheduleManagerInterfacePtr & getScheduleManagerGlobal() const override;
 
 	public:
 		Affectorable * getAffectorable() const override;
@@ -168,21 +161,13 @@ namespace Menge
         MousePickerSystemInterface * m_mousePickerSystem;
         GlobalHandleSystemInterface * m_globalHandleSystem;
 
-		ScheduleManagerInterface * m_scheduleManager;
-		ScheduleManagerInterface * m_scheduleManagerGlobal;
-
-		typedef stdex::vector<ScheduleManagerInterface *> TVectorUserScheduler;
-		TVectorUserScheduler m_schedulers;
+		ScheduleManagerInterfacePtr m_scheduleManager;
+		ScheduleManagerInterfacePtr m_scheduleManagerGlobal;
 
         FactoryDefaultStore<ScheduleManager> m_factoryScheduleManager;
 
-		ScheduleManagerInterface * m_timingManager;
-		ScheduleManagerInterface * m_timingManagerGlobal;
-
-		typedef stdex::vector<ScheduleManagerInterface *> TVectorUserTiming;
-		TVectorUserTiming m_timingers;
-
-        FactoryDefaultStore<ScheduleManager> m_factoryTimingManager;
+		typedef stdex::vector<ScheduleManagerInterfacePtr> TVectorUserScheduler;
+		TVectorUserScheduler m_schedulers;               
 
 		Affectorable * m_affectorable;
 		Affectorable * m_affectorableGlobal;

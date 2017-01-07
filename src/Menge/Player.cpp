@@ -196,7 +196,6 @@ namespace Menge
 			}
 
 			m_scheduleManager->removeAll();
-			m_timingManager->removeAll();
 			m_affectorable->stopAllAffectors();
 
 			m_globalHandleSystem->clear();
@@ -316,7 +315,6 @@ namespace Menge
 		}
 
 		m_scheduleManager->removeAll();
-		m_timingManager->removeAll();
 		m_affectorable->stopAllAffectors();
 		
 		if( oldScene != nullptr && destroyOldScene == true )
@@ -389,7 +387,6 @@ namespace Menge
 		}
 
 		m_scheduleManager->removeAll();
-		m_timingManager->removeAll();
 		m_affectorable->stopAllAffectors();
 
 		m_scene->disable();
@@ -518,9 +515,9 @@ namespace Menge
 		Helper::screenToWorldDelta( m_renderCamera, _screenPoint, _screenDeltha, _worldDeltha );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ScheduleManagerInterface * Player::createSchedulerManager()
+	ScheduleManagerInterfacePtr Player::createSchedulerManager()
 	{
-		ScheduleManagerInterface * sm = m_factoryScheduleManager.createObject();
+		ScheduleManagerInterfacePtr sm = m_factoryScheduleManager.createObject();
 
 		sm->setServiceProvider( m_serviceProvider );
 
@@ -529,7 +526,7 @@ namespace Menge
 		return sm;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::destroySchedulerManager( ScheduleManagerInterface * _scheduler )
+	bool Player::destroySchedulerManager( const ScheduleManagerInterfacePtr & _scheduler )
 	{	
 		TVectorUserScheduler::iterator it_found = std::find( m_schedulers.begin(), m_schedulers.end(), _scheduler );
 
@@ -542,8 +539,6 @@ namespace Menge
 		}
 		
 		m_schedulers.erase( it_found );
-
-		_scheduler->destroy();
 
 		return true;
 	}
@@ -558,55 +553,15 @@ namespace Menge
         return m_globalHandleSystem;
     }
 	//////////////////////////////////////////////////////////////////////////
-	ScheduleManagerInterface * Player::getScheduleManager() const
+	const ScheduleManagerInterfacePtr & Player::getScheduleManager() const
 	{
 		return m_scheduleManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ScheduleManagerInterface * Player::getScheduleManagerGlobal() const
+	const ScheduleManagerInterfacePtr & Player::getScheduleManagerGlobal() const
 	{
 		return m_scheduleManagerGlobal;
 	}	
-	//////////////////////////////////////////////////////////////////////////
-	ScheduleManagerInterface * Player::createTimingManager()
-	{
-		ScheduleManagerInterface * tm = m_factoryTimingManager.createObject();
-
-		tm->setServiceProvider( m_serviceProvider );
-
-		m_timingers.push_back( tm );
-
-		return tm;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Player::destroyTimingManager( ScheduleManagerInterface * _timing )
-	{	
-		TVectorUserTiming::iterator it_found = std::find( m_timingers.begin(), m_timingers.end(), _timing );
-
-		if( it_found == m_timingers.end() )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Player::destroyTimingManager timing not found!"
-				);
-
-			return false;
-		}
-
-		m_timingers.erase( it_found );
-
-		_timing->destroy();
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ScheduleManagerInterface * Player::getTimingManager() const
-	{
-		return m_timingManager;
-	}
-    //////////////////////////////////////////////////////////////////////////
-	ScheduleManagerInterface * Player::getTimingManagerGlobal() const
-    {
-        return m_timingManagerGlobal;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	Affectorable * Player::getAffectorable() const
 	{
@@ -628,12 +583,6 @@ namespace Menge
 
 		m_scheduleManagerGlobal = m_factoryScheduleManager.createObject();
         m_scheduleManagerGlobal->setServiceProvider( m_serviceProvider );
-
-		m_timingManager = m_factoryTimingManager.createObject();
-        m_timingManager->setServiceProvider( m_serviceProvider );
-
-        m_timingManagerGlobal = m_factoryTimingManager.createObject();
-        m_timingManagerGlobal->setServiceProvider( m_serviceProvider );
 
 		m_affectorable = new Affectorable;
 		m_affectorableGlobal = new Affectorable;
@@ -694,53 +643,10 @@ namespace Menge
 			m_globalHandleSystem = nullptr;
 		}
 
-		if( m_scheduleManager != nullptr )
-		{
-			m_scheduleManager->destroy();
-			m_scheduleManager = nullptr;
-		}
-		
-		if( m_scheduleManagerGlobal != nullptr )
-		{
-			m_scheduleManagerGlobal->destroy();
-			m_scheduleManagerGlobal = nullptr;
-		}
-
-		for( TVectorUserScheduler::iterator
-			it = m_schedulers.begin(),
-			it_end = m_schedulers.end();
-		it != it_end;
-		++it )
-		{
-			ScheduleManagerInterface * sm = *it;
-
-			sm->destroy();
-		}
+		m_scheduleManager = nullptr;
+		m_scheduleManagerGlobal = nullptr;
 
 		m_schedulers.clear();
-
-		for( TVectorUserTiming::iterator
-			it = m_timingers.begin(),
-			it_end = m_timingers.end();
-		it != it_end;
-		++it )
-		{
-			ScheduleManagerInterface * tm = *it;
-
-			tm->destroy();
-		}
-
-		if( m_timingManager != nullptr )
-		{
-			m_timingManager->destroy();
-			m_timingManager = nullptr;
-		}
-
-        if( m_timingManagerGlobal != nullptr )
-        {
-            m_timingManagerGlobal->destroy();
-            m_timingManagerGlobal = nullptr;
-        }
 
 		if( m_affectorable != nullptr )
 		{
@@ -1003,7 +909,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ScheduleManagerInterface * sm = *it;
+			const ScheduleManagerInterfacePtr & sm = *it;
 
 			sm->update( _time, _timing );
 		}
@@ -1016,20 +922,6 @@ namespace Menge
 		if( m_affectorableGlobal != nullptr )
 		{
 			m_affectorableGlobal->updateAffectors( _time, _timing );
-		}
-
-		m_timingManager->update( _time, _timing );
-		m_timingManagerGlobal->update( _time, _timing );
-
-		for( TVectorUserTiming::iterator
-			it = m_timingers.begin(),
-			it_end = m_timingers.end();
-		it != it_end;
-		++it )
-		{
-			ScheduleManagerInterface * tm = *it;
-
-			tm->update( _time, _timing );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

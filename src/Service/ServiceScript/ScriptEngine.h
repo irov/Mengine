@@ -6,6 +6,8 @@
 
 #   include "ConstStringHolderPythonString.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "ScriptLogger.h"
 #	include "ScriptModule.h"
 #	include "ScriptModuleFinder.h"

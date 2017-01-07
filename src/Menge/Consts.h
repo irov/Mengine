@@ -2,6 +2,8 @@
 
 #	include "Config/Typedef.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "Core/ConstString.h"
 
 #   include "Interface/ServiceInterface.h"

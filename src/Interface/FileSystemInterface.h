@@ -26,7 +26,7 @@ namespace Menge
     typedef stdex::intrusive_ptr<FileInputStreamInterface> FileInputStreamInterfacePtr;
 
 	class FileMappedInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
 	public:
 		virtual bool open( const ConstString & _folder, const FilePath & _fileName ) = 0;

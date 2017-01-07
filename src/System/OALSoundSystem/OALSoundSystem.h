@@ -6,6 +6,8 @@
 #	include "OALSoundBufferStream.h"
 #	include "OALSoundSource.h"
 
+#   include "Core/ServiceBase.h"
+
 #   include "Factory/FactoryStore.h"
 
 #	include "AL/al.h"

@@ -2,6 +2,8 @@
 
 #	include "Interface/OptionsInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "Config/Char.h"
 
 namespace Menge

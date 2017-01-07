@@ -4,8 +4,8 @@
 
 #	include "Config/Typedef.h"
 
+#   include "Core/ServiceBase.h"
 #	include "Core/ConstString.h"
-
 
 namespace Menge
 {

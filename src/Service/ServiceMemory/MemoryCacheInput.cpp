@@ -12,8 +12,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MemoryCacheInput::MemoryCacheInput()
-		: m_serviceProvider(nullptr)
-		, m_memoryManager(nullptr)
+		: m_memoryManager(nullptr)
 		, m_bufferId(0)
 		, m_data(nullptr)
 		, m_size(0)
@@ -27,16 +26,6 @@ namespace Menge
 		this->uncache_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryCacheInput::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MemoryCacheInput::setMemoryManager( MemoryManager * _memoryManager )
-	{ 
-		m_memoryManager = _memoryManager;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void MemoryCacheInput::uncache_()
 	{
 		if( m_bufferId != 0 )
@@ -44,6 +33,11 @@ namespace Menge
 			m_memoryManager->unlockBuffer( m_bufferId );
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void MemoryCacheInput::setMemoryManager( MemoryManager * _memoryManager )
+    {
+        m_memoryManager = _memoryManager;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	Pointer MemoryCacheInput::cacheMemory( size_t _size, const char * _doc )
 	{

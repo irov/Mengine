@@ -1,6 +1,7 @@
 #   pragma once
 
 #   include "Interface/ServiceInterface.h"
+#   include "Interface/ServantInterface.h"
 
 #   include "Factory/FactorablePtr.h"
 

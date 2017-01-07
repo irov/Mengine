@@ -12,7 +12,7 @@
 namespace Menge
 {
 	class ArchivatorInterface
-		: public ServiceInterface
+		: public ServantInterface
 	{
 	public:
 		virtual size_t compressBound( size_t _size ) const = 0;

@@ -2,6 +2,8 @@
 
 #	include "Interface/ParticleSystemInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "Config/String.h"
 
 #	include "AstralaxEmitterContainer2.h"

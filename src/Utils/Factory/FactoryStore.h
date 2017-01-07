@@ -106,7 +106,7 @@ namespace Menge
 		FactoryPtr m_ptr;
 	};
 
-	template<class T, uint32_t Count>
+	template<class T, size_t Count>
 	class FactoryPoolStore
 	{
 	public:

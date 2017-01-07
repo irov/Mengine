@@ -4,6 +4,8 @@
 #   include "Interface/StreamInterface.h"
 #   include "Interface/ArchiveInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "Core/ConstString.h"
 #	include "Core/ConstStringTypes.h"
 #   include "Core/String.h"

@@ -9,6 +9,8 @@
 #   include "DX9RenderVertexBuffer.h"
 #   include "DX9RenderIndexBuffer.h"
 
+#   include "Core/ServiceBase.h"
+
 #   include "Factory/FactoryStore.h"
 
 #   include "stdex/stl_map.h"

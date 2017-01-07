@@ -2,6 +2,8 @@
 
 #	include "Interface/LoggerInterface.h"
 
+#   include "Core/ServantBase.h"
+
 namespace Menge
 {
 	class MessageBoxLogger

@@ -2,6 +2,8 @@
 
 #   include "Interface/TextInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "TextLocalePak.h"
 
 #	include "TextEntry.h"

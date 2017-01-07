@@ -4,6 +4,7 @@
 
 #	include "Kernel/Node.h"
 
+#	include "Core/ServantBase.h"
 #	include "Core/ConstString.h"
 #   include "Core/MemoryAllocator.h"
 

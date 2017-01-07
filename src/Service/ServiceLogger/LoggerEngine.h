@@ -2,6 +2,8 @@
 
 #	include "Interface/LoggerInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include <Logger/Logger.h>
 
 #	include <stdex/stl_vector.h>

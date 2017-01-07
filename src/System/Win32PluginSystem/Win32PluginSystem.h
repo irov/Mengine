@@ -2,6 +2,8 @@
 
 #   include "Interface/PluginInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 namespace Menge
 {
     class Win32PluginSystem

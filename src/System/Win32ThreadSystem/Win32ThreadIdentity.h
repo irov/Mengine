@@ -4,6 +4,8 @@
 
 #   include "WindowsLayer/WindowsIncluder.h"
 
+#	include "Core/ServantBase.h"
+
 namespace Menge
 {
 	class Win32ThreadIdentity

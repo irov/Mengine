@@ -3,6 +3,8 @@
 #   include <pybind/object.hpp>
 #   include <pybind/module.hpp>
 
+#   include "Factory/FactorableUnique.h"
+
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -37,9 +39,7 @@ namespace Menge
             }
             else
             {
-                static FactoryPoolStore<T_Receiver, 32> factory;
-
-                T_Receiver * receiver = factory.createObject();
+                T_Receiver * receiver = new FactorableUnique<T_Receiver>();
 
                 receiver->initialize( py_event );
 
@@ -63,9 +63,7 @@ namespace Menge
             }
             else
             {
-                static FactoryPoolStore<T_Receiver, 32> factory;
-
-                T_Receiver * receiver = factory.createObject();
+                T_Receiver * receiver = new FactorableUnique<T_Receiver>();
 
                 receiver->initialize( py_method );
 
@@ -89,9 +87,7 @@ namespace Menge
             }
             else
             {
-                static FactoryPoolStore<T_Receiver, 32> factory;
-
-                T_Receiver * receiver = factory.createObject();
+                T_Receiver * receiver = new FactorableUnique<T_Receiver>();
 
                 receiver->initialize( py_method );
 

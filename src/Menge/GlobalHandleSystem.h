@@ -2,6 +2,8 @@
 
 #	include "Interface/GlobalHandleSystemInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include <stdex/stl_vector.h>
 
 namespace Menge
@@ -43,9 +45,7 @@ namespace Menge
 		bool handleMouseMove( const InputMouseMoveEvent & _event ) override;
 		bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
-	protected:
-        ServiceProviderInterface * m_serviceProvider;
-        		
+	protected:      		
 		typedef stdex::vector<GlobalHandlerDesc> TVectorGlobalHandler;
 		TVectorGlobalHandler m_handlers;
 		TVectorGlobalHandler m_handlersAdd;

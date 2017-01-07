@@ -2,6 +2,8 @@
 
 #	include "Interface/PrototypeManagerInterface.h"
 
+#   include "Core/ServantBase.h"
+
 #	include "Kernel/Eventable.h"
 #	include "Kernel/Entity.h"
 

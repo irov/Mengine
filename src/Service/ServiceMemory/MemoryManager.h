@@ -4,6 +4,8 @@
 #	include "Interface/MemoryInterface.h"
 #	include "Interface/ThreadSystemInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "MemoryCacheBuffer.h"
 #	include "MemoryCacheInput.h"
 #	include "MemoryProxyInput.h"

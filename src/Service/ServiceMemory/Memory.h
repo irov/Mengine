@@ -3,6 +3,8 @@
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/MemoryInterface.h"
 
+#   include "Core/ServantBase.h"
+
 #   include "Factory/FactorablePtr.h"
 
 namespace Menge

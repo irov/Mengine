@@ -6,6 +6,8 @@
 
 #	include "MovieFramePack.h"
 
+#   include "Core/ServantBase.h"
+
 #	include "Factory/FactoryStore.h"
 
 namespace Menge

@@ -2,7 +2,8 @@
 
 #	include "Config/Typedef.h"
 
-#	include "Interface/ServiceInterface.h"
+#	include "Interface/ServantInterface.h"
+#   include "Interface/ServiceInterface.h"
 
 namespace Menge
 {

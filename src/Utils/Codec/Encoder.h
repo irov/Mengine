@@ -1,5 +1,7 @@
 #	pragma once
 
+#   include "Core/ServantBase.h"
+
 namespace Menge
 {
 	template<class TEncoderInterface>
@@ -8,8 +10,7 @@ namespace Menge
 	{
 	public:
 		Encoder()
-			: m_serviceProvider(nullptr)
-			, m_initialize(false)
+			: m_initialize(false)
 		{
 		}
 

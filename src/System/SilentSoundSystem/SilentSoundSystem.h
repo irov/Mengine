@@ -2,6 +2,8 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #   include "Factory/FactoryStore.h"
 
 #	include "SilentSoundBuffer.h"

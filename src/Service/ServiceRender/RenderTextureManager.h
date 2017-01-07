@@ -3,6 +3,8 @@
 #   include "Interface/RenderSystemInterface.h"
 #	include "Interface/ImageCodecInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #   include "RenderTexture.h"
 
 #	include "Core/ConstString.h"

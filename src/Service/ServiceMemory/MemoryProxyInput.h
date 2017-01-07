@@ -3,6 +3,8 @@
 #	include "Interface/StreamInterface.h"
 #	include "Interface/MemoryInterface.h"
 
+#   include "Core/ServantBase.h"
+
 #	include "stdex/thread_guard.h"
 
 namespace Menge

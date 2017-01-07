@@ -1,6 +1,7 @@
 #   pragma once
 
 #   include "Interface/ServiceInterface.h"
+#   include "Interface/ServantInterface.h"
 
 #   include "Factory/FactorablePtr.h"
 
@@ -74,4 +75,6 @@ namespace Menge
     public:
         virtual void update( float _current, float _timing ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<ScheduleManagerInterface> ScheduleManagerInterfacePtr;
 }

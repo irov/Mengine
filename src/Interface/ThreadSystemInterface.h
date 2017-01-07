@@ -1,9 +1,9 @@
 #	pragma once
 
 #   include "Interface/ServiceInterface.h"
+#   include "Interface/ServantInterface.h"
 
-#	include "Utils/Factory/Factorable.h"
-
+#	include "Factory/Factorable.h"
 #	include "Factory/FactorablePtr.h"
 
 #	include "Core/ConstString.h"
@@ -11,7 +11,7 @@
 namespace Menge
 {
     class ThreadTaskInterface
-        : public ServiceInterface
+        : public ServantInterface
     {
 	public:
 		virtual bool isRun() const = 0;

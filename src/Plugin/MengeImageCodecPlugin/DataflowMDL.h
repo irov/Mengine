@@ -4,6 +4,8 @@
 #	include "Interface/DataInterface.h"
 #   include "Interface/ArchiveInterface.h"
 
+#   include "Core/ServantBase.h"
+
 #	include "Model3DPack.h"
 
 #	include "Factory/FactoryStore.h"

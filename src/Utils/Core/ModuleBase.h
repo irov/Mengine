@@ -2,6 +2,8 @@
 
 #	include "Interface/ModuleInterface.h"
 
+#   include "Core/ServantBase.h"
+
 namespace Menge
 {
 	class ModuleBase

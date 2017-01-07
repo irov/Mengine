@@ -4,6 +4,8 @@
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/ArchiveInterface.h"
 
+#   include "Core/ServantBase.h"
+
 namespace Menge
 {
 	class XmlToBinDecoder

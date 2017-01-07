@@ -3,6 +3,8 @@
 #   include "Interface/StreamInterface.h"
 #	include "Interface/SoundSystemInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "MixerVolume.h"
 
 #   include "Kernel/ThreadJob.h"

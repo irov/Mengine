@@ -47,6 +47,7 @@ call:svndependr https://github.com/EsotericSoftware/spine-runtimes.git/trunk/spi
 call:svndepend https://github.com/zzzzrrr/poly2tri/trunk poly2tri
 call:svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
 call:svndepend https://github.com/erincatto/Box2D.git/trunk/Box2D Box2D
+call:svndepend https://github.com/irov/GOAP.git/trunk GOAP
 
 echo.&pause&goto:eof
 

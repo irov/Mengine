@@ -11,6 +11,15 @@ namespace Menge
     class PythonEventReceiver
     {
     public:
+        PythonEventReceiver()
+        {
+        }
+
+        ~PythonEventReceiver()
+        {
+        }
+
+    public:
         void initialize( const pybind::object & _cb )
         {
             m_cb = _cb;

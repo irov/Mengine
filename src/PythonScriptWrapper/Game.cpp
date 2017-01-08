@@ -292,7 +292,7 @@ namespace Menge
 
             bool onGameKey( KeyCode _key, float _x, float _y, WChar _code, bool _isDown, bool _isRepeat ) override
             {
-                return m_cb.call( _key, _x, _y, _code, _isDown, _isRepeat );
+                return m_cb.call( (uint32_t)_key, _x, _y, _code, _isDown, _isRepeat );
             }
 
             bool onGameMouseButton( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) override

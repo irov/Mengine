@@ -2212,7 +2212,7 @@ namespace Menge
 
             bool onHotSpotKey( const InputKeyEvent & _event ) override
             {
-                return m_cb.call( _event.x, _event.y, _event.key, _event.code, _event.isDown, _event.isRepeat );
+                return m_cb.call( _event.x, _event.y, (uint32_t)_event.key, _event.code, _event.isDown, _event.isRepeat );
             }
 
             bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override

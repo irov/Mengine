@@ -8,6 +8,7 @@
 #	include "NodeAOIActor.h"
 
 #	include "PythonScriptWrapper/ScriptClassWrapper.h"
+#	include "PythonScriptWrapper/PythonEventReceiver.h"
 
 #	include "Kernel/NodePrototypeGenerator.h"
 
@@ -16,6 +17,41 @@
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    class PythonNodeAOITriggerEventReceiver
+        : public PythonEventReceiver
+        , public NodeAOITriggerEventReceiver
+    {
+    public:
+        void onNodeAOITriggerEnter( AOIActorProviderInterface * _enemy, uint32_t _iff1, uint32_t _iff2 )
+        {
+            NodeAOIActor * enemy = static_cast<NodeAOIActor *>(_enemy);
+
+            m_cb.call( enemy, _iff1, _iff2 );
+        }
+
+        void onNodeAOITriggerLeave( AOIActorProviderInterface * _enemy, uint32_t _iff1, uint32_t _iff2 )
+        {
+            NodeAOIActor * enemy = static_cast<NodeAOIActor *>(_enemy);
+
+            m_cb.call( enemy, _iff1, _iff2 );
+        }
+    };
+    //////////////////////////////////////////////////////////////////////////
+    PyObject * s_NodeAOITrigger_setEventListener( NodeAOITrigger * _node, PyObject * _args, PyObject * _kwds )
+    {
+        if( _kwds == nullptr )
+        {
+            return pybind::ret_none();
+        }
+
+        pybind::dict py_kwds( _kwds );
+
+        Helper::registerEventReceiver<PythonNodeAOITriggerEventReceiver>( py_kwds, _node, "onTriggerEnter", EVENT_NODE_AOI_TRIGGER_ENTER );
+        Helper::registerEventReceiver<PythonNodeAOITriggerEventReceiver>( py_kwds, _node, "onTriggerLeave", EVENT_NODE_AOI_TRIGGER_LEAVE );
+
+        return pybind::ret_none();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	ModuleAreaOfInterest::ModuleAreaOfInterest()
 	{
@@ -44,6 +80,7 @@ namespace Menge
 			.def( "getAOI", &NodeAOITrigger::getAOI )
 			.def( "setTriggerUserData", &NodeAOITrigger::setTriggerUserData )
 			.def( "getTriggerUserData", &NodeAOITrigger::getTriggerUserData )
+            .def_static_native( "setEventListener", &s_NodeAOITrigger_setEventListener )
 			;
 
 		pybind::interface_<NodeAOIActor, pybind::bases<Node> >( "NodeAOIActor", false )

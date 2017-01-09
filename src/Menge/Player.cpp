@@ -1412,6 +1412,12 @@ namespace Menge
         (void)_fixed;
     }
 	//////////////////////////////////////////////////////////////////////////
+	void Player::onFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
+	{
+		(void)_resolution;
+		(void)_fixed;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Player::onFocus( bool _focus )
 	{
 		m_focus = _focus;

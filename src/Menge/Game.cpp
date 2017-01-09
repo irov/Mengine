@@ -39,6 +39,7 @@ namespace Menge
 	enum GameEventFlags
 	{
 		EVENT_GAME_FULLSCREEN = 0,
+		EVENT_GAME_FIXED_DISPLAY_RESOLUTION,
 		EVENT_GAME_FIXED_CONTENT_RESOLUTION,
 		EVENT_GAME_RENDER_VIEWPORT,
 		EVENT_GAME_VIEWPORT,
@@ -324,7 +325,8 @@ namespace Menge
 	void Game::registerEventMethods_( const ScriptModuleInterfacePtr & _module )
     {	
         _module->registerEventMethod( this, EVENT_GAME_FULLSCREEN, "onFullscreen" );
-		_module->registerEventMethod( this, EVENT_GAME_FIXED_CONTENT_RESOLUTION, "onFixedContentResolution" );
+		_module->registerEventMethod( this, EVENT_GAME_FIXED_DISPLAY_RESOLUTION, "onFixedDisplayResolution" );
+		_module->registerEventMethod( this, EVENT_GAME_FIXED_CONTENT_RESOLUTION, "onFixedContentResolution" );		
 		_module->registerEventMethod( this, EVENT_GAME_RENDER_VIEWPORT, "onRenderViewport" );
 		_module->registerEventMethod( this, EVENT_GAME_VIEWPORT, "onGameViewport" );
 		
@@ -610,6 +612,17 @@ namespace Menge
 
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_FIXED_CONTENT_RESOLUTION )(_fixed);
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Game::setFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
+	{
+		if( SERVICE_EXIST( m_serviceProvider, Menge::PlayerServiceInterface ) == true )
+		{
+			PLAYER_SERVICE( m_serviceProvider )
+				->onFixedContentResolution( _resolution, _fixed );
+		}
+
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_FIXED_DISPLAY_RESOLUTION )(_fixed);
+	}
     //////////////////////////////////////////////////////////////////////////
     void Game::setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )
     {

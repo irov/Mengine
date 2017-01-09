@@ -514,8 +514,8 @@ namespace Menge
 		
 
 		//while( true )
-		//{
-			aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, &providers, this );
+		{
+			aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_FALSE, &providers, this );
 
 			if( composition == nullptr )
 			{
@@ -523,7 +523,6 @@ namespace Menge
 			}
 
 			ae_set_movie_composition_loop( composition, AE_TRUE );
-			ae_set_movie_composition_interpolate( composition, AE_FALSE );
 
 			uint32_t max_render_node = ae_get_movie_composition_max_render_node( composition );
 
@@ -531,7 +530,7 @@ namespace Menge
 
 			//ae_destroy_movie_composition( composition );
 			m_composition = composition;
-		//}		
+		}		
 				
 		return true;
 	}
@@ -662,6 +661,21 @@ namespace Menge
 		printf( "time %f\n"
 			, ae_get_movie_composition_time( m_composition )
 			);
+
+
+		if( a < 2500.f )
+		{
+			a += _timing;
+			return;
+		}
+		
+		static bool aa = false;
+		if( aa == false )
+		{
+			aa = true;
+			ae_play_movie_sub_composition( m_composition, "persik", 0.f );
+		}
+
 		
 		//if( a < 10000.f )
 		//{

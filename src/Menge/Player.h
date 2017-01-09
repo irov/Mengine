@@ -145,6 +145,7 @@ namespace Menge
 
 		void onFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
 		void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
+		void onFixedDisplayResolution( const Resolution & _resolution, bool _fixed ) override;
 
 	protected:
 		void renderArrow_( unsigned int _debugMask );

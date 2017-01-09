@@ -2266,16 +2266,28 @@ namespace Menge
 				->getFullscreenMode();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_setFixedContentResolution( bool _fullscreen )
+		void s_setFixedContentResolution( bool _fixedContentResolution )
 		{
 			APPLICATION_SERVICE( m_serviceProvider )
-				->setFixedContentResolution( _fullscreen );
+				->setFixedContentResolution( _fixedContentResolution );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool s_getFixedContentResolution()
 		{
 			return APPLICATION_SERVICE( m_serviceProvider )
 				->getFixedContentResolution();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_setFixedDisplayResolution( bool _fixedDisplayResolution )
+		{
+			APPLICATION_SERVICE( m_serviceProvider )
+				->setFixedDisplayResolution( _fixedDisplayResolution );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_getFixedDisplayResolution()
+		{
+			return APPLICATION_SERVICE( m_serviceProvider )
+				->getFixedDisplayResolution();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void renderOneFrame()
@@ -7295,6 +7307,9 @@ namespace Menge
 			pybind::def_functor( "getFullscreenMode", nodeScriptMethod, &NodeScriptMethod::s_getFullscreenMode );
 			pybind::def_functor( "setFixedContentResolution", nodeScriptMethod, &NodeScriptMethod::s_setFixedContentResolution );
 			pybind::def_functor( "getFixedContentResolution", nodeScriptMethod, &NodeScriptMethod::s_getFixedContentResolution );
+			pybind::def_functor( "setFixedDisplayResolution", nodeScriptMethod, &NodeScriptMethod::s_setFixedDisplayResolution );
+			pybind::def_functor( "getFixedDisplayResolution", nodeScriptMethod, &NodeScriptMethod::s_getFixedDisplayResolution );
+			
 
 			pybind::def_functor( "renderOneFrame", nodeScriptMethod, &NodeScriptMethod::renderOneFrame );
 			pybind::def_functor( "writeImageToFile", nodeScriptMethod, &NodeScriptMethod::writeImageToFile );

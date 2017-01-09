@@ -216,10 +216,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( image_bb == true )
 	{
-		vec2f v0( 0.f, 0.f );
-		vec2f v1( image_base_size.x, 0.f );
-		vec2f v2( image_base_size.x, image_base_size.y );
-		vec2f v3( 0.f, image_base_size.y );
+		vec2f v0( image_trim_offset.x, image_trim_offset.y );
+		vec2f v1( image_trim_offset.x + image_trim_size.x, image_trim_offset.y );
+		vec2f v2( image_trim_offset.x + image_trim_size.x, image_trim_offset.y + image_trim_size.y );
+		vec2f v3( image_trim_offset.x, image_trim_offset.y + image_trim_size.y );
 
 		BoostPolygon imagePolygon;
 		boost::geometry::append( imagePolygon, v0 );

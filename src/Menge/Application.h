@@ -138,6 +138,10 @@ namespace Menge
 		bool getFixedContentResolution() const override;
 
 	public:
+		void setFixedDisplayResolution( bool _fixedDisplayResolution ) override;
+		bool getFixedDisplayResolution() override;
+
+	public:
 		bool isValidWindowMode() const override;		
 
 	public:

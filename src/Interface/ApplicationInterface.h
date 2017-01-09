@@ -77,6 +77,10 @@ namespace Menge
         virtual void setFixedContentResolution( bool _fixedContetResolution ) = 0; 
         virtual bool getFixedContentResolution() const = 0;
 
+		virtual void setFixedDisplayResolution( bool _fixedDisplayResolution ) = 0;
+		virtual bool getFixedDisplayResolution() = 0;
+
+
     public:
         virtual bool isValidWindowMode() const = 0;
 
@@ -104,8 +108,7 @@ namespace Menge
     public:
         virtual void setInputMouseButtonEventBlock( bool _block ) = 0;
         virtual bool getInputMouseButtonEventBlock() const = 0;
-
-
+		
     public:
         virtual void setCursorMode( bool _mode ) = 0;
         virtual bool getCursorMode() const = 0;

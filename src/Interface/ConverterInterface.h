@@ -44,23 +44,13 @@ namespace Menge
 	typedef stdex::intrusive_ptr<ConverterInterface> ConverterInterfacePtr;
 
 	class ConverterFactoryInterface
+        : public ServantInterface
 	{
 	public:
-		ConverterFactoryInterface()
-		{
-		};
-
-		virtual ~ConverterFactoryInterface()
-		{
-		};
-
-	public:
 		virtual ConverterInterfacePtr createConverter() = 0;
-        virtual const ConstString & getName() const = 0;
-
-    public:
-        virtual void destroy() = 0;
 	};
+
+    typedef stdex::intrusive_ptr<ConverterFactoryInterface> ConverterFactoryInterfacePtr;
 
 	class ConverterServiceInterface
 		: public ServiceInterface
@@ -68,7 +58,9 @@ namespace Menge
         SERVICE_DECLARE("ConverterService")
 
 	public:
-		virtual void registerConverter( const ConstString& _type, ConverterFactoryInterface * _interface ) = 0;
+		virtual void registerConverter( const ConstString& _type, const ConverterFactoryInterfacePtr & _converter ) = 0;
+
+    public:
 		virtual bool unregisterConverter( const ConstString& _type ) = 0;
 
 		virtual ConverterInterfacePtr createConverter( const ConstString & _type ) = 0; 

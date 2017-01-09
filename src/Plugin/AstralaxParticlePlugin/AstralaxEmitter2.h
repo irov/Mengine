@@ -2,6 +2,8 @@
 
 #	include "Interface/ParticleSystemInterface.h"
 
+#   include "Core/ServantBase.h"
+
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
 #	endif 
@@ -17,14 +19,14 @@ namespace Menge
 	class AstralaxParticleSystem2;
 
 	class AstralaxEmitter2 
-		: public ParticleEmitterInterface
+		: public ServantBase<ParticleEmitterInterface>
 	{
 	public:
 		AstralaxEmitter2();
 		~AstralaxEmitter2();
 
     public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, AstralaxParticleSystem2 * _particleSystem, const ParticleEmitterContainerInterface2Ptr & _container, HM_EMITTER _id );
+		bool initialize( AstralaxParticleSystem2 * _particleSystem, const ParticleEmitterContainerInterface2Ptr & _container, HM_EMITTER _id );
 		void finalize(); 
 		
 	public:
@@ -91,8 +93,6 @@ namespace Menge
         bool setupBasePosition_();
 		
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-		
 		AstralaxParticleSystem2 * m_particleSystem;
 
 		ParticleEmitterContainerInterface2Ptr m_container;

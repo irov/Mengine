@@ -81,7 +81,7 @@ namespace Menge
 	};
 
 	class ParticleEmitterInterface
-        : public FactorablePtr
+        : public ServantInterface
 	{
 	public:
 		virtual void play() = 0;

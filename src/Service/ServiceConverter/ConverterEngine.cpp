@@ -18,7 +18,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConverterEngine::registerConverter( const ConstString & _type, ConverterFactoryInterface * _factory )
+	void ConverterEngine::registerConverter( const ConstString & _type, const ConverterFactoryInterfacePtr & _factory )
 	{
         LOGGER_INFO(m_serviceProvider)("ConverterEngine::registerConverter add converter %s"
             , _type.c_str()
@@ -62,7 +62,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		ConverterFactoryInterface * factory = it_find->second;
+        const ConverterFactoryInterfacePtr & factory = it_find->second;
 
 		if( factory == nullptr )
 		{

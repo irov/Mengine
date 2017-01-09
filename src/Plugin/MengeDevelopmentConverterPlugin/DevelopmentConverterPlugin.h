@@ -17,9 +17,5 @@ namespace Menge
 	protected:
 		bool _initialize() override;
 		void _finalize() override;
-
-	protected:
-		typedef stdex::vector<ConverterFactoryInterface *> TVectorHotspotImageConverters;
-		TVectorHotspotImageConverters m_converters;
 	};
 }

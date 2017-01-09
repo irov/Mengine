@@ -22,7 +22,7 @@ namespace Menge
 		~ConverterEngine();
 
 	public:
-		void registerConverter( const ConstString & _type, ConverterFactoryInterface * _interface ) override;
+		void registerConverter( const ConstString & _type, const ConverterFactoryInterfacePtr & _interface ) override;
 		bool unregisterConverter( const ConstString & _type ) override;
 
 		ConverterInterfacePtr createConverter( const ConstString & _type ) override; 
@@ -31,7 +31,7 @@ namespace Menge
         bool convert( const ConstString & _converter, const ConstString & _category, const ConstString & _in, ConstString & _out ) override;
 			
 	protected:
-		typedef stdex::map<ConstString, ConverterFactoryInterface *> TMapConverterSystem;
+		typedef stdex::map<ConstString, ConverterFactoryInterfacePtr> TMapConverterSystem;
 		TMapConverterSystem m_mapConverterSystem;
 	};
 }

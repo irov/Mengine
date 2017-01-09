@@ -4,6 +4,7 @@
 
 #	include "AstralaxEmitter2.h"
 
+#   include "Core/ServantBase.h"
 #   include "Factory/FactoryStore.h"
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
@@ -21,15 +22,11 @@ namespace Menge
 	class AstralaxParticleSystem2;
 
 	class AstralaxEmitterContainer2
-		: public ParticleEmitterContainerInterface2
+		: public ServantBase<ParticleEmitterContainerInterface2>
 	{
 	public:
 		AstralaxEmitterContainer2();
 		~AstralaxEmitterContainer2();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
 
     public:
 		bool initialize( AstralaxParticleSystem2 * _particleSystem, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator );
@@ -57,9 +54,7 @@ namespace Menge
 		bool loadContainer_( const unsigned char * _buffer, size_t _size, HM_FILE & _mf ) const;
 		HM_EMITTER createEmitterId_() const;
 			
-	private:
-        ServiceProviderInterface * m_serviceProvider;
-
+    protected:
 		AstralaxParticleSystem2 * m_particleSystem;
 
 		HM_FILE m_mf;

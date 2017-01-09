@@ -12,8 +12,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitterContainer2::AstralaxEmitterContainer2()
-        : m_serviceProvider(nullptr)
-		, m_particleSystem(nullptr)
+        : m_particleSystem(nullptr)
 		, m_mf(0)
 		, m_id(0)
 	{
@@ -21,16 +20,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitterContainer2::~AstralaxEmitterContainer2()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitterContainer2::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * AstralaxEmitterContainer2::getServiceProvider() const 
-	{
-		return m_serviceProvider;
 	}
     //////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitterContainer2::initialize( AstralaxParticleSystem2 * _particleSystem, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
@@ -216,7 +205,9 @@ namespace Menge
 
 		AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter.createObject();
 
-		if( emitter->initialize( m_serviceProvider, m_particleSystem, this, id ) == false )
+        emitter->setServiceProvider( m_serviceProvider );
+
+		if( emitter->initialize( m_particleSystem, this, id ) == false )
 		{
 			return nullptr;
 		}

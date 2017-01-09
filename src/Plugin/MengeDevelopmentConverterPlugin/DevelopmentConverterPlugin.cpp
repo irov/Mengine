@@ -30,51 +30,33 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DevelopmentConverterPlugin::_initialize()
 	{
-		m_converters.push_back( new ConverterFactory<HotspotImageConverterPNGToHIT>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "png2hit")) );
-		m_converters.push_back( new ConverterFactory<SoundConverterFFMPEGToOGG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToOggSound")) );
-		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToWEBM>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToWebM")) );
-		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToOGV>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToOGV")) );
-		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToOGVA>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToOGVA")) );
-		m_converters.push_back( new ConverterFactory<MovieKeyConverterXMLToAEK>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "xmlToAekMovie")) );
-		m_converters.push_back( new ConverterFactory<ModelConverterMDLToMDZ>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "mdlToMdzModel")) );
-		m_converters.push_back( new ConverterFactory<ParticleConverterPTCToPTZ>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ptc2ptz")) );
-		m_converters.push_back( new ConverterFactory<ImageConverterPVRToHTF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "pvr2htf")) );
-		m_converters.push_back( new ConverterFactory<ImageConverterDDSToHTF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "dds2htf")) );		
-		m_converters.push_back( new ConverterFactory<ImageConverterPNGToACF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "png2acf")) );
-
-		for( TVectorHotspotImageConverters::iterator
-			it = m_converters.begin(), 
-			it_end = m_converters.end();
-		it != it_end;
-		++it )
-		{
-            ConverterFactoryInterface * converter = (*it);
-
-			const ConstString & name = converter->getName();
-
-			CONVERTER_SERVICE(m_serviceProvider)
-                ->registerConverter( name, converter );
-		}
+        Helper::registerConverter<HotspotImageConverterPNGToHIT>( m_serviceProvider, "png2hit" );
+        Helper::registerConverter<SoundConverterFFMPEGToOGG>( m_serviceProvider, "ffmpegToOggSound" );
+        Helper::registerConverter<VideoConverterFFMPEGToWEBM>( m_serviceProvider, "ffmpegToWebM" );
+        Helper::registerConverter<VideoConverterFFMPEGToOGV>( m_serviceProvider, "ffmpegToOGV" );
+        Helper::registerConverter<VideoConverterFFMPEGToOGVA>( m_serviceProvider, "ffmpegToOGVA" );
+        Helper::registerConverter<MovieKeyConverterXMLToAEK>( m_serviceProvider, "xmlToAekMovie" );
+        Helper::registerConverter<ModelConverterMDLToMDZ>( m_serviceProvider, "mdlToMdzModel" );
+        Helper::registerConverter<ParticleConverterPTCToPTZ>( m_serviceProvider, "ptc2ptz" );
+        Helper::registerConverter<ImageConverterPVRToHTF>( m_serviceProvider, "pvr2htf" );
+        Helper::registerConverter<ImageConverterDDSToHTF>( m_serviceProvider, "dds2htf" );
+        Helper::registerConverter<ImageConverterPNGToACF>( m_serviceProvider, "png2acf" );
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DevelopmentConverterPlugin::_finalize()
 	{
-		for( TVectorHotspotImageConverters::iterator
-			it = m_converters.begin(),
-			it_end = m_converters.end();
-		it != it_end;
-		++it )
-		{
-			ConverterFactoryInterface * converter = (*it);
-
-			const ConstString & name = converter->getName();
-
-			CONVERTER_SERVICE(m_serviceProvider)
-				->unregisterConverter( name );
-		}
-
-		m_converters.clear();
+        Helper::unregisterConverter( m_serviceProvider, "png2hit" );
+        Helper::unregisterConverter( m_serviceProvider, "ffmpegToOggSound" );
+        Helper::unregisterConverter( m_serviceProvider, "ffmpegToWebM" );
+        Helper::unregisterConverter( m_serviceProvider, "ffmpegToOGV" );
+        Helper::unregisterConverter( m_serviceProvider, "ffmpegToOGVA" );
+        Helper::unregisterConverter( m_serviceProvider, "xmlToAekMovie" );
+        Helper::unregisterConverter( m_serviceProvider, "mdlToMdzModel" );
+        Helper::unregisterConverter( m_serviceProvider, "ptc2ptz" );
+        Helper::unregisterConverter( m_serviceProvider, "pvr2htf" );
+        Helper::unregisterConverter( m_serviceProvider, "dds2htf" );
+        Helper::unregisterConverter( m_serviceProvider, "png2acf" );
 	}
 }

@@ -11,8 +11,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitter2::AstralaxEmitter2()
-		: m_serviceProvider( nullptr )
-		, m_emitterId( 0 )
+		: m_emitterId( 0 )
 		, m_positionProvider( nullptr )
 		, m_cameraProvider( nullptr )
 		, m_updateSpeed( 0.f )
@@ -32,9 +31,8 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::initialize( ServiceProviderInterface * _serviceProvider, AstralaxParticleSystem2 * _particleSystem, const ParticleEmitterContainerInterface2Ptr & _container, HM_EMITTER _id )
+	bool AstralaxEmitter2::initialize( AstralaxParticleSystem2 * _particleSystem, const ParticleEmitterContainerInterface2Ptr & _container, HM_EMITTER _id )
     {
-        m_serviceProvider = _serviceProvider;
 		m_particleSystem = _particleSystem;
 		m_container = _container;
         m_emitterId = _id;

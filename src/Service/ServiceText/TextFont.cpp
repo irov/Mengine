@@ -8,8 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TextFont::TextFont()
-		: m_serviceProvider(nullptr)
-		, m_height(0.f)
+		: m_height(0.f)
 		, m_params(EFP_NONE)
 		, m_lineOffset(0.f)
 		, m_charOffset(0.f)
@@ -18,11 +17,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextFont::~TextFont()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextFont::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextFont::setName( const ConstString & _name )

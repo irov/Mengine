@@ -2,10 +2,12 @@
 
 #   include "Interface/ThreadSystemInterface.h"
 
+#   include "Core/ServantBase.h"
+
 namespace Menge
 {
 	class ThreadMutexDummy
-		: public ThreadMutexInterface
+		: public ServantBase<ThreadMutexInterface>
 	{
 	protected:
 		void lock() override 

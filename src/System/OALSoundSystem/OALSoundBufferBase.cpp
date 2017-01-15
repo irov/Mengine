@@ -6,8 +6,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBufferBase::OALSoundBufferBase()
-		: m_serviceProvider(nullptr)
-		, m_soundSystem(nullptr)	
+		: m_soundSystem(nullptr)	
 		, m_format(0)
         , m_frequency(0)
         , m_channels(0)
@@ -20,9 +19,8 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBufferBase::initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem )
+	void OALSoundBufferBase::initialize( OALSoundSystem * _soundSystem )
 	{
-		m_serviceProvider = _serviceProvider;
 		m_soundSystem = _soundSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////

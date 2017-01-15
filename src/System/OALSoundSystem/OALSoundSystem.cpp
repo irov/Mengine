@@ -223,7 +223,8 @@ namespace Menge
         {
             OALSoundBufferMemory * buffer = m_poolOALSoundBuffer.createObject();
             
-            buffer->initialize( m_serviceProvider, this );
+            buffer->setServiceProvider( m_serviceProvider );
+            buffer->initialize( this );
 
             base = buffer;
         }
@@ -231,7 +232,8 @@ namespace Menge
         {
             OALSoundBufferStream * buffer = m_poolOALSoundBufferStream.createObject();
 
-            buffer->initialize( m_serviceProvider, this );
+            buffer->setServiceProvider( m_serviceProvider );
+            buffer->initialize( this );
 
             base = buffer;
         }

@@ -3,20 +3,20 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "math/vec4.h"
 
+#   include "Core/ServantBase.h"
 #	include "Core/ConstString.h"
 
 namespace Menge
 {
 	class RenderTexture
-		: public RenderTextureInterface
+		: public ServantBase<RenderTextureInterface>
 	{
 	public:
 		RenderTexture();
 		~RenderTexture();
 
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider
-            , const RenderImageInterfacePtr & _image
+        void initialize( const RenderImageInterfacePtr & _image
 			, uint32_t _mipmaps
             , uint32_t _width
             , uint32_t _height

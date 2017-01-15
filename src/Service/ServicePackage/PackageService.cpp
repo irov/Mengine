@@ -210,8 +210,9 @@ namespace Menge
 
 		PackagePtr package = m_factoryPackage.createObject();
 
-		package->setup( m_serviceProvider
-			, _desc.name
+        package->setServiceProvider( m_serviceProvider );
+
+		package->setup( _desc.name
 			, _desc.type
 			, _desc.locale
 			, _desc.platform

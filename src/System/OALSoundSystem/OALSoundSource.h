@@ -11,7 +11,7 @@ namespace Menge
 	class OALSoundSystem;
 
 	class OALSoundSource
-		: public SoundSourceInterface
+		: public ServantBase<SoundSourceInterface>
 	{
 	public:
 		OALSoundSource();
@@ -50,9 +50,7 @@ namespace Menge
         void unloadBuffer_();
         void releaseSourceId_();
 
-    private:
-        ServiceProviderInterface * m_serviceProvider;
-        
+    protected:
         OALSoundSystem * m_soundSystem;
 
         mt::vec3f m_position;

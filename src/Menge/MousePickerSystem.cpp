@@ -127,8 +127,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerSystem::MousePickerSystem()
-		: m_serviceProvider(nullptr)
-        , m_enumerator(0)
+		: m_enumerator(0)
 		, m_arrow(nullptr)
 		, m_scene(nullptr)
 		, m_viewport(nullptr)

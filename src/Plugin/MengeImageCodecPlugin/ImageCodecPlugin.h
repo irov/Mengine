@@ -22,12 +22,6 @@ namespace Menge
 		void _finalize() override;
 
 	protected:
-		typedef stdex::vector<DecoderFactoryInterfacePtr> TVectorDecoders;
-		TVectorDecoders m_decoders;
-
-		typedef stdex::vector<EncoderFactoryInterfacePtr> TVectorEncoders;
-		TVectorEncoders m_encoders;
-
 		DataflowFactoryInterfacePtr m_factoryAEK;
 		DataflowFactoryInterfacePtr m_factoryMDL;
 	};

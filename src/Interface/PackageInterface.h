@@ -1,12 +1,11 @@
 #   pragma once
 
 #	include "Interface/ServiceInterface.h"
+#	include "Interface/ServantInterface.h"
 
 #	include "Core/ConstString.h"
 #	include "Core/Tags.h"
 #	include "Core/FilePath.h"
-
-#	include "Factory/FactorablePtr.h"
 
 namespace Menge
 {
@@ -28,7 +27,7 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class PackageInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
 	public:
 		virtual const ConstString & getName() const = 0;

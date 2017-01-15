@@ -4,12 +4,14 @@
 
 #	include "SilentSoundBuffer.h"
 
+#   include "Core/ServantBase.h"
+
 namespace Menge
 {
 	class SilentSoundSystem;	
 
 	class SilentSoundSource
-		: public SoundSourceInterface
+		: public ServantBase<SoundSourceInterface>
 	{
 	public:
 		SilentSoundSource();

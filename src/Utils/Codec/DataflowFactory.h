@@ -2,6 +2,7 @@
 
 #   include "Interface/DataInterface.h"
 
+#   include "Core/ServantBase.h"
 #   include "Factory/FactoryDefault.h"
 
 #	include "Logger/Logger.h"
@@ -10,18 +11,8 @@ namespace Menge
 {     
 	template<class T>
 	class DataflowFactory
-		: public DataflowFactoryInterface
+		: public ServantBase<DataflowFactoryInterface>
 	{
-	public:
-		DataflowFactory( ServiceProviderInterface * _serviceProvider )
-			: m_serviceProvider(_serviceProvider)
-		{
-		}
-
-		~DataflowFactory()
-		{
-		}
-
 	protected:
 		DataflowInterfacePtr createDataflow()
 		{	
@@ -47,8 +38,6 @@ namespace Menge
 		}
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		typedef FactoryDefaultStore<T> TFactoryDecoder;
 		TFactoryDecoder m_factory;
 	};

@@ -19,7 +19,7 @@ namespace Menge
 	DECLARE_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA, 'A', 'C', 'D', '1', 1 );
 
     class AccountInterface
-		: public FactorablePtr
+		: public ServantInterface
     {
     public:
         virtual const WString & getName() const = 0;

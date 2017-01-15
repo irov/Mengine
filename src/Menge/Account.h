@@ -5,6 +5,7 @@
 
 #	include "Config/Typedef.h"
 
+#   include "Core/ServantBase.h"
 #	include "Core/ConstString.h"
 
 #   include "stdex/stl_map.h"
@@ -14,14 +15,14 @@
 namespace Menge
 {
 	class Account
-        : public AccountInterface
+        : public ServantBase<AccountInterface>
 	{		
 	public:
 		Account();
 		~Account();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const ConstString & _folder, uint32_t _projectVersion );
+		bool initialize( const WString & _name, const ConstString & _folder, uint32_t _projectVersion );
         
 	public:
 		const WString & getName() const override;
@@ -49,8 +50,6 @@ namespace Menge
 		bool hasBinaryFile( const ConstString & _filename ) const override;
 	
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		ArchivatorInterfacePtr m_archivator;
 
 		WString m_name;

@@ -1,6 +1,9 @@
 #   pragma once
 
 #   include "Interface/CodecInterface.h"
+#   include "Interface/StringizeInterface.h"
+
+#   include "Core/ServantBase.h"
 
 #	include "Factory/FactoryStore.h"
 
@@ -8,19 +11,8 @@ namespace Menge
 {
     template<class T>
     class EncoderFactory
-        : public EncoderFactoryInterface
+        : public ServantBase<EncoderFactoryInterface>
     {
-    public:
-        EncoderFactory( ServiceProviderInterface * _serviceProvider, const ConstString & _name )
-            : m_serviceProvider(_serviceProvider)
-            , m_name(_name)
-        {
-        }
-
-        virtual ~EncoderFactory()
-        {
-        }
-
     protected:
         EncoderInterfacePtr createEncoder() override
         {
@@ -31,11 +23,6 @@ namespace Menge
             return encoder;
         }
 
-        const ConstString & getName() const override
-        {
-            return m_name;
-        }
-
 	protected:
 		void destroy() override
 		{
@@ -43,10 +30,29 @@ namespace Menge
 		}
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-        ConstString m_name;
-
         typedef FactoryPoolStore<T, 8> TFacrotyDecoder;
         TFacrotyDecoder m_factory;
     };
+
+    namespace Helper
+    {
+        template<class T>
+        inline EncoderFactoryInterfacePtr registerEncoder( ServiceProviderInterface * _serviceProvider, const Char * _type )
+        {
+            EncoderFactoryInterfacePtr encoder = new EncoderFactory<T>();
+
+            encoder->setServiceProvider( _serviceProvider );
+
+            CODEC_SERVICE( _serviceProvider )
+                ->registerEncoder( Helper::stringizeString( _serviceProvider, _type ), encoder );
+
+            return encoder;
+        }
+
+        inline void unregisterEncoder( ServiceProviderInterface * _serviceProvider, const Char * _type )
+        {
+            CODEC_SERVICE( _serviceProvider )
+                ->unregisterEncoder( Helper::stringizeString( _serviceProvider, _type ) );
+        }
+    }
 }

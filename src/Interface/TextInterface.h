@@ -54,7 +54,7 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class TextFontInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
 	public:
 		virtual const ConstString & getName() const = 0;

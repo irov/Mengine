@@ -75,8 +75,6 @@ namespace Menge
 		void updateDead_();
 
 	private:
-        ServiceProviderInterface * m_serviceProvider;
-
 		uint32_t m_enumerator;
 
 		Arrow * m_arrow;

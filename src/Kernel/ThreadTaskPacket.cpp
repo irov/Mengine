@@ -6,14 +6,11 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTaskPacket::ThreadTaskPacket()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskPacket::initialize( ServiceProviderInterface * _serviceProvider, uint32_t _packetSize )
+	bool ThreadTaskPacket::initialize( uint32_t _packetSize )
 	{
-		m_serviceProvider = _serviceProvider;
-
 		m_tasks.reserve( _packetSize );
 
 		return true;

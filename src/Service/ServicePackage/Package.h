@@ -3,20 +3,20 @@
 #   include "Interface/PackageInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 
+#   include "Core/ServantBase.h"
 #	include "Core/String.h"
 #   include "Core/FilePath.h"
 
 namespace Menge
 {
 	class Package
-		: public PackageInterface
+		: public ServantBase<PackageInterface>
 	{
 	public:
 		Package();
 
 	public:
-		void setup( ServiceProviderInterface * _serviceProvider
-			, const ConstString & _name
+		void setup( const ConstString & _name
 			, const ConstString & _type
 			, const ConstString & _locale
 			, const Tags & _platform
@@ -79,8 +79,6 @@ namespace Menge
 		bool unloadMaterials_( const ConstString & _pakName, const FilePath & _path );
 				
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		struct PakResourceDesc
 		{			
 			FilePath path;

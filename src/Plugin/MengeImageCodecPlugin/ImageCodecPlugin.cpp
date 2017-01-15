@@ -49,23 +49,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageCodecPlugin::_initialize()
 	{
-        m_decoders.push_back( new DecoderFactory<ImageDecoderPNG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderJPEG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "jpegImage")) );
+        Helper::registerDecoder<ImageDecoderPNG>( m_serviceProvider, "pngImage" );
+        Helper::registerDecoder<ImageDecoderJPEG>( m_serviceProvider, "jpegImage" );
         
 #	ifdef MENGINE_SUPPORT_DECODER_WEBP
-        m_decoders.push_back( new DecoderFactory<ImageDecoderWEBP>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "webpImage")) );
+        Helper::registerDecoder<ImageDecoderWEBP>( m_serviceProvider, "webpImage" );        
 #	endif
 
-		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTC>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "pvrImage")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderETC1>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "etcImage")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderDDS>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ddsImage")) );
+        Helper::registerDecoder<ImageDecoderPVRTC>( m_serviceProvider, "pvrImage" );
+        Helper::registerDecoder<ImageDecoderETC1>( m_serviceProvider, "etcImage" );
+        Helper::registerDecoder<ImageDecoderDDS>( m_serviceProvider, "ddsImage" );
 
-//#	ifdef MENGINE_SUPPORT_DECODER_CRN
-//		m_decoders.push_back( new DecoderFactory<ImageDecoderCRN>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "crnImage")) );
-//#	endif
-
-		m_decoders.push_back( new DecoderFactory<ImageDecoderHTF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "htfImage")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderACF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "acfImage")) );
+        Helper::registerDecoder<ImageDecoderHTF>( m_serviceProvider, "htfImage" );
+        Helper::registerDecoder<ImageDecoderACF>( m_serviceProvider, "acfImage" );
 
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "png", STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage") );
@@ -102,45 +98,22 @@ namespace Menge
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "acf", STRINGIZE_STRING_LOCAL(m_serviceProvider, "acfImage") );
 
-		m_encoders.push_back( new EncoderFactory<ImageEncoderPNG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage")) );
-		m_encoders.push_back( new EncoderFactory<ImageEncoderJPEG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "jpegImage")) );
-		m_encoders.push_back( new EncoderFactory<ImageEncoderHTF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "htfImage")) );
-		m_encoders.push_back( new EncoderFactory<ImageEncoderACF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "acfImage")) );
+        Helper::registerEncoder<ImageEncoderPNG>( m_serviceProvider, "pngImage" );
+        Helper::registerEncoder<ImageEncoderJPEG>( m_serviceProvider, "jpegImage" );
+        Helper::registerEncoder<ImageEncoderHTF>( m_serviceProvider, "htfImage" );
+        Helper::registerEncoder<ImageEncoderACF>( m_serviceProvider, "acfImage" );
 
-		m_encoders.push_back( new EncoderFactory<ImageEncoderDDS>( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ddsImage" ) ) );
+        Helper::registerEncoder<ImageEncoderDDS>( m_serviceProvider, "ddsImage" );
 
-		m_decoders.push_back( new DecoderFactory<PickDecoderHIT>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "hitPick")) );
-		m_encoders.push_back( new EncoderFactory<PickEncoderHIT>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "hitPick")) );
+        Helper::registerDecoder<PickDecoderHIT>( m_serviceProvider, "hitPick" );
+        Helper::registerEncoder<PickEncoderHIT>( m_serviceProvider, "hitPick" );
 
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "hit", STRINGIZE_STRING_LOCAL(m_serviceProvider, "hitPick") );
 
-		for( TVectorDecoders::iterator
-			it = m_decoders.begin(),
-			it_end = m_decoders.end();
-		it != it_end;
-		++it )
-		{
-			const ConstString & name = (*it)->getName();
+		m_factoryAEK = new DataflowFactory<DataflowAEK>();
+        m_factoryAEK->setServiceProvider( m_serviceProvider );
 
-			CODEC_SERVICE(m_serviceProvider)
-                ->registerDecoder( name, (*it) );
-		}
-
-		// Encoders
-		for( TVectorEncoders::iterator
-			it = m_encoders.begin(),
-			it_end = m_encoders.end();
-		it != it_end;
-		++it )
-		{
-			const ConstString & name = (*it)->getName();
-
-			CODEC_SERVICE(m_serviceProvider)
-                ->registerEncoder( name, (*it) );
-		}
-
-		m_factoryAEK = new DataflowFactory<DataflowAEK>(m_serviceProvider);
 		DataflowInterfacePtr aek = m_factoryAEK->createDataflow();
 
 		DATA_SERVICE(m_serviceProvider)
@@ -149,7 +122,9 @@ namespace Menge
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "aek", STRINGIZE_STRING_LOCAL(m_serviceProvider, "aekMovie") );
 
-		m_factoryMDL = new DataflowFactory<DataflowMDL>(m_serviceProvider);
+		m_factoryMDL = new DataflowFactory<DataflowMDL>();
+        m_factoryMDL->setServiceProvider( m_serviceProvider );
+
 		DataflowInterfacePtr mdl = m_factoryMDL->createDataflow();
 
 		DATA_SERVICE(m_serviceProvider)
@@ -163,34 +138,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ImageCodecPlugin::_finalize()
 	{
-		for( TVectorDecoders::iterator
-			it = m_decoders.begin(),
-			it_end = m_decoders.end();
-		it != it_end;
-		++it )
-		{
-			const ConstString & name = (*it)->getName();
+        Helper::unregisterDecoder( m_serviceProvider, "pngImage" );
+        Helper::unregisterDecoder( m_serviceProvider, "jpegImage" );
 
-			CODEC_SERVICE(m_serviceProvider)
-				->unregisterDecoder( name );
-		}
+#	ifdef MENGINE_SUPPORT_DECODER_WEBP
+        Helper::unregisterDecoder( m_serviceProvider, "webpImage" );
+#	endif
 
-		m_decoders.clear();
+        Helper::unregisterDecoder( m_serviceProvider, "pvrImage" );
+        Helper::unregisterDecoder( m_serviceProvider, "etcImage" );
+        Helper::unregisterDecoder( m_serviceProvider, "ddsImage" );
 
-		// Encoders
-		for( TVectorEncoders::iterator
-			it = m_encoders.begin(),
-			it_end = m_encoders.end();
-		it != it_end;
-		++it )
-		{
-			const ConstString & name = (*it)->getName();
+        Helper::unregisterDecoder( m_serviceProvider, "htfImage" );
+        Helper::unregisterDecoder( m_serviceProvider, "acfImage" );
+        Helper::unregisterEncoder( m_serviceProvider, "pngImage" );
+        Helper::unregisterEncoder( m_serviceProvider, "jpegImage" );
+        Helper::unregisterEncoder( m_serviceProvider, "htfImage" );
+        Helper::unregisterEncoder( m_serviceProvider, "acfImage" );
 
-			CODEC_SERVICE(m_serviceProvider)
-				->unregisterEncoder( name );
-		}
+        Helper::unregisterEncoder( m_serviceProvider, "ddsImage" );
 
-		m_encoders.clear();
+        Helper::unregisterDecoder( m_serviceProvider, "hitPick" );
+        Helper::unregisterEncoder( m_serviceProvider, "hitPick" );
 
 		DATA_SERVICE(m_serviceProvider)
 			->unregisterDataflow( STRINGIZE_STRING_LOCAL(m_serviceProvider, "aekMovie") );

@@ -557,7 +557,8 @@ namespace Menge
 
 		RenderTexture * texture = m_factoryRenderTexture.createObject();
 
-		texture->initialize( m_serviceProvider, _image, _mipmaps, _width, _height, _channels, id );
+        texture->setServiceProvider( m_serviceProvider );
+		texture->initialize( _image, _mipmaps, _width, _height, _channels, id );
 
 //#	ifndef MENGINE_MASTER_RELEASE
 //		size_t memroy_size = texture->getMemoryUse();

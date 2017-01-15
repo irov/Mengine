@@ -86,7 +86,9 @@ namespace Menge
     {
         Win32ThreadMutex * mutex = m_poolWin32ThreadMutex.createObject();
 
-		mutex->initialize( m_serviceProvider, _doc );
+        mutex->setServiceProvider( m_serviceProvider );
+
+		mutex->initialize( _doc );
 
         return mutex;
     }

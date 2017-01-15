@@ -257,15 +257,9 @@ namespace Menge
 		{
 			return false;
 		}
-		
-		DecoderFactoryInterfacePtr imageDecoderMemory = new DecoderFactory<ImageDecoderMemory>(m_serviceProvider, CONST_STRING(m_serviceProvider, memoryImage) );
-		DecoderFactoryInterfacePtr imageDecoderArchive = new DecoderFactory<ImageDecoderArchive>(m_serviceProvider, CONST_STRING(m_serviceProvider, archiveImage) );
-		
-		CODEC_SERVICE(m_serviceProvider)
-			->registerDecoder( CONST_STRING(m_serviceProvider, memoryImage), imageDecoderMemory );
 
-		CODEC_SERVICE(m_serviceProvider)
-			->registerDecoder( CONST_STRING(m_serviceProvider, archiveImage), imageDecoderArchive );
+        Helper::registerDecoder<ImageDecoderMemory>( m_serviceProvider, "memoryImage" );
+        Helper::registerDecoder<ImageDecoderArchive>( m_serviceProvider, "archiveImage" );
 	
 		m_companyName = CONFIG_VALUE(m_serviceProvider, "Project", "Company", L"NONAME");
 		m_projectName = CONFIG_VALUE(m_serviceProvider, "Project", "Name", L"UNKNOWN");

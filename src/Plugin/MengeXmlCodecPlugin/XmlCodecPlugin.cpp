@@ -20,15 +20,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool XmlCodecPlugin::_initialize()
 	{ 	
-		CODEC_SERVICE(m_serviceProvider)
-            ->registerDecoder( STRINGIZE_STRING_LOCAL(m_serviceProvider, "xml2bin"), new DecoderFactory<XmlToBinDecoder>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "bin")) );
+        Helper::registerDecoder<XmlToBinDecoder>( m_serviceProvider, "xml2bin" );
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XmlCodecPlugin::_finalize()
 	{
-		CODEC_SERVICE(m_serviceProvider)
-			->unregisterDecoder( STRINGIZE_STRING_LOCAL(m_serviceProvider, "xml2bin") );
+        Helper::unregisterDecoder( m_serviceProvider, "xml2bin" );
 	}
 }

@@ -49,7 +49,7 @@ namespace Menge
 	typedef stdex::intrusive_ptr<DataflowInterface> DataflowInterfacePtr;
 
 	class DataflowFactoryInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
 	public:
 		virtual DataflowInterfacePtr createDataflow() = 0;

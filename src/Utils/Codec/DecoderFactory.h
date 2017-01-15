@@ -1,8 +1,9 @@
 #   pragma once
 
 #   include "Interface/CodecInterface.h"
+#   include "Interface/StringizeInterface.h"
 
-#   include "Core/ConstString.h"
+#   include "Core/ServantBase.h"
 
 #   include "Factory/FactoryStore.h"
 
@@ -10,19 +11,8 @@ namespace Menge
 {     
     template<class T>
     class DecoderFactory
-        : public DecoderFactoryInterface
+        : public ServantBase<DecoderFactoryInterface>
     {
-    public:
-        DecoderFactory( ServiceProviderInterface * _serviceProvider, const ConstString & _name )
-            : m_serviceProvider(_serviceProvider)
-            , m_name(_name)
-        {
-        }
-
-        ~DecoderFactory()
-        {
-        }
-
     protected:
         DecoderInterfacePtr createDecoder() override
         {	
@@ -33,11 +23,6 @@ namespace Menge
             return decoder;
         }
 
-        const ConstString & getName() const override
-        {
-            return m_name;
-        }
-
 	protected:
 		void destroy() override
 		{
@@ -45,10 +30,29 @@ namespace Menge
 		}
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-        ConstString m_name;
-
         typedef FactoryPoolStore<T, 8> TFactoryDecoder;
         TFactoryDecoder m_factory;
     };
+
+    namespace Helper
+    {
+        template<class T>
+        inline DecoderFactoryInterfacePtr registerDecoder( ServiceProviderInterface * _serviceProvider, const Char * _type )
+        {
+            DecoderFactoryInterfacePtr decoder = new DecoderFactory<T>();
+
+            decoder->setServiceProvider( _serviceProvider );
+
+            CODEC_SERVICE( _serviceProvider )
+                ->registerDecoder( Helper::stringizeString(_serviceProvider, _type), decoder );
+
+            return decoder;
+        }
+
+        inline void unregisterDecoder( ServiceProviderInterface * _serviceProvider, const Char * _type )
+        {
+            CODEC_SERVICE( _serviceProvider )
+                ->unregisterDecoder( Helper::stringizeString( _serviceProvider, _type) );
+        }
+    }
 }

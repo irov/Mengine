@@ -6,8 +6,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadJob::ThreadJob()
-		: m_serviceProvider(nullptr)
-		, m_sleep(0)
+		: m_sleep(0)
 		, m_enumerator(0)
 	{
 	}
@@ -23,9 +22,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////        
-	void ThreadJob::initialize( ServiceProviderInterface * _serviceProvider, unsigned int _sleep )
+	void ThreadJob::initialize( unsigned int _sleep )
 	{
-		m_serviceProvider = _serviceProvider;
 		m_sleep = _sleep;
 
 		for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )

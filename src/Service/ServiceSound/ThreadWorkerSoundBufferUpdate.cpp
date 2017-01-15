@@ -12,8 +12,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadWorkerSoundBufferUpdate::ThreadWorkerSoundBufferUpdate()
-		: m_serviceProvider(nullptr)
-		, m_done(false)
+		: m_done(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -21,9 +20,8 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ThreadWorkerSoundBufferUpdate::initialize( ServiceProviderInterface * _serviceProvider, const SoundBufferInterfacePtr & _soundBuffer )
+    void ThreadWorkerSoundBufferUpdate::initialize( const SoundBufferInterfacePtr & _soundBuffer )
     {
-        m_serviceProvider = _serviceProvider;
         m_soundBuffer = _soundBuffer;
     }
 	//////////////////////////////////////////////////////////////////////////

@@ -187,10 +187,12 @@ namespace Menge
 
         AccountPtr newAccount = m_factoryAccounts.createObject();
 
+        newAccount->setServiceProvider( m_serviceProvider );
+
 		uint32_t projectVersion = APPLICATION_SERVICE( m_serviceProvider )
 			->getProjectVersion();
 		
-		if( newAccount->initialize( m_serviceProvider, _accountID, folder, projectVersion ) == false )
+		if( newAccount->initialize( _accountID, folder, projectVersion ) == false )
 		{
 			return nullptr;				 
 		}

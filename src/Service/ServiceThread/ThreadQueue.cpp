@@ -95,7 +95,9 @@ namespace Menge
 
 			ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket.createObject();
 			
-			if( packet->initialize( m_serviceProvider, m_packetSize ) == false )
+            packet->setServiceProvider( m_serviceProvider );
+
+			if( packet->initialize( m_packetSize ) == false )
 			{
 				return;
 			}

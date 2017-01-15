@@ -4,15 +4,12 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     Win32ThreadMutex::Win32ThreadMutex()
-        : m_serviceProvider(nullptr)
-		, m_doc(nullptr)
+        : m_doc(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	void Win32ThreadMutex::initialize( ServiceProviderInterface * _serviceProvider, const char * _doc )
+	void Win32ThreadMutex::initialize( const char * _doc )
     {
-        m_serviceProvider = _serviceProvider;
-        
         InitializeCriticalSection( &m_cs );
 
 		m_doc = _doc;

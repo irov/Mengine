@@ -20,15 +20,13 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Package::Package()
-		: m_serviceProvider(nullptr)
-		, m_preload(false)
+		: m_preload(false)
 		, m_load(false)
 		, m_enable(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::setup( ServiceProviderInterface * _serviceProvider
-		, const ConstString & _name
+	void Package::setup( const ConstString & _name
 		, const ConstString & _type
 		, const ConstString & _locale
 		, const Tags & _platform
@@ -36,7 +34,6 @@ namespace Menge
 		, const ConstString & _path
 		, bool _preload	)
 	{
-		m_serviceProvider = _serviceProvider;
         m_name = _name;
 		m_type = _type;
 		m_locale = _locale;

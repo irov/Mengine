@@ -33,7 +33,7 @@ namespace Menge
 	};
 
 	class SoundBufferInterface
-        : public FactorablePtr
+        : public ServantInterface
 	{
 	public:
 		virtual bool update() = 0;
@@ -45,7 +45,7 @@ namespace Menge
 	typedef stdex::intrusive_ptr<SoundBufferInterface> SoundBufferInterfacePtr;
 
 	class SoundSourceInterface
-        : public FactorablePtr
+        : public ServantInterface
 	{
 	public:
 		virtual bool play() = 0;

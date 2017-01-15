@@ -11,7 +11,7 @@
 namespace Menge 
 {
 	class ThreadWorkerInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
 	public:
 		virtual bool onWork( uint32_t _id ) = 0;
@@ -46,7 +46,7 @@ namespace Menge
 		~ThreadJob();
 
 	public:
-		void initialize( ServiceProviderInterface * _serviceProvider, unsigned int _sleep );
+		void initialize( unsigned int _sleep );
 
 	public:
 		uint32_t addWorker( const ThreadWorkerInterfacePtr &_worker );
@@ -63,7 +63,6 @@ namespace Menge
 		bool check_remove( uint32_t _id );
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
 		unsigned int m_sleep;
   
 		uint32_t m_enumerator;

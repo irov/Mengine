@@ -56,7 +56,7 @@ namespace Menge
 	typedef stdex::intrusive_ptr<ThreadIdentity> ThreadIdentityPtr;
 
     class ThreadMutexInterface
-        : public FactorablePtr
+        : public ServantInterface
     {
     public:
         virtual void lock() = 0;

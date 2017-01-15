@@ -18,8 +18,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Account::Account()
-		: m_serviceProvider(nullptr)
-		, m_projectVersion(0)
+		: m_projectVersion(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -27,9 +26,8 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Account::initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const ConstString & _folder, uint32_t _projectVersion )
+	bool Account::initialize( const WString & _name, const ConstString & _folder, uint32_t _projectVersion )
 	{
-		m_serviceProvider = _serviceProvider;
 		m_name = _name;
 		m_projectVersion = _projectVersion;
 

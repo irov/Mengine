@@ -5,21 +5,20 @@
 #	include "Kernel/Resource.h"
 #	include "Kernel/Reference.h"
 
+#   include "Core/ServantBase.h"
+
 #	include "TextGlyph.h"
 
 namespace Menge
 {
 	class TextFont
-		: public TextFontInterface
+		: public ServantBase<TextFontInterface>
 		, public Resource
 		, public Reference
 	{
 	public:
 		TextFont();
 		~TextFont();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
     public:
 		void setName( const ConstString & _name );
@@ -64,8 +63,6 @@ namespace Menge
 		void _decrementZero() override;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		TextGlyphPtr m_glyph;
 
 		ConstString m_name;

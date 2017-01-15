@@ -38,7 +38,8 @@ namespace Menge
 		if( m_supportStream == true )
 		{
 			m_threadSoundBufferUpdate = new ThreadJob();
-			m_threadSoundBufferUpdate->initialize( m_serviceProvider, 5 );
+            m_threadSoundBufferUpdate->setServiceProvider( m_serviceProvider );
+			m_threadSoundBufferUpdate->initialize( 5 );
 
 			THREAD_SERVICE(m_serviceProvider)
 				->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), 0, "SoundEngine::initialize" );
@@ -1193,7 +1194,8 @@ namespace Menge
 
 			SoundBufferInterfacePtr soundBuffer = _source->source->getSoundBuffer();
 
-			worker->initialize( m_serviceProvider, soundBuffer );
+            worker->setServiceProvider( m_serviceProvider );
+			worker->initialize( soundBuffer );
 
 			_source->worker = worker;
 			

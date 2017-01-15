@@ -7,14 +7,14 @@
 namespace Menge
 {
 	class ThreadWorkerSoundBufferUpdate
-		: public ThreadWorkerInterface
+		: public ServantBase<ThreadWorkerInterface>
 	{
 	public:
 		ThreadWorkerSoundBufferUpdate();
 		~ThreadWorkerSoundBufferUpdate();
 
     public:        
-        void initialize( ServiceProviderInterface * _serviceProvider, const SoundBufferInterfacePtr & _soundSource );
+        void initialize( const SoundBufferInterfacePtr & _soundSource );
 
 	public:
 		bool isDone() const;
@@ -24,8 +24,6 @@ namespace Menge
 		void onDone( uint32_t _id ) override;
 
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		SoundBufferInterfacePtr m_soundBuffer;
 
 		volatile bool m_done;

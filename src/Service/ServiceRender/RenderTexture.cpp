@@ -6,8 +6,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderTexture::RenderTexture()
-        : m_serviceProvider(nullptr)
-		, m_mipmaps(0)
+        : m_mipmaps(0)
 		, m_width(0)
 		, m_height(0)
         , m_channels(0)
@@ -19,8 +18,7 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void RenderTexture::initialize( ServiceProviderInterface * _serviceProvider
-        , const RenderImageInterfacePtr & _image
+    void RenderTexture::initialize( const RenderImageInterfacePtr & _image
 		, uint32_t _mipmaps
         , uint32_t _width
         , uint32_t _height
@@ -28,8 +26,6 @@ namespace Menge
         , uint32_t _id
         )
     {
-        m_serviceProvider = _serviceProvider;
-
         m_image = _image;
 
 		m_mipmaps = _mipmaps;

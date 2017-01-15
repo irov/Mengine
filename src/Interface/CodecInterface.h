@@ -26,7 +26,7 @@ namespace Menge
 	class CodecServiceInterface;
 
 	class CodecFactoryInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
 	};
 
@@ -72,7 +72,6 @@ namespace Menge
 
 	public:
 		virtual DecoderInterfacePtr createDecoder() = 0;
-        virtual const ConstString & getName() const = 0;
 	};
 
 	typedef stdex::intrusive_ptr<DecoderFactoryInterface> DecoderFactoryInterfacePtr;
@@ -101,7 +100,6 @@ namespace Menge
 	{
 	public:
 		virtual EncoderInterfacePtr createEncoder() = 0;
-        virtual const ConstString & getName() const = 0;
 	};
 
 	typedef stdex::intrusive_ptr<EncoderFactoryInterface> EncoderFactoryInterfacePtr;
@@ -117,10 +115,10 @@ namespace Menge
         SERVICE_DECLARE("CodecService")
 
 	public:
-		virtual void registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _interface ) = 0;
+		virtual void registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _decoder ) = 0;
 		virtual void unregisterDecoder( const ConstString& _type ) = 0;
 		
-		virtual void registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _interface ) = 0;
+		virtual void registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _encoder ) = 0;
 		virtual void unregisterEncoder( const ConstString& _type ) = 0;
 
     public:

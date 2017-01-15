@@ -16,10 +16,6 @@ namespace Menge
 
 	protected:
 		bool _initialize() override;
-		void _finalize() override;
-		
-	protected:
-        typedef stdex::vector<DecoderFactoryInterfacePtr> TVectorDecoders;
-        TVectorDecoders m_decoders;
+		void _finalize() override;		
 	};
 }

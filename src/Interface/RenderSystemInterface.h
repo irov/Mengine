@@ -220,7 +220,7 @@ namespace Menge
 	typedef stdex::intrusive_ptr<RenderImageInterface> RenderImageInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderTextureInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
 	public:
 		virtual void release() = 0;

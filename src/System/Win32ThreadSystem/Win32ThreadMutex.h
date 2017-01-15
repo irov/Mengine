@@ -4,16 +4,18 @@
 
 #   include "WindowsLayer/WindowsIncluder.h"
 
+#   include "Core/ServantBase.h"
+
 namespace Menge
 {
     class Win32ThreadMutex
-        : public ThreadMutexInterface
+        : public ServantBase<ThreadMutexInterface>
     {
     public:
         Win32ThreadMutex();
         
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider, const char * _doc );
+        void initialize( const char * _doc );
 
     protected:
         void lock() override;
@@ -26,8 +28,6 @@ namespace Menge
         void _destroy() override;
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
         CRITICAL_SECTION m_cs;
 
 		const char * m_doc;

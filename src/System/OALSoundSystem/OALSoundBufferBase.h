@@ -2,6 +2,8 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
+#   include "Core/ServantBase.h"
+
 #   include "AL/al.h"
 
 namespace Menge
@@ -9,14 +11,14 @@ namespace Menge
 	class OALSoundSystem;
 
 	class OALSoundBufferBase
-		: public SoundBufferInterface
+		: public ServantBase<SoundBufferInterface>
 	{
 	public:
 		OALSoundBufferBase();
 		virtual ~OALSoundBufferBase();
        
 	public:
-		void initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem );
+		void initialize( OALSoundSystem * _soundSystem );
 
 	public:
 		const SoundDecoderInterfacePtr & getDecoder() const override;
@@ -38,7 +40,6 @@ namespace Menge
 		float getTimeTotal() const;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
 		OALSoundSystem * m_soundSystem;
 
 		SoundDecoderInterfacePtr m_soundDecoder;

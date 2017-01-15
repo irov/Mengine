@@ -79,8 +79,6 @@ namespace Menge
         bool removeSchedule_( ScheduleEventDesc & _event );
 
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		float m_speedFactor;
 		float m_timing;
 

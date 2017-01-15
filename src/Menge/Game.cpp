@@ -113,7 +113,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
-		: m_accountProvider(nullptr)
+		: m_player(nullptr)
+		, m_accountProvider(nullptr)
 		, m_soundVolumeProvider(nullptr)
 		, m_defaultArrow(nullptr)
 		, m_timingFactor(1.f)

@@ -48,6 +48,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ModuleSteam::_avaliable()
 	{
+		bool avaliable = CONFIG_VALUE( m_serviceProvider, "Steam", "Avaliable", true );
+
+		if( avaliable == false )
+		{
+			return false;
+		}
+
 		int32_t appId = CONFIG_VALUE( m_serviceProvider, "Steam", "AppId", k_uAppIdInvalid );
 
 		if( HAS_OPTION( m_serviceProvider, "steamappid" ) == true )

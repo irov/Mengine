@@ -79,6 +79,16 @@ namespace Menge
 		ae_remove_movie_composition_work_area( m_composition );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie2::playSubComposition( const ConstString & _name )
+	{
+		ae_play_movie_sub_composition( m_composition, _name.c_str(), 0.f );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie2::stopSubComposition( const ConstString & _name )
+	{
+		ae_stop_movie_sub_composition( m_composition, _name.c_str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Movie2::_play( float _time )
 	{
 		(void)_time;
@@ -703,7 +713,7 @@ namespace Menge
 		if( aa == false )
 		{
 			aa = true;
-			ae_play_movie_sub_composition( m_composition, "lock", 0.f );
+			//ae_play_movie_sub_composition( m_composition, "lock", 0.f );
 		}
 
 		

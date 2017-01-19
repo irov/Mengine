@@ -33,6 +33,9 @@ namespace Menge
 		void setWorkAreaFromEvent( const ConstString & _eventName );
 		void removeWorkArea();
 
+		void playSubComposition( const ConstString & _name );
+		void stopSubComposition( const ConstString & _name );
+
 	protected:
 		bool _play( float _time ) override;
 		bool _restart( float _time, uint32_t _enumerator ) override;

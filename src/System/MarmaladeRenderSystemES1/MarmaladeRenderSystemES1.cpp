@@ -163,14 +163,14 @@ namespace Menge
 		{
 			GLenum plane = GL_CLIP_PLANE0 + i;
 
-			glEnable( plane );
+			GLCALL( m_serviceProvider, glEnable, ( plane ) );
 		}
 		
 		for( uint32_t i = _count; i != m_maxClipPlanes; ++i )
 		{
 			GLenum plane = GL_CLIP_PLANE0 + i;
 
-			glDisable( plane );
+			GLCALL( m_serviceProvider, glDisable, ( plane ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -183,7 +183,7 @@ namespace Menge
 
 		GLenum plane = GL_CLIP_PLANE0 + _i;
 
-		glClipPlanef( plane, _plane.buff() );
+		GLCALL( m_serviceProvider, glClipPlanef, ( plane, _plane.buff() ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::setViewport( const Viewport & _viewport )

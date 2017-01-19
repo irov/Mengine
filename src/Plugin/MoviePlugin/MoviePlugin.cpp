@@ -121,6 +121,8 @@ namespace Menge
 			.def( "getDuration", &Movie2::getDuration )
 			.def( "setWorkAreaFromEvent", &Movie2::setWorkAreaFromEvent )
 			.def( "removeWorkArea", &Movie2::removeWorkArea )
+			.def( "playSubComposition", &Movie2::playSubComposition )
+			.def( "stopSubComposition", &Movie2::stopSubComposition )
 			;
 
 		pybind::interface_<ResourceMovie2, pybind::bases<ResourceReference> >( "ResourceMovie2", false )

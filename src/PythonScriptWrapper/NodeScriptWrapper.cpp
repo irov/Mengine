@@ -2377,18 +2377,14 @@ namespace Menge
             return surface;
         }
         //////////////////////////////////////////////////////////////////////////
-        ShapeQuadFixed * createSprite( const ConstString & _name, const ConstString & _resourceName )
+        ShapeQuadFixed * createSprite( const ConstString & _name, const ResourceReferencePtr & _resource )
         {
-            const ResourceReferencePtr & resource = RESOURCE_SERVICE( m_serviceProvider )
-                ->getResourceReference( _resourceName );
-
-            if( resource == nullptr )
+            if( _resource == nullptr )
             {
-                LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' not exist resource '%s'"
+                LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' resource is NULL"
                     , _name.c_str()
-                    , _resourceName.c_str()
                     );
-                
+
                 return nullptr;
             }
 
@@ -2399,13 +2395,13 @@ namespace Menge
             {
                 LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' resource '%s' invalid create surface 'SurfaceImage'"
                     , _name.c_str()
-                    , _resourceName.c_str()
+                    , _resource->getName().c_str()
                     );
 
                 return nullptr;
             }
 
-            surface->setResourceImage( resource );
+            surface->setResourceImage( _resource );
 
             ShapeQuadFixed * shape = NODE_SERVICE( m_serviceProvider )
                 ->createNodeT<ShapeQuadFixed *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ShapeQuadFixed" ) );
@@ -2414,7 +2410,7 @@ namespace Menge
             {
                 LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' resource '%s' invalid create shape 'ShapeQuadFixed'"
                     , _name.c_str()
-                    , _resourceName.c_str()
+                    , _resource->getName().c_str()
                     );
 
                 return nullptr;
@@ -4200,11 +4196,6 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		Node * createChildren( Node * _node, const ConstString & _type )
 		{
-			if( _node == nullptr )
-			{
-				return nullptr;
-			}
-
 			Node * newNode = NODE_SERVICE( m_serviceProvider )
 				->createNode( _type );
 
@@ -4212,6 +4203,8 @@ namespace Menge
 			{
 				return nullptr;
 			}
+
+            newNode->disable();
 
 			_node->addChild( newNode );
 

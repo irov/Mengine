@@ -1871,6 +1871,8 @@ namespace Menge
             return false;
         }
 
+        layer_sprite->setSurface( surface );
+
 		if( this->addMovieNode_( _layer, layer_sprite, nullptr, nullptr, nullptr ) == false )
 		{
 			return false;

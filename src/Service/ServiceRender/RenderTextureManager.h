@@ -58,9 +58,6 @@ namespace Menge
         void visitTexture( VisitorRenderTextureInterface * _visitor ) const override;
 		size_t getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) const override;
 
-    public:
-        const RenderTextureDebugInfo & getDebugInfo() override;
-
 	protected:
 		bool onRenderTextureDestroy_( RenderTextureInterface * _texture );
 		void releaseRenderTexture_( RenderTextureInterface * _texture );
@@ -80,8 +77,6 @@ namespace Menge
         TFactoryRenderTexture m_factoryRenderTexture;
 
         uint32_t m_textureEnumerator;
-
-        RenderTextureDebugInfo m_debugInfo;
 
 		bool m_supportA8;
 		bool m_supportR8G8B8;

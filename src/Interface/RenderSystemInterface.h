@@ -506,12 +506,6 @@ namespace Menge
 #   define RENDERMATERIAL_SERVICE( serviceProvider )\
     ((Menge::RenderMaterialServiceInterface*)SERVICE_GET(serviceProvider, Menge::RenderMaterialServiceInterface))
     //////////////////////////////////////////////////////////////////////////
-    struct RenderTextureDebugInfo
-    {
-        size_t textureMemory;
-        uint32_t textureCount;
-    };
-    //////////////////////////////////////////////////////////////////////////
     class VisitorRenderTextureInterface
     {
     public:
@@ -550,9 +544,6 @@ namespace Menge
 
     public:
         virtual void visitTexture( VisitorRenderTextureInterface * _visitor ) const = 0;
-
-    public:
-        virtual const RenderTextureDebugInfo & getDebugInfo() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERTEXTURE_SERVICE( serviceProvider )\
@@ -703,12 +694,15 @@ namespace Menge
 		virtual uint32_t getMaxCombinedTextureImageUnits() const = 0;
 
 		virtual void setSeparateAlphaBlendMode() = 0;
+
+		virtual size_t getTextureMemoryUse() const = 0;
+		virtual uint32_t getTextureCount() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define RENDER_SYSTEM( serviceProvider )\
     ((Menge::RenderSystemInterface*)SERVICE_GET(serviceProvider, Menge::RenderSystemInterface))
 	//////////////////////////////////////////////////////////////////////////
-    struct RenderDebugInfo
+    struct RenderServiceDebugInfo
     {
         uint32_t frameCount;
         uint32_t dips;
@@ -802,7 +796,7 @@ namespace Menge
         virtual bool isWindowCreated() const = 0;
 
     public:
-        virtual const RenderDebugInfo & getDebugInfo() const = 0;
+        virtual const RenderServiceDebugInfo & getDebugInfo() const = 0;
         virtual void resetFrameCount() = 0;
 	};
 

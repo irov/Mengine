@@ -93,7 +93,9 @@ namespace Menge
 
 		pybind::decref( py_syspath );
 
-		pybind::def_functor( "Error", this, &XlsExportPlugin::error_, module_builtins );
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		pybind::def_functor( kernel, "Error", this, &XlsExportPlugin::error_, module_builtins );
 
 		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
 			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE_PREPARE, this, &XlsExportPlugin::notifyChangeLocale );

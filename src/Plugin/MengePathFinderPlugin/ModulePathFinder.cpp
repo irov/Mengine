@@ -73,15 +73,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ModulePathFinder::_initialize()
 	{
-		pybind::interface_<fastpathfinder::graph_node>("fastpathfinder::graph_node", true)
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		pybind::interface_<fastpathfinder::graph_node>( kernel, "fastpathfinder::graph_node", true )
 			;
 
-		pybind::superclass_<PathGraphNode, pybind::bases<fastpathfinder::graph_node> >("PathGraphNode", (void *)m_serviceProvider, new superclass_new_PathGraphNode, nullptr, false)
+		pybind::superclass_<PathGraphNode, pybind::bases<fastpathfinder::graph_node> >( kernel, "PathGraphNode", (void *)m_serviceProvider, new superclass_new_PathGraphNode, nullptr, false )
 			.def_constructor( pybind::init<>() )
 			.def( "getWeight", &PathGraphNode::getWeight )
 			;
 
-		pybind::interface_<fastpathfinder::graph>("PathGraph")
+		pybind::interface_<fastpathfinder::graph>( kernel, "PathGraph" )
 			.def( "addNode", &fastpathfinder::graph::addNode )
 			.def( "addEdge", &fastpathfinder::graph::addEdge )
 			.def( "addEdge2", &fastpathfinder::graph::addEdge2 )
@@ -94,10 +96,10 @@ namespace Menge
 			.def_static( "getPath", &s_fastpathfinder_graph_getPath )
 			;
 
-		pybind::def_functor( "createPathFinderGraph", this, &ModulePathFinder::createGraph );
-		pybind::def_functor( "destroyPathFinderGraph", this, &ModulePathFinder::destroyGraph );
+		pybind::def_functor( kernel, "createPathFinderGraph", this, &ModulePathFinder::createGraph );
+		pybind::def_functor( kernel, "destroyPathFinderGraph", this, &ModulePathFinder::destroyGraph );
 
-		pybind::interface_<PathFinderMap>("PathFinderMap")
+		pybind::interface_<PathFinderMap>( kernel, "PathFinderMap" )
 			.def( "setMap", &PathFinderMap::setMap )
 			.def( "testMap", &PathFinderMap::testMap )
 			.def( "testPoint", &PathFinderMap::testPoint )
@@ -112,11 +114,11 @@ namespace Menge
 			;
 
 
-		pybind::def_functor( "createPathFinderMap", this, &ModulePathFinder::createMap );		
-		pybind::def_functor( "destroyPathFinderMap", this, &ModulePathFinder::destroyMap );
-		pybind::def_functor( "setPathFinderMapWeight", this, &ModulePathFinder::setMapWeight );
+		pybind::def_functor( kernel, "createPathFinderMap", this, &ModulePathFinder::createMap );
+		pybind::def_functor( kernel, "destroyPathFinderMap", this, &ModulePathFinder::destroyMap );
+		pybind::def_functor( kernel, "setPathFinderMapWeight", this, &ModulePathFinder::setMapWeight );
 
-		pybind::interface_<PathFinderWayAffector, pybind::bases<Affector> >("PathFinderWayAffector")
+		pybind::interface_<PathFinderWayAffector, pybind::bases<Affector> >( kernel, "PathFinderWayAffector" )
 			.def( "purge", &PathFinderWayAffector::purge )
 			.def( "unpurge", &PathFinderWayAffector::unpurge )
 			.def( "getLength", &PathFinderWayAffector::getLength )
@@ -127,11 +129,9 @@ namespace Menge
 			.def( "predictionParabolicBullet", &PathFinderWayAffector::predictionParabolicBullet )
 			;
 		
-		pybind::def_functor_args( "createPathFinderWayAffector", this, &ModulePathFinder::createPathFinderWayAffector );
-		pybind::def_functor( "destroyPathFinderWayAffector", this, &ModulePathFinder::destroyPathFinderWayAffector );
-
+		pybind::def_functor_args( kernel, "createPathFinderWayAffector", this, &ModulePathFinder::createPathFinderWayAffector );
+		pybind::def_functor( kernel, "destroyPathFinderWayAffector", this, &ModulePathFinder::destroyPathFinderWayAffector );
 		
-
 		SCRIPT_SERVICE(m_serviceProvider)
 			->setWrapper( Helper::stringizeString( m_serviceProvider, "PathGraphNode" ), new ClassScriptWrapper<PathGraphNode>() );
 		

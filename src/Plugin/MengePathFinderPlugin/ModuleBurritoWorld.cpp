@@ -50,7 +50,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ModuleBurritoWorld::_initialize()
 	{
-		pybind::interface_<BurritoBison>("BurritoBison")
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		pybind::interface_<BurritoBison>( kernel, "BurritoBison" )
 			.def( "addForce", &BurritoBison::addForce )
 			.def( "removeForce", &BurritoBison::removeForce )
 			.def( "addImpulse", &BurritoBison::addImpulse )			
@@ -87,7 +89,7 @@ namespace Menge
 			.def( "getCameraFollowerScale", &BurritoBison::getCameraFollowerScale )
 			;
 
-		pybind::interface_<BurritoUnit>( "BurritoUnit" )
+		pybind::interface_<BurritoUnit>( kernel, "BurritoUnit" )
 			.def( "getNode", &BurritoUnit::getNode )
 			.def( "getPosition", &BurritoUnit::getPosition )
 			.def( "setVelocity", &BurritoUnit::setVelocity )
@@ -100,10 +102,10 @@ namespace Menge
 			.def( "isBound", &BurritoUnit::isBound )
 			;
 
-		pybind::interface_<BurritoGround>( "BurritoGround" )
+		pybind::interface_<BurritoGround>( kernel, "BurritoGround" )
 			;
 			
-		pybind::interface_<BurritoWorld>("BurritoWorld")
+		pybind::interface_<BurritoWorld>( kernel, "BurritoWorld" )
 			.def( "setFreeze", &BurritoWorld::setFreeze )
 			.def( "getFreeze", &BurritoWorld::getFreeze )
 			.def( "createBison", &BurritoWorld::createBison )
@@ -114,8 +116,8 @@ namespace Menge
 			.def( "removeLayerUnit", &BurritoWorld::removeLayerUnit )
 			;
 
-		pybind::def_functor( "createBurritoWorld", this, &ModuleBurritoWorld::createBurritoWorld );
-		pybind::def_functor( "removeBurritoWorld", this, &ModuleBurritoWorld::removeBurritoWorld );
+		pybind::def_functor( kernel, "createBurritoWorld", this, &ModuleBurritoWorld::createBurritoWorld );
+		pybind::def_functor( kernel, "removeBurritoWorld", this, &ModuleBurritoWorld::removeBurritoWorld );
 				
 		return true;
 	}

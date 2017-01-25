@@ -155,6 +155,9 @@ namespace Menge
         
         void setSeparateAlphaBlendMode() override;
 
+		size_t getTextureMemoryUse() const override;
+		uint32_t getTextureCount() const override;
+
     protected:
         void findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const;
 

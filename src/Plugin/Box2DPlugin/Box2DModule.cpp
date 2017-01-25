@@ -26,10 +26,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	bool Box2DModule::_initialize()
     {
-		pybind::def_functor( "createBox2DWorld", this, &Box2DModule::createWorld );
-		pybind::def_functor( "destroyBox2DWorld", this, &Box2DModule::destroyWorld );
+		pybind::kernel_interface * kernel = pybind::get_kernel();
 
-		pybind::interface_<Box2DWorld>( "Box2DWorld" )
+		pybind::def_functor( kernel, "createBox2DWorld", this, &Box2DModule::createWorld );
+		pybind::def_functor( kernel, "destroyBox2DWorld", this, &Box2DModule::destroyWorld );
+
+		pybind::interface_<Box2DWorld>( kernel, "Box2DWorld" )
 			.def_smart_pointer()
 			.def( "setTimeStep", &Box2DWorld::setTimeStep )
 			.def( "createBody", &Box2DWorld::createBody )
@@ -43,7 +45,7 @@ namespace Menge
 			.def( "rayCast", &Box2DWorld::rayCast )
 			;
 			
-		pybind::interface_<Box2DBody, pybind::bases<Eventable> >( "Box2DBody" )
+		pybind::interface_<Box2DBody, pybind::bases<Eventable> >( kernel, "Box2DBody" )
 			.def_smart_pointer()
 			.def( "setUserData", &Box2DBody::setUserData )
 			.def( "getUserData", &Box2DBody::getUserData )
@@ -74,11 +76,11 @@ namespace Menge
 			.def( "wakeUp", &Box2DBody::wakeUp )
 			;
 
-		pybind::interface_<Box2DJoint>( "Box2DJoint" )
+		pybind::interface_<Box2DJoint>( kernel, "Box2DJoint" )
 			.def_smart_pointer()
 			;
 
-		pybind::interface_<NodeBox2DBody, pybind::bases<Node> >( "NodeBox2DBody" )
+		pybind::interface_<NodeBox2DBody, pybind::bases<Node> >( kernel, "NodeBox2DBody" )
 			.def( "setBox2DBody", &NodeBox2DBody::setBox2DBody )
 			.def( "getBox2DBody", &NodeBox2DBody::getBox2DBody )
 			;

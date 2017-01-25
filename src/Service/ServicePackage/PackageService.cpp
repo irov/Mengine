@@ -367,6 +367,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::validatePackages() const
 	{
+		LOGGER_WARNING( m_serviceProvider )("Validate Packages..."
+			);
+
 		bool successful = true;
 
 		for( TVectorPackage::const_iterator

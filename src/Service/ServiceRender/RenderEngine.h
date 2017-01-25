@@ -166,7 +166,7 @@ namespace Menge
         void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign ) override;
 		
 	public:
-		const RenderDebugInfo & getDebugInfo() const override;
+		const RenderServiceDebugInfo & getDebugInfo() const override;
 		void resetFrameCount() override;
 
 	public:
@@ -257,7 +257,7 @@ namespace Menge
 
 		RenderProgramInterfacePtr m_currentProgram;
 
-		RenderDebugInfo m_debugInfo;	    // debug info
+		RenderServiceDebugInfo m_debugInfo;	    // debug info
 
 		typedef stdex::heap_array<RenderIndices> TArrayRenderIndices;
 		TArrayRenderIndices m_indicesQuad;

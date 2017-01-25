@@ -939,4 +939,14 @@ namespace Menge
     {
         mt::make_lookat_m4( _viewMatrix, _eye, _dir, _up, _sign );
     }
+	//////////////////////////////////////////////////////////////////////////
+	size_t MarmaladeRenderSystem::getTextureMemoryUse() const
+	{
+		return 0U;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t MarmaladeRenderSystem::getTextureCount() const
+	{
+		return 0U;
+	}
 }	// namespace Menge

@@ -27,9 +27,9 @@ namespace Menge
 		uint32_t getHWHeight() const override;
         uint32_t getHWChannels() const override;
 		uint32_t getHWDepth() const override;
-
+		
         PixelFormat getHWPixelFormat() const override;
-        
+
 	public:
         void * lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
 		void unlock( uint32_t _level ) override;

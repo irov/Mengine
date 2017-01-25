@@ -135,8 +135,10 @@ namespace Menge
 		void setVSync( bool _vSync ) override;
 		void setSeparateAlphaBlendMode() override;
 
+	public:
+		size_t getTextureMemoryUse() const override;
+		uint32_t getTextureCount() const override;
 		
-
 	public:
 		bool lockRenderTarget( const RenderImageInterfacePtr & _renderTarget ) override;
 		bool unlockRenderTarget() override;
@@ -189,6 +191,9 @@ namespace Menge
 		bool d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels,
 			DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture );
 
+		DX9RenderImage * onCreateDX9RenderImage_( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat );
+		void onDestroyDX9RenderImage_( DX9RenderImage * _image );
+
 	protected:
 		UINT m_adapterToUse;
         D3DDEVTYPE m_deviceType;
@@ -230,6 +235,9 @@ namespace Menge
 		mt::mat4f m_worldMatrix;
 
 		uint32_t m_dxMaxCombinedTextureImageUnits;
+
+		size_t m_textureMemoryUse;
+		uint32_t m_textureCount;
 
 		bool m_vertexBufferEnable;
 		bool m_indexBufferEnable;

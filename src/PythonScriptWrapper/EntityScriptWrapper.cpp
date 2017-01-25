@@ -195,12 +195,14 @@ namespace Menge
 	{
 		classWrapping( _serviceProvider );
 
-		pybind::superclass_<Entity, pybind::bases<Node, Eventable> >( "Entity", (void *)_serviceProvider, new superclass_new_Entity, nullptr, false )
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		pybind::superclass_<Entity, pybind::bases<Node, Eventable> >( kernel, "Entity", (void *)_serviceProvider, new superclass_new_Entity, nullptr, false )
             .def_constructor( pybind::init<>() )
 			.def( "getPrototype", &Entity::getPrototype )
 			;
 
-		pybind::superclass_<Arrow, pybind::bases<Entity> >( "Arrow", (void *)_serviceProvider, new superclass_new_Arrow, nullptr, false )
+		pybind::superclass_<Arrow, pybind::bases<Entity> >( kernel, "Arrow", (void *)_serviceProvider, new superclass_new_Arrow, nullptr, false )
             .def_constructor( pybind::init<>() )
 			.def( "setOffsetClick", &Arrow::setOffsetClick )
 			.def( "getOffsetClick", &Arrow::getOffsetClick )
@@ -210,7 +212,7 @@ namespace Menge
 			.def( "getRadius", &Arrow::getRadius )
 			;
 
-		pybind::superclass_<Scene, pybind::bases<Entity> >("Scene", (void *)_serviceProvider, new superclass_new_Scene, nullptr, false)
+		pybind::superclass_<Scene, pybind::bases<Entity> >( kernel, "Scene", (void *)_serviceProvider, new superclass_new_Scene, nullptr, false )
             .def_constructor( pybind::init<>() )
 			.def( "isSubScene", &Scene::isSubScene )
 			.def( "getParentScene", &Scene::getParentScene )
@@ -224,11 +226,11 @@ namespace Menge
 
         EntityScriptMethod * entityScriptMethod = new EntityScriptMethod(_serviceProvider);
 
-        pybind::def_functor( "addEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addEntityPrototypeFinder );
-        pybind::def_functor( "addScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addScenePrototypeFinder );
-        pybind::def_functor( "addArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addArrowPrototypeFinder );
-		pybind::def_functor( "createEntity", entityScriptMethod, &EntityScriptMethod::s_createEntity );
-        pybind::def_functor( "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
+		pybind::def_functor( kernel, "addEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addEntityPrototypeFinder );
+		pybind::def_functor( kernel, "addScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addScenePrototypeFinder );
+		pybind::def_functor( kernel, "addArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addArrowPrototypeFinder );
+		pybind::def_functor( kernel, "createEntity", entityScriptMethod, &EntityScriptMethod::s_createEntity );
+		pybind::def_functor( kernel, "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
 		//pybind::def_function( "createEntityFromBinary", &ScriptMethod::createEntityFromBinary );
 	}
 }

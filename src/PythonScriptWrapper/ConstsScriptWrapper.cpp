@@ -62,8 +62,10 @@ namespace Menge
 		return hash;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool ConstString_convert( PyObject * _obj, void * _place, void * _user )
+	static bool ConstString_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
     {
+		(void)_kernel;
+
 		ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(_user);
 
 		ConstString & cstr = *(ConstString*)_place;
@@ -90,7 +92,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	void PythonScriptWrapper::constsWrap( ServiceProviderInterface * _serviceProvider )
 	{
-		pybind::structhash_<ConstString>( "ConstString" )
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		pybind::structhash_<ConstString>( kernel, "ConstString" )
             .def_compare( &s_ConstString_compare )
             .def_convert( &ConstString_convert, _serviceProvider )
             .def_repr( &s_ConstString_repr )

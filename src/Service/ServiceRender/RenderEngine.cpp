@@ -893,7 +893,7 @@ namespace Menge
 		_renderViewport = renderViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderDebugInfo & RenderEngine::getDebugInfo() const
+	const RenderServiceDebugInfo & RenderEngine::getDebugInfo() const
 	{
 		return m_debugInfo;
 	}

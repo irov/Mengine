@@ -104,6 +104,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceTrackMatte::_update( float _current, float _timing )
 	{
+		(void)_current;
+		(void)_timing;
 		//const RenderMaterialInterfacePtr & material = this->getMaterial();
 
 		//const RenderMaterialStage * stage = material->getStage();
@@ -115,36 +117,44 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SurfaceTrackMatte::_play( float _time )
 	{
+		(void)_time;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SurfaceTrackMatte::_restart( float _time, uint32_t _enumerator )
 	{
+		(void)_time;
+		(void)_enumerator;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceTrackMatte::_pause( uint32_t _enumerator )
 	{
-
+		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceTrackMatte::_resume( float _time, uint32_t _enumerator )
 	{
-
+		(void)_time;
+		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceTrackMatte::_stop( uint32_t _enumerator )
 	{
-
+		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceTrackMatte::_end( uint32_t _enumerator )
 	{
-
+		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SurfaceTrackMatte::_interrupt( uint32_t _enumerator )
 	{
+		(void)_enumerator;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

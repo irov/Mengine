@@ -23,13 +23,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ModuleInvader::_initialize()
 	{
-		pybind::interface_<InvaderFollowAffector, pybind::bases<Affector> >( "InvaderFollowAffector" )
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		pybind::interface_<InvaderFollowAffector, pybind::bases<Affector> >( kernel, "InvaderFollowAffector" )
 			.def( "setMoveSpeed", &InvaderFollowAffector::setMoveSpeed )
 			.def( "getMoveSpeed", &InvaderFollowAffector::getMoveSpeed )
 			;
 
-		pybind::def_functor_args( "createFollowAffector", this, &ModuleInvader::createFollowAffector );
-		pybind::def_functor( "destroyFollowAffector", this, &ModuleInvader::destroyFollowAffector );
+		pybind::def_functor_args( kernel, "createFollowAffector", this, &ModuleInvader::createFollowAffector );
+		pybind::def_functor( kernel, "destroyFollowAffector", this, &ModuleInvader::destroyFollowAffector );
 		
 		return true;
 	}

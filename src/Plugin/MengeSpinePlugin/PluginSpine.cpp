@@ -24,7 +24,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PluginSpine::_initialize()
 	{
-		pybind::interface_<Spine, pybind::bases<Node, Eventable, Animatable> >( "Spine", false )
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		pybind::interface_<Spine, pybind::bases<Node, Eventable, Animatable> >( kernel, "Spine", false )
 			.def( "setResourceSpine", &Spine::setResourceSpine )
 			.def( "getResourceSpine", &Spine::getResourceSpine )
 			.def( "mixAnimation", &Spine::mixAnimation )
@@ -40,7 +42,7 @@ namespace Menge
 			.def( "getStateAnimationDuration", &Spine::getStateAnimationDuration )			
 			;
 
-		pybind::interface_<ResourceSpine, pybind::bases<ResourceReference> >( "ResourceSpine", false )
+		pybind::interface_<ResourceSpine, pybind::bases<ResourceReference> >( kernel, "ResourceSpine", false )
 			;
 
 		SCRIPT_SERVICE( m_serviceProvider )

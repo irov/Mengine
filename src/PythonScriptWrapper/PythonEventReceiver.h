@@ -54,6 +54,10 @@ namespace Menge
 
                 _eventable->registerEventReceiver( _event, receiver );
             }
+
+#   ifdef _DEBUG
+            _kwds.remove( _method );
+#   endif
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>

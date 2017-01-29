@@ -42,7 +42,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ShapeQuadFlex::hasCustomSize() const
 	{
-		return m_customSize.x < 0.f || m_customSize.y < 0.f;
+		return m_customSize.x >= 0.f || m_customSize.y >= 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ShapeQuadFlex::getCustomSize() const

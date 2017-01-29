@@ -17,7 +17,8 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Layer2D::Layer2D()
-		: m_viewport(0.f, 0.f, 0.f, 0.f)
+        : m_size(0.f, 0.f)
+		, m_viewport(0.f, 0.f, 0.f, 0.f)
 		, m_renderCamera(nullptr)
 		, m_hasViewport(false)
 		, m_renderViewport(nullptr)
@@ -47,6 +48,16 @@ namespace	Menge
         }
 
         Node::_deactivate();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Layer2D::setSize( const mt::vec2f & _size )
+    {
+        m_size = _size;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & Layer2D::getSize() const
+    {
+        return m_size;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::setViewport( const Viewport & _viewport )

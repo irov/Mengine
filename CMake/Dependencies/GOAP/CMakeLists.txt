@@ -14,6 +14,7 @@ ${SOURCE_DIR}/src/TaskDeadLock.cpp
 ${SOURCE_DIR}/src/TaskDummy.cpp
 ${SOURCE_DIR}/src/TaskFork.cpp
 ${SOURCE_DIR}/src/TaskFunction.cpp
+${SOURCE_DIR}/src/TaskGuard.cpp
 ${SOURCE_DIR}/src/TaskIf.cpp
 ${SOURCE_DIR}/src/TaskParallelNeck.cpp
 ${SOURCE_DIR}/src/TaskRaceNeck.cpp

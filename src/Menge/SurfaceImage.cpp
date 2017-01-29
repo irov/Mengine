@@ -89,9 +89,9 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceImage::getSize() const
     {
-        if( this->isCompile() == false )
+        if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("SurfaceImage.getSize: '%s' not compile"
+            LOGGER_ERROR( m_serviceProvider )("SurfaceImage.getSize: '%s' not setup resource"
                 , this->getName().c_str()
                 );
 
@@ -105,9 +105,9 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceImage::getOffset() const
     {
-        if( this->isCompile() == false )
+        if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("SurfaceImage.getOffset: '%s' not compile"
+            LOGGER_ERROR( m_serviceProvider )("SurfaceImage.getOffset: '%s' not setup resource"
                 , this->getName().c_str()
                 );
 
@@ -149,9 +149,9 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     const mt::uv4f & SurfaceImage::getUV( uint32_t _index ) const
     {
-        if( this->isCompile() == false )
+        if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("SurfaceImage.getUV: '%s' not compile"
+            LOGGER_ERROR( m_serviceProvider )("SurfaceImage.getUV: '%s' not setup texture"
                 , this->getName().c_str()
                 );
 
@@ -182,9 +182,9 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     const ColourValue & SurfaceImage::getColour() const
     {
-        if( this->isCompile() == false )
+        if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("SurfaceImage.getColour: '%s' not compile"
+            LOGGER_ERROR( m_serviceProvider )("SurfaceImage.getColour: '%s' not setup texture"
                 , this->getName().c_str()
                 );
 

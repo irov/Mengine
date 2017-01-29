@@ -54,5 +54,26 @@ namespace Menge
 
 			_worldDeltha = deltha;
 		}
+        //////////////////////////////////////////////////////////////////////////
+        void worldToScreenBox( const RenderCameraInterface * _renderCamera, const RenderViewportInterface * _renderViewport, const Resolution & _contentResolution, const mt::box2f & _worldBox, mt::box2f & _screenBox )
+        {
+            const mt::mat4f & vpm = _renderCamera->getCameraViewProjectionMatrix();
+            const Viewport & vp = _renderViewport->getViewport();
+
+            mt::vec2f vp_size;
+            vp.calcSize( vp_size );
+
+            mt::vec2f contentResolutionInvSize;
+            _contentResolution.calcInvSize( contentResolutionInvSize );
+
+            mt::box2f bb_screen;
+            mt::set_box_homogenize( bb_screen, _worldBox.minimum, _worldBox.maximum, vpm );
+
+            mt::scale_box( bb_screen, vp_size );
+            mt::transpose_box( bb_screen, vp.begin );
+            mt::scale_box( bb_screen, contentResolutionInvSize );
+
+            _screenBox = bb_screen;
+        }
 	}
 }

@@ -1520,6 +1520,8 @@ namespace Menge
             return false;
         }
 
+        layer_animation->setSurface( surface );
+
 		if( this->addMovieNode_( _layer, layer_animation, surface.get(), nullptr, nullptr ) == false )
 		{
 			return false;

@@ -17,6 +17,10 @@ namespace Menge
 	public:
 		Layer2D();
 
+    public:
+        void setSize( const mt::vec2f & _size );
+        const mt::vec2f & getSize() const;
+
 	public:
 		void setViewport( const Viewport & _viewport );
 		void removeViewport();
@@ -30,6 +34,8 @@ namespace Menge
         void _deactivate() override;
 
 	protected:
+        mt::vec2f m_size;
+
 		Viewport m_viewport;
 		
 		RenderCameraOrthogonal * m_renderCamera;

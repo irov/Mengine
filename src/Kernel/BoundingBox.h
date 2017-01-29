@@ -33,8 +33,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::box2f & BoundingBox::getBoundingBox() const
 	{
-		{
-		if( m_invalidateBoundingBox == true )
+        if( m_invalidateBoundingBox == true )
+		{		
 			this->updateBoundingBox();
 		}
 

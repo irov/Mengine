@@ -237,9 +237,10 @@ namespace Menge
             return nullptr;
         }
         
-		it_found->dead = true;
-
 		InputSystemHandler * handler = it_found->handler;
+
+        it_found->dead = true;
+        it_found->handler = nullptr;
 
         return handler;
 	}

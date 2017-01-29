@@ -112,9 +112,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MoviePlugin::_initialize()
 	{
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
 		m_instance = ae_create_movie_instance( &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, &stdex_movie_logerror, this );
 
-		pybind::interface_<Movie2, pybind::bases<Node, Animatable> >( "Movie2", false )
+		pybind::interface_<Movie2, pybind::bases<Node, Animatable> >( kernel, "Movie2", false )
 			.def( "setResourceMovie2", &Movie2::setResourceMovie2 )
 			.def( "getResourceMovie2", &Movie2::getResourceMovie2 )
 			.def( "setCompositionName", &Movie2::setCompositionName )
@@ -122,9 +124,11 @@ namespace Menge
 			.def( "getDuration", &Movie2::getDuration )
 			.def( "setWorkAreaFromEvent", &Movie2::setWorkAreaFromEvent )
 			.def( "removeWorkArea", &Movie2::removeWorkArea )
+			.def( "playSubComposition", &Movie2::playSubComposition )
+			.def( "stopSubComposition", &Movie2::stopSubComposition )
 			;
 
-		pybind::interface_<ResourceMovie2, pybind::bases<ResourceReference> >( "ResourceMovie2", false )
+		pybind::interface_<ResourceMovie2, pybind::bases<ResourceReference> >( kernel, "ResourceMovie2", false )
 			;
 		
 		SCRIPT_SERVICE( m_serviceProvider )

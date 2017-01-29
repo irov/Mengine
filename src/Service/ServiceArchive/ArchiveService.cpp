@@ -43,6 +43,18 @@ namespace Menge
 		m_archivators.erase( it_found );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ArchiveService::hasArchivator( const ConstString & _type ) const
+	{
+		TMapArchivators::const_iterator it_found = m_archivators.find( _type );
+
+		if( it_found == m_archivators.end() )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	ArchivatorInterfacePtr ArchiveService::getArchivator( const ConstString & _type ) const
 	{
 		TMapArchivators::const_iterator it_found = m_archivators.find( _type );
@@ -90,7 +102,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryInputInterfacePtr ArchiveService::compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream )
+	MemoryInputInterfacePtr ArchiveService::compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, EArchivatorCompress _compress )
 	{
 		MemoryCacheBufferInterfacePtr uncompress_buffer = Helper::createMemoryCacheStream( m_serviceProvider, _stream, "ArchiveService::compressStream" );
 
@@ -105,12 +117,12 @@ namespace Menge
 		const void * uncompress_memory = uncompress_buffer->getMemory();
 		size_t uncompress_size = uncompress_buffer->getSize();
 				
-		MemoryInputInterfacePtr compress_memory = this->compressBuffer( _archivator, uncompress_memory, uncompress_size );
+		MemoryInputInterfacePtr compress_memory = this->compressBuffer( _archivator, uncompress_memory, uncompress_size, _compress );
 
 		return compress_memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryInputInterfacePtr ArchiveService::compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size )
+	MemoryInputInterfacePtr ArchiveService::compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress )
 	{
 		size_t compressSize2 = _archivator->compressBound( _size );
 
@@ -128,7 +140,7 @@ namespace Menge
 		}
 
 		size_t compressSize;
-		if( _archivator->compress( buffer, compressSize2, _buffer, _size, compressSize ) == false )
+		if( _archivator->compress( buffer, compressSize2, _buffer, _size, compressSize, _compress ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ArchiveService::compress: invalid compress"
 				);

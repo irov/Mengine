@@ -256,6 +256,8 @@ namespace Menge
         mt::box2f bb_polygon_screen;
         Helper::worldToScreenBox( _camera, _viewport, _contentResolution, bb_polygon, bb_polygon_screen );
 
+        transpose_box( bb_polygon_screen, _point );
+
         if( mt::is_intersect( bb_screen, bb_polygon_screen ) == false )
         {
             return m_outward;

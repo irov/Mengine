@@ -13,8 +13,10 @@ namespace Menge
     struct ScriptClassExtract
         : public pybind::interface_<T>::extract_type_ptr
     {
-		PyObject * wrap( typename pybind::interface_<T>::extract_type_ptr::TCastRef _self ) override
+		PyObject * wrap( pybind::kernel_interface * _kernel, typename pybind::interface_<T>::extract_type_ptr::TCastRef _self ) override
         {
+			(void)_kernel;
+
 			if( _self == nullptr )
 			{
 				return pybind::ret_none();
@@ -52,7 +54,9 @@ namespace Menge
 	public:
 		bool initialize() override
 		{
-			pybind::registration_type_cast<T>(new ScriptClassExtract<T>());
+			pybind::kernel_interface * kernel = pybind::get_kernel();
+
+			pybind::registration_type_cast<T>(kernel, new ScriptClassExtract<T>());
 
 			return true;
 		}

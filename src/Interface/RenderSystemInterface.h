@@ -264,6 +264,7 @@ namespace Menge
 			, minification( TF_LINEAR )
 			, addressU(TAM_CLAMP)
 			, addressV(TAM_CLAMP)
+			, addressBorder(0x00000000)
             , colorOp(TOP_DISABLE)
             , colorArg1(TARG_TEXTURE)
             , colorArg2(TARG_DIFFUSE)
@@ -280,6 +281,7 @@ namespace Menge
 
 		ETextureAddressMode addressU;
 		ETextureAddressMode addressV;
+		uint32_t addressBorder;
 
         ETextureOp colorOp;
         ETextureArgument colorArg1;
@@ -492,12 +494,6 @@ namespace Menge
 #   define RENDERMATERIAL_SERVICE( serviceProvider )\
     ((Menge::RenderMaterialServiceInterface*)SERVICE_GET(serviceProvider, Menge::RenderMaterialServiceInterface))
     //////////////////////////////////////////////////////////////////////////
-    struct RenderTextureDebugInfo
-    {
-        size_t textureMemory;
-        uint32_t textureCount;
-    };
-    //////////////////////////////////////////////////////////////////////////
     class VisitorRenderTextureInterface
     {
     public:
@@ -536,9 +532,6 @@ namespace Menge
 
     public:
         virtual void visitTexture( VisitorRenderTextureInterface * _visitor ) const = 0;
-
-    public:
-        virtual const RenderTextureDebugInfo & getDebugInfo() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERTEXTURE_SERVICE( serviceProvider )\
@@ -631,7 +624,7 @@ namespace Menge
 			uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount ) = 0;
 
 		virtual void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) = 0;
-		virtual void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) = 0;
+		virtual void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) = 0;
 		virtual void setTextureFactor( uint32_t _color ) = 0;
 		virtual void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op ) = 0;
 		virtual void setCullMode( ECullMode _mode ) = 0;
@@ -689,12 +682,15 @@ namespace Menge
 		virtual uint32_t getMaxCombinedTextureImageUnits() const = 0;
 
 		virtual void setSeparateAlphaBlendMode() = 0;
+
+		virtual size_t getTextureMemoryUse() const = 0;
+		virtual uint32_t getTextureCount() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define RENDER_SYSTEM( serviceProvider )\
     ((Menge::RenderSystemInterface*)SERVICE_GET(serviceProvider, Menge::RenderSystemInterface))
 	//////////////////////////////////////////////////////////////////////////
-    struct RenderDebugInfo
+    struct RenderServiceDebugInfo
     {
         uint32_t frameCount;
         uint32_t dips;
@@ -788,7 +784,7 @@ namespace Menge
         virtual bool isWindowCreated() const = 0;
 
     public:
-        virtual const RenderDebugInfo & getDebugInfo() const = 0;
+        virtual const RenderServiceDebugInfo & getDebugInfo() const = 0;
         virtual void resetFrameCount() = 0;
 	};
 

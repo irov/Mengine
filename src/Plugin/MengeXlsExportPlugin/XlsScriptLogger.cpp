@@ -79,7 +79,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * XlsScriptLogger::embedding( PyObject * _module )
 	{
-		pybind::interface_<XlsScriptLogger>( "XlsScriptLogger", true, _module )
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		pybind::interface_<XlsScriptLogger>( kernel, "XlsScriptLogger", true, _module )
 			.def_native("write", &XlsScriptLogger::py_write )
             .def_native("flush", &XlsScriptLogger::py_flush )
 			.def_property("softspace", &XlsScriptLogger::getSoftspace, &XlsScriptLogger::setSoftspace )

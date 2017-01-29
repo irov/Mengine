@@ -32,14 +32,6 @@ namespace Menge
 	{
         m_convertExt = ".acf";
 
-		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
-
-		if( m_archivator == nullptr )
-		{
-			return false;
-		}
-
 		return true;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////

@@ -229,6 +229,5 @@ namespace Menge
 	GLuint MarmaladeRenderTextureES1::getUId() const
 	{
 		return m_uid;
-	}
-	//////////////////////////////////////////////////////////////////////////
+	}	
 }	// namespace Menge

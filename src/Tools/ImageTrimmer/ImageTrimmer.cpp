@@ -470,7 +470,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		in = in.substr( 1, in.size() - 2 );
 	}
 
-	if( out.front() == L'\"' && out.back() == L'\"' )
+	if( out.empty() == false && out.front() == L'\"' && out.back() == L'\"' )
 	{
 		out = out.substr( 1, out.size() - 2 );
 	}

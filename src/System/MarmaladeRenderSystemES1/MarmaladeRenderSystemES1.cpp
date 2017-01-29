@@ -163,14 +163,14 @@ namespace Menge
 		{
 			GLenum plane = GL_CLIP_PLANE0 + i;
 
-			glEnable( plane );
+			GLCALL( m_serviceProvider, glEnable, ( plane ) );
 		}
 		
 		for( uint32_t i = _count; i != m_maxClipPlanes; ++i )
 		{
 			GLenum plane = GL_CLIP_PLANE0 + i;
 
-			glDisable( plane );
+			GLCALL( m_serviceProvider, glDisable, ( plane ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -183,7 +183,7 @@ namespace Menge
 
 		GLenum plane = GL_CLIP_PLANE0 + _i;
 
-		glClipPlanef( plane, _plane.buff() );
+		GLCALL( m_serviceProvider, glClipPlanef, ( plane, _plane.buff() ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::setViewport( const Viewport & _viewport )
@@ -408,13 +408,15 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystemES1::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
+	void MarmaladeRenderSystemES1::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
 	{
 		GLenum modeUGL = s_getGLAddressMode( _modeU );
 		GLenum modeVGL = s_getGLAddressMode( _modeV );
 
 		m_textureStage[_stage].wrapS = modeUGL;
 		m_textureStage[_stage].wrapT = modeVGL;
+
+		m_textureStage[_stage].border = _border;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::setTextureFactor( uint32_t _color )
@@ -925,5 +927,15 @@ namespace Menge
 	void MarmaladeRenderSystemES1::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )
 	{
 		mt::make_lookat_m4( _viewMatrix, _eye, _dir, _up, _sign );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t MarmaladeRenderSystemES1::getTextureMemoryUse() const
+	{
+		return 0U;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t MarmaladeRenderSystemES1::getTextureCount() const
+	{
+		return 0U;
 	}
 }	// namespace Menge

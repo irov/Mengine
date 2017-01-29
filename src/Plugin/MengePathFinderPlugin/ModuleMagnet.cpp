@@ -24,16 +24,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ModuleMagnet::_initialize()
 	{
-		pybind::interface_<MagnetWorld>( "MagnetWorld" )
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		pybind::interface_<MagnetWorld>( kernel, "MagnetWorld" )
 			.def_smart_pointer()
 			.def( "setIFFs", &MagnetWorld::setIFFs )
 			.def( "getIFFs", &MagnetWorld::getIFFs )
 			;
 
-		pybind::def_functor( "createMagnetWorld", this, &ModuleMagnet::createMagnetWorld );
-		pybind::def_functor( "removeMagnetWorld", this, &ModuleMagnet::removeMagnetWorld );
+		pybind::def_functor( kernel, "createMagnetWorld", this, &ModuleMagnet::createMagnetWorld );
+		pybind::def_functor( kernel, "removeMagnetWorld", this, &ModuleMagnet::removeMagnetWorld );
 
-		pybind::interface_<NodeMagnetActor, pybind::bases<Node> >( "NodeMagnetActor", false )
+		pybind::interface_<NodeMagnetActor, pybind::bases<Node> >( kernel, "NodeMagnetActor", false )
 			.def( "setMagnetRadius", &NodeMagnetActor::setMagnetRadius )
 			.def( "getMagnetRadius", &NodeMagnetActor::getMagnetRadius )
 			.def( "setMagnetForce", &NodeMagnetActor::setMagnetForce )

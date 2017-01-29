@@ -18,8 +18,5 @@ namespace Menge
 
     public:
 		bool convert() override;
-
-	protected:
-		ArchivatorInterfacePtr m_archivator;
     };
 }	// namespace Menge

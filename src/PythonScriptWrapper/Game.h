@@ -27,6 +27,7 @@ namespace Menge
     {
         EVENT_GAME_FULLSCREEN = 0,
         EVENT_GAME_FIXED_CONTENT_RESOLUTION,
+        EVENT_GAME_FIXED_DISPLAY_RESOLUTION,
         EVENT_GAME_RENDER_VIEWPORT,
         EVENT_GAME_VIEWPORT,
         EVENT_GAME_KEY,
@@ -65,6 +66,7 @@ namespace Menge
     public:
         virtual void onGameFullscreen( bool _fullscreen ) = 0;
         virtual void onGameFixedContentResolution( bool _fixed ) = 0;
+        virtual void onGameFixedDisplayResolution( bool _fixed ) = 0;
         virtual void onGameRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) = 0;
         virtual void onGameViewport( const Viewport & _viewport, float _aspect ) = 0;
         virtual bool onGameKey( KeyCode _key, float _x, float _y, WChar _code, bool _isDown, bool _isRepeat ) = 0;
@@ -150,6 +152,7 @@ namespace Menge
 		void setFocus( bool _focus ) override;
 		void setFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
         void setFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
+		void setFixedDisplayResolution( const Resolution & _resolution, bool _fixed ) override;
         void setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) override;
 		void setGameViewport( const Viewport & _viewport, float _aspect ) override;
 

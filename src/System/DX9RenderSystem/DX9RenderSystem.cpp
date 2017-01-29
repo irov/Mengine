@@ -36,6 +36,8 @@ namespace Menge
 		, m_fvf(0)
 		, m_frames(0)
 		, m_dxMaxCombinedTextureImageUnits(0)
+		, m_textureMemoryUse(0U)
+		, m_textureCount(0U)
 	{
 		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
@@ -175,6 +177,8 @@ namespace Menge
 		}
 	
 		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "DX9" );
+
+		m_factoryDX9Texture.setMethodListener( this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
 							
 		return true;
 	}
@@ -554,9 +558,8 @@ namespace Menge
 			return nullptr;
 		}
 
-		DX9RenderImage * dxTexture = m_factoryDX9Texture.createObject();
-        dxTexture->initialize( m_serviceProvider, dxTextureInterface, ERIM_NORMAL, texDesc.Width, texDesc.Height, _channels, _format );
-
+		DX9RenderImage * dxTexture = this->onCreateDX9RenderImage_( dxTextureInterface, ERIM_NORMAL, texDesc.Width, texDesc.Height, _channels, _format );
+		
 		LOGGER_INFO(m_serviceProvider)( "DX9RenderSystem.createImage: texture created %dx%d %d:%d"
 			, texDesc.Width
 			, texDesc.Height
@@ -590,8 +593,7 @@ namespace Menge
 			return nullptr;
 		}
 
-        DX9RenderImage * dxTexture = m_factoryDX9Texture.createObject();
-        dxTexture->initialize( m_serviceProvider, dxTextureInterface, ERIM_DYNAMIC, texDesc.Width, texDesc.Height, _channels, _format );		
+		DX9RenderImage * dxTexture = this->onCreateDX9RenderImage_( dxTextureInterface, ERIM_DYNAMIC, texDesc.Width, texDesc.Height, _channels, _format );
         
 		LOGGER_INFO(m_serviceProvider)( "DX9RenderSystem.createDynamicImage: texture created %dx%d %d:%d"
 			, texDesc.Width
@@ -893,6 +895,16 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::changeWindowMode: Graphics change mode failed" 
 				);
 		}        
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t DX9RenderSystem::getTextureMemoryUse() const
+	{
+		return m_textureMemoryUse;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t DX9RenderSystem::getTextureCount() const
+	{
+		return m_textureCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::lockRenderTarget( const RenderImageInterfacePtr & _renderTarget )
@@ -1381,7 +1393,7 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, (D3DRS_BLENDOP, blend_op) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
+	void DX9RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
 	{	
         if( m_pD3DDevice == nullptr )
         {
@@ -1406,6 +1418,8 @@ namespace Menge
 
         D3DTEXTUREADDRESS adrV = s_toD3DTextureAddress( _modeV );
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, ( _stage, D3DSAMP_ADDRESSV, adrV ) );
+
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_BORDERCOLOR, _border) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureFactor( uint32_t _color )
@@ -1974,4 +1988,27 @@ namespace Menge
 		//empty, not supported
 	}
 	//////////////////////////////////////////////////////////////////////////
+	DX9RenderImage * DX9RenderSystem::onCreateDX9RenderImage_( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
+	{
+		m_textureCount++;
+
+		DX9RenderImage * dxTexture = m_factoryDX9Texture.createObject();
+		dxTexture->initialize( m_serviceProvider, _d3dInterface, _mode, _hwWidth, _hwHeight, _hwChannels, _hwPixelFormat );
+
+		//size_t memoryUse = dxTexture->getMemoryUse();
+
+		//m_textureMemoryUse += memoryUse;
+
+		return dxTexture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderSystem::onDestroyDX9RenderImage_( DX9RenderImage * _image )
+	{
+		m_textureCount--;
+
+		//size_t memoryUse = _image->getMemoryUse();
+
+		//m_textureMemoryUse -= memoryUse;
+	}
 }	// namespace Menge
+

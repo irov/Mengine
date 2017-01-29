@@ -53,6 +53,7 @@ namespace Menge
 
 		virtual void onFullscreen( const Resolution & _resolution, bool _fullscreen ) = 0;
 		virtual void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) = 0;
+		virtual void onFixedDisplayResolution( const Resolution & _resolution, bool _fixed ) = 0;
 
 	public:
 		virtual void tick( float _time, float _timing ) = 0;

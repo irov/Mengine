@@ -473,14 +473,17 @@ namespace Menge
 			const RenderTextureStage & texture_stage = m_currentStage->textureStage[stageId];
 
 			if( current_texture_stage.addressU != texture_stage.addressU
-				|| current_texture_stage.addressV != texture_stage.addressV )
+				|| current_texture_stage.addressV != texture_stage.addressV
+				|| current_texture_stage.addressBorder != texture_stage.addressBorder )
 			{
 				current_texture_stage.addressU = texture_stage.addressU;
 				current_texture_stage.addressV = texture_stage.addressV;
+				current_texture_stage.addressBorder = texture_stage.addressBorder;
 
 				RENDER_SYSTEM( m_serviceProvider )->setTextureAddressing( stageId
 					, current_texture_stage.addressU
 					, current_texture_stage.addressV
+					, current_texture_stage.addressBorder
 					);
 			}
 
@@ -497,6 +500,26 @@ namespace Menge
 			}
 		}
 
+		if( m_alphaBlendEnable != m_currentStage->alphaBlendEnable )
+		{
+			m_alphaBlendEnable = m_currentStage->alphaBlendEnable;
+
+			RENDER_SYSTEM( m_serviceProvider )
+				->setAlphaBlendEnable( m_alphaBlendEnable );
+		}
+
+		if( m_currentBlendSrc != m_currentStage->blendSrc ||
+			m_currentBlendDst != m_currentStage->blendDst ||
+			m_currentBlendOp != m_currentStage->blendOp )
+		{
+			m_currentBlendSrc = m_currentStage->blendSrc;
+			m_currentBlendDst = m_currentStage->blendDst;
+			m_currentBlendOp = m_currentStage->blendOp;
+
+			RENDER_SYSTEM( m_serviceProvider )
+				->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
+		}
+
 		if( m_currentProgram != m_currentStage->program )
 		{
 			m_currentProgram = m_currentStage->program;
@@ -504,7 +527,8 @@ namespace Menge
 			RENDER_SYSTEM( m_serviceProvider )
 				->setProgram( m_currentProgram );
 		}
-		else
+		
+		if( m_currentProgram == nullptr )
 		{
 			for( uint32_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
 			{
@@ -551,26 +575,6 @@ namespace Menge
 				}
 			}
 		}
-
-		if( m_alphaBlendEnable != m_currentStage->alphaBlendEnable )
-		{
-			m_alphaBlendEnable = m_currentStage->alphaBlendEnable;
-
-			RENDER_SYSTEM(m_serviceProvider)
-				->setAlphaBlendEnable( m_alphaBlendEnable );
-		}
-
-		if( m_currentBlendSrc != m_currentStage->blendSrc ||
-			m_currentBlendDst != m_currentStage->blendDst ||
-			m_currentBlendOp != m_currentStage->blendOp )
-		{
-			m_currentBlendSrc = m_currentStage->blendSrc;
-			m_currentBlendDst = m_currentStage->blendDst;
-			m_currentBlendOp = m_currentStage->blendOp;
-
-			RENDER_SYSTEM(m_serviceProvider)
-				->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::updateTexture_( uint32_t _stageId, const RenderTextureInterfacePtr & _texture )
@@ -578,7 +582,7 @@ namespace Menge
 		uint32_t texture_id = _texture->getId();
 		uint32_t current_texture_id = m_currentTexturesID[_stageId];
 
-		if( texture_id != current_texture_id || current_texture_id != 0 )
+		if( texture_id != current_texture_id || current_texture_id == 0 )
 		{
 			m_currentTexturesID[_stageId] = texture_id;
 
@@ -705,6 +709,7 @@ namespace Menge
 		RENDER_SYSTEM( m_serviceProvider )->setTextureAddressing( _stage
 			, stage.addressU
 			, stage.addressV
+			, stage.addressBorder
 			);
 
 		RENDER_SYSTEM( m_serviceProvider )->setTextureStageFilter( _stage
@@ -888,7 +893,7 @@ namespace Menge
 		_renderViewport = renderViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderDebugInfo & RenderEngine::getDebugInfo() const
+	const RenderServiceDebugInfo & RenderEngine::getDebugInfo() const
 	{
 		return m_debugInfo;
 	}

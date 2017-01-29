@@ -37,7 +37,7 @@ namespace	Menge
 		float getPosMs() const override;
 
 	protected:
-		void onSoundChangeVolume( float _sound, float _music, float _voice ) override;
+		void onSoundChangeVolume( float _sound, float _music, float _voice, bool _mute ) override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

@@ -175,7 +175,9 @@ namespace Menge
 		
 		pybind::set_currentmodule( m_moduleMenge );
 
-		pybind::interface_<ScriptLogger>( "ScriptLogger", true )
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		pybind::interface_<ScriptLogger>( kernel, "ScriptLogger", true )
 			.def_native( "write", &ScriptLogger::py_write )
 			.def_property( "softspace", &ScriptLogger::getSoftspace, &ScriptLogger::setSoftspace )
 			;
@@ -198,7 +200,7 @@ namespace Menge
 
 		pybind::set_observer_bind_call( new My_observer_bind_call( m_serviceProvider ) );
 
-        pybind::interface_<ScriptModuleFinder>("ScriptModuleFinder", true)
+		pybind::interface_<ScriptModuleFinder>( kernel, "ScriptModuleFinder", true )
             .def("find_module", &ScriptModuleFinder::find_module)   
 			.def("load_module", &ScriptModuleFinder::load_module)
             ;

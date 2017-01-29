@@ -385,7 +385,8 @@ namespace Menge
 
 				meta_TextureStages.get_AddressMode_U( textureStage.addressU );
 				meta_TextureStages.get_AddressMode_V( textureStage.addressV );
-
+				meta_TextureStages.get_AddressMode_Border( textureStage.addressBorder );
+  
 				meta_TextureStages.get_Color_Operator( textureStage.colorOp );
 				meta_TextureStages.get_Color_Arg1( textureStage.colorArg1 );
 				meta_TextureStages.get_Color_Arg2( textureStage.colorArg2 );
@@ -651,6 +652,11 @@ namespace Menge
 		}
 
 		if( _src.addressV != _dst.addressV )
+		{
+			return false;
+		}
+
+		if( _src.addressBorder != _dst.addressBorder )
 		{
 			return false;
 		}

@@ -19,16 +19,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ModuleBounce::_initialize()
 	{
-		pybind::interface_<BounceWorld>( "BounceWorld" )
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		pybind::interface_<BounceWorld>( kernel, "BounceWorld" )
 			.def_smart_pointer()
 			.def( "createBounceActor", &BounceWorld::createBounceActor )
 			.def( "removeBounceActor", &BounceWorld::removeBounceActor )
 			;
 
-		pybind::def_functor( "createBounceWorld", this, &ModuleBounce::createBounceWorld );
-		pybind::def_functor( "removeBounceWorld", this, &ModuleBounce::removeBounceWorld );
+		pybind::def_functor( kernel, "createBounceWorld", this, &ModuleBounce::createBounceWorld );
+		pybind::def_functor( kernel, "removeBounceWorld", this, &ModuleBounce::removeBounceWorld );
 
-		pybind::interface_<BounceActor>( "BounceActor", false )
+		pybind::interface_<BounceActor>( kernel, "BounceActor", false )
 			.def_smart_pointer()
 			.def( "setRadius", &BounceActor::setRadius )
 			.def( "getRadius", &BounceActor::getRadius )

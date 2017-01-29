@@ -2,21 +2,25 @@
 
 #	include "Core/PluginBase.h"
 
-#	include "steam/steam_api.h"
+#   include "PybindChain.h"
+#   include "PybindSource.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class SteamPlugin
+	class GOAPPlugin
 		: public PluginBase
 	{
-		PLUGIN_DECLARE( "Steam" )
+		PLUGIN_DECLARE( "GOAP" )
 
 	public:
-		SteamPlugin();
+		GOAPPlugin();
 
 	protected:
 		bool _initialize() override;
 		void _finalize() override;
+
+    protected:
+        PybindChainPtr makeChain( const PybindSourcePtr & _source );
 	};
 }

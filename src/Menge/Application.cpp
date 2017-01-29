@@ -1916,6 +1916,26 @@ namespace Menge
 		return m_fixedContentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Application::setFixedDisplayResolution( bool _fixedDisplayResolution )
+	{
+		if( m_fixedDisplayResolution == _fixedDisplayResolution )
+		{
+			return;
+		}
+
+		m_fixedDisplayResolution = _fixedDisplayResolution;
+
+		this->invalidateWindow_();
+
+		GAME_SERVICE( m_serviceProvider )
+			->setFixedDisplayResolution( m_currentResolution, m_fixedDisplayResolution );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getFixedDisplayResolution()
+	{
+		return m_fixedDisplayResolution;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Application::getGameViewport( float & _aspect, Viewport & _viewport ) const
 	{
         float aspect = m_currentResolution.getAspectRatio();

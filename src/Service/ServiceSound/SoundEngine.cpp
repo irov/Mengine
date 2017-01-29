@@ -102,6 +102,8 @@ namespace Menge
 	void SoundEngine::addSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider )
 	{
 		m_soundVolumeProviders.push_back( _soundVolumeProvider );
+
+		this->updateSoundVolumeProvider_( _soundVolumeProvider );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::removeSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider )
@@ -658,6 +660,11 @@ namespace Menge
 			}
 		}
 
+		if( process == true )
+		{
+			this->updateVolume();
+		}
+
 		for( TVectorSoundListeners::iterator
 			it = m_listeners.begin(),
 			it_end = m_listeners.end();
@@ -935,6 +942,29 @@ namespace Menge
 		source->listener = _listener;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::updateSoundVolumeProvider_( SoundVolumeProviderInterface * _provider )
+	{
+		float commonVolume = m_commonVolume.mixVolume();
+
+		float soundVolume = m_soundVolume.mixVolume();
+		float musicVolume = m_musicVolume.mixVolume();
+		float voiceVolume = m_voiceVolume.mixVolume();
+
+		float mixSoundVolume = 1.f;
+		mixSoundVolume *= commonVolume;
+		mixSoundVolume *= soundVolume;
+
+		float mixMusicVolume = 1.f;
+		mixMusicVolume *= commonVolume;
+		mixMusicVolume *= musicVolume;
+
+		float mixVoiceVolume = 1.f;
+		mixVoiceVolume *= commonVolume;
+		mixVoiceVolume *= voiceVolume;
+
+		_provider->onSoundChangeVolume( mixSoundVolume, mixMusicVolume, mixVoiceVolume, m_muted );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::updateVolume()
 	{
 		for( TMapSoundSource::iterator 
@@ -956,19 +986,7 @@ namespace Menge
 		{
 			SoundVolumeProviderInterface * provider = *it;
 
-			float mixSoundVolume = 1.f;
-			mixSoundVolume *= m_commonVolume.mixVolume();
-			mixSoundVolume *= m_soundVolume.mixVolume();
-			
-			float mixMusicVolume = 1.f;
-			mixMusicVolume *= m_commonVolume.mixVolume();
-			mixMusicVolume *= m_musicVolume.mixVolume();
-							
-			float mixVoiceVolume = 1.f;
-			mixVoiceVolume *= m_commonVolume.mixVolume();
-			mixVoiceVolume *= m_voiceVolume.mixVolume();
-
-			provider->onSoundChangeVolume( mixSoundVolume, mixMusicVolume, mixVoiceVolume );
+			this->updateSoundVolumeProvider_( provider );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -722,49 +722,51 @@ namespace	Menge
 	{
         SoundScriptMethod * soundScriptMethod = new SoundScriptMethod(_serviceProvider);
 
-		pybind::def_functor( "hasSound", soundScriptMethod, &SoundScriptMethod::s_hasSound );
-        pybind::def_functor( "isMute", soundScriptMethod, &SoundScriptMethod::s_isMute );
-        pybind::def_functor( "isSilent", soundScriptMethod, &SoundScriptMethod::s_isSilent );
-        pybind::def_functor( "soundMute", soundScriptMethod, &SoundScriptMethod::s_soundMute );
+		pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        pybind::def_functor( "commonSetVolume", soundScriptMethod, &SoundScriptMethod::s_commonSetVolume );
-        pybind::def_functor( "commonGetVolume", soundScriptMethod, &SoundScriptMethod::commonGetVolume );
+		pybind::def_functor( kernel, "hasSound", soundScriptMethod, &SoundScriptMethod::s_hasSound );
+		pybind::def_functor( kernel, "isMute", soundScriptMethod, &SoundScriptMethod::s_isMute );
+		pybind::def_functor( kernel, "isSilent", soundScriptMethod, &SoundScriptMethod::s_isSilent );
+		pybind::def_functor( kernel, "soundMute", soundScriptMethod, &SoundScriptMethod::s_soundMute );
+
+		pybind::def_functor( kernel, "commonSetVolume", soundScriptMethod, &SoundScriptMethod::s_commonSetVolume );
+		pybind::def_functor( kernel, "commonGetVolume", soundScriptMethod, &SoundScriptMethod::commonGetVolume );
                 
-        pybind::def_functor_args( "soundPlay", soundScriptMethod, &SoundScriptMethod::s_soundPlay );
-		pybind::def_functor_args( "soundPlayFromPosition", soundScriptMethod, &SoundScriptMethod::s_soundPlayFromPosition );
-		pybind::def_functor( "soundStop", soundScriptMethod, &SoundScriptMethod::s_soundStop );
-		pybind::def_functor( "soundPause", soundScriptMethod, &SoundScriptMethod::s_soundPause );
-		pybind::def_functor( "soundResume", soundScriptMethod, &SoundScriptMethod::s_soundResume );
-		pybind::def_functor( "soundSourceSetVolume", soundScriptMethod, &SoundScriptMethod::s_soundSourceSetVolume );
-		pybind::def_functor( "soundSourceGetVolume", soundScriptMethod, &SoundScriptMethod::s_soundSourceGetVolume );
-		pybind::def_functor( "soundSetVolume", soundScriptMethod, &SoundScriptMethod::s_soundSetVolume );
-		pybind::def_functor( "soundGetVolume", soundScriptMethod, &SoundScriptMethod::s_soundGetVolume );
-		pybind::def_functor( "soundGetPosition", soundScriptMethod, &SoundScriptMethod::s_soundGetPosMs );
-		pybind::def_functor( "soundSetPosition", soundScriptMethod, &SoundScriptMethod::s_soundSetPosMs );
-		pybind::def_functor_args( "soundFadeIn", soundScriptMethod, &SoundScriptMethod::s_soundFadeIn );
-		pybind::def_functor_args( "soundFadeOut", soundScriptMethod, &SoundScriptMethod::s_soundFadeOut );
+		pybind::def_functor_args( kernel, "soundPlay", soundScriptMethod, &SoundScriptMethod::s_soundPlay );
+		pybind::def_functor_args( kernel, "soundPlayFromPosition", soundScriptMethod, &SoundScriptMethod::s_soundPlayFromPosition );
+		pybind::def_functor( kernel, "soundStop", soundScriptMethod, &SoundScriptMethod::s_soundStop );
+		pybind::def_functor( kernel, "soundPause", soundScriptMethod, &SoundScriptMethod::s_soundPause );
+		pybind::def_functor( kernel, "soundResume", soundScriptMethod, &SoundScriptMethod::s_soundResume );
+		pybind::def_functor( kernel, "soundSourceSetVolume", soundScriptMethod, &SoundScriptMethod::s_soundSourceSetVolume );
+		pybind::def_functor( kernel, "soundSourceGetVolume", soundScriptMethod, &SoundScriptMethod::s_soundSourceGetVolume );
+		pybind::def_functor( kernel, "soundSetVolume", soundScriptMethod, &SoundScriptMethod::s_soundSetVolume );
+		pybind::def_functor( kernel, "soundGetVolume", soundScriptMethod, &SoundScriptMethod::s_soundGetVolume );
+		pybind::def_functor( kernel, "soundGetPosition", soundScriptMethod, &SoundScriptMethod::s_soundGetPosMs );
+		pybind::def_functor( kernel, "soundSetPosition", soundScriptMethod, &SoundScriptMethod::s_soundSetPosMs );
+		pybind::def_functor_args( kernel, "soundFadeIn", soundScriptMethod, &SoundScriptMethod::s_soundFadeIn );
+		pybind::def_functor_args( kernel, "soundFadeOut", soundScriptMethod, &SoundScriptMethod::s_soundFadeOut );
 				
-		pybind::def_functor( "musicPlay", soundScriptMethod, &SoundScriptMethod::musicPlay );
-		pybind::def_functor( "musicSetVolume", soundScriptMethod, &SoundScriptMethod::musicSetVolume );
-		pybind::def_functor( "musicGetVolume", soundScriptMethod, &SoundScriptMethod::musicGetVolume );
-		pybind::def_functor( "musicSetVolumeTag", soundScriptMethod, &SoundScriptMethod::musicSetVolumeTag );
-		pybind::def_functor( "musicGetVolumeTag", soundScriptMethod, &SoundScriptMethod::musicGetVolumeTag );
-		pybind::def_functor( "musicStop", soundScriptMethod, &SoundScriptMethod::musicStop );
-        pybind::def_functor( "musicPause", soundScriptMethod, &SoundScriptMethod::musicPause );
-        pybind::def_functor( "musicResume", soundScriptMethod, &SoundScriptMethod::musicResume );
-		pybind::def_functor( "musicGetDuration", soundScriptMethod, &SoundScriptMethod::s_musicGetDuration );
-		pybind::def_functor( "musicGetLengthMs", soundScriptMethod, &SoundScriptMethod::s_musicGetDuration );
-		pybind::def_functor( "musicGetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicGetPosMs );
-		pybind::def_functor( "musicSetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicSetPosMs );
-		pybind::def_functor_args( "musicFadeIn", soundScriptMethod, &SoundScriptMethod::s_musicFadeIn );
-		pybind::def_functor( "musicFadeOut", soundScriptMethod, &SoundScriptMethod::s_musicFadeOut );
+		pybind::def_functor( kernel, "musicPlay", soundScriptMethod, &SoundScriptMethod::musicPlay );
+		pybind::def_functor( kernel, "musicSetVolume", soundScriptMethod, &SoundScriptMethod::musicSetVolume );
+		pybind::def_functor( kernel, "musicGetVolume", soundScriptMethod, &SoundScriptMethod::musicGetVolume );
+		pybind::def_functor( kernel, "musicSetVolumeTag", soundScriptMethod, &SoundScriptMethod::musicSetVolumeTag );
+		pybind::def_functor( kernel, "musicGetVolumeTag", soundScriptMethod, &SoundScriptMethod::musicGetVolumeTag );
+		pybind::def_functor( kernel, "musicStop", soundScriptMethod, &SoundScriptMethod::musicStop );
+		pybind::def_functor( kernel, "musicPause", soundScriptMethod, &SoundScriptMethod::musicPause );
+		pybind::def_functor( kernel, "musicResume", soundScriptMethod, &SoundScriptMethod::musicResume );
+		pybind::def_functor( kernel, "musicGetDuration", soundScriptMethod, &SoundScriptMethod::s_musicGetDuration );
+		pybind::def_functor( kernel, "musicGetLengthMs", soundScriptMethod, &SoundScriptMethod::s_musicGetDuration );
+		pybind::def_functor( kernel, "musicGetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicGetPosMs );
+		pybind::def_functor( kernel, "musicSetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicSetPosMs );
+		pybind::def_functor_args( kernel, "musicFadeIn", soundScriptMethod, &SoundScriptMethod::s_musicFadeIn );
+		pybind::def_functor( kernel, "musicFadeOut", soundScriptMethod, &SoundScriptMethod::s_musicFadeOut );
 
 
-        pybind::def_functor_args( "voicePlay", soundScriptMethod, &SoundScriptMethod::s_voicePlay );
-        pybind::def_functor( "voiceStop", soundScriptMethod, &SoundScriptMethod::s_voiceStop );
-		pybind::def_functor( "voicePause", soundScriptMethod, &SoundScriptMethod::s_voicePause );
-		pybind::def_functor( "voiceResume", soundScriptMethod, &SoundScriptMethod::s_voiceResume );
-        pybind::def_functor( "voiceSetVolume", soundScriptMethod, &SoundScriptMethod::voiceSetVolume );
-        pybind::def_functor( "voiceGetVolume", soundScriptMethod, &SoundScriptMethod::voiceGetVolume );
+		pybind::def_functor_args( kernel, "voicePlay", soundScriptMethod, &SoundScriptMethod::s_voicePlay );
+		pybind::def_functor( kernel, "voiceStop", soundScriptMethod, &SoundScriptMethod::s_voiceStop );
+		pybind::def_functor( kernel, "voicePause", soundScriptMethod, &SoundScriptMethod::s_voicePause );
+		pybind::def_functor( kernel, "voiceResume", soundScriptMethod, &SoundScriptMethod::s_voiceResume );
+		pybind::def_functor( kernel, "voiceSetVolume", soundScriptMethod, &SoundScriptMethod::voiceSetVolume );
+		pybind::def_functor( kernel, "voiceGetVolume", soundScriptMethod, &SoundScriptMethod::voiceGetVolume );
 	}
 }

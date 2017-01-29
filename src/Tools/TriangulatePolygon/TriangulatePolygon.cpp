@@ -140,7 +140,7 @@ static void parse_arg( const std::wstring & _str, vec2f & _value )
 {
 	double value_x;
 	double value_y;
-	swscanf( _str.c_str(), L"%lf %lf", &value_x, &value_y );
+	swscanf( _str.c_str(), L"%lf; %lf", &value_x, &value_y );
 
 	_value.x = value_x;
 	_value.y = value_y;
@@ -158,18 +158,25 @@ static void parse_arg( const std::wstring & _str, TVectorPoints & _value )
 		tokens.push_back( buf );
 	}
 
-	uint32_t count;
-	swscanf( tokens[0].c_str(), L"%u", &count );
+	std::vector<std::wstring>::size_type count = tokens.size();
 
-	for( uint32_t i = 0; i != count; ++i )
+	if( count % 2 != 0 )
 	{
+		return;
+	}
+	
+	for( uint32_t i = 0; i != count; i += 2 )
+	{
+		const wchar_t * tocken_0 = tokens[i + 0].c_str();
+		const wchar_t * tocken_1 = tokens[i + 1].c_str();
+
 		double value_x;
-		swscanf( tokens[1 + i * 2 + 0].c_str(), L"%lf", &value_x );
+		swscanf( tocken_0, L"%lf", &value_x );
 
 		double value_y;
-		swscanf( tokens[1 + i * 2 + 1].c_str(), L"%lf", &value_y );
+		swscanf( tocken_1, L"%lf", &value_y );
 
-		_value.push_back( vec2f( value_x, value_x ) );
+		_value.push_back( vec2f( value_x, value_y ) );
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -209,10 +216,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( image_bb == true )
 	{
-		vec2f v0( 0.f, 0.f );
-		vec2f v1( image_base_size.x, 0.f );
-		vec2f v2( image_base_size.x, image_base_size.y );
-		vec2f v3( 0.f, image_base_size.y );
+		vec2f v0( image_trim_offset.x, image_trim_offset.y );
+		vec2f v1( image_trim_offset.x + image_trim_size.x, image_trim_offset.y );
+		vec2f v2( image_trim_offset.x + image_trim_size.x, image_trim_offset.y + image_trim_size.y );
+		vec2f v3( image_trim_offset.x, image_trim_offset.y + image_trim_size.y );
 
 		BoostPolygon imagePolygon;
 		boost::geometry::append( imagePolygon, v0 );
@@ -231,7 +238,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			}
 			catch( const std::exception & )
 			{
-				message_error( "# " );
+				printf( "# " );
 
 				return 0;
 			}
@@ -285,6 +292,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	}
 		
 	std::vector<p2t::Point> p2t_points;
+	std::vector<p2t::Point*> p2t_polygon_trinagles;
 
 	size_t max_points = 0;
 
@@ -315,7 +323,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			max_points += inner_count - 1;
 		}
 	}
-
+	
 	p2t_points.reserve( max_points );
 
 	TVectorIndices shape_indices;
@@ -387,11 +395,37 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			p2t::Point * p1 = tr->GetPoint( 1 );
 			p2t::Point * p2 = tr->GetPoint( 2 );
 
-			p2t::Point * pb = &p2t_points[0];
+			if( std::find( p2t_polygon_trinagles.begin(), p2t_polygon_trinagles.end(), p0 ) == p2t_polygon_trinagles.end() )
+			{
+				p2t_polygon_trinagles.push_back( p0 );
+			}
 
-			uint32_t i0 = (uint32_t)std::distance( pb, p0 );
-			uint32_t i1 = (uint32_t)std::distance( pb, p1 );
-			uint32_t i2 = (uint32_t)std::distance( pb, p2 );
+			if( std::find( p2t_polygon_trinagles.begin(), p2t_polygon_trinagles.end(), p1 ) == p2t_polygon_trinagles.end() )
+			{
+				p2t_polygon_trinagles.push_back( p1 );
+			}
+
+			if( std::find( p2t_polygon_trinagles.begin(), p2t_polygon_trinagles.end(), p2 ) == p2t_polygon_trinagles.end() )
+			{
+				p2t_polygon_trinagles.push_back( p2 );
+			}
+		}
+
+		for( std::vector<p2t::Triangle*>::iterator
+			it = triangles.begin(),
+			it_end = triangles.end();
+		it != it_end;
+		++it )
+		{
+			p2t::Triangle* tr = *it;
+
+			p2t::Point * p0 = tr->GetPoint( 0 );
+			p2t::Point * p1 = tr->GetPoint( 1 );
+			p2t::Point * p2 = tr->GetPoint( 2 );
+
+			uint32_t i0 = (uint32_t)std::distance( p2t_polygon_trinagles.begin(), std::find( p2t_polygon_trinagles.begin(), p2t_polygon_trinagles.end(), p0 ) );
+			uint32_t i1 = (uint32_t)std::distance( p2t_polygon_trinagles.begin(), std::find( p2t_polygon_trinagles.begin(), p2t_polygon_trinagles.end(), p1 ) );
+			uint32_t i2 = (uint32_t)std::distance( p2t_polygon_trinagles.begin(), std::find( p2t_polygon_trinagles.begin(), p2t_polygon_trinagles.end(), p2 ) );
 
 			shape_indices.push_back( i0 );
 			shape_indices.push_back( i1 );
@@ -399,7 +433,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		}
 	}
 
-	size_t shapeVertexCount = p2t_points.size();
+	size_t shapeVertexCount = p2t_polygon_trinagles.size();
 	size_t shapeIndicesCount = shape_indices.size();
 
 	uint16_t mesh_vertexCount = (uint16_t)shapeVertexCount;
@@ -412,13 +446,13 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	for( size_t i = 0; i != shapeVertexCount; ++i )
 	{
-		const p2t::Point & shape_pos = p2t_points[i];
+		const p2t::Point * shape_pos = p2t_polygon_trinagles[i];
 
-		mesh_pos[i].x = (float)shape_pos.x;
-		mesh_pos[i].y = (float)shape_pos.y;
+		mesh_pos[i].x = (float)shape_pos->x;
+		mesh_pos[i].y = (float)shape_pos->y;
 
-		mesh_uv[i].x = ((float)shape_pos.x - image_trim_offset.x) / image_trim_size.x;
-		mesh_uv[i].y = ((float)shape_pos.y - image_trim_offset.y) / image_trim_size.y;
+		mesh_uv[i].x = ((float)shape_pos->x - image_trim_offset.x) / image_trim_size.x;
+		mesh_uv[i].y = ((float)shape_pos->y - image_trim_offset.y) / image_trim_size.y;
 	}
 
 	for( size_t i = 0; i != shapeIndicesCount; ++i )
@@ -444,10 +478,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		ss << uv.x << " " << uv.y << " ";
 	}
-
+	
 	for( size_t i = 0; i != shapeIndicesCount; ++i )
 	{
-		const uint16_t & index = mesh_indices[i];
+		uint16_t index = mesh_indices[i];
 
 		ss << index << " ";
 	}

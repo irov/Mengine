@@ -207,7 +207,6 @@ namespace Menge
 	{		
         EVENTABLE_METHOD( this, EVENT_GAME_APP_MOUSE_LEAVE )
             ->onGameAppMouseLeave();
-		//EVENTABLE_CALL(m_serviceProvider, this, EVENT_GAME_APP_MOUSE_LEAVE)();
 
 		PLAYER_SERVICE( m_serviceProvider )
 			->onAppMouseLeave( _event );
@@ -217,8 +216,7 @@ namespace Menge
 	{
         EVENTABLE_METHOD( this, EVENT_GAME_APP_MOUSE_ENTER )
             ->onGameAppMouseEnter( _event.x, _event.y );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_APP_MOUSE_ENTER )(_event.x, _event.y);
-
+		
 		PLAYER_SERVICE( m_serviceProvider )
 			->onAppMouseEnter( _event );
 	}
@@ -276,6 +274,11 @@ namespace Menge
             }
 
             void onGameFixedContentResolution( bool _fixed ) override
+            {
+                m_cb.call( _fixed );
+            }
+
+            void onGameFixedDisplayResolution( bool _fixed ) override
             {
                 m_cb.call( _fixed );
             }
@@ -440,13 +443,9 @@ namespace Menge
 
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFullscreen", EVENT_GAME_FULLSCREEN );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFixedContentResolution", EVENT_GAME_FIXED_CONTENT_RESOLUTION );
+        Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFixedDisplayResolution", EVENT_GAME_FIXED_DISPLAY_RESOLUTION );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onRenderViewport", EVENT_GAME_RENDER_VIEWPORT );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onGameViewport", EVENT_GAME_VIEWPORT );
-
-  //      _module->registerEventMethod( this, EVENT_GAME_FULLSCREEN, "onFullscreen" );
-		//_module->registerEventMethod( this, EVENT_GAME_FIXED_CONTENT_RESOLUTION, "onFixedContentResolution" );
-		//_module->registerEventMethod( this, EVENT_GAME_RENDER_VIEWPORT, "onRenderViewport" );
-		//_module->registerEventMethod( this, EVENT_GAME_VIEWPORT, "onGameViewport" );
 
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleKeyEvent", EVENT_GAME_KEY );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleMouseButtonEvent", EVENT_GAME_MOUSE_BUTTON );
@@ -455,21 +454,9 @@ namespace Menge
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleMouseMove", EVENT_GAME_MOUSE_MOVE );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleMouseWheel", EVENT_GAME_MOUSE_WHEEL );
 
-        //_module->registerEventMethod( this, EVENT_GAME_KEY, "onHandleKeyEvent" );
-		//_module->registerEventMethod( this, EVENT_GAME_MOUSE_BUTTON, "onHandleMouseButtonEvent" );
-		//_module->registerEventMethod( this, EVENT_GAME_MOUSE_BUTTON_BEGIN, "onHandleMouseButtonEventBegin" );
-		//_module->registerEventMethod( this, EVENT_GAME_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd" );
-		//_module->registerEventMethod( this, EVENT_GAME_MOUSE_MOVE, "onHandleMouseMove" );
-		//_module->registerEventMethod( this, EVENT_GAME_MOUSE_WHEEL, "onHandleMouseWheel" );
-
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onAppMouseEnter", EVENT_GAME_APP_MOUSE_ENTER );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onAppMouseLeave", EVENT_GAME_APP_MOUSE_LEAVE );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onTimingFactor", EVENT_GAME_ON_TIMING_FACTOR );
-
-		//_module->registerEventMethod( this, EVENT_GAME_APP_MOUSE_ENTER, "onAppMouseEnter" );
-		//_module->registerEventMethod( this, EVENT_GAME_APP_MOUSE_LEAVE, "onAppMouseLeave" );
-
-		//_module->registerEventMethod( this, EVENT_GAME_ON_TIMING_FACTOR, "onTimingFactor" );
 
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onPreparation", EVENT_GAME_PREPARATION );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onRun", EVENT_GAME_RUN );
@@ -479,44 +466,19 @@ namespace Menge
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFinalize", EVENT_GAME_FINALIZE );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onDestroy", EVENT_GAME_DESTROY );
 
-		//_module->registerEventMethod( this, EVENT_GAME_PREPARATION, "onPreparation" );
-		//_module->registerEventMethod( this, EVENT_GAME_RUN, "onRun" );
-		//_module->registerEventMethod( this, EVENT_GAME_INITIALIZE, "onInitialize" );
-		//_module->registerEventMethod( this, EVENT_GAME_INITIALIZE_RENDER_RESOURCES, "onInitializeRenderResources" );
-		//_module->registerEventMethod( this, EVENT_GAME_ACCOUNT_FINALIZE, "onAccountFinalize" );
-		//_module->registerEventMethod( this, EVENT_GAME_FINALIZE, "onFinalize" );
-		//_module->registerEventMethod( this, EVENT_GAME_DESTROY, "onDestroy" );
-
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFocus", EVENT_GAME_FOCUS );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCreateDefaultAccount", EVENT_GAME_CREATE_DEFAULT_ACCOUNT );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onLoadAccounts", EVENT_GAME_LOAD_ACCOUNTS );
-
-		//_module->registerEventMethod( this, EVENT_GAME_FOCUS, "onFocus" );
-
-		//_module->registerEventMethod( this, EVENT_GAME_CREATE_DEFAULT_ACCOUNT, "onCreateDefaultAccount" );
-		//_module->registerEventMethod( this, EVENT_GAME_LOAD_ACCOUNTS, "onLoadAccounts" );
 
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCreateAccount", EVENT_GAME_CREATE_ACCOUNT );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onDeleteAccount", EVENT_GAME_DELETE_ACCOUNT );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onSelectAccount", EVENT_GAME_SELECT_ACCOUNT );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onUnselectAccount", EVENT_GAME_UNSELECT_ACCOUNT );
 
-		//_module->registerEventMethod( this, EVENT_GAME_CREATE_ACCOUNT, "onCreateAccount" );
-		//_module->registerEventMethod( this, EVENT_GAME_DELETE_ACCOUNT, "onDeleteAccount" );
-		//_module->registerEventMethod( this, EVENT_GAME_SELECT_ACCOUNT, "onSelectAccount" );
-		//_module->registerEventMethod( this, EVENT_GAME_UNSELECT_ACCOUNT, "onUnselectAccount" );
-
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onChangeSoundVolume", EVENT_GAME_CHANGE_SOUND_VOLUME );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCursorMode", EVENT_GAME_CURSOR_MODE );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onUserEvent", EVENT_GAME_USER );
         Helper::registerEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCloseWindow", EVENT_GAME_CLOSE );
-
-		//_module->registerEventMethod( this, EVENT_GAME_CHANGE_SOUND_VOLUME, "onChangeSoundVolume" );
-
-		//_module->registerEventMethod( this, EVENT_GAME_CURSOR_MODE, "onCursorMode" );
-
-		//_module->registerEventMethod( this, EVENT_GAME_USER, "onUserEvent" );
-		//_module->registerEventMethod( this, EVENT_GAME_CLOSE, "onCloseWindow" );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality()
@@ -626,12 +588,10 @@ namespace Menge
 		{
             EVENTABLE_METHOD( this, EVENT_GAME_CREATE_DEFAULT_ACCOUNT )
                 ->onGameCreateDefaultAccount();
-			//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_CREATE_DEFAULT_ACCOUNT )();
 		}
 
         EVENTABLE_METHOD( this, EVENT_GAME_LOAD_ACCOUNTS )
             ->onGameLoadAccounts();
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_LOAD_ACCOUNTS )();
 
 		return true;
 	}
@@ -662,7 +622,6 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_GAME_RUN )
             ->onGameRun();
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_RUN )();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::destroyArrow()
@@ -678,7 +637,6 @@ namespace Menge
 	{	
         EVENTABLE_METHOD( this, EVENT_GAME_ACCOUNT_FINALIZE )
             ->onGameAccountFinalize();
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_ACCOUNT_FINALIZE )();
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::AccountServiceInterface );
 
@@ -687,7 +645,6 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_GAME_FINALIZE )
             ->onGameFinalize();
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_FINALIZE )();
 
         if( m_accountProvider != nullptr )
         {
@@ -705,8 +662,7 @@ namespace Menge
 				
         EVENTABLE_METHOD( this, EVENT_GAME_DESTROY )
             ->onGameDestroy();
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_DESTROY )();
-
+		
 		this->removeEvents();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -714,14 +670,12 @@ namespace Menge
 	{
         EVENTABLE_METHOD( this, EVENT_GAME_INITIALIZE_RENDER_RESOURCES )
             ->onGameInitializeRenderResources();
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_INITIALIZE_RENDER_RESOURCES )();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::finalizeRenderResources()
 	{
         EVENTABLE_METHOD( this, EVENT_GAME_FINALIZE_RENDER_RESOURCES )
             ->onGameFinalizeRenderResources();
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_FINALIZE_RENDER_RESOURCES )();
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	void Game::turnSound( bool _turn )
@@ -754,7 +708,6 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_GAME_FOCUS )
             ->onGameFocus( _focus );
-		//EVENTABLE_CALL(m_serviceProvider, this, EVENT_GAME_FOCUS)( _focus );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setFullscreen( const Resolution & _resolution, bool _fullscreen )
@@ -767,7 +720,6 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_GAME_FULLSCREEN )
             ->onGameFullscreen( _fullscreen );
-		//EVENTABLE_CALL(m_serviceProvider, this, EVENT_GAME_FULLSCREEN)( _fullscreen );
 	}
     //////////////////////////////////////////////////////////////////////////
     void Game::setFixedContentResolution( const Resolution & _resolution, bool _fixed )
@@ -780,29 +732,36 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_GAME_FIXED_CONTENT_RESOLUTION )
             ->onGameFixedContentResolution( _fixed );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_FIXED_CONTENT_RESOLUTION )(_fixed);
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Game::setFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
+	{
+		if( SERVICE_EXIST( m_serviceProvider, Menge::PlayerServiceInterface ) == true )
+		{
+			PLAYER_SERVICE( m_serviceProvider )
+				->onFixedContentResolution( _resolution, _fixed );
+		}
+
+        EVENTABLE_METHOD( this, EVENT_GAME_FIXED_DISPLAY_RESOLUTION )
+            ->onGameFixedDisplayResolution( _fixed );
+	}
     //////////////////////////////////////////////////////////////////////////
     void Game::setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )
     {
         EVENTABLE_METHOD( this, EVENT_GAME_RENDER_VIEWPORT )
             ->onGameRenderViewport( _viewport, _contentResolution );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_RENDER_VIEWPORT )(_viewport, _contentResolution);
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setGameViewport( const Viewport & _viewport, float _aspect )
 	{
         EVENTABLE_METHOD( this, EVENT_GAME_VIEWPORT )
             ->onGameViewport( _viewport, _aspect );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_VIEWPORT )(_viewport, _aspect);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::close()
 	{
 		bool needQuit = EVENTABLE_METHODR( this, EVENT_GAME_VIEWPORT, true )
             ->onGameClose();
-
-		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_CLOSE, needQuit )();
 	
 		return needQuit;
 	}
@@ -820,7 +779,6 @@ namespace Menge
 	{
         EVENTABLE_METHOD( this, EVENT_GAME_CURSOR_MODE )
             ->onGameCursorMode( _mode );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_CURSOR_MODE )(_mode);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Game::getTimingFactor() const
@@ -834,7 +792,6 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_GAME_ON_TIMING_FACTOR )
             ->onGameTimingFactor( _timingFactor );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_ON_TIMING_FACTOR )(m_timingFactor);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString & Game::getParam( const ConstString & _paramName ) const

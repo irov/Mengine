@@ -31,9 +31,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::_initialize()
     {
-        m_debugInfo.textureMemory = 0;
-        m_debugInfo.textureCount = 0;
-
 		m_supportA8 = RENDER_SYSTEM(m_serviceProvider)
 			->supportTextureFormat( PF_A8 );
 
@@ -547,7 +544,7 @@ namespace Menge
 		}
 
 		this->releaseRenderTexture_( _texture );
-
+		
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -560,48 +557,11 @@ namespace Menge
         texture->setServiceProvider( m_serviceProvider );
 		texture->initialize( _image, _mipmaps, _width, _height, _channels, id );
 
-//#	ifndef MENGINE_MASTER_RELEASE
-//		size_t memroy_size = texture->getMemoryUse();
-//
-//		m_debugInfo.textureMemory += memroy_size;
-//		++m_debugInfo.textureCount;
-//		
-//		LOGGER_INFO(m_serviceProvider)( "RenderTextureManager::createRenderTexture_ creating texture %dx%d %d memory %d:%d"
-//			, HWWidth
-//			, HWHeight
-//			, HWFormat
-//			, memroy_size
-//			, m_debugInfo.textureMemory
-//			);
-//#	endif
-
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderTextureManager::releaseRenderTexture_( RenderTextureInterface * _texture )
-	{
-//#	ifndef MENGINE_MASTER_RELEASE
-//        size_t memroy_size = _texture->getMemoryUse();
-//
-//		const RenderImageInterfacePtr & image = _texture->getImage(); 
-//
-//        size_t HWWidth = image->getHWWidth();
-//        size_t HWHeight = image->getHWHeight();
-//        PixelFormat HWPixelFormat = image->getHWPixelFormat();
-//
-//        m_debugInfo.textureMemory -= memroy_size;
-//        --m_debugInfo.textureCount;
-//
-//        LOGGER_INFO(m_serviceProvider)( "RenderTextureManager::destroyTexture_ destroy %s texture %dx%d %d memory %d:%d"
-//			, filename.c_str()
-//            , HWWidth
-//            , HWHeight
-//            , HWPixelFormat
-//            , memroy_size
-//            , m_debugInfo.textureMemory
-//            );
-//#	endif
-
+	{		
 		_texture->release();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -730,10 +690,5 @@ namespace Menge
 
 			stdex::memorycopy( image_data, height * _texturePitch, image_data + (height - 1) * _texturePitch, _texturePitch );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderTextureDebugInfo & RenderTextureManager::getDebugInfo()
-    {
-        return m_debugInfo;
     }
 }

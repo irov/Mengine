@@ -62,7 +62,7 @@ namespace Menge
 		{   
 			size_t mipmap_size = dataInfo->getMipMapSize( i );
 
-			if( Helper::writeStreamArchiveBuffer( m_serviceProvider, m_stream, m_archivator, false, mipmap_buffer, mipmap_size ) == false )
+			if( Helper::writeStreamArchiveBuffer( m_serviceProvider, m_stream, m_archivator, false, mipmap_buffer, mipmap_size, EAC_BEST ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ImageEncoderACF::encode invalid write buffer"
 					);

@@ -22,15 +22,16 @@ namespace Menge
         TextureStage()
 			: texture( nullptr )
 			, minFilter( 0 )
-            , magFilter(0)
-            , wrapS(0)
-            , wrapT(0)
-            , colorOp(0)
-            , colorArg1(0)
-            , colorArg2(0)
-            , alphaOp(0)
-            , alphaArg1(0)
-            , alphaArg2(0)
+			, magFilter( 0 )
+			, wrapS( 0 )
+			, wrapT( 0 )
+			, border( 0x00000000 )
+			, colorOp( 0 )
+			, colorArg1( 0 )
+			, colorArg2( 0 )
+			, alphaOp( 0 )
+			, alphaArg1( 0 )
+			, alphaArg2( 0 )
         {
 
         }
@@ -41,6 +42,7 @@ namespace Menge
         GLenum magFilter;
         GLenum wrapS;
         GLenum wrapT;
+		uint32_t border;
 
         GLenum colorOp;
         GLenum colorArg1;
@@ -103,7 +105,7 @@ namespace Menge
 
 	public:
 		void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
-		void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
+		void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) override;
 		void setTextureFactor( uint32_t _color ) override;
 		void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op ) override;
 		void setCullMode( ECullMode _mode ) override;
@@ -152,6 +154,9 @@ namespace Menge
 		void clear( uint32_t _color, bool _force ) override;
         
         void setSeparateAlphaBlendMode() override;
+
+		size_t getTextureMemoryUse() const override;
+		uint32_t getTextureCount() const override;
 
     protected:
         void findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const;

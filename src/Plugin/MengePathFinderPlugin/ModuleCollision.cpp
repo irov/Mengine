@@ -24,16 +24,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ModuleCollision::_initialize()
 	{
-		pybind::interface_<CollisionWorld>( "CollisionWorld" )
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		pybind::interface_<CollisionWorld>( kernel, "CollisionWorld" )
 			.def_smart_pointer()
 			.def( "setIFFs", &CollisionWorld::setIFFs )
 			.def( "getIFFs", &CollisionWorld::getIFFs )
 			;
 
-		pybind::def_functor( "createCollisionWorld", this, &ModuleCollision::createCollisionWorld );
-		pybind::def_functor( "removeCollisionWorld", this, &ModuleCollision::removeCollisionWorld );
+		pybind::def_functor( kernel, "createCollisionWorld", this, &ModuleCollision::createCollisionWorld );
+		pybind::def_functor( kernel, "removeCollisionWorld", this, &ModuleCollision::removeCollisionWorld );
 
-		pybind::interface_<NodeCollisionActor, pybind::bases<Node, Eventable> >( "NodeCollisionActor", false )
+		pybind::interface_<NodeCollisionActor, pybind::bases<Node, Eventable> >( kernel, "NodeCollisionActor", false )
 			.def( "setCollisionRadius", &NodeCollisionActor::setCollisionRadius )
 			.def( "getCollisionRadius", &NodeCollisionActor::getCollisionRadius )
 			.def( "setCollisionRaycast", &NodeCollisionActor::setCollisionRaycast )

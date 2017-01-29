@@ -2,6 +2,7 @@
 
 #	include "Kernel/Node.h"
 #	include "Kernel/Animatable.h"
+#	include "Kernel/Surface.h"
 
 #	include "Kernel/RenderCameraProjection.h"
 #	include "Kernel/RenderViewport.h"
@@ -33,6 +34,9 @@ namespace Menge
 		float getDuration() const;
 		void setWorkAreaFromEvent( const ConstString & _eventName );
 		void removeWorkArea();
+
+		void playSubComposition( const ConstString & _name );
+		void stopSubComposition( const ConstString & _name );
 
 	protected:
 		bool _play( float _time ) override;
@@ -70,6 +74,9 @@ namespace Menge
 		void _removeChild( Node * _node ) override;
 
 	public:
+		void addSurface( const SurfacePtr & _surface );
+
+	public:
 		struct Camera
 		{
 			RenderCameraProjection * projection;
@@ -101,5 +108,8 @@ namespace Menge
 
 		typedef stdex::map<ConstString, Camera> TMapCamera;
 		TMapCamera m_cameras;
+
+		typedef stdex::vector<SurfacePtr> TVectorSurfaces;
+		TVectorSurfaces m_surfaces;
 	};
 }

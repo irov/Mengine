@@ -63,15 +63,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ModuleAreaOfInterest::_initialize()
 	{
-		pybind::interface_<AreaOfInterest>("AreaOfInterest")
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		pybind::interface_<AreaOfInterest>( kernel, "AreaOfInterest" )
 			.def( "freeze", &AreaOfInterest::freeze )
 			.def( "isFreeze", &AreaOfInterest::isFreeze )
 			;
 
-		pybind::def_functor( "createAOI", this, &ModuleAreaOfInterest::createAOI );
-		pybind::def_functor( "removeAOI", this, &ModuleAreaOfInterest::removeAOI );
+		pybind::def_functor( kernel, "createAOI", this, &ModuleAreaOfInterest::createAOI );
+		pybind::def_functor( kernel, "removeAOI", this, &ModuleAreaOfInterest::removeAOI );
 
-		pybind::interface_<NodeAOITrigger, pybind::bases<Node, Eventable> >( "NodeAOITrigger", false )
+		pybind::interface_<NodeAOITrigger, pybind::bases<Node, Eventable> >( kernel, "NodeAOITrigger", false )
 			.def( "setRadius", &NodeAOITrigger::setRadius )
 			.def( "getRadius", &NodeAOITrigger::getRadius )
 			.def( "setIFF", &NodeAOITrigger::setIFF )
@@ -83,7 +85,7 @@ namespace Menge
             .def_static_native( "setEventListener", &s_NodeAOITrigger_setEventListener )
 			;
 
-		pybind::interface_<NodeAOIActor, pybind::bases<Node> >( "NodeAOIActor", false )
+		pybind::interface_<NodeAOIActor, pybind::bases<Node> >( kernel, "NodeAOIActor", false )
 			.def( "setRadius", &NodeAOIActor::setRadius )
 			.def( "getRadius", &NodeAOIActor::getRadius )
 			.def( "setIFF", &NodeAOIActor::setIFF )

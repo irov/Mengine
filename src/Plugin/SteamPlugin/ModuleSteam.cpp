@@ -46,6 +46,46 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ModuleSteam::_avaliable()
+	{
+		bool avaliable = CONFIG_VALUE( m_serviceProvider, "Steam", "Avaliable", true );
+
+		if( avaliable == false )
+		{
+			return false;
+		}
+
+		int32_t appId = CONFIG_VALUE( m_serviceProvider, "Steam", "AppId", k_uAppIdInvalid );
+
+		if( HAS_OPTION( m_serviceProvider, "steamappid" ) == true )
+		{
+			const Char * str_steamappid = GET_OPTION_VALUE( m_serviceProvider, "steamappid" );
+
+			if( sscanf( str_steamappid, "%d", &appId ) != 0 )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_avaliable invalid option steamappid '%s'"
+					, str_steamappid
+					);
+
+				return false;
+			}
+		}
+
+		if( HAS_OPTION( m_serviceProvider, "norestartsteamapp" ) == false )
+		{
+			if( SteamAPI_RestartAppIfNecessary( appId ) == true )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_avaliable invalid SteamAPI_RestartAppIfNecessary [Id = %d]"
+					, appId
+					);
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ModuleSteam::_initialize()
 	{
 		s_serviceProvider = m_serviceProvider;
@@ -107,36 +147,6 @@ namespace Menge
 		m_iso639_1["turkish"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "tr" );
 		m_iso639_1["ukrainian"] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "uk" );
 		
-#	ifndef _DEBUG
-		int32_t appId = CONFIG_VALUE( m_serviceProvider, "Steam", "AppId", k_uAppIdInvalid );
-
-		if( HAS_OPTION( m_serviceProvider, "steamappid" ) == true )
-		{
-			const Char * str_steamappid = GET_OPTION_VALUE( m_serviceProvider, "steamappid" );
-
-			if( sscanf( str_steamappid, "%d", &appId ) != 0 )
-			{
-				LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_initialize invalid option steamappid '%s'"
-					, str_steamappid
-					);
-
-				return false;
-			}
-		}
-
-		if( HAS_OPTION( m_serviceProvider, "norestartsteamapp" ) == false )
-		{
-			if( SteamAPI_RestartAppIfNecessary( appId ) == true )
-			{
-				LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_initialize invalid SteamAPI_RestartAppIfNecessary [Id = %d]"
-					, appId
-					);
-
-				return false;
-			}
-		}
-#	endif
-
 		if( SteamAPI_Init() == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("ModuleSteam::_initialize invalid SteamAPI_Init"

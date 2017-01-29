@@ -1066,11 +1066,8 @@ namespace Menge
 
 		if( m_showDebugText != 0 )
 		{			
-			const RenderDebugInfo & rdi = 
+			const RenderServiceDebugInfo & rdi = 
 				RENDER_SERVICE(m_serviceProvider)->getDebugInfo();
-
-			const RenderTextureDebugInfo & rtdi =
-				RENDERTEXTURE_SERVICE(m_serviceProvider)->getDebugInfo();
 
 			//size_t particlesCount = 
 			//	Holder<ParticleEngine>::get()->getFrameParticlesCount();
@@ -1095,8 +1092,16 @@ namespace Menge
 					->getBatchMode();
 
 				ss << "Smart Batch: " << mode << " " << rdi.batch <<  std::endl;
-				ss << "Texture Memory Usage: " << (float)rtdi.textureMemory / (1024.f*1024.f) << std::endl;
-				ss << "Texture Count: " << rtdi.textureCount << std::endl;
+
+				uint32_t textureMemoryUse = RENDER_SYSTEM( m_serviceProvider )
+					->getTextureMemoryUse();
+
+				ss << "Texture Memory Usage: " << (float)textureMemoryUse / (1024.f*1024.f) << std::endl;
+
+				uint32_t textureCount = RENDER_SYSTEM( m_serviceProvider )
+					->getTextureCount();
+
+				ss << "Texture Count: " << textureCount << std::endl;
 
 				ss << "Particles: " << particlesCount << std::endl;
 			}
@@ -1302,6 +1307,12 @@ namespace Menge
 		(void)_resolution;
         (void)_fixed;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Player::onFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
+	{
+		(void)_resolution;
+		(void)_fixed;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onFocus( bool _focus )
 	{

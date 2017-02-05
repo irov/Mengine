@@ -6,6 +6,7 @@ SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../pybind )
 
 # OUR SOURCES
 set( sources
+${SOURCE_DIR}/src/base.cpp
 ${SOURCE_DIR}/src/kernel.cpp
 ${SOURCE_DIR}/src/kernel_python.cpp
 ${SOURCE_DIR}/src/adapter_interface.cpp
@@ -30,6 +31,7 @@ ${SOURCE_DIR}/src/object.cpp
 ${SOURCE_DIR}/src/list.cpp
 ${SOURCE_DIR}/src/tuple.cpp
 ${SOURCE_DIR}/src/dict.cpp
+${SOURCE_DIR}/src/dict_iterator.cpp
 ${SOURCE_DIR}/src/bindable.cpp
 ${SOURCE_DIR}/src/module.cpp
 )

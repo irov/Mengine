@@ -25,7 +25,7 @@ namespace Menge
         bool initialize( const pybind::object & _type );
 
     public:
-        PybindTaskPtr generate( const pybind::object & _obj );
+        PybindTaskPtr generate();
 
     public:
         bool callEventInitialize( const pybind::object & _obj );
@@ -44,6 +44,8 @@ namespace Menge
         bool callEventCheckSkip( const pybind::object & _obj );
 
     protected:
+        pybind::object m_type;
+
         uint32_t m_events;
 
         pybind::object m_eventInitialize;
@@ -62,4 +64,6 @@ namespace Menge
         pybind::object m_eventCheckRun;
         pybind::object m_eventCheckSkip;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<PybindTaskGenerator> PybindTaskGeneratorPtr;
 }

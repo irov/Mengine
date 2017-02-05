@@ -16,8 +16,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool PybindTaskGenerator::initialize( const pybind::object & _type )
     {
+        m_type = _type;
+
 #   define CHECK_EVENTS(O, M, E)\
-        m_events |= (O = _type.get_attr( #M )).is_valid() == true ? GOAP::##E : 0
+        m_events |= (O = m_type.get_attr( #M )).is_valid() == true ? GOAP::##E : 0
 
         CHECK_EVENTS( m_eventInitialize, onInitialize, TASK_EVENT_INITIALIZE );
         CHECK_EVENTS( m_eventFinalize, onFinalize, TASK_EVENT_FINALIZE );
@@ -39,13 +41,15 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    PybindTaskPtr PybindTaskGenerator::generate( const pybind::object & _obj )
+    PybindTaskPtr PybindTaskGenerator::generate()
     {
         PybindTask * task = new PybindTask();
 
         task->setEvents( m_events );
         task->setGenerator( this );
-        task->setScriptObject( _obj );
+
+        pybind::object obj = m_type.call();
+        task->setScriptObject( obj );
 
         return task;
     }

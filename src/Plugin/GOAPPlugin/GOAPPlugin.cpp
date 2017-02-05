@@ -7,6 +7,7 @@
 #   include "PybindChain.h"
 #   include "PybindSource.h"
 #   include "PybindTask.h"
+#   include "PybindTaskGenerator.h"
 
 #   include "pybind/pybind.hpp"
 
@@ -72,6 +73,8 @@ namespace Menge
 
         pybind::def_functor( kernel, "makeChain", this, &GOAPPlugin::makeChain );
 
+        pybind::def_functor( kernel, "registryTask", this, &GOAPPlugin::registryTask );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -84,5 +87,42 @@ namespace Menge
         PybindChainPtr chain = new PybindChain( _source );
 
         return chain;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GOAPPlugin::registryTask( const ConstString & _name, const pybind::object & _obj )
+    {
+        TMapPybindTaskGenerator::iterator it_found = m_generators.find( _name );
+
+        if( it_found != m_generators.end() )
+        {
+            return false;
+        }
+
+        PybindTaskGeneratorPtr generator = new PybindTaskGenerator();
+
+        if( generator->initialize( _obj ) == false )
+        {
+            return false;
+        }
+
+        m_generators.insert( std::make_pair( _name, generator ) );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PybindTaskPtr GOAPPlugin::generateTask( const ConstString & _name )
+    {
+        TMapPybindTaskGenerator::iterator it_found = m_generators.find( _name );
+
+        if( it_found == m_generators.end() )
+        {
+            return nullptr;
+        }
+
+        const PybindTaskGeneratorPtr & generator = it_found->second;
+
+        PybindTaskPtr task = generator->generate();
+
+        return task;
     }
 }

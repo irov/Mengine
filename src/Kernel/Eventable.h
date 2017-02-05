@@ -29,7 +29,7 @@ namespace Menge
 		bool hasEvent( uint32_t _event ) const;
 
 	public:
-		PyObject * setEventListener( PyObject * _args, PyObject * _kwds );
+		PyObject * setEventListener( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds );
 		void removeEventListener();
 
 	protected:

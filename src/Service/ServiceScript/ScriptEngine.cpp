@@ -113,7 +113,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::ScriptEngine()
-		: m_moduleFinder(nullptr)
+		: m_kernel(nullptr)
+		, m_moduleFinder(nullptr)
         , m_moduleMenge(nullptr)
 		, m_loggerWarning(nullptr)
         , m_loggerError(nullptr)
@@ -145,13 +146,17 @@ namespace Menge
             Py_ErrFormatFlag = 0;
         }
 
-		if( pybind::initialize( false, false, true ) == false )
+		pybind::kernel_interface * kernel = pybind::initialize( false, false, true );
+
+		if( kernel == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initialize invalid initialize pybind"
 				);
 
 			return false;
 		}
+
+		m_kernel = kernel;
 
 		pybind::set_logger( (pybind::pybind_logger_t)s_pybind_logger, m_serviceProvider);
 
@@ -170,14 +175,12 @@ namespace Menge
         uint32_t python_version = pybind::get_python_version();
 
 		this->addGlobalModule( "_PYTHON_VERSION"
-			, (ScriptObject *)pybind::ptr( python_version )
+			, (ScriptObject *)pybind::ptr( m_kernel, python_version )
 			);
 		
 		pybind::set_currentmodule( m_moduleMenge );
-
-		pybind::kernel_interface * kernel = pybind::get_kernel();
-
-		pybind::interface_<ScriptLogger>( kernel, "ScriptLogger", true )
+				
+		pybind::interface_<ScriptLogger>( m_kernel, "ScriptLogger", true )
 			.def_native( "write", &ScriptLogger::py_write )
 			.def_property( "softspace", &ScriptLogger::getSoftspace, &ScriptLogger::setSoftspace )
 			;
@@ -186,7 +189,7 @@ namespace Menge
 
 		m_loggerWarning->setMessageLevel( LM_WARNING );
 
-		PyObject * py_logger = pybind::ptr( m_loggerWarning );
+		PyObject * py_logger = pybind::ptr( m_kernel, m_loggerWarning );
 		pybind::setStdOutHandle( py_logger );
 		pybind::decref( py_logger );
 
@@ -194,15 +197,15 @@ namespace Menge
 
 		m_loggerError->setMessageLevel( LM_ERROR );
 
-		PyObject * py_loggerError = pybind::ptr( m_loggerError );
+		PyObject * py_loggerError = pybind::ptr( m_kernel, m_loggerError );
 		pybind::setStdErrorHandle( py_loggerError );
 		pybind::decref( py_loggerError );
 
 		pybind::set_observer_bind_call( new My_observer_bind_call( m_serviceProvider ) );
 
-		pybind::interface_<ScriptModuleFinder>( kernel, "ScriptModuleFinder", true )
-            .def("find_module", &ScriptModuleFinder::find_module)   
-			.def("load_module", &ScriptModuleFinder::load_module)
+		pybind::interface_<ScriptModuleFinder>( m_kernel, "ScriptModuleFinder", true )
+			.def_kernel( "find_module", &ScriptModuleFinder::find_module )
+			.def_kernel( "load_module", &ScriptModuleFinder::load_module )
             ;
         
         m_moduleFinder = new ScriptModuleFinder();
@@ -215,7 +218,7 @@ namespace Menge
 			return false;
 		}
        
-        PyObject * py_moduleFinder = pybind::ptr( m_moduleFinder );
+		PyObject * py_moduleFinder = pybind::ptr( m_kernel, m_moduleFinder );
 
 		m_moduleFinder->setEmbed( py_moduleFinder );
 
@@ -272,6 +275,11 @@ namespace Menge
         pybind::setStdErrorHandle( nullptr );
 
 		pybind::finalize();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	pybind::kernel_interface * ScriptEngine::getKernel()
+	{
+		return m_kernel;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::addModulePath( const ConstString & _pak, const TVectorScriptModulePack & _modules )
@@ -546,7 +554,7 @@ namespace Menge
 
 		ScriptModulePtr module = m_factoryScriptModule.createObject();
 
-		if( module->initialize( pybind::module(py_module) ) == false )
+		if( module->initialize( pybind::module(m_kernel, py_module) ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("ScriptEngine: invalid import initialize '%s'(script)"
 				, _name.c_str()
@@ -569,7 +577,7 @@ namespace Menge
 
         PyObject * dir_bltin = pybind::module_dict( builtins );
 
-        pybind::dict_set_t( dir_bltin, _name, (PyObject*)_module );
+        pybind::dict_set_t( m_kernel, dir_bltin, _name, (PyObject*)_module );
     }
     //////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::removeGlobalModule( const Char * _name )
@@ -578,7 +586,7 @@ namespace Menge
 
         PyObject * dir_bltin = pybind::module_dict( builtins );
 
-        pybind::dict_remove_t( dir_bltin, _name );
+		pybind::dict_remove_t( m_kernel, dir_bltin, _name );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScriptEngine::stringize( ScriptObject * _object, ConstString & _cstr )

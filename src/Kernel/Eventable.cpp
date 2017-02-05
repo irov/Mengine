@@ -161,7 +161,7 @@ namespace Menge
 		m_mapEvent.clear();
 	}
     //////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::setEventListener( PyObject * _args, PyObject * _kwds )
+	PyObject * Eventable::setEventListener( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds )
 	{
 		(void)_args;
 
@@ -170,7 +170,7 @@ namespace Menge
 			return pybind::ret_none();
 		}
 
-		pybind::dict py_kwds( _kwds );
+		pybind::dict py_kwds( _kernel, _kwds );
 		this->_setEventListener( py_kwds );
 
 		PyObject * py_none = pybind::ret_none();

@@ -91,8 +91,9 @@ namespace Menge
 			);
 	}
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleFinder::find_module( PyObject * _module, PyObject * _path )
+	PyObject * ScriptModuleFinder::find_module( pybind::kernel_interface * _kernel, PyObject * _module, PyObject * _path )
     {
+		(void)_kernel;
         (void)_module;
         (void)_path;
 
@@ -133,7 +134,7 @@ namespace Menge
 		return pybind::ret_none();
     }
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptModuleFinder::load_module( PyObject * _module )
+	PyObject * ScriptModuleFinder::load_module( pybind::kernel_interface * _kernel, PyObject * _module )
 	{
 		ScriptModuleLoaderPtr loader = m_loaders.back();
 		m_loaders.pop_back();
@@ -145,7 +146,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		PyObject * py_code = loader->load_module( _module );
+		PyObject * py_code = loader->load_module( _kernel, _module );
 
 		return py_code;
 	}

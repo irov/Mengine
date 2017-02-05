@@ -34,7 +34,7 @@ namespace Menge
 		void setPackagePath( bool _packagePath );
 
     public:
-        virtual PyObject * load_module( PyObject * _module ) = 0;
+		virtual PyObject * load_module( pybind::kernel_interface * _kernel, PyObject * _module ) = 0;
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;

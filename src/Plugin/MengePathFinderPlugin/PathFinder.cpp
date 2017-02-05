@@ -2,6 +2,8 @@
 
 #	include "Logger/Logger.h"
 
+#	include "Interface/ScriptSystemInterface.h"
+
 namespace Menge
 {	
 	//////////////////////////////////////////////////////////////////////////
@@ -9,6 +11,7 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_from(0.f, 0.f)
 		, m_to(0.f, 0.f)
+		, m_way( pybind::invalid() )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -97,12 +100,14 @@ namespace Menge
 		{
 			return;
 		}
+
+		pybind::kernel_interface * kernel = Helper::getPybindkernel( m_serviceProvider );
 		
 		const fastpathfinder::point_array & pa = m_pathfinder.getPath();
 
 		fastpathfinder::point_array::size_type pa_size = pa.size();
 
-		pybind::list py_way( pa_size );
+		pybind::list py_way( kernel, pa_size );
 
 		py_way[0] = m_from;
 

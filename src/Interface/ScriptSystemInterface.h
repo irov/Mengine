@@ -10,7 +10,8 @@
 #	include "Core/FilePath.h"
 #	include "Core/Tags.h"
 
-#	include <stdex/stl_vector.h>
+#	include "pybind/kernel.hpp"
+#	include "stdex/stl_vector.h"
 
 #	include <stdarg.h>
 
@@ -72,6 +73,9 @@ namespace Menge
         SERVICE_DECLARE("ScriptService")
 
 	public:
+		virtual pybind::kernel_interface * getKernel() = 0;
+
+	public:
 		virtual void setWrapper( const ConstString& _type, ScriptWrapperInterface * _wrapper ) = 0;
 		virtual ScriptWrapperInterface * getWrapper( const ConstString & _type ) const = 0;
 
@@ -96,4 +100,20 @@ namespace Menge
 
 #   define SCRIPT_SERVICE( serviceProvider )\
     ((Menge::ScriptServiceInterface*)SERVICE_GET(serviceProvider, Menge::ScriptServiceInterface))
+
+	namespace Helper
+	{
+		inline pybind::kernel_interface * getPybindkernel( ServiceProviderInterface * _serviceProvider )
+		{
+			static pybind::kernel_interface * kernel = nullptr;
+
+			if( kernel == nullptr )
+			{
+				kernel = SCRIPT_SERVICE( _serviceProvider )
+					->getKernel();
+			}
+
+			return kernel;
+		}
+	}
 }

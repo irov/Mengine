@@ -43,8 +43,8 @@ namespace Menge
 		void removeModulePath( const ConstString & _pack );
 
     public:
-        PyObject * find_module( PyObject * _module, PyObject * _path );
-		PyObject * load_module( PyObject * _module );
+		PyObject * find_module( pybind::kernel_interface * _kernel, PyObject * _module, PyObject * _path );
+		PyObject * load_module( pybind::kernel_interface * _kernel, PyObject * _module );
 
     protected:
         bool find_module_source_( PyObject * _module, const ScriptModuleLoaderPtr & _loader );

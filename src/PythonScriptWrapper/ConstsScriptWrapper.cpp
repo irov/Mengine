@@ -7,12 +7,12 @@
 
 namespace Menge
 {
-    static bool s_ConstString_compare( PyObject * _obj, ConstString * _self, PyObject * _compare, pybind::PybindOperatorCompare _op, bool & _result )
+    static bool s_ConstString_compare( pybind::kernel_interface * _kernel, PyObject * _obj, ConstString * _self, PyObject * _compare, pybind::PybindOperatorCompare _op, bool & _result )
     {
         (void)_obj;
 
         ConstString cs_compare;
-        if( pybind::extract_value( _compare, cs_compare, false ) == false )
+		if( pybind::extract_value( _kernel, _compare, cs_compare, false ) == false )
         {
             return false;
         }
@@ -99,7 +99,6 @@ namespace Menge
             .def_convert( &ConstString_convert, _serviceProvider )
             .def_repr( &s_ConstString_repr )
             .def_hash( &s_ConstString_hash )
-			.def_as_string()
             ;
 	}
 }

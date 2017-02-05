@@ -35,6 +35,9 @@ namespace Menge
 		bool _initialize() override;
 		void _finalize() override;
 
+	protected:
+		pybind::kernel_interface * getKernel() override;
+
 	public:
 		PyObject * initModule( const char * _name );
 
@@ -65,6 +68,8 @@ namespace Menge
 		static void handleException();
 	
 	private:
+		pybind::kernel_interface * m_kernel;
+
         ScriptModuleFinder * m_moduleFinder;
 
 		PyObject * m_moduleMenge;

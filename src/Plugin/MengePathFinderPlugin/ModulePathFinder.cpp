@@ -49,13 +49,13 @@ namespace Menge
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
-	static pybind::list s_fastpathfinder_graph_getPath( fastpathfinder::graph * _graph, fastpathfinder::graph_node * _from, fastpathfinder::graph_node * _to, uint32_t _mask )
+	static pybind::list s_fastpathfinder_graph_getPath( pybind::kernel_interface * _kernel, fastpathfinder::graph * _graph, fastpathfinder::graph_node * _from, fastpathfinder::graph_node * _to, uint32_t _mask )
 	{
 		fastpathfinder::vector_graph_node path;
 
 		_graph->getPath( _from, _to, _mask, path );
 		
-		pybind::list py_path;
+		pybind::list py_path( _kernel );
 
 		for( fastpathfinder::vector_graph_node::iterator
 			it = path.begin(),
@@ -93,7 +93,7 @@ namespace Menge
 			.def( "setMask", &fastpathfinder::graph::setMask )
 			.def( "getMask", &fastpathfinder::graph::getMask )
 			.def( "getPathWeight", &fastpathfinder::graph::getPathWeight )
-			.def_static( "getPath", &s_fastpathfinder_graph_getPath )
+			.def_static_kernel( "getPath", &s_fastpathfinder_graph_getPath )
 			;
 
 		pybind::def_functor( kernel, "createPathFinderGraph", this, &ModulePathFinder::createGraph );
@@ -125,8 +125,8 @@ namespace Menge
 			.def( "getWayLength", &PathFinderWayAffector::getWayLength )
 			.def( "getLocalPosition", &PathFinderWayAffector::getLocalPosition )
 			.def( "getTimePosition", &PathFinderWayAffector::getTimePosition )
-			.def( "predictionLinearBullet", &PathFinderWayAffector::predictionLinearBullet )
-			.def( "predictionParabolicBullet", &PathFinderWayAffector::predictionParabolicBullet )
+			.def_kernel( "predictionLinearBullet", &PathFinderWayAffector::predictionLinearBullet )
+			.def_kernel( "predictionParabolicBullet", &PathFinderWayAffector::predictionParabolicBullet )
 			;
 		
 		pybind::def_functor_args( kernel, "createPathFinderWayAffector", this, &ModulePathFinder::createPathFinderWayAffector );

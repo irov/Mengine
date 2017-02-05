@@ -45,7 +45,7 @@ namespace Menge
 			pybind::set_path( shortpath );
         }        
 
-		pybind::initialize( false, false, true );
+		pybind::kernel_interface * kernel = pybind::initialize( false, false, true );
 
         //PyObject * xls_module = pybind::module_init( "Xls" );
 		
@@ -55,12 +55,12 @@ namespace Menge
 
 		m_warninglogger = new XlsScriptLogger( m_serviceProvider, LM_WARNING );
 
-		PyObject * pyWarningLogger = m_warninglogger->embedding( module_builtins );
+		PyObject * pyWarningLogger = m_warninglogger->embedding( kernel, module_builtins );
         pybind::setStdOutHandle( pyWarningLogger );
 
 		m_errorLogger = new XlsScriptLogger( m_serviceProvider, LM_ERROR );
 
-		PyObject * pyErrorLogger = m_errorLogger->embedding( module_builtins );
+		PyObject * pyErrorLogger = m_errorLogger->embedding( kernel, module_builtins );
         pybind::setStdErrorHandle( pyErrorLogger );
 
         PyObject * py_syspath = pybind::list_new(0);
@@ -74,7 +74,7 @@ namespace Menge
 			PLATFORM_SERVICE( m_serviceProvider )
 				->getShortPathName( stdPath, shortpath, MENGINE_MAX_PATH );
 
-			pybind::list_appenditem_t( py_syspath, shortpath );			
+			pybind::list_appenditem_t( kernel, py_syspath, shortpath );			
 		}
 
 		{
@@ -86,15 +86,13 @@ namespace Menge
 			PLATFORM_SERVICE( m_serviceProvider )
 				->getShortPathName( stdPath, shortpath, MENGINE_MAX_PATH );
 
-			pybind::list_appenditem_t( py_syspath, shortpath );
+			pybind::list_appenditem_t( kernel, py_syspath, shortpath );
 		}
 
 		pybind::set_syspath( py_syspath );
 
 		pybind::decref( py_syspath );
-
-		pybind::kernel_interface * kernel = pybind::get_kernel();
-
+				
 		pybind::def_functor( kernel, "Error", this, &XlsExportPlugin::error_, module_builtins );
 
 		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )

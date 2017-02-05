@@ -26,7 +26,7 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleLoaderCode::load_module( PyObject * _module )
+	PyObject * ScriptModuleLoaderCode::load_module( pybind::kernel_interface * _kernel, PyObject * _module )
     {   
         ConstString c_fullPath = Helper::stringizeString( m_serviceProvider, m_path );
 
@@ -42,14 +42,14 @@ namespace Menge
 			return nullptr;
 		}
      	
-		PyObject * module = this->load_module_code_( _module, stream );
+		PyObject * module = this->load_module_code_( _kernel, _module, stream );
 
         return module;        
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleLoaderCode::load_module_code_( PyObject * _module, const InputStreamInterfacePtr & _stream )
+	PyObject * ScriptModuleLoaderCode::load_module_code_( pybind::kernel_interface * _kernel, PyObject * _module, const InputStreamInterfacePtr & _stream )
     {
-        PyObject * code = this->unmarshal_code_( _module, _stream );
+        PyObject * code = this->unmarshal_code_( _kernel, _module, _stream );
 
         if( code == nullptr )
         {
@@ -66,7 +66,7 @@ namespace Menge
         if( m_packagePath == true )
         {
 			PyObject * py_packagePath = pybind::build_value( "[O]", _module );
-            pybind::dict_setstring_t( dict, "__path__", py_packagePath );
+			pybind::dict_setstring_t( _kernel, dict, "__path__", py_packagePath );
         }
 
         PyObject * py_module_exec = pybind::module_execcode( str_module, code );
@@ -76,8 +76,10 @@ namespace Menge
         return py_module_exec;
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleLoaderCode::unmarshal_code_( PyObject * _module, const InputStreamInterfacePtr & _stream )
+	PyObject * ScriptModuleLoaderCode::unmarshal_code_( pybind::kernel_interface * _kernel, PyObject * _module, const InputStreamInterfacePtr & _stream )
     {
+		(void)_kernel;
+
         size_t file_size = _stream->size();
 				
         if( file_size == 0 )

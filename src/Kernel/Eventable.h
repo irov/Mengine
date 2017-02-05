@@ -100,9 +100,16 @@ public:\
 #   define EVENTABLE_METHOD(Self, Event)\
     EVENTABLE_METHODR(Self, Event, ((void)0))
 
+#   define EVENTABLE_METHODRS(Self, Event, R)\
+    Self->hasEventReceiver( Event ) == false ? R : Helper::getThisEventRecieverT( Self, Event )
+
 #   define EVENTABLE_METHODRT(Self, Event, R, Type)\
     Self == nullptr ? R : Self->hasEventReceiver( Event ) == false ? R : Helper::getThisEventReciever<Type>( Self, Event )
 
 #   define EVENTABLE_METHODT(Self, Event, Type)\
     EVENTABLE_METHODRT(Self, Event, ((void)0), Type)
+
+#   define EVENTABLE_METHODRTS(Self, Event, R, Type)\
+    Self->hasEventReceiver( Event ) == false ? R : Helper::getThisEventReciever<Type>( Self, Event )
+
 

@@ -11,6 +11,8 @@ src
 	PybindSource.cpp
 	PybindTask.h
 	PybindTask.cpp
+	PybindTaskGenerator.h
+	PybindTaskGenerator.cpp
 	
 	PybindCallbackProvider.h
 	PybindCallbackProvider.cpp

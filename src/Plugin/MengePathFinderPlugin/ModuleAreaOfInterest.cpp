@@ -38,14 +38,16 @@ namespace Menge
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    PyObject * s_NodeAOITrigger_setEventListener( NodeAOITrigger * _node, PyObject * _args, PyObject * _kwds )
+    PyObject * s_NodeAOITrigger_setEventListener( pybind::kernel_interface * _kernel, NodeAOITrigger * _node, PyObject * _args, PyObject * _kwds )
     {
+        (void)_args;
+
         if( _kwds == nullptr )
         {
             return pybind::ret_none();
         }
 
-        pybind::dict py_kwds( _kwds );
+        pybind::dict py_kwds( _kernel, _kwds );
 
         Helper::registerEventReceiver<PythonNodeAOITriggerEventReceiver>( py_kwds, _node, "onTriggerEnter", EVENT_NODE_AOI_TRIGGER_ENTER );
         Helper::registerEventReceiver<PythonNodeAOITriggerEventReceiver>( py_kwds, _node, "onTriggerLeave", EVENT_NODE_AOI_TRIGGER_LEAVE );
@@ -82,7 +84,7 @@ namespace Menge
 			.def( "getAOI", &NodeAOITrigger::getAOI )
 			.def( "setTriggerUserData", &NodeAOITrigger::setTriggerUserData )
 			.def( "getTriggerUserData", &NodeAOITrigger::getTriggerUserData )
-            .def_static_native( "setEventListener", &s_NodeAOITrigger_setEventListener )
+            .def_static_native_kernel( "setEventListener", &s_NodeAOITrigger_setEventListener )
 			;
 
 		pybind::interface_<NodeAOIActor, pybind::bases<Node> >( kernel, "NodeAOIActor", false )

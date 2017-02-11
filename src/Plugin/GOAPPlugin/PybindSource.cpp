@@ -13,6 +13,15 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
+    PybindSource::PybindSource()
+        : m_kernel(nullptr)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PybindSource::~PybindSource()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PybindSource::addFunction( const pybind::object & _obj, const pybind::detail::args_operator_t & _args )
     {
         GOAP::FunctionProviderPtr provider = new PybindFunctionProvider( _obj, _args );
@@ -40,7 +49,7 @@ namespace Menge
 
         GOAP::IfSource desc = this->addIfProvider( provider );
 
-        return pybind::make_tuple_t( desc.source_true, desc.source_false );
+        return pybind::make_tuple_t( m_kernel, desc.source_true, desc.source_false );
     }
     //////////////////////////////////////////////////////////////////////////
     pybind::tuple PybindSource::addSwitch( size_t _count, const pybind::object & _obj, const pybind::detail::args_operator_t & _args )
@@ -49,7 +58,7 @@ namespace Menge
 
         GOAP::TVectorSources & sources = this->addSwitchProvider( provider, _count );
 
-        return pybind::make_tuple_container_t( sources );
+        return pybind::make_tuple_container_t( m_kernel, sources );
     }
     //////////////////////////////////////////////////////////////////////////
     GOAP::SourcePtr PybindSource::addRepeat( const pybind::object & _obj, const pybind::detail::args_operator_t & _args )

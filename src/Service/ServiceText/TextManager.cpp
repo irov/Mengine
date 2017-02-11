@@ -12,9 +12,9 @@
 
 #	include "Logger/Logger.h"
 
-#	include <stdex/xml_sax_parser.h>
+#	include "stdex/xml_sax_parser.h"
 
-#	include <utf8.h>
+#	include "utf8.h"
 
 #   include <stdio.h>
 
@@ -77,7 +77,7 @@ namespace Menge
             ConstString text_key;
 
 
-            ConstString text;
+            String text;
             ConstString fontName;
 
             float charOffset = 0.f;
@@ -126,20 +126,15 @@ namespace Menge
                             );
 
                         String str( str_value, str_value_size );
-                        String temp;
-                        utf8::replace_invalid( str.begin(), str.end(), std::back_inserter( temp ) );
+						utf8::replace_invalid( str.begin(), str.end(), std::back_inserter( text ) );
 
                         LOGGER_ERROR( m_serviceProvider )("replace to |%s|"
-                            , temp.c_str()
+							, text.c_str()
                             );
-
-                        text = Helper::stringizeString( m_serviceProvider, temp );
                     }
                     else
                     {
-                        m_textManager->createLocalString_( str_value, str_value_size, text );
-
-                        //text = Helper::stringizeStringExternal( m_serviceProvider, str_value, str_value_size );
+						text = Menge::String( str_value, str_value_size );
                     }
                 }
                 else if( strcmp( str_key, "Font" ) == 0 )
@@ -753,7 +748,7 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::addTextEntry( const ConstString& _key
-        , const ConstString & _text
+        , const String & _text
         , const ConstString & _font
         , const ColourValue & _colorFont
         , const ColourValue & _colorOutline
@@ -774,7 +769,7 @@ namespace Menge
 
             if( _isOverride == false )
             {
-                const ConstString & text = textEntry_has.getValue();
+                const String & text = textEntry_has.getValue();
 
                 WString ws_text;
                 Helper::utf8ToUnicode( m_serviceProvider, text, ws_text );
@@ -1009,7 +1004,7 @@ namespace Menge
                     continue;
                 }
 
-                const ConstString & value = text.getValue();
+                const String & value = text.getValue();
 
                 const char * text_str = value.c_str();
                 size_t text_len = value.size();

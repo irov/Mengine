@@ -154,6 +154,25 @@ namespace mt
 		return f;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_INLINE bool is_pow2( uint32_t n )
+	{
+		return !(n & (n - 1));
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_INLINE uint32_t next_pow2( uint32_t n )
+	{
+		--n;
+		n |= n >> 16;
+		n |= n >> 8;
+		n |= n >> 4;
+		n |= n >> 2;
+		n |= n >> 1;
+		++n;
+
+		return n;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_INLINE float length_f( const float & _a, const float & _b )
 	{
 		float d = _a - _b;

@@ -1939,7 +1939,7 @@ namespace Menge
 					);
 			}
 
-			const ConstString & text = entry->getValue();
+			const String & text = entry->getValue();
 
             WString unicode;
             if( Helper::utf8ToUnicode(m_serviceProvider, text, unicode ) == false )
@@ -1964,7 +1964,7 @@ namespace Menge
 					);
 			}
 
-			const ConstString & text = entry->getValue();
+			const String & text = entry->getValue();
 
 			uint32_t count = (uint32_t)text.size();
 

@@ -92,8 +92,8 @@ PLUGIN_EXPORT( MengeWin32FileGroup );
 PLUGIN_EXPORT( Spine );
 PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( Box2D );
-
 PLUGIN_EXPORT( PathFinder );
+PLUGIN_EXPORT( TTF );
 
 namespace Menge
 {
@@ -707,6 +707,7 @@ namespace Menge
 		MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
 		
 		MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
+		MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
 
 
 #	undef MENGINE_ADD_PLUGIN
@@ -834,7 +835,7 @@ namespace Menge
 				);
 		}
 
-		const ConstString & projectTitle = APPLICATION_SERVICE( m_serviceProvider )
+		const String & projectTitle = APPLICATION_SERVICE( m_serviceProvider )
 			->getProjectTitle();
 
 		WString wprojectTitle;

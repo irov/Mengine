@@ -8,6 +8,8 @@
 #   include "Core/GlyphChar.h"
 #   include "Core/ColourValue.h"
 
+#	include "Config/String.h"
+
 #   include "Factory/FactorablePtr.h"
 
 #	include "Math/vec4.h"
@@ -87,7 +89,7 @@ namespace Menge
 	{
 	public:
 		virtual const ConstString & getKey() const = 0;
-		virtual const ConstString & getValue() const = 0;
+		virtual const String & getValue() const = 0;
 
 	public:
 		virtual const ConstString & getFontName() const = 0;
@@ -127,7 +129,7 @@ namespace Menge
 
 	public:
 		virtual bool addTextEntry( const ConstString & _key
-			, const ConstString & _text
+			, const String & _text
 			, const ConstString & _font
 			, const ColourValue & _colorFont
 			, const ColourValue & _colorOutline

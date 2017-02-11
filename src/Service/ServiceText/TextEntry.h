@@ -17,7 +17,7 @@ namespace Menge
 
 	public:
 		void initialize( const ConstString & _key
-			, const ConstString & _text
+			, const String & _text
 			, const ConstString & _font
 			, const ColourValue & _colorFont
 			, const ColourValue & _colorOutline
@@ -31,7 +31,7 @@ namespace Menge
 
 	public:
 		const ConstString & getKey() const override;
-		const ConstString & getValue() const override;
+		const String & getValue() const override;
 
 	public:
 		const ConstString & getFontName() const override;
@@ -49,7 +49,7 @@ namespace Menge
 
 	protected:
 		ConstString m_key;
-		ConstString m_text;
+		String m_text;
 
 		ConstString m_fontName;
 

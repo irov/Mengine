@@ -41,8 +41,8 @@ namespace Menge
 	public:
 		mt::vec3f getTimePosition( float _time ) const;
 
-		pybind::tuple predictionLinearBullet( const mt::vec3f & _offset, const mt::vec3f & _position, float _speed ) const;
-		pybind::tuple predictionParabolicBullet( const mt::vec3f & _offset, const mt::vec3f & _position, const mt::vec3f & _height, float _speed ) const;
+		pybind::tuple predictionLinearBullet( pybind::kernel_interface * _kernel, const mt::vec3f & _offset, const mt::vec3f & _position, float _speed ) const;
+		pybind::tuple predictionParabolicBullet( pybind::kernel_interface * _kernel, const mt::vec3f & _offset, const mt::vec3f & _position, const mt::vec3f & _height, float _speed ) const;
 
 	public:
 		bool _prepare() override;

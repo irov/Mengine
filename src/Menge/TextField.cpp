@@ -1191,7 +1191,7 @@ namespace Menge
 			return 0;
 		}
 
-		const ConstString & textValue = textEntry->getValue();
+		const String & textValue = textEntry->getValue();
 
 		const char * str_textValue = textValue.c_str();
 
@@ -1231,7 +1231,7 @@ namespace Menge
 			return false;
 		}
 
-		const ConstString & textValue = textEntry->getValue();
+		const String & textValue = textEntry->getValue();
 
 		const char * str_textValue = textValue.c_str();
 		

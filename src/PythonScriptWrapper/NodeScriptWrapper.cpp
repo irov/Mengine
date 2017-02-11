@@ -177,7 +177,7 @@ namespace Menge
 
 	public:
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * textfield_setTextFormatArgs( TextField * _textField, PyObject * _args, PyObject * _kwds )
+		PyObject * textfield_setTextFormatArgs( pybind::kernel_interface * _kernel, TextField * _textField, PyObject * _args, PyObject * _kwds )
 		{
 			(void)_kwds;
 
@@ -193,7 +193,7 @@ namespace Menge
 				if( pybind::string_check( py_string ) == true )
 				{
 					String key;
-					if( pybind::extract_value( py_string, key, false ) == false )
+					if( pybind::extract_value( _kernel, py_string, key, false ) == false )
 					{
 						LOGGER_ERROR( m_serviceProvider )("textfield_setTextFormatArgs %s invalid get str %s"
 							, pybind::object_repr( py_string )
@@ -207,7 +207,7 @@ namespace Menge
 				else if( pybind::unicode_check( py_string ) == true )
 				{
 					WString key;
-					if( pybind::extract_value( py_string, key, false ) == false )
+					if( pybind::extract_value( _kernel, py_string, key, false ) == false )
 					{
 						LOGGER_ERROR( m_serviceProvider )("textfield_setTextFormatArgs %s invalid get unicode %s"
 							, pybind::object_repr( py_string )
@@ -323,7 +323,7 @@ namespace Menge
 			return wap;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * movie_getEnableMovieLayer( Movie * _movie, const ConstString & _name )
+		PyObject * movie_getEnableMovieLayer( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _name )
 		{
 			bool enable;
 			if( _movie->getEnableMovieLayer( _name, enable ) == false )
@@ -331,7 +331,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			return pybind::ptr( enable );
+			return pybind::ptr( _kernel, enable );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		Node * movie_getMovieSlot( Movie * _movie, const ConstString & _name )
@@ -488,8 +488,9 @@ namespace Menge
 			: public VisitorMovieNode
 		{
 		public:
-			PythonVisitorMovieSlot( pybind::list & _list )
-				: m_list( _list )
+			PythonVisitorMovieSlot( pybind::kernel_interface * _kernel, pybind::list & _list )
+				: m_kernel( _kernel )
+				, m_list( _list )
 			{
 			}
 
@@ -505,24 +506,23 @@ namespace Menge
 
 				const ConstString & name = slot->getName();
 
-				pybind::tuple py_value = pybind::make_tuple_t( _movie, name, slot );
+				pybind::tuple py_value = pybind::make_tuple_t( m_kernel, _movie, name, slot );
 				m_list.append( py_value );
-
-				//pybind::list_appendtuple_t( m_list, _movie, name, slot );
 			}
 
 		protected:
+			pybind::kernel_interface * m_kernel;
 			pybind::list & m_list;
 
 		private:
 			void operator = (const PythonVisitorMovieSlot &);
 		};
 		//////////////////////////////////////////////////////////////////////////
-		pybind::list movie_getSlots( Movie * _movie )
+		pybind::list movie_getSlots( pybind::kernel_interface * _kernel, Movie * _movie )
 		{
-			pybind::list py_list;
+			pybind::list py_list( _kernel );
 
-			PythonVisitorMovieSlot visitor( py_list );
+			PythonVisitorMovieSlot visitor( _kernel, py_list );
 			_movie->visitMovieLayer(STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSlot" ), &visitor );
 
 			return py_list;
@@ -532,8 +532,9 @@ namespace Menge
 			: public VisitorMovieNode
 		{
 		public:
-			PythonVisitorMovieSocket( const pybind::list & _list )
-				: m_list( _list )
+			PythonVisitorMovieSocket( pybind::kernel_interface * _kernel, const pybind::list & _list )
+				: m_kernel( _kernel )
+				, m_list( _list )
 			{
 			}
 
@@ -549,18 +550,19 @@ namespace Menge
 
 				const ConstString & name = hotspot->getName();
 
-				m_list.append( pybind::make_tuple_t( _movie, name, hotspot ) );
+				m_list.append( pybind::make_tuple_t( m_kernel, _movie, name, hotspot ) );
 			}
 
 		protected:
+			pybind::kernel_interface * m_kernel;
 			pybind::list m_list;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		pybind::list movie_getSockets( Movie * _movie )
+		pybind::list movie_getSockets( pybind::kernel_interface * _kernel, Movie * _movie )
 		{
-			pybind::list py_list;
+			pybind::list py_list( _kernel );
 
-			PythonVisitorMovieSocket visitor( py_list );
+			PythonVisitorMovieSocket visitor( _kernel, py_list );
 			_movie->visitMovieLayer(STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketImage" ), &visitor );
 			_movie->visitMovieLayer(STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketShape" ), &visitor );
 
@@ -571,8 +573,9 @@ namespace Menge
 			: public VisitorMovieNode
 		{
 		public:
-			PythonVisitorMovieSubMovie( const pybind::list & _list )
-				: m_list( _list )
+			PythonVisitorMovieSubMovie( pybind::kernel_interface * _kernel, const pybind::list & _list )
+				: m_kernel(_kernel)
+				, m_list( _list )
 			{
 			}
 
@@ -588,18 +591,19 @@ namespace Menge
 
 				const ConstString & name = subMovie->getName();
 
-				m_list.append( pybind::make_tuple_t( _movie, name, subMovie ) );
+				m_list.append( pybind::make_tuple_t( m_kernel, _movie, name, subMovie ) );
 			}
 
 		protected:
+			pybind::kernel_interface * m_kernel;
 			pybind::list m_list;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		pybind::list movie_getSubMovies( Movie * _movie )
+		pybind::list movie_getSubMovies( pybind::kernel_interface * _kernel, Movie * _movie )
 		{
-			pybind::list py_list;
+			pybind::list py_list( _kernel );
 
-			PythonVisitorMovieSubMovie visitor( py_list );
+			PythonVisitorMovieSubMovie visitor( _kernel, py_list );
 			_movie->visitMovieLayer(STRINGIZE_STRING_LOCAL( m_serviceProvider, "SubMovie" ), &visitor );
 
 			return py_list;
@@ -609,26 +613,28 @@ namespace Menge
 			: public VisitorMovieNode
 		{
 		public:
-			PythonVisitorMovieLayer( const pybind::list & _list )
-				: m_list( _list )
+			PythonVisitorMovieLayer( pybind::kernel_interface * _kernel, const pybind::list & _list )
+				: m_kernel(_kernel)
+				, m_list( _list )
 			{
 			}
 
 		protected:
 			void visitMovieNode( Movie * _movie, Node * _layer ) override
 			{
-				m_list.append( pybind::make_tuple_t( _movie, _layer ) );
+				m_list.append( pybind::make_tuple_t( m_kernel, _movie, _layer ) );
 			}
 
 		protected:
+			pybind::kernel_interface * m_kernel;
 			pybind::list m_list;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		pybind::list movie_filterLayers( Movie * _movie, const ConstString & _type )
+		pybind::list movie_filterLayers( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _type )
 		{
-			pybind::list py_list;
+			pybind::list py_list(_kernel);
 
-			PythonVisitorMovieLayer visitor( py_list );
+			PythonVisitorMovieLayer visitor( _kernel, py_list );
 			_movie->visitMovieLayer( _type, &visitor );
 
 			return py_list;
@@ -758,7 +764,7 @@ namespace Menge
 			return len;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		pybind::list movie_getLayerPath( Movie * _movie, const ConstString & _name )
+		pybind::list movie_getLayerPath( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _name )
 		{
 			const MovieLayer * layer;
 			Movie * sub_movie;
@@ -798,7 +804,7 @@ namespace Menge
 				return pybind::make_invalid_list_t();
 			}
 
-			pybind::list py_path( indexCount );
+			pybind::list py_path( _kernel, indexCount );
 
 			for( uint32_t i = 0; i != indexCount; ++i )
 			{
@@ -816,7 +822,7 @@ namespace Menge
 			return py_path;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		pybind::list movie_getLayerPath2( Movie * _movie, const ConstString & _name )
+		pybind::list movie_getLayerPath2( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _name )
 		{
 			const MovieLayer * layer;
 			Movie * sub_movie;
@@ -846,7 +852,7 @@ namespace Menge
 
 			const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
 
-			pybind::list py_path( indexCount );
+			pybind::list py_path( _kernel, indexCount );
 
 			for( uint32_t i = 0; i != indexCount; ++i )
 			{
@@ -868,7 +874,7 @@ namespace Menge
 			return py_path;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		pybind::list movie_getLayerPath3( Movie * _movie, const ConstString & _name )
+		pybind::list movie_getLayerPath3( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _name )
 		{
 			const MovieLayer * layer;
 			Movie * sub_movie;
@@ -907,7 +913,7 @@ namespace Menge
 
 			const mt::mat4f & wm = _movie->getWorldMatrix();
 
-			pybind::list py_path( indexCount );
+			pybind::list py_path( _kernel, indexCount );
 
 			for( uint32_t i = 0; i != indexCount; ++i )
 			{
@@ -930,7 +936,7 @@ namespace Menge
 			return py_path;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		pybind::list movie_getLayerPath4( Movie * _movie, const ConstString & _name )
+		pybind::list movie_getLayerPath4( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _name )
 		{
 			const MovieLayer * layer;
 			Movie * sub_movie;
@@ -969,7 +975,7 @@ namespace Menge
 
 			const mt::mat4f & wm = _movie->getWorldMatrix();
 
-			pybind::list py_path( indexCount );
+			pybind::list py_path( _kernel, indexCount );
 
 			for( uint32_t i = 0; i != indexCount; ++i )
 			{
@@ -2922,8 +2928,9 @@ namespace Menge
 		class PythonSaxCallback
 		{
 		public:
-			PythonSaxCallback( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb )
+			PythonSaxCallback( ServiceProviderInterface * _serviceProvider, pybind::kernel_interface * _kernel, const pybind::object & _cb )
 				: m_serviceProvider( _serviceProvider )
+				, m_kernel( _kernel )
 				, m_cb( _cb )
 			{
 			}
@@ -2945,7 +2952,7 @@ namespace Menge
 			{
 				(void)_node;
 
-				pybind::dict py_attr( _count );
+				pybind::dict py_attr( m_kernel, _count );
 
 				for( uint32_t i = 0; i != _count; ++i )
 				{
@@ -2971,10 +2978,11 @@ namespace Menge
 
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
+			pybind::kernel_interface * m_kernel;
 			pybind::object m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		bool s_parseXml( const ConstString & _fileGroup, const FilePath & _path, const pybind::object & _cb )
+		bool s_parseXml( pybind::kernel_interface * _kernel, const ConstString & _fileGroup, const FilePath & _path, const pybind::object & _cb )
 		{
 			MemoryCacheBufferInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( m_serviceProvider, _fileGroup, _path, false, "parseXml" );
 
@@ -2985,7 +2993,7 @@ namespace Menge
 
 			char * memory = binary_buffer->getMemory();
 
-			PythonSaxCallback pysc( m_serviceProvider, _cb );
+			PythonSaxCallback pysc( m_serviceProvider, _kernel, _cb );
 			if( stdex::xml_sax_parse( memory, pysc ) == false )
 			{
 				return false;
@@ -3054,9 +3062,9 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		pybind::list s_getFonts()
+		pybind::list s_getFonts( pybind::kernel_interface * _kernel )
 		{
-			pybind::list l;
+			pybind::list l( _kernel );
 			MyVisitorCollectTextFont mvtf( l );
 
 			TEXT_SERVICE( m_serviceProvider )
@@ -3590,7 +3598,7 @@ namespace Menge
 			return wp;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		pybind::object s_getMovieSlotsPosition( const ConstString & _groupName, const ConstString & _movieName )
+		pybind::object s_getMovieSlotsPosition( pybind::kernel_interface * _kernel, const ConstString & _groupName, const ConstString & _movieName )
 		{
 			stdex::array_string<128> buffer;
 			buffer.append( "Movie" );
@@ -3609,10 +3617,10 @@ namespace Menge
 					, resourceMovieName.c_str()
 					);
 
-				return pybind::make_none_t();
+				return pybind::make_none_t( _kernel );
 			}
 
-			pybind::list py_list;
+			pybind::list py_list( _kernel );
 
 			const TVectorMovieLayers & layers = resourceMovie->getLayers();
             
@@ -3629,13 +3637,13 @@ namespace Menge
 					continue;
 				}
 
-				py_list.append( pybind::make_tuple_t( layer.name, layer.position ) );
+				py_list.append( pybind::make_tuple_t( _kernel, layer.name, layer.position ) );
 			}
 
 			return py_list;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * s_getMovieSlotPosition( const ConstString & _groupName, const ConstString & _movieName, const ConstString & _slotName )
+		PyObject * s_getMovieSlotPosition( pybind::kernel_interface * _kernel, const ConstString & _groupName, const ConstString & _movieName, const ConstString & _slotName )
 		{
 			stdex::array_string<128> buffer;
 			buffer.append( "Movie" );
@@ -3668,7 +3676,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			PyObject * py_position = pybind::ptr( layer->position );
+			PyObject * py_position = pybind::ptr( _kernel, layer->position );
 
 			return py_position;
 		}
@@ -4191,7 +4199,7 @@ namespace Menge
 			return exist;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		pybind::list s_pickHotspot( const mt::vec2f & _point )
+		pybind::list s_pickHotspot( pybind::kernel_interface * _kernel, const mt::vec2f & _point )
 		{
 			MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getMousePickerSystem();
@@ -4199,7 +4207,7 @@ namespace Menge
 			TVectorPickerTraps traps;
 			mousePickerSystem->pickTrap( _point, traps );
 
-			pybind::list pyret;
+			pybind::list pyret( _kernel );
 
 			bool onFocus = APPLICATION_SERVICE( m_serviceProvider )
 				->isFocus();
@@ -4241,7 +4249,6 @@ namespace Menge
 				->hasTouchpad();
 
 			return touchpad;
-
 		}
 		//////////////////////////////////////////////////////////////////////////
 		const mt::vec2f & s_getSurfaceSize( Shape * _shape )
@@ -4313,13 +4320,13 @@ namespace Menge
 			return newNode;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		pybind::list getAllChildren( Node * _node )
+		pybind::list getAllChildren( pybind::kernel_interface * _kernel, Node * _node )
 		{
 			TListNodeChild & children = _node->getChildren();
 
 			size_t size = children.size();
 
-			pybind::list py_children( size );
+			pybind::list py_children( _kernel, size );
 
 			size_t index = 0;
 
@@ -6133,7 +6140,7 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * s_getGameParam( const ConstString & _paramName )
+		PyObject * s_getGameParam( pybind::kernel_interface * _kernel, const ConstString & _paramName )
 		{
 			if( GAME_SERVICE( m_serviceProvider )
 				->hasParam( _paramName ) == false )
@@ -6144,10 +6151,10 @@ namespace Menge
 			const WString & val = GAME_SERVICE( m_serviceProvider )
 				->getParam( _paramName );
 
-			return pybind::ptr( val );
+			return pybind::ptr( _kernel, val );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * s_getGameParamFloat( const ConstString & _paramName )
+		PyObject * s_getGameParamFloat( pybind::kernel_interface * _kernel, const ConstString & _paramName )
 		{
 			if( GAME_SERVICE( m_serviceProvider )
 				->hasParam( _paramName ) == false )
@@ -6161,10 +6168,10 @@ namespace Menge
 			float value;
 			Utils::wstringToFloat( val, value );
 
-			return pybind::ptr( value );
+			return pybind::ptr( _kernel, value );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * s_getGameParamInt( const ConstString & _paramName )
+		PyObject * s_getGameParamInt( pybind::kernel_interface * _kernel, const ConstString & _paramName )
 		{
 			if( GAME_SERVICE( m_serviceProvider )
 				->hasParam( _paramName ) == false )
@@ -6178,11 +6185,13 @@ namespace Menge
 			int value;
 			Utils::wstringToInt( val, value );
 
-			return pybind::ptr( value );
+			return pybind::ptr( _kernel, value );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * s_getGameParamBool( const ConstString & _paramName )
+		PyObject * s_getGameParamBool( pybind::kernel_interface * _kernel, const ConstString & _paramName )
 		{
+			(void)_kernel;
+
 			if( GAME_SERVICE( m_serviceProvider )
 				->hasParam( _paramName ) == false )
 			{
@@ -6220,8 +6229,9 @@ namespace Menge
 			: public VisitorResourceMovie
 		{
 		public:
-			ResourceMovieVisitorNullLayers( ServiceProviderInterface * _serviceProvider, const pybind::dict & _dictResult, float _frameDuration )
+			ResourceMovieVisitorNullLayers( ServiceProviderInterface * _serviceProvider, pybind::kernel_interface * _kernel, const pybind::dict & _dictResult, float _frameDuration )
 				: m_serviceProvider( _serviceProvider )
+				, m_kernel(_kernel)
 				, m_dictResult( _dictResult )
 				, m_frameDuration( _frameDuration )
 			{
@@ -6240,7 +6250,7 @@ namespace Menge
 					return;
 				}
 
-				pybind::list py_list_frames;
+				pybind::list py_list_frames( m_kernel );
 
 				const MovieLayerFrame & frames = _framePack->getLayer( _layer.index );
 
@@ -6249,7 +6259,7 @@ namespace Menge
 					MovieFrameSource frame_source;
 					_framePack->getLayerFrame( _layer.index, i, frame_source );
 
-					pybind::dict py_dict_frame;
+					pybind::dict py_dict_frame( m_kernel );
 
 					py_dict_frame["position"] = frame_source.position;
 
@@ -6265,21 +6275,22 @@ namespace Menge
 
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
+			pybind::kernel_interface * m_kernel;
 			pybind::dict m_dictResult;
 			float m_frameDuration;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * s_getNullObjectsFromResourceVideo( ResourceMovie * _resource )
+		PyObject * s_getNullObjectsFromResourceVideo( pybind::kernel_interface * _kernel, ResourceMovie * _resource )
 		{
 			if( _resource == nullptr )
 			{
 				return pybind::ret_none();
 			}
 
-			pybind::dict py_dict_result;
+			pybind::dict py_dict_result(_kernel);
 
 			float frameTime = _resource->getFrameDuration();
-			ResourceMovieVisitorNullLayers visitor( m_serviceProvider, py_dict_result, frameTime );
+			ResourceMovieVisitorNullLayers visitor( m_serviceProvider, _kernel, py_dict_result, frameTime );
 
 			_resource->visitResourceMovie( &visitor );
 
@@ -6496,11 +6507,11 @@ namespace Menge
 			, public ConcreteVisitor<ResourceReference>
 		{
 		public:
-			GetResourceVisitor()
+			GetResourceVisitor( pybind::kernel_interface * _kernel )
+				: m_kernel(_kernel)
+				, m_l(_kernel)
 			{
-				pybind::kernel_interface * kernel = pybind::get_kernel();
-
-				m_scope = kernel->class_scope<ResourceReference>();
+				 m_scope = m_kernel->class_scope<ResourceReference>();
 			}
 
 			const pybind::list & getResult() const
@@ -6511,21 +6522,20 @@ namespace Menge
 		protected:
 			void accept( ResourceReference* _resource ) override
 			{
-				pybind::kernel_interface * kernel = pybind::get_kernel();
-
-				PyObject * py_obj = m_scope->create_holder( kernel, ( void * )_resource );
+				PyObject * py_obj = m_scope->create_holder( m_kernel, (void *)_resource );
 
 				m_l.append( py_obj );
 			}
 
 		protected:
+			pybind::kernel_interface * m_kernel;
 			pybind::class_type_scope_ptr m_scope;
 			pybind::list m_l;
 		};
 		//////////////////////////////////////////////////////////////////////////		
-		pybind::list s_getResources( const ConstString & _category, const ConstString & _groupName )
+		pybind::list s_getResources( pybind::kernel_interface * _kernel, const ConstString & _category, const ConstString & _groupName )
 		{
-			GetResourceVisitor rv_gac;
+			GetResourceVisitor rv_gac( _kernel );
 
 			RESOURCE_SERVICE( m_serviceProvider )
 				->visitGroupResources( _category, _groupName, &rv_gac );
@@ -6684,7 +6694,7 @@ namespace Menge
 
 			if( pybind::list_check( _obj ) == true )
 			{
-				pybind::list l( _obj, pybind::borrowed() );
+				pybind::list l( _kernel, _obj, pybind::borrowed() );
 
 				size_t tags_size = l.size();
 
@@ -6719,7 +6729,7 @@ namespace Menge
 			{
 				const ConstString & tag = *it;
 
-				PyObject * py_tag = pybind::ptr( tag );
+				PyObject * py_tag = pybind::ptr( _kernel, tag );
 
 				pybind::list_appenditem( py_tags, py_tag );
 
@@ -7042,7 +7052,7 @@ namespace Menge
 			.def( "getRenderCameraInheritance", &Node::getRenderCameraInheritance )
 
 			.def_proxy_static( "createChildren", nodeScriptMethod, &NodeScriptMethod::createChildren )
-			.def_proxy_static( "getAllChildren", nodeScriptMethod, &NodeScriptMethod::getAllChildren )
+			.def_proxy_static_kernel( "getAllChildren", nodeScriptMethod, &NodeScriptMethod::getAllChildren )
 
 			.def_proxy_args_static( "colorTo", nodeScriptMethod, &NodeScriptMethod::colorTo )
 			.def_proxy_args_static( "alphaTo", nodeScriptMethod, &NodeScriptMethod::alphaTo )
@@ -7069,8 +7079,10 @@ namespace Menge
 			.def_proxy_args_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::accAngleTo )
 			;
 
-        pybind::interface_<Surface, pybind::bases<Identity, Materialable, Resource> >( kernel, "Surface", false )
-            .def_smart_pointer()
+		pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Eventable, Materialable> >( kernel, "Surface", false )
+			.def_smart_pointer()
+			.def_native_kernel( "setEventListener", &Surface::setEventListener )
+			.def( "removeEventListener", &Surface::removeEventListener )
             .def( "getMaxSize", &Surface::getMaxSize )
             .def( "getSize", &Surface::getSize )
             .def( "getOffset", &Surface::getOffset )
@@ -7274,7 +7286,7 @@ namespace Menge
 					.def_depricated( "setTextByKey", &TextField::setTextID, "use setTextID" )
 					.def( "setTextID", &TextField::setTextID )
 					.def( "removeTextID", &TextField::removeTextID )
-					.def_proxy_native( "setTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::textfield_setTextFormatArgs )
+					.def_proxy_native_kernel( "setTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::textfield_setTextFormatArgs )
 					.def_proxy_static( "getTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::textfield_getTextFormatArgs )
 					.def( "removeTextFormatArgs", &TextField::removeTextFormatArgs )
 					.def_depricated( "getTextKey", &TextField::getTextID, "use getTextID" )
@@ -7522,7 +7534,7 @@ namespace Menge
 					.def( "setEnableMovieLayer", &Movie::setEnableMovieLayer )
 					.def( "setEnableMovieLayers", &Movie::setEnableMovieLayers )
 					.def_proxy_static( "getWorldAnchorPoint", nodeScriptMethod, &NodeScriptMethod::movie_getWorldAnchorPoint )
-					.def_proxy_static( "getEnableMovieLayer", nodeScriptMethod, &NodeScriptMethod::movie_getEnableMovieLayer )
+					.def_proxy_static_kernel( "getEnableMovieLayer", nodeScriptMethod, &NodeScriptMethod::movie_getEnableMovieLayer )
 					.def_proxy_static( "getMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlot )
 					.def_proxy_static( "hasMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieSlot )
 					.def_proxy_static( "getMovieText", nodeScriptMethod, &NodeScriptMethod::movie_getMovieText )
@@ -7534,21 +7546,21 @@ namespace Menge
 					.def_proxy_args_static( "setMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_setMovieEvent )
 					.def_proxy_static( "removeMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_removeMovieEvent )
 					.def_proxy_static( "hasMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieEvent )
-					.def_proxy_static( "getSockets", nodeScriptMethod, &NodeScriptMethod::movie_getSockets )
-					.def_proxy_static( "getSlots", nodeScriptMethod, &NodeScriptMethod::movie_getSlots )
-					.def_proxy_static( "getSubMovies", nodeScriptMethod, &NodeScriptMethod::movie_getSubMovies )
+					.def_proxy_static_kernel( "getSockets", nodeScriptMethod, &NodeScriptMethod::movie_getSockets )
+					.def_proxy_static_kernel( "getSlots", nodeScriptMethod, &NodeScriptMethod::movie_getSlots )
+					.def_proxy_static_kernel( "getSubMovies", nodeScriptMethod, &NodeScriptMethod::movie_getSubMovies )
 					.def_proxy_static( "getMovieNode", nodeScriptMethod, &NodeScriptMethod::movie_getMovieNode )
 					.def_proxy_static( "hasMovieNode", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieNode )
-					.def_proxy_static( "filterLayers", nodeScriptMethod, &NodeScriptMethod::movie_filterLayers )
+					.def_proxy_static_kernel( "filterLayers", nodeScriptMethod, &NodeScriptMethod::movie_filterLayers )
 					.def_proxy_static( "getFrameDuration", nodeScriptMethod, &NodeScriptMethod::movie_getFrameDuration )
 					.def_proxy_static( "getDuration", nodeScriptMethod, &NodeScriptMethod::movie_getDuration )
 					.def_proxy_static( "getFrameCount", nodeScriptMethod, &NodeScriptMethod::movie_getFrameCount )
 					.def_proxy_static( "getSize", nodeScriptMethod, &NodeScriptMethod::movie_getSize )
 					.def_proxy_static( "getLayerPathLength", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPathLength )
-					.def_proxy_static( "getLayerPath", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath )
-					.def_proxy_static( "getLayerPath2", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath2 )
-					.def_proxy_static( "getLayerPath3", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath3 )
-					.def_proxy_static( "getLayerPath4", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath4 )
+					.def_proxy_static_kernel( "getLayerPath", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath )
+					.def_proxy_static_kernel( "getLayerPath2", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath2 )
+					.def_proxy_static_kernel( "getLayerPath3", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath3 )
+					.def_proxy_static_kernel( "getLayerPath4", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath4 )
 					.def_proxy_static( "getMovieSlotWorldPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotWorldPosition )
 					.def_proxy_static( "getMovieSlotOffsetPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotOffsetPosition )
 					.def_proxy_static( "attachMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_attachMovieSlotNode )
@@ -7732,7 +7744,7 @@ namespace Menge
 
 			pybind::def_functor( kernel, "validResource", nodeScriptMethod, &NodeScriptMethod::s_validResource );
 
-			pybind::def_functor( kernel, "getResources", nodeScriptMethod, &NodeScriptMethod::s_getResources );
+			pybind::def_functor_kernel( kernel, "getResources", nodeScriptMethod, &NodeScriptMethod::s_getResources );
 
 			pybind::def_functor( kernel, "testPlatformTags", nodeScriptMethod, &NodeScriptMethod::s_testPlatformTags );
 			pybind::def_functor( kernel, "hasTouchpad", nodeScriptMethod, &NodeScriptMethod::s_hasTouchpad );
@@ -7745,7 +7757,7 @@ namespace Menge
 			pybind::def_functor( kernel, "cancelTask", nodeScriptMethod, &NodeScriptMethod::s_cancelTask );
 			pybind::def_functor( kernel, "joinTask", nodeScriptMethod, &NodeScriptMethod::s_joinTask );
 
-			pybind::def_functor( kernel, "getNullObjectsFromResourceVideo", nodeScriptMethod, &NodeScriptMethod::s_getNullObjectsFromResourceVideo );
+			pybind::def_functor_kernel( kernel, "getNullObjectsFromResourceVideo", nodeScriptMethod, &NodeScriptMethod::s_getNullObjectsFromResourceVideo );
 
 			pybind::def_functor( kernel, "hasMovieSlot", nodeScriptMethod, &NodeScriptMethod::s_hasMovieSlot );
 			pybind::def_functor( kernel, "hasMovieSubMovie", nodeScriptMethod, &NodeScriptMethod::s_hasMovieSubMovie );
@@ -7757,10 +7769,10 @@ namespace Menge
 			pybind::def_functor( kernel, "getGameAspect", nodeScriptMethod, &NodeScriptMethod::s_getGameAspect );
 			pybind::def_functor( kernel, "getGameViewport", nodeScriptMethod, &NodeScriptMethod::s_getGameViewport );
 
-			pybind::def_functor( kernel, "getGameParam", nodeScriptMethod, &NodeScriptMethod::s_getGameParam );
-			pybind::def_functor( kernel, "getGameParamFloat", nodeScriptMethod, &NodeScriptMethod::s_getGameParamFloat );
-			pybind::def_functor( kernel, "getGameParamInt", nodeScriptMethod, &NodeScriptMethod::s_getGameParamInt );
-			pybind::def_functor( kernel, "getGameParamBool", nodeScriptMethod, &NodeScriptMethod::s_getGameParamBool );
+			pybind::def_functor_kernel( kernel, "getGameParam", nodeScriptMethod, &NodeScriptMethod::s_getGameParam );
+			pybind::def_functor_kernel( kernel, "getGameParamFloat", nodeScriptMethod, &NodeScriptMethod::s_getGameParamFloat );
+			pybind::def_functor_kernel( kernel, "getGameParamInt", nodeScriptMethod, &NodeScriptMethod::s_getGameParamInt );
+			pybind::def_functor_kernel( kernel, "getGameParamBool", nodeScriptMethod, &NodeScriptMethod::s_getGameParamBool );
 
 			pybind::def_functor( kernel, "hasGameParam", nodeScriptMethod, &NodeScriptMethod::s_hasGameParam );
 			pybind::def_functor( kernel, "openUrlInDefaultBrowser", nodeScriptMethod, &NodeScriptMethod::s_openUrlInDefaultBrowser );
@@ -7783,10 +7795,10 @@ namespace Menge
 			pybind::def_functor( kernel, "loadResourcePak", nodeScriptMethod, &NodeScriptMethod::s_loadResourcePak );
 
 			pybind::def_functor( kernel, "existFile", nodeScriptMethod, &NodeScriptMethod::s_existFile );
-			pybind::def_functor( kernel, "parseXml", nodeScriptMethod, &NodeScriptMethod::s_parseXml );
+			pybind::def_functor_kernel( kernel, "parseXml", nodeScriptMethod, &NodeScriptMethod::s_parseXml );
 
 			pybind::def_functor( kernel, "visitFonts", nodeScriptMethod, &NodeScriptMethod::s_visitFonts );
-			pybind::def_functor( kernel, "getFonts", nodeScriptMethod, &NodeScriptMethod::s_getFonts );
+			pybind::def_functor_kernel( kernel, "getFonts", nodeScriptMethod, &NodeScriptMethod::s_getFonts );
 			pybind::def_functor( kernel, "hasFont", nodeScriptMethod, &NodeScriptMethod::s_hasFont );
 			pybind::def_functor( kernel, "validateFont", nodeScriptMethod, &NodeScriptMethod::s_validateFont );
 
@@ -7807,8 +7819,8 @@ namespace Menge
 			pybind::def_functor( kernel, "screenToWorldPoint", nodeScriptMethod, &NodeScriptMethod::s_screenToWorldPoint );
 			pybind::def_functor( kernel, "screenToWorldClick", nodeScriptMethod, &NodeScriptMethod::s_screenToWorldClick );
 
-			pybind::def_functor( kernel, "getMovieSlotsPosition", nodeScriptMethod, &NodeScriptMethod::s_getMovieSlotsPosition );
-			pybind::def_functor( kernel, "getMovieSlotPosition", nodeScriptMethod, &NodeScriptMethod::s_getMovieSlotPosition );
+			pybind::def_functor_kernel( kernel, "getMovieSlotsPosition", nodeScriptMethod, &NodeScriptMethod::s_getMovieSlotsPosition );
+			pybind::def_functor_kernel( kernel, "getMovieSlotPosition", nodeScriptMethod, &NodeScriptMethod::s_getMovieSlotPosition );
 
 			pybind::def_functor( kernel, "gridBurnTransparency", nodeScriptMethod, &NodeScriptMethod::s_gridBurnTransparency );
 

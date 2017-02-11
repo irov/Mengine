@@ -67,7 +67,7 @@ namespace Menge
 
 	public:
 		bool addTextEntry( const ConstString& _key
-			, const ConstString & _text
+			, const String & _text
 			, const ConstString & _font
 			, const ColourValue & _colorFont
 			, const ColourValue & _colorOutline

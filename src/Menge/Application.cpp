@@ -1824,24 +1824,24 @@ namespace Menge
 		return m_projectName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Application::getProjectTitle() const
+	const String & Application::getProjectTitle() const
 	{
 		if( SERVICE_EXIST(m_serviceProvider, TextServiceInterface) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application::getProjectTitle not initialize textManager"
 				);
 
-			return Utils::emptyConstString();
+			return Utils::emptyString();
 		}
 
         const TextEntryInterface * entry;
 		if( TEXT_SERVICE( m_serviceProvider )
 			->existText( STRINGIZE_STRING_LOCAL( m_serviceProvider, "APPLICATION_TITLE" ), &entry ) == false )
 		{
-            return Utils::emptyConstString();
+			return Utils::emptyString();
 		}
 
-		const ConstString & text = entry->getValue();
+		const String & text = entry->getValue();
 
 		return text;
 	}

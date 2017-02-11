@@ -15,7 +15,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextEntry::initialize( const ConstString & _key
-		, const ConstString & _text
+		, const String & _text
 		, const ConstString & _fontName
 		, const ColourValue & _colorFont
 		, const ColourValue & _colorOutline
@@ -52,7 +52,7 @@ namespace Menge
 		return m_key;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & TextEntry::getValue() const
+	const String & TextEntry::getValue() const
 	{
 		return m_text;
 	}

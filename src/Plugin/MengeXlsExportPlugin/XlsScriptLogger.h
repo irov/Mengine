@@ -5,6 +5,7 @@
 #	include "Config/Typedef.h"
 
 #	include "pybind/types.hpp"
+#	include "pybind/kernel.hpp"
 
 namespace Menge
 {
@@ -28,7 +29,7 @@ namespace Menge
 		int getSoftspace() const;
 
 	public:
-		virtual PyObject * embedding( PyObject * _module );
+		virtual PyObject * embedding( pybind::kernel_interface * _kernel, PyObject * _module );
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;

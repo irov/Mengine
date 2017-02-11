@@ -1,5 +1,16 @@
 assets
 {
+    [MECH_IOS_WEBP]
+	("d:/Projects/MECHBuild_Mobile_WEBP")    
+    Locale_RU    
+    application.ini    
+    Framework.pak
+	Framework2.pak
+    Game.ini
+    Game.pak
+    ResourcePack.ini
+    Resources.pak   
+
 	[MECH_IOS]
 	("d:/Projects/MECHBuild_PVRTC")    
     Locale_RU    
@@ -137,6 +148,18 @@ assets
     Game.pak
     ResourcePack.ini
     Resources.pak     
+    
+    [WisbeyMystery_Mobile_WEBP]
+    ("d:/Projects/WisbeyMysteryBuild_Mobile_WEBP")
+    Localization    
+    application.ini
+    Framework.pak
+	Framework2.pak
+    Framework3.pak
+    Game.ini
+    Game.pak
+    ResourcePack.ini
+    Resources.pak
     
     [WisbeyMystery_IOS]
     ("d:/Projects/WisbeyMysteryBuild_PVRTC")

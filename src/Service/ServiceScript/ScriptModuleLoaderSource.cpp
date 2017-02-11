@@ -15,7 +15,7 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleLoaderSource::load_module( PyObject * _module )
+	PyObject * ScriptModuleLoaderSource::load_module( pybind::kernel_interface * _kernel, PyObject * _module )
     {   
         ConstString c_fullPath = Helper::stringizeString( m_serviceProvider, m_path );
         
@@ -31,14 +31,14 @@ namespace Menge
 			return nullptr;
 		}
      	
-		PyObject * module = this->load_module_source_( _module, stream );
+		PyObject * module = this->load_module_source_( _kernel, _module, stream );
 
         return module;        
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleLoaderSource::load_module_source_( PyObject * _module, const InputStreamInterfacePtr & _stream )
+	PyObject * ScriptModuleLoaderSource::load_module_source_( pybind::kernel_interface * _kernel, PyObject * _module, const InputStreamInterfacePtr & _stream )
     {
-        PyObject * code = this->unmarshal_source_( _module, _stream );
+		PyObject * code = this->unmarshal_source_( _kernel, _module, _stream );
 
         if( code == nullptr )
         {
@@ -55,7 +55,7 @@ namespace Menge
 		if( m_packagePath == true )
 		{
 			PyObject * py_packagePath = pybind::build_value( "[O]", _module );
-			pybind::dict_setstring_t( dict, "__path__", py_packagePath );
+			pybind::dict_setstring_t( _kernel, dict, "__path__", py_packagePath );
 		}
 
         PyObject * py_module_exec = pybind::module_execcode( str_module, code );
@@ -65,8 +65,10 @@ namespace Menge
         return py_module_exec;
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleLoaderSource::unmarshal_source_( PyObject * _module, const InputStreamInterfacePtr & _stream )
+	PyObject * ScriptModuleLoaderSource::unmarshal_source_( pybind::kernel_interface * _kernel, PyObject * _module, const InputStreamInterfacePtr & _stream )
     {
+		(void)_kernel;
+
         size_t file_size = _stream->size();
 
 		MemoryCacheBufferInterfacePtr source_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, file_size + 2, "unmarshal_source_" );

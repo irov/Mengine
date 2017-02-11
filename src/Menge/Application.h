@@ -122,7 +122,7 @@ namespace Menge
 		const WString & getProjectName() const override;
 
 	public:
-		const ConstString & getProjectTitle() const override;
+		const String & getProjectTitle() const override;
 		const ConstString & getProjectCodename() const override;
 		uint32_t getProjectVersion() const override;
 

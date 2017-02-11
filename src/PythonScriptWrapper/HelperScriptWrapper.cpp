@@ -157,10 +157,10 @@ namespace Menge
 			return result;
 		}
 
-		bool s_writeGameData( const ConstString & _name, PyObject * _data, PyObject * _pickleTypes )
+		bool s_writeGameData( pybind::kernel_interface * _kernel, const ConstString & _name, PyObject * _data, PyObject * _pickleTypes )
 		{
 			size_t size;
-			pybind::pickle( _data, _pickleTypes, nullptr, 0, size );
+			pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size );
 
 			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, size, "s_writeAccountBinaryFile" );
 
@@ -172,7 +172,7 @@ namespace Menge
 			void * memory_buffer = buffer->getMemory();
 			size_t memory_size = buffer->getSize();
 
-			if( pybind::pickle( _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
+			if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("s_writeGameData: data %s invalid pickle"
 					, _name.c_str()
@@ -193,7 +193,7 @@ namespace Menge
 			return true;
 		}
 		
-		PyObject * s_loadGameData( const ConstString & _name, PyObject * _pickleTypes )
+		PyObject * s_loadGameData( pybind::kernel_interface * _kernel, const ConstString & _name, PyObject * _pickleTypes )
 		{
 			MemoryCacheBufferInterfacePtr binaryBuffer = USERDATA_SERVICE( m_serviceProvider )
 				->loadUserdata( _name );
@@ -210,7 +210,7 @@ namespace Menge
 			void * binaryBuffer_memory = binaryBuffer->getMemory();
 			size_t binaryBuffer_size = binaryBuffer->getSize();
 
-			PyObject * py_data = pybind::unpickle( binaryBuffer_memory, binaryBuffer_size, _pickleTypes );
+			PyObject * py_data = pybind::unpickle( _kernel, binaryBuffer_memory, binaryBuffer_size, _pickleTypes );
 
 			if( py_data == nullptr )
 			{
@@ -358,7 +358,7 @@ namespace Menge
 			return false;
 		}
 
-		pybind::object s_selectRandomPointFromPathRadius( const pybind::list & _path, const mt::vec3f & _position, float _radius )
+		pybind::object s_selectRandomPointFromPathRadius( pybind::kernel_interface * _kernel, const pybind::list & _path, const mt::vec3f & _position, float _radius )
 		{
 			size_t path_count = _path.size();
 
@@ -380,7 +380,7 @@ namespace Menge
 
 			if( points.empty() == true )
 			{
-				return pybind::make_none_t();
+				return pybind::make_none_t( _kernel );
 			}
 			
 			uint32_t size = (uint32_t)points.size();
@@ -389,7 +389,7 @@ namespace Menge
 
 			const mt::vec3f & vr = points[index];
 
-			return pybind::make_object_t( vr );
+			return pybind::make_object_t( _kernel, vr );
 		}
 
 		PyObject * s_reloadModule( PyObject * _module )
@@ -707,14 +707,14 @@ namespace Menge
 			return line_point;
 		}
 
-		pybind::tuple s_angle_correct_interpolate_from_to( float _from, float _to )
+		pybind::tuple s_angle_correct_interpolate_from_to( pybind::kernel_interface * _kernel, float _from, float _to )
 		{
 			float correct_angle_from;
 			float correct_angle_to;
 
 			mt::angle_correct_interpolate_from_to( _from, _to, correct_angle_from, correct_angle_to );
 
-			pybind::tuple py_result = pybind::make_tuple_t( correct_angle_from, correct_angle_to );
+			pybind::tuple py_result = pybind::make_tuple_t( _kernel, correct_angle_from, correct_angle_to );
 
 			return py_result;
 		}
@@ -734,9 +734,9 @@ namespace Menge
             return angle;
         }
 
-		pybind::list s_getPolygonPoints( const Polygon & _polygon )
+		pybind::list s_getPolygonPoints( pybind::kernel_interface * _kernel, const Polygon & _polygon )
 		{
-			pybind::list py_list;
+			pybind::list py_list( _kernel );
 
 			const mt::vec2f * ring = _polygon.outer_points();
 			size_t ring_count = _polygon.outer_count();
@@ -999,9 +999,9 @@ namespace Menge
 		};
 #	endif
 
-		pybind::list s_objects()
+		pybind::list s_objects( pybind::kernel_interface * _kernel )
 		{
-			pybind::list py_list;
+			pybind::list py_list( _kernel );
 
 #	ifdef PYBIND_VISIT_OBJECTS
 			MyObjectVisits mov(py_list);
@@ -1032,9 +1032,9 @@ namespace Menge
 			pybind::list m_list;
         };
 
-		pybind::list s_textures()
+		pybind::list s_textures( pybind::kernel_interface * _kernel )
         {
-			pybind::list py_list;
+			pybind::list py_list( _kernel );
 
             MyVisitorRenderTexture mvrt(py_list);
             RENDERTEXTURE_SERVICE(m_serviceProvider)
@@ -1316,7 +1316,7 @@ namespace Menge
             return value;
         }
 
-		PyObject * s_getSetting( const ConstString & _setting )
+		PyObject * s_getSetting( pybind::kernel_interface * _kernel, const ConstString & _setting )
 		{
 			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
@@ -1332,13 +1332,15 @@ namespace Menge
 
 			const WString & value = currentAccount->getSetting( _setting );
 
-			PyObject * py_value = pybind::ptr( value );
+			PyObject * py_value = pybind::ptr( _kernel, value );
 
 			return py_value;
 		}
 
-		PyObject * s_getSettingBool( const ConstString & _setting )
+		PyObject * s_getSettingBool( pybind::kernel_interface * _kernel, const ConstString & _setting )
 		{
+			(void)_kernel;
+
 			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
 
@@ -1376,7 +1378,7 @@ namespace Menge
 			return pybind::ret_none();
 		}
 
-		PyObject * s_getSettingInt( const ConstString & _setting )
+		PyObject * s_getSettingInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
 		{
 			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
@@ -1402,12 +1404,12 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			PyObject * py_value = pybind::ptr( value );
+			PyObject * py_value = pybind::ptr( _kernel, value );
 
 			return py_value;
 		}
 
-		PyObject * s_getSettingUInt( const ConstString & _setting )
+		PyObject * s_getSettingUInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
 		{
 			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
@@ -1433,12 +1435,12 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			PyObject * py_value = pybind::ptr( value );
+			PyObject * py_value = pybind::ptr( _kernel, value );
 
 			return py_value;
 		}
 
-		PyObject * s_getSettingFloat( const ConstString & _setting )
+		PyObject * s_getSettingFloat( pybind::kernel_interface * _kernel, const ConstString & _setting )
 		{
 			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
@@ -1464,7 +1466,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			PyObject * py_value = pybind::ptr( value );
+			PyObject * py_value = pybind::ptr( _kernel, value );
 
 			return py_value;
 		}
@@ -1534,7 +1536,7 @@ namespace Menge
 			return result;
 		}
 
-		PyObject * s_getAccountSetting( const WString & _accountID, const ConstString & _setting )
+		PyObject * s_getAccountSetting( pybind::kernel_interface * _kernel, const WString & _accountID, const ConstString & _setting )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
 				->getAccount( _accountID );
@@ -1550,13 +1552,15 @@ namespace Menge
 
 			const WString & value = account->getSetting( _setting );
 
-			PyObject * py_value = pybind::ptr( value );
+			PyObject * py_value = pybind::ptr( _kernel, value );
 
 			return py_value;
 		}
 
-		PyObject * s_getAccountSettingBool( const WString& _accountID, const ConstString & _setting )
+		PyObject * s_getAccountSettingBool( pybind::kernel_interface * _kernel, const WString& _accountID, const ConstString & _setting )
 		{
+			(void)_kernel;
+
 			AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
 				->getAccount( _accountID );
 
@@ -1592,7 +1596,7 @@ namespace Menge
 			return pybind::ret_none();
 		}
 
-		PyObject * s_getAccountSettingUInt( const WString& _accountID, const ConstString & _setting )
+		PyObject * s_getAccountSettingUInt( pybind::kernel_interface * _kernel, const WString& _accountID, const ConstString & _setting )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
 				->getAccount( _accountID );
@@ -1619,24 +1623,24 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			PyObject * py_value = pybind::ptr( value );
+			PyObject * py_value = pybind::ptr( _kernel, value );
 
 			return py_value;
 		}
 
-		PyObject * s_createAccount()
+		PyObject * s_createAccount( pybind::kernel_interface * _kernel )
 		{
             AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
                 ->createAccount();
 
             if( account == nullptr )
             {
-                return pybind::ret_none();
+				return pybind::ret_none();
             }
             
 			const WString & accountId = account->getName();
 
-            PyObject * py_value = pybind::ptr( accountId );
+			PyObject * py_value = pybind::ptr( _kernel, accountId );
 
             return py_value;
 		}
@@ -1735,7 +1739,7 @@ namespace Menge
 			return name;
 		}
 
-		bool s_writeAccountPickleFile( const WString & _fileName, PyObject * _data, PyObject * _pickleTypes )
+		bool s_writeAccountPickleFile( pybind::kernel_interface * _kernel, const WString & _fileName, PyObject * _data, PyObject * _pickleTypes )
 		{
             String utf8_fileName;
             if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
@@ -1762,7 +1766,7 @@ namespace Menge
             ConstString filepath = Helper::stringizeString( m_serviceProvider, utf8_fileName );
 
 			size_t size;
-			if( pybind::pickle( _data, _pickleTypes, nullptr, 0, size ) == false )
+			if( pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size ) == false )
 			{
 				const WString & accountName = currentAccount->getName();
 
@@ -1790,7 +1794,7 @@ namespace Menge
 			void * memory_buffer = buffer->getMemory();
 			size_t memory_size = buffer->getSize();
 			
-			if( pybind::pickle( _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
+			if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
 			{
 				const WString & accountName = currentAccount->getName();
 
@@ -1816,7 +1820,7 @@ namespace Menge
 			return true;
 		}
 
-		PyObject * s_loadAccountPickleFile( const WString & _fileName, PyObject * _pickleTypes )
+		PyObject * s_loadAccountPickleFile( pybind::kernel_interface * _kernel, const WString & _fileName, PyObject * _pickleTypes )
 		{
             String utf8_fileName;
             if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
@@ -1825,7 +1829,7 @@ namespace Menge
                     , _fileName.c_str()
                     );
 
-                return pybind::ret_none();
+				return pybind::ret_none();
             }
 
             AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
@@ -1853,13 +1857,13 @@ namespace Menge
                     , _fileName.c_str()
                     );
 
-                return pybind::ret_none();
+				return pybind::ret_none();
             }
 
 			void * binaryBuffer_memory = binaryBuffer->getMemory();
 			size_t binaryBuffer_size = binaryBuffer->getSize();
 	
-			PyObject * py_data = pybind::unpickle( binaryBuffer_memory, binaryBuffer_size, _pickleTypes );
+			PyObject * py_data = pybind::unpickle( _kernel, binaryBuffer_memory, binaryBuffer_size, _pickleTypes );
 
 			if( py_data == nullptr )
 			{
@@ -1883,7 +1887,7 @@ namespace Menge
 
 			if( currentAccount == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid load file %ls (currentAccount is none)"
+				LOGGER_ERROR(m_serviceProvider)("s_hasAccountPickleFile: invalid load file %ls (currentAccount is none)"
 					, _fileName.c_str()
 					);
 
@@ -1893,7 +1897,7 @@ namespace Menge
 			String utf8_fileName;
 			if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid convert filename %ls to utf8"
+				LOGGER_ERROR(m_serviceProvider)("s_hasAccountPickleFile: invalid convert filename %ls to utf8"
 					, _fileName.c_str()
 					);
 
@@ -1905,239 +1909,6 @@ namespace Menge
 			bool exist = currentAccount->hasBinaryFile( filename );
 
 			return exist;
-		}
-
-		bool s_writeAccountBinaryFile_deprecated( const WString & _fileName, const Blobject & _data )
-		{
-			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
-				->getCurrentAccount();
-
-			if( currentAccount == nullptr )
-			{                
-				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid get current account"
-					);
-
-				return false;
-			}
-
-			String utf8_fileName;
-			if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid file %ls convert to utf8"                    
-					, _fileName.c_str()
-					);
-
-				return false;                     
-			}
-
-			ConstString filename = Helper::stringizeString( m_serviceProvider, utf8_fileName );
-
-			OutputStreamInterfacePtr stream = currentAccount->openWriteBinaryFile( filename );
-			
-			if( stream == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid open file %ls"
-					, _fileName.c_str()
-					);
-
-				return false;
-			}
-
-			ArchivatorInterfacePtr archivator = ARCHIVE_SERVICE(m_serviceProvider)
-				->getArchivator( Helper::stringizeString(m_serviceProvider, "zip") );
-
-			if( archivator == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid get archivator 'zip'"
-					);
-
-				return false;
-			}
-
-			size_t data_size = _data.size();
-
-			MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE( m_serviceProvider )
-				->compressBuffer( archivator, &_data[0], data_size, EAC_NORMAL );
-
-			if( compress_memory == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid compress file %ls"
-					, _fileName.c_str()
-					);
-
-				return false;
-			}
-						
-			const void * compressBuffer = compress_memory->getMemory();
-			size_t compressSize = compress_memory->getSize();
-
-			uint32_t value_crc32 = Helper::make_crc32( (const unsigned char *)compressBuffer, compressSize );
-
-			if( stream->write( &value_crc32, sizeof(value_crc32) ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid write 'crc32' %ls"
-					, _fileName.c_str()
-					);
-
-				return false;
-			}
-
-			uint32_t write_data_size = (uint32_t)data_size;
-			if( stream->write( &write_data_size, sizeof( write_data_size ) ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid write 'data size' %ls"
-					, _fileName.c_str()
-					);
-
-				return false;
-			}
-
-			if( stream->write( compressBuffer, compressSize ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid write 'data' %ls"
-					, _fileName.c_str()
-					);
-
-				return false;
-			}
-
-			return true;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		PyObject * s_loadAccountBinaryFile_deprecated( const WString & _fileName )
-		{
-			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
-				->getCurrentAccount();
-
-			if( currentAccount == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid load file %ls (currentAccount is none)"
-					, _fileName.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-
-			String utf8_fileName;
-			if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid convert filename %ls to utf8"
-					, _fileName.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-			
-			ConstString filename = Helper::stringizeString( m_serviceProvider, utf8_fileName );
-
-			InputStreamInterfacePtr stream = currentAccount->openReadBinaryFile( filename );
-
-			if( stream == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid open file '%ls'"
-					, _fileName.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-
-			size_t file_size = stream->size();
-
-			uint32_t load_crc32 = 0;
-			if( stream->read( &load_crc32, sizeof(load_crc32) ) != sizeof(load_crc32) )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid load file %ls (load crc32)"
-					, _fileName.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-
-			uint32_t load_data_size = 0;
-			if( stream->read( &load_data_size, sizeof(load_data_size) ) != sizeof(load_data_size) )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid load file %ls (load data size)"
-					, _fileName.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-
-			size_t load_compress_size = file_size - sizeof(load_crc32) - sizeof(load_data_size);
-
-			Blobject archive_blob;
-			archive_blob.resize( load_compress_size );
-
-			Blobject::value_type * archive_blob_buffer = &archive_blob[0];
-			
-			if( stream->read( archive_blob_buffer, load_compress_size ) != load_compress_size )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid load file %ls (load data)"
-					, _fileName.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-
-			stream = nullptr;
-
-			size_t check_crc32 = Helper::make_crc32( &archive_blob[0], load_compress_size );
-
-			if( load_crc32 != check_crc32 )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid load file %ls (crc32 incorect)"
-					, _fileName.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-
-			ArchivatorInterfacePtr archivator = ARCHIVE_SERVICE(m_serviceProvider)
-				->getArchivator( Helper::stringizeString(m_serviceProvider, "zip") );
-
-			if( archivator == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid get archivator %s"
-					, "zip"
-					);
-
-				return pybind::ret_none();
-			}
-
-			Blobject data_blob;
-			data_blob.resize( load_data_size );
-
-			size_t uncompress_size;
-			if( archivator->decompress( &data_blob[0], load_data_size, &archive_blob[0], load_compress_size, uncompress_size ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: file '%ls' invalid decompress"
-					, _fileName.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-
-			if( load_data_size != uncompress_size )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: file '%ls' invalid decompress size"
-					, _fileName.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-
-			PyObject * py_data = pybind::string_from_char_size( (const char *)&data_blob[0], load_data_size );
-
-			if( py_data == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: %ls invalid make python string"
-					, _fileName.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-
-			return py_data;
 		}
 
 		void s_setParticlesEnabled( bool _enable )
@@ -2165,7 +1936,7 @@ namespace Menge
 					);
 			}
 
-			const ConstString & text = entry->getValue();
+			const String & text = entry->getValue();
 
             WString unicode;
             if( Helper::utf8ToUnicode(m_serviceProvider, text, unicode ) == false )
@@ -2190,7 +1961,7 @@ namespace Menge
 					);
 			}
 
-			const ConstString & text = entry->getValue();
+			const String & text = entry->getValue();
 
 			uint32_t count = (uint32_t)text.size();
 
@@ -2287,7 +2058,7 @@ namespace Menge
         pybind::def_functor( kernel, "norm_v2", helperScriptMethod, &HelperScriptMethod::mt_norm_v2 );
 		pybind::def_functor( kernel, "norm_v3", helperScriptMethod, &HelperScriptMethod::mt_norm_v3 );
 
-        pybind::def_functor( kernel, "angle_correct_interpolate_from_to", helperScriptMethod, &HelperScriptMethod::s_angle_correct_interpolate_from_to );
+        pybind::def_functor_kernel( kernel, "angle_correct_interpolate_from_to", helperScriptMethod, &HelperScriptMethod::s_angle_correct_interpolate_from_to );
         pybind::def_functor( kernel, "angle_between_two_vectors", helperScriptMethod, &HelperScriptMethod::s_angle_between_two_vectors );
 
 		pybind::def_functor( kernel, "projectionPointToLine", helperScriptMethod, &HelperScriptMethod::projectionPointToLine );
@@ -2304,14 +2075,14 @@ namespace Menge
 
 		pybind::def_functor( kernel, "getAccounts", helperScriptMethod, &HelperScriptMethod::s_getAccounts );
 		pybind::def_functor( kernel, "addSetting", helperScriptMethod, &HelperScriptMethod::s_addSetting );
-		pybind::def_functor( kernel, "getSetting", helperScriptMethod, &HelperScriptMethod::s_getSetting );
+		pybind::def_functor_kernel( kernel, "getSetting", helperScriptMethod, &HelperScriptMethod::s_getSetting );
         pybind::def_functor( kernel, "hasSetting", helperScriptMethod, &HelperScriptMethod::s_hasSetting );
 
-		pybind::def_functor( kernel, "getSettingBool", helperScriptMethod, &HelperScriptMethod::s_getSettingBool );
-		pybind::def_functor( kernel, "getSettingInt", helperScriptMethod, &HelperScriptMethod::s_getSettingInt );
-		pybind::def_functor( kernel, "getSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getSettingUInt );
-		pybind::def_functor( kernel, "getSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getSettingFloat );
-		pybind::def_functor( kernel, "getSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getSettingFloatDefault );		
+		pybind::def_functor_kernel( kernel, "getSettingBool", helperScriptMethod, &HelperScriptMethod::s_getSettingBool );
+		pybind::def_functor_kernel( kernel, "getSettingInt", helperScriptMethod, &HelperScriptMethod::s_getSettingInt );
+		pybind::def_functor_kernel( kernel, "getSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getSettingUInt );
+		pybind::def_functor_kernel( kernel, "getSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getSettingFloat );
+		pybind::def_functor( kernel, "getSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getSettingFloatDefault );
 
 		pybind::def_functor( kernel, "getConfigBool", helperScriptMethod, &HelperScriptMethod::s_getConfigBool );
 		pybind::def_functor( kernel, "getConfigInt", helperScriptMethod, &HelperScriptMethod::s_getConfigInt );
@@ -2322,15 +2093,15 @@ namespace Menge
 		pybind::def_functor( kernel, "changeSetting", helperScriptMethod, &HelperScriptMethod::s_changeSetting );
 		pybind::def_functor( kernel, "changeSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeSettingBool );
 		
-		pybind::def_functor( kernel, "getAccountSetting", helperScriptMethod, &HelperScriptMethod::s_getAccountSetting );
-		pybind::def_functor( kernel, "getAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingBool );
-		pybind::def_functor( kernel, "getAccountSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingUInt );
+		pybind::def_functor_kernel( kernel, "getAccountSetting", helperScriptMethod, &HelperScriptMethod::s_getAccountSetting );
+		pybind::def_functor_kernel( kernel, "getAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingBool );
+		pybind::def_functor_kernel( kernel, "getAccountSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingUInt );
 
 		pybind::def_functor( kernel, "addAccountSetting", helperScriptMethod, &HelperScriptMethod::s_addAccountSetting );
 		pybind::def_functor( kernel, "changeAccountSetting", helperScriptMethod, &HelperScriptMethod::s_changeAccountSetting );
 		pybind::def_functor( kernel, "changeAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingBool );
 
-		pybind::def_functor( kernel, "createAccount", helperScriptMethod, &HelperScriptMethod::s_createAccount );
+		pybind::def_functor_kernel( kernel, "createAccount", helperScriptMethod, &HelperScriptMethod::s_createAccount );
 		pybind::def_functor( kernel, "selectAccount", helperScriptMethod, &HelperScriptMethod::s_selectAccount );
 		pybind::def_functor( kernel, "deleteAccount", helperScriptMethod, &HelperScriptMethod::s_deleteAccount );
 				
@@ -2346,13 +2117,10 @@ namespace Menge
 		pybind::def_functor( kernel, "isCurrentDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_isCurrentDefaultAccount );
 		pybind::def_functor( kernel, "selectDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_selectDefaultAccount );
 
-        pybind::def_functor( kernel, "writeAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_writeAccountPickleFile );
-        pybind::def_functor( kernel, "loadAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_loadAccountPickleFile );
+        pybind::def_functor_kernel( kernel, "writeAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_writeAccountPickleFile );
+		pybind::def_functor_kernel( kernel, "loadAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_loadAccountPickleFile );
 		pybind::def_functor( kernel, "hasAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_hasAccountPickleFile );
 
-		pybind::def_functor( kernel, "writeAccountBinaryFile_deprecated", helperScriptMethod, &HelperScriptMethod::s_writeAccountBinaryFile_deprecated );
-		pybind::def_functor( kernel, "loadAccountBinaryFile_deprecated", helperScriptMethod, &HelperScriptMethod::s_loadAccountBinaryFile_deprecated );
-		
 		pybind::def_functor( kernel, "setParticlesEnabled", helperScriptMethod, &HelperScriptMethod::s_setParticlesEnabled );
 
 		//pybind::def_function( "unicode", &ScriptHelper::s_unicode );
@@ -2373,7 +2141,7 @@ namespace Menge
 		pybind::def_functor( kernel, "intersectsEllipseVsPoint", helperScriptMethod, &HelperScriptMethod::s_intersectsEllipseVsPoint );
 		pybind::def_functor( kernel, "intersectsBoxes", helperScriptMethod, &HelperScriptMethod::s_intersectsBoxes );
 
-		pybind::def_functor( kernel, "getPolygonPoints", helperScriptMethod, &HelperScriptMethod::s_getPolygonPoints );
+		pybind::def_functor_kernel( kernel, "getPolygonPoints", helperScriptMethod, &HelperScriptMethod::s_getPolygonPoints );
 		pybind::def_functor( kernel, "intersectionPolygons", helperScriptMethod, &HelperScriptMethod::s_intersectionPolygons );
 		pybind::def_functor( kernel, "intersectsPolygons", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygons );
 		pybind::def_functor( kernel, "intersectsPolygonsWM", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWM );
@@ -2382,8 +2150,8 @@ namespace Menge
 		pybind::def_functor( kernel, "intersectMoviesHotspotVsPolygon", helperScriptMethod, &HelperScriptMethod::s_intersectMoviesHotspotVsPolygon );
 		
 
-		pybind::def_functor( kernel, "objects", helperScriptMethod, &HelperScriptMethod::s_objects );
-        pybind::def_functor( kernel, "textures", helperScriptMethod, &HelperScriptMethod::s_textures );
+		pybind::def_functor_kernel( kernel, "objects", helperScriptMethod, &HelperScriptMethod::s_objects );
+        pybind::def_functor_kernel( kernel, "textures", helperScriptMethod, &HelperScriptMethod::s_textures );
 		
 		pybind::def_functor( kernel, "watchdog", helperScriptMethod, &HelperScriptMethod::s_watchdog );
 
@@ -2430,8 +2198,8 @@ namespace Menge
 		pybind::def_functor( kernel, "memoryuse", helperScriptMethod, &HelperScriptMethod::s_memoryuse );
 
 		pybind::def_functor( kernel, "hasGameData", helperScriptMethod, &HelperScriptMethod::s_hasGameData );
-		pybind::def_functor( kernel, "writeGameData", helperScriptMethod, &HelperScriptMethod::s_writeGameData );
-		pybind::def_functor( kernel, "loadGameData", helperScriptMethod, &HelperScriptMethod::s_loadGameData );
+		pybind::def_functor_kernel( kernel, "writeGameData", helperScriptMethod, &HelperScriptMethod::s_writeGameData );
+		pybind::def_functor_kernel( kernel, "loadGameData", helperScriptMethod, &HelperScriptMethod::s_loadGameData );
 
 
 		pybind::def_functor( kernel, "isAltDown", helperScriptMethod, &HelperScriptMethod::s_isAltDown );
@@ -2450,7 +2218,7 @@ namespace Menge
 		pybind::def_functor( kernel, "getGroupResourcesMemoryUse", helperScriptMethod, &HelperScriptMethod::s_getGroupResourcesMemoryUse );
 
 		pybind::def_functor( kernel, "intersectPathVsCircle", helperScriptMethod, &HelperScriptMethod::s_intersectPathVsCircle );
-		pybind::def_functor( kernel, "selectRandomPointFromPathRadius", helperScriptMethod, &HelperScriptMethod::s_selectRandomPointFromPathRadius );
+		pybind::def_functor_kernel( kernel, "selectRandomPointFromPathRadius", helperScriptMethod, &HelperScriptMethod::s_selectRandomPointFromPathRadius );
 
 		pybind::def_functor( kernel, "reloadModule", helperScriptMethod, &HelperScriptMethod::s_reloadModule );
 	}

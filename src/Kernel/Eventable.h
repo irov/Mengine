@@ -28,6 +28,10 @@ namespace Menge
     public:
         void removeEvents();
 
+	public:
+		PyObject * setEventListener( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds );
+		void removeEventListener();
+
     public:
         template<class T>
         T getEventRecieverT( uint32_t _event ) const

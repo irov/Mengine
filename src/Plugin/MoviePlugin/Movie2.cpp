@@ -190,7 +190,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		uint8_t type = _callbackData->layer->type;
+		aeMovieLayerTypeEnum type = _callbackData->layer->type;
 
 		if( _callbackData->trackmatteLayer != AE_NULL )
 		{
@@ -389,6 +389,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void * ae_movie_composition_track_matte_update( const aeMovieTrackMatteUpdateCallbackData * _callbackData, void * _data )
 	{
+		(void)_data;
+
 		switch( _callbackData->state )
 		{
 		case AE_MOVIE_NODE_UPDATE_CREATE:
@@ -544,7 +546,7 @@ namespace Menge
 
 		//while( true )
 		{
-			aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_FALSE, &providers, this );
+			aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, this );
 
 			if( composition == nullptr )
 			{
@@ -601,14 +603,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie2::_changeParent( Node * _oldParent, Node * _newParent )
 	{
+		(void)_oldParent;
+		(void)_newParent;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie2::_addChild( Node * _node )
 	{
+		(void)_node;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie2::_removeChild( Node * _node )
 	{
+		(void)_node;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie2::_afterActivate()
@@ -996,7 +1002,7 @@ namespace Menge
 							mt::vec2f uv;
 							uv.from_f2( &mesh.uv[index][0] );
 							
-							const mt::uv4f & uv_image = resourceImage->getUVImage();
+							//const mt::uv4f & uv_image = resourceImage->getUVImage();
 
 							const RenderTextureInterfacePtr & texture_image = resourceImage->getTexture();
 
@@ -1012,7 +1018,7 @@ namespace Menge
 								vp.to_vec2f()
 								);
 
-							const mt::uv4f & uv_alpha = resourceTrackMatteImage->getUVImage();
+							//const mt::uv4f & uv_alpha = resourceTrackMatteImage->getUVImage();
 							const RenderTextureInterfacePtr & texture_trackmatte = resourceTrackMatteImage->getTexture();
 
 							const mt::uv4f & texture_trackmatte_uv = texture_trackmatte->getUV();

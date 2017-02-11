@@ -11,6 +11,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderWayAffector::PathFinderWayAffector()
 		: m_node(nullptr)
+		, m_satellite( pybind::invalid() )
+		, m_way( pybind::invalid() )
 		, m_speed(0.f)
 		, m_offset(0.f)
 		, m_length(0.f)
@@ -291,7 +293,7 @@ namespace Menge
 		return new_pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	pybind::tuple PathFinderWayAffector::predictionLinearBullet( const mt::vec3f & _offset, const mt::vec3f & _position, float _speed ) const
+	pybind::tuple PathFinderWayAffector::predictionLinearBullet( pybind::kernel_interface * _kernel, const mt::vec3f & _offset, const mt::vec3f & _position, float _speed ) const
 	{
 		mt::vec3f unit_start_position = m_node->getLocalPosition();
 		unit_start_position += _offset;
@@ -351,10 +353,10 @@ namespace Menge
 
 		float delay = unit_time - bullet_time;
 
-		return pybind::make_tuple_t( unit_time, delay, target_position );
+		return pybind::make_tuple_t( _kernel, unit_time, delay, target_position );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	pybind::tuple PathFinderWayAffector::predictionParabolicBullet( const mt::vec3f & _offset, const mt::vec3f & _position, const mt::vec3f & _height, float _speed ) const
+	pybind::tuple PathFinderWayAffector::predictionParabolicBullet( pybind::kernel_interface * _kernel, const mt::vec3f & _offset, const mt::vec3f & _position, const mt::vec3f & _height, float _speed ) const
 	{
 		mt::vec3f unit_start_position = m_node->getLocalPosition();
 		unit_start_position += _offset;
@@ -426,7 +428,7 @@ namespace Menge
 
 		float delay = unit_time > bullet_time ? unit_time - bullet_time : 0.f;
 
-		return pybind::make_tuple_t( unit_time, delay, target_position );
+		return pybind::make_tuple_t( _kernel, unit_time, delay, target_position );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::complete()

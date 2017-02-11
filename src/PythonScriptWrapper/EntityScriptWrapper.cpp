@@ -83,8 +83,10 @@ namespace Menge
 			return py_entity;
 		}
         //////////////////////////////////////////////////////////////////////////
-		pybind::object s_importEntity( const ConstString & _prototype )
+		pybind::object s_importEntity( pybind::kernel_interface * _kernel, const ConstString & _prototype )
         {
+			(void)_kernel;
+
             PrototypeGeneratorInterfacePtr generator;
             if( PROTOTYPE_SERVICE( m_serviceProvider )
                 ->hasPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Entity" ), _prototype, generator ) == false )
@@ -93,7 +95,7 @@ namespace Menge
                     , _prototype.c_str()
                     );
 
-                return pybind::make_none_t();
+				return pybind::make_none_t( _kernel );
             }
 
             EntityPrototypeGeneratorPtr entityGenerator =
@@ -230,7 +232,7 @@ namespace Menge
 		pybind::def_functor( kernel, "addScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addScenePrototypeFinder );
 		pybind::def_functor( kernel, "addArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addArrowPrototypeFinder );
 		pybind::def_functor( kernel, "createEntity", entityScriptMethod, &EntityScriptMethod::s_createEntity );
-		pybind::def_functor( kernel, "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
+		pybind::def_functor_kernel( kernel, "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
 		//pybind::def_function( "createEntityFromBinary", &ScriptMethod::createEntityFromBinary );
 	}
 }

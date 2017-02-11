@@ -24,7 +24,7 @@ PLUGIN_FACTORY( Movie, Menge::MoviePlugin )
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static void * stdex_movie_alloc( void * _data, uint32_t _size )
+	static void * stdex_movie_alloc( void * _data, size_t _size )
 	{
 		(void)_data;
 
@@ -33,7 +33,7 @@ namespace Menge
 		return malloc( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void * stdex_movie_alloc_n( void * _data, uint32_t _size, uint32_t _count )
+	static void * stdex_movie_alloc_n( void * _data, size_t _size, size_t _count )
 	{
 		(void)_data;
 

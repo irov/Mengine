@@ -15,10 +15,10 @@ namespace Menge
 		inline uint32_t getHeight() const;
 
 	public:
-		uint32_t top;
-		uint32_t bottom;
 		uint32_t left;
+		uint32_t top;
 		uint32_t right;
+		uint32_t bottom;		
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline uint32_t Rect::getWidth() const

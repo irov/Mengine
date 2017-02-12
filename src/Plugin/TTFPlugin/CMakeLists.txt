@@ -8,8 +8,9 @@ src
     TTFFont.cpp
     TTFFontManager.h
     TTFFontManager.cpp
-    TTFAtlasManager.h
-    TTFAtlasManager.cpp
+    TTFAtlasServiceInterface.h
+    TTFAtlasService.h
+    TTFAtlasService.cpp
 )
 
 #add_definitions(-DMENGE_PLUGIN_DLL)

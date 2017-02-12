@@ -15,6 +15,8 @@
 
 #	include "Math/uv4.h"
 
+#	include "stdex/stl_map.h"
+
 namespace Menge
 {
 	struct TTFGlyph
@@ -27,6 +29,8 @@ namespace Menge
 		mt::uv4f uv;
 		RenderTextureInterfacePtr texture;
 	};
+
+#	define MENGINE_TTF_FONT_GLYPH_HASH_SIZE 32
 
 	class TTFFont
 		: public FactorablePtr
@@ -43,9 +47,16 @@ namespace Menge
 		bool prepareText( const String & _text );
 
 	protected:
+		const TTFGlyph * getGlyph_( WChar _ch );
+
+	protected:
 		FT_Library m_library;
 		FT_Face m_face;
 
-		//stdex::map<wchar_t, TTFGlyph>;
+		float m_ascender;
+		float m_advance;
+		
+		typedef stdex::map<WChar, TTFGlyph> TMapTTFGlyphs;
+		TMapTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];
 	};
 }

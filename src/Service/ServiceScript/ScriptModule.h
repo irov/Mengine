@@ -12,7 +12,6 @@ namespace Menge
 {
 	class ScriptModule
 		: public ScriptModuleInterface
-		, public Servant
 	{
 	public:
 		ScriptModule();

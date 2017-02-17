@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "TTFAtlasServiceInterface.h"
+#	include "TTFServiceInterface.h"
 
 #	include "stdex/stl_vector.h"
 

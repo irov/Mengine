@@ -21,9 +21,8 @@ namespace Menge
 	typedef stdex::intrusive_ptr<class Box2DJoint> Box2DJointPtr;
 
 	class Box2DWorld
-		: public FactorablePtr
+		: public Servant
 		, public Scriptable
-		, public Servant
 		, public b2DestructionListener
 		, public b2ContactFilter
 		, public b2ContactListener		

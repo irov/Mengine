@@ -13,10 +13,9 @@
 namespace Menge
 {
     class Box2DBody
-        : public FactorablePtr
+		: public Servant
 		, public Scriptable
 		, public Eventable
-		, public Servant
     {
     public:
 		Box2DBody();

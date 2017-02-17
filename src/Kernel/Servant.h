@@ -1,10 +1,13 @@
 #	pragma once
 
+#	include "Factory/FactorablePtr.h"
+
 #	include "Interface/ServiceInterface.h"
 
 namespace Menge
 {
 	class Servant
+		: public FactorablePtr
 	{
 	public:
 		Servant();

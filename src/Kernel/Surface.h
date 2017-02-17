@@ -16,7 +16,7 @@
 namespace Menge
 {
 	class Surface
-		: public FactorablePtr
+		: public Servant
 		, public Identity
 		, public Updatable
 		, public Materialable
@@ -24,7 +24,6 @@ namespace Menge
 		, public Scriptable
 		, public Animatable
 		, public Comable
-		, public Servant
 	{
 	public:
 		Surface();

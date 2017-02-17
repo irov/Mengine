@@ -4,11 +4,11 @@ ADD_FILTER(
 src
     TTFPlugin.h
 	TTFPlugin.cpp
+    TTFServiceInterface.h
     TTFFont.h
     TTFFont.cpp
     TTFFontManager.h
-    TTFFontManager.cpp
-    TTFAtlasServiceInterface.h
+    TTFFontManager.cpp    
     TTFAtlasService.h
     TTFAtlasService.cpp
 )

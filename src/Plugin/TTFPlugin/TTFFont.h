@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "TTFServiceInterface.h"
+
 #	include "Interface/MemoryInterface.h"
 #	include "Interface/RenderSystemInterface.h"
 
@@ -21,6 +23,8 @@ namespace Menge
 {
 	struct TTFGlyph
 	{
+		WChar ch;
+
 		float dx;
 		float dy;
 		float ax;
@@ -33,8 +37,7 @@ namespace Menge
 #	define MENGINE_TTF_FONT_GLYPH_HASH_SIZE 32
 
 	class TTFFont
-		: public FactorablePtr
-		, public Servant
+		: public TTFFontInterface
 	{
 	public:
 		TTFFont();
@@ -47,7 +50,8 @@ namespace Menge
 		bool prepareText( const String & _text );
 
 	protected:
-		const TTFGlyph * getGlyph_( WChar _ch );
+		bool prepareGlyph_( WChar _ch );
+		const TTFGlyph * getGlyph_( WChar _ch ) const;
 
 	protected:
 		FT_Library m_library;
@@ -56,7 +60,9 @@ namespace Menge
 		float m_ascender;
 		float m_advance;
 		
-		typedef stdex::map<WChar, TTFGlyph> TMapTTFGlyphs;
+		typedef stdex::vector<TTFGlyph> TMapTTFGlyphs;
 		TMapTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];
 	};
+
+	typedef stdex::intrusive_ptr<TTFFont> TTFFontPtr;
 }

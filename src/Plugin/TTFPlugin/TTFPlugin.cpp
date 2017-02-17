@@ -8,8 +8,9 @@
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( TTFAtlasService );
+SERVICE_EXTERN( TTFFontManager );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( TTF, Menge::TTFPlugin )
+PLUGIN_FACTORY( TTF, Menge::TTFPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -20,12 +21,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TTFPlugin::_initialize()
 	{
-		if( FT_Init_FreeType( &m_library ) )
-		{
-			return false;
-		}
-
 		SERVICE_CREATE( m_serviceProvider, TTFAtlasService );
+		SERVICE_CREATE( m_serviceProvider, TTFFontManager );
 			
 		return true;
 	}

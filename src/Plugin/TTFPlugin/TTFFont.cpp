@@ -1,6 +1,6 @@
 #	include "TTFFont.h"
 
-#	include "TTFAtlasServiceInterface.h"
+#	include "TTFServiceInterface.h"
 
 #	include "utf8.h"
 
@@ -84,50 +84,90 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TTFGlyph * TTFFont::getGlyph_( WChar _ch )
+	namespace
+	{
+		class PFindGlyph
+		{
+		public:
+			PFindGlyph( WChar _ch )
+				: m_ch( _ch )
+			{
+			}
+
+		public:
+			bool operator () ( const TTFGlyph & _glyph ) const
+			{
+				return m_ch == _glyph.ch;
+			}
+
+		protected:
+			WChar m_ch;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TTFFont::prepareGlyph_( WChar _ch )
 	{
 		uint32_t ch_hash = _ch % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
 
 		TMapTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
 
-		TMapTTFGlyphs::iterator it_found = glyphs.find( _ch );
+		TMapTTFGlyphs::iterator it_found = std::find_if(glyphs.begin(), glyphs.end(), PFindGlyph( _ch ) );
+
+		if( it_found != glyphs.end() )
+		{
+			return true;
+		}
+		
+		FT_Set_Char_Size( m_face, 0, 16 * 64, 300, 300 );
+
+		if( FT_Load_Char( m_face, _ch, FT_LOAD_RENDER ) )
+			throw std::runtime_error( "FT_Load_Glyph failed" );
+
+		FT_GlyphSlot glyph = m_face->glyph;
+
+		const FT_Glyph_Metrics & metrics = glyph->metrics;
+		Rect outRect;
+		outRect.left = metrics.horiBearingX >> 6;
+		outRect.top = -(metrics.horiBearingY >> 6);
+		outRect.right = outRect.left + (metrics.width >> 6);
+		outRect.bottom = outRect.top + (metrics.height >> 6);
+
+		m_advance = static_cast<float>(metrics.horiAdvance >> 6);
+
+		FT_Bitmap bitmap = glyph->bitmap;
+		uint32_t bitmap_width = bitmap.width;
+		uint32_t bitmap_height = bitmap.rows;
+
+		const void * buffer = glyph->bitmap.buffer;
+
+		mt::uv4f uv;
+		RenderTextureInterfacePtr texture = TTFATLAS_SERVICE( m_serviceProvider )
+			->makeTextureGlyph( bitmap_width, bitmap_height, buffer, bitmap_width, uv );
+
+		TTFGlyph g;
+		g.ch = _ch;
+		g.texture = texture;
+		g.uv = uv;
+
+		glyphs.push_back( g );
+		
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TTFGlyph * TTFFont::getGlyph_( WChar _ch ) const
+	{
+		uint32_t ch_hash = _ch % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
+
+		const TMapTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
+
+		TMapTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _ch ) );
 
 		if( it_found == glyphs.end() )
 		{
-			FT_Set_Char_Size( m_face, 0, 16 * 64, 300, 300 );
-
-			if( FT_Load_Char( m_face, _ch, FT_LOAD_RENDER ) )
-				throw std::runtime_error( "FT_Load_Glyph failed" );
-
-			FT_GlyphSlot glyph = m_face->glyph;
-
-			const FT_Glyph_Metrics & metrics = glyph->metrics;
-			Rect outRect;
-			outRect.left = metrics.horiBearingX >> 6;
-			outRect.top = -(metrics.horiBearingY >> 6);
-			outRect.right = outRect.left + (metrics.width >> 6);
-			outRect.bottom = outRect.top + (metrics.height >> 6);
-
-			m_advance = static_cast<float>(metrics.horiAdvance >> 6);
-
-			FT_Bitmap bitmap = glyph->bitmap;
-			uint32_t bitmap_width = bitmap.width;
-			uint32_t bitmap_height = bitmap.rows;
-
-			const void * buffer = glyph->bitmap.buffer;
-
-			mt::uv4f uv;
-			RenderTextureInterfacePtr texture = TTFATLAS_SERVICE( m_serviceProvider )
-				->makeTextureGlyph( bitmap_width, bitmap_height, buffer, bitmap_width, uv );
-
-			TTFGlyph g;
-			g.texture = texture;
-			g.uv = uv;
-
-			it_found = glyphs.insert( std::make_pair( _ch, g ) ).first;
+			return nullptr;
 		}
 
-		const TTFGlyph & glyph = it_found->second;
+		const TTFGlyph & glyph = *it_found;
 
 		return &glyph;
 	}

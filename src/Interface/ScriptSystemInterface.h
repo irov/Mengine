@@ -10,6 +10,8 @@
 #	include "Core/FilePath.h"
 #	include "Core/Tags.h"
 
+#	include "Kernel/Servant.h"
+
 #	include "pybind/kernel.hpp"
 #	include "stdex/stl_vector.h"
 
@@ -55,7 +57,7 @@ namespace Menge
 	typedef stdex::vector<ScriptModulePack> TVectorScriptModulePack;
 	//////////////////////////////////////////////////////////////////////////
 	class ScriptModuleInterface
-		: public FactorablePtr
+		: public Servant
 	{
 	public:
 		virtual bool onInitialize( const ConstString & _method ) = 0;

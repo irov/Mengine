@@ -5,6 +5,8 @@ src
     TTFPlugin.h
 	TTFPlugin.cpp
     TTFServiceInterface.h
+    TTFText.h
+    TTFText.cpp
     TTFFont.h
     TTFFont.cpp
     TTFFontManager.h
@@ -18,6 +20,7 @@ src
 INCLUDE_DIRECTORIES( 
         ${Mengine_SOURCE_DIR}/Utils 
         ${THIRDPARTY_DIR}/freetype/include
+        ${THIRDPARTY_DIR}/pybind/include
         ${THIRDPARTY_DIR}/utf8/source        
 )
 

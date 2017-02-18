@@ -21,19 +21,6 @@
 
 namespace Menge
 {
-	struct TTFGlyph
-	{
-		WChar ch;
-
-		float dx;
-		float dy;
-		float ax;
-		float ay;
-
-		mt::uv4f uv;
-		RenderTextureInterfacePtr texture;
-	};
-
 #	define MENGINE_TTF_FONT_GLYPH_HASH_SIZE 32
 
 	class TTFFont
@@ -47,11 +34,11 @@ namespace Menge
 		bool initialize( FT_Library _library, const MemoryInterfacePtr & _memory );
 
 	public:
-		bool prepareText( const String & _text );
+		U32String prepareText( const String & _text ) override;
+		const TTFGlyph * getGlyph( uint32_t _ch ) const override;
 
 	protected:
-		bool prepareGlyph_( WChar _ch );
-		const TTFGlyph * getGlyph_( WChar _ch ) const;
+		bool prepareGlyph_( uint32_t _ch );	
 
 	protected:
 		FT_Library m_library;

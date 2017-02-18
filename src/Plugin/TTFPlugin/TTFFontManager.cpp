@@ -34,7 +34,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TTFFontManager::_finalize()
 	{
-
+		FT_Done_FreeType( m_library );
+		m_library = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TTFFontInterfacePtr TTFFontManager::createFont( const ConstString & _name, const ConstString& _pakName, const FilePath& _fileName )

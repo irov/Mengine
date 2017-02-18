@@ -40,8 +40,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TTFFont::prepareText( const String & _text )
+	U32String TTFFont::prepareText( const String & _text )
 	{
+		U32String result;
+
 		const char * text_str = _text.c_str();
 		size_t text_len = _text.size();
 
@@ -79,9 +81,16 @@ namespace Menge
 			{
 				code = 32;
 			}
+
+			if( this->prepareGlyph_( code ) == false )
+			{
+				return false;
+			}
+
+			result.push_back( code );
 		}
 
-		return true;
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -89,7 +98,7 @@ namespace Menge
 		class PFindGlyph
 		{
 		public:
-			PFindGlyph( WChar _ch )
+			PFindGlyph( uint32_t _ch )
 				: m_ch( _ch )
 			{
 			}
@@ -101,11 +110,11 @@ namespace Menge
 			}
 
 		protected:
-			WChar m_ch;
+			uint32_t m_ch;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TTFFont::prepareGlyph_( WChar _ch )
+	bool TTFFont::prepareGlyph_( uint32_t _ch )
 	{
 		uint32_t ch_hash = _ch % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
 
@@ -121,7 +130,9 @@ namespace Menge
 		FT_Set_Char_Size( m_face, 0, 16 * 64, 300, 300 );
 
 		if( FT_Load_Char( m_face, _ch, FT_LOAD_RENDER ) )
-			throw std::runtime_error( "FT_Load_Glyph failed" );
+		{
+			return false;
+		}
 
 		FT_GlyphSlot glyph = m_face->glyph;
 
@@ -132,7 +143,7 @@ namespace Menge
 		outRect.right = outRect.left + (metrics.width >> 6);
 		outRect.bottom = outRect.top + (metrics.height >> 6);
 
-		m_advance = static_cast<float>(metrics.horiAdvance >> 6);
+		float advance = static_cast<float>(metrics.horiAdvance >> 6);
 
 		FT_Bitmap bitmap = glyph->bitmap;
 		uint32_t bitmap_width = bitmap.width;
@@ -144,8 +155,14 @@ namespace Menge
 		RenderTextureInterfacePtr texture = TTFATLAS_SERVICE( m_serviceProvider )
 			->makeTextureGlyph( bitmap_width, bitmap_height, buffer, bitmap_width, uv );
 
+		if( texture == nullptr )
+		{
+			return false;
+		}
+
 		TTFGlyph g;
 		g.ch = _ch;
+		g.advance = advance;
 		g.texture = texture;
 		g.uv = uv;
 
@@ -154,7 +171,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TTFGlyph * TTFFont::getGlyph_( WChar _ch ) const
+	const TTFGlyph * TTFFont::getGlyph( uint32_t _ch ) const
 	{
 		uint32_t ch_hash = _ch % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
 

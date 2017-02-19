@@ -24,7 +24,7 @@ namespace Menge
 		void _finalize() override;
 
 	public:
-		TTFFontInterfacePtr createFont( const ConstString & _name, const ConstString& _pakName, const FilePath& _fileName ) override;
+		bool createFont( const ConstString & _name, const ConstString& _pakName, const FilePath& _fileName ) override;
 		TTFFontInterfacePtr getFont( const ConstString & _name ) const override;
 
 	protected:

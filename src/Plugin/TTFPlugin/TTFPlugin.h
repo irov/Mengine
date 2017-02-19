@@ -2,6 +2,8 @@
 
 #	include "Core/PluginBase.h"
 
+#	include "TTFServiceInterface.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -16,5 +18,8 @@ namespace Menge
 	protected:
 		bool _initialize() override;
 		void _finalize() override;
+
+    protected:
+        bool createTTFFont( const ConstString & _name, const ConstString& _pakName, const FilePath& _fileName );
 	};
 }

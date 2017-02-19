@@ -28,7 +28,7 @@ namespace Menge
     public:
 		virtual bool addSetting( const ConstString & _setting, const WString& _defaultValue, const pybind::object & _applyFunc ) = 0;
         virtual bool changeSetting( const ConstString & _setting, const WString& _value ) = 0;
-        virtual const WString& getSetting( const ConstString & _setting ) const = 0;
+        virtual WString getSetting( const ConstString & _setting ) const = 0;
         virtual bool hasSetting( const ConstString & _setting ) const = 0;
 
     public:

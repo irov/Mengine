@@ -105,9 +105,9 @@ namespace Menge
 		new_atlas.dimension = _dimension;
 
 #   ifdef MENGE_RENDER_TEXTURE_RGBA
-		PixelFormat format = PF_R8G8B8A8;
+        PixelFormat format = PF_A8B8G8R8;
 #	else
-		PixelFormat format = PF_B8G8R8A8;
+        PixelFormat format = PF_A8R8G8B8;        
 #	endif
 
 		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE( m_serviceProvider )

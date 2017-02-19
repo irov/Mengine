@@ -38,20 +38,35 @@ namespace Menge
 		m_library = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TTFFontInterfacePtr TTFFontManager::createFont( const ConstString & _name, const ConstString& _pakName, const FilePath& _fileName )
+	bool TTFFontManager::createFont( const ConstString & _name, const ConstString& _pakName, const FilePath& _fileName )
 	{
 		InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
 			->openInputFile( _pakName, _fileName, false );
 
+        if( stream == nullptr )
+        {
+            return false;
+        }
+
 		MemoryInterfacePtr memory = Helper::createMemoryStream( m_serviceProvider, stream );
+
+        if( memory == nullptr )
+        {
+            return false;
+        }
 
 		TTFFontPtr font = new TTFFont;
 
-		font->initialize( m_library, memory );
+        font->setServiceProvider( m_serviceProvider );
+
+        if( font->initialize( m_library, memory ) == false )
+        {
+            return false;
+        }
 
 		m_fonts.insert( std::make_pair( _name, font ) );
 
-		return font;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TTFFontInterfacePtr TTFFontManager::getFont( const ConstString & _name ) const

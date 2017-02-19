@@ -48,7 +48,7 @@ namespace Menge
 		SERVICE_DECLARE( "TTFFontManager" );
 
 	public:
-		virtual TTFFontInterfacePtr createFont( const ConstString & _name, const ConstString& _pakName, const FilePath& _fileName ) = 0;
+		virtual bool createFont( const ConstString & _name, const ConstString& _pakName, const FilePath& _fileName ) = 0;
 		virtual TTFFontInterfacePtr getFont( const ConstString & _name ) const = 0;
 	};
 }

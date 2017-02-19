@@ -31,6 +31,16 @@ namespace Menge
 	{
 		return m_key;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void TTFText::setFontName( const ConstString & _fontName )
+    {
+        m_fontName = _fontName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & TTFText::getFontName() const
+    {
+        return m_fontName;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void TTFText::updateFont_() const
 	{
@@ -79,15 +89,38 @@ namespace Menge
 	{
 		m_invalidateVertices = false;
 
-		const TTFFontInterfacePtr & font = this->getFont();
+        m_vertexText.clear();
+        m_chunks.clear();
+
 		const U32String & text = this->getText();
+
+        if( text.empty() == true )
+        {
+            return;
+        }
 
 		U32String::size_type text_size = text.size();
 
 		m_vertexText.reserve( text_size * 4 );
-		m_vertexText.clear();
+
+        const TTFFontInterfacePtr & font = this->getFont();
 
 		mt::vec2f offset(0.f, 0.f);
+
+        Chunk chunk;
+        chunk.begin = 0;
+        chunk.count = 0;
+        chunk.material = nullptr;
+
+        const TTFGlyph * glyph0 = font->getGlyph( text[0] );
+
+        const ConstString & textureBlend = RENDERMATERIAL_SERVICE( m_serviceProvider )
+            ->getMaterialName( EM_TEXTURE_BLEND );
+
+        RenderMaterialInterfacePtr material0 = RENDERMATERIAL_SERVICE( m_serviceProvider )
+            ->getMaterial( textureBlend, PT_TRIANGLELIST, 1, &glyph0->texture );
+
+        chunk.material = material0;
 
 		for( U32String::const_iterator
 			it = text.begin(),
@@ -121,6 +154,22 @@ namespace Menge
 			m_vertexText.push_back( v1 );
 			m_vertexText.push_back( v2 );
 			m_vertexText.push_back( v3 );
+
+            RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( m_serviceProvider )
+                ->getMaterial( textureBlend, PT_TRIANGLELIST, 1, &glyph->texture );
+
+            if( chunk.material == material )
+            {
+                chunk.count += 4;
+            }
+            else
+            {
+                m_chunks.push_back( chunk );
+
+                chunk.begin = chunk.begin + chunk.count;
+                chunk.count = 4;
+                chunk.material = material;
+            }
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -131,6 +180,10 @@ namespace Menge
 		const mt::mat4f & wm = this->getWorldMatrix();
 
 		const TVectorRenderVertex2D & vertexText = this->getVertices();
+
+        TVectorRenderVertex2D::size_type vertex_size = vertexText.size();
+
+        m_vertexTextWM.resize( vertex_size );
 
 		TVectorRenderVertex2D::const_iterator it = vertexText.begin();
 		TVectorRenderVertex2D::const_iterator it_end = vertexText.end();
@@ -146,4 +199,34 @@ namespace Menge
 			mt::mul_v3_v3_m4( vertex_w.position, vertex.position, wm );
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void TTFText::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
+    {
+        const TVectorRenderVertex2D & textVertices = this->getVerticesWM();
+
+        const TVectorRenderVertex2D::value_type * vertices = &textVertices.front();
+
+        const mt::box2f & bb = this->getBoundingBox();
+
+        for( TVectorChunks::const_iterator
+            it = m_chunks.begin(),
+            it_end = m_chunks.end();
+            it != it_end;
+            ++it )
+        {
+            const Chunk & chunk = *it;
+
+            const TVectorRenderVertex2D::value_type * chunk_vertices = vertices + chunk.begin;            
+
+            _renderService
+                ->addRenderQuad( _state, chunk.material, chunk_vertices, chunk.count, &bb, false );
+        }                
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFText::_invalidateWorldMatrix()
+    {
+        Node::_invalidateWorldMatrix();
+
+        this->invalidateVerticesWM();
+    }
 }

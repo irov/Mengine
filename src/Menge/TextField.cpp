@@ -1157,17 +1157,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const String & TextField::getText() const
 	{
-		const TextEntryInterface * textEntry = this->getTextEntry();
-
-		if( textEntry == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::getText '%s' can't setup text ID"
-				, this->getName().c_str()
-				);
-			
-			return Utils::emptyString();
-		}
-
 		if( this->updateTextCache_() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("TextField::getText '%s' invalid update text cache %s"
@@ -1225,7 +1214,7 @@ namespace Menge
 
 		if( textEntry == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TextField::updateTextCache_ '%s:%s' invalid get text entry"
+			LOGGER_ERROR( m_serviceProvider )("TextField::updateTextCache_ '%s:%s' invalid get text entry can't setup text ID"
 				, this->getName().c_str()
 				, m_key.c_str()
 				);

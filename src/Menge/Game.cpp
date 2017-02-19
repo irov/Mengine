@@ -670,7 +670,7 @@ namespace Menge
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_ON_TIMING_FACTOR )(m_timingFactor);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & Game::getParam( const ConstString & _paramName ) const
+	WString Game::getParam( const ConstString & _paramName ) const
 	{
 		TMapParams::const_iterator it_find = m_params.find( _paramName );
 
@@ -680,7 +680,7 @@ namespace Menge
                 , _paramName.c_str()
                 );
 
-            return Utils::emptyWString();
+            return WString();
         }
 
         const WString & param = it_find->second;

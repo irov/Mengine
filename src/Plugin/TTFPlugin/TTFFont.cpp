@@ -19,9 +19,10 @@ namespace Menge
 	bool TTFFont::initialize( FT_Library _library, const MemoryInterfacePtr & _memory )
 	{
 		m_library = _library;
+        m_memory = _memory;
 
-		FT_Byte * memory_byte = _memory->getMemory();
-		size_t memory_size = _memory->getSize();
+		FT_Byte * memory_byte = m_memory->getMemory();
+		size_t memory_size = m_memory->getSize();
 
 		if( memory_byte == nullptr )
 		{
@@ -35,7 +36,19 @@ namespace Menge
 			return false;
 		}
 
-		m_ascender = static_cast<float>(m_face->size->metrics.ascender >> 6);
+        if( FT_Select_Charmap( m_face, FT_ENCODING_UNICODE ) != FT_Err_Ok )
+        {
+            return false;
+        }
+
+        FT_F26Dot6 fontSizePoints = 16 * 64;
+        FT_UInt dpi = 72;
+        if( FT_Set_Char_Size( m_face, fontSizePoints, fontSizePoints, dpi, dpi ) != FT_Err_Ok )
+        {
+            return false;
+        }
+
+        m_ascender = static_cast<float>(m_face->size->metrics.ascender >> 6);
 
 		return true;
 	}
@@ -114,22 +127,22 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TTFFont::prepareGlyph_( uint32_t _ch )
-	{
-		uint32_t ch_hash = _ch % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
+    bool TTFFont::prepareGlyph_( uint32_t _ch )
+    {
+        uint32_t ch_hash = _ch % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
 
-		TMapTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
+        TMapTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
 
-		TMapTTFGlyphs::iterator it_found = std::find_if(glyphs.begin(), glyphs.end(), PFindGlyph( _ch ) );
+        TMapTTFGlyphs::iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _ch ) );
 
-		if( it_found != glyphs.end() )
-		{
-			return true;
-		}
-		
-		FT_Set_Char_Size( m_face, 0, 16 * 64, 300, 300 );
+        if( it_found != glyphs.end() )
+        {
+            return true;
+        }
 
-		if( FT_Load_Char( m_face, _ch, FT_LOAD_RENDER ) )
+        FT_UInt glyph_index = FT_Get_Char_Index( m_face, _ch );
+
+        if( FT_Load_Glyph( m_face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT ) )
 		{
 			return false;
 		}
@@ -139,7 +152,7 @@ namespace Menge
 		const FT_Glyph_Metrics & metrics = glyph->metrics;
 		Rect outRect;
 		outRect.left = metrics.horiBearingX >> 6;
-		outRect.top = -(metrics.horiBearingY >> 6);
+		outRect.top = (metrics.horiBearingY >> 6);
 		outRect.right = outRect.left + (metrics.width >> 6);
 		outRect.bottom = outRect.top + (metrics.height >> 6);
 

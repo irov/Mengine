@@ -42,6 +42,9 @@ namespace Menge
 
 	protected:
 		FT_Library m_library;
+
+        MemoryInterfacePtr m_memory;
+
 		FT_Face m_face;
 
 		float m_ascender;

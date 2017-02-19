@@ -1724,7 +1724,7 @@ namespace Menge
 				->deleteAccount( _accountName );
 		}
 				
-		const WString & s_getCurrentAccountName()
+		WString s_getCurrentAccountName()
 		{
 			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
   				->getCurrentAccount();
@@ -1734,7 +1734,7 @@ namespace Menge
 				LOGGER_ERROR(m_serviceProvider)("Error getCurrentAccountName: currentAccount is none"
 					);
 
-				return Utils::emptyWString();
+				return WString();
 			}
 
 			const WString & name = currentAccount->getName();

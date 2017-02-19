@@ -18,7 +18,7 @@ namespace Menge
 		const ConstString & getTextID() const;
 
 	public:
-		void setFontName( const ConstString & _name );
+		void setFontName( const ConstString & _fontName );
 		const ConstString & getFontName() const;
 
 	protected:
@@ -26,8 +26,6 @@ namespace Menge
 
 	protected:
 		void _invalidateWorldMatrix() override;
-		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
-		void _invalidateColor() override;
 
 	protected:
 		inline const TTFFontInterfacePtr & getFont() const;
@@ -41,7 +39,7 @@ namespace Menge
 	protected:		
 		inline const TVectorRenderVertex2D & getVertices();
 		inline const TVectorRenderVertex2D & getVerticesWM();
-
+        
 	protected:
 		void updateText_();
 		void updateVertices_();
@@ -62,6 +60,17 @@ namespace Menge
 
 		TVectorRenderVertex2D m_vertexText;
 		TVectorRenderVertex2D m_vertexTextWM;
+
+        struct Chunk
+        {
+            uint32_t begin;
+            uint32_t count;
+
+            RenderMaterialInterfacePtr material;
+        };
+
+        typedef stdex::vector<Chunk> TVectorChunks;
+        TVectorChunks m_chunks;
 
 		mutable bool m_invalidateText;
 		mutable bool m_invalidateFont;

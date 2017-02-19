@@ -35,7 +35,7 @@ namespace Menge
         virtual void setTimingFactor( float _timingFactor ) = 0;
 
     public:
-        virtual const WString & getParam( const ConstString & _paramName ) const = 0;
+        virtual WString getParam( const ConstString & _paramName ) const = 0;
         virtual bool hasParam( const ConstString & _paramName ) const = 0;
 
     public:

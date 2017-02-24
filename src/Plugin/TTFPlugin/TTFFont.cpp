@@ -41,7 +41,7 @@ namespace Menge
             return false;
         }
 
-        FT_F26Dot6 fontSizePoints = 16 * 64;
+        FT_F26Dot6 fontSizePoints = 64 * 64;
         FT_UInt dpi = 72;
         if( FT_Set_Char_Size( m_face, fontSizePoints, fontSizePoints, dpi, dpi ) != FT_Err_Ok )
         {
@@ -150,23 +150,57 @@ namespace Menge
 		FT_GlyphSlot glyph = m_face->glyph;
 
 		const FT_Glyph_Metrics & metrics = glyph->metrics;
-		Rect outRect;
-		outRect.left = metrics.horiBearingX >> 6;
-		outRect.top = (metrics.horiBearingY >> 6);
-		outRect.right = outRect.left + (metrics.width >> 6);
-		outRect.bottom = outRect.top + (metrics.height >> 6);
+
+        int32_t dx = (metrics.horiBearingX >> 6);
+        int32_t dy = -(metrics.horiBearingY >> 6);
+        uint32_t w = (metrics.width >> 6);
+        uint32_t h = (metrics.height >> 6);
 
 		float advance = static_cast<float>(metrics.horiAdvance >> 6);
 
 		FT_Bitmap bitmap = glyph->bitmap;
+
+        uint32_t bitmap_channel = 0;
+
+        switch( bitmap.pixel_mode )
+        {
+        case FT_PIXEL_MODE_MONO:
+            {
+                bitmap_channel = 1;
+            }break;
+        case FT_PIXEL_MODE_GRAY:
+            {
+                bitmap_channel = 1;
+            }break;
+        case FT_PIXEL_MODE_GRAY2:
+            {
+                bitmap_channel = 2;
+            }break;
+        case FT_PIXEL_MODE_GRAY4:
+            {
+                bitmap_channel = 4;
+            }break;
+        case FT_PIXEL_MODE_BGRA:
+            {
+                bitmap_channel = 4;
+            }break;
+        case FT_PIXEL_MODE_NONE:
+        case FT_PIXEL_MODE_LCD:
+        case FT_PIXEL_MODE_LCD_V:
+            {
+                return false;
+            }break;                
+        };
+
+        uint32_t bitmap_pitch = bitmap.pitch;
 		uint32_t bitmap_width = bitmap.width;
-		uint32_t bitmap_height = bitmap.rows;
+        uint32_t bitmap_height = bitmap.rows;
 
 		const void * buffer = glyph->bitmap.buffer;
 
 		mt::uv4f uv;
 		RenderTextureInterfacePtr texture = TTFATLAS_SERVICE( m_serviceProvider )
-			->makeTextureGlyph( bitmap_width, bitmap_height, buffer, bitmap_width, uv );
+			->makeTextureGlyph( bitmap_width, bitmap_height, bitmap_channel, buffer, bitmap_pitch, uv );
 
 		if( texture == nullptr )
 		{
@@ -176,6 +210,12 @@ namespace Menge
 		TTFGlyph g;
 		g.ch = _ch;
 		g.advance = advance;
+
+        g.dx = (float)dx;
+        g.dy = (float)dy;
+        g.ax = (float)dx + w;
+        g.ay = (float)dy + h;
+
 		g.texture = texture;
 		g.uv = uv;
 

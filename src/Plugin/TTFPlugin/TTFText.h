@@ -3,11 +3,13 @@
 #	include "TTFServiceInterface.h"
 
 #	include "Kernel/Node.h"
+#   include "Kernel/Materialable.h"
 
 namespace Menge
 {
 	class TTFText
 		: public Node
+        , public Materialable
 	{
 	public:
 		TTFText();
@@ -51,6 +53,9 @@ namespace Menge
 		inline void invalidateVertices() const;
 		inline void invalidateVerticesWM() const;
 
+    protected:
+        RenderMaterialInterfacePtr _updateMaterial() const override;
+
 	protected:
 		ConstString m_fontName;
 		mutable TTFFontInterfacePtr m_font;
@@ -91,11 +96,15 @@ namespace Menge
 	inline void TTFText::invalidateText() const
 	{
 		m_invalidateText = true;
+
+        this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline void TTFText::invalidateFont() const
 	{
 		m_invalidateFont = true;
+
+        this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline void TTFText::invalidateVertices() const

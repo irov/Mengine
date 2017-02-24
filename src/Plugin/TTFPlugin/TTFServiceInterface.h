@@ -14,7 +14,7 @@ namespace Menge
 		SERVICE_DECLARE( "TTFAtlasService" )
 
 	public:
-		virtual RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, const void * _buffer, uint32_t _pitch, mt::uv4f & _uv ) = 0;
+		virtual RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _channel, const void * _buffer, uint32_t _pitch, mt::uv4f & _uv ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	struct TTFGlyph

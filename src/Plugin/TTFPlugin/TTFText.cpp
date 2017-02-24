@@ -64,9 +64,7 @@ namespace Menge
 				);
 
 			return;
-		}
-
-		this->invalidateVertices();
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TTFText::updateText_()
@@ -114,11 +112,19 @@ namespace Menge
 
         const TTFGlyph * glyph0 = font->getGlyph( text[0] );
 
-        const ConstString & textureBlend = RENDERMATERIAL_SERVICE( m_serviceProvider )
-            ->getMaterialName( EM_TEXTURE_BLEND );
+        ConstString materialName;
+
+        switch( m_blendMode )
+        {
+        case EMB_NORMAL:
+            {                
+                materialName = RENDERMATERIAL_SERVICE( m_serviceProvider )
+                    ->getMaterialName( EM_TEXTURE_BLEND );
+            }break;
+        };
 
         RenderMaterialInterfacePtr material0 = RENDERMATERIAL_SERVICE( m_serviceProvider )
-            ->getMaterial( textureBlend, PT_TRIANGLELIST, 1, &glyph0->texture );
+            ->getMaterial( materialName, PT_TRIANGLELIST, 1, &glyph0->texture );
 
         chunk.material = material0;
 
@@ -135,18 +141,30 @@ namespace Menge
 			RenderVertex2D v0;
 			v0.position.x = offset.x + glyph->dx;
 			v0.position.y = offset.y + glyph->dy;
+            v0.position.z = 0.f;
+            v0.color = 0xFFFFFFFF;
+            v0.uv[0] = glyph->uv.p0;
 
 			RenderVertex2D v1;
 			v1.position.x = offset.x + glyph->ax;
 			v1.position.y = offset.y + glyph->dy;
+            v1.position.z = 0.f;
+            v1.color = 0xFFFFFFFF;
+            v1.uv[0] = glyph->uv.p1;
 
 			RenderVertex2D v2;
 			v2.position.x = offset.x + glyph->ax;
 			v2.position.y = offset.y + glyph->ay;
+            v2.position.z = 0.f;
+            v2.color = 0xFFFFFFFF;
+            v2.uv[0] = glyph->uv.p2;
 
 			RenderVertex2D v3;
 			v3.position.x = offset.x + glyph->dx;
 			v3.position.y = offset.y + glyph->ay;
+            v3.position.z = 0.f;
+            v3.color = 0xFFFFFFFF;
+            v3.uv[0] = glyph->uv.p3;
 
 			offset.x += glyph->advance;
 			
@@ -156,7 +174,7 @@ namespace Menge
 			m_vertexText.push_back( v3 );
 
             RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( m_serviceProvider )
-                ->getMaterial( textureBlend, PT_TRIANGLELIST, 1, &glyph->texture );
+                ->getMaterial( materialName, PT_TRIANGLELIST, 1, &glyph->texture );
 
             if( chunk.material == material )
             {
@@ -171,6 +189,11 @@ namespace Menge
                 chunk.material = material;
             }
 		}
+
+        if( chunk.count != 0 )
+        {
+            m_chunks.push_back( chunk );
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TTFText::updateVerticesWM_()
@@ -197,6 +220,8 @@ namespace Menge
 			RenderVertex2D & vertex_w = *it_w;
 
 			mt::mul_v3_v3_m4( vertex_w.position, vertex.position, wm );
+            vertex_w.color = vertex.color;
+            vertex_w.uv[0] = vertex.uv[0];
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -228,5 +253,10 @@ namespace Menge
         Node::_invalidateWorldMatrix();
 
         this->invalidateVerticesWM();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderMaterialInterfacePtr TTFText::_updateMaterial() const
+    {
+        return nullptr;
     }
 }

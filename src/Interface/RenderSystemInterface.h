@@ -13,6 +13,7 @@
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
 #	include "Core/PixelFormat.h"
+#   include "Core/Pointer.h"
 
 #   include "stdex/intrusive_ptr.h"
 
@@ -213,7 +214,7 @@ namespace Menge
 		virtual PixelFormat getHWPixelFormat() const = 0;
 
 	public:
-		virtual void * lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly = true ) = 0;
+		virtual Pointer lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly = true ) = 0;
 		virtual void unlock( uint32_t _level ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -231,6 +232,10 @@ namespace Menge
 	public:
 		virtual uint32_t getId() const = 0;
 
+    public:
+        virtual bool isPow2() const = 0;
+
+    public:
 		virtual const Rect & getRect() const = 0;
 		virtual const Rect & getHWRect() const = 0;
 
@@ -248,7 +253,7 @@ namespace Menge
 		virtual uint32_t getHeight() const = 0;
 		virtual uint32_t getChannels() const = 0;
 
-		virtual void * lock( size_t * _pitch, uint32_t _miplevel, const Rect & _rect, bool _readOnly = true ) const = 0;
+		virtual Pointer lock( size_t * _pitch, uint32_t _miplevel, const Rect & _rect, bool _readOnly = true ) const = 0;
 		virtual void unlock( uint32_t _miplevel ) const = 0;
 
 		virtual size_t getMemoryUse() const = 0;
@@ -342,6 +347,7 @@ namespace Menge
 
 		EM_TEXTURE_SOLID,
 		EM_TEXTURE_BLEND,
+        EM_TEXTURE_BLEND_A8,
 		EM_TEXTURE_BLEND_PREMULTIPLY,
 		EM_TEXTURE_BLEND_WC,
 		EM_TEXTURE_BLEND_WW,

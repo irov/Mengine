@@ -38,6 +38,7 @@ namespace Menge
 	public:
 		virtual U32String prepareText( const String & _text ) = 0;
 		virtual const TTFGlyph * getGlyph( uint32_t _ch ) const = 0;
+        virtual float getKerning( uint32_t _lch, uint32_t _rch ) const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<TTFFontInterface> TTFFontInterfacePtr;

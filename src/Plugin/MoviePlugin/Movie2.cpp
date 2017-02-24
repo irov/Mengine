@@ -231,7 +231,6 @@ namespace Menge
 				}break;
 			default:
 				{
-					printf( "fdsfs" );
 				}break;
 			}
 		}

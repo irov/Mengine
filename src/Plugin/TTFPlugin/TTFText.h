@@ -28,6 +28,7 @@ namespace Menge
 
 	protected:
 		void _invalidateWorldMatrix() override;
+        void _invalidateColor() override;
 
 	protected:
 		inline const TTFFontInterfacePtr & getFont() const;

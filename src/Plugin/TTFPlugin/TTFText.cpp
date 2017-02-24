@@ -128,6 +128,8 @@ namespace Menge
 
         chunk.material = material0;
 
+        uint32_t lch = 0;
+
 		for( U32String::const_iterator
 			it = text.begin(),
 			it_end = text.end();
@@ -166,7 +168,9 @@ namespace Menge
             v3.color = 0xFFFFFFFF;
             v3.uv[0] = glyph->uv.p3;
 
-			offset.x += glyph->advance;
+            float kerning = m_font->getKerning( lch, ch );
+            
+			offset.x += glyph->advance + kerning;
 			
 			m_vertexText.push_back( v0 );
 			m_vertexText.push_back( v1 );
@@ -188,6 +192,8 @@ namespace Menge
                 chunk.count = 4;
                 chunk.material = material;
             }
+
+            lch = ch;
 		}
 
         if( chunk.count != 0 )
@@ -199,6 +205,11 @@ namespace Menge
 	void TTFText::updateVerticesWM_()
 	{
 		m_invalidateVerticesWM = false;
+
+        ColourValue color;
+        this->calcTotalColor( color );
+
+        ColourValue_ARGB color_argb = color.getAsARGB();
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -220,7 +231,7 @@ namespace Menge
 			RenderVertex2D & vertex_w = *it_w;
 
 			mt::mul_v3_v3_m4( vertex_w.position, vertex.position, wm );
-            vertex_w.color = vertex.color;
+            vertex_w.color = color_argb;
             vertex_w.uv[0] = vertex.uv[0];
 		}
 	}
@@ -251,6 +262,13 @@ namespace Menge
     void TTFText::_invalidateWorldMatrix()
     {
         Node::_invalidateWorldMatrix();
+
+        this->invalidateVerticesWM();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFText::_invalidateColor()
+    {
+        Node::_invalidateColor();
 
         this->invalidateVerticesWM();
     }

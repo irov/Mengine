@@ -36,6 +36,7 @@ namespace Menge
 	public:
 		U32String prepareText( const String & _text ) override;
 		const TTFGlyph * getGlyph( uint32_t _ch ) const override;
+        float getKerning( uint32_t _lch, uint32_t _rch ) const override;
 
 	protected:
 		bool prepareGlyph_( uint32_t _ch );	

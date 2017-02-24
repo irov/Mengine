@@ -241,4 +241,34 @@ namespace Menge
 
 		return &glyph;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    float TTFFont::getKerning( uint32_t _lch, uint32_t _rch ) const
+    {
+        FT_UInt lindex = FT_Get_Char_Index( m_face, _lch );
+
+        if( lindex == 0 )
+        {
+            return 0.f;
+        }
+
+        // get the ID to the char we need
+        int rindex = FT_Get_Char_Index( m_face, _rch );
+
+        if( rindex == 0 )
+        {
+            return 0.f;
+        }
+
+        FT_Vector ttf_kerning;
+        FT_Get_Kerning( m_face, _lch, _rch, FT_KERNING_DEFAULT, &ttf_kerning );
+
+        if( ttf_kerning.x == 0 )
+        {
+            return 0.f;
+        }
+
+        float kerning = (float)( ttf_kerning.x >> 6);
+
+        return kerning;
+    }
 }

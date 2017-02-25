@@ -1,30 +1,30 @@
 getdepend()
 {
 	if [ ! -f $2 ]; then
-        wget --no-clobber --no-check-certificate $1
+        curl -0 --no-clobber --no-check-certificate $1
     fi
 
 	rm -rf $4
-	7z x -y $2
+	./wget/7za x -y $2
 	mv $3 $4
 }
 
 getdepend2()
 {
 	if [ ! -f $2 ]; then
-        wget --no-clobber --no-check-certificate $1
+        curl -0 --no-clobber --no-check-certificate $1
     fi
 
 	rm -rf $5
-	7z x -y $2
-    7z x -y $3
+	./wget/7za x -y $2
+    ./wget/7za x -y $3
 	mv $4 $5
 }
 
 getdepend_tgz()
 {
 	if [ ! -f $2 ]; then
-        wget --no-clobber --no-check-certificate $1
+        curl -0 --no-clobber --no-check-certificate $1
     fi
 
 	rm -rf $4

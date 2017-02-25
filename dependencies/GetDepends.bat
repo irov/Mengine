@@ -10,7 +10,7 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 :: extracting 7za.exe
 unzip -o 7za920.zip 7za.exe
 
-call:getdepend http://downloads.sourceforge.net/project/boost/boost/1.62.0/boost_1_62_0.7z boost_1_62_0.7z boost_1_62_0 boost
+call:getdepend http://downloads.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.7z boost_1_63_0.7z boost_1_63_0 boost
 
 call:getdepend https://cmake.org/files/v3.7/cmake-3.7.1-win64-x64.zip cmake-3.7.1-win64-x64.zip cmake-3.7.1-win64-x64 cmake
 call:getdepend http://download.sourceforge.net/libpng/lpng1623.zip lpng1623.zip lpng1623 libpng
@@ -34,7 +34,7 @@ call:svndepend https://github.com/irov/pybind.git/trunk pybind
 call:svndepend https://github.com/irov/metabuf.git/trunk metabuf
 call:svndepend https://github.com/irov/stdex.git/trunk stdex
 call:svndepend https://github.com/irov/movie.git/trunk libmovie
-call:svndepend http://svn.code.sf.net/p/utfcpp/code/v2_0 utf8
+call:svndepend https://github.com/nemtrif/utfcpp.git/trunk utf8
 call:svndepend https://github.com/lz4/lz4.git/trunk lz4
 call:svndepend https://github.com/irov/fastpathfinder.git/trunk fastpathfinder
 call:svndependr https://github.com/EsotericSoftware/spine-runtimes.git/trunk/spine-c spine-c 1587

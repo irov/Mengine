@@ -37,10 +37,11 @@ call:svndepend https://github.com/irov/movie.git/trunk libmovie
 call:svndepend https://github.com/nemtrif/utfcpp.git/trunk utf8
 call:svndepend https://github.com/lz4/lz4.git/trunk lz4
 call:svndepend https://github.com/irov/fastpathfinder.git/trunk fastpathfinder
-call:svndependr https://github.com/EsotericSoftware/spine-runtimes.git/trunk/spine-c spine-c 1587
 call:svndepend https://github.com/zzzzrrr/poly2tri/trunk poly2tri
 call:svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
 call:svndepend https://github.com/erincatto/Box2D.git/trunk/Box2D Box2D
+
+call:svndependr https://github.com/EsotericSoftware/spine-runtimes.git/trunk/spine-c spine-c 1587
 
 echo.&pause&goto:eof
 

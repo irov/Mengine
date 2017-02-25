@@ -65,6 +65,8 @@ svndepend https://github.com/irov/movie.git/trunk libmovie
 svndepend https://github.com/nemtrif/utfcpp.git/trunk utf8
 svndepend https://github.com/lz4/lz4.git/trunk lz4
 svndepend https://github.com/irov/fastpathfinder.git/trunk fastpathfinder
+svndepend https://github.com/zzzzrrr/poly2tri/trunk poly2tri
+svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
 svndepend https://github.com/erincatto/Box2D.git/trunk/Box2D Box2D
 svndepend https://github.com/irov/GOAP.git/trunk GOAP
 

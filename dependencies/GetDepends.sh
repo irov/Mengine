@@ -1,7 +1,7 @@
 getdepend()
 {
 	if [ ! -f $2 ]; then
-        curl -0 --no-clobber --no-check-certificate $1
+        curl -L $1 > $2
     fi
 
 	rm -rf $4
@@ -12,7 +12,7 @@ getdepend()
 getdepend2()
 {
 	if [ ! -f $2 ]; then
-        curl -0 --no-clobber --no-check-certificate $1
+        curl -L $1 > $2
     fi
 
 	rm -rf $5
@@ -24,7 +24,7 @@ getdepend2()
 getdepend_tgz()
 {
 	if [ ! -f $2 ]; then
-        curl -0 --no-clobber --no-check-certificate $1
+        curl -L $1 > $2
     fi
 
 	rm -rf $4

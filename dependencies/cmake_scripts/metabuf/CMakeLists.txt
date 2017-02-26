@@ -23,7 +23,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)
 
 add_library( metabuf_static STATIC ${metabuf_sources} )
 
-if( DEFINED MENGINE_TARGET_MSVC )
+if( MENGINE_TARGET_MSVC )
     set( xml2metabuf_sources
     ${SOURCE_DIR}/xml2metabuf/Xml2Metabuf.cpp
     ${SOURCE_DIR}/xml2metabuf/Xml2Metacode.cpp

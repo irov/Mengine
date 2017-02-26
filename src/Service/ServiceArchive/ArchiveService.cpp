@@ -147,8 +147,10 @@ namespace Menge
 
 			return nullptr;
 		}
+        
+        void * new_memory = memory->newMemory( compressSize );
 
-		if( memory->newMemory( compressSize ) == nullptr )
+		if( new_memory == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ArchiveService::compress: invalid new memory"
 				);

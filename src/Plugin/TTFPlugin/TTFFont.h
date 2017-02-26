@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "TTFServiceInterface.h"
+
 #	include "Interface/MemoryInterface.h"
 #	include "Interface/RenderSystemInterface.h"
 
@@ -15,22 +17,14 @@
 
 #	include "Math/uv4.h"
 
+#	include "stdex/stl_map.h"
+
 namespace Menge
 {
-	struct TTFGlyph
-	{
-		float dx;
-		float dy;
-		float ax;
-		float ay;
-
-		mt::uv4f uv;
-		RenderTextureInterfacePtr texture;
-	};
+#	define MENGINE_TTF_FONT_GLYPH_HASH_SIZE 32
 
 	class TTFFont
-		: public FactorablePtr
-		, public Servant
+		: public TTFFontInterface
 	{
 	public:
 		TTFFont();
@@ -40,12 +34,26 @@ namespace Menge
 		bool initialize( FT_Library _library, const MemoryInterfacePtr & _memory );
 
 	public:
-		bool prepareText( const String & _text );
+		U32String prepareText( const String & _text ) override;
+		const TTFGlyph * getGlyph( uint32_t _ch ) const override;
+        float getKerning( uint32_t _lch, uint32_t _rch ) const override;
+
+	protected:
+		bool prepareGlyph_( uint32_t _ch );	
 
 	protected:
 		FT_Library m_library;
+
+        MemoryInterfacePtr m_memory;
+
 		FT_Face m_face;
 
-		//stdex::map<wchar_t, TTFGlyph>;
+		float m_ascender;
+		float m_advance;
+		
+		typedef stdex::vector<TTFGlyph> TMapTTFGlyphs;
+		TMapTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];
 	};
+
+	typedef stdex::intrusive_ptr<TTFFont> TTFFontPtr;
 }

@@ -217,6 +217,7 @@ namespace Menge
 
 		ResourceCursorPtr m_cursorResource;
 
+        String m_projectTitle;
 		WString m_companyName;
 		WString m_projectName;
 

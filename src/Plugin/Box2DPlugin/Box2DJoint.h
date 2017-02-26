@@ -10,9 +10,8 @@
 namespace Menge
 {
 	class Box2DJoint
-		: public FactorablePtr
+		: public Servant
 		, public Scriptable
-		, public Servant
 	{
 	public:
 		Box2DJoint();

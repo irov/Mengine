@@ -110,7 +110,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & Account::getSetting( const ConstString & _setting ) const
+	WString Account::getSetting( const ConstString & _setting ) const
 	{
 		TMapSettings::const_iterator it_found = m_settings.find( _setting );
 
@@ -121,7 +121,7 @@ namespace Menge
 				, _setting.c_str()
 				);
 
-			return Utils::emptyWString();
+			return WString();
 		}
 
 		const Setting & st = it_found->second;

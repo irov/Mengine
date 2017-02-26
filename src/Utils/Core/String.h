@@ -9,8 +9,6 @@ namespace Menge
 {	
 	namespace Utils
 	{
-		const String& emptyString();
-		const WString& emptyWString();
 		const ConstString& emptyConstString();
 		
 		void split( TVectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delim );

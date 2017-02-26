@@ -28,6 +28,12 @@ namespace Menge
 		m_hDestroySignalEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 	
 		m_hFrameSignalThread = CreateThread(NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &m_threadId);
+
+        if( m_hFrameSignalThread == 0 )
+        {
+            return false;
+        }
+
 		SetThreadPriority(m_hFrameSignalThread, THREAD_PRIORITY_TIME_CRITICAL);
 
 		return true;

@@ -319,6 +319,18 @@ namespace Menge
 			this->calcWindowResolution( m_currentResolution );
 		}
 
+        const TextEntryInterface * entry;
+        if( TEXT_SERVICE( m_serviceProvider )
+            ->existText( STRINGIZE_STRING_LOCAL( m_serviceProvider, "APPLICATION_TITLE" ), &entry ) == false )
+        {
+            LOGGER_WARNING( m_serviceProvider )("Application not setup title 'APPLICATION_TITLE'"
+                );
+        }
+        else
+        {
+            m_projectTitle = entry->getValue();
+        }
+
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -1824,26 +1836,9 @@ namespace Menge
 		return m_projectName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & Application::getProjectTitle() const
+    const String & Application::getProjectTitle() const
 	{
-		if( SERVICE_EXIST(m_serviceProvider, TextServiceInterface) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application::getProjectTitle not initialize textManager"
-				);
-
-			return Utils::emptyString();
-		}
-
-        const TextEntryInterface * entry;
-		if( TEXT_SERVICE( m_serviceProvider )
-			->existText( STRINGIZE_STRING_LOCAL( m_serviceProvider, "APPLICATION_TITLE" ), &entry ) == false )
-		{
-			return Utils::emptyString();
-		}
-
-		const String & text = entry->getValue();
-
-		return text;
+		return m_projectTitle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Application::getProjectCodename() const

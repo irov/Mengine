@@ -18,7 +18,7 @@
 namespace Menge
 {
 	class Surface
-		: public FactorablePtr
+		: public Servant
         , public Servant
         , public Identity
         , public Visitable

@@ -16,12 +16,13 @@ namespace Menge
 		~RenderTexture();
 
     public:
-        void initialize( const RenderImageInterfacePtr & _image
+        void initialize( ServiceProviderInterface * _serviceProvider
+            , uint32_t _id
+            , const RenderImageInterfacePtr & _image
 			, uint32_t _mipmaps
             , uint32_t _width
             , uint32_t _height
-            , uint32_t _channels
-            , uint32_t _id
+            , uint32_t _channels            
 			);
 
 	public:
@@ -32,6 +33,7 @@ namespace Menge
    
 	public:
 		uint32_t getId() const override;
+        bool isPow2() const override;
 
 		void setCategory( const ConstString & _category ) override;
 		const ConstString & getCategory() const override;
@@ -51,7 +53,7 @@ namespace Menge
 
 		uint32_t getChannels() const override;
 		
-		void * lock( size_t * _pitch, uint32_t _miplevel, const Rect & _rect, bool _readOnly = true ) const override;
+		Pointer lock( size_t * _pitch, uint32_t _miplevel, const Rect & _rect, bool _readOnly = true ) const override;
 
 		void unlock( uint32_t _miplevel ) const override;
 
@@ -59,6 +61,8 @@ namespace Menge
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
+
+        uint32_t m_id;
 
 		RenderImageInterfacePtr m_image;
 
@@ -74,7 +78,7 @@ namespace Menge
         Rect m_hwRect;
 		mt::uv4f m_uv;
 
-		uint32_t m_id;
+        bool m_pow2;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderTexture> RenderTexturePtr;

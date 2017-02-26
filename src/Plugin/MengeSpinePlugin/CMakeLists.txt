@@ -14,7 +14,7 @@ INCLUDE_DIRECTORIES(
         ${Mengine_SOURCE_DIR}/Utils
         ${THIRDPARTY_DIR}/metabuf
         ${THIRDPARTY_DIR}/pybind/include
-        ${THIRDPARTY_DIR}/spine-c/include
+        ${THIRDPARTY_DIR}/spine-c/spine-c/include
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

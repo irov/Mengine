@@ -83,13 +83,13 @@ namespace Menge
 			, tm.wSecond
 			);
 
-		MEMORYSTATUS mem_st;
-		GlobalMemoryStatus( &mem_st );
-		LOGGER_INFO( m_serviceProvider )("Memory: %ldK total, %ldK free, %ldK Page file total, %ldK Page file free"
-			, mem_st.dwTotalPhys / 1024L
-			, mem_st.dwAvailPhys / 1024L
-			, mem_st.dwTotalPageFile / 1024L
-			, mem_st.dwAvailPageFile / 1024L
+		MEMORYSTATUSEX mem_st;
+		GlobalMemoryStatusEx( &mem_st );
+		LOGGER_INFO( m_serviceProvider )("Memory: %uK total, %uK free, %uK Page file total, %uK Page file free"
+			, (uint32_t)(mem_st.ullTotalPhys / 1024UL)
+			, (uint32_t)(mem_st.ullAvailPhys / 1024UL)
+			, (uint32_t)(mem_st.ullTotalPageFile / 1024UL)
+			, (uint32_t)(mem_st.ullAvailPageFile / 1024UL)
 			);
 
 		if( WINDOWSLAYER_SERVICE(m_serviceProvider)->setProcessDPIAware() == false )
@@ -1386,6 +1386,9 @@ namespace Menge
 		{
 			return false;
 		}
+
+        CloseHandle( process_info.hProcess );
+        CloseHandle( process_info.hThread );
 
 		return true;
 	}

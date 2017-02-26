@@ -20,6 +20,7 @@ namespace Menge
     RenderTextureManager::RenderTextureManager()
         : m_textureEnumerator(0)
 		, m_supportA8(false)
+        , m_supportL8( false )
 		, m_supportR8G8B8(false)
 		, m_supportNonPow2(false)
     {
@@ -33,6 +34,9 @@ namespace Menge
     {
 		m_supportA8 = RENDER_SYSTEM(m_serviceProvider)
 			->supportTextureFormat( PF_A8 );
+
+        m_supportL8 = RENDER_SYSTEM( m_serviceProvider )
+            ->supportTextureFormat( PF_L8 );
 
 		m_supportR8G8B8 = RENDER_SYSTEM(m_serviceProvider)
 			->supportTextureFormat( PF_R8G8B8 );
@@ -497,7 +501,11 @@ namespace Menge
 					}
 					else
 					{
-						_format = PF_X8R8G8B8;
+#   ifdef MENGE_RENDER_TEXTURE_RGBA
+                        _format = PF_A8B8G8R8;
+#   else
+                        _format = PF_A8R8G8B8;
+#   endif
 						_channels = 4;
 					}
 				}
@@ -515,13 +523,70 @@ namespace Menge
 				}
 				else if( _channels == 4 )
 				{
-					_format = PF_A8R8G8B8;
+#   ifdef MENGE_RENDER_TEXTURE_RGBA
+                    _format = PF_A8B8G8R8;
+#   else
+                    _format = PF_A8R8G8B8;
+#   endif
 				}
 			}break;
+        case PF_A8:
+            {
+                if( _channels == 1 )
+                {
+                    if( m_supportA8 == true )
+                    {
+                        _format = PF_A8;
+                    }
+                    else
+                    {
+#   ifdef MENGE_RENDER_TEXTURE_RGBA
+                        _format = PF_A8B8G8R8;
+#   else
+                        _format = PF_A8R8G8B8;
+#   endif
+                        _channels = 4;
+                    }
+                }
+            }break;
 		default:
 			{
 			}break;
 		}
+
+        if( _channels == 0 )
+        {
+            switch( _format )
+            {
+            case PF_A8:
+                {
+                    if( m_supportA8 == true )
+                    {
+                        _channels = 1;
+                    }
+                    else
+                    {
+#   ifdef MENGE_RENDER_TEXTURE_RGBA
+                        _format = PF_A8B8G8R8;
+#   else
+                        _format = PF_A8R8G8B8;
+#   endif
+                        _channels = 4;
+                    }
+                }break;
+            case PF_A8B8G8R8:
+                {
+                    _channels = 4;
+                }break;
+            case PF_A8R8G8B8:
+                {
+                    _channels = 4;
+                }break;
+            default:
+                {
+                }break;
+            }
+        }
 
 		(void)_depth; //ToDo
 	}
@@ -550,12 +615,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterfacePtr RenderTextureManager::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels )
 	{
-		uint32_t id = ++m_textureEnumerator;
+		RenderTexturePtr texture = m_factoryRenderTexture.createObject();
 
-		RenderTexture * texture = m_factoryRenderTexture.createObject();
+        uint32_t id = ++m_textureEnumerator;
 
-        texture->setServiceProvider( m_serviceProvider );
-		texture->initialize( _image, _mipmaps, _width, _height, _channels, id );
+		texture->initialize( m_serviceProvider, id, _image, _mipmaps, _width, _height, _channels );
 
 		return texture;
 	}
@@ -623,7 +687,7 @@ namespace Menge
 			}
 
 			//this->sweezleAlpha( _texture, textureBuffer, pitch );
-			if( mipmaps == 1 )
+            if( mipmaps == 1 && _texture->isPow2() == false )
 			{
 				this->imageQuality( _texture, textureBuffer, pitch );
 			}

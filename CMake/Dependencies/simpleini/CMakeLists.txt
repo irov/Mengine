@@ -18,4 +18,4 @@ include_directories( ${SOURCE_DIR}../icu/source/common )
 
 #TARGET_LINK_LIBRARIES(SimpleIni  ${SOURCE_DIR}/libicu_static.a )
 
-add_library( ${PROJECT_NAME}_static STATIC ${sources} )
+add_library( ${PROJECT_NAME} STATIC ${sources} )

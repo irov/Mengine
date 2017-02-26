@@ -74,4 +74,4 @@ include_directories(${THIRDPARTY_DIR}/stdex/include)
 include_directories(${SOURCE_DIR})
 
 
-add_library( ${PROJECT_NAME}_static STATIC ${jpeg_sources} )
+add_library( ${PROJECT_NAME} STATIC ${jpeg_sources} )

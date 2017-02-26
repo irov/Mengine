@@ -40,7 +40,7 @@ namespace Menge
         m_hwPixelFormat = _hwPixelFormat;
     }
 	///////////////////////////////////////////////////////////////////////////
-	void * DX9RenderImage::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+	Pointer DX9RenderImage::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
 	{
 		DWORD flags;
 		if( _readOnly == true )

@@ -24,10 +24,10 @@ call:getdepend http://www.zlib.net/zlib-1.2.11.tar.gz zlib-1.2.11.tar.gz zlib-1.
 call:getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.2.zip libogg-1.3.2.zip libogg-1.3.2 libogg
 call:getdepend http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.zip libvorbis-1.3.5.zip libvorbis-1.3.5 libvorbis
 call:getdepend http://downloads.xiph.org/releases/theora/libtheora-1.1.1.zip libtheora-1.1.1.zip libtheora-1.1.1 libtheora
-
+call:getdepend http://download.savannah.gnu.org/releases/freetype/freetype-2.7.1.tar.gz freetype-2.7.1.tar.gz freetype-2.7.1.tar freetype-2.7.1 freetype
 call:getdepend_2 https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-0.6.0.tar.gz libwebp-0.6.0.tar.gz libwebp-0.6.0.tar libwebp-0.6.0 libwebp
-call:getdepend_2 http://kcat.strangesoft.net/openal-releases/openal-soft-1.17.2.tar.bz2 openal-soft-1.17.2.tar.bz2 openal-soft-1.17.2.tar openal-soft-1.17.2 openal-soft
 
+call:getdepend_2 http://kcat.strangesoft.net/openal-releases/openal-soft-1.17.2.tar.bz2 openal-soft-1.17.2.tar.bz2 openal-soft-1.17.2.tar openal-soft-1.17.2 openal-soft
 call:getdepend_2 https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz Python-2.7.13.tgz Python-2.7.13.tar Python-2.7.13 Python
 call:getdepend_2 https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz Python-3.5.1.tgz Python-3.5.1.tar Python-3.5.1 Python3
 
@@ -41,7 +41,7 @@ call:svndepend https://github.com/irov/pybind.git/trunk pybind
 call:svndepend https://github.com/irov/metabuf.git/trunk metabuf
 call:svndepend https://github.com/irov/stdex.git/trunk stdex
 call:svndepend https://github.com/irov/movie.git/trunk libmovie
-call:svndepend http://svn.code.sf.net/p/utfcpp/code/v2_0 utf8
+call:svndepend https://github.com/nemtrif/utfcpp.git/trunk utf8
 call:svndepend https://github.com/lz4/lz4.git/trunk lz4
 call:svndepend https://github.com/irov/fastpathfinder.git/trunk fastpathfinder
 call:svndepend https://github.com/zzzzrrr/poly2tri/trunk poly2tri

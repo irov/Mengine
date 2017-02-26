@@ -27,10 +27,9 @@ namespace Menge
     typedef stdex::intrusive_ptr<Box2DBodyEventReceiver> Box2DBodyEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
     class Box2DBody
-        : public FactorablePtr
+		: public Servant
 		, public Scriptable
 		, public Eventable
-		, public Servant
     {
         EVENT_RECEIVER( Box2DBodyEventReceiver );
 

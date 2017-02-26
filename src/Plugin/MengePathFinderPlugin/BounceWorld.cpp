@@ -22,7 +22,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	BounceWorld::BounceWorld()
 		: m_serviceProvider( nullptr )
-		, m_scriptWrapper( nullptr )
 		, m_remove( false )
 	{
 	}

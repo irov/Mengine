@@ -35,14 +35,16 @@ namespace Menge
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    static PyObject * s_Spine_setEventListener( Spine * _spine, PyObject * _args, PyObject * _kwds )
+    static PyObject * s_Spine_setEventListener( pybind::kernel_interface * _kernel, Spine * _spine, PyObject * _args, PyObject * _kwds )
     {
+        (void)_args;
+
         if( _kwds == nullptr )
         {
             return pybind::ret_none();
         }
 
-        pybind::dict py_kwds( _kwds );
+        pybind::dict py_kwds( _kernel, _kwds );
         Helper::registerAnimatableEventReceiver<PythonSpineEventReceiver>( py_kwds, _spine );
         
         Helper::registerEventReceiver<PythonSpineEventReceiver>( py_kwds, _spine, "onSpineEvent", EVENT_SPINE_EVENT );
@@ -73,7 +75,7 @@ namespace Menge
 			.def( "setStateAnimationFreeze", &Spine::setStateAnimationFreeze )
 			.def( "getStateAnimationFreeze", &Spine::getStateAnimationFreeze )
 			.def( "getStateAnimationDuration", &Spine::getStateAnimationDuration )
-            .def_static_native( "setEventListener", &s_Spine_setEventListener )
+            .def_static_native_kernel( "setEventListener", &s_Spine_setEventListener )
 			;
 
 		pybind::interface_<ResourceSpine, pybind::bases<ResourceReference> >( kernel, "ResourceSpine", false )

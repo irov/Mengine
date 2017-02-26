@@ -7,7 +7,7 @@
 #	include "Kernel/NodePrototypeGenerator.h"
 #	include "Kernel/ScriptablePrototypeGenerator.h"
 
-#	include "PythonScriptWrapper/ScriptClassWrapper.h"
+#   include "Kernel/ScriptWrapper.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -87,16 +87,16 @@ namespace Menge
 			;
 
 		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeBox2DBody" ), new ClassScriptWrapper<NodeBox2DBody>() );
+			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeBox2DBody" ), new ScriptWrapper<NodeBox2DBody>() );
 
 		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DBody" ), new ClassScriptWrapper<Box2DBody>() );
+			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DBody" ), new ScriptWrapper<Box2DBody>() );
 
 		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DJoint" ), new ClassScriptWrapper<Box2DJoint>() );
+			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DJoint" ), new ScriptWrapper<Box2DJoint>() );
 
 		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DWorld" ), new ClassScriptWrapper<Box2DWorld>() );
+			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DWorld" ), new ScriptWrapper<Box2DWorld>() );
 
 		if( PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeBox2DBody" ), new NodePrototypeGenerator<NodeBox2DBody, 128> ) == false )

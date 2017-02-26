@@ -123,19 +123,15 @@
 
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/PhysicSystemInterface.h"
-
-#	include "Kernel/Identity.h"
-
-#	include "Kernel/Affector.h"
-
-#   include "Kernel/ThreadTask.h"
-
 #   include "Interface/ThreadSystemInterface.h"
 
-#   include "PythonEventReceiver.h"
-#   include "PythonAnimatableEventReceiver.h"
+#	include "Kernel/Identity.h"
+#	include "Kernel/Affector.h"
+#   include "Kernel/ThreadTask.h"
+#   include "Kernel/ScriptEventReceiver.h"
+#   include "Kernel/ScriptWrapper.h"
 
-#   include "ScriptClassWrapper.h"
+#   include "PythonAnimatableEventReceiver.h"
 
 #	include "Core/Polygon.h"
 #	include "Core/MemoryHelper.h"
@@ -2085,7 +2081,7 @@ namespace Menge
 			return id;
 		}
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_SurfaceVideo_setEventListener( SurfaceVideo * _surface, PyObject * _args, PyObject * _kwds )
+        PyObject * s_SurfaceVideo_setEventListener( pybind::kernel_interface * _kernel, SurfaceVideo * _surface, PyObject * _args, PyObject * _kwds )
         {
             (void)_args;
 
@@ -2094,7 +2090,7 @@ namespace Menge
                 return pybind::ret_none();
             }
                         
-            pybind::dict py_kwds( _kwds );
+            pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
 
             if( py_kwds.empty() == false )
@@ -2105,7 +2101,7 @@ namespace Menge
             return pybind::ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_SurfaceImageSequence_setEventListener( SurfaceImageSequence * _surface, PyObject * _args, PyObject * _kwds )
+        PyObject * s_SurfaceImageSequence_setEventListener( pybind::kernel_interface * _kernel, SurfaceImageSequence * _surface, PyObject * _args, PyObject * _kwds )
         {
             (void)_args;
 
@@ -2114,7 +2110,7 @@ namespace Menge
                 return pybind::ret_none();
             }
 
-            pybind::dict py_kwds( _kwds );
+            pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
 
             if( py_kwds.empty() == false )
@@ -2125,7 +2121,7 @@ namespace Menge
             return pybind::ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_SurfaceSound_setEventListener( SurfaceSound * _surface, PyObject * _args, PyObject * _kwds )
+        PyObject * s_SurfaceSound_setEventListener( pybind::kernel_interface * _kernel, SurfaceSound * _surface, PyObject * _args, PyObject * _kwds )
         {
             (void)_args;
 
@@ -2134,7 +2130,7 @@ namespace Menge
                 return pybind::ret_none();
             }
 
-            pybind::dict py_kwds( _kwds );
+            pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
 
             if( py_kwds.empty() == false )
@@ -2146,7 +2142,7 @@ namespace Menge
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonMeshEventReceiver
-            : public PythonEventReceiver
+            : public ScriptEventReceiver
             , public MeshgetEventReceiver
         {
         public:
@@ -2156,7 +2152,7 @@ namespace Menge
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_Meshget_setEventListener( Meshget * _node, PyObject * _args, PyObject * _kwds )
+        PyObject * s_Meshget_setEventListener( pybind::kernel_interface * _kernel,  Meshget * _node, PyObject * _args, PyObject * _kwds )
         {
             (void)_args;
 
@@ -2165,8 +2161,8 @@ namespace Menge
                 return pybind::ret_none();
             }
 
-            pybind::dict py_kwds( _kwds );
-            Helper::registerEventReceiver<PythonMeshEventReceiver>( py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
+            pybind::dict py_kwds( _kernel, _kwds );
+            Helper::registerScriptEventReceiver<PythonMeshEventReceiver>( py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
 
             if( py_kwds.empty() == false )
             {
@@ -2176,7 +2172,7 @@ namespace Menge
             return pybind::ret_none();
         }        
         ////////////////////////////////////////////////////////////////////////////        
-        PyObject * s_ParticleEmitter2_setEventListener( ParticleEmitter2 * _node, PyObject * _args, PyObject * _kwds )
+        PyObject * s_ParticleEmitter2_setEventListener( pybind::kernel_interface * _kernel, ParticleEmitter2 * _node, PyObject * _args, PyObject * _kwds )
         {
             (void)_args;
 
@@ -2185,7 +2181,7 @@ namespace Menge
                 return pybind::ret_none();
             }
 
-            pybind::dict py_kwds( _kwds );
+            pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<>( py_kwds, _node );
 
             if( py_kwds.empty() == false )
@@ -2197,7 +2193,7 @@ namespace Menge
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonScriptHolderEventReceiver
-            : public PythonEventReceiver
+            : public ScriptEventReceiver
             , public ScriptHolderEventReceiver
         {
         public:
@@ -2212,7 +2208,7 @@ namespace Menge
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_ScriptHolder_setEventListener( ScriptHolder * _node, PyObject * _args, PyObject * _kwds )
+        PyObject * s_ScriptHolder_setEventListener( pybind::kernel_interface * _kernel, ScriptHolder * _node, PyObject * _args, PyObject * _kwds )
         {
             (void)_args;
 
@@ -2221,9 +2217,9 @@ namespace Menge
                 return pybind::ret_none();
             }
 
-            pybind::dict py_kwds( _kwds );
-            Helper::registerEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
-            Helper::registerEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
+            pybind::dict py_kwds( _kernel, _kwds );
+            Helper::registerScriptEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
+            Helper::registerScriptEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
 
             if( py_kwds.empty() == false )
             {
@@ -2234,7 +2230,7 @@ namespace Menge
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonHotSpotEventReceiver
-            : public PythonEventReceiver
+            : public ScriptEventReceiver
             , public HotSpotEventReceiver
         {
         public:
@@ -2304,7 +2300,7 @@ namespace Menge
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_HotSpot_setEventListener( HotSpot * _node, PyObject * _args, PyObject * _kwds )
+        PyObject * s_HotSpot_setEventListener( pybind::kernel_interface * _kernel, HotSpot * _node, PyObject * _args, PyObject * _kwds )
         {
             (void)_args;
 
@@ -2313,19 +2309,19 @@ namespace Menge
                 return pybind::ret_none();
             }
 
-            pybind::dict py_kwds( _kwds );
+            pybind::dict py_kwds( _kernel, _kwds );
 
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleKeyEvent", EVENT_KEY );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEvent", EVENT_MOUSE_BUTTON );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_MOUSE_BUTTON_BEGIN );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_MOUSE_BUTTON_END );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseMove", EVENT_MOUSE_MOVE );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseWheel", EVENT_MOUSE_WHEEL );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseEnter", EVENT_MOUSE_ENTER );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseLeave", EVENT_MOUSE_LEAVE );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseOverDestroy", EVENT_MOUSE_OVER_DESTROY );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onActivate", EVENT_ACTIVATE );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleKeyEvent", EVENT_KEY );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEvent", EVENT_MOUSE_BUTTON );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_MOUSE_BUTTON_BEGIN );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_MOUSE_BUTTON_END );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseMove", EVENT_MOUSE_MOVE );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseWheel", EVENT_MOUSE_WHEEL );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseEnter", EVENT_MOUSE_ENTER );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseLeave", EVENT_MOUSE_LEAVE );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseOverDestroy", EVENT_MOUSE_OVER_DESTROY );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onActivate", EVENT_ACTIVATE );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
 
             if( py_kwds.empty() == false )
             {
@@ -2365,7 +2361,7 @@ namespace Menge
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_Movie_setEventListener( Movie * _node, PyObject * _args, PyObject * _kwds )
+        PyObject * s_Movie_setEventListener( pybind::kernel_interface * _kernel, Movie * _node, PyObject * _args, PyObject * _kwds )
         {
             (void)_args;
 
@@ -2374,12 +2370,12 @@ namespace Menge
                 return pybind::ret_none();
             }
 
-            pybind::dict py_kwds( _kwds );
+            pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<PythonMovieEventReceiver>( py_kwds, _node );
 
-            Helper::registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL );
-            Helper::registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL );
-            Helper::registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL );
+            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL );
+            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL );
+            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL );
 
             if( py_kwds.empty() == false )
             {
@@ -2400,20 +2396,6 @@ namespace Menge
 
             return pybind::ret_none();
         }
-        ////////////////////////////////////////////////////////////////////////////
-        //PyObject * s_Node_setEventListener( Node * _node, PyObject * _args, PyObject * _kwds )
-        //{
-        //    if( _kwds == nullptr )
-        //    {
-        //        return pybind::ret_none();
-        //    }
-
-        //    pybind::dict py_kwds( _kwds );
-        //    NodeEventVisitor visitor( py_kwds );
-        //    _node->visit( &visitor );
-
-        //    return pybind::ret_none();
-        //}        
 		//////////////////////////////////////////////////////////////////////////
 		void s_Animatable_resume( Animatable * _animatable )
 		{
@@ -6560,7 +6542,7 @@ namespace Menge
 	static void classWrapping( ServiceProviderInterface * _serviceProvider )
 	{
 # define SCRIPT_CLASS_WRAPPING( serviceProvider, Class )\
-    SCRIPT_SERVICE(serviceProvider)->setWrapper( Helper::stringizeString(serviceProvider, #Class), new ClassScriptWrapper<Class>() )
+    SCRIPT_SERVICE(serviceProvider)->setWrapper( Helper::stringizeString(serviceProvider, #Class), new ScriptWrapper<Class>() )
 
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Node );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer );
@@ -7079,10 +7061,8 @@ namespace Menge
 			.def_proxy_args_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::accAngleTo )
 			;
 
-		pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Eventable, Materialable> >( kernel, "Surface", false )
+		pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Materialable, Resource> >( kernel, "Surface", false )
 			.def_smart_pointer()
-			.def_native_kernel( "setEventListener", &Surface::setEventListener )
-			.def( "removeEventListener", &Surface::removeEventListener )
             .def( "getMaxSize", &Surface::getMaxSize )
             .def( "getSize", &Surface::getSize )
             .def( "getOffset", &Surface::getOffset )
@@ -7099,14 +7079,14 @@ namespace Menge
 			.def( "getWidth", &SurfaceVideo::getWidth )
 			.def( "getHeight", &SurfaceVideo::getHeight )
 			.def( "getDuration", &SurfaceVideo::getDuration )
-            .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceVideo_setEventListener )
+            .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceVideo_setEventListener )
 			;
 
 		pybind::interface_<SurfaceSound, pybind::bases<Surface, Eventable, Animatable, Soundable> >( kernel, "SurfaceSound", false )
 			.def( "setResourceSound", &SurfaceSound::setResourceSound )
 			.def( "getResourceSound", &SurfaceSound::getResourceSound )
 			.def( "getDuration", &SurfaceSound::getDuration )
-            .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceSound_setEventListener )
+            .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceSound_setEventListener )
 			;
 
         pybind::interface_<SurfaceImage, pybind::bases<Surface> >( kernel, "SurfaceImage", false )
@@ -7121,7 +7101,7 @@ namespace Menge
 			.def( "getFrameDelay", &SurfaceImageSequence::getFrameDelay )
 			.def( "setCurrentFrame", &SurfaceImageSequence::setCurrentFrame )
 			.def( "getCurrentFrame", &SurfaceImageSequence::getCurrentFrame )
-            .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceImageSequence_setEventListener )
+            .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceImageSequence_setEventListener )
 			;
 
         pybind::interface_<SurfaceSolidColor, pybind::bases<Surface> >( kernel, "SurfaceSolidColor", false )
@@ -7274,7 +7254,7 @@ namespace Menge
 
 					.def( "setEmitterRandomMode", &ParticleEmitter2::setEmitterRandomMode )
 					.def( "getEmitterRandomMode", &ParticleEmitter2::getEmitterRandomMode )
-                    .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_ParticleEmitter2_setEventListener )
+                    .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_ParticleEmitter2_setEventListener )
 					;
 
 				pybind::interface_<SoundEmitter, pybind::bases<Node> >( kernel, "SoundEmitter", false )
@@ -7350,7 +7330,7 @@ namespace Menge
 					;
 
 				pybind::interface_<ScriptHolder, pybind::bases<Node, Eventable> >( kernel, "ScriptHolder", false )
-                    .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_ScriptHolder_setEventListener )
+                    .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_ScriptHolder_setEventListener )
 					;
 
 				pybind::interface_<Point, pybind::bases<Node> >( kernel, "Point", false )
@@ -7419,7 +7399,7 @@ namespace Menge
 					.def( "setDefaultHandle", &HotSpot::setDefaultHandle )
 					.def( "getDefaultHandle", &HotSpot::getDefaultHandle )
 					.def( "isMousePickerOver", &HotSpot::isMousePickerOver )
-                    .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_setEventListener )
+                    .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_setEventListener )
                     .def_proxy_native( "removeEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_removeEventListener )
 					;
 
@@ -7565,14 +7545,14 @@ namespace Menge
 					.def_proxy_static( "getMovieSlotOffsetPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotOffsetPosition )
 					.def_proxy_static( "attachMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_attachMovieSlotNode )
 					.def_proxy_static( "removeAllMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_removeAllMovieSlotNode )
-                    .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Movie_setEventListener )
+                    .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Movie_setEventListener )
 					;
 
 				pybind::interface_<Meshget, pybind::bases<Node, Eventable, Materialable> >( kernel, "Meshget", false )
 					.def( "setResourceImage", &Meshget::setResourceImage )
 					.def( "getResourceImage", &Meshget::getResourceImage )
 					.def( "setVertices", &Meshget::setVertices )
-                    .def_proxy_native( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Meshget_setEventListener )
+                    .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Meshget_setEventListener )
 					;
 
 				pybind::interface_<MovieSlot, pybind::bases<Node> >( kernel, "MovieSlot", false )

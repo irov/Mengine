@@ -12,4 +12,4 @@ set( GLee_sources
 )
 
 include_directories(${SOURCE_DIR})
-add_library( ${PROJECT_NAME}_static STATIC ${GLee_sources} )
+add_library( ${PROJECT_NAME} STATIC ${GLee_sources} )

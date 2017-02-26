@@ -63,5 +63,5 @@ endif(NOT M_LIBRARY AND NOT WIN32)
 # NOW BUILD OUR TARGET
 include_directories(${SOURCE_DIR} ${ZLIB_INCLUDE_DIR})
 
-add_library( ${PROJECT_NAME}_static STATIC ${png_sources} )
+add_library( ${PROJECT_NAME} STATIC ${png_sources} )
 

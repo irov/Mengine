@@ -14,23 +14,11 @@ if(NOT MSVC)
     endif()
 endif()
 
-set( metabuf_sources
+set( sources
     ${SOURCE_DIR}/metabuf/Metabuf.cpp
     )
     
 include_directories(${SOURCE_DIR})
 include_directories(${THIRDPARTY_DIR}/stdex/include)         
 
-add_library( metabuf_static STATIC ${metabuf_sources} )
-
-if( DEFINED MENGINE_TARGET_MSVC )
-    set( xml2metabuf_sources
-    ${SOURCE_DIR}/xml2metabuf/Xml2Metabuf.cpp
-    ${SOURCE_DIR}/xml2metabuf/Xml2Metacode.cpp
-    ${SOURCE_DIR}/xml2metabuf/XmlProtocol.cpp
-    )
-
-    include_directories(${SOURCE_DIR}/include ${THIRDPARTY_DIR}/pugixml/src)
-
-    add_library( xml2metabuf_static STATIC ${xml2metabuf_sources} )
-endif()
+add_library( ${PROJECT_NAME} STATIC ${sources} )

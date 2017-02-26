@@ -12,4 +12,4 @@ ${SOURCE_DIR}/src/pugixml.cpp
 
 add_definitions(-DPUGIXML_NO_XPATH)
 
-add_library( ${PROJECT_NAME}_static STATIC ${sources} )
+add_library( ${PROJECT_NAME} STATIC ${sources} )

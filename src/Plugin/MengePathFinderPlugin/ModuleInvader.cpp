@@ -4,7 +4,7 @@
 #	include "Interface/PlayerInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "PythonScriptWrapper/ScriptClassWrapper.h"
+#	include "Kernel/ScriptEventReceiver.h"
 
 #	include "Kernel/NodePrototypeGenerator.h"
 

@@ -16,5 +16,5 @@ set(TINYXML_SRCS
 
 include_directories(${SOURCE_DIR}/..)
 
-add_library( ${PROJECT_NAME}_static STATIC ${TINYXML_SRCS} )
+add_library( ${PROJECT_NAME} STATIC ${TINYXML_SRCS} )
 

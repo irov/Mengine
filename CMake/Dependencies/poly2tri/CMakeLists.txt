@@ -13,4 +13,4 @@ ${SOURCE_DIR}/sweep/sweep.cc
 ${SOURCE_DIR}/sweep/sweep_context.cc
 )
 
-add_library( ${PROJECT_NAME}_static STATIC ${sources} )
+add_library( ${PROJECT_NAME} STATIC ${sources} )

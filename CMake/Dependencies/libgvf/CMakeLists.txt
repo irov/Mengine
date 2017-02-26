@@ -14,4 +14,4 @@ ${SOURCE_DIR}/gvf_encoder.c
 include_directories(${SOURCE_DIR})
 include_directories(${THIRDPARTY_DIR}/lz4)
 
-add_library( ${PROJECT_NAME}_static STATIC ${sources} )
+add_library( ${PROJECT_NAME} STATIC ${sources} )

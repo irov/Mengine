@@ -35,6 +35,15 @@ src
 
 add_definitions(-DUNICODE)
 
+IF(MENGINE_PLUGIN_SPINE)
+    add_definitions(-DMENGINE_PLUGIN_SPINE)
+ENDIF()
+
+IF(MENGINE_PLUGIN_TTF)
+    add_definitions(-DMENGINE_PLUGIN_TTF)
+ENDIF()
+
+
 if(MINGW)
     # resource compilation for mingw
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/WinApplication_rc.o

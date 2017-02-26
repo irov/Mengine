@@ -523,9 +523,7 @@ namespace Menge
 
 		if( it_cache_found == m_resourcesCache.end() )
 		{
-			TVectorResources new_resources;
-			
-			it_cache_found = m_resourcesCache.insert( it_cache_found, std::make_pair( cache_key, new_resources ) );
+			it_cache_found = m_resourcesCache.insert( it_cache_found, std::make_pair( cache_key, TVectorResources() ) );
 		}
 		
 		TVectorResources & cahce_resources = it_cache_found->second;

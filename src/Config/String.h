@@ -9,6 +9,7 @@ namespace Menge
 {
     typedef stdex::string String;
     typedef stdex::wstring WString;
+	typedef stdex::u32string U32String;
 
     typedef stdex::vector<Char> TVectorChar;
     typedef stdex::vector<String> TVectorString;

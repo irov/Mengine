@@ -4,7 +4,7 @@
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/ScriptSystemInterface.h"
 
-#	include "PythonScriptWrapper/ScriptClassWrapper.h"
+#   include "Kernel/ScriptWrapper.h"
 
 #	include "Kernel/NodePrototypeGenerator.h"
 #	include "Kernel/ResourcePrototypeGenerator.h"
@@ -132,10 +132,10 @@ namespace Menge
 			;
 		
 		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2" ), new ClassScriptWrapper<Movie2>() );
+			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2" ), new ScriptWrapper<Movie2>() );
 
 		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceMovie2" ), new ClassScriptWrapper<ResourceMovie2>() );
+			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceMovie2" ), new ScriptWrapper<ResourceMovie2>() );
 
 		if( PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2" ), new NodePrototypeGenerator<Movie2, 128> ) == false )

@@ -2,7 +2,7 @@
 
 #   include "Interface/StringizeInterface.h"
 
-#   include "PythonEventReceiver.h"
+#   include "Kernel/ScriptEventReceiver.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -14,7 +14,7 @@ namespace Menge
     namespace
     {
         class PythonEntityEventReceiver
-            : public PythonEventReceiver
+            : public ScriptEventReceiver
             , public EntityEventReceiver
         {
         public:
@@ -121,14 +121,14 @@ namespace Menge
 			}
 		}
 
-		Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onCreate", EVENT_ENTITY_CREATE );
-        Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onDestroy", EVENT_ENTITY_DESTROY );
-        Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onPreparation", EVENT_ENTITY_PREPARATION );
-        Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onActivate", EVENT_ENTITY_ACTIVATE );
-        Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onPreparationDeactivate", EVENT_ENTITY_PREPARATION_DEACTIVATE );
-        Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onDeactivate", EVENT_ENTITY_DEACTIVATE );
-        Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onCompile", EVENT_ENTITY_COMPILE );
-        Helper::registerEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onRelease", EVENT_ENTITY_RELEASE );
+		Helper::registerScriptEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onCreate", EVENT_ENTITY_CREATE );
+        Helper::registerScriptEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onDestroy", EVENT_ENTITY_DESTROY );
+        Helper::registerScriptEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onPreparation", EVENT_ENTITY_PREPARATION );
+        Helper::registerScriptEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onActivate", EVENT_ENTITY_ACTIVATE );
+        Helper::registerScriptEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onPreparationDeactivate", EVENT_ENTITY_PREPARATION_DEACTIVATE );
+        Helper::registerScriptEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onDeactivate", EVENT_ENTITY_DEACTIVATE );
+        Helper::registerScriptEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onCompile", EVENT_ENTITY_COMPILE );
+        Helper::registerScriptEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onRelease", EVENT_ENTITY_RELEASE );
 
 		//this->registerEventMethod( EVENT_ENTITY_DESTROY, "onDestroy", py_type );
 

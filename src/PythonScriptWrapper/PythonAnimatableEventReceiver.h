@@ -1,7 +1,6 @@
 #   pragma once
 
-#   include "PythonEventReceiver.h"
-
+#   include "Kernel/ScriptEventReceiver.h"
 #   include "Kernel/Animatable.h"
 
 namespace Menge
@@ -9,7 +8,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     template<class T_AnimatableEventReceiver = AnimatableEventReceiver>
     class PythonAnimatableEventReceiver
-        : public PythonEventReceiver
+        : public ScriptEventReceiver
         , public T_AnimatableEventReceiver
     {
     public:
@@ -52,16 +51,16 @@ namespace Menge
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        template<class T_AnimatableReceiver = PythonAnimatableEventReceiver<>>
+        template<class T_AnimatableReceiver = PythonAnimatableEventReceiver<> >
         void registerAnimatableEventReceiver( const pybind::dict & _kwds, Eventable * _eventable )
         {
-            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatablePlay", EVENT_ANIMATABLE_PLAY );
-            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableRestart", EVENT_ANIMATABLE_RESTART );
-            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatablePause", EVENT_ANIMATABLE_PAUSE );
-            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableResume", EVENT_ANIMATABLE_RESUME );
-            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableStop", EVENT_ANIMATABLE_STOP );
-            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableEnd", EVENT_ANIMATABLE_END );
-            registerEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableInterrupt", EVENT_ANIMATABLE_INTERRUPT );
+            Helper::registerScriptEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatablePlay", EVENT_ANIMATABLE_PLAY );
+            Helper::registerScriptEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableRestart", EVENT_ANIMATABLE_RESTART );
+            Helper::registerScriptEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatablePause", EVENT_ANIMATABLE_PAUSE );
+            Helper::registerScriptEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableResume", EVENT_ANIMATABLE_RESUME );
+            Helper::registerScriptEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableStop", EVENT_ANIMATABLE_STOP );
+            Helper::registerScriptEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableEnd", EVENT_ANIMATABLE_END );
+            Helper::registerScriptEventReceiver<T_AnimatableReceiver>( _kwds, _eventable, "onAnimatableInterrupt", EVENT_ANIMATABLE_INTERRUPT );
         }
     }
 }

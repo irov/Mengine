@@ -13,6 +13,10 @@ namespace Menge
         : public GOAP::Source
         , public pybind::bindable
     {
+    public:
+        PybindSource();
+        ~PybindSource();
+
     protected:
         void addFunction( const pybind::object & _obj, const pybind::detail::args_operator_t & _args );
         void addCallback( const pybind::object & _obj, const pybind::detail::args_operator_t & _args );
@@ -27,6 +31,9 @@ namespace Menge
 
     protected:
         PyObject * _embedded() override;
+
+    public:
+        pybind::kernel_interface * m_kernel;
     };
 
     typedef GOAP::IntrusivePtr<PybindSource> PybindSourcePtr;

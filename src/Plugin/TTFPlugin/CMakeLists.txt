@@ -4,12 +4,15 @@ ADD_FILTER(
 src
     TTFPlugin.h
 	TTFPlugin.cpp
+    TTFServiceInterface.h
+    TTFText.h
+    TTFText.cpp
     TTFFont.h
     TTFFont.cpp
     TTFFontManager.h
-    TTFFontManager.cpp
-    TTFAtlasManager.h
-    TTFAtlasManager.cpp
+    TTFFontManager.cpp    
+    TTFAtlasService.h
+    TTFAtlasService.cpp
 )
 
 #add_definitions(-DMENGE_PLUGIN_DLL)
@@ -17,6 +20,7 @@ src
 INCLUDE_DIRECTORIES( 
         ${Mengine_SOURCE_DIR}/Utils 
         ${THIRDPARTY_DIR}/freetype/include
+        ${THIRDPARTY_DIR}/pybind/include
         ${THIRDPARTY_DIR}/utf8/source        
 )
 
@@ -40,7 +44,7 @@ SET( APPLICATION_LIBS
     Archive
     Factory
     Kernel
-    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}freetype${CMAKE_DEBUG_POSTFIX}${MENGINE_LIB_SUFFIX}
+    ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}freetype${MENGINE_LIB_SUFFIX}
     )
 
 SET( APPLICATION_LIBS

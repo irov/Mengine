@@ -28,5 +28,5 @@ ${SOURCE_DIR}/src/TranscriptorRace.cpp
 
 include_directories(${SOURCE_DIR}/include)
 
-add_library( ${PROJECT_NAME}_static STATIC ${sources} )
+add_library( ${PROJECT_NAME} STATIC ${sources} )
 

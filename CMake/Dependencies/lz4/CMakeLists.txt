@@ -12,4 +12,4 @@ ${SOURCE_DIR}/lib/lz4hc.c
 
 include_directories(${SOURCE_DIR}/lib)
 
-add_library( ${PROJECT_NAME}_static STATIC ${SOURCES} )
+add_library( ${PROJECT_NAME} STATIC ${SOURCES} )

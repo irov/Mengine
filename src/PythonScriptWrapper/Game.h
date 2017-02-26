@@ -163,7 +163,7 @@ namespace Menge
 		void turnSound( bool _turn ) override;
 
 	public:
-		const WString & getParam( const ConstString & _paramName ) const override;
+		WString getParam( const ConstString & _paramName ) const override;
 		bool hasParam( const ConstString & _paramName ) const override;
 
 	public:

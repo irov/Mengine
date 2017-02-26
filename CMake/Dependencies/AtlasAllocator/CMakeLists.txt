@@ -11,4 +11,4 @@ ${SOURCE_DIR}/src/AtlasAllocator.h
 ${SOURCE_DIR}/src/AtlasAllocator.cpp
 )
 
-add_library( ${PROJECT_NAME}_static STATIC ${sources} )
+add_library( ${PROJECT_NAME} STATIC ${sources} )

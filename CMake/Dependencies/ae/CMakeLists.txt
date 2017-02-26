@@ -15,4 +15,4 @@ include_directories( ${SOURCE_DIR}/Headers )
 include_directories( ${SOURCE_DIR}/Headers/SP )
 include_directories( ${SOURCE_DIR}/Headers/Win )
 
-add_library( ${PROJECT_NAME}_static STATIC ${sources} )
+add_library( ${PROJECT_NAME} STATIC ${sources} )

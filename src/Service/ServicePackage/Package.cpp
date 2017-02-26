@@ -333,8 +333,8 @@ namespace Menge
 			return false;
 		}
 
-		const Tags & platformTags = PLATFORM_SERVICE( m_serviceProvider )
-			->getPlatformTags();
+		//const Tags & platformTags = PLATFORM_SERVICE( m_serviceProvider )
+		//	->getPlatformTags();
 
 		SCRIPT_SERVICE( m_serviceProvider )
 			->addModulePath( m_name, m_scriptsPackages );

@@ -51,5 +51,5 @@ add_definitions(-DHAVE_CONFIG_H)
 # NOW BUILD OUR TARGET
 include_directories( ${SOURCE_DIR} ${THIRDPARTY_DIR}/zlib )
 
-add_library( ${PROJECT_NAME}_static STATIC ${sources} )
+add_library( ${PROJECT_NAME} STATIC ${sources} )
 

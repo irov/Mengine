@@ -16,11 +16,11 @@ namespace pybind
     template<typename T>
     struct extract_specialized<GOAP::IntrusivePtr<T> >
     {
-        T * operator () ( PyObject * _obj )
+        T * operator () ( kernel_interface * _kernel, PyObject * _obj )
         {
             T * value = nullptr;
 
-            if( extract_value( _obj, value, true ) == false )
+            if( extract_value( _kernel, _obj, value, true ) == false )
             {
                 const std::type_info & tinfo = typeid(T *);
 
@@ -40,11 +40,11 @@ namespace pybind
     template<typename T>
     struct ptr_throw_specialized < GOAP::IntrusivePtr<T> >
     {
-        PyObject * operator () ( const GOAP::IntrusivePtr<T> & _t )
+        PyObject * operator () ( kernel_interface * _kernel, const GOAP::IntrusivePtr<T> & _t )
         {
             T * t_ptr = _t.get();
 
-            return ptr_throw_i( t_ptr );
+            return ptr_throw_i( _kernel, t_ptr );
         }
     };
 }

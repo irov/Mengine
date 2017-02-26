@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include "Interface/COMMengineInterface.h"
-
 #	include "Kernel/ResourceImage.h"
 
 #	include "Config/Typedef.h"

@@ -4,8 +4,7 @@
 #	include "Interface/PlayerInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "PythonScriptWrapper/ScriptClassWrapper.h"
-
+#   include "Kernel/ScriptWrapper.h"
 #	include "Kernel/NodePrototypeGenerator.h"
 
 #	include "pybind/pybind.hpp"
@@ -52,7 +51,7 @@ namespace Menge
 			;
 
 		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeCollisionActor" ), new ClassScriptWrapper<NodeCollisionActor>() );
+			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeCollisionActor" ), new ScriptWrapper<NodeCollisionActor>() );
 
 		PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeCollisionActor" ), new NodePrototypeGenerator<NodeCollisionActor, 32>() );

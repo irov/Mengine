@@ -241,6 +241,12 @@ ScheduleManager
 	ScheduleManager.cpp
 	ScheduleManager.h
 )
+
+ADD_FILTER(
+ScriptWrapper
+	ScriptWrapper.h
+	ScriptEventReceiver.h	
+)
    
 INCLUDE_DIRECTORIES( 
     ${Mengine_SOURCE_DIR} 

@@ -2004,6 +2004,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::onDestroyDX9RenderImage_( DX9RenderImage * _image )
 	{
+		(void)_image;
+
 		m_textureCount--;
 
 		//size_t memoryUse = _image->getMemoryUse();

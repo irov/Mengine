@@ -2,10 +2,13 @@
 
 #	include "pybind/bindable.hpp"
 
+#   include "stdex/intrusive_ptr.h"
+
 namespace Menge
 {
-	class ScriptWrapperInterface;
-
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<class ScriptWrapperInterface> ScriptWrapperInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
 	class Scriptable
 		: public pybind::bindable
 	{	
@@ -14,13 +17,13 @@ namespace Menge
 		~Scriptable();
 
 	public:
-		void setScriptWrapper( ScriptWrapperInterface * _scriptWrapper );		
-		ScriptWrapperInterface * getScriptWrapper() const;
+		void setScriptWrapper( const ScriptWrapperInterfacePtr & _scriptWrapper );		
+        const ScriptWrapperInterfacePtr & getScriptWrapper() const;
         	
     protected:
 		PyObject * _embedded() override;
 
 	protected:
-		ScriptWrapperInterface * m_scriptWrapper;
+		ScriptWrapperInterfacePtr m_scriptWrapper;
 	};
 }

@@ -58,12 +58,14 @@ namespace Menge
 	{
 		this->_destroy();
 
-		delete this;
+        bool dynamicLoad = m_dynamicLoad;
 
-		if( m_dynamicLoad == true )
+        delete this;
+
+		if( dynamicLoad == true )
 		{
 			stdex_allocator_finalize();
-		}
+		}        
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PluginBase::_initialize()

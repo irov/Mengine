@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include "Interface/COMInterface.h"
-
 #	include "Factory/FactorablePtr.h"
 
 #	include "Kernel/Identity.h"
@@ -18,8 +16,7 @@
 namespace Menge
 {
 	class Surface
-		: public FactorablePtr
-        , public Servant
+		: public Servant
         , public Identity
         , public Visitable
         , public Scriptable

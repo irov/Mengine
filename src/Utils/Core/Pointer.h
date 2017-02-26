@@ -12,6 +12,11 @@ namespace Menge
 		{
 		}
 
+        Pointer( const Pointer & _pointer )
+            : m_pointer(_pointer.m_pointer)
+        {
+        }
+
 	public:
 		operator void * () const
 		{

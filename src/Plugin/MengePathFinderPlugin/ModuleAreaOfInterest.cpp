@@ -7,8 +7,8 @@
 #	include "NodeAOITrigger.h"
 #	include "NodeAOIActor.h"
 
-#	include "PythonScriptWrapper/ScriptClassWrapper.h"
-#	include "PythonScriptWrapper/PythonEventReceiver.h"
+#   include "Kernel/ScriptWrapper.h"
+#	include "Kernel/ScriptEventReceiver.h"
 
 #	include "Kernel/NodePrototypeGenerator.h"
 
@@ -19,7 +19,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     class PythonNodeAOITriggerEventReceiver
-        : public PythonEventReceiver
+        : public ScriptEventReceiver
         , public NodeAOITriggerEventReceiver
     {
     public:
@@ -38,17 +38,19 @@ namespace Menge
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    PyObject * s_NodeAOITrigger_setEventListener( NodeAOITrigger * _node, PyObject * _args, PyObject * _kwds )
+    PyObject * s_NodeAOITrigger_setEventListener( pybind::kernel_interface * _kernel, NodeAOITrigger * _node, PyObject * _args, PyObject * _kwds )
     {
+        (void)_args;
+
         if( _kwds == nullptr )
         {
             return pybind::ret_none();
         }
 
-        pybind::dict py_kwds( _kwds );
+        pybind::dict py_kwds( _kernel, _kwds );
 
-        Helper::registerEventReceiver<PythonNodeAOITriggerEventReceiver>( py_kwds, _node, "onTriggerEnter", EVENT_NODE_AOI_TRIGGER_ENTER );
-        Helper::registerEventReceiver<PythonNodeAOITriggerEventReceiver>( py_kwds, _node, "onTriggerLeave", EVENT_NODE_AOI_TRIGGER_LEAVE );
+        Helper::registerScriptEventReceiver<PythonNodeAOITriggerEventReceiver>( py_kwds, _node, "onTriggerEnter", EVENT_NODE_AOI_TRIGGER_ENTER );
+        Helper::registerScriptEventReceiver<PythonNodeAOITriggerEventReceiver>( py_kwds, _node, "onTriggerLeave", EVENT_NODE_AOI_TRIGGER_LEAVE );
 
         return pybind::ret_none();
     }
@@ -82,7 +84,7 @@ namespace Menge
 			.def( "getAOI", &NodeAOITrigger::getAOI )
 			.def( "setTriggerUserData", &NodeAOITrigger::setTriggerUserData )
 			.def( "getTriggerUserData", &NodeAOITrigger::getTriggerUserData )
-            .def_static_native( "setEventListener", &s_NodeAOITrigger_setEventListener )
+            .def_static_native_kernel( "setEventListener", &s_NodeAOITrigger_setEventListener )
 			;
 
 		pybind::interface_<NodeAOIActor, pybind::bases<Node> >( kernel, "NodeAOIActor", false )
@@ -97,10 +99,10 @@ namespace Menge
 			;
 
 		SCRIPT_SERVICE(m_serviceProvider)
-			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeAOITrigger" ), new ClassScriptWrapper<NodeAOITrigger>() );
+			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeAOITrigger" ), new ScriptWrapper<NodeAOITrigger>() );
 
 		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeAOIActor" ), new ClassScriptWrapper<NodeAOIActor>() );
+			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeAOIActor" ), new ScriptWrapper<NodeAOIActor>() );
 		
 		PROTOTYPE_SERVICE(m_serviceProvider)
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeAOITrigger" ), new NodePrototypeGenerator<NodeAOITrigger, 32> );

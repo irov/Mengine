@@ -89,11 +89,18 @@ PLUGIN_EXPORT( MengeZip );
 PLUGIN_EXPORT( MengeLZ4 );
 PLUGIN_EXPORT( MengeOggVorbis );
 PLUGIN_EXPORT( MengeWin32FileGroup );
+
+#   ifdef MENGINE_PLUGIN_SPINE
 PLUGIN_EXPORT( Spine );
+#   endif
+
 PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( Box2D );
 PLUGIN_EXPORT( PathFinder );
+
+#   ifdef MENGINE_PLUGIN_TTF
 PLUGIN_EXPORT( TTF );
+#   endif
 
 namespace Menge
 {
@@ -701,13 +708,18 @@ namespace Menge
 		MENGINE_ADD_PLUGIN( MengeOggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
 		MENGINE_ADD_PLUGIN( MengeAmplifier, "initialize Plugin Amplifier..." );
 		MENGINE_ADD_PLUGIN( MengeVideoCodec, "initialize Plugin Video Codec..." );
+#ifdef MENGINE_PLUGIN_SPINE
 		MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine..." );
+#endif
 		MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie..." );
 		//MENGINE_ADD_PLUGIN(Motor, "initialize Plugin Motor...");
 		MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
 		
 		MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
+
+#ifdef MENGINE_PLUGIN_TTF
 		MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
+#endif
 
 
 #	undef MENGINE_ADD_PLUGIN

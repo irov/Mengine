@@ -75,4 +75,4 @@ elseif(APPLE)
 endif(WIN32)
 
 include_directories(${SOURCE_DIR}/includes)
-add_library( ${PROJECT_NAME}_static STATIC ${ois_sources} )
+add_library( ${PROJECT_NAME} STATIC ${ois_sources} )

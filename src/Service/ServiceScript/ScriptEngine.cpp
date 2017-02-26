@@ -169,13 +169,13 @@ namespace Menge
 		m_moduleMenge = this->initModule( "Menge" );
 
         this->addGlobalModule( "Menge"
-			, (ScriptObject *)m_moduleMenge
+			, m_moduleMenge
 			);
 
         uint32_t python_version = pybind::get_python_version();
 
 		this->addGlobalModule( "_PYTHON_VERSION"
-			, (ScriptObject *)pybind::ptr( m_kernel, python_version )
+			, pybind::ptr( m_kernel, python_version )
 			);
 		
 		pybind::set_currentmodule( m_moduleMenge );
@@ -240,19 +240,6 @@ namespace Menge
 
         this->removeGlobalModule( "Menge" );
 		this->removeGlobalModule( "_PYTHON_VERSION" );
-
-		for( TMapScriptWrapper::iterator 
-			it = m_scriptWrapper.begin(),
-			it_end = m_scriptWrapper.end();
-		it != it_end;
-		++it )
-		{
-			ScriptWrapperInterface * scriptClass = it->second;
-			
-            scriptClass->destroy();
-		}
-
-		//pybind::decref( m_moduleMenge );
 
 		m_scriptWrapper.clear();       
 
@@ -566,18 +553,18 @@ namespace Menge
 		return module;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::setCurrentModule( ScriptObject * _module )
+	void ScriptEngine::setCurrentModule( PyObject * _module )
 	{
-		pybind::set_currentmodule( (PyObject*)_module );
+		pybind::set_currentmodule( _module );
 	}
     //////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::addGlobalModule( const Char * _name, ScriptObject * _module )
+	void ScriptEngine::addGlobalModule( const Char * _name, PyObject * _module )
     {        
         PyObject * builtins = pybind::get_builtins();
 
         PyObject * dir_bltin = pybind::module_dict( builtins );
 
-        pybind::dict_set_t( m_kernel, dir_bltin, _name, (PyObject*)_module );
+        pybind::dict_set_t( m_kernel, dir_bltin, _name, _module );
     }
     //////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::removeGlobalModule( const Char * _name )
@@ -589,12 +576,12 @@ namespace Menge
 		pybind::dict_remove_t( m_kernel, dir_bltin, _name );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptEngine::stringize( ScriptObject * _object, ConstString & _cstr )
+    bool ScriptEngine::stringize( PyObject * _object, ConstString & _cstr )
     {
-        if( pybind::string_check( (PyObject*)_object ) == false )
+        if( pybind::string_check( _object ) == false )
         {            
             LOGGER_ERROR(m_serviceProvider)("ScriptEngine::stringize invalid stringize object %s"
-                , pybind::object_repr( (PyObject*)_object )
+                , pybind::object_repr( _object )
                 );
 
             return false;
@@ -625,7 +612,7 @@ namespace Menge
 		m_scriptWrapper.insert( std::make_pair(_type, _wrapper) );
 	}
 	//////////////////////////////////////////////////////////////////////////|
-	ScriptWrapperInterface * ScriptEngine::getWrapper( const ConstString & _type ) const
+	const ScriptWrapperInterfacePtr & ScriptEngine::getWrapper( const ConstString & _type ) const
 	{
 		TMapScriptWrapper::const_iterator it_found = m_scriptWrapper.find( _type );
 
@@ -635,10 +622,10 @@ namespace Menge
                 , _type.c_str()
                 );
 
-			return nullptr;
+			return ScriptWrapperInterfacePtr::none();
 		}
 
-		ScriptWrapperInterface * wrapper = it_found->second;
+        const ScriptWrapperInterfacePtr & wrapper = it_found->second;
 
 		return wrapper;
 	}

@@ -22,4 +22,4 @@ ${SOURCE_DIR}/zutil.c
 )
 
 include_directories(${SOURCE_DIR})
-add_library( ${PROJECT_NAME}_static STATIC ${zlib_sources} )
+add_library( ${PROJECT_NAME} STATIC ${zlib_sources} )

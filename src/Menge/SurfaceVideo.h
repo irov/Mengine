@@ -7,7 +7,6 @@
 #	include "ResourceVideo.h"
 
 #	include "Interface/VideoCodecInterface.h"
-#	include "Interface/COMMengineInterface.h"
 
 namespace Menge
 {

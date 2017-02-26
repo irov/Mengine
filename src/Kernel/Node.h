@@ -33,7 +33,6 @@ namespace Menge
 	class Node
         : public stdex::intrusive_slug_linked<Node>
 		, public Factorable
-        , public Servant
         , public Identity
 		, public Resource
 		, public Updatable
@@ -50,6 +49,13 @@ namespace Menge
 	public:
 		Node();
 		~Node();
+
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+        ServiceProviderInterface * getServiceProvider() const;
+
+    protected:
+        ServiceProviderInterface * m_serviceProvider;
 
 	public:
 		void render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask ) override;

@@ -23,4 +23,4 @@ add_definitions(-DU_STATIC_IMPLEMENTATION)
 
 include_directories( ${SOURCE_DIR}/source/common )
 
-add_library( ${PROJECT_NAME}_static STATIC ${sources} )
+add_library( ${PROJECT_NAME} STATIC ${sources} )

@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project(spine)
 
-SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../spine-c/spine-c )
+SET( SOURCE_DIR ${THIRDPARTY_DIR}/spine-c/spine-c )
 
 # OUR SOURCES
 set( sources

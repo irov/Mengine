@@ -17,4 +17,4 @@ include_directories(${SOURCE_DIR}/lib)
 include_directories(${THIRDPARTY_DIR}/SDL2/include)
 
 SET(FORCE_STATIC_VCRT ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
-add_library(${PROJECT_NAME}_static STATIC ${SOURCES})
+add_library(${PROJECT_NAME} STATIC ${SOURCES})

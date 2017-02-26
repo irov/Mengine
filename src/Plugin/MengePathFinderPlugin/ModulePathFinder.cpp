@@ -8,8 +8,7 @@
 #	include "PathGraphNode.h"
 
 #	include "Kernel/ResourceImageData.h"
-
-#	include "PythonScriptWrapper/ScriptClassWrapper.h"
+#   include "Kernel/ScriptWrapper.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -133,7 +132,7 @@ namespace Menge
 		pybind::def_functor( kernel, "destroyPathFinderWayAffector", this, &ModulePathFinder::destroyPathFinderWayAffector );
 		
 		SCRIPT_SERVICE(m_serviceProvider)
-			->setWrapper( Helper::stringizeString( m_serviceProvider, "PathGraphNode" ), new ClassScriptWrapper<PathGraphNode>() );
+			->setWrapper( Helper::stringizeString( m_serviceProvider, "PathGraphNode" ), new ScriptWrapper<PathGraphNode>() );
 		
 		return true;
 	}

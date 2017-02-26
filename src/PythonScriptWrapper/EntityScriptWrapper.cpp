@@ -1,15 +1,20 @@
 #	include "PythonScriptWrapper.h"
 
-#	include "PythonScriptWrapper/ScriptClassWrapper.h"
+#	include "Kernel/ScriptEventReceiver.h"
+
+#   include "Interface/StringizeInterface.h"
+#   include "Interface/ResourceInterface.h"
+#   include "Interface/ScriptSystemInterface.h"
+#   include "Interface/NodeInterface.h"
+
+#	include "Kernel/ScriptWrapper.h"
 
 #	include "Kernel/Entity.h"
 #	include "Kernel/Scene.h"
 
 #	include "Kernel/Arrow.h"
 
-#   include "Interface/ResourceInterface.h"
-#   include "Interface/ScriptSystemInterface.h"
-#   include "Interface/NodeInterface.h"
+
 #	include "EntityPrototypeGenerator.h"
 
 #	include "Logger/Logger.h"
@@ -116,7 +121,7 @@ namespace Menge
 	static void classWrapping( ServiceProviderInterface * _serviceProvider )
 	{
 # define SCRIPT_CLASS_WRAPPING( serviceProvider, Class )\
-    SCRIPT_SERVICE(serviceProvider)->setWrapper( Helper::stringizeString(serviceProvider, #Class), new ClassScriptWrapper<Class>() )
+    SCRIPT_SERVICE(serviceProvider)->setWrapper( Helper::stringizeString(serviceProvider, #Class), new ScriptWrapper<Class>() )
 
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Entity );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Scene );

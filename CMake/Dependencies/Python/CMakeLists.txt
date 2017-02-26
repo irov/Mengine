@@ -266,7 +266,7 @@ add_definitions(-DPy_BUILD_CORE)
              #${SIGNAL_SRCS}
               # )
 			  
-add_library( ${PROJECT_NAME}_static STATIC
+add_library( ${PROJECT_NAME} STATIC
 			  ${SOURCE_DIR}/Modules/getbuildinfo.c 
 #			  ${SOURCE_DIR}/Modules/_typesmodule.c
               ${PARSER_SRCS}
@@ -274,7 +274,7 @@ add_library( ${PROJECT_NAME}_static STATIC
               ${PYTHON_SRCS}
               ${MODULE_SRCS} )
 
-target_link_libraries(${PROJECT_NAME}_static ${extraLibs})
+target_link_libraries(${PROJECT_NAME} ${extraLibs})
 #set_target_properties(pythonLib PROPERTIES OUTPUT_NAME ${python_LIB_NAME})
 
 #add_executable(python Modules/python.c )

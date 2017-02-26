@@ -2,6 +2,8 @@
 
 #	include "TTFServiceInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 #	include "stdex/stl_map.h"
 
 #	include "ft2build.h"

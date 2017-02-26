@@ -7,7 +7,7 @@
 #   include "TTFText.h"
 
 #   include "Kernel/NodePrototypeGenerator.h"
-#   include "Kernel/ScriptClassWrapper.h"
+#   include "Kernel/ScriptWrapper.h"
 
 #	include "Core/PixelFormat.h"
 
@@ -34,7 +34,7 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, TTFFontManager );
 			
         SCRIPT_SERVICE( m_serviceProvider )
-            ->setWrapper( Helper::stringizeString( m_serviceProvider, "TTFText" ), new ClassScriptWrapper<TTFText>() );
+            ->setWrapper( Helper::stringizeString( m_serviceProvider, "TTFText" ), new ScriptWrapper<TTFText>() );
 
         if( PROTOTYPE_SERVICE( m_serviceProvider )
             ->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "TTFText" ), new NodePrototypeGenerator<TTFText, 32> ) == false )

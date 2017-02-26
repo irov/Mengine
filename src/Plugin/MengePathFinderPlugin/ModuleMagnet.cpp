@@ -4,9 +4,9 @@
 #	include "Interface/PlayerInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "PythonScriptWrapper/ScriptClassWrapper.h"
-
+#	include "Kernel/ScriptEventReceiver.h"
 #	include "Kernel/NodePrototypeGenerator.h"
+#   include "Kernel/ScriptWrapper.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -51,7 +51,7 @@ namespace Menge
 			;
 
 		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeMagnetActor" ), new ClassScriptWrapper<NodeMagnetActor>() );
+			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeMagnetActor" ), new ScriptWrapper<NodeMagnetActor>() );
 
 		PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeMagnetActor" ), new NodePrototypeGenerator<NodeMagnetActor, 32> );

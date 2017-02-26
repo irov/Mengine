@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include "Interface/COMInterface.h"
-
 #	include "Kernel/Loadable.h"
 
 #	include "Kernel/Servant.h"
@@ -23,20 +21,16 @@
 
 namespace Menge
 {
-    class ServiceProviderInterface;
-
-	class ResourceVisitor;
+    class ResourceVisitor;
 	
 	class ResourceReference
-		: public FactorablePtr
-        , public Servant
+		: public Servant
 		, public Resource
 		, public Identity
 		, public Reference
 		, public Loadable
         , public Scriptable
 		, public Visitable
-		, public Comable
 	{
 		DECLARE_VISITABLE_BASE();
 

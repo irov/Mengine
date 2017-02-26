@@ -15,4 +15,4 @@ ${SOURCE_DIR}/src/framing.c
 include_directories(${SOURCE_DIR}/include)
 include_directories(${THIRDPARTY_DIR}/stdex/include)
 
-add_library( ${PROJECT_NAME}_static STATIC ${ogg_sources} )
+add_library( ${PROJECT_NAME} STATIC ${ogg_sources} )

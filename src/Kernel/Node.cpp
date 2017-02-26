@@ -9,7 +9,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Node::Node()
-		: m_active(false)
+		: m_serviceProvider(nullptr)
+        , m_active(false)
 		, m_deactivating(false)
 		, m_afterActive(false)
 		, m_enable(true)
@@ -30,6 +31,16 @@ namespace Menge
 	Node::~Node()
 	{		
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Node::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ServiceProviderInterface * Node::getServiceProvider() const
+    {
+        return m_serviceProvider;
+    }
     //////////////////////////////////////////////////////////////////////////
     void Node::setShallowGrave()
     {

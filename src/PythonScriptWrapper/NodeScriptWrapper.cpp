@@ -123,19 +123,15 @@
 
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/PhysicSystemInterface.h"
-
-#	include "Kernel/Identity.h"
-
-#	include "Kernel/Affector.h"
-
-#   include "Kernel/ThreadTask.h"
-
 #   include "Interface/ThreadSystemInterface.h"
 
-#   include "PythonEventReceiver.h"
-#   include "PythonAnimatableEventReceiver.h"
+#	include "Kernel/Identity.h"
+#	include "Kernel/Affector.h"
+#   include "Kernel/ThreadTask.h"
+#   include "Kernel/ScriptEventReceiver.h"
+#   include "Kernel/ScriptWrapper.h"
 
-#   include "ScriptClassWrapper.h"
+#   include "PythonAnimatableEventReceiver.h"
 
 #	include "Core/Polygon.h"
 #	include "Core/MemoryHelper.h"
@@ -2146,7 +2142,7 @@ namespace Menge
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonMeshEventReceiver
-            : public PythonEventReceiver
+            : public ScriptEventReceiver
             , public MeshgetEventReceiver
         {
         public:
@@ -2166,7 +2162,7 @@ namespace Menge
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerEventReceiver<PythonMeshEventReceiver>( py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
+            Helper::registerScriptEventReceiver<PythonMeshEventReceiver>( py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
 
             if( py_kwds.empty() == false )
             {
@@ -2197,7 +2193,7 @@ namespace Menge
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonScriptHolderEventReceiver
-            : public PythonEventReceiver
+            : public ScriptEventReceiver
             , public ScriptHolderEventReceiver
         {
         public:
@@ -2222,8 +2218,8 @@ namespace Menge
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
-            Helper::registerEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
+            Helper::registerScriptEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
+            Helper::registerScriptEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
 
             if( py_kwds.empty() == false )
             {
@@ -2234,7 +2230,7 @@ namespace Menge
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonHotSpotEventReceiver
-            : public PythonEventReceiver
+            : public ScriptEventReceiver
             , public HotSpotEventReceiver
         {
         public:
@@ -2315,17 +2311,17 @@ namespace Menge
 
             pybind::dict py_kwds( _kernel, _kwds );
 
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleKeyEvent", EVENT_KEY );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEvent", EVENT_MOUSE_BUTTON );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_MOUSE_BUTTON_BEGIN );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_MOUSE_BUTTON_END );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseMove", EVENT_MOUSE_MOVE );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseWheel", EVENT_MOUSE_WHEEL );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseEnter", EVENT_MOUSE_ENTER );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseLeave", EVENT_MOUSE_LEAVE );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseOverDestroy", EVENT_MOUSE_OVER_DESTROY );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onActivate", EVENT_ACTIVATE );
-            Helper::registerEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleKeyEvent", EVENT_KEY );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEvent", EVENT_MOUSE_BUTTON );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_MOUSE_BUTTON_BEGIN );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_MOUSE_BUTTON_END );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseMove", EVENT_MOUSE_MOVE );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseWheel", EVENT_MOUSE_WHEEL );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseEnter", EVENT_MOUSE_ENTER );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseLeave", EVENT_MOUSE_LEAVE );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseOverDestroy", EVENT_MOUSE_OVER_DESTROY );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onActivate", EVENT_ACTIVATE );
+            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
 
             if( py_kwds.empty() == false )
             {
@@ -2377,9 +2373,9 @@ namespace Menge
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<PythonMovieEventReceiver>( py_kwds, _node );
 
-            Helper::registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL );
-            Helper::registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL );
-            Helper::registerEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL );
+            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL );
+            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL );
+            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL );
 
             if( py_kwds.empty() == false )
             {
@@ -6546,7 +6542,7 @@ namespace Menge
 	static void classWrapping( ServiceProviderInterface * _serviceProvider )
 	{
 # define SCRIPT_CLASS_WRAPPING( serviceProvider, Class )\
-    SCRIPT_SERVICE(serviceProvider)->setWrapper( Helper::stringizeString(serviceProvider, #Class), new ClassScriptWrapper<Class>() )
+    SCRIPT_SERVICE(serviceProvider)->setWrapper( Helper::stringizeString(serviceProvider, #Class), new ScriptWrapper<Class>() )
 
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Node );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer );

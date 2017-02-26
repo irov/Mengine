@@ -13,9 +13,9 @@
 #	include "Kernel/Servant.h"
 
 #	include "pybind/kernel.hpp"
-#	include "stdex/stl_vector.h"
+#	include "pybind/base.hpp"
 
-#	include <stdex/stl_vector.h>
+#	include "stdex/stl_vector.h"
 
 #	include <stdarg.h>
 
@@ -23,29 +23,19 @@ namespace Menge
 {	    
     class Scriptable;
 	class Eventable;
-    //////////////////////////////////////////////////////////////////////////
-    typedef void * ScriptObject;
 	//////////////////////////////////////////////////////////////////////////
     class ScriptWrapperInterface
+        : public ServantInterface
     {
-	public:
-		ScriptWrapperInterface(){};
-		virtual ~ScriptWrapperInterface(){};
-
-	public:
-		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
-		virtual ServiceProviderInterface * getServiceProvider() = 0;
-
 	public:
 		virtual bool initialize() = 0;
 		virtual void finalize() = 0;
 
     public:
-		virtual ScriptObject * wrap( Scriptable * _node ) = 0;
-
-    public:
-        virtual void destroy() = 0;
+		virtual PyObject * wrap( Scriptable * _node ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<ScriptWrapperInterface> ScriptWrapperInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	struct ScriptModulePack
 	{
@@ -81,7 +71,7 @@ namespace Menge
 
 	public:
 		virtual void setWrapper( const ConstString& _type, ScriptWrapperInterface * _wrapper ) = 0;
-		virtual ScriptWrapperInterface * getWrapper( const ConstString & _type ) const = 0;
+		virtual const ScriptWrapperInterfacePtr & getWrapper( const ConstString & _type ) const = 0;
 
 	public:
 		virtual bool bootstrapModules() = 0;
@@ -94,12 +84,12 @@ namespace Menge
 
 		virtual ScriptModuleInterfacePtr importModule( const ConstString& _name ) = 0;
 
-		virtual void setCurrentModule( ScriptObject * _module ) = 0;
-        virtual void addGlobalModule( const Char * _name, ScriptObject * _module ) = 0;
+		virtual void setCurrentModule( PyObject * _module ) = 0;
+        virtual void addGlobalModule( const Char * _name, PyObject * _module ) = 0;
 		virtual void removeGlobalModule( const Char * _name ) = 0;
 
     public:
-        virtual bool stringize( ScriptObject * _object, ConstString & _str ) = 0;
+        virtual bool stringize( PyObject * _object, ConstString & _str ) = 0;
 	};
 
 #   define SCRIPT_SERVICE( serviceProvider )\

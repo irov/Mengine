@@ -1,8 +1,11 @@
 #	include "ModuleBounce.h"
 
-#	include "Kernel/DefaultPrototypeGenerator.h"
+#   include "Interface/ScriptSystemInterface.h"
+#   include "Interface/StringizeInterface.h"
 
-#	include "PythonScriptWrapper/ScriptClassWrapper.h"
+#	include "Kernel/DefaultPrototypeGenerator.h"
+#	include "Kernel/ScriptEventReceiver.h"
+#   include "Kernel/ScriptWrapper.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -41,7 +44,7 @@ namespace Menge
 			;
 
 		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( Helper::stringizeString( m_serviceProvider, "BounceActor" ), new ClassScriptWrapper<BounceActor>() );
+			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "BounceActor" ), new ScriptWrapper<BounceActor>() );
 
 		PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "BounceActor" ), new DefaultPrototypeGenerator<BounceActor, 32>() );

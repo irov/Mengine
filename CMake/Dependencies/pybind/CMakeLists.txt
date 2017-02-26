@@ -58,5 +58,5 @@ include_directories(${THIRDPARTY_DIR}/Python/PC)
 include_directories(${THIRDPARTY_DIR}/stdex/include)
 
 
-add_library( ${PROJECT_NAME}_static STATIC ${sources} )
+add_library( ${PROJECT_NAME} STATIC ${sources} )
 

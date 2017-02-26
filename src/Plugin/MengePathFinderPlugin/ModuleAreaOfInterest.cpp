@@ -7,8 +7,8 @@
 #	include "NodeAOITrigger.h"
 #	include "NodeAOIActor.h"
 
-#	include "PythonScriptWrapper/ScriptClassWrapper.h"
-#	include "PythonScriptWrapper/PythonEventReceiver.h"
+#   include "Kernel/ScriptWrapper.h"
+#	include "Kernel/ScriptEventReceiver.h"
 
 #	include "Kernel/NodePrototypeGenerator.h"
 
@@ -19,7 +19,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     class PythonNodeAOITriggerEventReceiver
-        : public PythonEventReceiver
+        : public ScriptEventReceiver
         , public NodeAOITriggerEventReceiver
     {
     public:
@@ -49,8 +49,8 @@ namespace Menge
 
         pybind::dict py_kwds( _kernel, _kwds );
 
-        Helper::registerEventReceiver<PythonNodeAOITriggerEventReceiver>( py_kwds, _node, "onTriggerEnter", EVENT_NODE_AOI_TRIGGER_ENTER );
-        Helper::registerEventReceiver<PythonNodeAOITriggerEventReceiver>( py_kwds, _node, "onTriggerLeave", EVENT_NODE_AOI_TRIGGER_LEAVE );
+        Helper::registerScriptEventReceiver<PythonNodeAOITriggerEventReceiver>( py_kwds, _node, "onTriggerEnter", EVENT_NODE_AOI_TRIGGER_ENTER );
+        Helper::registerScriptEventReceiver<PythonNodeAOITriggerEventReceiver>( py_kwds, _node, "onTriggerLeave", EVENT_NODE_AOI_TRIGGER_LEAVE );
 
         return pybind::ret_none();
     }
@@ -99,10 +99,10 @@ namespace Menge
 			;
 
 		SCRIPT_SERVICE(m_serviceProvider)
-			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeAOITrigger" ), new ClassScriptWrapper<NodeAOITrigger>() );
+			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeAOITrigger" ), new ScriptWrapper<NodeAOITrigger>() );
 
 		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeAOIActor" ), new ClassScriptWrapper<NodeAOIActor>() );
+			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeAOIActor" ), new ScriptWrapper<NodeAOIActor>() );
 		
 		PROTOTYPE_SERVICE(m_serviceProvider)
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeAOITrigger" ), new NodePrototypeGenerator<NodeAOITrigger, 32> );

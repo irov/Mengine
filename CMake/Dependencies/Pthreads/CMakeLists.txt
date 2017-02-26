@@ -36,4 +36,4 @@ set(pthreads_sources
 add_definitions(-D_WIN32_WINNT=0x400 -DPTW32_STATIC_LIB -DPTW32_BUILD_INLINED -DHAVE_CONFIG_H -D__CLEANUP_C )
 
 include_directories(${SOURCE_DIR})
-add_library( ${PROJECT_NAME}_static STATIC ${pthreads_sources} )
+add_library( ${PROJECT_NAME} STATIC ${pthreads_sources} )

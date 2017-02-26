@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/PrototypeManagerInterface.h"
+#   include "Interface/ScriptSystemInterface.h"
 
 #	include "Kernel/Node.h"
 
@@ -30,6 +31,6 @@ namespace Menge
 		ConstString m_category;
 		ConstString m_prototype;
 
-		ScriptWrapperInterface * m_scriptWrapper;
+		ScriptWrapperInterfacePtr m_scriptWrapper;
 	};
 }

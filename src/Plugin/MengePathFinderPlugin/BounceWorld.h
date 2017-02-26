@@ -43,7 +43,7 @@ namespace Menge
 		TVectorBounceActors m_actors;
 		TVectorBounceActors m_actorsAdd;
 
-		ScriptWrapperInterface * m_scriptWrapper;
+		ScriptWrapperInterfacePtr m_scriptWrapper;
 
 		bool m_remove;
 	};

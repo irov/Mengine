@@ -6,7 +6,6 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable::Scriptable()
-		: m_scriptWrapper(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -14,12 +13,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scriptable::setScriptWrapper( ScriptWrapperInterface * _scriptWrapper )
+	void Scriptable::setScriptWrapper( const ScriptWrapperInterfacePtr & _scriptWrapper )
 	{
 		m_scriptWrapper = _scriptWrapper;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ScriptWrapperInterface * Scriptable::getScriptWrapper() const
+    const ScriptWrapperInterfacePtr & Scriptable::getScriptWrapper() const
 	{
 		return m_scriptWrapper;
 	}

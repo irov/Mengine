@@ -36,4 +36,4 @@ set( sources
     ${SOURCE_DIR}/lib/tokenize.c
     )
 
-add_library( ${PROJECT_NAME}_static STATIC ${sources} )
+add_library( ${PROJECT_NAME} STATIC ${sources} )

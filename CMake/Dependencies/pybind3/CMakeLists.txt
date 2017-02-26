@@ -58,5 +58,5 @@ IF(WIN32)
     include_directories(${SOURCE_DIR}/include ${THIRDPARTY_DIR}/Python3/PC)
 ENDIF(WIN32)
 
-add_library( ${PROJECT_NAME}_static STATIC ${sources} )
+add_library( ${PROJECT_NAME} STATIC ${sources} )
 

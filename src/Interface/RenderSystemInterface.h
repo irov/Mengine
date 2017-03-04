@@ -453,7 +453,7 @@ namespace Menge
 		: public FactorablePtr
 	{
 	public:
-		virtual RenderVertex2D * lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
+		virtual Pointer lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
 		virtual bool unlock() = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -463,7 +463,7 @@ namespace Menge
 		: public FactorablePtr
 	{
 	public:
-		virtual RenderIndices * lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
+		virtual Pointer lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
 		virtual bool unlock() = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////

@@ -78,6 +78,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Graveyard::tick( float _time, float _timing )
 	{
+        (void)_time;
+
 		TVectorTextureGrave::iterator it_erase = std::remove_if( m_textures.begin(), m_textures.end(), FGraveyardDead( _timing ) );
 
 		for( TVectorTextureGrave::iterator

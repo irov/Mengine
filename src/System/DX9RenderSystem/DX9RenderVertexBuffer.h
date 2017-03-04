@@ -17,7 +17,7 @@ namespace Menge
 		bool initialize( ServiceProviderInterface * _serviceProvider, IDirect3DDevice9 * _pD3DDevice, DWORD _vertexDeclaration, uint32_t _vertexNum, bool _dynamic );
 
 	public:
-		RenderVertex2D * lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
+		Pointer lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
 		bool unlock() override;
 
 	public:

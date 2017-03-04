@@ -5,7 +5,11 @@
 #   include "Core/ServiceBase.h"
 #	include "Core/ConstString.h"
 
-#   include "stdex/stl_map.h"
+#   include "stdex/stl_vector.h"
+
+#   ifndef MENGINE_PROTOTYPE_HASH_SIZE
+#   define MENGINE_PROTOTYPE_HASH_SIZE 256
+#   endif
 
 namespace Menge
 {
@@ -35,6 +39,7 @@ namespace Menge
         {
             ConstString category;
             ConstString prototype;
+            PrototypeGeneratorInterfacePtr generator;
         };
 
         struct CategoryKeyLess
@@ -54,7 +59,7 @@ namespace Menge
             }
         };
 
-        typedef stdex::map<CategoryKey, PrototypeGeneratorInterfacePtr, CategoryKeyLess> TMapPrototypes;
-		TMapPrototypes m_prototypes;       
+        typedef stdex::vector<CategoryKey> TVectorPrototypes;
+        TVectorPrototypes m_prototypes[MENGINE_PROTOTYPE_HASH_SIZE];
 	};
 }

@@ -7,23 +7,37 @@ SERVICE_FACTORY( PrototypeService, Menge::PrototypeManager );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	PrototypeManager::PrototypeManager()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PrototypeManager::~PrototypeManager()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool PrototypeManager::_initialize()
-	{
-		return true;
-	}
-	void PrototypeManager::_finalize()
-	{ 
-		m_prototypes.clear();
-	}
+    //////////////////////////////////////////////////////////////////////////
+    PrototypeManager::PrototypeManager()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PrototypeManager::~PrototypeManager()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PrototypeManager::_initialize()
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PrototypeManager::_finalize()
+    {
+        for( size_t index = 0; index != MENGINE_PROTOTYPE_HASH_SIZE; ++index )
+        {
+            TVectorPrototypes & prototypes = m_prototypes[index];
+
+            prototypes.clear();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static uint32_t getPrototypeHashId( const ConstString & _category, const ConstString & _prototype )
+    {
+        ConstString::hash_type hash = _category.hash() + _prototype.hash();
+        uint32_t hash_id = (uint32_t)hash % MENGINE_PROTOTYPE_HASH_SIZE;
+
+        return hash_id;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool PrototypeManager::addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator )
 	{
@@ -39,30 +53,16 @@ namespace Menge
 			return false;
 		}
 
+        uint32_t hash_id = getPrototypeHashId( _category, _prototype );
+
+        TVectorPrototypes & prototypes = m_prototypes[hash_id];
+
         CategoryKey key;
         key.category = _category;
         key.prototype = _prototype;
+        key.generator = _generator;
 
-		std::pair<TMapPrototypes::iterator, bool> it_insert = m_prototypes.insert( std::make_pair( key, _generator ) );
-
-		if( it_insert.second == false )
-		{
-			PrototypeGeneratorInterfacePtr conflict_generator = it_insert.first->second;
-
-			if( conflict_generator->count() > 0 )
-			{
-				LOGGER_ERROR(m_serviceProvider)("PrototypeManager::addPrototype add %s:%s alredy exist and use!"
-					, _category.c_str()
-					, _prototype.c_str()
-					);
-
-				return false;
-			}
-			else
-			{
-				it_insert.first->second = _generator;
-			}
-		}
+        prototypes.push_back( key );
 
         LOGGER_INFO(m_serviceProvider)("PrototypeManager::addPrototype add %s:%s"
             , _category.c_str()
@@ -74,28 +74,30 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PrototypeManager::hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr & _generator ) const
 	{
-        CategoryKey prototype_key;
-        prototype_key.category = _category;
-        prototype_key.prototype = _prototype;
+        uint32_t hash_id = getPrototypeHashId( _category, _prototype );
 
-		TMapPrototypes::const_iterator it_found = m_prototypes.find( prototype_key );
+        const TVectorPrototypes & prototypes = m_prototypes[hash_id];
 
-		if( it_found == m_prototypes.end() )
+		for( TVectorPrototypes::const_iterator
+            it = prototypes.begin(),
+            it_end = prototypes.end();
+            it != it_end;
+            ++it )
 		{
-            CategoryKey category_key;
-            category_key.category = _category;
+            const CategoryKey & key = *it;
 
-            it_found = m_prototypes.find( category_key );
-            
-            if( it_found == m_prototypes.end() )
+            if( key.category != _category ||
+                key.prototype != _prototype )
             {
-                return false;
+                continue;
             }
+
+            _generator = key.generator;
+
+            return true;
 		}
 
-		_generator = it_found->second;
-
-		return true;
+		return false;
 	}
     //////////////////////////////////////////////////////////////////////////
     Factorable * PrototypeManager::generatePrototype( const ConstString & _category, const ConstString & _prototype )
@@ -118,17 +120,20 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void PrototypeManager::visitGenerators( VisitorPrototypeGenerator * _visitor ) const
     {
-        for( TMapPrototypes::const_iterator
-            it = m_prototypes.begin(),
-            it_end = m_prototypes.end();
-        it != it_end;
-        ++it )
+        for( size_t index = 0; index != MENGINE_PROTOTYPE_HASH_SIZE; ++index )
         {
-            const CategoryKey & keys = it->first;
+            const TVectorPrototypes & prototypes = m_prototypes[index];
 
-            const PrototypeGeneratorInterfacePtr & generator = it->second;
+            for( TVectorPrototypes::const_iterator
+                it = prototypes.begin(),
+                it_end = prototypes.end();
+                it != it_end;
+                ++it )
+            {
+                const CategoryKey & key = *it;
 
-            _visitor->visit( keys.category, keys.prototype, generator );
+                _visitor->visit( key.category, key.prototype, key.generator );
+            }
         }
     }
 }

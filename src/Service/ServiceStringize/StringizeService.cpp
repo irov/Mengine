@@ -20,7 +20,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void StringizeService::stringize( const char * _str, size_t _size, ConstString::hash_type _hash, ConstString & _cstr )
 	{
-		if( _size == (size_t)-1 )
+        if( _size == 0 )
+        {
+            _cstr = ConstString::none();
+
+            return;
+        }
+        
+        if( _size == (size_t)-1 )
 		{
 			_size = strlen(_str);
 		}

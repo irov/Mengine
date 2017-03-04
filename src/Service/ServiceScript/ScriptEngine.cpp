@@ -587,6 +587,13 @@ namespace Menge
             return false;
         }
 
+        if( pybind::string_size( _object ) == 0 )
+        {
+            _cstr = ConstString::none();
+
+            return true;
+        }
+
         ConstStringHolderPythonString * holder = m_factoryPythonString.createObject();
 
         holder->setPythonObject( (PyObject*)_object );

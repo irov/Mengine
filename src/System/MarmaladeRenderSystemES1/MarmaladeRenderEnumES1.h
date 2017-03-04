@@ -11,7 +11,7 @@ namespace Menge
 		{
 		case 1: return GL_UNSIGNED_BYTE;
 		case 2: return GL_UNSIGNED_SHORT;
-		case 3: return GL_UNSIGNED_INT;
+		case 4: return GL_UNSIGNED_INT;
 		default:;
 		}
 
@@ -154,15 +154,15 @@ namespace Menge
     {
 	    switch( _format )
 	    {
-	    case Menge::PF_X8B8G8R8:
-	    case Menge::PF_X8R8G8B8:
 	    case Menge::PF_A8B8G8R8:
 	    case Menge::PF_A8R8G8B8:
 	    case Menge::PF_B8G8R8A8:
 	    case Menge::PF_R8G8B8A8:
 		    //return GL_RGBA8;
 		    return GL_RGBA;
-		case PF_R8G8B8:
+        case Menge::PF_X8B8G8R8:
+        case Menge::PF_X8R8G8B8:
+        case Menge::PF_R8G8B8:
 			return GL_RGB;
 		case Menge::PF_A8:
 		    return GL_ALPHA;
@@ -185,10 +185,12 @@ namespace Menge
     {
 	    switch( _format )
 	    {
-		case Menge::PF_R8G8B8:
+        case Menge::PF_X8R8G8B8:
+        case Menge::PF_X8B8G8R8:
+        case Menge::PF_R8G8B8:
 			return GL_RGB;
-	    case Menge::PF_X8R8G8B8:
-	    case Menge::PF_A8R8G8B8:
+        case Menge::PF_A8R8G8B8:
+        case Menge::PF_A8B8G8R8:
 		    return GL_RGBA;
 	    case Menge::PF_A8:
 		    return GL_ALPHA;
@@ -213,8 +215,10 @@ namespace Menge
 	    {
 		case Menge::PF_R8G8B8:
 			return GL_UNSIGNED_BYTE;
-	    case Menge::PF_X8R8G8B8:
-	    case Menge::PF_A8R8G8B8:
+        case Menge::PF_X8R8G8B8:
+        case Menge::PF_A8R8G8B8:
+        case Menge::PF_X8B8G8R8:
+        case Menge::PF_A8B8G8R8:
 		    return GL_UNSIGNED_BYTE;
 	    case Menge::PF_A8:
 		    return GL_UNSIGNED_BYTE;

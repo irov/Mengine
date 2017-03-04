@@ -17,16 +17,14 @@ int main()
 
 	//s3eDeviceYield( 10000 );
 
+    Menge::MarmaladeApplication marApplication;
+    
 	try
 	{
-		Menge::MarmaladeApplication marApplication;
-
 		if( marApplication.initialize() == true )
 		{
 			marApplication.loop();
 		}
-
-		marApplication.finalize();
 	}
 	catch( const std::exception & se )
 	{
@@ -34,6 +32,8 @@ int main()
 
 		s3eDebugErrorShow( S3E_MESSAGE_CONTINUE, se_what );
 	}
+    
+    marApplication.finalize();
 
 	stdex_allocator_finalize();
 

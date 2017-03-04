@@ -148,6 +148,7 @@
 #	include "Codec/DecoderFactory.h"
 
 #	include "Config/Config.h"
+#	include "Config/Stringstream.h"
 
 #   include "Core/String.h"
 #	include "Core/IniUtil.h"
@@ -812,8 +813,60 @@ namespace Menge
 
 			if( _event.key == KC_F5 && _event.isDown == true )
 			{
-				RESOURCE_SERVICE(m_serviceProvider)
-					->dumpResources("Application");
+				//RESOURCE_SERVICE(m_serviceProvider)
+					//->dumpResources("Application");
+                class VisitorPlayerFactoryManager
+                    : public VisitorPrototypeGenerator
+                {
+                public:
+                    VisitorPlayerFactoryManager( ServiceProviderInterface * _serviceProvider, const ConstString & _category, Stringstream & _ss )
+                        : m_serviceProvider( _serviceProvider )
+                        , m_category( _category )
+                        , m_ss( _ss )
+                    {
+                    }
+
+                private:
+                    VisitorPlayerFactoryManager & operator = ( const VisitorPlayerFactoryManager & _vpfm )
+                    {
+                        (void)_vpfm;
+
+                        return *this;
+                    }
+
+                protected:
+                    void visit( const ConstString & _category, const ConstString & _type, const PrototypeGeneratorInterfacePtr & _generator ) override
+                    {
+                        if( m_category != _category )
+                        {
+                            return;
+                        }
+
+                        uint32_t count = _generator->count();
+
+                        if( count == 0 )
+                        {
+                            return;
+                        }
+
+                        m_ss << "" << _type.c_str() << ": " << count << "\n";
+                    }
+
+                protected:
+                    ServiceProviderInterface * m_serviceProvider;
+                    ConstString m_category;
+                    Stringstream & m_ss;
+                };
+
+                Stringstream ss;
+                VisitorPlayerFactoryManager pfmv( m_serviceProvider, CONST_STRING( m_serviceProvider, Node ), ss );
+
+                PROTOTYPE_SERVICE( m_serviceProvider )
+                    ->visitGenerators( &pfmv );
+
+                const String & str = ss.str();
+
+                LOGGER_ERROR( m_serviceProvider )("%s", str.c_str() );
 			}
 
 			if( _event.key == KC_OEM_MINUS && _event.isDown == true )
@@ -851,7 +904,7 @@ namespace Menge
 					->enableRedAlertMode( !enable );
 			}
 
-			if( _event.key == KC_F4 && _event.isDown )
+			if( _event.key == KC_F4 && _event.isDown == true )
 			{
 				m_debugFileOpen = !m_debugFileOpen;
 

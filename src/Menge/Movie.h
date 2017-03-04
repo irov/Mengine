@@ -123,6 +123,9 @@ namespace Menge
 	protected:
 		void _afterActivate() override;
 
+    protected:
+        void _destroy() override;
+
 	protected:
 		void _update( float _current, float _timing ) override;
 

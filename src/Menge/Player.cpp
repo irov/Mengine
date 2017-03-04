@@ -984,49 +984,53 @@ namespace Menge
 	{
 		return m_renderClipplane;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	class VisitorPlayerFactoryManager
-		: public VisitorPrototypeGenerator
-	{
-	public:
-		VisitorPlayerFactoryManager( ServiceProviderInterface * _serviceProvider, const ConstString & _category, Stringstream & _ss )
-			: m_serviceProvider(_serviceProvider)
-            , m_category(_category)
-            , m_ss(_ss)
-		{
-		}
-
-    private:
-        VisitorPlayerFactoryManager & operator = ( const VisitorPlayerFactoryManager & _vpfm )
+    //////////////////////////////////////////////////////////////////////////
+    namespace
+    {
+        //////////////////////////////////////////////////////////////////////////
+        class VisitorPlayerFactoryManager
+            : public VisitorPrototypeGenerator
         {
-            (void)_vpfm;
-
-            return *this;
-        }
-
-	protected:
-		void visit( const ConstString & _category, const ConstString & _type, const PrototypeGeneratorInterfacePtr & _generator ) override
-		{
-            if( m_category != _category )
+        public:
+            VisitorPlayerFactoryManager( ServiceProviderInterface * _serviceProvider, const ConstString & _category, Stringstream & _ss )
+                : m_serviceProvider( _serviceProvider )
+                , m_category( _category )
+                , m_ss( _ss )
             {
-                return;
             }
 
-			uint32_t count = _generator->count();
+        private:
+            VisitorPlayerFactoryManager & operator = ( const VisitorPlayerFactoryManager & _vpfm )
+            {
+                (void)_vpfm;
 
-			if( count == 0 )
-			{
-				return;
-			}
+                return *this;
+            }
 
-			m_ss << "Factory Object " << _type.c_str() << ": " << count << "\n";
-		}
+        protected:
+            void visit( const ConstString & _category, const ConstString & _type, const PrototypeGeneratorInterfacePtr & _generator ) override
+            {
+                if( m_category != _category )
+                {
+                    return;
+                }
 
-	protected:
-        ServiceProviderInterface * m_serviceProvider;
-        ConstString m_category;
-		Stringstream & m_ss;
-	};
+                uint32_t count = _generator->count();
+
+                if( count == 0 )
+                {
+                    return;
+                }
+
+                m_ss << "Factory Object " << _type.c_str() << ": " << count << "\n";
+            }
+
+        protected:
+            ServiceProviderInterface * m_serviceProvider;
+            ConstString m_category;
+            Stringstream & m_ss;
+        };
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Player::render()
 	{

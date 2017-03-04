@@ -9,6 +9,7 @@ namespace Menge
 	{
     public:
         MovieSceneEffect();
+        ~MovieSceneEffect();
 
     public:
         void setPropagateNode( Node * _propagate );

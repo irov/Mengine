@@ -74,7 +74,7 @@ namespace Menge
 
 		m_resourceMovie = _resourceMovie;
 
-		this->destroyLayers_();
+        this->destroyLayers_();
 
 		if( m_resourceMovie != nullptr )
 		{
@@ -2235,9 +2235,7 @@ namespace Menge
 			}
 
 			if( layer.parent == 0 )
-			{
-				//this->addChildren( node );
-
+			{				
 				continue;
 			}
 
@@ -2480,6 +2478,32 @@ namespace Menge
 			this->updateTiming_();
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Movie::_destroy()
+    {
+        for( TVectorNodies::const_iterator
+            it = m_nodies.begin(),
+            it_end = m_nodies.end();
+            it != it_end;
+            ++it )
+        {
+            const Nodies & ns = *it;
+
+            if( ns.node == nullptr )
+            {
+                continue;
+            }
+
+            if( ns.child == true )
+            {
+                continue;
+            }
+
+            ns.node->destroy();
+        }
+
+        Node::_destroy();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_update( float _current, float _timing )
 	{

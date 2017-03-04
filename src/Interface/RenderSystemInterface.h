@@ -22,11 +22,11 @@
 #	include "Math/plane.h"
 
 #   ifndef MENGE_MAX_TEXTURE_STAGES
-#	define MENGE_MAX_TEXTURE_STAGES 4
+#	define MENGE_MAX_TEXTURE_STAGES 2
 #   endif
 
 #	ifndef MENGINE_RENDER_VERTEX_UV_COUNT
-#	define MENGINE_RENDER_VERTEX_UV_COUNT 4
+#	define MENGINE_RENDER_VERTEX_UV_COUNT 2
 #	endif
 
 namespace Menge

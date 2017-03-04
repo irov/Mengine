@@ -6080,8 +6080,8 @@ namespace Menge
 		{
 			IncrefResourceVisitor rv_gac;
 
-			RESOURCE_SERVICE( m_serviceProvider )
-				->visitGroupResources( _category, _groupName, &rv_gac );
+			//RESOURCE_SERVICE( m_serviceProvider )
+			//	->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class DecrementResourceVisitor
@@ -6099,8 +6099,8 @@ namespace Menge
 		{
 			DecrementResourceVisitor rv_gac;
 
-			RESOURCE_SERVICE( m_serviceProvider )
-				->visitGroupResources( _category, _groupName, &rv_gac );
+			//RESOURCE_SERVICE( m_serviceProvider )
+			//	->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class GetResourceVisitor

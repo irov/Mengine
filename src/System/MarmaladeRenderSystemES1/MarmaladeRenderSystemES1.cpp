@@ -58,7 +58,7 @@ namespace Menge
 
 		MARMALADE_RENDER_CHECK_ERROR( m_serviceProvider );
 
-		for( uint32_t i = 0; i < m_maxTextureUnits; ++i )
+		for( uint32_t i = 0; i < MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
 		{
 			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE) );
@@ -311,7 +311,7 @@ namespace Menge
 			return;
 		}
 
-		for( uint32_t i = 0; i != m_maxTextureUnits; ++i )
+		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
 		{
 			const TextureStage & textureStage = m_textureStage[i];
 
@@ -319,9 +319,10 @@ namespace Menge
 
 			if( textureStage.texture == nullptr )
 			{
-				GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
+                GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, 0) );
+                GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
 
-				continue;
+                continue;
 			}
 
 			GLuint texture_uid = textureStage.texture->getUId();
@@ -348,45 +349,68 @@ namespace Menge
 			GLCALL( m_serviceProvider, glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT) );
 			GLCALL( m_serviceProvider, glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter) );
 			GLCALL( m_serviceProvider, glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter) );
-			//GLCALL( m_serviceProvider, glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR) );
-			//GLCALL( m_serviceProvider, glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR) );
 		}
-
-		MarmaladeRenderIndexBufferES1 * ib = stdex::intrusive_get<MarmaladeRenderIndexBufferES1 *>( m_currentIndexBuffer );
-		ib->enable();
 
 		MarmaladeRenderVertexBufferES1 * vb = stdex::intrusive_get<MarmaladeRenderVertexBufferES1 *>( m_currentVertexBuffer );
 		vb->enable();
-
+        
+        size_t sizeof_vertex = sizeof( RenderVertex2D );
+        size_t offsetof_position = offsetof( RenderVertex2D, position );
+        size_t offsetof_color = offsetof( RenderVertex2D, color );
+        size_t offsetof_uv = offsetof( RenderVertex2D, uv );
+        size_t sizeof_vec2f = sizeof( mt::vec2f );
+        
 		GLCALL( m_serviceProvider, glEnableClientState, (GL_VERTEX_ARRAY) );
-		GLCALL( m_serviceProvider, glVertexPointer, (3, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, position ))) );
+		GLCALL( m_serviceProvider, glVertexPointer, (3, GL_FLOAT, sizeof_vertex, reinterpret_cast<const GLvoid *>(offsetof_position)) );
 
 		GLCALL( m_serviceProvider, glEnableClientState, (GL_COLOR_ARRAY) );
-		GLCALL( m_serviceProvider, glColorPointer, (4, GL_UNSIGNED_BYTE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, color ))) );
+		GLCALL( m_serviceProvider, glColorPointer, (4, GL_UNSIGNED_BYTE, sizeof_vertex, reinterpret_cast<const GLvoid *>(offsetof_color)) );
 
-		for( uint32_t i = 0; i != m_maxTextureUnits; ++i )
+		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
 		{
 			GLCALL( m_serviceProvider, glClientActiveTexture, (GL_TEXTURE0 + i) );
 			GLCALL( m_serviceProvider, glEnableClientState, (GL_TEXTURE_COORD_ARRAY) );
 
-			size_t uv_offset = offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * i;
+			size_t uv_offset = offsetof_uv + sizeof_vec2f * i;
 
-			GLCALL( m_serviceProvider, glTexCoordPointer, (2, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(uv_offset)) );
+			GLCALL( m_serviceProvider, glTexCoordPointer, (2, GL_FLOAT, sizeof_vertex, reinterpret_cast<const GLvoid *>(uv_offset)) );
 		}
 
+        MarmaladeRenderIndexBufferES1 * ib = stdex::intrusive_get<MarmaladeRenderIndexBufferES1 *>( m_currentIndexBuffer );
+        ib->enable(_startIndex, _indexCount);
+        
 		GLenum mode = s_getGLPrimitiveMode( _type );
-		const RenderIndices * baseIndex = nullptr;
-		const RenderIndices * offsetIndex = baseIndex + _startIndex;
-				
 		GLenum indexType = s_getGLIndexType();
-
-		GLCALL( m_serviceProvider, glDrawElements, (mode, _indexCount, indexType, reinterpret_cast<const GLvoid *>(offsetIndex)) );
+        
+		GLCALL( m_serviceProvider, glDrawElements, (mode, _indexCount, indexType, (const GLvoid *)0) );
 
 		GLCALL( m_serviceProvider, glDisableClientState, (GL_VERTEX_ARRAY) );
 		GLCALL( m_serviceProvider, glDisableClientState, (GL_COLOR_ARRAY) );
-		GLCALL( m_serviceProvider, glDisableClientState, (GL_TEXTURE_COORD_ARRAY) );
 
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
+        {
+            GLCALL( m_serviceProvider, glClientActiveTexture, (GL_TEXTURE0 + i) );
+            GLCALL( m_serviceProvider, glDisableClientState, (GL_TEXTURE_COORD_ARRAY) );
+        }
+        
+        for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
+        {
+            TextureStage & textureStage = m_textureStage[i];
+            
+            if( textureStage.texture == nullptr )
+            {
+                break;
+            }
+            
+            GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
+            
+            GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, 0) );
+            GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
+            
+            stdex::intrusive_ptr_release( textureStage.texture );
+        }
+        
+        GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -517,7 +541,7 @@ namespace Menge
 		}
 		else
 		{
-			GLCALL( m_serviceProvider, glDisable, (GL_BLEND) );
+			//GLCALL( m_serviceProvider, glDisable, (GL_BLEND) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -585,8 +609,8 @@ namespace Menge
 				}
 				else if( _channels == 3 )
 				{
-					_hwFormat = PF_X8R8G8B8;
-					_hwChannels = 4;
+					_hwFormat = PF_R8G8B8;
+					_hwChannels = 3;
 				}
 				else if( _channels == 4 )
 				{

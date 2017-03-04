@@ -113,7 +113,7 @@ namespace Menge
 		return m_hwPixelFormat;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MarmaladeRenderTextureES1::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+	Pointer MarmaladeRenderTextureES1::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
 	{
 		if( m_lockMemory != nullptr )
 		{
@@ -125,8 +125,8 @@ namespace Menge
 
 		size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
-		MemoryCacheBufferInterfacePtr lockMemory = MEMORY_SERVICE( m_serviceProvider )
-			->createMemoryCacheBuffer();
+		MemoryInterfacePtr lockMemory = MEMORY_SERVICE( m_serviceProvider )
+			->createMemory();
 
 		if( lockMemory == nullptr )
 		{
@@ -136,7 +136,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		void * memory = lockMemory->cacheMemory( size, "MarmaladeRenderTextureES1::lock" );
+		void * memory = lockMemory->newMemory( size );
 
 		if( memory == nullptr )
 		{
@@ -163,12 +163,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderTextureES1::unlock( uint32_t _level )
 	{
-		GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
+        GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
 		GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, m_uid) );
-
-		GLCALL( m_serviceProvider, glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR) );
-		GLCALL( m_serviceProvider, glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR) );
-
+		
 		uint32_t miplevel_width = m_hwWidth >> _level;
 		uint32_t miplevel_height = m_hwHeight >> _level;
 

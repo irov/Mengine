@@ -20,7 +20,7 @@ call:getdepend http://downloads.sourceforge.net/project/boost/boost/1.63.0/boost
 call:getdepend https://cmake.org/files/v3.7/cmake-3.7.2-win64-x64.zip cmake-3.7.2-win64-x64.zip cmake-3.7.2-win64-x64 cmake
 call:getdepend http://download.sourceforge.net/libpng/lpng1628.zip lpng1628.zip lpng1628 libpng
 call:getdepend http://www.ijg.org/files/jpegsr9b.zip jpegsr9b.zip jpeg-9b libjpeg
-call:getdepend http://www.zlib.net/zlib-1.2.11.tar.gz zlib-1.2.11.tar.gz zlib-1.2.11 zlib
+call:getdepend http://www.zlib.net/zlib-1.2.11.tar.gz zlib-1.2.11.tar zlib-1.2.11 zlib
 call:getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.2.zip libogg-1.3.2.zip libogg-1.3.2 libogg
 call:getdepend http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.zip libvorbis-1.3.5.zip libvorbis-1.3.5 libvorbis
 call:getdepend http://downloads.xiph.org/releases/theora/libtheora-1.1.1.zip libtheora-1.1.1.zip libtheora-1.1.1 libtheora
@@ -49,7 +49,7 @@ call:svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
 call:svndepend https://github.com/erincatto/Box2D.git/trunk/Box2D Box2D
 call:svndepend https://github.com/irov/GOAP.git/trunk GOAP
 
-call:svndependr https://github.com/EsotericSoftware/spine-runtimes.git/trunk/spine-c spine-c 1587
+call:svndepend https://github.com/EsotericSoftware/spine-runtimes.git/trunk/spine-c spine-c
 
 echo.&pause&goto:eof
 

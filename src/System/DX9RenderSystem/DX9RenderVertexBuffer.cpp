@@ -53,7 +53,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderVertex2D * DX9RenderVertexBuffer::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
+    Pointer DX9RenderVertexBuffer::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
 	{
 		if( _offset + _count > m_vertexNum )
 		{
@@ -79,9 +79,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		RenderVertex2D * vertices = static_cast<RenderVertex2D *>(memory);
-
-		return vertices;
+		return memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderVertexBuffer::unlock()

@@ -97,7 +97,11 @@ PLUGIN_EXPORT( MengeSoundCodec );
 PLUGIN_EXPORT( MengeVideoCodec );
 PLUGIN_EXPORT( MengeZip );
 PLUGIN_EXPORT( MengeLZ4 );
-PLUGIN_EXPORT( Spine );
+
+#   ifdef MENGINE_PLUGIN_SPINE
+    PLUGIN_EXPORT( Spine );
+#   endif
+
 PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( MengeOggVorbis );
 PLUGIN_EXPORT( PathFinder );
@@ -352,6 +356,8 @@ namespace Menge
 		
 		uint32_t sys_gl_version = 2;
 
+        if( false )
+        {
 		char config_SysGlesVersion[S3E_CONFIG_STRING_MAX] = {0};
 		if( s3eConfigGetString( "S3E", "SysGlesVersion", config_SysGlesVersion ) == S3E_RESULT_SUCCESS )
 		{
@@ -372,6 +378,7 @@ namespace Menge
 				return false;
 			}
 		}
+        }
 
 		RenderSystemInterface * renderSystem = nullptr;
 
@@ -546,7 +553,11 @@ namespace Menge
 		PLUGIN_CREATE( m_serviceProvider, MengeOggVorbis );
 		PLUGIN_CREATE( m_serviceProvider, MengeVideoCodec );		
 		PLUGIN_CREATE( m_serviceProvider, PathFinder );
+
+#   ifdef MENGINE_PLUGIN_SPINE
 		PLUGIN_CREATE( m_serviceProvider, Spine );
+#   endif
+        
 		PLUGIN_CREATE( m_serviceProvider, Movie );
 
 		PLUGIN_CREATE( m_serviceProvider, MarmaladeGoogleAdMob );

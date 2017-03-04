@@ -53,7 +53,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderIndices * DX9RenderIndexBuffer::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
+    Pointer DX9RenderIndexBuffer::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
 	{
 		if( _offset + _count > m_indexNum )
 		{
@@ -79,9 +79,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		RenderIndices * indices = static_cast<RenderIndices *>(memory);
-
-		return indices;
+		return memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderIndexBuffer::unlock()

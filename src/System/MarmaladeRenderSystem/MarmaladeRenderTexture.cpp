@@ -113,7 +113,7 @@ namespace Menge
 		return m_hwPixelFormat;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MarmaladeRenderTexture::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+	Pointer MarmaladeRenderTexture::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
 	{
 		if( m_lockMemory != nullptr )
 		{

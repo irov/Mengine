@@ -54,8 +54,8 @@ namespace Menge
 		}			
 
 		int32 iwgl_version = IwGLGetInt( IW_GL_VERSION );
-		
-		if( (iwgl_version >> 8) < 2 )
+		int32 iwgl_version_major = iwgl_version >> 8
+		if( iwgl_version_major < 2 )
 		{
 			IwGLTerminate();
 

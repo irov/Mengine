@@ -100,6 +100,8 @@ namespace Menge
 		s3eAudioUnRegister( S3E_AUDIO_STOP, (s3eCallback)&s_Amplifier_AudioCallback_Stop );
 
 		this->stop();
+        
+        m_audioMemory = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeAmplifier::stop()
@@ -261,7 +263,7 @@ namespace Menge
 			}
 						
 			
-			m_audioMemory = Helper::createMemoryStream( m_serviceProvider, stream );
+			MemoryInterfacePtr audioMemory = Helper::createMemoryStream( m_serviceProvider, stream );
 
 			if( m_audioMemory == nullptr )
 			{
@@ -273,8 +275,8 @@ namespace Menge
 				return false;
 			}
 						
-			void * buffer_memory = m_audioMemory->getMemory();
-			size_t buffer_size = m_audioMemory->getSize();
+			void * buffer_memory = audioMemory->getMemory();
+			size_t buffer_size = audioMemory->getSize();
 
 			s3eResult result_play = s3eAudioPlayFromBuffer( const_cast<void *>(buffer_memory), buffer_size, 1 );
 
@@ -291,7 +293,9 @@ namespace Menge
 					);
 
 				return false;
-			}	
+			}
+            
+            m_audioMemory = audioMemory;
 		}
 		else
 		{

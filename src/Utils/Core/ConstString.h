@@ -11,7 +11,7 @@ namespace Menge
 
 namespace std
 {
-	template<> inline void swap( Menge::ConstString & _left, Menge::ConstString & _right )
+	inline void swap( Menge::ConstString & _left, Menge::ConstString & _right )
 	{
 		_left.swap( _right );
 	}

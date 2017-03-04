@@ -24,7 +24,7 @@ namespace Menge
 		void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
 	protected:
-		void _debugRender( const RenderObjectState * _state, unsigned int _debugMask );
+		void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask ) override;
 
     protected:
         ConstString m_movieName;

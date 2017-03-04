@@ -40,6 +40,8 @@
 #   define nullptr 0
 #   define STDEX_UNSUPPOT_NULLPTR_T
 
+#   define fdopen fdopen
+
 #	ifdef __aarch64__
 #		define STDEX_X64
 #	endif

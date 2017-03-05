@@ -9,7 +9,7 @@
 #	include "AstralaxEmitterContainer2.h"
 #	include "AstralaxEmitter2.h"
 
-#   include "Factory/FactoryStore.h"
+#   include "Factory/Factory.h"
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
@@ -50,9 +50,8 @@ namespace Menge
 	protected:
 		void onContainerRelease_( AstralaxEmitterContainer2 * _container );
 
-    protected:
-        typedef FactoryPoolStore<AstralaxEmitterContainer2, 16> TFactoryPoolAstralaxEmitterContainer;
-        TFactoryPoolAstralaxEmitterContainer m_factoryPoolAstralaxEmitterContainer;
+    protected:        
+        FactoryPtr m_factoryPoolAstralaxEmitterContainer;
 
 		typedef stdex::map<uint32_t, AstralaxEmitterContainer2 *> TMapHashEmitterContainers;
 		TMapHashEmitterContainers m_containers;

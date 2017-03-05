@@ -46,6 +46,9 @@ namespace Menge
 	class ConverterFactoryInterface
         : public ServantInterface
 	{
+    public:
+        virtual bool initialize() = 0;
+
 	public:
 		virtual ConverterInterfacePtr createConverter() = 0;
 	};
@@ -58,7 +61,7 @@ namespace Menge
         SERVICE_DECLARE("ConverterService")
 
 	public:
-		virtual void registerConverter( const ConstString& _type, const ConverterFactoryInterfacePtr & _converter ) = 0;
+		virtual bool registerConverter( const ConstString& _type, const ConverterFactoryInterfacePtr & _converter ) = 0;
 
     public:
 		virtual bool unregisterConverter( const ConstString& _type ) = 0;

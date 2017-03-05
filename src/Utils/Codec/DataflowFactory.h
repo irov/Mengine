@@ -13,10 +13,16 @@ namespace Menge
 	class DataflowFactory
 		: public ServantBase<DataflowFactoryInterface>
 	{
+    protected:
+        bool initialize() override
+        {
+            m_factory = new FactoryDefault<T>();
+        }
+
 	protected:
 		DataflowInterfacePtr createDataflow()
 		{	
-			DataflowInterfacePtr decoder = m_factory.createObject();
+			DataflowInterfacePtr decoder = m_factory->createObject();
 
 			decoder->setServiceProvider( m_serviceProvider );
 
@@ -38,7 +44,6 @@ namespace Menge
 		}
 
 	protected:
-		typedef FactoryDefaultStore<T> TFactoryDecoder;
-		TFactoryDecoder m_factory;
+		FactoryPtr m_factory;
 	};
 }

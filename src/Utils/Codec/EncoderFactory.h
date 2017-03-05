@@ -14,6 +14,12 @@ namespace Menge
         : public ServantBase<EncoderFactoryInterface>
     {
     protected:
+        bool initialize() override
+        {
+            m_factory = new FactoryPool<T, 8>();
+        }
+
+    protected:
         EncoderInterfacePtr createEncoder() override
         {
             T * encoder = m_factory.createObject();
@@ -30,8 +36,7 @@ namespace Menge
 		}
 
     protected:
-        typedef FactoryPoolStore<T, 8> TFacrotyDecoder;
-        TFacrotyDecoder m_factory;
+        FactoryPtr m_factory;
     };
 
     namespace Helper

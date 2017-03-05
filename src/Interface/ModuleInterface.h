@@ -40,7 +40,7 @@ namespace Menge
 	typedef stdex::intrusive_ptr<ModuleInterface> ModuleInterfacePtr;
 
 	class ModuleFactoryInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
 	public:
 		virtual ModuleInterfacePtr createModule() = 0;

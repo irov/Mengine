@@ -11,19 +11,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	template<class T>
 	class ModuleFactory
-		: public ModuleFactoryInterface
+		: public ServantBase<ModuleFactoryInterface>
 	{
-	public:
-		ModuleFactory( ServiceProviderInterface * _serviceProvider, const ConstString & _name )
-			: m_serviceProvider(_serviceProvider)
-			, m_name(_name)
-		{
-		}
+    public:
+        bool initialize( const ConstString & _name )
+        {
+            m_name = _name;
+
+            m_factory = new FactoryDefault<T>();
+        }
 
 	public:
 		ModuleInterfacePtr createModule() override
 		{
-			ModuleInterface * module = m_factory.createObject();
+			ModuleInterface * module = m_factory->createObject();
 
 			module->setServiceProvider( m_serviceProvider );
 			module->setName( m_name );
@@ -38,10 +39,8 @@ namespace Menge
 		}
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
 		ConstString m_name;
 
-		typedef FactoryDefaultStore<T> TFactoryModule;
-		TFactoryModule m_factory;
+		FactoryPtr m_factory;
 	};
 }

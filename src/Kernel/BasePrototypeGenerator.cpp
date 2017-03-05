@@ -18,8 +18,18 @@ namespace Menge
 		m_scriptWrapper = SCRIPT_SERVICE( m_serviceProvider )
 			->getWrapper( m_prototype );
 
+        if( this->_initialize() == false )
+        {
+            return false;
+        }
+
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool BasePrototypeGenerator::_initialize()
+    {
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void BasePrototypeGenerator::destroy()
 	{

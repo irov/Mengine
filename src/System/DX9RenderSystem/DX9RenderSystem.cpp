@@ -8,6 +8,9 @@
 
 #	include "DX9RenderTargetOffscreen.h"
 
+#   include "Factory/FactoryPool.h"
+#   include "Factory/FactoryDefault.h"
+
 #	include <algorithm>
 #	include <cmath>
 #	include <stdio.h>
@@ -178,7 +181,13 @@ namespace Menge
 	
 		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "DX9" );
 
-		m_factoryDX9Texture.setMethodListener( this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
+        m_factoryRenderVertexShader = new FactoryPool<DX9RenderVertexShader, 16>();
+        m_factoryRenderFragmentShader = new FactoryPool<DX9RenderFragmentShader, 16>();
+        m_factoryRenderProgram = new FactoryPool<DX9RenderProgram, 16>();
+        m_factoryVertexBuffer = new FactoryDefault<DX9RenderVertexBuffer>();
+        m_factoryIndexBuffer = new FactoryDefault<DX9RenderIndexBuffer>();
+        
+        m_factoryDX9Texture = Helper::makeFactoryPool<DX9RenderImage, 128>( this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
 							
 		return true;
 	}
@@ -1232,7 +1241,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertexBufferInterfacePtr DX9RenderSystem::createVertexBuffer( uint32_t _verticesNum, bool _dynamic )
 	{
-		DX9RenderVertexBufferPtr buffer = m_factoryVertexBuffer.createObject();
+		DX9RenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject();
 
 		if( buffer->initialize( m_serviceProvider, m_pD3DDevice, m_fvf, _verticesNum, _dynamic ) == false )
 		{
@@ -1270,7 +1279,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderIndexBufferInterfacePtr DX9RenderSystem::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
 	{
-		DX9RenderIndexBufferPtr buffer = m_factoryIndexBuffer.createObject();
+		DX9RenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject();
 
 		if( buffer->initialize( m_serviceProvider, m_pD3DDevice, _indiciesNum, _dynamic ) == false )
 		{
@@ -1708,7 +1717,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderFragmentShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
-		DX9RenderFragmentShaderPtr shader = m_factoryRenderFragmentShader.createObject();
+		DX9RenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject();
 
 		if( shader == nullptr )
 		{
@@ -1765,7 +1774,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertexShaderInterfacePtr DX9RenderSystem::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
-		DX9RenderVertexShaderPtr shader = m_factoryRenderVertexShader.createObject();
+		DX9RenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject();
 
 		if( shader == nullptr )
 		{
@@ -1824,7 +1833,7 @@ namespace Menge
 	{
 		(void)_samplerCount;
 
-		DX9RenderProgramPtr program = m_factoryRenderProgram.createObject();
+		DX9RenderProgramPtr program = m_factoryRenderProgram->createObject();
 
 		if( program == nullptr )
 		{
@@ -1992,7 +2001,8 @@ namespace Menge
 	{
 		m_textureCount++;
 
-		DX9RenderImage * dxTexture = m_factoryDX9Texture.createObject();
+		DX9RenderImage * dxTexture = m_factoryDX9Texture->createObject();
+
 		dxTexture->initialize( m_serviceProvider, _d3dInterface, _mode, _hwWidth, _hwHeight, _hwChannels, _hwPixelFormat );
 
 		//size_t memoryUse = dxTexture->getMemoryUse();

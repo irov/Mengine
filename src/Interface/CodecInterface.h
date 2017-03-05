@@ -28,6 +28,8 @@ namespace Menge
 	class CodecFactoryInterface
 		: public ServantInterface
 	{
+    public:
+        virtual bool initialize() = 0;
 	};
 
 	typedef stdex::intrusive_ptr<CodecFactoryInterface> CodecFactoryInterfacePtr;
@@ -115,11 +117,11 @@ namespace Menge
         SERVICE_DECLARE("CodecService")
 
 	public:
-		virtual void registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _decoder ) = 0;
-		virtual void unregisterDecoder( const ConstString& _type ) = 0;
+		virtual bool registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _decoder ) = 0;
+		virtual bool unregisterDecoder( const ConstString& _type ) = 0;
 		
-		virtual void registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _encoder ) = 0;
-		virtual void unregisterEncoder( const ConstString& _type ) = 0;
+		virtual bool registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _encoder ) = 0;
+		virtual bool unregisterEncoder( const ConstString& _type ) = 0;
 
     public:
 		virtual DecoderInterfacePtr createDecoder( const ConstString & _type ) = 0; 

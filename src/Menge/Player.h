@@ -9,7 +9,7 @@
 #	include "Core/ConstString.h"
 #	include "Core/Resolution.h"
 
-#   include "Factory/FactoryStore.h"
+#   include "Factory/Factory.h"
 
 #	include "Math/vec3.h"
 
@@ -165,7 +165,7 @@ namespace Menge
 		ScheduleManagerInterfacePtr m_scheduleManager;
 		ScheduleManagerInterfacePtr m_scheduleManagerGlobal;
 
-        FactoryDefaultStore<ScheduleManager> m_factoryScheduleManager;
+        FactoryPtr m_factoryScheduleManager;
 
 		typedef stdex::vector<ScheduleManagerInterfacePtr> TVectorUserScheduler;
 		TVectorUserScheduler m_schedulers;               

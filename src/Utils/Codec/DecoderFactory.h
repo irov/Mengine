@@ -14,9 +14,17 @@ namespace Menge
         : public ServantBase<DecoderFactoryInterface>
     {
     protected:
+        bool initialize()
+        {
+            m_factory = new FactoryPool<T, 8>;
+
+            return true;
+        }
+
+    protected:
         DecoderInterfacePtr createDecoder() override
         {	
-            T * decoder = m_factory.createObject();
+            T * decoder = m_factory->createObject();
 
 			decoder->setServiceProvider( m_serviceProvider );
 
@@ -30,8 +38,7 @@ namespace Menge
 		}
 
     protected:
-        typedef FactoryPoolStore<T, 8> TFactoryDecoder;
-        TFactoryDecoder m_factory;
+        FactoryPtr m_factory;
     };
 
     namespace Helper
@@ -42,9 +49,17 @@ namespace Menge
             DecoderFactoryInterfacePtr decoder = new DecoderFactory<T>();
 
             decoder->setServiceProvider( _serviceProvider );
+            
+            if( decoder->initialize() == false )
+            {
+                return nullptr;
+            }
 
-            CODEC_SERVICE( _serviceProvider )
-                ->registerDecoder( Helper::stringizeString(_serviceProvider, _type), decoder );
+            if( CODEC_SERVICE( _serviceProvider )
+                ->registerDecoder( Helper::stringizeString( _serviceProvider, _type ), decoder ) == false )
+            {
+                return nullptr;
+            }
 
             return decoder;
         }

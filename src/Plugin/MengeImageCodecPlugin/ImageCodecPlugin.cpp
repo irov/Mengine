@@ -113,6 +113,7 @@ namespace Menge
 
 		m_factoryAEK = new DataflowFactory<DataflowAEK>();
         m_factoryAEK->setServiceProvider( m_serviceProvider );
+        m_factoryAEK->initialize();
 
 		DataflowInterfacePtr aek = m_factoryAEK->createDataflow();
 
@@ -124,6 +125,7 @@ namespace Menge
 
 		m_factoryMDL = new DataflowFactory<DataflowMDL>();
         m_factoryMDL->setServiceProvider( m_serviceProvider );
+        m_factoryMDL->initialize();
 
 		DataflowInterfacePtr mdl = m_factoryMDL->createDataflow();
 

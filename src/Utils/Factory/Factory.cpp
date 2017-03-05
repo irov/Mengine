@@ -13,9 +13,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Factory::setListener( const FactoryListenerInterfacePtr & _listener )
+	void Factory::setDestroyListener( const FactoryDestroyListenerInterfacePtr & _listener )
 	{
-		m_listener = _listener;
+		m_destroyListener = _listener;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Factory::setMutex( const ThreadMutexInterfacePtr & _mutex )
@@ -23,7 +23,7 @@ namespace Menge
 		m_mutex = _mutex;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Factorable * Factory::createObject()
+    PointerFactorable Factory::createObject()
 	{
 		Factorable * object = nullptr;
 
@@ -59,9 +59,9 @@ namespace Menge
 		{
 			STDEX_THREAD_GUARD_CHECK( this, "Factory::destroyObject" );
 
-			if( m_listener != nullptr )
+			if( m_destroyListener != nullptr )
 			{
-				m_listener->onFactoryDestroyObject( _object );
+				m_destroyListener->onFactoryDestroyObject( _object );
 			}
 
 			this->_destroyObject( _object );
@@ -73,9 +73,9 @@ namespace Menge
 		{
 			m_mutex->lock();
 
-			if( m_listener != nullptr )
+			if( m_destroyListener != nullptr )
 			{
-				m_listener->onFactoryDestroyObject( _object );
+				m_destroyListener->onFactoryDestroyObject( _object );
 			}
 
 			this->_destroyObject( _object );

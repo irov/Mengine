@@ -5,7 +5,8 @@
 #	include "AstralaxEmitter2.h"
 
 #   include "Core/ServantBase.h"
-#   include "Factory/FactoryStore.h"
+
+#   include "Factory/Factory.h"
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
@@ -63,8 +64,7 @@ namespace Menge
 		
 		MemoryInterfacePtr m_memory;
 
-		typedef FactoryPoolStore<AstralaxEmitter2, 16> TFactoryPoolAstralaxEmitter;
-		TFactoryPoolAstralaxEmitter m_factoryPoolAstralaxEmitter;
+        FactoryPtr m_factoryPoolAstralaxEmitter;
 
 		typedef stdex::vector<ResourceImagePtr> TVectorResourceImage;
 		TVectorResourceImage m_resourceImages;

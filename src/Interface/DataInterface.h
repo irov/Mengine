@@ -51,6 +51,9 @@ namespace Menge
 	class DataflowFactoryInterface
 		: public ServantInterface
 	{
+    public:
+        virtual bool initialize() = 0;
+
 	public:
 		virtual DataflowInterfacePtr createDataflow() = 0;
 	};

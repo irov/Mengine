@@ -8,6 +8,8 @@
 #	include "Core/String.h"
 #	include "Core/Stream.h"
 
+#   include "Factory/FactoryPool.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -60,9 +62,9 @@ namespace Menge
 		}
 
 		m_resourceImages.resize( atlasCount );
-
-		m_factoryPoolAstralaxEmitter.setMethodListener( this, &AstralaxEmitterContainer2::onEmitterRelease_ );
-
+                
+        m_factoryPoolAstralaxEmitter = Helper::makeFactoryPool<AstralaxEmitter2, 16>( this, &AstralaxEmitterContainer2::onEmitterRelease_ );
+        		
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -203,7 +205,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter.createObject();
+		AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter->createObject();
 
         emitter->setServiceProvider( m_serviceProvider );
 

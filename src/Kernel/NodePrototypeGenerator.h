@@ -7,7 +7,7 @@
 #	include "Core/ConstString.h"
 #   include "Core/MemoryAllocator.h"
 
-#	include "Factory/FactoryStore.h"
+#	include "Factory/FactoryPool.h"
 
 #	include "Logger/Logger.h"
 
@@ -17,10 +17,18 @@ namespace Menge
 	class NodePrototypeGenerator
 		: public BasePrototypeGenerator
 	{
+    protected:
+        bool _initialize()
+        {
+            m_factory = new FactoryPool<Type, Count>();
+
+            return true;
+        }
+
 	protected:
 		Factorable * generate() override
 		{
-			Type * node = m_factory.createObject();
+			Type * node = m_factory->createObjectT<Type *>();
 
 			if( node == nullptr )
 			{
@@ -36,31 +44,17 @@ namespace Menge
 			node->setType( m_prototype );
 			node->setScriptWrapper( m_scriptWrapper );
 
-			if( this->setup( node ) == false )
-			{
-				return nullptr;
-			}
-
 			return node;
-		}
-
-		virtual bool setup( Type * _node )
-		{
-			(void)_node;
-			//Empty
-
-			return true;
 		}
 
 		uint32_t count() const override
 		{
-			uint32_t count = m_factory.countObject();
+			uint32_t count = m_factory->countObject();
 
 			return count;
 		}
 
 	protected:
-		typedef FactoryPoolStore<Type, Count> TNodeFactory;
-		TNodeFactory m_factory;
+        FactoryPtr m_factory;
 	};
 }

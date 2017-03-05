@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Factory/Factory.h"
+#   include "Factory/FactoryHelper.h"
 
 #	include "stdex/pool.h"
 
@@ -38,4 +39,19 @@ namespace Menge
         typedef stdex::template_pool<T, Count> TTemplatePool;
 		TTemplatePool m_pool;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        //////////////////////////////////////////////////////////////////////////
+        template<class T, size_t Count, class C, class M>
+        FactoryPtr makeFactoryPool( C * _self, M _method )
+        {
+            FactoryPtr factory = new FactoryPool<T, Count>();
+
+            setupFactoryDestroyListener<T>( factory, _self, _method );
+
+            return factory;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

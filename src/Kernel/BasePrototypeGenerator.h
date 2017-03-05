@@ -25,6 +25,10 @@ namespace Menge
 	protected:
 		bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
 
+    protected:
+        virtual bool _initialize();
+
+    protected:
 		void destroy() override;
 
 	protected:

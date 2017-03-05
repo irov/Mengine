@@ -25,6 +25,8 @@
 #	include "Kernel/RenderCameraHelper.h"
 #	include "Kernel/Arrow.h"
 
+#   include "Factory/FactoryDefault.h"
+
 #	include "Consts.h"
 
 #	include "Logger/Logger.h"
@@ -578,6 +580,8 @@ namespace Menge
 		m_mousePickerSystem = SERVICE_GENERATE( m_serviceProvider, MousePickerSystem, MousePickerSystemInterface );
         m_globalHandleSystem = SERVICE_GENERATE( m_serviceProvider, GlobalHandleSystem, GlobalHandleSystemInterface );
 		
+        m_factoryScheduleManager = new FactoryDefault<ScheduleManager>();
+
         m_scheduleManager = m_factoryScheduleManager.createObject();
         m_scheduleManager->setServiceProvider( m_serviceProvider );
 
@@ -586,7 +590,7 @@ namespace Menge
 
 		m_affectorable = new Affectorable;
 		m_affectorableGlobal = new Affectorable;
-
+        
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

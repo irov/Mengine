@@ -5,6 +5,8 @@
 #   include "Core/String.h"
 #   include "Logger/Logger.h"
 
+#   include "Factory/FactoryPool.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ParticleSystem, Menge::AstralaxParticleSystem2 );
 //////////////////////////////////////////////////////////////////////////
@@ -63,14 +65,14 @@ namespace Menge
 			, version
 			);
 
-		m_factoryPoolAstralaxEmitterContainer.setMethodListener( this, &AstralaxParticleSystem2::onContainerRelease_ );
-
+        m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPool<AstralaxEmitterContainer2, 16>( this, &AstralaxParticleSystem2::onContainerRelease_ );
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticleSystem2::_finalize()
 	{
-		uint32_t count = m_factoryPoolAstralaxEmitterContainer.countObject();
+		uint32_t count = m_factoryPoolAstralaxEmitterContainer->countObject();
 
 		if( count != 0 )
 		{
@@ -85,7 +87,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitterContainerInterface2Ptr AstralaxParticleSystem2::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
 	{
-		AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer.createObject();
+		AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer->createObject();
 
 		if( container == nullptr )
 		{

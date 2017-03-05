@@ -11,7 +11,7 @@
 
 #   include "Core/ServiceBase.h"
 
-#   include "Factory/FactoryStore.h"
+#   include "Factory/Factory.h"
 
 #   include "stdex/stl_map.h"
 
@@ -203,32 +203,22 @@ namespace Menge
 		DWORD m_fvf;
 		IDirect3DVertexDeclaration9 * m_vertexDeclaration;
 
-		typedef FactoryPoolStore<DX9RenderVertexShader, 16> TFactoryRenderVertexShader;
-		TFactoryRenderVertexShader m_factoryRenderVertexShader;
+		FactoryPtr m_factoryRenderVertexShader;
+        FactoryPtr m_factoryRenderFragmentShader;
+        FactoryPtr m_factoryRenderProgram;
+        FactoryPtr m_factoryVertexBuffer;
+        FactoryPtr m_factoryIndexBuffer;
+        FactoryPtr m_factoryDX9Texture;
 
-		typedef FactoryPoolStore<DX9RenderFragmentShader, 16> TFactoryRenderFragmentShader;
-		TFactoryRenderFragmentShader m_factoryRenderFragmentShader;
+        typedef stdex::vector<DX9RenderVertexShaderPtr> TVectorRenderVertexShaders;
+        TVectorRenderVertexShaders m_deferredCompileVertexShaders;
 
-		typedef FactoryPoolStore<DX9RenderProgram, 16> TFactoryRenderProgram;
-		TFactoryRenderProgram m_factoryRenderProgram;
+        typedef stdex::vector<DX9RenderFragmentShaderPtr> TVectorRenderFragmentShaders;
+        TVectorRenderFragmentShaders m_deferredCompileFragmentShaders;
 
-		typedef stdex::vector<DX9RenderVertexShaderPtr> TVectorRenderVertexShaders;
-		TVectorRenderVertexShaders m_deferredCompileVertexShaders;
+        typedef stdex::vector<DX9RenderProgramPtr> TVectorRenderPrograms;
+        TVectorRenderPrograms m_deferredCompilePrograms;
 
-		typedef stdex::vector<DX9RenderFragmentShaderPtr> TVectorRenderFragmentShaders;
-		TVectorRenderFragmentShaders m_deferredCompileFragmentShaders;
-
-		typedef stdex::vector<DX9RenderProgramPtr> TVectorRenderPrograms;
-		TVectorRenderPrograms m_deferredCompilePrograms;
-
-		typedef FactoryDefaultStore<DX9RenderVertexBuffer> TFactoryRenderVertexBuffer;
-		TFactoryRenderVertexBuffer m_factoryVertexBuffer;
-
-		typedef FactoryDefaultStore<DX9RenderIndexBuffer> TFactoryRenderIndexBuffer;
-		TFactoryRenderIndexBuffer m_factoryIndexBuffer;
-
-		typedef FactoryPoolStore<DX9RenderImage, 128> TFactoryDX9Texture;
-		TFactoryDX9Texture m_factoryDX9Texture;
 
 		mt::mat4f m_projectionMatrix;
 		mt::mat4f m_modelViewMatrix;

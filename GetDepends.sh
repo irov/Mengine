@@ -1,53 +1,56 @@
-basedir=${PWD##*/}
-toolsdir=%basedir%\wget
-dependenciesdir=%basedir%\dependencies
+basedir=${PWD}
+dependenciesdir=$basedir/dependencies
 
 getdepend()
 {
+	cd $dependenciesdir
 	if [ ! -f $2 ]; then
         curl -L $1 > $2
     fi
 
 	rm -rf $4
-	%toolsdir%/7za x -y $2
+	./../wget/7za x -y $2
 	mv $3 $4
 }
 
 getdepend2()
 {
-	if [ ! -f $2 ]; then
+    cd $dependenciesdir
+    if [ ! -f $2 ]; then
         curl -L $1 > $2
     fi
 
-	rm -rf $5
-	%toolsdir%/7za x -y $2
-    %toolsdir%/7za x -y $3
-	mv $4 $5
+    rm -rf $5
+    ./../wget/7za x -y $2
+    ./../wget/7za x -y $3
+    mv $4 $5
 }
 
 getdepend_tgz()
 {
-	if [ ! -f $2 ]; then
+    cd $dependenciesdir
+    if [ ! -f $2 ]; then
         curl -L $1 > $2
     fi
 
-	rm -rf $4
-	tar -zxf $2
-	mv $3 $4
+    rm -rf $4
+    tar -zxf $2
+    mv $3 $4
 }
 
 svndepend()
 {
+    cd $dependenciesdir
     svn checkout -q $1 $2
 }
 
 svndependr()
 {
+    cd $dependenciesdir
     svn checkout -q -r $3 $1 $2
 }
 
-mkdir %dependenciesdir%
-cd %dependenciesdir%
+mkdir $dependenciesdir
 
 getdepend http://downloads.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.7z boost_1_63_0.7z boost_1_63_0 boost
 

@@ -1,52 +1,62 @@
+basedir=${PWD}
+dependenciesdir=$basedir/dependencies
+
 getdepend()
 {
+	cd $dependenciesdir
 	if [ ! -f $2 ]; then
         curl -L $1 > $2
     fi
 
 	rm -rf $4
-	./wget/7za x -y $2
+	./../wget/7za x -y $2
 	mv $3 $4
 }
 
 getdepend2()
 {
-	if [ ! -f $2 ]; then
+    cd $dependenciesdir
+    if [ ! -f $2 ]; then
         curl -L $1 > $2
     fi
 
-	rm -rf $5
-	./wget/7za x -y $2
-    ./wget/7za x -y $3
-	mv $4 $5
+    rm -rf $5
+    ./../wget/7za x -y $2
+    ./../wget/7za x -y $3
+    mv $4 $5
 }
 
 getdepend_tgz()
 {
-	if [ ! -f $2 ]; then
+    cd $dependenciesdir
+    if [ ! -f $2 ]; then
         curl -L $1 > $2
     fi
 
-	rm -rf $4
-	tar -zxf $2
-	mv $3 $4
+    rm -rf $4
+    tar -zxf $2
+    mv $3 $4
 }
 
 svndepend()
 {
+    cd $dependenciesdir
     svn checkout -q $1 $2
 }
 
 svndependr()
 {
+    cd $dependenciesdir
     svn checkout -q -r $3 $1 $2
 }
+
+mkdir $dependenciesdir
 
 getdepend http://downloads.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.7z boost_1_63_0.7z boost_1_63_0 boost
 
 getdepend http://download.sourceforge.net/libpng/lpng1628.zip lpng1628.zip lpng1628 libpng
 getdepend http://www.ijg.org/files/jpegsr9b.zip jpegsr9b.zip jpeg-9b libjpeg
-getdepend http://www.zlib.net/zlib-1.2.11.tar.gz zlib-1.2.11.tar.gz zlib-1.2.11 zlib
+getdepend http://www.zlib.net/zlib-1.2.11.tar.gz zlib-1.2.11.tar zlib-1.2.11 zlib
 getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.2.zip libogg-1.3.2.zip libogg-1.3.2 libogg
 getdepend http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.zip libvorbis-1.3.5.zip libvorbis-1.3.5 libvorbis
 getdepend http://downloads.xiph.org/releases/theora/libtheora-1.1.1.zip libtheora-1.1.1.zip libtheora-1.1.1 libtheora

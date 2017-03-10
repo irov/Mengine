@@ -1,7 +1,7 @@
 #	pragma once
 
-#	include "Factory.h"
-#	include "FactorableUnique.h"
+#	include "Factory/Factory.h"
+#	include "Factory/FactorableUnique.h"
 
 namespace Menge
 {

@@ -82,6 +82,11 @@ namespace Menge
             DataInterfacePtr data = this->dataflow( _type, _stream );
 
 #   ifdef _DEBUG
+			if (data == nullptr)
+			{
+				return nullptr;
+			}
+			
 			if( stdex::intrusive_dynamic_cast<T>(data) == nullptr )
 			{
                 throw;

@@ -132,6 +132,11 @@ namespace Menge
             DecoderInterfacePtr decoder = this->createDecoder( _type );
 
 #   ifdef _DEBUG
+			if (decoder == nullptr)
+			{
+				return nullptr;
+			}
+
 			if( stdex::intrusive_dynamic_cast<T>(decoder) == nullptr )
 			{
                 throw;
@@ -152,6 +157,11 @@ namespace Menge
             EncoderInterfacePtr encoder = this->createEncoder( _type );
 
 #   ifdef _DEBUG
+			if (encoder == nullptr)
+			{
+				return nullptr;
+			}
+			
             if( stdex::intrusive_dynamic_cast<T>(encoder) == nullptr )
             {
                 throw;

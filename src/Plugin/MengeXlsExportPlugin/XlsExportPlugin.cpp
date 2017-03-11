@@ -92,7 +92,8 @@ namespace Menge
 		pybind::set_syspath( py_syspath );
 
 		pybind::decref( py_syspath );
-				
+		
+		pybind::def_functor(kernel, "Warning", this, &XlsExportPlugin::warning_, module_builtins);
 		pybind::def_functor( kernel, "Error", this, &XlsExportPlugin::error_, module_builtins );
 
 		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
@@ -146,6 +147,18 @@ namespace Menge
         pybind::decref( py_xlsxExporter );
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void XlsExportPlugin::warning_(const wchar_t * _msg)
+	{
+		Char utf8_msg[2048];
+		UNICODE_SERVICE(m_serviceProvider)
+			->unicodeToUtf8(_msg, (size_t)-1, utf8_msg, 2048, nullptr);
+
+		LOGGER_WARNING(m_serviceProvider)("%s"
+			, utf8_msg
+			);
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XlsExportPlugin::error_( const wchar_t * _msg )

@@ -97,7 +97,7 @@ namespace Menge
 	{       
         s_writeCrashDump( pExceptionPointers );
 
-		stdex::string stack;
+		std::string stack;
 		stdex::get_callstack( stack, pExceptionPointers->ContextRecord );
 
 		LOGGER_CRITICAL( g_crashDumpExceptionHandlerData->serviceProvider )("CriticalErrorsMonitor: catch exception and write dumb %ls\n\n\n %s\n\n\n"

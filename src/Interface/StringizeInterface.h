@@ -20,8 +20,9 @@ namespace Menge
 			
 	public:
 		virtual void stringize( const Char * _str, ConstString::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) = 0;
-
+		
     public:
+		virtual void stringizeInternal(const Char * _str, ConstString::size_type _size, ConstString & _cstr) = 0;
         virtual bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) = 0;
 	};
 
@@ -67,10 +68,19 @@ namespace Menge
 
 			return cstr;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		inline ConstString stringizeStringLocal(ServiceProviderInterface * _serviceProvider, const Char * _value, ConstString::size_type _size)
+		{
+			ConstString cstr;
+			STRINGIZE_SERVICE(_serviceProvider)
+				->stringizeInternal(_value, _size, cstr);
+
+			return cstr;
+		}
 	}
 
 #	define STRINGIZE_STRING_LOCAL( serviceProvider, str )\
-	Helper::stringizeStringSize( serviceProvider, str, (sizeof(str) - 1) )
+	Helper::stringizeStringLocal( serviceProvider, str, (sizeof(str) - 1) )
 }
 
 

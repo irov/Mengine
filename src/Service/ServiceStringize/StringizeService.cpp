@@ -22,6 +22,17 @@ namespace Menge
 	{
 		m_factoryHolderStringMemory = new FactoryPool<ConstStringHolderMemory, 512>();
 
+		for (uint32_t i = 0; i != 257; ++i)
+		{
+			for (uint32_t j = 0; j != 8; ++j)
+			{
+				InternalHolder & holder = m_internals[i][j];
+
+				holder.str = nullptr;
+				holder.holder = nullptr;				
+			}
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -32,16 +43,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void StringizeService::stringize( const char * _str, size_t _size, ConstString::hash_type _hash, ConstString & _cstr )
 	{
-        if( _size == 0 )
-        {
-            _cstr = ConstString::none();
-
-            return;
-        }
-        
         if( _size == (size_t)-1 )
 		{
 			_size = strlen(_str);
+		}
+
+		if (_size == 0)
+		{
+			_cstr = ConstString::none();
+
+			return;
 		}
 
 		if( _hash == (ConstString::hash_type)(-1) )
@@ -49,21 +60,58 @@ namespace Menge
             _hash = Helper::makeHash( _str, _size );
         }
 
-        ConstStringHolder * test = this->testHolder_( _str, _size, _hash );
+		ConstStringHolder * holder = this->stringizeHolder_(_str, _size, _hash);
 
-        if( test != nullptr )
-        {
-            _cstr = ConstString( test );
-
-            return;
-        }
-
-        ConstStringHolderMemory * holder = m_factoryHolderStringMemory->createObject();
-
-        holder->setValue( _str, _size, _hash );
-
-		this->addHolder_( holder, _hash, _cstr );
+		_cstr = ConstString(holder);
     }
+	//////////////////////////////////////////////////////////////////////////
+	void StringizeService::stringizeInternal(const Char * _str, ConstString::size_type _size, ConstString & _cstr)
+	{
+		if (_size == 0)
+		{
+			_cstr = ConstString::none();
+
+			return;
+		}
+
+		ptrdiff_t ptr_diff = reinterpret_cast<ptrdiff_t>(_str);
+
+		uint32_t ptr_hash = (ptr_diff / sizeof(ptrdiff_t)) % 257;
+
+		for (uint32_t i = 0; i != 8; ++i)
+		{
+			InternalHolder & inter = m_internals[ptr_hash][i];
+
+			if (inter.str == _str)
+			{
+				_cstr = ConstString(inter.holder);
+
+				return;
+			}
+
+			if (inter.holder != nullptr)
+			{
+				continue;
+			}
+
+			ConstString::hash_type _hash = Helper::makeHash(_str, _size);
+			
+			ConstStringHolder * holder = this->stringizeHolder_(_str, _size, _hash);
+
+			inter.str = _str;
+			inter.holder = holder;
+
+			_cstr = ConstString(holder);
+
+			return;
+		}
+
+		ConstString::hash_type hash = Helper::makeHash(_str, _size);
+
+		ConstStringHolder * holder = this->stringizeHolder_(_str, _size, hash);
+
+		_cstr = ConstString(holder);
+	}
     //////////////////////////////////////////////////////////////////////////
     bool StringizeService::stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr )
     {
@@ -75,6 +123,11 @@ namespace Menge
         {
             holder_size = strlen( holder_str );
         }
+
+		if (holder_size == 0)
+		{
+			_cstr = ConstString::none();
+		}
 
 		if( holder_hash == (ConstStringHolder::hash_type) (-1) )
         {
@@ -92,10 +145,30 @@ namespace Menge
             return false;
         }
 
-		this->addHolder_( _holder, holder_hash, _cstr );
+		this->addHolder_( _holder, holder_hash );
+
+		_cstr = ConstString(_holder);
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	ConstStringHolder * StringizeService::stringizeHolder_(const char * _str, size_t _size, ConstString::hash_type _hash)
+	{
+		ConstStringHolder * test = this->testHolder_(_str, _size, _hash);
+
+		if (test != nullptr)
+		{
+			return test;
+		}
+
+		ConstStringHolderMemory * holder = m_factoryHolderStringMemory->createObject();
+
+		holder->setValue(_str, _size, _hash);
+
+		this->addHolder_(holder, _hash);
+
+		return holder;
+	}
     //////////////////////////////////////////////////////////////////////////
     ConstStringHolder * StringizeService::testHolder_( const char * _str, ConstString::size_type _size, ConstString::hash_type _hash )
     {
@@ -129,13 +202,11 @@ namespace Menge
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::addHolder_( ConstStringHolder * _holder, ConstString::hash_type _hash, ConstString & _cstr )
+	void StringizeService::addHolder_( ConstStringHolder * _holder, ConstString::hash_type _hash )
     {
 		TIntrusiveListConstStringHolder & list = this->getList_( _hash );
 
         list.push_back( _holder );
-
-        _cstr = ConstString( _holder );
     }
     //////////////////////////////////////////////////////////////////////////
     StringizeService::TIntrusiveListConstStringHolder & StringizeService::getList_( ConstStringHolder::hash_type _hash )

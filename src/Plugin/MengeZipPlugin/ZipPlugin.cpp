@@ -25,7 +25,7 @@ namespace Menge
 			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip"), new FactoryDefault<FileGroupZip>() );
 		
 		ARCHIVE_SERVICE(m_serviceProvider)
-			->registerArchivator( STRINGIZE_STRING_LOCAL( m_serviceProvider, "zip" ), new ArchivatorZip() );
+			->registerArchivator( STRINGIZE_STRING_LOCAL( m_serviceProvider, "zip" ), new FactorableUnique<ArchivatorZip>() );
 
         return true;
 	}

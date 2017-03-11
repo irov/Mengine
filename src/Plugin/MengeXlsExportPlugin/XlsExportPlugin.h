@@ -28,6 +28,7 @@ namespace Menge
 		bool proccess_();
 
 	protected:
+		void warning_(const wchar_t * _msg);
 		void error_( const wchar_t * _msg );
 
 	protected:

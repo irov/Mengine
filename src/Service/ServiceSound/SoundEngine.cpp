@@ -7,6 +7,8 @@
 #	include "Interface/PrefetcherInterface.h"
 #	include "Interface/ConfigInterface.h"
 
+#	include "Factory/FactoryPool.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Math/utils.h"
@@ -59,6 +61,8 @@ namespace Menge
 
 		float voiceVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "VoiceVolume", 1.f);
 		this->setVoiceVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), voiceVolume, 0.f );
+
+		m_factoryWorkerTaskSoundBufferUpdate = new FactoryPool<ThreadWorkerSoundBufferUpdate, 32>();
 
 		return true;
 	}
@@ -1208,7 +1212,7 @@ namespace Menge
 
 		if( m_threadSoundBufferUpdate != nullptr )
 		{
-			ThreadWorkerSoundBufferUpdatePtr worker = m_poolWorkerTaskSoundBufferUpdate.createObject();
+			ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject();
 
 			SoundBufferInterfacePtr soundBuffer = _source->source->getSoundBuffer();
 

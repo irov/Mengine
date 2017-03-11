@@ -1,5 +1,7 @@
 #	include "MemoryManager.h"
 
+#	include "Factory/FactoryPool.h"
+
 #	include "Logger/Logger.h"
 
 #	include <malloc.h>
@@ -24,14 +26,20 @@ namespace Menge
 		m_memoryCacheMutex = THREAD_SERVICE(m_serviceProvider)
 			->createMutex( "MemoryManager::initialize" );
 
+		m_factoryPoolMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16>();
+		m_factoryPoolMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16>();
+		m_factoryPoolMemoryProxyInput = new FactoryPool<MemoryProxyInput, 16>();
+		m_factoryPoolMemoryInput = new FactoryPool<MemoryInput, 16>();
+		m_factoryPoolMemory = new FactoryPool<Memory, 16>();
+
 		m_memoryFactoryMutex = THREAD_SERVICE( m_serviceProvider )
 			->createMutex( "MemoryManager::initialize" );
 
-		m_factoryPoolMemoryCacheBuffer.setMutex( m_memoryFactoryMutex );
-		m_factoryPoolMemoryCacheInput.setMutex( m_memoryFactoryMutex );
-		m_factoryPoolMemoryProxyInput.setMutex( m_memoryFactoryMutex );
-		m_factoryPoolMemoryInput.setMutex( m_memoryFactoryMutex );
-		m_factoryPoolMemory.setMutex( m_memoryFactoryMutex );
+		m_factoryPoolMemoryCacheBuffer->setMutex( m_memoryFactoryMutex );
+		m_factoryPoolMemoryCacheInput->setMutex( m_memoryFactoryMutex );
+		m_factoryPoolMemoryProxyInput->setMutex( m_memoryFactoryMutex );
+		m_factoryPoolMemoryInput->setMutex( m_memoryFactoryMutex );
+		m_factoryPoolMemory->setMutex( m_memoryFactoryMutex );
 
 		return true;
 	}
@@ -212,7 +220,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryCacheBufferInterfacePtr MemoryManager::createMemoryCacheBuffer()
 	{
-		MemoryCacheBuffer * memoryBuffer = m_factoryPoolMemoryCacheBuffer.createObject();
+		MemoryCacheBuffer * memoryBuffer = m_factoryPoolMemoryCacheBuffer->createObject();
 
 		memoryBuffer->setServiceProvider( m_serviceProvider );
 
@@ -223,7 +231,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryCacheInputInterfacePtr MemoryManager::createMemoryCacheInput()
 	{
-		MemoryCacheInput * memoryCache = m_factoryPoolMemoryCacheInput.createObject();
+		MemoryCacheInput * memoryCache = m_factoryPoolMemoryCacheInput->createObject();
 
 		memoryCache->setServiceProvider( m_serviceProvider );
 
@@ -234,7 +242,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryProxyInputInterfacePtr MemoryManager::createMemoryProxyInput()
 	{
-		MemoryProxyInput * memoryProxy = m_factoryPoolMemoryProxyInput.createObject();
+		MemoryProxyInput * memoryProxy = m_factoryPoolMemoryProxyInput->createObject();
 
 		memoryProxy->setServiceProvider( m_serviceProvider );
 
@@ -243,7 +251,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInputInterfacePtr MemoryManager::createMemoryInput()
 	{
-		MemoryInput * memory = m_factoryPoolMemoryInput.createObject();
+		MemoryInput * memory = m_factoryPoolMemoryInput->createObject();
 
 		memory->setServiceProvider( m_serviceProvider );
 
@@ -252,7 +260,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInterfacePtr MemoryManager::createMemory()
 	{
-		Memory * memory = m_factoryPoolMemory.createObject();
+		Memory * memory = m_factoryPoolMemory->createObject();
 
 		memory->setServiceProvider( m_serviceProvider );
 

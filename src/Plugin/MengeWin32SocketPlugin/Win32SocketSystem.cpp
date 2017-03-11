@@ -1,5 +1,7 @@
 #	include "Win32SocketSystem.h"
 
+#   include "Factory/FactoryPool.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SocketSystem, Menge::Win32SocketSystem );
 //////////////////////////////////////////////////////////////////////////
@@ -23,6 +25,8 @@ namespace Menge
 			return false;
 		}
 
+		m_poolWin32Socket = new FactoryPool<Win32Socket, 16>();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -33,7 +37,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SocketInterfacePtr Win32SocketSystem::createSocket()
 	{
-		SocketInterfacePtr socket = m_poolWin32Socket.createObject();
+		SocketInterfacePtr socket = m_poolWin32Socket->createObject();
 
 		return socket;
 	}

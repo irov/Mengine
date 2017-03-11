@@ -1,5 +1,7 @@
 #	include "CollisionWorld.h"
 
+#	include "Factory/FactoryPool.h"
+
 #	include "Math/ccd.h"
 
 #   include <algorithm>
@@ -42,6 +44,8 @@ namespace Menge
 			}
 		}
 
+        m_factoryCollisionActor = new FactoryPool<CollisionActor, 32>();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -57,7 +61,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	CollisionActorPtr CollisionWorld::createActor( CollisionActorProviderInterface * _provider, float _radius, const mt::vec3f & _raycastDirection, uint32_t _iff, bool _active )
 	{
-		CollisionActorPtr actor = m_factoryCollisionActor.createObject();
+		CollisionActorPtr actor = m_factoryCollisionActor->createObject();
 
 		actor->setCollisionActorProvider( _provider );
 		actor->setRadius( _radius );

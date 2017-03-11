@@ -10,6 +10,8 @@
 #	include "Interface/PrototypeManagerInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#   include "Factory/FactoryPool.h"
+
 #	include "Logger/Logger.h"
 
 #	include "pybind/debug.hpp"
@@ -230,6 +232,9 @@ namespace Menge
 		//PyObject * gc = pybind::module_import( "gc", gc_exist );
 
 		//pybind::call_method( gc, "disable", "()" );
+
+		m_factoryPythonString = new FactoryPool<ConstStringHolderPythonString, 256>();
+		m_factoryScriptModule = new FactoryPool<ScriptModule, 8>();
 
         return true;
 	}
@@ -539,7 +544,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		ScriptModulePtr module = m_factoryScriptModule.createObject();
+		ScriptModulePtr module = m_factoryScriptModule->createObject();
 
 		if( module->initialize( pybind::module(m_kernel, py_module) ) == false )
 		{
@@ -594,7 +599,7 @@ namespace Menge
             return true;
         }
 
-        ConstStringHolderPythonString * holder = m_factoryPythonString.createObject();
+        ConstStringHolderPythonString * holder = m_factoryPythonString->createObject();
 
         holder->setPythonObject( (PyObject*)_object );
 

@@ -5,7 +5,6 @@
 #	include "Factory/FactoryDefault.h"
 #	include "Factory/FactoryPool.h"
 #	include "Factory/FactoryHelper.h"
-#	include "Factory/FactorableUnique.h"
 
 #	include "stdex/thread_guard.h"
 
@@ -20,7 +19,7 @@ namespace Menge
 	public:
 		FactoryPoolStore()
 		{
-			m_ptr = new FactorableUnique<TFactoryType>();
+			m_ptr = new TFactoryType();
 		}
 
 	public:

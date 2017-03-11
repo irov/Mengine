@@ -1,5 +1,7 @@
 #	include "MagnetWorld.h"
 
+#	include "Factory/FactoryPool.h"
+
 #	include "Math/ccd.h"
 
 #   include <algorithm>
@@ -38,6 +40,8 @@ namespace Menge
 			}
 		}
 
+        m_factoryCollisionActor = new FactoryPool<MagnetActor, 32>();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -53,7 +57,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MagnetActorPtr MagnetWorld::createActor( MagnetActorProviderInterface * _provider, float _radius, float _force, uint32_t _iff, bool _active )
 	{
-		MagnetActorPtr actor = m_factoryCollisionActor.createObject();
+		MagnetActorPtr actor = m_factoryCollisionActor->createObject();
 
 		actor->setMagnetActorProvider( _provider );
 		actor->setRadius( _radius );

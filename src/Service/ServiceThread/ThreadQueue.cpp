@@ -1,5 +1,7 @@
 #	include "ThreadQueue.h"
 
+#	include "Factory/FactoryPool.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -7,6 +9,7 @@ namespace Menge
 		: m_cancel(false)
 		, m_packetSize(1)
 	{
+		m_factoryPoolTaskPacket = new FactoryPool<ThreadTaskPacket, 4>();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ThreadQueue::~ThreadQueue()
@@ -93,7 +96,7 @@ namespace Menge
 				return;
 			}
 
-			ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket.createObject();
+			ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket->createObject();
 			
             packet->setServiceProvider( m_serviceProvider );
 

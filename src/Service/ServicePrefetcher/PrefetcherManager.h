@@ -64,14 +64,9 @@ namespace Menge
 	protected:
 		ThreadQueueInterfacePtr m_threadQueue;
 
-		typedef FactoryPoolStore<ThreadTaskPrefetchImageDecoder, 16> TFactoryThreadTaskPrefetchImageDecoder;
-		TFactoryThreadTaskPrefetchImageDecoder m_factoryThreadTaskPrefetchImageDecoder;
-
-		typedef FactoryPoolStore<ThreadTaskPrefetchSoundDecoder, 16> TFactoryThreadTaskPrefetchSoundDecoder;
-		TFactoryThreadTaskPrefetchSoundDecoder m_factoryThreadTaskPrefetchSoundDecoder;
-
-		typedef FactoryPoolStore<ThreadTaskPrefetchDataflow, 16> TFactoryThreadTaskPrefetchDataflow;
-		TFactoryThreadTaskPrefetchDataflow m_factoryThreadTaskPrefetchDataflow;
+		FactoryPtr m_factoryThreadTaskPrefetchImageDecoder;
+        FactoryPtr m_factoryThreadTaskPrefetchSoundDecoder;
+        FactoryPtr m_factoryThreadTaskPrefetchDataflow;
 		
 		typedef std::pair<ConstString, FilePath> TKeyPrefetchReceiver;
 		typedef stdex::map<TKeyPrefetchReceiver, PrefetchReceiver> TMapPrefetchReceiver;

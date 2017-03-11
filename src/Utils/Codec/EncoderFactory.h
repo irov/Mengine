@@ -17,12 +17,14 @@ namespace Menge
         bool initialize() override
         {
             m_factory = new FactoryPool<T, 8>();
+
+            return true;
         }
 
     protected:
         EncoderInterfacePtr createEncoder() override
         {
-            T * encoder = m_factory.createObject();
+            T * encoder = m_factory->createObject();
 
 			encoder->setServiceProvider( m_serviceProvider );
 

@@ -9,8 +9,7 @@
 
 #	include "Core/ConstString.h"
 
-#   include "Factory/FactoryStore.h"
-#	include "Factory/FactoryDefault.h"
+#   include "Factory/Factory.h"
 
 #	include "stdex/stl_map.h"
 
@@ -75,8 +74,7 @@ namespace Menge
 		typedef stdex::map<TMapRenderTextureKey, RenderTextureInterface *> TMapRenderTextureEntry;
 		TMapRenderTextureEntry m_textures[MENGINE_TEXTURE_MANAGER_HASH_SIZE];
 
-        typedef FactoryPoolStore<RenderTexture, 128> TFactoryRenderTexture;
-        TFactoryRenderTexture m_factoryRenderTexture;
+        FactoryPtr m_factoryRenderTexture;
 
         uint32_t m_textureEnumerator;
 

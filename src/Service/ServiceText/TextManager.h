@@ -100,17 +100,10 @@ namespace Menge
 		
 		ConstString m_defaultFontName;
 
-		typedef FactoryPoolStore<TextFont, 16> TFactoryTextFont;
-		TFactoryTextFont m_factoryTextFont;
-
-		typedef FactoryPoolStore<TextGlyph, 16> TFactoryTextGlyph;
-		TFactoryTextGlyph m_factoryTextGlyph;
-
-		typedef FactoryPoolStore<TextLocalePack, 4> TFactoryTextLocalePak;
-		TFactoryTextLocalePak m_factoryTextLocalePak;
-
-        typedef FactoryPoolStore<ConstStringHolderLocalString, 128> FactoryPoolLocalString;
-        FactoryPoolLocalString m_factoryLocalString;
+		FactoryPtr m_factoryTextFont;
+		FactoryPtr m_factoryTextGlyph;
+		FactoryPtr m_factoryTextLocalePak;
+		FactoryPtr m_factoryLocalString;
 
 	protected:
         class TextManagerLoadSaxCallback;

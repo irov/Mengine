@@ -6,6 +6,8 @@
 #	include "Win32FileOutputStream.h"
 #	include "Win32FileMapped.h"
 
+#   include "Factory/Factory.h"
+
 namespace Menge
 {
 	class Win32FileGroupDirectory
@@ -52,13 +54,8 @@ namespace Menge
     protected:
 		FilePath m_path;
 
-		typedef FactoryPoolStore<Win32FileInputStream, 8> TFactoryFileInputStream;
-		TFactoryFileInputStream m_factoryInputStream;
-
-		typedef FactoryPoolStore<Win32FileOutputStream, 4> TFactoryFileOutputStream;
-		TFactoryFileOutputStream m_factoryOutputStream;
-
-		typedef FactoryPoolStore<Win32FileMapped, 4> TFactoryWin32MappedFile;
-		TFactoryWin32MappedFile m_factoryWin32MappedFile;
+		FactoryPtr m_factoryInputStream;
+        FactoryPtr m_factoryOutputStream;
+        FactoryPtr m_factoryWin32MappedFile;
 	};
 }	// namespace Menge

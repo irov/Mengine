@@ -21,24 +21,32 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CodecEngine::registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _factory )
+    bool CodecEngine::registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _factory )
 	{
 		m_mapDecoderSystem.insert( std::make_pair(_type, _factory) );
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CodecEngine::unregisterDecoder( const ConstString& _type )
+    bool CodecEngine::unregisterDecoder( const ConstString& _type )
 	{
 		m_mapDecoderSystem.erase( _type );
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CodecEngine::registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _factory )
+    bool CodecEngine::registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _factory )
 	{
 		m_mapEncoderSystem.insert( std::make_pair( _type, _factory) );
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CodecEngine::unregisterEncoder( const ConstString& _type )
+    bool CodecEngine::unregisterEncoder( const ConstString& _type )
 	{
 		m_mapEncoderSystem.erase( _type );
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DecoderInterfacePtr CodecEngine::createDecoder( const ConstString& _type )

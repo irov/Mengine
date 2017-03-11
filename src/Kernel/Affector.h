@@ -5,7 +5,7 @@
 #	include "Kernel/Scriptable.h"
 
 #   include "Factory/Factorable.h"
-#   include "Factory/FactoryStore.h"
+#   include "Factory/FactoryPool.h"
 
 #	include "Core/ValueInterpolator.h"
 
@@ -13,10 +13,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	typedef uint32_t AFFECTOR_ID;
-	//////////////////////////////////////////////////////////////////////////
-	static const AFFECTOR_ID INVALID_AFFECTOR_ID = 0;
 	//////////////////////////////////////////////////////////////////////////
 	class ServiceProviderInterface;
 	//////////////////////////////////////////////////////////////////////////
@@ -344,12 +340,18 @@ namespace Menge
 		public:
 			typedef MemberAffectorAccumulateLinear<C, M, T, void> AffectorType;
 
+        public:
+            NodeAffectorCreatorAccumulateLinear()
+            {
+                m_factory = new FactoryPool<AffectorType, 4>();
+            }
+
 		public:
 			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method
 				, const T & _pos, const T & _dir, float _speed )
 			{
-				AffectorType * affector = m_factory.createObject();
+				AffectorType * affector = m_factory->createObject();
 
 				affector->setServiceProvider( _serviceProvider );
 				affector->setAffectorType( _type );
@@ -366,8 +368,8 @@ namespace Menge
 				return affector;
 			}
 
-			typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
-			TFactoryAffector m_factory;
+        protected:
+			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		template<class C, class M, class T, class MA = void>
@@ -376,12 +378,18 @@ namespace Menge
 		public:
 			typedef MemberAffectorInterpolateLinear<C, M, T, MA> AffectorType;
 
+        public:
+            NodeAffectorCreatorInterpolateLinear()
+            {
+                m_factory = new FactoryPool<AffectorType, 4>();
+            }
+
 		public:
 			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method, const MA & _argument
 				, const T & _start, const T & _end, float _time )
 			{
-				AffectorType * affector = m_factory.createObject();
+				AffectorType * affector = m_factory->createObject();
 
 				affector->setServiceProvider( _serviceProvider );
 				affector->setAffectorType( _type );
@@ -399,8 +407,7 @@ namespace Menge
 			}
 
 		protected:
-			typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
-			TFactoryAffector m_factory;
+            FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		template<class C, class M, class T>
@@ -409,12 +416,18 @@ namespace Menge
 		public:
 			typedef MemberAffectorInterpolateLinear<C, M, T, void> AffectorType;
 
+        public:
+            NodeAffectorCreatorInterpolateLinear()
+            {
+                m_factory = new FactoryPool<AffectorType, 4>();
+            }
+
 		public:
 			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method
 				, const T & _start, const T & _end, float _time )
 			{
-				AffectorType * affector = m_factory.createObject();
+				AffectorType * affector = m_factory->createObject();
 
 				affector->setServiceProvider( _serviceProvider );
 				affector->setAffectorType( _type );
@@ -432,8 +445,7 @@ namespace Menge
 			}
 
 		protected:
-			typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
-			TFactoryAffector m_factory;
+			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		template<class C, class M, class T>
@@ -442,12 +454,18 @@ namespace Menge
 		public:
 			typedef MemberAffectorInterpolateQuadratic<C, M, T> AffectorType;
 
+        public:
+            NodeAffectorCreatorInterpolateQuadratic()
+            {
+                m_factory = new FactoryPool<AffectorType, 4>();
+            }
+
 		public:
 			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method
 				, const T & _start, const T & _end, const T & _v0, float _time )
 			{
-				AffectorType * affector = m_factory.createObject();
+				AffectorType * affector = m_factory->createObject();
 
 				affector->setServiceProvider( _serviceProvider );
 				affector->setAffectorType( _type );
@@ -465,8 +483,7 @@ namespace Menge
 			}
 
 		protected:
-			typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
-			TFactoryAffector m_factory;
+			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		template<class C, class M, class T, size_t N>
@@ -475,12 +492,18 @@ namespace Menge
 		public:
 			typedef MemberAffectorInterpolateBezier<C, M, T, N> AffectorType;
 
+        public:
+            NodeAffectorCreatorInterpolateBezier()
+            {
+                m_factory = new FactoryPool<AffectorType, 4>();
+            }
+
 		public:
 			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method
 				, const T & _start, const T & _end, const T * _v, float _time )
 			{
-				AffectorType * affector = m_factory.createObject();
+				AffectorType * affector = m_factory->createObject();
 
 				affector->setServiceProvider( _serviceProvider );
 				affector->setAffectorType( _type );
@@ -497,9 +520,8 @@ namespace Menge
 				return affector;
 			}
 
-		protected:
-			typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
-			TFactoryAffector m_factory;
+		protected:			
+            FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
 	}

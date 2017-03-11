@@ -8,7 +8,7 @@
 
 #	include "Model3DPack.h"
 
-#	include "Factory/FactoryStore.h"
+#	include "Factory/Factory.h"
 
 namespace Menge
 {
@@ -29,8 +29,7 @@ namespace Menge
 
 	protected:
 		ArchivatorInterfacePtr m_archivator;
-
-		typedef FactoryPoolStore<Model3DPack, 32> TFactoryPoolModel3DPack;
-		TFactoryPoolModel3DPack m_poolModel3DPack;
+        		
+		FactoryPtr m_poolModel3DPack;
 	};
 }

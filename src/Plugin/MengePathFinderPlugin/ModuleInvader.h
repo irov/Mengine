@@ -27,7 +27,6 @@ namespace Menge
 		void destroyFollowAffector( InvaderFollowAffector * _affector );
 
 	protected:
-		typedef FactoryPoolStore<InvaderFollowAffector, 4> TFactoryInvaderFollowAffector;
-		TFactoryInvaderFollowAffector m_factoryInvaderFollowAffector;
+		FactoryPtr m_factoryInvaderFollowAffector;
 	};
 }

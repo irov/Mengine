@@ -7,7 +7,7 @@
 #	include "Win32ThreadIdentity.h"
 #	include "Win32ThreadMutex.h"
 
-#   include "Factory/FactoryStore.h"
+#   include "Factory/Factory.h"
 
 #   include "Core/ServiceBase.h"
 
@@ -47,10 +47,7 @@ namespace Menge
 		void onThreadIdentityRemove_( Win32ThreadIdentity * _identity );
 	
 	protected:
-        typedef FactoryPoolStore<Win32ThreadIdentity, 16> TPoolWin32ThreadIdentity;
-        TPoolWin32ThreadIdentity m_poolWin32ThreadIdentity;
-
-        typedef FactoryPoolStore<Win32ThreadMutex, 16> TPoolWin32ThreadMutex;
-        TPoolWin32ThreadMutex m_poolWin32ThreadMutex;				
+        FactoryPtr m_poolWin32ThreadIdentity;
+        FactoryPtr m_poolWin32ThreadMutex;
 	};
 }

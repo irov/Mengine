@@ -1,6 +1,7 @@
 #	pragma once
 
-#	include "Factory/FactoryStore.h"
+#	include "Factory/FactoryPool.h"
+#	include "Factory/FactoryHelper.h"
 
 #	include <stdex/intrusive_tree.h>
 
@@ -13,6 +14,7 @@ namespace Menge
 	public:
 		IntrusiveTree()
 		{
+            m_factoryNode = new FactoryPool<T, Count>();
 		}
 
 		~IntrusiveTree()
@@ -23,7 +25,7 @@ namespace Menge
 	public:
 		T * create()
 		{
-			T * node = m_factoryNode.createObject();
+			T * node = m_factoryNode->createObject();
 
 			return node;
 		}
@@ -40,9 +42,9 @@ namespace Menge
 		template<class C, class M>
 		void setMethodListener( C * _self, M _method )
 		{
-			FactoryListenerInterfacePtr listener = new MethodFactoryListenerInterface<C, M, T>(_self, _method);
+			FactoryDestroyListenerInterfacePtr listener = new MethodFactoryDestroyListener<C, M, T>(_self, _method);
 
-			m_factoryNode.setListener( listener );
+			m_factoryNode->setListener( listener );
 		}
 
 	protected:
@@ -55,8 +57,7 @@ namespace Menge
 			}
 		};
 				
-	protected:
-		typedef FactoryPoolStore<T, Count> TFactoryNode;
-		TFactoryNode m_factoryNode;
+	protected:		
+		FactoryPtr m_factoryNode;
 	};
 }

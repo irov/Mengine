@@ -34,6 +34,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::_initialize()
     {
+		m_factoryTextFont = new FactoryPool<TextFont, 16>();
+		m_factoryTextGlyph = new FactoryPool<TextGlyph, 16>();
+		m_factoryTextLocalePak = new FactoryPool<TextLocalePack, 4>();
+		m_factoryLocalString = new FactoryPool<ConstStringHolderLocalString, 128>();
+		
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -373,7 +378,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::loadTextEntry( const ConstString & _pakName, const FilePath & _path )
     {
-        TextLocalePackPtr pak = m_factoryTextLocalePak.createObject();
+        TextLocalePackPtr pak = m_factoryTextLocalePak->createObject();
 
         if( pak->initialize( m_serviceProvider, _pakName, _path ) == false )
         {
@@ -501,7 +506,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::unloadTextEntry( const ConstString & _pakName, const FilePath & _path )
     {
-        TextLocalePackPtr pak = m_factoryTextLocalePak.createObject();
+        TextLocalePackPtr pak = m_factoryTextLocalePak->createObject();
 
         if( pak->initialize( m_serviceProvider, _pakName, _path ) == false )
         {
@@ -572,7 +577,7 @@ namespace Menge
                 return false;
             }
 
-            TextFont * font = m_factoryTextFont.createObject();
+            TextFont * font = m_factoryTextFont->createObject();
 
             font->setServiceProvider( m_serviceProvider );
             font->setName( fontName );
@@ -735,7 +740,7 @@ namespace Menge
             return glyph;
         }
 
-        TextGlyphPtr glyph = m_factoryTextGlyph.createObject();
+        TextGlyphPtr glyph = m_factoryTextGlyph->createObject();
 
         if( glyph->initialize( m_serviceProvider, _pakName, _path ) == false )
         {
@@ -1074,7 +1079,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void TextManager::createLocalString_( const Char * _text, size_t _size, ConstString & _cstr )
     {
-        ConstStringHolderLocalString * holder = m_factoryLocalString.createObject();
+        ConstStringHolderLocalString * holder = m_factoryLocalString->createObject();
 
         holder->setup( _text, _size, -1 );
 

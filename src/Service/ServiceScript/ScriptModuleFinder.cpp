@@ -4,6 +4,8 @@
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/MemoryInterface.h"
 
+#   include "Factory/FactoryPool.h"
+
 #   include "Logger/Logger.h"
 
 namespace Menge
@@ -26,6 +28,12 @@ namespace Menge
 		{
 			return false;
 		}
+
+		m_factoryScriptModuleLoaderCode = new FactoryPool<ScriptModuleLoaderCode, 8>();
+
+#   ifndef MENGINE_MASTER_RELEASE
+		m_factoryScriptModuleLoaderSource = new FactoryPool<ScriptModuleLoaderSource, 8>();
+#	endif
 
 		return true;
 	}
@@ -99,7 +107,7 @@ namespace Menge
 
 #   ifndef MENGINE_MASTER_RELEASE
 		{
-			ScriptModuleLoaderPtr loaderSource = m_factoryScriptModuleLoaderSource.createObject();
+			ScriptModuleLoaderPtr loaderSource = m_factoryScriptModuleLoaderSource->createObject();
 
 			loaderSource->setServiceProvider( m_serviceProvider );
 			loaderSource->setModule( _module );
@@ -116,7 +124,7 @@ namespace Menge
 #   endif
 	
 		{
-			ScriptModuleLoaderPtr loaderCode = m_factoryScriptModuleLoaderCode.createObject();
+			ScriptModuleLoaderPtr loaderCode = m_factoryScriptModuleLoaderCode->createObject();
 
 			loaderCode->setServiceProvider( m_serviceProvider );
 			loaderCode->setModule( _module );

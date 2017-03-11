@@ -21,13 +21,16 @@ namespace Menge
         ~StringizeService();
 
 	public:
+		bool _initialize() override;
+		void _finalize() override;
+
+	public:
 		void stringize( const char * _str, size_t _size, ConstString::hash_type _hash, ConstString & _cstr ) override;
 
         bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) override;
 
     protected:	
-		typedef FactoryPoolStore<ConstStringHolderMemory, 512> FactoryConstStringHolderMemory;
-		FactoryConstStringHolderMemory m_poolHolderStringMemory;
+		FactoryPtr m_factoryHolderStringMemory;
 
         typedef stdex::intrusive_list<ConstStringHolder> TIntrusiveListConstStringHolder;
         TIntrusiveListConstStringHolder m_holdres[4096];

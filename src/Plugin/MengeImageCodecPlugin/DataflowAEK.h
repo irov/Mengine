@@ -8,7 +8,7 @@
 
 #   include "Core/ServantBase.h"
 
-#	include "Factory/FactoryStore.h"
+#	include "Factory/Factory.h"
 
 namespace Menge
 {
@@ -33,7 +33,6 @@ namespace Menge
 	protected:
 		ArchivatorInterfacePtr m_archivator;
 
-		typedef FactoryPoolStore<MovieFramePack, 32> TFactoryPoolMovieFramePack;
-		TFactoryPoolMovieFramePack m_poolMovieFramePack;
+		FactoryPtr m_poolMovieFramePack;
 	};
 }

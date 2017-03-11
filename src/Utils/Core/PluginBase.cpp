@@ -47,6 +47,18 @@ namespace Menge
 		m_initialize = false;
 
 		this->_finalize();
+
+		for (TVectorModuleFactory::iterator
+			it = m_moduleFactories.begin(),
+			it_end = m_moduleFactories.end();
+			it != it_end;
+			++it)
+		{
+			const ConstString & moduleFactory = *it;
+
+			MODULE_SERVICE(m_serviceProvider)
+				->unregisterModule(moduleFactory);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PluginBase::isInitialize() const
@@ -83,5 +95,20 @@ namespace Menge
 	void PluginBase::_destroy()
 	{
 		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PluginBase::addModuleFactory(const ConstString & _name, const ModuleFactoryInterfacePtr & _factory)
+	{	
+		_factory->setServiceProvider(m_serviceProvider);
+
+		if (MODULE_SERVICE(m_serviceProvider)
+			->registerModule(_name, _factory) == false)
+		{
+			return false;
+		}
+
+		m_moduleFactories.push_back(_name);
+
+		return true;
 	}
 }

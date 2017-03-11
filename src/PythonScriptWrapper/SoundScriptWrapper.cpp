@@ -6,8 +6,10 @@
 #	include "Interface/StringizeInterface.h"
 
 #	include "Kernel/Affectorable.h"
+#	include "Kernel/Affector.h"
 
 #	include "Menge/ResourceSound.h"
+#	include "Factory/FactoryStore.h"
 
 #	include "Logger/Logger.h"
 

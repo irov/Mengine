@@ -8,6 +8,8 @@
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/ConfigInterface.h"
 
+#   include "Factory/FactoryPool.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Consts.h"
@@ -44,6 +46,8 @@ namespace Menge
 		LOGGER_INFO( m_serviceProvider )("Initializing Account manager..."
 			);
 		
+        m_factoryAccounts = new FactoryPool<Account, 8>();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -185,7 +189,7 @@ namespace Menge
             }
         }
 
-        AccountPtr newAccount = m_factoryAccounts.createObject();
+        AccountPtr newAccount = m_factoryAccounts->createObject();
 
         newAccount->setServiceProvider( m_serviceProvider );
 

@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Factory/Factorable.h"
-#	include "Factory/FactoryStore.h"
+#	include "Factory/Factory.h"
 
 #	include "AOIInterface.h"
 
@@ -21,6 +21,9 @@ namespace Menge
 	public:
 		AreaOfInterest();
 		~AreaOfInterest();
+
+    public:
+        bool initialize();
 
 	public:
 		AOITriggerPtr createTrigger( AOITriggerProviderInterface * _provider );
@@ -43,11 +46,8 @@ namespace Menge
 		TVectorAOIActors m_actors;
 		TVectorAOIActors m_actorsAdd;
 
-		typedef FactoryPoolStore<AOIActor, 32> TFactoryAOIActor;
-		TFactoryAOIActor m_factoryAOIActor;
-
-		typedef FactoryPoolStore<AOITrigger, 32> TFactoryAOITrigger;
-		TFactoryAOITrigger m_factoryAOITrigger;
+		FactoryPtr m_factoryAOIActor;
+        FactoryPtr m_factoryAOITrigger;
 
 		bool m_freeze;
 	};

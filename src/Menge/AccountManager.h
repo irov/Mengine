@@ -4,7 +4,7 @@
 
 #   include "Core/ServiceBase.h"
 
-#	include "Factory/FactoryStore.h"
+#	include "Factory/Factory.h"
 
 #	include "pybind/types.hpp"
 
@@ -72,8 +72,7 @@ namespace Menge
 		typedef stdex::map<WString, AccountInterfacePtr> TMapAccounts;
 		TMapAccounts m_accounts;
 		
-		typedef FactoryPoolStore<Account, 8> TFactoryAccounts;
-		TFactoryAccounts m_factoryAccounts;
+		FactoryPtr m_factoryAccounts;
 
 		WString m_defaultAccountID;
 

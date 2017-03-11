@@ -7,7 +7,7 @@
 
 #	include "Package.h"
 
-#	include "Factory/FactoryStore.h"
+#	include "Factory/Factory.h"
 
 namespace Menge
 {
@@ -47,8 +47,7 @@ namespace Menge
 		typedef stdex::vector<PackagePtr> TVectorPackage;
 		TVectorPackage m_packages;
 
-		typedef FactoryPoolStore<Package, 8> TFactoryPackage;
-		TFactoryPackage m_factoryPackage;
+		FactoryPtr m_factoryPackage;
 
 	protected:
 		bool loadLocalePacksByName_( TVectorPackage & _packs, const ConstString & _locale, const Tags & _platformTags ) const;

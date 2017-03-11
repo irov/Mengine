@@ -5,11 +5,13 @@
 #	include "Kernel/ThreadTask.h"
 #	include "Kernel/ThreadTaskPacket.h"
 
+#	include "Factory/FactoryPool.h"
+
 #	include "Logger/Logger.h"
 
-#	include <algorithm>
-
 #	include "stdex/allocator.h"
+
+#	include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ThreadService, Menge::ThreadEngine );
@@ -63,13 +65,16 @@ namespace Menge
 
 		m_threadCount = CONFIG_VALUE( m_serviceProvider, "Engine", "ThreadCount", 16U );
 
-		m_allocatorPoolMutex = THREAD_SYSTEM(m_serviceProvider)
+		m_mutexAllocatorPool = THREAD_SYSTEM(m_serviceProvider)
 			->createMutex( "ThreadEngine::initialize" );
 
-		stdex_allocator_initialize_threadsafe( m_allocatorPoolMutex.get()
+		stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
 			, (stdex_allocator_thread_lock_t)&s_stdex_thread_lock
 			, (stdex_allocator_thread_unlock_t)&s_stdex_thread_unlock 
 			);
+
+		m_factoryThreadQueue = new FactoryPool<ThreadQueue, 4>();
+		m_factoryThreadMutexDummy = new FactoryPool<ThreadMutexDummy, 16>();
                 
         return true;
 	}
@@ -106,7 +111,7 @@ namespace Menge
 
 		stdex_allocator_finalize_threadsafe();
 
-		m_allocatorPoolMutex = nullptr;
+		m_mutexAllocatorPool = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::avaliable() const
@@ -273,7 +278,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		ThreadQueuePtr taskQueue = m_factoryThreadQueue.createObject();
+		ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject();
 
 		taskQueue->setServiceProvider( m_serviceProvider );
 		taskQueue->setThreadName( _threadName );
@@ -383,7 +388,7 @@ namespace Menge
 		if( m_avaliable == false )
 		{
 			 ThreadMutexInterfacePtr mutex_dummy = 
-				 m_poolThreadMutexDummy.createObject();
+				 m_factoryThreadMutexDummy->createObject();
 
 			return mutex_dummy;
 		}

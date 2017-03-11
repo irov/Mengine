@@ -3,7 +3,8 @@
 #	include "Interface/ModuleInterface.h"
 
 #	include "Core/ConstString.h"
-#	include "Factory/FactoryStore.h"
+
+#	include "Factory/FactoryDefault.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
@@ -14,20 +15,18 @@ namespace Menge
 		: public ServantBase<ModuleFactoryInterface>
 	{
     public:
-        bool initialize( const ConstString & _name )
+		ModuleFactory()
         {
-            m_name = _name;
-
             m_factory = new FactoryDefault<T>();
         }
 
 	public:
-		ModuleInterfacePtr createModule() override
+		ModuleInterfacePtr createModule( const ConstString & _name ) override
 		{
 			ModuleInterface * module = m_factory->createObject();
 
 			module->setServiceProvider( m_serviceProvider );
-			module->setName( m_name );
+			module->setName(_name);
 
 			return module;
 		}
@@ -38,9 +37,7 @@ namespace Menge
 			delete this;
 		}
 
-	protected:
-		ConstString m_name;
-
+	protected:		
 		FactoryPtr m_factory;
 	};
 }

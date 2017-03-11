@@ -4,7 +4,7 @@
 
 #	include "Core/ConstString.h"
 
-#	include "Factory/FactoryStore.h"
+#	include "Factory/FactoryPool.h"
 
 #	include "Logger/Logger.h"
 
@@ -14,10 +14,18 @@ namespace Menge
 	class DefaultPrototypeGenerator
 		: public BasePrototypeGenerator
 	{
+    protected:
+        bool _initialize() override
+        {
+            m_factory = new FactoryPool<Type, Count>();
+
+            return true;
+        }
+
 	protected:
 		Factorable * generate() override
 		{
-			Type * object = m_factory.createObject();
+			Type * object = m_factory->createObject();
 
 			if( object == nullptr )
 			{
@@ -38,13 +46,12 @@ namespace Menge
 
 		uint32_t count() const override
 		{
-			uint32_t count = m_factory.countObject();
+			uint32_t count = m_factory->countObject();
 
 			return count;
 		}
 
 	protected:
-		typedef FactoryPoolStore<Type, Count> TNodeFactory;
-		TNodeFactory m_factory;
+        FactoryPtr m_factory;
 	};
 }

@@ -27,8 +27,7 @@ namespace Menge
 		void _render( const RenderObjectState * _state, unsigned int _debugMask ) override;
 
 	protected:
-		typedef FactoryPoolStore<BounceWorld, 4> TFactoryBounceWorlds;
-		TFactoryBounceWorlds m_factoryBounceWorlds;
+		FactoryPtr m_factoryBounceWorlds;
 
 		typedef stdex::vector<BounceWorldPtr> TVectorBounceWorlds;
 		TVectorBounceWorlds m_bounceWorlds;

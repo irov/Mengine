@@ -7,7 +7,7 @@
 #   include "ScriptModuleLoaderSource.h"
 #   include "ScriptModuleLoaderCode.h"
 
-#   include "Factory/FactoryStore.h"
+#   include "Factory/Factory.h"
 
 #   include "Core/ConstString.h"
 #   include "Core/ConstStringTypes.h"
@@ -65,15 +65,13 @@ namespace Menge
 
         TVectorModulePathes m_modulePaths;    
 
-		typedef FactoryPoolStore<ScriptModuleLoaderCode, 8> TFactoryScriptModuleLoaderCode;
-		TFactoryScriptModuleLoaderCode m_factoryScriptModuleLoaderCode;
+		FactoryPtr m_factoryScriptModuleLoaderCode;
+
+#   ifndef MENGINE_MASTER_RELEASE
+		FactoryPtr m_factoryScriptModuleLoaderSource;
+#	endif
 
 		typedef stdex::vector<ScriptModuleLoaderPtr> TMapModuleLoaders;
 		TMapModuleLoaders m_loaders;
-
-#   ifndef MENGINE_MASTER_RELEASE
-		typedef FactoryPoolStore<ScriptModuleLoaderSource, 8> TFactoryScriptModuleLoaderSource;
-		TFactoryScriptModuleLoaderSource m_factoryScriptModuleLoaderSource;
-#	endif
     };
 }

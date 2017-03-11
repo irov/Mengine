@@ -14,8 +14,7 @@
 
 #	include "Kernel/Entity.h"
 
-#   include "Factory/FactoryStore.h"
-#   include "Factory/FactoryDefault.h"
+#   include "Factory/Factory.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -88,11 +87,8 @@ namespace Menge
 		typedef stdex::map<ConstString, ScriptWrapperInterfacePtr> TMapScriptWrapper;
 		TMapScriptWrapper m_scriptWrapper;
 
-        typedef FactoryPoolStore<ConstStringHolderPythonString, 256> FactoryConstStringHolderPythonString;
-        FactoryConstStringHolderPythonString m_factoryPythonString;		
-
-		typedef FactoryPoolStore<ScriptModule, 8> FactoryScriptModuleInterface;
-		FactoryScriptModuleInterface m_factoryScriptModule;
+        FactoryPtr m_factoryPythonString;		
+		FactoryPtr m_factoryScriptModule;
 		
 		bool m_initializeModules;
 	};

@@ -7,6 +7,8 @@
 #	include "Interface/GraveyardInterface.h"
 #	include "Interface/ConfigInterface.h"
 
+#   include "Factory/FactoryPool.h"
+
 #	include "stdex/memorycopy.h"
 
 #   include "Logger/Logger.h"
@@ -44,8 +46,8 @@ namespace Menge
 		m_supportNonPow2 = RENDER_SYSTEM( m_serviceProvider )
 			->supportTextureNonPow2();
 
-		m_factoryRenderTexture.setMethodListener( this, &RenderTextureManager::onRenderTextureDestroy_ );
-
+		m_factoryRenderTexture = Helper::makeFactoryPool<RenderTexture, 128>(this, &RenderTextureManager::onRenderTextureDestroy_);
+		
 		return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -615,7 +617,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterfacePtr RenderTextureManager::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels )
 	{
-		RenderTexturePtr texture = m_factoryRenderTexture.createObject();
+		RenderTexturePtr texture = m_factoryRenderTexture->createObject();
 
         uint32_t id = ++m_textureEnumerator;
 

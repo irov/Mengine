@@ -4,6 +4,8 @@
 #	include "Interface/MemoryInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Factory/FactoryPool.h"
+
 #	include "Core/Stream.h"
 
 #	include "stdex/memory_reader.h"
@@ -31,6 +33,8 @@ namespace Menge
 			return false;
 		}
 
+        m_poolModel3DPack = new FactoryPool<Model3DPack, 32>();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -41,7 +45,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DataInterfacePtr DataflowMDL::create()
 	{
-		Model3DPack * pack = m_poolModel3DPack.createObject();
+		Model3DPack * pack = m_poolModel3DPack->createObject();
 
 		return pack;
 	}

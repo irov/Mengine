@@ -7,7 +7,7 @@
 #	include "Core/ConstString.h"
 #   include "Core/MemoryAllocator.h"
 
-#	include "Factory/FactoryStore.h"
+#	include "Factory/FactoryPool.h"
 
 #	include "Logger/Logger.h"
 
@@ -17,10 +17,18 @@ namespace Menge
 	class SurfacePrototypeGenerator
 		: public BasePrototypeGenerator
 	{
+    protected:
+        bool _initialize() override
+        {
+            m_factory = new FactoryPool<Type, Count>();
+
+			return true;
+        }
+
 	protected:
 		Factorable * generate() override
 		{
-			Surface * surface = m_factory.createObject();
+			Surface * surface = m_factory->createObject();
 
 			if( surface == nullptr )
 			{
@@ -41,13 +49,12 @@ namespace Menge
 
 		uint32_t count() const override
 		{
-			uint32_t count = m_factory.countObject();
+			uint32_t count = m_factory->countObject();
 
 			return count;
 		}
 
-	protected:
-		typedef FactoryPoolStore<Type, Count> TNodeFactory;
-		TNodeFactory m_factory;
+	protected:		
+		FactoryPtr m_factory;
 	};
 }

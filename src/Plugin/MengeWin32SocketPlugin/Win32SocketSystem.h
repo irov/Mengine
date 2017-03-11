@@ -4,7 +4,7 @@
 
 #   include "Core/ServiceBase.h"
 
-#   include "Factory/FactoryStore.h"
+#   include "Factory/Factory.h"
 
 #	include "Win32Socket.h"
 
@@ -29,7 +29,6 @@ namespace Menge
 	protected:
 		WSADATA m_wsaData;
 
-		typedef FactoryPoolStore<Win32Socket, 16> TPoolWin32Socket;
-		TPoolWin32Socket m_poolWin32Socket;
+		FactoryPtr m_poolWin32Socket;
 	};
 }

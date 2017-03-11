@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Factory/Factorable.h"
-#	include "Factory/FactoryStore.h"
+#	include "Factory/Factory.h"
 
 #	include "CollisionActor.h"
 
@@ -39,8 +39,7 @@ namespace Menge
 		TVectorCollisionActor m_actors;
 		TVectorCollisionActor m_actorsAdd;
 		
-		typedef FactoryPoolStore<CollisionActor, 32> TFactoryCollisionActor;
-		TFactoryCollisionActor m_factoryCollisionActor;
+		FactoryPtr m_factoryCollisionActor;
 
 		bool m_iffs[16][16];
 

@@ -101,8 +101,6 @@ namespace Menge
 		m_defaultStages[EM_COLOR_MULTIPLY] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Multiply" );
 		m_defaultStages[EM_COLOR_SCREEN] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Screen" );
 
-		m_factoryMaterial.setMethodListener( this, &RenderMaterialManager::onRenderMaterialDestroy_ );
-
 		uint32_t defaultTextureFilterMipmap = CONFIG_VALUE( m_serviceProvider, "Engine", "DefaultTextureFilterMipmap", 0U );
 		uint32_t defaultTextureFilterMagnification = CONFIG_VALUE( m_serviceProvider, "Engine", "DefaultTextureFilterMagnification", 2U );
 		uint32_t defaultTextureFilterMinification = CONFIG_VALUE( m_serviceProvider, "Engine", "DefaultTextureFilterMinification", 2U );
@@ -110,6 +108,8 @@ namespace Menge
 		m_defaultTextureFilterMipmap = parseConfigTextureFilterValue( defaultTextureFilterMipmap );
 		m_defaultTextureFilterMagnification = parseConfigTextureFilterValue( defaultTextureFilterMagnification );
 		m_defaultTextureFilterMinification = parseConfigTextureFilterValue( defaultTextureFilterMinification );
+
+		m_factoryMaterial = Helper::makeFactoryPool<RenderMaterial, 256>(this, &RenderMaterialManager::onRenderMaterialDestroy_);
 
 		return true;
     }
@@ -799,7 +799,7 @@ namespace Menge
 			return material;
 		}
 
-		RenderMaterial * material = m_factoryMaterial.createObject();
+		RenderMaterial * material = m_factoryMaterial->createObject();
 
 		uint32_t id = this->makeMaterialIndex_();
 		material->initialize( _materialName, id, material_hash, _primitiveType, _textureCount, _textures, _stage );

@@ -28,7 +28,7 @@ namespace Menge
 	protected:
 		Factorable * generate() override
 		{
-			Type * node = m_factory->createObjectT<Type *>();
+			Type * node = m_factory->createObject();
 
 			if( node == nullptr )
 			{

@@ -7,6 +7,8 @@
 #	include "Kernel/ScriptEventReceiver.h"
 #   include "Kernel/ScriptWrapper.h"
 
+#   include "Factory/FactoryPool.h"
+
 #	include "pybind/pybind.hpp"
 
 namespace Menge
@@ -49,6 +51,8 @@ namespace Menge
 		PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "BounceActor" ), new DefaultPrototypeGenerator<BounceActor, 32>() );
 		
+        m_factoryBounceWorlds = new FactoryPool<BounceWorld, 4>();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -58,7 +62,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	BounceWorldPtr ModuleBounce::createBounceWorld()
 	{
-		BounceWorldPtr world = m_factoryBounceWorlds.createObject();
+		BounceWorldPtr world = m_factoryBounceWorlds->createObject();
 
 		if( world->initialize( m_serviceProvider ) == false )
 		{

@@ -3,6 +3,7 @@
 #   include "Interface/PluginInterface.h"
 
 #   include "Core/ServiceBase.h"
+#   include "Factory/Factory.h"
 
 namespace Menge
 {
@@ -13,7 +14,14 @@ namespace Menge
 		Win32PluginSystem();
 		~Win32PluginSystem();
 
+	public:
+		bool _initialize() override;
+		void _finalize() override;
+
     public:
-		DynamicLibraryInterface * loadDynamicLibrary( const WString & _dynamicLibraryName ) override;
+		DynamicLibraryInterfacePtr loadDynamicLibrary( const WString & _dynamicLibraryName ) override;
+
+	protected:
+		FactoryPtr m_factoryDynamicLibraries;
 	};
 }

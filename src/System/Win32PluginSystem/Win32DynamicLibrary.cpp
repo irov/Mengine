@@ -5,10 +5,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Win32DynamicLibrary::Win32DynamicLibrary( ServiceProviderInterface * _serviceProvider, const WString & _name )
-		: m_serviceProvider(_serviceProvider)
-		, m_name(_name)
-		, m_hInstance(NULL)
+	Win32DynamicLibrary::Win32DynamicLibrary()
+		: m_hInstance(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -19,6 +17,16 @@ namespace Menge
 			::FreeLibrary( m_hInstance );
 			m_hInstance = NULL;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Win32DynamicLibrary::setName(const WString & _name)
+	{
+		m_name = _name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const WString & Win32DynamicLibrary::getName() const
+	{
+		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32DynamicLibrary::load()
@@ -38,11 +46,6 @@ namespace Menge
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Win32DynamicLibrary::destroy()
-	{
-        delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TDynamicLibraryFunction Win32DynamicLibrary::getSymbol( const Char * _name ) const

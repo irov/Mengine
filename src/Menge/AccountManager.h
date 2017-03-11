@@ -26,7 +26,7 @@ namespace Menge
         void _finalize() override;
 
 	public:
-		void setAccountProviderInterface( AccountProviderInterface * _accountProvider ) override;
+		void setAccountProviderInterface(const AccountProviderInterfacePtr & _accountProvider ) override;
 
 	public:
 		AccountInterfacePtr createAccount() override;
@@ -67,7 +67,7 @@ namespace Menge
         void unselectCurrentAccount_();
 
 	protected:
-		AccountProviderInterface * m_accountProvider;        
+		AccountProviderInterfacePtr m_accountProvider;
 				
 		typedef stdex::map<WString, AccountInterfacePtr> TMapAccounts;
 		TMapAccounts m_accounts;

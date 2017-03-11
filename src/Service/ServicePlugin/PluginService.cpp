@@ -27,12 +27,6 @@ namespace Menge
             PluginDesc & desc = *it;
 
 			desc.plugin->finalize();
-            desc.plugin->destroy();
-
-			if( desc.dlib != nullptr )
-			{
-				desc.dlib->destroy();
-			}
         }
 
         m_plugins.clear();
@@ -56,12 +50,6 @@ namespace Menge
 			PluginDesc & desc = *it;
 
 			desc.plugin->finalize();
-			desc.plugin->destroy();
-
-			if( desc.dlib != nullptr )
-			{
-				desc.dlib->destroy();
-			}
 		}
 
 		m_plugins.clear();
@@ -73,7 +61,7 @@ namespace Menge
 			, _dllName.c_str()
             );
 
-		DynamicLibraryInterface * dlib = PLUGIN_SYSTEM( m_serviceProvider )
+		DynamicLibraryInterfacePtr dlib = PLUGIN_SYSTEM( m_serviceProvider )
 			->loadDynamicLibrary( _dllName );
 
 		if( dlib == nullptr )
@@ -114,7 +102,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool PluginService::createPlugin( DynamicLibraryInterface * _dlib, TPluginCreate _create, bool _dynamic )
+	bool PluginService::createPlugin(const DynamicLibraryInterfacePtr & _dlib, TPluginCreate _create, bool _dynamic )
 	{
 		if( _create == nullptr )
 		{
@@ -146,7 +134,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PluginService::addPlugin( DynamicLibraryInterface * _dlib, PluginInterface * _plugin )
+	bool PluginService::addPlugin(const DynamicLibraryInterfacePtr & _dlib, const PluginInterfacePtr & _plugin )
 	{
 		if( _plugin == nullptr )
 		{
@@ -181,7 +169,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PluginService::removePlugin( PluginInterface * _plugin )
+	bool PluginService::removePlugin( const PluginInterfacePtr & _plugin )
 	{
 		if( _plugin == nullptr )
 		{
@@ -202,12 +190,6 @@ namespace Menge
 			}
 
 			desc.plugin->finalize();
-			desc.plugin->destroy();
-
-			if( desc.dlib != nullptr )
-			{
-				desc.dlib->destroy();
-			}
 
 			m_plugins.erase( it );
 
@@ -243,7 +225,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PluginInterface * PluginService::getPlugin( const Char * _name ) const
+	const PluginInterfacePtr & PluginService::getPlugin( const Char * _name ) const
 	{
 		for( TVectorPlugins::const_iterator
 			it = m_plugins.begin(),
@@ -263,11 +245,11 @@ namespace Menge
 				continue;
 			}
 
-			PluginInterface * plugin = desc.plugin;
+			const PluginInterfacePtr & plugin = desc.plugin;
 
 			return plugin;
 		}
 
-		return nullptr;
+		return PluginInterfacePtr::none();
 	}
 }

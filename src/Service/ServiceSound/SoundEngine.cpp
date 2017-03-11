@@ -103,14 +103,14 @@ namespace Menge
 		return m_supportStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::addSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider )
+	void SoundEngine::addSoundVolumeProvider(const SoundVolumeProviderInterfacePtr & _soundVolumeProvider )
 	{
 		m_soundVolumeProviders.push_back( _soundVolumeProvider );
 
 		this->updateSoundVolumeProvider_( _soundVolumeProvider );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::removeSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider )
+	bool SoundEngine::removeSoundVolumeProvider(const SoundVolumeProviderInterfacePtr & _soundVolumeProvider )
 	{
 		TVectorSoundVolumeProviders::iterator it_found = std::find( m_soundVolumeProviders.begin(), m_soundVolumeProviders.end(), _soundVolumeProvider );
 
@@ -946,7 +946,7 @@ namespace Menge
 		source->listener = _listener;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::updateSoundVolumeProvider_( SoundVolumeProviderInterface * _provider )
+	void SoundEngine::updateSoundVolumeProvider_(const SoundVolumeProviderInterfacePtr & _provider )
 	{
 		float commonVolume = m_commonVolume.mixVolume();
 
@@ -988,7 +988,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			SoundVolumeProviderInterface * provider = *it;
+			const SoundVolumeProviderInterfacePtr & provider = *it;
 
 			this->updateSoundVolumeProvider_( provider );
 		}

@@ -3,7 +3,6 @@
 #   include "Interface/ResourceInterface.h"
 
 #	include "Kernel/ResourceReference.h"
-#	include "Factory/FactoryStore.h"
 
 #   include "Core/ServiceBase.h"
 

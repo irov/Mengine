@@ -1,13 +1,24 @@
 #   include "GameSoundVolumeProvider.h"
 
+#	include "Game.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {//////////////////////////////////////////////////////////////////////////
-    GameSoundVolumeProvider::GameSoundVolumeProvider( ServiceProviderInterface * _serviceProvider, Game * _game )
-        : m_serviceProvider( _serviceProvider )
-        , m_game( _game )
+    GameSoundVolumeProvider::GameSoundVolumeProvider()
+		: m_game(nullptr)
     {
     }
+	//////////////////////////////////////////////////////////////////////////
+	void GameSoundVolumeProvider::setGame(Game * _game)
+	{
+		m_game = _game;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Game * GameSoundVolumeProvider::getGame() const
+	{
+		return m_game;
+	}
     //////////////////////////////////////////////////////////////////////////
     void GameSoundVolumeProvider::onSoundChangeVolume( float _sound, float _music, float _voice, bool _mute )
     {

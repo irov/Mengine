@@ -6,8 +6,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderTexture::RenderTexture()
-        : m_serviceProvider(nullptr)
-        , m_id( 0 )
+        : m_id( 0 )
 		, m_mipmaps(0)
 		, m_width(0)
 		, m_height(0)

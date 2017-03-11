@@ -102,14 +102,13 @@ namespace Menge
     ((Menge::SoundSystemInterface *)SERVICE_GET(serviceProvider, Menge::SoundSystemInterface))
 
 	class SoundVolumeProviderInterface
+		: public ServantInterface
 	{
-	public:
-		SoundVolumeProviderInterface(){};
-		virtual ~SoundVolumeProviderInterface(){};
-
 	public:
 		virtual void onSoundChangeVolume( float _sound, float _music, float _voice, bool _mute ) = 0;
 	};
+
+	typedef stdex::intrusive_ptr<SoundVolumeProviderInterface> SoundVolumeProviderInterfacePtr;
 
 	class SoundServiceInterface
 		: public ServiceInterface
@@ -123,8 +122,8 @@ namespace Menge
 		virtual bool supportStreamSound() const = 0;
 
 	public:
-		virtual void addSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider ) = 0;
-		virtual bool removeSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider ) = 0;
+		virtual void addSoundVolumeProvider( const SoundVolumeProviderInterfacePtr & _soundVolumeProvider ) = 0;
+		virtual bool removeSoundVolumeProvider(const SoundVolumeProviderInterfacePtr & _soundVolumeProvider ) = 0;
 
 	public:
 		virtual void onTurnStream( bool _turn ) = 0;

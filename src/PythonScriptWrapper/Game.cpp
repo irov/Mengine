@@ -37,9 +37,7 @@ namespace Menge
 
 	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
-		: m_accountProvider(nullptr)
-		, m_soundVolumeProvider(nullptr)
-		, m_defaultArrow(nullptr)
+		: m_defaultArrow(nullptr)
 		, m_timingFactor(1.f)
 	{
 	}
@@ -602,35 +600,21 @@ namespace Menge
 
 		SERVICE_CREATE( m_serviceProvider, AccountService );
 
-		m_accountProvider = new GameAccountProvider( m_serviceProvider, this );
+		GameAccountProviderPtr accountProvider = new FactorableUnique<GameAccountProvider>();
+		accountProvider->setServiceProvider(m_serviceProvider);
+		accountProvider->setGame(this);
 
-		ACCOUNT_SERVICE( m_serviceProvider )
-			->setAccountProviderInterface( m_accountProvider );
+		ACCOUNT_SERVICE(m_serviceProvider)
+			->setAccountProviderInterface(accountProvider);
 
-		m_soundVolumeProvider = new GameSoundVolumeProvider( m_serviceProvider, this );
+		GameSoundVolumeProviderPtr soundVolumeProvider = new FactorableUnique<GameSoundVolumeProvider>();
+		soundVolumeProvider->setServiceProvider(m_serviceProvider);
+		soundVolumeProvider->setGame(this);
 
 		SOUND_SERVICE( m_serviceProvider )
-			->addSoundVolumeProvider( m_soundVolumeProvider );
+			->addSoundVolumeProvider(soundVolumeProvider);
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::run()
-	{
-		LOGGER_WARNING(m_serviceProvider)("Run game"
-			);
-
-        EVENTABLE_METHOD( this, EVENT_GAME_RUN )
-            ->onGameRun();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::destroyArrow()
-	{
-		if( m_defaultArrow != nullptr )
-		{
-			m_defaultArrow->destroy();
-			m_defaultArrow = nullptr;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::_finalize()
@@ -646,24 +630,30 @@ namespace Menge
         EVENTABLE_METHOD( this, EVENT_GAME_FINALIZE )
             ->onGameFinalize();
 
-        if( m_accountProvider != nullptr )
-        {
-            delete m_accountProvider;
-            m_accountProvider = nullptr;
-        }
-
-		if( m_soundVolumeProvider != nullptr )
-		{
-			delete m_soundVolumeProvider;
-			m_soundVolumeProvider = nullptr;
-		}
-
 		this->destroyArrow();		      
 				
         EVENTABLE_METHOD( this, EVENT_GAME_DESTROY )
             ->onGameDestroy();
 		
 		this->removeEvents();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::run()
+	{
+		LOGGER_WARNING(m_serviceProvider)("Run game"
+			);
+
+		EVENTABLE_METHOD(this, EVENT_GAME_RUN)
+			->onGameRun();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::destroyArrow()
+	{
+		if (m_defaultArrow != nullptr)
+		{
+			m_defaultArrow->destroy();
+			m_defaultArrow = nullptr;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initializeRenderResources()

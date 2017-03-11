@@ -2,16 +2,22 @@
 
 #   include "Interface/SoundSystemInterface.h"
 
-#   include "Game.h"
+#	include "Core/ServantBase.h"
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	class Game;
     //////////////////////////////////////////////////////////////////////////
     class GameSoundVolumeProvider
-        : public SoundVolumeProviderInterface
+        : public ServantBase<SoundVolumeProviderInterface>
     {
     public:
-        GameSoundVolumeProvider( ServiceProviderInterface * _serviceProvider, Game * _game );
+        GameSoundVolumeProvider();
+
+	public:
+		void setGame(Game * _game);
+		Game * getGame() const;
 
     protected:
         void onSoundChangeVolume( float _sound, float _music, float _voice, bool _mute ) override;
@@ -20,4 +26,6 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
         Game * m_game;
     };
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<GameSoundVolumeProvider> GameSoundVolumeProviderPtr;
 }

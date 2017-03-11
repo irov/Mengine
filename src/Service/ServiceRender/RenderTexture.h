@@ -59,9 +59,7 @@ namespace Menge
 
 		size_t getMemoryUse() const override;
 
-	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
+	protected:        
         uint32_t m_id;
 
 		RenderImageInterfacePtr m_image;

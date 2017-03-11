@@ -67,7 +67,7 @@ namespace Menge
         m_accounts.clear();
     }
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::setAccountProviderInterface( AccountProviderInterface * _accountProvider )
+	void AccountManager::setAccountProviderInterface(const AccountProviderInterfacePtr & _accountProvider)
 	{
 		m_accountProvider = _accountProvider;
 	}

@@ -172,9 +172,6 @@ namespace Menge
 		void destroyArrow();
 
     protected:
-		GameAccountProvider * m_accountProvider; 
-		GameSoundVolumeProvider * m_soundVolumeProvider;
-
 		Arrow * m_defaultArrow;
 		
 		ConstString m_currentPackName;

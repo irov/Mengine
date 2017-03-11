@@ -4,7 +4,6 @@
 #	include "Interface/ThreadSystemInterface.h"
 
 #   include "Core/ServantBase.h"
-#	include "Factory/FactoryStore.h"
 
 #	include "stdex/stl_map.h"
 

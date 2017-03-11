@@ -50,6 +50,7 @@ namespace Menge
 	typedef stdex::intrusive_ptr<AccountInterface> AccountInterfacePtr;
 
     class AccountProviderInterface
+		: public ServantInterface
     {
 	public:
 		AccountProviderInterface(){};
@@ -61,6 +62,8 @@ namespace Menge
         virtual void onSelectAccount( const WString & _accountID ) = 0;
         virtual void onUnselectAccount( const WString & _accountID ) = 0;
     };
+
+	typedef stdex::intrusive_ptr<AccountProviderInterface> AccountProviderInterfacePtr;
 
 	class AccountVisitorInterface
 	{
@@ -74,7 +77,7 @@ namespace Menge
         SERVICE_DECLARE("AccountService")
 
 	public:
-		virtual void setAccountProviderInterface( AccountProviderInterface * _accountProvider ) = 0;
+		virtual void setAccountProviderInterface(const AccountProviderInterfacePtr & _accountProvider ) = 0;
 
     public:
         virtual AccountInterfacePtr createAccount() = 0;

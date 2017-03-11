@@ -67,8 +67,8 @@ namespace Menge
 		void tick( float _time, float _timing ) override;
 
 	public:
-		void addSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider ) override;
-		bool removeSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider ) override;
+		void addSoundVolumeProvider( const SoundVolumeProviderInterfacePtr & _soundVolumeProvider ) override;
+		bool removeSoundVolumeProvider(const SoundVolumeProviderInterfacePtr & _soundVolumeProvider ) override;
 
         
     public:
@@ -140,7 +140,7 @@ namespace Menge
 		void updateVolume() override;
 
     protected:
-		void updateSoundVolumeProvider_( SoundVolumeProviderInterface * _provider );
+		void updateSoundVolumeProvider_( const SoundVolumeProviderInterfacePtr & _provider );
 		void updateSourceVolume_( SoundSourceDesc * _source );
 
     protected:
@@ -174,7 +174,7 @@ namespace Menge
 
         FactoryPtr m_factoryWorkerTaskSoundBufferUpdate;
 
-		typedef stdex::vector<SoundVolumeProviderInterface *> TVectorSoundVolumeProviders;
+		typedef stdex::vector<SoundVolumeProviderInterfacePtr> TVectorSoundVolumeProviders;
 		TVectorSoundVolumeProviders m_soundVolumeProviders;
 
 		bool m_supportStream;

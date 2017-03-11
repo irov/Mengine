@@ -2,16 +2,22 @@
 
 #   include "Interface/AccountInterface.h"
 
-#   include "Game.h"
+#	include "Core/ServantBase.h"
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	class Game;
     //////////////////////////////////////////////////////////////////////////
     class GameAccountProvider
-        : public AccountProviderInterface
+        : public ServantBase<AccountProviderInterface>
     {
     public:
-        GameAccountProvider( ServiceProviderInterface * _serviceProvider, Game * _game );
+        GameAccountProvider();
+
+	public:
+		void setGame(Game * _game);
+		Game * getGame() const;
 
     protected:
         void onCreateAccount( const WString & _accountID ) override;
@@ -20,7 +26,9 @@ namespace Menge
         void onUnselectAccount( const WString & _accountID ) override;
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
         Game * m_game;
     };
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<GameAccountProvider> GameAccountProviderPtr;
+	//////////////////////////////////////////////////////////////////////////
 }

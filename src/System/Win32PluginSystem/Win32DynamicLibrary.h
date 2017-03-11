@@ -2,6 +2,8 @@
 
 #	include "Interface/WindowsLayerInterface.h"
 
+#	include "Core/ServantBase.h"
+
 #	ifdef _WIN32_WINNT	
 #       undef _WIN32_WINNT
 #       define _WIN32_WINNT 0x0500
@@ -29,11 +31,15 @@
 namespace Menge
 {
 	class Win32DynamicLibrary 
-		: public DynamicLibraryInterface
+		: public ServantBase<DynamicLibraryInterface>
 	{
 	public:
-		Win32DynamicLibrary( ServiceProviderInterface * _serviceProvider, const WString & _name );
+		Win32DynamicLibrary();
 		~Win32DynamicLibrary();
+
+	public:
+		void setName(const WString & _name);
+		const WString & getName() const;
 
 	public:
 		bool load() override;
@@ -41,13 +47,11 @@ namespace Menge
     public:
         TDynamicLibraryFunction getSymbol( const Char * _name ) const override;
 
-    public:
-        void destroy() override;
-
-	private:
-		ServiceProviderInterface * m_serviceProvider;
-
+	protected:
 		WString m_name;
 		HINSTANCE m_hInstance;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<Win32DynamicLibrary> Win32DynamicLibraryPtr;
+	//////////////////////////////////////////////////////////////////////////
 };

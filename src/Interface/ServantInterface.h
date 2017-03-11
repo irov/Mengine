@@ -25,4 +25,7 @@ namespace Menge
         virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
         virtual ServiceProviderInterface * getServiceProvider() const = 0;
     };
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ServantInterface> ServantInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -25,20 +25,20 @@ namespace Menge
 
     public:
 		bool loadPlugin( const WString & _dllName ) override;
-		bool createPlugin( DynamicLibraryInterface * _dlib, TPluginCreate _create, bool _dynamic ) override;
+		bool createPlugin( const DynamicLibraryInterfacePtr & _dlib, TPluginCreate _create, bool _dynamic ) override;
 
 	public:
-		bool addPlugin( DynamicLibraryInterface * _dlib, PluginInterface * _plugin ) override;
-		bool removePlugin( PluginInterface * _plugin ) override;
+		bool addPlugin( const DynamicLibraryInterfacePtr & _dlib, const PluginInterfacePtr & _plugin ) override;
+		bool removePlugin( const PluginInterfacePtr & _plugin ) override;
 		bool hasPlugin( const Char * _name ) const override;
-		PluginInterface * getPlugin( const Char * _name ) const override;
+		const PluginInterfacePtr & getPlugin( const Char * _name ) const override;
 
     protected:
         struct PluginDesc
         {
 			Char name[MENGINE_PLUGIN_NAME_MAX];
-            DynamicLibraryInterface * dlib;
-            PluginInterface * plugin;
+            DynamicLibraryInterfacePtr dlib;
+            PluginInterfacePtr plugin;
         };
 
 		typedef stdex::vector<PluginDesc> TVectorPlugins;

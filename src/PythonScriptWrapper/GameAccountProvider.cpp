@@ -1,14 +1,25 @@
 #   include "GameAccountProvider.h"
 
+#	include "Game.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    GameAccountProvider::GameAccountProvider( ServiceProviderInterface * _serviceProvider, Game * _game )
-        : m_serviceProvider( _serviceProvider )
-        , m_game( _game )
+    GameAccountProvider::GameAccountProvider()
+        : m_game( nullptr )
     {
     }
+	//////////////////////////////////////////////////////////////////////////
+	void GameAccountProvider::setGame(Game * _game)
+	{
+		m_game = _game;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Game * GameAccountProvider::getGame() const
+	{
+		return m_game;
+	}
     //////////////////////////////////////////////////////////////////////////
     void GameAccountProvider::onCreateAccount( const WString & _accountID )
     {

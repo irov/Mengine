@@ -8,6 +8,7 @@
 #	include "Kernel/Affectorable.h"
 
 #	include "Menge/ResourceSound.h"
+#	include "Factory/FactoryStore.h"
 
 #	include "Logger/Logger.h"
 

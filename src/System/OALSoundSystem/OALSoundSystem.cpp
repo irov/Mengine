@@ -4,7 +4,7 @@
 #	include "Interface/ThreadSystemInterface.h"
 
 #	include "OALSoundError.h"
-
+#	include "Factory/FactoryPool.h"
 #	include "Logger/Logger.h"
 
 #	include <algorithm>
@@ -147,6 +147,10 @@ namespace Menge
 		m_threadAvaliable = THREAD_SYSTEM(m_serviceProvider)
 			->avaliable();
 
+        m_poolOALSoundBuffer = new FactoryPool<OALSoundBufferMemory, 32>();
+        m_poolOALSoundBufferStream = new FactoryPool<OALSoundBufferStream, 32>();
+        m_poolOALSoundSource = new FactoryPool<OALSoundSource, 32>();
+
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -205,7 +209,7 @@ namespace Menge
 	SoundSourceInterfacePtr OALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
 	{
 		//OALSoundSource* soundSource = m_soundSources.get();
-		OALSoundSource * soundSource = m_poolOALSoundSource.createObject();
+		OALSoundSource * soundSource = m_poolOALSoundSource->createObject();
 
         soundSource->initialize( m_serviceProvider, this );
         		
@@ -221,7 +225,7 @@ namespace Menge
 
         if( _isStream == false || m_threadAvaliable == false )
         {
-            OALSoundBufferMemory * buffer = m_poolOALSoundBuffer.createObject();
+            OALSoundBufferMemory * buffer = m_poolOALSoundBuffer->createObject();
             
             buffer->setServiceProvider( m_serviceProvider );
             buffer->initialize( this );
@@ -230,7 +234,7 @@ namespace Menge
         }
         else
         {
-            OALSoundBufferStream * buffer = m_poolOALSoundBufferStream.createObject();
+            OALSoundBufferStream * buffer = m_poolOALSoundBufferStream->createObject();
 
             buffer->setServiceProvider( m_serviceProvider );
             buffer->initialize( this );

@@ -3,6 +3,8 @@
 #	include "Interface/ThreadSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Factory/FactoryPool.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PrefetcherService, Menge::PrefetcherManager );
 //////////////////////////////////////////////////////////////////////////
@@ -27,6 +29,10 @@ namespace Menge
 
 		m_threadQueue = THREAD_SERVICE(m_serviceProvider)
 			->runTaskQueue( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadPrefetcherManager"), MENGINE_PREFETCHER_THREAD_COUNT, MENGINE_PREFETCHER_PACKET_SIZE );
+
+        m_factoryThreadTaskPrefetchImageDecoder = new FactoryPool<ThreadTaskPrefetchImageDecoder, 16>();
+        m_factoryThreadTaskPrefetchSoundDecoder = new FactoryPool<ThreadTaskPrefetchSoundDecoder, 16>();
+        m_factoryThreadTaskPrefetchDataflow = new FactoryPool<ThreadTaskPrefetchDataflow, 16>();
 
 		return true;
 	}
@@ -107,7 +113,7 @@ namespace Menge
 
 		new_receiver.refcount = 1;
 	
-		ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder.createObject();
+		ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
 		task->initialize( _pakName, _filePath );
@@ -173,7 +179,7 @@ namespace Menge
 
 		new_receiver.refcount = 1;
 
-		ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder.createObject();
+		ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
 		task->initialize( _pakName, _filePath );
@@ -239,7 +245,7 @@ namespace Menge
 
 		new_receiver.refcount = 1;
 
-		ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow.createObject();
+		ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
 		task->initialize( _pakName, _filePath );

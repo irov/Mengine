@@ -2,6 +2,8 @@
 
 #	include "Interface/MemoryInterface.h"
 
+#   include "Factory/FactoryPool.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Core/String.h"
@@ -22,6 +24,10 @@ namespace Menge
 	bool Win32FileGroupDirectory::initialize( const FilePath & _path )
 	{
         m_path = _path;
+
+        m_factoryInputStream = new FactoryPool<Win32FileInputStream, 8>();
+        m_factoryOutputStream = new FactoryPool<Win32FileOutputStream, 4>();
+        m_factoryWin32MappedFile = new FactoryPool<Win32FileMapped, 4>();
 
         return true;
     }
@@ -66,7 +72,7 @@ namespace Menge
 		(void)_fileName;
 		(void)_streaming;
 
-		Win32FileInputStream * inputStream = m_factoryInputStream.createObject();
+		Win32FileInputStream * inputStream = m_factoryInputStream->createObject();
 
 		inputStream->setServiceProvider( m_serviceProvider );
 
@@ -102,7 +108,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile()
 	{
-		Win32FileOutputStream * outputStream = m_factoryOutputStream.createObject();
+		Win32FileOutputStream * outputStream = m_factoryOutputStream->createObject();
 
 		outputStream->setServiceProvider( m_serviceProvider );
 
@@ -136,7 +142,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileMappedInterfacePtr Win32FileGroupDirectory::createMappedFile()
 	{
-		Win32FileMapped * mappedStream = m_factoryWin32MappedFile.createObject();
+		Win32FileMapped * mappedStream = m_factoryWin32MappedFile->createObject();
 
 		mappedStream->setServiceProvider( m_serviceProvider );
 

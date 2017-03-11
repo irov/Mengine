@@ -1,5 +1,7 @@
 #	include "AreaOfInterest.h"
 
+#	include "Factory/FactoryPool.h"
+
 #	include <algorithm>
 
 namespace Menge
@@ -13,10 +15,18 @@ namespace Menge
 	AreaOfInterest::~AreaOfInterest()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool AreaOfInterest::initialize()
+    {
+        m_factoryAOIActor = new FactoryPool<AOIActor, 32>();
+        m_factoryAOITrigger = new FactoryPool<AOITrigger, 32>();
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	AOITriggerPtr AreaOfInterest::createTrigger( AOITriggerProviderInterface * _provider )
 	{
-		AOITrigger * trigger = m_factoryAOITrigger.createObject();
+		AOITrigger * trigger = m_factoryAOITrigger->createObject();
 
 		trigger->setProvider( _provider );
 
@@ -85,7 +95,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AOIActorPtr AreaOfInterest::createActor( AOIActorProviderInterface * _provider )
 	{
-		AOIActor * actor = m_factoryAOIActor.createObject();
+		AOIActor * actor = m_factoryAOIActor->createObject();
 
 		actor->setProvider( _provider );
 

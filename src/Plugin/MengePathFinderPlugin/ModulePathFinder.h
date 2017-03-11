@@ -44,7 +44,6 @@ namespace Menge
 		typedef stdex::vector<PathFinderMap *> TPathFinderMaps;
 		TPathFinderMaps m_maps;
 
-		typedef FactoryPoolStore<PathFinderWayAffector, 16> TFactoryPoolPathFinderWayAffector;
-		TFactoryPoolPathFinderWayAffector m_factoryPathFinderWayAffector;
+		FactoryPtr m_factoryPathFinderWayAffector;
 	};
 }

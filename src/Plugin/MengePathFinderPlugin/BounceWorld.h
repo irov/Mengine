@@ -5,7 +5,7 @@
 #	include "Kernel/Scriptable.h"
 
 #	include "Factory/FactorablePtr.h"
-#	include "Factory/FactoryStore.h"
+#	include "Factory/Factory.h"
 
 #   include "stdex/intrusive_ptr.h"
 
@@ -36,8 +36,7 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		typedef FactoryPoolStore<BounceActor, 4> TFactoryBounceActors;
-		TFactoryBounceActors m_factoryBounceActors;
+		FactoryPtr m_factoryBounceActors;
 
 		typedef stdex::vector<BounceActorPtr> TVectorBounceActors;
 		TVectorBounceActors m_actors;

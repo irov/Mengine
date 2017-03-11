@@ -28,8 +28,7 @@ namespace Menge
 		void _render( const RenderObjectState * _state, unsigned int _debugMask ) override;
 		
 	protected:
-		typedef FactoryPoolStore<CollisionWorld, 4> TFactoryCollisionWorld;
-		TFactoryCollisionWorld m_factoryCollisionWorld;
+		FactoryPtr m_factoryCollisionWorld;
 
 		typedef stdex::vector<CollisionWorldPtr> TVectorCollisionWorlds;
 		TVectorCollisionWorlds m_collisionWorlds;

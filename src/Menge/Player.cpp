@@ -519,7 +519,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ScheduleManagerInterfacePtr Player::createSchedulerManager()
 	{
-		ScheduleManagerInterfacePtr sm = m_factoryScheduleManager.createObject();
+		ScheduleManagerInterfacePtr sm = m_factoryScheduleManager->createObject();
 
 		sm->setServiceProvider( m_serviceProvider );
 
@@ -582,10 +582,10 @@ namespace Menge
 		
         m_factoryScheduleManager = new FactoryDefault<ScheduleManager>();
 
-        m_scheduleManager = m_factoryScheduleManager.createObject();
+        m_scheduleManager = m_factoryScheduleManager->createObject();
         m_scheduleManager->setServiceProvider( m_serviceProvider );
 
-		m_scheduleManagerGlobal = m_factoryScheduleManager.createObject();
+		m_scheduleManagerGlobal = m_factoryScheduleManager->createObject();
         m_scheduleManagerGlobal->setServiceProvider( m_serviceProvider );
 
 		m_affectorable = new Affectorable;

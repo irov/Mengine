@@ -18,13 +18,15 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConverterEngine::registerConverter( const ConstString & _type, const ConverterFactoryInterfacePtr & _factory )
+	bool ConverterEngine::registerConverter( const ConstString & _type, const ConverterFactoryInterfacePtr & _factory )
 	{
         LOGGER_INFO(m_serviceProvider)("ConverterEngine::registerConverter add converter %s"
             , _type.c_str()
             );
 
 		m_mapConverterSystem.insert( std::make_pair(_type, _factory) );
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ConverterEngine::unregisterConverter( const ConstString& _type )

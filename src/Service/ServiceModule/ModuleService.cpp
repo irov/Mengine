@@ -75,7 +75,7 @@ namespace Menge
 		
 		const ModuleFactoryInterfacePtr & factory = it_found->second;
 
-		ModuleInterfacePtr module = factory->createModule();
+		ModuleInterfacePtr module = factory->createModule( _name );
 
 		if( module->avaliable() == false )
 		{

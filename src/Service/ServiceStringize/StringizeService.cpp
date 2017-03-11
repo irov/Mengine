@@ -18,6 +18,18 @@ namespace Menge
     {
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool StringizeService::_initialize()
+	{
+		m_factoryHolderStringMemory = new FactoryPool<ConstStringHolderMemory, 512>();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void StringizeService::_finalize()
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void StringizeService::stringize( const char * _str, size_t _size, ConstString::hash_type _hash, ConstString & _cstr )
 	{
         if( _size == 0 )
@@ -46,7 +58,7 @@ namespace Menge
             return;
         }
 
-        ConstStringHolderMemory * holder = m_poolHolderStringMemory.createObject();
+        ConstStringHolderMemory * holder = m_factoryHolderStringMemory->createObject();
 
         holder->setValue( _str, _size, _hash );
 

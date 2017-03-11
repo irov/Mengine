@@ -11,12 +11,13 @@
 #   include "ThreadWorkerSoundBufferUpdate.h"
 
 #	include "Core/ConstString.h"
-#   include "Factory/FactoryStore.h"
+#   include "Factory/Factory.h"
 
 #	include	"math/vec3.h"
 
 #   include "stdex/stl_map.h"
-#	include <stdex/stl_vector.h>
+#	include "stdex/stl_vector.h"
+#	include "stdex/pool.h"
 
 namespace Menge
 {
@@ -171,8 +172,7 @@ namespace Menge
 		
         ThreadJobPtr m_threadSoundBufferUpdate;
 
-        typedef FactoryPoolStore<ThreadWorkerSoundBufferUpdate, 32> TPoolWorkerTaskSoundBufferUpdate;
-        TPoolWorkerTaskSoundBufferUpdate m_poolWorkerTaskSoundBufferUpdate;
+        FactoryPtr m_factoryWorkerTaskSoundBufferUpdate;
 
 		typedef stdex::vector<SoundVolumeProviderInterface *> TVectorSoundVolumeProviders;
 		TVectorSoundVolumeProviders m_soundVolumeProviders;

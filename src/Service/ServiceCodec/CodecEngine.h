@@ -24,12 +24,12 @@ namespace Menge
 		~CodecEngine();
 
 	public:
-		void registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _factory ) override;
-		void unregisterDecoder( const ConstString& _type ) override;
+		bool registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _factory ) override;
+        bool unregisterDecoder( const ConstString& _type ) override;
 
 	public:
-		void registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _factory ) override;
-		void unregisterEncoder( const ConstString& _type ) override;
+        bool registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _factory ) override;
+        bool unregisterEncoder( const ConstString& _type ) override;
 	
     public:
 		DecoderInterfacePtr createDecoder( const ConstString& _type ) override;

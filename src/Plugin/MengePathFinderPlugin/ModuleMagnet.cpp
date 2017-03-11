@@ -8,6 +8,8 @@
 #	include "Kernel/NodePrototypeGenerator.h"
 #   include "Kernel/ScriptWrapper.h"
 
+#	include "Factory/FactoryPool.h"
+
 #	include "pybind/pybind.hpp"
 
 //////////////////////////////////////////////////////////////////////////
@@ -56,6 +58,8 @@ namespace Menge
 		PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeMagnetActor" ), new NodePrototypeGenerator<NodeMagnetActor, 32> );
 
+        m_factoryMagnetWorld = new FactoryPool<MagnetWorld, 4>();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -65,7 +69,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MagnetWorldPtr ModuleMagnet::createMagnetWorld()
 	{
-		MagnetWorldPtr magnet = m_factoryMagnetWorld.createObject();
+		MagnetWorldPtr magnet = m_factoryMagnetWorld->createObject();
 
 		if( magnet->initialize() == false )
 		{

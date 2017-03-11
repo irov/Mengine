@@ -17,6 +17,8 @@ namespace Menge
         bool initialize() override
         {
             m_factory = new FactoryDefault<T>();
+
+            return true;
         }
 
 	protected:

@@ -134,6 +134,8 @@ namespace Menge
 		SCRIPT_SERVICE(m_serviceProvider)
 			->setWrapper( Helper::stringizeString( m_serviceProvider, "PathGraphNode" ), new ScriptWrapper<PathGraphNode>() );
 		
+        m_factoryPathFinderWayAffector = new FactoryPool<PathFinderWayAffector, 16>();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -178,7 +180,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderWayAffector * ModulePathFinder::createPathFinderWayAffector( Node * _node, const pybind::list & _satellite, const pybind::list & _way, float _offset, float _speed, bool _preparePosition, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 	{
-		PathFinderWayAffector * affector = m_factoryPathFinderWayAffector.createObject();
+		PathFinderWayAffector * affector = m_factoryPathFinderWayAffector->createObject();
 
 		affector->setServiceProvider( m_serviceProvider );
 

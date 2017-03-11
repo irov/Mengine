@@ -3,6 +3,8 @@
 #   include "Interface/StringizeInterface.h"
 #	include "Interface/FileSystemInterface.h"
 
+#   include "Factory/FactoryDefault.h"
+
 #	include "Win32FileGroupDirectory.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -18,7 +20,7 @@ namespace Menge
 	bool Win32FileGroupPlugin::_initialize()
 	{
 		FILE_SERVICE(m_serviceProvider)
-			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir"), new FactorableUnique<FactoryDefault<Win32FileGroupDirectory> >() );
+			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir"), new FactoryDefault<Win32FileGroupDirectory>() );
 
         return true;
 	}

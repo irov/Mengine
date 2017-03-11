@@ -56,6 +56,8 @@ namespace Menge
 		PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeCollisionActor" ), new NodePrototypeGenerator<NodeCollisionActor, 32>() );
 
+        m_factoryCollisionWorld = new FactoryPool<CollisionWorld, 4>();        
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -65,7 +67,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	CollisionWorldPtr ModuleCollision::createCollisionWorld()
 	{
-		CollisionWorldPtr collision = m_factoryCollisionWorld.createObject();
+		CollisionWorldPtr collision = m_factoryCollisionWorld->createObject();
 
 		if( collision->initialize() == false )
 		{

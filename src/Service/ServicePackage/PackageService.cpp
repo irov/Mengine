@@ -7,6 +7,8 @@
 
 #   include "Logger/Logger.h"
 
+#	include "Factory/FactoryPool.h"
+
 #	include "Core/IniUtil.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -28,6 +30,8 @@ namespace Menge
 	{
 		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
 			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale );
+
+        m_factoryPackage = new FactoryPool<Package, 8>();
 
 		return true;
 	}
@@ -208,7 +212,7 @@ namespace Menge
 			return true;
 		}
 
-		PackagePtr package = m_factoryPackage.createObject();
+		PackagePtr package = m_factoryPackage->createObject();
 
         package->setServiceProvider( m_serviceProvider );
 

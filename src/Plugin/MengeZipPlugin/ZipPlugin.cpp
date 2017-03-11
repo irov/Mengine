@@ -7,6 +7,8 @@
 #	include "FileGroupZip.h"
 #	include "ArchivatorZip.h"
 
+#   include "Factory/FactoryDefault.h"
+
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( MengeZip, Menge::ZipPlugin )
 //////////////////////////////////////////////////////////////////////////
@@ -20,10 +22,10 @@ namespace Menge
 	bool ZipPlugin::_initialize()
 	{
 		FILE_SERVICE(m_serviceProvider)
-			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip"), new FactorableUnique<FactoryDefault<FileGroupZip> >() );
+			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip"), new FactoryDefault<FileGroupZip>() );
 		
 		ARCHIVE_SERVICE(m_serviceProvider)
-			->registerArchivator( STRINGIZE_STRING_LOCAL( m_serviceProvider, "zip" ), new FactorableUnique<ArchivatorZip>() );
+			->registerArchivator( STRINGIZE_STRING_LOCAL( m_serviceProvider, "zip" ), new ArchivatorZip() );
 
         return true;
 	}

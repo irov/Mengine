@@ -22,7 +22,7 @@ namespace Menge
 		~ConverterEngine();
 
 	public:
-		void registerConverter( const ConstString & _type, const ConverterFactoryInterfacePtr & _interface ) override;
+		bool registerConverter( const ConstString & _type, const ConverterFactoryInterfacePtr & _interface ) override;
 		bool unregisterConverter( const ConstString & _type ) override;
 
 		ConverterInterfacePtr createConverter( const ConstString & _type ) override; 

@@ -3,6 +3,8 @@
 #	include "Interface/WatchdogInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Factory/FactoryPool.h"
+
 #	include "Logger/Logger.h"
 
 namespace Menge
@@ -40,6 +42,8 @@ namespace Menge
 		{
 			return false;
 		}
+
+        m_factoryPathFinder = new FactoryPool<PathFinder, 32>();
 
 		return true;
 	}
@@ -410,7 +414,7 @@ namespace Menge
 			return 0;
 		}
 
-		PathFinderPtr pf = m_factoryPathFinder.createObject();
+		PathFinderPtr pf = m_factoryPathFinder->createObject();
 
 		if( pf->initialize( &m_map, _from, _to, m_gridSize ) == false )
 		{

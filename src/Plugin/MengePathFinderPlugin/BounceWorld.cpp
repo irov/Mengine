@@ -3,6 +3,8 @@
 #	include "Interface/ScriptSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Factory/FactoryPool.h"
+
 #	include <math.h>
 
 namespace Menge
@@ -37,6 +39,8 @@ namespace Menge
 		m_scriptWrapper = SCRIPT_SERVICE( m_serviceProvider )
 			->getWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "BounceActor" ) );
 
+        m_factoryBounceActors = new FactoryPool<BounceActor, 4>();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -48,7 +52,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	BounceActorPtr BounceWorld::createBounceActor( float _radius, float _mass, Node * _node )
 	{
-		BounceActorPtr actor = m_factoryBounceActors.createObject();
+		BounceActorPtr actor = m_factoryBounceActors->createObject();
 
 		actor->setScriptWrapper( m_scriptWrapper );
 

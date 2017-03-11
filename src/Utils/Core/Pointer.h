@@ -40,21 +40,6 @@ namespace Menge
 			return t;
 		}
 
-        template<class U>
-        operator stdex::intrusive_ptr<U>()
-        {
-#	ifdef _DEBUG
-            if( stdex::mpl::is_dynamic_cast<U *>::test( m_pointer ) == false )
-            {
-                throw;
-            }
-#	endif
-
-            U * t = static_cast<U *>(m_pointer);
-
-            return t;
-        }
-
 	protected:
 		T * m_pointer;
 	};

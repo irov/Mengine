@@ -5,7 +5,7 @@
 
 #   include "Core/ServantBase.h"
 
-#   include "Factory/FactoryStore.h"
+#   include "Factory/FactoryPool.h"
 
 namespace Menge
 {     
@@ -16,7 +16,7 @@ namespace Menge
     protected:
         bool initialize()
         {
-            m_factory = new FactoryPool<T, 8>;
+            m_factory = new FactoryPool<T, 8>();
 
             return true;
         }

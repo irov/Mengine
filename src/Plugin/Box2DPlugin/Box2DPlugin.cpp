@@ -21,17 +21,14 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Box2DPlugin::_initialize()
-	{
-		MODULE_SERVICE( m_serviceProvider )
-			->registerModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBox2D" )
-			, new ModuleFactory<Box2DModule>( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBox2D" ) ) );
+	{		
+		this->addModuleFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBox2D" )
+			, new ModuleFactory<Box2DModule>() );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Box2DPlugin::_finalize()
 	{
-		MODULE_SERVICE( m_serviceProvider )
-			->unregisterModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBox2D" ) );
 	}
 }

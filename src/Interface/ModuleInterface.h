@@ -43,7 +43,7 @@ namespace Menge
 		: public ServantInterface
 	{
 	public:
-		virtual ModuleInterfacePtr createModule() = 0;
+		virtual ModuleInterfacePtr createModule( const ConstString & _name ) = 0;
 	};
 
 	typedef stdex::intrusive_ptr<ModuleFactoryInterface> ModuleFactoryInterfacePtr;

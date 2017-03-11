@@ -7,7 +7,7 @@
 #	include "ThreadWorkerPathFinder.h"
 
 #	include "Core/Polygon.h"
-#	include "Factory/FactoryStore.h"
+#	include "Factory/Factory.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -111,8 +111,7 @@ namespace Menge
 
 		ThreadQueueInterfacePtr m_threadPathFinders;
 
-		typedef FactoryPoolStore<PathFinder, 32> TFactoryPathFinder;
-		TFactoryPathFinder m_factoryPathFinder;
+		FactoryPtr m_factoryPathFinder;
 
 		const RenderCameraInterface * m_camera;
 	};

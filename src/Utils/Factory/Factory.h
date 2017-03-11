@@ -5,6 +5,7 @@
 #   include "Factory/FactorablePtr.h"
 
 #   include "Core/Pointer.h"
+#	include "Core/MemoryAllocator.h"
 
 #	include "stdex/thread_guard.h"
 
@@ -28,6 +29,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	class Factory
 		: public FactorablePtr
+        , public MemoryAllocator
 	{
 	public:
 		Factory();
@@ -42,11 +44,15 @@ namespace Menge
 		void destroyObject( Factorable * _object );
 
 	public:
+        bool emptyObject() const;
 		uint32_t countObject() const;
 
 	protected:
 		virtual Factorable * _createObject() = 0;
 		virtual void _destroyObject( Factorable * _object ) = 0;
+
+    protected:
+        void destroy() override;
 
 	protected:
 		FactoryDestroyListenerInterfacePtr m_destroyListener;

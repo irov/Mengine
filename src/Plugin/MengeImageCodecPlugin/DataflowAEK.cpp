@@ -4,6 +4,8 @@
 #	include "Interface/MemoryInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Factory/FactoryPool.h"
+
 #	include "Core/Stream.h"
 #	include "Core/MemoryHelper.h"
 
@@ -34,6 +36,8 @@ namespace Menge
 			return false;
 		}
 
+        m_poolMovieFramePack = new FactoryPool<MovieFramePack, 32>();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -44,7 +48,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DataInterfacePtr DataflowAEK::create()
 	{
-		MovieFramePack * pack = m_poolMovieFramePack.createObject();
+		MovieFramePack * pack = m_poolMovieFramePack->createObject();
 
 		return pack;
 	}

@@ -103,8 +103,7 @@ namespace Menge
 		typedef stdex::vector<RenderMaterial *> TVectorRenderMaterial;
 		TVectorRenderMaterial m_materials[MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE];
 
-		typedef FactoryPoolStore<RenderMaterial, 256> TFactoryRenderMaterial; 
-		TFactoryRenderMaterial m_factoryMaterial;
+		FactoryPtr m_factoryMaterial;
 
 		typedef stdex::vector<uint32_t> TVectorMaterialIndexer;
 		TVectorMaterialIndexer m_materialEnumerators;

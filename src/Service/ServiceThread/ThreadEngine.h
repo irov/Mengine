@@ -7,9 +7,9 @@
 #	include "ThreadQueue.h"
 #	include "ThreadMutexDummy.h"
 
-#	include "Factory/FactoryStore.h"
+#	include "Factory/Factory.h"
 
-#	include <stdex/stl_vector.h>
+#	include "stdex/stl_vector.h"
 
 namespace Menge
 {    
@@ -53,7 +53,7 @@ namespace Menge
 		bool hasThread_( const ConstString & _name ) const;
 		
 	protected:
-		ThreadMutexInterfacePtr m_allocatorPoolMutex;
+		ThreadMutexInterfacePtr m_mutexAllocatorPool;
 
         uint32_t m_threadCount;
 		        
@@ -72,11 +72,8 @@ namespace Menge
 		typedef stdex::vector<ThreadQueuePtr> TVectorThreadQueues;
 		TVectorThreadQueues m_threadQueues;
 
-		typedef FactoryPoolStore<ThreadQueue, 4> TFactoryThreadQueue;
-		TFactoryThreadQueue m_factoryThreadQueue;
-
-		typedef FactoryPoolStore<ThreadMutexDummy, 16> TPoolThreadMutexDummy;
-		TPoolThreadMutexDummy m_poolThreadMutexDummy;	
+		FactoryPtr m_factoryThreadQueue;
+		FactoryPtr m_factoryThreadMutexDummy;	
 
 		struct ThreadDesc
 		{

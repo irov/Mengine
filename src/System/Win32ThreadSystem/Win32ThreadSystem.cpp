@@ -1,5 +1,6 @@
 #	include "Win32ThreadSystem.h"
 
+#   include "Factory/FactoryPool.h"
 #	include "Logger/Logger.h"
 
 #   include <algorithm>
@@ -22,22 +23,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32ThreadSystem::_initialize()		
 	{
+        m_poolWin32ThreadIdentity = new FactoryPool<Win32ThreadIdentity, 16>();
+        m_poolWin32ThreadMutex = new FactoryPool<Win32ThreadMutex, 16>();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadSystem::_finalize()
 	{
-		if( m_poolWin32ThreadIdentity.emptyObject() == false )
+		if( m_poolWin32ThreadIdentity->emptyObject() == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("Win32ThreadSystem::finalize Win32ThreadIdentity not all remove %d"
-				, m_poolWin32ThreadIdentity.countObject()
+				, m_poolWin32ThreadIdentity->countObject()
 				);
 		}
 
-		if( m_poolWin32ThreadMutex.emptyObject() == false )
+		if( m_poolWin32ThreadMutex->emptyObject() == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("Win32ThreadSystem::finalize Win32ThreadMutex not all remove %d"
-				, m_poolWin32ThreadMutex.countObject()
+				, m_poolWin32ThreadMutex->countObject()
 				);
 		}
 	}
@@ -49,7 +53,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ThreadIdentityPtr Win32ThreadSystem::createThread( int _priority, const char * _doc )
 	{
-		Win32ThreadIdentityPtr identity = m_poolWin32ThreadIdentity.createObject();
+		Win32ThreadIdentityPtr identity = m_poolWin32ThreadIdentity->createObject();
 
 		if( identity == nullptr )
 		{
@@ -84,7 +88,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const char * _doc )
     {
-        Win32ThreadMutex * mutex = m_poolWin32ThreadMutex.createObject();
+        Win32ThreadMutex * mutex = m_poolWin32ThreadMutex->createObject();
 
         mutex->setServiceProvider( m_serviceProvider );
 

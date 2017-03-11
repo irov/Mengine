@@ -4,42 +4,12 @@
 
 #	include "Factory/FactoryDefault.h"
 #	include "Factory/FactoryPool.h"
-#	include "Factory/FactorableUnique.h"
+#	include "Factory/FactoryHelper.h"
 
 #	include "stdex/thread_guard.h"
 
 namespace Menge
 {
-	template<class C, class M, class T>
-	class MethodFactoryListenerInterface
-		: public FactoryListenerInterface
-	{
-	public:
-		MethodFactoryListenerInterface( C * _self, M _method )
-			: m_self(_self)
-			, m_method(_method)
-		{
-		}
-
-	protected:
-		void onFactoryDestroyObject( Factorable * _object ) override
-		{
-			T * obj = static_cast<T *>(_object);
-
-			(m_self->*m_method)( obj );
-		}
-
-	protected:
-		void destroy() override
-		{
-			delete this;
-		}
-
-	protected:
-		C * m_self;
-		M m_method;
-	};
-
 	template<class T, size_t Count>
 	class FactoryPoolStore
 	{
@@ -49,7 +19,7 @@ namespace Menge
 	public:
 		FactoryPoolStore()
 		{
-			m_ptr = new FactorableUnique<TFactoryType>();
+			m_ptr = new TFactoryType();
 		}
 
 	public:
@@ -62,12 +32,12 @@ namespace Menge
 		template<class C, class M>
 		void setMethodListener( C * _self, M _method )
 		{
-			FactoryListenerInterfacePtr listener = new MethodFactoryListenerInterface<C, M, T>(_self, _method);
+			FactoryDestroyListenerInterfacePtr listener = Helper::makeFactoryDestroyListener<T>(_self, _method);
 
 			this->setListener( listener );
 		}
 
-		void setListener( const FactoryListenerInterfacePtr & _listener )
+		void setListener( const FactoryDestroyListenerInterfacePtr & _listener )
 		{
 			m_ptr->setListener( _listener );
 		}

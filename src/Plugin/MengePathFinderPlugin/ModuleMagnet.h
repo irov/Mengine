@@ -6,6 +6,8 @@
 #	include "MagnetActor.h"
 #	include "NodeMagnetActor.h"
 
+#	include "Factory/Factory.h"
+
 namespace Menge
 {
 	class ModuleMagnet
@@ -28,8 +30,7 @@ namespace Menge
 		void _render( const RenderObjectState * _state, unsigned int _debugMask ) override;
 		
 	protected:
-		typedef FactoryPoolStore<MagnetWorld, 4> TFactoryMagnetWorld;
-		TFactoryMagnetWorld m_factoryMagnetWorld;
+		FactoryPtr m_factoryMagnetWorld;
 
 		typedef stdex::vector<MagnetWorldPtr> TVectorMagnetWorlds;
 		TVectorMagnetWorlds m_magnetWorlds;

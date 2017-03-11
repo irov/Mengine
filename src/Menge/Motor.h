@@ -23,7 +23,7 @@ namespace Menge
 		~Motor();
 
 	public:
-		void setServiceProvider(ServiceProviderInterface * m_serviceProvider);
+		void setServiceProvider(ServiceProviderInterface * _serviceProvider);
 		ServiceProviderInterface * getServiceProvider() const;
 
 	public:

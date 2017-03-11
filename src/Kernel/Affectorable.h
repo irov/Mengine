@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Kernel/AffectorType.h"
-#   include "Kernel/Affector.h"
 
 #	include "stdex/intrusive_slug_list_size.h"
 #	include "stdex/intrusive_slug.h"
@@ -10,6 +9,8 @@
 
 namespace Menge
 {
+	class Affector;
+
 	class Affectorable
 	{
 	public:

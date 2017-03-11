@@ -9,8 +9,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderIndexBuffer::DX9RenderIndexBuffer()
-		: m_serviceProvider(nullptr)
-		, m_pD3DDevice(nullptr)
+		: m_pD3DDevice(nullptr)
 		, m_indexNum(0)
 		, m_usage( 0 )
 		, m_format( D3DFMT_UNKNOWN )
@@ -30,9 +29,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderIndexBuffer::initialize( ServiceProviderInterface * _serviceProvider, IDirect3DDevice9 * _pD3DDevice, uint32_t _indexNum, bool _dynamic )
+	bool DX9RenderIndexBuffer::initialize( IDirect3DDevice9 * _pD3DDevice, uint32_t _indexNum, bool _dynamic )
 	{
-		m_serviceProvider = _serviceProvider;
 		m_pD3DDevice = _pD3DDevice;
 		m_indexNum = _indexNum;
 

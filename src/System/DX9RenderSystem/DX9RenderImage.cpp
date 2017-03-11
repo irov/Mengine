@@ -6,8 +6,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderImage::DX9RenderImage()
-		: m_serviceProvider(nullptr)
-		, m_d3dTexture(nullptr)
+		: m_d3dTexture(nullptr)
 		, m_mode(ERIM_NORMAL)
         , m_hwWidth(0)
         , m_hwHeight(0)
@@ -27,9 +26,8 @@ namespace Menge
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::initialize( ServiceProviderInterface * _serviceProvider, IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
+    void DX9RenderImage::initialize( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
     {
-		m_serviceProvider = _serviceProvider;
         m_d3dTexture = _d3dInterface;
 
 		m_mode = _mode;

@@ -5,8 +5,6 @@
 
 #   include "Core/ServantBase.h"
 
-#   include "Factory/FactoryStore.h"
-
 namespace Menge
 {
 	class Win32FileMapped

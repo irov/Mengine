@@ -2,19 +2,18 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
+#	include "Core/ServantBase.h"
+
 #	include <d3d9.h>
 
 namespace Menge
 {
 	class DX9RenderTargetOffscreen
-		: public RenderTargetInterface
+		: public ServantBase<RenderTargetInterface>
 	{
 	public:
 		DX9RenderTargetOffscreen();
 		~DX9RenderTargetOffscreen();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
 		bool initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, PixelFormat _format );
@@ -28,8 +27,6 @@ namespace Menge
 		bool getData( unsigned char * _buffer, size_t _pitch ) override;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		uint32_t m_width;
 		uint32_t m_height;
 		D3DFORMAT m_format;

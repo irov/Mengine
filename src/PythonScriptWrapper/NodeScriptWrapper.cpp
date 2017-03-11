@@ -149,7 +149,7 @@
 #	include "Core/Polygon.h"
 #	include "Core/ValueFollower.h"
 
-#	include "Factory/FactoryStore.h"
+#	include "Factory/FactoryPoolStore.h"
 
 #	include "pybind/stl_type_cast.hpp"
 #	include "stdex/xml_sax_parser.h"

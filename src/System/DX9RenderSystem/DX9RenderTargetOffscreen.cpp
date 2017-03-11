@@ -6,8 +6,7 @@
 namespace Menge
 {
 	DX9RenderTargetOffscreen::DX9RenderTargetOffscreen()
-		: m_serviceProvider( nullptr )
-		, m_width( 0 )
+		: m_width( 0 )
 		, m_height( 0 )
 		, m_device( nullptr )
 		, m_renderTexture( nullptr )
@@ -19,11 +18,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderTargetOffscreen::~DX9RenderTargetOffscreen()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderTargetOffscreen::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderTargetOffscreen::initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, PixelFormat _format )

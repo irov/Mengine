@@ -567,7 +567,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		DX9RenderImage * dxTexture = this->onCreateDX9RenderImage_( dxTextureInterface, ERIM_NORMAL, texDesc.Width, texDesc.Height, _channels, _format );
+		DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_NORMAL, texDesc.Width, texDesc.Height, _channels, _format );
 		
 		LOGGER_INFO(m_serviceProvider)( "DX9RenderSystem.createImage: texture created %dx%d %d:%d"
 			, texDesc.Width
@@ -602,7 +602,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		DX9RenderImage * dxTexture = this->onCreateDX9RenderImage_( dxTextureInterface, ERIM_DYNAMIC, texDesc.Width, texDesc.Height, _channels, _format );
+		DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_DYNAMIC, texDesc.Width, texDesc.Height, _channels, _format );
         
 		LOGGER_INFO(m_serviceProvider)( "DX9RenderSystem.createDynamicImage: texture created %dx%d %d:%d"
 			, texDesc.Width
@@ -933,7 +933,7 @@ namespace Menge
 			return false;
 		}
 
-		DX9TexturePtr texture = stdex::intrusive_static_cast<DX9TexturePtr>(_renderTarget);
+		DX9RenderImagePtr texture = stdex::intrusive_static_cast<DX9RenderImagePtr>(_renderTarget);
 
 		IDirect3DTexture9 * dx_texture = texture->getDXTextureInterface();
 
@@ -1243,7 +1243,9 @@ namespace Menge
 	{
 		DX9RenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject();
 
-		if( buffer->initialize( m_serviceProvider, m_pD3DDevice, m_fvf, _verticesNum, _dynamic ) == false )
+		buffer->setServiceProvider(m_serviceProvider);
+
+		if( buffer->initialize( m_pD3DDevice, m_fvf, _verticesNum, _dynamic ) == false )
 		{
 			return nullptr;
 		}
@@ -1281,7 +1283,9 @@ namespace Menge
 	{
 		DX9RenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject();
 
-		if( buffer->initialize( m_serviceProvider, m_pD3DDevice, _indiciesNum, _dynamic ) == false )
+		buffer->setServiceProvider(m_serviceProvider);
+
+		if( buffer->initialize( m_pD3DDevice, _indiciesNum, _dynamic ) == false )
 		{
 			return nullptr;
 		}
@@ -1997,13 +2001,15 @@ namespace Menge
 		//empty, not supported
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DX9RenderImage * DX9RenderSystem::onCreateDX9RenderImage_( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
+	DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
 	{
 		m_textureCount++;
 
-		DX9RenderImage * dxTexture = m_factoryDX9Texture->createObject();
+		DX9RenderImagePtr dxTexture = m_factoryDX9Texture->createObject();
 
-		dxTexture->initialize( m_serviceProvider, _d3dInterface, _mode, _hwWidth, _hwHeight, _hwChannels, _hwPixelFormat );
+		dxTexture->setServiceProvider(m_serviceProvider);
+
+		dxTexture->initialize( _d3dInterface, _mode, _hwWidth, _hwHeight, _hwChannels, _hwPixelFormat );
 
 		//size_t memoryUse = dxTexture->getMemoryUse();
 

@@ -191,7 +191,9 @@ namespace Menge
 		bool d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels,
 			DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture );
 
-		DX9RenderImage * onCreateDX9RenderImage_( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat );
+		DX9RenderImagePtr createDX9RenderImage_( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat );
+
+	protected:
 		void onDestroyDX9RenderImage_( DX9RenderImage * _image );
 
 	protected:

@@ -200,7 +200,7 @@ namespace Menge
 	typedef uint32_t IBHandle; // Index Buffer Handle
 	//////////////////////////////////////////////////////////////////////////
 	class RenderImageInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
 	public:
 		virtual ERenderImageMode getMode() const = 0;
@@ -438,7 +438,7 @@ namespace Menge
 	typedef stdex::vector<RenderVertex2D> TVectorRenderVertex2D;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderVertexBufferInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
 	public:
 		virtual Pointer lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
@@ -448,7 +448,7 @@ namespace Menge
 	typedef stdex::intrusive_ptr<RenderVertexBufferInterface> RenderVertexBufferInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderIndexBufferInterface
-		: public FactorablePtr
+		: public ServantInterface
 	{
 	public:
 		virtual Pointer lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
@@ -570,6 +570,7 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderTargetInterface
+		: public ServantInterface
 	{
 	public:
 		virtual bool begin() = 0;

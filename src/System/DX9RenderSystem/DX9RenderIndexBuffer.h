@@ -2,19 +2,22 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
+#	include "Core/ServantBase.h"
+
+
 #	include <d3d9.h>
 
 namespace Menge
 {
 	class DX9RenderIndexBuffer
-		: public RenderIndexBufferInterface
+		: public ServantBase<RenderIndexBufferInterface>
 	{
 	public:
 		DX9RenderIndexBuffer();
 		~DX9RenderIndexBuffer();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, IDirect3DDevice9 * _pD3DDevice, uint32_t _indiciesNum, bool _dynamic );
+		bool initialize( IDirect3DDevice9 * _pD3DDevice, uint32_t _indiciesNum, bool _dynamic );
 
 	public:
         Pointer lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
@@ -24,7 +27,6 @@ namespace Menge
 		bool enable();
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
 		IDirect3DDevice9 * m_pD3DDevice;
 
 		uint32_t m_indexNum;

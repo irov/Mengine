@@ -2,19 +2,21 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
+#	include "Core/ServantBase.h"
+
 #	include <d3d9.h>
 
 namespace Menge
 {
 	class DX9RenderImage
-		: public RenderImageInterface
+		: public ServantBase<RenderImageInterface>
 	{
 	public:
 		DX9RenderImage();
         ~DX9RenderImage();
 
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider, IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat );
+        void initialize( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat );
 		
 	public:
 		IDirect3DTexture9 * getDXTextureInterface() const;		
@@ -35,8 +37,6 @@ namespace Menge
 		void unlock( uint32_t _level ) override;
 		               		
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		IDirect3DTexture9 * m_d3dTexture;
 
 		ERenderImageMode m_mode;
@@ -47,6 +47,6 @@ namespace Menge
 
         PixelFormat m_hwPixelFormat;
 	};
-
-    typedef stdex::intrusive_ptr<DX9RenderImage> DX9TexturePtr;
+	//////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<DX9RenderImage> DX9RenderImagePtr;
 }	// namespace Menge

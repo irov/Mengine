@@ -9,8 +9,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderVertexBuffer::DX9RenderVertexBuffer()
-		: m_serviceProvider( nullptr )
-		, m_pD3DDevice( nullptr )
+		: m_pD3DDevice( nullptr )
 		, m_vertexDeclaration( 0 )
 		, m_vertexNum( 0 )
 		, m_usage( 0 )
@@ -31,9 +30,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderVertexBuffer::initialize( ServiceProviderInterface * _serviceProvider, IDirect3DDevice9 * _pD3DDevice, DWORD _vertexDeclaration, uint32_t _vertexNum, bool _dynamic )
+	bool DX9RenderVertexBuffer::initialize( IDirect3DDevice9 * _pD3DDevice, DWORD _vertexDeclaration, uint32_t _vertexNum, bool _dynamic )
 	{
-		m_serviceProvider = _serviceProvider;
 		m_pD3DDevice = _pD3DDevice;
 		m_vertexDeclaration = _vertexDeclaration;
 		m_vertexNum = _vertexNum;

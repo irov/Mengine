@@ -23,7 +23,6 @@ namespace Menge
         void onSoundChangeVolume( float _sound, float _music, float _voice, bool _mute ) override;
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
         Game * m_game;
     };
 	//////////////////////////////////////////////////////////////////////////

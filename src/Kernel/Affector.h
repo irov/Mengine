@@ -469,7 +469,7 @@ namespace Menge
 				, C * _self, M _method
 				, const T & _start, const T & _end, const T & _v0, float _time )
 			{
-				AffectorType * affector = m_factory.createObject();
+				AffectorType * affector = m_factory->createObject();
 
 				affector->setServiceProvider( _serviceProvider );
 				affector->setAffectorType( _type );
@@ -507,7 +507,7 @@ namespace Menge
 				, C * _self, M _method
 				, const T & _start, const T & _end, const T * _v, float _time )
 			{
-				AffectorType * affector = m_factory.createObject();
+				AffectorType * affector = m_factory->createObject();
 
 				affector->setServiceProvider( _serviceProvider );
 				affector->setAffectorType( _type );

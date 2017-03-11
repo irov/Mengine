@@ -1212,7 +1212,7 @@ namespace Menge
 
 		if( m_threadSoundBufferUpdate != nullptr )
 		{
-			ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate.createObject();
+			ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject();
 
 			SoundBufferInterfacePtr soundBuffer = _source->source->getSoundBuffer();
 

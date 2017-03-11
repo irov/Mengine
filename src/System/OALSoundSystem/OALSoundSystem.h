@@ -8,8 +8,6 @@
 
 #   include "Core/ServiceBase.h"
 
-#   include "Factory/FactoryStore.h"
-
 #	include "AL/al.h"
 #	include "AL/alc.h"
 

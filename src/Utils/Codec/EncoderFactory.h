@@ -5,7 +5,7 @@
 
 #   include "Core/ServantBase.h"
 
-#	include "Factory/FactoryStore.h"
+#	include "Factory/FactoryPool.h"
 
 namespace Menge
 {

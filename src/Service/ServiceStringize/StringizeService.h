@@ -4,7 +4,7 @@
 
 #   include "Core/ServiceBase.h"
 
-#   include "Factory/FactoryStore.h"
+#   include "Factory/Factory.h"
 
 #   include "ConstStringHolderMemory.h"
 

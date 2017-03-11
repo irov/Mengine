@@ -7,8 +7,6 @@
 
 #	include "Core/ModuleBase.h"
 
-#   include "Factory/FactoryStore.h"
-
 #	include "Box2D/Box2D.h"
 
 #	include "pybind/object.hpp"

@@ -7,7 +7,6 @@
 #	include "Core/IntrusiveTree.h"
 
 #	include "Factory/FactorablePtr.h"
-#	include "Factory/FactoryStore.h"
 
 namespace Menge
 {

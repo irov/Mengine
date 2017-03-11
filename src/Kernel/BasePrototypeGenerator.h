@@ -9,8 +9,6 @@
 #	include "Core/ConstString.h"
 #   include "Core/MemoryAllocator.h"
 
-#	include "Factory/FactoryStore.h"
-
 #	include "Logger/Logger.h"
 
 namespace Menge

@@ -5,7 +5,7 @@
 #	include "Kernel/ResourceReference.h"
 
 #	include "Core/ConstString.h"
-#	include "Factory/FactoryStore.h"
+#	include "Factory/FactoryPool.h"
 
 #	include "Logger/Logger.h"
 

@@ -3,6 +3,8 @@
 #	include "Config/Config.h"
 #	include "Logger/Logger.h"
 
+#   include "Factory/FactoryPool.h"
+
 #	include <algorithm>
 #	include <stdio.h>
 #	include <stdarg.h>
@@ -27,6 +29,9 @@ namespace Menge
 	{
         LOGGER_INFO(m_serviceProvider)( "Starting Silent Sound System..." );
         		
+		m_factorySilentSoundBuffer = new FactoryPool<SilentSoundBuffer, 32>();
+		m_factorySilentSoundSource = new FactoryPool<SilentSoundSource, 32>();
+
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -52,7 +57,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundSourceInterfacePtr SilentSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
 	{		
-		SilentSoundSource * soundSource = m_poolSilentSoundSource.createObject();
+		SilentSoundSource * soundSource = m_factorySilentSoundSource->createObject();
 
 		soundSource->initialize(this);
 		
@@ -66,7 +71,7 @@ namespace Menge
 	{
         (void)_streamable;
 
-		SilentSoundBuffer * buffer = m_poolSilentSoundBuffer.createObject();
+		SilentSoundBuffer * buffer = m_factorySilentSoundBuffer->createObject();
 
 		if( buffer->load( _soundDecoder ) == false )
 		{

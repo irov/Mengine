@@ -9,7 +9,7 @@
 #	include "Kernel/Affector.h"
 
 #	include "Menge/ResourceSound.h"
-#	include "Factory/FactoryStore.h"
+#	include "Factory/FactoryPoolStore.h"
 
 #	include "Logger/Logger.h"
 

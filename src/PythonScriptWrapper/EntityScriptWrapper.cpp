@@ -14,7 +14,7 @@
 
 #	include "Kernel/Arrow.h"
 
-#	include "Factory/FactoryStore.h"
+#	include "Factory/FactoryPoolStore.h"
 
 #	include "EntityPrototypeGenerator.h"
 

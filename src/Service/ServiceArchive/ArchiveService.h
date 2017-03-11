@@ -4,8 +4,6 @@
 
 #   include "Core/ServiceBase.h"
 
-#	include "Factory/FactoryStore.h"
-
 #	include "stdex/stl_map.h"
 
 namespace Menge

@@ -4,7 +4,7 @@
 
 #   include "Core/ServiceBase.h"
 
-#   include "Factory/FactoryStore.h"
+#   include "Factory/Factory.h"
 
 #	include "SilentSoundBuffer.h"
 #	include "SilentSoundSource.h"
@@ -48,10 +48,7 @@ namespace Menge
 	private:
         uint32_t m_enumerate;
 
-        typedef FactoryPoolStore<SilentSoundBuffer, 32> TPoolSilentSoundBuffer;
-        TPoolSilentSoundBuffer m_poolSilentSoundBuffer;
-
-        typedef FactoryPoolStore<SilentSoundSource, 32> TPoolSilentSoundSource;
-        TPoolSilentSoundSource m_poolSilentSoundSource;
+        FactoryPtr m_factorySilentSoundBuffer;
+		FactoryPtr m_factorySilentSoundSource;
 	};
 }	// namespace Menge

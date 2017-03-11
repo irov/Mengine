@@ -6,6 +6,8 @@
 
 #	include "Core/MemoryHelper.h"
 
+#	include "Factory/FactoryPool.h"
+
 #   include "Logger/Logger.h"
 
 #	include <Metacode/Metacode.h>

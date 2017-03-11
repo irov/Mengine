@@ -15,8 +15,6 @@
 #	include "Core/Resolution.h"
 #   include "Core/String.h"
 
-#	include "Factory/FactoryStore.h"
-
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////

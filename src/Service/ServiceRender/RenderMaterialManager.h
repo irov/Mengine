@@ -6,7 +6,7 @@
 
 #	include "RenderMaterial.h"
 
-#	include "Factory/FactoryStore.h"
+#	include "Factory/Factory.h"
 
 #   include "stdex/binary_vector.h"
 #   include "stdex/stl_map.h"

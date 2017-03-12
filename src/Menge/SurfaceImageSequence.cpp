@@ -95,10 +95,11 @@ namespace	Menge
 					}
 					else
 					{
-                        this->setTiming( m_frameTiming );                                   
+						m_currentFrame = 0;
+                        //this->setTiming( m_frameTiming );                                   
                     }
 
-                    lastFrame = m_currentFrame;
+                    //lastFrame = m_currentFrame;
                 }
 
                 frameDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );                

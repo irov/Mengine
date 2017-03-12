@@ -17,6 +17,8 @@ namespace Menge
     public:
         void destroy() override
         {
+			this->_destroy();
+
 			delete this;
         }
 	};

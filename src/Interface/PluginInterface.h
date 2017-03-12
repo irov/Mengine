@@ -3,7 +3,10 @@
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/ServantInterface.h"
 
+#	include "Factory/FactorableUnique.h"
+
 #   include "Config/String.h"
+
 
 namespace Menge
 {
@@ -89,7 +92,7 @@ namespace Menge
 #	define PLUGIN_FACTORY_STATIC(Name, Type)\
 	extern "C"{bool PLUGIN_FUNCTION(Name)( Menge::PluginInterface ** _plugin, bool _dynamic ){\
 	if( _dynamic == true ){stdex_allocator_initialize();}\
-	Menge::PluginInterface * plugin = new Type();\
+	Menge::PluginInterface * plugin = new Menge::FactorableUnique<Type>();\
 	if( plugin == nullptr ){ return false; }\
 	plugin->setDynamicLoad( _dynamic );\
 	*_plugin = plugin;\

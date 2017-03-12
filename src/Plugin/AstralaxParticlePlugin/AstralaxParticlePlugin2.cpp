@@ -32,6 +32,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticlePlugin2::_destroy()
 	{
-		SERVICE_DESTROY( m_serviceProvider, Menge::ParticleSystemInterface2 );		
+		SERVICE_DESTROY( m_serviceProvider, Menge::ParticleSystemInterface2 );
 	}
 }

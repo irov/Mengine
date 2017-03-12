@@ -1500,6 +1500,7 @@ namespace Menge
             return false;
         }
 
+		surface->setName(_layer.name);
         surface->setResourceAnimation( resourceAnimation );
 
         surface->setIntervalStart( _layer.startInterval );
@@ -1520,6 +1521,7 @@ namespace Menge
             return false;
         }
 
+		layer_animation->setName(_layer.name);
         layer_animation->setSurface( surface );
 
 		if( this->addMovieNode_( _layer, layer_animation, surface.get(), nullptr, nullptr ) == false )

@@ -910,7 +910,7 @@ namespace Menge
 				->stopModules();
 		}
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::PlatformInterface );
+		
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ApplicationInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PrefetcherServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::DataServiceInterface );
@@ -948,6 +948,7 @@ namespace Menge
 		SERVICE_FINALIZE( m_serviceProvider, Menge::TimerServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::TimerSystemInterface );
 
+		SERVICE_FINALIZE(m_serviceProvider, Menge::PlatformInterface);
 		SERVICE_FINALIZE( m_serviceProvider, Menge::WindowsLayerInterface );
 
 		if( m_fileLog != nullptr )

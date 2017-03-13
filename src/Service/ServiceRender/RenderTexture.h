@@ -16,8 +16,7 @@ namespace Menge
 		~RenderTexture();
 
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider
-            , uint32_t _id
+        void initialize( uint32_t _id
             , const RenderImageInterfacePtr & _image
 			, uint32_t _mipmaps
             , uint32_t _width

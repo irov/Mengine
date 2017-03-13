@@ -18,8 +18,7 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void RenderTexture::initialize( ServiceProviderInterface * _serviceProvider
-        , uint32_t _id
+    void RenderTexture::initialize( uint32_t _id
         , const RenderImageInterfacePtr & _image
 		, uint32_t _mipmaps
         , uint32_t _width

@@ -619,9 +619,11 @@ namespace Menge
 	{
 		RenderTexturePtr texture = m_factoryRenderTexture->createObject();
 
+		texture->setServiceProvider(m_serviceProvider);
+
         uint32_t id = ++m_textureEnumerator;
 
-		texture->initialize( m_serviceProvider, id, _image, _mipmaps, _width, _height, _channels );
+		texture->initialize( id, _image, _mipmaps, _width, _height, _channels );
 
 		return texture;
 	}

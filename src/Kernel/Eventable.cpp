@@ -5,6 +5,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	static const uint32_t max_event_id = (sizeof(event_t) * 8 - 1);
+	//////////////////////////////////////////////////////////////////////////
 	Eventable::Eventable()
 		: m_flag(0)
 	{
@@ -17,7 +19,7 @@ namespace Menge
     class Eventable::FEventReciver
     {
     public:
-        FEventReciver( uint32_t _event )
+        FEventReciver(event_t _event )
             : m_event( _event )
         {
         }
@@ -29,13 +31,13 @@ namespace Menge
         }
 
     protected:
-        uint32_t m_event;
+		event_t m_event;
     };
     //////////////////////////////////////////////////////////////////////////
-    bool Eventable::registerEventReceiver( uint32_t _event, const EventReceiverPtr & _receiver )
+    bool Eventable::registerEventReceiver(event_t _event, const EventReceiverPtr & _receiver )
     {
 #   ifdef _DEBUG
-        if( _event >= 32 )
+        if( _event >= max_event_id)
         {
             throw;
         }
@@ -61,10 +63,10 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Eventable::removeEventReceiver( uint32_t _event )
+    void Eventable::removeEventReceiver(event_t _event )
     {
 #   ifdef _DEBUG
-        if( _event >= 32 )
+        if( _event >= max_event_id)
         {
             throw;
         }
@@ -82,10 +84,10 @@ namespace Menge
         m_flag &= ~(1 << _event);
     }
     //////////////////////////////////////////////////////////////////////////
-    const EventReceiverPtr & Eventable::getEventReciever( uint32_t _event ) const
+    const EventReceiverPtr & Eventable::getEventReciever(event_t _event ) const
     {
 #   ifdef _DEBUG
-        if( _event >= 32 )
+        if( _event >= max_event_id)
         {
             throw;
         }
@@ -103,10 +105,10 @@ namespace Menge
         return receiver;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Eventable::hasEventReceiver( uint32_t _event ) const
+    bool Eventable::hasEventReceiver(event_t _event ) const
     {
 #   ifdef _DEBUG
-        if( _event >= 32 )
+        if( _event >= max_event_id)
         {
             throw;
         }

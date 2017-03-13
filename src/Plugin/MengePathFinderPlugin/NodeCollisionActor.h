@@ -24,7 +24,7 @@ namespace Menge
         : public EventReceiver
     {
     public:
-        virtual bool onNodeCollisionActorCollisionTest( class NodeCollisionActor * _other, uint32_t _iff, uint32_t _other_iff, const mt::vec3f & _point, const mt::vec3f & _normal, float _penetration ) = 0;
+        virtual bool onNodeCollisionActorCollisionTest( class NodeCollisionActor * _other, uint32_t _iff1, uint32_t _iff2, const mt::vec3f & _point, const mt::vec3f & _normal, float _penetration ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 	class NodeCollisionActor

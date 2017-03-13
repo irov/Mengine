@@ -5,6 +5,8 @@
 #	include "Interface/StringizeInterface.h"
 
 #   include "Kernel/ScriptWrapper.h"
+#	include "Kernel/ScriptEventReceiver.h"
+
 #	include "Kernel/NodePrototypeGenerator.h"
 
 #	include "pybind/pybind.hpp"
@@ -12,6 +14,35 @@
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	class PythonNodeCollisionActorEventReceiver
+		: public ScriptEventReceiver
+		, public NodeCollisionActorEventReceiver
+	{
+	protected:
+		bool onNodeCollisionActorCollisionTest(NodeCollisionActor * _other, uint32_t _iff1, uint32_t _iff2, const mt::vec3f & _point, const mt::vec3f & _normal, float _penetration)
+		{
+			bool result = m_cb.call(_other, _iff1, _iff2, _point, _normal, _penetration);
+
+			return result;
+		}
+	};
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * s_NodeCollisionActor_setEventListener(pybind::kernel_interface * _kernel, NodeCollisionActor * _node, PyObject * _args, PyObject * _kwds)
+	{
+		(void)_args;
+
+		if (_kwds == nullptr)
+		{
+			return pybind::ret_none();
+		}
+
+		pybind::dict py_kwds(_kernel, _kwds);
+
+		Helper::registerScriptEventReceiver<PythonNodeCollisionActorEventReceiver>(py_kwds, _node, "onCollisionTest", EVENT_COLLISION_TEST);
+
+		return pybind::ret_none();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	ModuleCollision::ModuleCollision()
 	{
@@ -48,6 +79,7 @@ namespace Menge
 			.def( "setCollisionUserData", &NodeCollisionActor::setCollisionUserData )
 			.def( "getCollisionUserData", &NodeCollisionActor::getCollisionUserData )
 			.def( "addCollisionException", &NodeCollisionActor::addCollisionException )
+			.def_static_native_kernel("setEventListener", &s_NodeCollisionActor_setEventListener)
 			;
 
 		SCRIPT_SERVICE( m_serviceProvider )

@@ -11,6 +11,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	typedef uint64_t event_t;	
+	//////////////////////////////////////////////////////////////////////////
 	class Eventable
 	{
 	public:
@@ -18,19 +20,19 @@ namespace Menge
 		~Eventable();
 
     public:
-        bool registerEventReceiver( uint32_t _event, const EventReceiverPtr & _receiver );
-        void removeEventReceiver( uint32_t _event );
+        bool registerEventReceiver(event_t _event, const EventReceiverPtr & _receiver );
+        void removeEventReceiver(event_t _event );
 
     public:
-        const EventReceiverPtr & getEventReciever( uint32_t _event ) const;
-        bool hasEventReceiver( uint32_t _event ) const;
+        const EventReceiverPtr & getEventReciever(event_t _event ) const;
+        bool hasEventReceiver(event_t _event ) const;
 
     public:
         void removeEvents();
 
     public:
         template<class T>
-        T getEventRecieverT( uint32_t _event ) const
+        T getEventRecieverT(event_t _event ) const
         {   
             const EventReceiverPtr & reciever = this->getEventReciever( _event );
 
@@ -57,14 +59,14 @@ namespace Menge
 	protected:
         struct EventReceiverDesc
         {
-            uint32_t event;
+			event_t event;
             EventReceiverPtr receiver;
         };
 
         typedef stdex::vector<EventReceiverDesc> TMapEventReceivers;
         TMapEventReceivers m_receivers;
 
-		uint32_t m_flag;
+		event_t m_flag;
 
     private:
         class FEventReciver;

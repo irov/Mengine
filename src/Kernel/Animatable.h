@@ -53,7 +53,9 @@ namespace Menge
         inline float getIntervalEnd() const;
 		
 		void setFirstFrame();
-		void setLastFrame();		
+		void setLastFrame();
+		
+		float getAdaptTiming(float _timing) const;
 
 		void setTiming( float _timing );
 		float getTiming() const;

@@ -47,11 +47,18 @@ namespace Menge
 		this->_setAnimationSpeedFactor( _factor );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animatable::setTiming( float _timing )
-	{		
+	float Animatable::getAdaptTiming(float _timing) const
+	{
 		float timing = m_intervalStart + m_intervalBegin + _timing;
 
-		this->_setTiming( timing );
+		return timing;
+	}	
+	//////////////////////////////////////////////////////////////////////////
+	void Animatable::setTiming( float _timing )
+	{		
+		float adaptTiming = this->getAdaptTiming(_timing);
+
+		this->_setTiming(adaptTiming);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::_setTiming( float _timing )

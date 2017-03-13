@@ -94,9 +94,12 @@ namespace	Menge
 						break;
 					}
 					else
-					{
-						m_currentFrame = 0;
-                        //this->setTiming( m_frameTiming );                                   
+					{						
+						float adaptFrameTiming = this->getAdaptTiming(m_frameTiming);
+
+						float newFrameTiming;
+						m_currentFrame = this->getFrame_(m_frameTiming, newFrameTiming);
+						m_frameTiming = newFrameTiming;
                     }
 
                     //lastFrame = m_currentFrame;

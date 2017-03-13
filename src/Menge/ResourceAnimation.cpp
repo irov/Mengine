@@ -24,6 +24,8 @@ namespace Menge
 
         const Metacode::Meta_DataBlock::Meta_ResourceAnimation::TVectorMeta_Sequence & includes_sequence = metadata->get_IncludesSequence();
 
+		m_duration = 0.f;
+
         for( Metacode::Meta_DataBlock::Meta_ResourceAnimation::TVectorMeta_Sequence::const_iterator
             it = includes_sequence.begin(),
             it_end = includes_sequence.end();
@@ -57,9 +59,7 @@ namespace Menge
 
 			return false;
 		}
-
-		m_duration = 0.f;
-
+		
 		for( TVectorAnimationSequence::iterator
 			it = m_sequence.begin(),
 			it_end = m_sequence.end();

@@ -46,6 +46,8 @@ namespace Menge
 		void setCurrentFrame( uint32_t _frame );
 		uint32_t getCurrentFrame() const;
 
+		uint32_t getFrame(float _timing, float & _delthaTiming) const;
+
     public:
         const mt::vec2f & getMaxSize() const override;
         const mt::vec2f & getSize() const override;

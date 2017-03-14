@@ -44,6 +44,56 @@ namespace Menge
 		return pybind::ret_none();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	class PythonNodeCollisionActorUserData
+		: public NodeCollisionActorUserData
+	{
+	public:
+		void setObject(const pybind::object & _object)
+		{
+			m_object = _object;
+		}
+
+		const pybind::object & getObject() const
+		{
+			return m_object;
+		}
+
+	protected:
+		pybind::object m_object;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	struct extract_NodeCollisionActorUserData
+		: public pybind::type_cast_result<NodeCollisionActorUserData *>
+	{
+		extract_NodeCollisionActorUserData()
+		{
+			m_factory = new FactoryPool<PythonNodeCollisionActorUserData, 8>();
+		}
+
+		bool apply(pybind::kernel_interface * _kernel, PyObject * _obj, TCastValue _value, bool _nothrow) override
+		{
+			PythonNodeCollisionActorUserData * data = m_factory->createObject();
+
+			data->setObject(pybind::object(_kernel, _obj));
+
+			_value = data;
+
+			return true;
+		}
+
+		PyObject * wrap(pybind::kernel_interface * _kernel, TCastRef _value) override
+		{
+			const PythonNodeCollisionActorUserData * pyValue = static_cast<const PythonNodeCollisionActorUserData *>(_value);
+
+			const pybind::object & py_object = pyValue->getObject();
+
+			return py_object.ret();
+		}
+
+	protected:
+		FactoryPtr m_factory;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	ModuleCollision::ModuleCollision()
 	{
 	}
@@ -81,6 +131,8 @@ namespace Menge
 			.def( "addCollisionException", &NodeCollisionActor::addCollisionException )
 			.def_static_native_kernel("setEventListener", &s_NodeCollisionActor_setEventListener)
 			;
+
+		pybind::registration_type_cast<NodeCollisionActorUserData>(kernel, new extract_NodeCollisionActorUserData());
 
 		SCRIPT_SERVICE( m_serviceProvider )
 			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeCollisionActor" ), new ScriptWrapper<NodeCollisionActor>() );

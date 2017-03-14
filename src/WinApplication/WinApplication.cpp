@@ -910,6 +910,8 @@ namespace Menge
 				->stopModules();
 		}
 
+		PLATFORM_SERVICE(m_serviceProvider)
+			->stop();
 		
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ApplicationInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PrefetcherServiceInterface );

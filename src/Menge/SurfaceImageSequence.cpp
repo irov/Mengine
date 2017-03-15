@@ -153,6 +153,37 @@ namespace	Menge
 			return false;
 		}
 
+		m_materials.resize(sequenceCount);
+
+		for (uint32_t frameId = 0; frameId != sequenceCount; ++frameId)
+		{
+			const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource(frameId);
+
+			if (resourceImage->compile() == false)
+			{
+				LOGGER_ERROR(m_serviceProvider)("SurfaceImageSequence::_updateMaterial '%s' invalid compile %d frame"
+					, this->getName().c_str()
+					, m_currentFrame
+					);
+
+				return nullptr;
+			}
+
+			RenderMaterialInterfacePtr material = this->makeImageMaterial(m_serviceProvider, resourceImage, false);
+
+			if (material == nullptr)
+			{
+				LOGGER_ERROR(m_serviceProvider)("SurfaceImageSequence::updateMaterial_ %s resource %s m_material is NULL"
+					, this->getName().c_str()
+					, resourceImage->getName().c_str()
+					);
+
+				return nullptr;
+			}
+
+			m_materials[frameId] = material;
+		}
+
 		this->invalidateMaterial();
 		
 		return true;
@@ -160,6 +191,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceImageSequence::_release()
 	{
+		m_materials.clear();
+
         m_resourceAnimation.release();
 
 		m_play = false;
@@ -525,30 +558,8 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr SurfaceImageSequence::_updateMaterial() const
-	{
-		const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
-
-		if( resourceImage->compile() == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence::_updateMaterial '%s' invalid compile %d frame"
-				, this->getName().c_str()
-				, m_currentFrame
-				);
-
-			return nullptr;
-		}
-		
-		RenderMaterialInterfacePtr material = this->makeImageMaterial( m_serviceProvider, resourceImage, false );
-
-		if( material == nullptr )
-		{
-			LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence::updateMaterial_ %s resource %s m_material is NULL"
-				, this->getName().c_str()
-				, resourceImage->getName().c_str()
-				);
-
-			return nullptr;
-		}
+	{		
+		const RenderMaterialInterfacePtr & material = m_materials[m_currentFrame];
 
 		return material;
 	}

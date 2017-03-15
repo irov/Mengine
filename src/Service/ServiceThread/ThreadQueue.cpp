@@ -33,7 +33,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadQueue::addTask( const ThreadTaskInterfacePtr & _task )
 	{
-		m_threadTasks.push( _task );
+		m_threadTasks.push_back( _task );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadQueue::cancel()
@@ -59,7 +59,9 @@ namespace Menge
 
 		while( m_threadTasks.empty() == false )
 		{
-			ThreadTaskInterfacePtr threadTask = m_threadTasks.pop();
+			ThreadTaskInterfacePtr threadTask = m_threadTasks.front();
+			m_threadTasks.pop_front();
+
 			threadTask->cancel();
 		}
 
@@ -109,7 +111,8 @@ namespace Menge
 						
 			while( m_threadTasks.empty() == false && packetSize > 0 )
 			{
-				ThreadTaskInterfacePtr threadTask = m_threadTasks.pop();
+				ThreadTaskInterfacePtr threadTask = m_threadTasks.front();
+				m_threadTasks.pop_front();
 
 				if( threadTask->isComplete() == true ||
 					threadTask->isCancel() == true )
@@ -133,7 +136,7 @@ namespace Menge
 					{
 						const ThreadTaskPtr & task = packet->getTask( i );
 
-						m_threadTasks.push( task );
+						m_threadTasks.push_back( task );
 					}
 
 					return;

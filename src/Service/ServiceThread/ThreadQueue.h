@@ -5,7 +5,7 @@
 #	include "Kernel/ThreadTaskPacket.h"
 #	include "Factory/Factory.h"
 
-#	include "stdex/queue.h"
+#	include "stdex/stl_list.h"
 
 namespace Menge 
 {
@@ -37,7 +37,7 @@ namespace Menge
 		ConstString m_threadName;
 		uint32_t m_packetSize;
 
-		typedef stdex::queue<ThreadTaskInterfacePtr> TVectorThreadTask;
+		typedef stdex::list<ThreadTaskInterfacePtr> TVectorThreadTask;
 		TVectorThreadTask m_threadTasks;
 
 		typedef stdex::vector<ThreadTaskInterfacePtr> TVectorCurrentThreadTask;

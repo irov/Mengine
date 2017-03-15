@@ -7711,7 +7711,7 @@ namespace Menge
 			pybind::def_functor_args( kernel, "addMouseButtonHandlerBegin", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerBegin );
 			pybind::def_functor_args( kernel, "addMouseButtonHandlerEnd", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerEnd );
 			pybind::def_functor_args( kernel, "addMouseWheelHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseWheelHandler );
-			pybind::def_functor_args( kernel, "ÇaddKeyHandler", nodeScriptMethod, &NodeScriptMethod::s_addKeyHandler );
+			pybind::def_functor_args( kernel, "addKeyHandler", nodeScriptMethod, &NodeScriptMethod::s_addKeyHandler );
 
 			pybind::def_functor( kernel, "removeGlobalHandler", nodeScriptMethod, &NodeScriptMethod::s_removeGlobalHandler );
 			pybind::def_functor( kernel, "enableGlobalHandler", nodeScriptMethod, &NodeScriptMethod::s_enableGlobalHandler );

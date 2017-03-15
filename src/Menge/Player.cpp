@@ -1014,10 +1014,10 @@ namespace Menge
         protected:
             void visit( const ConstString & _category, const ConstString & _type, const PrototypeGeneratorInterfacePtr & _generator ) override
             {
-                if( m_category != _category )
-                {
-                    return;
-                }
+				if (m_category != _category)
+				{
+					return;
+				}
 
                 uint32_t count = _generator->count();
 
@@ -1166,10 +1166,15 @@ namespace Menge
 			}
 			else if( m_showDebugText == 3 )
             {
-			    VisitorPlayerFactoryManager pfmv(m_serviceProvider, CONST_STRING(m_serviceProvider, Node), ss);
+			    VisitorPlayerFactoryManager pfmv_node(m_serviceProvider, CONST_STRING(m_serviceProvider, Node), ss);
 
 			    PROTOTYPE_SERVICE(m_serviceProvider)
-				    ->visitGenerators( &pfmv );
+				    ->visitGenerators( &pfmv_node );
+
+				VisitorPlayerFactoryManager pfmv_surface(m_serviceProvider, CONST_STRING(m_serviceProvider, Surface), ss);
+
+				PROTOTYPE_SERVICE(m_serviceProvider)
+					->visitGenerators(&pfmv_surface);
             }
 			else if( m_showDebugText == 4 )
             {

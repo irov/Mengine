@@ -93,6 +93,8 @@ namespace Menge
 		float m_frameTiming;
 
 		uint32_t m_currentFrame;
+
+		stdex::vector<RenderMaterialInterfacePtr> m_materials;
 	};
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<SurfaceImageSequence> SurfaceImageSequencePtr;

@@ -788,7 +788,9 @@ namespace Menge
 		{
 			RenderMaterial * material = *it;
 
-			if( material->getHash() != material_hash )
+			uint32_t test_material_hash = material->getHash();
+
+			if(test_material_hash != material_hash )
 			{
 				continue;
 			}

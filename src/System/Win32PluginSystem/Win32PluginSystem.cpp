@@ -22,7 +22,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32PluginSystem::_initialize()
 	{
-		m_factoryDynamicLibraries = new FactoryPool<Win32DynamicLibrary, 8>();
+		m_factoryDynamicLibraries = new FactoryPool<Win32DynamicLibrary, 8>( m_serviceProvider );
 
 		return true;
 	}

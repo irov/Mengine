@@ -34,10 +34,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::_initialize()
     {
-		m_factoryTextFont = new FactoryPool<TextFont, 16>();
-		m_factoryTextGlyph = new FactoryPool<TextGlyph, 16>();
-		m_factoryTextLocalePak = new FactoryPool<TextLocalePack, 4>();
-		m_factoryLocalString = new FactoryPool<ConstStringHolderLocalString, 128>();
+		m_factoryTextFont = new FactoryPool<TextFont, 16>( m_serviceProvider );
+		m_factoryTextGlyph = new FactoryPool<TextGlyph, 16>( m_serviceProvider );
+		m_factoryTextLocalePak = new FactoryPool<TextLocalePack, 4>( m_serviceProvider );
+		m_factoryLocalString = new FactoryPool<ConstStringHolderLocalString, 128>( m_serviceProvider );
 		
         return true;
     }
@@ -1058,7 +1058,7 @@ namespace Menge
                     }
 
                     GlyphCode glyphChar;
-                    glyphChar.setCode( code );
+                    glyphChar.setUTF8( code );
 
                     if( font->hasGlyph( glyphChar ) == false )
                     {

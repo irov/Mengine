@@ -111,7 +111,7 @@ namespace Menge
 		m_defaultTextureFilterMagnification = parseConfigTextureFilterValue( defaultTextureFilterMagnification );
 		m_defaultTextureFilterMinification = parseConfigTextureFilterValue( defaultTextureFilterMinification );
 
-		m_factoryMaterial = Helper::makeFactoryPool<RenderMaterial, 256>(this, &RenderMaterialManager::onRenderMaterialDestroy_);
+		m_factoryMaterial = Helper::makeFactoryPool<RenderMaterial, 256>(m_serviceProvider, this, &RenderMaterialManager::onRenderMaterialDestroy_);
 
 		return true;
     }

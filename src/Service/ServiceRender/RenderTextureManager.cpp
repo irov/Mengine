@@ -46,7 +46,7 @@ namespace Menge
 		m_supportNonPow2 = RENDER_SYSTEM( m_serviceProvider )
 			->supportTextureNonPow2();
 
-		m_factoryRenderTexture = Helper::makeFactoryPool<RenderTexture, 128>(this, &RenderTextureManager::onRenderTextureDestroy_);
+        m_factoryRenderTexture = Helper::makeFactoryPool<RenderTexture, 128>( m_serviceProvider, this, &RenderTextureManager::onRenderTextureDestroy_ );
 		
 		return true;
     }

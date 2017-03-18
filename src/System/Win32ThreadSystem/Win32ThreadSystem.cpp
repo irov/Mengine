@@ -23,8 +23,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32ThreadSystem::_initialize()		
 	{
-        m_poolWin32ThreadIdentity = new FactoryPool<Win32ThreadIdentity, 16>();
-        m_poolWin32ThreadMutex = new FactoryPool<Win32ThreadMutex, 16>();
+        m_poolWin32ThreadIdentity = new FactoryPool<Win32ThreadIdentity, 16>( m_serviceProvider );
+        m_poolWin32ThreadMutex = new FactoryPool<Win32ThreadMutex, 16>( m_serviceProvider );
 
 		return true;
 	}

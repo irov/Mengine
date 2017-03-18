@@ -25,9 +25,9 @@ namespace Menge
 	{
         m_path = _path;
 
-        m_factoryInputStream = new FactoryPool<Win32FileInputStream, 8>();
-        m_factoryOutputStream = new FactoryPool<Win32FileOutputStream, 4>();
-        m_factoryWin32MappedFile = new FactoryPool<Win32FileMapped, 4>();
+        m_factoryInputStream = new FactoryPool<Win32FileInputStream, 8>( m_serviceProvider );
+        m_factoryOutputStream = new FactoryPool<Win32FileOutputStream, 4>( m_serviceProvider );
+        m_factoryWin32MappedFile = new FactoryPool<Win32FileMapped, 4>( m_serviceProvider );
 
         return true;
     }

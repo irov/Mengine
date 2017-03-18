@@ -65,7 +65,7 @@ namespace Menge
 			, version
 			);
 
-        m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPool<AstralaxEmitterContainer2, 16>( this, &AstralaxParticleSystem2::onContainerRelease_ );
+        m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPool<AstralaxEmitterContainer2, 16>( m_serviceProvider, this, &AstralaxParticleSystem2::onContainerRelease_ );
 		
 		return true;
 	}

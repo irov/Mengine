@@ -33,7 +33,7 @@ namespace Menge
 			return false;
 		}
 
-        m_poolModel3DPack = new FactoryPool<Model3DPack, 32>();
+        m_poolModel3DPack = new FactoryPool<Model3DPack, 32>( m_serviceProvider );
 
 		return true;
 	}

@@ -1,12 +1,18 @@
 #	include "Factory.h"
 #	include "Factorable.h"
 
+#	include "Interface/FactoryInterface.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Factory::Factory()
-		: m_count(0)
+	Factory::Factory(ServiceProviderInterface * _serviceProvider, const char * _name )
+		: m_serviceProvider(_serviceProvider)
+		, m_name(_name)
+		, m_count(0)
 	{
+		FACTORY_SERVICE(m_serviceProvider)
+            ->registerFactory( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Factory::~Factory()
@@ -97,8 +103,16 @@ namespace Menge
 		return m_count;
 	}
     //////////////////////////////////////////////////////////////////////////
+    void Factory::_destroy()
+    {
+        FACTORY_SERVICE( m_serviceProvider )
+            ->unregisterFactory( this );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Factory::destroy()
     {
+        this->_destroy();
+
         delete this;
     }
 }

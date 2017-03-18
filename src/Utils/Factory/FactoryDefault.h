@@ -3,21 +3,24 @@
 #	include "Factory/Factory.h"
 #	include "Factory/FactorableUnique.h"
 
+#   include <typeinfo>
+
 namespace Menge
 {
-	template<class T>
+	template<class Type>
 	class FactoryDefault
 		: public Factory
 	{
 	public:
-		FactoryDefault()
+		FactoryDefault( ServiceProviderInterface * _serviceProvider )
+            : Factory( _serviceProvider, typeid(Type).name() )
 		{
 		}
 
     protected:
 		Factorable * _createObject() override
 		{
-			T * t = Helper::allocateT<T>();
+            Type * t = Helper::allocateT<Type>();
 
 			return t;
 		}

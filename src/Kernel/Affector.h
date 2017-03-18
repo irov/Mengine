@@ -341,19 +341,19 @@ namespace Menge
 			typedef MemberAffectorAccumulateLinear<C, M, T, void> AffectorType;
 
         public:
-            NodeAffectorCreatorAccumulateLinear()
+            NodeAffectorCreatorAccumulateLinear( ServiceProviderInterface * _serviceProvider )
             {
-                m_factory = new FactoryPool<AffectorType, 4>();
+                m_factory = new FactoryPool<AffectorType, 4>( _serviceProvider );
             }
 
 		public:
-			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method
 				, const T & _pos, const T & _dir, float _speed )
 			{
 				AffectorType * affector = m_factory->createObject();
 
-				affector->setServiceProvider( _serviceProvider );
+				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -369,6 +369,8 @@ namespace Menge
 			}
 
         protected:
+            ServiceProviderInterface * m_serviceProvider;
+
 			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -379,19 +381,20 @@ namespace Menge
 			typedef MemberAffectorInterpolateLinear<C, M, T, MA> AffectorType;
 
         public:
-            NodeAffectorCreatorInterpolateLinear()
+            NodeAffectorCreatorInterpolateLinear( ServiceProviderInterface * _serviceProvider )
+                : m_serviceProvider( _serviceProvider )
             {
-                m_factory = new FactoryPool<AffectorType, 4>();
+                m_factory = new FactoryPool<AffectorType, 4>( m_serviceProvider );
             }
 
 		public:
-			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method, const MA & _argument
 				, const T & _start, const T & _end, float _time )
 			{
 				AffectorType * affector = m_factory->createObject();
 
-				affector->setServiceProvider( _serviceProvider );
+				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -407,6 +410,8 @@ namespace Menge
 			}
 
 		protected:
+            ServiceProviderInterface * m_serviceProvider;
+
             FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -417,19 +422,20 @@ namespace Menge
 			typedef MemberAffectorInterpolateLinear<C, M, T, void> AffectorType;
 
         public:
-            NodeAffectorCreatorInterpolateLinear()
+            NodeAffectorCreatorInterpolateLinear( ServiceProviderInterface * _serviceProvider )
+                : m_serviceProvider( _serviceProvider )
             {
-                m_factory = new FactoryPool<AffectorType, 4>();
-            }
-
+                m_factory = new FactoryPool<AffectorType, 4>( m_serviceProvider );
+            }                       
+            
 		public:
-			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method
 				, const T & _start, const T & _end, float _time )
 			{
 				AffectorType * affector = m_factory->createObject();
 
-				affector->setServiceProvider( _serviceProvider );
+				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -445,6 +451,8 @@ namespace Menge
 			}
 
 		protected:
+            ServiceProviderInterface * m_serviceProvider;
+
 			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -455,19 +463,20 @@ namespace Menge
 			typedef MemberAffectorInterpolateQuadratic<C, M, T> AffectorType;
 
         public:
-            NodeAffectorCreatorInterpolateQuadratic()
+            NodeAffectorCreatorInterpolateQuadratic( ServiceProviderInterface * _serviceProvider )
+                : m_serviceProvider( _serviceProvider )
             {
-                m_factory = new FactoryPool<AffectorType, 4>();
+                m_factory = new FactoryPool<AffectorType, 4>( m_serviceProvider );
             }
 
 		public:
-			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method
 				, const T & _start, const T & _end, const T & _v0, float _time )
 			{
 				AffectorType * affector = m_factory->createObject();
 
-				affector->setServiceProvider( _serviceProvider );
+				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -483,6 +492,8 @@ namespace Menge
 			}
 
 		protected:
+            ServiceProviderInterface * m_serviceProvider;
+
 			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -493,19 +504,20 @@ namespace Menge
 			typedef MemberAffectorInterpolateBezier<C, M, T, N> AffectorType;
 
         public:
-            NodeAffectorCreatorInterpolateBezier()
+            NodeAffectorCreatorInterpolateBezier( ServiceProviderInterface * _serviceProvider )
+                : m_serviceProvider( _serviceProvider )
             {
-                m_factory = new FactoryPool<AffectorType, 4>();
+                m_factory = new FactoryPool<AffectorType, 4>( m_serviceProvider );
             }
 
 		public:
-			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method
 				, const T & _start, const T & _end, const T * _v, float _time )
 			{
 				AffectorType * affector = m_factory->createObject();
 
-				affector->setServiceProvider( _serviceProvider );
+				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -520,7 +532,9 @@ namespace Menge
 				return affector;
 			}
 
-		protected:			
+		protected:
+            ServiceProviderInterface * m_serviceProvider;
+
             FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////

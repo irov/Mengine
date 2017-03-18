@@ -46,7 +46,7 @@ namespace Menge
 		LOGGER_INFO( m_serviceProvider )("Initializing Account manager..."
 			);
 		
-        m_factoryAccounts = new FactoryPool<Account, 8>();
+        m_factoryAccounts = new FactoryPool<Account, 8>( m_serviceProvider );
 
         return true;
     }

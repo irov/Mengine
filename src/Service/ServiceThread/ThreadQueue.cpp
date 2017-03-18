@@ -9,7 +9,7 @@ namespace Menge
 		: m_cancel(false)
 		, m_packetSize(1)
 	{
-		m_factoryPoolTaskPacket = new FactoryPool<ThreadTaskPacket, 4>();
+		m_factoryPoolTaskPacket = new FactoryPool<ThreadTaskPacket, 4>(m_serviceProvider);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ThreadQueue::~ThreadQueue()

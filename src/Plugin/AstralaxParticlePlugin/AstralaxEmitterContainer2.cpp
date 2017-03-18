@@ -63,7 +63,7 @@ namespace Menge
 
 		m_resourceImages.resize( atlasCount );
                 
-        m_factoryPoolAstralaxEmitter = Helper::makeFactoryPool<AstralaxEmitter2, 16>( this, &AstralaxEmitterContainer2::onEmitterRelease_ );
+        m_factoryPoolAstralaxEmitter = Helper::makeFactoryPool<AstralaxEmitter2, 16>( m_serviceProvider, this, &AstralaxEmitterContainer2::onEmitterRelease_ );
         		
         return true;
     }

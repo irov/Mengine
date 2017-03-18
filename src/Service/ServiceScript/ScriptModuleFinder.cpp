@@ -29,10 +29,10 @@ namespace Menge
 			return false;
 		}
 
-		m_factoryScriptModuleLoaderCode = new FactoryPool<ScriptModuleLoaderCode, 8>();
+		m_factoryScriptModuleLoaderCode = new FactoryPool<ScriptModuleLoaderCode, 8>( m_serviceProvider );
 
 #   ifndef MENGINE_MASTER_RELEASE
-		m_factoryScriptModuleLoaderSource = new FactoryPool<ScriptModuleLoaderSource, 8>();
+		m_factoryScriptModuleLoaderSource = new FactoryPool<ScriptModuleLoaderSource, 8>( m_serviceProvider );
 #	endif
 
 		return true;

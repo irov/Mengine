@@ -134,7 +134,7 @@ namespace Menge
 		SCRIPT_SERVICE(m_serviceProvider)
 			->setWrapper( Helper::stringizeString( m_serviceProvider, "PathGraphNode" ), new ScriptWrapper<PathGraphNode>() );
 		
-        m_factoryPathFinderWayAffector = new FactoryPool<PathFinderWayAffector, 16>();
+        m_factoryPathFinderWayAffector = new FactoryPool<PathFinderWayAffector, 16>( m_serviceProvider );
 
 		return true;
 	}

@@ -181,13 +181,13 @@ namespace Menge
 	
 		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "DX9" );
 
-        m_factoryRenderVertexShader = new FactoryPool<DX9RenderVertexShader, 16>();
-        m_factoryRenderFragmentShader = new FactoryPool<DX9RenderFragmentShader, 16>();
-        m_factoryRenderProgram = new FactoryPool<DX9RenderProgram, 16>();
-        m_factoryVertexBuffer = new FactoryDefault<DX9RenderVertexBuffer>();
-        m_factoryIndexBuffer = new FactoryDefault<DX9RenderIndexBuffer>();
+        m_factoryRenderVertexShader = new FactoryPool<DX9RenderVertexShader, 16>( m_serviceProvider );
+        m_factoryRenderFragmentShader = new FactoryPool<DX9RenderFragmentShader, 16>( m_serviceProvider );
+        m_factoryRenderProgram = new FactoryPool<DX9RenderProgram, 16>( m_serviceProvider );
+        m_factoryVertexBuffer = new FactoryDefault<DX9RenderVertexBuffer>( m_serviceProvider );
+        m_factoryIndexBuffer = new FactoryDefault<DX9RenderIndexBuffer>( m_serviceProvider );
         
-        m_factoryDX9Texture = Helper::makeFactoryPool<DX9RenderImage, 128>( this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
+        m_factoryDX9Texture = Helper::makeFactoryPool<DX9RenderImage, 128>( m_serviceProvider, this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
 							
 		return true;
 	}

@@ -40,7 +40,7 @@ namespace Menge
 			}
 		}
 
-        m_factoryCollisionActor = new FactoryPool<MagnetActor, 32>();
+        m_factoryCollisionActor = new FactoryPool<MagnetActor, 32>( m_serviceProvider );
 
 		return true;
 	}

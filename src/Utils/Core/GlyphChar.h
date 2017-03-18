@@ -11,31 +11,38 @@ namespace Menge
         }
 
     public:
-        inline void setCode( uint32_t _code );       
-        inline uint32_t getCode() const;
+        inline bool empty() const;
+
+    public:
+        inline void setUTF8( uint32_t _code );       
+        inline uint32_t getUTF8() const;
 
     protected:
         uint32_t m_utf8;
     };
+    //////////////////////////////////////////////////////////////////////////
+    inline bool GlyphCode::empty() const
+    {
+        return m_utf8 == (uint32_t)-1;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	inline void GlyphCode::setCode( uint32_t _code )
+	inline void GlyphCode::setUTF8( uint32_t _code )
 	{
 		m_utf8 = _code;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline uint32_t GlyphCode::getCode() const
+	inline uint32_t GlyphCode::getUTF8() const
 	{
 		return m_utf8;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    struct GlyphCharLess
+    inline bool operator == ( const GlyphCode & _l, const GlyphCode & _r )
     {
-        inline bool operator()( const GlyphCode & _left, const GlyphCode & _right ) const
-        {
-            uint32_t lid = _left.getCode();
-            uint32_t rid = _right.getCode();
-
-            return lid < rid;
-        }
-    };
+        return _l.getUTF8() == _r.getUTF8();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline bool operator != ( const GlyphCode & _l, const GlyphCode & _r )
+    {
+        return _l.getUTF8() != _r.getUTF8();
+    }
 }

@@ -8,7 +8,6 @@ src
 	Factory.h
 	Factory.cpp
 	FactoryHelper.h
-    FactoryPoolStore.h
     FactoryDefault.h    
     FactoryPool.h
     FactorablePtr.h

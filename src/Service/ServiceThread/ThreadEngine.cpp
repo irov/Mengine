@@ -73,8 +73,8 @@ namespace Menge
 			, (stdex_allocator_thread_unlock_t)&s_stdex_thread_unlock 
 			);
 
-		m_factoryThreadQueue = new FactoryPool<ThreadQueue, 4>();
-		m_factoryThreadMutexDummy = new FactoryPool<ThreadMutexDummy, 16>();
+		m_factoryThreadQueue = new FactoryPool<ThreadQueue, 4>( m_serviceProvider );
+		m_factoryThreadMutexDummy = new FactoryPool<ThreadMutexDummy, 16>( m_serviceProvider );
                 
         return true;
 	}

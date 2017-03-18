@@ -34,7 +34,7 @@ namespace Menge
 		pybind::def_functor_args( kernel, "createFollowAffector", this, &ModuleInvader::createFollowAffector );
 		pybind::def_functor( kernel, "destroyFollowAffector", this, &ModuleInvader::destroyFollowAffector );
 		
-        m_factoryInvaderFollowAffector = new FactoryPool<InvaderFollowAffector, 4>();
+        m_factoryInvaderFollowAffector = new FactoryPool<InvaderFollowAffector, 4>( m_serviceProvider );
 
 		return true;
 	}

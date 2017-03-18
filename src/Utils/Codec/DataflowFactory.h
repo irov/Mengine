@@ -16,7 +16,7 @@ namespace Menge
     protected:
         bool initialize() override
         {
-            m_factory = new FactoryDefault<T>();
+            m_factory = new FactoryDefault<T>( m_serviceProvider );
 
             return true;
         }

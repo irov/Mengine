@@ -1,5 +1,6 @@
 #	pragma once
 
+#	include "Interface/ServiceInterface.h"
 #	include "Interface/ThreadSystemInterface.h"
 
 #   include "Factory/FactorablePtr.h"
@@ -32,7 +33,7 @@ namespace Menge
         , public MemoryAllocator
 	{
 	public:
-		Factory();
+		Factory(ServiceProviderInterface * _serviceProvider, const char * _name);
 		virtual ~Factory();
 
 	public:
@@ -52,9 +53,14 @@ namespace Menge
 		virtual void _destroyObject( Factorable * _object ) = 0;
 
     protected:
+        void _destroy() override;
         void destroy() override;
 
 	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
+		const char * m_name;
+
 		FactoryDestroyListenerInterfacePtr m_destroyListener;
 		ThreadMutexInterfacePtr m_mutex;
 

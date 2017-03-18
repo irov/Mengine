@@ -51,7 +51,7 @@ namespace Menge
 		PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "BounceActor" ), new DefaultPrototypeGenerator<BounceActor, 32>() );
 		
-        m_factoryBounceWorlds = new FactoryPool<BounceWorld, 4>();
+        m_factoryBounceWorlds = new FactoryPool<BounceWorld, 4>( m_serviceProvider );
 
 		return true;
 	}

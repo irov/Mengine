@@ -5,14 +5,17 @@
 
 #	include "stdex/pool.h"
 
+#   include <typeinfo>
+
 namespace Menge
 {
-	template<class T, size_t Count>
+	template<class Type, size_t Count>
 	class FactoryPool
 		: public Factory
 	{
     public:
-        FactoryPool()
+        FactoryPool( ServiceProviderInterface * _serviceProvider )
+            : Factory( _serviceProvider, typeid(Type).name() )
         {
         }
 
@@ -23,32 +26,32 @@ namespace Menge
     protected:
         Factorable * _createObject() override
         {
-            T * ptr = m_pool.createT();
+            Type * ptr = m_pool.createT();
 
             return ptr;
         }
 
 		void _destroyObject( Factorable * _node ) override
 		{
-            T * ptr = static_cast<T*>(_node);
+            Type * ptr = static_cast<Type*>(_node);
 
             m_pool.destroyT( ptr );
 		}
 
 	protected:
-        typedef stdex::template_pool<T, Count> TTemplatePool;
+        typedef stdex::template_pool<Type, Count> TTemplatePool;
 		TTemplatePool m_pool;
 	};
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        template<class T, size_t Count, class C, class M>
-        FactoryPtr makeFactoryPool( C * _self, M _method )
+        template<class Type, size_t Count, class C, class M>
+        FactoryPtr makeFactoryPool( ServiceProviderInterface * _serviceProvider, C * _self, M _method )
         {
-            FactoryPtr factory = new FactoryPool<T, Count>();
+            FactoryPtr factory = new FactoryPool<Type, Count>( _serviceProvider );
 
-            setupFactoryDestroyListener<T>( factory, _self, _method );
+            setupFactoryDestroyListener<Type>( factory, _self, _method );
 
             return factory;
         }

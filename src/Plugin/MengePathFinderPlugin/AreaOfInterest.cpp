@@ -18,8 +18,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool AreaOfInterest::initialize()
     {
-        m_factoryAOIActor = new FactoryPool<AOIActor, 32>();
-        m_factoryAOITrigger = new FactoryPool<AOITrigger, 32>();
+        m_factoryAOIActor = new FactoryPool<AOIActor, 32>( m_serviceProvider );
+        m_factoryAOITrigger = new FactoryPool<AOITrigger, 32>( m_serviceProvider );
 
         return true;
     }

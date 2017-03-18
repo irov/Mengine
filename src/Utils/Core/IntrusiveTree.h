@@ -12,9 +12,9 @@ namespace Menge
 		: public stdex::intrusive_tree<T>
 	{
 	public:
-		IntrusiveTree()
+		IntrusiveTree( ServiceProviderInterface * _serviceProvider )
 		{
-            m_factoryNode = new FactoryPool<T, Count>();
+            m_factoryNode = new FactoryPool<T, Count>( _serviceProvider );
 		}
 
 		~IntrusiveTree()

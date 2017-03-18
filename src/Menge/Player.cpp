@@ -579,8 +579,8 @@ namespace Menge
 	{
 		m_mousePickerSystem = SERVICE_GENERATE( m_serviceProvider, MousePickerSystem, MousePickerSystemInterface );
         m_globalHandleSystem = SERVICE_GENERATE( m_serviceProvider, GlobalHandleSystem, GlobalHandleSystemInterface );
-		
-        m_factoryScheduleManager = new FactoryDefault<ScheduleManager>();
+
+        m_factoryScheduleManager = new FactoryDefault<ScheduleManager>( m_serviceProvider );
 
         m_scheduleManager = m_factoryScheduleManager->createObject();
         m_scheduleManager->setServiceProvider( m_serviceProvider );

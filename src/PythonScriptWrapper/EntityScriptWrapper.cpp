@@ -14,7 +14,7 @@
 
 #	include "Kernel/Arrow.h"
 
-#	include "Factory/FactoryPoolStore.h"
+#	include "Factory/FactoryPool.h"
 
 #	include "EntityPrototypeGenerator.h"
 
@@ -30,13 +30,14 @@ namespace Menge
         EntityScriptMethod( ServiceProviderInterface * _serviceProvider )
             : m_serviceProvider(_serviceProvider)
         {
+            m_factoryEntityPrototypeGenerator = new FactoryPool<EntityPrototypeGenerator, 64>(m_serviceProvider);
         }
 
     public:
         //////////////////////////////////////////////////////////////////////////
         bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator)
         {
-            EntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator.createObject();
+            EntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject();
 
             generator->setScriptGenerator(_generator);
 
@@ -113,8 +114,7 @@ namespace Menge
         }
 
     protected:
-        typedef FactoryPoolStore<EntityPrototypeGenerator, 64> FactoryEntityPrototypeGenerator;
-        FactoryEntityPrototypeGenerator m_factoryEntityPrototypeGenerator;
+        FactoryPtr m_factoryEntityPrototypeGenerator;
 
         ServiceProviderInterface * m_serviceProvider;
 	};

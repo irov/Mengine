@@ -26,11 +26,11 @@ namespace Menge
 		m_memoryCacheMutex = THREAD_SERVICE(m_serviceProvider)
 			->createMutex( "MemoryManager::initialize" );
 
-		m_factoryPoolMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16>();
-		m_factoryPoolMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16>();
-		m_factoryPoolMemoryProxyInput = new FactoryPool<MemoryProxyInput, 16>();
-		m_factoryPoolMemoryInput = new FactoryPool<MemoryInput, 16>();
-		m_factoryPoolMemory = new FactoryPool<Memory, 16>();
+		m_factoryPoolMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16>( m_serviceProvider );
+		m_factoryPoolMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16>( m_serviceProvider );
+		m_factoryPoolMemoryProxyInput = new FactoryPool<MemoryProxyInput, 16>( m_serviceProvider );
+		m_factoryPoolMemoryInput = new FactoryPool<MemoryInput, 16>( m_serviceProvider );
+		m_factoryPoolMemory = new FactoryPool<Memory, 16>( m_serviceProvider );
 
 		m_memoryFactoryMutex = THREAD_SERVICE( m_serviceProvider )
 			->createMutex( "MemoryManager::initialize" );

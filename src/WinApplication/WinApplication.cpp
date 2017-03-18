@@ -49,6 +49,7 @@
 
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
+SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( LoggerService );
@@ -531,6 +532,8 @@ namespace Menge
 		SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
 
 		m_serviceProvider = serviceProvider;
+
+        SERVICE_CREATE( m_serviceProvider, FactoryService );
 
 		SERVICE_CREATE( m_serviceProvider, OptionsService );
 

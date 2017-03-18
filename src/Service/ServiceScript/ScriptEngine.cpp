@@ -233,8 +233,8 @@ namespace Menge
 
 		//pybind::call_method( gc, "disable", "()" );
 
-		m_factoryPythonString = new FactoryPool<ConstStringHolderPythonString, 256>();
-		m_factoryScriptModule = new FactoryPool<ScriptModule, 8>();
+		m_factoryPythonString = new FactoryPool<ConstStringHolderPythonString, 256>( m_serviceProvider );
+		m_factoryScriptModule = new FactoryPool<ScriptModule, 8>( m_serviceProvider );
 
         return true;
 	}

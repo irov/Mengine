@@ -43,7 +43,7 @@ namespace Menge
 			return false;
 		}
 
-        m_factoryPathFinder = new FactoryPool<PathFinder, 32>();
+        m_factoryPathFinder = new FactoryPool<PathFinder, 32>(m_serviceProvider);
 
 		return true;
 	}

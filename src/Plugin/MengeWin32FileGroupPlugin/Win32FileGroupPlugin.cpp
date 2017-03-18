@@ -20,7 +20,7 @@ namespace Menge
 	bool Win32FileGroupPlugin::_initialize()
 	{
 		FILE_SERVICE(m_serviceProvider)
-			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir"), new FactoryDefault<Win32FileGroupDirectory>() );
+			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir"), new FactoryDefault<Win32FileGroupDirectory>( m_serviceProvider ) );
 
         return true;
 	}

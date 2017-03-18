@@ -612,7 +612,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::setWrapper( const ConstString & _type, ScriptWrapperInterface * _wrapper )
+	void ScriptEngine::setWrapper( const ConstString & _type, const ScriptWrapperInterfacePtr & _wrapper )
 	{
 		_wrapper->setServiceProvider( m_serviceProvider );
 
@@ -623,6 +623,18 @@ namespace Menge
 
 		m_scriptWrapper.insert( std::make_pair(_type, _wrapper) );
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void ScriptEngine::removeWrapper(const ConstString& _type)
+    {
+        TMapScriptWrapper::iterator it_found = m_scriptWrapper.find(_type);
+
+        if (it_found == m_scriptWrapper.end())
+        {
+            return;
+        }
+
+        it_found->second = nullptr;
+    }
 	//////////////////////////////////////////////////////////////////////////|
 	const ScriptWrapperInterfacePtr & ScriptEngine::getWrapper( const ConstString & _type ) const
 	{

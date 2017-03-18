@@ -24,6 +24,28 @@ namespace Menge
 	FileEngine::~FileEngine()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool FileEngine::_initialize()
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FileEngine::_finalize()
+    {
+        for( TMapFileSystem::iterator 
+            it = m_fileSystemMap.begin(),
+            it_end = m_fileSystemMap.end();
+            it != it_end;
+            ++it )
+        {
+            const FileGroupInterfacePtr & group = it->second;
+
+            group->finalize();
+        }
+
+        m_factoryFileGroups.clear();
+        m_fileSystemMap.clear();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory )
 	{
@@ -140,7 +162,6 @@ namespace Menge
         const FileGroupInterfacePtr & groupInterface = it_find->second;
 
         groupInterface->finalize();
-
 
 		m_fileSystemMap.erase( it_find );
 	}

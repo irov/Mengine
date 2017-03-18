@@ -201,6 +201,14 @@ namespace Menge
             FreeLibrary( m_hd3d9 );
             m_hd3d9 = NULL;
         }
+
+        m_factoryRenderVertexShader = nullptr;
+        m_factoryRenderFragmentShader = nullptr;
+        m_factoryRenderProgram = nullptr;
+        m_factoryVertexBuffer = nullptr;
+        m_factoryIndexBuffer = nullptr;
+
+        m_factoryDX9Texture = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, 

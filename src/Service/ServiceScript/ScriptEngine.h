@@ -62,7 +62,8 @@ namespace Menge
         bool stringize( PyObject * _object, ConstString & _str ) override;
 
 	public:
-		void setWrapper( const ConstString& _type, ScriptWrapperInterface * _wrapper ) override;
+		void setWrapper( const ConstString& _type, const ScriptWrapperInterfacePtr & _wrapper ) override;
+        void removeWrapper(const ConstString& _type) override;
         const ScriptWrapperInterfacePtr & getWrapper( const ConstString & _type ) const override;
 		
 	public:

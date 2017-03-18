@@ -27,6 +27,11 @@ namespace Menge
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void ConfigManager::_finalize()
+    {
+        m_platformTags.clear();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ConfigManager::loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath )
 	{

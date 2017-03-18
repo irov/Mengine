@@ -40,7 +40,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void StringizeService::_finalize()
 	{
+        for( uint32_t i = 0; i != 257; ++i )
+        {
+            for( uint32_t j = 0; j != 8; ++j )
+            {
+                InternalHolder & holder = m_internals[i][j];
 
+                holder.str = nullptr;
+                holder.holder = nullptr;
+            }
+        }
+
+        m_factoryHolderStringMemory = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void StringizeService::stringize( const char * _str, size_t _size, ConstString::hash_type _hash, ConstString & _cstr )

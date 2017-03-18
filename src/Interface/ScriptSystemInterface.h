@@ -70,7 +70,8 @@ namespace Menge
 		virtual pybind::kernel_interface * getKernel() = 0;
 
 	public:
-		virtual void setWrapper( const ConstString& _type, ScriptWrapperInterface * _wrapper ) = 0;
+		virtual void setWrapper( const ConstString& _type, const ScriptWrapperInterfacePtr & _wrapper ) = 0;
+        virtual void removeWrapper(const ConstString& _type) = 0;
 		virtual const ScriptWrapperInterfacePtr & getWrapper( const ConstString & _type ) const = 0;
 
 	public:

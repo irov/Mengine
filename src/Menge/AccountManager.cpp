@@ -65,6 +65,8 @@ namespace Menge
 
         m_currentAccount = nullptr;
         m_accounts.clear();
+
+        m_factoryAccounts = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void AccountManager::setAccountProviderInterface(const AccountProviderInterfacePtr & _accountProvider)

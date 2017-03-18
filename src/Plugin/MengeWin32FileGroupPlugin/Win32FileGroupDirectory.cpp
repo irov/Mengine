@@ -34,7 +34,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Win32FileGroupDirectory::finalize()
     {
-        //Empty
+        m_factoryInputStream = nullptr;
+        m_factoryOutputStream = nullptr;
+        m_factoryWin32MappedFile = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileGroupDirectory::isPacked() const

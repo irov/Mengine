@@ -58,6 +58,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleBounce::_finalize()
 	{
+        SCRIPT_SERVICE(m_serviceProvider)
+            ->removeWrapper(STRINGIZE_STRING_LOCAL(m_serviceProvider, "BounceActor"));
+
+        PROTOTYPE_SERVICE(m_serviceProvider)
+            ->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "BounceActor" ) );
+
+        m_factoryBounceWorlds = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BounceWorldPtr ModuleBounce::createBounceWorld()

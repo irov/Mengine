@@ -29,7 +29,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32PluginSystem::_finalize()
 	{
-
+        m_factoryDynamicLibraries = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
 	DynamicLibraryInterfacePtr Win32PluginSystem::loadDynamicLibrary( const WString & _dynamicLibraryName )

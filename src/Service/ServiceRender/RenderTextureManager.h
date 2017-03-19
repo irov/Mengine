@@ -82,5 +82,9 @@ namespace Menge
         bool m_supportL8;
 		bool m_supportR8G8B8;
 		bool m_supportNonPow2;
+
+    private:
+        TMapRenderTextureEntry & getHashEntry_(const ConstString & _fileName);
+        const TMapRenderTextureEntry & getHashEntry_(const ConstString & _fileName) const;
     };
 }

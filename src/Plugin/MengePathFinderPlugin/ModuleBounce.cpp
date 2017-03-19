@@ -27,7 +27,7 @@ namespace Menge
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 
 		pybind::interface_<BounceWorld>( kernel, "BounceWorld" )
-			.def_smart_pointer()
+			.def_smart_pointer()            
 			.def( "createBounceActor", &BounceWorld::createBounceActor )
 			.def( "removeBounceActor", &BounceWorld::removeBounceActor )
 			;

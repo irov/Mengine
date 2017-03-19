@@ -64,6 +64,7 @@ namespace Menge
 
         pybind::interface_<PybindChain>( kernel, "PybindChain", false )
             .def_smart_pointer()
+            .def_bindable()
             .def( "run", &PybindChain::run )
             .def( "skip", &PybindChain::skip )
             .def( "cancel", &PybindChain::cancel )

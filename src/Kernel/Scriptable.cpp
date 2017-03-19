@@ -30,7 +30,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		PyObject * embedding = (PyObject *)m_scriptWrapper->wrap( this );
+		PyObject * embedding = m_scriptWrapper->wrap( this );
 
 		return embedding;
 	}

@@ -396,7 +396,7 @@ namespace Menge
 			{
 				if( soundDecoder->rewind() == false )
 				{
-					LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTexture invalid rewind decoder '%s':'%s'"
+					LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile invalid rewind decoder '%s':'%s'"
 						, _pakName.c_str()
 						, _fileName.c_str()
 						);

@@ -772,9 +772,6 @@ namespace Menge
         virtual void makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport ) = 0;
         virtual void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign ) = 0;
 
-	//public:
-	//	virtual bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder ) = 0;
-
    public:
 		virtual void enableDebugStepRenderMode( bool _enable ) = 0;
 		virtual bool isDebugStepRenderMode() const = 0;

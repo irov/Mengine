@@ -6506,7 +6506,7 @@ namespace Menge
 		protected:
 			void accept( ResourceReference* _resource ) override
 			{
-				PyObject * py_obj = m_scope->create_holder( m_kernel, (void *)_resource );
+				PyObject * py_obj = m_scope->create_holder( (void *)_resource );
 
 				m_l.append( py_obj );
 			}
@@ -6750,6 +6750,7 @@ namespace Menge
 			;
 
 		pybind::interface_<Scriptable>( kernel, "Scriptable" )
+            .def_bindable()
 			;
 
 		pybind::interface_<Identity>( kernel, "Identity" )
@@ -6824,7 +6825,7 @@ namespace Menge
 			.def( "countReference", &Reference::countReference )
 			;
 
-		pybind::interface_<ResourceReference, pybind::bases<Resource, Identity, Reference> >( kernel, "ResourceReference", false )
+		pybind::interface_<ResourceReference, pybind::bases<Scriptable, Resource, Identity, Reference> >( kernel, "ResourceReference", false )
 			.def_smart_pointer()
 			.def( "getCategory", &ResourceReference::getCategory )
 			.def( "getGroup", &ResourceReference::getGroup )

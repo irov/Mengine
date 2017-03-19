@@ -45,7 +45,7 @@ namespace Menge
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
         pybind::interface_<TTFFontInterface>( kernel, "TTFFontInterface", false )
-            .def_smart_pointer()            
+            .def_smart_pointer()
             ;
 
         pybind::interface_<TTFText, pybind::bases<Node> >( kernel, "TTFText", false )

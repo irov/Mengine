@@ -134,8 +134,9 @@ namespace Menge
 		: public pybind::new_adapter_interface
 	{
 	public:
-		void * call( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
+		void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
 		{
+            (void)_kernel;
 			(void)_obj;
 			(void)_args;
 			(void)_kwds;
@@ -157,8 +158,9 @@ namespace Menge
 		: public pybind::new_adapter_interface
 	{
 	public:
-		void * call( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
+		void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
 		{
+            (void)_kernel;
 			(void)_obj;
 			(void)_args;
 			(void)_kwds;
@@ -180,8 +182,9 @@ namespace Menge
 		: public pybind::new_adapter_interface
 	{
 	public:
-		void * call( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
+		void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
 		{
+            (void)_kernel;
 			(void)_obj;
 			(void)_args;
 			(void)_kwds;

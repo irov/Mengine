@@ -50,6 +50,12 @@ namespace Menge
 
 		m_memoryCacheMutex = nullptr;
 		m_memoryFactoryMutex = nullptr;
+
+        m_factoryPoolMemoryCacheBuffer = nullptr;
+        m_factoryPoolMemoryCacheInput = nullptr;
+        m_factoryPoolMemoryProxyInput = nullptr;
+        m_factoryPoolMemoryInput = nullptr;
+        m_factoryPoolMemory = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CacheBufferID MemoryManager::lockBuffer( size_t _size, void ** _memory, const char * _doc )

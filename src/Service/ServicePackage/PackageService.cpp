@@ -41,6 +41,8 @@ namespace Menge
 		m_observerChangeLocale = nullptr;
 
 		m_packages.clear();
+
+        m_factoryPackage = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::loadPackages( const ConstString & _fileGroup, const FilePath & _resourceIni )

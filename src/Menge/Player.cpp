@@ -663,6 +663,8 @@ namespace Menge
 			delete m_affectorableGlobal;
 			m_affectorableGlobal = nullptr;
 		}
+
+        m_factoryScheduleManager = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::initializeRenderResources()

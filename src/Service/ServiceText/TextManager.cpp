@@ -48,6 +48,11 @@ namespace Menge
         m_fonts.clear();
         m_glyphs.clear();
         m_packs.clear();
+
+        m_factoryTextFont = nullptr;
+        m_factoryTextGlyph = nullptr;
+        m_factoryTextLocalePak = nullptr;
+        m_factoryLocalString = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     class TextManager::TextManagerLoadSaxCallback

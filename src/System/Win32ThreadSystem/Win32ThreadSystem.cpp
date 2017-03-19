@@ -44,6 +44,9 @@ namespace Menge
 				, m_poolWin32ThreadMutex->countObject()
 				);
 		}
+
+        m_poolWin32ThreadIdentity = nullptr;
+        m_poolWin32ThreadMutex = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32ThreadSystem::avaliable() const

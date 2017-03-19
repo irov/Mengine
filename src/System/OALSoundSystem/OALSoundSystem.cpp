@@ -173,6 +173,10 @@ namespace Menge
 #	ifdef MENGINE_MARMALADE
 		alcDeinit();
 #	endif
+
+        m_poolOALSoundBuffer = nullptr;
+        m_poolOALSoundBufferStream = nullptr;
+        m_poolOALSoundSource = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::update()

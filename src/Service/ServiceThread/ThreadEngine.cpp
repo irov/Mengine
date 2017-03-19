@@ -96,6 +96,8 @@ namespace Menge
 
 		m_tasks.clear();
 
+        m_threadQueues.clear();
+
 		for( TVectorThreads::iterator
 			it = m_threads.begin(),
 			it_end = m_threads.end();
@@ -112,6 +114,9 @@ namespace Menge
 		stdex_allocator_finalize_threadsafe();
 
 		m_mutexAllocatorPool = nullptr;
+
+        m_factoryThreadQueue = nullptr;
+        m_factoryThreadMutexDummy = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::avaliable() const

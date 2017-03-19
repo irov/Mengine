@@ -69,6 +69,10 @@ namespace Menge
 			m_threadQueue->cancel();
 			m_threadQueue = nullptr;
 		}
+
+        m_factoryThreadTaskPrefetchImageDecoder = nullptr;
+        m_factoryThreadTaskPrefetchSoundDecoder = nullptr;
+        m_factoryThreadTaskPrefetchDataflow = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace

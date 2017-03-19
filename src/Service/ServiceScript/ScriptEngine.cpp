@@ -246,6 +246,17 @@ namespace Menge
         this->removeGlobalModule( "Menge" );
 		this->removeGlobalModule( "_PYTHON_VERSION" );
 
+        for( TMapScriptWrapper::iterator
+            it = m_scriptWrapper.begin(),
+            it_end = m_scriptWrapper.end();
+            it != it_end;
+            ++it )
+        {
+            const ScriptWrapperInterfacePtr & wrapper = it->second;
+
+            wrapper->finalize();
+        }
+
 		m_scriptWrapper.clear();       
 
 		if( m_moduleFinder != nullptr )
@@ -267,6 +278,9 @@ namespace Menge
         pybind::setStdErrorHandle( nullptr );
 
 		pybind::finalize();
+
+        m_factoryPythonString = nullptr;
+        m_factoryScriptModule = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	pybind::kernel_interface * ScriptEngine::getKernel()
@@ -633,7 +647,10 @@ namespace Menge
             return;
         }
 
+        it_found->second->finalize();
         it_found->second = nullptr;
+
+        m_scriptWrapper.erase( it_found );
     }
 	//////////////////////////////////////////////////////////////////////////|
 	const ScriptWrapperInterfacePtr & ScriptEngine::getWrapper( const ConstString & _type ) const

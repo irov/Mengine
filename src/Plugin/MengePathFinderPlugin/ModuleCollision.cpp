@@ -72,6 +72,9 @@ namespace Menge
 
 		bool apply(pybind::kernel_interface * _kernel, PyObject * _obj, TCastValue _value, bool _nothrow) override
 		{
+            (void)_kernel;
+            (void)_nothrow;
+
 			PythonNodeCollisionActorUserData * data = m_factory->createObject();
 
 			data->setObject(pybind::object(_kernel, _obj));

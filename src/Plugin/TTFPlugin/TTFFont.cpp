@@ -97,7 +97,7 @@ namespace Menge
 
 			if( this->prepareGlyph_( code ) == false )
 			{
-				return false;
+				return 0;
 			}
 
 			result.push_back( code );

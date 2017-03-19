@@ -37,6 +37,7 @@ namespace Menge
 
     public:
         virtual bool addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator ) = 0;
+        virtual bool removePrototype(const ConstString & _category, const ConstString & _prototype) = 0;
         virtual bool hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr & _generator ) const = 0;
 
     public:

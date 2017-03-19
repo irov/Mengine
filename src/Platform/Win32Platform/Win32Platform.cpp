@@ -172,7 +172,42 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32Platform::_finalize()
-	{		
+	{
+        m_platformTags.clear();
+        
+        m_cursors.clear();
+
+        if( m_alreadyRunningMonitor != nullptr )
+        {
+            m_alreadyRunningMonitor->stop();
+
+            delete m_alreadyRunningMonitor;
+            m_alreadyRunningMonitor = nullptr;
+        }
+
+        if( m_hWnd != NULL )
+        {
+            WINDOWSLAYER_SERVICE( m_serviceProvider )
+                ->destroyWindow( m_hWnd );
+
+            m_hWnd = NULL;
+        }
+
+        if( m_hInstance != NULL )
+        {
+            WINDOWSLAYER_SERVICE( m_serviceProvider )
+                ->unregisterClass( MENGINE_WINDOW_CLASSNAME, m_hInstance );
+
+            m_hInstance = NULL;
+        }
+
+        if( m_fpsMonitor != nullptr )
+        {
+            m_fpsMonitor->finalize();
+
+            delete m_fpsMonitor;
+            m_fpsMonitor = nullptr;
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32Platform::update()
@@ -271,20 +306,6 @@ namespace Menge
 				->destroyWindow( m_hWnd );
 
 			m_hWnd = NULL;
-		}
-
-		if( m_hInstance != NULL )
-		{
-			WINDOWSLAYER_SERVICE( m_serviceProvider )
-				->unregisterClass( MENGINE_WINDOW_CLASSNAME, m_hInstance );
-		}
-
-		if( m_fpsMonitor != nullptr )
-		{
-			m_fpsMonitor->finalize();
-
-			delete m_fpsMonitor;
-			m_fpsMonitor = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

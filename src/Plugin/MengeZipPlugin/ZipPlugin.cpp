@@ -22,7 +22,7 @@ namespace Menge
 	bool ZipPlugin::_initialize()
 	{
 		FILE_SERVICE(m_serviceProvider)
-			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip"), new FactoryDefault<FileGroupZip>() );
+			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip"), new FactoryDefault<FileGroupZip>( m_serviceProvider ) );
 		
 		ARCHIVE_SERVICE(m_serviceProvider)
 			->registerArchivator( STRINGIZE_STRING_LOCAL( m_serviceProvider, "zip" ), new FactorableUnique<ArchivatorZip>() );

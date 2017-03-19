@@ -149,7 +149,7 @@
 #	include "Core/Polygon.h"
 #	include "Core/ValueFollower.h"
 
-#	include "Factory/FactoryPoolStore.h"
+#	include "Factory/FactoryPool.h"
 
 #	include "pybind/stl_type_cast.hpp"
 #	include "stdex/xml_sax_parser.h"
@@ -170,7 +170,38 @@ namespace Menge
 	public:
 		NodeScriptMethod( ServiceProviderInterface * _serviceProvider )
 			: m_serviceProvider( _serviceProvider )
+            , m_creatorAffectorNodeFollowerLocalAlpha( _serviceProvider )
+            , m_creatorAffectorNodeFollowerCustomSize( _serviceProvider )         
+            , m_creatorAffectorNodeFollowerTextureUVScale( _serviceProvider )
+            , m_factoryAffectorVelocity2(_serviceProvider)
+            , m_nodeAffectorCreatorInterpolateLinear( _serviceProvider )
+            , m_nodeAffectorCreatorInterpolateLinearFloat( _serviceProvider )
+            , m_nodeAffectorCreatorInterpolateQuadratic( _serviceProvider )
+            , m_nodeAffectorCreatorInterpolateQuadraticBezier( _serviceProvider )
+            , m_nodeAffectorCreatorInterpolateCubicBezier( _serviceProvider )
+            , m_nodeAffectorCreatorInterpolateQuarticBezier( _serviceProvider )
+            , m_nodeAffectorCreatorInterpolateParabolic( _serviceProvider )
+            , m_nodeAffectorCreatorInterpolateQuadraticFloat( _serviceProvider )
+            , m_nodeAffectorCreatorInterpolateLinearColour( _serviceProvider )
+            , m_nodeAffectorCreatorInterpolateLinearVec4( _serviceProvider )
+            , m_nodeAffectorCreatorFollowTo( _serviceProvider )
+            , m_nodeAffectorCreatorFollowToW( _serviceProvider )
+            , m_nodeAffectorCreatorAccumulateLinear( _serviceProvider )
 		{
+            m_factoryPyObjectTimingListener = new FactoryPool<PyScheduleTimerInterface, 8>(m_serviceProvider);            
+            m_factoryPySchedulePipeInterface = new FactoryPool<PySchedulePipeInterface, 8>(m_serviceProvider);
+            m_factoryDelaySchedulePipeInterface = new FactoryPool<DelaySchedulePipeInterface, 8>(m_serviceProvider);
+            m_factoryPyObjectScheduleListener = new FactoryPool<PyScheduleEventInterface, 8>(m_serviceProvider);
+            m_factoryPythonSceneChangeCallback = new FactoryPool<PythonSceneChangeCallback, 8>(m_serviceProvider);
+            m_factoryAffectorGridBurnTransparency = new FactoryPool<AffectorGridBurnTransparency, 4>(m_serviceProvider);
+            m_factoryAffectorUser = new FactoryPool<AffectorUser, 4>(m_serviceProvider);
+            m_factoryNodeAffectorCallback = new FactoryPool<ScriptableAffectorCallback, 4>(m_serviceProvider);
+            m_factoryPyGlobalMouseMoveHandlers = new FactoryPool<PyGlobalMouseMoveHandler, 32>(m_serviceProvider);
+            m_factoryPyGlobalMouseHandlerButtons = new FactoryPool<PyGlobalMouseHandlerButton, 32>(m_serviceProvider);
+            m_factoryPyGlobalMouseHandlerButtonEnds = new FactoryPool<PyGlobalMouseHandlerButtonEnd, 32>(m_serviceProvider);
+            m_factoryPyGlobalMouseHandlerWheels = new FactoryPool<PyGlobalMouseHandlerWheel, 32>(m_serviceProvider);
+            m_factoryPyGlobalMouseHandlerButtonBegins = new FactoryPool<PyGlobalMouseHandlerButtonBegin, 32>(m_serviceProvider);
+            m_factoryPyGlobalKeyHandler = new FactoryPool<PyGlobalKeyHandler, 32>(m_serviceProvider);
 		}
 
 	public:
@@ -1351,8 +1382,7 @@ namespace Menge
 			pybind::detail::args_operator_t m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyScheduleTimerInterface, 8> TFactoryPyObjectTimingListener;
-		TFactoryPyObjectTimingListener m_factoryPyObjectTimingListener;
+		FactoryPtr m_factoryPyObjectTimingListener;
 		//////////////////////////////////////////////////////////////////////////
 		class PySchedulePipeInterface
 			: public SchedulePipeInterface
@@ -1389,8 +1419,7 @@ namespace Menge
 			pybind::detail::args_operator_t m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PySchedulePipeInterface, 8> TFactoryPySchedulePipeInterface;
-		TFactoryPySchedulePipeInterface m_factoryPySchedulePipeInterface;
+		FactoryPtr m_factoryPySchedulePipeInterface;
 		//////////////////////////////////////////////////////////////////////////
 		class DelaySchedulePipeInterface
 			: public SchedulePipeInterface
@@ -1429,8 +1458,7 @@ namespace Menge
 			float m_delay;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<DelaySchedulePipeInterface, 8> TFactoryDelaySchedulePipeInterface;
-		TFactoryDelaySchedulePipeInterface m_factoryDelaySchedulePipeInterface;
+		FactoryPtr m_factoryDelaySchedulePipeInterface;
 		//////////////////////////////////////////////////////////////////////////
 		class PyScheduleEventInterface
 			: public ScheduleEventInterface
@@ -1470,19 +1498,18 @@ namespace Menge
 			pybind::detail::args_operator_t m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyScheduleEventInterface, 8> TFactoryPyObjectScheduleListener;
-		TFactoryPyObjectScheduleListener m_factoryPyObjectScheduleListener;
+		FactoryPtr m_factoryPyObjectScheduleListener;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t timing( float _delay, const pybind::object & _listener, const pybind::detail::args_operator_t & _args )
 		{
 			const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
-			DelaySchedulePipeInterface * pipe = m_factoryDelaySchedulePipeInterface.createObject();
+			DelaySchedulePipeInterface * pipe = m_factoryDelaySchedulePipeInterface->createObject();
 
 			pipe->initialize( m_serviceProvider, _delay );
 
-			PyScheduleTimerInterface * listener = m_factoryPyObjectTimingListener.createObject();
+			PyScheduleTimerInterface * listener = m_factoryPyObjectTimingListener->createObject();
 
 			listener->initialize( m_serviceProvider, _listener, _args );
 
@@ -1530,7 +1557,7 @@ namespace Menge
             const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
-			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener.createObject();
+			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener->createObject();
 
 			sl->initialize( m_serviceProvider, _script, _args );
 
@@ -1541,7 +1568,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::detail::args_operator_t & _args )
 		{
-			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener.createObject();
+			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener->createObject();
 
 			sl->initialize( m_serviceProvider, _script, _args );
 
@@ -1552,11 +1579,11 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t ScheduleManagerInterface_timing( ScheduleManagerInterface * _scheduleManager, float _delay, const pybind::object & _listener, const pybind::detail::args_operator_t & _args )
 		{
-			DelaySchedulePipeInterface * pipe = m_factoryDelaySchedulePipeInterface.createObject();
+			DelaySchedulePipeInterface * pipe = m_factoryDelaySchedulePipeInterface->createObject();
 
 			pipe->initialize( m_serviceProvider, _delay );
 
-			PyScheduleTimerInterface * tl = m_factoryPyObjectTimingListener.createObject();
+			PyScheduleTimerInterface * tl = m_factoryPyObjectTimingListener->createObject();
 
 			tl->initialize( m_serviceProvider, _listener, _args );
 
@@ -1567,11 +1594,11 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t ScheduleManagerInterface_pipe( ScheduleManagerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _listener, const pybind::detail::args_operator_t & _args )
 		{
-			PySchedulePipeInterface * pipe = m_factoryPySchedulePipeInterface.createObject();
+			PySchedulePipeInterface * pipe = m_factoryPySchedulePipeInterface->createObject();
 
 			pipe->initialize( m_serviceProvider, _pipe, _args );
 
-			PyScheduleTimerInterface * tl = m_factoryPyObjectTimingListener.createObject();
+			PyScheduleTimerInterface * tl = m_factoryPyObjectTimingListener->createObject();
 
 			tl->initialize( m_serviceProvider, _listener, _args );
 
@@ -1687,7 +1714,7 @@ namespace Menge
 				return 0;
 			}
 
-			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener.createObject();
+			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener->createObject();
 
 			sl->initialize( m_serviceProvider, _script, _args );
 
@@ -1868,8 +1895,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		typedef stdex::intrusive_ptr<PythonSceneChangeCallback> PythonSceneChangeCallbackPtr;
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PythonSceneChangeCallback, 8> TFactoryPythonSceneChangeCallback;
-		TFactoryPythonSceneChangeCallback m_factoryPythonSceneChangeCallback;
+		FactoryPtr m_factoryPythonSceneChangeCallback;
 		//////////////////////////////////////////////////////////////////////////
 		bool setCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _destroyOld, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
@@ -1883,7 +1909,7 @@ namespace Menge
 				return false;
 			}
 
-			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback.createObject();
+			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject();
 
 			py_cb->initialize( m_serviceProvider, _cb, _args );
 
@@ -3113,7 +3139,7 @@ namespace Menge
 				}
 
 				GlyphCode glyphChar;
-				glyphChar.setCode( code );
+				glyphChar.setUTF8( code );
 
 				if( font->hasGlyph( glyphChar ) == false )
 				{
@@ -3788,11 +3814,11 @@ namespace Menge
 			float m_timing;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		FactoryPoolStore<AffectorGridBurnTransparency, 4> m_factoryAffectorGridBurnTransparency;
+		FactoryPtr m_factoryAffectorGridBurnTransparency;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_gridBurnTransparency( Grid2D * _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra, const pybind::object & _cb )
 		{
-			AffectorGridBurnTransparency * affector = m_factoryAffectorGridBurnTransparency.createObject();
+			AffectorGridBurnTransparency * affector = m_factoryAffectorGridBurnTransparency->createObject();
 
 			affector->setServiceProvider( m_serviceProvider );
 			affector->setAffectorType( ETA_USER );
@@ -3837,11 +3863,11 @@ namespace Menge
 			pybind::detail::args_operator_t m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		FactoryPoolStore<AffectorUser, 4> m_factoryAffectorUser;
+		FactoryPtr m_factoryAffectorUser;
 		//////////////////////////////////////////////////////////////////////////		
 		Affector * s_createAffector( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
-			AffectorUser * affector = m_factoryAffectorUser.createObject();
+			AffectorUser * affector = m_factoryAffectorUser->createObject();
 
 			if( affector->initialize( _cb, _args ) == false )
 			{
@@ -3855,7 +3881,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		AFFECTOR_ID s_addAffector( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
-			AffectorUser * affector = m_factoryAffectorUser.createObject();
+			AffectorUser * affector = m_factoryAffectorUser->createObject();
 
 			if( affector->initialize( _cb, _args ) == false )
 			{
@@ -4014,13 +4040,19 @@ namespace Menge
 		template<class T_Node, class T_Value, class T_Setter, class T_Getter>
 		class AffectorNodeFollowerCreator
 		{
+        public:
+            AffectorNodeFollowerCreator( ServiceProviderInterface * _serviceProvider )
+            {
+                m_factory = new FactoryPool<TAffectorNodeFollowerMethod, 4>( _serviceProvider );
+            }
+
 		protected:
 			typedef AffectorNodeFollowerMethod<T_Node, T_Value, T_Setter, T_Getter> TAffectorNodeFollowerMethod;
 
 		public:
 			AffectorFollower * create( T_Node * _node, T_Setter _setter, T_Getter _getter, const T_Value & _value, const T_Value & _target, float _speed )
 			{
-				TAffectorNodeFollowerMethod * affector = m_factory.createObject();
+				TAffectorNodeFollowerMethod * affector = m_factory->createObject();
 
 				if( affector->initialize( _node, _setter, _getter, _value, _target, _speed ) == false )
 				{
@@ -4040,8 +4072,7 @@ namespace Menge
 			}
 
 		protected:			
-			typedef FactoryPoolStore<TAffectorNodeFollowerMethod, 4> TFactoryAffectorNodeFollowerMethod;
-			TFactoryAffectorNodeFollowerMethod m_factory;
+			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		AffectorNodeFollowerCreator<Node, float, void(Node::*)(float), float(Node::*)()const> m_creatorAffectorNodeFollowerLocalAlpha;
@@ -4381,11 +4412,11 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		typedef stdex::intrusive_ptr<ScriptableAffectorCallback> ScriptableAffectorCallbackPtr;
 		//////////////////////////////////////////////////////////////////////////
-		FactoryPoolStore<ScriptableAffectorCallback, 4> m_factoryNodeAffectorCallback;
+		FactoryPtr m_factoryNodeAffectorCallback;
 		//////////////////////////////////////////////////////////////////////////
 		ScriptableAffectorCallbackPtr createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
-			ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback.createObject();
+			ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback->createObject();
 
 			callback->initialize( m_serviceProvider, _scriptable, _cb, _args );
 
@@ -4408,8 +4439,8 @@ namespace Menge
 
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-			Affector * affector = m_nodeAffectorCreatorAccumulateLinear.create( m_serviceProvider
-				, ETA_POSITION, callback, _node, &Node::setLocalPosition
+			Affector * affector = m_nodeAffectorCreatorAccumulateLinear.create( ETA_POSITION
+                , callback, _node, &Node::setLocalPosition
 				, _node->getLocalPosition(), _dir, _speed
 				);
 
@@ -4432,70 +4463,76 @@ namespace Menge
 
 			return id;
 		}
+        //////////////////////////////////////////////////////////////////////////
+        class AffectorVelocity2
+            : public CallbackAffector
+        {
+        public:
+            AffectorVelocity2()
+                : m_node( nullptr )
+                , m_velocity( 0.f, 0.f, 0.f )
+                , m_time( 0.f )
+            {
+            }
+
+        public:
+            void setNode( Node * _node )
+            {
+                m_node = _node;
+            }
+
+        public:
+            void initialize( const mt::vec3f & _velocity, float _time )
+            {
+                m_velocity = _velocity;
+                m_time = _time;
+            }
+
+        protected:
+            bool _affect( float _timing ) override
+            {
+                m_time -= _timing;
+
+                if( m_time > 0.f )
+                {
+                    m_node->translate( m_velocity * _timing );
+
+                    return false;
+                }
+
+                m_node->translate( m_velocity * (m_time + _timing) );
+
+                return true;
+            }
+
+            void stop() override
+            {
+                this->end_( false );
+            }
+
+        protected:
+            Node * m_node;
+
+            mt::vec3f m_velocity;
+            float m_time;
+        };
 		//////////////////////////////////////////////////////////////////////////
 		class FactoryAffectorVelocity2
 		{
 		public:
-			class AffectorVelocity2
-				: public CallbackAffector
-			{
-			public:
-				AffectorVelocity2()
-					: m_node( nullptr )
-					, m_velocity( 0.f, 0.f, 0.f )
-					, m_time( 0.f )
-				{
-				}
-
-			public:
-				void setNode( Node * _node )
-				{
-					m_node = _node;
-				}
-
-			public:
-				void initialize( const mt::vec3f & _velocity, float _time )
-				{
-					m_velocity = _velocity;
-					m_time = _time;
-				}
-
-			protected:
-				bool _affect( float _timing ) override
-				{
-					m_time -= _timing;
-
-					if( m_time > 0.f )
-					{
-						m_node->translate( m_velocity * _timing );
-
-						return false;
-					}
-
-					m_node->translate( m_velocity * (m_time + _timing) );
-
-					return true;
-				}
-
-				void stop() override
-				{
-					this->end_( false );
-				}
-
-			protected:
-				Node * m_node;
-
-				mt::vec3f m_velocity;
-				float m_time;
-			};
+            FactoryAffectorVelocity2( ServiceProviderInterface * _serviceProvider )
+                : m_serviceProvider(_serviceProvider)
+            {
+                m_factory = new FactoryPool<AffectorVelocity2, 4>(m_serviceProvider);
+            }
 
 		public:
-			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
 				, Node * _node, const mt::vec3f & _velocity, float _time )
 			{
-				AffectorVelocity2 * affector = m_factory.createObject();
+				AffectorVelocity2 * affector = m_factory->createObject();
 
-				affector->setServiceProvider( _serviceProvider );
+				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -4508,8 +4545,9 @@ namespace Menge
 			}
 
 		protected:
-			typedef FactoryPoolStore<AffectorVelocity2, 4> TFactoryAffector;
-			TFactoryAffector m_factory;
+            ServiceProviderInterface * m_serviceProvider;
+
+			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		FactoryAffectorVelocity2 m_factoryAffectorVelocity2;
@@ -4528,8 +4566,8 @@ namespace Menge
 
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-			Affector * affector = m_factoryAffectorVelocity2.create( m_serviceProvider
-				, ETA_POSITION, callback, _node, _velocity, _time
+			Affector * affector = m_factoryAffectorVelocity2.create( ETA_POSITION
+                , callback, _node, _velocity, _time
 				);
 
 			if( affector == nullptr )
@@ -4568,10 +4606,10 @@ namespace Menge
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			Affector* affector =
-				m_nodeAffectorCreatorInterpolateLinear.create( m_serviceProvider
-				, ETA_POSITION, callback, _node, &Node::setLocalPosition
-				, _node->getLocalPosition(), _point, _time
-				);
+				m_nodeAffectorCreatorInterpolateLinear.create( ETA_POSITION
+                    , callback, _node, &Node::setLocalPosition
+                    , _node->getLocalPosition(), _point, _time
+                );
 
 			if( affector == nullptr )
 			{
@@ -4614,8 +4652,8 @@ namespace Menge
 
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-			Affector* affector = m_nodeAffectorCreatorInterpolateQuadratic.create( m_serviceProvider
-				, ETA_POSITION, callback, _node, &Node::setLocalPosition
+			Affector* affector = m_nodeAffectorCreatorInterpolateQuadratic.create( ETA_POSITION
+                , callback, _node, &Node::setLocalPosition
 				, _node->getLocalPosition(), _point, linearSpeed, _time
 				);
 
@@ -4659,8 +4697,8 @@ namespace Menge
 
 			mt::vec3f v[] = {_v0};
 
-			Affector* affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( m_serviceProvider
-				, ETA_POSITION, callback, _node, &Node::setLocalPosition
+			Affector* affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( ETA_POSITION
+                , callback, _node, &Node::setLocalPosition
 				, _node->getLocalPosition(), _to, v, _time
 				);
 
@@ -4706,8 +4744,8 @@ namespace Menge
 			mt::vec3f v[] = {_v0, _v1};
 
 			Affector* affector =
-				m_nodeAffectorCreatorInterpolateCubicBezier.create( m_serviceProvider
-				, ETA_POSITION, callback, _node, &Node::setLocalPosition
+				m_nodeAffectorCreatorInterpolateCubicBezier.create( ETA_POSITION
+                    , callback, _node, &Node::setLocalPosition
 				, _node->getLocalPosition(), _to, v, _time
 				);
 
@@ -4754,8 +4792,8 @@ namespace Menge
 			mt::vec3f v[] = {_v0, _v1, _v2};
 
 			Affector* affector =
-				m_nodeAffectorCreatorInterpolateQuarticBezier.create( m_serviceProvider
-				, ETA_POSITION, callback, _node, &Node::setLocalPosition
+				m_nodeAffectorCreatorInterpolateQuarticBezier.create( ETA_POSITION
+                    , callback, _node, &Node::setLocalPosition
 				, _node->getLocalPosition(), _to, v, _time
 				);
 
@@ -4775,133 +4813,138 @@ namespace Menge
 
 			return id;
 		}
-		//////////////////////////////////////////////////////////////////////////
+        class AffectorCreatorInterpolateParabolic
+            : public CallbackAffector
+        {
+        public:
+            AffectorCreatorInterpolateParabolic()
+                : m_node( nullptr )
+                , m_speed( 5.f )
+            {
+            }
+
+        public:
+            void setNode( Node * _node )
+            {
+                m_node = _node;
+            }
+
+        public:
+            void initialize( const mt::vec3f & _end, const mt::vec3f & _v0, float _time )
+            {
+                const mt::vec3f & start_position = m_node->getLocalPosition();
+
+                m_interpolator.start( start_position, _end, _v0, _time );
+
+                mt::vec3f next_position;
+                m_interpolator.step( 100.f, &next_position );
+
+                mt::vec3f dir;
+                mt::dir_v3_v3( dir, start_position, next_position );
+
+                m_prevDir = dir;
+                m_currentDir = dir;
+                m_targetDir = dir;
+
+                m_node->setBillboard( dir, mt::vec3f( 0.f, 1.f, 1.f ) );
+            }
+
+        protected:
+            bool _affect( float _timing ) override
+            {
+                mt::vec3f position;
+                bool finish = m_interpolator.update( _timing, &position );
+
+                this->updateDirection_( _timing, position );
+                this->updatePosition_( position );
+
+                if( finish == false )
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            void stop() override
+            {
+                m_interpolator.stop();
+
+                this->end_( false );
+            }
+
+        protected:
+            void updateDirection_( float _timing, const mt::vec3f & _position )
+            {
+                const mt::vec3f & prev_position = m_node->getLocalPosition();
+
+                if( mt::sqrlength_v3_v3( prev_position, _position ) > mt::m_eps )
+                {
+                    mt::dir_v3_v3( m_targetDir, prev_position, _position );
+                }
+
+                float length = mt::length_v3_v3( m_targetDir, m_currentDir );
+
+                if( length < mt::m_eps )
+                {
+                    return;
+                }
+
+                float t = length / _timing * m_speed;
+
+                if( t > 1.f )
+                {
+                    m_currentDir = m_targetDir;
+
+                    m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
+                }
+                else
+                {
+                    m_currentDir = m_currentDir + (m_targetDir - m_currentDir) * t;
+
+                    m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
+                }
+            }
+
+            void updatePosition_( const mt::vec3f & _position )
+            {
+                const mt::vec3f & prev_position = m_node->getLocalPosition();
+
+                if( mt::sqrlength_v3_v3( prev_position, _position ) < mt::m_eps )
+                {
+                    return;
+                }
+
+                m_node->setLocalPosition( _position );
+            }
+
+        protected:
+            Node * m_node;
+
+            mt::vec3f m_prevDir;
+            mt::vec3f m_currentDir;
+            mt::vec3f m_targetDir;
+            float m_speed;
+
+            ValueInterpolatorParabolic<mt::vec3f> m_interpolator;
+        };
+        //////////////////////////////////////////////////////////////////////////
 		class FactoryAffectorInterpolateParabolic
 		{
 		public:
-			class AffectorCreatorInterpolateParabolic
-				: public CallbackAffector
-			{
-			public:
-				AffectorCreatorInterpolateParabolic()
-					: m_node( nullptr )
-					, m_speed( 5.f )
-				{
-				}
-
-			public:
-				void setNode( Node * _node )
-				{
-					m_node = _node;
-				}
-
-			public:
-				void initialize( const mt::vec3f & _end, const mt::vec3f & _v0, float _time )
-				{
-					const mt::vec3f & start_position = m_node->getLocalPosition();
-
-					m_interpolator.start( start_position, _end, _v0, _time );
-
-					mt::vec3f next_position;
-					m_interpolator.step( 100.f, &next_position );
-
-					mt::vec3f dir;
-					mt::dir_v3_v3( dir, start_position, next_position );
-
-					m_prevDir = dir;
-					m_currentDir = dir;
-					m_targetDir = dir;
-
-					m_node->setBillboard( dir, mt::vec3f( 0.f, 1.f, 1.f ) );
-				}
-
-			protected:
-				bool _affect( float _timing ) override
-				{
-					mt::vec3f position;
-					bool finish = m_interpolator.update( _timing, &position );
-
-					this->updateDirection_( _timing, position );
-					this->updatePosition_( position );
-
-					if( finish == false )
-					{
-						return false;
-					}
-
-					return true;
-				}
-
-				void stop() override
-				{
-					m_interpolator.stop();
-
-					this->end_( false );
-				}
-
-			protected:
-				void updateDirection_( float _timing, const mt::vec3f & _position )
-				{
-					const mt::vec3f & prev_position = m_node->getLocalPosition();
-
-					if( mt::sqrlength_v3_v3( prev_position, _position ) > mt::m_eps )
-					{
-						mt::dir_v3_v3( m_targetDir, prev_position, _position );
-					}
-
-					float length = mt::length_v3_v3( m_targetDir, m_currentDir );
-
-					if( length < mt::m_eps )
-					{
-						return;
-					}
-
-					float t = length / _timing * m_speed;
-
-					if( t > 1.f )
-					{
-						m_currentDir = m_targetDir;
-
-						m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
-					}
-					else
-					{
-						m_currentDir = m_currentDir + (m_targetDir - m_currentDir) * t;
-
-						m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
-					}
-				}
-
-				void updatePosition_( const mt::vec3f & _position )
-				{
-					const mt::vec3f & prev_position = m_node->getLocalPosition();
-
-					if( mt::sqrlength_v3_v3( prev_position, _position ) < mt::m_eps )
-					{
-						return;
-					}
-
-					m_node->setLocalPosition( _position );
-				}
-
-			protected:
-				Node * m_node;
-
-				mt::vec3f m_prevDir;
-				mt::vec3f m_currentDir;
-				mt::vec3f m_targetDir;
-				float m_speed;
-
-				ValueInterpolatorParabolic<mt::vec3f> m_interpolator;
-			};
+            FactoryAffectorInterpolateParabolic( ServiceProviderInterface * _serviceProvider )
+                : m_serviceProvider(_serviceProvider)
+            {
+                m_factory = new FactoryPool<AffectorCreatorInterpolateParabolic, 4>( m_serviceProvider );
+            }
 
 		public:
-			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
 				, Node * _node, const mt::vec3f & _end, const mt::vec3f & _v0, float _time )
 			{
-				AffectorCreatorInterpolateParabolic * affector = m_factory.createObject();
+				AffectorCreatorInterpolateParabolic * affector = m_factory->createObject();
 
-				affector->setServiceProvider( _serviceProvider );
+				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -4914,8 +4957,9 @@ namespace Menge
 			}
 
 		protected:
-			typedef FactoryPoolStore<AffectorCreatorInterpolateParabolic, 4> TFactoryAffector;
-			TFactoryAffector m_factory;
+            ServiceProviderInterface * m_serviceProvider;
+
+			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		FactoryAffectorInterpolateParabolic m_nodeAffectorCreatorInterpolateParabolic;
@@ -4940,8 +4984,8 @@ namespace Menge
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			Affector* affector =
-				m_nodeAffectorCreatorInterpolateParabolic.create( m_serviceProvider
-				, ETA_POSITION, callback, _node, _end, _v0, _time
+				m_nodeAffectorCreatorInterpolateParabolic.create( ETA_POSITION
+                    , callback, _node, _end, _v0, _time
 				);
 
 			if( affector == nullptr )
@@ -4960,178 +5004,183 @@ namespace Menge
 
 			return id;
 		}
-		//////////////////////////////////////////////////////////////////////////
+        class AffectorCreatorFollowTo
+            : public CallbackAffector
+        {
+        public:
+            AffectorCreatorFollowTo()
+                : m_node( nullptr )
+                , m_target( nullptr )
+                , m_offset( 0.f, 0.f, 0.f )
+                , m_distance( 0.f )
+                , m_moveSpeed( 0.f )
+                , m_moveAcceleration( 0.f )
+                , m_moveLimit( 0.f )
+                , m_rotate( false )
+                , m_rotationSpeed( 0.f )
+                , m_rotationAcceleration( 0.f )
+                , m_rotationLimit( 0.f )
+            {
+            }
+
+        public:
+            bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, bool _rotate, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
+            {
+                if( _node == nullptr )
+                {
+                    return false;
+                }
+
+                if( _target == nullptr )
+                {
+                    return false;
+                }
+
+                m_node = _node;
+                m_target = _target;
+                m_offset = _offset;
+                m_distance = _distance;
+                m_moveSpeed = _moveSpeed;
+                m_moveAcceleration = _moveAcceleration;
+                m_moveLimit = _moveLimit;
+                m_rotate = _rotate;
+                m_rotationSpeed = _rotationSpeed;
+                m_rotationAcceleration = _rotationAcceleration;
+                m_rotationLimit = _rotationLimit;
+
+                return true;
+            }
+
+        protected:
+            bool _affect( float _timing ) override
+            {
+                mt::vec3f node_position = m_node->getLocalPosition();
+                mt::vec3f follow_position = m_target->getLocalPosition();
+
+                mt::vec3f current_direction;
+
+                if( m_rotate == true )
+                {
+                    mt::vec3f direction = follow_position - node_position;
+
+                    mt::mat4f mr;
+                    mt::make_rotate_m4_direction( mr, direction, mt::vec3f( 0.f, 0.f, 1.f ) );
+
+                    mt::vec3f target_orientation;
+                    mt::make_euler_angles( target_orientation, mr );
+
+                    const mt::vec3f & node_orientation = m_node->getOrientation();
+
+                    mt::vec3f correct_rotate_from;
+                    mt::vec3f correct_rotate_to;
+                    mt::angle_correct_interpolate_from_to( node_orientation.x, target_orientation.x, correct_rotate_from.x, correct_rotate_to.x );
+                    mt::angle_correct_interpolate_from_to( node_orientation.y, target_orientation.y, correct_rotate_from.y, correct_rotate_to.y );
+                    mt::angle_correct_interpolate_from_to( node_orientation.z, target_orientation.z, correct_rotate_from.z, correct_rotate_to.z );
+
+                    float roatationSpeedStep = m_rotationAcceleration * _timing;
+
+                    if( m_rotationSpeed + roatationSpeedStep > m_rotationLimit )
+                    {
+                        m_rotationSpeed = m_rotationLimit;
+                    }
+                    else
+                    {
+                        m_rotationSpeed += m_rotationAcceleration * _timing;
+                    }
+
+                    mt::vec3f new_orientation;
+                    mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _timing );
+
+                    m_node->setOrientation( new_orientation );
+
+                    current_direction = m_node->getAxisDirection();
+                }
+                else
+                {
+                    mt::dir_v3_v3( current_direction, node_position, follow_position );
+                }
+
+                float directionSpeedStep = m_moveAcceleration * _timing;
+
+                if( m_moveSpeed + directionSpeedStep > m_moveLimit )
+                {
+                    m_moveSpeed = m_moveLimit;
+                }
+                else
+                {
+                    m_moveSpeed += m_moveAcceleration * _timing;
+                }
+
+                float step = m_moveSpeed * _timing;
+
+                float length = mt::length_v3_v3( node_position, follow_position );
+
+                if( m_distance > 0.0 )
+                {
+                    if( length - step < m_distance )
+                    {
+                        mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
+
+                        m_node->setLocalPosition( distance_position );
+
+                        return true;
+                    }
+                }
+                else
+                {
+                    if( length - step < 0.f )
+                    {
+                        m_node->setLocalPosition( follow_position );
+
+                        return false;
+                    }
+                }
+
+                mt::vec3f new_position = node_position + current_direction * step;
+
+                m_node->setLocalPosition( new_position );
+
+                return false;
+            }
+
+            void stop() override
+            {
+                this->end_( false );
+            }
+
+        protected:
+            Node * m_node;
+            Node * m_target;
+
+            mt::vec3f m_offset;
+            float m_distance;
+            float m_moveSpeed;
+            float m_moveAcceleration;
+            float m_moveLimit;
+            bool m_rotate;
+            float m_rotationSpeed;
+            float m_rotationAcceleration;
+            float m_rotationLimit;
+        };
+        //////////////////////////////////////////////////////////////////////////
 		class FactoryAffectorFollowTo
 		{
 		public:
-			class AffectorCreatorFollowTo
-				: public CallbackAffector
-			{
-			public:
-				AffectorCreatorFollowTo()
-					: m_node( nullptr )
-					, m_target( nullptr )
-					, m_offset( 0.f, 0.f, 0.f )
-					, m_distance( 0.f )
-					, m_moveSpeed( 0.f )
-					, m_moveAcceleration( 0.f )
-					, m_moveLimit( 0.f )
-					, m_rotate( false )
-					, m_rotationSpeed( 0.f )
-					, m_rotationAcceleration( 0.f )
-					, m_rotationLimit( 0.f )
-				{
-				}
-
-			public:
-				bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, bool _rotate, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
-				{
-					if( _node == nullptr )
-					{
-						return false;
-					}
-
-					if( _target == nullptr )
-					{
-						return false;
-					}
-
-					m_node = _node;
-					m_target = _target;
-					m_offset = _offset;
-					m_distance = _distance;
-					m_moveSpeed = _moveSpeed;
-					m_moveAcceleration = _moveAcceleration;
-					m_moveLimit = _moveLimit;
-					m_rotate = _rotate;
-					m_rotationSpeed = _rotationSpeed;
-					m_rotationAcceleration = _rotationAcceleration;
-					m_rotationLimit = _rotationLimit;
-
-					return true;
-				}
-
-			protected:
-				bool _affect( float _timing ) override
-				{
-					mt::vec3f node_position = m_node->getLocalPosition();
-					mt::vec3f follow_position = m_target->getLocalPosition();
-
-					mt::vec3f current_direction;
-
-					if( m_rotate == true )
-					{
-						mt::vec3f direction = follow_position - node_position;
-
-						mt::mat4f mr;
-						mt::make_rotate_m4_direction( mr, direction, mt::vec3f( 0.f, 0.f, 1.f ) );
-
-						mt::vec3f target_orientation;
-						mt::make_euler_angles( target_orientation, mr );
-
-						const mt::vec3f & node_orientation = m_node->getOrientation();
-
-						mt::vec3f correct_rotate_from;
-						mt::vec3f correct_rotate_to;
-						mt::angle_correct_interpolate_from_to( node_orientation.x, target_orientation.x, correct_rotate_from.x, correct_rotate_to.x );
-						mt::angle_correct_interpolate_from_to( node_orientation.y, target_orientation.y, correct_rotate_from.y, correct_rotate_to.y );
-						mt::angle_correct_interpolate_from_to( node_orientation.z, target_orientation.z, correct_rotate_from.z, correct_rotate_to.z );
-
-						float roatationSpeedStep = m_rotationAcceleration * _timing;
-
-						if( m_rotationSpeed + roatationSpeedStep > m_rotationLimit )
-						{
-							m_rotationSpeed = m_rotationLimit;
-						}
-						else
-						{
-							m_rotationSpeed += m_rotationAcceleration * _timing;
-						}
-
-						mt::vec3f new_orientation;
-						mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _timing );
-
-						m_node->setOrientation( new_orientation );
-
-						current_direction = m_node->getAxisDirection();
-					}
-					else
-					{
-						mt::dir_v3_v3( current_direction, node_position, follow_position );
-					}					
-
-					float directionSpeedStep = m_moveAcceleration * _timing;
-
-					if( m_moveSpeed + directionSpeedStep > m_moveLimit )
-					{
-						m_moveSpeed = m_moveLimit;
-					}
-					else
-					{
-						m_moveSpeed += m_moveAcceleration * _timing;
-					}
-
-					float step = m_moveSpeed * _timing;
-
-					float length = mt::length_v3_v3( node_position, follow_position );
-
-					if( m_distance > 0.0 )
-					{
-						if( length - step < m_distance )
-						{
-							mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
-
-							m_node->setLocalPosition( distance_position );
-
-							return true;
-						}
-					}
-					else
-					{
-						if( length - step < 0.f )
-						{
-							m_node->setLocalPosition( follow_position );
-
-							return false;
-						}
-					}
-
-					mt::vec3f new_position = node_position + current_direction * step;
-
-					m_node->setLocalPosition( new_position );
-
-					return false;
-				}
-
-				void stop() override
-				{
-					this->end_( false );
-				}
-
-			protected:
-				Node * m_node;
-				Node * m_target;
-
-				mt::vec3f m_offset;
-				float m_distance;
-				float m_moveSpeed;
-				float m_moveAcceleration;
-				float m_moveLimit;
-				bool m_rotate;
-				float m_rotationSpeed;
-				float m_rotationAcceleration;
-				float m_rotationLimit;
-			};
+            FactoryAffectorFollowTo( ServiceProviderInterface * _serviceProvider )
+                : m_serviceProvider(_serviceProvider)
+            {
+                m_factory = new FactoryPool<AffectorCreatorFollowTo, 4>( m_serviceProvider );
+            }
 
 		public:
-			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
 				, Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit
 				, bool _rotate
 				, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
 			{
-				AffectorCreatorFollowTo * affector = m_factory.createObject();
+				AffectorCreatorFollowTo * affector = m_factory->createObject();
 
-				affector->setServiceProvider( _serviceProvider );
+				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -5147,8 +5196,9 @@ namespace Menge
 			}
 
 		protected:
-			typedef FactoryPoolStore<AffectorCreatorFollowTo, 4> TFactoryAffector;
-			TFactoryAffector m_factory;
+            ServiceProviderInterface * m_serviceProvider;
+
+			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		FactoryAffectorFollowTo m_nodeAffectorCreatorFollowTo;
@@ -5180,12 +5230,12 @@ namespace Menge
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			Affector * affector =
-				m_nodeAffectorCreatorFollowTo.create( m_serviceProvider
-				, ETA_POSITION, callback, _node, _target, _offset, _distance
-				, _moveSpeed, _moveAcceleration, _moveLimit
-				, _rotate
-				, _rotationSpeed, _rotationAcceleration, _rotationLimit
-				);
+				m_nodeAffectorCreatorFollowTo.create( ETA_POSITION
+                    , callback, _node, _target, _offset, _distance
+                    , _moveSpeed, _moveAcceleration, _moveLimit
+                    , _rotate
+                    , _rotationSpeed, _rotationAcceleration, _rotationLimit
+                );
 
 			if( affector == nullptr )
 			{
@@ -5203,125 +5253,131 @@ namespace Menge
 
 			return id;
 		}
+        //////////////////////////////////////////////////////////////////////////
+        class AffectorCreatorFollowToW
+            : public CallbackAffector
+        {
+        public:
+            AffectorCreatorFollowToW()
+                : m_node( nullptr )
+                , m_target( nullptr )
+                , m_offset( 0.f, 0.f, 0.f )
+                , m_distance( 0.f )
+                , m_moveSpeed( 0.f )
+                , m_moveAcceleration( 0.f )
+                , m_moveLimit( 0.f )
+            {
+            }
+
+        public:
+            bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
+            {
+                if( _node == nullptr )
+                {
+                    return false;
+                }
+
+                if( _target == nullptr )
+                {
+                    return false;
+                }
+
+                m_node = _node;
+                m_target = _target;
+                m_offset = _offset;
+                m_distance = _distance;
+                m_moveSpeed = _moveSpeed;
+                m_moveAcceleration = _moveAcceleration;
+                m_moveLimit = _moveLimit;
+
+                return true;
+            }
+
+        protected:
+            bool _affect( float _timing ) override
+            {
+                mt::vec3f node_position = m_node->getWorldPosition();
+                mt::vec3f follow_position = m_target->getWorldPosition();
+
+                mt::vec3f current_direction;
+
+                mt::dir_v3_v3( current_direction, node_position, follow_position );
+
+                float directionSpeedStep = m_moveAcceleration * _timing;
+
+                if( m_moveSpeed + directionSpeedStep > m_moveLimit )
+                {
+                    m_moveSpeed = m_moveLimit;
+                }
+                else
+                {
+                    m_moveSpeed += m_moveAcceleration * _timing;
+                }
+
+                float step = m_moveSpeed * _timing;
+
+                float length = mt::length_v3_v3( node_position, follow_position );
+
+                if( m_distance > 0.0 )
+                {
+                    if( length - step < m_distance )
+                    {
+                        mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
+
+                        m_node->setWorldPosition( distance_position );
+
+                        return true;
+                    }
+                }
+                else
+                {
+                    if( length - step < 0.f )
+                    {
+                        m_node->setWorldPosition( follow_position );
+
+                        return false;
+                    }
+                }
+
+                mt::vec3f new_position = node_position + current_direction * step;
+
+                m_node->setWorldPosition( new_position );
+
+                return false;
+            }
+
+            void stop() override
+            {
+                this->end_( false );
+            }
+
+        protected:
+            Node * m_node;
+            Node * m_target;
+
+            mt::vec3f m_offset;
+            float m_distance;
+            float m_moveSpeed;
+            float m_moveAcceleration;
+            float m_moveLimit;
+        };
 		//////////////////////////////////////////////////////////////////////////
 		class FactoryAffectorFollowToW
 		{
 		public:
-			class AffectorCreatorFollowToW
-				: public CallbackAffector
-			{
-			public:
-				AffectorCreatorFollowToW()
-					: m_node( nullptr )
-					, m_target( nullptr )
-					, m_offset( 0.f, 0.f, 0.f )
-					, m_distance( 0.f )
-					, m_moveSpeed( 0.f )
-					, m_moveAcceleration( 0.f )
-					, m_moveLimit( 0.f )
-				{
-				}
-
-			public:
-				bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
-				{
-					if( _node == nullptr )
-					{
-						return false;
-					}
-
-					if( _target == nullptr )
-					{
-						return false;
-					}
-
-					m_node = _node;
-					m_target = _target;
-					m_offset = _offset;
-					m_distance = _distance;
-					m_moveSpeed = _moveSpeed;
-					m_moveAcceleration = _moveAcceleration;
-					m_moveLimit = _moveLimit;
-
-					return true;
-				}
-
-			protected:
-				bool _affect( float _timing ) override
-				{
-					mt::vec3f node_position = m_node->getWorldPosition();
-					mt::vec3f follow_position = m_target->getWorldPosition();
-
-					mt::vec3f current_direction;
-
-					mt::dir_v3_v3( current_direction, node_position, follow_position );
-
-					float directionSpeedStep = m_moveAcceleration * _timing;
-
-					if( m_moveSpeed + directionSpeedStep > m_moveLimit )
-					{
-						m_moveSpeed = m_moveLimit;
-					}
-					else
-					{
-						m_moveSpeed += m_moveAcceleration * _timing;
-					}
-
-					float step = m_moveSpeed * _timing;
-
-					float length = mt::length_v3_v3( node_position, follow_position );
-
-					if( m_distance > 0.0 )
-					{
-						if( length - step < m_distance )
-						{
-							mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
-
-							m_node->setWorldPosition( distance_position );
-
-							return true;
-						}
-					}
-					else
-					{
-						if( length - step < 0.f )
-						{
-							m_node->setWorldPosition( follow_position );
-
-							return false;
-						}
-					}
-
-					mt::vec3f new_position = node_position + current_direction * step;
-
-					m_node->setWorldPosition( new_position );
-
-					return false;
-				}
-
-				void stop() override
-				{
-					this->end_( false );
-				}
-
-			protected:
-				Node * m_node;
-				Node * m_target;
-
-				mt::vec3f m_offset;
-				float m_distance;
-				float m_moveSpeed;
-				float m_moveAcceleration;
-				float m_moveLimit;
-			};
+            FactoryAffectorFollowToW( ServiceProviderInterface * _serviceProvider )
+                : m_serviceProvider( _serviceProvider )
+            {
+                m_factory = new FactoryPool<AffectorCreatorFollowToW, 4>( m_serviceProvider );
+            }
 
 		public:
-			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
 				, Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
 			{
-				AffectorCreatorFollowToW * affector = m_factory.createObject();
+				AffectorCreatorFollowToW * affector = m_factory->createObject();
 
-				affector->setServiceProvider( _serviceProvider );
+				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -5337,8 +5393,9 @@ namespace Menge
 			}
 
 		protected:
-			typedef FactoryPoolStore<AffectorCreatorFollowToW, 4> TFactoryAffector;
-			TFactoryAffector m_factory;
+            ServiceProviderInterface * m_serviceProvider;
+
+			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		FactoryAffectorFollowToW m_nodeAffectorCreatorFollowToW;
@@ -5366,10 +5423,10 @@ namespace Menge
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			Affector * affector =
-				m_nodeAffectorCreatorFollowToW.create( m_serviceProvider
-				, ETA_POSITION, callback, _node, _target, _offset, _distance
-				, _moveSpeed, _moveAcceleration, _moveLimit
-				);
+				m_nodeAffectorCreatorFollowToW.create( ETA_POSITION
+                    , callback, _node, _target, _offset, _distance
+                    , _moveSpeed, _moveAcceleration, _moveLimit
+                );
 
 			if( affector == nullptr )
 			{
@@ -5393,8 +5450,8 @@ namespace Menge
 			_node->stopAffectors( ETA_ANGLE );
 			_node->setAngularSpeed( 0.f );
 		}
-		//////////////////////////////////////////////////////////////////////////
-		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)(float), float> m_odeAffectorCreatorInterpolateLinear;
+        //////////////////////////////////////////////////////////////////////////
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)(float), float> m_nodeAffectorCreatorInterpolateLinearFloat;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t angleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
@@ -5416,8 +5473,8 @@ namespace Menge
 
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-			Affector* affector = m_odeAffectorCreatorInterpolateLinear.create( m_serviceProvider
-				, ETA_ANGLE, callback, _node, &Node::setOrientationX
+			Affector* affector = m_nodeAffectorCreatorInterpolateLinearFloat.create( ETA_ANGLE
+                , callback, _node, &Node::setOrientationX
 				, correct_angle_from, correct_angle_to, _time
 				);
 
@@ -5467,8 +5524,8 @@ namespace Menge
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			Affector* affector =
-				m_nodeAffectorCreatorInterpolateQuadraticFloat.create( m_serviceProvider
-				, ETA_ANGLE, callback, _node, &Node::setOrientationX
+				m_nodeAffectorCreatorInterpolateQuadraticFloat.create( ETA_ANGLE
+                    , callback, _node, &Node::setOrientationX
 				, correct_angle_from, correct_angle_to, angularSpeed, _time
 				);
 
@@ -5520,8 +5577,8 @@ namespace Menge
 
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-			Affector* affector = m_nodeAffectorCreatorInterpolateLinear.create( m_serviceProvider
-				, ETA_SCALE, callback, _node, &Node::setScale
+			Affector* affector = m_nodeAffectorCreatorInterpolateLinear.create( ETA_SCALE
+                , callback, _node, &Node::setScale
 				, _node->getScale(), _scale, _time
 				);
 
@@ -5571,10 +5628,10 @@ namespace Menge
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			Affector* affector =
-				m_nodeAffectorCreatorInterpolateLinearColour.create( m_serviceProvider
-				, ETA_COLOR, callback, _node, &Colorable::setLocalColor
-				, _node->getLocalColor(), _color, _time
-				);
+				m_nodeAffectorCreatorInterpolateLinearColour.create( ETA_COLOR
+                    , callback, _node, &Colorable::setLocalColor
+                    , _node->getLocalColor(), _color, _time
+                );
 
 			if( affector == nullptr )
 			{
@@ -5613,7 +5670,7 @@ namespace Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<ShapeQuadFlex, void (ShapeQuadFlex::*)(const mt::vec4f &), mt::vec4f> m_NodeAffectorCreatorInterpolateLinearVec4;
+		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<ShapeQuadFlex, void (ShapeQuadFlex::*)(const mt::vec4f &), mt::vec4f> m_nodeAffectorCreatorInterpolateLinearVec4;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t setPercentVisibilityTo( ShapeQuadFlex * _shape, float _time, const mt::vec4f& _percent, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
@@ -5624,8 +5681,8 @@ namespace Menge
 
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _shape, _cb, _args );
 
-			Affector* affector = m_NodeAffectorCreatorInterpolateLinearVec4.create( m_serviceProvider
-				, ETA_VISIBILITY, callback, _shape, &ShapeQuadFlex::setPercentVisibility
+            Affector* affector = m_nodeAffectorCreatorInterpolateLinearVec4.create( ETA_VISIBILITY
+                , callback, _shape, &ShapeQuadFlex::setPercentVisibility
 				, _shape->getPercentVisibility(), _percent, _time
 				);
 
@@ -5697,7 +5754,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void removeCurrentScene( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
-			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback.createObject();
+			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject();
 
 			py_cb->initialize( m_serviceProvider, _cb, _args );
 
@@ -5812,15 +5869,14 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyGlobalMouseMoveHandler, 32> TFactoryPyGlobalMouseMoveHandlers;
-		TFactoryPyGlobalMouseMoveHandlers m_factoryPyGlobalMouseMoveHandlers;
+		FactoryPtr m_factoryPyGlobalMouseMoveHandlers;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseMoveHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
 
-			PyGlobalMouseMoveHandler * handler = m_factoryPyGlobalMouseMoveHandlers.createObject();
+			PyGlobalMouseMoveHandler * handler = m_factoryPyGlobalMouseMoveHandlers->createObject();
 
 			handler->initialize( m_serviceProvider, _cb, _args );
 
@@ -5855,15 +5911,14 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyGlobalMouseHandlerButton, 32> TFactoryPyGlobalMouseHandlerButtons;
-		TFactoryPyGlobalMouseHandlerButtons m_factoryPyGlobalMouseHandlerButtons;
+		FactoryPtr m_factoryPyGlobalMouseHandlerButtons;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseButtonHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
 
-			PyGlobalMouseHandlerButton * handler = m_factoryPyGlobalMouseHandlerButtons.createObject();
+			PyGlobalMouseHandlerButton * handler = m_factoryPyGlobalMouseHandlerButtons->createObject();
 
 			handler->initialize( m_serviceProvider, _cb, _args );
 
@@ -5899,15 +5954,14 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyGlobalMouseHandlerButtonEnd, 32> TFactoryPyGlobalMouseHandlerButtonEnds;
-		TFactoryPyGlobalMouseHandlerButtonEnds m_factoryPyGlobalMouseHandlerButtonEnds;
+		FactoryPtr m_factoryPyGlobalMouseHandlerButtonEnds;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseButtonHandlerEnd( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
 
-			PyGlobalMouseHandlerButtonEnd * handler = m_factoryPyGlobalMouseHandlerButtonEnds.createObject();
+			PyGlobalMouseHandlerButtonEnd * handler = m_factoryPyGlobalMouseHandlerButtonEnds->createObject();
 
 			handler->initialize( m_serviceProvider, _cb, _args );
 
@@ -5937,15 +5991,14 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyGlobalMouseHandlerWheel, 32> TFactoryPyGlobalMouseHandlerWheels;
-		TFactoryPyGlobalMouseHandlerWheels m_factoryPyGlobalMouseHandlerWheels;
+		FactoryPtr m_factoryPyGlobalMouseHandlerWheels;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseWheelHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
 
-			PyGlobalMouseHandlerWheel * handler = m_factoryPyGlobalMouseHandlerWheels.createObject();
+			PyGlobalMouseHandlerWheel * handler = m_factoryPyGlobalMouseHandlerWheels->createObject();
 
 			handler->initialize( m_serviceProvider, _cb, _args );
 
@@ -5981,15 +6034,14 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyGlobalMouseHandlerButtonBegin, 32> TFactoryPyGlobalMouseHandlerButtonBegins;
-		TFactoryPyGlobalMouseHandlerButtonBegins m_factoryPyGlobalMouseHandlerButtonBegins;
+		FactoryPtr m_factoryPyGlobalMouseHandlerButtonBegins;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseButtonHandlerBegin( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
 
-			PyGlobalMouseHandlerButtonBegin * handler = m_factoryPyGlobalMouseHandlerButtonBegins.createObject();
+			PyGlobalMouseHandlerButtonBegin * handler = m_factoryPyGlobalMouseHandlerButtonBegins->createObject();
 
 			handler->initialize( m_serviceProvider, _cb, _args );
 
@@ -6018,15 +6070,14 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyGlobalKeyHandler, 32> TFactoryPyGlobalKeyHandler;
-		TFactoryPyGlobalKeyHandler m_poolPyGlobalKeyHandler;
+		FactoryPtr m_factoryPyGlobalKeyHandler;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addKeyHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
 
-			PyGlobalKeyHandler * handler = m_poolPyGlobalKeyHandler.createObject();
+			PyGlobalKeyHandler * handler = m_factoryPyGlobalKeyHandler->createObject();
 
 			handler->initialize( m_serviceProvider, _cb, _args );
 

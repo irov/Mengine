@@ -17,7 +17,7 @@ namespace Menge
     public:
 		ModuleFactory()
         {
-            m_factory = new FactoryDefault<T>();
+            m_factory = new FactoryDefault<T>( m_serviceProvider );
         }
 
 	public:

@@ -59,9 +59,6 @@ namespace Menge
 	public:
 		bool validate() const override;
 
-	protected:
-		void _validateText( TextEntry * _text ) const;
-		
 	public:
 		const ConstString & getDefaultFontName() const override;
 
@@ -109,7 +106,6 @@ namespace Menge
         class TextManagerLoadSaxCallback;
         class TextManagerUnloadSaxCallback;
 
-		const TMapTextEntry * getLocaleTextEntries_( const ConstString & _locale, ConstString & _correctLocale ) const;
         void createLocalString_( const Char * _text, size_t _size, ConstString & _cstr );
 	};
 }

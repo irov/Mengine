@@ -30,9 +30,9 @@ namespace Menge
 		m_threadQueue = THREAD_SERVICE(m_serviceProvider)
 			->runTaskQueue( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadPrefetcherManager"), MENGINE_PREFETCHER_THREAD_COUNT, MENGINE_PREFETCHER_PACKET_SIZE );
 
-        m_factoryThreadTaskPrefetchImageDecoder = new FactoryPool<ThreadTaskPrefetchImageDecoder, 16>();
-        m_factoryThreadTaskPrefetchSoundDecoder = new FactoryPool<ThreadTaskPrefetchSoundDecoder, 16>();
-        m_factoryThreadTaskPrefetchDataflow = new FactoryPool<ThreadTaskPrefetchDataflow, 16>();
+        m_factoryThreadTaskPrefetchImageDecoder = new FactoryPool<ThreadTaskPrefetchImageDecoder, 16>( m_serviceProvider );
+        m_factoryThreadTaskPrefetchSoundDecoder = new FactoryPool<ThreadTaskPrefetchSoundDecoder, 16>( m_serviceProvider );
+        m_factoryThreadTaskPrefetchDataflow = new FactoryPool<ThreadTaskPrefetchDataflow, 16>( m_serviceProvider );
 
 		return true;
 	}
@@ -69,6 +69,10 @@ namespace Menge
 			m_threadQueue->cancel();
 			m_threadQueue = nullptr;
 		}
+
+        m_factoryThreadTaskPrefetchImageDecoder = nullptr;
+        m_factoryThreadTaskPrefetchSoundDecoder = nullptr;
+        m_factoryThreadTaskPrefetchDataflow = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace

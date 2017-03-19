@@ -26,11 +26,11 @@ namespace Menge
 		m_memoryCacheMutex = THREAD_SERVICE(m_serviceProvider)
 			->createMutex( "MemoryManager::initialize" );
 
-		m_factoryPoolMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16>();
-		m_factoryPoolMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16>();
-		m_factoryPoolMemoryProxyInput = new FactoryPool<MemoryProxyInput, 16>();
-		m_factoryPoolMemoryInput = new FactoryPool<MemoryInput, 16>();
-		m_factoryPoolMemory = new FactoryPool<Memory, 16>();
+		m_factoryPoolMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16>( m_serviceProvider );
+		m_factoryPoolMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16>( m_serviceProvider );
+		m_factoryPoolMemoryProxyInput = new FactoryPool<MemoryProxyInput, 16>( m_serviceProvider );
+		m_factoryPoolMemoryInput = new FactoryPool<MemoryInput, 16>( m_serviceProvider );
+		m_factoryPoolMemory = new FactoryPool<Memory, 16>( m_serviceProvider );
 
 		m_memoryFactoryMutex = THREAD_SERVICE( m_serviceProvider )
 			->createMutex( "MemoryManager::initialize" );
@@ -50,6 +50,12 @@ namespace Menge
 
 		m_memoryCacheMutex = nullptr;
 		m_memoryFactoryMutex = nullptr;
+
+        m_factoryPoolMemoryCacheBuffer = nullptr;
+        m_factoryPoolMemoryCacheInput = nullptr;
+        m_factoryPoolMemoryProxyInput = nullptr;
+        m_factoryPoolMemoryInput = nullptr;
+        m_factoryPoolMemory = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CacheBufferID MemoryManager::lockBuffer( size_t _size, void ** _memory, const char * _doc )

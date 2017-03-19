@@ -19,23 +19,4 @@ namespace Menge
 		m_advance = _advance;
 		m_size = _size;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextGlyphChar::addKerning( GlyphCode _char, float _kerning )
-	{		
-		m_kernings.insert( std::make_pair( _char, _kerning ) );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float TextGlyphChar::getKerning( GlyphCode _char ) const
-	{		
-		TMapKerning::const_iterator it_found = m_kernings.find( _char );
-
-		if( it_found == m_kernings.end() )
-		{
-			return 0.f;
-		}
-
-		float kerning = it_found->second;
-
-		return kerning;
-	}
 }

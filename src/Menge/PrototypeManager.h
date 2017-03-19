@@ -26,6 +26,7 @@ namespace Menge
 
 	public:
 		bool addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator ) override;
+        bool removePrototype( const ConstString & _category, const ConstString & _prototype ) override;
 		bool hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr & _generator ) const override;
 
     public:

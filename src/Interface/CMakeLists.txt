@@ -59,6 +59,7 @@ src
     SocketInterface.h
     COMInterface.h
     COMMengineInterface.h
+	FactoryInterface.h
     
 	dummy.cpp
 )

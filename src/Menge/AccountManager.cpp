@@ -46,7 +46,7 @@ namespace Menge
 		LOGGER_INFO( m_serviceProvider )("Initializing Account manager..."
 			);
 		
-        m_factoryAccounts = new FactoryPool<Account, 8>();
+        m_factoryAccounts = new FactoryPool<Account, 8>( m_serviceProvider );
 
         return true;
     }
@@ -65,6 +65,8 @@ namespace Menge
 
         m_currentAccount = nullptr;
         m_accounts.clear();
+
+        m_factoryAccounts = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void AccountManager::setAccountProviderInterface(const AccountProviderInterfacePtr & _accountProvider)

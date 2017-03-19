@@ -80,7 +80,7 @@ namespace Menge
 		_glyph->size = ch->getSize();		
 		_glyph->advance = ch->getAdvance();
 
-		float kerning = ch->getKerning( _next );
+		float kerning = m_glyph->getKerning( _char, _next );
 		_glyph->advance += kerning;
 
 		return true;

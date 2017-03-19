@@ -58,7 +58,7 @@ namespace Menge
 		PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeMagnetActor" ), new NodePrototypeGenerator<NodeMagnetActor, 32> );
 
-        m_factoryMagnetWorld = new FactoryPool<MagnetWorld, 4>();
+        m_factoryMagnetWorld = new FactoryPool<MagnetWorld, 4>( m_serviceProvider );
 
 		return true;
 	}

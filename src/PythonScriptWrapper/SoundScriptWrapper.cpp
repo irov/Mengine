@@ -9,7 +9,7 @@
 #	include "Kernel/Affector.h"
 
 #	include "Menge/ResourceSound.h"
-#	include "Factory/FactoryPoolStore.h"
+#	include "Factory/FactoryPool.h"
 
 #	include "Logger/Logger.h"
 
@@ -24,7 +24,11 @@ namespace	Menge
     public:
         SoundScriptMethod( ServiceProviderInterface * _serviceProvider )
             : m_serviceProvider(_serviceProvider)
+            , m_affectorCreatorSound(_serviceProvider)
+            , m_affectorCreatorMusic(_serviceProvider)
         {
+            m_factorySoundAffectorCallback = new FactoryPool<SoundAffectorCallback, 4>(m_serviceProvider);
+            m_factoryMusicAffectorCallback = new FactoryPool<MusicAffectorCallback, 4>(m_serviceProvider);
         }
 
     public:
@@ -348,11 +352,11 @@ namespace	Menge
 			pybind::detail::args_operator_t m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		FactoryPoolStore<SoundAffectorCallback, 4> m_factorySoundAffectorCallback;
+		FactoryPtr m_factorySoundAffectorCallback;
 		//////////////////////////////////////////////////////////////////////////
 		SoundAffectorCallback * createSoundAffectorCallback( uint32_t _sourceId, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
-			SoundAffectorCallback * callback = m_factorySoundAffectorCallback.createObject();
+			SoundAffectorCallback * callback = m_factorySoundAffectorCallback->createObject();
 
 			callback->initialize( m_serviceProvider, _sourceId, _cb, _args );
 
@@ -372,10 +376,10 @@ namespace	Menge
 			SoundAffectorCallback * callback = createSoundAffectorCallback( _sourceId, _cb, _args );
 
 			Affector* affector =
-				m_affectorCreatorSound.create( m_serviceProvider
-				, ETA_POSITION, callback, this, &SoundScriptMethod::___soundFade, _sourceId
-				, 1.f, 0.f, _time
-				);
+				m_affectorCreatorSound.create( ETA_POSITION
+                    , callback, this, &SoundScriptMethod::___soundFade, _sourceId
+                    , 1.f, 0.f, _time
+                );
 
 			Affectorable * affectorable = PLAYER_SERVICE( m_serviceProvider )
 				->getAffectorableGlobal();
@@ -407,10 +411,10 @@ namespace	Menge
 			}
 
 			Affector* affector =
-				m_affectorCreatorSound.create( m_serviceProvider
-				, ETA_POSITION, nullptr, this, &SoundScriptMethod::___soundFade, sourceId
-				, 0.f, 1.f, _time
-				);
+				m_affectorCreatorSound.create( ETA_POSITION
+                    , nullptr, this, &SoundScriptMethod::___soundFade, sourceId
+                    , 0.f, 1.f, _time
+                );
 
 			Affectorable * affectorable = PLAYER_SERVICE( m_serviceProvider )
 				->getAffectorableGlobal();
@@ -632,11 +636,11 @@ namespace	Menge
 			pybind::detail::args_operator_t m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		FactoryPoolStore<MusicAffectorCallback, 4> m_factoryMusicAffectorCallback;
+		FactoryPtr m_factoryMusicAffectorCallback;
 		//////////////////////////////////////////////////////////////////////////
 		MusicAffectorCallback * createMusicAffectorCallback( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
-			MusicAffectorCallback * callback = m_factoryMusicAffectorCallback.createObject();
+            MusicAffectorCallback * callback = m_factoryMusicAffectorCallback->createObject();
 
 			callback->initialize( m_serviceProvider, _cb, _args );
 
@@ -655,8 +659,8 @@ namespace	Menge
 			MusicAffectorCallback * callback = createMusicAffectorCallback( _cb, _args );
 
 			Affector* affector = 
-				m_affectorCreatorMusic.create( m_serviceProvider
-				, ETA_POSITION, callback, this, &SoundScriptMethod::___musicFade
+				m_affectorCreatorMusic.create( ETA_POSITION
+                    , callback, this, &SoundScriptMethod::___musicFade
 				, 1.f, 0.f, _time
 				);
 
@@ -679,8 +683,8 @@ namespace	Menge
 				->playMusic( _resourceMusic, _pos, _isLooped );
 
 			Affector* affector = 
-				m_affectorCreatorMusic.create( m_serviceProvider
-				, ETA_POSITION, nullptr, this, &SoundScriptMethod::___musicFade
+				m_affectorCreatorMusic.create( ETA_POSITION
+                    , nullptr, this, &SoundScriptMethod::___musicFade
 				, 0.f, 1.f, _time
 				);
 

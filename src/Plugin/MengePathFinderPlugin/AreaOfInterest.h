@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Kernel/Servant.h"
+
 #	include "Factory/Factorable.h"
 #	include "Factory/Factory.h"
 
@@ -17,6 +19,7 @@ namespace Menge
 	typedef stdex::vector<AOIActorPtr> TVectorAOIActors;
 	//////////////////////////////////////////////////////////////////////////
 	class AreaOfInterest
+        : public Servant
 	{
 	public:
 		AreaOfInterest();

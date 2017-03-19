@@ -71,6 +71,35 @@ namespace Menge
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool PrototypeManager::removePrototype( const ConstString & _category, const ConstString & _prototype )
+    {
+        uint32_t hash_id = getPrototypeHashId( _category, _prototype );
+
+        TVectorPrototypes & prototypes = m_prototypes[hash_id];
+
+        for( TVectorPrototypes::iterator
+            it = prototypes.begin(),
+            it_end = prototypes.end();
+            it != it_end;
+            ++it )
+        {
+            const CategoryKey & key = *it;
+
+            if( key.category != _category ||
+                key.prototype != _prototype )
+            {
+                continue;
+            }
+
+            *it = prototypes.back();
+            prototypes.pop_back();
+
+            return true;
+        }
+
+        return false;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool PrototypeManager::hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr & _generator ) const
 	{

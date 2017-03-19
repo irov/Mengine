@@ -29,8 +29,8 @@ namespace Menge
 	{
         LOGGER_INFO(m_serviceProvider)( "Starting Silent Sound System..." );
         		
-		m_factorySilentSoundBuffer = new FactoryPool<SilentSoundBuffer, 32>();
-		m_factorySilentSoundSource = new FactoryPool<SilentSoundSource, 32>();
+		m_factorySilentSoundBuffer = new FactoryPool<SilentSoundBuffer, 32>( m_serviceProvider );
+		m_factorySilentSoundSource = new FactoryPool<SilentSoundSource, 32>( m_serviceProvider );
 
 		return true;
 	}

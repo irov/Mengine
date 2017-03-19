@@ -44,7 +44,7 @@ namespace Menge
 			}
 		}
 
-        m_factoryCollisionActor = new FactoryPool<CollisionActor, 32>();
+        m_factoryCollisionActor = new FactoryPool<CollisionActor, 32>( m_serviceProvider );
 
 		return true;
 	}

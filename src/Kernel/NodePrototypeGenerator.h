@@ -20,7 +20,7 @@ namespace Menge
     protected:
         bool _initialize()
         {
-            m_factory = new FactoryPool<Type, Count>();
+            m_factory = new FactoryPool<Type, Count>( m_serviceProvider );
 
             return true;
         }

@@ -34,10 +34,13 @@ namespace Menge
 		float getDescender() const;
 
 	public:
-		const TextGlyphChar * getGlyphChar( GlyphCode _code ) const;
+        bool existGlyphCode( GlyphCode _code ) const;
+		const TextGlyphChar * getGlyphChar( GlyphCode _code ) const;               
 
 	public:
-		TextGlyphChar * addGlyphChar( GlyphCode _code, const mt::vec4f & _uv, const mt::vec2f & _offset, float _advance, const mt::vec2f & _size );
+		bool addGlyphChar( GlyphCode _code, const mt::vec4f & _uv, const mt::vec2f & _offset, float _advance, const mt::vec2f & _size );
+        void addKerning( GlyphCode _char, GlyphCode _next, float _kerning );
+        float getKerning( GlyphCode _char, GlyphCode _next ) const;
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
@@ -48,8 +51,18 @@ namespace Menge
 		float m_ascender;
 		float m_descender;
 
-		typedef IntrusiveTree<TextGlyphChar, 256> TMapGlyphChar;
-		TMapGlyphChar m_chars;
+		typedef std::vector<TextGlyphChar> TVectorGlyphChar;
+        TVectorGlyphChar m_chars[257];
+
+        struct KerningDesc
+        {
+            GlyphCode code;
+            GlyphCode next;
+            float kerning;
+        };
+
+        typedef std::vector<KerningDesc> TVectorKerning;
+        TVectorKerning m_kernings[257];
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<TextGlyph> TextGlyphPtr;

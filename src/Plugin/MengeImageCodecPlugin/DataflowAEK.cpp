@@ -36,7 +36,7 @@ namespace Menge
 			return false;
 		}
 
-        m_poolMovieFramePack = new FactoryPool<MovieFramePack, 32>();
+        m_poolMovieFramePack = new FactoryPool<MovieFramePack, 32>( m_serviceProvider );
 
 		return true;
 	}

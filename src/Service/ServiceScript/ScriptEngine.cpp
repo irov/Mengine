@@ -233,8 +233,8 @@ namespace Menge
 
 		//pybind::call_method( gc, "disable", "()" );
 
-		m_factoryPythonString = new FactoryPool<ConstStringHolderPythonString, 256>();
-		m_factoryScriptModule = new FactoryPool<ScriptModule, 8>();
+		m_factoryPythonString = new FactoryPool<ConstStringHolderPythonString, 256>( m_serviceProvider );
+		m_factoryScriptModule = new FactoryPool<ScriptModule, 8>( m_serviceProvider );
 
         return true;
 	}
@@ -245,6 +245,17 @@ namespace Menge
 
         this->removeGlobalModule( "Menge" );
 		this->removeGlobalModule( "_PYTHON_VERSION" );
+
+        for( TMapScriptWrapper::iterator
+            it = m_scriptWrapper.begin(),
+            it_end = m_scriptWrapper.end();
+            it != it_end;
+            ++it )
+        {
+            const ScriptWrapperInterfacePtr & wrapper = it->second;
+
+            wrapper->finalize();
+        }
 
 		m_scriptWrapper.clear();       
 
@@ -267,6 +278,9 @@ namespace Menge
         pybind::setStdErrorHandle( nullptr );
 
 		pybind::finalize();
+
+        m_factoryPythonString = nullptr;
+        m_factoryScriptModule = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	pybind::kernel_interface * ScriptEngine::getKernel()
@@ -612,7 +626,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::setWrapper( const ConstString & _type, ScriptWrapperInterface * _wrapper )
+	void ScriptEngine::setWrapper( const ConstString & _type, const ScriptWrapperInterfacePtr & _wrapper )
 	{
 		_wrapper->setServiceProvider( m_serviceProvider );
 
@@ -623,6 +637,21 @@ namespace Menge
 
 		m_scriptWrapper.insert( std::make_pair(_type, _wrapper) );
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void ScriptEngine::removeWrapper(const ConstString& _type)
+    {
+        TMapScriptWrapper::iterator it_found = m_scriptWrapper.find(_type);
+
+        if (it_found == m_scriptWrapper.end())
+        {
+            return;
+        }
+
+        it_found->second->finalize();
+        it_found->second = nullptr;
+
+        m_scriptWrapper.erase( it_found );
+    }
 	//////////////////////////////////////////////////////////////////////////|
 	const ScriptWrapperInterfacePtr & ScriptEngine::getWrapper( const ConstString & _type ) const
 	{

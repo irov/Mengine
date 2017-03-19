@@ -28,7 +28,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextGlyph::~TextGlyph()
 	{
-		m_chars.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextGlyph::setSize( float _size )
@@ -81,7 +80,6 @@ namespace Menge
 				, m_textGlyph(_textGlyph)
 				, m_pakName(_pakName)
 				, m_path(_path)
-				, m_glyphChar(nullptr)
 				, m_valid(false)
 			{
 			}
@@ -257,17 +255,19 @@ namespace Menge
 					}
 
 					GlyphCode glyphCode;
-					glyphCode.setCode( cp );
+					glyphCode.setUTF8( cp );
 
 					float ascender = m_textGlyph->getAscender();
 					offset.y = ascender - offset.y;
 
-					m_glyphChar = m_textGlyph->addGlyphChar( glyphCode, uv, offset, advance, size );
+					m_textGlyph->addGlyphChar( glyphCode, uv, offset, advance, size );
+
+                    m_glyphCode = glyphCode;
 				}
 				else if( strcmp( _node, "kerning" ) == 0 )
 				{	
 					float advance = 0.f;
-					GlyphCode glyphCode;					
+					GlyphCode nextCode;					
 
 					for( uint32_t i = 0; i != _count; ++i )
 					{
@@ -302,11 +302,11 @@ namespace Menge
 									);
 							}
 
-							glyphCode.setCode( cp );
+							nextCode.setUTF8( cp );
 						}
 					}
 
-					if( m_glyphChar == nullptr )
+					if( m_glyphCode.empty() == true )
 					{
 						LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize %s:%s invalid kerning m_glyphChar is nullptr"
 							, m_pakName.c_str()
@@ -316,7 +316,7 @@ namespace Menge
 						return;
 					}
 
-					m_glyphChar->addKerning( glyphCode, advance );
+                    m_textGlyph->addKerning( m_glyphCode, nextCode, advance );
 				}
 			}
 
@@ -338,7 +338,7 @@ namespace Menge
 			const ConstString & m_pakName;
 			const FilePath & m_path;
 
-			TextGlyphChar * m_glyphChar;
+			GlyphCode m_glyphCode;
 			bool m_valid;
 		};
 	}
@@ -397,31 +397,116 @@ namespace Menge
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool TextGlyph::existGlyphCode( GlyphCode _code ) const
+    {
+        uint32_t hash_code = _code.getUTF8() % 257;
+        const TVectorGlyphChar & glyps = m_chars[hash_code];
+
+        for( TVectorGlyphChar::const_iterator
+            it = glyps.begin(),
+            it_end = glyps.end();
+            it != it_end;
+            ++it )
+        {
+            const TextGlyphChar & glyph = *it;
+
+            const GlyphCode & glyph_code = glyph.getCode();
+
+            if( glyph_code != _code )
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	const TextGlyphChar * TextGlyph::getGlyphChar( GlyphCode _code ) const
 	{
-		const TextGlyphChar * ch = m_chars.find( _code );
+        uint32_t hash_code = _code.getUTF8() % 257;
+        const TVectorGlyphChar & glyps = m_chars[hash_code];
 
-		return ch;
+        for( TVectorGlyphChar::const_iterator
+            it = glyps.begin(), 
+            it_end = glyps.end();
+            it != it_end;
+            ++it )
+        {
+            const TextGlyphChar & glyph = *it;
+
+            GlyphCode code = glyph.getCode();
+
+            if( code != _code )
+            {
+                continue;
+            }
+
+            return &glyph;
+        }
+
+        return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextGlyphChar * TextGlyph::addGlyphChar( GlyphCode _code, const mt::vec4f & _uv, const mt::vec2f & _offset, float _advance, const mt::vec2f & _size )
+	bool TextGlyph::addGlyphChar( GlyphCode _code, const mt::vec4f & _uv, const mt::vec2f & _offset, float _advance, const mt::vec2f & _size )
 	{
-		if( m_chars.exist( _code ) == true )
+		if( this->existGlyphCode( _code ) == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextGlyph::addGlyphChar code %d alredy exist!"
-				, _code.getCode()
+			LOGGER_ERROR(m_serviceProvider)("TextGlyph::addGlyphChar code '%u' alredy exist!"
+				, _code.getUTF8()
 				);
 
-			return nullptr;
+			return false;
 		}
 
-		TextGlyphChar * glyphChar = m_chars.create();
+		TextGlyphChar glyphChar;
 
-		glyphChar->initialize( _code, _uv, _offset, _advance, _size );
+		glyphChar.initialize( _code, _uv, _offset, _advance, _size );
 
-		m_chars.insert( glyphChar, nullptr );
+        uint32_t hash_code = _code.getUTF8() % 257;
+        TVectorGlyphChar & glyps = m_chars[hash_code];
 
-		return glyphChar;
+        glyps.push_back( glyphChar );
+
+		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void TextGlyph::addKerning( GlyphCode _char, GlyphCode _next, float _kerning )
+    {
+        uint32_t hash_code = (_char.getUTF8() + _next.getUTF8()) % 257;
+        TVectorKerning & kerning = m_kernings[hash_code];
+
+        KerningDesc desc;
+        desc.code = _char;
+        desc.next = _next;
+        desc.kerning = _kerning;
+
+        kerning.push_back( desc );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextGlyph::getKerning( GlyphCode _char, GlyphCode _next ) const
+    {
+        uint32_t hash_code = (_char.getUTF8() + _next.getUTF8()) % 257;
+        const TVectorKerning & kerning = m_kernings[hash_code];
+
+        for( TVectorKerning::const_iterator
+            it = kerning.begin(),
+            it_end = kerning.end();
+            it != it_end;
+            ++it )
+        {
+            const KerningDesc & desc = *it;
+
+            if( desc.code != _char || desc.next != _next )
+            {
+                continue;
+            }
+
+            return desc.kerning;
+        }
+        
+        return 0.f;
+    }
 }

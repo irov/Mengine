@@ -156,5 +156,17 @@ namespace Menge
 	{
 		ae_delete_movie_instance( m_instance );
 		m_instance = nullptr;
+
+        SCRIPT_SERVICE( m_serviceProvider )
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2" ) );
+
+        SCRIPT_SERVICE( m_serviceProvider )
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceMovie2" ) );
+
+        PROTOTYPE_SERVICE( m_serviceProvider )
+            ->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2" ) );
+        
+        PROTOTYPE_SERVICE( m_serviceProvider )
+            ->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Resource" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceMovie2" ) );
 	}
 }

@@ -39,7 +39,7 @@ namespace Menge
 		m_scriptWrapper = SCRIPT_SERVICE( m_serviceProvider )
 			->getWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "BounceActor" ) );
 
-        m_factoryBounceActors = new FactoryPool<BounceActor, 4>();
+        m_factoryBounceActors = new FactoryPool<BounceActor, 4>( m_serviceProvider );
 
 		return true;
 	}

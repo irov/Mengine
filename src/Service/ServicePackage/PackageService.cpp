@@ -31,7 +31,7 @@ namespace Menge
 		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
 			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale );
 
-        m_factoryPackage = new FactoryPool<Package, 8>();
+        m_factoryPackage = new FactoryPool<Package, 8>(m_serviceProvider);
 
 		return true;
 	}
@@ -41,6 +41,8 @@ namespace Menge
 		m_observerChangeLocale = nullptr;
 
 		m_packages.clear();
+
+        m_factoryPackage = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::loadPackages( const ConstString & _fileGroup, const FilePath & _resourceIni )

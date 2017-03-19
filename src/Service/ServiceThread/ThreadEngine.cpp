@@ -73,8 +73,8 @@ namespace Menge
 			, (stdex_allocator_thread_unlock_t)&s_stdex_thread_unlock 
 			);
 
-		m_factoryThreadQueue = new FactoryPool<ThreadQueue, 4>();
-		m_factoryThreadMutexDummy = new FactoryPool<ThreadMutexDummy, 16>();
+		m_factoryThreadQueue = new FactoryPool<ThreadQueue, 4>( m_serviceProvider );
+		m_factoryThreadMutexDummy = new FactoryPool<ThreadMutexDummy, 16>( m_serviceProvider );
                 
         return true;
 	}
@@ -96,6 +96,8 @@ namespace Menge
 
 		m_tasks.clear();
 
+        m_threadQueues.clear();
+
 		for( TVectorThreads::iterator
 			it = m_threads.begin(),
 			it_end = m_threads.end();
@@ -112,6 +114,9 @@ namespace Menge
 		stdex_allocator_finalize_threadsafe();
 
 		m_mutexAllocatorPool = nullptr;
+
+        m_factoryThreadQueue = nullptr;
+        m_factoryThreadMutexDummy = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::avaliable() const

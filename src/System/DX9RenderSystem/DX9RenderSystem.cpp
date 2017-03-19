@@ -181,13 +181,13 @@ namespace Menge
 	
 		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "DX9" );
 
-        m_factoryRenderVertexShader = new FactoryPool<DX9RenderVertexShader, 16>();
-        m_factoryRenderFragmentShader = new FactoryPool<DX9RenderFragmentShader, 16>();
-        m_factoryRenderProgram = new FactoryPool<DX9RenderProgram, 16>();
-        m_factoryVertexBuffer = new FactoryDefault<DX9RenderVertexBuffer>();
-        m_factoryIndexBuffer = new FactoryDefault<DX9RenderIndexBuffer>();
+        m_factoryRenderVertexShader = new FactoryPool<DX9RenderVertexShader, 16>( m_serviceProvider );
+        m_factoryRenderFragmentShader = new FactoryPool<DX9RenderFragmentShader, 16>( m_serviceProvider );
+        m_factoryRenderProgram = new FactoryPool<DX9RenderProgram, 16>( m_serviceProvider );
+        m_factoryVertexBuffer = new FactoryDefault<DX9RenderVertexBuffer>( m_serviceProvider );
+        m_factoryIndexBuffer = new FactoryDefault<DX9RenderIndexBuffer>( m_serviceProvider );
         
-        m_factoryDX9Texture = Helper::makeFactoryPool<DX9RenderImage, 128>( this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
+        m_factoryDX9Texture = Helper::makeFactoryPool<DX9RenderImage, 128>( m_serviceProvider, this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
 							
 		return true;
 	}
@@ -201,6 +201,14 @@ namespace Menge
             FreeLibrary( m_hd3d9 );
             m_hd3d9 = NULL;
         }
+
+        m_factoryRenderVertexShader = nullptr;
+        m_factoryRenderFragmentShader = nullptr;
+        m_factoryRenderProgram = nullptr;
+        m_factoryVertexBuffer = nullptr;
+        m_factoryIndexBuffer = nullptr;
+
+        m_factoryDX9Texture = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, 

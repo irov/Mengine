@@ -147,9 +147,9 @@ namespace Menge
 		m_threadAvaliable = THREAD_SYSTEM(m_serviceProvider)
 			->avaliable();
 
-        m_poolOALSoundBuffer = new FactoryPool<OALSoundBufferMemory, 32>();
-        m_poolOALSoundBufferStream = new FactoryPool<OALSoundBufferStream, 32>();
-        m_poolOALSoundSource = new FactoryPool<OALSoundSource, 32>();
+        m_poolOALSoundBuffer = new FactoryPool<OALSoundBufferMemory, 32>( m_serviceProvider );
+        m_poolOALSoundBufferStream = new FactoryPool<OALSoundBufferStream, 32>( m_serviceProvider );
+        m_poolOALSoundSource = new FactoryPool<OALSoundSource, 32>( m_serviceProvider );
 
 		return true;
 	}
@@ -173,6 +173,10 @@ namespace Menge
 #	ifdef MENGINE_MARMALADE
 		alcDeinit();
 #	endif
+
+        m_poolOALSoundBuffer = nullptr;
+        m_poolOALSoundBufferStream = nullptr;
+        m_poolOALSoundSource = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::update()

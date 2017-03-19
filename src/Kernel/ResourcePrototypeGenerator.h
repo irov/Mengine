@@ -18,7 +18,7 @@ namespace Menge
     protected:
         bool _initialize() override
         {
-            m_factory = new FactoryPool<Type, Count>();
+            m_factory = new FactoryPool<Type, Count>( m_serviceProvider );
 
             return true;
         }

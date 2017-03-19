@@ -65,13 +65,16 @@ namespace Menge
 	struct extract_NodeCollisionActorUserData
 		: public pybind::type_cast_result<NodeCollisionActorUserData *>
 	{
-		extract_NodeCollisionActorUserData()
+		extract_NodeCollisionActorUserData( ServiceProviderInterface * _serviceProvider )
 		{
-			m_factory = new FactoryPool<PythonNodeCollisionActorUserData, 8>();
+            m_factory = new FactoryPool<PythonNodeCollisionActorUserData, 8>( _serviceProvider );
 		}
 
 		bool apply(pybind::kernel_interface * _kernel, PyObject * _obj, TCastValue _value, bool _nothrow) override
 		{
+            (void)_kernel;
+            (void)_nothrow;
+
 			PythonNodeCollisionActorUserData * data = m_factory->createObject();
 
 			data->setObject(pybind::object(_kernel, _obj));
@@ -132,7 +135,7 @@ namespace Menge
 			.def_static_native_kernel("setEventListener", &s_NodeCollisionActor_setEventListener)
 			;
 
-		pybind::registration_type_cast<NodeCollisionActorUserData>(kernel, new extract_NodeCollisionActorUserData());
+		pybind::registration_type_cast<NodeCollisionActorUserData>(kernel, new extract_NodeCollisionActorUserData(m_serviceProvider));
 
 		SCRIPT_SERVICE( m_serviceProvider )
 			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeCollisionActor" ), new ScriptWrapper<NodeCollisionActor>() );
@@ -140,7 +143,7 @@ namespace Menge
 		PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeCollisionActor" ), new NodePrototypeGenerator<NodeCollisionActor, 32>() );
 
-        m_factoryCollisionWorld = new FactoryPool<CollisionWorld, 4>();        
+        m_factoryCollisionWorld = new FactoryPool<CollisionWorld, 4>( m_serviceProvider );
 
 		return true;
 	}

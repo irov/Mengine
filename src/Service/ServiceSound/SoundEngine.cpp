@@ -62,7 +62,7 @@ namespace Menge
 		float voiceVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "VoiceVolume", 1.f);
 		this->setVoiceVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), voiceVolume, 0.f );
 
-		m_factoryWorkerTaskSoundBufferUpdate = new FactoryPool<ThreadWorkerSoundBufferUpdate, 32>();
+        m_factoryWorkerTaskSoundBufferUpdate = new FactoryPool<ThreadWorkerSoundBufferUpdate, 32>( m_serviceProvider );
 
 		return true;
 	}
@@ -96,6 +96,12 @@ namespace Menge
 
 			m_threadSoundBufferUpdate = nullptr;
 		}
+
+        m_threadSoundBufferUpdate = nullptr;
+
+        m_factoryWorkerTaskSoundBufferUpdate = nullptr;
+
+        m_soundVolumeProviders.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::supportStreamSound() const

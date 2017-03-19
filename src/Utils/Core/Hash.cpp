@@ -13,11 +13,15 @@ namespace Menge
 
 			const unsigned char * p = (const unsigned char *)_data;
 
-			HashType x = *p << 7;
+            HashType b = *p;
+
+			HashType x = b << 7;
 
 			for( size_t i = 0; i != _len; ++i )
 			{
-				x = (1000003 * x) ^ *p++;
+                HashType b2 = *p++;
+
+				x = (1000003L * x) ^ b2;
 			}
 
 			x ^= (HashType)_len;

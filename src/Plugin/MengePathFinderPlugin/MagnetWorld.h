@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Kernel/Servant.h"
+
 #	include "Factory/Factorable.h"
 #	include "Factory/Factory.h"
 
@@ -11,7 +13,7 @@ namespace Menge
 	typedef stdex::vector<MagnetActorPtr> TVectorMagnetActor;
 	//////////////////////////////////////////////////////////////////////////
 	class MagnetWorld
-		: public FactorablePtr
+		: public Servant
 	{
 	public:
 		MagnetWorld();

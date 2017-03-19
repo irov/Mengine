@@ -15,6 +15,10 @@ namespace Menge
 		FileEngine();
 		~FileEngine();
 
+    public:
+        bool _initialize() override;
+        void _finalize() override;
+
 	public:
 		void registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory ) override;
 		void unregisterFileGroupFactory( const ConstString & _type ) override;

@@ -17,6 +17,7 @@ namespace Menge
 
 	public:
 		bool _initialize() override;
+        void _finalize() override;
 
 	public:
 		bool loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath ) override;

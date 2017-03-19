@@ -51,13 +51,20 @@ namespace Menge
 		PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "BounceActor" ), new DefaultPrototypeGenerator<BounceActor, 32>() );
 		
-        m_factoryBounceWorlds = new FactoryPool<BounceWorld, 4>();
+        m_factoryBounceWorlds = new FactoryPool<BounceWorld, 4>( m_serviceProvider );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleBounce::_finalize()
 	{
+        SCRIPT_SERVICE(m_serviceProvider)
+            ->removeWrapper(STRINGIZE_STRING_LOCAL(m_serviceProvider, "BounceActor"));
+
+        PROTOTYPE_SERVICE(m_serviceProvider)
+            ->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "BounceActor" ) );
+
+        m_factoryBounceWorlds = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BounceWorldPtr ModuleBounce::createBounceWorld()

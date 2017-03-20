@@ -598,10 +598,6 @@ namespace Menge
 				->buryTexture( _texture );
 		}
 
-        LOGGER_WARNING(m_serviceProvider)("release %s"
-            , _texture->getFileName().c_str()
-            );
-
 		this->releaseRenderTexture_( _texture );
 		
 		return false;

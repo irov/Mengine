@@ -741,29 +741,23 @@ namespace Menge
 
 		uint32_t mesh_iterator = 0;
 
-		//ae_get_movie_composition_slot( m_composition, "minbet" );
-
 		aeMovieRenderMesh mesh;
 		while( ae_compute_movie_mesh( m_composition, &mesh_iterator, &mesh ) == AE_TRUE )
 		{			
-			//if( mesh.track_matte_data != nullptr )
-			//{
-			//	continue;
-			//}
-
 			ResourceReference * resource_reference = (ResourceReference *)mesh.resource_data;
 
 			RenderObjectState state;
-			//if( mesh.camera_data != nullptr )
-			//{
-			//	Movie2::Camera * camera = (Movie2::Camera *)mesh.camera_data;
 
-			//	state.camera = camera->projection;
-			//	state.viewport = camera->viewport;
-			//	state.clipplane = _state->clipplane;
-			//	state.target = _state->target;
-			//}
-			//else
+            if( mesh.camera_data != nullptr )
+			{
+				Movie2::Camera * camera = (Movie2::Camera *)mesh.camera_data;
+
+				state.camera = camera->projection;
+				state.viewport = camera->viewport;
+				state.clipplane = _state->clipplane;
+				state.target = _state->target;
+			}
+			else
 			{
 				state.camera = _state->camera;
 				state.viewport = _state->viewport;
@@ -771,7 +765,6 @@ namespace Menge
 				state.target = _state->target;
 			}
 
-			//if( mesh. )
 			if( mesh.track_matte_data == nullptr )
 			{
 				switch( mesh.layer_type )

@@ -41,7 +41,7 @@ namespace Menge
 			size_t memory_size = sizeof( T );
 			void * memory_buffer = stdex_malloc( memory_size );
 
-			new (memory_buffer)T();
+            new (memory_buffer)T();
 
 			return reinterpret_cast<T *>(memory_buffer);
 		}

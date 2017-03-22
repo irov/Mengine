@@ -14,11 +14,6 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLSoundBuffer::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool SDLSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )
     {
         //const SoundCodecDataInfo * dataInfo = _soundDecoder->getCodecDataInfo();

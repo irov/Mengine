@@ -29,13 +29,6 @@
 
 namespace Menge
 {
-	class SystemDLL;
-	class ConsoleLogger;
-	class MessageBoxLogger;
-	class Application;
-	
-	class FileLogger;
-
 	//////////////////////////////////////////////////////////////////////////
 	class WinApplication
 	{
@@ -76,9 +69,7 @@ namespace Menge
 	private:
 		ServiceProviderInterface * m_serviceProvider;
 		
-		FileLogger * m_fileLog;
-
-		ConsoleLogger * m_loggerConsole;
-		MessageBoxLogger * m_loggerMessageBox;
+        LoggerInterfacePtr m_fileLog;
+        LoggerInterfacePtr m_loggerMessageBox;
 	};
 }	// namespace Menge

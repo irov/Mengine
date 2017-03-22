@@ -39,17 +39,20 @@ if( MENGINE_TARGET_MSVC )
 
     ADD_SUBDIRECTORY( MengeXlsExportPlugin )
     ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
+	ADD_SUBDIRECTORY( Win32ConsoleLogger )
 endif()
 
 if( MENGINE_TARGET_MINGW )
     ADD_SUBDIRECTORY( MengeWin32SocketPlugin )
     ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
     ADD_SUBDIRECTORY( MengeWin32FileGroupPlugin )
+	ADD_SUBDIRECTORY( Win32ConsoleLogger )
 endif()
 
 if( MENGINE_TARGET_SDL )
     ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
     ADD_SUBDIRECTORY( SDLFileGroupPlugin )
+	ADD_SUBDIRECTORY( Win32ConsoleLogger )
 endif()
 
 if( MENGINE_PLUGIN_TTF )

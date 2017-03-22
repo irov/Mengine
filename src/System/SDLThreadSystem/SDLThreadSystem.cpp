@@ -31,6 +31,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadSystem::_finalize()
     {
+        m_poolThreadIdentity = nullptr;
+        m_poolThreadMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadSystem::avaliable() const

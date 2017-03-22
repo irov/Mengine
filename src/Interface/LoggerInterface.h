@@ -7,7 +7,7 @@
 
 namespace Menge
 {
-	//class OutputStreamInterface;
+	//////////////////////////////////////////////////////////////////////////
 	enum EMessageLevel
 	{
 		LM_FATAL = 0,
@@ -20,7 +20,7 @@ namespace Menge
 
 		LM_MAX = 7
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	class LoggerInterface
         : public ServantInterface
 	{
@@ -48,7 +48,9 @@ namespace Menge
 		virtual void log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _size ) = 0;
 		virtual void flush() = 0;
 	};
-	
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<LoggerInterface> LoggerInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
 	class LoggerServiceInterface
 		: public ServiceInterface
 	{
@@ -66,8 +68,8 @@ namespace Menge
 		virtual size_t getCountMessage( Menge::EMessageLevel _level ) = 0;
 
 	public:
-		virtual bool registerLogger( LoggerInterface* _logger ) = 0;
-		virtual void unregisterLogger( LoggerInterface* _logger ) = 0;
+		virtual bool registerLogger( const LoggerInterfacePtr & _logger ) = 0;
+		virtual bool unregisterLogger( const LoggerInterfacePtr & _logger ) = 0;
 	};
     
 #   define LOGGER_SERVICE( serviceProvider )\

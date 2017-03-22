@@ -132,9 +132,15 @@ namespace Menge
 			stage.program = nullptr;
 		}
 
+        m_materialStageIndexer.clear();
+
 		m_vertexShaders.clear();
 		m_fragmentShaders.clear();
 		m_programs.clear();
+        
+        m_debugMaterial = nullptr;
+
+        m_factoryMaterial = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::loadMaterials( const ConstString& _pakName, const FilePath& _fileName )

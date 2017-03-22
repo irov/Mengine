@@ -3,13 +3,13 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/PlatformInterface.h"
 
-#   include "Config/String.h"
-
 #   include "OpenGLTexture.h"
 #   include "OpenGLRenderVertexBuffer.h"
 #   include "OpenGLRenderIndexBuffer.h"
 #   include "OpenGLRenderShader.h"
 #   include "OpenGLRenderProgram.h"
+
+#   include "Core/ServiceBase.h"
 
 #   include "Factory/Factory.h"
 
@@ -166,6 +166,9 @@ namespace Menge
         void clear(uint32_t _color, bool _force) override;
 
         void setSeparateAlphaBlendMode() override;
+
+        size_t getTextureMemoryUse() const override;
+        uint32_t getTextureCount() const override;
 
     protected:
         void findFormatFromChannels_(PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels) const;

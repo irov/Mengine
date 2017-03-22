@@ -9,7 +9,7 @@
 namespace Menge
 {
 	class Win32ThreadIdentity
-		: public ServantBase<ThreadIdentity>
+		: public ServantBase<ThreadIdentityInterface>
 	{
 	public:
 		Win32ThreadIdentity();
@@ -39,6 +39,7 @@ namespace Menge
 		volatile bool m_complete;
 		volatile bool m_exit;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<Win32ThreadIdentity> Win32ThreadIdentityPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -2,12 +2,14 @@
 
 #   include "Interface/RenderSystemInterface.h"
 
+#   include "Core/ServantBase.h"
+
 #   include "OpenGL.h"
 
 namespace Menge
 {
     class OpenGLRenderIndexBuffer
-        : public RenderIndexBufferInterface
+        : public ServantBase<RenderIndexBufferInterface>
     {
     public:
         OpenGLRenderIndexBuffer();
@@ -24,8 +26,6 @@ namespace Menge
         void enable();
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
         RenderIndices * m_memory;
         uint32_t m_indexNum;
 

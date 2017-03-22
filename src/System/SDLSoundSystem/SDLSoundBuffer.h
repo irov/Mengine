@@ -3,19 +3,22 @@
 #	include "Interface/SoundSystemInterface.h"
 #	include "Interface/SoundCodecInterface.h"
 
+#   include "Core/ServantBase.h"
+
 #	include "SDL.h"
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
     class SDLSoundBuffer
-        : public SoundBufferInterface
+        : public ServantBase<SoundBufferInterface>
     {
     public:
         SDLSoundBuffer();
-        virtual ~SDLSoundBuffer();
-
+        ~SDLSoundBuffer();
+       
     public:
-        void setServiceProvider( ServiceProviderInterface * m_serviceProvider );
+        const SoundDecoderInterfacePtr & getDecoder() const override;
 
     public:
         virtual bool load( const SoundDecoderInterfacePtr & _soundDecoder );
@@ -23,14 +26,12 @@ namespace Menge
 
     public:
         virtual bool update() override;
-
-    public:
-        virtual const SoundDecoderInterfacePtr & getDecoder() const override;
         
     protected:
         ServiceProviderInterface * m_serviceProvider;
         SoundDecoderInterfacePtr m_soundDecoder;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<SDLSoundBuffer> SDLSoundBufferPtr;
+    //////////////////////////////////////////////////////////////////////////
 }   // namespace Menge

@@ -14,11 +14,17 @@ namespace Menge
 		PluginBase();
 		~PluginBase();
 
-	public:
+    protected:
 		void setDynamicLoad( bool _dynamicLoad ) override;
 		bool isDynamicLoad() const override;
 		
-	private:
+    protected:
+        bool avaliable() override;
+
+    protected:
+        virtual bool _avaliable();
+
+    protected:
 		bool initialize() override;
 		void finalize() override;
 

@@ -1,12 +1,6 @@
 set( MY_LIB_NAME WinApplication )
 
 ADD_FILTER(
-ConsoleLogger
-    ConsoleLogger.cpp
-    ConsoleLogger.h
-)
-
-ADD_FILTER(
 MessageBoxLogger
     MessageBoxLogger.cpp
     MessageBoxLogger.h

@@ -145,6 +145,11 @@ namespace Menge
 
 		_plugin->setServiceProvider( m_serviceProvider );
 
+        if( _plugin->avaliable() == false )
+        {
+            return true;
+        }
+
 		if( _plugin->initialize() == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin invalid initialize plugin '%s'"

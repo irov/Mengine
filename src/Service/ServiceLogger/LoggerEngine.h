@@ -29,14 +29,14 @@ namespace Menge
 		size_t getCountMessage( Menge::EMessageLevel _level ) override;
 
 	public:
-		bool registerLogger( LoggerInterface* _logger ) override;
-		void unregisterLogger( LoggerInterface* _logger ) override;
+		bool registerLogger( const LoggerInterfacePtr & _logger ) override;
+		bool unregisterLogger( const LoggerInterfacePtr & _logger ) override;
 	
 	protected:
 		Menge::EMessageLevel m_verboseLevel;
         uint32_t m_verboseFlag;
 
-		typedef stdex::vector<LoggerInterface *> TVectorLoggers;
+		typedef stdex::vector<LoggerInterfacePtr> TVectorLoggers;
 		TVectorLoggers m_loggers;
 
 		size_t m_countMessage[LM_MAX];

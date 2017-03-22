@@ -31,10 +31,8 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLTexture::initialize(ServiceProviderInterface * _serviceProvider, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type)
-    {
-        m_serviceProvider = _serviceProvider;
-
+    bool OpenGLTexture::initialize( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
+    {       
         switch( _internalFormat )
         {
         case GL_ETC1_RGB8_OES:

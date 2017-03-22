@@ -26,7 +26,6 @@
 
 #   include <errno.h>
 
-#	include "ConsoleLogger.h"
 #	include "MessageBoxLogger.h"
 
 #	include "CriticalErrorsMonitor.h"
@@ -108,7 +107,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	WinApplication::WinApplication() 
 		: m_serviceProvider(nullptr)
-		, m_loggerConsole(nullptr)
 		, m_loggerMessageBox(nullptr)	
 		, m_fileLog(nullptr)
 	{
@@ -420,7 +418,7 @@ namespace Menge
 
 		if( fileLogInterface != nullptr )
 		{
-			m_fileLog = new FileLogger();
+			m_fileLog = new FactorableUnique<FileLogger>();
 
 			LOGGER_SERVICE(m_serviceProvider)
 				->registerLogger( m_fileLog );
@@ -436,20 +434,10 @@ namespace Menge
 	bool WinApplication::initializeLogEngine_()
 	{
 		bool nologs = HAS_OPTION( m_serviceProvider, "nologs" );
-
-		bool console = HAS_OPTION( m_serviceProvider, "console" );
-
-		if( console == true && nologs == false )
-		{
-			m_loggerConsole = new ConsoleLogger();
-
-			LOGGER_SERVICE( m_serviceProvider )
-				->registerLogger( m_loggerConsole );
-		}
-		
+	
 		if( nologs == false )
 		{
-			m_loggerMessageBox = new MessageBoxLogger();
+			m_loggerMessageBox = new FactorableUnique<MessageBoxLogger>();
 
 			m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 
@@ -955,7 +943,7 @@ namespace Menge
 
 		SERVICE_FINALIZE(m_serviceProvider, Menge::PlatformInterface);
 		SERVICE_FINALIZE( m_serviceProvider, Menge::WindowsLayerInterface );
-
+        
 		if( m_fileLog != nullptr )
 		{
 			if( SERVICE_EXIST( m_serviceProvider, Menge::LoggerServiceInterface ) == true )
@@ -964,20 +952,7 @@ namespace Menge
 					->unregisterLogger( m_fileLog );
 			}
 
-			delete m_fileLog;
 			m_fileLog = nullptr;
-		}
-
-		if( m_loggerConsole != nullptr )
-		{
-			if( SERVICE_EXIST( m_serviceProvider, Menge::LoggerServiceInterface ) == true )
-			{
-				LOGGER_SERVICE( m_serviceProvider )
-					->unregisterLogger( m_loggerConsole );
-			}
-
-			delete m_loggerConsole;
-			m_loggerConsole = nullptr;
 		}
 
 		if( m_loggerMessageBox != nullptr )
@@ -987,9 +962,8 @@ namespace Menge
 				LOGGER_SERVICE( m_serviceProvider )
 					->unregisterLogger( m_loggerMessageBox );
 			}
-
-			delete m_loggerMessageBox;
-			m_loggerMessageBox = nullptr;
+            
+            m_loggerMessageBox = nullptr;
 		}
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::LoggerServiceInterface );

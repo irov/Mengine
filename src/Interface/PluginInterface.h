@@ -21,6 +21,9 @@ namespace Menge
 		virtual void setDynamicLoad( bool _dynamicLoad ) = 0;
 		virtual bool isDynamicLoad() const = 0;
 
+    public:
+        virtual bool avaliable() = 0;
+
 	public:
 		virtual bool initialize() = 0;
 		virtual void finalize() = 0;

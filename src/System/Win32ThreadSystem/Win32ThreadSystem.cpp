@@ -54,7 +54,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ThreadIdentityPtr Win32ThreadSystem::createThread( int _priority, const char * _doc )
+    ThreadIdentityInterfacePtr Win32ThreadSystem::createThread( int _priority, const char * _doc )
 	{
 		Win32ThreadIdentityPtr identity = m_poolWin32ThreadIdentity->createObject();
 
@@ -100,7 +100,7 @@ namespace Menge
         return mutex;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Win32ThreadSystem::sleep( unsigned int _ms )
+	void Win32ThreadSystem::sleep( uint32_t _ms )
 	{
 		::Sleep( _ms );
 	}

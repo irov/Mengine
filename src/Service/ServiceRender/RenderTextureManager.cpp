@@ -70,6 +70,8 @@ namespace Menge
 
 			textures.clear();
 		}
+
+        m_factoryRenderTexture = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::hasTexture( const ConstString& _pakName, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const

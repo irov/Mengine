@@ -26,7 +26,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			(*it)->flush();
+            const LoggerInterfacePtr & logger = *it;
+
+			logger->flush();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -70,7 +72,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			LoggerInterface * logger = (*it);
+			const LoggerInterfacePtr & logger = *it;
 
 			if( logger->validMessage( _level, _flag ) == false )
 			{
@@ -88,7 +90,7 @@ namespace Menge
 		return count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoggerEngine::registerLogger( LoggerInterface * _logger )
+	bool LoggerEngine::registerLogger( const LoggerInterfacePtr & _logger )
 	{
 		TVectorLoggers::iterator it_find = 
 			std::find( m_loggers.begin(), m_loggers.end(), _logger );
@@ -110,14 +112,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerEngine::unregisterLogger( LoggerInterface * _logger )
+	bool LoggerEngine::unregisterLogger( const LoggerInterfacePtr & _logger )
 	{
 		TVectorLoggers::iterator it_find = 
 			std::find( m_loggers.begin(), m_loggers.end(), _logger );
 
 		if( it_find == m_loggers.end() )
 		{
-			return;
+			return false;
 		}
 
 		_logger->flush();
@@ -125,5 +127,7 @@ namespace Menge
 		_logger->finalize();
 
 		m_loggers.erase( it_find );
+
+        return true;
 	}
 }

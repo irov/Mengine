@@ -1,0 +1,23 @@
+set( MY_LIB_NAME Win32ConsoleLogger )
+
+ADD_FILTER(
+src
+	Win32ConsoleLoggerPlugin.h
+	Win32ConsoleLoggerPlugin.cpp
+    
+    Win32ConsoleLogger.h
+    Win32ConsoleLogger.cpp
+)
+
+add_definitions(-DMENGE_PLUGIN_DLL)
+
+INCLUDE_DIRECTORIES( 
+        ${Mengine_SOURCE_DIR}/Utils 
+)
+
+ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
+
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Logger )
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Core )
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Factory )
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})

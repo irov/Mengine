@@ -2,14 +2,14 @@
 
 #   include "Interface/RenderSystemInterface.h"
 
-#   include "Core/ServiceBase.h"
+#   include "Core/ServantBase.h"
 
 #   include "OpenGL.h"
 
 namespace Menge
 {
     class OpenGLRenderVertexBuffer
-        : public ServiceBase<RenderVertexBufferInterface>
+        : public ServantBase<RenderVertexBufferInterface>
     {
     public:
         OpenGLRenderVertexBuffer();

@@ -37,6 +37,7 @@
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( SDLLayer );
 SERVICE_EXTERN( Platform );
 SERVICE_EXTERN( Application );
@@ -91,7 +92,9 @@ PLUGIN_EXPORT( MengeVideoCodec );
 PLUGIN_EXPORT( MengeAmplifier );
 PLUGIN_EXPORT( MengeZip );
 PLUGIN_EXPORT( MengeLZ4 );
+#ifdef MENGINE_PLUGIN_SPINE
 PLUGIN_EXPORT( Spine );
+#endif
 PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( Box2D );
 PLUGIN_EXPORT( MengeOggVorbis );
@@ -248,12 +251,6 @@ namespace Menge
     {
         LOGGER_WARNING(m_serviceProvider)("Inititalizing Config Manager..." );
 
-        const ConstString & platformName = PLATFORM_SERVICE( m_serviceProvider )
-            ->getPlatformName();
-
-        CONFIG_SERVICE( m_serviceProvider )
-            ->setPlatformName( platformName );
-
         FilePath gameIniPath;
         if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
         {
@@ -404,6 +401,8 @@ namespace Menge
 
         m_serviceProvider = serviceProvider;
 
+        SERVICE_CREATE( m_serviceProvider, FactoryService );
+
         SERVICE_CREATE( m_serviceProvider, OptionsService );
 
 		TVectorString options;
@@ -495,14 +494,6 @@ namespace Menge
 
         SERVICE_CREATE( m_serviceProvider, PrefetcherService );
 
-        //PLUGIN_CREATE( m_serviceProvider, MengeImageCodec );
-        //PLUGIN_CREATE( m_serviceProvider, MengeSoundCodec );
-        //PLUGIN_CREATE( m_serviceProvider, MengeOggVorbis );
-        //PLUGIN_CREATE( m_serviceProvider, MengeVideoCodec );
-        //PLUGIN_CREATE( m_serviceProvider, MengeAmplifier );
-        //PLUGIN_CREATE( m_serviceProvider, PathFinder );
-        //PLUGIN_CREATE( m_serviceProvider, Spine );
-
 #   define MENGINE_ADD_PLUGIN( Name, Info )\
         do{LOGGER_INFO(m_serviceProvider)( Info );\
         if(	PLUGIN_CREATE(m_serviceProvider, Name) == false ){\
@@ -514,7 +505,9 @@ namespace Menge
         MENGINE_ADD_PLUGIN(MengeOggVorbis, "initialize Plugin Ogg Vorbis Codec...");
         MENGINE_ADD_PLUGIN(MengeAmplifier, "initialize Plugin Amplifier...");
         MENGINE_ADD_PLUGIN(MengeVideoCodec, "initialize Plugin Video Codec...");
+#ifdef MENGINE_PLUGIN_SPINE
         MENGINE_ADD_PLUGIN(Spine, "initialize Plugin Spine...");
+#endif
         MENGINE_ADD_PLUGIN(Movie, "initialize Plugin Movie...");
         //MENGINE_ADD_PLUGIN(Motor, "initialize Plugin Motor...");
         MENGINE_ADD_PLUGIN(Box2D, "initialize Plugin Box2D...");
@@ -610,11 +603,11 @@ namespace Menge
         const bool fullscreen = APPLICATION_SERVICE(m_serviceProvider)
             ->getFullscreenMode();
 
-        const ConstString & projectTitle = APPLICATION_SERVICE(m_serviceProvider)
+        const String & projectTitle = APPLICATION_SERVICE(m_serviceProvider)
             ->getProjectTitle();
 
         WString wprojectTitle;
-        if( Helper::utf8ToUnicodeSize(m_serviceProvider, projectTitle.c_str(), projectTitle.size(), wprojectTitle) == false )
+        if( Helper::utf8ToUnicode(m_serviceProvider, projectTitle, wprojectTitle) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Application project title %s not convert to unicode"
                                             , projectTitle.c_str()

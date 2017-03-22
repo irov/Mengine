@@ -32,20 +32,17 @@ namespace Menge
 		bool avaliable() const override;
 
 	public:
-		ThreadIdentityPtr createThread( int _priority, const char * _doc ) override;
+		ThreadIdentityInterfacePtr createThread( int _priority, const char * _doc ) override;
 
 	public:
         ThreadMutexInterfacePtr createMutex( const char * _doc ) override;
 
 	public:
-		void sleep( unsigned int _ms ) override;
+		void sleep( uint32_t _ms ) override;
 
 	public:
 		ptrdiff_t getCurrentThreadId() const override;
-
-	protected:
-		void onThreadIdentityRemove_( Win32ThreadIdentity * _identity );
-	
+        	
 	protected:
         FactoryPtr m_poolWin32ThreadIdentity;
         FactoryPtr m_poolWin32ThreadMutex;

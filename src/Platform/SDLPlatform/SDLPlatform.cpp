@@ -93,7 +93,7 @@ namespace Menge
         const Char* sdlPlatform = SDL_GetPlatform();
         const int sdlRam = SDL_GetSystemRAM();
 
-        m_platformName = Helper::stringizeString(m_serviceProvider, sdlPlatform);
+        m_platformName.addTag( Helper::stringizeString( m_serviceProvider, sdlPlatform ) );
 
         LOGGER_WARNING(m_serviceProvider)("Device info:"
             );
@@ -250,7 +250,7 @@ namespace Menge
         return m_window;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & SDLPlatform::getPlatformName() const
+    const Tags & SDLPlatform::getPlatformTags() const
     {
         return m_platformName;
     }

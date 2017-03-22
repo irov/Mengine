@@ -2,6 +2,8 @@
 
 #   include "Interface/SoundSystemInterface.h"
 
+#   include "Core/ServantBase.h"
+
 #   include "SDLSoundBuffer.h"
 #   include "SDLSoundFilter.h"
 
@@ -10,14 +12,14 @@ namespace Menge
     class SDLSoundSystem;
     
     class SDLSoundSource
-        : public SoundSourceInterface
+        : public ServantBase<SoundSourceInterface>
     {
     public:
         SDLSoundSource();
         ~SDLSoundSource();
         
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider, SDLSoundSystem * _soundSystem );
+        void initialize( SDLSoundSystem * _soundSystem );
 
     public:
         bool play() override;
@@ -49,7 +51,6 @@ namespace Menge
         void setChannel(int _channel);
 
     private:
-        ServiceProviderInterface * m_serviceProvider;
         SDLSoundSystem * m_soundSystem;
 
         SDLSoundBufferPtr m_soundBuffer;

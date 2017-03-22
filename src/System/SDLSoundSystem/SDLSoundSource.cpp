@@ -14,8 +14,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     SDLSoundSource::SDLSoundSource()
-        : m_serviceProvider(nullptr)
-        , m_soundSystem(nullptr)
+        : m_soundSystem(nullptr)
         , m_volume(1.f)
         , m_playing(false)
         , m_pausing(false)
@@ -34,9 +33,8 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLSoundSource::initialize( ServiceProviderInterface * _serviceProvider, SDLSoundSystem * _soundSystem )
+    void SDLSoundSource::initialize( SDLSoundSystem * _soundSystem )
     {
-        m_serviceProvider = _serviceProvider;
         m_soundSystem = _soundSystem;
     }
     //////////////////////////////////////////////////////////////////////////

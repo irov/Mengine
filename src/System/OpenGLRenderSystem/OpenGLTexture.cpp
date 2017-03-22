@@ -112,7 +112,7 @@ namespace Menge
         return m_hwPixelFormat;
     }
     //////////////////////////////////////////////////////////////////////////
-    void * OpenGLTexture::lock( size_t * _pitch, uint32_t _level, const Rect &, bool )
+    Pointer OpenGLTexture::lock( size_t * _pitch, uint32_t _level, const Rect &, bool )
     {
         if (m_lockMemory != nullptr)
         {

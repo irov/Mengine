@@ -14,16 +14,6 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLLayer::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * SDLLayer::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool SDLLayer::concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, Char * _filePath, size_t _capacity )
     {
         size_t folderSize = _folder.size();

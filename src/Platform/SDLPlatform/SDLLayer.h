@@ -2,7 +2,7 @@
 
 #   include "Interface/SDLLayerInterface.h"
 
-#   include "Core/ServantBase.h"
+#   include "Core/ServiceBase.h"
 
 namespace Menge
 {

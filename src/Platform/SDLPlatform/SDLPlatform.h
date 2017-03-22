@@ -51,7 +51,7 @@ namespace Menge
         WindowHandle getWindowHandle() const override;
 
     public:
-        const ConstString & getPlatformName() const override;
+        const Tags & getPlatformTags() const override;
 
     public:
         bool hasTouchpad() const override;
@@ -96,7 +96,7 @@ namespace Menge
         bool processEvents();
 
     protected:
-        ConstString m_platformName;
+        Tags m_platformName;
 
         WindowHandle m_window;
         void* m_glContext;

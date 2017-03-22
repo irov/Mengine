@@ -2,6 +2,8 @@
 
 #   include "Interface/UnicodeInterface.h"
 
+#   include "Core/ServiceBase.h"
+
 namespace Menge
 {
     class SDLUnicodeSystem

@@ -3,22 +3,24 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/MemoryInterface.h"
 
+#   include "Core/ServantBase.h"
+
 #	include "OpenGL.h"
 
 namespace Menge
 {
 	class OpenGLTexture
-		: public RenderImageInterface
+		: public ServantBase<RenderImageInterface>
 	{
 	public:
 		OpenGLTexture();
 		~OpenGLTexture();
 
     public:
-        bool initialize(ServiceProviderInterface * _serviceProvider, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type);
+        bool initialize( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type );
 
 	public:
-        void * lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly ) override;
+        Pointer lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly ) override;
 		void unlock( uint32_t _level ) override;
 	
 	public:

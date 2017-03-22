@@ -460,13 +460,14 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
+    void OpenGLRenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
     {
         GLenum modeUGL = s_getGLAddressMode( _modeU );
         GLenum modeVGL = s_getGLAddressMode( _modeV );
 
         m_textureStage[_stage].wrapS = modeUGL;
         m_textureStage[_stage].wrapT = modeVGL;
+        m_textureStage[_stage].border = _border;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setTextureFactor( uint32_t _color )

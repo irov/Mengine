@@ -126,7 +126,7 @@ namespace Menge
 		size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
 		MemoryInterfacePtr lockMemory = MEMORY_SERVICE( m_serviceProvider )
-			->createMemory();
+			->createMemoryCacheBuffer();
 
 		if( lockMemory == nullptr )
 		{
@@ -136,7 +136,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		void * memory = lockMemory->newMemory( size );
+        void * memory = lockMemory->cacheMemory( size, "MarmaladeRenderTextureES1::lock" );
 
 		if( memory == nullptr )
 		{

@@ -8,8 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderIndexBuffer::OpenGLRenderIndexBuffer()
-		: m_serviceProvider( nullptr )
-		, m_memory( nullptr )
+		: m_memory( nullptr )
 		, m_indexNum( 0 )
 		, m_usage( GL_STATIC_DRAW )
 		, m_id( 0 )
@@ -30,10 +29,8 @@ namespace Menge
 		Helper::freeMemory( m_memory );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OpenGLRenderIndexBuffer::initialize( ServiceProviderInterface * _serviceProvider, uint32_t _indexNum, bool _dynamic )
+	bool OpenGLRenderIndexBuffer::initialize( uint32_t _indexNum, bool _dynamic )
 	{
-		m_serviceProvider = _serviceProvider;
-
 		m_memory = Helper::allocateMemory<RenderIndices>( _indexNum );
 		m_indexNum = _indexNum;
 
@@ -56,7 +53,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderIndices * OpenGLRenderIndexBuffer::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
+    Pointer OpenGLRenderIndexBuffer::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
 	{
 		if( m_lockMemory != nullptr )
 		{

@@ -11,8 +11,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     SDLFileOutputStream::SDLFileOutputStream()
-        : m_serviceProvider(nullptr)
-        , m_rwops(nullptr)
+        : m_rwops(nullptr)
         , m_size(0)
     {
     }
@@ -21,13 +20,8 @@ namespace Menge
     {
         if( m_rwops != nullptr )
         {
-            SDL_RWclose(m_rwops);
+            SDL_RWclose( m_rwops );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLFileOutputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileOutputStream::open( const FilePath & _folder, const FilePath& _fileName )

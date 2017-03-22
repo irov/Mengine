@@ -49,7 +49,7 @@ namespace Menge
 		ptrdiff_t getCurrentThreadId() override;
 
     protected:
-		bool isTaskOnProgress_( const ThreadTaskInterfacePtr & _task, ThreadIdentityPtr & _identity ) const;
+		bool isTaskOnProgress_( const ThreadTaskInterfacePtr & _task, ThreadIdentityInterfacePtr & _identity ) const;
 		bool hasThread_( const ConstString & _name ) const;
 		
 	protected:
@@ -60,7 +60,7 @@ namespace Menge
 		struct ThreadTaskDesc
 		{
 			ThreadTaskInterfacePtr task;
-			ThreadIdentityPtr identity;
+			ThreadIdentityInterfacePtr identity;
 			ConstString threadName;
 			bool progress;
 			bool complete;
@@ -78,7 +78,7 @@ namespace Menge
 		struct ThreadDesc
 		{
 			ConstString name;
-			ThreadIdentityPtr identity;
+			ThreadIdentityInterfacePtr identity;
 		};
 
 		typedef stdex::vector<ThreadDesc> TVectorThreads;

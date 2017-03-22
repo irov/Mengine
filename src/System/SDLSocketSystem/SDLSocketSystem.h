@@ -2,10 +2,9 @@
 
 #   include "Interface/SocketInterface.h"
 
-#   include "Factory/FactoryStore.h"
+#   include "Core/ServiceBase.h"
 
-#   include "SDLSocket.h"
-
+#   include "Factory/Factory.h"
 
 namespace Menge
 {
@@ -24,7 +23,6 @@ namespace Menge
         SocketInterfacePtr createSocket() override;
 
     protected:
-        typedef FactoryPoolStore<SDLSocket, 16> TPoolWin32Socket;
-        TPoolWin32Socket m_poolSDLSocket;
+        FactoryPtr m_poolSDLSocket;
     };
 }

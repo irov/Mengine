@@ -4,6 +4,12 @@
 #   include "SDLSoundError.h"
 #   include "SDLSoundSource.h"
 
+#   include "SDLSoundBufferMemory.h"
+#   include "SDLSoundBufferStream.h"
+#   include "SDLSoundSource.h"
+
+#   include "Factory/FactoryPool.h"
+
 #   include "Logger/Logger.h"
 
 #   include "SDL_audio.h"
@@ -64,6 +70,10 @@ namespace Menge
         {
             m_freeChannels[i] = true;
         }
+
+        m_poolSoundBuffer = new FactoryPool<SDLSoundBufferMemory, MENGINE_SDL_SOUND_MAX_COUNT>();
+        m_poolSoundBufferStream = new FactoryPool<SDLSoundBufferStream, MENGINE_SDL_SOUND_MAX_COUNT>();
+        m_poolSoundSource = new FactoryPool<SDLSoundSource, MENGINE_SDL_SOUND_MAX_COUNT>();
 
         return true;
     }

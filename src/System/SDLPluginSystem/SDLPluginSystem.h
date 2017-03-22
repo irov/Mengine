@@ -2,6 +2,9 @@
 
 #   include "Interface/PluginInterface.h"
 
+#   include "Core/ServiceBase.h"
+#   include "Factory/Factory.h"
+
 namespace Menge
 {
     class SDLPluginSystem
@@ -12,6 +15,13 @@ namespace Menge
         ~SDLPluginSystem();
 
     public:
-        DynamicLibraryInterface * loadDynamicLibrary( const WString & _dynamicLibraryName ) override;
+        bool _initialize() override;
+        void _finalize() override;
+
+    public:
+        DynamicLibraryInterfacePtr loadDynamicLibrary( const WString & _dynamicLibraryName ) override;
+
+    protected:
+        FactoryPtr m_factoryDynamicLibraries;
     };
 }

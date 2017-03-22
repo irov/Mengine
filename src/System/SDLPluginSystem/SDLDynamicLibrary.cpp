@@ -7,20 +7,29 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    SDLDynamicLibrary::SDLDynamicLibrary( ServiceProviderInterface * _serviceProvider, const String & _name )
-        : m_serviceProvider(_serviceProvider)
-        , m_name(_name)
-        , m_instance(nullptr)
+    SDLDynamicLibrary::SDLDynamicLibrary()
+        : m_serviceProvider( nullptr )
+        , m_instance( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     SDLDynamicLibrary::~SDLDynamicLibrary()
     {
-        if (m_instance)
+        if( m_instance != nullptr )
         {
-            SDL_UnloadObject(m_instance);
+            SDL_UnloadObject( m_instance );
             m_instance = nullptr;
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLDynamicLibrary::setName( const String & _name )
+    {
+        m_name = _name;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const String & SDLDynamicLibrary::getName() const
+    {
+        return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLDynamicLibrary::load()
@@ -39,25 +48,18 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLDynamicLibrary::destroy()
-    {
-        delete this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     TDynamicLibraryFunction SDLDynamicLibrary::getSymbol( const Char * _name ) const
     {
-        if (m_instance)
-        {
-            void* proc = ::SDL_LoadFunction(m_instance, _name);
-
-            TDynamicLibraryFunction dlfunc = reinterpret_cast<TDynamicLibraryFunction>(proc);
-
-            return dlfunc;
-        }
-        else
+        if( m_instance == nullptr )
         {
             return nullptr;
         }
+
+        void* proc = ::SDL_LoadFunction( m_instance, _name );
+
+        TDynamicLibraryFunction dlfunc = reinterpret_cast<TDynamicLibraryFunction>(proc);
+
+        return dlfunc;
     }
     //////////////////////////////////////////////////////////////////////////
 }

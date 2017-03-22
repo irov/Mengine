@@ -5,6 +5,8 @@
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/PlatformInterface.h"
 
+#   include "Factory/FactoryPool.h"
+
 #   include "Logger/Logger.h"
 
 #   include "OpenGL.h"
@@ -47,6 +49,13 @@ namespace Menge
         LOGGER_WARNING(m_serviceProvider)("Initializing OpenGL RenderSystem...");
 
         m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "OpenGL" );
+
+        m_factoryVertexBuffer = new FactoryDefault<OpenGLRenderVertexBuffer>( m_serviceProvider );
+        m_factoryIndexBuffer = new FactoryDefault<OpenGLRenderIndexBuffer>( m_serviceProvider );
+        m_factoryTexture = new FactoryPool<OpenGLTexture, 128>( m_serviceProvider );
+        m_factoryRenderFragmentShader = new FactoryPool<OpenGLRenderFragmentShader, 16>( m_serviceProvider );
+        m_factoryRenderVertexShader = new FactoryPool<OpenGLRenderVertexShader, 16>( m_serviceProvider );
+        m_factoryProgram = new FactoryPool<OpenGLRenderProgram, 16>( m_serviceProvider );
 
         return true;
     }

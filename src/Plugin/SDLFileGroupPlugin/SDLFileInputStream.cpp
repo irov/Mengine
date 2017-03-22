@@ -8,14 +8,11 @@
 
 #	include "stdex/memorycopy.h"
 
-#   include "SDL_rwops.h"
-
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     SDLFileInputStream::SDLFileInputStream()
-        : m_serviceProvider(nullptr)
-        , m_rwops(nullptr)
+        : m_rwops(nullptr)
         , m_size(0)
         , m_offset(0)
         , m_carriage(0)
@@ -27,11 +24,6 @@ namespace Menge
     SDLFileInputStream::~SDLFileInputStream()
     {
         this->close_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLFileInputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLFileInputStream::close_()

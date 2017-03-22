@@ -124,7 +124,7 @@ namespace Menge
 		return m_avaliable;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::isTaskOnProgress_( const ThreadTaskInterfacePtr & _task, ThreadIdentityPtr & _identity ) const
+	bool ThreadEngine::isTaskOnProgress_( const ThreadTaskInterfacePtr & _task, ThreadIdentityInterfacePtr & _identity ) const
 	{
 		for( TVectorThreadTaskDesc::const_iterator 
 			it = m_tasks.begin(),
@@ -166,7 +166,7 @@ namespace Menge
 			return false;
 		}
 
-		ThreadIdentityPtr identity = THREAD_SYSTEM(m_serviceProvider)
+		ThreadIdentityInterfacePtr identity = THREAD_SYSTEM(m_serviceProvider)
 			->createThread( _priority, _doc );
 
 		if( identity == nullptr )
@@ -265,7 +265,7 @@ namespace Menge
 	{
 		_task->cancel();
 
-		ThreadIdentityPtr threadIdentity;
+		ThreadIdentityInterfacePtr threadIdentity;
 		if( this->isTaskOnProgress_( _task, threadIdentity ) == false )
 		{
 			return true;

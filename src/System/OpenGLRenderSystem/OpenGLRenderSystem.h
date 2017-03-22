@@ -11,7 +11,7 @@
 #   include "OpenGLRenderShader.h"
 #   include "OpenGLRenderProgram.h"
 
-#   include "Factory/FactoryStore.h"
+#   include "Factory/Factory.h"
 
 #   include "stdex/binary_vector.h"
 
@@ -179,35 +179,24 @@ namespace Menge
 
         Resolution m_resolution;
 
-        typedef FactoryDefaultStore<OpenGLRenderVertexBuffer> TFactoryRenderVertexBuffer;
-        TFactoryRenderVertexBuffer m_factoryVertexBuffer;
-
-        typedef FactoryDefaultStore<OpenGLRenderIndexBuffer> TFactoryRenderIndexBuffer;
-        TFactoryRenderIndexBuffer m_factoryIndexBuffer;
-
         RenderIndexBufferInterfacePtr m_currentIndexBuffer;
         RenderVertexBufferInterfacePtr m_currentVertexBuffer;
 
-        typedef stdex::map<ConstString, RenderFragmentShaderInterface *> TMapRenderFragmentShaders;
+        typedef stdex::map<ConstString, RenderFragmentShaderInterfacePtr> TMapRenderFragmentShaders;
         TMapRenderFragmentShaders m_fragmentShaders;
 
-        typedef stdex::map<ConstString, RenderVertexShaderInterface *> TMapRenderVertexShaders;
+        typedef stdex::map<ConstString, RenderVertexShaderInterfacePtr> TMapRenderVertexShaders;
         TMapRenderVertexShaders m_vertexShaders;
 
         uint32_t m_activeTextureStage;
         GLuint m_activeTexture;
 
-        typedef FactoryPoolStore<OpenGLTexture, 128> TFactoryTexture;
-        TFactoryTexture m_factoryTexture;
-
-        typedef FactoryPoolStore<OpenGLRenderFragmentShader, 16> TFactoryRenderFragmentShader;
-        TFactoryRenderFragmentShader m_factoryRenderFragmentShader;
-
-        typedef FactoryPoolStore<OpenGLRenderVertexShader, 16> TFactoryRenderVertexShader;
-        TFactoryRenderVertexShader m_factoryRenderVertexShader;
-
-        typedef FactoryPoolStore<OpenGLRenderProgram, 16> TFactoryProgram;
-        TFactoryProgram m_factoryProgram;
+        FactoryPtr m_factoryVertexBuffer;
+        FactoryPtr m_factoryIndexBuffer;
+        FactoryPtr m_factoryTexture;
+        FactoryPtr m_factoryRenderFragmentShader;
+        FactoryPtr m_factoryRenderVertexShader;
+        FactoryPtr m_factoryProgram;
 
         OpenGLProgramPtr m_currentProgram;
 

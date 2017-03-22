@@ -2,20 +2,18 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-// fwd-declaration
-struct SDL_RWops;
+#   include "Core/ServantBase.h"
+
+#   include "SDL_rwops.h"
 
 namespace Menge
 {
     class SDLFileOutputStream
-        : public FileOutputStreamInterface
+        : public ServantBase<FileOutputStreamInterface>
     {
     public:
         SDLFileOutputStream();
         ~SDLFileOutputStream();
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
     public:
         bool open( const FilePath & _folder, const FilePath& _fileName ) override;
@@ -27,11 +25,12 @@ namespace Menge
     public:
         bool flush() override;
 
-    private:
-        ServiceProviderInterface * m_serviceProvider;
-
-        SDL_RWops* m_rwops;
+    protected:
+        SDL_RWops * m_rwops;
 
         size_t m_size;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<SDLFileOutputStream> SDLFileOutputStreamPtr;
+    //////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

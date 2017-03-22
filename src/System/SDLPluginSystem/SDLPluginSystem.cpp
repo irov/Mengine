@@ -2,6 +2,8 @@
 
 #   include "SDLDynamicLibrary.h"
 
+#   include "Factory/FactoryPool.h"
+
 #   include "Logger/Logger.h"
 
 #   include "Interface/UnicodeInterface.h"
@@ -20,31 +22,52 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DynamicLibraryInterface * SDLPluginSystem::loadDynamicLibrary( const WString & _dynamicLibraryName )
+    bool SDLPluginSystem::_initialize()
+    {
+        m_factoryDynamicLibraries = new FactoryPool<SDLDynamicLibrary, 8>( m_serviceProvider );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPluginSystem::_finalize()
+    {
+        m_factoryDynamicLibraries = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    DynamicLibraryInterfacePtr SDLPluginSystem::loadDynamicLibrary( const WString & _dynamicLibraryName )
     {
         LOGGER_WARNING( m_serviceProvider )("SDLPluginSystem::loadDynamicLibrary plugin '%ls'"
             , _dynamicLibraryName.c_str()
             );
 
-        Char utf8Path[1025] = { 0 };
-        size_t utf8Size = 0;
-        if (!UNICODE_SERVICE(m_serviceProvider)->unicodeToUtf8(_dynamicLibraryName.c_str(), _dynamicLibraryName.size(),
-                                                               utf8Path, sizeof(utf8Path) - 1, &utf8Size))
+        SDLDynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject();
+
+        if( dynamicLibrary == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLPluginSystem::loadDynamicLibrary can't get utf8 path");
+            LOGGER_ERROR( m_serviceProvider )("SDLPluginSystem::loadDynamicLibrary can't create dynamic library"
+                );
+
             return nullptr;
         }
 
+        dynamicLibrary->setServiceProvider( m_serviceProvider );
 
-        SDLDynamicLibrary * dynamicLibrary = new SDLDynamicLibrary(m_serviceProvider, utf8Path);
+        String utf8_dynamicLibraryName;
+        if( Helper::unicodeToUtf8( m_serviceProvider, _dynamicLibraryName, utf8_dynamicLibraryName ) == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("SDLPluginSystem::loadDynamicLibrary can't get utf8 path"
+                );
 
-        if (!dynamicLibrary->load())
+            return nullptr;
+        }
+                
+        dynamicLibrary->setName( utf8_dynamicLibraryName );
+
+        if( dynamicLibrary->load() == false )
         {
             LOGGER_ERROR( m_serviceProvider )("SDLPluginSystem::loadDynamicLibrary can't load '%ls' plugin [invalid load]"
                 , _dynamicLibraryName.c_str()
                 );
-
-            dynamicLibrary->destroy();
 
             return nullptr;
         }

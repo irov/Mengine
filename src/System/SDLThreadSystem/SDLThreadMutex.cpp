@@ -6,16 +6,13 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     SDLThreadMutex::SDLThreadMutex()
-        : m_serviceProvider(nullptr)
-        , m_cs(nullptr)
-        , m_doc(nullptr)
+        : m_cs( nullptr )
+        , m_doc( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadMutex::initialize( ServiceProviderInterface * _serviceProvider, const char * _doc)
+    bool SDLThreadMutex::initialize( const char * _doc)
     {
-        m_serviceProvider = _serviceProvider;
-
         m_doc = _doc;
 
         SDL_mutex * cs = SDL_CreateMutex();

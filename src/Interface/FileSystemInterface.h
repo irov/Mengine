@@ -15,16 +15,16 @@ namespace Menge
 #	ifndef MENGINE_FILE_STREAM_BUFFER_SIZE
 #	define MENGINE_FILE_STREAM_BUFFER_SIZE 4096
 #	endif
-
+    //////////////////////////////////////////////////////////////////////////
 	class FileInputStreamInterface
 		: public InputStreamInterface
 	{
 	public:
 		virtual bool open( const ConstString & _folder, const FilePath & _fileName, size_t _offset, size_t _size ) = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<FileInputStreamInterface> FileInputStreamInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	class FileMappedInterface
 		: public ServantInterface
 	{
@@ -35,18 +35,18 @@ namespace Menge
         virtual InputStreamInterfacePtr createFileStream() = 0;
         virtual bool openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** _memory ) = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<FileMappedInterface> FileMappedInterfacePtr;
-	
+	//////////////////////////////////////////////////////////////////////////
 	class FileOutputStreamInterface
 		: public OutputStreamInterface
 	{
 	public:
 		virtual bool open( const ConstString & _folder, const FilePath & _fileName ) = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<FileOutputStreamInterface> FileOutputStreamInterfacePtr;
-	
+	//////////////////////////////////////////////////////////////////////////
     class FileGroupInterface
         : public ServantInterface
     {	
@@ -81,9 +81,9 @@ namespace Menge
         virtual bool createDirectory( const FilePath & _path ) = 0;
         virtual bool removeDirectory( const FilePath & _path ) = 0;        
     };
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<FileGroupInterface> FileGroupInterfacePtr;
-	
+	//////////////////////////////////////////////////////////////////////////
     class FileServiceInterface 
         : public ServiceInterface
     {
@@ -117,7 +117,7 @@ namespace Menge
         virtual bool removeDirectory( const ConstString & _fileGroupName, const FilePath& _path ) = 0;
         virtual bool removeFile( const ConstString & _fileGroupName, const FilePath& _fileName ) = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 #   define FILE_SERVICE( serviceProvider )\
     ((Menge::FileServiceInterface *)SERVICE_GET(serviceProvider, Menge::FileServiceInterface))
 }

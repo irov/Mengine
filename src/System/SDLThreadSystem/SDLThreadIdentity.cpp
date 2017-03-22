@@ -6,12 +6,11 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     SDLThreadIdentity::SDLThreadIdentity()
-        : m_serviceProvider(nullptr)
-        , m_doc(nullptr)
-        , m_thread(nullptr)
-        , m_task(nullptr)
-        , m_complete(true)
-        , m_exit(false)
+        : m_doc( nullptr )
+        , m_thread( nullptr )
+        , m_task( nullptr )
+        , m_complete( true )
+        , m_exit( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -24,11 +23,10 @@ namespace Menge
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadIdentity::initialize( ServiceProviderInterface * _serviceProvider, const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _doc)
+    bool SDLThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _doc)
     {
         (void)_priority;
 
-        m_serviceProvider = _serviceProvider;
         m_mutex = _mutex;
         m_doc = _doc;
 

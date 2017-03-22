@@ -2,18 +2,23 @@
 
 #   include "Interface/PluginInterface.h"
 
+#	include "Core/ServantBase.h"
+
 namespace Menge
 {
     class SDLDynamicLibrary 
-        : public DynamicLibraryInterface
+        : public ServantBase<DynamicLibraryInterface>
     {
     public:
-        SDLDynamicLibrary( ServiceProviderInterface * _serviceProvider, const String & _name );
+        SDLDynamicLibrary();
         ~SDLDynamicLibrary();
 
     public:
+        void setName( const String & _name );
+        const String & getName() const;
+
+    public:
         bool load() override;
-        void destroy() override;
 
     public:
         TDynamicLibraryFunction getSymbol( const Char * _name ) const override;
@@ -24,4 +29,7 @@ namespace Menge
         String m_name;
         void* m_instance;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<SDLDynamicLibrary> SDLDynamicLibraryPtr;
+    //////////////////////////////////////////////////////////////////////////
 };

@@ -2,13 +2,11 @@
 
 #   include "Interface/SoundSystemInterface.h"
 
-#   include "SDLSoundBufferMemory.h"
-#   include "SDLSoundBufferStream.h"
-#   include "SDLSoundSource.h"
+#   include "Core/ServiceBase.h"
 
 #   include "SDLSoundFilter.h"
 
-#   include "Factory/FactoryStore.h"
+#   include "Factory/Factory.h"
 
 namespace Menge
 {
@@ -50,16 +48,9 @@ namespace Menge
         void freeChannel(int channel);
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
-        typedef FactoryPoolStore<SDLSoundBufferMemory, MENGINE_SDL_SOUND_MAX_COUNT> TPoolSoundBuffer;
-        TPoolSoundBuffer m_poolSoundBuffer;
-
-        typedef FactoryPoolStore<SDLSoundBufferStream, MENGINE_SDL_SOUND_MAX_COUNT> TPoolSoundBufferStream;
-        TPoolSoundBufferStream m_poolSoundBufferStream;
-
-        typedef FactoryPoolStore<SDLSoundSource, MENGINE_SDL_SOUND_MAX_COUNT> TPoolSoundSource;
-        TPoolSoundSource m_poolSoundSource;
+        FactoryPtr m_poolSoundBuffer;
+        FactoryPtr m_poolSoundBufferStream;
+        FactoryPtr m_poolSoundSource;
 
         bool m_freeChannels[MENGINE_SDL_SOUND_MAX_COUNT];
     };

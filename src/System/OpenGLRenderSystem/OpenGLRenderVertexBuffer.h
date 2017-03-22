@@ -7,25 +7,23 @@
 namespace Menge
 {
     class OpenGLRenderVertexBuffer
-        : public RenderVertexBufferInterface
+        : public ServiceBase<RenderVertexBufferInterface>
     {
     public:
         OpenGLRenderVertexBuffer();
         ~OpenGLRenderVertexBuffer();
 
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, uint32_t _verticesNum, bool _dynamic );
+        bool initialize( uint32_t _verticesNum, bool _dynamic );
 
     protected:
-        RenderVertex2D * lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
+        Pointer lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
         bool unlock() override;
 
     public:
         void enable();
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
         RenderVertex2D * m_memory;
         uint32_t m_vertexNum;
 

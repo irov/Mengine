@@ -2,18 +2,22 @@
 
 #   include "Interface/SDLLayerInterface.h"
 
+#	include "SDLFileInputStream.h"
+#	include "SDLFileOutputStream.h"
+#	include "SDLFileMapped.h"
+
+#   include "Factory/FactoryPool.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Core/String.h"
 
 #   include "SDL_rwops.h"
 
-
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     SDLFileGroupDirectory::SDLFileGroupDirectory()
-        : m_serviceProvider(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -21,19 +25,12 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLFileGroupDirectory::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * SDLFileGroupDirectory::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::initialize( const FilePath & _path )
     {
         m_path = _path;
+
+        m_factoryInputStream = new FactoryPool<SDLFileInputStream, 8>( m_serviceProvider );
+        m_factoryOutputStream = new FactoryPool<SDLFileOutputStream, 4>( m_serviceProvider );
 
         return true;
     }
@@ -70,10 +67,11 @@ namespace Menge
         }
 
         bool exist = false;
-        SDL_RWops* file = SDL_RWFromFile(filePath, "rb");
+        SDL_RWops* file = SDL_RWFromFile( filePath, "rb" );
+
         if( file != nullptr )
         {
-            SDL_RWclose(file);
+            SDL_RWclose( file );
             exist = true;
         }
 
@@ -85,7 +83,7 @@ namespace Menge
         (void)_fileName;
         (void)_streaming;
 
-        SDLFileInputStream * inputStream = m_factoryInputStream.createObject();
+        SDLFileInputStreamPtr inputStream = m_factoryInputStream->createObject();
 
         inputStream->setServiceProvider( m_serviceProvider );
 
@@ -121,7 +119,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr SDLFileGroupDirectory::createOutputFile()
     {
-        SDLFileOutputStream * outputStream = m_factoryOutputStream.createObject();
+        SDLFileOutputStreamPtr outputStream = m_factoryOutputStream->createObject();
 
         outputStream->setServiceProvider( m_serviceProvider );
 

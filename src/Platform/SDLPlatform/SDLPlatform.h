@@ -23,6 +23,7 @@
 #   include "Interface/PrefetcherInterface.h"
 
 #   include "Core/FileLogger.h"
+#   include "Core/ServiceBase.h"
 
 #   include "SDLInput.h"
 

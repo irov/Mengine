@@ -42,7 +42,7 @@ namespace Menge
 
 	typedef stdex::intrusive_ptr<ThreadQueueInterface> ThreadQueueInterfacePtr;
 
-	class ThreadIdentity
+	class ThreadIdentityInterface
 		: public ServantInterface
 	{
 	public:
@@ -53,7 +53,7 @@ namespace Menge
 		virtual void join() = 0;
 	};
 
-	typedef stdex::intrusive_ptr<ThreadIdentity> ThreadIdentityPtr;
+	typedef stdex::intrusive_ptr<ThreadIdentityInterface> ThreadIdentityInterfacePtr;
 
     class ThreadMutexInterface
         : public ServantInterface
@@ -77,7 +77,7 @@ namespace Menge
 		virtual bool avaliable() const = 0;
 
 	public:
-		virtual ThreadIdentityPtr createThread( int _priority, const char * _doc ) = 0;
+		virtual ThreadIdentityInterfacePtr createThread( int _priority, const char * _doc ) = 0;
 
 	public:
 		virtual void sleep( uint32_t _ms ) = 0;

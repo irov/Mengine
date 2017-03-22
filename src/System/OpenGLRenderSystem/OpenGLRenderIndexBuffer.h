@@ -14,10 +14,10 @@ namespace Menge
         ~OpenGLRenderIndexBuffer();
 
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, uint32_t _indexNum, bool _dynamic );
+        bool initialize( uint32_t _indexNum, bool _dynamic );
 
     protected:
-        RenderIndices * lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
+        Pointer lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
         bool unlock() override;
 
     public:

@@ -5,6 +5,8 @@
 
 #	include "SDLFileGroupDirectory.h"
 
+#   include "Factory/FactoryDefault.h"
+
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( MengeSDLFileGroup, Menge::SDLFileGroupPlugin)
 //////////////////////////////////////////////////////////////////////////
@@ -18,7 +20,7 @@ namespace Menge
     bool SDLFileGroupPlugin::_initialize()
     {
         FILE_SERVICE(m_serviceProvider)
-            ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir"), new FactorableUnique<FactoryDefault<SDLFileGroupDirectory> >() );
+            ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ), new FactoryDefault<SDLFileGroupDirectory>( m_serviceProvider ) );
 
         return true;
     }

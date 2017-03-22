@@ -2,24 +2,18 @@
 
 #   include "Interface/FileSystemInterface.h"
 
-#   include "Factory/FactoryStore.h"
+#   include "Core/ServantBase.h"
 
-#	include "SDLFileInputStream.h"
-#	include "SDLFileOutputStream.h"
-#	include "SDLFileMapped.h"
+#   include "Factory/Factory.h"
 
 namespace Menge
 {
     class SDLFileGroupDirectory
-        : public FileGroupInterface
+        : public ServantBase<FileGroupInterface>
     {
     public:
         SDLFileGroupDirectory();
         ~SDLFileGroupDirectory();
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
 
     public:
         bool initialize( const FilePath & _path ) override;
@@ -52,18 +46,10 @@ namespace Menge
         bool createDirectory( const FilePath& _path ) override;
         bool removeDirectory( const FilePath& _path ) override;
 
-    protected:
-        ServiceProviderInterface * m_serviceProvider;
-
+    protected:        
         FilePath m_path;
 
-        typedef FactoryPoolStore<SDLFileInputStream, 8> TFactoryFileInputStream;
-        TFactoryFileInputStream m_factoryInputStream;
-
-        typedef FactoryPoolStore<SDLFileOutputStream, 4> TFactoryFileOutputStream;
-        TFactoryFileOutputStream m_factoryOutputStream;
-
-        //typedef FactoryPoolStore<SDLFileMapped, 4> TFactoryWin32MappedFile;
-        //TFactoryWin32MappedFile m_factoryWin32MappedFile;
+        FactoryPtr m_factoryInputStream;
+        FactoryPtr m_factoryOutputStream;
     };
 }	// namespace Menge

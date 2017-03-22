@@ -2,10 +2,8 @@
 
 #	include "Interface/ThreadSystemInterface.h"
 
-#	include "SDLThreadIdentity.h"
-#   include "SDLThreadMutex.h"
-
-#   include "Factory/FactoryStore.h"
+#   include "Core/ServiceBase.h"
+#   include "Factory/Factory.h"
 
 #   include "stdex/pool.h"
 
@@ -26,7 +24,7 @@ namespace Menge
         bool avaliable() const override;
 
     public:
-        ThreadIdentityPtr createThread(int _priority, const char * _doc) override;
+        ThreadIdentityInterfacePtr createThread(int _priority, const char * _doc) override;
         
     public:
         void sleep( unsigned int _ms ) override;
@@ -38,10 +36,7 @@ namespace Menge
         ptrdiff_t getCurrentThreadId() const override;
     
     protected:
-        typedef FactoryPoolStore<SDLThreadIdentity, 16> TPoolThreadIdentity;
-        TPoolThreadIdentity m_poolThreadIdentity;
-
-        typedef FactoryPoolStore<SDLThreadMutex, 16> TPoolThreadMutex;
-        TPoolThreadMutex m_poolThreadMutex;
+        FactoryPtr m_poolThreadIdentity;
+        FactoryPtr m_poolThreadMutex;
     };
 }

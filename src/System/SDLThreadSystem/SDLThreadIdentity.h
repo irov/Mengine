@@ -2,19 +2,21 @@
 
 #	include "Interface/ThreadSystemInterface.h"
 
+#   include "Core/ServantBase.h"
+
 #	include "SDL_Thread.h"
 #	include "SDL_timer.h"
 
 namespace Menge
 {
     class SDLThreadIdentity
-        : public ThreadIdentity
+        : public ServantBase<ThreadIdentityInterface>
     {
     public:
         SDLThreadIdentity();
 
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _doc);
+        bool initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _doc);
         
     public:
         void main();
@@ -27,8 +29,6 @@ namespace Menge
         void join() override;
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-        
         ThreadMutexInterfacePtr m_mutex;
 
         const char * m_doc;

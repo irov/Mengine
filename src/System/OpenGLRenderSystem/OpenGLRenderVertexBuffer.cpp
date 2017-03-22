@@ -8,8 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderVertexBuffer::OpenGLRenderVertexBuffer()
-		: m_serviceProvider( nullptr )
-		, m_memory( nullptr )
+		: m_memory( nullptr )
 		, m_vertexNum( 0 )
 		, m_usage( GL_STATIC_DRAW )
 		, m_id( 0 )
@@ -30,10 +29,8 @@ namespace Menge
 		Helper::freeMemory( m_memory );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OpenGLRenderVertexBuffer::initialize( ServiceProviderInterface * _serviceProvider, uint32_t _vertexNum, bool _dynamic )
+	bool OpenGLRenderVertexBuffer::initialize( uint32_t _vertexNum, bool _dynamic )
 	{ 
-		m_serviceProvider = _serviceProvider;
-
 		m_memory = Helper::allocateMemory<RenderVertex2D>( _vertexNum );
 		m_vertexNum = _vertexNum;
 
@@ -56,7 +53,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderVertex2D * OpenGLRenderVertexBuffer::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
+    Pointer OpenGLRenderVertexBuffer::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
 	{
 		if( m_lockMemory != nullptr )
 		{

@@ -2,18 +2,20 @@
 
 #   include "Interface/ThreadSystemInterface.h"
 
+#   include "Core/ServantBase.h"
+
 #	include "SDL_Thread.h"
 
 namespace Menge
 {
     class SDLThreadMutex
-        : public ThreadMutexInterface
+        : public ServantBase<ThreadMutexInterface>
     {
     public:
         SDLThreadMutex();
 
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, const char * _doc);
+        bool initialize( const char * _doc );
 
     protected:
         void lock() override;
@@ -26,7 +28,6 @@ namespace Menge
         void _destroy() override;
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
         SDL_mutex * m_cs;
         const char * m_doc;
     };

@@ -1,5 +1,9 @@
 #   include "SDLSocketSystem.h"
 
+#   include "SDLSocket.h"
+
+#   include "Factory/FactoryPool.h"
+
 #   include "SDL_net.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -20,10 +24,12 @@ namespace Menge
     {
         const int sdlNetInit = SDLNet_Init();
 
-        if (sdlNetInit < 0 )
+        if( sdlNetInit < 0 )
         {
             return false;
         }
+
+        m_poolSDLSocket = new FactoryPool<SDLSocket, 16>( m_serviceProvider );
 
         return true;
     }
@@ -35,7 +41,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     SocketInterfacePtr SDLSocketSystem::createSocket()
     {
-        SocketInterfacePtr socket = m_poolSDLSocket.createObject();
+        SocketInterfacePtr socket = m_poolSDLSocket->createObject();
 
         return socket;
     }

@@ -467,26 +467,6 @@ namespace Menge
 
         return nullptr;
     }
-	//////////////////////////////////////////////////////////////////////////
-	FileMappedInterfacePtr FileGroupZip::createMappedFile()
-	{
-		LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createMappedFile unsupport method"
-			);
-
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::openMappedFile( const FilePath & _fileName, const FileMappedInterfacePtr & _stream )
-	{
-		(void)_fileName;
-		(void)_stream;
-
-		LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openMappedFile %s unsupport method"
-			, _fileName.c_str()
-			);
-
-		return false;
-	}
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::openOutputFile( const FilePath& _fileName, const OutputStreamInterfacePtr & _file )
     {
@@ -498,57 +478,4 @@ namespace Menge
             );
 
         return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::existDirectory( const FilePath & _path ) const
-    {
-        //bool result = m_folders.has( _path );
-
-        //return result;
-
-        (void)_path;
-
-		LOGGER_ERROR(m_serviceProvider)("FileGroupZip::existDirectory '%s:%s' unsupport method (path %s)"
-            , m_path.c_str()
-            , _path.c_str()
-            );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::createDirectory( const FilePath& _path )
-    {
-        (void)_path;
-
-        LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createDirectory '%s:%s' unsupport method"
-			, m_path.c_str()
-            , _path.c_str()
-            );
-        
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::removeDirectory( const FilePath& _path )
-    {
-        (void)_path;
-
-        LOGGER_ERROR(m_serviceProvider)("FileGroupZip::removeDirectory '%s:%s' unsupport method"
-			, m_path.c_str()
-            , _path.c_str()
-            );
-
-        return false;
-    }     
-    //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::removeFile( const FilePath& _fileName )
-    {
-        (void)_fileName;
-
-        LOGGER_ERROR(m_serviceProvider)("FileGroupZip::removeFile '%s:%s' unsupport method"
-			, m_path.c_str()
-            , _fileName.c_str()
-            );
-
-        return false;
-    }
-}	// namespace Menge
+    }}	// namespace Menge

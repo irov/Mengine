@@ -77,8 +77,8 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        SDLLogger * m_loggerConsole;
-        FileLogger * m_fileLog;
+        LoggerInterfacePtr m_loggerConsole;
+        LoggerInterfacePtr m_fileLog;
 
         ConstString m_platformName;
 

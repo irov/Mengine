@@ -62,7 +62,6 @@ namespace Menge
 
     public:
         virtual bool existFile( const FilePath & _fileName ) const = 0;
-		virtual bool removeFile( const FilePath & _fileName ) = 0;
 
     public:
         virtual InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming ) = 0;
@@ -71,15 +70,6 @@ namespace Menge
     public:
         virtual OutputStreamInterfacePtr createOutputFile() = 0;
         virtual bool openOutputFile( const FilePath & _fileName, const OutputStreamInterfacePtr & _stream ) = 0;
-
-	public:
-		virtual FileMappedInterfacePtr createMappedFile() = 0;
-		virtual bool openMappedFile( const FilePath & _fileName, const FileMappedInterfacePtr & _stream ) = 0;
-
-    public:
-        virtual bool existDirectory( const FilePath & _path ) const = 0;
-        virtual bool createDirectory( const FilePath & _path ) = 0;
-        virtual bool removeDirectory( const FilePath & _path ) = 0;        
     };
     //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<FileGroupInterface> FileGroupInterfacePtr;
@@ -107,15 +97,6 @@ namespace Menge
 	public:
 		virtual InputStreamInterfacePtr openInputFile( const ConstString & _fileGroupName, const FilePath & _fileName, bool _streamable ) = 0;
 		virtual OutputStreamInterfacePtr openOutputFile( const ConstString & _fileGroupName, const FilePath & _fileName ) = 0;
-
-    public:
-        virtual FileMappedInterfacePtr openMappedFile( const ConstString & _fileGroupName, const FilePath& _fileName ) = 0;
-
-    public:
-        virtual bool existDirectory( const ConstString & _fileGroupName, const FilePath& _path ) const = 0;
-        virtual bool createDirectory( const ConstString & _fileGroupName, const FilePath& _path ) = 0;
-        virtual bool removeDirectory( const ConstString & _fileGroupName, const FilePath& _path ) = 0;
-        virtual bool removeFile( const ConstString & _fileGroupName, const FilePath& _fileName ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
 #   define FILE_SERVICE( serviceProvider )\

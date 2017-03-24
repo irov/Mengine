@@ -106,8 +106,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     SDLApplication::SDLApplication()
         : m_serviceProvider(nullptr)
-        , m_loggerConsole(nullptr)
-        , m_fileLog(nullptr)
         , m_running(false)
         , m_active(false)
         , m_developmentMode(false)
@@ -168,12 +166,12 @@ namespace Menge
             return false;
         }
 
-        if( FILE_SERVICE( m_serviceProvider )
-            ->existDirectory( Helper::stringizeString( m_serviceProvider, "user" ), ConstString::none() ) == false )
-        {
-            FILE_SERVICE( m_serviceProvider )
-                ->createDirectory( Helper::stringizeString( m_serviceProvider, "user" ), ConstString::none() );
-        }
+        //if( FILE_SERVICE( m_serviceProvider )
+        //    ->existDirectory( Helper::stringizeString( m_serviceProvider, "user" ), ConstString::none() ) == false )
+        //{
+        //    FILE_SERVICE( m_serviceProvider )
+        //        ->createDirectory( Helper::stringizeString( m_serviceProvider, "user" ), ConstString::none() );
+        //}
 
         FilePath logFilename = Helper::stringizeString( m_serviceProvider, "log.log" );
 
@@ -182,7 +180,7 @@ namespace Menge
 
         if( fileLogInterface != nullptr )
         {
-            m_fileLog = new FileLogger();
+            m_fileLog = new ServantBase<FileLogger>();
 
             LOGGER_SERVICE( m_serviceProvider )
                 ->registerLogger( m_fileLog );
@@ -272,7 +270,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeLoggerEngine_()
     {
-        m_loggerConsole = new SDLLogger();
+        m_loggerConsole = new FactorableUnique<SDLLogger>();
 
         LOGGER_SERVICE(m_serviceProvider)
             ->registerLogger( m_loggerConsole );
@@ -719,18 +717,14 @@ namespace Menge
             LOGGER_SERVICE( m_serviceProvider )
                 ->unregisterLogger( m_fileLog );
 
-            delete m_fileLog;
             m_fileLog = nullptr;
         }
-
-
-
+        
         if( m_loggerConsole != nullptr )
         {
             LOGGER_SERVICE( m_serviceProvider )
                 ->unregisterLogger( m_loggerConsole );
 
-            delete m_loggerConsole;
             m_loggerConsole = nullptr;
         }
 

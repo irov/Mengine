@@ -41,15 +41,6 @@ namespace Menge
 		InputStreamInterfacePtr openInputFile( const ConstString& _fileGroupName, const FilePath& _fileName, bool _streaming ) override;
 		OutputStreamInterfacePtr openOutputFile( const ConstString& _fileGroupName, const FilePath& _fileName ) override;
         
-    public:
-        FileMappedInterfacePtr openMappedFile( const ConstString & _fileGroupName, const FilePath& _fileName ) override;
-
-	public:
-        bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const override;
-		bool createDirectory( const ConstString& _fileGroupName, const FilePath& _path ) override;
-		bool removeDirectory( const ConstString& _fileGroupName, const FilePath& _path ) override;
-		bool removeFile( const ConstString& _fileGroupName, const FilePath& _fileName ) override;
-
 	private:
 		typedef stdex::map<ConstString, FactoryPtr> TFactoryFileGroups;
 		TFactoryFileGroups m_factoryFileGroups;

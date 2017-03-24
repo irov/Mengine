@@ -151,40 +151,4 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    FileMappedInterfacePtr SDLFileGroupDirectory::createMappedFile()
-    {
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::openMappedFile( const FilePath & _fileName, const FileMappedInterfacePtr & _stream )
-    {
-        (void)_fileName;
-        (void)_stream;
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::existDirectory( const FilePath & _path ) const
-    {
-        (void)_path;
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::createDirectory( const FilePath & _path )
-    {
-        (void)_path;
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::removeDirectory( const FilePath & _path )
-    {
-        (void)_path;
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::removeFile( const FilePath & _fileName )
-    {
-        (void)_fileName;
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
 }   // namespace Menge

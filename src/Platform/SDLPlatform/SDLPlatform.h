@@ -99,8 +99,10 @@ namespace Menge
         Tags m_platformName;
 
         WindowHandle m_window;
+        
         void* m_glContext;
-        SDLInput* m_sdlInput;
+
+        SDLInputPtr m_sdlInput;
 
         int m_width;
         int m_height;

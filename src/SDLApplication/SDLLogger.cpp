@@ -17,16 +17,6 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLLogger::setServiceProvider(ServiceProviderInterface * _serviceProvider)
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * SDLLogger::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool SDLLogger::initialize()
     {
         return true;

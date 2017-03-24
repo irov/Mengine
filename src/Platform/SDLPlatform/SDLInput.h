@@ -5,6 +5,8 @@
 
 #   include "math/vec2.h"
 
+#   include "Kernel/Servant.h"
+
 #   include "stdex/stl_map.h"
 
 #   include "SDL.h"
@@ -12,14 +14,11 @@
 namespace Menge
 {
     class SDLInput
+        : public Servant
     {
     public:
         SDLInput();
         ~SDLInput();
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-        ServiceProviderInterface * getServiceProvider();
 
     public:
         bool initialize();
@@ -45,8 +44,6 @@ namespace Menge
         void calcCursorPosition_( int _mx, int _my, mt::vec2f & _point ) const;
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
         bool m_keyDown[KC_MAX_CODE];
        
         KeyCode m_keys[KC_MAX_CODE];
@@ -59,4 +56,7 @@ namespace Menge
         KeyCode getKeyCode_( SDL_Scancode _key ) const;
         SDL_Scancode getSDLKey_( KeyCode _code ) const;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<SDLInput> SDLInputPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -109,8 +109,11 @@ namespace Menge
             , sdlRam
             );
 
-        m_sdlInput = new SDLInput();
+        
+        m_sdlInput = new FactorableUnique<SDLInput>();
+
         m_sdlInput->setServiceProvider(m_serviceProvider);
+        
         if( !m_sdlInput->initialize() )
         {
             return false;
@@ -185,11 +188,16 @@ namespace Menge
         SDL_GL_DeleteContext(reinterpret_cast<SDL_GLContext>(m_glContext));
         SDL_Quit();
 
-        delete m_sdlInput;
+        if( m_sdlInput != nullptr )
+        {
+            m_sdlInput->finalize();
+            m_sdlInput = nullptr;
+        }
 
-        m_sdlInput = nullptr;
         m_window = nullptr;
         m_glContext = nullptr;
+
+        m_platformName.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::stop()

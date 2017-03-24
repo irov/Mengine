@@ -233,13 +233,6 @@ namespace Menge
 
 		const FilePath & folder = account->getFolder();
 
-        if( FILE_SERVICE(m_serviceProvider)
-            ->existDirectory( CONST_STRING(m_serviceProvider, user), folder ) == true )
-        {
-		    FILE_SERVICE(m_serviceProvider)
-                ->removeDirectory( CONST_STRING(m_serviceProvider, user), folder );
-        }
-
 		m_accounts.erase( it_find );
 
         if( m_accountProvider != nullptr )

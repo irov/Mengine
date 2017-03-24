@@ -2,18 +2,16 @@
 
 #   include "Interface/LoggerInterface.h"
 
+#   include "Core/ServantBase.h"
+
 namespace Menge
 {
     class SDLLogger
-        : public LoggerInterface
+        : public ServantBase<LoggerInterface>
     {
     public:
         SDLLogger();
-        virtual ~SDLLogger();
-
-    public:
-        void setServiceProvider(ServiceProviderInterface * _serviceProvider) override;
-        ServiceProviderInterface * getServiceProvider() const override;
+        ~SDLLogger();
 
     public:
         bool initialize() override;
@@ -32,7 +30,5 @@ namespace Menge
     protected:
         EMessageLevel m_verboseLevel;
         uint32_t m_verboseFlag;
-        ServiceProviderInterface * m_serviceProvider;
-        bool m_initialize;
     };
 }

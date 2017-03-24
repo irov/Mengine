@@ -495,12 +495,9 @@ namespace Menge
 					}
 					else
 					{
-#   ifdef MENGE_RENDER_TEXTURE_RGBA
-                        _format = PF_A8B8G8R8;
-#   else
                         _format = PF_A8R8G8B8;
-#   endif
-						_channels = 4;
+
+                        _channels = 4;
 					}
 				}
 				else if( _channels == 3 )
@@ -517,11 +514,7 @@ namespace Menge
 				}
 				else if( _channels == 4 )
 				{
-#   ifdef MENGE_RENDER_TEXTURE_RGBA
-                    _format = PF_A8B8G8R8;
-#   else
                     _format = PF_A8R8G8B8;
-#   endif
 				}
 			}break;
         case PF_A8:
@@ -534,11 +527,8 @@ namespace Menge
                     }
                     else
                     {
-#   ifdef MENGE_RENDER_TEXTURE_RGBA
-                        _format = PF_A8B8G8R8;
-#   else
                         _format = PF_A8R8G8B8;
-#   endif
+
                         _channels = 4;
                     }
                 }
@@ -560,11 +550,8 @@ namespace Menge
                     }
                     else
                     {
-#   ifdef MENGE_RENDER_TEXTURE_RGBA
-                        _format = PF_A8B8G8R8;
-#   else
                         _format = PF_A8R8G8B8;
-#   endif
+
                         _channels = 4;
                     }
                 }break;

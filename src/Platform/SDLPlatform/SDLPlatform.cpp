@@ -77,7 +77,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::getMaxClientResolution( Resolution & _resolution ) const
     {
-        this->getDesktopResolution(_resolution);
+        SDL_Rect rect;
+        SDL_GetDisplayUsableBounds( 0, &rect );
+
+        _resolution = Resolution((uint32_t)rect.w, (uint32_t)rect.h);
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initialize()

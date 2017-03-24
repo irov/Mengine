@@ -34,9 +34,9 @@ namespace Menge
 		m_folder = _folder;
 
 		PathString settingsPath;
-		settingsPath.append( m_folder );
-		settingsPath.append( MENGE_FOLDER_RESOURCE_DELIM );
-		settingsPath.append( "settings.ini" );
+		settingsPath += m_folder;
+        settingsPath += '_';
+		settingsPath += "settings.ini";
 
 		m_settingsPath = Helper::stringizeString( m_serviceProvider, settingsPath );
 
@@ -299,7 +299,7 @@ namespace Menge
 		PathString path;
 
 		path += m_folder;
-		path += MENGE_FOLDER_RESOURCE_DELIM;
+		path += '_';
 		path += _fileName;
 
 		ConstString fullpath = Helper::stringizeString( m_serviceProvider, path );
@@ -325,7 +325,7 @@ namespace Menge
 		PathString path;
 
 		path += m_folder;
-		path += MENGE_FOLDER_RESOURCE_DELIM;
+		path += '_';
 		path += _fileName;
 
 		ConstString fullpath = Helper::stringizeString( m_serviceProvider, path );
@@ -420,7 +420,7 @@ namespace Menge
 		PathString path;
 
 		path += m_folder;
-		path += MENGE_FOLDER_RESOURCE_DELIM;
+        path += '_';
 		path += _fileName;
 
 		ConstString fullpath = Helper::stringizeString( m_serviceProvider, path );

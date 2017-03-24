@@ -186,7 +186,7 @@ namespace Menge
 			return GL_RGB;
 	    case Menge::PF_X8R8G8B8:
 	    case Menge::PF_A8R8G8B8:
-		    return GL_RGBA;
+            return GL_RGBA;
 	    case Menge::PF_A8:
 		    return GL_ALPHA;
 

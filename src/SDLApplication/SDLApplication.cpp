@@ -538,6 +538,32 @@ namespace Menge
             }
         }
 
+        bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+        bool nodevplugins = HAS_OPTION( m_serviceProvider, "nodevplugins" );
+
+        if( developmentMode == true && nodevplugins == false )
+        {
+            TVectorWString devPlugins;
+            CONFIG_VALUES( m_serviceProvider, "DevPlugins", "Name", devPlugins );
+
+            for( TVectorWString::const_iterator
+                it = devPlugins.begin(),
+                it_end = devPlugins.end();
+                it != it_end;
+                ++it )
+            {
+                const WString & pluginName = *it;
+
+                if( PLUGIN_SERVICE( m_serviceProvider )
+                    ->loadPlugin( pluginName ) == false )
+                {
+                    LOGGER_WARNING( m_serviceProvider )("Application Failed to load dev plugin %ls"
+                        , pluginName.c_str()
+                        );
+                }
+            }
+        }
+
         SERVICE_CREATE(m_serviceProvider, ParticleService);
 
         TVectorString modules;

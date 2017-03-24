@@ -30,17 +30,23 @@ namespace Menge
 		//Py_NoSiteFlag = 1;
 
 		WChar currentPath[MENGINE_MAX_PATH];
-		PLATFORM_SERVICE( m_serviceProvider )
-			->getCurrentPath( currentPath, MENGINE_MAX_PATH );
+        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
+
+        if( len == 0 )
+        {
+            return false;
+        }
+
+        currentPath[len] = L'\\';
+        currentPath[len + 1] = L'\0';
 
         {
-			WString exportPath;
-			exportPath += currentPath;
-			exportPath += L"Python3Lib\\";
+			WChar exportPath[MENGINE_MAX_PATH];
+            wcscpy( exportPath, currentPath );
+            wcscat( exportPath, L"Python3Lib\\" );
 
 			WChar shortpath[MENGINE_MAX_PATH];
-			PLATFORM_SERVICE( m_serviceProvider )
-				->getShortPathName( exportPath, shortpath, MENGINE_MAX_PATH );
+            GetShortPathName( exportPath, shortpath, MENGINE_MAX_PATH );
 			
 			pybind::set_path( shortpath );
         }        
@@ -66,25 +72,23 @@ namespace Menge
         PyObject * py_syspath = pybind::list_new(0);
 
 		{
-			WString stdPath;
-			stdPath += currentPath;
-			stdPath += L"Python3Lib\\";
+            WChar stdPath[MENGINE_MAX_PATH];
+            wcscpy( stdPath, currentPath );
+            wcscat( stdPath, L"Python3Lib\\" );
 
-			WChar shortpath[MENGINE_MAX_PATH];
-			PLATFORM_SERVICE( m_serviceProvider )
-				->getShortPathName( stdPath, shortpath, MENGINE_MAX_PATH );
+            WChar shortpath[MENGINE_MAX_PATH];
+            GetShortPathName( stdPath, shortpath, MENGINE_MAX_PATH );
 
 			pybind::list_appenditem_t( kernel, py_syspath, shortpath );			
 		}
 
 		{
-			WString stdPath;
-			stdPath += currentPath;
-			stdPath += L"XlsxExport\\";
+            WChar xlsxPath[MENGINE_MAX_PATH];
+            wcscpy( xlsxPath, currentPath );
+            wcscat( xlsxPath, L"XlsxExport\\" );
 
 			WChar shortpath[MENGINE_MAX_PATH];
-			PLATFORM_SERVICE( m_serviceProvider )
-				->getShortPathName( stdPath, shortpath, MENGINE_MAX_PATH );
+            GetShortPathName( xlsxPath, shortpath, MENGINE_MAX_PATH );
 
 			pybind::list_appenditem_t( kernel, py_syspath, shortpath );
 		}
@@ -93,8 +97,8 @@ namespace Menge
 
 		pybind::decref( py_syspath );
 		
-		pybind::def_functor(kernel, "Warning", this, &XlsExportPlugin::warning_, module_builtins);
-		pybind::def_functor( kernel, "Error", this, &XlsExportPlugin::error_, module_builtins );
+        pybind::def_functor( kernel, "Warning", this, &XlsExportPlugin::warning_, module_builtins );
+        pybind::def_functor( kernel, "Error", this, &XlsExportPlugin::error_, module_builtins );
 
 		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
 			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE_PREPARE, this, &XlsExportPlugin::notifyChangeLocale );

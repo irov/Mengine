@@ -86,6 +86,8 @@ namespace Menge
 
 		PyObject * wrap(pybind::kernel_interface * _kernel, TCastRef _value) override
 		{
+            (void)_kernel;
+
 			const PythonNodeCollisionActorUserData * pyValue = static_cast<const PythonNodeCollisionActorUserData *>(_value);
 
 			const pybind::object & py_object = pyValue->getObject();

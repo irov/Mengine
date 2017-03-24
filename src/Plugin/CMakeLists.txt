@@ -20,8 +20,9 @@ if( MENGINE_PLUGIN_STEAM )
 endif()
 
 if( MENGINE_TARGET_MSVC )
-    ADD_SUBDIRECTORY( MengeWin32SocketPlugin )
-    ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )
+	ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )
+
+    ADD_SUBDIRECTORY( MengeWin32SocketPlugin )    
     ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
     ADD_SUBDIRECTORY( MengeWin32FileGroupPlugin )
     
@@ -50,8 +51,14 @@ if( MENGINE_TARGET_MINGW )
 endif()
 
 if( MENGINE_TARGET_SDL )
-    ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
+	ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )
+    
+	ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
+	
     ADD_SUBDIRECTORY( SDLFileGroupPlugin )
+
+    ADD_SUBDIRECTORY( MengeXlsExportPlugin )
+    ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
 	ADD_SUBDIRECTORY( Win32ConsoleLogger )
 endif()
 

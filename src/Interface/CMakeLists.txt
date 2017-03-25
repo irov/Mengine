@@ -27,6 +27,7 @@ src
 	ApplicationInterface.h
 	InputSystemInterface.h
 	SoundSystemInterface.h
+	ThreadInterface.h
 	ThreadSystemInterface.h
 	HttpSystemInterface.h
 	ConverterInterface.h

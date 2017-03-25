@@ -69,7 +69,7 @@ namespace Menge
 
 	public:
 		virtual void tick( float _time, float _timing ) = 0;
-		virtual void render( const RenderObjectState * _state, unsigned int _debugMask ) = 0;
+		virtual void render( const RenderObjectState * _state, uint32_t _debugMask ) = 0;
 
 	public:
 		virtual void message( const ConstString & _moduleName, const ConstString & _messageName, const TMapParams & _params ) = 0;

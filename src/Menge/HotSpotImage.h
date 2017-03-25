@@ -33,7 +33,7 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
 
 	protected:
-		void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask ) override;
+		void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
 
     protected:
 		bool _compile() override;

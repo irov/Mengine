@@ -48,10 +48,11 @@ namespace Menge
         void freeChannel(int channel);
 
     protected:
-        FactoryPtr m_poolSoundBuffer;
-        FactoryPtr m_poolSoundBufferStream;
-        FactoryPtr m_poolSoundSource;
+        FactoryPtr m_factorySoundBuffer;
+        FactoryPtr m_factorySoundBufferStream;
+        FactoryPtr m_factorySoundSource;
 
+        uint32_t m_countChannels;        
         bool m_freeChannels[MENGINE_SDL_SOUND_MAX_COUNT];
     };
 }	// namespace Menge

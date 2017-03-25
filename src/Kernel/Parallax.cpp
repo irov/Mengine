@@ -22,7 +22,7 @@ namespace	Menge
 		return m_parallaxFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Parallax::render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
+	void Parallax::render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		const mt::mat4f & camera_vm = _state->camera->getCameraViewMatrix();
 		const mt::mat4f & camera_pm = _state->camera->getCameraProjectionMatrix();

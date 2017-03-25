@@ -10,6 +10,7 @@
 
 namespace Menge 
 {
+    //////////////////////////////////////////////////////////////////////////
 	class ThreadWorkerInterface
 		: public ServantInterface
 	{
@@ -17,16 +18,16 @@ namespace Menge
 		virtual bool onWork( uint32_t _id ) = 0;
 		virtual void onDone( uint32_t _id ) = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ThreadWorkerInterface> ThreadWorkerInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	enum EThreadStatus
 	{
 		ETS_WORK,
 		ETS_DONE,
 		ETS_FREE
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	struct ThreadJobWorkerDesc
 	{
 		ThreadMutexInterfacePtr mutex;
@@ -37,7 +38,7 @@ namespace Menge
 
 		volatile uint32_t status;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	class ThreadJob
 		: public ThreadTask
 	{
@@ -46,7 +47,7 @@ namespace Menge
 		~ThreadJob();
 
 	public:
-		void initialize( unsigned int _sleep );
+		bool initialize( uint32_t _sleep );
 
 	public:
 		uint32_t addWorker( const ThreadWorkerInterfacePtr &_worker );
@@ -57,18 +58,16 @@ namespace Menge
 		void _onUpdate() override;
 
 	protected:
-		void destroy() override;
-
-	protected:
 		bool check_remove( uint32_t _id );
 
 	protected:
-		unsigned int m_sleep;
+        uint32_t m_sleep;
   
 		uint32_t m_enumerator;
 		
 		ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ThreadJob> ThreadJobPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

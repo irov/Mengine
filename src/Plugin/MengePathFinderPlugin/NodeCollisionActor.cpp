@@ -162,7 +162,7 @@ namespace Menge
 		m_actor = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCollisionActor::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
+	void NodeCollisionActor::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		(void)_debugMask;
 

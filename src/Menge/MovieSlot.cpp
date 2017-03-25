@@ -72,7 +72,7 @@ namespace Menge
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MovieSlot::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
+	void MovieSlot::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
 		{

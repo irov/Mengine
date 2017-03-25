@@ -63,10 +63,20 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::_finalize()
     {
+        m_currentProgram = nullptr;
+
         m_currentIndexBuffer = nullptr;
         m_currentVertexBuffer = nullptr;
 
-        m_currentProgram = nullptr;
+        m_factoryVertexBuffer = nullptr;
+        m_factoryIndexBuffer = nullptr;
+        m_factoryTexture = nullptr;
+        m_factoryRenderFragmentShader = nullptr;
+        m_factoryRenderVertexShader = nullptr;
+        m_factoryProgram = nullptr;    
+
+        m_fragmentShaders.clear();
+        m_vertexShaders.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & OpenGLRenderSystem::getRenderPlatformName() const
@@ -399,14 +409,17 @@ namespace Menge
         for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
         {
             const TextureStage & textureStage = m_textureStage[i];
-            if( textureStage.texture != nullptr )
+            
+            if( textureStage.texture == nullptr )
             {
-                GLCALL( m_serviceProvider, glClientActiveTexture_, (GL_TEXTURE0 + i) );
-                GLCALL( m_serviceProvider, glEnableClientState, (GL_TEXTURE_COORD_ARRAY) );
-
-                const ptrdiff_t uv_offset = offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * i;
-                GLCALL( m_serviceProvider, glTexCoordPointer, (2, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(uv_offset)) );
+                continue;
             }
+            
+            GLCALL( m_serviceProvider, glClientActiveTexture_, (GL_TEXTURE0 + i) );
+            GLCALL( m_serviceProvider, glEnableClientState, (GL_TEXTURE_COORD_ARRAY) );
+
+            const ptrdiff_t uv_offset = offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * i;
+            GLCALL( m_serviceProvider, glTexCoordPointer, (2, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(uv_offset)) );
         }
 
         GLenum mode = s_getGLPrimitiveMode( _type );

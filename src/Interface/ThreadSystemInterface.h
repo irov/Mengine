@@ -1,73 +1,14 @@
 #	pragma once
 
+#   include "Interface/ThreadInterface.h"
+
 #   include "Interface/ServiceInterface.h"
-#   include "Interface/ServantInterface.h"
 
-#	include "Factory/Factorable.h"
-#	include "Factory/FactorablePtr.h"
-
-#	include "Core/ConstString.h"
+#   include "Kernel/ThreadJob.h"
 
 namespace Menge
 {
-    class ThreadTaskInterface
-        : public ServantInterface
-    {
-	public:
-		virtual bool isRun() const = 0;
-		virtual bool isComplete() const = 0;
-		virtual bool isSuccessful() const = 0;
-		virtual bool isCancel() const = 0;
-
-    public:
-		virtual void main() = 0;
-
-	public:
-		virtual bool run() = 0;
-        virtual bool cancel() = 0;
-        virtual bool update() = 0;
-    };
-
-	typedef stdex::intrusive_ptr<ThreadTaskInterface> ThreadTaskInterfacePtr;
-
-	class ThreadQueueInterface
-		: public ServantInterface
-	{
-	public:
-		virtual void addTask( const ThreadTaskInterfacePtr & _task ) = 0;
-
-	public:
-		virtual void cancel() = 0;
-	};
-
-	typedef stdex::intrusive_ptr<ThreadQueueInterface> ThreadQueueInterfacePtr;
-
-	class ThreadIdentityInterface
-		: public ServantInterface
-	{
-	public:
-		virtual bool processTask( ThreadTaskInterface * _task ) = 0;
-		virtual bool joinTask() = 0;
-
-	public:
-		virtual void join() = 0;
-	};
-
-	typedef stdex::intrusive_ptr<ThreadIdentityInterface> ThreadIdentityInterfacePtr;
-
-    class ThreadMutexInterface
-        : public ServantInterface
-    {
-    public:
-        virtual void lock() = 0;
-        virtual void unlock() = 0;
-
-	public:
-		virtual bool try_lock() = 0;
-    };
-
-	typedef stdex::intrusive_ptr<ThreadMutexInterface> ThreadMutexInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	class ThreadSystemInterface
         : public ServiceInterface
 	{
@@ -88,10 +29,10 @@ namespace Menge
 	public:
 		virtual ptrdiff_t getCurrentThreadId() const = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 #   define THREAD_SYSTEM( serviceProvider )\
     ((Menge::ThreadSystemInterface*)SERVICE_GET(serviceProvider, Menge::ThreadSystemInterface))
-
+    //////////////////////////////////////////////////////////////////////////
     class ThreadServiceInterface
         : public ServiceInterface
     {
@@ -102,6 +43,9 @@ namespace Menge
 
     public:
         virtual void update() = 0;
+
+    public:
+        virtual ThreadJobPtr createJob( uint32_t _sleep ) = 0;
 
 	public:
 		virtual bool createThread( const ConstString & _threadName, int _priority, const char * _doc ) = 0;
@@ -118,12 +62,13 @@ namespace Menge
 		virtual ThreadMutexInterfacePtr createMutex( const char * _doc ) = 0;
 
 	public:
-		virtual void sleep( unsigned int _ms ) = 0;
+		virtual void sleep( uint32_t _ms ) = 0;
 
 	public:
 		virtual ptrdiff_t getCurrentThreadId() = 0;
     };
-
+    //////////////////////////////////////////////////////////////////////////
 #   define THREAD_SERVICE( serviceProvider )\
     ((Menge::ThreadServiceInterface*)SERVICE_GET(serviceProvider, Menge::ThreadServiceInterface))
+    //////////////////////////////////////////////////////////////////////////
 }

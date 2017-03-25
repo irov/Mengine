@@ -22,7 +22,7 @@
 #   include "Interface/ConfigInterface.h"
 #   include "Interface/PrefetcherInterface.h"
 
-#   include "SDLLogger.h"
+#   include "SDLMessageBoxLogger.h"
 
 #   include "Core/FileLogger.h"
 
@@ -53,6 +53,8 @@ namespace Menge
         bool initializeThreadEngine_();
         bool initializeFileEngine_();
         bool initializeConfigEngine_();
+        bool initializeUserDirectory_();
+        bool initializeLoggerFile_();
         bool initializeLoggerEngine_();
         bool initializeUnicodeEngine_();
         bool initializeParticleEngine2_();
@@ -77,14 +79,10 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        LoggerInterfacePtr m_loggerConsole;
+        LoggerInterfacePtr m_loggerMessageBox;
         LoggerInterfacePtr m_fileLog;
 
         ConstString m_platformName;
-
-        FilePath m_currentPath;
-        WString m_userPath;
-        WString m_tempPath;
 
         WString m_projectName;
         WString m_companyName;

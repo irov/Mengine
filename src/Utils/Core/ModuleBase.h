@@ -39,11 +39,11 @@ namespace Menge
 
 	protected:
 		void tick( float _time, float _timing ) override;
-		void render( const RenderObjectState * _state, unsigned int _debugMask ) override;
+		void render( const RenderObjectState * _state, uint32_t _debugMask ) override;
 
 	protected:
 		virtual void _tick( float _time, float _timing );
-		virtual void _render( const RenderObjectState * _state, unsigned int _debugMask );
+		virtual void _render( const RenderObjectState * _state, uint32_t _debugMask );
 		
 	protected:
 		void message( const ConstString & _messageName, const TMapParams & _params ) override;

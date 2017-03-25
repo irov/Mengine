@@ -23,21 +23,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileLogger::initialize()
 	{
-		WString date;
-		Helper::makeDateTime( date );
-
 		WString unicode_logFilename;
 		unicode_logFilename += L"Game";
 
-		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
-		bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
-		bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );
-
-		if( developmentMode == true && roamingMode == false || noroamingMode == true)
-		{
-			unicode_logFilename += L"_";
-			unicode_logFilename += date;
-		}
+		unicode_logFilename += L"_";
+        
+        WString date;
+        Helper::makeDateTime( date );
+		unicode_logFilename += date;
 
 		unicode_logFilename += L".log";
 
@@ -51,6 +44,11 @@ namespace Menge
 
 		m_stream = FILE_SERVICE( m_serviceProvider)
 			->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), logFilename );
+
+        if( m_stream == nullptr )
+        {
+            return false;
+        }
 		
 		return true;
 	}

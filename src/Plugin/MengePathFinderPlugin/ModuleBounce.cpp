@@ -118,7 +118,7 @@ namespace Menge
 		m_bounceWorlds.erase( it_erase, m_bounceWorlds.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBounce::_render( const RenderObjectState * _state, unsigned int _debugMask )
+	void ModuleBounce::_render( const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		(void)_state;
 		(void)_debugMask;

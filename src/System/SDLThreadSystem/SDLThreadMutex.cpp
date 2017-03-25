@@ -69,5 +69,6 @@ namespace Menge
     void SDLThreadMutex::_destroy()
     {
         SDL_DestroyMutex( m_cs );
+        m_cs = nullptr;
     }
 }

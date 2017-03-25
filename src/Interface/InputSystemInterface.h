@@ -430,7 +430,7 @@ namespace Menge
 			this->pushEvent( event );
 		}
 				
-		inline void pushMouseLeaveEvent( unsigned int _touchId, float _x, float _y, float _pressure )
+		inline void pushMouseLeaveEvent( uint32_t _touchId, float _x, float _y, float _pressure )
 		{
 			InputUnionEvent event;
 			event.position.type = IET_MOUSE_LEAVE;

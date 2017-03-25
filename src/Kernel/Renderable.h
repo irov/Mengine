@@ -12,11 +12,11 @@ namespace Menge
 		Renderable();
 
 	public:
-		virtual void render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask ) = 0;
+		virtual void render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) = 0;
 
 	public:
 		virtual void _render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state );
-		virtual void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask );
+		virtual void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask );
 
 	public:
 		virtual void hide( bool _value );

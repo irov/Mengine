@@ -1,5 +1,7 @@
 #	include "ThreadJob.h"
 
+#	include "Interface/ThreadSystemInterface.h"
+
 #	include "Logger/Logger.h"
 
 namespace Menge 
@@ -22,7 +24,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////        
-	void ThreadJob::initialize( unsigned int _sleep )
+	bool ThreadJob::initialize( uint32_t _sleep )
 	{
 		m_sleep = _sleep;
 
@@ -37,6 +39,8 @@ namespace Menge
 			desc.id = 0;
 			desc.status = ETS_FREE;
 		}
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_thread_addWorker( ThreadJobWorkerDesc & desc, const ThreadWorkerInterfacePtr & _worker, uint32_t _id )
@@ -225,10 +229,5 @@ namespace Menge
 
 			s_thread_updateWorker( desc );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadJob::destroy()
-	{
-		delete this;
 	}
 }

@@ -1045,7 +1045,7 @@ namespace Menge
 			return;
 		}
 
-        unsigned int debugMask = APPLICATION_SERVICE(m_serviceProvider)
+        uint32_t debugMask = APPLICATION_SERVICE(m_serviceProvider)
             ->getDebugMask();
 
 		RenderObjectState state;

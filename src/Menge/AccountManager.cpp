@@ -78,8 +78,6 @@ namespace Menge
 	{
         uint32_t new_playerID = ++m_playerEnumerator;
 
-		//wchar_t bufferAccountID[128];
-		//swprintf( bufferAccountID, 128, L"Player_%d", new_playerID );
 		WStringstream streamAccountID;
 		streamAccountID << L"Player_" << new_playerID;
 
@@ -230,8 +228,6 @@ namespace Menge
                 this->unselectCurrentAccount_();
 			}
 		}
-
-		const FilePath & folder = account->getFolder();
 
 		m_accounts.erase( it_find );
 

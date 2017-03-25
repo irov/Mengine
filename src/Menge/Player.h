@@ -141,7 +141,7 @@ namespace Menge
 		void onFixedDisplayResolution( const Resolution & _resolution, bool _fixed ) override;
 
 	protected:
-		void renderArrow_( unsigned int _debugMask );
+		void renderArrow_( uint32_t _debugMask );
 
 	private:
 		Scene * m_scene;

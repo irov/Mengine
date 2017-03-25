@@ -75,6 +75,7 @@ namespace Menge
 
 		m_factoryThreadQueue = new FactoryPool<ThreadQueue, 4>( m_serviceProvider );
 		m_factoryThreadMutexDummy = new FactoryPool<ThreadMutexDummy, 16>( m_serviceProvider );
+        m_factoryThreadJob = new FactoryPool<ThreadJob, 16>( m_serviceProvider );
                 
         return true;
 	}
@@ -117,6 +118,7 @@ namespace Menge
 
         m_factoryThreadQueue = nullptr;
         m_factoryThreadMutexDummy = nullptr;
+        m_factoryThreadJob = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::avaliable() const
@@ -153,6 +155,23 @@ namespace Menge
 		
 		return false;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ThreadJobPtr ThreadEngine::createJob( uint32_t _sleep )
+    {
+        ThreadJobPtr threadJob = m_factoryThreadJob->createObject();
+
+        threadJob->setServiceProvider( m_serviceProvider );
+
+        if( threadJob->initialize( _sleep ) == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("ThreadEngine::createJob invalid create"
+                );
+
+            return nullptr;
+        }
+
+        return threadJob;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::createThread( const ConstString & _threadName, int _priority, const char * _doc )
 	{
@@ -404,7 +423,7 @@ namespace Menge
         return mutex;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadEngine::sleep( unsigned int _ms )
+    void ThreadEngine::sleep( uint32_t _ms )
     {
         THREAD_SYSTEM(m_serviceProvider)
             ->sleep( _ms );

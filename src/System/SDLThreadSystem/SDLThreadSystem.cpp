@@ -67,7 +67,7 @@ namespace Menge
         return identity;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLThreadSystem::sleep( unsigned int _ms )
+    void SDLThreadSystem::sleep( uint32_t _ms )
     {
         SDL_Delay( _ms );
     }

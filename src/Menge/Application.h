@@ -115,7 +115,7 @@ namespace Menge
 	public:
 		void minimizeWindow() override;
 
-		unsigned int getDebugMask() const override;
+        uint32_t getDebugMask() const override;
 
 	public:
 		const WString & getCompanyName() const override;
@@ -207,7 +207,7 @@ namespace Menge
 		bool m_fixedDisplayResolution;
 		bool m_createRenderWindow;
 
-		unsigned int m_debugMask;
+        uint32_t m_debugMask;
 
 		bool m_resetTiming;
 		float m_phycisTiming;

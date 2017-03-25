@@ -891,7 +891,7 @@ namespace Menge
         this->deactivate();
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
+	void Node::render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		if( this->isRenderable() == false )
 		{
@@ -1067,7 +1067,7 @@ namespace Menge
 		m_invalidateRendering = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::renderChild_( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
+	void Node::renderChild_( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		for( TListNodeChild::unslug_iterator
 			it = m_children.ubegin(),
@@ -1206,7 +1206,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
+	void Node::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		if( (_debugMask & MENGE_DEBUG_NODES) == 0 )
 		{

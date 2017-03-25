@@ -2,8 +2,6 @@
 
 #   include "Interface/SoundSystemInterface.h"
 
-#	include "Kernel/ThreadJob.h"
-
 namespace Menge
 {
 	class ThreadWorkerSoundBufferUpdate

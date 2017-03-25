@@ -251,7 +251,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModulePathFinder::_render( const RenderObjectState * _state, unsigned int _debugMask )
+	void ModulePathFinder::_render( const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		for( TPathFinderMaps::iterator 
 			it = m_maps.begin(),

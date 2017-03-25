@@ -25,7 +25,7 @@ namespace Menge
 
 	public:
 		void _tick( float _time, float _timing ) override;
-		void _render( const RenderObjectState * _state, unsigned int _debugMask ) override;
+		void _render( const RenderObjectState * _state, uint32_t _debugMask ) override;
 		
 	protected:
 		typedef stdex::vector<AreaOfInterest *> TVectorAreaOfInterest;

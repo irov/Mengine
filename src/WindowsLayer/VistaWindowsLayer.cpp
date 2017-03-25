@@ -139,13 +139,13 @@ namespace Menge
         WString unicode_exeFilePath(exeFilePath);
         WString::size_type slashPos = unicode_exeFilePath.find_last_of( L'\\' );
 
-        WString unicode_exeFileDir = unicode_exeFilePath.substr( 0, slashPos );
-
         if( slashPos == WString::npos )
         {
             return false;
         }
 
+        WString unicode_exeFileDir = unicode_exeFilePath.substr( 0, slashPos );
+        
         if( ::SetCurrentDirectory( unicode_exeFileDir.c_str() ) == FALSE )
         {
             return false;

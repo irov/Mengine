@@ -71,7 +71,7 @@ namespace Menge
 		this->_tick( _time, _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::render( const RenderObjectState * _state, unsigned int _debugMask )
+	void ModuleBase::render( const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		this->_render( _state, _debugMask );
 	}
@@ -84,7 +84,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::_render( const RenderObjectState * _state, unsigned int _debugMask )
+	void ModuleBase::_render( const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		(void)_state;
 		(void)_debugMask;

@@ -22,6 +22,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     SDLSoundSystem::SDLSoundSystem()
+        : m_countChannels(0)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -48,6 +49,7 @@ namespace Menge
             LOGGER_ERROR( m_serviceProvider )("SDLSoundSystem.initialize: Failed, error = %s ..."
                 , Mix_GetError()
                 );
+
             return false;
         }
 
@@ -60,22 +62,25 @@ namespace Menge
 
         const int channels = Mix_AllocateChannels( MENGINE_SDL_SOUND_MAX_COUNT );
         
-        if( channels != MENGINE_SDL_SOUND_MAX_COUNT )
+        if( channels == 0 )
         {
             LOGGER_ERROR(m_serviceProvider)("SDLSoundSystem.initialize: Mix_AllocateChannels failed, error = %s ..."
-                , Mix_GetError());
+                , Mix_GetError()
+                );
 
             return false;
         }
 
-        for( int i = 0; i != MENGINE_SDL_SOUND_MAX_COUNT; ++i )
+        m_countChannels = channels;
+
+        for( uint32_t i = 0; i != m_countChannels; ++i )
         {
             m_freeChannels[i] = true;
         }
 
-        m_poolSoundBuffer = new FactoryPool<SDLSoundBufferMemory, MENGINE_SDL_SOUND_MAX_COUNT>( m_serviceProvider );
-        m_poolSoundBufferStream = new FactoryPool<SDLSoundBufferStream, MENGINE_SDL_SOUND_MAX_COUNT>( m_serviceProvider );
-        m_poolSoundSource = new FactoryPool<SDLSoundSource, MENGINE_SDL_SOUND_MAX_COUNT>( m_serviceProvider );
+        m_factorySoundBuffer = new FactoryPool<SDLSoundBufferMemory, MENGINE_SDL_SOUND_MAX_COUNT>( m_serviceProvider );
+        m_factorySoundBufferStream = new FactoryPool<SDLSoundBufferStream, MENGINE_SDL_SOUND_MAX_COUNT>( m_serviceProvider );
+        m_factorySoundSource = new FactoryPool<SDLSoundSource, MENGINE_SDL_SOUND_MAX_COUNT>( m_serviceProvider );
 
         return true;
     }
@@ -84,22 +89,30 @@ namespace Menge
     {
         Mix_CloseAudio();
         Mix_Quit();
+
+        m_factorySoundBuffer = nullptr;
+        m_factorySoundBufferStream = nullptr;
+        m_factorySoundSource = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLSoundSystem::update()
     {
-        for( int i = 0; i < MENGINE_SDL_SOUND_MAX_COUNT; ++i )
+        for( uint32_t i = 0; i != m_countChannels; ++i )
         {
-            if( !m_freeChannels[i] )
+            bool free = m_freeChannels[i];
+            
+            if( free == true )
             {
-                const int isPaused = Mix_Paused(i);
-                const int isPlaying = Mix_Playing(i);
+                continue;
+            }
 
-                // this channel stoped playing, mark it as free
-                if( !isPaused && !isPlaying )
-                {
-                    this->freeChannel(i);
-                }
+            const int isPaused = Mix_Paused( i );
+            const int isPlaying = Mix_Playing( i );
+
+            // this channel stoped playing, mark it as free
+            if( !isPaused && !isPlaying )
+            {
+                this->freeChannel( i );
             }
         }
     }
@@ -122,7 +135,7 @@ namespace Menge
 
         if( _isStream == false )
         {
-            SDLSoundBufferMemory * buffer = m_poolSoundBuffer->createObject();
+            SDLSoundBufferMemory * buffer = m_factorySoundBuffer->createObject();
 
             buffer->setServiceProvider( m_serviceProvider );
 
@@ -130,7 +143,7 @@ namespace Menge
         }
         else
         {
-            SDLSoundBufferStream * buffer = m_poolSoundBufferStream->createObject();
+            SDLSoundBufferStream * buffer = m_factorySoundBufferStream->createObject();
 
             buffer->setServiceProvider( m_serviceProvider );
 
@@ -152,7 +165,7 @@ namespace Menge
     {
         (void)_isHeadMode;
 
-        SDLSoundSourcePtr soundSource = m_poolSoundSource->createObject();
+        SDLSoundSourcePtr soundSource = m_factorySoundSource->createObject();
 
         if( soundSource == nullptr )
         {
@@ -168,23 +181,26 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     int SDLSoundSystem::findFreeChannel()
     {
-        int channel = -1;
-        for( int i = 0; i < MENGINE_SDL_SOUND_MAX_COUNT; ++i )
+        for( int i = 0; i < m_countChannels; ++i )
         {
-            if( m_freeChannels[i] )
+            bool free = m_freeChannels[i];
+
+            if( free == false )
             {
-                m_freeChannels[i] = false;
-                channel = i;
-                break;
+                continue;
             }
+
+            m_freeChannels[i] = false;
+
+            return i;
         }
 
-        return channel;
+        return -1;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLSoundSystem::freeChannel(int channel)
     {
-        if( channel >= 0 && channel < MENGINE_SDL_SOUND_MAX_COUNT )
+        if( channel >= 0 && channel < m_countChannels )
         {
             m_freeChannels[channel] = true;
         }

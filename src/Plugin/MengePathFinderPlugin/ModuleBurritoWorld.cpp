@@ -166,7 +166,7 @@ namespace Menge
 		m_worlds.erase( it_erase, m_worlds.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBurritoWorld::_render( const RenderObjectState * _state, unsigned int _debugMask )
+	void ModuleBurritoWorld::_render( const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		(void)_state;
 		(void)_debugMask;

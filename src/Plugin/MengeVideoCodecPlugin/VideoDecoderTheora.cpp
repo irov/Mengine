@@ -429,19 +429,19 @@ namespace Menge
 
 		if( m_options.alpha == false && m_options.pixelFormat == PF_X8R8G8B8 )
 		{
-			unsigned char * dstBitmap = _buffer;
+			uint8_t * dstBitmap = _buffer;
 			unsigned char * dstBitmapOffset = _buffer + m_pitch;
 
-			unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 4;
+            uint32_t dstOff = m_pitch * 2 - m_theoraInfo.width * 4;
 			int yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
 			int y_height = _yuvBuffer.y_height >> 1;
 			int y_width = _yuvBuffer.y_width >> 1;
 
-			unsigned char * ySrc = (unsigned char*)_yuvBuffer.y;
-			unsigned char * uSrc = (unsigned char*)_yuvBuffer.u;
-			unsigned char * vSrc = (unsigned char*)_yuvBuffer.v;
-			unsigned char * ySrc2 = ySrc + _yuvBuffer.y_stride;
+			uint8_t * ySrc = (uint8_t*)_yuvBuffer.y;
+			uint8_t * uSrc = (uint8_t*)_yuvBuffer.u;
+			uint8_t * vSrc = (uint8_t*)_yuvBuffer.v;
+			uint8_t * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
 			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
 			for( int y = 0; y != y_height; ++y )
@@ -523,19 +523,19 @@ namespace Menge
 		}
 		else if( m_options.alpha == false && m_options.pixelFormat == PF_R8G8B8 )
 		{
-			unsigned char * dstBitmap = _buffer;
-			unsigned char * dstBitmapOffset = _buffer + m_pitch;
+			uint8_t * dstBitmap = _buffer;
+            uint8_t * dstBitmapOffset = _buffer + m_pitch;
 
-			unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 3;
+            uint32_t dstOff = m_pitch * 2 - m_theoraInfo.width * 3;
 			int yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
 			int y_height = _yuvBuffer.y_height >> 1;
 			int y_width = _yuvBuffer.y_width >> 1;
 
-			unsigned char * ySrc = (unsigned char*)_yuvBuffer.y;
-			unsigned char * uSrc = (unsigned char*)_yuvBuffer.u;
-			unsigned char * vSrc = (unsigned char*)_yuvBuffer.v;
-			unsigned char * ySrc2 = ySrc + _yuvBuffer.y_stride;
+			uint8_t * ySrc = (uint8_t*)_yuvBuffer.y;
+			uint8_t * uSrc = (uint8_t*)_yuvBuffer.u;
+			uint8_t * vSrc = (uint8_t*)_yuvBuffer.v;
+			uint8_t * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
 			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
 			for( int y = 0; y != y_height; ++y )
@@ -613,19 +613,19 @@ namespace Menge
 		}
 		else if( m_options.alpha == true )
 		{
-			unsigned char * dstBitmap = _buffer;
-			unsigned char * dstBitmapOffset = _buffer + m_pitch;
+            uint8_t * dstBitmap = _buffer;
+            uint8_t * dstBitmapOffset = _buffer + m_pitch;
 
-			unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 4;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
+			uint32_t dstOff = m_pitch * 2 - m_theoraInfo.width * 4;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
 			int yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
 			int y_height = _yuvBuffer.y_height >> 1;
 			int y_width = _yuvBuffer.y_width >> 1;
 
-			unsigned char * ySrc = (unsigned char*)_yuvBuffer.y;
-			unsigned char * uSrc = (unsigned char*)_yuvBuffer.u;
-			unsigned char * vSrc = (unsigned char*)_yuvBuffer.v;
-			unsigned char * ySrc2 = ySrc + _yuvBuffer.y_stride;
+			uint8_t * ySrc = (uint8_t*)_yuvBuffer.y;
+			uint8_t * uSrc = (uint8_t*)_yuvBuffer.u;
+			uint8_t * vSrc = (uint8_t*)_yuvBuffer.v;
+			uint8_t * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
 			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
 			//int y_rgb_height_begin = y_height;

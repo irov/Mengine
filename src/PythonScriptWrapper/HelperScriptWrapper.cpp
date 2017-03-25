@@ -1086,7 +1086,7 @@ namespace Menge
             std::time_t ctTime; 
             std::time(&ctTime);
 
-            return static_cast<unsigned int>(ctTime);
+            return static_cast<uint32_t>(ctTime);
         }
 
 		String s_getTimeString()

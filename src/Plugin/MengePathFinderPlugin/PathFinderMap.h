@@ -66,7 +66,7 @@ namespace Menge
 		void setCamera2D( const RenderCameraInterface * _camera );
 
 	public:
-		void render( const RenderObjectState * _state, unsigned int _debugMask );
+		void render( const RenderObjectState * _state, uint32_t _debugMask );
 
 	protected:
 		//void renderPolygonRing_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const Polygon::ring_type & _ring, uint32_t _color );

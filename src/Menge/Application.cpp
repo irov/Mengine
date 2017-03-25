@@ -1839,7 +1839,7 @@ namespace Menge
 		return m_renderViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int Application::getDebugMask() const
+    uint32_t Application::getDebugMask() const
 	{
 		return m_debugMask;
 	}

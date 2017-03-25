@@ -7,7 +7,6 @@
 
 #	include "MixerVolume.h"
 
-#   include "Kernel/ThreadJob.h"
 #   include "ThreadWorkerSoundBufferUpdate.h"
 
 #	include "Core/ConstString.h"
@@ -170,7 +169,7 @@ namespace Menge
 		typedef stdex::map<uint32_t, SoundSourceDesc *> TMapSoundSource;
 		TMapSoundSource m_soundSourceMap;
 		
-        ThreadJobPtr m_threadSoundBufferUpdate;
+        ThreadJobPtr m_threadJobSoundBufferUpdate;
 
         FactoryPtr m_factoryWorkerTaskSoundBufferUpdate;
 

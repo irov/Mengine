@@ -41,17 +41,17 @@ enum PixelType
 	EACRG11S,
 };
 
-const unsigned int PVRTEX_MIPMAP = (1<<8); // has mip map levels
-const unsigned int PVRTEX_TWIDDLE = (1<<9); // is twiddled
-const unsigned int PVRTEX_BUMPMAP = (1<<10); // has normals encoded for a bump map
-const unsigned int PVRTEX_TILING = (1<<11); // is bordered for tiled pvr
-const unsigned int PVRTEX_CUBEMAP = (1<<12); // is a cubemap/skybox
-const unsigned int PVRTEX_FALSEMIPCOL  = (1<<13); //
-const unsigned int PVRTEX_VOLUME = (1<<14);
-const unsigned int PVRTEX_PIXELTYPE = 0xff; // pixel type is always in the last 16bits of the flags
-const unsigned int PVRTEX_IDENTIFIER  = 0x21525650;  // the pvr identifier is the characters 'P','V','R'
+const uint32_t PVRTEX_MIPMAP = (1<<8); // has mip map levels
+const uint32_t PVRTEX_TWIDDLE = (1<<9); // is twiddled
+const uint32_t PVRTEX_BUMPMAP = (1<<10); // has normals encoded for a bump map
+const uint32_t PVRTEX_TILING = (1<<11); // is bordered for tiled pvr
+const uint32_t PVRTEX_CUBEMAP = (1<<12); // is a cubemap/skybox
+const uint32_t PVRTEX_FALSEMIPCOL  = (1<<13); //
+const uint32_t PVRTEX_VOLUME = (1<<14);
+const uint32_t PVRTEX_PIXELTYPE = 0xff; // pixel type is always in the last 16bits of the flags
+const uint32_t PVRTEX_IDENTIFIER  = 0x21525650;  // the pvr identifier is the characters 'P','V','R'
 
-const unsigned int PVRTEX_V1_HEADER_SIZE = 44; // old header size was 44 for identification purposes
+const uint32_t PVRTEX_V1_HEADER_SIZE = 44; // old header size was 44 for identification purposes
 
 //////////////////////////////////////////////////////////////////////////
 ImageDecoderPVRTC::ImageDecoderPVRTC()

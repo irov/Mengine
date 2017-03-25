@@ -27,6 +27,9 @@ namespace Menge
 	public:
 		bool avaliable() const override;
 
+    public:
+        ThreadJobPtr createJob( uint32_t _sleep ) override;
+
 	public:
 		bool createThread( const ConstString & _threadName, int _priority, const char * _doc ) override;
 		bool destroyThread( const ConstString & _threadName ) override;
@@ -73,7 +76,8 @@ namespace Menge
 		TVectorThreadQueues m_threadQueues;
 
 		FactoryPtr m_factoryThreadQueue;
-		FactoryPtr m_factoryThreadMutexDummy;	
+        FactoryPtr m_factoryThreadJob;
+		FactoryPtr m_factoryThreadMutexDummy;
 
 		struct ThreadDesc
 		{

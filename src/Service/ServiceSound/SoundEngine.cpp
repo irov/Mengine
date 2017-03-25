@@ -39,15 +39,14 @@ namespace Menge
 
 		if( m_supportStream == true )
 		{
-			m_threadSoundBufferUpdate = new ThreadJob();
-            m_threadSoundBufferUpdate->setServiceProvider( m_serviceProvider );
-			m_threadSoundBufferUpdate->initialize( 5 );
+			m_threadJobSoundBufferUpdate = THREAD_SERVICE(m_serviceProvider)
+                ->createJob( 5 );
 
 			THREAD_SERVICE(m_serviceProvider)
 				->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), 0, "SoundEngine::initialize" );
 
 			THREAD_SERVICE(m_serviceProvider)
-				->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), m_threadSoundBufferUpdate );
+				->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), m_threadJobSoundBufferUpdate );
 		}
 
 		float commonVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "CommonVolume", 1.f);
@@ -89,15 +88,13 @@ namespace Menge
 
         m_soundSourceMap.clear();
 
-		if( m_threadSoundBufferUpdate != nullptr )
+		if( m_threadJobSoundBufferUpdate != nullptr )
 		{
 			THREAD_SERVICE(m_serviceProvider)
-				->joinTask( m_threadSoundBufferUpdate );
+				->joinTask( m_threadJobSoundBufferUpdate );
 
-			m_threadSoundBufferUpdate = nullptr;
+			m_threadJobSoundBufferUpdate = nullptr;
 		}
-
-        m_threadSoundBufferUpdate = nullptr;
 
         m_factoryWorkerTaskSoundBufferUpdate = nullptr;
 
@@ -1190,9 +1187,9 @@ namespace Menge
 			return false;
 		}
 
-		if( m_threadSoundBufferUpdate != nullptr )
+		if( m_threadJobSoundBufferUpdate != nullptr )
 		{
-	        m_threadSoundBufferUpdate->removeWorker( _source->bufferId );
+	        m_threadJobSoundBufferUpdate->removeWorker( _source->bufferId );
 		}
 
         _source->worker = nullptr;
@@ -1216,7 +1213,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_threadSoundBufferUpdate != nullptr )
+		if( m_threadJobSoundBufferUpdate != nullptr )
 		{
 			ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject();
 
@@ -1227,7 +1224,7 @@ namespace Menge
 
 			_source->worker = worker;
 			
-			_source->bufferId = m_threadSoundBufferUpdate->addWorker( _source->worker );
+			_source->bufferId = m_threadJobSoundBufferUpdate->addWorker( _source->worker );
 		}
 		else
 		{

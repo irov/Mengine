@@ -310,7 +310,7 @@ namespace	Menge
 		_adaptScreenPoint = _screenPoint * windowScale + windowOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
+	void Arrow::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) == 0 )
 		{

@@ -21,6 +21,7 @@
 
 #	include "Core/FileLogger.h"
 #	include "Core/IniUtil.h"
+#	include "Core/Date.h"
 
 //#	include "resource.h"
 
@@ -29,6 +30,34 @@
 
 #	include <sstream>
 #	include <iomanip>
+
+#   include "SDL_filesystem.h"
+
+#ifdef WIN32
+#	ifdef _WIN32_WINNT	
+#       undef _WIN32_WINNT
+#       define _WIN32_WINNT 0x0500
+#   endif
+
+#   ifdef _WIN32_WINDOWS
+#       undef _WIN32_WINDOWS
+#       define _WIN32_WINDOWS 0x0500
+#   endif
+
+#	define WIN32_LEAN_AND_MEAN
+
+#	ifndef NOMINMAX
+#	define NOMINMAX
+#	endif
+
+#pragma warning(push, 0) 
+#	include <Windows.h>
+#   include <WinUser.h>
+
+#   include <shellapi.h>
+#   include <shlobj.h>
+#pragma warning(pop) 
+#endif
 
 #ifdef _MSC_VER
 #	define snprintf _snprintf
@@ -119,71 +148,42 @@ namespace Menge
     bool SDLApplication::initializeFileEngine_()
     {
         LOGGER_INFO(m_serviceProvider)( "Inititalizing File Service..." );
+        SERVICE_CREATE( m_serviceProvider, FileService );
 
-        {
-            LOGGER_INFO( m_serviceProvider )("Initialize SDL file group...");
-            PLUGIN_CREATE( m_serviceProvider, MengeSDLFileGroup );
-        }
+        LOGGER_INFO( m_serviceProvider )("Initialize SDL file group...");
+        PLUGIN_CREATE( m_serviceProvider, MengeSDLFileGroup );
+        
+#	ifdef _MSC_VER
+        WChar currentPathW[MENGINE_MAX_PATH];
+        size_t currentPathW_len = (size_t)::GetCurrentDirectory( MENGINE_MAX_PATH, currentPathW );
 
+        currentPathW[currentPathW_len] = L'\\';
+        currentPathW[currentPathW_len + 1] = L'\0';
+
+        Char utf8_currentPath[MENGINE_MAX_PATH];
+        size_t utf8_currentPath_len;
+        UNICODE_SERVICE( m_serviceProvider )
+            ->unicodeToUtf8( currentPathW, currentPathW_len + 1, utf8_currentPath, MENGINE_MAX_PATH, &utf8_currentPath_len );
+
+        FilePath currentPath = Helper::stringizeStringSize( m_serviceProvider, utf8_currentPath, utf8_currentPath_len );
+#   else
+        char * basePath = SDL_GetBasePath();
+
+        FilePath currentPath = Helper::stringizeString( m_serviceProvider, basePath );
+
+        SDL_free( basePath );
+#	endif
+        
         // mount root		
         ConstString c_dir = Helper::stringizeString(m_serviceProvider, "dir");
         if( FILE_SERVICE( m_serviceProvider )
-            ->mountFileGroup( ConstString::none(), m_currentPath, c_dir ) == false )
+            ->mountFileGroup( ConstString::none(), currentPath, c_dir ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "SDLApplication::setupFileService: failed to mount application directory %ls"
-                , m_currentPath.c_str()
+                , currentPath.c_str()
                 );
 
             return false;
-        }
-
-        //m_tempPath.clear();
-        m_userPath.clear();
-
-        m_userPath += L"User";
-        m_userPath += L"/";
-
-        String utf8_userPath;
-        if( Helper::unicodeToUtf8( m_serviceProvider, m_userPath, utf8_userPath ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "SDLApplication: failed user directory %ls convert to ut8f"
-                , m_userPath.c_str()
-                );
-
-            return false;
-        }
-
-        FilePath userPath = Helper::stringizeString( m_serviceProvider, utf8_userPath );
-
-        // mount user directory
-        if( FILE_SERVICE( m_serviceProvider )
-            ->mountFileGroup( Helper::stringizeString( m_serviceProvider, "user" ), userPath, Helper::stringizeString( m_serviceProvider, "dir" ) ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "SDLApplication: failed to mount user directory %ls"
-                , m_userPath.c_str()
-                );
-
-            return false;
-        }
-
-        //if( FILE_SERVICE( m_serviceProvider )
-        //    ->existDirectory( Helper::stringizeString( m_serviceProvider, "user" ), ConstString::none() ) == false )
-        //{
-        //    FILE_SERVICE( m_serviceProvider )
-        //        ->createDirectory( Helper::stringizeString( m_serviceProvider, "user" ), ConstString::none() );
-        //}
-
-        FilePath logFilename = Helper::stringizeString( m_serviceProvider, "log.log" );
-
-        OutputStreamInterfacePtr fileLogInterface = FILE_SERVICE( m_serviceProvider )
-            ->openOutputFile( Helper::stringizeString( m_serviceProvider, "user" ), logFilename );
-
-        if( fileLogInterface != nullptr )
-        {
-            m_fileLog = new ServantBase<FileLogger>();
-
-            LOGGER_SERVICE( m_serviceProvider )
-                ->registerLogger( m_fileLog );
         }
 
 #	ifndef MENGINE_MASTER_RELEASE
@@ -193,7 +193,7 @@ namespace Menge
             ->mountFileGroup( c_dev, ConstString::none(), c_dir ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "SDLApplication::setupFileService: failed to mount dev directory %ls"
-                , m_currentPath.c_str()
+                , currentPath.c_str()
                 );
 
             return false;
@@ -248,6 +248,7 @@ namespace Menge
     bool SDLApplication::initializeConfigEngine_()
     {
         LOGGER_WARNING(m_serviceProvider)("Inititalizing Config Manager..." );
+        SERVICE_CREATE( m_serviceProvider, ConfigService );
 
         FilePath gameIniPath;
         if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
@@ -268,16 +269,84 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLApplication::initializeUserDirectory_()
+    {
+        WString Project_Company = CONFIG_VALUE( m_serviceProvider, "Project", "Company", L"NONAME" );
+        WString Project_Name = CONFIG_VALUE( m_serviceProvider, "Project", "Name", L"UNKNOWN" );
+
+        String utf8_Project_Company;
+        Helper::unicodeToUtf8( m_serviceProvider, Project_Company, utf8_Project_Company );
+
+        String utf8_Project_Name;
+        Helper::unicodeToUtf8( m_serviceProvider, Project_Name, utf8_Project_Name );
+
+        char * sdl_prefPath = SDL_GetPrefPath( utf8_Project_Company.c_str(), utf8_Project_Name.c_str() );
+
+        FilePath userPath = Helper::stringizeString( m_serviceProvider, sdl_prefPath );
+
+        SDL_free( sdl_prefPath );
+
+        // mount user directory
+        if( FILE_SERVICE( m_serviceProvider )
+            ->mountFileGroup( Helper::stringizeString( m_serviceProvider, "user" ), userPath, Helper::stringizeString( m_serviceProvider, "dir" ) ) == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("SDLApplication: failed to mount user directory %ls"
+                , userPath.c_str()
+                );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLApplication::initializeLoggerFile_()
+    {
+        bool nologs = HAS_OPTION( m_serviceProvider, "nologs" );
+
+        if( nologs == true )
+        {
+            return true;
+        }
+
+        m_fileLog = new FactorableUnique<FileLogger>();
+
+        LOGGER_SERVICE( m_serviceProvider )
+            ->registerLogger( m_fileLog );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeLoggerEngine_()
     {
-        m_loggerConsole = new FactorableUnique<SDLLogger>();
+        SERVICE_CREATE( m_serviceProvider, LoggerService );
+
+        bool nologs = HAS_OPTION( m_serviceProvider, "nologs" );
+
+        if( nologs == true )
+        {
+            return true;
+        }
+
+        m_loggerMessageBox = new FactorableUnique<SDLMessageBoxLogger>();
+
+        m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 
         LOGGER_SERVICE(m_serviceProvider)
-            ->registerLogger( m_loggerConsole );
+            ->registerLogger( m_loggerMessageBox );
 
         EMessageLevel m_logLevel;
 
-        m_logLevel = LM_ERROR;
+        bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+
+        if( developmentMode == true  )
+        {
+            m_logLevel = LM_LOG;
+        }
+        else
+        {
+            m_logLevel = LM_ERROR;
+        }        
 
         const Char * option_log = GET_OPTION_VALUE( m_serviceProvider, "log" );
         
@@ -417,8 +486,6 @@ namespace Menge
 
         SERVICE_CREATE( m_serviceProvider, StringizeService );
 
-        SERVICE_CREATE( m_serviceProvider, LoggerService );
-
         if( this->initializeLoggerEngine_() == false )
         {
             return false;
@@ -433,19 +500,26 @@ namespace Menge
         SERVICE_CREATE( m_serviceProvider, PluginSystem );
         SERVICE_CREATE( m_serviceProvider, PluginService );
 
-        SERVICE_CREATE( m_serviceProvider, FileService );
-
         if( this->initializeFileEngine_() == false )
         {
             return false;
         }
 
-        SERVICE_CREATE( m_serviceProvider, ConfigService );
-
         if( this->initializeConfigEngine_() == false )
         {
             return false;
         }
+
+        if( this->initializeUserDirectory_() == false )
+        {
+            return false;
+        }
+
+        if( this->initializeLoggerFile_() == false )
+        {
+            return false;
+        }
+
 
         SERVICE_CREATE( m_serviceProvider, ArchiveService );
 
@@ -489,8 +563,6 @@ namespace Menge
         PythonScriptWrapper::entityWrap( m_serviceProvider );
         
         SERVICE_CREATE( m_serviceProvider, Application );
-
-        SERVICE_CREATE( m_serviceProvider, PrefetcherService );
 
 #   define MENGINE_ADD_PLUGIN( Name, Info )\
         do{LOGGER_INFO(m_serviceProvider)( Info );\
@@ -599,13 +671,6 @@ namespace Menge
 
         LOGGER_INFO( m_serviceProvider )("Application Create...");
 
-        Resolution desktopResolution;
-        PLATFORM_SERVICE( m_serviceProvider )
-            ->getDesktopResolution( desktopResolution );
-
-        APPLICATION_SERVICE( m_serviceProvider )
-            ->changeWindowResolution( desktopResolution );
-
         ConstString resourceIniPath;
         if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
         {
@@ -711,6 +776,8 @@ namespace Menge
 
         SERVICE_FINALIZE( m_serviceProvider, Menge::TimerServiceInterface );
         SERVICE_FINALIZE( m_serviceProvider, Menge::TimerSystemInterface );
+
+        SERVICE_FINALIZE( m_serviceProvider, Menge::PlatformInterface );
         
         if( m_fileLog != nullptr )
         {
@@ -720,12 +787,12 @@ namespace Menge
             m_fileLog = nullptr;
         }
         
-        if( m_loggerConsole != nullptr )
+        if( m_loggerMessageBox != nullptr )
         {
             LOGGER_SERVICE( m_serviceProvider )
-                ->unregisterLogger( m_loggerConsole );
+                ->unregisterLogger( m_loggerMessageBox );
 
-            m_loggerConsole = nullptr;
+            m_loggerMessageBox = nullptr;
         }
 
         SERVICE_FINALIZE( m_serviceProvider, Menge::LoggerServiceInterface );

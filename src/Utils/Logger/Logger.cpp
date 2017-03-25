@@ -20,7 +20,7 @@ namespace Menge
 
 		va_start(argList, _format);
 
-		char str[4096] = {0};
+		char str[8192] = {0};
 		int size = vsprintf( str, _format, argList );
         
 		va_end(argList);

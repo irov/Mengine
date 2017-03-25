@@ -427,7 +427,7 @@ namespace Menge
 		ColourValue color;
 		this->calcTotalColor(color);
 
-		unsigned int argb = color.getAsARGB();
+        uint32_t argb = color.getAsARGB();
 
 		for( RenderVertex2D
 			*it = _vertices,

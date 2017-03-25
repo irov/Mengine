@@ -27,7 +27,7 @@ namespace Menge
         ThreadIdentityInterfacePtr createThread(int _priority, const char * _doc) override;
         
     public:
-        void sleep( unsigned int _ms ) override;
+        void sleep( uint32_t _ms ) override;
 
     public:
         ThreadMutexInterfacePtr createMutex(const char * _doc) override;

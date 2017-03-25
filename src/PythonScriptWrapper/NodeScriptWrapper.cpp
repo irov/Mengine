@@ -2826,7 +2826,7 @@ namespace Menge
 				->pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, unsigned int _button, bool _isDown )
+		void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, uint32_t _button, bool _isDown )
 		{
 			mt::vec2f pos_screen;
 			this->s_calcMouseScreenPosition( _pos, pos_screen );

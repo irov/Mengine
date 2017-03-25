@@ -85,7 +85,7 @@ namespace Menge
                 mt::vec2f point;
                 this->calcCursorPosition_( _event.button.x, _event.button.y, point );
 
-                unsigned int button;
+                uint32_t button;
                 
                 switch( _event.button.button )
                 {
@@ -120,7 +120,7 @@ namespace Menge
                 mt::vec2f point;
                 this->calcCursorPosition_( _event.button.x, _event.button.y, point );
 
-                unsigned int button;
+                uint32_t button;
 
                 switch( _event.button.button )
                 {

@@ -28,7 +28,7 @@ namespace	Menge
 		};		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Isometric::render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, unsigned int _debugMask )
+	void Isometric::render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		stdex::intrusive_sort_stable( m_children, FIsometricSortY() );
 

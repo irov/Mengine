@@ -1,11 +1,12 @@
 #	pragma once
 
-#	include "Interface/ThreadSystemInterface.h"
+#	include "Interface/ThreadInterface.h"
 
 #   include "Core/ServantBase.h"
 
 namespace Menge 
 {
+    //////////////////////////////////////////////////////////////////////////
 	class ThreadTask
 		: public ServantBase<ThreadTaskInterface>
 	{
@@ -45,6 +46,7 @@ namespace Menge
 		volatile bool m_successful;
 		volatile bool m_cancel;				
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ThreadTask> ThreadTaskPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

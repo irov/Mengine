@@ -104,8 +104,8 @@ namespace mt
 			return 1;
 		}
 		
-		unsigned int f = 1;
-		unsigned int d = 0;
+        uint32_t f = 1;
+        uint32_t d = 0;
 		
 		for( uint32_t i = 0; i != _value; ++i )
 		{			

@@ -130,7 +130,7 @@ namespace Menge
 
 		if (datacount > 0) 
 		{
-			dest->m_stream->write(dest->buffer, (unsigned int)datacount );
+			dest->m_stream->write(dest->buffer, datacount );
 		}
 	}
 

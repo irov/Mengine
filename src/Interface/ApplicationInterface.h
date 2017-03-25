@@ -125,7 +125,7 @@ namespace Menge
 		virtual bool getTextEnable() const = 0;
 
 	public:
-        virtual unsigned int getDebugMask() const = 0;
+        virtual uint32_t getDebugMask() const = 0;
 
         virtual void showKeyboard() = 0;
         virtual void hideKeyboard() = 0;

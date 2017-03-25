@@ -606,7 +606,7 @@ namespace Menge
 	//		);
 	//}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderMap::render( const RenderObjectState * _state, unsigned int _debugMask )
+	void PathFinderMap::render( const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		(void)_state;
 

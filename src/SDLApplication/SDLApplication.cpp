@@ -688,9 +688,9 @@ namespace Menge
 
             return false;
         }
-
-        const bool fullscreen = APPLICATION_SERVICE(m_serviceProvider)
-            ->getFullscreenMode();
+               
+        PLATFORM_SERVICE( m_serviceProvider )
+            ->setIcon( 0 );
 
         const String & projectTitle = APPLICATION_SERVICE(m_serviceProvider)
             ->getProjectTitle();
@@ -703,12 +703,18 @@ namespace Menge
                                             );
         }
 
+        PLATFORM_SERVICE( m_serviceProvider )
+            ->setProjectTitle( wprojectTitle );
+
         Resolution windowResolution;
         APPLICATION_SERVICE(m_serviceProvider)
             ->calcWindowResolution(windowResolution);
 
+        const bool fullscreen = APPLICATION_SERVICE( m_serviceProvider )
+            ->getFullscreenMode();
+
         if( PLATFORM_SERVICE(m_serviceProvider)
-            ->createWindow(0, wprojectTitle, windowResolution, fullscreen) == false )
+            ->createWindow( windowResolution, fullscreen ) == false )
         {
             return false;
         }

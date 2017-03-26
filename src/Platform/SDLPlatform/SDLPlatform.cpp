@@ -40,8 +40,7 @@ namespace Menge
         : m_window(nullptr)
         , m_glContext(nullptr)
         , m_sdlInput(nullptr)
-        , m_width(0)
-        , m_height(0)
+        , m_icon(0)
         , m_shouldQuit(false)
         , m_running(false)
         , m_pause(false)
@@ -184,8 +183,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::_finalize()
     {
-        SDL_DestroyWindow(reinterpret_cast<SDL_Window*>(m_window));
-        SDL_GL_DeleteContext(reinterpret_cast<SDL_GLContext>(m_glContext));
+        this->destroyWindow_();
+
         SDL_Quit();
 
         if( m_sdlInput != nullptr )
@@ -193,9 +192,6 @@ namespace Menge
             m_sdlInput->finalize();
             m_sdlInput = nullptr;
         }
-
-        m_window = nullptr;
-        m_glContext = nullptr;
 
         m_platformName.clear();
     }
@@ -206,57 +202,47 @@ namespace Menge
         m_shouldQuit = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::createWindow( uint32_t _icon, const Menge::WString & _projectTitle, const Resolution & _resolution, bool _fullscreen )
+    void SDLPlatform::setIcon( uint32_t _icon )
     {
-        PARAM_UNUSED(_icon);
-        PARAM_UNUSED(_fullscreen);
-
-        Menge::Char utf8Title[1024] = { 0 };
-        size_t utf8Size = 0;
-        UNICODE_SERVICE( m_serviceProvider )->unicodeToUtf8(_projectTitle.c_str(), _projectTitle.size(),
-                                                            utf8Title, sizeof(utf8Title) - 1, &utf8Size);
-
-        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-        SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-        SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-        SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-        SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-
-        Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
-        if( _fullscreen )
-        {
-            windowFlags |= SDL_WINDOW_FULLSCREEN;
-        }
-
-        m_width = static_cast<int>(_resolution.getWidth());
-        m_height = static_cast<int>(_resolution.getHeight());
-
-        m_window = reinterpret_cast<WindowHandle>(SDL_CreateWindow(utf8Title,
-                                                                   SDL_WINDOWPOS_CENTERED,
-                                                                   SDL_WINDOWPOS_CENTERED,
-                                                                   m_width, m_height,
-                                                                   windowFlags));
-        if( m_window == nullptr )
+        m_icon = _icon;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SDLPlatform::getIcon() const
+    {
+        return m_icon;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::setProjectTitle( const WString & _projectTitle )
+    {
+        m_projectTitle = _projectTitle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const WString & SDLPlatform::getProjectTitle() const
+    {
+        return m_projectTitle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::createWindow( const Resolution & _resolution, bool _fullscreen )
+    {
+        if( this->createWindow_( _resolution, _fullscreen ) == false )
         {
             return false;
         }
 
-        m_glContext = SDL_GL_CreateContext(reinterpret_cast<SDL_Window*>(m_window));
+        m_glContext = SDL_GL_CreateContext( m_window );
 
         if( m_glContext == nullptr )
         {
-            SDL_DestroyWindow(reinterpret_cast<SDL_Window*>(m_window));
+            SDL_DestroyWindow( m_window );
+            m_window = nullptr;
+
             return false;
         }
-
-        m_sdlInput->updateSurfaceResolution(static_cast<float>(m_width),
-                                            static_cast<float>(m_height));
-
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    WindowHandle SDLPlatform::getWindowHandle() const
+    Pointer SDLPlatform::getWindowHandle() const
     {
         return m_window;
     }
@@ -271,27 +257,45 @@ namespace Menge
         return m_touchpad;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::getDesktopResolution( Resolution & _resolution ) const
+    bool SDLPlatform::getDesktopResolution( Resolution & _resolution ) const
     {
         SDL_DisplayMode dm;
-        if (SDL_GetDesktopDisplayMode(0, &dm) == 0)
+        if( SDL_GetDesktopDisplayMode( 0, &dm ) != 0 )
         {
-            _resolution.setWidth(static_cast<uint32_t>(dm.w));
-            _resolution.setHeight(static_cast<uint32_t>(dm.h));
+            LOGGER_ERROR(m_serviceProvider)("SDLPlatform::getDesktopResolution failed %s"
+                , SDL_GetError()
+            );
+
+            return false;
         }
+            
+        _resolution.setWidth(static_cast<uint32_t>(dm.w));
+        _resolution.setHeight( static_cast<uint32_t>(dm.h) );
+        
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::minimizeWindow()
     {
-
+        SDL_MinimizeWindow( m_window );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setCursorPosition( const mt::vec2f & _pos )
     {
-        const int wndPosX = static_cast<int>(_pos.x * m_width);
-        const int wndPosY = static_cast<int>(_pos.y * m_width);
+        Resolution resolution;
+        if( this->getDesktopResolution( resolution ) == false )
+        {
+            return;
+        }
+
+        uint32_t width = resolution.getWidth();
+        uint32_t height = resolution.getHeight();
+
+        const int wndPosX = static_cast<int>(_pos.x * width);
+        const int wndPosY = static_cast<int>(_pos.y * height);
+
         // ! This function generates a mouse motion event !
-        SDL_WarpMouseInWindow(reinterpret_cast<SDL_Window*>(m_window), wndPosX, wndPosY);
+        SDL_WarpMouseInWindow( m_window, wndPosX, wndPosY );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::showKeyboard()
@@ -308,11 +312,61 @@ namespace Menge
         PARAM_UNUSED(_fullscreen);
 
         // SDL can't toggle this without recreating the window!
+        //m_windowResolution = _resolution;
+
+        Uint32 flags = SDL_GetWindowFlags( m_window );
+
+        if( _fullscreen == true && !(flags & SDL_WINDOW_FULLSCREEN) )
+        {
+            this->changeWindow_( _resolution, _fullscreen );
+        }
+        else if( _fullscreen == false && (flags & SDL_WINDOW_FULLSCREEN) )
+        {
+            this->changeWindow_( _resolution, _fullscreen );
+        }
+        //Uint32 flags = SDL_GetWindowFlags( m_window );
+
+        //if( _fullscreen == true && !(flags & SDL_WINDOW_FULLSCREEN_DESKTOP) )
+        //{
+        //    this->changeWindow_( _resolution, _fullscreen );
+        //}
+        //else if( _fullscreen == false && (flags & SDL_WINDOW_FULLSCREEN_DESKTOP) )
+        //{
+        //    this->changeWindow_( _resolution, _fullscreen );
+        //}
+
+        //this->createWindow( _resolution, _fullscreen );
+
+        //const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
+        //    ->getContentResolution();
+
+        //const Viewport & renderViewport = APPLICATION_SERVICE( m_serviceProvider )
+        //    ->getRenderViewport();
+
+        //RENDER_SERVICE( m_serviceProvider )
+        //    ->createRenderWindow( _resolution
+        //        , contentResolution
+        //        , renderViewport
+        //        , 0
+        //        , _fullscreen
+        //        , 0
+        //        , 0
+        //        , 0
+        //    );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::notifyVsyncChanged( bool _vsync )
     {
         PARAM_UNUSED(_vsync);
+
+        if( _vsync == false )
+        {
+            SDL_GL_SetSwapInterval( 0 );
+        }
+        else
+        {
+            SDL_GL_SetSwapInterval( 1 );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::notifyCursorModeChanged( bool _mode )
@@ -387,26 +441,136 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::changeWindow_( const Resolution & _resolution, bool _fullscreen )
+    {
+        this->destroyWindow_();
+        this->createWindow_( _resolution, _fullscreen );
+
+        SDL_GL_MakeCurrent( m_window, m_glContext );        
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::createWindow_( const Resolution & _resolution, bool _fullscreen )
+    {
+        Menge::Char utf8Title[1024] = {0};
+        size_t utf8Size = 0;
+        UNICODE_SERVICE( m_serviceProvider )
+            ->unicodeToUtf8( m_projectTitle.c_str()
+                , m_projectTitle.size()
+                , utf8Title
+                , sizeof( utf8Title ) - 1
+                , &utf8Size
+            );
+
+        SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+        SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
+        SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
+        SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
+        SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
+        SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
+
+        Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+
+        if( _fullscreen )
+        {
+            windowFlags |= SDL_WINDOW_FULLSCREEN;
+        }
+
+        int width = static_cast<int>(_resolution.getWidth());
+        int height = static_cast<int>(_resolution.getHeight());
+
+        m_window = SDL_CreateWindow( utf8Title
+            , SDL_WINDOWPOS_CENTERED
+            , SDL_WINDOWPOS_CENTERED
+            , width
+            , height
+            , windowFlags
+        );
+
+        if( m_window == nullptr )
+        {
+            return false;
+        }
+
+        m_sdlInput->updateSurfaceResolution( static_cast<float>(width),
+            static_cast<float>(height) );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::destroyWindow_()
+    {
+
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::processEvents()
     {
         bool quitRequest = m_shouldQuit;
 
-        if( !quitRequest )
+        if( m_shouldQuit == true )
         {
-            SDL_Event sdlEvent;
-            while( SDL_PollEvent(&sdlEvent) != 0 && !quitRequest )
-            {
-                m_sdlInput->handleEvent(sdlEvent);
-
-                switch( sdlEvent.type )
-                {
-                    case SDL_QUIT:
-                        quitRequest = true;
-                        break;
-                }
-            }
+            return true;
         }
 
+        Uint32 windowID = SDL_GetWindowID( m_window );
+
+        SDL_Event sdlEvent;
+        while( SDL_PollEvent(&sdlEvent) != 0 && !quitRequest )
+        {
+            m_sdlInput->handleEvent( sdlEvent );
+
+            switch( sdlEvent.type )
+            {
+            case SDL_KEYDOWN:
+                {
+                    switch( sdlEvent.key.keysym.sym )
+                    {
+                    case SDLK_RETURN:
+                        {
+                            if( sdlEvent.key.keysym.mod & KMOD_ALT )
+                            {
+                                bool fullscreen = APPLICATION_SERVICE( m_serviceProvider )
+                                    ->getFullscreenMode();
+
+                                APPLICATION_SERVICE( m_serviceProvider )
+                                    ->setFullscreenMode( !fullscreen );
+                            }
+                        }break;
+                    }
+                }break;
+            case SDL_WINDOWEVENT:
+                {
+                    if( sdlEvent.window.windowID != windowID )
+                    {
+                        continue;
+                    }
+
+                    SDL_WindowEventID windowEventId = (SDL_WindowEventID)sdlEvent.window.event;
+
+                    switch( windowEventId )
+                    {
+                    case SDL_WINDOWEVENT_MAXIMIZED:
+                        {
+                            break;
+                        }
+
+                    case SDL_WINDOWEVENT_CLOSE:
+                        {
+                            SDL_Event newEvent;
+                            newEvent = sdlEvent;
+                            newEvent.type = SDL_QUIT;
+
+                            SDL_PushEvent( &newEvent );
+                            break;
+                        }
+                    }
+                }break;
+            case SDL_QUIT:
+                {
+                    return true;
+                }break;
+            }
+        }
+        
         return quitRequest;
     }
 }

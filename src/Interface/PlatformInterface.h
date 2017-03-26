@@ -15,8 +15,6 @@
 
 namespace Menge
 {
-	typedef void * WindowHandle;
-
     class PlatformInterface
         : public ServiceInterface
     {
@@ -26,9 +24,16 @@ namespace Menge
 		virtual void update() = 0;
 		virtual void stop() = 0;
 
+    public:
+        virtual void setIcon( uint32_t _icon ) = 0;
+        virtual uint32_t getIcon() const = 0;
+
+        virtual void setProjectTitle( const WString & _projectTitle ) = 0;
+        virtual const WString & getProjectTitle() const = 0;
+
 	public:
-		virtual bool createWindow( uint32_t _icon, const Menge::WString & _projectTitle, const Resolution & _resolution, bool _fullscreen ) = 0;
-		virtual WindowHandle getWindowHandle() const = 0;
+		virtual bool createWindow( const Resolution & _resolution, bool _fullscreen ) = 0;
+		virtual Pointer getWindowHandle() const = 0;
 
 	public:
 		virtual const Tags & getPlatformTags() const = 0;
@@ -37,7 +42,7 @@ namespace Menge
 		virtual bool hasTouchpad() const = 0;
 
     public:
-        virtual void getDesktopResolution( Resolution & _resolution ) const = 0;
+        virtual bool getDesktopResolution( Resolution & _resolution ) const = 0;
 
 		virtual size_t getCurrentPath( WChar * _path, size_t _len ) const = 0;
 

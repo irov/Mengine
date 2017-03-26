@@ -792,7 +792,8 @@ namespace Menge
 			, MENGE_MAX_TEXTURE_STAGES
 			);
 
-		RENDER_SYSTEM( m_serviceProvider )->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
+		RENDER_SYSTEM( m_serviceProvider )
+            ->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport, float zn, float zf )

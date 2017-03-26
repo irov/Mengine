@@ -110,7 +110,8 @@ namespace Menge
 
         OPENGL_RENDER_CHECK_ERROR( m_serviceProvider );
 
-        m_window = PLATFORM_SERVICE( m_serviceProvider )->getWindowHandle();
+        m_window = PLATFORM_SERVICE( m_serviceProvider )
+            ->getWindowHandle();
 
         GLint maxClipPlanes;
         glGetIntegerv( GL_MAX_CLIP_PLANES, &maxClipPlanes );
@@ -189,10 +190,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setViewport( const Viewport & _viewport )
     {
-        const GLsizei w = static_cast<GLsizei>(_viewport.getWidth());
-        const GLsizei h = static_cast<GLsizei>(_viewport.getHeight());
         const GLsizei xb = static_cast<GLsizei>(_viewport.begin.x);
         const GLsizei yb = static_cast<GLsizei>(_viewport.end.y);
+        const GLsizei w = static_cast<GLsizei>(_viewport.getWidth());
+        const GLsizei h = static_cast<GLsizei>(_viewport.getHeight());
+
         const GLsizei height = static_cast<GLsizei>(m_resolution.getHeight());
 
         GLCALL( m_serviceProvider, glViewport, (xb, height - yb, w, h) );
@@ -776,7 +778,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::swapBuffers()
     {
-        GLCALL( m_serviceProvider, SDL_GL_SwapWindow, (reinterpret_cast<SDL_Window*>(m_window)) );
+        GLCALL( m_serviceProvider, SDL_GL_SwapWindow, (m_window) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil )

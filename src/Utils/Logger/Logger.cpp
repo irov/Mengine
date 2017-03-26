@@ -44,6 +44,11 @@ namespace Menge
 
             return *this;
         }
+
+        if( size > (8192 - 2) )
+        {
+            size = 8192 - 2;
+        }
         
         str[size] = '\n';
         str[size + 1] = 0;	

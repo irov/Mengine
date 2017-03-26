@@ -517,11 +517,11 @@ namespace Menge
 					{
 						if( lParam == 13 )
 						{
-							bool fullscreen = APPLICATION_SERVICE(m_serviceProvider)
-								->getFullscreenMode();
+                            bool fullscreen = APPLICATION_SERVICE( m_serviceProvider )
+                                ->getFullscreenMode();
 
-							APPLICATION_SERVICE( m_serviceProvider )
-								->setFullscreenMode( !fullscreen );
+                            APPLICATION_SERVICE( m_serviceProvider )
+                                ->setFullscreenMode( !fullscreen );
 						}
 
 						//return FALSE;

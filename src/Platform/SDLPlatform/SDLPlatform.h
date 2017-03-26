@@ -47,8 +47,15 @@ namespace Menge
         void stop()	override;
 
     public:
-        bool createWindow( uint32_t _icon, const Menge::WString & _projectTitle, const Resolution & _resolution, bool _fullscreen ) override;
-        WindowHandle getWindowHandle() const override;
+        void setIcon( uint32_t _icon ) override;
+        uint32_t getIcon() const override;
+
+        void setProjectTitle( const WString & _projectTitle ) override;
+        const WString & getProjectTitle() const override;
+
+    public:
+        bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
+        Pointer getWindowHandle() const override;
 
     public:
         const Tags & getPlatformTags() const override;
@@ -57,7 +64,7 @@ namespace Menge
         bool hasTouchpad() const override;
 
     public:
-        void getDesktopResolution( Resolution & _resolution ) const override;
+        bool getDesktopResolution( Resolution & _resolution ) const override;
 
         size_t getCurrentPath( WChar * _path, size_t _len ) const override;
 
@@ -92,21 +99,26 @@ namespace Menge
     public:
         bool concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity ) override;
 
-    private:
+    protected:
+        void changeWindow_( const Resolution & _resolution, bool _fullscreen );
+        bool createWindow_( const Resolution & _resolution, bool _fullscreen );
+        void destroyWindow_();
+
+    protected:
         bool processEvents();
 
     protected:
         Tags m_platformName;
 
-        WindowHandle m_window;
+        SDL_Window * m_window;
         
-        void* m_glContext;
+        SDL_GLContext m_glContext;
 
         SDLInputPtr m_sdlInput;
 
-        int m_width;
-        int m_height;
-
+        uint32_t m_icon;
+        WString m_projectTitle;
+        
         bool m_shouldQuit;
         bool m_running;
         bool m_pause;

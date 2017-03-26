@@ -176,7 +176,7 @@ namespace Menge
     private:
         ConstString m_renderPlatform;
 
-        WindowHandle m_window;
+        SDL_Window * m_window;
 
         mt::mat4f m_worldMatrix;
         mt::mat4f m_viewMatrix;

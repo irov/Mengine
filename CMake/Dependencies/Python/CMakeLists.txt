@@ -170,7 +170,6 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
                 ${SOURCE_DIR}/Python/getargs.c 
                 ${SOURCE_DIR}/Python/getcompiler.c 
                 ${SOURCE_DIR}/Python/getcopyright.c 
-#                ${SOURCE_DIR}/Python/getmtime.c 
                 ${SOURCE_DIR}/Python/getplatform.c 
                 ${SOURCE_DIR}/Python/getversion.c 
                 ${SOURCE_DIR}/Python/graminit.c 
@@ -198,8 +197,6 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
                 ${SOURCE_DIR}/Python/pyctype.c                
                 ${SOURCE_DIR}/Python/dtoa.c
                 ${SOURCE_DIR}/Python/random.c
-                
-                #${MACHDEP_SRCS}
                 ${THREAD_SRC}
                 ${DYNLOAD_SRC}
                 )
@@ -207,14 +204,7 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
 set(MODULE_SRCS ${SOURCE_DIR}/Modules/main.c 
                 ${SOURCE_DIR}/Modules/gcmodule.c
                 ${SOURCE_DIR}/Modules/mathmodule.c
-                #${SOURCE_DIR}/Modules/posixmodule.c
                 ${SOURCE_DIR}/Modules/_math.c
-                
-                #${SOURCE_DIR}/Modules/timemodule.c
-				#${SOURCE_DIR}/Modules/cStringIO.c
-				#${SOURCE_DIR}/Modules/arraymodule.c
-				#${SOURCE_DIR}/Modules/datetimemodule.c		
-				
                 ${MOD_SRCS} )
 
 set( MODULE_SRCS ${MODULE_SRCS} Modified/config.c )

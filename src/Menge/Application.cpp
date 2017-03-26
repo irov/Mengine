@@ -294,7 +294,7 @@ namespace Menge
 
 		m_windowResolution = CONFIG_VALUE( m_serviceProvider, "Window", "Size", Resolution( 1024, 768 ) );
 		m_bits = CONFIG_VALUE( m_serviceProvider, "Window", "Bits", 32U );
-		m_fullscreen = CONFIG_VALUE( m_serviceProvider, "Window", "Fullscreen", true );
+        m_fullscreen = CONFIG_VALUE( m_serviceProvider, "Window", "Fullscreen", true );
 		m_vsync = CONFIG_VALUE( m_serviceProvider, "Window", "VSync", true );
 
 		if( HAS_OPTION( m_serviceProvider, "author" ) == true || HAS_OPTION( m_serviceProvider, "support" ) == true )
@@ -569,8 +569,6 @@ namespace Menge
 			, m_renderViewport.getHeight()
 			);
 
-		uint32_t MultiSampleCount = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMultiSampleCount", 2U );
-
         m_createRenderWindow = RENDER_SERVICE( m_serviceProvider )
             ->createRenderWindow( m_currentResolution
                 , m_contentResolution
@@ -579,7 +577,6 @@ namespace Menge
                 , fullscreen
                 , m_FSAAType
                 , m_FSAAQuality
-                , MultiSampleCount
             );
 
 		if( m_createRenderWindow == false )
@@ -1737,6 +1734,21 @@ namespace Menge
 		
 		GAME_SERVICE(m_serviceProvider)
 			->setFullscreen( m_currentResolution, fullscreen );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Application::getWindowBits() const
+    {
+        return m_bits;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int Application::getWindowFSAAType() const
+    {
+        return m_FSAAType;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int Application::getWindowFSAAQuality() const
+    {
+        return m_FSAAQuality;
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::invalidateWindow_()

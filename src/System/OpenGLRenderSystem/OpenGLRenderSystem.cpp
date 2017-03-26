@@ -53,7 +53,7 @@ namespace Menge
 
         m_factoryVertexBuffer = new FactoryDefault<OpenGLRenderVertexBuffer>( m_serviceProvider );
         m_factoryIndexBuffer = new FactoryDefault<OpenGLRenderIndexBuffer>( m_serviceProvider );
-        m_factoryTexture = new FactoryPool<OpenGLTexture, 128>( m_serviceProvider );
+        m_factoryTexture = new FactoryPool<OpenGLRenderImage, 128>( m_serviceProvider );
         m_factoryRenderFragmentShader = new FactoryPool<OpenGLRenderFragmentShader, 16>( m_serviceProvider );
         m_factoryRenderVertexShader = new FactoryPool<OpenGLRenderVertexShader, 16>( m_serviceProvider );
         m_factoryProgram = new FactoryPool<OpenGLRenderProgram, 16>( m_serviceProvider );
@@ -471,7 +471,7 @@ namespace Menge
 
         if( _texture != nullptr )
         {
-            OpenGLTexture * texture = stdex::intrusive_get<OpenGLTexture *>( _texture );
+            OpenGLRenderImage * texture = stdex::intrusive_get<OpenGLRenderImage *>( _texture );
             stdex::intrusive_ptr_setup( tStage.texture, texture );
         }
         else

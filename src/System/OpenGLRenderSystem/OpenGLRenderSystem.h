@@ -3,7 +3,7 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/PlatformInterface.h"
 
-#   include "OpenGLTexture.h"
+#   include "OpenGLRenderImage.h"
 #   include "OpenGLRenderVertexBuffer.h"
 #   include "OpenGLRenderIndexBuffer.h"
 #   include "OpenGLRenderShader.h"
@@ -41,7 +41,7 @@ namespace Menge
 
         }
 
-        OpenGLTexture * texture;
+        OpenGLRenderImage * texture;
 
         GLenum minFilter;
         GLenum magFilter;

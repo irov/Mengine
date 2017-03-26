@@ -22,8 +22,8 @@ src
     OpenGLRenderVertexBuffer.h
     OpenGLRenderVertexShader.cpp
     OpenGLRenderVertexShader.h
-    OpenGLTexture.cpp
-    OpenGLTexture.h
+    OpenGLRenderImage.cpp
+    OpenGLRenderImage.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

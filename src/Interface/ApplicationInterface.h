@@ -73,6 +73,10 @@ namespace Menge
 		virtual void setFullscreenMode( bool _fullscreen ) = 0;
 		virtual bool getFullscreenMode() const = 0;
 
+        virtual uint32_t getWindowBits() const = 0;
+        virtual int getWindowFSAAType() const = 0;
+        virtual int getWindowFSAAQuality() const = 0;
+
     public:
         virtual void setFixedContentResolution( bool _fixedContetResolution ) = 0; 
         virtual bool getFixedContentResolution() const = 0;

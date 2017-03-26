@@ -46,6 +46,10 @@ namespace Menge
 	public:
 		void setFullscreenMode( bool _fullscreen ) override;
 		bool getFullscreenMode() const override;
+
+        uint32_t getWindowBits() const override;
+        int getWindowFSAAType() const override;
+        int getWindowFSAAQuality() const override;
 		
 	public:
 		bool isFocus() const override;

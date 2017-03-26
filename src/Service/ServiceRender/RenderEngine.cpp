@@ -128,6 +128,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::_finalize()
 	{   
+        this->restoreRenderSystemStates_();
+
 		for( TArrayRenderObject::iterator
 			it = m_renderObjects.begin(),
 			it_end = m_renderObjects.end();
@@ -156,7 +158,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
-		int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount )
+		int _FSAAType, int _FSAAQuality )
 	{
 		m_windowResolution = _resolution;
 		m_contentResolution = _contentResolution;
@@ -175,9 +177,11 @@ namespace Menge
 			, m_renderViewport.end.y
 			, m_fullscreen
 			);
+
+        uint32_t MultiSampleCount = CONFIG_VALUE( m_serviceProvider, "Render", "MultiSampleCount", 2U );
 		
 		m_windowCreated = RENDER_SYSTEM(m_serviceProvider)
-			->createRenderWindow( m_windowResolution, _bits, m_fullscreen, m_vsync, _FSAAType, _FSAAQuality, _MultiSampleCount );
+			->createRenderWindow( m_windowResolution, _bits, m_fullscreen, m_vsync, _FSAAType, _FSAAQuality, MultiSampleCount );
 
 		if( m_windowCreated == false )
 		{
@@ -209,6 +213,19 @@ namespace Menge
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void RenderEngine::destroyRenderWindow()
+    {
+        this->restoreRenderSystemStates_();
+
+        m_nullTexture = nullptr;
+        m_whitePixelTexture = nullptr;
+                
+        m_ibHandle2D = nullptr;
+        m_vbHandle2D = nullptr;
+
+        //RENDERTEXTURE_SERVICE(m_serviceProvider)
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createNullTexture_()
 	{
@@ -377,7 +394,7 @@ namespace Menge
 
 		RENDER_SYSTEM(m_serviceProvider)
 			->changeWindowMode( m_windowResolution, m_fullscreen );
-
+        
 		//this->restoreRenderSystemStates_();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -400,30 +417,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::beginScene()
 	{		
-		m_renderPasses.clear();
-		m_renderObjects.clear();
-
-		m_debugVertices.clear();
-
-		m_debugInfo.fillrate = 0.f;
-		m_debugInfo.object = 0;
-		m_debugInfo.triangle = 0;
-
-		m_iterateRenderObjects = 0;
-		m_stopRenderObjects = false;
-
-		m_currentRenderCamera = nullptr;
-		m_currentRenderViewport = nullptr;
-		m_currentRenderClipplane = nullptr;
-		m_currentRenderTarget = nullptr;
-		
-		m_currentMaterialId = 0;
-		m_currentTextureStages = 0;
-		m_currentStage = nullptr;
-
-		m_renderVertexCount = 0;
-		m_renderIndicesCount = 0;
-
 		this->restoreRenderSystemStates_();
 		
 		if( RENDER_SYSTEM(m_serviceProvider)->beginScene() == false )
@@ -737,9 +730,30 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::restoreRenderSystemStates_()
 	{
-		m_currentMaterialId = 0;
-		m_currentStage = nullptr;
+        m_renderPasses.clear();
+        m_renderObjects.clear();
 
+        m_debugVertices.clear();
+
+        m_debugInfo.fillrate = 0.f;
+        m_debugInfo.object = 0;
+        m_debugInfo.triangle = 0;
+
+        m_iterateRenderObjects = 0;
+        m_stopRenderObjects = false;
+
+        m_currentRenderCamera = nullptr;
+        m_currentRenderViewport = nullptr;
+        m_currentRenderClipplane = nullptr;
+        m_currentRenderTarget = nullptr;
+
+        m_currentMaterialId = 0;
+        m_currentTextureStages = 0;
+        m_currentStage = nullptr;
+
+        m_renderVertexCount = 0;
+        m_renderIndicesCount = 0;
+        
 		m_currentBlendSrc = BF_ONE;
 		m_currentBlendDst = BF_ZERO;
 		m_currentBlendOp = BOP_ADD;

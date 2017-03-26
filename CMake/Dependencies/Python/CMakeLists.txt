@@ -153,7 +153,8 @@ set(OBJECT_SRCS ${SOURCE_DIR}/Objects/abstract.c
                 
                 
    )
-   
+
+set(OBJECT_SRCS ${OBJECT_SRCS} ${SOURCE_DIR}/Objects/unicodeobject.c ${SOURCE_DIR}/Objects/unicodectype.c)   
 
 set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
 				${SOURCE_DIR}/Python/Python-ast.c 

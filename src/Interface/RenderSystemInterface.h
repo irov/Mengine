@@ -751,7 +751,9 @@ namespace Menge
 
 	public:
 		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen, 
-			int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) = 0;
+			int _FSAAType, int _FSAAQuality ) = 0;
+
+        virtual void destroyRenderWindow() = 0;
 
 		virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) = 0;
 

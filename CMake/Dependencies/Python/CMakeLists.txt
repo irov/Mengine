@@ -21,11 +21,11 @@ set(THREAD_SRC)
 
 if(HAVE_LIBM)
   set(extraLibs ${extraLibs} ${HAVE_LIBM})
-endif(HAVE_LIBM)
+endif()
 
 if(HAVE_LIBUTIL)
   set(extraLibs ${extraLibs} ${HAVE_LIBUTIL})
-endif(HAVE_LIBUTIL)
+endif()
 
 set(MACHDEP_SRCS ) #conf 
 
@@ -42,22 +42,22 @@ macro(ADD_PYTHON_MODULE _NAME _STATIC_SRCS)
     option(MODULE_${_NAME}_SHARED "Add module ${_NAME} shared" FALSE)
     if(MODULE_${_NAME}_SHARED)
       message(STATUS "NOT Adding ${_NAME} as shared module (not yet implemented)")
-    else(MODULE_${_NAME}_SHARED)
+    else()
       message(STATUS "Adding ${_NAME} as static module")
       foreach (_current_FILE ${ARGN})
         set(${_STATIC_SRCS} ${${_STATIC_SRCS}} ${_current_FILE})
       endforeach (_current_FILE ${ARGN})
       set(PY_STATIC_MODULES_INIT_FUNCTIONS "${PY_STATIC_MODULES_INIT_FUNCTIONS}extern void init${_NAME}(void);\n")
       set(PY_STATIC_MODULES_INITTAB        "${PY_STATIC_MODULES_INITTAB}  {\"${_NAME}\", init${_NAME}},\n")
-    endif(MODULE_${_NAME}_SHARED)
-  endif(MODULE_${_NAME}_ENABLE)
-endmacro(ADD_PYTHON_MODULE)
+    endif()
+  endif()
+endmacro()
 
 if(WIN32)
   set(PY_POSIX_NAME nt)
-else(WIN32)
+else()
   set(PY_POSIX_NAME posix)
-endif(WIN32)
+endif()
 
 #add_python_module(${PY_POSIX_NAME}  MOD_SRCS ${SOURCE_DIR}/Modules/posixmodule.c)
 
@@ -154,10 +154,6 @@ set(OBJECT_SRCS ${SOURCE_DIR}/Objects/abstract.c
                 
    )
    
-#if(Py_USING_UNICODE)
-   set(OBJECT_SRCS ${OBJECT_SRCS} ${SOURCE_DIR}/Objects/unicodeobject.c ${SOURCE_DIR}/Objects/unicodectype.c)
-#endif(Py_USING_UNICODE)
-
 
 set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
 				${SOURCE_DIR}/Python/Python-ast.c 
@@ -226,16 +222,15 @@ set( MODULE_SRCS ${MODULE_SRCS} Modified/mockup.c )
 				
 if( NOT WIN32 )
 	#set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )    
-else( NOT WIN32 )
+else()
 	set( MODULE_SRCS ${MODULE_SRCS} 
 	${SOURCE_DIR}/Modules/wininit.c
 	${SOURCE_DIR}/PC/getpathp.c	)
-endif( NOT WIN32 )
+endif()
 
 set_source_files_properties(${SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
 set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"2.7.9\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
 
-#include_directories(${SOURCE_DIR}/Modules/zlib ${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Python)
 include_directories(${THIRDPARTY_DIR}/stdex/include)
@@ -245,26 +240,15 @@ include_directories(${SOURCE_DIR}/PC)
 if(WIN32)  
   if(MSVC)
 	  add_definitions(-DWIN32 -D_WINDOWS)
-  else(MSVC)
+  else()
 	  add_definitions(-D_WINDOWS)
-  endif(MSVC)
-endif(WIN32)
+  endif()
+endif()
 
 add_definitions(-DMS_NO_COREDLL)
 add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPy_BUILD_CORE)
 
-#if(NOT HAVE_HYPOT)
- # add_definitions(-DWITHOUT_COMPLEX)
-#endif(NOT HAVE_HYPOT)
-
-# add_library(${python_LIB_NAME} ${SOURCE_DIR}/Modules/getbuildinfo.c ${SOURCE_DIR}/Modules/_typesmodule.c
-              # ${PARSER_SRCS}
-              # ${OBJECT_SRCS}
-              # ${PYTHON_SRCS}
-              # ${MODULE_SRCS}
-             #${SIGNAL_SRCS}
-              # )
 			  
 add_library( ${PROJECT_NAME} STATIC
 			  ${SOURCE_DIR}/Modules/getbuildinfo.c 
@@ -274,12 +258,3 @@ add_library( ${PROJECT_NAME} STATIC
               ${MODULE_SRCS} )
 
 target_link_libraries(${PROJECT_NAME} ${extraLibs})
-#set_target_properties(pythonLib PROPERTIES OUTPUT_NAME ${python_LIB_NAME})
-
-#add_executable(python Modules/python.c )
-#target_link_libraries(python pythonLib)
-
-#install(TARGETS pythonLib DESTINATION lib)
-#install(TARGETS python DESTINATION bin)
-#file(GLOB pyHeaders ${Python_SOURCE_DIR}/Include/*.h )
-#install(FILES ${Python_BINARY_DIR}/pyconfig.h ${pyHeaders} DESTINATION include/python${PY_MAJOR}.${PY_MINOR})

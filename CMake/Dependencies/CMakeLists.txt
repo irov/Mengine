@@ -32,6 +32,7 @@ if( MENGINE_TARGET_SDL )
     set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
     set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/SDL2)    
     SET(FORCE_STATIC_VCRT ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
+    set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
     set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
 
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/SDL2 )

@@ -66,6 +66,10 @@ getdependt http://kcat.strangesoft.net/openal-releases/openal-soft-1.17.2.tar.bz
 getdependt https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz Python-2.7.13.tgz Python-2.7.13 Python
 getdependt https://www.python.org/ftp/python/3.4.3/Python-3.4.3.tgz Python-3.4.3.tgz Python-3.4.3 Python3
 
+getdepend https://www.libsdl.org/release/SDL2-2.0.5.zip SDL2-2.0.5.zip SDL2-2.0.5 SDL2
+getdepend https://www.libsdl.org/projects/SDL_net/release/SDL2_net-2.0.1.zip SDL2_net-2.0.1.zip SDL2_net-2.0.1 SDL2_net
+getdepend https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.1.zip SDL2_mixer-2.0.1.zip SDL2_mixer-2.0.1 SDL2_mixer
+
 svndepend https://github.com/zeux/pugixml.git/trunk pugixml
 svndepend https://github.com/irov/pybind.git/trunk pybind
 svndepend https://github.com/irov/metabuf.git/trunk metabuf

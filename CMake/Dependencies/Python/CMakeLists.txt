@@ -268,7 +268,6 @@ add_definitions(-DPy_BUILD_CORE)
 			  
 add_library( ${PROJECT_NAME} STATIC
 			  ${SOURCE_DIR}/Modules/getbuildinfo.c 
-#			  ${SOURCE_DIR}/Modules/_typesmodule.c
               ${PARSER_SRCS}
               ${OBJECT_SRCS}
               ${PYTHON_SRCS}

@@ -235,10 +235,10 @@ namespace Menge
 		m_d3dppW.BackBufferHeight = m_windowResolution.getHeight();
 		m_d3dppW.BackBufferCount = 1;
 
-		WindowHandle windowHandle = PLATFORM_SERVICE( m_serviceProvider )
+        HWND windowHandle = PLATFORM_SERVICE( m_serviceProvider )
 			->getWindowHandle();
 
-		m_d3dppW.hDeviceWindow = (HWND)windowHandle;
+		m_d3dppW.hDeviceWindow = windowHandle;
 
 		m_d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
 		

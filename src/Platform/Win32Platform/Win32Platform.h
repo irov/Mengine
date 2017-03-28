@@ -25,16 +25,23 @@ namespace Menge
 		void update() override;
 		void stop() override;
 
+    public:
+        void setIcon( uint32_t _icon ) override;
+        uint32_t getIcon() const override;
+
+        void setProjectTitle( const WString & _projectTitle ) override;
+        const WString & getProjectTitle() const override;
+
 	public:
-		bool createWindow( uint32_t _icon, const Menge::WString & _projectTitle, const Resolution & _resolution, bool _fullscreen ) override;
-		WindowHandle getWindowHandle() const override;
+		bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
+		Pointer getWindowHandle() const override;
 
 	public:
 		const Tags & getPlatformTags() const override;
 		bool hasTouchpad() const override;
 
 	public:
-		void getDesktopResolution( Resolution & _resolution ) const override;
+		bool getDesktopResolution( Resolution & _resolution ) const override;
 
 		size_t getCurrentPath( WChar * _path, size_t _len ) const override;
 
@@ -95,6 +102,9 @@ namespace Menge
 		Win32FPSMonitor * m_fpsMonitor;
 
 		Win32MouseEvent m_mouseEvent;
+
+        uint32_t m_icon;
+        Menge::WString m_projectTitle;
 
 		Tags m_platformTags;
 		Resolution m_windowResolution;

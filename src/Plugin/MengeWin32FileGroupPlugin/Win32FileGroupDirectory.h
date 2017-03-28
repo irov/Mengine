@@ -29,7 +29,6 @@ namespace Menge
 
 	public:
 		bool existFile( const FilePath & _fileName ) const override;
-		bool removeFile( const FilePath& _fileName ) override;
 
     public:
 		InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming ) override;
@@ -38,18 +37,6 @@ namespace Menge
     public:
 		OutputStreamInterfacePtr createOutputFile() override;        
 		bool openOutputFile( const FilePath& _fileName, const OutputStreamInterfacePtr & _file ) override;
-
-	public:
-		FileMappedInterfacePtr createMappedFile() override;
-		bool openMappedFile( const FilePath & _fileName, const FileMappedInterfacePtr & _stream ) override;
-
-    public:
-        bool existDirectory( const FilePath& _path ) const override;
-		bool createDirectory( const FilePath& _path ) override;
-		bool removeDirectory( const FilePath& _path ) override;		
-
-	private:
-        bool initializeDirectory_( bool _create );
 
     protected:
 		FilePath m_path;

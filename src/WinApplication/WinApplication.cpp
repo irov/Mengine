@@ -366,11 +366,6 @@ namespace Menge
 			return false;
 		}
 
-		if( FILE_SERVICE( m_serviceProvider )->existDirectory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), ConstString::none() ) == false )
-		{
-			FILE_SERVICE( m_serviceProvider )->createDirectory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), ConstString::none() );
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -853,8 +848,14 @@ namespace Menge
 		APPLICATION_SERVICE( m_serviceProvider )
 			->calcWindowResolution( windowResolution );
 
+        PLATFORM_SERVICE( m_serviceProvider )
+            ->setIcon( IDI_MENGE );
+
+        PLATFORM_SERVICE( m_serviceProvider )
+            ->setProjectTitle( wprojectTitle );
+
 		if( PLATFORM_SERVICE( m_serviceProvider )
-			->createWindow( IDI_MENGE, wprojectTitle, windowResolution, fullscreen ) == false )
+			->createWindow( windowResolution, fullscreen ) == false )
 		{
 			return false;
 		}

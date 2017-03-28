@@ -308,6 +308,26 @@ namespace Menge
 			m_hWnd = NULL;
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::setIcon( uint32_t _icon )
+    {
+        m_icon = _icon;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Win32Platform::getIcon() const
+    {
+        return m_icon;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::setProjectTitle( const WString & _projectTitle )
+    {
+        m_projectTitle = _projectTitle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const WString & Win32Platform::getProjectTitle() const
+    {
+        return m_projectTitle;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32Platform::getShortPathName( const WString & _path, WChar * _shortpath, size_t _len ) const
 	{
@@ -852,7 +872,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32Platform::createWindow( uint32_t _icon, const Menge::WString & _projectTitle, const Resolution & _resolution, bool _fullscreen )
+	bool Win32Platform::createWindow( const Resolution & _resolution, bool _fullscreen )
 	{
 		bool alreadyRunning = CONFIG_VALUE( m_serviceProvider, "Game", "AlreadyRunning", true );
 
@@ -860,7 +880,7 @@ namespace Menge
 		{
 			m_alreadyRunningMonitor = new Win32AlreadyRunningMonitor( m_serviceProvider );
 
-			if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, MENGINE_WINDOW_CLASSNAME, _projectTitle ) == false )
+			if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, MENGINE_WINDOW_CLASSNAME, m_projectTitle ) == false )
 			{
 				LOGGER_ERROR( m_serviceProvider )("Application invalid running monitor"
 					);
@@ -879,7 +899,7 @@ namespace Menge
 			0,
 			0,
 			m_hInstance,
-			_icon,
+			m_icon,
 			black_brush,
 			MENGINE_WINDOW_CLASSNAME
 			);
@@ -899,7 +919,8 @@ namespace Menge
 		DWORD exStyle = _fullscreen ? WS_EX_TOPMOST : 0;
 		//DWORD exStyle = 0;
 
-		m_hWnd = WINDOWSLAYER_SERVICE( m_serviceProvider )->createWindowEx( exStyle, MENGINE_WINDOW_CLASSNAME, _projectTitle.c_str(), dwStyle
+		m_hWnd = WINDOWSLAYER_SERVICE( m_serviceProvider )
+            ->createWindowEx( exStyle, MENGINE_WINDOW_CLASSNAME, m_projectTitle.c_str(), dwStyle
 			, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
 			, NULL, NULL, m_hInstance, (LPVOID)this );
 
@@ -956,9 +977,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WindowHandle Win32Platform::getWindowHandle() const
+    Pointer Win32Platform::getWindowHandle() const
 	{
-		return (WindowHandle)m_hWnd;
+		return m_hWnd;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32Platform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
@@ -1074,40 +1095,18 @@ namespace Menge
 				return false;
 			}
 
-			FileGroupInterfacePtr userGroup = FILE_SERVICE(m_serviceProvider)
-				->getFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ) );
+            PathString icoFile;
+            icoFile += "IconCache";
+            icoFile += '_';
+            icoFile += _path;
+            icoFile += ".ico";
+            
+            ConstString c_icoFile = Helper::stringizeString( m_serviceProvider, icoFile );
 
-			if( userGroup->createDirectory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "IconCache" ) ) == false )
-			{
-				LOGGER_ERROR( m_serviceProvider )("Win32Platform::notifyCursorIconSetup name %s path %s can't create directory 'IconCache'"
-					, _name.c_str()
-					, _path.c_str()
-					);
+            OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+				->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), c_icoFile );
 
-				return false;
-			}
-
-			OutputStreamInterfacePtr stream = userGroup->createOutputFile();
-
-			if( stream == nullptr )
-			{
-				LOGGER_ERROR( m_serviceProvider )("Win32Platform::notifyCursorIconSetup name %s path %s can't create output stream"
-					, _name.c_str()
-					, _path.c_str()
-					);
-
-				return false;
-			}
-
-			PathString icoFile;
-			icoFile += "IconCache";
-			icoFile += '\\';
-			icoFile += _path;
-			icoFile += ".ico";
-
-			ConstString c_icoFile = Helper::stringizeString( m_serviceProvider, icoFile );
-
-			if( userGroup->openOutputFile( c_icoFile, stream ) == false )
+            if( stream == nullptr )
 			{
 				LOGGER_ERROR( m_serviceProvider )("Win32Platform::notifyCursorIconSetup name %s path %s can't open output stream '%s'"
 					, _name.c_str()
@@ -1290,13 +1289,15 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32Platform::getDesktopResolution( Resolution & _resolution ) const
+	bool Win32Platform::getDesktopResolution( Resolution & _resolution ) const
 	{
 		int cxscreen = ::GetSystemMetrics( SM_CXSCREEN );
 		int cyscreen = ::GetSystemMetrics( SM_CYSCREEN );
 
 		_resolution.setWidth( cxscreen );
 		_resolution.setHeight( cyscreen );
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32Platform::getCurrentPath( WChar * _path, size_t _len ) const

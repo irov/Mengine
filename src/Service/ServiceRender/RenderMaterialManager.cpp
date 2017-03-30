@@ -939,7 +939,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertexShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
 	{
-		MemoryCacheBufferInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, _pakName, _filePath, false, "loadVertexShader" );
+		MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, _pakName, _filePath, false, __FILE__, __LINE__ );
 
 		if( data_cache == nullptr )
 		{
@@ -957,7 +957,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderFragmentShaderInterfacePtr RenderMaterialManager::createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
 	{ 
-		MemoryCacheBufferInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, _pakName, _filePath, false, "loadFragmentShader" );
+		MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, _pakName, _filePath, false, __FILE__, __LINE__ );
 		
 		if( data_cache == nullptr )
 		{

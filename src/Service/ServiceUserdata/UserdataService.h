@@ -26,7 +26,7 @@ namespace Menge
 		bool hasUserdata( const ConstString & _name ) const override;
 
 	public:
-		MemoryCacheBufferInterfacePtr loadUserdata( const ConstString & _name ) const override;
+		MemoryInterfacePtr loadUserdata( const ConstString & _name ) const override;
 		bool writeUserdata( const ConstString & _name, const void * _data, size_t _size ) const override;
 
 	protected:

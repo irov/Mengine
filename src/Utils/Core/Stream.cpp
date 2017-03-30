@@ -63,7 +63,7 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool loadStreamArchiveBuffer( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, MemoryCacheBufferInterfacePtr & _binaryBuffer )
+		bool loadStreamArchiveBuffer( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, MemoryInterfacePtr & _binaryBuffer, const char * _file, uint32_t _line )
 		{
 			uint32_t crc32;
 			_stream->read( &crc32, sizeof(crc32) );
@@ -77,7 +77,7 @@ namespace Menge
 			size_t binary_size = (size_t)load_binary_size;
 			size_t compress_size = (size_t)load_compress_size;
 
-			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( _serviceProvider, compress_size, "loadStreamArchiveBuffer" );
+            MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( _serviceProvider, compress_size, _file, _line );
 
 			if( compress_buffer == nullptr )
 			{
@@ -117,7 +117,7 @@ namespace Menge
 				}
 			}
 
-			MemoryCacheBufferInterfacePtr binaryBuffer = MEMORY_SERVICE( _serviceProvider )
+            MemoryInterfacePtr binaryBuffer = MEMORY_SERVICE( _serviceProvider )
 				->createMemoryCacheBuffer();
 
 			if( binaryBuffer == nullptr )
@@ -129,7 +129,7 @@ namespace Menge
 				return false;
 			}
 
-			void * binaryMemory = binaryBuffer->cacheMemory( binary_size, "loadStreamArchiveBuffer binary_memory" );
+			void * binaryMemory = binaryBuffer->newMemory( binary_size, __FILE__, __LINE__ );
 
 			if( binaryMemory == nullptr )
 			{
@@ -164,7 +164,7 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool loadStreamArchiveInplace( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, void * _data, size_t _size )
+		bool loadStreamArchiveInplace( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, void * _data, size_t _size, const char * _file, uint32_t _line )
 		{
 			uint32_t crc32;
 			_stream->read( &crc32, sizeof(crc32) );
@@ -188,7 +188,7 @@ namespace Menge
 				return false;
 			}
 
-			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _serviceProvider, _stream, compress_size, "ArchiveService::getData compress_memory" );
+			MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _serviceProvider, _stream, compress_size, _file, _line );
 			
 			if( compress_buffer == nullptr )
 			{
@@ -339,14 +339,14 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool loadStreamArchiveData( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, MemoryCacheBufferInterfacePtr & _binaryBuffer )
+		bool loadStreamArchiveData( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, MemoryInterfacePtr & _binaryBuffer, const char * _file, uint32_t _line )
 		{
 			if( Helper::loadStreamMagicHeader( _serviceProvider, _stream, _magic, _version ) == false )
 			{
 				return false;
 			}
 
-			if( Helper::loadStreamArchiveBuffer( _serviceProvider, _stream, _archivator, _binaryBuffer ) == false )
+            if( Helper::loadStreamArchiveBuffer( _serviceProvider, _stream, _archivator, _binaryBuffer, _file, _line ) == false )
 			{
 				return false;
 			}
@@ -369,7 +369,7 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		MemoryInterfacePtr loadStreamArchiveMemory( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
+		MemoryInterfacePtr loadStreamArchiveMemory( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const char * _file, uint32_t _line )
 		{
 			uint32_t crc32;
 			_stream->read( &crc32, sizeof( crc32 ) );
@@ -383,7 +383,7 @@ namespace Menge
 			size_t binary_size = (size_t)load_binary_size;
 			size_t compress_size = (size_t)load_compress_size;
 
-			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( _serviceProvider, compress_size, "loadStreamArchiveMemory compress" );
+			MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( _serviceProvider, compress_size, _file, _line );
 
 			if( compress_buffer == nullptr )
 			{
@@ -435,7 +435,7 @@ namespace Menge
 				return nullptr;
 			}
 
-			void * binary_memory = binary_buffer->newMemory( binary_size );
+			void * binary_memory = binary_buffer->newMemory( binary_size, _file, _line );
 
 			size_t uncompressSize = 0;
 			if( _archivator->decompress( binary_memory, binary_size, compress_memory, compress_size, uncompressSize ) == false )
@@ -459,14 +459,14 @@ namespace Menge
 			return binary_buffer;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		MemoryInterfacePtr loadStreamArchiveMemory( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version )
+		MemoryInterfacePtr loadStreamArchiveMagicMemory( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const char * _file, uint32_t _line )
 		{
 			if( Helper::loadStreamMagicHeader( _serviceProvider, _stream, _magic, _version ) == false )
 			{
 				return nullptr;
 			}
 
-			MemoryInterfacePtr memory = Helper::loadStreamArchiveMemory( _serviceProvider, _stream, _archivator );
+			MemoryInterfacePtr memory = Helper::loadStreamArchiveMemory( _serviceProvider, _stream, _archivator, _file, _line );
 
 			return memory;
 		}

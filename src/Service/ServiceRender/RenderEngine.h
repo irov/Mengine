@@ -61,11 +61,6 @@ namespace Menge
 		uint32_t flags;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline bool hasRenderObjectFlag( const RenderObject * ro, uint32_t _flag )
-	{
-		return (ro->flags & _flag) > 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	struct RenderPass
 	{
 		uint32_t beginRenderObject;

@@ -15,7 +15,7 @@ namespace Menge
 	class MemoryManager;
 
 	class MemoryCacheBuffer
-		: public ServantBase<MemoryCacheBufferInterface>
+		: public ServantBase<MemoryInterface>
 	{
 	public:
 		MemoryCacheBuffer();
@@ -25,8 +25,10 @@ namespace Menge
 		void setMemoryManager( MemoryManager * _memoryManager );
 
     public:
-		Pointer cacheMemory( size_t _size, const char * _doc ) override;
+        void setMemory( const void * _ptr, size_t _size, const char * _file, uint32_t _line ) override;
+		Pointer newMemory( size_t _size, const char * _file, uint32_t _line ) override;
 		
+    public:
 		inline Pointer getMemory() const override;
 
 		inline size_t getSize() const override;

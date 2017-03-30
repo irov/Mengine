@@ -198,14 +198,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	typedef uint32_t VBHandle; // Vertex Buffer Handle
 	typedef uint32_t IBHandle; // Index Buffer Handle
+    //////////////////////////////////////////////////////////////////////////
+    class RenderImageProviderInterface
+        : public ServantInterface
+    {
+    public:
+        virtual MemoryInterfacePtr getImageMemory( uint32_t & _mipmaps, uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, PixelFormat & _format ) const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<RenderImageProviderInterface> RenderImageProviderInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderImageInterface
 		: public ServantInterface
 	{
+    public:
+        virtual void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) = 0;
+        virtual const RenderImageProviderInterfacePtr & getRenderImageProvider() const = 0;
+
 	public:
 		virtual ERenderImageMode getMode() const = 0;
 		
 	public:
+        virtual uint32_t getHWMipmaps() const = 0;
 		virtual uint32_t getHWWidth() const = 0;
 		virtual uint32_t getHWHeight() const = 0;
 		virtual uint32_t getHWChannels() const = 0;
@@ -231,10 +245,7 @@ namespace Menge
 
 	public:
 		virtual uint32_t getId() const = 0;
-
-    public:
-        virtual bool isPow2() const = 0;
-
+        
     public:
 		virtual const Rect & getRect() const = 0;
 		virtual const Rect & getHWRect() const = 0;
@@ -247,16 +258,11 @@ namespace Menge
 		virtual void setFileName( const FilePath & _fileName ) = 0;
 		virtual const FilePath & getFileName() const = 0;
 
-		virtual uint32_t getMipmaps() const = 0;
-
 		virtual uint32_t getWidth() const = 0;
 		virtual uint32_t getHeight() const = 0;
-		virtual uint32_t getChannels() const = 0;
 
 		virtual Pointer lock( size_t * _pitch, uint32_t _miplevel, const Rect & _rect, bool _readOnly = true ) const = 0;
 		virtual void unlock( uint32_t _miplevel ) const = 0;
-
-		virtual size_t getMemoryUse() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderTextureInterface> RenderTextureInterfacePtr;
@@ -513,7 +519,7 @@ namespace Menge
 
     public:
         virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec ) = 0;
-		virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels ) = 0;
+		virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height ) = 0;
 
     public:
         virtual RenderTextureInterfacePtr createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;

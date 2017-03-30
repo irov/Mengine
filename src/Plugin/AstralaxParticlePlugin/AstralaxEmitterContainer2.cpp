@@ -28,7 +28,7 @@ namespace Menge
     {
 		m_particleSystem = _particleSystem;
 
-		MemoryInterfacePtr memory = Helper::loadStreamArchiveMemory( m_serviceProvider, _stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ) );
+		MemoryInterfacePtr memory = Helper::loadStreamArchiveMagicMemory( m_serviceProvider, _stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{

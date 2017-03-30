@@ -40,10 +40,10 @@ namespace Menge
         inline const mt::uv4f & getUVAlpha() const;
 
 		inline void setAlpha( bool _alpha );
-		inline bool isAlpha() const;
+		inline bool hasAlpha() const;
 
 		inline void setPremultiply( bool _alpha );
-		inline bool isPremultiply() const;
+		inline bool getPremultiply() const;
     
     public:
 		inline const RenderTextureInterfacePtr & getTexture() const;
@@ -55,9 +55,6 @@ namespace Menge
     protected:
         void _release() override;
 
-    public:
-		size_t getMemoryUse() const override;
-		
 	protected:        
         RenderTextureInterfacePtr m_texture;
         RenderTextureInterfacePtr m_textureAlpha;
@@ -71,7 +68,7 @@ namespace Menge
 		mt::uv4f m_uv_image;
         mt::uv4f m_uv_alpha;
 
-        bool m_isAlpha;
+        bool m_hasAlpha;
 		bool m_isPremultiply;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -149,12 +146,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline void ResourceImage::setAlpha( bool _alpha )
 	{
-		m_isAlpha = _alpha;
+		m_hasAlpha = _alpha;
 	}
     //////////////////////////////////////////////////////////////////////////
-    inline bool ResourceImage::isAlpha() const
+    inline bool ResourceImage::hasAlpha() const
     {
-        return m_isAlpha;
+        return m_hasAlpha;
     }
 	//////////////////////////////////////////////////////////////////////////
 	inline void ResourceImage::setPremultiply( bool _premultiply )
@@ -162,7 +159,7 @@ namespace Menge
 		m_isPremultiply = _premultiply;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline bool ResourceImage::isPremultiply() const
+	inline bool ResourceImage::getPremultiply() const
 	{
 		return m_isPremultiply;
 	}

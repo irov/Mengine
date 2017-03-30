@@ -8,8 +8,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderImage::OpenGLRenderImage()
-        : m_serviceProvider(nullptr)
-        , m_uid(0)
+        : m_uid(0)
         , m_hwMipmaps(0)
         , m_hwWidth(0)
         , m_hwHeight(0)
@@ -85,6 +84,11 @@ namespace Menge
         return m_mode;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t OpenGLRenderImage::getHWMipmaps() const
+    {
+        return m_hwMipmaps;
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderImage::getHWWidth() const
     {
         return m_hwWidth;
@@ -110,6 +114,16 @@ namespace Menge
         return m_hwPixelFormat;
     }
     //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
+    {
+        m_renderImageProvider = _renderImageProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderImageProviderInterfacePtr & OpenGLRenderImage::getRenderImageProvider() const
+    {
+        return m_renderImageProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
     Pointer OpenGLRenderImage::lock( size_t * _pitch, uint32_t _level, const Rect &, bool )
     {
         if (m_lockMemory != nullptr)
@@ -122,7 +136,7 @@ namespace Menge
 
         size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
-        MemoryCacheBufferInterfacePtr lockMemory = MEMORY_SERVICE(m_serviceProvider)
+        MemoryInterfacePtr lockMemory = MEMORY_SERVICE(m_serviceProvider)
             ->createMemoryCacheBuffer();
 
         if (lockMemory == nullptr)
@@ -132,7 +146,7 @@ namespace Menge
             return nullptr;
         }
 
-        void * memory = lockMemory->cacheMemory(size, "MarmaladeRenderTexture::lock");
+        void * memory = lockMemory->newMemory( size, __FILE__, __LINE__ );
 
         if (memory == nullptr)
         {

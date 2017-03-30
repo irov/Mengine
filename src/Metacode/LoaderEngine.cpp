@@ -197,7 +197,7 @@ namespace Menge
         uint32_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
 
-		MemoryCacheBufferInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, bin_size, "importBin_binary" );
+		MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, bin_size, __FILE__, __LINE__ );
 
 		if( binary_buffer == nullptr )
 		{

@@ -75,7 +75,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress )
 	{
-		MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( m_serviceProvider, _stream, _size, "ArchiveService::decompressStream" );
+		MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( m_serviceProvider, _stream, _size, __FILE__, __LINE__ );
 
 		if( compress_buffer == nullptr )
 		{
@@ -104,7 +104,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInputInterfacePtr ArchiveService::compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, EArchivatorCompress _compress )
 	{
-		MemoryCacheBufferInterfacePtr uncompress_buffer = Helper::createMemoryCacheStream( m_serviceProvider, _stream, "ArchiveService::compressStream" );
+		MemoryInterfacePtr uncompress_buffer = Helper::createMemoryCacheStream( m_serviceProvider, _stream, __FILE__, __LINE__ );
 
 		if( uncompress_buffer == nullptr )
 		{

@@ -118,6 +118,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureManager::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
     {
+        uint32_t HWMipmaps = _mipmaps;
 		uint32_t HWWidth = _width;
 		uint32_t HWHeight = _height;
 		uint32_t HWChannels = _channels;
@@ -128,7 +129,7 @@ namespace Menge
 		this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
 		RenderImageInterfacePtr image = RENDER_SYSTEM(m_serviceProvider)
-			->createImage( _mipmaps, HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
+			->createImage( HWMipmaps, HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
         if( image == nullptr )
         {
@@ -140,7 +141,7 @@ namespace Menge
             return nullptr;
         }
 
-        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _mipmaps, _width, _height, _channels );
+        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height );
 
         return texture;
     }
@@ -169,7 +170,7 @@ namespace Menge
             return nullptr;
         }
 
-        RenderTextureInterfacePtr texture = this->createRenderTexture( image, 1, _width, _height, _channels );
+        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height );
 
         return texture;
     }
@@ -431,8 +432,9 @@ namespace Menge
 		uint32_t image_height = dataInfo->height;
 		uint32_t image_channels = dataInfo->channels;
 		uint32_t image_depth = dataInfo->depth;
+        PixelFormat image_format = dataInfo->format;
 
-		RenderTextureInterfacePtr texture = this->createTexture( image_mipmaps, image_width, image_height, image_channels, image_depth, dataInfo->format );
+		RenderTextureInterfacePtr texture = this->createTexture( image_mipmaps, image_width, image_height, image_channels, image_depth, image_format );
 		
 		if( texture == nullptr )
 		{
@@ -587,12 +589,12 @@ namespace Menge
 				->buryTexture( _texture );
 		}
 
-		this->releaseRenderTexture_( _texture );
+        _texture->release();
 		
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterfacePtr RenderTextureManager::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels )
+	RenderTextureInterfacePtr RenderTextureManager::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height )
 	{
 		RenderTexturePtr texture = m_factoryRenderTexture->createObject();
 
@@ -600,15 +602,10 @@ namespace Menge
 
         uint32_t id = ++m_textureEnumerator;
 
-		texture->initialize( id, _image, _mipmaps, _width, _height, _channels );
+		texture->initialize( id, _image, _width, _height );
 
 		return texture;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderTextureManager::releaseRenderTexture_( RenderTextureInterface * _texture )
-	{		
-		_texture->release();
-    }
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder )
     {
@@ -620,7 +617,8 @@ namespace Menge
 		uint32_t depth = image->getHWDepth();
 		PixelFormat pf = image->getHWPixelFormat();
 
-		uint32_t mipmaps = _texture->getMipmaps();
+		//uint32_t mipmaps = _texture->getMipmaps();
+        uint32_t mipmaps = 1;
 
 		for( uint32_t i = 0; i != mipmaps; ++i )
 		{
@@ -667,11 +665,10 @@ namespace Menge
 				return false;
 			}
 
-			//this->sweezleAlpha( _texture, textureBuffer, pitch );
-            if( mipmaps == 1 && _texture->isPow2() == false )
-			{
-				this->imageQuality( _texture, textureBuffer, pitch );
-			}
+   //         if( mipmaps == 1 && _texture->isPow2() == false )
+			//{
+			//	this->imageQuality( _texture, textureBuffer, pitch );
+			//}
 
 			_texture->unlock( i );
 		}

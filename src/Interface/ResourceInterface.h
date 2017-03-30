@@ -143,8 +143,6 @@ namespace Menge
         virtual void visitResources( Visitor * _visitor ) const = 0;
 		virtual void visitGroupResources( const ConstString & _category, const ConstString & _group, Visitor * _visitor ) const = 0;
 
-		virtual size_t getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group ) const = 0;
-
     public:
 		virtual bool validateResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) const = 0;
 

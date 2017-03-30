@@ -58,19 +58,19 @@ namespace Menge
         m_factoryPoolMemory = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CacheBufferID MemoryManager::lockBuffer( size_t _size, void ** _memory, const char * _doc )
+	CacheBufferID MemoryManager::lockBuffer( size_t _size, void ** _memory, const char * _file, uint32_t _line )
 	{
 		m_memoryCacheMutex->lock();
 
 		CacheBufferID buffer_id = 
-			this->lockBufferNoMutex_( _size, _memory, _doc );
+			this->lockBufferNoMutex_( _size, _memory, _file, _line );
 
 		m_memoryCacheMutex->unlock();
 
 		return buffer_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CacheBufferID MemoryManager::lockBufferNoMutex_( size_t _size, void ** _memory, const char * _doc )
+	CacheBufferID MemoryManager::lockBufferNoMutex_( size_t _size, void ** _memory, const char * _file, uint32_t _line )
 	{
 		size_t minSize = (size_t)(0);
 		size_t maxSize = (size_t)(-1);
@@ -110,7 +110,8 @@ namespace Menge
 		{
 			CacheBufferMemory & buffer = m_buffers[maxIndex];
 			
-			buffer.doc = _doc;
+			buffer.file = _file;
+            buffer.line = _line;
 			buffer.lock = true;			
 
 			*_memory = buffer.memory;
@@ -136,7 +137,8 @@ namespace Menge
 					
 			buffer.memory = memory;
 			buffer.size = _size;
-			buffer.doc = _doc;
+			buffer.file = _file;
+            buffer.line = _line;
 			buffer.lock = true;
 
 			*_memory = buffer.memory;
@@ -161,7 +163,8 @@ namespace Menge
 		buffer.id = new_id;
 		buffer.memory = memory;
 		buffer.size = _size;
-		buffer.doc = _doc;		
+        buffer.file = _file;
+        buffer.line = _line;
 		buffer.lock = true;
 
 		m_buffers.push_back( buffer );
@@ -224,7 +227,7 @@ namespace Menge
 		m_memoryCacheMutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryCacheBufferInterfacePtr MemoryManager::createMemoryCacheBuffer()
+    MemoryInterfacePtr MemoryManager::createMemoryCacheBuffer()
 	{
 		MemoryCacheBuffer * memoryBuffer = m_factoryPoolMemoryCacheBuffer->createObject();
 

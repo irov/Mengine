@@ -346,7 +346,7 @@ namespace Menge
 		return stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryCacheBufferInterfacePtr Account::loadBinaryFile( const ConstString & _fileName )
+	MemoryInterfacePtr Account::loadBinaryFile( const ConstString & _fileName )
     {        
         InputStreamInterfacePtr stream = this->openReadBinaryFile( _fileName );           
 
@@ -360,9 +360,8 @@ namespace Menge
             return nullptr;
         }
 		
-		MemoryCacheBufferInterfacePtr binaryBuffer;
-		
-		if( Helper::loadStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), binaryBuffer ) == false )
+		MemoryInterfacePtr binaryBuffer;		
+		if( Helper::loadStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), binaryBuffer, __FILE__, __LINE__ ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load stream archive %s"
 				, m_name.c_str()

@@ -22,7 +22,7 @@ namespace Menge
 		void setMemoryManager( MemoryManager * _memoryManager );
 
     public:
-		Pointer cacheMemory( size_t _size, const char * _doc ) override;
+        Pointer cacheMemory( size_t _size, const char * _file, uint32_t _line ) override;
 		
 	public:
 		Pointer getMemory() const override;

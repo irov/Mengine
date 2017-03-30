@@ -94,7 +94,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryCacheBufferInterfacePtr UserdataService::loadUserdata( const ConstString & _name ) const
+    MemoryInterfacePtr UserdataService::loadUserdata( const ConstString & _name ) const
 	{
 		TMapDatas::const_iterator it_found = m_datas.find( _name );
 
@@ -122,8 +122,8 @@ namespace Menge
 			return nullptr;
 		}
 
-		MemoryCacheBufferInterfacePtr binaryBuffer;
-		if( Helper::loadStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), binaryBuffer ) == false )
+        MemoryInterfacePtr binaryBuffer;
+		if( Helper::loadStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), binaryBuffer, __FILE__, __LINE__ ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("UserdataService::loadData: data %s invalid load stream archive %s"
 				, _name.c_str()

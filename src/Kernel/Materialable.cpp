@@ -68,7 +68,7 @@ namespace Menge
 				textures[0] = _resourceImage->getTexture();
 				textures[1] = _resourceImage->getTextureAlpha();
 
-				premultiply = _resourceImage->isPremultiply();
+				premultiply = _resourceImage->getPremultiply();
 			}
 			else
 			{ 
@@ -154,7 +154,7 @@ namespace Menge
 
 								if( _resourceImage != nullptr )
 								{
-									isAlpha = _resourceImage->isAlpha();
+									isAlpha = _resourceImage->hasAlpha();
 								}
 
 								if( isAlpha == true || _solid == false )

@@ -67,9 +67,6 @@ namespace Menge
 		void visitGroupResources( const ConstString & _category, const ConstString & _group, Visitor * _visitor ) const override;
 			
 	public:
-		size_t getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group ) const override;
-
-	public:
 		void dumpResources( const String & _tag );
 
 	protected:

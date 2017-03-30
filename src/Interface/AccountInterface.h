@@ -42,7 +42,7 @@ namespace Menge
 		virtual OutputStreamInterfacePtr openWriteBinaryFile( const FilePath & _fileName ) = 0;
 
     public:		
-		virtual MemoryCacheBufferInterfacePtr loadBinaryFile( const ConstString & _filename ) = 0;
+		virtual MemoryInterfacePtr loadBinaryFile( const ConstString & _filename ) = 0;
 		virtual bool writeBinaryFile( const ConstString & _filename, const void * _data, size_t _size ) = 0;
 		virtual bool hasBinaryFile( const ConstString & _filename ) const = 0;
     };

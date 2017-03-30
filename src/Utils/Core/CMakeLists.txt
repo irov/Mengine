@@ -76,7 +76,7 @@ src
 	ConstStringHolderLocalString.cpp
 	ConstStringTypes.h
         
-    RenderUtil.h
+    RenderUtils.h
     
     OutputStreamWriter.h   
     

@@ -8,6 +8,8 @@ src
 	RenderTexture.cpp
     RenderTextureManager.h
     RenderTextureManager.cpp
+	DecoderRenderImageProvider.h
+	DecoderRenderImageProvider.cpp
     RenderMaterial.h
     RenderMaterial.cpp
     RenderMaterialManager.h

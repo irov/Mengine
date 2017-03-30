@@ -820,37 +820,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceManager::getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group ) const
-	{
-		TResourceCacheKey cache_key = std::make_pair( _category, _group );
-
-		TMapResourceCache::const_iterator it_cache_found = m_resourcesCache.find( cache_key );
-
-		if( it_cache_found == m_resourcesCache.end() )
-		{
-			return 0U;
-		}
-
-		size_t groupMemoryUse = 0U;
-
-		const TVectorResources & resources = it_cache_found->second;
-		
-		for( TVectorResources::const_iterator
-			it = resources.begin(),
-			it_end = resources.end();
-		it != it_end;
-		++it )
-		{
-			const ResourceReferencePtr & resource = *it;
-
-			size_t memoryUse = resource->getMemoryUse();
-
-			groupMemoryUse += memoryUse;
-		}
-
-		return groupMemoryUse;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	namespace
 	{
 		class FResourcesForeachDump
@@ -883,15 +852,11 @@ namespace Menge
 					return;
 				}
 
-				size_t memoryUse = resource->getMemoryUse();
-				float memoryUseMb = (float)(memoryUse)/(1024.f);
-
 				const ConstString & name = _entry->resource->getName();
 
-				LOGGER_ERROR(m_serviceProvider)("Resource %s\n: count - %u memory - %f"
+				LOGGER_ERROR(m_serviceProvider)("Resource %s\n: count - %u"
 					, name.c_str()
 					, count
-					, memoryUseMb
 					);
 			}
 
@@ -935,15 +900,11 @@ namespace Menge
 					return;
 				}
 
-				size_t memoryUse = resource->getMemoryUse();
-				float memoryUseMb = (float)(memoryUse) / (1024.f);
-
 				const ConstString & name = entry.resource->getName();
 
-				LOGGER_ERROR( m_serviceProvider )("Resource %s\n: count - %u memory - %f"
+				LOGGER_ERROR( m_serviceProvider )("Resource %s\n: count - %u"
 					, name.c_str()
 					, count
-					, memoryUseMb
 					);
 			}
 		}

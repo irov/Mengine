@@ -87,7 +87,7 @@ namespace Menge
 		
 		if( m_options.pitch * m_dataInfo.height == dataSize )
 		{		
-			if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, _buffer, _bufferSize ) == false )
+			if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, _buffer, _bufferSize, __FILE__, __LINE__ ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode invalid load"
 					);
@@ -97,7 +97,7 @@ namespace Menge
 		}
 		else
 		{
-			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, dataSize, "ImageDecoderACF::decode" );
+			MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, dataSize, __FILE__, __LINE__ );
 
 			if( buffer == nullptr )
 			{
@@ -106,7 +106,7 @@ namespace Menge
 
 			void * memory = buffer->getMemory();
 
-			if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, memory, dataSize ) == false )
+			if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, memory, dataSize, __FILE__, __LINE__ ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode invalid load"
 					);

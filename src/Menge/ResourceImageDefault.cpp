@@ -220,7 +220,7 @@ namespace Menge
 		{
 			size_t texture_size = dataInfo->getSize();
 
-			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, texture_size, "ResourceImageDefault::_isValid" );
+			MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, texture_size, __FILE__, __LINE__ );
 
 			if( buffer == nullptr )
 			{
@@ -305,8 +305,8 @@ namespace Menge
 				->findCodecType( m_filePath );
 		}
 
-		m_isAlpha = true;
-        metadata->get_File_Alpha( m_isAlpha );
+		m_hasAlpha = true;
+        metadata->get_File_Alpha( m_hasAlpha );
 
 		m_isPremultiply = false;
 		metadata->get_File_Premultiply( m_isPremultiply );
@@ -403,7 +403,7 @@ namespace Menge
 		m_texture = nullptr;
 		m_textureAlpha = nullptr;
 		
-		m_isAlpha = true;
+		m_hasAlpha = true;
 		
 		this->recompile();
 	}
@@ -427,15 +427,15 @@ namespace Menge
 			m_uv_image[i] *= uv_scale;
 		}
 
-		uint32_t channels = m_texture->getChannels();
+		uint32_t hwChannels = image->getHWChannels();
 
-		if( channels == 3 )
+		if( hwChannels == 3 )
 		{
-			m_isAlpha = false;
+			m_hasAlpha = false;
 		}
 		else
 		{
-			m_isAlpha = true;
+			m_hasAlpha = true;
 		}
 	}
 }

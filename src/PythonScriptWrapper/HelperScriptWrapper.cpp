@@ -162,7 +162,7 @@ namespace Menge
 			size_t size;
 			pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size );
 
-			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, size, "s_writeAccountBinaryFile" );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, size, __FILE__, __LINE__ );
 
 			if( buffer == nullptr )
 			{
@@ -195,7 +195,7 @@ namespace Menge
 		
 		PyObject * s_loadGameData( pybind::kernel_interface * _kernel, const ConstString & _name, PyObject * _pickleTypes )
 		{
-			MemoryCacheBufferInterfacePtr binaryBuffer = USERDATA_SERVICE( m_serviceProvider )
+			MemoryInterfacePtr binaryBuffer = USERDATA_SERVICE( m_serviceProvider )
 				->loadUserdata( _name );
 
 			if( binaryBuffer == nullptr )
@@ -307,10 +307,10 @@ namespace Menge
 
 		size_t s_getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group )
 		{
-			size_t memoryUse = RESOURCE_SERVICE( m_serviceProvider )
-				->getGroupResourcesMemoryUse( _category, _group );
+            (void)_category;
+            (void)_group;
 
-			return memoryUse;
+			return 0U;
 		}
 
 		bool s_intersectPathVsCircle( const pybind::list & _path, const mt::vec3f & _position, float _radius )
@@ -1777,7 +1777,7 @@ namespace Menge
 				return false;
 			}
 
-			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, size, "s_writeAccountBinaryFile" );
+			MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, size, __FILE__, __LINE__ );
 
 			if( buffer == nullptr )
 			{
@@ -1846,7 +1846,7 @@ namespace Menge
 
             ConstString filename = Helper::stringizeString( m_serviceProvider, utf8_fileName );
 
-			MemoryCacheBufferInterfacePtr binaryBuffer = currentAccount->loadBinaryFile( filename );
+			MemoryInterfacePtr binaryBuffer = currentAccount->loadBinaryFile( filename );
 
 			if( binaryBuffer == nullptr )
             {

@@ -43,7 +43,7 @@ namespace Menge
 		m_memory = MEMORY_SERVICE( m_serviceProvider )
 			->createMemory();
 
-		Char * memory_buffer = m_memory->newMemory( xml_buffer_size + 1 );
+		Char * memory_buffer = m_memory->newMemory( xml_buffer_size + 1, __FILE__, __LINE__ );
 
 		xml_text->read( memory_buffer, xml_buffer_size );
 		memory_buffer[xml_buffer_size] = '\0';

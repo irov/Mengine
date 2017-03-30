@@ -33,13 +33,20 @@ namespace Menge
 			m_memoryManager->unlockBuffer( m_bufferId );
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void MemoryCacheBuffer::setMemory( const void * _ptr, size_t _size, const char * _file, uint32_t _line )
+    {
+        void * buffer = this->newMemory( _size, _file, _line );
+
+        stdex::memorycopy( buffer, 0, _ptr, _size );
+    }
 	//////////////////////////////////////////////////////////////////////////
-	Pointer MemoryCacheBuffer::cacheMemory( size_t _size, const char * _doc )
+	Pointer MemoryCacheBuffer::newMemory( size_t _size, const char * _file, uint32_t _line )
 	{
 		this->uncache_();
 
 		void * memory;
-		uint32_t bufferId = m_memoryManager->lockBuffer( _size, &memory, _doc );
+		uint32_t bufferId = m_memoryManager->lockBuffer( _size, &memory, _file, _line );
 
 		if( bufferId == INVALID_CACHE_BUFFER_ID )
 		{

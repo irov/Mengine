@@ -9,7 +9,7 @@
 
 //#	include "Megatextures.h"
 
-#	include "Core/RenderUtil.h"
+#	include "Core/RenderUtils.h"
 
 #	include "Logger/Logger.h"
 
@@ -24,6 +24,11 @@ SERVICE_FACTORY( RenderService, Menge::RenderEngine );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    static bool hasRenderObjectFlag( const RenderObject * ro, uint32_t _flag )
+    {
+        return (ro->flags & _flag) > 0;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine()
 		: m_windowCreated( false )

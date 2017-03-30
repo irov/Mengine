@@ -16,13 +16,7 @@ namespace Menge
 		~RenderTexture();
 
     public:
-        void initialize( uint32_t _id
-            , const RenderImageInterfacePtr & _image
-			, uint32_t _mipmaps
-            , uint32_t _width
-            , uint32_t _height
-            , uint32_t _channels            
-			);
+        void initialize( uint32_t _id, const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height );
 
 	public:
 		void release() override;
@@ -32,8 +26,8 @@ namespace Menge
    
 	public:
 		uint32_t getId() const override;
-        bool isPow2() const override;
 
+    public:
 		void setCategory( const ConstString & _category ) override;
 		const ConstString & getCategory() const override;
 
@@ -45,18 +39,12 @@ namespace Menge
 
 		const mt::uv4f & getUV() const override;
 
-		uint32_t getMipmaps() const override;
-
 		uint32_t getWidth() const override;
 		uint32_t getHeight() const override;
-
-		uint32_t getChannels() const override;
 		
 		Pointer lock( size_t * _pitch, uint32_t _miplevel, const Rect & _rect, bool _readOnly = true ) const override;
 
 		void unlock( uint32_t _miplevel ) const override;
-
-		size_t getMemoryUse() const override;
 
 	protected:        
         uint32_t m_id;
@@ -66,16 +54,12 @@ namespace Menge
 		ConstString m_category;
 		FilePath m_fileName;
 		
-		uint32_t m_mipmaps;
 		uint32_t m_width;
 		uint32_t m_height;
-		uint32_t m_channels;
 		
 		Rect m_rect;
         Rect m_hwRect;
 		mt::uv4f m_uv;
-
-        bool m_pow2;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderTexture> RenderTexturePtr;

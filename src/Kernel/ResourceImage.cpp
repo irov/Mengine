@@ -11,7 +11,7 @@ namespace Menge
         , m_maxSize(0.f, 0.f)
         , m_size(0.f, 0.f)
 		, m_offset(0.f, 0.f)
-        , m_isAlpha(false)
+        , m_hasAlpha(false)
 		, m_isPremultiply(false)
 	{
 	}
@@ -46,21 +46,4 @@ namespace Menge
             m_textureAlpha = nullptr;
         }
     }
-	/////////////////////////////////////////////////////////////////////////
-	size_t ResourceImage::getMemoryUse() const
-	{
-		size_t memory = ResourceReference::getMemoryUse();
-
-		if( m_texture != nullptr )
-		{
-			memory += m_texture->getMemoryUse();
-		}
-
-		if( m_textureAlpha != nullptr )
-		{
-			memory += m_textureAlpha->getMemoryUse();
-		}
-
-		return memory;
-	}
 }

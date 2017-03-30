@@ -39,12 +39,12 @@ namespace Menge
         m_memoryManager = _memoryManager;
     }
 	//////////////////////////////////////////////////////////////////////////
-	Pointer MemoryCacheInput::cacheMemory( size_t _size, const char * _doc )
+	Pointer MemoryCacheInput::cacheMemory( size_t _size, const char * _file, uint32_t _line )
 	{
 		this->uncache_();
 
 		void * memory;
-		uint32_t bufferId = m_memoryManager->lockBuffer( _size, &memory, _doc );
+		uint32_t bufferId = m_memoryManager->lockBuffer( _size, &memory, _file, _line );
 
 		if( bufferId == INVALID_CACHE_BUFFER_ID )
 		{

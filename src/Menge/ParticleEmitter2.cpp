@@ -21,7 +21,7 @@
 #	include "math/box2.h"
 #	include "math/angle.h"
 
-#	include "Core/RenderUtil.h"
+#	include "Core/RenderUtils.h"
 
 namespace	Menge
 {

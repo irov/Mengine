@@ -114,7 +114,7 @@ namespace Menge
 		}
 		
 		size_t mipmapsize = (size_t)dataInfo->mipmapsize;
-		void * buffer = mipmap->newMemory( mipmapsize );
+		void * buffer = mipmap->newMemory( mipmapsize, __FILE__, __LINE__ );
 
 		if( buffer == nullptr )
 		{

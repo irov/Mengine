@@ -34,21 +34,21 @@ namespace Menge
 		void _finalize() override;
 
 	public:
-		CacheBufferID lockBuffer( size_t _size, void ** _memory, const char * _doc );
+		CacheBufferID lockBuffer( size_t _size, void ** _memory, const char * _file, uint32_t _line );
 		void unlockBuffer( CacheBufferID _bufferId );
 
 	public:
 		void clearCacheBuffers() override;
 
 	public:
-		MemoryCacheBufferInterfacePtr createMemoryCacheBuffer() override;
+        MemoryInterfacePtr createMemoryCacheBuffer() override;
 		MemoryCacheInputInterfacePtr createMemoryCacheInput() override;
 		MemoryProxyInputInterfacePtr createMemoryProxyInput() override;
 		MemoryInputInterfacePtr createMemoryInput() override;
 		MemoryInterfacePtr createMemory() override;
 
 	protected:
-		CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const char * _doc );
+		CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const char * _file, uint32_t _line );
 		
 	protected:
 		struct CacheBufferMemory
@@ -56,7 +56,8 @@ namespace Menge
 			CacheBufferID id;
 			void * memory;
 			size_t size;
-			const char * doc;
+			const char * file;
+            uint32_t line;
 			bool lock;
 		};
 

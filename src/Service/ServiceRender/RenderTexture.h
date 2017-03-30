@@ -32,7 +32,6 @@ namespace Menge
    
 	public:
 		uint32_t getId() const override;
-        bool isPow2() const override;
 
 		void setCategory( const ConstString & _category ) override;
 		const ConstString & getCategory() const override;
@@ -74,8 +73,6 @@ namespace Menge
 		Rect m_rect;
         Rect m_hwRect;
 		mt::uv4f m_uv;
-
-        bool m_pow2;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderTexture> RenderTexturePtr;

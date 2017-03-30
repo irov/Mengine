@@ -625,7 +625,7 @@ namespace Menge
 		for( uint32_t i = 0; i != mipmaps; ++i )
 		{
 			size_t pitch = 0;
-			void * textureBuffer = _texture->lock( &pitch, i, _rect, false );
+			void * textureBuffer = image->lock( &pitch, i, _rect, false );
 
 			if( textureBuffer == nullptr )
 			{
@@ -662,18 +662,18 @@ namespace Menge
 					, _rect.bottom
 					);
 
-				_texture->unlock( i );
+                image->unlock( i );
 
 				return false;
 			}
 
 			//this->sweezleAlpha( _texture, textureBuffer, pitch );
-            if( mipmaps == 1 && _texture->isPow2() == false )
+            if( mipmaps == 1 && image->isPow2() == false )
 			{
 				this->imageQuality( _texture, textureBuffer, pitch );
 			}
 
-			_texture->unlock( i );
+            image->unlock( i );
 		}
 		
         return true;

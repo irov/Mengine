@@ -49,8 +49,6 @@ namespace Menge
 		float scaleV = float(m_rect.bottom) / float(m_hwRect.bottom);
 
 		mt::uv4_from_mask( m_uv, mt::vec4f(0.f, 0.f, scaleU, scaleV) );
-
-        m_pow2 = (m_hwRect.right == m_rect.right && m_hwRect.bottom == m_rect.bottom);
     }
 	//////////////////////////////////////////////////////////////////////////
 	void RenderTexture::release()
@@ -67,11 +65,6 @@ namespace Menge
 	{
 		return m_id;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderTexture::isPow2() const
-    {
-        return m_pow2;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	void RenderTexture::setCategory( const ConstString & _category )
 	{

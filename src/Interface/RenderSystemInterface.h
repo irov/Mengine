@@ -198,6 +198,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	typedef uint32_t VBHandle; // Vertex Buffer Handle
 	typedef uint32_t IBHandle; // Index Buffer Handle
+    //////////////////////////////////////////////////////////////////////////
+    class RenderImageProviderInterface
+    {
+    public:
+
+    };
 	//////////////////////////////////////////////////////////////////////////
 	class RenderImageInterface
 		: public ServantInterface
@@ -212,6 +218,8 @@ namespace Menge
 		virtual uint32_t getHWDepth() const = 0;
 
 		virtual PixelFormat getHWPixelFormat() const = 0;
+
+        virtual bool isPow2() const = 0;
 
 	public:
 		virtual Pointer lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly = true ) = 0;
@@ -231,9 +239,6 @@ namespace Menge
 
 	public:
 		virtual uint32_t getId() const = 0;
-
-    public:
-        virtual bool isPow2() const = 0;
 
     public:
 		virtual const Rect & getRect() const = 0;

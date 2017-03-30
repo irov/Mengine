@@ -33,6 +33,8 @@ namespace Menge
 
 		PixelFormat getHWPixelFormat() const override;
 
+        bool isPow2() const override;
+
 	public:
 		void _destroy() override;
 
@@ -77,7 +79,9 @@ namespace Menge
 
         MemoryCacheBufferInterfacePtr m_lockMemory;
 		uint32_t m_lockLevel;
+
+        bool m_pow2;
 	};
 
-    typedef stdex::intrusive_ptr<OpenGLRenderImage> OGLTexturePtr;
+    typedef stdex::intrusive_ptr<OpenGLRenderImage> OpenGLRenderImagePtr;
 }	// namespace Menge

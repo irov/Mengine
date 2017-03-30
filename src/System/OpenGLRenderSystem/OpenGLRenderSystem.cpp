@@ -724,7 +724,15 @@ namespace Menge
             return nullptr;
         }
 
-        OGLTexturePtr texture = m_factoryTexture->createObject();
+        OpenGLRenderImagePtr texture = m_factoryTexture->createObject();
+
+        if( texture == nullptr )
+        {
+            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystem::createImage invalid create"
+                );
+
+            return nullptr;
+        }
 
         texture->setServiceProvider( m_serviceProvider );
 
@@ -918,7 +926,7 @@ namespace Menge
             return nullptr;
         }
 
-        OGLTexturePtr texture = m_factoryTexture->createObject();
+        OpenGLRenderImagePtr texture = m_factoryTexture->createObject();
 
         texture->setServiceProvider( m_serviceProvider );
 

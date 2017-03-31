@@ -50,7 +50,7 @@ namespace Menge
 
 		uint32_t bufferSize = (uint32_t)dataInfo->mipmapsize;
 
-		MemoryCacheBufferInterfacePtr memory = Helper::createMemoryCacheBuffer( m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::validateVersion" );
+		MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( m_serviceProvider, bufferSize, __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{
@@ -123,7 +123,7 @@ namespace Menge
 
 		uint32_t bufferSize = width * height + mimmap_size;
 		
-		MemoryCacheBufferInterfacePtr memory = Helper::createMemoryCacheBuffer( m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::convert" );
+		MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( m_serviceProvider, bufferSize, __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{

@@ -104,7 +104,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceAnimation::_isValid() const
 	{
-		size_t total_memory = 0;
+        size_t total_memory = 0;
 
 		for( TVectorAnimationSequence::const_iterator
 			it = m_sequence.begin(),
@@ -149,9 +149,25 @@ namespace Menge
                 return false;
             }
 
-            uint32_t resource_memory = resourceImage->getMemoryUse();
+            const RenderTextureInterfacePtr & texture = resourceImage->getTexture();
 
-			total_memory += resource_memory;
+            if( texture == nullptr )
+            {
+                continue;
+            }
+
+            const RenderImageInterfacePtr & image = texture->getImage();
+
+            uint32_t width = texture->getWidth();
+            uint32_t height = texture->getHeight();
+
+            uint32_t HWChannels = image->getHWChannels();
+            uint32_t HWDepth = image->getHWDepth();
+            PixelFormat HWPixelFormat = image->getHWPixelFormat();
+
+            size_t textureSize = Helper::getTextureMemorySize( width, height, HWChannels, HWDepth, HWPixelFormat );
+
+            total_memory += textureSize;
 		}
 
 		uint32_t animationMemoryLimit = CONFIG_VALUE(m_serviceProvider, "Limit", "AnimationMemoryLimit", 4194304U ); //4kb

@@ -26,7 +26,7 @@ namespace Menge
 		m_size = size;
 		m_offset = mt::vec2f(0.f, 0.f);
 
-        m_isAlpha = false;
+        m_hasAlpha = false;
 
         m_texture = nullptr;
 		m_textureAlpha = nullptr;

@@ -33,7 +33,7 @@ namespace Menge
 			{
 				featuresBufferSize += MENGINE_FILE_STREAM_BUFFER_SIZE;
 
-				MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, featuresBufferSize, "ImageDecoderWEBP::_prepareData" );
+				MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, featuresBufferSize, __FILE__, __LINE__ );
 				
 				if( buffer == nullptr )
 				{
@@ -114,7 +114,7 @@ namespace Menge
 		size_t streamSize;
 		if( m_stream->memory( &streamMemory, &streamSize ) == false )
 		{
-			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryCacheStream( m_serviceProvider, m_stream, "ImageDecoderWEBP::decode" );
+			MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_serviceProvider, m_stream, __FILE__, __LINE__ );
 
 			if( buffer == nullptr )
 			{

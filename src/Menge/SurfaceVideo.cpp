@@ -2,6 +2,8 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
+#	include "Core/RenderUtils.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Consts.h"
@@ -503,6 +505,8 @@ namespace Menge
 
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
+        const RenderImageInterfacePtr & image = texture->getImage();
+
 		if( dataInfo->clamp == true )
 		{
 			rect.left = 0;
@@ -512,8 +516,6 @@ namespace Menge
 		}
 		else
 		{
-			const RenderImageInterfacePtr & image = texture->getImage();
-
 			rect.left = 0;
 			rect.top = 0;
 			rect.right = image->getHWWidth();
@@ -521,7 +523,7 @@ namespace Menge
 		}
 
 		size_t pitch = 0;
-		void * lockRect = texture->lock( &pitch, 0, rect, false );
+		void * lockRect = image->lock( &pitch, 0, rect, false );
 
 		if( lockRect == nullptr )
 		{
@@ -537,10 +539,10 @@ namespace Menge
 
 		m_videoDecoder->setPitch( pitch );
 
-		size_t bufferSize = texture->getMemoryUse();
+        size_t bufferSize = Helper::getImageMemorySize( image );
 		size_t bytes = m_videoDecoder->decode( lockRect, bufferSize );
 
-		texture->unlock( 0 );
+        image->unlock( 0 );
 
 		m_invalidVideoTexture = false;
 

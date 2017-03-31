@@ -19,14 +19,14 @@ namespace Menge
         const Metacode::Meta_DataBlock::Meta_ResourceImageSubstract * metadata 
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageSubstract *>(_meta);
         
-        m_isAlpha = true;
+        m_hasAlpha = true;
 
         m_resourceImageName = metadata->get_Image_Name();
 
 		m_uv_image = metadata->get_Image_UV();
 		m_uv_alpha = m_uv_image;
 
-        metadata->get_Image_Alpha( m_isAlpha );
+        metadata->get_Image_Alpha( m_hasAlpha );
 
 		m_maxSize = metadata->get_Image_MaxSize();
 

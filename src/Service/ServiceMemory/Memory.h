@@ -17,8 +17,8 @@ namespace Menge
 		~Memory();
 
     public:
-		void setMemory( const void * _ptr, size_t _size ) override;
-		Pointer newMemory( size_t _size ) override;
+		void setMemory( const void * _ptr, size_t _size, const char * _file, uint32_t _line ) override;
+		Pointer newMemory( size_t _size, const char * _file, uint32_t _line ) override;
 
 	public:
 		inline Pointer getMemory() const override;
@@ -28,6 +28,8 @@ namespace Menge
 	protected:
 		void * m_memory;
 		size_t m_size;
+        const char * m_file;
+        uint32_t m_line;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline Pointer Memory::getMemory() const

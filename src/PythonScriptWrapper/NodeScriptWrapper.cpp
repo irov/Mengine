@@ -2994,7 +2994,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_parseXml( pybind::kernel_interface * _kernel, const ConstString & _fileGroup, const FilePath & _path, const pybind::object & _cb )
 		{
-			MemoryCacheBufferInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( m_serviceProvider, _fileGroup, _path, false, "parseXml" );
+			MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( m_serviceProvider, _fileGroup, _path, false, __FILE__, __LINE__ );
 
 			if( binary_buffer == nullptr )
 			{
@@ -3478,7 +3478,7 @@ namespace Menge
 
 			size_t size = stream->size();
 
-			void * memory_buffer = _blob->newMemory( size );
+			void * memory_buffer = _blob->newMemory( size, __FILE__, __LINE__ );
 
 			if( stream->read( memory_buffer, size ) != size )
 			{
@@ -6896,7 +6896,7 @@ namespace Menge
 			.def( "setUVAlpha", &ResourceImage::setUVAlpha )
 			.def( "getUVAlpha", &ResourceImage::getUVAlpha )
 			.def( "setAlpha", &ResourceImage::setAlpha )
-			.def( "isAlpha", &ResourceImage::isAlpha )
+			.def( "isAlpha", &ResourceImage::hasAlpha )
 			.def( "setColor", &ResourceImage::setColor )
 			.def( "getColor", &ResourceImage::getColor )
 			;

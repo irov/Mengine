@@ -19,6 +19,10 @@ namespace Menge
     public:
         bool initialize( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type );
 
+    public:
+        void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
+        const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;
+
 	public:
         Pointer lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly ) override;
 		void unlock( uint32_t _level ) override;
@@ -26,6 +30,7 @@ namespace Menge
 	public:
 		ERenderImageMode getMode() const override;
 
+        uint32_t getHWMipmaps() const override;
 		uint32_t getHWWidth() const override;
 		uint32_t getHWHeight() const override;
         uint32_t getHWChannels() const override;
@@ -53,8 +58,8 @@ namespace Menge
 		void setWrapT( GLenum _wrapT );		
         GLenum getWrapT() const;
 
-	private:
-		ServiceProviderInterface * m_serviceProvider;
+    protected:
+        RenderImageProviderInterfacePtr m_renderImageProvider;
 
 		GLuint m_uid;
 		
@@ -77,7 +82,7 @@ namespace Menge
 		GLenum m_format;
 		GLenum m_type;
 
-        MemoryCacheBufferInterfacePtr m_lockMemory;
+        MemoryInterfacePtr m_lockMemory;
 		uint32_t m_lockLevel;
 
         bool m_pow2;

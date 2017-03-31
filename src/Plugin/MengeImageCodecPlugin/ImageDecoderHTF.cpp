@@ -82,7 +82,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderHTF::_decode( void * _buffer, size_t _bufferSize )
 	{
-		if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, _buffer, _bufferSize ) == false )
+		if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, _buffer, _bufferSize, __FILE__, __LINE__ ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("ImageDecoderHTF::decode invalid load"
 				);

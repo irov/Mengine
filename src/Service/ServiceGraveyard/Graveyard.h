@@ -12,11 +12,10 @@ namespace Menge
 		FilePath filePath;
 
 		RenderImageInterfacePtr image;
-		uint32_t mipmaps;
 		uint32_t width;
 		uint32_t height;
-		uint32_t channels;
-		float timing;
+
+        float timing;
 	};
 
 	class Graveyard

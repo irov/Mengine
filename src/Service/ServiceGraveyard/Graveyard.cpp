@@ -126,10 +126,9 @@ namespace Menge
 		entry.filePath = filePath;
 
 		entry.image = _texture->getImage();
-		entry.mipmaps = _texture->getMipmaps();
 		entry.width = _texture->getWidth();
 		entry.height = _texture->getHeight();
-		entry.channels = _texture->getChannels();
+
 		entry.timing = m_graveyardTime;
 
 		m_textures.push_back( entry );
@@ -200,7 +199,7 @@ namespace Menge
 		RenderTextureGraveEntry & entry = *it_found;
 
 		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE( m_serviceProvider )
-			->createRenderTexture( entry.image, entry.mipmaps, entry.width, entry.height, entry.channels );
+			->createRenderTexture( entry.image, entry.width, entry.height );
 
 		entry.image = nullptr;
 

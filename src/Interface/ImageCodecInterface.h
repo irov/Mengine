@@ -79,12 +79,14 @@ namespace Menge
             : flags(DF_NONE)
             , pitch(0)
             , channels(0)
+            , mipmap(0)
         {
         }
 
         uint32_t flags;
 		size_t pitch;
         uint32_t channels;
+        uint32_t mipmap;
 
 		bool hasFlag( uint32_t _flag ) const
 		{

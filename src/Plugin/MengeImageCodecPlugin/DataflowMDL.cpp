@@ -52,8 +52,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DataflowMDL::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
 	{
-		MemoryCacheBufferInterfacePtr binaryBuffer;
-		if( Helper::loadStreamArchiveData( m_serviceProvider, _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_MDL ), GET_MAGIC_VERSION( MAGIC_MDL ), binaryBuffer ) == false )
+		MemoryInterfacePtr binaryBuffer;
+		if( Helper::loadStreamArchiveData( m_serviceProvider, _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_MDL ), GET_MAGIC_VERSION( MAGIC_MDL ), binaryBuffer, __FILE__, __LINE__ ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("DataflowMDL::load: invalid get data"
 				);

@@ -55,8 +55,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DataflowAEK::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
 	{
-		MemoryCacheBufferInterfacePtr binaryBuffer;
-		if( Helper::loadStreamArchiveData( m_serviceProvider, _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), binaryBuffer ) == false )
+		MemoryInterfacePtr binaryBuffer;
+		if( Helper::loadStreamArchiveData( m_serviceProvider, _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), binaryBuffer, __FILE__, __LINE__ ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: invalid get data"
 				);

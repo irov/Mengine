@@ -19,21 +19,14 @@ namespace Menge
 		virtual bool empty() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	class MemoryCacheBufferInterface		
-		: public MemoryGetterBufferInterface
-	{
-	public:
-		virtual Pointer cacheMemory( size_t _size, const char * _doc ) = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<MemoryCacheBufferInterface> MemoryCacheBufferInterfacePtr;
+	typedef stdex::intrusive_ptr<MemoryGetterBufferInterface> MemoryGetterBufferInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class MemoryInterface
 		: public MemoryGetterBufferInterface
 	{
 	public:
-		virtual void setMemory( const void * _ptr, size_t _size ) = 0;
-		virtual Pointer newMemory( size_t _size ) = 0;
+		virtual void setMemory( const void * _ptr, size_t _size, const char * _file, uint32_t _line ) = 0;
+		virtual Pointer newMemory( size_t _size, const char * _file, uint32_t _line ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<MemoryInterface> MemoryInterfacePtr;
@@ -50,7 +43,7 @@ namespace Menge
 		: public MemoryGetterStreamInterface
 	{
 	public:
-		virtual Pointer cacheMemory( size_t _size, const char * _doc ) = 0;
+		virtual Pointer cacheMemory( size_t _size, const char * _file, uint32_t _line ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<MemoryCacheInputInterface> MemoryCacheInputInterfacePtr;
@@ -79,11 +72,13 @@ namespace Menge
 		SERVICE_DECLARE( "MemoryService" )
 
 	public:
-		virtual MemoryCacheBufferInterfacePtr createMemoryCacheBuffer() = 0;
+        virtual MemoryInterfacePtr createMemory() = 0;
+		virtual MemoryInterfacePtr createMemoryCacheBuffer() = 0;
+
+    public:
 		virtual MemoryCacheInputInterfacePtr createMemoryCacheInput() = 0;
 		virtual MemoryProxyInputInterfacePtr createMemoryProxyInput() = 0;
-		virtual MemoryInputInterfacePtr createMemoryInput() = 0;
-		virtual MemoryInterfacePtr createMemory() = 0;
+		virtual MemoryInputInterfacePtr createMemoryInput() = 0;		
 
 	public:
 		virtual void clearCacheBuffers() = 0;

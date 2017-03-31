@@ -24,7 +24,7 @@ namespace Menge
 		virtual bool hasUserdata( const ConstString & _name ) const = 0;
 
 	public:
-		virtual MemoryCacheBufferInterfacePtr loadUserdata( const ConstString & _name ) const = 0;
+		virtual MemoryInterfacePtr loadUserdata( const ConstString & _name ) const = 0;
 		virtual bool writeUserdata( const ConstString & _name, const void * _data, size_t _size ) const = 0;
 	};
 

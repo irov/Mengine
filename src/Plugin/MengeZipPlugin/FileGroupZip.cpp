@@ -426,7 +426,7 @@ namespace Menge
 				return false;
 			}
 
-			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, fi.file_size, "FileGroupZip_createInputFile" );
+			MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, fi.file_size, __FILE__, __LINE__ );
 			
 			if( compress_buffer == nullptr )
 			{

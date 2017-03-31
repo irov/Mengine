@@ -31,7 +31,7 @@ namespace Menge
 
     public:
         RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec ) override;
-		RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels ) override;
+		RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height ) override;
 
 	protected:
 		ImageDecoderInterfacePtr createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec );
@@ -60,8 +60,7 @@ namespace Menge
 		size_t getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) const override;
 
 	protected:
-		bool onRenderTextureDestroy_( RenderTextureInterface * _texture );
-		void releaseRenderTexture_( RenderTextureInterface * _texture );
+		bool onRenderTextureDestroy_( RenderTextureInterface * _texture );		
 
     protected:
         bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder );

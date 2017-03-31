@@ -248,9 +248,9 @@ ScriptWrapper
 	ScriptEventReceiver.h	
 )
    
-INCLUDE_DIRECTORIES( 
-    ${Mengine_SOURCE_DIR} 
-    ${Mengine_SOURCE_DIR}/Utils 
+INCLUDE_DIRECTORIES(
+    ${SOURCE_DIR}
+    ${SOURCE_DIR}/Utils
     ${THIRDPARTY_DIR}/metabuf
     ${THIRDPARTY_DIR}/pybind/include
     )     

@@ -4,7 +4,7 @@ MACRO( ADD_FILTER group_name )
     SOURCE_GROUP( ${group_name} FILES ${ARGN} )
     SET( SRC_FILES ${SRC_FILES} ${ARGN} )
     #MESSAGE( ${ARGN} )
-ENDMACRO( ADD_FILTER group_name files )
+ENDMACRO()
 
 ADD_SUBDIRECTORY( Config )
 

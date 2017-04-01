@@ -77,6 +77,7 @@ namespace Menge
 		}
 
         m_factoryRenderTexture = nullptr;
+		m_factoryDecoderRenderImageProvider = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::hasTexture( const ConstString& _pakName, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const

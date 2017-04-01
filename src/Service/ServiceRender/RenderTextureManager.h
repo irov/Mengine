@@ -5,8 +5,6 @@
 
 #   include "Core/ServiceBase.h"
 
-#   include "RenderTexture.h"
-
 #	include "Core/ConstString.h"
 
 #   include "Factory/Factory.h"
@@ -30,15 +28,11 @@ namespace Menge
         void _finalize() override;
 
     public:
-        RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec ) override;
+		RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codecName ) override;
 		RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height ) override;
 
-	protected:
-		ImageDecoderInterfacePtr createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec );
-		RenderTextureInterfacePtr createTextureFromDecoder_( const ImageDecoderInterfacePtr & _decoder );
-
-    public:
-        RenderTextureInterfacePtr createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
+    public:        
+		RenderTextureInterfacePtr createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
         RenderTextureInterfacePtr createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 
 	public:
@@ -62,9 +56,6 @@ namespace Menge
 	protected:
 		bool onRenderTextureDestroy_( RenderTextureInterface * _texture );		
 
-    protected:
-        bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder );
-
 	protected:
 		void updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, PixelFormat & _format ) const;
 
@@ -74,6 +65,7 @@ namespace Menge
 		TMapRenderTextureEntry m_textures[MENGINE_TEXTURE_MANAGER_HASH_SIZE];
 
         FactoryPtr m_factoryRenderTexture;
+        FactoryPtr m_factoryDecoderRenderImageProvider;
 
         uint32_t m_textureEnumerator;
 

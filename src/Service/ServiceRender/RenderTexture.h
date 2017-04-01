@@ -35,16 +35,11 @@ namespace Menge
 		const FilePath & getFileName() const override;
 		
 		const Rect & getRect() const override;
-		const Rect & getHWRect() const override;
 
 		const mt::uv4f & getUV() const override;
 
 		uint32_t getWidth() const override;
 		uint32_t getHeight() const override;
-		
-		Pointer lock( size_t * _pitch, uint32_t _miplevel, const Rect & _rect, bool _readOnly = true ) const override;
-
-		void unlock( uint32_t _miplevel ) const override;
 
 	protected:        
         uint32_t m_id;
@@ -58,7 +53,6 @@ namespace Menge
 		uint32_t m_height;
 		
 		Rect m_rect;
-        Rect m_hwRect;
 		mt::uv4f m_uv;
 	};
 	//////////////////////////////////////////////////////////////////////////

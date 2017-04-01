@@ -10,6 +10,8 @@ src
     RenderTextureManager.cpp
 	DecoderRenderImageProvider.h
 	DecoderRenderImageProvider.cpp
+	DecoderRenderImageLoader.h
+	DecoderRenderImageLoader.cpp
     RenderMaterial.h
     RenderMaterial.cpp
     RenderMaterialManager.h

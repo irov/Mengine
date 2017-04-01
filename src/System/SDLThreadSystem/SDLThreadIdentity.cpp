@@ -6,9 +6,10 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     SDLThreadIdentity::SDLThreadIdentity()
-        : m_doc( nullptr )
-        , m_thread( nullptr )
+        : m_thread( nullptr )
         , m_task( nullptr )
+		, m_file( nullptr )
+		, m_line( 0 )
         , m_complete( true )
         , m_exit( false )
     {
@@ -23,12 +24,13 @@ namespace Menge
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _doc)
+    bool SDLThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _file, uint32_t _line)
     {
         (void)_priority;
 
         m_mutex = _mutex;
-        m_doc = _doc;
+        m_file = _file;
+		m_line = _line;
 
         SDL_Thread * thread = SDL_CreateThread( &s_tread_job, "Mengine Thread", reinterpret_cast<void *>(this) );
 

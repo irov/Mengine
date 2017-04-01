@@ -9,15 +9,22 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ThreadTaskDownloadAsset::ThreadTaskDownloadAsset( ServiceProviderInterface * _serviceProvider, const String & _url, const ConstString & _category, const FilePath & _filepath, uint32_t _id, HttpDownloadAssetReceiver * _receiver )
-		: m_serviceProvider(_serviceProvider)
-		, m_url(_url)
-		, m_category(_category)
-		, m_filePath(_filepath)
-		, m_id(_id)
-		, m_receiver(_receiver)
+	ThreadTaskDownloadAsset::ThreadTaskDownloadAsset()
+		: m_id(0)
+		, m_receiver(nullptr)
 		, m_successful(false)
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ThreadTaskDownloadAsset::initialize( const String & _url, const ConstString & _category, const FilePath & _filepath, uint32_t _id, HttpDownloadAssetReceiver * _receiver )
+	{
+		m_url = _url;
+		m_category = _category;
+		m_filePath = _filepath;
+		m_id = _id;
+		m_receiver = _receiver;
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskDownloadAsset::_onRun()
@@ -49,6 +56,11 @@ namespace Menge
 		, curl_off_t _ultotal, curl_off_t _ulnow 
 		)
 	{
+		(void)_dltotal;
+		(void)_dlnow;
+		(void)_ultotal;
+		(void)_ulnow;
+
 		ThreadTaskDownloadAsset * task = (ThreadTaskDownloadAsset *)_userp;
 
 		if( task->isCancel() == true )
@@ -113,17 +125,6 @@ namespace Menge
 		m_stream->flush();
 		m_stream = nullptr;
 
-		if( _successful == false )
-		{
-			FILE_SERVICE(m_serviceProvider)
-				->removeFile( m_category, m_filePath );
-		}
-
 		m_receiver->onDownloadAssetComplete( m_id, _successful );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskDownloadAsset::destroy()
-	{
-		delete this;
 	}
 }

@@ -1,2 +1,0 @@
-LIBRARY	"CURLHTTPSystem"
-EXPORTS 	dllCreatePlugin 	@1

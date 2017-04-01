@@ -2,34 +2,33 @@
 
 #	include "Interface/HttpSystemInterface.h"
 
+#	include "Core/ServiceBase.h"
+
+#	include "Factory/Factory.h"
+
 #	include "Kernel/ThreadTask.h"
 
 namespace Menge
 {
-	class CurlHttpSystem
-		: public HttpSystemInterface
+	class cURLHttpSystem
+		: public ServiceBase<HttpSystemInterface>
 		, public HttpDownloadAssetReceiver
 	{
 	public:
-		CurlHttpSystem();
+		cURLHttpSystem();
 
 	protected:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
-
-	protected:
-		bool initialize() override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 		
 	protected:
-		uint32_t downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpDownloadAssetReceiver * _receiver ) override;
-		bool cancelAsset( uint32_t _id ) override;
+		HttpAssetID downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpDownloadAssetReceiver * _receiver ) override;
+		bool cancelAsset( HttpAssetID _id ) override;
 
 	private:
-		void onDownloadAssetComplete( uint32_t _id, bool _successful ) override;
+		void onDownloadAssetComplete( HttpAssetID _id, bool _successful ) override;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
 		uint32_t m_enumeratorDownloadAsset;
 
 		struct DownloadAssetDesc
@@ -41,5 +40,7 @@ namespace Menge
 
 		typedef stdex::vector<DownloadAssetDesc> TVectorDownloadAssets;
 		TVectorDownloadAssets m_downloadAssets;
+
+		FactoryPtr m_factoryTaskDownloadAsset;
 	};
 }

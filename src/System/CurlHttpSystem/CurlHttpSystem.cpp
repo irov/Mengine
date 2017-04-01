@@ -1,37 +1,28 @@
-#	include "CurlHttpSystem.h"
+#	include "cURLHttpSystem.h"
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 
 #	include "ThreadTaskDownloadAsset.h"
 
-#	include "curl/curl.h"
+#	include "Factory/FactoryPool.h"
 
 #	include "Logger/Logger.h"
 
+#	include "curl/curl.h"
+
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( HttpSystem, Menge::HttpSystemInterface, Menge::CurlHttpSystem );
+SERVICE_FACTORY( HttpSystem, Menge::cURLHttpSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	CurlHttpSystem::CurlHttpSystem()
-		: m_serviceProvider(nullptr)
-		, m_enumeratorDownloadAsset(0)
+	cURLHttpSystem::cURLHttpSystem()
+		: m_enumeratorDownloadAsset(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CurlHttpSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * CurlHttpSystem::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool CurlHttpSystem::initialize()
+	bool cURLHttpSystem::_initialize()
 	{
 		CURLcode code = curl_global_init(CURL_GLOBAL_ALL);
 
@@ -46,17 +37,21 @@ namespace Menge
 		}
 
 		THREAD_SERVICE(m_serviceProvider)
-			->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), -1 );
+			->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), -1, __FILE__, __LINE__ );
+
+		m_factoryTaskDownloadAsset = new FactoryPool<ThreadTaskDownloadAsset, 8>( m_serviceProvider );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CurlHttpSystem::finalize()
+	void cURLHttpSystem::_finalize()
 	{
 		curl_global_cleanup();
+
+		m_factoryTaskDownloadAsset = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t CurlHttpSystem::downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpDownloadAssetReceiver * _receiver )
+	HttpAssetID cURLHttpSystem::downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpDownloadAssetReceiver * _receiver )
 	{
 		if( FILE_SERVICE(m_serviceProvider)
 			->hasFileGroup( _category, nullptr ) == false )
@@ -82,8 +77,10 @@ namespace Menge
 
 		uint32_t task_id = ++m_enumeratorDownloadAsset;
 		
-		ThreadTaskDownloadAssetPtr task = 
-			new ThreadTaskDownloadAsset( m_serviceProvider, _url, _category, _path, task_id, this );
+		ThreadTaskDownloadAssetPtr task = m_factoryTaskDownloadAsset->createObject();
+
+		task->setServiceProvider( m_serviceProvider );
+		task->initialize( _url, _category, _path, task_id, this );
 		
 		if( THREAD_SERVICE(m_serviceProvider)
 			->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), task ) == false )
@@ -106,7 +103,7 @@ namespace Menge
 		return task_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool CurlHttpSystem::cancelAsset( uint32_t _id )
+	bool cURLHttpSystem::cancelAsset( HttpAssetID _id )
 	{
 		for( TVectorDownloadAssets::iterator
 			it = m_downloadAssets.begin(),
@@ -129,7 +126,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CurlHttpSystem::onDownloadAssetComplete( uint32_t _id, bool _successful )
+	void cURLHttpSystem::onDownloadAssetComplete( HttpAssetID _id, bool _successful )
 	{
 		for( TVectorDownloadAssets::iterator
 			it = m_downloadAssets.begin(),

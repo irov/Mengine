@@ -74,7 +74,7 @@ namespace Menge
 		}
 
 		m_mutex = THREAD_SERVICE(m_serviceProvider)
-			->createMutex( "FileGroupZip::initialize" );
+			->createMutex( __FILE__, __LINE__ );
 		
 		return true;
 	}

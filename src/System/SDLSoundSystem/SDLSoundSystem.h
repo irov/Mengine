@@ -44,8 +44,8 @@ namespace Menge
         SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer ) override;
 
     public:
-        int findFreeChannel();
-        void freeChannel(int channel);
+		uint32_t findFreeChannel();
+        void freeChannel( uint32_t channel);
 
     protected:
         FactoryPtr m_factorySoundBuffer;

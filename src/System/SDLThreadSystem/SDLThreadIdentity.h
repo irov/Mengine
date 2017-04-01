@@ -16,7 +16,7 @@ namespace Menge
         SDLThreadIdentity();
 
     public:
-        bool initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _doc);
+        bool initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _file, uint32_t _line );
         
     public:
         void main();
@@ -31,15 +31,16 @@ namespace Menge
     protected:
         ThreadMutexInterfacePtr m_mutex;
 
-        const char * m_doc;
-
         SDL_Thread * m_thread;
 
         ThreadTaskInterface * m_task;
+
+		const char * m_file;
+		uint32_t m_line;
         
         volatile bool m_complete;
-        volatile bool m_exit;
-    };
+		volatile bool m_exit;
+	};
 
     typedef stdex::intrusive_ptr<SDLThreadIdentity> SDLThreadIdentityPtr;
 }

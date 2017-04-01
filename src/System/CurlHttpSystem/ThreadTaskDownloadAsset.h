@@ -7,12 +7,16 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	class ThreadTaskDownloadAsset
 		: public ThreadTask
 	{
 	public:
-		ThreadTaskDownloadAsset( ServiceProviderInterface * _serviceProvider, const String & _url, const ConstString & _category, const FilePath & _filepath, uint32_t _id, HttpDownloadAssetReceiver * _receiver );
+		ThreadTaskDownloadAsset();
 		
+	public:
+		bool initialize( const String & _url, const ConstString & _category, const FilePath & _filepath, uint32_t _id, HttpDownloadAssetReceiver * _receiver );
+
 	protected:
 		bool _onRun() override;
 
@@ -22,12 +26,7 @@ namespace Menge
 	protected:
 		void _onComplete( bool _successful ) override;
 
-	protected:
-		void destroy() override;
-
-	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
+	protected:		
 		String m_url;
 		ConstString m_category;
 		FilePath m_filePath;
@@ -39,6 +38,7 @@ namespace Menge
 
 		bool m_successful;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ThreadTaskDownloadAsset> ThreadTaskDownloadAssetPtr;
+	//////////////////////////////////////////////////////////////////////////
 }

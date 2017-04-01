@@ -28,10 +28,28 @@ if( MENGINE_PLUGIN_TTF )
     set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})    
 endif()
 
+if( MENGINE_PLUGIN_CURL )
+    set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
+    set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libcurl) 
+	
+    set(BUILD_CURL_EXE OFF CACHE BOOL "Set to ON to build curl executable." FORCE)
+	set(BUILD_TESTING OFF CACHE BOOL "Set to ON to build curl executable." FORCE)
+	set(ENABLE_MANUAL OFF CACHE BOOL "to provide the built-in manual" FORCE)
+	set(CURL_STATICLIB ON CACHE BOOL "Set to ON to build libcurl with static linking." FORCE)
+	set(HTTP_ONLY ON CACHE BOOL "disables all protocols except HTTP (This overrides all CURL_DISABLE_* options)" FORCE)	
+	
+    ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libcurl )
+	
+	configure_file(${CURL_BINARY_DIR}/include/curl/curlbuild.h ${CURL_SOURCE_DIR}/include/curl/curlbuild.h COPYONLY)
+		
+    set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
+endif()
+
+
 if( MENGINE_TARGET_SDL )
     set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
     set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/SDL2)    
-    SET(FORCE_STATIC_VCRT ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
+    set(FORCE_STATIC_VCRT ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
     set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
     set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
 

@@ -66,7 +66,7 @@ namespace Menge
 		m_threadCount = CONFIG_VALUE( m_serviceProvider, "Engine", "ThreadCount", 16U );
 
 		m_mutexAllocatorPool = THREAD_SYSTEM(m_serviceProvider)
-			->createMutex( "ThreadEngine::initialize" );
+			->createMutex( __FILE__, __LINE__ );
 
 		stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
 			, (stdex_allocator_thread_lock_t)&s_stdex_thread_lock
@@ -173,7 +173,7 @@ namespace Menge
         return threadJob;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::createThread( const ConstString & _threadName, int _priority, const char * _doc )
+	bool ThreadEngine::createThread( const ConstString & _threadName, int _priority, const char * _file, uint32_t _line )
 	{
 		if( m_avaliable == false )
 		{
@@ -186,7 +186,7 @@ namespace Menge
 		}
 
 		ThreadIdentityInterfacePtr identity = THREAD_SYSTEM(m_serviceProvider)
-			->createThread( _priority, _doc );
+			->createThread( _priority, _file, _line );
 
 		if( identity == nullptr )
 		{
@@ -407,7 +407,7 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-	ThreadMutexInterfacePtr ThreadEngine::createMutex( const char * _doc )
+	ThreadMutexInterfacePtr ThreadEngine::createMutex( const char * _file, uint32_t _line )
     {
 		if( m_avaliable == false )
 		{
@@ -418,7 +418,7 @@ namespace Menge
 		}
 
         ThreadMutexInterfacePtr mutex = THREAD_SYSTEM(m_serviceProvider)
-            ->createMutex( _doc );
+            ->createMutex( _file, _line );
 
         return mutex;
     }

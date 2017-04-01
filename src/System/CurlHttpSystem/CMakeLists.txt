@@ -1,9 +1,9 @@
-set( MY_LIB_NAME CurlHttpSystem )
+set( MY_LIB_NAME cURLHttpSystem )
 
 ADD_FILTER(
 src
-	CurlHttpSystem.cpp
-	CurlHttpSystem.h
+	cURLHttpSystem.cpp
+	cURLHttpSystem.h
     
     ThreadTaskDownloadAsset.h
     ThreadTaskDownloadAsset.cpp
@@ -25,17 +25,11 @@ SET( APPLICATION_DEPENDENCIES
  PARENT_SCOPE
 )
 
-IF( MINGW )
-    SET( APPLICATION_LIBS
-     ${APPLICATION_LIBS}
-        ${THIRDPARTY_LIB_DIR}/libcurl.a
-    )
-ELSEIF( MSVC )
-    SET( APPLICATION_LIBS
-     ${APPLICATION_LIBS}
-        ${THIRDPARTY_LIB_DIR}/libcurl.lib
-    )
-ENDIF( MINGW )
+SET( APPLICATION_LIBS
+ ${APPLICATION_LIBS}
+	${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}libcurl${MENGINE_LIB_SUFFIX}
+	ws2_32.lib
+)
 
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}

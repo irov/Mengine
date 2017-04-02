@@ -36,7 +36,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const;
+		RenderMaterialInterfacePtr _updateMaterial() const override;
 
 	protected:
 		ResourceHolder<ResourceImage> m_resourceImage;

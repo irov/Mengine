@@ -12,7 +12,7 @@
 #	include "Core/ConstString.h"
 #   include "Factory/Factory.h"
 
-#	include	"math/vec3.h"
+#	include	"Math/vec3.h"
 
 #   include "stdex/stl_map.h"
 #	include "stdex/stl_vector.h"

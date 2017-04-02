@@ -18,6 +18,8 @@
 
 #	include "pybind/pybind.hpp"
 
+#   include <stdlib.h>
+
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Movie, Menge::MoviePlugin )
 //////////////////////////////////////////////////////////////////////////
@@ -37,7 +39,7 @@ namespace Menge
 	{
 		(void)_data;
 
-		uint32_t total = _size * _count;
+		size_t total = _size * _count;
 
 		//return stdex_malloc( total );
 		//return new uint8_t[total];

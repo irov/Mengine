@@ -3459,7 +3459,7 @@ namespace Menge
 			ResourceFilePtr resourceFile = RESOURCE_SERVICE( m_serviceProvider )
 				->getResourceT<ResourceFilePtr>( _resourceFileName );
 
-			if( resourceFile == false )
+			if( resourceFile == nullptr )
 			{
 				return false;
 			}
@@ -5818,14 +5818,14 @@ namespace Menge
 				return false;
 			}
 
-			bool handleMouseMove( const InputMouseMoveEvent & _event )
+			bool handleMouseMove( const InputMouseMoveEvent & _event ) override
 			{
 				(void)_event;
 
 				return false;
 			}
 
-			bool handleMouseWheel( const InputMouseWheelEvent & _event )
+			bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
 			{
 				(void)_event;
 

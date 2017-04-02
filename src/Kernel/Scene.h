@@ -4,8 +4,8 @@
 #	include "Kernel/Scriptable.h"
 #	include "Kernel/Layer.h"
 
-#	include "math/vec3.h"
-#	include "math/vec4.h"
+#	include "Math/vec3.h"
+#	include "Math/vec4.h"
 
 namespace Menge
 {

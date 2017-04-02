@@ -4,7 +4,7 @@
 
 #   include "Core/ServantBase.h"
 
-#	include "SDL_Thread.h"
+#	include "SDL_thread.h"
 #	include "SDL_timer.h"
 
 namespace Menge

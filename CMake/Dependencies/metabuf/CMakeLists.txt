@@ -6,14 +6,6 @@ SET( SOURCE_DIR ${THIRDPARTY_DIR}/metabuf )
 
 configure_file(Metaconfig.hpp ${SOURCE_DIR}/metabuf/Metaconfig.hpp COPYONLY)
 
-if(NOT MSVC)
-    if(NOT EMSCRIPTEN)
-        ADD_DEFINITIONS(-D"override = /* */")
-        ADD_DEFINITIONS(-D"nullptr=0")
-        ADD_DEFINITIONS(-D"nullptr_t=void*")    
-    endif()
-endif()
-
 set( sources
     ${SOURCE_DIR}/metabuf/Metabuf.cpp
     )

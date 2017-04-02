@@ -9,9 +9,9 @@
 #   include "Kernel/Materialable.h"
 #	include "Kernel/Resource.h"
 
-#   include "Math\vec2.h"
-#   include "Math\uv4.h"
-#   include "Core\ColourValue.h"
+#   include "Math/vec2.h"
+#   include "Math/uv4.h"
+#   include "Core/ColourValue.h"
 
 namespace Menge
 {

@@ -68,7 +68,7 @@ namespace Menge
 
 		//void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect );
 
-		void quit();
+		void quit() override;
 
 	public:
 		void calcWindowResolution( Resolution & _windowResolution ) const override;

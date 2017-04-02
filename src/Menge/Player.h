@@ -113,7 +113,7 @@ namespace Menge
 		void finalizeRenderResources() override;
 
     public:
-		void tick( float _time, float _timing );
+		void tick( float _time, float _timing ) override;
 		bool update() override;
 
 	public:

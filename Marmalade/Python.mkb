@@ -8,7 +8,7 @@ options
     #strict-compile
     enable-exceptions
 	preinclude="preinclude_python.h"
-    buildenv=VC12
+    buildenv=XCODE
 }
 
 includepaths

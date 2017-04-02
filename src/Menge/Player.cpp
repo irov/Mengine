@@ -1196,7 +1196,7 @@ namespace Menge
                     }
 
                 protected:
-                    void visit_scope( pybind::class_type_scope * _scope ) override
+                    void visit_scope( pybind::class_type_scope_interface * _scope ) override
                     {   
                         uint32_t count = _scope->getObjectCount();
 

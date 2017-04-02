@@ -12,15 +12,12 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     ScriptModuleFinder::ScriptModuleFinder()
-        : m_serviceProvider(nullptr)
-		, m_embed(nullptr)
+        : m_embed(nullptr)
     {
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptModuleFinder::initialize( ServiceProviderInterface * _serviceProvider )
+	bool ScriptModuleFinder::initialize()
 	{
-		m_serviceProvider = _serviceProvider;
-
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
 			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip") );
 
@@ -99,9 +96,8 @@ namespace Menge
 			);
 	}
     //////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptModuleFinder::find_module( pybind::kernel_interface * _kernel, PyObject * _module, PyObject * _path )
+	PyObject * ScriptModuleFinder::find_module( PyObject * _module, PyObject * _path )
     {
-		(void)_kernel;
         (void)_module;
         (void)_path;
 
@@ -142,7 +138,7 @@ namespace Menge
 		return pybind::ret_none();
     }
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptModuleFinder::load_module( pybind::kernel_interface * _kernel, PyObject * _module )
+	PyObject * ScriptModuleFinder::load_module( PyObject * _module )
 	{
 		ScriptModuleLoaderPtr loader = m_loaders.back();
 		m_loaders.pop_back();
@@ -154,7 +150,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		PyObject * py_code = loader->load_module( _kernel, _module );
+		PyObject * py_code = loader->load_module( _module );
 
 		return py_code;
 	}
@@ -260,18 +256,18 @@ namespace Menge
             {
                 const ConstString & path = *it_path;
 				
-				PathString & fullPath = _loader->modifyPath();
-				fullPath += path;
-				fullPath.append( _modulePath, _modulePathLen );
+				m_cacheFullPath.clear();
+				m_cacheFullPath += path;
+				m_cacheFullPath.append( _modulePath, _modulePathLen );
 
-				ConstString c_fullPath = Helper::stringizeString( m_serviceProvider, fullPath );
+				ConstString c_fullPath = Helper::stringizeString( m_serviceProvider, m_cacheFullPath );
 				
                 if( fileGroup->existFile( c_fullPath ) == false )
                 {
                     continue;
                 }
 
-				_loader->initialize( fileGroup, m_archivator );
+				_loader->initialize( fileGroup, c_fullPath, m_archivator );
 		
 				return true;
             }

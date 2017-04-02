@@ -134,7 +134,7 @@ namespace Menge
         void updateProgram(const RenderProgramInterfacePtr & _program) override;
 
     public:
-        RenderImageInterfacePtr createImage(uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format) override;
+        RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format) override;
         RenderImageInterfacePtr createDynamicImage(uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format) override;
 
         RenderTargetInterface * createRenderTargetOffscreen(uint32_t _width, uint32_t _height, PixelFormat _format) override;
@@ -195,7 +195,7 @@ namespace Menge
 
         FactoryPtr m_factoryVertexBuffer;
         FactoryPtr m_factoryIndexBuffer;
-        FactoryPtr m_factoryTexture;
+        FactoryPtr m_factoryRenderImage;
         FactoryPtr m_factoryRenderFragmentShader;
         FactoryPtr m_factoryRenderVertexShader;
         FactoryPtr m_factoryProgram;

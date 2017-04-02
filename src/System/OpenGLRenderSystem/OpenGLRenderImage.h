@@ -84,5 +84,5 @@ namespace Menge
 		uint32_t m_lockLevel;
 	};
 
-    typedef stdex::intrusive_ptr<OpenGLRenderImage> OGLTexturePtr;
+    typedef stdex::intrusive_ptr<OpenGLRenderImage> OpenGLRenderImagePtr;
 }	// namespace Menge

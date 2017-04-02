@@ -7,6 +7,9 @@
 #	include "Interface/GraveyardInterface.h"
 #	include "Interface/ConfigInterface.h"
 
+#   include "RenderTexture.h"
+#   include "DecoderRenderImageProvider.h"
+
 #   include "Factory/FactoryPool.h"
 
 #	include "stdex/memorycopy.h"
@@ -47,6 +50,8 @@ namespace Menge
 			->supportTextureNonPow2();
 
         m_factoryRenderTexture = Helper::makeFactoryPool<RenderTexture, 128>( m_serviceProvider, this, &RenderTextureManager::onRenderTextureDestroy_ );
+
+        m_factoryDecoderRenderImageProvider = new FactoryPool<DecoderRenderImageProvider, 128>( m_serviceProvider );
 		
 		return true;
     }
@@ -72,6 +77,7 @@ namespace Menge
 		}
 
         m_factoryRenderTexture = nullptr;
+		m_factoryDecoderRenderImageProvider = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::hasTexture( const ConstString& _pakName, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const
@@ -116,9 +122,9 @@ namespace Menge
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
-    {
-        uint32_t HWMipmaps = _mipmaps;
+	RenderTextureInterfacePtr RenderTextureManager::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+	{
+		uint32_t HWMipmaps = _mipmaps;
 		uint32_t HWWidth = _width;
 		uint32_t HWHeight = _height;
 		uint32_t HWChannels = _channels;
@@ -128,23 +134,33 @@ namespace Menge
 
 		this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
-		RenderImageInterfacePtr image = RENDER_SYSTEM(m_serviceProvider)
+		RenderImageInterfacePtr image = RENDER_SYSTEM( m_serviceProvider )
 			->createImage( HWMipmaps, HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
-        if( image == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createTexture_ invalid create image %dx%d"
-                , HWWidth
-                , HWHeight
-                );
+		if( image == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createTexture_ invalid create image %ux%u"
+				, HWWidth
+				, HWHeight
+				);
 
-            return nullptr;
-        }
+			return nullptr;
+		}
 
-        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height );
+		RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height );
 
-        return texture;
-    }
+		if( texture == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createTexture_ invalid create render texture %ux%u"
+				, _width
+				, _height
+				);
+
+			return nullptr;
+		}
+
+		return texture;
+	}
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureManager::createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
     {
@@ -217,6 +233,8 @@ namespace Menge
         dataInfo.height = _texture->getHeight();		
         dataInfo.depth = 1;
         dataInfo.mipmaps = 1;
+
+		const RenderImageInterfacePtr & image = _texture->getImage();
         
         Rect rect;
         rect.left = 0;
@@ -225,7 +243,7 @@ namespace Menge
         rect.bottom = dataInfo.height;
 
 		size_t pitch = 0;
-        void * buffer = _texture->lock( &pitch, 0, rect, true );
+        void * buffer = image->lock( &pitch, 0, rect, true );
 
 		if( buffer == nullptr )
 		{
@@ -248,7 +266,7 @@ namespace Menge
 				, _fileName.c_str() 
 				);
 
-			_texture->unlock( 0 );
+			image->unlock( 0 );
 
 			return false;
 		}
@@ -257,7 +275,7 @@ namespace Menge
 
 		size_t bytesWritten = imageEncoder->encode( buffer, bufferSize, &dataInfo );
 
-        _texture->unlock( 0 );
+		image->unlock( 0 );
 
         if( bytesWritten == 0 )
         {
@@ -308,7 +326,7 @@ namespace Menge
             );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::loadTexture( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
+    RenderTextureInterfacePtr RenderTextureManager::loadTexture( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecName )
     {
         const TMapRenderTextureEntry & textures = this->getHashEntry_(_fileName);
 
@@ -333,134 +351,79 @@ namespace Menge
 				return resurrect_texture;
 			}
 		}
-			
-		ImageDecoderInterfacePtr imageDecoder;
-		if( PREFETCHER_SERVICE(m_serviceProvider)
-			->getImageDecoder( _pakName, _fileName, imageDecoder ) == false )
-		{
-			imageDecoder = this->createImageDecoder_( _pakName, _fileName, _codec );
 
-			if( imageDecoder == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTexture invalid create decoder '%s':'%s'"
-					, _pakName.c_str()
-					, _fileName.c_str()
-					);
+        DecoderRenderImageProviderPtr imageProvider = m_factoryDecoderRenderImageProvider->createObject();
 
-				return nullptr;
-			}
-		}
-		else
-		{
-			if( imageDecoder->rewind() == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTexture invalid rewind decoder '%s':'%s'"
-					, _pakName.c_str()
-					, _fileName.c_str()
-					);
+        imageProvider->setServiceProvider( m_serviceProvider );
+        imageProvider->initialize( _pakName, _fileName, _codecName );
 
-				return nullptr;
-			}
-		}
+		RenderImageLoaderInterfacePtr imageLoader = imageProvider->getLoader();
 
-		RenderTextureInterfacePtr new_texture = this->createTextureFromDecoder_( imageDecoder );
+		RenderImageDesc imageDesc = imageLoader->getImageDesc();
+		        		
+		RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.channels, imageDesc.depth, imageDesc.format );
 
 		if( new_texture == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTexture invalid create texure '%s':'%s'"
+			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::loadTexture create texture '%s:%s' codec '%s'"				
 				, _pakName.c_str()
-				, _fileName.c_str()				
+				, _fileName.c_str()
+				, _codecName.c_str()
 				);
 
 			return nullptr;
 		}
 
+		RenderImageInterfacePtr image = new_texture->getImage();
+
+		if( image == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::loadTexture invalid get image"
+				);
+
+			return nullptr;
+		}
+
+		Rect rect;
+		rect.left = 0;
+		rect.top = 0;
+		rect.right = image->getHWWidth();
+		rect.bottom = image->getHWHeight();
+
+		size_t pitch = 0;
+		void * textureBuffer = image->lock( &pitch, 0, rect, false );
+
+		if( textureBuffer == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createTexture Invalid lock mipmap %d rect %d:%d-%d:%d"
+				, 0
+				, rect.left
+				, rect.top
+				, rect.right
+				, rect.bottom
+				);
+
+			return nullptr;
+		}
+
+		if( imageLoader->load( textureBuffer, pitch ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createTexture Invalid decode image"
+				);
+
+			image->unlock( 0 );
+
+			return nullptr;
+		}
+
+		image->unlock( 0 );
+
+		image->setRenderImageProvider( imageProvider );
+        
         this->cacheFileTexture( _pakName, _fileName, new_texture );
 
         return new_texture;
     }
-	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderInterfacePtr RenderTextureManager::createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
-	{
-		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( _pakName, _fileName, false );
-
-		if( stream == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createImageDecoder_: Image file '%s:%s' was not found"
-				, _pakName.c_str()
-				, _fileName.c_str() 
-				);
-
-			return nullptr;
-		}	
-
-		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-			->createDecoderT<ImageDecoderInterfacePtr>( _codec );
-
-		if( imageDecoder == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createImageDecoder_: Image decoder '%s' for file '%s:%s' was not found"
-				, _codec.c_str()
-				, _pakName.c_str()
-				, _fileName.c_str() 
-				);
-
-			return nullptr;
-		}
-
-		if( imageDecoder->prepareData( stream ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createImageDecoder_: Image decoder '%s' for file '%s:%s' was not initialize"
-				, _codec.c_str()
-				, _pakName.c_str()
-				, _fileName.c_str() 
-				);
-
-			return nullptr;
-		}
-
-		return imageDecoder;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterfacePtr RenderTextureManager::createTextureFromDecoder_( const ImageDecoderInterfacePtr & _decoder )
-	{
-		const ImageCodecDataInfo* dataInfo = _decoder->getCodecDataInfo();
-
-		uint32_t image_mipmaps = dataInfo->mipmaps;
-		uint32_t image_width = dataInfo->width;
-		uint32_t image_height = dataInfo->height;
-		uint32_t image_channels = dataInfo->channels;
-		uint32_t image_depth = dataInfo->depth;
-        PixelFormat image_format = dataInfo->format;
-
-		RenderTextureInterfacePtr texture = this->createTexture( image_mipmaps, image_width, image_height, image_channels, image_depth, image_format );
-		
-		if( texture == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createTextureFromDecoder_: invalid create texture %d mipmaps %d:%d channels %d format %d"
-				, image_mipmaps
-				, image_width
-				, image_height
-				, image_channels
-				, dataInfo->format
-				);
-
-			return nullptr;
-		}
-
-		const Rect & rect = texture->getHWRect();
-
-		if( this->loadTextureRectImageData( texture, rect, _decoder ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createTextureFromDecoder_: invalid decode texture"
-				);
-
-			return nullptr;
-		}
-
-		return texture;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTextureManager::getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) const
 	{
@@ -606,75 +569,6 @@ namespace Menge
 
 		return texture;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureManager::loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder )
-    {
-		const RenderImageInterfacePtr & image = _texture->getImage();
-
-		uint32_t width = image->getHWWidth();
-		uint32_t height = image->getHWHeight();
-		uint32_t channels = image->getHWChannels();
-		uint32_t depth = image->getHWDepth();
-		PixelFormat pf = image->getHWPixelFormat();
-
-		//uint32_t mipmaps = _texture->getMipmaps();
-        uint32_t mipmaps = 1;
-
-		for( uint32_t i = 0; i != mipmaps; ++i )
-		{
-			size_t pitch = 0;
-			void * textureBuffer = _texture->lock( &pitch, i, _rect, false );
-
-			if( textureBuffer == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTextureImageData %s Invalid lock mipmap %d rect %d:%d:%d:%d"
-					, _texture->getFileName().c_str()
-					, i
-					, _rect.left
-					, _rect.top
-					, _rect.right					
-					, _rect.bottom
-					);
-
-				return false;
-			}
-			
-			ImageCodecOptions options;
-			options.channels = channels;
-			options.pitch = pitch;
-
-			uint32_t miplevel_width = width >> i;
-			uint32_t miplevel_height = height >> i;
-
-			_imageDecoder->setOptions( &options );
-			
-			size_t bufferSize = Helper::getTextureMemorySize( miplevel_width, miplevel_height, channels, depth, pf );
-			if( _imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
-			{
-				LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTextureImageData %s Invalid decode mipmap %d rect %d:%d:%d:%d"
-					, _texture->getFileName().c_str()
-					, i
-					, _rect.left
-					, _rect.top
-					, _rect.right
-					, _rect.bottom
-					);
-
-				_texture->unlock( i );
-
-				return false;
-			}
-
-   //         if( mipmaps == 1 && _texture->isPow2() == false )
-			//{
-			//	this->imageQuality( _texture, textureBuffer, pitch );
-			//}
-
-			_texture->unlock( i );
-		}
-		
-        return true;
-    }
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::imageQuality( const RenderTextureInterfacePtr & _texture, void * _textureBuffer, size_t _texturePitch )
     {

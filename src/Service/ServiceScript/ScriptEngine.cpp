@@ -11,6 +11,7 @@
 #	include "Interface/StringizeInterface.h"
 
 #   include "Factory/FactoryPool.h"
+#   include "Factory/FactorableUnique.h"
 
 #	include "Logger/Logger.h"
 
@@ -116,7 +117,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::ScriptEngine()
 		: m_kernel(nullptr)
-		, m_moduleFinder(nullptr)
         , m_moduleMenge(nullptr)
 		, m_loggerWarning(nullptr)
         , m_loggerError(nullptr)
@@ -206,13 +206,15 @@ namespace Menge
 		pybind::set_observer_bind_call( new My_observer_bind_call( m_serviceProvider ) );
 
 		pybind::interface_<ScriptModuleFinder>( m_kernel, "ScriptModuleFinder", true )
-			.def_kernel( "find_module", &ScriptModuleFinder::find_module )
-			.def_kernel( "load_module", &ScriptModuleFinder::load_module )
+			.def( "find_module", &ScriptModuleFinder::find_module )
+			.def( "load_module", &ScriptModuleFinder::load_module )
             ;
         
-        m_moduleFinder = new ScriptModuleFinder();
+        m_moduleFinder = new FactorableUnique<ScriptModuleFinder>();
 
-		if( m_moduleFinder->initialize( m_serviceProvider ) == false )
+		m_moduleFinder->setServiceProvider( m_serviceProvider );
+
+		if( m_moduleFinder->initialize() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initialize invalid initialize ScriptModuleFinder"
 				);
@@ -262,8 +264,6 @@ namespace Menge
 		if( m_moduleFinder != nullptr )
 		{
 			m_moduleFinder->finalize();
-
-			delete m_moduleFinder;
 			m_moduleFinder = nullptr;
 		}
 
@@ -669,6 +669,132 @@ namespace Menge
         const ScriptWrapperInterfacePtr & wrapper = it_found->second;
 
 		return wrapper;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * ScriptEngine::loadModuleSource( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _buffer )
+	{
+		const char * str_moduleName = pybind::string_to_char( _moduleName );
+
+		if( _buffer == nullptr )
+		{
+			return nullptr;
+		}
+
+		char * source_memory = _buffer->getMemory();
+
+		PyObject * code = pybind::code_compile_file( source_memory, str_moduleName );
+
+		if( code == nullptr )
+		{
+			pybind::check_error();
+
+			LOGGER_ERROR( m_serviceProvider )("ScriptEngine::loadModuleSource %s invalid marshal get object"
+				, str_moduleName
+				);
+
+			return nullptr;
+		}
+
+		if( pybind::code_check( code ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ScriptEngine::loadModuleSource %s marshal get object not code"
+				, str_moduleName
+				);
+
+			return nullptr;
+		}
+
+		PyObject * py_module = pybind::module_init( str_moduleName );
+
+		PyObject * dict = pybind::module_dict( py_module );
+
+		if( _packagePath == true )
+		{
+			PyObject * py_packagePath = pybind::build_value( "[O]", _moduleName );
+			pybind::dict_setstring_t( m_kernel, dict, "__path__", py_packagePath );
+		}
+
+		PyObject * py_module_exec = pybind::module_execcode( str_moduleName, code );
+
+		pybind::decref( code );
+
+		return py_module_exec;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static int s_get_int( const uint8_t * _buff )
+	{
+		int x;
+		x = (int)_buff[0];
+		x |= (int)_buff[1] << 8;
+		x |= (int)_buff[2] << 16;
+		x |= (int)_buff[3] << 24;
+
+		return x;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * ScriptEngine::loadModuleBinary( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _buffer )
+	{
+		const char * str_moduleName = pybind::string_to_char( _moduleName );
+
+		if( _buffer == nullptr )
+		{
+			return nullptr;
+		}
+
+		uint8_t * code_memory = _buffer->getMemory();
+		size_t code_size = _buffer->getSize();
+
+		long file_magic = s_get_int( code_memory );
+		long py_magic = pybind::marshal_magic_number();
+
+		if( file_magic != py_magic )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ScriptModuleLoaderCode::unmarshal_code_ %s invalid magic %u need %u"
+				, str_moduleName
+				, file_magic
+				, py_magic
+				);
+
+			return nullptr;
+		}
+
+		PyObject * code = pybind::marshal_get_object( (char *)code_memory + 8, code_size - 8 );
+
+		if( code == nullptr )
+		{
+			pybind::check_error();
+
+			LOGGER_ERROR( m_serviceProvider )("ScriptModuleLoaderCode::unmarshal_code_ %s invalid marshal get object"
+				, str_moduleName
+				);
+
+			return nullptr;
+		}
+
+		if( pybind::code_check( code ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ScriptModuleLoaderCode::unmarshal_code_ %s marshal get object not code"
+				, str_moduleName
+				);
+
+			return nullptr;
+		}
+
+		PyObject * py_module = pybind::module_init( str_moduleName );
+
+		PyObject * dict = pybind::module_dict( py_module );
+
+		if( _packagePath == true )
+		{
+			PyObject * py_packagePath = pybind::build_value( "[O]", _moduleName );
+			pybind::dict_setstring_t( m_kernel, dict, "__path__", py_packagePath );
+		}
+
+		PyObject * py_module_exec = pybind::module_execcode( str_moduleName, code );
+
+		pybind::decref( code );
+
+		return py_module_exec;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::handleException()

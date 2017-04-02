@@ -9,6 +9,7 @@
 
 #   include "Factory/Factory.h"
 
+#	include "Kernel/Servant.h"
 #   include "Core/ConstString.h"
 #   include "Core/ConstStringTypes.h"
 #   include "Core/FilePath.h"
@@ -27,12 +28,13 @@ namespace Menge
 	typedef stdex::vector<ModulePathes> TVectorModulePathes;
 	//////////////////////////////////////////////////////////////////////////
     class ScriptModuleFinder
+		: public Servant
     {
     public:
         ScriptModuleFinder();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider );
+		bool initialize();
 		void finalize();
 
 	public:
@@ -43,8 +45,8 @@ namespace Menge
 		void removeModulePath( const ConstString & _pack );
 
     public:
-		PyObject * find_module( pybind::kernel_interface * _kernel, PyObject * _module, PyObject * _path );
-		PyObject * load_module( pybind::kernel_interface * _kernel, PyObject * _module );
+		PyObject * find_module( PyObject * _module, PyObject * _path );
+		PyObject * load_module( PyObject * _module );
 
     protected:
         bool find_module_source_( PyObject * _module, const ScriptModuleLoaderPtr & _loader );
@@ -58,7 +60,6 @@ namespace Menge
 		bool findModule_( const char * _modulePath, size_t _modulePathLen, const ScriptModuleLoaderPtr & _loader ) const;
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
 		PyObject * m_embed;
 
 		ArchivatorInterfacePtr m_archivator;
@@ -73,5 +74,10 @@ namespace Menge
 
 		typedef stdex::vector<ScriptModuleLoaderPtr> TMapModuleLoaders;
 		TMapModuleLoaders m_loaders;
+
+		mutable PathString m_cacheFullPath;
     };
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ScriptModuleFinder> ScriptModuleFinderPtr;
+	//////////////////////////////////////////////////////////////////////////
 }

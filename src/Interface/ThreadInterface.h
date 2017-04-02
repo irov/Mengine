@@ -20,6 +20,7 @@ namespace Menge
 		virtual bool isCancel() const = 0;
 
     public:
+		virtual void preparation() = 0;
 		virtual void main() = 0;
 
 	public:

@@ -6564,7 +6564,7 @@ namespace Menge
 
 		protected:
 			pybind::kernel_interface * m_kernel;
-			pybind::class_type_scope_ptr m_scope;
+			pybind::class_type_scope_interface_ptr m_scope;
 			pybind::list m_l;
 		};
 		//////////////////////////////////////////////////////////////////////////		

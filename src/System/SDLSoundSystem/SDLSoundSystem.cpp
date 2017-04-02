@@ -73,7 +73,7 @@ namespace Menge
 
         m_countChannels = channels;
 
-        for( uint32_t i = 0; i != m_countChannels; ++i )
+        for( int i = 0; i != m_countChannels; ++i )
         {
             m_freeChannels[i] = true;
         }
@@ -97,7 +97,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SDLSoundSystem::update()
     {
-        for( uint32_t i = 0; i != m_countChannels; ++i )
+        for( int i = 0; i != m_countChannels; ++i )
         {
             bool free = m_freeChannels[i];
             
@@ -179,7 +179,7 @@ namespace Menge
         return soundSource;
     }
     //////////////////////////////////////////////////////////////////////////
-    int SDLSoundSystem::findFreeChannel()
+	int SDLSoundSystem::findFreeChannel()
     {
         for( int i = 0; i < m_countChannels; ++i )
         {
@@ -198,12 +198,11 @@ namespace Menge
         return -1;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLSoundSystem::freeChannel(int channel)
+    void SDLSoundSystem::freeChannel( int channel)
     {
         if( channel >= 0 && channel < m_countChannels )
         {
             m_freeChannels[channel] = true;
         }
     }
-
 }   // namespace Menge

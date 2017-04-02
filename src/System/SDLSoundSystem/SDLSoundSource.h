@@ -62,7 +62,7 @@ namespace Menge
 
         float m_position;
 
-        int m_channel;
+		int m_channel;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<SDLSoundSource> SDLSoundSourcePtr;

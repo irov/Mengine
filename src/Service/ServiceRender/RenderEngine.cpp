@@ -253,6 +253,8 @@ namespace Menge
 			return false;
 		}
 
+		const RenderImageInterfacePtr & image = texture->getImage();
+
 		Rect rect;
 		rect.left = 0;
 		rect.top = 0;
@@ -260,7 +262,7 @@ namespace Menge
 		rect.bottom = null_height;
 
 		size_t pitch = 0;
-		void * textureData = texture->lock( &pitch, 0, rect, false );
+		void * textureData = image->lock( &pitch, 0, rect, false );
 
 		if( textureData == nullptr )
 		{
@@ -292,7 +294,7 @@ namespace Menge
 		buffer_textureData[4] = 0x00;
 		buffer_textureData[5] = 0x00;
 
-		texture->unlock( 0 );
+		image->unlock( 0 );
 
 		RENDERTEXTURE_SERVICE(m_serviceProvider)
 			->cacheFileTexture( ConstString::none(), STRINGIZE_STRING_LOCAL(m_serviceProvider, "__null__"), texture );
@@ -323,6 +325,8 @@ namespace Menge
 			return false;
 		}
 
+		const RenderImageInterfacePtr & image = texture->getImage();
+
 		Rect rect;
 		rect.left = 0;
 		rect.top = 0;
@@ -330,7 +334,7 @@ namespace Menge
 		rect.bottom = null_height;
 
 		size_t pitch = 0;
-		void * textureData = texture->lock( &pitch, 0, rect, false );
+		void * textureData = image->lock( &pitch, 0, rect, false );
 
 		if( textureData == nullptr )
 		{
@@ -362,7 +366,7 @@ namespace Menge
 		buffer_textureData[4] = 0xFF;
 		buffer_textureData[5] = 0xFF;
 
-		texture->unlock( 0 );
+		image->unlock( 0 );
 
 		RENDERTEXTURE_SERVICE(m_serviceProvider)
 			->cacheFileTexture( ConstString::none(), STRINGIZE_STRING_LOCAL(m_serviceProvider, "WhitePixel"), texture );

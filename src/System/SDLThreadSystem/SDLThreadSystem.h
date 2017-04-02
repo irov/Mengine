@@ -24,13 +24,13 @@ namespace Menge
         bool avaliable() const override;
 
     public:
-        ThreadIdentityInterfacePtr createThread(int _priority, const char * _doc) override;
+        ThreadIdentityInterfacePtr createThread(int _priority, const char * _file, uint32_t _line ) override;
         
     public:
         void sleep( uint32_t _ms ) override;
 
     public:
-        ThreadMutexInterfacePtr createMutex(const char * _doc) override;
+        ThreadMutexInterfacePtr createMutex( const char * _file, uint32_t _line ) override;
 
     public:
         ptrdiff_t getCurrentThreadId() const override;

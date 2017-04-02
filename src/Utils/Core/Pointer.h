@@ -39,14 +39,6 @@ namespace Menge
 
 			return t;
 		}
-        
-        template<class U>
-        operator stdex::intrusive_ptr<U> () const
-        {
-            U * t = static_cast<U *>(m_pointer);
-            
-            return stdex::intrusive_ptr<U>(t);
-        }
 
 	protected:
 		T * m_pointer;

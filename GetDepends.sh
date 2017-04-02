@@ -82,5 +82,6 @@ svndepend https://github.com/zzzzrrr/poly2tri/trunk poly2tri
 svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
 svndepend https://github.com/erincatto/Box2D.git/trunk/Box2D Box2D
 svndepend https://github.com/irov/GOAP.git/trunk GOAP
+svndepend https://github.com/curl/curl.git/trunk libcurl
 
 svndepend https://github.com/EsotericSoftware/spine-runtimes.git/trunk/spine-c spine-c

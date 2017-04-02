@@ -1,7 +1,8 @@
 #	pragma once
 
 #	include "Interface/RenderSystemInterface.h"
-#	include "math/vec4.h"
+
+#	include "Math/vec4.h"
 
 #   include "Core/ServantBase.h"
 #	include "Core/ConstString.h"

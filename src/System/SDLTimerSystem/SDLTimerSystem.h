@@ -4,8 +4,6 @@
 
 #   include "Core/ServiceBase.h"
 
-#   include <wtypes.h>
-
 namespace Menge
 {
     class SDLTimerSystem 

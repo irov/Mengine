@@ -8,7 +8,7 @@
 
 #	include "Core/Viewport.h"
 
-#	include "math/box2.h"
+#	include "Math/box2.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ParticleService, Menge::ParticleEngine2 );

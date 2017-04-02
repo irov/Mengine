@@ -16,8 +16,8 @@
 
 #   include "Factory/FactoryPool.h"
 
-#	include "math/mat4.h"
-#	include "math/vec4.h"
+#	include "Math/mat4.h"
+#	include "Math/vec4.h"
 
 #	include <stdex/stl_vector.h>
 #	include <stdex/stl_list.h>

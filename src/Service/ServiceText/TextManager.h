@@ -10,6 +10,8 @@
 #	include "TextFont.h"
 #	include "TextGlyph.h"
 
+#   include "Factory/Factory.h"
+
 #	include "Core/ConstString.h"
 #   include "Core/ConstStringHolderLocalString.h"
 

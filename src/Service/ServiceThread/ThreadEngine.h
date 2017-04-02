@@ -31,7 +31,7 @@ namespace Menge
         ThreadJobPtr createJob( uint32_t _sleep ) override;
 
 	public:
-		bool createThread( const ConstString & _threadName, int _priority, const char * _doc ) override;
+		bool createThread( const ConstString & _threadName, int _priority, const char * _file, uint32_t _line ) override;
 		bool destroyThread( const ConstString & _threadName ) override;
 
     public:
@@ -45,7 +45,7 @@ namespace Menge
         void update() override;
 
     public:
-		ThreadMutexInterfacePtr createMutex( const char * _doc ) override;
+		ThreadMutexInterfacePtr createMutex( const char * _file, uint32_t _line ) override;
 
     public:
         void sleep( uint32_t _ms ) override;

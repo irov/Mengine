@@ -40,25 +40,27 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityInterfacePtr SDLThreadSystem::createThread( int _priority, const char * _doc)
+    ThreadIdentityInterfacePtr SDLThreadSystem::createThread( int _priority, const char * _file, uint32_t _line )
     {
         SDLThreadIdentityPtr identity = m_poolThreadIdentity->createObject();
 
         if( identity == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("SDLThreadSystem::createThread invalid initialize (doc: '%s')"
-                , _doc
+            LOGGER_ERROR( m_serviceProvider )("SDLThreadSystem::createThread invalid initialize (doc: '%s:%u')"
+                , _file
+				, _line
                 );
 
             return nullptr;
         }
 
-        ThreadMutexInterfacePtr mutex = this->createMutex(_doc);
+		ThreadMutexInterfacePtr mutex = this->createMutex( _file, _line );
 
-        if( identity->initialize( mutex, _priority, _doc ) == false )
+        if( identity->initialize( mutex, _priority, _file, _line ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLThreadSystem::createThread invalid initialize (doc: '%s')"
-                , _doc
+            LOGGER_ERROR(m_serviceProvider)("SDLThreadSystem::createThread invalid initialize (doc: '%s:%u')"
+                , _file
+				, _line
                 );
 
             return nullptr;
@@ -72,14 +74,15 @@ namespace Menge
         SDL_Delay( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadMutexInterfacePtr SDLThreadSystem::createMutex(const char * _doc)
+    ThreadMutexInterfacePtr SDLThreadSystem::createMutex( const char * _file, uint32_t _line )
     {
         SDLThreadMutexPtr mutex = m_poolThreadMutex->createObject();
         
         if( mutex == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("MarmaladeThreadSystem::createMutex invalid create (doc: '%s')"
-                , _doc
+            LOGGER_ERROR( m_serviceProvider )("MarmaladeThreadSystem::createMutex invalid create (doc: '%s:%u')"
+                , _file
+				, _line
                 );
 
             return nullptr;
@@ -87,10 +90,11 @@ namespace Menge
 
         mutex->setServiceProvider( m_serviceProvider );
 
-        if( mutex->initialize( _doc ) == false )
+        if( mutex->initialize( _file, _line ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadSystem::createMutex invalid initialize (doc: '%s')"
-                , _doc
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadSystem::createMutex invalid initialize (doc: '%s:%u')"
+                , _file
+				, _line
                 );
 
             return nullptr;

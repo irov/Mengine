@@ -3,8 +3,7 @@
 namespace Menge
 {
 	ScriptModuleLoader::ScriptModuleLoader()
-		: m_serviceProvider(nullptr)
-		, m_module(nullptr)
+		: m_module(nullptr)
 		, m_packagePath(false)
 	{
 	}
@@ -12,11 +11,6 @@ namespace Menge
 	ScriptModuleLoader::~ScriptModuleLoader()
 	{
 		pybind::decref( m_module );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptModuleLoader::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptModuleLoader::setModule( PyObject * _module )
@@ -30,16 +24,10 @@ namespace Menge
 		return m_module;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PathString & ScriptModuleLoader::modifyPath()
-	{
-		m_path.clear();
-
-		return m_path;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptModuleLoader::initialize( const FileGroupInterfacePtr & _group, const ArchivatorInterfacePtr & _archivator )
+	bool ScriptModuleLoader::initialize( const FileGroupInterfacePtr & _group, const ConstString & _path, const ArchivatorInterfacePtr & _archivator )
 	{
 		m_group = _group;
+		m_path = _path;
 		m_archivator = _archivator;
 
 		return true;

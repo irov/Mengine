@@ -7,13 +7,15 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     SDLThreadMutex::SDLThreadMutex()
         : m_cs( nullptr )
-        , m_doc( nullptr )
+        , m_file( nullptr )
+		, m_line( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadMutex::initialize( const char * _doc)
+    bool SDLThreadMutex::initialize( const char * _file, uint32_t _line )
     {
-        m_doc = _doc;
+        m_file = _file;
+		m_line = _line;
 
         SDL_mutex * cs = SDL_CreateMutex();
 

@@ -102,11 +102,6 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PluginBase::_destroy()
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool PluginBase::addModuleFactory(const ConstString & _name, const ModuleFactoryInterfacePtr & _factory)
 	{	
 		_factory->setServiceProvider(m_serviceProvider);

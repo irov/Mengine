@@ -67,12 +67,16 @@ namespace Menge
         const ScriptWrapperInterfacePtr & getWrapper( const ConstString & _type ) const override;
 		
 	public:
+		PyObject * loadModuleSource( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) override;
+		PyObject * loadModuleBinary( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) override;
+
+	public:
 		static void handleException();
 	
 	private:
 		pybind::kernel_interface * m_kernel;
 
-        ScriptModuleFinder * m_moduleFinder;
+		ScriptModuleFinderPtr m_moduleFinder;
 
 		PyObject * m_moduleMenge;
 

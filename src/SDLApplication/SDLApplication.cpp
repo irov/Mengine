@@ -114,6 +114,7 @@ SERVICE_EXTERN( OptionsSystem );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( TimerSystem );
 SERVICE_EXTERN( TimerService );
+SERVICE_EXTERN( HttpSystem );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( MengeImageCodec );
 PLUGIN_EXPORT( MengeSoundCodec );
@@ -554,6 +555,8 @@ namespace Menge
         SERVICE_CREATE( m_serviceProvider, MemoryService );
 		SERVICE_CREATE( m_serviceProvider, ConverterService );                
         SERVICE_CREATE( m_serviceProvider, InputService );
+
+		SERVICE_CREATE( m_serviceProvider, HttpSystem );
 
         PythonScriptWrapper::constsWrap( m_serviceProvider );
         PythonScriptWrapper::mathWrap( m_serviceProvider );

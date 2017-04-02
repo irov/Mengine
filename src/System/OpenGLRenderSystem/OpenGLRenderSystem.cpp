@@ -53,7 +53,7 @@ namespace Menge
 
         m_factoryVertexBuffer = new FactoryDefault<OpenGLRenderVertexBuffer>( m_serviceProvider );
         m_factoryIndexBuffer = new FactoryDefault<OpenGLRenderIndexBuffer>( m_serviceProvider );
-        m_factoryTexture = new FactoryPool<OpenGLRenderImage, 128>( m_serviceProvider );
+        m_factoryRenderImage = new FactoryPool<OpenGLRenderImage, 128>( m_serviceProvider );
         m_factoryRenderFragmentShader = new FactoryPool<OpenGLRenderFragmentShader, 16>( m_serviceProvider );
         m_factoryRenderVertexShader = new FactoryPool<OpenGLRenderVertexShader, 16>( m_serviceProvider );
         m_factoryProgram = new FactoryPool<OpenGLRenderProgram, 16>( m_serviceProvider );
@@ -70,7 +70,7 @@ namespace Menge
 
         m_factoryVertexBuffer = nullptr;
         m_factoryIndexBuffer = nullptr;
-        m_factoryTexture = nullptr;
+        m_factoryRenderImage = nullptr;
         m_factoryRenderFragmentShader = nullptr;
         m_factoryRenderVertexShader = nullptr;
         m_factoryProgram = nullptr;    
@@ -724,7 +724,7 @@ namespace Menge
             return nullptr;
         }
 
-        OpenGLRenderImagePtr texture = m_factoryTexture->createObject();
+        OpenGLRenderImagePtr texture = m_factoryRenderImage->createObject();
 
         if( texture == nullptr )
         {
@@ -926,7 +926,7 @@ namespace Menge
             return nullptr;
         }
 
-        OpenGLRenderImagePtr texture = m_factoryTexture->createObject();
+        OpenGLRenderImagePtr texture = m_factoryRenderImage->createObject();
 
         texture->setServiceProvider( m_serviceProvider );
 

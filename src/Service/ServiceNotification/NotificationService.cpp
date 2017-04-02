@@ -22,7 +22,7 @@ namespace Menge
 	bool NotificationService::_initialize()
 	{
 		m_mutex = THREAD_SERVICE( m_serviceProvider )
-			->createMutex( "NotificationService" );
+			->createMutex( __FILE__, __LINE__ );
 
 		return true;
 	}

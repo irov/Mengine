@@ -34,13 +34,11 @@ namespace Menge
         m_rect.right = m_width;
         m_rect.bottom = m_height;
 
-        m_hwRect.left = 0;
-        m_hwRect.top = 0;
-        m_hwRect.right = m_image->getHWWidth();
-        m_hwRect.bottom = m_image->getHWHeight();
+        uint32_t HWWidth = m_image->getHWWidth();
+		uint32_t HWHeight = m_image->getHWHeight();
 
-		float scaleU = float(m_rect.right) / float(m_hwRect.right);
-		float scaleV = float(m_rect.bottom) / float(m_hwRect.bottom);
+		float scaleU = float( m_rect.right ) / float( HWWidth );
+		float scaleV = float( m_rect.bottom ) / float( HWHeight );
 
 		mt::uv4_from_mask( m_uv, mt::vec4f(0.f, 0.f, scaleU, scaleV) );
     }
@@ -79,27 +77,10 @@ namespace Menge
 	{
 		return m_height;
 	}
-    /////////////////////////////////////////////////////////////////////////////
-    Pointer RenderTexture::lock( size_t * _pitch, uint32_t _miplevel, const Rect& _rect, bool _readOnly /*= true */ ) const
-	{
-        Pointer buffer = m_image->lock( _pitch, _miplevel, _rect, _readOnly );
-
-		return buffer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderTexture::unlock( uint32_t _miplevel ) const
-	{
-		m_image->unlock( _miplevel );
-	}
 	//////////////////////////////////////////////////////////////////////////
 	const Rect & RenderTexture::getRect() const
 	{
 		return m_rect;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Rect & RenderTexture::getHWRect() const
-	{
-		return m_hwRect;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::uv4f & RenderTexture::getUV() const

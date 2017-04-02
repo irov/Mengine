@@ -15,7 +15,7 @@ namespace Menge
         SDLThreadMutex();
 
     public:
-        bool initialize( const char * _doc );
+        bool initialize( const char * _file, uint32_t _line );
 
     protected:
         void lock() override;
@@ -29,7 +29,9 @@ namespace Menge
 
     protected:
         SDL_mutex * m_cs;
-        const char * m_doc;
+
+		const char * m_file;
+		uint32_t m_line;
     };
 
     typedef stdex::intrusive_ptr<SDLThreadMutex> SDLThreadMutexPtr;

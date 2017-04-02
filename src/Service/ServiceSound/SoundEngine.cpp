@@ -43,7 +43,7 @@ namespace Menge
                 ->createJob( 5 );
 
 			THREAD_SERVICE(m_serviceProvider)
-				->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), 0, "SoundEngine::initialize" );
+				->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), 0, __FILE__, __LINE__ );
 
 			THREAD_SERVICE(m_serviceProvider)
 				->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), m_threadJobSoundBufferUpdate );

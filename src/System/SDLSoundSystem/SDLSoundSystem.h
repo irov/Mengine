@@ -44,15 +44,15 @@ namespace Menge
         SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer ) override;
 
     public:
-        int findFreeChannel();
-        void freeChannel(int channel);
+		int findFreeChannel();
+        void freeChannel( int channel);
 
     protected:
         FactoryPtr m_factorySoundBuffer;
         FactoryPtr m_factorySoundBufferStream;
         FactoryPtr m_factorySoundSource;
 
-        uint32_t m_countChannels;        
+		int m_countChannels;
         bool m_freeChannels[MENGINE_SDL_SOUND_MAX_COUNT];
     };
 }	// namespace Menge

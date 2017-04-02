@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Interface/ServiceInterface.h"
-#	include "Interface/MemoryInterface.h"
+#	include "Interface/ServantInterface.h"
 
 #	include "Config/Typedef.h"
 
@@ -199,11 +199,33 @@ namespace Menge
 	typedef uint32_t VBHandle; // Vertex Buffer Handle
 	typedef uint32_t IBHandle; // Index Buffer Handle
     //////////////////////////////////////////////////////////////////////////
+    struct RenderImageDesc
+    {
+        uint32_t mipmaps;
+        uint32_t width;
+        uint32_t height;
+        uint32_t channels;
+        uint32_t depth;
+        PixelFormat format;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    class RenderImageLoaderInterface
+        : public ServantInterface
+    {
+    public:
+        virtual RenderImageDesc getImageDesc() const = 0;
+
+    public:
+        virtual bool load( void * _buffer, uint32_t _pitch ) const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<RenderImageLoaderInterface> RenderImageLoaderInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class RenderImageProviderInterface
         : public ServantInterface
     {
     public:
-        virtual MemoryInterfacePtr getImageMemory( uint32_t & _mipmaps, uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, PixelFormat & _format ) const = 0;
+        virtual RenderImageLoaderInterfacePtr getLoader() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<RenderImageProviderInterface> RenderImageProviderInterfacePtr;
@@ -250,7 +272,6 @@ namespace Menge
         
     public:
 		virtual const Rect & getRect() const = 0;
-		virtual const Rect & getHWRect() const = 0;
 
 		virtual const mt::uv4f & getUV() const = 0;
 
@@ -262,9 +283,6 @@ namespace Menge
 
 		virtual uint32_t getWidth() const = 0;
 		virtual uint32_t getHeight() const = 0;
-
-		virtual Pointer lock( size_t * _pitch, uint32_t _miplevel, const Rect & _rect, bool _readOnly = true ) const = 0;
-		virtual void unlock( uint32_t _miplevel ) const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderTextureInterface> RenderTextureInterfacePtr;

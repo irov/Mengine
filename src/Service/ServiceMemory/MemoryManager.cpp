@@ -24,7 +24,7 @@ namespace Menge
 	bool MemoryManager::_initialize()
 	{
 		m_memoryCacheMutex = THREAD_SERVICE(m_serviceProvider)
-			->createMutex( "MemoryManager::initialize" );
+			->createMutex( __FILE__, __LINE__ );
 
 		m_factoryPoolMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16>( m_serviceProvider );
 		m_factoryPoolMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16>( m_serviceProvider );
@@ -33,7 +33,7 @@ namespace Menge
 		m_factoryPoolMemory = new FactoryPool<Memory, 16>( m_serviceProvider );
 
 		m_memoryFactoryMutex = THREAD_SERVICE( m_serviceProvider )
-			->createMutex( "MemoryManager::initialize" );
+			->createMutex( __FILE__, __LINE__ );
 
 		m_factoryPoolMemoryCacheBuffer->setMutex( m_memoryFactoryMutex );
 		m_factoryPoolMemoryCacheInput->setMutex( m_memoryFactoryMutex );

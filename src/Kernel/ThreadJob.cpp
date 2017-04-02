@@ -33,7 +33,7 @@ namespace Menge
 			ThreadJobWorkerDesc & desc = m_workers[i];
 			
 			desc.mutex = THREAD_SERVICE(m_serviceProvider)
-				->createMutex( "ThreadJob::initialize" );
+				->createMutex( __FILE__, __LINE__ );
 
 			desc.worker = nullptr;
 			desc.id = 0;

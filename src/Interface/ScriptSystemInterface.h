@@ -2,6 +2,7 @@
 
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/PrototypeManagerInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #	include "Config/Typedef.h"
 #	include "Config/String.h"
@@ -88,6 +89,10 @@ namespace Menge
 		virtual void setCurrentModule( PyObject * _module ) = 0;
         virtual void addGlobalModule( const Char * _name, PyObject * _module ) = 0;
 		virtual void removeGlobalModule( const Char * _name ) = 0;
+
+	public:
+		virtual PyObject * loadModuleSource( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) = 0;
+		virtual PyObject * loadModuleBinary( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) = 0;
 
     public:
         virtual bool stringize( PyObject * _object, ConstString & _str ) = 0;

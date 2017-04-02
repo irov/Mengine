@@ -3,6 +3,7 @@
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/ArchiveInterface.h"
 
+#	include "Kernel/Servant.h"
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 
@@ -10,44 +11,38 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
     class ScriptModuleLoader
-		: public FactorablePtr
+		: public Servant
     {
 	public:
 		ScriptModuleLoader();
-		virtual ~ScriptModuleLoader();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+		~ScriptModuleLoader();
 
 	public:
 		void setModule( PyObject * _module );
 		PyObject * getModule() const;
 
 	public:
-		PathString & modifyPath();
-
-	public:
-		bool initialize( const FileGroupInterfacePtr & _group, const ArchivatorInterfacePtr & _archivator );
+		bool initialize( const FileGroupInterfacePtr & _group, const ConstString & _path, const ArchivatorInterfacePtr & _archivator );
 
 	public:
 		void setPackagePath( bool _packagePath );
 
     public:
-		virtual PyObject * load_module( pybind::kernel_interface * _kernel, PyObject * _module ) = 0;
+		virtual PyObject * load_module( PyObject * _module ) = 0;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-				
 		PyObject * m_module;
 		
 		FileGroupInterfacePtr m_group;
-		PathString m_path;
+		ConstString m_path;
 
 		ArchivatorInterfacePtr m_archivator;
 		
 		bool m_packagePath;
     };
-
+	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ScriptModuleLoader> ScriptModuleLoaderPtr;
+	//////////////////////////////////////////////////////////////////////////
 }

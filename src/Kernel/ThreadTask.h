@@ -21,6 +21,7 @@ namespace Menge
 		bool isCancel() const override;
 
 	public:
+		void preparation() override;
 		void main() override;
 
 	public:
@@ -29,6 +30,7 @@ namespace Menge
 		bool update() override;
 				
 	protected:
+		virtual void _onPreparation();
 		virtual bool _onMain();
 
 	protected:

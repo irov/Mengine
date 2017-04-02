@@ -66,15 +66,18 @@ namespace Menge
         }
 
         m_channel = m_soundSystem->findFreeChannel();
-        if( 0 <= m_channel )
-        {
-            m_soundBuffer->play(m_channel, m_loop);
-            Mix_Volume(m_channel, static_cast<int>(m_volume * 127.5f));
 
-            m_playing = true;
-            m_pausing = false;
-        }
+		if( m_channel == (uint32_t)-1 )
+		{
+			return false;
+		}
 
+		m_soundBuffer->play( m_channel, m_loop );
+		Mix_Volume( m_channel, static_cast<int>(m_volume * 127.5f) );
+
+		m_playing = true;
+		m_pausing = false;
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

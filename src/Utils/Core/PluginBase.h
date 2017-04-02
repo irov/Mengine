@@ -37,7 +37,6 @@ namespace Menge
 	protected:
 		virtual bool _initialize();
 		virtual void _finalize();
-		virtual void _destroy();
 
 	protected:
 		bool addModuleFactory(const ConstString & _name, const ModuleFactoryInterfacePtr & _factory);

@@ -19,6 +19,7 @@ namespace Menge
         bool initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _file, uint32_t _line );
         
     public:
+
         void main();
 
     public:

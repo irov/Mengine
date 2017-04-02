@@ -15,7 +15,7 @@ namespace Menge
 		ThreadTaskDownloadAsset();
 		
 	public:
-		bool initialize( const String & _url, const ConstString & _category, const FilePath & _filepath, uint32_t _id, HttpDownloadAssetReceiver * _receiver );
+		bool initialize( const String & _url, const ConstString & _category, const FilePath & _filepath, HttpAssetID _id, HttpDownloadAssetReceiver * _receiver );
 
 	protected:
 		bool _onRun() override;
@@ -31,7 +31,7 @@ namespace Menge
 		ConstString m_category;
 		FilePath m_filePath;
 
-		uint32_t m_id;
+		HttpAssetID m_id;
 		HttpDownloadAssetReceiver * m_receiver;
 
 		OutputStreamInterfacePtr m_stream;

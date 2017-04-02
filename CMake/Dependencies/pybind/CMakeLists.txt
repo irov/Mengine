@@ -8,17 +8,10 @@ SET( SOURCE_DIR ${THIRDPARTY_DIR}/pybind )
 set( sources
 ${SOURCE_DIR}/src/base.cpp
 ${SOURCE_DIR}/src/kernel.cpp
-${SOURCE_DIR}/src/kernel_python.cpp
 ${SOURCE_DIR}/src/adapter_interface.cpp
-${SOURCE_DIR}/src/class_type_scope.cpp
 ${SOURCE_DIR}/src/debug.cpp
 ${SOURCE_DIR}/src/exception.cpp
 ${SOURCE_DIR}/src/extract.cpp
-${SOURCE_DIR}/src/function_python.cpp
-${SOURCE_DIR}/src/functor_python.cpp
-${SOURCE_DIR}/src/member_python.cpp
-${SOURCE_DIR}/src/method_python.cpp
-${SOURCE_DIR}/src/pod_python.cpp
 ${SOURCE_DIR}/src/function.cpp
 ${SOURCE_DIR}/src/functor.cpp
 ${SOURCE_DIR}/src/logger.cpp
@@ -34,6 +27,14 @@ ${SOURCE_DIR}/src/dict.cpp
 ${SOURCE_DIR}/src/dict_iterator.cpp
 ${SOURCE_DIR}/src/bindable.cpp
 ${SOURCE_DIR}/src/module.cpp
+
+${SOURCE_DIR}/src/function_python.cpp
+${SOURCE_DIR}/src/functor_python.cpp
+${SOURCE_DIR}/src/member_python.cpp
+${SOURCE_DIR}/src/method_python.cpp
+${SOURCE_DIR}/src/pod_python.cpp
+${SOURCE_DIR}/src/python_class_type_scope.cpp
+${SOURCE_DIR}/src/python_kernel.cpp
 )
 
 if( CMAKE_BUILD_TYPE MATCHES Debug )

@@ -16,7 +16,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskDownloadAsset::initialize( const String & _url, const ConstString & _category, const FilePath & _filepath, uint32_t _id, HttpDownloadAssetReceiver * _receiver )
+	bool ThreadTaskDownloadAsset::initialize( const String & _url, const ConstString & _category, const FilePath & _filepath, HttpAssetID _id, HttpDownloadAssetReceiver * _receiver )
 	{
 		m_url = _url;
 		m_category = _category;

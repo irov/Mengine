@@ -53,10 +53,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	HttpAssetID cURLHttpSystem::downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpDownloadAssetReceiver * _receiver )
 	{
-		if( FILE_SERVICE(m_serviceProvider)
+		if( FILE_SERVICE( m_serviceProvider )
 			->hasFileGroup( _category, nullptr ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("CurlHttpSystem::downloadAsset not found category '%s' for filepath '%s'"
+			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::downloadAsset not found category '%s' for filepath '%s'"
 				, _category.c_str()
 				, _path.c_str()
 				);
@@ -64,10 +64,10 @@ namespace Menge
 			return 0;
 		}
 
-		if( FILE_SERVICE(m_serviceProvider)
+		if( FILE_SERVICE( m_serviceProvider )
 			->existFile( _category, _path, nullptr ) == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("CurlHttpSystem::downloadAsset category '%s' file alredy exist '%s'"
+			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::downloadAsset category '%s' file alredy exist '%s'"
 				, _category.c_str()
 				, _path.c_str()
 				);

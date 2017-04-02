@@ -23,12 +23,9 @@ namespace Menge
         ScriptModuleLoaderCode();
 
     public:
-		PyObject * load_module( pybind::kernel_interface * _kernel, PyObject * _module ) override;
+		PyObject * load_module( PyObject * _module ) override;
 
 	protected:
-		PyObject * load_module_code_( pybind::kernel_interface * _kernel, PyObject * _module, const InputStreamInterfacePtr & _stream );
-
-    protected:        
-		PyObject * unmarshal_code_( pybind::kernel_interface * _kernel, PyObject * _module, const InputStreamInterfacePtr & _stream );
+		PyObject * load_module_code_( PyObject * _module, const InputStreamInterfacePtr & _stream );
     };
 }

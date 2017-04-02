@@ -87,6 +87,8 @@ namespace Menge
             m_complete = false;
 
             successful = true;
+
+			m_task->preparation();
         }
 
         m_mutex->unlock();

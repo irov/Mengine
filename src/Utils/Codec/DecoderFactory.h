@@ -14,7 +14,7 @@ namespace Menge
         : public ServantBase<DecoderFactoryInterface>
     {
     protected:
-        bool initialize()
+        bool initialize() override
         {
             m_factory = new FactoryPool<T, 8>( m_serviceProvider );
 

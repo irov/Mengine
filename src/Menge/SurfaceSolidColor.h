@@ -33,7 +33,7 @@ namespace Menge
 		bool update( float _current, float _timing ) override;
 
 	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const;
+		RenderMaterialInterfacePtr _updateMaterial() const override;
 
 	protected:
 		ColourValue m_color;

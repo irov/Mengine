@@ -10,8 +10,8 @@
 
 #	include "Logger/Logger.h"
 
-#	include "math/box2.h"
-#	include "math/clamp.h"
+#	include "Math/box2.h"
+#	include "Math/clamp.h"
 
 #	include <math.h>
 

@@ -18,8 +18,8 @@
 
 #	include "Consts.h"
 
-#	include "math/box2.h"
-#	include "math/angle.h"
+#	include "Math/box2.h"
+#	include "Math/angle.h"
 
 #	include "Core/RenderUtils.h"
 

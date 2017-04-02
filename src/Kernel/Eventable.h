@@ -75,15 +75,17 @@ namespace Menge
         template<class T>
         static typename T::EventReceiverType * getThisEventRecieverT( T * _self, uint32_t _event )
         {
-            typename T::EventReceiverType * reciever = _self->getEventRecieverT<typename T::EventReceiverType *>( _event );
+            typedef typename T::EventReceiverType * T_EventReceiverType;
+            
+            T_EventReceiverType reciever = _self->template getEventRecieverT<T_EventReceiverType>( _event );
 
             return reciever;
         }
 
         template<class T>
-        static typename T * getThisEventReciever( Eventable * _self, uint32_t _event )
+        static T * getThisEventReciever( Eventable * _self, uint32_t _event )
         {
-            typename T * reciever = _self->getEventRecieverT<T *>( _event );
+            T * reciever = _self->getEventRecieverT<T *>( _event );
 
             return reciever;
         }

@@ -1,4 +1,4 @@
-set( MY_LIB_NAME AstralaxParticlePlugin2 )
+set( MY_LIB_NAME AstralaxParticlePlugin )
 
 ADD_FILTER(
 src

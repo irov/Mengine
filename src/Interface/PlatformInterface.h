@@ -71,6 +71,7 @@ namespace Menge
         virtual bool openUrlInDefaultBrowser( const WString & _url ) = 0;       
 
 	public:
+		virtual bool createDirectory(const WString & _path) = 0;
 		virtual bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
 		virtual bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
 

@@ -9,6 +9,10 @@
 #   include "Interface/OptionsInterface.h"
 #   include "Interface/TimerInterface.h"
 
+#	ifdef WIN32
+#	include "WIN32/WindowsIncluder.h"
+#	endif
+
 #   include <cstdio>
 #   include <clocale>
 
@@ -54,12 +58,17 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////    
     size_t SDLPlatform::getCurrentPath( WChar * _path, size_t _len ) const
     {
-        if( _len > 0 )
-        {
-            wcscpy( _path, L"" );
-        }
+		DWORD len = (DWORD)::GetCurrentDirectory((DWORD)_len, _path);
 
-        return 0;
+		if (len == 0)
+		{
+			return 0;
+		}
+
+		_path[len] = L'\\';
+		_path[len + 1] = L'\0';
+
+		return (size_t)len + 1;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatform::getShortPathName( const WString & _path, WChar * _short, size_t _len ) const
@@ -394,6 +403,100 @@ namespace Menge
         PARAM_UNUSED(_event);
         PARAM_UNUSED(_params);
     }
+	//////////////////////////////////////////////////////////////////////////
+	static void PathCorrectBackslash(WChar * _out, const WChar * _in)
+	{
+		wcscpy(_out, _in);
+
+		WChar * pch = wcschr(_out, '/');
+		while (pch != NULL)
+		{
+			*pch = '\\';
+
+			pch = wcschr(pch + 1, '/');
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SDLPlatform::createDirectory(const WString & _path)
+	{
+#	ifdef WIN32
+		WChar pathCorrect[MENGINE_MAX_PATH];
+		PathCorrectBackslash(pathCorrect, _path.c_str());
+
+		PathRemoveBackslash(pathCorrect);
+
+		if (PathIsDirectoryW(pathCorrect) == FILE_ATTRIBUTE_DIRECTORY)
+		{
+			return true;
+		}
+
+		TVectorWString paths;
+
+		for (;; )
+		{
+			paths.push_back(pathCorrect);
+
+			if (PathRemoveFileSpecW(pathCorrect) == FALSE)
+			{
+				break;
+			}
+
+			if (PathIsDirectoryW(pathCorrect) == FILE_ATTRIBUTE_DIRECTORY)
+			{
+				break;
+			}
+		}
+
+		for (TVectorWString::reverse_iterator
+			it = paths.rbegin(),
+			it_end = paths.rend();
+			it != it_end;
+			++it)
+		{
+			const WString & path = *it;
+
+			BOOL successful = CreateDirectory(path.c_str(), NULL);
+
+			if (successful == FALSE)
+			{
+				DWORD err = GetLastError();
+
+				switch (err)
+				{
+				case ERROR_ALREADY_EXISTS:
+				{
+					LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls alredy exists"
+						, path.c_str()
+						);
+
+					return false;
+				}break;
+				case ERROR_PATH_NOT_FOUND:
+				{
+					LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls not found"
+						, path.c_str()
+						);
+
+					return false;
+				}break;
+				default:
+				{
+					LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls unknown error %d"
+						, path.c_str()
+						, err
+						);
+
+					return false;
+				}break;
+				}
+			}
+		}
+
+		return true;
+#endif
+
+		return false;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
     {

@@ -156,10 +156,8 @@ namespace Menge
         
 #	ifdef _MSC_VER
         WChar currentPathW[MENGINE_MAX_PATH];
-        size_t currentPathW_len = (size_t)::GetCurrentDirectory( MENGINE_MAX_PATH, currentPathW );
-
-        currentPathW[currentPathW_len] = L'\\';
-        currentPathW[currentPathW_len + 1] = L'\0';
+		size_t currentPathW_len = PLATFORM_SERVICE(m_serviceProvider)
+			->getCurrentPath(currentPathW, MENGINE_MAX_PATH);
 
         Char utf8_currentPath[MENGINE_MAX_PATH];
         size_t utf8_currentPath_len;
@@ -272,20 +270,49 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeUserDirectory_()
     {
-        WString Project_Company = CONFIG_VALUE( m_serviceProvider, "Project", "Company", L"NONAME" );
-        WString Project_Name = CONFIG_VALUE( m_serviceProvider, "Project", "Name", L"UNKNOWN" );
+		bool developmentMode = HAS_OPTION(m_serviceProvider, "dev");
+		bool roamingMode = HAS_OPTION(m_serviceProvider, "roaming");
+		bool noroamingMode = HAS_OPTION(m_serviceProvider, "noroaming");
 
-        String utf8_Project_Company;
-        Helper::unicodeToUtf8( m_serviceProvider, Project_Company, utf8_Project_Company );
+		FilePath userPath;
+		if (developmentMode == true && roamingMode == false || noroamingMode == true)
+		{
+			WChar currentPathW[MENGINE_MAX_PATH];
+			PLATFORM_SERVICE(m_serviceProvider)
+				->getCurrentPath(currentPathW, MENGINE_MAX_PATH);
 
-        String utf8_Project_Name;
-        Helper::unicodeToUtf8( m_serviceProvider, Project_Name, utf8_Project_Name );
+			wcscat(currentPathW, L"User");
+			wcscat(currentPathW, L"\\");
 
-        char * sdl_prefPath = SDL_GetPrefPath( utf8_Project_Company.c_str(), utf8_Project_Name.c_str() );
+			size_t currentPathW_len = wcslen(currentPathW);
 
-        FilePath userPath = Helper::stringizeString( m_serviceProvider, sdl_prefPath );
+			PLATFORM_SERVICE(m_serviceProvider)
+				->createDirectory(currentPathW);
 
-        SDL_free( sdl_prefPath );
+			Char utf8_currentPath[MENGINE_MAX_PATH];
+			size_t utf8_currentPath_len;
+			UNICODE_SERVICE(m_serviceProvider)
+				->unicodeToUtf8(currentPathW, currentPathW_len + 1, utf8_currentPath, MENGINE_MAX_PATH, &utf8_currentPath_len);
+
+			userPath = Helper::stringizeStringSize(m_serviceProvider, utf8_currentPath, utf8_currentPath_len);
+		}
+		else
+		{
+			WString Project_Company = CONFIG_VALUE(m_serviceProvider, "Project", "Company", L"NONAME");
+			WString Project_Name = CONFIG_VALUE(m_serviceProvider, "Project", "Name", L"UNKNOWN");
+
+			String utf8_Project_Company;
+			Helper::unicodeToUtf8(m_serviceProvider, Project_Company, utf8_Project_Company);
+
+			String utf8_Project_Name;
+			Helper::unicodeToUtf8(m_serviceProvider, Project_Name, utf8_Project_Name);
+
+			char * sdl_prefPath = SDL_GetPrefPath(utf8_Project_Company.c_str(), utf8_Project_Name.c_str());
+
+			userPath = Helper::stringizeString(m_serviceProvider, sdl_prefPath);
+
+			SDL_free(sdl_prefPath);
+		}
 
         // mount user directory
         if( FILE_SERVICE( m_serviceProvider )

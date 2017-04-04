@@ -4,7 +4,6 @@ ADD_FILTER(
 src
 	VistaWindowsLayer.cpp
 	VistaWindowsLayer.h
-    WindowsIncluder.h
 )
 
 INCLUDE_DIRECTORIES(

@@ -25,7 +25,7 @@ namespace Menge
         virtual void play( int _channel, bool _loop );
 
     public:
-        virtual bool update() override;
+        bool update() override;
         
     protected:
         ServiceProviderInterface * m_serviceProvider;

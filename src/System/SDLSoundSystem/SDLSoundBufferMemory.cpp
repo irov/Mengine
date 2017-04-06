@@ -24,49 +24,49 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLSoundBufferMemory::load(const SoundDecoderInterfacePtr & _soundDecoder)
     {
-        bool result = SDLSoundBuffer::load(_soundDecoder);
+		if( SDLSoundBuffer::load( _soundDecoder ) == false )
+		{
+			return false;
+		}
+         
+		const SoundCodecDataInfo* dataInfo = m_soundDecoder->getCodecDataInfo();
 
-        if( result )
-        {
-            const SoundCodecDataInfo* dataInfo = m_soundDecoder->getCodecDataInfo();
+		m_frequency = dataInfo->frequency;
+		m_channels = dataInfo->channels;
+		m_length = dataInfo->length;
+		size_t size = dataInfo->size;
 
-            m_frequency = dataInfo->frequency;
-            m_channels = dataInfo->channels;
-            m_length = dataInfo->length;
-            size_t size = dataInfo->size;
+		MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, size, __FILE__, __LINE__ );
 
-            MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, size, __FILE__, __LINE__ );
+		if( binary_buffer == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("SDLSoundBufferMemory::load invalid sound %d memory %d"
+				, size
+				);
 
-            if( binary_buffer == nullptr )
-            {
-                LOGGER_ERROR(m_serviceProvider)("SDLSoundBufferMemory::load invalid sound %d memory %d"
-                                                , size
-                                                );
+			return false;
+		}
 
-                return false;
-            }
+		void * binary_memory = binary_buffer->getMemory();
 
-            void * binary_memory = binary_buffer->getMemory();
+		size_t decode_size = m_soundDecoder->decode( binary_memory, size );
 
-            size_t decode_size = m_soundDecoder->decode(binary_memory, size);
+		if( decode_size == 0 )
+		{
+			LOGGER_ERROR( m_serviceProvider )("SDLSoundBufferMemory::load invalid sound %d decode %d"
+				, size
+				);
 
-            if( decode_size == 0 )
-            {
-                LOGGER_ERROR(m_serviceProvider)("SDLSoundBufferMemory::load invalid sound %d decode %d"
-                                                , size
-                                                );
+			return false;
+		}
 
-                return false;
-            }
+		decode_size -= decode_size & 3;
 
-            decode_size -= decode_size & 3;
+		m_chunk.abuf = reinterpret_cast<Uint8*>(stdex_malloc( decode_size ));
+		memcpy( m_chunk.abuf, binary_memory, decode_size );
+		m_chunk.alen = static_cast<Uint32>(decode_size);
 
-            m_chunk.abuf = reinterpret_cast<Uint8*>(stdex_malloc(decode_size));
-            memcpy(m_chunk.abuf, binary_memory, decode_size);
-            m_chunk.alen = static_cast<Uint32>(decode_size);
-        }
-
-        return result;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLSoundBufferMemory::play(int _channel, bool _loop)

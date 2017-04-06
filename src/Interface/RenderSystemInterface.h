@@ -249,6 +249,8 @@ namespace Menge
 
 		virtual PixelFormat getHWPixelFormat() const = 0;
 
+        virtual bool isPow2() const = 0;
+
 	public:
 		virtual Pointer lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly = true ) = 0;
 		virtual void unlock( uint32_t _level ) = 0;

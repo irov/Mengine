@@ -85,7 +85,7 @@ namespace Menge
 		uint32_t getFrame_( float _timing, float & _delthaTiming ) const;
 
 	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const;
+		RenderMaterialInterfacePtr _updateMaterial() const override;
 
 	protected:
 		ResourceHolder<ResourceAnimation> m_resourceAnimation;

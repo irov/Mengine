@@ -25,6 +25,8 @@
 #	include "Kernel/RenderCameraHelper.h"
 #	include "Kernel/Arrow.h"
 
+#	include "Kernel/ScheduleManager.h"
+
 #   include "Factory/FactoryDefault.h"
 
 #	include "Consts.h"
@@ -582,11 +584,15 @@ namespace Menge
 
         m_factoryScheduleManager = new FactoryDefault<ScheduleManager>( m_serviceProvider );
 
-        m_scheduleManager = m_factoryScheduleManager->createObject();
-        m_scheduleManager->setServiceProvider( m_serviceProvider );
+		ScheduleManagerInterfacePtr scheduleManager = m_factoryScheduleManager->createObject();
+        scheduleManager->setServiceProvider( m_serviceProvider );
 
-		m_scheduleManagerGlobal = m_factoryScheduleManager->createObject();
-        m_scheduleManagerGlobal->setServiceProvider( m_serviceProvider );
+		m_scheduleManager = scheduleManager;
+
+		ScheduleManagerInterfacePtr scheduleManagerGlobal = m_factoryScheduleManager->createObject();
+        scheduleManagerGlobal->setServiceProvider( m_serviceProvider );
+
+		m_scheduleManagerGlobal = scheduleManagerGlobal;
 
 		m_affectorable = new Affectorable;
 		m_affectorableGlobal = new Affectorable;

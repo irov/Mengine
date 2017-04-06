@@ -19,22 +19,22 @@ namespace Menge
         m_type = _type;
 
 #   define CHECK_EVENTS(O, M, E)\
-        m_events |= (O = m_type.get_attr( #M )).is_valid() == true ? GOAP::##E : 0
+        m_events |= (O = m_type.get_attr( #M )).is_valid() == true ? E : 0
 
-        CHECK_EVENTS( m_eventInitialize, onInitialize, TASK_EVENT_INITIALIZE );
-        CHECK_EVENTS( m_eventFinalize, onFinalize, TASK_EVENT_FINALIZE );
-        CHECK_EVENTS( m_eventValidate, onValidate, TASK_EVENT_VALIDATE );
-        CHECK_EVENTS( m_eventCheck, onCheck, TASK_EVENT_CHECK );
-        CHECK_EVENTS( m_eventRun, onRun, TASK_EVENT_RUN );
-        CHECK_EVENTS( m_eventSkipable, onSkipable, TASK_EVENT_SKIPABLE );
-        CHECK_EVENTS( m_eventSkipNoSkiped, onSkipNoSkiped, TASK_EVENT_SKIP_NO_SKIPED );
-        CHECK_EVENTS( m_eventSkipBlock, onSkipBlock, TASK_EVENT_SKIP_BLOCK );
-        CHECK_EVENTS( m_eventComplete, onComplete, TASK_EVENT_COMPLETE );
-        CHECK_EVENTS( m_eventSkip, onSkip, TASK_EVENT_SKIP );
-        CHECK_EVENTS( m_eventCancel, onCancel, TASK_EVENT_CANCEL );
-        CHECK_EVENTS( m_eventFinally, onFinally, TASK_EVENT_FINALLY );
-        CHECK_EVENTS( m_eventCheckRun, onCheckRun, TASK_EVENT_CHECK_RUN );
-        CHECK_EVENTS( m_eventCheckSkip, onCheckSkip, TASK_EVENT_CHECK_SKIP );
+        CHECK_EVENTS( m_eventInitialize, onInitialize, GOAP::TASK_EVENT_INITIALIZE );
+        CHECK_EVENTS( m_eventFinalize, onFinalize, GOAP::TASK_EVENT_FINALIZE );
+        CHECK_EVENTS( m_eventValidate, onValidate, GOAP::TASK_EVENT_VALIDATE );
+        CHECK_EVENTS( m_eventCheck, onCheck, GOAP::TASK_EVENT_CHECK );
+        CHECK_EVENTS( m_eventRun, onRun, GOAP::TASK_EVENT_RUN );
+        CHECK_EVENTS( m_eventSkipable, onSkipable, GOAP::TASK_EVENT_SKIPABLE );
+        CHECK_EVENTS( m_eventSkipNoSkiped, onSkipNoSkiped, GOAP::TASK_EVENT_SKIP_NO_SKIPED );
+        CHECK_EVENTS( m_eventSkipBlock, onSkipBlock, GOAP::TASK_EVENT_SKIP_BLOCK );
+        CHECK_EVENTS( m_eventComplete, onComplete, GOAP::TASK_EVENT_COMPLETE );
+        CHECK_EVENTS( m_eventSkip, onSkip, GOAP::TASK_EVENT_SKIP );
+        CHECK_EVENTS( m_eventCancel, onCancel, GOAP::TASK_EVENT_CANCEL );
+        CHECK_EVENTS( m_eventFinally, onFinally, GOAP::TASK_EVENT_FINALLY );
+        CHECK_EVENTS( m_eventCheckRun, onCheckRun, GOAP::TASK_EVENT_CHECK_RUN );
+        CHECK_EVENTS( m_eventCheckSkip, onCheckSkip, GOAP::TASK_EVENT_CHECK_SKIP );
 
 #   undef CHECK_EVENTS
 

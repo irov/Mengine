@@ -8,8 +8,7 @@ namespace Menge
 {	
 	//////////////////////////////////////////////////////////////////////////
 	PathFinder::PathFinder()
-		: m_serviceProvider(nullptr)
-		, m_from(0.f, 0.f)
+		: m_from(0.f, 0.f)
 		, m_to(0.f, 0.f)
 		, m_way( pybind::invalid() )
 	{
@@ -17,11 +16,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinder::~PathFinder()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PathFinder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinder::initialize( TPathMap * _map, const mt::vec2f & _from, const mt::vec2f & _to, float _gridSize )

@@ -7,6 +7,8 @@
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/NotificationServiceInterface.h"
 
+#   include "Factory/FactoryPool.h"
+
 #	include "Core/String.h"
 #	include "Core/IniUtil.h"
 

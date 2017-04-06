@@ -83,7 +83,7 @@ namespace Menge
 		void _setLoop( bool _value ) override;
 
 	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const;
+		RenderMaterialInterfacePtr _updateMaterial() const override;
 
 	private:
 		ResourceHolder<ResourceSound> m_resourceSound;

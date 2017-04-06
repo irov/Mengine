@@ -134,7 +134,6 @@ namespace Menge
 	{
 		BurritoBisonImpulse impulse;
 		
-		impulse.direction;
 		mt::norm_v3_v3( impulse.direction, _direction );
 
 		impulse.value = _value;

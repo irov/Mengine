@@ -33,14 +33,15 @@ if( MENGINE_PLUGIN_CURL )
     set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libcurl) 
 	
     set(BUILD_CURL_EXE OFF CACHE BOOL "Set to ON to build curl executable." FORCE)
-	set(BUILD_TESTING OFF CACHE BOOL "Set to ON to build curl executable." FORCE)
-	set(ENABLE_MANUAL OFF CACHE BOOL "to provide the built-in manual" FORCE)
-	set(CURL_STATICLIB ON CACHE BOOL "Set to ON to build libcurl with static linking." FORCE)
-	set(HTTP_ONLY ON CACHE BOOL "disables all protocols except HTTP (This overrides all CURL_DISABLE_* options)" FORCE)	
+    set(BUILD_TESTING OFF CACHE BOOL "Set to ON to build curl executable." FORCE)
+    set(ENABLE_MANUAL OFF CACHE BOOL "to provide the built-in manual" FORCE)
+    set(CURL_STATICLIB ON CACHE BOOL "Set to ON to build libcurl with static linking." FORCE)
+    set(HTTP_ONLY ON CACHE BOOL "disables all protocols except HTTP (This overrides all CURL_DISABLE_* options)" FORCE)
+    set(CMAKE_USE_OPENSSL OFF CACHE BOOL "Use OpenSSL code. Experimental" FORCE)	
 	
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libcurl )
 	
-	configure_file(${CURL_BINARY_DIR}/include/curl/curlbuild.h ${CURL_SOURCE_DIR}/include/curl/curlbuild.h COPYONLY)
+    configure_file(${CURL_BINARY_DIR}/include/curl/curlbuild.h ${CURL_SOURCE_DIR}/include/curl/curlbuild.h COPYONLY)
 		
     set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
 endif()

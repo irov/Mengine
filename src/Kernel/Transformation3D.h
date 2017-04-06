@@ -3,7 +3,7 @@
 #   include "stdex/intrusive_slug_list_size.h"
 #   include "stdex/intrusive_slug.h"
 
-#	include "math/mat4.h"
+#	include "Math/mat4.h"
 
 namespace Menge
 {

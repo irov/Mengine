@@ -24,9 +24,6 @@ namespace Menge
 		~PathFinder();
 
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-
-	public:
 		bool initialize( TPathMap * _map, const mt::vec2f & _from, const mt::vec2f & _to, float _gridSize );
 
 	public:
@@ -38,8 +35,6 @@ namespace Menge
 		void _onComplete( bool _successful ) override;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		mt::vec2f m_from;
 		mt::vec2f m_to;
 

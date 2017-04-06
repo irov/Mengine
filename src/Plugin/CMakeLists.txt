@@ -20,8 +20,6 @@ if( MENGINE_PLUGIN_STEAM )
 endif()
 
 if( MENGINE_TARGET_MSVC )
-	ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )
-
     ADD_SUBDIRECTORY( MengeWin32SocketPlugin )    
     ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
     ADD_SUBDIRECTORY( MengeWin32FileGroupPlugin )
@@ -37,10 +35,6 @@ if( MENGINE_TARGET_MSVC )
 
     #ADD_SUBDIRECTORY( CURLHTTPSystem )
     #ADD_SUBDIRECTORY( MengeHTTPLoggerPlugin )
-
-    ADD_SUBDIRECTORY( MengeXlsExportPlugin )
-    ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
-	ADD_SUBDIRECTORY( Win32ConsoleLogger )
 endif()
 
 if( MENGINE_TARGET_MINGW )
@@ -50,16 +44,17 @@ if( MENGINE_TARGET_MINGW )
 	ADD_SUBDIRECTORY( Win32ConsoleLogger )
 endif()
 
-if( MENGINE_TARGET_SDL )
-	ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )
+if( MENGINE_PLATFORM_WIN32 )
+    ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )
     
-	ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
-	
-    ADD_SUBDIRECTORY( SDLFileGroupPlugin )
-
     ADD_SUBDIRECTORY( MengeXlsExportPlugin )
     ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
-	ADD_SUBDIRECTORY( Win32ConsoleLogger )
+    ADD_SUBDIRECTORY( Win32ConsoleLogger )
+endif()
+
+if( MENGINE_TARGET_SDL )
+    ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
+    ADD_SUBDIRECTORY( SDLFileGroupPlugin )
 endif()
 
 if( MENGINE_PLUGIN_TTF )

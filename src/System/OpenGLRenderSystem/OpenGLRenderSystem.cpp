@@ -30,8 +30,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderSystem::OpenGLRenderSystem()
         : m_window( nullptr )
-        , m_activeTextureStage( 0 )
-        , m_activeTexture( 0 )
         , m_depthMask( false )
         , m_glMaxClipPlanes( 0 )
         , m_glMaxCombinedTextureImageUnits( 0 )
@@ -725,6 +723,14 @@ namespace Menge
         }
 
         OpenGLRenderImagePtr texture = m_factoryRenderImage->createObject();
+
+        if( texture == nullptr )
+        {
+            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystem::createImage invalid create"
+                );
+
+            return nullptr;
+        }
 
         texture->setServiceProvider( m_serviceProvider );
 

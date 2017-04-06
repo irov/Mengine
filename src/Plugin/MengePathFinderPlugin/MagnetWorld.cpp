@@ -176,7 +176,7 @@ namespace Menge
 				
 				mt::vec3f velocity = dir * speed;
 
-				actor_test->addVelocity( dir * speed );				
+				actor_test->addVelocity( velocity );				
 			}
 		}
 

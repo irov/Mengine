@@ -13,9 +13,9 @@
 #	include "Core/ColourValue.h"
 #	include "Core/ValueInterpolator.h"
 
-#	include "math/mat3.h"
-#	include "math/vec4.h"
-#	include "math/mat4.h"
+#	include "Math/mat3.h"
+#	include "Math/vec4.h"
+#	include "Math/mat4.h"
 
 namespace Menge
 {

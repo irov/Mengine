@@ -4,6 +4,7 @@
 #   include "Interface/NotificationServiceInterface.h"
 #   include "Interface/MousePickerSystemInterface.h"
 #   include "Interface/GlobalHandleSystemInterface.h"
+#   include "Interface/ScheduleManagerInterface.h"
 
 #   include "Core/ServiceBase.h"
 #	include "Core/ConstString.h"
@@ -14,9 +15,6 @@
 #	include "Math/vec3.h"
 
 #	include "pybind/types.hpp"
-
-#   include "Kernel/ScheduleManager.h"
-
 
 namespace Menge
 {	
@@ -33,8 +31,6 @@ namespace Menge
 
 	class MousePickerSystemInterface;
 	class GlobalHandleSystem;
-
-	class ScheduleManagerInterface;
 
 	class EventManager;
 
@@ -113,7 +109,7 @@ namespace Menge
 		void finalizeRenderResources() override;
 
     public:
-		void tick( float _time, float _timing );
+		void tick( float _time, float _timing ) override;
 		bool update() override;
 
 	public:

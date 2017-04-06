@@ -4,7 +4,7 @@
 
 #   include "Core/ServantBase.h"
 
-#	include "SDL_Thread.h"
+#	include "SDL_thread.h"
 
 namespace Menge
 {

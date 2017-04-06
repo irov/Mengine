@@ -1,6 +1,9 @@
 #	include "AstralaxIO.h"
 
 #	include "Interface/PrototypeManagerInterface.h"
+#	include "Interface/StringizeInterface.h"
+#	include "Interface/UnicodeInterface.h"
+#	include "Interface/FileSystemInterface.h"
 
 #	include "Kernel/NodePrototypeGenerator.h"
 #	include "Kernel/ResourcePrototypeGenerator.h"
@@ -48,7 +51,7 @@ namespace Menge
 		}
 
 		if( PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Resource" ), STRINGIZE_STRING_LOCAL( serviceProvider, "ResourceParticle" ), new ResourcePrototypeGenerator<ResourceParticle, 8> ) == false )
+			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Resource" ), STRINGIZE_STRING_LOCAL(m_serviceProvider, "ResourceParticle" ), new ResourcePrototypeGenerator<ResourceParticle, 8> ) == false )
 		{
 			return false;
 		}
@@ -85,19 +88,19 @@ namespace Menge
 		return true;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_InitInSpecFromFile( 
-		Menge::AstralaxOptions * _headerP
+	static bool s_InitInSpecFromFile(  ServiceProviderInterface * _serviceProvider
+		, Menge::AstralaxOptions * _headerP
 		, Menge::AstralaxRender * _render
 		, const WChar * _ptcFile )
 	{
 		Char utf8_ptcFile[MAX_PATH];
 
-		UNICODE_SERVICE( m_serviceProvider )
+		UNICODE_SERVICE(_serviceProvider)
 			->unicodeToUtf8( _ptcFile, -1, utf8_ptcFile, MAX_PATH, nullptr );
 
-		FilePath ptcFile = Helper::stringizeString( m_serviceProvider, utf8_ptcFile );
+		FilePath ptcFile = Helper::stringizeString(_serviceProvider, utf8_ptcFile );
 
-		InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
+		InputStreamInterfacePtr stream = FILE_SERVICE(_serviceProvider)
 			->openInputFile( ConstString::none(), ptcFile, false );
 		
 		Menge::Emitter * emitter = _render->createEmitter( _ptcFile );
@@ -190,7 +193,7 @@ namespace Menge
 
 		const WChar * wc_file_pathZ = (const WChar *)file_pathZ;
 		
-		successful = s_InitInSpecFromFile( headerP, m_render, wc_file_pathZ );
+		successful = s_InitInSpecFromFile( m_serviceProvider, headerP, m_render, wc_file_pathZ );
 
 		if( successful == true )
 		{
@@ -341,7 +344,7 @@ namespace Menge
 
 		new_headerP->readFlatten( flat_headerP );
 
-		bool successful = s_InitInSpecFromFile( new_headerP, m_render, ptcPath );
+		bool successful = s_InitInSpecFromFile( m_serviceProvider, new_headerP, m_render, ptcPath );
 
 		if( successful == true )
 		{

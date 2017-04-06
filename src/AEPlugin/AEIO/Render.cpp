@@ -1,6 +1,6 @@
 #	include "Render.h"
 
-#	include <d3dx9tex.h>
+#	include <d3d9.h>
 
 namespace Menge
 {

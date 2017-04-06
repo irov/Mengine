@@ -7,7 +7,7 @@ set cmd_vcvars="C:\Program Files\Microsoft Visual Studio\2017\Community\VC\Auxil
 if not exist %cmd_vcvars% goto vs_not_found
 :vs_vars_found
 
-call %cmd_vcvars% x86
+call %cmd_vcvars% x64
 if errorlevel 1 goto error
 
 goto successful

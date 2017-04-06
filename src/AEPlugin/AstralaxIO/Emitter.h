@@ -7,6 +7,7 @@
 #	include "magic.h"
 
 #	include <vector>
+#	include <memory>
 
 #	include <stdint.h>
 

@@ -1132,7 +1132,7 @@ namespace Menge
 		}
 #	endif
 
-		m_aeioLogger = new AEIOLogger( suites, aegp_plugin_id );
+		m_aeioLogger = new AEIOLogger( &suites, aegp_plugin_id );
 
 		m_aeioLogger->setVerboseLevel( LM_ERROR );
 

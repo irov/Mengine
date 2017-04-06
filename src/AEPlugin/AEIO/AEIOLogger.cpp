@@ -5,7 +5,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	AEIOLogger::AEIOLogger( const AEGP_SuiteHandler & _suites, AEGP_PluginID _aegp_plugin_id )
+	AEIOLogger::AEIOLogger(AEGP_SuiteHandler * _suites, AEGP_PluginID _aegp_plugin_id )
 		: m_suites( _suites )
 		, m_aegp_plugin_id( _aegp_plugin_id )
 		, m_serviceProvider( nullptr )
@@ -73,7 +73,7 @@ namespace Menge
         (void)_flag;
 		(void)_count;
 		
-		m_suites.UtilitySuite5()->AEGP_ReportInfo( m_aegp_plugin_id, _data );
+		m_suites->UtilitySuite5()->AEGP_ReportInfo( m_aegp_plugin_id, _data );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AEIOLogger::flush()

@@ -12,7 +12,7 @@ namespace Menge
 		: public LoggerInterface
 	{
 	public:
-		AEIOLogger( const AEGP_SuiteHandler & _suites, AEGP_PluginID _aegp_plugin_id );
+		AEIOLogger( AEGP_SuiteHandler * _suites, AEGP_PluginID _aegp_plugin_id );
 		~AEIOLogger();
 
 	public:
@@ -36,7 +36,7 @@ namespace Menge
 
 
 	private:
-		AEGP_SuiteHandler m_suites;
+		AEGP_SuiteHandler * m_suites;
 		AEGP_PluginID m_aegp_plugin_id;
 
 		ServiceProviderInterface * m_serviceProvider;

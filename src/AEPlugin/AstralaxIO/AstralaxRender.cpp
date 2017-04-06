@@ -5,7 +5,7 @@
 #	include <iterator>
 #	include <algorithm>
 
-#	include <d3dx9tex.h>
+#	include <d3d9.h>
 
 #	include <Windows.h>
 
@@ -473,8 +473,8 @@ namespace Menge
 			return false;
 		}
 
-		DXCALL m_device->SetTransform( D3DTS_PROJECTION, (D3DXMATRIX *)projection.buff());
-		DXCALL m_device->SetTransform( D3DTS_VIEW, (D3DXMATRIX *)view.buff() );
+		DXCALL m_device->SetTransform( D3DTS_PROJECTION, (D3DMATRIX *)projection.buff());
+		DXCALL m_device->SetTransform( D3DTS_VIEW, (D3DMATRIX *)view.buff() );
 
 		for( TVectorParticleMesh::const_iterator 
 			it = _flush.meshes.begin(),

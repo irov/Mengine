@@ -27,6 +27,7 @@ namespace Menge
 
 	public:
 		bool addPackage( const PackageDesc & _desc ) override;
+		bool removePackage( const ConstString & _name ) override;
 		PackageInterfacePtr getPackage( const ConstString & _name ) const override;
 
 	public:

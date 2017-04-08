@@ -70,6 +70,7 @@ namespace Menge
 
 	public:
 		virtual bool addPackage( const PackageDesc & _desc ) = 0;
+		virtual bool removePackage( const ConstString & _name ) = 0;
 		virtual PackageInterfacePtr getPackage( const ConstString & _name ) const = 0;
 
 	public:

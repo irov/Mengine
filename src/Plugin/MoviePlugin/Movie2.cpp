@@ -690,7 +690,7 @@ namespace Menge
 		{
 			ae_update_movie_composition( m_composition, _timing );
 		}
-
+						
 		for( TVectorSurfaces::iterator
 			it = m_surfaces.begin(),
 			it_end = m_surfaces.end();

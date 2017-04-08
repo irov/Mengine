@@ -2892,7 +2892,7 @@ namespace Menge
 				->cancelAsset( _id );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool s_loadResourcePak( const ConstString & _fileGroup
+		bool s_mountResourcePak( const ConstString & _fileGroup
 			, const ConstString & _name
 			, const ConstString & _type
 			, const ConstString & _path
@@ -2923,6 +2923,14 @@ namespace Menge
 
 			bool result = PACKAGE_SERVICE( m_serviceProvider )
 				->addPackage( desc );
+
+			return result;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_unmountResourcePak( const ConstString & _name )
+		{
+			bool result = PACKAGE_SERVICE( m_serviceProvider )
+				->removePackage( _name );
 
 			return result;
 		}
@@ -7826,7 +7834,8 @@ namespace Menge
 			pybind::def_functor( kernel, "downloadAsset", nodeScriptMethod, &NodeScriptMethod::s_downloadAsset );
 			pybind::def_functor( kernel, "cancelDownloadAsset", nodeScriptMethod, &NodeScriptMethod::s_cancelDownloadAsset );
 
-			pybind::def_functor( kernel, "loadResourcePak", nodeScriptMethod, &NodeScriptMethod::s_loadResourcePak );
+			pybind::def_functor( kernel, "mountResourcePak", nodeScriptMethod, &NodeScriptMethod::s_mountResourcePak );
+			pybind::def_functor( kernel, "unmountResourcePak", nodeScriptMethod, &NodeScriptMethod::s_unmountResourcePak );
 
 			pybind::def_functor( kernel, "existFile", nodeScriptMethod, &NodeScriptMethod::s_existFile );
 			pybind::def_functor_kernel( kernel, "parseXml", nodeScriptMethod, &NodeScriptMethod::s_parseXml );

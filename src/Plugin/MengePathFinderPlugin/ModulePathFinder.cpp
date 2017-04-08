@@ -142,6 +142,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ModulePathFinder::_finalize()
 	{
+		for (TPathFinderMaps::iterator
+			it = m_maps.begin(),
+			it_end = m_maps.end();
+			it != it_end;
+			++it)
+		{
+			PathFinderMap * map = *it;
+
+			delete map;
+		}
+
+		m_maps.clear();
+
+		SCRIPT_SERVICE(m_serviceProvider)
+			->removeWrapper(Helper::stringizeString(m_serviceProvider, "PathGraphNode"));
+
+		m_factoryPathFinderWayAffector = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderMap * ModulePathFinder::createMap()

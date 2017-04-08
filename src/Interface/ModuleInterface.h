@@ -62,9 +62,6 @@ namespace Menge
 		virtual void stopModule( const ConstString & _name ) = 0;
 
 	public:
-		virtual void stopModules() = 0;
-
-	public:
 		virtual void update( bool _focus ) = 0;
 
 	public:

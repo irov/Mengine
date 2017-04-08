@@ -250,6 +250,33 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool PackageService::removePackage( const ConstString & _name )
+	{
+		for( TVectorPackage::const_iterator
+			it = m_packages.begin(),
+			it_end = m_packages.end();
+			it != it_end;
+			++it )
+		{
+			const PackagePtr & package = *it;
+
+			const ConstString & packName = package->getName();
+
+			if( packName != _name )
+			{
+				continue;
+			}
+
+			package->disable();
+
+			m_packages.erase( it );
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	PackageInterfacePtr PackageService::getPackage( const ConstString & _name ) const
 	{
 		for( TVectorPackage::const_iterator

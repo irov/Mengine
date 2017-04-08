@@ -424,6 +424,18 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::onWindowFullscreen( bool _fullscreen )
+	{
+		this->restoreRenderSystemStates_();
+
+		this->createNullTexture_();
+		this->createWhitePixelTexture_();
+		this->create2DBuffers_();
+		
+		RENDER_SYSTEM( m_serviceProvider )
+			->onWindowFullscreen( _fullscreen );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::beginScene()
 	{		
 		this->restoreRenderSystemStates_();

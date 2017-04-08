@@ -1116,7 +1116,7 @@
 /* Define if you want to use the new-style (Openstep, Rhapsody, MacOS) dynamic
    linker (dyld) instead of the old-style (NextStep) dynamic linker (rld).
    Dyld is necessary to support frameworks. */
-#define WITH_DYLD 1
+#define WITH_DYLD 0
 
 /* Define to 1 if libintl is needed for locale functions. */
 /* #undef WITH_LIBINTL */
@@ -1129,7 +1129,7 @@
 #define WITH_PYMALLOC 1
 
 /* Define if you want to compile in rudimentary thread support */
-#define WITH_THREAD 1
+#define WITH_THREAD 0
 
 /* Define to profile with the Pentium timestamp counter */
 /* #undef WITH_TSC */
@@ -1168,7 +1168,7 @@
 #define _GNU_SOURCE 1
 
 /* This must be defined on some systems to enable large file support. */
-#define _LARGEFILE_SOURCE 1
+#define _LARGEFILE_SOURCE 0
 
 /* This must be defined on AIX systems to enable large file support. */
 /* #undef _LARGE_FILES */

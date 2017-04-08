@@ -22,7 +22,7 @@ namespace Menge
     public:
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
         const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;
-
+		
 	public:
         Pointer lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly ) override;
 		void unlock( uint32_t _level ) override;

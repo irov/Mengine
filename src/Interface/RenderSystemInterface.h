@@ -682,9 +682,6 @@ namespace Menge
 
 		virtual RenderTargetInterface * createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) = 0;
 
-		//
-		// отрисовка изображения
-
 		virtual bool beginScene() = 0;
 		virtual void endScene() = 0;
 		virtual void swapBuffers() = 0;
@@ -706,6 +703,7 @@ namespace Menge
 
 		virtual void onWindowMovedOrResized() = 0;
 		virtual void onWindowClose() = 0;
+		virtual void onWindowFullscreen( bool _fullscreen ) = 0;
 
 		virtual void setVSync( bool _vSync ) = 0;
 		virtual void clear( uint32_t _color, bool _force ) = 0;
@@ -813,6 +811,7 @@ namespace Menge
 
     public:
         virtual void onWindowClose() = 0;
+		virtual void onWindowFullscreen( bool _fullscreen ) = 0;
         virtual bool isWindowCreated() const = 0;
 
     public:

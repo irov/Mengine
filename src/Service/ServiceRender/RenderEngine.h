@@ -148,8 +148,9 @@ namespace Menge
 		void endScene() override;
 		void swapBuffers() override;
 		
-		void onWindowActive( bool _active );
+	public:
 		void onWindowClose() override;
+		void onWindowFullscreen( bool _fullscreen ) override;
 
 	public:
         const Viewport & getRenderViewport() const;
@@ -175,7 +176,6 @@ namespace Menge
 	protected:			
 		void restoreTextureStage_( uint32_t _stage );
 
-		void setRenderSystemDefaults_();
 		void restoreRenderSystemStates_();
 		
 		void renderPasses_();

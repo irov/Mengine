@@ -75,7 +75,8 @@ namespace Menge
 
     public:
         bool createRenderWindow(const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount) override;
-
+		
+	public:
         void makeProjectionOrthogonal(mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far) override;
         void makeProjectionFrustum(mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far) override;
         void makeProjectionPerspective(mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf) override;
@@ -160,6 +161,7 @@ namespace Menge
 
         void onWindowMovedOrResized() override;
         void onWindowClose() override;
+		void onWindowFullscreen( bool _fullscreen ) override;
 
         void setVSync(bool _vSync) override;
 
@@ -172,6 +174,9 @@ namespace Menge
 
     protected:
         void findFormatFromChannels_(PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels) const;
+
+	protected:
+		void onRenderImageDestroy_( OpenGLRenderImage * _image );
 
     private:
         ConstString m_renderPlatform;
@@ -206,6 +211,9 @@ namespace Menge
         uint32_t m_glMaxCombinedTextureImageUnits;
 
         TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
+
+		typedef stdex::vector<OpenGLRenderImage *> TVectorImages;
+		TVectorImages m_images;
 
         bool m_depthMask;
     };

@@ -51,7 +51,7 @@ namespace Menge
 
         m_factoryVertexBuffer = new FactoryDefault<OpenGLRenderVertexBuffer>( m_serviceProvider );
         m_factoryIndexBuffer = new FactoryDefault<OpenGLRenderIndexBuffer>( m_serviceProvider );
-        m_factoryRenderImage = new FactoryPool<OpenGLRenderImage, 128>( m_serviceProvider );
+        m_factoryRenderImage = Helper::makeFactoryPool<OpenGLRenderImage, 128>(m_serviceProvider, this, &OpenGLRenderSystem::onRenderImageDestroy_ );
         m_factoryRenderFragmentShader = new FactoryPool<OpenGLRenderFragmentShader, 16>( m_serviceProvider );
         m_factoryRenderVertexShader = new FactoryPool<OpenGLRenderVertexShader, 16>( m_serviceProvider );
         m_factoryProgram = new FactoryPool<OpenGLRenderProgram, 16>( m_serviceProvider );
@@ -722,9 +722,9 @@ namespace Menge
             return nullptr;
         }
 
-        OpenGLRenderImagePtr texture = m_factoryRenderImage->createObject();
+        OpenGLRenderImagePtr image = m_factoryRenderImage->createObject();
 
-        if( texture == nullptr )
+        if( image == nullptr )
         {
             LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystem::createImage invalid create"
                 );
@@ -732,9 +732,9 @@ namespace Menge
             return nullptr;
         }
 
-        texture->setServiceProvider( m_serviceProvider );
+        image->setServiceProvider( m_serviceProvider );
 
-        if( texture->initialize( ERIM_NORMAL
+        if( image->initialize( ERIM_NORMAL
             , _mipmaps
             , _width
             , _height
@@ -750,7 +750,10 @@ namespace Menge
             return nullptr;
         }
 
-        return texture;
+		OpenGLRenderImage * image_ptr = image.get();
+		m_images.push_back( image_ptr );
+
+        return image;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::lockRenderTarget( const RenderImageInterfacePtr & _renderTarget )
@@ -870,6 +873,50 @@ namespace Menge
     {
 
     }
+	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderSystem::onWindowFullscreen( bool _fullscreen )
+	{
+		(void)_fullscreen;
+
+		for( TVectorImages::iterator
+			it = m_images.begin(),
+			it_end = m_images.end();
+			it != it_end;
+			++it )
+		{
+			OpenGLRenderImage * image = *it;
+
+			const RenderImageProviderInterfacePtr & provider = image->getRenderImageProvider();
+
+			if( provider == nullptr )
+			{
+				continue;
+			}
+
+			RenderImageLoaderInterfacePtr loader = provider->getLoader();
+
+			Rect rect;
+			rect.left = 0;
+			rect.top = 0;
+			rect.right = image->getHWWidth();
+			rect.bottom = image->getHWHeight();
+
+			size_t pitch = 0;
+			void * textureBuffer = image->lock( &pitch, 0, rect, false );
+
+			if( loader->load( textureBuffer, pitch ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createTexture Invalid decode image"
+					);
+
+				image->unlock( 0 );
+
+				continue;
+			}
+
+			image->unlock( 0 );
+		}
+	}
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setVSync( bool _vSync )
     {
@@ -1021,4 +1068,17 @@ namespace Menge
     {
         mt::make_lookat_m4( _viewMatrix, _eye, _dir, _up, _sign );
     }
+	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderSystem::onRenderImageDestroy_( OpenGLRenderImage * _image )
+	{
+		TVectorImages::iterator it_found = std::find( m_images.begin(), m_images.end(), _image );
+
+		if( it_found == m_images.end() )
+		{
+			return;
+		}
+
+		*it_found = m_images.back();
+		m_images.pop_back();
+	}
 }   // namespace Menge

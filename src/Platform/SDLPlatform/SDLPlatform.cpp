@@ -554,9 +554,12 @@ namespace Menge
         //SDL_GL_MakeCurrent( old_window, nullptr );
 
         this->destroyWindow_();
-        this->createWindow_( _resolution, _fullscreen );
+        this->createWindow( _resolution, _fullscreen );
 
-        SDL_GL_MakeCurrent( m_window, m_glContext );
+		RENDER_SYSTEM( m_serviceProvider )
+			->onWindowFullscreen( _fullscreen );
+
+        //SDL_GL_MakeCurrent( m_window, m_glContext );
 
         //if( old_window != nullptr )
         //{

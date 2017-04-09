@@ -180,6 +180,8 @@ namespace Menge
                 {
                     APPLICATION_SERVICE( m_serviceProvider )
                         ->flush();
+					
+					SDL_GL_SwapWindow( m_window );
                 }
             }
 
@@ -559,11 +561,14 @@ namespace Menge
         //SDL_HideWindow( old_window );
         //SDL_GL_MakeCurrent( old_window, nullptr );
 
+		RENDER_SERVICE( m_serviceProvider )
+			->onWindowChangeFullscreenPrepare( _fullscreen );
+
         this->destroyWindow_();
         this->createWindow( _resolution, _fullscreen );
 
-		RENDER_SYSTEM( m_serviceProvider )
-			->onWindowFullscreen( _fullscreen );
+		RENDER_SERVICE( m_serviceProvider )
+			->onWindowChangeFullscreen( _fullscreen );
 
         //SDL_GL_MakeCurrent( m_window, m_glContext );
 
@@ -656,6 +661,12 @@ namespace Menge
             SDL_DestroyWindow( m_window );
             m_window = nullptr;
         }
+
+		if( m_glContext != nullptr )
+		{
+			SDL_GL_DeleteContext( m_glContext );
+			m_glContext = nullptr;
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::processEvents()

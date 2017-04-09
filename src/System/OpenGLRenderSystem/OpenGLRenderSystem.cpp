@@ -29,8 +29,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderSystem::OpenGLRenderSystem()
-        : m_window( nullptr )
-        , m_depthMask( false )
+        : m_depthMask( false )
         , m_glMaxClipPlanes( 0 )
         , m_glMaxCombinedTextureImageUnits( 0 )
     {
@@ -107,9 +106,6 @@ namespace Menge
         LOGGER_WARNING( m_serviceProvider )("Extensions  : %s", reinterpret_cast<const char*>(glGetString( GL_EXTENSIONS )));
 
         OPENGL_RENDER_CHECK_ERROR( m_serviceProvider );
-
-        m_window = PLATFORM_SERVICE( m_serviceProvider )
-            ->getWindowHandle();
 
         GLint maxClipPlanes;
         glGetIntegerv( GL_MAX_CLIP_PLANES, &maxClipPlanes );
@@ -787,7 +783,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::swapBuffers()
     {
-        GLCALL( m_serviceProvider, SDL_GL_SwapWindow, (m_window) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil )
@@ -874,7 +869,7 @@ namespace Menge
 
     }
 	//////////////////////////////////////////////////////////////////////////
-	void OpenGLRenderSystem::onWindowFullscreen( bool _fullscreen )
+	void OpenGLRenderSystem::onWindowChangeFullscreenPrepare( bool _fullscreen )
 	{
 		(void)_fullscreen;
 
@@ -886,35 +881,23 @@ namespace Menge
 		{
 			OpenGLRenderImage * image = *it;
 
-			const RenderImageProviderInterfacePtr & provider = image->getRenderImageProvider();
+			image->release();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderSystem::onWindowChangeFullscreen( bool _fullscreen )
+	{
+		(void)_fullscreen;
 
-			if( provider == nullptr )
-			{
-				continue;
-			}
-
-			RenderImageLoaderInterfacePtr loader = provider->getLoader();
-
-			Rect rect;
-			rect.left = 0;
-			rect.top = 0;
-			rect.right = image->getHWWidth();
-			rect.bottom = image->getHWHeight();
-
-			size_t pitch = 0;
-			void * textureBuffer = image->lock( &pitch, 0, rect, false );
-
-			if( loader->load( textureBuffer, pitch ) == false )
-			{
-				LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createTexture Invalid decode image"
-					);
-
-				image->unlock( 0 );
-
-				continue;
-			}
-
-			image->unlock( 0 );
+		for( TVectorImages::iterator
+			it = m_images.begin(),
+			it_end = m_images.end();
+			it != it_end;
+			++it )
+		{
+			OpenGLRenderImage * image = *it;
+			
+			image->reload();
 		}
 	}
     //////////////////////////////////////////////////////////////////////////

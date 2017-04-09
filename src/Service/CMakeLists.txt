@@ -29,10 +29,7 @@ ADD_SUBDIRECTORY( ServiceUserdata )
 ADD_SUBDIRECTORY( ServiceOptions )
 ADD_SUBDIRECTORY( ServiceTimeline )
 ADD_SUBDIRECTORY( ServiceFactory )
-
-if( WIN32 )
-    ADD_SUBDIRECTORY( ServicePlugin )
-endif( WIN32 )
+ADD_SUBDIRECTORY( ServicePlugin )
 
 SET( MENGE_DEPENDENCIES
  ${MENGE_DEPENDENCIES}

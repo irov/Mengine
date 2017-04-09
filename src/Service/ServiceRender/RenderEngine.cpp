@@ -294,7 +294,7 @@ namespace Menge
 		buffer_textureData[4] = 0x00;
 		buffer_textureData[5] = 0x00;
 
-		image->unlock( 0 );
+		image->unlock( 0, true );
 
 		RENDERTEXTURE_SERVICE(m_serviceProvider)
 			->cacheFileTexture( ConstString::none(), STRINGIZE_STRING_LOCAL(m_serviceProvider, "__null__"), texture );
@@ -366,7 +366,7 @@ namespace Menge
 		buffer_textureData[4] = 0xFF;
 		buffer_textureData[5] = 0xFF;
 
-		image->unlock( 0 );
+		image->unlock( 0, true );
 
 		RENDERTEXTURE_SERVICE(m_serviceProvider)
 			->cacheFileTexture( ConstString::none(), STRINGIZE_STRING_LOCAL(m_serviceProvider, "WhitePixel"), texture );
@@ -424,7 +424,21 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::onWindowFullscreen( bool _fullscreen )
+	void RenderEngine::onWindowChangeFullscreenPrepare( bool _fullscreen )
+	{
+		this->restoreRenderSystemStates_();
+
+		m_nullTexture = nullptr;
+		m_whitePixelTexture = nullptr;
+
+		m_ibHandle2D = nullptr;
+		m_vbHandle2D = nullptr;
+
+		RENDER_SYSTEM( m_serviceProvider )
+			->onWindowChangeFullscreenPrepare( _fullscreen );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::onWindowChangeFullscreen( bool _fullscreen )
 	{
 		this->restoreRenderSystemStates_();
 
@@ -433,7 +447,7 @@ namespace Menge
 		this->create2DBuffers_();
 		
 		RENDER_SYSTEM( m_serviceProvider )
-			->onWindowFullscreen( _fullscreen );
+			->onWindowChangeFullscreen( _fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::beginScene()

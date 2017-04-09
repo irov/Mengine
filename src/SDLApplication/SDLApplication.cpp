@@ -275,7 +275,7 @@ namespace Menge
 		bool noroamingMode = HAS_OPTION(m_serviceProvider, "noroaming");
 
 		FilePath userPath;
-		if (developmentMode == true && roamingMode == false || noroamingMode == true)
+		if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
 		{
 			WChar currentPathW[MENGINE_MAX_PATH];
 			PLATFORM_SERVICE(m_serviceProvider)

@@ -90,7 +90,3 @@ endif()
 if(MSVC)
     set_target_properties( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE )
 endif(MSVC)
-
-if(APPLE)
-    set_target_properties( ${MY_LIB_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Mengine-Info.plist)
-endif()

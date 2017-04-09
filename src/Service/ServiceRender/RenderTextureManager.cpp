@@ -266,7 +266,7 @@ namespace Menge
 				, _fileName.c_str() 
 				);
 
-			image->unlock( 0 );
+			image->unlock( 0, false );
 
 			return false;
 		}
@@ -275,7 +275,7 @@ namespace Menge
 
 		size_t bytesWritten = imageEncoder->encode( buffer, bufferSize, &dataInfo );
 
-		image->unlock( 0 );
+		image->unlock( 0, true );
 
         if( bytesWritten == 0 )
         {
@@ -411,12 +411,12 @@ namespace Menge
 			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createTexture Invalid decode image"
 				);
 
-			image->unlock( 0 );
+			image->unlock( 0, false );
 
 			return nullptr;
 		}
 
-		image->unlock( 0 );
+		image->unlock( 0, true );
 
 		image->setRenderImageProvider( imageProvider );
         

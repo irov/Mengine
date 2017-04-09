@@ -161,7 +161,9 @@ namespace Menge
 
         void onWindowMovedOrResized() override;
         void onWindowClose() override;
-		void onWindowFullscreen( bool _fullscreen ) override;
+
+		void onWindowChangeFullscreenPrepare( bool _fullscreen ) override;
+		void onWindowChangeFullscreen( bool _fullscreen ) override;
 
         void setVSync(bool _vSync) override;
 
@@ -180,8 +182,6 @@ namespace Menge
 
     private:
         ConstString m_renderPlatform;
-
-        SDL_Window * m_window;
 
         mt::mat4f m_worldMatrix;
         mt::mat4f m_viewMatrix;

@@ -542,7 +542,7 @@ namespace Menge
         size_t bufferSize = Helper::getImageMemorySize( image );
 		size_t bytes = m_videoDecoder->decode( lockRect, bufferSize );
 
-        image->unlock( 0 );
+        image->unlock( 0, true );
 
 		m_invalidVideoTexture = false;
 

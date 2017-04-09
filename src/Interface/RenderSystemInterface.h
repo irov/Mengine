@@ -253,7 +253,7 @@ namespace Menge
 
 	public:
 		virtual Pointer lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly = true ) = 0;
-		virtual void unlock( uint32_t _level ) = 0;
+		virtual bool unlock( uint32_t _level, bool _successful ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderImageInterface> RenderImageInterfacePtr;
@@ -703,7 +703,9 @@ namespace Menge
 
 		virtual void onWindowMovedOrResized() = 0;
 		virtual void onWindowClose() = 0;
-		virtual void onWindowFullscreen( bool _fullscreen ) = 0;
+
+		virtual void onWindowChangeFullscreenPrepare( bool _fullscreen ) = 0;
+		virtual void onWindowChangeFullscreen( bool _fullscreen ) = 0;
 
 		virtual void setVSync( bool _vSync ) = 0;
 		virtual void clear( uint32_t _color, bool _force ) = 0;
@@ -811,7 +813,8 @@ namespace Menge
 
     public:
         virtual void onWindowClose() = 0;
-		virtual void onWindowFullscreen( bool _fullscreen ) = 0;
+		virtual void onWindowChangeFullscreenPrepare( bool _fullscreen ) = 0;
+		virtual void onWindowChangeFullscreen( bool _fullscreen ) = 0;
         virtual bool isWindowCreated() const = 0;
 
     public:

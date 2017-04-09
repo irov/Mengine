@@ -131,6 +131,51 @@ namespace Menge
     {
         return m_renderImageProvider;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderImage::release()
+	{
+		GLCALL( m_serviceProvider, glDeleteTextures, (1, &m_uid) );
+
+		m_uid = 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool OpenGLRenderImage::reload()
+	{
+		GLuint tuid = 0;
+		GLCALL( m_serviceProvider, glGenTextures, (1, &tuid) );
+
+		m_uid = tuid;
+
+		if( m_renderImageProvider == nullptr )
+		{
+			return true;
+		}
+
+		RenderImageLoaderInterfacePtr loader = m_renderImageProvider->getLoader();
+
+		Rect rect;
+		rect.left = 0;
+		rect.top = 0;
+		rect.right = this->getHWWidth();
+		rect.bottom = this->getHWHeight();
+
+		size_t pitch = 0;
+		void * textureBuffer = this->lock( &pitch, 0, rect, false );
+
+		if( loader->load( textureBuffer, pitch ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createTexture Invalid decode image"
+				);
+
+			this->unlock( 0, false );
+
+			return false;
+		}
+
+		this->unlock( 0, true );
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     Pointer OpenGLRenderImage::lock( size_t * _pitch, uint32_t _level, const Rect &, bool )
     {
@@ -179,8 +224,13 @@ namespace Menge
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderImage::unlock( uint32_t _level )
-    {		
+    bool OpenGLRenderImage::unlock( uint32_t _level, bool _successful )
+    {	
+		if( _successful == false )
+		{
+			return true;
+		}
+
         GLCALL( m_serviceProvider, glBindTexture, ( GL_TEXTURE_2D, m_uid ) );
 
         uint32_t miplevel_width = m_hwWidth >> _level;
@@ -194,6 +244,8 @@ namespace Menge
             , miplevel_height
             , textureMemorySize
             );
+
+		bool successful = true;
 
         switch( m_internalFormat )
         {
@@ -214,6 +266,8 @@ namespace Menge
                         , m_hwPixelFormat
                         , textureMemorySize
                         );
+
+					successful = false;
                 }
             }break;
         default:
@@ -231,12 +285,16 @@ namespace Menge
                         , m_type
                         , m_hwPixelFormat
                         );
+
+					successful = false;
                 }
             }break;
         }
 
         m_lockMemory = nullptr;
         m_lockLevel = 0;
+
+		return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::_destroy()

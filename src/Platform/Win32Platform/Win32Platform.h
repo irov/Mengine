@@ -41,6 +41,9 @@ namespace Menge
 		bool hasTouchpad() const override;
 
 	public:
+		bool createDirectory( const WString & _path ) override;
+
+	public:
 		bool getDesktopResolution( Resolution & _resolution ) const override;
 
 		size_t getCurrentPath( WChar * _path, size_t _len ) const override;

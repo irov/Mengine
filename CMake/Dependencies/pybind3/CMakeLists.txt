@@ -12,8 +12,6 @@ ${SOURCE_DIR}/src/adapter_interface.cpp
 ${SOURCE_DIR}/src/debug.cpp
 ${SOURCE_DIR}/src/exception.cpp
 ${SOURCE_DIR}/src/extract.cpp
-${SOURCE_DIR}/src/function.cpp
-${SOURCE_DIR}/src/functor.cpp
 ${SOURCE_DIR}/src/logger.cpp
 ${SOURCE_DIR}/src/pickle.cpp
 ${SOURCE_DIR}/src/stl_type_cast.cpp

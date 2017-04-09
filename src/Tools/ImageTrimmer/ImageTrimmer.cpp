@@ -262,7 +262,7 @@ namespace Menge
 			return false;
 		}
 
-		unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize );
+		unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize, __FILE__, __LINE__ );
 
 		if( textureBuffer == nullptr )
 		{
@@ -360,7 +360,7 @@ namespace Menge
 			return false;
 		}
 
-		unsigned char * new_textureBuffer = buffer->newMemory( new_bufferSize );
+		unsigned char * new_textureBuffer = buffer->newMemory( new_bufferSize, __FILE__, __LINE__ );
 
 		if( new_textureBuffer == nullptr )
 		{

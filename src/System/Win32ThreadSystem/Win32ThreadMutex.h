@@ -2,7 +2,7 @@
 
 #   include "Interface/ThreadSystemInterface.h"
 
-#   include "WindowsLayer/WindowsIncluder.h"
+#	include "WIN32/WindowsIncluder.h"
 
 #   include "Core/ServantBase.h"
 
@@ -15,7 +15,7 @@ namespace Menge
         Win32ThreadMutex();
         
     public:
-        void initialize( const char * _doc );
+        void initialize( const char * _file, uint32_t _line );
 
     protected:
         void lock() override;
@@ -30,6 +30,7 @@ namespace Menge
     protected:
         CRITICAL_SECTION m_cs;
 
-		const char * m_doc;
+		const char * m_file;
+		uint32_t m_line;
     };
 }

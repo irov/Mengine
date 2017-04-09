@@ -483,7 +483,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static ColourValue color_convert( PyObject * _obj )
+	static ColourValue color_convert( pybind::kernel_interface * _kernel, PyObject * _obj )
 	{
 		if( pybind::tuple_check( _obj ) == true )
 		{
@@ -494,10 +494,10 @@ namespace Menge
 				PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
 				PyObject * i3 = pybind::tuple_getitem( _obj, 3 );
 
-				float r = pybind::extract<float>(i0);
-				float g = pybind::extract<float>(i1);
-				float b = pybind::extract<float>(i2);
-				float a = pybind::extract<float>(i3);
+				float r = pybind::extract<float>( _kernel, i0);
+				float g = pybind::extract<float>( _kernel, i1);
+				float b = pybind::extract<float>( _kernel, i2);
+				float a = pybind::extract<float>( _kernel, i3);
 
 				return ColourValue( a, r, g, b );
 			}
@@ -507,9 +507,9 @@ namespace Menge
 				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
 				PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
 
-				float r = pybind::extract<float>(i0);
-				float g = pybind::extract<float>(i1);
-				float b = pybind::extract<float>(i2);
+				float r = pybind::extract<float>( _kernel, i0);
+				float g = pybind::extract<float>( _kernel, i1);
+				float b = pybind::extract<float>( _kernel, i2);
 				float a = 1.f;
 
 				return ColourValue( a, r, g, b );
@@ -524,10 +524,10 @@ namespace Menge
 				PyObject * i2 = pybind::list_getitem( _obj, 2 );
 				PyObject * i3 = pybind::list_getitem( _obj, 3 );
 
-				float r = pybind::extract<float>(i0);
-				float g = pybind::extract<float>(i1);
-				float b = pybind::extract<float>(i2);
-				float a = pybind::extract<float>(i3);
+				float r = pybind::extract<float>( _kernel, i0);
+				float g = pybind::extract<float>( _kernel, i1);
+				float b = pybind::extract<float>( _kernel, i2);
+				float a = pybind::extract<float>( _kernel, i3);
 
 				return ColourValue( a, r, g, b );
 			}				
@@ -538,9 +538,9 @@ namespace Menge
 				PyObject * i2 = pybind::list_getitem( _obj, 2 );
 
 
-				float r = pybind::extract<float>(i0);
-				float g = pybind::extract<float>(i1);
-				float b = pybind::extract<float>(i2);
+				float r = pybind::extract<float>( _kernel, i0);
+				float g = pybind::extract<float>( _kernel, i1);
+				float b = pybind::extract<float>( _kernel, i2);
 				float a = 1.f;
 
 				return ColourValue( a, r, g, b );
@@ -550,12 +550,12 @@ namespace Menge
 		return ColourValue();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Image * createImage( uint32_t _width, uint32_t _height, uint32_t _channel, PyObject * _colour )
+	Image * createImage( pybind::kernel_interface * _kernel, uint32_t _width, uint32_t _height, uint32_t _channel, PyObject * _colour )
 	{
 		Image * image = new Image( serviceProvider );
 
 		image->create( _width, _height, _channel );
-		image->fill( color_convert(_colour) );
+		image->fill( color_convert( _kernel, _colour) );
 
 		return image;
 	}
@@ -577,7 +577,7 @@ namespace Menge
 		{
 			LOGGER_ERROR( serviceProvider )("pathSHA1 %ls invalid open '%s'"
 				, _path
-				, c_path
+				, c_path.c_str()
 				);
 
 			return L"";
@@ -794,16 +794,18 @@ bool run()
 			);
 	}	
 
-	if( pybind::initialize( false, false, false ) == false )
+	pybind::kernel_interface * kernel = pybind::initialize( false, false, false );
+
+	if( kernel == nullptr )
 	{
 		return false;
 	}
-
+	
 	LOGGER_ERROR(Menge::serviceProvider)("pybind::initialize complete");
 
 	PyObject * py_tools_module = pybind::module_init( "ToolsBuilderPlugin" );
 
-	pybind::interface_<Menge::PythonLogger>("XlsScriptLogger", true, py_tools_module)
+	pybind::interface_<Menge::PythonLogger>( kernel, "XlsScriptLogger", true, py_tools_module)
 		.def_native("write", &Menge::PythonLogger::py_write )
 		.def_native("flush", &Menge::PythonLogger::py_flush )
 		.def_property("softspace", &Menge::PythonLogger::getSoftspace, &Menge::PythonLogger::setSoftspace )
@@ -811,30 +813,30 @@ bool run()
 		.def_property("encoding", &Menge::PythonLogger::getEncoding, &Menge::PythonLogger::setEncoding )
 		;
 	Menge::PythonLogger * logger = new Menge::PythonLogger(Menge::serviceProvider);
-	PyObject * py_logger = pybind::ptr(logger);
+	PyObject * py_logger = pybind::ptr( kernel, logger);
 
 	pybind::setStdOutHandle( py_logger );
 	pybind::setStdErrorHandle( py_logger );
 
-	pybind::def_function( "spreadingPngAlpha", &Menge::spreadingPngAlpha, py_tools_module );
-	pybind::def_function( "writeBin", &Menge::writeBin, py_tools_module );
-	pybind::def_function( "writeAek", &Menge::writeAek, py_tools_module );
+	pybind::def_function( kernel, "spreadingPngAlpha", &Menge::spreadingPngAlpha, py_tools_module );
+	pybind::def_function( kernel, "writeBin", &Menge::writeBin, py_tools_module );
+	pybind::def_function( kernel, "writeAek", &Menge::writeAek, py_tools_module );
 
-	pybind::def_function( "convert", &Menge::convert, py_tools_module );	
-	pybind::def_function( "isAlphaInImageFile", &Menge::isAlphaInImageFile, py_tools_module );
-	pybind::def_function( "isUselessAlphaInImageFile", &Menge::isUselessAlphaInImageFile, py_tools_module );
+	pybind::def_function( kernel, "convert", &Menge::convert, py_tools_module );
+	pybind::def_function( kernel, "isAlphaInImageFile", &Menge::isAlphaInImageFile, py_tools_module );
+	pybind::def_function( kernel, "isUselessAlphaInImageFile", &Menge::isUselessAlphaInImageFile, py_tools_module );
 
-	Menge::Image::embedding( py_tools_module );
+	Menge::Image::embedding( kernel, py_tools_module );
 
-	pybind::def_function( "loadImage", &Menge::loadImage, py_tools_module );
-	pybind::def_function( "saveImage", &Menge::saveImage, py_tools_module );
-	pybind::def_function( "createImage", &Menge::createImage, py_tools_module );
+	pybind::def_function( kernel, "loadImage", &Menge::loadImage, py_tools_module );
+	pybind::def_function( kernel, "saveImage", &Menge::saveImage, py_tools_module );
+	pybind::def_function_kernel( kernel, "createImage", &Menge::createImage, py_tools_module );
 
-	pybind::def_function( "pathSHA1", &Menge::pathSHA1, py_tools_module );
+	pybind::def_function( kernel, "pathSHA1", &Menge::pathSHA1, py_tools_module );
 
 	PyObject * module_builtins = pybind::get_builtins();
 
-	pybind::def_function( "Error", &s_error, module_builtins );
+	pybind::def_function( kernel, "Error", &s_error, module_builtins );
 
 	pybind::incref( py_tools_module );
 	pybind::module_addobject( module_builtins, "ToolsBuilderPlugin", py_tools_module );
@@ -857,19 +859,21 @@ bool run()
 				);
 		}
 
-		WCHAR * ch = wcstok( szPythonPath, L";" );
+		WCHAR * ch_buffer;
+		WCHAR * ch = wcstok( szPythonPath, L";", &ch_buffer );
 
 		while( ch != NULL )
 		{
-			PyObject * py_stdpath = pybind::ptr( ch );
+			PyObject * py_stdpath = pybind::ptr( kernel, ch );
 			pybind::list_appenditem( py_syspath, py_stdpath );
 			pybind::decref( py_stdpath );
 
-			ch = wcstok( NULL, L";");
+			WCHAR * ch_buffer2;
+			ch = wcstok( NULL, L";", &ch_buffer2 );
 		}
 	}
 
-	PyObject * py_currentpath = pybind::ptr( currentDirectory );
+	PyObject * py_currentpath = pybind::ptr( kernel, currentDirectory );
 	pybind::list_appenditem( py_syspath, py_currentpath );
 	pybind::decref( py_currentpath );
 
@@ -917,7 +921,7 @@ bool run()
 	{
 		LPWSTR arg = szArglist[i];
 		
-		pybind::tuple_setitem_t( py_args, i - 3, arg );
+		pybind::tuple_setitem_t( kernel, py_args, i - 3, arg );
 	}
 
 	pybind::call_method_native( py_run_module, utf8_FunctionName.c_str(), py_args );

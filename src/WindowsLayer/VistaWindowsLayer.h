@@ -6,7 +6,7 @@
 
 #   include "Core/ServiceBase.h"
 
-#	include "WindowsIncluder.h"
+#	include "WIN32/WindowsIncluder.h"
 
 namespace Menge
 {
@@ -22,9 +22,6 @@ namespace Menge
         bool setProcessDPIAware() override;
         bool supportUnicode() override;
 
-        bool setCurrentDirectory( const WChar * _path ) override;
-        bool setModuleCurrentDirectory() override;
-        bool createDirectory( const WChar * _path ) override;
         bool fileExists( const WChar * _path ) override;
 
         HANDLE createFile( const WChar * _fileName, DWORD _desiredAccess,
@@ -52,8 +49,7 @@ namespace Menge
         LONG_PTR setWindowLongPtr( HWND _hWnd, int _index, LONG_PTR _newLong ) override;
         LONG_PTR getWindowLongPtr( HWND _hWnd, int _index ) override;
         LRESULT defWindowProc( HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam ) override;
-        size_t getCurrentDirectory( WChar * _path, size_t _len ) override;
-
+        
 		void updateMessage( HWND _hWnd ) override;
 
         int messageBox( HWND _hWnd, const WChar * _text, const WChar * _caption, UINT _type ) override;

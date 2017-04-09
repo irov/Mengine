@@ -31,9 +31,6 @@ namespace Menge
         virtual bool setProcessDPIAware() = 0;
         virtual bool supportUnicode() = 0;
 
-        virtual bool setCurrentDirectory( const WChar * _path ) = 0;
-        virtual bool setModuleCurrentDirectory() = 0;
-        virtual bool createDirectory( const WChar * _path ) = 0;
         virtual bool fileExists( const WChar * _path ) = 0;
 
         virtual HANDLE createFile( const WChar * _fileName, DWORD _desiredAccess,
@@ -61,8 +58,7 @@ namespace Menge
         virtual LONG_PTR setWindowLongPtr( HWND _hWnd, int _index, LONG_PTR _newLong ) = 0;
         virtual LONG_PTR getWindowLongPtr( HWND _hWnd, int _index ) = 0;
         virtual LRESULT defWindowProc( HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam ) = 0;
-		virtual size_t getCurrentDirectory( WChar * _path, size_t _len ) = 0;
-
+		
 		virtual void updateMessage( HWND _hWnd ) = 0;
 
         virtual int messageBox( HWND _hWnd, const WChar * _text, const WChar * _caption, UINT _type ) = 0;

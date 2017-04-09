@@ -44,7 +44,7 @@ namespace Menge
 		uint32_t getChannels() const;
 
 	public:
-		static void embedding( PyObject * _module );
+		static void embedding( pybind::kernel_interface * _kernel, PyObject * _module );
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;

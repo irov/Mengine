@@ -54,7 +54,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    ThreadIdentityInterfacePtr Win32ThreadSystem::createThread( int _priority, const char * _doc )
+    ThreadIdentityInterfacePtr Win32ThreadSystem::createThread( int _priority, const char * _file, uint32_t _line )
 	{
 		Win32ThreadIdentityPtr identity = m_poolWin32ThreadIdentity->createObject();
 
@@ -68,7 +68,7 @@ namespace Menge
 
 		identity->setServiceProvider( m_serviceProvider );
 
-		ThreadMutexInterfacePtr mutex = this->createMutex( _doc );
+		ThreadMutexInterfacePtr mutex = this->createMutex( _file, _line );
 
 		if( mutex == nullptr )
 		{
@@ -78,7 +78,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( identity->initialize( mutex, _priority, _doc ) == false )
+		if( identity->initialize( mutex, _priority, _file, _line ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Win32ThreadSystem::createThread invalid initialize"
 				);
@@ -89,13 +89,13 @@ namespace Menge
 		return identity;
 	}
     //////////////////////////////////////////////////////////////////////////
-	ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const char * _doc )
+	ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const char * _file, uint32_t _line )
     {
         Win32ThreadMutex * mutex = m_poolWin32ThreadMutex->createObject();
 
         mutex->setServiceProvider( m_serviceProvider );
 
-		mutex->initialize( _doc );
+		mutex->initialize( _file, _line );
 
         return mutex;
     }

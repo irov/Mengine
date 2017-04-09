@@ -1,12 +1,11 @@
 #   include "VistaWindowsLayer.h"
 
 #   include "Interface/UnicodeInterface.h"
+#   include "Interface/PlatformInterface.h"
 
 #   include "Config/Typedef.h"
 
 #   include "Logger/Logger.h"
-
-#   include <Shlwapi.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( WindowsLayer, Menge::VistaWindowsLayer );
@@ -116,119 +115,6 @@ namespace Menge
         }
 
         return m_supportUnicode;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VistaWindowsLayer::setCurrentDirectory( const WChar * _path )
-    {
-		WChar pathCorrect[MENGINE_MAX_PATH];
-		PathCorrectBackslash( pathCorrect, _path );
-
-        if( ::SetCurrentDirectory( pathCorrect ) == FALSE )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VistaWindowsLayer::setModuleCurrentDirectory()
-    {
-        WChar exeFilePath[MENGINE_MAX_PATH];
-        ::GetModuleFileName( NULL, exeFilePath, MENGINE_MAX_PATH );
-
-        WString unicode_exeFilePath(exeFilePath);
-        WString::size_type slashPos = unicode_exeFilePath.find_last_of( L'\\' );
-
-        if( slashPos == WString::npos )
-        {
-            return false;
-        }
-
-        WString unicode_exeFileDir = unicode_exeFilePath.substr( 0, slashPos );
-        
-        if( ::SetCurrentDirectory( unicode_exeFileDir.c_str() ) == FALSE )
-        {
-            return false;
-        }
-        
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VistaWindowsLayer::createDirectory( const WChar * _path )
-    {
-		WChar pathCorrect[MENGINE_MAX_PATH];
-		PathCorrectBackslash( pathCorrect, _path );
-		
-		PathRemoveBackslash( pathCorrect );
-
-		if( PathIsDirectoryW( pathCorrect ) == FILE_ATTRIBUTE_DIRECTORY )
-		{
-			return true;
-		}
-
-		TVectorWString paths;
-
-		for( ;; )
-		{
-			paths.push_back( pathCorrect );
-
-			if( PathRemoveFileSpecW( pathCorrect ) == FALSE )
-			{
-				break;
-			}
-
-			if( PathIsDirectoryW( pathCorrect ) == FILE_ATTRIBUTE_DIRECTORY )
-			{
-				break;
-			}
-		}
-
-		for( TVectorWString::reverse_iterator
-			it = paths.rbegin(),
-			it_end = paths.rend();
-		it != it_end;
-		++it )
-		{
-			const WString & path = *it;
-
-			BOOL successful = CreateDirectory( path.c_str(), NULL );
-
-			if( successful == FALSE )
-			{
-				DWORD err = GetLastError();
-
-				switch( err )
-				{
-				case ERROR_ALREADY_EXISTS:
-					{
-						LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls alredy exists"
-							, path.c_str()
-							);
-
-						return false;
-					}break;
-				case ERROR_PATH_NOT_FOUND:
-					{
-						LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls not found"
-							, path.c_str()
-							);
-
-						return false;
-					}break;
-				default:
-					{
-						LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls unknown error %d"
-							, path.c_str()
-							, err
-							);
-
-						return false;
-					}break;
-				}
-			}
-		}
-
-		return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::fileExists( const WChar * _path )
@@ -425,21 +311,6 @@ namespace Menge
 
         return result;		
     }
-    //////////////////////////////////////////////////////////////////////////
-	size_t VistaWindowsLayer::getCurrentDirectory( WChar * _path, size_t _len )
-    {        
-		DWORD len = (DWORD)::GetCurrentDirectory( (DWORD)_len, _path );
-
-		if( len == 0 )
-        {
-            return 0;
-        }
-
-		_path[len] = L'\\';
-		_path[len + 1] = L'\0';
-
-        return (size_t)len + 1;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	void VistaWindowsLayer::updateMessage( HWND _hWnd )
 	{
@@ -609,7 +480,8 @@ namespace Menge
 
 		if( this->fileExists( szPath ) == false )
 		{
-			if( this->createDirectory( szPath ) == false )
+			if( PLATFORM_SERVICE(m_serviceProvider)
+				->createDirectory( szPath ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createDirectory %s"
 					, pathCorrect

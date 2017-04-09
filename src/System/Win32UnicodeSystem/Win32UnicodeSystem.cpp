@@ -4,7 +4,7 @@
 
 #	include "Logger/Logger.h"
 
-#   include "WindowsLayer/WindowsIncluder.h"
+#	include "WIN32/WindowsIncluder.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UnicodeSystem, Menge::Win32UnicodeSystem );

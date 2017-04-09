@@ -8,7 +8,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32ThreadIdentity::Win32ThreadIdentity()
-        : m_doc(nullptr)
+        : m_file(nullptr)
+		, m_line(0)
 		, m_handle(INVALID_HANDLE_VALUE)
         , m_task(nullptr)
 		, m_complete(true)
@@ -47,11 +48,12 @@ namespace Menge
 		return 0;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool Win32ThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _doc )
+	bool Win32ThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _file, uint32_t _line )
     {
 		m_mutex = _mutex;
 		
-		m_doc = _doc;
+		m_file = _file;
+		m_line = _line;
 
 		m_handle = (HANDLE)_beginthreadex( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
 

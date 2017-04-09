@@ -5,7 +5,7 @@
 #	include "Config/Typedef.h"
 #	include "Config/String.h"
 
-#	include "WindowsLayer/WindowsIncluder.h"
+#	include "WIN32/WindowsIncluder.h"
 
 namespace Menge
 {	

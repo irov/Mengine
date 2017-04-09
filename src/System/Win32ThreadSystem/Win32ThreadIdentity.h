@@ -2,7 +2,7 @@
 
 #	include "Interface/ThreadSystemInterface.h"
 
-#   include "WindowsLayer/WindowsIncluder.h"
+#	include "WIN32/WindowsIncluder.h"
 
 #	include "Core/ServantBase.h"
 
@@ -15,7 +15,7 @@ namespace Menge
 		Win32ThreadIdentity();
 
 	public:
-        bool initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _doc );
+        bool initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _file, uint32_t _line );
 
 	public:
 		void main();
@@ -32,7 +32,8 @@ namespace Menge
 
 		HANDLE m_handle;
 
-		const char * m_doc;
+		const char * m_file;
+		uint32_t m_line;
 			
         ThreadTaskInterface * m_task;
 

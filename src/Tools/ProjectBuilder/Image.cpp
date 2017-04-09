@@ -2,6 +2,7 @@
 
 #	include "Interface/InputSystemInterface.h"
 #	include "Interface/ImageCodecInterface.h"
+#	include "Interface/ScriptSystemInterface.h"
 
 namespace Menge
 {
@@ -70,7 +71,7 @@ namespace Menge
 			return false;
 		}
 		
-		void * memory = m_memory->newMemory( m_width * m_height * m_channels );
+		void * memory = m_memory->newMemory( m_width * m_height * m_channels, __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{
@@ -160,7 +161,7 @@ namespace Menge
 			return false;
 		}
 
-		void * memory = m_memory->newMemory( m_width * m_height * m_channels );
+		void * memory = m_memory->newMemory( m_width * m_height * m_channels, __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{
@@ -260,7 +261,10 @@ namespace Menge
 	{
 		uint8_t * memory = this->getMemory();
 
-		pybind::list pixels( m_width * m_height );
+		pybind::kernel_interface * kernel = SCRIPT_SERVICE( m_serviceProvider )
+			->getKernel();
+
+		pybind::list pixels( kernel, m_width * m_height );
 
 		for( uint32_t j = 0; j != m_height; ++j )
 		{
@@ -269,7 +273,7 @@ namespace Menge
 				uint32_t pixel_index = i + (j * m_width);
 				uint32_t index = pixel_index * m_channels;
 
-				pybind::list pixel( m_channels );
+				pybind::list pixel( kernel, m_channels );
 
 				for( uint32_t k = 0; k != m_channels; ++k )
 				{
@@ -374,11 +378,14 @@ namespace Menge
 			}
 		}
 
-		pybind::list py_extrema( m_channels );
+		pybind::kernel_interface * kernel = SCRIPT_SERVICE( m_serviceProvider )
+			->getKernel();
+
+		pybind::list py_extrema( kernel, m_channels );
 
 		for( uint32_t k = 0; k != m_channels; ++k )
 		{
-			py_extrema[k] = pybind::make_tuple_t( min_color[k], max_color[k] );
+			py_extrema[k] = pybind::make_tuple_t( kernel, min_color[k], max_color[k] );
 		}
 
 		return py_extrema;
@@ -446,12 +453,15 @@ namespace Menge
 			}
 		}
 
-		return pybind::make_tuple_t( imageRGB, imageAlpha );
+		pybind::kernel_interface * kernel = SCRIPT_SERVICE( m_serviceProvider )
+			->getKernel();
+
+		return pybind::make_tuple_t( kernel, imageRGB, imageAlpha );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Image::embedding( PyObject * _module )
+	void Image::embedding( pybind::kernel_interface * _kernel, PyObject * _module )
 	{
-		pybind::class_<Image>("Image", true, _module)
+		pybind::class_<Image>( _kernel, "Image", true, _module)
 			.def( "getWidth", &Image::getWidth )
 			.def( "getHeight", &Image::getHeight )
 			.def( "getChannels", &Image::getChannels )

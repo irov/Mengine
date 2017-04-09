@@ -92,7 +92,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize );
+		unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize, __FILE__, __LINE__ );
 
 		if( textureBuffer == nullptr )
 		{

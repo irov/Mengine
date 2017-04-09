@@ -300,23 +300,6 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/expat/xmlrole.c
                 ${SOURCE_DIR}/Modules/expat/xmltok.c
                 
-                ${SOURCE_DIR}/Modules/zlib/adler32.c
-                ${SOURCE_DIR}/Modules/zlib/compress.c
-                ${SOURCE_DIR}/Modules/zlib/crc32.c
-                ${SOURCE_DIR}/Modules/zlib/deflate.c
-                ${SOURCE_DIR}/Modules/zlib/gzclose.c
-                ${SOURCE_DIR}/Modules/zlib/gzlib.c
-                ${SOURCE_DIR}/Modules/zlib/gzread.c
-                ${SOURCE_DIR}/Modules/zlib/gzwrite.c
-                ${SOURCE_DIR}/Modules/zlib/infback.c
-                ${SOURCE_DIR}/Modules/zlib/inffast.c
-                ${SOURCE_DIR}/Modules/zlib/inflate.c
-                ${SOURCE_DIR}/Modules/zlib/inftrees.c
-                ${SOURCE_DIR}/Modules/zlib/minigzip.c
-                ${SOURCE_DIR}/Modules/zlib/trees.c
-                ${SOURCE_DIR}/Modules/zlib/uncompr.c
-                ${SOURCE_DIR}/Modules/zlib/zutil.c
-                
                 ${SOURCE_DIR}/Modules/zlibmodule.c
                 
                 

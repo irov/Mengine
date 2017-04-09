@@ -191,7 +191,7 @@
 #define HAVE_DUP2 1
 
 /* Defined when any dynamic module loading is enabled. */
-#define HAVE_DYNAMIC_LOADING 1
+#undef HAVE_DYNAMIC_LOADING
 
 /* Define if you have the 'epoll' functions. */
 /* #undef HAVE_EPOLL */
@@ -1116,7 +1116,7 @@
 /* Define if you want to use the new-style (Openstep, Rhapsody, MacOS) dynamic
    linker (dyld) instead of the old-style (NextStep) dynamic linker (rld).
    Dyld is necessary to support frameworks. */
-#define WITH_DYLD 0
+#undef WITH_DYLD
 
 /* Define to 1 if libintl is needed for locale functions. */
 /* #undef WITH_LIBINTL */
@@ -1129,7 +1129,7 @@
 #define WITH_PYMALLOC 1
 
 /* Define if you want to compile in rudimentary thread support */
-#define WITH_THREAD 0
+#undef WITH_THREAD
 
 /* Define to profile with the Pentium timestamp counter */
 /* #undef WITH_TSC */

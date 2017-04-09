@@ -67,7 +67,7 @@ namespace Menge
 		void visitGroupResources( const ConstString & _category, const ConstString & _group, Visitor * _visitor ) const override;
 			
 	public:
-		void dumpResources( const String & _tag );
+		void dumpResources( const String & _tag ) override;
 
 	protected:
 		ResourceEntry * findResource_( const ConstString & _name );

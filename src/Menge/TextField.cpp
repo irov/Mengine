@@ -12,7 +12,7 @@
 #	include "Core/String.h"
 #	include "Core/StringFormat.h"
 
-#	include "math/box2.h"
+#	include "Math/box2.h"
 
 #	include "pybind/system.hpp"
 

@@ -22,7 +22,7 @@ namespace Menge
         }
 
 	protected:
-		DataflowInterfacePtr createDataflow()
+		DataflowInterfacePtr createDataflow() override
 		{	
 			DataflowInterfacePtr decoder = m_factory->createObject();
 

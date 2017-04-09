@@ -81,6 +81,7 @@ MARK_AS_ADVANCED (Cocoa_LIBRARY
 SET(EXTRA_LIBS ${Cocoa_LIBRARY} ${Carbon_LIBRARY} ${AppKit_LIBRARY} ${CoreData_LIBRARY} ${CoreAudio_LIBRARY} ${CoreFoundation_LIBRARY} ${ForceFeedback_LIBRARY} ${IOKit_LIBRARY} ${CoreVideo_LIBRARY} ${AudioToolBox_LIBRARY} ${Foundation_LIBRARY} ${OpenGL_LIBRARY} ${OpenAL_LIBRARY})
 
 TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${EXTRA_LIBS})
+TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} iconv)
 endif()
 
 if(WIN32)

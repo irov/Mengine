@@ -15,6 +15,6 @@ namespace Menge
 		bool _initialize() override;
 		
 	public:
-		size_t encode( const void * _buffer, size_t _size, const CodecDataInfo* _dataInfo );
+		size_t encode( const void * _buffer, size_t _size, const CodecDataInfo* _dataInfo ) override;
 	};
 }	// namespace Menge

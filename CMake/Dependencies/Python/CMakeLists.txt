@@ -217,7 +217,7 @@ set( MODULE_SRCS ${MODULE_SRCS} Modified/config.c )
 set( MODULE_SRCS ${MODULE_SRCS} Modified/mockup.c )                
 				
 if( NOT WIN32 )
-	#set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )    
+	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )
 else()
 	set( MODULE_SRCS ${MODULE_SRCS} 
 	${SOURCE_DIR}/Modules/wininit.c

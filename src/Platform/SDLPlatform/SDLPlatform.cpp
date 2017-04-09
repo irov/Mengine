@@ -58,6 +58,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////    
     size_t SDLPlatform::getCurrentPath( WChar * _path, size_t _len ) const
     {
+#ifdef WIN32
 		DWORD len = (DWORD)::GetCurrentDirectory((DWORD)_len, _path);
 
 		if (len == 0)
@@ -69,6 +70,11 @@ namespace Menge
 		_path[len + 1] = L'\0';
 
 		return (size_t)len + 1;
+#endif
+        
+        _path[0] = L'\0';
+        
+        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatform::getShortPathName( const WString & _path, WChar * _short, size_t _len ) const

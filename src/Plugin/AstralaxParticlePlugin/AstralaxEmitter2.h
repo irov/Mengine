@@ -59,7 +59,7 @@ namespace Menge
 
 	public:		
 		bool prepareParticles( ParticleEmitterRenderFlush & _flush ) override;
-		bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndices * _indices, ParticleEmitterRenderFlush & _flush );
+		bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndices * _indices, ParticleEmitterRenderFlush & _flush ) override;
 
 	public:
 		//void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;

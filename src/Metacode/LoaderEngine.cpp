@@ -75,6 +75,7 @@ namespace Menge
 
 			return false;
 		}
+        
 
 		if( file_bin == nullptr )
 		{
@@ -111,7 +112,7 @@ namespace Menge
 			done = this->importBin_( file_bin, _metadata, nullptr );
 		}
 #	endif
-
+        
 		return done;
 	}
 	//////////////////////////////////////////////////////////////////////////

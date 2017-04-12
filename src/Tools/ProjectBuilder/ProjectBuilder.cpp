@@ -74,6 +74,7 @@ PLUGIN_EXPORT( MengeLZ4 );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
+SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( UnicodeSystem );
 SERVICE_EXTERN( UnicodeService );
 SERVICE_EXTERN( StringizeService );
@@ -130,37 +131,14 @@ namespace Menge
 			AllocConsole();
 
 			// set the screen buffer to be big enough to let us scroll text
-			GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
+			HANDLE output_handle = ::GetStdHandle( STD_OUTPUT_HANDLE );
+			GetConsoleScreenBufferInfo( output_handle, &coninfo );
 			coninfo.dwSize.Y = 1000;
-			SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
+			SetConsoleScreenBufferSize( output_handle, coninfo.dwSize );
 		}
 
-		FILE *fp[3];
-		HANDLE lStdHandle[3];
-		int hConHandle[3];
+		freopen( "CONOUT$", "w", stdout );
 
-		// redirect unbuffered STDOUT to the console
-		lStdHandle[0] = GetStdHandle(STD_OUTPUT_HANDLE);
-		hConHandle[0] = _open_osfhandle((intptr_t)lStdHandle[0], _O_TEXT);
-		fp[0] = _fdopen( hConHandle[0], "w" );
-		*stdout = *fp[0];
-		setvbuf( stdout, NULL, _IONBF, 0 );
-
-		// redirect unbuffered STDIN to the console
-		lStdHandle[1] = GetStdHandle(STD_INPUT_HANDLE);
-		hConHandle[1] = _open_osfhandle((intptr_t)lStdHandle[1], _O_TEXT);
-		fp[1] = _fdopen( hConHandle[1], "r" );
-		*stdin = *fp[1];
-		setvbuf( stdin, NULL, _IONBF, 0 );
-
-		// redirect unbuffered STDERR to the console
-		lStdHandle[2] = GetStdHandle(STD_ERROR_HANDLE);
-		hConHandle[2] = _open_osfhandle((intptr_t)lStdHandle[2], _O_TEXT);
-		fp[2] = _fdopen( hConHandle[2], "w" );
-		*stderr = *fp[2];
-		setvbuf( stderr, NULL, _IONBF, 0 );
-
-		//HANDLE ConsoleHandle = lStdHandle[2];
 		//::MoveWindow( GetConsoleWindow(), 0, 650, 0, 0, TRUE );
 		// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
 		// point to console as well
@@ -180,6 +158,7 @@ namespace Menge
 
 		SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
 
+		SERVICE_CREATE( serviceProvider, FactoryService );
 		SERVICE_CREATE( serviceProvider, UnicodeSystem );		
 		SERVICE_CREATE( serviceProvider, UnicodeService );
 		SERVICE_CREATE( serviceProvider, StringizeService );
@@ -752,6 +731,7 @@ static bool getCurrentUserRegValue( const WCHAR * _path, WCHAR * _value, DWORD _
 //////////////////////////////////////////////////////////////////////////
 bool run()
 {
+	Sleep( 10000 );
 	try
 	{
 		if( Menge::initialize() == false )
@@ -868,8 +848,7 @@ bool run()
 			pybind::list_appenditem( py_syspath, py_stdpath );
 			pybind::decref( py_stdpath );
 
-			WCHAR * ch_buffer2;
-			ch = wcstok( NULL, L";", &ch_buffer2 );
+			ch = wcstok( NULL, L";", &ch_buffer );
 		}
 	}
 

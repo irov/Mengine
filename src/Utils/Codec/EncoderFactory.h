@@ -49,6 +49,11 @@ namespace Menge
             EncoderFactoryInterfacePtr encoder = new EncoderFactory<T>();
 
             encoder->setServiceProvider( _serviceProvider );
+			
+			if( encoder->initialize() == false )
+			{
+				return nullptr;
+			}
 
             CODEC_SERVICE( _serviceProvider )
                 ->registerEncoder( Helper::stringizeString( _serviceProvider, _type ), encoder );

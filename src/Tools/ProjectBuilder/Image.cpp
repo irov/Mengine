@@ -261,8 +261,7 @@ namespace Menge
 	{
 		uint8_t * memory = this->getMemory();
 
-		pybind::kernel_interface * kernel = SCRIPT_SERVICE( m_serviceProvider )
-			->getKernel();
+		pybind::kernel_interface * kernel = pybind::get_kernel();
 
 		pybind::list pixels( kernel, m_width * m_height );
 
@@ -378,8 +377,7 @@ namespace Menge
 			}
 		}
 
-		pybind::kernel_interface * kernel = SCRIPT_SERVICE( m_serviceProvider )
-			->getKernel();
+		pybind::kernel_interface * kernel = pybind::get_kernel();
 
 		pybind::list py_extrema( kernel, m_channels );
 
@@ -453,8 +451,7 @@ namespace Menge
 			}
 		}
 
-		pybind::kernel_interface * kernel = SCRIPT_SERVICE( m_serviceProvider )
-			->getKernel();
+		pybind::kernel_interface * kernel = pybind::get_kernel();
 
 		return pybind::make_tuple_t( kernel, imageRGB, imageAlpha );
 	}

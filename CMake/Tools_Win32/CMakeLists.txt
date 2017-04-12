@@ -63,6 +63,7 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/Win32UnicodeSystem ${CMAKE_TEMP_DIR}/Syst
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/Win32ThreadSystem ${CMAKE_TEMP_DIR}/System/Win32ThreadSystem )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/Win32PluginSystem ${CMAKE_TEMP_DIR}/System/Win32PluginSystem )
 
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceFactory ${CMAKE_TEMP_DIR}/Service/ServiceFactory )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceProvider ${CMAKE_TEMP_DIR}/Service/ServiceProvider )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceStringize ${CMAKE_TEMP_DIR}/Service/ServiceStringize )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceArchive ${CMAKE_TEMP_DIR}/Service/ServiceArchive )

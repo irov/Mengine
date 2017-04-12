@@ -33,6 +33,7 @@ namespace Menge
 	RenderEngine::RenderEngine()
 		: m_windowCreated( false )
 		, m_vsync( false )
+		, m_fullscreen( false )
 		, m_currentTextureStages( 0 )
 		, m_currentRenderCamera( nullptr )
 		, m_currentRenderViewport( nullptr )
@@ -807,15 +808,6 @@ namespace Menge
 		m_currentIBHandle = nullptr;
 		m_currentProgram = nullptr;
 
-		RENDER_SYSTEM( m_serviceProvider )
-			->setVertexBuffer( nullptr );
-
-		RENDER_SYSTEM( m_serviceProvider )			
-			->setIndexBuffer( nullptr );
-
-		RENDER_SYSTEM( m_serviceProvider )
-			->setProgram( nullptr );
-
 		mt::mat4f viewTransform;
 		mt::ident_m4( viewTransform );
 
@@ -828,6 +820,9 @@ namespace Menge
 		RENDER_SYSTEM( m_serviceProvider )->setProjectionMatrix( projTransform );
 		RENDER_SYSTEM( m_serviceProvider )->setModelViewMatrix( viewTransform );
 		RENDER_SYSTEM( m_serviceProvider )->setWorldMatrix( worldTransform );
+		RENDER_SYSTEM( m_serviceProvider )->setVertexBuffer( m_currentVBHandle );
+		RENDER_SYSTEM( m_serviceProvider )->setIndexBuffer( m_currentIBHandle );
+		RENDER_SYSTEM( m_serviceProvider )->setProgram( m_currentProgram );
 		RENDER_SYSTEM( m_serviceProvider )->setCullMode( CM_CULL_NONE );
 		//RENDER_SYSTEM( m_serviceProvider )->setFillMode( FM_SOLID );
 		//RENDER_SYSTEM( m_serviceProvider )->setFillMode( FM_WIREFRAME );
@@ -836,13 +831,11 @@ namespace Menge
 		RENDER_SYSTEM( m_serviceProvider )->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
 		RENDER_SYSTEM( m_serviceProvider )->setAlphaBlendEnable( m_alphaBlendEnable );
 		RENDER_SYSTEM( m_serviceProvider )->setLightingEnable( false );
+		RENDER_SYSTEM( m_serviceProvider )->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
 
 		LOGGER_INFO(m_serviceProvider)("RenderEngine::restoreRenderSystemStates_ texture stages %d"
 			, MENGE_MAX_TEXTURE_STAGES
-			);
-
-		RENDER_SYSTEM( m_serviceProvider )
-            ->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
+			);		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport, float zn, float zf )

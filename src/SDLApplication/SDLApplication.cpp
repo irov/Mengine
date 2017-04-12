@@ -164,7 +164,8 @@ namespace Menge
         UNICODE_SERVICE( m_serviceProvider )
             ->unicodeToUtf8( currentPathW, currentPathW_len + 1, utf8_currentPath, MENGINE_MAX_PATH, &utf8_currentPath_len );
 
-        FilePath currentPath = Helper::stringizeStringSize( m_serviceProvider, utf8_currentPath, utf8_currentPath_len );
+        //FilePath currentPath = Helper::stringizeStringSize( m_serviceProvider, utf8_currentPath, utf8_currentPath_len );
+		FilePath currentPath;
 #   else
         char * basePath = SDL_GetBasePath();
 

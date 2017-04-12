@@ -718,7 +718,8 @@ namespace Menge
 		if( aa == false )
 		{
 			aa = true;
-			//ae_play_movie_sub_composition( m_composition, "lock", 0.f );
+			ae_set_movie_sub_composition_loop( m_composition, "1-1", AE_TRUE );
+			ae_play_movie_sub_composition( m_composition, "1-1", 0.f );
 		}
 
 		

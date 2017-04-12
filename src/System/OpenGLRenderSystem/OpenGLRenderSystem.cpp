@@ -496,7 +496,8 @@ namespace Menge
         const GLenum blendOp = s_toGLBlendFactor( _op );
 
         GLCALL( m_serviceProvider, glBlendFunc, (srcBlendFactor, dstBlendFactor) );
-        GLCALL( m_serviceProvider, glBlendEquation_, (blendOp) );
+
+		GLCALL( m_serviceProvider, glBlendEquation_, (blendOp) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setCullMode( ECullMode _mode )

@@ -749,7 +749,7 @@ namespace Menge
 
 		if( file_magic != py_magic )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScriptModuleLoaderCode::unmarshal_code_ %s invalid magic %u need %u"
+			LOGGER_ERROR( m_serviceProvider )("ScriptEngine::loadModuleBinary %s invalid magic %u need %u"
 				, str_moduleName
 				, file_magic
 				, py_magic
@@ -764,7 +764,7 @@ namespace Menge
 		{
 			pybind::check_error();
 
-			LOGGER_ERROR( m_serviceProvider )("ScriptModuleLoaderCode::unmarshal_code_ %s invalid marshal get object"
+			LOGGER_ERROR( m_serviceProvider )("ScriptEngine::loadModuleBinary %s invalid marshal get object"
 				, str_moduleName
 				);
 
@@ -773,7 +773,7 @@ namespace Menge
 
 		if( pybind::code_check( code ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScriptModuleLoaderCode::unmarshal_code_ %s marshal get object not code"
+			LOGGER_ERROR( m_serviceProvider )("ScriptEngine::loadModuleBinary %s marshal get object not code"
 				, str_moduleName
 				);
 

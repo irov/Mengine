@@ -1,9 +1,6 @@
 #	include "SDLStdioLogger.h"
 
-#	include <cstdio>
-#	include <locale.h>
-
-#   include <iostream>
+#	include "SDL_log.h"
 
 namespace Menge
 {
@@ -62,11 +59,11 @@ namespace Menge
 		(void)_level;
         (void)_flag;
 
-		std::cout.write( _data, _count );
+		SDL_Log( "%s", _data );
+		//OutputDebugString( _data );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLStdioLogger::flush()
     {
-        std::cout.flush();
     }
 }	// namespace Menge

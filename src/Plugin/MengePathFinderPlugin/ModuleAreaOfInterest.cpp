@@ -121,6 +121,13 @@ namespace Menge
 	{
 		AreaOfInterest * aoi = new AreaOfInterest;
 
+		aoi->setServiceProvider( m_serviceProvider );
+
+		if( aoi->initialize() == false )
+		{
+			return nullptr;
+		}
+
 		m_aois.push_back( aoi );
 
 		return aoi;

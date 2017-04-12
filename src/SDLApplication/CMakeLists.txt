@@ -7,6 +7,8 @@ src
     SDLApplication.h
     SDLMessageBoxLogger.cpp
     SDLMessageBoxLogger.h
+    SDLStdioLogger.cpp
+    SDLStdioLogger.h
 )
 
 add_definitions(-DUNICODE)

@@ -22,8 +22,6 @@
 #   include "Interface/ConfigInterface.h"
 #   include "Interface/PrefetcherInterface.h"
 
-#   include "SDLMessageBoxLogger.h"
-
 #   include "Core/FileLogger.h"
 
 namespace Menge
@@ -80,6 +78,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
         LoggerInterfacePtr m_loggerMessageBox;
+		LoggerInterfacePtr m_loggerStdio;
         LoggerInterfacePtr m_fileLog;
 
         ConstString m_platformName;

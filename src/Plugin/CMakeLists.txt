@@ -52,10 +52,6 @@ if( MENGINE_PLATFORM_WIN32 )
     ADD_SUBDIRECTORY( Win32ConsoleLogger )
 endif()
 
-if( MENGINE_PLATFORM_XCODE )
-    ADD_SUBDIRECTORY( XcodeConsoleLogger )
-endif()
-
 if( MENGINE_TARGET_SDL )
     ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
     ADD_SUBDIRECTORY( SDLFileGroupPlugin )

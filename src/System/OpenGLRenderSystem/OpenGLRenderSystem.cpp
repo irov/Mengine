@@ -483,7 +483,7 @@ namespace Menge
         m_textureStage[_stage].wrapT = modeVGL;
         m_textureStage[_stage].border = _border;
     }
-    //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////L////////////////////////////////
     void OpenGLRenderSystem::setTextureFactor( uint32_t _color )
     {
         GLUNUSED( _color );

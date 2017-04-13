@@ -167,11 +167,12 @@ namespace Menge
         //FilePath currentPath = Helper::stringizeStringSize( m_serviceProvider, utf8_currentPath, utf8_currentPath_len );
 		FilePath currentPath;
 #   else
-        char * basePath = SDL_GetBasePath();
+        //char * basePath = SDL_GetBasePath();
 
-        FilePath currentPath = Helper::stringizeString( m_serviceProvider, basePath );
+        //FilePath currentPath = Helper::stringizeString( m_serviceProvider, basePath );
 
-        SDL_free( basePath );
+        //SDL_free( basePath );
+        FilePath currentPath;
 #	endif
         
         // mount root		
@@ -405,6 +406,8 @@ namespace Menge
                 }
             }
         }
+        
+        m_logLevel = LM_INFO;
 
         LOGGER_SERVICE(m_serviceProvider)
             ->setVerboseLevel( m_logLevel );

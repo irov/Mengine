@@ -23,6 +23,9 @@
 #	include "Core/IniUtil.h"
 #	include "Core/Date.h"
 
+#   include "SDLMessageBoxLogger.h"
+#   include "SDLStdioLogger.h"
+
 //#	include "resource.h"
 
 #	include <ctime>
@@ -357,6 +360,13 @@ namespace Menge
         {
             return true;
         }
+
+		m_loggerStdio = new FactorableUnique<SDLStdioLogger>();
+
+		m_loggerStdio->setVerboseFlag( LM_LOG );
+
+		LOGGER_SERVICE( m_serviceProvider )
+			->registerLogger( m_loggerStdio );
 
         m_loggerMessageBox = new FactorableUnique<SDLMessageBoxLogger>();
 
@@ -826,6 +836,14 @@ namespace Menge
 
             m_fileLog = nullptr;
         }
+
+		if( m_loggerStdio != nullptr )
+		{
+			LOGGER_SERVICE( m_serviceProvider )
+				->unregisterLogger( m_loggerStdio );
+
+			m_loggerStdio = nullptr;
+		}
         
         if( m_loggerMessageBox != nullptr )
         {

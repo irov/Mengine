@@ -1,43 +1,40 @@
-#	include "XcodeConsoleLogger.h"
+#	include "SDLStdioLogger.h"
 
-#	include <cstdio>
-#	include <locale.h>
-
-#   include <iostream>
+#	include "SDL_log.h"
 
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-	XcodeConsoleLogger::XcodeConsoleLogger()
+	SDLStdioLogger::SDLStdioLogger()
         : m_verboseLevel( LM_INFO )
         , m_verboseFlag( 0xFFFFFFFF )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	XcodeConsoleLogger::~XcodeConsoleLogger()
+	SDLStdioLogger::~SDLStdioLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool XcodeConsoleLogger::initialize()
+    bool SDLStdioLogger::initialize()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void XcodeConsoleLogger::finalize()
+    void SDLStdioLogger::finalize()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void XcodeConsoleLogger::setVerboseLevel( EMessageLevel _level )
+    void SDLStdioLogger::setVerboseLevel( EMessageLevel _level )
     {
         m_verboseLevel = _level;
     }
     //////////////////////////////////////////////////////////////////////////
-    void XcodeConsoleLogger::setVerboseFlag( uint32_t _flag )
+    void SDLStdioLogger::setVerboseFlag( uint32_t _flag )
     {
         m_verboseFlag = _flag;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool XcodeConsoleLogger::validMessage( EMessageLevel _level, uint32_t _flag ) const
+    bool SDLStdioLogger::validMessage( EMessageLevel _level, uint32_t _flag ) const
     {
         if( m_verboseLevel < _level )
         {
@@ -57,16 +54,16 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void XcodeConsoleLogger::log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _count )
+    void SDLStdioLogger::log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _count )
     {
 		(void)_level;
         (void)_flag;
 
-		std::cout.write( _data, _count );
+		SDL_Log( "%s", _data );
+		//OutputDebugString( _data );
     }
     //////////////////////////////////////////////////////////////////////////
-    void XcodeConsoleLogger::flush()
+    void SDLStdioLogger::flush()
     {
-        std::cout.flush();
     }
 }	// namespace Menge

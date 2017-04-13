@@ -9,12 +9,12 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    class XcodeConsoleLogger
+    class SDLStdioLogger
         : public ServantBase<LoggerInterface>
     {
     public:
-		XcodeConsoleLogger();
-        ~XcodeConsoleLogger();
+		SDLStdioLogger();
+        ~SDLStdioLogger();
 
     public:
         bool initialize() override;

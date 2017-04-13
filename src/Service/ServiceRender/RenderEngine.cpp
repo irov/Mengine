@@ -427,6 +427,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onWindowChangeFullscreenPrepare( bool _fullscreen )
 	{
+		if( m_windowCreated == false )
+		{
+			return;
+		}
+
 		this->restoreRenderSystemStates_();
 
 		m_nullTexture = nullptr;

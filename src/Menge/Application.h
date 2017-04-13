@@ -194,6 +194,7 @@ namespace Menge
 		Resolution m_windowResolution;
 		uint32_t m_bits;
 		bool m_fullscreen;
+		bool m_nofullscreen;
 		bool m_vsync;
 
 		Resolution m_renderResolution;

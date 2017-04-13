@@ -201,6 +201,7 @@ namespace Menge
 		, m_invalidateVsync( true )
 		, m_invalidateCursorMode(true)
 		, m_fullscreen(false)		
+		, m_nofullscreen(false)
 		, m_inputMouseButtonEventBlock(false)
 		, m_mouseEnter(false)
         , m_resourceCheck(true)
@@ -295,7 +296,13 @@ namespace Menge
 		m_windowResolution = CONFIG_VALUE( m_serviceProvider, "Window", "Size", Resolution( 1024, 768 ) );
 		m_bits = CONFIG_VALUE( m_serviceProvider, "Window", "Bits", 32U );
         m_fullscreen = CONFIG_VALUE( m_serviceProvider, "Window", "Fullscreen", true );
+		m_nofullscreen = CONFIG_VALUE( m_serviceProvider, "Window", "NoFullscreen", false );
 		m_vsync = CONFIG_VALUE( m_serviceProvider, "Window", "VSync", true );
+
+		if( HAS_OPTION( m_serviceProvider, "nofullscreen" ) == true )
+		{
+			m_nofullscreen = true;
+		}
 
 		if( HAS_OPTION( m_serviceProvider, "author" ) == true || HAS_OPTION( m_serviceProvider, "support" ) == true )
 		{
@@ -1726,6 +1733,11 @@ namespace Menge
 			return;
 		}
 
+		if( m_nofullscreen == true )
+		{
+			return;
+		}
+
 		m_fullscreen = _fullscreen;
 
         this->invalidateWindow_();
@@ -1837,12 +1849,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFullscreenMode() const
 	{
-		bool nofullscreen = HAS_OPTION( m_serviceProvider, "nofullscreen" );
-        
-		if( nofullscreen == true )
-        {
-            return false;
-        }
+		if( m_nofullscreen == true )
+		{
+			return false;
+		}
 
 		return m_fullscreen;
 	}

@@ -416,8 +416,6 @@ namespace Menge
                 }
             }
         }
-        
-        m_logLevel = LM_INFO;
 
         LOGGER_SERVICE(m_serviceProvider)
             ->setVerboseLevel( m_logLevel );

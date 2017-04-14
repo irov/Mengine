@@ -133,7 +133,12 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::_finalize()
-	{   
+	{
+        if( m_windowCreated == false )
+        {
+            return;
+        }
+        
         this->restoreRenderSystemStates_();
 
 		for( TArrayRenderObject::iterator

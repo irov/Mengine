@@ -187,9 +187,6 @@ namespace Menge
 			return false;
 		}
 
-		const ConstString & resourceVideoName = m_resourceVideo->getName();
-		dynamicTexture->setFileName( resourceVideoName );
-
 		m_textures[0] = dynamicTexture;
 
 		this->invalidateMaterial();

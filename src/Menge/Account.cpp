@@ -26,7 +26,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Account::initialize( const WString & _name, const ConstString & _folder, uint32_t _projectVersion )
+	bool Account::initialize( const WString & _name, const FilePath & _folder, uint32_t _projectVersion )
 	{
 		m_name = _name;
 		m_projectVersion = _projectVersion;
@@ -38,7 +38,7 @@ namespace Menge
         settingsPath += '_';
 		settingsPath += "settings.ini";
 
-		m_settingsPath = Helper::stringizeString( m_serviceProvider, settingsPath );
+		m_settingsPath = Helper::stringizeFilePath( m_serviceProvider, settingsPath );
 
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
 			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
@@ -56,7 +56,7 @@ namespace Menge
 		return m_name;
 	}
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & Account::getFolder() const
+    const FilePath & Account::getFolder() const
     {
         return m_folder;
     }
@@ -302,7 +302,7 @@ namespace Menge
 		path += '_';
 		path += _fileName;
 
-		ConstString fullpath = Helper::stringizeString( m_serviceProvider, path );
+		FilePath fullpath = Helper::stringizeFilePath( m_serviceProvider, path );
 
 		InputStreamInterfacePtr stream = 
 			FILE_SERVICE(m_serviceProvider)->openInputFile( CONST_STRING(m_serviceProvider, user), fullpath, false );
@@ -320,15 +320,15 @@ namespace Menge
 		return stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutputStreamInterfacePtr Account::openWriteBinaryFile( const FilePath & _fileName )
+	OutputStreamInterfacePtr Account::openWriteBinaryFile( const FilePath & _filepath )
 	{
 		PathString path;
 
 		path += m_folder;
 		path += '_';
-		path += _fileName;
+		path += _filepath;
 
-		ConstString fullpath = Helper::stringizeString( m_serviceProvider, path );
+		FilePath fullpath = Helper::stringizeFilePath( m_serviceProvider, path );
 
 		OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
 			->openOutputFile( CONST_STRING(m_serviceProvider, user), fullpath );
@@ -337,7 +337,7 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)("Account::openWriteBinaryFile: account %ls invalid open file %s"
 				, m_name.c_str()
-				, _fileName.c_str()
+				, _filepath.c_str()
 				);
 
 			return nullptr;
@@ -346,15 +346,15 @@ namespace Menge
 		return stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryInterfacePtr Account::loadBinaryFile( const ConstString & _fileName )
+	MemoryInterfacePtr Account::loadBinaryFile( const FilePath & _filepath )
     {        
-        InputStreamInterfacePtr stream = this->openReadBinaryFile( _fileName );           
+        InputStreamInterfacePtr stream = this->openReadBinaryFile( _filepath );           
 
         if( stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid open file %s"
                 , m_name.c_str()
-                , _fileName.c_str()
+                , _filepath.c_str()
                 );
 
             return nullptr;
@@ -365,7 +365,7 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load stream archive %s"
 				, m_name.c_str()
-				, _fileName.c_str()
+				, _filepath.c_str()
 				);
 
 			return nullptr;
@@ -374,25 +374,25 @@ namespace Menge
 		return binaryBuffer;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Account::writeBinaryFile( const ConstString & _fileName, const void * _data, size_t _size )
+    bool Account::writeBinaryFile( const FilePath & _filepath, const void * _data, size_t _size )
     {
 		if( _data == nullptr || _size == 0 )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls write empty file %s"
 				, m_name.c_str()
-				, _fileName.c_str()
+				, _filepath.c_str()
 				);
 
 			return false;
 		}
 
-        OutputStreamInterfacePtr stream = this->openWriteBinaryFile( _fileName );
+        OutputStreamInterfacePtr stream = this->openWriteBinaryFile( _filepath );
 
         if( stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid open file %s"
                 , m_name.c_str()
-                , _fileName.c_str()
+                , _filepath.c_str()
                 );
 
             return false;
@@ -405,7 +405,7 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write file %s"
 				, m_name.c_str()
-				, _fileName.c_str()
+				, _filepath.c_str()
 				);
 
 			return false;
@@ -414,7 +414,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Account::hasBinaryFile( const ConstString & _fileName ) const
+	bool Account::hasBinaryFile( const FilePath & _fileName ) const
 	{
 		PathString path;
 
@@ -422,7 +422,7 @@ namespace Menge
         path += '_';
 		path += _fileName;
 
-		ConstString fullpath = Helper::stringizeString( m_serviceProvider, path );
+		FilePath fullpath = Helper::stringizeFilePath( m_serviceProvider, path );
 
 		bool exist = FILE_SERVICE(m_serviceProvider)
 			->existFile( CONST_STRING(m_serviceProvider, user), fullpath, nullptr );

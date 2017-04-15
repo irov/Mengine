@@ -162,32 +162,32 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     AccountInterfacePtr AccountManager::newAccount_( const WString& _accountID )
     {
-        String utf8_path;
-        if( Helper::unicodeToUtf8( m_serviceProvider, _accountID, utf8_path ) == false )
+        if( PLATFORM_SERVICE(m_serviceProvider)
+            ->existDirectory( _accountID ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("AccountManager::newAccount_ can't convert accountID '%ls' to utf8"
-                , _accountID.c_str() 
-                );
+            if( PLATFORM_SERVICE(m_serviceProvider)
+                ->createDirectory( _accountID ) == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)("AccountManager::createAccount_: Account '%ls' failed create directory"
+                    , _accountID.c_str() 
+                    );
 
-            return nullptr;
+                return nullptr;
+            }
         }
 
-        ConstString folder = Helper::stringizeString( m_serviceProvider, utf8_path );
+		String utf8_path;
+		if( Helper::unicodeToUtf8( m_serviceProvider, _accountID, utf8_path ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("AccountManager::newAccount_ can't convert accountID '%ls' to utf8"
+				, _accountID.c_str()
+				);
 
-        //if( FILE_SERVICE(m_serviceProvider)
-        //    ->existDirectory( CONST_STRING(m_serviceProvider, user), folder ) == false )
-        //{
-        //    if( FILE_SERVICE(m_serviceProvider)
-        //        ->createDirectory( CONST_STRING(m_serviceProvider, user), folder ) == false )
-        //    {
-        //        LOGGER_ERROR(m_serviceProvider)("AccountManager::createAccount_: Account '%ls' failed create directory '%s'"
-        //            , _accountID.c_str() 
-        //            , folder.c_str()
-        //            );
+			return nullptr;
+		}
 
-        //        return nullptr;
-        //    }
-        //}
+		FilePath folder = Helper::stringizeFilePath( m_serviceProvider, utf8_path.c_str(), utf8_path.size() );
+
 
         AccountPtr newAccount = m_factoryAccounts->createObject();
 
@@ -413,7 +413,7 @@ namespace Menge
 			return true;
 		}
 
-		FilePath accountsPath = CONFIG_VALUE( m_serviceProvider, "Game", "AccountsPath", STRINGIZE_STRING_LOCAL( m_serviceProvider, "accounts.ini" ) );
+		FilePath accountsPath = CONFIG_VALUE( m_serviceProvider, "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "accounts.ini" ) );
 
 		bool accountsExist = FILE_SERVICE(m_serviceProvider)
             ->existFile( CONST_STRING(m_serviceProvider, user), accountsPath, nullptr );
@@ -570,15 +570,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::saveAccounts()
 	{
-		FilePath m_accountsPath = CONFIG_VALUE( m_serviceProvider, "Game", "AccountsPath", STRINGIZE_STRING_LOCAL( m_serviceProvider, "accounts.ini" ) );
+		FilePath accountsPath = CONFIG_VALUE( m_serviceProvider, "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "accounts.ini" ) );
 
 		OutputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
-            ->openOutputFile( CONST_STRING(m_serviceProvider, user), m_accountsPath );
+            ->openOutputFile( CONST_STRING(m_serviceProvider, user), accountsPath );
 
 		if( file == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("AccountManager::saveAccountsInfo can't open file for writing. Accounts '%s' settings not saved"
-				, m_accountsPath.c_str()
+				, accountsPath.c_str()
 				);
 
 			return false;

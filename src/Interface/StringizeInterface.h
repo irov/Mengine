@@ -62,13 +62,6 @@ namespace Menge
             return cstr;
         }
 		//////////////////////////////////////////////////////////////////////////
-		inline ConstString stringizeString( ServiceProviderInterface * _serviceProvider, const PathString & _value )
-		{
-			ConstString cstr = stringizeStringSize( _serviceProvider, _value.c_str(), _value.size() );
-
-			return cstr;
-		}
-		//////////////////////////////////////////////////////////////////////////
 		inline ConstString stringizeStringLocal(ServiceProviderInterface * _serviceProvider, const Char * _value, ConstString::size_type _size)
 		{
 			ConstString cstr;

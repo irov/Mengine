@@ -8,6 +8,7 @@
 #	include "Interface/ConfigInterface.h"
 
 #	include "Core/MemoryHelper.h"
+#	include "Core/FilePath.h"
 
 #	include "metabuf/Metabuf.hpp"
 #   include "Metacode.h"
@@ -34,7 +35,7 @@ namespace Menge
 			return false;
 		}
 
-		m_protocolPath = CONFIG_VALUE( m_serviceProvider, "Engine", "ProtocolPath", STRINGIZE_STRING_LOCAL( m_serviceProvider, "protocol.xml" ) );
+		m_protocolPath = CONFIG_VALUE( m_serviceProvider, "Engine", "ProtocolPath", STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "protocol.xml" ) );
 
 		return true;
 	}
@@ -44,7 +45,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoaderEngine::setProtocolPath( const ConstString & _protocolPath )
+	void LoaderEngine::setProtocolPath( const FilePath & _protocolPath )
 	{
 		m_protocolPath = _protocolPath;
 	}
@@ -94,9 +95,9 @@ namespace Menge
 			cache_path_xml += _path;			
 			cache_path_xml.replace_last( "xml" );
             			
-            ConstString c_cache_path_xml = Helper::stringizeString( m_serviceProvider, cache_path_xml );
+            ConstString c_cache_path_xml = Helper::stringizeStringLocal( m_serviceProvider, cache_path_xml.c_str(), c_cache_path_xml.size() );
 
-			if( this->makeBin_( _pak, c_cache_path_xml, _path ) == false )
+			if( this->makeBin_( _pak, FilePath(c_cache_path_xml), _path ) == false )
 			{
                 LOGGER_ERROR(m_serviceProvider)("LoaderEngine::import invlid rebild bin %s from xml %s"
                     , _path.c_str()
@@ -283,7 +284,7 @@ namespace Menge
 		cache_path_xml += _path;
 		cache_path_xml.replace_last( "xml" );
         		
-        ConstString c_cache_path_xml = Helper::stringizeString( m_serviceProvider, cache_path_xml );
+        FilePath c_cache_path_xml = Helper::stringizeFilePath( m_serviceProvider, cache_path_xml );
         
 		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, c_cache_path_xml, nullptr ) == false )
 		{
@@ -319,16 +320,16 @@ namespace Menge
 			}
 		}
 
-		InputStreamInterfacePtr file_bin = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, _path, false );
+		InputStreamInterfacePtr file_bin = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( _pak, _path, false );
 
 		if( file_bin == nullptr )
 		{
 			return false;
 		}
 
-		InputStreamInterfacePtr file_xml = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, c_cache_path_xml, false );
+		InputStreamInterfacePtr file_xml = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( _pak, c_cache_path_xml, false );
 
 		if( file_xml == nullptr )
 		{
@@ -406,7 +407,7 @@ namespace Menge
         }
 
 		const FilePath & path = fileGroup->getPath();
-			
+
 		options.pathXml = Helper::concatenationFilePath( m_serviceProvider, path, _pathXml );
 		options.pathBin = Helper::concatenationFilePath( m_serviceProvider, path, _pathBin );
 

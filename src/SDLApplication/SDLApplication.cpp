@@ -194,7 +194,7 @@ namespace Menge
         ConstString c_dev = Helper::stringizeString( m_serviceProvider, "dev" );
         // mount root
         if( FILE_SERVICE(m_serviceProvider)
-            ->mountFileGroup( c_dev, ConstString::none(), c_dir ) == false )
+            ->mountFileGroup( c_dev, FilePath(ConstString::none()), c_dir ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "SDLApplication::setupFileService: failed to mount dev directory %ls"
                 , currentPath.c_str()
@@ -209,10 +209,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
     {
-        FilePath applicationPath = STRINGIZE_STRING_LOCAL( m_serviceProvider, "application.ini" );
+        FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "application.ini" );
 
-        InputStreamInterfacePtr applicationInputStream = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( ConstString::none(), applicationPath, false );
+        InputStreamInterfacePtr applicationInputStream = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( ConstString::none(), applicationPath, false );
 
         if( applicationInputStream == nullptr )
         {
@@ -299,7 +299,7 @@ namespace Menge
 			UNICODE_SERVICE(m_serviceProvider)
 				->unicodeToUtf8(currentPathW, currentPathW_len + 1, utf8_currentPath, MENGINE_MAX_PATH, &utf8_currentPath_len);
 
-			userPath = Helper::stringizeStringSize(m_serviceProvider, utf8_currentPath, utf8_currentPath_len);
+			userPath = Helper::stringizeFilePath(m_serviceProvider, utf8_currentPath, utf8_currentPath_len);
 		}
 		else
 		{
@@ -314,7 +314,7 @@ namespace Menge
 
 			char * sdl_prefPath = SDL_GetPrefPath(utf8_Project_Company.c_str(), utf8_Project_Name.c_str());
 
-			userPath = Helper::stringizeString(m_serviceProvider, sdl_prefPath);
+			userPath = Helper::stringizeFilePath(m_serviceProvider, sdl_prefPath, (ConstString::size_type)-1);
 
 			SDL_free(sdl_prefPath);
 		}
@@ -700,7 +700,8 @@ namespace Menge
             }
         }
 
-        ConstString renderMaterialsPath = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaterials", ConstString::none() );
+		FilePath renderMaterialsPathEmpty;
+        FilePath renderMaterialsPath = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaterials", renderMaterialsPathEmpty );
 
         if( renderMaterialsPath.empty() == false )
         {
@@ -713,7 +714,7 @@ namespace Menge
 
         LOGGER_INFO( m_serviceProvider )("Application Create...");
 
-        ConstString resourceIniPath;
+        FilePath resourceIniPath;
         if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
         {
             LOGGER_CRITICAL( m_serviceProvider )("Application invalid setup resource path"

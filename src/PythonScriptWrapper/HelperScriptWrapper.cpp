@@ -1763,7 +1763,7 @@ namespace Menge
 				return false;
 			}
 
-            ConstString filepath = Helper::stringizeString( m_serviceProvider, utf8_fileName );
+			FilePath filepath = Helper::stringizeFilePath( m_serviceProvider, utf8_fileName.c_str(), utf8_fileName.size() );
 
 			size_t size;
 			if( pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size ) == false )
@@ -1844,7 +1844,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-            ConstString filename = Helper::stringizeString( m_serviceProvider, utf8_fileName );
+			FilePath filename = Helper::stringizeFilePath( m_serviceProvider, utf8_fileName.c_str(), utf8_fileName.size() );
 
 			MemoryInterfacePtr binaryBuffer = currentAccount->loadBinaryFile( filename );
 
@@ -1904,7 +1904,7 @@ namespace Menge
 				return false;
 			}
 
-			ConstString filename = Helper::stringizeString( m_serviceProvider, utf8_fileName );
+			FilePath filename = Helper::stringizeFilePath( m_serviceProvider, utf8_fileName.c_str(), utf8_fileName.size() );
 
 			bool exist = currentAccount->hasBinaryFile( filename );
 

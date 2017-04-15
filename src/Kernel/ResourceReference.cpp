@@ -81,7 +81,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceReference::convertDefault2_( const ConstString & _converter, const ConstString & _path, ConstString & _out )
+	bool ResourceReference::convertDefault2_( const ConstString & _converter, const FilePath & _path, FilePath & _out )
 	{
 		if( _path.empty() == true )
 		{
@@ -106,7 +106,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceReference::convertDefault_( const ConstString & _converter, const ConstString & _path, ConstString & _out, ConstString & _codecType )
+	bool ResourceReference::convertDefault_( const ConstString & _converter, const FilePath & _path, FilePath & _out, ConstString & _codecType )
 	{
 		if( this->convertDefault2_( _converter, _path, _out ) == false )
 		{

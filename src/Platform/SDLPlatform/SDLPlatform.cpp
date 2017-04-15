@@ -425,6 +425,13 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool SDLPlatform::existDirectory( const WString & _path ) const
+	{
+		(void)_path;
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool SDLPlatform::createDirectory(const WString & _path)
 	{
 #	ifdef WIN32

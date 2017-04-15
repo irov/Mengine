@@ -198,7 +198,7 @@ namespace Menge
 		full_path += folder.c_str();
 		full_path += _path;
 
-		FilePath c_path = Helper::stringizeString( m_serviceProvider, full_path );
+		FilePath c_path = Helper::stringizeFilePath( m_serviceProvider, full_path );
 
 		mt::uv4f uv_image;
 		mt::uv4f uv_alpha;
@@ -220,18 +220,6 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		video->setCategory( category );
-
-		PathString full_path;
-
-		ConstString folder = Helper::getPathFolder( m_serviceProvider, m_filePath );
-
-		full_path += folder.c_str();
-		full_path += _resource->path;
-
-		FilePath c_path = Helper::stringizeString( m_serviceProvider, full_path );
-
-
-		video->setFilePath( c_path );
 
 		video->setFrameRate( _resource->frameRate );
 		video->setDuration( _resource->duration );
@@ -268,7 +256,7 @@ namespace Menge
 		full_path += folder.c_str();
 		full_path += _resource->path;
 
-		FilePath c_path = Helper::stringizeString( m_serviceProvider, full_path );
+		FilePath c_path = Helper::stringizeFilePath( m_serviceProvider, full_path );
 		
 		sound->setFilePath( c_path );
 		

@@ -3,6 +3,8 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/PlatformInterface.h"
 
+#	include "Core/Exception.h"
+
 #	include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -33,10 +35,10 @@ namespace Menge
         m_platformTags.clear();
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigManager::loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath )
+	bool ConfigManager::loadConfig( const ConstString & _fileGroup, const FilePath & _applicationPath )
 	{
-		InputStreamInterfacePtr applicationInputStream = 
-			FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _applicationPath, false );
+		InputStreamInterfacePtr applicationInputStream = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( _fileGroup, _applicationPath, false );
 
 		if( applicationInputStream == nullptr )
 		{
@@ -166,6 +168,11 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConstString ConfigManager::getValue( const Char * _section, const Char * _key, const ConstString & _default ) const
+	{
+		return Helper::s_getValueT( m_serviceProvider, m_ini, m_platformTags, _section, _key, _default );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FilePath ConfigManager::getValue( const Char * _section, const Char * _key, const FilePath & _default ) const
 	{
 		return Helper::s_getValueT( m_serviceProvider, m_ini, m_platformTags, _section, _key, _default );
 	}

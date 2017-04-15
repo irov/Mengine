@@ -22,11 +22,11 @@ namespace Menge
 		~Account();
 
 	public:
-		bool initialize( const WString & _name, const ConstString & _folder, uint32_t _projectVersion );
+		bool initialize( const WString & _name, const FilePath & _folder, uint32_t _projectVersion );
         
 	public:
 		const WString & getName() const override;
-        const ConstString & getFolder() const override;
+        const FilePath & getFolder() const override;
 
     public:
 		bool addSetting( const ConstString & _setting, const WString& _defaultValue, const pybind::object & _applyFunc ) override;
@@ -41,13 +41,13 @@ namespace Menge
 		bool save() override;
 
 	public:
-		InputStreamInterfacePtr openReadBinaryFile( const FilePath & _fileName ) override;
-		OutputStreamInterfacePtr openWriteBinaryFile( const FilePath & _fileName ) override;
+		InputStreamInterfacePtr openReadBinaryFile( const FilePath & _filepath ) override;
+		OutputStreamInterfacePtr openWriteBinaryFile( const FilePath & _filepath ) override;
 
     public:
-		MemoryInterfacePtr loadBinaryFile( const ConstString & _fileName ) override;
-        bool writeBinaryFile( const ConstString & _fileName, const void * _data, size_t _size ) override;
-		bool hasBinaryFile( const ConstString & _filename ) const override;
+		MemoryInterfacePtr loadBinaryFile( const FilePath & _filepath ) override;
+        bool writeBinaryFile( const FilePath & _filepath, const void * _data, size_t _size ) override;
+		bool hasBinaryFile( const FilePath & _filepath ) const override;
 	
 	protected:
 		ArchivatorInterfacePtr m_archivator;
@@ -55,8 +55,8 @@ namespace Menge
 		WString m_name;
 		uint32_t m_projectVersion;
 
-        ConstString m_folder;
-        ConstString m_settingsPath;
+		FilePath m_folder;
+        FilePath m_settingsPath;
         		
         struct Setting
         {

@@ -54,10 +54,10 @@ namespace Menge
             return false;
         }
 
-        const ConstString & pakPath = fileGroup->getPath();            
+        const FilePath & pakPath = fileGroup->getPath();
 
-        ConstString full_input = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
-        ConstString full_output = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
+		FilePath full_input = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
+		FilePath full_output = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
 		        
 		MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false, __FILE__, __LINE__ );
 

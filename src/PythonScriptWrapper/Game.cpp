@@ -503,7 +503,7 @@ namespace Menge
 			return false;
 		}
 
-		ConstString personality = CONFIG_VALUE( m_serviceProvider, "Game", "PersonalityModule", STRINGIZE_STRING_LOCAL( m_serviceProvider, "Personality" ) );
+		ConstString personality = CONFIG_VALUE( m_serviceProvider, "Game", "PersonalityModule", STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "Personality" ) );
 
 		ScriptModuleInterfacePtr module = SCRIPT_SERVICE( m_serviceProvider )
 			->importModule( personality );

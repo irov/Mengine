@@ -28,8 +28,8 @@ namespace Menge
 		ConverterInterfacePtr createConverter( const ConstString & _type ) override; 
 
     public:
-        bool convert( const ConstString & _converter, const ConstString & _category, const ConstString & _in, ConstString & _out ) override;
-			
+        bool convert( const ConstString & _converter, const ConstString & _category, const FilePath & _in, FilePath & _out ) override;
+
 	protected:
 		typedef stdex::map<ConstString, ConverterFactoryInterfacePtr> TMapConverterSystem;
 		TMapConverterSystem m_mapConverterSystem;

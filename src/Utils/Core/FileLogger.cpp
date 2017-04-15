@@ -40,7 +40,7 @@ namespace Menge
 			return false;
 		}
 
-		FilePath logFilename = Helper::stringizeString( m_serviceProvider, utf8_logFilename );
+		FilePath logFilename = Helper::stringizeFilePath( m_serviceProvider, utf8_logFilename.c_str(), utf8_logFilename.size() );
 
 		m_stream = FILE_SERVICE( m_serviceProvider)
 			->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), logFilename );

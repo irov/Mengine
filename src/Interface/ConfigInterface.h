@@ -21,7 +21,7 @@ namespace Menge
         SERVICE_DECLARE("ConfigService")
 
 	public:
-		virtual bool loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath ) = 0;
+		virtual bool loadConfig( const ConstString & _fileGroup, const FilePath & _applicationPath ) = 0;
 
 	public:
 		virtual bool addValue( const Char * _section, const Char * _key, const Char * _value ) = 0;
@@ -35,6 +35,7 @@ namespace Menge
 		virtual String getValue( const Char * _section, const Char * _key, const Char * _default ) const = 0;
 		virtual WString getValue( const Char * _section, const Char * _key, const WChar * _default ) const = 0;
 		virtual ConstString getValue( const Char * _section, const Char * _key, const ConstString & _default ) const = 0;
+		virtual FilePath getValue( const Char * _section, const Char * _key, const FilePath & _default ) const = 0;
 		virtual Resolution getValue( const Char * _section, const Char * _key, const Resolution & _default ) const = 0;		
 
 	public:

@@ -60,7 +60,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::initialize( const ConstString & _path )
+	bool FileGroupZip::initialize( const FilePath & _path )
 	{
         m_path = _path;
 
@@ -226,7 +226,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & FileGroupZip::getPath() const
+	const FilePath & FileGroupZip::getPath() const
 	{
 		return m_path;
 	}

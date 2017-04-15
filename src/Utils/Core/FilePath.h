@@ -1,6 +1,7 @@
 #   pragma once
 
 #   include "Interface/ServiceInterface.h"
+#   include "Interface/StringizeInterface.h"
 
 #   include "Core/ConstString.h"
 
@@ -18,7 +19,19 @@ namespace Menge
 
 #	define MENGINE_FILE_PATH_INVALID_ID	((uint32_t)-1)
 
-	typedef ConstString FilePath;
+	class FilePath
+		: public ConstString
+	{
+	public:
+		FilePath() 
+		{
+		}
+
+		explicit FilePath( const ConstString & _cst )
+			: ConstString( _cst )
+		{
+		}
+	};
 
 	//typedef ConstString FilePath; //UTF8
 	typedef stdex::array_string<MENGINE_MAX_PATH> PathString;
@@ -27,9 +40,16 @@ namespace Menge
 
 	namespace Helper
 	{
-		ConstString concatenationFilePath( ServiceProviderInterface * _serviceProvider, const FilePath & _left, const FilePath & _right );
+		FilePath concatenationFilePath( ServiceProviderInterface * _serviceProvider, const FilePath & _left, const FilePath & _right );
 		
-		bool makeFullPath( ServiceProviderInterface * _serviceProvider, const ConstString & _fileGroupName, const ConstString & _fileName, FilePath & _fullPath );
-		ConstString getPathFolder( ServiceProviderInterface * _serviceProvider, const FilePath & _fullpath );
+		bool makeFullPath( ServiceProviderInterface * _serviceProvider, const ConstString & _fileGroupName, const FilePath & _fileName, FilePath & _fullPath );
+		FilePath getPathFolder( ServiceProviderInterface * _serviceProvider, const FilePath & _fullpath );
+
+		//////////////////////////////////////////////////////////////////////////
+		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const Char * _value, ConstString::size_type _size );
+		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const PathString & _path );
 	}
+
+#	define STRINGIZE_FILEPATH_LOCAL( serviceProvider, str )\
+	Helper::stringizeFilePath( serviceProvider, str, (sizeof(str) - 1) )
 }  

@@ -30,8 +30,8 @@ namespace Menge
 		, const ConstString & _type
 		, const ConstString & _locale
 		, const Tags & _platform
-		, const ConstString & _descriptionPath
-		, const ConstString & _path
+		, const FilePath & _descriptionPath
+		, const FilePath & _path
 		, bool _preload	)
 	{
         m_name = _name;
@@ -78,12 +78,12 @@ namespace Menge
 		return m_platform;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Package::setPath( const ConstString & _path )
+	void Package::setPath( const FilePath & _path )
 	{
 		m_path = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Package::getPath() const
+	const FilePath & Package::getPath() const
 	{
 		return m_path;
 	}
@@ -282,7 +282,7 @@ namespace Menge
 				const Metacode::Meta_Pak::Meta_Datas::Meta_Data & meta_data = *it_include;
 
 				const ConstString & name = meta_data.get_Name();
-				const ConstString & path = meta_data.get_Path();
+				const FilePath & path = meta_data.get_Path();
 
 				this->addData_( name, path, platform );
 			}
@@ -581,7 +581,7 @@ namespace Menge
 		return m_enable;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool Package::loadText_( const ConstString & _pakName, const ConstString & _path )
+	bool Package::loadText_( const ConstString & _pakName, const FilePath & _path )
     {
         bool result = TEXT_SERVICE(m_serviceProvider)
 			->loadTextEntry( _pakName, _path );
@@ -589,7 +589,7 @@ namespace Menge
         return result;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Package::unloadText_( const ConstString & _pakName, const ConstString & _path )
+	bool Package::unloadText_( const ConstString & _pakName, const FilePath & _path )
 	{
 		bool result = TEXT_SERVICE( m_serviceProvider )
 			->unloadTextEntry( _pakName, _path );
@@ -597,7 +597,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Package::loadFont_( const ConstString & _pakName, const ConstString & _path )
+	bool Package::loadFont_( const ConstString & _pakName, const FilePath & _path )
 	{
 		bool result = TEXT_SERVICE(m_serviceProvider)
 			->loadFonts( _pakName, _path );
@@ -605,7 +605,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Package::unloadFont_( const ConstString & _pakName, const ConstString & _path )
+	bool Package::unloadFont_( const ConstString & _pakName, const FilePath & _path )
 	{
 		bool result = TEXT_SERVICE( m_serviceProvider )
 			->unloadFonts( _pakName, _path );

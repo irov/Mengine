@@ -20,7 +20,7 @@ namespace Menge
 		: public InputStreamInterface
 	{
 	public:
-		virtual bool open( const ConstString & _folder, const FilePath & _fileName, size_t _offset, size_t _size ) = 0;
+		virtual bool open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<FileInputStreamInterface> FileInputStreamInterfacePtr;
@@ -29,7 +29,7 @@ namespace Menge
 		: public ServantInterface
 	{
 	public:
-		virtual bool open( const ConstString & _folder, const FilePath & _fileName ) = 0;
+		virtual bool open( const FilePath & _folder, const FilePath & _fileName ) = 0;
 
 	public:
         virtual InputStreamInterfacePtr createFileStream() = 0;
@@ -42,7 +42,7 @@ namespace Menge
 		: public OutputStreamInterface
 	{
 	public:
-		virtual bool open( const ConstString & _folder, const FilePath & _fileName ) = 0;
+		virtual bool open( const FilePath & _folder, const FilePath & _fileName ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<FileOutputStreamInterface> FileOutputStreamInterfacePtr;
@@ -51,14 +51,14 @@ namespace Menge
         : public ServantInterface
     {	
     public:
-        virtual bool initialize( const ConstString & _path ) = 0;
+        virtual bool initialize( const FilePath & _path ) = 0;
         virtual void finalize() = 0;
 
     public:
 		virtual bool isPacked() const = 0;
 
 	public:
-        virtual const ConstString & getPath() const = 0;
+        virtual const FilePath & getPath() const = 0;
 
     public:
         virtual bool existFile( const FilePath & _fileName ) const = 0;
@@ -84,7 +84,7 @@ namespace Menge
 		virtual void unregisterFileGroupFactory( const ConstString & _type ) = 0;
 
     public:
-        virtual bool mountFileGroup( const ConstString & _fileGroupName, const ConstString & _path, const ConstString & _type ) = 0;
+        virtual bool mountFileGroup( const ConstString & _fileGroupName, const FilePath & _path, const ConstString & _type ) = 0;
         virtual void unmountFileGroup( const ConstString & _fileGroupName ) = 0;
 
     public:

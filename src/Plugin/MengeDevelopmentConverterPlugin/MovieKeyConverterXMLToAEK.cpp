@@ -99,7 +99,7 @@ namespace Menge
 		binPath += m_options.inputFileName;
 		binPath.replace_last( "bin" );
 
-		FilePath path_bin = Helper::stringizeString( m_serviceProvider, binPath );
+		FilePath path_bin = Helper::stringizeFilePath( m_serviceProvider, binPath );
 
 		if( LOADER_SERVICE( m_serviceProvider )
 			->load( m_options.pakName, path_bin, &keyFramesPack, exist ) == false )

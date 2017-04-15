@@ -2895,8 +2895,8 @@ namespace Menge
 		bool s_mountResourcePak( const ConstString & _fileGroup
 			, const ConstString & _name
 			, const ConstString & _type
-			, const ConstString & _path
-			, const ConstString & _descriptionPath
+			, const FilePath & _path
+			, const FilePath & _descriptionPath
 			)
 		{
 			FileGroupInterfacePtr fileGroup;

@@ -70,8 +70,8 @@ namespace Menge
         virtual bool _convert();
 
 	protected:
-		bool convertDefault2_( const ConstString & _converter, const ConstString & _path, ConstString & _out );
-		bool convertDefault_( const ConstString & _converter, const ConstString & _path, ConstString & _out, ConstString & _codecType );
+		bool convertDefault2_( const ConstString & _converter, const FilePath & _path, FilePath & _out );
+		bool convertDefault_( const ConstString & _converter, const FilePath & _path, FilePath & _out, ConstString & _codecType );
 
 	public:
 		bool cache();

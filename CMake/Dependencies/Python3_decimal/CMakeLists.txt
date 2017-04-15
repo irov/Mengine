@@ -4,8 +4,6 @@ project(python3_decimal)
 
 SET( SOURCE_DIR ${THIRDPARTY_DIR}/Python3 )
 
-REMOVE_DEFINITIONS(-Doverride)
-
 if(WIN32)
   set(PY_POSIX_NAME nt)
 else(WIN32)

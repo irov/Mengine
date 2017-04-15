@@ -287,7 +287,7 @@ namespace Menge
            m_aspectRatioViewports[aspect] = it->viewport;
         }
 
-		m_locale = CONFIG_VALUE( m_serviceProvider, "Locale", "Default", STRINGIZE_STRING_LOCAL( m_serviceProvider, "en" ) );
+		m_locale = CONFIG_VALUE( m_serviceProvider, "Locale", "Default", STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "en" ) );
 
 		LOGGER_WARNING( m_serviceProvider )("Application::_initialize locale %s"
 			, m_locale.c_str()

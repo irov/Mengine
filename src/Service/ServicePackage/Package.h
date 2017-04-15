@@ -20,8 +20,8 @@ namespace Menge
 			, const ConstString & _type
 			, const ConstString & _locale
 			, const Tags & _platform
-			, const ConstString & _descriptionPath
-			, const ConstString & _path
+			, const FilePath & _descriptionPath
+			, const FilePath & _path
 			, bool _preload
 			);
 
@@ -38,8 +38,8 @@ namespace Menge
 		void setPlatfromTags( const Tags & _tags ) override;
 		const Tags & getPlatfromTags() const override;
 
-		void setPath( const ConstString & _path ) override;
-		const ConstString & getPath() const override;
+		void setPath( const FilePath & _path ) override;
+		const FilePath & getPath() const override;
 
 	public:
 		bool load() override;
@@ -66,7 +66,7 @@ namespace Menge
 		void addScriptPak_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform );
 		void addFontPath_( const FilePath & _path, const Tags & _tags );
 		void addData_( const ConstString & _name, const FilePath & _path, const Tags & _platform );
-		void addMaterial_( const ConstString & _path, const Tags & _platform );
+		void addMaterial_( const FilePath & _path, const Tags & _platform );
 
     protected:
 		bool loadText_( const ConstString & _pakName, const FilePath & _path );
@@ -96,7 +96,7 @@ namespace Menge
 		Tags m_platform;
 		FilePath m_descriptionPath;
 
-		ConstString m_path;
+		FilePath m_path;
 
 		TVectorScriptModulePack m_scriptsPackages;
 

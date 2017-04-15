@@ -76,6 +76,27 @@ namespace Metabuf
 		_value = loader->getCacheConstString( index );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, Menge::FilePath & _value, void * _userData )
+	{
+		Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
+
+		uint32_t index;
+		ar.readSize( index );
+
+		const Menge::ConstString & value = loader->getCacheConstString( index );
+				
+#	ifdef _DEBUG
+		const char * s = strstr( _value.c_str(), "\\" );
+
+		if( s != nullptr )
+		{
+			stdex::throw_memory_reader_exception();
+		}
+#	endif
+
+		_value = Menge::FilePath( value );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void archive_read( stdex::memory_reader & ar, Menge::Tags & _value, void * _userData )
 	{
 		Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);

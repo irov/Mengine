@@ -123,6 +123,34 @@ namespace Menge
             return true;
         }
 		//////////////////////////////////////////////////////////////////////////
+		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, FilePath & _value, ServiceProviderInterface * _serviceProvider )
+		{
+			const Char * ini_value = _ini.getSettingValue( _section, _key );
+
+			if( ini_value == nullptr )
+			{
+				return false;
+			}
+
+#	ifdef _DEBUG
+			if( strstr( ini_value, "\\" ) != nullptr )
+			{
+				MENGINE_THROW_EXCEPTION( "get ini filepath section '%s' key '%s' has invalid slash"
+					, _section
+					, _key
+				);
+
+				return false;
+			}
+#	endif
+
+			const ConstString & cs_value = Helper::stringizeString( _serviceProvider, ini_value );
+
+			_value = FilePath( cs_value );
+
+			return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags & _value, ServiceProviderInterface * _serviceProvider )
 		{
 			const Char * ini_value = _ini.getSettingValue( _section, _key );

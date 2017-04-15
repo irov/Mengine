@@ -98,7 +98,7 @@ namespace Menge
 		return converter;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    bool ConverterEngine::convert( const ConstString & _converter, const ConstString & _category, const ConstString & _in, ConstString & _out )
+    bool ConverterEngine::convert( const ConstString & _converter, const ConstString & _category, const FilePath & _in, FilePath & _out )
     {
         ConverterInterfacePtr converter = this->createConverter( _converter );
 
@@ -136,7 +136,7 @@ namespace Menge
 		const String & ext = converter->getConvertExt();
 		cache_path += ext;
 		
-        options.outputFileName = Helper::stringizeString( m_serviceProvider, cache_path );
+        options.outputFileName = Helper::stringizeFilePath( m_serviceProvider, cache_path );
 
         converter->setOptions( &options );
 

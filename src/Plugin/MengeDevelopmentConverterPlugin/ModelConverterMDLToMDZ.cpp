@@ -53,10 +53,10 @@ namespace Menge
             return false;
         }
 
-        const ConstString & pakPath = fileGroup->getPath();            
+        const FilePath & pakPath = fileGroup->getPath();
 
-        ConstString full_input = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
-        ConstString full_output = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
+		FilePath full_input = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
+		FilePath full_output = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
 
         ConstString c_dev = STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" );
 

@@ -36,7 +36,7 @@ namespace Menge
 		PyObject * m_module;
 		
 		FileGroupInterfacePtr m_group;
-		ConstString m_path;
+		FilePath m_path;
 
 		ArchivatorInterfacePtr m_archivator;
 		

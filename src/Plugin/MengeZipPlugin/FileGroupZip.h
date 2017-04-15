@@ -17,12 +17,12 @@ namespace Menge
 		~FileGroupZip();
 
 	public:
-		bool initialize( const ConstString & _path ) override;
+		bool initialize( const FilePath & _path ) override;
 		void finalize() override;
 		
     public:
 		bool isPacked() const override;
-        const ConstString & getPath() const override;
+        const FilePath & getPath() const override;
         
 	public:
 		bool existFile( const FilePath & _fileName ) const override;
@@ -39,7 +39,7 @@ namespace Menge
 		bool loadHeader_();
 
 	protected:
-		ConstString m_path;
+		FilePath m_path;
 
 		FileGroupInterfacePtr m_zipFileGroup;
 		InputStreamInterfacePtr m_zipFile;

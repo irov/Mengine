@@ -3,6 +3,8 @@
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/FileSystemInterface.h"
 
+#	include "Core/FilePath.h"
+
 #	include "Logger/Logger.h"
 
 namespace Menge
@@ -10,19 +12,19 @@ namespace Menge
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		ConstString concatenationFilePath( ServiceProviderInterface * _serviceProvider, const ConstString & _left, const ConstString & _right )
+		FilePath concatenationFilePath( ServiceProviderInterface * _serviceProvider, const FilePath & _left, const FilePath & _right )
 		{
 			PathString path;
 
 			path += _left;
 			path += _right;
 
-			ConstString c_path = Helper::stringizeString( _serviceProvider, path );
+			ConstString c_path = Helper::stringizeStringSize( _serviceProvider, path.c_str(), path.size() );
 
-			return c_path;
+			return FilePath(c_path);
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool makeFullPath( ServiceProviderInterface * _serviceProvider, const ConstString & _fileGroupName, const ConstString & _fileName, ConstString & _fullPath )
+		bool makeFullPath( ServiceProviderInterface * _serviceProvider, const ConstString & _fileGroupName, const FilePath & _fileName, FilePath & _fullPath )
 		{
 			FileGroupInterfacePtr group;
 
@@ -36,16 +38,16 @@ namespace Menge
 				return false;
 			}
 
-			const ConstString & groupPath = group->getPath();
+			const FilePath & groupPath = group->getPath();
 
-			ConstString fullPath = Helper::concatenationFilePath( _serviceProvider, groupPath, _fileName );
+			FilePath fullPath = Helper::concatenationFilePath( _serviceProvider, groupPath, _fileName );
 
 			_fullPath = fullPath;
 
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		ConstString getPathFolder( ServiceProviderInterface * _serviceProvider, const FilePath & _fullpath )
+		FilePath getPathFolder( ServiceProviderInterface * _serviceProvider, const FilePath & _fullpath )
 		{
 			const Char * str_fullpath = _fullpath.c_str();
 
@@ -56,12 +58,26 @@ namespace Menge
 
 			if( folder_delimiter == nullptr )
 			{
-				return ConstString::none();
+				return FilePath(ConstString::none());
 			}
 
-			ConstString c_folder = Helper::stringizeStringSize( _serviceProvider, str_fullpath, folder_delimiter - str_fullpath + 1 );
+			FilePath c_folder = Helper::stringizeFilePath( _serviceProvider, str_fullpath, folder_delimiter - str_fullpath + 1 );
 
 			return c_folder;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const Char * _value, ConstString::size_type _size )
+		{
+			ConstString cstr = stringizeStringSize( _serviceProvider, _value, _size );
+
+			return FilePath( cstr );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const PathString & _path )
+		{
+			FilePath fp = stringizeFilePath( _serviceProvider, _path.c_str(), _path.size() );
+
+			return fp;
 		}
 	}
 }  

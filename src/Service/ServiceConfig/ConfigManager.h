@@ -20,7 +20,7 @@ namespace Menge
         void _finalize() override;
 
 	public:
-		bool loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath ) override;
+		bool loadConfig( const ConstString & _fileGroup, const FilePath & _applicationPath ) override;
 		
 	public:
 		bool addValue( const Char * _section, const Char * _key, const Char * _value ) override;
@@ -34,6 +34,7 @@ namespace Menge
 		String getValue( const Char * _section, const Char * _key, const Char * _default ) const override;
 		WString getValue( const Char * _section, const Char * _key, const WChar * _default ) const override;
 		ConstString getValue( const Char * _section, const Char * _key, const ConstString & _default ) const override;
+		FilePath getValue( const Char * _section, const Char * _key, const FilePath & _default ) const override;
 		Resolution getValue( const Char * _section, const Char * _key, const Resolution & _default ) const override;
 
 	public:

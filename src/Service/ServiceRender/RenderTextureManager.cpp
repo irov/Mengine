@@ -542,14 +542,17 @@ namespace Menge
 		const ConstString & category = _texture->getCategory();
 		const FilePath & fileName = _texture->getFileName();
 
-        TMapRenderTextureEntry & textures = this->getHashEntry_(fileName);
-
-		textures.erase( std::make_pair( category, fileName ) );
-				
-		if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+		if( fileName.empty() == false )
 		{
-			GRAVEYARD_SERVICE( m_serviceProvider )
-				->buryTexture( _texture );
+			TMapRenderTextureEntry & textures = this->getHashEntry_( fileName );
+
+			textures.erase( std::make_pair( category, fileName ) );
+
+			if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+			{
+				GRAVEYARD_SERVICE( m_serviceProvider )
+					->buryTexture( _texture );
+			}
 		}
 
         _texture->release();

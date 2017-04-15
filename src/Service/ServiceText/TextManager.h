@@ -82,7 +82,7 @@ namespace Menge
 		bool removeTextEntry( const ConstString& _key );
 
 	protected:
-		TextGlyphPtr loadGlyph_( const ConstString & _pakName, const ConstString & _path );
+		TextGlyphPtr loadGlyph_( const ConstString & _pakName, const FilePath & _path );
 
     protected:
 		typedef stdex::map<ConstString, TextEntry> TMapTextEntry;		

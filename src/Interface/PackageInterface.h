@@ -18,8 +18,8 @@ namespace Menge
 		ConstString locale;
 		Tags platform;
 
-		ConstString path;
-		ConstString descriptionPath;
+		FilePath descriptionPath;
+		FilePath path;		
 
 		bool dev;
 		bool immediately;
@@ -42,8 +42,8 @@ namespace Menge
 		virtual void setPlatfromTags( const Tags & _platform ) = 0;
 		virtual const Tags & getPlatfromTags() const = 0;
 
-		virtual void setPath( const ConstString & _path ) = 0;
-		virtual const ConstString & getPath() const = 0;
+		virtual void setPath( const FilePath & _path ) = 0;
+		virtual const FilePath & getPath() const = 0;
 
 	public:
 		virtual bool load() = 0;

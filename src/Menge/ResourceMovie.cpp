@@ -833,7 +833,7 @@ namespace Menge
 			xml_path += m_filePath;
 			xml_path.replace_last( "xml" );
 
-			ConstString c_xml_path = Helper::stringizeString( m_serviceProvider, xml_path );
+			FilePath c_xml_path = Helper::stringizeFilePath( m_serviceProvider, xml_path );
 
 			if( CONVERTER_SERVICE(m_serviceProvider)
 				->convert( m_converterType, m_category, c_xml_path, m_filePath ) == false )

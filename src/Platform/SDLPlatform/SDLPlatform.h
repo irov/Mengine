@@ -93,6 +93,7 @@ namespace Menge
         bool openUrlInDefaultBrowser( const WString & _url ) override;
         
     public:
+		bool existDirectory( const WString & _path ) const override;
 		bool createDirectory(const WString & _path) override;
 
 	public:

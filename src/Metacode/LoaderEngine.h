@@ -29,7 +29,7 @@ namespace Menge
 		void _finalize() override;
 
 	public:
-		void setProtocolPath( const ConstString & _protocolPath ) override;
+		void setProtocolPath( const FilePath & _protocolPath ) override;
 
 	public:
 		bool load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const override;
@@ -49,7 +49,7 @@ namespace Menge
 	protected:
 		ArchivatorInterfacePtr m_archivator;
 		
-		ConstString m_protocolPath;
+		FilePath m_protocolPath;
 
 		mutable TVectorConstString m_bufferConstString;
 	};

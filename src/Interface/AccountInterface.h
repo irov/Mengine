@@ -23,7 +23,7 @@ namespace Menge
     {
     public:
         virtual const WString & getName() const = 0;
-        virtual const ConstString & getFolder() const = 0;
+        virtual const FilePath & getFolder() const = 0;
 
     public:
 		virtual bool addSetting( const ConstString & _setting, const WString& _defaultValue, const pybind::object & _applyFunc ) = 0;
@@ -42,9 +42,9 @@ namespace Menge
 		virtual OutputStreamInterfacePtr openWriteBinaryFile( const FilePath & _fileName ) = 0;
 
     public:		
-		virtual MemoryInterfacePtr loadBinaryFile( const ConstString & _filename ) = 0;
-		virtual bool writeBinaryFile( const ConstString & _filename, const void * _data, size_t _size ) = 0;
-		virtual bool hasBinaryFile( const ConstString & _filename ) const = 0;
+		virtual MemoryInterfacePtr loadBinaryFile( const FilePath & _filename ) = 0;
+		virtual bool writeBinaryFile( const FilePath & _filename, const void * _data, size_t _size ) = 0;
+		virtual bool hasBinaryFile( const FilePath & _filename ) const = 0;
     };
 
 	typedef stdex::intrusive_ptr<AccountInterface> AccountInterfacePtr;

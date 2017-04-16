@@ -190,7 +190,7 @@ namespace Menge
 				continue;
 			}
 
-			const ConstString & filePath = meta_FragmentShader.get_File_Path();
+			const FilePath & filePath = meta_FragmentShader.get_File_Path();
 
 			bool isCompile = false;
 			meta_FragmentShader.get_File_Compile( isCompile );
@@ -231,7 +231,7 @@ namespace Menge
 
 			const ConstString & name = meta_VertexShader.get_Name();
 
-			const ConstString & filePath = meta_VertexShader.get_File_Path();
+			const FilePath & filePath = meta_VertexShader.get_File_Path();
 
 			bool isCompile = false;
 			meta_VertexShader.get_File_Compile( isCompile );
@@ -937,7 +937,7 @@ namespace Menge
 		return material_hash;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderVertexShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
+	RenderVertexShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath, bool isCompile )
 	{
 		MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, _pakName, _filePath, false, __FILE__, __LINE__ );
 
@@ -955,7 +955,7 @@ namespace Menge
 		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderFragmentShaderInterfacePtr RenderMaterialManager::createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
+	RenderFragmentShaderInterfacePtr RenderMaterialManager::createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath, bool isCompile )
 	{ 
 		MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, _pakName, _filePath, false, __FILE__, __LINE__ );
 		

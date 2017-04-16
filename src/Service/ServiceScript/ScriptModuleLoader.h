@@ -24,7 +24,7 @@ namespace Menge
 		PyObject * getModule() const;
 
 	public:
-		bool initialize( const FileGroupInterfacePtr & _group, const ConstString & _path, const ArchivatorInterfacePtr & _archivator );
+		bool initialize( const FileGroupInterfacePtr & _group, const FilePath & _path, const ArchivatorInterfacePtr & _archivator );
 
 	public:
 		void setPackagePath( bool _packagePath );

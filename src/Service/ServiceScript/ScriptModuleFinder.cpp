@@ -260,7 +260,7 @@ namespace Menge
 				m_cacheFullPath += path;
 				m_cacheFullPath.append( _modulePath, _modulePathLen );
 
-				ConstString c_fullPath = Helper::stringizeString( m_serviceProvider, m_cacheFullPath );
+				FilePath c_fullPath = Helper::stringizeFilePath( m_serviceProvider, m_cacheFullPath );
 				
                 if( fileGroup->existFile( c_fullPath ) == false )
                 {

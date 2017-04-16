@@ -8,6 +8,9 @@ namespace Menge
 {
 	bool sdlSoundErrorCheck( ServiceProviderInterface * _serviceProvider, const char * _file, int _line )
 	{
+		(void)_serviceProvider;
+		(void)_file;
+		(void)_line;
 		//const char * err = SDL_GetError();
 
   //      if( err == S3E_SOUND_ERR_NONE )

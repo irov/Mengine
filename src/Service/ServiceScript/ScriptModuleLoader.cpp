@@ -24,7 +24,7 @@ namespace Menge
 		return m_module;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptModuleLoader::initialize( const FileGroupInterfacePtr & _group, const ConstString & _path, const ArchivatorInterfacePtr & _archivator )
+	bool ScriptModuleLoader::initialize( const FileGroupInterfacePtr & _group, const FilePath & _path, const ArchivatorInterfacePtr & _archivator )
 	{
 		m_group = _group;
 		m_path = _path;

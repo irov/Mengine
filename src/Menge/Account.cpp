@@ -154,21 +154,8 @@ namespace Menge
             return false;
         }
 
-		InputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user"), m_settingsPath, false );
-
-        if( file == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Account::load can't open file for read. Account '%ls' settings not load '%s'"
-                , m_name.c_str() 
-                , m_settingsPath.c_str()
-                );
-
-            return false;
-        }
-
 		IniUtil::IniStore ini;
-		if( IniUtil::loadIni( ini, file, m_serviceProvider ) == false )
+		if( IniUtil::loadIni( ini, STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), m_settingsPath, m_serviceProvider ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Account::load parsing Account '%ls' settings failed '%s'"
                 , m_name.c_str()
@@ -177,8 +164,6 @@ namespace Menge
 
 			return false;
 		}
-
-        file = nullptr;
 
 		String projectVersion_s;
 		if( IniUtil::getIniValue( ini, "PROJECT", "VERSION", projectVersion_s, m_serviceProvider ) == false )

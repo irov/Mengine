@@ -211,20 +211,8 @@ namespace Menge
     {
         FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "application.ini" );
 
-        InputStreamInterfacePtr applicationInputStream = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( ConstString::none(), applicationPath, false );
-
-        if( applicationInputStream == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("SDLApplication::initializeConfigEngine_ Invalid open application settings %s"
-                , applicationPath.c_str()
-                );
-
-            return false;
-        }
-
         IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, applicationInputStream, m_serviceProvider ) == false )
+        if( IniUtil::loadIni( ini, ConstString::none(), applicationPath, m_serviceProvider ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("SDLApplication::initializeConfigEngine_ Invalid load application settings %s"
                 , applicationPath.c_str()

@@ -540,20 +540,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::loadFonts( const ConstString & _pakName, const FilePath & _path )
     {
-        InputStreamInterfacePtr stream =
-            FILE_SERVICE( m_serviceProvider )->openInputFile( _pakName, _path, false );
-
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts Invalid open settings %s"
-                , _path.c_str()
-                );
-
-            return false;
-        }
-
         IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, stream, m_serviceProvider ) == false )
+        if( IniUtil::loadIni( ini, _pakName, _path, m_serviceProvider ) == false )
         {
             LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts Invalid load settings %s"
                 , _path.c_str()
@@ -672,20 +660,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::unloadFonts( const ConstString & _pakName, const FilePath & _path )
     {
-        InputStreamInterfacePtr stream =
-            FILE_SERVICE( m_serviceProvider )->openInputFile( _pakName, _path, false );
-
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( m_serviceProvider )("TextManager::unloadFonts Invalid open settings %s"
-                , _path.c_str()
-                );
-
-            return false;
-        }
-
         IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, stream, m_serviceProvider ) == false )
+        if( IniUtil::loadIni( ini, _pakName, _path, m_serviceProvider ) == false )
         {
             LOGGER_ERROR( m_serviceProvider )("TextManager::unloadFonts Invalid load settings %s"
                 , _path.c_str()

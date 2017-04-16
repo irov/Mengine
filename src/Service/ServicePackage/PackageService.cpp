@@ -47,20 +47,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::loadPackages( const ConstString & _fileGroup, const FilePath & _resourceIni )
 	{ 
-		InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
-			->openInputFile( _fileGroup, _resourceIni, false );
-
-		if( stream == nullptr )
-		{
-			LOGGER_ERROR( m_serviceProvider )("PackageService::loadPackages Invalid open resourcesPack setting '%s'"
-				, _resourceIni.c_str()
-				);
-
-			return false;
-		}
-
 		IniUtil::IniStore ini;
-		if( IniUtil::loadIni( ini, stream, m_serviceProvider ) == false )
+		if( IniUtil::loadIni( ini, _fileGroup, _resourceIni, m_serviceProvider ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("PackageService::loadPackages Invalid load resource settings '%s'"
 				, _resourceIni.c_str()
@@ -68,8 +56,6 @@ namespace Menge
 
 			return false;
 		}
-
-		stream = nullptr;
 
 		ConstString c_dir = STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" );
 

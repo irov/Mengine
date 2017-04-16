@@ -426,21 +426,9 @@ namespace Menge
 
 			return true;
 		}
-        
-		InputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( CONST_STRING(m_serviceProvider, user), accountsPath, false );
-
-        if( file == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts open accounts failed '%s'"
-                , accountsPath.c_str()
-                );
-
-            return false;
-        }
-		
+        	
 		IniUtil::IniStore ini;
-		if( IniUtil::loadIni( ini, file, m_serviceProvider ) == false )
+		if( IniUtil::loadIni( ini, CONST_STRING( m_serviceProvider, user ), accountsPath, m_serviceProvider ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts parsing accounts failed '%s'"
 				, accountsPath.c_str()
@@ -448,8 +436,6 @@ namespace Menge
 
 			return false;
 		}
-
-		file = nullptr;
 
 		//unsigned int playerCount;
 

@@ -28,9 +28,13 @@ namespace Menge
 		struct IniStore
 			: public stdex::ini
 		{			
+			ConstString category;
+			FilePath path;
+
 			char buff[MENGINE_INI_BUFFER_SIZE];
 		};
 		//////////////////////////////////////////////////////////////////////////
+		bool loadIni( IniStore & _ini, const ConstString & _category, const FilePath & _path, ServiceProviderInterface * _serviceProvider );
 		bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _input, ServiceProviderInterface * _serviceProvider );
 		//////////////////////////////////////////////////////////////////////////
 		bool addIniValue( IniStore & _ini, const Char * _section, const Char * _key, const Char * _value, ServiceProviderInterface * _serviceProvider );

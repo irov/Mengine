@@ -1,6 +1,7 @@
 #   include "Utils/Core/IniUtil.h"
 
 #   include "Interface/UnicodeInterface.h"
+#   include "Interface/FileSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
 
 #   include "Logger/Logger.h"
@@ -14,6 +15,27 @@ namespace Menge
 {
     namespace IniUtil
     {
+		//////////////////////////////////////////////////////////////////////////
+		bool loadIni( IniStore & _ini, const ConstString & _category, const FilePath & _path, ServiceProviderInterface * _serviceProvider )
+		{
+			InputStreamInterfacePtr stream = FILE_SERVICE( _serviceProvider )
+				->openInputFile( _category, _path, false );
+
+			if( stream == nullptr )
+			{
+				LOGGER_ERROR( _serviceProvider )("loadIni invalid open ini file '%s:%s'"
+					, _category.c_str()
+					, _path.c_str()
+					);
+
+				return false;
+			}
+
+			_ini.category = _category;
+			_ini.path = _path;
+
+			return loadIni( _ini, stream, _serviceProvider );
+		}
 		//////////////////////////////////////////////////////////////////////////
 		bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _input, ServiceProviderInterface * _serviceProvider )
 		{
@@ -135,7 +157,9 @@ namespace Menge
 #	ifdef _DEBUG
 			if( strstr( ini_value, "\\" ) != nullptr )
 			{
-				MENGINE_THROW_EXCEPTION( "get ini filepath section '%s' key '%s' has invalid slash"
+				MENGINE_THROW_EXCEPTION( "get ini '%s:%s' filepath section '%s' key '%s' has invalid slash"
+					, _ini.category.c_str()
+					, _ini.path.c_str()
 					, _section
 					, _key
 				);

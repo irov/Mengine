@@ -52,7 +52,7 @@ namespace Menge
 		m_length = dataInfo->length;
 		size_t size = dataInfo->size;
 		
-		MemoryCacheBufferInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, size, "OALSoundBuffer" );
+		MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, size, __FILE__, __LINE__ );
 
 		if( binary_buffer == nullptr )
 		{

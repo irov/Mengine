@@ -4,14 +4,6 @@ project(xml2metabuf)
 
 SET( SOURCE_DIR ${THIRDPARTY_DIR}/metabuf )
 
-if(NOT MSVC)
-    if(NOT EMSCRIPTEN)
-        ADD_DEFINITIONS(-D"override = /* */")
-        ADD_DEFINITIONS(-D"nullptr=0")
-        ADD_DEFINITIONS(-D"nullptr_t=void*")    
-    endif()
-endif()
-
 set( sources
     ${SOURCE_DIR}/xml2metabuf/Xml2Metabuf.cpp
     ${SOURCE_DIR}/xml2metabuf/Xml2Metacode.cpp

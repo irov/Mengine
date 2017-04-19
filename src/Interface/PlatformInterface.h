@@ -45,6 +45,7 @@ namespace Menge
         virtual bool getDesktopResolution( Resolution & _resolution ) const = 0;
 
 		virtual size_t getCurrentPath( WChar * _path, size_t _len ) const = 0;
+		virtual size_t getUserPath( WChar * _path, size_t _len ) const = 0;
 
         virtual void minimizeWindow() = 0;
 

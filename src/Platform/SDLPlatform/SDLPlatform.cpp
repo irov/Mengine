@@ -76,6 +76,59 @@ namespace Menge
         
         return 0;
     }
+	//////////////////////////////////////////////////////////////////////////
+	size_t SDLPlatform::getUserPath( WChar * _path, size_t _len ) const
+	{
+		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+		bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
+		bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );
+
+		FilePath userPath;
+		if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
+		{
+			WChar currentPathW[MENGINE_MAX_PATH];
+			size_t currentPathLen = PLATFORM_SERVICE( m_serviceProvider )
+				->getCurrentPath( currentPathW, MENGINE_MAX_PATH );
+
+			if( _len <= currentPathLen + 5 )
+			{
+				return 0;
+			}
+
+			wcscpy( _path, currentPathW );
+			wcscat( _path, L"User" );
+			wcscat( _path, L"\\" );
+
+			return wcslen( _path );
+		}
+		else
+		{
+			WString Project_Company = CONFIG_VALUE( m_serviceProvider, "Project", "Company", L"NONAME" );
+			WString Project_Name = CONFIG_VALUE( m_serviceProvider, "Project", "Name", L"UNKNOWN" );
+
+			String utf8_Project_Company;
+			Helper::unicodeToUtf8( m_serviceProvider, Project_Company, utf8_Project_Company );
+
+			String utf8_Project_Name;
+			Helper::unicodeToUtf8( m_serviceProvider, Project_Name, utf8_Project_Name );
+
+			char * sdl_prefPath = SDL_GetPrefPath( utf8_Project_Company.c_str(), utf8_Project_Name.c_str() );
+			
+			WString unicode_UserPath;
+			Helper::utf8ToUnicode( m_serviceProvider, sdl_prefPath, unicode_UserPath );
+
+			SDL_free( sdl_prefPath );
+
+			if( _len <= unicode_UserPath.size() )
+			{
+				return 0;
+			}
+
+			wcscpy( _path, unicode_UserPath.c_str() );
+
+			return unicode_UserPath.size();
+		}
+	}
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatform::getShortPathName( const WString & _path, WChar * _short, size_t _len ) const
     {
@@ -435,28 +488,35 @@ namespace Menge
 	bool SDLPlatform::createDirectory(const WString & _path)
 	{
 #	ifdef WIN32
+		WChar userPath[MENGINE_MAX_PATH];
+		this->getUserPath( userPath, MENGINE_MAX_PATH );
+
 		WChar pathCorrect[MENGINE_MAX_PATH];
 		PathCorrectBackslash(pathCorrect, _path.c_str());
 
-		PathRemoveBackslash(pathCorrect);
+		WChar fullPath[MENGINE_MAX_PATH];
+		wcscpy( fullPath, userPath );
+		wcscat( fullPath, pathCorrect );
 
-		if (PathIsDirectoryW(pathCorrect) == FILE_ATTRIBUTE_DIRECTORY)
+		PathRemoveBackslash( fullPath );
+
+		if (PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY)
 		{
 			return true;
 		}
 
 		TVectorWString paths;
 
-		for (;; )
+		for( ;; )
 		{
-			paths.push_back(pathCorrect);
+			paths.push_back( fullPath );
 
-			if (PathRemoveFileSpecW(pathCorrect) == FALSE)
+			if (PathRemoveFileSpecW( fullPath ) == FALSE)
 			{
 				break;
 			}
 
-			if (PathIsDirectoryW(pathCorrect) == FILE_ATTRIBUTE_DIRECTORY)
+			if (PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY)
 			{
 				break;
 			}

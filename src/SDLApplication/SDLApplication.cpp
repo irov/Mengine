@@ -263,56 +263,23 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeUserDirectory_()
     {
-		bool developmentMode = HAS_OPTION(m_serviceProvider, "dev");
-		bool roamingMode = HAS_OPTION(m_serviceProvider, "roaming");
-		bool noroamingMode = HAS_OPTION(m_serviceProvider, "noroaming");
+		WChar userPathW[MENGINE_MAX_PATH];
+		size_t userPathLen = PLATFORM_SERVICE( m_serviceProvider )
+			->getUserPath( userPathW, MENGINE_MAX_PATH );
 
-		FilePath userPath;
-		if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
-		{
-			WChar currentPathW[MENGINE_MAX_PATH];
-			PLATFORM_SERVICE(m_serviceProvider)
-				->getCurrentPath(currentPathW, MENGINE_MAX_PATH);
+		Char utf8_userPath[MENGINE_MAX_PATH];
+		size_t utf8_userPathLen;
+		UNICODE_SERVICE( m_serviceProvider )
+			->unicodeToUtf8( userPathW, userPathLen, utf8_userPath, MENGINE_MAX_PATH, &utf8_userPathLen );
 
-			wcscat(currentPathW, L"User");
-			wcscat(currentPathW, L"\\");
-
-			size_t currentPathW_len = wcslen(currentPathW);
-
-			PLATFORM_SERVICE(m_serviceProvider)
-				->createDirectory(currentPathW);
-
-			Char utf8_currentPath[MENGINE_MAX_PATH];
-			size_t utf8_currentPath_len;
-			UNICODE_SERVICE(m_serviceProvider)
-				->unicodeToUtf8(currentPathW, currentPathW_len + 1, utf8_currentPath, MENGINE_MAX_PATH, &utf8_currentPath_len);
-
-			userPath = Helper::stringizeFilePath(m_serviceProvider, utf8_currentPath, utf8_currentPath_len);
-		}
-		else
-		{
-			WString Project_Company = CONFIG_VALUE(m_serviceProvider, "Project", "Company", L"NONAME");
-			WString Project_Name = CONFIG_VALUE(m_serviceProvider, "Project", "Name", L"UNKNOWN");
-
-			String utf8_Project_Company;
-			Helper::unicodeToUtf8(m_serviceProvider, Project_Company, utf8_Project_Company);
-
-			String utf8_Project_Name;
-			Helper::unicodeToUtf8(m_serviceProvider, Project_Name, utf8_Project_Name);
-
-			char * sdl_prefPath = SDL_GetPrefPath(utf8_Project_Company.c_str(), utf8_Project_Name.c_str());
-
-			userPath = Helper::stringizeFilePath(m_serviceProvider, sdl_prefPath, (ConstString::size_type)-1);
-
-			SDL_free(sdl_prefPath);
-		}
-
+		FilePath cs_userPath = Helper::stringizeFilePath(m_serviceProvider, utf8_userPath, utf8_userPathLen );
+		
         // mount user directory
         if( FILE_SERVICE( m_serviceProvider )
-            ->mountFileGroup( Helper::stringizeString( m_serviceProvider, "user" ), userPath, Helper::stringizeString( m_serviceProvider, "dir" ) ) == false )
+            ->mountFileGroup( Helper::stringizeString( m_serviceProvider, "user" ), cs_userPath, Helper::stringizeString( m_serviceProvider, "dir" ) ) == false )
         {
             LOGGER_ERROR( m_serviceProvider )("SDLApplication: failed to mount user directory %ls"
-                , userPath.c_str()
+                , cs_userPath.c_str()
                 );
 
             return false;

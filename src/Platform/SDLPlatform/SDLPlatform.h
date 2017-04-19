@@ -67,6 +67,7 @@ namespace Menge
         bool getDesktopResolution( Resolution & _resolution ) const override;
 
         size_t getCurrentPath( WChar * _path, size_t _len ) const override;
+		size_t getUserPath( WChar * _path, size_t _len ) const override;
 
         void minimizeWindow() override;
 

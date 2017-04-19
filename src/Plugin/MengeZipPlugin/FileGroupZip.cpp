@@ -185,7 +185,7 @@ namespace Menge
 				continue;
 			}
 
-			ConstString fileName = Helper::stringizeStringSize(m_serviceProvider, fileNameBuffer, header.fileNameLen);
+			FilePath fileName = Helper::stringizeFilePath(m_serviceProvider, fileNameBuffer, header.fileNameLen);
 			
 			if( header.compressionMethod != Z_NO_COMPRESSION && header.compressionMethod != Z_DEFLATED )
 			{

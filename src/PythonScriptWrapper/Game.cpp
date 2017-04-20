@@ -227,12 +227,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::update()
 	{
-		m_events.insert( m_events.end(), m_eventsAdd.begin(), m_eventsAdd.end() );
-		m_eventsAdd.clear();
+		m_userEvents.insert( m_userEvents.end(), m_userEventsAdd.begin(), m_userEventsAdd.end() );
+		m_userEventsAdd.clear();
 
 		for( TVectorUserEvents::const_iterator
-			it = m_events.begin(),
-			it_end = m_events.end();
+			it = m_userEvents.begin(),
+			it_end = m_userEvents.end();
 		it != it_end;
 		++it )
 		{
@@ -242,7 +242,7 @@ namespace Menge
                 ->onGameUser( ev.id, ev.params );
 		}
 
-		m_events.clear();
+		m_userEvents.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::tick( float _time, float _timing )
@@ -636,6 +636,14 @@ namespace Menge
             ->onGameDestroy();
 		
 		this->removeEvents();
+
+		m_userEventsAdd.clear();
+		m_userEvents.clear();
+
+		m_params.clear();
+
+		m_iconPath.clear();
+		m_currentPackName.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::run()
@@ -762,7 +770,7 @@ namespace Menge
 		ev.id = _id;
 		ev.params = _params;
 
-		m_events.push_back( ev );
+		m_userEvents.push_back( ev );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setCursorMode( bool _mode )

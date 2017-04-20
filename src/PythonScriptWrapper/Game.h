@@ -190,8 +190,8 @@ namespace Menge
 		};
 
 		typedef std::vector<UserEvent> TVectorUserEvents;
-		TVectorUserEvents m_eventsAdd;
-		TVectorUserEvents m_events;
+		TVectorUserEvents m_userEventsAdd;
+		TVectorUserEvents m_userEvents;
 		
     protected:
 		void registerEventMethods_( const ScriptModuleInterfacePtr & _module );

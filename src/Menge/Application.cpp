@@ -1507,6 +1507,9 @@ namespace Menge
 		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderTextureServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::TextServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PrototypeServiceInterface );
+
+		m_locale.clear();
+		m_projectCodename.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::calcWindowResolution( Resolution & _windowResolution ) const

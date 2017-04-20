@@ -42,7 +42,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void LoaderEngine::_finalize()
 	{
-		//Empty
+		m_archivator = nullptr;
+
+		m_protocolPath.clear();
+		m_bufferConstString.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LoaderEngine::setProtocolPath( const FilePath & _protocolPath )

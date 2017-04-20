@@ -196,9 +196,9 @@ namespace Menge
 			desc.service->finalize();
 		}
 
-        for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+        for( uint32_t index = SERVICE_PROVIDER_COUNT; index != 0; --index )
         {
-            ServiceDesc & desc = m_services[index];
+            ServiceDesc & desc = m_services[index - 1];
 
             if( desc.service == nullptr )
             {

@@ -81,7 +81,7 @@ namespace Menge
 	public:
 		ValueFollowerLinear()
 			: m_speed( 0.f )
-			, m_distance( 0.f )
+			, m_minimalDistance( 0.f )
 		{
 		}
 
@@ -96,14 +96,14 @@ namespace Menge
 			return m_speed;
 		}
 
-		void setDistance( float _distance )
+		void setMinimalDistance( float _minimalDistance )
 		{
-			m_distance = _distance;
+			m_minimalDistance = _minimalDistance;
 		}
 
-		float getDistance() const
+		float getMinimalDistance() const
 		{
-			return m_distance;
+			return m_minimalDistance;
 		}
 
 	protected:
@@ -126,11 +126,11 @@ namespace Menge
 
 				return true;
 			}
-			else if( step + m_distance >= l )
+			else if( step + m_minimalDistance >= l )
 			{
 				T offset = this->getDistance();
 
-				T add = offset * ((l - m_distance) / l);
+				T add = offset * ((l - m_minimalDistance) / l);
 
 				this->step( add );
 
@@ -148,7 +148,7 @@ namespace Menge
 
 	protected:
 		float m_speed;
-		float m_distance;
+		float m_minimalDistance;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	template <typename T>

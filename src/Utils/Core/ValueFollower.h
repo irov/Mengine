@@ -30,6 +30,30 @@ namespace Menge
 			return m_follow;
 		}
 
+		T getDistance() const
+		{
+			T distance = m_follow - m_value;
+
+			return distance;
+		}
+
+		void overtake()
+		{
+			m_value = m_follow;
+		}
+
+		void step( const T & _value )
+		{
+			m_value += _value;
+		}
+
+		float getLength() const
+		{
+			float length = mt::length( m_follow, m_value );
+
+			return length;
+		}
+
 		void follow( const T & _follow )
 		{
 			m_follow = _follow;
@@ -38,7 +62,7 @@ namespace Menge
 		bool update( float _timing )
 		{
 			bool successful = this->_update( _timing );
-			
+
 			return successful;
 		}
 
@@ -56,8 +80,8 @@ namespace Menge
 	{
 	public:
 		ValueFollowerLinear()
-			: m_speed(0.f)
-			, m_distance(0.f)
+			: m_speed( 0.f )
+			, m_distance( 0.f )
 		{
 		}
 
@@ -85,11 +109,11 @@ namespace Menge
 	protected:
 		bool _update( float _timing ) override
 		{
-			float l = mt::length( ValueFollower<T>::m_follow, ValueFollower<T>::m_value );
+			float l = this->getLength();
 
 			if( mt::equal_f_z( l ) == true )
 			{
-				ValueFollower<T>::m_value = ValueFollower<T>::m_follow;
+				this->overtake();
 
 				return true;
 			}
@@ -98,26 +122,26 @@ namespace Menge
 
 			if( step >= l )
 			{
-				ValueFollower<T>::m_value = ValueFollower<T>::m_follow;
+				this->overtake();
 
 				return true;
 			}
 			else if( step + m_distance >= l )
 			{
-				T offset = ValueFollower<T>::m_follow - ValueFollower<T>::m_value;
+				T offset = this->getDistance();
 
 				T add = offset * ((l - m_distance) / l);
 
-				ValueFollower<T>::m_value += add;
+				this->step( add );
 
 				return true;
 			}
 
-			T offset = ValueFollower<T>::m_follow - ValueFollower<T>::m_value;
+			T offset = this->getDistance();
 
 			T add = offset * (step / l);
 
-			ValueFollower<T>::m_value += add;
+			this->step( add );
 
 			return false;
 		}
@@ -151,7 +175,7 @@ namespace Menge
 		}
 
 		void setAcceleration( float _acceleration )
-		{ 
+		{
 			m_acceleration = _acceleration;
 		}
 
@@ -173,11 +197,11 @@ namespace Menge
 	protected:
 		bool _update( float _timing ) override
 		{
-			float l = mt::length( ValueFollower<T>::m_follow, ValueFollower<T>::m_value );
+			float l = this->getLength();
 
 			if( mt::equal_f_z( l ) == true )
 			{
-				ValueFollower<T>::m_value = ValueFollower<T>::m_follow;
+				this->overtake();
 
 				return true;
 			}
@@ -188,26 +212,26 @@ namespace Menge
 
 			if( step >= l )
 			{
-				ValueFollower<T>::m_value = ValueFollower<T>::m_follow;
+				this->overtake();
 
 				return true;
 			}
 			else if( step + m_distance >= l )
 			{
-				T offset = ValueFollower<T>::m_follow - ValueFollower<T>::m_value;
+				T offset = this->getDistance();
 
 				T add = offset * ((l - m_distance) / l);
 
-				ValueFollower<T>::m_value += add;
+				this->step( add );
 
 				return true;
 			}
 
-			T offset = ValueFollower<T>::m_follow - ValueFollower<T>::m_value;
+			T offset = this->getDistance();
 
 			T add = offset * (step / l);
 
-			ValueFollower<T>::m_value += add;
+			this->step( add );
 
 			return false;
 		}

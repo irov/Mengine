@@ -5,14 +5,12 @@ src
     TTFPlugin.h
 	TTFPlugin.cpp
     TTFServiceInterface.h
-    TTFText.h
-    TTFText.cpp
     TTFFont.h
     TTFFont.cpp
-    TTFFontManager.h
-    TTFFontManager.cpp    
     TTFAtlasService.h
-    TTFAtlasService.cpp
+    TTFAtlasService.cpp    
+    TTFPrototypeGenerator.h
+    TTFPrototypeGenerator.cpp
 )
 
 #add_definitions(-DMENGE_PLUGIN_DLL)

@@ -461,7 +461,7 @@ namespace Menge
 	ResourceReferencePtr ResourceManager::generateResource( const ConstString& _type ) const
 	{
 		ResourceReferencePtr resource = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototypeT<ResourceReference *>( CONST_STRING( m_serviceProvider, Resource ), _type );
+			->generatePrototype( CONST_STRING( m_serviceProvider, Resource ), _type );
 
 		if( resource == nullptr )
 		{

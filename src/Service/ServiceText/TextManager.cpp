@@ -904,8 +904,7 @@ namespace Menge
                         code = 32;
                     }
 
-                    GlyphCode glyphChar;
-                    glyphChar.setUTF8( code );
+                    GlyphCode glyphChar = code;
 
                     if( font->hasGlyph( glyphChar ) == false )
                     {

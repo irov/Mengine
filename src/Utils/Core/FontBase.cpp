@@ -22,16 +22,6 @@ namespace Menge
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FontBase::setCategory( const ConstString & _category )
-	{
-		m_category = _category;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & FontBase::getCategory() const
-	{
-		return m_category;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void FontBase::setColourFont( const ColourValue & _colour )
 	{
 		m_colourFont = _colour;
@@ -136,5 +126,34 @@ namespace Menge
 		}
 
 		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FontBase::initializeBase_( const IniUtil::IniStore & _ini )
+	{
+		ColourValue colourFont;
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorFont", colourFont, m_serviceProvider ) == true )
+		{
+			this->setColourFont( colourFont );
+		}
+
+		ColourValue colourOutline;
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorOutline", colourOutline, m_serviceProvider ) == true )
+		{
+			this->setColourOutline( colourOutline );
+		}
+
+		float lineOffset;
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "LineOffset", lineOffset, m_serviceProvider ) == true )
+		{
+			this->setLineOffset( lineOffset );
+		}
+
+		float charOffset;
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "CharOffset", charOffset, m_serviceProvider ) == true )
+		{
+			this->setCharOffset( charOffset );
+		}
+
+		return true;
 	}
 }

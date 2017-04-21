@@ -12,14 +12,14 @@ namespace Menge
 		(void)_category;
 		(void)_prototype;
 
-		m_factoryBitmapFont = new FactoryPool<BitmapFont, 8>( m_serviceProvider );
+		m_factoryFont = new FactoryPool<BitmapFont, 8>( m_serviceProvider );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PointerFactorable BitmapFontPrototypeGenerator::generate()
 	{
-		BitmapFont * font = m_factoryBitmapFont->createObject();
+		BitmapFont * font = m_factoryFont->createObject();
 
 		font->setServiceProvider( m_serviceProvider );
 
@@ -28,7 +28,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t BitmapFontPrototypeGenerator::count() const
 	{
-		uint32_t count = m_factoryBitmapFont->countObject();
+		uint32_t count = m_factoryFont->countObject();
 
 		return count;
 	}

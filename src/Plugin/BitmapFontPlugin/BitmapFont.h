@@ -19,7 +19,7 @@ namespace Menge
 		~BitmapFont();
 
 	public:
-		bool initialize( const IniUtil::IniStore & _ini ) override;
+		bool initialize( const ConstString & _category, const IniUtil::IniStore & _ini ) override;
 
     public:
 		void setGlyph( const BitmapGlyphPtr & _glyph );
@@ -32,11 +32,7 @@ namespace Menge
 		float getFontHeight() const override;
 
 	public:
-		bool _prepareGlyph( uint32_t _code ) override;
-
-	public:
-		const RenderTextureInterfacePtr & getTextureFont() const override;
-		const RenderTextureInterfacePtr & getTextureOutline() const override;
+		bool _prepareGlyph( GlyphCode _code ) override;
 
 	protected:
 		BitmapGlyphPtr m_glyph;
@@ -51,24 +47,10 @@ namespace Menge
 
 		float m_lineOffset;
 		float m_charOffset;
-
-		ConstString m_category;
-		FilePath m_pathFontImage;
-		FilePath m_pathOutlineImage;
-
+		
 		RenderTextureInterfacePtr m_textureFont;
 		RenderTextureInterfacePtr m_textureOutline;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<BitmapFont> BitmapFontPtr;
-	//////////////////////////////////////////////////////////////////////////
-	inline const RenderTextureInterfacePtr & BitmapFont::getTextureFont() const
-	{
-		return m_textureFont;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const RenderTextureInterfacePtr & BitmapFont::getTextureOutline() const
-	{
-		return m_textureOutline;
-	}
 }

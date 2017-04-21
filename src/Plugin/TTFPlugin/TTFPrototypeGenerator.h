@@ -6,12 +6,23 @@
 
 #	include "Factory/Factory.h"
 
+#	include "ft2build.h"
+#	include "freetype/freetype.h"
+#	include "freetype/ftglyph.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class BitmapFontPrototypeGenerator
+	class TTFPrototypeGenerator
 		: public ServantBase<PrototypeGeneratorInterface>
 	{
+	public:
+		TTFPrototypeGenerator();
+		~TTFPrototypeGenerator();
+
+	public:
+		void setFTLibrary( FT_Library _library );
+
 	public:
 		bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
 
@@ -22,6 +33,8 @@ namespace Menge
 		uint32_t count() const override;
 
 	protected:
+		FT_Library m_library;
+
 		FactoryPtr m_factoryFont;
 	};
 }

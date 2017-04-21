@@ -52,7 +52,7 @@ namespace Menge
 	Node * NodeManager::createNode( const ConstString& _type )
 	{
 		Node * node = PROTOTYPE_SERVICE(m_serviceProvider)
-            ->generatePrototypeT<Node *>( CONST_STRING(m_serviceProvider, Node), _type );
+            ->generatePrototype( CONST_STRING(m_serviceProvider, Node), _type );
 
 		if( node == nullptr )
 		{

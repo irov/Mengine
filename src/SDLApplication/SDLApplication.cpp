@@ -739,49 +739,49 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()
     {
-        SERVICE_FINALIZE( m_serviceProvider, Menge::ApplicationInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::PrefetcherServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::DataServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::PluginServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::ModuleServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::InputServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeSystemInterface );
+        SERVICE_FINALIZE( m_serviceProvider, ApplicationInterface );
+        SERVICE_FINALIZE( m_serviceProvider, PrefetcherServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, DataServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, PluginServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, ModuleServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, InputServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, UnicodeServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, UnicodeSystemInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, Menge::FileServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::CodecServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::ParticleSystemInterface2 );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::ParticleServiceInterface2 );
+        SERVICE_FINALIZE( m_serviceProvider, FileServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, CodecServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, ParticleSystemInterface2 );
+        SERVICE_FINALIZE( m_serviceProvider, ParticleServiceInterface2 );
 
-        SERVICE_FINALIZE( m_serviceProvider, Menge::SoundServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::SoundSystemInterface );
+        SERVICE_FINALIZE( m_serviceProvider, SoundServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, SoundSystemInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, Menge::PrototypeServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::ScriptServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::ConverterServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, PrototypeServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, ScriptServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, ConverterServiceInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, Menge::RenderServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::RenderMaterialServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::RenderTextureServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::RenderSystemInterface );
+        SERVICE_FINALIZE( m_serviceProvider, RenderServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, RenderMaterialServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, RenderTextureServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, RenderSystemInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, Menge::ConfigServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::StringizeServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, ConfigServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, StringizeServiceInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, Menge::ConfigServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::StringizeServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, ConfigServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, StringizeServiceInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, Menge::ArchiveServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::MemoryServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::NotificationServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, ArchiveServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, MemoryServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, NotificationServiceInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, Menge::ThreadServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::ThreadSystemInterface );
+        SERVICE_FINALIZE( m_serviceProvider, ThreadServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, ThreadSystemInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, Menge::TimerServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, Menge::TimerSystemInterface );
+        SERVICE_FINALIZE( m_serviceProvider, TimerServiceInterface );
+        SERVICE_FINALIZE( m_serviceProvider, TimerSystemInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, Menge::PlatformInterface );
+        SERVICE_FINALIZE( m_serviceProvider, PlatformInterface );
         
         if( m_fileLog != nullptr )
         {

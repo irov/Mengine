@@ -17,9 +17,6 @@ namespace Menge
 		void setName( const ConstString & _name ) override;
 		const ConstString & getName() const override;
 
-		void setCategory( const ConstString & _category ) override;
-		const ConstString & getCategory() const override;
-
 	public:
 		void setColourFont( const ColourValue & _colour ) override;
 		const ColourValue & getColorFont() const override;
@@ -38,13 +35,15 @@ namespace Menge
 
 	public:
 		U32String prepareText( const String & _text ) override;
+
+	protected:
+		bool initializeBase_( const IniUtil::IniStore & _ini );
 		
 	protected:
 		virtual bool _prepareGlyph( uint32_t _code ) = 0;
 
 	protected:
 		ConstString m_name;
-		ConstString m_category;
 
 		float m_height;
 

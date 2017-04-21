@@ -2,7 +2,6 @@
 
 #	include "TTFServiceInterface.h"
 
-#	include "Interface/MemoryInterface.h"
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/TextInterface.h"
 
@@ -12,7 +11,7 @@
 
 #	include "Kernel/Servant.h"
 
-#   include "Core/ServantBase.h"
+#   include "Core/FontBase.h"
 
 #	include "ft2build.h"
 #	include "freetype/freetype.h"
@@ -27,17 +26,19 @@ namespace Menge
 #	define MENGINE_TTF_FONT_GLYPH_HASH_SIZE 32
 
 	class TTFFont
-		: public ServantBase<TextFontInterface>
+		: public FontBase
 	{
 	public:
 		TTFFont();
 		~TTFFont();
 
 	public:
-		bool initialize( FT_Library _library, const MemoryInterfacePtr & _memory, float _height );
+		void setFTLibrary( FT_Library _library );
 
 	public:
-		U32String prepareText( const String & _text ) override;
+		bool initialize( const ConstString & _category, const IniUtil::IniStore & _ini ) override;
+
+	public:
 		bool hasGlyph( GlyphCode _char ) const override;
 		bool getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const override;
 
@@ -45,21 +46,18 @@ namespace Menge
 		float getFontHeight() const override;
 
 	protected:
-		bool prepareGlyph_( uint32_t _ch );	
+		bool _prepareGlyph( GlyphCode _ch ) override;
 
 	protected:
 		FT_Library m_library;
-
-        MemoryInterfacePtr m_memory;
-
 		FT_Face m_face;
 
 		float m_height;
 		float m_ascender;
 		float m_advance;
 		
-		typedef stdex::vector<TTFGlyph> TMapTTFGlyphs;
-		TMapTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];
+		typedef stdex::vector<TTFGlyph> TVectorTTFGlyphs;
+		TVectorTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];
 	};
 
 	typedef stdex::intrusive_ptr<TTFFont> TTFFontPtr;

@@ -146,7 +146,7 @@ namespace Menge
 	Box2DWorld * Box2DModule::createWorld( const mt::vec2f& _gravity )
     {
 		Box2DWorld * world = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototypeT<Box2DWorld *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2D" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DWorld" ) );
+			->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2D" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DWorld" ) );
 
 		if( world->initialize( _gravity ) == false )
 		{

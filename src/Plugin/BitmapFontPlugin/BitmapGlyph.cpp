@@ -75,10 +75,11 @@ namespace Menge
 		{
 		public:
 			BitmapGlyphSaxCallback( ServiceProviderInterface * _serviceProvider, BitmapGlyph * _glyph, const ConstString & _pakName, const FilePath & _path )
-				: m_serviceProvider(_serviceProvider)				
+				: m_serviceProvider(_serviceProvider)
 				, m_glyph(_glyph)
 				, m_pakName(_pakName)
 				, m_path(_path)
+				, m_glyphCode(0)
 				, m_valid(false)
 			{
 			}
@@ -253,8 +254,7 @@ namespace Menge
 							);
 					}
 
-					GlyphCode glyphCode;
-					glyphCode.setUTF8( cp );
+					GlyphCode glyphCode = cp;
 
 					float ascender = m_glyph->getAscender();
 					offset.y = ascender - offset.y;
@@ -266,7 +266,7 @@ namespace Menge
 				else if( strcmp( _node, "kerning" ) == 0 )
 				{	
 					float advance = 0.f;
-					GlyphCode nextCode;					
+					GlyphCode nextCode = 0;					
 
 					for( uint32_t i = 0; i != _count; ++i )
 					{
@@ -301,11 +301,11 @@ namespace Menge
 									);
 							}
 
-							nextCode.setUTF8( cp );
+							nextCode = cp;
 						}
 					}
 
-					if( m_glyphCode.empty() == true )
+					if( m_glyphCode == 0 )
 					{
 						LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize %s:%s invalid kerning m_glyphChar is nullptr"
 							, m_pakName.c_str()
@@ -397,7 +397,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool BitmapGlyph::existGlyphCode( GlyphCode _code ) const
     {
-        uint32_t hash_code = _code.getUTF8() % 257;
+        uint32_t hash_code = _code % 257;
         const TVectorGlyphChar & glyps = m_chars[hash_code];
 
         for( TVectorGlyphChar::const_iterator
@@ -421,7 +421,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const BitmapGlyphChar * BitmapGlyph::getGlyphChar( GlyphCode _code ) const
 	{
-        uint32_t hash_code = _code.getUTF8() % 257;
+        uint32_t hash_code = _code % 257;
         const TVectorGlyphChar & glyps = m_chars[hash_code];
 
         for( TVectorGlyphChar::const_iterator
@@ -448,7 +448,7 @@ namespace Menge
 		if( this->existGlyphCode( _code ) == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("TextGlyph::addGlyphChar code '%u' alredy exist!"
-				, _code.getUTF8()
+				, _code
 				);
 
 			return false;
@@ -461,7 +461,7 @@ namespace Menge
 		glyphChar.advance = _advance;
 		glyphChar.size = _size;
 
-        uint32_t hash_code = _code.getUTF8() % 257;
+        uint32_t hash_code = _code % 257;
         TVectorGlyphChar & glyps = m_chars[hash_code];
 
         glyps.push_back( glyphChar );
@@ -471,7 +471,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void BitmapGlyph::addKerning( GlyphCode _char, GlyphCode _next, float _kerning )
     {
-        uint32_t hash_code = (_char.getUTF8() + _next.getUTF8()) % 257;
+        uint32_t hash_code = (_char + _next) % 257;
         TVectorKerning & kerning = m_kernings[hash_code];
 
         KerningDesc desc;
@@ -484,7 +484,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     float BitmapGlyph::getKerning( GlyphCode _char, GlyphCode _next ) const
     {
-        uint32_t hash_code = (_char.getUTF8() + _next.getUTF8()) % 257;
+        uint32_t hash_code = (_char + _next) % 257;
         const TVectorKerning & kerning = m_kernings[hash_code];
 
         for( TVectorKerning::const_iterator

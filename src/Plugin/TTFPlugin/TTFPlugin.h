@@ -4,6 +4,10 @@
 
 #	include "TTFServiceInterface.h"
 
+#	include "ft2build.h"
+#	include "freetype/freetype.h"
+#	include "freetype/ftglyph.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -19,7 +23,7 @@ namespace Menge
 		bool _initialize() override;
 		void _finalize() override;
 
-    protected:
-        bool createTTFFont( const ConstString & _name, const ConstString& _pakName, const FilePath& _fileName );
+	protected:
+		FT_Library m_library;
 	};
 }

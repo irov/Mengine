@@ -2,6 +2,13 @@
 
 #	include "TTFServiceInterface.h"
 
+#	include "Interface/FileSystemInterface.h"
+#	include "Interface/MemoryInterface.h"
+
+#	include "Core/MemoryHelper.h"
+
+#	include "Logger/Logger.h"
+
 #	include "utf8.h"
 
 #	include <algorithm>
@@ -10,6 +17,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TTFFont::TTFFont()
+		: m_library(nullptr)
+		, m_face(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -18,13 +27,40 @@ namespace Menge
 		FT_Done_Face( m_face );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TTFFont::initialize( FT_Library _library, const MemoryInterfacePtr & _memory, float _height )
+	void TTFFont::setFTLibrary( FT_Library _library )
 	{
 		m_library = _library;
-        m_memory = _memory;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TTFFont::initialize( const ConstString & _category, const IniUtil::IniStore & _ini )
+	{
+		if( this->initializeBase_( _ini ) == false )
+		{
+			return false;
+		}
 
-		FT_Byte * memory_byte = m_memory->getMemory();
-		size_t memory_size = m_memory->getSize();
+		FilePath ttfPath;
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Path", ttfPath, m_serviceProvider ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s don't setup Glyph"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+
+		InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
+			->openInputFile( _category, ttfPath, false );
+
+		if( stream == nullptr )
+		{
+			return false;
+		}
+
+		MemoryInterfacePtr memory = Helper::createMemoryStream( m_serviceProvider, stream, __FILE__, __LINE__ );
+		
+		FT_Byte * memory_byte = memory->getMemory();
+		size_t memory_size = memory->getSize();
 
 		if( memory_byte == nullptr )
 		{
@@ -43,70 +79,23 @@ namespace Menge
             return false;
         }
 
-        FT_F26Dot6 fontSizePoints = (FT_F26Dot6)_height * 64;
-        FT_UInt dpi = 72;
+		uint32_t fontHeight = 64;
+		IniUtil::getIniValue( _ini, m_name.c_str(), "Height", fontHeight, m_serviceProvider );
+		
+		uint32_t fontDPI = 72;
+		IniUtil::getIniValue( _ini, m_name.c_str(), "DPI", fontDPI, m_serviceProvider );
+		
+        FT_F26Dot6 fontSizePoints = (FT_F26Dot6)fontHeight * 64;
+        FT_UInt dpi = (FT_UInt)fontDPI;
         if( FT_Set_Char_Size( m_face, fontSizePoints, fontSizePoints, dpi, dpi ) != FT_Err_Ok )
         {
             return false;
         }
 
-		m_height = _height;
+		m_height = (float)fontHeight;
         m_ascender = static_cast<float>(m_face->size->metrics.ascender >> 6);
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	U32String TTFFont::prepareText( const String & _text )
-	{
-		U32String result;
-
-		const char * text_str = _text.c_str();
-		size_t text_len = _text.size();
-
-		for( const char
-			*text_it = text_str,
-			*text_end = text_str + text_len + 1;
-		text_it != text_end;
-		)
-		{
-			uint32_t code = 0;
-			utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
-
-			if( err != utf8::internal::UTF8_OK )
-			{
-				continue;
-			}
-
-			if( code == 0 )
-			{
-				continue;
-			}
-			else if( code == 10 )
-			{
-				continue;
-			}
-			else if( code == 13 )
-			{
-				continue;
-			}
-			else if( code == 160 )
-			{
-				code = 32;
-			}
-			else if( code == 9 )
-			{
-				code = 32;
-			}
-
-			if( this->prepareGlyph_( code ) == false )
-			{
-				return 0;
-			}
-
-			result.push_back( code );
-		}
-
-		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -114,7 +103,7 @@ namespace Menge
 		class PFindGlyph
 		{
 		public:
-			PFindGlyph( uint32_t _ch )
+			PFindGlyph( GlyphCode _ch )
 				: m_ch( _ch )
 			{
 			}
@@ -126,17 +115,17 @@ namespace Menge
 			}
 
 		protected:
-			uint32_t m_ch;
+			GlyphCode m_ch;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-    bool TTFFont::prepareGlyph_( uint32_t _ch )
+    bool TTFFont::_prepareGlyph( GlyphCode _ch )
     {
         uint32_t ch_hash = _ch % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
 
-        TMapTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
+        TVectorTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
 
-        TMapTTFGlyphs::iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _ch ) );
+        TVectorTTFGlyphs::iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _ch ) );
 
         if( it_found != glyphs.end() )
         {
@@ -229,12 +218,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TTFFont::hasGlyph( GlyphCode _char ) const
 	{
-		uint32_t utf8_ch = _char.getUTF8();
-		uint32_t ch_hash = utf8_ch % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
+		uint32_t ch_hash = _char % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
 
-		const TMapTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
+		const TVectorTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
 
-		TMapTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _char ) );
+		TVectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _char ) );
 
 		if( it_found == glyphs.end() )
 		{
@@ -244,14 +232,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TTFFont::getGlyph( GlyphCode _char, const Glyph * _glyph ) const
+	bool TTFFont::getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const
 	{
-		uint32_t utf8_ch = _char.getUTF8();
-		uint32_t ch_hash = utf8_ch % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
+		uint32_t ch_hash = _char % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
 
-		const TMapTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
+		const TVectorTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
 
-		TMapTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _ch ) );
+		TVectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _char ) );
 
 		if( it_found == glyphs.end() )
 		{
@@ -267,41 +254,32 @@ namespace Menge
 		_glyph->texture = glyph.texture;
 		_glyph->uv = glyph.uv;
 
+		if( _next == 0 )
+		{
+			return true;
+		}
+
+		FT_UInt rindex = FT_Get_Char_Index( m_face, _next );
+
+		if( rindex == 0 )
+		{
+			return true;
+		}
+
+		FT_Vector ttf_kerning;
+		FT_Get_Kerning( m_face, _char, _next, FT_KERNING_DEFAULT, &ttf_kerning );
+
+		if( ttf_kerning.x == 0 )
+		{
+			return true;
+		}
+
+		float kerning = (float)(ttf_kerning.x >> 6);
+
+		_glyph->advance += kerning;
+
 		return true;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    float TTFFont::getKerning( GlyphCode _lch, GlyphCode _rch ) const
-    {
-		uint32_t utf8_lch = _lch.getUTF8();
-
-        FT_UInt lindex = FT_Get_Char_Index( m_face, utf8_lch );
-
-        if( lindex == 0 )
-        {
-            return 0.f;
-        }
-
-		uint32_t utf8_rch = _rch.getUTF8();
-		        
-        int rindex = FT_Get_Char_Index( m_face, utf8_rch );
-
-        if( rindex == 0 )
-        {
-            return 0.f;
-        }
-
-        FT_Vector ttf_kerning;
-        FT_Get_Kerning( m_face, utf8_lch, utf8_rch, FT_KERNING_DEFAULT, &ttf_kerning );
-
-        if( ttf_kerning.x == 0 )
-        {
-            return 0.f;
-        }
-
-        float kerning = (float)( ttf_kerning.x >> 6);
-
-        return kerning;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	float TTFFont::getFontHeight() const
 	{

@@ -21,8 +21,13 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BitmapFont::initialize( const IniUtil::IniStore & _ini )
+	bool BitmapFont::initialize( const ConstString & _category, const IniUtil::IniStore & _ini )
 	{
+		if( this->initializeBase_( _ini ) == false )
+		{
+			return false;
+		}
+
 		FilePath glyphPath;
 		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Glyph", glyphPath, m_serviceProvider ) == false )
 		{
@@ -34,7 +39,7 @@ namespace Menge
 		}
 
 		BitmapGlyphPtr glyph = BITMAPGLYPH_SERVICE(m_serviceProvider)
-			->getGlyph( m_category, glyphPath );
+			->getGlyph( _category, glyphPath );
 
 		if( glyph == nullptr )
 		{
@@ -60,66 +65,38 @@ namespace Menge
 			return false;
 		}
 
-		m_pathFontImage = pathImage;
-
 		FilePath pathOutline;
 		IniUtil::getIniValue( _ini, m_name.c_str(), "Outline", pathOutline, m_serviceProvider );
 
-		m_pathOutlineImage = pathOutline;
-
-		ColourValue colourFont;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorFont", colourFont, m_serviceProvider ) == true )
-		{
-			this->setColourFont( colourFont );
-		}
-
-		ColourValue colourOutline;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorOutline", colourOutline, m_serviceProvider ) == true )
-		{
-			this->setColourOutline( colourOutline );
-		}
-
-		float lineOffset;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "LineOffset", lineOffset, m_serviceProvider ) == true )
-		{
-			this->setLineOffset( lineOffset );
-		}
-
-		float charOffset;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "CharOffset", charOffset, m_serviceProvider ) == true )
-		{
-			this->setCharOffset( charOffset );
-		}
-
 		const ConstString & fontImageCodec = CODEC_SERVICE( m_serviceProvider )
-			->findCodecType( m_pathFontImage );
+			->findCodecType( pathImage );
 
 		m_textureFont = RENDERTEXTURE_SERVICE( m_serviceProvider )
-			->loadTexture( m_category, m_pathFontImage, fontImageCodec );
+			->loadTexture( _category, pathImage, fontImageCodec );
 
 		if( m_textureFont == nullptr )
 		{
 			LOGGER_ERROR( m_serviceProvider )("TextFont::_compile '%s' invalid loading font image '%s'"
 				, m_name.c_str()
-				, m_pathFontImage.c_str()
+				, pathImage.c_str()
 				);
 
 			return false;
 		}
 
-		if( m_pathOutlineImage.empty() == false )
+		if( pathOutline.empty() == false )
 		{
 			const ConstString & outlineImageCodec = CODEC_SERVICE( m_serviceProvider )
-				->findCodecType( m_pathOutlineImage );
+				->findCodecType( pathOutline );
 
 			m_textureOutline = RENDERTEXTURE_SERVICE( m_serviceProvider )
-				->loadTexture( m_category, m_pathOutlineImage, outlineImageCodec );
+				->loadTexture( _category, pathOutline, outlineImageCodec );
 
 			if( m_textureOutline == nullptr )
 			{
 				LOGGER_ERROR( m_serviceProvider )("TextFont::_compile '%s' can't loaded outline image file '%s'"
 					, m_name.c_str()
-					, m_pathOutlineImage.c_str()
+					, pathOutline.c_str()
 					);
 
 				return false;
@@ -145,7 +122,7 @@ namespace Menge
 			return false;
 		}
 
-		_glyph->uv = ch->uv;
+		mt::uv4_from_mask( _glyph->uv, ch->uv );
 		_glyph->offset = ch->offset;
 		_glyph->size = ch->size;		
 		_glyph->advance = ch->advance;

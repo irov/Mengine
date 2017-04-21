@@ -42,16 +42,6 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<TTFFontInterface> TTFFontInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	class TTFFontManagerInterface
-		: public ServiceInterface
-	{
-		SERVICE_DECLARE( "TTFFontManager" );
-
-	public:
-		virtual bool createFont( const ConstString & _name, const ConstString& _pakName, const FilePath& _fileName ) = 0;
-		virtual TTFFontInterfacePtr getFont( const ConstString & _name ) const = 0;
-	};
 }
 
 #   define TTFATLAS_SERVICE( serviceProvider )\

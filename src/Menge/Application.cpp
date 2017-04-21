@@ -1488,10 +1488,10 @@ namespace Menge
 
 		m_cursorResource = nullptr;
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::GameServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::PlayerServiceInterface );		
-		SERVICE_FINALIZE( m_serviceProvider, Menge::PackageServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::UserdataServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, GameServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, PlayerServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, PackageServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, UserdataServiceInterface );
 
 		CODEC_SERVICE(m_serviceProvider)
 			->unregisterDecoder( STRINGIZE_STRING_LOCAL(m_serviceProvider, "memoryImage") );
@@ -1499,14 +1499,14 @@ namespace Menge
 		CODEC_SERVICE(m_serviceProvider)
 			->unregisterDecoder( STRINGIZE_STRING_LOCAL( m_serviceProvider, "archiveImage" ) );
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::GraveyardInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::NodeServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ResourceServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderMaterialServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderTextureServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::TextServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::PrototypeServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, GraveyardInterface );
+		SERVICE_FINALIZE( m_serviceProvider, NodeServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, ResourceServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, RenderServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, RenderMaterialServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, RenderTextureServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, TextServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, PrototypeServiceInterface );
 
 		m_locale.clear();
 		m_projectCodename.clear();

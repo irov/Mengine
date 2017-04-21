@@ -26,7 +26,7 @@ namespace Menge
         }
 
 	protected:
-		Factorable * generate() override
+		PointerFactorable generate() override
 		{
 			Type * scriptable = m_factory->createObject();
 

@@ -77,8 +77,7 @@ namespace Menge
 				code = 32;
 			}
 
-			GlyphCode glyphChar;
-			glyphChar.setUTF8( code );
+			GlyphCode glyphChar = code;
 
 			uint32_t code_next = 0;
 			const char * text_it_next = text_it;		
@@ -97,8 +96,7 @@ namespace Menge
 				continue;
 			}
 
-            GlyphCode glyphCharNext;
-            glyphCharNext.setUTF8( code_next );
+            GlyphCode glyphCharNext = code_next;
 
 			Glyph glyph;
 			if( _font->getGlyph( glyphChar, glyphCharNext, &glyph ) == false )

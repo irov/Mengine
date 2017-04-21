@@ -49,7 +49,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	struct Glyph
 	{
-		mt::vec4f uv;
+		mt::uv4f uv;
 		mt::vec2f offset;		
 		mt::vec2f size;
 
@@ -65,11 +65,8 @@ namespace Menge
 		virtual void setName( const ConstString & _name ) = 0;
 		virtual const ConstString & getName() const = 0;
 
-		virtual void setCategory( const ConstString & _name ) = 0;
-		virtual const ConstString & getCategory() const = 0;
-
 	public:
-		virtual bool initialize( const IniUtil::IniStore & _ini ) = 0;
+		virtual bool initialize( const ConstString & _category, const IniUtil::IniStore & _ini ) = 0;
 
 	public:
 		virtual void setColourFont( const ColourValue & _colour ) = 0;
@@ -95,10 +92,6 @@ namespace Menge
 
 		virtual float getLineOffset() const = 0;
 		virtual float getCharOffset() const = 0;
-
-	public:
-		virtual const RenderTextureInterfacePtr & getTextureFont() const = 0;
-		virtual const RenderTextureInterfacePtr & getTextureOutline() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<TextFontInterface> TextFontInterfacePtr;

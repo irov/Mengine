@@ -8,6 +8,9 @@ src
 	
 	ServantBase.h
 	ServiceBase.h
+	
+	FontBase.h
+	FontBase.cpp
     
     Date.h
     Date.cpp
@@ -76,6 +79,7 @@ src
 	ConstStringHolderLocalString.cpp
 	ConstStringTypes.h
         
+        
     RenderUtils.h
     
     OutputStreamWriter.h   
@@ -97,6 +101,7 @@ ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 INCLUDE_DIRECTORIES(    ${Mengine_SOURCE_DIR}/Utils 
                         ${THIRDPARTY_DIR}/boost
+						${THIRDPARTY_DIR}/utf8/source
                         ) 
 
 SET( MENGE_DEPENDENCIES

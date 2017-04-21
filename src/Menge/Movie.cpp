@@ -1279,7 +1279,7 @@ namespace Menge
 		}
 
         SurfaceImagePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-            ->generatePrototypeT<SurfaceImage *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceImage ) );
+            ->generatePrototype( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceImage ) );
 
         if( surface == nullptr )
         {
@@ -1361,7 +1361,7 @@ namespace Menge
 		}
 
         SurfaceImagePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-            ->generatePrototypeT<SurfaceImage *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceImage ) );
+            ->generatePrototype( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceImage ) );
 
         if( surface == nullptr )
         {
@@ -1493,7 +1493,7 @@ namespace Menge
 		}
 
         SurfaceImageSequencePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-            ->generatePrototypeT<SurfaceImageSequence *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceImageSequence ) );
+            ->generatePrototype( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceImageSequence ) );
 
         if( surface == nullptr )
         {
@@ -1644,7 +1644,7 @@ namespace Menge
 		}
 
 		SurfaceVideoPtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototypeT<SurfaceVideo *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceVideo ) );
+			->generatePrototype( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceVideo ) );
 
 		if( surface == nullptr )
 		{
@@ -1700,7 +1700,7 @@ namespace Menge
 		}
 
 		SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototypeT<SurfaceSound *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceSound ) );
+			->generatePrototype( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceSound ) );
 
 		if( surfaceSound == nullptr )
 		{
@@ -1744,7 +1744,7 @@ namespace Menge
 		}
 
 		SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototypeT<SurfaceSound *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceSound ) );
+			->generatePrototype( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceSound ) );
 
 		if( surfaceSound == nullptr )
 		{
@@ -1847,7 +1847,7 @@ namespace Menge
 		}
 
         SurfaceImagePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-            ->generatePrototypeT<SurfaceImage *>( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceImage ) );
+            ->generatePrototype( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceImage ) );
 
         if( surface == nullptr )
         {

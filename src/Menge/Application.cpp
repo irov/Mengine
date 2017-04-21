@@ -457,7 +457,7 @@ namespace Menge
 			}
 
         protected:
-            Factorable * generate() override
+			PointerFactorable generate() override
             {
                 Scene * scene = NODE_SERVICE(m_serviceProvider)
                     ->createNodeT<Scene *>( CONST_STRING(m_serviceProvider, Scene) );

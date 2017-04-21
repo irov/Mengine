@@ -72,12 +72,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	namespace
 	{
-		class TextGlyphSaxCallback
+		class BitmapGlyphSaxCallback
 		{
 		public:
-			TextGlyphSaxCallback( ServiceProviderInterface * _serviceProvider, TextGlyph * _textGlyph, const ConstString & _pakName, const FilePath & _path )
+			BitmapGlyphSaxCallback( ServiceProviderInterface * _serviceProvider, TextGlyph * _textGlyph, const ConstString & _pakName, const FilePath & _path )
 				: m_serviceProvider(_serviceProvider)				
-				, m_textGlyph(_textGlyph)
+				, m_glyph(_textGlyph)
 				, m_pakName(_pakName)
 				, m_path(_path)
 				, m_valid(false)
@@ -85,7 +85,7 @@ namespace Menge
 			}
 
 		protected:
-			void operator = ( const TextGlyphSaxCallback & )
+			void operator = ( const BitmapGlyphSaxCallback & )
 			{
 			}
 
@@ -132,7 +132,7 @@ namespace Menge
 									);
 							}
 
-							m_textGlyph->setSize( size );
+							m_glyph->setSize( size );
 						}
 					}
 				}
@@ -155,7 +155,7 @@ namespace Menge
 									);
 							}
 
-							m_textGlyph->setAscender( ascender );
+							m_glyph->setAscender( ascender );
 						}
 						else if( strcmp( key, "height" ) == 0 )
 						{
@@ -169,7 +169,7 @@ namespace Menge
 									);
 							}
 
-							m_textGlyph->setHeight( height );
+							m_glyph->setHeight( height );
 						}
 						else if( strcmp( key, "descender" ) == 0 )
 						{
@@ -183,7 +183,7 @@ namespace Menge
 									);
 							}
 
-							m_textGlyph->setDescender( descender );
+							m_glyph->setDescender( descender );
 						}
 					}
 				}
@@ -257,10 +257,10 @@ namespace Menge
 					GlyphCode glyphCode;
 					glyphCode.setUTF8( cp );
 
-					float ascender = m_textGlyph->getAscender();
+					float ascender = m_glyph->getAscender();
 					offset.y = ascender - offset.y;
 
-					m_textGlyph->addGlyphChar( glyphCode, uv, offset, advance, size );
+					m_glyph->addGlyphChar( glyphCode, uv, offset, advance, size );
 
                     m_glyphCode = glyphCode;
 				}
@@ -316,7 +316,7 @@ namespace Menge
 						return;
 					}
 
-                    m_textGlyph->addKerning( m_glyphCode, nextCode, advance );
+                    m_glyph->addKerning( m_glyphCode, nextCode, advance );
 				}
 			}
 
@@ -333,7 +333,7 @@ namespace Menge
 
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
-			TextGlyph * m_textGlyph;
+			TextGlyph * m_glyph;
 
 			const ConstString & m_pakName;
 			const FilePath & m_path;
@@ -374,7 +374,7 @@ namespace Menge
 		stream->read( memory, xml_buffer_size );
 		memory[xml_buffer_size] = '\0';
 
-		TextGlyphSaxCallback tmsc(m_serviceProvider, this, _pakName, _path);
+		BitmapGlyphSaxCallback tmsc(m_serviceProvider, this, _pakName, _path);
 		if( stdex::xml_sax_parse( memory, tmsc ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize invalid parse file %s:%s"

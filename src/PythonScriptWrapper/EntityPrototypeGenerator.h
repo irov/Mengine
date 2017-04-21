@@ -28,7 +28,7 @@ namespace Menge
 		pybind::object preparePythonType();
 
 	protected:
-		Factorable * generate() override;
+		PointerFactorable generate() override;
 
 	public:
 		PyObject * getGenerator() const;

@@ -5,62 +5,33 @@
 #	include "Kernel/Resource.h"
 #	include "Kernel/Reference.h"
 
-#   include "Core/ServantBase.h"
+#   include "Core/FontBase.h"
 
 #	include "TextGlyph.h"
 
 namespace Menge
 {
 	class TextFont
-		: public ServantBase<TextFontInterface>
-		, public Resource
-		, public Reference
+		: public FontBase
 	{
 	public:
 		TextFont();
 		~TextFont();
 
     public:
-		void setName( const ConstString & _name );
-		
 		void setGlyph( const TextGlyphPtr & _glyph );
 		void setTexturePath( const ConstString & _category, const FilePath & _pathFontImage, const FilePath & _pathOutlineImage );
-		void setColourFont( const ColourValue & _colour );
-		void setColourOutline( const ColourValue & _colour );
-		void setLineOffset( float _lineOffset );
-		void setCharOffset( float _charOffset );
 
 	public:
-		const ConstString & getName() const override;
-
-	public:
-		bool getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const override;
 		bool hasGlyph( GlyphCode _char ) const override;
+		bool getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const override;
 
 	public:
 		float getFontHeight() const override;
 
 	public:
-		uint32_t getFontParams() const override;
-
-		const ColourValue & getColorFont() const override;
-		const ColourValue & getColorOutline() const override;
-
-		float getLineOffset() const override;
-		float getCharOffset() const override;
-
-	public:
 		const RenderTextureInterfacePtr & getTextureFont() const override;
 		const RenderTextureInterfacePtr & getTextureOutline() const override;
-
-
-	protected:
-		bool _compile() override;
-		void _release() override;
-
-	protected:
-		bool _incrementZero() override;
-		void _decrementZero() override;
 
 	protected:
 		TextGlyphPtr m_glyph;

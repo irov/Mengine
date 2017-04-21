@@ -7,6 +7,7 @@
 #   include "Core/FilePath.h"
 #   include "Core/GlyphChar.h"
 #   include "Core/ColourValue.h"
+#   include "Core/IniUtil.h"
 
 #	include "Config/String.h"
 
@@ -53,17 +54,35 @@ namespace Menge
 		mt::vec2f size;
 
 		float advance;
+
+		RenderTextureInterfacePtr texture;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class TextFontInterface
 		: public ServantInterface
 	{
 	public:
+		virtual void setName( const ConstString & _name ) = 0;
 		virtual const ConstString & getName() const = 0;
+
+		virtual void setCategory( const ConstString & _name ) = 0;
+		virtual const ConstString & getCategory() const = 0;
+
+	public:
+		virtual bool initialize( const IniUtil::IniStore & _ini ) = 0;
+
+	public:
+		virtual void setColourFont( const ColourValue & _colour ) = 0;
+		virtual void setColourOutline( const ColourValue & _colour ) = 0;
+		virtual void setLineOffset( float _lineOffset ) = 0;
+		virtual void setCharOffset( float _charOffset ) = 0;
+
+	public:
+		virtual U32String prepareText( const String & _text ) = 0;
 
 	public:
 		virtual bool hasGlyph( GlyphCode _char ) const = 0;
-		virtual bool getGlyph( GlyphCode _char, GlyphCode _prev, Glyph * _glyph ) const = 0;
+		virtual bool getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const = 0;
 
 	public:
 		virtual float getFontHeight() const = 0;
@@ -148,16 +167,10 @@ namespace Menge
 
 	public:
 		virtual bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const = 0;
-
 		virtual TextFontInterfacePtr getFont( const ConstString & _name ) const = 0;
-		virtual void releaseFont( const TextFontInterfacePtr & _font ) = 0;
 
 	public:
 		virtual void visitFonts( VisitorTextFontInterface * _vistitor ) = 0;
-
-	public:
-		virtual bool directFontCompile( const ConstString & _name ) = 0;
-		virtual bool directFontRelease( const ConstString & _name ) = 0;
 
 	public:
 		virtual const ConstString & getDefaultFontName() const = 0;

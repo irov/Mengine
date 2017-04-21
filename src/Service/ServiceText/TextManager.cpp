@@ -5,6 +5,7 @@
 #	include "Interface/UnicodeInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
+#	include "Interface/PrototypeManagerInterface.h"
 #	include "Interface/NotificationServiceInterface.h"
 
 #   include "Factory/FactoryPool.h"
@@ -36,8 +37,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::_initialize()
     {
-		m_factoryTextFont = new FactoryPool<TextFont, 16>( m_serviceProvider );
-		m_factoryTextGlyph = new FactoryPool<TextGlyph, 16>( m_serviceProvider );
 		m_factoryTextLocalePak = new FactoryPool<TextLocalePack, 4>( m_serviceProvider );
 		m_factoryLocalString = new FactoryPool<ConstStringHolderLocalString, 128>( m_serviceProvider );
 		
@@ -48,11 +47,8 @@ namespace Menge
     {
         m_texts.clear();
         m_fonts.clear();
-        m_glyphs.clear();
         m_packs.clear();
 
-        m_factoryTextFont = nullptr;
-        m_factoryTextGlyph = nullptr;
         m_factoryTextLocalePak = nullptr;
         m_factoryLocalString = nullptr;
     }
@@ -572,80 +568,40 @@ namespace Menge
                 return false;
             }
 
-            TextFont * font = m_factoryTextFont->createObject();
+			ConstString fontType;
+			if( IniUtil::getIniValue( ini, fontName.c_str(), "Type", fontType, m_serviceProvider ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid %s:%s font %s don't setup Type"
+					, _pakName.c_str()
+					, _path.c_str()
+					, fontName.c_str()
+					);
 
-            font->setServiceProvider( m_serviceProvider );
+				return false;
+			}
+
+			TextFontInterfacePtr font = PROTOTYPE_SERVICE( m_serviceProvider )
+				->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Font" ), fontType );
+
+			if( font == nullptr )
+			{
+				return false;
+			}
+
             font->setName( fontName );
+			font->setCategory( _pakName );
 
-            FilePath glyphPath;
-            if( IniUtil::getIniValue( ini, fontName.c_str(), "Glyph", glyphPath, m_serviceProvider ) == false )
-            {
-                LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid %s:%s font %s don't setup Glyph"
-                    , _pakName.c_str()
-                    , _path.c_str()
-                    , fontName.c_str()
-                    );
+			if( font->initialize( ini ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid initialize %s:%s font %s"
+					, _pakName.c_str()
+					, _path.c_str()
+					, fontName.c_str()
+					);
 
-                return false;
-            }
-
-            TextGlyphPtr glyph = this->loadGlyph_( _pakName, glyphPath );
-
-            if( glyph == nullptr )
-            {
-                LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid %s:%s font %s don't load Glyph %s"
-                    , _pakName.c_str()
-                    , _path.c_str()
-                    , fontName.c_str()
-                    , glyphPath.c_str()
-                    );
-
-                return false;
-            }
-
-            font->setGlyph( glyph );
-
-            FilePath pathImage;
-            if( IniUtil::getIniValue( ini, fontName.c_str(), "Image", pathImage, m_serviceProvider ) == false )
-            {
-                LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid %s:%s font %s dont setup Image"
-                    , _pakName.c_str()
-                    , _path.c_str()
-                    , fontName.c_str()
-                    );
-
-                return false;
-            }
-
-			FilePath pathOutline;
-            IniUtil::getIniValue( ini, fontName.c_str(), "Outline", pathOutline, m_serviceProvider );
-
-            font->setTexturePath( _pakName, pathImage, pathOutline );
-
-            ColourValue colourFont;
-            if( IniUtil::getIniValue( ini, fontName.c_str(), "ColorFont", colourFont, m_serviceProvider ) == true )
-            {
-                font->setColourFont( colourFont );
-            }
-
-            ColourValue colourOutline;
-            if( IniUtil::getIniValue( ini, fontName.c_str(), "ColorOutline", colourOutline, m_serviceProvider ) == true )
-            {
-                font->setColourOutline( colourOutline );
-            }
-
-            float lineOffset;
-            if( IniUtil::getIniValue( ini, fontName.c_str(), "LineOffset", lineOffset, m_serviceProvider ) == true )
-            {
-                font->setLineOffset( lineOffset );
-            }
-
-            float charOffset;
-            if( IniUtil::getIniValue( ini, fontName.c_str(), "CharOffset", charOffset, m_serviceProvider ) == true )
-            {
-                font->setCharOffset( charOffset );
-            }
-
+				return false;
+			}
+			
             m_fonts.insert( std::make_pair( fontName, font ) );
         }
 
@@ -692,47 +648,10 @@ namespace Menge
                 return false;
             }
 
-            ConstString glyphPath;
-            if( IniUtil::getIniValue( ini, fontName.c_str(), "Glyph", glyphPath, m_serviceProvider ) == false )
-            {
-                LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid %s:%s font %s don't setup Glyph"
-                    , _pakName.c_str()
-                    , _path.c_str()
-                    , fontName.c_str()
-                    );
-
-                return false;
-            }
-
-            m_glyphs.erase( glyphPath );
-
             m_fonts.erase( fontName );
         }
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    TextGlyphPtr TextManager::loadGlyph_( const ConstString & _pakName, const FilePath & _path )
-    {
-        TMapTextGlyph::iterator it_found = m_glyphs.find( _path );
-
-        if( it_found != m_glyphs.end() )
-        {
-            const TextGlyphPtr & glyph = it_found->second;
-
-            return glyph;
-        }
-
-        TextGlyphPtr glyph = m_factoryTextGlyph->createObject();
-
-        if( glyph->initialize( m_serviceProvider, _pakName, _path ) == false )
-        {
-            return nullptr;
-        }
-
-        m_glyphs.insert( std::make_pair( _path, glyph ) );
-
-        return glyph;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::addTextEntry( const ConstString& _key
@@ -847,7 +766,7 @@ namespace Menge
             return false;
         }
 
-        const TextFontPtr & font = it_found->second;
+        const TextFontInterfacePtr & font = it_found->second;
 
         _font = font;
 
@@ -863,26 +782,9 @@ namespace Menge
             return nullptr;
         }
 
-        const TextFontPtr & font = it_found->second;
-
-        if( font->incrementReference() == false )
-        {
-            return nullptr;
-        }
+        const TextFontInterfacePtr & font = it_found->second;
 
         return font;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void TextManager::releaseFont( const TextFontInterfacePtr & _font )
-    {
-        if( _font == nullptr )
-        {
-            return;
-        }
-
-        TextFontPtr font = stdex::intrusive_static_cast<TextFontPtr>(_font);
-
-        font->decrementReference();
     }
     //////////////////////////////////////////////////////////////////////////
     void TextManager::visitFonts( VisitorTextFontInterface * _vistitor )
@@ -893,48 +795,10 @@ namespace Menge
             it != it_end;
             ++it )
         {
-            const TextFontPtr & font = it->second;
+            const TextFontInterfacePtr & font = it->second;
 
             _vistitor->onTextFont( font );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool TextManager::directFontCompile( const ConstString & _name )
-    {
-        TMapTextFont::const_iterator it_found = m_fonts.find( _name );
-
-        if( it_found == m_fonts.end() )
-        {
-            return false;
-        }
-
-        const TextFontPtr & font = it_found->second;
-
-        if( font->incrementReference() == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool TextManager::directFontRelease( const ConstString & _name )
-    {
-        TMapTextFont::const_iterator it_found = m_fonts.find( _name );
-
-        if( it_found == m_fonts.end() )
-        {
-            return false;
-        }
-
-        const TextFontPtr & font = it_found->second;
-
-        if( font->decrementReference() == false )
-        {
-            return false;
-        }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & TextManager::getDefaultFontName() const

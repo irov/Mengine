@@ -451,7 +451,7 @@ namespace Menge
 	bool Player::createGlobalScene()
 	{
 		Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototypeT<Scene *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ) );
+			->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ) );
 
 		if( scene == nullptr )
 		{

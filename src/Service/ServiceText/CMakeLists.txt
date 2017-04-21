@@ -4,12 +4,6 @@ ADD_FILTER(
 src
 	TextEntry.cpp
     TextEntry.h
-    TextFont.cpp
-    TextFont.h
-	TextGlyph.cpp
-    TextGlyph.h
-    TextGlyphChar.cpp
-    TextGlyphChar.h
     TextManager.cpp
     TextManager.h
     TextLocalePak.cpp

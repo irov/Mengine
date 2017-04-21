@@ -92,10 +92,7 @@ namespace Menge
 		m_observerChangeLocale = nullptr;
 		m_observerDebugMode = nullptr;
 
-		TEXT_SERVICE(m_serviceProvider)
-			->releaseFont( m_font );
-
-        m_font = nullptr;
+		m_font = nullptr;
 		m_textEntry = nullptr;
 
 		String cacheText;
@@ -684,9 +681,6 @@ namespace Menge
 			}
 			else
 			{
-				TEXT_SERVICE(m_serviceProvider)
-					->releaseFont( m_font );
-
 				m_font = nullptr;
 
 				m_materialFont = nullptr;

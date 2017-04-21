@@ -4,6 +4,7 @@ ADD_FILTER(
 src
     Factorable.h
     Factorable.cpp  
+	FactorablePointer.h
     FactorableUnique.h
 	Factory.h
 	Factory.cpp

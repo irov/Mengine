@@ -1927,7 +1927,7 @@ namespace Menge
 			else
 			{
 				Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
-					->generatePrototypeT<Scene *>(STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ), _prototype );
+					->generatePrototype(STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ), _prototype );
 
 				if( scene == nullptr )
 				{
@@ -1959,7 +1959,7 @@ namespace Menge
 		Scene * s_createScene( const ConstString & _prototype, const ConstString & _name )
 		{
 			Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
-				->generatePrototypeT<Scene *>(STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ), _prototype );
+				->generatePrototype(STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ), _prototype );
 
 			scene->setName( _name );
 
@@ -1991,7 +1991,7 @@ namespace Menge
 		void s_setArrow( const ConstString & _prototype )
 		{
 			Arrow * arrow = PROTOTYPE_SERVICE( m_serviceProvider )
-				->generatePrototypeT<Arrow *>(STRINGIZE_STRING_LOCAL( m_serviceProvider, "Arrow" ), _prototype );
+				->generatePrototype(STRINGIZE_STRING_LOCAL( m_serviceProvider, "Arrow" ), _prototype );
 
 			if( arrow == nullptr )
 			{
@@ -2483,7 +2483,7 @@ namespace Menge
             }
 
             SurfaceImagePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-                ->generatePrototypeT<SurfaceImage *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "SurfaceImage" ) );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "SurfaceImage" ) );
 
             if( surface == nullptr )
             {
@@ -2594,18 +2594,22 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool directFontCompile( const ConstString & _fontName )
 		{
-			bool successful = TEXT_SERVICE( m_serviceProvider )
-				->directFontCompile( _fontName );
+			//bool successful = TEXT_SERVICE( m_serviceProvider )
+			//	->directFontCompile( _fontName );
 
-			return successful;
+			//return successful;
+
+			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool directFontRelease( const ConstString & _fontName )
 		{
-			bool successful = TEXT_SERVICE( m_serviceProvider )
-				->directFontRelease( _fontName );
+			//bool successful = TEXT_SERVICE( m_serviceProvider )
+			//	->directFontRelease( _fontName );
 
-			return successful;
+			//return successful;
+
+			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		ResourceReferencePtr s_getResourceReference( const ConstString & _nameResource )

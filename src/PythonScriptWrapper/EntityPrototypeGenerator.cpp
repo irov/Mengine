@@ -144,7 +144,7 @@ namespace Menge
 		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Factorable * EntityPrototypeGenerator::generate()
+	PointerFactorable EntityPrototypeGenerator::generate()
 	{
 		const pybind::object & py_type = this->preparePythonType();
 
@@ -166,7 +166,7 @@ namespace Menge
 		}
 
 		Entity * entity = PROTOTYPE_SERVICE( m_serviceProvider )
-            ->generatePrototypeT<Entity *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), m_category );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), m_category );
 
 		if( entity == nullptr )
 		{

@@ -199,7 +199,7 @@ namespace Menge
 			case AE_MOVIE_LAYER_TYPE_IMAGE:
 				{
 					SurfaceTrackMatte * surfaceTrackMatte = PROTOTYPE_SERVICE( serviceProvider )
-						->generatePrototypeT<SurfaceTrackMatte *>( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceTrackMatte" ) );
+						->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceTrackMatte" ) );
 
 					surfaceTrackMatte->setName( c_name );
 
@@ -241,7 +241,7 @@ namespace Menge
 			case AE_MOVIE_LAYER_TYPE_VIDEO:
 				{
 					SurfaceVideo * surfaceVideo = PROTOTYPE_SERVICE( serviceProvider )
-						->generatePrototypeT<SurfaceVideo *>( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceVideo" ) );
+						->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceVideo" ) );
 
 					surfaceVideo->setName( c_name );
 
@@ -272,7 +272,7 @@ namespace Menge
 			case AE_MOVIE_LAYER_TYPE_SOUND:
 				{
 					SurfaceSound * surfaceSound = PROTOTYPE_SERVICE( serviceProvider )
-						->generatePrototypeT<SurfaceSound *>( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceSound" ) );
+						->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceSound" ) );
 
 					surfaceSound->setName( c_name );
 

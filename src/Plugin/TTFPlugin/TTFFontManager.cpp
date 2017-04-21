@@ -48,7 +48,7 @@ namespace Menge
             return false;
         }
 
-		MemoryInterfacePtr memory = Helper::createMemoryStream( m_serviceProvider, stream );
+		MemoryInterfacePtr memory = Helper::createMemoryStream( m_serviceProvider, stream, __FILE__, __LINE__ );
 
         if( memory == nullptr )
         {

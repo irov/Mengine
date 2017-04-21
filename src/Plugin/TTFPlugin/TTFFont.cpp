@@ -4,6 +4,8 @@
 
 #	include "utf8.h"
 
+#	include <algorithm>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -16,7 +18,7 @@ namespace Menge
 		FT_Done_Face( m_face );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TTFFont::initialize( FT_Library _library, const MemoryInterfacePtr & _memory )
+	bool TTFFont::initialize( FT_Library _library, const MemoryInterfacePtr & _memory, float _height )
 	{
 		m_library = _library;
         m_memory = _memory;
@@ -41,13 +43,14 @@ namespace Menge
             return false;
         }
 
-        FT_F26Dot6 fontSizePoints = 64 * 64;
+        FT_F26Dot6 fontSizePoints = (FT_F26Dot6)_height * 64;
         FT_UInt dpi = 72;
         if( FT_Set_Char_Size( m_face, fontSizePoints, fontSizePoints, dpi, dpi ) != FT_Err_Ok )
         {
             return false;
         }
 
+		m_height = _height;
         m_ascender = static_cast<float>(m_face->size->metrics.ascender >> 6);
 
 		return true;
@@ -224,9 +227,27 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TTFGlyph * TTFFont::getGlyph( uint32_t _ch ) const
+	bool TTFFont::hasGlyph( GlyphCode _char ) const
 	{
-		uint32_t ch_hash = _ch % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
+		uint32_t utf8_ch = _char.getUTF8();
+		uint32_t ch_hash = utf8_ch % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
+
+		const TMapTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
+
+		TMapTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _char ) );
+
+		if( it_found == glyphs.end() )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TTFFont::getGlyph( GlyphCode _char, const Glyph * _glyph ) const
+	{
+		uint32_t utf8_ch = _char.getUTF8();
+		uint32_t ch_hash = utf8_ch % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
 
 		const TMapTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
 
@@ -234,25 +255,35 @@ namespace Menge
 
 		if( it_found == glyphs.end() )
 		{
-			return nullptr;
+			return false;
 		}
 
 		const TTFGlyph & glyph = *it_found;
 
-		return &glyph;
+		_glyph->advance = glyph.advance;
+		_glyph->offset = mt::vec2f( glyph.dx, glyph.dy );
+		_glyph->size = mt::vec2f( glyph.ax, glyph.ay );
+
+		_glyph->texture = glyph.texture;
+		_glyph->uv = glyph.uv;
+
+		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    float TTFFont::getKerning( uint32_t _lch, uint32_t _rch ) const
+    float TTFFont::getKerning( GlyphCode _lch, GlyphCode _rch ) const
     {
-        FT_UInt lindex = FT_Get_Char_Index( m_face, _lch );
+		uint32_t utf8_lch = _lch.getUTF8();
+
+        FT_UInt lindex = FT_Get_Char_Index( m_face, utf8_lch );
 
         if( lindex == 0 )
         {
             return 0.f;
         }
 
-        // get the ID to the char we need
-        int rindex = FT_Get_Char_Index( m_face, _rch );
+		uint32_t utf8_rch = _rch.getUTF8();
+		        
+        int rindex = FT_Get_Char_Index( m_face, utf8_rch );
 
         if( rindex == 0 )
         {
@@ -260,7 +291,7 @@ namespace Menge
         }
 
         FT_Vector ttf_kerning;
-        FT_Get_Kerning( m_face, _lch, _rch, FT_KERNING_DEFAULT, &ttf_kerning );
+        FT_Get_Kerning( m_face, utf8_lch, utf8_rch, FT_KERNING_DEFAULT, &ttf_kerning );
 
         if( ttf_kerning.x == 0 )
         {
@@ -271,4 +302,9 @@ namespace Menge
 
         return kerning;
     }
+	//////////////////////////////////////////////////////////////////////////
+	float TTFFont::getFontHeight() const
+	{
+		return m_height;
+	}
 }

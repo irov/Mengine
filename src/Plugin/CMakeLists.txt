@@ -57,6 +57,8 @@ if( MENGINE_TARGET_SDL )
     ADD_SUBDIRECTORY( SDLFileGroupPlugin )
 endif()
 
+ADD_SUBDIRECTORY( BitmapFontPlugin )
+
 if( MENGINE_PLUGIN_TTF )
     ADD_SUBDIRECTORY( TTFPlugin )
 endif()

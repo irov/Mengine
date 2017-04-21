@@ -4,6 +4,7 @@
 #   include "Interface/ServantInterface.h"
 
 #   include "Factory/FactorablePtr.h"
+#   include "Factory/FactorablePointer.h"
 
 #   include "Core/ConstString.h"
 
@@ -17,8 +18,9 @@ namespace Menge
 		virtual bool initialize( const ConstString & _category, const ConstString & _prototype ) = 0;
 
     public:
-        virtual Factorable * generate() = 0;
+        virtual PointerFactorable generate() = 0;
 
+	public:
         virtual uint32_t count() const = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
@@ -41,25 +43,7 @@ namespace Menge
         virtual bool hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr & _generator ) const = 0;
 
     public:
-        virtual Factorable * generatePrototype( const ConstString & _category, const ConstString & _prototype ) = 0;
-
-    public:
-        template<class T>
-        T generatePrototypeT( const ConstString & _category, const ConstString & _prototype )
-        {
-            Factorable * prototype = this->generatePrototype( _category, _prototype );
-
-#   ifdef _DEBUG
-            if( dynamic_cast<T>(prototype) == nullptr )
-            {
-                throw;
-            }
-#   endif
-
-            T t = static_cast<T>(prototype);
-
-            return t;
-        }
+        virtual PointerFactorable generatePrototype( const ConstString & _category, const ConstString & _prototype ) = 0;
 
     public:
         virtual void visitGenerators( VisitorPrototypeGenerator * _visitor ) const = 0;

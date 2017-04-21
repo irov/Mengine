@@ -7,8 +7,6 @@
 #	include "TextLocalePak.h"
 
 #	include "TextEntry.h"
-#	include "TextFont.h"
-#	include "TextGlyph.h"
 
 #   include "Factory/Factory.h"
 
@@ -48,15 +46,10 @@ namespace Menge
 		
 	public:
 		bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const override;
-
 		TextFontInterfacePtr getFont( const ConstString & _name ) const override;
-		void releaseFont( const TextFontInterfacePtr & _font ) override;
-
-		void visitFonts( VisitorTextFontInterface * _vistitor ) override;
 
 	public:
-		bool directFontCompile( const ConstString & _name ) override;
-		bool directFontRelease( const ConstString & _name ) override;
+		void visitFonts( VisitorTextFontInterface * _vistitor ) override;
 
 	public:
 		bool validate() const override;
@@ -81,26 +74,18 @@ namespace Menge
 
 		bool removeTextEntry( const ConstString& _key );
 
-	protected:
-		TextGlyphPtr loadGlyph_( const ConstString & _pakName, const FilePath & _path );
-
     protected:
 		typedef stdex::map<ConstString, TextEntry> TMapTextEntry;		
 		TMapTextEntry m_texts;
 
-		typedef stdex::map<ConstString, TextFontPtr> TMapTextFont;
+		typedef stdex::map<ConstString, TextFontInterfacePtr> TMapTextFont;
 		TMapTextFont m_fonts;
-
-		typedef stdex::map<ConstString, TextGlyphPtr> TMapTextGlyph;
-		TMapTextGlyph m_glyphs;
 
 		typedef stdex::vector<TextLocalePackPtr> TVectorPaks;
 		TVectorPaks m_packs;
 		
 		ConstString m_defaultFontName;
 
-		FactoryPtr m_factoryTextFont;
-		FactoryPtr m_factoryTextGlyph;
 		FactoryPtr m_factoryTextLocalePak;
 		FactoryPtr m_factoryLocalString;
 

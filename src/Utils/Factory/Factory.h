@@ -4,6 +4,7 @@
 #	include "Interface/ThreadSystemInterface.h"
 
 #   include "Factory/FactorablePtr.h"
+#   include "Factory/FactorablePointer.h"
 
 #   include "Core/Pointer.h"
 #	include "Core/MemoryAllocator.h"
@@ -14,10 +15,6 @@
 
 namespace Menge
 {
-    //////////////////////////////////////////////////////////////////////////
-	class Factorable;
-    //////////////////////////////////////////////////////////////////////////
-    typedef PointerT<Factorable> PointerFactorable;
     //////////////////////////////////////////////////////////////////////////
 	class FactoryDestroyListenerInterface
 		: public FactorablePtr

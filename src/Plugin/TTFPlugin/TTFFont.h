@@ -4,12 +4,15 @@
 
 #	include "Interface/MemoryInterface.h"
 #	include "Interface/RenderSystemInterface.h"
+#	include "Interface/TextInterface.h"
 
 #	include "Config/String.h"
 
 #	include "Factory/FactorablePtr.h"
 
 #	include "Kernel/Servant.h"
+
+#   include "Core/ServantBase.h"
 
 #	include "ft2build.h"
 #	include "freetype/freetype.h"
@@ -24,19 +27,22 @@ namespace Menge
 #	define MENGINE_TTF_FONT_GLYPH_HASH_SIZE 32
 
 	class TTFFont
-		: public TTFFontInterface
+		: public ServantBase<TextFontInterface>
 	{
 	public:
 		TTFFont();
 		~TTFFont();
 
 	public:
-		bool initialize( FT_Library _library, const MemoryInterfacePtr & _memory );
+		bool initialize( FT_Library _library, const MemoryInterfacePtr & _memory, float _height );
 
 	public:
 		U32String prepareText( const String & _text ) override;
-		const TTFGlyph * getGlyph( uint32_t _ch ) const override;
-        float getKerning( uint32_t _lch, uint32_t _rch ) const override;
+		bool hasGlyph( GlyphCode _char ) const override;
+		bool getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const override;
+
+	protected:
+		float getFontHeight() const override;
 
 	protected:
 		bool prepareGlyph_( uint32_t _ch );	
@@ -48,6 +54,7 @@ namespace Menge
 
 		FT_Face m_face;
 
+		float m_height;
 		float m_ascender;
 		float m_advance;
 		

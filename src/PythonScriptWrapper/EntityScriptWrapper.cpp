@@ -71,7 +71,7 @@ namespace Menge
 		const pybind::object & s_createEntity( const ConstString & _prototype )
 		{
 			Entity * entity = PROTOTYPE_SERVICE(m_serviceProvider)
-				->generatePrototypeT<Entity *>(STRINGIZE_STRING_LOCAL(m_serviceProvider, "Entity"), _prototype );
+				->generatePrototype(STRINGIZE_STRING_LOCAL(m_serviceProvider, "Entity"), _prototype );
 
 			if( entity == nullptr )
 			{

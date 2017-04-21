@@ -23,22 +23,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileLogger::initialize()
 	{
-		WString unicode_logFilename;
-		unicode_logFilename += L"Game";
-
-		unicode_logFilename += L"_";
-        
-        WString date;
-        Helper::makeDateTime( date );
-		unicode_logFilename += date;
-
-		unicode_logFilename += L".log";
-
 		String utf8_logFilename;
-		if( Helper::unicodeToUtf8( m_serviceProvider, unicode_logFilename, utf8_logFilename ) == false )
-		{
-			return false;
-		}
+		utf8_logFilename += "Game";
+
+		utf8_logFilename += "_";
+        
+        String date;
+        Helper::makeDateTime( date );
+		utf8_logFilename += date;
+
+		utf8_logFilename += ".log";
 
 		FilePath logFilename = Helper::stringizeFilePath( m_serviceProvider, utf8_logFilename.c_str(), utf8_logFilename.size() );
 

@@ -26,7 +26,7 @@ namespace Menge
         }
 
 	protected:
-		Factorable * generate() override
+		PointerFactorable generate() override
 		{
 			Surface * surface = m_factory->createObject();
 

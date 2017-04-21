@@ -66,8 +66,10 @@ namespace Menge
 
         uint32_t texture_channel = texture_image->getHWChannels();
 
+		const RenderImageInterfacePtr & image = texture->getImage();
+
         size_t texture_pitch;
-		uint8_t * texture_memory = texture->lock( &texture_pitch, 0, r, false );
+		uint8_t * texture_memory = image->lock( &texture_pitch, 0, r, false );
 
         const uint8_t * glyph_buffer = reinterpret_cast<const uint8_t *>(_buffer);
 
@@ -101,7 +103,7 @@ namespace Menge
             }
         }
 
-		texture->unlock( 0 );
+		image->unlock( 0, true );
 
 		float atlas_width_inv = 1.f / float( m_maxAtlasWidth );
 		float atlas_height_inv = 1.f / float( dimension );

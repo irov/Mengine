@@ -129,7 +129,7 @@ namespace Menge
 		return false;
 	}
     //////////////////////////////////////////////////////////////////////////
-    Factorable * PrototypeManager::generatePrototype( const ConstString & _category, const ConstString & _prototype )
+	PointerFactorable PrototypeManager::generatePrototype( const ConstString & _category, const ConstString & _prototype )
     {
         PrototypeGeneratorInterfacePtr generator;
         if( this->hasPrototype( _category, _prototype, generator ) == false )

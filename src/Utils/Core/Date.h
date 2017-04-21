@@ -6,6 +6,6 @@ namespace Menge
 {
 	namespace Helper
 	{
-		void makeDateTime( WString & _date );
+		void makeDateTime( String & _date );
 	}
 }

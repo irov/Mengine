@@ -22,7 +22,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextLine::initialize( const TextFontInterfacePtr & _font, const String & _text )
 	{
-		WString::size_type text_size = _text.length();
+		String::size_type text_size = _text.length();
 		m_charsData.reserve( text_size );
 				
         const char * text_str = _text.c_str();

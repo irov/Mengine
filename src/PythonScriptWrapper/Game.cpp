@@ -546,7 +546,7 @@ namespace Menge
 		}
 
 		m_defaultArrow = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototypeT<Arrow *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Arrow" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Default" ) );
+			->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Arrow" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Default" ) );
 
 		if( m_defaultArrow == nullptr )
 		{

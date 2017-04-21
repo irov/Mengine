@@ -30,7 +30,7 @@ namespace Menge
 		bool hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr & _generator ) const override;
 
     public:
-        Factorable * generatePrototype( const ConstString & _category, const ConstString & _prototype ) override;
+		PointerFactorable generatePrototype( const ConstString & _category, const ConstString & _prototype ) override;
 
     public:
         void visitGenerators( VisitorPrototypeGenerator * _visitor ) const override;

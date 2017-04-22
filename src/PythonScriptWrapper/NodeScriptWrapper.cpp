@@ -298,15 +298,15 @@ namespace Menge
 			return ws_args;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		WString textfield_getText( TextField * _textField )
-		{
-			const String & utf8 = _textField->getText();
+		//WString textfield_getText( TextField * _textField )
+		//{
+		//	const U32String & utf8 = _textField->getText();
 
-			WString unicode;
-			Helper::utf8ToUnicode( m_serviceProvider, utf8, unicode );
+		//	WString unicode;
+		//	Helper::utf8ToUnicode( m_serviceProvider, utf8, unicode );
 
-			return unicode;
-		}
+		//	return unicode;
+		//}
 		//////////////////////////////////////////////////////////////////////////
 		Node * movie_getMovieNode( Movie * _movie, const ConstString & _name )
 		{
@@ -7336,7 +7336,7 @@ namespace Menge
 					.def( "removeTextFormatArgs", &TextField::removeTextFormatArgs )
 					.def_depricated( "getTextKey", &TextField::getTextID, "use getTextID" )
 					.def( "getTextID", &TextField::getTextID )
-					.def_proxy_static( "getText", nodeScriptMethod, &NodeScriptMethod::textfield_getText )
+					//.def_proxy_static( "getText", nodeScriptMethod, &NodeScriptMethod::textfield_getText )
 					.def( "getTextExpectedArgument", &TextField::getTextExpectedArgument )
 
 					.def_depricated( "getHeight", &TextField::getFontHeight, "use getFontHeight" )

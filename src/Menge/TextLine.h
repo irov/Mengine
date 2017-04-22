@@ -11,6 +11,7 @@
 
 #	include "Math/vec4.h"
 #	include "Math/mat4.h"
+#	include "Math/uv4.h"
 
 #	include "Math/box2.h"
 
@@ -19,11 +20,12 @@ namespace Menge
 	struct CharData
 	{
 		GlyphCode code;
-		mt::vec2f vertex[4];
-		mt::vec4f uv;
+		mt::uv4f uv;
 		mt::vec2f offset;
 		mt::vec2f size;
 		float advance;
+
+		RenderTextureInterfacePtr texture;
 	};
 
 	typedef stdex::vector<CharData> TVectorCharData;
@@ -34,21 +36,18 @@ namespace Menge
 		TextLine( ServiceProviderInterface * _serviceProvider, float _charOffset );
 
 	public:
-		bool initialize( const TextFontInterfacePtr & _font, const String & _text );
+		bool initialize( const TextFontInterfacePtr & _font, const U32String & _text );
 
 	public:
-		void prepareRenderObject( mt::vec2f & _offset
-			, float _charScale
-			, const mt::uv4f & _uv
-			, ColourValue_ARGB _argb
-			, TVectorRenderVertex2D & _renderObject ) const;
+		const TVectorCharData & getCharData() const;
 
     public:
 		float getLength() const;
 		uint32_t getCharsDataSize() const;
 
-	private:
-		void updateRenderLine_( mt::vec2f & _offset, float _charScale ) const;
+	public:
+		void calcCharPosition( const CharData & _cd, const mt::vec2f & _offset, float _charScale, uint32_t _index, mt::vec3f & _pos ) const;
+		void advanceCharOffset( const CharData & _cd, float _charScale, mt::vec2f & _offset ) const;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;

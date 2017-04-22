@@ -125,6 +125,10 @@ PLUGIN_EXPORT( MengeVideoCodec );
 PLUGIN_EXPORT( MengeAmplifier );
 PLUGIN_EXPORT( MengeZip );
 PLUGIN_EXPORT( MengeLZ4 );
+PLUGIN_EXPORT( BitmapFont );
+#ifdef MENGINE_PLUGIN_TTF
+PLUGIN_EXPORT( TTF )
+#endif
 #ifdef MENGINE_PLUGIN_SPINE
 PLUGIN_EXPORT( Spine );
 #endif
@@ -572,6 +576,13 @@ namespace Menge
         MENGINE_ADD_PLUGIN(MengeOggVorbis, "initialize Plugin Ogg Vorbis Codec...");
         MENGINE_ADD_PLUGIN(MengeAmplifier, "initialize Plugin Amplifier...");
         MENGINE_ADD_PLUGIN(MengeVideoCodec, "initialize Plugin Video Codec...");
+
+		MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin TTF..." );
+
+#ifdef MENGINE_PLUGIN_TTF
+		MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
+#endif
+
 #ifdef MENGINE_PLUGIN_SPINE
         MENGINE_ADD_PLUGIN(Spine, "initialize Plugin Spine...");
 #endif

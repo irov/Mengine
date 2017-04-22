@@ -21,6 +21,10 @@ namespace Menge
 	public:
 		bool initialize( const ConstString & _category, const IniUtil::IniStore & _ini ) override;
 
+	protected:
+		bool _compile() override;
+		void _release() override;
+
     public:
 		void setGlyph( const BitmapGlyphPtr & _glyph );
 
@@ -36,18 +40,11 @@ namespace Menge
 
 	protected:
 		BitmapGlyphPtr m_glyph;
-
-		ConstString m_name;
-		float m_height;
 		
-		uint32_t m_params;
+		ConstString m_category;
+		FilePath m_pathFontImage;
+		FilePath m_pathOutlineImage;
 
-		ColourValue m_colourFont;
-		ColourValue m_colourOutline;
-
-		float m_lineOffset;
-		float m_charOffset;
-		
 		RenderTextureInterfacePtr m_textureFont;
 		RenderTextureInterfacePtr m_textureOutline;
 	};

@@ -58,6 +58,7 @@ namespace Menge
     {
 		(void)_level;
         (void)_flag;
+		(void)_count;
 
 		SDL_Log( "%s", _data );
 		//OutputDebugString( _data );

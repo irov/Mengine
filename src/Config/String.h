@@ -13,7 +13,9 @@ namespace Menge
 
     typedef stdex::vector<Char> TVectorChar;
     typedef stdex::vector<String> TVectorString;
-
+	
     typedef stdex::vector<WChar> TVectorWChar;
     typedef stdex::vector<WString> TVectorWString;
+
+	typedef stdex::vector<U32String> TVectorU32String;
 }

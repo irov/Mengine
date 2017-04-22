@@ -4,10 +4,15 @@
 
 #   include "Core/ServantBase.h"
 
+#   include "Kernel/Resource.h"
+#   include "Kernel/Reference.h"
+
 namespace Menge
 {
 	class FontBase
 		: public ServantBase<TextFontInterface>
+		, public Resource
+		, public Reference
 	{
 	public:
 		FontBase();
@@ -16,6 +21,14 @@ namespace Menge
 	public:
 		void setName( const ConstString & _name ) override;
 		const ConstString & getName() const override;
+
+	public:
+		bool compileFont() override;
+		void releaseFont() override;
+
+	public:
+		bool _incrementZero() override;
+		void _decrementZero() override;
 
 	public:
 		void setColourFont( const ColourValue & _colour ) override;

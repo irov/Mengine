@@ -6,9 +6,14 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FontBase::FontBase()
-		: m_params( EFP_NONE )
+		: m_height( 0.f )
+		, m_params( EFP_NONE )
 		, m_lineOffset( 0.f )
 		, m_charOffset( 0.f )
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FontBase::~FontBase()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////	
@@ -20,6 +25,30 @@ namespace Menge
 	const ConstString & FontBase::getName() const
 	{
 		return m_name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FontBase::compileFont()
+	{
+		bool successful = this->incrementReference();
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FontBase::releaseFont()
+	{
+		this->decrementReference();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FontBase::_incrementZero()
+	{
+		bool successful = this->compile();
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FontBase::_decrementZero()
+	{
+		this->release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FontBase::setColourFont( const ColourValue & _colour )
@@ -122,7 +151,7 @@ namespace Menge
 				return 0;
 			}
 
-			result.push_back( code );
+			result.push_back( (char32_t)code );
 		}
 
 		return result;

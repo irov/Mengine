@@ -69,6 +69,10 @@ namespace Menge
 		virtual bool initialize( const ConstString & _category, const IniUtil::IniStore & _ini ) = 0;
 
 	public:
+		virtual bool compileFont() = 0;
+		virtual void releaseFont() = 0;
+
+	public:
 		virtual void setColourFont( const ColourValue & _colour ) = 0;
 		virtual void setColourOutline( const ColourValue & _colour ) = 0;
 		virtual void setLineOffset( float _lineOffset ) = 0;

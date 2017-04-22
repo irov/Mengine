@@ -23,56 +23,10 @@ namespace Menge
 			String::size_type start = 0;
 			String::size_type pos = 0;
 
-			do 
-			{
-				pos = _str.find_first_of(_delim, start);
-			
-				if (pos == String::npos )
-				{
-					_outStrings.push_back( _str.substr(start) );
-					break;
-				}
-				else
-				{
-					_outStrings.push_back( _str.substr(start, pos - start) );
-					start = pos + 1;
-				}
-
-				if( _trimDelims == true )
-				{
-					start = _str.find_first_not_of(_delim, start);
-				}
-
-				++numSplits;
-
-			}while( pos != String::npos );
-		}
-		//////////////////////////////////////////////////////////////////////////
-		void split2( TVectorString & _outStrings, const String& _str, bool _trimDelims, const TVectorString & _delims )
-		{
-			String::size_type start = 0;
-			String::size_type pos = 0;
-
 			do
 			{
-				pos = String::npos;
+				pos = _str.find_first_of( _delim, start );
 
-				for( TVectorString::const_iterator
-					it = _delims.begin(),
-					it_end = _delims.end();
-				it != it_end;
-				++it )
-				{
-					const String & delim = *it;
-
-					String::size_type pos_delim = _str.find_first_of( delim, start );
-
-					if( pos > pos_delim )
-					{
-						pos = pos_delim;
-					}
-				}
-				
 				if( pos == String::npos )
 				{
 					_outStrings.push_back( _str.substr( start ) );
@@ -86,17 +40,64 @@ namespace Menge
 
 				if( _trimDelims == true )
 				{
-					String::size_type pos_n = String::npos;
+					start = _str.find_first_not_of( _delim, start );
+				}
 
-					for( TVectorString::const_iterator
-						it = _delims.begin(),
-						it_end = _delims.end();
+				++numSplits;
+
+			} while( pos != String::npos );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		template<class T, class C = stdex::vector<T> >
+		static void t_split2( C & _outStrings, const T & _str, bool _trimDelims, const C & _delims )
+		{
+			typename T::size_type start = 0;
+			typename T::size_type pos = 0;
+
+			do
+			{
+				pos = T::npos;
+
+				for( typename C::const_iterator
+					it = _delims.begin(),
+					it_end = _delims.end();
 					it != it_end;
 					++it )
-					{
-						const String & delim = *it;
+				{
+					const T & delim = *it;
 
-						String::size_type pos_delim = _str.find_first_not_of( delim, start );
+					typename T::size_type pos_delim = _str.find_first_of( delim, start );
+
+					if( pos > pos_delim )
+					{
+						pos = pos_delim;
+					}
+				}
+
+				if( pos == T::npos )
+				{
+					_outStrings.push_back( _str.substr( start ) );
+					break;
+				}
+				else
+				{
+					_outStrings.push_back( _str.substr( start, pos - start ) );
+					start = pos + 1;
+				}
+
+				if( _trimDelims == true )
+				{
+					typename T::size_type pos_n = T::npos;
+
+					for( typename C::const_iterator
+						it = _delims.begin(),
+						it_end = _delims.end();
+						it != it_end;
+						++it )
+					{
+						const T & delim = *it;
+
+						typename T::size_type pos_delim = _str.find_first_not_of( delim, start );
 
 						if( pos_n > pos_delim )
 						{
@@ -105,8 +106,18 @@ namespace Menge
 					}
 
 					start = pos_n;
-				}				
-			} while( pos != String::npos );
+				}
+			} while( pos != T::npos );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void split2( TVectorString & _outStrings, const String& _str, bool _trimDelims, const TVectorString & _delims )
+		{
+			t_split2( _outStrings, _str, _trimDelims, _delims );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void u32split2( TVectorU32String & _outStrings, const U32String& _str, bool _trimDelims, const TVectorU32String & _delims )
+		{
+			t_split2( _outStrings, _str, _trimDelims, _delims );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void wsplit( TVectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delims )

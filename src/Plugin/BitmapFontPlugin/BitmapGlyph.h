@@ -40,6 +40,10 @@ namespace Menge
 		float getDescender() const;
 
 	public:
+		void setTextureWidth( uint32_t _textureWidth );
+		void setTextureHeight( uint32_t _textureHeight );
+		
+	public:
         bool existGlyphCode( GlyphCode _code ) const;
 		const BitmapGlyphChar * getGlyphChar( GlyphCode _code ) const;
 
@@ -54,6 +58,9 @@ namespace Menge
 
 		float m_ascender;
 		float m_descender;
+
+		float m_textureInvWidth;
+		float m_textureInvHeight;
 
 		typedef std::vector<BitmapGlyphChar> TVectorGlyphChar;
         TVectorGlyphChar m_chars[257];

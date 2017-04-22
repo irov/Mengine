@@ -3,6 +3,7 @@
 #	include "Interface/NotificationServiceInterface.h"
 
 #	include "Kernel/Node.h"
+#	include "Kernel/Materialable.h"
 
 #	include "Core/ColourValue.h"
 #	include "Core/ValueInterpolator.h"
@@ -20,6 +21,7 @@ namespace Menge
 	
 	class TextField
 		: public Node
+		, public Materialable
 	{
 	public:
 		TextField();
@@ -46,9 +48,6 @@ namespace Menge
 	public:
 		size_t getTextExpectedArgument() const;
 		
-	public:
-		const String & getText() const;
-
 	protected:
 		bool updateTextCache_() const;
 
@@ -143,8 +142,8 @@ namespace Menge
 
         void invalidateVerticesWM_() const;
 
-		inline TVectorRenderVertex2D & getOutlineVertices( const TextFontInterfacePtr & _font );
-		inline TVectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font );
+		inline const TVectorRenderVertex2D & getOutlineVertices( const TextFontInterfacePtr & _font );
+		inline const TVectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font );
 
 		void updateVertexData_( const TextFontInterfacePtr & _font, const ColourValue & _color, TVectorRenderVertex2D& _vertexData );
 
@@ -169,14 +168,6 @@ namespace Menge
 		mutable bool m_invalidateFont;
 
 	protected:
-		inline const RenderMaterialInterfacePtr & getMaterialFont();
-		inline const RenderMaterialInterfacePtr & getMaterialOutline();
-				
-	protected:
-		mutable RenderMaterialInterfacePtr m_materialFont;
-		mutable RenderMaterialInterfacePtr m_materialOutline;
-
-	protected:
 		const ConstString & calcFontName() const;
 		float calcLineOffset() const;
 		float calcCharOffset() const;
@@ -191,12 +182,15 @@ namespace Menge
 		float calcCharScale() const;
 
 	protected:
+		RenderMaterialInterfacePtr _updateMaterial() const;
+
+	protected:
 		ConstString m_key;
 
 		mutable const TextEntryInterface * m_textEntry;
 		mutable TVectorString m_textFormatArgs;
 		
-		mutable String m_cacheText;
+		mutable U32String m_cacheText;
 				
 		ETextHorizontAlign m_horizontAlign;
 		ETextVerticalAlign m_verticalAlign;
@@ -228,6 +222,17 @@ namespace Menge
 				
 		mutable TVectorTextLine m_lines;
 
+		struct Chunk
+		{
+			uint32_t begin;
+			uint32_t count;
+
+			RenderMaterialInterfacePtr material;
+		};
+
+		typedef stdex::vector<Chunk> TVectorChunks;
+		TVectorChunks m_chunks;
+
 		TVectorRenderVertex2D m_vertexDataText;
 		TVectorRenderVertex2D m_vertexDataOutline;
 
@@ -241,7 +246,7 @@ namespace Menge
 		mutable bool m_invalidateTextEntry;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline TVectorRenderVertex2D & TextField::getOutlineVertices( const TextFontInterfacePtr & _font )
+	inline const TVectorRenderVertex2D & TextField::getOutlineVertices( const TextFontInterfacePtr & _font )
 	{
 		if( m_invalidateVerticesWM == true )
 		{
@@ -251,7 +256,7 @@ namespace Menge
 		return m_vertexDataOutlineWM;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline TVectorRenderVertex2D & TextField::getTextVertices( const TextFontInterfacePtr & _font )
+	inline const TVectorRenderVertex2D & TextField::getTextVertices( const TextFontInterfacePtr & _font )
 	{
 		if( m_invalidateVerticesWM == true )
 		{
@@ -289,25 +294,5 @@ namespace Menge
 	inline void TextField::invalidateFont() const
 	{
 		m_invalidateFont = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const RenderMaterialInterfacePtr & TextField::getMaterialFont()
-	{
-		if( m_invalidateFont == true )
-		{
-			this->updateFont_();
-		}
-
-		return m_materialFont;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const RenderMaterialInterfacePtr & TextField::getMaterialOutline()
-	{
-		if( m_invalidateFont == true )
-		{
-			this->updateFont_();
-		}
-
-		return m_materialOutline;
 	}
 }

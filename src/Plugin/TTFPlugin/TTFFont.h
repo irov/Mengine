@@ -38,6 +38,10 @@ namespace Menge
 	public:
 		bool initialize( const ConstString & _category, const IniUtil::IniStore & _ini ) override;
 
+	protected:
+		bool _compile() override;
+		void _release() override;
+
 	public:
 		bool hasGlyph( GlyphCode _char ) const override;
 		bool getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const override;
@@ -52,9 +56,12 @@ namespace Menge
 		FT_Library m_library;
 		FT_Face m_face;
 
-		float m_height;
+		ConstString m_category;
+		FilePath m_ttfPath;
+
+		uint32_t m_fontDPI;
+
 		float m_ascender;
-		float m_advance;
 		
 		typedef stdex::vector<TTFGlyph> TVectorTTFGlyphs;
 		TVectorTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];

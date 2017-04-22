@@ -2,10 +2,13 @@
 
 #	include "Interface/StringizeInterface.h"
 #   include "Interface/PrototypeManagerInterface.h"
+#   include "Interface/StringizeInterface.h"
 
 #	include "Core/PixelFormat.h"
 
 #	include "Logger/Logger.h"
+
+#	include "TTFPrototypeGenerator.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( TTFAtlasService );
@@ -29,11 +32,23 @@ namespace Menge
 			return false;
 		}
 
+		TTFPrototypeGeneratorPtr generator = new FactorableUnique<TTFPrototypeGenerator>();
+
+		generator->setFTLibrary( m_library );
+
+		PROTOTYPE_SERVICE( m_serviceProvider )
+			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Font" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "TTF" )
+				, new FactorableUnique<TTFPrototypeGenerator>()
+			);
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TTFPlugin::_finalize()
 	{
+		PROTOTYPE_SERVICE( m_serviceProvider )
+			->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Font" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "TTF" ) );
+
 		SERVICE_FINALIZE( m_serviceProvider, TTFAtlasServiceInterface );
 	}
 }

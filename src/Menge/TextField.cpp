@@ -41,8 +41,6 @@ namespace Menge
 		, m_outline(true)
 		, m_pixelsnap(true)
 		, m_debugMode( false )
-		, m_materialFont(nullptr)
-		, m_materialOutline(nullptr)
 		, m_invalidateVertices(true)
         , m_invalidateVerticesWM(true)
 		, m_invalidateTextLines(true)
@@ -92,10 +90,15 @@ namespace Menge
 		m_observerChangeLocale = nullptr;
 		m_observerDebugMode = nullptr;
 
-		m_font = nullptr;
+		if( m_font != nullptr )
+		{
+			m_font->releaseFont();
+			m_font = nullptr;
+		}
+
 		m_textEntry = nullptr;
 
-		String cacheText;
+		U32String cacheText;
 		m_cacheText.swap( cacheText );
 
 		TVectorTextLine lines;
@@ -112,9 +115,6 @@ namespace Menge
 
 		TVectorRenderVertex2D vertexDataOutlineWM;
 		m_vertexDataOutlineWM.swap( vertexDataOutlineWM );
-
-		m_materialFont = nullptr;
-		m_materialOutline = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale )
@@ -152,21 +152,16 @@ namespace Menge
 	void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const ColourValue & _color, TVectorRenderVertex2D & _vertexData )
 	{
 		_vertexData.clear();
-
-		float fontHeght = _font->getFontHeight();
-
-		const RenderTextureInterfacePtr & textureFont = _font->getTextureFont();
 				
-		const mt::uv4f & uv = textureFont->getUV();
-
+		float fontHeght = _font->getFontHeight();
 		float lineOffset = this->calcLineOffset();
 
 		const TVectorTextLine & lines = this->getTextLines();
 
-		mt::vec2f offset(0.f, 0.f);
-
+		mt::vec2f offset( 0.f, 0.f );
+		
 		ETextVerticalAlign verticalAlign = this->calcVerticalAlign();
-
+		
 		switch( verticalAlign )
 		{
 		case ETFVA_BOTTOM:
@@ -184,6 +179,17 @@ namespace Menge
 		float charScale = this->calcCharScale();
 
 		ColourValue_ARGB argb = _color.getAsARGB();
+		
+		ConstString materialName;
+
+		switch( m_blendMode )
+		{
+		case EMB_NORMAL:
+			{
+				materialName = RENDERMATERIAL_SERVICE( m_serviceProvider )
+					->getMaterialName( EM_TEXTURE_BLEND );
+			}break;
+		};
 
 		for( TVectorTextLine::const_iterator
 			it_line = lines.begin(),
@@ -193,12 +199,73 @@ namespace Menge
 		{
 			const TextLine & line = *it_line;
 
-            float alignOffsetX = this->getHorizontAlignOffset_( line );
+			const TVectorCharData & charData = line.getCharData();
+
+			if( charData.empty() == true )
+			{
+				continue;
+			}
+
+			float alignOffsetX = this->getHorizontAlignOffset_( line );
 			offset.x = alignOffsetX;
 
-			line.prepareRenderObject( offset, charScale, uv, argb, _vertexData );
+			Chunk chunk;
+			chunk.begin = 0;
+			chunk.count = 0;
+			chunk.material = nullptr;
 
-            offset.y += fontHeght;
+			const CharData & ch0 = charData[0];
+
+			RenderMaterialInterfacePtr material0 = RENDERMATERIAL_SERVICE( m_serviceProvider )
+				->getMaterial( materialName, PT_TRIANGLELIST, 1, &ch0.texture );
+
+			chunk.material = material0;
+
+			for( TVectorCharData::const_iterator
+				it = charData.begin(),
+				it_end = charData.end();
+				it != it_end;
+				++it )
+			{
+				const CharData & cd = *it;
+
+				for( uint32_t i = 0; i != 4; ++i )
+				{
+					RenderVertex2D v;
+
+					line.calcCharPosition( cd, offset, charScale, i, v.position );
+
+					v.color = argb;
+					v.uv[0] = cd.uv[i];
+
+					_vertexData.push_back( v );
+				}
+
+				line.advanceCharOffset( cd, charScale, offset );
+				
+				RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( m_serviceProvider )
+					->getMaterial( materialName, PT_TRIANGLELIST, 1, &cd.texture );
+
+				if( chunk.material == material )
+				{
+					chunk.count += 4;
+				}
+				else
+				{
+					m_chunks.push_back( chunk );
+
+					chunk.begin = chunk.begin + chunk.count;
+					chunk.count = 4;
+					chunk.material = material;
+				}
+			}
+
+			if( chunk.count != 0 )
+			{
+				m_chunks.push_back( chunk );
+			}
+
+			offset.y += fontHeght;
 			offset.y += lineOffset;
 		}
 	}
@@ -216,93 +283,121 @@ namespace Menge
 			return;
 		}
 
-		this->renderOutline_( _state );
-
-		const RenderMaterialInterfacePtr & material = this->getMaterialFont();
-
-		if( material == nullptr )
-		{
-			return;
-		}
-
 		const TextFontInterfacePtr & font = this->getFont();
+		
+		const TVectorRenderVertex2D & textVertices = this->getTextVertices( font );
 
-		if( font == nullptr )
+		if( textVertices.empty() == true )
 		{
 			return;
 		}
 
-		TVectorRenderVertex2D & textVertices = this->getTextVertices( font );
-		
-        if( textVertices.empty() == true )
-        {
-            return;
-        }
-
-		uint32_t countVertex;
-		
-		if( m_maxCharCount == (uint32_t)-1 )
-		{
-			countVertex = (uint32_t)textVertices.size();
-		}
-		else
-		{
-			countVertex = m_maxCharCount * 4;
-		}
-
-		const TVectorRenderVertex2D::value_type * vertices = &(textVertices[0]);
+		const TVectorRenderVertex2D::value_type * vertices = &textVertices.front();
 
 		const mt::box2f & bb = this->getBoundingBox();
 
-		_renderService
-			->addRenderQuad( _state, material, vertices, countVertex, &bb, false );
+		for( TVectorChunks::const_iterator
+			it = m_chunks.begin(),
+			it_end = m_chunks.end();
+			it != it_end;
+			++it )
+		{
+			const Chunk & chunk = *it;
+
+			const TVectorRenderVertex2D::value_type * chunk_vertices = vertices + chunk.begin;
+
+			_renderService
+				->addRenderQuad( _state, chunk.material, chunk_vertices, chunk.count, &bb, false );
+		}
+
+		//this->renderOutline_( _state );
+
+		//const RenderMaterialInterfacePtr & material = this->getMaterialFont();
+
+		//if( material == nullptr )
+		//{
+		//	return;
+		//}
+
+		//const TextFontInterfacePtr & font = this->getFont();
+
+		//if( font == nullptr )
+		//{
+		//	return;
+		//}
+
+		//TVectorRenderVertex2D & textVertices = this->getTextVertices( font );
+		//
+  //      if( textVertices.empty() == true )
+  //      {
+  //          return;
+  //      }
+
+		//uint32_t countVertex;
+		//
+		//if( m_maxCharCount == (uint32_t)-1 )
+		//{
+		//	countVertex = (uint32_t)textVertices.size();
+		//}
+		//else
+		//{
+		//	countVertex = m_maxCharCount * 4;
+		//}
+
+		//const TVectorRenderVertex2D::value_type * vertices = &(textVertices[0]);
+
+		//const mt::box2f & bb = this->getBoundingBox();
+
+		//_renderService
+		//	->addRenderQuad( _state, material, vertices, countVertex, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::renderOutline_( const RenderObjectState * _state )
 	{
-		if( m_outline == false )
-		{
-			return;
-		}
+		(void)_state;
+		//if( m_outline == false )
+		//{
+		//	return;
+		//}
 
-		const RenderMaterialInterfacePtr & material = this->getMaterialOutline();
+		//const RenderMaterialInterfacePtr & material = this->getMaterialOutline();
 
-		if( material == nullptr )
-		{
-			return;
-		}
+		//if( material == nullptr )
+		//{
+		//	return;
+		//}
 
-		const TextFontInterfacePtr & font = this->getFont();
+		//const TextFontInterfacePtr & font = this->getFont();
 
-		if( font == nullptr )
-		{
-			return;
-		}
-		
-		TVectorRenderVertex2D & outlineVertices = this->getOutlineVertices( font );
+		//if( font == nullptr )
+		//{
+		//	return;
+		//}
+		//
+		//TVectorRenderVertex2D & outlineVertices = this->getOutlineVertices( font );
 
-		if( outlineVertices.empty() == true )
-		{
-			return;
-		}
+		//if( outlineVertices.empty() == true )
+		//{
+		//	return;
+		//}
 
-		uint32_t countVertex;
+		//uint32_t countVertex;
 
-		if( m_maxCharCount == (uint32_t)-1 )
-		{
-			countVertex = (uint32_t)outlineVertices.size();
-		}
-		else
-		{
-			countVertex = m_maxCharCount * 4;
-		}
+		//if( m_maxCharCount == (uint32_t)-1 )
+		//{
+		//	countVertex = (uint32_t)outlineVertices.size();
+		//}
+		//else
+		//{
+		//	countVertex = m_maxCharCount * 4;
+		//}
 
-		TVectorRenderVertex2D::value_type * vertices = &(outlineVertices[0]);
+		//TVectorRenderVertex2D::value_type * vertices = &(outlineVertices[0]);
 
-		const mt::box2f & bb = this->getBoundingBox();
+		//const mt::box2f & bb = this->getBoundingBox();
 
-        RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _state, material, vertices, countVertex, &bb, false );
+  //      RENDER_SERVICE(m_serviceProvider)
+		//	->addRenderQuad( _state, material, vertices, countVertex, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t TextField::getCharCount() const
@@ -518,29 +613,33 @@ namespace Menge
 			return;
 		}
 
-		String space_delim = " ";
+		U32String space_delim = U" ";
 
-		TVectorString line_delims;
-		line_delims.push_back( "\n" );
-		line_delims.push_back( "\r\n" );
-		line_delims.push_back( "\n\r" );
-		line_delims.push_back( "\n\r\t" );
+		TVectorU32String line_delims;
+		line_delims.push_back( U"\n" );
+		line_delims.push_back( U"\r\n" );
+		line_delims.push_back( U"\n\r" );
+		line_delims.push_back( U"\n\r\t" );
 
-		TVectorString space_delims;
-		space_delims.push_back( " " );
-		space_delims.push_back( "\r" );
+		TVectorU32String space_delims;
+		space_delims.push_back( U" " );
+		space_delims.push_back( U"\r" );
 
-		TVectorString lines;
-		Utils::split2( lines, m_cacheText, false, line_delims );
+		TVectorU32String lines;
+		Utils::u32split2( lines, m_cacheText, false, line_delims );
 
 		if( m_debugMode == true )
 		{
-			lines.insert( lines.begin(), m_key.c_str() );
+			String s_key = m_key.c_str();
+
+			U32String u32_key( s_key.begin(), s_key.end() );
+
+			lines.insert( lines.begin(), u32_key );
 		}
 
 		float charOffset = this->calcCharOffset();
 		
-		for(TVectorString::const_iterator 
+		for(TVectorU32String::const_iterator 
 			it = lines.begin(),
 			it_end = lines.end(); 
 		it != it_end; 
@@ -565,17 +664,17 @@ namespace Menge
 
 				if( textLength > maxLength )
 				{
-					TVectorString words;
-					Utils::split2( words, *it, false, space_delims );
+					TVectorU32String words;
+					Utils::u32split2( words, *it, false, space_delims );
 
-					String newLine = words.front();
+					U32String newLine = words.front();
 					words.erase( words.begin() );
 
 					while( words.empty() == false )
 					{
 						TextLine tl(m_serviceProvider,  charOffset);
 
-						String tl_string( newLine + space_delim + words.front() );
+						U32String tl_string( newLine + space_delim + words.front() );
 
 						if( tl.initialize( font, tl_string ) == false )
 						{
@@ -681,10 +780,8 @@ namespace Menge
 			}
 			else
 			{
+				m_font->releaseFont();
 				m_font = nullptr;
-
-				m_materialFont = nullptr;
-				m_materialOutline = nullptr;
 			}
 		}
 
@@ -705,25 +802,15 @@ namespace Menge
 
 			return;
 		}
-		
-		const RenderTextureInterfacePtr & textureFont = m_font->getTextureFont();
 
-		const ConstString & textureBlend = RENDERMATERIAL_SERVICE( m_serviceProvider )
-			->getMaterialName( EM_TEXTURE_BLEND );
-
-		m_materialFont = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( textureBlend, PT_TRIANGLELIST, 1, &textureFont );
-
-		const RenderTextureInterfacePtr & textureOutline = m_font->getTextureOutline();
-
-		if( textureOutline != nullptr )
+		if( m_font->compileFont() == false )
 		{
-			m_materialOutline = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( textureBlend, PT_TRIANGLELIST, 1, &textureOutline );
-		}
-		else
-		{
-			m_materialOutline = nullptr;
+			LOGGER_ERROR( m_serviceProvider )("TextField::updateFont_ '%s' invalid compile font '%s'"
+				, this->getName().c_str()
+				, fontName.c_str()
+				);
+
+			return;
 		}
 
 		this->invalidateTextLines();
@@ -1147,19 +1234,6 @@ namespace Menge
 		return m_textFormatArgs;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & TextField::getText() const
-	{
-		if( this->updateTextCache_() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::getText '%s' invalid update text cache %s"
-				, this->getName().c_str()
-				, m_key.c_str()
-				);
-		}
-
-		return m_cacheText;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	size_t TextField::getTextExpectedArgument() const
 	{
 		const TextEntryInterface * textEntry = this->getTextEntry();
@@ -1231,9 +1305,11 @@ namespace Menge
 				const String & arg = *it_arg;
 
 				fmt % arg;
-			}
+			}		
 
-			m_cacheText = fmt.str();
+			const TextFontInterfacePtr & font = this->getFont();
+
+			m_cacheText = font->prepareText( fmt.str() );
 		}
 		catch( const boost::io::format_error & _ex )
 		{
@@ -1244,7 +1320,7 @@ namespace Menge
 				);
 
 			return false;
-		}		
+		}
 		
 		return true;
 	}
@@ -1371,7 +1447,7 @@ namespace Menge
 
         this->updateVertexDataWM_( m_vertexDataTextWM, m_vertexDataText );
 
-		if( m_outline == true && m_materialOutline != nullptr )
+		if( m_outline == true )
 		{
 			this->updateVertexDataWM_( m_vertexDataOutlineWM, m_vertexDataOutline );
 		}
@@ -1433,7 +1509,7 @@ namespace Menge
 		
 		this->updateVertexData_( _font, colorFont, m_vertexDataText );
 		
-		if( m_outline == true && m_materialOutline != nullptr )
+		if( m_outline == true )
 		{
 			ColourValue colorOutline;
 
@@ -1442,5 +1518,10 @@ namespace Menge
 			
 			this->updateVertexData_( _font, colorOutline, m_vertexDataOutline );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderMaterialInterfacePtr TextField::_updateMaterial() const
+	{
+		return nullptr;
 	}
 }

@@ -20,94 +20,36 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextLine::initialize( const TextFontInterfacePtr & _font, const String & _text )
+	bool TextLine::initialize( const TextFontInterfacePtr & _font, const U32String & _text )
 	{
-		String::size_type text_size = _text.length();
+		U32String::size_type text_size = _text.length();
 		m_charsData.reserve( text_size );
-				
-        const char * text_str = _text.c_str();
-        size_t text_len = _text.size();
-
-        //const char * text_it = text_str;
-        //const char * text_end = text_str + text_len + 1;
-
-		const RenderTextureInterfacePtr & textureFont = _font->getTextureFont();
-
-		float image_width = (float)textureFont->getWidth();
-		float image_height = (float)textureFont->getHeight();
-
-		float inv_image_width = 1.f / image_width;
-		float inv_image_height = 1.f / image_height;
-
+		
 		bool successful = true;
 
-		for( const char
-            *text_it = text_str,
-            *text_end = text_str + text_len + 1;
-        text_it != text_end;
-        )
-		{			
-			uint32_t code = 0;
-			utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
+		for( U32String::const_iterator
+			it = _text.begin(),
+			it_end = _text.end();
+			it != it_end;
+			++it )
+		{
+			GlyphCode glyphChar = *it;
 			
-			if( err != utf8::internal::UTF8_OK )
-			{
-				LOGGER_ERROR(m_serviceProvider)("TextLine for fontName %s invalid glyph |%s| err code %d"
-					, _font->getName().c_str()
-					, text_it
-					, err
-					);
+			U32String::const_iterator it_kerning = it;
+			std::advance( it_kerning, 1 );
 
-				successful = false;
-
-				continue;
-			}
-
-            if( code == 0 )
-            {
-                continue;
-            }			
-			else if( code == 160 )
-			{
-				//'nbsp' replace to space :)
-				code = 32;
-			}
-			else if( code == 9 )
-			{
-				code = 32;
-			}
-
-			GlyphCode glyphChar = code;
-
-			uint32_t code_next = 0;
-			const char * text_it_next = text_it;		
-			utf8::internal::utf_error err_next = utf8::internal::validate_next( text_it_next, text_end, code_next );
-
-			if( err_next != utf8::internal::UTF8_OK )
-			{
-				LOGGER_ERROR(m_serviceProvider)("TextLine for fontName %s invalid glyph |%s| err code %d"
-					, _font->getName().c_str()
-					, text_it
-					, err
-					);
-
-				successful = false;
-
-				continue;
-			}
-
-            GlyphCode glyphCharNext = code_next;
+			GlyphCode glyphCharNext = (it_kerning != _text.end()) ? *it_kerning : 0;
 
 			Glyph glyph;
 			if( _font->getGlyph( glyphChar, glyphCharNext, &glyph ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("TextLine for fontName %s invalid glyph %d next %d"
+				LOGGER_ERROR(m_serviceProvider)("TextLine for fontName %s invalid glyph %u next %u"
 					, _font->getName().c_str()
-					, code
-					, code_next
+					, glyphChar
+					, glyphCharNext
 					);
 
-				glyph.uv = mt::vec4f( 0.f, 0.f, 0.f, 0.f );
+				mt::uv4_from_mask( glyph.uv, mt::vec4f( 0.f, 0.f, 0.f, 0.f ) );
 				glyph.offset = mt::vec2f( 0.f, 0.f );
 				glyph.advance = 0.f;
 				glyph.size = mt::vec2f( 0.f, 0.f );
@@ -119,24 +61,16 @@ namespace Menge
 					
 			CharData charData;
 
-			charData.code = glyphChar;	
-
-			mt::ident_v2( charData.vertex[0] );
-			mt::ident_v2( charData.vertex[1] );
-			mt::ident_v2( charData.vertex[2] );
-			mt::ident_v2( charData.vertex[3] );
+			charData.code = glyphChar;
 
 			charData.uv = glyph.uv;
-
-			charData.uv.x *= inv_image_width;
-			charData.uv.y *= inv_image_height;
-			charData.uv.z *= inv_image_width;
-			charData.uv.w *= inv_image_height;
 
 			charData.advance = glyph.advance;
 			charData.offset = glyph.offset;
 			
 			charData.size = glyph.size;
+
+			charData.texture = glyph.texture;
 
 			m_charsData.push_back( charData );
 
@@ -158,89 +92,25 @@ namespace Menge
 		return m_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::prepareRenderObject(	mt::vec2f & _offset		
-		, float _charScale
-		, const mt::uv4f & _uv
-		, ColourValue_ARGB _argb
-		, TVectorRenderVertex2D & _renderObject ) const
+	const TVectorCharData & TextLine::getCharData() const
 	{
-		if( m_invalidateTextLine == true )
-		{
-			this->updateRenderLine_( _offset, _charScale );
-		}
-
-		size_t renderObjectNum = _renderObject.size();
-
-		size_t chars_size = m_charsData.size();
-
-		_renderObject.resize( renderObjectNum + chars_size * 4 );
-
-		for( TVectorCharData::const_iterator
-			it_char = m_charsData.begin(), 
-			it_char_end = m_charsData.end();
-		it_char != it_char_end; 
-		++it_char )
-		{
-			const CharData & data = *it_char;
-
-			for( uint32_t i = 0; i != 4; ++i )
-			{
-				RenderVertex2D & renderVertex = _renderObject[renderObjectNum + i];
-
-				const mt::vec2f & charVertex = data.vertex[i];
-
-				renderVertex.position.x = charVertex.x;
-				renderVertex.position.y = charVertex.y;
-
-				renderVertex.position.z = 0.f;
-
-				renderVertex.color = _argb;
-			}
-
-			const mt::vec4f & char_uv = data.uv;
-
-			mt::uv4f total_uv;
-			mt::multiply_tetragon_uv4_v4( total_uv, _uv, char_uv );
-
-			for( size_t i = 0; i != 4; ++i )
-			{
-				_renderObject[renderObjectNum + i].uv[0] = total_uv[i];
-				_renderObject[renderObjectNum + i].uv[1] = total_uv[i];
-			}
-
-			renderObjectNum += 4;
-		}
-
-		_offset.x += m_offset;
-
-		return;
+		return m_charsData;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::updateRenderLine_( mt::vec2f & _offset, float _charScale ) const
+	void TextLine::calcCharPosition( const CharData & _cd, const mt::vec2f & _offset, float _charScale, uint32_t _index, mt::vec3f & _pos ) const
 	{
-		m_invalidateTextLine = false;
+		mt::vec2f size = _cd.size * _charScale;
 
-		for( TVectorCharData::iterator
-			it_char = m_charsData.begin(), 
-			it_char_end = m_charsData.end();
-		it_char != it_char_end; 
-		++it_char )
-		{
-			CharData & cd = *it_char;
+		mt::vec2f offset = _offset + _cd.offset * _charScale;
 
-			mt::vec2f size = cd.size * _charScale;
-
-			mt::vec2f offset = _offset + cd.offset * _charScale;
-			
-			cd.vertex[0] = offset + mt::vec2f( 0.f, 0.f );
-			cd.vertex[1] = offset + mt::vec2f( size.x, 0.f );
-			cd.vertex[2] = offset + mt::vec2f( size.x, size.y );
-			cd.vertex[3] = offset + mt::vec2f( 0.f, size.y );
-
-			_offset.x += (cd.advance + m_charOffset) * _charScale;
-		}
-
-		m_offset = _offset.x;		
+		_pos.x = offset.x + ((_index & 1) ? size.x : 0.f);
+		_pos.y = offset.y + ((_index & 2) ? size.y : 0.f);
+		_pos.z = 0.f;		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextLine::advanceCharOffset( const CharData & _cd, float _charScale, mt::vec2f & _offset ) const
+	{
+		_offset.x += (_cd.advance + m_charOffset) * _charScale;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

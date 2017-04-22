@@ -19,6 +19,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	BitmapGlyph::BitmapGlyph()
 		: m_size(0.f)
+		, m_textureInvWidth(1.f)
+		, m_textureInvHeight(1.f)
 		, m_height(0.f)
 		, m_ascender(0.f)
 		, m_descender(0.f)
@@ -67,6 +69,16 @@ namespace Menge
 	float BitmapGlyph::getDescender() const
 	{
 		return m_descender;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BitmapGlyph::setTextureWidth( uint32_t _textureWidth )
+	{
+		m_textureInvWidth = 1.f / (float)_textureWidth;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BitmapGlyph::setTextureHeight( uint32_t _textureHeight )
+	{
+		m_textureInvHeight = 1.f / (float)_textureHeight;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -184,6 +196,47 @@ namespace Menge
 							}
 
 							m_glyph->setDescender( descender );
+						}
+					}
+				}
+				else if( strcmp( _node, "texture" ) == 0 )
+				{
+					for( uint32_t i = 0; i != _count; ++i )
+					{
+						const char * key = _keys[i];
+						const char * value = _values[i];
+
+						if( strcmp( key, "width" ) == 0 )
+						{
+							uint32_t width = 0;
+							if( sscanf( value, "%u", &width ) != 1 )
+							{
+								LOGGER_ERROR( m_serviceProvider )("TextGlyph::initialize %s:%s invalid read width %s"
+									, m_pakName.c_str()
+									, m_path.c_str()
+									, value
+									);
+							}
+
+							uint32_t width_pow2 = Helper::getTexturePOW2( width );
+
+							m_glyph->setTextureWidth( width_pow2 );
+						}
+						else if( strcmp( key, "height" ) == 0 )
+						{
+							uint32_t height = 0;
+							if( sscanf( value, "%u", &height ) != 1 )
+							{
+								LOGGER_ERROR( m_serviceProvider )("TextGlyph::initialize %s:%s invalid read height %s"
+									, m_pakName.c_str()
+									, m_path.c_str()
+									, value
+									);
+							}
+
+							uint32_t height_pow2 = Helper::getTexturePOW2( height );
+
+							m_glyph->setTextureHeight( height_pow2 );
 						}
 					}
 				}
@@ -456,7 +509,7 @@ namespace Menge
 
 		BitmapGlyphChar glyphChar;
 		glyphChar.code = _code;
-		glyphChar.uv = _uv;
+		glyphChar.uv = _uv * mt::vec2f(m_textureInvWidth, m_textureInvHeight);
 		glyphChar.offset = _offset;
 		glyphChar.advance = _advance;
 		glyphChar.size = _size;

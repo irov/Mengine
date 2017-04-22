@@ -568,17 +568,8 @@ namespace Menge
                 return false;
             }
 
-			ConstString fontType;
-			if( IniUtil::getIniValue( ini, fontName.c_str(), "Type", fontType, m_serviceProvider ) == false )
-			{
-				LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid %s:%s font %s don't setup Type"
-					, _pakName.c_str()
-					, _path.c_str()
-					, fontName.c_str()
-					);
-
-				return false;
-			}
+			ConstString fontType = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Bitmap" );
+			IniUtil::getIniValue( ini, fontName.c_str(), "Type", fontType, m_serviceProvider );
 
 			TextFontInterfacePtr font = PROTOTYPE_SERVICE( m_serviceProvider )
 				->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Font" ), fontType );
@@ -589,9 +580,8 @@ namespace Menge
 			}
 
             font->setName( fontName );
-			font->setCategory( _pakName );
 
-			if( font->initialize( ini ) == false )
+			if( font->initialize( _pakName, ini ) == false )
 			{
 				LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid initialize %s:%s font %s"
 					, _pakName.c_str()

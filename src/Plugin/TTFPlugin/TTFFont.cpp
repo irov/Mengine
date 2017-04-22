@@ -17,14 +17,15 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TTFFont::TTFFont()
-		: m_library(nullptr)
-		, m_face(nullptr)
+		: m_library( nullptr )
+		, m_face( nullptr )
+		, m_fontDPI( 72 )
+		, m_ascender( 0.f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TTFFont::~TTFFont()
-	{
-		FT_Done_Face( m_face );
+	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TTFFont::setFTLibrary( FT_Library _library )
@@ -34,13 +35,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TTFFont::initialize( const ConstString & _category, const IniUtil::IniStore & _ini )
 	{
+		m_category = _category;
+
 		if( this->initializeBase_( _ini ) == false )
 		{
 			return false;
 		}
 
-		FilePath ttfPath;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Path", ttfPath, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Path", m_ttfPath, m_serviceProvider ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s don't setup Glyph"
 				, m_name.c_str()
@@ -49,8 +51,16 @@ namespace Menge
 			return false;
 		}
 
+		IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_height, m_serviceProvider );		
+		IniUtil::getIniValue( _ini, m_name.c_str(), "DPI", m_fontDPI, m_serviceProvider );
+		
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TTFFont::_compile()
+	{
 		InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
-			->openInputFile( _category, ttfPath, false );
+			->openInputFile( m_category, m_ttfPath, false );
 
 		if( stream == nullptr )
 		{
@@ -58,7 +68,7 @@ namespace Menge
 		}
 
 		MemoryInterfacePtr memory = Helper::createMemoryStream( m_serviceProvider, stream, __FILE__, __LINE__ );
-		
+
 		FT_Byte * memory_byte = memory->getMemory();
 		size_t memory_size = memory->getSize();
 
@@ -74,28 +84,26 @@ namespace Menge
 			return false;
 		}
 
-        if( FT_Select_Charmap( m_face, FT_ENCODING_UNICODE ) != FT_Err_Ok )
-        {
-            return false;
-        }
+		if( FT_Select_Charmap( m_face, FT_ENCODING_UNICODE ) != FT_Err_Ok )
+		{
+			return false;
+		}
 
-		uint32_t fontHeight = 64;
-		IniUtil::getIniValue( _ini, m_name.c_str(), "Height", fontHeight, m_serviceProvider );
-		
-		uint32_t fontDPI = 72;
-		IniUtil::getIniValue( _ini, m_name.c_str(), "DPI", fontDPI, m_serviceProvider );
-		
-        FT_F26Dot6 fontSizePoints = (FT_F26Dot6)fontHeight * 64;
-        FT_UInt dpi = (FT_UInt)fontDPI;
-        if( FT_Set_Char_Size( m_face, fontSizePoints, fontSizePoints, dpi, dpi ) != FT_Err_Ok )
-        {
-            return false;
-        }
+		FT_F26Dot6 fontSizePoints = (FT_F26Dot6)m_height * 64;
+		FT_UInt dpi = (FT_UInt)m_fontDPI;
+		if( FT_Set_Char_Size( m_face, fontSizePoints, fontSizePoints, dpi, dpi ) != FT_Err_Ok )
+		{
+			return false;
+		}
 
-		m_height = (float)fontHeight;
-        m_ascender = static_cast<float>(m_face->size->metrics.ascender >> 6);
+		m_ascender = static_cast<float>(m_face->size->metrics.ascender >> 6);
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TTFFont::_release()
+	{
+		FT_Done_Face( m_face );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace

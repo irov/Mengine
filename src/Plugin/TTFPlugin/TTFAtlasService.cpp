@@ -173,14 +173,10 @@ namespace Menge
         
         //PixelFormat format = format_select[unpow_channel];
 
-#   ifdef MENGE_RENDER_TEXTURE_RGBA
-        PixelFormat format = PF_A8B8G8R8;
-#   else
         PixelFormat format = PF_A8R8G8B8;
-#   endif
 
 		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE( m_serviceProvider )
-			->createDynamicTexture( m_maxAtlasWidth, _dimension, 0, 0, format );
+			->createDynamicTexture( m_maxAtlasWidth, _dimension, 4, 1, format );
 
 		new_atlas.texture = texture;
 

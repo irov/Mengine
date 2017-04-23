@@ -1,6 +1,7 @@
 #   pragma once
 
 #   include "Interface/RenderSystemInterface.h"
+#   include "Interface/MemoryInterface.h"
 
 #   include "Core/ServantBase.h"
 

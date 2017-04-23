@@ -103,8 +103,14 @@ namespace Menge
 
 		mt::vec2f offset = _offset + _cd.offset * _charScale;
 
-		_pos.x = offset.x + ((_index & 1) ? size.x : 0.f);
-		_pos.y = offset.y + ((_index & 2) ? size.y : 0.f);
+		const float size_xi[] = { 0.f, size.x, size.x, 0.f };
+		const float size_yi[] = { 0.f, 0.f, size.y, size.y };
+
+		float size_x = size_xi[_index];
+		float size_y = size_yi[_index];
+
+		_pos.x = offset.x + size_x;
+		_pos.y = offset.y + size_y;
 		_pos.z = 0.f;		
 	}
 	//////////////////////////////////////////////////////////////////////////

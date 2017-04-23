@@ -10,6 +10,7 @@
 #	include "Utils/Math/mat3.h"
 #	include "Utils/Math/mat4.h"
 #	include "Utils/Math/quat.h"
+#	include "Utils/Math/plane.h"
 #	include "Utils/Math/uv4.h"
 #	include "Utils/Math/utils.h"
 
@@ -709,6 +710,14 @@ namespace Menge
 			.def_member( "x", &mt::quatf::x )
 			.def_member( "y", &mt::quatf::y )
 			.def_member( "z", &mt::quatf::z )			
+			;
+
+		pybind::struct_<mt::planef>( kernel, "planef" )
+			.def_constructor( pybind::init<float, float, float, float>() )
+			.def_member( "a", &mt::planef::a )
+			.def_member( "b", &mt::planef::b )
+			.def_member( "c", &mt::planef::c )
+			.def_member( "d", &mt::planef::d )
 			;
 
 		pybind::struct_<Polygon>( kernel, "Polygon" )

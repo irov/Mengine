@@ -41,12 +41,10 @@ namespace Menge
 		bool hasTouchpad() const override;
 
 	public:
-		bool createDirectory( const WString & _path ) override;
-
-	public:
 		bool getDesktopResolution( Resolution & _resolution ) const override;
 
 		size_t getCurrentPath( WChar * _path, size_t _len ) const override;
+		size_t getUserPath( WChar * _path, size_t _len ) const override;
 
 		void minimizeWindow() override;
 
@@ -71,6 +69,10 @@ namespace Menge
 
 	public:
 		bool openUrlInDefaultBrowser( const WString & _url ) override;
+
+	public:
+		bool existDirectory( const WString & _path ) const override;
+		bool createDirectory( const WString & _path ) override;
 
 	public:
 		bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;

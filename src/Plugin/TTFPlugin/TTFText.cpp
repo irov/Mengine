@@ -148,22 +148,22 @@ namespace Menge
             v0.uv[0] = glyph->uv.p0;
 
 			RenderVertex2D v1;
-			v1.position.x = offset.x + glyph->ax;
+			v1.position.x = offset.x + glyph->w;
 			v1.position.y = offset.y + glyph->dy;
             v1.position.z = 0.f;
             v1.color = 0xFFFFFFFF;
             v1.uv[0] = glyph->uv.p1;
 
 			RenderVertex2D v2;
-			v2.position.x = offset.x + glyph->ax;
-			v2.position.y = offset.y + glyph->ay;
+			v2.position.x = offset.x + glyph->w;
+			v2.position.y = offset.y + glyph->h;
             v2.position.z = 0.f;
             v2.color = 0xFFFFFFFF;
             v2.uv[0] = glyph->uv.p2;
 
 			RenderVertex2D v3;
 			v3.position.x = offset.x + glyph->dx;
-			v3.position.y = offset.y + glyph->ay;
+			v3.position.y = offset.y + glyph->h;
             v3.position.z = 0.f;
             v3.color = 0xFFFFFFFF;
             v3.uv[0] = glyph->uv.p3;

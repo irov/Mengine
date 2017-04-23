@@ -53,7 +53,7 @@ namespace Menge
 		bool _prepareGlyph( GlyphCode _ch ) override;
 
 	protected:
-		FT_Library m_library;
+		FT_Library m_ftlibrary;
 		FT_Face m_face;
 
 		ConstString m_category;

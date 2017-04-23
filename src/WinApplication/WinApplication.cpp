@@ -89,6 +89,7 @@ PLUGIN_EXPORT( MengeZip );
 PLUGIN_EXPORT( MengeLZ4 );
 PLUGIN_EXPORT( MengeOggVorbis );
 PLUGIN_EXPORT( MengeWin32FileGroup );
+PLUGIN_EXPORT( BitmapFont );
 
 #   ifdef MENGINE_PLUGIN_SPINE
 PLUGIN_EXPORT( Spine );
@@ -133,7 +134,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
 	{
-		FilePath applicationPath = STRINGIZE_STRING_LOCAL( m_serviceProvider, "application.ini" );
+		FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "application.ini" );
 
 		InputStreamInterfacePtr applicationInputStream = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( ConstString::none(), applicationPath, false );
@@ -177,7 +178,7 @@ namespace Menge
 	{
 		LOGGER_WARNING(m_serviceProvider)("Inititalizing Config Manager..." );
 				
-		ConstString gameIniPath;
+		FilePath gameIniPath;
 		if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
 		{
 			return false;
@@ -212,8 +213,8 @@ namespace Menge
 
 		WChar currentPath[MENGINE_MAX_PATH];
 
-		size_t currentPathLen = WINDOWSLAYER_SERVICE( m_serviceProvider )
-			->getCurrentDirectory( currentPath, MENGINE_MAX_PATH );
+		size_t currentPathLen = PLATFORM_SERVICE( m_serviceProvider )
+			->getCurrentPath( currentPath, MENGINE_MAX_PATH );
 		
 		if( currentPathLen == 0 )
 		{
@@ -238,7 +239,7 @@ namespace Menge
 			);
 		
 		// mount root		
-		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( ConstString::none(), Helper::stringizeString( m_serviceProvider, utf8_currentPath ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( ConstString::none(), Helper::stringizeFilePath( m_serviceProvider, utf8_currentPath ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount application directory %ls"
 				, currentPath
@@ -249,7 +250,7 @@ namespace Menge
 
 #	ifndef MENGINE_MASTER_RELEASE
 		// mount root		
-		if( FILE_SERVICE( m_serviceProvider )->mountFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), ConstString::none(), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
+		if( FILE_SERVICE( m_serviceProvider )->mountFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), FilePath(ConstString::none()), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount dev directory %ls"
 				, currentPath
@@ -266,77 +267,17 @@ namespace Menge
 	{ 
 		_wstring.clear();
 
-		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
-		bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
-		bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );
+		WChar userPath[MENGINE_MAX_PATH];
+		size_t userPathLen = PLATFORM_SERVICE( m_serviceProvider )
+			->getUserPath( userPath, MENGINE_MAX_PATH );
+
+		if( userPathLen == 0 )
+		{
+			return false;
+		}
+
+		_wstring.assign( userPath, userPathLen );
 		
-		if( developmentMode == true && roamingMode == false || noroamingMode == true )
-		{
-			WChar currentPath[MENGINE_MAX_PATH];
-			size_t currentPathLen = WINDOWSLAYER_SERVICE(m_serviceProvider)
-				->getCurrentDirectory( currentPath, MENGINE_MAX_PATH );
-			
-			if( currentPathLen == 0 )
-			{
-				LOGGER_ERROR( m_serviceProvider )("WinApplication::makeUserPath_: failed to get current directory"
-					);
-
-				return false;
-			}
-
-			_wstring += currentPath;
-			_wstring += L"User";
-			_wstring += L'\\';
-		}
-		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
-		{
-			WChar buffer[MENGINE_MAX_PATH];
-			LPITEMIDLIST itemIDList;
-
-			HRESULT hr = SHGetSpecialFolderLocation( NULL,
-				CSIDL_APPDATA | CSIDL_FLAG_CREATE, &itemIDList );
-
-			if( hr != S_OK )
-			{
-				WString msg;
-
-				if( WINDOWSLAYER_SERVICE( m_serviceProvider )->makeFormatMessage( hr, msg ) == false )
-				{
-					LOGGER_ERROR( m_serviceProvider )("SHGetSpecialFolderLocation invalid %d"
-						, hr
-						);
-				}
-				else
-				{
-					LOGGER_ERROR( m_serviceProvider )("SHGetSpecialFolderLocation invalid %ls '%d'"
-						, msg.c_str()
-						, hr
-						);
-				}
-
-				return false;
-			}
-
-			BOOL result = SHGetPathFromIDListW( itemIDList, buffer );
-
-			if( result == FALSE )
-			{
-				LOGGER_ERROR( m_serviceProvider )("SHGetPathFromIDListW invalid"
-					);
-
-				return false;
-			}
-
-			CoTaskMemFree( itemIDList );
-
-			_wstring = buffer;
-			_wstring += L'\\';
-			_wstring += CONFIG_VALUE( m_serviceProvider, "Project", "Company", L"NONAME" );
-			_wstring += L'\\';
-			_wstring += CONFIG_VALUE( m_serviceProvider, "Project", "Name", L"UNKNOWN" );
-			_wstring += L'\\';
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -357,7 +298,7 @@ namespace Menge
 		}
 
 		// mount user directory
-		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), Helper::stringizeString( m_serviceProvider, utf8_userPath ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), Helper::stringizeFilePath( m_serviceProvider, utf8_userPath ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication: failed to mount user directory %ls"
 				, userPath.c_str()
@@ -379,7 +320,7 @@ namespace Menge
 		}
 
 		WString date;
-		Helper::makeDateTime( date );
+		Helper::makeDateTimeW( date );
 
 		WString unicode_logFilename;
 		unicode_logFilename += L"Game";
@@ -406,7 +347,7 @@ namespace Menge
 			return false;
 		}
 
-		FilePath logFilename = Helper::stringizeString( m_serviceProvider, utf8_logFilename );
+		FilePath logFilename = Helper::stringizeFilePath( m_serviceProvider, utf8_logFilename );
 
 		OutputStreamInterfacePtr fileLogInterface = FILE_SERVICE( m_serviceProvider )
 			->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), logFilename );
@@ -703,6 +644,8 @@ namespace Menge
 		
 		MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
 
+		MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin BitmapFont..." );
+
 #ifdef MENGINE_PLUGIN_TTF
 		MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
 #endif
@@ -786,7 +729,7 @@ namespace Menge
 			}
 		}
 
-		ConstString renderMaterialsPath = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaterials", ConstString::none() );
+		FilePath renderMaterialsPath = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaterials", FilePath(ConstString::none()) );
 
 		if( renderMaterialsPath.empty() == false )
 		{
@@ -800,7 +743,7 @@ namespace Menge
 		LOGGER_INFO(m_serviceProvider)( "Application Create..."
 			);
 
-		ConstString resourceIniPath;
+		FilePath resourceIniPath;
 		if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
 		{
 			LOGGER_CRITICAL(m_serviceProvider)("Application invalid setup resource path"
@@ -896,20 +839,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::finalize()
 	{
-		if( SERVICE_EXIST(m_serviceProvider, Menge::ModuleServiceInterface) == true )
-		{
-			MODULE_SERVICE(m_serviceProvider)
-				->stopModules();
-		}
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ModuleServiceInterface );
 
 		PLATFORM_SERVICE(m_serviceProvider)
-			->stop();
+			->stop();		
 		
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ApplicationInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PrefetcherServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::DataServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::PluginServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ModuleServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::PluginServiceInterface );		
 		SERVICE_FINALIZE( m_serviceProvider, Menge::InputServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeSystemInterface );

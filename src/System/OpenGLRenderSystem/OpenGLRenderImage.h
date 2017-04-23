@@ -87,9 +87,11 @@ namespace Menge
 		GLenum m_type;
 
         MemoryInterfacePtr m_lockMemory;
+		Rect m_lockRect;
 		uint32_t m_lockLevel;
+		bool m_lockFirst;
 
-        bool m_pow2;
+        bool m_pow2;		
 	};
 
     typedef stdex::intrusive_ptr<OpenGLRenderImage> OpenGLRenderImagePtr;

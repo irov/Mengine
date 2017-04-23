@@ -699,6 +699,54 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Movie::getMovieClipplane( const ConstString & _name, RenderClipplane ** _clipplane )
+	{
+		for( TVectorClipplane::iterator
+			it = m_clipplanes.begin(),
+			it_end = m_clipplanes.end();
+			it != it_end;
+			++it )
+		{
+			RenderClipplane * clipplane = *it;
+
+			const ConstString & name = clipplane->getName();
+
+			if( name != _name )
+			{
+				continue;
+			}
+
+			*_clipplane = clipplane;
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::hasMovieClipplane( const ConstString & _name )
+	{
+		for( TVectorClipplane::const_iterator
+			it = m_clipplanes.begin(),
+			it_end = m_clipplanes.end();
+			it != it_end;
+			++it )
+		{
+			const RenderClipplane * clipplane = *it;
+
+			const ConstString & name = clipplane->getName();
+
+			if( name != _name )
+			{
+				continue;				
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Movie::setEnableMovieLayers( const ConstString & _name, bool _enable )
 	{
 		if( m_resourceMovie == nullptr )

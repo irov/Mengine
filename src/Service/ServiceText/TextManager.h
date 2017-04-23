@@ -74,6 +74,10 @@ namespace Menge
 
 		bool removeTextEntry( const ConstString& _key );
 
+	public:
+		bool directFontCompile( const ConstString & _name ) override;
+		bool directFontRelease( const ConstString & _name ) override;
+
     protected:
 		typedef stdex::map<ConstString, TextEntry> TMapTextEntry;		
 		TMapTextEntry m_texts;

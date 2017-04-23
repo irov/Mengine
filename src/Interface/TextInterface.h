@@ -173,6 +173,10 @@ namespace Menge
 		virtual const ConstString & getDefaultFontName() const = 0;
 
 	public:
+		virtual bool directFontCompile( const ConstString & _name ) = 0;
+		virtual bool directFontRelease( const ConstString & _name ) = 0;
+
+	public:
 		virtual bool validate() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////

@@ -1102,7 +1102,7 @@ namespace Menge
             icoFile += _path;
             icoFile += ".ico";
             
-            ConstString c_icoFile = Helper::stringizeString( m_serviceProvider, icoFile );
+            FilePath c_icoFile = Helper::stringizeFilePath( m_serviceProvider, icoFile );
 
             OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
 				->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), c_icoFile );
@@ -1266,33 +1266,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32Platform::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
+	static void PathCorrectBackslash( WChar * _out, const WString & _in )
 	{
-		bool successful = WINDOWSLAYER_SERVICE( m_serviceProvider )
-			->createDirectoryUserPicture( _path, _file, _data, _size );
-
-		return successful;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32Platform::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
-	{
-		bool successful = WINDOWSLAYER_SERVICE( m_serviceProvider )
-			->createDirectoryUserMusic( _path, _file, _data, _size );
-
-		return successful;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32Platform::concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity )
-	{
-		bool successful = WINDOWSLAYER_SERVICE( m_serviceProvider )
-			->concatenateFilePath( _folder, _fileName, _filePath, _capacity );
-
-		return successful;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void PathCorrectBackslash( WChar * _out, const WChar * _in )
-	{
-		wcscpy( _out, _in );
+		wcscpy( _out, _in.c_str() );
 
 		WChar * pch = wcschr( _out, '/' );
 		while( pch != NULL )
@@ -1303,10 +1279,36 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Win32Platform::existDirectory( const WString & _path ) const
+	{
+		WChar pathCorrect[MENGINE_MAX_PATH];
+		PathCorrectBackslash( pathCorrect, _path );
+
+		size_t len = wcslen( pathCorrect );
+		if( len == 0 )	// current dir
+		{
+			return true;
+		}
+
+		if( pathCorrect[len - 1] == L':' )	// root dir
+		{
+			return true;	// let it be
+		}
+
+		DWORD attributes = GetFileAttributes( pathCorrect );
+
+		if( attributes == INVALID_FILE_ATTRIBUTES )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::createDirectory( const WString & _path )
 	{
 		WChar pathCorrect[MENGINE_MAX_PATH];
-		PathCorrectBackslash( pathCorrect, _path.c_str() );
+		PathCorrectBackslash( pathCorrect, _path );
 
 		PathRemoveBackslash( pathCorrect );
 
@@ -1349,35 +1351,59 @@ namespace Menge
 				switch( err )
 				{
 				case ERROR_ALREADY_EXISTS:
-				{
-					LOGGER_WARNING( m_serviceProvider )("VistaWindowsLayer::createDirectory %ls alredy exists"
-						, path.c_str()
-						);
+					{
+						LOGGER_WARNING( m_serviceProvider )("VistaWindowsLayer::createDirectory %ls alredy exists"
+							, path.c_str()
+							);
 
-					return false;
-				}break;
+						return false;
+					}break;
 				case ERROR_PATH_NOT_FOUND:
-				{
-					LOGGER_WARNING( m_serviceProvider )("VistaWindowsLayer::createDirectory %ls not found"
-						, path.c_str()
-						);
+					{
+						LOGGER_WARNING( m_serviceProvider )("VistaWindowsLayer::createDirectory %ls not found"
+							, path.c_str()
+							);
 
-					return false;
-				}break;
+						return false;
+					}break;
 				default:
-				{
-					LOGGER_WARNING( m_serviceProvider )("VistaWindowsLayer::createDirectory %ls unknown error %d"
-						, path.c_str()
-						, err
-						);
+					{
+						LOGGER_WARNING( m_serviceProvider )("VistaWindowsLayer::createDirectory %ls unknown error %d"
+							, path.c_str()
+							, err
+							);
 
-					return false;
-				}break;
+						return false;
+					}break;
 				}
 			}
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32Platform::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
+	{
+		bool successful = WINDOWSLAYER_SERVICE( m_serviceProvider )
+			->createDirectoryUserPicture( _path, _file, _data, _size );
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32Platform::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
+	{
+		bool successful = WINDOWSLAYER_SERVICE( m_serviceProvider )
+			->createDirectoryUserMusic( _path, _file, _data, _size );
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32Platform::concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity )
+	{
+		bool successful = WINDOWSLAYER_SERVICE( m_serviceProvider )
+			->concatenateFilePath( _folder, _fileName, _filePath, _capacity );
+
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::getDesktopResolution( Resolution & _resolution ) const
@@ -1404,6 +1430,95 @@ namespace Menge
 		_path[len + 1] = L'\0';
 
 		return (size_t)len + 1;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t Win32Platform::getUserPath( WChar * _path, size_t _len ) const
+	{
+		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+		bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
+		bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );
+
+		if( developmentMode == true && roamingMode == false || noroamingMode == true )
+		{
+			WChar currentPath[MENGINE_MAX_PATH];
+
+			DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
+
+			if( len == 0 )
+			{
+				LOGGER_ERROR( m_serviceProvider )("WinApplication::makeUserPath_: failed to get current directory"
+					);
+
+				return false;
+			}
+
+			currentPath[len] = L'\\';
+			currentPath[len + 1] = L'\0';
+
+			wcscat( currentPath, L"User" );
+			wcscat( currentPath, L"\\" );
+
+			wcscpy( _path, currentPath );
+
+			size_t currentPathLen = wcslen( currentPath );
+
+			return currentPathLen;
+		}
+		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
+		{
+			WChar currentPath[MENGINE_MAX_PATH];
+			LPITEMIDLIST itemIDList;
+
+			HRESULT hr = SHGetSpecialFolderLocation( NULL,
+				CSIDL_APPDATA | CSIDL_FLAG_CREATE, &itemIDList );
+
+			if( hr != S_OK )
+			{
+				WString msg;
+
+				if( WINDOWSLAYER_SERVICE( m_serviceProvider )->makeFormatMessage( hr, msg ) == false )
+				{
+					LOGGER_ERROR( m_serviceProvider )("SHGetSpecialFolderLocation invalid %d"
+						, hr
+						);
+				}
+				else
+				{
+					LOGGER_ERROR( m_serviceProvider )("SHGetSpecialFolderLocation invalid %ls '%d'"
+						, msg.c_str()
+						, hr
+						);
+				}
+
+				return false;
+			}
+
+			BOOL result = SHGetPathFromIDListW( itemIDList, currentPath );
+
+			if( result == FALSE )
+			{
+				LOGGER_ERROR( m_serviceProvider )("SHGetPathFromIDListW invalid"
+					);
+
+				return false;
+			}
+
+			CoTaskMemFree( itemIDList );
+
+			wcschr( currentPath, L'\\' );
+			WString wcompany = CONFIG_VALUE( m_serviceProvider, "Project", "Company", L"NONAME" );
+			wcscat( currentPath, wcompany.c_str() );
+			wcschr( currentPath, L'\\' );
+			WString wname = CONFIG_VALUE( m_serviceProvider, "Project", "Name", L"UNKNOWN" );
+			wcscat( currentPath, wname.c_str() );
+			wcschr( currentPath, L'\\' );
+
+			wcscpy( _path, currentPath );
+
+			size_t currentPathLen = wcslen( currentPath );
+
+			return currentPathLen;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32Platform::minimizeWindow()

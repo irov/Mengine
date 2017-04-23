@@ -269,7 +269,7 @@ namespace Menge
         mt::vec2f m_loopSegment;
 
 		bool m_hasBoundBox;
-		mt::box2f m_boundbox;
+		mt::box2f m_boundBox;
 
 		bool m_hasAnchorPoint;
 		mt::vec3f m_anchorPoint;

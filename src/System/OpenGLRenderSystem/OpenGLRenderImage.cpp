@@ -23,6 +23,7 @@ namespace Menge
         , m_magFilter(GL_LINEAR)
         , m_mode(ERIM_NORMAL)
         , m_lockLevel(0)
+		, m_lockFirst(false)
         , m_pow2(false)
     {
     }
@@ -177,15 +178,20 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    Pointer OpenGLRenderImage::lock( size_t * _pitch, uint32_t _level, const Rect &, bool )
+    Pointer OpenGLRenderImage::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
+		(void)_readOnly;
+
         if (m_lockMemory != nullptr)
         {
             return nullptr;
         }
 
-        uint32_t miplevel_width = m_hwWidth >> _level;
-        uint32_t miplevel_height = m_hwHeight >> _level;
+		uint32_t rect_width = _rect.getWidth();
+		uint32_t rect_height = _rect.getHeight();
+
+        uint32_t miplevel_width = rect_width >> _level;
+        uint32_t miplevel_height = rect_height >> _level;
 
         size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
@@ -216,10 +222,12 @@ namespace Menge
         }
 
         m_lockMemory = lockMemory;
+		m_lockRect = _rect;
 
         *_pitch = size / miplevel_height;
 
         m_lockLevel = _level;
+		m_lockFirst = true;
 
         return memory;
     }
@@ -228,71 +236,142 @@ namespace Menge
     {	
 		if( _successful == false )
 		{
+			m_lockMemory = nullptr;
+			m_lockLevel = 0;
+			
 			return true;
 		}
 
+		GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
         GLCALL( m_serviceProvider, glBindTexture, ( GL_TEXTURE_2D, m_uid ) );
 
-        uint32_t miplevel_width = m_hwWidth >> _level;
-        uint32_t miplevel_height = m_hwHeight >> _level;
-
-        GLuint textureMemorySize = Helper::getTextureMemorySize(miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat);
-
-        LOGGER_INFO(m_serviceProvider)("OpenGLTexture::unlock l %d w %d d %d"
+        
+        LOGGER_INFO(m_serviceProvider)("OpenGLTexture::unlock l %d r %d:%d-%d:%d"
             , _level
-            , miplevel_width
-            , miplevel_height
-            , textureMemorySize
+            , m_lockRect.left
+			, m_lockRect.top
+			, m_lockRect.right
+			, m_lockRect.bottom
             );
+
+		void * memory = m_lockMemory->getMemory();
 
 		bool successful = true;
 
-        switch( m_internalFormat )
-        {
-        case GL_ETC1_RGB8_OES:
-        case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
-        case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
-        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
-            {
-                void * memory = m_lockMemory->getMemory();
+		if( m_lockRect.full( m_hwWidth, m_hwHeight ) == true )
+		{
+			uint32_t miplevel_hwwidth = m_hwWidth >> _level;
+			uint32_t miplevel_hwheight = m_hwHeight >> _level;
 
-                IF_GLCALL( m_serviceProvider, glCompressedTexImage2D_, ( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, memory) )
-                {
-                    LOGGER_ERROR(m_serviceProvider)("OpenGLTexture::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
-                        , _level
-                        , miplevel_width
-                        , miplevel_height
-                        , m_internalFormat
-                        , m_hwPixelFormat
-                        , textureMemorySize
-                        );
+			switch( m_internalFormat )
+			{
+			case GL_ETC1_RGB8_OES:
+			case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+			case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+			case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+				{
+					GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_hwwidth, miplevel_hwheight, m_hwChannels, 1, m_hwPixelFormat );
 
+					IF_GLCALL( m_serviceProvider, glCompressedTexImage2D_, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, textureMemorySize, memory) )
+					{
+						LOGGER_ERROR( m_serviceProvider )("OpenGLTexture::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
+							, _level
+							, miplevel_hwwidth
+							, miplevel_hwheight
+							, m_internalFormat
+							, m_hwPixelFormat
+							, textureMemorySize
+							);
+
+						successful = false;
+					}
+				}break;
+			default:
+				{
+					IF_GLCALL( m_serviceProvider, glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, m_format, m_type, memory) )
+					{
+						LOGGER_ERROR( m_serviceProvider )("OpenGLTexture::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+							, _level
+							, miplevel_hwwidth
+							, miplevel_hwheight
+							, m_internalFormat
+							, m_format
+							, m_type
+							, m_hwPixelFormat
+							);
+
+						successful = false;
+					}
+				}break;
+			}
+		}
+		else
+		{
+			switch( m_internalFormat )
+			{
+			case GL_ETC1_RGB8_OES:
+			case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+			case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+			case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+				{
 					successful = false;
-                }
-            }break;
-        default:
-            {
-                void * memory = m_lockMemory->getMemory();
+				}break;
+			default:
+				{
+					uint32_t miplevel_xoffset = m_lockRect.left >> _level;
+					uint32_t miplevel_yoffset = m_lockRect.top >> _level;
+					uint32_t miplevel_width = (m_lockRect.right - m_lockRect.left) >> _level;
+					uint32_t miplevel_height = (m_lockRect.bottom - m_lockRect.top) >> _level;
 
-                IF_GLCALL( m_serviceProvider, glTexImage2D, ( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, m_format, m_type, memory) )
-                {
-                    LOGGER_ERROR(m_serviceProvider)("OpenGLTexture::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
-                        , _level
-                        , miplevel_width
-                        , miplevel_height
-                        , m_internalFormat
-                        , m_format
-                        , m_type
-                        , m_hwPixelFormat
-                        );
+					if( m_lockFirst == true )
+					{
+						uint32_t miplevel_hwwidth = m_hwWidth >> _level;
+						uint32_t miplevel_hwheight = m_hwHeight >> _level;
 
-					successful = false;
-                }
-            }break;
-        }
+						IF_GLCALL( m_serviceProvider, glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, m_format, m_type, nullptr) )
+						{
+							LOGGER_ERROR( m_serviceProvider )("OpenGLTexture::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+								, _level
+								, miplevel_hwwidth
+								, miplevel_hwheight
+								, m_internalFormat
+								, m_format
+								, m_type
+								, m_hwPixelFormat
+								);
+
+							successful = false;
+						}
+					}
+
+					IF_GLCALL( m_serviceProvider, glTexSubImage2D, (GL_TEXTURE_2D, m_lockLevel
+						, miplevel_xoffset
+						, miplevel_yoffset
+						, miplevel_width
+						, miplevel_height
+						, m_format
+						, m_type
+						, memory) )
+					{
+						LOGGER_ERROR( m_serviceProvider )("OpenGLTexture::unlock glTexSubImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+							, _level
+							, miplevel_width
+							, miplevel_height
+							, m_internalFormat
+							, m_format
+							, m_type
+							, m_hwPixelFormat
+							);
+
+						successful = false;
+					}
+				}break;
+			}
+		}
 
         m_lockMemory = nullptr;
         m_lockLevel = 0;
+		m_lockFirst = false;
 
 		return successful;
     }

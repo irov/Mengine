@@ -73,6 +73,13 @@ namespace Menge
 			return FilePath( cstr );
 		}
 		//////////////////////////////////////////////////////////////////////////
+		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const String & _path )
+		{
+			FilePath fp = stringizeFilePath( _serviceProvider, _path.c_str(), _path.size() );
+
+			return fp;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const PathString & _path )
 		{
 			FilePath fp = stringizeFilePath( _serviceProvider, _path.c_str(), _path.size() );

@@ -83,6 +83,10 @@ namespace Menge
 		bool hasMovieLayer( const ConstString & _name ) const;
 
 	public:
+		bool getMovieClipplane( const ConstString & _name, RenderClipplane ** _clipplane );
+		bool hasMovieClipplane( const ConstString & _name );
+
+	public:
 		bool setEnableMovieLayer( const ConstString & _name, bool _enable );
 		bool getEnableMovieLayer( const ConstString & _name, bool & _enable );
 

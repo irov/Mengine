@@ -152,6 +152,7 @@ namespace Menge
 	void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const ColourValue & _color, TVectorRenderVertex2D & _vertexData )
 	{
 		_vertexData.clear();
+		m_chunks.clear();
 				
 		float fontHeght = _font->getFontHeight();
 		float lineOffset = this->calcLineOffset();
@@ -191,6 +192,11 @@ namespace Menge
 			}break;
 		};
 
+		Chunk chunk;
+		chunk.begin = 0;
+		chunk.count = 0;
+		chunk.material = nullptr;
+
 		for( TVectorTextLine::const_iterator
 			it_line = lines.begin(),
 			it_line_end = lines.end();
@@ -208,18 +214,6 @@ namespace Menge
 
 			float alignOffsetX = this->getHorizontAlignOffset_( line );
 			offset.x = alignOffsetX;
-
-			Chunk chunk;
-			chunk.begin = 0;
-			chunk.count = 0;
-			chunk.material = nullptr;
-
-			const CharData & ch0 = charData[0];
-
-			RenderMaterialInterfacePtr material0 = RENDERMATERIAL_SERVICE( m_serviceProvider )
-				->getMaterial( materialName, PT_TRIANGLELIST, 1, &ch0.texture );
-
-			chunk.material = material0;
 
 			for( TVectorCharData::const_iterator
 				it = charData.begin(),
@@ -250,6 +244,12 @@ namespace Menge
 				{
 					chunk.count += 4;
 				}
+				else if( chunk.material == nullptr )
+				{
+					chunk.begin = 0;
+					chunk.count = 4;
+					chunk.material = material;
+				}
 				else
 				{
 					m_chunks.push_back( chunk );
@@ -260,13 +260,13 @@ namespace Menge
 				}
 			}
 
-			if( chunk.count != 0 )
-			{
-				m_chunks.push_back( chunk );
-			}
-
 			offset.y += fontHeght;
 			offset.y += lineOffset;
+		}
+
+		if( chunk.count != 0 )
+		{
+			m_chunks.push_back( chunk );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -309,47 +309,6 @@ namespace Menge
 			_renderService
 				->addRenderQuad( _state, chunk.material, chunk_vertices, chunk.count, &bb, false );
 		}
-
-		//this->renderOutline_( _state );
-
-		//const RenderMaterialInterfacePtr & material = this->getMaterialFont();
-
-		//if( material == nullptr )
-		//{
-		//	return;
-		//}
-
-		//const TextFontInterfacePtr & font = this->getFont();
-
-		//if( font == nullptr )
-		//{
-		//	return;
-		//}
-
-		//TVectorRenderVertex2D & textVertices = this->getTextVertices( font );
-		//
-  //      if( textVertices.empty() == true )
-  //      {
-  //          return;
-  //      }
-
-		//uint32_t countVertex;
-		//
-		//if( m_maxCharCount == (uint32_t)-1 )
-		//{
-		//	countVertex = (uint32_t)textVertices.size();
-		//}
-		//else
-		//{
-		//	countVertex = m_maxCharCount * 4;
-		//}
-
-		//const TVectorRenderVertex2D::value_type * vertices = &(textVertices[0]);
-
-		//const mt::box2f & bb = this->getBoundingBox();
-
-		//_renderService
-		//	->addRenderQuad( _state, material, vertices, countVertex, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::renderOutline_( const RenderObjectState * _state )
@@ -586,7 +545,7 @@ namespace Menge
 	{
 		m_invalidateTextLines = false;
 
-		m_lines.clear();
+		m_lines.clear();		
 		m_textSize.x = 0.f;
 		m_textSize.y = 0.f;
 		m_charCount = 0;
@@ -631,10 +590,13 @@ namespace Menge
 		if( m_debugMode == true )
 		{
 			String s_key = m_key.c_str();
+			String s_font = this->calcFontName().c_str();
 
 			U32String u32_key( s_key.begin(), s_key.end() );
+			U32String u32_font( s_font.begin(), s_font.end() );
 
 			lines.insert( lines.begin(), u32_key );
+			lines.insert( lines.begin(), u32_font );
 		}
 
 		float charOffset = this->calcCharOffset();

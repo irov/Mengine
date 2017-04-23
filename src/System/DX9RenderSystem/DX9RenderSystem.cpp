@@ -209,6 +209,10 @@ namespace Menge
         m_factoryIndexBuffer = nullptr;
 
         m_factoryDX9Texture = nullptr;
+
+		m_deferredCompileVertexShaders.clear();
+		m_deferredCompileFragmentShaders.clear();
+		m_deferredCompilePrograms.clear();
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, 
@@ -558,7 +562,7 @@ namespace Menge
 
 		IDirect3DTexture9 * dxTextureInterface = nullptr;
         
-		if( this->d3dCreateTexture_( _width, _height, _mipmaps, 0,	_format, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
+		if( this->d3dCreateTexture_( _width, _height, _mipmaps, 0, _format, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem.createImage: can't create texture %dx%d %d"
 				, _width
@@ -575,7 +579,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_NORMAL, texDesc.Width, texDesc.Height, _channels, _format );
+		DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_NORMAL, _mipmaps, texDesc.Width, texDesc.Height, _channels, _format );
 		
 		LOGGER_INFO(m_serviceProvider)( "DX9RenderSystem.createImage: texture created %dx%d %d:%d"
 			, texDesc.Width
@@ -610,7 +614,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_DYNAMIC, texDesc.Width, texDesc.Height, _channels, _format );
+		DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_DYNAMIC, 1, texDesc.Width, texDesc.Height, _channels, _format );
         
 		LOGGER_INFO(m_serviceProvider)( "DX9RenderSystem.createDynamicImage: texture created %dx%d %d:%d"
 			, texDesc.Width
@@ -819,7 +823,7 @@ namespace Menge
 
 		switch( _count )
 		{
-		case 0:			
+		case 0:
 			break;
 		case 1:
 			CLIPPLANEENABLE = D3DCLIPPLANE0;
@@ -842,15 +846,13 @@ namespace Menge
 		}
 
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, (D3DRS_CLIPPLANEENABLE, CLIPPLANEENABLE) );
-		//DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, (D3DRS_CLIPPLANEENABLE, D3DCLIPPLANE0) );
-
-		//mt::planef p( 1.f, 0.f, 0.f, -1000.f );
-		//DXCALL( m_serviceProvider, m_pD3DDevice, SetClipPlane, (0, p.buff()) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setClipplane( uint32_t _i, const mt::planef & _plane )
 	{
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetClipPlane, (_i, _plane.buff()) );
+		const float * plane_buff = _plane.buff();
+
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetClipPlane, (_i, plane_buff) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setViewport( const Viewport & _viewport )
@@ -1031,18 +1033,25 @@ namespace Menge
 		return m_dxMaxCombinedTextureImageUnits;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderSystem::onWindowChangeFullscreenPrepare( bool _fullscreen )
+	{
+		(void)_fullscreen;
+		//Empty
+	}
+	void DX9RenderSystem::onWindowChangeFullscreen( bool _fullscreen )
+	{
+		(void)_fullscreen;
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::onWindowMovedOrResized()
 	{
-
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::onWindowClose()
 	{
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::syncCPU_()
-	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels, DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture )
@@ -1754,7 +1763,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		memory->setMemory( _buffer, _size );
+		memory->setMemory( _buffer, _size, __FILE__, __LINE__ );
 				
 		if( shader->initialize( _name, memory, _isCompile ) == false )
 		{
@@ -1811,7 +1820,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		memory->setMemory( _buffer, _size );
+		memory->setMemory( _buffer, _size, __FILE__, __LINE__ );
 
 		if( shader->initialize( _name, memory, _isCompile ) == false )
 		{
@@ -2009,7 +2018,7 @@ namespace Menge
 		//empty, not supported
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
+	DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
 	{
 		m_textureCount++;
 
@@ -2017,7 +2026,7 @@ namespace Menge
 
 		dxTexture->setServiceProvider(m_serviceProvider);
 
-		dxTexture->initialize( _d3dInterface, _mode, _hwWidth, _hwHeight, _hwChannels, _hwPixelFormat );
+		dxTexture->initialize( _d3dInterface, _mode, _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwPixelFormat );
 
 		//size_t memoryUse = dxTexture->getMemoryUse();
 

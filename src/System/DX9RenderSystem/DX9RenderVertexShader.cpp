@@ -15,6 +15,7 @@ namespace Menge
 		if( m_shader != nullptr )
 		{
 			m_shader->Release();
+			m_shader = nullptr;
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////

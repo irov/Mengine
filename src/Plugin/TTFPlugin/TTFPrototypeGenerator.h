@@ -21,7 +21,7 @@ namespace Menge
 		~TTFPrototypeGenerator();
 
 	public:
-		void setFTLibrary( FT_Library _library );
+		void setFTLibrary( FT_Library _ftlibrary );
 
 	public:
 		bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
@@ -33,7 +33,7 @@ namespace Menge
 		uint32_t count() const override;
 
 	protected:
-		FT_Library m_library;
+		FT_Library m_ftlibrary;
 
 		FactoryPtr m_factoryFont;
 	};

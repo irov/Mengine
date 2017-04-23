@@ -6,7 +6,7 @@
 
 #	include "stdex/stack.h"
 
-#   include "WindowsLayer/WindowsIncluder.h"
+#   include "WIN32/WindowsIncluder.h"
 #   include "DbgHelp.h"
 
 #	include <cstdio>
@@ -116,7 +116,7 @@ namespace Menge
 		dumpPath += L"_";
 
 		WString date;
-		Helper::makeDateTime( date );
+		Helper::makeDateTimeW( date );
 		
 		dumpPath += date;
 		dumpPath += L".dmp";

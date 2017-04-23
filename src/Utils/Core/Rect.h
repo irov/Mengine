@@ -15,6 +15,9 @@ namespace Menge
 		inline uint32_t getHeight() const;
 
 	public:
+		bool full( uint32_t _width, uint32_t _height ) const;
+
+	public:
 		uint32_t left;
 		uint32_t top;
 		uint32_t right;

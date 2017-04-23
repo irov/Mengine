@@ -25,8 +25,8 @@ namespace Menge
 
 		float dx;
 		float dy;
-		float ax;
-		float ay;
+		float w;
+		float h;
 
 		mt::uv4f uv;
 		RenderTextureInterfacePtr texture;

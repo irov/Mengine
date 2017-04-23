@@ -19,7 +19,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TTFPlugin::TTFPlugin()
-		: m_library( nullptr )
+		: m_ftlibrary( nullptr )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -27,19 +27,28 @@ namespace Menge
 	{
 		SERVICE_CREATE( m_serviceProvider, TTFAtlasService );
 
-		if( FT_Init_FreeType( &m_library ) )
+		FT_Library ftlibrary;
+		FT_Error ft_err = FT_Init_FreeType( &ftlibrary );
+
+		if( ft_err != 0 )
 		{
+			LOGGER_ERROR( m_serviceProvider )("TTFPlugin::_initialize invalid init FreeType '%d'"
+				, ft_err
+				);
+
 			return false;
 		}
 
 		TTFPrototypeGeneratorPtr generator = new FactorableUnique<TTFPrototypeGenerator>();
 
-		generator->setFTLibrary( m_library );
+		generator->setFTLibrary( ftlibrary );
 
 		PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Font" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "TTF" )
-				, new FactorableUnique<TTFPrototypeGenerator>()
+				, generator
 			);
+
+		m_ftlibrary = ftlibrary;
 
 		return true;
 	}
@@ -50,5 +59,8 @@ namespace Menge
 			->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Font" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "TTF" ) );
 
 		SERVICE_FINALIZE( m_serviceProvider, TTFAtlasServiceInterface );
+
+		FT_Done_FreeType( m_ftlibrary );
+		m_ftlibrary = nullptr;
 	}
 }

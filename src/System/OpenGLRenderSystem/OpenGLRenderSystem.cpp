@@ -98,15 +98,11 @@ namespace Menge
 
         LOGGER_WARNING( m_serviceProvider )("OpenGL Version: %d.%d", ver_major, ver_minor);
 
-        OPENGL_RENDER_CHECK_ERROR( m_serviceProvider );
-
         LOGGER_WARNING( m_serviceProvider )("Vendor      : %s", reinterpret_cast<const char*>(glGetString( GL_VENDOR )));
         LOGGER_WARNING( m_serviceProvider )("Renderer    : %s", reinterpret_cast<const char*>(glGetString( GL_RENDERER )));
         LOGGER_WARNING( m_serviceProvider )("Version     : %s", reinterpret_cast<const char*>(glGetString( GL_VERSION )));
         LOGGER_WARNING( m_serviceProvider )("Extensions  : %s", reinterpret_cast<const char*>(glGetString( GL_EXTENSIONS )));
-
-        OPENGL_RENDER_CHECK_ERROR( m_serviceProvider );
-
+		
         GLint maxClipPlanes;
         glGetIntegerv( GL_MAX_CLIP_PLANES, &maxClipPlanes );
 
@@ -171,15 +167,22 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setClipplaneCount( uint32_t _count )
     {
-        GLUNUSED( _count );
-        //ToDo
+		for( uint32_t i = 0; i != _count; ++i )
+		{
+			glEnable( GL_CLIP_PLANE0 + i );
+		}
+
+		for( uint32_t i = _count; i != m_glMaxClipPlanes; ++i )
+		{
+			glDisable( GL_CLIP_PLANE0 + i );
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setClipplane( uint32_t _i, const mt::planef & _plane )
     {
-        GLUNUSED( _i );
-        GLUNUSED( _plane );
-        //ToDo
+		const GLdouble equation[4] = { _plane.a, _plane.b, _plane.c, _plane.d };
+
+		glClipPlane( GL_CLIP_PLANE0 + _i, equation );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setViewport( const Viewport & _viewport )

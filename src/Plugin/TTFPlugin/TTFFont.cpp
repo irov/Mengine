@@ -17,9 +17,9 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TTFFont::TTFFont()
-		: m_library( nullptr )
+		: m_ftlibrary( nullptr )
 		, m_face( nullptr )
-		, m_fontDPI( 72 )
+		, m_fontDPI( 0 )
 		, m_ascender( 0.f )
 	{
 	}
@@ -28,9 +28,9 @@ namespace Menge
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TTFFont::setFTLibrary( FT_Library _library )
+	void TTFFont::setFTLibrary( FT_Library _ftlibrary )
 	{
-		m_library = _library;
+		m_ftlibrary = _ftlibrary;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TTFFont::initialize( const ConstString & _category, const IniUtil::IniStore & _ini )
@@ -51,8 +51,23 @@ namespace Menge
 			return false;
 		}
 
-		IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_height, m_serviceProvider );		
-		IniUtil::getIniValue( _ini, m_name.c_str(), "DPI", m_fontDPI, m_serviceProvider );
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_height, m_serviceProvider ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s don't setup Height"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "DPI", m_fontDPI, m_serviceProvider ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s don't setup DPI"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
 		
 		return true;
 	}
@@ -77,10 +92,15 @@ namespace Menge
 			return false;
 		}
 
-		FT_Error err_code = FT_New_Memory_Face( m_library, memory_byte, memory_size, 0, &m_face );
+		FT_Error err_code = FT_New_Memory_Face( m_ftlibrary, memory_byte, memory_size, 0, &m_face );
 
 		if( err_code != 0 )
 		{
+			LOGGER_ERROR( m_serviceProvider )("TTFFont::_compile invalid FT_New_Memory_Face font '%s' path '%s'"
+				, m_name.c_str()
+				, m_ttfPath.c_str()
+				);
+
 			return false;
 		}
 
@@ -130,7 +150,6 @@ namespace Menge
     bool TTFFont::_prepareGlyph( GlyphCode _ch )
     {
         uint32_t ch_hash = _ch % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
-
         TVectorTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
 
         TVectorTTFGlyphs::iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _ch ) );
@@ -212,9 +231,9 @@ namespace Menge
 		g.advance = advance;
 
         g.dx = (float)dx;
-        g.dy = (float)dy;
-        g.ax = (float)dx + w;
-        g.ay = (float)dy + h;
+        g.dy = (float)dy + h;
+        g.w = (float)w;
+        g.h = (float)h;
 
 		g.texture = texture;
 		g.uv = uv;
@@ -227,7 +246,6 @@ namespace Menge
 	bool TTFFont::hasGlyph( GlyphCode _char ) const
 	{
 		uint32_t ch_hash = _char % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
-
 		const TVectorTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
 
 		TVectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _char ) );
@@ -243,7 +261,6 @@ namespace Menge
 	bool TTFFont::getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const
 	{
 		uint32_t ch_hash = _char % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
-
 		const TVectorTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
 
 		TVectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _char ) );
@@ -257,7 +274,7 @@ namespace Menge
 
 		_glyph->advance = glyph.advance;
 		_glyph->offset = mt::vec2f( glyph.dx, glyph.dy );
-		_glyph->size = mt::vec2f( glyph.ax, glyph.ay );
+		_glyph->size = mt::vec2f( glyph.w, glyph.h );
 
 		_glyph->texture = glyph.texture;
 		_glyph->uv = glyph.uv;

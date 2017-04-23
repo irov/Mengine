@@ -5,6 +5,8 @@
 
 #   include "Core/ConstString.h"
 
+#	include "Config/String.h"
+
 #	include "stdex/array_string.h"
 
 #	include <stdex/stl_vector.h>
@@ -47,6 +49,7 @@ namespace Menge
 
 		//////////////////////////////////////////////////////////////////////////
 		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const Char * _value, ConstString::size_type _size );
+		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const String & _path );
 		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const PathString & _path );
 	}
 

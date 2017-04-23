@@ -8,7 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TTFPrototypeGenerator::TTFPrototypeGenerator()
-		: m_library( nullptr )
+		: m_ftlibrary( nullptr )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -16,9 +16,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TTFPrototypeGenerator::setFTLibrary( FT_Library _library )
+	void TTFPrototypeGenerator::setFTLibrary( FT_Library _ftlibrary )
 	{
-		m_library = _library;
+		m_ftlibrary = _ftlibrary;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TTFPrototypeGenerator::initialize( const ConstString & _category, const ConstString & _prototype )
@@ -37,7 +37,7 @@ namespace Menge
 
 		font->setServiceProvider( m_serviceProvider );
 
-		font->setFTLibrary( m_library );
+		font->setFTLibrary( m_ftlibrary );
 
 		return font;
 	}

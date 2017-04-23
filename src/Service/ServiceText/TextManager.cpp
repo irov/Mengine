@@ -591,6 +591,12 @@ namespace Menge
 
 				return false;
 			}
+
+			LOGGER_INFO( m_serviceProvider )("TextManager::loadFonts add font %s path '%s:%s'"
+				, fontName.c_str()
+				, _pakName.c_str()
+				, _path.c_str()
+				);
 			
             m_fonts.insert( std::make_pair( fontName, font ) );
         }
@@ -709,7 +715,35 @@ namespace Menge
 
         return true;
     }
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	bool TextManager::directFontCompile( const ConstString & _name )
+	{
+		TextFontInterfacePtr font = this->getFont( _name );
+
+		if( font == nullptr )
+		{
+			return false;
+		}
+
+		bool successful = font->compileFont();
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextManager::directFontRelease( const ConstString & _name )
+	{
+		TextFontInterfacePtr font = this->getFont( _name );
+
+		if( font == nullptr )
+		{
+			return false;
+		}
+
+		font->releaseFont();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
     const TextEntryInterface * TextManager::getTextEntry( const ConstString& _key ) const
     {
         TMapTextEntry::const_iterator it_found = m_texts.find( _key );

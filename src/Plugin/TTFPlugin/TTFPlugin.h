@@ -24,6 +24,6 @@ namespace Menge
 		void _finalize() override;
 
 	protected:
-		FT_Library m_library;
+		FT_Library m_ftlibrary;
 	};
 }

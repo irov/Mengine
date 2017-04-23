@@ -92,6 +92,7 @@
 #	include "Kernel/Isometric.h"
 #	include "Kernel/Parallax.h"
 #	include "Kernel/RenderViewport.h"
+#	include "Kernel/RenderClipplane.h"
 #	include "Kernel/RenderCameraOrthogonal.h"
 #	include "Kernel/RenderCameraProjection.h"
 #	include "Kernel/RenderCameraOrthogonalTarget.h"
@@ -373,6 +374,24 @@ namespace Menge
 			}
 
 			return node;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		RenderClipplane * movie_getMovieClipplane( Movie * _movie, const ConstString & _name )
+		{
+			RenderClipplane * clipplane;
+			if( _movie->getMovieClipplane( _name, &clipplane ) == false )
+			{
+				return nullptr;
+			}
+
+			return clipplane;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool movie_hasMovieClipplane( Movie * _movie, const ConstString & _name )
+		{
+			bool result = _movie->hasMovieClipplane( _name );
+
+			return result;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool movie_hasMovieSlot( Movie * _movie, const ConstString & _name )
@@ -2594,22 +2613,18 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool directFontCompile( const ConstString & _fontName )
 		{
-			//bool successful = TEXT_SERVICE( m_serviceProvider )
-			//	->directFontCompile( _fontName );
+			bool successful = TEXT_SERVICE( m_serviceProvider )
+				->directFontCompile( _fontName );
 
-			//return successful;
-
-			return false;
+			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool directFontRelease( const ConstString & _fontName )
 		{
-			//bool successful = TEXT_SERVICE( m_serviceProvider )
-			//	->directFontRelease( _fontName );
+			bool successful = TEXT_SERVICE( m_serviceProvider )
+				->directFontRelease( _fontName );
 
-			//return successful;
-
-			return false;
+			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		ResourceReferencePtr s_getResourceReference( const ConstString & _nameResource )
@@ -7227,6 +7242,12 @@ namespace Menge
 			.def( "getFixedHorizont", &RenderCameraOrthogonalTarget::getFixedHorizont )
 			.def( "isFixedHorizont", &RenderCameraOrthogonalTarget::isFixedHorizont )
 			;
+
+		pybind::interface_<RenderClipplane, pybind::bases<Node> >( kernel, "RenderClipplane", false )
+			.def( "getCount", &RenderClipplane::getCount )
+			.def( "getPlane", &RenderClipplane::getPlane )
+			;
+
 		{
 
 			//pybind::proxy_<RigidBody3D, pybind::bases<Node>>("RigidBody3D", false)
@@ -7584,10 +7605,12 @@ namespace Menge
 					.def_proxy_static( "hasMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieSlot )
 					.def_proxy_static( "getMovieText", nodeScriptMethod, &NodeScriptMethod::movie_getMovieText )
 					.def_proxy_static( "hasMovieText", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieText )
+					.def_proxy_static( "getMovieClipplane", nodeScriptMethod, &NodeScriptMethod::movie_getMovieClipplane )
+					.def_proxy_static( "hasMovieClipplane", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieClipplane )
 					.def_proxy_static( "getSubMovie", nodeScriptMethod, &NodeScriptMethod::movie_getSubMovie )
 					.def_proxy_static( "hasSubMovie", nodeScriptMethod, &NodeScriptMethod::movie_hasSubMovie )
 					.def_proxy_static( "getSocket", nodeScriptMethod, &NodeScriptMethod::movie_getSocket )
-					.def_proxy_static( "hasSocket", nodeScriptMethod, &NodeScriptMethod::movie_hasSocket )
+					.def_proxy_static( "hasSocket", nodeScriptMethod, &NodeScriptMethod::movie_hasSocket )					
 					.def_proxy_args_static( "setMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_setMovieEvent )
 					.def_proxy_static( "removeMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_removeMovieEvent )
 					.def_proxy_static( "hasMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieEvent )

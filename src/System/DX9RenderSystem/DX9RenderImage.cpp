@@ -12,6 +12,7 @@ namespace Menge
         , m_hwHeight(0)
         , m_hwChannels(0)
         , m_hwPixelFormat(PF_UNKNOWN)
+		, m_pow2(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -26,17 +27,30 @@ namespace Menge
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::initialize( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
+    void DX9RenderImage::initialize( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
     {
         m_d3dTexture = _d3dInterface;
 
 		m_mode = _mode;
 
+		m_hwMipmaps = _mipmaps;
         m_hwWidth = _hwWidth;
         m_hwHeight = _hwHeight;
         m_hwChannels = _hwChannels;
         m_hwPixelFormat = _hwPixelFormat;
+
+		m_pow2 = Helper::isTexturePOW2( m_hwWidth ) && Helper::isTexturePOW2( m_hwHeight );
     }
+	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
+	{
+		m_renderImageProvider = _renderImageProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderImageProviderInterfacePtr & DX9RenderImage::getRenderImageProvider() const
+	{
+		return m_renderImageProvider;
+	}
 	///////////////////////////////////////////////////////////////////////////
 	Pointer DX9RenderImage::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
 	{
@@ -69,9 +83,16 @@ namespace Menge
 		return bits;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderImage::unlock( uint32_t _level )
+	bool DX9RenderImage::unlock( uint32_t _level, bool _successful )
 	{
-		DXCALL( m_serviceProvider, m_d3dTexture, UnlockRect, (_level) );
+		(void)_successful;
+
+		IF_DXCALL( m_serviceProvider, m_d3dTexture, UnlockRect, (_level) )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	IDirect3DTexture9 * DX9RenderImage::getDXTextureInterface() const
@@ -107,5 +128,15 @@ namespace Menge
 	uint32_t DX9RenderImage::getHWDepth() const
 	{
 		return 1; //ToDo
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t DX9RenderImage::getHWMipmaps() const
+	{
+		return m_hwMipmaps;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool DX9RenderImage::isPow2() const
+	{
+		return m_pow2;
 	}
 }	// namespace Menge

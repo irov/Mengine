@@ -152,7 +152,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::box2f & ResourceMovie::getBoundBox() const
 	{
-		return m_boundbox;
+		return m_boundBox;
 	}
     //////////////////////////////////////////////////////////////////////////
     namespace
@@ -472,7 +472,7 @@ namespace Menge
         
 		metadata->get_Loop_Segment( m_loopSegment );
 
-		m_hasBoundBox = metadata->get_Bounds_Box( m_boundbox );
+		m_hasBoundBox = metadata->get_Bounds_Box( m_boundBox );
 		m_hasAnchorPoint = metadata->get_Anchor_Point( m_anchorPoint );
 		m_hasOffsetPoint = metadata->get_Offset_Point( m_offsetPoint );
                 

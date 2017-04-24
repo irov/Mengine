@@ -278,6 +278,8 @@ namespace Menge
 		bool m_depthBufferWriteEnable;
 		bool m_alphaBlendEnable;
 
+		bool m_noShader;
+
         bool m_debugStepRenderMode;
 		bool m_debugRedAlertMode;
 

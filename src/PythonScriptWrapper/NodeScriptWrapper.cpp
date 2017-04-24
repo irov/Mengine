@@ -97,14 +97,10 @@
 #	include "Kernel/RenderCameraProjection.h"
 #	include "Kernel/RenderCameraOrthogonalTarget.h"
 
-#	include "Menge/Layer2D.h"
-//#	include "Menge/Layer2DParallax.h"
-//#	include "Menge/Layer2DIsometric.h"
-//#	include "Menge/Layer2DTexture.h"
-
 #   include "Kernel/ResourceImage.h"
 
-//#	include "RigidBody2D.h"
+#	include "Menge/Layer2D.h"
+
 
 #	include "Menge/TilePolygon.h"
 

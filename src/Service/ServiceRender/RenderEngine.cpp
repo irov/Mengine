@@ -54,6 +54,7 @@ namespace Menge
 		, m_iterateRenderObjects( 0 )
 		, m_limitRenderObjects( 0 )
 		, m_stopRenderObjects( false )
+		, m_noShader(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -71,6 +72,8 @@ namespace Menge
 
 		uint32_t maxQuadBatch = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxQuadBatch", 2000U );
 		uint32_t maxLineBatch = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxLineBatch", 4000U );
+
+		m_noShader = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderNoShader", false );
 
 		m_renderObjects.reserve( maxObjects );
 		m_renderPasses.reserve( maxPasses );
@@ -559,7 +562,7 @@ namespace Menge
 				->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
 		}
 
-		if( m_currentProgram != m_currentStage->program )
+		if( m_currentProgram != m_currentStage->program && m_noShader == false )
 		{
 			m_currentProgram = m_currentStage->program;
 			
@@ -567,7 +570,7 @@ namespace Menge
 				->setProgram( m_currentProgram );
 		}
 		
-		if( m_currentProgram == nullptr )
+		if( m_currentProgram == nullptr || m_noShader == true )
 		{
 			for( uint32_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
 			{
@@ -673,7 +676,7 @@ namespace Menge
 
 		this->updateStage_( stage );
 
-		if( m_currentProgram != nullptr )
+		if( m_currentProgram != nullptr && m_noShader == false )
 		{
 			RENDER_SYSTEM( m_serviceProvider )
 				->updateProgram( m_currentProgram );

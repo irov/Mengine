@@ -182,7 +182,7 @@ namespace Menge
 		float calcCharScale() const;
 
 	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const;
+		RenderMaterialInterfacePtr _updateMaterial() const override;
 
 	protected:
 		ConstString m_key;

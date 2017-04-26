@@ -60,6 +60,8 @@ getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.2.zip libogg-1.3.2.z
 getdepend http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.zip libvorbis-1.3.5.zip libvorbis-1.3.5 libvorbis
 getdepend http://downloads.xiph.org/releases/theora/libtheora-1.1.1.zip libtheora-1.1.1.zip libtheora-1.1.1 libtheora
 
+getdepend https://www.astralax.ru/download/programm/dev/magic_mac.zip magic_mac.zip mac astralax
+
 getdependt https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-0.6.0.tar.gz libwebp-0.6.0.tar.gz libwebp-0.6.0 libwebp
 getdependt http://kcat.strangesoft.net/openal-releases/openal-soft-1.17.2.tar.bz2 openal-soft-1.17.2.tar.bz2 openal-soft-1.17.2 openal-soft
 
@@ -83,5 +85,6 @@ svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
 svndepend https://github.com/erincatto/Box2D.git/trunk/Box2D Box2D
 svndepend https://github.com/irov/GOAP.git/trunk GOAP
 svndepend https://github.com/curl/curl.git/trunk libcurl
+
 
 svndepend https://github.com/EsotericSoftware/spine-runtimes.git/trunk/spine-c spine-c

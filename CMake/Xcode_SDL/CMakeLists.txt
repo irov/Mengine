@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 PROJECT( Mengine_Xcode_SDL )
 
 INCLUDE( ../macro_template.cmake )
-INCLUDE( ../xcode_sdl_template.cmake )
+INCLUDE( ../xcode_template.cmake )
 
 SET(MENGINE_TARGET "SDL")
 

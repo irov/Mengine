@@ -62,5 +62,20 @@ else()
      ${APPLICATION_DEPENDENCIES}
      PARENT_SCOPE
     )    
+    
+    SET( APPLICATION_LIBS
+    ${APPLICATION_LIBS}
+    Logger
+    Core
+    Codec
+    Archive
+    Factory
+    Kernel
+    )
+
+    SET( APPLICATION_LIBS
+     ${APPLICATION_LIBS}
+     PARENT_SCOPE
+    )
 endif()
 

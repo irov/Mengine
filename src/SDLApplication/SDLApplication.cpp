@@ -137,6 +137,9 @@ PLUGIN_EXPORT( Box2D );
 PLUGIN_EXPORT( MengeOggVorbis );
 PLUGIN_EXPORT( PathFinder );
 PLUGIN_EXPORT( MengeSDLFileGroup );
+#ifndef MENGINE_PLUGIN_ASTRALAX_DLL
+PLUGIN_EXPORT( AstralaxParticlePlugin2 );
+#endif
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {

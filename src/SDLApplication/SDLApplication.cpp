@@ -592,6 +592,11 @@ namespace Menge
 
         MENGINE_ADD_PLUGIN(PathFinder, "initialize Plugin Path Finder...");
 
+#ifndef MENGINE_PLUGIN_ASTRALAX_DLL
+		MENGINE_ADD_PLUGIN( AstralaxParticlePlugin2, "initialize Astralax Particle Plugin..." );
+#endif
+
+
 #   undef MENGINE_ADD_PLUGIN
 
         TVectorWString plugins;

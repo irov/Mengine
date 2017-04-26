@@ -5,11 +5,15 @@ ADD_SUBDIRECTORY( MengeZipPlugin )
 ADD_SUBDIRECTORY( MengeLZ4Plugin )
 ADD_SUBDIRECTORY( MengeOggVorbisPlugin )
 ADD_SUBDIRECTORY( MengePathFinderPlugin )
-ADD_SUBDIRECTORY( AstralaxParticlePlugin )
+
 ADD_SUBDIRECTORY( Box2DPlugin )
 ADD_SUBDIRECTORY( MoviePlugin )
 ADD_SUBDIRECTORY( GOAPPlugin )
 #ADD_SUBDIRECTORY( MengeCal3dPlugin )
+
+if( MENGINE_PLUGIN_ASTRALAX )
+    ADD_SUBDIRECTORY( AstralaxParticlePlugin )
+endif()
 
 if( MENGINE_PLUGIN_SPINE )
     ADD_SUBDIRECTORY( MengeSpinePlugin )

@@ -169,7 +169,7 @@ namespace Menge
         Char utf8_currentPath[MENGINE_MAX_PATH];
         size_t utf8_currentPath_len;
         UNICODE_SERVICE( m_serviceProvider )
-            ->unicodeToUtf8( currentPathW, currentPathW_len + 1, utf8_currentPath, MENGINE_MAX_PATH, &utf8_currentPath_len );
+            ->unicodeToUtf8( currentPathW, currentPathW_len, utf8_currentPath, MENGINE_MAX_PATH, &utf8_currentPath_len );
 
         //FilePath currentPath = Helper::stringizeStringSize( m_serviceProvider, utf8_currentPath, utf8_currentPath_len );
 		FilePath currentPath;

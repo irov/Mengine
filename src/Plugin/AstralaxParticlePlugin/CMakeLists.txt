@@ -37,10 +37,6 @@ TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}
 if( MINGW )
     TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/libmagic3d.a)
 elseif( WIN32 )
-    if( MENGINE_PLATFORM_XCODE )
-        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/libmagic3d.a)
-    endif()
-
     if( MENGINE_PLATFORM_WIN32 )
         TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/magic3d.lib)
     endif()
@@ -76,6 +72,13 @@ else()
     Factory
     Kernel
     )
+
+if( MENGINE_PLATFORM_XCODE )
+    SET( APPLICATION_LIBS
+    ${APPLICATION_LIBS}
+    ${THIRDPARTY_DIR}/astralax/magic3d.dylib
+    )
+endif()
 
     SET( APPLICATION_LIBS
      ${APPLICATION_LIBS}

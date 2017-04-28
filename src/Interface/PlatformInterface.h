@@ -60,7 +60,7 @@ namespace Menge
 		virtual bool notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const MemoryInterfacePtr & _buffer ) = 0;
 
     public:
-        virtual void onEvent( const ConstString & _event, const TMapParams & _params ) = 0;
+        virtual void onEvent( const ConstString & _event, const TMapWParams & _params ) = 0;
 
     public:
 		virtual size_t getShortPathName( const WString & _path, WChar * _short, size_t _len ) const = 0;

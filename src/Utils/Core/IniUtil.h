@@ -57,7 +57,7 @@ namespace Menge
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorWString & _values, ServiceProviderInterface * _serviceProvider );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorAspectRatioViewports & _values, ServiceProviderInterface * _serviceProvider );
 		//////////////////////////////////////////////////////////////////////////
-        bool getIniAllSettings( const IniStore & _ini, const Char * _section, TMapParams & _values, ServiceProviderInterface * _serviceProvider );
+        bool getIniAllSettings( const IniStore & _ini, const Char * _section, TMapWParams & _values, ServiceProviderInterface * _serviceProvider );
 		//////////////////////////////////////////////////////////////////////////
         bool writeIniSetting( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _file, const char * _key, const WString & _value );
         bool writeIniSection( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _file, const char * _section, uint32_t _sectionSize );

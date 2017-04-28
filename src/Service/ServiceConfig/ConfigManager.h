@@ -43,7 +43,7 @@ namespace Menge
 		void getValues( const Char * _section, const Char * _key, TVectorString & _value ) const override;
 
 	public:
-		void getSection( const Char * _section, TMapParams & _params ) const override;
+		void getSection( const Char * _section, TMapWParams & _params ) const override;
 
 	protected:
 		Tags m_platformTags;

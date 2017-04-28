@@ -3,7 +3,8 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "ThreadTaskDownloadAsset.h"
+#	include "ThreadTaskGetAsset.h"
+#	include "ThreadTaskPostMessage.h"
 
 #	include "Factory/FactoryPool.h"
 
@@ -39,7 +40,7 @@ namespace Menge
 		THREAD_SERVICE(m_serviceProvider)
 			->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), -1, __FILE__, __LINE__ );
 
-		m_factoryTaskDownloadAsset = new FactoryPool<ThreadTaskDownloadAsset, 8>( m_serviceProvider );
+		m_factoryTaskDownloadAsset = new FactoryPool<ThreadTaskGetAsset, 8>( m_serviceProvider );
 
 		return true;
 	}
@@ -51,12 +52,42 @@ namespace Menge
 		m_factoryTaskDownloadAsset = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HttpAssetID cURLHttpSystem::downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpDownloadAssetReceiver * _receiver )
+	HttpRequestID cURLHttpSystem::postMessage( const String & _url, const TMapParams & _params, HttpPostMessageReceiver * _receiver )
+	{
+		uint32_t task_id = ++m_enumeratorDownloadAsset;
+
+		ThreadTaskPostMessagePtr task = m_factoryTaskPostMessage->createObject();
+
+		task->setServiceProvider( m_serviceProvider );
+		task->initialize( _url, _params, task_id, this );
+
+		if( THREAD_SERVICE( m_serviceProvider )
+			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ), task ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::postMessage url '%s' invalid add task"
+				, _url.c_str()
+				);
+
+			return 0;
+		}
+
+		PostMessageDesc desc;
+		desc.id = task_id;
+		desc.task = task;
+		desc.receiver = _receiver;
+
+		m_postMessages.push_back( desc );
+
+		return task_id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	HttpRequestID cURLHttpSystem::downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpDownloadAssetReceiver * _receiver )
 	{
 		if( FILE_SERVICE( m_serviceProvider )
 			->hasFileGroup( _category, nullptr ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::downloadAsset not found category '%s' for filepath '%s'"
+			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::downloadAsset url '%s' not found category '%s' for filepath '%s'"
+				, _url.c_str()
 				, _category.c_str()
 				, _path.c_str()
 				);
@@ -67,7 +98,8 @@ namespace Menge
 		if( FILE_SERVICE( m_serviceProvider )
 			->existFile( _category, _path, nullptr ) == true )
 		{
-			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::downloadAsset category '%s' file alredy exist '%s'"
+			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::downloadAsset url '%s' category '%s' file alredy exist '%s'"
+				, _url.c_str()
 				, _category.c_str()
 				, _path.c_str()
 				);
@@ -77,7 +109,7 @@ namespace Menge
 
 		uint32_t task_id = ++m_enumeratorDownloadAsset;
 		
-		ThreadTaskDownloadAssetPtr task = m_factoryTaskDownloadAsset->createObject();
+		ThreadTaskGetAssetPtr task = m_factoryTaskDownloadAsset->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
 		task->initialize( _url, _category, _path, task_id, this );
@@ -85,7 +117,8 @@ namespace Menge
 		if( THREAD_SERVICE(m_serviceProvider)
 			->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), task ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("CurlHttpSystem::downloadAsset category '%s' path '%s' invalid add task"
+			LOGGER_ERROR(m_serviceProvider)("CurlHttpSystem::downloadAsset url '%s' category '%s' path '%s' invalid add task"
+				, _url.c_str()
 				, _category.c_str()
 				, _path.c_str()
 				);
@@ -103,7 +136,30 @@ namespace Menge
 		return task_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool cURLHttpSystem::cancelAsset( HttpAssetID _id )
+	bool cURLHttpSystem::cancelPostMessage( HttpRequestID _id )
+	{
+		for( TVectorPostMessages::iterator
+			it = m_postMessages.begin(),
+			it_end = m_postMessages.end();
+			it != it_end;
+			++it )
+		{
+			PostMessageDesc & desc = *it;
+
+			if( desc.id != _id )
+			{
+				continue;
+			}
+
+			desc.task->cancel();
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool cURLHttpSystem::cancelDownloadAsset( HttpRequestID _id )
 	{
 		for( TVectorDownloadAssets::iterator
 			it = m_downloadAssets.begin(),
@@ -126,7 +182,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void cURLHttpSystem::onDownloadAssetComplete( HttpAssetID _id, bool _successful )
+	void cURLHttpSystem::onDownloadAssetComplete( HttpRequestID _id, bool _successful )
 	{
 		for( TVectorDownloadAssets::iterator
 			it = m_downloadAssets.begin(),
@@ -150,6 +206,34 @@ namespace Menge
 				receiver->onDownloadAssetComplete( _id, _successful );
 			}
 			
+			break;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void cURLHttpSystem::onPostMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful )
+	{
+		for( TVectorPostMessages::iterator
+			it = m_postMessages.begin(),
+			it_end = m_postMessages.end();
+			it != it_end;
+			++it )
+		{
+			PostMessageDesc & desc = *it;
+
+			if( desc.id != _id )
+			{
+				continue;
+			}
+
+			HttpPostMessageReceiver * receiver = desc.receiver;
+
+			m_postMessages.erase( it );
+
+			if( receiver != nullptr )
+			{
+				receiver->onPostMessageComplete( _id, _response, _code, _successful );
+			}
+
 			break;
 		}
 	}

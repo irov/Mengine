@@ -197,7 +197,7 @@ namespace Menge
 		Helper::s_calcValueT( m_serviceProvider, m_ini, m_platformTags, _section, _key, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConfigManager::getSection( const Char * _section, TMapParams & _params ) const
+	void ConfigManager::getSection( const Char * _section, TMapWParams & _params ) const
 	{
 		IniUtil::getIniAllSettings( m_ini, _section, _params, m_serviceProvider );
 	}

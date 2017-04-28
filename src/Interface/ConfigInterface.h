@@ -44,7 +44,7 @@ namespace Menge
 		virtual void getValues( const Char * _section, const Char * _key, TVectorString & _value ) const = 0;
 
 	public:
-		virtual void getSection( const Char * _section, TMapParams & _params ) const = 0;
+		virtual void getSection( const Char * _section, TMapWParams & _params ) const = 0;
 	};
 
 #   define CONFIG_SERVICE( serviceProvider )\

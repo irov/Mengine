@@ -33,8 +33,8 @@ namespace Menge
 		virtual void render( const RenderObjectState * _state, uint32_t _debugMask ) = 0;
 
 	public:
-		virtual void message( const ConstString & _messageName, const TMapParams & _params ) = 0;
-		virtual void messageAll( const ConstString & _messageName, const TMapParams & _params ) = 0;
+		virtual void message( const ConstString & _messageName, const TMapWParams & _params ) = 0;
+		virtual void messageAll( const ConstString & _messageName, const TMapWParams & _params ) = 0;
 	};
 
 	typedef stdex::intrusive_ptr<ModuleInterface> ModuleInterfacePtr;
@@ -69,8 +69,8 @@ namespace Menge
 		virtual void render( const RenderObjectState * _state, uint32_t _debugMask ) = 0;
 
 	public:
-		virtual void message( const ConstString & _moduleName, const ConstString & _messageName, const TMapParams & _params ) = 0;
-		virtual void messageAll( const ConstString & _messageName, const TMapParams & _params ) = 0;
+		virtual void message( const ConstString & _moduleName, const ConstString & _messageName, const TMapWParams & _params ) = 0;
+		virtual void messageAll( const ConstString & _messageName, const TMapWParams & _params ) = 0;
 	};
 
 #   define MODULE_SERVICE( serviceProvider )\

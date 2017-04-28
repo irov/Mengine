@@ -36,8 +36,8 @@ namespace Menge
 		void render( const RenderObjectState * _state, uint32_t _debugMask ) override;
 
 	public:
-		void message( const ConstString & _moduleName, const ConstString & _messageName, const TMapParams & _params ) override;
-		void messageAll( const ConstString & _messageName, const TMapParams & _params ) override;
+		void message( const ConstString & _moduleName, const ConstString & _messageName, const TMapWParams & _params ) override;
+		void messageAll( const ConstString & _messageName, const TMapWParams & _params ) override;
 
 	protected:
 		const ModuleInterfacePtr & findModule( const ConstString & _moduleName ) const;

@@ -169,7 +169,7 @@ namespace Menge
 				m_switchScene2 = false;
 
 				MODULE_SERVICE( m_serviceProvider )
-					->messageAll( STRINGIZE_STRING_LOCAL( m_serviceProvider, "onSceneChange" ), TMapParams() );
+					->messageAll( STRINGIZE_STRING_LOCAL( m_serviceProvider, "onSceneChange" ), TMapWParams() );
 			}
 
 			if( m_focus == true )

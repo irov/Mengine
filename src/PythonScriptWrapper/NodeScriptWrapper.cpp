@@ -2850,7 +2850,7 @@ namespace Menge
 				->pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_platformEvent( const ConstString & _event, const TMapParams & _params )
+		void s_platformEvent( const ConstString & _event, const TMapWParams & _params )
 		{
 			PLATFORM_SERVICE( m_serviceProvider )
 				->onEvent( _event, _params );
@@ -2893,7 +2893,7 @@ namespace Menge
 			pybind::object m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_downloadAsset( const String & _url, const ConstString & _category, const FilePath & _filepath, const pybind::object & _cb )
+		HttpRequestID s_downloadAsset( const String & _url, const ConstString & _category, const FilePath & _filepath, const pybind::object & _cb )
 		{
 			uint32_t id = HTTP_SYSTEM( m_serviceProvider )
 				->downloadAsset( _url, _category, _filepath, new PyHttpDownloadAssetReceiver( _cb ) );
@@ -2901,10 +2901,47 @@ namespace Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_cancelDownloadAsset( uint32_t _id )
+		void s_cancelDownloadAsset( HttpRequestID _id )
 		{
 			HTTP_SYSTEM( m_serviceProvider )
-				->cancelAsset( _id );
+				->cancelDownloadAsset( _id );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		class PyHttpPostMessageReceiver
+			: public HttpPostMessageReceiver
+		{
+		public:
+			PyHttpPostMessageReceiver( const pybind::object & _cb )
+				: m_cb( _cb )
+			{
+			}
+
+			~PyHttpPostMessageReceiver()
+			{
+			}
+
+		protected:
+			void onPostMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override
+			{
+				m_cb.call( _id, _response, _code, _successful );
+			}
+
+		protected:
+			pybind::object m_cb;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		HttpRequestID s_postMessage( const String & _url, const TMapParams & _category, const pybind::object & _cb )
+		{
+			HttpRequestID id = HTTP_SYSTEM( m_serviceProvider )
+				->postMessage( _url, _category, new PyHttpPostMessageReceiver( _cb ) );
+
+			return id;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_cancelPostMessage( HttpRequestID _id )
+		{
+			HTTP_SYSTEM( m_serviceProvider )
+				->cancelPostMessage( _id );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool s_mountResourcePak( const ConstString & _fileGroup
@@ -4137,7 +4174,7 @@ namespace Menge
 			_affector->stop();
 		}
 		//////////////////////////////////////////////////////////////////////////		
-		void s_moduleMessage( const ConstString & _moduleName, const ConstString & _messageName, const TMapParams & _params )
+		void s_moduleMessage( const ConstString & _moduleName, const ConstString & _messageName, const TMapWParams & _params )
 		{
 			MODULE_SERVICE( m_serviceProvider )
 				->message( _moduleName, _messageName, _params );
@@ -6809,7 +6846,8 @@ namespace Menge
 		pybind::registration_stl_vector_type_cast<ResourceImage *, TVectorResourceImage>(kernel);
 		pybind::registration_stl_vector_type_cast<HotSpotPolygon *, TVectorHotSpotPolygon>(kernel);
 
-		pybind::registration_stl_map_type_cast<ConstString, WString, TMapParams>(kernel);
+		pybind::registration_stl_map_type_cast<ConstString, WString, TMapWParams>(kernel);
+		pybind::registration_stl_map_type_cast<ConstString, String, TMapParams>(kernel);
 
 		classWrapping( _serviceProvider );
 
@@ -7852,6 +7890,11 @@ namespace Menge
 			pybind::def_functor( kernel, "getProjectCodename", nodeScriptMethod, &NodeScriptMethod::s_getProjectCodename );
 
 			pybind::def_functor( kernel, "sleep", nodeScriptMethod, &NodeScriptMethod::s_sleep );
+
+			
+			pybind::def_functor( kernel, "postMessage", nodeScriptMethod, &NodeScriptMethod::s_postMessage );
+			pybind::def_functor( kernel, "cancelPostMessage", nodeScriptMethod, &NodeScriptMethod::s_cancelPostMessage );
+
 
 			pybind::def_functor( kernel, "downloadAsset", nodeScriptMethod, &NodeScriptMethod::s_downloadAsset );
 			pybind::def_functor( kernel, "cancelDownloadAsset", nodeScriptMethod, &NodeScriptMethod::s_cancelDownloadAsset );

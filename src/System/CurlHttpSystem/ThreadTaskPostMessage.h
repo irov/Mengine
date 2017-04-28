@@ -1,21 +1,20 @@
 #	pragma once
 
 #	include "Interface/HttpSystemInterface.h"
-#	include "Interface/StreamInterface.h"
 
 #	include "Kernel/ThreadTask.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class ThreadTaskDownloadAsset
+	class ThreadTaskPostMessage
 		: public ThreadTask
 	{
 	public:
-		ThreadTaskDownloadAsset();
+		ThreadTaskPostMessage();
 		
 	public:
-		bool initialize( const String & _url, const ConstString & _category, const FilePath & _filepath, HttpAssetID _id, HttpDownloadAssetReceiver * _receiver );
+		bool initialize( const String & _url, const TMapParams & _params, HttpRequestID _id, HttpPostMessageReceiver * _receiver );
 
 	protected:
 		bool _onRun() override;
@@ -26,19 +25,22 @@ namespace Menge
 	protected:
 		void _onComplete( bool _successful ) override;
 
+	public:
+		void writeResponse( char * _ptr, size_t _size );
+
 	protected:		
 		String m_url;
-		ConstString m_category;
-		FilePath m_filePath;
+		TMapParams m_params;
 
-		HttpAssetID m_id;
-		HttpDownloadAssetReceiver * m_receiver;
+		HttpRequestID m_id;
+		HttpPostMessageReceiver * m_receiver;
 
-		OutputStreamInterfacePtr m_stream;
-
+		uint32_t m_code;
+		String m_response;
+		
 		bool m_successful;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadTaskDownloadAsset> ThreadTaskDownloadAssetPtr;
+	typedef stdex::intrusive_ptr<ThreadTaskPostMessage> ThreadTaskPostMessagePtr;
 	//////////////////////////////////////////////////////////////////////////
 }

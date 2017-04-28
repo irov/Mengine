@@ -5,8 +5,10 @@ src
 	cURLHttpSystem.cpp
 	cURLHttpSystem.h
     
-    ThreadTaskDownloadAsset.h
-    ThreadTaskDownloadAsset.cpp
+    ThreadTaskGetAsset.h
+    ThreadTaskGetAsset.cpp
+    ThreadTaskPostMessage.h
+    ThreadTaskPostMessage.cpp
 )
 
 add_definitions(-DCURL_STATICLIB)

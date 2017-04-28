@@ -60,7 +60,7 @@ namespace Menge
 
         virtual bool close() = 0;
 
-        virtual void userEvent( const ConstString & _event, const TMapParams & _params ) = 0;
+        virtual void userEvent( const ConstString & _event, const TMapWParams & _params ) = 0;
 
         virtual void turnSound( bool _turn ) = 0;
     };

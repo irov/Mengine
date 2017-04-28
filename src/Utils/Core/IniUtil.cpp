@@ -437,7 +437,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniAllSettings( const IniStore & _ini, const Char * _section, TMapParams & _values, ServiceProviderInterface * _serviceProvider )
+        bool getIniAllSettings( const IniStore & _ini, const Char * _section, TMapWParams & _values, ServiceProviderInterface * _serviceProvider )
         {
             uint32_t count = _ini.countSettings( _section );
 

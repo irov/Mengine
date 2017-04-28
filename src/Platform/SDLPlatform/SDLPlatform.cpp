@@ -459,7 +459,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::onEvent( const ConstString & _event, const TMapParams & _params )
+    void SDLPlatform::onEvent( const ConstString & _event, const TMapWParams & _params )
     {
         PARAM_UNUSED(_event);
         PARAM_UNUSED(_params);

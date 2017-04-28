@@ -172,7 +172,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleService::message( const ConstString & _moduleName, const ConstString & _messageName, const TMapParams & _params )
+	void ModuleService::message( const ConstString & _moduleName, const ConstString & _messageName, const TMapWParams & _params )
 	{
 		const ModuleInterfacePtr & module = this->findModule( _moduleName );
 
@@ -184,7 +184,7 @@ namespace Menge
 		module->message( _messageName, _params );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleService::messageAll( const ConstString & _messageName, const TMapParams & _params )
+	void ModuleService::messageAll( const ConstString & _messageName, const TMapWParams & _params )
 	{
 		for( TVectorModules::const_iterator
 			it = m_modules.begin(),

@@ -421,7 +421,7 @@ namespace Menge
                 m_cb.call( _mode );
             }
 
-            void onGameUser( const ConstString & _event, const TMapParams & _params ) override
+            void onGameUser( const ConstString & _event, const TMapWParams & _params ) override
             {
                 m_cb.call( _event, _params );
             }
@@ -764,7 +764,7 @@ namespace Menge
 		return needQuit;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Game::userEvent( const ConstString & _id, const TMapParams & _params )
+    void Game::userEvent( const ConstString & _id, const TMapWParams & _params )
     {
 		UserEvent ev;
 		ev.id = _id;
@@ -794,7 +794,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	WString Game::getParam( const ConstString & _paramName ) const
 	{
-		TMapParams::const_iterator it_find = m_params.find( _paramName );
+		TMapWParams::const_iterator it_find = m_params.find( _paramName );
 
         if( it_find == m_params.end() )
         {
@@ -812,7 +812,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::hasParam( const ConstString & _paramName ) const
 	{
-		TMapParams::const_iterator it_find = m_params.find( _paramName );
+		TMapWParams::const_iterator it_find = m_params.find( _paramName );
 
 		if( it_find == m_params.end() )
 		{

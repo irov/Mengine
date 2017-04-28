@@ -93,7 +93,7 @@ namespace Menge
         virtual void onGameUselectAccount( const WString & _accountID ) = 0;
         virtual void onGameChangeSoundVolume( float _sound, float _music, float _voice ) = 0;
         virtual void onGameCursorMode( bool _mode ) = 0;
-        virtual void onGameUser( const ConstString & _event, const TMapParams & _params ) = 0;
+        virtual void onGameUser( const ConstString & _event, const TMapWParams & _params ) = 0;
         virtual bool onGameClose() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -156,7 +156,7 @@ namespace Menge
 
 		bool close() override;
 
-		void userEvent( const ConstString & _id, const TMapParams & _params ) override;
+		void userEvent( const ConstString & _id, const TMapWParams & _params ) override;
 
 		void turnSound( bool _turn ) override;
 
@@ -181,12 +181,12 @@ namespace Menge
 
 		FilePath m_iconPath;
 				
-		TMapParams m_params;
+		TMapWParams m_params;
 
 		struct UserEvent
 		{
 			ConstString id;
-			TMapParams params;
+			TMapWParams params;
 		};
 
 		typedef std::vector<UserEvent> TVectorUserEvents;

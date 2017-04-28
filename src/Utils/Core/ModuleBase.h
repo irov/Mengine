@@ -46,12 +46,12 @@ namespace Menge
 		virtual void _render( const RenderObjectState * _state, uint32_t _debugMask );
 		
 	protected:
-		void message( const ConstString & _messageName, const TMapParams & _params ) override;
-		void messageAll (const ConstString & _messageName, const TMapParams & _params) override;
+		void message( const ConstString & _messageName, const TMapWParams & _params ) override;
+		void messageAll (const ConstString & _messageName, const TMapWParams & _params) override;
 
 	protected:
-		virtual void _message( const ConstString & _messageName, const TMapParams & _params );
-		virtual void _messageAll( const ConstString & _messageName, const TMapParams & _params );
+		virtual void _message( const ConstString & _messageName, const TMapWParams & _params );
+		virtual void _messageAll( const ConstString & _messageName, const TMapWParams & _params );
 
 	protected:
 		ConstString m_name;

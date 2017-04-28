@@ -7,5 +7,6 @@
 
 namespace Menge
 {
-	typedef stdex::map<ConstString, WString> TMapParams;
+	typedef stdex::map<ConstString, String> TMapParams;
+	typedef stdex::map<ConstString, WString> TMapWParams;
 }

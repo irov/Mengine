@@ -1,4 +1,4 @@
-#	include "ThreadTaskDownloadAsset.h"
+#	include "ThreadTaskGetAsset.h"
 
 #	include "Interface/FileSystemInterface.h"
 
@@ -9,14 +9,14 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ThreadTaskDownloadAsset::ThreadTaskDownloadAsset()
+	ThreadTaskGetAsset::ThreadTaskGetAsset()
 		: m_id(0)
 		, m_receiver(nullptr)
 		, m_successful(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskDownloadAsset::initialize( const String & _url, const ConstString & _category, const FilePath & _filepath, HttpAssetID _id, HttpDownloadAssetReceiver * _receiver )
+	bool ThreadTaskGetAsset::initialize( const String & _url, const ConstString & _category, const FilePath & _filepath, HttpRequestID _id, HttpDownloadAssetReceiver * _receiver )
 	{
 		m_url = _url;
 		m_category = _category;
@@ -27,7 +27,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskDownloadAsset::_onRun()
+	bool ThreadTaskGetAsset::_onRun()
 	{
 		m_stream = FILE_SERVICE(m_serviceProvider)
 			->openOutputFile( m_category, m_filePath );
@@ -61,7 +61,7 @@ namespace Menge
 		(void)_ultotal;
 		(void)_ulnow;
 
-		ThreadTaskDownloadAsset * task = (ThreadTaskDownloadAsset *)_userp;
+		ThreadTaskGetAsset * task = (ThreadTaskGetAsset *)_userp;
 
 		if( task->isCancel() == true )
 		{
@@ -71,35 +71,35 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskDownloadAsset::_onMain()
+	bool ThreadTaskGetAsset::_onMain()
 	{		
 		/* init the curl session */
-		CURL * curl_handle = curl_easy_init();
+		CURL * curl = curl_easy_init();
 
 		/* specify URL to get */
 		const char * url_str = m_url.c_str();
-		curl_easy_setopt( curl_handle, CURLOPT_URL, url_str );
+		curl_easy_setopt( curl, CURLOPT_URL, url_str );
 
 		/* send all data to this function  */
-		curl_easy_setopt( curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback );
+		curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback );
 
 		/* we pass our 'chunk' struct to the callback function */
 		OutputStreamInterface * stream_ptr = m_stream.get();
-		curl_easy_setopt( curl_handle, CURLOPT_WRITEDATA, (void *)stream_ptr );
+		curl_easy_setopt( curl, CURLOPT_WRITEDATA, (void *)stream_ptr );
 
-		curl_easy_setopt( curl_handle, CURLOPT_XFERINFOFUNCTION, XFERInfoCallback );
-		curl_easy_setopt( curl_handle, CURLOPT_XFERINFODATA, (void *)this );
+		curl_easy_setopt( curl, CURLOPT_XFERINFOFUNCTION, XFERInfoCallback );
+		curl_easy_setopt( curl, CURLOPT_XFERINFODATA, (void *)this );
 
 		/* some servers don't like requests that are made without a user-agent
 		field, so we provide one */
 		//curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
 		
-		curl_easy_setopt( curl_handle, CURLOPT_NOPROGRESS, 0L );
+		curl_easy_setopt( curl, CURLOPT_NOPROGRESS, 0L );
 
 		/* get it! */
-		CURLcode res = curl_easy_perform(curl_handle);
+		CURLcode res = curl_easy_perform(curl);
 
-		curl_easy_cleanup( curl_handle );
+		curl_easy_cleanup( curl );
 
 		/* check for errors */
 		if( res == CURLE_ABORTED_BY_CALLBACK )
@@ -120,7 +120,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskDownloadAsset::_onComplete( bool _successful )
+	void ThreadTaskGetAsset::_onComplete( bool _successful )
 	{
 		m_stream->flush();
 		m_stream = nullptr;

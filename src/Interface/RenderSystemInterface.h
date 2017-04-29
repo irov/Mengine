@@ -248,9 +248,7 @@ namespace Menge
 		virtual uint32_t getHWDepth() const = 0;
 
 		virtual PixelFormat getHWPixelFormat() const = 0;
-
-        virtual bool isPow2() const = 0;
-
+		
 	public:
 		virtual Pointer lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly = true ) = 0;
 		virtual bool unlock( uint32_t _level, bool _successful ) = 0;
@@ -283,6 +281,9 @@ namespace Menge
 
 		virtual uint32_t getWidth() const = 0;
 		virtual uint32_t getHeight() const = 0;
+
+	public:
+		virtual bool isPow2() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderTextureInterface> RenderTextureInterfacePtr;
@@ -554,9 +555,6 @@ namespace Menge
 		virtual size_t getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) const = 0;
 
     public:
-        //virtual void sweezleAlpha( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
-        virtual void imageQuality( const RenderTextureInterfacePtr & _texture, void * _textureBuffer, size_t _texturePitch ) = 0;
-
         virtual void cacheFileTexture( const ConstString& _pakName, const FilePath& _fileName, const RenderTextureInterfacePtr & _texture ) = 0;
 
     public:

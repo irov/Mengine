@@ -1731,12 +1731,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setFullscreenMode( bool _fullscreen )
 	{
-		if( m_fullscreen == _fullscreen )
+		if( m_nofullscreen == true )
 		{
-			return;
+			_fullscreen = false;
 		}
 
-		if( m_nofullscreen == true )
+		if( m_fullscreen == _fullscreen )
 		{
 			return;
 		}

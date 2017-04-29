@@ -105,24 +105,24 @@ namespace Menge
         }
 
         // copy pixels on the edge for better image quality
-        if( HWWidth != mipmap_width )
+        if( image_width != mipmap_width )
         {
             unsigned char * image_data = static_cast<unsigned char *>(_buffer);
             size_t pixel_size = _pitch / HWWidth;
 
-            for( uint32_t j = 0; j != mipmap_height; ++j )
+            for( uint32_t j = 0; j != image_height; ++j )
             {
-                stdex::memorycopy( image_data, mipmap_width * pixel_size, image_data + (mipmap_width - 1) * pixel_size, pixel_size );
+                stdex::memorycopy( image_data, image_width * pixel_size, image_data + (image_width - 1) * pixel_size, pixel_size );
 
                 image_data += _pitch;
             }
         }
 
-        if( HWHeight > mipmap_height )
+        if( image_height != mipmap_height )
         {
             unsigned char * image_data = static_cast<unsigned char *>(_buffer);
 
-            stdex::memorycopy( image_data, mipmap_height * _pitch, image_data + (mipmap_height - 1) * _pitch, _pitch );
+            stdex::memorycopy( image_data, image_height * _pitch, image_data + (image_height - 1) * _pitch, _pitch );
         }
 
         return true;

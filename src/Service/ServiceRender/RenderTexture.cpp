@@ -6,9 +6,10 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderTexture::RenderTexture()
-        : m_id( 0 )
-		, m_width(0)
-		, m_height(0)
+		: m_id( 0 )
+		, m_width( 0 )
+		, m_height( 0 )
+		, m_pow2( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -41,6 +42,8 @@ namespace Menge
 		float scaleV = float( m_rect.bottom ) / float( HWHeight );
 
 		mt::uv4_from_mask( m_uv, mt::vec4f(0.f, 0.f, scaleU, scaleV) );
+
+		m_pow2 = Helper::isTexturePOW2( m_width ) && Helper::isTexturePOW2( m_height );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void RenderTexture::release()
@@ -86,6 +89,11 @@ namespace Menge
 	const mt::uv4f & RenderTexture::getUV() const
 	{
 		return m_uv;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderTexture::isPow2() const
+	{
+		return m_pow2;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

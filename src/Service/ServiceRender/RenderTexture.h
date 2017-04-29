@@ -42,6 +42,8 @@ namespace Menge
 		uint32_t getWidth() const override;
 		uint32_t getHeight() const override;
 
+		bool isPow2() const override;
+
 	protected:        
         uint32_t m_id;
 
@@ -55,6 +57,8 @@ namespace Menge
 		
 		Rect m_rect;
 		mt::uv4f m_uv;
+		
+		bool m_pow2;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderTexture> RenderTexturePtr;

@@ -133,6 +133,8 @@ namespace Menge
 			pch++;
 
 			*pch = L'\0';
+
+			return true;
 		}
 	}
 }  

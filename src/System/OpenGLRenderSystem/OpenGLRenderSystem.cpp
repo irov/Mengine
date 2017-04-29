@@ -115,6 +115,7 @@ namespace Menge
 
         for( uint32_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
         {
+			GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
             GLCALL( m_serviceProvider, glActiveTexture_, (GL_TEXTURE0 + i) );
             GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE) );
             GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR) );

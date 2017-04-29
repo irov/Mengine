@@ -53,6 +53,10 @@ if( MENGINE_PLUGIN_ASTRALAX_DLL )
     TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Factory)
     TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Codec)  
 else()   
+if( MENGINE_PLATFORM_XCODE )
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/magic3d.dylib)
+endif()
+
     SET( APPLICATION_DEPENDENCIES
      ${APPLICATION_DEPENDENCIES}
      ${MY_LIB_NAME}
@@ -72,13 +76,6 @@ else()
     Factory
     Kernel
     )
-
-if( MENGINE_PLATFORM_XCODE )
-    SET( APPLICATION_LIBS
-    ${APPLICATION_LIBS}
-    ${THIRDPARTY_DIR}/astralax/magic3d.dylib
-    )
-endif()
 
     SET( APPLICATION_LIBS
      ${APPLICATION_LIBS}

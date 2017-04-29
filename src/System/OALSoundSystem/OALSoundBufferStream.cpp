@@ -311,7 +311,6 @@ namespace Menge
 		//int queuedBuffers;
 		//alGetSourcei( m_sourceId, AL_BUFFERS_QUEUED, &queuedBuffers );
 
-		// Получаем количество отработанных буферов
 		ALint processed = 0;
 		alGetSourcei( m_sourceId, AL_BUFFERS_PROCESSED, &processed );
 		OAL_CHECK_ERROR( m_serviceProvider );

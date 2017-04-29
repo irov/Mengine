@@ -494,7 +494,7 @@ namespace Menge
 		UNICODE_SERVICE( _serviceProvider )
 			->unicodeToUtf8( _fullpath, (size_t)-1, utf8_fullpath, MENGINE_MAX_PATH, &utf8_fullpathLen );
 
-		int status = mkdir( utf8_fullpath );
+		int status = mkdir( utf8_fullpath, 0700 );
 		
 		if( status != 0 )
 		{

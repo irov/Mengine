@@ -91,14 +91,10 @@ namespace Menge
         GLUNUSED( _MultiSampleCount );
 
 		Menge::initialize_GLEXT( m_serviceProvider );
+      
+        const GLubyte * ver_string = glGetString(GL_VERSION);
 
-		GLint ver_major = 0;
-		GLCALL( m_serviceProvider, glGetIntegerv, (GL_MAJOR_VERSION, &ver_major) );
-
-		GLint ver_minor = 0;
-		GLCALL( m_serviceProvider, glGetIntegerv, (GL_MINOR_VERSION, &ver_minor) );
-
-        LOGGER_WARNING( m_serviceProvider )("OpenGL Version: %d.%d", ver_major, ver_minor);
+        LOGGER_WARNING( m_serviceProvider )("OpenGL Version: %s", ver_string);
 
         LOGGER_WARNING( m_serviceProvider )("Vendor      : %s", reinterpret_cast<const char*>(glGetString( GL_VENDOR )));
         LOGGER_WARNING( m_serviceProvider )("Renderer    : %s", reinterpret_cast<const char*>(glGetString( GL_RENDERER )));

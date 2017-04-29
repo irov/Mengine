@@ -12,19 +12,6 @@ SERVICE_FACTORY( WindowsLayer, Menge::VistaWindowsLayer );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	static void PathCorrectBackslash( WChar * _out, const WChar * _in )
-	{
-		wcscpy( _out, _in );
-
-		WChar * pch = wcschr( _out, '/' );
-		while( pch != NULL )
-		{
-			*pch = '\\';
-
-			pch = wcschr( pch + 1, '/' );
-		}
-	}
     //////////////////////////////////////////////////////////////////////////
     VistaWindowsLayer::VistaWindowsLayer()
         : m_windowsType(EWT_UNKNOWN)
@@ -120,7 +107,7 @@ namespace Menge
     bool VistaWindowsLayer::fileExists( const WChar * _path )
     {
 		WChar pathCorrect[MENGINE_MAX_PATH];
-		PathCorrectBackslash( pathCorrect, _path );
+		Helper::pathCorrectBackslash( pathCorrect, _path );
 
         size_t len = wcslen( pathCorrect );
         if( len == 0 )	// current dir
@@ -147,7 +134,7 @@ namespace Menge
         DWORD _sharedMode, DWORD _creationDisposition )
     {
 		WChar pathCorrect[MENGINE_MAX_PATH];
-		PathCorrectBackslash( pathCorrect, _path );
+		Helper::pathCorrectBackslash( pathCorrect, _path );
 
         HANDLE handle = ::CreateFile( pathCorrect, _desiredAccess, _sharedMode, NULL,
             _creationDisposition, FILE_ATTRIBUTE_NORMAL, NULL );
@@ -440,7 +427,7 @@ namespace Menge
             return false;
         }
 
-		PathCorrectBackslash( _filePath, filePathW );
+		Helper::pathCorrectBackslash( _filePath, filePathW );
         
         return true;
     }
@@ -471,10 +458,10 @@ namespace Menge
 		PathAppend( szPath, _userPath );
 
 		WChar pathCorrect[MENGINE_MAX_PATH];
-		PathCorrectBackslash( pathCorrect, _path.c_str() );
+		Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
 
 		WChar fileCorrect[MENGINE_MAX_PATH];
-		PathCorrectBackslash( fileCorrect, _file.c_str() );
+		Helper::pathCorrectBackslash( fileCorrect, _file.c_str() );
 
 		PathAppend( szPath, pathCorrect );
 

@@ -69,7 +69,7 @@ namespace Menge
 			return 0;
 		}
 
-		_path[len] = L'\\';
+		_path[len] = L'/';
 		_path[len + 1] = L'\0';
 
 		return (size_t)len + 1;

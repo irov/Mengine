@@ -91,12 +91,12 @@ namespace Menge
 		{
 			wcscpy( _out, _in );
 
-			WChar * pch = wcschr( _out, '/' );
+			WChar * pch = wcschr( _out, L'\\' );
 			while( pch != NULL )
 			{
-				*pch = '\\';
+				*pch = L'/';
 
-				pch = wcschr( pch + 1, '/' );
+				pch = wcschr( pch + 1, L'\\' );
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ namespace Menge
 
 			WChar * pch = _path + len - 1;
 
-			if( *pch == L'\\' )
+			if( *pch == L'/' )
 			{
 				*pch = L'\0';
 			}
@@ -118,14 +118,14 @@ namespace Menge
 
 			WChar * pch = _path + len - 1;
 
-			if( *pch == L'\\' )
+			if( *pch == L'/' )
 			{
 				return false;
 			}
 
 			pch--;
 
-			while( *pch != L'\\' )
+			while( *pch != L'/' )
 			{
 				pch--;
 			}

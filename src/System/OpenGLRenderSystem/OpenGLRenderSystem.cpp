@@ -92,9 +92,11 @@ namespace Menge
 
         Menge::initialize_GLEXT();
 
-        GLint ver_major = 0, ver_minor = 0;
-        glGetIntegerv( GL_MAJOR_VERSION, &ver_major );
-        glGetIntegerv( GL_MINOR_VERSION, &ver_minor );
+		GLint ver_major = 0;
+		GLCALL( m_serviceProvider, glGetIntegerv, (GL_MAJOR_VERSION, &ver_major) );
+
+		GLint ver_minor = 0;
+		GLCALL( m_serviceProvider, glGetIntegerv, (GL_MINOR_VERSION, &ver_minor) );
 
         LOGGER_WARNING( m_serviceProvider )("OpenGL Version: %d.%d", ver_major, ver_minor);
 
@@ -104,12 +106,12 @@ namespace Menge
         LOGGER_WARNING( m_serviceProvider )("Extensions  : %s", reinterpret_cast<const char*>(glGetString( GL_EXTENSIONS )));
 		
         GLint maxClipPlanes;
-        glGetIntegerv( GL_MAX_CLIP_PLANES, &maxClipPlanes );
+		GLCALL( m_serviceProvider, glGetIntegerv, (GL_MAX_CLIP_PLANES, &maxClipPlanes) );
 
         m_glMaxClipPlanes = maxClipPlanes;
 
         GLint maxCombinedTextureImageUnits;
-        glGetIntegerv( GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits );
+		GLCALL( m_serviceProvider, glGetIntegerv, (GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits) );
 
         m_glMaxCombinedTextureImageUnits = maxCombinedTextureImageUnits;
 

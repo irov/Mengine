@@ -24,7 +24,6 @@ namespace Menge
         , m_mode(ERIM_NORMAL)
         , m_lockLevel(0)
 		, m_lockFirst(false)
-        , m_pow2(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -78,8 +77,6 @@ namespace Menge
         m_format = _format;
         m_type = _type;
 
-        m_pow2 = Helper::isTexturePOW2( m_hwWidth ) && Helper::isTexturePOW2( m_hwHeight );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -116,11 +113,6 @@ namespace Menge
     PixelFormat OpenGLRenderImage::getHWPixelFormat() const
     {
         return m_hwPixelFormat;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderImage::isPow2() const
-    {
-        return m_pow2;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )

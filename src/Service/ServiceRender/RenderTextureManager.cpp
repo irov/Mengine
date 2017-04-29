@@ -573,64 +573,6 @@ namespace Menge
 		return texture;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureManager::imageQuality( const RenderTextureInterfacePtr & _texture, void * _textureBuffer, size_t _texturePitch )
-    {
-		const RenderImageInterfacePtr & image = _texture->getImage();
-
-		PixelFormat hwPixelFormat = image->getHWPixelFormat();
-
-		if( hwPixelFormat != PF_A8R8G8B8 &&
-			hwPixelFormat != PF_A8B8G8R8 &&
-			hwPixelFormat != PF_B8G8R8A8 &&
-			hwPixelFormat != PF_R8G8B8A8 &&
-			hwPixelFormat != PF_X8R8G8B8 &&
-			hwPixelFormat != PF_X8B8G8R8 )
-		{
-			return;
-		}
-
-		uint32_t width = _texture->getWidth();
-		uint32_t height = _texture->getHeight();
-
-		uint32_t hwWidth = image->getHWWidth();
-		uint32_t hwHeight = image->getHWHeight();
-		
-        // copy pixels on the edge for better image quality
-        if( hwWidth > width )
-        {
-            LOGGER_INFO(m_serviceProvider)("imageQuality_ width %d - %d"
-                , width
-                , hwWidth
-                );
-
-            unsigned char * image_data = static_cast<unsigned char *>(_textureBuffer);
-            size_t pixel_size = _texturePitch / hwWidth;
-
-            for( uint32_t j = 0; j != height; ++j )
-            {
-     //           std::copy( image_data + (width - 1) * pixel_size
-					//, image_data + width * pixel_size
-					//, image_data + width * pixel_size );
-
-				stdex::memorycopy( image_data, width * pixel_size, image_data + (width - 1) * pixel_size, pixel_size );
-
-                image_data += _texturePitch;
-            }
-        }
-
-        if( hwHeight > height )
-        {
-            LOGGER_INFO(m_serviceProvider)("imageQuality_ height %d - %d"
-                , height
-                , hwHeight
-                );
-
-            unsigned char * image_data = static_cast<unsigned char *>(_textureBuffer);
-
-			stdex::memorycopy( image_data, height * _texturePitch, image_data + (height - 1) * _texturePitch, _texturePitch );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     RenderTextureManager::TMapRenderTextureEntry & RenderTextureManager::getHashEntry_(const ConstString & _fileName)
     {
         ConstString::hash_type hash = _fileName.hash();

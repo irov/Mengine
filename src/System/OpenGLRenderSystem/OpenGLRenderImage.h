@@ -41,9 +41,7 @@ namespace Menge
 		uint32_t getHWDepth() const override;
 
 		PixelFormat getHWPixelFormat() const override;
-
-        bool isPow2() const override;
-
+		
 	public:
 		void _destroy() override;
 
@@ -89,9 +87,7 @@ namespace Menge
         MemoryInterfacePtr m_lockMemory;
 		Rect m_lockRect;
 		uint32_t m_lockLevel;
-		bool m_lockFirst;
-
-        bool m_pow2;		
+		bool m_lockFirst;	
 	};
 
     typedef stdex::intrusive_ptr<OpenGLRenderImage> OpenGLRenderImagePtr;

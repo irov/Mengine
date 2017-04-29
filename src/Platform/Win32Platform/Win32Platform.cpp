@@ -1571,7 +1571,7 @@ namespace Menge
 		return wide[0];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32Platform::onEvent( const ConstString & _event, const TMapParams & _params )
+	void Win32Platform::onEvent( const ConstString & _event, const TMapWParams & _params )
 	{
 		(void)_event;
 		(void)_params;

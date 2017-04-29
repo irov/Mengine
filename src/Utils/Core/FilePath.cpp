@@ -86,5 +86,53 @@ namespace Menge
 
 			return fp;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		void pathCorrectBackslash( WChar * _out, const WChar * _in )
+		{
+			wcscpy( _out, _in );
+
+			WChar * pch = wcschr( _out, '/' );
+			while( pch != NULL )
+			{
+				*pch = '\\';
+
+				pch = wcschr( pch + 1, '/' );
+			}
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void pathRemoveBackslash( WChar * _path )
+		{
+			size_t len = wcslen( _path );
+
+			WChar * pch = _path + len - 1;
+
+			if( *pch == L'\\' )
+			{
+				*pch = L'\0';
+			}
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool pathRemoveFileSpec( WChar * _path )
+		{
+			size_t len = wcslen( _path );
+
+			WChar * pch = _path + len - 1;
+
+			if( *pch == L'\\' )
+			{
+				return false;
+			}
+
+			pch--;
+
+			while( *pch != L'\\' )
+			{
+				pch--;
+			}
+
+			pch++;
+
+			*pch = L'\0';
+		}
 	}
 }  

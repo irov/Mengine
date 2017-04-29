@@ -18,6 +18,7 @@
 
 #   include "Core/FileLogger.h"
 #   include "Core/IniUtil.h"
+#   include "Core/FilePath.h"
 
 #   include "Factory/FactorableUnique.h"
 #   include "Factory/FactoryDefault.h"
@@ -31,6 +32,8 @@
 
 #   include <sstream>
 #   include <iomanip>
+
+#   include <sys/stat.h>
 
 #   define PARAM_UNUSED(x) ((void)x)
 
@@ -465,42 +468,119 @@ namespace Menge
         PARAM_UNUSED(_params);
     }
 	//////////////////////////////////////////////////////////////////////////
-	static void PathCorrectBackslash(WChar * _out, const WChar * _in)
+	static bool s_isDirectoryFullpath( ServiceProviderInterface * _serviceProvider, const WChar * _fullpath )
 	{
-		wcscpy(_out, _in);
+		Char utf8_fullpath[MENGINE_MAX_PATH];
 
-		WChar * pch = wcschr(_out, '/');
-		while (pch != NULL)
+		size_t utf8_fullpathLen;
+		UNICODE_SERVICE( _serviceProvider )
+			->unicodeToUtf8( _fullpath, (size_t)-1, utf8_fullpath, MENGINE_MAX_PATH, &utf8_fullpathLen );
+
+		struct stat sb;
+		if( stat( utf8_fullpath, &sb ) == 0 && ((sb.st_mode)& S_IFMT) == S_IFDIR )
 		{
-			*pch = '\\';
-
-			pch = wcschr(pch + 1, '/');
+			return true;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SDLPlatform::existDirectory( const WString & _path ) const
-	{
-		(void)_path;
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SDLPlatform::createDirectory(const WString & _path)
+	static bool s_createDurectoryFullpath( ServiceProviderInterface * _serviceProvider, const WChar * _fullpath )
 	{
-#	ifdef WIN32
+#	ifdef __MACH__
+		Char utf8_fullpath[MENGINE_MAX_PATH];
+
+		size_t utf8_fullpathLen;
+		UNICODE_SERVICE( _serviceProvider )
+			->unicodeToUtf8( _fullpath, (size_t)-1, utf8_fullpath, MENGINE_MAX_PATH, &utf8_fullpathLen );
+
+		int status = mkdir( utf8_fullpath );
+		
+		if( status != 0 )
+		{
+			LOGGER_WARNING( _serviceProvider )("SDLPlatform::createDirectory %ls alredy exists"
+				, _fullpath
+				);
+
+			return false;
+		}
+#	endif
+
+#	ifdef WIN32		
+		BOOL successful = CreateDirectoryW( _fullpath, NULL );
+		
+		if( successful == FALSE )
+		{
+			DWORD err = GetLastError();
+
+			switch( err )
+			{
+			case ERROR_ALREADY_EXISTS:
+				{
+					LOGGER_WARNING( _serviceProvider )("SDLPlatform::createDirectory %ls alredy exists"
+						, _fullpath
+						);
+
+					return false;
+				}break;
+			case ERROR_PATH_NOT_FOUND:
+				{
+					LOGGER_WARNING( _serviceProvider )("SDLPlatform::createDirectory %ls not found"
+						, _fullpath
+						);
+
+					return false;
+				}break;
+			default:
+				{
+					LOGGER_WARNING( _serviceProvider )("SDLPlatform::createDirectory %ls unknown error %d"
+						, _fullpath
+						, err
+						);
+
+					return false;
+				}break;
+			}
+
+			return false;
+		}
+#	endif
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SDLPlatform::existDirectory( const WString & _path ) const
+	{
 		WChar userPath[MENGINE_MAX_PATH];
 		this->getUserPath( userPath, MENGINE_MAX_PATH );
 
 		WChar pathCorrect[MENGINE_MAX_PATH];
-		PathCorrectBackslash(pathCorrect, _path.c_str());
+		Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
 
 		WChar fullPath[MENGINE_MAX_PATH];
 		wcscpy( fullPath, userPath );
 		wcscat( fullPath, pathCorrect );
 
-		PathRemoveBackslash( fullPath );
+		bool exist = s_isDirectoryFullpath( m_serviceProvider, fullPath );
 
-		if (PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY)
+		return exist;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SDLPlatform::createDirectory(const WString & _path)
+	{
+		WChar userPath[MENGINE_MAX_PATH];
+		this->getUserPath( userPath, MENGINE_MAX_PATH );
+
+		WChar pathCorrect[MENGINE_MAX_PATH];
+		Helper::pathCorrectBackslash(pathCorrect, _path.c_str());
+
+		WChar fullPath[MENGINE_MAX_PATH];
+		wcscpy( fullPath, userPath );
+		wcscat( fullPath, pathCorrect );
+
+		Helper::pathRemoveBackslash( fullPath );
+
+		if( s_isDirectoryFullpath( m_serviceProvider, fullPath ) == true )
 		{
 			return true;
 		}
@@ -511,12 +591,12 @@ namespace Menge
 		{
 			paths.push_back( fullPath );
 
-			if (PathRemoveFileSpecW( fullPath ) == FALSE)
+			if( Helper::pathRemoveFileSpec( fullPath ) == false )
 			{
 				break;
 			}
 
-			if (PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY)
+			if( s_isDirectoryFullpath( m_serviceProvider, fullPath ) == true )
 			{
 				break;
 			}
@@ -530,47 +610,13 @@ namespace Menge
 		{
 			const WString & path = *it;
 
-			BOOL successful = CreateDirectory(path.c_str(), NULL);
-
-			if (successful == FALSE)
+			if( s_createDurectoryFullpath( m_serviceProvider, path.c_str() ) == false )
 			{
-				DWORD err = GetLastError();
-
-				switch (err)
-				{
-				case ERROR_ALREADY_EXISTS:
-				{
-					LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls alredy exists"
-						, path.c_str()
-						);
-
-					return false;
-				}break;
-				case ERROR_PATH_NOT_FOUND:
-				{
-					LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls not found"
-						, path.c_str()
-						);
-
-					return false;
-				}break;
-				default:
-				{
-					LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls unknown error %d"
-						, path.c_str()
-						, err
-						);
-
-					return false;
-				}break;
-				}
+				return false;
 			}
 		}
 
 		return true;
-#endif
-
-		return false;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )

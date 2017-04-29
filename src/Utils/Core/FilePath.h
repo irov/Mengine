@@ -51,6 +51,11 @@ namespace Menge
 		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const Char * _value, ConstString::size_type _size );
 		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const String & _path );
 		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const PathString & _path );
+		//////////////////////////////////////////////////////////////////////////
+		void pathCorrectBackslash( WChar * _out, const WChar * _in );
+		void pathRemoveBackslash( WChar * _path );
+		bool pathRemoveFileSpec( WChar * _in );
+		//////////////////////////////////////////////////////////////////////////
 	}
 
 #	define STRINGIZE_FILEPATH_LOCAL( serviceProvider, str )\

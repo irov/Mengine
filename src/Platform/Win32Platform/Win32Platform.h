@@ -59,7 +59,7 @@ namespace Menge
 		bool notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const MemoryInterfacePtr & _buffer ) override;
 
 	public:
-		void onEvent( const ConstString & _event, const TMapParams & _params ) override;
+		void onEvent( const ConstString & _event, const TMapWParams & _params ) override;
 
 	public:
 		size_t getShortPathName( const WString & _path, WChar * _short, size_t _len ) const override;

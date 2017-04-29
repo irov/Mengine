@@ -90,7 +90,7 @@ namespace Menge
         GLUNUSED( _FSAAQuality );
         GLUNUSED( _MultiSampleCount );
 
-        Menge::initialize_GLEXT();
+		Menge::initialize_GLEXT( m_serviceProvider );
 
 		GLint ver_major = 0;
 		GLCALL( m_serviceProvider, glGetIntegerv, (GL_MAJOR_VERSION, &ver_major) );

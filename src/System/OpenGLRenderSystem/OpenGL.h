@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Interface/ServantInterface.h"
+
 #	include "SDL_opengl.h"
 
 #   define GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG                      0x8C00
@@ -119,5 +121,5 @@ extern PFNGLGETVERTEXATTRIBPOINTERVPROC     glGetVertexAttribPointerv;
 
 namespace Menge
 {
-    void initialize_GLEXT();
+    void initialize_GLEXT( ServiceProviderInterface * _serviceProvider );
 }

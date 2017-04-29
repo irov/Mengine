@@ -37,7 +37,7 @@ namespace Menge
             return false;
         }
 
-        currentPath[len] = L'\\';
+        currentPath[len] = L'/';
         currentPath[len + 1] = L'\0';
 
         {

@@ -61,7 +61,10 @@ namespace Menge
         }
         else if( err == -1 )
         {
-            LOGGER_ERROR( m_serviceProvider )("SDLThreadMutex::lock invalid try lock"
+            const char * err_msg = SDL_GetError();
+            
+            LOGGER_ERROR( m_serviceProvider )("SDLThreadMutex::lock invalid try lock (msg %s)"
+                , err_msg
                 );
         }
 

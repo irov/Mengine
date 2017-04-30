@@ -76,6 +76,7 @@ namespace Menge
 		curl_easy_setopt( curl, CURLOPT_HTTPPOST, formpost );
 
 		/* send all data to this function  */
+		curl_easy_setopt( curl, CURLOPT_WRITEDATA, (void *)this );
 		curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, &s_writeRequestPerformerResponse );
 
 		/* get it! */

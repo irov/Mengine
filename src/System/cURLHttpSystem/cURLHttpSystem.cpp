@@ -40,6 +40,7 @@ namespace Menge
 		THREAD_SERVICE(m_serviceProvider)
 			->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), -1, __FILE__, __LINE__ );
 
+		m_factoryTaskPostMessage = new FactoryPool<ThreadTaskPostMessage, 8>( m_serviceProvider );
 		m_factoryTaskDownloadAsset = new FactoryPool<ThreadTaskGetAsset, 8>( m_serviceProvider );
 
 		return true;

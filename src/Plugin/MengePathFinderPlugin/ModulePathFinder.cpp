@@ -78,8 +78,9 @@ namespace Menge
 		pybind::interface_<fastpathfinder::graph_node>( kernel, "fastpathfinder::graph_node", true )
 			;
 
-		pybind::superclass_<PathGraphNode, pybind::bases<fastpathfinder::graph_node> >( kernel, "PathGraphNode", (void *)m_serviceProvider, new superclass_new_PathGraphNode, nullptr, false )
+		pybind::superclass_<PathGraphNode, pybind::bases<fastpathfinder::graph_node> >( kernel, "PathGraphNode", (void *)m_serviceProvider, new superclass_new_PathGraphNode, nullptr, false )			
 			.def_constructor( pybind::init<>() )
+			.def_bindable()
 			.def( "getWeight", &PathGraphNode::getWeight )
 			;
 
@@ -119,6 +120,7 @@ namespace Menge
 		pybind::def_functor( kernel, "setPathFinderMapWeight", this, &ModulePathFinder::setMapWeight );
 
 		pybind::interface_<PathFinderWayAffector, pybind::bases<Affector> >( kernel, "PathFinderWayAffector" )
+			.def_bindable()
 			.def( "purge", &PathFinderWayAffector::purge )
 			.def( "unpurge", &PathFinderWayAffector::unpurge )
 			.def( "getLength", &PathFinderWayAffector::getLength )

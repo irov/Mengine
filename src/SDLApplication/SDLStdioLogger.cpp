@@ -2,6 +2,8 @@
 
 #	include "SDL_log.h"
 
+#   include <iostream>
+
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -60,8 +62,7 @@ namespace Menge
         (void)_flag;
 		(void)_count;
 
-		SDL_Log( "%s", _data );
-		//OutputDebugString( _data );
+		std::cout.write( _data, _count );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLStdioLogger::flush()

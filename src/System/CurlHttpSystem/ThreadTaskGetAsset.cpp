@@ -12,11 +12,12 @@ namespace Menge
 	ThreadTaskGetAsset::ThreadTaskGetAsset()
 		: m_id(0)
 		, m_receiver(nullptr)
+		, m_code(0)
 		, m_successful(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskGetAsset::initialize( const String & _url, const ConstString & _category, const FilePath & _filepath, HttpRequestID _id, HttpDownloadAssetReceiver * _receiver )
+	bool ThreadTaskGetAsset::initialize( const String & _url, const ConstString & _category, const FilePath & _filepath, HttpRequestID _id, HttpReceiver * _receiver )
 	{
 		m_url = _url;
 		m_category = _category;
@@ -76,9 +77,7 @@ namespace Menge
 		/* init the curl session */
 		CURL * curl = curl_easy_init();
 
-		/* specify URL to get */
-		const char * url_str = m_url.c_str();
-		curl_easy_setopt( curl, CURLOPT_URL, url_str );
+		curl_easy_setopt( curl, CURLOPT_URL, m_url.c_str() );
 
 		/* send all data to this function  */
 		curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback );
@@ -98,6 +97,11 @@ namespace Menge
 
 		/* get it! */
 		CURLcode res = curl_easy_perform(curl);
+
+		long http_code = 0;
+		curl_easy_getinfo( curl, CURLINFO_RESPONSE_CODE, &http_code );
+
+		m_code = (uint32_t)http_code;
 
 		curl_easy_cleanup( curl );
 
@@ -123,8 +127,9 @@ namespace Menge
 	void ThreadTaskGetAsset::_onComplete( bool _successful )
 	{
 		m_stream->flush();
-		m_stream = nullptr;
+		
+		m_receiver->onDownloadAssetComplete( m_id, m_stream, m_code, _successful );
 
-		m_receiver->onDownloadAssetComplete( m_id, _successful );
+		m_stream = nullptr;
 	}
 }

@@ -1,4 +1,4 @@
-#	include "ThreadTaskPostMessage.h"
+#	include "ThreadTaskGetMessage.h"
 
 #	include "Interface/FileSystemInterface.h"
 
@@ -11,7 +11,7 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////
 	static size_t s_writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata )
 	{
-		ThreadTaskPostMessage * perfomer = static_cast<ThreadTaskPostMessage *>(userdata);
+		ThreadTaskGetMessage * perfomer = static_cast<ThreadTaskGetMessage *>(userdata);
 		
 		size_t total = size * nmemb;
 
@@ -20,7 +20,7 @@ namespace Menge
 		return total;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ThreadTaskPostMessage::ThreadTaskPostMessage()
+	ThreadTaskGetMessage::ThreadTaskGetMessage()
 		: m_id(0)
 		, m_receiver(nullptr)
 		, m_code(0)
@@ -28,52 +28,26 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskPostMessage::initialize( const String & _url, const TMapParams & _params, HttpRequestID _id, HttpReceiver * _receiver )
+	bool ThreadTaskGetMessage::initialize( const String & _url, HttpRequestID _id, HttpReceiver * _receiver )
 	{
 		m_url = _url;
-		m_params = _params;
 		m_id = _id;
 		m_receiver = _receiver;
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskPostMessage::_onRun()
+	bool ThreadTaskGetMessage::_onRun()
 	{
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskPostMessage::_onMain()
+	bool ThreadTaskGetMessage::_onMain()
 	{		
 		/* init the curl session */
 		CURL * curl = curl_easy_init();
 
-		/* specify URL to get */
 		curl_easy_setopt( curl, CURLOPT_URL, m_url.c_str() );
-
-		curl_easy_setopt( curl, CURLOPT_POST, 1 );
-
-		struct curl_httppost * lastptr = nullptr;
-		curl_httppost * formpost = nullptr;
-
-		for( TMapParams::const_iterator
-			it = m_params.begin(),
-			it_end = m_params.end();
-			it != it_end;
-			++it )
-		{
-			const ConstString & key = it->first;
-			const String & value = it->second;
-
-			/* Fill in the  field */
-			curl_formadd( &formpost,
-				&lastptr,
-				CURLFORM_COPYNAME, key.c_str(),
-				CURLFORM_COPYCONTENTS, value.c_str(),
-				CURLFORM_END );
-		}
-
-		curl_easy_setopt( curl, CURLOPT_HTTPPOST, formpost );
 
 		/* send all data to this function  */
 		curl_easy_setopt( curl, CURLOPT_WRITEDATA, (void *)this );
@@ -87,7 +61,6 @@ namespace Menge
 
 		m_code = (uint32_t)http_code;		
 
-		curl_formfree( formpost );
 		curl_easy_cleanup( curl );
 
 		/* check for errors */
@@ -107,12 +80,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPostMessage::writeResponse( char * _ptr, size_t _size )
+	void ThreadTaskGetMessage::writeResponse( char * _ptr, size_t _size )
 	{
 		m_response.append( _ptr, _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPostMessage::_onComplete( bool _successful )
+	void ThreadTaskGetMessage::_onComplete( bool _successful )
 	{
 		m_receiver->onPostMessageComplete( m_id, m_response, m_code, _successful );
 	}

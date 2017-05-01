@@ -12,8 +12,7 @@ namespace Menge
 {
 	class cURLHttpSystem
 		: public ServiceBase<HttpSystemInterface>
-		, public HttpDownloadAssetReceiver
-		, public HttpPostMessageReceiver
+		, public HttpReceiver
 	{
 	public:
 		cURLHttpSystem();
@@ -21,42 +20,34 @@ namespace Menge
 	protected:
 		bool _initialize() override;
 		void _finalize() override;
-		
-	protected:
-		HttpRequestID postMessage( const String & _url, const TMapParams & _params, HttpPostMessageReceiver * _receiver ) override;
-		bool cancelPostMessage( HttpRequestID _id ) override;
 
 	protected:
-		HttpRequestID downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpDownloadAssetReceiver * _receiver ) override;
-		bool cancelDownloadAsset( HttpRequestID _id ) override;
+		HttpRequestID getMessage( const String & _url, HttpReceiver * _receiver ) override;
+		HttpRequestID postMessage( const String & _url, const TMapParams & _params, HttpReceiver * _receiver ) override;
+		HttpRequestID downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver ) override;
+
+	protected:
+		bool cancelRequest( HttpRequestID _id ) override;
 
 	private:
-		void onDownloadAssetComplete( HttpRequestID _id, bool _successful ) override;
+		void onDownloadAssetComplete( HttpRequestID _id, const OutputStreamInterfacePtr & _stream, uint32_t _code, bool _successful ) override;
 		void onPostMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override;
+		void onGetMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override;
 
 	protected:
-		uint32_t m_enumeratorDownloadAsset;
+		uint32_t m_enumeratorReceivers;
 
-		struct DownloadAssetDesc
+		struct HttpReceiverDesc
 		{
 			uint32_t id;
 			ThreadTaskPtr task;
-			HttpDownloadAssetReceiver * receiver;
+			HttpReceiver * receiver;
 		};
 
-		typedef stdex::vector<DownloadAssetDesc> TVectorDownloadAssets;
-		TVectorDownloadAssets m_downloadAssets;
+		typedef stdex::vector<HttpReceiverDesc> TVectorHttpReceiverDesc;
+		TVectorHttpReceiverDesc m_receiverDescs;
 
-		struct PostMessageDesc
-		{
-			uint32_t id;
-			ThreadTaskPtr task;
-			HttpPostMessageReceiver * receiver;
-		};
-
-		typedef stdex::vector<PostMessageDesc> TVectorPostMessages;
-		TVectorPostMessages m_postMessages;
-
+		FactoryPtr m_factoryTaskGetMessage;
 		FactoryPtr m_factoryTaskPostMessage;
 		FactoryPtr m_factoryTaskDownloadAsset;
 	};

@@ -14,7 +14,7 @@ namespace Menge
 		ThreadTaskPostMessage();
 		
 	public:
-		bool initialize( const String & _url, const TMapParams & _params, HttpRequestID _id, HttpPostMessageReceiver * _receiver );
+		bool initialize( const String & _url, const TMapParams & _params, HttpRequestID _id, HttpReceiver * _receiver );
 
 	protected:
 		bool _onRun() override;
@@ -33,7 +33,7 @@ namespace Menge
 		TMapParams m_params;
 
 		HttpRequestID m_id;
-		HttpPostMessageReceiver * m_receiver;
+		HttpReceiver * m_receiver;
 
 		uint32_t m_code;
 		String m_response;

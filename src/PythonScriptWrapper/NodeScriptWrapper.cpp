@@ -2623,15 +2623,15 @@ namespace Menge
 			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		ResourceReferencePtr s_getResourceReference( const ConstString & _nameResource )
+		ResourceReferencePtr s_getResourceReference( const ConstString & _name )
 		{
 			const ResourceReferencePtr & resource = RESOURCE_SERVICE( m_serviceProvider )
-				->getResourceReference( _nameResource );
+				->getResourceReference( _name );
 
 			if( resource == nullptr )
 			{
 				LOGGER_ERROR( m_serviceProvider )("Menge.getResourceReference: not exist resource %s"
-					, _nameResource.c_str()
+					, _name.c_str()
 					);
 
 				return nullptr;
@@ -2870,78 +2870,128 @@ namespace Menge
 				->sleep( _time );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		class PyHttpDownloadAssetReceiver
-			: public HttpDownloadAssetReceiver
+		class PyHttpReceiver
+			: public HttpReceiver
 		{
 		public:
-			PyHttpDownloadAssetReceiver( const pybind::object & _cb )
+			PyHttpReceiver( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 				: m_cb( _cb )
-			{
-			}
-
-			~PyHttpDownloadAssetReceiver()
+				, m_args( _args )
 			{
 			}
 
 		protected:
-			void onDownloadAssetComplete( uint32_t _id, bool _successful ) override
+			void onDownloadAssetComplete( HttpRequestID _id, const OutputStreamInterfacePtr & _stream, uint32_t _code, bool _successful ) override
 			{
-				m_cb.call( _id, _successful );
+				(void)_id;
+				(void)_stream;
+				(void)_code;				
+				(void)_successful;
+				//Empty
+			}
+
+			void onPostMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override
+			{
+				(void)_id;
+				(void)_response;
+				(void)_code;
+				(void)_successful;
+				//Empty
+			}
+
+			void onGetMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override
+			{
+				(void)_id;
+				(void)_response;
+				(void)_code;
+				(void)_successful;
+				//Empty
 			}
 
 		protected:
 			pybind::object m_cb;
+			pybind::detail::args_operator_t m_args;
+
 		};
 		//////////////////////////////////////////////////////////////////////////
-		HttpRequestID s_downloadAsset( const String & _url, const ConstString & _category, const FilePath & _filepath, const pybind::object & _cb )
+		class PyDownloadAssetHttpReceiver
+			: public PyHttpReceiver
+		{
+		public:
+			PyDownloadAssetHttpReceiver( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+				: PyHttpReceiver( _cb, _args )
+			{
+			}
+
+		protected:
+			void onDownloadAssetComplete( HttpRequestID _id, const OutputStreamInterfacePtr & _stream, uint32_t _code, bool _successful ) override
+			{
+				(void)_stream;
+				(void)_code;
+				m_cb.call_args( _id, _code, _successful, m_args );
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////
+		HttpRequestID s_downloadAsset( const String & _url, const ConstString & _category, const FilePath & _filepath, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			uint32_t id = HTTP_SYSTEM( m_serviceProvider )
-				->downloadAsset( _url, _category, _filepath, new PyHttpDownloadAssetReceiver( _cb ) );
+				->downloadAsset( _url, _category, _filepath, new PyDownloadAssetHttpReceiver( _cb, _args ) );
 
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_cancelDownloadAsset( HttpRequestID _id )
-		{
-			HTTP_SYSTEM( m_serviceProvider )
-				->cancelDownloadAsset( _id );
-		}
-		//////////////////////////////////////////////////////////////////////////
-		class PyHttpPostMessageReceiver
-			: public HttpPostMessageReceiver
+		class PyPostMessageHttpReceiver
+			: public PyHttpReceiver
 		{
 		public:
-			PyHttpPostMessageReceiver( const pybind::object & _cb )
-				: m_cb( _cb )
-			{
-			}
-
-			~PyHttpPostMessageReceiver()
+			PyPostMessageHttpReceiver( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+				: PyHttpReceiver( _cb, _args )
 			{
 			}
 
 		protected:
 			void onPostMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override
 			{
-				m_cb.call( _id, _response, _code, _successful );
+				m_cb.call_args( _id, _response, _code, _successful, m_args );
 			}
-
-		protected:
-			pybind::object m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		HttpRequestID s_postMessage( const String & _url, const TMapParams & _category, const pybind::object & _cb )
+		HttpRequestID s_postMessage( const String & _url, const TMapParams & _params, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			HttpRequestID id = HTTP_SYSTEM( m_serviceProvider )
-				->postMessage( _url, _category, new PyHttpPostMessageReceiver( _cb ) );
+				->postMessage( _url, _params, new PyPostMessageHttpReceiver( _cb, _args ) );
 
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_cancelPostMessage( HttpRequestID _id )
+		class PyGetMessageHttpReceiver
+			: public PyHttpReceiver
+		{
+		public:
+			PyGetMessageHttpReceiver( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+				: PyHttpReceiver( _cb, _args )
+			{
+			}
+
+		protected:
+			void onPostMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override
+			{
+				m_cb.call_args( _id, _response, _code, _successful, m_args );
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////
+		HttpRequestID s_getMessage( const String & _url, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		{
+			HttpRequestID id = HTTP_SYSTEM( m_serviceProvider )
+				->getMessage( _url, new PyGetMessageHttpReceiver( _cb, _args ) );
+
+			return id;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_cancelRequest( HttpRequestID _id )
 		{
 			HTTP_SYSTEM( m_serviceProvider )
-				->cancelPostMessage( _id );
+				->cancelRequest( _id );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool s_mountResourcePak( const ConstString & _fileGroup
@@ -7891,13 +7941,11 @@ namespace Menge
 
 			pybind::def_functor( kernel, "sleep", nodeScriptMethod, &NodeScriptMethod::s_sleep );
 
-			
-			pybind::def_functor( kernel, "postMessage", nodeScriptMethod, &NodeScriptMethod::s_postMessage );
-			pybind::def_functor( kernel, "cancelPostMessage", nodeScriptMethod, &NodeScriptMethod::s_cancelPostMessage );
 
-
-			pybind::def_functor( kernel, "downloadAsset", nodeScriptMethod, &NodeScriptMethod::s_downloadAsset );
-			pybind::def_functor( kernel, "cancelDownloadAsset", nodeScriptMethod, &NodeScriptMethod::s_cancelDownloadAsset );
+			pybind::def_functor_args( kernel, "getMessage", nodeScriptMethod, &NodeScriptMethod::s_getMessage );
+			pybind::def_functor_args( kernel, "postMessage", nodeScriptMethod, &NodeScriptMethod::s_postMessage );
+			pybind::def_functor_args( kernel, "downloadAsset", nodeScriptMethod, &NodeScriptMethod::s_downloadAsset );
+			pybind::def_functor( kernel, "cancelRequest", nodeScriptMethod, &NodeScriptMethod::s_cancelRequest );
 
 			pybind::def_functor( kernel, "mountResourcePak", nodeScriptMethod, &NodeScriptMethod::s_mountResourcePak );
 			pybind::def_functor( kernel, "unmountResourcePak", nodeScriptMethod, &NodeScriptMethod::s_unmountResourcePak );

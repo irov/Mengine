@@ -152,6 +152,39 @@ namespace Menge
 
         _resolution = Resolution((uint32_t)rect.w, (uint32_t)rect.h);
     }
+	//////////////////////////////////////////////////////////////////////////
+	static void MySDL_LogOutputFunction( void *userdata, int category, SDL_LogPriority priority, const char *message )
+	{
+		ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(userdata);
+
+		EMessageLevel level;
+		switch( priority )
+		{
+		case SDL_LOG_PRIORITY_VERBOSE:
+			level = LM_INFO;
+			break;
+		case SDL_LOG_PRIORITY_DEBUG:
+			level = LM_WARNING;
+			break;
+		case SDL_LOG_PRIORITY_INFO:
+			level = LM_INFO;
+			break;
+		case SDL_LOG_PRIORITY_WARN:
+			level = LM_WARNING;
+			break;
+		case SDL_LOG_PRIORITY_ERROR:
+			level = LM_ERROR;
+			break;
+		case SDL_LOG_PRIORITY_CRITICAL:
+			level = LM_CRITICAL;
+			break;
+		}
+
+		size_t messageLen = strlen( message );
+
+		LOGGER_SERVICE( serviceProvider )
+			->logMessage( level, 0, message, messageLen );
+	}
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initialize()
     {
@@ -178,6 +211,9 @@ namespace Menge
         LOGGER_WARNING(m_serviceProvider)("RAM: %d MB"
             , sdlRam
             );
+
+		SDL_LogSetOutputFunction( &MySDL_LogOutputFunction, m_serviceProvider );
+		SDL_LogSetAllPriority( SDL_LOG_PRIORITY_WARN );
 
         
         m_sdlInput = new FactorableUnique<SDLInput>();

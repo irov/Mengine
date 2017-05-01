@@ -1,21 +1,20 @@
 #	pragma once
 
 #	include "Interface/HttpSystemInterface.h"
-#	include "Interface/StreamInterface.h"
 
 #	include "Kernel/ThreadTask.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class ThreadTaskGetAsset
+	class ThreadTaskGetMessage
 		: public ThreadTask
 	{
 	public:
-		ThreadTaskGetAsset();
+		ThreadTaskGetMessage();
 		
 	public:
-		bool initialize( const String & _url, const ConstString & _category, const FilePath & _filepath, HttpRequestID _id, HttpReceiver * _receiver );
+		bool initialize( const String & _url, HttpRequestID _id, HttpReceiver * _receiver );
 
 	protected:
 		bool _onRun() override;
@@ -26,20 +25,21 @@ namespace Menge
 	protected:
 		void _onComplete( bool _successful ) override;
 
+	public:
+		void writeResponse( char * _ptr, size_t _size );
+
 	protected:		
 		String m_url;
-		ConstString m_category;
-		FilePath m_filePath;
 
 		HttpRequestID m_id;
 		HttpReceiver * m_receiver;
 
 		uint32_t m_code;
-		OutputStreamInterfacePtr m_stream;
-
+		String m_response;
+		
 		bool m_successful;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadTaskGetAsset> ThreadTaskGetAssetPtr;
+	typedef stdex::intrusive_ptr<ThreadTaskGetMessage> ThreadTaskGetMessagePtr;
 	//////////////////////////////////////////////////////////////////////////
 }

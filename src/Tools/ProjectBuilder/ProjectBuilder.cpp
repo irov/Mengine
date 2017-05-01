@@ -263,7 +263,7 @@ namespace Menge
 			->loadPlugin( L"MengeXmlCodecPlugin.dll" );
 
 		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::stringizeString(serviceProvider, "dir") ) == false )
+			->mountFileGroup( ConstString::none(), FilePath( ConstString::none() ), Helper::stringizeString( serviceProvider, "dir" ) ) == false )
 		{
 			return false;
 		}
@@ -271,7 +271,7 @@ namespace Menge
 		ConstString dev = Helper::stringizeString(serviceProvider, "dev");
 
 		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( dev, ConstString::none(), Helper::stringizeString(serviceProvider, "dir") ) == false )
+			->mountFileGroup( dev, FilePath( ConstString::none() ), Helper::stringizeString(serviceProvider, "dir") ) == false )
 		{
 			return false;
 		}
@@ -296,8 +296,8 @@ namespace Menge
 		ConverterOptions options;
 
 		options.pakName = ConstString::none();
-		options.inputFileName = Helper::stringizeString(serviceProvider, utf8_fromPath);
-		options.outputFileName = Helper::stringizeString(serviceProvider, utf8_toPath);
+		options.inputFileName = Helper::stringizeFilePath(serviceProvider, utf8_fromPath);
+		options.outputFileName = Helper::stringizeFilePath(serviceProvider, utf8_toPath);
 		options.params = utf8_params;
 
 		ConverterInterfacePtr converter = CONVERTER_SERVICE(serviceProvider)
@@ -354,7 +354,7 @@ namespace Menge
 			return NULL;
 		}
 
-		ConstString c_path = Helper::stringizeString(serviceProvider, utf8_path);
+		FilePath c_path = Helper::stringizeFilePath(serviceProvider, utf8_path);
 
 		InputStreamInterfacePtr stream = FILE_SERVICE(serviceProvider)
 			->openInputFile( ConstString::none(), c_path, false );
@@ -399,7 +399,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		ConstString c_path = Helper::stringizeString(serviceProvider, utf8_path);
+		FilePath c_path = Helper::stringizeFilePath(serviceProvider, utf8_path);
 
 		Image * image = new Image( serviceProvider );
 
@@ -432,7 +432,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		ConstString c_path = Helper::stringizeString(serviceProvider, utf8_path);
+		FilePath c_path = Helper::stringizeFilePath(serviceProvider, utf8_path);
 
 		Image * image = new Image( serviceProvider );
 
@@ -452,7 +452,7 @@ namespace Menge
 			return false;
 		}
 
-		ConstString c_path = Helper::stringizeString(serviceProvider, utf8_path);
+		FilePath c_path = Helper::stringizeFilePath(serviceProvider, utf8_path);
 
 		if( _image->save( c_path ) == false )
 		{
@@ -547,7 +547,7 @@ namespace Menge
 			return NULL;
 		}
 
-		ConstString c_path = Helper::stringizeString( serviceProvider, utf8_path );
+		FilePath c_path = Helper::stringizeFilePath( serviceProvider, utf8_path );
 
 		InputStreamInterfacePtr stream = FILE_SERVICE( serviceProvider )
 			->openInputFile( ConstString::none(), c_path, false );
@@ -756,7 +756,7 @@ bool run()
 
 	LOGGER_ERROR(Menge::serviceProvider)("Menge::initialize complete");
 
-	const WCHAR * szRegPath = L"SOFTWARE\\Python\\PythonCore\\3.5-32\\PythonPath";
+	const WCHAR * szRegPath = L"SOFTWARE\\Python\\PythonCore\\3.6-32\\PythonPath";
 
 	{
 		WCHAR szPythonPath[512];

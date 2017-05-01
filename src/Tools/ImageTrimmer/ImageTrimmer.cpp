@@ -178,7 +178,7 @@ namespace Menge
 		PLUGIN_CREATE( serviceProvider, MengeImageCodec );
 
 		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::stringizeString(serviceProvider, "dir") ) == false )
+			->mountFileGroup( ConstString::none(), FilePath(ConstString::none()), Helper::stringizeString(serviceProvider, "dir") ) == false )
 		{
 			return false;
 		}
@@ -186,7 +186,7 @@ namespace Menge
 		ConstString dev = Helper::stringizeString(serviceProvider, "dev");
 
 		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( dev, ConstString::none(), Helper::stringizeString(serviceProvider, "dir") ) == false )
+			->mountFileGroup( dev, FilePath(ConstString::none()), Helper::stringizeString(serviceProvider, "dir") ) == false )
 		{
 			return false;
 		}
@@ -201,7 +201,7 @@ namespace Menge
 		String utf8_in;
 		Helper::unicodeToUtf8(serviceProvider, in, utf8_in);
 
-		ConstString c_in = Helper::stringizeString(serviceProvider, utf8_in);
+		FilePath c_in = Helper::stringizeFilePath(serviceProvider, utf8_in);
 
 		InputStreamInterfacePtr input_stream = 
 			FILE_SERVICE(serviceProvider)->openInputFile( ConstString::none(), c_in, false );
@@ -386,7 +386,7 @@ namespace Menge
 			String utf8_out;
 			Helper::unicodeToUtf8( serviceProvider, out, utf8_out );
 
-			ConstString c_out = Helper::stringizeString( serviceProvider, utf8_out );
+			FilePath c_out = Helper::stringizeFilePath( serviceProvider, utf8_out );
 
 			OutputStreamInterfacePtr output_stream = FILE_SERVICE( serviceProvider )
 				->openOutputFile( ConstString::none(), c_out );

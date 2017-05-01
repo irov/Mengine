@@ -73,11 +73,11 @@ namespace Menge
 		_path[len + 1] = L'\0';
 
 		return (size_t)len + 1;
-#endif
-        
+#else  
         _path[0] = L'\0';
         
         return 0;
+#endif
     }
 	//////////////////////////////////////////////////////////////////////////
 	size_t SDLPlatform::getUserPath( WChar * _path, size_t _len ) const
@@ -116,10 +116,10 @@ namespace Menge
 			Helper::unicodeToUtf8( m_serviceProvider, Project_Name, utf8_Project_Name );
 
 			char * sdl_prefPath = SDL_GetPrefPath( utf8_Project_Company.c_str(), utf8_Project_Name.c_str() );
-			
+
 			WString unicode_UserPath;
 			Helper::utf8ToUnicode( m_serviceProvider, sdl_prefPath, unicode_UserPath );
-
+			
 			SDL_free( sdl_prefPath );
 
 			if( _len <= unicode_UserPath.size() )
@@ -127,8 +127,8 @@ namespace Menge
 				return 0;
 			}
 
-			wcscpy( _path, unicode_UserPath.c_str() );
-
+			Helper::pathCorrectBackslash( _path, unicode_UserPath.c_str() );
+			
 			return unicode_UserPath.size();
 		}
 	}

@@ -31,8 +31,8 @@ namespace Menge
         String utf8_outputFileName;
         Helper::unicodeToUtf8(serviceProvider, pngPathOut, utf8_outputFileName);
 
-        ConstString inputFileName = Helper::stringizeString(serviceProvider, utf8_inputFileName);
-        ConstString outputFileName = Helper::stringizeString(serviceProvider, utf8_outputFileName);
+        FilePath inputFileName = Helper::stringizeFilePath(serviceProvider, utf8_inputFileName);
+		FilePath outputFileName = Helper::stringizeFilePath(serviceProvider, utf8_outputFileName);
 
         InputStreamInterfacePtr input_stream = FILE_SERVICE(serviceProvider)
 			->openInputFile( ConstString::none(), inputFileName, false );

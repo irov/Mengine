@@ -42,8 +42,10 @@ namespace Menge
 		String utf8_aekPath;
 		Helper::unicodeToUtf8( serviceProvider, _aekPath, utf8_aekPath );
 		
+		FilePath fp_protocolPath = Helper::stringizeFilePath( serviceProvider, utf8_protocolPath );
+
 		LOADER_SERVICE( serviceProvider )
-			->setProtocolPath( Helper::stringizeString( serviceProvider, utf8_protocolPath ) );
+			->setProtocolPath( fp_protocolPath );
 	
 		String framePackPath( utf8_xmlPath.c_str(), utf8_xmlPath.size() );
 
@@ -52,13 +54,13 @@ namespace Menge
 		framePackPath[size-2] = L'm';
 		framePackPath[size-1] = L'l';
 
-		FilePath path_xml = Helper::stringizeString( serviceProvider, framePackPath );
+		FilePath path_xml = Helper::stringizeFilePath( serviceProvider, framePackPath );
 
 		ConverterOptions options;
 		   
 		options.pakName = ConstString::none();
 		options.inputFileName = path_xml;
-		options.outputFileName = Helper::stringizeString(serviceProvider, utf8_aekPath);
+		options.outputFileName = Helper::stringizeFilePath(serviceProvider, utf8_aekPath);
 		
 		ConverterInterfacePtr converter = CONVERTER_SERVICE(serviceProvider)
 			->createConverter( Helper::stringizeString(serviceProvider, "xmlToAekMovie") );

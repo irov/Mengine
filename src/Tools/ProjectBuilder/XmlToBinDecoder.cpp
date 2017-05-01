@@ -59,9 +59,9 @@ namespace Menge
 		}
 
         XmlCodecOptions options;
-        options.pathProtocol = Helper::stringizeString( serviceProvider, utf8_protocolPath );
-        options.pathXml = Helper::stringizeString( serviceProvider, utf8_xmlPath );
-        options.pathBin = Helper::stringizeString( serviceProvider, utf8_binPath );
+        options.pathProtocol = Helper::stringizeFilePath( serviceProvider, utf8_protocolPath );
+        options.pathXml = Helper::stringizeFilePath( serviceProvider, utf8_xmlPath );
+        options.pathBin = Helper::stringizeFilePath( serviceProvider, utf8_binPath );
 
         if( decoder->setOptions( &options ) == false )
         {

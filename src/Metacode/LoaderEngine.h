@@ -14,7 +14,7 @@
 
 #	include "Config/Typedef.h"
 
-#	include "metabuf/Metabuf.hpp"
+#	include "metabuf/Metadata.hpp"
 
 namespace Menge
 {

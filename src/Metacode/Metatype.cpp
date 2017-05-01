@@ -9,7 +9,7 @@
 namespace Metabuf
 {
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, bool & _value, void * _userData )
+	void archive_read( Reader & ar, bool & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -19,35 +19,35 @@ namespace Metabuf
 		_value = !!bool_value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, uint8_t & _value, void * _userData )
+	void archive_read( Reader & ar, uint8_t & _value, void * _userData )
 	{
 		(void)_userData;
 
 		ar.readPOD( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, uint16_t & _value, void * _userData )
+	void archive_read( Reader & ar, uint16_t & _value, void * _userData )
 	{
 		(void)_userData;
 
 		ar.readPOD( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, uint32_t & _value, void * _userData )
+	void archive_read( Reader & ar, uint32_t & _value, void * _userData )
 	{
 		(void)_userData;
 
 		ar.readPOD( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, float & _value, void * _userData )
+	void archive_read( Reader & ar, float & _value, void * _userData )
 	{
 		(void)_userData;
 
 		ar.readPOD( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void archive_read( stdex::memory_reader & ar, Menge::String & _value, void * _userData )
+    void archive_read( Reader & ar, Menge::String & _value, void * _userData )
 	{
         (void)_userData;
 
@@ -66,7 +66,7 @@ namespace Metabuf
         ar.readPODs( &_value[0], size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::ConstString & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::ConstString & _value, void * _userData )
 	{
 		Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
 		
@@ -76,7 +76,7 @@ namespace Metabuf
 		_value = loader->getCacheConstString( index );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::FilePath & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::FilePath & _value, void * _userData )
 	{
 		Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
 
@@ -97,7 +97,7 @@ namespace Metabuf
 		_value = Menge::FilePath( value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::Tags & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::Tags & _value, void * _userData )
 	{
 		Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
 
@@ -115,7 +115,7 @@ namespace Metabuf
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( stdex::memory_reader & ar, Menge::WChar & _value, void * _userData )
+    void archive_read( Reader & ar, Menge::WChar & _value, void * _userData )
     {   
         uint32_t size;
         ar.readSize( size );
@@ -147,7 +147,7 @@ namespace Metabuf
         _value = unicode[0];
     }
 	//////////////////////////////////////////////////////////////////////////
-    void archive_read( stdex::memory_reader & ar, Menge::WString & _value, void * _userData )
+    void archive_read( Reader & ar, Menge::WString & _value, void * _userData )
 	{
         static Menge::String utf8;
         archive_read( ar, utf8, _userData );
@@ -158,7 +158,7 @@ namespace Metabuf
         Menge::Helper::utf8ToUnicode( serviceProvider, utf8, _value );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( stdex::memory_reader & ar, Menge::ColourValue & _value, void * _userData )
+    void archive_read( Reader & ar, Menge::ColourValue & _value, void * _userData )
     {
         (void)_userData;
 
@@ -181,7 +181,7 @@ namespace Metabuf
         _value.setARGB( a, r, g, b );
     }
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( stdex::memory_reader & ar, Menge::Polygon & _value, void * _userData )
+    void archive_read( Reader & ar, Menge::Polygon & _value, void * _userData )
     {
         (void)_userData;
 
@@ -204,7 +204,7 @@ namespace Metabuf
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::Viewport & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::Viewport & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -214,7 +214,7 @@ namespace Metabuf
 		ar.readPOD( _value.end.y );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( stdex::memory_reader & ar, Menge::Floats & _value, void * _userData )
+    void archive_read( Reader & ar, Menge::Floats & _value, void * _userData )
     {
         (void)_userData;
 
@@ -233,7 +233,7 @@ namespace Metabuf
         ar.readPODs( &_value[0], count );
     }
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::Int8s & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::Int8s & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -252,7 +252,7 @@ namespace Metabuf
 		ar.readPODs( &_value[0], count );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::Int16s & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::Int16s & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -271,7 +271,7 @@ namespace Metabuf
 		ar.readPODs( &_value[0], count );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::Int32s & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::Int32s & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -290,7 +290,7 @@ namespace Metabuf
 		ar.readPODs( &_value[0], count );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::UInt8s & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::UInt8s & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -309,7 +309,7 @@ namespace Metabuf
 		ar.readPODs( &_value[0], count );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::UInt16s & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::UInt16s & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -328,7 +328,7 @@ namespace Metabuf
 		ar.readPODs( &_value[0], count );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::UInt32s & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::UInt32s & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -347,7 +347,7 @@ namespace Metabuf
 		ar.readPODs( &_value[0], count );
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void archive_read( stdex::memory_reader & ar, mt::vec2f & _value, void * _userData )
+    void archive_read( Reader & ar, mt::vec2f & _value, void * _userData )
 	{
         (void)_userData;
 
@@ -355,7 +355,7 @@ namespace Metabuf
 		ar.readPOD( _value.y );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( stdex::memory_reader & ar, mt::vec3f & _value, void * _userData )
+    void archive_read( Reader & ar, mt::vec3f & _value, void * _userData )
     {
         (void)_userData;
 
@@ -364,7 +364,7 @@ namespace Metabuf
         ar.readPOD( _value.z );
     }
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( stdex::memory_reader & ar, mt::vec4f & _value, void * _userData )
+    void archive_read( Reader & ar, mt::vec4f & _value, void * _userData )
     {
         (void)_userData;
 
@@ -374,7 +374,7 @@ namespace Metabuf
         ar.readPOD( _value.w );
     }
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, mt::box2f & _value, void * _userData )
+	void archive_read( Reader & ar, mt::box2f & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -384,7 +384,7 @@ namespace Metabuf
 		ar.readPOD( _value.maximum.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, mt::uv4f & _value, void * _userData )
+	void archive_read( Reader & ar, mt::uv4f & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -398,7 +398,7 @@ namespace Metabuf
 		ar.readPOD( _value.p3.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::EBlendFactor & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::EBlendFactor & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -408,7 +408,7 @@ namespace Metabuf
 		_value = (Menge::EBlendFactor)tmp_value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::EBlendOp & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::EBlendOp & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -418,7 +418,7 @@ namespace Metabuf
 		_value = (Menge::EBlendOp)tmp_value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::ETextureOp & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::ETextureOp & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -428,7 +428,7 @@ namespace Metabuf
 		_value = (Menge::ETextureOp)tmp_value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::ETextureArgument & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::ETextureArgument & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -438,7 +438,7 @@ namespace Metabuf
 		_value = (Menge::ETextureArgument)tmp_value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( stdex::memory_reader & ar, Menge::ETextureAddressMode & _value, void * _userData )
+	void archive_read( Reader & ar, Menge::ETextureAddressMode & _value, void * _userData )
 	{
 		(void)_userData;
 

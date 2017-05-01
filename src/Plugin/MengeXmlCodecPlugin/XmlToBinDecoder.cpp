@@ -8,7 +8,7 @@
 
 #	include "Utils/Logger/Logger.h"
 
-#	include "metabuf/Metabuf.hpp"
+#	include "metabuf/Metadata.hpp"
 
 #	include "xml2metabuf/Xml2Metabuf.hpp"
 #	include "xml2metabuf/Xml2Metacode.hpp"

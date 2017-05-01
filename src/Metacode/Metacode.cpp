@@ -22,9 +22,9 @@ namespace Metacode
         return metacode_protocol;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool readHeader2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, uint32_t & _readProtocol, uint32_t & _needProtocol )
+    bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, uint32_t & _readProtocol, uint32_t & _needProtocol )
     {
-        stdex::memory_reader ar(_buff, _size, _read);
+        Metabuf::Reader ar(_buff, _size, _read);
 
         uint32_t head;
         ar.readPOD( head );
@@ -58,16 +58,9 @@ namespace Metacode
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, uint32_t & _readProtocol, uint32_t & _needProtocol )
-    {
-        bool successful = readHeader2( _buff, _size, _read, _readVersion, _needVersion, _readProtocol, _needProtocol );
-
-        return successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
     static bool readStrings2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringCount )
     {
-        stdex::memory_reader ar(_buff, _size, _read);
+        Metabuf::Reader ar(_buff, _size, _read);
 
         uint32_t count;
         ar.readPOD( count );
@@ -86,7 +79,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     static const char * readString2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, int64_t & _stringHash )
     {
-        stdex::memory_reader ar(_buff, _size, _read);
+        Metabuf::Reader ar(_buff, _size, _read);
 
         uint32_t size;
         ar.readSize( size );
@@ -184,31 +177,36 @@ namespace Metacode
         {
         case 4:
             {
-                Meta_DataBlock::Meta_FragmentShader & metadata = includes_Meta_FragmentShader.emplace_back();
+                includes_Meta_FragmentShader.emplace_back( Meta_DataBlock::Meta_FragmentShader() );
+                Meta_DataBlock::Meta_FragmentShader & metadata = includes_Meta_FragmentShader.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 2:
             {
-                Meta_DataBlock::Meta_Include & metadata = includes_Meta_Include.emplace_back();
+                includes_Meta_Include.emplace_back( Meta_DataBlock::Meta_Include() );
+                Meta_DataBlock::Meta_Include & metadata = includes_Meta_Include.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 6:
             {
-                Meta_DataBlock::Meta_Material & metadata = includes_Meta_Material.emplace_back();
+                includes_Meta_Material.emplace_back( Meta_DataBlock::Meta_Material() );
+                Meta_DataBlock::Meta_Material & metadata = includes_Meta_Material.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 5:
             {
-                Meta_DataBlock::Meta_Program & metadata = includes_Meta_Program.emplace_back();
+                includes_Meta_Program.emplace_back( Meta_DataBlock::Meta_Program() );
+                Meta_DataBlock::Meta_Program & metadata = includes_Meta_Program.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 3:
             {
-                Meta_DataBlock::Meta_VertexShader & metadata = includes_Meta_VertexShader.emplace_back();
+                includes_Meta_VertexShader.emplace_back( Meta_DataBlock::Meta_VertexShader() );
+                Meta_DataBlock::Meta_VertexShader & metadata = includes_Meta_VertexShader.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -598,7 +596,8 @@ namespace Metacode
         {
         case 8:
             {
-                Meta_DataBlock::Meta_Material::Meta_TextureStages & metadata = includes_Meta_TextureStages.emplace_back();
+                includes_Meta_TextureStages.emplace_back( Meta_DataBlock::Meta_Material::Meta_TextureStages() );
+                Meta_DataBlock::Meta_Material::Meta_TextureStages & metadata = includes_Meta_TextureStages.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -963,7 +962,8 @@ namespace Metacode
         {
         case 5:
             {
-                Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence & metadata = includes_Meta_Sequence.emplace_back();
+                includes_Meta_Sequence.emplace_back( Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence() );
+                Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence & metadata = includes_Meta_Sequence.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -1875,19 +1875,22 @@ namespace Metacode
         {
         case 18:
             {
-                Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & metadata = includes_Meta_MovieCamera3D.emplace_back();
+                includes_Meta_MovieCamera3D.emplace_back( Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D() );
+                Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & metadata = includes_Meta_MovieCamera3D.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 16:
             {
-                Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & metadata = includes_Meta_MovieLayer2D.emplace_back();
+                includes_Meta_MovieLayer2D.emplace_back( Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D() );
+                Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & metadata = includes_Meta_MovieLayer2D.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 17:
             {
-                Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & metadata = includes_Meta_MovieLayer3D.emplace_back();
+                includes_Meta_MovieLayer3D.emplace_back( Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D() );
+                Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & metadata = includes_Meta_MovieLayer3D.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -2473,7 +2476,8 @@ namespace Metacode
         {
         case 8:
             {
-                Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas & metadata = includes_Meta_Atlas.emplace_back();
+                includes_Meta_Atlas.emplace_back( Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas() );
+                Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas & metadata = includes_Meta_Atlas.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -2692,7 +2696,8 @@ namespace Metacode
         {
         case 7:
             {
-                Meta_DataBlock::Meta_ResourceSpine::Meta_Image & metadata = includes_Meta_Image.emplace_back();
+                includes_Meta_Image.emplace_back( Meta_DataBlock::Meta_ResourceSpine::Meta_Image() );
+                Meta_DataBlock::Meta_ResourceSpine::Meta_Image & metadata = includes_Meta_Image.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -2966,31 +2971,36 @@ namespace Metacode
         {
         case 5:
             {
-                Meta_KeyFramesPack::Meta_ImageShape & metadata = includes_Meta_ImageShape.emplace_back();
+                includes_Meta_ImageShape.emplace_back( Meta_KeyFramesPack::Meta_ImageShape() );
+                Meta_KeyFramesPack::Meta_ImageShape & metadata = includes_Meta_ImageShape.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 6:
             {
-                Meta_KeyFramesPack::Meta_KeyFrames2D & metadata = includes_Meta_KeyFrames2D.emplace_back();
+                includes_Meta_KeyFrames2D.emplace_back( Meta_KeyFramesPack::Meta_KeyFrames2D() );
+                Meta_KeyFramesPack::Meta_KeyFrames2D & metadata = includes_Meta_KeyFrames2D.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 7:
             {
-                Meta_KeyFramesPack::Meta_KeyFrames3D & metadata = includes_Meta_KeyFrames3D.emplace_back();
+                includes_Meta_KeyFrames3D.emplace_back( Meta_KeyFramesPack::Meta_KeyFrames3D() );
+                Meta_KeyFramesPack::Meta_KeyFrames3D & metadata = includes_Meta_KeyFrames3D.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 4:
             {
-                Meta_KeyFramesPack::Meta_Polygon & metadata = includes_Meta_Polygon.emplace_back();
+                includes_Meta_Polygon.emplace_back( Meta_KeyFramesPack::Meta_Polygon() );
+                Meta_KeyFramesPack::Meta_Polygon & metadata = includes_Meta_Polygon.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 3:
             {
-                Meta_KeyFramesPack::Meta_TimeRemap & metadata = includes_Meta_TimeRemap.emplace_back();
+                includes_Meta_TimeRemap.emplace_back( Meta_KeyFramesPack::Meta_TimeRemap() );
+                Meta_KeyFramesPack::Meta_TimeRemap & metadata = includes_Meta_TimeRemap.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -3086,7 +3096,8 @@ namespace Metacode
         {
         case 8:
             {
-                Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & metadata = includes_Meta_Shape.emplace_back();
+                includes_Meta_Shape.emplace_back( Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape() );
+                Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & metadata = includes_Meta_Shape.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -3206,7 +3217,8 @@ namespace Metacode
         {
         case 4:
             {
-                Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & metadata = includes_Meta_KeyFrame2D.emplace_back();
+                includes_Meta_KeyFrame2D.emplace_back( Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D() );
+                Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & metadata = includes_Meta_KeyFrame2D.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -3383,7 +3395,8 @@ namespace Metacode
         {
         case 4:
             {
-                Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & metadata = includes_Meta_KeyFrame3D.emplace_back();
+                includes_Meta_KeyFrame3D.emplace_back( Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D() );
+                Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & metadata = includes_Meta_KeyFrame3D.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -3677,37 +3690,43 @@ namespace Metacode
         {
         case 5:
             {
-                Meta_Pak::Meta_Datas & metadata = includes_Meta_Datas.emplace_back();
+                includes_Meta_Datas.emplace_back( Meta_Pak::Meta_Datas() );
+                Meta_Pak::Meta_Datas & metadata = includes_Meta_Datas.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 2:
             {
-                Meta_Pak::Meta_Fonts & metadata = includes_Meta_Fonts.emplace_back();
+                includes_Meta_Fonts.emplace_back( Meta_Pak::Meta_Fonts() );
+                Meta_Pak::Meta_Fonts & metadata = includes_Meta_Fonts.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 6:
             {
-                Meta_Pak::Meta_Materials & metadata = includes_Meta_Materials.emplace_back();
+                includes_Meta_Materials.emplace_back( Meta_Pak::Meta_Materials() );
+                Meta_Pak::Meta_Materials & metadata = includes_Meta_Materials.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 3:
             {
-                Meta_Pak::Meta_Resources & metadata = includes_Meta_Resources.emplace_back();
+                includes_Meta_Resources.emplace_back( Meta_Pak::Meta_Resources() );
+                Meta_Pak::Meta_Resources & metadata = includes_Meta_Resources.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 1:
             {
-                Meta_Pak::Meta_Scripts & metadata = includes_Meta_Scripts.emplace_back();
+                includes_Meta_Scripts.emplace_back( Meta_Pak::Meta_Scripts() );
+                Meta_Pak::Meta_Scripts & metadata = includes_Meta_Scripts.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
         case 4:
             {
-                Meta_Pak::Meta_Texts & metadata = includes_Meta_Texts.emplace_back();
+                includes_Meta_Texts.emplace_back( Meta_Pak::Meta_Texts() );
+                Meta_Pak::Meta_Texts & metadata = includes_Meta_Texts.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -3773,7 +3792,8 @@ namespace Metacode
         {
         case 2:
             {
-                Meta_Pak::Meta_Datas::Meta_Data & metadata = includes_Meta_Data.emplace_back();
+                includes_Meta_Data.emplace_back( Meta_Pak::Meta_Datas::Meta_Data() );
+                Meta_Pak::Meta_Datas::Meta_Data & metadata = includes_Meta_Data.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -3944,7 +3964,8 @@ namespace Metacode
         {
         case 2:
             {
-                Meta_Pak::Meta_Materials::Meta_Material & metadata = includes_Meta_Material.emplace_back();
+                includes_Meta_Material.emplace_back( Meta_Pak::Meta_Materials::Meta_Material() );
+                Meta_Pak::Meta_Materials::Meta_Material & metadata = includes_Meta_Material.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -4067,7 +4088,8 @@ namespace Metacode
         {
         case 3:
             {
-                Meta_Pak::Meta_Resources::Meta_Resource & metadata = includes_Meta_Resource.emplace_back();
+                includes_Meta_Resource.emplace_back( Meta_Pak::Meta_Resources::Meta_Resource() );
+                Meta_Pak::Meta_Resources::Meta_Resource & metadata = includes_Meta_Resource.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -4261,7 +4283,8 @@ namespace Metacode
         {
         case 2:
             {
-                Meta_Pak::Meta_Texts::Meta_Text & metadata = includes_Meta_Text.emplace_back();
+                includes_Meta_Text.emplace_back( Meta_Pak::Meta_Texts::Meta_Text() );
+                Meta_Pak::Meta_Texts::Meta_Text & metadata = includes_Meta_Text.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;
@@ -4370,7 +4393,8 @@ namespace Metacode
         {
         case 1:
             {
-                Meta_Texts::Meta_Text & metadata = includes_Meta_Text.emplace_back();
+                includes_Meta_Text.emplace_back( Meta_Texts::Meta_Text() );
+                Meta_Texts::Meta_Text & metadata = includes_Meta_Text.back();
     
                 metadata.parse( _buff, _size, _read, m_userData );
             }break;

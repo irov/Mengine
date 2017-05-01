@@ -2,7 +2,7 @@
 
 #   include "Metatype.h"
 
-#   include <metabuf/Metabuf.hpp>
+#   include "metabuf/Metadata.hpp"
 
 namespace Metacode
 {
@@ -748,7 +748,7 @@ namespace Metacode
             bool Program_Name_successful;
             mutable Menge::ConstString Program_Name;
         public:
-            typedef stdex::auto_array<Meta_TextureStages> TVectorMeta_TextureStages;
+            typedef std::vector<Meta_TextureStages> TVectorMeta_TextureStages;
         
             const TVectorMeta_TextureStages & get_IncludesTextureStages() const
             {
@@ -1108,7 +1108,7 @@ namespace Metacode
         protected:
         protected:
         public:
-            typedef stdex::auto_array<Meta_Sequence> TVectorMeta_Sequence;
+            typedef std::vector<Meta_Sequence> TVectorMeta_Sequence;
         
             const TVectorMeta_Sequence & get_IncludesSequence() const
             {
@@ -3750,7 +3750,7 @@ namespace Metacode
             mutable mt::vec3f Offset_Point;
             mutable float Width_Value;
         public:
-            typedef stdex::auto_array<Meta_MovieCamera3D> TVectorMeta_MovieCamera3D;
+            typedef std::vector<Meta_MovieCamera3D> TVectorMeta_MovieCamera3D;
         
             const TVectorMeta_MovieCamera3D & get_IncludesMovieCamera3D() const
             {
@@ -3760,7 +3760,7 @@ namespace Metacode
         protected:
             TVectorMeta_MovieCamera3D includes_Meta_MovieCamera3D;
         public:
-            typedef stdex::auto_array<Meta_MovieLayer2D> TVectorMeta_MovieLayer2D;
+            typedef std::vector<Meta_MovieLayer2D> TVectorMeta_MovieLayer2D;
         
             const TVectorMeta_MovieLayer2D & get_IncludesMovieLayer2D() const
             {
@@ -3770,7 +3770,7 @@ namespace Metacode
         protected:
             TVectorMeta_MovieLayer2D includes_Meta_MovieLayer2D;
         public:
-            typedef stdex::auto_array<Meta_MovieLayer3D> TVectorMeta_MovieLayer3D;
+            typedef std::vector<Meta_MovieLayer3D> TVectorMeta_MovieLayer3D;
         
             const TVectorMeta_MovieLayer3D & get_IncludesMovieLayer3D() const
             {
@@ -4085,7 +4085,7 @@ namespace Metacode
             mutable Menge::ConstString File_Converter;
             mutable Menge::FilePath File_Path;
         public:
-            typedef stdex::auto_array<Meta_Atlas> TVectorMeta_Atlas;
+            typedef std::vector<Meta_Atlas> TVectorMeta_Atlas;
         
             const TVectorMeta_Atlas & get_IncludesAtlas() const
             {
@@ -4369,7 +4369,7 @@ namespace Metacode
             mutable Menge::FilePath Atlas_Path;
             mutable Menge::FilePath Skeleton_Path;
         public:
-            typedef stdex::auto_array<Meta_Image> TVectorMeta_Image;
+            typedef std::vector<Meta_Image> TVectorMeta_Image;
         
             const TVectorMeta_Image & get_IncludesImage() const
             {
@@ -4830,7 +4830,7 @@ namespace Metacode
     protected:
         mutable Menge::ConstString Name;
     public:
-        typedef stdex::auto_array<Meta_FragmentShader> TVectorMeta_FragmentShader;
+        typedef std::vector<Meta_FragmentShader> TVectorMeta_FragmentShader;
     
         const TVectorMeta_FragmentShader & get_IncludesFragmentShader() const
         {
@@ -4840,7 +4840,7 @@ namespace Metacode
     protected:
         TVectorMeta_FragmentShader includes_Meta_FragmentShader;
     public:
-        typedef stdex::auto_array<Meta_Include> TVectorMeta_Include;
+        typedef std::vector<Meta_Include> TVectorMeta_Include;
     
         const TVectorMeta_Include & get_IncludesInclude() const
         {
@@ -4850,7 +4850,7 @@ namespace Metacode
     protected:
         TVectorMeta_Include includes_Meta_Include;
     public:
-        typedef stdex::auto_array<Meta_Material> TVectorMeta_Material;
+        typedef std::vector<Meta_Material> TVectorMeta_Material;
     
         const TVectorMeta_Material & get_IncludesMaterial() const
         {
@@ -4860,7 +4860,7 @@ namespace Metacode
     protected:
         TVectorMeta_Material includes_Meta_Material;
     public:
-        typedef stdex::auto_array<Meta_Program> TVectorMeta_Program;
+        typedef std::vector<Meta_Program> TVectorMeta_Program;
     
         const TVectorMeta_Program & get_IncludesProgram() const
         {
@@ -4870,7 +4870,7 @@ namespace Metacode
     protected:
         TVectorMeta_Program includes_Meta_Program;
     public:
-        typedef stdex::auto_array<Meta_VertexShader> TVectorMeta_VertexShader;
+        typedef std::vector<Meta_VertexShader> TVectorMeta_VertexShader;
     
         const TVectorMeta_VertexShader & get_IncludesVertexShader() const
         {
@@ -4880,7 +4880,7 @@ namespace Metacode
     protected:
         TVectorMeta_VertexShader includes_Meta_VertexShader;
     public:
-        typedef stdex::auto_array<Meta_Resource *> TVectorMeta_Resource;
+        typedef std::vector<Meta_Resource *> TVectorMeta_Resource;
     
         const TVectorMeta_Resource & get_IncludesResource() const
         {
@@ -5157,7 +5157,7 @@ namespace Metacode
             bool Subtract_successful;
             mutable bool Subtract;
         public:
-            typedef stdex::auto_array<Meta_Shape> TVectorMeta_Shape;
+            typedef std::vector<Meta_Shape> TVectorMeta_Shape;
         
             const TVectorMeta_Shape & get_IncludesShape() const
             {
@@ -5499,7 +5499,7 @@ namespace Metacode
             mutable bool Immutable;
             mutable uint32_t LayerIndex;
         public:
-            typedef stdex::auto_array<Meta_KeyFrame2D> TVectorMeta_KeyFrame2D;
+            typedef std::vector<Meta_KeyFrame2D> TVectorMeta_KeyFrame2D;
         
             const TVectorMeta_KeyFrame2D & get_IncludesKeyFrame2D() const
             {
@@ -5872,7 +5872,7 @@ namespace Metacode
             mutable bool Immutable;
             mutable uint32_t LayerIndex;
         public:
-            typedef stdex::auto_array<Meta_KeyFrame3D> TVectorMeta_KeyFrame3D;
+            typedef std::vector<Meta_KeyFrame3D> TVectorMeta_KeyFrame3D;
         
             const TVectorMeta_KeyFrame3D & get_IncludesKeyFrame3D() const
             {
@@ -5974,7 +5974,7 @@ namespace Metacode
         mutable uint32_t MaxIndex;
         mutable uint32_t Version;
     public:
-        typedef stdex::auto_array<Meta_ImageShape> TVectorMeta_ImageShape;
+        typedef std::vector<Meta_ImageShape> TVectorMeta_ImageShape;
     
         const TVectorMeta_ImageShape & get_IncludesImageShape() const
         {
@@ -5984,7 +5984,7 @@ namespace Metacode
     protected:
         TVectorMeta_ImageShape includes_Meta_ImageShape;
     public:
-        typedef stdex::auto_array<Meta_KeyFrames2D> TVectorMeta_KeyFrames2D;
+        typedef std::vector<Meta_KeyFrames2D> TVectorMeta_KeyFrames2D;
     
         const TVectorMeta_KeyFrames2D & get_IncludesKeyFrames2D() const
         {
@@ -5994,7 +5994,7 @@ namespace Metacode
     protected:
         TVectorMeta_KeyFrames2D includes_Meta_KeyFrames2D;
     public:
-        typedef stdex::auto_array<Meta_KeyFrames3D> TVectorMeta_KeyFrames3D;
+        typedef std::vector<Meta_KeyFrames3D> TVectorMeta_KeyFrames3D;
     
         const TVectorMeta_KeyFrames3D & get_IncludesKeyFrames3D() const
         {
@@ -6004,7 +6004,7 @@ namespace Metacode
     protected:
         TVectorMeta_KeyFrames3D includes_Meta_KeyFrames3D;
     public:
-        typedef stdex::auto_array<Meta_Polygon> TVectorMeta_Polygon;
+        typedef std::vector<Meta_Polygon> TVectorMeta_Polygon;
     
         const TVectorMeta_Polygon & get_IncludesPolygon() const
         {
@@ -6014,7 +6014,7 @@ namespace Metacode
     protected:
         TVectorMeta_Polygon includes_Meta_Polygon;
     public:
-        typedef stdex::auto_array<Meta_TimeRemap> TVectorMeta_TimeRemap;
+        typedef std::vector<Meta_TimeRemap> TVectorMeta_TimeRemap;
     
         const TVectorMeta_TimeRemap & get_IncludesTimeRemap() const
         {
@@ -6136,7 +6136,7 @@ namespace Metacode
             bool Platform_successful;
             mutable Menge::Tags Platform;
         public:
-            typedef stdex::auto_array<Meta_Data> TVectorMeta_Data;
+            typedef std::vector<Meta_Data> TVectorMeta_Data;
         
             const TVectorMeta_Data & get_IncludesData() const
             {
@@ -6293,7 +6293,7 @@ namespace Metacode
             bool Platform_successful;
             mutable Menge::Tags Platform;
         public:
-            typedef stdex::auto_array<Meta_Material> TVectorMeta_Material;
+            typedef std::vector<Meta_Material> TVectorMeta_Material;
         
             const TVectorMeta_Material & get_IncludesMaterial() const
             {
@@ -6418,7 +6418,7 @@ namespace Metacode
             bool Platform_successful;
             mutable Menge::Tags Platform;
         public:
-            typedef stdex::auto_array<Meta_Resource> TVectorMeta_Resource;
+            typedef std::vector<Meta_Resource> TVectorMeta_Resource;
         
             const TVectorMeta_Resource & get_IncludesResource() const
             {
@@ -6668,7 +6668,7 @@ namespace Metacode
             bool Platform_successful;
             mutable Menge::Tags Platform;
         public:
-            typedef stdex::auto_array<Meta_Text> TVectorMeta_Text;
+            typedef std::vector<Meta_Text> TVectorMeta_Text;
         
             const TVectorMeta_Text & get_IncludesText() const
             {
@@ -6682,7 +6682,7 @@ namespace Metacode
     protected:
     protected:
     public:
-        typedef stdex::auto_array<Meta_Datas> TVectorMeta_Datas;
+        typedef std::vector<Meta_Datas> TVectorMeta_Datas;
     
         const TVectorMeta_Datas & get_IncludesDatas() const
         {
@@ -6692,7 +6692,7 @@ namespace Metacode
     protected:
         TVectorMeta_Datas includes_Meta_Datas;
     public:
-        typedef stdex::auto_array<Meta_Fonts> TVectorMeta_Fonts;
+        typedef std::vector<Meta_Fonts> TVectorMeta_Fonts;
     
         const TVectorMeta_Fonts & get_IncludesFonts() const
         {
@@ -6702,7 +6702,7 @@ namespace Metacode
     protected:
         TVectorMeta_Fonts includes_Meta_Fonts;
     public:
-        typedef stdex::auto_array<Meta_Materials> TVectorMeta_Materials;
+        typedef std::vector<Meta_Materials> TVectorMeta_Materials;
     
         const TVectorMeta_Materials & get_IncludesMaterials() const
         {
@@ -6712,7 +6712,7 @@ namespace Metacode
     protected:
         TVectorMeta_Materials includes_Meta_Materials;
     public:
-        typedef stdex::auto_array<Meta_Resources> TVectorMeta_Resources;
+        typedef std::vector<Meta_Resources> TVectorMeta_Resources;
     
         const TVectorMeta_Resources & get_IncludesResources() const
         {
@@ -6722,7 +6722,7 @@ namespace Metacode
     protected:
         TVectorMeta_Resources includes_Meta_Resources;
     public:
-        typedef stdex::auto_array<Meta_Scripts> TVectorMeta_Scripts;
+        typedef std::vector<Meta_Scripts> TVectorMeta_Scripts;
     
         const TVectorMeta_Scripts & get_IncludesScripts() const
         {
@@ -6732,7 +6732,7 @@ namespace Metacode
     protected:
         TVectorMeta_Scripts includes_Meta_Scripts;
     public:
-        typedef stdex::auto_array<Meta_Texts> TVectorMeta_Texts;
+        typedef std::vector<Meta_Texts> TVectorMeta_Texts;
     
         const TVectorMeta_Texts & get_IncludesTexts() const
         {
@@ -6919,7 +6919,7 @@ namespace Metacode
     protected:
     protected:
     public:
-        typedef stdex::auto_array<Meta_Text> TVectorMeta_Text;
+        typedef std::vector<Meta_Text> TVectorMeta_Text;
     
         const TVectorMeta_Text & get_IncludesText() const
         {

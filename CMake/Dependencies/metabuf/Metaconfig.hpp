@@ -12,5 +12,5 @@
 
 #	ifndef METABUF_MEMCPY
 #	include "stdex/memorycopy.h"
-#	define METABUF_MEMCPY(Dest, Src, Size) stdex::memorycopy(Dest, Src, Size)
+#	define METABUF_MEMCPY(Dest, Src, Size) stdex::memorycopy(Dest, 0, Src, Size)
 #	endif

@@ -7,7 +7,7 @@ SET( SOURCE_DIR ${THIRDPARTY_DIR}/metabuf )
 configure_file(Metaconfig.hpp ${SOURCE_DIR}/metabuf/Metaconfig.hpp COPYONLY)
 
 set( sources
-    ${SOURCE_DIR}/metabuf/Metabuf.cpp
+    ${SOURCE_DIR}/metabuf/Metadata.cpp
     )
     
 include_directories(${SOURCE_DIR})

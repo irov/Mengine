@@ -19,11 +19,11 @@ set(THREAD_SRC)
 
 if(HAVE_LIBM)
   set(extraLibs ${extraLibs} ${HAVE_LIBM})
-endif(HAVE_LIBM)
+endif()
 
 if(HAVE_LIBUTIL)
   set(extraLibs ${extraLibs} ${HAVE_LIBUTIL})
-endif(HAVE_LIBUTIL)
+endif()
 
 set(MACHDEP_SRCS ) #conf 
 
@@ -40,22 +40,22 @@ macro(ADD_PYTHON_MODULE _NAME _STATIC_SRCS)
     option(MODULE_${_NAME}_SHARED "Add module ${_NAME} shared" FALSE)
     if(MODULE_${_NAME}_SHARED)
       message(STATUS "NOT Adding ${_NAME} as shared module (not yet implemented)")
-    else(MODULE_${_NAME}_SHARED)
+    else()
       message(STATUS "Adding ${_NAME} as static module")
       foreach (_current_FILE ${ARGN})
         set(${_STATIC_SRCS} ${${_STATIC_SRCS}} ${_current_FILE})
       endforeach (_current_FILE ${ARGN})
       set(PY_STATIC_MODULES_INIT_FUNCTIONS "${PY_STATIC_MODULES_INIT_FUNCTIONS}extern void init${_NAME}(void);\n")
       set(PY_STATIC_MODULES_INITTAB        "${PY_STATIC_MODULES_INITTAB}  {\"${_NAME}\", init${_NAME}},\n")
-    endif(MODULE_${_NAME}_SHARED)
-  endif(MODULE_${_NAME}_ENABLE)
-endmacro(ADD_PYTHON_MODULE)
+    endif()
+  endif()
+endmacro()
 
 if(WIN32)
   set(PY_POSIX_NAME nt)
-else(WIN32)
+else()
   set(PY_POSIX_NAME posix)
-endif(WIN32)
+endif()
 
 #add_python_module(${PY_POSIX_NAME}  MOD_SRCS ${SOURCE_DIR}/Modules/posixmodule.c)
 
@@ -259,6 +259,7 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/_io/iobase.c
                 ${SOURCE_DIR}/Modules/_io/stringio.c
                 ${SOURCE_DIR}/Modules/_io/textio.c
+                ${SOURCE_DIR}/Modules/_io/winconsoleio.c
                 
                 ${SOURCE_DIR}/Modules/cjkcodecs/multibytecodec.c
                 
@@ -284,13 +285,13 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/signalmodule.c
                 ${SOURCE_DIR}/Modules/symtablemodule.c
                 ${SOURCE_DIR}/Modules/_threadmodule.c
+                ${SOURCE_DIR}/Modules/_datetimemodule.c
                 ${SOURCE_DIR}/Modules/xxsubtype.c
                 ${SOURCE_DIR}/Modules/zipimport.c
                 ${SOURCE_DIR}/Modules/unicodedata.c
                 
                 ${SOURCE_DIR}/Modules/faulthandler.c
                 ${SOURCE_DIR}/Modules/hashtable.c
-                
                 
                 ${SOURCE_DIR}/Modules/pyexpat.c
                 
@@ -309,10 +310,10 @@ set(MODULE_SRCS
 				
 if( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )
-else( NOT WIN32 )
+else()
 	set( MODULE_SRCS ${MODULE_SRCS} 
-	${SOURCE_DIR}/PC/getpathp.c	)
-endif( NOT WIN32 )
+	${SOURCE_DIR}/PC/getpathp.c	)	
+endif()
 
 set_source_files_properties(${SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
 set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"3.4.2\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
@@ -322,14 +323,19 @@ include_directories(${SOURCE_DIR}/Include)
 
 
 if(WIN32)
-  include_directories(${SOURCE_DIR}/PC ${SOURCE_DIR}/Python ${SOURCE_DIR}/Modules/expat)
+  include_directories(
+    ${SOURCE_DIR}/PC 
+    ${SOURCE_DIR}/Python 
+    ${SOURCE_DIR}/Modules/expat
+    )
   include_directories(${THIRDPARTY_DIR}/zlib)
+
   if(MSVC)
 	  add_definitions(-DWIN32 -D_WINDOWS)
-  else(MSVC)
+  else()
 	  add_definitions(-D_WINDOWS)
-  endif(MSVC)
-endif(WIN32)
+  endif()
+endif()
 
 
 add_definitions(-DPYEXPAT_EXPORTS)
@@ -354,6 +360,4 @@ add_library( ${PROJECT_NAME} STATIC
               ${MODULE_SRCS}
               )
 
-
-            
 target_link_libraries(${PROJECT_NAME} ${extraLibs})

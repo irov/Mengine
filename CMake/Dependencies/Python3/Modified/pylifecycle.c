@@ -1,4 +1,3 @@
-
 /* Python interpreter top-level routines, including init/exit */
 
 #include "Python.h"
@@ -32,6 +31,9 @@
 #ifdef MS_WINDOWS
 #undef BYTE
 #include "windows.h"
+
+extern PyTypeObject PyWindowsConsoleIO_Type;
+#define PyWindowsConsoleIO_Check(op) (PyObject_TypeCheck((op), &PyWindowsConsoleIO_Type))
 #endif
 
 _Py_IDENTIFIER(flush);
@@ -91,6 +93,10 @@ int Py_NoUserSiteDirectory = 0; /* for -s and site.py */
 int Py_UnbufferedStdioFlag = 0; /* Unbuffered binary std{in,out,err} */
 int Py_HashRandomizationFlag = 0; /* for -R and PYTHONHASHSEED */
 int Py_IsolatedFlag = 0; /* for -I, isolate from user's env */
+#ifdef MS_WINDOWS
+int Py_LegacyWindowsFSEncodingFlag = 0; /* Uses mbcs instead of utf-8 */
+int Py_LegacyWindowsStdioFlag = 0; /* Uses FileIO instead of WindowsConsoleIO */
+#endif
 
 PyThreadState *_Py_Finalizing = NULL;
 
@@ -152,11 +158,17 @@ Py_SetStandardStreamEncoding(const char *encoding, const char *errors)
             return -3;
         }
     }
+#ifdef MS_WINDOWS
+    if (_Py_StandardStreamEncoding) {
+        /* Overriding the stream encoding implies legacy streams */
+        Py_LegacyWindowsStdioFlag = 1;
+    }
+#endif
     return 0;
 }
 
-/* Global initializations.  Can be undone by Py_Finalize().  Don't
-   call this twice without an intervening Py_Finalize() call.  When
+/* Global initializations.  Can be undone by Py_FinalizeEx().  Don't
+   call this twice without an intervening Py_FinalizeEx() call.  When
    initializations fail, a fatal error is issued and the function does
    not return.  On return, the first thread and interpreter state have
    been created.
@@ -193,7 +205,7 @@ get_codec_name(const char *encoding)
     if (!name)
         goto error;
 
-    name_utf8 = _PyUnicode_AsString(name);
+    name_utf8 = PyUnicode_AsUTF8(name);
     if (name_utf8 == NULL)
         goto error;
     name_str = _PyMem_RawStrdup(name_utf8);
@@ -224,6 +236,8 @@ get_locale_encoding(void)
         return NULL;
     }
     return get_codec_name(codeset);
+#elif defined(__ANDROID__)
+    return get_codec_name("UTF-8");
 #else
     PyErr_SetNone(PyExc_NotImplementedError);
     return NULL;
@@ -253,13 +267,18 @@ import_init(PyInterpreterState *interp, PyObject *sysmod)
     interp->importlib = importlib;
     Py_INCREF(interp->importlib);
 
-    /* Install _importlib as __import__ */
+    interp->import_func = PyDict_GetItemString(interp->builtins, "__import__");
+    if (interp->import_func == NULL)
+        Py_FatalError("Py_Initialize: __import__ not found");
+    Py_INCREF(interp->import_func);
+
+    /* Import the _imp module */
     impmod = PyInit_imp();
     if (impmod == NULL) {
-        Py_FatalError("Py_Initialize: can't import imp");
+        Py_FatalError("Py_Initialize: can't import _imp");
     }
     else if (Py_VerboseFlag) {
-        PySys_FormatStderr("import imp # builtin\n");
+        PySys_FormatStderr("import _imp # builtin\n");
     }
     sys_modules = PyImport_GetModuleDict();
     if (Py_VerboseFlag) {
@@ -269,6 +288,7 @@ import_init(PyInterpreterState *interp, PyObject *sysmod)
         Py_FatalError("Py_Initialize: can't save _imp to sys.modules");
     }
 
+    /* Install importlib as the implementation of import */
     value = PyObject_CallMethod(importlib, "_install", "OO", sysmod, impmod);
     if (value == NULL) {
         PyErr_Print();
@@ -295,7 +315,7 @@ _Py_InitializeEx_Private(int install_sigs, int install_importlib)
     initialized = 1;
     _Py_Finalizing = NULL;
 
-#if defined(HAVE_LANGINFO_H) && defined(HAVE_SETLOCALE)
+#ifdef HAVE_SETLOCALE
     /* Set up the LC_CTYPE locale, so we can obtain
        the locale's charset without having to switch
        locales. */
@@ -314,6 +334,12 @@ _Py_InitializeEx_Private(int install_sigs, int install_importlib)
        check its value further. */
     if ((p = Py_GETENV("PYTHONHASHSEED")) && *p != '\0')
         Py_HashRandomizationFlag = add_flag(Py_HashRandomizationFlag, p);
+#ifdef MS_WINDOWS
+    if ((p = Py_GETENV("PYTHONLEGACYWINDOWSFSENCODING")) && *p != '\0')
+        Py_LegacyWindowsFSEncodingFlag = add_flag(Py_LegacyWindowsFSEncodingFlag, p);
+    if ((p = Py_GETENV("PYTHONLEGACYWINDOWSSTDIO")) && *p != '\0')
+        Py_LegacyWindowsStdioFlag = add_flag(Py_LegacyWindowsStdioFlag, p);
+#endif
 
     _PyRandom_Init();
 
@@ -327,11 +353,11 @@ _Py_InitializeEx_Private(int install_sigs, int install_importlib)
     (void) PyThreadState_Swap(tstate);
 
 #ifdef WITH_THREAD
-    /* We can't call _PyEval_FiniThreads() in Py_Finalize because
+    /* We can't call _PyEval_FiniThreads() in Py_FinalizeEx because
        destroying the GIL might fail when it is being referenced from
        another running thread (see issue #9901).
        Instead we destroy the previously created GIL here, which ensures
-       that we can call Py_Initialize / Py_Finalize multiple times. */
+       that we can call Py_Initialize / Py_FinalizeEx multiple times. */
     _PyEval_FiniThreads();
 
     /* Auto-thread-state API */
@@ -424,10 +450,9 @@ _Py_InitializeEx_Private(int install_sigs, int install_importlib)
         Py_FatalError("Py_Initialize: can't initialize tracemalloc");
 
     initmain(interp); /* Module __main__ */
-
-	if( initstdio() < 0 )
-		Py_FatalError(
-		"Py_Initialize: can't initialize sys standard streams" );
+    if (initstdio() < 0)
+        Py_FatalError(
+            "Py_Initialize: can't initialize sys standard streams");
 
     /* Initialize warnings. */
     if (PySys_HasWarnOptions()) {
@@ -478,28 +503,35 @@ file_is_closed(PyObject *fobj)
     return r > 0;
 }
 
-static void
+static int
 flush_std_files(void)
 {
     PyObject *fout = _PySys_GetObjectId(&PyId_stdout);
     PyObject *ferr = _PySys_GetObjectId(&PyId_stderr);
     PyObject *tmp;
+    int status = 0;
 
     if (fout != NULL && fout != Py_None && !file_is_closed(fout)) {
-        tmp = _PyObject_CallMethodId(fout, &PyId_flush, "");
-        if (tmp == NULL)
+        tmp = _PyObject_CallMethodId(fout, &PyId_flush, NULL);
+        if (tmp == NULL) {
             PyErr_WriteUnraisable(fout);
+            status = -1;
+        }
         else
             Py_DECREF(tmp);
     }
 
     if (ferr != NULL && ferr != Py_None && !file_is_closed(ferr)) {
-        tmp = _PyObject_CallMethodId(ferr, &PyId_flush, "");
-        if (tmp == NULL)
+        tmp = _PyObject_CallMethodId(ferr, &PyId_flush, NULL);
+        if (tmp == NULL) {
             PyErr_Clear();
+            status = -1;
+        }
         else
             Py_DECREF(tmp);
     }
+
+    return status;
 }
 
 /* Undo the effect of Py_Initialize().
@@ -516,14 +548,15 @@ flush_std_files(void)
 
 */
 
-void
-Py_Finalize(void)
+int
+Py_FinalizeEx(void)
 {
     PyInterpreterState *interp;
     PyThreadState *tstate;
+    int status = 0;
 
     if (!initialized)
-        return;
+        return status;
 
     wait_for_thread_shutdown();
 
@@ -548,7 +581,9 @@ Py_Finalize(void)
     initialized = 0;
 
     /* Flush sys.stdout and sys.stderr */
-    flush_std_files();
+    if (flush_std_files() < 0) {
+        status = -1;
+    }
 
     /* Disable signal handling */
     PyOS_FiniInterrupts();
@@ -565,19 +600,21 @@ Py_Finalize(void)
      * XXX but I'm unclear on exactly how that one happens.  In any case,
      * XXX I haven't seen a real-life report of either of these.
      */
-    PyGC_Collect();
+    _PyGC_CollectIfEnabled();
 #ifdef COUNT_ALLOCS
     /* With COUNT_ALLOCS, it helps to run GC multiple times:
        each collection might release some types from the type
        list, so they become garbage. */
-    while (PyGC_Collect() > 0)
+    while (_PyGC_CollectIfEnabled() > 0)
         /* nothing */;
 #endif
     /* Destroy all modules */
     PyImport_Cleanup();
 
     /* Flush sys.stdout and sys.stderr (again, in case more was printed) */
-    flush_std_files();
+    if (flush_std_files() < 0) {
+        status = -1;
+    }
 
     /* Collect final garbage.  This disposes of cycles created by
      * class definitions, for example.
@@ -595,7 +632,7 @@ Py_Finalize(void)
      * XXX Python code getting called.
      */
 #if 0
-    PyGC_Collect();
+    _PyGC_CollectIfEnabled();
 #endif
 
     /* Disable tracemalloc after all Python objects have been destroyed,
@@ -613,7 +650,7 @@ Py_Finalize(void)
 
     /* Debugging stuff */
 #ifdef COUNT_ALLOCS
-    dump_counts(stdout);
+    dump_counts(stderr);
 #endif
     /* dump hash stats */
     _PyHash_Fini();
@@ -656,6 +693,8 @@ Py_Finalize(void)
     PySlice_Fini();
     _PyGC_Fini();
     _PyRandom_Fini();
+    _PyArg_Fini();
+    PyAsyncGen_Fini();
 
     /* Cleanup Unicode implementation */
     _PyUnicode_Fini();
@@ -681,6 +720,7 @@ Py_Finalize(void)
 
     /* Delete current thread. After this, many C API calls become crashy. */
     PyThreadState_Swap(NULL);
+
     PyInterpreterState_Delete(interp);
 
 #ifdef Py_TRACE_REFS
@@ -691,12 +731,22 @@ Py_Finalize(void)
     if (Py_GETENV("PYTHONDUMPREFS"))
         _Py_PrintReferenceAddresses(stderr);
 #endif /* Py_TRACE_REFS */
-#ifdef PYMALLOC_DEBUG
-    if (Py_GETENV("PYTHONMALLOCSTATS"))
-        _PyObject_DebugMallocStats(stderr);
+#ifdef WITH_PYMALLOC
+    if (_PyMem_PymallocEnabled()) {
+        char *opt = Py_GETENV("PYTHONMALLOCSTATS");
+        if (opt != NULL && *opt != '\0')
+            _PyObject_DebugMallocStats(stderr);
+    }
 #endif
 
     call_ll_exitfuncs();
+    return status;
+}
+
+void
+Py_Finalize(void)
+{
+    Py_FinalizeEx();
 }
 
 /* Create and initialize a new interpreter and thread, and return the
@@ -721,6 +771,12 @@ Py_NewInterpreter(void)
 
     if (!initialized)
         Py_FatalError("Py_NewInterpreter: call Py_Initialize first");
+
+#ifdef WITH_THREAD
+    /* Issue #10915, #15751: The GIL API doesn't work with multiple
+       interpreters: disable PyGILState_Check(). */
+    _PyGILState_check_enabled = 0;
+#endif
 
     interp = PyInterpreterState_New();
     if (interp == NULL)
@@ -778,7 +834,7 @@ Py_NewInterpreter(void)
 
         if (initstdio() < 0)
             Py_FatalError(
-            "Py_Initialize: can't initialize sys standard streams");
+                "Py_Initialize: can't initialize sys standard streams");
         initmain(interp);
         if (!Py_NoSiteFlag)
             initsite();
@@ -804,7 +860,7 @@ handle_error:
    frames, and that it is its interpreter's only remaining thread.
    It is a fatal error to violate these constraints.
 
-   (Py_Finalize() doesn't have these constraints -- it zaps
+   (Py_FinalizeEx() doesn't have these constraints -- it zaps
    everything, regardless.)
 
    Locking: as above.
@@ -882,11 +938,17 @@ Py_GetPythonHome(void)
 static void
 initmain(PyInterpreterState *interp)
 {
-    PyObject *m, *d, *loader;
+    PyObject *m, *d, *loader, *ann_dict;
     m = PyImport_AddModule("__main__");
     if (m == NULL)
         Py_FatalError("can't create __main__ module");
     d = PyModule_GetDict(m);
+    ann_dict = PyDict_New();
+    if ((ann_dict == NULL) ||
+        (PyDict_SetItemString(d, "__annotations__", ann_dict) < 0)) {
+        Py_FatalError("Failed to initialize __main__.__annotations__");
+    }
+    Py_DECREF(ann_dict);
     if (PyDict_GetItemString(d, "__builtins__") == NULL) {
         PyObject *bimod = PyImport_ImportModule("builtins");
         if (bimod == NULL) {
@@ -922,6 +984,18 @@ initfsencoding(PyInterpreterState *interp)
 {
     PyObject *codec;
 
+#ifdef MS_WINDOWS
+    if (Py_LegacyWindowsFSEncodingFlag)
+    {
+        Py_FileSystemDefaultEncoding = "mbcs";
+        Py_FileSystemDefaultEncodeErrors = "replace";
+    }
+    else
+    {
+        Py_FileSystemDefaultEncoding = "utf-8";
+        Py_FileSystemDefaultEncodeErrors = "surrogatepass";
+    }
+#else
     if (Py_FileSystemDefaultEncoding == NULL)
     {
         Py_FileSystemDefaultEncoding = get_locale_encoding();
@@ -932,6 +1006,7 @@ initfsencoding(PyInterpreterState *interp)
         interp->fscodec_initialized = 1;
         return 0;
     }
+#endif
 
     /* the encoding is mbcs, utf-8 or ascii */
     codec = _PyCodec_Lookup(Py_FileSystemDefaultEncoding);
@@ -964,10 +1039,30 @@ initsite(void)
     }
 }
 
+/* Check if a file descriptor is valid or not.
+   Return 0 if the file descriptor is invalid, return non-zero otherwise. */
+static int
+is_valid_fd(int fd)
+{
+    int fd2;
+    if (fd < 0)
+        return 0;
+    _Py_BEGIN_SUPPRESS_IPH
+    /* Prefer dup() over fstat(). fstat() can require input/output whereas
+       dup() doesn't, there is a low risk of EMFILE/ENFILE at Python
+       startup. */
+    fd2 = dup(fd);
+    if (fd2 >= 0)
+        close(fd2);
+    _Py_END_SUPPRESS_IPH
+    return fd2 >= 0;
+}
+
+/* returns Py_None if the fd is not valid */
 static PyObject*
 create_stdio(PyObject* io,
-    int fd, int write_mode, char* name,
-    char* encoding, char* errors)
+    int fd, int write_mode, const char* name,
+    const char* encoding, const char* errors)
 {
     PyObject *buf = NULL, *stream = NULL, *text = NULL, *raw = NULL, *res;
     const char* mode;
@@ -978,6 +1073,9 @@ create_stdio(PyObject* io,
     _Py_IDENTIFIER(isatty);
     _Py_IDENTIFIER(TextIOWrapper);
     _Py_IDENTIFIER(mode);
+
+    if (!is_valid_fd(fd))
+        Py_RETURN_NONE;
 
     /* stdin is always opened in buffered mode, first because it shouldn't
        make a difference in common use cases, second because TextIOWrapper
@@ -994,7 +1092,8 @@ create_stdio(PyObject* io,
         mode = "rb";
     buf = _PyObject_CallMethodId(io, &PyId_open, "isiOOOi",
                                  fd, mode, buffering,
-                                 Py_None, Py_None, Py_None, 0);
+                                 Py_None, Py_None, /* encoding, errors */
+                                 Py_None, 0); /* newline, closefd */
     if (buf == NULL)
         goto error;
 
@@ -1009,10 +1108,16 @@ create_stdio(PyObject* io,
         Py_INCREF(raw);
     }
 
+#ifdef MS_WINDOWS
+    /* Windows console IO is always UTF-8 encoded */
+    if (PyWindowsConsoleIO_Check(raw))
+        encoding = "utf-8";
+#endif
+
     text = PyUnicode_FromString(name);
     if (text == NULL || _PyObject_SetAttrId(raw, &PyId_name, text) < 0)
         goto error;
-    res = _PyObject_CallMethodId(raw, &PyId_isatty, "");
+    res = _PyObject_CallMethodId(raw, &PyId_isatty, NULL);
     if (res == NULL)
         goto error;
     isatty = PyObject_IsTrue(res);
@@ -1060,21 +1165,15 @@ error:
     Py_XDECREF(stream);
     Py_XDECREF(text);
     Py_XDECREF(raw);
-    return NULL;
-}
 
-static int
-is_valid_fd(int fd)
-{
-    int dummy_fd;
-    if (fd < 0 || !_PyVerify_fd(fd))
-        return 0;
-    _Py_BEGIN_SUPPRESS_IPH
-    dummy_fd = dup(fd);
-    if (dummy_fd >= 0)
-        close(dummy_fd);
-    _Py_END_SUPPRESS_IPH
-    return dummy_fd >= 0;
+    if (PyErr_ExceptionMatches(PyExc_OSError) && !is_valid_fd(fd)) {
+        /* Issue #24891: the file descriptor was closed after the first
+           is_valid_fd() check was called. Ignore the OSError and set the
+           stream to None. */
+        PyErr_Clear();
+        Py_RETURN_NONE;
+    }
+    return NULL;
 }
 
 /* Initialize sys.stdin, stdout, stderr and builtins.open */
@@ -1122,15 +1221,6 @@ initstdio(void)
     encoding = _Py_StandardStreamEncoding;
     errors = _Py_StandardStreamErrors;
     if (!encoding || !errors) {
-        if (!errors) {
-            /* When the LC_CTYPE locale is the POSIX locale ("C locale"),
-               stdin and stdout use the surrogateescape error handler by
-               default, instead of the strict error handler. */
-            char *loc = setlocale(LC_CTYPE, NULL);
-            if (loc != NULL && strcmp(loc, "C") == 0)
-                errors = "surrogateescape";
-        }
-
         pythonioencoding = Py_GETENV("PYTHONIOENCODING");
         if (pythonioencoding) {
             char *err;
@@ -1143,7 +1233,7 @@ initstdio(void)
             if (err) {
                 *err = '\0';
                 err++;
-                if (*err && !_Py_StandardStreamErrors) {
+                if (*err && !errors) {
                     errors = err;
                 }
             }
@@ -1151,111 +1241,69 @@ initstdio(void)
                 encoding = pythonioencoding;
             }
         }
+        if (!errors && !(pythonioencoding && *pythonioencoding)) {
+            /* When the LC_CTYPE locale is the POSIX locale ("C locale"),
+               stdin and stdout use the surrogateescape error handler by
+               default, instead of the strict error handler. */
+            char *loc = setlocale(LC_CTYPE, NULL);
+            if (loc != NULL && strcmp(loc, "C") == 0)
+                errors = "surrogateescape";
+        }
     }
 
-	std = Py_None;
-	Py_INCREF( std );
+    /* Set sys.stdin */
+    fd = fileno(stdin);
+    /* Under some conditions stdin, stdout and stderr may not be connected
+     * and fileno() may point to an invalid file descriptor. For example
+     * GUI apps don't have valid standard streams by default.
+     */
+    std = create_stdio(iomod, fd, 0, "<stdin>", encoding, errors);
+    if (std == NULL)
+        goto error;
+    PySys_SetObject("__stdin__", std);
+    _PySys_SetObjectId(&PyId_stdin, std);
+    Py_DECREF(std);
 
-	PySys_SetObject( "__stdin__", std );
-	_PySys_SetObjectId( &PyId_stdin, std );
-	Py_DECREF( std );
+    /* Set sys.stdout */
+    fd = fileno(stdout);
+    std = create_stdio(iomod, fd, 1, "<stdout>", encoding, errors);
+    if (std == NULL)
+        goto error;
+    PySys_SetObject("__stdout__", std);
+    _PySys_SetObjectId(&PyId_stdout, std);
+    Py_DECREF(std);
 
-	std = Py_None;
-	Py_INCREF( std );
+#if 1 /* Disable this if you have trouble debugging bootstrap stuff */
+    /* Set sys.stderr, replaces the preliminary stderr */
+    fd = fileno(stderr);
+    std = create_stdio(iomod, fd, 1, "<stderr>", encoding, "backslashreplace");
+    if (std == NULL)
+        goto error;
 
-	PySys_SetObject( "__stdout__", std );
-	_PySys_SetObjectId( &PyId_stdout, std );	
-	Py_DECREF( std );
+    /* Same as hack above, pre-import stderr's codec to avoid recursion
+       when import.c tries to write to stderr in verbose mode. */
+    encoding_attr = PyObject_GetAttrString(std, "encoding");
+    if (encoding_attr != NULL) {
+        const char * std_encoding;
+        std_encoding = PyUnicode_AsUTF8(encoding_attr);
+        if (std_encoding != NULL) {
+            PyObject *codec_info = _PyCodec_Lookup(std_encoding);
+            Py_XDECREF(codec_info);
+        }
+        Py_DECREF(encoding_attr);
+    }
+    PyErr_Clear();  /* Not a fatal error if codec isn't available */
 
-	std = Py_None;
-	Py_INCREF( std );
-
-	PySys_SetObject( "__stderr__", std );
-	_PySys_SetObjectId( &PyId_stderr, std );
-
-	Py_DECREF( std );
-
-//    /* Set sys.stdin */
-//    fd = fileno(stdin);
-//
-//    /* Under some conditions stdin, stdout and stderr may not be connected
-//     * and fileno() may point to an invalid file descriptor. For example
-//     * GUI apps don't have valid standard streams by default.
-//     */
-//    if (!is_valid_fd(fd)) {
-//        std = Py_None;
-//        Py_INCREF(std);
-//    }
-//    else {
-//        std = create_stdio(iomod, fd, 0, "<stdin>", encoding, errors);
-//		if( std == NULL )
-//		{
-//			std = Py_None;
-//			Py_INCREF( std );
-//		}
-//    } /* if (fd < 0) */
-//    PySys_SetObject("__stdin__", std);
-//    _PySys_SetObjectId(&PyId_stdin, std);
-//    Py_DECREF(std);
-//
-//    /* Set sys.stdout */
-//    fd = fileno(stdout);
-//    if (!is_valid_fd(fd)) {
-//        std = Py_None;
-//        Py_INCREF(std);
-//    }
-//    else {
-//        std = create_stdio(iomod, fd, 1, "<stdout>", encoding, errors);
-//		if( std == NULL )
-//		{
-//			std = Py_None;
-//			Py_INCREF( std );
-//		}
-//    } /* if (fd < 0) */
-//    PySys_SetObject("__stdout__", std);
-//    _PySys_SetObjectId(&PyId_stdout, std);
-//    Py_DECREF(std);
-//
-//#if 1 /* Disable this if you have trouble debugging bootstrap stuff */
-//    /* Set sys.stderr, replaces the preliminary stderr */
-//    fd = fileno(stderr);
-//    if (!is_valid_fd(fd)) {
-//        std = Py_None;
-//        Py_INCREF(std);
-//    }
-//    else {
-//        std = create_stdio(iomod, fd, 1, "<stderr>", encoding, "backslashreplace");
-//		if( std == NULL )
-//		{
-//			std = Py_None;
-//			Py_INCREF( std );
-//		}
-//    } /* if (fd < 0) */
-//
-//    /* Same as hack above, pre-import stderr's codec to avoid recursion
-//       when import.c tries to write to stderr in verbose mode. */
-//    encoding_attr = PyObject_GetAttrString(std, "encoding");
-//    if (encoding_attr != NULL) {
-//        const char * std_encoding;
-//        std_encoding = _PyUnicode_AsString(encoding_attr);
-//        if (std_encoding != NULL) {
-//            PyObject *codec_info = _PyCodec_Lookup(std_encoding);
-//            Py_XDECREF(codec_info);
-//        }
-//        Py_DECREF(encoding_attr);
-//    }
-//    PyErr_Clear();  /* Not a fatal error if codec isn't available */
-//
-//    if (PySys_SetObject("__stderr__", std) < 0) {
-//        Py_DECREF(std);
-//        goto error;
-//    }
-//    if (_PySys_SetObjectId(&PyId_stderr, std) < 0) {
-//        Py_DECREF(std);
-//        goto error;
-//    }
-//    Py_DECREF(std);
-//#endif
+    if (PySys_SetObject("__stderr__", std) < 0) {
+        Py_DECREF(std);
+        goto error;
+    }
+    if (_PySys_SetObjectId(&PyId_stderr, std) < 0) {
+        Py_DECREF(std);
+        goto error;
+    }
+    Py_DECREF(std);
+#endif
 
     if (0) {
   error:
@@ -1278,31 +1326,48 @@ initstdio(void)
 }
 
 
-/* Print the current exception (if an exception is set) with its traceback,
- * or display the current Python stack.
- *
- * Don't call PyErr_PrintEx() and the except hook, because Py_FatalError() is
- * called on catastrophic cases. */
-
 static void
-_Py_PrintFatalError(int fd)
+_Py_FatalError_DumpTracebacks(int fd)
+{
+    fputc('\n', stderr);
+    fflush(stderr);
+
+    /* display the current Python stack */
+    _Py_DumpTracebackThreads(fd, NULL, NULL);
+}
+
+/* Print the current exception (if an exception is set) with its traceback,
+   or display the current Python stack.
+
+   Don't call PyErr_PrintEx() and the except hook, because Py_FatalError() is
+   called on catastrophic cases.
+
+   Return 1 if the traceback was displayed, 0 otherwise. */
+
+static int
+_Py_FatalError_PrintExc(int fd)
 {
     PyObject *ferr, *res;
     PyObject *exception, *v, *tb;
     int has_tb;
-    PyThreadState *tstate;
+
+    if (PyThreadState_GET() == NULL) {
+        /* The GIL is released: trying to acquire it is likely to deadlock,
+           just give up. */
+        return 0;
+    }
 
     PyErr_Fetch(&exception, &v, &tb);
     if (exception == NULL) {
         /* No current exception */
-        goto display_stack;
+        return 0;
     }
 
     ferr = _PySys_GetObjectId(&PyId_stderr);
     if (ferr == NULL || ferr == Py_None) {
         /* sys.stderr is not set yet or set to None,
            no need to try to display the exception */
-        goto display_stack;
+        return 0;
     }
 
     PyErr_NormalizeException(&exception, &v, &tb);
@@ -1313,7 +1378,7 @@ _Py_PrintFatalError(int fd)
     PyException_SetTraceback(v, tb);
     if (exception == NULL) {
         /* PyErr_NormalizeException() failed */
-        goto display_stack;
+        return 0;
     }
 
     has_tb = (tb != Py_None);
@@ -1323,34 +1388,15 @@ _Py_PrintFatalError(int fd)
     Py_XDECREF(tb);
 
     /* sys.stderr may be buffered: call sys.stderr.flush() */
-    res = _PyObject_CallMethodId(ferr, &PyId_flush, "");
+    res = _PyObject_CallMethodId(ferr, &PyId_flush, NULL);
     if (res == NULL)
         PyErr_Clear();
     else
         Py_DECREF(res);
 
-    if (has_tb)
-        return;
-
-display_stack:
-#ifdef WITH_THREAD
-    /* PyGILState_GetThisThreadState() works even if the GIL was released */
-    tstate = PyGILState_GetThisThreadState();
-#else
-    tstate = PyThreadState_GET();
-#endif
-    if (tstate == NULL) {
-        /* _Py_DumpTracebackThreads() requires the thread state to display
-         * frames */
-        return;
-    }
-
-    fputc('\n', stderr);
-    fflush(stderr);
-
-    /* display the current Python stack */
-    _Py_DumpTracebackThreads(fd, tstate->interp, tstate);
+    return has_tb;
 }
+
 /* Print fatal error message and abort */
 
 void
@@ -1376,15 +1422,19 @@ Py_FatalError(const char *msg)
 
     /* Print the exception (if an exception is set) with its traceback,
      * or display the current Python stack. */
-    _Py_PrintFatalError(fd);
-
-    /* Flush sys.stdout and sys.stderr */
-    flush_std_files();
+    if (!_Py_FatalError_PrintExc(fd))
+        _Py_FatalError_DumpTracebacks(fd);
 
     /* The main purpose of faulthandler is to display the traceback. We already
      * did our best to display it. So faulthandler can now be disabled.
      * (Don't trigger it on abort().) */
     _PyFaulthandler_Fini();
+
+    /* Check if the current Python thread hold the GIL */
+    if (PyThreadState_GET() != NULL) {
+        /* Flush sys.stdout and sys.stderr */
+        flush_std_files();
+    }
 
 #ifdef MS_WINDOWS
     len = strlen(msg);
@@ -1410,7 +1460,7 @@ exit:
 /* Clean up and exit */
 
 #ifdef WITH_THREAD
-#include "pythread.h"
+#  include "pythread.h"
 #endif
 
 static void (*pyexitfunc)(void) = NULL;
@@ -1448,7 +1498,7 @@ wait_for_thread_shutdown(void)
         PyErr_Clear();
         return;
     }
-    result = _PyObject_CallMethodId(threading, &PyId__shutdown, "");
+    result = _PyObject_CallMethodId(threading, &PyId__shutdown, NULL);
     if (result == NULL) {
         PyErr_WriteUnraisable(threading);
     }
@@ -1484,7 +1534,9 @@ call_ll_exitfuncs(void)
 void
 Py_Exit(int sts)
 {
-    Py_Finalize();
+    if (Py_FinalizeEx() < 0) {
+        sts = 120;
+    }
 
     exit(sts);
 }

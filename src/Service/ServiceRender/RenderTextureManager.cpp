@@ -374,7 +374,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		RenderImageInterfacePtr image = new_texture->getImage();
+		const RenderImageInterfacePtr & image = new_texture->getImage();
 
 		if( image == nullptr )
 		{
@@ -384,29 +384,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		Rect rect;
-		rect.left = 0;
-		rect.top = 0;
-		rect.right = image->getHWWidth();
-		rect.bottom = image->getHWHeight();
-
-		size_t pitch = 0;
-		void * textureBuffer = image->lock( &pitch, 0, rect, false );
-
-		if( textureBuffer == nullptr )
-		{
-			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createTexture Invalid lock mipmap %d rect %d:%d-%d:%d"
-				, 0
-				, rect.left
-				, rect.top
-				, rect.right
-				, rect.bottom
-				);
-
-			return nullptr;
-		}
-
-		if( imageLoader->load( textureBuffer, pitch ) == false )
+		if( imageLoader->load( image ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createTexture Invalid decode image"
 				);
@@ -415,8 +393,6 @@ namespace Menge
 
 			return nullptr;
 		}
-
-		image->unlock( 0, true );
 
 		image->setRenderImageProvider( imageProvider );
         

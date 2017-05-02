@@ -12,7 +12,6 @@ namespace Menge
         , m_hwHeight(0)
         , m_hwChannels(0)
         , m_hwPixelFormat(PF_UNKNOWN)
-		, m_pow2(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -38,8 +37,6 @@ namespace Menge
         m_hwHeight = _hwHeight;
         m_hwChannels = _hwChannels;
         m_hwPixelFormat = _hwPixelFormat;
-
-		m_pow2 = Helper::isTexturePOW2( m_hwWidth ) && Helper::isTexturePOW2( m_hwHeight );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
@@ -133,10 +130,5 @@ namespace Menge
 	uint32_t DX9RenderImage::getHWMipmaps() const
 	{
 		return m_hwMipmaps;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderImage::isPow2() const
-	{
-		return m_pow2;
 	}
 }	// namespace Menge

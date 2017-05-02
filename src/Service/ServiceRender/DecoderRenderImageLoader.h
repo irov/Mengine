@@ -24,7 +24,7 @@ namespace Menge
         RenderImageDesc getImageDesc() const override;
 
     protected:
-        bool load( void * _buffer, uint32_t _pitch ) const override;
+        bool load( const RenderImageInterfacePtr & _image ) const override;
 
     protected:
         ImageDecoderInterfacePtr createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecName ) const;

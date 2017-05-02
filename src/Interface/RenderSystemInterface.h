@@ -208,18 +208,20 @@ namespace Menge
         uint32_t depth;
         PixelFormat format;
     };
-    //////////////////////////////////////////////////////////////////////////
-    class RenderImageLoaderInterface
-        : public ServantInterface
-    {
-    public:
-        virtual RenderImageDesc getImageDesc() const = 0;
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<class RenderImageInterface> RenderImageInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
+	class RenderImageLoaderInterface
+		: public ServantInterface
+	{
+	public:
+		virtual RenderImageDesc getImageDesc() const = 0;
 
-    public:
-        virtual bool load( void * _buffer, uint32_t _pitch ) const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<RenderImageLoaderInterface> RenderImageLoaderInterfacePtr;
+	public:
+		virtual bool load( const RenderImageInterfacePtr & _image ) const = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<RenderImageLoaderInterface> RenderImageLoaderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderImageProviderInterface
         : public ServantInterface

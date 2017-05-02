@@ -38,9 +38,6 @@ namespace Menge
         PixelFormat getHWPixelFormat() const override;
 
 	public:
-		bool isPow2() const override;
-
-	public:
         Pointer lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
 		bool unlock( uint32_t _level, bool _successful ) override;
 		               		
@@ -57,8 +54,6 @@ namespace Menge
         uint32_t m_hwChannels;
 
         PixelFormat m_hwPixelFormat;
-
-		bool m_pow2;
 	};
 	//////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<DX9RenderImage> DX9RenderImagePtr;

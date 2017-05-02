@@ -1307,10 +1307,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::createDirectory( const WString & _path )
 	{
-		WChar pathCorrect[MENGINE_MAX_PATH];
-		PathCorrectBackslash( pathCorrect, _path );
+		WChar userPath[MENGINE_MAX_PATH];
+		this->getUserPath( userPath, MENGINE_MAX_PATH );
 
-		PathRemoveBackslash( pathCorrect );
+		WChar pathCorrect[MENGINE_MAX_PATH];
+		Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
+
+		WChar fullPath[MENGINE_MAX_PATH];
+		wcscpy( fullPath, userPath );
+		wcscat( fullPath, pathCorrect );
+
+		Helper::pathRemoveBackslash( fullPath );
 
 		if( PathIsDirectoryW( pathCorrect ) == FILE_ATTRIBUTE_DIRECTORY )
 		{
@@ -1321,14 +1328,14 @@ namespace Menge
 
 		for( ;; )
 		{
-			paths.push_back( pathCorrect );
+			paths.push_back( fullPath );
 
-			if( PathRemoveFileSpecW( pathCorrect ) == FALSE )
+			if( Helper::pathRemoveFileSpec( fullPath ) == false )
 			{
 				break;
 			}
 
-			if( PathIsDirectoryW( pathCorrect ) == FILE_ATTRIBUTE_DIRECTORY )
+			if( PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY )
 			{
 				break;
 			}
@@ -1458,7 +1465,7 @@ namespace Menge
 			wcscat( currentPath, L"User" );
 			wcscat( currentPath, L"\\" );
 
-			wcscpy( _path, currentPath );
+			Helper::pathCorrectBackslash( _path , currentPath );
 
 			size_t currentPathLen = wcslen( currentPath );
 
@@ -1513,7 +1520,7 @@ namespace Menge
 			wcscat( currentPath, wname.c_str() );
 			wcschr( currentPath, L'\\' );
 
-			wcscpy( _path, currentPath );
+			Helper::pathCorrectBackslash( _path, currentPath );
 
 			size_t currentPathLen = wcslen( currentPath );
 

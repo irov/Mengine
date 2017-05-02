@@ -1,6 +1,7 @@
 #   include "FilePath.h"
 
 #   include "Interface/StringizeInterface.h"
+#   include "Interface/UnicodeInterface.h"
 #   include "Interface/FileSystemInterface.h"
 
 #	include "Core/FilePath.h"
@@ -86,6 +87,20 @@ namespace Menge
 
 			return fp;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		FilePath unicodeToFilePath( ServiceProviderInterface * _serviceProvide, const WString & _unicode )
+		{
+			String utf8;
+			if( Helper::unicodeToUtf8Size( _serviceProvide, _unicode.c_str(), _unicode.size(), utf8 ) == false )
+			{
+				return FilePath(ConstString::none());
+			}
+
+			FilePath fp = Helper::stringizeFilePath( _serviceProvide, utf8 );
+
+			return fp;
+		}
+
 		//////////////////////////////////////////////////////////////////////////
 		void pathCorrectBackslash( WChar * _out, const WChar * _in )
 		{

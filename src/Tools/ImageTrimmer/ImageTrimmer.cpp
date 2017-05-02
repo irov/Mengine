@@ -503,6 +503,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		return 0;
 	}	
-
+	
 	return 0;
 }

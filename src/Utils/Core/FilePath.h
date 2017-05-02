@@ -52,6 +52,8 @@ namespace Menge
 		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const String & _path );
 		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const PathString & _path );
 		//////////////////////////////////////////////////////////////////////////
+		FilePath unicodeToFilePath( ServiceProviderInterface * _serviceProvide, const WString & _unicode );
+		//////////////////////////////////////////////////////////////////////////
 		void pathCorrectBackslash( WChar * _out, const WChar * _in );
 		void pathRemoveBackslash( WChar * _path );
 		bool pathRemoveFileSpec( WChar * _in );

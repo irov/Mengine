@@ -73,7 +73,7 @@ namespace Menge
 	}
 
 #	define STRINGIZE_STRING_LOCAL( serviceProvider, str )\
-	Helper::stringizeStringLocal( serviceProvider, str, (sizeof(str) - 1) )
+	Menge::Helper::stringizeStringLocal( serviceProvider, str, (sizeof(str) - 1) )
 }
 
 

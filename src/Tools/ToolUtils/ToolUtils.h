@@ -24,7 +24,7 @@
 
 #	include <stdint.h>
 
-void message_error( const char * _format, ... )
+static void message_error( const char * _format, ... )
 {
 	va_list argList;
 
@@ -39,7 +39,7 @@ void message_error( const char * _format, ... )
 	printf( str );
 }
 //////////////////////////////////////////////////////////////////////////
-void parse_arg( const std::wstring & _str, bool & _value )
+static void parse_arg( const std::wstring & _str, bool & _value )
 {
 	uint32_t value;
 	swscanf( _str.c_str(), L"%u", &value );
@@ -47,7 +47,7 @@ void parse_arg( const std::wstring & _str, bool & _value )
 	_value = (value != 0);
 }
 //////////////////////////////////////////////////////////////////////////
-void parse_arg( const std::wstring & _str, uint32_t & _value )
+static void parse_arg( const std::wstring & _str, uint32_t & _value )
 {
 	uint32_t value;
 	swscanf( _str.c_str(), L"%u", &value );
@@ -55,7 +55,7 @@ void parse_arg( const std::wstring & _str, uint32_t & _value )
 	_value = value;
 }
 //////////////////////////////////////////////////////////////////////////
-void parse_arg( const std::wstring & _str, float & _value )
+static void parse_arg( const std::wstring & _str, float & _value )
 {
 	float value;
 	swscanf( _str.c_str(), L"%f", &value );
@@ -63,7 +63,7 @@ void parse_arg( const std::wstring & _str, float & _value )
 	_value = value;
 }
 //////////////////////////////////////////////////////////////////////////
-void parse_arg( const std::wstring & _str, double & _value )
+static void parse_arg( const std::wstring & _str, double & _value )
 {
 	double value;
 	swscanf( _str.c_str(), L"%lf", &value );
@@ -71,13 +71,13 @@ void parse_arg( const std::wstring & _str, double & _value )
 	_value = value;
 }
 //////////////////////////////////////////////////////////////////////////
-void parse_arg( const std::wstring & _str, std::wstring & _value )
+static void parse_arg( const std::wstring & _str, std::wstring & _value )
 {
 	_value = _str;
 }
 //////////////////////////////////////////////////////////////////////////
 template<class T>
-T parse_kwds( PWSTR lpCmdLine, const wchar_t * _key, const T & _default )
+static T parse_kwds( PWSTR lpCmdLine, const wchar_t * _key, const T & _default )
 {
 	int cmd_num;
 	LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
@@ -109,7 +109,7 @@ T parse_kwds( PWSTR lpCmdLine, const wchar_t * _key, const T & _default )
 	return _default;
 }
 //////////////////////////////////////////////////////////////////////////
-void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )
+static void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )
 {
 	if( _path.empty() == true )
 	{

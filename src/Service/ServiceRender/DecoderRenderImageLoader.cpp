@@ -126,28 +126,31 @@ namespace Menge
             return false;
         }
 
-		_image->unlock( 0, true );
+		const ImageCodecDataInfo* dataInfo = m_decoder->getCodecDataInfo();
 
         // copy pixels on the edge for better image quality
-        if( image_width != mipmap_width )
+        if( dataInfo->width != mipmap_width )
         {
             unsigned char * image_data = static_cast<unsigned char *>(textureBuffer);
             size_t pixel_size = pitch / HWWidth;
 
-            for( uint32_t j = 0; j != image_height; ++j )
+            for( uint32_t j = 0; j != dataInfo->height; ++j )
             {
-                stdex::memorycopy( image_data, image_width * pixel_size, image_data + (image_width - 1) * pixel_size, pixel_size );
+                stdex::memorycopy( image_data, dataInfo->width * pixel_size, image_data + (dataInfo->width - 1) * pixel_size, pixel_size );
 
                 image_data += pitch;
             }
         }
 
-        if( image_height != mipmap_height )
+        if( dataInfo->height != mipmap_height )
         {
             unsigned char * image_data = static_cast<unsigned char *>(textureBuffer);
+			size_t pixel_size = pitch / HWWidth;
 
-            stdex::memorycopy( image_data, image_height * pitch, image_data + (image_height - 1) * pitch, image_width );
+            stdex::memorycopy( image_data, dataInfo->height * pitch, image_data + (dataInfo->height - 1) * pitch, dataInfo->width * pixel_size );
         }
+
+		_image->unlock( 0, true );
 
         return true;
     }

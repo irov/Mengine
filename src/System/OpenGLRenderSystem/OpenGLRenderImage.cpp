@@ -145,27 +145,14 @@ namespace Menge
 		}
 
 		RenderImageLoaderInterfacePtr loader = m_renderImageProvider->getLoader();
-
-		Rect rect;
-		rect.left = 0;
-		rect.top = 0;
-		rect.right = this->getHWWidth();
-		rect.bottom = this->getHWHeight();
-
-		size_t pitch = 0;
-		void * textureBuffer = this->lock( &pitch, 0, rect, false );
-
-		if( loader->load( textureBuffer, pitch ) == false )
+		
+		if( loader->load( this ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createTexture Invalid decode image"
 				);
-
-			this->unlock( 0, false );
-
+					
 			return false;
 		}
-
-		this->unlock( 0, true );
 
 		return true;
 	}

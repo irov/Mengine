@@ -142,13 +142,18 @@ namespace Menge
 		}
 
 		const Char * name = _plugin->getPluginName();
+		
+		if( this->hasPlugin( name ) == true )
+		{
+			return false;
+		}
 
 		_plugin->setServiceProvider( m_serviceProvider );
 
-        if( _plugin->avaliable() == false )
-        {
-            return true;
-        }
+		if( _plugin->avaliable() == false )
+		{
+			return true;
+		}
 
 		if( _plugin->initialize() == false )
 		{
@@ -156,11 +161,6 @@ namespace Menge
 				, name
 				);
 
-			return false;
-		}
-		
-		if( this->hasPlugin( name ) == true )
-		{
 			return false;
 		}
 

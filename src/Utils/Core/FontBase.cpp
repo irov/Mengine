@@ -125,15 +125,49 @@ namespace Menge
 				continue;
 			}
 
+			bool control = false;
+
 			if( code == 0 )
+			{
+				continue;
+			}
+			else if( code == 7 )
+			{
+				continue;
+			}
+			else if( code == 8 )
+			{
+				continue;
+			}
+			else if( code == 9 )
 			{
 				continue;
 			}
 			else if( code == 10 )
 			{
+				control = true;
+			}
+			else if( code == 11 )
+			{
+				continue;
+			}
+			else if( code == 12 )
+			{
 				continue;
 			}
 			else if( code == 13 )
+			{
+				control = true;
+			}
+			else if( code == 26 )
+			{
+				continue;
+			}
+			else if( code == 27 )
+			{
+				continue;
+			}
+			else if( code == 127 )
 			{
 				continue;
 			}
@@ -146,9 +180,12 @@ namespace Menge
 				code = 32;
 			}
 
-			if( this->_prepareGlyph( code ) == false )
+			if( control == false )
 			{
-				return 0;
+				if( this->_prepareGlyph( code ) == false )
+				{
+					return 0;
+				}
 			}
 
 			result.push_back( (char32_t)code );

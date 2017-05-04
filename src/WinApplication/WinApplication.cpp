@@ -79,6 +79,7 @@ SERVICE_EXTERN( TimerService );
 SERVICE_EXTERN( TimerSystem );
 SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
+SERVICE_EXTERN( HttpSystem );
 SERVICE_EXTERN( Application );
 
 PLUGIN_EXPORT( MengeImageCodec );
@@ -588,6 +589,8 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, MemoryService );
 		SERVICE_CREATE( m_serviceProvider, ConverterService );
 		SERVICE_CREATE( m_serviceProvider, InputService );
+		
+		SERVICE_CREATE( m_serviceProvider, HttpSystem );
 
 		SERVICE_CREATE( m_serviceProvider, TimerSystem );
 		SERVICE_CREATE( m_serviceProvider, TimerService );

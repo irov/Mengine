@@ -10,7 +10,6 @@
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/PhysicSystemInterface.h"
 #   include "Interface/ConfigInterface.h"
-#   include "Interface/GameInterface.h"
 #   include "Interface/PlayerInterface.h"
 #	include "Interface/PrefetcherInterface.h"
 #   include "Interface/StringizeInterface.h"
@@ -1834,21 +1833,6 @@ namespace Menge
 				);
         }
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void Application::screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect )
-	//{
-	//	mt::vec4f res; 
-
-	//	res = _rect;
-
-	//	res.x *= static_cast<float>( m_currentResolution.getWidth() ) / m_contentResolution.getWidth();
-	//	res.y *= static_cast<float>( m_currentResolution.getHeight() ) / m_contentResolution.getHeight();
-	//	res.z *= static_cast<float>( m_currentResolution.getWidth() ) / m_contentResolution.getWidth();
-	//	res.w *= static_cast<float>( m_currentResolution.getHeight() ) / m_contentResolution.getHeight();
-	//	
-	//	RENDER_SERVICE(m_serviceProvider)
- //           ->screenshot( _renderTargetImage, _rect );
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFullscreenMode() const
 	{

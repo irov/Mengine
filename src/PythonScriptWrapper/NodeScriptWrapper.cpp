@@ -2974,7 +2974,7 @@ namespace Menge
 			}
 
 		protected:
-			void onPostMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override
+			void onGetMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override
 			{
 				m_cb.call_args( _id, _response, _code, _successful, m_args );
 			}

@@ -630,7 +630,7 @@ namespace Menge
         EVENTABLE_METHOD( this, EVENT_GAME_FINALIZE )
             ->onGameFinalize();
 
-		this->destroyArrow();		      
+		this->destroyArrow();
 				
         EVENTABLE_METHOD( this, EVENT_GAME_DESTROY )
             ->onGameDestroy();
@@ -657,7 +657,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::destroyArrow()
 	{
-		if (m_defaultArrow != nullptr)
+		if( m_defaultArrow != nullptr )
 		{
 			m_defaultArrow->destroy();
 			m_defaultArrow = nullptr;

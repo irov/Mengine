@@ -114,26 +114,13 @@ namespace Menge
 		{
 			const AnimationSequence & sequence = *(it);
 
-			ResourceReferencePtr resource;
+			ResourceImagePtr resourceImage;
 			if( RESOURCE_SERVICE(m_serviceProvider)
-				->hasResource( sequence.resourceName, &resource ) == false )
+				->hasResourceT<ResourceImagePtr>( sequence.resourceName, &resourceImage ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid: '%s' not found image resource '%s'"
 					, this->getName().c_str()
 					, sequence.resourceName.c_str() 
-					);
-
-				return false;
-			}
-
-			ResourceImagePtr resourceImage = stdex::intrusive_dynamic_cast<ResourceImagePtr>(resource);
-
-			if( resourceImage == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid: '%s' resource '%s' not ResourceImage '%s'"
-					, this->getName().c_str()
-					, sequence.resourceName.c_str() 
-					, resource->getType().c_str()
 					);
 
 				return false;

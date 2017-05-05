@@ -35,9 +35,14 @@ namespace Menge
 			ResourceReferencePtr resource = this->generateResource( _type );
 
 #   ifdef _DEBUG
-			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
+			if( resource == nullptr )
 			{
 				return nullptr;
+			}
+
+			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
+			{
+				throw;
 			}
 #   endif
 
@@ -56,9 +61,14 @@ namespace Menge
 			ResourceReferencePtr resource = this->createResource( _locale, _category, _group, _name, _type );
 
 #   ifdef _DEBUG
-			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
+			if( resource == nullptr )
 			{
 				return nullptr;
+			}
+			
+			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
+			{
+				throw;
 			}
 #   endif
 
@@ -79,9 +89,14 @@ namespace Menge
 			ResourceReferencePtr resource = this->getResource( _name );
 
 #   ifdef _DEBUG
+			if( resource == nullptr )
+			{
+				return nullptr;
+			}
+			
 			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
             {
-                return nullptr;
+				throw;
             }
 #   endif
 
@@ -98,9 +113,14 @@ namespace Menge
 			ResourceReferencePtr resource = this->getResourceReference( _name );
 
 #   ifdef _DEBUG
-			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
+			if( resource == nullptr )
 			{
 				return nullptr;
+			}
+
+			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
+			{
+				throw;
 			}
 #   endif
 
@@ -121,9 +141,14 @@ namespace Menge
 			}
 			
 #   ifdef _DEBUG
-			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
+			if( resource == nullptr )
 			{
 				return nullptr;
+			}
+
+			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
+			{
+				throw;
 			}
 #   endif
 

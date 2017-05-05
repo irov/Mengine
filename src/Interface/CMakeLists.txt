@@ -61,6 +61,7 @@ src
     COMInterface.h
     COMMengineInterface.h
 	FactoryInterface.h
+    ResourceInterface.h
     
 	dummy.cpp
 )

@@ -87,6 +87,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskGetMessage::_onComplete( bool _successful )
 	{
-		m_receiver->onPostMessageComplete( m_id, m_response, m_code, _successful );
+		m_receiver->onGetMessageComplete( m_id, m_response, m_code, _successful );
 	}
 }

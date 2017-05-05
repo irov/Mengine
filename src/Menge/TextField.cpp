@@ -205,15 +205,10 @@ namespace Menge
 		{
 			const TextLine & line = *it_line;
 
-			const TVectorCharData & charData = line.getCharData();
-
-			if( charData.empty() == true )
-			{
-				continue;
-			}
-
 			float alignOffsetX = this->getHorizontAlignOffset_( line );
 			offset.x = alignOffsetX;
+
+			const TVectorCharData & charData = line.getCharData();
 
 			for( TVectorCharData::const_iterator
 				it = charData.begin(),

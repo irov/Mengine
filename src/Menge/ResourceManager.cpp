@@ -511,11 +511,6 @@ namespace Menge
 		entry.resource = resource;
 		entry.isLocked = false;
 
-		if( _name == "Login/Layer2D_Main/Demon_Login/Demon_EditBox_Password/Sprite_Password_EditBox/Sprite_Password_EditBox" )
-		{
-			entry.isLocked = false;
-		}
-
 		ConstString::hash_type hash = _name.hash();
 		uint32_t table = (uint32_t)hash % MENGINE_RESOURCE_MANAGER_HASH_SIZE;
 		TMapResource & resources = m_resources[table];

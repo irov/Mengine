@@ -30,8 +30,13 @@ if(WIN32)
 ADD_EXECUTABLE( ${MY_LIB_NAME} WIN32 ${SRC_FILES} )
 endif()
 
+set(MACOSX_BUNDLE_ICON_FILE icon.icns)
+set(myApp_ICON ~/Desktop/icon.icns)
+set_source_files_properties(${myApp_ICON} PROPERTIES
+       MACOSX_PACKAGE_LOCATION "Resources")
+
 if(APPLE)
-ADD_EXECUTABLE( ${MY_LIB_NAME} MACOSX_BUNDLE ${SRC_FILES} )
+ADD_EXECUTABLE( ${MY_LIB_NAME} MACOSX_BUNDLE ${myApp_ICON} ${SRC_FILES} )
 endif()
 
 if (WIN32) #disable console mode for VC++
@@ -93,3 +98,5 @@ endif()
 if(MSVC)
     set_target_properties( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE )
 endif(MSVC)
+
+

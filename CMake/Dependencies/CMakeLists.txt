@@ -44,7 +44,14 @@ if( MENGINE_PLUGIN_CURL )
     set(ENABLE_MANUAL OFF CACHE BOOL "to provide the built-in manual" FORCE)
     set(CURL_STATICLIB ON CACHE BOOL "Set to ON to build libcurl with static linking." FORCE)
     set(HTTP_ONLY ON CACHE BOOL "disables all protocols except HTTP (This overrides all CURL_DISABLE_* options)" FORCE)
-    set(CMAKE_USE_OPENSSL OFF CACHE BOOL "Use OpenSSL code. Experimental" FORCE)	
+    
+if( MENGINE_PLATFORM_XCODE )
+    set(CMAKE_USE_OPENSSL OFF CACHE BOOL "Use OpenSSL code. Experimental" FORCE)
+endif()
+    
+if( MENGINE_PLATFORM_WIN32 )    
+    set(CMAKE_USE_WINSSL ON CACHE BOOL "Use OpenSSL code. Experimental" FORCE)
+endif()
 	
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libcurl )
 	

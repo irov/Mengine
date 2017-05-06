@@ -1,79 +1,57 @@
-#	include "cURLHttpSystem.h"
+#	include "MockupHttpSystem.h"
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "ThreadTaskGetMessage.h"
-#	include "ThreadTaskPostMessage.h"
-#	include "ThreadTaskGetAsset.h"
+#	include "ThreadTaskDummy.h"
 
 #	include "Factory/FactoryPool.h"
 
 #	include "Logger/Logger.h"
 
-#	include "curl/curl.h"
-
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( HttpSystem, Menge::cURLHttpSystem );
+SERVICE_FACTORY( HttpSystem, Menge::MockupHttpSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	cURLHttpSystem::cURLHttpSystem()
+	MockupHttpSystem::MockupHttpSystem()
 		: m_enumeratorReceivers(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool cURLHttpSystem::_initialize()
+	bool MockupHttpSystem::_initialize()
 	{
-		CURLcode code = curl_global_init(CURL_GLOBAL_ALL);
-
-		if( code != CURLE_OK )
-		{
-			LOGGER_ERROR(m_serviceProvider)("CurlHttpSystem::initialize invalid initialize curl %d:%s"
-				, code
-				, curl_easy_strerror(code)
-				);
-
-			return false;
-		}
-
 		if( THREAD_SERVICE( m_serviceProvider )
-			->createThread( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ), -1, __FILE__, __LINE__ ) == false )
+			->createThread( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadMockupHttpSystem" ), MENGINE_THREAD_PRIORITY_LOWEST, __FILE__, __LINE__ ) == false )
 		{
 			return false;
 		}
 
-		m_factoryTaskGetMessage = new FactoryPool<ThreadTaskGetMessage, 8>( m_serviceProvider );
-		m_factoryTaskPostMessage = new FactoryPool<ThreadTaskPostMessage, 8>( m_serviceProvider );
-		m_factoryTaskDownloadAsset = new FactoryPool<ThreadTaskGetAsset, 8>( m_serviceProvider );
+		m_factoryTaskDummy = new FactoryPool<ThreadTaskDummy, 8>( m_serviceProvider );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void cURLHttpSystem::_finalize()
+	void MockupHttpSystem::_finalize()
 	{
 		THREAD_SERVICE( m_serviceProvider )
-			->destroyThread( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ) );
-		
-		m_factoryTaskDownloadAsset = nullptr;
-		m_factoryTaskPostMessage = nullptr;
-		m_factoryTaskGetMessage = nullptr;
+			->destroyThread( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadMockupHttpSystem" ) );
 
-		curl_global_cleanup();
+		m_factoryTaskDummy = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HttpRequestID cURLHttpSystem::getMessage( const String & _url, HttpReceiver * _receiver )
+	HttpRequestID MockupHttpSystem::getMessage( const String & _url, HttpReceiver * _receiver )
 	{
 		uint32_t task_id = ++m_enumeratorReceivers;
 
-		ThreadTaskGetMessagePtr task = m_factoryTaskGetMessage->createObject();
+		ThreadTaskDummyPtr task = m_factoryTaskDummy->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( _url, task_id, this );
+		task->initialize( 1, task_id, this );
 
 		if( THREAD_SERVICE( m_serviceProvider )
-			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ), task ) == false )
+			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadMockupHttpSystem" ), task ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::getMessage url '%s' invalid add task"
 				, _url.c_str()
@@ -92,17 +70,17 @@ namespace Menge
 		return task_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HttpRequestID cURLHttpSystem::postMessage( const String & _url, const TMapParams & _params, HttpReceiver * _receiver )
+	HttpRequestID MockupHttpSystem::postMessage( const String & _url, const TMapParams & _params, HttpReceiver * _receiver )
 	{
 		uint32_t task_id = ++m_enumeratorReceivers;
 
-		ThreadTaskPostMessagePtr task = m_factoryTaskPostMessage->createObject();
+		ThreadTaskDummyPtr task = m_factoryTaskDummy->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( _url, _params, task_id, this );
+		task->initialize( 2, task_id, this );
 
 		if( THREAD_SERVICE( m_serviceProvider )
-			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ), task ) == false )
+			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadMockupHttpSystem" ), task ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::postMessage url '%s' invalid add task"
 				, _url.c_str()
@@ -121,7 +99,7 @@ namespace Menge
 		return task_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HttpRequestID cURLHttpSystem::downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver )
+	HttpRequestID MockupHttpSystem::downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver )
 	{
 		if( FILE_SERVICE( m_serviceProvider )
 			->hasFileGroup( _category, nullptr ) == false )
@@ -149,13 +127,13 @@ namespace Menge
 
 		uint32_t task_id = ++m_enumeratorReceivers;
 		
-		ThreadTaskGetAssetPtr task = m_factoryTaskDownloadAsset->createObject();
+		ThreadTaskDummyPtr task = m_factoryTaskDummy->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( _url, _category, _path, task_id, this );
+		task->initialize( 0, task_id, this );
 		
 		if( THREAD_SERVICE(m_serviceProvider)
-			->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), task ) == false )
+			->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadMockupHttpSystem"), task ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("CurlHttpSystem::downloadAsset url '%s' category '%s' path '%s' invalid add task"
 				, _url.c_str()
@@ -176,7 +154,7 @@ namespace Menge
 		return task_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool cURLHttpSystem::cancelRequest( HttpRequestID _id )
+	bool MockupHttpSystem::cancelRequest( HttpRequestID _id )
 	{
 		for( TVectorHttpReceiverDesc::iterator
 			it = m_receiverDescs.begin(),
@@ -199,7 +177,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void cURLHttpSystem::onDownloadAssetComplete( HttpRequestID _id, const OutputStreamInterfacePtr & _stream, uint32_t _code, bool _successful )
+	void MockupHttpSystem::onDownloadAssetComplete( HttpRequestID _id, const OutputStreamInterfacePtr & _stream, uint32_t _code, bool _successful )
 	{
 		for( TVectorHttpReceiverDesc::iterator
 			it = m_receiverDescs.begin(),
@@ -227,7 +205,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void cURLHttpSystem::onGetMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful )
+	void MockupHttpSystem::onGetMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful )
 	{
 		for( TVectorHttpReceiverDesc::iterator
 			it = m_receiverDescs.begin(),
@@ -255,7 +233,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void cURLHttpSystem::onPostMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful )
+	void MockupHttpSystem::onPostMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful )
 	{
 		for( TVectorHttpReceiverDesc::iterator
 			it = m_receiverDescs.begin(),

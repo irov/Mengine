@@ -12,7 +12,7 @@
 #	include "stdex/stl_vector.h"
 
 namespace Menge
-{    
+{
 	class ThreadEngine
         : public ServiceBase<ThreadServiceInterface>
 	{

@@ -29,7 +29,12 @@ if( MENGINE_TARGET_SDL )
     ADD_SUBDIRECTORY( SDLPluginSystem )    
     ADD_SUBDIRECTORY( SDLSocketSystem )
     ADD_SUBDIRECTORY( OpenGLRenderSystem )
+if( MENGINE_PLATFORM_WIN32 )
 	ADD_SUBDIRECTORY( cURLHttpSystem )
+endif()
+if( MENGINE_PLATFORM_XCODE )
+    ADD_SUBDIRECTORY( MockupHttpSystem )
+endif()    
 endif()
 
 SET( APPLICATION_DEPENDENCIES

@@ -354,10 +354,24 @@ namespace Menge
 
         DecoderRenderImageProviderPtr imageProvider = m_factoryDecoderRenderImageProvider->createObject();
 
+		if( imageProvider == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::loadTexture invalid create render image provider");
+
+			return nullptr;
+		}
+
         imageProvider->setServiceProvider( m_serviceProvider );
         imageProvider->initialize( _pakName, _fileName, _codecName );
 
 		RenderImageLoaderInterfacePtr imageLoader = imageProvider->getLoader();
+
+		if( imageLoader == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::loadTexture invalid get image loader");
+
+			return nullptr;
+		}
 
 		RenderImageDesc imageDesc = imageLoader->getImageDesc();
 		        		

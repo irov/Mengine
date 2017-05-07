@@ -424,7 +424,7 @@ namespace Menge
         //m_windowResolution = _resolution;
 
         Uint32 flags = SDL_GetWindowFlags( m_window );
-
+		
         if( _fullscreen == true && !(flags & SDL_WINDOW_FULLSCREEN) )
         {
             this->changeWindow_( _resolution, _fullscreen );

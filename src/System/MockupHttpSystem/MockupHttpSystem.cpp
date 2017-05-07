@@ -72,6 +72,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	HttpRequestID MockupHttpSystem::postMessage( const String & _url, const TMapParams & _params, HttpReceiver * _receiver )
 	{
+		(void)_params;
+
 		uint32_t task_id = ++m_enumeratorReceivers;
 
 		ThreadTaskDummyPtr task = m_factoryTaskDummy->createObject();

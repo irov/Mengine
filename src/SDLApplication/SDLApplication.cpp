@@ -10,6 +10,7 @@
 #	include "Interface/InputSystemInterface.h"
 #	include "Interface/TimerInterface.h"
 #	include "Interface/OptionsInterface.h"
+#	include "Interface/HttpSystemInterface.h"
 
 #   include "PythonScriptWrapper/PythonScriptWrapper.h"
 
@@ -783,6 +784,8 @@ namespace Menge
         SERVICE_FINALIZE( m_serviceProvider, RenderMaterialServiceInterface );
         SERVICE_FINALIZE( m_serviceProvider, RenderTextureServiceInterface );
         SERVICE_FINALIZE( m_serviceProvider, RenderSystemInterface );
+
+		SERVICE_FINALIZE( m_serviceProvider, HttpSystemInterface );
 
         SERVICE_FINALIZE( m_serviceProvider, ConfigServiceInterface );
         SERVICE_FINALIZE( m_serviceProvider, StringizeServiceInterface );

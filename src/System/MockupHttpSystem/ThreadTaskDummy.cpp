@@ -35,6 +35,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskDummy::_onComplete( bool _successful )
 	{
+		(void)_successful;
+
 		switch( m_type )
 		{
 		case 0:

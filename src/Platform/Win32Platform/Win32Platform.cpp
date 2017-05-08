@@ -1389,6 +1389,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	uint64_t Win32Platform::getFileTime( const WString & _path ) const
+	{
+		return 0U;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
 	{
 		bool successful = WINDOWSLAYER_SERVICE( m_serviceProvider )

@@ -75,6 +75,9 @@ namespace Menge
 		bool createDirectory( const WString & _path ) override;
 
 	public:
+		uint64_t getFileTime( const WString & _path ) const override;
+
+	public:
 		bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
 		bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
 

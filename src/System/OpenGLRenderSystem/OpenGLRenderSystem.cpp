@@ -186,14 +186,18 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setViewport( const Viewport & _viewport )
     {
-        const GLsizei xb = static_cast<GLsizei>(_viewport.begin.x);
-        const GLsizei yb = static_cast<GLsizei>(_viewport.end.y);
+        const GLint xb = static_cast<GLint>(_viewport.begin.x);
+        const GLint yb = static_cast<GLint>(_viewport.end.y);
         const GLsizei w = static_cast<GLsizei>(_viewport.getWidth());
         const GLsizei h = static_cast<GLsizei>(_viewport.getHeight());
 
-        const GLsizei height = static_cast<GLsizei>(m_resolution.getHeight());
+        const GLint resolution_height = static_cast<GLint>(m_resolution.getHeight());
 
-        GLCALL( m_serviceProvider, glViewport, (xb, height - yb, w, h) );
+
+		GLint x = xb;
+		GLint y = resolution_height - yb;
+
+        GLCALL( m_serviceProvider, glViewport, (x, y, w, h) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setProjectionMatrix( const mt::mat4f & _projection )

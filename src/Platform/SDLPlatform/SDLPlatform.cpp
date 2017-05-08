@@ -72,6 +72,8 @@ namespace Menge
 		_path[len] = L'/';
 		_path[len + 1] = L'\0';
 
+		Helper::pathCorrectBackslash( _path, _path );
+
 		return (size_t)len + 1;
 #else  
         _path[0] = L'\0';
@@ -100,7 +102,7 @@ namespace Menge
 
 			wcscpy( _path, currentPathW );
 			wcscat( _path, L"User" );
-			wcscat( _path, L"\\" );
+			wcscat( _path, L"/" );
 
 			return wcslen( _path );
 		}

@@ -86,11 +86,15 @@ namespace Metabuf
 		const Menge::ConstString & value = loader->getCacheConstString( index );
 				
 #	ifdef _DEBUG
-		const char * s = strstr( _value.c_str(), "\\" );
+		const char * test_value = value.c_str();
+
+		const char * s = strstr( test_value, "\\" );
 
 		if( s != nullptr )
 		{
-			stdex::throw_memory_reader_exception();
+			MENGINE_THROW_EXCEPTION( "archive_read read FilePath '%s' has invalid slash"
+				, test_value
+			);
 		}
 #	endif
 

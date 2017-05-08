@@ -3,6 +3,7 @@
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/NotificationServiceInterface.h"
 #   include "Interface/SDLLayerInterface.h"
+#   include "Interface/PlatformInterface.h"
 
 #   include "Utils/Logger/Logger.h"
 
@@ -40,8 +41,8 @@ namespace Menge
         STDEX_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::open" );
 
 #	ifdef _DEBUG
-        m_folder = _folder.c_str();
-        m_fileName = _fileName.c_str();
+        m_folder = _folder;
+        m_fileName = _fileName;
 #	endif
 
         Char filePath[MENGINE_MAX_PATH];
@@ -326,8 +327,31 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::time( uint64_t & _time ) const
     {
-        _time = 0;
-        return false;
+#	ifdef _DEBUG
+		Char filePath[MENGINE_MAX_PATH];
+		if( SDLLAYER_SERVICE( m_serviceProvider )
+			->concatenateFilePath( m_folder, m_fileName, filePath, MENGINE_MAX_PATH ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
+				, m_folder.c_str()
+				, m_fileName.c_str()
+				);
+
+			return false;
+		}
+		
+		WString unicode_filePath;
+		Helper::utf8ToUnicodeSize( m_serviceProvider, filePath, UNICODE_UNSIZE, unicode_filePath );
+
+		uint64_t ft = PLATFORM_SERVICE( m_serviceProvider )
+			->getFileTime( unicode_filePath );
+
+		_time = ft;
+		return true;
+#	else
+		_time = 0;
+		return false;
+#	endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::memory( void ** _memory, size_t * _size )

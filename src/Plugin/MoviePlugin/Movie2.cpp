@@ -711,10 +711,10 @@ namespace Menge
 			, ae_get_movie_composition_time( m_composition )
 			);
 
+		a += _timing;
 
 		if( a < 2500.f )
-		{
-			a += _timing;
+		{			
 			return;
 		}
 		
@@ -729,6 +729,91 @@ namespace Menge
 			{
 				ae_set_movie_sub_composition_loop( subcomposition, AE_TRUE );
 				ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
+			}
+		}
+
+		for( uint32_t islot = 1; islot < 6; ++islot )
+		{
+			char name[256];
+			sprintf( name, "star%u", islot );
+			const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, name );
+
+			ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
+		}
+
+		if( a < 5000.f )
+		{
+			return;
+		}
+
+		{
+			uint32_t islot = 1;
+			for( ; islot < 4; ++islot )
+			{
+				char name[256];
+				sprintf( name, "star%u", islot );
+				const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, name );
+
+				float time = ae_get_movie_sub_composition_time( subcomposition );
+				float in, out;
+				ae_get_movie_sub_composition_in_out_loop( subcomposition, &in, &out );
+
+				if( time < out )
+					continue;
+
+				ae_stop_movie_sub_composition( m_composition, subcomposition );
+
+				ae_set_movie_sub_composition_loop( subcomposition, AE_TRUE );
+				ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
+				//_view->submovieStop( star );
+				//_view->submoviePlay( star, true );
+			}
+
+			for( ; islot < 6; ++islot )
+			{
+				char name[256];
+				sprintf( name, "star%u", islot );
+				const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, name );
+
+				ae_interrupt_movie_sub_composition( m_composition, subcomposition, AE_TRUE );
+			}
+		}
+
+		if( a < 6000.f )
+		{
+			return;
+		}
+
+		{
+			uint32_t islot = 1;
+			for( ; islot < 3; ++islot )
+			{
+				char name[256];
+				sprintf( name, "star%u", islot );
+				const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, name );
+
+				float time = ae_get_movie_sub_composition_time( subcomposition );
+				float in, out;
+				ae_get_movie_sub_composition_in_out_loop( subcomposition, &in, &out );
+
+				if( time < out )
+					continue;
+
+				ae_stop_movie_sub_composition( m_composition, subcomposition );
+
+				ae_set_movie_sub_composition_loop( subcomposition, AE_TRUE );
+				ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
+				//_view->submovieStop( star );
+				//_view->submoviePlay( star, true );
+			}
+
+			for( ; islot < 6; ++islot )
+			{
+				char name[256];
+				sprintf( name, "star%u", islot );
+				const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, name );
+
+				ae_interrupt_movie_sub_composition( m_composition, subcomposition, AE_TRUE );
 			}
 		}
 

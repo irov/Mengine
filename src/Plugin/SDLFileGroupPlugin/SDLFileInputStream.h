@@ -55,8 +55,8 @@ namespace Menge
         STDEX_THREAD_GUARD_INIT;
 
 #	ifdef _DEBUG
-        String m_folder;
-        String m_fileName;
+		FilePath m_folder;
+		FilePath m_fileName;
 #	endif
     };
     //////////////////////////////////////////////////////////////////////////

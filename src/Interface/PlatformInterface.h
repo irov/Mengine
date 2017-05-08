@@ -76,6 +76,9 @@ namespace Menge
 		virtual bool createDirectory( const WString & _path ) = 0;
 
 	public:
+		virtual uint64_t getFileTime( const WString & _path ) const = 0;
+
+	public:
 		virtual bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
 		virtual bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
 

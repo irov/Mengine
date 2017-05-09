@@ -2368,6 +2368,19 @@ namespace Menge
 
             if( py_kwds.empty() == false )
             {
+				for( pybind::dict::iterator
+					it = py_kwds.begin(),
+					it_end = py_kwds.end();
+					it != it_end;
+					++it )
+				{
+					std::string k = it.key();
+					LOGGER_ERROR( m_serviceProvider )("HotSpot::setEventListener %s kwds %s"
+						, _node->getName().c_str()
+						, k.c_str()
+						);
+				}
+
                 throw;
             }
 

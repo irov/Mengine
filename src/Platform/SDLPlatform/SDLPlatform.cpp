@@ -419,11 +419,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
     {
-        PARAM_UNUSED(_resolution);
-        PARAM_UNUSED(_fullscreen);
-
-        // SDL can't toggle this without recreating the window!
-        //m_windowResolution = _resolution;
+		if( m_window == nullptr )
+		{
+			return;
+		}
 
         Uint32 flags = SDL_GetWindowFlags( m_window );
 		
@@ -435,35 +434,6 @@ namespace Menge
         {
             this->changeWindow_( _resolution, _fullscreen );
         }
-        //Uint32 flags = SDL_GetWindowFlags( m_window );
-
-        //if( _fullscreen == true && !(flags & SDL_WINDOW_FULLSCREEN_DESKTOP) )
-        //{
-        //    this->changeWindow_( _resolution, _fullscreen );
-        //}
-        //else if( _fullscreen == false && (flags & SDL_WINDOW_FULLSCREEN_DESKTOP) )
-        //{
-        //    this->changeWindow_( _resolution, _fullscreen );
-        //}
-
-        //this->createWindow( _resolution, _fullscreen );
-
-        //const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
-        //    ->getContentResolution();
-
-        //const Viewport & renderViewport = APPLICATION_SERVICE( m_serviceProvider )
-        //    ->getRenderViewport();
-
-        //RENDER_SERVICE( m_serviceProvider )
-        //    ->createRenderWindow( _resolution
-        //        , contentResolution
-        //        , renderViewport
-        //        , 0
-        //        , _fullscreen
-        //        , 0
-        //        , 0
-        //        , 0
-        //    );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::notifyVsyncChanged( bool _vsync )

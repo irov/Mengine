@@ -724,11 +724,10 @@ namespace Menge
         PLATFORM_SERVICE( m_serviceProvider )
             ->setProjectTitle( wprojectTitle );
 
-        Resolution windowResolution;
-        APPLICATION_SERVICE(m_serviceProvider)
-            ->calcWindowResolution(windowResolution);
+        const Resolution & windowResolution = APPLICATION_SERVICE(m_serviceProvider)
+            ->getCurrentResolution();
 
-        const bool fullscreen = APPLICATION_SERVICE( m_serviceProvider )
+        bool fullscreen = APPLICATION_SERVICE( m_serviceProvider )
             ->getFullscreenMode();
 
         if( PLATFORM_SERVICE(m_serviceProvider)

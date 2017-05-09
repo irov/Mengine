@@ -308,9 +308,6 @@ namespace Menge
 			LOGGER_CRITICAL( m_serviceProvider )("Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru");
 		}
 
-		Resolution windowResolution;
-		this->calcWindowResolution( windowResolution );
-
 		bool fullscreen = this->getFullscreenMode();
 
 		if( fullscreen == true )

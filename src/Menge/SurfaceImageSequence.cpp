@@ -168,7 +168,7 @@ namespace	Menge
 					, m_currentFrame
 					);
 
-				return nullptr;
+				return false;
 			}
 
 			RenderMaterialInterfacePtr material = this->makeImageMaterial(m_serviceProvider, resourceImage, false);
@@ -180,7 +180,7 @@ namespace	Menge
 					, resourceImage->getName().c_str()
 					);
 
-				return nullptr;
+				return false;
 			}
 
 			m_materials[frameId] = material;

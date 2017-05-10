@@ -8,7 +8,6 @@ ADD_SUBDIRECTORY( MengePathFinderPlugin )
 
 ADD_SUBDIRECTORY( Box2DPlugin )
 ADD_SUBDIRECTORY( MoviePlugin )
-ADD_SUBDIRECTORY( GOAPPlugin )
 #ADD_SUBDIRECTORY( MengeCal3dPlugin )
 
 if( MENGINE_PLUGIN_ASTRALAX )
@@ -27,6 +26,8 @@ if( MENGINE_TARGET_MSVC )
     ADD_SUBDIRECTORY( MengeWin32SocketPlugin )    
     ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
     ADD_SUBDIRECTORY( MengeWin32FileGroupPlugin )
+    
+    ADD_SUBDIRECTORY( GOAPPlugin )
     
     
     #ADD_SUBDIRECTORY( FFMPEGVideoCodecPlugin )
@@ -48,7 +49,7 @@ if( MENGINE_TARGET_MINGW )
 	ADD_SUBDIRECTORY( Win32ConsoleLogger )
 endif()
 
-if( MENGINE_PLATFORM_WIN32 )
+if( MENGINE_TARGET_MSVC )
     ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )
     
     ADD_SUBDIRECTORY( MengeXlsExportPlugin )

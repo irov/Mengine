@@ -75,7 +75,7 @@ WIN32 is still required for the locale module.
 #define HAVE_STRFTIME
 #define DONT_HAVE_SIG_ALARM
 #define DONT_HAVE_SIG_PAUSE
-#define LONG_BIT	32
+//#define LONG_BIT	32
 #define WORD_BIT 32
 #define PREFIX ""
 #define EXEC_PREFIX ""
@@ -587,6 +587,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 
 /* Define as the size of the unicode type. */
 /* This is enough for unicodeobject.h to do the "right thing" on Windows. */
+#define PY_UNICODE_TYPE wchar_t
 #define Py_UNICODE_SIZE 2
 
 /* Use Python's own small-block memory-allocator. */

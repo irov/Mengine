@@ -207,10 +207,10 @@ namespace Menge
 			PLUGIN_CREATE( m_serviceProvider, MengeWin32FileGroup );
 		}
 
-#	ifndef _MSC_VER
-			WINDOWSLAYER_SERVICE(m_serviceProvider)
-				->setModuleCurrentDirectory();
-#	endif
+//#	ifndef _MSC_VER
+//			WINDOWSLAYER_SERVICE(m_serviceProvider)
+//				->setModuleCurrentDirectory();
+//#	endif
 
 		WChar currentPath[MENGINE_MAX_PATH];
 

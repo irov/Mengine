@@ -48,7 +48,7 @@ namespace Menge
 				, m_pakName.c_str()
 				);
 
-			return nullptr;
+			return false;
 		}
 		
 		m_soundDecoder = CODEC_SERVICE(m_serviceProvider)

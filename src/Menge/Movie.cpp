@@ -807,7 +807,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		const MovieLayer * exist_layer;
@@ -862,7 +862,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		const MovieLayer * exist_layer;
@@ -917,7 +917,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		const MovieLayer * exist_layer;

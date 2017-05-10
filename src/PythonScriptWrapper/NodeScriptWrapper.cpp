@@ -7315,6 +7315,7 @@ namespace Menge
 		pybind::interface_<RenderViewport, pybind::bases<Node, RenderViewportInterface> >( kernel, "RenderViewport", false )
 			.def( "setFixedViewport", &RenderViewport::setFixedViewport )
 			.def( "getFixedViewport", &RenderViewport::getFixedViewport )
+			.def( "setViewport", &RenderViewport::setViewport )
 			;
 
 		pybind::interface_<RenderCameraInterface>( kernel, "RenderCameraInterface" )

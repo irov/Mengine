@@ -45,7 +45,7 @@ namespace Menge
 				, m_pakName.c_str()
 				);
 
-			return nullptr;
+			return false;
 		}
 	
 		m_dataflow = DATA_SERVICE(m_serviceProvider)

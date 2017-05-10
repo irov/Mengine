@@ -161,7 +161,7 @@ namespace Menge
 					, has_resource->getName().c_str()
 					);
 
-				return nullptr;
+				return false;
 			}
 
 			ResourceReferencePtr resource =
@@ -298,7 +298,7 @@ namespace Menge
 					, has_resource->getName().c_str()
 					);
 
-				return nullptr;
+				return false;
 			}
 
 			if( this->removeResource( has_resource ) == false )

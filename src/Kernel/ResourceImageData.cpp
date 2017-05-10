@@ -162,7 +162,7 @@ namespace Menge
 				, m_fileName.c_str()  
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();

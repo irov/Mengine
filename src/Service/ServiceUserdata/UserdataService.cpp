@@ -171,7 +171,7 @@ namespace Menge
 				, desc.path.c_str()
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		const void * data_memory = _data;

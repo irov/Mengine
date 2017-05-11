@@ -20,6 +20,7 @@ ADD_EXECUTABLE( ${MY_LIB_NAME} WIN32 ${SRC_FILES} )
 TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/astralax/magic3d.lib
+    ToolUtils
     Shlwapi.lib
     )
     

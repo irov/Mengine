@@ -9,6 +9,7 @@
 
 #	include "Interface/PluginInterface.h"
 
+#	include "Interface/FactoryInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/LoggerInterface.h"
 #	include "Interface/CodecInterface.h"
@@ -35,6 +36,7 @@ PLUGIN_EXPORT( MengeLZ4 );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider )
 
+SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( UnicodeSystem );
 SERVICE_EXTERN( UnicodeService );
 SERVICE_EXTERN( StringizeService );
@@ -57,6 +59,8 @@ namespace Menge
 	{
 		Menge::ServiceProviderInterface * serviceProvider;
 		SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
+
+		SERVICE_CREATE( serviceProvider, FactoryService );
 
 		SERVICE_CREATE( serviceProvider, UnicodeSystem );
 		SERVICE_CREATE( serviceProvider, UnicodeService );
@@ -196,7 +200,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool trimImage( Menge::ServiceProviderInterface * serviceProvider, const WString & in, const WString & out )
+	static bool trimImage( Menge::ServiceProviderInterface * serviceProvider, const WString & in, const WString & out, const WString & info )
 	{
 		String utf8_in;
 		Helper::unicodeToUtf8(serviceProvider, in, utf8_in);
@@ -430,12 +434,48 @@ namespace Menge
 			}
 		}
 
-		printf( "base_width=%u\n", width );
-		printf( "base_height=%u\n", height );
-		printf( "trim_width=%u\n", new_width );
-		printf( "trim_height=%u\n", new_height );
-		printf( "offset_x=%u\n", min_i );
-		printf( "offset_y=%u\n", min_j );
+		if( info.empty() == false )
+		{
+			String utf8_info;
+			Helper::unicodeToUtf8( serviceProvider, info, utf8_info );
+
+			FilePath c_info = Helper::stringizeFilePath( serviceProvider, utf8_info );
+
+			OutputStreamInterfacePtr info_stream = FILE_SERVICE( serviceProvider )
+				->openOutputFile( ConstString::none(), c_info );
+
+			if( info_stream == nullptr )
+			{
+				return false;
+			}
+
+			char info_buffer[1024];
+
+			sprintf( info_buffer, "%u\n%u\n%u\n%u\n%u\n%u\n"
+				, width
+				, height
+				, new_width
+				, new_height
+				, min_i
+				, min_j
+			);
+
+			size_t info_buffer_size = strlen( info_buffer );
+
+			if( info_stream->write( info_buffer, info_buffer_size + 1 ) == false )
+			{
+				return false;
+			}
+		}
+		else
+		{
+			printf( "base_width=%u\n", width );
+			printf( "base_height=%u\n", height );
+			printf( "trim_width=%u\n", new_width );
+			printf( "trim_height=%u\n", new_height );
+			printf( "offset_x=%u\n", min_i );
+			printf( "offset_y=%u\n", min_j );
+		}
 
 		return true;
 	}
@@ -456,6 +496,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	Menge::WString in = parse_kwds( lpCmdLine, L"--in", Menge::WString() );
 	Menge::WString out = parse_kwds( lpCmdLine, L"--out", Menge::WString() );
+	Menge::WString info = parse_kwds( lpCmdLine, L"--info", Menge::WString() );
 
 	if( in.empty() == true )
 	{
@@ -474,6 +515,12 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	{
 		out = out.substr( 1, out.size() - 2 );
 	}
+
+	if( info.empty() == false && info.front() == L'\"' && info.back() == L'\"' )
+	{
+		info = info.substr( 1, info.size() - 2 );
+	}
+	
 
 	Menge::ServiceProviderInterface * serviceProvider;
 
@@ -495,7 +542,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		return 0;
 	}
 
-	if( Menge::trimImage( serviceProvider, in, out ) == false )
+	if( Menge::trimImage( serviceProvider, in, out, info ) == false )
 	{
 		message_error( "ImageTrimmer invalid trim %ls"
 			, in.c_str()

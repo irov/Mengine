@@ -82,6 +82,9 @@ namespace Menge
 
                 throw;
             }
+#	else
+			(void)_file;
+			(void)_line;
 #   endif
             T * t = static_cast<T *>(service);
 

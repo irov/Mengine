@@ -848,6 +848,7 @@ namespace Menge
 			->stop();		
 		
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ApplicationInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::HttpSystemInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PrefetcherServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::DataServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PluginServiceInterface );		
@@ -872,7 +873,6 @@ namespace Menge
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ConfigServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::StringizeServiceInterface );
 		
-
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ArchiveServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::MemoryServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::NotificationServiceInterface );

@@ -1478,7 +1478,6 @@ namespace Menge
 		}
 		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
 		{
-			WChar currentPath[MENGINE_MAX_PATH];
 			LPITEMIDLIST itemIDList;
 
 			HRESULT hr = SHGetSpecialFolderLocation( NULL,
@@ -1505,6 +1504,7 @@ namespace Menge
 				return false;
 			}
 
+			WChar currentPath[MENGINE_MAX_PATH];
 			BOOL result = SHGetPathFromIDListW( itemIDList, currentPath );
 
 			if( result == FALSE )
@@ -1517,13 +1517,13 @@ namespace Menge
 
 			CoTaskMemFree( itemIDList );
 
-			wcschr( currentPath, L'\\' );
+			wcscat( currentPath, L"\\" );
 			WString wcompany = CONFIG_VALUE( m_serviceProvider, "Project", "Company", L"NONAME" );
 			wcscat( currentPath, wcompany.c_str() );
-			wcschr( currentPath, L'\\' );
+			wcscat( currentPath, L"\\" );
 			WString wname = CONFIG_VALUE( m_serviceProvider, "Project", "Name", L"UNKNOWN" );
 			wcscat( currentPath, wname.c_str() );
-			wcschr( currentPath, L'\\' );
+			wcscat( currentPath, L"\\" );
 
 			Helper::pathCorrectBackslash( _path, currentPath );
 

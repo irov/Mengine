@@ -27,8 +27,6 @@ namespace Menge
         Factorable * _createObject() override
         {
             Type * ptr = m_pool.createT();
-
-			new (ptr) Type();
 				 
             return ptr;
         }
@@ -36,8 +34,6 @@ namespace Menge
 		void _destroyObject( Factorable * _node ) override
 		{
             Type * ptr = static_cast<Type*>(_node);
-
-			ptr->~Type();
 
             m_pool.destroyT( ptr );
 		}

@@ -1098,7 +1098,7 @@ namespace Menge
 
             PathString icoFile;
             icoFile += "IconCache";
-            icoFile += '_';
+            icoFile += '/';
             icoFile += _path;
             icoFile += ".ico";
             
@@ -1281,21 +1281,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::existDirectory( const WString & _path ) const
 	{
+		WChar userPath[MENGINE_MAX_PATH];
+		this->getUserPath( userPath, MENGINE_MAX_PATH );
+		
 		WChar pathCorrect[MENGINE_MAX_PATH];
 		PathCorrectBackslash( pathCorrect, _path );
 
-		size_t len = wcslen( pathCorrect );
+		WChar fullPath[MENGINE_MAX_PATH];
+		wcscpy( fullPath, userPath );
+		wcscat( fullPath, pathCorrect );
+
+		size_t len = wcslen( fullPath );
+
 		if( len == 0 )	// current dir
 		{
 			return true;
 		}
 
-		if( pathCorrect[len - 1] == L':' )	// root dir
+		if( fullPath[len - 1] == L':' )	// root dir
 		{
 			return true;	// let it be
 		}
 
-		DWORD attributes = GetFileAttributes( pathCorrect );
+		DWORD attributes = GetFileAttributes( fullPath );
 
 		if( attributes == INVALID_FILE_ATTRIBUTES )
 		{

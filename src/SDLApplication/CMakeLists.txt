@@ -31,13 +31,13 @@ ADD_EXECUTABLE( ${MY_LIB_NAME} WIN32 ${SRC_FILES} )
 endif()
 
 if(APPLE)
+set(MACOSX_BUNDLE_BUNDLE_NAME "The Wisbey Mystery")
+set(MACOSX_BUNDLE_COPYRIGHT "Argali LLC 2017")
 set(MACOSX_BUNDLE_ICON_FILE icon.icns)
 set(myApp_ICON ~/Desktop/icon.icns)
 set_source_files_properties(${myApp_ICON} PROPERTIES
        MACOSX_PACKAGE_LOCATION "Resources")
        
-set_target_properties(${MY_LIB_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "The Wisbey Mystery")
-
 ADD_EXECUTABLE( ${MY_LIB_NAME} MACOSX_BUNDLE ${myApp_ICON} ${SRC_FILES} )
 endif()
 

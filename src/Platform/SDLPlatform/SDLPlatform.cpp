@@ -157,9 +157,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void MySDL_LogOutputFunction( void *userdata, int category, SDL_LogPriority priority, const char *message )
 	{
+		(void)category;
+
 		ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(userdata);
 
-		EMessageLevel level;
+		EMessageLevel level = LM_INFO;
+
 		switch( priority )
 		{
 		case SDL_LOG_PRIORITY_VERBOSE:
@@ -201,8 +204,23 @@ namespace Menge
         const Char* sdlPlatform = SDL_GetPlatform();
         const int sdlRam = SDL_GetSystemRAM();
 
-        m_platformName.addTag( Helper::stringizeString( m_serviceProvider, sdlPlatform ) );
-
+		if( strcmp( sdlPlatform, "Windows" ) == 0 )
+		{
+			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "PC" ) );
+		}
+		else if( strcmp( sdlPlatform, "Mac OS X" ) == 0 )
+		{
+			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "MAC" ) );
+		}
+		else if( strcmp( sdlPlatform, "Android" ) == 0 )
+		{
+			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "Android" ) );			
+		}
+		else if( strcmp( sdlPlatform, "iOS" ) == 0 )
+		{
+			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "IOS" ) );
+		}
+		
         LOGGER_WARNING(m_serviceProvider)("Device info:"
             );
 
@@ -545,8 +563,6 @@ namespace Menge
 						, _fullpath
 						, err
 						);
-
-					return false;
 				}break;
 			}
 
@@ -719,9 +735,9 @@ namespace Menge
 		::CloseHandle( handle );
 
 		return time;
-#	endif
-
+#	else
 		return 0U;
+#	endif		
 	}
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )

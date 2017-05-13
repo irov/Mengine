@@ -309,11 +309,15 @@ namespace Menge
                 continue;
             }
 
+			node->setShallowGrave();
+
 			node->release();
 
             node->setParent_( nullptr );
 
 			m_children.erase( it_node );
+
+			node->removeShallowGrave();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

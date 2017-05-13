@@ -157,6 +157,13 @@ namespace Menge
 #	ifdef _DEBUG
 			if( strstr( ini_value, "\\" ) != nullptr )
 			{
+				LOGGER_ERROR( _serviceProvider )("get ini '%s:%s' filepath section '%s' key '%s' has invalid slash"
+					, _ini.category.c_str()
+					, _ini.path.c_str()
+					, _section
+					, _key
+					);
+
 				MENGINE_THROW_EXCEPTION( "get ini '%s:%s' filepath section '%s' key '%s' has invalid slash"
 					, _ini.category.c_str()
 					, _ini.path.c_str()

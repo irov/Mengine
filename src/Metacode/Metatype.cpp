@@ -4,6 +4,8 @@
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/StringizeInterface.h"
 
+#	include "Logger/Logger.h"
+
 #   include "LoaderEngine.h"
 
 namespace Metabuf
@@ -92,6 +94,12 @@ namespace Metabuf
 
 		if( s != nullptr )
 		{
+			Menge::ServiceProviderInterface * serviceProvider = loader->getServiceProvider();
+
+			LOGGER_ERROR( serviceProvider )("archive_read read FilePath '%s' has invalid slash"
+				, test_value
+				);
+
 			MENGINE_THROW_EXCEPTION( "archive_read read FilePath '%s' has invalid slash"
 				, test_value
 			);

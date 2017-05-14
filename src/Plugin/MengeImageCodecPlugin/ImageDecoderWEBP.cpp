@@ -154,7 +154,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderWEBP::decodeWEBP_( const uint8_t * _source, size_t _sourceSize, uint8_t * _buffer, size_t _bufferSize )
 	{
-#	ifdef MENGE_RENDER_TEXTURE_RGBA
+#	ifdef MENGINE_RENDER_TEXTURE_RGBA
 #	define MENGINE_WEBP_DECODE_RGBA WebPDecodeRGBAInto
 #	define MENGINE_WEBP_DECODE_RGB WebPDecodeRGBInto
 #	else

@@ -160,14 +160,14 @@ namespace Menge
 		case  PNG_COLOR_TYPE_PALETTE:
 			{
 				png_set_palette_to_rgb( m_png_ptr );
-#   ifndef MENGE_RENDER_TEXTURE_RGBA
+#   ifndef MENGINE_RENDER_TEXTURE_RGBA
 				png_set_bgr( m_png_ptr );
 #   endif
 			}break;
 		case PNG_COLOR_TYPE_RGB:
 		case PNG_COLOR_TYPE_RGB_ALPHA:
 			{
-#   ifndef MENGE_RENDER_TEXTURE_RGBA
+#   ifndef MENGINE_RENDER_TEXTURE_RGBA
 				png_set_bgr( m_png_ptr );
 #   endif
 			}break;

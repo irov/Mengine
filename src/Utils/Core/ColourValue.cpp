@@ -9,17 +9,17 @@ namespace Menge
 		{
 			const float rgba_255 = 255.f;
 
-#   ifdef MENGE_RENDER_TEXTURE_RGBA
+#   ifdef MENGINE_RENDER_TEXTURE_RGBA
 			uint8_t a8 = static_cast<uint8_t>(_a * rgba_255);
 			uint8_t b8 = static_cast<uint8_t>(_r * rgba_255);
 			uint8_t g8 = static_cast<uint8_t>(_g * rgba_255);
 			uint8_t r8 = static_cast<uint8_t>(_b * rgba_255);
-#	else // MENGE_RENDER_TEXTURE_RGBA
+#	else
 			uint8_t a8 = static_cast<uint8_t>(_a * rgba_255);
 			uint8_t r8 = static_cast<uint8_t>(_r * rgba_255);
 			uint8_t g8 = static_cast<uint8_t>(_g * rgba_255);
 			uint8_t b8 = static_cast<uint8_t>(_b * rgba_255);
-#	endif // MENGE_RENDER_TEXTURE_RGBA
+#	endif
 
 			ColourValue_ARGB argb = (a8 << 24) | (r8 << 16) | (g8 << 8) | (b8 << 0);
 
@@ -67,17 +67,17 @@ namespace Menge
 			return;
 		}
 
-#   ifdef MENGE_RENDER_TEXTURE_RGBA
+#   ifdef MENGINE_RENDER_TEXTURE_RGBA
 		uint8_t a8 = (m_argb >> 24) & 0xFF;
 		uint8_t b8 = (m_argb >> 16) & 0xFF;
 		uint8_t g8 = (m_argb >> 8) & 0xFF;
 		uint8_t r8 = (m_argb >> 0) & 0xFF;
-#	else // MENGE_RENDER_TEXTURE_RGBA
+#	else
 		uint8_t a8 = (m_argb >> 24) & 0xFF;
 		uint8_t r8 = (m_argb >> 16) & 0xFF;
 		uint8_t g8 = (m_argb >> 8) & 0xFF;
 		uint8_t b8 = (m_argb >> 0) & 0xFF;
-#	endif // MENGE_RENDER_TEXTURE_RGBA
+#	endif
 
 		const float rgba_1_div_255 = 1.f / 255.f;
 

@@ -604,7 +604,7 @@ namespace Menge
 
 		m_particleSystem->updateAtlas();
 
-#	ifdef MENGE_RENDER_TEXTURE_RGBA
+#	ifdef MENGINE_RENDER_TEXTURE_RGBA
 		MAGIC_ARGB_ENUM color_mode = MAGIC_RGBA;
 #	else
 		MAGIC_ARGB_ENUM color_mode = MAGIC_ABGR;

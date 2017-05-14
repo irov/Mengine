@@ -8,7 +8,7 @@
 #define MAX( a, b ) ((a > b) ? a : b)
 #define MIN( a, b ) ((a < b) ? a : b)
 
-#	ifdef MENGE_RENDER_TEXTURE_RGBA
+#	ifdef MENGINE_RENDER_TEXTURE_RGBA
 #		define COLOR_R 0
 #		define COLOR_G 1
 #		define COLOR_B 2

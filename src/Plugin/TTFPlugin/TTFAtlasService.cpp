@@ -165,7 +165,7 @@ namespace Menge
 		new_atlas.dimension = _dimension;
         new_atlas.channel = _channel;
 
-//#   ifdef MENGE_RENDER_TEXTURE_RGBA
+//#   ifdef MENGINE_RENDER_TEXTURE_RGBA
 //        PixelFormat format_select[] = {PF_A8, PF_A8B8G8R8, PF_A8B8G8R8, PF_A8B8G8R8};
 //#	else
 //        PixelFormat format_select[] = {PF_A8, PF_A8R8G8B8, PF_A8R8G8B8, PF_A8R8G8B8};

@@ -292,6 +292,11 @@ namespace Menge
 				
 		bool successful = threadIdentity->joinTask();
 
+		if( successful == false )
+		{
+			threadIdentity->join();
+		}
+
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -312,6 +317,35 @@ namespace Menge
 		m_threadQueues.push_back( taskQueue );
 
 		return taskQueue;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ThreadEngine::cancelTaskQueue( const ThreadQueueInterfacePtr & _queue )
+	{
+		if( m_avaliable == false )
+		{
+			return;
+		}
+
+		_queue->cancel();
+
+		for( TVectorThreadQueues::iterator
+			it = m_threadQueues.begin(),
+			it_end = m_threadQueues.end();
+			it != it_end;
+			++it)
+		{
+			ThreadQueueInterfacePtr queue = *it;
+
+			if( queue != _queue )
+			{
+				continue;
+			}
+
+			*it = m_threadQueues.back();
+			m_threadQueues.pop_back();
+
+			return;
+		}
 	}
 	///////////////////////////////////////////////////////////////////////////
 	void ThreadEngine::update()

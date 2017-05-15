@@ -66,7 +66,9 @@ namespace Menge
 
 		if( m_threadQueue != nullptr )
 		{
-			m_threadQueue->cancel();
+			THREAD_SERVICE( m_serviceProvider )
+				->cancelTaskQueue( m_threadQueue );
+
 			m_threadQueue = nullptr;
 		}
 

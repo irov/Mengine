@@ -40,6 +40,7 @@ namespace Menge
 
 	public:
 		ThreadQueueInterfacePtr runTaskQueue( const ConstString & _threadName, uint32_t _countThread, uint32_t _packetSize ) override;
+		void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) override;
 
 	public:
         void update() override;

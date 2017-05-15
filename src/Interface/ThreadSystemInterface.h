@@ -64,6 +64,7 @@ namespace Menge
 
 	public:
 		virtual ThreadQueueInterfacePtr runTaskQueue( const ConstString & _threadName, uint32_t _countThread, uint32_t _packetSize ) = 0;
+		virtual void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) = 0;
 
     public:
 		virtual ThreadMutexInterfacePtr createMutex( const char * _file, uint32_t _line ) = 0;

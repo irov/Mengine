@@ -17,9 +17,11 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskGetAsset::initialize( const String & _url, const ConstString & _category, const FilePath & _filepath, HttpRequestID _id, HttpReceiver * _receiver )
+	bool ThreadTaskGetAsset::initialize( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _filepath, HttpRequestID _id, HttpReceiver * _receiver )
 	{
 		m_url = _url;
+		m_login = _login;
+		m_password = _password;
 		m_category = _category;
 		m_filePath = _filepath;
 		m_id = _id;
@@ -78,6 +80,8 @@ namespace Menge
 		CURL * curl = curl_easy_init();
 
 		curl_easy_setopt( curl, CURLOPT_URL, m_url.c_str() );
+		curl_easy_setopt( curl, CURLOPT_USERNAME, m_login.c_str() );
+		curl_easy_setopt( curl, CURLOPT_PASSWORD, m_password.c_str() );
 
 		/* send all data to this function  */
 		curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback );

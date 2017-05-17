@@ -31,7 +31,7 @@ namespace Menge
 	public:
 		virtual HttpRequestID getMessage( const String & _url, HttpReceiver * _receiver ) = 0;
 		virtual HttpRequestID postMessage( const String & _url, const TMapParams & _params, HttpReceiver * _receiver ) = 0;
-		virtual HttpRequestID downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver ) = 0;
+		virtual HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver ) = 0;
 
 	public:
 		virtual bool cancelRequest( HttpRequestID _id ) = 0;

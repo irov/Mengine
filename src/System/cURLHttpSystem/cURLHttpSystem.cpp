@@ -121,7 +121,7 @@ namespace Menge
 		return task_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HttpRequestID cURLHttpSystem::downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver )
+	HttpRequestID cURLHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver )
 	{
 		if( FILE_SERVICE( m_serviceProvider )
 			->hasFileGroup( _category, nullptr ) == false )
@@ -152,7 +152,7 @@ namespace Menge
 		ThreadTaskGetAssetPtr task = m_factoryTaskDownloadAsset->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( _url, _category, _path, task_id, this );
+		task->initialize( _url, _login, _password, _category, _path, task_id, this );
 		
 		if( THREAD_SERVICE(m_serviceProvider)
 			->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), task ) == false )

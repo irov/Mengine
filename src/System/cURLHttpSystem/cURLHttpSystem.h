@@ -24,7 +24,7 @@ namespace Menge
 	protected:
 		HttpRequestID getMessage( const String & _url, HttpReceiver * _receiver ) override;
 		HttpRequestID postMessage( const String & _url, const TMapParams & _params, HttpReceiver * _receiver ) override;
-		HttpRequestID downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver ) override;
+		HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver ) override;
 
 	protected:
 		bool cancelRequest( HttpRequestID _id ) override;

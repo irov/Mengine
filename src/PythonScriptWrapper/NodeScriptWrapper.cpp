@@ -2961,10 +2961,10 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		HttpRequestID s_downloadAsset( const String & _url, const ConstString & _category, const FilePath & _filepath, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		HttpRequestID s_downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _filepath, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			uint32_t id = HTTP_SYSTEM( m_serviceProvider )
-				->downloadAsset( _url, _category, _filepath, new PyDownloadAssetHttpReceiver( _cb, _args ) );
+				->downloadAsset( _url, _login, _password, _category, _filepath, new PyDownloadAssetHttpReceiver( _cb, _args ) );
 
 			return id;
 		}

@@ -1343,6 +1343,8 @@ namespace Menge
 				break;
 			}
 
+			Helper::pathRemoveBackslash( fullPath );
+
 			if( PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY )
 			{
 				break;

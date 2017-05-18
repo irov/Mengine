@@ -101,8 +101,11 @@ namespace Menge
 		return task_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HttpRequestID MockupHttpSystem::downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver )
+	HttpRequestID MockupHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver )
 	{
+		(void)_login;
+		(void)_password;
+
 		if( FILE_SERVICE( m_serviceProvider )
 			->hasFileGroup( _category, nullptr ) == false )
 		{
@@ -179,7 +182,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MockupHttpSystem::onDownloadAssetComplete( HttpRequestID _id, const OutputStreamInterfacePtr & _stream, uint32_t _code, bool _successful )
+	void MockupHttpSystem::onDownloadAssetComplete( HttpRequestID _id, uint32_t _code, bool _successful )
 	{
 		for( TVectorHttpReceiverDesc::iterator
 			it = m_receiverDescs.begin(),
@@ -200,7 +203,7 @@ namespace Menge
 
 			if( receiver != nullptr)
 			{
-				receiver->onDownloadAssetComplete( _id, _stream, _code, _successful );
+				receiver->onDownloadAssetComplete( _id, _code, _successful );
 			}
 			
 			break;

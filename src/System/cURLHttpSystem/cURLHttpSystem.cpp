@@ -199,7 +199,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void cURLHttpSystem::onDownloadAssetComplete( HttpRequestID _id, const OutputStreamInterfacePtr & _stream, uint32_t _code, bool _successful )
+	void cURLHttpSystem::onDownloadAssetComplete( HttpRequestID _id, uint32_t _code, bool _successful )
 	{
 		for( TVectorHttpReceiverDesc::iterator
 			it = m_receiverDescs.begin(),
@@ -220,7 +220,7 @@ namespace Menge
 
 			if( receiver != nullptr)
 			{
-				receiver->onDownloadAssetComplete( _id, _stream, _code, _successful );
+				receiver->onDownloadAssetComplete( _id, _code, _successful );
 			}
 			
 			break;

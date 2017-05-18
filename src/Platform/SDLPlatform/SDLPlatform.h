@@ -98,6 +98,9 @@ namespace Menge
 		bool createDirectory(const WString & _path) override;
 
 	public:
+		bool removeFile( const WString & _path ) override;
+
+	public:
 		uint64_t getFileTime( const WString & _filePath ) const override;
 
 	public:

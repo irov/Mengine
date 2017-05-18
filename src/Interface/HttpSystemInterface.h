@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Interface/ServiceInterface.h"
-#	include "Interface/StreamInterface.h"
 
 #	include "Core/String.h"
 #	include "Core/ConstString.h"
@@ -18,7 +17,7 @@ namespace Menge
 	class HttpReceiver
 	{
 	public:
-		virtual void onDownloadAssetComplete( HttpRequestID _id, const OutputStreamInterfacePtr & _stream, uint32_t _code, bool _successful ) = 0;
+		virtual void onDownloadAssetComplete( HttpRequestID _id, uint32_t _code, bool _successful ) = 0;
 		virtual void onPostMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) = 0;
 		virtual void onGetMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) = 0;
 	};

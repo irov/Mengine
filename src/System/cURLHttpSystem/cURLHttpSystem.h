@@ -30,7 +30,7 @@ namespace Menge
 		bool cancelRequest( HttpRequestID _id ) override;
 
 	private:
-		void onDownloadAssetComplete( HttpRequestID _id, const OutputStreamInterfacePtr & _stream, uint32_t _code, bool _successful ) override;
+		void onDownloadAssetComplete( HttpRequestID _id, uint32_t _code, bool _successful ) override;
 		void onPostMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override;
 		void onGetMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override;
 

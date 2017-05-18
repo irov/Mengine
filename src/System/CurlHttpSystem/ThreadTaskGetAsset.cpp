@@ -131,9 +131,8 @@ namespace Menge
 	void ThreadTaskGetAsset::_onComplete( bool _successful )
 	{
 		m_stream->flush();
-		
-		m_receiver->onDownloadAssetComplete( m_id, m_stream, m_code, _successful );
-
 		m_stream = nullptr;
+		
+		m_receiver->onDownloadAssetComplete( m_id, m_code, _successful );
 	}
 }

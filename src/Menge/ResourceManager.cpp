@@ -204,7 +204,7 @@ namespace Menge
 #	ifndef MENGINE_MASTER_RELEASE
 			if( _ignored == false && resource->convert() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid convert"
+				LOGGER_ERROR( m_serviceProvider )("ResourceManager::loadResource %s type [%s] invalid convert"
 					, name.c_str()
 					, type.c_str()
 					);

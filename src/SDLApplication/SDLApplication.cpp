@@ -625,10 +625,16 @@ namespace Menge
             }
         }
 
-        bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
-        bool nodevplugins = HAS_OPTION( m_serviceProvider, "nodevplugins" );
+#	ifdef _DEBUG
+		bool devplugins = true;
+#	else
+		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+		bool devplugins = developmentMode;
+#	endif
 
-        if( developmentMode == true && nodevplugins == false )
+		bool nodevplugins = HAS_OPTION( m_serviceProvider, "nodevplugins" );
+
+        if( devplugins == true && nodevplugins == false )
         {
             TVectorWString devPlugins;
             CONFIG_VALUES( m_serviceProvider, "DevPlugins", "Name", devPlugins );

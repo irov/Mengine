@@ -620,6 +620,8 @@ namespace Menge
 				break;
 			}
 
+			Helper::pathRemoveBackslash( fullPath );
+
 			if( s_isDirectoryFullpath( m_serviceProvider, fullPath ) == true )
 			{
 				break;

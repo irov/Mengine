@@ -94,7 +94,7 @@ configure_file(Modified/errors.c ${SOURCE_DIR}/Python/errors.c COPYONLY)
 configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
 
 if(APPLE)
-    configure_file(ModifiedMac/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
+    configure_file(ModifiedMac/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
 else()
     configure_file(Modified/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
 endif()

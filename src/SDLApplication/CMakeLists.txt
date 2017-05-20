@@ -68,11 +68,13 @@ FIND_LIBRARY(CoreData_LIBRARY CoreData )
 FIND_LIBRARY(CoreAudio_LIBRARY CoreAudio )
 FIND_LIBRARY(CoreVideo_LIBRARY CoreVideo )
 FIND_LIBRARY(CoreFoundation_LIBRARY CoreFoundation )
+FIND_LIBRARY(AudioUnit_LIBRARY AudioUnit)
 FIND_LIBRARY(AudioToolBox_LIBRARY AudioToolBox)
 FIND_LIBRARY(IOKit_LIBRARY IOKit )
 FIND_LIBRARY(ForceFeedback_LIBRARY ForceFeedback )
 FIND_LIBRARY(Foundation_LIBRARY Foundation )
 FIND_LIBRARY(OpenGL_LIBRARY OpenGL )
+FIND_LIBRARY(OpenAL_LIBRARY OpenAL )
 
 MARK_AS_ADVANCED (Cocoa_LIBRARY
 		 Carbon_LIBRARY
@@ -80,14 +82,16 @@ MARK_AS_ADVANCED (Cocoa_LIBRARY
                  CoreData_LIBRARY
 		 CoreAudio_LIBRARY
 		 CoreFoundation_LIBRARY
+		AudioUnit_LIBRARY
 		 AudioToolBox_LIBRARY
 		 IOKit_LIBRARY
                  ForceFeedback_LIBRARY
 		 CoreVideo_LIBRARY
                  Foundation_LIBRARY
-                 OpenGL_LIBRARY)
+                 OpenGL_LIBRARY
+		OpenAL_LIBRARY)
 
-SET(EXTRA_LIBS ${Cocoa_LIBRARY} ${Carbon_LIBRARY} ${AppKit_LIBRARY} ${CoreData_LIBRARY} ${CoreAudio_LIBRARY} ${CoreFoundation_LIBRARY} ${ForceFeedback_LIBRARY} ${IOKit_LIBRARY} ${CoreVideo_LIBRARY} ${AudioToolBox_LIBRARY} ${Foundation_LIBRARY} ${OpenGL_LIBRARY} ${OpenAL_LIBRARY})
+SET(EXTRA_LIBS ${Cocoa_LIBRARY} ${Carbon_LIBRARY} ${AppKit_LIBRARY} ${CoreData_LIBRARY} ${CoreAudio_LIBRARY} ${CoreFoundation_LIBRARY} ${ForceFeedback_LIBRARY} ${IOKit_LIBRARY} ${CoreVideo_LIBRARY} ${AudioUnit_LIBRARY} ${AudioToolBox_LIBRARY} ${Foundation_LIBRARY} ${OpenGL_LIBRARY} ${OpenAL_LIBRARY})
 
 TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${EXTRA_LIBS})
 TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} iconv)

@@ -6204,6 +6204,11 @@ namespace Menge
 		protected:
 			bool handleKeyEvent( const InputKeyEvent & _event ) override
 			{
+                if( _event.code == (wchar_t)0xfffd )
+                {
+                    return false;
+                }
+                
 				pybind::object py_result = m_cb.call_args( (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat, m_args );
 
 				if( py_result.is_none() == false )

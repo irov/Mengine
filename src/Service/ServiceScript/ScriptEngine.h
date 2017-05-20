@@ -57,6 +57,9 @@ namespace Menge
 		bool bootstrapModules() override;
 		bool initializeModules() override;
 		bool finalizeModules() override;
+
+	protected:
+		bool initializeModule_( const ScriptModulePack & _pack );
 		
     public:
         bool stringize( PyObject * _object, ConstString & _str ) override;

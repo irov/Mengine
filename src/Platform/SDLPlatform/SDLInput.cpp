@@ -61,10 +61,15 @@ namespace Menge
 
                 KeyCode code = this->getKeyCode_( _event.key.keysym.scancode );
 
+				if( code == SDL_SCANCODE_UNKNOWN )
+				{
+					return;
+				}
+
                 bool isDown = _event.key.type == SDL_KEYDOWN;
 
                 m_keyDown[code] = isDown;
-
+				
                 INPUT_SERVICE( m_serviceProvider )
                     ->pushKeyEvent( point.x, point.y, code, (wchar_t)_event.key.keysym.sym, isDown, false );
             } break;

@@ -348,7 +348,7 @@ namespace Menge
         }
         else
         {
-            m_logLevel = LM_ERROR;
+            m_logLevel = LM_WARNING;
         }        
 
         const Char * option_log = GET_OPTION_VALUE( m_serviceProvider, "log" );

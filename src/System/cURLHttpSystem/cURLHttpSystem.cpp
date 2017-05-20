@@ -121,7 +121,7 @@ namespace Menge
 		return task_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HttpRequestID cURLHttpSystem::downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver )
+	HttpRequestID cURLHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver )
 	{
 		if( FILE_SERVICE( m_serviceProvider )
 			->hasFileGroup( _category, nullptr ) == false )
@@ -152,7 +152,7 @@ namespace Menge
 		ThreadTaskGetAssetPtr task = m_factoryTaskDownloadAsset->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( _url, _category, _path, task_id, this );
+		task->initialize( _url, _login, _password, _category, _path, task_id, this );
 		
 		if( THREAD_SERVICE(m_serviceProvider)
 			->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), task ) == false )
@@ -199,7 +199,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void cURLHttpSystem::onDownloadAssetComplete( HttpRequestID _id, const OutputStreamInterfacePtr & _stream, uint32_t _code, bool _successful )
+	void cURLHttpSystem::onDownloadAssetComplete( HttpRequestID _id, uint32_t _code, bool _successful )
 	{
 		for( TVectorHttpReceiverDesc::iterator
 			it = m_receiverDescs.begin(),
@@ -220,7 +220,7 @@ namespace Menge
 
 			if( receiver != nullptr)
 			{
-				receiver->onDownloadAssetComplete( _id, _stream, _code, _successful );
+				receiver->onDownloadAssetComplete( _id, _code, _successful );
 			}
 			
 			break;

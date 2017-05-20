@@ -1343,6 +1343,8 @@ namespace Menge
 				break;
 			}
 
+			Helper::pathRemoveBackslash( fullPath );
+
 			if( PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY )
 			{
 				break;
@@ -1367,7 +1369,7 @@ namespace Menge
 				{
 				case ERROR_ALREADY_EXISTS:
 					{
-						LOGGER_WARNING( m_serviceProvider )("VistaWindowsLayer::createDirectory %ls alredy exists"
+						LOGGER_WARNING( m_serviceProvider )("Win32Platform::createDirectory %ls alredy exists"
 							, path.c_str()
 							);
 
@@ -1375,7 +1377,7 @@ namespace Menge
 					}break;
 				case ERROR_PATH_NOT_FOUND:
 					{
-						LOGGER_WARNING( m_serviceProvider )("VistaWindowsLayer::createDirectory %ls not found"
+						LOGGER_WARNING( m_serviceProvider )("Win32Platform::createDirectory %ls not found"
 							, path.c_str()
 							);
 
@@ -1383,7 +1385,7 @@ namespace Menge
 					}break;
 				default:
 					{
-						LOGGER_WARNING( m_serviceProvider )("VistaWindowsLayer::createDirectory %ls unknown error %d"
+						LOGGER_WARNING( m_serviceProvider )("Win32Platform::createDirectory %ls unknown error %d"
 							, path.c_str()
 							, err
 							);
@@ -1392,6 +1394,33 @@ namespace Menge
 					}break;
 				}
 			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32Platform::removeFile( const WString & _path )
+	{
+		WChar userPath[MENGINE_MAX_PATH];
+		this->getUserPath( userPath, MENGINE_MAX_PATH );
+
+		WChar pathCorrect[MENGINE_MAX_PATH];
+		Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
+
+		WChar fullPath[MENGINE_MAX_PATH];
+		wcscpy( fullPath, userPath );
+		wcscat( fullPath, pathCorrect );
+
+		if( DeleteFile( fullPath ) == FALSE )
+		{
+			DWORD err = GetLastError();
+
+			LOGGER_WARNING( m_serviceProvider )("Win32Platform::removeFile '%ls' error '%d'"
+				, fullPath
+				, err
+				);
+
+			return false;
 		}
 
 		return true;
@@ -1602,47 +1631,51 @@ namespace Menge
 	{
 		//size_t cmd_path_size = 0;
 		//wchar_t cmd_path [MENGINE_MAX_PATH];
-		wchar_t * cmd_path = _wgetenv( L"COMSPEC" );
+		//wchar_t * cmd_path = _wgetenv( L"COMSPEC" );
 
-		WString params = L"/c start " + _url;
+		//WString params = L"/c start \"";
+		//params += _url;
+		//params += L"\"";
 
-		STARTUPINFO startup_info;
-		memset( &startup_info, 0, sizeof( startup_info ) );
-		startup_info.cb = sizeof( startup_info );
-		startup_info.wShowWindow = SW_HIDE;
-		startup_info.dwFlags |= STARTF_USESHOWWINDOW;
+		//STARTUPINFO startup_info;
+		//memset( &startup_info, 0, sizeof( startup_info ) );
+		//startup_info.cb = sizeof( startup_info );
+		//startup_info.wShowWindow = SW_HIDE;
+		//startup_info.dwFlags |= STARTF_USESHOWWINDOW;
 
-		PROCESS_INFORMATION process_info;
-		memset( &process_info, 0, sizeof( process_info ) );
+		//PROCESS_INFORMATION process_info;
+		//memset( &process_info, 0, sizeof( process_info ) );
 
-		WCHAR lpCommandLine[32768] = {0};
-		wcscpy( lpCommandLine, params.c_str() );
+		//WCHAR lpCommandLine[32768] = {0};
+		//wcscpy( lpCommandLine, params.c_str() );
 
-		BOOL result = ::CreateProcess(
-			cmd_path,          // path
-			lpCommandLine, // command line
-			NULL,            // process attributes
-			NULL,            // thread attributes
-			FALSE,            // inherit handles
-			NORMAL_PRIORITY_CLASS,    // creation flags
-			NULL,            // environment
-			NULL,            // current directory
-			&startup_info,        // startup info structure
-			&process_info        // process info structure
-			);
+		//BOOL result = ::CreateProcess(
+		//	cmd_path,          // path
+		//	lpCommandLine, // command line
+		//	NULL,            // process attributes
+		//	NULL,            // thread attributes
+		//	FALSE,            // inherit handles
+		//	NORMAL_PRIORITY_CLASS,    // creation flags
+		//	NULL,            // environment
+		//	NULL,            // current directory
+		//	&startup_info,        // startup info structure
+		//	&process_info        // process info structure
+		//	);
 
-		LOGGER_WARNING( m_serviceProvider )("WinApplication::openUrlInDefaultBrowser %ls %d"
-			, _url.c_str()
-			, result
-			);
+		//LOGGER_WARNING( m_serviceProvider )("WinApplication::openUrlInDefaultBrowser %ls %d"
+		//	, _url.c_str()
+		//	, result
+		//	);
 
-		if( result == FALSE )
-		{
-			return false;
-		}
+		//if( result == FALSE )
+		//{
+		//	return false;
+		//}
 
-        CloseHandle( process_info.hProcess );
-        CloseHandle( process_info.hThread );
+  //      CloseHandle( process_info.hProcess );
+  //      CloseHandle( process_info.hThread );
+
+		ShellExecute( NULL, L"open", _url.c_str(), NULL, NULL, SW_SHOWNORMAL );
 
 		return true;
 	}

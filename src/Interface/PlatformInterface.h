@@ -76,6 +76,9 @@ namespace Menge
 		virtual bool createDirectory( const WString & _path ) = 0;
 
 	public:
+		virtual bool removeFile( const WString & _path ) = 0;
+
+	public:
 		virtual uint64_t getFileTime( const WString & _path ) const = 0;
 
 	public:

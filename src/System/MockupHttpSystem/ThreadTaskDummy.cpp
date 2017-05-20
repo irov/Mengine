@@ -41,7 +41,7 @@ namespace Menge
 		{
 		case 0:
 			{
-				m_receiver->onDownloadAssetComplete( m_id, nullptr, 0, false );
+				m_receiver->onDownloadAssetComplete( m_id, 0, false );
 			}break;
 		case 1:
 			{

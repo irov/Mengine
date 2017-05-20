@@ -2910,10 +2910,9 @@ namespace Menge
 			}
 
 		protected:
-			void onDownloadAssetComplete( HttpRequestID _id, const OutputStreamInterfacePtr & _stream, uint32_t _code, bool _successful ) override
+			void onDownloadAssetComplete( HttpRequestID _id, uint32_t _code, bool _successful ) override
 			{
 				(void)_id;
-				(void)_stream;
 				(void)_code;				
 				(void)_successful;
 				//Empty
@@ -2953,18 +2952,18 @@ namespace Menge
 			}
 
 		protected:
-			void onDownloadAssetComplete( HttpRequestID _id, const OutputStreamInterfacePtr & _stream, uint32_t _code, bool _successful ) override
+			void onDownloadAssetComplete( HttpRequestID _id, uint32_t _code, bool _successful ) override
 			{
-				(void)_stream;
 				(void)_code;
+
 				m_cb.call_args( _id, _code, _successful, m_args );
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		HttpRequestID s_downloadAsset( const String & _url, const ConstString & _category, const FilePath & _filepath, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		HttpRequestID s_downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _filepath, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
 			uint32_t id = HTTP_SYSTEM( m_serviceProvider )
-				->downloadAsset( _url, _category, _filepath, new PyDownloadAssetHttpReceiver( _cb, _args ) );
+				->downloadAsset( _url, _login, _password, _category, _filepath, new PyDownloadAssetHttpReceiver( _cb, _args ) );
 
 			return id;
 		}
@@ -3070,6 +3069,17 @@ namespace Menge
 		{
 			bool result = FILE_SERVICE( m_serviceProvider )
 				->existFile( _fileGroup, _path, nullptr );
+
+			return result;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_removeFile( const FilePath & _path )
+		{
+			WString unicode_path;
+			Helper::utf8ToUnicode( m_serviceProvider, _path, unicode_path );
+
+			bool result = PLATFORM_SERVICE( m_serviceProvider )
+				->removeFile( unicode_path );
 
 			return result;
 		}
@@ -7981,6 +7991,7 @@ namespace Menge
 			pybind::def_functor( kernel, "unmountResourcePak", nodeScriptMethod, &NodeScriptMethod::s_unmountResourcePak );
 
 			pybind::def_functor( kernel, "existFile", nodeScriptMethod, &NodeScriptMethod::s_existFile );
+			pybind::def_functor( kernel, "removeFile", nodeScriptMethod, &NodeScriptMethod::s_removeFile );
 			pybind::def_functor_kernel( kernel, "parseXml", nodeScriptMethod, &NodeScriptMethod::s_parseXml );
 
 			pybind::def_functor( kernel, "visitFonts", nodeScriptMethod, &NodeScriptMethod::s_visitFonts );

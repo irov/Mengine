@@ -240,7 +240,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleMouseWheel( const InputMouseWheelEvent & _event )
 	{
-        bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_MOVE, m_defaultHandle )
+        bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_WHEEL, m_defaultHandle )
             ->onHotSpotMouseWheel( _event );
 		//bool handle = m_defaultHandle;
 				

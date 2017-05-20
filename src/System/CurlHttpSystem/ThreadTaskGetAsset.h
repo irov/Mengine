@@ -15,7 +15,7 @@ namespace Menge
 		ThreadTaskGetAsset();
 		
 	public:
-		bool initialize( const String & _url, const ConstString & _category, const FilePath & _filepath, HttpRequestID _id, HttpReceiver * _receiver );
+		bool initialize( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _filepath, HttpRequestID _id, HttpReceiver * _receiver );
 
 	protected:
 		bool _onRun() override;
@@ -28,6 +28,8 @@ namespace Menge
 
 	protected:		
 		String m_url;
+		String m_login;
+		String m_password;
 		ConstString m_category;
 		FilePath m_filePath;
 

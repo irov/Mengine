@@ -310,7 +310,22 @@ namespace Menge
 
         m_moduleFinder->addModulePath( _pak, pathes );
 
+
 		m_bootstrapperModules.insert( m_bootstrapperModules.end(), _modules.begin(), _modules.end() );
+		
+		if( m_initializeModules == true )
+		{
+			for( TVectorScriptModulePack::const_iterator
+				it = _modules.begin(),
+				it_end = _modules.end();
+				it != it_end;
+				++it )
+			{
+				const ScriptModulePack & pack = *it;
+
+				this->initializeModule_( pack );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -413,38 +428,48 @@ namespace Menge
 		{
 			const ScriptModulePack & pak = *it;
 
-			if( pak.module.empty() == true )
+			if( this->initializeModule_( pak ) == false )
 			{
-				continue;
-			}
-
-			ScriptModuleInterfacePtr module = this->importModule( pak.module );
-
-			if( module == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules invalid import module %s"
-					, pak.module.c_str()
-					);
-
-				return false;
-			}
-
-			if( pak.initializer.empty() == true )
-			{
-				continue;
-			}
-
-			if( module->onInitialize( pak.initializer ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules invalid initialize module %s"
-					, pak.module.c_str()
-					);
-
 				return false;
 			}
 		}
 
 		m_initializeModules = true;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ScriptEngine::initializeModule_( const ScriptModulePack & _pack )
+	{
+		if( _pack.module.empty() == true )
+		{
+			return true;
+		}
+
+		ScriptModuleInterfacePtr module = this->importModule( _pack.module );
+
+		if( module == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ScriptEngine::initializeModules invalid import module %s"
+				, _pack.module.c_str()
+				);
+
+			return false;
+		}
+
+		if( _pack.initializer.empty() == true )
+		{
+			return true;
+		}
+
+		if( module->onInitialize( _pack.initializer ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ScriptEngine::initializeModules invalid initialize module %s"
+				, _pack.module.c_str()
+				);
+
+			return false;
+		}
 
 		return true;
 	}

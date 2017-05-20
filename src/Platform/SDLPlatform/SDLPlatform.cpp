@@ -620,6 +620,8 @@ namespace Menge
 				break;
 			}
 
+			Helper::pathRemoveBackslash( fullPath );
+
 			if( s_isDirectoryFullpath( m_serviceProvider, fullPath ) == true )
 			{
 				break;
@@ -641,6 +643,11 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SDLPlatform::removeFile( const WString & _path )
+	{
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 #	ifdef WIN32

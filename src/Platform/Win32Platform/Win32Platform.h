@@ -96,7 +96,6 @@ namespace Menge
 
 	protected:
 		bool calcCursorPosition_( mt::vec2f & _point ) const;
-		WChar translateVirtualKey_( unsigned int _vkc, unsigned int _vk ) const;
 		DWORD getWindowStyle_( bool _fullsreen ) const;
 		RECT getWindowsRect_( const Resolution & _resolution, bool _fullsreen ) const;
 

@@ -198,6 +198,17 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleTextEvent( const InputTextEvent & _event )
+	{
+		//bool handle = m_defaultHandle;
+
+		bool handle = EVENTABLE_METHODR( this, EVENT_TEXT, m_defaultHandle )
+			->onHotSpotText( _event );
+		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEY, handle )(this, (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat);
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
 	{
 		//bool handle = m_defaultHandle;

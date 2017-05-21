@@ -58,6 +58,14 @@ if( MENGINE_TARGET_MSVC )
 endif()
 
 if( MENGINE_TARGET_SDL )
+    ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )
+    
+    ADD_SUBDIRECTORY( MengeXlsExportPlugin )
+    ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
+    ADD_SUBDIRECTORY( Win32ConsoleLogger )
+endif()
+
+if( MENGINE_TARGET_SDL )
     ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
     ADD_SUBDIRECTORY( SDLFileGroupPlugin )
 endif()

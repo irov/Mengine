@@ -90,7 +90,7 @@ namespace Menge
             , int_unicodeCapacity
             );
         
-        if( wc_size == 0 && _utf8Size != 0 )
+		if( (wc_size == 0 || wc_size == 0xFFFD) && _utf8Size != 0 )
         {
             DWORD err = GetLastError();
 

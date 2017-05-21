@@ -199,6 +199,7 @@ namespace Menge
             m_factoryPyGlobalMouseHandlerWheels = new FactoryPool<PyGlobalMouseHandlerWheel, 32>(m_serviceProvider);
             m_factoryPyGlobalMouseHandlerButtonBegins = new FactoryPool<PyGlobalMouseHandlerButtonBegin, 32>(m_serviceProvider);
             m_factoryPyGlobalKeyHandler = new FactoryPool<PyGlobalKeyHandler, 32>(m_serviceProvider);
+			m_factoryPyGlobalTextHandler = new FactoryPool<PyGlobalTextHandler, 32>( m_serviceProvider );
 		}
 
 	public:
@@ -2311,8 +2312,13 @@ namespace Menge
 
             bool onHotSpotKey( const InputKeyEvent & _event ) override
             {
-                return m_cb.call( _event.x, _event.y, (uint32_t)_event.key, _event.code, _event.isDown, _event.isRepeat );
+                return m_cb.call( _event.x, _event.y, (uint32_t)_event.code, _event.isDown, _event.isRepeat );
             }
+
+			bool onHotSpotText( const InputTextEvent & _event ) override
+			{
+				return m_cb.call( _event.x, _event.y, _event.key );
+			}
 
             bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override
             {
@@ -5944,6 +5950,13 @@ namespace Menge
 				return false;
 			}
 
+			bool handleTextEvent( const InputTextEvent & _event ) override
+			{
+				(void)_event;
+
+				return false;
+			}
+
 		protected:
 			bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
 			{
@@ -6204,7 +6217,7 @@ namespace Menge
 		protected:
 			bool handleKeyEvent( const InputKeyEvent & _event ) override
 			{
-				pybind::object py_result = m_cb.call_args( (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat, m_args );
+				pybind::object py_result = m_cb.call_args( (uint32_t)_event.code, _event.x, _event.y, _event.isDown, _event.isRepeat, m_args );
 
 				if( py_result.is_none() == false )
 				{
@@ -6213,7 +6226,7 @@ namespace Menge
 						, py_result.repr()
 						);
 				}
-
+				
 				return false;
 			}
 		};
@@ -6226,6 +6239,42 @@ namespace Menge
 				->getGlobalHandleSystem();
 
 			PyGlobalKeyHandler * handler = m_factoryPyGlobalKeyHandler->createObject();
+
+			handler->initialize( m_serviceProvider, _cb, _args );
+
+			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
+
+			return id;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		class PyGlobalTextHandler
+			: public PyGlobalBaseHandler
+		{
+		protected:
+			bool handleTextEvent( const InputTextEvent & _event ) override
+			{
+				pybind::object py_result = m_cb.call_args( _event.key, _event.x, _event.y, m_args );
+
+				if( py_result.is_none() == false )
+				{
+					LOGGER_ERROR( m_serviceProvider )("PyGlobalTextHandler %s return value %s not None"
+						, m_cb.repr()
+						, py_result.repr()
+						);
+				}
+
+				return false;
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////
+		FactoryPtr m_factoryPyGlobalTextHandler;
+		//////////////////////////////////////////////////////////////////////////
+		uint32_t s_addTextHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		{
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
+				->getGlobalHandleSystem();
+
+			PyGlobalKeyHandler * handler = m_factoryPyGlobalTextHandler->createObject();
 
 			handler->initialize( m_serviceProvider, _cb, _args );
 
@@ -7922,6 +7971,7 @@ namespace Menge
 			pybind::def_functor_args( kernel, "addMouseButtonHandlerEnd", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerEnd );
 			pybind::def_functor_args( kernel, "addMouseWheelHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseWheelHandler );
 			pybind::def_functor_args( kernel, "addKeyHandler", nodeScriptMethod, &NodeScriptMethod::s_addKeyHandler );
+			pybind::def_functor_args( kernel, "addTextHandler", nodeScriptMethod, &NodeScriptMethod::s_addTextHandler );
 
 			pybind::def_functor( kernel, "removeGlobalHandler", nodeScriptMethod, &NodeScriptMethod::s_removeGlobalHandler );
 			pybind::def_functor( kernel, "enableGlobalHandler", nodeScriptMethod, &NodeScriptMethod::s_enableGlobalHandler );

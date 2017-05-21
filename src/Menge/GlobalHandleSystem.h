@@ -37,6 +37,7 @@ namespace Menge
 
 	public:
 		bool handleKeyEvent( const InputKeyEvent & _event ) override;
+		bool handleTextEvent( const InputTextEvent & _event ) override;
 
 	public:
 		bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;

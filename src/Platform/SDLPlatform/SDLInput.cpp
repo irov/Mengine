@@ -1,5 +1,7 @@
 #   include "SDLInput.h"
 
+#	include "Interface/UnicodeInterface.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Config/String.h"
@@ -67,12 +69,29 @@ namespace Menge
 				}
 
                 bool isDown = _event.key.type == SDL_KEYDOWN;
-
+				
                 m_keyDown[code] = isDown;
 				
                 INPUT_SERVICE( m_serviceProvider )
-                    ->pushKeyEvent( point.x, point.y, code, (wchar_t)_event.key.keysym.sym, isDown, false );
+                    ->pushKeyEvent( point.x, point.y, code, isDown, false );
             } break;
+		case SDL_TEXTINPUT:
+			{
+				int x;
+				int y;
+				SDL_GetMouseState( &x, &y );
+
+				mt::vec2f point;
+				this->calcCursorPosition_( x, y, point );
+
+				WChar text_code[2];
+				size_t text_code_size;
+				UNICODE_SERVICE( m_serviceProvider )
+					->utf8ToUnicode( _event.text.text, -1, text_code, 2, &text_code_size );
+
+				INPUT_SERVICE( m_serviceProvider )
+					->pushTextEvent( point.x, point.y, text_code[0] );
+			}break;
         case SDL_MOUSEMOTION:
             {
                 mt::vec2f point;

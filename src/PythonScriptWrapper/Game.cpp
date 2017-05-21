@@ -59,8 +59,7 @@ namespace Menge
 				->calcGlobalMouseWorldPosition( point, wp );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_KEY, handle )
-                ->onGameKey( _event.key, wp.x, wp.y, _event.code, _event.isDown, _event.isRepeat );
-			//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_KEY, handle )((uint32_t)_event.key, wp.x, wp.y, _event.code, _event.isDown, _event.isRepeat);
+                ->onGameKey( _event.code, wp.x, wp.y, _event.isDown, _event.isRepeat );
 		}
 
 		if( handle == false )
@@ -68,6 +67,31 @@ namespace Menge
 			handle = PLAYER_SERVICE(m_serviceProvider)
 				->handleKeyEvent( _event );
 		}	
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::handleTextEvent( const InputTextEvent & _event )
+	{
+		bool handle = false;
+
+		if( handle == false )
+		{
+			mt::vec2f point( _event.x, _event.y );
+
+			mt::vec2f wp;
+			PLAYER_SERVICE( m_serviceProvider )
+				->calcGlobalMouseWorldPosition( point, wp );
+
+			handle = EVENTABLE_METHODR( this, EVENT_GAME_TEXT, handle )
+				->onGameText( _event.key, wp.x, wp.y );
+		}
+
+		if( handle == false )
+		{
+			handle = PLAYER_SERVICE( m_serviceProvider )
+				->handleTextEvent( _event );
+		}
 
 		return handle;
 	}
@@ -291,10 +315,15 @@ namespace Menge
                 m_cb.call( _viewport, _aspect );
             }
 
-            bool onGameKey( KeyCode _key, float _x, float _y, WChar _code, bool _isDown, bool _isRepeat ) override
+            bool onGameKey( KeyCode _code, float _x, float _y, bool _isDown, bool _isRepeat ) override
             {
-                return m_cb.call( (uint32_t)_key, _x, _y, _code, _isDown, _isRepeat );
+                return m_cb.call( (uint32_t)_code, _x, _y, _isDown, _isRepeat );
             }
+
+			bool onGameText( WChar _key, float _x, float _y ) override
+			{
+				return m_cb.call( _key, _x, _y );
+			}
 
             bool onGameMouseButton( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) override
             {
@@ -446,6 +475,7 @@ namespace Menge
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onGameViewport", EVENT_GAME_VIEWPORT );
 
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleKeyEvent", EVENT_GAME_KEY );
+		Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleTextEvent", EVENT_GAME_TEXT );
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleMouseButtonEvent", EVENT_GAME_MOUSE_BUTTON );
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleMouseButtonEventBegin", EVENT_GAME_MOUSE_BUTTON_BEGIN );
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleMouseButtonEventEnd", EVENT_GAME_MOUSE_BUTTON_END );

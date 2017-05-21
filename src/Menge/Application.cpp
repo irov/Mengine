@@ -752,7 +752,7 @@ namespace Menge
 
 		if( developmentMode == true )
 		{
-			if( _event.key == KC_F6 && _event.isDown )
+			if( _event.code == KC_F6 && _event.isDown )
 			{
 				if( ( m_debugMask & MENGE_DEBUG_HOTSPOTS ) != 0 )
 				{
@@ -764,7 +764,7 @@ namespace Menge
 				}
 			}
 
-			if( _event.key == KC_F11 && _event.isDown )
+			if( _event.code == KC_F11 && _event.isDown )
 			{
 				static bool wireframeMode = false;
 
@@ -782,7 +782,7 @@ namespace Menge
 				}
 			}
 
-			if( _event.key == KC_F10 && _event.isDown )
+			if( _event.code == KC_F10 && _event.isDown )
 			{
 				if( ( m_debugMask & MENGE_DEBUG_NODES ) != 0 )
 				{
@@ -794,13 +794,13 @@ namespace Menge
 				}
 			}
 
-			if( _event.key == KC_F9 && _event.isDown )
+			if( _event.code == KC_F9 && _event.isDown )
 			{
 				PLAYER_SERVICE( m_serviceProvider )
 					->toggleDebugText();
 			}
 
-			if( _event.key == KC_F8 && _event.isDown )
+			if( _event.code == KC_F8 && _event.isDown )
 			{
 				if( ( m_debugMask & MENGE_DEBUG_TILEPOLYGON ) != 0 )
 				{
@@ -812,7 +812,7 @@ namespace Menge
 				}
 			}
 
-			if( _event.key == KC_F5 && _event.isDown == true )
+			if( _event.code == KC_F5 && _event.isDown == true )
 			{
 				//RESOURCE_SERVICE(m_serviceProvider)
 					//->dumpResources("Application");
@@ -870,7 +870,7 @@ namespace Menge
                 LOGGER_ERROR( m_serviceProvider )("%s", str.c_str() );
 			}
 
-			if( _event.key == KC_OEM_MINUS && _event.isDown == true )
+			if( _event.code == KC_OEM_MINUS && _event.isDown == true )
 			{
 				if( RENDER_SERVICE(m_serviceProvider)
 					->decrefLimitRenderObjects() == false )
@@ -882,7 +882,7 @@ namespace Menge
 				}				
 			}
 
-			if( _event.key == KC_OEM_PLUS && _event.isDown == true )
+			if( _event.code == KC_OEM_PLUS && _event.isDown == true )
 			{
 				RENDER_SERVICE(m_serviceProvider)
 					->increfLimitRenderObjects();
@@ -896,7 +896,7 @@ namespace Menge
 				m_debugPause = true;
 			}
 
-			if( _event.key == KC_F12 && _event.isDown == true )
+			if( _event.code == KC_F12 && _event.isDown == true )
 			{
 				bool enable = RENDER_SERVICE( m_serviceProvider )
 					->isRedAlertMode();
@@ -905,7 +905,7 @@ namespace Menge
 					->enableRedAlertMode( !enable );
 			}
 
-			if( _event.key == KC_F4 && _event.isDown == true )
+			if( _event.code == KC_F4 && _event.isDown == true )
 			{
 				m_debugFileOpen = !m_debugFileOpen;
 
@@ -920,7 +920,7 @@ namespace Menge
 				}
 			}
 
-			if( _event.key == KC_P && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
+			if( _event.code == KC_P && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
 			{
 				static bool s_particle_enable = true;
 
@@ -930,7 +930,7 @@ namespace Menge
 					->setParticleEnable( s_particle_enable );
 			}
 
-			if( _event.key == KC_T && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
+			if( _event.code == KC_T && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
 			{
 				static bool s_text_enable = true;
 
@@ -940,7 +940,7 @@ namespace Menge
 					->setTextEnable( s_text_enable );
 			}
 
-			if( _event.key == KC_R && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
+			if( _event.code == KC_R && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
 			{
 				static bool s_text_debug = true;
 
@@ -950,7 +950,7 @@ namespace Menge
 					->notify( NOTIFICATOR_DEBUG_TEXT_MODE, s_text_debug );
 			}
 
-			if( _event.key == KC_E && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
+			if( _event.code == KC_E && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
 			{
 				NOTIFICATION_SERVICE( m_serviceProvider )
 					->notify( NOTIFICATOR_RELOAD_LOCALE_PREPARE );
@@ -968,7 +968,7 @@ namespace Menge
 					->setLocale( locale );
 			}
 
-			if( _event.key == KC_0 && _event.isDown == true )
+			if( _event.code == KC_0 && _event.isDown == true )
 			{
 				static uint32_t batchMode = RENDER_SERVICE(m_serviceProvider)
 					->getBatchMode();
@@ -993,7 +993,7 @@ namespace Menge
 					->setBatchMode( mode );
 			}
 
-			if( _event.key == KC_F3 && _event.isDown == true )
+			if( _event.code == KC_F3 && _event.isDown == true )
             {
 				stdex_memory_info_t mi[25];
                 size_t count = stdex_allocator_memoryinfo( mi, 25 );
@@ -1034,7 +1034,7 @@ namespace Menge
 				printf("total %.3f:%.3f\n", total_now_mb, total_max_mb);
             }
 
-			if( _event.key == KC_F2 && _event.isDown == true )
+			if( _event.code == KC_F2 && _event.isDown == true )
 			{
 				Scene * scene = PLAYER_SERVICE(m_serviceProvider)
 					->getCurrentScene();
@@ -1043,7 +1043,16 @@ namespace Menge
 			}
 		}
 
-		bool handle = GAME_SERVICE( m_serviceProvider )->handleKeyEvent( _event );
+		bool handle = GAME_SERVICE( m_serviceProvider )
+			->handleKeyEvent( _event );
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::textEvent( const InputTextEvent & _event )
+	{
+		bool handle = GAME_SERVICE( m_serviceProvider )
+			->handleTextEvent( _event );
 
 		return handle;
 	}

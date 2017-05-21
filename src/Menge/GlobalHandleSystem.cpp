@@ -67,6 +67,32 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool GlobalHandleSystem::handleTextEvent( const InputTextEvent & _event )
+	{
+		for( TVectorGlobalHandler::iterator
+			it = m_handlers.begin(),
+			it_end = m_handlers.end();
+			it != it_end;
+			++it )
+		{
+			const GlobalHandlerDesc & desc = *it;
+
+			if( desc.dead == true )
+			{
+				continue;
+			}
+
+			if( desc.enable == false )
+			{
+				continue;
+			}
+
+			desc.handler->handleTextEvent( _event );
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool GlobalHandleSystem::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
 	{
 		for( TVectorGlobalHandler::iterator

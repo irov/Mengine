@@ -29,6 +29,7 @@ namespace Menge
         EVENT_GAME_RENDER_VIEWPORT,
         EVENT_GAME_VIEWPORT,
         EVENT_GAME_KEY,
+		EVENT_GAME_TEXT,
         EVENT_GAME_MOUSE_BUTTON,
         EVENT_GAME_MOUSE_BUTTON_BEGIN,
         EVENT_GAME_MOUSE_BUTTON_END,
@@ -67,7 +68,8 @@ namespace Menge
         virtual void onGameFixedDisplayResolution( bool _fixed ) = 0;
         virtual void onGameRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) = 0;
         virtual void onGameViewport( const Viewport & _viewport, float _aspect ) = 0;
-        virtual bool onGameKey( KeyCode _key, float _x, float _y, WChar _code, bool _isDown, bool _isRepeat ) = 0;
+        virtual bool onGameKey( KeyCode _code, float _x, float _y, bool _isDown, bool _isRepeat ) = 0;
+		virtual bool onGameText( WChar _key, float _x, float _y ) = 0;
         virtual bool onGameMouseButton( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) = 0;
         virtual bool onGameMouseButtonBegin( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) = 0;
         virtual bool onGameMouseButtonEnd( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) = 0;
@@ -133,6 +135,7 @@ namespace Menge
 
 	public:
 		bool handleKeyEvent( const InputKeyEvent & _event ) override;
+		bool handleTextEvent( const InputTextEvent & _event ) override;
 
 	public:
 		bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;

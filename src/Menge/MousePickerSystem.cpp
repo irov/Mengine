@@ -327,6 +327,41 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool MousePickerSystem::handleTextEvent( const InputTextEvent & _event )
+	{
+		m_states.clear();
+
+		if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
+		{
+			return false;
+		}
+
+		for( TVectorPickerTrapStates::reverse_iterator
+			it = m_states.rbegin(),
+			it_end = m_states.rend();
+			it != it_end;
+			++it )
+		{
+			PickerTrapState * state = it->state;
+
+			if( state->dead == true )
+			{
+				continue;
+			}
+
+			MousePickerTrapInterface * trap = state->trap;
+
+			if( trap->handleTextEvent( _event ) == false )
+			{
+				continue;
+			}
+
+			return m_handleValue;
+		}
+
+		return false;
+	}	
+	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
 	{
 		m_states.clear();

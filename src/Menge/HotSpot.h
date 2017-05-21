@@ -14,6 +14,7 @@ namespace Menge
     enum HotSpotEventFlag
     {
         EVENT_KEY = 0,
+		EVENT_TEXT,
         EVENT_MOUSE_BUTTON,
         EVENT_MOUSE_BUTTON_BEGIN,
         EVENT_MOUSE_BUTTON_END,
@@ -35,6 +36,7 @@ namespace Menge
         virtual void onHotSpotMouseLeave() = 0;
         virtual bool onHotSpotMouseEnter( float _x, float _y ) = 0;
         virtual bool onHotSpotKey( const InputKeyEvent & _event ) = 0;
+		virtual bool onHotSpotText( const InputTextEvent & _event ) = 0;
         virtual bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) = 0;
         virtual bool onHotSpotMouseButtonBegin( const InputMouseButtonEvent & _event ) = 0;
         virtual bool onHotSpotMouseButtonEnd( const InputMouseButtonEvent & _event ) = 0;
@@ -110,6 +112,7 @@ namespace Menge
 
 	public:
 		bool handleKeyEvent( const InputKeyEvent & _event ) override;
+		bool handleTextEvent( const InputTextEvent & _event ) override;
 
 	public:
 		bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;

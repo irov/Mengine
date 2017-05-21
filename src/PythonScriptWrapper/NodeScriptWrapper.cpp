@@ -167,38 +167,39 @@ namespace Menge
 	public:
 		NodeScriptMethod( ServiceProviderInterface * _serviceProvider )
 			: m_serviceProvider( _serviceProvider )
-            , m_creatorAffectorNodeFollowerLocalAlpha( _serviceProvider )
-            , m_creatorAffectorNodeFollowerCustomSize( _serviceProvider )         
-            , m_creatorAffectorNodeFollowerTextureUVScale( _serviceProvider )
-            , m_factoryAffectorVelocity2(_serviceProvider)
-            , m_nodeAffectorCreatorInterpolateLinear( _serviceProvider )
-            , m_nodeAffectorCreatorInterpolateLinearFloat( _serviceProvider )
-            , m_nodeAffectorCreatorInterpolateQuadratic( _serviceProvider )
-            , m_nodeAffectorCreatorInterpolateQuadraticBezier( _serviceProvider )
-            , m_nodeAffectorCreatorInterpolateCubicBezier( _serviceProvider )
-            , m_nodeAffectorCreatorInterpolateQuarticBezier( _serviceProvider )
-            , m_nodeAffectorCreatorInterpolateParabolic( _serviceProvider )
-            , m_nodeAffectorCreatorInterpolateQuadraticFloat( _serviceProvider )
-            , m_nodeAffectorCreatorInterpolateLinearColour( _serviceProvider )
-            , m_nodeAffectorCreatorInterpolateLinearVec4( _serviceProvider )
-            , m_nodeAffectorCreatorFollowTo( _serviceProvider )
-            , m_nodeAffectorCreatorFollowToW( _serviceProvider )
-            , m_nodeAffectorCreatorAccumulateLinear( _serviceProvider )
+			, m_creatorAffectorNodeFollowerLocalAlpha( _serviceProvider )
+			, m_creatorAffectorNodeFollowerCustomSize( _serviceProvider )
+			, m_creatorAffectorNodeFollowerTextureUVScale( _serviceProvider )
+			, m_factoryAffectorVelocity2( _serviceProvider )
+			, m_nodeAffectorCreatorInterpolateLinear( _serviceProvider )
+			, m_nodeAffectorCreatorInterpolateLinearFloat( _serviceProvider )
+			, m_nodeAffectorCreatorInterpolateQuadratic( _serviceProvider )
+			, m_nodeAffectorCreatorInterpolateQuadraticBezier( _serviceProvider )
+			, m_nodeAffectorCreatorInterpolateCubicBezier( _serviceProvider )
+			, m_nodeAffectorCreatorInterpolateQuarticBezier( _serviceProvider )
+			, m_nodeAffectorCreatorInterpolateParabolic( _serviceProvider )
+			, m_nodeAffectorCreatorInterpolateQuadraticFloat( _serviceProvider )
+			, m_nodeAffectorCreatorInterpolateLinearColour( _serviceProvider )
+			, m_nodeAffectorCreatorInterpolateLinearVec4( _serviceProvider )
+			, m_nodeAffectorCreatorFollowTo( _serviceProvider )
+			, m_nodeAffectorCreatorFollowToW( _serviceProvider )
+			, m_nodeAffectorCreatorAccumulateLinear( _serviceProvider )
 		{
-            m_factoryPyObjectTimingListener = new FactoryPool<PyScheduleTimerInterface, 8>(m_serviceProvider);            
-            m_factoryPySchedulePipeInterface = new FactoryPool<PySchedulePipeInterface, 8>(m_serviceProvider);
-            m_factoryDelaySchedulePipeInterface = new FactoryPool<DelaySchedulePipeInterface, 8>(m_serviceProvider);
-            m_factoryPyObjectScheduleListener = new FactoryPool<PyScheduleEventInterface, 8>(m_serviceProvider);
-            m_factoryPythonSceneChangeCallback = new FactoryPool<PythonSceneChangeCallback, 8>(m_serviceProvider);
-            m_factoryAffectorGridBurnTransparency = new FactoryPool<AffectorGridBurnTransparency, 4>(m_serviceProvider);
-            m_factoryAffectorUser = new FactoryPool<AffectorUser, 4>(m_serviceProvider);
-            m_factoryNodeAffectorCallback = new FactoryPool<ScriptableAffectorCallback, 4>(m_serviceProvider);
-            m_factoryPyGlobalMouseMoveHandlers = new FactoryPool<PyGlobalMouseMoveHandler, 32>(m_serviceProvider);
-            m_factoryPyGlobalMouseHandlerButtons = new FactoryPool<PyGlobalMouseHandlerButton, 32>(m_serviceProvider);
-            m_factoryPyGlobalMouseHandlerButtonEnds = new FactoryPool<PyGlobalMouseHandlerButtonEnd, 32>(m_serviceProvider);
-            m_factoryPyGlobalMouseHandlerWheels = new FactoryPool<PyGlobalMouseHandlerWheel, 32>(m_serviceProvider);
-            m_factoryPyGlobalMouseHandlerButtonBegins = new FactoryPool<PyGlobalMouseHandlerButtonBegin, 32>(m_serviceProvider);
-            m_factoryPyGlobalKeyHandler = new FactoryPool<PyGlobalKeyHandler, 32>(m_serviceProvider);
+			m_factoryPyObjectTimingListener = new FactoryPool<PyScheduleTimerInterface, 8>( m_serviceProvider );
+			m_factoryPySchedulePipeInterface = new FactoryPool<PySchedulePipeInterface, 8>( m_serviceProvider );
+			m_factoryDelaySchedulePipeInterface = new FactoryPool<DelaySchedulePipeInterface, 8>( m_serviceProvider );
+			m_factoryPyObjectScheduleListener = new FactoryPool<PyScheduleEventInterface, 8>( m_serviceProvider );
+			m_factoryPythonSceneChangeCallback = new FactoryPool<PythonSceneChangeCallback, 8>( m_serviceProvider );
+			m_factoryAffectorGridBurnTransparency = new FactoryPool<AffectorGridBurnTransparency, 4>( m_serviceProvider );
+			m_factoryAffectorUser = new FactoryPool<AffectorUser, 4>( m_serviceProvider );
+			m_factoryNodeAffectorCallback = new FactoryPool<ScriptableAffectorCallback, 4>( m_serviceProvider );
+			m_factoryPyGlobalMouseMoveHandlers = new FactoryPool<PyGlobalMouseMoveHandler, 32>( m_serviceProvider );
+			m_factoryPyGlobalMouseHandlerButtons = new FactoryPool<PyGlobalMouseHandlerButton, 32>( m_serviceProvider );
+			m_factoryPyGlobalMouseHandlerButtonEnds = new FactoryPool<PyGlobalMouseHandlerButtonEnd, 32>( m_serviceProvider );
+			m_factoryPyGlobalMouseHandlerWheels = new FactoryPool<PyGlobalMouseHandlerWheel, 32>( m_serviceProvider );
+			m_factoryPyGlobalMouseHandlerButtonBegins = new FactoryPool<PyGlobalMouseHandlerButtonBegin, 32>( m_serviceProvider );
+			m_factoryPyGlobalKeyHandler = new FactoryPool<PyGlobalKeyHandler, 32>( m_serviceProvider );
+			m_factoryPyGlobalTextHandler = new FactoryPool<PyGlobalTextHandler, 32>( m_serviceProvider );
 		}
 
 	public:
@@ -281,8 +282,8 @@ namespace Menge
 			for( TVectorString::const_iterator
 				it = str_args.begin(),
 				it_end = str_args.end();
-			it != it_end;
-			++it )
+				it != it_end;
+				++it )
 			{
 				const String & str_arg = *it;
 
@@ -559,7 +560,7 @@ namespace Menge
 			pybind::list & m_list;
 
 		private:
-			void operator = (const PythonVisitorMovieSlot &);
+			void operator = ( const PythonVisitorMovieSlot & );
 		};
 		//////////////////////////////////////////////////////////////////////////
 		pybind::list movie_getSlots( pybind::kernel_interface * _kernel, Movie * _movie )
@@ -567,7 +568,7 @@ namespace Menge
 			pybind::list py_list( _kernel );
 
 			PythonVisitorMovieSlot visitor( _kernel, py_list );
-			_movie->visitMovieLayer(STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSlot" ), &visitor );
+			_movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSlot" ), &visitor );
 
 			return py_list;
 		}
@@ -607,8 +608,8 @@ namespace Menge
 			pybind::list py_list( _kernel );
 
 			PythonVisitorMovieSocket visitor( _kernel, py_list );
-			_movie->visitMovieLayer(STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketImage" ), &visitor );
-			_movie->visitMovieLayer(STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketShape" ), &visitor );
+			_movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketImage" ), &visitor );
+			_movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketShape" ), &visitor );
 
 			return py_list;
 		}
@@ -618,7 +619,7 @@ namespace Menge
 		{
 		public:
 			PythonVisitorMovieSubMovie( pybind::kernel_interface * _kernel, const pybind::list & _list )
-				: m_kernel(_kernel)
+				: m_kernel( _kernel )
 				, m_list( _list )
 			{
 			}
@@ -648,7 +649,7 @@ namespace Menge
 			pybind::list py_list( _kernel );
 
 			PythonVisitorMovieSubMovie visitor( _kernel, py_list );
-			_movie->visitMovieLayer(STRINGIZE_STRING_LOCAL( m_serviceProvider, "SubMovie" ), &visitor );
+			_movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( m_serviceProvider, "SubMovie" ), &visitor );
 
 			return py_list;
 		}
@@ -658,7 +659,7 @@ namespace Menge
 		{
 		public:
 			PythonVisitorMovieLayer( pybind::kernel_interface * _kernel, const pybind::list & _list )
-				: m_kernel(_kernel)
+				: m_kernel( _kernel )
 				, m_list( _list )
 			{
 			}
@@ -676,7 +677,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		pybind::list movie_filterLayers( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _type )
 		{
-			pybind::list py_list(_kernel);
+			pybind::list py_list( _kernel );
 
 			PythonVisitorMovieLayer visitor( _kernel, py_list );
 			_movie->visitMovieLayer( _type, &visitor );
@@ -1235,8 +1236,8 @@ namespace Menge
 			for( const mt::vec2f
 				*it = outer_points,
 				*it_end = outer_points + outer_count;
-			it != it_end;
-			++it )
+				it != it_end;
+				++it )
 			{
 				const mt::vec2f & v = *it;
 
@@ -1535,7 +1536,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool timingRemove( uint32_t _id )
 		{
-            const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			bool successful = tm->remove( _id );
@@ -1545,7 +1546,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		ScheduleManagerInterfacePtr createScheduler()
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->createSchedulerManager();
 
 			return sm;
@@ -1569,7 +1570,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t schedule( float _timing, const pybind::object & _script, const pybind::detail::args_operator_t & _args )
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener->createObject();
@@ -1624,7 +1625,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool scheduleRemove( uint32_t _id )
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1639,7 +1640,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void scheduleRemoveAll()
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1652,7 +1653,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleFreeze( uint32_t _id, bool _freeze )
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1667,7 +1668,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_scheduleFreezeAll()
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1680,7 +1681,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void scheduleResumeAll()
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1693,7 +1694,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleIsFreeze( uint32_t _id )
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1706,7 +1707,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		float s_scheduleTime( uint32_t _id )
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1721,7 +1722,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_scheduleGlobal( float _timing, const pybind::object & _script, const pybind::detail::args_operator_t & _args )
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1740,7 +1741,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleGlobalRemove( uint32_t _id )
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1755,7 +1756,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_scheduleGlobalRemoveAll()
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1768,7 +1769,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleGlobalFreeze( uint32_t _id, bool _freeze )
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1783,7 +1784,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_scheduleGlobalFreezeAll()
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1796,7 +1797,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_scheduleGlobalResumeAll()
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1809,7 +1810,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleGlobalIsFreeze( uint32_t _id )
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1824,7 +1825,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		float s_scheduleGlobalTime( uint32_t _id )
 		{
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1942,7 +1943,7 @@ namespace Menge
 			else
 			{
 				Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
-					->generatePrototype(STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ), _prototype );
+					->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ), _prototype );
 
 				if( scene == nullptr )
 				{
@@ -1974,7 +1975,7 @@ namespace Menge
 		Scene * s_createScene( const ConstString & _prototype, const ConstString & _name )
 		{
 			Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
-				->generatePrototype(STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ), _prototype );
+				->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ), _prototype );
 
 			scene->setName( _name );
 
@@ -2006,7 +2007,7 @@ namespace Menge
 		void s_setArrow( const ConstString & _prototype )
 		{
 			Arrow * arrow = PROTOTYPE_SERVICE( m_serviceProvider )
-				->generatePrototype(STRINGIZE_STRING_LOCAL( m_serviceProvider, "Arrow" ), _prototype );
+				->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Arrow" ), _prototype );
 
 			if( arrow == nullptr )
 			{
@@ -2123,264 +2124,269 @@ namespace Menge
 
 			return id;
 		}
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_SurfaceVideo_setEventListener( pybind::kernel_interface * _kernel, SurfaceVideo * _surface, PyObject * _args, PyObject * _kwds )
-        {
-            (void)_args;
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * s_SurfaceVideo_setEventListener( pybind::kernel_interface * _kernel, SurfaceVideo * _surface, PyObject * _args, PyObject * _kwds )
+		{
+			(void)_args;
 
-            if( _kwds == nullptr )
-            {
-                return pybind::ret_none();
-            }
-                        
-            pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
+			if( _kwds == nullptr )
+			{
+				return pybind::ret_none();
+			}
+
+			pybind::dict py_kwds( _kernel, _kwds );
+			Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
 
 #	ifdef _DEBUG
-            if( py_kwds.empty() == false )
-            {
-                throw;
-            }
+			if( py_kwds.empty() == false )
+			{
+				throw;
+			}
 #	endif
 
-            return pybind::ret_none();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_SurfaceImageSequence_setEventListener( pybind::kernel_interface * _kernel, SurfaceImageSequence * _surface, PyObject * _args, PyObject * _kwds )
-        {
-            (void)_args;
+			return pybind::ret_none();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * s_SurfaceImageSequence_setEventListener( pybind::kernel_interface * _kernel, SurfaceImageSequence * _surface, PyObject * _args, PyObject * _kwds )
+		{
+			(void)_args;
 
-            if( _kwds == nullptr )
-            {
-                return pybind::ret_none();
-            }
+			if( _kwds == nullptr )
+			{
+				return pybind::ret_none();
+			}
 
-            pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
+			pybind::dict py_kwds( _kernel, _kwds );
+			Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
 
 #	ifdef _DEBUG
-            if( py_kwds.empty() == false )
-            {
-                throw;
-            }
+			if( py_kwds.empty() == false )
+			{
+				throw;
+			}
 #	endif
 
-            return pybind::ret_none();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_SurfaceSound_setEventListener( pybind::kernel_interface * _kernel, SurfaceSound * _surface, PyObject * _args, PyObject * _kwds )
-        {
-            (void)_args;
+			return pybind::ret_none();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * s_SurfaceSound_setEventListener( pybind::kernel_interface * _kernel, SurfaceSound * _surface, PyObject * _args, PyObject * _kwds )
+		{
+			(void)_args;
 
-            if( _kwds == nullptr )
-            {
-                return pybind::ret_none();
-            }
+			if( _kwds == nullptr )
+			{
+				return pybind::ret_none();
+			}
 
-            pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
+			pybind::dict py_kwds( _kernel, _kwds );
+			Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
 
 #	ifdef _DEBUG
-            if( py_kwds.empty() == false )
-            {
-                throw;
-            }
+			if( py_kwds.empty() == false )
+			{
+				throw;
+			}
 #	endif
 
-            return pybind::ret_none();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonMeshEventReceiver
-            : public ScriptEventReceiver
-            , public MeshgetEventReceiver
-        {
-        public:
-            void onMeshgetUpdate( float _current, float _timing ) override
-            {
-                m_cb.call( _current, _timing );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_Meshget_setEventListener( pybind::kernel_interface * _kernel,  Meshget * _node, PyObject * _args, PyObject * _kwds )
-        {
-            (void)_args;
+			return pybind::ret_none();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		class PythonMeshEventReceiver
+			: public ScriptEventReceiver
+			, public MeshgetEventReceiver
+		{
+		public:
+			void onMeshgetUpdate( float _current, float _timing ) override
+			{
+				m_cb.call( _current, _timing );
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * s_Meshget_setEventListener( pybind::kernel_interface * _kernel, Meshget * _node, PyObject * _args, PyObject * _kwds )
+		{
+			(void)_args;
 
-            if( _kwds == nullptr )
-            {
-                return pybind::ret_none();
-            }
+			if( _kwds == nullptr )
+			{
+				return pybind::ret_none();
+			}
 
-            pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerScriptEventReceiver<PythonMeshEventReceiver>( py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
-
-#	ifdef _DEBUG
-            if( py_kwds.empty() == false )
-            {
-                throw;
-            }
-#	endif
-            
-            return pybind::ret_none();
-        }        
-        ////////////////////////////////////////////////////////////////////////////        
-        PyObject * s_ParticleEmitter2_setEventListener( pybind::kernel_interface * _kernel, ParticleEmitter2 * _node, PyObject * _args, PyObject * _kwds )
-        {
-            (void)_args;
-
-            if( _kwds == nullptr )
-            {
-                return pybind::ret_none();
-            }
-
-            pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( py_kwds, _node );
+			pybind::dict py_kwds( _kernel, _kwds );
+			Helper::registerScriptEventReceiver<PythonMeshEventReceiver>( py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
 
 #	ifdef _DEBUG
-            if( py_kwds.empty() == false )
-            {
-                throw;
-            }
+			if( py_kwds.empty() == false )
+			{
+				throw;
+			}
 #	endif
 
-            return pybind::ret_none();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonScriptHolderEventReceiver
-            : public ScriptEventReceiver
-            , public ScriptHolderEventReceiver
-        {
-        public:
-            pybind::object onScriptHolderKeepScript() override
-            {
-                return m_cb.call();
-            }
+			return pybind::ret_none();
+		}
+		////////////////////////////////////////////////////////////////////////////        
+		PyObject * s_ParticleEmitter2_setEventListener( pybind::kernel_interface * _kernel, ParticleEmitter2 * _node, PyObject * _args, PyObject * _kwds )
+		{
+			(void)_args;
 
-            void onScriptHolderReleaseScript(const pybind::object & _script) override
-            {
-                m_cb.call( _script );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_ScriptHolder_setEventListener( pybind::kernel_interface * _kernel, ScriptHolder * _node, PyObject * _args, PyObject * _kwds )
-        {
-            (void)_args;
+			if( _kwds == nullptr )
+			{
+				return pybind::ret_none();
+			}
 
-            if( _kwds == nullptr )
-            {
-                return pybind::ret_none();
-            }
-
-            pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerScriptEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
-            Helper::registerScriptEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
+			pybind::dict py_kwds( _kernel, _kwds );
+			Helper::registerAnimatableEventReceiver<>( py_kwds, _node );
 
 #	ifdef _DEBUG
-            if( py_kwds.empty() == false )
-            {
-                throw;
-            }
+			if( py_kwds.empty() == false )
+			{
+				throw;
+			}
 #	endif
 
-            return pybind::ret_none();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonHotSpotEventReceiver
-            : public ScriptEventReceiver
-            , public HotSpotEventReceiver
-        {
-        public:
-            void onHotSpotActivate() override
-            {
-                m_cb.call();
-            }
-            
-            void onHotSpotDeactivate() override
-            { 
-                m_cb.call();
-            }
-            
-            void onHotSpotMouseLeave() override
-            {
-                m_cb.call();
-            }
+			return pybind::ret_none();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		class PythonScriptHolderEventReceiver
+			: public ScriptEventReceiver
+			, public ScriptHolderEventReceiver
+		{
+		public:
+			pybind::object onScriptHolderKeepScript() override
+			{
+				return m_cb.call();
+			}
 
-            bool onHotSpotMouseEnter( float _x, float _y ) override
-            {
-                return m_cb.call( _x, _y );
-            }
+			void onScriptHolderReleaseScript( const pybind::object & _script ) override
+			{
+				m_cb.call( _script );
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * s_ScriptHolder_setEventListener( pybind::kernel_interface * _kernel, ScriptHolder * _node, PyObject * _args, PyObject * _kwds )
+		{
+			(void)_args;
 
-            bool onHotSpotKey( const InputKeyEvent & _event ) override
-            {
-                return m_cb.call( _event.x, _event.y, (uint32_t)_event.key, _event.code, _event.isDown, _event.isRepeat );
-            }
+			if( _kwds == nullptr )
+			{
+				return pybind::ret_none();
+			}
 
-            bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override
-            {
-                return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
-            }
-            
-            bool onHotSpotMouseButtonBegin( const InputMouseButtonEvent & _event ) override
-            {
-                return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
-            }
-            
-            bool onHotSpotMouseButtonEnd( const InputMouseButtonEvent & _event ) override
-            {
-                return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
-            }
-            
-            bool onHotSpotMouseMove( const InputMouseMoveEvent & _event ) override
-            {
-                return m_cb.call( _event.touchId, _event.x, _event.y, _event.dx, _event.dy, _event.pressure );
-            }
-
-            bool onHotSpotMouseWheel( const InputMouseWheelEvent & _event ) override
-            {
-                return m_cb.call( _event.x, _event.y, _event.button, _event.wheel );
-            }
-
-            void onHotSpotMouseOverDestroy() override
-            {
-                m_cb.call();
-            }
-
-            void onHotSpotMouseButtonBegin( uint32_t _enumerator, bool _isEnd ) override
-            {
-                m_cb.call( _enumerator, _isEnd );
-            }
-
-            void onHotSpotMouseButtonEnd( uint32_t _enumerator, bool _isEnd ) override
-            {
-                m_cb.call( _enumerator, _isEnd );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_HotSpot_setEventListener( pybind::kernel_interface * _kernel, HotSpot * _node, PyObject * _args, PyObject * _kwds )
-        {
-            (void)_args;
-
-            if( _kwds == nullptr )
-            {
-                return pybind::ret_none();
-            }
-
-            pybind::dict py_kwds( _kernel, _kwds );
-
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleKeyEvent", EVENT_KEY );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEvent", EVENT_MOUSE_BUTTON );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_MOUSE_BUTTON_BEGIN );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_MOUSE_BUTTON_END );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseMove", EVENT_MOUSE_MOVE );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseWheel", EVENT_MOUSE_WHEEL );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseEnter", EVENT_MOUSE_ENTER );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseLeave", EVENT_MOUSE_LEAVE );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseOverDestroy", EVENT_MOUSE_OVER_DESTROY );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onActivate", EVENT_ACTIVATE );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
+			pybind::dict py_kwds( _kernel, _kwds );
+			Helper::registerScriptEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
+			Helper::registerScriptEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
 
 #	ifdef _DEBUG
-            if( py_kwds.empty() == false )
-            {
+			if( py_kwds.empty() == false )
+			{
+				throw;
+			}
+#	endif
+
+			return pybind::ret_none();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		class PythonHotSpotEventReceiver
+			: public ScriptEventReceiver
+			, public HotSpotEventReceiver
+		{
+		public:
+			void onHotSpotActivate() override
+			{
+				m_cb.call();
+			}
+
+			void onHotSpotDeactivate() override
+			{
+				m_cb.call();
+			}
+
+			void onHotSpotMouseLeave() override
+			{
+				m_cb.call();
+			}
+
+			bool onHotSpotMouseEnter( float _x, float _y ) override
+			{
+				return m_cb.call( _x, _y );
+			}
+
+			bool onHotSpotKey( const InputKeyEvent & _event ) override
+			{
+				return m_cb.call( _event.x, _event.y, (uint32_t)_event.code, _event.isDown, _event.isRepeat );
+			}
+
+			bool onHotSpotText( const InputTextEvent & _event ) override
+			{
+				return m_cb.call( _event.x, _event.y, _event.key );
+			}
+
+			bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override
+			{
+				return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
+			}
+
+			bool onHotSpotMouseButtonBegin( const InputMouseButtonEvent & _event ) override
+			{
+				return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
+			}
+
+			bool onHotSpotMouseButtonEnd( const InputMouseButtonEvent & _event ) override
+			{
+				return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
+			}
+
+			bool onHotSpotMouseMove( const InputMouseMoveEvent & _event ) override
+			{
+				return m_cb.call( _event.touchId, _event.x, _event.y, _event.dx, _event.dy, _event.pressure );
+			}
+
+			bool onHotSpotMouseWheel( const InputMouseWheelEvent & _event ) override
+			{
+				return m_cb.call( _event.x, _event.y, _event.button, _event.wheel );
+			}
+
+			void onHotSpotMouseOverDestroy() override
+			{
+				m_cb.call();
+			}
+
+			void onHotSpotMouseButtonBegin( uint32_t _enumerator, bool _isEnd ) override
+			{
+				m_cb.call( _enumerator, _isEnd );
+			}
+
+			void onHotSpotMouseButtonEnd( uint32_t _enumerator, bool _isEnd ) override
+			{
+				m_cb.call( _enumerator, _isEnd );
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * s_HotSpot_setEventListener( pybind::kernel_interface * _kernel, HotSpot * _node, PyObject * _args, PyObject * _kwds )
+		{
+			(void)_args;
+
+			if( _kwds == nullptr )
+			{
+				return pybind::ret_none();
+			}
+
+			pybind::dict py_kwds( _kernel, _kwds );
+
+			Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleKeyEvent", EVENT_KEY );
+			Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEvent", EVENT_MOUSE_BUTTON );
+			Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_MOUSE_BUTTON_BEGIN );
+			Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_MOUSE_BUTTON_END );
+			Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseMove", EVENT_MOUSE_MOVE );
+			Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseWheel", EVENT_MOUSE_WHEEL );
+			Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseEnter", EVENT_MOUSE_ENTER );
+			Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseLeave", EVENT_MOUSE_LEAVE );
+			Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseOverDestroy", EVENT_MOUSE_OVER_DESTROY );
+			Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onActivate", EVENT_ACTIVATE );
+			Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
+
+#	ifdef _DEBUG
+			if( py_kwds.empty() == false )
+			{
 				for( pybind::dict::iterator
 					it = py_kwds.begin(),
 					it_end = py_kwds.end();
@@ -2394,80 +2400,80 @@ namespace Menge
 						);
 				}
 
-                throw;
-            }
+				throw;
+			}
 #	endif
 
-            return pybind::ret_none();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_HotSpot_removeEventListener( HotSpot * _node, PyObject * _args, PyObject * _kwds )
-        {
-            (void)_args;
-            (void)_kwds;
+			return pybind::ret_none();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * s_HotSpot_removeEventListener( HotSpot * _node, PyObject * _args, PyObject * _kwds )
+		{
+			(void)_args;
+			(void)_kwds;
 
-            _node->removeEvents();
+			_node->removeEvents();
 
-            return pybind::ret_none();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonMovieEventReceiver
-            : public PythonAnimatableEventReceiver<MovieEventReceiver>
-        {
-        public:
-            pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) override
-            {
-                return m_cb.call( _group, _name );
-            }
+			return pybind::ret_none();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		class PythonMovieEventReceiver
+			: public PythonAnimatableEventReceiver<MovieEventReceiver>
+		{
+		public:
+			pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) override
+			{
+				return m_cb.call( _group, _name );
+			}
 
-            Node * onMovieActivateInternal( const pybind::object & _internal ) override
-            {
-                return m_cb.call( _internal );
-            }
+			Node * onMovieActivateInternal( const pybind::object & _internal ) override
+			{
+				return m_cb.call( _internal );
+			}
 
-            void onMovieDeactivateInternal( const pybind::object & _internal ) override
-            {
-                m_cb.call( _internal );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_Movie_setEventListener( pybind::kernel_interface * _kernel, Movie * _node, PyObject * _args, PyObject * _kwds )
-        {
-            (void)_args;
+			void onMovieDeactivateInternal( const pybind::object & _internal ) override
+			{
+				m_cb.call( _internal );
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * s_Movie_setEventListener( pybind::kernel_interface * _kernel, Movie * _node, PyObject * _args, PyObject * _kwds )
+		{
+			(void)_args;
 
-            if( _kwds == nullptr )
-            {
-                return pybind::ret_none();
-            }
+			if( _kwds == nullptr )
+			{
+				return pybind::ret_none();
+			}
 
-            pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<PythonMovieEventReceiver>( py_kwds, _node );
+			pybind::dict py_kwds( _kernel, _kwds );
+			Helper::registerAnimatableEventReceiver<PythonMovieEventReceiver>( py_kwds, _node );
 
-            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL );
-            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL );
-            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL );
+			Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL );
+			Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL );
+			Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL );
 
 #	ifdef _DEBUG
-            if( py_kwds.empty() == false )
-            {
-                for( pybind::dict::iterator 
-                    it = py_kwds.begin(),
-                    it_end = py_kwds.end();
-                    it != it_end;
-                    ++it )
-                {
-                    std::string k = it.key();
-                    printf( "k %s\n"
-                        , k.c_str()
-                    );
-                }
+			if( py_kwds.empty() == false )
+			{
+				for( pybind::dict::iterator
+					it = py_kwds.begin(),
+					it_end = py_kwds.end();
+					it != it_end;
+					++it )
+				{
+					std::string k = it.key();
+					printf( "k %s\n"
+						, k.c_str()
+					);
+				}
 
-                throw;
-            }
+				throw;
+			}
 #	endif
 
-            return pybind::ret_none();
-        }
+			return pybind::ret_none();
+		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_Animatable_resume( Animatable * _animatable )
 		{
@@ -2506,60 +2512,60 @@ namespace Menge
 
 			return node;
 		}
-        //////////////////////////////////////////////////////////////////////////
-        SurfacePtr createSurface( const ConstString & _type )
-        {
-            SurfacePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Surface" ), _type );
+		//////////////////////////////////////////////////////////////////////////
+		SurfacePtr createSurface( const ConstString & _type )
+		{
+			SurfacePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
+				->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Surface" ), _type );
 
-            return surface;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        ShapeQuadFixed * createSprite( const ConstString & _name, const ResourceReferencePtr & _resource )
-        {
-            if( _resource == nullptr )
-            {
-                LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' resource is NULL"
-                    , _name.c_str()
-                    );
+			return surface;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		ShapeQuadFixed * createSprite( const ConstString & _name, const ResourceReferencePtr & _resource )
+		{
+			if( _resource == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' resource is NULL"
+					, _name.c_str()
+					);
 
-                return nullptr;
-            }
+				return nullptr;
+			}
 
-            SurfaceImagePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "SurfaceImage" ) );
+			SurfaceImagePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
+				->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "SurfaceImage" ) );
 
-            if( surface == nullptr )
-            {
-                LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' resource '%s' invalid create surface 'SurfaceImage'"
-                    , _name.c_str()
-                    , _resource->getName().c_str()
-                    );
+			if( surface == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' resource '%s' invalid create surface 'SurfaceImage'"
+					, _name.c_str()
+					, _resource->getName().c_str()
+					);
 
-                return nullptr;
-            }
+				return nullptr;
+			}
 
-            surface->setName( _name );
-            surface->setResourceImage( _resource );
+			surface->setName( _name );
+			surface->setResourceImage( _resource );
 
-            ShapeQuadFixed * shape = NODE_SERVICE( m_serviceProvider )
-                ->createNodeT<ShapeQuadFixed *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ShapeQuadFixed" ) );
+			ShapeQuadFixed * shape = NODE_SERVICE( m_serviceProvider )
+				->createNodeT<ShapeQuadFixed *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ShapeQuadFixed" ) );
 
-            if( shape == nullptr )
-            {
-                LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' resource '%s' invalid create shape 'ShapeQuadFixed'"
-                    , _name.c_str()
-                    , _resource->getName().c_str()
-                    );
+			if( shape == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' resource '%s' invalid create shape 'ShapeQuadFixed'"
+					, _name.c_str()
+					, _resource->getName().c_str()
+					);
 
-                return nullptr;
-            }
+				return nullptr;
+			}
 
-            shape->setName( _name );
-            shape->setSurface( surface );
+			shape->setName( _name );
+			shape->setSurface( surface );
 
-            return shape;
-        }
+			return shape;
+		}
 		//////////////////////////////////////////////////////////////////////////
 		void quitApplication()
 		{
@@ -2795,7 +2801,7 @@ namespace Menge
 			}
 
 			ResourceImageDefaultPtr resource = RESOURCE_SERVICE( m_serviceProvider )
-				->generateResourceT<ResourceImageDefaultPtr>(STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceImageDefault" ) );
+				->generateResourceT<ResourceImageDefaultPtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceImageDefault" ) );
 
 			if( resource == nullptr )
 			{
@@ -2815,7 +2821,7 @@ namespace Menge
 		ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const ColourValue & _colour, const mt::vec2f & _maxSize )
 		{
 			ResourceImageSolidPtr resource = RESOURCE_SERVICE( m_serviceProvider )
-				->generateResourceT<ResourceImageSolidPtr>(STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceImageSolid" ) );
+				->generateResourceT<ResourceImageSolidPtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceImageSolid" ) );
 
 			if( resource == nullptr )
 			{
@@ -2913,7 +2919,7 @@ namespace Menge
 			void onDownloadAssetComplete( HttpRequestID _id, uint32_t _code, bool _successful ) override
 			{
 				(void)_id;
-				(void)_code;				
+				(void)_code;
 				(void)_successful;
 				//Empty
 			}
@@ -3027,7 +3033,7 @@ namespace Menge
 			, const ConstString & _type
 			, const FilePath & _path
 			, const FilePath & _descriptionPath
-			)
+		)
 		{
 			FileGroupInterfacePtr fileGroup;
 			if( FILE_SERVICE( m_serviceProvider )
@@ -3095,7 +3101,7 @@ namespace Menge
 			}
 
 		protected:
-			void operator = (const PythonSaxCallback &)
+			void operator = ( const PythonSaxCallback & )
 			{
 			}
 
@@ -3182,7 +3188,7 @@ namespace Menge
 			pybind::object m_cb;
 
 		private:
-			void operator = (const MyVisitorTextFont &)
+			void operator = ( const MyVisitorTextFont & )
 			{
 			}
 		};
@@ -3216,7 +3222,7 @@ namespace Menge
 			pybind::list & m_l;
 
 		private:
-			void operator = (const MyVisitorCollectTextFont &)
+			void operator = ( const MyVisitorCollectTextFont & )
 			{
 			}
 		};
@@ -3260,8 +3266,8 @@ namespace Menge
 			for( WString::const_iterator
 				it = text_ws.begin(),
 				it_end = text_ws.end();
-			it != it_end;
-			++it )
+				it != it_end;
+				++it )
 			{
 				WChar ws_ch = *it;
 				WString ws_str( &ws_ch, 1 );
@@ -3569,7 +3575,7 @@ namespace Menge
 			uint32_t trimetric = s_rotateToTrimetric( _to - _from, _vx, _vy );
 
 			return trimetric;
-		}				
+		}
 		//////////////////////////////////////////////////////////////////////////
 		Polygon s_hotspotCorrect( HotSpotPolygon * _base, const TVectorHotSpotPolygon & _overlap )
 		{
@@ -3581,8 +3587,8 @@ namespace Menge
 			for( TVectorHotSpotPolygon::const_iterator
 				it = _overlap.begin(),
 				it_end = _overlap.end();
-			it != it_end;
-			++it )
+				it != it_end;
+				++it )
 			{
 				const HotSpotPolygon * overlap_hotspot = *it;
 
@@ -3781,12 +3787,12 @@ namespace Menge
 			pybind::list py_list( _kernel );
 
 			const TVectorMovieLayers & layers = resourceMovie->getLayers();
-            
+
 			for( TVectorMovieLayers::const_iterator
 				it = layers.begin(),
 				it_end = layers.end();
-			it != it_end;
-			++it )
+				it != it_end;
+				++it )
 			{
 				const MovieLayer & layer = *it;
 
@@ -4188,11 +4194,11 @@ namespace Menge
 		template<class T_Node, class T_Value, class T_Setter, class T_Getter>
 		class AffectorNodeFollowerCreator
 		{
-        public:
-            AffectorNodeFollowerCreator( ServiceProviderInterface * _serviceProvider )
-            {
-                m_factory = new FactoryPool<TAffectorNodeFollowerMethod, 4>( _serviceProvider );
-            }
+		public:
+			AffectorNodeFollowerCreator( ServiceProviderInterface * _serviceProvider )
+			{
+				m_factory = new FactoryPool<TAffectorNodeFollowerMethod, 4>( _serviceProvider );
+			}
 
 		protected:
 			typedef AffectorNodeFollowerMethod<T_Node, T_Value, T_Setter, T_Getter> TAffectorNodeFollowerMethod;
@@ -4219,7 +4225,7 @@ namespace Menge
 				return affector;
 			}
 
-		protected:			
+		protected:
 			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -4268,37 +4274,37 @@ namespace Menge
 			MODULE_SERVICE( m_serviceProvider )
 				->message( _moduleName, _messageName, _params );
 		}
-        //////////////////////////////////////////////////////////////////////////
-        mt::vec3f s_getCameraPosition( const RenderCameraInterface * _camera, Node * _node )
-        {
-            const mt::vec3f & wp = _node->getWorldPosition();
+		//////////////////////////////////////////////////////////////////////////
+		mt::vec3f s_getCameraPosition( const RenderCameraInterface * _camera, Node * _node )
+		{
+			const mt::vec3f & wp = _node->getWorldPosition();
 
-            const mt::mat4f & vm = _camera->getCameraViewMatrix();
+			const mt::mat4f & vm = _camera->getCameraViewMatrix();
 
-            mt::vec3f wp_screen;
-            mt::mul_m4_v3( wp_screen, vm, wp );
+			mt::vec3f wp_screen;
+			mt::mul_m4_v3( wp_screen, vm, wp );
 
-            return wp_screen;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        Scene * s_findNodeScene( Node * _node )
-        {
-            Node * node_iterator = _node;
+			return wp_screen;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		Scene * s_findNodeScene( Node * _node )
+		{
+			Node * node_iterator = _node;
 
-            while( node_iterator )
-            {
-                Scene * node_scene = dynamic_cast<Scene *>(node_iterator);
+			while( node_iterator )
+			{
+				Scene * node_scene = dynamic_cast<Scene *>(node_iterator);
 
-                if( node_scene != nullptr )
-                {
-                    return node_scene;
-                }
+				if( node_scene != nullptr )
+				{
+					return node_scene;
+				}
 
-                node_iterator = node_iterator->getParent();                
-            }
+				node_iterator = node_iterator->getParent();
+			}
 
-            return nullptr;
-        }
+			return nullptr;
+		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_setLocale( const ConstString & _locale )
 		{
@@ -4383,8 +4389,8 @@ namespace Menge
 			for( TVectorPickerTraps::iterator
 				it = traps.begin(),
 				it_end = traps.end();
-			it != it_end;
-			++it )
+				it != it_end;
+				++it )
 			{
 				MousePickerTrapInterface * mousePickerTrap = (*it);
 
@@ -4434,22 +4440,22 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		mt::vec2f s_getLocalImageCenter( Shape * _shape )
 		{
-            const SurfacePtr & surface = _shape->getSurface();
+			const SurfacePtr & surface = _shape->getSurface();
 
-            if( surface == nullptr )
-            {
-                LOGGER_ERROR( m_serviceProvider )("s_getLocalImageCenter shape %s not setup surface"
-                    , _shape->getName().c_str()
-                    );
+			if( surface == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_getLocalImageCenter shape %s not setup surface"
+					, _shape->getName().c_str()
+					);
 
-                return mt::vec2f::identity();
-            }
+				return mt::vec2f::identity();
+			}
 
-            const mt::vec2f & offset = surface->getOffset();
+			const mt::vec2f & offset = surface->getOffset();
 
-            const mt::vec2f & size = surface->getSize();
+			const mt::vec2f & size = surface->getSize();
 
-            mt::vec2f center = offset + size * 0.5f;
+			mt::vec2f center = offset + size * 0.5f;
 
 			return center;
 		}
@@ -4476,7 +4482,7 @@ namespace Menge
 				return nullptr;
 			}
 
-            newNode->disable();
+			newNode->disable();
 
 			_node->addChild( newNode );
 
@@ -4588,9 +4594,9 @@ namespace Menge
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			Affector * affector = m_nodeAffectorCreatorAccumulateLinear.create( ETA_POSITION
-                , callback, _node, &Node::setLocalPosition
+				, callback, _node, &Node::setLocalPosition
 				, _node->getLocalPosition(), _dir, _speed
-				);
+			);
 
 			if( affector == nullptr )
 			{
@@ -4611,68 +4617,68 @@ namespace Menge
 
 			return id;
 		}
-        //////////////////////////////////////////////////////////////////////////
-        class AffectorVelocity2
-            : public CallbackAffector
-        {
-        public:
-            AffectorVelocity2()
-                : m_node( nullptr )
-                , m_velocity( 0.f, 0.f, 0.f )
-                , m_time( 0.f )
-            {
-            }
+		//////////////////////////////////////////////////////////////////////////
+		class AffectorVelocity2
+			: public CallbackAffector
+		{
+		public:
+			AffectorVelocity2()
+				: m_node( nullptr )
+				, m_velocity( 0.f, 0.f, 0.f )
+				, m_time( 0.f )
+			{
+			}
 
-        public:
-            void setNode( Node * _node )
-            {
-                m_node = _node;
-            }
+		public:
+			void setNode( Node * _node )
+			{
+				m_node = _node;
+			}
 
-        public:
-            void initialize( const mt::vec3f & _velocity, float _time )
-            {
-                m_velocity = _velocity;
-                m_time = _time;
-            }
+		public:
+			void initialize( const mt::vec3f & _velocity, float _time )
+			{
+				m_velocity = _velocity;
+				m_time = _time;
+			}
 
-        protected:
-            bool _affect( float _timing ) override
-            {
-                m_time -= _timing;
+		protected:
+			bool _affect( float _timing ) override
+			{
+				m_time -= _timing;
 
-                if( m_time > 0.f )
-                {
-                    m_node->translate( m_velocity * _timing );
+				if( m_time > 0.f )
+				{
+					m_node->translate( m_velocity * _timing );
 
-                    return false;
-                }
+					return false;
+				}
 
-                m_node->translate( m_velocity * (m_time + _timing) );
+				m_node->translate( m_velocity * (m_time + _timing) );
 
-                return true;
-            }
+				return true;
+			}
 
-            void stop() override
-            {
-                this->end_( false );
-            }
+			void stop() override
+			{
+				this->end_( false );
+			}
 
-        protected:
-            Node * m_node;
+		protected:
+			Node * m_node;
 
-            mt::vec3f m_velocity;
-            float m_time;
-        };
+			mt::vec3f m_velocity;
+			float m_time;
+		};
 		//////////////////////////////////////////////////////////////////////////
 		class FactoryAffectorVelocity2
 		{
 		public:
-            FactoryAffectorVelocity2( ServiceProviderInterface * _serviceProvider )
-                : m_serviceProvider(_serviceProvider)
-            {
-                m_factory = new FactoryPool<AffectorVelocity2, 4>(m_serviceProvider);
-            }
+			FactoryAffectorVelocity2( ServiceProviderInterface * _serviceProvider )
+				: m_serviceProvider( _serviceProvider )
+			{
+				m_factory = new FactoryPool<AffectorVelocity2, 4>( m_serviceProvider );
+			}
 
 		public:
 			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
@@ -4693,7 +4699,7 @@ namespace Menge
 			}
 
 		protected:
-            ServiceProviderInterface * m_serviceProvider;
+			ServiceProviderInterface * m_serviceProvider;
 
 			FactoryPtr m_factory;
 		};
@@ -4715,8 +4721,8 @@ namespace Menge
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			Affector * affector = m_factoryAffectorVelocity2.create( ETA_POSITION
-                , callback, _node, _velocity, _time
-				);
+				, callback, _node, _velocity, _time
+			);
 
 			if( affector == nullptr )
 			{
@@ -4755,9 +4761,9 @@ namespace Menge
 
 			Affector* affector =
 				m_nodeAffectorCreatorInterpolateLinear.create( ETA_POSITION
-                    , callback, _node, &Node::setLocalPosition
-                    , _node->getLocalPosition(), _point, _time
-                );
+					, callback, _node, &Node::setLocalPosition
+					, _node->getLocalPosition(), _point, _time
+				);
 
 			if( affector == nullptr )
 			{
@@ -4801,9 +4807,9 @@ namespace Menge
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			Affector* affector = m_nodeAffectorCreatorInterpolateQuadratic.create( ETA_POSITION
-                , callback, _node, &Node::setLocalPosition
+				, callback, _node, &Node::setLocalPosition
 				, _node->getLocalPosition(), _point, linearSpeed, _time
-				);
+			);
 
 			if( affector == nullptr )
 			{
@@ -4843,12 +4849,12 @@ namespace Menge
 
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-			mt::vec3f v[] = {_v0};
+			mt::vec3f v[] = { _v0 };
 
 			Affector* affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( ETA_POSITION
-                , callback, _node, &Node::setLocalPosition
+				, callback, _node, &Node::setLocalPosition
 				, _node->getLocalPosition(), _to, v, _time
-				);
+			);
 
 			if( affector == nullptr )
 			{
@@ -4889,12 +4895,12 @@ namespace Menge
 
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-			mt::vec3f v[] = {_v0, _v1};
+			mt::vec3f v[] = { _v0, _v1 };
 
 			Affector* affector =
 				m_nodeAffectorCreatorInterpolateCubicBezier.create( ETA_POSITION
-                    , callback, _node, &Node::setLocalPosition
-				, _node->getLocalPosition(), _to, v, _time
+					, callback, _node, &Node::setLocalPosition
+					, _node->getLocalPosition(), _to, v, _time
 				);
 
 			if( affector == nullptr )
@@ -4937,12 +4943,12 @@ namespace Menge
 
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-			mt::vec3f v[] = {_v0, _v1, _v2};
+			mt::vec3f v[] = { _v0, _v1, _v2 };
 
 			Affector* affector =
 				m_nodeAffectorCreatorInterpolateQuarticBezier.create( ETA_POSITION
-                    , callback, _node, &Node::setLocalPosition
-				, _node->getLocalPosition(), _to, v, _time
+					, callback, _node, &Node::setLocalPosition
+					, _node->getLocalPosition(), _to, v, _time
 				);
 
 			if( affector == nullptr )
@@ -4961,130 +4967,130 @@ namespace Menge
 
 			return id;
 		}
-        class AffectorCreatorInterpolateParabolic
-            : public CallbackAffector
-        {
-        public:
-            AffectorCreatorInterpolateParabolic()
-                : m_node( nullptr )
-                , m_speed( 5.f )
-            {
-            }
+		class AffectorCreatorInterpolateParabolic
+			: public CallbackAffector
+		{
+		public:
+			AffectorCreatorInterpolateParabolic()
+				: m_node( nullptr )
+				, m_speed( 5.f )
+			{
+			}
 
-        public:
-            void setNode( Node * _node )
-            {
-                m_node = _node;
-            }
+		public:
+			void setNode( Node * _node )
+			{
+				m_node = _node;
+			}
 
-        public:
-            void initialize( const mt::vec3f & _end, const mt::vec3f & _v0, float _time )
-            {
-                const mt::vec3f & start_position = m_node->getLocalPosition();
+		public:
+			void initialize( const mt::vec3f & _end, const mt::vec3f & _v0, float _time )
+			{
+				const mt::vec3f & start_position = m_node->getLocalPosition();
 
-                m_interpolator.start( start_position, _end, _v0, _time );
+				m_interpolator.start( start_position, _end, _v0, _time );
 
-                mt::vec3f next_position;
-                m_interpolator.step( 100.f, &next_position );
+				mt::vec3f next_position;
+				m_interpolator.step( 100.f, &next_position );
 
-                mt::vec3f dir;
-                mt::dir_v3_v3( dir, start_position, next_position );
+				mt::vec3f dir;
+				mt::dir_v3_v3( dir, start_position, next_position );
 
-                m_prevDir = dir;
-                m_currentDir = dir;
-                m_targetDir = dir;
+				m_prevDir = dir;
+				m_currentDir = dir;
+				m_targetDir = dir;
 
-                m_node->setBillboard( dir, mt::vec3f( 0.f, 1.f, 1.f ) );
-            }
+				m_node->setBillboard( dir, mt::vec3f( 0.f, 1.f, 1.f ) );
+			}
 
-        protected:
-            bool _affect( float _timing ) override
-            {
-                mt::vec3f position;
-                bool finish = m_interpolator.update( _timing, &position );
+		protected:
+			bool _affect( float _timing ) override
+			{
+				mt::vec3f position;
+				bool finish = m_interpolator.update( _timing, &position );
 
-                this->updateDirection_( _timing, position );
-                this->updatePosition_( position );
+				this->updateDirection_( _timing, position );
+				this->updatePosition_( position );
 
-                if( finish == false )
-                {
-                    return false;
-                }
+				if( finish == false )
+				{
+					return false;
+				}
 
-                return true;
-            }
+				return true;
+			}
 
-            void stop() override
-            {
-                m_interpolator.stop();
+			void stop() override
+			{
+				m_interpolator.stop();
 
-                this->end_( false );
-            }
+				this->end_( false );
+			}
 
-        protected:
-            void updateDirection_( float _timing, const mt::vec3f & _position )
-            {
-                const mt::vec3f & prev_position = m_node->getLocalPosition();
+		protected:
+			void updateDirection_( float _timing, const mt::vec3f & _position )
+			{
+				const mt::vec3f & prev_position = m_node->getLocalPosition();
 
-                if( mt::sqrlength_v3_v3( prev_position, _position ) > mt::m_eps )
-                {
-                    mt::dir_v3_v3( m_targetDir, prev_position, _position );
-                }
+				if( mt::sqrlength_v3_v3( prev_position, _position ) > mt::m_eps )
+				{
+					mt::dir_v3_v3( m_targetDir, prev_position, _position );
+				}
 
-                float length = mt::length_v3_v3( m_targetDir, m_currentDir );
+				float length = mt::length_v3_v3( m_targetDir, m_currentDir );
 
-                if( length < mt::m_eps )
-                {
-                    return;
-                }
+				if( length < mt::m_eps )
+				{
+					return;
+				}
 
-                float t = length / _timing * m_speed;
+				float t = length / _timing * m_speed;
 
-                if( t > 1.f )
-                {
-                    m_currentDir = m_targetDir;
+				if( t > 1.f )
+				{
+					m_currentDir = m_targetDir;
 
-                    m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
-                }
-                else
-                {
-                    m_currentDir = m_currentDir + (m_targetDir - m_currentDir) * t;
+					m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
+				}
+				else
+				{
+					m_currentDir = m_currentDir + (m_targetDir - m_currentDir) * t;
 
-                    m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
-                }
-            }
+					m_node->setBillboard( m_currentDir, mt::vec3f( 0.f, 1.f, 1.f ) );
+				}
+			}
 
-            void updatePosition_( const mt::vec3f & _position )
-            {
-                const mt::vec3f & prev_position = m_node->getLocalPosition();
+			void updatePosition_( const mt::vec3f & _position )
+			{
+				const mt::vec3f & prev_position = m_node->getLocalPosition();
 
-                if( mt::sqrlength_v3_v3( prev_position, _position ) < mt::m_eps )
-                {
-                    return;
-                }
+				if( mt::sqrlength_v3_v3( prev_position, _position ) < mt::m_eps )
+				{
+					return;
+				}
 
-                m_node->setLocalPosition( _position );
-            }
+				m_node->setLocalPosition( _position );
+			}
 
-        protected:
-            Node * m_node;
+		protected:
+			Node * m_node;
 
-            mt::vec3f m_prevDir;
-            mt::vec3f m_currentDir;
-            mt::vec3f m_targetDir;
-            float m_speed;
+			mt::vec3f m_prevDir;
+			mt::vec3f m_currentDir;
+			mt::vec3f m_targetDir;
+			float m_speed;
 
-            ValueInterpolatorParabolic<mt::vec3f> m_interpolator;
-        };
-        //////////////////////////////////////////////////////////////////////////
+			ValueInterpolatorParabolic<mt::vec3f> m_interpolator;
+		};
+		//////////////////////////////////////////////////////////////////////////
 		class FactoryAffectorInterpolateParabolic
 		{
 		public:
-            FactoryAffectorInterpolateParabolic( ServiceProviderInterface * _serviceProvider )
-                : m_serviceProvider(_serviceProvider)
-            {
-                m_factory = new FactoryPool<AffectorCreatorInterpolateParabolic, 4>( m_serviceProvider );
-            }
+			FactoryAffectorInterpolateParabolic( ServiceProviderInterface * _serviceProvider )
+				: m_serviceProvider( _serviceProvider )
+			{
+				m_factory = new FactoryPool<AffectorCreatorInterpolateParabolic, 4>( m_serviceProvider );
+			}
 
 		public:
 			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
@@ -5105,7 +5111,7 @@ namespace Menge
 			}
 
 		protected:
-            ServiceProviderInterface * m_serviceProvider;
+			ServiceProviderInterface * m_serviceProvider;
 
 			FactoryPtr m_factory;
 		};
@@ -5133,7 +5139,7 @@ namespace Menge
 
 			Affector* affector =
 				m_nodeAffectorCreatorInterpolateParabolic.create( ETA_POSITION
-                    , callback, _node, _end, _v0, _time
+					, callback, _node, _end, _v0, _time
 				);
 
 			if( affector == nullptr )
@@ -5152,173 +5158,173 @@ namespace Menge
 
 			return id;
 		}
-        class AffectorCreatorFollowTo
-            : public CallbackAffector
-        {
-        public:
-            AffectorCreatorFollowTo()
-                : m_node( nullptr )
-                , m_target( nullptr )
-                , m_offset( 0.f, 0.f, 0.f )
-                , m_distance( 0.f )
-                , m_moveSpeed( 0.f )
-                , m_moveAcceleration( 0.f )
-                , m_moveLimit( 0.f )
-                , m_rotate( false )
-                , m_rotationSpeed( 0.f )
-                , m_rotationAcceleration( 0.f )
-                , m_rotationLimit( 0.f )
-            {
-            }
+		class AffectorCreatorFollowTo
+			: public CallbackAffector
+		{
+		public:
+			AffectorCreatorFollowTo()
+				: m_node( nullptr )
+				, m_target( nullptr )
+				, m_offset( 0.f, 0.f, 0.f )
+				, m_distance( 0.f )
+				, m_moveSpeed( 0.f )
+				, m_moveAcceleration( 0.f )
+				, m_moveLimit( 0.f )
+				, m_rotate( false )
+				, m_rotationSpeed( 0.f )
+				, m_rotationAcceleration( 0.f )
+				, m_rotationLimit( 0.f )
+			{
+			}
 
-        public:
-            bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, bool _rotate, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
-            {
-                if( _node == nullptr )
-                {
-                    return false;
-                }
+		public:
+			bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, bool _rotate, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
+			{
+				if( _node == nullptr )
+				{
+					return false;
+				}
 
-                if( _target == nullptr )
-                {
-                    return false;
-                }
+				if( _target == nullptr )
+				{
+					return false;
+				}
 
-                m_node = _node;
-                m_target = _target;
-                m_offset = _offset;
-                m_distance = _distance;
-                m_moveSpeed = _moveSpeed;
-                m_moveAcceleration = _moveAcceleration;
-                m_moveLimit = _moveLimit;
-                m_rotate = _rotate;
-                m_rotationSpeed = _rotationSpeed;
-                m_rotationAcceleration = _rotationAcceleration;
-                m_rotationLimit = _rotationLimit;
+				m_node = _node;
+				m_target = _target;
+				m_offset = _offset;
+				m_distance = _distance;
+				m_moveSpeed = _moveSpeed;
+				m_moveAcceleration = _moveAcceleration;
+				m_moveLimit = _moveLimit;
+				m_rotate = _rotate;
+				m_rotationSpeed = _rotationSpeed;
+				m_rotationAcceleration = _rotationAcceleration;
+				m_rotationLimit = _rotationLimit;
 
-                return true;
-            }
+				return true;
+			}
 
-        protected:
-            bool _affect( float _timing ) override
-            {
-                mt::vec3f node_position = m_node->getLocalPosition();
-                mt::vec3f follow_position = m_target->getLocalPosition();
+		protected:
+			bool _affect( float _timing ) override
+			{
+				mt::vec3f node_position = m_node->getLocalPosition();
+				mt::vec3f follow_position = m_target->getLocalPosition();
 
-                mt::vec3f current_direction;
+				mt::vec3f current_direction;
 
-                if( m_rotate == true )
-                {
-                    mt::vec3f direction = follow_position - node_position;
+				if( m_rotate == true )
+				{
+					mt::vec3f direction = follow_position - node_position;
 
-                    mt::mat4f mr;
-                    mt::make_rotate_m4_direction( mr, direction, mt::vec3f( 0.f, 0.f, 1.f ) );
+					mt::mat4f mr;
+					mt::make_rotate_m4_direction( mr, direction, mt::vec3f( 0.f, 0.f, 1.f ) );
 
-                    mt::vec3f target_orientation;
-                    mt::make_euler_angles( target_orientation, mr );
+					mt::vec3f target_orientation;
+					mt::make_euler_angles( target_orientation, mr );
 
-                    const mt::vec3f & node_orientation = m_node->getOrientation();
+					const mt::vec3f & node_orientation = m_node->getOrientation();
 
-                    mt::vec3f correct_rotate_from;
-                    mt::vec3f correct_rotate_to;
-                    mt::angle_correct_interpolate_from_to( node_orientation.x, target_orientation.x, correct_rotate_from.x, correct_rotate_to.x );
-                    mt::angle_correct_interpolate_from_to( node_orientation.y, target_orientation.y, correct_rotate_from.y, correct_rotate_to.y );
-                    mt::angle_correct_interpolate_from_to( node_orientation.z, target_orientation.z, correct_rotate_from.z, correct_rotate_to.z );
+					mt::vec3f correct_rotate_from;
+					mt::vec3f correct_rotate_to;
+					mt::angle_correct_interpolate_from_to( node_orientation.x, target_orientation.x, correct_rotate_from.x, correct_rotate_to.x );
+					mt::angle_correct_interpolate_from_to( node_orientation.y, target_orientation.y, correct_rotate_from.y, correct_rotate_to.y );
+					mt::angle_correct_interpolate_from_to( node_orientation.z, target_orientation.z, correct_rotate_from.z, correct_rotate_to.z );
 
-                    float roatationSpeedStep = m_rotationAcceleration * _timing;
+					float roatationSpeedStep = m_rotationAcceleration * _timing;
 
-                    if( m_rotationSpeed + roatationSpeedStep > m_rotationLimit )
-                    {
-                        m_rotationSpeed = m_rotationLimit;
-                    }
-                    else
-                    {
-                        m_rotationSpeed += m_rotationAcceleration * _timing;
-                    }
+					if( m_rotationSpeed + roatationSpeedStep > m_rotationLimit )
+					{
+						m_rotationSpeed = m_rotationLimit;
+					}
+					else
+					{
+						m_rotationSpeed += m_rotationAcceleration * _timing;
+					}
 
-                    mt::vec3f new_orientation;
-                    mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _timing );
+					mt::vec3f new_orientation;
+					mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _timing );
 
-                    m_node->setOrientation( new_orientation );
+					m_node->setOrientation( new_orientation );
 
-                    current_direction = m_node->getAxisDirection();
-                }
-                else
-                {
-                    mt::dir_v3_v3( current_direction, node_position, follow_position );
-                }
+					current_direction = m_node->getAxisDirection();
+				}
+				else
+				{
+					mt::dir_v3_v3( current_direction, node_position, follow_position );
+				}
 
-                float directionSpeedStep = m_moveAcceleration * _timing;
+				float directionSpeedStep = m_moveAcceleration * _timing;
 
-                if( m_moveSpeed + directionSpeedStep > m_moveLimit )
-                {
-                    m_moveSpeed = m_moveLimit;
-                }
-                else
-                {
-                    m_moveSpeed += m_moveAcceleration * _timing;
-                }
+				if( m_moveSpeed + directionSpeedStep > m_moveLimit )
+				{
+					m_moveSpeed = m_moveLimit;
+				}
+				else
+				{
+					m_moveSpeed += m_moveAcceleration * _timing;
+				}
 
-                float step = m_moveSpeed * _timing;
+				float step = m_moveSpeed * _timing;
 
-                float length = mt::length_v3_v3( node_position, follow_position );
+				float length = mt::length_v3_v3( node_position, follow_position );
 
-                if( m_distance > 0.0 )
-                {
-                    if( length - step < m_distance )
-                    {
-                        mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
+				if( m_distance > 0.0 )
+				{
+					if( length - step < m_distance )
+					{
+						mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
 
-                        m_node->setLocalPosition( distance_position );
+						m_node->setLocalPosition( distance_position );
 
-                        return true;
-                    }
-                }
-                else
-                {
-                    if( length - step < 0.f )
-                    {
-                        m_node->setLocalPosition( follow_position );
+						return true;
+					}
+				}
+				else
+				{
+					if( length - step < 0.f )
+					{
+						m_node->setLocalPosition( follow_position );
 
-                        return false;
-                    }
-                }
+						return false;
+					}
+				}
 
-                mt::vec3f new_position = node_position + current_direction * step;
+				mt::vec3f new_position = node_position + current_direction * step;
 
-                m_node->setLocalPosition( new_position );
+				m_node->setLocalPosition( new_position );
 
-                return false;
-            }
+				return false;
+			}
 
-            void stop() override
-            {
-                this->end_( false );
-            }
+			void stop() override
+			{
+				this->end_( false );
+			}
 
-        protected:
-            Node * m_node;
-            Node * m_target;
+		protected:
+			Node * m_node;
+			Node * m_target;
 
-            mt::vec3f m_offset;
-            float m_distance;
-            float m_moveSpeed;
-            float m_moveAcceleration;
-            float m_moveLimit;
-            bool m_rotate;
-            float m_rotationSpeed;
-            float m_rotationAcceleration;
-            float m_rotationLimit;
-        };
-        //////////////////////////////////////////////////////////////////////////
+			mt::vec3f m_offset;
+			float m_distance;
+			float m_moveSpeed;
+			float m_moveAcceleration;
+			float m_moveLimit;
+			bool m_rotate;
+			float m_rotationSpeed;
+			float m_rotationAcceleration;
+			float m_rotationLimit;
+		};
+		//////////////////////////////////////////////////////////////////////////
 		class FactoryAffectorFollowTo
 		{
 		public:
-            FactoryAffectorFollowTo( ServiceProviderInterface * _serviceProvider )
-                : m_serviceProvider(_serviceProvider)
-            {
-                m_factory = new FactoryPool<AffectorCreatorFollowTo, 4>( m_serviceProvider );
-            }
+			FactoryAffectorFollowTo( ServiceProviderInterface * _serviceProvider )
+				: m_serviceProvider( _serviceProvider )
+			{
+				m_factory = new FactoryPool<AffectorCreatorFollowTo, 4>( m_serviceProvider );
+			}
 
 		public:
 			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
@@ -5344,7 +5350,7 @@ namespace Menge
 			}
 
 		protected:
-            ServiceProviderInterface * m_serviceProvider;
+			ServiceProviderInterface * m_serviceProvider;
 
 			FactoryPtr m_factory;
 		};
@@ -5379,11 +5385,11 @@ namespace Menge
 
 			Affector * affector =
 				m_nodeAffectorCreatorFollowTo.create( ETA_POSITION
-                    , callback, _node, _target, _offset, _distance
-                    , _moveSpeed, _moveAcceleration, _moveLimit
-                    , _rotate
-                    , _rotationSpeed, _rotationAcceleration, _rotationLimit
-                );
+					, callback, _node, _target, _offset, _distance
+					, _moveSpeed, _moveAcceleration, _moveLimit
+					, _rotate
+					, _rotationSpeed, _rotationAcceleration, _rotationLimit
+				);
 
 			if( affector == nullptr )
 			{
@@ -5401,123 +5407,123 @@ namespace Menge
 
 			return id;
 		}
-        //////////////////////////////////////////////////////////////////////////
-        class AffectorCreatorFollowToW
-            : public CallbackAffector
-        {
-        public:
-            AffectorCreatorFollowToW()
-                : m_node( nullptr )
-                , m_target( nullptr )
-                , m_offset( 0.f, 0.f, 0.f )
-                , m_distance( 0.f )
-                , m_moveSpeed( 0.f )
-                , m_moveAcceleration( 0.f )
-                , m_moveLimit( 0.f )
-            {
-            }
+		//////////////////////////////////////////////////////////////////////////
+		class AffectorCreatorFollowToW
+			: public CallbackAffector
+		{
+		public:
+			AffectorCreatorFollowToW()
+				: m_node( nullptr )
+				, m_target( nullptr )
+				, m_offset( 0.f, 0.f, 0.f )
+				, m_distance( 0.f )
+				, m_moveSpeed( 0.f )
+				, m_moveAcceleration( 0.f )
+				, m_moveLimit( 0.f )
+			{
+			}
 
-        public:
-            bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
-            {
-                if( _node == nullptr )
-                {
-                    return false;
-                }
+		public:
+			bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
+			{
+				if( _node == nullptr )
+				{
+					return false;
+				}
 
-                if( _target == nullptr )
-                {
-                    return false;
-                }
+				if( _target == nullptr )
+				{
+					return false;
+				}
 
-                m_node = _node;
-                m_target = _target;
-                m_offset = _offset;
-                m_distance = _distance;
-                m_moveSpeed = _moveSpeed;
-                m_moveAcceleration = _moveAcceleration;
-                m_moveLimit = _moveLimit;
+				m_node = _node;
+				m_target = _target;
+				m_offset = _offset;
+				m_distance = _distance;
+				m_moveSpeed = _moveSpeed;
+				m_moveAcceleration = _moveAcceleration;
+				m_moveLimit = _moveLimit;
 
-                return true;
-            }
+				return true;
+			}
 
-        protected:
-            bool _affect( float _timing ) override
-            {
-                mt::vec3f node_position = m_node->getWorldPosition();
-                mt::vec3f follow_position = m_target->getWorldPosition();
+		protected:
+			bool _affect( float _timing ) override
+			{
+				mt::vec3f node_position = m_node->getWorldPosition();
+				mt::vec3f follow_position = m_target->getWorldPosition();
 
-                mt::vec3f current_direction;
+				mt::vec3f current_direction;
 
-                mt::dir_v3_v3( current_direction, node_position, follow_position );
+				mt::dir_v3_v3( current_direction, node_position, follow_position );
 
-                float directionSpeedStep = m_moveAcceleration * _timing;
+				float directionSpeedStep = m_moveAcceleration * _timing;
 
-                if( m_moveSpeed + directionSpeedStep > m_moveLimit )
-                {
-                    m_moveSpeed = m_moveLimit;
-                }
-                else
-                {
-                    m_moveSpeed += m_moveAcceleration * _timing;
-                }
+				if( m_moveSpeed + directionSpeedStep > m_moveLimit )
+				{
+					m_moveSpeed = m_moveLimit;
+				}
+				else
+				{
+					m_moveSpeed += m_moveAcceleration * _timing;
+				}
 
-                float step = m_moveSpeed * _timing;
+				float step = m_moveSpeed * _timing;
 
-                float length = mt::length_v3_v3( node_position, follow_position );
+				float length = mt::length_v3_v3( node_position, follow_position );
 
-                if( m_distance > 0.0 )
-                {
-                    if( length - step < m_distance )
-                    {
-                        mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
+				if( m_distance > 0.0 )
+				{
+					if( length - step < m_distance )
+					{
+						mt::vec3f distance_position = follow_position + mt::norm_v3( node_position - follow_position ) * m_distance;
 
-                        m_node->setWorldPosition( distance_position );
+						m_node->setWorldPosition( distance_position );
 
-                        return true;
-                    }
-                }
-                else
-                {
-                    if( length - step < 0.f )
-                    {
-                        m_node->setWorldPosition( follow_position );
+						return true;
+					}
+				}
+				else
+				{
+					if( length - step < 0.f )
+					{
+						m_node->setWorldPosition( follow_position );
 
-                        return false;
-                    }
-                }
+						return false;
+					}
+				}
 
-                mt::vec3f new_position = node_position + current_direction * step;
+				mt::vec3f new_position = node_position + current_direction * step;
 
-                m_node->setWorldPosition( new_position );
+				m_node->setWorldPosition( new_position );
 
-                return false;
-            }
+				return false;
+			}
 
-            void stop() override
-            {
-                this->end_( false );
-            }
+			void stop() override
+			{
+				this->end_( false );
+			}
 
-        protected:
-            Node * m_node;
-            Node * m_target;
+		protected:
+			Node * m_node;
+			Node * m_target;
 
-            mt::vec3f m_offset;
-            float m_distance;
-            float m_moveSpeed;
-            float m_moveAcceleration;
-            float m_moveLimit;
-        };
+			mt::vec3f m_offset;
+			float m_distance;
+			float m_moveSpeed;
+			float m_moveAcceleration;
+			float m_moveLimit;
+		};
 		//////////////////////////////////////////////////////////////////////////
 		class FactoryAffectorFollowToW
 		{
 		public:
-            FactoryAffectorFollowToW( ServiceProviderInterface * _serviceProvider )
-                : m_serviceProvider( _serviceProvider )
-            {
-                m_factory = new FactoryPool<AffectorCreatorFollowToW, 4>( m_serviceProvider );
-            }
+			FactoryAffectorFollowToW( ServiceProviderInterface * _serviceProvider )
+				: m_serviceProvider( _serviceProvider )
+			{
+				m_factory = new FactoryPool<AffectorCreatorFollowToW, 4>( m_serviceProvider );
+			}
 
 		public:
 			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
@@ -5541,7 +5547,7 @@ namespace Menge
 			}
 
 		protected:
-            ServiceProviderInterface * m_serviceProvider;
+			ServiceProviderInterface * m_serviceProvider;
 
 			FactoryPtr m_factory;
 		};
@@ -5572,9 +5578,9 @@ namespace Menge
 
 			Affector * affector =
 				m_nodeAffectorCreatorFollowToW.create( ETA_POSITION
-                    , callback, _node, _target, _offset, _distance
-                    , _moveSpeed, _moveAcceleration, _moveLimit
-                );
+					, callback, _node, _target, _offset, _distance
+					, _moveSpeed, _moveAcceleration, _moveLimit
+				);
 
 			if( affector == nullptr )
 			{
@@ -5598,8 +5604,8 @@ namespace Menge
 			_node->stopAffectors( ETA_ANGLE );
 			_node->setAngularSpeed( 0.f );
 		}
-        //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)(float), float> m_nodeAffectorCreatorInterpolateLinearFloat;
+		//////////////////////////////////////////////////////////////////////////
+		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)(float), float> m_nodeAffectorCreatorInterpolateLinearFloat;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t angleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
 		{
@@ -5622,9 +5628,9 @@ namespace Menge
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			Affector* affector = m_nodeAffectorCreatorInterpolateLinearFloat.create( ETA_ANGLE
-                , callback, _node, &Node::setOrientationX
+				, callback, _node, &Node::setOrientationX
 				, correct_angle_from, correct_angle_to, _time
-				);
+			);
 
 			if( affector == nullptr )
 			{
@@ -5673,8 +5679,8 @@ namespace Menge
 
 			Affector* affector =
 				m_nodeAffectorCreatorInterpolateQuadraticFloat.create( ETA_ANGLE
-                    , callback, _node, &Node::setOrientationX
-				, correct_angle_from, correct_angle_to, angularSpeed, _time
+					, callback, _node, &Node::setOrientationX
+					, correct_angle_from, correct_angle_to, angularSpeed, _time
 				);
 
 			if( affector == nullptr )
@@ -5726,9 +5732,9 @@ namespace Menge
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
 			Affector* affector = m_nodeAffectorCreatorInterpolateLinear.create( ETA_SCALE
-                , callback, _node, &Node::setScale
+				, callback, _node, &Node::setScale
 				, _node->getScale(), _scale, _time
-				);
+			);
 
 			if( affector == nullptr )
 			{
@@ -5777,9 +5783,9 @@ namespace Menge
 
 			Affector* affector =
 				m_nodeAffectorCreatorInterpolateLinearColour.create( ETA_COLOR
-                    , callback, _node, &Colorable::setLocalColor
-                    , _node->getLocalColor(), _color, _time
-                );
+					, callback, _node, &Colorable::setLocalColor
+					, _node->getLocalColor(), _color, _time
+				);
 
 			if( affector == nullptr )
 			{
@@ -5829,10 +5835,10 @@ namespace Menge
 
 			ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _shape, _cb, _args );
 
-            Affector* affector = m_nodeAffectorCreatorInterpolateLinearVec4.create( ETA_VISIBILITY
-                , callback, _shape, &ShapeQuadFlex::setPercentVisibility
+			Affector* affector = m_nodeAffectorCreatorInterpolateLinearVec4.create( ETA_VISIBILITY
+				, callback, _shape, &ShapeQuadFlex::setPercentVisibility
 				, _shape->getPercentVisibility(), _percent, _time
-				);
+			);
 
 			if( affector == nullptr )
 			{
@@ -5944,6 +5950,13 @@ namespace Menge
 				return false;
 			}
 
+			bool handleTextEvent( const InputTextEvent & _event ) override
+			{
+				(void)_event;
+
+				return false;
+			}
+
 		protected:
 			bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
 			{
@@ -5996,7 +6009,7 @@ namespace Menge
 				mt::vec2f delta( _event.dx, _event.dy );
 
 				mt::vec2f wp;
-				PLAYER_SERVICE(m_serviceProvider)
+				PLAYER_SERVICE( m_serviceProvider )
 					->calcGlobalMouseWorldPosition( point, wp );
 
 				mt::vec2f wd;
@@ -6204,12 +6217,7 @@ namespace Menge
 		protected:
 			bool handleKeyEvent( const InputKeyEvent & _event ) override
 			{
-                if( _event.code == (wchar_t)0xfffd )
-                {
-                    return false;
-                }
-                
-				pybind::object py_result = m_cb.call_args( (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat, m_args );
+				pybind::object py_result = m_cb.call_args( (uint32_t)_event.code, _event.x, _event.y, _event.isDown, _event.isRepeat, m_args );
 
 				if( py_result.is_none() == false )
 				{
@@ -6231,6 +6239,42 @@ namespace Menge
 				->getGlobalHandleSystem();
 
 			PyGlobalKeyHandler * handler = m_factoryPyGlobalKeyHandler->createObject();
+
+			handler->initialize( m_serviceProvider, _cb, _args );
+
+			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
+
+			return id;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		class PyGlobalTextHandler
+			: public PyGlobalBaseHandler
+		{
+		protected:
+			bool handleTextEvent( const InputTextEvent & _event ) override
+			{
+				pybind::object py_result = m_cb.call_args( _event.key, _event.x, _event.y, m_args );
+
+				if( py_result.is_none() == false )
+				{
+					LOGGER_ERROR( m_serviceProvider )("PyGlobalTextHandler %s return value %s not None"
+						, m_cb.repr()
+						, py_result.repr()
+						);
+				}
+
+				return false;
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////
+		FactoryPtr m_factoryPyGlobalTextHandler;
+		//////////////////////////////////////////////////////////////////////////
+		uint32_t s_addTextHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		{
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
+				->getGlobalHandleSystem();
+
+			PyGlobalKeyHandler * handler = m_factoryPyGlobalTextHandler->createObject();
 
 			handler->initialize( m_serviceProvider, _cb, _args );
 
@@ -6419,7 +6463,7 @@ namespace Menge
 		public:
 			ResourceMovieVisitorNullLayers( ServiceProviderInterface * _serviceProvider, pybind::kernel_interface * _kernel, const pybind::dict & _dictResult, float _frameDuration )
 				: m_serviceProvider( _serviceProvider )
-				, m_kernel(_kernel)
+				, m_kernel( _kernel )
 				, m_dictResult( _dictResult )
 				, m_frameDuration( _frameDuration )
 			{
@@ -6475,7 +6519,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			pybind::dict py_dict_result(_kernel);
+			pybind::dict py_dict_result( _kernel );
 
 			float frameTime = _resource->getFrameDuration();
 			ResourceMovieVisitorNullLayers visitor( m_serviceProvider, _kernel, py_dict_result, frameTime );
@@ -6492,8 +6536,8 @@ namespace Menge
 			for( TVectorMovieLayers::const_iterator
 				it = layers.begin(),
 				it_end = layers.end();
-			it != it_end;
-			++it )
+				it != it_end;
+				++it )
 			{
 				const MovieLayer & layer = *it;
 
@@ -6696,10 +6740,10 @@ namespace Menge
 		{
 		public:
 			GetResourceVisitor( pybind::kernel_interface * _kernel )
-				: m_kernel(_kernel)
-				, m_l(_kernel)
+				: m_kernel( _kernel )
+				, m_l( _kernel )
 			{
-				 m_scope = m_kernel->class_scope<ResourceReference>();
+				m_scope = m_kernel->class_scope<ResourceReference>();
 			}
 
 			const pybind::list & getResult() const
@@ -6783,9 +6827,9 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Landscape2D );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Grid2D );
 
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, ShapeQuadFixed );
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, ShapeQuadFlex );
-        
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, ShapeQuadFixed );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, ShapeQuadFlex );
+
 		//SCRIPT_CLASS_WRAPPING( FFCamera3D );
 		//SCRIPT_CLASS_WRAPPING( DiscreteEntity );
 		//SCRIPT_CLASS_WRAPPING( RigidBody3D );
@@ -6824,12 +6868,12 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceInternalObject );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceHIT );
 
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, Surface );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, Surface );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceVideo );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceSound );
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceImage );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceImage );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceImageSequence );
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceSolidColor );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceSolidColor );
 
 # undef SCRIPT_CLASS_WRAPPING
 	}
@@ -6891,7 +6935,7 @@ namespace Menge
 					ConstString tag = l[i];
 
 					_tags.addTag( tag );
-				}				
+				}
 			}
 			else
 			{
@@ -6906,14 +6950,14 @@ namespace Menge
 			(void)_kernel;
 
 			const TVectorConstString & tags = _value.getTags();
-			
+
 			PyObject * py_tags = pybind::list_new( 0 );
-			
+
 			for( TVectorConstString::const_iterator
 				it = tags.begin(),
 				it_end = tags.end();
-			it != it_end;
-			++it )
+				it != it_end;
+				++it )
 			{
 				const ConstString & tag = *it;
 
@@ -6923,7 +6967,7 @@ namespace Menge
 
 				pybind::decref( py_tag );
 			}
-			
+
 			return py_tags;
 		}
 	};
@@ -6934,7 +6978,7 @@ namespace Menge
 
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 
-		pybind::registration_type_cast<Blobject>( kernel, new extract_TBlobject_type);
+		pybind::registration_type_cast<Blobject>(kernel, new extract_TBlobject_type);
 		pybind::registration_type_cast<Tags>(kernel, new extract_Tags_type);
 
 		pybind::registration_stl_vector_type_cast<ResourceImage *, TVectorResourceImage>(kernel);
@@ -6955,7 +6999,7 @@ namespace Menge
 			;
 
 		pybind::interface_<Scriptable>( kernel, "Scriptable" )
-            .def_bindable()
+			.def_bindable()
 			;
 
 		pybind::interface_<Identity>( kernel, "Identity" )
@@ -6980,7 +7024,7 @@ namespace Menge
 			//.def( "getLocalDirection", &Transformation3D::getLocalDirection )
 			//.def( "setLocalDirection", &Transformation3D::setLocalDirection )
 			.def( "setOrigin", &Transformation3D::setOrigin )
-			.def( "getOrigin", &Transformation3D::getOrigin )			
+			.def( "getOrigin", &Transformation3D::getOrigin )
 			.def( "setScale", &Transformation3D::setScale )
 			.def( "getScale", &Transformation3D::getScale )
 			.def( "setSkew", &Transformation3D::setSkew )
@@ -7176,10 +7220,10 @@ namespace Menge
 			//.def( "removeEventListener", &Eventable::removeEventListener )
 			;
 
-        pybind::interface_<Soundable>( kernel, "Soundable" )
-            .def( "setVolume", &Soundable::setVolume )
-            .def( "getVolume", &Soundable::getVolume )
-            ;
+		pybind::interface_<Soundable>( kernel, "Soundable" )
+			.def( "setVolume", &Soundable::setVolume )
+			.def( "getVolume", &Soundable::getVolume )
+			;
 
 		pybind::interface_<Affectorable>( kernel, "Affectorable" )
 			.def( "addAffector", &Affectorable::addAffector )
@@ -7271,36 +7315,36 @@ namespace Menge
 
 		pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Materialable, Resource> >( kernel, "Surface", false )
 			.def_smart_pointer()
-            .def( "getMaxSize", &Surface::getMaxSize )
-            .def( "getSize", &Surface::getSize )
-            .def( "getOffset", &Surface::getOffset )
+			.def( "getMaxSize", &Surface::getMaxSize )
+			.def( "getSize", &Surface::getSize )
+			.def( "getOffset", &Surface::getOffset )
 
-            .def( "getUVCount", &Surface::getUVCount )
-            .def( "getUV", &Surface::getUV )
+			.def( "getUVCount", &Surface::getUVCount )
+			.def( "getUV", &Surface::getUV )
 
-            .def( "getColour", &Surface::getColour )
+			.def( "getColour", &Surface::getColour )
 			;
 
-		pybind::interface_<SurfaceVideo, pybind::bases<Surface, Eventable,  Animatable> >( kernel, "SurfaceVideo", false )
+		pybind::interface_<SurfaceVideo, pybind::bases<Surface, Eventable, Animatable> >( kernel, "SurfaceVideo", false )
 			.def( "setResourceVideo", &SurfaceVideo::setResourceVideo )
 			.def( "getResourceVideo", &SurfaceVideo::getResourceVideo )
 			.def( "getWidth", &SurfaceVideo::getWidth )
 			.def( "getHeight", &SurfaceVideo::getHeight )
 			.def( "getDuration", &SurfaceVideo::getDuration )
-            .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceVideo_setEventListener )
+			.def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceVideo_setEventListener )
 			;
 
 		pybind::interface_<SurfaceSound, pybind::bases<Surface, Eventable, Animatable, Soundable> >( kernel, "SurfaceSound", false )
 			.def( "setResourceSound", &SurfaceSound::setResourceSound )
 			.def( "getResourceSound", &SurfaceSound::getResourceSound )
 			.def( "getDuration", &SurfaceSound::getDuration )
-            .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceSound_setEventListener )
+			.def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceSound_setEventListener )
 			;
 
-        pybind::interface_<SurfaceImage, pybind::bases<Surface> >( kernel, "SurfaceImage", false )
-            .def( "setResourceImage", &SurfaceImage::setResourceImage )
-            .def( "getResourceImage", &SurfaceImage::getResourceImage )
-            ;
+		pybind::interface_<SurfaceImage, pybind::bases<Surface> >( kernel, "SurfaceImage", false )
+			.def( "setResourceImage", &SurfaceImage::setResourceImage )
+			.def( "getResourceImage", &SurfaceImage::getResourceImage )
+			;
 
 		pybind::interface_<SurfaceImageSequence, pybind::bases<Surface, Eventable, Animatable> >( kernel, "SurfaceImageSequence", false )
 			.def( "setResourceAnimation", &SurfaceImageSequence::setResourceAnimation )
@@ -7309,16 +7353,16 @@ namespace Menge
 			.def( "getFrameDelay", &SurfaceImageSequence::getFrameDelay )
 			.def( "setCurrentFrame", &SurfaceImageSequence::setCurrentFrame )
 			.def( "getCurrentFrame", &SurfaceImageSequence::getCurrentFrame )
-            .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceImageSequence_setEventListener )
+			.def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceImageSequence_setEventListener )
 			;
 
-        pybind::interface_<SurfaceSolidColor, pybind::bases<Surface> >( kernel, "SurfaceSolidColor", false )
-            .def( "setSolidColor", &SurfaceSolidColor::setSolidColor )
-            .def( "getSolidColor", &SurfaceSolidColor::getSolidColor )
-            .def( "setSolidSize", &SurfaceSolidColor::setSolidSize )
-            .def( "getSolidSize", &SurfaceSolidColor::getSolidSize )
-            ;
-        
+		pybind::interface_<SurfaceSolidColor, pybind::bases<Surface> >( kernel, "SurfaceSolidColor", false )
+			.def( "setSolidColor", &SurfaceSolidColor::setSolidColor )
+			.def( "getSolidColor", &SurfaceSolidColor::getSolidColor )
+			.def( "setSolidSize", &SurfaceSolidColor::setSolidSize )
+			.def( "getSolidSize", &SurfaceSolidColor::getSolidSize )
+			;
+
 
 		pybind::interface_<ThreadTask>( kernel, "Task" )
 			;
@@ -7469,7 +7513,7 @@ namespace Menge
 
 					.def( "setEmitterRandomMode", &ParticleEmitter2::setEmitterRandomMode )
 					.def( "getEmitterRandomMode", &ParticleEmitter2::getEmitterRandomMode )
-                    .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_ParticleEmitter2_setEventListener )
+					.def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_ParticleEmitter2_setEventListener )
 					;
 
 				pybind::interface_<SoundEmitter, pybind::bases<Node> >( kernel, "SoundEmitter", false )
@@ -7545,7 +7589,7 @@ namespace Menge
 					;
 
 				pybind::interface_<ScriptHolder, pybind::bases<Node, Eventable> >( kernel, "ScriptHolder", false )
-                    .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_ScriptHolder_setEventListener )
+					.def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_ScriptHolder_setEventListener )
 					;
 
 				pybind::interface_<Point, pybind::bases<Node> >( kernel, "Point", false )
@@ -7568,9 +7612,9 @@ namespace Menge
 				pybind::interface_<Layer, pybind::bases<Node> >( kernel, "Layer", false )
 					;
 
-                pybind::interface_<Layer2D, pybind::bases<Layer> >( kernel, "Layer2D", false )
-                    .def( "setSize", &Layer2D::setSize )
-                    .def( "getSize", &Layer2D::getSize )
+				pybind::interface_<Layer2D, pybind::bases<Layer> >( kernel, "Layer2D", false )
+					.def( "setSize", &Layer2D::setSize )
+					.def( "getSize", &Layer2D::getSize )
 					.def( "setViewport", &Layer2D::setViewport )
 					.def( "removeViewport", &Layer2D::removeViewport )
 					;
@@ -7614,8 +7658,8 @@ namespace Menge
 					.def( "setDefaultHandle", &HotSpot::setDefaultHandle )
 					.def( "getDefaultHandle", &HotSpot::getDefaultHandle )
 					.def( "isMousePickerOver", &HotSpot::isMousePickerOver )
-                    .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_setEventListener )
-                    .def_proxy_native( "removeEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_removeEventListener )
+					.def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_setEventListener )
+					.def_proxy_native( "removeEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_removeEventListener )
 					;
 
 				pybind::interface_<HotSpotPolygon, pybind::bases<HotSpot> >( kernel, "HotSpotPolygon", false )
@@ -7641,7 +7685,7 @@ namespace Menge
 					.def( "getWidth", &HotSpotImage::getWidth )
 					.def( "getHeight", &HotSpotImage::getHeight )
 					;
-				
+
 				pybind::interface_<HotSpotCircle, pybind::bases<HotSpot> >( kernel, "HotSpotCircle", false )
 					.def( "setRadius", &HotSpotCircle::setRadius )
 					.def( "getRadius", &HotSpotCircle::getRadius )
@@ -7657,38 +7701,38 @@ namespace Menge
 					.def( "setSurface", &Shape::setSurface )
 					.def( "getSurface", &Shape::getSurface )
 
-                    .def_proxy_static( "getSurfaceSize", nodeScriptMethod, &NodeScriptMethod::s_getSurfaceSize )
-                    .def_proxy_static( "getLocalImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getLocalImageCenter )
-                    .def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldImageCenter )
+					.def_proxy_static( "getSurfaceSize", nodeScriptMethod, &NodeScriptMethod::s_getSurfaceSize )
+					.def_proxy_static( "getLocalImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getLocalImageCenter )
+					.def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldImageCenter )
 					;
 
-                pybind::interface_<ShapeQuad, pybind::bases<Shape> >( kernel, "ShapeQuad", false )
-                    ;
-                
+				pybind::interface_<ShapeQuad, pybind::bases<Shape> >( kernel, "ShapeQuad", false )
+					;
 
-                pybind::interface_<ShapeQuadFixed, pybind::bases<ShapeQuad> >( kernel, "ShapeQuadFixed", false )
-                    ;
 
-                pybind::interface_<ShapeQuadFlex, pybind::bases<ShapeQuad> >( kernel, "ShapeQuadFlex", false )
-                    .def( "setCenterAlign", &ShapeQuadFlex::setCenterAlign )
-                    .def( "getCenterAlign", &ShapeQuadFlex::getCenterAlign )
-                    .def( "setFlipX", &ShapeQuadFlex::setFlipX )
-                    .def( "getFlipX", &ShapeQuadFlex::getFlipX )
-                    .def( "setFlipY", &ShapeQuadFlex::setFlipY )
-                    .def( "getFlipY", &ShapeQuadFlex::getFlipY )
-                    .def( "setPercentVisibility", &ShapeQuadFlex::setPercentVisibility )
-                    .def( "getPercentVisibility", &ShapeQuadFlex::getPercentVisibility )
-                    .def( "setCustomSize", &ShapeQuadFlex::setCustomSize )
-                    .def( "getCustomSize", &ShapeQuadFlex::getCustomSize )
-                    .def( "removeCustomSize", &ShapeQuadFlex::removeCustomSize )
-                    .def( "hasCustomSize", &ShapeQuadFlex::hasCustomSize )
-                    .def_proxy_static( "setPercentVisibilityTo", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityTo )
-                    .def_proxy_static( "setPercentVisibilityStop", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityStop )
-                    .def( "setTextureUVOffset", &ShapeQuadFlex::setTextureUVOffset )
-                    .def( "getTextureUVOffset", &ShapeQuadFlex::getTextureUVOffset )
-                    .def( "setTextureUVScale", &ShapeQuadFlex::setTextureUVScale )
-                    .def( "getTextureUVScale", &ShapeQuadFlex::getTextureUVScale )
-                    ;
+				pybind::interface_<ShapeQuadFixed, pybind::bases<ShapeQuad> >( kernel, "ShapeQuadFixed", false )
+					;
+
+				pybind::interface_<ShapeQuadFlex, pybind::bases<ShapeQuad> >( kernel, "ShapeQuadFlex", false )
+					.def( "setCenterAlign", &ShapeQuadFlex::setCenterAlign )
+					.def( "getCenterAlign", &ShapeQuadFlex::getCenterAlign )
+					.def( "setFlipX", &ShapeQuadFlex::setFlipX )
+					.def( "getFlipX", &ShapeQuadFlex::getFlipX )
+					.def( "setFlipY", &ShapeQuadFlex::setFlipY )
+					.def( "getFlipY", &ShapeQuadFlex::getFlipY )
+					.def( "setPercentVisibility", &ShapeQuadFlex::setPercentVisibility )
+					.def( "getPercentVisibility", &ShapeQuadFlex::getPercentVisibility )
+					.def( "setCustomSize", &ShapeQuadFlex::setCustomSize )
+					.def( "getCustomSize", &ShapeQuadFlex::getCustomSize )
+					.def( "removeCustomSize", &ShapeQuadFlex::removeCustomSize )
+					.def( "hasCustomSize", &ShapeQuadFlex::hasCustomSize )
+					.def_proxy_static( "setPercentVisibilityTo", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityTo )
+					.def_proxy_static( "setPercentVisibilityStop", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityStop )
+					.def( "setTextureUVOffset", &ShapeQuadFlex::setTextureUVOffset )
+					.def( "getTextureUVOffset", &ShapeQuadFlex::getTextureUVOffset )
+					.def( "setTextureUVScale", &ShapeQuadFlex::setTextureUVScale )
+					.def( "getTextureUVScale", &ShapeQuadFlex::getTextureUVScale )
+					;
 
 				pybind::interface_<Landscape2D, pybind::bases<Node, Materialable> >( kernel, "Landscape2D", false )
 					.def( "setBackParts", &Landscape2D::setBackParts )
@@ -7739,7 +7783,7 @@ namespace Menge
 					.def_proxy_static( "getSubMovie", nodeScriptMethod, &NodeScriptMethod::movie_getSubMovie )
 					.def_proxy_static( "hasSubMovie", nodeScriptMethod, &NodeScriptMethod::movie_hasSubMovie )
 					.def_proxy_static( "getSocket", nodeScriptMethod, &NodeScriptMethod::movie_getSocket )
-					.def_proxy_static( "hasSocket", nodeScriptMethod, &NodeScriptMethod::movie_hasSocket )					
+					.def_proxy_static( "hasSocket", nodeScriptMethod, &NodeScriptMethod::movie_hasSocket )
 					.def_proxy_args_static( "setMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_setMovieEvent )
 					.def_proxy_static( "removeMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_removeMovieEvent )
 					.def_proxy_static( "hasMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieEvent )
@@ -7762,14 +7806,14 @@ namespace Menge
 					.def_proxy_static( "getMovieSlotOffsetPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotOffsetPosition )
 					.def_proxy_static( "attachMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_attachMovieSlotNode )
 					.def_proxy_static( "removeAllMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_removeAllMovieSlotNode )
-                    .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Movie_setEventListener )
+					.def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Movie_setEventListener )
 					;
 
 				pybind::interface_<Meshget, pybind::bases<Node, Eventable, Materialable> >( kernel, "Meshget", false )
 					.def( "setResourceImage", &Meshget::setResourceImage )
 					.def( "getResourceImage", &Meshget::getResourceImage )
 					.def( "setVertices", &Meshget::setVertices )
-                    .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Meshget_setEventListener )
+					.def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Meshget_setEventListener )
 					;
 
 				pybind::interface_<MovieSlot, pybind::bases<Node> >( kernel, "MovieSlot", false )
@@ -7805,14 +7849,14 @@ namespace Menge
 			pybind::def_functor( kernel, "createNode", nodeScriptMethod, &NodeScriptMethod::createNode );
 			pybind::def_functor( kernel, "destroyNode", nodeScriptMethod, &NodeScriptMethod::destroyNode );
 
-            pybind::def_functor( kernel, "createSurface", nodeScriptMethod, &NodeScriptMethod::createSurface );
-            pybind::def_functor( kernel, "createSprite", nodeScriptMethod, &NodeScriptMethod::createSprite );
+			pybind::def_functor( kernel, "createSurface", nodeScriptMethod, &NodeScriptMethod::createSurface );
+			pybind::def_functor( kernel, "createSprite", nodeScriptMethod, &NodeScriptMethod::createSprite );
 
 			pybind::def_functor_args( kernel, "timing", nodeScriptMethod, &NodeScriptMethod::timing );
 			pybind::def_functor( kernel, "timingRemove", nodeScriptMethod, &NodeScriptMethod::timingRemove );
 
 			pybind::interface_<ScheduleManagerInterface>( kernel, "ScheduleManagerInterface", true )
-                .def_smart_pointer()
+				.def_smart_pointer()
 				.def_proxy_args_static( "timing", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_timing )
 				.def_proxy_args_static( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_schedule )
 				.def_proxy_args_static( "pipe", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_pipe )
@@ -7877,7 +7921,7 @@ namespace Menge
 			pybind::def_functor( kernel, "getFixedContentResolution", nodeScriptMethod, &NodeScriptMethod::s_getFixedContentResolution );
 			pybind::def_functor( kernel, "setFixedDisplayResolution", nodeScriptMethod, &NodeScriptMethod::s_setFixedDisplayResolution );
 			pybind::def_functor( kernel, "getFixedDisplayResolution", nodeScriptMethod, &NodeScriptMethod::s_getFixedDisplayResolution );
-			
+
 
 			pybind::def_functor( kernel, "renderOneFrame", nodeScriptMethod, &NodeScriptMethod::renderOneFrame );
 			pybind::def_functor( kernel, "writeImageToFile", nodeScriptMethod, &NodeScriptMethod::writeImageToFile );
@@ -7907,7 +7951,7 @@ namespace Menge
 			pybind::def_functor( kernel, "getInputMouseButtonEventBlock", nodeScriptMethod, &NodeScriptMethod::s_getInputMouseButtonEventBlock );
 
 			pybind::def_functor( kernel, "loadPlugin", nodeScriptMethod, &NodeScriptMethod::s_loadPlugin );
-			
+
 			pybind::def_functor( kernel, "getRenderCamera2D", nodeScriptMethod, &NodeScriptMethod::s_getRenderCamera2D );
 
 			pybind::def_functor( kernel, "testHotspot", nodeScriptMethod, &NodeScriptMethod::s_testHotspot );
@@ -7927,6 +7971,7 @@ namespace Menge
 			pybind::def_functor_args( kernel, "addMouseButtonHandlerEnd", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerEnd );
 			pybind::def_functor_args( kernel, "addMouseWheelHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseWheelHandler );
 			pybind::def_functor_args( kernel, "addKeyHandler", nodeScriptMethod, &NodeScriptMethod::s_addKeyHandler );
+			pybind::def_functor_args( kernel, "addTextHandler", nodeScriptMethod, &NodeScriptMethod::s_addTextHandler );
 
 			pybind::def_functor( kernel, "removeGlobalHandler", nodeScriptMethod, &NodeScriptMethod::s_removeGlobalHandler );
 			pybind::def_functor( kernel, "enableGlobalHandler", nodeScriptMethod, &NodeScriptMethod::s_enableGlobalHandler );
@@ -8040,12 +8085,12 @@ namespace Menge
 			pybind::def_functor( kernel, "addShapeFollowerCustomSize", nodeScriptMethod, &NodeScriptMethod::s_addShapeFollowerCustomSize );
 			pybind::def_functor( kernel, "addShapeFollowerTextureUVScale", nodeScriptMethod, &NodeScriptMethod::s_addShapeFollowerTextureUVScale );
 			pybind::def_functor( kernel, "removeNodeFollower", nodeScriptMethod, &NodeScriptMethod::s_removeNodeFollower );
-			
+
 			pybind::def_functor( kernel, "moduleMessage", nodeScriptMethod, &NodeScriptMethod::s_moduleMessage );
 
-            pybind::def_functor( kernel, "findNodeScene", nodeScriptMethod, &NodeScriptMethod::s_findNodeScene );
+			pybind::def_functor( kernel, "findNodeScene", nodeScriptMethod, &NodeScriptMethod::s_findNodeScene );
 
-            pybind::def_functor( kernel, "getCameraPosition", nodeScriptMethod, &NodeScriptMethod::s_getCameraPosition );
+			pybind::def_functor( kernel, "getCameraPosition", nodeScriptMethod, &NodeScriptMethod::s_getCameraPosition );
 		}
 	}
 }

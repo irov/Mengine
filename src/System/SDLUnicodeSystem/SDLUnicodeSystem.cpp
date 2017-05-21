@@ -23,7 +23,7 @@ namespace Menge
     {
 		try
 		{
-			std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> convert;
+			std::wstring_convert<std::codecvt_utf8<WChar>, WChar> convert;
 			std::string dest = (_unicodeSize == UNICODE_UNSIZE) ? convert.to_bytes( _unicode ) : convert.to_bytes( _unicode, _unicode + _unicodeSize );
 			size_t utf8_size = dest.size();
 
@@ -64,7 +64,7 @@ namespace Menge
     {
 		try
 		{
-			std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> convert;
+			std::wstring_convert<std::codecvt_utf8<WChar>, WChar> convert;
 			std::wstring dest = (_utf8Size == UNICODE_UNSIZE) ? convert.from_bytes( _utf8 ) : convert.from_bytes( _utf8, _utf8 + _utf8Size );
 			size_t wc_size = dest.size();
 

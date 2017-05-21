@@ -757,6 +757,26 @@ namespace Menge
 		return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Player::handleTextEvent( const InputTextEvent & _event )
+	{
+		bool handler = false;
+
+		if( m_globalHandleSystem != nullptr )
+		{
+			m_globalHandleSystem->handleTextEvent( _event );
+		}
+
+		if( m_mousePickerSystem != nullptr )
+		{
+			if( handler == false )
+			{
+				handler = m_mousePickerSystem->handleTextEvent( _event );
+			}
+		}
+
+		return handler;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
 	{
 		if( m_globalHandleSystem != nullptr )

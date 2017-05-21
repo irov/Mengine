@@ -245,6 +245,7 @@ namespace Menge
 	enum InputEventType
 	{
 		IET_KEY,
+		IET_TEXT,
 		IET_MOUSE_BUTTON,
 		IET_MOUSE_WHELL,
 		IET_MOUSE_MOVE,
@@ -259,10 +260,18 @@ namespace Menge
 
 		float x;
 		float y;
-		KeyCode key;
-		WChar code;
+		KeyCode code;
 		bool isDown;
 		bool isRepeat;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	struct InputTextEvent
+	{
+		InputEventType type;
+
+		float x;
+		float y;
+		WChar key;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	struct InputMouseButtonEvent
@@ -315,6 +324,7 @@ namespace Menge
 		InputEventType type;
 
 		InputKeyEvent key;
+		InputTextEvent text;
 		InputMouseButtonEvent button;
 		InputMouseWheelEvent wheel;
 		InputMouseMoveEvent move;
@@ -329,6 +339,7 @@ namespace Menge
 
 	public:
 		virtual bool handleKeyEvent( const InputKeyEvent & _event ) = 0;
+		virtual bool handleTextEvent( const InputTextEvent & _event ) = 0;
 
 	public:
 		virtual bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) = 0;
@@ -415,17 +426,28 @@ namespace Menge
 			this->pushEvent( event );
 		}
 
-		inline void pushKeyEvent( float _x, float _y, KeyCode _key, WChar _code, bool _isDown, bool _repeating )
+		inline void pushKeyEvent( float _x, float _y, KeyCode _code, bool _isDown, bool _repeating )
 		{
 			InputUnionEvent event;
 			event.key.type = IET_KEY;
 
 			event.key.x = _x;
 			event.key.y = _y;
-			event.key.key = _key;
 			event.key.code = _code;
 			event.key.isDown = _isDown;
 			event.key.isRepeat = _repeating;
+
+			this->pushEvent( event );
+		}
+
+		inline void pushTextEvent( float _x, float _y, WChar _key )
+		{
+			InputUnionEvent event;
+			event.text.type = IET_TEXT;
+
+			event.text.x = _x;
+			event.text.y = _y;
+			event.text.key = _key;
 
 			this->pushEvent( event );
 		}

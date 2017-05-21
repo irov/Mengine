@@ -62,6 +62,10 @@ namespace Menge
 				{
 					this->keyEvent_( event.key );
 				}break;
+			case IET_TEXT:
+				{
+					this->textEvent_( event.text );
+				}break;
 			case IET_MOUSE_BUTTON:
 				{
 					this->mouseButtonEvent_( event.button );
@@ -285,21 +289,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::keyEvent_( const InputKeyEvent & _params )
 	{
-		bool isRepeat = (m_keyBuffer[_params.key] == true && _params.isDown == true);
+		bool isRepeat = (m_keyBuffer[_params.code] == true && _params.isDown == true);
 		
-		m_keyBuffer[_params.key] = _params.isDown;
+		m_keyBuffer[_params.code] = _params.isDown;
 
 		InputKeyEvent event;
 		event.type = _params.type;
 		event.x = _params.x;
 		event.y = _params.y;
-		event.key = _params.key;
 		event.code = _params.code;
 		event.isDown = _params.isDown;
 		event.isRepeat = isRepeat;
 
 		APPLICATION_SERVICE(m_serviceProvider)
 			->keyEvent( event );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::textEvent_( const InputTextEvent & _params )
+	{
+		APPLICATION_SERVICE( m_serviceProvider )
+			->textEvent( _params );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseButtonEvent_( const InputMouseButtonEvent & _params )

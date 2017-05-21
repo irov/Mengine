@@ -496,34 +496,26 @@ namespace Menge
 		case WM_SYSKEYDOWN:
 			{
 				unsigned int vkc = static_cast<unsigned int>(wParam);
-				HKL  layout = ::GetKeyboardLayout( 0 );
-				unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
 
 				mt::vec2f point;
 				this->calcCursorPosition_( point );
 
-				WChar tvk = translateVirtualKey_( vkc, vk );
-
 				KeyCode code = (KeyCode)vkc;
 
 				INPUT_SERVICE( m_serviceProvider )
-					->pushKeyEvent( point.x, point.y, code, tvk, true, false );
+					->pushKeyEvent( point.x, point.y, code, true, false );
 			}break;
 		case WM_SYSKEYUP:
 			{
 				unsigned int vkc = static_cast<unsigned int>(wParam);
-				HKL  layout = ::GetKeyboardLayout( 0 );
-				unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
 
 				mt::vec2f point;
 				this->calcCursorPosition_( point );
 
-				WChar tvk = translateVirtualKey_( vkc, vk );
-
 				KeyCode code = (KeyCode)vkc;
 
 				INPUT_SERVICE( m_serviceProvider )
-					->pushKeyEvent( point.x, point.y, code, tvk, false, false );
+					->pushKeyEvent( point.x, point.y, code, false, false );
 			}break;
 		case WM_SYSCOMMAND:
 			{
@@ -597,6 +589,38 @@ namespace Menge
 			->defWindowProc( hWnd, uMsg, wParam, lParam );
 
 		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_sonvertUTF32toUTF8( UINT32 _utf32, char * _utf8 )
+	{
+		if( _utf32 <= 0x7F ) {
+			_utf8[0] = (char)_utf32;
+			_utf8[1] = '\0';
+		}
+		else if( _utf32 <= 0x7FF ) {
+			_utf8[0] = 0xC0 | (char)((_utf32 >> 6) & 0x1F);
+			_utf8[1] = 0x80 | (char)(_utf32 & 0x3F);
+			_utf8[2] = '\0';
+		}
+		else if( _utf32 <= 0xFFFF ) {
+			_utf8[0] = 0xE0 | (char)((_utf32 >> 12) & 0x0F);
+			_utf8[1] = 0x80 | (char)((_utf32 >> 6) & 0x3F);
+			_utf8[2] = 0x80 | (char)(_utf32 & 0x3F);
+			_utf8[3] = '\0';
+		}
+		else if( _utf32 <= 0x10FFFF ) {
+			_utf8[0] = 0xF0 | (char)((_utf32 >> 18) & 0x0F);
+			_utf8[1] = 0x80 | (char)((_utf32 >> 12) & 0x3F);
+			_utf8[2] = 0x80 | (char)((_utf32 >> 6) & 0x3F);
+			_utf8[3] = 0x80 | (char)(_utf32 & 0x3F);
+			_utf8[4] = '\0';
+		}
+		else 
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & _result )
@@ -833,18 +857,14 @@ namespace Menge
 		case WM_KEYDOWN:
 			{
 				UINT vkc = static_cast<UINT>(wParam);
-				HKL  layout = ::GetKeyboardLayout( 0 );
-				UINT vk = MapVirtualKeyEx( vkc, 0, layout );
 
 				mt::vec2f point;
 				this->calcCursorPosition_( point );
 
-				WChar tvk = this->translateVirtualKey_( vkc, vk );
-
 				KeyCode code = (KeyCode)vkc;
 
 				INPUT_SERVICE( m_serviceProvider )
-					->pushKeyEvent( point.x, point.y, code, tvk, true, false );
+					->pushKeyEvent( point.x, point.y, code, true, false );
 
 				handle = true;
 				_result = FALSE;
@@ -852,21 +872,43 @@ namespace Menge
 		case WM_KEYUP:
 			{
 				UINT vkc = static_cast<UINT>(wParam);
-				HKL  layout = ::GetKeyboardLayout( 0 );
-				unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
 
 				mt::vec2f point;
 				this->calcCursorPosition_( point );
 
-				WChar tvk = this->translateVirtualKey_( vkc, vk );
-
 				KeyCode code = (KeyCode)vkc;
 
 				INPUT_SERVICE( m_serviceProvider )
-					->pushKeyEvent( point.x, point.y, code, tvk, false, false );
+					->pushKeyEvent( point.x, point.y, code, false, false );
 
 				handle = true;
 				_result = FALSE;
+			}break;
+		case WM_UNICHAR:
+			if( wParam == UNICODE_NOCHAR ) 
+			{
+				_result = TRUE;
+				break;
+			}
+		case WM_CHAR:
+			{
+				Char utf8[5];
+				if( s_sonvertUTF32toUTF8( (uint32_t)wParam, utf8 ) == true )
+				{
+					mt::vec2f point;
+					this->calcCursorPosition_( point );
+
+					WChar text_code[2];
+					size_t text_code_size;
+					UNICODE_SERVICE( m_serviceProvider )
+						->utf8ToUnicode( utf8, -1, text_code, 2, &text_code_size );
+
+					INPUT_SERVICE( m_serviceProvider )
+						->pushTextEvent( point.x, point.y, text_code[0] );
+
+					handle = true;
+					_result = FALSE;
+				}
 			}break;
 		}
 
@@ -1592,32 +1634,6 @@ namespace Menge
 	void Win32Platform::hideKeyboard()
 	{
 		//Empty - for iPad
-	}
-	//////////////////////////////////////////////////////////////////////////
-	WChar Win32Platform::translateVirtualKey_( unsigned int _vkc, unsigned int _vk ) const
-	{
-		if( _vk == 0 )
-		{
-			return 0;
-		}
-
-		BYTE keyState[256];
-		if( ::GetKeyboardState( keyState ) == 0 )
-		{
-			return 0;
-		}
-
-		HKL layout = ::GetKeyboardLayout( 0 );
-
-		WCHAR wide[4];
-		int res = ::ToUnicodeEx( _vkc, _vk, keyState, wide, 4, 0, layout );
-
-		if( res <= 0 )
-		{
-			return 0;
-		}
-
-		return wide[0];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32Platform::onEvent( const ConstString & _event, const TMapWParams & _params )

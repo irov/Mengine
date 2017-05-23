@@ -90,8 +90,10 @@ namespace Menge
         GLUNUSED( _FSAAQuality );
         GLUNUSED( _MultiSampleCount );
 
+#ifdef _WIN32
 		Menge::initialize_GLEXT( m_serviceProvider );
-      
+#endif
+        
         const GLubyte * ver_string = glGetString(GL_VERSION);
 
         LOGGER_WARNING( m_serviceProvider )("OpenGL Version: %s", ver_string);

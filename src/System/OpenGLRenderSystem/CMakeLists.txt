@@ -27,10 +27,6 @@ ENDIF()
 ADD_FILTER(
 OpenGLRender
     OpenGLRenderHeader.h
-    OpenGLRenderHeaderWin32.cpp
-    OpenGLRenderHeaderWin32.h
-    OpenGLRenderHeaderIOS.h
-    OpenGLRenderHeaderMAC.h
     OpenGLRenderSystem.cpp
     OpenGLRenderSystem.h
     OpenGLRenderError.cpp

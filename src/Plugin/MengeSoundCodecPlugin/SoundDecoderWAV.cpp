@@ -110,7 +110,7 @@ namespace Menge
 			return false;
 		}
 
-		m_chunkDataPos = m_stream->tell();
+		m_chunkDataPos = (uint32_t)m_stream->tell();
 				
         m_dataInfo.size = chunkDataSize;
         m_dataInfo.channels = header.NumChannels;

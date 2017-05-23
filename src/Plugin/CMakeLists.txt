@@ -57,7 +57,7 @@ if( MENGINE_TARGET_MSVC )
     ADD_SUBDIRECTORY( Win32ConsoleLogger )
 endif()
 
-if( MENGINE_TARGET_SDL )
+if( MENGINE_TARGET_SDL AND MENGINE_PLATFORM_WIN32 )
     ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )
     
     ADD_SUBDIRECTORY( MengeXlsExportPlugin )

@@ -247,11 +247,13 @@ namespace Menge
 			case GL_ETC1_RGB8_OES:
 			case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
 			case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+#ifdef _WIN32
 			case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+#endif
 				{
 					GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_hwwidth, miplevel_hwheight, m_hwChannels, 1, m_hwPixelFormat );
 
-					IF_GLCALL( m_serviceProvider, glCompressedTexImage2D_, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, textureMemorySize, memory) )
+					IF_GLCALL( m_serviceProvider, glCompressedTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, textureMemorySize, memory) )
 					{
 						LOGGER_ERROR( m_serviceProvider )("OpenGLTexture::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
 							, _level
@@ -291,7 +293,9 @@ namespace Menge
 			case GL_ETC1_RGB8_OES:
 			case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
 			case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+#ifdef _WIN32
 			case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+#endif
 				{
 					successful = false;
 				}break;

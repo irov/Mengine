@@ -1,8 +1,7 @@
 #	include "OpenGLRenderError.h"
+#   include "OpenGLRenderHeader.h"
 
 #	include "Logger/Logger.h"
-
-#	include "OpenGL.h"
 
 namespace Menge
 {

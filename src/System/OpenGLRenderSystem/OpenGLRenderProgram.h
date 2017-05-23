@@ -6,7 +6,7 @@
 #   include "OpenGLRenderVertexShader.h"
 #   include "OpenGLRenderFragmentShader.h"
 
-#   include "OpenGL.h"
+#   include "OpenGLRenderHeader.h"
 
 namespace Menge
 {

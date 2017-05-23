@@ -2,7 +2,7 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
-#   include "OpenGL.h"
+#   include "OpenGLRenderHeader.h"
 
 namespace Menge
 {

@@ -2,10 +2,35 @@ set( MY_LIB_NAME OpenGLRenderSystem )
 
 include_directories( ${THIRDPARTY_DIR}/SDL2/include ${Mengine_SOURCE_DIR}/Utils)
 
+IF(MENGINE_PLATFORM_WIN32)
 ADD_FILTER(
-src
-    OpenGL.cpp
-    OpenGL.h
+OpenGLRenderHeader
+    OpenGLRenderHeaderWin32.cpp
+    OpenGLRenderHeaderWin32.h
+)
+ENDIF()
+
+IF(MENGINE_PLATFORM_IOS)
+ADD_FILTER(
+OpenGLRenderHeader
+    OpenGLRenderHeaderIOS.h
+)
+ENDIF()
+
+IF(MENGINE_PLATFORM_MAC)
+ADD_FILTER(
+OpenGLRenderHeader
+    OpenGLRenderHeaderMacOS.h
+)
+ENDIF()
+
+ADD_FILTER(
+OpenGLRender
+    OpenGLRenderHeader.h
+    OpenGLRenderHeaderWin32.cpp
+    OpenGLRenderHeaderWin32.h
+    OpenGLRenderHeaderIOS.h
+    OpenGLRenderHeaderMAC.h
     OpenGLRenderSystem.cpp
     OpenGLRenderSystem.h
     OpenGLRenderError.cpp

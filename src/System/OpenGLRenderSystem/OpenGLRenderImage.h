@@ -5,7 +5,7 @@
 
 #   include "Core/ServantBase.h"
 
-#	include "OpenGL.h"
+#   include "OpenGLRenderHeader.h"
 
 namespace Menge
 {

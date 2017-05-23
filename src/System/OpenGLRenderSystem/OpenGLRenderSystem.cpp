@@ -10,7 +10,7 @@
 
 #   include "Logger/Logger.h"
 
-#   include "OpenGL.h"
+#   include "OpenGLRenderHeader.h"
 
 #   include <cmath>
 
@@ -114,7 +114,7 @@ namespace Menge
         for( uint32_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
         {
 			GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
-            GLCALL( m_serviceProvider, glActiveTexture_, (GL_TEXTURE0 + i) );
+            GLCALL( m_serviceProvider, mglActiveTexture, (GL_TEXTURE0 + i) );
             GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE) );
             GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR) );
             GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR) );
@@ -367,7 +367,7 @@ namespace Menge
         {
             const TextureStage & textureStage = m_textureStage[i];
 
-            GLCALL( m_serviceProvider, glActiveTexture_, (GL_TEXTURE0 + i) );
+            GLCALL( m_serviceProvider, mglActiveTexture, (GL_TEXTURE0 + i) );
 
             if( textureStage.texture == nullptr )
             {
@@ -417,7 +417,7 @@ namespace Menge
                 continue;
             }
             
-            GLCALL( m_serviceProvider, glClientActiveTexture_, (GL_TEXTURE0 + i) );
+            GLCALL( m_serviceProvider, mglClientActiveTexture, (GL_TEXTURE0 + i) );
             GLCALL( m_serviceProvider, glEnableClientState, (GL_TEXTURE_COORD_ARRAY) );
 
             const ptrdiff_t uv_offset = offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * i;
@@ -437,7 +437,7 @@ namespace Menge
 
         for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
         {
-            GLCALL( m_serviceProvider, glClientActiveTexture_, (GL_TEXTURE0 + i) );
+            GLCALL( m_serviceProvider, mglClientActiveTexture, (GL_TEXTURE0 + i) );
             GLCALL( m_serviceProvider, glDisableClientState, (GL_TEXTURE_COORD_ARRAY) );
         }
 
@@ -450,7 +450,7 @@ namespace Menge
                 break;
             }
 
-            GLCALL( m_serviceProvider, glActiveTexture_, (GL_TEXTURE0 + i) );
+            GLCALL( m_serviceProvider, mglActiveTexture, (GL_TEXTURE0 + i) );
 
             GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, 0) );
         }

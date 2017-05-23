@@ -723,7 +723,7 @@ namespace Menge
 		{
 			aa = true;
 
-			const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, "1-1" );
+			const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, "ok" );
 
 			if( subcomposition != nullptr )
 			{
@@ -732,49 +732,20 @@ namespace Menge
 			}
 		}
 
-		for( uint32_t islot = 1; islot < 6; ++islot )
-		{
-			char name[256];
-			sprintf( name, "star%u", islot );
-			const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, name );
-
-			ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
-		}
-
 		if( a < 5000.f )
 		{
 			return;
 		}
 
+		static bool aa2 = false;
+		if( aa2 == false )
 		{
-			uint32_t islot = 1;
-			for( ; islot < 4; ++islot )
+			aa2 = true;
+
+			const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, "ok" );
+
+			if( subcomposition != nullptr )
 			{
-				char name[256];
-				sprintf( name, "star%u", islot );
-				const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, name );
-
-				float time = ae_get_movie_sub_composition_time( subcomposition );
-				float in, out;
-				ae_get_movie_sub_composition_in_out_loop( subcomposition, &in, &out );
-
-				if( time < out )
-					continue;
-
-				ae_stop_movie_sub_composition( m_composition, subcomposition );
-
-				ae_set_movie_sub_composition_loop( subcomposition, AE_TRUE );
-				ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
-				//_view->submovieStop( star );
-				//_view->submoviePlay( star, true );
-			}
-
-			for( ; islot < 6; ++islot )
-			{
-				char name[256];
-				sprintf( name, "star%u", islot );
-				const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, name );
-
 				ae_interrupt_movie_sub_composition( m_composition, subcomposition, AE_TRUE );
 			}
 		}
@@ -783,50 +754,6 @@ namespace Menge
 		{
 			return;
 		}
-
-		{
-			uint32_t islot = 1;
-			for( ; islot < 3; ++islot )
-			{
-				char name[256];
-				sprintf( name, "star%u", islot );
-				const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, name );
-
-				float time = ae_get_movie_sub_composition_time( subcomposition );
-				float in, out;
-				ae_get_movie_sub_composition_in_out_loop( subcomposition, &in, &out );
-
-				if( time < out )
-					continue;
-
-				ae_stop_movie_sub_composition( m_composition, subcomposition );
-
-				ae_set_movie_sub_composition_loop( subcomposition, AE_TRUE );
-				ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
-				//_view->submovieStop( star );
-				//_view->submoviePlay( star, true );
-			}
-
-			for( ; islot < 6; ++islot )
-			{
-				char name[256];
-				sprintf( name, "star%u", islot );
-				const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, name );
-
-				ae_interrupt_movie_sub_composition( m_composition, subcomposition, AE_TRUE );
-			}
-		}
-
-		
-		//if( a < 10000.f )
-		//{
-		//	a += _timing;
-		//}
-
-		//if( a > 10000.f )
-		//{
-		//	set_movie_composition_timing( m_composition, 6000.f );
-		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie2::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )

@@ -15,7 +15,7 @@
 
 #   include "stdex/binary_vector.h"
 
-#	include "OpenGL.h"
+#	include "OpenGLRenderHeader.h"
 
 #	include "SDL_video.h"
 

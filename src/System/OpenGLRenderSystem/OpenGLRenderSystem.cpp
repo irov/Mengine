@@ -503,7 +503,7 @@ namespace Menge
 
         GLCALL( m_serviceProvider, glBlendFunc, (srcBlendFactor, dstBlendFactor) );
 
-		GLCALL( m_serviceProvider, glBlendEquation_, (blendOp) );
+		GLCALL( m_serviceProvider, mglBlendEquation, (blendOp) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setCullMode( ECullMode _mode )

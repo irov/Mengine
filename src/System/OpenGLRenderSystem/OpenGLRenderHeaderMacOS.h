@@ -9,3 +9,5 @@
 #   define GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG                     0x8C03
 
 #   define GL_ETC1_RGB8_OES                                        0x8D64
+
+#	define MENGINE_SUFIX_GLEXT

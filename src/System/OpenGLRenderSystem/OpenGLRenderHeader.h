@@ -3,6 +3,7 @@
 #if _WIN32
 #	include "OpenGLRenderHeaderWin32.h"
 #elif __APPLE__
+#   include <TargetConditionals.h>
 #	if TARGET_OS_IPHONE
 #	include "OpenGLRenderHeaderIOS.h"
 #	elif __MACH__

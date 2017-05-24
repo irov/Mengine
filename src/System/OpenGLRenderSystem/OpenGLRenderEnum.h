@@ -45,8 +45,6 @@ namespace Menge
 		case BOP_ADD: return GL_FUNC_ADD;
 		case BOP_SUBTRACT: return GL_FUNC_SUBTRACT;
 		case BOP_REVSUBTRACT: return GL_FUNC_REVERSE_SUBTRACT;
-		case BOP_MIN: return GL_MIN;
-		case BOP_MAX: return GL_MAX;
 		default:;
 		}
 

@@ -576,13 +576,20 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setFillMode( EFillMode _mode )
     {
-        const GLenum mode = s_getGLFillMode(_mode);
-        glPolygonMode(GL_FRONT_AND_BACK, mode);
+		(void)_mode;
+
+		//const GLenum mode = s_getGLFillMode( _mode );
+		//glPolygonMode( GL_FRONT_AND_BACK, mode );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
     {
-        GLCALL( m_serviceProvider, glColorMask, ( _r ? GL_TRUE : GL_FALSE, _g ? GL_TRUE : GL_FALSE, _b ? GL_TRUE : GL_FALSE, _a ? GL_TRUE : GL_FALSE ) );
+		const GLboolean red = _r ? GL_TRUE : GL_FALSE;
+		const GLboolean green = _g ? GL_TRUE : GL_FALSE;
+		const GLboolean blue = _b ? GL_TRUE : GL_FALSE;
+		const GLboolean alpha = _a ? GL_TRUE : GL_FALSE;
+
+		GLCALL( m_serviceProvider, glColorMask, (red, green, blue, alpha) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setShadeType( EShadeType _sType )

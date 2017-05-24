@@ -5,6 +5,7 @@
 #elif __APPLE__
 #   include <TargetConditionals.h>
 #	if TARGET_OS_IPHONE
+#	define MENGINE_OPENGL_ES
 #	include "OpenGLRenderHeaderIOS.h"
 #	elif __MACH__
 #	include "OpenGLRenderHeaderMacOS.h"

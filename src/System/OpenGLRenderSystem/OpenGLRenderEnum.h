@@ -302,20 +302,23 @@ namespace Menge
 		
 		return 0;
 	}
-    ////////////////////////////////////////////////////////////////////////////
-    //inline GLenum s_getGLFillMode(EFillMode _op)
-    //{
-    //    switch (_op)
-    //    {
-    //    case FM_POINT:
-    //        return GL_POINT;
-    //    case FM_WIREFRAME:
-    //        return GL_LINE;
-    //    case FM_SOLID:
-    //        return GL_FILL;
-    //    default:;
-    //    }
+    //////////////////////////////////////////////////////////////////////////
+#	ifndef MENGINE_OPENGL_ES
+    inline GLenum s_getGLFillMode(EFillMode _op)
+    {
+        switch (_op)
+        {
+        case FM_POINT:
+            return GL_POINT;
+        case FM_WIREFRAME:
+            return GL_LINE;
+        case FM_SOLID:
+            return GL_FILL;
+        default:;
+        }
 
-    //    return 0;
-    //};
+        return 0;
+    };
+#endif
+
 }	// namespace Menge

@@ -160,7 +160,7 @@ namespace Menge
 		case PF_R8G8B8:
 			return GL_RGB;
 		case PF_A8:
-		    return GL_ALPHA8;
+		    return GL_ALPHA;
 		case PF_L8:
 			return GL_LUMINANCE;
 		case PF_ETC1:
@@ -169,8 +169,10 @@ namespace Menge
 			return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
 		case PF_PVRTC4_RGBA:
 			return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
+#ifdef _WIN32
 		case PF_DXT1:
 			return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+#endif
 	    default:;
 	    }
 
@@ -195,8 +197,10 @@ namespace Menge
 			return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
 		case PF_PVRTC4_RGBA:
 			return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
+#ifdef _WIN32
 		case PF_DXT1:
 			return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+#endif
 	    default:;
 	    }
 

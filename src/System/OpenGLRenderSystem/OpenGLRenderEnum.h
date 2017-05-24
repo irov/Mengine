@@ -82,18 +82,18 @@ namespace Menge
 		return 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-	inline const GLenum s_toMagFilter( Menge::ETextureFilter _magFilter )
+	inline const GLenum s_toMagFilter( ETextureFilter _magFilter )
     {
 		switch( _magFilter )
 		{
-		case Menge::TF_NONE:
-		case Menge::TF_POINT:
+		case TF_NONE:
+		case TF_POINT:
 			return GL_NEAREST;
 			break;
-		case Menge::TF_LINEAR:
-		case Menge::TF_ANISOTROPIC:
-		case Menge::TF_FLATCUBIC:
-		case Menge::TF_GAUSSIANCUBIC:
+		case TF_LINEAR:
+		case TF_ANISOTROPIC:
+		case TF_FLATCUBIC:
+		case TF_GAUSSIANCUBIC:
 			return GL_LINEAR;
 			break;
 		default:;
@@ -102,40 +102,40 @@ namespace Menge
 		return 0;
     };
     //////////////////////////////////////////////////////////////////////////
-	inline GLenum s_toGLMinFilter( Menge::ETextureFilter _minFilter, Menge::ETextureFilter _mipFilter )
+	inline GLenum s_toGLMinFilter( ETextureFilter _minFilter, ETextureFilter _mipFilter )
     {
 	    switch( _minFilter )
 	    {
-	    case Menge::TF_NONE:
-	    case Menge::TF_POINT:
+	    case TF_NONE:
+	    case TF_POINT:
 		    switch( _mipFilter )
 		    {
-		    case Menge::TF_NONE:
+		    case TF_NONE:
 			    return GL_NEAREST;
-		    case Menge::TF_POINT:
+		    case TF_POINT:
 				return GL_NEAREST;
-		    case Menge::TF_ANISOTROPIC:
-		    case Menge::TF_LINEAR:
-		    case Menge::TF_FLATCUBIC:
-		    case Menge::TF_GAUSSIANCUBIC:
+		    case TF_ANISOTROPIC:
+		    case TF_LINEAR:
+		    case TF_FLATCUBIC:
+		    case TF_GAUSSIANCUBIC:
 				return GL_LINEAR;
 		    default:;
 		    }
 		    break;
-	    case Menge::TF_ANISOTROPIC:
-	    case Menge::TF_LINEAR:
-	    case Menge::TF_FLATCUBIC:
-	    case Menge::TF_GAUSSIANCUBIC:
+	    case TF_ANISOTROPIC:
+	    case TF_LINEAR:
+	    case TF_FLATCUBIC:
+	    case TF_GAUSSIANCUBIC:
 		    switch( _mipFilter )
 		    {
-		    case Menge::TF_NONE:
+		    case TF_NONE:
 			    return GL_LINEAR;
-		    case Menge::TF_POINT:
+		    case TF_POINT:
 				return GL_LINEAR;
-		    case Menge::TF_ANISOTROPIC:
-		    case Menge::TF_LINEAR:
-		    case Menge::TF_FLATCUBIC:
-		    case Menge::TF_GAUSSIANCUBIC:
+		    case TF_ANISOTROPIC:
+		    case TF_LINEAR:
+		    case TF_FLATCUBIC:
+		    case TF_GAUSSIANCUBIC:
 				return GL_LINEAR;
 		    default:;
 		    }
@@ -146,29 +146,30 @@ namespace Menge
 		return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-	inline int s_toGLInternalFormat( Menge::PixelFormat _format )
+	inline int s_toGLInternalFormat( PixelFormat _format )
     {
 	    switch( _format )
 	    {
-	    case Menge::PF_X8B8G8R8:
-	    case Menge::PF_X8R8G8B8:
-	    case Menge::PF_A8B8G8R8:
-	    case Menge::PF_A8R8G8B8:
-	    case Menge::PF_B8G8R8A8:
-	    case Menge::PF_R8G8B8A8:
-		    return GL_RGBA8;
+	    case PF_X8B8G8R8:
+	    case PF_X8R8G8B8:
+	    case PF_A8B8G8R8:
+	    case PF_A8R8G8B8:
+	    case PF_B8G8R8A8:
+	    case PF_R8G8B8A8:
+		    return GL_RGBA;
 		case PF_R8G8B8:
-			return GL_RGB8;
-		case Menge::PF_A8:
+			return GL_RGB;
+		case PF_A8:
 		    return GL_ALPHA8;
-		    //return GL_LUMINANCE;
-		case Menge::PF_ETC1:
+		case PF_L8:
+			return GL_LUMINANCE;
+		case PF_ETC1:
 			return GL_ETC1_RGB8_OES;
-		case Menge::PF_PVRTC4_RGB:
+		case PF_PVRTC4_RGB:
 			return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
-		case Menge::PF_PVRTC4_RGBA:
+		case PF_PVRTC4_RGBA:
 			return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-		case Menge::PF_DXT1:
+		case PF_DXT1:
 			return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
 	    default:;
 	    }
@@ -176,25 +177,25 @@ namespace Menge
 	    return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-	inline GLenum s_toGLColorFormat( Menge::PixelFormat _format )
+	inline GLenum s_toGLColorFormat( PixelFormat _format )
     {
 	    switch( _format )
 	    {
-		case Menge::PF_R8G8B8:
+		case PF_R8G8B8:
 			return GL_RGB;
-	    case Menge::PF_X8R8G8B8:
-	    case Menge::PF_A8R8G8B8:
+	    case PF_X8R8G8B8:
+	    case PF_A8R8G8B8:
             return GL_RGBA;
-	    case Menge::PF_A8:
+	    case PF_A8:
 		    return GL_ALPHA;
 
-		case Menge::PF_ETC1:
+		case PF_ETC1:
 			return GL_ETC1_RGB8_OES;
-		case Menge::PF_PVRTC4_RGB:
+		case PF_PVRTC4_RGB:
 			return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
-		case Menge::PF_PVRTC4_RGBA:
+		case PF_PVRTC4_RGBA:
 			return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-		case Menge::PF_DXT1:
+		case PF_DXT1:
 			return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
 	    default:;
 	    }
@@ -202,16 +203,16 @@ namespace Menge
 	    return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-	inline GLenum s_getGLColorDataType( Menge::PixelFormat _format )
+	inline GLenum s_getGLColorDataType( PixelFormat _format )
     {
 	    switch( _format )
 	    {
-		case Menge::PF_R8G8B8:
+		case PF_R8G8B8:
 			return GL_UNSIGNED_BYTE;
-	    case Menge::PF_X8R8G8B8:
-	    case Menge::PF_A8R8G8B8:
+	    case PF_X8R8G8B8:
+	    case PF_A8R8G8B8:
 		    return GL_UNSIGNED_BYTE;
-	    case Menge::PF_A8:
+	    case PF_A8:
 		    return GL_UNSIGNED_BYTE;
 		case PF_DXT1:
 		case PF_ETC1:

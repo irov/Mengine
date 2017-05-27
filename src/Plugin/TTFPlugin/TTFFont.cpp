@@ -3,7 +3,6 @@
 #	include "TTFServiceInterface.h"
 
 #	include "Interface/FileSystemInterface.h"
-#	include "Interface/MemoryInterface.h"
 
 #	include "Core/MemoryHelper.h"
 
@@ -116,6 +115,8 @@ namespace Menge
 			return false;
 		}
 
+		m_memory = memory;
+
 		m_ascender = static_cast<float>(m_face->size->metrics.ascender >> 6);
 
 		return true;
@@ -124,6 +125,8 @@ namespace Menge
 	void TTFFont::_release()
 	{
 		FT_Done_Face( m_face );
+
+		m_memory = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -161,7 +164,7 @@ namespace Menge
 
         FT_UInt glyph_index = FT_Get_Char_Index( m_face, _ch );
 
-        if( FT_Load_Glyph( m_face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT ) )
+        if( FT_Load_Glyph( m_face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
 		{
 			return false;
 		}
@@ -216,6 +219,24 @@ namespace Menge
         uint32_t bitmap_height = bitmap.rows;
 
 		const void * buffer = glyph->bitmap.buffer;
+
+		if( bitmap_width == 0 || bitmap_height == 0 )
+		{
+			TTFGlyph g;
+			g.ch = _ch;
+			g.advance = advance;
+
+			g.dx = 0.f;
+			g.dy = 0.f;
+			g.w = 0.f;
+			g.h = 0.f;
+
+			g.texture = nullptr;
+
+			glyphs.push_back( g );
+
+			return true;
+		}
 
 		mt::uv4f uv;
 		RenderTextureInterfacePtr texture = TTFATLAS_SERVICE( m_serviceProvider )

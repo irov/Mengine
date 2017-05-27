@@ -184,7 +184,7 @@ namespace Menge
 			{
 				if( this->_prepareGlyph( code ) == false )
 				{
-					return 0;
+					continue;
 				}
 			}
 

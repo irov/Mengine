@@ -707,7 +707,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_printChildren2( Node * _node, uint32_t _tab )
+	static void s_printChildren2( ServiceProviderInterface * _serviceProvider, Node * _node, uint32_t _tab )
 	{
 		TListNodeChild & children = _node->getChildren();
 
@@ -722,7 +722,7 @@ namespace Menge
 				continue;
 			}
 
-			printf( "%.*s-%s [%s] (%.2f, %.2f) %d\n"
+			LOGGER_ERROR( _serviceProvider )("%.*s-%s [%s] (%.2f, %.2f) %d"
 				, _tab
 				, "                                         "
 				, child->getName().c_str() 
@@ -732,18 +732,18 @@ namespace Menge
 				, child->isRenderable()
 				);
 
-			s_printChildren2( child, _tab + 1 );
+			s_printChildren2( _serviceProvider, child, _tab + 1 );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_printChildren( Node * _node )
+	static void s_printChildren( ServiceProviderInterface * _serviceProvider, Node * _node )
 	{
 		if( _node == nullptr )
 		{
 			return;
 		}
 
-		s_printChildren2( _node, 0 );
+		s_printChildren2( _serviceProvider, _node, 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::keyEvent( const InputKeyEvent & _event )
@@ -1039,7 +1039,7 @@ namespace Menge
 				Scene * scene = PLAYER_SERVICE(m_serviceProvider)
 					->getCurrentScene();
 
-				s_printChildren( scene );
+				s_printChildren( m_serviceProvider, scene );
 			}
 		}
 

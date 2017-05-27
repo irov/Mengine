@@ -230,11 +230,12 @@ namespace Menge
         ImageCodecDataInfo dataInfo;
         //dataInfo.format = _image->getHWPixelFormat();
         dataInfo.width = _texture->getWidth();
-        dataInfo.height = _texture->getHeight();		
-        dataInfo.depth = 1;
-        dataInfo.mipmaps = 1;
+        dataInfo.height = _texture->getHeight();	
 
 		const RenderImageInterfacePtr & image = _texture->getImage();
+		dataInfo.channels = image->getHWChannels();
+        dataInfo.depth = 1;
+        dataInfo.mipmaps = 1;
         
         Rect rect;
         rect.left = 0;

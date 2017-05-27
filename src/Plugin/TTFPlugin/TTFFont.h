@@ -3,6 +3,7 @@
 #	include "TTFServiceInterface.h"
 
 #	include "Interface/RenderSystemInterface.h"
+#	include "Interface/MemoryInterface.h"
 #	include "Interface/TextInterface.h"
 
 #	include "Config/String.h"
@@ -23,7 +24,7 @@
 
 namespace Menge
 {
-#	define MENGINE_TTF_FONT_GLYPH_HASH_SIZE 32
+#	define MENGINE_TTF_FONT_GLYPH_HASH_SIZE 37
 
 	class TTFFont
 		: public FontBase
@@ -53,6 +54,8 @@ namespace Menge
 		bool _prepareGlyph( GlyphCode _ch ) override;
 
 	protected:
+		MemoryInterfacePtr m_memory;
+
 		FT_Library m_ftlibrary;
 		FT_Face m_face;
 

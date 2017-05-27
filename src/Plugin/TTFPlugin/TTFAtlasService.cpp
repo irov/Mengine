@@ -39,7 +39,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TTFAtlasService::_finalize()
 	{
-
+		for( uint32_t i = 0; i != 2; ++i )
+		{
+			m_atlasess[i].clear();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterfacePtr TTFAtlasService::makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _channel, const void * _buffer, uint32_t _pitch, mt::uv4f & _uv )
@@ -48,6 +51,11 @@ namespace Menge
 		uint32_t hw_height = Helper::getTexturePOW2( _height );
 
 		uint32_t dimension = std::max( hw_width, hw_height );
+
+		if( dimension == 0 )
+		{
+			return nullptr;
+		}
 
 		TTFAtlas * atlas = this->getAtlas_( dimension, _channel );
 

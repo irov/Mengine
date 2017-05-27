@@ -58,7 +58,7 @@ namespace Menge
 
 				continue;
 			}			
-					
+
 			CharData charData;
 
 			charData.code = glyphChar;

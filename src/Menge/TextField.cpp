@@ -218,6 +218,13 @@ namespace Menge
 			{
 				const CharData & cd = *it;
 
+				if( cd.texture == nullptr )
+				{
+					line.advanceCharOffset( cd, charScale, offset );
+
+					continue;
+				}
+
 				for( uint32_t i = 0; i != 4; ++i )
 				{
 					RenderVertex2D v;
@@ -231,7 +238,7 @@ namespace Menge
 				}
 
 				line.advanceCharOffset( cd, charScale, offset );
-				
+
 				RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( m_serviceProvider )
 					->getMaterial( materialName, PT_TRIANGLELIST, 1, &cd.texture );
 

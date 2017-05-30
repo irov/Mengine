@@ -151,7 +151,7 @@ namespace Menge
 
         size_t height = m_resolution.getHeight();
 
-        GLCALL( m_serviceProvider, glViewport, ( (GLsizei)xb, height - (GLsizei)(yb), (GLsizei)w, (GLsizei)h ) );
+        GLCALL( m_serviceProvider, glViewport, ( (GLint)xb, (GLint)height - (GLint)(yb), (GLsizei)w, (GLsizei)h ) );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setProjectionMatrix( const mt::mat4f & _projection )

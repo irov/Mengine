@@ -55,7 +55,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderIndices * OpenGLRenderIndexBufferES::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
+	Pointer OpenGLRenderIndexBufferES::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
 	{
 		if( m_lockMemory != nullptr )
 		{

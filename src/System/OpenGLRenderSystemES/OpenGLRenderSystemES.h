@@ -10,7 +10,8 @@
 #   include "OpenGLRenderShaderES.h"
 #   include "OpenGLRenderProgramES.h"
 
-#   include "Factory/FactoryStore.h"
+#   include "Factory/Factory.h"
+#   include "Core/ServiceBase.h"
 
 #   include "stdex/stl_map.h"
 

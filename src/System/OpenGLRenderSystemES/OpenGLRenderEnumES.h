@@ -45,8 +45,6 @@ namespace Menge
 		case BOP_ADD: return GL_FUNC_ADD;
 		case BOP_SUBTRACT: return GL_FUNC_SUBTRACT;
 		case BOP_REVSUBTRACT: return GL_FUNC_REVERSE_SUBTRACT;
-		case BOP_MIN: return GL_MIN;
-		case BOP_MAX: return GL_MAX;
 		default:;
 		}
 
@@ -171,8 +169,6 @@ namespace Menge
 			return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
 		case Menge::PF_PVRTC4_RGBA:
 			return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-		case Menge::PF_DXT1:
-			return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;			
 	    default:;
 	    }
 
@@ -199,8 +195,6 @@ namespace Menge
 			return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
 		case Menge::PF_PVRTC4_RGBA:
 			return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-		case Menge::PF_DXT1:
-			return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
 	    default:;
 	    }
 

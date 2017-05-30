@@ -225,7 +225,7 @@ namespace Menge
         GLCALL( m_serviceProvider, glBindTexture, ( GL_TEXTURE_2D, m_uid ) );
 
         
-        LOGGER_INFO(m_serviceProvider)("OpenGLTexture::unlock l %d r %d:%d-%d:%d"
+        LOGGER_INFO(m_serviceProvider)("OpenGLRenderImage::unlock l %d r %d:%d-%d:%d"
             , _level
             , m_lockRect.left
 			, m_lockRect.top
@@ -255,7 +255,7 @@ namespace Menge
 
 					IF_GLCALL( m_serviceProvider, mglCompressedTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, textureMemorySize, memory) )
 					{
-						LOGGER_ERROR( m_serviceProvider )("OpenGLTexture::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
+						LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImage::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
 							, _level
 							, miplevel_hwwidth
 							, miplevel_hwheight
@@ -271,7 +271,7 @@ namespace Menge
 				{
 					IF_GLCALL( m_serviceProvider, glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, m_format, m_type, memory) )
 					{
-						LOGGER_ERROR( m_serviceProvider )("OpenGLTexture::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+						LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImage::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
 							, _level
 							, miplevel_hwwidth
 							, miplevel_hwheight
@@ -313,7 +313,7 @@ namespace Menge
 
 						IF_GLCALL( m_serviceProvider, glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, m_format, m_type, nullptr) )
 						{
-							LOGGER_ERROR( m_serviceProvider )("OpenGLTexture::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+							LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImage::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
 								, _level
 								, miplevel_hwwidth
 								, miplevel_hwheight
@@ -336,7 +336,7 @@ namespace Menge
 						, m_type
 						, memory) )
 					{
-						LOGGER_ERROR( m_serviceProvider )("OpenGLTexture::unlock glTexSubImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+						LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImage::unlock glTexSubImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
 							, _level
 							, miplevel_width
 							, miplevel_height

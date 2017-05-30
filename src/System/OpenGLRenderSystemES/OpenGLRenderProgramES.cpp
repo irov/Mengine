@@ -59,7 +59,7 @@ namespace Menge
 
 		if( m_samplerCount > MENGE_MAX_TEXTURE_STAGES )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeProgram::initialize %s don't support sampler count %d max %d"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderProgramES::initialize %s don't support sampler count %d max %d"
 				, _name.c_str()
 				, m_samplerCount
 				, MENGE_MAX_TEXTURE_STAGES
@@ -73,7 +73,7 @@ namespace Menge
 
 		if( program == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeProgram::initialize %s invalid create program"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderProgramES::initialize %s invalid create program"
 				, _name.c_str()
 				);
 
@@ -115,7 +115,7 @@ namespace Menge
 			GLchar errorLog[1024] = {0};
 			GLCALL( m_serviceProvider, glGetProgramInfoLog, ( program, 1023, NULL, errorLog ) );
 
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeProgram::shaderProgram - shader linking error '%s'"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderProgramES::shaderProgram - shader linking error '%s'"
 				, errorLog
 				);
 
@@ -164,7 +164,7 @@ namespace Menge
 	{	
 		if( _index >= m_samplerCount )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeProgram::bindTexture %s invalid support sampler count %d max %d"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderProgramES::bindTexture %s invalid support sampler count %d max %d"
 				, m_name.c_str()
 				, _index
 				, m_samplerCount

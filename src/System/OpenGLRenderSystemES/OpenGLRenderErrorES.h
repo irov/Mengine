@@ -4,10 +4,10 @@
 
 namespace Menge
 {
-	bool marmaladeRenderErrorCheck( ServiceProviderInterface * _serviceProvider, const char * _file, int _line );
+	bool openglRenderErrorCheck( ServiceProviderInterface * _serviceProvider, const char * _file, int _line );
 }
 
-#	define OPENGL_RENDER_CHECK_ERROR(serviceProvider) Menge::marmaladeRenderErrorCheck( serviceProvider, __FILE__, __LINE__ )
+#	define OPENGL_RENDER_CHECK_ERROR(serviceProvider) Menge::openglRenderErrorCheck( serviceProvider, __FILE__, __LINE__ )
 
 #	define GLCALL( ServiceProvider, Method, Args )\
 	do{\

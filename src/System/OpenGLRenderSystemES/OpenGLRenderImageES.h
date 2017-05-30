@@ -19,7 +19,7 @@ namespace Menge
 
 	public:
         Pointer lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly ) override;
-		void unlock( uint32_t _level ) override;
+		bool unlock( uint32_t _level, bool _successful ) override;
 	
 	public:
 		ERenderImageMode getMode() const override;

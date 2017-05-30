@@ -4,10 +4,12 @@
 
 #	include "OpenGLRenderHeaderES.h"
 
+#   include "Core/ServantBase.h"
+
 namespace Menge
 {
 	class OpenGLRenderIndexBufferES
-		: public RenderIndexBufferInterface
+		: public ServantBase<RenderIndexBufferInterface>
 	{
 	public:
 		OpenGLRenderIndexBufferES();

@@ -4,10 +4,12 @@
 
 #	include "OpenGLRenderHeaderES.h"
 
+#   include "Core/ServantBase.h"
+
 namespace Menge
 {
 	class OpenGLRenderVertexBufferES
-		: public RenderVertexBufferInterface
+		: public ServantBase<RenderVertexBufferInterface>
 	{
 	public:
 		OpenGLRenderVertexBufferES();

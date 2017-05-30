@@ -307,7 +307,6 @@ namespace Menge
 		return 0;
 	}
     //////////////////////////////////////////////////////////////////////////
-#	ifndef MENGINE_OPENGL_ES
     inline GLenum s_getGLFillMode(EFillMode _op)
     {
         switch (_op)
@@ -323,6 +322,4 @@ namespace Menge
 
         return 0;
     };
-#endif
-
 }	// namespace Menge

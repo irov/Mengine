@@ -10,13 +10,6 @@ OpenGLRenderHeader
 )
 ENDIF()
 
-IF(MENGINE_PLATFORM_IOS)
-ADD_FILTER(
-OpenGLRenderHeader
-    OpenGLRenderHeaderIOS.h
-)
-ENDIF()
-
 IF(MENGINE_PLATFORM_MAC)
 ADD_FILTER(
 OpenGLRenderHeader

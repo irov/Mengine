@@ -181,11 +181,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setClipplane( uint32_t _i, const mt::planef & _plane )
     {
-#ifndef MENGINE_OPENGL_ES
 		const GLdouble equation[4] = { _plane.a, _plane.b, _plane.c, _plane.d };
 
 		glClipPlane( GL_CLIP_PLANE0 + _i, equation );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setViewport( const Viewport & _viewport )
@@ -580,10 +578,8 @@ namespace Menge
     {
 		(void)_mode;
 
-#ifndef MENGINE_OPENGL_ES
 		const GLenum mode = s_getGLFillMode( _mode );
 		glPolygonMode( GL_FRONT_AND_BACK, mode );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )

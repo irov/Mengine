@@ -156,6 +156,9 @@ namespace Menge
 		void onWindowMovedOrResized() override;
 		void onWindowClose() override;
 
+		void onWindowChangeFullscreenPrepare( bool _fullscreen ) override;
+		void onWindowChangeFullscreen( bool _fullscreen ) override;
+
 		void setVSync( bool _vSync ) override;
 
         void clear( uint32_t _color, bool _force ) override;

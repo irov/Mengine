@@ -782,6 +782,38 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderSystemES::onWindowChangeFullscreenPrepare( bool _fullscreen )
+	{
+		(void)_fullscreen;
+
+		for( TVectorImages::iterator
+			it = m_images.begin(),
+			it_end = m_images.end();
+			it != it_end;
+			++it )
+		{
+			OpenGLRenderImage * image = *it;
+
+			image->release();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderSystemES::onWindowChangeFullscreen( bool _fullscreen )
+	{
+		(void)_fullscreen;
+
+		for( TVectorImages::iterator
+			it = m_images.begin(),
+			it_end = m_images.end();
+			it != it_end;
+			++it )
+		{
+			OpenGLRenderImage * image = *it;
+
+			image->reload();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setVSync( bool _vSync )
 	{
 		//m_windowContext->setVSync( _vSync );

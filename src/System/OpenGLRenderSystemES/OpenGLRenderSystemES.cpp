@@ -100,7 +100,7 @@ namespace Menge
         m_factoryRenderImage = nullptr;
         m_factoryRenderFragmentShader = nullptr;
         m_factoryRenderVertexShader = nullptr;
-        m_factoryProgram = nullptr;
+        m_factoryRenderProgram = nullptr;
 
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -176,7 +176,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertexBufferInterfacePtr OpenGLRenderSystemES::createVertexBuffer( uint32_t _verticesNum, bool _dynamic )
 	{
-		OpenGLRenderVertexBufferESPtr buffer = m_factoryVertexBuffer.createObject();
+		OpenGLRenderVertexBufferESPtr buffer = m_factoryVertexBuffer->createObject();
 
 		if( buffer->initialize( m_serviceProvider, _verticesNum, _dynamic ) == false )
 		{
@@ -195,7 +195,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderIndexBufferInterfacePtr OpenGLRenderSystemES::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
 	{
-		OpenGLRenderIndexBufferESPtr buffer = m_factoryIndexBuffer.createObject();
+		OpenGLRenderIndexBufferESPtr buffer = m_factoryIndexBuffer->createObject();
 
 		if( buffer->initialize( m_serviceProvider, _indiciesNum, _dynamic ) == false )
 		{
@@ -214,7 +214,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderFragmentShaderInterfacePtr OpenGLRenderSystemES::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
-		OpenGLRenderFragmentShaderESPtr shader = m_factoryRenderFragmentShader.createObject();
+		OpenGLRenderFragmentShaderESPtr shader = m_factoryRenderFragmentShader->createObject();
 
 		shader->setServiceProvider( m_serviceProvider );
 
@@ -232,7 +232,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertexShaderInterfacePtr OpenGLRenderSystemES::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
-		OpenGLRenderVertexShaderESPtr shader = m_factoryRenderVertexShader.createObject();
+		OpenGLRenderVertexShaderESPtr shader = m_factoryRenderVertexShader->createObject();
 
 		shader->setServiceProvider( m_serviceProvider );
 
@@ -250,7 +250,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderProgramInterfacePtr OpenGLRenderSystemES::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount )
 	{
-		OpenGLProgramESPtr program = m_factoryRenderProgram.createObject();
+		OpenGLProgramESPtr program = m_factoryRenderProgram->createObject();
 
 		program->setServiceProvider( m_serviceProvider );
 				
@@ -654,11 +654,9 @@ namespace Menge
 			return nullptr;
 		}
 
-		OpenGLRenderImageESPtr texture = m_factoryRenderImage.createObject();
+		OpenGLRenderImageESPtr image = m_factoryRenderImage->createObject();
 
-		if( texture->initialize(
-			m_serviceProvider
-			, ERIM_NORMAL
+		if( image->initialize( ERIM_NORMAL
 			, _mipmaps
 			, _width
 			, _height
@@ -674,10 +672,10 @@ namespace Menge
 			return nullptr;
 		}
 
-		OpenGLRenderImage * image_ptr = image.get();
+		OpenGLRenderImageES * image_ptr = image.get();
 		m_images.push_back( image_ptr );
 
-		return texture;
+		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OpenGLRenderSystemES::lockRenderTarget( const RenderImageInterfacePtr & _renderTarget )
@@ -710,7 +708,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::swapBuffers()
 	{
-        GLCALL( m_serviceProvider, IwGLSwapBuffers, () );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil )
@@ -805,7 +802,7 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			OpenGLRenderImage * image = *it;
+			OpenGLRenderImageES * image = *it;
 
 			image->release();
 		}
@@ -821,7 +818,7 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			OpenGLRenderImage * image = *it;
+			OpenGLRenderImageES * image = *it;
 
 			image->reload();
 		}
@@ -877,11 +874,9 @@ namespace Menge
 			return nullptr;
 		}
 
-		OpenGLRenderImageESPtr texture = m_factoryRenderImage.createObject();
+		OpenGLRenderImageESPtr image = m_factoryRenderImage->createObject();
 
-		if( texture->initialize(
-			m_serviceProvider
-			, ERIM_DYNAMIC
+		if( image->initialize( ERIM_DYNAMIC
 			, 1
 			, _width
 			, _height
@@ -897,7 +892,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		return texture;
+		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderTargetInterface * OpenGLRenderSystemES::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format )
@@ -979,7 +974,7 @@ namespace Menge
 		return 0U;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OpenGLRenderSystemES::onRenderImageDestroy_( OpenGLRenderImage * _image )
+	void OpenGLRenderSystemES::onRenderImageDestroy_( OpenGLRenderImageES * _image )
 	{
 		TVectorImages::iterator it_found = std::find( m_images.begin(), m_images.end(), _image );
 

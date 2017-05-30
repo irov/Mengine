@@ -201,7 +201,7 @@ namespace Menge
         FactoryPtr m_factoryRenderImage;
 		FactoryPtr m_factoryRenderFragmentShader;
 		FactoryPtr m_factoryRenderVertexShader;
-		FactoryPtr m_factoryProgram;
+		FactoryPtr m_factoryRenderProgram;
 
 		OpenGLProgramESPtr m_currentProgram;
 
@@ -210,7 +210,7 @@ namespace Menge
 
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
 
-		typedef stdex::vector<OpenGLRenderImage *> TVectorImages;
+		typedef stdex::vector<OpenGLRenderImageES *> TVectorImages;
 		TVectorImages m_images;
 
 		bool m_depthMask;

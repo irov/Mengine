@@ -1,5 +1,6 @@
 #	include "OpenGLRenderImageES.h"
-#	include "OpenGLRenderErrorES.h"
+
+#	include "OpenGLRenderError.h"
 
 #	include "Logger/Logger.h"
 
@@ -7,8 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderImageES::OpenGLRenderImageES()
-		: m_serviceProvider( nullptr )
-		, m_uid( 0 )
+		: m_uid( 0 )
 		, m_hwMipmaps( 0 )
 		, m_hwWidth( 0 )
 		, m_hwHeight( 0 )
@@ -17,29 +17,27 @@ namespace Menge
 		, m_internalFormat( GL_RGB )
 		, m_format( GL_RGB )
 		, m_type( GL_UNSIGNED_BYTE )
+		, m_wrapS( GL_CLAMP_TO_EDGE )
+		, m_wrapT( GL_CLAMP_TO_EDGE )
+		, m_minFilter( GL_LINEAR )
+		, m_magFilter( GL_LINEAR )
 		, m_mode( ERIM_NORMAL )
 		, m_lockLevel( 0 )
+		, m_lockFirst( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderImageES::~OpenGLRenderImageES()
 	{
-		if( m_uid != 0 )
-		{
-			GLCALL( m_serviceProvider, glDeleteTextures, (1, &m_uid) );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OpenGLRenderImageES::initialize( ServiceProviderInterface * _serviceProvider, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
+	bool OpenGLRenderImageES::initialize( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
 	{
-		m_serviceProvider = _serviceProvider;
-
 		switch( _internalFormat )
 		{
 		case GL_ETC1_RGB8_OES:
 		case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
 		case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
-		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 			{
 				if( _width != _height )
 				{
@@ -87,6 +85,11 @@ namespace Menge
 		return m_mode;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	uint32_t OpenGLRenderImageES::getHWMipmaps() const
+	{
+		return m_hwMipmaps;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	uint32_t OpenGLRenderImageES::getHWWidth() const
 	{
 		return m_hwWidth;
@@ -112,30 +115,76 @@ namespace Menge
 		return m_hwPixelFormat;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderImageES::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
+	{
+		m_renderImageProvider = _renderImageProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderImageProviderInterfacePtr & OpenGLRenderImageES::getRenderImageProvider() const
+	{
+		return m_renderImageProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderImageES::release()
+	{
+		GLCALL( m_serviceProvider, glDeleteTextures, (1, &m_uid) );
+
+		m_uid = 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool OpenGLRenderImageES::reload()
+	{
+		GLuint tuid = 0;
+		GLCALL( m_serviceProvider, glGenTextures, (1, &tuid) );
+
+		m_uid = tuid;
+
+		if( m_renderImageProvider == nullptr )
+		{
+			return true;
+		}
+
+		RenderImageLoaderInterfacePtr loader = m_renderImageProvider->getLoader();
+
+		if( loader->load( this ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::createTexture Invalid decode image"
+				);
+
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Pointer OpenGLRenderImageES::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
 	{
+		(void)_readOnly;
+
 		if( m_lockMemory != nullptr )
 		{
 			return nullptr;
 		}
 
-		uint32_t miplevel_width = m_hwWidth >> _level;
-		uint32_t miplevel_height = m_hwHeight >> _level;
+		uint32_t rect_width = _rect.getWidth();
+		uint32_t rect_height = _rect.getHeight();
+
+		uint32_t miplevel_width = rect_width >> _level;
+		uint32_t miplevel_height = rect_height >> _level;
 
 		size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
-		MemoryCacheBufferInterfacePtr lockMemory = MEMORY_SERVICE( m_serviceProvider )
+		MemoryInterfacePtr lockMemory = MEMORY_SERVICE( m_serviceProvider )
 			->createMemoryCacheBuffer();
 
 		if( lockMemory == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::lock invalid create cache buffer"
-				);
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::lock invalid create cache buffer");
 
 			return nullptr;
 		}
 
-		void * memory = lockMemory->cacheMemory( size, "MarmaladeRenderTexture::lock" );
+		void * memory = lockMemory->newMemory( size, __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{
@@ -152,10 +201,12 @@ namespace Menge
 		}
 
 		m_lockMemory = lockMemory;
+		m_lockRect = _rect;
 
 		*_pitch = size / miplevel_height;
 
 		m_lockLevel = _level;
+		m_lockFirst = true;
 
 		return memory;
 	}
@@ -170,21 +221,19 @@ namespace Menge
 			return true;
 		}
 
+		GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
 		GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, m_uid) );
 
-		uint32_t miplevel_width = m_hwWidth >> _level;
-		uint32_t miplevel_height = m_hwHeight >> _level;
 
-		GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
-
-		LOGGER_INFO( m_serviceProvider )("OpenGLRenderImageES::unlock l %d w %d d %d"
+		LOGGER_INFO( m_serviceProvider )("OpenGLRenderImageES::unlock l %d r %d:%d-%d:%d"
 			, _level
-			, miplevel_width
-			, miplevel_height
-			, textureMemorySize
+			, m_lockRect.left
+			, m_lockRect.top
+			, m_lockRect.right
+			, m_lockRect.bottom
 			);
 
-		bool successful = true;
+		void * memory = m_lockMemory->getMemory();
 
 		bool successful = true;
 
@@ -287,7 +336,7 @@ namespace Menge
 						, m_type
 						, memory) )
 					{
-						LOGGER_ERROR( m_serviceProvider )("OpenGLTexture::unlock glTexSubImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+						LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::unlock glTexSubImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
 							, _level
 							, miplevel_width
 							, miplevel_height
@@ -310,9 +359,54 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderImageES::_destroy()
+	{
+		GLCALL( m_serviceProvider, glDeleteTextures, (1, &m_uid) );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	GLuint OpenGLRenderImageES::getUId() const
 	{
 		return m_uid;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+	GLenum OpenGLRenderImageES::getMinFilter() const
+	{
+		return m_minFilter;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderImageES::setMinFilter( GLenum _minFilter )
+	{
+		m_minFilter = _minFilter;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	GLenum OpenGLRenderImageES::getMagFilter() const
+	{
+		return m_magFilter;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderImageES::setMagFilter( GLenum _magFilter )
+	{
+		m_magFilter = _magFilter;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	GLenum OpenGLRenderImageES::getWrapS() const
+	{
+		return m_wrapS;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderImageES::setWrapS( GLenum _wrapS )
+	{
+		m_wrapS = _wrapS;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	GLenum OpenGLRenderImageES::getWrapT() const
+	{
+		return m_wrapT;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderImageES::setWrapT( GLenum _wrapT )
+	{
+		m_wrapT = _wrapT;
+	}
+	//////////////////////////////////////////////////////////////////////////
+}   // namespace Menge

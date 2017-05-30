@@ -170,6 +170,9 @@ namespace Menge
     protected:
         void findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const;
 
+	protected:
+		void onRenderImageDestroy_( OpenGLRenderImageES * _image );
+
 	private:
 		ConstString m_renderPlatform;
 
@@ -194,7 +197,7 @@ namespace Menge
 		uint32_t m_activeTextureStage;
 		GLuint m_activeTexture;
 
-        FactoryPtr m_factoryTexture;
+        FactoryPtr m_factoryRenderImage;
 		FactoryPtr m_factoryRenderFragmentShader;
 		FactoryPtr m_factoryRenderVertexShader;
 		FactoryPtr m_factoryProgram;
@@ -205,6 +208,9 @@ namespace Menge
 		uint32_t m_glMaxCombinedTextureImageUnits;
 
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
+
+		typedef stdex::vector<OpenGLRenderImage *> TVectorImages;
+		TVectorImages m_images;
 
 		bool m_depthMask;
 	};

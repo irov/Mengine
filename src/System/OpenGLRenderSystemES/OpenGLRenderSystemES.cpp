@@ -6,6 +6,8 @@
 
 #   include "Logger/Logger.h"
 
+#   include "Factory/FactoryPool.h"
+
 #	include <cmath>
 
 #	include <stdex/allocator.h>
@@ -90,8 +92,15 @@ namespace Menge
 		m_currentVertexBuffer = nullptr;
 
 		m_currentProgram = nullptr;
+        
+        m_factoryVertexBuffer = nullptr;
+        m_factoryIndexBuffer = nullptr;
+        
+        m_factoryRenderImage = nullptr;
+        m_factoryRenderFragmentShader = nullptr;
+        m_factoryRenderVertexShader = nullptr;
+        m_factoryProgram = nullptr;
 
-		GLCALL( m_serviceProvider, IwGLTerminate, () );		
     }
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & OpenGLRenderSystemES::getRenderPlatformName() const
@@ -166,7 +175,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertexBufferInterfacePtr OpenGLRenderSystemES::createVertexBuffer( uint32_t _verticesNum, bool _dynamic )
 	{
-		OpenGLRenderVertexBufferESPtr buffer = m_factoryVertexBuffer.createObject();
+		OpenGLRenderVertexBufferESPtr buffer = m_factoryVertexBuffer->createObject();
 
 		if( buffer->initialize( m_serviceProvider, _verticesNum, _dynamic ) == false )
 		{
@@ -185,7 +194,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderIndexBufferInterfacePtr OpenGLRenderSystemES::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
 	{
-		OpenGLRenderIndexBufferESPtr buffer = m_factoryIndexBuffer.createObject();
+		OpenGLRenderIndexBufferESPtr buffer = m_factoryIndexBuffer->createObject();
 
 		if( buffer->initialize( m_serviceProvider, _indiciesNum, _dynamic ) == false )
 		{
@@ -204,7 +213,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderFragmentShaderInterfacePtr OpenGLRenderSystemES::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
-		OpenGLRenderFragmentShaderESPtr shader = m_factoryRenderFragmentShader.createObject();
+		OpenGLRenderFragmentShaderESPtr shader = m_factoryRenderFragmentShader->createObject();
 
 		shader->setServiceProvider( m_serviceProvider );
 
@@ -222,7 +231,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertexShaderInterfacePtr OpenGLRenderSystemES::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
-		OpenGLRenderVertexShaderESPtr shader = m_factoryRenderVertexShader.createObject();
+		OpenGLRenderVertexShaderESPtr shader = m_factoryRenderVertexShader->createObject();
 
 		shader->setServiceProvider( m_serviceProvider );
 
@@ -240,7 +249,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderProgramInterfacePtr OpenGLRenderSystemES::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount )
 	{
-		OpenGLProgramESPtr program = m_factoryProgram.createObject();
+		OpenGLProgramESPtr program = m_factoryProgram->createObject();
 
 		program->setServiceProvider( m_serviceProvider );
 				
@@ -644,7 +653,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		OpenGLRenderImageESPtr texture = m_factoryTexture.createObject();
+		OpenGLRenderImageESPtr texture = m_factoryRenderImage->createObject();
 
 		if( texture->initialize(
 			m_serviceProvider
@@ -697,7 +706,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::swapBuffers()
 	{
-        GLCALL( m_serviceProvider, IwGLSwapBuffers, () );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil )

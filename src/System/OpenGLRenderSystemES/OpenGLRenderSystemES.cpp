@@ -24,9 +24,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderSystemES::OpenGLRenderSystemES()
-		: m_activeTextureStage( 0 )
-		, m_activeTexture( 0 )
-		, m_depthMask( false )
+		: m_depthMask( false )
 		, m_glMaxClipPlanes(0)
 		, m_glMaxCombinedTextureImageUnits(0)
 	{

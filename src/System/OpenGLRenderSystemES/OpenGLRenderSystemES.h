@@ -195,9 +195,6 @@ namespace Menge
 		typedef stdex::map<ConstString, RenderVertexShaderInterface *> TMapRenderVertexShaders;
 		TMapRenderVertexShaders m_vertexShaders;
 
-		uint32_t m_activeTextureStage;
-		GLuint m_activeTexture;
-
         FactoryPtr m_factoryRenderImage;
 		FactoryPtr m_factoryRenderFragmentShader;
 		FactoryPtr m_factoryRenderVertexShader;

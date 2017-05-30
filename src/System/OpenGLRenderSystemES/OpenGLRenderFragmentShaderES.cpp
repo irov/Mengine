@@ -62,7 +62,8 @@ namespace Menge
 		}
 		else
 		{
-			GLCALL( m_serviceProvider, glShaderBinary, (1, &shaderId, GL_SHADER_BINARY_ANGLE_DX11, _source, _size) );
+			//GLCALL( m_serviceProvider, glShaderBinary, (1, &shaderId, GL_SHADER_BINARY_ANGLE_DX11, _source, _size) );
+			return false;
 		}
 
 		GLint status;

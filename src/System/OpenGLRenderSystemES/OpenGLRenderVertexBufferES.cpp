@@ -55,7 +55,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderVertex2D * OpenGLRenderVertexBufferES::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
+	Pointer OpenGLRenderVertexBufferES::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
 	{
 		if( m_lockMemory != nullptr )
 		{

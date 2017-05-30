@@ -31,14 +31,27 @@ ADD_EXECUTABLE( ${MY_LIB_NAME} WIN32 ${SRC_FILES} )
 endif()
 
 if(APPLE)
-set(MACOSX_BUNDLE_BUNDLE_NAME "The Wisbey Mystery")
-set(MACOSX_BUNDLE_COPYRIGHT "Argali LLC 2017")
-set(MACOSX_BUNDLE_ICON_FILE icon.icns)
+#set(MACOSX_BUNDLE true)
+#set(MACOSX_BUNDLE_INFO_PLIST "~/Desktop/Info.plist.in")
+
+#set(MACOSX_BUNDLE_BUNDLE_NAME "The Wisbey Mystery")
+#set(MACOSX_BUNDLE_DISPLAY_NAME "The Wisbey Mystery")
+#set(MACOSX_BUNDLE_COPYRIGHT "Argali LLC 2017")
+#set(MACOSX_BUNDLE_ICON_FILE icon.icns)
+
 set(myApp_ICON ~/Desktop/icon.icns)
 set_source_files_properties(${myApp_ICON} PROPERTIES
        MACOSX_PACKAGE_LOCATION "Resources")
+
+set(myApp_ASTRALAX ~/Desktop/magic3d.dylib)
+set_source_files_properties(${myApp_ASTRALAX} PROPERTIES
+       MACOSX_PACKAGE_LOCATION "MacOS")
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "~/Desktop")
        
-ADD_EXECUTABLE( ${MY_LIB_NAME} MACOSX_BUNDLE ${myApp_ICON} ${SRC_FILES} )
+ADD_EXECUTABLE( ${MY_LIB_NAME} MACOSX_BUNDLE ${myApp_ICON} ${myApp_ASTRALAX} ${SRC_FILES} )
+
+set_target_properties( ${MY_LIB_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST Info.plist.in)
 endif()
 
 if (WIN32) #disable console mode for VC++

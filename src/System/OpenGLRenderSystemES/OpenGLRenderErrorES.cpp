@@ -32,7 +32,7 @@ namespace Menge
 		return "GL_UNKNOWN";
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool marmaladeRenderErrorCheck( ServiceProviderInterface * _serviceProvider, const char * _file, int _line )
+	bool openglRenderErrorCheck( ServiceProviderInterface * _serviceProvider, const char * _file, int _line )
 	{
 		GLenum err = glGetError();
 
@@ -43,7 +43,7 @@ namespace Menge
 
 		const char * err_str = glGetErrorString( err );		
 
-		LOGGER_ERROR(_serviceProvider)("Marmalade render: %s:%d error %s:%d"
+		LOGGER_ERROR(_serviceProvider)("OpenGL render: %s:%d error %s:%d"
 			, _file
 			, _line
 			, err_str

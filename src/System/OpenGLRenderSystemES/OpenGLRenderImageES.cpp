@@ -43,7 +43,7 @@ namespace Menge
 			{
 				if( _width != _height )
 				{
-					LOGGER_ERROR( m_serviceProvider )("MarmaladeTexture::initialize not square texture %d:%d"
+					LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::initialize not square texture %d:%d"
 						, _width
 						, _height
 						);
@@ -58,7 +58,7 @@ namespace Menge
 
 		if( tuid == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeTexture::initialize invalid gen texture for size %d:%d channel %d PF %d"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::initialize invalid gen texture for size %d:%d channel %d PF %d"
 				, _width
 				, _height
 				, _channels
@@ -129,7 +129,7 @@ namespace Menge
 
 		if( lockMemory == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderTexture::lock invalid create cache buffer"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::lock invalid create cache buffer"
 				);
 
 			return nullptr;
@@ -139,7 +139,7 @@ namespace Menge
 
 		if( memory == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderTexture::lock invalid cache memory %d (l %d w %d h %d c %d f %d)"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::lock invalid cache memory %d (l %d w %d h %d c %d f %d)"
 				, size
 				, _level
 				, miplevel_width
@@ -160,8 +160,16 @@ namespace Menge
 		return memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OpenGLRenderImageES::unlock( uint32_t _level )
+	bool OpenGLRenderImageES::unlock( uint32_t _level, bool _successful )
 	{
+		if( _successful == false )
+		{
+			m_lockMemory = nullptr;
+			m_lockLevel = 0;
+
+			return true;
+		}
+
 		GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, m_uid) );
 
 		uint32_t miplevel_width = m_hwWidth >> _level;
@@ -169,56 +177,137 @@ namespace Menge
 
 		GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
-		LOGGER_INFO( m_serviceProvider )("MarmaladeRenderTexture::unlock l %d w %d d %d"
+		LOGGER_INFO( m_serviceProvider )("OpenGLRenderImageES::unlock l %d w %d d %d"
 			, _level
 			, miplevel_width
 			, miplevel_height
 			, textureMemorySize
 			);
 
-		switch( m_internalFormat )
+		bool successful = true;
+
+		bool successful = true;
+
+		if( m_lockRect.full( m_hwWidth, m_hwHeight ) == true )
 		{
-		case GL_ETC1_RGB8_OES:
-		case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
-		case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
-		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
-			{
-				void * memory = m_lockMemory->getMemory();
+			uint32_t miplevel_hwwidth = m_hwWidth >> _level;
+			uint32_t miplevel_hwheight = m_hwHeight >> _level;
 
-				IF_GLCALL( m_serviceProvider, glCompressedTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, memory) )
+			switch( m_internalFormat )
+			{
+			case GL_ETC1_RGB8_OES:
+			case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+			case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+#ifdef _WIN32
+			case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+#endif
 				{
-					LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderTexture::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
-						, _level
+					GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_hwwidth, miplevel_hwheight, m_hwChannels, 1, m_hwPixelFormat );
+
+					IF_GLCALL( m_serviceProvider, mglCompressedTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, textureMemorySize, memory) )
+					{
+						LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
+							, _level
+							, miplevel_hwwidth
+							, miplevel_hwheight
+							, m_internalFormat
+							, m_hwPixelFormat
+							, textureMemorySize
+							);
+
+						successful = false;
+					}
+				}break;
+			default:
+				{
+					IF_GLCALL( m_serviceProvider, glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, m_format, m_type, memory) )
+					{
+						LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+							, _level
+							, miplevel_hwwidth
+							, miplevel_hwheight
+							, m_internalFormat
+							, m_format
+							, m_type
+							, m_hwPixelFormat
+							);
+
+						successful = false;
+					}
+				}break;
+			}
+		}
+		else
+		{
+			switch( m_internalFormat )
+			{
+			case GL_ETC1_RGB8_OES:
+			case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+			case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+#ifdef _WIN32
+			case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+#endif
+				{
+					successful = false;
+				}break;
+			default:
+				{
+					uint32_t miplevel_xoffset = m_lockRect.left >> _level;
+					uint32_t miplevel_yoffset = m_lockRect.top >> _level;
+					uint32_t miplevel_width = (m_lockRect.right - m_lockRect.left) >> _level;
+					uint32_t miplevel_height = (m_lockRect.bottom - m_lockRect.top) >> _level;
+
+					if( m_lockFirst == true )
+					{
+						uint32_t miplevel_hwwidth = m_hwWidth >> _level;
+						uint32_t miplevel_hwheight = m_hwHeight >> _level;
+
+						IF_GLCALL( m_serviceProvider, glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, m_format, m_type, nullptr) )
+						{
+							LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+								, _level
+								, miplevel_hwwidth
+								, miplevel_hwheight
+								, m_internalFormat
+								, m_format
+								, m_type
+								, m_hwPixelFormat
+								);
+
+							successful = false;
+						}
+					}
+
+					IF_GLCALL( m_serviceProvider, glTexSubImage2D, (GL_TEXTURE_2D, m_lockLevel
+						, miplevel_xoffset
+						, miplevel_yoffset
 						, miplevel_width
 						, miplevel_height
-						, m_internalFormat
-						, m_hwPixelFormat
-						, textureMemorySize
-						);
-				}
-			}break;
-		default:
-			{
-				void * memory = m_lockMemory->getMemory();
-
-				IF_GLCALL( m_serviceProvider, glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, m_format, m_type, memory) )
-				{
-					LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderTexture::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
-						, _level
-						, miplevel_width
-						, miplevel_height
-						, m_internalFormat
 						, m_format
 						, m_type
-						, m_hwPixelFormat
-						);
-				}
-			}break;
+						, memory) )
+					{
+						LOGGER_ERROR( m_serviceProvider )("OpenGLTexture::unlock glTexSubImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+							, _level
+							, miplevel_width
+							, miplevel_height
+							, m_internalFormat
+							, m_format
+							, m_type
+							, m_hwPixelFormat
+							);
+
+						successful = false;
+					}
+				}break;
+			}
 		}
 
 		m_lockMemory = nullptr;
-
 		m_lockLevel = 0;
+		m_lockFirst = false;
+
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	GLuint OpenGLRenderImageES::getUId() const

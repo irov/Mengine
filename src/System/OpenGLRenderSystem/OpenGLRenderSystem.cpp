@@ -230,7 +230,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     RenderVertexBufferInterfacePtr OpenGLRenderSystem::createVertexBuffer( uint32_t _verticesNum, bool _dynamic )
     {
-        MarmaladeRenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject();
+		OpenGLRenderVertexBufferESPtr buffer = m_factoryVertexBuffer->createObject();
 
         buffer->setServiceProvider( m_serviceProvider );
 

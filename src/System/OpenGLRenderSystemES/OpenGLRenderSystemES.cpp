@@ -41,27 +41,6 @@ namespace Menge
 	{
 		LOGGER_WARNING(m_serviceProvider)("Initializing OpenGL RenderSystem...");
 
-		if ( IwGLIsInitialised() == false )
-		{
-			if( IwGLInit() == false )
-			{
-				return false;
-			}
-
-			s3eDeviceYield( 0 );
-		}			
-
-		int32 iwgl_version = IwGLGetInt( IW_GL_VERSION );
-		int32 iwgl_version_major = iwgl_version >> 8
-		if( iwgl_version_major < 2 )
-		{
-			IwGLTerminate();
-
-			return false;
-		}
-
-		LOGGER_WARNING( m_serviceProvider )("Marmalade IWGL Version: %d (full %d)", iwgl_version >> 8, iwgl_version);
-
 		OPENGL_RENDER_CHECK_ERROR( m_serviceProvider );
 
 		LOGGER_WARNING(m_serviceProvider)("Vendor      : %s", (const char*)glGetString( GL_VENDOR ) );
@@ -91,9 +70,8 @@ namespace Menge
 		glGetIntegerv( GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits );
 
 		m_glMaxCombinedTextureImageUnits = maxCombinedTextureImageUnits;
-
-		//m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Marmalade OpenGL ES2" );
-		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Marmalade" );
+				
+		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "GLES" );
 
 		m_factoryVertexBuffer = new FactoryPool<OpenGLRenderVertexBufferES, 8>( m_serviceProvider );
 		m_factoryIndexBuffer = new FactoryPool<OpenGLRenderIndexBufferES, 8>( m_serviceProvider );
@@ -232,7 +210,7 @@ namespace Menge
 
 		if( shader->initialize( _name, _buffer, _size, _isCompile ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createFragmentShader invalid initialize shader %s"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createFragmentShader invalid initialize shader %s"
 				, _name.c_str()
 				);
 
@@ -250,7 +228,7 @@ namespace Menge
 
 		if( shader->initialize( _name, _buffer, _size, _isCompile ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createVertexShader invalid initialize shader %s"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createVertexShader invalid initialize shader %s"
 				, _name.c_str()
 				);
 
@@ -268,7 +246,7 @@ namespace Menge
 				
 		if( program->initialize( _name, _vertex, _fragment, _samplerCount ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createProgram invalid initialize program %s"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createProgram invalid initialize program %s"
 				, _name.c_str()
 				);
 
@@ -637,7 +615,7 @@ namespace Menge
 
 		if( textureInternalFormat == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeRenderSystem::createImage invalid get GL Texture Internal format for PF %d"
+			LOGGER_ERROR(m_serviceProvider)("OpenGLRenderSystemES::createImage invalid get GL Texture Internal format for PF %d"
 				, hwFormat
 				);
 
@@ -648,7 +626,7 @@ namespace Menge
 
 		if( textureColorFormat == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeRenderSystem::createImage invalid get GL Texture Color format for PF %d"
+			LOGGER_ERROR(m_serviceProvider)("OpenGLRenderSystemES::createImage invalid get GL Texture Color format for PF %d"
 				, hwFormat
 				);
 
@@ -659,7 +637,7 @@ namespace Menge
 
 		if( textureColorDataType == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createImage invalid get GL Color Data Type for PF %d"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createImage invalid get GL Color Data Type for PF %d"
 				, hwFormat
 				);
 
@@ -680,7 +658,7 @@ namespace Menge
 			, textureColorFormat
 			, textureColorDataType ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createImage invalid initialize"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createImage invalid initialize"
 				);
 
 			return nullptr;
@@ -825,7 +803,7 @@ namespace Menge
 
 		if( textureInternalFormat == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeRenderSystem::createDynamicImage invalid get GL Texture Internal format for PF %d"
+			LOGGER_ERROR(m_serviceProvider)("OpenGLRenderSystemES::createDynamicImage invalid get GL Texture Internal format for PF %d"
 				, hwFormat
 				);
 
@@ -836,7 +814,7 @@ namespace Menge
 
 		if( textureColorFormat == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeRenderSystem::createDynamicImage invalid get GL Texture Color format for PF %d"
+			LOGGER_ERROR(m_serviceProvider)("OpenGLRenderSystemES::createDynamicImage invalid get GL Texture Color format for PF %d"
 				, hwFormat
 				);
 
@@ -847,7 +825,7 @@ namespace Menge
 
 		if( textureColorDataType == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createDynamicImage invalid get GL Color Data Type for PF %d"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createDynamicImage invalid get GL Color Data Type for PF %d"
 				, hwFormat
 				);
 
@@ -868,7 +846,7 @@ namespace Menge
 			, textureColorFormat
 			, textureColorDataType ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createDynamicImage invalid initialize"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createDynamicImage invalid initialize"
 				);
 
 			return nullptr;

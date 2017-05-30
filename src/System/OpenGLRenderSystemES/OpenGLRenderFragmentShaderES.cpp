@@ -45,7 +45,7 @@ namespace Menge
 
 		if( shaderId == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeShader::initialize %s invalid create shader"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderFragmentShaderES::initialize %s invalid create shader"
 				, _name.c_str()
 				);
 
@@ -59,23 +59,6 @@ namespace Menge
 
 			GLCALL( m_serviceProvider, glShaderSource, ( shaderId, 1, &str_source, &str_size ) );
 			GLCALL( m_serviceProvider, glCompileShader, ( shaderId ) );
-
-			int32 device = s3eDeviceGetInt( S3E_DEVICE_OS );
-			int32 deviceFeatureLevel = s3eDeviceGetInt( S3E_DEVICE_DX_FEATURE_LEVEL );
-
-			if( (device != S3E_OS_ID_WS8 && device != S3E_OS_ID_WS81 && device != S3E_OS_ID_WP81) ||
-				deviceFeatureLevel < 93 )
-			{
-				IwCompileShadersPlatformType shadersPlatformType = IwGetCompileShadersPlatformType();
-				// This is needed to compile shaders for Windows Store 8/8.1 and Windows Phone 8.1 using the Win32 Marmalade Simulator.
-				// For more information look at README.IwGLES2.txt.
-				if( shadersPlatformType == IW_CS_OS_ID_WS8 ||
-					shadersPlatformType == IW_CS_OS_ID_WS81 ||
-					shadersPlatformType == IW_CS_OS_ID_WP81 )
-				{
-					s3eRegisterShader( str_source, IW_GL_ST_PIXEL, IW_DX_FL_9_3 );
-				}
-			}
 		}
 		else
 		{
@@ -90,7 +73,7 @@ namespace Menge
 			GLchar errorLog[1024];
 			GLCALL( m_serviceProvider, glGetShaderInfoLog, ( shaderId, 1023, NULL, errorLog ) );
 
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeShader::initialize compilation shader error '%s'"
+			LOGGER_ERROR(m_serviceProvider)("OpenGLRenderFragmentShaderES::initialize compilation shader error '%s'"
 				, errorLog
 				);			
 

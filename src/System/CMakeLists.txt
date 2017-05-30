@@ -29,7 +29,13 @@ if( MENGINE_TARGET_SDL )
     ADD_SUBDIRECTORY( SDLTimerSystem )    
     ADD_SUBDIRECTORY( SDLPluginSystem )    
     ADD_SUBDIRECTORY( SDLSocketSystem )
+
+if( MENGINE_PLATFORM_IOS )
+    ADD_SUBDIRECTORY( OpenGLRenderSystemES )
+else()
     ADD_SUBDIRECTORY( OpenGLRenderSystem )
+endif()
+
 if( MENGINE_PLATFORM_WIN32 )
 	ADD_SUBDIRECTORY( cURLHttpSystem )
 endif()

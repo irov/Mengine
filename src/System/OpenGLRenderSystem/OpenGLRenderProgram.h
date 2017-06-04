@@ -59,7 +59,7 @@ namespace Menge
         int m_samplerLocation[MENGE_MAX_TEXTURE_STAGES];
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<OpenGLRenderProgram> OpenGLProgramPtr;
+    typedef stdex::intrusive_ptr<OpenGLRenderProgram> OpenGLRenderProgramPtr;
     //////////////////////////////////////////////////////////////////////////
 }   // namespace Menge
 

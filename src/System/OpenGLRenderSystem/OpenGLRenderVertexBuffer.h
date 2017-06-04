@@ -39,5 +39,5 @@ namespace Menge
         EBufferLockFlag m_lockFlags;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<OpenGLRenderVertexBuffer> MarmaladeRenderVertexBufferPtr;
+    typedef stdex::intrusive_ptr<OpenGLRenderVertexBuffer> OpenGLRenderVertexBufferPtr;
 }

@@ -32,10 +32,6 @@ namespace Menge
 	{
 		LOGGER_INFO(m_serviceProvider)( "Starting OpenAL Sound System..." );
 
-#	ifdef MENGINE_MARMALADE
-		alcInit();
-#	endif
-
         m_device = alcOpenDevice( nullptr );
 			
 		if( m_device == nullptr )
@@ -169,10 +165,6 @@ namespace Menge
             alcCloseDevice( m_device );
             m_device = nullptr;
         }
-
-#	ifdef MENGINE_MARMALADE
-		alcDeinit();
-#	endif
 
         m_poolOALSoundBuffer = nullptr;
         m_poolOALSoundBufferStream = nullptr;

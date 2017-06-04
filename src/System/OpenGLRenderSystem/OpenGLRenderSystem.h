@@ -205,7 +205,7 @@ namespace Menge
         FactoryPtr m_factoryRenderVertexShader;
         FactoryPtr m_factoryProgram;
 
-        OpenGLProgramPtr m_currentProgram;
+        OpenGLRenderProgramPtr m_currentProgram;
 
         uint32_t m_glMaxClipPlanes;
         uint32_t m_glMaxCombinedTextureImageUnits;

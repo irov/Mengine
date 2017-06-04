@@ -13,6 +13,10 @@
 #	include "WIN32/WindowsIncluder.h"
 #	endif
 
+#	ifdef __APPLE__
+#	include "TargetConditionals.h"
+#	endif
+
 #   include <cstdio>
 #   include <clocale>
 
@@ -868,15 +872,24 @@ namespace Menge
         SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
         SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
         
+#	ifdef TARGET_OS_IPHONE
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+#	endif
 
         Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
         if( _fullscreen )
-        {
-            windowFlags |= SDL_WINDOW_FULLSCREEN;
+        {			
+            windowFlags |= SDL_WINDOW_FULLSCREEN;			
         }
+
+#	ifdef TARGET_OS_IPHONE
+		windowFlags |= SDL_WINDOW_BORDERLESS;
+		windowFlags |= SDL_WINDOW_FULLSCREEN;
+
+		SDL_SetHint( SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight" );
+#	endif
 
         int width = static_cast<int>(_resolution.getWidth());
         int height = static_cast<int>(_resolution.getHeight());

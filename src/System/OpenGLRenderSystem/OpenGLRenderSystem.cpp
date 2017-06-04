@@ -230,7 +230,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     RenderVertexBufferInterfacePtr OpenGLRenderSystem::createVertexBuffer( uint32_t _verticesNum, bool _dynamic )
     {
-		OpenGLRenderVertexBufferESPtr buffer = m_factoryVertexBuffer->createObject();
+		OpenGLRenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject();
 
         buffer->setServiceProvider( m_serviceProvider );
 
@@ -308,7 +308,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     RenderProgramInterfacePtr OpenGLRenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount )
     {
-        OpenGLProgramPtr program = m_factoryProgram->createObject();
+        OpenGLRenderProgramPtr program = m_factoryProgram->createObject();
 
         program->setServiceProvider( m_serviceProvider );
 
@@ -326,7 +326,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setProgram( const RenderProgramInterfacePtr & _program )
     {
-        m_currentProgram = stdex::intrusive_static_cast<OpenGLProgramPtr>(_program);
+        m_currentProgram = stdex::intrusive_static_cast<OpenGLRenderProgramPtr>(_program);
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::updateProgram( const RenderProgramInterfacePtr & _program )

@@ -80,7 +80,7 @@ namespace Menge
         
         if( mutex == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("MarmaladeThreadSystem::createMutex invalid create (doc: '%s:%u')"
+            LOGGER_ERROR( m_serviceProvider )("SDLThreadSystem::createMutex invalid create (doc: '%s:%u')"
                 , _file
 				, _line
                 );
@@ -92,7 +92,7 @@ namespace Menge
 
         if( mutex->initialize( _file, _line ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadSystem::createMutex invalid initialize (doc: '%s:%u')"
+            LOGGER_ERROR(m_serviceProvider)("SDLThreadSystem::createMutex invalid initialize (doc: '%s:%u')"
                 , _file
 				, _line
                 );

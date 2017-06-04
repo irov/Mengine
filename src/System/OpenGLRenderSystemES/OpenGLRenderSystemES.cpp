@@ -552,7 +552,6 @@ namespace Menge
 		if( m_currentProgram != nullptr )
 		{
 			m_currentProgram->disable();
-			m_currentProgram = nullptr;
 		}
 
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, 0 ) );

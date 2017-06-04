@@ -194,6 +194,22 @@ namespace Menge
 		LOGGER_SERVICE( serviceProvider )
 			->logMessage( level, 0, message, messageLen );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	static int RemoveMouse_EventFilter( void *userdata, SDL_Event * event )
+	{
+		(void)userdata;
+
+		switch( event->type )
+		{
+		case SDL_MOUSEMOTION:
+		case SDL_MOUSEBUTTONDOWN:
+		case SDL_MOUSEBUTTONUP:
+			return 0;
+		default: break;
+		};
+
+		return 1;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initialize()
     {
@@ -219,12 +235,14 @@ namespace Menge
 		else if( strcmp( sdlPlatform, "Android" ) == 0 )
 		{
 			m_touchpad = true;
-			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "Android" ) );			
+			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "Android" ) );
+			SDL_SetEventFilter( RemoveMouse_EventFilter, nullptr );
 		}
 		else if( strcmp( sdlPlatform, "iOS" ) == 0 )
 		{
 			m_touchpad = true;
 			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "IOS" ) );
+			SDL_SetEventFilter( RemoveMouse_EventFilter, nullptr );
 		}
 		
         LOGGER_WARNING(m_serviceProvider)("Device info:"
@@ -655,6 +673,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SDLPlatform::removeFile( const WString & _path )
 	{
+		(void)_path;
+
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////

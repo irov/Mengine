@@ -9,8 +9,8 @@ namespace Menge
     Factorable::Factorable()
 	    : m_factory(nullptr)
 #   ifdef MENGINE_FACTORABLE_DEBUG
-		, m_immortal(false)
         , m_destroy(false)
+		, m_immortal(false)
 #   endif
     {
     }

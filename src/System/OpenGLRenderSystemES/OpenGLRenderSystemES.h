@@ -194,13 +194,22 @@ namespace Menge
 
 		typedef stdex::map<ConstString, RenderVertexShaderInterface *> TMapRenderVertexShaders;
 		TMapRenderVertexShaders m_vertexShaders;
+        
+        typedef stdex::vector<OpenGLRenderVertexShaderESPtr> TVectorRenderVertexShaders;
+        TVectorRenderVertexShaders m_deferredCompileVertexShaders;
+        
+        typedef stdex::vector<OpenGLRenderFragmentShaderESPtr> TVectorRenderFragmentShaders;
+        TVectorRenderFragmentShaders m_deferredCompileFragmentShaders;
+        
+        typedef stdex::vector<OpenGLRenderProgramESPtr> TVectorRenderPrograms;
+        TVectorRenderPrograms m_deferredCompilePrograms;
 
         FactoryPtr m_factoryRenderImage;
 		FactoryPtr m_factoryRenderFragmentShader;
 		FactoryPtr m_factoryRenderVertexShader;
 		FactoryPtr m_factoryRenderProgram;
 
-		OpenGLProgramESPtr m_currentProgram;
+		OpenGLRenderProgramESPtr m_currentProgram;
 
 		uint32_t m_glMaxClipPlanes;
 		uint32_t m_glMaxCombinedTextureImageUnits;
@@ -210,6 +219,7 @@ namespace Menge
 		typedef stdex::vector<OpenGLRenderImageES *> TVectorImages;
 		TVectorImages m_images;
 
+        bool m_renderWindowCreate;
 		bool m_depthMask;
 	};
 }	// namespace Menge

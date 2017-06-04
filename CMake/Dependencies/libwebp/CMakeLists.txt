@@ -33,6 +33,8 @@ set(sources
     ${SOURCE_DIR}/src/dsp/yuv_sse2.c
     ${SOURCE_DIR}/src/dsp/alpha_processing.c
     ${SOURCE_DIR}/src/dsp/alpha_processing_sse2.c
+    ${SOURCE_DIR}/src/dsp/filters.c
+    ${SOURCE_DIR}/src/dsp/filters_sse2.c
 
     ${SOURCE_DIR}/src/utils/bit_reader.c
     ${SOURCE_DIR}/src/utils/color_cache.c

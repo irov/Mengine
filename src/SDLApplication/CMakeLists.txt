@@ -29,14 +29,6 @@ ADD_EXECUTABLE( ${MY_LIB_NAME} WIN32 ${SRC_FILES} )
 endif()
 
 if(APPLE)
-#set(MACOSX_BUNDLE true)
-#set(MACOSX_BUNDLE_INFO_PLIST "~/Desktop/Info.plist.in")
-
-#set(MACOSX_BUNDLE_BUNDLE_NAME "The Wisbey Mystery")
-#set(MACOSX_BUNDLE_DISPLAY_NAME "The Wisbey Mystery")
-#set(MACOSX_BUNDLE_COPYRIGHT "Argali LLC 2017")
-#set(MACOSX_BUNDLE_ICON_FILE icon.icns)
-
 set(myApp_ICON ~/Desktop/icon.icns)
 set_source_files_properties(${myApp_ICON} PROPERTIES
        MACOSX_PACKAGE_LOCATION "Resources")
@@ -52,7 +44,7 @@ ADD_EXECUTABLE( ${MY_LIB_NAME} MACOSX_BUNDLE ${myApp_ICON} ${myApp_ASTRALAX} ${S
 set_target_properties( ${MY_LIB_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST Info.plist.in)
 endif()
 
-if (WIN32) #disable console mode for VC++
+if (WIN32)
 	set_target_properties( ${MY_LIB_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
 endif(WIN32)
 
@@ -70,7 +62,29 @@ endif()
 
 TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${APPLICATION_LIBS} )
 
-if(APPLE)
+IF(MENGINE_PLATFORM_IOS)
+  ADD_FRAMEWORK(${MY_LIB_NAME} Cocoa)
+  ADD_FRAMEWORK(${MY_LIB_NAME} Carbon)
+  ADD_FRAMEWORK(${MY_LIB_NAME} AppKit)
+  ADD_FRAMEWORK(${MY_LIB_NAME} CoreData)
+  ADD_FRAMEWORK(${MY_LIB_NAME} CoreAudio)
+  ADD_FRAMEWORK(${MY_LIB_NAME} CoreVideo)
+  ADD_FRAMEWORK(${MY_LIB_NAME} CoreFoundation)
+  ADD_FRAMEWORK(${MY_LIB_NAME} CoreMotion)
+  ADD_FRAMEWORK(${MY_LIB_NAME} AudioToolbox)
+  ADD_FRAMEWORK(${MY_LIB_NAME} AVFoundation)
+  ADD_FRAMEWORK(${MY_LIB_NAME} IOKit)
+  ADD_FRAMEWORK(${MY_LIB_NAME} UIKit)
+  ADD_FRAMEWORK(${MY_LIB_NAME} GameController)
+  ADD_FRAMEWORK(${MY_LIB_NAME} QuartzCore)
+  ADD_FRAMEWORK(${MY_LIB_NAME} ForceFeedback)
+  ADD_FRAMEWORK(${MY_LIB_NAME} Foundation)
+  ADD_FRAMEWORK(${MY_LIB_NAME} OpenGLES)
+  ADD_FRAMEWORK(${MY_LIB_NAME} CoreGraphics)
+  ADD_FRAMEWORK(${MY_LIB_NAME} OpenAL)
+ENDIF()
+
+IF(MENGINE_PLATFORM_MAC)
 INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
 
 FIND_LIBRARY(Cocoa_LIBRARY Cocoa)
@@ -103,18 +117,20 @@ MARK_AS_ADVANCED (Cocoa_LIBRARY
                  OpenGL_LIBRARY
 		OpenAL_LIBRARY)
 
-SET(EXTRA_LIBS ${Cocoa_LIBRARY} ${Carbon_LIBRARY} ${AppKit_LIBRARY} ${CoreData_LIBRARY} ${CoreAudio_LIBRARY} ${CoreFoundation_LIBRARY} ${ForceFeedback_LIBRARY} ${IOKit_LIBRARY} ${CoreVideo_LIBRARY} ${AudioUnit_LIBRARY} ${AudioToolBox_LIBRARY} ${Foundation_LIBRARY} ${OpenGL_LIBRARY} ${OpenAL_LIBRARY})
+SET(EXTRA_LIBS ${AppKit_LIBRARY} ${CoreData_LIBRARY} ${CoreAudio_LIBRARY} ${CoreFoundation_LIBRARY} ${ForceFeedback_LIBRARY} ${IOKit_LIBRARY} ${CoreVideo_LIBRARY} ${AudioUnit_LIBRARY} ${AudioToolBox_LIBRARY} ${Foundation_LIBRARY} ${OpenGL_LIBRARY} ${OpenAL_LIBRARY})
+
+SET(EXTRA_LIBS ${EXTRA_LIBS} ${Cocoa_LIBRARY} ${Carbon_LIBRARY})
 
 TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${EXTRA_LIBS})
 TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} iconv)
-endif()
+ENDIF()
 
-if(WIN32)
-TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} Winmm Version Imm32 OpenGL32) 
-endif()
+IF(WIN32)
+  TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} Winmm Version Imm32 OpenGL32) 
+ENDIF()
 
-if(MSVC)
-    set_target_properties( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE )
-endif(MSVC)
+IF(MSVC)
+  set_target_properties( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS /FORCE:MULTIPLE )
+ENDIF()
 
 

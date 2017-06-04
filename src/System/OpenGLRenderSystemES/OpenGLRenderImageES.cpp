@@ -221,7 +221,6 @@ namespace Menge
 			return true;
 		}
 
-		GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
 		GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, m_uid) );
 
 

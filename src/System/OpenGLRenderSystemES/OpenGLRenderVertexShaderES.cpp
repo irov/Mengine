@@ -7,8 +7,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderVertexShaderES::OpenGLRenderVertexShaderES()
-		: m_serviceProvider( nullptr )
-		, m_shaderId( 0 )
+		: m_shaderId( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -21,50 +20,40 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OpenGLRenderVertexShaderES::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * OpenGLRenderVertexShaderES::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const ConstString & OpenGLRenderVertexShaderES::getName() const
 	{
 		return m_name;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool OpenGLRenderVertexShaderES::initialize( const ConstString & _name, const void * _source, size_t _size, bool _isCompile )
+	bool OpenGLRenderVertexShaderES::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _isCompile )
 	{
-		m_name = _name;
-
-		GLuint shaderId;		
+        (void)_isCompile;
+		
+        m_name = _name;
+        m_memory = _memory;
+        
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderVertexShaderES::compile()
+    {
+		GLuint shaderId;
 		GLCALLR( m_serviceProvider, shaderId, glCreateShader, (GL_VERTEX_SHADER) );
 
 		if( shaderId == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeShader::initialize %s invalid create shader"
-				, _name.c_str()
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderVertexShaderES::initialize %s invalid create shader"
+				, m_name.c_str()
 				);
 
 			return false;
 		}
 
-		if( _isCompile == false )
-		{
-			const char * str_source = static_cast<const char *>(_source);
-			GLint str_size = (GLint)_size;
+		const char * str_source = m_memory->getMemory();
+		GLint str_size = (GLint)m_memory->getSize();
 
-			GLCALL( m_serviceProvider, glShaderSource, ( shaderId, 1, &str_source, &str_size ) );
-			GLCALL( m_serviceProvider, glCompileShader, ( shaderId ) );
-		}
-		else
-		{
-			//GLCALL( m_serviceProvider, glShaderBinary, (1, &shaderId, GL_SHADER_BINARY_ANGLE_DX11, _source, _size) );
-			return false;
-		}
+		GLCALL( m_serviceProvider, glShaderSource, ( shaderId, 1, &str_source, &str_size ) );
+		GLCALL( m_serviceProvider, glCompileShader, ( shaderId ) );
 
 		GLint status;
 		GLCALL( m_serviceProvider, glGetShaderiv, ( shaderId, GL_COMPILE_STATUS, &status ) );
@@ -74,7 +63,7 @@ namespace Menge
 			GLchar errorLog[1024];
 			GLCALL( m_serviceProvider, glGetShaderInfoLog, ( shaderId, 1023, NULL, errorLog ) );
 
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeShader::initialize compilation shader error '%s'"
+			LOGGER_ERROR(m_serviceProvider)("OpenGLRenderVertexShaderES::initialize compilation shader error '%s'"
 				, errorLog
 				);			
 

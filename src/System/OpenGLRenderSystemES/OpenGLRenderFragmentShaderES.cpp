@@ -7,8 +7,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderFragmentShaderES::OpenGLRenderFragmentShaderES()
-		: m_serviceProvider( nullptr )
-		, m_shaderId( 0 )
+		: m_shaderId( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -21,50 +20,42 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OpenGLRenderFragmentShaderES::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * OpenGLRenderFragmentShaderES::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const ConstString & OpenGLRenderFragmentShaderES::getName() const
 	{
 		return m_name;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool OpenGLRenderFragmentShaderES::initialize( const ConstString & _name, const void * _source, size_t _size, bool _isCompile )
+	bool OpenGLRenderFragmentShaderES::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _isCompile )
 	{
+        (void)_isCompile;
+        
 		m_name = _name;
-
-		GLuint shaderId;		
+        
+        m_memory = _memory;
+        
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderFragmentShaderES::compile()
+    {
+		GLuint shaderId;
 		GLCALLR( m_serviceProvider, shaderId, glCreateShader, ( GL_FRAGMENT_SHADER ) );
 
 		if( shaderId == 0 )
 		{
 			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderFragmentShaderES::initialize %s invalid create shader"
-				, _name.c_str()
+				, m_name.c_str()
 				);
 
 			return false;
 		}
 
-		if( _isCompile == false )
-		{
-			const char * str_source = static_cast<const char *>(_source);
-			GLint str_size = (GLint)_size;
+        const char * str_source = m_memory->getMemory();
+		GLint str_size = (GLint)m_memory->getSize();
 
-			GLCALL( m_serviceProvider, glShaderSource, ( shaderId, 1, &str_source, &str_size ) );
-			GLCALL( m_serviceProvider, glCompileShader, ( shaderId ) );
-		}
-		else
-		{
-			//GLCALL( m_serviceProvider, glShaderBinary, (1, &shaderId, GL_SHADER_BINARY_ANGLE_DX11, _source, _size) );
-			return false;
-		}
+		GLCALL( m_serviceProvider, glShaderSource, ( shaderId, 1, &str_source, &str_size ) );
+		GLCALL( m_serviceProvider, glCompileShader, ( shaderId ) );
+
 
 		GLint status;
 		GLCALL( m_serviceProvider, glGetShaderiv, ( shaderId, GL_COMPILE_STATUS, &status ) );

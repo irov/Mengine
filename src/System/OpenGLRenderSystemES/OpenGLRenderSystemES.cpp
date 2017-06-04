@@ -25,6 +25,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderSystemES::OpenGLRenderSystemES()
 		: m_depthMask( false )
+        , m_renderWindowCreate(false)
 		, m_glMaxClipPlanes(0)
 		, m_glMaxCombinedTextureImageUnits(0)
 	{
@@ -41,37 +42,7 @@ namespace Menge
 	{
 		LOGGER_WARNING(m_serviceProvider)("Initializing OpenGL RenderSystem...");
 
-		OPENGL_RENDER_CHECK_ERROR( m_serviceProvider );
-
-		LOGGER_WARNING(m_serviceProvider)("Vendor      : %s", (const char*)glGetString( GL_VENDOR ) );
-		LOGGER_WARNING(m_serviceProvider)("Renderer    : %s", (const char*)glGetString( GL_RENDERER ) );
-		LOGGER_WARNING(m_serviceProvider)("Version     : %s", (const char*)glGetString( GL_VERSION ) );
-		LOGGER_WARNING(m_serviceProvider)("Extensions  : %s", (const char*)glGetString( GL_EXTENSIONS ) );
-
-		OPENGL_RENDER_CHECK_ERROR( m_serviceProvider );
-
-		GLCALL( m_serviceProvider, glFrontFace, ( GL_CW ) );
-		GLCALL( m_serviceProvider, glDisable, ( GL_DEPTH_TEST ) );
-		GLCALL( m_serviceProvider, glDisable, ( GL_STENCIL_TEST ) );
-		GLCALL( m_serviceProvider, glDisable, ( GL_CULL_FACE ) );
-		GLCALL( m_serviceProvider, glDisable, ( GL_LIGHTING ) );
-		GLCALL( m_serviceProvider, glDisable, ( GL_BLEND ) );
-		GLCALL( m_serviceProvider, glDisable, ( GL_ALPHA_TEST ) );
-		GLCALL( m_serviceProvider, glDisable, ( GL_DITHER ) );
-
-		GLCALL( m_serviceProvider, glDepthMask, ( GL_FALSE ) );
-
-		GLint maxClipPlanes;
-		glGetIntegerv( GL_MAX_CLIP_PLANES, &maxClipPlanes );
-
-		m_glMaxClipPlanes = maxClipPlanes;
-
-		GLint maxCombinedTextureImageUnits;
-		glGetIntegerv( GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits );
-
-		m_glMaxCombinedTextureImageUnits = maxCombinedTextureImageUnits;
-				
-		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "GLES" );
+		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Marmalade" );
 
 		m_factoryVertexBuffer = new FactoryPool<OpenGLRenderVertexBufferES, 8>( m_serviceProvider );
 		m_factoryIndexBuffer = new FactoryPool<OpenGLRenderIndexBufferES, 8>( m_serviceProvider );
@@ -117,6 +88,86 @@ namespace Menge
 		(void)_MultiSampleCount;
 
         m_resolution = _resolution;
+        
+        OPENGL_RENDER_CHECK_ERROR( m_serviceProvider );
+        
+        LOGGER_WARNING(m_serviceProvider)("Vendor      : %s", (const char*)glGetString( GL_VENDOR ) );
+        LOGGER_WARNING(m_serviceProvider)("Renderer    : %s", (const char*)glGetString( GL_RENDERER ) );
+        LOGGER_WARNING(m_serviceProvider)("Version     : %s", (const char*)glGetString( GL_VERSION ) );
+        LOGGER_WARNING(m_serviceProvider)("Extensions  : %s", (const char*)glGetString( GL_EXTENSIONS ) );
+        
+        OPENGL_RENDER_CHECK_ERROR( m_serviceProvider );
+        
+        GLCALL( m_serviceProvider, glFrontFace, ( GL_CW ) );
+        GLCALL( m_serviceProvider, glDisable, ( GL_DEPTH_TEST ) );
+        GLCALL( m_serviceProvider, glDisable, ( GL_STENCIL_TEST ) );
+        GLCALL( m_serviceProvider, glDisable, ( GL_CULL_FACE ) );
+
+        GLCALL( m_serviceProvider, glDisable, ( GL_BLEND ) );
+        
+        GLCALL( m_serviceProvider, glDisable, ( GL_DITHER ) );
+        
+        GLCALL( m_serviceProvider, glDepthMask, ( GL_FALSE ) );
+        
+        GLint maxClipPlanes;
+        glGetIntegerv( GL_MAX_CLIP_PLANES, &maxClipPlanes );
+        
+        m_glMaxClipPlanes = maxClipPlanes;
+        
+        GLint maxCombinedTextureImageUnits;
+        glGetIntegerv( GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits );
+        
+        m_glMaxCombinedTextureImageUnits = maxCombinedTextureImageUnits;
+        
+        for( TVectorRenderVertexShaders::iterator
+            it = m_deferredCompileVertexShaders.begin(),
+            it_end = m_deferredCompileVertexShaders.end();
+            it != it_end;
+            ++it )
+        {
+            const OpenGLRenderVertexShaderESPtr & shader = *it;
+            
+            if( shader->compile() == false )
+            {
+                return false;
+            }
+        }
+        
+        m_deferredCompileVertexShaders.clear();
+        
+        for( TVectorRenderFragmentShaders::iterator
+            it = m_deferredCompileFragmentShaders.begin(),
+            it_end = m_deferredCompileFragmentShaders.end();
+            it != it_end;
+            ++it )
+        {
+            const OpenGLRenderFragmentShaderESPtr & shader = *it;
+            
+            if( shader->compile() == false )
+            {
+                return false;
+            }
+        }
+        
+        m_deferredCompileFragmentShaders.clear();
+        
+        for( TVectorRenderPrograms::iterator
+            it = m_deferredCompilePrograms.begin(),
+            it_end = m_deferredCompilePrograms.end();
+            it != it_end;
+            ++it )
+        {
+            const OpenGLRenderProgramESPtr & program = *it;
+            
+            if( program->compile() == false )
+            {
+                return false;
+            }
+        }
+        
+        m_deferredCompilePrograms.clear();
+        
+        m_renderWindowCreate = true;
 		        		
         return true;
 	}
@@ -214,59 +265,163 @@ namespace Menge
 	{
 		OpenGLRenderFragmentShaderESPtr shader = m_factoryRenderFragmentShader->createObject();
 
+        if( shader == nullptr )
+        {
+            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createFragmentShader invalid create shader %s"
+                                              , _name.c_str()
+                                              );
+            
+            return nullptr;
+        }
+        
 		shader->setServiceProvider( m_serviceProvider );
-
-		if( shader->initialize( _name, _buffer, _size, _isCompile ) == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createFragmentShader invalid initialize shader %s"
-				, _name.c_str()
-				);
-
-			return nullptr;
-		}
-
-		return shader;
+        
+        MemoryInterfacePtr memory = MEMORY_SERVICE(m_serviceProvider)
+            ->createMemory();
+        
+        if( memory == nullptr )
+        {
+            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createFragmentShader invalid create memory for shader %s"
+                                              , _name.c_str()
+                                              );
+            
+            return nullptr;
+        }
+        
+        memory->setMemory( _buffer, _size, __FILE__, __LINE__ );
+        
+        if( shader->initialize( _name, memory, _isCompile ) == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createFragmentShader invalid initialize shader %s"
+                                              , _name.c_str()
+                                              );
+            
+            return nullptr;
+        }
+        
+        if( m_renderWindowCreate == true )
+        {
+            if( shader->compile() == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createFragmentShader invalid compile shader %s"
+                                                  , _name.c_str()
+                                                  );
+                
+                return nullptr;
+            }
+        }
+        else
+        {
+            m_deferredCompileFragmentShaders.push_back( shader );
+        }
+        
+        return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertexShaderInterfacePtr OpenGLRenderSystemES::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
 		OpenGLRenderVertexShaderESPtr shader = m_factoryRenderVertexShader->createObject();
 
+        if( shader == nullptr )
+        {
+            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createVertexShader invalid create shader %s"
+                                              , _name.c_str()
+                                              );
+            
+            return nullptr;
+        }
+
+        
 		shader->setServiceProvider( m_serviceProvider );
 
-		if( shader->initialize( _name, _buffer, _size, _isCompile ) == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createVertexShader invalid initialize shader %s"
-				, _name.c_str()
-				);
-
-			return nullptr;
-		}
-
-		return shader;
+        MemoryInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
+        ->createMemory();
+        
+        if( memory == nullptr )
+        {
+            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createVertexShader invalid create memory for shader %s"
+                                              , _name.c_str()
+                                              );
+            
+            return nullptr;
+        }
+        
+        memory->setMemory( _buffer, _size, __FILE__, __LINE__ );
+        
+        if( shader->initialize( _name, memory, _isCompile ) == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createVertexShader invalid initialize shader %s"
+                                              , _name.c_str()
+                                              );
+            
+            return nullptr;
+        }
+        
+        if( m_renderWindowCreate == true )
+        {
+            if( shader->compile() == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createVertexShader invalid compile shader %s"
+                                                  , _name.c_str()
+                                                  );
+                
+                return nullptr;
+            }
+        }
+        else
+        {
+            m_deferredCompileVertexShaders.push_back( shader );
+        }
+        
+        return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderProgramInterfacePtr OpenGLRenderSystemES::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount )
 	{
-		OpenGLProgramESPtr program = m_factoryRenderProgram->createObject();
+		OpenGLRenderProgramESPtr program = m_factoryRenderProgram->createObject();
+        
+        if( program == nullptr )
+        {
+            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createProgram invalid create program %s"
+                                              , _name.c_str()
+                                              );
+            
+            return nullptr;
+        }
 
 		program->setServiceProvider( m_serviceProvider );
 				
-		if( program->initialize( _name, _vertex, _fragment, _samplerCount ) == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createProgram invalid initialize program %s"
-				, _name.c_str()
-				);
-
-			return nullptr;
-		}
+        if( program->initialize( _name, _vertex, _fragment, _samplerCount ) == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createProgram invalid initialize program %s"
+                                              , _name.c_str()
+                                              );
+            
+            return nullptr;
+        }
+        
+        if( m_renderWindowCreate == true )
+        {
+            if( program->compile() == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createProgram invalid compile program %s"
+                                                  , _name.c_str()
+                                                  );
+                
+                return nullptr;
+            }
+        }
+        else
+        {
+            m_deferredCompilePrograms.push_back( program );
+        }
 
 		return program;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setProgram( const RenderProgramInterfacePtr & _program )
 	{
-		m_currentProgram = stdex::intrusive_static_cast<OpenGLProgramESPtr>(_program);
+		m_currentProgram = stdex::intrusive_static_cast<OpenGLRenderProgramESPtr>(_program);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::updateProgram( const RenderProgramInterfacePtr & _program )
@@ -534,14 +689,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setLightingEnable( bool _light )
 	{
-		if( _light == true )
-        {
-            GLCALL( m_serviceProvider, glEnable, ( GL_LIGHTING ) );
-        }
-        else
-        {
-            GLCALL( m_serviceProvider, glDisable, ( GL_LIGHTING ) );
-        }
+        (void)_light;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,  ETextureArgument _arg1, ETextureArgument _arg2 )

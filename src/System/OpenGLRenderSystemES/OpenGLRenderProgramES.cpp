@@ -55,12 +55,19 @@ namespace Menge
 	bool OpenGLRenderProgramES::initialize( const ConstString & _name, const OpenGLRenderVertexShaderESPtr & _vertexShader, const OpenGLRenderFragmentShaderESPtr & _fragmentShader, uint32_t _samplerCount )
 	{
 		m_name = _name;
+        m_vertexShader = _vertexShader;
+        m_fragmentShader = _fragmentShader;
 		m_samplerCount = _samplerCount;
-
+        
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderProgramES::compile()
+    {
 		if( m_samplerCount > MENGE_MAX_TEXTURE_STAGES )
 		{
 			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderProgramES::initialize %s don't support sampler count %d max %d"
-				, _name.c_str()
+				, m_name.c_str()
 				, m_samplerCount
 				, MENGE_MAX_TEXTURE_STAGES
 				);
@@ -74,23 +81,19 @@ namespace Menge
 		if( program == 0 )
 		{
 			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderProgramES::initialize %s invalid create program"
-				, _name.c_str()
+				, m_name.c_str()
 				);
 
 			return false;
 		}
 
-		if( _vertexShader != nullptr )
+		if( m_vertexShader != nullptr )
 		{
-			m_vertexShader = _vertexShader;
-
 			m_vertexShader->attach( program );
 		}
 
-		if( _fragmentShader != nullptr )
+		if( m_fragmentShader != nullptr )
 		{
-			m_fragmentShader = _fragmentShader;
-
 			m_fragmentShader->attach( program );
 		}
 		
@@ -115,7 +118,8 @@ namespace Menge
 			GLchar errorLog[1024] = {0};
 			GLCALL( m_serviceProvider, glGetProgramInfoLog, ( program, 1023, NULL, errorLog ) );
 
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderProgramES::shaderProgram - shader linking error '%s'"
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderProgramES::shaderProgram '%s' - shader linking error '%s'"
+                , m_name.c_str()
 				, errorLog
 				);
 

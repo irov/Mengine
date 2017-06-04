@@ -30,6 +30,7 @@ namespace Menge
 
     public:
 		bool initialize( const ConstString & _name, const OpenGLRenderVertexShaderESPtr & _vertexShader, const OpenGLRenderFragmentShaderESPtr & _fragmentShader, uint32_t _samplerCount );
+        bool compile();
 
 	public:
 		void enable() const;
@@ -59,7 +60,7 @@ namespace Menge
 		int m_samplerLocation[MENGE_MAX_TEXTURE_STAGES];
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<OpenGLRenderProgramES> OpenGLProgramESPtr;
+	typedef stdex::intrusive_ptr<OpenGLRenderProgramES> OpenGLRenderProgramESPtr;
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge
 

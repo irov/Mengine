@@ -48,14 +48,14 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     SDLPlatform::SDLPlatform()
-        : m_window(nullptr)
-        , m_glContext(nullptr)
-        , m_sdlInput(nullptr)
-        , m_icon(0)
-        , m_shouldQuit(false)
-        , m_running(false)
-        , m_pause(false)
-        , m_touchpad(true)
+		: m_window( nullptr )
+		, m_glContext( nullptr )
+		, m_sdlInput( nullptr )
+		, m_icon( 0 )
+		, m_shouldQuit( false )
+		, m_running( false )
+		, m_pause( false )
+		, m_touchpad( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -197,8 +197,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initialize()
     {
-        m_touchpad = false;
-
         if( SDL_Init(SDL_INIT_EVERYTHING) < 0 )
         {
             LOGGER_CRITICAL(m_serviceProvider)("SDL initialization failed");
@@ -210,18 +208,22 @@ namespace Menge
 
 		if( strcmp( sdlPlatform, "Windows" ) == 0 )
 		{
+			m_touchpad = false;
 			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "PC" ) );
 		}
 		else if( strcmp( sdlPlatform, "Mac OS X" ) == 0 )
 		{
+			m_touchpad = false;
 			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "MAC" ) );
 		}
 		else if( strcmp( sdlPlatform, "Android" ) == 0 )
 		{
+			m_touchpad = true;
 			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "Android" ) );			
 		}
 		else if( strcmp( sdlPlatform, "iOS" ) == 0 )
 		{
+			m_touchpad = true;
 			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "IOS" ) );
 		}
 		

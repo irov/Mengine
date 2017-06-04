@@ -545,8 +545,6 @@ namespace Menge
 			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
 
 			GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, 0) );
-
-			stdex::intrusive_ptr_release( textureStage.texture );
 		}
 
 		if( m_currentProgram != nullptr )
@@ -841,7 +839,6 @@ namespace Menge
 
 		m_currentIndexBuffer = nullptr;
 		m_currentVertexBuffer = nullptr;
-
 		m_currentProgram = nullptr;
 
         return true;

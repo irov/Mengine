@@ -84,10 +84,10 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition_( x, y, point );
 
-				WChar text_code[2];
+				WChar text_code[8];
 				size_t text_code_size;
 				UNICODE_SERVICE( m_serviceProvider )
-					->utf8ToUnicode( _event.text.text, -1, text_code, 2, &text_code_size );
+					->utf8ToUnicode( _event.text.text, -1, text_code, 8, &text_code_size );
 
 				INPUT_SERVICE( m_serviceProvider )
 					->pushTextEvent( point.x, point.y, text_code[0] );
@@ -133,7 +133,7 @@ namespace Menge
             break;
         case SDL_FINGERMOTION:
             {
-                uint32_t touchId = (uint32_t)_event.tfinger.fingerId;
+                uint32_t touchId = (uint32_t)_event.tfinger.fingerId - 1;
 
                 INPUT_SERVICE( m_serviceProvider )
                     ->pushMouseMoveEvent( touchId, _event.tfinger.x, _event.tfinger.y, _event.tfinger.dx, _event.tfinger.dx, _event.tfinger.pressure );
@@ -141,29 +141,10 @@ namespace Menge
         case SDL_FINGERDOWN:
         case SDL_FINGERUP:
             {
-                mt::vec2f point;
-                this->calcCursorPosition_( _event.button.x, _event.button.y, point );
-
-                uint32_t button;
-
-                switch( _event.button.button )
-                {
-                case SDL_BUTTON_LEFT:
-                    button = 0;
-                    break;
-                case SDL_BUTTON_RIGHT:
-                    button = 1;
-                    break;
-                case SDL_BUTTON_MIDDLE:
-                    button = 2;
-                    break;
-                default:
-                    button = _event.button.button - 1;
-                    break;
-                };
+                uint32_t touchId = (uint32_t)_event.tfinger.touchId - 1;
 
                 INPUT_SERVICE( m_serviceProvider )
-                    ->pushMouseButtonEvent( 0, _event.tfinger.x, _event.tfinger.y, 0, _event.tfinger.pressure, _event.tfinger.type == SDL_FINGERDOWN );
+                    ->pushMouseButtonEvent( touchId, _event.tfinger.x, _event.tfinger.y, 0, _event.tfinger.pressure, _event.tfinger.type == SDL_FINGERDOWN );
             }
             break;
         }

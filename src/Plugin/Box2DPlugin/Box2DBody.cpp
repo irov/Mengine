@@ -235,7 +235,7 @@ namespace Menge
 
 		b2Vec2 b2_world_center = m_body->GetWorldCenter();
 		b2Vec2 b2_total_point = b2_world_center + b2_point;
-		m_body->ApplyLinearImpulse( b2_impulse, b2_world_center, true );
+		m_body->ApplyLinearImpulse( b2_impulse, b2_total_point, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Box2DBody::onBeginCollide( Box2DBody * _body, b2Contact * _contact )

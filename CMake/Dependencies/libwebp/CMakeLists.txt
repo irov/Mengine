@@ -4,20 +4,26 @@ project( webp )
 
 SET( SOURCE_DIR ${THIRDPARTY_DIR}/libwebp )
 
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h ${SOURCE_DIR}/src/webp/config.h COPYONLY)
+#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h ${SOURCE_DIR}/src/webp/config.h COPYONLY)
 
 set(sources
-    ${SOURCE_DIR}/src/dec/alpha.c
-    ${SOURCE_DIR}/src/dec/buffer.c
-    ${SOURCE_DIR}/src/dec/frame.c
-    ${SOURCE_DIR}/src/dec/idec.c
-    ${SOURCE_DIR}/src/dec/io.c
-    ${SOURCE_DIR}/src/dec/quant.c
-    ${SOURCE_DIR}/src/dec/tree.c
-    ${SOURCE_DIR}/src/dec/vp8.c
-    ${SOURCE_DIR}/src/dec/vp8l.c
-    ${SOURCE_DIR}/src/dec/webp.c
+    ${SOURCE_DIR}/src/dec/alpha_dec.c
+    ${SOURCE_DIR}/src/dec/buffer_dec.c
+    ${SOURCE_DIR}/src/dec/frame_dec.c
+    ${SOURCE_DIR}/src/dec/idec_dec.c
+    ${SOURCE_DIR}/src/dec/io_dec.c
+    ${SOURCE_DIR}/src/dec/quant_dec.c
+    ${SOURCE_DIR}/src/dec/tree_dec.c
+    ${SOURCE_DIR}/src/dec/vp8_dec.c
+    ${SOURCE_DIR}/src/dec/vp8l_dec.c
+    ${SOURCE_DIR}/src/dec/webp_dec.c
     
+    ${SOURCE_DIR}/src/dsp/alpha_processing.c
+    ${SOURCE_DIR}/src/dsp/alpha_processing_sse2.c
+    ${SOURCE_DIR}/src/dsp/argb.c
+    ${SOURCE_DIR}/src/dsp/argb_sse2.c
+    ${SOURCE_DIR}/src/dsp/cost.c
+    ${SOURCE_DIR}/src/dsp/cost_sse2.c
     ${SOURCE_DIR}/src/dsp/cpu.c
     ${SOURCE_DIR}/src/dsp/dec.c
     ${SOURCE_DIR}/src/dsp/dec_neon.c
@@ -35,20 +41,22 @@ set(sources
     ${SOURCE_DIR}/src/dsp/alpha_processing_sse2.c
     ${SOURCE_DIR}/src/dsp/filters.c
     ${SOURCE_DIR}/src/dsp/filters_sse2.c
+    ${SOURCE_DIR}/src/dsp/rescaler.c
+    ${SOURCE_DIR}/src/dsp/rescaler_sse2.c
 
-    ${SOURCE_DIR}/src/utils/bit_reader.c
-    ${SOURCE_DIR}/src/utils/color_cache.c
-    ${SOURCE_DIR}/src/utils/filters.c
-    ${SOURCE_DIR}/src/utils/huffman.c
-    ${SOURCE_DIR}/src/utils/quant_levels.c
-    ${SOURCE_DIR}/src/utils/quant_levels_dec.c
-    ${SOURCE_DIR}/src/utils/random.c
-    ${SOURCE_DIR}/src/utils/rescaler.c
-    ${SOURCE_DIR}/src/utils/thread.c
+    ${SOURCE_DIR}/src/utils/bit_reader_utils.c
+    ${SOURCE_DIR}/src/utils/color_cache_utils.c
+    ${SOURCE_DIR}/src/utils/filters_utils.c
+    ${SOURCE_DIR}/src/utils/huffman_utils.c
+    ${SOURCE_DIR}/src/utils/quant_levels_utils.c
+    ${SOURCE_DIR}/src/utils/quant_levels_dec_utils.c
+    ${SOURCE_DIR}/src/utils/random_utils.c
+    ${SOURCE_DIR}/src/utils/rescaler_utils.c
+    ${SOURCE_DIR}/src/utils/thread_utils.c
     ${SOURCE_DIR}/src/utils/utils.c    
 )
 
-add_definitions(-DHAVE_CONFIG_H)
+#add_definitions(-DHAVE_CONFIG_H)
 
 # NOW BUILD OUR TARGET
 include_directories( ${SOURCE_DIR} ${THIRDPARTY_DIR}/zlib )

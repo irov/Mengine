@@ -2,7 +2,7 @@ SET( MENGINE_LIB_PREFIX "lib" )
 SET( MENGINE_LIB_SUFFIX ".a" )
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -x objective-c++ -std=c++11 -stdlib=libc++ -std=c++1y ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++ -std=c++1y ")
 
 set(LLVM_ENABLE_CXX1Y ON CACHE BOOL "" FORCE)
 

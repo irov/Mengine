@@ -25,7 +25,7 @@ namespace Menge
 		bool initialize( const WString & _name, const FilePath & _folder, uint32_t _projectVersion );
         
 	public:
-		const WString & getName() const override;
+		const WString & getID() const override;
         const FilePath & getFolder() const override;
 
     public:

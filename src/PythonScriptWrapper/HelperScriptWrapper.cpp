@@ -1116,7 +1116,7 @@ namespace Menge
 		protected:
 			void onAccount( const AccountInterfacePtr & _account ) override
 			{
-				const WString & name = _account->getName();
+				const WString & name = _account->getID();
 
 				m_accounts.push_back( name );
 			}
@@ -1144,69 +1144,74 @@ namespace Menge
 
 		bool s_addSetting( const ConstString & _setting, const WString & _defaultValue, const pybind::object & _applyFunc )
 		{
-			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
-				->getCurrentAccount();
-
-			if( currentAccount == nullptr )
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasCurrentAccount() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Error addSetting: currentAccount is none [%s]"
-                    , _setting.c_str()
+				LOGGER_ERROR( m_serviceProvider )("Error addSetting: currentAccount is none [%s]"
+					, _setting.c_str()
 					);
 
 				return false;
 			}
-			
-			bool result = currentAccount->addSetting( _setting, _defaultValue, _applyFunc );
 
-			return result;
+			const WString & accountID = ACCOUNT_SERVICE(m_serviceProvider)
+				->getCurrentAccount();
+
+			return s_addAccountSetting( accountID, _setting, _defaultValue, _applyFunc );
 		}
 
 		bool s_changeSetting( const ConstString & _setting, const WString & _value )
 		{
-			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE( m_serviceProvider )
-				->getCurrentAccount();
-
-			if( currentAccount == nullptr )
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasCurrentAccount() == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("changeSetting: currentAccount is none [%s]"
+				LOGGER_ERROR( m_serviceProvider )("Error changeSetting: currentAccount is none [%s]"
 					, _setting.c_str()
 					);
 
 				return false;
 			}
 
-			bool result = currentAccount->changeSetting( _setting, _value );
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getCurrentAccount();
 
-			return result;
+			return s_changeAccountSetting( accountID, _setting, _value );
 		}
 
 		bool s_changeSettingBool( const ConstString & _setting, bool _value )
 		{
-			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE( m_serviceProvider )
-				->getCurrentAccount();
-
-			if( currentAccount == nullptr )
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasCurrentAccount() == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("changeSetting: currentAccount is none [%s]"
+				LOGGER_ERROR( m_serviceProvider )("Error changeSettingBool: currentAccount is none [%s]"
 					, _setting.c_str()
 					);
 
 				return false;
 			}
 
-			WString setting_value;
-			if( _value == true )
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getCurrentAccount();
+
+			return s_changeAccountSettingBool( accountID, _setting, _value );
+		}
+
+		bool s_changeSettingStrings( const ConstString & _setting, const TVectorWString & _values )
+		{
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasCurrentAccount() == false )
 			{
-				setting_value = L"True";
-			}
-			else
-			{
-				setting_value = L"False";
+				LOGGER_ERROR( m_serviceProvider )("Error changeSettingStrings: currentAccount is none [%s]"
+					, _setting.c_str()
+					);
+
+				return false;
 			}
 
-			bool result = currentAccount->changeSetting( _setting, setting_value );
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getCurrentAccount();
 
-			return result;
+			return s_changeAccountSettingStrings( accountID, _setting, _values );
 		}
 
 		bool s_addAccountSetting( const WString & _accountID, const ConstString & _setting, const WString & _defaultValue, const pybind::object & _applyFunc )
@@ -1283,7 +1288,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSettingBool: account not found '%ls'"
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account not found '%ls'"
 					, _accountID.c_str()
 					);
 
@@ -1292,7 +1297,7 @@ namespace Menge
 
 			if( account->hasSetting( _setting ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSettingBool: account '%ls' not found setting '%s'"
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account '%ls' not found setting '%s'"
 					, _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -1308,6 +1313,53 @@ namespace Menge
 			else
 			{
 				setting_value = L"False";
+			}
+
+			bool result = account->changeSetting( _setting, setting_value );
+
+			return result;
+		}
+
+		bool s_changeAccountSettingStrings( const WString & _accountID, const ConstString & _setting, const TVectorWString & _values )
+		{
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingStrings: account not found '%ls'"
+					, _accountID.c_str()
+					);
+
+				return false;
+			}
+
+			if( account->hasSetting( _setting ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingStrings: account '%ls' not found setting '%s'"
+					, _accountID.c_str()
+					, _setting.c_str()
+					);
+
+				return false;
+			}
+			
+			WString setting_value;
+
+			for( TVectorWString::const_iterator
+				it = _values.begin(),
+				it_end = _values.end();
+				it != it_end;
+				++it )
+			{
+				const WString & value = *it;
+
+				if( setting_value.empty() == false )
+				{
+					setting_value += L" ,,, ";
+				}
+
+				setting_value += value;
 			}
 
 			bool result = account->changeSetting( _setting, setting_value );
@@ -1329,21 +1381,7 @@ namespace Menge
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccount();
 
-			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
-				->getAccount( accountID );
-
-			if( account == nullptr )
-			{
-				LOGGER_ERROR( m_serviceProvider )("addAccountSetting: account not found '%ls'"
-					, accountID.c_str()
-					);
-
-				return false;
-			}
-
-			bool result = account->addSetting( _setting, _defaultValue, _applyFunc );
-
-			return result;
+			return s_addAccountSetting( accountID, _setting, _defaultValue, _applyFunc );
 		}
 
 		bool s_hasGlobalSetting( const ConstString & _setting )
@@ -1360,21 +1398,7 @@ namespace Menge
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccount();
 
-			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
-				->getAccount( accountID );
-
-			if( account == nullptr )
-			{
-				LOGGER_ERROR( m_serviceProvider )("addAccountSetting: account not found '%ls'"
-					, accountID.c_str()
-					);
-
-				return false;
-			}
-
-			bool result = account->hasSetting( _setting );
-
-			return result;
+			return s_hasAccountSetting( accountID, _setting );
 		}
 
 		bool s_changeGlobalSetting( const ConstString & _setting, const WString & _value )
@@ -1391,31 +1415,7 @@ namespace Menge
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccount();
 
-			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
-				->getAccount( accountID );
-
-			if( account == nullptr )
-			{
-				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSetting: account not found '%ls'"
-					, accountID.c_str()
-					);
-
-				return false;
-			}
-
-			if( account->hasSetting( _setting ) == false )
-			{
-				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSetting: account '%ls' not found setting '%s'"
-					, accountID.c_str()
-					, _setting.c_str()
-					);
-
-				return false;
-			}
-
-			bool result = account->changeSetting( _setting, _value );
-
-			return result;
+			return s_changeAccountSetting( accountID, _setting, _value );
 		}
 
 		bool s_changeGlobalSettingBool( const ConstString & _setting, bool _value )
@@ -1432,240 +1432,169 @@ namespace Menge
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccount();
 
-			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
-				->getAccount( accountID );
+			return s_changeAccountSettingBool( accountID, _setting, _value );
+		}
 
-			if( account == nullptr )
+
+		bool s_changeGlobalSettingStrings( const ConstString & _setting, const TVectorWString & _values )
+		{
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasGlobalAccount() == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSettingBool: account not found '%ls'"
-					, accountID.c_str()
+				LOGGER_ERROR( m_serviceProvider )("addGlobalSetting: account not found"
 					);
 
 				return false;
 			}
 
-			if( account->hasSetting( _setting ) == false )
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getGlobalAccount();
+
+			return s_changeAccountSettingStrings( accountID, _setting, _values );
+		}		
+
+        bool s_hasSetting( const ConstString & _setting )
+        {
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasCurrentAccount() == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSettingBool: account '%ls' not found setting '%s'"
-					, accountID.c_str()
+				LOGGER_ERROR( m_serviceProvider )("Error hasSetting: currentAccount is none [%s]"
 					, _setting.c_str()
 					);
 
 				return false;
 			}
 
-			WString setting_value;
-			if( _value == true )
-			{
-				setting_value = L"True";
-			}
-			else
-			{
-				setting_value = L"False";
-			}
-
-			bool result = account->changeSetting( _setting, setting_value );
-
-			return result;
-		}
-
-        bool s_hasSetting( const ConstString & _setting )
-        {
-            AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
-                ->getCurrentAccount();
-
-            if( currentAccount == nullptr )
-            {
-                LOGGER_ERROR(m_serviceProvider)("getSetting: currentAccount is none [%s]"
-                    , _setting.c_str()
-                    );
-
-                return false;
-            }
-
-            bool value = currentAccount->hasSetting( _setting );
-            
-            return value;
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getCurrentAccount();
+			
+			return s_hasAccountSetting( accountID, _setting );
         }
 
 		PyObject * s_getSetting( pybind::kernel_interface * _kernel, const ConstString & _setting )
 		{
-			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
-				->getCurrentAccount();
-
-			if( currentAccount == nullptr )
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasCurrentAccount() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("getSetting: currentAccount is none [%s]"
+				LOGGER_ERROR( m_serviceProvider )("Error hasSetting: currentAccount is none [%s]"
 					, _setting.c_str()
 					);
 
-				return pybind::ret_none();
+				return false;
 			}
 
-			const WString & value = currentAccount->getSetting( _setting );
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getCurrentAccount();
 
-			PyObject * py_value = pybind::ptr( _kernel, value );
-
-			return py_value;
+			return s_getAccountSetting( _kernel, accountID, _setting );
 		}
 
 		PyObject * s_getSettingBool( pybind::kernel_interface * _kernel, const ConstString & _setting )
 		{
-			(void)_kernel;
-
-			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
-				->getCurrentAccount();
-
-			if( currentAccount == nullptr )
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasCurrentAccount() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("getSettingBool: currentAccount is none [%s]"
+				LOGGER_ERROR( m_serviceProvider )("Error getSettingBool: currentAccount is none [%s]"
 					, _setting.c_str()
 					);
 
-				return pybind::ret_none();
+				return false;
 			}
 
-			const WString & value = currentAccount->getSetting( _setting );
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getCurrentAccount();
 
-			if( value == L"True" ||
-				value == L"true" )
-			{
-				return pybind::ret_true();
-			}
-
-			if( value == L"False" ||
-				value == L"false" )
-			{
-				return pybind::ret_false();
-			}
-
-			const WString & accountID = currentAccount->getName();
-
-			LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt account '%ls' setting '%s' value '%ls' is not bool [True|False]"
-				, accountID.c_str()
-				, _setting.c_str()
-				, value.c_str()
-				);
-
-			return pybind::ret_none();
+			return s_getAccountSettingBool( _kernel, accountID, _setting );
 		}
 
 		PyObject * s_getSettingInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
 		{
-			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasCurrentAccount() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Error getSettingInt: currentAccount is none [%s]"
+					, _setting.c_str()
+					);
+
+				return false;
+			}
+
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccount();
 
-			if( currentAccount == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("getSettingInt: currentAccount is none [%s]"
-					, _setting.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-
-			const WString & setting = currentAccount->getSetting( _setting );
-
-			int value;
-			if( Utils::wstringToInt( setting, value ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("getSettingInt: can't scanf from [%s]"
-					, _setting.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-
-			PyObject * py_value = pybind::ptr( _kernel, value );
-
-			return py_value;
+			return s_getAccountSettingInt( _kernel, accountID, _setting );
 		}
 
 		PyObject * s_getSettingUInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
 		{
-			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasCurrentAccount() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Error getSettingUInt: currentAccount is none [%s]"
+					, _setting.c_str()
+					);
+
+				return false;
+			}
+
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccount();
 
-			if( currentAccount == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("getSettingUInt: currentAccount is none [%s]"
-					, _setting.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-
-			const WString & setting = currentAccount->getSetting( _setting );
-
-			uint32_t value;
-			if( Utils::wstringToUnsigned( setting, value ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("getSettingUInt: can't scanf from [%s]"
-					, _setting.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-
-			PyObject * py_value = pybind::ptr( _kernel, value );
-
-			return py_value;
+			return s_getAccountSettingUInt( _kernel, accountID, _setting );
 		}
 
 		PyObject * s_getSettingFloat( pybind::kernel_interface * _kernel, const ConstString & _setting )
 		{
-			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasCurrentAccount() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Error getSettingFloat: currentAccount is none [%s]"
+					, _setting.c_str()
+					);
+
+				return false;
+			}
+
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccount();
 
-			if( currentAccount == nullptr )
+			return s_getAccountSettingFloat( _kernel, accountID, _setting );
+		}
+
+		PyObject * s_getSettingStrings( pybind::kernel_interface * _kernel, const ConstString & _setting )
+		{
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasCurrentAccount() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("getSettingFloat: currentAccount is none [%s]"
+				LOGGER_ERROR( m_serviceProvider )("Error getSettingFloat: currentAccount is none [%s]"
 					, _setting.c_str()
 					);
 
 				return pybind::ret_none();
 			}
 
-			const WString & setting = currentAccount->getSetting( _setting );
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getCurrentAccount();
 
-			float value;
-			if( Utils::wstringToFloat( setting, value ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("getSettingFloat: can't scanf from [%S]"
-					, _setting.c_str()
-					);
-
-				return pybind::ret_none();
-			}
-
-			PyObject * py_value = pybind::ptr( _kernel, value );
-
-			return py_value;
+			return s_getAccountSettingStrings( _kernel, accountID, _setting );
 		}
 
 		float s_getSettingFloatDefault( const ConstString & _setting, float _default )
 		{
-			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
-				->getCurrentAccount();
-
-			if( currentAccount == nullptr )
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasCurrentAccount() == false )
 			{
-				return _default;
-			}
-
-			const WString & setting = currentAccount->getSetting( _setting );
-
-			float value;
-			if( Utils::wstringToFloat( setting, value ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("getSettingFloat: can't scanf from [%S]"
+				LOGGER_ERROR( m_serviceProvider )("Error getSettingFloat: currentAccount is none [%s]"
 					, _setting.c_str()
 					);
 
 				return _default;
 			}
 
-			return value;
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getCurrentAccount();
+
+			return s_getAccountSettingFloatDefault( accountID, _setting, _default );
 		}
 
 		bool s_getConfigBool( const Char * _section, const Char * _key, bool _default )
@@ -1832,6 +1761,37 @@ namespace Menge
 			return py_value;
 		}
 
+		PyObject * s_getAccountSettingStrings( pybind::kernel_interface * _kernel, const WString& _accountID, const ConstString & _setting )
+		{
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt account '%ls' is none"
+					, _accountID.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & setting = account->getSetting( _setting );
+
+			if( setting.empty() == true )
+			{
+				pybind::list l( _kernel );
+
+				return l.ret();
+			}
+
+			TVectorWString strings;
+			Utils::wsplit( strings, setting, true, L" ,,, " );
+
+			pybind::list l = pybind::make_list_container_t( _kernel, strings );
+
+			return l.ret();
+		}		
+
 		PyObject * s_getAccountSettingFloat( pybind::kernel_interface * _kernel, const WString& _accountID, const ConstString & _setting )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
@@ -1839,7 +1799,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingFloat account '%ls' is none"
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloat account '%ls' is none"
 					, _accountID.c_str()
 					);
 
@@ -1851,7 +1811,7 @@ namespace Menge
 			float value;
 			if( Utils::wstringToFloat( setting, value ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingFloat account '%ls' can't scanf from '%s'"
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloat account '%ls' can't scanf from '%s'"
 					, _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -1863,7 +1823,42 @@ namespace Menge
 
 			return py_value;
 		}
-		
+
+		float s_getAccountSettingFloatDefault( const WString& _accountID, const ConstString & _setting, float _default )
+		{
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloatDefault account '%ls' is none"
+					, _accountID.c_str()
+					);
+
+				return _default;
+			}
+
+			if( account->hasSetting( _setting ) == false )
+			{
+				return _default;
+			}
+
+			const WString & setting = account->getSetting( _setting );
+
+			float value;
+			if( Utils::wstringToFloat( setting, value ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloatDefault account '%ls' can't scanf from '%s'"
+					, _accountID.c_str()
+					, _setting.c_str()
+					);
+
+				return _default;
+			}
+
+			return value;
+		}
+
 		PyObject * s_getGlobalSetting( pybind::kernel_interface * _kernel, const ConstString & _setting )
 		{
 			if( ACCOUNT_SERVICE( m_serviceProvider )
@@ -2055,7 +2050,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingFloat account '%ls' is none"
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloat account '%ls' is none"
 					, accountID.c_str()
 					);
 
@@ -2067,7 +2062,7 @@ namespace Menge
 			float value;
 			if( Utils::wstringToFloat( setting, value ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingFloat account '%ls' can't scanf from '%s'"
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloat account '%ls' can't scanf from '%s'"
 					, accountID.c_str()
 					, _setting.c_str()
 					);
@@ -2080,6 +2075,49 @@ namespace Menge
 			return py_value;
 		}
 
+		PyObject * s_getGlobalSettingStrings( pybind::kernel_interface * _kernel, const ConstString & _setting )
+		{
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasGlobalAccount() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getGlobalSetting account is none"
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getGlobalAccount();
+
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloat account '%ls' is none"
+					, accountID.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & setting = account->getSetting( _setting );
+
+			if( setting.empty() == true )
+			{
+				pybind::list l( _kernel );
+
+				return l.ret();
+			}
+
+			TVectorWString strings;
+			Utils::wsplit( strings, setting, true, L" ,,, " );
+
+			pybind::list l = pybind::make_list_container_t( _kernel, strings );
+
+			return l.ret();
+		}
+
 		PyObject * s_createAccount( pybind::kernel_interface * _kernel )
 		{
             AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
@@ -2090,7 +2128,7 @@ namespace Menge
 				return pybind::ret_none();
             }
             
-			const WString & accountId = account->getName();
+			const WString & accountId = account->getID();
 
 			PyObject * py_value = pybind::ptr( _kernel, accountId );
 
@@ -2193,23 +2231,22 @@ namespace Menge
 				
 		WString s_getCurrentAccountName()
 		{
-			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
-  				->getCurrentAccount();
-
-			if( currentAccount == nullptr )
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasCurrentAccount() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Error getCurrentAccountName: currentAccount is none"
+				LOGGER_ERROR( m_serviceProvider )("Error getCurrentAccountName: currentAccount is none"
 					);
 
 				return WString();
 			}
 
-			const WString & name = currentAccount->getName();
+			const WString & name = ACCOUNT_SERVICE(m_serviceProvider)
+  				->getCurrentAccount();
 
 			return name;
 		}
 
-		bool s_writeAccountPickleFile( pybind::kernel_interface * _kernel, const WString & _fileName, PyObject * _data, PyObject * _pickleTypes )
+		bool s_writeAccountPickleFile( pybind::kernel_interface * _kernel, const WString & _accountID, const WString & _fileName, PyObject * _data, PyObject * _pickleTypes )
 		{
             String utf8_fileName;
             if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
@@ -2221,27 +2258,25 @@ namespace Menge
                 return false;                     
             }
 
-            AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
-				->getCurrentAccount();
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
 
-			if( currentAccount == nullptr )
-			{                
-				LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: invalid write file %ls (currentAccount is none)"
-                    , _fileName.c_str()
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("writeAccountPickleFile: invalid account '%ls'"
+					, _accountID.c_str()
 					);
 
 				return false;
 			}
-
+			
 			FilePath filepath = Helper::stringizeFilePath( m_serviceProvider, utf8_fileName.c_str(), utf8_fileName.size() );
 
 			size_t size;
 			if( pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size ) == false )
 			{
-				const WString & accountName = currentAccount->getName();
-
 				LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: account %ls invalid get pickle size"
-					, accountName.c_str()
+					, _accountID.c_str()
 					);
 
 				return false;
@@ -2251,10 +2286,8 @@ namespace Menge
 
 			if( buffer == nullptr )
 			{
-				const WString & accountName = currentAccount->getName();
-
 				LOGGER_ERROR( m_serviceProvider )("writeAccountPickleFile: account %ls invalid get memory for %d size"
-					, accountName.c_str()
+					, _accountID.c_str()
 					, size
 					);
 
@@ -2266,21 +2299,17 @@ namespace Menge
 			
 			if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
 			{
-				const WString & accountName = currentAccount->getName();
-
 				LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: account %ls invalid pickle"
-					, accountName.c_str()
+					, _accountID.c_str()
 					);
 
 				return false;
 			}
 
-            if( currentAccount->writeBinaryFile( filepath, memory_buffer, memory_size ) == false )
+            if( account->writeBinaryFile( filepath, memory_buffer, memory_size ) == false )
             {
-                const WString & accountName = currentAccount->getName();
-
                 LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: account %ls invalid write file %ls"
-                    , accountName.c_str()
+                    , _accountID.c_str()
                     , _fileName.c_str()
                     );
                 
@@ -2290,25 +2319,25 @@ namespace Menge
 			return true;
 		}
 
-		PyObject * s_loadAccountPickleFile( pybind::kernel_interface * _kernel, const WString & _fileName, PyObject * _pickleTypes )
+		PyObject * s_loadAccountPickleFile( pybind::kernel_interface * _kernel, const WString & _accountID, const WString & _fileName, PyObject * _pickleTypes )
 		{
             String utf8_fileName;
             if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid convert filename %ls to utf8"
+                LOGGER_ERROR(m_serviceProvider)("loadAccountPickleFile: invalid convert filename %ls to utf8"
                     , _fileName.c_str()
                     );
 
 				return pybind::ret_none();
             }
 
-            AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
-				->getCurrentAccount();
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
 
-			if( currentAccount == nullptr )
+			if( account == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid load file %ls (currentAccount is none)"
-                    , _fileName.c_str()
+				LOGGER_ERROR( m_serviceProvider )("loadAccountPickleFile: invalid get account '%ls'"
+					, _accountID.c_str()
 					);
 
 				return pybind::ret_none();
@@ -2316,14 +2345,12 @@ namespace Menge
 
 			FilePath filename = Helper::stringizeFilePath( m_serviceProvider, utf8_fileName.c_str(), utf8_fileName.size() );
 
-			MemoryInterfacePtr binaryBuffer = currentAccount->loadBinaryFile( filename );
+			MemoryInterfacePtr binaryBuffer = account->loadBinaryFile( filename );
 
 			if( binaryBuffer == nullptr )
             {
-                const WString & accountName = currentAccount->getName();
-
-                LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: account %ls invalid load file %ls"
-                    , accountName.c_str()
+                LOGGER_ERROR(m_serviceProvider)("loadAccountPickleFile: account %ls invalid load file %ls"
+                    , _accountID.c_str()
                     , _fileName.c_str()
                     );
 
@@ -2337,10 +2364,8 @@ namespace Menge
 
 			if( py_data == nullptr )
 			{
-				const WString & accountName = currentAccount->getName();
-
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: account %ls invalid unpickle file %ls"
-					, accountName.c_str()
+				LOGGER_ERROR(m_serviceProvider)("loadAccountPickleFile: account %ls invalid unpickle file %ls"
+					, _accountID.c_str()
 					, _fileName.c_str()
 					);
 
@@ -2350,15 +2375,16 @@ namespace Menge
 			return py_data;
 		}
 
-		bool s_hasAccountPickleFile( const WString & _fileName )
+		bool s_hasAccountPickleFile( const WString & _accountID, const WString & _fileName )
 		{
-			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
-				->getCurrentAccount();
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
 
-			if( currentAccount == nullptr )
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasCurrentAccount() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("s_hasAccountPickleFile: invalid load file %ls (currentAccount is none)"
-					, _fileName.c_str()
+				LOGGER_ERROR( m_serviceProvider )("hasAccountPickleFile: invalid get account %ls"
+					, _accountID.c_str()
 					);
 
 				return false;
@@ -2367,7 +2393,7 @@ namespace Menge
 			String utf8_fileName;
 			if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("s_hasAccountPickleFile: invalid convert filename %ls to utf8"
+				LOGGER_ERROR(m_serviceProvider)("hasAccountPickleFile: invalid convert filename %ls to utf8"
 					, _fileName.c_str()
 					);
 
@@ -2376,7 +2402,7 @@ namespace Menge
 
 			FilePath filename = Helper::stringizeFilePath( m_serviceProvider, utf8_fileName.c_str(), utf8_fileName.size() );
 
-			bool exist = currentAccount->hasBinaryFile( filename );
+			bool exist = account->hasBinaryFile( filename );
 
 			return exist;
 		}
@@ -2558,34 +2584,42 @@ namespace Menge
 		pybind::def_functor_kernel( kernel, "getSettingInt", helperScriptMethod, &HelperScriptMethod::s_getSettingInt );
 		pybind::def_functor_kernel( kernel, "getSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getSettingUInt );
 		pybind::def_functor_kernel( kernel, "getSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getSettingFloat );
+		pybind::def_functor_kernel( kernel, "getSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getSettingStrings );
 		pybind::def_functor( kernel, "getSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getSettingFloatDefault );
 
 		pybind::def_functor( kernel, "addSetting", helperScriptMethod, &HelperScriptMethod::s_addSetting );
 		pybind::def_functor( kernel, "hasSetting", helperScriptMethod, &HelperScriptMethod::s_hasSetting );
 		pybind::def_functor( kernel, "changeSetting", helperScriptMethod, &HelperScriptMethod::s_changeSetting );
 		pybind::def_functor( kernel, "changeSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeSettingBool );
-		
+		pybind::def_functor( kernel, "changeSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeSettingStrings );
+
 		pybind::def_functor_kernel( kernel, "getAccountSetting", helperScriptMethod, &HelperScriptMethod::s_getAccountSetting );
 		pybind::def_functor_kernel( kernel, "getAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingBool );
 		pybind::def_functor_kernel( kernel, "getAccountSettingInt", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingInt );
 		pybind::def_functor_kernel( kernel, "getAccountSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingUInt );
+		pybind::def_functor_kernel( kernel, "getAccountSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingUInt );
 		pybind::def_functor_kernel( kernel, "getAccountSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingFloat );
+		pybind::def_functor_kernel( kernel, "getAccountSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingStrings );
+		pybind::def_functor( kernel, "getAccountSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingFloatDefault );
 
 		pybind::def_functor( kernel, "addAccountSetting", helperScriptMethod, &HelperScriptMethod::s_addAccountSetting );
 		pybind::def_functor( kernel, "hasAccountSetting", helperScriptMethod, &HelperScriptMethod::s_hasAccountSetting );
 		pybind::def_functor( kernel, "changeAccountSetting", helperScriptMethod, &HelperScriptMethod::s_changeAccountSetting );
 		pybind::def_functor( kernel, "changeAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingBool );
+		pybind::def_functor( kernel, "changeAccountSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingStrings );
 
 		pybind::def_functor_kernel( kernel, "getGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_getGlobalSetting );
 		pybind::def_functor_kernel( kernel, "getGlobalSettingBool", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingBool );
 		pybind::def_functor_kernel( kernel, "getGlobalSettingInt", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingInt );
 		pybind::def_functor_kernel( kernel, "getGlobalSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingUInt );
 		pybind::def_functor_kernel( kernel, "getGlobalSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingFloat );
+		pybind::def_functor_kernel( kernel, "getGlobalSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingStrings );
 
 		pybind::def_functor( kernel, "addGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_addGlobalSetting );
 		pybind::def_functor( kernel, "hasGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_hasGlobalSetting );
 		pybind::def_functor( kernel, "changeGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSetting );
 		pybind::def_functor( kernel, "changeGlobalSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingBool );
+		pybind::def_functor( kernel, "changeGlobalSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingStrings );
 
 		pybind::def_functor_kernel( kernel, "createAccount", helperScriptMethod, &HelperScriptMethod::s_createAccount );
 		pybind::def_functor( kernel, "selectAccount", helperScriptMethod, &HelperScriptMethod::s_selectAccount );

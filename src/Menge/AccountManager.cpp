@@ -32,7 +32,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AccountManager::AccountManager()
 		: m_accountProvider(nullptr)
-		, m_currentAccount(nullptr)
 		, m_playerEnumerator(0)
 	{
 	}
@@ -56,14 +55,14 @@ namespace Menge
         LOGGER_WARNING(m_serviceProvider)("AccountManager::finalize save accounts"
             );
 
-        AccountInterfacePtr lastAccount = m_currentAccount;
+        WString lastAccount = m_currentAccountID;
         this->unselectCurrentAccount_();
 
-        m_currentAccount = lastAccount;
+		m_currentAccountID = lastAccount;
 
         this->saveAccounts();
 
-        m_currentAccount = nullptr;
+		m_currentAccountID.clear();
         m_accounts.clear();
 
         m_factoryAccounts = nullptr;
@@ -119,16 +118,16 @@ namespace Menge
             return nullptr;
         }
         
-		m_currentAccount = newAccount;
+		m_currentAccountID = newAccount->getID();
+
+		m_accounts.insert( std::make_pair( _accountID, newAccount ) );
 
         if( m_accountProvider != nullptr )
         {
 		    m_accountProvider->onCreateAccount( _accountID );
-        }
-        
-		m_accounts.insert( std::make_pair( _accountID, newAccount ) );
+        }        	
 
-		m_currentAccount->apply();
+		newAccount->apply();
 
 		if( m_accountProvider != nullptr )
 		{
@@ -140,23 +139,21 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void AccountManager::unselectCurrentAccount_()
     {
-        if( m_currentAccount == nullptr )
+        if( m_currentAccountID.empty() == true )
         {
             return;
         }
 
-		AccountInterfacePtr currentAccount = m_currentAccount;
+		WString currentAccount = m_currentAccountID;
         
         if( m_accountProvider != nullptr )
         {
-            const WString & name = m_currentAccount->getName();
-
-            m_accountProvider->onUnselectAccount( name );
+            m_accountProvider->onUnselectAccount( currentAccount );
         }
 
-		if( m_currentAccount == currentAccount )
+		if( m_currentAccountID == currentAccount )
 		{
-			m_currentAccount = nullptr;
+			m_currentAccountID.clear();
 		}
     }
     //////////////////////////////////////////////////////////////////////////
@@ -219,11 +216,9 @@ namespace Menge
 
         AccountInterfacePtr account = it_find->second;
 
-		if( m_currentAccount != nullptr )
+		if( m_currentAccountID.empty() == false )
 		{
-			const WString & name = m_currentAccount->getName();
-
-            if( name == _accountID )
+            if( m_currentAccountID == _accountID )
 			{
                 this->unselectCurrentAccount_();
 			}
@@ -250,11 +245,9 @@ namespace Menge
 			return false;
 		}
 
-        if( m_currentAccount != nullptr )
+        if( m_currentAccountID.empty() == false )
         {
-            const WString & currAccountId = m_currentAccount->getName();
-
-            if( currAccountId != _accountID )
+            if( m_currentAccountID != _accountID )
             {
                 this->unselectCurrentAccount_();
             }     
@@ -262,9 +255,9 @@ namespace Menge
 
 		AccountInterfacePtr account = it_find->second;
 		       
-        m_currentAccount = account;
+		m_currentAccountID = _accountID;
 
-		m_currentAccount->apply();
+		account->apply();
 
         if( m_accountProvider != nullptr )
         {
@@ -276,12 +269,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::hasCurrentAccount() const
 	{
-		return m_currentAccount != nullptr;
+		return m_currentAccountID.empty() == false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const AccountInterfacePtr & AccountManager::getCurrentAccount()
+	const WString & AccountManager::getCurrentAccount() const
 	{
-		return m_currentAccount;
+		return m_currentAccountID;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	AccountInterfacePtr AccountManager::getAccount( const WString& _accountID )
@@ -333,14 +326,12 @@ namespace Menge
 			return false;
 		}
 
-		if( m_currentAccount == nullptr )
+		if( m_currentAccountID.empty() == true )
 		{
 			return false;
 		}
 
-		const WString & accountID = m_currentAccount->getName();
-
-		return m_defaultAccountID == accountID;
+		return m_defaultAccountID == m_currentAccountID;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::hasDefaultAccount() const
@@ -392,36 +383,27 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	AccountInterfacePtr AccountManager::loadAccount_( const WString& _accountID )
+	bool AccountManager::loadAccount_( const AccountInterfacePtr & _account )
 	{
-		AccountInterfacePtr account = this->newAccount_( _accountID );
+		const WString & accountID = _account->getID();
 
-        if( account == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccount_ invalid create account %ls"
-                , _accountID.c_str()
-                );
-
-            return nullptr;
-        }
-        
         if( m_accountProvider != nullptr )
         {
-            m_currentAccount = account;
-            m_accountProvider->onCreateAccount( _accountID );
-            m_currentAccount = nullptr;
+            m_currentAccountID = accountID;
+            m_accountProvider->onCreateAccount( accountID );
+			m_currentAccountID.clear();
         }
 
-        if( account->load() == false )
+        if( _account->load() == false )
         {
             LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccount_ invalid load account %ls"
-                , _accountID.c_str()
+                , accountID.c_str()
                 );
 
-            return nullptr;
+            return false;
         }       
         
-		return account;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::loadAccounts()
@@ -507,22 +489,31 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const WString & name = *it;
+			const WString & accountID = *it;
 
-			AccountInterfacePtr account = this->loadAccount_( name );
+			AccountInterfacePtr account = this->newAccount_( accountID );
 
-            if( account == nullptr )
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("AccountManager::loadAccountsInfo invalid create account %ls"
+					, accountID.c_str()
+					);
+
+				return false;
+			}
+
+			m_accounts.insert( std::make_pair( accountID, account ) );
+
+            if( this->loadAccount_( account ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccountsInfo invalid load account '%ls'"
-                    , name.c_str()
+                    , accountID.c_str()
                     );
 
                 continue;
             }
 
             validAccount = account;
-
-			m_accounts.insert( std::make_pair( name, account ) );
 		}
 
 		if( selectAccountID.empty() == false )
@@ -557,7 +548,7 @@ namespace Menge
         }
         else if( validAccount != nullptr )
         {
-            const WString & accountID = validAccount->getName();
+            const WString & accountID = validAccount->getID();
 
             LOGGER_WARNING(m_serviceProvider)( "AccountManager::loadAccounts set valid account '%ls'"
                 , accountID.c_str()
@@ -609,11 +600,9 @@ namespace Menge
             IniUtil::writeIniSetting( m_serviceProvider, file, "DefaultAccountID", m_defaultAccountID );
 		}
 
-		if( m_currentAccount != nullptr )
+		if( m_currentAccountID.empty() == false )
 		{
-			const WString & name = m_currentAccount->getName();
-
-            IniUtil::writeIniSetting( m_serviceProvider, file, "SelectAccountID", name );
+            IniUtil::writeIniSetting( m_serviceProvider, file, "SelectAccountID", m_currentAccountID );
 		}
 
         WString AccountEnumerator;
@@ -645,7 +634,7 @@ namespace Menge
             if( account->save() == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("AccountManager::finalize invalid save account %ls:%s"
-                    , account->getName().c_str()
+                    , account->getID().c_str()
                     , account->getFolder().c_str()
                     );
 

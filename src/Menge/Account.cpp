@@ -51,7 +51,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & Account::getName() const
+	const WString & Account::getID() const
 	{
 		return m_name;
 	}

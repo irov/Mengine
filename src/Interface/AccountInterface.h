@@ -22,7 +22,7 @@ namespace Menge
 		: public ServantInterface
     {
     public:
-        virtual const WString & getName() const = 0;
+        virtual const WString & getID() const = 0;
         virtual const FilePath & getFolder() const = 0;
 
     public:
@@ -107,9 +107,12 @@ namespace Menge
 
     public:
         virtual bool hasCurrentAccount() const = 0;
-        virtual const AccountInterfacePtr & getCurrentAccount() = 0;
+        virtual const WString & getCurrentAccount() const = 0;
+
+	public:
         virtual AccountInterfacePtr getAccount( const WString& _accountID ) = 0;
 
+	public:
         virtual void visitAccounts( AccountVisitorInterface * _visitor ) const = 0;
     };
 

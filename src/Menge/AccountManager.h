@@ -57,13 +57,15 @@ namespace Menge
 
 	public:
 		bool hasCurrentAccount() const override;
-		const AccountInterfacePtr & getCurrentAccount() override;
+		const WString & getCurrentAccount() const override;
+
+	public:
 		AccountInterfacePtr getAccount( const WString& _accountID ) override;
 
 		void visitAccounts( AccountVisitorInterface * _visitor ) const override;
 
 	protected:
-		AccountInterfacePtr loadAccount_( const WString& _accountID );
+		bool loadAccount_( const AccountInterfacePtr & _account );
 		AccountInterfacePtr createAccount_( const WString& _accountID );
 
     protected:
@@ -80,10 +82,9 @@ namespace Menge
 		
 		FactoryPtr m_factoryAccounts;
 
+		WString m_currentAccountID;
 		WString m_globalAccountID;
 		WString m_defaultAccountID;
-
-		AccountInterfacePtr m_currentAccount;
 
 		uint32_t m_playerEnumerator;
 	};

@@ -50,6 +50,12 @@ namespace Menge
 		bool selectDefaultAccount() override;
 
 	public:
+		void setGlobalAccount( const WString & _accountID ) override;
+		const WString & getGlobalAccount() const override;
+
+		bool hasGlobalAccount() const override;
+
+	public:
 		bool hasCurrentAccount() const override;
 		const AccountInterfacePtr & getCurrentAccount() override;
 		AccountInterfacePtr getAccount( const WString& _accountID ) override;
@@ -74,6 +80,7 @@ namespace Menge
 		
 		FactoryPtr m_factoryAccounts;
 
+		WString m_globalAccountID;
 		WString m_defaultAccountID;
 
 		AccountInterfacePtr m_currentAccount;

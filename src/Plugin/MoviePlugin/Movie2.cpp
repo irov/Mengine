@@ -723,11 +723,12 @@ namespace Menge
 		{
 			aa = true;
 
-			const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, "ok" );
+			const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, "lock" );
 
 			if( subcomposition != nullptr )
 			{
-				ae_set_movie_sub_composition_loop( subcomposition, AE_TRUE );
+				ae_stop_movie_sub_composition( m_composition, subcomposition );
+				ae_set_movie_sub_composition_loop( subcomposition, AE_FALSE );
 				ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
 			}
 		}
@@ -742,11 +743,13 @@ namespace Menge
 		{
 			aa2 = true;
 
-			const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, "ok" );
+			const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, "lock" );
 
 			if( subcomposition != nullptr )
 			{
-				ae_interrupt_movie_sub_composition( m_composition, subcomposition, AE_TRUE );
+				ae_stop_movie_sub_composition( m_composition, subcomposition );
+				ae_set_movie_sub_composition_loop( subcomposition, AE_FALSE );
+				ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
 			}
 		}
 

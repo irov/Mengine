@@ -99,6 +99,12 @@ namespace Menge
 
         virtual bool selectDefaultAccount() = 0;
 
+	public:
+		virtual void setGlobalAccount( const WString & _accountID ) = 0;
+		virtual const WString & getGlobalAccount() const = 0;
+
+		virtual bool hasGlobalAccount() const = 0;
+
     public:
         virtual bool hasCurrentAccount() const = 0;
         virtual const AccountInterfacePtr & getCurrentAccount() = 0;

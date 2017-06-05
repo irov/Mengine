@@ -1161,70 +1161,21 @@ namespace Menge
 			return result;
 		}
 
-		bool s_addAccountSetting( const WString & _accountID, const ConstString & _setting, const WString & _defaultValue, const pybind::object & _applyFunc )
-		{
-			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
-				->getAccount( _accountID );
-
-			if( account == nullptr )
-			{
-				LOGGER_ERROR( m_serviceProvider )("addAccountSetting: account not found '%ls'"
-					, _accountID.c_str()
-					);
-
-				return false;
-			}
-
-			bool result = account->addSetting( _setting, _defaultValue, _applyFunc );
-
-			return result;
-		}
-		
-
 		bool s_changeSetting( const ConstString & _setting, const WString & _value )
 		{
-            AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
-                ->getCurrentAccount();
+			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE( m_serviceProvider )
+				->getCurrentAccount();
 
-            if( currentAccount == nullptr )
-            {
-                LOGGER_ERROR(m_serviceProvider)("changeSetting: currentAccount is none [%s]"
-                    , _setting.c_str()
-                    );
-
-                return false;
-            }
-
-            bool result = currentAccount->changeSetting( _setting, _value );
-
-            return result;
-		}
-
-		bool s_changeAccountSetting( const WString & _accountID, const ConstString & _setting, const WString & _value )
-		{
-			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
-				->getAccount( _accountID );
-
-			if( account == nullptr )
+			if( currentAccount == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSetting: account not found '%ls'"
-					, _accountID.c_str()
-					);
-
-				return false;
-			}
-
-			if( account->hasSetting( _setting ) == false )
-			{
-				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSetting: account '%ls' not found setting '%s'"
-					, _accountID.c_str()
+				LOGGER_ERROR( m_serviceProvider )("changeSetting: currentAccount is none [%s]"
 					, _setting.c_str()
 					);
 
 				return false;
 			}
 
-			bool result = account->changeSetting( _setting, _value );
+			bool result = currentAccount->changeSetting( _setting, _value );
 
 			return result;
 		}
@@ -1254,6 +1205,73 @@ namespace Menge
 			}
 
 			bool result = currentAccount->changeSetting( _setting, setting_value );
+
+			return result;
+		}
+
+		bool s_addAccountSetting( const WString & _accountID, const ConstString & _setting, const WString & _defaultValue, const pybind::object & _applyFunc )
+		{
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("addAccountSetting: account not found '%ls'"
+					, _accountID.c_str()
+					);
+
+				return false;
+			}
+
+			bool result = account->addSetting( _setting, _defaultValue, _applyFunc );
+
+			return result;
+		}
+
+		bool s_hasAccountSetting( const WString & _accountID, const ConstString & _setting )
+		{
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("addAccountSetting: account not found '%ls'"
+					, _accountID.c_str()
+					);
+
+				return false;
+			}
+
+			bool result = account->hasSetting( _setting );
+
+			return result;
+		}
+
+		bool s_changeAccountSetting( const WString & _accountID, const ConstString & _setting, const WString & _value )
+		{
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSetting: account not found '%ls'"
+					, _accountID.c_str()
+					);
+
+				return false;
+			}
+
+			if( account->hasSetting( _setting ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSetting: account '%ls' not found setting '%s'"
+					, _accountID.c_str()
+					, _setting.c_str()
+					);
+
+				return false;
+			}
+
+			bool result = account->changeSetting( _setting, _value );
 
 			return result;
 		}
@@ -1296,6 +1314,160 @@ namespace Menge
 
 			return result;
 		}		
+
+		bool s_addGlobalSetting( const ConstString & _setting, const WString & _defaultValue, const pybind::object & _applyFunc )
+		{
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasGlobalAccount() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("addGlobalSetting: account not found"
+					);
+
+				return false;
+			}
+
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getGlobalAccount();
+
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("addAccountSetting: account not found '%ls'"
+					, accountID.c_str()
+					);
+
+				return false;
+			}
+
+			bool result = account->addSetting( _setting, _defaultValue, _applyFunc );
+
+			return result;
+		}
+
+		bool s_hasGlobalSetting( const ConstString & _setting )
+		{
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasGlobalAccount() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("addGlobalSetting: account not found"
+					);
+
+				return false;
+			}
+
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getGlobalAccount();
+
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("addAccountSetting: account not found '%ls'"
+					, accountID.c_str()
+					);
+
+				return false;
+			}
+
+			bool result = account->hasSetting( _setting );
+
+			return result;
+		}
+
+		bool s_changeGlobalSetting( const ConstString & _setting, const WString & _value )
+		{
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasGlobalAccount() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("addGlobalSetting: account not found"
+					);
+
+				return false;
+			}
+
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getGlobalAccount();
+
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSetting: account not found '%ls'"
+					, accountID.c_str()
+					);
+
+				return false;
+			}
+
+			if( account->hasSetting( _setting ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSetting: account '%ls' not found setting '%s'"
+					, accountID.c_str()
+					, _setting.c_str()
+					);
+
+				return false;
+			}
+
+			bool result = account->changeSetting( _setting, _value );
+
+			return result;
+		}
+
+		bool s_changeGlobalSettingBool( const ConstString & _setting, bool _value )
+		{
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasGlobalAccount() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("addGlobalSetting: account not found"
+					);
+
+				return false;
+			}
+
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getGlobalAccount();
+
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSettingBool: account not found '%ls'"
+					, accountID.c_str()
+					);
+
+				return false;
+			}
+
+			if( account->hasSetting( _setting ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSettingBool: account '%ls' not found setting '%s'"
+					, accountID.c_str()
+					, _setting.c_str()
+					);
+
+				return false;
+			}
+
+			WString setting_value;
+			if( _value == true )
+			{
+				setting_value = L"True";
+			}
+			else
+			{
+				setting_value = L"False";
+			}
+
+			bool result = account->changeSetting( _setting, setting_value );
+
+			return result;
+		}
 
         bool s_hasSetting( const ConstString & _setting )
         {
@@ -1596,6 +1768,38 @@ namespace Menge
 			return pybind::ret_none();
 		}
 
+		PyObject * s_getAccountSettingInt( pybind::kernel_interface * _kernel, const WString& _accountID, const ConstString & _setting )
+		{
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingInt account '%ls' is none"
+					, _accountID.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & setting = account->getSetting( _setting );
+
+			int32_t value;
+			if( Utils::wstringToInt( setting, value ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingInt account '%ls' can't scanf from '%s'"
+					, _accountID.c_str()
+					, _setting.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			PyObject * py_value = pybind::ptr( _kernel, value );
+
+			return py_value;
+		}
+
 		PyObject * s_getAccountSettingUInt( pybind::kernel_interface * _kernel, const WString& _accountID, const ConstString & _setting )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
@@ -1617,6 +1821,254 @@ namespace Menge
 			{
 				LOGGER_ERROR(m_serviceProvider)("getAccountSettingUInt account '%ls'can't scanf from '%s'"
                     , _accountID.c_str()
+					, _setting.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			PyObject * py_value = pybind::ptr( _kernel, value );
+
+			return py_value;
+		}
+
+		PyObject * s_getAccountSettingFloat( pybind::kernel_interface * _kernel, const WString& _accountID, const ConstString & _setting )
+		{
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingFloat account '%ls' is none"
+					, _accountID.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & setting = account->getSetting( _setting );
+
+			float value;
+			if( Utils::wstringToFloat( setting, value ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingFloat account '%ls' can't scanf from '%s'"
+					, _accountID.c_str()
+					, _setting.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			PyObject * py_value = pybind::ptr( _kernel, value );
+
+			return py_value;
+		}
+		
+		PyObject * s_getGlobalSetting( pybind::kernel_interface * _kernel, const ConstString & _setting )
+		{
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasGlobalAccount() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getGlobalSetting account is none"
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getGlobalAccount();
+			
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getAccountSetting account '%ls' is none"
+					, accountID.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & value = account->getSetting( _setting );
+
+			PyObject * py_value = pybind::ptr( _kernel, value );
+
+			return py_value;
+		}
+
+		PyObject * s_getGlobalSettingBool( pybind::kernel_interface * _kernel, const ConstString & _setting )
+		{
+			(void)_kernel;
+
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasGlobalAccount() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getGlobalSetting account is none"
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getGlobalAccount();
+
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt account '%ls' is none"
+					, accountID.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & value = account->getSetting( _setting );
+
+			if( value == L"True" ||
+				value == L"true" )
+			{
+				return pybind::ret_true();
+			}
+
+			if( value == L"False" ||
+				value == L"false" )
+			{
+				return pybind::ret_false();
+			}
+
+			LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt account '%ls' setting '%s' value '%ls' is not bool [True|False]"
+				, accountID.c_str()
+				, _setting.c_str()
+				, value.c_str()
+				);
+
+			return pybind::ret_none();
+		}
+
+		PyObject * s_getGlobalSettingInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
+		{
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasGlobalAccount() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getGlobalSetting account is none"
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getGlobalAccount();
+
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingInt account '%ls' is none"
+					, accountID.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & setting = account->getSetting( _setting );
+
+			int32_t value;
+			if( Utils::wstringToInt( setting, value ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingInt account '%ls' can't scanf from '%s'"
+					, accountID.c_str()
+					, _setting.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			PyObject * py_value = pybind::ptr( _kernel, value );
+
+			return py_value;
+		}
+
+		PyObject * s_getGlobalSettingUInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
+		{
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasGlobalAccount() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getGlobalSetting account is none"
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getGlobalAccount();
+
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt account '%ls' is none"
+					, accountID.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & setting = account->getSetting( _setting );
+
+			uint32_t value;
+			if( Utils::wstringToUnsigned( setting, value ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt account '%ls'can't scanf from '%s'"
+					, accountID.c_str()
+					, _setting.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			PyObject * py_value = pybind::ptr( _kernel, value );
+
+			return py_value;
+		}
+
+		PyObject * s_getGlobalSettingFloat( pybind::kernel_interface * _kernel, const ConstString & _setting )
+		{
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasGlobalAccount() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getGlobalSetting account is none"
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getGlobalAccount();
+
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingFloat account '%ls' is none"
+					, accountID.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & setting = account->getSetting( _setting );
+
+			float value;
+			if( Utils::wstringToFloat( setting, value ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingFloat account '%ls' can't scanf from '%s'"
+					, accountID.c_str()
 					, _setting.c_str()
 					);
 
@@ -1659,8 +2111,26 @@ namespace Menge
 
 		void s_setDefaultAccount( const WString & _accountID )
 		{
-			return ACCOUNT_SERVICE(m_serviceProvider)
+			ACCOUNT_SERVICE(m_serviceProvider)
 				->setDefaultAccount( _accountID );
+		}
+
+		void s_setGlobalAccount( const WString & _accountID )
+		{
+			ACCOUNT_SERVICE( m_serviceProvider )
+				->setGlobalAccount( _accountID );
+		}		
+
+		bool s_hasGlobalAccount()
+		{
+			return ACCOUNT_SERVICE( m_serviceProvider )
+				->hasGlobalAccount();
+		}
+
+		const WString & s_getGlobalAccountName()
+		{
+			return ACCOUNT_SERVICE( m_serviceProvider )
+				->getGlobalAccount();
 		}
 
 		const WString & s_getDefaultAccount()
@@ -2073,33 +2543,49 @@ namespace Menge
         
 		pybind::def_functor( kernel, "getTimeString", helperScriptMethod, &HelperScriptMethod::s_getTimeString );
 
-		pybind::def_functor( kernel, "getAccounts", helperScriptMethod, &HelperScriptMethod::s_getAccounts );
-		pybind::def_functor( kernel, "addSetting", helperScriptMethod, &HelperScriptMethod::s_addSetting );
-		pybind::def_functor_kernel( kernel, "getSetting", helperScriptMethod, &HelperScriptMethod::s_getSetting );
-        pybind::def_functor( kernel, "hasSetting", helperScriptMethod, &HelperScriptMethod::s_hasSetting );
-
-		pybind::def_functor_kernel( kernel, "getSettingBool", helperScriptMethod, &HelperScriptMethod::s_getSettingBool );
-		pybind::def_functor_kernel( kernel, "getSettingInt", helperScriptMethod, &HelperScriptMethod::s_getSettingInt );
-		pybind::def_functor_kernel( kernel, "getSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getSettingUInt );
-		pybind::def_functor_kernel( kernel, "getSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getSettingFloat );
-		pybind::def_functor( kernel, "getSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getSettingFloatDefault );
-
 		pybind::def_functor( kernel, "getConfigBool", helperScriptMethod, &HelperScriptMethod::s_getConfigBool );
 		pybind::def_functor( kernel, "getConfigInt", helperScriptMethod, &HelperScriptMethod::s_getConfigInt );
 		pybind::def_functor( kernel, "getConfigUInt", helperScriptMethod, &HelperScriptMethod::s_getConfigUInt );
 		pybind::def_functor( kernel, "getConfigFloat", helperScriptMethod, &HelperScriptMethod::s_getConfigFloat );
 		pybind::def_functor( kernel, "getConfigString", helperScriptMethod, &HelperScriptMethod::s_getConfigString );
 
+		pybind::def_functor( kernel, "getAccounts", helperScriptMethod, &HelperScriptMethod::s_getAccounts );
+		
+		
+
+		pybind::def_functor_kernel( kernel, "getSetting", helperScriptMethod, &HelperScriptMethod::s_getSetting );
+		pybind::def_functor_kernel( kernel, "getSettingBool", helperScriptMethod, &HelperScriptMethod::s_getSettingBool );
+		pybind::def_functor_kernel( kernel, "getSettingInt", helperScriptMethod, &HelperScriptMethod::s_getSettingInt );
+		pybind::def_functor_kernel( kernel, "getSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getSettingUInt );
+		pybind::def_functor_kernel( kernel, "getSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getSettingFloat );
+		pybind::def_functor( kernel, "getSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getSettingFloatDefault );
+
+		pybind::def_functor( kernel, "addSetting", helperScriptMethod, &HelperScriptMethod::s_addSetting );
+		pybind::def_functor( kernel, "hasSetting", helperScriptMethod, &HelperScriptMethod::s_hasSetting );
 		pybind::def_functor( kernel, "changeSetting", helperScriptMethod, &HelperScriptMethod::s_changeSetting );
 		pybind::def_functor( kernel, "changeSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeSettingBool );
 		
 		pybind::def_functor_kernel( kernel, "getAccountSetting", helperScriptMethod, &HelperScriptMethod::s_getAccountSetting );
 		pybind::def_functor_kernel( kernel, "getAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingBool );
+		pybind::def_functor_kernel( kernel, "getAccountSettingInt", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingInt );
 		pybind::def_functor_kernel( kernel, "getAccountSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingUInt );
+		pybind::def_functor_kernel( kernel, "getAccountSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingFloat );
 
 		pybind::def_functor( kernel, "addAccountSetting", helperScriptMethod, &HelperScriptMethod::s_addAccountSetting );
+		pybind::def_functor( kernel, "hasAccountSetting", helperScriptMethod, &HelperScriptMethod::s_hasAccountSetting );
 		pybind::def_functor( kernel, "changeAccountSetting", helperScriptMethod, &HelperScriptMethod::s_changeAccountSetting );
 		pybind::def_functor( kernel, "changeAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingBool );
+
+		pybind::def_functor_kernel( kernel, "getGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_getGlobalSetting );
+		pybind::def_functor_kernel( kernel, "getGlobalSettingBool", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingBool );
+		pybind::def_functor_kernel( kernel, "getGlobalSettingInt", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingInt );
+		pybind::def_functor_kernel( kernel, "getGlobalSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingUInt );
+		pybind::def_functor_kernel( kernel, "getGlobalSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingFloat );
+
+		pybind::def_functor( kernel, "addGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_addGlobalSetting );
+		pybind::def_functor( kernel, "hasGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_hasGlobalSetting );
+		pybind::def_functor( kernel, "changeGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSetting );
+		pybind::def_functor( kernel, "changeGlobalSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingBool );
 
 		pybind::def_functor_kernel( kernel, "createAccount", helperScriptMethod, &HelperScriptMethod::s_createAccount );
 		pybind::def_functor( kernel, "selectAccount", helperScriptMethod, &HelperScriptMethod::s_selectAccount );
@@ -2110,10 +2596,14 @@ namespace Menge
 		pybind::def_functor( kernel, "saveAccountsInfo", helperScriptMethod, &HelperScriptMethod::s_saveAccountsInfo );
 		pybind::def_functor( kernel, "hasCurrentAccount", helperScriptMethod, &HelperScriptMethod::s_hasCurrentAccount );
 		pybind::def_functor( kernel, "getCurrentAccountName", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountName );
+		
+		pybind::def_functor( kernel, "setGlobalAccount", helperScriptMethod, &HelperScriptMethod::s_setGlobalAccount );
+		pybind::def_functor( kernel, "hasGlobalAccount", helperScriptMethod, &HelperScriptMethod::s_hasGlobalAccount );
+		pybind::def_functor( kernel, "getGlobalAccountName", helperScriptMethod, &HelperScriptMethod::s_getGlobalAccountName );
 
 		pybind::def_functor( kernel, "setDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_setDefaultAccount );
 		pybind::def_functor( kernel, "getDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_getDefaultAccount );
-		pybind::def_functor( kernel, "hasDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_hasDefaultAccount );
+		pybind::def_functor( kernel, "hasDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_hasDefaultAccount );		
 		pybind::def_functor( kernel, "isCurrentDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_isCurrentDefaultAccount );
 		pybind::def_functor( kernel, "selectDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_selectDefaultAccount );
 

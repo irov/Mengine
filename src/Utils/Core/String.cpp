@@ -249,7 +249,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool stringToInt( const String & _str, int & _value )
+        bool stringToInt( const String & _str, int32_t & _value )
         {
             Stringstream ss;
             ss << _str;
@@ -292,7 +292,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool wstringToInt( const WString & _str, int & _value )
+        bool wstringToInt( const WString & _str, int32_t & _value )
         {
             WStringstream ss;
             ss << _str;
@@ -306,7 +306,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool wstringToInt2( const WString & _str, int & _value1, int & _value2, bool _separator )
+        bool wstringToInt2( const WString & _str, int32_t & _value1, int32_t & _value2, bool _separator )
         {
             WStringstream ss;
             ss << _str;
@@ -338,7 +338,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool wstringToInt4( const WString & _str, int & _value1, int & _value2, int & _value3, int & _value4, bool _separator )
+        bool wstringToInt4( const WString & _str, int32_t & _value1, int32_t & _value2, int32_t & _value3, int32_t & _value4, bool _separator )
         {
             WStringstream ss;
             ss << _str;

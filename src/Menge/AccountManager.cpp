@@ -353,6 +353,26 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void AccountManager::setGlobalAccount( const WString & _accountID )
+	{
+		m_globalAccountID = _accountID;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const WString & AccountManager::getGlobalAccount() const
+	{
+		return m_globalAccountID;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AccountManager::hasGlobalAccount() const
+	{
+		if( m_globalAccountID.empty() == true )
+		{
+			return false;
+		}
+
+		return true;		
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::selectDefaultAccount()
 	{
 		if( m_defaultAccountID.empty() == true )
@@ -449,12 +469,19 @@ namespace Menge
             return false;
         }
 
+		if( IniUtil::getIniValue( ini, "SETTINGS", "GlobalAccountID", m_globalAccountID, m_serviceProvider ) == false )
+		{
+			LOGGER_INFO( m_serviceProvider )("AccountManager::loadAccounts get GlobalAccountID failed '%s'"
+				, accountsPath.c_str()
+				);
+		}
+
 		if( IniUtil::getIniValue( ini, "SETTINGS", "DefaultAccountID", m_defaultAccountID, m_serviceProvider ) == false )
         {
             LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get DefaultAccountID failed '%s'"
                 , accountsPath.c_str()
                 );
-        }           
+        }
 
 		WString selectAccountID;
 		if( IniUtil::getIniValue( ini, "SETTINGS", "SelectAccountID", selectAccountID, m_serviceProvider ) == false )
@@ -571,6 +598,11 @@ namespace Menge
 		}
 
         IniUtil::writeIniSection( m_serviceProvider, file, "[SETTINGS]" );
+
+		if( m_globalAccountID.empty() == false )
+		{
+			IniUtil::writeIniSetting( m_serviceProvider, file, "GlobalAccountID", m_globalAccountID );
+		}
 
 		if( m_defaultAccountID.empty() == false )
 		{

@@ -28,13 +28,13 @@ namespace Menge
 		bool unsignedToWString( uint32_t _value, WString & _str );
         bool floatToWString( float _value, WString & _str );
 
-        bool stringToInt( const String & _str, int & _value );
+        bool stringToInt( const String & _str, int32_t & _value );
         bool stringToUnsigned( const String & _str, uint32_t & _value );
         bool wstringToFloat( const String & _str, float & _value );
 
-        bool wstringToInt( const WString & _str, int & _value );
-        bool wstringToInt2( const WString & _str, int & _value1, int & _value2, bool _separator );
-        bool wstringToInt4( const WString & _str, int & _value1, int & _value2, int & _value3, int & _value4, bool _separator );
+        bool wstringToInt( const WString & _str, int32_t & _value );
+        bool wstringToInt2( const WString & _str, int32_t & _value1, int32_t & _value2, bool _separator );
+        bool wstringToInt4( const WString & _str, int32_t & _value1, int32_t & _value2, int32_t & _value3, int32_t & _value4, bool _separator );
         bool wstringToUnsigned( const WString & _str, uint32_t & _value );
         bool wstringToFloat( const WString & _str, float & _value );
     }

@@ -54,7 +54,7 @@ if( MENGINE_PLATFORM_MAC )
 endif()
 
 if( MENGINE_PLATFORM_IOS )
-    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax-ios/libimagic3d.a)
+    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax-ios/bitcode/libimagic3d.a)
 endif()
 
 if( MENGINE_PLUGIN_ASTRALAX_DLL )    

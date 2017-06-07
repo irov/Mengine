@@ -1480,7 +1480,7 @@ namespace Menge
 					, _setting.c_str()
 					);
 
-				return false;
+                return pybind::ret_none();
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
@@ -1498,7 +1498,7 @@ namespace Menge
 					, _setting.c_str()
 					);
 
-				return false;
+                return pybind::ret_none();
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
@@ -1516,7 +1516,7 @@ namespace Menge
 					, _setting.c_str()
 					);
 
-				return false;
+				return pybind::ret_none();
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
@@ -1534,7 +1534,7 @@ namespace Menge
 					, _setting.c_str()
 					);
 
-				return false;
+                return pybind::ret_none();
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
@@ -1552,7 +1552,7 @@ namespace Menge
 					, _setting.c_str()
 					);
 
-				return false;
+                return pybind::ret_none();
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )

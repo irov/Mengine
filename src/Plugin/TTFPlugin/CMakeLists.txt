@@ -20,6 +20,7 @@ INCLUDE_DIRECTORIES(
         ${THIRDPARTY_DIR}/freetype/include
         ${THIRDPARTY_DIR}/pybind/include
         ${THIRDPARTY_DIR}/utf8/source        
+        ${THIRDPARTY_DIR}/tinyini/include
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

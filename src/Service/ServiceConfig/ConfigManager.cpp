@@ -61,16 +61,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigManager::addValue( const Char * _section, const Char * _key, const Char * _value )
-	{
-		return IniUtil::addIniValue( m_ini, _section, _key, _value, m_serviceProvider );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ConfigManager::setValue( const Char * _section, const Char * _key, const Char * _value )
-	{
-		return IniUtil::setIniValue( m_ini, _section, _key, _value, m_serviceProvider );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	namespace Helper
 	{
 		template<class T>

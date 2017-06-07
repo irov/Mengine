@@ -114,7 +114,7 @@ namespace Menge
 	{	
 		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( m_name, m_path, m_type ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourcePak::load failed to mount pak '%s' path '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourcePak::mountFileGroup_ failed to mount pak '%s' path '%s'"
 				, m_name.c_str()
 				//, m_baseDir.c_str()
 				, m_path.c_str()
@@ -125,6 +125,21 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Package::unmountFileGroup_()
+	{
+		if( FILE_SERVICE( m_serviceProvider )->unmountFileGroup( m_name ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ResourcePak::unmountFileGroup_ failed to mount pak '%s' path '%s'"
+				, m_name.c_str()
+				, m_path.c_str()
+				);
+
+			return false;
+		}
+
+		return true;
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::loadPak_()
 	{
@@ -571,6 +586,11 @@ namespace Menge
 			{
 				return false;
 			}
+		}
+
+		if( this->unmountFileGroup_() == false )
+		{
+			return false;
 		}
 
 		return true;

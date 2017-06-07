@@ -26,6 +26,7 @@ namespace Menge
 		bool loadPackages( const ConstString & _fileGroup, const FilePath & _resourceIni ) override;
 
 	public:
+		bool hasPackage( const ConstString & _name ) const override;
 		bool addPackage( const PackageDesc & _desc ) override;
 		bool removePackage( const ConstString & _name ) override;
 		PackageInterfacePtr getPackage( const ConstString & _name ) const override;

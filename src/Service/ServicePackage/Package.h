@@ -55,6 +55,7 @@ namespace Menge
 		
 	protected:
 		bool mountFileGroup_();
+		bool unmountFileGroup_();
 		bool loadPak_();
 
 	protected:

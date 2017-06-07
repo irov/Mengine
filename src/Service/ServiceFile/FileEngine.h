@@ -28,7 +28,7 @@ namespace Menge
 
 	public:	// FileEngine Interface
 		bool mountFileGroup( const ConstString& _fileGroupName, const FilePath & _path, const ConstString & _type ) override;
-		void unmountFileGroup( const ConstString& _fileGroupName ) override;
+		bool unmountFileGroup( const ConstString& _fileGroupName ) override;
 
     public:
         bool hasFileGroup( const ConstString& _fileGroupName, FileGroupInterfacePtr * _fileGroup ) const override;

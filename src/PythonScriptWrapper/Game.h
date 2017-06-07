@@ -47,10 +47,11 @@ namespace Menge
         EVENT_GAME_FINALIZE,
         EVENT_GAME_DESTROY,
         EVENT_GAME_FOCUS,
-        EVENT_GAME_CREATE_DEFAULT_ACCOUNT,
-        EVENT_GAME_LOAD_ACCOUNTS,
+		EVENT_GAME_CREATE_DEFAULT_ACCOUNT,
+		EVENT_GAME_CREATE_GLOBAL_ACCOUNT,
+		EVENT_GAME_LOAD_ACCOUNTS,
         EVENT_GAME_CREATE_ACCOUNT,
-        EVENT_GAME_DELETE_ACCOUNT,
+		EVENT_GAME_DELETE_ACCOUNT,
         EVENT_GAME_SELECT_ACCOUNT,
         EVENT_GAME_UNSELECT_ACCOUNT,
         EVENT_GAME_CHANGE_SOUND_VOLUME,
@@ -88,8 +89,9 @@ namespace Menge
         virtual void onGameDestroy() = 0;
         virtual void onGameFocus( bool _focus ) = 0;
         virtual void onGameCreateDefaultAccount() = 0;
+		virtual void onGameCreateGlobalAccount() = 0;
         virtual void onGameLoadAccounts() = 0;
-        virtual void onGameCreateAccount( const WString & _accountID ) = 0;
+        virtual void onGameCreateAccount( const WString & _accountID, bool _global ) = 0;
         virtual void onGameDeleteAccount( const WString & _accountID ) = 0;
         virtual void onGameSelectAccount( const WString & _accountID ) = 0;
         virtual void onGameUselectAccount( const WString & _accountID ) = 0;

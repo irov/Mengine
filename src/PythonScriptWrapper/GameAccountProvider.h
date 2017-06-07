@@ -20,7 +20,7 @@ namespace Menge
 		Game * getGame() const;
 
     protected:
-        void onCreateAccount( const WString & _accountID ) override;
+        void onCreateAccount( const WString & _accountID, bool _global ) override;
         void onDeleteAccount( const WString & _accountID ) override;
         void onSelectAccount( const WString & _accountID ) override;
         void onUnselectAccount( const WString & _accountID ) override;

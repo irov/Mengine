@@ -10,6 +10,8 @@ extern void initgc(void);
 //extern void init_ast(void);
 extern void initunicodedata(void);
 extern void initmath(void);
+extern void init_sre( void );
+extern void init_struct( void );
 //extern void initnt(void);
 //extern void initcPickle(void);
 //extern void initcStringIO(void);
@@ -26,6 +28,8 @@ struct _inittab _PyImport_Inittab[] = {
 	/* This lives in import.c */
 	{"imp", initimp},
     {"math", initmath},
+	{"_sre", init_sre},
+	{"_struct", init_struct },
 
 	/* This lives in Python/Python-ast.c */
 	//{"_ast", init_ast},

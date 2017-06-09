@@ -24,10 +24,6 @@ namespace Menge
 		virtual bool loadConfig( const ConstString & _fileGroup, const FilePath & _applicationPath ) = 0;
 
 	public:
-		virtual bool addValue( const Char * _section, const Char * _key, const Char * _value ) = 0;
-		virtual bool setValue( const Char * _section, const Char * _key, const Char * _value ) = 0;
-
-	public:
 		virtual bool getValue( const Char * _section, const Char * _key, bool _default ) const = 0;
 		virtual int32_t getValue( const Char * _section, const Char * _key, int32_t _default ) const = 0;
 		virtual uint32_t getValue( const Char * _section, const Char * _key, uint32_t _default ) const = 0;

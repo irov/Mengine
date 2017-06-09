@@ -2135,6 +2135,23 @@ namespace Menge
             return py_value;
 		}
 
+		PyObject * s_createGlobalAccount( pybind::kernel_interface * _kernel )
+		{
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->createGlobalAccount();
+
+			if( account == nullptr )
+			{
+				return pybind::ret_none();
+			}
+
+			const WString & accountId = account->getID();
+
+			PyObject * py_value = pybind::ptr( _kernel, accountId );
+
+			return py_value;
+		}
+
 		void s_selectAccount( const WString& _accountID )
 		{
 			ACCOUNT_SERVICE(m_serviceProvider)
@@ -2622,6 +2639,8 @@ namespace Menge
 		pybind::def_functor( kernel, "changeGlobalSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingStrings );
 
 		pybind::def_functor_kernel( kernel, "createAccount", helperScriptMethod, &HelperScriptMethod::s_createAccount );
+		pybind::def_functor_kernel( kernel, "createGlobalAccount", helperScriptMethod, &HelperScriptMethod::s_createGlobalAccount );
+
 		pybind::def_functor( kernel, "selectAccount", helperScriptMethod, &HelperScriptMethod::s_selectAccount );
 		pybind::def_functor( kernel, "deleteAccount", helperScriptMethod, &HelperScriptMethod::s_deleteAccount );
 				

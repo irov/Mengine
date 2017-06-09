@@ -3063,6 +3063,14 @@ namespace Menge
 			return result;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		bool s_hasPackage( const ConstString & _name )
+		{
+			bool result = PACKAGE_SERVICE( m_serviceProvider )
+				->hasPackage( _name );
+
+			return result;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		bool s_unmountResourcePak( const ConstString & _name )
 		{
 			bool result = PACKAGE_SERVICE( m_serviceProvider )

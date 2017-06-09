@@ -65,38 +65,6 @@ namespace Menge
 
 			return true;
 		}
-		//////////////////////////////////////////////////////////////////////////
-		bool addIniValue( IniStore & _ini, const Char * _section, const Char * _key, const Char * _value, ServiceProviderInterface * _serviceProvider )
-		{
-			if( _ini.addSetting( _section, _key, _value ) == false )
-			{
-				LOGGER_ERROR(_serviceProvider)("addIniValue invalid set section %s key %s value %s"
-					, _section
-					, _key
-					, _value
-					);
-
-				return false;
-			}
-
-			return true;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		bool setIniValue( IniStore & _ini, const Char * _section, const Char * _key, const Char * _value, ServiceProviderInterface * _serviceProvider )
-		{
-			if( _ini.setSetting( _section, _key, _value ) == false )
-			{
-				LOGGER_ERROR(_serviceProvider)("setIniValue invalid set section %s key %s value %s"
-					, _section
-					, _key
-					, _value
-					);
-
-				return false;
-			}
-
-			return true;
-		}
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, WString & _value, ServiceProviderInterface * _serviceProvider )
         {

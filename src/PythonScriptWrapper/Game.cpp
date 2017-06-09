@@ -415,14 +415,19 @@ namespace Menge
                 m_cb.call();
             }
 
+			void onGameCreateGlobalAccount() override
+			{
+				m_cb.call();
+			}
+
             void onGameLoadAccounts() override
             {
                 m_cb.call();
             }
 
-            void onGameCreateAccount( const WString & _accountID ) override
+            void onGameCreateAccount( const WString & _accountID, bool _global ) override
             {
-                m_cb.call( _accountID);
+				m_cb.call( _accountID, _global );
             }
 
             void onGameDeleteAccount( const WString & _accountID ) override
@@ -496,6 +501,7 @@ namespace Menge
 
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFocus", EVENT_GAME_FOCUS );
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCreateDefaultAccount", EVENT_GAME_CREATE_DEFAULT_ACCOUNT );
+		Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCreateGlobalAccount", EVENT_GAME_CREATE_GLOBAL_ACCOUNT );
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onLoadAccounts", EVENT_GAME_LOAD_ACCOUNTS );
 
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCreateAccount", EVENT_GAME_CREATE_ACCOUNT );
@@ -607,6 +613,15 @@ namespace Menge
 		{
 			LOGGER_ERROR( m_serviceProvider )("Game::initialize failed load accounts"
 				);
+		}
+
+		bool hasGlobalAccount = ACCOUNT_SERVICE( m_serviceProvider )
+			->hasGlobalAccount();
+
+		if( hasGlobalAccount == false )
+		{
+			EVENTABLE_METHOD( this, EVENT_GAME_CREATE_GLOBAL_ACCOUNT )
+				->onGameCreateGlobalAccount();
 		}
 
 		bool hasCurrentAccount = ACCOUNT_SERVICE( m_serviceProvider )

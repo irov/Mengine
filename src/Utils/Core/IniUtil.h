@@ -1,6 +1,6 @@
 #   pragma once
 
-#   include "stdex/ini.h"
+#   include "tinyini/tinyini.h"
 
 #   include "Interface/ServiceInterface.h"
 #   include "Interface/StreamInterface.h"
@@ -26,7 +26,7 @@ namespace Menge
     {
 		//////////////////////////////////////////////////////////////////////////
 		struct IniStore
-			: public stdex::ini
+			: public tinyini::tinyini
 		{			
 			ConstString category;
 			FilePath path;
@@ -36,10 +36,6 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool loadIni( IniStore & _ini, const ConstString & _category, const FilePath & _path, ServiceProviderInterface * _serviceProvider );
 		bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _input, ServiceProviderInterface * _serviceProvider );
-		//////////////////////////////////////////////////////////////////////////
-		bool addIniValue( IniStore & _ini, const Char * _section, const Char * _key, const Char * _value, ServiceProviderInterface * _serviceProvider );
-        //////////////////////////////////////////////////////////////////////////
-		bool setIniValue( IniStore & _ini, const Char * _section, const Char * _key, const Char * _value, ServiceProviderInterface * _serviceProvider );
 		//////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, WString & _value, ServiceProviderInterface * _serviceProvider ); 
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, String & _value, ServiceProviderInterface * _serviceProvider );

@@ -147,7 +147,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::unmountFileGroup( const ConstString& _fileGroupName )
+	bool FileEngine::unmountFileGroup( const ConstString& _fileGroupName )
 	{
 		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _fileGroupName );
 		if( it_find == m_fileSystemMap.end() )
@@ -156,7 +156,7 @@ namespace Menge
 				, _fileGroupName.c_str() 
 				);
 
-			return;
+			return false;
 		}
 
         const FileGroupInterfacePtr & groupInterface = it_find->second;
@@ -164,6 +164,8 @@ namespace Menge
         groupInterface->finalize();
 
 		m_fileSystemMap.erase( it_find );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::existFile( const ConstString& _fileGroupName, const FilePath & _fileName, FileGroupInterfacePtr * _fileGroup ) const

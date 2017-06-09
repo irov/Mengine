@@ -42,6 +42,7 @@ INCLUDE_DIRECTORIES(
 	${THIRDPARTY_DIR}/stdex/include
 	${THIRDPARTY_DIR}/libmovie/include
 	${THIRDPARTY_DIR}/utf8/source
+    ${THIRDPARTY_DIR}/tinyini/include
     ) 
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

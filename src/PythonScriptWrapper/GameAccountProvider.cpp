@@ -21,11 +21,10 @@ namespace Menge
 		return m_game;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void GameAccountProvider::onCreateAccount( const WString & _accountID )
+    void GameAccountProvider::onCreateAccount( const WString & _accountID, bool _global )
     {
         EVENTABLE_METHOD( m_game, EVENT_GAME_CREATE_ACCOUNT )
-            ->onGameCreateAccount( _accountID );
-        //EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_CREATE_ACCOUNT)( _accountID );
+            ->onGameCreateAccount( _accountID, _global );
     }
     //////////////////////////////////////////////////////////////////////////
     void GameAccountProvider::onDeleteAccount( const WString & _accountID )

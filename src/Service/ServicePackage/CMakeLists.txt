@@ -15,6 +15,7 @@ INCLUDE_DIRECTORIES(
     ${Mengine_SOURCE_DIR}/Utils 
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/metabuf
+    ${THIRDPARTY_DIR}/tinyini/include
     ) 
 
 SET( MENGE_DEPENDENCIES

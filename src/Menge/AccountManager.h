@@ -30,6 +30,7 @@ namespace Menge
 
 	public:
 		AccountInterfacePtr createAccount() override;
+		AccountInterfacePtr createGlobalAccount() override;
 
 	public:
 		void deleteAccount( const WString& _accountID ) override;
@@ -67,6 +68,7 @@ namespace Menge
 	protected:
 		bool loadAccount_( const AccountInterfacePtr & _account );
 		AccountInterfacePtr createAccount_( const WString& _accountID );
+		AccountInterfacePtr createGlobalAccount_( const WString& _accountID );
 
     protected:
         AccountInterfacePtr newAccount_( const WString& _accountID );

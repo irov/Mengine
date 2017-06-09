@@ -191,6 +191,29 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool PackageService::hasPackage( const ConstString & _name ) const
+	{
+		for( TVectorPackage::const_iterator
+			it = m_packages.begin(),
+			it_end = m_packages.end();
+			it != it_end;
+			++it )
+		{
+			const PackagePtr & package = *it;
+
+			const ConstString & packName = package->getName();
+
+			if( packName != _name )
+			{
+				continue;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::addPackage( const PackageDesc & _desc )
 	{
 		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );

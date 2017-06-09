@@ -57,7 +57,7 @@ namespace Menge
 		virtual ~AccountProviderInterface(){};
 
     public:
-        virtual void onCreateAccount( const WString & _accountID ) = 0;
+        virtual void onCreateAccount( const WString & _accountID, bool _global ) = 0;
         virtual void onDeleteAccount( const WString & _accountID ) = 0;
         virtual void onSelectAccount( const WString & _accountID ) = 0;
         virtual void onUnselectAccount( const WString & _accountID ) = 0;
@@ -81,6 +81,7 @@ namespace Menge
 
     public:
         virtual AccountInterfacePtr createAccount() = 0;
+		virtual AccountInterfacePtr createGlobalAccount() = 0;
 
     public:
         virtual void deleteAccount( const WString& _accountID ) = 0;

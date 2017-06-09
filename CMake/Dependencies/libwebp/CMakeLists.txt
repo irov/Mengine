@@ -30,6 +30,7 @@ set(sources
     ${SOURCE_DIR}/src/dsp/dec_sse2.c
     ${SOURCE_DIR}/src/dsp/dec_clip_tables.c
     ${SOURCE_DIR}/src/dsp/dec_mips32.c
+    ${SOURCE_DIR}/src/dsp/dec_sse41.c
     ${SOURCE_DIR}/src/dsp/lossless.c
     ${SOURCE_DIR}/src/dsp/lossless_sse2.c
     ${SOURCE_DIR}/src/dsp/upsampling.c
@@ -39,6 +40,7 @@ set(sources
     ${SOURCE_DIR}/src/dsp/yuv_sse2.c
     ${SOURCE_DIR}/src/dsp/alpha_processing.c
     ${SOURCE_DIR}/src/dsp/alpha_processing_sse2.c
+    ${SOURCE_DIR}/src/dsp/alpha_processing_sse41.c
     ${SOURCE_DIR}/src/dsp/filters.c
     ${SOURCE_DIR}/src/dsp/filters_sse2.c
     ${SOURCE_DIR}/src/dsp/rescaler.c

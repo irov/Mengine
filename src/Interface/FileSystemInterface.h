@@ -85,7 +85,7 @@ namespace Menge
 
     public:
         virtual bool mountFileGroup( const ConstString & _fileGroupName, const FilePath & _path, const ConstString & _type ) = 0;
-        virtual void unmountFileGroup( const ConstString & _fileGroupName ) = 0;
+        virtual bool unmountFileGroup( const ConstString & _fileGroupName ) = 0;
 
     public:
         virtual bool hasFileGroup( const ConstString & _fileGroupName, FileGroupInterfacePtr * _fileGroup ) const = 0;

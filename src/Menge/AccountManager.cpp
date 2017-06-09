@@ -92,6 +92,25 @@ namespace Menge
 		return account;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	AccountInterfacePtr AccountManager::createGlobalAccount()
+	{
+		uint32_t new_playerID = ++m_playerEnumerator;
+
+		WStringstream streamAccountID;
+		streamAccountID << L"Player_" << new_playerID;
+
+		WString accountID = streamAccountID.str();
+
+		AccountInterfacePtr account = this->createGlobalAccount_( accountID );
+
+		if( account == nullptr )
+		{
+			return nullptr;
+		}
+
+		return account;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	AccountInterfacePtr AccountManager::createAccount_( const WString& _accountID )
 	{
 		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
@@ -105,7 +124,7 @@ namespace Menge
 			return nullptr;
 		}
 
-        this->unselectCurrentAccount_();
+		this->unselectCurrentAccount_();
 				
 		AccountInterfacePtr newAccount = this->newAccount_( _accountID );
 
@@ -124,7 +143,7 @@ namespace Menge
 
         if( m_accountProvider != nullptr )
         {
-		    m_accountProvider->onCreateAccount( _accountID );
+		    m_accountProvider->onCreateAccount( _accountID, false );
         }        	
 
 		newAccount->apply();
@@ -135,6 +154,39 @@ namespace Menge
 		}
 
         return newAccount;
+	}
+	//////////////////////////////////////////////////////////////////////////	
+	AccountInterfacePtr AccountManager::createGlobalAccount_( const WString& _accountID )
+	{
+		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
+
+		if( it_find != m_accounts.end() )
+		{
+			LOGGER_ERROR( m_serviceProvider )("AccountManager::createGlobalAccount_: Account with ID '%ls' already exist. Account not created"
+				, _accountID.c_str()
+				);
+
+			return nullptr;
+		}
+				
+		AccountInterfacePtr newAccount = this->newAccount_( _accountID );
+
+		if( newAccount == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("AccountManager::createGlobalAccount_: Account with ID '%ls' invalid create. Account not created"
+				, _accountID.c_str()
+				);
+
+			return nullptr;
+		}
+
+		m_globalAccountID = newAccount->getID();
+
+		m_accounts.insert( std::make_pair( _accountID, newAccount ) );
+		
+		newAccount->apply();
+
+		return newAccount;
 	}
     //////////////////////////////////////////////////////////////////////////
     void AccountManager::unselectCurrentAccount_()
@@ -387,10 +439,10 @@ namespace Menge
 	{
 		const WString & accountID = _account->getID();
 
-        if( m_accountProvider != nullptr )
+		if( m_accountProvider != nullptr )
         {
             m_currentAccountID = accountID;
-            m_accountProvider->onCreateAccount( accountID );
+            m_accountProvider->onCreateAccount( accountID, m_globalAccountID == accountID );
 			m_currentAccountID.clear();
         }
 

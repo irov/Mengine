@@ -520,26 +520,9 @@ namespace Menge
         PARAM_UNUSED(_params);
     }
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_isDirectoryFullpath( ServiceProviderInterface * _serviceProvider, const WChar * _fullpath )
-	{
-		Char utf8_fullpath[MENGINE_MAX_PATH];
-
-		size_t utf8_fullpathLen;
-		UNICODE_SERVICE( _serviceProvider )
-			->unicodeToUtf8( _fullpath, (size_t)-1, utf8_fullpath, MENGINE_MAX_PATH, &utf8_fullpathLen );
-
-		struct stat sb;
-		if( stat( utf8_fullpath, &sb ) == 0 && ((sb.st_mode)& S_IFMT) == S_IFDIR )
-		{
-			return true;
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	static bool s_createDurectoryFullpath( ServiceProviderInterface * _serviceProvider, const WChar * _fullpath )
 	{
-#	ifdef __MACH__
+#	ifdef __APPLE__
 		Char utf8_fullpath[MENGINE_MAX_PATH];
 
 		size_t utf8_fullpathLen;
@@ -598,6 +581,23 @@ namespace Menge
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    static bool s_isDirectoryFullpath( ServiceProviderInterface * _serviceProvider, const WChar * _fullpath )
+    {
+        Char utf8_fullpath[MENGINE_MAX_PATH];
+        
+        size_t utf8_fullpathLen;
+        UNICODE_SERVICE( _serviceProvider )
+        ->unicodeToUtf8( _fullpath, (size_t)-1, utf8_fullpath, MENGINE_MAX_PATH, &utf8_fullpathLen );
+        
+        struct stat sb;
+        if( stat( utf8_fullpath, &sb ) == 0 && ((sb.st_mode)& S_IFMT) == S_IFDIR )
+        {
+            return true;
+        }
+        
+        return false;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool SDLPlatform::existDirectory( const WString & _path ) const
 	{
@@ -673,9 +673,30 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SDLPlatform::removeFile( const WString & _path )
 	{
-		(void)_path;
-
-		return false;
+        WChar userPath[MENGINE_MAX_PATH];
+        this->getUserPath( userPath, MENGINE_MAX_PATH );
+        
+        WChar pathCorrect[MENGINE_MAX_PATH];
+        Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
+        
+        WChar fullPath[MENGINE_MAX_PATH];
+        wcscpy( fullPath, userPath );
+        wcscat( fullPath, pathCorrect );
+        
+        Char utf8_fullpath[MENGINE_MAX_PATH];
+        
+        size_t utf8_fullpathLen;
+        UNICODE_SERVICE(m_serviceProvider)
+        ->unicodeToUtf8( fullPath, (size_t)-1, utf8_fullpath, MENGINE_MAX_PATH, &utf8_fullpathLen );
+        
+        int result = remove( utf8_fullpath );
+        
+        if( result != 0 )
+        {
+            return false;
+        }
+        
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 #	ifdef WIN32

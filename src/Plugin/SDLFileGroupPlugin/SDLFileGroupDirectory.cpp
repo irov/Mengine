@@ -66,16 +66,19 @@ namespace Menge
             return false;
         }
 
-        bool exist = false;
-        SDL_RWops* file = SDL_RWFromFile( filePath, "rb" );
+        SDL_RWops* rwops = SDL_RWFromFile( filePath, "rb" );
 
-        if( file != nullptr )
+        if( rwops != nullptr )
         {
-            SDL_RWclose( file );
-            exist = true;
+            Sint64 size = SDL_RWsize(rwops);
+            (void)size;
+            
+            SDL_RWclose( rwops );
+            
+            return true;
         }
 
-        return exist;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming )

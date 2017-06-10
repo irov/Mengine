@@ -42,13 +42,11 @@ if( MENGINE_TARGET_SDL )
         ADD_SUBDIRECTORY( OpenGLRenderSystem )
     endif()    
 
-    if( MENGINE_PLATFORM_WIN32 )
+    if( MENGINE_PLUGIN_CURL )
         ADD_SUBDIRECTORY( cURLHttpSystem )
-    endif()
-    
-    if( MENGINE_PLATFORM_XCODE )
+    else()
         ADD_SUBDIRECTORY( MockupHttpSystem )
-    endif()    
+    endif()
 endif()
 
 SET( APPLICATION_DEPENDENCIES

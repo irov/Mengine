@@ -28,6 +28,8 @@ if( MENGINE_PLUGIN_TTF )
     set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
     set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/freetype)    
     set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP_INSTALL_ALL" FORCE)
+    set(IOS_PLATFORM "OS" CACHE STRING "IOS_PLATFORM" FORCE)
+    set(WITH_BZip2 OFF CACHE BOOL "WITH_BZip2" FORCE)
 
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/freetype )
     set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})    
@@ -69,8 +71,11 @@ endif()
 	
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libcurl )
 	
-    configure_file(${CURL_BINARY_DIR}/include/curl/curlbuild.h ${CURL_SOURCE_DIR}/include/curl/curlbuild.h COPYONLY)
-		
+if( MENGINE_PLATFORM_IOS )
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/libcurl/curl_config.h ${CURL_SOURCE_DIR}/lib/curl_config.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libcurl/curlbuild.h ${CURL_SOURCE_DIR}/include/curl/curlbuild.h COPYONLY)	
+endif()
+
     set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
 endif()
 

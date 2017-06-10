@@ -41,10 +41,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::_initialize()
 	{
+        m_factoryThreadMutexDummy = new FactoryPool<ThreadMutexDummy, 16>( m_serviceProvider );
+        m_factoryThreadQueue = new FactoryPool<ThreadQueue, 4>( m_serviceProvider );
+        m_factoryThreadJob = new FactoryPool<ThreadJob, 16>( m_serviceProvider );
+        
 		bool avaliable = CONFIG_VALUE(m_serviceProvider, "Engine", "ThreadServiceAvaliable", true );
 
 		if( avaliable == false )
 		{
+            m_avaliable = false;
+            
 			return true;
 		}
 
@@ -72,11 +78,7 @@ namespace Menge
 			, (stdex_allocator_thread_lock_t)&s_stdex_thread_lock
 			, (stdex_allocator_thread_unlock_t)&s_stdex_thread_unlock 
 			);
-
-		m_factoryThreadQueue = new FactoryPool<ThreadQueue, 4>( m_serviceProvider );
-		m_factoryThreadMutexDummy = new FactoryPool<ThreadMutexDummy, 16>( m_serviceProvider );
-        m_factoryThreadJob = new FactoryPool<ThreadJob, 16>( m_serviceProvider );
-                
+        
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -321,11 +323,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadEngine::cancelTaskQueue( const ThreadQueueInterfacePtr & _queue )
 	{
-		if( m_avaliable == false )
-		{
-			return;
-		}
-
 		_queue->cancel();
 
 		for( TVectorThreadQueues::iterator

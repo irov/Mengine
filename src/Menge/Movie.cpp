@@ -17,6 +17,7 @@
 
 
 #	include "Kernel/Layer.h"
+#	include "Kernel/Scene.h"
 
 #	include "Kernel/RenderCameraProjection.h"
 #	include "Kernel/RenderViewport.h"
@@ -2148,11 +2149,28 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static Node * s_findNodeScene( Node * _node )
+	{
+		Node * parent = _node->getParent();
+
+		while( parent != nullptr )
+		{
+			if( dynamic_cast<Layer *>(parent) != nullptr )
+			{
+				return parent;
+			}
+
+			parent = parent->getParent();
+		}
+
+		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Movie::setupSceneEffect_()
 	{
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		Node * parent = this->getParent();
+		Node * parent = s_findNodeScene( this );
 
 		for( TVectorMovieLayers::const_iterator
 			it = layers.begin(),

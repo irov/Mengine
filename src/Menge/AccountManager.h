@@ -42,7 +42,7 @@ namespace Menge
 
 	public:
 		void setDefaultAccount( const WString & _accountID ) override;
-		const WString & getDefaultAccount() const override;
+		const WString & getDefaultAccountID() const override;
 
 		bool isCurrentDefaultAccount() const override;
 
@@ -52,13 +52,13 @@ namespace Menge
 
 	public:
 		void setGlobalAccount( const WString & _accountID ) override;
-		const WString & getGlobalAccount() const override;
+		const WString & getGlobalAccountID() const override;
 
 		bool hasGlobalAccount() const override;
 
 	public:
 		bool hasCurrentAccount() const override;
-		const WString & getCurrentAccount() const override;
+		const WString & getCurrentAccountID() const override;
 
 	public:
 		AccountInterfacePtr getAccount( const WString& _accountID ) override;

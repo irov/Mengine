@@ -324,7 +324,7 @@ namespace Menge
 		return m_currentAccountID.empty() == false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & AccountManager::getCurrentAccount() const
+	const WString & AccountManager::getCurrentAccountID() const
 	{
 		return m_currentAccountID;
 	}
@@ -357,6 +357,13 @@ namespace Menge
 		{
 			const AccountInterfacePtr & account = it->second;
 
+			const WString & accountID = account->getID();
+
+			if( accountID == m_globalAccountID )
+			{
+				continue;
+			}
+
 			_visitor->onAccount( account );
 		}		
 	}
@@ -366,7 +373,7 @@ namespace Menge
 		m_defaultAccountID = _accountID;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & AccountManager::getDefaultAccount() const
+	const WString & AccountManager::getDefaultAccountID() const
 	{
 		return m_defaultAccountID;
 	}
@@ -401,7 +408,7 @@ namespace Menge
 		m_globalAccountID = _accountID;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & AccountManager::getGlobalAccount() const
+	const WString & AccountManager::getGlobalAccountID() const
 	{
 		return m_globalAccountID;
 	}

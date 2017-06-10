@@ -1134,7 +1134,7 @@ namespace Menge
         TVectorWString s_getAccounts()
 		{
 			TVectorWString v_accounts;
-			MyAccountVisitorInterface mav(v_accounts);
+			MyAccountVisitorInterface mav( v_accounts );
 
 			ACCOUNT_SERVICE(m_serviceProvider)
 				->visitAccounts( &mav );
@@ -1155,7 +1155,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE(m_serviceProvider)
-				->getCurrentAccount();
+				->getCurrentAccountID();
 
 			return s_addAccountSetting( accountID, _setting, _defaultValue, _applyFunc );
 		}
@@ -1173,7 +1173,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getCurrentAccount();
+				->getCurrentAccountID();
 
 			return s_changeAccountSetting( accountID, _setting, _value );
 		}
@@ -1191,7 +1191,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getCurrentAccount();
+				->getCurrentAccountID();
 
 			return s_changeAccountSettingBool( accountID, _setting, _value );
 		}
@@ -1209,7 +1209,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getCurrentAccount();
+				->getCurrentAccountID();
 
 			return s_changeAccountSettingStrings( accountID, _setting, _values );
 		}
@@ -1379,7 +1379,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getGlobalAccount();
+				->getGlobalAccountID();
 
 			return s_addAccountSetting( accountID, _setting, _defaultValue, _applyFunc );
 		}
@@ -1396,7 +1396,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getGlobalAccount();
+				->getGlobalAccountID();
 
 			return s_hasAccountSetting( accountID, _setting );
 		}
@@ -1413,7 +1413,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getGlobalAccount();
+				->getGlobalAccountID();
 
 			return s_changeAccountSetting( accountID, _setting, _value );
 		}
@@ -1430,7 +1430,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getGlobalAccount();
+				->getGlobalAccountID();
 
 			return s_changeAccountSettingBool( accountID, _setting, _value );
 		}
@@ -1448,7 +1448,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getGlobalAccount();
+				->getGlobalAccountID();
 
 			return s_changeAccountSettingStrings( accountID, _setting, _values );
 		}		
@@ -1466,7 +1466,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getCurrentAccount();
+				->getCurrentAccountID();
 			
 			return s_hasAccountSetting( accountID, _setting );
         }
@@ -1484,7 +1484,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getCurrentAccount();
+				->getCurrentAccountID();
 
 			return s_getAccountSetting( _kernel, accountID, _setting );
 		}
@@ -1502,7 +1502,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getCurrentAccount();
+				->getCurrentAccountID();
 
 			return s_getAccountSettingBool( _kernel, accountID, _setting );
 		}
@@ -1520,7 +1520,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getCurrentAccount();
+				->getCurrentAccountID();
 
 			return s_getAccountSettingInt( _kernel, accountID, _setting );
 		}
@@ -1538,7 +1538,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getCurrentAccount();
+				->getCurrentAccountID();
 
 			return s_getAccountSettingUInt( _kernel, accountID, _setting );
 		}
@@ -1556,7 +1556,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getCurrentAccount();
+				->getCurrentAccountID();
 
 			return s_getAccountSettingFloat( _kernel, accountID, _setting );
 		}
@@ -1574,7 +1574,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getCurrentAccount();
+				->getCurrentAccountID();
 
 			return s_getAccountSettingStrings( _kernel, accountID, _setting );
 		}
@@ -1592,7 +1592,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getCurrentAccount();
+				->getCurrentAccountID();
 
 			return s_getAccountSettingFloatDefault( accountID, _setting, _default );
 		}
@@ -1667,7 +1667,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("getAccountSettingUInt account '%ls' is none"
+				LOGGER_ERROR(m_serviceProvider)("getAccountSettingBool account '%ls' is none"
 					, _accountID.c_str()
 					);
 
@@ -1688,7 +1688,7 @@ namespace Menge
 				return pybind::ret_false();
 			}
 
-			LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt account '%ls' setting '%s' value '%ls' is not bool [True|False]"
+			LOGGER_ERROR( m_serviceProvider )("getAccountSettingBool account '%ls' setting '%s' value '%ls' is not bool [True|False]"
 				, _accountID.c_str()
 				, _setting.c_str()
 				, value.c_str()
@@ -1871,7 +1871,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getGlobalAccount();
+				->getGlobalAccountID();
 			
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( accountID );
@@ -1906,7 +1906,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getGlobalAccount();
+				->getGlobalAccountID();
 
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( accountID );
@@ -1955,7 +1955,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getGlobalAccount();
+				->getGlobalAccountID();
 
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( accountID );
@@ -1999,7 +1999,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getGlobalAccount();
+				->getGlobalAccountID();
 
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( accountID );
@@ -2043,7 +2043,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getGlobalAccount();
+				->getGlobalAccountID();
 
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( accountID );
@@ -2087,7 +2087,7 @@ namespace Menge
 			}
 
 			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
-				->getGlobalAccount();
+				->getGlobalAccountID();
 
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( accountID );
@@ -2185,13 +2185,13 @@ namespace Menge
 		const WString & s_getGlobalAccountName()
 		{
 			return ACCOUNT_SERVICE( m_serviceProvider )
-				->getGlobalAccount();
+				->getGlobalAccountID();
 		}
 
 		const WString & s_getDefaultAccount()
 		{
 			return ACCOUNT_SERVICE(m_serviceProvider)
-				->getDefaultAccount();
+				->getDefaultAccountID();
 		}
 
 		bool s_hasDefaultAccount()
@@ -2258,7 +2258,7 @@ namespace Menge
 			}
 
 			const WString & name = ACCOUNT_SERVICE(m_serviceProvider)
-  				->getCurrentAccount();
+  				->getCurrentAccountID();
 
 			return name;
 		}

@@ -93,7 +93,7 @@ namespace Menge
 
     public:
         virtual void setDefaultAccount( const WString & _accountID ) = 0;
-        virtual const WString & getDefaultAccount() const = 0;
+        virtual const WString & getDefaultAccountID() const = 0;
 		virtual bool isCurrentDefaultAccount() const = 0;
 
         virtual bool hasDefaultAccount() const = 0;
@@ -102,13 +102,13 @@ namespace Menge
 
 	public:
 		virtual void setGlobalAccount( const WString & _accountID ) = 0;
-		virtual const WString & getGlobalAccount() const = 0;
+		virtual const WString & getGlobalAccountID() const = 0;
 
 		virtual bool hasGlobalAccount() const = 0;
 
     public:
         virtual bool hasCurrentAccount() const = 0;
-        virtual const WString & getCurrentAccount() const = 0;
+        virtual const WString & getCurrentAccountID() const = 0;
 
 	public:
         virtual AccountInterfacePtr getAccount( const WString& _accountID ) = 0;

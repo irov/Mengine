@@ -198,8 +198,6 @@ namespace Menge
 		bool m_nofullscreen;
 		bool m_vsync;
 
-		Resolution m_renderResolution;
-
 		bool m_textureFiltering;
 		int	m_FSAAType;
 		int m_FSAAQuality;

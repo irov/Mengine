@@ -132,7 +132,7 @@ namespace Menge
 			return false;
 		}
 
-		if( fs->initialize( _path ) == false )
+		if( fs->initialize( _fileGroupName, _path ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem can't initialize FileSystem '%s' for object '%s'"
 				, _fileGroupName.c_str()

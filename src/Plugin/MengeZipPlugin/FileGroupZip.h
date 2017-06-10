@@ -17,7 +17,7 @@ namespace Menge
 		~FileGroupZip();
 
 	public:
-		bool initialize( const FilePath & _path ) override;
+		bool initialize( const ConstString & _name, const FilePath & _path ) override;
 		void finalize() override;
 		
     public:
@@ -39,6 +39,7 @@ namespace Menge
 		bool loadHeader_();
 
 	protected:
+		ConstString m_name;
 		FilePath m_path;
 
 		FileGroupInterfacePtr m_zipFileGroup;

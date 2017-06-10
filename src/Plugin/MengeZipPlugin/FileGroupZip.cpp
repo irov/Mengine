@@ -60,8 +60,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::initialize( const FilePath & _path )
+	bool FileGroupZip::initialize( const ConstString & _name, const FilePath & _path )
 	{
+		m_name = _name;
         m_path = _path;
 
 		if( this->loadHeader_() == false )
@@ -95,7 +96,7 @@ namespace Menge
 		m_zipFileGroup = zipFileGroup;
 		
 		InputStreamInterfacePtr zipFile = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( ConstString::none(), m_path, false );
+			->openInputFile( m_name, m_path, false );
 
 		if( zipFile == nullptr )
 		{

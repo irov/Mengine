@@ -51,7 +51,7 @@ namespace Menge
         : public ServantInterface
     {	
     public:
-        virtual bool initialize( const FilePath & _path ) = 0;
+        virtual bool initialize( const ConstString & _name, const FilePath & _path ) = 0;
         virtual void finalize() = 0;
 
     public:

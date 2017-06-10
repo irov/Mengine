@@ -21,8 +21,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileGroupDirectory::initialize( const FilePath & _path )
+	bool Win32FileGroupDirectory::initialize( const ConstString & _name, const FilePath & _path )
 	{
+		m_name = _name;
         m_path = _path;
 
         m_factoryInputStream = new FactoryPool<Win32FileInputStream, 8>( m_serviceProvider );

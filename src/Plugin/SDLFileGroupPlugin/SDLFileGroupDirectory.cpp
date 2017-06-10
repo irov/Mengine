@@ -25,8 +25,9 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::initialize( const FilePath & _path )
+    bool SDLFileGroupDirectory::initialize( const ConstString & _name, const FilePath & _path )
     {
+		m_name = _name;
         m_path = _path;
 
         m_factoryInputStream = new FactoryPool<SDLFileInputStream, 8>( m_serviceProvider );

@@ -19,6 +19,7 @@ INCLUDE_DIRECTORIES(
     ${Mengine_SOURCE_DIR}/Utils
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/SDL2/include
+    ${THIRDPARTY_DIR}/tinyini/include
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX}
 )
 

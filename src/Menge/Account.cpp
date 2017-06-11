@@ -35,7 +35,6 @@ namespace Menge
 
 		PathString settingsPath;
 		settingsPath += m_folder;
-		settingsPath += '/';
 		settingsPath += "settings.ini";
 
 		m_settingsPath = Helper::stringizeFilePath( m_serviceProvider, settingsPath );
@@ -284,7 +283,6 @@ namespace Menge
 		PathString path;
 
 		path += m_folder;
-		path += '/';
 		path += _fileName;
 
 		FilePath fullpath = Helper::stringizeFilePath( m_serviceProvider, path );
@@ -310,7 +308,6 @@ namespace Menge
 		PathString path;
 
 		path += m_folder;
-		path += '/';
 		path += _filepath;
 
 		FilePath fullpath = Helper::stringizeFilePath( m_serviceProvider, path );
@@ -404,7 +401,6 @@ namespace Menge
 		PathString path;
 
 		path += m_folder;
-        path += '/';
 		path += _fileName;
 
 		FilePath fullpath = Helper::stringizeFilePath( m_serviceProvider, path );

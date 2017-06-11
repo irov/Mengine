@@ -21,6 +21,7 @@ namespace Menge
 			, const ConstString & _locale
 			, const Tags & _platform
 			, const FilePath & _descriptionPath
+			, const ConstString & _category
 			, const FilePath & _path
 			, bool _preload
 			);
@@ -90,13 +91,14 @@ namespace Menge
 		typedef stdex::vector<PakResourceDesc> TVectorPakResourceDesc;
 		TVectorPakResourceDesc m_resourcesDesc;
 				
-		ConstString m_name;
+		ConstString m_name;		
 		ConstString m_type;
 		ConstString m_locale;
 
 		Tags m_platform;
 		FilePath m_descriptionPath;
 
+		ConstString m_category;
 		FilePath m_path;
 
 		TVectorScriptModulePack m_scriptsPackages;

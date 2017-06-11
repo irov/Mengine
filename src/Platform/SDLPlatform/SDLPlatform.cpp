@@ -611,6 +611,8 @@ namespace Menge
 		wcscpy( fullPath, userPath );
 		wcscat( fullPath, pathCorrect );
 
+		Helper::pathRemoveFileSpec( fullPath );
+
 		bool exist = s_isDirectoryFullpath( m_serviceProvider, fullPath );
 
 		return exist;
@@ -628,12 +630,14 @@ namespace Menge
 		wcscpy( fullPath, userPath );
 		wcscat( fullPath, pathCorrect );
 
-		Helper::pathRemoveBackslash( fullPath );
-
+		Helper::pathRemoveFileSpec( fullPath );
+		
 		if( s_isDirectoryFullpath( m_serviceProvider, fullPath ) == true )
 		{
 			return true;
 		}
+
+		Helper::pathRemoveBackslash( fullPath );
 
 		TVectorWString paths;
 

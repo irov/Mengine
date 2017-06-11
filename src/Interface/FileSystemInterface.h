@@ -51,7 +51,7 @@ namespace Menge
         : public ServantInterface
     {	
     public:
-        virtual bool initialize( const ConstString & _name, const FilePath & _path ) = 0;
+        virtual bool initialize( const ConstString & _name, const ConstString & _category, const FilePath & _path ) = 0;
         virtual void finalize() = 0;
 
     public:
@@ -84,19 +84,19 @@ namespace Menge
 		virtual void unregisterFileGroupFactory( const ConstString & _type ) = 0;
 
     public:
-        virtual bool mountFileGroup( const ConstString & _fileGroupName, const FilePath & _path, const ConstString & _type ) = 0;
-        virtual bool unmountFileGroup( const ConstString & _fileGroupName ) = 0;
+        virtual bool mountFileGroup( const ConstString & _name, const ConstString & _category, const FilePath & _path, const ConstString & _type ) = 0;
+        virtual bool unmountFileGroup( const ConstString & _name ) = 0;
 
     public:
-        virtual bool hasFileGroup( const ConstString & _fileGroupName, FileGroupInterfacePtr * _fileGroup ) const = 0;
-        virtual FileGroupInterfacePtr getFileGroup( const ConstString & _fileGroupName ) const = 0;
+        virtual bool hasFileGroup( const ConstString & _name, FileGroupInterfacePtr * _fileGroup ) const = 0;
+        virtual FileGroupInterfacePtr getFileGroup( const ConstString & _name ) const = 0;
 
 	public:
-		virtual bool existFile( const ConstString & _fileGroupName, const FilePath & _fileName, FileGroupInterfacePtr * _fileGroup ) const = 0;
+		virtual bool existFile( const ConstString & _name, const FilePath & _fileName, FileGroupInterfacePtr * _fileGroup ) const = 0;
 
 	public:
-		virtual InputStreamInterfacePtr openInputFile( const ConstString & _fileGroupName, const FilePath & _fileName, bool _streamable ) = 0;
-		virtual OutputStreamInterfacePtr openOutputFile( const ConstString & _fileGroupName, const FilePath & _fileName ) = 0;
+		virtual InputStreamInterfacePtr openInputFile( const ConstString & _name, const FilePath & _fileName, bool _streamable ) = 0;
+		virtual OutputStreamInterfacePtr openOutputFile( const ConstString & _name, const FilePath & _fileName ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
 #   define FILE_SERVICE( serviceProvider )\

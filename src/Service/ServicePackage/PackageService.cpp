@@ -70,12 +70,12 @@ namespace Menge
 		{
 			const String & resourcePack = *it;
 
-			PackageDesc desc;
+			PackageDesc pack;
 
-			desc.dev = false;
-			desc.immediately = true;
-			desc.preload = true;
-			desc.type = c_dir;
+			pack.dev = false;
+			pack.immediately = true;
+			pack.preload = true;
+			pack.type = c_dir;
 
 			if( ini.hasSection( resourcePack.c_str() ) == false )
 			{
@@ -87,16 +87,17 @@ namespace Menge
 				return false;
 			}
 
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", desc.name, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", desc.type, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", desc.path, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", desc.locale, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", desc.platform, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", desc.descriptionPath, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", desc.dev, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", desc.preload, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", pack.name, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", pack.type, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Category", pack.category, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", pack.locale, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", pack.platform, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.descriptionPath, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );
 
-			if( this->addPackage( desc ) == false )
+			if( this->addPackage( pack ) == false )
 			{
 				return false;
 			}
@@ -132,6 +133,7 @@ namespace Menge
 
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", pack.name, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", pack.type, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Category", pack.category, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", pack.locale, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", pack.platform, m_serviceProvider );
@@ -175,6 +177,7 @@ namespace Menge
 
 			IniUtil::getIniValue( ini, languagePack.c_str(), "Name", pack.name, m_serviceProvider );
 			IniUtil::getIniValue( ini, languagePack.c_str(), "Type", pack.type, m_serviceProvider );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Category", pack.category, m_serviceProvider );
 			IniUtil::getIniValue( ini, languagePack.c_str(), "Path", pack.path, m_serviceProvider );
 			IniUtil::getIniValue( ini, languagePack.c_str(), "Locale", pack.locale, m_serviceProvider );
 			IniUtil::getIniValue( ini, languagePack.c_str(), "Platform", pack.platform, m_serviceProvider );
@@ -232,6 +235,7 @@ namespace Menge
 			, _desc.locale
 			, _desc.platform
 			, _desc.descriptionPath
+			, _desc.category
 			, _desc.path
 			, _desc.preload
 			);

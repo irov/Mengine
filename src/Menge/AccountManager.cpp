@@ -211,22 +211,25 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     AccountInterfacePtr AccountManager::newAccount_( const WString& _accountID )
     {
+		WString accountFolder = _accountID;
+		accountFolder += '/';
+
         if( PLATFORM_SERVICE(m_serviceProvider)
-            ->existDirectory( _accountID ) == false )
+            ->existDirectory( accountFolder ) == false )
         {
             if( PLATFORM_SERVICE(m_serviceProvider)
-                ->createDirectory( _accountID ) == false )
+                ->createDirectory( accountFolder ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("AccountManager::createAccount_: Account '%ls' failed create directory"
-                    , _accountID.c_str() 
+                    , accountFolder.c_str()
                     );
 
                 return nullptr;
             }
         }
 
-		String utf8_path;
-		if( Helper::unicodeToUtf8( m_serviceProvider, _accountID, utf8_path ) == false )
+		String utf8_accountFolder;
+		if( Helper::unicodeToUtf8( m_serviceProvider, accountFolder, utf8_accountFolder ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("AccountManager::newAccount_ can't convert accountID '%ls' to utf8"
 				, _accountID.c_str()
@@ -235,9 +238,8 @@ namespace Menge
 			return nullptr;
 		}
 
-		FilePath folder = Helper::stringizeFilePath( m_serviceProvider, utf8_path.c_str(), utf8_path.size() );
-
-
+		FilePath folder = Helper::stringizeFilePath( m_serviceProvider, utf8_accountFolder.c_str(), utf8_accountFolder.size() );
+		
         AccountPtr newAccount = m_factoryAccounts->createObject();
 
         newAccount->setServiceProvider( m_serviceProvider );

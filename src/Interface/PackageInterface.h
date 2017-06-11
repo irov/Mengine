@@ -18,8 +18,9 @@ namespace Menge
 		ConstString locale;
 		Tags platform;
 
+		ConstString category;
 		FilePath descriptionPath;
-		FilePath path;		
+		FilePath path;
 
 		bool dev;
 		bool immediately;

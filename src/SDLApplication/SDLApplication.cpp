@@ -189,7 +189,7 @@ namespace Menge
         // mount root		
         ConstString c_dir = Helper::stringizeString(m_serviceProvider, "dir");
         if( FILE_SERVICE( m_serviceProvider )
-            ->mountFileGroup( ConstString::none(), currentPath, c_dir ) == false )
+            ->mountFileGroup( ConstString::none(), ConstString::none(), currentPath, c_dir ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "SDLApplication::setupFileService: failed to mount application directory %ls"
                 , currentPath.c_str()
@@ -202,7 +202,7 @@ namespace Menge
         ConstString c_dev = Helper::stringizeString( m_serviceProvider, "dev" );
         // mount root
         if( FILE_SERVICE(m_serviceProvider)
-            ->mountFileGroup( c_dev, FilePath(ConstString::none()), c_dir ) == false )
+            ->mountFileGroup( c_dev, ConstString::none(), FilePath(ConstString::none()), c_dir ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "SDLApplication::setupFileService: failed to mount dev directory %ls"
                 , currentPath.c_str()
@@ -284,7 +284,7 @@ namespace Menge
 		
         // mount user directory
         if( FILE_SERVICE( m_serviceProvider )
-            ->mountFileGroup( Helper::stringizeString( m_serviceProvider, "user" ), cs_userPath, Helper::stringizeString( m_serviceProvider, "dir" ) ) == false )
+            ->mountFileGroup( Helper::stringizeString( m_serviceProvider, "user" ), ConstString::none(), cs_userPath, Helper::stringizeString( m_serviceProvider, "dir" ) ) == false )
         {
             LOGGER_ERROR( m_serviceProvider )("SDLApplication: failed to mount user directory %ls"
                 , cs_userPath.c_str()

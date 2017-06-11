@@ -60,9 +60,10 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::initialize( const ConstString & _name, const FilePath & _path )
+	bool FileGroupZip::initialize( const ConstString & _name, const ConstString & _category, const FilePath & _path )
 	{
 		m_name = _name;
+		m_category = _category;
         m_path = _path;
 
 		if( this->loadHeader_() == false )
@@ -84,7 +85,7 @@ namespace Menge
 	{
 		FileGroupInterfacePtr zipFileGroup;
 		if( FILE_SERVICE(m_serviceProvider)
-			->hasFileGroup( ConstString::none(), &zipFileGroup ) == false )
+			->hasFileGroup( m_category, &zipFileGroup ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileSystemZip::loadHeader_ can't open file group for path %s"
 				, m_path.c_str()
@@ -96,7 +97,7 @@ namespace Menge
 		m_zipFileGroup = zipFileGroup;
 		
 		InputStreamInterfacePtr zipFile = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( m_name, m_path, false );
+			->openInputFile( m_category, m_path, false );
 
 		if( zipFile == nullptr )
 		{

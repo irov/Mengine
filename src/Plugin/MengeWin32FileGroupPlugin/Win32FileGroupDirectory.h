@@ -18,7 +18,7 @@ namespace Menge
 		~Win32FileGroupDirectory();
 
 	public:
-		bool initialize( const ConstString & _name, const FilePath & _path ) override;
+		bool initialize( const ConstString & _name, const ConstString & _category, const FilePath & _path ) override;
         void finalize() override;
 
 	public:
@@ -40,6 +40,7 @@ namespace Menge
 
     protected:
 		ConstString m_name;
+		ConstString m_category;
 		FilePath m_path;
 
 		FactoryPtr m_factoryInputStream;

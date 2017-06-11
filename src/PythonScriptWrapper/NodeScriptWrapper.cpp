@@ -3031,6 +3031,7 @@ namespace Menge
 		bool s_mountResourcePak( const ConstString & _fileGroup
 			, const ConstString & _name
 			, const ConstString & _type
+			, const ConstString & _category
 			, const FilePath & _path
 			, const FilePath & _descriptionPath
 		)
@@ -3054,6 +3055,7 @@ namespace Menge
 			desc.name = _name;
 			desc.type = _type;
 
+			desc.category = _category;
 			desc.path = _path;
 			desc.descriptionPath = _descriptionPath;
 

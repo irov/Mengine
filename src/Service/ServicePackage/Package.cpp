@@ -31,6 +31,7 @@ namespace Menge
 		, const ConstString & _locale
 		, const Tags & _platform
 		, const FilePath & _descriptionPath
+		, const ConstString & _category
 		, const FilePath & _path
 		, bool _preload	)
 	{
@@ -39,6 +40,7 @@ namespace Menge
 		m_locale = _locale;
 		m_platform = _platform;
 		m_descriptionPath = _descriptionPath;
+		m_category = _category;
 		m_path = _path;
 		m_preload = _preload;
 	}
@@ -112,7 +114,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::mountFileGroup_()
 	{	
-		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( m_name, m_path, m_type ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( m_name, m_category, m_path, m_type ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourcePak::mountFileGroup_ failed to mount pak '%s' path '%s'"
 				, m_name.c_str()

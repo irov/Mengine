@@ -3046,6 +3046,13 @@ namespace Menge
 
 				return false;
 			}
+            
+            LOGGER_WARNING(m_serviceProvider)("mountResourcePak name '%s' type '%s' category '%s' path '%s'"
+                                              , _name.c_str()
+                                              , _type.c_str()
+                                              , _category.c_str()
+                                              , _path.c_str()
+                                              );
 
 			PackageDesc desc;
 			desc.dev = false;
@@ -3057,7 +3064,8 @@ namespace Menge
 
 			desc.category = _category;
 			desc.path = _path;
-			desc.descriptionPath = _descriptionPath;
+			desc.descriptionPath = _descriptionPath;         
+
 
 			bool result = PACKAGE_SERVICE( m_serviceProvider )
 				->addPackage( desc );

@@ -164,6 +164,8 @@ namespace Menge
 		{
 			return false;
 		}
+        
+        _cache[module_size] = '\0';
 
         for( char
             *it = _cache,

@@ -613,6 +613,18 @@ namespace Menge
 
 		Helper::pathRemoveFileSpec( fullPath );
 
+		size_t len = wcslen( fullPath );
+
+		if( len == 0 )	// current dir
+		{
+			return true;
+		}
+
+		if( fullPath[len - 1] == L':' )	// root dir
+		{
+			return true;	// let it be
+		}
+
 		bool exist = s_isDirectoryFullpath( m_serviceProvider, fullPath );
 
 		return exist;

@@ -1308,30 +1308,19 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void PathCorrectBackslash( WChar * _out, const WString & _in )
-	{
-		wcscpy( _out, _in.c_str() );
-
-		WChar * pch = wcschr( _out, '/' );
-		while( pch != NULL )
-		{
-			*pch = '\\';
-
-			pch = wcschr( pch + 1, '/' );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::existDirectory( const WString & _path ) const
 	{
 		WChar userPath[MENGINE_MAX_PATH];
 		this->getUserPath( userPath, MENGINE_MAX_PATH );
 		
 		WChar pathCorrect[MENGINE_MAX_PATH];
-		PathCorrectBackslash( pathCorrect, _path );
+		Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
 
 		WChar fullPath[MENGINE_MAX_PATH];
 		wcscpy( fullPath, userPath );
 		wcscat( fullPath, pathCorrect );
+
+		Helper::pathRemoveFileSpec( fullPath );
 
 		size_t len = wcslen( fullPath );
 
@@ -1366,13 +1355,15 @@ namespace Menge
 		WChar fullPath[MENGINE_MAX_PATH];
 		wcscpy( fullPath, userPath );
 		wcscat( fullPath, pathCorrect );
+		
+		Helper::pathRemoveFileSpec( fullPath );
 
-		Helper::pathRemoveBackslash( fullPath );
-
-		if( PathIsDirectoryW( pathCorrect ) == FILE_ATTRIBUTE_DIRECTORY )
+		if( PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY )
 		{
 			return true;
 		}
+
+		Helper::pathRemoveBackslash( fullPath );
 
 		TVectorWString paths;
 

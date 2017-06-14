@@ -4,16 +4,18 @@
 
 #   include "SDLUnicodeSystem.h"
 
-#   include "Logger/Logger.h"
+#	include "SDL_stdinc.h"
 
-#   include <locale>
-#   include <codecvt>
+#   include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UnicodeSystem, Menge::SDLUnicodeSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	static const char * SDL_UCS_types[] = { "UCS-2-INTERNAL", "UCS-4-INTERNAL" };
+	static const char * SDL_UCS_wchar_t = SDL_UCS_types[sizeof( WChar ) / 2 - 1];
     //////////////////////////////////////////////////////////////////////////
     SDLUnicodeSystem::SDLUnicodeSystem()
     {
@@ -21,82 +23,71 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLUnicodeSystem::unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
     {
-		try
+		size_t unicodeSize = (_unicodeSize == UNICODE_UNSIZE) ? wcslen( _unicode ) + 1 : _unicodeSize + 1;
+
+		Char * sdl_utf8 = (Char *)SDL_iconv_string( "UTF-8", SDL_UCS_wchar_t, (const char*)_unicode, unicodeSize  * sizeof( WChar ) );
+
+		if( sdl_utf8 == nullptr )
 		{
-			std::wstring_convert<std::codecvt_utf8<WChar>, WChar> convert;
-			std::string dest = (_unicodeSize == UNICODE_UNSIZE) ? convert.to_bytes( _unicode ) : convert.to_bytes( _unicode, _unicode + _unicodeSize );
-			size_t utf8_size = dest.size();
-
-			if( _utf8 != nullptr && _utf8Capacity < utf8_size )
-			{
-				return false;
-			}
-
-			if( _utf8 != nullptr )
-			{
-				std::copy( dest.begin(), dest.end(), _utf8 );
-			}
-
-			if( _utf8Size != nullptr )
-			{
-				*_utf8Size = utf8_size;
-			}
-
-			if( _utf8 != nullptr && _utf8Capacity != 0 )
-			{
-				_utf8[utf8_size] = '\0';
-			}
-		}
-		catch( const std::range_error & _ex )
-		{
-			LOGGER_ERROR( m_serviceProvider )("SDLUnicodeSystem::unicodeToUtf8 catch std::range_error '%s'"
-				, _ex.what()
-				);
-
 			return false;
 		}
 
+		size_t utf8Size = strlen( sdl_utf8 );
+
+		if( _utf8 != nullptr )
+		{
+			if( _utf8Capacity < utf8Size )
+			{
+				SDL_free( sdl_utf8 );
+
+				return false;
+			}
+
+			std::copy( sdl_utf8, sdl_utf8 + utf8Size, _utf8 );
+		}
+
+		if( _utf8Size != nullptr )
+		{
+			*_utf8Size = utf8Size;
+		}
+
+		SDL_free( sdl_utf8 );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLUnicodeSystem::utf8ToUnicode( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _sizeUnicode )
     {
-		try
+		size_t utf8Size = (_utf8Size == UNICODE_UNSIZE) ? strlen( _utf8 ) + 1 : _utf8Size + 1;
+
+		wchar_t * sdl_unicode = (wchar_t*)SDL_iconv_string( SDL_UCS_wchar_t, "UTF-8", _utf8, utf8Size * sizeof( Char ) );
+
+		if( sdl_unicode == nullptr )
 		{
-			std::wstring_convert<std::codecvt_utf8<WChar>, WChar> convert;
-			std::wstring dest = (_utf8Size == UNICODE_UNSIZE) ? convert.from_bytes( _utf8 ) : convert.from_bytes( _utf8, _utf8 + _utf8Size );
-			size_t wc_size = dest.size();
-
-			if( _unicode != nullptr &&_unicodeCapacity < wc_size )
-			{
-				return false;
-			}
-
-			if( _unicode != nullptr )
-			{
-				std::copy( dest.begin(), dest.end(), _unicode );
-			}
-
-			if( _sizeUnicode != nullptr )
-			{
-				*_sizeUnicode = wc_size;
-			}
-
-			if( _unicode != nullptr && _unicodeCapacity != 0 )
-			{
-				_unicode[wc_size] = L'\0';
-			}
-		}
-		catch( const std::range_error & _ex )
-		{
-			LOGGER_ERROR( m_serviceProvider )("SDLUnicodeSystem::utf8ToUnicode catch std::range_error '%s'"
-				, _ex.what()
-				);
-
 			return false;
 		}
 
-        return true;
+		size_t unicodeSize = wcslen( sdl_unicode );
+		
+		if( _unicode != nullptr )
+		{
+			if( _unicodeCapacity < unicodeSize )
+			{
+				SDL_free( sdl_unicode );
+
+				return false;
+			}
+
+			std::copy( sdl_unicode, sdl_unicode + unicodeSize, _unicode );
+		}
+
+		if( _sizeUnicode != nullptr )
+		{
+			*_sizeUnicode = unicodeSize;
+		}
+
+		SDL_free( sdl_unicode );
+
+		return true;
     }
 }

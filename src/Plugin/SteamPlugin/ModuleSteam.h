@@ -25,7 +25,7 @@ namespace Menge
 		void _update( bool _focus ) override;
 
 	protected:
-		void _message( const ConstString & _messageName, const TMapParams & _params ) override;
+		void _message( const ConstString & _messageName, const TMapWParams & _params ) override;
 
 	protected:
 		ISteamClient * m_client;

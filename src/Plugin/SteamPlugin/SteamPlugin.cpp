@@ -20,9 +20,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SteamPlugin::_initialize()
 	{
+        ModuleFactoryInterfacePtr moduleStreamFactory = new ModuleFactory<ModuleSteam>();
+        moduleStreamFactory->setServiceProvider(m_serviceProvider);
+        
 		MODULE_SERVICE( m_serviceProvider )
-			->registerModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleSteam" )
-			, new ModuleFactory<ModuleSteam>( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleSteam" ) ) );
+			->registerModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleSteam" ), moduleStreamFactory);
 
 		return true;
 	}

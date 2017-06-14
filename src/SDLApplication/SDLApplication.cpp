@@ -141,6 +141,9 @@ PLUGIN_EXPORT( MengeSDLFileGroup );
 #ifndef MENGINE_PLUGIN_ASTRALAX_DLL
 PLUGIN_EXPORT( AstralaxParticlePlugin2 );
 #endif
+#ifndef MENGINE_PLUGIN_STEAM_DLL
+PLUGIN_EXPORT( Steam );
+#endif
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -600,6 +603,9 @@ namespace Menge
 		MENGINE_ADD_PLUGIN( AstralaxParticlePlugin2, "initialize Astralax Particle Plugin..." );
 #endif
 
+#ifndef MENGINE_PLUGIN_STEAM_DLL
+        MENGINE_ADD_PLUGIN( Steam, "initialize Steam Plugin..." );
+#endif
 
 #   undef MENGINE_ADD_PLUGIN
 

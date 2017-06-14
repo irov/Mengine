@@ -256,13 +256,13 @@ namespace Menge
 		//bool status = m_userStats->RequestCurrentStats();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleSteam::_message( const ConstString & _messageName, const TMapParams & _params )
+	void ModuleSteam::_message( const ConstString & _messageName, const TMapWParams & _params )
 	{
 		m_userStats->RequestCurrentStats();
 
 		if( _messageName == "SetAchievement" )
 		{
-			TMapParams::const_iterator it_value_found = _params.find( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Value" ) );
+			TMapWParams::const_iterator it_value_found = _params.find( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Value" ) );
 
 			if( it_value_found == _params.end() )
 			{
@@ -291,7 +291,7 @@ namespace Menge
 		}
 		else if( _messageName == "SetStat" )
 		{
-			TMapParams::const_iterator it_name_found = _params.find( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Name" ) );
+			TMapWParams::const_iterator it_name_found = _params.find( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Name" ) );
 
 			if( it_name_found == _params.end() )
 			{
@@ -309,7 +309,7 @@ namespace Menge
 
 			const char * str_name = utf8_name.c_str();
 
-			TMapParams::const_iterator it_value_found = _params.find( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Value" ) );
+			TMapWParams::const_iterator it_value_found = _params.find( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Value" ) );
 
 			if( it_value_found == _params.end() )
 			{
@@ -327,7 +327,7 @@ namespace Menge
 
 			const char * str_value = utf8_value.c_str();
 
-			TMapParams::const_iterator it_type_found = _params.find( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Type" ) );
+			TMapWParams::const_iterator it_type_found = _params.find( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Type" ) );
 
 			if( it_type_found == _params.end() )
 			{

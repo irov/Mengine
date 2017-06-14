@@ -1008,6 +1008,7 @@ namespace Menge
         mt::make_scale_m4( scale, 1.f, 1.f, 1.f );
 
         mt::mat4f translation;
+        //mt::make_translation_m4( translation, -0.5f, -0.5f, 0.f );
         mt::make_translation_m4( translation, 0.f, 0.f, 0.f );
 
         mt::mat4f transform;
@@ -1025,7 +1026,8 @@ namespace Menge
         mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
 
         mt::mat4f translation;
-        mt::make_translation_m4( translation, -0.5f, +0.5f, 0.0f );
+        //mt::make_translation_m4( translation, -0.5f, +0.5f, 0.0f );
+        mt::make_translation_m4( translation, 0.f, 0.f, 0.0f );
 
         mt::mat4f transform;
         mt::mul_m4_m4( transform, scale, translation );
@@ -1042,7 +1044,8 @@ namespace Menge
         mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
 
         mt::mat4f translation;
-        mt::make_translation_m4( translation, -0.5f, -0.5f, 0.0f );
+        //mt::make_translation_m4( translation, -0.5f, -0.5f, 0.0f );
+        mt::make_translation_m4( translation, 0.f, 0.f, 0.0f );
 
         mt::mat4f transform;
         mt::mul_m4_m4( transform, scale, translation );

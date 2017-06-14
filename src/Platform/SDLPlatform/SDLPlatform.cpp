@@ -931,7 +931,7 @@ namespace Menge
         SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
         SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
         
-#	ifdef TARGET_OS_IPHONE
+#	if TARGET_OS_IPHONE
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 #	endif
@@ -943,7 +943,7 @@ namespace Menge
             windowFlags |= SDL_WINDOW_FULLSCREEN;			
         }
 
-#	ifdef TARGET_OS_IPHONE
+#	if TARGET_OS_IPHONE
 		windowFlags |= SDL_WINDOW_BORDERLESS;
 		windowFlags |= SDL_WINDOW_FULLSCREEN;
 

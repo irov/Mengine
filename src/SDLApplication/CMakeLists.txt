@@ -38,9 +38,14 @@ set(myApp_ASTRALAX ~/Desktop/magic3d.dylib)
 set_source_files_properties(${myApp_ASTRALAX} PROPERTIES
        MACOSX_PACKAGE_LOCATION "MacOS")
 
+set(myApp_STEAM ~/Desktop/libsteam_api.dylib)
+set_source_files_properties(${myApp_STEAM} PROPERTIES
+       MACOSX_PACKAGE_LOCATION "MacOS")
+
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "~/Desktop")
        
-ADD_EXECUTABLE( ${MY_LIB_NAME} MACOSX_BUNDLE ${myApp_ICON} ${myApp_ASTRALAX} ${SRC_FILES} )
+ADD_EXECUTABLE( ${MY_LIB_NAME} MACOSX_BUNDLE ${myApp_ICON} ${myApp_ASTRALAX} ${myApp_STEAM} ${SRC_FILES} )
 
 set_target_properties( ${MY_LIB_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST Info.plist.in)
 endif()

@@ -309,13 +309,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::_pause( uint32_t _enumerator )
 	{
-		(void)_enumerator;
+		EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
+			->onAnimatablePause( _enumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::_resume( uint32_t _enumerator, float _time )
 	{
-		(void)_time;
-		(void)_enumerator;
+		EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
+			->onAnimatableResume( _enumerator, _time );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::updateVideoBuffer_()

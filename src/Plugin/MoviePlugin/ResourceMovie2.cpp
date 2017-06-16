@@ -221,6 +221,17 @@ namespace Menge
 
 		video->setCategory( category );
 
+		PathString full_path;
+
+		ConstString folder = Helper::getPathFolder( m_serviceProvider, m_filePath );
+
+		full_path += folder.c_str();
+		full_path += _resource->path;
+
+		FilePath fullPath = Helper::stringizeFilePath( m_serviceProvider, full_path );
+
+		video->setFilePath( fullPath );
+
 		video->setFrameRate( _resource->frameRate );
 		video->setDuration( _resource->duration );
 

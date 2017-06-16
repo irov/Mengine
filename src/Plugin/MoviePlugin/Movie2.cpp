@@ -186,15 +186,19 @@ namespace Menge
 		Movie2 * movie2 = (Movie2 *)_data;
 
 		ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
-				
-		ConstString c_name = Helper::stringizeString( serviceProvider, _callbackData->layer->name );
 		
-		if( _callbackData->layer->is_track_matte == AE_TRUE )
+		const char * layer_name = ae_get_movie_layer_data_name( _callbackData->layer );
+
+		ConstString c_name = Helper::stringizeString( serviceProvider, layer_name );
+		
+		ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( _callbackData->layer );
+
+		if( is_track_matte == AE_TRUE )
 		{
 			return nullptr;
 		}
 
-		aeMovieLayerTypeEnum type = _callbackData->layer->type;
+		aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( _callbackData->layer );
 
 		if( _callbackData->trackmatteLayer != AE_NULL )
 		{
@@ -207,15 +211,17 @@ namespace Menge
 
 					surfaceTrackMatte->setName( c_name );
 
-					ResourceImage * resourceImage = (ResourceImage *)(_callbackData->layer->resource->data);
-					ResourceImage * resourceTrackMatteImage = (ResourceImage *)(_callbackData->trackmatteLayer->resource->data);
+					ResourceImage * resourceImage = (ResourceImage *)ae_get_movie_layer_data_resource_data( _callbackData->layer );
+					ResourceImage * resourceTrackMatteImage = (ResourceImage *)ae_get_movie_layer_data_resource_data( _callbackData->trackmatteLayer );
 
 					surfaceTrackMatte->setResourceImage( resourceImage );
 					surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
 
 					EMaterialBlendMode blend_mode = EMB_NORMAL;
+					
+					aeMovieBlendMode layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
 
-					switch( _callbackData->layer->blend_mode )
+					switch( layer_blend_mode )
 					{
 					case AE_MOVIE_BLEND_ADD:
 						blend_mode = EMB_ADD;
@@ -249,13 +255,15 @@ namespace Menge
 
 					surfaceVideo->setName( c_name );
 
-					ResourceVideo * resourceVideo = (ResourceVideo *)(_callbackData->layer->resource->data);
+					ResourceVideo * resourceVideo = (ResourceVideo *)ae_get_movie_layer_data_resource_data( _callbackData->layer );
 
 					surfaceVideo->setResourceVideo( resourceVideo );
 
 					EMaterialBlendMode blend_mode = EMB_NORMAL;
 
-					switch( _callbackData->layer->blend_mode )
+					aeMovieBlendMode layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
+
+					switch( layer_blend_mode )
 					{
 					case AE_MOVIE_BLEND_ADD:
 						blend_mode = EMB_ADD;
@@ -280,7 +288,7 @@ namespace Menge
 
 					surfaceSound->setName( c_name );
 
-					ResourceSound * resourceSound = (ResourceSound *)(_callbackData->layer->resource->data);
+					ResourceSound * resourceSound = (ResourceSound *)ae_get_movie_layer_data_resource_data( _callbackData->layer );
 
 					surfaceSound->setResourceSound( resourceSound );
 
@@ -306,81 +314,130 @@ namespace Menge
 	{
 		Movie2 * movie2 = (Movie2 *)_data;
 
-		if( _callbackData->state == AE_MOVIE_NODE_UPDATE_UPDATE )
+		switch( _callbackData->state )
 		{
-			switch( _callbackData->type )
+		case AE_MOVIE_NODE_UPDATE_UPDATE:
 			{
-			case AE_MOVIE_LAYER_TYPE_PARTICLE:
+				switch( _callbackData->type )
 				{
-					//printf( "AE_MOVIE_LAYER_TYPE_PARTICLE %f %f\n"
-					//	, _matrix[12]
-					//	, _matrix[13]
-					//	);
-				}break;
-			case AE_MOVIE_LAYER_TYPE_SLOT:
-				{
-					//printf( "AE_MOVIE_LAYER_TYPE_SLOT %f %f\n"
-					//	, _matrix[12]
-					//	, _matrix[13]
-					//	);
-				}break;
-			}
-		}
-		else if( _callbackData->state == AE_MOVIE_NODE_UPDATE_BEGIN )
-		{
-			switch( _callbackData->type )
-			{
-			case AE_MOVIE_LAYER_TYPE_VIDEO:
-				{
-					SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
-					
-					ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
-
-					float time = TIMELINE_SERVICE( serviceProvider )
-						->getTime();
-
-					surfaceVide->setTiming( _callbackData->offset );
-
-					if( surfaceVide->play( time ) == 0 )
+				case AE_MOVIE_LAYER_TYPE_PARTICLE:
 					{
-						return;
-					}
-				}break;
-			case AE_MOVIE_LAYER_TYPE_SOUND:
-				{
-					SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
-					
-					ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
-
-					float time = TIMELINE_SERVICE( serviceProvider )
-						->getTime();
-
-					surfaceSound->setTiming( _callbackData->offset );
-
-					if( surfaceSound->play( time ) == 0 )
+						//printf( "AE_MOVIE_LAYER_TYPE_PARTICLE %f %f\n"
+						//	, _matrix[12]
+						//	, _matrix[13]
+						//	);
+					}break;
+				case AE_MOVIE_LAYER_TYPE_SLOT:
 					{
-						return;
-					}
-				}break;
-			}
-		}
-		else if( _callbackData->state == AE_MOVIE_NODE_UPDATE_END )
-		{
-			switch( _callbackData->type )
+						//printf( "AE_MOVIE_LAYER_TYPE_SLOT %f %f\n"
+						//	, _matrix[12]
+						//	, _matrix[13]
+						//	);
+					}break;
+				}
+			}break;
+		case AE_MOVIE_NODE_UPDATE_BEGIN:
 			{
-			case AE_MOVIE_LAYER_TYPE_VIDEO:
+				switch( _callbackData->type )
 				{
-					SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+				case AE_MOVIE_LAYER_TYPE_VIDEO:
+					{
+						SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
 
-					surfaceVide->stop();
-				}break;
-			case AE_MOVIE_LAYER_TYPE_SOUND:
+						ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+
+						float time = TIMELINE_SERVICE( serviceProvider )
+							->getTime();
+
+						surfaceVide->setTiming( _callbackData->offset );
+
+						if( surfaceVide->play( time ) == 0 )
+						{
+							return;
+						}
+					}break;
+				case AE_MOVIE_LAYER_TYPE_SOUND:
+					{
+						SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+
+						ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+
+						float time = TIMELINE_SERVICE( serviceProvider )
+							->getTime();
+
+						surfaceSound->setTiming( _callbackData->offset );
+
+						if( surfaceSound->play( time ) == 0 )
+						{
+							return;
+						}
+					}break;
+				}
+			}break;
+		case AE_MOVIE_NODE_UPDATE_END:
+			{
+				switch( _callbackData->type )
 				{
-					SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+				case AE_MOVIE_LAYER_TYPE_VIDEO:
+					{
+						SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
 
-					surfaceSound->stop();
-				}break;
-			}
+						surfaceVide->stop();
+					}break;
+				case AE_MOVIE_LAYER_TYPE_SOUND:
+					{
+						SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+
+						surfaceSound->stop();
+					}break;
+				}
+			}break;
+		case AE_MOVIE_NODE_UPDATE_PAUSE:
+			{
+				switch( _callbackData->type )
+				{
+				case AE_MOVIE_LAYER_TYPE_VIDEO:
+					{
+						SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+
+						surfaceVide->pause();						
+					}break;
+				case AE_MOVIE_LAYER_TYPE_SOUND:
+					{
+						SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+												
+						surfaceSound->pause();						
+					}break;
+				}
+			}break;
+		case AE_MOVIE_NODE_UPDATE_RESUME:
+			{
+				switch( _callbackData->type )
+				{
+				case AE_MOVIE_LAYER_TYPE_VIDEO:
+					{
+						SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+
+						ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+
+						float time = TIMELINE_SERVICE( serviceProvider )
+							->getTime();
+
+						surfaceVide->resume( time );
+					}break;
+				case AE_MOVIE_LAYER_TYPE_SOUND:
+					{
+						SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+
+						ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+
+						float time = TIMELINE_SERVICE( serviceProvider )
+							->getTime();
+
+						surfaceSound->resume( time );
+					}break;
+				}
+			}break;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -723,14 +780,16 @@ namespace Menge
 		{
 			aa = true;
 
-			const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, "lock" );
+			//const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, "lock" );
 
-			if( subcomposition != nullptr )
-			{
-				ae_stop_movie_sub_composition( m_composition, subcomposition );
-				ae_set_movie_sub_composition_loop( subcomposition, AE_FALSE );
-				ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
-			}
+			//if( subcomposition != nullptr )
+			//{
+			//	ae_stop_movie_sub_composition( m_composition, subcomposition );
+			//	ae_set_movie_sub_composition_loop( subcomposition, AE_FALSE );
+			//	ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
+			//}
+
+			ae_pause_movie_composition( m_composition );
 		}
 
 		if( a < 5000.f )
@@ -743,14 +802,16 @@ namespace Menge
 		{
 			aa2 = true;
 
-			const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, "lock" );
+			//const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, "lock" );
 
-			if( subcomposition != nullptr )
-			{
-				ae_stop_movie_sub_composition( m_composition, subcomposition );
-				ae_set_movie_sub_composition_loop( subcomposition, AE_FALSE );
-				ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
-			}
+			//if( subcomposition != nullptr )
+			//{
+			//	ae_stop_movie_sub_composition( m_composition, subcomposition );
+			//	ae_set_movie_sub_composition_loop( subcomposition, AE_FALSE );
+			//	ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
+			//}
+
+			ae_resume_movie_composition( m_composition );
 		}
 
 		if( a < 6000.f )

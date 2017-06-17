@@ -44,6 +44,9 @@ namespace Menge
     public:
         virtual bool getDesktopResolution( Resolution & _resolution ) const = 0;
 
+		virtual bool getNoFullscreen() const = 0;
+		virtual bool getAlwaysFullscreen() const = 0;
+
 		virtual size_t getCurrentPath( WChar * _path, size_t _len ) const = 0;
 		virtual size_t getUserPath( WChar * _path, size_t _len ) const = 0;
 

@@ -156,6 +156,9 @@ namespace Menge
         SDL_Rect rect;
         SDL_GetDisplayUsableBounds( 0, &rect );
 
+		SDL_DisplayMode displayMode;
+		SDL_GetCurrentDisplayMode( 0, &displayMode );
+
         _resolution = Resolution((uint32_t)rect.w, (uint32_t)rect.h);
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -930,6 +933,7 @@ namespace Menge
         SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
         SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
         SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
+		SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 );
         
         Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
@@ -942,6 +946,8 @@ namespace Menge
 		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
 
 		SDL_SetHint( SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight" );
+		SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "linear" );
+
 #	else
 		if( _fullscreen )
 		{
@@ -953,8 +959,8 @@ namespace Menge
         int height = static_cast<int>(_resolution.getHeight());
 
         m_window = SDL_CreateWindow( utf8Title
-            , SDL_WINDOWPOS_CENTERED
-            , SDL_WINDOWPOS_CENTERED
+            , SDL_WINDOWPOS_UNDEFINED
+            , SDL_WINDOWPOS_UNDEFINED
             , width
             , height
             , windowFlags

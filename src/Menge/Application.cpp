@@ -1847,6 +1847,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFullscreenMode() const
 	{
+		if( PLATFORM_SERVICE( m_serviceProvider )
+			->getNoFullscreen() == true )
+		{
+			return false;
+		}
+
+		if( PLATFORM_SERVICE( m_serviceProvider )
+			->getAlwaysFullscreen() == true )
+		{
+			return true;
+		}
+
 		if( m_nofullscreen == true )
 		{
 			return false;

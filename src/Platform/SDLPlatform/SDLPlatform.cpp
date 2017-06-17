@@ -430,6 +430,15 @@ namespace Menge
         
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool SDLPlatform::getNoFullscreen() const
+	{
+		return false;
+	}
+	bool SDLPlatform::getAlwaysFullscreen() const
+	{
+		return false;
+	}
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::minimizeWindow()
     {

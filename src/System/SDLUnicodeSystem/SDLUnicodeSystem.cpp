@@ -32,7 +32,7 @@ namespace Menge
 			return false;
 		}
 
-		size_t utf8Size = strlen( sdl_utf8 );
+		size_t utf8Size = strlen( sdl_utf8 ) + 1;
 
 		if( _utf8 != nullptr )
 		{
@@ -67,7 +67,7 @@ namespace Menge
 			return false;
 		}
 
-		size_t unicodeSize = wcslen( sdl_unicode );
+		size_t unicodeSize = wcslen( sdl_unicode ) + 1;
 		
 		if( _unicode != nullptr )
 		{

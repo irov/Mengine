@@ -335,6 +335,11 @@ namespace Menge
             m_projectTitle = entry->getValue();
         }
 
+		if( CONFIG_VALUE( m_serviceProvider, "Debug", "ShowHotspots", false ) == true )
+		{
+			m_debugMask |= MENGE_DEBUG_HOTSPOTS;
+		}
+
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////

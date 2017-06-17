@@ -931,23 +931,22 @@ namespace Menge
         SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
         SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
         
-#	if TARGET_OS_IPHONE
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-#	endif
-
         Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
-
-        if( _fullscreen )
-        {			
-            windowFlags |= SDL_WINDOW_FULLSCREEN;			
-        }
 
 #	if TARGET_OS_IPHONE
 		windowFlags |= SDL_WINDOW_BORDERLESS;
 		windowFlags |= SDL_WINDOW_FULLSCREEN;
+		windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
+
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES );
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
 
 		SDL_SetHint( SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight" );
+#	else
+		if( _fullscreen )
+		{
+			windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+		}
 #	endif
 
         int width = static_cast<int>(_resolution.getWidth());

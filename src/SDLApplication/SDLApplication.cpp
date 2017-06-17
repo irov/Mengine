@@ -128,21 +128,29 @@ PLUGIN_EXPORT( MengeZip );
 PLUGIN_EXPORT( MengeLZ4 );
 PLUGIN_EXPORT( BitmapFont );
 #ifdef MENGINE_PLUGIN_TTF
+#ifndef MENGINE_PLUGIN_TTF_DLL
 PLUGIN_EXPORT( TTF )
 #endif
+#endif
 #ifdef MENGINE_PLUGIN_SPINE
+#ifndef MENGINE_PLUGIN_SPINE_DLL
 PLUGIN_EXPORT( Spine );
+#endif
 #endif
 PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( Box2D );
 PLUGIN_EXPORT( MengeOggVorbis );
 PLUGIN_EXPORT( PathFinder );
 PLUGIN_EXPORT( MengeSDLFileGroup );
+#ifdef MENGINE_PLUGIN_ASTRALAX
 #ifndef MENGINE_PLUGIN_ASTRALAX_DLL
 PLUGIN_EXPORT( AstralaxParticlePlugin2 );
 #endif
+#endif
+#ifdef MENGINE_PLUGIN_SPINE
 #ifndef MENGINE_PLUGIN_STEAM_DLL
 PLUGIN_EXPORT( Steam );
+#endif
 #endif
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
@@ -587,11 +595,15 @@ namespace Menge
 		MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin TTF..." );
 
 #ifdef MENGINE_PLUGIN_TTF
+#ifndef MENGINE_PLUGIN_TTF_DLL
 		MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
+#endif
 #endif
 
 #ifdef MENGINE_PLUGIN_SPINE
+#ifndef MENGINE_PLUGIN_SPINE_DLL
         MENGINE_ADD_PLUGIN(Spine, "initialize Plugin Spine...");
+#endif
 #endif
         MENGINE_ADD_PLUGIN(Movie, "initialize Plugin Movie...");
         //MENGINE_ADD_PLUGIN(Motor, "initialize Plugin Motor...");
@@ -599,12 +611,17 @@ namespace Menge
 
         MENGINE_ADD_PLUGIN(PathFinder, "initialize Plugin Path Finder...");
 
+#ifdef MENGINE_PLUGIN_ASTRALAX
 #ifndef MENGINE_PLUGIN_ASTRALAX_DLL
 		MENGINE_ADD_PLUGIN( AstralaxParticlePlugin2, "initialize Astralax Particle Plugin..." );
 #endif
+#endif
 
+
+#ifdef MENGINE_PLUGIN_SPINE
 #ifndef MENGINE_PLUGIN_STEAM_DLL
         MENGINE_ADD_PLUGIN( Steam, "initialize Steam Plugin..." );
+#endif
 #endif
 
 #   undef MENGINE_ADD_PLUGIN

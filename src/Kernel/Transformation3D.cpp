@@ -16,8 +16,8 @@ namespace Menge
 		, m_orientation(0.f, 0.f, 0.f)
 		, m_identityLocalMatrix(true)
 		, m_identityWorldMatrix(true)
+        , m_invalidateLocalMatrix(false)    
         , m_invalidateWorldMatrix(false)
-        , m_invalidateLocalMatrix(false)
 	{
 		mt::ident_m4( m_localMatrix );
 		mt::ident_m4( m_worldMatrix );

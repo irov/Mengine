@@ -23,6 +23,7 @@ namespace Menge
     {
     public:
         virtual const WString & getID() const = 0;
+		virtual const String & getUID() const = 0;
         virtual const FilePath & getFolder() const = 0;
 
     public:

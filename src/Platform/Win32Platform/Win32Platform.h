@@ -43,6 +43,9 @@ namespace Menge
 	public:
 		bool getDesktopResolution( Resolution & _resolution ) const override;
 
+		bool getNoFullscreen() const override;
+		bool getAlwaysFullscreen() const override;
+
 		size_t getCurrentPath( WChar * _path, size_t _len ) const override;
 		size_t getUserPath( WChar * _path, size_t _len ) const override;
 

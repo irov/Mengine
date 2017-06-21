@@ -78,7 +78,9 @@ src
 	ConstStringHolderLocalString.h
 	ConstStringHolderLocalString.cpp
 	ConstStringTypes.h
-        
+    
+    UID.h
+    UID.cpp        
         
     RenderUtils.h
     
@@ -104,16 +106,6 @@ INCLUDE_DIRECTORIES(    ${Mengine_SOURCE_DIR}/Utils
 						${THIRDPARTY_DIR}/utf8/source
                         ${THIRDPARTY_DIR}/tinyini/include
                         ) 
-
-SET( MENGE_DEPENDENCIES
- ${MENGE_DEPENDENCIES}
- ${MY_LIB_NAME}
-)
- 
-SET( MENGE_DEPENDENCIES
- ${MENGE_DEPENDENCIES}
- PARENT_SCOPE
-)
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

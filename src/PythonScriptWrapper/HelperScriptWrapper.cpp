@@ -1637,6 +1637,28 @@ namespace Menge
 			return result;
 		}
 
+		
+		PyObject * s_getAccountUID( pybind::kernel_interface * _kernel, const WString & _accountID )
+		{
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( _accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getAccountSetting account '%ls' is none"
+					, _accountID.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const String & value = account->getUID();
+
+			PyObject * py_value = pybind::ptr( _kernel, value );
+
+			return py_value;
+		}
+
 		PyObject * s_getAccountSetting( pybind::kernel_interface * _kernel, const WString & _accountID, const ConstString & _setting )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
@@ -1857,6 +1879,39 @@ namespace Menge
 			}
 
 			return value;
+		}
+
+		PyObject * s_getGlobalAccountUID( pybind::kernel_interface * _kernel )
+		{
+			if( ACCOUNT_SERVICE( m_serviceProvider )
+				->hasGlobalAccount() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getGlobalSetting account is none"
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+				->getGlobalAccountID();
+
+			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
+				->getAccount( accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("getAccountSetting account '%ls' is none"
+					, accountID.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const String & value = account->getUID();
+
+			PyObject * py_value = pybind::ptr( _kernel, value );
+
+			return py_value;
 		}
 
 		PyObject * s_getGlobalSetting( pybind::kernel_interface * _kernel, const ConstString & _setting )
@@ -2610,6 +2665,8 @@ namespace Menge
 		pybind::def_functor( kernel, "changeSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeSettingBool );
 		pybind::def_functor( kernel, "changeSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeSettingStrings );
 
+		pybind::def_functor_kernel( kernel, "getAccountUID", helperScriptMethod, &HelperScriptMethod::s_getAccountUID );
+
 		pybind::def_functor_kernel( kernel, "getAccountSetting", helperScriptMethod, &HelperScriptMethod::s_getAccountSetting );
 		pybind::def_functor_kernel( kernel, "getAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingBool );
 		pybind::def_functor_kernel( kernel, "getAccountSettingInt", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingInt );
@@ -2624,6 +2681,8 @@ namespace Menge
 		pybind::def_functor( kernel, "changeAccountSetting", helperScriptMethod, &HelperScriptMethod::s_changeAccountSetting );
 		pybind::def_functor( kernel, "changeAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingBool );
 		pybind::def_functor( kernel, "changeAccountSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingStrings );
+
+		pybind::def_functor_kernel( kernel, "getGlobalAccountUID", helperScriptMethod, &HelperScriptMethod::s_getGlobalAccountUID );
 
 		pybind::def_functor_kernel( kernel, "getGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_getGlobalSetting );
 		pybind::def_functor_kernel( kernel, "getGlobalSettingBool", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingBool );

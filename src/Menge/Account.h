@@ -26,6 +26,7 @@ namespace Menge
         
 	public:
 		const WString & getID() const override;
+		const String & getUID() const override;
         const FilePath & getFolder() const override;
 
     public:
@@ -53,6 +54,7 @@ namespace Menge
 		ArchivatorInterfacePtr m_archivator;
 
 		WString m_name;
+		String m_uid;
 		uint32_t m_projectVersion;
 
 		FilePath m_folder;

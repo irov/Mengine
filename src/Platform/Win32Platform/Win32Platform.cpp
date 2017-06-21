@@ -901,7 +901,7 @@ namespace Menge
 					WChar text_code[2];
 					size_t text_code_size;
 					UNICODE_SERVICE( m_serviceProvider )
-						->utf8ToUnicode( utf8, -1, text_code, 2, &text_code_size );
+						->utf8ToUnicode( utf8, (size_t)-1, text_code, 2, &text_code_size );
 
 					INPUT_SERVICE( m_serviceProvider )
 						->pushTextEvent( point.x, point.y, text_code[0] );
@@ -1461,6 +1461,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint64_t Win32Platform::getFileTime( const WString & _path ) const
 	{
+		(void)_path;
+
 		return 0U;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1499,6 +1501,16 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Win32Platform::getNoFullscreen() const
+	{
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32Platform::getAlwaysFullscreen() const
+	{
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	size_t Win32Platform::getCurrentPath( WChar * _path, size_t _len ) const
 	{
 		DWORD len = (DWORD)::GetCurrentDirectory( (DWORD)_len, _path );
@@ -1516,6 +1528,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32Platform::getUserPath( WChar * _path, size_t _len ) const
 	{
+		(void)_len;
+
 		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
 		bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
 		bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );

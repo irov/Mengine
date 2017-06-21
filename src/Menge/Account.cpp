@@ -13,6 +13,7 @@
 #	include "Core/IniUtil.h"
 #	include "Core/String.h"
 #	include "Core/Stream.h"
+#	include "Core/UID.h"
 
 namespace Menge
 {
@@ -47,12 +48,19 @@ namespace Menge
 			return false;
 		}
 
+		m_uid = Helper::makeUID( 20 );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString & Account::getID() const
 	{
 		return m_name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String & Account::getUID() const
+	{
+		return m_uid;
 	}
     //////////////////////////////////////////////////////////////////////////
     const FilePath & Account::getFolder() const

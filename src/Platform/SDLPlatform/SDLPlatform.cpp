@@ -159,7 +159,7 @@ namespace Menge
 		SDL_DisplayMode displayMode;
 		SDL_GetCurrentDisplayMode( 0, &displayMode );
 
-        _resolution = Resolution((uint32_t)rect.w, (uint32_t)rect.h);
+        _resolution = Resolution((uint32_t)1920, (uint32_t)1080);
     }
 	//////////////////////////////////////////////////////////////////////////
 	static void MySDL_LogOutputFunction( void *userdata, int category, SDL_LogPriority priority, const char *message )
@@ -395,6 +395,20 @@ namespace Menge
             return false;
         }
         
+#	if TARGET_OS_IPHONE
+        int dw;
+        int dh;
+        SDL_GL_GetDrawableSize(m_window, &dw, &dh);
+        
+        m_sdlInput->updateSurfaceResolution( static_cast<float>(dw),
+                                            static_cast<float>(dh) );
+        
+        ;
+        
+        APPLICATION_SERVICE(m_serviceProvider)
+        ->changeWindowResolution(Resolution(dw, dh));
+#    endif
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -415,6 +429,21 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::getDesktopResolution( Resolution & _resolution ) const
     {
+#	if TARGET_OS_IPHONE
+        if( m_window == nullptr )
+        {
+            return false;
+        }
+        
+        int dw;
+        int dh;
+        SDL_GL_GetDrawableSize(m_window, &dw, &dh);
+        
+        _resolution.setWidth(static_cast<uint32_t>(dw));
+        _resolution.setHeight( static_cast<uint32_t>(dh) );
+        
+        return true;
+#   else
         SDL_DisplayMode dm;
         if( SDL_GetDesktopDisplayMode( 0, &dm ) != 0 )
         {
@@ -427,6 +456,7 @@ namespace Menge
             
         _resolution.setWidth(static_cast<uint32_t>(dm.w));
         _resolution.setHeight( static_cast<uint32_t>(dm.h) );
+#   endif
         
         return true;
     }
@@ -946,11 +976,12 @@ namespace Menge
         
         Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
+        windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
+        
 #	if TARGET_OS_IPHONE
 		windowFlags |= SDL_WINDOW_BORDERLESS;
 		windowFlags |= SDL_WINDOW_FULLSCREEN;
-		windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
-
+        
 		SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES );
 		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
 
@@ -964,24 +995,32 @@ namespace Menge
 		}
 #	endif
 
-        int width = static_cast<int>(_resolution.getWidth());
-        int height = static_cast<int>(_resolution.getHeight());
 
+    int width = static_cast<int>(_resolution.getWidth());
+    int height = static_cast<int>(_resolution.getHeight());
+
+#	if TARGET_OS_IPHONE
         m_window = SDL_CreateWindow( utf8Title
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED
-            , width
-            , height
+            , -1
+            , -1
             , windowFlags
-        );
+                                    );
+#else
+        m_window = SDL_CreateWindow( utf8Title
+                                    , SDL_WINDOWPOS_UNDEFINED
+                                    , SDL_WINDOWPOS_UNDEFINED
+                                    , width
+                                    , height
+                                    , windowFlags
+                                    );
+#   endif
 
         if( m_window == nullptr )
         {
             return false;
         }
-
-        m_sdlInput->updateSurfaceResolution( static_cast<float>(width),
-            static_cast<float>(height) );
 
         return true;
     }

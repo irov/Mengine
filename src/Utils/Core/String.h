@@ -7,7 +7,7 @@
 
 namespace Menge
 {	
-	namespace Utils
+	namespace Helper
 	{
 		const ConstString& emptyConstString();
 		
@@ -20,12 +20,13 @@ namespace Menge
 		void join( const String& _delim, const TVectorString& _stringArray, String & _outString );
 		void trim( String& str, bool left = true, bool right = true );
 
-		bool intToString( int _value, String & _str );
+		bool intToString( int32_t _value, String & _str );
 		bool unsignedToString( uint32_t _value, String & _str );
         bool floatToString( float _value, String & _str );
 
-		bool intToWString( int _value, WString & _str );
+		bool intToWString( int32_t _value, WString & _str );
 		bool unsignedToWString( uint32_t _value, WString & _str );
+		bool unsigned64ToWString( uint64_t _value, WString & _str );
         bool floatToWString( float _value, WString & _str );
 
         bool stringToInt( const String & _str, int32_t & _value );
@@ -36,6 +37,7 @@ namespace Menge
         bool wstringToInt2( const WString & _str, int32_t & _value1, int32_t & _value2, bool _separator );
         bool wstringToInt4( const WString & _str, int32_t & _value1, int32_t & _value2, int32_t & _value3, int32_t & _value4, bool _separator );
         bool wstringToUnsigned( const WString & _str, uint32_t & _value );
+		bool wstringToUnsigned64( const WString & _str, uint64_t & _value );
         bool wstringToFloat( const WString & _str, float & _value );
     }
 };

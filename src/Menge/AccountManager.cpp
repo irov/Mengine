@@ -667,7 +667,7 @@ namespace Menge
 		}
 
         WString AccountEnumerator;
-        Utils::unsignedToWString( m_playerEnumerator, AccountEnumerator );
+        Helper::unsignedToWString( m_playerEnumerator, AccountEnumerator );
 
         IniUtil::writeIniSetting( m_serviceProvider, file, "AccountEnumerator", AccountEnumerator );
 

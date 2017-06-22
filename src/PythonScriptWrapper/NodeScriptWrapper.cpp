@@ -6416,7 +6416,7 @@ namespace Menge
 				->getParam( _paramName );
 
 			float value;
-			Utils::wstringToFloat( val, value );
+			Helper::wstringToFloat( val, value );
 
 			return pybind::ptr( _kernel, value );
 		}
@@ -6433,7 +6433,7 @@ namespace Menge
 				->getParam( _paramName );
 
 			int value;
-			Utils::wstringToInt( val, value );
+			Helper::wstringToInt( val, value );
 
 			return pybind::ptr( _kernel, value );
 		}
@@ -6452,7 +6452,7 @@ namespace Menge
 				->getParam( _paramName );
 
 			int value;
-			Utils::wstringToInt( val, value );
+			Helper::wstringToInt( val, value );
 
 			bool b_value = value != 0;
 

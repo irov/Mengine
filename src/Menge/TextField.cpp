@@ -587,7 +587,7 @@ namespace Menge
 		space_delims.push_back( U"\r" );
 
 		TVectorU32String lines;
-		Utils::u32split2( lines, m_cacheText, false, line_delims );
+		Helper::u32split2( lines, m_cacheText, false, line_delims );
 
 		if( m_debugMode == true )
 		{
@@ -629,7 +629,7 @@ namespace Menge
 				if( textLength > maxLength )
 				{
 					TVectorU32String words;
-					Utils::u32split2( words, *it, false, space_delims );
+					Helper::u32split2( words, *it, false, space_delims );
 
 					U32String newLine = words.front();
 					words.erase( words.begin() );

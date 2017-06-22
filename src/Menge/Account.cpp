@@ -183,7 +183,7 @@ namespace Menge
 		}
 
 		uint32_t projectVersion = 0;
-		if( Utils::stringToUnsigned( projectVersion_s, projectVersion ) == false )
+		if( Helper::stringToUnsigned( projectVersion_s, projectVersion ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed invalid project version '%s'"
 				, m_name.c_str()
@@ -243,7 +243,7 @@ namespace Menge
 		IniUtil::writeIniSection( m_serviceProvider, file, "[PROJECT]" );
 
 		WString projectVersion_s;
-		if( Utils::unsignedToWString( m_projectVersion, projectVersion_s ) == false )
+		if( Helper::unsignedToWString( m_projectVersion, projectVersion_s ) == false )
 		{
 			return false;
 		}

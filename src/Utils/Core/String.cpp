@@ -9,7 +9,7 @@
 
 namespace Menge
 {
-	namespace Utils
+	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
 		const ConstString& emptyConstString()
@@ -189,7 +189,7 @@ namespace Menge
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool intToString( int _value, String & _str )
+		bool intToString( int32_t _value, String & _str )
 		{
 			Stringstream ss;
 			ss << _value;
@@ -219,7 +219,7 @@ namespace Menge
             return true;
         }
 		//////////////////////////////////////////////////////////////////////////
-		bool intToWString( int _value, WString & _str )
+		bool intToWString( int32_t _value, WString & _str )
 		{
 			WStringstream ss;
 			ss << _value;
@@ -237,6 +237,16 @@ namespace Menge
             _str = ss.str();
 
             return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool unsigned64ToWString( uint64_t _value, WString & _str )
+		{
+			WStringstream ss;
+			ss << _value;
+
+			_str = ss.str();
+
+			return true;
 		}
         //////////////////////////////////////////////////////////////////////////
         bool floatToWString( float _value, WString & _str )
@@ -431,6 +441,20 @@ namespace Menge
 
             return true;
         }
+		//////////////////////////////////////////////////////////////////////////
+		bool wstringToUnsigned64( const WString & _str, uint64_t & _value )
+		{
+			WStringstream ss;
+			ss << _str;
+			ss >> _value;
+
+			if( ss.fail() == true )
+			{
+				return false;
+			}
+
+			return true;
+		}
         //////////////////////////////////////////////////////////////////////////
         bool wstringToFloat( const WString & _str, float & _value )
         {

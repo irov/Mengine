@@ -26,6 +26,7 @@ namespace Menge
 		bool getValue( const Char * _section, const Char * _key, bool _default ) const override;
 		int32_t getValue( const Char * _section, const Char * _key, int32_t _default ) const override;
 		uint32_t getValue( const Char * _section, const Char * _key, uint32_t _default ) const override;
+		uint64_t getValue( const Char * _section, const Char * _key, uint64_t _default ) const override;
 		float getValue( const Char * _section, const Char * _key, float _default ) const override;
 		String getValue( const Char * _section, const Char * _key, const Char * _default ) const override;
 		WString getValue( const Char * _section, const Char * _key, const WChar * _default ) const override;

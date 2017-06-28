@@ -24,8 +24,6 @@ namespace Menge
         TDynamicLibraryFunction getSymbol( const Char * _name ) const override;
 
     private:
-        ServiceProviderInterface * m_serviceProvider;
-
         String m_name;
         void* m_instance;
     };

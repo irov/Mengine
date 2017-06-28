@@ -28,13 +28,11 @@ namespace Menge
 		String makeUID( size_t _length )
 		{
 			std::default_random_engine rng( std::random_device{}() );
+			
+			std::uniform_int_distribution<> dist( 0, sizeof( char_array ) - 1 );
 
-			size_t length = 20;
-
-			std::uniform_int_distribution<> dist( 0, sizeof( char_array ) );
-
-			String uid( length, 0 );
-			std::generate_n( uid.begin(), length, [&dist, &rng]() {size_t e = dist( rng ); return char_array[e]; } );
+			String uid( _length, 0 );
+			std::generate_n( uid.begin(), _length, [&dist, &rng]() {size_t e = dist( rng ); return char_array[e]; } );
 
 			return uid;
 		}

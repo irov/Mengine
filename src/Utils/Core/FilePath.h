@@ -42,6 +42,8 @@ namespace Menge
 
 	namespace Helper
 	{
+		FilePath emptyPath();
+
 		FilePath concatenationFilePath( ServiceProviderInterface * _serviceProvider, const FilePath & _left, const FilePath & _right );
 		
 		bool makeFullPath( ServiceProviderInterface * _serviceProvider, const ConstString & _fileGroupName, const FilePath & _fileName, FilePath & _fullPath );

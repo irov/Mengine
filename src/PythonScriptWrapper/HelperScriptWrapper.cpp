@@ -23,6 +23,7 @@
 #	include "Core/Polygon.h"
 #	include "Core/ColourValue.h"
 #	include "Core/MemoryHelper.h"
+#	include "Core/UID.h"
 
 #	include "Menge/Account.h"
 
@@ -395,6 +396,13 @@ namespace Menge
 		PyObject * s_reloadModule( PyObject * _module )
 		{
 			return pybind::module_reload( _module );
+		}
+
+		String s_makeUID( uint32_t _length )
+		{
+			String uid = Helper::makeUID( _length );
+
+			return uid;
 		}
 
         void s_setCursorPosition( const mt::vec2f & _pos )
@@ -1481,7 +1489,7 @@ namespace Menge
 			}
 
 			WString setting_value;
-			Helper::unsignedToWString( _value, setting_value );
+			Helper::unsigned64ToWString( _value, setting_value );
 
 			bool result = account->changeSetting( _setting, setting_value );
 
@@ -3029,5 +3037,8 @@ namespace Menge
 		pybind::def_functor_kernel( kernel, "selectRandomPointFromPathRadius", helperScriptMethod, &HelperScriptMethod::s_selectRandomPointFromPathRadius );
 
 		pybind::def_functor( kernel, "reloadModule", helperScriptMethod, &HelperScriptMethod::s_reloadModule );
+
+		pybind::def_functor( kernel, "makeUID", helperScriptMethod, &HelperScriptMethod::s_makeUID );
+			
 	}
 }

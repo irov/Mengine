@@ -13,7 +13,6 @@
 #	include "Core/IniUtil.h"
 #	include "Core/String.h"
 #	include "Core/Stream.h"
-#	include "Core/UID.h"
 
 namespace Menge
 {
@@ -48,14 +47,17 @@ namespace Menge
 			return false;
 		}
 
-		m_uid = Helper::makeUID( 20 );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString & Account::getID() const
 	{
 		return m_name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Account::setUID( const String & _uid )
+	{
+		m_uid = _uid;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String & Account::getUID() const
@@ -173,7 +175,7 @@ namespace Menge
 		}
 
 		String projectVersion_s;
-		if( IniUtil::getIniValue( ini, "PROJECT", "VERSION", projectVersion_s, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( ini, "ACCOUNT", "PROJECT_VERSION", projectVersion_s, m_serviceProvider ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed not found project version"
 				, m_name.c_str()
@@ -203,6 +205,18 @@ namespace Menge
 
 			return false;
 		}
+
+		String uid;
+		if( IniUtil::getIniValue( ini, "ACCOUNT", "UID", uid, m_serviceProvider ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Account::load account '%ls' failed not found uid"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+
+		m_uid = uid;
 
 		for( TMapSettings::iterator 
 			it = m_settings.begin(), 
@@ -240,7 +254,7 @@ namespace Menge
 			return false;
 		}
 
-		IniUtil::writeIniSection( m_serviceProvider, file, "[PROJECT]" );
+		IniUtil::writeIniSection( m_serviceProvider, file, "[ACCOUNT]" );
 
 		WString projectVersion_s;
 		if( Helper::unsignedToWString( m_projectVersion, projectVersion_s ) == false )
@@ -248,7 +262,11 @@ namespace Menge
 			return false;
 		}
 
-		IniUtil::writeIniSetting( m_serviceProvider, file, "VERSION", projectVersion_s );
+		WString wuid;
+		Helper::utf8ToUnicode( m_serviceProvider, m_uid, wuid );
+
+		IniUtil::writeIniSetting( m_serviceProvider, file, "PROJECT_VERSION", projectVersion_s );
+		IniUtil::writeIniSetting( m_serviceProvider, file, "UID", wuid );
         
         IniUtil::writeIniSection( m_serviceProvider, file, "[SETTINGS]" );
         

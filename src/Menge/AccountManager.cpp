@@ -15,8 +15,8 @@
 #	include "Consts.h"
 
 #	include "Core/IniUtil.h"
-
 #	include "Core/String.h"
+#	include "Core/UID.h"
 
 #	include "Config/Typedef.h"
 #	include "Config/Stringstream.h"
@@ -84,6 +84,10 @@ namespace Menge
         
 		AccountInterfacePtr account = this->createAccount_( accountID );
 
+		String uid = Helper::makeUID( 20 );
+
+		account->setUID( uid );
+
         if( account == nullptr )
         {
             return nullptr;
@@ -97,7 +101,7 @@ namespace Menge
 		uint32_t new_playerID = ++m_playerEnumerator;
 
 		WStringstream streamAccountID;
-		streamAccountID << L"Player_" << new_playerID;
+		streamAccountID << L"Global_" << new_playerID;
 
 		WString accountID = streamAccountID.str();
 
@@ -136,6 +140,10 @@ namespace Menge
 
             return nullptr;
         }
+
+		String uid = Helper::makeUID( 20 );
+
+		newAccount->setUID( uid );
         
 		m_currentAccountID = newAccount->getID();
 
@@ -179,6 +187,10 @@ namespace Menge
 
 			return nullptr;
 		}
+
+		String uid = Helper::makeUID( 20 );
+
+		newAccount->setUID( uid );
 
 		m_globalAccountID = newAccount->getID();
 
@@ -246,7 +258,7 @@ namespace Menge
 
 		uint32_t projectVersion = APPLICATION_SERVICE( m_serviceProvider )
 			->getProjectVersion();
-		
+
 		if( newAccount->initialize( _accountID, folder, projectVersion ) == false )
 		{
 			return nullptr;				 

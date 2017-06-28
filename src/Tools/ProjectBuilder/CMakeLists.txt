@@ -20,10 +20,12 @@ add_definitions(-DMS_NO_COREDLL)
 add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPYBIND_PYTHON_VERSION=342)
 
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
-			         ${THIRDPARTY_DIR}/pugixml/src
-                     ${THIRDPARTY_DIR}/metabuf                     
-                     ${THIRDPARTY_DIR}/pybind/include
+INCLUDE_DIRECTORIES( 
+    ${Mengine_SOURCE_DIR}/Utils
+    ${THIRDPARTY_DIR}/pugixml/src
+    ${THIRDPARTY_DIR}/metabuf                     
+    ${THIRDPARTY_DIR}/pybind/include
+    ${THIRDPARTY_DIR}/tinyini/include
 )
  
 LINK_DIRECTORIES( ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
@@ -62,7 +64,8 @@ TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}python3_decimal${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}zlib${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX}
-    ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind3${MENGINE_LIB_SUFFIX}    
+    ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind3${MENGINE_LIB_SUFFIX}
+    ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}tinyini${MENGINE_LIB_SUFFIX}
     )
     
 foreach(dependency ${APPLICATION_DEPENDENCIES})

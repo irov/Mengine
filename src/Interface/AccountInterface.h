@@ -22,9 +22,12 @@ namespace Menge
 		: public ServantInterface
     {
     public:
-        virtual const WString & getID() const = 0;
-		virtual const String & getUID() const = 0;
+        virtual const WString & getID() const = 0;		
         virtual const FilePath & getFolder() const = 0;
+
+	public:
+		virtual void setUID( const String & _uid ) = 0;
+		virtual const String & getUID() const = 0;
 
     public:
 		virtual bool addSetting( const ConstString & _setting, const WString& _defaultValue, const pybind::object & _applyFunc ) = 0;

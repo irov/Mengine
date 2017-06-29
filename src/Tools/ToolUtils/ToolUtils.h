@@ -32,6 +32,27 @@ void parse_arg( const std::wstring & _str, double & _value );
 void parse_arg( const std::wstring & _str, std::wstring & _value );
 //////////////////////////////////////////////////////////////////////////
 template<class T>
+static T parse_args( PWSTR lpCmdLine, uint32_t _index )
+{
+	int cmd_num;
+	LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
+	
+	wchar_t * arg_value = cmd_args[_index];
+
+	std::wstring wstr_arg_value = arg_value;
+
+	if( wstr_arg_value.front() == L'\"' && wstr_arg_value.back() == L'\"' )
+	{
+		wstr_arg_value = wstr_arg_value.substr( 1, wstr_arg_value.size() - 2 );
+	}
+
+	T value;
+	parse_arg( wstr_arg_value, value );
+
+	return value;	
+}
+//////////////////////////////////////////////////////////////////////////
+template<class T>
 static T parse_kwds( PWSTR lpCmdLine, const wchar_t * _key, const T & _default )
 {
 	int cmd_num;

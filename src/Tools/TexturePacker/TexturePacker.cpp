@@ -16,8 +16,16 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	(void)nShowCmd;
 
 	std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker", std::wstring() );
+	uint32_t images_count = parse_kwds( lpCmdLine, L"--image_count", 0U );
+			
 	std::vector<std::wstring> images_path;
-	parse_vector_kwds( lpCmdLine, L"--images", images_path );
+	for( uint32_t i = 0; i != images_count; ++i )
+	{
+		std::wstring image_path = parse_args<std::wstring>( lpCmdLine, i );
+		images_path.push_back( image_path );
+	}
+	
+	std::wstring atlas_path = parse_kwds( lpCmdLine, L"--atlas_path", std::wstring() );
 
 	if( texturepacker_path.empty() == true )
 	{
@@ -66,7 +74,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	ForcePathQuoteSpaces( dataFormatQuote, dataFormat );
 
 	WCHAR sheetFormat[MAX_PATH];
-	PathCombine( sheetFormat, libmovieTempDir, L"sheet\\atlas_{n}.png" );
+	PathCombine( sheetFormat, atlas_path.c_str(), L"atlas_{n}.png" );
 
 	WCHAR sheetFormatQuote[MAX_PATH];
 	ForcePathQuoteSpaces( sheetFormatQuote, sheetFormat );
@@ -285,8 +293,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		}
 	}
 		
-	printf( "{\"images\":[" );
-
 	for( std::vector<AtlasImageDesc>::const_iterator
 		it = atlas_images.begin(),
 		it_end = atlas_images.end();
@@ -294,31 +300,23 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		++it )
 	{
 		const AtlasImageDesc & image = *it;
-		
-		printf( "{" );
-		printf( "\"name\":\"%s\",", image.name.c_str() );
-		printf( "\"atlas\":\"%s\",", image.atlas.c_str() );
 
-		printf( "\"w\":%llu,", image.w );
-		printf( "\"h\":%llu,", image.h );
-		printf( "\"x0\":%llu,", image.x0 );
-		printf( "\"y0\":%llu,", image.y0 );
-		printf( "\"x1\":%llu,", image.x1 );
-		printf( "\"y1\":%llu,", image.y1 );
-		printf( "\"x2\":%llu,", image.x2 );
-		printf( "\"y2\":%llu,", image.y2 );
-		printf( "\"x3\":%llu,", image.x3 );
-		printf( "\"y3\":%llu,", image.y3 );
-		printf( "\"y3\":%llu", image.y3 );
-		printf( "}" );
-
-		if( it + 1 != it_end )
-		{
-			printf( "," );
-		}
+		///////////////n//a//w////h////x0///y0...
+		printf( "image=%s;%s;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu\n"
+			, image.name.c_str()
+			, image.atlas.c_str()
+			, image.w
+			, image.h
+			, image.x0
+			, image.y0
+			, image.x1
+			, image.y1
+			, image.x2
+			, image.y2
+			, image.x3
+			, image.y3
+		);
 	}
-
-	printf( "]}" );
 
 	return 0;
 }

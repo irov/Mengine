@@ -15,17 +15,35 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	(void)hPrevInstance;
 	(void)nShowCmd;
 
-	std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker", std::wstring() );
 	uint32_t images_count = parse_kwds( lpCmdLine, L"--image_count", 0U );
-			
+	std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
+	std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker", std::wstring() );
+	std::wstring atlas_path = parse_kwds( lpCmdLine, L"--atlas_path", std::wstring() );
+	
 	std::vector<std::wstring> images_path;
-	for( uint32_t i = 0; i != images_count; ++i )
+
+	FILE * f_in = _wfopen( in_path.c_str(), L"r" );
+
+	if( f_in == NULL )
 	{
-		std::wstring image_path = parse_args<std::wstring>( lpCmdLine, i );
-		images_path.push_back( image_path );
+		message_error( "invalid open in_path %ls\n"
+			, in_path
+		);
+
+		return 0;
 	}
 	
-	std::wstring atlas_path = parse_kwds( lpCmdLine, L"--atlas_path", std::wstring() );
+	WCHAR image_path[MAX_PATH];
+	while( fgetws( image_path, MAX_PATH, f_in ) )
+	{		
+		wchar_t * pos;
+		if( (pos = wcschr( image_path, L'\n' )) != NULL )
+		{
+			*pos = '\0';
+		}
+
+		images_path.push_back( image_path );
+	}
 
 	if( texturepacker_path.empty() == true )
 	{
@@ -169,8 +187,17 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		std::string name;
 		std::string atlas;
 
-		json_int_t w;
-		json_int_t h;
+		json_int_t aw;
+		json_int_t ah;
+
+		json_int_t ox;
+		json_int_t oy;
+
+		json_int_t ow;
+		json_int_t oh;
+
+		json_int_t fw;
+		json_int_t fh;
 
 		json_int_t x0;
 		json_int_t y0;
@@ -242,6 +269,22 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 			const char * filename = json_string_value( frame_data_filename );
 
+			json_t * frame_data_sourceSize = json_object_get( frame_data, "sourceSize" );
+
+			json_t * frame_data_sourceSize_w = json_object_get( frame_data_sourceSize, "w" );
+			json_int_t fw = json_integer_value( frame_data_sourceSize_w );
+
+			json_t * frame_data_sourceSize_h = json_object_get( frame_data_sourceSize, "h" );
+			json_int_t fh = json_integer_value( frame_data_sourceSize_h );
+
+			json_t * frame_data_spriteSourceSize = json_object_get( frame_data, "spriteSourceSize" );
+			
+			json_t * frame_data_spriteSourceSize_x = json_object_get( frame_data_spriteSourceSize, "x" );
+			json_int_t ox = json_integer_value( frame_data_spriteSourceSize_x );
+
+			json_t * frame_data_spriteSourceSize_y = json_object_get( frame_data_spriteSourceSize, "y" );
+			json_int_t oy = json_integer_value( frame_data_spriteSourceSize_y );
+
 			json_t * frame_data_frame = json_object_get( frame_data, "frame" );
 
 			json_t * frame_data_frame_x = json_object_get( frame_data_frame, "x" );
@@ -263,8 +306,17 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			image.name = filename;
 			image.atlas = atlasname;
 
-			image.w = atlas_w;
-			image.h = atlas_h;
+			image.aw = atlas_w;
+			image.ah = atlas_h;
+
+			image.ox = ox;
+			image.oy = oy;
+
+			image.ow = w;
+			image.oh = h;
+
+			image.fw = fw;
+			image.fh = fh;
 
 			if( rotated == true )
 			{
@@ -301,12 +353,18 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	{
 		const AtlasImageDesc & image = *it;
 
-		///////////////n//a//w////h////x0///y0...
-		printf( "image=%s;%s;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu\n"
+		///////////////n//a//aw///ah///ox///oy///ow///oh///x0///y0...
+		printf( "image=%s;%s;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu\n"
 			, image.name.c_str()
 			, image.atlas.c_str()
-			, image.w
-			, image.h
+			, image.aw
+			, image.ah
+			, image.ox
+			, image.oy
+			, image.ow
+			, image.oh
+			, image.fw
+			, image.fh
 			, image.x0
 			, image.y0
 			, image.x1

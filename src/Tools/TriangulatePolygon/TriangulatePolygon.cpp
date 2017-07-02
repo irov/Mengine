@@ -314,8 +314,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		for( size_t index = 0; index != inners_count; ++index )
 		{
-			const BoostPolygon::inner_container_type & shape_vertex_inners = shape_vertex.inners();
-
 			const BoostPolygon::ring_type & shape_vertex_inners_ring = shape_vertex_inners[index];
 
 			size_t inner_count = shape_vertex_inners_ring.size();
@@ -384,12 +382,12 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		std::vector<p2t::Triangle*> triangles = cdt.GetTriangles();
 
 		for( std::vector<p2t::Triangle*>::iterator
-			it = triangles.begin(),
-			it_end = triangles.end();
-		it != it_end;
-		++it )
+			it_triangle = triangles.begin(),
+			it_triangle_end = triangles.end();
+			it_triangle != it_triangle_end;
+		++it_triangle )
 		{
-			p2t::Triangle* tr = *it;
+			p2t::Triangle* tr = *it_triangle;
 
 			p2t::Point * p0 = tr->GetPoint( 0 );
 			p2t::Point * p1 = tr->GetPoint( 1 );
@@ -412,12 +410,12 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		}
 
 		for( std::vector<p2t::Triangle*>::iterator
-			it = triangles.begin(),
-			it_end = triangles.end();
-		it != it_end;
-		++it )
+			it_triangle = triangles.begin(),
+			it_triangle_end = triangles.end();
+			it_triangle != it_triangle_end;
+		++it_triangle )
 		{
-			p2t::Triangle* tr = *it;
+			p2t::Triangle* tr = *it_triangle;
 
 			p2t::Point * p0 = tr->GetPoint( 0 );
 			p2t::Point * p1 = tr->GetPoint( 1 );

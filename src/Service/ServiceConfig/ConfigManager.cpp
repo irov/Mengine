@@ -142,6 +142,11 @@ namespace Menge
 		return Helper::s_getValueT( m_serviceProvider, m_ini, m_platformTags, _section, _key, _default );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	uint64_t ConfigManager::getValue( const Char * _section, const Char * _key, uint64_t _default ) const
+	{
+		return Helper::s_getValueT( m_serviceProvider, m_ini, m_platformTags, _section, _key, _default );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	float ConfigManager::getValue( const Char * _section, const Char * _key, float _default ) const
 	{
 		return Helper::s_getValueT( m_serviceProvider, m_ini, m_platformTags, _section, _key, _default );

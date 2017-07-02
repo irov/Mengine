@@ -263,7 +263,7 @@ namespace Menge
 			->loadPlugin( L"MengeXmlCodecPlugin.dll" );
 
 		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( ConstString::none(), FilePath( ConstString::none() ), Helper::stringizeString( serviceProvider, "dir" ) ) == false )
+			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), Helper::stringizeString( serviceProvider, "dir" ) ) == false )
 		{
 			return false;
 		}
@@ -271,7 +271,7 @@ namespace Menge
 		ConstString dev = Helper::stringizeString(serviceProvider, "dev");
 
 		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( dev, FilePath( ConstString::none() ), Helper::stringizeString(serviceProvider, "dir") ) == false )
+			->mountFileGroup( dev, ConstString::none(), Helper::emptyPath(), Helper::stringizeString(serviceProvider, "dir") ) == false )
 		{
 			return false;
 		}

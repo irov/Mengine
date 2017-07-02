@@ -26,8 +26,12 @@ namespace Menge
         
 	public:
 		const WString & getID() const override;
-		const String & getUID() const override;
         const FilePath & getFolder() const override;
+
+	public:
+		void setUID( const String & _uid ) override;
+		const String & getUID() const override;
+
 
     public:
 		bool addSetting( const ConstString & _setting, const WString& _defaultValue, const pybind::object & _applyFunc ) override;

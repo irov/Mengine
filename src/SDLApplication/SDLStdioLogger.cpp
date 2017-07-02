@@ -62,7 +62,7 @@ namespace Menge
         (void)_flag;
 		(void)_count;
 
-		std::cout.write( _data, _count );
+		//std::cout.write( _data, _count );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLStdioLogger::flush()

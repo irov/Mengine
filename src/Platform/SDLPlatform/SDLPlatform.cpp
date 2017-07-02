@@ -154,12 +154,14 @@ namespace Menge
     void SDLPlatform::getMaxClientResolution( Resolution & _resolution ) const
     {
         SDL_Rect rect;
-        SDL_GetDisplayUsableBounds( 0, &rect );
+        SDL_GetDisplayBounds( 0, &rect );
+        
+        LOGGER_WARNING(m_serviceProvider)("SDLPlatform::getMaxClientResolution w %d h %d"
+                                          , rect.w
+                                          , rect.h
+                                          );
 
-		SDL_DisplayMode displayMode;
-		SDL_GetCurrentDisplayMode( 0, &displayMode );
-
-        _resolution = Resolution((uint32_t)1920, (uint32_t)1080);
+        _resolution = Resolution((uint32_t)rect.w, (uint32_t)rect.h);
     }
 	//////////////////////////////////////////////////////////////////////////
 	static void MySDL_LogOutputFunction( void *userdata, int category, SDL_LogPriority priority, const char *message )
@@ -380,6 +382,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow( const Resolution & _resolution, bool _fullscreen )
     {
+        LOGGER_WARNING(m_serviceProvider)("SDLPlatform::createWindow w %d h %d fullscreen %d"
+                                          , _resolution.getWidth()
+                                          , _resolution.getHeight()
+                                          , _fullscreen
+                                          );
+        
         if( this->createWindow_( _resolution, _fullscreen ) == false )
         {
             return false;
@@ -395,7 +403,7 @@ namespace Menge
             return false;
         }
         
-#	if TARGET_OS_IPHONE
+//#	if TARGET_OS_IPHONE
         int dw;
         int dh;
         SDL_GL_GetDrawableSize(m_window, &dw, &dh);
@@ -405,9 +413,9 @@ namespace Menge
         
         ;
         
-        APPLICATION_SERVICE(m_serviceProvider)
-        ->changeWindowResolution(Resolution(dw, dh));
-#    endif
+//        APPLICATION_SERVICE(m_serviceProvider)
+//        ->changeWindowResolution(Resolution(dw, dh));
+//#    endif
         
         return true;
     }
@@ -1014,8 +1022,8 @@ namespace Menge
                                     );
 #else
         m_window = SDL_CreateWindow( utf8Title
-                                    , SDL_WINDOWPOS_UNDEFINED
-                                    , SDL_WINDOWPOS_UNDEFINED
+                                    , SDL_WINDOWPOS_CENTERED
+                                    , SDL_WINDOWPOS_CENTERED
                                     , width
                                     , height
                                     , windowFlags

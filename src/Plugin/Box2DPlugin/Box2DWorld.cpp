@@ -141,18 +141,18 @@ namespace Menge
 			{
 			case 0:
 				{
-					mBody1->onBeginCollide( mBody2, contact );
-					mBody2->onBeginCollide( mBody1, contact );
+					mBody1->onBeginContact( mBody2, contact );
+					mBody2->onBeginContact( mBody1, contact );
 				}break;
 			case 1:
 				{
-					mBody1->onUpdateCollide( mBody2, contact );
-					mBody2->onUpdateCollide( mBody1, contact );
+					mBody1->onPreSolve( mBody2, contact );
+					mBody2->onPreSolve( mBody1, contact );
 				}break;
 			case 2:
 				{
-					mBody1->onEndCollide( mBody2, contact );
-					mBody2->onEndCollide( mBody1, contact );
+					mBody1->onEndContact( mBody2, contact );
+					mBody2->onEndContact( mBody1, contact );
 				}break;
 			}
         }
@@ -228,39 +228,70 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	void Box2DWorld::BeginContact( b2Contact* _contact )
     {
-		ContactDef def;
-		def.contact = _contact;
-		def.mode = 0;
+		b2Body * body1 = _contact->GetFixtureA()->GetBody();
+		b2Body * body2 = _contact->GetFixtureB()->GetBody();
 
-		m_contacts.push_back( def );
+		if( !body1 || !body2 )
+		{
+			return;
+		}
+
+		Box2DBody * mBody1 = static_cast<Box2DBody*>(body1->GetUserData());
+		Box2DBody * mBody2 = static_cast<Box2DBody*>(body2->GetUserData());
+
+		mBody1->onBeginContact( mBody2, _contact );
+		mBody2->onBeginContact( mBody1, _contact );
     }
     //////////////////////////////////////////////////////////////////////////
 	void Box2DWorld::EndContact( b2Contact* _contact )
     {
-		ContactDef def;
-		def.contact = _contact;
-		def.mode = 2;
+		b2Body * body1 = _contact->GetFixtureA()->GetBody();
+		b2Body * body2 = _contact->GetFixtureB()->GetBody();
 
-		m_contacts.push_back( def );
+		if( !body1 || !body2 )
+		{
+			return;
+		}
+
+		Box2DBody * mBody1 = static_cast<Box2DBody*>(body1->GetUserData());
+		Box2DBody * mBody2 = static_cast<Box2DBody*>(body2->GetUserData());
+
+		mBody1->onEndContact( mBody2, _contact );
+		mBody2->onEndContact( mBody1, _contact );
     }
     //////////////////////////////////////////////////////////////////////////
 	void Box2DWorld::PreSolve( b2Contact* _contact, const b2Manifold* _oldManifold )
     {
-        (void)_oldManifold;
+		b2Body * body1 = _contact->GetFixtureA()->GetBody();
+		b2Body * body2 = _contact->GetFixtureB()->GetBody();
 
-		ContactDef def;
-		def.contact = _contact;
-		def.mode = 1;
+		if( !body1 || !body2 )
+		{
+			return;
+		}
 
-		m_contacts.push_back( def );
+		Box2DBody * mBody1 = static_cast<Box2DBody*>(body1->GetUserData());
+		Box2DBody * mBody2 = static_cast<Box2DBody*>(body2->GetUserData());
+
+		mBody1->onPreSolve( mBody2, _contact );
+		mBody2->onPreSolve( mBody1, _contact );
     }
     //////////////////////////////////////////////////////////////////////////
 	void Box2DWorld::PostSolve( b2Contact* _contact, const b2ContactImpulse* _impulse )
     {
-        (void)_contact;
-        (void)_impulse;
+		b2Body * body1 = _contact->GetFixtureA()->GetBody();
+		b2Body * body2 = _contact->GetFixtureB()->GetBody();
 
-		//printf( "PostSolve" );
+		if( !body1 || !body2 )
+		{
+			return;
+		}
+
+		Box2DBody * mBody1 = static_cast<Box2DBody*>(body1->GetUserData());
+		Box2DBody * mBody2 = static_cast<Box2DBody*>(body2->GetUserData());
+
+		mBody1->onPostSolve( mBody2, _contact );
+		mBody2->onPostSolve( mBody1, _contact );
     }
     //////////////////////////////////////////////////////////////////////////
 	Box2DJointPtr Box2DWorld::createDistanceJoint( const Box2DBodyPtr & _body1, const Box2DBodyPtr & _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2, bool _collideBodies )

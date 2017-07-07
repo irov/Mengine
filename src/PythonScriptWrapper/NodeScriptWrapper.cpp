@@ -2140,6 +2140,19 @@ namespace Menge
 #	ifdef _DEBUG
 			if( py_kwds.empty() == false )
 			{
+				for( pybind::dict::iterator
+					it = py_kwds.begin(),
+					it_end = py_kwds.end();
+					it != it_end;
+					++it )
+				{
+					std::string k = it.key();
+
+					LOGGER_ERROR( m_serviceProvider )("setEventListener invalid kwds '%s'\n"
+						, k.c_str()
+						);
+				}
+
 				throw;
 			}
 #	endif
@@ -2162,6 +2175,19 @@ namespace Menge
 #	ifdef _DEBUG
 			if( py_kwds.empty() == false )
 			{
+				for( pybind::dict::iterator
+					it = py_kwds.begin(),
+					it_end = py_kwds.end();
+					it != it_end;
+					++it )
+				{
+					std::string k = it.key();
+
+					LOGGER_ERROR( m_serviceProvider )("setEventListener invalid kwds '%s'\n"
+						, k.c_str()
+						);
+				}
+
 				throw;
 			}
 #	endif
@@ -2184,6 +2210,19 @@ namespace Menge
 #	ifdef _DEBUG
 			if( py_kwds.empty() == false )
 			{
+				for( pybind::dict::iterator
+					it = py_kwds.begin(),
+					it_end = py_kwds.end();
+					it != it_end;
+					++it )
+				{
+					std::string k = it.key();
+
+					LOGGER_ERROR( m_serviceProvider )("setEventListener invalid kwds '%s'\n"
+						, k.c_str()
+						);
+				}
+
 				throw;
 			}
 #	endif
@@ -2217,6 +2256,19 @@ namespace Menge
 #	ifdef _DEBUG
 			if( py_kwds.empty() == false )
 			{
+				for( pybind::dict::iterator
+					it = py_kwds.begin(),
+					it_end = py_kwds.end();
+					it != it_end;
+					++it )
+				{
+					std::string k = it.key();
+
+					LOGGER_ERROR( m_serviceProvider )("setEventListener invalid kwds '%s'\n"
+						, k.c_str()
+						);
+				}
+
 				throw;
 			}
 #	endif
@@ -2239,6 +2291,19 @@ namespace Menge
 #	ifdef _DEBUG
 			if( py_kwds.empty() == false )
 			{
+				for( pybind::dict::iterator
+					it = py_kwds.begin(),
+					it_end = py_kwds.end();
+					it != it_end;
+					++it )
+				{
+					std::string k = it.key();
+
+					LOGGER_ERROR( m_serviceProvider )("setEventListener invalid kwds '%s'\n"
+						, k.c_str()
+						);
+				}
+
 				throw;
 			}
 #	endif
@@ -2278,6 +2343,19 @@ namespace Menge
 #	ifdef _DEBUG
 			if( py_kwds.empty() == false )
 			{
+				for( pybind::dict::iterator
+					it = py_kwds.begin(),
+					it_end = py_kwds.end();
+					it != it_end;
+					++it )
+				{
+					std::string k = it.key();
+
+					LOGGER_ERROR( m_serviceProvider )("setEventListener invalid kwds '%s'\n"
+						, k.c_str()
+						);
+				}
+
 				throw;
 			}
 #	endif
@@ -2463,7 +2541,8 @@ namespace Menge
 					++it )
 				{
 					std::string k = it.key();
-					printf( "k %s\n"
+
+					LOGGER_ERROR(m_serviceProvider)( "setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 					);
 				}

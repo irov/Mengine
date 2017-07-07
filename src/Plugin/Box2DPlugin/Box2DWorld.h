@@ -11,7 +11,7 @@
 
 #	include "pybind/object.hpp"
 
-#	include <vector>
+#	include "stdex/stl_vector.h"
 
 namespace Menge
 {
@@ -142,7 +142,7 @@ namespace Menge
 			uint32_t mode;
 		};
 
-		typedef std::vector<ContactDef> TVectorContact;
+		typedef stdex::vector<ContactDef> TVectorContact;
         TVectorContact m_contacts;
         
         struct JoinDef
@@ -151,7 +151,7 @@ namespace Menge
             Box2DJoint * join;
         };
 
-        typedef std::vector<JoinDef> TVectorJoints;
+        typedef stdex::vector<JoinDef> TVectorJoints;
         TVectorJoints m_joints;
     };
 }

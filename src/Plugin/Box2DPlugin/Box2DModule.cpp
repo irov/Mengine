@@ -1,15 +1,13 @@
 #	include "Box2DModule.h"
 #	include "Box2DWorld.h"
-#	include "Box2DBody.h"
 #	include "Box2DJoint.h"
 #	include "NodeBox2DBody.h"
 
 #	include "Kernel/NodePrototypeGenerator.h"
 #	include "Kernel/ScriptablePrototypeGenerator.h"
+#	include "Kernel/ScriptEventReceiver.h"
 
 #   include "Kernel/ScriptWrapper.h"
-
-#	include "pybind/pybind.hpp"
 
 #	include <algorithm>
 
@@ -24,6 +22,73 @@ namespace Menge
 	Box2DModule::~Box2DModule()
     {
     }
+	//////////////////////////////////////////////////////////////////////////
+	namespace 
+	{
+		class PythonBox2DBodyEventReceiver
+			: public ScriptEventReceiver
+			, public Box2DBodyEventReceiver
+		{
+		public:
+			void onBox2DBodyBeginContact( class Box2DBody * _other, const mt::vec2f & _position, const mt::vec2f & _normal ) override
+			{
+				m_cb.call( _other, _position, _normal );
+			}
+
+			void onBox2DBodyEndContact( class Box2DBody * _other ) override
+			{
+				m_cb.call( _other );
+			}
+
+			void onBox2DBodyPreSolve( class Box2DBody * _other, const mt::vec2f & _position, const mt::vec2f & _normal ) override
+			{
+				m_cb.call( _other, _position, _normal );
+			}
+
+			void onBox2DBodyPostSolve( class Box2DBody * _other, const mt::vec2f & _position, const mt::vec2f & _normal ) override
+			{
+				m_cb.call( _other, _position, _normal );
+			}
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * Box2DModule::s_Box2DBody_setEventListener( pybind::kernel_interface * _kernel, Box2DBody * _node, PyObject * _args, PyObject * _kwds )
+	{
+		(void)_args;
+
+		if( _kwds == nullptr )
+		{
+			return pybind::ret_none();
+		}
+
+		pybind::dict py_kwds( _kernel, _kwds );
+		Helper::registerScriptEventReceiver<PythonBox2DBodyEventReceiver>( py_kwds, _node, "onBox2DBodyBeginContact", EVENT_BOX2DBODY_BEGIN_CONTACT );
+		Helper::registerScriptEventReceiver<PythonBox2DBodyEventReceiver>( py_kwds, _node, "onBox2DBodyEndContact", EVENT_BOX2DBODY_END_CONTACT );
+		Helper::registerScriptEventReceiver<PythonBox2DBodyEventReceiver>( py_kwds, _node, "onBox2DBodyPreSolve", EVENT_BOX2DBODY_PRE_SOLVE );
+		Helper::registerScriptEventReceiver<PythonBox2DBodyEventReceiver>( py_kwds, _node, "onBox2DBodyPostSolve", EVENT_BOX2DBODY_POST_SOLVE );
+
+#	ifdef _DEBUG
+		if( py_kwds.empty() == false )
+		{
+			for( pybind::dict::iterator
+				it = py_kwds.begin(),
+				it_end = py_kwds.end();
+				it != it_end;
+				++it )
+			{
+				std::string k = it.key();
+
+				LOGGER_ERROR( m_serviceProvider )("setEventListener invalid kwds '%s'\n"
+					, k.c_str()
+					);
+			}
+
+			throw;
+		}
+#	endif
+
+		return pybind::ret_none();
+	}
     //////////////////////////////////////////////////////////////////////////
 	bool Box2DModule::_initialize()
     {
@@ -34,6 +99,7 @@ namespace Menge
 
 		pybind::interface_<Box2DWorld, pybind::bases<Scriptable> >( kernel, "Box2DWorld" )
 			.def_smart_pointer()
+			.def_bindable()
 			.def( "setTimeStep", &Box2DWorld::setTimeStep )
 			.def( "createBody", &Box2DWorld::createBody )
 			.def( "createDistanceJoint", &Box2DWorld::createDistanceJoint )
@@ -48,6 +114,7 @@ namespace Menge
 			
 		pybind::interface_<Box2DBody, pybind::bases<Scriptable, Eventable> >( kernel, "Box2DBody" )
 			.def_smart_pointer()
+			.def_bindable()
 			.def( "setUserData", &Box2DBody::setUserData )
 			.def( "getUserData", &Box2DBody::getUserData )
 			.def( "addShapeConvex", &Box2DBody::addShapeConvex )
@@ -75,10 +142,12 @@ namespace Menge
 			.def( "getIsBullet", &Box2DBody::getIsBullet )
 			.def( "sleep", &Box2DBody::sleep )
 			.def( "wakeUp", &Box2DBody::wakeUp )
+			.def_proxy_native_kernel( "setEventListener", this, &Box2DModule::s_Box2DBody_setEventListener )
 			;
 
 		pybind::interface_<Box2DJoint, pybind::bases<Scriptable> >( kernel, "Box2DJoint" )
 			.def_smart_pointer()
+			.def_bindable()
 			;
 
 		pybind::interface_<NodeBox2DBody, pybind::bases<Node> >( kernel, "NodeBox2DBody" )

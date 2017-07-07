@@ -4,13 +4,6 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	enum Box2DBodyEventFlag
-	{
-		EVENT_BOX2DBODY_BEGIN_COLLIDE,
-		EVENT_BOX2DBODY_UPDATE_COLLIDE,
-		EVENT_BOX2DBODY_END_COLLIDE,
-	};
-	//////////////////////////////////////////////////////////////////////////
 	Box2DBody::Box2DBody()
 		: m_world( nullptr )
 		, m_body( nullptr )
@@ -19,7 +12,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Box2DBody::~Box2DBody()
 	{
-		if( m_world && m_body )
+		if( m_world != nullptr && m_body != nullptr )
 		{
 			m_world->DestroyBody( m_body );
 		}
@@ -29,6 +22,7 @@ namespace Menge
 	{
 		m_world = _world;
 	}
+	//////////////////////////////////////////////////////////////////////////
 	b2World * Box2DBody::getWorld() const
 	{
 		return m_world;
@@ -54,8 +48,14 @@ namespace Menge
 		return m_body;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Box2DBody::addShapeConvex( const Menge::Polygon & _vertices, float _density, float _friction, float _restitution, bool _isSensor,
-		unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
+	bool Box2DBody::addShapeConvex( const Menge::Polygon & _vertices
+		, float _density
+		, float _friction
+		, float _restitution
+		, bool _isSensor
+		, unsigned short _collisionMask
+		, unsigned short _categoryBits
+		, unsigned short _groupIndex )
 	{
 		size_t num_points = _vertices.num_points();
 
@@ -238,9 +238,9 @@ namespace Menge
 		m_body->ApplyLinearImpulse( b2_impulse, b2_total_point, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Box2DBody::onBeginCollide( Box2DBody * _body, b2Contact * _contact )
+	void Box2DBody::onBeginContact( Box2DBody * _body, b2Contact * _contact )
 	{
-		if( this->hasEventReceiver( EVENT_BOX2DBODY_BEGIN_COLLIDE ) == false )
+		if( this->hasEventReceiver( EVENT_BOX2DBODY_BEGIN_CONTACT ) == false )
 		{
 			return;
 		}
@@ -252,13 +252,27 @@ namespace Menge
 		mt::vec2f contact_normal = Box2DScalerFromWorld( worldManifold.normal );
 
 		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_BEGIN_COLLIDE )(this, _body, contact_position, contact_normal );
-        EVENTABLE_METHOD( this, EVENT_BOX2DBODY_BEGIN_COLLIDE )
-            ->onBox2DBodyBeginCollide( this, _body, contact_position, contact_normal );
+        EVENTABLE_METHOD( this, EVENT_BOX2DBODY_BEGIN_CONTACT )
+            ->onBox2DBodyBeginContact( _body, contact_position, contact_normal );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Box2DBody::onUpdateCollide( Box2DBody * _body, b2Contact * _contact )
+	void Box2DBody::onEndContact( Box2DBody * _body, b2Contact * _contact )
 	{
-		if( this->hasEventReceiver( EVENT_BOX2DBODY_UPDATE_COLLIDE ) == false )
+		(void)_contact;
+
+		if( this->hasEventReceiver( EVENT_BOX2DBODY_END_CONTACT ) == false )
+		{
+			return;
+		}
+
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_END_COLLIDE )(this, _body);
+		EVENTABLE_METHOD( this, EVENT_BOX2DBODY_END_CONTACT )
+			->onBox2DBodyEndContact( _body );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Box2DBody::onPreSolve( Box2DBody * _body, b2Contact * _contact )
+	{
+		if( this->hasEventReceiver( EVENT_BOX2DBODY_PRE_SOLVE ) == false )
 		{
 			return;
 		}
@@ -270,23 +284,27 @@ namespace Menge
 		mt::vec2f contact_normal = Box2DScalerFromWorld( worldManifold.normal );
 
 		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_UPDATE_COLLIDE )(this, _body, contact_position, contact_normal);
-        EVENTABLE_METHOD( this, EVENT_BOX2DBODY_UPDATE_COLLIDE )
-            ->onBox2DBodyBeginCollide( this, _body, contact_position, contact_normal );
+        EVENTABLE_METHOD( this, EVENT_BOX2DBODY_PRE_SOLVE )
+            ->onBox2DBodyPreSolve( _body, contact_position, contact_normal );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Box2DBody::onEndCollide( Box2DBody * _body, b2Contact * _contact )
+	void Box2DBody::onPostSolve( Box2DBody * _body, b2Contact * _contact )
 	{
-		(void)_contact;
-
-		if( this->hasEventReceiver( EVENT_BOX2DBODY_END_COLLIDE ) == false )
+		if( this->hasEventReceiver( EVENT_BOX2DBODY_POST_SOLVE ) == false )
 		{
 			return;
 		}
 
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_END_COLLIDE )(this, _body);
-        EVENTABLE_METHOD( this, EVENT_BOX2DBODY_END_COLLIDE )
-            ->onBox2DBodyEndCollide( this, _body );
-	}	
+		b2WorldManifold worldManifold;
+		_contact->GetWorldManifold( &worldManifold );
+
+		mt::vec2f contact_position = Box2DScalerFromWorld( worldManifold.points[0] );
+		mt::vec2f contact_normal = Box2DScalerFromWorld( worldManifold.normal );
+
+		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_UPDATE_COLLIDE )(this, _body, contact_position, contact_normal);
+		EVENTABLE_METHOD( this, EVENT_BOX2DBODY_POST_SOLVE )
+			->onBox2DBodyPostSolve( _body, contact_position, contact_normal );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Box2DBody::setLinearDumping( float _dumping )
 	{
@@ -374,12 +392,5 @@ namespace Menge
 			//may be not need : m_world->Refilter( shape );
 			fixture = fixture->GetNext();
 		}
-	}	
-	//////////////////////////////////////////////////////////////////////////
-	//void Box2DBody::_setEventListener( const pybind::dict & _listener )
-	//{
-	//	this->registerEvent( EVENT_BOX2DBODY_BEGIN_COLLIDE, ("onBeginCollide"), _listener );
-	//	this->registerEvent( EVENT_BOX2DBODY_UPDATE_COLLIDE, ("onUpdateCollide"), _listener );
-	//	this->registerEvent( EVENT_BOX2DBODY_END_COLLIDE, ("onEndCollide"), _listener );
-	//}
+	}
 }

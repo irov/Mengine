@@ -21,17 +21,18 @@ namespace Menge
 		EVENT_BOX2DBODY_END_CONTACT,
 		EVENT_BOX2DBODY_PRE_SOLVE,
 		EVENT_BOX2DBODY_POST_SOLVE,
+		EVENT_BOX2DBODY_UPDATE_CONTACT,
 	};
     //////////////////////////////////////////////////////////////////////////
     class Box2DBodyEventReceiver
         : public EventReceiver
     {
     public:
-        virtual void onBox2DBodyBeginContact( class Box2DBody * _other, const mt::vec2f & _position, const mt::vec2f & _normal ) = 0;
-		virtual void onBox2DBodyEndContact( class Box2DBody * _other ) = 0;
+        virtual void onBox2DBodyBeginContact( class Box2DBody * _other, b2Contact * _contact ) = 0;
+		virtual void onBox2DBodyEndContact( class Box2DBody * _other, b2Contact * _contact ) = 0;
 
-		virtual void onBox2DBodyPreSolve( class Box2DBody * _other, const mt::vec2f & _position, const mt::vec2f & _normal ) = 0;
-		virtual void onBox2DBodyPostSolve( class Box2DBody * _other, const mt::vec2f & _position, const mt::vec2f & _normal ) = 0;
+		virtual void onBox2DBodyPreSolve( class Box2DBody * _other, b2Contact * _contact, const b2Manifold* _manifold ) = 0;
+		virtual void onBox2DBodyPostSolve( class Box2DBody * _other, b2Contact * _contact, const b2ContactImpulse* _impulse ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<Box2DBodyEventReceiver> Box2DBodyEventReceiverPtr;
@@ -58,8 +59,8 @@ namespace Menge
 	public:
 		void onBeginContact( Box2DBody * _body, b2Contact * _contact );		
 		void onEndContact( Box2DBody * _body, b2Contact * _contact );
-		void onPreSolve( Box2DBody * _body, b2Contact * _contact );
-		void onPostSolve( Box2DBody * _body, b2Contact * _contact );
+		void onPreSolve( Box2DBody * _body, b2Contact * _contact, const b2Manifold* _oldManifold );
+		void onPostSolve( Box2DBody * _body, b2Contact * _contact, const b2ContactImpulse* _impulse );
 
     public:
 		void setBody( b2Body * _body );
@@ -111,6 +112,8 @@ namespace Menge
         void wakeUp();
 
 		void updateFilterData( uint16_t _categoryBits, uint16_t _collisionMask, int16_t _groupIndex );
+
+		void filterContactList( const pybind::object & _filter, const pybind::detail::args_operator_t & _args );
 
 	protected:
         b2World* m_world;

@@ -27,7 +27,7 @@ namespace Menge
 		void _finalize() override;
 
     public:
-		Box2DWorld * createWorld( const mt::vec2f& _gravity );
+		Box2DWorld * createWorld( const mt::vec2f& _gravity, const pybind::object & _update, const pybind::detail::args_operator_t & _update_args );
 		void destroyWorld( Box2DWorld * _world );
 
 	public:

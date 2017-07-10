@@ -23,6 +23,13 @@ namespace Menge
 		return bytes;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void Mengine_copy_stream( void * _data, const void * _src, void * _dst, size_t _size )
+	{
+		(void)_data;
+
+		memcpy( _dst, _src, _size );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static void * Mengine_resource_provider( const aeMovieResource * _resource, void * _data )
 	{
 		ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_data;
@@ -140,7 +147,7 @@ namespace Menge
 
 		aeMovieData * movieData = ae_create_movie_data( m_instance );
 
-		aeMovieStream * movie_stream = ae_create_movie_stream( m_instance, &Mengine_read_stream, nullptr, stream.get() );
+		aeMovieStream * movie_stream = ae_create_movie_stream( m_instance, &Mengine_read_stream, &Mengine_copy_stream, stream.get() );
 
 		if( ae_load_movie_data( movieData, movie_stream, &Mengine_resource_provider, this ) != AE_MOVIE_SUCCESSFUL )
 		{

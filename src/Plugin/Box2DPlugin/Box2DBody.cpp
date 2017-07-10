@@ -245,65 +245,59 @@ namespace Menge
 			return;
 		}
 
-		b2WorldManifold worldManifold;
-		_contact->GetWorldManifold( &worldManifold );
+		//b2WorldManifold worldManifold;
+		//_contact->GetWorldManifold( &worldManifold );
 
-		mt::vec2f contact_position = Box2DScalerFromWorld( worldManifold.points[0] );	
-		mt::vec2f contact_normal = Box2DScalerFromWorld( worldManifold.normal );
+		//mt::vec2f contact_position = Box2DScalerFromWorld( worldManifold.points[0] );	
+		//mt::vec2f contact_normal = Box2DScalerFromWorld( worldManifold.normal );
 
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_BEGIN_COLLIDE )(this, _body, contact_position, contact_normal );
         EVENTABLE_METHOD( this, EVENT_BOX2DBODY_BEGIN_CONTACT )
-            ->onBox2DBodyBeginContact( _body, contact_position, contact_normal );
+            ->onBox2DBodyBeginContact( _body, _contact );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Box2DBody::onEndContact( Box2DBody * _body, b2Contact * _contact )
 	{
-		(void)_contact;
-
 		if( this->hasEventReceiver( EVENT_BOX2DBODY_END_CONTACT ) == false )
 		{
 			return;
 		}
 
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_END_COLLIDE )(this, _body);
 		EVENTABLE_METHOD( this, EVENT_BOX2DBODY_END_CONTACT )
-			->onBox2DBodyEndContact( _body );
+			->onBox2DBodyEndContact( _body, _contact );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Box2DBody::onPreSolve( Box2DBody * _body, b2Contact * _contact )
+	void Box2DBody::onPreSolve( Box2DBody * _body, b2Contact * _contact, const b2Manifold* _oldManifold )
 	{
 		if( this->hasEventReceiver( EVENT_BOX2DBODY_PRE_SOLVE ) == false )
 		{
 			return;
 		}
 
-		b2WorldManifold worldManifold;
-		_contact->GetWorldManifold( &worldManifold );
+		//b2WorldManifold worldManifold;
+		//_contact->GetWorldManifold( &worldManifold );
 
-		mt::vec2f contact_position = Box2DScalerFromWorld( worldManifold.points[0] );
-		mt::vec2f contact_normal = Box2DScalerFromWorld( worldManifold.normal );
+		//mt::vec2f contact_position = Box2DScalerFromWorld( worldManifold.points[0] );
+		//mt::vec2f contact_normal = Box2DScalerFromWorld( worldManifold.normal );
 
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_UPDATE_COLLIDE )(this, _body, contact_position, contact_normal);
         EVENTABLE_METHOD( this, EVENT_BOX2DBODY_PRE_SOLVE )
-            ->onBox2DBodyPreSolve( _body, contact_position, contact_normal );
+            ->onBox2DBodyPreSolve( _body, _contact, _oldManifold );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Box2DBody::onPostSolve( Box2DBody * _body, b2Contact * _contact )
+	void Box2DBody::onPostSolve( Box2DBody * _body, b2Contact * _contact, const b2ContactImpulse* _impulse )
 	{
 		if( this->hasEventReceiver( EVENT_BOX2DBODY_POST_SOLVE ) == false )
 		{
 			return;
 		}
 
-		b2WorldManifold worldManifold;
-		_contact->GetWorldManifold( &worldManifold );
+		//b2WorldManifold worldManifold;
+		//_contact->GetWorldManifold( &worldManifold );
 
-		mt::vec2f contact_position = Box2DScalerFromWorld( worldManifold.points[0] );
-		mt::vec2f contact_normal = Box2DScalerFromWorld( worldManifold.normal );
+		//mt::vec2f contact_position = Box2DScalerFromWorld( worldManifold.points[0] );
+		//mt::vec2f contact_normal = Box2DScalerFromWorld( worldManifold.normal );
 
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_BOX2DBODY_UPDATE_COLLIDE )(this, _body, contact_position, contact_normal);
 		EVENTABLE_METHOD( this, EVENT_BOX2DBODY_POST_SOLVE )
-			->onBox2DBodyPostSolve( _body, contact_position, contact_normal );
+			->onBox2DBodyPostSolve( _body, _contact, _impulse );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Box2DBody::setLinearDumping( float _dumping )
@@ -391,6 +385,17 @@ namespace Menge
 			fixture->SetFilterData( filter );
 			//may be not need : m_world->Refilter( shape );
 			fixture = fixture->GetNext();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Box2DBody::filterContactList( const pybind::object & _filter, const pybind::detail::args_operator_t & _args )
+	{
+		for( b2ContactEdge* ce = m_body->GetContactList(); ce; ce = ce->next )
+		{
+			b2Contact* c = ce->contact;
+			b2Body* b = ce->other;
+
+			_filter.call_args( c, b, _args );
 		}
 	}
 }

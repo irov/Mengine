@@ -50,9 +50,6 @@ namespace Menge
 #	define CONFIG_VALUE( serviceProvider, section, key, default )\
 	(CONFIG_SERVICE( serviceProvider )->getValue( section, key, default ))
 
-#	define CONFIG_ADD( serviceProvider, section, key, value )\
-	(CONFIG_SERVICE( serviceProvider )->addValue( section, key, value ))
-
 #	define CONFIG_SET( serviceProvider, section, key, value )\
 	(CONFIG_SERVICE( serviceProvider )->setValue( section, key, value ))
 

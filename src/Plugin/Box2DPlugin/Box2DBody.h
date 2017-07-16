@@ -14,14 +14,25 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	enum Box2DBodyEventFlag
+	{
+		EVENT_BOX2DBODY_BEGIN_CONTACT,
+		EVENT_BOX2DBODY_END_CONTACT,
+		EVENT_BOX2DBODY_PRE_SOLVE,
+		EVENT_BOX2DBODY_POST_SOLVE,
+		EVENT_BOX2DBODY_UPDATE_CONTACT,
+	};
     //////////////////////////////////////////////////////////////////////////
     class Box2DBodyEventReceiver
         : public EventReceiver
     {
     public:
-        virtual void onBox2DBodyBeginCollide( class Box2DBody * _self, class Box2DBody * _other, const mt::vec2f & _position, const mt::vec2f & _normal ) = 0;
-        virtual void onBox2DBodyUpdateCollide( class Box2DBody * _self, class Box2DBody * _other, const mt::vec2f & _position, const mt::vec2f & _normal ) = 0;
-        virtual void onBox2DBodyEndCollide( class Box2DBody * _self, class Box2DBody * _other ) = 0;
+        virtual void onBox2DBodyBeginContact( class Box2DBody * _other, b2Contact * _contact ) = 0;
+		virtual void onBox2DBodyEndContact( class Box2DBody * _other, b2Contact * _contact ) = 0;
+
+		virtual void onBox2DBodyPreSolve( class Box2DBody * _other, b2Contact * _contact, const b2Manifold* _manifold ) = 0;
+		virtual void onBox2DBodyPostSolve( class Box2DBody * _other, b2Contact * _contact, const b2ContactImpulse* _impulse ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<Box2DBodyEventReceiver> Box2DBodyEventReceiverPtr;
@@ -46,23 +57,24 @@ namespace Menge
 		const pybind::object & getUserData() const;
 
 	public:
-		void onBeginCollide( Box2DBody * _body, b2Contact * _contact );
-		void onUpdateCollide( Box2DBody * _body, b2Contact * _contact );
-		void onEndCollide( Box2DBody * _body, b2Contact * _contact );
+		void onBeginContact( Box2DBody * _body, b2Contact * _contact );		
+		void onEndContact( Box2DBody * _body, b2Contact * _contact );
+		void onPreSolve( Box2DBody * _body, b2Contact * _contact, const b2Manifold* _oldManifold );
+		void onPostSolve( Box2DBody * _body, b2Contact * _contact, const b2ContactImpulse* _impulse );
 
     public:
 		void setBody( b2Body * _body );
 		b2Body * getBody() const;
 
     public:
-		bool addShapeConvex( const Menge::Polygon & _vertices, float _density, float _friction, float _restitution, bool _isSensor,
-            unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex );
-        bool addShapeCircle( float _radius, const mt::vec2f& _localPos,
-            float _density, float _friction, float _restitution, bool _isSensor,
-            unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex );
-		bool addShapeBox( float _width, float _height, const mt::vec2f& _localPos, float _angle,
-            float _density, float _friction, float _restitution, bool _isSensor,
-            unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex );
+		bool addShapeConvex( const Menge::Polygon & _vertices, float _density, float _friction, float _restitution, bool _isSensor
+			, unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex );
+        bool addShapeCircle( float _radius, const mt::vec2f& _localPos
+			, float _density, float _friction, float _restitution, bool _isSensor
+			, unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex );
+		bool addShapeBox( float _width, float _height, const mt::vec2f& _localPos, float _angle
+			, float _density, float _friction, float _restitution, bool _isSensor
+			, unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex );
 
 	public:
 		mt::vec2f GetPosition() const;
@@ -101,8 +113,7 @@ namespace Menge
 
 		void updateFilterData( uint16_t _categoryBits, uint16_t _collisionMask, int16_t _groupIndex );
 
-	//protected:
-	//	void _setEventListener( const pybind::dict & _embed ) override;
+		void filterContactList( const pybind::object & _filter, const pybind::detail::args_operator_t & _args );
 
 	protected:
         b2World* m_world;

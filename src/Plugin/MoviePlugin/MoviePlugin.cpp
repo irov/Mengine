@@ -3,6 +3,7 @@
 #	include "Interface/PrototypeManagerInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/ScriptSystemInterface.h"
+#	include "Interface/ConfigInterface.h"
 
 #   include "Kernel/ScriptWrapper.h"
 
@@ -112,11 +113,28 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool MoviePlugin::_avaliable()
+	{
+		m_hashkey = CONFIG_VALUE( m_serviceProvider, "MoviePlugin", "HASHKEY", "" );
+
+		if( m_hashkey.empty() == true )
+		{
+			return false;
+		}
+
+		if( m_hashkey.size() != 20 )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool MoviePlugin::_initialize()
 	{
 		pybind::kernel_interface * kernel = pybind::get_kernel();
-
-		m_instance = ae_create_movie_instance( &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, &stdex_movie_logerror, this );
+		
+		m_instance = ae_create_movie_instance( m_hashkey.c_str(), &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, &stdex_movie_logerror, this );
 
 		pybind::interface_<Movie2, pybind::bases<Node, Animatable> >( kernel, "Movie2", false )
 			.def( "setResourceMovie2", &Movie2::setResourceMovie2 )

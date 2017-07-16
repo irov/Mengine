@@ -16,10 +16,15 @@ namespace Menge
 		MoviePlugin();
 
 	protected:
+		bool _avaliable() override;
+
+	protected:
 		bool _initialize() override;
 		void _finalize() override;
 
 	protected:
 		aeMovieInstance * m_instance;
+
+		String m_hashkey;
 	};
 }

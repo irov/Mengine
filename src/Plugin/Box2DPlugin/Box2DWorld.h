@@ -11,7 +11,7 @@
 
 #	include "pybind/object.hpp"
 
-#	include <vector>
+#	include "stdex/stl_vector.h"
 
 namespace Menge
 {
@@ -34,7 +34,7 @@ namespace Menge
 		bool isDead() const;
 
     public:
-		bool initialize( const mt::vec2f& _gravity );
+		bool initialize( const mt::vec2f& _gravity, const pybind::object & _update, const pybind::detail::args_operator_t & _update_args );
 		void finalize();
 
 	public:
@@ -132,26 +132,20 @@ namespace Menge
 
         b2World * m_world;
 
+		pybind::object m_update;
+		pybind::detail::args_operator_t m_update_args;
+
 		float m_timeStep;
 		uint32_t m_velocityIterations;
 		uint32_t m_positionIterations;
-
-		struct ContactDef
-		{
-			b2Contact * contact;
-			uint32_t mode;
-		};
-
-		typedef std::vector<ContactDef> TVectorContact;
-        TVectorContact m_contacts;
-        
+       
         struct JoinDef
         {
             b2JointDef * def;
             Box2DJoint * join;
         };
 
-        typedef std::vector<JoinDef> TVectorJoints;
+        typedef stdex::vector<JoinDef> TVectorJoints;
         TVectorJoints m_joints;
     };
 }

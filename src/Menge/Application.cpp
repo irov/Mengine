@@ -1755,7 +1755,7 @@ namespace Menge
 
         this->invalidateWindow_();
 
-        bool fullscreen = this->getFullscreenMode();        
+        bool fullscreen = this->getFullscreenMode();
 		
 		GAME_SERVICE(m_serviceProvider)
 			->setFullscreen( m_currentResolution, fullscreen );

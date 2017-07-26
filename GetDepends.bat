@@ -17,7 +17,7 @@ unzip -o 7za920.zip 7za.exe
 
 call:getdepend http://downloads.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.7z boost_1_63_0.7z boost_1_63_0 boost
 
-call:getdepend https://cmake.org/files/v3.7/cmake-3.7.2-win64-x64.zip cmake-3.7.2-win64-x64.zip cmake-3.7.2-win64-x64 cmake
+call:getdepend https://cmake.org/files/v3.8/cmake-3.8.2-win64-x64.zip cmake-3.8.2-win64-x64.zip cmake-3.8.2-win64-x64 cmake
 call:getdepend http://download.sourceforge.net/libpng/lpng1628.zip lpng1628.zip lpng1628 libpng
 call:getdepend http://www.ijg.org/files/jpegsr9b.zip jpegsr9b.zip jpeg-9b libjpeg
 call:getdepend http://www.zlib.net/zlib-1.2.11.tar.gz zlib-1.2.11.tar zlib-1.2.11 zlib
@@ -29,7 +29,7 @@ call:getdepend_2 https://storage.googleapis.com/downloads.webmproject.org/releas
 
 call:getdepend_2 http://kcat.strangesoft.net/openal-releases/openal-soft-1.17.2.tar.bz2 openal-soft-1.17.2.tar.bz2 openal-soft-1.17.2.tar openal-soft-1.17.2 openal-soft
 call:getdepend_2 https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz Python-2.7.13.tgz Python-2.7.13.tar Python-2.7.13 Python
-call:getdepend_2 https://www.python.org/ftp/python/3.5.1/Python-3.5.1.tgz Python-3.5.1.tgz Python-3.5.1.tar Python-3.5.1 Python3
+call:getdepend_2 https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tgz Python-3.6.1.tgz Python-3.6.1.tar Python-3.6.1 Python3
 
 call:getdepend http://www.astralax.ru/download/programm/dev/magic_win.zip magic_win.zip win astralax
 call:getdepend https://www.libsdl.org/release/SDL2-2.0.5.zip SDL2-2.0.5.zip SDL2-2.0.5 SDL2

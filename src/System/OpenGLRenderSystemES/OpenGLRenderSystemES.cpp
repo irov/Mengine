@@ -812,6 +812,16 @@ namespace Menge
 
 		OpenGLRenderImageESPtr image = m_factoryRenderImage->createObject();
 
+		if( image == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createImage invalid create"
+				);
+
+			return nullptr;
+		}
+
+		image->setServiceProvider( m_serviceProvider );
+
 		if( image->initialize( ERIM_NORMAL
 			, _mipmaps
 			, _width
@@ -1030,6 +1040,16 @@ namespace Menge
 		}
 
 		OpenGLRenderImageESPtr image = m_factoryRenderImage->createObject();
+
+		if( image == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createDynamicImage invalid create"
+				);
+
+			return nullptr;
+		}
+
+		image->setServiceProvider( m_serviceProvider );
 
 		if( image->initialize( ERIM_DYNAMIC
 			, 1

@@ -58,6 +58,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystemES::_finalize()
     {
+		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			TextureStage & stage = m_textureStage[i];
+
+			if( stage.texture != nullptr )
+			{
+				stdex::intrusive_ptr_release( stage.texture );
+				stage.texture = nullptr;
+			}
+		}
+
 		m_currentIndexBuffer = nullptr;
 		m_currentVertexBuffer = nullptr;
 
@@ -560,15 +571,17 @@ namespace Menge
 	{        
         TextureStage & tStage = m_textureStage[_stage];
 
+		if( tStage.texture != nullptr )
+		{
+			stdex::intrusive_ptr_release( tStage.texture );
+			tStage.texture = nullptr;
+		}
+
         if( _texture != nullptr )
         {
             OpenGLRenderImageES * texture = stdex::intrusive_get<OpenGLRenderImageES *>(_texture);
             
 			stdex::intrusive_ptr_setup( tStage.texture, texture );
-        }
-        else
-        {			
-			stdex::intrusive_ptr_release( tStage.texture );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////

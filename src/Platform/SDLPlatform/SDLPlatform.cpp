@@ -218,7 +218,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initialize()
     {
-        if( SDL_Init(SDL_INIT_EVERYTHING) < 0 )
+        if( SDL_Init(SDL_INIT_VIDEO) < 0 )
         {
             LOGGER_CRITICAL(m_serviceProvider)("SDL initialization failed");
             return false;
@@ -413,8 +413,8 @@ namespace Menge
         
         ;
         
-//        APPLICATION_SERVICE(m_serviceProvider)
-//        ->changeWindowResolution(Resolution(dw, dh));
+        APPLICATION_SERVICE(m_serviceProvider)
+            ->changeWindowResolution(Resolution(dw, dh));
 //#    endif
         
         return true;
@@ -1008,19 +1008,22 @@ namespace Menge
 		}
 #	endif
 
-
-    int width = static_cast<int>(_resolution.getWidth());
-    int height = static_cast<int>(_resolution.getHeight());
-
 #	if TARGET_OS_IPHONE
+        SDL_DisplayMode mode;
+        SDL_GetCurrentDisplayMode(0, &mode);
+        
         m_window = SDL_CreateWindow( utf8Title
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED
-            , -1
-            , -1
+            , mode.w
+            , mode.h
             , windowFlags
                                     );
 #else
+        
+        int width = static_cast<int>(_resolution.getWidth());
+        int height = static_cast<int>(_resolution.getHeight());
+        
         m_window = SDL_CreateWindow( utf8Title
                                     , SDL_WINDOWPOS_CENTERED
                                     , SDL_WINDOWPOS_CENTERED

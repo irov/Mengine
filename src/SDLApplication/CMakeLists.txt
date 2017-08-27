@@ -30,7 +30,48 @@ ADD_EXECUTABLE( ${MY_LIB_NAME} WIN32 ${SRC_FILES} )
 endif()
 
 if(MENGINE_PLATFORM_IOS)
-set(myApp_ICON ~/Desktop/icon.icns)
+set(myApp_ICON 
+	~/Desktop/deploy-ios-icons/Default-568h@2x.png
+	~/Desktop/deploy-ios-icons/Default-568h@2x.png
+	~/Desktop/deploy-ios-icons/Default-667h@2x.png
+	~/Desktop/deploy-ios-icons/Default-736h@3x.png
+	~/Desktop/deploy-ios-icons/Default-Landscape-568h@2x.png
+	~/Desktop/deploy-ios-icons/Default-Landscape-667h@2x.png
+	~/Desktop/deploy-ios-icons/Default-Landscape-736h@2x.png
+	~/Desktop/deploy-ios-icons/Default-Landscape-1366@2x.png
+	~/Desktop/deploy-ios-icons/Default-Landscape.png
+	~/Desktop/deploy-ios-icons/Default-Landscape@2x.png
+	~/Desktop/deploy-ios-icons/Default-Portrait-1366@2x.png
+	~/Desktop/deploy-ios-icons/Default-Portrait.png
+	~/Desktop/deploy-ios-icons/Default-Portrait@2x.png
+	~/Desktop/deploy-ios-icons/Default.png
+	~/Desktop/deploy-ios-icons/Default@2x.png
+	~/Desktop/deploy-ios-icons/Icon-App-20x20@1x.png
+	~/Desktop/deploy-ios-icons/Icon-App-20x20@2x.png
+	~/Desktop/deploy-ios-icons/Icon-App-20x20@3x.png
+	~/Desktop/deploy-ios-icons/Icon-App-29x29@1x.png
+	~/Desktop/deploy-ios-icons/Icon-App-29x29@2x.png
+	~/Desktop/deploy-ios-icons/Icon-App-29x29@3x.png
+	~/Desktop/deploy-ios-icons/Icon-App-40x40@1x.png
+	~/Desktop/deploy-ios-icons/Icon-App-40x40@2x.png
+	~/Desktop/deploy-ios-icons/Icon-App-40x40@3x.png
+	~/Desktop/deploy-ios-icons/Icon-App-57x57@1x.png
+	~/Desktop/deploy-ios-icons/Icon-App-57x57@2x.png
+	~/Desktop/deploy-ios-icons/Icon-App-60x60@1x.png
+	~/Desktop/deploy-ios-icons/Icon-App-60x60@2x.png
+	~/Desktop/deploy-ios-icons/Icon-App-60x60@3x.png
+	~/Desktop/deploy-ios-icons/Icon-App-72x72@1x.png
+	~/Desktop/deploy-ios-icons/Icon-App-72x72@2x.png
+	~/Desktop/deploy-ios-icons/Icon-App-76x76@1x.png
+	~/Desktop/deploy-ios-icons/Icon-App-76x76@2x.png
+	~/Desktop/deploy-ios-icons/Icon-App-76x76@3x.png
+	~/Desktop/deploy-ios-icons/Icon-App-83.5x83.5@2x.png
+	~/Desktop/deploy-ios-icons/Icon-Small-50x50@1x.png
+	~/Desktop/deploy-ios-icons/Icon-Small-50x50@2x.png
+	~/Desktop/deploy-ios-icons/iTunesArtwork@1x.png
+	~/Desktop/deploy-ios-icons/iTunesArtwork@2x.png
+	~/Desktop/deploy-ios-icons/iTunesArtwork@3x.png
+)
 set_source_files_properties(${myApp_ICON} PROPERTIES
        MACOSX_PACKAGE_LOCATION "Resources")
 
@@ -103,7 +144,9 @@ IF(MENGINE_PLATFORM_IOS)
   ADD_FRAMEWORK(${MY_LIB_NAME} Security)
 
 set_target_properties(
-    ${MY_LIB_NAME} PROPERTIES XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2"
+    ${MY_LIB_NAME} PROPERTIES 
+	XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2"
+	XCODE_ATTRIBUTE_COMBINE_HIDPI_IMAGES "NO"
 )
 
 #set_target_properties(${MY_LIB_NAME} PROPERTIES

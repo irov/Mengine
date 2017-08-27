@@ -23,6 +23,12 @@ ModulePathFinder
 )
 
 ADD_FILTER(
+ModuleJumpcraft
+    ModuleJumpcraft.h
+    ModuleJumpcraft.cpp
+    )
+
+ADD_FILTER(
 ModuleBurritoWorld
     ModuleBurritoWorld.cpp
 	ModuleBurritoWorld.h
@@ -101,6 +107,7 @@ ModuleInvader
 
 INCLUDE_DIRECTORIES(    
     ${Mengine_SOURCE_DIR}/Utils     
+    ${THIRDPARTY_DIR}/Box2D
     ${THIRDPARTY_DIR}/metabuf
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/fastpathfinder/include

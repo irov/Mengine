@@ -7256,6 +7256,8 @@ namespace Menge
 			;
 
 		pybind::interface_<ResourceHIT, pybind::bases<ResourceReference> >( kernel, "ResourceHIT", false )
+			.def( "getWidth", &ResourceHIT::getWidth )
+			.def( "getHeight", &ResourceHIT::getHeight )
 			;
 
 		pybind::interface_<Renderable>( kernel, "Renderable" )

@@ -84,6 +84,7 @@ namespace Menge
 		};
 
 		Camera * addCamera( const ConstString & _name, RenderCameraProjection * _projection, RenderViewport * _viewport );
+        bool removeCamera( const ConstString & _name );
 		bool hasCamera( const ConstString & _name ) const;
 
 		bool getCamera( const ConstString & _name, Camera ** _camera );

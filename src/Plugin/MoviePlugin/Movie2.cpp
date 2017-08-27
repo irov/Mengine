@@ -131,7 +131,7 @@ namespace Menge
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_node_camera( const aeMovieCameraProviderCallbackData * _callbackData, void * _data )
+	static void * ae_movie_composition_camera_provider( const aeMovieCameraProviderCallbackData * _callbackData, void * _data )
 	{
 		Movie2 * movie2 = (Movie2 *)_data;
 
@@ -150,15 +150,18 @@ namespace Menge
 
 		renderCameraProjection->setName( c_name );
 
+        mt::vec3f cameraTarget;
+        cameraTarget.from_f3( _callbackData->target );
 		mt::vec3f cameraPosition;
 		cameraPosition.from_f3( _callbackData->position );
+
 		mt::vec3f cameraDirection;
-		cameraDirection.from_f3( _callbackData->direction );
+		mt::norm_v3_v3( cameraDirection, cameraTarget - cameraPosition );
 
 		float aspect = _callbackData->width / _callbackData->height;
-		
-		renderCameraProjection->setLocalPosition( cameraPosition );
-		renderCameraProjection->setDirection( cameraDirection, mt::vec3f(0.f, 1.f, 0.f) );
+
+		renderCameraProjection->setCameraPosition( cameraPosition );
+		renderCameraProjection->setCameraDirection( cameraDirection );
 		renderCameraProjection->setCameraFOV( _callbackData->fov );
 		renderCameraProjection->setCameraAspect( aspect );
 		
@@ -180,6 +183,36 @@ namespace Menge
 
 		return new_camera;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    static void ae_movie_composition_camera_destroyer( const aeMovieCameraDestroyCallbackData * _callbackData, void * _data )
+    {
+        Movie2 * movie2 = (Movie2 *)_data;
+
+        ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+        
+        ConstString c_name = Helper::stringizeString( serviceProvider, _callbackData->name );
+
+        movie2->removeCamera( c_name );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void ae_movie_composition_camera_update( const aeMovieCameraUpdateCallbackData * _callbackData, void * _data )
+    {
+        (void)_data;
+
+        Movie2::Camera * camera = (Movie2::Camera *)(_callbackData->element);
+        
+        //camera
+        mt::vec3f cameraTarget;
+        cameraTarget.from_f3( _callbackData->target );
+        mt::vec3f cameraPosition;
+        cameraPosition.from_f3( _callbackData->position );
+
+        mt::vec3f cameraDirection;
+        mt::norm_v3_v3( cameraDirection, cameraTarget - cameraPosition );
+
+        camera->projection->setCameraPosition( cameraPosition );
+        camera->projection->setCameraDirection( cameraDirection );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	static void * ae_movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, void * _data )
 	{
@@ -527,6 +560,25 @@ namespace Menge
 
 		return new_camera;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::removeCamera( const ConstString & _name )
+    {
+        TMapCamera::iterator it_found = m_cameras.find( _name );
+
+        if( it_found == m_cameras.end() )
+        {
+            return false;
+        }
+
+        Camera & c = it_found->second;
+
+        c.projection->destroy();
+        c.viewport->destroy();
+
+        m_cameras.erase( it_found );
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie2::hasCamera( const ConstString & _name ) const
 	{ 
@@ -593,11 +645,14 @@ namespace Menge
 		}
 
 		aeMovieCompositionProviders providers;
-		providers.camera_provider = &ae_movie_composition_node_camera;
+		providers.camera_provider = &ae_movie_composition_camera_provider;
+        providers.camera_destroyer = &ae_movie_composition_camera_destroyer;
+        providers.camera_update = &ae_movie_composition_camera_update;
+
 		providers.node_provider = &ae_movie_composition_node_provider;
 		providers.node_destroyer = &ae_movie_composition_node_destroyer;
-
 		providers.node_update = &ae_movie_composition_node_update;
+
 		providers.track_matte_update = &ae_movie_composition_track_matte_update;
 
 		providers.composition_event = &ae_movie_composition_event;
@@ -825,6 +880,9 @@ namespace Menge
 		m_meshes.clear();
 
 		const mt::mat4f & wm = this->getWorldMatrix();
+
+        ae_voidptr_t composition_camera_data = ae_get_movie_composition_camera_data( m_composition );
+        (void)composition_camera_data;
 
 		uint32_t mesh_iterator = 0;
 

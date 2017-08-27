@@ -329,7 +329,7 @@ namespace Menge
             APPLICATION_SERVICE( m_serviceProvider )
                 ->endUpdate();
 
-            SDL_Delay( 0 );
+            SDL_Delay( 1 );
         }
     }
     //////////////////////////////////////////////////////////////////////////

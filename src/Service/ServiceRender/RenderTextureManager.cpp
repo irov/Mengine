@@ -353,6 +353,12 @@ namespace Menge
 			}
 		}
 
+		//RenderTextureInterfacePtr atlas_texture;
+		//if( this->findInAtlas( _pakName, _fileName, &atlas_texture ) == true )
+		//{
+		//	return atlas_texture;
+		//}
+
         DecoderRenderImageProviderPtr imageProvider = m_factoryDecoderRenderImageProvider->createObject();
 
 		if( imageProvider == nullptr )

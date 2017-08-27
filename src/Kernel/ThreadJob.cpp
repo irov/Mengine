@@ -8,7 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadJob::ThreadJob()
-		: m_sleep(0)
+		: m_sleep(1)
 		, m_enumerator(0)
 	{
 	}

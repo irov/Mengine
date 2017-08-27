@@ -122,7 +122,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_hashkey.size() != 20 )
+		if( m_hashkey.size() != 40 )
 		{
 			return false;
 		}

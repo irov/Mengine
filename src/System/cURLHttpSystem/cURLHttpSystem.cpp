@@ -5,6 +5,7 @@
 
 #	include "ThreadTaskGetMessage.h"
 #	include "ThreadTaskPostMessage.h"
+#	include "ThreadTaskHeaderData.h"
 #	include "ThreadTaskGetAsset.h"
 
 #	include "Factory/FactoryPool.h"
@@ -30,7 +31,7 @@ namespace Menge
 
 		if( code != CURLE_OK )
 		{
-			LOGGER_ERROR(m_serviceProvider)("CurlHttpSystem::initialize invalid initialize curl %d:%s"
+			LOGGER_ERROR(m_serviceProvider)("cURLHttpSystem::initialize invalid initialize curl %d:%s"
 				, code
 				, curl_easy_strerror(code)
 				);
@@ -46,6 +47,7 @@ namespace Menge
 
 		m_factoryTaskGetMessage = new FactoryPool<ThreadTaskGetMessage, 8>( m_serviceProvider );
 		m_factoryTaskPostMessage = new FactoryPool<ThreadTaskPostMessage, 8>( m_serviceProvider );
+        m_factoryTaskHeaderData = new FactoryPool<ThreadTaskHeaderData, 8>( m_serviceProvider );
 		m_factoryTaskDownloadAsset = new FactoryPool<ThreadTaskGetAsset, 8>( m_serviceProvider );
 
 		return true;
@@ -58,6 +60,7 @@ namespace Menge
 		
 		m_factoryTaskDownloadAsset = nullptr;
 		m_factoryTaskPostMessage = nullptr;
+        m_factoryTaskHeaderData = nullptr;
 		m_factoryTaskGetMessage = nullptr;
 
 		curl_global_cleanup();
@@ -75,7 +78,7 @@ namespace Menge
 		if( THREAD_SERVICE( m_serviceProvider )
 			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ), task ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::getMessage url '%s' invalid add task"
+			LOGGER_ERROR( m_serviceProvider )("cURLHttpSystem::getMessage url '%s' invalid add task"
 				, _url.c_str()
 				);
 
@@ -104,7 +107,7 @@ namespace Menge
 		if( THREAD_SERVICE( m_serviceProvider )
 			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ), task ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::postMessage url '%s' invalid add task"
+			LOGGER_ERROR( m_serviceProvider )("cURLHttpSystem::postMessage url '%s' invalid add task"
 				, _url.c_str()
 				);
 
@@ -120,6 +123,35 @@ namespace Menge
 
 		return task_id;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    HttpRequestID cURLHttpSystem::headerData( const String & _url, const TVectorString & _headers, const String & _data, HttpReceiver * _receiver )
+    {
+        uint32_t task_id = ++m_enumeratorReceivers;
+
+        ThreadTaskHeaderDataPtr task = m_factoryTaskHeaderData->createObject();
+
+        task->setServiceProvider( m_serviceProvider );
+        task->initialize( _url, _headers, _data, task_id, this );
+
+        if( THREAD_SERVICE( m_serviceProvider )
+            ->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ), task ) == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("cURLHttpSystem::headerData url '%s' invalid add task"
+                , _url.c_str()
+                );
+
+            return 0;
+        }
+
+        HttpReceiverDesc desc;
+        desc.id = task_id;
+        desc.task = task;
+        desc.receiver = _receiver;
+
+        m_receiverDescs.push_back( desc );
+
+        return task_id;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	HttpRequestID cURLHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver )
 	{
@@ -199,35 +231,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void cURLHttpSystem::onDownloadAssetComplete( HttpRequestID _id, uint32_t _code, bool _successful )
-	{
-		for( TVectorHttpReceiverDesc::iterator
-			it = m_receiverDescs.begin(),
-			it_end = m_receiverDescs.end();
-		it != it_end;
-		++it )
-		{
-			HttpReceiverDesc & desc = *it;
-
-			if( desc.id != _id )
-			{
-				continue;
-			}
-
-			HttpReceiver * receiver = desc.receiver;
-
-			m_receiverDescs.erase( it );
-
-			if( receiver != nullptr)
-			{
-				receiver->onDownloadAssetComplete( _id, _code, _successful );
-			}
-			
-			break;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void cURLHttpSystem::onGetMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful )
+	void cURLHttpSystem::onHttpRequestComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful )
 	{
 		for( TVectorHttpReceiverDesc::iterator
 			it = m_receiverDescs.begin(),
@@ -248,35 +252,7 @@ namespace Menge
 
 			if( receiver != nullptr )
 			{
-				receiver->onGetMessageComplete( _id, _response, _code, _successful );
-			}
-
-			break;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void cURLHttpSystem::onPostMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful )
-	{
-		for( TVectorHttpReceiverDesc::iterator
-			it = m_receiverDescs.begin(),
-			it_end = m_receiverDescs.end();
-			it != it_end;
-			++it )
-		{
-			HttpReceiverDesc & desc = *it;
-
-			if( desc.id != _id )
-			{
-				continue;
-			}
-
-			HttpReceiver * receiver = desc.receiver;
-
-			m_receiverDescs.erase( it );
-
-			if( receiver != nullptr )
-			{
-				receiver->onPostMessageComplete( _id, _response, _code, _successful );
+				receiver->onHttpRequestComplete( _id, _response, _code, _successful );
 			}
 
 			break;

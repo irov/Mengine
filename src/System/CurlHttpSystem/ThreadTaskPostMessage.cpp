@@ -74,7 +74,7 @@ namespace Menge
 		}
 
 		curl_easy_setopt( curl, CURLOPT_HTTPPOST, formpost );
-
+        
 		/* send all data to this function  */
 		curl_easy_setopt( curl, CURLOPT_WRITEDATA, (void *)this );
 		curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, &s_writeRequestPerformerResponse );
@@ -88,6 +88,7 @@ namespace Menge
 		m_code = (uint32_t)http_code;		
 
 		curl_formfree( formpost );
+
 		curl_easy_cleanup( curl );
 
 		/* check for errors */
@@ -114,6 +115,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskPostMessage::_onComplete( bool _successful )
 	{
-		m_receiver->onPostMessageComplete( m_id, m_response, m_code, _successful );
+		m_receiver->onHttpRequestComplete( m_id, m_response, m_code, _successful );
 	}
 }

@@ -92,6 +92,7 @@ namespace Menge
 		CURL * curl = curl_easy_init();
 
 		curl_easy_setopt( curl, CURLOPT_URL, m_url.c_str() );
+
 		curl_easy_setopt( curl, CURLOPT_USERNAME, m_login.c_str() );
 		curl_easy_setopt( curl, CURLOPT_PASSWORD, m_password.c_str() );
 
@@ -120,7 +121,7 @@ namespace Menge
 		m_code = (uint32_t)http_code;
 
 		curl_easy_cleanup( curl );
-
+        
 		/* check for errors */
 		if( res == CURLE_ABORTED_BY_CALLBACK )
 		{
@@ -145,6 +146,6 @@ namespace Menge
 		m_stream->flush();
 		m_stream = nullptr;
 		
-		m_receiver->onDownloadAssetComplete( m_id, m_code, _successful );
+		m_receiver->onHttpRequestComplete( m_id, "", m_code, _successful );
 	}
 }

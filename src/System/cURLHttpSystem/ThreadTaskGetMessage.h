@@ -30,7 +30,7 @@ namespace Menge
 
 	protected:		
 		String m_url;
-
+        
 		HttpRequestID m_id;
 		HttpReceiver * m_receiver;
 

@@ -24,15 +24,16 @@ namespace Menge
 	protected:
 		HttpRequestID getMessage( const String & _url, HttpReceiver * _receiver ) override;
 		HttpRequestID postMessage( const String & _url, const TMapParams & _params, HttpReceiver * _receiver ) override;
-		HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver ) override;
+        HttpRequestID headerData( const String & _url, const TVectorString & _headers, const String & _data, HttpReceiver * _receiver ) override;
 
+    protected:
+		HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver ) override;
+        
 	protected:
 		bool cancelRequest( HttpRequestID _id ) override;
 
 	private:
-		void onDownloadAssetComplete( HttpRequestID _id, uint32_t _code, bool _successful ) override;
-		void onPostMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override;
-		void onGetMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override;
+		void onHttpRequestComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override;
 
 	protected:
 		uint32_t m_enumeratorReceivers;
@@ -49,6 +50,7 @@ namespace Menge
 
 		FactoryPtr m_factoryTaskGetMessage;
 		FactoryPtr m_factoryTaskPostMessage;
+        FactoryPtr m_factoryTaskHeaderData;
 		FactoryPtr m_factoryTaskDownloadAsset;
 	};
 }

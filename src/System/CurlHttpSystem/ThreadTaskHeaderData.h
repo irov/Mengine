@@ -7,14 +7,14 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class ThreadTaskPostMessage
+	class ThreadTaskHeaderData
 		: public ThreadTask
 	{
 	public:
-		ThreadTaskPostMessage();
+        ThreadTaskHeaderData();
 		
 	public:
-		bool initialize( const String & _url, const TMapParams & _params, HttpRequestID _id, HttpReceiver * _receiver );
+		bool initialize( const String & _url, const TVectorString & _headers, const String & _data, HttpRequestID _id, HttpReceiver * _receiver );
 
 	protected:
 		bool _onRun() override;
@@ -30,7 +30,8 @@ namespace Menge
 
 	protected:		
 		String m_url;
-        TMapParams m_params;
+        TVectorString m_headers;
+        String m_data;
 
 		HttpRequestID m_id;
 		HttpReceiver * m_receiver;
@@ -41,6 +42,6 @@ namespace Menge
 		bool m_successful;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadTaskPostMessage> ThreadTaskPostMessagePtr;
+	typedef stdex::intrusive_ptr<ThreadTaskHeaderData> ThreadTaskHeaderDataPtr;
 	//////////////////////////////////////////////////////////////////////////
 }

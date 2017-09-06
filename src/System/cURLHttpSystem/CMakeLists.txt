@@ -12,6 +12,8 @@ src
     ThreadTaskPostMessage.cpp
     ThreadTaskGetAsset.h
     ThreadTaskGetAsset.cpp
+    ThreadTaskHeaderData.h
+    ThreadTaskHeaderData.cpp
 )
 
 add_definitions(-DCURL_STATICLIB)

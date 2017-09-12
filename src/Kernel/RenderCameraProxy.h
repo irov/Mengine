@@ -23,6 +23,7 @@ namespace Menge
 
 	protected:
 		const mt::mat4f & getCameraViewProjectionMatrix() const override;
+        const mt::mat4f & getCameraViewProjectionMatrixInv() const override;
 
 	protected:		
 		mt::mat4f m_viewMatrix;
@@ -31,6 +32,7 @@ namespace Menge
 		mt::mat4f m_projectionMatrixInv;
 
 		mt::mat4f m_viewProjectionMatrix;
+        mt::mat4f m_viewProjectionMatrixInv;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & RenderCameraProxy::getCameraViewMatrixInv() const
@@ -57,4 +59,9 @@ namespace Menge
 	{ 
 		return m_viewProjectionMatrix;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    inline const mt::mat4f & RenderCameraProxy::getCameraViewProjectionMatrixInv() const
+    {
+        return m_viewProjectionMatrixInv;
+    }
 }

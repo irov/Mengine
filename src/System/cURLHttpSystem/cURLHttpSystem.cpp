@@ -73,7 +73,9 @@ namespace Menge
 		ThreadTaskGetMessagePtr task = m_factoryTaskGetMessage->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( _url, task_id, this );
+        task->setRequestId( task_id );
+        task->setReceiver( this );
+		task->initialize( _url );
 
 		if( THREAD_SERVICE( m_serviceProvider )
 			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ), task ) == false )
@@ -102,7 +104,9 @@ namespace Menge
 		ThreadTaskPostMessagePtr task = m_factoryTaskPostMessage->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( _url, _params, task_id, this );
+        task->setRequestId( task_id );
+        task->setReceiver( this );
+		task->initialize( _url, _params );
 
 		if( THREAD_SERVICE( m_serviceProvider )
 			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ), task ) == false )
@@ -131,7 +135,9 @@ namespace Menge
         ThreadTaskHeaderDataPtr task = m_factoryTaskHeaderData->createObject();
 
         task->setServiceProvider( m_serviceProvider );
-        task->initialize( _url, _headers, _data, task_id, this );
+        task->setRequestId( task_id );
+        task->setReceiver( this );
+        task->initialize( _url, _headers, _data );
 
         if( THREAD_SERVICE( m_serviceProvider )
             ->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ), task ) == false )
@@ -184,7 +190,9 @@ namespace Menge
 		ThreadTaskGetAssetPtr task = m_factoryTaskDownloadAsset->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( _url, _login, _password, _category, _path, task_id, this );
+        task->setRequestId( task_id );
+        task->setReceiver( this );
+		task->initialize( _url, _login, _password, _category, _path );
 		
 		if( THREAD_SERVICE(m_serviceProvider)
 			->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), task ) == false )
@@ -231,7 +239,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void cURLHttpSystem::onHttpRequestComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful )
+	void cURLHttpSystem::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _response, uint32_t _code, bool _successful )
 	{
 		for( TVectorHttpReceiverDesc::iterator
 			it = m_receiverDescs.begin(),
@@ -252,7 +260,7 @@ namespace Menge
 
 			if( receiver != nullptr )
 			{
-				receiver->onHttpRequestComplete( _id, _response, _code, _successful );
+				receiver->onHttpRequestComplete( _id, _status, _response, _code, _successful );
 			}
 
 			break;

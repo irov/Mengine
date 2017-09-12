@@ -5,7 +5,8 @@ src
 	cURLHttpSystem.cpp
 	cURLHttpSystem.h
     
-
+    ThreadTaskCurl.h
+    ThreadTaskCurl.cpp
     ThreadTaskGetMessage.h
     ThreadTaskGetMessage.cpp
     ThreadTaskPostMessage.h

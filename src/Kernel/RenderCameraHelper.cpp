@@ -7,10 +7,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void screenToWorldPosition( const RenderCameraInterface * _renderCamera, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint )
 		{
-			const mt::mat4f & pm = _renderCamera->getCameraProjectionMatrix();
-
-			mt::mat4f pm_inv;
-			mt::inv_m4_m4( pm_inv, pm );
+            const mt::mat4f & pm_inv = _renderCamera->getCameraProjectionMatrixInv();
 
 			mt::vec2f p1 = _screenPoint * 2.f - mt::vec2f( 1.f, 1.f );
 			p1.y = -p1.y;
@@ -33,26 +30,31 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void screenToWorldDelta( const RenderCameraInterface * _renderCamera, const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha )
 		{
-			const mt::mat4f & pm = _renderCamera->getCameraProjectionMatrix();
+            (void)_screenPoint;
 
-			mt::mat4f pm_inv;
-			mt::inv_m4_m4( pm_inv, pm );
+		    const mt::mat4f & pm_inv = _renderCamera->getCameraProjectionMatrixInv();
 
-			mt::vec2f p1 = (_screenPoint + _screenDeltha) * 2.f - mt::vec2f( 1.f, 1.f );
-			p1.y = -p1.y;
+			//mt::vec2f p1 = (_screenPoint + _screenDeltha) * 2.f - mt::vec2f( 1.f, 1.f );
+			//p1.y = -p1.y;
 
-			mt::vec2f p_pm;
-			mt::mul_v2_v2_m4( p_pm, p1, pm_inv );
+			//mt::vec2f p_pm;
+			//mt::mul_v2_v2_m4( p_pm, p1, pm_inv );
 
-			mt::vec2f p2 = (_screenPoint)* 2.f - mt::vec2f( 1.f, 1.f );
-			p2.y = -p2.y;
+			//mt::vec2f p2 = (_screenPoint)* 2.f - mt::vec2f( 1.f, 1.f );
+			//p2.y = -p2.y;
 
-			mt::vec2f p_pm_base;
-			mt::mul_v2_v2_m4( p_pm_base, p2, pm_inv );
+			//mt::vec2f p_pm_base;
+			//mt::mul_v2_v2_m4( p_pm_base, p2, pm_inv );
 
-			mt::vec2f deltha = p_pm - p_pm_base;
+			//mt::vec2f deltha = p_pm - p_pm_base;
 
-			_worldDeltha = deltha;
+            mt::vec2f p3 = (_screenDeltha)* 2.f - mt::vec2f( 1.f, 1.f );
+            p3.y = -p3.y;
+
+            mt::vec2f p_pm_deltha;
+            mt::mul_v2_v2_m4( p_pm_deltha, p3, pm_inv );
+
+			_worldDeltha = p_pm_deltha;
 		}
         //////////////////////////////////////////////////////////////////////////
         void worldToScreenBox( const RenderCameraInterface * _renderCamera, const RenderViewportInterface * _renderViewport, const Resolution & _contentResolution, const mt::box2f & _worldBox, mt::box2f & _screenBox )

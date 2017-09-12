@@ -685,7 +685,7 @@ namespace Menge
 	{	
 		Node::_release();
 
-		ae_destroy_movie_composition( m_composition );
+        ae_delete_movie_composition( m_composition );
 		m_composition = nullptr;
 
 		m_resourceMovie2.release();

@@ -17,7 +17,7 @@ namespace Menge
 	class HttpReceiver
 	{
 	public:
-		virtual void onHttpRequestComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) = 0;
+		virtual void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _response, uint32_t _code, bool _successful ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
     class HttpSystemInterface

@@ -593,6 +593,7 @@ namespace Menge
 
 	public:
 		virtual const mt::mat4f & getCameraViewProjectionMatrix() const = 0;
+        virtual const mt::mat4f & getCameraViewProjectionMatrixInv() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderTargetInterface

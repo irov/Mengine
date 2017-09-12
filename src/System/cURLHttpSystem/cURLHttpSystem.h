@@ -33,7 +33,7 @@ namespace Menge
 		bool cancelRequest( HttpRequestID _id ) override;
 
 	private:
-		void onHttpRequestComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override;
+		void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _response, uint32_t _code, bool _successful ) override;
 
 	protected:
 		uint32_t m_enumeratorReceivers;

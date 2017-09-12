@@ -2995,9 +2995,9 @@ namespace Menge
 			}
 
 		protected:
-			void onHttpRequestComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful ) override
+			void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _response, uint32_t _code, bool _successful ) override
 			{
-                m_cb.call_args( _id, _response, _code, _successful, m_args );
+                m_cb.call_args( _id, _status, _response, _code, _successful, m_args );
 			}
 
 		protected:

@@ -294,8 +294,9 @@ namespace Menge
                 continue;
             }
             
-            const bool quitRequest = this->processEvents();
-            if( quitRequest )
+            bool quitRequest = this->processEvents();
+
+            if( quitRequest == true )
             {
                 break;
             }

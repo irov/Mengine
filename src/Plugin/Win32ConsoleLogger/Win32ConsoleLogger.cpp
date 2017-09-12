@@ -151,6 +151,9 @@ namespace Menge
         case LM_PERFOMANCE:
             textColor = FOREGROUND_BLUE | FOREGROUND_RED;
             break;
+        case LM_STATISTIC:
+            textColor = FOREGROUND_GREEN;
+            break;
         case LM_WARNING:
             textColor = FOREGROUND_RED | FOREGROUND_GREEN;
             break;

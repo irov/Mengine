@@ -5653,7 +5653,7 @@ namespace Menge
 				return 0;
 			}
 
-			float angle = _node->getOrientationZ();
+			float angle = _node->getOrientationX();
 
 			float correct_angle_from = angle;
 			float correct_angle_to = _angle;
@@ -5703,7 +5703,7 @@ namespace Menge
 
 			float angularSpeed = _node->getAngularSpeed();
 
-			float angle = _node->getOrientationZ();
+			float angle = _node->getOrientationX();
 
 			float correct_angle_from = angle;
 			float correct_angle_to = _angle;

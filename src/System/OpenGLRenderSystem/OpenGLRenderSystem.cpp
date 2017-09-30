@@ -579,7 +579,7 @@ namespace Menge
 		(void)_mode;
 
 		const GLenum mode = s_getGLFillMode( _mode );
-		glPolygonMode( GL_FRONT_AND_BACK, mode );
+        GLCALL( m_serviceProvider, glPolygonMode, (GL_FRONT_AND_BACK, mode) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )

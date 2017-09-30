@@ -479,22 +479,25 @@ namespace Menge
 		mt::mat4f matrix;
 		aeMovieRenderMesh mesh;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    static void * ae_movie_composition_track_matte_provider( const aeMovieTrackMatteProviderCallbackData * _callbackData, void * _data )
+    {
+        (void)_data;
+
+        TrackMatteDesc * desc = new TrackMatteDesc;
+
+        desc->matrix.from_f16( _callbackData->matrix );
+        desc->mesh = *_callbackData->mesh;
+
+        return desc;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	static void * ae_movie_composition_track_matte_update( const aeMovieTrackMatteUpdateCallbackData * _callbackData, void * _data )
+	static void ae_movie_composition_track_matte_update( const aeMovieTrackMatteUpdateCallbackData * _callbackData, void * _data )
 	{
 		(void)_data;
 
 		switch( _callbackData->state )
 		{
-		case AE_MOVIE_NODE_UPDATE_CREATE:
-			{
-				TrackMatteDesc * desc = new TrackMatteDesc;
-
-				desc->matrix.from_f16( _callbackData->matrix );
-				desc->mesh = *_callbackData->mesh;
-				
-				return desc;
-			}break;
 		case AE_MOVIE_NODE_UPDATE_BEGIN:
 			{
 				TrackMatteDesc * desc = static_cast<TrackMatteDesc *>(_callbackData->track_matte_data);
@@ -509,12 +512,7 @@ namespace Menge
 				desc->matrix.from_f16( _callbackData->matrix );
 				desc->mesh = *_callbackData->mesh;
 			}break;
-		case AE_MOVIE_NODE_UPDATE_END:
-			{
-			}break;
 		}
-
-		return nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
     static void * ae_movie_composition_shader_provider( const aeMovieShaderProviderCallbackData * _callbackData, ae_voidptr_t _data )
@@ -668,6 +666,7 @@ namespace Menge
 		providers.node_deleter = &ae_movie_composition_node_deleter;
 		providers.node_update = &ae_movie_composition_node_update;
 
+        providers.track_matte_provider = &ae_movie_composition_track_matte_provider;
 		providers.track_matte_update = &ae_movie_composition_track_matte_update;
 
         providers.shader_provider = &ae_movie_composition_shader_provider;

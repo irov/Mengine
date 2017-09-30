@@ -579,7 +579,7 @@ namespace Menge
 		(void)_mode;
 
 		const GLenum mode = s_getGLFillMode( _mode );
-		glPolygonMode( GL_FRONT_AND_BACK, mode );
+        GLCALL( m_serviceProvider, glPolygonMode, (GL_FRONT_AND_BACK, mode) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
@@ -1022,38 +1022,13 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float _zn, float _zf )
     {
-        mt::mat4f scale;
-        mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
-
-        mt::mat4f translation;
-        //mt::make_translation_m4( translation, -0.5f, +0.5f, 0.0f );
-        mt::make_translation_m4( translation, 0.f, 0.f, 0.0f );
-
-        mt::mat4f transform;
-        mt::mul_m4_m4( transform, scale, translation );
-
         mt::mat4f projection_fov;
-        mt::make_projection_fov_m4( projection_fov, _fov, _aspect, _zn, _zf );
-
-        mt::mul_m4_m4( _projectionMatrix, transform, projection_fov );
+        mt::make_projection_fov_m4( _projectionMatrix, _fov, _aspect, _zn, _zf );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
     {
-        mt::mat4f scale;
-        mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
-
-        mt::mat4f translation;
-        //mt::make_translation_m4( translation, -0.5f, -0.5f, 0.0f );
-        mt::make_translation_m4( translation, 0.f, 0.f, 0.0f );
-
-        mt::mat4f transform;
-        mt::mul_m4_m4( transform, scale, translation );
-
-        mt::mat4f frustum;
-        mt::make_projection_frustum_m4(frustum, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
-
-        mt::mul_m4_m4( _projectionMatrix, transform, frustum );
+        mt::make_projection_frustum_m4( _projectionMatrix, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport )

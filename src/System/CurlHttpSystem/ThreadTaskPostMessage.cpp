@@ -1,57 +1,32 @@
 #	include "ThreadTaskPostMessage.h"
 
-#	include "Interface/FileSystemInterface.h"
+#	include "Interface/ConfigInterface.h"
 
 #	include "Logger/Logger.h"
 
-#	include "curl/curl.h"
+#   include <sstream>
 
 namespace Menge
 {
-	////////////////////////////////////////////////////////////////////////
-	static size_t s_writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata )
-	{
-		ThreadTaskPostMessage * perfomer = static_cast<ThreadTaskPostMessage *>(userdata);
-		
-		size_t total = size * nmemb;
-
-		perfomer->writeResponse( ptr, total );
-			
-		return total;
-	}
 	//////////////////////////////////////////////////////////////////////////
-	ThreadTaskPostMessage::ThreadTaskPostMessage()
-		: m_id(0)
-		, m_receiver(nullptr)
-		, m_code(0)
-		, m_successful(false)
+    ThreadTaskPostMessage::ThreadTaskPostMessage()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskPostMessage::initialize( const String & _url, const TMapParams & _params, HttpRequestID _id, HttpReceiver * _receiver )
+	bool ThreadTaskPostMessage::initialize( const String & _url, const TMapParams & _params )
 	{
 		m_url = _url;
 		m_params = _params;
-		m_id = _id;
-		m_receiver = _receiver;
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskPostMessage::_onRun()
-	{
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskPostMessage::_onMain()
+	void ThreadTaskPostMessage::_onCURL( CURL * _curl )
 	{		
-		/* init the curl session */
-		CURL * curl = curl_easy_init();
-
 		/* specify URL to get */
-		curl_easy_setopt( curl, CURLOPT_URL, m_url.c_str() );
+		curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );
 
-		curl_easy_setopt( curl, CURLOPT_POST, 1 );
+		curl_easy_setopt( _curl, CURLOPT_POST, 1 );
 
 		struct curl_httppost * lastptr = nullptr;
 		curl_httppost * formpost = nullptr;
@@ -73,47 +48,31 @@ namespace Menge
 				CURLFORM_END );
 		}
 
-		curl_easy_setopt( curl, CURLOPT_HTTPPOST, formpost );
-
+		curl_easy_setopt( _curl, CURLOPT_HTTPPOST, formpost );
+        
 		/* send all data to this function  */
-		curl_easy_setopt( curl, CURLOPT_WRITEDATA, (void *)this );
-		curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, &s_writeRequestPerformerResponse );
+        this->setupWriteResponse( _curl );
 
-		/* get it! */
-		CURLcode res = curl_easy_perform(curl);
+        if( CONFIG_VALUE( m_serviceProvider, "HTTP", "Log", false ) == true )
+        {
+            std::stringstream ss;
 
-		long http_code = 0;
-		curl_easy_getinfo( curl, CURLINFO_RESPONSE_CODE, &http_code );
+            for( TMapParams::const_iterator
+                it = m_params.begin(),
+                it_end = m_params.end();
+                it != it_end;
+                ++it )
+            {
+                ss << it->first.c_str() << ": " << it->second;
+                ss << std::endl;
+            }
 
-		m_code = (uint32_t)http_code;		
+            std::string params_str = ss.str();
 
-		curl_formfree( formpost );
-		curl_easy_cleanup( curl );
-
-		/* check for errors */
-		if( res == CURLE_ABORTED_BY_CALLBACK )
-		{
-			return false;
-		}
-		else if( res != CURLE_OK )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPostMessage::_onMain invalid post message %s error %d:%s"
-				, m_url.c_str()
-				, res
-				, curl_easy_strerror(res)
-				);
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPostMessage::writeResponse( char * _ptr, size_t _size )
-	{
-		m_response.append( _ptr, _size );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPostMessage::_onComplete( bool _successful )
-	{
-		m_receiver->onPostMessageComplete( m_id, m_response, m_code, _successful );
+            LOGGER_STATISTIC( m_serviceProvider )("HTTP: post message url '%s' params:\n %s"
+                , m_url.c_str()
+                , params_str.c_str()
+                );
+        }
 	}
 }

@@ -1,9 +1,9 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
-PROJECT( Mengine_Win32_SDL )
-
 INCLUDE( ../macro_template.cmake )
 INCLUDE( ../win32_template.cmake )
+
+PROJECT( Mengine_WIN32_SDL )
 
 SET(MENGINE_TARGET "SDL")
 

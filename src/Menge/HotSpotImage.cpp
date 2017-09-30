@@ -140,11 +140,11 @@ namespace Menge
 			return m_outward;
 		}
 
-        const mt::mat4f & vpm = _camera->getCameraViewProjectionMatrix();
+        const mt::mat4f & vpm_inv = _camera->getCameraViewProjectionMatrixInv();
         const Viewport & vp = _viewport->getViewport();
 
-		mt::mat4f vpm_inv;
-		mt::inv_m4_m4( vpm_inv, vpm );
+		//mt::mat4f vpm_inv;
+		//mt::inv_m4_m4( vpm_inv, vpm );
 
 		mt::vec2f contentResolutionSize;
 		_contentResolution.calcSize( contentResolutionSize );
@@ -195,11 +195,11 @@ namespace Menge
 			return m_outward;
 		}
 
-        const mt::mat4f & vpm = _camera->getCameraViewProjectionMatrix();
+        const mt::mat4f & vpm_inv = _camera->getCameraViewProjectionMatrixInv();
         const Viewport & vp = _viewport->getViewport();
 
-        mt::mat4f vpm_inv;
-        mt::inv_m4_m4( vpm_inv, vpm );
+        //mt::mat4f vpm_inv;
+        //mt::inv_m4_m4( vpm_inv, vpm );
 
         mt::vec2f contentResolutionSize;
         _contentResolution.calcSize( contentResolutionSize );

@@ -5,22 +5,24 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class ThreadTaskGetMessage
+	class ThreadTaskHeaderData
 		: public ThreadTaskCurl
 	{
 	public:
-		ThreadTaskGetMessage();
+        ThreadTaskHeaderData();
 		
 	public:
-		bool initialize( const String & _url );
+		bool initialize( const String & _url, const TVectorString & _headers, const String & _data );
 
 	protected:
-		void _onCURL( CURL * _curl ) override;
-        
+        void _onCURL( CURL * _curl ) override;
+
 	protected:		
 		String m_url;
+        TVectorString m_headers;
+        String m_data;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadTaskGetMessage> ThreadTaskGetMessagePtr;
+	typedef stdex::intrusive_ptr<ThreadTaskHeaderData> ThreadTaskHeaderDataPtr;
 	//////////////////////////////////////////////////////////////////////////
 }

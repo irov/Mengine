@@ -16,5 +16,6 @@ namespace Menge
 		mt::inv_m4_m4( m_viewMatrixInv, m_viewMatrix );
 
 		mt::mul_m4_m4( m_viewProjectionMatrix, m_viewMatrix, m_projectionMatrix );
+        mt::inv_m4_m4( m_viewProjectionMatrixInv, m_viewProjectionMatrix );        
 	}
 }

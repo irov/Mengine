@@ -29,6 +29,7 @@ namespace Menge
 
 	public:
 		const mt::mat4f & getCameraViewProjectionMatrix() const override;
+        const mt::mat4f & getCameraViewProjectionMatrixInv() const override;
 
 	protected:
 		void _invalidateWorldMatrix() override;
@@ -57,6 +58,7 @@ namespace Menge
 		mutable mt::mat4f m_projectionMatrixInv;
 
 		mutable mt::mat4f m_viewProjectionMatrix;
+        mutable mt::mat4f m_viewProjectionMatrixInv;
 
 		mutable bool m_invalidateProjectionMatrix;
 		mutable bool m_invalidateViewMatrix;
@@ -122,6 +124,18 @@ namespace Menge
 
 		return m_viewProjectionMatrix;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    inline const mt::mat4f & RenderCamera::getCameraViewProjectionMatrixInv() const
+    {
+        if( m_invalidateViewProjectionMatrix == true )
+        {
+            m_invalidateViewProjectionMatrix = false;
+
+            this->updateViewProjectionMatrix_();
+        }
+
+        return m_viewProjectionMatrixInv;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	inline void RenderCamera::invalidateViewMatrix_()
 	{

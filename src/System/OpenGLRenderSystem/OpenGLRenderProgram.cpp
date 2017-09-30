@@ -106,7 +106,7 @@ namespace Menge
             GLCALL( m_serviceProvider, glBindAttribLocation, (program, VERTEX_UV0_ARRAY + i, attrib) );
         }
 
-        GLCALL( m_serviceProvider, glLinkProgram, ( program ) );
+        GLCALL( m_serviceProvider, glLinkProgram, (program) );
 
         GLint linked;
         GLCALL( m_serviceProvider, glGetProgramiv, ( program, GL_LINK_STATUS, &linked ) );

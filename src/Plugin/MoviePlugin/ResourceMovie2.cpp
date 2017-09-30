@@ -14,8 +14,10 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static size_t Mengine_read_stream( void * _data, void * _buff, size_t _size )
+	static size_t Mengine_read_stream( void * _data, void * _buff, size_t _carriage, size_t _size )
 	{
+        (void)_carriage;
+
 		InputStreamInterface * stream = (InputStreamInterface *)_data;
 
 		size_t bytes = stream->read( _buff, _size );
@@ -29,43 +31,50 @@ namespace Menge
 
 		memcpy( _dst, _src, _size );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	static void * Mengine_resource_provider( const aeMovieResource * _resource, void * _data )
-	{
-		ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_data;
+    //////////////////////////////////////////////////////////////////////////
+    static ae_voidptr_t Mengine_resource_provider( const aeMovieResource * _resource, void * _data )
+    {
+        ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_data;
 
-		aeMovieResourceTypeEnum resource_type = _resource->type;
+        aeMovieResourceTypeEnum resource_type = _resource->type;
 
-		switch( resource_type )
-		{
-		case AE_MOVIE_RESOURCE_IMAGE:
-			{
-				const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
+        switch( resource_type )
+        {
+        case AE_MOVIE_RESOURCE_IMAGE:
+            {
+                const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
 
-				ResourceReference * data_resource = resourceMovie2->createResourceImage_( resource_image->path, resource_image->trim_width, resource_image->trim_height );
+                ResourceReference * data_resource = resourceMovie2->createResourceImage_( resource_image->path, resource_image->trim_width, resource_image->trim_height );
 
-				return data_resource;
-			}break;
-		case AE_MOVIE_RESOURCE_VIDEO:
-			{
-				const aeMovieResourceVideo * resource_video = (const aeMovieResourceVideo *)_resource;
+                return data_resource;
+            }break;
+        case AE_MOVIE_RESOURCE_VIDEO:
+            {
+                const aeMovieResourceVideo * resource_video = (const aeMovieResourceVideo *)_resource;
 
-				ResourceReference * data_resource = resourceMovie2->createResourceVideo_( resource_video );
+                ResourceReference * data_resource = resourceMovie2->createResourceVideo_( resource_video );
 
-				return data_resource;
-			}
-		case AE_MOVIE_RESOURCE_SOUND:
-			{
-				const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
+                return data_resource;
+            }
+        case AE_MOVIE_RESOURCE_SOUND:
+            {
+                const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
 
-				ResourceReference * data_resource = resourceMovie2->createResourceSound_( resource_sound );
+                ResourceReference * data_resource = resourceMovie2->createResourceSound_( resource_sound );
 
-				return data_resource;
-			}
-		}		
+                return data_resource;
+            }
+        }
 
-		return AE_NULL;
-	}
+        return AE_NULL;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void Mengine_resource_deleter( aeMovieResourceTypeEnum _type, const ae_voidptr_t * _data, ae_voidptr_t _ud )
+    {
+        (void)_type;
+        (void)_data;
+        (void)_ud;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	ResourceMovie2::ResourceMovie2()
 	{
@@ -145,11 +154,11 @@ namespace Menge
 			return false;
 		}
 
-		aeMovieData * movieData = ae_create_movie_data( m_instance );
+		aeMovieData * movieData = ae_create_movie_data( m_instance, &Mengine_resource_provider, &Mengine_resource_deleter, this );
 
 		aeMovieStream * movie_stream = ae_create_movie_stream( m_instance, &Mengine_read_stream, &Mengine_copy_stream, stream.get() );
 
-		if( ae_load_movie_data( movieData, movie_stream, &Mengine_resource_provider, this ) != AE_MOVIE_SUCCESSFUL )
+		if( ae_load_movie_data( movieData, movie_stream ) != AE_MOVIE_SUCCESSFUL )
 		{
 			LOGGER_ERROR( m_serviceProvider )("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s'"
 				, this->getName().c_str()

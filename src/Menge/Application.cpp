@@ -152,6 +152,8 @@
 #   include "Core/String.h"
 #	include "Core/IniUtil.h"
 
+#   include "../dependencies/SDL2/include/SDL_video.h"
+
 #   include "stdex/allocator.h"
 #   include "stdex/stl_list.h"
 

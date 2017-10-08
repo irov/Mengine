@@ -11,7 +11,6 @@ add_definitions(-D_UNICODE)
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
                     ${Mengine_SOURCE_DIR}/Tools
 					${THIRDPARTY_DIR}/pugixml/src
-                    ${THIRDPARTY_DIR}/tinyini/include
                     ${THIRDPARTY_DIR}/jansson/include                    
                     )
 
@@ -23,7 +22,6 @@ TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ToolUtils)
 TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pugixml${MENGINE_LIB_SUFFIX}
-    ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}tinyini${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}jansson${MENGINE_LIB_SUFFIX}
     Shlwapi.lib
     )   

@@ -36,7 +36,7 @@ namespace Menge
     {
         ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_data;
 
-        aeMovieResourceTypeEnum resource_type = _resource->type;
+        uint8_t resource_type = _resource->type;
 
         switch( resource_type )
         {
@@ -69,7 +69,7 @@ namespace Menge
         return AE_NULL;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void Mengine_resource_deleter( aeMovieResourceTypeEnum _type, const ae_voidptr_t * _data, ae_voidptr_t _ud )
+    static void Mengine_resource_deleter( aeMovieResourceTypeEnum _type, ae_voidptr_t * _data, ae_voidptr_t _ud )
     {
         (void)_type;
         (void)_data;

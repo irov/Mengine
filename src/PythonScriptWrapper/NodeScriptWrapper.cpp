@@ -1919,11 +1919,11 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			if( PLAYER_SERVICE( m_serviceProvider )
-				->isChangedScene() == true )
-			{
-				return false;
-			}
+			//if( PLAYER_SERVICE( m_serviceProvider )
+			//	->isChangedScene() == true )
+			//{
+			//	return false;
+			//}
 
 			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject();
 

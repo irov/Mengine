@@ -37,9 +37,7 @@ namespace Menge
         
 		virtual Scene * getCurrentScene() = 0;
 
-		virtual bool isChangedScene() const = 0;
-
-	public:
+    public:
 		virtual bool createGlobalScene() = 0;
 		virtual void removeGlobalScene() = 0;
 		virtual Scene * getGlobalScene() = 0;
@@ -59,9 +57,6 @@ namespace Menge
 		virtual void tick( float _time, float _timing ) = 0;
 		virtual bool update() = 0;
 		virtual void render() = 0;
-
-	public:
-		virtual void updateChangeScene() = 0;
 
 	public:
 		virtual void initializeRenderResources() = 0;

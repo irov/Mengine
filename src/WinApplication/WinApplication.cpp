@@ -831,6 +831,9 @@ namespace Menge
 				->setVSync( false );
 		}
 
+        GAME_SERVICE( m_serviceProvider )
+            ->run();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

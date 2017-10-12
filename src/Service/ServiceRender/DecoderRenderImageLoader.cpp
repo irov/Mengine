@@ -165,6 +165,7 @@ namespace Menge
             LOGGER_ERROR( m_serviceProvider )("DecoderRenderImageProviderInterface::createImageDecoder_ invalid open stream '%s:%s' codec '%s'"
                 , _pakName.c_str()
                 , _fileName.c_str()
+                , _codecName.c_str()
                 );
 
             return nullptr;

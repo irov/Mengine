@@ -33,7 +33,7 @@ namespace Menge
 		, m_verticalAlign(ETFVA_BOTTOM)
 		, m_charScale(1.f)
 		, m_maxLength(2048.f)
-		, m_maxCharCount((uint32_t)-1)
+		, m_maxCharCount(0xFFFFFFFF)
 		, m_charCount(0)
 		, m_charOffset(0.f)
 		, m_lineOffset(0.f)
@@ -298,6 +298,8 @@ namespace Menge
 
 		const mt::box2f & bb = this->getBoundingBox();
 
+        uint32_t renderCharCount = 0U;
+        
 		for( TVectorChunks::const_iterator
 			it = m_chunks.begin(),
 			it_end = m_chunks.end();
@@ -308,8 +310,24 @@ namespace Menge
 
 			const TVectorRenderVertex2D::value_type * chunk_vertices = vertices + chunk.begin;
 
-			_renderService
-				->addRenderQuad( _state, chunk.material, chunk_vertices, chunk.count, &bb, false );
+            if( renderCharCount >= m_maxCharCount )
+            { 
+                continue;
+            }
+
+            uint32_t correctChunkCount = chunk.count;
+            if( renderCharCount + chunk.count >= m_maxCharCount )
+            {
+                correctChunkCount = (m_maxCharCount - renderCharCount) * 4;
+                renderCharCount = m_maxCharCount;
+            }
+            else
+            {
+                renderCharCount += chunk.count;
+            }            
+
+            _renderService
+                ->addRenderQuad( _state, chunk.material, chunk_vertices, correctChunkCount, &bb, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

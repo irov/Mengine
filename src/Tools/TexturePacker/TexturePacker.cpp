@@ -15,7 +15,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	(void)hPrevInstance;
 	(void)nShowCmd;
 
-	uint32_t images_count = parse_kwds( lpCmdLine, L"--image_count", 0U );
+    uint32_t images_count = parse_kwds( lpCmdLine, L"--image_count", 0U );
 	std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
     std::wstring log_path = parse_kwds( lpCmdLine, L"--log_path", std::wstring() );
 	std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker", std::wstring() );
@@ -335,8 +335,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			json_t * frame_data_frame_h = json_object_get( frame_data_frame, "h" );
 			json_int_t h = json_integer_value( frame_data_frame_h );
 
-			json_t * frame_data_frame_rotated = json_object_get( frame_data_frame, "rotated" );
-			bool rotated = json_boolean_value( frame_data_frame_rotated );
+			json_t * frame_data_rotated = json_object_get( frame_data, "rotated" );
+			bool rotated = json_boolean_value( frame_data_rotated );
 
 			AtlasImageDesc image;
 			image.name = filename;
@@ -356,14 +356,14 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 			if( rotated == true )
 			{
-				image.x0 = x + 0;
-				image.y0 = y + h;
-				image.x1 = x + 0;
-				image.y1 = y + 0;
-				image.x2 = x + w;
-				image.y2 = y + 0;
-				image.x3 = x + w;
-				image.y3 = y + h;
+				image.x0 = x + w;
+				image.y0 = y + 0;
+				image.x1 = x + w;
+				image.y1 = y + h;
+				image.x2 = x + 0;
+				image.y2 = y + h;
+				image.x3 = x + 0;
+				image.y3 = y + 0;
 			}
 			else
 			{

@@ -51,6 +51,72 @@ SERVICE_FACTORY( PlayerService, Menge::Player );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////    
+    namespace
+    {
+        class PlayerResourceUselessCompile
+        {
+        public:
+            PlayerResourceUselessCompile( ServiceProviderInterface * _serviceProvider )
+                : m_serviceProvider( _serviceProvider )
+            {
+            }
+
+            ~PlayerResourceUselessCompile()
+            {
+            }
+
+        public:
+            void begin()
+            {
+                m_observerResourceCompile = NOTIFICATION_SERVICE( m_serviceProvider )
+                    ->addObserverMethod( NOTIFICATOR_RESOURCE_COMPILE, this, &PlayerResourceUselessCompile::resourceCompile );
+
+                m_observerResourceRelease = NOTIFICATION_SERVICE( m_serviceProvider )
+                    ->addObserverMethod( NOTIFICATOR_RESOURCE_RELEASE, this, &PlayerResourceUselessCompile::resourceRelease );
+            }
+
+            void end()
+            {
+                m_observerResourceCompile = nullptr;
+                m_observerResourceRelease = nullptr;
+            }
+
+        protected:
+            void resourceCompile( ResourceReference * _resource )
+            {
+                m_resources.push_back( _resource );
+            }
+
+            void resourceRelease( ResourceReference * _resource )
+            {
+                TVectorResourceDesc::iterator it_remove =
+                    std::find( m_resources.begin(), m_resources.end(), _resource );
+
+                if( it_remove == m_resources.end() )
+                {
+                    return;
+                }
+
+                LOGGER_PERFORMANCE( m_serviceProvider )("Useless Compile %s %s:%s"
+                    , _resource->getType().c_str()
+                    , _resource->getGroup().c_str()
+                    , _resource->getName().c_str()
+                    );
+
+                m_resources.erase( it_remove );
+            }
+
+        protected:
+            ServiceProviderInterface * m_serviceProvider;
+
+            ObserverInterfacePtr m_observerResourceCompile;
+            ObserverInterfacePtr m_observerResourceRelease;
+
+            typedef stdex::vector<ResourceReference *> TVectorResourceDesc;
+            TVectorResourceDesc m_resources;
+        };
+    }
 	//////////////////////////////////////////////////////////////////////////
 	Player::Player()
 		: m_scene( nullptr )
@@ -65,11 +131,11 @@ namespace Menge
 		, m_renderTarget( nullptr )
 		, m_switchSceneTo( nullptr )
 		, m_mousePickerSystem( nullptr )
-		, m_switchScene2( true )
-		, m_switchScene( false )
-		, m_removeScene( false )
-		, m_destroyOldScene( false )
-		, m_restartScene( false )
+		//, m_switchScene2( true )
+		//, m_switchScene( false )
+		//, m_removeScene( false )
+		//, m_destroyOldScene( false )
+		//, m_restartScene( false )
 		, m_arrowHided( false )
 		, m_fps( 0 )
 		, m_affectorable( nullptr )
@@ -94,54 +160,173 @@ namespace Menge
 			return false;
 		}
 
-		if( this->isChangedScene() == true )
-		{
-			return false;
-		}
+        MODULE_SERVICE( m_serviceProvider )
+            ->messageAll( STRINGIZE_STRING_LOCAL( m_serviceProvider, "onSceneChange" ), TMapWParams() );
 
-		m_switchSceneTo = _scene;
-		
-		m_restartScene = false;
-		m_switchScene = true;
-        m_removeScene = false;
+        Scene * oldScene = m_scene;
+        m_scene = nullptr;
 
-		m_destroyOldScene = _destroyOld;
+        if( m_arrow != nullptr )
+        {
+            m_arrow->removeFromParent();
+            m_arrow->disable();
+        }
 
-		m_changeSceneCb = _cb;
+        m_scheduleManager->removeAll();
+        m_affectorable->stopAllAffectors();
+
+        if( oldScene != nullptr && _destroyOld == true )
+        {
+            oldScene->destroy();
+
+            //NODE_SERVICE( m_serviceProvider )
+            //    ->clearHomeless();
+
+            if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+            {
+                GRAVEYARD_SERVICE( m_serviceProvider )
+                    ->clearTextures();
+            }
+        }
+        
+        if( _cb != nullptr )
+        {
+            _cb->onSceneChange( nullptr, false, false );
+        }
+
+        m_scene = _scene;
+
+        if( m_mousePickerSystem != nullptr )
+        {
+            m_mousePickerSystem->setScene( m_scene );
+        }
+
+        if( _cb != nullptr )
+        {
+            _cb->onSceneChange( m_scene, false, false );
+        }
+
+#   ifndef MENGINE_MASTER_RELEASE
+        PlayerResourceUselessCompile unlessCompile( m_serviceProvider );
+        unlessCompile.begin();
+#   endif
+
+        m_scene->enable();
+
+#   ifndef MENGINE_MASTER_RELEASE
+        unlessCompile.end();
+#   endif
+
+        if( m_arrow != nullptr )
+        {
+            m_arrow->enable();
+        }
+
+        if( _cb != nullptr )
+        {
+            _cb->onSceneChange( m_scene, true, false );
+        }
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::restartCurrentScene( const SceneChangeCallbackInterfacePtr & _cb )
 	{
-		if( this->isChangedScene() == true )
-		{
-			return false;
-		}
+        MODULE_SERVICE( m_serviceProvider )
+            ->messageAll( STRINGIZE_STRING_LOCAL( m_serviceProvider, "onSceneChange" ), TMapWParams() );
 
-		m_restartScene = true;
-		m_switchScene = false;
-		m_removeScene = true;
+        if( m_arrow != nullptr )
+        {
+            m_arrow->removeFromParent();
+            m_arrow->disable();
+        }
 
-		m_destroyOldScene = false;
+        m_scheduleManager->removeAll();
+        m_affectorable->stopAllAffectors();
 
-		m_changeSceneCb = _cb;
+        m_scene->disable();
+
+        //NODE_SERVICE( m_serviceProvider )
+        //    ->clearHomeless();
+
+        if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+        {
+            GRAVEYARD_SERVICE( m_serviceProvider )
+                ->clearTextures();
+        }
+
+        if( _cb != nullptr )
+        {
+            _cb->onSceneChange( nullptr, false, false );
+        }
+
+        if( _cb != nullptr )
+        {
+            _cb->onSceneChange( m_scene, false, false );
+        }
+
+#   ifndef MENGINE_MASTER_RELEASE
+        PlayerResourceUselessCompile unlessCompile( m_serviceProvider );
+        unlessCompile.begin();
+#   endif
+
+        m_scene->enable();
+
+#   ifndef MENGINE_MASTER_RELEASE
+        unlessCompile.end();
+#   endif
+
+        if( m_arrow != nullptr )
+        {
+            m_arrow->enable();
+        }
+
+        if( _cb != nullptr )
+        {
+            _cb->onSceneChange( m_scene, true, false );
+        }
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::removeCurrentScene( const SceneChangeCallbackInterfacePtr & _cb )
 	{
-		if( this->isChangedScene() == true )
-		{
-			return false;
-		}
+        if( m_scene != nullptr )
+        {
+            if( m_arrow != nullptr )
+            {
+                m_arrow->removeFromParent();
+                m_arrow->disable();
+            }
 
-		m_restartScene = false;
-        m_switchScene = false;
-		m_removeScene = true;
-		
-		m_removeSceneCb = _cb;
+            m_scheduleManager->removeAll();
+            m_affectorable->stopAllAffectors();
+
+            m_globalHandleSystem->clear();
+
+            m_scene->release();
+
+            //NODE_SERVICE( m_serviceProvider )
+            //    ->clearHomeless();
+
+            if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+            {
+                GRAVEYARD_SERVICE( m_serviceProvider )
+                    ->clearTextures();
+            }
+
+            m_scene = nullptr;
+        }
+
+        if( m_mousePickerSystem != nullptr )
+        {
+            m_mousePickerSystem->setScene( nullptr );
+        }
+
+        if( _cb != nullptr )
+        {
+            _cb->onSceneChange( nullptr, false, true );
+        }
 
 		return true;
 	}
@@ -158,294 +343,6 @@ namespace Menge
 	Scene * Player::getCurrentScene()
 	{
 		return m_scene;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::updateChangeScene()
-	{
-		if( m_switchScene == true )
-		{
-			if( m_switchScene2 == true )
-			{
-				m_switchScene2 = false;
-
-				MODULE_SERVICE( m_serviceProvider )
-					->messageAll( STRINGIZE_STRING_LOCAL( m_serviceProvider, "onSceneChange" ), TMapWParams() );
-			}
-
-			if( m_focus == true )
-			{
-				this->updateSwitchScene_();
-			}
-		}
-		else if( m_removeScene == true )
-		{
-			this->updateRemoveScene_();
-		}
-		else if( m_restartScene == true )
-		{
-			this->updateRestartScene_();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::updateRemoveScene_()
-	{
-		m_removeScene = false;
-
-		if( m_scene != nullptr )
-		{
-			if( m_arrow != nullptr )
-			{
-				m_arrow->removeFromParent();
-				m_arrow->disable();
-			}
-
-			m_scheduleManager->removeAll();
-			m_affectorable->stopAllAffectors();
-
-			m_globalHandleSystem->clear();
-
-            m_scene->release();
-
-			NODE_SERVICE(m_serviceProvider)
-				->clearHomeless();
-
-			if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
-			{
-				GRAVEYARD_SERVICE( m_serviceProvider )
-					->clearTextures();
-			}
-
-			m_scene = nullptr;
-		}
-
-		if( m_mousePickerSystem != nullptr )
-		{
-			m_mousePickerSystem->setScene( nullptr );
-		}
-
-		if( m_removeSceneCb != nullptr )
-		{
-			SceneChangeCallbackInterfacePtr cb = m_removeSceneCb;
-			m_removeSceneCb = nullptr;
-
-			cb->onSceneChange( nullptr, false, true );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-    namespace
-    {
-        class PlayerResourceUselessCompile
-        {
-        public:
-            PlayerResourceUselessCompile( ServiceProviderInterface * _serviceProvider )
-                : m_serviceProvider(_serviceProvider)
-            {
-            }
-
-            ~PlayerResourceUselessCompile()
-            {
-            }
-
-        public:
-            void begin()
-            {
-                m_observerResourceCompile = NOTIFICATION_SERVICE(m_serviceProvider)
-                    ->addObserverMethod( NOTIFICATOR_RESOURCE_COMPILE, this, &PlayerResourceUselessCompile::resourceCompile );
-
-                m_observerResourceRelease = NOTIFICATION_SERVICE(m_serviceProvider)
-                    ->addObserverMethod( NOTIFICATOR_RESOURCE_RELEASE, this, &PlayerResourceUselessCompile::resourceRelease );
-            }
-
-            void end()
-            {
-				m_observerResourceCompile = nullptr;
-				m_observerResourceRelease = nullptr;
-            }
-
-        protected:
-            void resourceCompile( ResourceReference * _resource )
-            {
-                m_resources.push_back( _resource );
-            }
-
-            void resourceRelease( ResourceReference * _resource )
-            {
-                TVectorResourceDesc::iterator it_remove =
-                    std::find( m_resources.begin(), m_resources.end(), _resource );
-
-                if( it_remove == m_resources.end() )
-                {
-                    return;
-                }
-                
-                LOGGER_PERFORMANCE(m_serviceProvider)("Useless Compile %s %s:%s"
-					, _resource->getType().c_str()
-                    , _resource->getGroup().c_str()
-                    , _resource->getName().c_str()
-                    );
-
-                m_resources.erase( it_remove );
-            }
-
-        protected:
-            ServiceProviderInterface * m_serviceProvider;
-
-            ObserverInterfacePtr m_observerResourceCompile;
-			ObserverInterfacePtr m_observerResourceRelease;
-
-            typedef stdex::vector<ResourceReference *> TVectorResourceDesc;
-            TVectorResourceDesc m_resources;
-        };
-    }
-	//////////////////////////////////////////////////////////////////////////
-	void Player::updateSwitchScene_()
-	{
-		m_switchScene = false;
-		m_switchScene2 = true;
-
-		Scene * oldScene = m_scene;
-		m_scene = nullptr;
-
-		bool destroyOldScene = m_destroyOldScene;
-		m_destroyOldScene = false;
-
-		SceneChangeCallbackInterfacePtr cb = m_changeSceneCb;
-		m_changeSceneCb = nullptr;
-
-		if( m_arrow != nullptr )
-		{
-			m_arrow->removeFromParent();
-			m_arrow->disable();
-		}
-
-		m_scheduleManager->removeAll();
-		m_affectorable->stopAllAffectors();
-		
-		if( oldScene != nullptr && destroyOldScene == true )
-		{
-			oldScene->destroy();
-
-			NODE_SERVICE( m_serviceProvider )
-				->clearHomeless();
-
-			if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
-			{
-				GRAVEYARD_SERVICE( m_serviceProvider )
-					->clearTextures();
-			}
-		}
-		
-		//m_globalHandleSystem->clear();
-        
-        if( cb != nullptr )
-        {
-			cb->onSceneChange( nullptr, false, false );
-        }
-        
-		m_scene = m_switchSceneTo;
-
-		if( m_mousePickerSystem != nullptr )
-		{
-			m_mousePickerSystem->setScene( m_scene );
-		}
-
-		if( cb != nullptr )
-		{			
-			cb->onSceneChange( m_scene, false, false );
-		}
-
-		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
-
-#   ifndef MENGINE_MASTER_RELEASE
-        PlayerResourceUselessCompile unlessCompile(m_serviceProvider);
-        unlessCompile.begin();
-#   endif
-
-		m_scene->enable();
-
-#   ifndef MENGINE_MASTER_RELEASE
-        unlessCompile.end();
-#   endif
-
-        if( m_arrow != nullptr )
-        {
-			m_arrow->enable();
-        }
-
-		if( cb != nullptr )
-		{
-			cb->onSceneChange( m_scene, true, false );
-		}
-
-		return;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::updateRestartScene_()
-	{
-		m_restartScene = false;
-
-		if( m_arrow != nullptr )
-		{
-			m_arrow->removeFromParent();
-			m_arrow->disable();
-		}
-
-		m_scheduleManager->removeAll();
-		m_affectorable->stopAllAffectors();
-
-		m_scene->disable();
-
-		NODE_SERVICE( m_serviceProvider )
-			->clearHomeless();
-
-		if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
-		{
-			GRAVEYARD_SERVICE( m_serviceProvider )
-				->clearTextures();
-		}
-
-		SceneChangeCallbackInterfacePtr cb = m_changeSceneCb;
-		m_changeSceneCb = nullptr;
-
-		if( cb != nullptr )
-		{
-			cb->onSceneChange( nullptr, false, false );
-		}
-
-		if( cb != nullptr )
-		{
-			cb->onSceneChange( m_scene, false, false );
-		}
-
-		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
-
-#   ifndef MENGINE_MASTER_RELEASE
-		PlayerResourceUselessCompile unlessCompile( m_serviceProvider );
-		unlessCompile.begin();
-#   endif
-
-		m_scene->enable();
-
-#   ifndef MENGINE_MASTER_RELEASE
-		unlessCompile.end();
-#   endif
-
-		if( m_arrow != nullptr )
-		{
-			m_arrow->enable();
-		}
-
-		if( cb != nullptr )
-		{
-			cb->onSceneChange( m_scene, true, false );
-		}
-
-		return;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Player::isChangedScene() const
-	{
-		return m_switchScene == true || m_restartScene == true || m_removeScene == true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::createGlobalScene()
@@ -614,9 +511,6 @@ namespace Menge
 			m_globalScene = nullptr;
 		}
 
-		m_removeSceneCb = nullptr;
-		m_changeSceneCb = nullptr;
-        
         if( m_camera2D != nullptr )
         {
             m_camera2D->destroy();
@@ -969,6 +863,9 @@ namespace Menge
 			m_globalHandleSystem->update();
 		}
 
+        NODE_SERVICE( m_serviceProvider )
+            ->clearHomeless();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1066,10 +963,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::render()
 	{
-		if( this->isChangedScene() == true )
-		{
-			return;
-		}
+		//if( this->isChangedScene() == true )
+		//{
+		//	return;
+		//}
 
         uint32_t debugMask = APPLICATION_SERVICE(m_serviceProvider)
             ->getDebugMask();

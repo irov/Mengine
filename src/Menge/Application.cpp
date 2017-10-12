@@ -598,8 +598,8 @@ namespace Menge
         GAME_SERVICE(m_serviceProvider)
 			->initializeRenderResources();
 
-		PLAYER_SERVICE( m_serviceProvider )
-			->initializeRenderResources();
+        PLAYER_SERVICE( m_serviceProvider )
+            ->initializeRenderResources();
 
 		NOTIFICATION_SERVICE(m_serviceProvider)
 			->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
@@ -705,9 +705,6 @@ namespace Menge
 
 		GAME_SERVICE( m_serviceProvider )
 			->setCursorMode( m_cursorMode );
-
-		GAME_SERVICE( m_serviceProvider )
-			->run();
 		        
 		return true;
 	}
@@ -1391,8 +1388,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::endUpdate()
 	{
-		PLAYER_SERVICE( m_serviceProvider )
-			->updateChangeScene();
+		//PLAYER_SERVICE( m_serviceProvider )
+		//	->updateChangeScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::render()

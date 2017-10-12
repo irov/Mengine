@@ -53,21 +53,11 @@ namespace Menge
 
 		Scene * getCurrentScene() override;
 
-		bool isChangedScene() const override;
-
 	public:
 		bool createGlobalScene() override;
 		void removeGlobalScene() override;
 		Scene * getGlobalScene() override;
-
-	public:
-		void updateChangeScene() override;
-
-    protected:        
-		void updateSwitchScene_();
-		void updateRemoveScene_();
-		void updateRestartScene_();
-
+            
 	public:
 		void setArrow( Arrow * _arrow ) override;
 		Arrow * getArrow() const override;
@@ -175,16 +165,16 @@ namespace Menge
 		
 		Scene * m_switchSceneTo;
 
-		bool m_switchScene2;
-		bool m_switchBlock;
-		bool m_switchScene;
-		bool m_restartScene;
-		bool m_removeScene;
+		//bool m_switchScene2;
+		//bool m_switchBlock;
+		//bool m_switchScene;
+		//bool m_restartScene;
+		//bool m_removeScene;
 
-		bool m_destroyOldScene;
+		//bool m_destroyOldScene;
 				
-		SceneChangeCallbackInterfacePtr m_changeSceneCb;
-		SceneChangeCallbackInterfacePtr m_removeSceneCb;
+		//SceneChangeCallbackInterfacePtr m_changeSceneCb;
+		//SceneChangeCallbackInterfacePtr m_removeSceneCb;
 
 		uint32_t m_fps;
 

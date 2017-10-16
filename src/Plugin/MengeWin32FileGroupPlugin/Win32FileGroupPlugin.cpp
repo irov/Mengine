@@ -79,6 +79,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32FileGroupPlugin::_finalize()
 	{
+        FILE_SERVICE( m_serviceProvider )
+            ->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "global" ) );
+
 		FILE_SERVICE(m_serviceProvider)
 			->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir") );
 	}

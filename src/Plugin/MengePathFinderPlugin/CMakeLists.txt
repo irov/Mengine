@@ -23,12 +23,6 @@ ModulePathFinder
 )
 
 ADD_FILTER(
-ModuleJumpcraft
-    ModuleJumpcraft.h
-    ModuleJumpcraft.cpp
-    )
-
-ADD_FILTER(
 ModuleBurritoWorld
     ModuleBurritoWorld.cpp
 	ModuleBurritoWorld.h

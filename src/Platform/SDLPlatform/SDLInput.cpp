@@ -133,10 +133,10 @@ namespace Menge
             break;
         case SDL_FINGERMOTION:
             {
-                uint32_t touchId = (uint32_t)_event.tfinger.fingerId - 1;
+                uint32_t touchId = (uint32_t)_event.tfinger.touchId - 1;
 
                 INPUT_SERVICE( m_serviceProvider )
-                    ->pushMouseMoveEvent( touchId, _event.tfinger.x, _event.tfinger.y, _event.tfinger.dx, _event.tfinger.dx, _event.tfinger.pressure );
+                    ->pushMouseMoveEvent( touchId, _event.tfinger.x, _event.tfinger.y, _event.tfinger.dx, _event.tfinger.dy, _event.tfinger.pressure );
             }break;
         case SDL_FINGERDOWN:
         case SDL_FINGERUP:

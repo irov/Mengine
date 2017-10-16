@@ -52,7 +52,7 @@ namespace Menge
 	{
 		OutputStreamInterface * stream_ptr = (OutputStreamInterface *)_userp;
 
-		uint32_t realsize = _size * _nmemb;
+		size_t realsize = _size * _nmemb;
 
 		stream_ptr->write( _contents, realsize );
 

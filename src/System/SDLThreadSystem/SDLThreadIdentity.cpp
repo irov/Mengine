@@ -15,6 +15,10 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    SDLThreadIdentity::~SDLThreadIdentity()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     static int s_tread_job( void * _userData )
     {
         SDLThreadIdentity * thread = reinterpret_cast<SDLThreadIdentity *>(_userData);
@@ -54,18 +58,19 @@ namespace Menge
         while( work )
         {
             m_mutex->lock();
-            {
-                if( m_complete == false )
-                {
-                    m_task->main();
-                    m_complete = true;
-                }
 
-                if( m_exit == true )
-                {
-                    work = false;
-                }
+            if( m_complete == false && m_exit == false )
+            {
+                m_task->main();
+                m_complete = true;
             }
+
+            if( m_exit == true )
+            {
+                m_complete = true;
+                work = false;
+            }
+            
             m_mutex->unlock();
             
             SDL_Delay( 10 );
@@ -105,7 +110,6 @@ namespace Menge
         if( m_complete == false )
         {	
             m_task = nullptr;
-            m_complete = true;
 
             successful = true;
         }
@@ -123,12 +127,12 @@ namespace Menge
         }
 
         m_mutex->lock();
-        {
-            m_exit = true;
-        }
+        
+        m_exit = true;
+        
         m_mutex->unlock();
 
-        int status = 99;
+        int status;
         SDL_WaitThread( m_thread, &status );
 
         if( status != 0 )
@@ -139,5 +143,6 @@ namespace Menge
         }
 
         m_thread = nullptr;
+        m_mutex = nullptr;
     }
 }

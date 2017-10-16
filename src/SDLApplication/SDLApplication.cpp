@@ -176,7 +176,6 @@ namespace Menge
         LOGGER_INFO( m_serviceProvider )("Initialize SDL file group...");
         PLUGIN_CREATE( m_serviceProvider, MengeSDLFileGroup );
         
-#	ifdef _MSC_VER
         WChar currentPathW[MENGINE_MAX_PATH];
 		size_t currentPathW_len = PLATFORM_SERVICE(m_serviceProvider)
 			->getCurrentPath(currentPathW, MENGINE_MAX_PATH);
@@ -186,16 +185,7 @@ namespace Menge
         UNICODE_SERVICE( m_serviceProvider )
             ->unicodeToUtf8( currentPathW, currentPathW_len, utf8_currentPath, MENGINE_MAX_PATH, &utf8_currentPath_len );
 
-        //FilePath currentPath = Helper::stringizeStringSize( m_serviceProvider, utf8_currentPath, utf8_currentPath_len );
-		FilePath currentPath;
-#   else
-        //char * basePath = SDL_GetBasePath();
-
-        //FilePath currentPath = Helper::stringizeString( m_serviceProvider, basePath );
-
-        //SDL_free( basePath );
-        FilePath currentPath;
-#	endif
+        FilePath currentPath = Helper::stringizeFilePath( m_serviceProvider, utf8_currentPath, utf8_currentPath_len );
         
         // mount root		
         ConstString c_dir = Helper::stringizeString(m_serviceProvider, "dir");

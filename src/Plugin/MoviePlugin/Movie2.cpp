@@ -20,7 +20,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Movie2::Movie2()
 		: m_composition(nullptr)
-	{	
+	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Movie2::~Movie2()
@@ -184,7 +184,7 @@ namespace Menge
 		return new_camera;
 	}
     //////////////////////////////////////////////////////////////////////////
-    static void ae_movie_composition_camera_deleter( const aeMovieCameraDestroyCallbackData * _callbackData, void * _data )
+    static void ae_movie_composition_camera_deleter( const aeMovieCameraDeleterCallbackData * _callbackData, void * _data )
     {
         Movie2 * movie2 = (Movie2 *)_data;
 
@@ -233,7 +233,7 @@ namespace Menge
 
 		aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( _callbackData->layer );
 
-		if( _callbackData->trackmatteLayer != AE_NULL )
+		if( _callbackData->track_matte_layer != AE_NULL )
 		{
 			switch( type )
 			{
@@ -245,7 +245,7 @@ namespace Menge
 					surfaceTrackMatte->setName( c_name );
 
 					ResourceImage * resourceImage = (ResourceImage *)ae_get_movie_layer_data_resource_data( _callbackData->layer );
-					ResourceImage * resourceTrackMatteImage = (ResourceImage *)ae_get_movie_layer_data_resource_data( _callbackData->trackmatteLayer );
+					ResourceImage * resourceTrackMatteImage = (ResourceImage *)ae_get_movie_layer_data_resource_data( _callbackData->track_matte_layer );
 
 					surfaceTrackMatte->setResourceImage( resourceImage );
 					surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
@@ -337,7 +337,7 @@ namespace Menge
 		return AE_NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void ae_movie_composition_node_deleter( const aeMovieNodeDestroyCallbackData * _callbackData, void * _data )
+	static void ae_movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, void * _data )
 	{
 		(void)_callbackData;
 		(void)_data;

@@ -69,7 +69,7 @@ namespace Menge
         return AE_NULL;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void Mengine_resource_deleter( aeMovieResourceTypeEnum _type, const ae_voidptr_t * _data, ae_voidptr_t _ud )
+    static void Mengine_resource_deleter( aeMovieResourceTypeEnum _type, ae_voidptr_t * _data, ae_voidptr_t _ud )
     {
         (void)_type;
         (void)_data;

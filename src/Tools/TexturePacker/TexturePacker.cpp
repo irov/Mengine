@@ -17,6 +17,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	uint32_t images_count = parse_kwds( lpCmdLine, L"--image_count", 0U );
 	std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
+    std::wstring log_path = parse_kwds( lpCmdLine, L"--log_path", std::wstring() );
 	std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker", std::wstring() );
 	std::wstring atlas_path = parse_kwds( lpCmdLine, L"--atlas_path", std::wstring() );
 	
@@ -26,28 +27,30 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( f_in == NULL )
 	{
-		message_error( "invalid open in_path %ls\n"
-			, in_path
+        message_error( "#invalid open in_path %ls\n"
+			, in_path.c_str()
 		);
 
 		return 0;
 	}
 	
-	WCHAR image_path[MAX_PATH];
-	while( fgetws( image_path, MAX_PATH, f_in ) )
+	WCHAR wimage_path[MAX_PATH];
+	while( fgetws( wimage_path, MAX_PATH, f_in ) )
 	{		
 		wchar_t * pos;
-		if( (pos = wcschr( image_path, L'\n' )) != NULL )
+		if( (pos = wcschr( wimage_path, L'\n' )) != NULL )
 		{
 			*pos = '\0';
 		}
 
-		images_path.push_back( image_path );
+		images_path.push_back( wimage_path );
 	}
+
+    fclose( f_in );
 
 	if( texturepacker_path.empty() == true )
 	{
-		message_error( "not found 'texturepacker' param\n"
+        message_error( "#not found 'texturepacker' param\n"
 			);
 
 		return 0;
@@ -55,19 +58,11 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( images_path.empty() == true )
 	{
-		message_error( "not found 'images' param\n"
+        message_error( "#not found 'images' param\n"
 			);
 
 		return 0;
 	}
-
-	//if( out_path.empty() == true )
-	//{
-	//	message_error( "not found 'images' param\n"
-	//	);
-
-	//	return 0;
-	//}	
 
 	std::wstring system_cmd;
 
@@ -107,9 +102,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	system_cmd += L" --format json-array ";	
 	system_cmd += L" --texture-format png ";
-	system_cmd += L" --max-width 4096 ";
-	system_cmd += L" --max-height 4096 ";
-	system_cmd += L" --max-size 4096 ";
+	system_cmd += L" --max-width 2048 ";
+	system_cmd += L" --max-height 2048 ";
+	system_cmd += L" --max-size 2048 ";
 	
 	for( const std::wstring & image_path : images_path )
 	{
@@ -122,11 +117,37 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	}
 
 	ForceRemoveDirectory( libmovieTempDir );
+
+    HANDLE hLogFile = INVALID_HANDLE_VALUE;
+
+    if( log_path.empty() == false )
+    {
+        SECURITY_ATTRIBUTES sa;
+        sa.nLength = sizeof( sa );
+        sa.lpSecurityDescriptor = NULL;
+        sa.bInheritHandle = TRUE;
+
+        hLogFile = CreateFile( log_path.c_str(),
+            FILE_APPEND_DATA,
+            FILE_SHARE_WRITE | FILE_SHARE_READ,
+            &sa,
+            OPEN_ALWAYS,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL );
+    }
 	
 	STARTUPINFO lpStartupInfo;
 	ZeroMemory( &lpStartupInfo, sizeof( STARTUPINFOW ) );
 	lpStartupInfo.cb = sizeof( lpStartupInfo );
-	lpStartupInfo.wShowWindow = SW_HIDE;
+    lpStartupInfo.wShowWindow = SW_HIDE;
+
+    if( hLogFile != INVALID_HANDLE_VALUE )
+    {
+        lpStartupInfo.dwFlags |= STARTF_USESTDHANDLES;
+        lpStartupInfo.hStdInput = NULL;
+        lpStartupInfo.hStdError = hLogFile;
+        lpStartupInfo.hStdOutput = hLogFile;
+    }
 
 	PROCESS_INFORMATION lpProcessInformation;
 	ZeroMemory( &lpProcessInformation, sizeof( PROCESS_INFORMATION ) );
@@ -142,21 +163,26 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		, lpCommandLine
 		, NULL
 		, NULL
-		, FALSE
+        , (hLogFile != INVALID_HANDLE_VALUE) ? TRUE : FALSE
 		, CREATE_NO_WINDOW
 		, NULL
 		, NULL
 		, &lpStartupInfo
 		, &lpProcessInformation ) == FALSE )
 	{
-		message_error( "invalid CreateProcess %ls %ls\n"
+        message_error( "#invalid CreateProcess %ls %ls\n"
 			, TexturePathCanonicalizeQuote
 			, lpCommandLine
 			);
 
+        if( hLogFile != INVALID_HANDLE_VALUE )
+        {
+            CloseHandle( hLogFile );
+        }
+
 		return 0;
 	}
-
+        
 	CloseHandle( lpProcessInformation.hThread );
 
 	WaitForSingleObject( lpProcessInformation.hProcess, INFINITE );
@@ -168,13 +194,23 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( exit_code != 0 )
 	{
-		message_error( "invalid Process %ls exit_code %d\n"
+        message_error( "#invalid Process %ls exit_code %d\n"
 			, TexturePathCanonicalizeQuote
 			, exit_code
 			);
 
+        if( hLogFile != INVALID_HANDLE_VALUE )
+        {
+            CloseHandle( hLogFile );
+        }
+
 		return 0;
 	}
+
+    if( hLogFile != INVALID_HANDLE_VALUE )
+    {
+        CloseHandle( hLogFile );
+    }
 
 	WCHAR dataPath[MAX_PATH];
 	PathCombine( dataPath, dataTempDir, L"*.json" );
@@ -226,7 +262,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		if( f == NULL )
 		{
-			message_error( "invalid _wfopen %ls\n"
+            message_error( "#invalid _wfopen %ls\n"
 				, sheetPath
 				);
 

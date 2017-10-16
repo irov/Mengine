@@ -22,7 +22,7 @@ namespace Menge
 		~Win32FileInputStream();
 
 	public:
-		bool open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size ) override;
+		bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size ) override;
 		
 	public:
 		size_t read( void * _buf, size_t _count ) override;
@@ -39,7 +39,7 @@ namespace Menge
 		bool memory( void ** _memory, size_t * _size ) override;
 
     protected:
-		bool openFile_( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath );
+		bool openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _fullPath );
         void close_();
 		bool read_( void * _buf, size_t _size, size_t & _read );
 		bool seek_( size_t _pos );

@@ -34,17 +34,17 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-	bool Win32FileInputStream::open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size )
+	bool Win32FileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size )
 	{
 		STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::open" );
 
 #	ifdef _DEBUG
-		m_folder = _folder.c_str();
-		m_fileName = _fileName.c_str();
+		m_folder = _folderPath.c_str();
+		m_fileName = _filePath.c_str();
 #	endif
 
-		WChar filePath[MENGINE_MAX_PATH];
-		if( this->openFile_( _folder, _fileName, filePath ) == false )
+		WChar fullPath[MENGINE_MAX_PATH];
+		if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
 		{
 			return false;
 		}
@@ -56,7 +56,7 @@ namespace Menge
 			this->close_();
 
 			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid file size"
-				, filePath
+				, fullPath
 				);
 
 			return false;
@@ -65,7 +65,7 @@ namespace Menge
 		if( _offset + _size > size )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid file range %d:%d size %d"
-				, filePath
+				, fullPath
 				, _offset
 				, _size
 				, size
@@ -102,21 +102,21 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileInputStream::openFile_( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath )
+	bool Win32FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _fullPath )
 	{		
 		if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( _folder, _fileName, _filePath, MENGINE_MAX_PATH ) == false )
+			->concatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open invlalid concatenate filePath '%s':'%s'"
-				, _folder.c_str()
-				, _fileName.c_str()
+				, _folderPath.c_str()
+				, _filePath.c_str()
 				);
 
 			return false;
 		}
 
 		m_hFile = WINDOWSLAYER_SERVICE(m_serviceProvider)->createFile( 
-			_filePath, // file to open
+			_fullPath, // file to open
 			GENERIC_READ, // open for reading
 			FILE_SHARE_READ, // share for reading, exclusive for mapping
 			OPEN_EXISTING // existing file only
@@ -125,7 +125,7 @@ namespace Menge
 		if ( m_hFile == INVALID_HANDLE_VALUE)
 		{
 			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid open"
-				, _filePath
+				, _fullPath
 				);
 
 			return false;
@@ -135,7 +135,7 @@ namespace Menge
 		if( SERVICE_EXIST( m_serviceProvider, NotificationServiceInterface ) == true )
 		{
 			NOTIFICATION_SERVICE( m_serviceProvider )
-				->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folder.c_str(), _fileName.c_str() );
+				->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str() );
 		}
 #	endif
 

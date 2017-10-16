@@ -16,7 +16,7 @@ namespace Menge
         ~SDLFileOutputStream();
 
     public:
-        bool open( const FilePath & _folder, const FilePath& _fileName ) override;
+        bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath ) override;
 
     public:
         bool write( const void * _data, size_t _size ) override;

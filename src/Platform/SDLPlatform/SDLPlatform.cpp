@@ -886,34 +886,6 @@ namespace Menge
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity )
-    {
-        size_t folderSize = _folder.size();
-        size_t dirSize = _fileName.size();
-
-        size_t filePathSize = folderSize + dirSize;
-
-        if( filePathSize >= MENGINE_MAX_PATH )
-        {
-            return false;
-        }
-
-        Char filePath[MENGINE_MAX_PATH];
-        stdex::memorycopy( filePath, 0, _folder.c_str(), folderSize );
-        stdex::memorycopy( filePath, folderSize, _fileName.c_str(), dirSize );
-
-        filePath[filePathSize] = '\0';
-        //filePathSize += 1; //Null
-
-        if( UNICODE_SERVICE( m_serviceProvider )
-            ->utf8ToUnicode( filePath, filePathSize, _filePath, _capacity, nullptr ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::changeWindow_( const Resolution & _resolution, bool _fullscreen )
     {
         //RENDER_SERVICE( m_serviceProvider )

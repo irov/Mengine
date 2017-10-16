@@ -25,11 +25,11 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::initialize( const ConstString & _name, const ConstString & _category, const FilePath & _path )
+    bool SDLFileGroupDirectory::initialize( const ConstString & _name, const ConstString & _category, const FilePath & _folderPath )
     {
 		m_name = _name;
 		m_category = _category;
-        m_path = _path;
+        m_folderPath = _folderPath;
 
         m_factoryInputStream = new FactoryPool<SDLFileInputStream, 8>( m_serviceProvider );
         m_factoryOutputStream = new FactoryPool<SDLFileOutputStream, 4>( m_serviceProvider );
@@ -49,7 +49,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     const FilePath & SDLFileGroupDirectory::getPath() const
     {
-        return m_path;
+        return m_folderPath;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::existFile( const FilePath & _fileName ) const
@@ -58,10 +58,10 @@ namespace Menge
 
         Char filePath[MENGINE_MAX_PATH];
         if( SDLLAYER_SERVICE(m_serviceProvider)
-            ->concatenateFilePath( m_path, _fileName, filePath, MENGINE_MAX_PATH ) == false )
+            ->concatenateFilePath( m_relationPath, m_folderPath, _fileName, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
-                , m_path.c_str()
+                , m_folderPath.c_str()
                 , _fileName.c_str()
                 );
 
@@ -95,7 +95,7 @@ namespace Menge
         return inputStream;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming )
+    bool SDLFileGroupDirectory::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming )
     {
         (void)_streaming;
 
@@ -109,11 +109,11 @@ namespace Menge
 
         FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>(_stream);
 
-        if( file->open( m_path, _fileName, _offset, _size ) == false )
+        if( file->open( m_relationPath, m_folderPath, _filePath, _offset, _size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("SDLFileGroupDirectory::openInputFile failed open file '%s':'%s'"
-                , m_path.c_str()
-                , _fileName.c_str()
+                , m_folderPath.c_str()
+                , _filePath.c_str()
                 );
 
             return false;
@@ -131,7 +131,7 @@ namespace Menge
         return outputStream;
     }
     //////////////////////////////////////////////////////////////////////////	
-    bool SDLFileGroupDirectory::openOutputFile( const FilePath & _fileName, const OutputStreamInterfacePtr & _stream )
+    bool SDLFileGroupDirectory::openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream )
     {
         if( _stream == nullptr )
         {
@@ -143,17 +143,27 @@ namespace Menge
 
         FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>(_stream);
 
-        if( file->open( m_path, _fileName ) == false )
+        if( file->open( m_relationPath, m_folderPath, _filePath ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("SDLFileGroupDirectory::openOutputFile failed open file '%s':'%s'"
-                , m_path.c_str()
-                , _fileName.c_str()
+                , m_folderPath.c_str()
+                , _filePath.c_str()
                 );
 
             return false;
         }
                 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLFileGroupDirectory::setRelationPath( const FilePath & _relationPath )
+    {
+        m_relationPath = _relationPath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & SDLFileGroupDirectory::getRelationPath() const
+    {
+        return m_relationPath;
     }
     //////////////////////////////////////////////////////////////////////////
 }   // namespace Menge

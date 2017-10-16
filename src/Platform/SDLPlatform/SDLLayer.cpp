@@ -14,18 +14,20 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLLayer::concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, Char * _filePath, size_t _capacity )
+    bool SDLLayer::concatenateFilePath( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * _concatenatePath, size_t _capacity )
     {
-        size_t folderSize = _folder.size();
-        size_t fileNameSize = _fileName.size();
+        size_t relationSize = _relationPath.size();
+        size_t folderSize = _folderPath.size();
+        size_t fileSize = _filePath.size();
 
-        if( folderSize + fileNameSize > _capacity )
+        if( relationSize + folderSize + fileSize > _capacity )
         {
             return false;
         }
 
-        strcpy( _filePath, _folder.c_str() );
-        strcat( _filePath, _fileName.c_str() );
+        strcpy( _concatenatePath, _relationPath.c_str() );
+        strcpy( _concatenatePath, _folderPath.c_str() );
+        strcat( _concatenatePath, _filePath.c_str() );
 
         return true;
     }

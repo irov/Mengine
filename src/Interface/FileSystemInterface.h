@@ -20,7 +20,7 @@ namespace Menge
 		: public InputStreamInterface
 	{
 	public:
-		virtual bool open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size ) = 0;
+		virtual bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<FileInputStreamInterface> FileInputStreamInterfacePtr;
@@ -29,7 +29,7 @@ namespace Menge
 		: public ServantInterface
 	{
 	public:
-		virtual bool open( const FilePath & _folder, const FilePath & _fileName ) = 0;
+		virtual bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath ) = 0;
 
 	public:
         virtual InputStreamInterfacePtr createFileStream() = 0;
@@ -42,7 +42,7 @@ namespace Menge
 		: public OutputStreamInterface
 	{
 	public:
-		virtual bool open( const FilePath & _folder, const FilePath & _fileName ) = 0;
+		virtual bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<FileOutputStreamInterface> FileOutputStreamInterfacePtr;

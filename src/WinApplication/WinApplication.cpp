@@ -240,7 +240,7 @@ namespace Menge
 			);
 		
 		// mount root		
-		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( ConstString::none(), ConstString::none(), Helper::stringizeFilePath( m_serviceProvider, utf8_currentPath ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
+        if( FILE_SERVICE( m_serviceProvider )->mountFileGroup( ConstString::none(), ConstString::none(), FilePath( ConstString::none() ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount application directory %ls"
 				, currentPath
@@ -251,7 +251,7 @@ namespace Menge
 
 #	ifndef MENGINE_MASTER_RELEASE
 		// mount root		
-		if( FILE_SERVICE( m_serviceProvider )->mountFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), ConstString::none(), FilePath(ConstString::none()), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
+		if( FILE_SERVICE( m_serviceProvider )->mountFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), ConstString::none(), FilePath( ConstString::none() ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "global" ) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount dev directory %ls"
 				, currentPath

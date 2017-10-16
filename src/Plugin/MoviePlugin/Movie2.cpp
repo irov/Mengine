@@ -252,7 +252,7 @@ namespace Menge
 
 					EMaterialBlendMode blend_mode = EMB_NORMAL;
 					
-					aeMovieBlendMode layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
+					ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
 
 					switch( layer_blend_mode )
 					{
@@ -294,7 +294,7 @@ namespace Menge
 
 					EMaterialBlendMode blend_mode = EMB_NORMAL;
 
-					aeMovieBlendMode layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
+					ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
 
 					switch( layer_blend_mode )
 					{

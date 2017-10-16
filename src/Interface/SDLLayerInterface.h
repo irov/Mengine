@@ -14,7 +14,7 @@ namespace Menge
         SERVICE_DECLARE("SDLLayerService")
 
     public:
-        virtual bool concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, Char * _filePath, size_t _capacity ) = 0;
+        virtual bool concatenateFilePath( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * _concatenatePath, size_t _capacity ) = 0;
     };
 
 #   define SDLLAYER_SERVICE( serviceProvider )\

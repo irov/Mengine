@@ -22,22 +22,22 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileOutputStream::open( const FilePath & _folder, const FilePath& _fileName )
+	bool Win32FileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath& _filePath )
 	{        
-        WChar filePath[MENGINE_MAX_PATH];
+        WChar fullPath[MENGINE_MAX_PATH];
         if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( _folder, _fileName, filePath, MENGINE_MAX_PATH ) == false )
+			->concatenateFilePath( _relationPath, _folderPath, _filePath, fullPath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Win32OutputStream::open invlalid concatenate filePath '%s':'%s'"
-                , _folder.c_str()
-                , _fileName.c_str()
+                , _folderPath.c_str()
+                , _filePath.c_str()
                 );
 
             return false;
         }
 
 		m_hFile = WINDOWSLAYER_SERVICE(m_serviceProvider)->createFile( 
-            filePath
+            fullPath
             , GENERIC_WRITE
             , FILE_SHARE_READ | FILE_SHARE_WRITE
             , CREATE_ALWAYS
@@ -46,7 +46,7 @@ namespace Menge
 		if ( m_hFile == INVALID_HANDLE_VALUE)
 		{
             LOGGER_ERROR(m_serviceProvider)("Win32OutputStream::open %ls invalid open"
-                , filePath
+                , fullPath
                 );
 
 			return false;

@@ -14,6 +14,6 @@ namespace Menge
         ~SDLLayer();
 
     public:
-        bool concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, Char * _filePath, size_t _capacity ) override;
+        bool concatenateFilePath( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * _concatenatePath, size_t _capacity ) override;
     };
 }

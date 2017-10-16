@@ -18,7 +18,7 @@ namespace Menge
 		~Win32FileGroupDirectory();
 
 	public:
-		bool initialize( const ConstString & _name, const ConstString & _category, const FilePath & _path ) override;
+		bool initialize( const ConstString & _name, const ConstString & _category, const FilePath & _folderPath ) override;
         void finalize() override;
 
 	public:
@@ -38,10 +38,16 @@ namespace Menge
 		OutputStreamInterfacePtr createOutputFile() override;        
 		bool openOutputFile( const FilePath& _fileName, const OutputStreamInterfacePtr & _file ) override;
 
+    public:
+        void setRelationPath( const FilePath & _relationPath );
+        const FilePath & getRelationPath() const;
+
     protected:
 		ConstString m_name;
 		ConstString m_category;
-		FilePath m_path;
+		FilePath m_folderPath;
+
+        FilePath m_relationPath;
 
 		FactoryPtr m_factoryInputStream;
         FactoryPtr m_factoryOutputStream;

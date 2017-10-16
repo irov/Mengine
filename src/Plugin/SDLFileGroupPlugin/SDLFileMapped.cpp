@@ -16,10 +16,12 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileMapped::open( const FilePath & _folder, const FilePath & _fileName )
+    bool SDLFileMapped::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
     {
-        (void)_folder;
-        (void)_fileName;
+        (void)_relationPath;
+        (void)_folderPath;
+        (void)_filePath;
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////

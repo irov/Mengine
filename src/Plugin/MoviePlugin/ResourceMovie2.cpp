@@ -32,7 +32,7 @@ namespace Menge
 		memcpy( _dst, _src, _size );
 	}
     //////////////////////////////////////////////////////////////////////////
-    static ae_voidptr_t Mengine_resource_provider( const aeMovieResource * _resource, void * _data )
+    static ae_voidptr_t Mengine_resource_provider( const aeMovieResource * _resource, ae_voidptr_t _data )
     {
         ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_data;
 
@@ -69,7 +69,7 @@ namespace Menge
         return AE_NULL;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void Mengine_resource_deleter( aeMovieResourceTypeEnum _type, ae_voidptr_t * _data, ae_voidptr_t _ud )
+    static void Mengine_resource_deleter( aeMovieResourceTypeEnum _type, ae_voidptr_t _data, ae_voidptr_t _ud )
     {
         (void)_type;
         (void)_data;

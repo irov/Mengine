@@ -342,6 +342,9 @@ namespace Menge
 				new_width = max_i - min_i + 1;
 				new_height = max_j - min_j + 1;
 			}
+
+            new_width += 2;
+            new_height += 2;
 		}
 		else
 		{
@@ -375,10 +378,19 @@ namespace Menge
 		{
 			for( size_t j = 0; j != new_height; ++j )
 			{
-				size_t old_index = (min_i + i) + (min_j + j) * width;
-				size_t new_index = i + j * new_width;
+                size_t new_index = i + j * new_width;
 
-				for( size_t k = 0; k != decode_dataInfo->channels; ++k )
+                if( decode_dataInfo->channels == 4 && (i == 0 || j == 0 || i == new_width - 1 || j == new_height - 1) )
+                {
+                    for( size_t k = 0; k != decode_dataInfo->channels; ++k )
+                    {
+                        new_textureBuffer[new_index * decode_dataInfo->channels + k] = 0;
+                    }
+                }
+
+                size_t old_index = decode_dataInfo->channels == 4 ? (min_i + (i - 1)) + (min_j + (j - 1)) * width : (min_i + i) + (min_j + j) * width;
+
+                for( size_t k = 0; k != decode_dataInfo->channels; ++k )
 				{
 					new_textureBuffer[new_index * decode_dataInfo->channels + k] = textureBuffer[old_index * decode_dataInfo->channels + k];
 				}

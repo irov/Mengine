@@ -14,9 +14,9 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     VistaWindowsLayer::VistaWindowsLayer()
-        : m_windowsType(EWT_UNKNOWN)
-        , m_checkedUnicode(false)
-        , m_supportUnicode(false)        
+        : m_windowsType( EWT_UNKNOWN )
+        , m_checkedUnicode( false )
+        , m_supportUnicode( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -28,25 +28,25 @@ namespace Menge
         }
 
         OSVERSIONINFO osvi;
-        ::ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+        ::ZeroMemory( &osvi, sizeof( OSVERSIONINFO ) );
 
-        osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-        if( ::GetVersionEx((LPOSVERSIONINFO)&osvi) == TRUE )
-		{
-			if( osvi.dwMajorVersion >= 6 )
-			{
-				m_windowsType = EWT_VISTA;
-			}
-			else if( osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS ) // let's check Win95, 98, *AND* ME.
-			{
-				m_windowsType = EWT_98;
-			}
-		}
-		else
+        osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
+        if( ::GetVersionEx( (LPOSVERSIONINFO)&osvi ) == TRUE )
         {
-			m_windowsType = EWT_NT;
+            if( osvi.dwMajorVersion >= 6 )
+            {
+                m_windowsType = EWT_VISTA;
+            }
+            else if( osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS ) // let's check Win95, 98, *AND* ME.
+            {
+                m_windowsType = EWT_98;
+            }
         }
-		
+        else
+        {
+            m_windowsType = EWT_NT;
+        }
+
         return m_windowsType;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -59,9 +59,9 @@ namespace Menge
             return false;
         }
 
-        typedef BOOL (WINAPI *PSETPROCESSDPIAWARE)(VOID);
+        typedef BOOL( WINAPI *PSETPROCESSDPIAWARE )(VOID);
 
-		FARPROC pSetProcessDPIAware =
+        FARPROC pSetProcessDPIAware =
             ::GetProcAddress( hUser32, "SetProcessDPIAware" );
 
         if( pSetProcessDPIAware == NULL )
@@ -106,8 +106,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::fileExists( const WChar * _path )
     {
-		WChar pathCorrect[MENGINE_MAX_PATH];
-		Helper::pathCorrectBackslash( pathCorrect, _path );
+        WChar pathCorrect[MENGINE_MAX_PATH];
+        Helper::pathCorrectBackslash( pathCorrect, _path );
 
         size_t len = wcslen( pathCorrect );
         if( len == 0 )	// current dir
@@ -133,82 +133,82 @@ namespace Menge
     HANDLE VistaWindowsLayer::createFile( const WChar * _path, DWORD _desiredAccess,
         DWORD _sharedMode, DWORD _creationDisposition )
     {
-		WChar pathCorrect[MENGINE_MAX_PATH];
-		Helper::pathCorrectBackslash( pathCorrect, _path );
+        WChar pathCorrect[MENGINE_MAX_PATH];
+        Helper::pathCorrectBackslash( pathCorrect, _path );
 
         HANDLE handle = ::CreateFile( pathCorrect, _desiredAccess, _sharedMode, NULL,
             _creationDisposition, FILE_ATTRIBUTE_NORMAL, NULL );
 
-		if( handle == INVALID_HANDLE_VALUE )
-		{
-			DWORD err_code = GetLastError();
+        if( handle == INVALID_HANDLE_VALUE )
+        {
+            DWORD err_code = GetLastError();
 
-			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createFile invalid create file %ls err %d"
-				, pathCorrect
-				, err_code
-				);
+            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createFile invalid create file %ls err %d"
+                , pathCorrect
+                , err_code
+                );
 
-			return INVALID_HANDLE_VALUE;
-		}
+            return INVALID_HANDLE_VALUE;
+        }
 
 #ifdef _DEBUG
-		if( this->validateFile_( pathCorrect ) == false )
-		{
-			::CloseHandle( handle );
+        if( this->validateFile_( pathCorrect ) == false )
+        {
+            ::CloseHandle( handle );
 
-			return INVALID_HANDLE_VALUE;
-		}
+            return INVALID_HANDLE_VALUE;
+        }
 #endif
 
         return handle;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool VistaWindowsLayer::validateFile_( const WChar * _path )
-	{
-		WIN32_FIND_DATA wfd;
-		HANDLE hFind = ::FindFirstFile( _path, &wfd );
+    //////////////////////////////////////////////////////////////////////////
+    bool VistaWindowsLayer::validateFile_( const WChar * _path )
+    {
+        WIN32_FIND_DATA wfd;
+        HANDLE hFind = ::FindFirstFile( _path, &wfd );
 
-		if( hFind == INVALID_HANDLE_VALUE )
-		{
-			LOGGER_ERROR(m_serviceProvider)("File invalid find ??? (%ls)\n"
-				, _path
-				);
-		}
+        if( hFind == INVALID_HANDLE_VALUE )
+        {
+            LOGGER_ERROR( m_serviceProvider )("File invalid find ??? (%ls)\n"
+                , _path
+                );
+        }
 
-		const WChar * filename = PathFindFileName( _path );
+        const WChar * filename = PathFindFileName( _path );
 
-		if( wcscmp( filename, wfd.cFileName ) != 0 )
-		{
-			LOGGER_ERROR(m_serviceProvider)("File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
-				, _path
-				, filename
-				, wfd.cFileName
-				);
+        if( wcscmp( filename, wfd.cFileName ) != 0 )
+        {
+            LOGGER_ERROR( m_serviceProvider )("File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
+                , _path
+                , filename
+                , wfd.cFileName
+                );
 
-			::FindClose( hFind );
+            ::FindClose( hFind );
 
-			return false;
-		}	
+            return false;
+        }
 
-		::FindClose( hFind );
+        ::FindClose( hFind );
 
-		return true;
-	}
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     ATOM VistaWindowsLayer::registerClass( WNDPROC _wndProc, int _clsExtra, int _wndExtra
         , HINSTANCE _hInstance, DWORD _hIcon, HBRUSH _hbrBackground
         , const WChar * _className )
     {
         WNDCLASS wc;
-        ::ZeroMemory( &wc, sizeof(WNDCLASS) );
+        ::ZeroMemory( &wc, sizeof( WNDCLASS ) );
         wc.cbClsExtra = _clsExtra;
         wc.cbWndExtra = _wndExtra;
         wc.style = /*CS_DBLCLKS |*/ CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
         wc.lpfnWndProc = _wndProc;
         wc.hInstance = _hInstance;
 
-        wc.hIcon = LoadIcon( _hInstance, MAKEINTRESOURCEW(_hIcon) );
-        wc.hCursor = LoadCursor( NULL, MAKEINTRESOURCEW(32512) );
+        wc.hIcon = LoadIcon( _hInstance, MAKEINTRESOURCEW( _hIcon ) );
+        wc.hCursor = LoadCursor( NULL, MAKEINTRESOURCEW( 32512 ) );
 
         wc.lpszClassName = _className;
         wc.hbrBackground = _hbrBackground;
@@ -239,9 +239,9 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     HWND VistaWindowsLayer::createWindowEx( DWORD _exStyle, const WChar * _className
-        , const WChar * _windowName,	DWORD _style, int _x, int _y
+        , const WChar * _windowName, DWORD _style, int _x, int _y
         , int _width, int _height, HWND _parent, HMENU _hMenu
-        , HINSTANCE _hInstance,	LPVOID _param )
+        , HINSTANCE _hInstance, LPVOID _param )
     {
         HWND hwnd = ::CreateWindowEx( _exStyle, _className, _windowName
             , _style, _x, _y, _width, _height, _parent, _hMenu, _hInstance, _param );
@@ -253,7 +253,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void VistaWindowsLayer::destroyWindow( HWND _hWnd )
     {
-		::CloseWindow( _hWnd );
+        ::CloseWindow( _hWnd );
         ::DestroyWindow( _hWnd );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -264,14 +264,14 @@ namespace Menge
         return createStruct->lpCreateParams;
     }
     //////////////////////////////////////////////////////////////////////////
-    LONG VistaWindowsLayer::setWindowLong( HWND _hWnd,	int _index,	LONG _newLong )
+    LONG VistaWindowsLayer::setWindowLong( HWND _hWnd, int _index, LONG _newLong )
     {
         LONG value = ::SetWindowLong( _hWnd, _index, _newLong );
 
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
-    LONG VistaWindowsLayer::getWindowLong( HWND _hWnd,	int _index )
+    LONG VistaWindowsLayer::getWindowLong( HWND _hWnd, int _index )
     {
         LONG value = ::GetWindowLong( _hWnd, _index );
 
@@ -296,19 +296,19 @@ namespace Menge
     {
         LRESULT result = ::DefWindowProc( _hWnd, _msg, _wParam, _lParam );
 
-        return result;		
+        return result;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void VistaWindowsLayer::updateMessage( HWND _hWnd )
-	{
-		MSG  msg;
-		while( ::PeekMessage( &msg, _hWnd, 0U, 0U, PM_REMOVE ) == TRUE )
-		{
-			::TranslateMessage( &msg );
+    //////////////////////////////////////////////////////////////////////////
+    void VistaWindowsLayer::updateMessage( HWND _hWnd )
+    {
+        MSG  msg;
+        while( ::PeekMessage( &msg, _hWnd, 0U, 0U, PM_REMOVE ) == TRUE )
+        {
+            ::TranslateMessage( &msg );
 
-			::DispatchMessage( &msg );
-		}
-	}
+            ::DispatchMessage( &msg );
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     int VistaWindowsLayer::messageBox( HWND _hWnd, const WChar * _text, const WChar * _caption, UINT _type )
     {
@@ -319,12 +319,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::getModuleFileName( HMODULE hModule, WChar * _moduleFilename, size_t _capacity )
     {
-		if( ::GetModuleFileName( hModule, _moduleFilename, (DWORD)_capacity ) == 0 )
+        if( ::GetModuleFileName( hModule, _moduleFilename, (DWORD)_capacity ) == 0 )
         {
             return false;
         }
 
-        return true;             
+        return true;
     }
     ////////////////////////////////////////////////////////////////////////////
     //LONG setRegistryValue( HKEY _hKey, const Menge::WString & _lpKeyName, const Menge::WString & _lpValueName, DWORD _dwType, const BYTE* _lpData, DWORD _cbData )
@@ -374,25 +374,25 @@ namespace Menge
     {
         LPTSTR errorText = NULL;
 
-		if( FormatMessage(
-			// use system message tables to retrieve error text
-			FORMAT_MESSAGE_FROM_SYSTEM
-			// allocate buffer on local heap for error text
-			| FORMAT_MESSAGE_ALLOCATE_BUFFER
-			// Important! will fail otherwise, since we're not 
-			// (and CANNOT) pass insertion parameters
-			| FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
-			_hresult,
-			MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
-			(LPTSTR)&errorText,  // output 
-			0, // minimum size for output buffer
-			NULL ) == 0 )
-		{
+        if( FormatMessage(
+            // use system message tables to retrieve error text
+            FORMAT_MESSAGE_FROM_SYSTEM
+            // allocate buffer on local heap for error text
+            | FORMAT_MESSAGE_ALLOCATE_BUFFER
+            // Important! will fail otherwise, since we're not 
+            // (and CANNOT) pass insertion parameters
+            | FORMAT_MESSAGE_IGNORE_INSERTS,
+            NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
+            _hresult,
+            MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
+            (LPTSTR)&errorText,  // output 
+            0, // minimum size for output buffer
+            NULL ) == 0 )
+        {
 
 
-			return false;
-		}
+            return false;
+        }
 
         _out.assign( errorText );
 
@@ -401,184 +401,186 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VistaWindowsLayer::concatenateFilePath( const ConstString & _folder, const ConstString & _fileName, WChar * _filePath, size_t _capacity )
-    {        
-        size_t folderSize = _folder.size();
-		size_t dirSize = _fileName.size();
-                        
-        size_t filePathSize = folderSize + dirSize;
-        
+    bool VistaWindowsLayer::concatenateFilePath( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _concatenatePath, size_t _capacity )
+    {
+        size_t relationSize = _relationPath.size();
+        size_t folderSize = _folderPath.size();        
+        size_t fileSize = _filePath.size();
+
+        size_t filePathSize = relationSize + folderSize + fileSize;
+
         if( filePathSize >= MENGINE_MAX_PATH )
         {
             return false;
         }
 
         Char filePath[MENGINE_MAX_PATH];
-        stdex::memorycopy(filePath, 0, _folder.c_str(), folderSize);
-		stdex::memorycopy(filePath, folderSize, _fileName.c_str(), dirSize);
+        stdex::memorycopy( filePath, 0, _relationPath.c_str(), relationSize );
+        stdex::memorycopy( filePath, relationSize, _folderPath.c_str(), folderSize );
+        stdex::memorycopy( filePath, relationSize + folderSize, _filePath.c_str(), fileSize );
 
         filePath[filePathSize] = '\0';
         filePathSize += 1; //Null
 
-		WChar filePathW[MENGINE_MAX_PATH];
-        if( UNICODE_SERVICE(m_serviceProvider)
+        WChar filePathW[MENGINE_MAX_PATH];
+        if( UNICODE_SERVICE( m_serviceProvider )
             ->utf8ToUnicode( filePath, filePathSize, filePathW, _capacity, nullptr ) == false )
         {
             return false;
         }
 
-		Helper::pathCorrectBackslash( _filePath, filePathW );
-        
+        Helper::pathCorrectBackslash( _concatenatePath, filePathW );
+
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool VistaWindowsLayer::cmd( const WString & _command )
-	{
-		const wchar_t * wc = _command.c_str();
+    //////////////////////////////////////////////////////////////////////////
+    bool VistaWindowsLayer::cmd( const WString & _command )
+    {
+        const wchar_t * wc = _command.c_str();
 
-		int err = _wsystem( wc );
+        int err = _wsystem( wc );
 
-		if( err != 0 )
-		{
-			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::cmd: command:\n%ls\nerror: %d"
-				, _command.c_str()
-				, errno
-				);
+        if( err != 0 )
+        {
+            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::cmd: command:\n%ls\nerror: %d"
+                , _command.c_str()
+                , errno
+                );
 
-			return false;
-		}
+            return false;
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool VistaWindowsLayer::createDirectoryUser_( const WChar * _userPath, const WString & _path, const WString & _file, const void * _data, size_t _size )
-	{
-		WChar szPath[MENGINE_MAX_PATH] = {0};
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VistaWindowsLayer::createDirectoryUser_( const WChar * _userPath, const WString & _path, const WString & _file, const void * _data, size_t _size )
+    {
+        WChar szPath[MENGINE_MAX_PATH] = { 0 };
 
-		PathAppend( szPath, _userPath );
+        PathAppend( szPath, _userPath );
 
-		WChar pathCorrect[MENGINE_MAX_PATH];
-		Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
+        WChar pathCorrect[MENGINE_MAX_PATH];
+        Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
 
-		WChar fileCorrect[MENGINE_MAX_PATH];
-		Helper::pathCorrectBackslash( fileCorrect, _file.c_str() );
+        WChar fileCorrect[MENGINE_MAX_PATH];
+        Helper::pathCorrectBackslash( fileCorrect, _file.c_str() );
 
-		PathAppend( szPath, pathCorrect );
+        PathAppend( szPath, pathCorrect );
 
-		if( this->fileExists( szPath ) == false )
-		{
-			if( PLATFORM_SERVICE(m_serviceProvider)
-				->createDirectory( szPath ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createDirectory %s"
-					, pathCorrect
-					, fileCorrect
-					, szPath
-					);
+        if( this->fileExists( szPath ) == false )
+        {
+            if( PLATFORM_SERVICE( m_serviceProvider )
+                ->createDirectory( szPath ) == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createDirectory %s"
+                    , pathCorrect
+                    , fileCorrect
+                    , szPath
+                    );
 
-				return false;
-			}
-		}
+                return false;
+            }
+        }
 
-		PathAppend( szPath, fileCorrect );
+        PathAppend( szPath, fileCorrect );
 
-		HANDLE hFile = this->createFile( szPath 
-			, GENERIC_WRITE
-			, FILE_SHARE_READ | FILE_SHARE_WRITE
-			, CREATE_ALWAYS
-			);
+        HANDLE hFile = this->createFile( szPath
+            , GENERIC_WRITE
+            , FILE_SHARE_READ | FILE_SHARE_WRITE
+            , CREATE_ALWAYS
+        );
 
-		if( hFile == INVALID_HANDLE_VALUE )
-		{
-			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createFile %s"
-				, pathCorrect
-				, fileCorrect
-				, szPath
-				);
+        if( hFile == INVALID_HANDLE_VALUE )
+        {
+            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createFile %s"
+                , pathCorrect
+                , fileCorrect
+                , szPath
+                );
 
-			return false;
-		}
+            return false;
+        }
 
-		DWORD bytesWritten = 0;
-		BOOL result = ::WriteFile( hFile, _data, (DWORD)_size, &bytesWritten, NULL );
+        DWORD bytesWritten = 0;
+        BOOL result = ::WriteFile( hFile, _data, (DWORD)_size, &bytesWritten, NULL );
 
-		::CloseHandle( hFile );
+        ::CloseHandle( hFile );
 
-		if( result == FALSE )
-		{
-			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid writeFile %s"
-				, pathCorrect
-				, fileCorrect
-				, szPath
-				);
+        if( result == FALSE )
+        {
+            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid writeFile %s"
+                , pathCorrect
+                , fileCorrect
+                , szPath
+                );
 
-			return false;
-		}
+            return false;
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool VistaWindowsLayer::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
-	{
-		WCHAR szPath[MENGINE_MAX_PATH];
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VistaWindowsLayer::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
+    {
+        WCHAR szPath[MENGINE_MAX_PATH];
 
-		if(FAILED(SHGetFolderPath(NULL
-			, CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
-			, NULL
-			, 0
-			, szPath))) 
-		{
-			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: '%ls:%ls' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
-				, _path.c_str()
-				, _file.c_str()
-				);
+        if( FAILED( SHGetFolderPath( NULL
+            , CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
+            , NULL
+            , 0
+            , szPath ) ) )
+        {
+            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createDirectoryUserPicture: '%ls:%ls' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
+                , _path.c_str()
+                , _file.c_str()
+                );
 
-			return false;
-		}
+            return false;
+        }
 
-		if( this->createDirectoryUser_( szPath, _path, _file, _data, _size ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
-				, _path.c_str()
-				, _file.c_str()
-				, szPath
-				);
+        if( this->createDirectoryUser_( szPath, _path, _file, _data, _size ) == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createDirectoryUserPicture: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
+                , _path.c_str()
+                , _file.c_str()
+                , szPath
+                );
 
-			return false;
-		}
+            return false;
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool VistaWindowsLayer::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
-	{
-		WCHAR szPath[MENGINE_MAX_PATH];
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VistaWindowsLayer::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
+    {
+        WCHAR szPath[MENGINE_MAX_PATH];
 
-		if(FAILED(SHGetFolderPath(NULL
-			, CSIDL_COMMON_MUSIC | CSIDL_FLAG_CREATE
-			, NULL
-			, 0
-			, szPath))) 
-		{
-			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserMusic: %ls:%ls invalid SHGetFolderPath CSIDL_COMMON_MUSIC"
-				, _path.c_str()
-				, _file.c_str()
-				);
+        if( FAILED( SHGetFolderPath( NULL
+            , CSIDL_COMMON_MUSIC | CSIDL_FLAG_CREATE
+            , NULL
+            , 0
+            , szPath ) ) )
+        {
+            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createDirectoryUserMusic: %ls:%ls invalid SHGetFolderPath CSIDL_COMMON_MUSIC"
+                , _path.c_str()
+                , _file.c_str()
+                );
 
-			return false;
-		}	
+            return false;
+        }
 
-		if( this->createDirectoryUser_( szPath, _path, _file, _data, _size ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserMusic: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
-				, _path.c_str()
-				, _file.c_str()
-				, szPath
-				);
+        if( this->createDirectoryUser_( szPath, _path, _file, _data, _size ) == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createDirectoryUserMusic: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
+                , _path.c_str()
+                , _file.c_str()
+                , szPath
+                );
 
-			return false;
-		}
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

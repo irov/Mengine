@@ -24,26 +24,26 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileOutputStream::open( const FilePath & _folder, const FilePath& _fileName )
+    bool SDLFileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
     {
-        Char filePath[MENGINE_MAX_PATH];
+        Char concatenatePath[MENGINE_MAX_PATH];
         if( SDLLAYER_SERVICE(m_serviceProvider)
-            ->concatenateFilePath( _folder, _fileName, filePath, MENGINE_MAX_PATH ) == false )
+            ->concatenateFilePath( _relationPath, _folderPath, _filePath, concatenatePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("SDLFileOutputStream::open invlalid concatenate filePath '%s':'%s'"
-                , _folder.c_str()
-                , _fileName.c_str()
+                , _folderPath.c_str()
+                , _filePath.c_str()
                 );
 
             return false;
         }
 
-        m_rwops = SDL_RWFromFile(filePath, "wb");
+        m_rwops = SDL_RWFromFile(concatenatePath, "wb");
 
         if ( m_rwops == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("SDLFileOutputStream::open %s invalid open"
-                , filePath
+                , concatenatePath
                 );
 
             return false;

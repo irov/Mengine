@@ -45,22 +45,22 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileMapped::open( const FilePath & _folder, const FilePath & _fileName )
+	bool Win32FileMapped::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
 	{
-        WChar filePath[MENGINE_MAX_PATH];
+        WChar concatenatePath[MENGINE_MAX_PATH];
         if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( _folder, _fileName, filePath, MENGINE_MAX_PATH ) == false )
+			->concatenateFilePath( _relationPath, _folderPath, _filePath, concatenatePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Win32MappedInputStream::open invlalid concatenate filePath '%s':'%s'"
-                , _folder.c_str()
-                , _fileName.c_str()
+                , _folderPath.c_str()
+                , _filePath.c_str()
                 );
 
             return false;
         }
 
 		m_hFile = WINDOWSLAYER_SERVICE(m_serviceProvider)->createFile( 
-            filePath, // file to open
+            concatenatePath, // file to open
 			GENERIC_READ, // open for reading
 			FILE_SHARE_READ, // share for reading, exclusive for mapping
 			OPEN_EXISTING // existing file only
@@ -69,7 +69,7 @@ namespace Menge
 		if ( m_hFile == INVALID_HANDLE_VALUE)
 		{
             LOGGER_ERROR(m_serviceProvider)("Win32MappedInputStream::open %ls invalid open"
-                , filePath
+                , concatenatePath
                 );
 
 			return false;
@@ -82,7 +82,7 @@ namespace Menge
 			DWORD error = GetLastError();
 
 			LOGGER_ERROR(m_serviceProvider)("Win32MappedInputStream::open invalid create file mapping %ls error %d"
-				, filePath
+				, concatenatePath
 				, error
 				);
 
@@ -99,7 +99,7 @@ namespace Menge
 			DWORD error = GetLastError();
 
 			LOGGER_ERROR(m_serviceProvider)("Win32MappedInputStream::open invalid map view of file %ls error %d"
-				, filePath
+				, concatenatePath
 				, error
 				);
 

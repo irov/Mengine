@@ -13,12 +13,12 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     SDLFileInputStream::SDLFileInputStream()
-        : m_rwops(nullptr)
-        , m_size(0)
-        , m_offset(0)
-        , m_carriage(0)
-        , m_capacity(0)
-        , m_reading(0)
+        : m_rwops( nullptr )
+        , m_size( 0 )
+        , m_offset( 0 )
+        , m_carriage( 0 )
+        , m_capacity( 0 )
+        , m_reading( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -31,34 +31,35 @@ namespace Menge
     {
         if( m_rwops != nullptr )
         {
-            SDL_RWclose(m_rwops);
+            SDL_RWclose( m_rwops );
             m_rwops = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileInputStream::open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size )
+    bool SDLFileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size )
     {
         STDEX_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::open" );
 
 #	ifdef _DEBUG
-        m_folder = _folder;
-        m_fileName = _fileName;
+        m_relationPath = _relationPath;
+        m_folderPath = _folderPath;
+        m_filePath = _filePath;
 #	endif
 
-        Char filePath[MENGINE_MAX_PATH];
-        if( this->openFile_( _folder, _fileName, filePath ) == false )
+        Char fullPath[MENGINE_MAX_PATH];
+        if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
         {
             return false;
         }
 
-        Sint64 size = SDL_RWsize(m_rwops);
+        Sint64 size = SDL_RWsize( m_rwops );
 
         if( 0 > size )
         {
             this->close_();
 
-            LOGGER_ERROR(m_serviceProvider)("SDLFileInputStream::open %s invalid file size"
-                , filePath
+            LOGGER_ERROR( m_serviceProvider )("SDLFileInputStream::open %s invalid file size"
+                , fullPath
                 );
 
             return false;
@@ -66,8 +67,8 @@ namespace Menge
 
         if( _offset + _size > size )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLFileInputStream::open %s invalid file range %d:%d size %d"
-                , filePath
+            LOGGER_ERROR( m_serviceProvider )("SDLFileInputStream::open %s invalid file range %d:%d size %d"
+                , fullPath
                 , _offset
                 , _size
                 , size
@@ -104,25 +105,25 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileInputStream::openFile_( const FilePath & _folder, const FilePath & _fileName, Char * _filePath )
+    bool SDLFileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * _fullPath )
     {
-        if( SDLLAYER_SERVICE(m_serviceProvider)
-            ->concatenateFilePath( _folder, _fileName, _filePath, MENGINE_MAX_PATH ) == false )
+        if( SDLLAYER_SERVICE( m_serviceProvider )
+            ->concatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
-                , _folder.c_str()
-                , _fileName.c_str()
+            LOGGER_ERROR( m_serviceProvider )("SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
+                , _folderPath.c_str()
+                , _filePath.c_str()
                 );
 
             return false;
         }
 
-        m_rwops = SDL_RWFromFile(_filePath, "rb");
+        m_rwops = SDL_RWFromFile( _fullPath, "rb" );
 
-        if ( m_rwops == nullptr )
+        if( m_rwops == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLFileInputStream::open %s invalid open"
-                , _filePath
+            LOGGER_ERROR( m_serviceProvider )("SDLFileInputStream::open %s invalid open"
+                , _fullPath
                 );
 
             return false;
@@ -132,7 +133,7 @@ namespace Menge
         if( SERVICE_EXIST( m_serviceProvider, NotificationServiceInterface ) == true )
         {
             NOTIFICATION_SERVICE( m_serviceProvider )
-                ->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folder.c_str(), _fileName.c_str() );
+                ->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str() );
         }
 #	endif
 
@@ -144,7 +145,7 @@ namespace Menge
         STDEX_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::read" );
 
         size_t pos = m_reading - m_capacity + m_carriage;
-        
+
         size_t correct_count = _count;
 
         if( pos + _count > m_size )
@@ -167,11 +168,11 @@ namespace Menge
 
             return bytesRead;
         }
-        
+
         if( correct_count > MENGINE_FILE_STREAM_BUFFER_SIZE )
-        {            
+        {
             size_t tail = m_capacity - m_carriage;
-            
+
             if( tail != 0 )
             {
                 stdex::memorycopy( _buf, 0, m_readCache + m_carriage, tail );
@@ -193,7 +194,7 @@ namespace Menge
 
             return bytesRead + tail;
         }
-        
+
         if( m_carriage + correct_count <= m_capacity )
         {
             stdex::memorycopy( _buf, 0, m_readCache + m_carriage, correct_count );
@@ -215,7 +216,7 @@ namespace Menge
         {
             return 0;
         }
-        
+
         size_t readSize = (std::min)(correct_count - tail, bytesRead);
 
         stdex::memorycopy( _buf, tail, m_readCache, readSize );
@@ -230,13 +231,13 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::read_( void * _buf, size_t _size, size_t & _read )
     {
-        const size_t bytesRead = SDL_RWread(m_rwops, _buf, 1, _size);
+        const size_t bytesRead = SDL_RWread( m_rwops, _buf, 1, _size );
 
         if( bytesRead == 0 )
         {
             const char* sdlError = SDL_GetError();
 
-            LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read %d:%d get error %s"
+            LOGGER_ERROR( m_serviceProvider )("Win32InputStream::read %d:%d get error %s"
                 , _size
                 , m_size
                 , sdlError
@@ -273,7 +274,7 @@ namespace Menge
             {
                 const char* sdlError = SDL_GetError();
 
-                LOGGER_ERROR(m_serviceProvider)("Win32InputStream::seek %d:%d get error %s"
+                LOGGER_ERROR( m_serviceProvider )("Win32InputStream::seek %d:%d get error %s"
                     , _pos
                     , m_size
                     , sdlError
@@ -313,7 +314,7 @@ namespace Menge
         return current;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLFileInputStream::size() const 
+    size_t SDLFileInputStream::size() const
     {
         return m_size;
     }
@@ -328,29 +329,29 @@ namespace Menge
     bool SDLFileInputStream::time( uint64_t & _time ) const
     {
 #	ifdef _DEBUG
-		Char filePath[MENGINE_MAX_PATH];
-		if( SDLLAYER_SERVICE( m_serviceProvider )
-			->concatenateFilePath( m_folder, m_fileName, filePath, MENGINE_MAX_PATH ) == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
-				, m_folder.c_str()
-				, m_fileName.c_str()
-				);
+        Char filePath[MENGINE_MAX_PATH];
+        if( SDLLAYER_SERVICE( m_serviceProvider )
+            ->concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH ) == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
+                , m_folderPath.c_str()
+                , m_filePath.c_str()
+                );
 
-			return false;
-		}
-		
-		WString unicode_filePath;
-		Helper::utf8ToUnicodeSize( m_serviceProvider, filePath, UNICODE_UNSIZE, unicode_filePath );
+            return false;
+        }
 
-		uint64_t ft = PLATFORM_SERVICE( m_serviceProvider )
-			->getFileTime( unicode_filePath );
+        WString unicode_filePath;
+        Helper::utf8ToUnicodeSize( m_serviceProvider, filePath, UNICODE_UNSIZE, unicode_filePath );
 
-		_time = ft;
-		return true;
+        uint64_t ft = PLATFORM_SERVICE( m_serviceProvider )
+            ->getFileTime( unicode_filePath );
+
+        _time = ft;
+        return true;
 #	else
-		_time = 0;
-		return false;
+        _time = 0;
+        return false;
 #	endif
     }
     //////////////////////////////////////////////////////////////////////////

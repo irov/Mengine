@@ -26,7 +26,7 @@ namespace Menge
         }
 
         strcpy( _concatenatePath, _relationPath.c_str() );
-        strcpy( _concatenatePath, _folderPath.c_str() );
+        strcat( _concatenatePath, _folderPath.c_str() );
         strcat( _concatenatePath, _filePath.c_str() );
 
         return true;

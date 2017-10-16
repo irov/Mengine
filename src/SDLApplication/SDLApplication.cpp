@@ -175,25 +175,13 @@ namespace Menge
 
         LOGGER_INFO( m_serviceProvider )("Initialize SDL file group...");
         PLUGIN_CREATE( m_serviceProvider, MengeSDLFileGroup );
-        
-        WChar currentPathW[MENGINE_MAX_PATH];
-		size_t currentPathW_len = PLATFORM_SERVICE(m_serviceProvider)
-			->getCurrentPath(currentPathW, MENGINE_MAX_PATH);
 
-        Char utf8_currentPath[MENGINE_MAX_PATH];
-        size_t utf8_currentPath_len;
-        UNICODE_SERVICE( m_serviceProvider )
-            ->unicodeToUtf8( currentPathW, currentPathW_len, utf8_currentPath, MENGINE_MAX_PATH, &utf8_currentPath_len );
-
-        FilePath currentPath = Helper::stringizeFilePath( m_serviceProvider, utf8_currentPath, utf8_currentPath_len );
-        
-        // mount root		
+        // mount root
         ConstString c_dir = Helper::stringizeString(m_serviceProvider, "dir");
         if( FILE_SERVICE( m_serviceProvider )
-            ->mountFileGroup( ConstString::none(), ConstString::none(), currentPath, c_dir ) == false )
+            ->mountFileGroup( ConstString::none(), ConstString::none(), FilePath(ConstString::none()), c_dir ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "SDLApplication::setupFileService: failed to mount application directory %ls"
-                , currentPath.c_str()
+            LOGGER_ERROR(m_serviceProvider)( "SDLApplication::setupFileService: failed to mount application directory"
                 );
 
             return false;

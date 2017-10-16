@@ -36,7 +36,7 @@ namespace Menge
     {
         ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_data;
 
-        aeMovieResourceTypeEnum resource_type = _resource->type;
+        uint8_t resource_type = _resource->type;
 
         switch( resource_type )
         {

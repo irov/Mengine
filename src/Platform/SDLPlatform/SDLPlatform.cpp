@@ -79,6 +79,10 @@ namespace Menge
 		Helper::pathCorrectBackslash( _path, _path );
 
 		return (size_t)len + 1;
+#elif TARGET_OS_IPHONE
+        wcscpy( _path, L"deploy-ios-data/" );
+        
+        return 16;
 #else  
         _path[0] = L'\0';
         

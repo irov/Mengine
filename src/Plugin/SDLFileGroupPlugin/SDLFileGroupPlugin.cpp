@@ -2,6 +2,8 @@
 
 #   include "Interface/StringizeInterface.h"
 #	include "Interface/FileSystemInterface.h"
+#	include "Interface/PlatformInterface.h"
+#	include "Interface/UnicodeInterface.h"
 
 #	include "SDLFileGroupDirectory.h"
 

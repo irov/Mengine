@@ -8,7 +8,7 @@
 #   include "Interface/ThreadSystemInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/SoundSystemInterface.h"
-#   include "Interface/PhysicSystemInterface.h"
+//#   include "Interface/PhysicSystemInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
 #   include "Interface/CodecInterface.h"

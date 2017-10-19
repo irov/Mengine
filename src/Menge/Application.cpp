@@ -774,7 +774,7 @@ namespace Menge
 
 				wireframeMode = !wireframeMode;
 
-				if( wireframeMode )
+				if( wireframeMode == true )
 				{
 					RENDER_SYSTEM( m_serviceProvider )
 						->setFillMode( FM_WIREFRAME );

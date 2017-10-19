@@ -299,7 +299,8 @@ namespace Menge
 		}
 
 		// mount user directory
-		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), ConstString::none(), Helper::stringizeFilePath( m_serviceProvider, utf8_userPath ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
+		if( FILE_SERVICE(m_serviceProvider)
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), ConstString::none(), Helper::stringizeFilePath( m_serviceProvider, utf8_userPath ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "global" ) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication: failed to mount user directory %ls"
 				, userPath.c_str()

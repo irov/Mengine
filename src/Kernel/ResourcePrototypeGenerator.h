@@ -42,22 +42,9 @@ namespace Menge
 			resource->setType( m_prototype );
 			resource->setScriptWrapper( m_scriptWrapper );
 
-			if( this->setup( resource ) == false )
-			{
-				return nullptr;
-			}
-			
 			return resource;
 		}
 
-		virtual bool setup( Type * _resource )
-		{
-			(void)_resource;
-			//Empty			
-
-			return true;
-		}
-		
 		uint32_t count() const override
 		{
 			uint32_t count = m_factory->countObject();

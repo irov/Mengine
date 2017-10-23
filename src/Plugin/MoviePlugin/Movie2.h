@@ -13,11 +13,20 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    class Movie2EventReceiver
+        : public AnimatableEventReceiver
+    {
+    public:
+    };
 	//////////////////////////////////////////////////////////////////////////
 	class Movie2
 		: public Node
+        , public Eventable
 		, public Animatable
 	{
+        EVENT_RECEIVER( Movie2EventReceiver );
+
 	public:
 		Movie2();
 		~Movie2();
@@ -75,6 +84,7 @@ namespace Menge
 
 	public:
 		void addSurface( const SurfacePtr & _surface );
+        void removeSurface( const SurfacePtr & _surface );
 
 	public:
 		struct Camera

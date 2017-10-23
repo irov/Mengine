@@ -2148,7 +2148,7 @@ namespace Menge
 				{
 					std::string k = it.key();
 
-					LOGGER_ERROR( m_serviceProvider )("setEventListener invalid kwds '%s'\n"
+					LOGGER_ERROR( m_serviceProvider )("SurfaceVideo::setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 						);
 				}
@@ -2183,7 +2183,7 @@ namespace Menge
 				{
 					std::string k = it.key();
 
-					LOGGER_ERROR( m_serviceProvider )("setEventListener invalid kwds '%s'\n"
+					LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence::setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 						);
 				}
@@ -2218,7 +2218,7 @@ namespace Menge
 				{
 					std::string k = it.key();
 
-					LOGGER_ERROR( m_serviceProvider )("setEventListener invalid kwds '%s'\n"
+					LOGGER_ERROR( m_serviceProvider )("SurfaceSound::setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 						);
 				}
@@ -2264,7 +2264,7 @@ namespace Menge
 				{
 					std::string k = it.key();
 
-					LOGGER_ERROR( m_serviceProvider )("setEventListener invalid kwds '%s'\n"
+					LOGGER_ERROR( m_serviceProvider )("Meshget::setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 						);
 				}
@@ -2299,7 +2299,7 @@ namespace Menge
 				{
 					std::string k = it.key();
 
-					LOGGER_ERROR( m_serviceProvider )("setEventListener invalid kwds '%s'\n"
+					LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 						);
 				}
@@ -2351,7 +2351,7 @@ namespace Menge
 				{
 					std::string k = it.key();
 
-					LOGGER_ERROR( m_serviceProvider )("setEventListener invalid kwds '%s'\n"
+					LOGGER_ERROR( m_serviceProvider )("ScriptHolder::setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 						);
 				}
@@ -2542,7 +2542,7 @@ namespace Menge
 				{
 					std::string k = it.key();
 
-					LOGGER_ERROR(m_serviceProvider)( "setEventListener invalid kwds '%s'\n"
+					LOGGER_ERROR(m_serviceProvider)( "Movie::setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 					);
 				}

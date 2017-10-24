@@ -58,8 +58,11 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 	public:
-		void render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
+		void render( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
 		inline bool isRenderable() const;
+
+    public:
+        virtual void _renderTarget( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask );
 		
 	public:
 		void setRenderViewport( const RenderViewportInterface * _viewport );
@@ -82,6 +85,13 @@ namespace Menge
 	public:
 		const RenderClipplaneInterface * getRenderClipplaneInheritance() const;
 
+    public:
+        void setRenderTarget( const RenderTargetInterfacePtr & _clipplane );
+        const RenderTargetInterfacePtr & getRenderTarget() const;
+
+    public:
+        const RenderTargetInterfacePtr & getRenderTargetInheritance() const;
+
 	protected:
 		void _hide( bool _value ) override;
 			
@@ -92,7 +102,9 @@ namespace Menge
 		const RenderViewportInterface * m_renderViewport;
 		const RenderCameraInterface * m_renderCamera;
 		const RenderClipplaneInterface * m_renderClipplane;
-		const RenderTargetInterface * m_renderTarget;
+		
+    protected:
+        RenderTargetInterfacePtr m_renderTarget;
 
 	protected:
 		void renderChild_( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask );

@@ -46,7 +46,10 @@ namespace Menge
 		inline bool getPremultiply() const;
     
     public:
+        void setTexture( const RenderTextureInterfacePtr & _texture );
 		inline const RenderTextureInterfacePtr & getTexture() const;
+
+        void setTextureAlpha( const RenderTextureInterfacePtr & _textureAlpha );
         inline const RenderTextureInterfacePtr & getTextureAlpha() const;
 
 		inline void setColor( const ColourValue & _colour );

@@ -109,7 +109,11 @@ namespace Menge
 		
 		
 		// create render target image
-		RenderTargetInterface * createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
+        RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
+        RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
+
+        RenderImageInterfacePtr createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget ) override;
+
 		// отрисовка изображения
 
 		bool beginScene() override;
@@ -211,6 +215,8 @@ namespace Menge
         FactoryPtr m_factoryVertexBuffer;
         FactoryPtr m_factoryIndexBuffer;
         FactoryPtr m_factoryDX9Texture;
+        FactoryPtr m_factoryDX9TargetTexture;
+        FactoryPtr m_factoryDX9TargetOffscreen;
 
         typedef stdex::vector<DX9RenderVertexShaderPtr> TVectorRenderVertexShaders;
         TVectorRenderVertexShaders m_deferredCompileVertexShaders;

@@ -599,6 +599,15 @@ namespace Menge
 	class RenderTargetInterface
 		: public ServantInterface
 	{
+    public:
+        virtual uint32_t getWidth() const = 0;
+        virtual uint32_t getHeight() const = 0;
+        virtual PixelFormat getFormat() const = 0;
+
+    public:
+        virtual uint32_t getHWWidth() const = 0;
+        virtual uint32_t getHWHeight() const = 0;
+
 	public:
 		virtual bool begin() = 0;
 		virtual void end() = 0;
@@ -606,6 +615,8 @@ namespace Menge
 	public:
 		virtual bool getData( unsigned char * _buffer, size_t _pitch ) = 0;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<RenderTargetInterface> RenderTargetInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderSystemInterface
         : public ServiceInterface
@@ -678,11 +689,16 @@ namespace Menge
         virtual void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) = 0;
 		virtual void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) = 0;
 
+    public:
 		virtual RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
 		virtual RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
 
-		virtual RenderTargetInterface * createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) = 0;
+        virtual RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, PixelFormat _format ) = 0;
+		virtual RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) = 0;
 
+        virtual RenderImageInterfacePtr createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget ) = 0;
+
+    public:
 		virtual bool beginScene() = 0;
 		virtual void endScene() = 0;
 		virtual void swapBuffers() = 0;
@@ -747,7 +763,8 @@ namespace Menge
 		const RenderViewportInterface * viewport;
 		const RenderCameraInterface * camera;
 		const RenderClipplaneInterface * clipplane;
-		const RenderTargetInterface * target;
+
+		RenderTargetInterfacePtr target;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderServiceInterface

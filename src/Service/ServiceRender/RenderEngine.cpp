@@ -38,7 +38,6 @@ namespace Menge
 		, m_currentRenderCamera( nullptr )
 		, m_currentRenderViewport( nullptr )
 		, m_currentRenderClipplane( nullptr )
-		, m_currentRenderTarget( nullptr )
 		, m_maxVertexCount( 0 )
 		, m_maxIndexCount( 0 )
 		, m_depthBufferWriteEnable( false )
@@ -169,6 +168,8 @@ namespace Menge
 		m_currentIBHandle = nullptr;
 
 		m_currentProgram = nullptr;
+
+        m_currentRenderTarget = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
@@ -971,7 +972,7 @@ namespace Menge
 			return;
 		}
 
-		for( TArrayRenderPass::iterator
+		for( TVectorRenderPass::iterator
 			it = m_renderPasses.begin(), 
 			it_end = m_renderPasses.end();
 		it != it_end;
@@ -983,11 +984,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderPass_( RenderPass & _renderPass )
+	void RenderEngine::renderPass_( RenderPass & _pass )
 	{
-		if( _renderPass.viewport != nullptr )
+		if( _pass.viewport != nullptr )
 		{
-			const Viewport & viewport = _renderPass.viewport->getViewport();
+			const Viewport & viewport = _pass.viewport->getViewport();
 
 			Viewport renderViewport;
 			this->calcRenderViewport_( viewport, renderViewport );
@@ -1010,16 +1011,16 @@ namespace Menge
 				->setViewport( renderViewport );
 		}
 
-		if( _renderPass.clipplane != nullptr )
+		if( _pass.clipplane != nullptr )
 		{
-			uint32_t count = _renderPass.clipplane->getCount();
+			uint32_t count = _pass.clipplane->getCount();
 
 			RENDER_SYSTEM( m_serviceProvider )
 				->setClipplaneCount( count );
 
 			for( uint32_t i = 0; i != count; ++i )
 			{
-				const mt::planef & p = _renderPass.clipplane->getPlane( i );
+				const mt::planef & p = _pass.clipplane->getPlane( i );
 
 				RENDER_SYSTEM( m_serviceProvider )
 					->setClipplane( i, p );
@@ -1031,19 +1032,19 @@ namespace Menge
 				->setClipplaneCount( 0 );
 		}
 
-		if( _renderPass.camera != nullptr )
+		if( _pass.camera != nullptr )
 		{
 			//const mt::mat4f & worldMatrix = _renderPass.camera->getCameraWorldMatrix();
 
 			//RENDER_SYSTEM( m_serviceProvider )
 			//	->setWorldMatrix( worldMatrix );
 
-			const mt::mat4f & viewMatrix = _renderPass.camera->getCameraViewMatrix();
+			const mt::mat4f & viewMatrix = _pass.camera->getCameraViewMatrix();
 
 			RENDER_SYSTEM( m_serviceProvider )
 				->setModelViewMatrix( viewMatrix );
 
-			const mt::mat4f & projectionMatrix = _renderPass.camera->getCameraProjectionMatrix();
+			const mt::mat4f & projectionMatrix = _pass.camera->getCameraProjectionMatrix();
 
 			RENDER_SYSTEM( m_serviceProvider )
 				->setProjectionMatrix( projectionMatrix );
@@ -1069,7 +1070,24 @@ namespace Menge
 				->setProjectionMatrix( projectionMatrix );
 		}
 
-		this->renderObjects_( _renderPass );
+        if( _pass.target != nullptr )
+        {
+            const RenderTargetInterfacePtr & target = _pass.target;
+
+            if( target->begin() == false )
+            {
+                return;
+            }
+        }
+
+		this->renderObjects_( _pass );
+
+        if( _pass.target != nullptr )
+        {
+            const RenderTargetInterfacePtr & target = _pass.target;
+
+            target->end();
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderObjects_( RenderPass & _renderPass )
@@ -1087,7 +1105,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::createRenderPass_()
 	{
-		RenderPass & pass = m_renderPasses.emplace();
+		RenderPass pass;
 
 		pass.beginRenderObject = (uint32_t)m_renderObjects.size();
 		pass.countRenderObject = 0U;
@@ -1100,6 +1118,8 @@ namespace Menge
 		{
 			pass.materialEnd[i] = nullptr;
 		}
+
+        m_renderPasses.push_back( pass );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderObject( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
@@ -1171,16 +1191,7 @@ namespace Menge
 			m_currentRenderClipplane != _state->clipplane || 
 			m_currentRenderTarget != _state->target )
 		{
-			if( m_renderPasses.full() == true )
-			{
-				LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D max render passes %u"
-					, m_renderPasses.size()
-					);
-
-				return;
-			}
-
-			m_currentRenderViewport = _state->viewport;
+            m_currentRenderViewport = _state->viewport;
 			m_currentRenderCamera = _state->camera;			
 			m_currentRenderClipplane = _state->clipplane;
 			m_currentRenderTarget = _state->target;
@@ -1527,7 +1538,7 @@ namespace Menge
 		uint32_t vbPos = 0;
 		uint32_t ibPos = 0;
 
-		for( TArrayRenderPass::iterator 
+		for( TVectorRenderPass::iterator 
 			it = m_renderPasses.begin(), 
 			it_end = m_renderPasses.end();
 		it != it_end;

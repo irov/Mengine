@@ -75,43 +75,19 @@ namespace Menge
 
 		if( is3d == false )
 		{
-			MAGIC_RECT rect;
-			float backgroundScale = Magic_GetBackgroundRect( m_emitterId, &rect );
+            m_rect.x = -1024.f;
+            m_rect.y = -1024.f;
+            m_rect.z = 1024.f;
+            m_rect.w = 1024.f;
 
-			if( rect.left == rect.right || rect.bottom == rect.top )
-			{
-				m_rect.x = -1024.f;
-				m_rect.y = -1024.f;
-				m_rect.z = 1024.f;
-				m_rect.w = 1024.f;
+            MAGIC_POSITION pos;
+            pos.x = 0.f;
+            pos.y = 0.f;
+            pos.z = 0.f;
 
-				MAGIC_POSITION pos;
-				pos.x = 0.f;
-				pos.y = 0.f;
-				pos.z = 0.f;
+            Magic_SetEmitterPosition( m_emitterId, &pos );
 
-				Magic_SetEmitterPosition( m_emitterId, &pos );
-
-				m_background = false;
-			}
-			else
-			{
-				if( mt::equal_f_f( backgroundScale, 1.f ) == false )
-				{
-					LOGGER_ERROR( m_serviceProvider )("AstralaxEmitter::setupBasePosition_ background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
-						, backgroundScale
-						);
-
-					return false;
-				}
-
-				m_rect.x = (float)rect.left;
-				m_rect.y = (float)rect.top;
-				m_rect.z = (float)rect.right;
-				m_rect.w = (float)rect.bottom;
-
-				m_background = true;
-			}
+            m_background = false;
 		}
 		else
 		{
@@ -121,8 +97,8 @@ namespace Menge
 				return false;
 			}
 
-			m_rect.x = (float)0.f;
-			m_rect.y = (float)0.f;
+            m_rect.x = 0.f;
+            m_rect.y = 0.f;
 			m_rect.z = (float)view.viewport_width;
 			m_rect.w = (float)view.viewport_height;
 
@@ -465,45 +441,6 @@ namespace Menge
 			Magic_SetDiagramAddition( m_emitterId, j, MAGIC_DIAGRAM_DIRECTION, m_angle );
 		}
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::getBackgroundBox( mt::box2f & _box ) const
-    {
-		if( Magic_Is3d( m_emitterId ) == false )
-		{        
-			MAGIC_RECT rect;
-			if( Magic_GetBackgroundRect( m_emitterId, &rect ) == MAGIC_ERROR )
-			{
-				return false;
-			}
-
-			if( rect.left == rect.right || rect.top == rect.bottom )
-			{
-				return false;
-			}
-
-			_box.minimum.x = (float)rect.left;
-			_box.minimum.y = (float)rect.top;
-
-			_box.maximum.x = (float)rect.right;
-			_box.maximum.y = (float)rect.bottom;
-		}
-		else
-		{
-			MAGIC_VIEW view;
-			if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
-			{
-				return false;
-			}
-
-			_box.minimum.x = 0.f;
-			_box.minimum.y = 0.f;
-
-			_box.maximum.x = (float)view.viewport_width;
-			_box.maximum.y = (float)view.viewport_height;
-		}
-
-        return true;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	float AstralaxEmitter2::getLeftBorder() const
 	{

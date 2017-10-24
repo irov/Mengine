@@ -26,7 +26,7 @@ namespace Menge
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::initialize( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
+    void DX9RenderImage::initialize( LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
     {
         m_d3dTexture = _d3dInterface;
 
@@ -92,7 +92,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IDirect3DTexture9 * DX9RenderImage::getDXTextureInterface() const
+    LPDIRECT3DTEXTURE9 DX9RenderImage::getDXTextureInterface() const
 	{
 		return m_d3dTexture;
 	}

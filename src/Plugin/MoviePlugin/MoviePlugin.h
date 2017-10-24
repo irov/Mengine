@@ -4,6 +4,11 @@
 
 #	include "movie/movie.hpp"
 
+#	include "Movie2.h"
+#	include "ResourceMovie2.h"
+
+#	include "pybind/pybind.hpp"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -21,6 +26,9 @@ namespace Menge
 	protected:
 		bool _initialize() override;
 		void _finalize() override;
+
+    protected:
+        PyObject * Movie2_setEventListener( pybind::kernel_interface * _kernel, Movie2 * _node, PyObject * _args, PyObject * _kwds );
 
 	protected:
 		aeMovieInstance * m_instance;

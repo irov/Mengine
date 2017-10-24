@@ -19,8 +19,10 @@ namespace Menge
 	public:
 		void setMovieInstance( aeMovieInstance * _instance );
 
-	public:
-		float getDuration() const;
+    public:
+        bool hasComposition( const ConstString & _name ) const;
+        float getCompositionDuration( const ConstString & _name ) const;
+        float getCompositionFrameDuration( const ConstString & _name ) const;
 
 	public:
 		const aeMovieData * getMovieData() const;

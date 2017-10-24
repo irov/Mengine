@@ -17,179 +17,182 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	Movie2::Movie2()
-		: m_composition(nullptr)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Movie2::~Movie2()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::setResourceMovie2( const ResourceMovie2Ptr & _resourceMovie2 )
-	{
-		if( m_resourceMovie2 == _resourceMovie2 )
-		{
-			return;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    Movie2::Movie2()
+        : m_composition( nullptr )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Movie2::~Movie2()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::setResourceMovie2( const ResourceMovie2Ptr & _resourceMovie2 )
+    {
+        if( m_resourceMovie2 == _resourceMovie2 )
+        {
+            return;
+        }
 
-		m_resourceMovie2 = _resourceMovie2;
+        m_resourceMovie2 = _resourceMovie2;
+        
+        this->recompile();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceMovie2Ptr & Movie2::getResourceMovie2() const
+    {
+        return m_resourceMovie2;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::setCompositionName( const ConstString & _name )
+    {
+        m_compositionName = _name;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & Movie2::getCompositionName() const
+    {
+        return m_compositionName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Movie2::getDuration() const
+    {
+        float duration = ae_get_movie_composition_duration( m_composition );
 
-		this->recompile();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ResourceMovie2Ptr & Movie2::getResourceMovie2() const
-	{
-		return m_resourceMovie2;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::setCompositionName( const ConstString & _name )
-	{
-		m_compositionName = _name;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Movie2::getCompositionName() const
-	{
-		return m_compositionName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float Movie2::getDuration() const
-	{
-		float duration = ae_get_movie_composition_duration( m_composition );
+        return duration;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::setWorkAreaFromEvent( const ConstString & _eventName )
+    {
+        float a, b;
+        ae_bool_t ok = ae_get_movie_composition_node_in_out_time( m_composition, _eventName.c_str(), AE_MOVIE_LAYER_TYPE_EVENT, &a, &b );
 
-		return duration;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::setWorkAreaFromEvent( const ConstString & _eventName )
-	{
-		float a, b;
-		ae_bool_t ok = ae_get_movie_composition_node_in_out_time( m_composition, _eventName.c_str(), AE_MOVIE_LAYER_TYPE_EVENT, &a, &b );
+        if( ok == AE_FALSE )
+        {
+            return;
+        }
 
-		if( ok == AE_FALSE )
-		{
-			return;
-		}
+        ae_set_movie_composition_work_area( m_composition, a, b );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::removeWorkArea()
+    {
+        ae_remove_movie_composition_work_area( m_composition );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::playSubComposition( const ConstString & _name )
+    {
+        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
 
-		ae_set_movie_composition_work_area( m_composition, a, b );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::removeWorkArea()
-	{
-		ae_remove_movie_composition_work_area( m_composition );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::playSubComposition( const ConstString & _name )
-	{
-		const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
+        ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::stopSubComposition( const ConstString & _name )
+    {
+        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
 
-		ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::stopSubComposition( const ConstString & _name )
-	{
-		const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
+        ae_stop_movie_sub_composition( m_composition, subcomposition );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::_play( float _time )
+    {
+        if( m_composition == nullptr )
+        {
+            return false;
+        }
 
-		ae_stop_movie_sub_composition( m_composition, subcomposition );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie2::_play( float _time )
-	{
-		(void)_time;
+        ae_play_movie_composition( m_composition, _time * 0.001f );
 
-		ae_play_movie_composition( m_composition, _time );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::_restart( uint32_t _enumerator, float _time )
+    {
+        (void)_time;
+        (void)_enumerator;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie2::_restart( uint32_t _enumerator, float _time )
-	{
-		(void)_time;
-		(void)_enumerator;
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_pause( uint32_t _enumerator )
+    {
+        (void)_enumerator;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_resume( uint32_t _enumerator, float _time )
+    {
+        (void)_time;
+        (void)_enumerator;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_stop( uint32_t _enumerator )
+    {
+        (void)_enumerator;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_end( uint32_t _enumerator )
+    {
+        (void)_enumerator;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void * __movie_composition_camera_provider( const aeMovieCameraProviderCallbackData * _callbackData, void * _data )
+    {
+        Movie2 * movie2 = (Movie2 *)_data;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_pause( uint32_t _enumerator )
-	{
-		(void)_enumerator;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_resume( uint32_t _enumerator, float _time )
-	{
-		(void)_time;
-		(void)_enumerator;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_stop( uint32_t _enumerator )
-	{
-		(void)_enumerator;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_end( uint32_t _enumerator )
-	{
-		(void)_enumerator;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void * __movie_composition_camera_provider( const aeMovieCameraProviderCallbackData * _callbackData, void * _data )
-	{
-		Movie2 * movie2 = (Movie2 *)_data;
+        ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
 
-		ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+        ConstString c_name = Helper::stringizeString( serviceProvider, _callbackData->name );
 
-		ConstString c_name = Helper::stringizeString( serviceProvider, _callbackData->name );
+        Movie2::Camera * old_camera;
+        if( movie2->getCamera( c_name, &old_camera ) == true )
+        {
+            return old_camera;
+        }
 
-		Movie2::Camera * old_camera;
-		if( movie2->getCamera( c_name, &old_camera ) == true )
-		{
-			return old_camera;
-		}
-		
-		RenderCameraProjection * renderCameraProjection = NODE_SERVICE( serviceProvider )
-			->createNodeT<RenderCameraProjection *>( STRINGIZE_STRING_LOCAL( serviceProvider, "RenderCameraProjection" ) );
+        RenderCameraProjection * renderCameraProjection = NODE_SERVICE( serviceProvider )
+            ->createNodeT<RenderCameraProjection *>( STRINGIZE_STRING_LOCAL( serviceProvider, "RenderCameraProjection" ) );
 
-		renderCameraProjection->setName( c_name );
+        renderCameraProjection->setName( c_name );
 
         mt::vec3f cameraTarget;
         cameraTarget.from_f3( _callbackData->target );
-		mt::vec3f cameraPosition;
-		cameraPosition.from_f3( _callbackData->position );
+        mt::vec3f cameraPosition;
+        cameraPosition.from_f3( _callbackData->position );
 
-		mt::vec3f cameraDirection;
-		mt::norm_v3_v3( cameraDirection, cameraTarget - cameraPosition );
+        mt::vec3f cameraDirection;
+        mt::norm_v3_v3( cameraDirection, cameraTarget - cameraPosition );
 
-		float aspect = _callbackData->width / _callbackData->height;
+        float aspect = _callbackData->width / _callbackData->height;
 
-		renderCameraProjection->setCameraPosition( cameraPosition );
-		renderCameraProjection->setCameraDirection( cameraDirection );
-		renderCameraProjection->setCameraFOV( _callbackData->fov );
-		renderCameraProjection->setCameraAspect( aspect );
-		
-		RenderViewport * renderViewport = NODE_SERVICE( serviceProvider )
-			->createNodeT<RenderViewport *>( STRINGIZE_STRING_LOCAL( serviceProvider, "RenderViewport" ) );
+        renderCameraProjection->setCameraPosition( cameraPosition );
+        renderCameraProjection->setCameraDirection( cameraDirection );
+        renderCameraProjection->setCameraFOV( _callbackData->fov );
+        renderCameraProjection->setCameraAspect( aspect );
 
-		renderViewport->setName( c_name );
+        RenderViewport * renderViewport = NODE_SERVICE( serviceProvider )
+            ->createNodeT<RenderViewport *>( STRINGIZE_STRING_LOCAL( serviceProvider, "RenderViewport" ) );
 
-		Viewport vp;
-		vp.begin.x = 0.f;
-		vp.begin.y = 0.f;
+        renderViewport->setName( c_name );
 
-		vp.end.x = _callbackData->width;
-		vp.end.y = _callbackData->height;
+        Viewport vp;
+        vp.begin.x = 0.f;
+        vp.begin.y = 0.f;
 
-		renderViewport->setViewport( vp );
-		
-		Movie2::Camera * new_camera = movie2->addCamera( c_name, renderCameraProjection, renderViewport );
+        vp.end.x = _callbackData->width;
+        vp.end.y = _callbackData->height;
 
-		return new_camera;
-	}
+        renderViewport->setViewport( vp );
+
+        Movie2::Camera * new_camera = movie2->addCamera( c_name, renderCameraProjection, renderViewport );
+
+        return new_camera;
+    }
     //////////////////////////////////////////////////////////////////////////
     static void __movie_composition_camera_deleter( const aeMovieCameraDeleterCallbackData * _callbackData, void * _data )
     {
         Movie2 * movie2 = (Movie2 *)_data;
 
         ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
-        
+
         ConstString c_name = Helper::stringizeString( serviceProvider, _callbackData->name );
 
         movie2->removeCamera( c_name );
@@ -200,7 +203,7 @@ namespace Menge
         (void)_data;
 
         Movie2::Camera * camera = (Movie2::Camera *)(_callbackData->element);
-        
+
         //camera
         mt::vec3f cameraTarget;
         cameraTarget.from_f3( _callbackData->target );
@@ -213,272 +216,304 @@ namespace Menge
         camera->projection->setCameraPosition( cameraPosition );
         camera->projection->setCameraDirection( cameraDirection );
     }
-	//////////////////////////////////////////////////////////////////////////
-	static void * __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, void * _data )
-	{
-		Movie2 * movie2 = (Movie2 *)_data;
+    //////////////////////////////////////////////////////////////////////////
+    static void * __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, void * _data )
+    {
+        Movie2 * movie2 = (Movie2 *)_data;
 
-		ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
-		
-		const char * layer_name = ae_get_movie_layer_data_name( _callbackData->layer );
+        ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
 
-		ConstString c_name = Helper::stringizeString( serviceProvider, layer_name );
-		
-		ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( _callbackData->layer );
+        const char * layer_name = ae_get_movie_layer_data_name( _callbackData->layer );
 
-		if( is_track_matte == AE_TRUE )
-		{
-			return nullptr;
-		}
+        ConstString c_name = Helper::stringizeString( serviceProvider, layer_name );
 
-		aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( _callbackData->layer );
+        ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( _callbackData->layer );
 
-		if( _callbackData->track_matte_layer != AE_NULL )
-		{
-			switch( type )
-			{
-			case AE_MOVIE_LAYER_TYPE_IMAGE:
-				{
-					SurfaceTrackMatte * surfaceTrackMatte = PROTOTYPE_SERVICE( serviceProvider )
-						->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceTrackMatte" ) );
+        if( is_track_matte == AE_TRUE )
+        {
+            return nullptr;
+        }
 
-					surfaceTrackMatte->setName( c_name );
+        aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( _callbackData->layer );
 
-					ResourceImage * resourceImage = (ResourceImage *)ae_get_movie_layer_data_resource_data( _callbackData->layer );
-					ResourceImage * resourceTrackMatteImage = (ResourceImage *)ae_get_movie_layer_data_resource_data( _callbackData->track_matte_layer );
+        if( _callbackData->track_matte_layer != AE_NULL )
+        {
+            switch( type )
+            {
+            case AE_MOVIE_LAYER_TYPE_IMAGE:
+                {
+                    SurfaceTrackMatte * surfaceTrackMatte = PROTOTYPE_SERVICE( serviceProvider )
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceTrackMatte" ) );
 
-					surfaceTrackMatte->setResourceImage( resourceImage );
-					surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
+                    surfaceTrackMatte->setName( c_name );
 
-					EMaterialBlendMode blend_mode = EMB_NORMAL;
-					
-					ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
+                    ResourceImage * resourceImage = (ResourceImage *)ae_get_movie_layer_data_resource_data( _callbackData->layer );
+                    ResourceImage * resourceTrackMatteImage = (ResourceImage *)ae_get_movie_layer_data_resource_data( _callbackData->track_matte_layer );
 
-					switch( layer_blend_mode )
-					{
-					case AE_MOVIE_BLEND_ADD:
-						blend_mode = EMB_ADD;
-						break;
-					case AE_MOVIE_BLEND_SCREEN:
-						blend_mode = EMB_SCREEN;
-						break;
-					};
+                    surfaceTrackMatte->setResourceImage( resourceImage );
+                    surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
 
-					surfaceTrackMatte->setBlendMode( blend_mode );
+                    EMaterialBlendMode blend_mode = EMB_NORMAL;
 
-					surfaceTrackMatte->compile();
+                    ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
 
-					movie2->addSurface( surfaceTrackMatte );
+                    switch( layer_blend_mode )
+                    {
+                    case AE_MOVIE_BLEND_ADD:
+                        blend_mode = EMB_ADD;
+                        break;
+                    case AE_MOVIE_BLEND_SCREEN:
+                        blend_mode = EMB_SCREEN;
+                        break;
+                    };
 
-					return surfaceTrackMatte;
-				}break;
-			default:
-				{
-				}break;
-			}
-		}
-		else
-		{
-			switch( type )
-			{
-			case AE_MOVIE_LAYER_TYPE_VIDEO:
-				{
-					SurfaceVideo * surfaceVideo = PROTOTYPE_SERVICE( serviceProvider )
-						->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceVideo" ) );
+                    surfaceTrackMatte->setBlendMode( blend_mode );
+                    
+                    movie2->addSurface( surfaceTrackMatte );
 
-					surfaceVideo->setName( c_name );
+                    return surfaceTrackMatte;
+                }break;
+            default:
+                {
+                }break;
+            }
+        }
+        else
+        {
+            switch( type )
+            {
+            case AE_MOVIE_LAYER_TYPE_VIDEO:
+                {
+                    SurfaceVideo * surfaceVideo = PROTOTYPE_SERVICE( serviceProvider )
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceVideo" ) );
 
-					ResourceVideo * resourceVideo = (ResourceVideo *)ae_get_movie_layer_data_resource_data( _callbackData->layer );
+                    surfaceVideo->setName( c_name );
 
-					surfaceVideo->setResourceVideo( resourceVideo );
+                    ResourceVideo * resourceVideo = (ResourceVideo *)ae_get_movie_layer_data_resource_data( _callbackData->layer );
 
-					EMaterialBlendMode blend_mode = EMB_NORMAL;
+                    surfaceVideo->setResourceVideo( resourceVideo );
 
-					ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
+                    EMaterialBlendMode blend_mode = EMB_NORMAL;
 
-					switch( layer_blend_mode )
-					{
-					case AE_MOVIE_BLEND_ADD:
-						blend_mode = EMB_ADD;
-						break;
-					case AE_MOVIE_BLEND_SCREEN:
-						blend_mode = EMB_SCREEN;
-						break;
-					};
+                    ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
 
-					surfaceVideo->setBlendMode( blend_mode );
+                    switch( layer_blend_mode )
+                    {
+                    case AE_MOVIE_BLEND_ADD:
+                        blend_mode = EMB_ADD;
+                        break;
+                    case AE_MOVIE_BLEND_SCREEN:
+                        blend_mode = EMB_SCREEN;
+                        break;
+                    };
 
-					surfaceVideo->compile();
+                    surfaceVideo->setBlendMode( blend_mode );
+                    
+                    movie2->addSurface( surfaceVideo );
 
-					movie2->addSurface( surfaceVideo );
+                    return surfaceVideo;
+                }break;
+            case AE_MOVIE_LAYER_TYPE_SOUND:
+                {
+                    SurfaceSound * surfaceSound = PROTOTYPE_SERVICE( serviceProvider )
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceSound" ) );
 
-					return surfaceVideo;
-				}break;
-			case AE_MOVIE_LAYER_TYPE_SOUND:
-				{
-					SurfaceSound * surfaceSound = PROTOTYPE_SERVICE( serviceProvider )
-						->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceSound" ) );
+                    surfaceSound->setName( c_name );
 
-					surfaceSound->setName( c_name );
+                    ResourceSound * resourceSound = (ResourceSound *)ae_get_movie_layer_data_resource_data( _callbackData->layer );
 
-					ResourceSound * resourceSound = (ResourceSound *)ae_get_movie_layer_data_resource_data( _callbackData->layer );
+                    surfaceSound->setResourceSound( resourceSound );
+                    
+                    movie2->addSurface( surfaceSound );
 
-					surfaceSound->setResourceSound( resourceSound );
+                    return surfaceSound;
+                }break;
+            }
+        }
 
-					surfaceSound->compile();
+        return AE_NULL;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, void * _data )
+    {
+        Movie2 * movie2 = (Movie2 *)_data;
 
-					movie2->addSurface( surfaceSound );
+        ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( _callbackData->layer );
 
-					return surfaceSound;
-				}break;
-			}
-		}
-				
-		return AE_NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, void * _data )
-	{
-		(void)_callbackData;
-		(void)_data;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void __movie_composition_node_update( const aeMovieNodeUpdateCallbackData * _callbackData, void * _data )
-	{
-		Movie2 * movie2 = (Movie2 *)_data;
+        if( is_track_matte == AE_TRUE )
+        {
+            return;
+        }
 
-		switch( _callbackData->state )
-		{
-		case AE_MOVIE_NODE_UPDATE_UPDATE:
-			{
-				switch( _callbackData->type )
-				{
-				case AE_MOVIE_LAYER_TYPE_PARTICLE:
-					{
-						//printf( "AE_MOVIE_LAYER_TYPE_PARTICLE %f %f\n"
-						//	, _matrix[12]
-						//	, _matrix[13]
-						//	);
-					}break;
-				case AE_MOVIE_LAYER_TYPE_SLOT:
-					{
-						//printf( "AE_MOVIE_LAYER_TYPE_SLOT %f %f\n"
-						//	, _matrix[12]
-						//	, _matrix[13]
-						//	);
-					}break;
-				}
-			}break;
-		case AE_MOVIE_NODE_UPDATE_BEGIN:
-			{
-				switch( _callbackData->type )
-				{
-				case AE_MOVIE_LAYER_TYPE_VIDEO:
-					{
-						SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+        aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( _callbackData->layer );
 
-						ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+        if( _callbackData->track_matte_layer != AE_NULL )
+        {
+            switch( type )
+            {
+            case AE_MOVIE_LAYER_TYPE_IMAGE:
+                {
+                    SurfaceTrackMatte * surfaceTrackMatte = (SurfaceTrackMatte *)_callbackData->element;
+                    
+                    movie2->removeSurface( surfaceTrackMatte );
+                }break;
+            default:
+                {
+                }break;
+            }
+        }
+        else
+        {
+            switch( type )
+            {
+            case AE_MOVIE_LAYER_TYPE_VIDEO:
+                {
+                    SurfaceVideo * surfaceVideo = (SurfaceVideo *)_callbackData->element;
 
-						float time = TIMELINE_SERVICE( serviceProvider )
-							->getTime();
+                    movie2->removeSurface( surfaceVideo );
+                }break;
+            case AE_MOVIE_LAYER_TYPE_SOUND:
+                {
+                    SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
 
-						surfaceVide->setTiming( _callbackData->offset );
+                    movie2->removeSurface( surfaceSound );
+                }break;
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void __movie_composition_node_update( const aeMovieNodeUpdateCallbackData * _callbackData, void * _data )
+    {
+        Movie2 * movie2 = (Movie2 *)_data;
 
-						if( surfaceVide->play( time ) == 0 )
-						{
-							return;
-						}
-					}break;
-				case AE_MOVIE_LAYER_TYPE_SOUND:
-					{
-						SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+        ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
 
-						ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+        aeMovieLayerTypeEnum type = _callbackData->type;
 
-						float time = TIMELINE_SERVICE( serviceProvider )
-							->getTime();
+        switch( _callbackData->state )
+        {
+        case AE_MOVIE_NODE_UPDATE_UPDATE:
+            {
+                switch( type )
+                {
+                case AE_MOVIE_LAYER_TYPE_PARTICLE:
+                    {
+                        //printf( "AE_MOVIE_LAYER_TYPE_PARTICLE %f %f\n"
+                        //	, _matrix[12]
+                        //	, _matrix[13]
+                        //	);
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SLOT:
+                    {
+                        //printf( "AE_MOVIE_LAYER_TYPE_SLOT %f %f\n"
+                        //	, _matrix[12]
+                        //	, _matrix[13]
+                        //	);
+                    }break;
+                }
+            }break;
+        case AE_MOVIE_NODE_UPDATE_BEGIN:
+            {
+                switch( type )
+                {
+                case AE_MOVIE_LAYER_TYPE_VIDEO:
+                    {
+                        SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
 
-						surfaceSound->setTiming( _callbackData->offset );
+                        float time = TIMELINE_SERVICE( serviceProvider )
+                            ->getTime();
 
-						if( surfaceSound->play( time ) == 0 )
-						{
-							return;
-						}
-					}break;
-				}
-			}break;
-		case AE_MOVIE_NODE_UPDATE_END:
-			{
-				switch( _callbackData->type )
-				{
-				case AE_MOVIE_LAYER_TYPE_VIDEO:
-					{
-						SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+                        surfaceVide->setTiming( _callbackData->offset );
 
-						surfaceVide->stop();
-					}break;
-				case AE_MOVIE_LAYER_TYPE_SOUND:
-					{
-						SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+                        if( surfaceVide->play( time ) == 0 )
+                        {
+                            return;
+                        }
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SOUND:
+                    {
+                        SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
 
-						surfaceSound->stop();
-					}break;
-				}
-			}break;
-		case AE_MOVIE_NODE_UPDATE_PAUSE:
-			{
-				switch( _callbackData->type )
-				{
-				case AE_MOVIE_LAYER_TYPE_VIDEO:
-					{
-						SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+                        float time = TIMELINE_SERVICE( serviceProvider )
+                            ->getTime();
 
-						surfaceVide->pause();						
-					}break;
-				case AE_MOVIE_LAYER_TYPE_SOUND:
-					{
-						SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
-												
-						surfaceSound->pause();						
-					}break;
-				}
-			}break;
-		case AE_MOVIE_NODE_UPDATE_RESUME:
-			{
-				switch( _callbackData->type )
-				{
-				case AE_MOVIE_LAYER_TYPE_VIDEO:
-					{
-						SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+                        surfaceSound->setTiming( _callbackData->offset );
 
-						ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+                        if( surfaceSound->play( time ) == 0 )
+                        {
+                            return;
+                        }
+                    }break;
+                }
+            }break;
+        case AE_MOVIE_NODE_UPDATE_END:
+            {
+                switch( type )
+                {
+                case AE_MOVIE_LAYER_TYPE_VIDEO:
+                    {
+                        SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
 
-						float time = TIMELINE_SERVICE( serviceProvider )
-							->getTime();
+                        surfaceVide->stop();
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SOUND:
+                    {
+                        SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
 
-						surfaceVide->resume( time );
-					}break;
-				case AE_MOVIE_LAYER_TYPE_SOUND:
-					{
-						SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+                        surfaceSound->stop();
+                    }break;
+                }
+            }break;
+        case AE_MOVIE_NODE_UPDATE_PAUSE:
+            {
+                switch( type )
+                {
+                case AE_MOVIE_LAYER_TYPE_VIDEO:
+                    {
+                        SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
 
-						ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
+                        surfaceVide->pause();
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SOUND:
+                    {
+                        SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
 
-						float time = TIMELINE_SERVICE( serviceProvider )
-							->getTime();
+                        surfaceSound->pause();
+                    }break;
+                }
+            }break;
+        case AE_MOVIE_NODE_UPDATE_RESUME:
+            {
+                switch( type )
+                {
+                case AE_MOVIE_LAYER_TYPE_VIDEO:
+                    {
+                        SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
 
-						surfaceSound->resume( time );
-					}break;
-				}
-			}break;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	struct TrackMatteDesc
-	{
-		mt::mat4f matrix;
-		aeMovieRenderMesh mesh;
-	};
+                        float time = TIMELINE_SERVICE( serviceProvider )
+                            ->getTime();
+
+                        surfaceVide->resume( time );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SOUND:
+                    {
+                        SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+
+                        float time = TIMELINE_SERVICE( serviceProvider )
+                            ->getTime();
+
+                        surfaceSound->resume( time );
+                    }break;
+                }
+            }break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    struct TrackMatteDesc
+    {
+        mt::mat4f matrix;
+        aeMovieRenderMesh mesh;
+    };
     //////////////////////////////////////////////////////////////////////////
     static void * __movie_composition_track_matte_provider( const aeMovieTrackMatteProviderCallbackData * _callbackData, void * _data )
     {
@@ -491,35 +526,37 @@ namespace Menge
 
         return desc;
     }
-	//////////////////////////////////////////////////////////////////////////
-	static void __movie_composition_track_matte_update( const aeMovieTrackMatteUpdateCallbackData * _callbackData, void * _data )
-	{
-		(void)_data;
-
-		switch( _callbackData->state )
-		{
-		case AE_MOVIE_NODE_UPDATE_BEGIN:
-			{
-				TrackMatteDesc * desc = static_cast<TrackMatteDesc *>(_callbackData->track_matte_data);
-
-				desc->matrix.from_f16( _callbackData->matrix );
-				desc->mesh = *_callbackData->mesh;
-			}break;
-		case AE_MOVIE_NODE_UPDATE_UPDATE:
-			{
-				TrackMatteDesc * desc = static_cast<TrackMatteDesc *>(_callbackData->track_matte_data);
-
-				desc->matrix.from_f16( _callbackData->matrix );
-				desc->mesh = *_callbackData->mesh;
-			}break;
-		}
-	}
     //////////////////////////////////////////////////////////////////////////
-    static void __movie_composition_track_matte_deleter(const aeMovieTrackMatteDeleterCallbackData * _callbackData, ae_voidptr_t _data)    
+    static void __movie_composition_track_matte_update( const aeMovieTrackMatteUpdateCallbackData * _callbackData, void * _data )
     {
         (void)_data;
 
-        delete (TrackMatteDesc *)_callbackData->element;
+        switch( _callbackData->state )
+        {
+        case AE_MOVIE_NODE_UPDATE_BEGIN:
+            {
+                TrackMatteDesc * desc = static_cast<TrackMatteDesc *>(_callbackData->track_matte_data);
+
+                desc->matrix.from_f16( _callbackData->matrix );
+                desc->mesh = *_callbackData->mesh;
+            }break;
+        case AE_MOVIE_NODE_UPDATE_UPDATE:
+            {
+                TrackMatteDesc * desc = static_cast<TrackMatteDesc *>(_callbackData->track_matte_data);
+
+                desc->matrix.from_f16( _callbackData->matrix );
+                desc->mesh = *_callbackData->mesh;
+            }break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void __movie_composition_track_matte_deleter( const aeMovieTrackMatteDeleterCallbackData * _callbackData, ae_voidptr_t _data )
+    {
+        (void)_data;
+
+        TrackMatteDesc * desc = (TrackMatteDesc *)_callbackData->element;
+
+        delete desc;
     }
     //////////////////////////////////////////////////////////////////////////
     static void * __movie_composition_shader_provider( const aeMovieShaderProviderCallbackData * _callbackData, ae_voidptr_t _data )
@@ -536,50 +573,45 @@ namespace Menge
         (void)_data;
 
     }
-	//////////////////////////////////////////////////////////////////////////
-	static void __movie_composition_event( const aeMovieCompositionEventCallbackData * _callbackData, void * _data )
-	{
-		(void)_callbackData;
-		(void)_data;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void __movie_composition_state( const aeMovieCompositionStateCallbackData * _callbackData, void * _data )
-	{
-		if( _callbackData->subcomposition != AE_NULL )
-		{
-			return;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    static void __movie_composition_event( const aeMovieCompositionEventCallbackData * _callbackData, void * _data )
+    {
+        (void)_callbackData;
+        (void)_data;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void __movie_composition_state( const aeMovieCompositionStateCallbackData * _callbackData, void * _data )
+    {
+        if( _callbackData->subcomposition != AE_NULL )
+        {
+            return;
+        }
 
-		Movie2 * m2 = (Movie2 *)(_data);
+        Movie2 * m2 = (Movie2 *)(_data);
 
-		if( _callbackData->state == AE_MOVIE_COMPOSITION_END )
-		{
-			printf( "AE_MOVIE_COMPOSITION_END\n" );
+        if( _callbackData->state == AE_MOVIE_COMPOSITION_END )
+        {
+            printf( "AE_MOVIE_COMPOSITION_END\n" );
 
-			m2->stop();
-			//ae_destroy_movie_composition( m2->m_composition );
-			//m2->m_composition = nullptr;
-			
+            m2->stop();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Movie2::Camera * Movie2::addCamera( const ConstString & _name, RenderCameraProjection * _projection, RenderViewport * _viewport )
+    {
+        this->addChild( _projection );
+        this->addChild( _viewport );
 
+        Camera c;
+        c.projection = _projection;
+        c.viewport = _viewport;
 
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Movie2::Camera * Movie2::addCamera( const ConstString & _name, RenderCameraProjection * _projection, RenderViewport * _viewport )
-	{
-		this->addChild( _projection );
-		this->addChild( _viewport );
+        TMapCamera::iterator it_found = m_cameras.insert( std::make_pair( _name, c ) ).first;
 
-		Camera c;
-		c.projection = _projection;
-		c.viewport = _viewport;
-		
-		TMapCamera::iterator it_found = m_cameras.insert( std::make_pair(_name, c) ).first;
+        Camera * new_camera = &it_found->second;
 
-		Camera * new_camera = &it_found->second;
-
-		return new_camera;
-	}
+        return new_camera;
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::removeCamera( const ConstString & _name )
     {
@@ -599,641 +631,590 @@ namespace Menge
 
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie2::hasCamera( const ConstString & _name ) const
-	{ 
-		TMapCamera::const_iterator it_found = m_cameras.find( _name );
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::hasCamera( const ConstString & _name ) const
+    {
+        TMapCamera::const_iterator it_found = m_cameras.find( _name );
 
-		if( it_found == m_cameras.end() )
-		{
-			return false;
-		}
+        if( it_found == m_cameras.end() )
+        {
+            return false;
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie2::getCamera( const ConstString & _name, Camera ** _camera )
-	{
-		TMapCamera::iterator it_found = m_cameras.find( _name );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::getCamera( const ConstString & _name, Camera ** _camera )
+    {
+        TMapCamera::iterator it_found = m_cameras.find( _name );
 
-		if( it_found == m_cameras.end() )
-		{
-			return false;
-		}
+        if( it_found == m_cameras.end() )
+        {
+            return false;
+        }
 
-		Camera & camera = it_found->second;
+        Camera & camera = it_found->second;
 
-		*_camera = &camera;
+        *_camera = &camera;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie2::_compile()
-	{
-		if( m_resourceMovie2 == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie2::_compile: '%s' can't setup resource"
-				, this->getName().c_str()
-				);
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::_compile()
+    {
+        if( m_resourceMovie2 == nullptr )
+        {
+            LOGGER_ERROR( m_serviceProvider )("Movie2::_compile: '%s' can't setup resource"
+                , this->getName().c_str()
+                );
 
-			return false;
-		}
+            return false;
+        }
 
-		if( m_resourceMovie2.compile() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie2::_compile '%s' resource %s not compile"
-				, m_name.c_str() 
-				, m_resourceMovie2->getName().c_str()
-				);
+        if( m_resourceMovie2.compile() == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("Movie2::_compile '%s' resource %s not compile"
+                , m_name.c_str()
+                , m_resourceMovie2->getName().c_str()
+                );
 
-			return false;
-		}
+            return false;
+        }
 
-		const aeMovieData * movieData = m_resourceMovie2->getMovieData();
+        const aeMovieData * movieData = m_resourceMovie2->getMovieData();
 
-		const aeMovieCompositionData * compositionData = m_resourceMovie2->getCompositionData( m_compositionName );
+        const aeMovieCompositionData * compositionData = m_resourceMovie2->getCompositionData( m_compositionName );
 
-		if( compositionData == nullptr )
-		{
-			LOGGER_ERROR( m_serviceProvider )("Movie2::_compile '%s' resource %s not found composition '%s'"
-				, m_name.c_str()
-				, m_resourceMovie2->getName().c_str()
-				, m_compositionName.c_str()
-				);
+        if( compositionData == nullptr )
+        {
+            LOGGER_ERROR( m_serviceProvider )("Movie2::_compile '%s' resource %s not found composition '%s'"
+                , m_name.c_str()
+                , m_resourceMovie2->getName().c_str()
+                , m_compositionName.c_str()
+                );
 
-			return false;
-		}
+            return false;
+        }
 
-		aeMovieCompositionProviders providers;
+        aeMovieCompositionProviders providers;
         ae_initialize_movie_composition_providers( &providers );
 
-		providers.camera_provider = &__movie_composition_camera_provider;
+        providers.camera_provider = &__movie_composition_camera_provider;
         providers.camera_deleter = &__movie_composition_camera_deleter;
         providers.camera_update = &__movie_composition_camera_update;
 
-		providers.node_provider = &__movie_composition_node_provider;
-		providers.node_deleter = &__movie_composition_node_deleter;
-		providers.node_update = &__movie_composition_node_update;
+        providers.node_provider = &__movie_composition_node_provider;
+        providers.node_deleter = &__movie_composition_node_deleter;
+        providers.node_update = &__movie_composition_node_update;
 
         providers.track_matte_provider = &__movie_composition_track_matte_provider;
-		providers.track_matte_update = &__movie_composition_track_matte_update;
+        providers.track_matte_update = &__movie_composition_track_matte_update;
         providers.track_matte_deleter = &__movie_composition_track_matte_deleter;
 
         providers.shader_provider = &__movie_composition_shader_provider;
         providers.shader_property_update = &__movie_composition_shader_property_update;
 
-		providers.composition_event = &__movie_composition_event;
-		providers.composition_state = &__movie_composition_state;
-		
+        providers.composition_event = &__movie_composition_event;
+        providers.composition_state = &__movie_composition_state;
 
-		//while( true )
-		{
-			aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, this );
 
-			if( composition == nullptr )
-			{
-				return false;
-			}
+        aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, this );
 
-			ae_set_movie_composition_loop( composition, AE_TRUE );
+        if( composition == nullptr )
+        {
+            return false;
+        }
 
-            aeMovieCompositionRenderInfo info;
-            ae_calculate_movie_composition_render_info( composition, &info );
+        aeMovieCompositionRenderInfo info;
+        ae_calculate_movie_composition_render_info( composition, &info );
 
-			m_meshes.reserve( info.max_render_node );
+        m_meshes.reserve( info.max_render_node );
 
-			//ae_destroy_movie_composition( composition );
-			m_composition = composition;
-		}		
-				
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_release()
-	{	
-		Node::_release();
+        m_composition = composition;
 
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_release()
+    {
+        for( TVectorSurfaces::const_iterator
+            it = m_surfaces.begin(),
+            it_end = m_surfaces.end();
+            it != it_end;
+            ++it )
+        {
+            const SurfacePtr & surface = *it;
+
+            surface->release();
+        }
+
+        m_meshes.clear();
+                
         ae_delete_movie_composition( m_composition );
-		m_composition = nullptr;
+        m_composition = nullptr;
 
-		m_resourceMovie2.release();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie2::_activate()
-	{
-		if( Node::_activate() == false )
-		{
-			return false;
-		}
+        m_resourceMovie2.release();
 
-		ae_vector3_t anchorPoint;
-		if( ae_get_movie_composition_anchor_point( m_composition, anchorPoint ) == AE_TRUE )
-		{	
-			mt::vec3f origin;
+        Node::_release();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::_activate()
+    {
+        if( Node::_activate() == false )
+        {
+            return false;
+        }
 
-			origin.from_f3( anchorPoint );
+        ae_vector3_t anchorPoint;
+        if( ae_get_movie_composition_anchor_point( m_composition, anchorPoint ) == AE_TRUE )
+        {
+            mt::vec3f origin;
 
-			this->setOrigin( origin );
-		}
+            origin.from_f3( anchorPoint );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_deactivate()
-	{
-		Node::_deactivate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_changeParent( Node * _oldParent, Node * _newParent )
-	{
-		(void)_oldParent;
-		(void)_newParent;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_addChild( Node * _node )
-	{
-		(void)_node;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_removeChild( Node * _node )
-	{
-		(void)_node;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_afterActivate()
-	{
-		Node::_afterActivate();
+            this->setOrigin( origin );
+        }
 
-		bool autoPlay = this->getAutoPlay();
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_deactivate()
+    {
+        Node::_deactivate();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_changeParent( Node * _oldParent, Node * _newParent )
+    {
+        (void)_oldParent;
+        (void)_newParent;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_addChild( Node * _node )
+    {
+        (void)_node;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_removeChild( Node * _node )
+    {
+        (void)_node;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_afterActivate()
+    {
+        Node::_afterActivate();
 
-		if( autoPlay == true )
-		{
-			float time = TIMELINE_SERVICE( m_serviceProvider )
-				->getTime();
+        bool autoPlay = this->getAutoPlay();
 
-			if( this->play( time ) == 0 )
-			{
-				LOGGER_ERROR( m_serviceProvider )("Movie2::_afterActivate '%s' resource '%s' auto play return 0"
-					, this->getName().c_str()
-					, this->m_resourceMovie2->getName().c_str()
-					);
+        if( autoPlay == true )
+        {
+            float time = TIMELINE_SERVICE( m_serviceProvider )
+                ->getTime();
 
-				return;
-			}
-		}		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_setLoop( bool _value )
-	{
-		if( m_composition == nullptr )
-		{
-			return;
-		}
+            if( this->play( time ) == 0 )
+            {
+                LOGGER_ERROR( m_serviceProvider )("Movie2::_afterActivate '%s' resource '%s' auto play return 0"
+                    , this->getName().c_str()
+                    , this->m_resourceMovie2->getName().c_str()
+                    );
 
-		ae_set_movie_composition_loop( m_composition, _value );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_setTiming( float _timing )
-	{
-		if( m_composition == nullptr )
-		{
-			return;
-		}
+                return;
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_setLoop( bool _value )
+    {
+        if( m_composition == nullptr )
+        {
+            return;
+        }
 
-		ae_set_movie_composition_time( m_composition, _timing );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float Movie2::_getTiming() const
-	{
-		float timing = ae_get_movie_composition_time( m_composition );
+        ae_set_movie_composition_loop( m_composition, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_setTiming( float _time )
+    {
+        if( m_composition == nullptr )
+        {
+            return;
+        }
 
-		return timing;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_update( float _current, float _timing )
-	{
-		(void)_current;
-		(void)_timing;
+        ae_set_movie_composition_time( m_composition, _time * 0.001f );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Movie2::_getTiming() const
+    {
+        float timing = ae_get_movie_composition_time( m_composition );
 
-		if( this->isPlay() == false )
-		{
-			return;
-		}
+        return timing;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_update( float _current, float _timing )
+    {
+        (void)_current;
+        (void)_timing;
 
-		static float a = 0.f;
+        if( this->isPlay() == false )
+        {
+            return;
+        }
+        
+        ae_update_movie_composition( m_composition, _timing * 0.001f );
 
-		if( a < 500.f )
-		{
-			a += _timing;
-			return;
-		}
-				
-		static int i = 0;
-		
-		//if( (i++) % 10 == 0 && _timing > 0.f )
-		{
-			ae_update_movie_composition( m_composition, _timing * 0.001f );
-		}
-						
-		for( TVectorSurfaces::iterator
-			it = m_surfaces.begin(),
-			it_end = m_surfaces.end();
-		it != it_end;
-		++it )
-		{
-			const SurfacePtr & surface = *it;
+        for( TVectorSurfaces::iterator
+            it = m_surfaces.begin(),
+            it_end = m_surfaces.end();
+            it != it_end;
+            ++it )
+        {
+            const SurfacePtr & surface = *it;
 
-			surface->update( _current, _timing );
-		}
-		
+            surface->update( _current, _timing );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
+    {
+        m_meshes.clear();
 
-		printf( "time %f\n"
-			, ae_get_movie_composition_time( m_composition )
-			);
-
-		a += _timing;
-
-		if( a < 2500.f )
-		{			
-			return;
-		}
-		
-		static bool aa = false;
-		if( aa == false )
-		{
-			aa = true;
-
-			//const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, "lock" );
-
-			//if( subcomposition != nullptr )
-			//{
-			//	ae_stop_movie_sub_composition( m_composition, subcomposition );
-			//	ae_set_movie_sub_composition_loop( subcomposition, AE_FALSE );
-			//	ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
-			//}
-
-			//ae_pause_movie_composition( m_composition );
-		}
-
-		if( a < 5000.f )
-		{
-			return;
-		}
-
-		static bool aa2 = false;
-		if( aa2 == false )
-		{
-			aa2 = true;
-
-			//const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, "lock" );
-
-			//if( subcomposition != nullptr )
-			//{
-			//	ae_stop_movie_sub_composition( m_composition, subcomposition );
-			//	ae_set_movie_sub_composition_loop( subcomposition, AE_FALSE );
-			//	ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
-			//}
-
-			//ae_resume_movie_composition( m_composition );
-		}
-
-		if( a < 6000.f )
-		{
-			return;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
-	{
-		m_meshes.clear();
-
-		const mt::mat4f & wm = this->getWorldMatrix();
+        const mt::mat4f & wm = this->getWorldMatrix();
 
         ae_voidptr_t composition_camera_data = ae_get_movie_composition_camera_data( m_composition );
         (void)composition_camera_data;
 
-		uint32_t mesh_iterator = 0;
+        uint32_t mesh_iterator = 0;
 
-		aeMovieRenderMesh mesh;
-		while( ae_compute_movie_mesh( m_composition, &mesh_iterator, &mesh ) == AE_TRUE )
-		{			
-			ResourceReference * resource_reference = (ResourceReference *)mesh.resource_data;
+        aeMovieRenderMesh mesh;
+        while( ae_compute_movie_mesh( m_composition, &mesh_iterator, &mesh ) == AE_TRUE )
+        {
+            ResourceReference * resource_reference = (ResourceReference *)mesh.resource_data;
 
-			RenderObjectState state;
+            RenderObjectState state;
 
             if( mesh.camera_data != nullptr )
-			{
-				Movie2::Camera * camera = (Movie2::Camera *)mesh.camera_data;
+            {
+                Movie2::Camera * camera = (Movie2::Camera *)mesh.camera_data;
 
-				state.camera = camera->projection;
-				state.viewport = camera->viewport;
-				state.clipplane = _state->clipplane;
-				state.target = _state->target;
-			}
-			else
-			{
-				state.camera = _state->camera;
-				state.viewport = _state->viewport;
-				state.clipplane = _state->clipplane;
-				state.target = _state->target;
-			}
+                state.camera = camera->projection;
+                state.viewport = camera->viewport;
+                state.clipplane = _state->clipplane;
+                state.target = _state->target;
+            }
+            else
+            {
+                state.camera = _state->camera;
+                state.viewport = _state->viewport;
+                state.clipplane = _state->clipplane;
+                state.target = _state->target;
+            }
 
-			if( mesh.track_matte_data == nullptr )
-			{
-				switch( mesh.layer_type )
-				{
-				case AE_MOVIE_LAYER_TYPE_SHAPE:
-					{
-						m_meshes.push_back( Mesh() );
-						Mesh & m = m_meshes.back();
+            if( mesh.track_matte_data == nullptr )
+            {
+                switch( mesh.layer_type )
+                {
+                case AE_MOVIE_LAYER_TYPE_SHAPE:
+                    {
+                        m_meshes.push_back( Mesh() );
+                        Mesh & m = m_meshes.back();
 
-						m.vertices.resize( mesh.vertexCount );
+                        m.vertices.resize( mesh.vertexCount );
 
-						ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
 
-						for( uint32_t index = 0; index != mesh.vertexCount; ++index )
-						{
-							RenderVertex2D & v = m.vertices[index];
+                        for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+                        {
+                            RenderVertex2D & v = m.vertices[index];
 
-							mt::vec3f vp;
-							vp.from_f3( &mesh.position[index][0] );
+                            mt::vec3f vp;
+                            vp.from_f3( &mesh.position[index][0] );
 
-							mt::mul_v3_v3_m4( v.position, vp, wm );
+                            mt::mul_v3_v3_m4( v.position, vp, wm );
 
-							mt::vec2f uv;
-							uv.from_f2( &mesh.uv[index][0] );
+                            mt::vec2f uv;
+                            uv.from_f2( &mesh.uv[index][0] );
 
-							v.uv[0] = uv;
-							v.uv[1] = uv;
+                            v.uv[0] = uv;
+                            v.uv[1] = uv;
 
-							v.color = color;
-						}
+                            v.color = color;
+                        }
 
-						m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+                        m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
 
-						EMaterialBlendMode blend_mode = EMB_NORMAL;
+                        EMaterialBlendMode blend_mode = EMB_NORMAL;
 
-						switch( mesh.blend_mode )
-						{
-						case AE_MOVIE_BLEND_ADD:
-							blend_mode = EMB_ADD;
-							break;
-						};
+                        switch( mesh.blend_mode )
+                        {
+                        case AE_MOVIE_BLEND_ADD:
+                            blend_mode = EMB_ADD;
+                            break;
+                        };
 
-						m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
+                        m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
-						_renderService
-							->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
-					}break;
-				case AE_MOVIE_LAYER_TYPE_SOLID:
-					{
-						m_meshes.push_back( Mesh() );
-						Mesh & m = m_meshes.back();
+                        _renderService
+                            ->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SOLID:
+                    {
+                        m_meshes.push_back( Mesh() );
+                        Mesh & m = m_meshes.back();
 
-						m.vertices.resize( mesh.vertexCount );
+                        m.vertices.resize( mesh.vertexCount );
 
-						ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
 
-						for( uint32_t index = 0; index != mesh.vertexCount; ++index )
-						{
-							RenderVertex2D & v = m.vertices[index];
+                        for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+                        {
+                            RenderVertex2D & v = m.vertices[index];
 
-							mt::vec3f vp;
-							vp.from_f3( &mesh.position[index][0] );
+                            mt::vec3f vp;
+                            vp.from_f3( &mesh.position[index][0] );
 
-							mt::mul_v3_v3_m4( v.position, vp, wm );
+                            mt::mul_v3_v3_m4( v.position, vp, wm );
 
-							mt::vec2f uv;
-							uv.from_f2( &mesh.uv[index][0] );
+                            mt::vec2f uv;
+                            uv.from_f2( &mesh.uv[index][0] );
 
-							v.uv[0] = uv;
-							v.uv[1] = uv;
+                            v.uv[0] = uv;
+                            v.uv[1] = uv;
 
-							v.color = color;
-						}
+                            v.color = color;
+                        }
 
-						m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+                        m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
 
-						EMaterialBlendMode blend_mode = EMB_NORMAL;
+                        EMaterialBlendMode blend_mode = EMB_NORMAL;
 
-						switch( mesh.blend_mode )
-						{
-						case AE_MOVIE_BLEND_ADD:
-							blend_mode = EMB_ADD;
-							break;
-						};
+                        switch( mesh.blend_mode )
+                        {
+                        case AE_MOVIE_BLEND_ADD:
+                            blend_mode = EMB_ADD;
+                            break;
+                        };
 
-						m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
+                        m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
-						_renderService
-							->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
-					}break;
-				case AE_MOVIE_LAYER_TYPE_SEQUENCE:
-				case AE_MOVIE_LAYER_TYPE_IMAGE:
-					{
-						ResourceImage * resource_image = static_cast<ResourceImage *>(resource_reference);
+                        _renderService
+                            ->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SEQUENCE:
+                case AE_MOVIE_LAYER_TYPE_IMAGE:
+                    {
+                        ResourceImage * resource_image = static_cast<ResourceImage *>(resource_reference);
 
-						m_meshes.push_back( Mesh() );
-						Mesh & m = m_meshes.back();
+                        m_meshes.push_back( Mesh() );
+                        Mesh & m = m_meshes.back();
 
-						m.vertices.resize( mesh.vertexCount );
+                        m.vertices.resize( mesh.vertexCount );
 
-						ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
 
-						for( uint32_t index = 0; index != mesh.vertexCount; ++index )
-						{
-							RenderVertex2D & v = m.vertices[index];
+                        for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+                        {
+                            RenderVertex2D & v = m.vertices[index];
 
-							mt::vec3f vp;
-							vp.from_f3( &mesh.position[index][0] );
+                            mt::vec3f vp;
+                            vp.from_f3( &mesh.position[index][0] );
 
-							mt::mul_v3_v3_m4( v.position, vp, wm );
+                            mt::mul_v3_v3_m4( v.position, vp, wm );
 
-							mt::vec2f uv;
-							uv.from_f2( &mesh.uv[index][0] );
+                            mt::vec2f uv;
+                            uv.from_f2( &mesh.uv[index][0] );
 
-							const mt::uv4f & uv_image = resource_image->getUVImage();
+                            const mt::uv4f & uv_image = resource_image->getUVImage();
 
-							mt::multiply_tetragon_uv4_v2( v.uv[0], uv_image, uv );
+                            mt::multiply_tetragon_uv4_v2( v.uv[0], uv_image, uv );
 
-							const mt::uv4f & uv_alpha = resource_image->getUVAlpha();
+                            const mt::uv4f & uv_alpha = resource_image->getUVAlpha();
 
-							mt::multiply_tetragon_uv4_v2( v.uv[1], uv_alpha, uv );
+                            mt::multiply_tetragon_uv4_v2( v.uv[1], uv_alpha, uv );
 
-							v.color = color;
-						}
+                            v.color = color;
+                        }
 
-						m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+                        m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
 
-						EMaterialBlendMode blend_mode = EMB_NORMAL;
+                        EMaterialBlendMode blend_mode = EMB_NORMAL;
 
-						switch( mesh.blend_mode )
-						{
-						case AE_MOVIE_BLEND_ADD:
-							blend_mode = EMB_ADD;
-							break;
-						};
+                        switch( mesh.blend_mode )
+                        {
+                        case AE_MOVIE_BLEND_ADD:
+                            blend_mode = EMB_ADD;
+                            break;
+                        };
 
-						m.material = Helper::makeImageMaterial( m_serviceProvider, resource_image, ConstString::none(), blend_mode, false, false );
+                        m.material = Helper::makeImageMaterial( m_serviceProvider, resource_image, ConstString::none(), blend_mode, false, false );
 
-						//printf( "%f %f\n", ae_get_movie_composition_time( m_composition ), mesh.a );
+                        //printf( "%f %f\n", ae_get_movie_composition_time( m_composition ), mesh.a );
 
-						if( m.vertices.size() == 0 )
-						{
-							continue;
-						}
+                        if( m.vertices.size() == 0 )
+                        {
+                            continue;
+                        }
 
-						_renderService
-							->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
-					}break;
-				case AE_MOVIE_LAYER_TYPE_VIDEO:
-					{
-						//ResourceVideo * resource_video = static_cast<ResourceVideo *>(resource_reference);
-						SurfaceVideo * surfaceVideo = static_cast<SurfaceVideo *>(mesh.element_data);
+                        _renderService
+                            ->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_VIDEO:
+                    {
+                        //ResourceVideo * resource_video = static_cast<ResourceVideo *>(resource_reference);
+                        SurfaceVideo * surfaceVideo = static_cast<SurfaceVideo *>(mesh.element_data);
 
-						m_meshes.push_back( Mesh() );
-						Mesh & m = m_meshes.back();
+                        m_meshes.push_back( Mesh() );
+                        Mesh & m = m_meshes.back();
 
-						m.vertices.resize( mesh.vertexCount );
+                        m.vertices.resize( mesh.vertexCount );
 
-						ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
 
-						for( uint32_t index = 0; index != mesh.vertexCount; ++index )
-						{
-							RenderVertex2D & v = m.vertices[index];
+                        for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+                        {
+                            RenderVertex2D & v = m.vertices[index];
 
-							mt::vec3f vp;
-							vp.from_f3( &mesh.position[index][0] );
+                            mt::vec3f vp;
+                            vp.from_f3( &mesh.position[index][0] );
 
-							mt::mul_v3_v3_m4( v.position, vp, wm );
+                            mt::mul_v3_v3_m4( v.position, vp, wm );
 
-							mt::vec2f uv;
-							uv.from_f2( &mesh.uv[index][0] );
+                            mt::vec2f uv;
+                            uv.from_f2( &mesh.uv[index][0] );
 
                             const mt::uv4f & uv0 = surfaceVideo->getUV( 0 );
                             const mt::uv4f & uv1 = surfaceVideo->getUV( 1 );
-                            
-							mt::multiply_tetragon_uv4_v2( v.uv[0], uv0, uv );
-							mt::multiply_tetragon_uv4_v2( v.uv[1], uv1, uv );
 
-							v.color = color;
-						}
+                            mt::multiply_tetragon_uv4_v2( v.uv[0], uv0, uv );
+                            mt::multiply_tetragon_uv4_v2( v.uv[1], uv1, uv );
 
-						m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+                            v.color = color;
+                        }
 
-						m.material = surfaceVideo->getMaterial();
+                        m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
 
-						_renderService
-							->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
-					}break;
-				}
-			}
-			else
-			{
-				switch( mesh.layer_type )
-				{
-				case AE_MOVIE_LAYER_TYPE_IMAGE:
-					{
-						const SurfaceTrackMatte * surfaceTrackMatte = static_cast<const SurfaceTrackMatte *>(mesh.element_data);
+                        m.material = surfaceVideo->getMaterial();
 
-						if( surfaceTrackMatte == nullptr )
-						{
-							return;
-						}
+                        _renderService
+                            ->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+                    }break;
+                }
+            }
+            else
+            {
+                switch( mesh.layer_type )
+                {
+                case AE_MOVIE_LAYER_TYPE_IMAGE:
+                    {
+                        const SurfaceTrackMatte * surfaceTrackMatte = static_cast<const SurfaceTrackMatte *>(mesh.element_data);
 
-						m_meshes.push_back( Mesh() );
-						Mesh & m = m_meshes.back();
+                        if( surfaceTrackMatte == nullptr )
+                        {
+                            return;
+                        }
 
-						m.vertices.resize( mesh.vertexCount );
+                        m_meshes.push_back( Mesh() );
+                        Mesh & m = m_meshes.back();
 
-						ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        m.vertices.resize( mesh.vertexCount );
 
-						const ResourceImagePtr & resourceImage = surfaceTrackMatte->getResourceImage();
-						const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceTrackMatteImage();
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
 
-						const TrackMatteDesc * track_matte_desc = static_cast<const TrackMatteDesc *>(mesh.track_matte_data);
+                        const ResourceImagePtr & resourceImage = surfaceTrackMatte->getResourceImage();
+                        const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceTrackMatteImage();
 
-						const aeMovieRenderMesh * track_matte_mesh = &track_matte_desc->mesh;
+                        const TrackMatteDesc * track_matte_desc = static_cast<const TrackMatteDesc *>(mesh.track_matte_data);
 
-						for( uint32_t index = 0; index != mesh.vertexCount; ++index )
-						{
-							RenderVertex2D & v = m.vertices[index];
+                        const aeMovieRenderMesh * track_matte_mesh = &track_matte_desc->mesh;
 
-							mt::vec3f vp;
-							vp.from_f3( mesh.position[index] );
+                        for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+                        {
+                            RenderVertex2D & v = m.vertices[index];
 
-							mt::mul_v3_v3_m4( v.position, vp, wm );
+                            mt::vec3f vp;
+                            vp.from_f3( mesh.position[index] );
 
-							mt::vec2f uv;
-							uv.from_f2( &mesh.uv[index][0] );
-							
-							//const mt::uv4f & uv_image = resourceImage->getUVImage();
+                            mt::mul_v3_v3_m4( v.position, vp, wm );
 
-							const RenderTextureInterfacePtr & texture_image = resourceImage->getTexture();
+                            mt::vec2f uv;
+                            uv.from_f2( &mesh.uv[index][0] );
 
-							const mt::uv4f & texture_image_uv = texture_image->getUV();
+                            //const mt::uv4f & uv_image = resourceImage->getUVImage();
 
-							mt::multiply_tetragon_uv4_v2( v.uv[0], texture_image_uv, uv );
-							//mt::multiply_tetragon_uv4_v2( v.uv[0], texture_image_uv, v.uv[0] );
+                            const RenderTextureInterfacePtr & texture_image = resourceImage->getTexture();
 
-							mt::vec2f uv_track_matte;
-							uv_track_matte = calc_point_uv(
-								mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
-								mt::vec2f( track_matte_mesh->uv[0] ), mt::vec2f( track_matte_mesh->uv[1] ), mt::vec2f( track_matte_mesh->uv[2] ),
-								vp.to_vec2f()
-								);
+                            const mt::uv4f & texture_image_uv = texture_image->getUV();
 
-							//const mt::uv4f & uv_alpha = resourceTrackMatteImage->getUVImage();
-							const RenderTextureInterfacePtr & texture_trackmatte = resourceTrackMatteImage->getTexture();
+                            mt::multiply_tetragon_uv4_v2( v.uv[0], texture_image_uv, uv );
+                            //mt::multiply_tetragon_uv4_v2( v.uv[0], texture_image_uv, v.uv[0] );
 
-							const mt::uv4f & texture_trackmatte_uv = texture_trackmatte->getUV();
+                            mt::vec2f uv_track_matte;
+                            uv_track_matte = calc_point_uv(
+                                mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
+                                mt::vec2f( track_matte_mesh->uv[0] ), mt::vec2f( track_matte_mesh->uv[1] ), mt::vec2f( track_matte_mesh->uv[2] ),
+                                vp.to_vec2f()
+                            );
 
-							//mt::multiply_tetragon_uv4_v2( v.uv[1], uv_alpha, uv_track_matte );
-							mt::multiply_tetragon_uv4_v2( v.uv[1], texture_trackmatte_uv, uv_track_matte );
-							//mt::multiply_tetragon_uv4_v2( v.uv[1], , v.uv[1] );
+                            //const mt::uv4f & uv_alpha = resourceTrackMatteImage->getUVImage();
+                            const RenderTextureInterfacePtr & texture_trackmatte = resourceTrackMatteImage->getTexture();
 
-							v.color = color;
-						}
+                            const mt::uv4f & texture_trackmatte_uv = texture_trackmatte->getUV();
 
-						m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+                            //mt::multiply_tetragon_uv4_v2( v.uv[1], uv_alpha, uv_track_matte );
+                            mt::multiply_tetragon_uv4_v2( v.uv[1], texture_trackmatte_uv, uv_track_matte );
+                            //mt::multiply_tetragon_uv4_v2( v.uv[1], , v.uv[1] );
 
-						EMaterialBlendMode blend_mode = EMB_NORMAL;
+                            v.color = color;
+                        }
 
-						switch( mesh.blend_mode )
-						{
-						case AE_MOVIE_BLEND_ADD:
-							blend_mode = EMB_ADD;
-							break;
-						};
+                        m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
 
-						m.material = surfaceTrackMatte->getMaterial();
+                        EMaterialBlendMode blend_mode = EMB_NORMAL;
 
-						//printf( "%f %f\n", ae_get_movie_composition_time( m_composition ), mesh.a );
+                        switch( mesh.blend_mode )
+                        {
+                        case AE_MOVIE_BLEND_ADD:
+                            blend_mode = EMB_ADD;
+                            break;
+                        };
 
-						if( m.vertices.size() == 0 )
-						{
-							continue;
-						}
+                        m.material = surfaceTrackMatte->getMaterial();
 
-						_renderService
-							->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
-					}
-				}
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie2::_interrupt( uint32_t _enumerator )
-	{
-		(void)_enumerator;
+                        //printf( "%f %f\n", ae_get_movie_composition_time( m_composition ), mesh.a );
 
-		ae_interrupt_movie_composition( m_composition, AE_FALSE );
+                        if( m.vertices.size() == 0 )
+                        {
+                            continue;
+                        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie2::addSurface( const SurfacePtr & _surface )
-	{
-		m_surfaces.push_back( _surface );
-	}
+                        _renderService
+                            ->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+                    }
+                }
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::_interrupt( uint32_t _enumerator )
+    {
+        (void)_enumerator;
+
+        ae_interrupt_movie_composition( m_composition, AE_FALSE );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::addSurface( const SurfacePtr & _surface )
+    {
+        _surface->compile();
+
+        m_surfaces.push_back( _surface );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::removeSurface( const SurfacePtr & _surface )
+    {
+        _surface->release();
+
+        TVectorSurfaces::iterator it_found = std::find( m_surfaces.begin(), m_surfaces.end(), _surface );
+
+        m_surfaces.erase( it_found );
+    }
 }

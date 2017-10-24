@@ -6,6 +6,7 @@
 #	include "DX9RenderEnum.h"
 #	include "DX9ErrorHelper.h"
 
+#   include "DX9RenderTarget.h"
 #	include "DX9RenderTargetOffscreen.h"
 
 #   include "Factory/FactoryPool.h"
@@ -188,6 +189,9 @@ namespace Menge
         m_factoryIndexBuffer = new FactoryDefault<DX9RenderIndexBuffer>( m_serviceProvider );
         
         m_factoryDX9Texture = Helper::makeFactoryPool<DX9RenderImage, 128>( m_serviceProvider, this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
+
+        m_factoryDX9TargetTexture = new FactoryDefault<DX9RenderTarget>( m_serviceProvider );
+        m_factoryDX9TargetOffscreen = new FactoryDefault<DX9RenderTargetOffscreen>( m_serviceProvider );
 							
 		return true;
 	}
@@ -209,6 +213,9 @@ namespace Menge
         m_factoryIndexBuffer = nullptr;
 
         m_factoryDX9Texture = nullptr;
+
+        m_factoryDX9TargetTexture = nullptr;
+        m_factoryDX9TargetOffscreen = nullptr;
 
 		m_deferredCompileVertexShaders.clear();
 		m_deferredCompileFragmentShaders.clear();
@@ -625,10 +632,36 @@ namespace Menge
 
 		return dxTexture;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, PixelFormat _format )
+    {
+        DX9RenderTargetPtr target = m_factoryDX9TargetTexture->createObject();
+
+        target->setServiceProvider( m_serviceProvider );
+
+        if( target->initialize( m_pD3DDevice, _width, _height, _format ) == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem.createRenderTargetTexture: can't initialize offscreen target %dx%d format %d"
+                , _width
+                , _height
+                , _format
+                );
+
+            return nullptr;
+        }
+
+        LOGGER_INFO( m_serviceProvider )("DX9RenderSystem.createRenderTargetTexture: offscreen target created %dx%d %d"
+            , _width
+            , _height
+            , _format
+            );
+
+        return target;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	RenderTargetInterface * DX9RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format )
+    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format )
 	{
-		DX9RenderTargetOffscreen * target = new DX9RenderTargetOffscreen();
+        DX9RenderTargetOffscreenPtr target = m_factoryDX9TargetOffscreen->createObject();
 
 		target->setServiceProvider( m_serviceProvider );
 
@@ -651,6 +684,20 @@ namespace Menge
 
 		return target;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    RenderImageInterfacePtr DX9RenderSystem::createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget )
+    {
+        DX9RenderTarget * targetTexture = _renderTarget.getT<DX9RenderTarget *>();
+
+        uint32_t width = targetTexture->getWidth();
+        uint32_t height = targetTexture->getHeight();
+        PixelFormat format = targetTexture->getFormat();
+        LPDIRECT3DTEXTURE9 dx9rendertexture = targetTexture->getDX9RenderTexture();
+
+        DX9RenderImagePtr image = this->createDX9RenderImage_( dx9rendertexture, ERIM_DYNAMIC, 1, width, height, 3, format );
+
+        return image;
+    }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::resetDevice_()
     {

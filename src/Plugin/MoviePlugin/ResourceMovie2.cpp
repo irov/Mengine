@@ -36,7 +36,7 @@ namespace Menge
     {
         ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_data;
 
-        uint8_t resource_type = _resource->type;
+        aeMovieResourceTypeEnum resource_type = _resource->type;
 
         switch( resource_type )
         {
@@ -83,6 +83,41 @@ namespace Menge
 	ResourceMovie2::~ResourceMovie2()
 	{
 	}	
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceMovie2::hasComposition( const ConstString & _name ) const
+    {
+        ae_bool_t exist = ae_has_movie_composition_data( m_movieData, _name.c_str() );
+
+        return exist;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ResourceMovie2::getCompositionDuration( const ConstString & _name ) const
+    {
+        const aeMovieCompositionData * compositionData = ae_get_movie_composition_data( m_movieData, _name.c_str() );
+
+        if( compositionData == nullptr )
+        {
+            return 0.f;
+        }
+
+        float duration = ae_get_movie_composition_data_duration( compositionData );
+
+        return duration;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ResourceMovie2::getCompositionFrameDuration( const ConstString & _name ) const
+    {
+        const aeMovieCompositionData * compositionData = ae_get_movie_composition_data( m_movieData, _name.c_str() );
+
+        if( compositionData == nullptr )
+        {
+            return 0.f;
+        }
+
+        float duration = ae_get_movie_composition_data_frame_duration( compositionData );
+
+        return duration;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	const aeMovieData * ResourceMovie2::getMovieData() const
 	{
@@ -193,6 +228,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie2::_release()
 	{
+        for( TVectorResources::const_iterator
+            it = m_resources.begin(),
+            it_end = m_resources.end();
+            it != it_end;
+            ++it )
+        {
+            const ResourceReferencePtr & resource = *it;
+
+            resource->release();
+        }
+
 		ae_delete_movie_data( m_movieData );
 
 		ResourceReference::_release();

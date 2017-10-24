@@ -260,20 +260,20 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeUserDirectory_()
     {
-		WChar userPathW[MENGINE_MAX_PATH];
-		size_t userPathLen = PLATFORM_SERVICE( m_serviceProvider )
-			->getUserPath( userPathW, MENGINE_MAX_PATH );
+        WChar userPathW[MENGINE_MAX_PATH];
+        size_t userPathLen = PLATFORM_SERVICE( m_serviceProvider )
+            ->getUserPath( userPathW, MENGINE_MAX_PATH );
 
-		Char utf8_userPath[MENGINE_MAX_PATH];
-		size_t utf8_userPathLen;
-		UNICODE_SERVICE( m_serviceProvider )
-			->unicodeToUtf8( userPathW, userPathLen, utf8_userPath, MENGINE_MAX_PATH, &utf8_userPathLen );
+        Char utf8_userPath[MENGINE_MAX_PATH];
+        size_t utf8_userPathLen;
+        UNICODE_SERVICE( m_serviceProvider )
+            ->unicodeToUtf8( userPathW, userPathLen, utf8_userPath, MENGINE_MAX_PATH, &utf8_userPathLen );
 
-		FilePath cs_userPath = Helper::stringizeFilePath(m_serviceProvider, utf8_userPath, utf8_userPathLen );
+        FilePath cs_userPath = Helper::stringizeFilePath( m_serviceProvider, utf8_userPath, utf8_userPathLen );
 		
         // mount user directory
         if( FILE_SERVICE( m_serviceProvider )
-            ->mountFileGroup( Helper::stringizeString( m_serviceProvider, "user" ), ConstString::none(), cs_userPath, Helper::stringizeString( m_serviceProvider, "dir" ) ) == false )
+            ->mountFileGroup( Helper::stringizeString( m_serviceProvider, "user" ), ConstString::none(), cs_userPath, Helper::stringizeString( m_serviceProvider, "global" ) ) == false )
         {
             LOGGER_ERROR( m_serviceProvider )("SDLApplication: failed to mount user directory %ls"
                 , cs_userPath.c_str()

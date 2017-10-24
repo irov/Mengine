@@ -10,14 +10,11 @@
 #	include "Kernel/NodePrototypeGenerator.h"
 #	include "Kernel/ResourcePrototypeGenerator.h"
 
-#	include "Movie2.h"
-#	include "ResourceMovie2.h"
+#   include "PythonScriptWrapper/PythonAnimatableEventReceiver.h"
 
 #	include "Core/ModuleFactory.h"
 
 #	include "Logger/Logger.h"
-
-#	include "pybind/pybind.hpp"
 
 #   include <stdlib.h>
 
@@ -31,9 +28,9 @@ namespace Menge
 	{
 		(void)_data;
 
-		//return stdex_malloc( _size );
+		return stdex_malloc( _size );
 		//return new uint8_t[_size];
-		return malloc( _size );
+		//return malloc( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void * stdex_movie_alloc_n( void * _data, size_t _size, size_t _count )
@@ -42,31 +39,42 @@ namespace Menge
 
 		size_t total = _size * _count;
 
-		//return stdex_malloc( total );
+		return stdex_malloc( total );
 		//return new uint8_t[total];
-		return malloc( total );
+		//return malloc( total );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void stdex_movie_free( void * _data, const void * _ptr )
 	{
 		(void)_data;
 
-		//stdex_free( (void *)_ptr );
+		stdex_free( (void *)_ptr );
 		//delete[] _ptr;
-		free( (void *)_ptr );
+		//free( (void *)_ptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void stdex_movie_free_n( void * _data, const void * _ptr )
 	{
 		(void)_data;
 
-		//stdex_free( (void *)_ptr );
+		stdex_free( (void *)_ptr );
 		//delete[] _ptr;
-		free( (void *)_ptr );
+		//free( (void *)_ptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void stdex_movie_logerror( void * _data, aeMovieErrorCode _code, const char * _format, ... )
 	{
+        switch( _code )
+        {
+        case AE_ERROR_STREAM:
+            {
+                return;
+            }break;
+        default:
+            {
+            }break;
+        }
+
 		va_list argList;
 
 		va_start( argList, _format );
@@ -97,16 +105,35 @@ namespace Menge
 			ResourceMovie2PrototypeGenerator( aeMovieInstance * _instance )
 				: m_instance( _instance )
 			{
-
 			}
+
+            ~ResourceMovie2PrototypeGenerator()
+            {
+            }
 
 		protected:
-			bool setup( ResourceMovie2 * _resource ) override
-			{
-				_resource->setMovieInstance( m_instance );
+            PointerFactorable generate() override
+            {
+                ResourceMovie2 * resource = m_factory->createObject();
 
-				return true;
-			}
+                if( resource == nullptr )
+                {
+                    LOGGER_ERROR( m_serviceProvider )("ResourcePrototypeGenerator can't generate %s %s"
+                        , m_category.c_str()
+                        , m_prototype.c_str()
+                        );
+
+                    return nullptr;
+                }
+
+                resource->setServiceProvider( m_serviceProvider );
+                resource->setType( m_prototype );
+                resource->setScriptWrapper( m_scriptWrapper );
+
+                resource->setMovieInstance( m_instance );
+
+                return resource;
+            }
 
 		protected:
 			aeMovieInstance * m_instance;
@@ -129,6 +156,47 @@ namespace Menge
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    class PythonMovie2EventReceiver
+        : public PythonAnimatableEventReceiver<Movie2EventReceiver>
+    {
+    public:
+    };
+    //////////////////////////////////////////////////////////////////////////
+    PyObject * MoviePlugin::Movie2_setEventListener( pybind::kernel_interface * _kernel, Movie2 * _node, PyObject * _args, PyObject * _kwds )
+    {
+        (void)_args;
+
+        if( _kwds == nullptr )
+        {
+            return pybind::ret_none();
+        }
+
+        pybind::dict py_kwds( _kernel, _kwds );
+        Helper::registerAnimatableEventReceiver<PythonMovie2EventReceiver>( py_kwds, _node );
+
+#	ifdef _DEBUG
+        if( py_kwds.empty() == false )
+        {
+            for( pybind::dict::iterator
+                it = py_kwds.begin(),
+                it_end = py_kwds.end();
+                it != it_end;
+                ++it )
+            {
+                std::string k = it.key();
+
+                LOGGER_ERROR( m_serviceProvider )("Movie2::setEventListener invalid kwds '%s'\n"
+                    , k.c_str()
+                    );
+            }
+
+            throw;
+        }
+#	endif
+
+        return pybind::ret_none();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool MoviePlugin::_initialize()
 	{
@@ -146,9 +214,14 @@ namespace Menge
 			.def( "removeWorkArea", &Movie2::removeWorkArea )
 			.def( "playSubComposition", &Movie2::playSubComposition )
 			.def( "stopSubComposition", &Movie2::stopSubComposition )
+            .def_proxy_native_kernel( "setEventListener", this, &MoviePlugin::Movie2_setEventListener )
 			;
 
-		pybind::interface_<ResourceMovie2, pybind::bases<ResourceReference> >( kernel, "ResourceMovie2", false )
+
+        pybind::interface_<ResourceMovie2, pybind::bases<ResourceReference> >( kernel, "ResourceMovie2", false )
+            .def( "hasComposition", &ResourceMovie2::hasComposition )
+            .def( "getCompositionDuration", &ResourceMovie2::getCompositionDuration )
+            .def( "getCompositionFrameDuration", &ResourceMovie2::getCompositionFrameDuration )
 			;
 		
 		SCRIPT_SERVICE( m_serviceProvider )

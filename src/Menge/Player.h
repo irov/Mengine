@@ -144,7 +144,8 @@ namespace Menge
 		RenderViewportInterface * m_renderViewport;
 		RenderCameraInterface * m_renderCamera;		
 		RenderClipplaneInterface * m_renderClipplane;
-		RenderTargetInterface * m_renderTarget;
+		
+        RenderTargetInterfacePtr m_renderTarget;
 
         MousePickerSystemInterface * m_mousePickerSystem;
         GlobalHandleSystemInterface * m_globalHandleSystem;

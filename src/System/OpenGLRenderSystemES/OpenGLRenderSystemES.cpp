@@ -1069,12 +1069,22 @@ namespace Menge
 
 		return image;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderTargetInterface * OpenGLRenderSystemES::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format )
-	{
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    RenderTargetInterfacePtr OpenGLRenderSystemES::createRenderTargetTexture( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
+    {
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderTargetInterfacePtr OpenGLRenderSystemES::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
+    {
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderImageInterfacePtr OpenGLRenderSystemES::createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget )
+    {
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystemES::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
 	{
         mt::mat4f scale;

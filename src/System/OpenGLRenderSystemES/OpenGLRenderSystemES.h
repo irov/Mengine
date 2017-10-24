@@ -113,10 +113,8 @@ namespace Menge
 		void setShadeType( EShadeType _sType ) override;
 		void setAlphaBlendEnable( bool _alphaBlend ) override;
 		void setLightingEnable( bool _light ) override;
-		void setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,
-			ETextureArgument _arg1, ETextureArgument _arg2 ) override;
-		void setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp,
-			ETextureArgument _arg1, ETextureArgument _arg2 ) override;
+		void setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp, ETextureArgument _arg1, ETextureArgument _arg2 ) override;
+		void setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp, ETextureArgument _arg1, ETextureArgument _arg2 ) override;
         void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) override;
 		void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;
 
@@ -132,7 +130,10 @@ namespace Menge
 		RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 		RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 
-		RenderTargetInterface * createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
+        RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
+        RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
+
+        RenderImageInterfacePtr createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget ) override;
 
 		bool lockRenderTarget( const RenderImageInterfacePtr & _renderTarget ) override;
 		bool unlockRenderTarget() override;

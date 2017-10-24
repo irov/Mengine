@@ -895,7 +895,7 @@ namespace Menge
         this->deactivate();
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void Node::render( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		if( this->isRenderable() == false )
 		{
@@ -923,7 +923,7 @@ namespace Menge
 			renderClipplane = m_renderClipplane;
 		}
 
-		const RenderTargetInterface * renderTarget = _state->target;
+		RenderTargetInterfacePtr renderTarget = _state->target;
 
 		if( m_renderTarget != nullptr )
 		{
@@ -962,6 +962,11 @@ namespace Menge
 		}
 		//}
 
+        if( m_renderTarget != nullptr )
+        {
+            this->_renderTarget( _renderService, _state, _debugMask );
+        }
+
         if( _debugMask != 0 )
         {
 			if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
@@ -970,6 +975,11 @@ namespace Menge
 			}
         }
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Node::_renderTarget( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+    {
+        //Empty
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setRenderViewport( const RenderViewportInterface * _viewport )
 	{
@@ -1063,6 +1073,37 @@ namespace Menge
 
 		return rc_parent;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Node::setRenderTarget( const RenderTargetInterfacePtr & _target )
+    {
+        m_renderTarget = _target;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTargetInterfacePtr & Node::getRenderTarget() const
+    {
+        return m_renderTarget;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTargetInterfacePtr & Node::getRenderTargetInheritance() const
+    {
+        const RenderTargetInterfacePtr & rt = this->getRenderTarget();
+
+        if( rt != nullptr )
+        {
+            return rt;
+        }
+
+        Node * parent = this->getParent();
+
+        if( parent == nullptr )
+        {
+            return nullptr;
+        }
+
+        const RenderTargetInterfacePtr & rt_parent = parent->getRenderTargetInheritance();
+
+        return rt_parent;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_hide( bool _value )
 	{
@@ -1212,7 +1253,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
-		if( (_debugMask & MENGE_DEBUG_NODES) == 0 )
+        if( (_debugMask & MENGE_DEBUG_NODES) == 0 )
 		{
 			return;
 		}

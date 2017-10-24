@@ -529,6 +529,7 @@ namespace Menge
 		//RESOURCE_FACTORY( m_serviceProvider, ResourceFont );
 		//RESOURCE_FACTORY( m_serviceProvider, ResourceGlyph );
 		
+        RESOURCE_FACTORY( m_serviceProvider, ResourceImage );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceImageData );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceImageDefault );
         RESOURCE_FACTORY( m_serviceProvider, ResourceImageSubstract );

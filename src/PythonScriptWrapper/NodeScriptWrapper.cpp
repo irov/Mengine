@@ -7321,6 +7321,14 @@ namespace Menge
 			.def( "getRenderCamera", &Node::getRenderCamera )
 			.def( "getRenderCameraInheritance", &Node::getRenderCameraInheritance )
 
+            .def( "setRenderClipplane", &Node::setRenderClipplane )
+            .def( "getRenderClipplane", &Node::getRenderClipplane )
+            .def( "getRenderClipplaneInheritance", &Node::getRenderClipplaneInheritance )
+            
+            .def( "setRenderTarget", &Node::setRenderTarget )
+            .def( "getRenderTarget", &Node::getRenderTarget )
+            .def( "getRenderTargetInheritance", &Node::getRenderTargetInheritance )            
+
 			.def_proxy_static( "createChildren", nodeScriptMethod, &NodeScriptMethod::createChildren )
 			.def_proxy_static_kernel( "getAllChildren", nodeScriptMethod, &NodeScriptMethod::getAllChildren )
 
@@ -7452,11 +7460,19 @@ namespace Menge
 			.def( "isFixedHorizont", &RenderCameraOrthogonalTarget::isFixedHorizont )
 			;
 
-		pybind::interface_<RenderClipplane, pybind::bases<Node> >( kernel, "RenderClipplane", false )
-			.def( "getCount", &RenderClipplane::getCount )
-			.def( "getPlane", &RenderClipplane::getPlane )
+
+        pybind::interface_<RenderClipplaneInterface>( kernel, "RenderClipplaneInterface", false )
+            .def( "getCount", &RenderClipplaneInterface::getCount )
+            .def( "getPlane", &RenderClipplaneInterface::getPlane )
+            ;
+
+		pybind::interface_<RenderClipplane, pybind::bases<Node, RenderClipplaneInterface> >( kernel, "RenderClipplane", false )
 			;
 
+        pybind::interface_<RenderTargetInterface>( kernel, "RenderTargetInterface", false )
+            .def( "getWidth", &RenderTargetInterface::getWidth )
+            .def( "getHeight", &RenderTargetInterface::getHeight )
+            ;
 		{
 
 			//pybind::proxy_<RigidBody3D, pybind::bases<Node>>("RigidBody3D", false)
@@ -7653,6 +7669,8 @@ namespace Menge
 					.def( "getSize", &Layer2D::getSize )
 					.def( "setViewport", &Layer2D::setViewport )
 					.def( "removeViewport", &Layer2D::removeViewport )
+                    .def( "setImageMask", &Layer2D::setImageMask )
+                    .def( "removeImageMask", &Layer2D::removeImageMask )
 					;
 
 				//pybind::interface_<Layer2DParallax, pybind::bases<Layer> >( "Layer2DParallax", false )

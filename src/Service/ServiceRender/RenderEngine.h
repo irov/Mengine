@@ -69,7 +69,8 @@ namespace Menge
 		const RenderViewportInterface * viewport;
 		const RenderCameraInterface * camera;
 		const RenderClipplaneInterface * clipplane;
-		const RenderTargetInterface * target;
+		
+        RenderTargetInterfacePtr target;
 				
 		const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];
 	};
@@ -253,7 +254,8 @@ namespace Menge
 		const RenderViewportInterface * m_currentRenderViewport;
 		const RenderCameraInterface * m_currentRenderCamera;
 		const RenderClipplaneInterface * m_currentRenderClipplane;
-		const RenderTargetInterface * m_currentRenderTarget;
+		
+        RenderTargetInterfacePtr m_currentRenderTarget;
 
 		RenderProgramInterfacePtr m_currentProgram;
 
@@ -268,8 +270,8 @@ namespace Menge
         typedef stdex::heap_array<RenderObject> TArrayRenderObject;
         TArrayRenderObject m_renderObjects;
 
-        typedef stdex::heap_array<RenderPass> TArrayRenderPass;
-        TArrayRenderPass m_renderPasses;
+        typedef stdex::vector<RenderPass> TVectorRenderPass;
+        TVectorRenderPass m_renderPasses;
 
 		typedef stdex::vector<RenderVertex2D> TArrayRenderVertex2D;
 		typedef stdex::list<TArrayRenderVertex2D> TListDebugVertices;

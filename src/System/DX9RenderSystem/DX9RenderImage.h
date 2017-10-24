@@ -16,14 +16,14 @@ namespace Menge
         ~DX9RenderImage();
 
     public:
-        void initialize( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat );
+        void initialize( LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat );
 		
 	protected:
 		void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
 		const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;
 
 	public:
-		IDirect3DTexture9 * getDXTextureInterface() const;		
+        LPDIRECT3DTEXTURE9 getDXTextureInterface() const;
 
 	public:
 		ERenderImageMode getMode() const override;
@@ -42,7 +42,7 @@ namespace Menge
 		bool unlock( uint32_t _level, bool _successful ) override;
 		               		
 	protected:
-		IDirect3DTexture9 * m_d3dTexture;
+        LPDIRECT3DTEXTURE9 m_d3dTexture;
 
 		RenderImageProviderInterfacePtr m_renderImageProvider;
 

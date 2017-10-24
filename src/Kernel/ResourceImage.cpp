@@ -6,9 +6,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImage::ResourceImage()
-        : m_texture(nullptr)
-        , m_textureAlpha(nullptr)
-        , m_maxSize(0.f, 0.f)
+        : m_maxSize(0.f, 0.f)
         , m_size(0.f, 0.f)
 		, m_offset(0.f, 0.f)
         , m_hasAlpha(false)
@@ -19,6 +17,16 @@ namespace Menge
 	ResourceImage::~ResourceImage()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImage::setTexture( const RenderTextureInterfacePtr & _texture )
+    {
+        m_texture = _texture;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImage::setTextureAlpha( const RenderTextureInterfacePtr & _textureAlpha )
+    {
+        m_textureAlpha = _textureAlpha;
+    }
 	//////////////////////////////////////////////////////////////////////////
     void ResourceImage::_release()
     {

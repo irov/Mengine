@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Kernel/Layer.h"
+#   include "Kernel/ResourceImage.h"
 
 #	include "Core/Viewport.h"
 
@@ -29,9 +30,19 @@ namespace Menge
         void createViewport_();
         void clearViewport_();
 
+    public:
+        void setImageMask( const ResourceImagePtr & _resourceImageMask );
+        void removeImageMask();
+
+    protected:
+        void createRenderTarget_();
+
     protected:
         bool _activate() override;
         void _deactivate() override;
+
+    protected:
+        void _renderTarget( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
 
 	protected:
         mt::vec2f m_size;
@@ -41,6 +52,16 @@ namespace Menge
 		RenderCameraOrthogonal * m_renderCamera;
 		RenderViewport * m_renderViewport;
 
+        ResourceImagePtr m_resourceImageMask;
+        //RenderTargetInterfacePtr m_renderTarget;
+        //RenderImageInterfacePtr m_renderTargetImage;
+        //RenderTextureInterfacePtr m_renderTargetTexture;
+
+        RenderMaterialInterfacePtr m_materialImageMask;
+
+        RenderVertex2D m_verticesImageMaskWM[4];
+
 		bool m_hasViewport;
+        bool m_hasImageMask;
 	};
 }

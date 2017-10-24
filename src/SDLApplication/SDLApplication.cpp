@@ -754,6 +754,9 @@ namespace Menge
         APPLICATION_SERVICE( m_serviceProvider )
             ->turnSound( true );
         
+        GAME_SERVICE(m_serviceProvider)
+            ->run();
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

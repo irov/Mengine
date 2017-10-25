@@ -1070,12 +1070,12 @@ namespace Menge
 		return image;
 	}
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr OpenGLRenderSystemES::createRenderTargetTexture( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
+    RenderTargetInterfacePtr OpenGLRenderSystemES::createRenderTargetTexture( uint32_t _width, uint32_t _height, PixelFormat _format )
     {
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr OpenGLRenderSystemES::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
+    RenderTargetInterfacePtr OpenGLRenderSystemES::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format )
     {
         return nullptr;
     }

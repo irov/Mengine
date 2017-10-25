@@ -44,7 +44,7 @@ namespace Menge
 				return false;
 			}
 
-			const FilePath & groupPath = group->getPath();
+			const FilePath & groupPath = group->getFolderPath();
 
 			FilePath fullPath = Helper::concatenationFilePath( _serviceProvider, groupPath, _fileName );
 
@@ -135,6 +135,11 @@ namespace Menge
 		bool pathRemoveFileSpec( WChar * _path )
 		{
 			size_t len = wcslen( _path );
+
+            if( len == 0 )
+            {
+                return true;
+            }
 
 			WChar * pch = _path + len - 1;
 

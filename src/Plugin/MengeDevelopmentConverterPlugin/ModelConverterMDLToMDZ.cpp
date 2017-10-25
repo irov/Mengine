@@ -53,7 +53,7 @@ namespace Menge
             return false;
         }
 
-        const FilePath & pakPath = fileGroup->getPath();
+        const FilePath & pakPath = fileGroup->getFolderPath();
 
 		FilePath full_input = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
 		FilePath full_output = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );

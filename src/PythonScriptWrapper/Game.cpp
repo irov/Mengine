@@ -425,22 +425,22 @@ namespace Menge
                 m_cb.call();
             }
 
-            void onGameCreateAccount( const WString & _accountID, bool _global ) override
+            void onGameCreateAccount( const ConstString & _accountID, bool _global ) override
             {
 				m_cb.call( _accountID, _global );
             }
 
-            void onGameDeleteAccount( const WString & _accountID ) override
+            void onGameDeleteAccount( const ConstString & _accountID ) override
             {
                 m_cb.call( _accountID );
             }
 
-            void onGameSelectAccount( const WString & _accountID ) override
+            void onGameSelectAccount( const ConstString & _accountID ) override
             {
                 m_cb.call( _accountID );
             }
 
-            void onGameUselectAccount( const WString & _accountID ) override
+            void onGameUselectAccount( const ConstString & _accountID ) override
             {
                 m_cb.call( _accountID );
             }

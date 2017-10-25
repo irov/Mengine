@@ -21,9 +21,6 @@
 #	include "Config/Typedef.h"
 #	include "Config/Stringstream.h"
 
-#	include <stdio.h>
-#	include <wchar.h>
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AccountService, Menge::AccountManager );
 //////////////////////////////////////////////////////////////////////////
@@ -55,7 +52,7 @@ namespace Menge
         LOGGER_WARNING(m_serviceProvider)("AccountManager::finalize save accounts"
             );
 
-        WString lastAccount = m_currentAccountID;
+        ConstString lastAccount = m_currentAccountID;
         this->unselectCurrentAccount_();
 
 		m_currentAccountID = lastAccount;
@@ -77,10 +74,10 @@ namespace Menge
 	{
         uint32_t new_playerID = ++m_playerEnumerator;
 
-		WStringstream streamAccountID;
-		streamAccountID << L"Player_" << new_playerID;
+		Stringstream streamAccountID;
+		streamAccountID << "Player_" << new_playerID;
 
-		WString accountID = streamAccountID.str();
+		ConstString accountID = Helper::stringizeString( m_serviceProvider, streamAccountID.str() );
         
 		AccountInterfacePtr account = this->createAccount_( accountID );
 
@@ -100,10 +97,10 @@ namespace Menge
 	{
 		uint32_t new_playerID = ++m_playerEnumerator;
 
-		WStringstream streamAccountID;
-		streamAccountID << L"Global_" << new_playerID;
+		Stringstream streamAccountID;
+		streamAccountID << "Global_" << new_playerID;
 
-		WString accountID = streamAccountID.str();
+		ConstString accountID = Helper::stringizeString( m_serviceProvider, streamAccountID.str() );
 
 		AccountInterfacePtr account = this->createGlobalAccount_( accountID );
 
@@ -115,7 +112,7 @@ namespace Menge
 		return account;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	AccountInterfacePtr AccountManager::createAccount_( const WString& _accountID )
+	AccountInterfacePtr AccountManager::createAccount_( const ConstString& _accountID )
 	{
 		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
 
@@ -164,7 +161,7 @@ namespace Menge
         return newAccount;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	AccountInterfacePtr AccountManager::createGlobalAccount_( const WString& _accountID )
+	AccountInterfacePtr AccountManager::createGlobalAccount_( const ConstString& _accountID )
 	{
 		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
 
@@ -208,7 +205,7 @@ namespace Menge
             return;
         }
 
-		WString currentAccount = m_currentAccountID;
+        ConstString currentAccount = m_currentAccountID;
         
         if( m_accountProvider != nullptr )
         {
@@ -221,37 +218,26 @@ namespace Menge
 		}
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountManager::newAccount_( const WString& _accountID )
+    AccountInterfacePtr AccountManager::newAccount_( const ConstString& _accountID )
     {
-		WString accountFolder = _accountID;
-		accountFolder += '/';
+        FileGroupInterfacePtr fileGroup = FILE_SERVICE( m_serviceProvider )
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ) );
 
-        if( PLATFORM_SERVICE(m_serviceProvider)
-            ->existDirectory( accountFolder ) == false )
+        PathString accountString;
+        accountString.append( _accountID );
+        accountString.append( '/' );
+
+        FilePath accountPath = Helper::stringizeFilePath( m_serviceProvider, accountString );
+
+        if( fileGroup->createDirectory( accountPath ) == false )
         {
-            if( PLATFORM_SERVICE(m_serviceProvider)
-                ->createDirectory( accountFolder ) == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("AccountManager::createAccount_: Account '%ls' failed create directory"
-                    , accountFolder.c_str()
-                    );
+            LOGGER_ERROR( m_serviceProvider )("AccountManager::createAccount_: Account '%s' failed create directory"
+                , accountPath.c_str()
+                );
 
-                return nullptr;
-            }
-        }
+            return nullptr;
+        }        
 
-		String utf8_accountFolder;
-		if( Helper::unicodeToUtf8( m_serviceProvider, accountFolder, utf8_accountFolder ) == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("AccountManager::newAccount_ can't convert accountID '%ls' to utf8"
-				, _accountID.c_str()
-				);
-
-			return nullptr;
-		}
-
-		FilePath folder = Helper::stringizeFilePath( m_serviceProvider, utf8_accountFolder.c_str(), utf8_accountFolder.size() );
-		
         AccountPtr newAccount = m_factoryAccounts->createObject();
 
         newAccount->setServiceProvider( m_serviceProvider );
@@ -259,7 +245,7 @@ namespace Menge
 		uint32_t projectVersion = APPLICATION_SERVICE( m_serviceProvider )
 			->getProjectVersion();
 
-		if( newAccount->initialize( _accountID, folder, projectVersion ) == false )
+		if( newAccount->initialize( _accountID, accountPath, projectVersion ) == false )
 		{
 			return nullptr;				 
 		}
@@ -267,7 +253,7 @@ namespace Menge
         return newAccount;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::deleteAccount( const WString& _accountID )
+	void AccountManager::deleteAccount( const ConstString& _accountID )
 	{
 		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
 
@@ -298,7 +284,7 @@ namespace Menge
         }  
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AccountManager::selectAccount( const WString& _accountID )
+	bool AccountManager::selectAccount( const ConstString& _accountID )
 	{
 		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
 
@@ -338,18 +324,18 @@ namespace Menge
 		return m_currentAccountID.empty() == false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & AccountManager::getCurrentAccountID() const
+	const ConstString & AccountManager::getCurrentAccountID() const
 	{
 		return m_currentAccountID;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	AccountInterfacePtr AccountManager::getAccount( const WString& _accountID )
+	AccountInterfacePtr AccountManager::getAccount( const ConstString& _accountID )
 	{
 		TMapAccounts::iterator it_found = m_accounts.find( _accountID );
 		
 		if( it_found == m_accounts.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AccountManager::getAccount account with ID '%ls' not found"
+			LOGGER_ERROR(m_serviceProvider)("AccountManager::getAccount account with ID '%s' not found"
 				, _accountID.c_str() 
 				);
 
@@ -371,7 +357,7 @@ namespace Menge
 		{
 			const AccountInterfacePtr & account = it->second;
 
-			const WString & accountID = account->getID();
+			const ConstString & accountID = account->getID();
 
 			if( accountID == m_globalAccountID )
 			{
@@ -382,12 +368,12 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::setDefaultAccount( const WString & _accountID )
+	void AccountManager::setDefaultAccount( const ConstString & _accountID )
 	{
 		m_defaultAccountID = _accountID;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & AccountManager::getDefaultAccountID() const
+	const ConstString & AccountManager::getDefaultAccountID() const
 	{
 		return m_defaultAccountID;
 	}
@@ -417,12 +403,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::setGlobalAccount( const WString & _accountID )
+	void AccountManager::setGlobalAccount( const ConstString & _accountID )
 	{
 		m_globalAccountID = _accountID;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & AccountManager::getGlobalAccountID() const
+	const ConstString & AccountManager::getGlobalAccountID() const
 	{
 		return m_globalAccountID;
 	}
@@ -458,7 +444,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::loadAccount_( const AccountInterfacePtr & _account )
 	{
-		const WString & accountID = _account->getID();
+		const ConstString & accountID = _account->getID();
 
 		if( m_accountProvider != nullptr )
         {
@@ -538,7 +524,7 @@ namespace Menge
                 );
         }
 
-		WString selectAccountID;
+		ConstString selectAccountID;
 		if( IniUtil::getIniValue( ini, "SETTINGS", "SelectAccountID", selectAccountID, m_serviceProvider ) == false )
         {
             LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get SelectAccountID failed '%s'"
@@ -546,7 +532,7 @@ namespace Menge
                 );
         }   
         
-        TVectorWString values;
+        TVectorConstString values;
 		if( IniUtil::getIniValue( ini, "ACCOUNTS", "Account", values, m_serviceProvider ) == false )
         {
             LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get ACCOUNTS failed '%s'"
@@ -556,13 +542,13 @@ namespace Menge
 
         AccountInterfacePtr validAccount = nullptr;
 
-		for( TVectorWString::const_iterator
+		for( TVectorConstString::const_iterator
 			it = values.begin(), 
 			it_end = values.end();
 		it != it_end;
 		++it )
 		{
-			const WString & accountID = *it;
+			const ConstString & accountID = *it;
 
 			AccountInterfacePtr account = this->newAccount_( accountID );
 
@@ -621,7 +607,7 @@ namespace Menge
         }
         else if( validAccount != nullptr )
         {
-            const WString & accountID = validAccount->getID();
+            const ConstString & accountID = validAccount->getID();
 
             LOGGER_WARNING(m_serviceProvider)( "AccountManager::loadAccounts set valid account '%ls'"
                 , accountID.c_str()
@@ -691,7 +677,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const WString & accountID = it->first;
+			const ConstString & accountID = it->first;
 
             IniUtil::writeIniSetting( m_serviceProvider, file, "Account", accountID );
 		}

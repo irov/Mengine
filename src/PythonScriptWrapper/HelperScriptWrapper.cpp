@@ -1116,7 +1116,7 @@ namespace Menge
 			: public AccountVisitorInterface
 		{
 		public:
-			MyAccountVisitorInterface( TVectorWString & _accounts )
+			MyAccountVisitorInterface( TVectorConstString & _accounts )
 				: m_accounts(_accounts)
 			{
 			}
@@ -1124,13 +1124,13 @@ namespace Menge
 		protected:
 			void onAccount( const AccountInterfacePtr & _account ) override
 			{
-				const WString & name = _account->getID();
+				const ConstString & name = _account->getID();
 
 				m_accounts.push_back( name );
 			}
 
 		protected:
-			TVectorWString & m_accounts;
+			TVectorConstString & m_accounts;
 
 		private:
 			void operator = ( const MyAccountVisitorInterface & )
@@ -1139,9 +1139,9 @@ namespace Menge
 			}
 		};
 
-        TVectorWString s_getAccounts()
+        TVectorConstString s_getAccounts()
 		{
-			TVectorWString v_accounts;
+            TVectorConstString v_accounts;
 			MyAccountVisitorInterface mav( v_accounts );
 
 			ACCOUNT_SERVICE(m_serviceProvider)
@@ -1162,7 +1162,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE(m_serviceProvider)
+			const ConstString & accountID = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccountID();
 
 			return s_addAccountSetting( accountID, _setting, _defaultValue, _applyFunc );
@@ -1180,7 +1180,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_changeAccountSetting( accountID, _setting, _value );
@@ -1198,7 +1198,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_changeAccountSettingBool( accountID, _setting, _value );
@@ -1216,7 +1216,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_changeAccountSettingInt( accountID, _setting, _value );
@@ -1234,7 +1234,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_changeAccountSettingUInt( accountID, _setting, _value );
@@ -1252,7 +1252,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_changeAccountSettingUInt64( accountID, _setting, _value );
@@ -1270,7 +1270,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_changeAccountSettingFloat( accountID, _setting, _value );
@@ -1288,13 +1288,13 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_changeAccountSettingStrings( accountID, _setting, _values );
 		}
 
-		bool s_addAccountSetting( const WString & _accountID, const ConstString & _setting, const WString & _defaultValue, const pybind::object & _applyFunc )
+		bool s_addAccountSetting( const ConstString & _accountID, const ConstString & _setting, const WString & _defaultValue, const pybind::object & _applyFunc )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -1313,7 +1313,7 @@ namespace Menge
 			return result;
 		}
 
-		bool s_hasAccountSetting( const WString & _accountID, const ConstString & _setting )
+		bool s_hasAccountSetting( const ConstString & _accountID, const ConstString & _setting )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -1332,7 +1332,7 @@ namespace Menge
 			return result;
 		}
 
-		bool s_changeAccountSetting( const WString & _accountID, const ConstString & _setting, const WString & _value )
+		bool s_changeAccountSetting( const ConstString & _accountID, const ConstString & _setting, const WString & _value )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -1361,7 +1361,7 @@ namespace Menge
 			return result;
 		}
 
-		bool s_changeAccountSettingBool( const WString & _accountID, const ConstString & _setting, bool _value )
+		bool s_changeAccountSettingBool( const ConstString & _accountID, const ConstString & _setting, bool _value )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -1400,7 +1400,7 @@ namespace Menge
 			return result;
 		}
 
-		bool s_changeAccountSettingInt( const WString & _accountID, const ConstString & _setting, int32_t _value )
+		bool s_changeAccountSettingInt( const ConstString & _accountID, const ConstString & _setting, int32_t _value )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -1432,7 +1432,7 @@ namespace Menge
 			return result;
 		}
 
-		bool s_changeAccountSettingUInt( const WString & _accountID, const ConstString & _setting, uint32_t _value )
+		bool s_changeAccountSettingUInt( const ConstString & _accountID, const ConstString & _setting, uint32_t _value )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -1464,7 +1464,7 @@ namespace Menge
 			return result;
 		}
 
-		bool s_changeAccountSettingUInt64( const WString & _accountID, const ConstString & _setting, uint64_t _value )
+		bool s_changeAccountSettingUInt64( const ConstString & _accountID, const ConstString & _setting, uint64_t _value )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -1496,7 +1496,7 @@ namespace Menge
 			return result;
 		}
 
-		bool s_changeAccountSettingFloat( const WString & _accountID, const ConstString & _setting, float _value )
+		bool s_changeAccountSettingFloat( const ConstString & _accountID, const ConstString & _setting, float _value )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -1528,7 +1528,7 @@ namespace Menge
 			return result;
 		}
 
-		bool s_changeAccountSettingStrings( const WString & _accountID, const ConstString & _setting, const TVectorWString & _values )
+		bool s_changeAccountSettingStrings( const ConstString & _accountID, const ConstString & _setting, const TVectorWString & _values )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -1586,7 +1586,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_addAccountSetting( accountID, _setting, _defaultValue, _applyFunc );
@@ -1603,7 +1603,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_hasAccountSetting( accountID, _setting );
@@ -1620,7 +1620,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_changeAccountSetting( accountID, _setting, _value );
@@ -1637,7 +1637,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_changeAccountSettingBool( accountID, _setting, _value );
@@ -1654,7 +1654,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_changeAccountSettingInt( accountID, _setting, _value );
@@ -1671,7 +1671,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_changeAccountSettingUInt( accountID, _setting, _value );
@@ -1688,7 +1688,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_changeAccountSettingUInt64( accountID, _setting, _value );
@@ -1705,7 +1705,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_changeAccountSettingFloat( accountID, _setting, _value );
@@ -1722,7 +1722,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_changeAccountSettingStrings( accountID, _setting, _values );
@@ -1740,7 +1740,7 @@ namespace Menge
 				return false;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 			
 			return s_hasAccountSetting( accountID, _setting );
@@ -1757,7 +1757,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_getAccountUID( _kernel, accountID );
@@ -1775,7 +1775,7 @@ namespace Menge
                 return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_getAccountSetting( _kernel, accountID, _setting );
@@ -1793,7 +1793,7 @@ namespace Menge
                 return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_getAccountSettingBool( _kernel, accountID, _setting );
@@ -1811,7 +1811,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_getAccountSettingInt( _kernel, accountID, _setting );
@@ -1829,7 +1829,7 @@ namespace Menge
                 return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_getAccountSettingUInt( _kernel, accountID, _setting );
@@ -1847,7 +1847,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_getAccountSettingUInt64( _kernel, accountID, _setting );
@@ -1865,7 +1865,7 @@ namespace Menge
                 return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_getAccountSettingFloat( _kernel, accountID, _setting );
@@ -1883,7 +1883,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_getAccountSettingStrings( _kernel, accountID, _setting );
@@ -1901,7 +1901,7 @@ namespace Menge
 				return _default;
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getCurrentAccountID();
 
 			return s_getAccountSettingFloatDefault( accountID, _setting, _default );
@@ -1956,7 +1956,7 @@ namespace Menge
 		}
 
 		
-		PyObject * s_getAccountUID( pybind::kernel_interface * _kernel, const WString & _accountID )
+		PyObject * s_getAccountUID( pybind::kernel_interface * _kernel, const ConstString & _accountID )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -1977,7 +1977,7 @@ namespace Menge
 			return py_value;
 		}
 
-		PyObject * s_getAccountSetting( pybind::kernel_interface * _kernel, const WString & _accountID, const ConstString & _setting )
+		PyObject * s_getAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
 				->getAccount( _accountID );
@@ -1998,7 +1998,7 @@ namespace Menge
 			return py_value;
 		}
 
-		PyObject * s_getAccountSettingBool( pybind::kernel_interface * _kernel, const WString& _accountID, const ConstString & _setting )
+		PyObject * s_getAccountSettingBool( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
 		{
 			(void)_kernel;
 
@@ -2037,7 +2037,7 @@ namespace Menge
 			return pybind::ret_none();
 		}
 
-		PyObject * s_getAccountSettingInt( pybind::kernel_interface * _kernel, const WString& _accountID, const ConstString & _setting )
+		PyObject * s_getAccountSettingInt( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -2069,7 +2069,7 @@ namespace Menge
 			return py_value;
 		}
 				
-		PyObject * s_getAccountSettingUInt( pybind::kernel_interface * _kernel, const WString& _accountID, const ConstString & _setting )
+		PyObject * s_getAccountSettingUInt( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
 				->getAccount( _accountID );
@@ -2101,7 +2101,7 @@ namespace Menge
 			return py_value;
 		}
 
-		PyObject * s_getAccountSettingUInt64( pybind::kernel_interface * _kernel, const WString& _accountID, const ConstString & _setting )
+		PyObject * s_getAccountSettingUInt64( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -2133,7 +2133,7 @@ namespace Menge
 			return py_value;
 		}
 
-		PyObject * s_getAccountSettingStrings( pybind::kernel_interface * _kernel, const WString& _accountID, const ConstString & _setting )
+		PyObject * s_getAccountSettingStrings( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -2164,7 +2164,7 @@ namespace Menge
 			return l.ret();
 		}		
 
-		PyObject * s_getAccountSettingFloat( pybind::kernel_interface * _kernel, const WString& _accountID, const ConstString & _setting )
+		PyObject * s_getAccountSettingFloat( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -2196,7 +2196,7 @@ namespace Menge
 			return py_value;
 		}
 
-		float s_getAccountSettingFloatDefault( const WString& _accountID, const ConstString & _setting, float _default )
+		float s_getAccountSettingFloatDefault( const ConstString& _accountID, const ConstString & _setting, float _default )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );
@@ -2242,7 +2242,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_getAccountUID( _kernel, accountID );
@@ -2259,7 +2259,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 			
 			return s_getAccountSetting( _kernel, accountID, _setting );
@@ -2278,7 +2278,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_getAccountSettingBool( _kernel, accountID, _setting );
@@ -2295,7 +2295,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_getAccountSettingInt( _kernel, accountID, _setting );
@@ -2312,7 +2312,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_getAccountSettingUInt( _kernel, accountID, _setting );
@@ -2329,7 +2329,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_getAccountSettingUInt64( _kernel, accountID, _setting );
@@ -2346,7 +2346,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			return s_getAccountSettingFloat( _kernel, accountID, _setting );
@@ -2363,7 +2363,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
+			const ConstString & accountID = ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
@@ -2382,7 +2382,7 @@ namespace Menge
 				return pybind::ret_none();
             }
             
-			const WString & accountId = account->getID();
+			const ConstString & accountId = account->getID();
 
 			PyObject * py_value = pybind::ptr( _kernel, accountId );
 
@@ -2399,14 +2399,14 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & accountId = account->getID();
+			const ConstString & accountId = account->getID();
 
 			PyObject * py_value = pybind::ptr( _kernel, accountId );
 
 			return py_value;
 		}
 
-		void s_selectAccount( const WString& _accountID )
+		void s_selectAccount( const ConstString& _accountID )
 		{
 			ACCOUNT_SERVICE(m_serviceProvider)
 				->selectAccount( _accountID );
@@ -2418,13 +2418,13 @@ namespace Menge
 				->hasCurrentAccount();
 		}
 
-		void s_setDefaultAccount( const WString & _accountID )
+		void s_setDefaultAccount( const ConstString & _accountID )
 		{
 			ACCOUNT_SERVICE(m_serviceProvider)
 				->setDefaultAccount( _accountID );
 		}
 
-		void s_setGlobalAccount( const WString & _accountID )
+		void s_setGlobalAccount( const ConstString & _accountID )
 		{
 			ACCOUNT_SERVICE( m_serviceProvider )
 				->setGlobalAccount( _accountID );
@@ -2436,13 +2436,13 @@ namespace Menge
 				->hasGlobalAccount();
 		}
 
-		const WString & s_getGlobalAccountName()
+		const ConstString & s_getGlobalAccountName()
 		{
 			return ACCOUNT_SERVICE( m_serviceProvider )
 				->getGlobalAccountID();
 		}
 
-		const WString & s_getDefaultAccount()
+		const ConstString & s_getDefaultAccount()
 		{
 			return ACCOUNT_SERVICE(m_serviceProvider)
 				->getDefaultAccountID();
@@ -2494,13 +2494,13 @@ namespace Menge
 			//	->saveAccountsInfo();
 		}
 
-		void s_deleteAccount( const WString& _accountName )
+		void s_deleteAccount( const ConstString& _accountName )
 		{
 			ACCOUNT_SERVICE(m_serviceProvider)
 				->deleteAccount( _accountName );
 		}
 				
-		WString s_getCurrentAccountName()
+        const ConstString & s_getCurrentAccountName()
 		{
 			if( ACCOUNT_SERVICE( m_serviceProvider )
 				->hasCurrentAccount() == false )
@@ -2508,16 +2508,16 @@ namespace Menge
 				LOGGER_ERROR( m_serviceProvider )("Error getCurrentAccountName: currentAccount is none"
 					);
 
-				return WString();
+				return ConstString::none();
 			}
 
-			const WString & name = ACCOUNT_SERVICE(m_serviceProvider)
+			const ConstString & name = ACCOUNT_SERVICE(m_serviceProvider)
   				->getCurrentAccountID();
 
 			return name;
 		}
 
-		bool s_writeAccountPickleFile( pybind::kernel_interface * _kernel, const WString & _accountID, const WString & _fileName, PyObject * _data, PyObject * _pickleTypes )
+		bool s_writeAccountPickleFile( pybind::kernel_interface * _kernel, const ConstString & _accountID, const WString & _fileName, PyObject * _data, PyObject * _pickleTypes )
 		{
             String utf8_fileName;
             if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
@@ -2590,7 +2590,7 @@ namespace Menge
 			return true;
 		}
 
-		PyObject * s_loadAccountPickleFile( pybind::kernel_interface * _kernel, const WString & _accountID, const WString & _fileName, PyObject * _pickleTypes )
+		PyObject * s_loadAccountPickleFile( pybind::kernel_interface * _kernel, const ConstString & _accountID, const WString & _fileName, PyObject * _pickleTypes )
 		{
             String utf8_fileName;
             if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
@@ -2646,7 +2646,7 @@ namespace Menge
 			return py_data;
 		}
 
-		bool s_hasAccountPickleFile( const WString & _accountID, const WString & _fileName )
+		bool s_hasAccountPickleFile( const ConstString & _accountID, const WString & _fileName )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE( m_serviceProvider )
 				->getAccount( _accountID );

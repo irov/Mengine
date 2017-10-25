@@ -22,10 +22,17 @@ namespace Menge
 		
     public:
 		bool isPacked() const override;
-        const FilePath & getPath() const override;
-        
+
+    public:
+        const FilePath & getRelationPath() const override;
+        const FilePath & getFolderPath() const override;
+                
 	public:
 		bool existFile( const FilePath & _fileName ) const override;
+        bool existDirectory( const FilePath & _folderName ) const override;
+
+    public:
+        bool createDirectory( const FilePath & _folderName ) const override;
 
     public:
 		InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming ) override;
@@ -41,7 +48,9 @@ namespace Menge
 	protected:
 		ConstString m_name;
 		ConstString m_category;
-		FilePath m_path;
+		
+        FilePath m_relationPath;
+        FilePath m_path;
 
 		FileGroupInterfacePtr m_zipFileGroup;
 		InputStreamInterfacePtr m_zipFile;

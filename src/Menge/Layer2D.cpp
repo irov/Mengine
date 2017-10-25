@@ -17,12 +17,14 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Layer2D::Layer2D()
-        : m_size(0.f, 0.f)
-		, m_viewport(0.f, 0.f, 0.f, 0.f)
-		, m_renderCamera(nullptr)
+        : m_size( 0.f, 0.f )
+        , m_viewport( 0.f, 0.f, 0.f, 0.f )
+        , m_renderCamera( nullptr )
         , m_renderViewport( nullptr )
-		, m_hasViewport(false)
-        , m_hasImageMask(false)		
+        , m_hasViewport( false )
+        , m_hasImageMask( false )
+        , m_invalidateVerticesImageMaskColor( true )
+        , m_invalidateVerticesImageMaskWM( true )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -38,6 +40,11 @@ namespace	Menge
             this->createViewport_();
         }
 
+        if( m_hasImageMask == true )
+        {
+            this->createRenderTarget_();
+        }
+
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -46,6 +53,11 @@ namespace	Menge
         if( m_hasViewport == true )
         {
             this->clearViewport_();
+        }
+
+        if( m_hasImageMask == true )
+        {
+            this->clearRenderTarget_();
         }
 
         Node::_deactivate();
@@ -63,6 +75,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::setViewport( const Viewport & _viewport )
 	{
+        if( m_hasViewport == true )
+        {
+            return;
+        }
+
 		m_viewport = _viewport;
 		
 		m_hasViewport = true;
@@ -155,12 +172,23 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::removeImageMask()
     {
-        m_renderTarget = nullptr;        
-        m_resourceImageMask = nullptr;
+        if( m_hasImageMask == false )
+        {
+            return;
+        }
+
+        m_hasImageMask = false;
+
+        this->clearRenderTarget_();
     }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::createRenderTarget_()
     {
+        if( m_resourceImageMask == nullptr )
+        {
+            return;
+        }
+
         RenderTargetInterfacePtr renderTarget = RENDER_SYSTEM( m_serviceProvider )
             ->createRenderTargetTexture( (uint32_t)m_size.x, (uint32_t)m_size.y, PF_A8R8G8B8 );
 
@@ -171,6 +199,11 @@ namespace	Menge
         
         RenderTextureInterfacePtr renderTargetTexture = RENDERTEXTURE_SERVICE( m_serviceProvider )
             ->createRenderTexture( renderTargetImage, (uint32_t)m_size.x, (uint32_t)m_size.y );
+
+        if( m_resourceImageMask.compile() == false )
+        {
+            return;
+        }
 
         const RenderTextureInterfacePtr & renderTargetTextureMask = m_resourceImageMask->getTexture();
 
@@ -202,28 +235,61 @@ namespace	Menge
         m_verticesImageMaskWM[3].uv[1] = uv_mask.p3;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Layer2D::clearRenderTarget_()
+    {
+        m_resourceImageMask.release();
+
+        m_resourceImageMask = nullptr;
+        m_renderTarget = nullptr;        
+        m_materialImageMask = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Layer2D::_renderTarget( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+    {
+        (void)_debugMask;
+              
+        const RenderVertex2D * verticesImageMask = this->getVerticesImageMaskWM();
+                
+        const mt::box2f & bb = this->getBoundingBox();
+
+        _renderService
+            ->addRenderQuad( _state, m_materialImageMask, verticesImageMask, 4, &bb, false );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Layer2D::updateVerticesImageMaskWM() const
+    {
+        const mt::mat4f & wm = this->getWorldMatrix();
+
+        mt::mul_v3_v2_m4( m_verticesImageMaskWM[0].position, mt::vec2f( 0.f, 0.f ), wm );
+        mt::mul_v3_v2_m4( m_verticesImageMaskWM[1].position, mt::vec2f( m_size.x, 0.f ), wm );
+        mt::mul_v3_v2_m4( m_verticesImageMaskWM[2].position, mt::vec2f( m_size.x, m_size.y ), wm );
+        mt::mul_v3_v2_m4( m_verticesImageMaskWM[3].position, mt::vec2f( 0.f, m_size.y ), wm );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Layer2D::updateVerticesImageMaskColor() const
     {
         ColourValue color;
         this->calcTotalColor( color );
 
         uint32_t argb = color.getAsARGB();
 
-        const mt::mat4f & wm = this->getWorldMatrix();
-
         m_verticesImageMaskWM[0].color = argb;
         m_verticesImageMaskWM[1].color = argb;
         m_verticesImageMaskWM[2].color = argb;
         m_verticesImageMaskWM[3].color = argb;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Layer2D::_invalidateColor()
+    {
+        Node::_invalidateColor();
 
-        mt::mul_v3_v2_m4( m_verticesImageMaskWM[0].position, mt::vec2f( 0.f, 0.f), wm );
-        mt::mul_v3_v2_m4( m_verticesImageMaskWM[1].position, mt::vec2f( m_size.x, 0.f ), wm );
-        mt::mul_v3_v2_m4( m_verticesImageMaskWM[2].position, mt::vec2f( m_size.x, m_size.y ), wm );
-        mt::mul_v3_v2_m4( m_verticesImageMaskWM[3].position, mt::vec2f( 0.f, m_size.y ), wm );
-                
-        const mt::box2f & bb = this->getBoundingBox();
+        m_invalidateVerticesImageMaskColor = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Layer2D::_invalidateWorldMatrix()
+    {
+        Node::_invalidateWorldMatrix();
 
-        _renderService
-            ->addRenderQuad( _state, m_materialImageMask, m_verticesImageMaskWM, 4, &bb, false );
+        m_invalidateVerticesImageMaskWM = true;
     }
 }

@@ -1,6 +1,8 @@
 #	include "Win32FileGroupDirectory.h"
 
 #	include "Interface/MemoryInterface.h"
+#	include "Interface/PlatformInterface.h"
+#	include "Interface/UnicodeInterface.h"
 
 #   include "Factory/FactoryPool.h"
 
@@ -27,6 +29,17 @@ namespace Menge
 		m_category = _category;
         m_folderPath = _folderPath;
 
+        FilePath baseDirectoryPath;
+
+        if( this->createDirectory( baseDirectoryPath ) == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("Win32FileGroupDirectory::initialize: invalid create directory '%s'"
+                , _folderPath.c_str()
+                );
+
+            return false;
+        }
+
         m_factoryInputStream = new FactoryPool<Win32FileInputStream, 8>( m_serviceProvider );
         m_factoryOutputStream = new FactoryPool<Win32FileOutputStream, 4>( m_serviceProvider );
         m_factoryWin32MappedFile = new FactoryPool<Win32FileMapped, 4>( m_serviceProvider );
@@ -46,7 +59,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const FilePath & Win32FileGroupDirectory::getPath() const
+	const FilePath & Win32FileGroupDirectory::getFolderPath() const
 	{
 		return m_folderPath;
 	}
@@ -70,6 +83,63 @@ namespace Menge
 
         return result;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::existDirectory( const FilePath & _folderName ) const
+    {
+        const FilePath & relationPath = this->getRelationPath();
+        const FilePath & folderPath = this->getFolderPath();
+
+        PathString accountString;
+        accountString.append( relationPath );
+        accountString.append( folderPath );
+        accountString.append( _folderName );
+        accountString.append( '/' );
+        
+        WString unicode_folderPath;
+        if( Helper::utf8ToUnicode( m_serviceProvider, accountString, unicode_folderPath ) == false )
+        {
+            return false;
+        }
+
+        if( PLATFORM_SERVICE( m_serviceProvider )
+            ->existDirectory( unicode_folderPath ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::createDirectory( const FilePath & _folderName ) const
+    {
+        const FilePath & relationPath = this->getRelationPath();
+        const FilePath & folderPath = this->getFolderPath();
+
+        PathString accountString;
+        accountString.append( relationPath );
+        accountString.append( folderPath );
+        accountString.append( _folderName );
+
+        WString unicode_folderPath;
+        if( Helper::utf8ToUnicode( m_serviceProvider, accountString, unicode_folderPath ) == false )
+        {
+            return false;
+        }
+
+        if( PLATFORM_SERVICE( m_serviceProvider )
+            ->existDirectory( unicode_folderPath ) == true )
+        {
+            return true;
+        }
+
+        if( PLATFORM_SERVICE( m_serviceProvider )
+            ->createDirectory( unicode_folderPath ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming )
 	{

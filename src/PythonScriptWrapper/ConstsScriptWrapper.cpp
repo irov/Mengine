@@ -4,6 +4,7 @@
 #   include "Interface/ScriptSystemInterface.h"
 
 #   include "pybind/pybind.hpp"
+#	include "pybind/stl_type_cast.hpp"
 
 namespace Menge
 {
@@ -177,6 +178,8 @@ namespace Menge
 	void PythonScriptWrapper::constsWrap( ServiceProviderInterface * _serviceProvider )
 	{
 		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+        pybind::registration_stl_vector_type_cast<ConstString, TVectorConstString>(kernel);
 
 		pybind::structhash_<ConstString>( kernel, "ConstString" )
             .def_compare( &s_ConstString_compare )

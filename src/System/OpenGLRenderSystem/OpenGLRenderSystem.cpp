@@ -993,11 +993,27 @@ namespace Menge
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterface * OpenGLRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format )
+    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, PixelFormat _format )
+    {
+        GLUNUSED( _width );
+        GLUNUSED( _height );
+        GLUNUSED( _format );
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format )
     {
         GLUNUSED(_width);
         GLUNUSED(_height);
         GLUNUSED(_format);
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderImageInterfacePtr OpenGLRenderSystem::createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget )
+    {
+        (void)_renderTarget;
 
         return nullptr;
     }

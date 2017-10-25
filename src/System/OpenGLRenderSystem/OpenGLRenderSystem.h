@@ -138,7 +138,10 @@ namespace Menge
         RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format) override;
         RenderImageInterfacePtr createDynamicImage(uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format) override;
 
-        RenderTargetInterface * createRenderTargetOffscreen(uint32_t _width, uint32_t _height, PixelFormat _format) override;
+        RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
+        RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
+
+        RenderImageInterfacePtr createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget ) override;
 
         bool lockRenderTarget(const RenderImageInterfacePtr & _renderTarget) override;
         bool unlockRenderTarget() override;

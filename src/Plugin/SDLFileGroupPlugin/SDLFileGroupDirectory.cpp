@@ -1,6 +1,8 @@
 #	include "SDLFileGroupDirectory.h"
 
 #   include "Interface/SDLLayerInterface.h"
+#   include "Interface/UnicodeInterface.h"
+#   include "Interface/PlatformInterface.h"
 
 #	include "SDLFileInputStream.h"
 #	include "SDLFileOutputStream.h"
@@ -47,7 +49,12 @@ namespace Menge
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLFileGroupDirectory::getPath() const
+    const FilePath & SDLFileGroupDirectory::getRelationPath() const
+    {
+        return m_relationPath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & SDLFileGroupDirectory::getFolderPath() const
     {
         return m_folderPath;
     }
@@ -81,6 +88,63 @@ namespace Menge
         }
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLFileGroupDirectory::existDirectory( const FilePath & _folderName ) const
+    {
+        const FilePath & relationPath = this->getRelationPath();
+        const FilePath & folderPath = this->getFolderPath();
+
+        PathString accountString;
+        accountString.append( relationPath );
+        accountString.append( folderPath );
+        accountString.append( _folderName );
+        accountString.append( '/' );
+
+        WString unicode_folderPath;
+        if( Helper::utf8ToUnicode( m_serviceProvider, accountString, unicode_folderPath ) == false )
+        {
+            return false;
+        }
+
+        if( PLATFORM_SERVICE( m_serviceProvider )
+            ->existDirectory( unicode_folderPath ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLFileGroupDirectory::createDirectory( const FilePath & _folderName ) const
+    {
+        const FilePath & relationPath = this->getRelationPath();
+        const FilePath & folderPath = this->getFolderPath();
+
+        PathString accountString;
+        accountString.append( relationPath );
+        accountString.append( folderPath );
+        accountString.append( _folderName );
+
+        WString unicode_folderPath;
+        if( Helper::utf8ToUnicode( m_serviceProvider, accountString, unicode_folderPath ) == false )
+        {
+            return false;
+        }
+
+        if( PLATFORM_SERVICE( m_serviceProvider )
+            ->existDirectory( unicode_folderPath ) == true )
+        {
+            return true;
+        }
+
+        if( PLATFORM_SERVICE( m_serviceProvider )
+            ->createDirectory( unicode_folderPath ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming )
@@ -159,11 +223,6 @@ namespace Menge
     void SDLFileGroupDirectory::setRelationPath( const FilePath & _relationPath )
     {
         m_relationPath = _relationPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLFileGroupDirectory::getRelationPath() const
-    {
-        return m_relationPath;
     }
     //////////////////////////////////////////////////////////////////////////
 }   // namespace Menge

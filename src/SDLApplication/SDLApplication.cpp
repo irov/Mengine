@@ -193,8 +193,7 @@ namespace Menge
         if( FILE_SERVICE(m_serviceProvider)
             ->mountFileGroup( c_dev, ConstString::none(), FilePath(ConstString::none()), c_dir ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "SDLApplication::setupFileService: failed to mount dev directory %ls"
-                , currentPath.c_str()
+            LOGGER_ERROR(m_serviceProvider)( "SDLApplication::setupFileService: failed to mount dev directory"
                 );
 
             return false;

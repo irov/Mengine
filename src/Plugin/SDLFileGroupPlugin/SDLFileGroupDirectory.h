@@ -23,10 +23,15 @@ namespace Menge
         bool isPacked() const override;
 
     public:
-        const FilePath & getPath() const override;
+        const FilePath & getRelationPath() const override;
+        const FilePath & getFolderPath() const override;
 
     public:
         bool existFile( const FilePath & _fileName ) const override;
+        bool existDirectory( const FilePath & _folderName ) const override;
+
+    public:
+        bool createDirectory( const FilePath & _folderName ) const override;
 
     public:
         InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming ) override;
@@ -37,8 +42,7 @@ namespace Menge
         bool openOutputFile( const FilePath& _fileName, const OutputStreamInterfacePtr & _file ) override;
 
     public:
-        void setRelationPath( const FilePath & _relationPath );
-        const FilePath & getRelationPath() const;
+        void setRelationPath( const FilePath & _relationPath );        
 
     protected:        
 		ConstString m_name;

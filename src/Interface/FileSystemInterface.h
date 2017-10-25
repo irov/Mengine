@@ -58,10 +58,15 @@ namespace Menge
 		virtual bool isPacked() const = 0;
 
 	public:
-        virtual const FilePath & getPath() const = 0;
+        virtual const FilePath & getRelationPath() const = 0;
+        virtual const FilePath & getFolderPath() const = 0;
 
     public:
         virtual bool existFile( const FilePath & _fileName ) const = 0;
+        virtual bool existDirectory( const FilePath & _folderName ) const = 0;
+
+    public:
+        virtual bool createDirectory( const FilePath & _folderName ) const = 0;
 
     public:
         virtual InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming ) = 0;

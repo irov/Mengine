@@ -36,6 +36,7 @@ namespace Menge
 
     protected:
         void createRenderTarget_();
+        void clearRenderTarget_();
 
     protected:
         bool _activate() override;
@@ -43,6 +44,17 @@ namespace Menge
 
     protected:
         void _renderTarget( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
+
+    protected:
+        inline const RenderVertex2D * getVerticesImageMaskWM() const;
+
+    protected:
+        void updateVerticesImageMaskWM() const;
+        void updateVerticesImageMaskColor() const;
+
+    protected:
+        void _invalidateColor() override;
+        void _invalidateWorldMatrix() override;
 
 	protected:
         mt::vec2f m_size;
@@ -52,16 +64,37 @@ namespace Menge
 		RenderCameraOrthogonal * m_renderCamera;
 		RenderViewport * m_renderViewport;
 
-        ResourceImagePtr m_resourceImageMask;
+        ResourceHolder<ResourceImage> m_resourceImageMask;
         //RenderTargetInterfacePtr m_renderTarget;
         //RenderImageInterfacePtr m_renderTargetImage;
         //RenderTextureInterfacePtr m_renderTargetTexture;
 
         RenderMaterialInterfacePtr m_materialImageMask;
 
-        RenderVertex2D m_verticesImageMaskWM[4];
+        mutable RenderVertex2D m_verticesImageMaskWM[4];
+        mutable bool m_invalidateVerticesImageMaskColor;
+        mutable bool m_invalidateVerticesImageMaskWM;
 
 		bool m_hasViewport;
         bool m_hasImageMask;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    inline const RenderVertex2D * Layer2D::getVerticesImageMaskWM() const
+    {
+        if( m_invalidateVerticesImageMaskColor == true )
+        {
+            m_invalidateVerticesImageMaskColor = false;
+
+            this->updateVerticesImageMaskColor();
+        }
+
+        if( m_invalidateVerticesImageMaskWM == true )
+        {
+            m_invalidateVerticesImageMaskWM = false;
+
+            this->updateVerticesImageMaskWM();
+        }
+
+        return m_verticesImageMaskWM;
+    }
 }

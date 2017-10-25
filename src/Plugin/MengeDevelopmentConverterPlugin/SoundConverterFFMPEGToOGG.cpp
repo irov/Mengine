@@ -37,7 +37,7 @@ namespace Menge
             return false;
         }
 
-        const ConstString & pakPath = fileGroup->getPath();            
+        const ConstString & pakPath = fileGroup->getFolderPath();            
 
         String full_input = pakPath.c_str();
         full_input += m_options.inputFileName.c_str();

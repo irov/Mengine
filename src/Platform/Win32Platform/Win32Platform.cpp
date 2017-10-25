@@ -1310,28 +1310,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::existDirectory( const WString & _path ) const
 	{
-		WChar userPath[MENGINE_MAX_PATH];
-		this->getUserPath( userPath, MENGINE_MAX_PATH );
-		
-		WChar pathCorrect[MENGINE_MAX_PATH];
-		Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
-
 		WChar fullPath[MENGINE_MAX_PATH];
-		wcscpy( fullPath, userPath );
-		wcscat( fullPath, pathCorrect );
+		Helper::pathCorrectBackslash( fullPath, _path.c_str() );
 
 		Helper::pathRemoveFileSpec( fullPath );
 
 		size_t len = wcslen( fullPath );
 
-		if( len == 0 )	// current dir
+		if( len == 0 )
 		{
 			return true;
 		}
 
-		if( fullPath[len - 1] == L':' )	// root dir
+		if( fullPath[len - 1] == L':' )
 		{
-			return true;	// let it be
+			return true;
 		}
 
 		DWORD attributes = GetFileAttributes( fullPath );
@@ -1346,16 +1339,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::createDirectory( const WString & _path )
 	{
-		WChar userPath[MENGINE_MAX_PATH];
-		this->getUserPath( userPath, MENGINE_MAX_PATH );
-
-		WChar pathCorrect[MENGINE_MAX_PATH];
-		Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
-
 		WChar fullPath[MENGINE_MAX_PATH];
-		wcscpy( fullPath, userPath );
-		wcscat( fullPath, pathCorrect );
-		
+		Helper::pathCorrectBackslash( fullPath, _path.c_str() );
+        	
 		Helper::pathRemoveFileSpec( fullPath );
 
 		if( PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY )

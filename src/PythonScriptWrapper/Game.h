@@ -91,10 +91,10 @@ namespace Menge
         virtual void onGameCreateDefaultAccount() = 0;
 		virtual void onGameCreateGlobalAccount() = 0;
         virtual void onGameLoadAccounts() = 0;
-        virtual void onGameCreateAccount( const WString & _accountID, bool _global ) = 0;
-        virtual void onGameDeleteAccount( const WString & _accountID ) = 0;
-        virtual void onGameSelectAccount( const WString & _accountID ) = 0;
-        virtual void onGameUselectAccount( const WString & _accountID ) = 0;
+        virtual void onGameCreateAccount( const ConstString & _accountID, bool _global ) = 0;
+        virtual void onGameDeleteAccount( const ConstString & _accountID ) = 0;
+        virtual void onGameSelectAccount( const ConstString & _accountID ) = 0;
+        virtual void onGameUselectAccount( const ConstString & _accountID ) = 0;
         virtual void onGameChangeSoundVolume( float _sound, float _music, float _voice ) = 0;
         virtual void onGameCursorMode( bool _mode ) = 0;
         virtual void onGameUser( const ConstString & _event, const TMapWParams & _params ) = 0;

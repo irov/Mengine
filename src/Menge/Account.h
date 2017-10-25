@@ -22,10 +22,10 @@ namespace Menge
 		~Account();
 
 	public:
-		bool initialize( const WString & _name, const FilePath & _folder, uint32_t _projectVersion );
+		bool initialize( const ConstString & _id, const FilePath & _folder, uint32_t _projectVersion );
         
 	public:
-		const WString & getID() const override;
+		const ConstString & getID() const override;
         const FilePath & getFolder() const override;
 
 	public:
@@ -57,7 +57,7 @@ namespace Menge
 	protected:
 		ArchivatorInterfacePtr m_archivator;
 
-		WString m_name;
+        ConstString m_id;
 		String m_uid;
 		uint32_t m_projectVersion;
 

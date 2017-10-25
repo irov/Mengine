@@ -227,8 +227,13 @@ namespace Menge
 	{
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & FileGroupZip::getRelationPath() const
+    {
+        return m_relationPath;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	const FilePath & FileGroupZip::getPath() const
+	const FilePath & FileGroupZip::getFolderPath() const
 	{
 		return m_path;
 	}
@@ -244,6 +249,20 @@ namespace Menge
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::existDirectory( const FilePath & _folderName ) const
+    {
+        (void)_folderName;
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::createDirectory( const FilePath & _folderName ) const
+    {
+        (void)_folderName;
+
+        return false;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	static voidpf s_alloc_func(voidpf opaque, uInt items, uInt size)
 	{

@@ -468,6 +468,20 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool writeIniSetting( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _file, const char * _key, const ConstString & _value )
+        {
+            (void)_serviceProvider;
+
+            size_t len = strlen( _key );
+            _file->write( _key, len );
+            _file->write( " = ", sizeof( " = " ) - 1 );
+
+            _file->write( _value.c_str(), _value.size() );
+            _file->write( "\n", sizeof( "\n" ) - 1 );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool writeIniSetting( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _file, const char * _key, const WString & _value )
         {
             size_t len = strlen(_key);

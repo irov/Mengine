@@ -409,7 +409,7 @@ namespace Menge
             return false;
         }
 
-		const FilePath & path = fileGroup->getPath();
+		const FilePath & path = fileGroup->getFolderPath();
 
 		options.pathXml = Helper::concatenationFilePath( m_serviceProvider, path, _pathXml );
 		options.pathBin = Helper::concatenationFilePath( m_serviceProvider, path, _pathBin );

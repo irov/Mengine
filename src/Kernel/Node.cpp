@@ -1097,7 +1097,7 @@ namespace Menge
 
         if( parent == nullptr )
         {
-            return nullptr;
+            return RenderTargetInterfacePtr::none();
         }
 
         const RenderTargetInterfacePtr & rt_parent = parent->getRenderTargetInheritance();

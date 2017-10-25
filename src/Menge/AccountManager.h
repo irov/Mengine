@@ -33,16 +33,16 @@ namespace Menge
 		AccountInterfacePtr createGlobalAccount() override;
 
 	public:
-		void deleteAccount( const WString& _accountID ) override;
-		bool selectAccount( const WString& _accountID ) override;
+		void deleteAccount( const ConstString& _accountID ) override;
+		bool selectAccount( const ConstString& _accountID ) override;
 
 	public:
 		bool loadAccounts() override;
         bool saveAccounts() override;
 
 	public:
-		void setDefaultAccount( const WString & _accountID ) override;
-		const WString & getDefaultAccountID() const override;
+		void setDefaultAccount( const ConstString & _accountID ) override;
+		const ConstString & getDefaultAccountID() const override;
 
 		bool isCurrentDefaultAccount() const override;
 
@@ -51,27 +51,27 @@ namespace Menge
 		bool selectDefaultAccount() override;
 
 	public:
-		void setGlobalAccount( const WString & _accountID ) override;
-		const WString & getGlobalAccountID() const override;
+		void setGlobalAccount( const ConstString & _accountID ) override;
+		const ConstString & getGlobalAccountID() const override;
 
 		bool hasGlobalAccount() const override;
 
 	public:
 		bool hasCurrentAccount() const override;
-		const WString & getCurrentAccountID() const override;
+		const ConstString & getCurrentAccountID() const override;
 
 	public:
-		AccountInterfacePtr getAccount( const WString& _accountID ) override;
+		AccountInterfacePtr getAccount( const ConstString& _accountID ) override;
 
 		void visitAccounts( AccountVisitorInterface * _visitor ) const override;
 
 	protected:
 		bool loadAccount_( const AccountInterfacePtr & _account );
-		AccountInterfacePtr createAccount_( const WString& _accountID );
-		AccountInterfacePtr createGlobalAccount_( const WString& _accountID );
+		AccountInterfacePtr createAccount_( const ConstString& _accountID );
+		AccountInterfacePtr createGlobalAccount_( const ConstString& _accountID );
 
     protected:
-        AccountInterfacePtr newAccount_( const WString& _accountID );
+        AccountInterfacePtr newAccount_( const ConstString& _accountID );
 
     protected:
         void unselectCurrentAccount_();
@@ -79,14 +79,14 @@ namespace Menge
 	protected:
 		AccountProviderInterfacePtr m_accountProvider;
 				
-		typedef stdex::map<WString, AccountInterfacePtr> TMapAccounts;
+		typedef stdex::map<ConstString, AccountInterfacePtr> TMapAccounts;
 		TMapAccounts m_accounts;
 		
 		FactoryPtr m_factoryAccounts;
 
-		WString m_currentAccountID;
-		WString m_globalAccountID;
-		WString m_defaultAccountID;
+        ConstString m_currentAccountID;
+        ConstString m_globalAccountID;
+        ConstString m_defaultAccountID;
 
 		uint32_t m_playerEnumerator;
 	};

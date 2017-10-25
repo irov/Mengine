@@ -1,8 +1,6 @@
 #	include "ThreadTaskGetAsset.h"
 
 #	include "Interface/FileSystemInterface.h"
-#	include "Interface/UnicodeInterface.h"
-#	include "Interface/PlatformInterface.h"
 #	include "Interface/ConfigInterface.h"
 
 #	include "Logger/Logger.h"
@@ -27,15 +25,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskGetAsset::_onRun()
 	{
-		WString unicode_filePath;
-		Helper::utf8ToUnicode( m_serviceProvider, m_filePath, unicode_filePath );
+        FileGroupInterfacePtr fileGroup = FILE_SERVICE( m_serviceProvider )
+            ->getFileGroup( m_category );
 
-		if( PLATFORM_SERVICE( m_serviceProvider )
-			->existDirectory( unicode_filePath ) == false )
-		{
-			PLATFORM_SERVICE( m_serviceProvider )
-				->createDirectory( unicode_filePath );
-		}
+        if( fileGroup->createDirectory( m_filePath ) == false )
+        {
+            return false;
+        }
 
 		m_stream = FILE_SERVICE(m_serviceProvider)
 			->openOutputFile( m_category, m_filePath );

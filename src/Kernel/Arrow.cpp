@@ -50,15 +50,27 @@ namespace	Menge
 		const RenderCameraInterface * renderCamera = this->getRenderCamera();
 		const RenderViewportInterface * renderViewport = this->getRenderViewport();
 
-		mt::vec2f wp;
-		this->calcMouseWorldPosition( renderCamera, renderViewport, cursor_pos, wp );
+        if( renderCamera != nullptr && renderViewport != nullptr )
+        {
+            mt::vec2f wp;
+            this->calcMouseWorldPosition( renderCamera, renderViewport, cursor_pos, wp );
 
-		mt::vec3f pos;
-		pos.x = wp.x;
-		pos.y = wp.y;
-		pos.z = 0.f;
+            mt::vec3f pos;
+            pos.x = wp.x;
+            pos.y = wp.y;
+            pos.z = 0.f;
 
-		this->setLocalPosition( pos );
+            this->setLocalPosition( pos );
+        }
+        else
+        {
+            mt::vec3f pos;
+            pos.x = 0.f;
+            pos.y = 0.f;
+            pos.z = 0.f;
+
+            this->setLocalPosition( pos );
+        }
 
 		return true;
 	}

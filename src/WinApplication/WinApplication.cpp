@@ -625,35 +625,6 @@ namespace Menge
 		srand( randomSeed.LowPart );
 
 		LOGGER_WARNING( m_serviceProvider )("initialize Application...");
-        
-#	define MENGINE_ADD_PLUGIN( Name, Info )\
-		do{LOGGER_INFO(m_serviceProvider)( Info );\
-		if(	PLUGIN_CREATE(m_serviceProvider, Name) == false ){\
-		LOGGER_ERROR(m_serviceProvider)( "Invalid %s", Info );}else{\
-		LOGGER_WARNING(m_serviceProvider)( "Successful %s", Info );}}while(false, false)
-
-		MENGINE_ADD_PLUGIN( MengeImageCodec, "initialize Plugin Image Codec..." );
-		MENGINE_ADD_PLUGIN( MengeSoundCodec, "initialize Plugin Sound Codec..." );
-		MENGINE_ADD_PLUGIN( MengeOggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
-		MENGINE_ADD_PLUGIN( MengeAmplifier, "initialize Plugin Amplifier..." );
-		MENGINE_ADD_PLUGIN( MengeVideoCodec, "initialize Plugin Video Codec..." );
-#ifdef MENGINE_PLUGIN_SPINE
-		MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine..." );
-#endif
-		MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie..." );
-		//MENGINE_ADD_PLUGIN(Motor, "initialize Plugin Motor...");
-		MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
-		
-		MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
-
-		MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin BitmapFont..." );
-
-#ifdef MENGINE_PLUGIN_TTF
-		MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
-#endif
-
-
-#	undef MENGINE_ADD_PLUGIN
 	
 		TVectorWString plugins;
 		CONFIG_VALUES(m_serviceProvider, "Plugins", "Name", plugins);
@@ -676,6 +647,35 @@ namespace Menge
 				return false;
 			}
 		}
+
+#	define MENGINE_ADD_PLUGIN( Name, Info )\
+		do{LOGGER_INFO(m_serviceProvider)( Info );\
+		if(	PLUGIN_CREATE(m_serviceProvider, Name) == false ){\
+		LOGGER_ERROR(m_serviceProvider)( "Invalid %s", Info );}else{\
+		LOGGER_WARNING(m_serviceProvider)( "Successful %s", Info );}}while(false, false)
+
+        MENGINE_ADD_PLUGIN( MengeImageCodec, "initialize Plugin Image Codec..." );
+        MENGINE_ADD_PLUGIN( MengeSoundCodec, "initialize Plugin Sound Codec..." );
+        MENGINE_ADD_PLUGIN( MengeOggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
+        MENGINE_ADD_PLUGIN( MengeAmplifier, "initialize Plugin Amplifier..." );
+        MENGINE_ADD_PLUGIN( MengeVideoCodec, "initialize Plugin Video Codec..." );
+#ifdef MENGINE_PLUGIN_SPINE
+        MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine..." );
+#endif
+        MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie..." );
+        //MENGINE_ADD_PLUGIN(Motor, "initialize Plugin Motor...");
+        MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
+
+        MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
+
+        MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin BitmapFont..." );
+
+#ifdef MENGINE_PLUGIN_TTF
+        MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
+#endif
+
+
+#	undef MENGINE_ADD_PLUGIN
 
 #	ifdef _DEBUG
 		bool devplugins = true;

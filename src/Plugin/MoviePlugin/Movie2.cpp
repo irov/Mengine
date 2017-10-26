@@ -95,12 +95,14 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::_play( float _time )
     {
-        if( m_composition == nullptr )
+        (void)_time;
+
+        if( this->isCompile() == false )
         {
             return false;
         }
 
-        ae_play_movie_composition( m_composition, _time * 0.001f );
+        ae_play_movie_composition( m_composition, 0.f );
 
         return true;
     }
@@ -730,6 +732,19 @@ namespace Menge
 
         m_meshes.reserve( info.max_render_node );
 
+        bool loop = this->getLoop();
+
+        ae_set_movie_composition_loop( composition, loop ? AE_TRUE : AE_FALSE );
+
+        bool play = this->isPlay();
+
+        if( play == true )
+        {
+            float timing = this->getTiming();
+
+            ae_play_movie_composition( composition, timing * 0.001f );
+        }
+
         m_composition = composition;
 
         return true;
@@ -824,7 +839,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_setLoop( bool _value )
     {
-        if( m_composition == nullptr )
+        if( this->isCompile() == false )
         {
             return;
         }
@@ -834,7 +849,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_setTiming( float _time )
     {
-        if( m_composition == nullptr )
+        if( this->isCompile() == false )
         {
             return;
         }

@@ -585,7 +585,7 @@ namespace Menge
 		Char utf8_fullpath[MENGINE_MAX_PATH];
 
 		size_t utf8_fullpathLen;
-		UNICODE_SERVICE( _serviceProvider )
+        UNICODE_SYSTEM( _serviceProvider )
 			->unicodeToUtf8( _fullpath, (size_t)-1, utf8_fullpath, MENGINE_MAX_PATH, &utf8_fullpathLen );
 
 		int status = mkdir( utf8_fullpath, 0700 );
@@ -646,8 +646,8 @@ namespace Menge
         Char utf8_fullpath[MENGINE_MAX_PATH];
         
         size_t utf8_fullpathLen;
-        UNICODE_SERVICE( _serviceProvider )
-        ->unicodeToUtf8( _fullpath, (size_t)-1, utf8_fullpath, MENGINE_MAX_PATH, &utf8_fullpathLen );
+        UNICODE_SYSTEM( _serviceProvider )
+            ->unicodeToUtf8( _fullpath, (size_t)-1, utf8_fullpath, MENGINE_MAX_PATH, &utf8_fullpathLen );
         
         struct stat sb;
         if( stat( utf8_fullpath, &sb ) == 0 && ((sb.st_mode)& S_IFMT) == S_IFDIR )
@@ -660,15 +660,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SDLPlatform::existDirectory( const WString & _path ) const
 	{
-		WChar userPath[MENGINE_MAX_PATH];
-		this->getUserPath( userPath, MENGINE_MAX_PATH );
-
-		WChar pathCorrect[MENGINE_MAX_PATH];
-		Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
-
 		WChar fullPath[MENGINE_MAX_PATH];
-		wcscpy( fullPath, userPath );
-		wcscat( fullPath, pathCorrect );
+		Helper::pathCorrectBackslash( fullPath, _path.c_str() );
 
 		Helper::pathRemoveFileSpec( fullPath );
 
@@ -691,15 +684,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SDLPlatform::createDirectory(const WString & _path)
 	{
-		WChar userPath[MENGINE_MAX_PATH];
-		this->getUserPath( userPath, MENGINE_MAX_PATH );
-
-		WChar pathCorrect[MENGINE_MAX_PATH];
-		Helper::pathCorrectBackslash(pathCorrect, _path.c_str());
-
-		WChar fullPath[MENGINE_MAX_PATH];
-		wcscpy( fullPath, userPath );
-		wcscat( fullPath, pathCorrect );
+        WChar fullPath[MENGINE_MAX_PATH];
+        Helper::pathCorrectBackslash( fullPath, _path.c_str() );
 
 		Helper::pathRemoveFileSpec( fullPath );
 		
@@ -761,8 +747,8 @@ namespace Menge
         Char utf8_fullpath[MENGINE_MAX_PATH];
         
         size_t utf8_fullpathLen;
-        UNICODE_SERVICE(m_serviceProvider)
-        ->unicodeToUtf8( fullPath, (size_t)-1, utf8_fullpath, MENGINE_MAX_PATH, &utf8_fullpathLen );
+        UNICODE_SYSTEM( m_serviceProvider )
+            ->unicodeToUtf8( fullPath, (size_t)-1, utf8_fullpath, MENGINE_MAX_PATH, &utf8_fullpathLen );
         
         int result = remove( utf8_fullpath );
         
@@ -947,7 +933,7 @@ namespace Menge
     {
         Menge::Char utf8Title[1024] = {0};
         size_t utf8Size = 0;
-        UNICODE_SERVICE( m_serviceProvider )
+        UNICODE_SYSTEM( m_serviceProvider )
             ->unicodeToUtf8( m_projectTitle.c_str()
                 , m_projectTitle.size()
                 , utf8Title

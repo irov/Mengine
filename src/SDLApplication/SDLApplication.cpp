@@ -92,7 +92,6 @@ SERVICE_EXTERN( RenderMaterialService );
 SERVICE_EXTERN( PhysicSystem );
 
 SERVICE_EXTERN( UnicodeSystem );
-SERVICE_EXTERN( UnicodeService );
 
 SERVICE_EXTERN( FileService );
 
@@ -265,7 +264,7 @@ namespace Menge
 
         Char utf8_userPath[MENGINE_MAX_PATH];
         size_t utf8_userPathLen;
-        UNICODE_SERVICE( m_serviceProvider )
+        UNICODE_SYSTEM( m_serviceProvider )
             ->unicodeToUtf8( userPathW, userPathLen, utf8_userPath, MENGINE_MAX_PATH, &utf8_userPathLen );
 
         FilePath cs_userPath = Helper::stringizeFilePath( m_serviceProvider, utf8_userPath, utf8_userPathLen );
@@ -274,7 +273,7 @@ namespace Menge
         if( FILE_SERVICE( m_serviceProvider )
             ->mountFileGroup( Helper::stringizeString( m_serviceProvider, "user" ), ConstString::none(), cs_userPath, Helper::stringizeString( m_serviceProvider, "global" ) ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("SDLApplication: failed to mount user directory %ls"
+            LOGGER_ERROR( m_serviceProvider )("SDLApplication: failed to mount user directory %s"
                 , cs_userPath.c_str()
                 );
 
@@ -483,8 +482,7 @@ namespace Menge
         }
 
         SERVICE_CREATE( m_serviceProvider, UnicodeSystem );
-        SERVICE_CREATE( m_serviceProvider, UnicodeService );
-
+        
         SERVICE_CREATE( m_serviceProvider, SDLLayer );
         SERVICE_CREATE( m_serviceProvider, Platform );
 
@@ -773,7 +771,6 @@ namespace Menge
         SERVICE_FINALIZE( m_serviceProvider, PluginServiceInterface );
         SERVICE_FINALIZE( m_serviceProvider, ModuleServiceInterface );
         SERVICE_FINALIZE( m_serviceProvider, InputServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, UnicodeServiceInterface );
         SERVICE_FINALIZE( m_serviceProvider, UnicodeSystemInterface );
 
         SERVICE_FINALIZE( m_serviceProvider, FileServiceInterface );

@@ -423,7 +423,7 @@ namespace Menge
         filePathSize += 1; //Null
 
         WChar filePathW[MENGINE_MAX_PATH];
-        if( UNICODE_SERVICE( m_serviceProvider )
+        if( UNICODE_SYSTEM( m_serviceProvider )
             ->utf8ToUnicode( filePath, filePathSize, filePathW, _capacity, nullptr ) == false )
         {
             return false;

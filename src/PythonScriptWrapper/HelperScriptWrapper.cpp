@@ -201,7 +201,7 @@ namespace Menge
 
 			if( binaryBuffer == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("s_readGameData: data %ls invalid load"
+				LOGGER_ERROR(m_serviceProvider)("s_readGameData: data %s invalid load"
 					, _name.c_str()
 					);
 
@@ -1301,7 +1301,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("addAccountSetting: account not found '%ls'"
+				LOGGER_ERROR( m_serviceProvider )("addAccountSetting: account not found '%s'"
 					, _accountID.c_str()
 					);
 
@@ -1320,7 +1320,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("addAccountSetting: account not found '%ls'"
+				LOGGER_ERROR( m_serviceProvider )("addAccountSetting: account not found '%s'"
 					, _accountID.c_str()
 					);
 
@@ -1339,7 +1339,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSetting: account not found '%ls'"
+				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSetting: account not found '%s'"
 					, _accountID.c_str()
 					);
 
@@ -1348,7 +1348,7 @@ namespace Menge
 
 			if( account->hasSetting( _setting ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSetting: account '%ls' not found setting '%s'"
+				LOGGER_ERROR( m_serviceProvider )("s_changeAccountSetting: account '%s' not found setting '%s'"
 					, _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -1368,7 +1368,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account not found '%ls'"
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account not found '%s'"
 					, _accountID.c_str()
 					);
 
@@ -1377,7 +1377,7 @@ namespace Menge
 
 			if( account->hasSetting( _setting ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account '%ls' not found setting '%s'"
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account '%s' not found setting '%s'"
 					, _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -1407,7 +1407,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account not found '%ls'"
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account not found '%s'"
 					, _accountID.c_str()
 					);
 
@@ -1416,7 +1416,7 @@ namespace Menge
 
 			if( account->hasSetting( _setting ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account '%ls' not found setting '%s'"
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account '%s' not found setting '%s'"
 					, _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -1439,7 +1439,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account not found '%ls'"
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account not found '%s'"
 					, _accountID.c_str()
 					);
 
@@ -1448,7 +1448,7 @@ namespace Menge
 
 			if( account->hasSetting( _setting ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account '%ls' not found setting '%s'"
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account '%s' not found setting '%s'"
 					, _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -1471,7 +1471,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account not found '%ls'"
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account not found '%s'"
 					, _accountID.c_str()
 					);
 
@@ -1480,7 +1480,7 @@ namespace Menge
 
 			if( account->hasSetting( _setting ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account '%ls' not found setting '%s'"
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account '%s' not found setting '%s'"
 					, _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -1503,7 +1503,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account not found '%ls'"
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account not found '%s'"
 					, _accountID.c_str()
 					);
 
@@ -1512,7 +1512,7 @@ namespace Menge
 
 			if( account->hasSetting( _setting ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account '%ls' not found setting '%s'"
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingBool: account '%s' not found setting '%s'"
 					, _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -1535,7 +1535,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingStrings: account not found '%ls'"
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingStrings: account not found '%s'"
 					, _accountID.c_str()
 					);
 
@@ -1544,7 +1544,7 @@ namespace Menge
 
 			if( account->hasSetting( _setting ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingStrings: account '%ls' not found setting '%s'"
+				LOGGER_ERROR( m_serviceProvider )("changeAccountSettingStrings: account '%s' not found setting '%s'"
 					, _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -1963,7 +1963,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("getAccountSetting account '%ls' is none"
+				LOGGER_ERROR( m_serviceProvider )("getAccountSetting account '%s' is none"
 					, _accountID.c_str()
 					);
 
@@ -1984,7 +1984,7 @@ namespace Menge
 						
 			if( account == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("getAccountSetting account '%ls' is none"
+				LOGGER_ERROR(m_serviceProvider)("getAccountSetting account '%s' is none"
 					, _accountID.c_str()
 					);
 
@@ -2007,7 +2007,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("getAccountSettingBool account '%ls' is none"
+				LOGGER_ERROR(m_serviceProvider)("getAccountSettingBool account '%s' is none"
 					, _accountID.c_str()
 					);
 
@@ -2028,7 +2028,7 @@ namespace Menge
 				return pybind::ret_false();
 			}
 
-			LOGGER_ERROR( m_serviceProvider )("getAccountSettingBool account '%ls' setting '%s' value '%ls' is not bool [True|False]"
+			LOGGER_ERROR( m_serviceProvider )("getAccountSettingBool account '%s' setting '%s' value '%ls' is not bool [True|False]"
 				, _accountID.c_str()
 				, _setting.c_str()
 				, value.c_str()
@@ -2044,7 +2044,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingInt account '%ls' is none"
+				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingInt account '%s' is none"
 					, _accountID.c_str()
 					);
 
@@ -2056,7 +2056,7 @@ namespace Menge
 			int32_t value;
 			if( Helper::wstringToInt( setting, value ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingInt account '%ls' can't scanf from '%s'"
+				LOGGER_ERROR( m_serviceProvider )("s_getAccountSettingInt account '%s' can't scanf from '%s'"
 					, _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -2076,7 +2076,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("getAccountSettingUInt account '%ls' is none"
+				LOGGER_ERROR(m_serviceProvider)("getAccountSettingUInt account '%s' is none"
 					, _accountID.c_str()
 					);
 
@@ -2088,7 +2088,7 @@ namespace Menge
 			uint32_t value;
 			if( Helper::wstringToUnsigned( setting, value ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("getAccountSettingUInt account '%ls'can't scanf from '%s'"
+				LOGGER_ERROR(m_serviceProvider)("getAccountSettingUInt account '%s'can't scanf from '%s'"
                     , _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -2108,7 +2108,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt account '%ls' is none"
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt account '%s' is none"
 					, _accountID.c_str()
 					);
 
@@ -2120,7 +2120,7 @@ namespace Menge
 			uint64_t value;
 			if( Helper::wstringToUnsigned64( setting, value ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt64 account '%ls' can't scanf from '%s'"
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt64 account '%s' can't scanf from '%s'"
 					, _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -2140,7 +2140,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt account '%ls' is none"
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt account '%s' is none"
 					, _accountID.c_str()
 					);
 
@@ -2171,7 +2171,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloat account '%ls' is none"
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloat account '%s' is none"
 					, _accountID.c_str()
 					);
 
@@ -2183,7 +2183,7 @@ namespace Menge
 			float value;
 			if( Helper::wstringToFloat( setting, value ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloat account '%ls' can't scanf from '%s'"
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloat account '%s' can't scanf from '%s'"
 					, _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -2203,7 +2203,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloatDefault account '%ls' is none"
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloatDefault account '%s' is none"
 					, _accountID.c_str()
 					);
 
@@ -2220,7 +2220,7 @@ namespace Menge
 			float value;
 			if( Helper::wstringToFloat( setting, value ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloatDefault account '%ls' can't scanf from '%s'"
+				LOGGER_ERROR( m_serviceProvider )("getAccountSettingFloatDefault account '%s' can't scanf from '%s'"
 					, _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -2522,7 +2522,7 @@ namespace Menge
             String utf8_fileName;
             if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid file %ls convert to utf8"                    
+                LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid file '%s' convert to utf8"                    
                     , _fileName.c_str()
                     );
 
@@ -2534,7 +2534,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("writeAccountPickleFile: invalid account '%ls'"
+				LOGGER_ERROR( m_serviceProvider )("writeAccountPickleFile: invalid account '%s'"
 					, _accountID.c_str()
 					);
 
@@ -2546,7 +2546,7 @@ namespace Menge
 			size_t size;
 			if( pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: account %ls invalid get pickle size"
+				LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: account '%s' invalid get pickle size"
 					, _accountID.c_str()
 					);
 
@@ -2557,7 +2557,7 @@ namespace Menge
 
 			if( buffer == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("writeAccountPickleFile: account %ls invalid get memory for %d size"
+				LOGGER_ERROR( m_serviceProvider )("writeAccountPickleFile: account '%s' invalid get memory for '%d' size"
 					, _accountID.c_str()
 					, size
 					);
@@ -2570,7 +2570,7 @@ namespace Menge
 			
 			if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: account %ls invalid pickle"
+				LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: account '%s' invalid pickle"
 					, _accountID.c_str()
 					);
 
@@ -2579,7 +2579,7 @@ namespace Menge
 
             if( account->writeBinaryFile( filepath, memory_buffer, memory_size ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: account %ls invalid write file %ls"
+                LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: account '%s' invalid write file '%s'"
                     , _accountID.c_str()
                     , _fileName.c_str()
                     );
@@ -2595,7 +2595,7 @@ namespace Menge
             String utf8_fileName;
             if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("loadAccountPickleFile: invalid convert filename %ls to utf8"
+                LOGGER_ERROR(m_serviceProvider)("loadAccountPickleFile: invalid convert filename %s to utf8"
                     , _fileName.c_str()
                     );
 
@@ -2607,7 +2607,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("loadAccountPickleFile: invalid get account '%ls'"
+				LOGGER_ERROR( m_serviceProvider )("loadAccountPickleFile: invalid get account '%s'"
 					, _accountID.c_str()
 					);
 
@@ -2620,7 +2620,7 @@ namespace Menge
 
 			if( binaryBuffer == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)("loadAccountPickleFile: account %ls invalid load file %ls"
+                LOGGER_ERROR(m_serviceProvider)("loadAccountPickleFile: account %s invalid load file %s"
                     , _accountID.c_str()
                     , _fileName.c_str()
                     );
@@ -2635,7 +2635,7 @@ namespace Menge
 
 			if( py_data == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("loadAccountPickleFile: account %ls invalid unpickle file %ls"
+				LOGGER_ERROR(m_serviceProvider)("loadAccountPickleFile: account %s invalid unpickle file %s"
 					, _accountID.c_str()
 					, _fileName.c_str()
 					);
@@ -2654,7 +2654,7 @@ namespace Menge
 			if( ACCOUNT_SERVICE( m_serviceProvider )
 				->hasCurrentAccount() == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("hasAccountPickleFile: invalid get account %ls"
+				LOGGER_ERROR( m_serviceProvider )("hasAccountPickleFile: invalid get account %s"
 					, _accountID.c_str()
 					);
 
@@ -2664,7 +2664,7 @@ namespace Menge
 			String utf8_fileName;
 			if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("hasAccountPickleFile: invalid convert filename %ls to utf8"
+				LOGGER_ERROR(m_serviceProvider)("hasAccountPickleFile: invalid convert filename %s to utf8"
 					, _fileName.c_str()
 					);
 
@@ -2708,7 +2708,7 @@ namespace Menge
             WString unicode;
             if( Helper::utf8ToUnicode(m_serviceProvider, text, unicode ) == false )
             {
-				pybind::throw_exception("Menge.getTextByKey invalid text key %s convert %s to unicode"
+				pybind::throw_exception("Menge.getTextByKey invalid text key '%s' convert '%s' to unicode"
 					, _key.c_str()
 					, text.c_str()
 					);

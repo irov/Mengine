@@ -27,11 +27,11 @@ namespace Menge
 		jmp_buf setjmp_buffer;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	static void	s_jpegErrorExit( j_common_ptr _cinfo ) 
+    static void	s_jpegErrorExit( j_common_ptr _cinfo )
 	{
 		EncoderJPEGErrorManager * mErr = (EncoderJPEGErrorManager *)_cinfo->err;
 		// always display the message
-		char buffer[JMSG_LENGTH_MAX];
+        char buffer[JMSG_LENGTH_MAX] = { 0 };
 
 		// create the message
 		(*mErr->pub.format_message)(_cinfo, buffer);
@@ -57,11 +57,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	// Actual output of any JPEG message.  Note that this method does not know
 	// how to generate a message, only where to send it.
-	static void	s_jpegOutputMessage( j_common_ptr _cinfo ) 
+    static void	s_jpegOutputMessage( j_common_ptr _cinfo )
 	{
 		EncoderJPEGErrorManager * mErr = (EncoderJPEGErrorManager *)_cinfo->err;
 
-		char buffer[JMSG_LENGTH_MAX];
+        char buffer[JMSG_LENGTH_MAX] = { 0 };
 
 		// create the message
 		(*mErr->pub.format_message)(_cinfo, buffer);
@@ -80,8 +80,7 @@ namespace Menge
 	//next_output_byte and free_in_buffer. free_in_buffer must be
 	//initialized to a positive value.
 
-	METHODDEF(void)
-		init_destination (j_compress_ptr cinfo) 
+    METHODDEF( void ) init_destination( j_compress_ptr cinfo )
 	{
 		menge_dst_ptr dest = (menge_dst_ptr) cinfo->dest;
 
@@ -102,8 +101,7 @@ namespace Menge
 	//free_in_buffer must be set to a positive value when TRUE is
 	//returned.  A FALSE return should only be used when I/O suspension is
 	//desired.
-	METHODDEF(boolean)
-		empty_output_buffer (j_compress_ptr cinfo) 
+    METHODDEF( boolean ) empty_output_buffer( j_compress_ptr cinfo )
 	{
 		menge_dst_ptr dest = (menge_dst_ptr) cinfo->dest;
 
@@ -119,8 +117,7 @@ namespace Menge
 	//data has been written.  In most applications, this must flush any
 	//data remaining in the buffer.  Use either next_output_byte or
 	//free_in_buffer to determine how much data is in the buffer.
-	METHODDEF(void)
-		term_destination (j_compress_ptr cinfo) 
+    METHODDEF( void ) term_destination( j_compress_ptr cinfo )
 	{
 		menge_dst_ptr dest = (menge_dst_ptr) cinfo->dest;
 
@@ -138,7 +135,7 @@ namespace Menge
 	//Prepare for output to a stdio stream.
 	//The caller must have already opened the stream, and is responsible
 	//for closing it after finishing compression.
-	GLOBAL(void) jpeg_menge_dst(j_compress_ptr cinfo, OutputStreamInterface * _stream ) 
+    GLOBAL( void ) jpeg_menge_dst( j_compress_ptr cinfo, OutputStreamInterface * _stream )
 	{
 		menge_dst_ptr dest;
 
@@ -189,7 +186,7 @@ namespace Menge
 		
 		struct jpeg_compress_struct cinfo = {0};
 		cinfo.err = jpeg_std_error(&errorMgr.pub);
-		cinfo.client_data = m_serviceProvider;
+		cinfo.client_data = (void *)m_serviceProvider;
 
 		jpeg_create_compress( &cinfo );
 

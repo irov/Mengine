@@ -26,25 +26,12 @@ namespace Menge
 #   define UNICODE_SYSTEM( serviceProvider )\
     SERVICE_GET(serviceProvider, Menge::UnicodeSystemInterface)
 
-	class UnicodeServiceInterface
-		: public ServiceInterface
-	{
-        SERVICE_DECLARE("UnicodeService");
-
-	public:
-        virtual bool unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size ) = 0;
-        virtual bool utf8ToUnicode( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize ) = 0;
-	};
-
-#   define UNICODE_SERVICE( serviceProvider )\
-    ((Menge::UnicodeServiceInterface*)SERVICE_GET(serviceProvider, Menge::UnicodeServiceInterface))
-
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
         inline bool unicodeToUtf8Size( ServiceProviderInterface * _serviceProvide, const WString::value_type * _unicode, WString::size_type _unicodeSize, String & _utf8 )
         {
-            UnicodeServiceInterface * unicodeService = UNICODE_SERVICE(_serviceProvide);
+            UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM(_serviceProvide);
 
             size_t utf8Size;
             if( unicodeService->unicodeToUtf8( _unicode, _unicodeSize, nullptr, 0, &utf8Size ) == false )
@@ -80,7 +67,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         inline bool utf8ToUnicodeSize( ServiceProviderInterface * _serviceProvide, const String::value_type * _utf8, String::size_type _utf8Size, WString & _unicode )
         {
-            UnicodeServiceInterface * unicodeService = UNICODE_SERVICE( _serviceProvide );
+            UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM( _serviceProvide );
 
             size_t unicodeSize;
             if( unicodeService->utf8ToUnicode( _utf8, _utf8Size, nullptr, 0, &unicodeSize ) == false )

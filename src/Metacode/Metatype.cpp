@@ -141,7 +141,7 @@ namespace Metabuf
         size_t unicodeSize;
 
         Menge::WChar unicode[2];
-        if( UNICODE_SERVICE(serviceProvider)
+        if( UNICODE_SYSTEM(serviceProvider)
             ->utf8ToUnicode( utf8, size, unicode, 2, &unicodeSize ) == false )
         {
             stdex::throw_memory_reader_exception();

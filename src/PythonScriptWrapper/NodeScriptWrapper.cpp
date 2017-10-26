@@ -3308,7 +3308,7 @@ namespace Menge
 
 				Char text_utf8[8];
 				size_t text_utf8_len = 0;
-				if( UNICODE_SERVICE( m_serviceProvider )
+				if( UNICODE_SYSTEM( m_serviceProvider )
 					->unicodeToUtf8( ws_str.c_str(), ws_str.size(), text_utf8, 8, &text_utf8_len ) == false )
 				{
 					_cb.call( "invalid utf8 ", 0, ws_str );

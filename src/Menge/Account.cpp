@@ -76,7 +76,7 @@ namespace Menge
 		
 		if( it != m_settings.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Account::addSetting: account '%ls' setting '%s' already exist"
+			LOGGER_ERROR(m_serviceProvider)("Account::addSetting: account '%s' setting '%s' already exist"
                 , m_id.c_str()
 				, _setting.c_str() 
 				);
@@ -99,7 +99,7 @@ namespace Menge
 
 		if( it_found == m_settings.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Account::changeSetting account %ls setting '%s' does not exist. Can't change"
+			LOGGER_ERROR(m_serviceProvider)("Account::changeSetting account %s setting '%s' does not exist. Can't change"
                 , m_id.c_str()
 				, _setting.c_str()
 				);
@@ -125,7 +125,7 @@ namespace Menge
 
 		if( it_found == m_settings.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Account::getSetting account '%ls' setting '%s' does not exist. Can't get"
+			LOGGER_ERROR(m_serviceProvider)("Account::getSetting account '%s' setting '%s' does not exist. Can't get"
                 , m_id.c_str()
 				, _setting.c_str()
 				);
@@ -155,7 +155,7 @@ namespace Menge
         if( FILE_SERVICE(m_serviceProvider)
 			->existFile( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user"), m_settingsPath, nullptr ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' settings not found '%s'"
+            LOGGER_ERROR(m_serviceProvider)("Account::load account '%s' settings not found '%s'"
                 , m_id.c_str()
                 , m_settingsPath.c_str() 
                 );
@@ -166,7 +166,7 @@ namespace Menge
 		IniUtil::IniStore ini;
 		if( IniUtil::loadIni( ini, STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), m_settingsPath, m_serviceProvider ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Account::load parsing Account '%ls' settings failed '%s'"
+			LOGGER_ERROR(m_serviceProvider)("Account::load parsing Account '%s' settings failed '%s'"
                 , m_id.c_str()
 				, m_settingsPath.c_str() 
 				);
@@ -177,7 +177,7 @@ namespace Menge
 		String projectVersion_s;
 		if( IniUtil::getIniValue( ini, "ACCOUNT", "PROJECT_VERSION", projectVersion_s, m_serviceProvider ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed not found project version"
+			LOGGER_ERROR(m_serviceProvider)("Account::load account '%s' failed not found project version"
 				, m_id.c_str()
 				);
 
@@ -187,7 +187,7 @@ namespace Menge
 		uint32_t projectVersion = 0;
 		if( Helper::stringToUnsigned( projectVersion_s, projectVersion ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed invalid project version '%s'"
+			LOGGER_ERROR(m_serviceProvider)("Account::load account '%s' failed invalid project version '%s'"
 				, m_id.c_str()
 				, projectVersion_s.c_str()
 				);
@@ -197,7 +197,7 @@ namespace Menge
 
 		if( m_projectVersion != projectVersion )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed invalid project version '%d' need '%d'"
+			LOGGER_ERROR(m_serviceProvider)("Account::load account '%s' failed invalid project version '%d' need '%d'"
 				, m_id.c_str()
 				, projectVersion
 				, m_projectVersion
@@ -209,7 +209,7 @@ namespace Menge
 		String uid;
 		if( IniUtil::getIniValue( ini, "ACCOUNT", "UID", uid, m_serviceProvider ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Account::load account '%ls' failed not found uid"
+			LOGGER_ERROR( m_serviceProvider )("Account::load account '%s' failed not found uid"
 				, m_id.c_str()
 				);
 
@@ -229,7 +229,7 @@ namespace Menge
 
             if( IniUtil::getIniValue( ini, "SETTINGS", key.c_str(), st.value, m_serviceProvider ) == false )
             {
-                LOGGER_WARNING(m_serviceProvider)("Account::load account '%ls' failed get setting '%s'"
+                LOGGER_WARNING(m_serviceProvider)("Account::load account '%s' failed get setting '%s'"
                     , m_id.c_str()
                     , key.c_str() 
                     );
@@ -246,7 +246,7 @@ namespace Menge
 
 		if( file == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Account::save can't open file for writing. Account '%ls' settings not saved %s"
+			LOGGER_ERROR(m_serviceProvider)("Account::save can't open file for writing. Account '%s' settings not saved %s"
 				, m_id.c_str() 
                 , m_settingsPath.c_str()
 				);
@@ -318,7 +318,7 @@ namespace Menge
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Account::openReadBinaryFile: account %ls invalid open file %s"
+			LOGGER_ERROR(m_serviceProvider)("Account::openReadBinaryFile: account %s invalid open file %s"
 				, m_id.c_str()
 				, fullpath.c_str()
 				);
@@ -343,7 +343,7 @@ namespace Menge
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Account::openWriteBinaryFile: account %ls invalid open file %s"
+			LOGGER_ERROR(m_serviceProvider)("Account::openWriteBinaryFile: account %s invalid open file %s"
 				, m_id.c_str()
 				, _filepath.c_str()
 				);
@@ -360,7 +360,7 @@ namespace Menge
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid open file %s"
+            LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %s invalid open file %s"
                 , m_id.c_str()
                 , _filepath.c_str()
                 );
@@ -371,7 +371,7 @@ namespace Menge
 		MemoryInterfacePtr binaryBuffer;		
 		if( Helper::loadStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), binaryBuffer, __FILE__, __LINE__ ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load stream archive %s"
+			LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %s invalid load stream archive %s"
 				, m_id.c_str()
 				, _filepath.c_str()
 				);
@@ -386,7 +386,7 @@ namespace Menge
     {
 		if( _data == nullptr || _size == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls write empty file %s"
+			LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %s write empty file %s"
 				, m_id.c_str()
 				, _filepath.c_str()
 				);
@@ -398,7 +398,7 @@ namespace Menge
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid open file %s"
+            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %s invalid open file %s"
                 , m_id.c_str()
                 , _filepath.c_str()
                 );
@@ -411,7 +411,7 @@ namespace Menge
 
 		if( Helper::writeStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_ACCOUNT_DATA), GET_MAGIC_VERSION(MAGIC_ACCOUNT_DATA), true, data_memory, data_size, EAC_NORMAL ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write file %s"
+			LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %s invalid write file %s"
 				, m_id.c_str()
 				, _filepath.c_str()
 				);

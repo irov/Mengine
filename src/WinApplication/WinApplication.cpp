@@ -55,7 +55,6 @@ SERVICE_EXTERN( LoggerService );
 SERVICE_EXTERN( WindowsLayer );
 SERVICE_EXTERN( Platform );
 SERVICE_EXTERN( NotificationService );
-SERVICE_EXTERN( UnicodeService );
 SERVICE_EXTERN( UnicodeSystem );
 SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( ConfigService );
@@ -523,7 +522,6 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, Platform );
 
 		SERVICE_CREATE( m_serviceProvider, UnicodeSystem );
-		SERVICE_CREATE( m_serviceProvider, UnicodeService );
 
 		SERVICE_CREATE( m_serviceProvider, PluginSystem );
 		SERVICE_CREATE( m_serviceProvider, PluginService );
@@ -857,7 +855,6 @@ namespace Menge
 		SERVICE_FINALIZE( m_serviceProvider, Menge::DataServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PluginServiceInterface );		
 		SERVICE_FINALIZE( m_serviceProvider, Menge::InputServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeSystemInterface );
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::FileServiceInterface );

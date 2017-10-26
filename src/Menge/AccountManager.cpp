@@ -118,7 +118,7 @@ namespace Menge
 
 		if( it_find != m_accounts.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AccountManager::createAccount_: Account with ID '%ls' already exist. Account not created"
+			LOGGER_ERROR(m_serviceProvider)("AccountManager::createAccount_: Account with ID '%s' already exist. Account not created"
 				, _accountID.c_str() 
 				);
 
@@ -131,7 +131,7 @@ namespace Menge
 
         if( newAccount == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("AccountManager::createAccount_: Account with ID '%ls' invalid create. Account not created"
+            LOGGER_ERROR(m_serviceProvider)("AccountManager::createAccount_: Account with ID '%s' invalid create. Account not created"
                 , _accountID.c_str() 
                 );
 
@@ -167,7 +167,7 @@ namespace Menge
 
 		if( it_find != m_accounts.end() )
 		{
-			LOGGER_ERROR( m_serviceProvider )("AccountManager::createGlobalAccount_: Account with ID '%ls' already exist. Account not created"
+			LOGGER_ERROR( m_serviceProvider )("AccountManager::createGlobalAccount_: Account with ID '%s' already exist. Account not created"
 				, _accountID.c_str()
 				);
 
@@ -178,7 +178,7 @@ namespace Menge
 
 		if( newAccount == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("AccountManager::createGlobalAccount_: Account with ID '%ls' invalid create. Account not created"
+			LOGGER_ERROR( m_serviceProvider )("AccountManager::createGlobalAccount_: Account with ID '%s' invalid create. Account not created"
 				, _accountID.c_str()
 				);
 
@@ -259,7 +259,7 @@ namespace Menge
 
 		if( it_find == m_accounts.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AccountManager::deleteAccount Can't delete account '%ls'. There is no account with such ID"
+			LOGGER_ERROR(m_serviceProvider)("AccountManager::deleteAccount Can't delete account '%s'. There is no account with such ID"
 				, _accountID.c_str() 
 				);
 
@@ -290,7 +290,7 @@ namespace Menge
 
 		if( it_find == m_accounts.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AccountManager::selectAccount Can't select account '%ls'. There is no account with such ID"
+			LOGGER_ERROR(m_serviceProvider)("AccountManager::selectAccount Can't select account '%s'. There is no account with such ID"
 				, _accountID.c_str() 
 				);
 			
@@ -432,7 +432,7 @@ namespace Menge
 
 		if( this->selectAccount( m_defaultAccountID ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("AccountManager::selectDefaultAccount invalid select account %ls"
+            LOGGER_ERROR(m_serviceProvider)("AccountManager::selectDefaultAccount invalid select account %s"
                 , m_defaultAccountID.c_str()
                 );
 
@@ -455,7 +455,7 @@ namespace Menge
 
         if( _account->load() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccount_ invalid load account %ls"
+            LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccount_ invalid load account %s"
                 , accountID.c_str()
                 );
 
@@ -554,7 +554,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("AccountManager::loadAccountsInfo invalid create account %ls"
+				LOGGER_ERROR( m_serviceProvider )("AccountManager::loadAccountsInfo invalid create account %s"
 					, accountID.c_str()
 					);
 
@@ -565,7 +565,7 @@ namespace Menge
 
             if( this->loadAccount_( account ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccountsInfo invalid load account '%ls'"
+                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccountsInfo invalid load account '%s'"
                     , accountID.c_str()
                     );
 
@@ -577,13 +577,13 @@ namespace Menge
 
 		if( selectAccountID.empty() == false )
 		{
-            LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts select account '%ls'"
+            LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts select account '%s'"
                 , selectAccountID.c_str()
                 );
 
 			if( this->selectAccount( selectAccountID ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts invalid set select account '%ls'"
+                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts invalid set select account '%s'"
                     , selectAccountID.c_str()
                     );
 
@@ -592,13 +592,13 @@ namespace Menge
 		}
         else if( m_defaultAccountID.empty() == false )
         {
-            LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts set default account '%ls'"
+            LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts set default account '%s'"
                 , m_defaultAccountID.c_str()
                 );
 
             if( this->selectAccount( m_defaultAccountID ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts invalid set default account '%ls'"
+                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts invalid set default account '%s'"
                     , m_defaultAccountID.c_str()
                     );
 
@@ -609,13 +609,13 @@ namespace Menge
         {
             const ConstString & accountID = validAccount->getID();
 
-            LOGGER_WARNING(m_serviceProvider)( "AccountManager::loadAccounts set valid account '%ls'"
+            LOGGER_WARNING(m_serviceProvider)( "AccountManager::loadAccounts set valid account '%s'"
                 , accountID.c_str()
                 );
 
             if( this->selectAccount( accountID ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts invalid set valid account '%ls'"
+                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts invalid set valid account '%s'"
                     , accountID.c_str()
                     );
 
@@ -692,7 +692,7 @@ namespace Menge
 
             if( account->save() == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("AccountManager::finalize invalid save account %ls:%s"
+                LOGGER_ERROR(m_serviceProvider)("AccountManager::finalize invalid save account %s:%s"
                     , account->getID().c_str()
                     , account->getFolder().c_str()
                     );

@@ -156,7 +156,7 @@ namespace Menge
 	void XlsExportPlugin::warning_(const wchar_t * _msg)
 	{
 		Char utf8_msg[2048];
-		UNICODE_SERVICE(m_serviceProvider)
+        UNICODE_SYSTEM(m_serviceProvider)
 			->unicodeToUtf8(_msg, (size_t)-1, utf8_msg, 2048, nullptr);
 
 		LOGGER_WARNING(m_serviceProvider)("%s"
@@ -168,7 +168,7 @@ namespace Menge
 	void XlsExportPlugin::error_( const wchar_t * _msg )
 	{
 		Char utf8_msg[2048];
-		UNICODE_SERVICE( m_serviceProvider )
+        UNICODE_SYSTEM( m_serviceProvider )
 			->unicodeToUtf8( _msg, (size_t)-1, utf8_msg, 2048, nullptr );
 
 		LOGGER_ERROR(m_serviceProvider)("%s"

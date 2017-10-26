@@ -17,10 +17,10 @@ namespace Menge
 		boolean start_of_file;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	static void	s_jpegErrorExit( j_common_ptr _cinfo ) 
+    static noreturn_t s_jpegErrorExit( j_common_ptr _cinfo )
 	{
 		{
-			char buffer[JMSG_LENGTH_MAX];
+            char buffer[JMSG_LENGTH_MAX] = { 0 };
 
 			(*_cinfo->err->format_message)(_cinfo, buffer);
 
@@ -39,9 +39,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void	s_jpegOutputMessage( j_common_ptr _cinfo ) 
+	static noreturn_t s_jpegOutputMessage( j_common_ptr _cinfo )
 	{
-		char buffer[JMSG_LENGTH_MAX];
+        char buffer[JMSG_LENGTH_MAX] = { 0 };
 
 		(*_cinfo->err->format_message)(_cinfo, buffer);
 		
@@ -132,15 +132,17 @@ namespace Menge
 		src->next_input_byte = nullptr;	// until buffer loaded 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static int s_getQuality( jpeg_decompress_struct * _jpegObject )
+	static int s_getQuality( const jpeg_decompress_struct * _jpegObject )
 	{
-		if( _jpegObject->quant_tbl_ptrs[0] == nullptr )
+        const JQUANT_TBL * tbl_ptrs = _jpegObject->quant_tbl_ptrs[0];
+
+        if( tbl_ptrs == nullptr )
 		{
 			return 100;
 		}
 
-		UINT16 val1 = _jpegObject->quant_tbl_ptrs[0]->quantval[0];
-		UINT16 val2 = _jpegObject->quant_tbl_ptrs[0]->quantval[1];
+		UINT16 val1 = tbl_ptrs->quantval[0];
+		UINT16 val2 = tbl_ptrs->quantval[1];
 
 		val1 = ( val1 * 100 - 50 ) / 16;
 		val2 = ( val2 * 100 - 50 ) / 11;

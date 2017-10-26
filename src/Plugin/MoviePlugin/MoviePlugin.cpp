@@ -142,18 +142,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MoviePlugin::_avaliable()
 	{
-		m_hashkey = CONFIG_VALUE( m_serviceProvider, "MoviePlugin", "HASHKEY", "" );
-
-		if( m_hashkey.empty() == true )
-		{
-			return false;
-		}
-
-		if( m_hashkey.size() != 40 )
-		{
-			return false;
-		}
-
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -200,6 +188,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MoviePlugin::_initialize()
 	{
+        String hashkey = CONFIG_VALUE( m_serviceProvider, "MoviePlugin", "HASHKEY", "" );
+
+        if( hashkey.empty() == true )
+        {
+            LOGGER_ERROR( m_serviceProvider )("MoviePlugin::_initialize not setup HASHKEY");
+
+            return false;
+        }
+
+        if( hashkey.size() != 40 )
+        {
+            LOGGER_ERROR( m_serviceProvider )("MoviePlugin::_initialize invalid HASHKEY '%s'"
+                , hashkey.c_str()
+                );
+
+            return false;
+        }
+
+        m_hashkey = hashkey;
+
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 		
 		m_instance = ae_create_movie_instance( m_hashkey.c_str(), &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, &stdex_movie_logerror, this );

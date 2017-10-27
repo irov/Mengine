@@ -132,8 +132,8 @@ namespace Metabuf
         uint32_t size;
         ar.readSize( size );
 
-        char utf8[32];
-        ar.readBuffer( (unsigned char *)utf8, size );
+        Menge::Char utf8[8];
+        ar.readBuffer( (void *)utf8, size );
 
         Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
         Menge::ServiceProviderInterface * serviceProvider = loader->getServiceProvider();
@@ -155,7 +155,7 @@ namespace Metabuf
 
             return;
         }
-
+        
         _value = unicode[0];
     }
 	//////////////////////////////////////////////////////////////////////////

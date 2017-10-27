@@ -267,6 +267,8 @@ namespace Menge
         UNICODE_SYSTEM( m_serviceProvider )
             ->unicodeToUtf8( userPathW, userPathLen, utf8_userPath, MENGINE_MAX_PATH, &utf8_userPathLen );
 
+        utf8_userPath[utf8_userPathLen] = '\0';
+
         FilePath cs_userPath = Helper::stringizeFilePath( m_serviceProvider, utf8_userPath, utf8_userPathLen );
 		
         // mount user directory

@@ -583,10 +583,7 @@ namespace Menge
 	{
 #	ifdef __APPLE__
 		Char utf8_fullpath[MENGINE_MAX_PATH];
-
-		size_t utf8_fullpathLen;
-        UNICODE_SYSTEM( _serviceProvider )
-			->unicodeToUtf8( _fullpath, (size_t)-1, utf8_fullpath, MENGINE_MAX_PATH, &utf8_fullpathLen );
+        Helper::unicodeToUtf8( _serviceProvider, _fullpath, utf8_fullpath, MENGINE_MAX_PATH );
 
 		int status = mkdir( utf8_fullpath, 0700 );
 		
@@ -643,11 +640,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     static bool s_isDirectoryFullpath( ServiceProviderInterface * _serviceProvider, const WChar * _fullpath )
     {
-        Char utf8_fullpath[MENGINE_MAX_PATH];
-        
-        size_t utf8_fullpathLen;
-        UNICODE_SYSTEM( _serviceProvider )
-            ->unicodeToUtf8( _fullpath, (size_t)-1, utf8_fullpath, MENGINE_MAX_PATH, &utf8_fullpathLen );
+        Char utf8_fullpath[MENGINE_MAX_PATH];        
+        Helper::unicodeToUtf8( _serviceProvider, _fullpath, utf8_fullpath, MENGINE_MAX_PATH );
         
         struct stat sb;
         if( stat( utf8_fullpath, &sb ) == 0 && ((sb.st_mode)& S_IFMT) == S_IFDIR )
@@ -745,10 +739,7 @@ namespace Menge
         wcscat( fullPath, pathCorrect );
         
         Char utf8_fullpath[MENGINE_MAX_PATH];
-        
-        size_t utf8_fullpathLen;
-        UNICODE_SYSTEM( m_serviceProvider )
-            ->unicodeToUtf8( fullPath, (size_t)-1, utf8_fullpath, MENGINE_MAX_PATH, &utf8_fullpathLen );
+        Helper::unicodeToUtf8( m_serviceProvider, fullPath, utf8_fullpath, MENGINE_MAX_PATH );
         
         int result = remove( utf8_fullpath );
         
@@ -932,14 +923,7 @@ namespace Menge
     bool SDLPlatform::createWindow_( const Resolution & _resolution, bool _fullscreen )
     {
         Menge::Char utf8Title[1024] = {0};
-        size_t utf8Size = 0;
-        UNICODE_SYSTEM( m_serviceProvider )
-            ->unicodeToUtf8( m_projectTitle.c_str()
-                , m_projectTitle.size()
-                , utf8Title
-                , sizeof( utf8Title ) - 1
-                , &utf8Size
-            );
+        Helper::unicodeToUtf8( m_serviceProvider, m_projectTitle, utf8Title, 1024 );
 
         SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
         SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );

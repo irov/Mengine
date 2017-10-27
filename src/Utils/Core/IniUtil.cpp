@@ -490,12 +490,14 @@ namespace Menge
 
             size_t utf8_size = 0;
 
-            char utf8_value[512];
+            Char utf8_value[512];
             if( UNICODE_SYSTEM(_serviceProvider)
                 ->unicodeToUtf8( _value.c_str(), _value.size(), utf8_value, 512, &utf8_size ) == false )
             {
                 return false;
             }
+
+            utf8_value[utf8_size] = '\0';
 
             _file->write( utf8_value, utf8_size );
             _file->write( "\n", sizeof("\n") - 1 );

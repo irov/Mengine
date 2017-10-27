@@ -65,6 +65,39 @@ namespace Menge
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
+        inline bool unicodeToUtf8( ServiceProviderInterface * _serviceProvide, const WChar * _unicode, Char * _utf8, size_t _utf8Capacity )
+        {
+            size_t unicode_size = wcslen( _unicode );
+
+            size_t utf8_size;
+            if( UNICODE_SYSTEM( _serviceProvide )
+                ->unicodeToUtf8( _unicode, unicode_size, _utf8, _utf8Capacity, &utf8_size ) == false )
+            {
+                return false;
+            }
+
+            _utf8[utf8_size] = '\0';
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        inline bool unicodeToUtf8( ServiceProviderInterface * _serviceProvide, const WString & _unicode, Char * _utf8, size_t _utf8Capacity )
+        {
+            const WChar * unicode_str = _unicode.c_str();
+            size_t unicode_size = _unicode.size();
+
+            size_t utf8_size;
+            if( UNICODE_SYSTEM( _serviceProvide )
+                ->unicodeToUtf8( unicode_str, unicode_size, _utf8, _utf8Capacity, &utf8_size ) == false )
+            {
+                return false;
+            }
+
+            _utf8[utf8_size] = '\0';
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         inline bool utf8ToUnicodeSize( ServiceProviderInterface * _serviceProvide, const String::value_type * _utf8, String::size_type _utf8Size, WString & _unicode )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM( _serviceProvide );

@@ -3297,24 +3297,26 @@ namespace Menge
 				return false;
 			}
 
-			for( WString::const_iterator
-				it = text_ws.begin(),
-				it_end = text_ws.end();
-				it != it_end;
-				++it )
-			{
-				WChar ws_ch = *it;
-				WString ws_str( &ws_ch, 1 );
+            for( WString::const_iterator
+                it = text_ws.begin(),
+                it_end = text_ws.end();
+                it != it_end;
+                ++it )
+            {
+                WChar ws_ch = *it;
+                WChar ws_str[2] = { ws_ch, L'\0' };
 
 				Char text_utf8[8];
 				size_t text_utf8_len = 0;
 				if( UNICODE_SYSTEM( m_serviceProvider )
-					->unicodeToUtf8( ws_str.c_str(), ws_str.size(), text_utf8, 8, &text_utf8_len ) == false )
+					->unicodeToUtf8( ws_str, 1, text_utf8, 8, &text_utf8_len ) == false )
 				{
 					_cb.call( "invalid utf8 ", 0, ws_str );
 
 					continue;
 				}
+
+                text_utf8[text_utf8_len] = '\0';
 
 				uint32_t code = 0;
 				const char * test_text = text_utf8;

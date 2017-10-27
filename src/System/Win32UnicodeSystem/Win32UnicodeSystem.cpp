@@ -63,11 +63,6 @@ namespace Menge
             *_utf8Size = u_utf8_size;
         }
 
-        if( _utf8 != nullptr && _utf8Capacity != 0 )
-        {
-            _utf8[ utf8_size ] = '\0';
-        }
-
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -115,11 +110,6 @@ namespace Menge
         {
             size_t u_wc_size = static_cast<size_t>(wc_size);
             *_sizeUnicode = u_wc_size;
-        }
-
-        if( _unicode != nullptr && _unicodeCapacity != 0 )
-        {
-            _unicode[ wc_size ] = L'\0';
         }
 
 		return true;

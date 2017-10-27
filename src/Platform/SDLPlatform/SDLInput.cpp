@@ -84,7 +84,7 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition_( x, y, point );
 
-				WChar text_code[8];
+                WChar text_code[8] = { 0 };
 				size_t text_code_size;
                 UNICODE_SYSTEM( m_serviceProvider )
 					->utf8ToUnicode( _event.text.text, (size_t)-1, text_code, 8, &text_code_size );

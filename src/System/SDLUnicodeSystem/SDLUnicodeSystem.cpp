@@ -25,20 +25,28 @@ namespace Menge
     {
 		size_t unicodeSize = (_unicodeSize == UNICODE_UNSIZE) ? wcslen( _unicode ) + 1 : _unicodeSize + 1;
 
-		Char * sdl_utf8 = (Char *)SDL_iconv_string( "UTF-8", SDL_UCS_wchar_t, (const char*)_unicode, unicodeSize  * sizeof( WChar ) );
+        Char * sdl_utf8 = (Char *)SDL_iconv_string( "UTF-8", SDL_UCS_wchar_t
+            , (const char*)_unicode
+            , unicodeSize * sizeof( WChar )
+        );
 
 		if( sdl_utf8 == nullptr )
 		{
 			return false;
 		}
 
-		size_t utf8Size = strlen( sdl_utf8 ) + 1;
+		size_t utf8Size = strlen( sdl_utf8 );
 
 		if( _utf8 != nullptr )
 		{
 			if( _utf8Capacity < utf8Size )
 			{
 				SDL_free( sdl_utf8 );
+
+                if( _utf8Size != nullptr )
+                {
+                    *_utf8Size = utf8Size;
+                }
 
 				return false;
 			}
@@ -60,20 +68,28 @@ namespace Menge
     {
 		size_t utf8Size = (_utf8Size == UNICODE_UNSIZE) ? strlen( _utf8 ) + 1 : _utf8Size + 1;
 
-		wchar_t * sdl_unicode = (wchar_t*)SDL_iconv_string( SDL_UCS_wchar_t, "UTF-8", _utf8, utf8Size * sizeof( Char ) );
+		wchar_t * sdl_unicode = (wchar_t*)SDL_iconv_string( SDL_UCS_wchar_t, "UTF-8"
+            , _utf8
+            , utf8Size * sizeof( Char )
+        );
 
 		if( sdl_unicode == nullptr )
 		{
 			return false;
 		}
 
-		size_t unicodeSize = wcslen( sdl_unicode ) + 1;
+		size_t unicodeSize = wcslen( sdl_unicode );
 		
 		if( _unicode != nullptr )
 		{
 			if( _unicodeCapacity < unicodeSize )
 			{
 				SDL_free( sdl_unicode );
+
+                if( _sizeUnicode != nullptr )
+                {
+                    *_sizeUnicode = unicodeSize;
+                }
 
 				return false;
 			}

@@ -373,6 +373,11 @@ namespace Menge
 				stage.program = program;
 			}
 
+            for( uint32_t index = 0; index != MENGE_MAX_TEXTURE_STAGES; ++index )
+            {
+                stage.textureStage[index].texCoordIndex = index;
+            }
+
 			const Metacode::Meta_DataBlock::Meta_Material::TVectorMeta_TextureStages & include_TextureStages = meta_Material.get_IncludesTextureStages();
 
 			for( Metacode::Meta_DataBlock::Meta_Material::TVectorMeta_TextureStages::const_iterator
@@ -403,7 +408,7 @@ namespace Menge
 				meta_TextureStages.get_Alpha_Arg1( textureStage.alphaArg1 );
 				meta_TextureStages.get_Alpha_Arg2( textureStage.alphaArg2 );
 
-				meta_TextureStages.get_TextureCoord_Index( textureStage.texCoordIndex );
+                meta_TextureStages.get_TextureCoord_Index( textureStage.texCoordIndex );
 			}
 
 			const RenderMaterialStage * cache_stage = this->createRenderStageGroup( name, stage );

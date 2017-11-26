@@ -1968,7 +1968,7 @@ namespace Menge
 			if( dx9_program->enable( m_pD3DDevice ) == false )
 			{
 				return;
-			}			
+			}
 		}
 		else
 		{

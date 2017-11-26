@@ -35,8 +35,18 @@ namespace Menge
 		m_indexNum = _indexNum;
 
 		m_usage = D3DUSAGE_WRITEONLY;
-		m_pool = D3DPOOL_MANAGED;
 		m_dynamic = _dynamic;
+
+        if( m_dynamic == true )
+        {
+            m_pool = D3DPOOL_DEFAULT;
+
+            m_usage |= D3DUSAGE_DYNAMIC;
+        }
+        else
+        {
+            m_pool = D3DPOOL_MANAGED;
+        }
 		
 		m_format = s_getD3DIndexFormat();
 

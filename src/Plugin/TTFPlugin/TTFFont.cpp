@@ -67,7 +67,9 @@ namespace Menge
 
 			return false;
 		}
-		
+
+        IniUtil::getIniValue( _ini, m_name.c_str(), "Effect", m_fontEffect, m_serviceProvider );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -119,6 +121,26 @@ namespace Menge
 
 		m_ascender = static_cast<float>(m_face->size->metrics.ascender >> 6);
 
+        if( m_fontEffect.empty() == false )
+        {
+            //InputStreamInterfacePtr fe_stream = FILE_SERVICE( m_serviceProvider )
+            //    ->openInputFile( m_category, m_fontEffect, false );
+
+            //if( stream == nullptr )
+            //{
+            //    return false;
+            //}
+
+            //MemoryInterfacePtr fe_memory = Helper::createMemoryStream( m_serviceProvider, fe_stream, __FILE__, __LINE__ );
+
+            //const void * fe_memory_buffer = fe_memory->getMemory();
+            //size_t fe_memory_size = fe_memory->getSize();
+
+            //fe_effect_bundle* bundle = fe_bundle_load( (const unsigned char*)fe_memory_buffer, fe_memory_size );
+
+            //m_fe_bundle = bundle;            
+        }
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -131,6 +153,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	namespace
 	{
+        //////////////////////////////////////////////////////////////////////////
 		class PFindGlyph
 		{
 		public:
@@ -148,6 +171,87 @@ namespace Menge
 		protected:
 			GlyphCode m_ch;
 		};
+        //////////////////////////////////////////////////////////////////////////
+        class TTFFontTextureGlyphProvider
+            : public TextureGlyphProviderInterface
+        {
+        public:
+            TTFFontTextureGlyphProvider( uint32_t _width, uint32_t _height, const void * _ttfbuffer, size_t _ttfpitch, uint32_t _ttfchannel )
+                : m_width( _width )
+                , m_height( _height )
+                , m_ttfbuffer( _ttfbuffer )
+                , m_ttfpitch( _ttfpitch )
+                , m_ttfchannel( _ttfchannel )
+            {
+            }
+
+        public:
+            void onTextureGlyphFill( uint8_t * _memory, size_t _pitch, uint32_t _channel ) override
+            {
+                const uint8_t * glyph_buffer = reinterpret_cast<const uint8_t *>(m_ttfbuffer);
+
+                uint8_t * it_texture_memory = _memory;
+                const uint8_t * it_glyph_buffer = glyph_buffer;
+
+                if( m_ttfchannel == 1 && _channel == 4 )
+                {
+                    for( uint32_t h = 0; h != m_height; ++h )
+                    {
+                        for( uint32_t w = 0; w != m_width; ++w )
+                        {
+                            *(it_texture_memory + w * 4 + 0) = 255;
+                            *(it_texture_memory + w * 4 + 1) = 255;
+                            *(it_texture_memory + w * 4 + 2) = 255;
+                            *(it_texture_memory + w * 4 + 3) = *(it_glyph_buffer + w);
+                        }
+
+                        it_texture_memory += _pitch;
+                        it_glyph_buffer += m_ttfpitch;
+                    }
+                }
+                else
+                {
+                    for( uint32_t h = 0; h != m_height; ++h )
+                    {
+                        stdex::memorycopy_pod( it_texture_memory, 0, it_glyph_buffer, m_width * m_ttfchannel );
+
+                        it_texture_memory += _pitch;
+                        it_glyph_buffer += m_ttfpitch;
+                    }
+                }
+
+                //fe_image image;
+                //image.data = _memory;
+                //image.w = m_width;
+                //image.h = m_height;
+                //image.pitch = _pitch;
+                //image.bytespp = _channel;
+                //image.data = _memory;
+                //image.format = _channel == 1 ? FE_IMG_A8 : FE_IMG_R8G8B8A8;
+                //image.free = nullptr;
+
+                //fe_im im;
+                //im.image = image;
+                //im.x = 0;
+                //im.y = 0;
+
+                //fe_effect * effect = fe_bundle_get_effect( m_febundle, 0 );
+
+                //fe_node * out_node = fe_effect_find_node_by_type( effect, fe_node_type_out );
+
+                //fe_im res;
+                //int font_size = 100;
+                //fe_node_apply( 1.0f, &im, out_node, font_size, &res );
+            }
+
+        protected:
+            uint32_t m_width;
+            uint32_t m_height;
+
+            const void * m_ttfbuffer;
+            size_t m_ttfpitch;
+            uint32_t m_ttfchannel;
+        };
 	}
 	//////////////////////////////////////////////////////////////////////////
     bool TTFFont::_prepareGlyph( GlyphCode _ch )
@@ -218,7 +322,7 @@ namespace Menge
 		uint32_t bitmap_width = bitmap.width;
         uint32_t bitmap_height = bitmap.rows;
 
-		const void * buffer = glyph->bitmap.buffer;
+		void * buffer = glyph->bitmap.buffer;
 
 		if( bitmap_width == 0 || bitmap_height == 0 )
 		{
@@ -238,9 +342,12 @@ namespace Menge
 			return true;
 		}
 
+        TTFFontTextureGlyphProvider provider( bitmap_width, bitmap_height, buffer, bitmap_pitch, bitmap_channel );
+
+
 		mt::uv4f uv;
 		RenderTextureInterfacePtr texture = TTFATLAS_SERVICE( m_serviceProvider )
-			->makeTextureGlyph( bitmap_width, bitmap_height, bitmap_channel, buffer, bitmap_pitch, uv );
+			->makeTextureGlyph( bitmap_width, bitmap_height, bitmap_channel, &provider, uv );
 
 		if( texture == nullptr )
 		{

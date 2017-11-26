@@ -77,6 +77,8 @@ namespace Menge
         m_format = _format;
         m_type = _type;
 
+        m_lockFirst = true;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -205,8 +207,7 @@ namespace Menge
 
         *_pitch = size / miplevel_height;
 
-        m_lockLevel = _level;
-		m_lockFirst = true;
+        m_lockLevel = _level;		
 
         return memory;
     }
@@ -325,6 +326,8 @@ namespace Menge
 
 							successful = false;
 						}
+
+                        m_lockFirst = false;
 					}
 
 					IF_GLCALL( m_serviceProvider, glTexSubImage2D, (GL_TEXTURE_2D, m_lockLevel

@@ -876,13 +876,19 @@ namespace Menge
         //SDL_GL_MakeCurrent( old_window, nullptr );
 
 		RENDER_SERVICE( m_serviceProvider )
-			->onWindowChangeFullscreenPrepare( _fullscreen );
+			->onDeviceLostPrepare();
+
+        RENDER_SYSTEM( m_serviceProvider )
+            ->onWindowChangeFullscreenPrepare( _fullscreen );
 
         this->destroyWindow_();
         this->createWindow( _resolution, _fullscreen );
 
 		RENDER_SERVICE( m_serviceProvider )
-			->onWindowChangeFullscreen( _fullscreen );
+			->onDeviceLostRestore();
+
+        RENDER_SYSTEM( m_serviceProvider )
+            ->onWindowChangeFullscreen( _fullscreen );
 
         //SDL_GL_MakeCurrent( m_window, m_glContext );
 

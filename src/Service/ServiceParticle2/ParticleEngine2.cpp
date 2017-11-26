@@ -67,6 +67,9 @@ namespace Menge
 	{
 		if( m_available == false )
 		{
+            LOGGER_ERROR( m_serviceProvider )("ParticleEngine2::createEmitterContainerFromFile Particle Engine not available"
+                );
+
 			return nullptr;
 		}
 		

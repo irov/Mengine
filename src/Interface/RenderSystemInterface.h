@@ -831,8 +831,8 @@ namespace Menge
 
     public:
         virtual void onWindowClose() = 0;
-		virtual void onWindowChangeFullscreenPrepare( bool _fullscreen ) = 0;
-		virtual void onWindowChangeFullscreen( bool _fullscreen ) = 0;
+		virtual void onDeviceLostPrepare() = 0;
+		virtual void onDeviceLostRestore() = 0;
         virtual bool isWindowCreated() const = 0;
 
     public:

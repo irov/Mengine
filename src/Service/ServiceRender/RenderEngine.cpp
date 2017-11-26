@@ -434,7 +434,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::onWindowChangeFullscreenPrepare( bool _fullscreen )
+	void RenderEngine::onDeviceLostPrepare()
 	{
 		if( m_windowCreated == false )
 		{
@@ -442,18 +442,15 @@ namespace Menge
 		}
 
 		this->restoreRenderSystemStates_();
-
+        
 		m_nullTexture = nullptr;
 		m_whitePixelTexture = nullptr;
 
 		m_ibHandle2D = nullptr;
 		m_vbHandle2D = nullptr;
-
-		RENDER_SYSTEM( m_serviceProvider )
-			->onWindowChangeFullscreenPrepare( _fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::onWindowChangeFullscreen( bool _fullscreen )
+	void RenderEngine::onDeviceLostRestore()
 	{
 		if( m_windowCreated == false )
 		{
@@ -465,9 +462,6 @@ namespace Menge
 		this->createNullTexture_();
 		this->createWhitePixelTexture_();
 		this->create2DBuffers_();
-		
-		RENDER_SYSTEM( m_serviceProvider )
-			->onWindowChangeFullscreen( _fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::beginScene()
@@ -1502,7 +1496,7 @@ namespace Menge
 			return false;
 		}
 
-		RenderIndices * indicesBuffer = m_ibHandle2D->lock( 0, m_renderIndicesCount, BLF_LOCK_DISCARD );
+		RenderIndices * indicesBuffer = m_ibHandle2D->lock( 0, m_renderIndicesCount, BLF_LOCK_NONE );
 
 		if( indicesBuffer == nullptr )
 		{

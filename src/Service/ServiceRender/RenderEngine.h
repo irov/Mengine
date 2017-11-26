@@ -151,8 +151,8 @@ namespace Menge
 		
 	public:
 		void onWindowClose() override;
-		void onWindowChangeFullscreenPrepare( bool _fullscreen ) override;
-		void onWindowChangeFullscreen( bool _fullscreen ) override;
+		void onDeviceLostPrepare() override;
+		void onDeviceLostRestore() override;
 
 	public:
         const Viewport & getRenderViewport() const;

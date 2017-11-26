@@ -1706,6 +1706,7 @@ namespace Menge
         surface->setPlayCount( _layer.playCount );
         surface->setStretch( _layer.stretch );
         surface->setLoop( _layer.loop );
+        surface->setPremultiplyAlpha( true );
 
 		if( this->setupBlendingMode_( _layer, surface.get() ) == false )
 		{

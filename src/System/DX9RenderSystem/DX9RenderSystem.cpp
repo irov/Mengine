@@ -198,14 +198,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::_finalize()
     {
-        this->release_();
-
-        if( m_hd3d9 != NULL )
-        {
-            FreeLibrary( m_hd3d9 );
-            m_hd3d9 = NULL;
-        }
-
         m_factoryRenderVertexShader = nullptr;
         m_factoryRenderFragmentShader = nullptr;
         m_factoryRenderProgram = nullptr;
@@ -220,6 +212,14 @@ namespace Menge
 		m_deferredCompileVertexShaders.clear();
 		m_deferredCompileFragmentShaders.clear();
 		m_deferredCompilePrograms.clear();
+
+        this->release_();
+
+        if( m_hd3d9 != NULL )
+        {
+            FreeLibrary( m_hd3d9 );
+            m_hd3d9 = NULL;
+        }
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, 
@@ -275,6 +275,8 @@ namespace Menge
 
 			multiSampleType = D3DMULTISAMPLE_NONE;
 		}
+
+        multiSampleType = D3DMULTISAMPLE_NONE;
 				
 		m_d3dppFS.MultiSampleType = multiSampleType;
 		m_d3dppFS.MultiSampleQuality = 0;
@@ -286,7 +288,14 @@ namespace Menge
 
 		m_d3dppFS.hDeviceWindow = (HWND)windowHandle;
 
-		m_d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
+        if( multiSampleType == D3DMULTISAMPLE_NONE )
+        {
+            m_d3dppFS.SwapEffect = D3DSWAPEFFECT_FLIP;
+        }
+        else
+        {
+            m_d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
+        }
 				
 		m_d3dppFS.BackBufferFormat = m_displayMode.Format;
         		
@@ -828,7 +837,9 @@ namespace Menge
         }
         else if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::swapBuffers failed to swap buffers" );
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::swapBuffers failed to swap buffers %x"
+                , hr
+                );
 		}
 
 		++m_frames;
@@ -1243,6 +1254,9 @@ namespace Menge
 
             return false;
         }
+
+        RENDER_SERVICE( m_serviceProvider )
+            ->onDeviceLostPrepare();
         
 		HRESULT hr = m_pD3DDevice->Reset( m_d3dpp );
 
@@ -1266,6 +1280,9 @@ namespace Menge
 		m_fvf = D3DFVF_XYZ | D3DFVF_DIFFUSE | FVF_UV;
 
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, (m_fvf) );
+
+        RENDER_SERVICE( m_serviceProvider )
+            ->onDeviceLostRestore();
 
 		return true;
 	}

@@ -20,7 +20,7 @@ INCLUDE_DIRECTORIES(
         ${THIRDPARTY_DIR}/freetype/include
         ${THIRDPARTY_DIR}/pybind/include
         ${THIRDPARTY_DIR}/utf8/source        
-        ${THIRDPARTY_DIR}/tinyini/include
+        ${THIRDPARTY_DIR}/tinyini/include		
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
@@ -43,7 +43,7 @@ SET( APPLICATION_LIBS
     Archive
     Factory
     Kernel
-    ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}freetype${MENGINE_LIB_SUFFIX}
+    ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}freetype${MENGINE_LIB_SUFFIX}	
     )
 
 SET( APPLICATION_LIBS

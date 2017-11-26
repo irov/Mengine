@@ -45,7 +45,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterfacePtr TTFAtlasService::makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _channel, const void * _buffer, uint32_t _pitch, mt::uv4f & _uv )
+	RenderTextureInterfacePtr TTFAtlasService::makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _channel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv )
 	{
 		uint32_t hw_width = Helper::getTexturePOW2( _width );
 		uint32_t hw_height = Helper::getTexturePOW2( _height );
@@ -79,37 +79,39 @@ namespace Menge
         size_t texture_pitch;
 		uint8_t * texture_memory = image->lock( &texture_pitch, 0, r, false );
 
-        const uint8_t * glyph_buffer = reinterpret_cast<const uint8_t *>(_buffer);
+        _provider->onTextureGlyphFill( texture_memory, texture_pitch, texture_channel );
 
-        uint8_t * it_texture_memory = texture_memory;
-        const uint8_t * it_glyph_buffer = glyph_buffer;
-        
-        if( _channel == 1 && texture_channel == 4 )
-        {
-            for( uint32_t h = 0; h != _height; ++h )
-            {
-                for( uint32_t w = 0; w != _width; ++w )
-                {
-                    *(it_texture_memory + w * 4 + 0) = 255;
-                    *(it_texture_memory + w * 4 + 1) = 255;
-                    *(it_texture_memory + w * 4 + 2) = 255;
-                    *(it_texture_memory + w * 4 + 3) = *(it_glyph_buffer + w);
-                }
+        //const uint8_t * glyph_buffer = reinterpret_cast<const uint8_t *>(_buffer);
 
-                it_texture_memory += texture_pitch;
-                it_glyph_buffer += _pitch;
-            }
-        }
-        else
-        {
-            for( uint32_t h = 0; h != _height; ++h )
-            {
-                stdex::memorycopy_pod( it_texture_memory, 0, it_glyph_buffer, _width * _channel );
+        //uint8_t * it_texture_memory = texture_memory;
+        //const uint8_t * it_glyph_buffer = glyph_buffer;
 
-                it_texture_memory += texture_pitch;
-                it_glyph_buffer += _pitch;
-            }
-        }
+        //if( _channel == 1 && texture_channel == 4 )
+        //{
+        //    for( uint32_t h = 0; h != _height; ++h )
+        //    {
+        //        for( uint32_t w = 0; w != _width; ++w )
+        //        {
+        //            *(it_texture_memory + w * 4 + 0) = 255;
+        //            *(it_texture_memory + w * 4 + 1) = 255;
+        //            *(it_texture_memory + w * 4 + 2) = 255;
+        //            *(it_texture_memory + w * 4 + 3) = *(it_glyph_buffer + w);
+        //        }
+
+        //        it_texture_memory += texture_pitch;
+        //        it_glyph_buffer += _pitch;
+        //    }
+        //}
+        //else
+        //{
+        //    for( uint32_t h = 0; h != _height; ++h )
+        //    {
+        //        stdex::memorycopy_pod( it_texture_memory, 0, it_glyph_buffer, _width * _channel );
+
+        //        it_texture_memory += texture_pitch;
+        //        it_glyph_buffer += _pitch;
+        //    }
+        //}
 
 		image->unlock( 0, true );
 

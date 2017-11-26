@@ -61,8 +61,10 @@ namespace Menge
 
 		ConstString m_category;
 		FilePath m_ttfPath;
-
+        
 		uint32_t m_fontDPI;
+
+        FilePath m_fontEffect;
 
 		float m_ascender;
 		

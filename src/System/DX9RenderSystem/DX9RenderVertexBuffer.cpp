@@ -36,9 +36,19 @@ namespace Menge
 		m_vertexDeclaration = _vertexDeclaration;
 		m_vertexNum = _vertexNum;
 
-		m_usage = D3DUSAGE_WRITEONLY;
-		m_pool = D3DPOOL_MANAGED;
+		m_usage = D3DUSAGE_WRITEONLY;		
 		m_dynamic = _dynamic;
+
+        if( m_dynamic == true )
+        {
+            m_pool = D3DPOOL_DEFAULT;
+
+            m_usage |= D3DUSAGE_DYNAMIC;
+        }
+        else
+        {
+            m_pool = D3DPOOL_MANAGED;
+        }
 
 		IDirect3DVertexBuffer9 * pVB = nullptr;
 		IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateVertexBuffer, (m_vertexNum * sizeof( RenderVertex2D ), m_usage, m_vertexDeclaration, m_pool, &pVB, NULL) )

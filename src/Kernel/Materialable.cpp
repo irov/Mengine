@@ -465,6 +465,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Materialable::Materialable()
 		: m_blendMode( EMB_NORMAL )
+        , m_premultiplyAlpha( false )
 		, m_disableTextureColor( false )
 		, m_invalidateMaterial( true )
 	{
@@ -497,6 +498,16 @@ namespace Menge
 	{
 		return m_disableTextureColor;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Materialable::setPremultiplyAlpha( bool _premultiplyAlpha )
+    {
+        m_premultiplyAlpha = _premultiplyAlpha;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Materialable::getPremultiplyAlpha() const
+    {
+        return m_premultiplyAlpha;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Materialable::setBlendMode( EMaterialBlendMode _blendMode )
 	{
@@ -540,7 +551,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr Materialable::makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, bool _solid ) const
 	{
-		RenderMaterialInterfacePtr material = Helper::makeTextureMaterial( _serviceProvider, _textures, _textureCount, m_materialName, m_blendMode, false, m_disableTextureColor, _solid );
+		RenderMaterialInterfacePtr material = Helper::makeTextureMaterial( _serviceProvider, _textures, _textureCount, m_materialName, m_blendMode, m_premultiplyAlpha, m_disableTextureColor, _solid );
 
 		return material;
 	}

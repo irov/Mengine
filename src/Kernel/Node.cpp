@@ -978,6 +978,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Node::_renderTarget( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
     {
+        (void)_renderService;
+        (void)_state;
+        (void)_debugMask;
+
         //Empty
     }
 	//////////////////////////////////////////////////////////////////////////

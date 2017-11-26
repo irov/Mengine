@@ -310,6 +310,7 @@ namespace Menge
                     };
 
                     surfaceVideo->setBlendMode( blend_mode );
+                    surfaceVideo->setPremultiplyAlpha( true );
                     
                     movie2->addSurface( surfaceVideo );
 

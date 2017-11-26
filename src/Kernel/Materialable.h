@@ -37,6 +37,10 @@ namespace Menge
 		void setDisableTextureColor( bool _disable );
 		bool getDisableTextureColor() const;
 
+    public:
+        void setPremultiplyAlpha( bool _premultiplyAlpha );
+        bool getPremultiplyAlpha() const;
+
 	public:
 		void setBlendMode( EMaterialBlendMode _blendMode );
 		EMaterialBlendMode getBlendMode() const;
@@ -67,6 +71,7 @@ namespace Menge
 
 		EMaterialBlendMode m_blendMode;
 
+        bool m_premultiplyAlpha;
 		bool m_disableTextureColor;
 
 		mutable RenderMaterialInterfacePtr m_material;

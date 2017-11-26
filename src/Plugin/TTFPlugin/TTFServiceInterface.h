@@ -7,6 +7,12 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    class TextureGlyphProviderInterface
+    {
+    public:
+        virtual void onTextureGlyphFill( uint8_t * _memory, size_t _pitch, uint32_t _channel ) = 0;
+    };
 	//////////////////////////////////////////////////////////////////////////
 	class TTFAtlasServiceInterface
 		: public ServiceInterface
@@ -14,7 +20,7 @@ namespace Menge
 		SERVICE_DECLARE( "TTFAtlasService" )
 
 	public:
-		virtual RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _channel, const void * _buffer, uint32_t _pitch, mt::uv4f & _uv ) = 0;
+		virtual RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _channel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	struct TTFGlyph

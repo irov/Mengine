@@ -14,10 +14,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	(void)nShowCmd;
 
 	std::wstring astralax = parse_kwds( lpCmdLine, L"--astralax", std::wstring() );
-	std::wstring in = parse_kwds( lpCmdLine, L"--in", std::wstring() );;
-	std::wstring out = parse_kwds( lpCmdLine, L"--out", std::wstring() );;
-	std::wstring csa = parse_kwds( lpCmdLine, L"--csa", std::wstring() );;
-	std::wstring info = parse_kwds( lpCmdLine, L"--info", std::wstring() );;
+	std::wstring in = parse_kwds( lpCmdLine, L"--in", std::wstring() );
+	std::wstring out = parse_kwds( lpCmdLine, L"--out", std::wstring() );
+	std::wstring csa = parse_kwds( lpCmdLine, L"--csa", std::wstring() );
+	std::wstring info = parse_kwds( lpCmdLine, L"--info", std::wstring() );
 
 	if( in.empty() == true )
 	{

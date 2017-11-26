@@ -31,7 +31,7 @@ namespace Menge
 		void _finalize() override;
 
 	public:
-		RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _channel, const void * _buffer, uint32_t _pitch, mt::uv4f & _uv ) override;
+		RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _channel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv ) override;
 		
 	protected:
 		TTFAtlas * getAtlas_( uint32_t _index, uint32_t _channel );

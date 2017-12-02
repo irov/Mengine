@@ -127,36 +127,6 @@ namespace Menge
 	{ 
 		return m_avaliable;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::isTaskOnProgress_( const ThreadTaskInterfacePtr & _task, ThreadIdentityInterfacePtr & _identity ) const
-	{
-		for( TVectorThreadTaskDesc::const_iterator 
-			it = m_tasks.begin(),
-			it_end = m_tasks.end();
-		it != it_end;
-		++it )
-		{
-			const ThreadTaskDesc & desc = *it;
-
-			const ThreadTaskInterfacePtr & task = desc.task;
-			
-			if( _task != task )
-			{
-				continue;
-			}
-			
-			if( desc.progress == false )
-			{
-				return false;
-			}
-
-			_identity = desc.identity;
-
-			return true;
-		}
-		
-		return false;
-	}
     //////////////////////////////////////////////////////////////////////////
     ThreadJobPtr ThreadEngine::createJob( uint32_t _sleep )
     {
@@ -182,7 +152,7 @@ namespace Menge
 			return false;
 		}
 
-		if( this->hasThread_( _threadName ) == true )
+		if( this->hasThread( _threadName ) == true )
 		{
 			return false;
 		}
@@ -222,13 +192,15 @@ namespace Menge
 			td.identity->joinTask();
 			td.identity->join();
 
+            m_threads.erase( it );
+
 			return true;
 		}
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::hasThread_( const ConstString & _name ) const
+	bool ThreadEngine::hasThread( const ConstString & _name ) const
 	{
 		for( TVectorThreads::const_iterator
 			it = m_threads.begin(),
@@ -254,7 +226,7 @@ namespace Menge
 			return false;
 		}
 
-		if( this->hasThread_( _threadName ) == false )
+		if( this->hasThread( _threadName ) == false )
 		{
 			return false;
 		}
@@ -286,20 +258,40 @@ namespace Menge
 	{
 		_task->cancel();
 
-		ThreadIdentityInterfacePtr threadIdentity;
-		if( this->isTaskOnProgress_( _task, threadIdentity ) == false )
-		{
-			return true;
-		}
-				
-		bool successful = threadIdentity->joinTask();
+        for( TVectorThreadTaskDesc::const_iterator
+            it = m_tasks.begin(),
+            it_end = m_tasks.end();
+            it != it_end;
+            ++it )
+        {
+            const ThreadTaskDesc & desc = *it;
 
-		if( successful == false )
-		{
-			threadIdentity->join();
-		}
+            const ThreadTaskInterfacePtr & task = desc.task;
 
-		return successful;
+            if( _task != task )
+            {
+                continue;
+            }
+
+            if( desc.progress == false )
+            {
+                return true;
+            }
+
+            const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
+
+            bool successful = threadIdentity->joinTask();
+
+            if( successful == false )
+            {
+                threadIdentity->join();
+                m_tasks.erase( it );
+            }            
+
+            return successful;
+        }
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ThreadQueueInterfacePtr ThreadEngine::runTaskQueue( const ConstString & _threadName, uint32_t _countThread, uint32_t _packetSize )

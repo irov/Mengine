@@ -35,6 +35,9 @@ namespace Menge
 		bool destroyThread( const ConstString & _threadName ) override;
 
     public:
+        bool hasThread( const ConstString & _name ) const override;
+
+    public:
         bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task ) override;
         bool joinTask( const ThreadTaskInterfacePtr & _task ) override;
 
@@ -53,8 +56,7 @@ namespace Menge
 		ptrdiff_t getCurrentThreadId() override;
 
     protected:
-		bool isTaskOnProgress_( const ThreadTaskInterfacePtr & _task, ThreadIdentityInterfacePtr & _identity ) const;
-		bool hasThread_( const ConstString & _name ) const;
+		
 		
 	protected:
 		ThreadMutexInterfacePtr m_mutexAllocatorPool;

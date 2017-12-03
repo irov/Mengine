@@ -119,12 +119,12 @@ if(MENGINE_PLATFORM_IOS)
     ADD_EXECUTABLE( ${MY_LIB_NAME} MACOSX_BUNDLE ${myApp_MEDIA} ${SRC_FILES} )
 
     SET_TARGET_PROPERTIES( ${MY_LIB_NAME} PROPERTIES MACOSX_BUNDLE YES )
-    SET_TARGET_PROPERTIES( ${MY_LIB_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST Info.plist.in )
+    SET_TARGET_PROPERTIES( ${MY_LIB_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ~/Desktop/deploy-ios-plist/info.plist.in )
     SET_TARGET_PROPERTIES( ${MY_LIB_NAME} PROPERTIES XCODE_ATTRIBUTE_INSTALL_PATH "$(LOCAL_APPS_DIR)" )
 endif()
 
 if(MENGINE_PLATFORM_MAC)
-    set(myApp_ICON ~/Desktop/icon.icns)
+    set(myApp_ICON ~/Desktop/deploy-mac-icons/icon.icns)
     set_source_files_properties(${myApp_ICON} PROPERTIES
            MACOSX_PACKAGE_LOCATION "Resources")
 
@@ -132,16 +132,20 @@ if(MENGINE_PLATFORM_MAC)
     set_source_files_properties(${myApp_ASTRALAX} PROPERTIES
            MACOSX_PACKAGE_LOCATION "MacOS")
 
-    set(myApp_STEAM ~/Desktop/libsteam_api.dylib)
-    set_source_files_properties(${myApp_STEAM} PROPERTIES
-           MACOSX_PACKAGE_LOCATION "MacOS")
+    if(MENGINE_PLUGIN_STEAM)
+        set(myApp_STEAM ~/Desktop/libsteam_api.dylib)
+        set_source_files_properties(${myApp_STEAM} PROPERTIES
+              MACOSX_PACKAGE_LOCATION "MacOS")
+    else()
+        set(myApp_STEAM)
+    endif()
 
-
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "~/Desktop")
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "~/Desktop/deploy-mac-plist")
            
     ADD_EXECUTABLE( ${MY_LIB_NAME} MACOSX_BUNDLE ${myApp_ICON} ${myApp_ASTRALAX} ${myApp_STEAM} ${SRC_FILES} )
 
-    set_target_properties( ${MY_LIB_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST Info.plist.in)
+    set_target_properties( ${MY_LIB_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE icon.icns )
+    set_target_properties( ${MY_LIB_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST info.plist.in)
 endif()
 
 foreach(dependency ${APPLICATION_DEPENDENCIES})

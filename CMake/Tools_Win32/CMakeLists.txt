@@ -60,7 +60,6 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceMemory ${CMAKE_TEMP_DIR}/Service/
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceConverter ${CMAKE_TEMP_DIR}/Service/ServiceConverter )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceLogger ${CMAKE_TEMP_DIR}/Service/ServiceLogger )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServicePlugin ${CMAKE_TEMP_DIR}/Service/ServicePlugin )
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceUnicode ${CMAKE_TEMP_DIR}/Service/ServiceUnicode )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceThread ${CMAKE_TEMP_DIR}/Service/ServiceThread )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceConfig ${CMAKE_TEMP_DIR}/Service/ServiceConfig )
 

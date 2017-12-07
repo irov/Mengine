@@ -30,7 +30,7 @@ namespace Menge
 
     protected:
         bool _onValidate() const override;
-        bool _onCheck() const override;
+        bool _onCheck() override;
         bool _onRun() override;
         bool _onSkipable() const override;
         void _onSkipNoSkiped() override;

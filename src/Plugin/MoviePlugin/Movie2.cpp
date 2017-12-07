@@ -395,7 +395,7 @@ namespace Menge
 
         switch( _callbackData->state )
         {
-        case AE_MOVIE_NODE_UPDATE_UPDATE:
+        case AE_MOVIE_STATE_UPDATE_PROCESS:
             {
                 switch( type )
                 {
@@ -415,7 +415,7 @@ namespace Menge
                     }break;
                 }
             }break;
-        case AE_MOVIE_NODE_UPDATE_BEGIN:
+        case AE_MOVIE_STATE_UPDATE_BEGIN:
             {
                 switch( type )
                 {
@@ -449,7 +449,7 @@ namespace Menge
                     }break;
                 }
             }break;
-        case AE_MOVIE_NODE_UPDATE_END:
+        case AE_MOVIE_STATE_UPDATE_END:
             {
                 switch( type )
                 {
@@ -467,7 +467,7 @@ namespace Menge
                     }break;
                 }
             }break;
-        case AE_MOVIE_NODE_UPDATE_PAUSE:
+        case AE_MOVIE_STATE_UPDATE_PAUSE:
             {
                 switch( type )
                 {
@@ -485,7 +485,7 @@ namespace Menge
                     }break;
                 }
             }break;
-        case AE_MOVIE_NODE_UPDATE_RESUME:
+        case AE_MOVIE_STATE_UPDATE_RESUME:
             {
                 switch( type )
                 {
@@ -536,14 +536,14 @@ namespace Menge
 
         switch( _callbackData->state )
         {
-        case AE_MOVIE_NODE_UPDATE_BEGIN:
+        case AE_MOVIE_STATE_UPDATE_BEGIN:
             {
                 TrackMatteDesc * desc = static_cast<TrackMatteDesc *>(_callbackData->track_matte_data);
 
                 desc->matrix.from_f16( _callbackData->matrix );
                 desc->mesh = *_callbackData->mesh;
             }break;
-        case AE_MOVIE_NODE_UPDATE_UPDATE:
+        case AE_MOVIE_STATE_UPDATE_PROCESS:
             {
                 TrackMatteDesc * desc = static_cast<TrackMatteDesc *>(_callbackData->track_matte_data);
 

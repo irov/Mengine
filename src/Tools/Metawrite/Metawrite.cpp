@@ -289,7 +289,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		return 0;
 	}
 
-	const Menge::FilePath & path = fileGroup->getPath();
+	const Menge::FilePath & path = fileGroup->getRelationPath();
 
 	options.pathXml = Menge::Helper::concatenationFilePath( serviceProvider, path, fp_in );
 	options.pathBin = Menge::Helper::concatenationFilePath( serviceProvider, path, fp_out );

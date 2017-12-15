@@ -93,10 +93,11 @@ namespace Menge
         const RenderTargetInterfacePtr & getRenderTargetInheritance() const;
 
 	protected:
-		void _hide( bool _value ) override;
+		void _setHide( bool _hide ) override;
+        void _setExternalRender( bool _externalRender ) override;
 			
 	protected:
-		void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
+		void _debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
 	
 	protected:
 		const RenderViewportInterface * m_renderViewport;
@@ -107,7 +108,7 @@ namespace Menge
         RenderTargetInterfacePtr m_renderTarget;
 
 	protected:
-		void renderChild_( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask );
+		void renderChild_( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask );
 
 	public:
 		void calcScreenPosition( const RenderCameraInterface * _camera, mt::vec2f & _screen );
@@ -193,7 +194,7 @@ namespace Menge
 		virtual void _afterDeactivate();
 
 	protected:
-		void _invalidateWorldMatrix() override;
+		void _invalidateWorldMatrix () override;
 		//void _invalidateBoundingBox() override;
 
 	public:
@@ -326,29 +327,29 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	template<class T>
-	inline T * static_node_cast( Node * _node )
+	inline T static_node_cast( Node * _node )
 	{
 #	ifdef _DEBUG
-		if( dynamic_cast<T *>(_node) == nullptr )
+		if( dynamic_cast<T>(_node) == nullptr )
 		{
             throw;
 		}
 #	endif
 
-		return static_cast<T *>(_node);
+		return static_cast<T>(_node);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	template<class T>
-	inline const T * static_node_cast( const Node * _node )
+	inline T static_node_cast( const Node * _node )
 	{
 #	ifdef _DEBUG
-		if( dynamic_cast<const T *>(_node) == nullptr )
+		if( dynamic_cast<T>(_node) == nullptr )
 		{
             throw;
 		}
 #	endif
 
-		return static_cast<const T *>(_node);
+		return static_cast<T>(_node);
 	}
 }
 

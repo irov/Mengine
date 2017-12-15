@@ -12,36 +12,47 @@ namespace Menge
 		Renderable();
 
 	public:
-		virtual void render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) = 0;
+		virtual void render( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) = 0;
 
 	public:
-		virtual void _render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state );
-		virtual void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask );
+		virtual void _render( RenderServiceInterface * _renderService, const RenderObjectState * _state );
+		virtual void _debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask );
 
 	public:
-		virtual void hide( bool _value );
-		inline bool isHide() const;
+		virtual void setHide( bool _hide );
+		inline bool getHide() const;
 
 	public:
-		void localHide( bool _value );
-		inline bool isLocalHide() const;
+		void setLocalHide( bool _localHide );
+		inline bool getLocalHide() const;
+
+    public:
+        void setExternalRender( bool _externalRender );
+        inline bool getExternalRender() const;
 
 	protected:
-		virtual void _localHide( bool _value );
-		virtual void _hide( bool _value );
+        virtual void _setHide( bool _hide );
+		virtual void _setLocalHide( bool _localHide );		
+        virtual void _setExternalRender( bool _externalRender );
 		
 	protected:
 		bool m_hide;
 		bool m_localHide;
+        bool m_externalRender;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline bool Renderable::isHide() const
+	inline bool Renderable::getHide() const
 	{
 		return m_hide;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline bool Renderable::isLocalHide() const
+	inline bool Renderable::getLocalHide() const
 	{
 		return m_localHide;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    inline bool Renderable::getExternalRender() const
+    {
+        return m_externalRender;
+    }
 }

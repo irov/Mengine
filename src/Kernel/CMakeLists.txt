@@ -152,6 +152,12 @@ Parallax
 )
 
 ADD_FILTER(
+MatrixProxy
+	MatrixProxy.cpp
+	MatrixProxy.h
+)
+
+ADD_FILTER(
 Isometric
 	Isometric.cpp
 	Isometric.h

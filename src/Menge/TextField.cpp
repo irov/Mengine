@@ -272,7 +272,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
+	void TextField::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{	
 		if( m_key.empty() == true )
 		{

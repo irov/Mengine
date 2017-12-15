@@ -433,12 +433,12 @@ namespace Menge
 		if( _layer.in <= 0.0001f )
 		{
 			nd.visible = true;
-			nd.node->localHide( false );
+			nd.node->setLocalHide( false );
 		}
 		else
 		{
 			nd.visible = false;
-			nd.node->localHide( true );
+			nd.node->setLocalHide( true );
 		}
 
 		nd.animatable = _animatable;
@@ -2899,18 +2899,24 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_localHide( bool _value )
+	void Movie::_setLocalHide( bool _value )
 	{
-		this->hide( _value );
+        Node::_setLocalHide( _value );
+
+		this->setHide( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setPersonalColor( const ColourValue& _color )
 	{
+        Node::_setPersonalColor( _color );
+
 		this->setLocalColor( _color );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setPersonalAlpha( float _alpha )
 	{
+        Node::_setPersonalAlpha( _alpha );
+
 		this->setLocalAlpha( _alpha );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -3233,11 +3239,11 @@ namespace Menge
 
 		if( nd.visible == true && nd.enable == true )
 		{
-			nd.node->localHide( false );
+			nd.node->setLocalHide( false );
 		}
 		else
 		{
-			nd.node->localHide( true );
+			nd.node->setLocalHide( true );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -3249,11 +3255,11 @@ namespace Menge
 
 		if( nd.visible == true && nd.enable == true )
 		{
-			nd.node->localHide( false );
+			nd.node->setLocalHide( false );
 		}
 		else
 		{
-			nd.node->localHide( true );
+			nd.node->setLocalHide( true );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

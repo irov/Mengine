@@ -79,6 +79,7 @@
 #	include "Kernel/Isometric.h"
 #	include "Kernel/Isometric.h"
 #	include "Kernel/Parallax.h"
+#	include "Kernel/MatrixProxy.h"
 #	include "Kernel/RenderViewport.h"
 #	include "Kernel/RenderClipplane.h"
 #	include "Kernel/RenderCameraOrthogonal.h"
@@ -366,6 +367,7 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, Gyroscope );
 		NODE_FACTORY( m_serviceProvider, Isometric );
 		NODE_FACTORY( m_serviceProvider, Parallax );
+        NODE_FACTORY( m_serviceProvider, MatrixProxy );
 		
 		//NODE_FACTORY( m_serviceProvider, ParticleEmitter );
 		NODE_FACTORY( m_serviceProvider, ParticleEmitter2 );

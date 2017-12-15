@@ -20,7 +20,7 @@ namespace Menge
         virtual void updateVerticesColor() const;
 
     protected:
-        void _render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
+        void _render( RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
 
     protected:
         void _updateBoundingBox( mt::box2f & _boundingBox ) const override;

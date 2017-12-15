@@ -108,7 +108,7 @@ namespace Menge
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
+	void Mesh2D::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
 		if( m_vertexCount == 0 )
 		{

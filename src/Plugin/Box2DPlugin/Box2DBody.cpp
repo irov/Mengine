@@ -48,7 +48,7 @@ namespace Menge
 		return m_body;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Box2DBody::addShapeConvex( const Menge::Polygon & _vertices
+	bool Box2DBody::addShapeConvex( const Polygon & _vertices
 		, float _density
 		, float _friction
 		, float _restitution

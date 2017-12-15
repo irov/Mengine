@@ -15,7 +15,7 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ShapeQuad::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
+    void ShapeQuad::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
     {
         const RenderVertex2D * vertices = this->getVerticesWM();
 

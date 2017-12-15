@@ -81,10 +81,6 @@ namespace Menge
 
 			logger->log( _level, _flag, _message, _size );
 		}
-        
-        printf("%s"
-               , _message
-               );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t LoggerEngine::getCountMessage( Menge::EMessageLevel _level )

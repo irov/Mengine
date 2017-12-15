@@ -9,7 +9,10 @@
 #	include "Menge/SurfaceSound.h"
 #	include "Menge/SurfaceTrackMatte.h"
 
+#   include "Menge/HotSpotPolygon.h"
+
 #	include "Kernel/Materialable.h"
+#   include "Kernel/MatrixProxy.h"
 
 #	include "Logger/Logger.h"
 
@@ -93,6 +96,21 @@ namespace Menge
         ae_stop_movie_sub_composition( m_composition, subcomposition );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2::setEnableMovieLayers( const ConstString & _name, bool _enable )
+    {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( m_serviceProvider )("Movie2::setEnableMovieLayers '%s' invalid get layer '%s' not compile"
+                , this->getName().c_str()
+                , _name.c_str()
+                );
+
+            return;
+        }
+
+        ae_set_movie_composition_nodes_enable( m_composition, _name.c_str(), AE_MOVIE_LAYER_TYPE_ANY, _enable ? AE_TRUE : AE_FALSE );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Movie2::_play( float _time )
     {
         (void)_time;
@@ -109,31 +127,34 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::_restart( uint32_t _enumerator, float _time )
     {
-        (void)_time;
-        (void)_enumerator;
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_RESTART )
+            ->onAnimatableRestart( _enumerator, _time );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_pause( uint32_t _enumerator )
     {
-        (void)_enumerator;
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_PAUSE )
+            ->onAnimatablePause( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_resume( uint32_t _enumerator, float _time )
     {
-        (void)_time;
-        (void)_enumerator;
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_RESUME )
+            ->onAnimatableResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_stop( uint32_t _enumerator )
     {
-        (void)_enumerator;
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
+            ->onAnimatableStop( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_end( uint32_t _enumerator )
     {
-        (void)_enumerator;
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
+            ->onAnimatableEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     static void * __movie_composition_camera_provider( const aeMovieCameraProviderCallbackData * _callbackData, void * _data )
@@ -238,6 +259,80 @@ namespace Menge
 
         aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( _callbackData->layer );
 
+        switch( type )
+        {
+        case AE_MOVIE_LAYER_TYPE_SLOT:
+            {
+                Movie2Slot * slot = PROTOTYPE_SERVICE( serviceProvider )
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "Movie2Slot" ) );
+
+                slot->setName( c_name );
+
+                slot->setExternalRender( false );
+
+                const ConstString & movie2Name = movie2->getName();
+
+                slot->setMovieName( movie2Name );
+
+                movie2->addSlot( c_name, slot );
+
+                MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
+
+                matrixProxy->setName( c_name );
+
+                mt::mat4f pm;
+                pm.from_f16( _callbackData->matrix );
+                matrixProxy->setProxyMatrix( pm );
+
+                matrixProxy->addChild( slot );
+
+                movie2->addChild( matrixProxy );
+
+                return slot;
+            }break;
+        case AE_MOVIE_LAYER_TYPE_SOCKET:
+            {
+                HotSpotPolygon * hotspotpolygon = NODE_SERVICE( serviceProvider )
+                    ->createNodeT<HotSpotPolygon *>( STRINGIZE_STRING_LOCAL( serviceProvider, "HotSpotPolygon" ) );
+
+                const ae_polygon_t * polygon;
+                if( ae_get_movie_layer_data_socket_polygon( _callbackData->layer, 0, &polygon ) == AE_FALSE )
+                {
+                    return AE_NULL;
+                }
+
+                Polygon p;
+                for( ae_uint32_t index = 0; index != polygon->point_count; ++index )
+                {
+                    const ae_vector2_t * v = polygon->points + index;
+
+                    mt::vec2f v2( (*v)[0], (*v)[1] );
+                    
+                    p.append( v2 );
+                }
+
+                hotspotpolygon->setPolygon( p );
+
+                movie2->addSocketShape( c_name, hotspotpolygon );
+
+                MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
+
+                matrixProxy->setName( c_name );
+
+                mt::mat4f pm;
+                pm.from_f16( _callbackData->matrix );
+                matrixProxy->setProxyMatrix( pm );
+
+                matrixProxy->addChild( hotspotpolygon );
+
+                movie2->addChild( matrixProxy );
+
+                return hotspotpolygon;
+            }break;
+        };
+
         if( _callbackData->track_matte_layer != AE_NULL )
         {
             switch( type )
@@ -266,6 +361,9 @@ namespace Menge
                         break;
                     case AE_MOVIE_BLEND_SCREEN:
                         blend_mode = EMB_SCREEN;
+                        break;
+                    case AE_MOVIE_BLEND_MULTIPLY:
+                        blend_mode = EMB_MULTIPLY;
                         break;
                     };
 
@@ -306,6 +404,9 @@ namespace Menge
                         break;
                     case AE_MOVIE_BLEND_SCREEN:
                         blend_mode = EMB_SCREEN;
+                        break;
+                    case AE_MOVIE_BLEND_MULTIPLY:
+                        blend_mode = EMB_MULTIPLY;
                         break;
                     };
 
@@ -412,6 +513,33 @@ namespace Menge
                         //	, _matrix[12]
                         //	, _matrix[13]
                         //	);
+
+                        Movie2Slot * slot = (Movie2Slot *)_callbackData->element;
+
+                        Node * slot_parent = slot->getParent();
+
+                        MatrixProxy * slot_matrix_proxy = static_node_cast<MatrixProxy *>( slot_parent );
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        slot_matrix_proxy->setProxyMatrix( mp );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SOCKET:
+                    {
+                        //printf( "AE_MOVIE_LAYER_TYPE_SLOT %f %f\n"
+                        //	, _matrix[12]
+                        //	, _matrix[13]
+                        //	);
+
+                        HotSpotPolygon * hotspot = (HotSpotPolygon *)_callbackData->element;
+
+                        Node * slot_parent = hotspot->getParent();
+
+                        MatrixProxy * slot_matrix_proxy = static_node_cast<MatrixProxy *>(slot_parent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        slot_matrix_proxy->setProxyMatrix( mp );
                     }break;
                 }
             }break;
@@ -753,6 +881,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_release()
     {
+        m_meshes.clear();
+        m_cameras.clear();
+
         for( TVectorSurfaces::const_iterator
             it = m_surfaces.begin(),
             it_end = m_surfaces.end();
@@ -763,9 +894,33 @@ namespace Menge
 
             surface->release();
         }
+        
+        for( TMapSlots::iterator
+            it = m_slots.begin(),
+            it_end = m_slots.end();
+            it != it_end;
+            ++it )
+        {
+            Movie2Slot * slot = it->second;
 
-        m_meshes.clear();
-                
+            slot->destroy();
+        }
+
+        m_slots.clear();
+
+        for( TMapSockets::iterator
+            it = m_sockets.begin(),
+            it_end = m_sockets.end();
+            it != it_end;
+            ++it )
+        {
+            HotSpot * hotspot = it->second;
+
+            hotspot->destroy();
+        }
+
+        m_sockets.clear();
+
         ae_delete_movie_composition( m_composition );
         m_composition = nullptr;
 
@@ -860,9 +1015,38 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     float Movie2::_getTiming() const
     {
+        if( this->isCompile() == false )
+        {
+            return 0.f;
+        }
+
         float timing = ae_get_movie_composition_time( m_composition );
 
-        return timing;
+        return timing * 1000.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_setFirstFrame()
+    {
+        this->setTiming( 0.f );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_setLastFrame()
+    {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("Movie._setLastFrame: '%s' not activate"
+                , this->getName().c_str()
+                );
+
+            return;
+        }
+
+        const aeMovieCompositionData * compositionData = ae_get_movie_composition_composition_data( m_composition );
+
+        float duration = ae_get_movie_composition_data_duration( compositionData );
+        float frameDuration = ae_get_movie_composition_data_frame_duration( compositionData );
+        
+        this->setTiming( duration * 1000.f - frameDuration * 1000.f );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_update( float _current, float _timing )
@@ -871,6 +1055,11 @@ namespace Menge
         (void)_timing;
 
         if( this->isPlay() == false )
+        {
+            return;
+        }
+
+        if( m_composition == nullptr )
         {
             return;
         }
@@ -928,6 +1117,12 @@ namespace Menge
             {
                 switch( mesh.layer_type )
                 {
+                case AE_MOVIE_LAYER_TYPE_SLOT:
+                    {
+                        Movie2Slot * slot = reinterpret_cast<Movie2Slot *>(mesh.element_data);
+                        
+                        slot->render( _renderService, _state, 0 );
+                    }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:
                     {
                         m_meshes.push_back( Mesh() );
@@ -963,6 +1158,12 @@ namespace Menge
                         {
                         case AE_MOVIE_BLEND_ADD:
                             blend_mode = EMB_ADD;
+                            break;
+                        case AE_MOVIE_BLEND_SCREEN:
+                            blend_mode = EMB_SCREEN;
+                            break;
+                        case AE_MOVIE_BLEND_MULTIPLY:
+                            blend_mode = EMB_MULTIPLY;
                             break;
                         };
 
@@ -1006,6 +1207,12 @@ namespace Menge
                         {
                         case AE_MOVIE_BLEND_ADD:
                             blend_mode = EMB_ADD;
+                            break;
+                        case AE_MOVIE_BLEND_SCREEN:
+                            blend_mode = EMB_SCREEN;
+                            break;
+                        case AE_MOVIE_BLEND_MULTIPLY:
+                            blend_mode = EMB_MULTIPLY;
                             break;
                         };
 
@@ -1057,6 +1264,12 @@ namespace Menge
                         {
                         case AE_MOVIE_BLEND_ADD:
                             blend_mode = EMB_ADD;
+                            break;
+                        case AE_MOVIE_BLEND_SCREEN:
+                            blend_mode = EMB_SCREEN;
+                            break;
+                        case AE_MOVIE_BLEND_MULTIPLY:
+                            blend_mode = EMB_MULTIPLY;
                             break;
                         };
 
@@ -1190,6 +1403,12 @@ namespace Menge
                         case AE_MOVIE_BLEND_ADD:
                             blend_mode = EMB_ADD;
                             break;
+                        case AE_MOVIE_BLEND_SCREEN:
+                            blend_mode = EMB_SCREEN;
+                            break;
+                        case AE_MOVIE_BLEND_MULTIPLY:
+                            blend_mode = EMB_MULTIPLY;
+                            break;
                         };
 
                         m.material = surfaceTrackMatte->getMaterial();
@@ -1232,5 +1451,67 @@ namespace Menge
         TVectorSurfaces::iterator it_found = std::find( m_surfaces.begin(), m_surfaces.end(), _surface );
 
         m_surfaces.erase( it_found );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::addSlot( const ConstString & _name, Movie2Slot * _slot )
+    {
+        m_slots.insert( std::make_pair( _name, _slot ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Movie2Slot * Movie2::getSlot( const ConstString & _name ) const
+    {
+        TMapSlots::const_iterator it_found = m_slots.find( _name );
+
+        if( it_found == m_slots.end() )
+        {
+            return nullptr;
+        }
+
+        Movie2Slot * slot = it_found->second;
+
+        return slot;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::hasSlot( const ConstString & _name ) const
+    {
+        TMapSlots::const_iterator it_found = m_slots.find( _name );
+
+        if( it_found == m_slots.end() )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::addSocketShape( const ConstString & _name, HotSpotPolygon * _hotspot )
+    {
+        m_sockets.insert( std::make_pair( _name, _hotspot ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HotSpot * Movie2::getSocket( const ConstString & _name ) const
+    {
+        TMapSockets::const_iterator it_found = m_sockets.find( _name );
+
+        if( it_found == m_sockets.end() )
+        {
+            return nullptr;
+        }
+
+        HotSpot * hotspot = it_found->second;
+
+        return hotspot;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::hasSocket( const ConstString & _name ) const
+    {
+        TMapSockets::const_iterator it_found = m_sockets.find( _name );
+
+        if( it_found == m_sockets.end() )
+        {
+            return false;
+        }
+
+        return true;
     }
 }

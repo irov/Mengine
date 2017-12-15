@@ -953,7 +953,7 @@ namespace Menge
 
 		//if( this->checkVisibility( viewPort ) == true )
 		{
-			if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
+			if( this->getLocalHide() == false && this->isPersonalTransparent() == false )
 			{
 				this->_render( _renderService, &state );
 			}
@@ -969,7 +969,7 @@ namespace Menge
 
         if( _debugMask != 0 )
         {
-			if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
+			if( this->getLocalHide() == false && this->isPersonalTransparent() == false )
 			{
 				this->_debugRender( _renderService, &state, _debugMask );
 			}
@@ -1109,14 +1109,21 @@ namespace Menge
         return rt_parent;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_hide( bool _value )
+	void Node::_setHide( bool _value )
 	{
         (void)_value;
 
 		m_invalidateRendering = true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Node::_setExternalRender( bool _value )
+    {
+        (void)_value;
+
+        m_invalidateRendering = true;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::renderChild_( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void Node::renderChild_( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		for( TListNodeChild::unslug_iterator
 			it = m_children.ubegin(),
@@ -1241,7 +1248,7 @@ namespace Menge
 		{
 			m_rendering = false;
 		}
-		else if( this->isHide() == true )
+		else if( this->getHide() == true )
 		{
 			m_rendering = false;
 		}
@@ -1249,13 +1256,17 @@ namespace Menge
 		{
 			m_rendering = false;
 		}
+        else if( this->getExternalRender() == true )
+        {
+            m_rendering = false;
+        }
 		else
 		{
 			m_rendering = true;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void Node::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
         if( (_debugMask & MENGE_DEBUG_NODES) == 0 )
 		{

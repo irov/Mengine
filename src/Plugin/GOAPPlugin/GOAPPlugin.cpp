@@ -63,7 +63,7 @@ namespace Menge
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
         pybind::interface_<PybindChain>( kernel, "PybindChain", false )
-            .def_smart_pointer()
+            .def_static_proxy_smart_pointer( &PybindChain::IntrusivePtrAddRef, &PybindChain::IntrusivePtrDecRef )
             .def_bindable()
             .def( "run", &PybindChain::run )
             .def( "skip", &PybindChain::skip )
@@ -84,7 +84,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     PybindChainPtr GOAPPlugin::makeChain( const PybindSourcePtr & _source )
     { 
-        PybindChainPtr chain = new PybindChain( _source );
+        PybindChainPtr chain = GOAP_NEW PybindChain( _source );
 
         return chain;
     }

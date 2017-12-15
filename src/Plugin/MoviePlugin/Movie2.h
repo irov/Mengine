@@ -7,7 +7,10 @@
 #	include "Kernel/RenderCameraProjection.h"
 #	include "Kernel/RenderViewport.h"
 
+#   include "Menge/HotSpotPolygon.h"
+
 #   include "ResourceMovie2.h"
+#   include "Movie2Slot.h"
 
 #   include "stdex/stl_map.h"
 
@@ -47,6 +50,9 @@ namespace Menge
 		void playSubComposition( const ConstString & _name );
 		void stopSubComposition( const ConstString & _name );
 
+    public:
+        void setEnableMovieLayers( const ConstString & _name, bool _enable );
+
 	protected:
 		bool _play( float _time ) override;
 		bool _restart( uint32_t _enumerator, float _time ) override;
@@ -70,6 +76,8 @@ namespace Menge
 		void _setLoop( bool _value ) override;
 		void _setTiming( float _timing ) override;
 		float _getTiming() const override;
+        void _setFirstFrame() override;
+        void _setLastFrame() override;
 
 	protected:
 		void _update( float _current, float _timing ) override;
@@ -86,6 +94,16 @@ namespace Menge
 		void addSurface( const SurfacePtr & _surface );
         void removeSurface( const SurfacePtr & _surface );
 
+    public:
+        void addSlot( const ConstString & _name, Movie2Slot * _slot );
+        Movie2Slot * getSlot( const ConstString & _name ) const;
+        bool hasSlot( const ConstString & _name ) const;
+
+    public:
+        void addSocketShape( const ConstString & _name, HotSpotPolygon * _hotspot );
+        HotSpot * getSocket( const ConstString & _name ) const;
+        bool hasSocket( const ConstString & _name ) const;
+        
 	public:
 		struct Camera
 		{
@@ -122,5 +140,11 @@ namespace Menge
 
 		typedef stdex::vector<SurfacePtr> TVectorSurfaces;
 		TVectorSurfaces m_surfaces;
+
+        typedef stdex::map<ConstString, Movie2Slot *> TMapSlots;
+        TMapSlots m_slots;
+
+        typedef stdex::map<ConstString, HotSpot *> TMapSockets;
+        TMapSockets m_sockets;
 	};
 }

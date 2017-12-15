@@ -52,7 +52,7 @@ namespace Menge
 			const Metacode::Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas & atlas = *it;
 
 			uint32_t index = atlas.get_Index();
-			const Menge::ConstString & resourceName = atlas.get_ResourceName();
+			const ConstString & resourceName = atlas.get_ResourceName();
 
 			m_resourceImageNames[index] = resourceName;
 		}

@@ -43,7 +43,7 @@ namespace Menge
 		return m_width;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Line::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
+	void Line::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
 		const mt::mat4f & wm = this->getWorldMatrix();
 

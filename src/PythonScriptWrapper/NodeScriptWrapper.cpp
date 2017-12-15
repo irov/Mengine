@@ -496,7 +496,7 @@ namespace Menge
 				return false;
 			}
 
-			MovieEvent * ev = static_node_cast<MovieEvent>(node);
+			MovieEvent * ev = static_node_cast<MovieEvent *>(node);
 
 			ev->setEvent( _cb, _args );
 
@@ -513,7 +513,7 @@ namespace Menge
 				return false;
 			}
 
-			MovieEvent * ev = static_node_cast<MovieEvent>(node);
+			MovieEvent * ev = static_node_cast<MovieEvent *>(node);
 
 			ev->removeEvent();
 
@@ -542,7 +542,7 @@ namespace Menge
 		protected:
 			void visitMovieNode( Movie * _movie, Node * _node ) override
 			{
-				MovieSlot * slot = static_node_cast<MovieSlot>(_node);
+				MovieSlot * slot = static_node_cast<MovieSlot *>(_node);
 
 				if( slot == nullptr )
 				{
@@ -586,7 +586,7 @@ namespace Menge
 		protected:
 			void visitMovieNode( Movie * _movie, Node * _node ) override
 			{
-				HotSpot * hotspot = static_node_cast<HotSpot>(_node);
+				HotSpot * hotspot = static_node_cast<HotSpot *>(_node);
 
 				if( hotspot == nullptr )
 				{
@@ -627,7 +627,7 @@ namespace Menge
 		protected:
 			void visitMovieNode( Movie * _movie, Node * _node ) override
 			{
-				Movie * subMovie = static_node_cast<Movie>(_node);
+				Movie * subMovie = static_node_cast<Movie *>(_node);
 
 				if( subMovie == nullptr )
 				{
@@ -2042,7 +2042,7 @@ namespace Menge
 			Arrow * arrow = PLAYER_SERVICE( m_serviceProvider )
 				->getArrow();
 
-			arrow->localHide( _hide );
+			arrow->setLocalHide( _hide );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		const Resolution & s_getCurrentResolution()
@@ -7200,10 +7200,10 @@ namespace Menge
 			;
 
 		pybind::interface_<Renderable>( kernel, "Renderable" )
-			.def( "hide", &Renderable::hide )
-			.def( "isHide", &Renderable::isHide )
-			.def( "localHide", &Renderable::localHide )
-			.def( "isLocalHide", &Renderable::isLocalHide )
+			.def( "hide", &Renderable::setHide )
+			.def( "isHide", &Renderable::getHide )
+			.def( "localHide", &Renderable::setLocalHide )
+			.def( "isLocalHide", &Renderable::getLocalHide )
 			;
 
 		pybind::interface_<Colorable>( kernel, "Colorable" )

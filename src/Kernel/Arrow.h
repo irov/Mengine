@@ -27,7 +27,7 @@ namespace Menge
 		Arrow();
 
 	public:
-		void hide( bool _value ) override;
+		void setHide( bool _value ) override;
 
 	public:
 		EArrowType getArrowType() const;
@@ -64,7 +64,7 @@ namespace Menge
 		void _deactivate() override;
 
     protected:
-		void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
+		void _debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
 
 	protected:
 		void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position ) override;

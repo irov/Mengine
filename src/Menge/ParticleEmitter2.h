@@ -83,7 +83,7 @@ namespace Menge
 		void _release() override;
 
 		void _update( float _current, float _timing ) override;
-		void _render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
+		void _render( RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
 
 		void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
 

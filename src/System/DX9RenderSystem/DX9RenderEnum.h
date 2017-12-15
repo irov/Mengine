@@ -128,25 +128,25 @@ namespace Menge
 	{
 		switch( _blend )
 		{
-		case Menge::BF_ONE:
+		case BF_ONE:
 			return D3DBLEND_ONE;
-		case Menge::BF_ZERO:
+		case BF_ZERO:
 			return D3DBLEND_ZERO;
-		case Menge::BF_DEST_COLOUR:
+		case BF_DEST_COLOUR:
 			return D3DBLEND_DESTCOLOR;
-		case Menge::BF_SOURCE_COLOUR:
+		case BF_SOURCE_COLOUR:
 			return D3DBLEND_SRCCOLOR;
-		case Menge::BF_ONE_MINUS_DEST_COLOUR:
+		case BF_ONE_MINUS_DEST_COLOUR:
 			return D3DBLEND_INVDESTCOLOR;
-		case Menge::BF_ONE_MINUS_SOURCE_COLOUR:
+		case BF_ONE_MINUS_SOURCE_COLOUR:
 			return D3DBLEND_INVSRCCOLOR;
-		case Menge::BF_DEST_ALPHA:
+		case BF_DEST_ALPHA:
 			return D3DBLEND_DESTALPHA;
-		case Menge::BF_SOURCE_ALPHA:
+		case BF_SOURCE_ALPHA:
 			return D3DBLEND_SRCALPHA;
-		case Menge::BF_ONE_MINUS_DEST_ALPHA:
+		case BF_ONE_MINUS_DEST_ALPHA:
 			return D3DBLEND_INVDESTALPHA;
-		case Menge::BF_ONE_MINUS_SOURCE_ALPHA:
+		case BF_ONE_MINUS_SOURCE_ALPHA:
 			return D3DBLEND_INVSRCALPHA;
 		}
 		return D3DBLEND_ZERO;
@@ -156,15 +156,15 @@ namespace Menge
 	{
 		switch( _blend )
 		{
-		case Menge::BOP_ADD:
+		case BOP_ADD:
 			return D3DBLENDOP_ADD;
-		case Menge::BOP_SUBTRACT:
+		case BOP_SUBTRACT:
 			return D3DBLENDOP_SUBTRACT;
-		case Menge::BOP_REVSUBTRACT:
+		case BOP_REVSUBTRACT:
 			return D3DBLENDOP_REVSUBTRACT;
-		case Menge::BOP_MIN:
+		case BOP_MIN:
 			return D3DBLENDOP_MIN;
-		case Menge::BOP_MAX:
+		case BOP_MAX:
 			return D3DBLENDOP_MAX;
 		}
 		return D3DBLENDOP_ADD;
@@ -174,17 +174,17 @@ namespace Menge
 	{
 		switch( _type )
 		{
-		case Menge::PT_POINTLIST:
+		case PT_POINTLIST:
 			return D3DPT_POINTLIST;
-		case Menge::PT_LINELIST:
+		case PT_LINELIST:
 			return D3DPT_LINELIST;
-		case Menge::PT_LINESTRIP:
+		case PT_LINESTRIP:
 			return D3DPT_LINESTRIP;
-		case Menge::PT_TRIANGLELIST:
+		case PT_TRIANGLELIST:
 			return D3DPT_TRIANGLELIST;
-		case Menge::PT_TRIANGLESTRIP:
+		case PT_TRIANGLESTRIP:
 			return D3DPT_TRIANGLESTRIP;
-		case Menge::PT_TRIANGLEFAN:
+		case PT_TRIANGLEFAN:
 			return D3DPT_TRIANGLEFAN;
 		}
 		return D3DPT_POINTLIST;

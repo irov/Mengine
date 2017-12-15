@@ -158,7 +158,7 @@ namespace Menge
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
+	void Model3D::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{		
 		if( m_frame == nullptr )
 		{

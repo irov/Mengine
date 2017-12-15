@@ -350,7 +350,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
+	void ParticleEmitter2::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
 		if( this->isPlay() == false )
 		{

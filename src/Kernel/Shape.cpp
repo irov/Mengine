@@ -71,7 +71,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Shape::_update( float _current, float _timing )
     {
-        if( m_surface->update( _current, _timing ) == true )
+        bool invalidate = m_surface->update( _current, _timing );
+
+        if( invalidate == true )
         {
             this->invalidateVerticesLocal();
             this->invalidateVerticesColor();

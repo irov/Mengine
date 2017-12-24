@@ -12,6 +12,8 @@
 #	include "Core/String.h"
 #	include "Core/StringFormat.h"
 
+#	include "TextLine.h"
+
 #	include "Math/box2.h"
 
 #	include "pybind/system.hpp"

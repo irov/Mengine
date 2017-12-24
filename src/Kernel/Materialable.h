@@ -2,12 +2,12 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
-#	include "Kernel/ResourceImage.h"
-
 #	include "Core/ConstString.h"
 
 namespace Menge
 {
+    typedef stdex::intrusive_ptr<class ResourceImage> ResourceImagePtr;
+
 	enum EMaterialBlendMode 
 	{	
 		EMB_NORMAL,

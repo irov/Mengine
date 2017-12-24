@@ -28,6 +28,35 @@ namespace Menge
 	{
 		return m_fileName;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceParticle::setConverterType( const ConstString & _converterType )
+    {
+        m_converterType = _converterType;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & ResourceParticle::getConverterType() const
+    {
+        return m_converterType;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceParticle::addResourceImage( const ResourceImagePtr & _resourceImage )
+    {
+        m_resourceImages.push_back( _resourceImage );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t ResourceParticle::getResourceImageCount() const
+    {
+        TVectorResourceImages::size_type resourceImageCount = m_resourceImages.size();
+
+        return (uint32_t)resourceImageCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & ResourceParticle::getResourceImage( uint32_t _index ) const
+    {
+        const ResourceImagePtr & resourceImage = m_resourceImages[_index];
+
+        return resourceImage;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceParticle::_loader( const Metabuf::Metadata * _meta )
 	{
@@ -39,7 +68,7 @@ namespace Menge
 
 		uint32_t atlasCount = metadata->get_AtlasCount_Value();
 
-		m_resourceImageNames.resize( atlasCount );
+		m_resourceImages.resize( atlasCount );
 
 		const Metacode::Meta_DataBlock::Meta_ResourceParticle::TVectorMeta_Atlas & includes_atlas = metadata->get_IncludesAtlas();
 
@@ -54,7 +83,21 @@ namespace Menge
 			uint32_t index = atlas.get_Index();
 			const ConstString & resourceName = atlas.get_ResourceName();
 
-			m_resourceImageNames[index] = resourceName;
+            ResourceImagePtr resourceImage = RESOURCE_SERVICE( m_serviceProvider )
+                ->getResourceReferenceT<ResourceImagePtr>( resourceName );
+
+            if( resourceImage == nullptr )
+            {
+                LOGGER_ERROR( m_serviceProvider )("ResourceParticle::_loader %s container %s can't get atlas image %s"
+                    , this->getName().c_str()
+                    , m_fileName.c_str()
+                    , resourceName.c_str()
+                    );
+
+                return false;
+            }
+
+			m_resourceImages[index] = resourceImage;
 		}
 
 		return true;
@@ -99,26 +142,6 @@ namespace Menge
 			return false;
 		}
 
-		for( TVectorResourceImageName::const_iterator
-			it = m_resourceImageNames.begin(),
-			it_end = m_resourceImageNames.end();
-		it != it_end;
-		++it )
-		{            
-			const ConstString & name = *it;
-
-			if( RESOURCE_SERVICE(m_serviceProvider)
-				->hasResource( name, nullptr ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceParticle::_isValid %s can't get image resource '%s'"
-					, m_name.c_str()
-					, name.c_str()
-					);
-
-				return false;
-			}            
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -139,28 +162,14 @@ namespace Menge
 			return false;
 		}
 
-		for( TVectorResourceImageName::size_type
+		for( TVectorResourceImages::size_type
 			it = 0,
-			it_end = m_resourceImageNames.size();
+			it_end = m_resourceImages.size();
 		it != it_end;
 		++it )
 		{
-			const ConstString & resourceName = m_resourceImageNames[it];
-
-			ResourceImagePtr resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceT<ResourceImagePtr>( resourceName );
-
-			if( resourceImage == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceParticle::_compile %s container %s can't get atlas image %s"
-					, this->getName().c_str()
-					, m_fileName.c_str()
-					, resourceName.c_str()
-					);
-
-				return false;
-			}
-
+			const ResourceImagePtr & resourceImage = m_resourceImages[it];
+                        
 			container->setAtlasResourceImage( it, resourceImage );
 		}
 

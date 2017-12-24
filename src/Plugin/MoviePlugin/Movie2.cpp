@@ -12,7 +12,6 @@
 #   include "Menge/HotSpotPolygon.h"
 
 #	include "Kernel/Materialable.h"
-#   include "Kernel/MatrixProxy.h"
 
 #	include "Logger/Logger.h"
 
@@ -246,21 +245,61 @@ namespace Menge
 
         ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
 
-        const char * layer_name = ae_get_movie_layer_data_name( _callbackData->layer );
+        const aeMovieLayerData * layer = _callbackData->layer;
+
+        const char * layer_name = ae_get_movie_layer_data_name( layer );
 
         ConstString c_name = Helper::stringizeString( serviceProvider, layer_name );
 
-        ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( _callbackData->layer );
+        ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( layer );
 
         if( is_track_matte == AE_TRUE )
         {
             return nullptr;
         }
 
-        aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( _callbackData->layer );
+        aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( layer );
 
         switch( type )
         {
+        case AE_MOVIE_LAYER_TYPE_TEXT:
+            {
+                TextField * text = PROTOTYPE_SERVICE( serviceProvider )
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "TextField" ) );
+
+                text->setName( c_name );
+
+                text->setTextID( c_name );
+                
+                if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_HORIZONTAL_CENTER ) == AE_TRUE )
+                {
+                    text->setHorizontalCenterAlign();
+                }
+
+                if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_VERTICAL_CENTER ) == AE_TRUE )
+                {
+                    text->setVerticalCenterAlign();
+                }
+                
+                movie2->addText( c_name, text );
+
+                MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
+
+                matrixProxy->setName( c_name );
+
+                mt::mat4f pm;
+                pm.from_f16( _callbackData->matrix );
+                matrixProxy->setProxyMatrix( pm );
+
+                matrixProxy->addChild( text );
+
+                movie2->addChild( matrixProxy );
+
+                movie2->addMatrixProxy( matrixProxy );
+
+                return text;
+            }break;
         case AE_MOVIE_LAYER_TYPE_SLOT:
             {
                 Movie2Slot * slot = PROTOTYPE_SERVICE( serviceProvider )
@@ -288,6 +327,8 @@ namespace Menge
                 matrixProxy->addChild( slot );
 
                 movie2->addChild( matrixProxy );
+
+                movie2->addMatrixProxy( matrixProxy );
 
                 return slot;
             }break;
@@ -328,6 +369,8 @@ namespace Menge
                 matrixProxy->addChild( hotspotpolygon );
 
                 movie2->addChild( matrixProxy );
+
+                movie2->addMatrixProxy( matrixProxy );
 
                 return hotspotpolygon;
             }break;
@@ -382,6 +425,65 @@ namespace Menge
         {
             switch( type )
             {
+            case AE_MOVIE_LAYER_TYPE_PARTICLE:
+                {
+                    ParticleEmitter2 * particleEmitter = NODE_SERVICE( serviceProvider )
+                        ->createNodeT<ParticleEmitter2 *>( STRINGIZE_STRING_LOCAL( serviceProvider, "ParticleEmitter2" ) );
+
+                    particleEmitter->setName( c_name );
+
+                    ResourceParticle * resourceParticle = (ResourceParticle *)ae_get_movie_layer_data_resource_data( _callbackData->layer );
+
+                    particleEmitter->setResourceParticle( resourceParticle );
+
+                    EMaterialBlendMode blend_mode = EMB_NORMAL;
+
+                    ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
+
+                    switch( layer_blend_mode )
+                    {
+                    case AE_MOVIE_BLEND_ADD:
+                        blend_mode = EMB_ADD;
+                        break;
+                    case AE_MOVIE_BLEND_SCREEN:
+                        blend_mode = EMB_SCREEN;
+                        break;
+                    case AE_MOVIE_BLEND_MULTIPLY:
+                        blend_mode = EMB_MULTIPLY;
+                        break;
+                    };
+
+                    ae_float_t layer_stretch = ae_get_movie_layer_data_stretch( _callbackData->layer );
+                    particleEmitter->setStretch( layer_stretch );
+
+                    ae_bool_t layer_loop = ae_has_movie_layer_data_param( _callbackData->layer, AE_MOVIE_LAYER_PARAM_LOOP );
+                    particleEmitter->setLoop( layer_loop || _callbackData->incessantly );
+
+                    particleEmitter->setEmitterPositionRelative( true );
+                    particleEmitter->setEmitterCameraRelative( false );
+                    particleEmitter->setEmitterTranslateWithParticle( false );
+
+                    particleEmitter->setEmitterPositionProviderOriginOffset( -mt::vec3f( 1024.f, 1024.f, 0.f ) );
+
+                    movie2->addParticle( particleEmitter );
+
+                    MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
+
+                    matrixProxy->setName( c_name );
+
+                    mt::mat4f pm;
+                    pm.from_f16( _callbackData->matrix );
+                    matrixProxy->setProxyMatrix( pm );
+
+                    matrixProxy->addChild( particleEmitter );
+
+                    movie2->addChild( matrixProxy );
+
+                    movie2->addMatrixProxy( matrixProxy );
+
+                    return particleEmitter;
+                }break;
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
                     SurfaceVideo * surfaceVideo = PROTOTYPE_SERVICE( serviceProvider )
@@ -441,6 +543,7 @@ namespace Menge
     static void __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, void * _data )
     {
         Movie2 * movie2 = (Movie2 *)_data;
+        (void)movie2;
 
         ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( _callbackData->layer );
 
@@ -457,9 +560,9 @@ namespace Menge
             {
             case AE_MOVIE_LAYER_TYPE_IMAGE:
                 {
-                    SurfaceTrackMatte * surfaceTrackMatte = (SurfaceTrackMatte *)_callbackData->element;
+                    //SurfaceTrackMatte * surfaceTrackMatte = (SurfaceTrackMatte *)_callbackData->element;
                     
-                    movie2->removeSurface( surfaceTrackMatte );
+                    //movie2->removeSurface( surfaceTrackMatte );
                 }break;
             default:
                 {
@@ -470,17 +573,23 @@ namespace Menge
         {
             switch( type )
             {
+            case AE_MOVIE_LAYER_TYPE_PARTICLE:
+                {
+                    //ParticleEmitter2 * particleEmitter = (ParticleEmitter2 *)_callbackData->element;
+
+                    //movie2->removeParticle( particleEmitter );
+                }break;
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
-                    SurfaceVideo * surfaceVideo = (SurfaceVideo *)_callbackData->element;
+                    //SurfaceVideo * surfaceVideo = (SurfaceVideo *)_callbackData->element;
 
-                    movie2->removeSurface( surfaceVideo );
+                    //movie2->removeSurface( surfaceVideo );
                 }break;
             case AE_MOVIE_LAYER_TYPE_SOUND:
                 {
-                    SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+                    //SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
 
-                    movie2->removeSurface( surfaceSound );
+                    //movie2->removeSurface( surfaceSound );
                 }break;
             }
         }
@@ -500,46 +609,53 @@ namespace Menge
             {
                 switch( type )
                 {
+                case AE_MOVIE_LAYER_TYPE_TEXT:
+                    {
+                        TextField * node = (TextField *)_callbackData->element;
+
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * nodeParentMatrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        nodeParentMatrixProxy->setProxyMatrix( mp );
+                    }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
-                        //printf( "AE_MOVIE_LAYER_TYPE_PARTICLE %f %f\n"
-                        //	, _matrix[12]
-                        //	, _matrix[13]
-                        //	);
+                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
+
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * nodeParentMatrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        nodeParentMatrixProxy->setProxyMatrix( mp );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SLOT:
                     {
-                        //printf( "AE_MOVIE_LAYER_TYPE_SLOT %f %f\n"
-                        //	, _matrix[12]
-                        //	, _matrix[13]
-                        //	);
+                        Movie2Slot * node = (Movie2Slot *)_callbackData->element;
 
-                        Movie2Slot * slot = (Movie2Slot *)_callbackData->element;
+                        Node * slot_parent = node->getParent();
 
-                        Node * slot_parent = slot->getParent();
-
-                        MatrixProxy * slot_matrix_proxy = static_node_cast<MatrixProxy *>( slot_parent );
+                        MatrixProxy * nodeParentMatrixProxy = static_node_cast<MatrixProxy *>( slot_parent );
 
                         mt::mat4f mp;
                         mp.from_f16( _callbackData->matrix );
-                        slot_matrix_proxy->setProxyMatrix( mp );
+                        nodeParentMatrixProxy->setProxyMatrix( mp );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOCKET:
                     {
-                        //printf( "AE_MOVIE_LAYER_TYPE_SLOT %f %f\n"
-                        //	, _matrix[12]
-                        //	, _matrix[13]
-                        //	);
+                        HotSpotPolygon * node = (HotSpotPolygon *)_callbackData->element;
 
-                        HotSpotPolygon * hotspot = (HotSpotPolygon *)_callbackData->element;
+                        Node * nodeParent = node->getParent();
 
-                        Node * slot_parent = hotspot->getParent();
-
-                        MatrixProxy * slot_matrix_proxy = static_node_cast<MatrixProxy *>(slot_parent);
+                        MatrixProxy * nodeParentMatrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
 
                         mt::mat4f mp;
                         mp.from_f16( _callbackData->matrix );
-                        slot_matrix_proxy->setProxyMatrix( mp );
+                        nodeParentMatrixProxy->setProxyMatrix( mp );
                     }break;
                 }
             }break;
@@ -547,30 +663,44 @@ namespace Menge
             {
                 switch( type )
                 {
-                case AE_MOVIE_LAYER_TYPE_VIDEO:
+                case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
-                        SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+                        ParticleEmitter2 * animatable = (ParticleEmitter2 *)_callbackData->element;
 
                         float time = TIMELINE_SERVICE( serviceProvider )
                             ->getTime();
 
-                        surfaceVide->setTiming( _callbackData->offset );
+                        animatable->setTiming( _callbackData->offset );
 
-                        if( surfaceVide->play( time ) == 0 )
+                        if( animatable->play( time ) == 0 )
+                        {
+                            return;
+                        }
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_VIDEO:
+                    {
+                        SurfaceVideo * animatable = (SurfaceVideo *)_callbackData->element;
+
+                        float time = TIMELINE_SERVICE( serviceProvider )
+                            ->getTime();
+
+                        animatable->setTiming( _callbackData->offset );
+
+                        if( animatable->play( time ) == 0 )
                         {
                             return;
                         }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOUND:
                     {
-                        SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+                        SurfaceSound * animatable = (SurfaceSound *)_callbackData->element;
 
                         float time = TIMELINE_SERVICE( serviceProvider )
                             ->getTime();
 
-                        surfaceSound->setTiming( _callbackData->offset );
+                        animatable->setTiming( _callbackData->offset );
 
-                        if( surfaceSound->play( time ) == 0 )
+                        if( animatable->play( time ) == 0 )
                         {
                             return;
                         }
@@ -581,17 +711,23 @@ namespace Menge
             {
                 switch( type )
                 {
+                case AE_MOVIE_LAYER_TYPE_PARTICLE:
+                    {
+                        ParticleEmitter2 * animatable = (ParticleEmitter2 *)_callbackData->element;
+
+                        animatable->stop();
+                    }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
-                        SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+                        SurfaceVideo * animatable = (SurfaceVideo *)_callbackData->element;
 
-                        surfaceVide->stop();
+                        animatable->stop();
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOUND:
                     {
-                        SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+                        SurfaceSound * animatable = (SurfaceSound *)_callbackData->element;
 
-                        surfaceSound->stop();
+                        animatable->stop();
                     }break;
                 }
             }break;
@@ -599,17 +735,23 @@ namespace Menge
             {
                 switch( type )
                 {
+                case AE_MOVIE_LAYER_TYPE_PARTICLE:
+                    {
+                        ParticleEmitter2 * animatable = (ParticleEmitter2 *)_callbackData->element;
+
+                        animatable->pause();
+                    }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
-                        SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+                        SurfaceVideo * animatable = (SurfaceVideo *)_callbackData->element;
 
-                        surfaceVide->pause();
+                        animatable->pause();
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOUND:
                     {
-                        SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+                        SurfaceSound * animatable = (SurfaceSound *)_callbackData->element;
 
-                        surfaceSound->pause();
+                        animatable->pause();
                     }break;
                 }
             }break;
@@ -617,23 +759,32 @@ namespace Menge
             {
                 switch( type )
                 {
-                case AE_MOVIE_LAYER_TYPE_VIDEO:
+                case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
-                        SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+                        ParticleEmitter2 * animatable = (ParticleEmitter2 *)_callbackData->element;
 
                         float time = TIMELINE_SERVICE( serviceProvider )
                             ->getTime();
 
-                        surfaceVide->resume( time );
+                        animatable->resume( time );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_VIDEO:
+                    {
+                        SurfaceVideo * animatable = (SurfaceVideo *)_callbackData->element;
+
+                        float time = TIMELINE_SERVICE( serviceProvider )
+                            ->getTime();
+
+                        animatable->resume( time );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOUND:
                     {
-                        SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+                        SurfaceSound * animatable = (SurfaceSound *)_callbackData->element;
 
                         float time = TIMELINE_SERVICE( serviceProvider )
                             ->getTime();
 
-                        surfaceSound->resume( time );
+                        animatable->resume( time );
                     }break;
                 }
             }break;
@@ -881,6 +1032,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_release()
     {
+        ae_delete_movie_composition( m_composition );
+        m_composition = nullptr;
+
         m_meshes.clear();
         m_cameras.clear();
 
@@ -894,6 +1048,8 @@ namespace Menge
 
             surface->release();
         }
+
+        m_surfaces.clear();
         
         for( TMapSlots::iterator
             it = m_slots.begin(),
@@ -921,8 +1077,18 @@ namespace Menge
 
         m_sockets.clear();
 
-        ae_delete_movie_composition( m_composition );
-        m_composition = nullptr;
+        for( TVectorMatrixProxies::iterator
+            it = m_matrixProxies.begin(),
+            it_end = m_matrixProxies.end();
+            it != it_end;
+            ++it )
+        {
+            MatrixProxy * matrixProxy = *it;
+
+            matrixProxy->destroy();
+        }
+
+        m_matrixProxies.clear();
 
         m_resourceMovie2.release();
 
@@ -1453,6 +1619,20 @@ namespace Menge
         m_surfaces.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2::addParticle( ParticleEmitter2 * _particleEmitter )
+    {
+        m_particleEmitters.push_back( _particleEmitter );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::removeParticle( ParticleEmitter2 * _particleEmitter )
+    {
+        _particleEmitter->release();
+
+        TVectorParticleEmitter2s::iterator it_found = std::find( m_particleEmitters.begin(), m_particleEmitters.end(), _particleEmitter );
+
+        m_particleEmitters.erase( it_found );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Movie2::addSlot( const ConstString & _name, Movie2Slot * _slot )
     {
         m_slots.insert( std::make_pair( _name, _slot ) );
@@ -1513,5 +1693,15 @@ namespace Menge
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::addText( const ConstString & _name, TextField * _text )
+    {
+        m_texts.insert( std::make_pair( _name, _text ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::addMatrixProxy( MatrixProxy * _matrixProxy )
+    {
+        m_matrixProxies.push_back( _matrixProxy );
     }
 }

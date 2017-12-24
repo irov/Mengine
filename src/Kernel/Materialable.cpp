@@ -1,6 +1,7 @@
 #	include "Materialable.h"
 
 #	include "Logger/Logger.h"
+#	include "Kernel/ResourceImage.h"
 
 namespace Menge
 {

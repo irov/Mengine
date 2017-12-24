@@ -6,8 +6,11 @@
 
 #	include "Kernel/RenderCameraProjection.h"
 #	include "Kernel/RenderViewport.h"
+#   include "Kernel/MatrixProxy.h"
 
 #   include "Menge/HotSpotPolygon.h"
+#   include "Menge/ParticleEmitter2.h"
+#   include "Menge/TextField.h"
 
 #   include "ResourceMovie2.h"
 #   include "Movie2Slot.h"
@@ -95,6 +98,10 @@ namespace Menge
         void removeSurface( const SurfacePtr & _surface );
 
     public:
+        void addParticle( ParticleEmitter2 * _particleEmitter );
+        void removeParticle( ParticleEmitter2 * _particleEmitter );
+
+    public:
         void addSlot( const ConstString & _name, Movie2Slot * _slot );
         Movie2Slot * getSlot( const ConstString & _name ) const;
         bool hasSlot( const ConstString & _name ) const;
@@ -103,6 +110,12 @@ namespace Menge
         void addSocketShape( const ConstString & _name, HotSpotPolygon * _hotspot );
         HotSpot * getSocket( const ConstString & _name ) const;
         bool hasSocket( const ConstString & _name ) const;
+
+    public:
+        void addText( const ConstString & _name, TextField * _text );
+
+    public:
+        void addMatrixProxy( MatrixProxy * _matrixProxy );
         
 	public:
 		struct Camera
@@ -146,5 +159,14 @@ namespace Menge
 
         typedef stdex::map<ConstString, HotSpot *> TMapSockets;
         TMapSockets m_sockets;
+
+        typedef stdex::map<ConstString, TextField *> TMapTexts;
+        TMapTexts m_texts;
+
+        typedef stdex::vector<ParticleEmitter2 *> TVectorParticleEmitter2s;
+        TVectorParticleEmitter2s m_particleEmitters;
+
+        typedef stdex::vector<MatrixProxy *> TVectorMatrixProxies;
+        TVectorMatrixProxies m_matrixProxies;
 	};
 }

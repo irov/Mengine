@@ -1,6 +1,7 @@
 # pragma once
 
 #	include "Interface/NotificationServiceInterface.h"
+#	include "Interface/TextInterface.h"
 
 #	include "Kernel/Node.h"
 #	include "Kernel/Materialable.h"
@@ -9,14 +10,11 @@
 #	include "Core/ValueInterpolator.h"
 #	include "Core/ConstString.h"
 
-#	include "TextLine.h"
-
 #	include "Math/vec4.h"
-
-#	include <list>
 
 namespace Menge
 {
+    class TextLine;
 	typedef stdex::vector<TextLine> TVectorTextLine;
 	
 	class TextField

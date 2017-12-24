@@ -493,7 +493,7 @@ namespace Menge
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void parse_arg( const std::wstring & _str, Menge::WString & _value )
+static void parse_arg( const std::wstring & _str, Menge::WString & _value )
 {
 	_value = Menge::WString( _str.begin(), _str.end() );
 }

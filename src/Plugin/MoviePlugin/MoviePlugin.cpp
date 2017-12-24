@@ -225,6 +225,8 @@ namespace Menge
             .def_proxy_native_kernel( "setEventListener", this, &MoviePlugin::Movie2_setEventListener )
             .def( "getSlot", &Movie2::getSlot )
             .def( "hasSlot", &Movie2::hasSlot )
+            .def( "getSocket", &Movie2::getSocket )
+            .def( "hasSocket", &Movie2::hasSocket )
             .def( "setEnableMovieLayers", &Movie2::setEnableMovieLayers )
 			;
 

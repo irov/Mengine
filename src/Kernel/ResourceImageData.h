@@ -1,8 +1,10 @@
 #	pragma once
 
-#	include "Kernel/ResourceImage.h"
+#	include "Kernel/ResourceReference.h"
 
 #	include "Config/Typedef.h"
+
+#   include "Math/vec2.h"
 
 namespace Menge
 {

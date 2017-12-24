@@ -39,6 +39,7 @@ namespace Menge
 		ResourceReference * createResourceImage_( const ae_string_t _path, float _width, float _height );
 		ResourceReference * createResourceVideo_( const aeMovieResourceVideo * _resource );
 		ResourceReference * createResourceSound_( const aeMovieResourceSound * _resource );
+        ResourceReference * createResourceParticle_( const aeMovieResourceParticle * _resource );
 
 	protected:
 		aeMovieInstance * m_instance;

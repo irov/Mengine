@@ -22,7 +22,6 @@ namespace Menge
 		, m_angle( 0.f )
 		, m_start( false )
 		, m_looped( false )
-		, m_background( false )
 		, m_relative( false )
 	{
 	}
@@ -86,8 +85,6 @@ namespace Menge
             pos.z = 0.f;
 
             Magic_SetEmitterPosition( m_emitterId, &pos );
-
-            m_background = false;
 		}
 		else
 		{
@@ -101,8 +98,6 @@ namespace Menge
             m_rect.y = 0.f;
 			m_rect.z = (float)view.viewport_width;
 			m_rect.w = (float)view.viewport_height;
-
-			m_background = false;
 		}
 
         return true;
@@ -387,14 +382,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::setPositionProvider( ParticlePositionProviderInterface * _positionProvider )
 	{		
-		if( m_background == true && _positionProvider != nullptr )
-		{
-			LOGGER_ERROR( m_serviceProvider )("AstralaxEmitter2::setPositionProvider this particle is background mode!"
-				);
-
-			return false;
-		}
-
 		m_positionProvider = _positionProvider;
 
 		return true;
@@ -402,14 +389,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::setCameraProvider( ParticleCameraProviderInterface * _cameraProvider )
 	{
-		if( m_background == true && _cameraProvider != nullptr )
-		{
-			LOGGER_ERROR( m_serviceProvider )("AstralaxEmitter2::setCameraProvider this particle is background mode!"
-				);
-
-			return false;
-		}
-
 		m_cameraProvider = _cameraProvider;
 
 		return true;
@@ -519,11 +498,6 @@ namespace Menge
 		bool mode = Magic_IsRandomMode( m_emitterId );
 
 		return mode;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::isBackground() const
-	{
-		return m_background;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::prepareParticles( ParticleEmitterRenderFlush & _flush )

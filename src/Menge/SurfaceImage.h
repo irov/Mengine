@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Kernel/Surface.h"
+#   include "Kernel/ResourceHolder.h"
 
 namespace Menge
 {

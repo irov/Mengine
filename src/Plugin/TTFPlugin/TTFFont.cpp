@@ -5,6 +5,7 @@
 #	include "Interface/FileSystemInterface.h"
 
 #	include "Core/MemoryHelper.h"
+#   include "Core/IniUtil.h"
 
 #	include "Logger/Logger.h"
 

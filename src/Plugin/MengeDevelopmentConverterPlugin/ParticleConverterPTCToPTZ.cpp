@@ -13,6 +13,7 @@
 #	include "Core/Stream.h"
 #	include "Core/MemoryHelper.h"
 
+#	include "Kernel/ResourceImage.h"
 
 #   include "Config/Blobject.h"
 

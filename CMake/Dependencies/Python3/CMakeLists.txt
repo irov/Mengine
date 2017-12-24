@@ -261,6 +261,13 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/_io/textio.c
                 ${SOURCE_DIR}/Modules/_io/winconsoleio.c
                 
+                ${SOURCE_DIR}/Modules/_blake2/blake2b_impl.c
+                ${SOURCE_DIR}/Modules/_blake2/blake2module.c
+                ${SOURCE_DIR}/Modules/_blake2/blake2s_impl.c
+                
+                ${SOURCE_DIR}/Modules/_sha3/sha3module.c               
+                
+                
                 ${SOURCE_DIR}/Modules/cjkcodecs/multibytecodec.c
                 
                 ${SOURCE_DIR}/Modules/arraymodule.c

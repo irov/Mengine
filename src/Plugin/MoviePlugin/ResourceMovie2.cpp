@@ -6,6 +6,7 @@
 #	include "Menge/ResourceImageDefault.h"
 #	include "Menge/ResourceVideo.h"
 #	include "Menge/ResourceSound.h"
+#	include "Menge/ResourceParticle.h"
 
 #	include "Metacode/Metacode.h"
 
@@ -55,7 +56,7 @@ namespace Menge
                 ResourceReference * data_resource = resourceMovie2->createResourceVideo_( resource_video );
 
                 return data_resource;
-            }
+            }break;
         case AE_MOVIE_RESOURCE_SOUND:
             {
                 const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
@@ -63,7 +64,15 @@ namespace Menge
                 ResourceReference * data_resource = resourceMovie2->createResourceSound_( resource_sound );
 
                 return data_resource;
-            }
+            }break;
+        case AE_MOVIE_RESOURCE_PARTICLE:
+            {
+                const aeMovieResourceParticle * resource_particle = (const aeMovieResourceParticle *)_resource;
+
+                ResourceReference * data_resource = resourceMovie2->createResourceParticle_( resource_particle );
+
+                return data_resource;
+            }break;
         }
 
         return AE_NULL;
@@ -193,12 +202,15 @@ namespace Menge
 
 		aeMovieStream * movie_stream = ae_create_movie_stream( m_instance, &Mengine_read_stream, &Mengine_copy_stream, stream.get() );
 
-		if( ae_load_movie_data( movieData, movie_stream ) != AE_MOVIE_SUCCESSFUL )
+        ae_result_t result = ae_load_movie_data( movieData, movie_stream );
+
+		if( result != AE_MOVIE_SUCCESSFUL )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s'"
+			LOGGER_ERROR( m_serviceProvider )("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s' result '%d'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, m_filePath.c_str()
+                , result
 				);
 
 			return 0;
@@ -339,4 +351,38 @@ namespace Menge
 
 		return sound.get();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ResourceReference * ResourceMovie2::createResourceParticle_( const aeMovieResourceParticle * _resource )
+    {
+        ResourceParticlePtr particle = RESOURCE_SERVICE( m_serviceProvider )
+            ->generateResourceT<ResourceParticlePtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceParticle" ) );
+
+        const ConstString & category = this->getCategory();
+
+        particle->setCategory( category );
+
+        PathString full_path;
+
+        ConstString folder = Helper::getPathFolder( m_serviceProvider, m_filePath );
+
+        full_path += folder.c_str();
+        full_path += _resource->path;
+
+        FilePath c_path = Helper::stringizeFilePath( m_serviceProvider, full_path );
+
+        particle->setFilePath( c_path );
+
+        for( ae_uint32_t index = 0; index != _resource->image_count; ++index )
+        {
+            const aeMovieResourceImage * movieResourceImage = _resource->images[index];
+
+            ResourceImage * resourceImage = static_cast<ResourceImage *>(movieResourceImage->data);
+            
+            particle->addResourceImage( resourceImage );
+        }
+
+        m_resources.push_back( particle );
+
+        return particle.get();
+    }
 }

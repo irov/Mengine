@@ -8,6 +8,8 @@
 #	include "Core/String.h"
 #	include "Core/Stream.h"
 
+#   include "Kernel/ResourceImage.h"
+
 #   include "Factory/FactoryPool.h"
 
 namespace Menge

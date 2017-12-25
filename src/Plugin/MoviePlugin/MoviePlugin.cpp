@@ -227,6 +227,8 @@ namespace Menge
             .def( "hasSlot", &Movie2::hasSlot )
             .def( "getSocket", &Movie2::getSocket )
             .def( "hasSocket", &Movie2::hasSocket )
+            .def( "getText", &Movie2::getText )
+            .def( "hasText", &Movie2::hasText )
             .def( "setEnableMovieLayers", &Movie2::setEnableMovieLayers )
 			;
 

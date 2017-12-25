@@ -169,6 +169,17 @@ namespace Menge
 		++it )
 		{
 			const ResourceImagePtr & resourceImage = m_resourceImages[it];
+
+            if( resourceImage->incrementReference() == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("ResourceParticle::_compile '%s' file '%s' can't invalid compile resource image '%s'"
+                    , m_name.c_str()
+                    , m_fileName.c_str()
+                    , resourceImage->getName().c_str()
+                    );
+
+                return false;
+            }
                         
 			container->setAtlasResourceImage( it, resourceImage );
 		}
@@ -180,6 +191,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceParticle::_release()
 	{
+        for( TVectorResourceImages::const_iterator
+            it = m_resourceImages.begin(),
+            it_end = m_resourceImages.end();
+            it != it_end;
+            ++it )
+        {
+            const ResourceImagePtr & resourceImage = *it;
+
+            if( resourceImage->decrementReference() == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("ResourceParticle::_release '%s' file '%s' can't invalid compile resource image '%s'"
+                    , m_name.c_str()
+                    , m_fileName.c_str()
+                    , resourceImage->getName().c_str()
+                    );
+            }
+        }
+
 		m_container = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////

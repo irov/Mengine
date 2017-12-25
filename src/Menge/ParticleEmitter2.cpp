@@ -425,6 +425,11 @@ namespace	Menge
 
 				const RenderTextureInterfacePtr & texture = image->getTexture();
 
+                if( texture == nullptr )
+                {
+                    return;
+                }
+
 				textures[i] = texture;
 			}
 

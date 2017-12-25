@@ -1404,12 +1404,14 @@ namespace Menge
                             RenderVertex2D & v = m.vertices[index];
 
                             mt::vec3f vp;
-                            vp.from_f3( &mesh.position[index][0] );
+                            const float * vp3 = mesh.position[index];
+                            vp.from_f3( vp3 );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
                             mt::vec2f uv;
-                            uv.from_f2( &mesh.uv[index][0] );
+                            const float * uv2 = mesh.uv[index];
+                            uv.from_f2( uv2 );
 
                             const mt::uv4f & uv_image = resource_image->getUVImage();
 
@@ -1698,6 +1700,32 @@ namespace Menge
     void Movie2::addText( const ConstString & _name, TextField * _text )
     {
         m_texts.insert( std::make_pair( _name, _text ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    TextField * Movie2::getText( const ConstString & _name ) const
+    {
+        TMapTexts::const_iterator it_found = m_texts.find( _name );
+
+        if( it_found == m_texts.end() )
+        {
+            return nullptr;
+        }
+
+        TextField * text = it_found->second;
+
+        return text;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::hasText( const ConstString & _name ) const
+    {
+        TMapTexts::const_iterator it_found = m_texts.find( _name );
+
+        if( it_found == m_texts.end() )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addMatrixProxy( MatrixProxy * _matrixProxy )

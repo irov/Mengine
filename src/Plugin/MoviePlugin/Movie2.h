@@ -50,6 +50,7 @@ namespace Menge
 		void setWorkAreaFromEvent( const ConstString & _eventName );
 		void removeWorkArea();
 
+    public:
 		void playSubComposition( const ConstString & _name );
 		void stopSubComposition( const ConstString & _name );
 
@@ -113,6 +114,8 @@ namespace Menge
 
     public:
         void addText( const ConstString & _name, TextField * _text );
+        TextField * getText( const ConstString & _name ) const;
+        bool hasText( const ConstString & _name ) const;
 
     public:
         void addMatrixProxy( MatrixProxy * _matrixProxy );

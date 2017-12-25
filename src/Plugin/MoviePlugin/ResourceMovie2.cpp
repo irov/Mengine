@@ -204,7 +204,7 @@ namespace Menge
 
         ae_result_t result = ae_load_movie_data( movieData, movie_stream );
 
-		if( result != AE_MOVIE_SUCCESSFUL )
+		if( result != AE_RESULT_SUCCESSFUL )
 		{
 			LOGGER_ERROR( m_serviceProvider )("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s' result '%d'"
 				, this->getName().c_str()
@@ -255,6 +255,57 @@ namespace Menge
 
 		ResourceReference::_release();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceMovie2::_isValid() const
+    {
+        if( m_filePath.empty() == true )
+        {
+            LOGGER_ERROR( m_serviceProvider )("ResourceMovie::_isValid: '%s' group '%s' don`t have Key Frames Pack Path"
+                , this->getName().c_str()
+                , this->getGroup().c_str()
+                );
+
+            return false;
+        }
+
+        const ConstString & category = this->getCategory();
+
+        InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
+            ->openInputFile( category, m_filePath, false );
+
+        if( stream == nullptr )
+        {
+            LOGGER_ERROR( m_serviceProvider )("ResourceMovie2::_isValid: '%s' group '%s' can`t open file '%s'"
+                , this->getName().c_str()
+                , this->getGroup().c_str()
+                , m_filePath.c_str()
+                );
+
+            return false;
+        }
+
+        aeMovieStream * movie_stream = ae_create_movie_stream( m_instance, &Mengine_read_stream, &Mengine_copy_stream, stream.get() );
+
+        ae_result_t check_result = ae_check_movie_data( movie_stream );
+
+        if( check_result != AE_RESULT_SUCCESSFUL )
+        {
+            const ae_char_t * result_string_info = ae_get_result_string_info( check_result );
+
+            LOGGER_ERROR( m_serviceProvider )("ResourceMovie2::_isValid: '%s' group '%s' file '%s' check movie data invalid '%s'"
+                , this->getName().c_str()
+                , this->getGroup().c_str()
+                , m_filePath.c_str()
+                , result_string_info
+                );
+
+            return false;
+        }
+
+        ae_delete_movie_stream( movie_stream );
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceMovie2::createResourceImage_( const ae_string_t _path, float _width, float _height )
 	{

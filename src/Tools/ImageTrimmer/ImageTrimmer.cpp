@@ -38,7 +38,6 @@ SERVICE_PROVIDER_EXTERN( ServiceProvider )
 
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( UnicodeSystem );
-SERVICE_EXTERN( UnicodeService );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( ArchiveService );
 SERVICE_EXTERN( LoggerService );
@@ -63,8 +62,7 @@ namespace Menge
 		SERVICE_CREATE( serviceProvider, FactoryService );
 
 		SERVICE_CREATE( serviceProvider, UnicodeSystem );
-		SERVICE_CREATE( serviceProvider, UnicodeService );
-
+		
 		SERVICE_CREATE( serviceProvider, StringizeService );
 		SERVICE_CREATE( serviceProvider, ArchiveService );
 

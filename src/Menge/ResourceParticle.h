@@ -19,7 +19,7 @@ namespace Menge
 		ResourceParticle();
 
 	public:
-		void setFilePath( const FilePath& _path );
+		void setFilePath( const FilePath& _filePath );
 		const FilePath& getFilePath() const;
 
     public:
@@ -46,7 +46,7 @@ namespace Menge
 		bool _isValid() const override;
 
 	protected:
-		FilePath m_fileName;
+		FilePath m_filePath;
 
 		ConstString m_converterType;
 

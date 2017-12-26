@@ -180,7 +180,7 @@ namespace Menge
 
         ae_delete_movie_instance( movieInstance );
 
-        if( successful != AE_MOVIE_SUCCESSFUL )
+        if( successful != AE_RESULT_SUCCESSFUL )
         {
             return pybind::ret_none();
         }

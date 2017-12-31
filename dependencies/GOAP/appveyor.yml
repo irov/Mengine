@@ -1,0 +1,23 @@
+version: '{build}'
+
+environment:
+  matrix:
+  # Comilers matrix
+  - env_cmake_generator: "Visual Studio 15 2017"
+    env_cmake_configuration: Debug
+  - env_cmake_generator: "Visual Studio 15 2017"
+    env_cmake_configuration: Release
+  - env_cmake_generator: "Visual Studio 15 2017 Win64"
+    env_cmake_configuration: Debug
+  - env_cmake_generator: "Visual Studio 15 2017 Win64"
+    env_cmake_configuration: Release
+
+build_script:
+- mkdir build_cmake
+- cd build_cmake
+- cmake .. -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+- cmake --build .
+- ctest --output-on-failure
+
+test_script:
+- ctest --build-config %env_cmake_configuration%

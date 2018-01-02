@@ -291,9 +291,10 @@ namespace Menge
                 mt::mat4f pm;
                 pm.from_f16( _callbackData->matrix );
                 matrixProxy->setProxyMatrix( pm );
+                matrixProxy->setLocalAlpha( _callbackData->opacity );
 
                 matrixProxy->addChild( text );
-
+                
                 movie2->addChild( matrixProxy );
 
                 movie2->addMatrixProxy( matrixProxy );
@@ -323,6 +324,7 @@ namespace Menge
                 mt::mat4f pm;
                 pm.from_f16( _callbackData->matrix );
                 matrixProxy->setProxyMatrix( pm );
+                matrixProxy->setLocalAlpha( _callbackData->opacity );
 
                 matrixProxy->addChild( slot );
 
@@ -365,6 +367,7 @@ namespace Menge
                 mt::mat4f pm;
                 pm.from_f16( _callbackData->matrix );
                 matrixProxy->setProxyMatrix( pm );
+                matrixProxy->setLocalAlpha( _callbackData->opacity );
 
                 matrixProxy->addChild( hotspotpolygon );
 
@@ -459,11 +462,11 @@ namespace Menge
                     ae_bool_t layer_loop = ae_has_movie_layer_data_param( _callbackData->layer, AE_MOVIE_LAYER_PARAM_LOOP );
                     particleEmitter->setLoop( layer_loop || _callbackData->incessantly );
 
-                    particleEmitter->setEmitterPositionRelative( true );
+                    particleEmitter->setEmitterPositionRelative( false );
                     particleEmitter->setEmitterCameraRelative( false );
                     particleEmitter->setEmitterTranslateWithParticle( false );
 
-                    particleEmitter->setEmitterPositionProviderOriginOffset( -mt::vec3f( 1024.f, 1024.f, 0.f ) );
+                    //particleEmitter->setEmitterPositionProviderOriginOffset( -mt::vec3f( 1024.f, 1024.f, 0.f ) );
 
                     movie2->addParticle( particleEmitter );
 
@@ -475,6 +478,7 @@ namespace Menge
                     mt::mat4f pm;
                     pm.from_f16( _callbackData->matrix );
                     matrixProxy->setProxyMatrix( pm );
+                    matrixProxy->setLocalAlpha( _callbackData->opacity );
 
                     matrixProxy->addChild( particleEmitter );
 
@@ -615,11 +619,13 @@ namespace Menge
 
                         Node * nodeParent = node->getParent();
 
-                        MatrixProxy * nodeParentMatrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
 
                         mt::mat4f mp;
                         mp.from_f16( _callbackData->matrix );
-                        nodeParentMatrixProxy->setProxyMatrix( mp );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalAlpha( _callbackData->opacity );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
@@ -627,23 +633,27 @@ namespace Menge
 
                         Node * nodeParent = node->getParent();
 
-                        MatrixProxy * nodeParentMatrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
 
                         mt::mat4f mp;
                         mp.from_f16( _callbackData->matrix );
-                        nodeParentMatrixProxy->setProxyMatrix( mp );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalAlpha( _callbackData->opacity );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SLOT:
                     {
                         Movie2Slot * node = (Movie2Slot *)_callbackData->element;
 
-                        Node * slot_parent = node->getParent();
+                        Node * nodeParent = node->getParent();
 
-                        MatrixProxy * nodeParentMatrixProxy = static_node_cast<MatrixProxy *>( slot_parent );
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>( nodeParent );
 
                         mt::mat4f mp;
                         mp.from_f16( _callbackData->matrix );
-                        nodeParentMatrixProxy->setProxyMatrix( mp );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalAlpha( _callbackData->opacity );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOCKET:
                     {
@@ -651,11 +661,13 @@ namespace Menge
 
                         Node * nodeParent = node->getParent();
 
-                        MatrixProxy * nodeParentMatrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
 
                         mt::mat4f mp;
                         mp.from_f16( _callbackData->matrix );
-                        nodeParentMatrixProxy->setProxyMatrix( mp );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalAlpha( _callbackData->opacity );
                     }break;
                 }
             }break;
@@ -665,42 +677,52 @@ namespace Menge
                 {
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
-                        ParticleEmitter2 * animatable = (ParticleEmitter2 *)_callbackData->element;
+                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
+
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalAlpha( _callbackData->opacity );
 
                         float time = TIMELINE_SERVICE( serviceProvider )
                             ->getTime();
 
-                        animatable->setTiming( _callbackData->offset );
+                        node->setTiming( _callbackData->offset );
 
-                        if( animatable->play( time ) == 0 )
+                        if( node->play( time ) == 0 )
                         {
                             return;
                         }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
-                        SurfaceVideo * animatable = (SurfaceVideo *)_callbackData->element;
+                        SurfaceVideo * node = (SurfaceVideo *)_callbackData->element;
 
                         float time = TIMELINE_SERVICE( serviceProvider )
                             ->getTime();
 
-                        animatable->setTiming( _callbackData->offset );
+                        node->setTiming( _callbackData->offset );
 
-                        if( animatable->play( time ) == 0 )
+                        if( node->play( time ) == 0 )
                         {
                             return;
                         }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOUND:
                     {
-                        SurfaceSound * animatable = (SurfaceSound *)_callbackData->element;
+                        SurfaceSound * node = (SurfaceSound *)_callbackData->element;
 
                         float time = TIMELINE_SERVICE( serviceProvider )
                             ->getTime();
 
-                        animatable->setTiming( _callbackData->offset );
+                        node->setTiming( _callbackData->offset );
 
-                        if( animatable->play( time ) == 0 )
+                        if( node->play( time ) == 0 )
                         {
                             return;
                         }
@@ -713,9 +735,19 @@ namespace Menge
                 {
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
-                        ParticleEmitter2 * animatable = (ParticleEmitter2 *)_callbackData->element;
+                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
 
-                        animatable->stop();
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalAlpha( _callbackData->opacity );
+
+                        node->stop();
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
@@ -737,9 +769,19 @@ namespace Menge
                 {
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
-                        ParticleEmitter2 * animatable = (ParticleEmitter2 *)_callbackData->element;
+                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
 
-                        animatable->pause();
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalAlpha( _callbackData->opacity );
+
+                        node->pause();
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
@@ -761,12 +803,22 @@ namespace Menge
                 {
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
-                        ParticleEmitter2 * animatable = (ParticleEmitter2 *)_callbackData->element;
+                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
+
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalAlpha( _callbackData->opacity );
 
                         float time = TIMELINE_SERVICE( serviceProvider )
                             ->getTime();
 
-                        animatable->resume( time );
+                        node->resume( time );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {

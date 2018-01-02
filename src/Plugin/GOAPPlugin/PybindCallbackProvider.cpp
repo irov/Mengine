@@ -5,17 +5,21 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    PybindCallbackProvider::PybindCallbackProvider( const pybind::object & _obj, const pybind::detail::args_operator_t & _args )
+    PybindCallbackProvider::PybindCallbackProvider( const pybind::object & _obj, const pybind::args & _args )
         : m_obj( _obj )
         , m_args( _args )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void PybindCallbackProvider::onCallback( GOAP::CallbackObserver * _callback, bool _skip )
+    void PybindCallbackProvider::onCallback( const GOAP::CallbackObserverPtr & _callback, bool _skip )
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        PyObject * cb = pybind::create_functor( kernel, "PybindCallbackProvider::onCallback", _callback, &GOAP::CallbackObserver::onCallback );
+        PyObject * cb = pybind::create_functor_ptr( kernel, "PybindCallbackProvider::onCallback", _callback.get()
+            , &GOAP::CallbackObserver::IntrusivePtrAddRef
+            , &GOAP::CallbackObserver::IntrusivePtrDecRef
+            , &GOAP::CallbackObserver::onCallback 
+        );
 
         m_obj.call_args( cb, _skip, m_args );
     }

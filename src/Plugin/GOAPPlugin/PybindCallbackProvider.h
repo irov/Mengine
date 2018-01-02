@@ -10,13 +10,13 @@ namespace Menge
         : public GOAP::CallbackProvider
     {
     public:
-        PybindCallbackProvider( const pybind::object & _obj, const pybind::detail::args_operator_t & _args );
+        PybindCallbackProvider( const pybind::object & _obj, const pybind::args & _args );
 
     protected:
-        void onCallback( GOAP::CallbackObserver * _callback, bool _skip ) override;
+        void onCallback( const GOAP::CallbackObserverPtr & _callback, bool _skip ) override;
 
     protected:
         pybind::object m_obj;
-        pybind::detail::args_operator_t m_args;
+        pybind::args m_args;
     };
 }

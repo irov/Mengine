@@ -654,54 +654,57 @@ namespace Menge
 			_flush.meshCount++;
 		}
 	
-		if( m_positionProvider == nullptr )
-		{
-			mt::mat4f vpm;
+        if( m_positionProvider == nullptr )
+        {
+            mt::mat4f vpm;
 
-			bool is3d = this->is3d();
+            bool is3d = this->is3d();
 
-			if( is3d == true )
-			{
-				ParticleCamera pc;
-				if( this->getCamera( pc ) == false )
-				{
-					return false;
-				}
+            if( is3d == true )
+            {
+                ParticleCamera pc;
+                if( this->getCamera( pc ) == false )
+                {
+                    return false;
+                }
 
-				mt::mat4f vm;
-				mt::make_lookat_m4( vm, pc.pos, pc.dir, -pc.up, -1.f );
+                mt::mat4f vm;
+                mt::make_lookat_m4( vm, pc.pos, pc.dir, -pc.up, -1.f );
 
-				mt::mat4f pm;
-				mt::make_projection_fov_m4( pm, pc.fov, pc.aspect, pc.znear, pc.zfar );
+                mt::mat4f pm;
+                mt::make_projection_fov_m4( pm, pc.fov, pc.aspect, pc.znear, pc.zfar );
 
-				mt::mul_m4_m4( vpm, vm, pm );
-			}
-			else
-			{
-				mt::mat4f vm;
-				mt::ident_m4( vm );
+                mt::mul_m4_m4( vpm, vm, pm );
+            }
+            else
+            {
+                mt::mat4f vm;
+                mt::ident_m4( vm );
 
-				mt::mat4f pm;
-				mt::make_projection_ortho_lh_m4( pm, m_rect.x, m_rect.z, m_rect.w, m_rect.y, - 1000.f, 1000.f );
+                mt::mat4f pm;
+                mt::make_projection_ortho_lh_m4( pm, m_rect.x, m_rect.z, m_rect.w, m_rect.y, -1000.f, 1000.f );
 
-				mt::mul_m4_m4( vpm, vm, pm );
-			}
+                mt::mul_m4_m4( vpm, vm, pm );
+            }
 
-			float half_width = (m_rect.z - m_rect.x) * 0.5f;
-			float half_height = (m_rect.w - m_rect.y) * 0.5f;
+            float half_width = (m_rect.z - m_rect.x) * 0.5f;
+            float half_height = (m_rect.w - m_rect.y) * 0.5f;
 
-			for( uint32_t i = 0; i != _flush.vertexCount; ++i )
-			{
-				RenderVertex2D & v = _vertices[i];
+            for( uint32_t i = 0; i != _flush.vertexCount; ++i )
+            {
+                RenderVertex2D & v = _vertices[i];
 
-				mt::vec3f v_vpm;
-				mt::mul_v3_v3_m4_homogenize( v_vpm, v.position, vpm );
+                mt::vec3f v_vpm;
+                mt::mul_v3_v3_m4_homogenize( v_vpm, v.position, vpm );
 
-				v.position.x = (1.f + v_vpm.x) * half_width;
-				v.position.y = (1.f + v_vpm.y) * half_height;
-				v.position.z = v_vpm.z;
-			}
-		}
+                mt::vec3f v_new;
+                v_new.x = (1.f + v_vpm.x) * half_width;
+                v_new.y = (1.f + v_vpm.y) * half_height;
+                v_new.z = v_vpm.z;
+
+                v.position = v_new;
+            }
+        }
 
 		return true;
 	}

@@ -486,7 +486,7 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool movie_setMovieEvent( Movie * _movie, const ConstString & _name, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		bool movie_setMovieEvent( Movie * _movie, const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
 		{
 			Node * node;
 			Movie * submovie;
@@ -1369,7 +1369,7 @@ namespace Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::args & _args )
 			{
 				m_serviceProvider = _serviceProvider;
 				m_cb = _cb;
@@ -1395,7 +1395,7 @@ namespace Menge
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
 			pybind::object m_cb;
-			pybind::detail::args_operator_t m_args;
+			pybind::args m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPtr m_factoryPyObjectTimingListener;
@@ -1414,7 +1414,7 @@ namespace Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::args & _args )
 			{
 				m_serviceProvider = _serviceProvider;
 				m_cb = _cb;
@@ -1432,7 +1432,7 @@ namespace Menge
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
 			pybind::object m_cb;
-			pybind::detail::args_operator_t m_args;
+			pybind::args m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPtr m_factoryPySchedulePipeInterface;
@@ -1490,7 +1490,7 @@ namespace Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::args & _args )
 			{
 				m_serviceProvider = _serviceProvider;
 				m_cb = _cb;
@@ -1511,12 +1511,12 @@ namespace Menge
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
 			pybind::object m_cb;
-			pybind::detail::args_operator_t m_args;
+			pybind::args m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPtr m_factoryPyObjectScheduleListener;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t timing( float _delay, const pybind::object & _listener, const pybind::detail::args_operator_t & _args )
+		uint32_t timing( float _delay, const pybind::object & _listener, const pybind::args & _args )
 		{
 			const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
@@ -1568,7 +1568,7 @@ namespace Menge
 			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t schedule( float _timing, const pybind::object & _script, const pybind::detail::args_operator_t & _args )
+		uint32_t schedule( float _timing, const pybind::object & _script, const pybind::args & _args )
 		{
 			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManager();
@@ -1582,7 +1582,7 @@ namespace Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::detail::args_operator_t & _args )
+		uint32_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::args & _args )
 		{
 			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener->createObject();
 
@@ -1593,7 +1593,7 @@ namespace Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t ScheduleManagerInterface_timing( ScheduleManagerInterface * _scheduleManager, float _delay, const pybind::object & _listener, const pybind::detail::args_operator_t & _args )
+		uint32_t ScheduleManagerInterface_timing( ScheduleManagerInterface * _scheduleManager, float _delay, const pybind::object & _listener, const pybind::args & _args )
 		{
 			DelaySchedulePipeInterface * pipe = m_factoryDelaySchedulePipeInterface->createObject();
 
@@ -1608,7 +1608,7 @@ namespace Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t ScheduleManagerInterface_pipe( ScheduleManagerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _listener, const pybind::detail::args_operator_t & _args )
+		uint32_t ScheduleManagerInterface_pipe( ScheduleManagerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _listener, const pybind::args & _args )
 		{
 			PySchedulePipeInterface * pipe = m_factoryPySchedulePipeInterface->createObject();
 
@@ -1720,7 +1720,7 @@ namespace Menge
 			return time;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_scheduleGlobal( float _timing, const pybind::object & _script, const pybind::detail::args_operator_t & _args )
+		uint32_t s_scheduleGlobal( float _timing, const pybind::object & _script, const pybind::args & _args )
 		{
 			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
 				->getScheduleManagerGlobal();
@@ -1872,7 +1872,7 @@ namespace Menge
 			: public SceneChangeCallbackInterface
 		{
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::args & _args )
 			{
 				m_serviceProvider = _serviceProvider;
 
@@ -1906,14 +1906,14 @@ namespace Menge
 			ServiceProviderInterface * m_serviceProvider;
 
 			pybind::object m_cb;
-			pybind::detail::args_operator_t m_args;
+			pybind::args m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		typedef stdex::intrusive_ptr<PythonSceneChangeCallback> PythonSceneChangeCallbackPtr;
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPtr m_factoryPythonSceneChangeCallback;
 		//////////////////////////////////////////////////////////////////////////
-		bool setCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _destroyOld, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		bool setCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
 		{
 			LOGGER_INFO( m_serviceProvider )("set current scene '%s'"
 				, _name.c_str()
@@ -2988,7 +2988,7 @@ namespace Menge
 			: public HttpReceiver
 		{
 		public:
-			PyHttpReceiver( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+			PyHttpReceiver( const pybind::object & _cb, const pybind::args & _args )
 				: m_cb( _cb )
 				, m_args( _args )
 			{
@@ -3002,11 +3002,11 @@ namespace Menge
 
 		protected:
 			pybind::object m_cb;
-			pybind::detail::args_operator_t m_args;
+			pybind::args m_args;
 
 		};		
 		//////////////////////////////////////////////////////////////////////////
-		HttpRequestID s_downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _filepath, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		HttpRequestID s_downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _filepath, const pybind::object & _cb, const pybind::args & _args )
 		{
 			uint32_t id = HTTP_SYSTEM( m_serviceProvider )
 				->downloadAsset( _url, _login, _password, _category, _filepath, new PyHttpReceiver( _cb, _args ) );
@@ -3014,7 +3014,7 @@ namespace Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		HttpRequestID s_postMessage( const String & _url, const TMapParams & _params, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		HttpRequestID s_postMessage( const String & _url, const TMapParams & _params, const pybind::object & _cb, const pybind::args & _args )
 		{
 			HttpRequestID id = HTTP_SYSTEM( m_serviceProvider )
 				->postMessage( _url, _params, new PyHttpReceiver( _cb, _args ) );
@@ -3022,7 +3022,7 @@ namespace Menge
 			return id;
 		}
         //////////////////////////////////////////////////////////////////////////
-        HttpRequestID s_headerData( const String & _url, const TVectorString & _headers, const String & _data, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+        HttpRequestID s_headerData( const String & _url, const TVectorString & _headers, const String & _data, const pybind::object & _cb, const pybind::args & _args )
         {
             HttpRequestID id = HTTP_SYSTEM( m_serviceProvider )
                 ->headerData( _url, _headers, _data, new PyHttpReceiver( _cb, _args ) );
@@ -3030,7 +3030,7 @@ namespace Menge
             return id;
         }
 		//////////////////////////////////////////////////////////////////////////
-		HttpRequestID s_getMessage( const String & _url, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		HttpRequestID s_getMessage( const String & _url, const pybind::object & _cb, const pybind::args & _args )
 		{
 			HttpRequestID id = HTTP_SYSTEM( m_serviceProvider )
 				->getMessage( _url, new PyHttpReceiver( _cb, _args ) );
@@ -3341,6 +3341,50 @@ namespace Menge
 
 			return true;
 		}
+        //////////////////////////////////////////////////////////////////////////
+        class PyPrefetcherObserver
+            : public FactorableUnique<PrefetcherObserverInterface>
+        {
+        public:
+            PyPrefetcherObserver( const pybind::object & _cb, const pybind::args & _args )
+                : m_cb( _cb )
+                , m_args( _args )
+                , m_count( 0 )
+                , m_successful( true )
+            {
+            }
+
+        public:
+
+
+        protected:
+            void onPrefetchPreparation() override
+            {
+                ++m_count;
+            }
+
+            bool onPrefetchRun() override
+            {
+                return true;
+            }
+
+            void onPrefetchComplete( bool _successful ) override
+            {
+                m_successful &= _successful;
+
+                if( --m_count == 0 )
+                {
+                    m_cb.call_args( m_successful, m_args );
+                }
+            }
+
+        protected:
+            pybind::object m_cb;
+            pybind::args m_args;
+
+            uint32_t m_count;
+            bool m_successful;
+        };
 		//////////////////////////////////////////////////////////////////////////
 		class PrefetchResourceVisitor
 			: public Visitor
@@ -3350,9 +3394,11 @@ namespace Menge
 			, public ConcreteVisitor<ResourceMovie>
 		{
 		public:
-			PrefetchResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category )
+			PrefetchResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const PrefetcherObserverInterfacePtr & _observer )
 				: m_serviceProvider( _serviceProvider )
 				, m_category( _category )
+                , m_observer( _observer )
+                , m_process( false )
 			{
 			}
 
@@ -3360,14 +3406,23 @@ namespace Menge
 			{
 			}
 
+        public:
+            bool isProcess() const
+            {
+                return m_process;
+            }
+
 		protected:
 			void accept( ResourceImageDefault * _resource ) override
 			{
 				const FilePath & filePath = _resource->getFilePath();
 				const ConstString & codecType = _resource->getCodecType();
 
-				PREFETCHER_SERVICE( m_serviceProvider )
-					->prefetchImageDecoder( m_category, filePath, codecType );
+                if( PREFETCHER_SERVICE( m_serviceProvider )
+                    ->prefetchImageDecoder( m_category, filePath, codecType, m_observer ) == true )
+                {
+                    m_process = true;
+                }
 			}
 
 			void accept( ResourceHIT * _resource ) override
@@ -3380,8 +3435,11 @@ namespace Menge
 				const FilePath & filePath = _resource->getFilePath();
 				const ConstString & codecType = _resource->getCodecType();
 
-				PREFETCHER_SERVICE( m_serviceProvider )
-					->prefetchSoundDecoder( m_category, filePath, codecType );
+                if( PREFETCHER_SERVICE( m_serviceProvider )
+                    ->prefetchSoundDecoder( m_category, filePath, codecType, m_observer ) == true )
+                {
+                    m_process = true;
+                }
 			}
 
 			void accept( ResourceMovie * _resource ) override
@@ -3389,21 +3447,30 @@ namespace Menge
 				const FilePath & filePath = _resource->getFilePath();
 				const ConstString & dataflowType = _resource->getDataflowType();
 
-				PREFETCHER_SERVICE( m_serviceProvider )
-					->prefetchData( m_category, filePath, dataflowType );
+                if( PREFETCHER_SERVICE( m_serviceProvider )
+                    ->prefetchData( m_category, filePath, dataflowType, m_observer ) == true )
+                {
+                    m_process = true;
+                }
 			}
 
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
 			ConstString m_category;
+            PrefetcherObserverInterfacePtr m_observer;
+            bool m_process;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		void s_prefetchResources( const ConstString & _category, const ConstString & _groupName )
+		bool s_prefetchResources( const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb, const pybind::args & _args )
 		{
-			PrefetchResourceVisitor rv_gac( m_serviceProvider, _category );
+			PrefetchResourceVisitor rv_gac( m_serviceProvider, _category, new PyPrefetcherObserver( _cb, _args ) );
 
 			RESOURCE_SERVICE( m_serviceProvider )
-				->visitGroupResources( _category, _groupName, &rv_gac );
+                ->visitGroupResources( _category, _groupName, &rv_gac );
+
+            bool process = rv_gac.isProcess();
+
+            return process;            
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class UnfetchResourceVisitor
@@ -4024,7 +4091,7 @@ namespace Menge
 			: public Affector
 		{
 		public:
-			bool initialize( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+			bool initialize( const pybind::object & _cb, const pybind::args & _args )
 			{
 				m_cb = _cb;
 				m_args = _args;
@@ -4050,12 +4117,12 @@ namespace Menge
 
 		protected:
 			pybind::object m_cb;
-			pybind::detail::args_operator_t m_args;
+			pybind::args m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPtr m_factoryAffectorUser;
 		//////////////////////////////////////////////////////////////////////////		
-		Affector * s_createAffector( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		Affector * s_createAffector( const pybind::object & _cb, const pybind::args & _args )
 		{
 			AffectorUser * affector = m_factoryAffectorUser->createObject();
 
@@ -4069,7 +4136,7 @@ namespace Menge
 			return affector;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		AFFECTOR_ID s_addAffector( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		AFFECTOR_ID s_addAffector( const pybind::object & _cb, const pybind::args & _args )
 		{
 			AffectorUser * affector = m_factoryAffectorUser->createObject();
 
@@ -4568,7 +4635,7 @@ namespace Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, Scriptable * _scriptable, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+			void initialize( ServiceProviderInterface * _serviceProvider, Scriptable * _scriptable, const pybind::object & _cb, const pybind::args & _args )
 			{
 				m_serviceProvider = _serviceProvider;
 				m_scriptable = _scriptable;
@@ -4597,14 +4664,14 @@ namespace Menge
 			Scriptable * m_scriptable;
 
 			pybind::object m_cb;
-			pybind::detail::args_operator_t m_args;
+			pybind::args m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		typedef stdex::intrusive_ptr<ScriptableAffectorCallback> ScriptableAffectorCallbackPtr;
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPtr m_factoryNodeAffectorCallback;
 		//////////////////////////////////////////////////////////////////////////
-		ScriptableAffectorCallbackPtr createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		ScriptableAffectorCallbackPtr createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb, const pybind::args & _args )
 		{
 			ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback->createObject();
 
@@ -4615,7 +4682,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<Node, void (Node::*)(const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorAccumulateLinear;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, const pybind::object & _cb, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -4742,7 +4809,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		FactoryAffectorVelocity2 m_factoryAffectorVelocity2;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const pybind::object & _cb, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -4781,7 +4848,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)(const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateLinear;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t moveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t moveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -4826,7 +4893,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<Node, void (Node::*)(const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateQuadratic;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t accMoveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t accMoveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -4871,7 +4938,7 @@ namespace Menge
 			, const mt::vec3f& _to
 			, const mt::vec3f& _v0
 			, const pybind::object & _cb
-			, const pybind::detail::args_operator_t & _args )
+			, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -4917,7 +4984,7 @@ namespace Menge
 			, const mt::vec3f& _v0
 			, const mt::vec3f& _v1
 			, const pybind::object & _cb
-			, const pybind::detail::args_operator_t & _args )
+			, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -4965,7 +5032,7 @@ namespace Menge
 			, const mt::vec3f& _v1
 			, const mt::vec3f& _v2
 			, const pybind::object & _cb
-			, const pybind::detail::args_operator_t & _args )
+			, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -5159,7 +5226,7 @@ namespace Menge
 			, const mt::vec3f& _end
 			, const mt::vec3f& _v0
 			, const pybind::object & _cb
-			, const pybind::detail::args_operator_t & _args )
+			, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -5405,7 +5472,7 @@ namespace Menge
 			, float _rotationAcceleration
 			, float _rotationLimit
 			, const pybind::object & _cb
-			, const pybind::detail::args_operator_t & _args )
+			, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -5598,7 +5665,7 @@ namespace Menge
 			, float _moveAcceleration
 			, float _moveLimit
 			, const pybind::object & _cb
-			, const pybind::detail::args_operator_t & _args )
+			, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -5643,7 +5710,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)(float), float> m_nodeAffectorCreatorInterpolateLinearFloat;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t angleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t angleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -5691,7 +5758,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<Node, void (Node::*)(float), float> m_nodeAffectorCreatorInterpolateQuadraticFloat;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t accAngleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t accAngleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -5741,7 +5808,7 @@ namespace Menge
 			_node->stopAffectors( ETA_SCALE );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t scaleTo( Node * _node, float _time, const mt::vec3f& _scale, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t scaleTo( Node * _node, float _time, const mt::vec3f& _scale, const pybind::object & _cb, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -5803,7 +5870,7 @@ namespace Menge
 			return 1.0f;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t colorTo( Node * _node, float _time, const ColourValue& _color, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t colorTo( Node * _node, float _time, const ColourValue& _color, const pybind::object & _cb, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -5840,7 +5907,7 @@ namespace Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t alphaTo( Node * _node, float _time, float _alpha, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t alphaTo( Node * _node, float _time, float _alpha, const pybind::object & _cb, const pybind::args & _args )
 		{
 			if( _node->isActivate() == false )
 			{
@@ -5862,7 +5929,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<ShapeQuadFlex, void (ShapeQuadFlex::*)(const mt::vec4f &), mt::vec4f> m_nodeAffectorCreatorInterpolateLinearVec4;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t setPercentVisibilityTo( ShapeQuadFlex * _shape, float _time, const mt::vec4f& _percent, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t setPercentVisibilityTo( ShapeQuadFlex * _shape, float _time, const mt::vec4f& _percent, const pybind::object & _cb, const pybind::args & _args )
 		{
 			if( _shape->isActivate() == false )
 			{
@@ -5942,7 +6009,7 @@ namespace Menge
 				->hasResource( _name, nullptr );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void removeCurrentScene( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		void removeCurrentScene( const pybind::object & _cb, const pybind::args & _args )
 		{
 			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject();
 
@@ -5967,7 +6034,7 @@ namespace Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::args & _args )
 			{
 				m_serviceProvider = _serviceProvider;
 				m_cb = _cb;
@@ -6032,7 +6099,7 @@ namespace Menge
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
 			pybind::object m_cb;
-			pybind::detail::args_operator_t m_args;
+			pybind::args m_args;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		class PyGlobalMouseMoveHandler
@@ -6068,7 +6135,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPtr m_factoryPyGlobalMouseMoveHandlers;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_addMouseMoveHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t s_addMouseMoveHandler( const pybind::object & _cb, const pybind::args & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
@@ -6110,7 +6177,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPtr m_factoryPyGlobalMouseHandlerButtons;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_addMouseButtonHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t s_addMouseButtonHandler( const pybind::object & _cb, const pybind::args & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
@@ -6153,7 +6220,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPtr m_factoryPyGlobalMouseHandlerButtonEnds;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_addMouseButtonHandlerEnd( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t s_addMouseButtonHandlerEnd( const pybind::object & _cb, const pybind::args & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
@@ -6190,7 +6257,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPtr m_factoryPyGlobalMouseHandlerWheels;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_addMouseWheelHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t s_addMouseWheelHandler( const pybind::object & _cb, const pybind::args & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
@@ -6233,7 +6300,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPtr m_factoryPyGlobalMouseHandlerButtonBegins;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_addMouseButtonHandlerBegin( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t s_addMouseButtonHandlerBegin( const pybind::object & _cb, const pybind::args & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
@@ -6269,7 +6336,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPtr m_factoryPyGlobalKeyHandler;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_addKeyHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t s_addKeyHandler( const pybind::object & _cb, const pybind::args & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
@@ -6305,7 +6372,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPtr m_factoryPyGlobalTextHandler;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_addTextHandler( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+		uint32_t s_addTextHandler( const pybind::object & _cb, const pybind::args & _args )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
@@ -8106,7 +8173,7 @@ namespace Menge
 			pybind::def_functor( kernel, "hasFont", nodeScriptMethod, &NodeScriptMethod::s_hasFont );
 			pybind::def_functor( kernel, "validateFont", nodeScriptMethod, &NodeScriptMethod::s_validateFont );
 
-			pybind::def_functor( kernel, "prefetchResources", nodeScriptMethod, &NodeScriptMethod::s_prefetchResources );
+			pybind::def_functor_args( kernel, "prefetchResources", nodeScriptMethod, &NodeScriptMethod::s_prefetchResources );
 			pybind::def_functor( kernel, "unfetchResources", nodeScriptMethod, &NodeScriptMethod::s_unfetchResources );
 
 			pybind::def_functor( kernel, "cacheResources", nodeScriptMethod, &NodeScriptMethod::s_cacheResources );

@@ -157,8 +157,6 @@ namespace Menge
 
 	static bool initialize()
 	{
-        Sleep( 10000 );
-
 		stdex_allocator_initialize();
 
 		SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );

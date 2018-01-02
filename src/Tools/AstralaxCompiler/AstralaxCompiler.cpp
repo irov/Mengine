@@ -21,8 +21,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	(void)hInstance;
 	(void)hPrevInstance;
 	(void)nShowCmd;
-    
-    //Sleep( 10000 );
 
 	std::wstring astralax = parse_kwds( lpCmdLine, L"--astralax", std::wstring() );
 	std::wstring in = parse_kwds( lpCmdLine, L"--in", std::wstring() );

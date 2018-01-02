@@ -388,7 +388,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Box2DBody::filterContactList( const pybind::object & _filter, const pybind::detail::args_operator_t & _args )
+	void Box2DBody::filterContactList( const pybind::object & _filter, const pybind::args & _args )
 	{
 		for( b2ContactEdge* ce = m_body->GetContactList(); ce; ce = ce->next )
 		{

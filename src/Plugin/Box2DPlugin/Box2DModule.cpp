@@ -334,7 +334,7 @@ namespace Menge
 		m_worlds.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-	Box2DWorld * Box2DModule::createWorld( const mt::vec2f& _gravity, const pybind::object & _update, const pybind::detail::args_operator_t & _update_args )
+	Box2DWorld * Box2DModule::createWorld( const mt::vec2f& _gravity, const pybind::object & _update, const pybind::args & _update_args )
     {
 		Box2DWorld * world = PROTOTYPE_SERVICE( m_serviceProvider )
 			->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2D" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DWorld" ) );

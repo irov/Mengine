@@ -3,7 +3,7 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    PybindScopeProvider::PybindScopeProvider( const pybind::object & _obj, const pybind::detail::args_operator_t & _args )
+    PybindScopeProvider::PybindScopeProvider( const pybind::object & _obj, const pybind::args & _args )
         : m_obj( _obj )
         , m_args( _args )
     {

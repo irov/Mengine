@@ -29,7 +29,7 @@ namespace Menge
 		float getMoveSpeed() const;
 	
 	public:
-		bool initialize( Node * _node, Node * _target, const pybind::object & _cb, const pybind::detail::args_operator_t & _args );
+		bool initialize( Node * _node, Node * _target, const pybind::object & _cb, const pybind::args & _args );
 
 	protected:
 		bool _affect( float _timing ) override;
@@ -46,7 +46,7 @@ namespace Menge
 		float m_moveSpeed;
 
 		pybind::object m_cb;
-		pybind::detail::args_operator_t m_args;
+		pybind::args m_args;
 	};
 }
 

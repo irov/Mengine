@@ -37,7 +37,7 @@ namespace Menge
 		return m_dead;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool Box2DWorld::initialize( const mt::vec2f& _gravity, const pybind::object & _update, const pybind::detail::args_operator_t & _update_args )
+	bool Box2DWorld::initialize( const mt::vec2f& _gravity, const pybind::object & _update, const pybind::args & _update_args )
     {
 		b2Vec2 b2_gravity = Box2DScalerToWorld( _gravity );
 
@@ -129,7 +129,7 @@ namespace Menge
 			: public b2RayCastCallback
 		{
 		public:
-			MyRayCastCallback( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+			MyRayCastCallback( const pybind::object & _cb, const pybind::args & _args )
 				: m_cb( _cb )
 				, m_args( _args )
 				, m_index( 0 )
@@ -157,13 +157,13 @@ namespace Menge
 
 		protected:
 			pybind::object m_cb;
-			pybind::detail::args_operator_t m_args;
+			pybind::args m_args;
 
 			uint32_t m_index;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Box2DWorld::rayCast( const mt::vec2f & _point1, const mt::vec2f & _point2, const pybind::object & _cb, const pybind::detail::args_operator_t & _args ) const
+	void Box2DWorld::rayCast( const mt::vec2f & _point1, const mt::vec2f & _point2, const pybind::object & _cb, const pybind::args & _args ) const
 	{
 		b2Vec2 b2_point1 = Box2DScalerToWorld( _point1 );
 		b2Vec2 b2_point2 = Box2DScalerToWorld( _point2 );

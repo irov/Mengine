@@ -14,7 +14,7 @@ namespace Menge
         ~MovieEvent();
 
     public:
-		void setEvent( const pybind::object & _cb, const pybind::detail::args_operator_t & _args );
+		void setEvent( const pybind::object & _cb, const pybind::args & _args );
 		void removeEvent();
 
     public:
@@ -25,7 +25,7 @@ namespace Menge
 
     protected:
 		pybind::object m_cb;
-		pybind::detail::args_operator_t m_args;
+		pybind::args m_args;
 
 		ResourceMoviePtr m_resourceMovie;
 	};

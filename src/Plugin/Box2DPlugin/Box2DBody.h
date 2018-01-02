@@ -113,7 +113,7 @@ namespace Menge
 
 		void updateFilterData( uint16_t _categoryBits, uint16_t _collisionMask, int16_t _groupIndex );
 
-		void filterContactList( const pybind::object & _filter, const pybind::detail::args_operator_t & _args );
+		void filterContactList( const pybind::object & _filter, const pybind::args & _args );
 
 	protected:
         b2World* m_world;

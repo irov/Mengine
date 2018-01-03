@@ -7,9 +7,12 @@ namespace Menge
 		: m_hide(false)
 		, m_localHide(false)
         , m_externalRender(false)
-	{
-		
+	{		
 	}
+    //////////////////////////////////////////////////////////////////////////
+    Renderable::~Renderable()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Renderable::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{

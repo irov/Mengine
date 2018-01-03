@@ -1133,6 +1133,11 @@ namespace Menge
 		{
 			Node * node = (*it);
 
+            if( node->getExternalRender() == true )
+            {
+                continue;
+            }
+
 			node->render( _renderService, _state, _debugMask );
 		}
 	}
@@ -1256,10 +1261,6 @@ namespace Menge
 		{
 			m_rendering = false;
 		}
-        else if( this->getExternalRender() == true )
-        {
-            m_rendering = false;
-        }
 		else
 		{
 			m_rendering = true;

@@ -10,6 +10,7 @@ namespace Menge
 	{
 	public:
 		Renderable();
+        ~Renderable();
 
 	public:
 		virtual void render( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) = 0;

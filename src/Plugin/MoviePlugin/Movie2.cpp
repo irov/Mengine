@@ -264,24 +264,25 @@ namespace Menge
         {
         case AE_MOVIE_LAYER_TYPE_TEXT:
             {
-                TextField * text = PROTOTYPE_SERVICE( serviceProvider )
+                TextField * node = PROTOTYPE_SERVICE( serviceProvider )
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "TextField" ) );
 
-                text->setName( c_name );
+                node->setName( c_name );
+                node->setExternalRender( true );
 
-                text->setTextID( c_name );
+                node->setTextID( c_name );
                 
                 if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_HORIZONTAL_CENTER ) == AE_TRUE )
                 {
-                    text->setHorizontalCenterAlign();
+                    node->setHorizontalCenterAlign();
                 }
 
                 if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_VERTICAL_CENTER ) == AE_TRUE )
                 {
-                    text->setVerticalCenterAlign();
+                    node->setVerticalCenterAlign();
                 }
                 
-                movie2->addText( c_name, text );
+                movie2->addText( c_name, node );
 
                 MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
@@ -292,29 +293,28 @@ namespace Menge
                 pm.from_f16( _callbackData->matrix );
                 matrixProxy->setProxyMatrix( pm );
                 matrixProxy->setLocalAlpha( _callbackData->opacity );
-
-                matrixProxy->addChild( text );
+                
+                matrixProxy->addChild( node );
                 
                 movie2->addChild( matrixProxy );
 
                 movie2->addMatrixProxy( matrixProxy );
 
-                return text;
+                return node;
             }break;
         case AE_MOVIE_LAYER_TYPE_SLOT:
             {
-                Movie2Slot * slot = PROTOTYPE_SERVICE( serviceProvider )
+                Movie2Slot * node = PROTOTYPE_SERVICE( serviceProvider )
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "Movie2Slot" ) );
 
-                slot->setName( c_name );
-
-                slot->setExternalRender( false );
+                node->setName( c_name );
+                node->setExternalRender( true );
 
                 const ConstString & movie2Name = movie2->getName();
 
-                slot->setMovieName( movie2Name );
+                node->setMovieName( movie2Name );
 
-                movie2->addSlot( c_name, slot );
+                movie2->addSlot( c_name, node );
 
                 MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
@@ -326,18 +326,21 @@ namespace Menge
                 matrixProxy->setProxyMatrix( pm );
                 matrixProxy->setLocalAlpha( _callbackData->opacity );
 
-                matrixProxy->addChild( slot );
+                matrixProxy->addChild( node );
 
                 movie2->addChild( matrixProxy );
 
                 movie2->addMatrixProxy( matrixProxy );
 
-                return slot;
+                return node;
             }break;
         case AE_MOVIE_LAYER_TYPE_SOCKET:
             {
-                HotSpotPolygon * hotspotpolygon = NODE_SERVICE( serviceProvider )
+                HotSpotPolygon * node = NODE_SERVICE( serviceProvider )
                     ->createNodeT<HotSpotPolygon *>( STRINGIZE_STRING_LOCAL( serviceProvider, "HotSpotPolygon" ) );
+
+                node->setName( c_name );
+                node->setExternalRender( true );
 
                 const ae_polygon_t * polygon;
                 if( ae_get_movie_layer_data_socket_polygon( _callbackData->layer, 0, &polygon ) == AE_FALSE )
@@ -355,9 +358,9 @@ namespace Menge
                     p.append( v2 );
                 }
 
-                hotspotpolygon->setPolygon( p );
+                node->setPolygon( p );
 
-                movie2->addSocketShape( c_name, hotspotpolygon );
+                movie2->addSocketShape( c_name, node );
 
                 MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
@@ -369,13 +372,13 @@ namespace Menge
                 matrixProxy->setProxyMatrix( pm );
                 matrixProxy->setLocalAlpha( _callbackData->opacity );
 
-                matrixProxy->addChild( hotspotpolygon );
+                matrixProxy->addChild( node );
 
                 movie2->addChild( matrixProxy );
 
                 movie2->addMatrixProxy( matrixProxy );
 
-                return hotspotpolygon;
+                return node;
             }break;
         };
 
@@ -430,14 +433,15 @@ namespace Menge
             {
             case AE_MOVIE_LAYER_TYPE_PARTICLE:
                 {
-                    ParticleEmitter2 * particleEmitter = NODE_SERVICE( serviceProvider )
+                    ParticleEmitter2 * node = NODE_SERVICE( serviceProvider )
                         ->createNodeT<ParticleEmitter2 *>( STRINGIZE_STRING_LOCAL( serviceProvider, "ParticleEmitter2" ) );
 
-                    particleEmitter->setName( c_name );
+                    node->setName( c_name );
+                    node->setExternalRender( true );
 
                     ResourceParticle * resourceParticle = (ResourceParticle *)ae_get_movie_layer_data_resource_data( _callbackData->layer );
 
-                    particleEmitter->setResourceParticle( resourceParticle );
+                    node->setResourceParticle( resourceParticle );
 
                     EMaterialBlendMode blend_mode = EMB_NORMAL;
 
@@ -457,18 +461,18 @@ namespace Menge
                     };
 
                     ae_float_t layer_stretch = ae_get_movie_layer_data_stretch( _callbackData->layer );
-                    particleEmitter->setStretch( layer_stretch );
+                    node->setStretch( layer_stretch );
 
                     ae_bool_t layer_loop = ae_has_movie_layer_data_param( _callbackData->layer, AE_MOVIE_LAYER_PARAM_LOOP );
-                    particleEmitter->setLoop( layer_loop || _callbackData->incessantly );
+                    node->setLoop( layer_loop || _callbackData->incessantly );
 
-                    particleEmitter->setEmitterPositionRelative( false );
-                    particleEmitter->setEmitterCameraRelative( false );
-                    particleEmitter->setEmitterTranslateWithParticle( false );
+                    node->setEmitterPositionRelative( false );
+                    node->setEmitterCameraRelative( false );
+                    node->setEmitterTranslateWithParticle( false );
 
                     //particleEmitter->setEmitterPositionProviderOriginOffset( -mt::vec3f( 1024.f, 1024.f, 0.f ) );
 
-                    movie2->addParticle( particleEmitter );
+                    movie2->addParticle( node );
 
                     MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
@@ -480,13 +484,13 @@ namespace Menge
                     matrixProxy->setProxyMatrix( pm );
                     matrixProxy->setLocalAlpha( _callbackData->opacity );
 
-                    matrixProxy->addChild( particleEmitter );
+                    matrixProxy->addChild( node );
 
                     movie2->addChild( matrixProxy );
 
                     movie2->addMatrixProxy( matrixProxy );
 
-                    return particleEmitter;
+                    return node;
                 }break;
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
@@ -694,9 +698,22 @@ namespace Menge
 
                         node->setTiming( _callbackData->offset );
 
-                        if( node->play( time ) == 0 )
+                        if( _callbackData->loop == AE_TRUE )
                         {
-                            return;
+                            if( node->isPlay() == false )
+                            {
+                                if( node->play( time ) == 0 )
+                                {
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if( node->play( time ) == 0 )
+                            {
+                                return;
+                            }
                         }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
@@ -708,9 +725,22 @@ namespace Menge
 
                         node->setTiming( _callbackData->offset );
 
-                        if( node->play( time ) == 0 )
+                        if( _callbackData->loop == AE_TRUE )
                         {
-                            return;
+                            if( node->isPlay() == false )
+                            {
+                                if( node->play( time ) == 0 )
+                                {
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if( node->play( time ) == 0 )
+                            {
+                                return;
+                            }
                         }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOUND:
@@ -722,9 +752,22 @@ namespace Menge
 
                         node->setTiming( _callbackData->offset );
 
-                        if( node->play( time ) == 0 )
+                        if( _callbackData->loop == AE_TRUE )
                         {
-                            return;
+                            if( node->isPlay() == false )
+                            {
+                                if( node->play( time ) == 0 )
+                                {
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if( node->play( time ) == 0 )
+                            {
+                                return;
+                            }
                         }
                     }break;
                 }
@@ -747,19 +790,28 @@ namespace Menge
 
                         matrixProxy->setLocalAlpha( _callbackData->opacity );
 
-                        node->stop();
+                        if( _callbackData->loop == AE_FALSE )
+                        {
+                            node->stop();
+                        }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
                         SurfaceVideo * animatable = (SurfaceVideo *)_callbackData->element;
 
-                        animatable->stop();
+                        if( _callbackData->loop == AE_FALSE )
+                        {
+                            animatable->stop();
+                        }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOUND:
                     {
                         SurfaceSound * animatable = (SurfaceSound *)_callbackData->element;
 
-                        animatable->stop();
+                        if( _callbackData->loop == AE_FALSE )
+                        {
+                            animatable->stop();
+                        }
                     }break;
                 }
             }break;
@@ -1340,6 +1392,12 @@ namespace Menge
                         Movie2Slot * slot = reinterpret_cast<Movie2Slot *>(mesh.element_data);
                         
                         slot->render( _renderService, _state, 0 );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_PARTICLE:
+                    {
+                        ParticleEmitter2 * particleEmitter2 = reinterpret_cast<ParticleEmitter2 *>(mesh.element_data);
+
+                        particleEmitter2->render( _renderService, _state, 0 );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:
                     {

@@ -149,7 +149,7 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32ThreadIdentity::joinTask()
+	bool Win32ThreadIdentity::completeTask()
 	{	
 		bool successful = false;
 

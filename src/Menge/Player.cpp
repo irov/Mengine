@@ -335,8 +335,10 @@ namespace Menge
 	{
 		if( m_scene != nullptr )
 		{
-			m_scene->destroy();
-			m_scene = nullptr;
+            Scene * destroyScene = m_scene;
+            m_scene = nullptr;
+
+            destroyScene->destroy();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

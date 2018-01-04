@@ -463,8 +463,7 @@ namespace Menge
                     ae_float_t layer_stretch = ae_get_movie_layer_data_stretch( _callbackData->layer );
                     node->setStretch( layer_stretch );
 
-                    ae_bool_t layer_loop = ae_has_movie_layer_data_param( _callbackData->layer, AE_MOVIE_LAYER_PARAM_LOOP );
-                    node->setLoop( layer_loop || _callbackData->incessantly );
+                    node->setLoop( _callbackData->incessantly );
 
                     node->setEmitterPositionRelative( false );
                     node->setEmitterCameraRelative( false );

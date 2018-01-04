@@ -134,6 +134,9 @@ namespace Menge
 		void setSeparateAlphaBlendMode() override;
 
 	public:
+        void enableDebugFillrateCalcMode( bool _enable ) override;
+        bool isDebugFillrateCalcMode() const override;
+
         void enableDebugStepRenderMode( bool _enable ) override;
 		bool isDebugStepRenderMode() const override;
 
@@ -202,8 +205,8 @@ namespace Menge
 		bool create2DBuffers_();
 
     protected:
-        void calcQuadSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum );
-        void calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _verteNum, const RenderIndices * _indices, uint32_t _indicesNum );
+        void calcQuadSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum, const Viewport & _viewport );
+        void calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum, const RenderIndices * _indices, uint32_t _indicesNum, const Viewport & _viewport );
 
     protected:
         bool createNullTexture_();
@@ -282,6 +285,7 @@ namespace Menge
 
 		bool m_noShader;
 
+        bool m_debugFillrateCalcMode;
         bool m_debugStepRenderMode;
 		bool m_debugRedAlertMode;
 

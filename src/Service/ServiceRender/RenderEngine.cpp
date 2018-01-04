@@ -11,6 +11,8 @@
 
 #	include "Core/RenderUtils.h"
 
+#   include "Math/convex8.h"
+
 #	include "Logger/Logger.h"
 
 #	include "stdex/memorycopy.h"
@@ -42,6 +44,7 @@ namespace Menge
         , m_maxIndexCount( 0 )
         , m_depthBufferWriteEnable( false )
         , m_alphaBlendEnable( false )
+        , m_debugFillrateCalcMode( false )
         , m_debugStepRenderMode( false )
         , m_debugRedAlertMode( false )
         , m_currentStage( nullptr )
@@ -106,6 +109,11 @@ namespace Menge
         m_debugInfo.fillrate = 0.f;
         m_debugInfo.object = 0;
         m_debugInfo.triangle = 0;
+
+#ifdef _DEBUG
+        m_debugFillrateCalcMode = true;
+#endif // _DEBUG
+ 
 
         //m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
@@ -1232,24 +1240,29 @@ namespace Menge
 
         RenderMaterialInterfacePtr ro_material = _material;
 
-        if( m_debugStepRenderMode == true && _debug == false )
-        {
-            if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
-            {
-                return;
-            }
+        m_debugInfo.object += 1;
 
+        if( m_debugFillrateCalcMode = true && _debug == false )
+        {
             EPrimitiveType primitiveType = ro_material->getPrimitiveType();
 
             switch( primitiveType )
             {
             case PT_TRIANGLELIST:
                 {
-                    this->calcQuadSquare_( _vertices, _verticesNum );
+                    this->calcQuadSquare_( _vertices, _verticesNum, vp );
                 }break;
             default:
                 {
                 }break;
+            }
+        }
+
+        if( m_debugStepRenderMode == true && _debug == false )
+        {
+            if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
+            {
+                return;
             }
 
             if( m_iterateRenderObjects == m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
@@ -1875,6 +1888,16 @@ namespace Menge
             ->setSeparateAlphaBlendMode();
     }
     //////////////////////////////////////////////////////////////////////////
+    void RenderEngine::enableDebugFillrateCalcMode( bool _enable )
+    {
+        m_debugFillrateCalcMode = _enable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool RenderEngine::isDebugFillrateCalcMode() const
+    {
+        return m_debugFillrateCalcMode;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void RenderEngine::enableDebugStepRenderMode( bool _enable )
     {
         m_debugStepRenderMode = _enable;
@@ -1922,49 +1945,52 @@ namespace Menge
         return m_renderViewport;
     }
     //////////////////////////////////////////////////////////////////////////
-    static double s_calcTriangleSquare( const RenderVertex2D & _v1, const RenderVertex2D & _v2, const RenderVertex2D & _v3 )
+    void RenderEngine::calcQuadSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum, const Viewport & _viewport )
     {
-        const mt::vec3f & p1 = _v1.position;
-        const mt::vec3f & p2 = _v2.position;
-        const mt::vec3f & p3 = _v3.position;
+        uint32_t triangleNum2 = (_vertexNum / 4);
 
-        double a = (double)mt::length_v3_v3( p1, p2 );
-        double b = (double)mt::length_v3_v3( p2, p3 );
-        double c = (double)mt::length_v3_v3( p3, p1 );
-
-        double p = (a + b + c) * 0.5;
-
-        double sq_p = sqrt( p );
-        double sq_pa = sqrt( fabs( p - a ) );
-        double sq_pb = sqrt( fabs( p - b ) );
-        double sq_pc = sqrt( fabs( p - c ) );
-
-        double S = sq_p * sq_pa * sq_pb * sq_pc;
-
-        return S;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::calcQuadSquare_( const RenderVertex2D * _vertex, uint32_t _num )
-    {
-        for( uint32_t i = 0; i != (_num / 4); ++i )
+        for( uint32_t i = 0; i != triangleNum2; ++i )
         {
             const RenderVertex2D & v0 = _vertex[i * 4 + 0];
             const RenderVertex2D & v1 = _vertex[i * 4 + 1];
             const RenderVertex2D & v2 = _vertex[i * 4 + 2];
             const RenderVertex2D & v3 = _vertex[i * 4 + 3];
 
-            m_debugInfo.fillrate += s_calcTriangleSquare( v0, v1, v2 );
-            m_debugInfo.fillrate += s_calcTriangleSquare( v0, v2, v3 );
+            mt::convex8 tri1;
+            tri1.add( v0.position.to_vec2f() );
+            tri1.add( v1.position.to_vec2f() );
+            tri1.add( v2.position.to_vec2f() );
 
-            m_debugInfo.triangle += 2;
+            mt::convex8 tri2;
+            tri2.add( v0.position.to_vec2f() );
+            tri2.add( v2.position.to_vec2f() );
+            tri2.add( v3.position.to_vec2f() );
+
+            mt::convex8 cv;
+            cv.add( mt::vec2f( _viewport.begin.x, _viewport.begin.y ) );
+            cv.add( mt::vec2f( _viewport.end.x, _viewport.begin.y ) );
+            cv.add( mt::vec2f( _viewport.end.x, _viewport.end.y ) );
+            cv.add( mt::vec2f( _viewport.begin.x, _viewport.end.y ) );
+
+            mt::convex8 tric1;
+            mt::convex8_intersect( tri1, cv, tric1 );
+
+            mt::convex8 tric2;
+            mt::convex8_intersect( tri2, cv, tric2 );
+
+            float tric1_area = mt::convex8_area( tric1 );
+            float tric2_area = mt::convex8_area( tric2 );
+
+            m_debugInfo.fillrate += (double)tric1_area;
+            m_debugInfo.fillrate += (double)tric2_area;
         }
 
-        m_debugInfo.object += 1;
+        m_debugInfo.triangle += triangleNum2 * 2;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _verteNum, const RenderIndices * _indices, uint32_t _indicesNum )
+    void RenderEngine::calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum, const RenderIndices * _indices, uint32_t _indicesNum, const Viewport & _viewport )
     {
-        (void)_verteNum;
+        (void)_vertexNum;
 
         for( uint32_t i = 0; i != (_indicesNum / 3); ++i )
         {
@@ -1972,11 +1998,29 @@ namespace Menge
             RenderIndices i1 = _indices[i + 1];
             RenderIndices i2 = _indices[i + 2];
 
-            m_debugInfo.fillrate += s_calcTriangleSquare( _vertex[i0], _vertex[i1], _vertex[i2] );
+            const RenderVertex2D & v0 = _vertex[i0];
+            const RenderVertex2D & v1 = _vertex[i1];
+            const RenderVertex2D & v2 = _vertex[i2];
+
+            mt::convex8 tri;
+            tri.add( v0.position.to_vec2f() );
+            tri.add( v1.position.to_vec2f() );
+            tri.add( v2.position.to_vec2f() );
+
+            mt::convex8 cv;
+            cv.add( mt::vec2f( _viewport.begin.x, _viewport.begin.y ) );
+            cv.add( mt::vec2f( _viewport.end.x, _viewport.begin.y ) );
+            cv.add( mt::vec2f( _viewport.end.x, _viewport.end.y ) );
+            cv.add( mt::vec2f( _viewport.begin.x, _viewport.end.y ) );
+
+            mt::convex8 tric;
+            mt::convex8_intersect( tri, cv, tric );
+
+            float tric_area = mt::convex8_area( tric );
+
+            m_debugInfo.fillrate += (double)tric_area;
 
             m_debugInfo.triangle += 1;
         }
-
-        m_debugInfo.object += 1;
     }
 }

@@ -7,6 +7,11 @@
 namespace mt
 {
     //////////////////////////////////////////////////////////////////////////
+    MENGINE_MATH_INLINE float abs_f( float _x )
+    {
+        return (_x >= 0.f) ? _x : -_x;
+    }
+    //////////////////////////////////////////////////////////////////////////
     MENGINE_MATH_INLINE float min_f( float _x, float _y )
     {
         return (_x < _y) ? _x : _y;

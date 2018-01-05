@@ -1240,6 +1240,14 @@ namespace Menge
 
         RenderMaterialInterfacePtr ro_material = _material;
 
+        if( m_debugStepRenderMode == true && _debug == false )
+        {
+            if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
+            {
+                return;
+            }
+        }
+
         m_debugInfo.object += 1;
 
         if( m_debugFillrateCalcMode = true && _debug == false )
@@ -1260,11 +1268,6 @@ namespace Menge
 
         if( m_debugStepRenderMode == true && _debug == false )
         {
-            if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
-            {
-                return;
-            }
-
             if( m_iterateRenderObjects == m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
             {
                 RenderMaterialPtr new_material = RENDERMATERIAL_SERVICE( m_serviceProvider )
@@ -1279,7 +1282,7 @@ namespace Menge
                     return;
                 }
 
-                //ro_material = new_material;
+                ro_material = new_material;
             }
         }
 

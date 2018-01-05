@@ -151,6 +151,11 @@ namespace Menge
 	{
 		return Helper::s_getValueT( m_serviceProvider, m_ini, m_platformTags, _section, _key, _default );
 	}
+    //////////////////////////////////////////////////////////////////////////
+    double ConfigManager::getValue( const Char * _section, const Char * _key, double _default ) const
+    {
+        return Helper::s_getValueT( m_serviceProvider, m_ini, m_platformTags, _section, _key, _default );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	String ConfigManager::getValue( const Char * _section, const Char * _key, const Char * _default ) const
 	{

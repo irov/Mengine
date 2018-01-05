@@ -779,9 +779,15 @@ namespace Menge
 		fpsTiming += _timing;
 		if( fpsTiming >= 1000.0f )
 		{
-			m_fps = RENDER_SERVICE(m_serviceProvider)->getDebugInfo().frameCount;
-			RENDER_SERVICE(m_serviceProvider)->resetFrameCount();
-			while( fpsTiming >= 1000.0f ) 
+            const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE( m_serviceProvider )
+                ->getDebugInfo();
+
+			m_fps = debugInfo.frameCount;
+
+            RENDER_SERVICE( m_serviceProvider )
+                ->resetFrameCount();
+
+			while( fpsTiming >= 1000.0f )
 			{
 				fpsTiming -= 1000.0f;
 			}

@@ -1915,6 +1915,17 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool setCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
 		{
+            if( _cb.is_callable() == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("setCurrentScene prototype '%s' name '%s' cb '%s' not callable"
+                    , _prototype.c_str()
+                    , _name.c_str()
+                    , _cb.repr()
+                    );
+
+                return false;
+            }
+
 			LOGGER_INFO( m_serviceProvider )("set current scene '%s'"
 				, _name.c_str()
 				);
@@ -6009,14 +6020,28 @@ namespace Menge
 				->hasResource( _name, nullptr );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void removeCurrentScene( const pybind::object & _cb, const pybind::args & _args )
+		bool removeCurrentScene( const pybind::object & _cb, const pybind::args & _args )
 		{
+            if( _cb.is_callable() == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("removeCurrentScene cb '%s' not callable"
+                    , _cb.repr()
+                    );
+
+                return false;
+            }
+
 			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject();
 
 			py_cb->initialize( m_serviceProvider, _cb, _args );
 
-			PLAYER_SERVICE( m_serviceProvider )
-				->removeCurrentScene( py_cb );
+            if( PLAYER_SERVICE( m_serviceProvider )
+                ->removeCurrentScene( py_cb ) == false )
+            {
+                return false;
+            }
+
+            return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class PyGlobalBaseHandler

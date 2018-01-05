@@ -745,7 +745,7 @@ namespace Menge
         uint32_t frameCount;
         uint32_t dips;
 
-        double fillrate;
+        float fillrate;
         uint32_t object;
         uint32_t triangle;
 		uint32_t batch;

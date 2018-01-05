@@ -292,7 +292,7 @@ namespace Menge
                 mt::mat4f pm;
                 pm.from_f16( _callbackData->matrix );
                 matrixProxy->setProxyMatrix( pm );
-                matrixProxy->setLocalAlpha( _callbackData->opacity );
+                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
                 
                 matrixProxy->addChild( node );
                 
@@ -324,7 +324,7 @@ namespace Menge
                 mt::mat4f pm;
                 pm.from_f16( _callbackData->matrix );
                 matrixProxy->setProxyMatrix( pm );
-                matrixProxy->setLocalAlpha( _callbackData->opacity );
+                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
                 matrixProxy->addChild( node );
 
@@ -370,7 +370,7 @@ namespace Menge
                 mt::mat4f pm;
                 pm.from_f16( _callbackData->matrix );
                 matrixProxy->setProxyMatrix( pm );
-                matrixProxy->setLocalAlpha( _callbackData->opacity );
+                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
                 matrixProxy->addChild( node );
 
@@ -469,8 +469,6 @@ namespace Menge
                     node->setEmitterCameraRelative( false );
                     node->setEmitterTranslateWithParticle( false );
 
-                    //particleEmitter->setEmitterPositionProviderOriginOffset( -mt::vec3f( 1024.f, 1024.f, 0.f ) );
-
                     movie2->addParticle( node );
 
                     MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
@@ -481,7 +479,7 @@ namespace Menge
                     mt::mat4f pm;
                     pm.from_f16( _callbackData->matrix );
                     matrixProxy->setProxyMatrix( pm );
-                    matrixProxy->setLocalAlpha( _callbackData->opacity );
+                    matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
                     matrixProxy->addChild( node );
 
@@ -628,7 +626,7 @@ namespace Menge
                         mp.from_f16( _callbackData->matrix );
                         matrixProxy->setProxyMatrix( mp );
 
-                        matrixProxy->setLocalAlpha( _callbackData->opacity );
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
@@ -642,7 +640,7 @@ namespace Menge
                         mp.from_f16( _callbackData->matrix );
                         matrixProxy->setProxyMatrix( mp );
 
-                        matrixProxy->setLocalAlpha( _callbackData->opacity );
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SLOT:
                     {
@@ -656,7 +654,7 @@ namespace Menge
                         mp.from_f16( _callbackData->matrix );
                         matrixProxy->setProxyMatrix( mp );
 
-                        matrixProxy->setLocalAlpha( _callbackData->opacity );
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOCKET:
                     {
@@ -670,7 +668,7 @@ namespace Menge
                         mp.from_f16( _callbackData->matrix );
                         matrixProxy->setProxyMatrix( mp );
 
-                        matrixProxy->setLocalAlpha( _callbackData->opacity );
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
                     }break;
                 }
             }break;
@@ -690,7 +688,7 @@ namespace Menge
                         mp.from_f16( _callbackData->matrix );
                         matrixProxy->setProxyMatrix( mp );
 
-                        matrixProxy->setLocalAlpha( _callbackData->opacity );
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
                         float time = TIMELINE_SERVICE( serviceProvider )
                             ->getTime();
@@ -787,7 +785,7 @@ namespace Menge
                         mp.from_f16( _callbackData->matrix );
                         matrixProxy->setProxyMatrix( mp );
 
-                        matrixProxy->setLocalAlpha( _callbackData->opacity );
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
                         if( _callbackData->loop == AE_FALSE )
                         {
@@ -830,7 +828,7 @@ namespace Menge
                         mp.from_f16( _callbackData->matrix );
                         matrixProxy->setProxyMatrix( mp );
 
-                        matrixProxy->setLocalAlpha( _callbackData->opacity );
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
                         node->pause();
                     }break;
@@ -864,7 +862,7 @@ namespace Menge
                         mp.from_f16( _callbackData->matrix );
                         matrixProxy->setProxyMatrix( mp );
 
-                        matrixProxy->setLocalAlpha( _callbackData->opacity );
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
                         float time = TIMELINE_SERVICE( serviceProvider )
                             ->getTime();
@@ -1405,7 +1403,7 @@ namespace Menge
 
                         m.vertices.resize( mesh.vertexCount );
 
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
                         for( uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
@@ -1454,7 +1452,7 @@ namespace Menge
 
                         m.vertices.resize( mesh.vertexCount );
 
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
                         for( uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
@@ -1506,7 +1504,7 @@ namespace Menge
 
                         m.vertices.resize( mesh.vertexCount );
 
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
                         for( uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
@@ -1572,7 +1570,7 @@ namespace Menge
 
                         m.vertices.resize( mesh.vertexCount );
 
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
                         for( uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
@@ -1622,7 +1620,7 @@ namespace Menge
 
                         m.vertices.resize( mesh.vertexCount );
 
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
                         const ResourceImagePtr & resourceImage = surfaceTrackMatte->getResourceImage();
                         const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceTrackMatteImage();

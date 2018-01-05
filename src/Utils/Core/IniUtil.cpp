@@ -349,6 +349,28 @@ namespace Menge
 			return true;
 		}
         //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double & _value, ServiceProviderInterface * _serviceProvider )
+        {
+            (void)_serviceProvider;
+
+            const Char * ini_value = _ini.getSettingValue( _section, _key );
+
+            if( ini_value == nullptr )
+            {
+                return false;
+            }
+
+            double tmp_value;
+            if( sscanf( ini_value, "%lf", &tmp_value ) != 1 )
+            {
+                return false;
+            }
+
+            _value = tmp_value;
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorString & _values, ServiceProviderInterface * _serviceProvider )
         {
             (void)_serviceProvider;

@@ -57,7 +57,8 @@ namespace Menge
         EVENT_GAME_CHANGE_SOUND_VOLUME,
         EVENT_GAME_CURSOR_MODE,
         EVENT_GAME_USER,
-        EVENT_GAME_CLOSE
+        EVENT_GAME_CLOSE,
+        EVENT_GAME_OVER_FILLRATE,
     };
     //////////////////////////////////////////////////////////////////////////
     class GameEventReceiver
@@ -99,6 +100,7 @@ namespace Menge
         virtual void onGameCursorMode( bool _mode ) = 0;
         virtual void onGameUser( const ConstString & _event, const TMapWParams & _params ) = 0;
         virtual bool onGameClose() = 0;
+        virtual void onGameOverFillrate( double _fillrate ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 	class Game

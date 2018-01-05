@@ -49,6 +49,7 @@ namespace Menge
 		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint32_t & _value, ServiceProviderInterface * _serviceProvider );
 		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t & _value, ServiceProviderInterface * _serviceProvider );
 		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float & _value, ServiceProviderInterface * _serviceProvider );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double & _value, ServiceProviderInterface * _serviceProvider );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorString & _values, ServiceProviderInterface * _serviceProvider );
 		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorConstString & _values, ServiceProviderInterface * _serviceProvider );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorWString & _values, ServiceProviderInterface * _serviceProvider );

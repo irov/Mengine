@@ -14,7 +14,7 @@ namespace Menge
         void _destroy() override;
 
     protected:
-        void _localHide( bool _value ) override;
+        void _setLocalHide( bool _value ) override;
 
     protected:
         void _setPersonalColor( const ColourValue& _color ) override;
@@ -24,7 +24,7 @@ namespace Menge
 		void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
 	protected:
-		void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
+		void _debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
 
     protected:
         ConstString m_movieName;

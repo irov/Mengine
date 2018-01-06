@@ -100,7 +100,7 @@ namespace Menge
 		//m_prefetchReceiver.erase( it_erase, m_prefetchReceiver.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::prefetchImageDecoder( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codec )
+	bool PrefetcherManager::prefetchImageDecoder( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer )
 	{
 		if( m_threadQueue == nullptr )
 		{
@@ -122,7 +122,7 @@ namespace Menge
 		ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( _pakName, _filePath );
+		task->initialize( _pakName, _filePath, _observer );
 		task->setImageCodec( _codec );
 
 		new_receiver.prefetcher = task;
@@ -166,7 +166,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::prefetchSoundDecoder( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codec )
+	bool PrefetcherManager::prefetchSoundDecoder( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer )
 	{
 		if( m_threadQueue == nullptr )
 		{
@@ -188,7 +188,7 @@ namespace Menge
 		ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( _pakName, _filePath );
+		task->initialize( _pakName, _filePath, _observer );
 		task->setSoundCodec( _codec );
 
 		new_receiver.prefetcher = task;
@@ -232,7 +232,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::prefetchData( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _dataflowType )
+	bool PrefetcherManager::prefetchData( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _dataflowType, const PrefetcherObserverInterfacePtr & _observer )
 	{
 		if( m_threadQueue == nullptr )
 		{
@@ -254,7 +254,7 @@ namespace Menge
 		ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( _pakName, _filePath );
+		task->initialize( _pakName, _filePath, _observer );
 		task->setDataflowType( _dataflowType );
 
 		new_receiver.prefetcher = task;

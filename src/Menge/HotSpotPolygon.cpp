@@ -242,7 +242,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotPolygon::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void HotSpotPolygon::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
 		{

@@ -260,9 +260,9 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_localHide( bool _value )
+	void HotSpot::_setLocalHide( bool _value )
 	{
-		Node::_localHide( _value );
+		Node::_setLocalHide( _value );
 
 		if( _value == true )
 		{
@@ -286,14 +286,14 @@ namespace Menge
 
 		if( _value == true )
 		{
-			if( this->isAfterActive() == true && this->isLocalHide() == false )
+			if( this->isAfterActive() == true && this->getLocalHide() == false )
 			{
 				this->deactivatePicker_();
 			}
 		}
 		else
 		{
-			if( this->isAfterActive() == true && this->isLocalHide() == false )
+			if( this->isAfterActive() == true && this->getLocalHide() == false )
 			{
 				this->activatePicker_();
 			}
@@ -336,7 +336,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_afterActivate()
 	{
-		if( this->isLocalHide() == false && this->isFreeze() == false )
+		if( this->getLocalHide() == false && this->isFreeze() == false )
 		{
 			this->activatePicker_();
 		}
@@ -344,7 +344,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_deactivate()
 	{
-		if( this->isLocalHide() == false && this->isFreeze() == false )
+		if( this->getLocalHide() == false && this->isFreeze() == false )
 		{
 			this->deactivatePicker_();
 		}

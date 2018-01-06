@@ -5,6 +5,8 @@
 #   include "Core/String.h"
 #   include "Logger/Logger.h"
 
+#   include "Kernel/ResourceImage.h"
+
 #   include "Factory/FactoryPool.h"
 
 //////////////////////////////////////////////////////////////////////////

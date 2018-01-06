@@ -14,7 +14,7 @@ namespace Menge
     {
 	}
     //////////////////////////////////////////////////////////////////////////
-	void MovieEvent::setEvent( const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+	void MovieEvent::setEvent( const pybind::object & _cb, const pybind::args & _args )
     {
         m_cb = _cb;
 		m_args = _args;
@@ -25,7 +25,7 @@ namespace Menge
 		if( m_cb.is_invalid() == false && m_cb.is_callable() == true )
 		{
 			pybind::object cb = m_cb;
-			pybind::detail::args_operator_t args = m_args;
+			pybind::args args = m_args;
 
 			m_cb.reset();
 			m_args.reset();

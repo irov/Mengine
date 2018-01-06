@@ -47,8 +47,6 @@ namespace Menge
 		void setRandomMode( bool _randomMode ) override;
 		bool getRandomMode() const override;
 
-		bool isBackground() const override;
-
 	public:
 		void interrupt() override;
 
@@ -115,7 +113,6 @@ namespace Menge
 		bool m_start;
 		bool m_looped;
 
-		bool m_background;
 		bool m_relative;
 	};
 

@@ -29,6 +29,7 @@ namespace Menge
 		virtual uint32_t getValue( const Char * _section, const Char * _key, uint32_t _default ) const = 0;
 		virtual uint64_t getValue( const Char * _section, const Char * _key, uint64_t _default ) const = 0;
 		virtual float getValue( const Char * _section, const Char * _key, float _default ) const = 0;
+        virtual double getValue( const Char * _section, const Char * _key, double _default ) const = 0;
 		virtual String getValue( const Char * _section, const Char * _key, const Char * _default ) const = 0;
 		virtual WString getValue( const Char * _section, const Char * _key, const WChar * _default ) const = 0;
 		virtual ConstString getValue( const Char * _section, const Char * _key, const ConstString & _default ) const = 0;

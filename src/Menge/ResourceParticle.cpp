@@ -19,27 +19,56 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceParticle::setFilePath( const FilePath& _path )
+	void ResourceParticle::setFilePath( const FilePath& _filePath )
 	{
-		m_fileName = _path;
+		m_filePath = _filePath;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const FilePath& ResourceParticle::getFilePath() const
 	{
-		return m_fileName;
+		return m_filePath;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceParticle::setConverterType( const ConstString & _converterType )
+    {
+        m_converterType = _converterType;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & ResourceParticle::getConverterType() const
+    {
+        return m_converterType;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceParticle::addResourceImage( const ResourceImagePtr & _resourceImage )
+    {
+        m_resourceImages.push_back( _resourceImage );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t ResourceParticle::getResourceImageCount() const
+    {
+        TVectorResourceImages::size_type resourceImageCount = m_resourceImages.size();
+
+        return (uint32_t)resourceImageCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & ResourceParticle::getResourceImage( uint32_t _index ) const
+    {
+        const ResourceImagePtr & resourceImage = m_resourceImages[_index];
+
+        return resourceImage;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceParticle::_loader( const Metabuf::Metadata * _meta )
 	{
 		const Metacode::Meta_DataBlock::Meta_ResourceParticle * metadata
 			= static_cast<const Metacode::Meta_DataBlock::Meta_ResourceParticle *>(_meta);
 
-		metadata->swap_File_Path( m_fileName );
+		metadata->swap_File_Path( m_filePath );
 		metadata->swap_File_Converter( m_converterType );
 
 		uint32_t atlasCount = metadata->get_AtlasCount_Value();
 
-		m_resourceImageNames.resize( atlasCount );
+		m_resourceImages.resize( atlasCount );
 
 		const Metacode::Meta_DataBlock::Meta_ResourceParticle::TVectorMeta_Atlas & includes_atlas = metadata->get_IncludesAtlas();
 
@@ -52,9 +81,23 @@ namespace Menge
 			const Metacode::Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas & atlas = *it;
 
 			uint32_t index = atlas.get_Index();
-			const Menge::ConstString & resourceName = atlas.get_ResourceName();
+			const ConstString & resourceName = atlas.get_ResourceName();
 
-			m_resourceImageNames[index] = resourceName;
+            ResourceImagePtr resourceImage = RESOURCE_SERVICE( m_serviceProvider )
+                ->getResourceReferenceT<ResourceImagePtr>( resourceName );
+
+            if( resourceImage == nullptr )
+            {
+                LOGGER_ERROR( m_serviceProvider )("ResourceParticle::_loader %s container %s can't get atlas image %s"
+                    , this->getName().c_str()
+                    , m_filePath.c_str()
+                    , resourceName.c_str()
+                    );
+
+                return false;
+            }
+
+			m_resourceImages[index] = resourceImage;
 		}
 
 		return true;
@@ -62,7 +105,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceParticle::_convert()
 	{
-		bool result = this->convertDefault2_( m_converterType, m_fileName, m_fileName );
+		bool result = this->convertDefault2_( m_converterType, m_filePath, m_filePath );
 
 		return result;
 	}
@@ -77,13 +120,13 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SERVICE2(m_serviceProvider)
-			->createEmitterContainerFromFile( category, m_fileName );
+			->createEmitterContainerFromFile( category, m_filePath );
 		
 		if( container == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceParticle::_isValid %s can't create container file '%s'"
 				, m_name.c_str()
-				, m_fileName.c_str() 
+				, m_filePath.c_str() 
 				);
 
 			return false;
@@ -93,30 +136,10 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceParticle::_isValid %s can't valid container '%s'"
 				, m_name.c_str()
-				, m_fileName.c_str() 
+				, m_filePath.c_str() 
 				);
 
 			return false;
-		}
-
-		for( TVectorResourceImageName::const_iterator
-			it = m_resourceImageNames.begin(),
-			it_end = m_resourceImageNames.end();
-		it != it_end;
-		++it )
-		{            
-			const ConstString & name = *it;
-
-			if( RESOURCE_SERVICE(m_serviceProvider)
-				->hasResource( name, nullptr ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceParticle::_isValid %s can't get image resource '%s'"
-					, m_name.c_str()
-					, name.c_str()
-					);
-
-				return false;
-			}            
 		}
 
 		return true;
@@ -127,40 +150,37 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SERVICE2( m_serviceProvider )
-			->createEmitterContainerFromFile( category, m_fileName );
+			->createEmitterContainerFromFile( category, m_filePath );
 
 		if( container == nullptr )
 		{
 			LOGGER_ERROR( m_serviceProvider )("ResourceParticle::_compile %s can't create container file '%s'"
 				, m_name.c_str()
-				, m_fileName.c_str()
+				, m_filePath.c_str()
 				);
 
 			return false;
 		}
 
-		for( TVectorResourceImageName::size_type
+		for( TVectorResourceImages::size_type
 			it = 0,
-			it_end = m_resourceImageNames.size();
+			it_end = m_resourceImages.size();
 		it != it_end;
 		++it )
 		{
-			const ConstString & resourceName = m_resourceImageNames[it];
+			const ResourceImagePtr & resourceImage = m_resourceImages[it];
 
-			ResourceImagePtr resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceT<ResourceImagePtr>( resourceName );
+            if( resourceImage->incrementReference() == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("ResourceParticle::_compile '%s' file '%s' can't invalid compile resource image '%s'"
+                    , m_name.c_str()
+                    , m_filePath.c_str()
+                    , resourceImage->getName().c_str()
+                    );
 
-			if( resourceImage == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceParticle::_compile %s container %s can't get atlas image %s"
-					, this->getName().c_str()
-					, m_fileName.c_str()
-					, resourceName.c_str()
-					);
-
-				return false;
-			}
-
+                return false;
+            }
+                        
 			container->setAtlasResourceImage( it, resourceImage );
 		}
 
@@ -171,6 +191,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceParticle::_release()
 	{
+        for( TVectorResourceImages::const_iterator
+            it = m_resourceImages.begin(),
+            it_end = m_resourceImages.end();
+            it != it_end;
+            ++it )
+        {
+            const ResourceImagePtr & resourceImage = *it;
+
+            if( resourceImage->decrementReference() == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("ResourceParticle::_release '%s' file '%s' can't invalid compile resource image '%s'"
+                    , m_name.c_str()
+                    , m_filePath.c_str()
+                    , resourceImage->getName().c_str()
+                    );
+            }
+        }
+
 		m_container = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////

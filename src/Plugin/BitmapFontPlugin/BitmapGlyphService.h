@@ -8,6 +8,8 @@
 
 #	include "Factory/Factory.h"
 
+#   include "stdex/stl_map.h"
+
 namespace Menge
 {
 	class BitmapGlyphService

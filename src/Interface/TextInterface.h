@@ -7,7 +7,6 @@
 #   include "Core/FilePath.h"
 #   include "Core/GlyphChar.h"
 #   include "Core/ColourValue.h"
-#   include "Core/IniUtil.h"
 
 #	include "Config/String.h"
 
@@ -17,6 +16,11 @@
 
 namespace Menge
 {
+    namespace IniUtil
+    {
+        struct IniStore;
+    }
+
 	//////////////////////////////////////////////////////////////////////////
 	enum ETextHorizontAlign
 	{

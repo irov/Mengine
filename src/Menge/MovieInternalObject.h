@@ -39,7 +39,7 @@ namespace Menge
 		void _setPersonalAlpha( float _alpha ) override;
 
 	protected:
-		void _localHide( bool _hide ) override;
+		void _setLocalHide( bool _hide ) override;
 
 	protected:
         ResourceHolder<ResourceInternalObject> m_resourceInternalObject;

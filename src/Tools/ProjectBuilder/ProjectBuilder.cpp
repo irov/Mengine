@@ -34,6 +34,7 @@
 #	include "XmlToBinDecoder.h"
 #	include "AlphaSpreading.h"
 #	include "XmlToAekConverter.h"
+#   include "ParseAem.h"
 
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/UnicodeInterface.h"
@@ -52,6 +53,7 @@
 #	include "Interface/ThreadSystemInterface.h"
 #	include "Interface/ParticleSystemInterface.h"
 #	include "Interface/ConfigInterface.h"
+#	include "Interface/OptionsInterface.h"
 
 #   include "WindowsLayer/VistaWindowsLayer.h"
 
@@ -74,9 +76,10 @@ PLUGIN_EXPORT( MengeLZ4 );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
+SERVICE_EXTERN( Platform );
 SERVICE_EXTERN( FactoryService );
+SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( UnicodeSystem );
-SERVICE_EXTERN( UnicodeService );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( ArchiveService );
 SERVICE_EXTERN( ArchiveService );
@@ -159,8 +162,8 @@ namespace Menge
 		SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
 
 		SERVICE_CREATE( serviceProvider, FactoryService );
+        SERVICE_CREATE( serviceProvider, OptionsService );
 		SERVICE_CREATE( serviceProvider, UnicodeSystem );		
-		SERVICE_CREATE( serviceProvider, UnicodeService );
 		SERVICE_CREATE( serviceProvider, StringizeService );
 		SERVICE_CREATE( serviceProvider, ArchiveService );
 		SERVICE_CREATE( serviceProvider, ArchiveService );
@@ -215,9 +218,9 @@ namespace Menge
 				(void)_flag;
 				(void)_count;
 
-				printf("%s"
-					, _data
-					);
+                printf( "%s"
+                    , _data
+                );
 			}
 
 			void flush() override 
@@ -247,6 +250,7 @@ namespace Menge
 		SERVICE_CREATE( serviceProvider, PluginService );
 
 		SERVICE_CREATE( serviceProvider, WindowsLayer );
+        SERVICE_CREATE( serviceProvider, Platform );
 		SERVICE_CREATE( serviceProvider, FileService );
 				
 		PLUGIN_CREATE( serviceProvider, MengeWin32FileGroup );
@@ -263,7 +267,7 @@ namespace Menge
 			->loadPlugin( L"MengeXmlCodecPlugin.dll" );
 
 		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), Helper::stringizeString( serviceProvider, "dir" ) ) == false )
+			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), STRINGIZE_STRING_LOCAL( serviceProvider, "global" ) ) == false )
 		{
 			return false;
 		}
@@ -271,7 +275,7 @@ namespace Menge
 		ConstString dev = Helper::stringizeString(serviceProvider, "dev");
 
 		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( dev, ConstString::none(), Helper::emptyPath(), Helper::stringizeString(serviceProvider, "dir") ) == false )
+			->mountFileGroup( dev, ConstString::none(), Helper::emptyPath(), STRINGIZE_STRING_LOCAL(serviceProvider, "global") ) == false )
 		{
 			return false;
 		}
@@ -731,7 +735,6 @@ static bool getCurrentUserRegValue( const WCHAR * _path, WCHAR * _value, DWORD _
 //////////////////////////////////////////////////////////////////////////
 bool run()
 {
-	Sleep( 10000 );
 	try
 	{
 		if( Menge::initialize() == false )
@@ -744,7 +747,7 @@ bool run()
 	}
 	catch( const std::exception & se )
 	{
-		char MSG[1024];
+		char MSG[2048];
 		sprintf(MSG, "PyInit_ToolsBuilderPlugin exception %s"			
 			, se.what()			
 			);
@@ -801,6 +804,8 @@ bool run()
 	pybind::def_function( kernel, "spreadingPngAlpha", &Menge::spreadingPngAlpha, py_tools_module );
 	pybind::def_function( kernel, "writeBin", &Menge::writeBin, py_tools_module );
 	pybind::def_function( kernel, "writeAek", &Menge::writeAek, py_tools_module );
+    pybind::def_function( kernel, "parseAem", &Menge::parseAem, py_tools_module );
+
 
 	pybind::def_function( kernel, "convert", &Menge::convert, py_tools_module );
 	pybind::def_function( kernel, "isAlphaInImageFile", &Menge::isAlphaInImageFile, py_tools_module );

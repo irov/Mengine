@@ -10,13 +10,13 @@ namespace Menge
         : public GOAP::ScopeProvider
     {
     public:
-        PybindScopeProvider( const pybind::object & _obj, const pybind::detail::args_operator_t & _args );
+        PybindScopeProvider( const pybind::object & _obj, const pybind::args & _args );
 
     protected:
         bool onScope( const GOAP::SourcePtr & _source ) override;
 
     protected:
         pybind::object m_obj;
-        pybind::detail::args_operator_t m_args;
+        pybind::args m_args;
     };
 }

@@ -41,15 +41,15 @@ namespace Menge
 		void update() override;
 
 	public:
-		bool prefetchImageDecoder( const ConstString & _pakName, const FilePath & _fileName, const ConstString & _codec ) override;		
+		bool prefetchImageDecoder( const ConstString & _pakName, const FilePath & _fileName, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer ) override;
 		bool getImageDecoder( const ConstString & _pakName, const FilePath & _fileName, ImageDecoderInterfacePtr & _decoder ) const override;
 
 	public:
-		bool prefetchSoundDecoder( const ConstString & _pakName, const FilePath & _fileName, const ConstString & _codec ) override;		
+		bool prefetchSoundDecoder( const ConstString & _pakName, const FilePath & _fileName, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer ) override;
 		bool getSoundDecoder( const ConstString& _pakName, const FilePath & _fileName, SoundDecoderInterfacePtr & _decoder ) const override;
 
 	public:
-		bool prefetchData( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _dataflowType ) override;		
+		bool prefetchData( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _dataflowType, const PrefetcherObserverInterfacePtr & _observer ) override;
 		bool getData( const ConstString& _pakName, const FilePath & _fileName, DataInterfacePtr & _data ) const override;
 
 	public:

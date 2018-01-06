@@ -19,7 +19,7 @@
 
 namespace Menge
 {
-	extern ServiceProviderInterface * serviceProvider;    
+	extern ServiceProviderInterface * serviceProvider;
 
     PyObject * spreadingPngAlpha( const wchar_t * pngPathIn, const wchar_t * pngPathOut )
     {
@@ -43,7 +43,7 @@ namespace Menge
                 , inputFileName.c_str()
                 );
 
-            return NULL;
+            return pybind::ret_none();
         }
 
         ConstString codec = Helper::stringizeString(serviceProvider, "pngImage");
@@ -57,7 +57,7 @@ namespace Menge
                 , inputFileName.c_str()
                 );
 
-            return nullptr;
+            return pybind::ret_none();
         }
 
 		if( imageDecoder->prepareData( input_stream ) == false )
@@ -66,7 +66,7 @@ namespace Menge
 				, inputFileName.c_str()
 				);
 
-			return nullptr;
+			return pybind::ret_none();
 		}
 
         const ImageCodecDataInfo* decode_dataInfo = imageDecoder->getCodecDataInfo();
@@ -89,14 +89,14 @@ namespace Menge
 		
 		if( memory_textureBuffer == nullptr )
 		{
-			return nullptr;
+			return pybind::ret_none();
 		}
 
 		unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize, __FILE__, __LINE__ );
 
 		if( textureBuffer == nullptr )
 		{
-			return nullptr;
+			return pybind::ret_none();
 		}
 
 		if( imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
@@ -105,7 +105,7 @@ namespace Menge
 				, inputFileName.c_str()
 				);
 
-			return nullptr;
+			return pybind::ret_none();
 		}
 
 		if( channels == 4 )
@@ -178,7 +178,7 @@ namespace Menge
                 , outputFileName.c_str()
                 );
 
-            return nullptr;
+            return pybind::ret_none();
         }
 
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE(serviceProvider)
@@ -190,7 +190,7 @@ namespace Menge
                 , outputFileName.c_str()
                 );
 
-            return nullptr;
+            return pybind::ret_none();
         }
 
 		if( imageEncoder->initialize( output_stream ) == false )
@@ -199,7 +199,7 @@ namespace Menge
 				, outputFileName.c_str()
 				);
 
-			return nullptr;
+			return pybind::ret_none();
 		}
 
         ImageCodecOptions encode_options;		
@@ -225,7 +225,7 @@ namespace Menge
                 , outputFileName.c_str()
                 );
 
-			return nullptr;
+			return pybind::ret_none();
         }
                
         return pybind::ret_none();

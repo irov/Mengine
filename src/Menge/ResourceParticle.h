@@ -19,8 +19,17 @@ namespace Menge
 		ResourceParticle();
 
 	public:
-		void setFilePath( const FilePath& _path );
+		void setFilePath( const FilePath& _filePath );
 		const FilePath& getFilePath() const;
+
+    public:
+        void setConverterType( const ConstString & _converterType );
+        const ConstString & getConverterType() const;
+
+    public:
+        void addResourceImage( const ResourceImagePtr & _resourceImage );
+        uint32_t getResourceImageCount() const;
+        const ResourceImagePtr & getResourceImage( uint32_t _index ) const;
 
 	public:
 		ParticleEmitterInterfacePtr createEmitter();
@@ -37,12 +46,12 @@ namespace Menge
 		bool _isValid() const override;
 
 	protected:
-		FilePath m_fileName;
+		FilePath m_filePath;
 
 		ConstString m_converterType;
 
-		typedef stdex::vector<ConstString> TVectorResourceImageName;
-		TVectorResourceImageName m_resourceImageNames;
+		typedef stdex::vector<ResourceImagePtr> TVectorResourceImages;
+		TVectorResourceImages m_resourceImages;
 
 		ParticleEmitterContainerInterface2Ptr m_container;
 	};

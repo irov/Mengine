@@ -59,6 +59,7 @@ namespace Menge
 		STDEX_THREAD_GUARD_INIT;
 
 #	ifdef _DEBUG
+        String m_relationPath;
 		String m_folder;
 		String m_fileName;
 #	endif

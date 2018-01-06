@@ -6,6 +6,13 @@ utils
 )
 
 ADD_FILTER(
+convex8
+    convex8.cpp
+	convex8.h
+    convex8_inline.h
+)
+
+ADD_FILTER(
 rect
     rect.cpp
 	rect.h

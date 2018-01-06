@@ -28,6 +28,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskPrefetchSoundDecoder::_onRun()
 	{
+        if( ThreadTaskPrefetch::_onRun() == false )
+        {
+            return false;
+        }
+
 		m_group = FILE_SERVICE(m_serviceProvider)
 			->getFileGroup( m_pakName );
 

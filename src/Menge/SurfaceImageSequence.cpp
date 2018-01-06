@@ -44,7 +44,9 @@ namespace	Menge
 	{
 		if( this->isPlay() == false )
 		{
-			return false; 
+            bool invalidate = this->isInvalidateMaterial();
+
+			return invalidate;
 		}
 
 		if( m_playTime > _current )

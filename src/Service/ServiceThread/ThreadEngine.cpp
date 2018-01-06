@@ -90,11 +90,23 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ThreadTaskDesc & taskThread = *it;
+            const ThreadTaskDesc & desc = *it;
 
-			const ThreadTaskInterfacePtr & task = taskThread.task;
+            const ThreadTaskInterfacePtr & task = desc.task;
 
-			this->joinTask( task );
+            task->cancel();
+
+            if( desc.progress == false )
+            {
+                continue;
+            }
+
+            const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
+
+            if( threadIdentity->completeTask() == false )
+            {
+                threadIdentity->join();
+            }
 		}
 
 		m_tasks.clear();
@@ -189,7 +201,7 @@ namespace Menge
 				continue;
 			}
 
-			td.identity->joinTask();
+			td.identity->completeTask();
 			td.identity->join();
 
             m_threads.erase( it );
@@ -280,7 +292,7 @@ namespace Menge
 
             const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
 
-            bool successful = threadIdentity->joinTask();
+            bool successful = threadIdentity->completeTask();
 
             if( successful == false )
             {

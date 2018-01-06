@@ -20,7 +20,6 @@
 
 #   include "stdex/stl_map.h"
 
-#	include <list>
 #	include <cstdarg>
 
 namespace Menge

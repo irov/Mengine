@@ -39,6 +39,7 @@ namespace Menge
 		STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::open" );
 
 #	ifdef _DEBUG
+        m_relationPath = _relationPath.c_str();
 		m_folder = _folderPath.c_str();
 		m_fileName = _filePath.c_str();
 #	endif

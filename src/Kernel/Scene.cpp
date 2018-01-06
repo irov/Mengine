@@ -17,17 +17,6 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//void Scene::_setEventListener( const pybind::dict & _embed )
-	//{
-	//	Entity::_setEventListener( _embed );
-
-	//	this->registerEvent( EVENT_APP_MOUSE_LEAVE, ("onAppMouseLeave"), _embed );
-	//	this->registerEvent( EVENT_APP_MOUSE_ENTER, ("onAppMouseEnter"), _embed );
-	//	this->registerEvent( EVENT_FOCUS, ("onFocus"), _embed );
-
-	//	this->registerEvent( EVENT_ON_SUB_SCENE, ("onSubScene"), _embed );
-	//}
-	//////////////////////////////////////////////////////////////////////////
 	void Scene::onAppMouseLeave()
 	{
         bool handle = EVENTABLE_METHODRT( m_scriptEventable, EVENT_APP_MOUSE_LEAVE, false, SceneEventReceiver )

@@ -223,7 +223,19 @@ namespace Menge
 			.def( "playSubComposition", &Movie2::playSubComposition )
 			.def( "stopSubComposition", &Movie2::stopSubComposition )
             .def_proxy_native_kernel( "setEventListener", this, &MoviePlugin::Movie2_setEventListener )
+            .def( "getSlot", &Movie2::getSlot )
+            .def( "hasSlot", &Movie2::hasSlot )
+            .def( "getSocket", &Movie2::getSocket )
+            .def( "hasSocket", &Movie2::hasSocket )
+            .def( "getText", &Movie2::getText )
+            .def( "hasText", &Movie2::hasText )
+            .def( "setEnableMovieLayers", &Movie2::setEnableMovieLayers )
 			;
+
+        
+        pybind::interface_<Movie2Slot, pybind::bases<Node> >( kernel, "Movie2Slot", false )
+            .def( "getMovieName", &Movie2Slot::getMovieName )
+            ;
 
 
         pybind::interface_<ResourceMovie2, pybind::bases<ResourceReference> >( kernel, "ResourceMovie2", false )
@@ -235,6 +247,9 @@ namespace Menge
 		SCRIPT_SERVICE( m_serviceProvider )
 			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2" ), new ScriptWrapper<Movie2>() );
 
+        SCRIPT_SERVICE( m_serviceProvider )
+            ->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2Slot" ), new ScriptWrapper<Movie2Slot>() );
+
 		SCRIPT_SERVICE( m_serviceProvider )
 			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceMovie2" ), new ScriptWrapper<ResourceMovie2>() );
 
@@ -243,6 +258,12 @@ namespace Menge
 		{
 			return false;
 		}
+
+        if( PROTOTYPE_SERVICE( m_serviceProvider )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2Slot" ), new NodePrototypeGenerator<Movie2Slot, 128> ) == false )
+        {
+            return false;
+        }
 
 		if( PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Resource" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceMovie2" ), new ResourceMovie2PrototypeGenerator(m_instance) ) == false )
@@ -266,7 +287,10 @@ namespace Menge
 
         PROTOTYPE_SERVICE( m_serviceProvider )
             ->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2" ) );
-        
+
+        PROTOTYPE_SERVICE( m_serviceProvider )
+            ->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2Slot" ) );
+
         PROTOTYPE_SERVICE( m_serviceProvider )
             ->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Resource" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceMovie2" ) );
 	}

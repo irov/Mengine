@@ -9,6 +9,8 @@
 #	include "Menge/SurfaceSound.h"
 #	include "Menge/SurfaceTrackMatte.h"
 
+#   include "Menge/HotSpotPolygon.h"
+
 #	include "Kernel/Materialable.h"
 
 #	include "Logger/Logger.h"
@@ -93,6 +95,21 @@ namespace Menge
         ae_stop_movie_sub_composition( m_composition, subcomposition );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2::setEnableMovieLayers( const ConstString & _name, bool _enable )
+    {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( m_serviceProvider )("Movie2::setEnableMovieLayers '%s' invalid get layer '%s' not compile"
+                , this->getName().c_str()
+                , _name.c_str()
+                );
+
+            return;
+        }
+
+        ae_set_movie_composition_nodes_enable( m_composition, _name.c_str(), AE_MOVIE_LAYER_TYPE_ANY, _enable ? AE_TRUE : AE_FALSE );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Movie2::_play( float _time )
     {
         (void)_time;
@@ -109,31 +126,34 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::_restart( uint32_t _enumerator, float _time )
     {
-        (void)_time;
-        (void)_enumerator;
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_RESTART )
+            ->onAnimatableRestart( _enumerator, _time );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_pause( uint32_t _enumerator )
     {
-        (void)_enumerator;
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_PAUSE )
+            ->onAnimatablePause( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_resume( uint32_t _enumerator, float _time )
     {
-        (void)_time;
-        (void)_enumerator;
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_RESUME )
+            ->onAnimatableResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_stop( uint32_t _enumerator )
     {
-        (void)_enumerator;
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
+            ->onAnimatableStop( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_end( uint32_t _enumerator )
     {
-        (void)_enumerator;
+        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
+            ->onAnimatableEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     static void * __movie_composition_camera_provider( const aeMovieCameraProviderCallbackData * _callbackData, void * _data )
@@ -225,18 +245,142 @@ namespace Menge
 
         ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
 
-        const char * layer_name = ae_get_movie_layer_data_name( _callbackData->layer );
+        const aeMovieLayerData * layer = _callbackData->layer;
+
+        const char * layer_name = ae_get_movie_layer_data_name( layer );
 
         ConstString c_name = Helper::stringizeString( serviceProvider, layer_name );
 
-        ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( _callbackData->layer );
+        ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( layer );
 
         if( is_track_matte == AE_TRUE )
         {
             return nullptr;
         }
 
-        aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( _callbackData->layer );
+        aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( layer );
+
+        switch( type )
+        {
+        case AE_MOVIE_LAYER_TYPE_TEXT:
+            {
+                TextField * node = PROTOTYPE_SERVICE( serviceProvider )
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "TextField" ) );
+
+                node->setName( c_name );
+                node->setExternalRender( true );
+
+                node->setTextID( c_name );
+                
+                if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_HORIZONTAL_CENTER ) == AE_TRUE )
+                {
+                    node->setHorizontalCenterAlign();
+                }
+
+                if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_VERTICAL_CENTER ) == AE_TRUE )
+                {
+                    node->setVerticalCenterAlign();
+                }
+                
+                movie2->addText( c_name, node );
+
+                MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
+
+                matrixProxy->setName( c_name );
+
+                mt::mat4f pm;
+                pm.from_f16( _callbackData->matrix );
+                matrixProxy->setProxyMatrix( pm );
+                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+                
+                matrixProxy->addChild( node );
+                
+                movie2->addChild( matrixProxy );
+
+                movie2->addMatrixProxy( matrixProxy );
+
+                return node;
+            }break;
+        case AE_MOVIE_LAYER_TYPE_SLOT:
+            {
+                Movie2Slot * node = PROTOTYPE_SERVICE( serviceProvider )
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "Movie2Slot" ) );
+
+                node->setName( c_name );
+                node->setExternalRender( true );
+
+                const ConstString & movie2Name = movie2->getName();
+
+                node->setMovieName( movie2Name );
+
+                movie2->addSlot( c_name, node );
+
+                MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
+
+                matrixProxy->setName( c_name );
+
+                mt::mat4f pm;
+                pm.from_f16( _callbackData->matrix );
+                matrixProxy->setProxyMatrix( pm );
+                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+
+                matrixProxy->addChild( node );
+
+                movie2->addChild( matrixProxy );
+
+                movie2->addMatrixProxy( matrixProxy );
+
+                return node;
+            }break;
+        case AE_MOVIE_LAYER_TYPE_SOCKET:
+            {
+                HotSpotPolygon * node = NODE_SERVICE( serviceProvider )
+                    ->createNodeT<HotSpotPolygon *>( STRINGIZE_STRING_LOCAL( serviceProvider, "HotSpotPolygon" ) );
+
+                node->setName( c_name );
+                node->setExternalRender( true );
+
+                const ae_polygon_t * polygon;
+                if( ae_get_movie_layer_data_socket_polygon( _callbackData->layer, 0, &polygon ) == AE_FALSE )
+                {
+                    return AE_NULL;
+                }
+
+                Polygon p;
+                for( ae_uint32_t index = 0; index != polygon->point_count; ++index )
+                {
+                    const ae_vector2_t * v = polygon->points + index;
+
+                    mt::vec2f v2( (*v)[0], (*v)[1] );
+                    
+                    p.append( v2 );
+                }
+
+                node->setPolygon( p );
+
+                movie2->addSocketShape( c_name, node );
+
+                MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
+
+                matrixProxy->setName( c_name );
+
+                mt::mat4f pm;
+                pm.from_f16( _callbackData->matrix );
+                matrixProxy->setProxyMatrix( pm );
+                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+
+                matrixProxy->addChild( node );
+
+                movie2->addChild( matrixProxy );
+
+                movie2->addMatrixProxy( matrixProxy );
+
+                return node;
+            }break;
+        };
 
         if( _callbackData->track_matte_layer != AE_NULL )
         {
@@ -267,6 +411,9 @@ namespace Menge
                     case AE_MOVIE_BLEND_SCREEN:
                         blend_mode = EMB_SCREEN;
                         break;
+                    case AE_MOVIE_BLEND_MULTIPLY:
+                        blend_mode = EMB_MULTIPLY;
+                        break;
                     };
 
                     surfaceTrackMatte->setBlendMode( blend_mode );
@@ -284,6 +431,64 @@ namespace Menge
         {
             switch( type )
             {
+            case AE_MOVIE_LAYER_TYPE_PARTICLE:
+                {
+                    ParticleEmitter2 * node = NODE_SERVICE( serviceProvider )
+                        ->createNodeT<ParticleEmitter2 *>( STRINGIZE_STRING_LOCAL( serviceProvider, "ParticleEmitter2" ) );
+
+                    node->setName( c_name );
+                    node->setExternalRender( true );
+
+                    ResourceParticle * resourceParticle = (ResourceParticle *)ae_get_movie_layer_data_resource_data( _callbackData->layer );
+
+                    node->setResourceParticle( resourceParticle );
+
+                    EMaterialBlendMode blend_mode = EMB_NORMAL;
+
+                    ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
+
+                    switch( layer_blend_mode )
+                    {
+                    case AE_MOVIE_BLEND_ADD:
+                        blend_mode = EMB_ADD;
+                        break;
+                    case AE_MOVIE_BLEND_SCREEN:
+                        blend_mode = EMB_SCREEN;
+                        break;
+                    case AE_MOVIE_BLEND_MULTIPLY:
+                        blend_mode = EMB_MULTIPLY;
+                        break;
+                    };
+
+                    ae_float_t layer_stretch = ae_get_movie_layer_data_stretch( _callbackData->layer );
+                    node->setStretch( layer_stretch );
+
+                    node->setLoop( _callbackData->incessantly );
+
+                    node->setEmitterPositionRelative( false );
+                    node->setEmitterCameraRelative( false );
+                    node->setEmitterTranslateWithParticle( false );
+
+                    movie2->addParticle( node );
+
+                    MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
+
+                    matrixProxy->setName( c_name );
+
+                    mt::mat4f pm;
+                    pm.from_f16( _callbackData->matrix );
+                    matrixProxy->setProxyMatrix( pm );
+                    matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+
+                    matrixProxy->addChild( node );
+
+                    movie2->addChild( matrixProxy );
+
+                    movie2->addMatrixProxy( matrixProxy );
+
+                    return node;
+                }break;
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
                     SurfaceVideo * surfaceVideo = PROTOTYPE_SERVICE( serviceProvider )
@@ -306,6 +511,9 @@ namespace Menge
                         break;
                     case AE_MOVIE_BLEND_SCREEN:
                         blend_mode = EMB_SCREEN;
+                        break;
+                    case AE_MOVIE_BLEND_MULTIPLY:
+                        blend_mode = EMB_MULTIPLY;
                         break;
                     };
 
@@ -340,6 +548,7 @@ namespace Menge
     static void __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, void * _data )
     {
         Movie2 * movie2 = (Movie2 *)_data;
+        (void)movie2;
 
         ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( _callbackData->layer );
 
@@ -356,9 +565,9 @@ namespace Menge
             {
             case AE_MOVIE_LAYER_TYPE_IMAGE:
                 {
-                    SurfaceTrackMatte * surfaceTrackMatte = (SurfaceTrackMatte *)_callbackData->element;
+                    //SurfaceTrackMatte * surfaceTrackMatte = (SurfaceTrackMatte *)_callbackData->element;
                     
-                    movie2->removeSurface( surfaceTrackMatte );
+                    //movie2->removeSurface( surfaceTrackMatte );
                 }break;
             default:
                 {
@@ -369,17 +578,23 @@ namespace Menge
         {
             switch( type )
             {
+            case AE_MOVIE_LAYER_TYPE_PARTICLE:
+                {
+                    //ParticleEmitter2 * particleEmitter = (ParticleEmitter2 *)_callbackData->element;
+
+                    //movie2->removeParticle( particleEmitter );
+                }break;
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
-                    SurfaceVideo * surfaceVideo = (SurfaceVideo *)_callbackData->element;
+                    //SurfaceVideo * surfaceVideo = (SurfaceVideo *)_callbackData->element;
 
-                    movie2->removeSurface( surfaceVideo );
+                    //movie2->removeSurface( surfaceVideo );
                 }break;
             case AE_MOVIE_LAYER_TYPE_SOUND:
                 {
-                    SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+                    //SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
 
-                    movie2->removeSurface( surfaceSound );
+                    //movie2->removeSurface( surfaceSound );
                 }break;
             }
         }
@@ -395,117 +610,282 @@ namespace Menge
 
         switch( _callbackData->state )
         {
-        case AE_MOVIE_NODE_UPDATE_UPDATE:
+        case AE_MOVIE_STATE_UPDATE_PROCESS:
+            {
+                switch( type )
+                {
+                case AE_MOVIE_LAYER_TYPE_TEXT:
+                    {
+                        TextField * node = (TextField *)_callbackData->element;
+
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_PARTICLE:
+                    {
+                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
+
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SLOT:
+                    {
+                        Movie2Slot * node = (Movie2Slot *)_callbackData->element;
+
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>( nodeParent );
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SOCKET:
+                    {
+                        HotSpotPolygon * node = (HotSpotPolygon *)_callbackData->element;
+
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+                    }break;
+                }
+            }break;
+        case AE_MOVIE_STATE_UPDATE_BEGIN:
             {
                 switch( type )
                 {
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
-                        //printf( "AE_MOVIE_LAYER_TYPE_PARTICLE %f %f\n"
-                        //	, _matrix[12]
-                        //	, _matrix[13]
-                        //	);
-                    }break;
-                case AE_MOVIE_LAYER_TYPE_SLOT:
-                    {
-                        //printf( "AE_MOVIE_LAYER_TYPE_SLOT %f %f\n"
-                        //	, _matrix[12]
-                        //	, _matrix[13]
-                        //	);
-                    }break;
-                }
-            }break;
-        case AE_MOVIE_NODE_UPDATE_BEGIN:
-            {
-                switch( type )
-                {
-                case AE_MOVIE_LAYER_TYPE_VIDEO:
-                    {
-                        SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
+
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
                         float time = TIMELINE_SERVICE( serviceProvider )
                             ->getTime();
 
-                        surfaceVide->setTiming( _callbackData->offset );
+                        node->setTiming( _callbackData->offset );
 
-                        if( surfaceVide->play( time ) == 0 )
+                        if( _callbackData->loop == AE_TRUE )
                         {
-                            return;
+                            if( node->isPlay() == false )
+                            {
+                                if( node->play( time ) == 0 )
+                                {
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if( node->play( time ) == 0 )
+                            {
+                                return;
+                            }
+                        }
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_VIDEO:
+                    {
+                        SurfaceVideo * node = (SurfaceVideo *)_callbackData->element;
+
+                        float time = TIMELINE_SERVICE( serviceProvider )
+                            ->getTime();
+
+                        node->setTiming( _callbackData->offset );
+
+                        if( _callbackData->loop == AE_TRUE )
+                        {
+                            if( node->isPlay() == false )
+                            {
+                                if( node->play( time ) == 0 )
+                                {
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if( node->play( time ) == 0 )
+                            {
+                                return;
+                            }
                         }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOUND:
                     {
-                        SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+                        SurfaceSound * node = (SurfaceSound *)_callbackData->element;
 
                         float time = TIMELINE_SERVICE( serviceProvider )
                             ->getTime();
 
-                        surfaceSound->setTiming( _callbackData->offset );
+                        node->setTiming( _callbackData->offset );
 
-                        if( surfaceSound->play( time ) == 0 )
+                        if( _callbackData->loop == AE_TRUE )
                         {
-                            return;
+                            if( node->isPlay() == false )
+                            {
+                                if( node->play( time ) == 0 )
+                                {
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if( node->play( time ) == 0 )
+                            {
+                                return;
+                            }
                         }
                     }break;
                 }
             }break;
-        case AE_MOVIE_NODE_UPDATE_END:
+        case AE_MOVIE_STATE_UPDATE_END:
             {
                 switch( type )
                 {
+                case AE_MOVIE_LAYER_TYPE_PARTICLE:
+                    {
+                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
+
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+
+                        if( _callbackData->loop == AE_FALSE )
+                        {
+                            node->stop();
+                        }
+                    }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
-                        SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+                        SurfaceVideo * animatable = (SurfaceVideo *)_callbackData->element;
 
-                        surfaceVide->stop();
+                        if( _callbackData->loop == AE_FALSE )
+                        {
+                            animatable->stop();
+                        }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOUND:
                     {
-                        SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+                        SurfaceSound * animatable = (SurfaceSound *)_callbackData->element;
 
-                        surfaceSound->stop();
+                        if( _callbackData->loop == AE_FALSE )
+                        {
+                            animatable->stop();
+                        }
                     }break;
                 }
             }break;
-        case AE_MOVIE_NODE_UPDATE_PAUSE:
+        case AE_MOVIE_STATE_UPDATE_PAUSE:
             {
                 switch( type )
                 {
+                case AE_MOVIE_LAYER_TYPE_PARTICLE:
+                    {
+                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
+
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+
+                        node->pause();
+                    }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
-                        SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+                        SurfaceVideo * animatable = (SurfaceVideo *)_callbackData->element;
 
-                        surfaceVide->pause();
+                        animatable->pause();
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOUND:
                     {
-                        SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+                        SurfaceSound * animatable = (SurfaceSound *)_callbackData->element;
 
-                        surfaceSound->pause();
+                        animatable->pause();
                     }break;
                 }
             }break;
-        case AE_MOVIE_NODE_UPDATE_RESUME:
+        case AE_MOVIE_STATE_UPDATE_RESUME:
             {
                 switch( type )
                 {
-                case AE_MOVIE_LAYER_TYPE_VIDEO:
+                case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
-                        SurfaceVideo * surfaceVide = (SurfaceVideo *)_callbackData->element;
+                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
+
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
                         float time = TIMELINE_SERVICE( serviceProvider )
                             ->getTime();
 
-                        surfaceVide->resume( time );
+                        node->resume( time );
                     }break;
-                case AE_MOVIE_LAYER_TYPE_SOUND:
+                case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
-                        SurfaceSound * surfaceSound = (SurfaceSound *)_callbackData->element;
+                        SurfaceVideo * animatable = (SurfaceVideo *)_callbackData->element;
 
                         float time = TIMELINE_SERVICE( serviceProvider )
                             ->getTime();
 
-                        surfaceSound->resume( time );
+                        animatable->resume( time );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SOUND:
+                    {
+                        SurfaceSound * animatable = (SurfaceSound *)_callbackData->element;
+
+                        float time = TIMELINE_SERVICE( serviceProvider )
+                            ->getTime();
+
+                        animatable->resume( time );
                     }break;
                 }
             }break;
@@ -536,14 +916,14 @@ namespace Menge
 
         switch( _callbackData->state )
         {
-        case AE_MOVIE_NODE_UPDATE_BEGIN:
+        case AE_MOVIE_STATE_UPDATE_BEGIN:
             {
                 TrackMatteDesc * desc = static_cast<TrackMatteDesc *>(_callbackData->track_matte_data);
 
                 desc->matrix.from_f16( _callbackData->matrix );
                 desc->mesh = *_callbackData->mesh;
             }break;
-        case AE_MOVIE_NODE_UPDATE_UPDATE:
+        case AE_MOVIE_STATE_UPDATE_PROCESS:
             {
                 TrackMatteDesc * desc = static_cast<TrackMatteDesc *>(_callbackData->track_matte_data);
 
@@ -753,6 +1133,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_release()
     {
+        ae_delete_movie_composition( m_composition );
+        m_composition = nullptr;
+
+        m_meshes.clear();
+        m_cameras.clear();
+
         for( TVectorSurfaces::const_iterator
             it = m_surfaces.begin(),
             it_end = m_surfaces.end();
@@ -764,10 +1150,46 @@ namespace Menge
             surface->release();
         }
 
-        m_meshes.clear();
-                
-        ae_delete_movie_composition( m_composition );
-        m_composition = nullptr;
+        m_surfaces.clear();
+        
+        for( TMapSlots::iterator
+            it = m_slots.begin(),
+            it_end = m_slots.end();
+            it != it_end;
+            ++it )
+        {
+            Movie2Slot * slot = it->second;
+
+            slot->destroy();
+        }
+
+        m_slots.clear();
+
+        for( TMapSockets::iterator
+            it = m_sockets.begin(),
+            it_end = m_sockets.end();
+            it != it_end;
+            ++it )
+        {
+            HotSpot * hotspot = it->second;
+
+            hotspot->destroy();
+        }
+
+        m_sockets.clear();
+
+        for( TVectorMatrixProxies::iterator
+            it = m_matrixProxies.begin(),
+            it_end = m_matrixProxies.end();
+            it != it_end;
+            ++it )
+        {
+            MatrixProxy * matrixProxy = *it;
+
+            matrixProxy->destroy();
+        }
+
+        m_matrixProxies.clear();
 
         m_resourceMovie2.release();
 
@@ -860,9 +1282,38 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     float Movie2::_getTiming() const
     {
+        if( this->isCompile() == false )
+        {
+            return 0.f;
+        }
+
         float timing = ae_get_movie_composition_time( m_composition );
 
-        return timing;
+        return timing * 1000.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_setFirstFrame()
+    {
+        this->setTiming( 0.f );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::_setLastFrame()
+    {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("Movie._setLastFrame: '%s' not activate"
+                , this->getName().c_str()
+                );
+
+            return;
+        }
+
+        const aeMovieCompositionData * compositionData = ae_get_movie_composition_composition_data( m_composition );
+
+        float duration = ae_get_movie_composition_data_duration( compositionData );
+        float frameDuration = ae_get_movie_composition_data_frame_duration( compositionData );
+        
+        this->setTiming( duration * 1000.f - frameDuration * 1000.f );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_update( float _current, float _timing )
@@ -871,6 +1322,11 @@ namespace Menge
         (void)_timing;
 
         if( this->isPlay() == false )
+        {
+            return;
+        }
+
+        if( m_composition == nullptr )
         {
             return;
         }
@@ -928,6 +1384,18 @@ namespace Menge
             {
                 switch( mesh.layer_type )
                 {
+                case AE_MOVIE_LAYER_TYPE_SLOT:
+                    {
+                        Movie2Slot * slot = reinterpret_cast<Movie2Slot *>(mesh.element_data);
+                        
+                        slot->render( _renderService, _state, 0 );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_PARTICLE:
+                    {
+                        ParticleEmitter2 * particleEmitter2 = reinterpret_cast<ParticleEmitter2 *>(mesh.element_data);
+
+                        particleEmitter2->render( _renderService, _state, 0 );
+                    }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:
                     {
                         m_meshes.push_back( Mesh() );
@@ -935,7 +1403,7 @@ namespace Menge
 
                         m.vertices.resize( mesh.vertexCount );
 
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
                         for( uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
@@ -964,6 +1432,12 @@ namespace Menge
                         case AE_MOVIE_BLEND_ADD:
                             blend_mode = EMB_ADD;
                             break;
+                        case AE_MOVIE_BLEND_SCREEN:
+                            blend_mode = EMB_SCREEN;
+                            break;
+                        case AE_MOVIE_BLEND_MULTIPLY:
+                            blend_mode = EMB_MULTIPLY;
+                            break;
                         };
 
                         m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
@@ -978,7 +1452,7 @@ namespace Menge
 
                         m.vertices.resize( mesh.vertexCount );
 
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
                         for( uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
@@ -1006,6 +1480,12 @@ namespace Menge
                         {
                         case AE_MOVIE_BLEND_ADD:
                             blend_mode = EMB_ADD;
+                            break;
+                        case AE_MOVIE_BLEND_SCREEN:
+                            blend_mode = EMB_SCREEN;
+                            break;
+                        case AE_MOVIE_BLEND_MULTIPLY:
+                            blend_mode = EMB_MULTIPLY;
                             break;
                         };
 
@@ -1024,19 +1504,21 @@ namespace Menge
 
                         m.vertices.resize( mesh.vertexCount );
 
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
                         for( uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
                             RenderVertex2D & v = m.vertices[index];
 
                             mt::vec3f vp;
-                            vp.from_f3( &mesh.position[index][0] );
+                            const float * vp3 = mesh.position[index];
+                            vp.from_f3( vp3 );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
                             mt::vec2f uv;
-                            uv.from_f2( &mesh.uv[index][0] );
+                            const float * uv2 = mesh.uv[index];
+                            uv.from_f2( uv2 );
 
                             const mt::uv4f & uv_image = resource_image->getUVImage();
 
@@ -1057,6 +1539,12 @@ namespace Menge
                         {
                         case AE_MOVIE_BLEND_ADD:
                             blend_mode = EMB_ADD;
+                            break;
+                        case AE_MOVIE_BLEND_SCREEN:
+                            blend_mode = EMB_SCREEN;
+                            break;
+                        case AE_MOVIE_BLEND_MULTIPLY:
+                            blend_mode = EMB_MULTIPLY;
                             break;
                         };
 
@@ -1082,7 +1570,7 @@ namespace Menge
 
                         m.vertices.resize( mesh.vertexCount );
 
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
                         for( uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
@@ -1132,7 +1620,7 @@ namespace Menge
 
                         m.vertices.resize( mesh.vertexCount );
 
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.r, mesh.g, mesh.b, mesh.a );
+                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
                         const ResourceImagePtr & resourceImage = surfaceTrackMatte->getResourceImage();
                         const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceTrackMatteImage();
@@ -1190,6 +1678,12 @@ namespace Menge
                         case AE_MOVIE_BLEND_ADD:
                             blend_mode = EMB_ADD;
                             break;
+                        case AE_MOVIE_BLEND_SCREEN:
+                            blend_mode = EMB_SCREEN;
+                            break;
+                        case AE_MOVIE_BLEND_MULTIPLY:
+                            blend_mode = EMB_MULTIPLY;
+                            break;
                         };
 
                         m.material = surfaceTrackMatte->getMaterial();
@@ -1232,5 +1726,117 @@ namespace Menge
         TVectorSurfaces::iterator it_found = std::find( m_surfaces.begin(), m_surfaces.end(), _surface );
 
         m_surfaces.erase( it_found );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::addParticle( ParticleEmitter2 * _particleEmitter )
+    {
+        m_particleEmitters.push_back( _particleEmitter );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::removeParticle( ParticleEmitter2 * _particleEmitter )
+    {
+        _particleEmitter->release();
+
+        TVectorParticleEmitter2s::iterator it_found = std::find( m_particleEmitters.begin(), m_particleEmitters.end(), _particleEmitter );
+
+        m_particleEmitters.erase( it_found );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::addSlot( const ConstString & _name, Movie2Slot * _slot )
+    {
+        m_slots.insert( std::make_pair( _name, _slot ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Movie2Slot * Movie2::getSlot( const ConstString & _name ) const
+    {
+        TMapSlots::const_iterator it_found = m_slots.find( _name );
+
+        if( it_found == m_slots.end() )
+        {
+            return nullptr;
+        }
+
+        Movie2Slot * slot = it_found->second;
+
+        return slot;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::hasSlot( const ConstString & _name ) const
+    {
+        TMapSlots::const_iterator it_found = m_slots.find( _name );
+
+        if( it_found == m_slots.end() )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::addSocketShape( const ConstString & _name, HotSpotPolygon * _hotspot )
+    {
+        m_sockets.insert( std::make_pair( _name, _hotspot ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HotSpot * Movie2::getSocket( const ConstString & _name ) const
+    {
+        TMapSockets::const_iterator it_found = m_sockets.find( _name );
+
+        if( it_found == m_sockets.end() )
+        {
+            return nullptr;
+        }
+
+        HotSpot * hotspot = it_found->second;
+
+        return hotspot;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::hasSocket( const ConstString & _name ) const
+    {
+        TMapSockets::const_iterator it_found = m_sockets.find( _name );
+
+        if( it_found == m_sockets.end() )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::addText( const ConstString & _name, TextField * _text )
+    {
+        m_texts.insert( std::make_pair( _name, _text ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    TextField * Movie2::getText( const ConstString & _name ) const
+    {
+        TMapTexts::const_iterator it_found = m_texts.find( _name );
+
+        if( it_found == m_texts.end() )
+        {
+            return nullptr;
+        }
+
+        TextField * text = it_found->second;
+
+        return text;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::hasText( const ConstString & _name ) const
+    {
+        TMapTexts::const_iterator it_found = m_texts.find( _name );
+
+        if( it_found == m_texts.end() )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::addMatrixProxy( MatrixProxy * _matrixProxy )
+    {
+        m_matrixProxies.push_back( _matrixProxy );
     }
 }

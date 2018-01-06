@@ -251,6 +251,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::update()
 	{
+#   ifdef _DEBUG
+        const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE( m_serviceProvider )
+            ->getDebugInfo();
+
+        float limitFillrate = CONFIG_VALUE( m_serviceProvider, "Limit", "Fillrate", 100.f );
+
+        const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
+            ->getContentResolution();
+
+        double sreenFillrate = debugInfo.fillrate / double( contentResolution.getWidth() * contentResolution.getHeight() );
+
+        if( sreenFillrate > limitFillrate )
+        {
+            EVENTABLE_METHOD( this, EVENT_GAME_OVER_FILLRATE )
+                ->onGameOverFillrate( sreenFillrate );
+        }
+#   endif
+
 		m_userEvents.insert( m_userEvents.end(), m_userEventsAdd.begin(), m_userEventsAdd.end() );
 		m_userEventsAdd.clear();
 
@@ -464,6 +482,11 @@ namespace Menge
             {
                 return m_cb.call();
             }
+
+            void onGameOverFillrate( double _fillrate ) override
+            {
+                m_cb.call( _fillrate );
+            }
         };
     }
     //////////////////////////////////////////////////////////////////////////
@@ -513,6 +536,8 @@ namespace Menge
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCursorMode", EVENT_GAME_CURSOR_MODE );
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onUserEvent", EVENT_GAME_USER );
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCloseWindow", EVENT_GAME_CLOSE );
+
+        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onOverFillrate", EVENT_GAME_OVER_FILLRATE );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality()

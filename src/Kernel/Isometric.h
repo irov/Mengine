@@ -13,6 +13,6 @@ namespace Menge
 		Isometric();
 
 	protected:
-		void render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
+		void render( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
 	};
 }

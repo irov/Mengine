@@ -15,7 +15,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	(void)hPrevInstance;
 	(void)nShowCmd;
 
-    uint32_t images_count = parse_kwds( lpCmdLine, L"--image_count", 0U );
+    //uint32_t image_count = parse_kwds( lpCmdLine, L"--image_count", 0U );
 	std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
     std::wstring log_path = parse_kwds( lpCmdLine, L"--log_path", std::wstring() );
 	std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker", std::wstring() );

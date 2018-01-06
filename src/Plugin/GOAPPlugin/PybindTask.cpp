@@ -48,7 +48,7 @@ namespace Menge
         return m_generator->callEventValidate( m_object );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PybindTask::_onCheck() const
+    bool PybindTask::_onCheck()
     {
         return m_generator->callEventCheck( m_object );
     }

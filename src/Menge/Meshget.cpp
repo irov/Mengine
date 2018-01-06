@@ -135,7 +135,7 @@ namespace Menge
 		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_MESHGET_UPDATE )(this, _current, _timing);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Meshget::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
+	void Meshget::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
 		if( m_positions.empty() == true )
 		{

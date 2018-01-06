@@ -22,7 +22,7 @@ namespace Menge
 			, Node * _target
 			, float _moveSpeed
 			, const pybind::object & _cb
-			, const pybind::detail::args_operator_t & _args );
+			, const pybind::args & _args );
 
 		void destroyFollowAffector( InvaderFollowAffector * _affector );
 

@@ -48,7 +48,7 @@ namespace Menge
 	{
 	public:
 		virtual bool processTask( ThreadTaskInterface * _task ) = 0;
-		virtual bool joinTask() = 0;
+		virtual bool completeTask() = 0;
 
 	public:
 		virtual void join() = 0;

@@ -3,6 +3,7 @@
 #	include "Kernel/Surface.h"
 #	include "Kernel/Eventable.h"
 #	include "Kernel/Animatable.h"
+#	include "Kernel/ResourceHolder.h"
 
 namespace Menge
 {

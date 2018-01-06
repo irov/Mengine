@@ -6,8 +6,14 @@
 
 #	include "Kernel/RenderCameraProjection.h"
 #	include "Kernel/RenderViewport.h"
+#   include "Kernel/MatrixProxy.h"
+
+#   include "Menge/HotSpotPolygon.h"
+#   include "Menge/ParticleEmitter2.h"
+#   include "Menge/TextField.h"
 
 #   include "ResourceMovie2.h"
+#   include "Movie2Slot.h"
 
 #   include "stdex/stl_map.h"
 
@@ -44,8 +50,12 @@ namespace Menge
 		void setWorkAreaFromEvent( const ConstString & _eventName );
 		void removeWorkArea();
 
+    public:
 		void playSubComposition( const ConstString & _name );
 		void stopSubComposition( const ConstString & _name );
+
+    public:
+        void setEnableMovieLayers( const ConstString & _name, bool _enable );
 
 	protected:
 		bool _play( float _time ) override;
@@ -70,6 +80,8 @@ namespace Menge
 		void _setLoop( bool _value ) override;
 		void _setTiming( float _timing ) override;
 		float _getTiming() const override;
+        void _setFirstFrame() override;
+        void _setLastFrame() override;
 
 	protected:
 		void _update( float _current, float _timing ) override;
@@ -86,6 +98,28 @@ namespace Menge
 		void addSurface( const SurfacePtr & _surface );
         void removeSurface( const SurfacePtr & _surface );
 
+    public:
+        void addParticle( ParticleEmitter2 * _particleEmitter );
+        void removeParticle( ParticleEmitter2 * _particleEmitter );
+
+    public:
+        void addSlot( const ConstString & _name, Movie2Slot * _slot );
+        Movie2Slot * getSlot( const ConstString & _name ) const;
+        bool hasSlot( const ConstString & _name ) const;
+
+    public:
+        void addSocketShape( const ConstString & _name, HotSpotPolygon * _hotspot );
+        HotSpot * getSocket( const ConstString & _name ) const;
+        bool hasSocket( const ConstString & _name ) const;
+
+    public:
+        void addText( const ConstString & _name, TextField * _text );
+        TextField * getText( const ConstString & _name ) const;
+        bool hasText( const ConstString & _name ) const;
+
+    public:
+        void addMatrixProxy( MatrixProxy * _matrixProxy );
+        
 	public:
 		struct Camera
 		{
@@ -122,5 +156,20 @@ namespace Menge
 
 		typedef stdex::vector<SurfacePtr> TVectorSurfaces;
 		TVectorSurfaces m_surfaces;
+
+        typedef stdex::map<ConstString, Movie2Slot *> TMapSlots;
+        TMapSlots m_slots;
+
+        typedef stdex::map<ConstString, HotSpot *> TMapSockets;
+        TMapSockets m_sockets;
+
+        typedef stdex::map<ConstString, TextField *> TMapTexts;
+        TMapTexts m_texts;
+
+        typedef stdex::vector<ParticleEmitter2 *> TVectorParticleEmitter2s;
+        TVectorParticleEmitter2s m_particleEmitters;
+
+        typedef stdex::vector<MatrixProxy *> TVectorMatrixProxies;
+        TVectorMatrixProxies m_matrixProxies;
 	};
 }

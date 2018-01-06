@@ -8,8 +8,6 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/ArchiveInterface.h"
 
-#	include "Kernel/ResourceImage.h"
-
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 #   include "Core/ColourValue.h"
@@ -30,6 +28,8 @@
 
 namespace Menge
 {
+    typedef stdex::intrusive_ptr<class ResourceImage> ResourceImagePtr;
+
 	struct ParticleMesh
 	{
 		uint32_t vertexOffset;
@@ -108,10 +108,7 @@ namespace Menge
 	public:
 		virtual bool prepareParticles( ParticleEmitterRenderFlush & _flush ) = 0;
 		virtual bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndices * _indices, ParticleEmitterRenderFlush & _flush ) = 0;
-
-	public:
-		virtual bool isBackground() const = 0;
-
+        
 	public:
 		virtual const mt::box2f & getBoundingBox() const = 0;
 

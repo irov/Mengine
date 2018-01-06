@@ -4,6 +4,8 @@
 
 #	include "BitmapFontInterface.h"
 
+#   include "Core/IniUtil.h"
+
 #	include "Logger/Logger.h"
 
 namespace Menge

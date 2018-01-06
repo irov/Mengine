@@ -126,6 +126,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_destroy()
 	{
+        this->setShallowGravePropagate( false );
+
 		this->release();
 
 		Node * old_parent = this->getParent();
@@ -162,7 +164,6 @@ namespace Menge
 
         EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_DESTROY, EntityEventReceiver )
             ->onEntityDestroy( m_object );
-		//EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_DESTROY )(m_object);
 
 		Factorable::destroy();
 	}

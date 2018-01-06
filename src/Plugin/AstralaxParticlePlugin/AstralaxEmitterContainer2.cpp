@@ -8,6 +8,8 @@
 #	include "Core/String.h"
 #	include "Core/Stream.h"
 
+#   include "Kernel/ResourceImage.h"
+
 #   include "Factory/FactoryPool.h"
 
 namespace Menge
@@ -113,7 +115,9 @@ namespace Menge
 				continue;
 			}
 		
-			return m_resourceImages[i];
+            const ResourceImagePtr & image = m_resourceImages[i];
+
+            return image;
 		}
 
 		LOGGER_ERROR( m_serviceProvider )("AstralaxEmitterContainer2::getAtlasResourceImage: not found atlas %s"

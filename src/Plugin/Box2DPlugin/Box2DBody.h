@@ -67,7 +67,7 @@ namespace Menge
 		b2Body * getBody() const;
 
     public:
-		bool addShapeConvex( const Menge::Polygon & _vertices, float _density, float _friction, float _restitution, bool _isSensor
+		bool addShapeConvex( const Polygon & _vertices, float _density, float _friction, float _restitution, bool _isSensor
 			, unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex );
         bool addShapeCircle( float _radius, const mt::vec2f& _localPos
 			, float _density, float _friction, float _restitution, bool _isSensor
@@ -113,7 +113,7 @@ namespace Menge
 
 		void updateFilterData( uint16_t _categoryBits, uint16_t _collisionMask, int16_t _groupIndex );
 
-		void filterContactList( const pybind::object & _filter, const pybind::detail::args_operator_t & _args );
+		void filterContactList( const pybind::object & _filter, const pybind::args & _args );
 
 	protected:
         b2World* m_world;

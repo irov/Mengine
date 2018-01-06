@@ -539,7 +539,7 @@ namespace Menge
 			{
 				const Metacode::Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & meta_shape = *it_shape;
 
-				Menge::Polygon polygon = meta_shape.get_Polygon();
+				Polygon polygon = meta_shape.get_Polygon();
 				polygon.correct();
 
 				mt::vec2f v0( 0.f, 0.f );
@@ -602,7 +602,7 @@ namespace Menge
 					it_polygon != it_polygon_end;
 					++it_polygon)
 					{
-						const Menge::Polygon & shape_vertex = *it_polygon;
+						const Polygon & shape_vertex = *it_polygon;
 
 						size_t outer_count = shape_vertex.outer_count();
 
@@ -631,7 +631,7 @@ namespace Menge
 
 					p2t_points.reserve( max_points );
 
-					Menge::TVectorIndices shape_indices;
+					TVectorIndices shape_indices;
 
 					for( TVectorPolygon::const_iterator
 						it_polygon = output.begin(),
@@ -639,7 +639,7 @@ namespace Menge
 					it_polygon != it_polygon_end;
 					++it_polygon)
 					{
-						const Menge::Polygon & shape_vertex = *it_polygon;
+						const Polygon & shape_vertex = *it_polygon;
 
 						std::vector<p2t::Point*> p2t_polygon;
 
@@ -782,7 +782,7 @@ namespace Menge
 
 			aw << layerIndex;
 
-			const Menge::Polygon & polygon = meta_polygon.get_Value();
+			const Polygon & polygon = meta_polygon.get_Value();
 
 			size_t polygon_size = polygon.num_points();
 

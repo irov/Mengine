@@ -36,7 +36,7 @@ namespace Menge
 		return m_moveSpeed;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InvaderFollowAffector::initialize( Node * _node, Node * _target, const pybind::object & _cb, const pybind::detail::args_operator_t & _args )
+	bool InvaderFollowAffector::initialize( Node * _node, Node * _target, const pybind::object & _cb, const pybind::args & _args )
 	{
 		if( _node == nullptr )
 		{

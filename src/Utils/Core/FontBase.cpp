@@ -1,5 +1,7 @@
 #	include "FontBase.h"
 
+#   include "Core/IniUtil.h"
+
 #	include "utf8.h"
 
 namespace Menge

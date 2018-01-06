@@ -36,18 +36,24 @@ namespace Menge
 		Node::_destroy();
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieSlot::_localHide( bool _value )
+    void MovieSlot::_setLocalHide( bool _value )
     {
-        this->hide( _value );
+        Node::_setLocalHide( _value );
+
+        this->setHide( _value );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_setPersonalColor( const ColourValue& _color )
     {
+        Node::_setPersonalColor( _color );
+
         this->setLocalColor( _color );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_setPersonalAlpha( float _alpha )
     {
+        Node::_setPersonalAlpha( _alpha );
+
         this->setLocalAlpha( _alpha );
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -72,7 +78,7 @@ namespace Menge
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MovieSlot::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void MovieSlot::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
 		{

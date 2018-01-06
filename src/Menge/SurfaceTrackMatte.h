@@ -1,10 +1,13 @@
 #	pragma once
 
 #	include "Kernel/Surface.h"
-#	include "Kernel/Resource.h"
+#	include "Kernel/ResourceHolder.h"
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<class ResourceImage> ResourceImagePtr;
+    //////////////////////////////////////////////////////////////////////////
 	class SurfaceTrackMatte
 		: public Surface
 	{

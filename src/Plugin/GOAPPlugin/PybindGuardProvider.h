@@ -10,13 +10,13 @@ namespace Menge
         : public GOAP::GuardProvider
     {
     public:
-        PybindGuardProvider( const pybind::object & _obj, const pybind::detail::args_operator_t & _args );
+        PybindGuardProvider( const pybind::object & _obj, const pybind::args & _args );
 
     protected:
         void onGuard() override;
 
     protected:
         pybind::object m_obj;
-        pybind::detail::args_operator_t m_args;
+        pybind::args m_args;
     };
 }

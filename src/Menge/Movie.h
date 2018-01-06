@@ -134,7 +134,7 @@ namespace Menge
 		void _update( float _current, float _timing ) override;
 
     protected:
-        void _localHide( bool _value ) override;
+        void _setLocalHide( bool _value ) override;
         void _setPersonalColor( const ColourValue& _color ) override;
         void _setPersonalAlpha( float _alpha ) override;
 

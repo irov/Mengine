@@ -34,7 +34,7 @@ namespace Menge
 		bool isDead() const;
 
     public:
-		bool initialize( const mt::vec2f& _gravity, const pybind::object & _update, const pybind::detail::args_operator_t & _update_args );
+		bool initialize( const mt::vec2f& _gravity, const pybind::object & _update, const pybind::args & _update_args );
 		void finalize();
 
 	public:
@@ -107,7 +107,7 @@ namespace Menge
             );	
 
 	public:
-		void rayCast( const mt::vec2f & _point1, const mt::vec2f & _point2, const pybind::object & _cb, const pybind::detail::args_operator_t & _args ) const;
+		void rayCast( const mt::vec2f & _point1, const mt::vec2f & _point2, const pybind::object & _cb, const pybind::args & _args ) const;
 
 	protected:
 		void SayGoodbye( b2Joint * joint ) override;
@@ -133,7 +133,7 @@ namespace Menge
         b2World * m_world;
 
 		pybind::object m_update;
-		pybind::detail::args_operator_t m_update_args;
+		pybind::args m_update_args;
 
 		float m_timeStep;
 		uint32_t m_velocityIterations;

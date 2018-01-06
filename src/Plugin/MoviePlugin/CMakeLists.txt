@@ -7,6 +7,8 @@ src
     
     Movie2.cpp
     Movie2.h
+    Movie2Slot.cpp
+    Movie2Slot.h
     ResourceMovie2.cpp
     ResourceMovie2.h
 )

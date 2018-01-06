@@ -18,7 +18,7 @@ namespace Menge
 
 		void setLocalColor( const ColourValue& _color );
 		inline const ColourValue & getLocalColor() const;
-
+        
 		void setLocalColorR( float _value );
 		inline float getLocalColorR() const;
 
@@ -29,6 +29,7 @@ namespace Menge
 		inline float getLocalColorB() const;
 
 		void setLocalColorRGB( float _r, float _g, float _b );
+        void setLocalColorRGBA( float _r, float _g, float _b, float _a );
 
 		void setLocalAlpha( float _value );
 		inline float getLocalAlpha() const;

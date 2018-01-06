@@ -3,7 +3,7 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    PybindSwitchProvider::PybindSwitchProvider( const pybind::object & _obj, const pybind::detail::args_operator_t & _args )
+    PybindSwitchProvider::PybindSwitchProvider( const pybind::object & _obj, const pybind::args & _args )
         : m_obj( _obj )
         , m_args( _args )
     {

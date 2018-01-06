@@ -1,5 +1,6 @@
 #	pragma once
 
+#	include "Interface/PrefetcherInterface.h"
 #	include "Interface/StreamInterface.h"
 #	include "Interface/FileSystemInterface.h"
 
@@ -12,11 +13,14 @@ namespace Menge
 	{
 	public:
 		ThreadTaskPrefetch();
+        ~ThreadTaskPrefetch();
 	
 	public:
-		void initialize( const ConstString& _pakName, const FilePath & _fileName );
+		void initialize( const ConstString& _pakName, const FilePath & _fileName, const PrefetcherObserverInterfacePtr & _observer );
 
 	protected:
+        void _onPreparation() override;
+        bool _onRun() override;
 		void _onComplete( bool _successful ) override;
 		
 	public:
@@ -30,6 +34,7 @@ namespace Menge
 	protected:
 		FileGroupInterfacePtr m_group;
 		InputStreamInterfacePtr m_stream;
+        PrefetcherObserverInterfacePtr m_observer;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const ConstString & ThreadTaskPrefetch::getPakName() const

@@ -407,7 +407,6 @@ namespace Menge
             return false;
         }
         
-//#	if TARGET_OS_IPHONE
         int dw;
         int dh;
         SDL_GL_GetDrawableSize(m_window, &dw, &dh);
@@ -417,9 +416,10 @@ namespace Menge
         
         ;
         
+#    if TARGET_OS_IPHONE
         APPLICATION_SERVICE(m_serviceProvider)
             ->changeWindowResolution(Resolution(dw, dh));
-//#    endif
+#    endif
         
         return true;
     }

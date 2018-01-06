@@ -1527,6 +1527,16 @@ namespace Menge
 		Resolution dres;
         PLATFORM_SERVICE(m_serviceProvider)
 			->getMaxClientResolution( dres );
+        
+        LOGGER_WARNING(m_serviceProvider)("Application::calcWindowResolution Max Client Resolution Resolution %u %u"
+                                          , dres.getWidth()
+                                          , dres.getHeight()
+                                          );
+        
+        LOGGER_WARNING(m_serviceProvider)("Application::calcWindowResolution Window Resolution Resolution %u %u"
+                                          , m_windowResolution.getWidth()
+                                          , m_windowResolution.getHeight()
+                                          );
 
 		float aspect = m_windowResolution.getAspectRatio();
 
@@ -1734,6 +1744,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::changeWindowResolution( const Resolution & _resolution )
 	{
+        LOGGER_ERROR(m_serviceProvider)("Application::changeWindowResolution %u %u -> %u %u"
+                                        , m_windowResolution.getWidth()
+                                        , m_windowResolution.getHeight()
+                                        , _resolution.getWidth()
+                                        , _resolution.getHeight()
+                                        );
+        
 		m_windowResolution = _resolution;
 
 		this->invalidateWindow_();

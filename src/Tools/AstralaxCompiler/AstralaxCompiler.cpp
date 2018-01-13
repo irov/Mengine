@@ -75,7 +75,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		wcscpy_s( szBuffer, astralax.c_str() );
 	}
 
-    if( out == L"None" )
+    if( out.empty() == true )
     {
         WCHAR tempPath[MAX_PATH];
         GetTempPath( MAX_PATH, tempPath );
@@ -126,7 +126,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		, NULL
 		, NULL
 		, FALSE
-		, BELOW_NORMAL_PRIORITY_CLASS
+		, CREATE_NO_WINDOW
 		, NULL
 		, NULL
 		, &lpStartupInfo

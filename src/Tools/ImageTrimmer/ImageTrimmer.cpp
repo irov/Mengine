@@ -27,7 +27,7 @@
 
 #	include "Logger/Logger.h"
 #	include "ToolUtils/ToolUtils.h"
-	
+
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( MengeWin32FileGroup );
 PLUGIN_EXPORT( MengeImageCodec );
@@ -36,6 +36,7 @@ PLUGIN_EXPORT( MengeLZ4 );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider )
 
+SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( UnicodeSystem );
 SERVICE_EXTERN( StringizeService );
@@ -47,6 +48,7 @@ SERVICE_EXTERN( ConfigService );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
+SERVICE_EXTERN( Platform );
 SERVICE_EXTERN( WindowsLayer );
 SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( PluginSystem );
@@ -54,512 +56,630 @@ SERVICE_EXTERN( PluginService );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-	static bool initializeEngine( Menge::ServiceProviderInterface ** _serviceProvider )
-	{
-		Menge::ServiceProviderInterface * serviceProvider;
-		SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
+    static bool initializeEngine( Menge::ServiceProviderInterface ** _serviceProvider )
+    {
+        Menge::ServiceProviderInterface * serviceProvider;
+        SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
 
-		SERVICE_CREATE( serviceProvider, FactoryService );
+        SERVICE_CREATE( serviceProvider, FactoryService );
 
-		SERVICE_CREATE( serviceProvider, UnicodeSystem );
-		
-		SERVICE_CREATE( serviceProvider, StringizeService );
-		SERVICE_CREATE( serviceProvider, ArchiveService );
+        SERVICE_CREATE( serviceProvider, OptionsService );
 
-		SERVICE_CREATE( serviceProvider, LoggerService );
+        SERVICE_CREATE( serviceProvider, UnicodeSystem );
 
-		class MyLogger
-			: public LoggerInterface
-		{
-		public:
-			bool initialize() override 
-			{ 
-				return true; 
-			}
+        SERVICE_CREATE( serviceProvider, StringizeService );
+        SERVICE_CREATE( serviceProvider, ArchiveService );
 
-			void finalize() override 
-			{
-			};
+        SERVICE_CREATE( serviceProvider, LoggerService );
 
-			void setServiceProvider(ServiceProviderInterface * _serviceProvider) override
-			{
-				m_serviceProvider = _serviceProvider;
-			}
+        class MyLogger
+            : public LoggerInterface
+        {
+        public:
+            bool initialize() override
+            {
+                return true;
+            }
 
-			ServiceProviderInterface * getServiceProvider() const override
-			{
-				return m_serviceProvider;
-			}
+            void finalize() override
+            {
+            };
 
-			MyLogger()
-				: m_verboseLevel(LM_WARNING)
-				, m_verboseFlag(0xFFFFFFFF)
-			{
-			}
+            void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override
+            {
+                m_serviceProvider = _serviceProvider;
+            }
 
-		public:
-			void setVerboseLevel( EMessageLevel _level ) override 
-			{
-				m_verboseLevel = _level;
-			};
+            ServiceProviderInterface * getServiceProvider() const override
+            {
+                return m_serviceProvider;
+            }
 
-			void setVerboseFlag( size_t _flag ) override 
-			{
-				m_verboseFlag = _flag;
-			};
+            MyLogger()
+                : m_verboseLevel( LM_WARNING )
+                , m_verboseFlag( 0xFFFFFFFF )
+            {
+            }
 
-		public:
-			bool validMessage( EMessageLevel _level, size_t _flag ) const override 
-			{ 
-				if( m_verboseLevel < _level )
-				{
-					return false;
-				}
+        public:
+            void setVerboseLevel( EMessageLevel _level ) override
+            {
+                m_verboseLevel = _level;
+            };
 
-				if( _flag == 0 )
-				{
-					return true;
-				}
+            void setVerboseFlag( size_t _flag ) override
+            {
+                m_verboseFlag = _flag;
+            };
 
-				if( (m_verboseFlag & _flag) == 0 )
-				{
-					return false;
-				}
+        public:
+            bool validMessage( EMessageLevel _level, size_t _flag ) const override
+            {
+                if( m_verboseLevel < _level )
+                {
+                    return false;
+                }
 
-				return true;
-			};
+                if( _flag == 0 )
+                {
+                    return true;
+                }
 
-		public:
-			void log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count ) override
-			{
-				(void)_level;
-				(void)_flag;
-				(void)_count;
+                if( (m_verboseFlag & _flag) == 0 )
+                {
+                    return false;
+                }
 
-				message_error("%s"
-					, _data
-					);
-			}
+                return true;
+            };
 
-			void flush() override 
-			{
-			}
+        public:
+            void log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count ) override
+            {
+                (void)_level;
+                (void)_flag;
+                (void)_count;
 
-		protected:
-			EMessageLevel m_verboseLevel;
-			uint32_t m_verboseFlag;
+                message_error( "%s"
+                    , _data
+                );
+            }
 
-		private:
-			ServiceProviderInterface * m_serviceProvider;
-		};
+            void flush() override
+            {
+            }
 
-		LOGGER_SERVICE(serviceProvider)
-			->setVerboseLevel( LM_WARNING );
+        protected:
+            EMessageLevel m_verboseLevel;
+            uint32_t m_verboseFlag;
 
-		LOGGER_SERVICE( serviceProvider )
-			->registerLogger( new MyLogger );
-				
-		SERVICE_CREATE( serviceProvider, CodecService );
-		SERVICE_CREATE( serviceProvider, DataService );
-		SERVICE_CREATE( serviceProvider, ConfigService );
-		
-		SERVICE_CREATE( serviceProvider, ThreadSystem );
+        private:
+            ServiceProviderInterface * m_serviceProvider;
+        };
 
-		SERVICE_CREATE( serviceProvider, ThreadService );
-		SERVICE_CREATE( serviceProvider, MemoryService );
-		SERVICE_CREATE( serviceProvider, PluginSystem );
-		SERVICE_CREATE( serviceProvider, PluginService );
+        LOGGER_SERVICE( serviceProvider )
+            ->setVerboseLevel( LM_WARNING );
 
-		SERVICE_CREATE( serviceProvider, WindowsLayer );
-		SERVICE_CREATE( serviceProvider, FileService );
+        LOGGER_SERVICE( serviceProvider )
+            ->registerLogger( new MyLogger );
 
-		PLUGIN_CREATE( serviceProvider, MengeWin32FileGroup );
-		
-		PLUGIN_CREATE( serviceProvider, MengeZip );
-		PLUGIN_CREATE( serviceProvider, MengeLZ4 );
-		PLUGIN_CREATE( serviceProvider, MengeImageCodec );
+        SERVICE_CREATE( serviceProvider, CodecService );
+        SERVICE_CREATE( serviceProvider, DataService );
+        SERVICE_CREATE( serviceProvider, ConfigService );
 
-		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), Helper::stringizeString(serviceProvider, "dir") ) == false )
-		{
-			return false;
-		}
+        SERVICE_CREATE( serviceProvider, ThreadSystem );
 
-		ConstString dev = Helper::stringizeString(serviceProvider, "dev");
+        SERVICE_CREATE( serviceProvider, ThreadService );
+        SERVICE_CREATE( serviceProvider, MemoryService );
+        SERVICE_CREATE( serviceProvider, PluginSystem );
+        SERVICE_CREATE( serviceProvider, PluginService );
 
-		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( dev, ConstString::none(), Helper::emptyPath(), Helper::stringizeString(serviceProvider, "dir") ) == false )
-		{
-			return false;
-		}
+        SERVICE_CREATE( serviceProvider, WindowsLayer );
+        SERVICE_CREATE( serviceProvider, Platform );
+        SERVICE_CREATE( serviceProvider, FileService );
 
-		*_serviceProvider = serviceProvider;
+        PLUGIN_CREATE( serviceProvider, MengeWin32FileGroup );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static bool trimImage( Menge::ServiceProviderInterface * serviceProvider, const WString & in, const WString & out, const WString & info )
-	{
-		String utf8_in;
-		Helper::unicodeToUtf8(serviceProvider, in, utf8_in);
+        PLUGIN_CREATE( serviceProvider, MengeZip );
+        PLUGIN_CREATE( serviceProvider, MengeLZ4 );
+        PLUGIN_CREATE( serviceProvider, MengeImageCodec );
 
-		FilePath c_in = Helper::stringizeFilePath(serviceProvider, utf8_in);
+        if( FILE_SERVICE( serviceProvider )
+            ->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), Helper::stringizeString( serviceProvider, "global" ) ) == false )
+        {
+            return false;
+        }
 
-		InputStreamInterfacePtr input_stream = 
-			FILE_SERVICE(serviceProvider)->openInputFile( ConstString::none(), c_in, false );
+        ConstString dev = Helper::stringizeString( serviceProvider, "dev" );
 
-		if( input_stream == nullptr )
-		{
-			return false;
-		}
+        if( FILE_SERVICE( serviceProvider )
+            ->mountFileGroup( dev, ConstString::none(), Helper::emptyPath(), Helper::stringizeString( serviceProvider, "global" ) ) == false )
+        {
+            return false;
+        }
 
-		const ConstString & codecType = CODEC_SERVICE(serviceProvider)
-			->findCodecType( c_in );
+        *_serviceProvider = serviceProvider;
 
-		if( codecType.empty() == true )
-		{
-			return false;
-		}
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static bool trimImage( Menge::ServiceProviderInterface * serviceProvider, const WString & in, const WString & out, const WString & info )
+    {
+        String utf8_in;
+        Helper::unicodeToUtf8( serviceProvider, in, utf8_in );
 
-		//message_error( "test" );
+        FilePath c_in = Helper::stringizeFilePath( serviceProvider, utf8_in );
 
-		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(serviceProvider)
-			->createDecoderT<ImageDecoderInterfacePtr>( codecType );
+        InputStreamInterfacePtr input_stream = FILE_SERVICE( serviceProvider )
+            ->openInputFile( ConstString::none(), c_in, false );
 
-		if( imageDecoder == nullptr )
-		{
-			return false;
-		}
+        if( input_stream == nullptr )
+        {
+            return false;
+        }
 
-		if( imageDecoder->prepareData( input_stream ) == false )
-		{
-			return false;
-		}
+        const ConstString & codecType = CODEC_SERVICE( serviceProvider )
+            ->findCodecType( c_in );
 
-		const ImageCodecDataInfo* decode_dataInfo = imageDecoder->getCodecDataInfo();
+        if( codecType.empty() == true )
+        {
+            return false;
+        }
 
-		if( decode_dataInfo->width == 0 ||
-			decode_dataInfo->height == 0 )
-		{
-			return false;
-		}
+        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE( serviceProvider )
+            ->createDecoderT<ImageDecoderInterfacePtr>( codecType );
 
-		ImageCodecOptions decode_options;
+        if( imageDecoder == nullptr )
+        {
+            return false;
+        }
 
-		decode_options.channels = decode_dataInfo->channels;
-		decode_options.pitch = decode_dataInfo->width * decode_dataInfo->channels;
-		
-		imageDecoder->setOptions( &decode_options );
-				
-		size_t width = decode_dataInfo->width;
-		size_t height = decode_dataInfo->height;
-		
-		size_t bufferSize = width * height * decode_dataInfo->channels;
+        if( imageDecoder->prepareData( input_stream ) == false )
+        {
+            return false;
+        }
 
-		MemoryInterfacePtr memory_textureBuffer = MEMORY_SERVICE( serviceProvider )
-			->createMemory();
+        const ImageCodecDataInfo* decode_dataInfo = imageDecoder->getCodecDataInfo();
 
-		if( memory_textureBuffer == nullptr )
-		{
-			return false;
-		}
+        if( decode_dataInfo->width == 0 ||
+            decode_dataInfo->height == 0 )
+        {
+            return false;
+        }
 
-		unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize, __FILE__, __LINE__ );
+        ImageCodecOptions decode_options;
 
-		if( textureBuffer == nullptr )
-		{
-			return false;
-		}
+        decode_options.channels = decode_dataInfo->channels;
+        decode_options.pitch = decode_dataInfo->width * decode_dataInfo->channels;
 
-		if( imageDecoder->decode( textureBuffer, bufferSize ) == 0U )
-		{
-			return false; 
-		}
+        imageDecoder->setOptions( &decode_options );
 
-		size_t new_width;
-		size_t new_height;
+        uint32_t width = decode_dataInfo->width;
+        uint32_t height = decode_dataInfo->height;
+        uint32_t channels = decode_dataInfo->channels;
 
-		size_t min_i;
-		size_t min_j;
-		size_t max_i;
-		size_t max_j;
-		
-		if( decode_dataInfo->channels == 4 )
-		{
-			min_i = width - 1;
-			min_j = height - 1;
-			max_i = 0;
-			max_j = 0;
+        size_t bufferSize = width * height * channels;
 
-			for( size_t i = 0; i != width; ++i )
-			{
-				for( size_t j = 0; j != height; ++j )
-				{
-					size_t index =  i + j * width;
-					unsigned char alpha = textureBuffer[index * 4 + 3];
+        MemoryInterfacePtr memory_textureBuffer = MEMORY_SERVICE( serviceProvider )
+            ->createMemory();
 
-					if( alpha == 0 )
-					{
-						continue;
-					}
+        if( memory_textureBuffer == nullptr )
+        {
+            return false;
+        }
 
-					if( min_i > i )
-					{
-						min_i = i;
-					}
+        unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize, __FILE__, __LINE__ );
 
-					if( min_j > j )
-					{
-						min_j = j;
-					}
+        if( textureBuffer == nullptr )
+        {
+            return false;
+        }
 
-					if( max_i < i )
-					{
-						max_i = i;
-					}
+        if( imageDecoder->decode( textureBuffer, bufferSize ) == 0U )
+        {
+            return false;
+        }
 
-					if( max_j < j )
-					{
-						max_j = j;
-					}
-				}
-			}
+        uint32_t new_width;
+        uint32_t new_height;
 
-			if( min_i > max_i || min_j > max_j )
-			{
-				new_width = 1;
-				new_height = 1;
+        uint32_t min_i;
+        uint32_t min_j;
+        uint32_t max_i;
+        uint32_t max_j;
 
-				min_i = 0;
-				min_j = 0;
-				max_i = 1;
-				max_j = 1;
-			}
-			else
-			{
-				new_width = max_i - min_i + 1;
-				new_height = max_j - min_j + 1;
-			}
+        if( channels == 4 )
+        {
+            min_i = width;
+            min_j = height;
+            max_i = 0;
+            max_j = 0;
+
+            for( uint32_t i = 0; i != width; ++i )
+            {
+                for( uint32_t j = 0; j != height; ++j )
+                {
+                    uint32_t index = i + j * width;
+                    unsigned char alpha = textureBuffer[index * 4 + 3];
+
+                    if( alpha == 0 )
+                    {
+                        continue;
+                    }
+
+                    if( min_i > i )
+                    {
+                        min_i = i;
+                    }
+
+                    if( min_j > j )
+                    {
+                        min_j = j;
+                    }
+
+                    if( max_i < i )
+                    {
+                        max_i = i;
+                    }
+
+                    if( max_j < j )
+                    {
+                        max_j = j;
+                    }
+                }
+            }
+
+            if( min_i > max_i || min_j > max_j )
+            {
+                new_width = 0;
+                new_height = 0;
+
+                min_i = 0;
+                min_j = 0;
+                max_i = 0;
+                max_j = 0;
+            }
+            else
+            {
+                new_width = max_i - min_i + 1;
+                new_height = max_j - min_j + 1;
+            }
 
             new_width += 2;
             new_height += 2;
-		}
-		else
-		{
-			new_width = width;
-			new_height = height;
+        }
+        else
+        {
+            new_width = width;
+            new_height = height;
 
-			min_i = 0;
-			min_j = 0;
-			max_i = width;
-			max_j = height;
-		}
+            min_i = 0;
+            min_j = 0;
+            max_i = width;
+            max_j = height;
+        }
 
-		size_t new_bufferSize = new_width * new_height * decode_dataInfo->channels;
+        if( out.empty() == false )
+        {
+            size_t new_bufferSize = new_width * new_height * channels;
 
-		MemoryInterfacePtr buffer = MEMORY_SERVICE( serviceProvider )
-			->createMemory();
+            MemoryInterfacePtr buffer = MEMORY_SERVICE( serviceProvider )
+                ->createMemory();
 
-		if( buffer == nullptr )
-		{
-			return false;
-		}
+            if( buffer == nullptr )
+            {
+                return false;
+            }
 
-		unsigned char * new_textureBuffer = buffer->newMemory( new_bufferSize, __FILE__, __LINE__ );
+            uint8_t * new_textureBuffer = buffer->newMemory( new_bufferSize, __FILE__, __LINE__ );
 
-		if( new_textureBuffer == nullptr )
-		{
-			return false;
-		}
-		
-		for( size_t i = 0; i != new_width; ++i )
-		{
-			for( size_t j = 0; j != new_height; ++j )
-			{
-                size_t new_index = i + j * new_width;
+            if( new_textureBuffer == nullptr )
+            {
+                return false;
+            }
 
-                if( decode_dataInfo->channels == 4 && (i == 0 || j == 0 || i == new_width - 1 || j == new_height - 1) )
+            if( channels == 4 )
+            {
+                for( uint32_t i = 0; i != new_width; ++i )
                 {
-                    for( size_t k = 0; k != decode_dataInfo->channels; ++k )
+                    for( uint32_t j = 0; j != new_height; ++j )
                     {
-                        new_textureBuffer[new_index * decode_dataInfo->channels + k] = 0;
+                        uint32_t new_index = i + j * new_width;
+
+                        if( (i == 0 || j == 0 || i == new_width - 1 || j == new_height - 1) )
+                        {
+                            for( uint32_t k = 0; k != channels; ++k )
+                            {
+                                new_textureBuffer[new_index * channels + k] = 0;
+                            }
+                        }
                     }
                 }
 
-                size_t old_index = decode_dataInfo->channels == 4 ? (min_i + (i - 1)) + (min_j + (j - 1)) * width : (min_i + i) + (min_j + j) * width;
+                for( uint32_t i = 0; i != new_width; ++i )
+                {
+                    for( uint32_t j = 0; j != new_height; ++j )
+                    {
+                        uint32_t new_index = i + j * new_width;
+                        uint32_t old_index = (min_i + (i - 1)) + (min_j + (j - 1)) * width;
 
-                for( size_t k = 0; k != decode_dataInfo->channels; ++k )
-				{
-					new_textureBuffer[new_index * decode_dataInfo->channels + k] = textureBuffer[old_index * decode_dataInfo->channels + k];
-				}
-			}
-		}
+                        for( uint32_t k = 0; k != channels; ++k )
+                        {
+                            new_textureBuffer[new_index * channels + k] = textureBuffer[old_index * channels + k];
+                        }
+                    }
+                }
 
-		if( out.empty() == false )
-		{
-			String utf8_out;
-			Helper::unicodeToUtf8( serviceProvider, out, utf8_out );
+                for( uint32_t i = 0; i != new_width; ++i )
+                {
+                    for( uint32_t j = 0; j != new_height; ++j )
+                    {
+                        uint32_t new_index = i + j * new_width;
 
-			FilePath c_out = Helper::stringizeFilePath( serviceProvider, utf8_out );
+                        uint8_t alpha = new_textureBuffer[new_index * channels + 3];
 
-			OutputStreamInterfacePtr output_stream = FILE_SERVICE( serviceProvider )
-				->openOutputFile( ConstString::none(), c_out );
+                        if( alpha != 0 )
+                        {
+                            continue;
+                        }
 
-			if( output_stream == nullptr )
-			{
-				return false;
-			}
+                        uint32_t r = 0;
+                        uint32_t g = 0;
+                        uint32_t b = 0;
+                        uint32_t colorNum = 0;
 
-			ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE( serviceProvider )
-				->createEncoderT<ImageEncoderInterfacePtr>( codecType );
+                        if( i > 0 ) // left pixel
+                        {
+                            uint32_t test_index = (i - 1) + (j + 0) * new_width;
 
-			if( imageEncoder == nullptr )
-			{
-				return false;
-			}
+                            uint8_t test_alpha = new_textureBuffer[test_index * channels + 3];
 
-			if( imageEncoder->initialize( output_stream ) == false )
-			{
-				return false;
-			}
+                            if( test_alpha != 0 )
+                            {
+                                ++colorNum;
+                                r += new_textureBuffer[test_index * channels + 0];
+                                g += new_textureBuffer[test_index * channels + 1];
+                                b += new_textureBuffer[test_index * channels + 2];
+                            }
+                        }
 
-			ImageCodecOptions encode_options;
+                        if( i < new_width - 1 ) // right pixel
+                        {
+                            uint32_t test_index = (i + 1) + (j + 0) * new_width;
 
-			encode_options.pitch = new_width * decode_dataInfo->channels;
-			encode_options.channels = decode_dataInfo->channels;
+                            uint8_t test_alpha = new_textureBuffer[test_index * channels + 3];
 
-			imageEncoder->setOptions( &encode_options );
+                            if( test_alpha != 0 )
+                            {
+                                ++colorNum;
+                                r += new_textureBuffer[test_index * channels + 0];
+                                g += new_textureBuffer[test_index * channels + 1];
+                                b += new_textureBuffer[test_index * channels + 2];
+                            }
+                        }
 
-			ImageCodecDataInfo encode_dataInfo;
-			//dataInfo.format = _image->getHWPixelFormat();
-			encode_dataInfo.width = new_width;
-			encode_dataInfo.height = new_height;
-			encode_dataInfo.channels = decode_dataInfo->channels;
-			encode_dataInfo.depth = 1;
-			encode_dataInfo.mipmaps = 1;
+                        if( j > 0 ) // top pixel
+                        {
+                            uint32_t test_index = (i + 0) + (j - 1) * new_width;
 
-			if( imageEncoder->encode( new_textureBuffer, new_bufferSize, &encode_dataInfo ) == 0 )
-			{
-				return false;
-			}
-		}
+                            uint8_t test_alpha = new_textureBuffer[test_index * channels + 3];
 
-		if( info.empty() == false )
-		{
-			String utf8_info;
-			Helper::unicodeToUtf8( serviceProvider, info, utf8_info );
+                            if( test_alpha != 0 )
+                            {
+                                ++colorNum;
+                                r += new_textureBuffer[test_index * channels + 0];
+                                g += new_textureBuffer[test_index * channels + 1];
+                                b += new_textureBuffer[test_index * channels + 2];
+                            }
+                        }
 
-			FilePath c_info = Helper::stringizeFilePath( serviceProvider, utf8_info );
+                        if( j < new_height - 1 ) // bottom pixel
+                        {
+                            uint32_t test_index = (i + 0) + (j + 1) * new_width;
 
-			OutputStreamInterfacePtr info_stream = FILE_SERVICE( serviceProvider )
-				->openOutputFile( ConstString::none(), c_info );
+                            uint8_t test_alpha = new_textureBuffer[test_index * channels + 3];
 
-			if( info_stream == nullptr )
-			{
-				return false;
-			}
+                            if( test_alpha != 0 )
+                            {
+                                ++colorNum;
+                                r += new_textureBuffer[test_index * channels + 0];
+                                g += new_textureBuffer[test_index * channels + 1];
+                                b += new_textureBuffer[test_index * channels + 2];
+                            }
+                        }
 
-			char info_buffer[1024];
+                        if( colorNum > 0 )
+                        {
+                            r /= colorNum;
+                            g /= colorNum;
+                            b /= colorNum;
 
-			sprintf( info_buffer, "%u\n%u\n%u\n%u\n%u\n%u\n"
-				, width
-				, height
-				, new_width
-				, new_height
-				, min_i
-				, min_j
-			);
+                            new_textureBuffer[new_index * channels + 0] = (uint8_t)r;
+                            new_textureBuffer[new_index * channels + 1] = (uint8_t)g;
+                            new_textureBuffer[new_index * channels + 2] = (uint8_t)b;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for( uint32_t i = 0; i != new_width; ++i )
+                {
+                    for( uint32_t j = 0; j != new_height; ++j )
+                    {
+                        uint32_t index = i + j * new_width;
 
-			size_t info_buffer_size = strlen( info_buffer );
+                        for( uint32_t k = 0; k != channels; ++k )
+                        {
+                            new_textureBuffer[index * channels + k] = textureBuffer[index * channels + k];
+                        }
+                    }
+                }
+            }
 
-			if( info_stream->write( info_buffer, info_buffer_size + 1 ) == false )
-			{
-				return false;
-			}
-		}
-		else
-		{
-			printf( "base_width=%u\n", width );
-			printf( "base_height=%u\n", height );
-			printf( "trim_width=%u\n", new_width );
-			printf( "trim_height=%u\n", new_height );
-			printf( "offset_x=%u\n", min_i );
-			printf( "offset_y=%u\n", min_j );
-		}
+            String utf8_out;
+            Helper::unicodeToUtf8( serviceProvider, out, utf8_out );
 
-		return true;
-	}
+            FilePath c_out = Helper::stringizeFilePath( serviceProvider, utf8_out );
+
+            OutputStreamInterfacePtr output_stream = FILE_SERVICE( serviceProvider )
+                ->openOutputFile( ConstString::none(), c_out );
+
+            if( output_stream == nullptr )
+            {
+                return false;
+            }
+
+            ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE( serviceProvider )
+                ->createEncoderT<ImageEncoderInterfacePtr>( codecType );
+
+            if( imageEncoder == nullptr )
+            {
+                return false;
+            }
+
+            if( imageEncoder->initialize( output_stream ) == false )
+            {
+                return false;
+            }
+
+            ImageCodecOptions encode_options;
+
+            encode_options.pitch = new_width * decode_dataInfo->channels;
+            encode_options.channels = decode_dataInfo->channels;
+
+            imageEncoder->setOptions( &encode_options );
+
+            ImageCodecDataInfo encode_dataInfo;
+            //dataInfo.format = _image->getHWPixelFormat();
+            encode_dataInfo.width = new_width;
+            encode_dataInfo.height = new_height;
+            encode_dataInfo.channels = decode_dataInfo->channels;
+            encode_dataInfo.depth = 1;
+            encode_dataInfo.mipmaps = 1;
+
+            if( imageEncoder->encode( new_textureBuffer, new_bufferSize, &encode_dataInfo ) == 0 )
+            {
+                return false;
+            }
+        }
+
+        if( info.empty() == false )
+        {
+            String utf8_info;
+            Helper::unicodeToUtf8( serviceProvider, info, utf8_info );
+
+            FilePath c_info = Helper::stringizeFilePath( serviceProvider, utf8_info );
+
+            OutputStreamInterfacePtr info_stream = FILE_SERVICE( serviceProvider )
+                ->openOutputFile( ConstString::none(), c_info );
+
+            if( info_stream == nullptr )
+            {
+                return false;
+            }
+
+            char info_buffer[1024];
+
+            sprintf( info_buffer, "%u\n%u\n%u\n%u\n%u\n%u\n"
+                , width
+                , height
+                , new_width
+                , new_height
+                , min_i
+                , min_j
+            );
+
+            size_t info_buffer_size = strlen( info_buffer );
+
+            if( info_stream->write( info_buffer, info_buffer_size + 1 ) == false )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            printf( "base_width=%u\n", width );
+            printf( "base_height=%u\n", height );
+            printf( "trim_width=%u\n", new_width );
+            printf( "trim_height=%u\n", new_height );
+            printf( "offset_x=%u\n", min_i );
+            printf( "offset_y=%u\n", min_j );
+        }
+
+        return true;
+    }
 }
 //////////////////////////////////////////////////////////////////////////
 static void parse_arg( const std::wstring & _str, Menge::WString & _value )
 {
-	_value = Menge::WString( _str.begin(), _str.end() );
+    _value = Menge::WString( _str.begin(), _str.end() );
 }
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
-	(void)hInstance;
-	(void)hPrevInstance;
-	(void)nShowCmd;
-	
-	stdex_allocator_initialize();
+    (void)hInstance;
+    (void)hPrevInstance;
+    (void)nShowCmd;
 
-	Menge::WString in = parse_kwds( lpCmdLine, L"--in", Menge::WString() );
-	Menge::WString out = parse_kwds( lpCmdLine, L"--out", Menge::WString() );
-	Menge::WString info = parse_kwds( lpCmdLine, L"--info", Menge::WString() );
+    stdex_allocator_initialize();
 
-	if( in.empty() == true )
-	{
-		message_error("not found 'in' param"
-			);
+    Menge::WString in = parse_kwds( lpCmdLine, L"--in_path", Menge::WString() );
+    Menge::WString out = parse_kwds( lpCmdLine, L"--out_path", Menge::WString() );
+    Menge::WString info = parse_kwds( lpCmdLine, L"--info", Menge::WString() );
 
-		return 0;
-	}
+    if( in.empty() == true )
+    {
+        message_error( "not found 'in' param"
+        );
 
-	if( in.front() == L'\"' && in.back() == L'\"' )
-	{
-		in = in.substr( 1, in.size() - 2 );
-	}
+        return 0;
+    }
 
-	if( out.empty() == false && out.front() == L'\"' && out.back() == L'\"' )
-	{
-		out = out.substr( 1, out.size() - 2 );
-	}
+    if( in.front() == L'\"' && in.back() == L'\"' )
+    {
+        in = in.substr( 1, in.size() - 2 );
+    }
 
-	if( info.empty() == false && info.front() == L'\"' && info.back() == L'\"' )
-	{
-		info = info.substr( 1, info.size() - 2 );
-	}
-	
+    if( out.empty() == false && out.front() == L'\"' && out.back() == L'\"' )
+    {
+        out = out.substr( 1, out.size() - 2 );
+    }
 
-	Menge::ServiceProviderInterface * serviceProvider;
+    if( info.empty() == false && info.front() == L'\"' && info.back() == L'\"' )
+    {
+        info = info.substr( 1, info.size() - 2 );
+    }
 
-	try
-	{
-		if( Menge::initializeEngine( &serviceProvider ) == false )
-		{
-			message_error( "ImageTrimmer invalid initialize" );
 
-			return 0;
-		}
-	}
-	catch( const std::exception & se )
-	{		
-		message_error( "Mengine exception %s"
-			, se.what()
-			);
+    Menge::ServiceProviderInterface * serviceProvider;
 
-		return 0;
-	}
+    try
+    {
+        if( Menge::initializeEngine( &serviceProvider ) == false )
+        {
+            message_error( "ImageTrimmer invalid initialize" );
 
-	if( Menge::trimImage( serviceProvider, in, out, info ) == false )
-	{
-		message_error( "ImageTrimmer invalid trim %ls"
-			, in.c_str()
-			);
+            return 0;
+        }
+    }
+    catch( const std::exception & se )
+    {
+        message_error( "Mengine exception %s"
+            , se.what()
+        );
 
-		return 0;
-	}	
-	
-	return 0;
+        return 0;
+    }
+
+    if( Menge::trimImage( serviceProvider, in, out, info ) == false )
+    {
+        message_error( "ImageTrimmer invalid trim %ls"
+            , in.c_str()
+        );
+
+        return 0;
+    }
+
+    return 0;
 }

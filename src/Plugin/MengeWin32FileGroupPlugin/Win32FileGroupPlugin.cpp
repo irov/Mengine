@@ -48,13 +48,13 @@ namespace Menge
             FilePath m_relationPath;
         };
     }
-	//////////////////////////////////////////////////////////////////////////
-	Win32FileGroupPlugin::Win32FileGroupPlugin()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileGroupPlugin::_initialize()
-	{
+    //////////////////////////////////////////////////////////////////////////
+    Win32FileGroupPlugin::Win32FileGroupPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupPlugin::_initialize()
+    {
         FILE_SERVICE( m_serviceProvider )
             ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "global" )
                 , new Detail::Win32FileGroupDirectoryFactory( m_serviceProvider, STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "" ) )
@@ -69,20 +69,20 @@ namespace Menge
 
         FilePath relationPath = Helper::stringizeFilePath( m_serviceProvider, utf8_currentPath );
 
-		FILE_SERVICE(m_serviceProvider)
-			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir")
+        FILE_SERVICE( m_serviceProvider )
+            ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" )
                 , new Detail::Win32FileGroupDirectoryFactory( m_serviceProvider, relationPath )
             );
 
         return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Win32FileGroupPlugin::_finalize()
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32FileGroupPlugin::_finalize()
+    {
         FILE_SERVICE( m_serviceProvider )
             ->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "global" ) );
 
-		FILE_SERVICE(m_serviceProvider)
-			->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir") );
-	}
+        FILE_SERVICE( m_serviceProvider )
+            ->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) );
+    }
 }

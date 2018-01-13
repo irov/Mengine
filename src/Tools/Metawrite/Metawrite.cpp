@@ -27,7 +27,7 @@
 
 #	include "Logger/Logger.h"
 #	include "ToolUtils/ToolUtils.h"
-	
+
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( MengeWin32FileGroup );
 PLUGIN_EXPORT( MengeZip );
@@ -53,254 +53,254 @@ SERVICE_EXTERN( PluginService );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-	static bool initializeEngine( Menge::ServiceProviderInterface ** _serviceProvider )
-	{
-		Menge::ServiceProviderInterface * serviceProvider;
-		SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
+    static bool initializeEngine( Menge::ServiceProviderInterface ** _serviceProvider )
+    {
+        Menge::ServiceProviderInterface * serviceProvider;
+        SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
 
-		SERVICE_CREATE( serviceProvider, FactoryService );
+        SERVICE_CREATE( serviceProvider, FactoryService );
 
-		SERVICE_CREATE( serviceProvider, UnicodeSystem );
-		
-		SERVICE_CREATE( serviceProvider, StringizeService );
-		SERVICE_CREATE( serviceProvider, ArchiveService );
+        SERVICE_CREATE( serviceProvider, UnicodeSystem );
 
-		SERVICE_CREATE( serviceProvider, LoggerService );
+        SERVICE_CREATE( serviceProvider, StringizeService );
+        SERVICE_CREATE( serviceProvider, ArchiveService );
 
-		class MyLogger
-			: public LoggerInterface
-		{
-		public:
-			bool initialize() override 
-			{ 
-				return true; 
-			}
+        SERVICE_CREATE( serviceProvider, LoggerService );
 
-			void finalize() override 
-			{
-			};
+        class MyLogger
+            : public LoggerInterface
+        {
+        public:
+            bool initialize() override
+            {
+                return true;
+            }
 
-			void setServiceProvider(ServiceProviderInterface * _serviceProvider) override
-			{
-				m_serviceProvider = _serviceProvider;
-			}
+            void finalize() override
+            {
+            };
 
-			ServiceProviderInterface * getServiceProvider() const override
-			{
-				return m_serviceProvider;
-			}
+            void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override
+            {
+                m_serviceProvider = _serviceProvider;
+            }
 
-			MyLogger()
-				: m_verboseLevel(LM_WARNING)
-				, m_verboseFlag(0xFFFFFFFF)
-			{
-			}
+            ServiceProviderInterface * getServiceProvider() const override
+            {
+                return m_serviceProvider;
+            }
 
-		public:
-			void setVerboseLevel( EMessageLevel _level ) override 
-			{
-				m_verboseLevel = _level;
-			};
+            MyLogger()
+                : m_verboseLevel( LM_WARNING )
+                , m_verboseFlag( 0xFFFFFFFF )
+            {
+            }
 
-			void setVerboseFlag( size_t _flag ) override 
-			{
-				m_verboseFlag = _flag;
-			};
+        public:
+            void setVerboseLevel( EMessageLevel _level ) override
+            {
+                m_verboseLevel = _level;
+            };
 
-		public:
-			bool validMessage( EMessageLevel _level, size_t _flag ) const override 
-			{ 
-				if( m_verboseLevel < _level )
-				{
-					return false;
-				}
+            void setVerboseFlag( size_t _flag ) override
+            {
+                m_verboseFlag = _flag;
+            };
 
-				if( _flag == 0 )
-				{
-					return true;
-				}
+        public:
+            bool validMessage( EMessageLevel _level, size_t _flag ) const override
+            {
+                if( m_verboseLevel < _level )
+                {
+                    return false;
+                }
 
-				if( (m_verboseFlag & _flag) == 0 )
-				{
-					return false;
-				}
+                if( _flag == 0 )
+                {
+                    return true;
+                }
 
-				return true;
-			};
+                if( (m_verboseFlag & _flag) == 0 )
+                {
+                    return false;
+                }
 
-		public:
-			void log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count ) override
-			{
-				(void)_level;
-				(void)_flag;
-				(void)_count;
+                return true;
+            };
 
-				message_error("%s"
-					, _data
-					);
-			}
+        public:
+            void log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count ) override
+            {
+                (void)_level;
+                (void)_flag;
+                (void)_count;
 
-			void flush() override 
-			{
-			}
+                message_error( "%s"
+                    , _data
+                );
+            }
 
-		protected:
-			EMessageLevel m_verboseLevel;
-			uint32_t m_verboseFlag;
+            void flush() override
+            {
+            }
 
-		private:
-			ServiceProviderInterface * m_serviceProvider;
-		};
+        protected:
+            EMessageLevel m_verboseLevel;
+            uint32_t m_verboseFlag;
 
-		LOGGER_SERVICE(serviceProvider)
-			->setVerboseLevel( LM_WARNING );
+        private:
+            ServiceProviderInterface * m_serviceProvider;
+        };
 
-		LOGGER_SERVICE( serviceProvider )
-			->registerLogger( new MyLogger );
-				
-		SERVICE_CREATE( serviceProvider, CodecService );
-		SERVICE_CREATE( serviceProvider, DataService );
-		SERVICE_CREATE( serviceProvider, ConfigService );
-		
-		SERVICE_CREATE( serviceProvider, ThreadSystem );
+        LOGGER_SERVICE( serviceProvider )
+            ->setVerboseLevel( LM_WARNING );
 
-		SERVICE_CREATE( serviceProvider, ThreadService );
-		SERVICE_CREATE( serviceProvider, MemoryService );
-		SERVICE_CREATE( serviceProvider, PluginSystem );
-		SERVICE_CREATE( serviceProvider, PluginService );
+        LOGGER_SERVICE( serviceProvider )
+            ->registerLogger( new MyLogger );
 
-		SERVICE_CREATE( serviceProvider, WindowsLayer );
-		SERVICE_CREATE( serviceProvider, FileService );
+        SERVICE_CREATE( serviceProvider, CodecService );
+        SERVICE_CREATE( serviceProvider, DataService );
+        SERVICE_CREATE( serviceProvider, ConfigService );
 
-		PLUGIN_CREATE( serviceProvider, MengeWin32FileGroup );
-		
-		PLUGIN_CREATE( serviceProvider, MengeZip );
-		PLUGIN_CREATE( serviceProvider, MengeLZ4 );
+        SERVICE_CREATE( serviceProvider, ThreadSystem );
 
-		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), Helper::stringizeString(serviceProvider, "dir") ) == false )
-		{
-			return false;
-		}
+        SERVICE_CREATE( serviceProvider, ThreadService );
+        SERVICE_CREATE( serviceProvider, MemoryService );
+        SERVICE_CREATE( serviceProvider, PluginSystem );
+        SERVICE_CREATE( serviceProvider, PluginService );
 
-		ConstString dev = Helper::stringizeString(serviceProvider, "dev");
+        SERVICE_CREATE( serviceProvider, WindowsLayer );
+        SERVICE_CREATE( serviceProvider, FileService );
 
-		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( dev, ConstString::none(), Helper::emptyPath(), Helper::stringizeString(serviceProvider, "dir") ) == false )
-		{
-			return false;
-		}
+        PLUGIN_CREATE( serviceProvider, MengeWin32FileGroup );
 
-		*_serviceProvider = serviceProvider;
+        PLUGIN_CREATE( serviceProvider, MengeZip );
+        PLUGIN_CREATE( serviceProvider, MengeLZ4 );
 
-		return true;
-	}
+        if( FILE_SERVICE( serviceProvider )
+            ->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), Helper::stringizeString( serviceProvider, "dir" ) ) == false )
+        {
+            return false;
+        }
+
+        ConstString dev = Helper::stringizeString( serviceProvider, "dev" );
+
+        if( FILE_SERVICE( serviceProvider )
+            ->mountFileGroup( dev, ConstString::none(), Helper::emptyPath(), Helper::stringizeString( serviceProvider, "dir" ) ) == false )
+        {
+            return false;
+        }
+
+        *_serviceProvider = serviceProvider;
+
+        return true;
+    }
 }
 //////////////////////////////////////////////////////////////////////////
 static void parse_arg( const std::wstring & _str, Menge::WString & _value )
 {
-	_value = Menge::WString( _str.begin(), _str.end() );
+    _value = Menge::WString( _str.begin(), _str.end() );
 }
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
-	(void)hInstance;
-	(void)hPrevInstance;
-	(void)nShowCmd;
-	
-	stdex_allocator_initialize();
+    (void)hInstance;
+    (void)hPrevInstance;
+    (void)nShowCmd;
 
-	Menge::WString protocol = parse_kwds( lpCmdLine, L"--protocol", Menge::WString() );
-	Menge::WString in = parse_kwds( lpCmdLine, L"--in", Menge::WString() );
-	Menge::WString out = parse_kwds( lpCmdLine, L"--out", Menge::WString() );
+    stdex_allocator_initialize();
 
-	if( in.empty() == true )
-	{
-		message_error("not found 'in' param"
-			);
+    Menge::WString protocol = parse_kwds( lpCmdLine, L"--protocol", Menge::WString() );
+    Menge::WString in = parse_kwds( lpCmdLine, L"--in", Menge::WString() );
+    Menge::WString out = parse_kwds( lpCmdLine, L"--out", Menge::WString() );
 
-		return 0;
-	}
+    if( in.empty() == true )
+    {
+        message_error( "not found 'in' param"
+        );
 
-	Menge::ServiceProviderInterface * serviceProvider;
+        return 0;
+    }
 
-	try
-	{
-		if( Menge::initializeEngine( &serviceProvider ) == false )
-		{
-			message_error( "ImageTrimmer invalid initialize" );
+    Menge::ServiceProviderInterface * serviceProvider;
 
-			return 0;
-		}
-	}
-	catch( const std::exception & se )
-	{		
-		message_error( "Mengine exception %s"
-			, se.what()
-			);
+    try
+    {
+        if( Menge::initializeEngine( &serviceProvider ) == false )
+        {
+            message_error( "ImageTrimmer invalid initialize" );
 
-		return 0;
-	}
+            return 0;
+        }
+    }
+    catch( const std::exception & se )
+    {
+        message_error( "Mengine exception %s"
+            , se.what()
+        );
 
-	Menge::FilePath fp_protocol = Menge::Helper::unicodeToFilePath( serviceProvider, protocol );
-	Menge::FilePath fp_in = Menge::Helper::unicodeToFilePath( serviceProvider, in );
-	Menge::FilePath fp_out = Menge::Helper::unicodeToFilePath( serviceProvider, out );
+        return 0;
+    }
 
-	if( PLUGIN_SERVICE( serviceProvider )
-		->loadPlugin( L"MengeXmlCodecPlugin.dll" ) == false )
-	{
-		return 0;
-	}
+    Menge::FilePath fp_protocol = Menge::Helper::unicodeToFilePath( serviceProvider, protocol );
+    Menge::FilePath fp_in = Menge::Helper::unicodeToFilePath( serviceProvider, in );
+    Menge::FilePath fp_out = Menge::Helper::unicodeToFilePath( serviceProvider, out );
 
-	Menge::XmlDecoderInterfacePtr decoder = CODEC_SERVICE( serviceProvider )
-		->createDecoderT<Menge::XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( serviceProvider, "xml2bin" ) );
+    if( PLUGIN_SERVICE( serviceProvider )
+        ->loadPlugin( L"MengeXmlCodecPlugin.dll" ) == false )
+    {
+        return 0;
+    }
 
-	if( decoder == nullptr )
-	{
-		LOGGER_ERROR( serviceProvider )("LoaderEngine::makeBin_ invalid create decoder xml2bin for %s"
-			, fp_in.c_str()
-			);
+    Menge::XmlDecoderInterfacePtr decoder = CODEC_SERVICE( serviceProvider )
+        ->createDecoderT<Menge::XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( serviceProvider, "xml2bin" ) );
 
-		return 0;
-	}
+    if( decoder == nullptr )
+    {
+        LOGGER_ERROR( serviceProvider )("LoaderEngine::makeBin_ invalid create decoder xml2bin for %s"
+            , fp_in.c_str()
+            );
 
-	if( decoder->prepareData( nullptr ) == false )
-	{
-		LOGGER_ERROR( serviceProvider )("LoaderEngine::makeBin_ invalid initialize decoder xml2bin for %s"
-			, fp_in.c_str()
-			);
+        return 0;
+    }
 
-		return 0;
-	}
+    if( decoder->prepareData( nullptr ) == false )
+    {
+        LOGGER_ERROR( serviceProvider )("LoaderEngine::makeBin_ invalid initialize decoder xml2bin for %s"
+            , fp_in.c_str()
+            );
 
-	Menge::XmlCodecOptions options;
-	options.pathProtocol = fp_protocol;
+        return 0;
+    }
 
-	Menge::FileGroupInterfacePtr fileGroup = FILE_SERVICE( serviceProvider )
-		->getFileGroup( Menge::ConstString::none() );
+    Menge::XmlCodecOptions options;
+    options.pathProtocol = fp_protocol;
 
-	if( fileGroup == nullptr )
-	{
-		LOGGER_ERROR( serviceProvider )("LoaderEngine::makeBin_ invalid get file group"
-			);
+    Menge::FileGroupInterfacePtr fileGroup = FILE_SERVICE( serviceProvider )
+        ->getFileGroup( Menge::ConstString::none() );
 
-		return 0;
-	}
+    if( fileGroup == nullptr )
+    {
+        LOGGER_ERROR( serviceProvider )("LoaderEngine::makeBin_ invalid get file group"
+            );
 
-	const Menge::FilePath & path = fileGroup->getRelationPath();
+        return 0;
+    }
 
-	options.pathXml = Menge::Helper::concatenationFilePath( serviceProvider, path, fp_in );
-	options.pathBin = Menge::Helper::concatenationFilePath( serviceProvider, path, fp_out );
+    const Menge::FilePath & path = fileGroup->getRelationPath();
 
-	if( decoder->setOptions( &options ) == false )
-	{
-		return 0;
-	}
+    options.pathXml = Menge::Helper::concatenationFilePath( serviceProvider, path, fp_in );
+    options.pathBin = Menge::Helper::concatenationFilePath( serviceProvider, path, fp_out );
 
-	if( decoder->decode( 0, 0 ) == 0 )
-	{
-		return 0;
-	}
-	
-	return 0;
+    if( decoder->setOptions( &options ) == false )
+    {
+        return 0;
+    }
+
+    if( decoder->decode( 0, 0 ) == 0 )
+    {
+        return 0;
+    }
+
+    return 0;
 }

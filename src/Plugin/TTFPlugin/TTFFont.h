@@ -47,8 +47,10 @@ namespace Menge
 		bool hasGlyph( GlyphCode _char ) const override;
 		bool getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const override;
 
-	protected:
-		float getFontHeight() const override;
+    protected:
+        float getFontAscent() const override;
+        float getFontDescent() const override;
+        float getFontLineSpacing() const override;
 
 	protected:
 		bool _prepareGlyph( GlyphCode _ch ) override;
@@ -64,9 +66,9 @@ namespace Menge
         
 		uint32_t m_fontDPI;
 
-        FilePath m_fontEffect;
-
-		float m_ascender;
+        float m_ascender;
+        float m_descender;
+        float m_fontLineSpacing;
 		
 		typedef stdex::vector<TTFGlyph> TVectorTTFGlyphs;
 		TVectorTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];

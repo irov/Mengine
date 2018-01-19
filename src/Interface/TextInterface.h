@@ -90,7 +90,9 @@ namespace Menge
 		virtual bool getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const = 0;
 
 	public:
-		virtual float getFontHeight() const = 0;
+        virtual float getFontAscent() const = 0;
+        virtual float getFontDescent() const = 0;
+        virtual float getFontLineSpacing() const = 0;
 
 	public:
 		virtual uint32_t getFontParams() const = 0;

@@ -47,81 +47,69 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterfacePtr TTFAtlasService::makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _channel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv )
 	{
-		uint32_t hw_width = Helper::getTexturePOW2( _width );
-		uint32_t hw_height = Helper::getTexturePOW2( _height );
+        if( _width == 0 || _height == 0 )
+        {
+            return nullptr;
+        }
 
-		uint32_t dimension = std::max( hw_width, hw_height );
+        uint32_t border_width = _width + 2;
+        uint32_t border_height = _height + 2;
 
-		if( dimension == 0 )
-		{
-			return nullptr;
-		}
+        uint32_t hw_width = Helper::getTexturePOW2( border_width );
+        uint32_t hw_height = Helper::getTexturePOW2( border_height );
 
-		TTFAtlas * atlas = this->getAtlas_( dimension, _channel );
+        uint32_t dimension = Helper::Max( hw_width, hw_height );
+
+        TTFAtlas * atlas = this->getAtlas_( dimension, _channel );
+
+        if( atlas == nullptr )
+        {
+            return nullptr;
+        }
 
 		uint32_t index = atlas->indices.back();
 		atlas->indices.pop_back();
 
 		const RenderTextureInterfacePtr & texture = atlas->texture;
 
-		Rect r;
-		r.left = index * dimension;
-		r.top = 0;
-		r.right = r.left + dimension;
-		r.bottom = dimension;
+		Rect rect;
+        rect.left = index * atlas->dimension;
+		rect.top = 0;
+		rect.right = rect.left + dimension;
+		rect.bottom = border_height;
 
         const RenderImageInterfacePtr & texture_image = texture->getImage();
+
+        if( texture_image == nullptr )
+        {
+            return nullptr;
+        }
 
         uint32_t texture_channel = texture_image->getHWChannels();
 
 		const RenderImageInterfacePtr & image = texture->getImage();
 
         size_t texture_pitch;
-		uint8_t * texture_memory = image->lock( &texture_pitch, 0, r, false );
+		uint8_t * texture_memory = image->lock( &texture_pitch, 0, rect, false );
 
-        _provider->onTextureGlyphFill( texture_memory, texture_pitch, texture_channel );
+        bool successful = _provider->onTextureGlyphFill( texture_memory, texture_pitch, texture_channel );
 
-        //const uint8_t * glyph_buffer = reinterpret_cast<const uint8_t *>(_buffer);
+		image->unlock( 0, successful );
 
-        //uint8_t * it_texture_memory = texture_memory;
-        //const uint8_t * it_glyph_buffer = glyph_buffer;
+        if( successful == false )
+        {
+            return nullptr;
+        }
 
-        //if( _channel == 1 && texture_channel == 4 )
-        //{
-        //    for( uint32_t h = 0; h != _height; ++h )
-        //    {
-        //        for( uint32_t w = 0; w != _width; ++w )
-        //        {
-        //            *(it_texture_memory + w * 4 + 0) = 255;
-        //            *(it_texture_memory + w * 4 + 1) = 255;
-        //            *(it_texture_memory + w * 4 + 2) = 255;
-        //            *(it_texture_memory + w * 4 + 3) = *(it_glyph_buffer + w);
-        //        }
+        uint32_t atlas_width = texture->getWidth();
+        uint32_t atlas_height = texture->getHeight();
+        float atlas_width_inv = 1.f / float( atlas_width );
+        float atlas_height_inv = 1.f / float( atlas_height );
 
-        //        it_texture_memory += texture_pitch;
-        //        it_glyph_buffer += _pitch;
-        //    }
-        //}
-        //else
-        //{
-        //    for( uint32_t h = 0; h != _height; ++h )
-        //    {
-        //        stdex::memorycopy_pod( it_texture_memory, 0, it_glyph_buffer, _width * _channel );
-
-        //        it_texture_memory += texture_pitch;
-        //        it_glyph_buffer += _pitch;
-        //    }
-        //}
-
-		image->unlock( 0, true );
-
-		float atlas_width_inv = 1.f / float( m_maxAtlasWidth );
-		float atlas_height_inv = 1.f / float( dimension );
-
-		_uv.p0 = mt::vec2f( float( r.left ) * atlas_width_inv, float( r.top ) * atlas_height_inv );
-		_uv.p1 = mt::vec2f( float( r.left + _width ) * atlas_width_inv, float( r.top ) * atlas_height_inv );
-		_uv.p2 = mt::vec2f( float( r.left + _width ) * atlas_width_inv, float( r.top + _height ) * atlas_height_inv );
-		_uv.p3 = mt::vec2f( float( r.left ) * atlas_width_inv, float( r.top + _height ) * atlas_height_inv );
+        _uv.p0 = mt::vec2f( float( rect.left + 1 ) * atlas_width_inv, float( rect.top + 1 ) * atlas_height_inv );
+        _uv.p1 = mt::vec2f( float( rect.left + 1 + _width ) * atlas_width_inv, float( rect.top + 1 ) * atlas_height_inv );
+        _uv.p2 = mt::vec2f( float( rect.left + 1 + _width ) * atlas_width_inv, float( rect.top + 1 + _height ) * atlas_height_inv );
+        _uv.p3 = mt::vec2f( float( rect.left + 1 ) * atlas_width_inv, float( rect.top + 1 + _height ) * atlas_height_inv );
 
 		return texture;
 	}
@@ -170,10 +158,13 @@ namespace Menge
 			return &atlas;
 		}
 
+        uint32_t minDimension = Helper::Power2( m_minAtlasPow );
+        uint32_t fixDimension = Helper::Max( minDimension, _dimension );
+
 		TTFAtlas new_atlas;
 
-		new_atlas.dimension = _dimension;
         new_atlas.channel = _channel;
+        new_atlas.dimension = fixDimension;
 
 //#   ifdef MENGINE_RENDER_TEXTURE_RGBA
 //        PixelFormat format_select[] = {PF_A8, PF_A8B8G8R8, PF_A8B8G8R8, PF_A8B8G8R8};
@@ -190,7 +181,7 @@ namespace Menge
 
 		new_atlas.texture = texture;
 
-		uint32_t max_glyph_count = m_maxAtlasWidth / _dimension;
+		uint32_t max_glyph_count = m_maxAtlasWidth / fixDimension;
 
 		new_atlas.indices.reserve( max_glyph_count );
 

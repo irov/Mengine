@@ -84,7 +84,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t TextLine::getCharsDataSize() const
 	{
-		return (uint32_t)m_charsData.size();
+        TVectorCharData::size_type charsDataSize = m_charsData.size();
+
+		return (uint32_t)charsDataSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextLine::getLength() const

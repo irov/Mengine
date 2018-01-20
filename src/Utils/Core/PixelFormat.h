@@ -68,6 +68,13 @@ namespace Menge
 		{
 			return !( n & (n-1));
 		}
+        //////////////////////////////////////////////////////////////////////////
+        inline uint32_t Power2( uint32_t _n )
+        {
+            uint32_t np = 1 << _n;
+
+            return np;
+        }
 		//////////////////////////////////////////////////////////////////////////
 		inline uint32_t getTexturePOW2( uint32_t n )
 		{
@@ -81,6 +88,18 @@ namespace Menge
 
 			return n;
 		}
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        inline const T & Max( const T & _left, const T & _right )
+        {
+            return _left < _right ? _right : _left;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        inline const T & Min( const T & _left, const T & _right )
+        {
+            return _right < _left ? _right : _left;
+        }
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t getTextureMemorySize( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format );
 	}

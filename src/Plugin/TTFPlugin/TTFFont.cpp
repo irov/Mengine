@@ -68,9 +68,7 @@ namespace Menge
 
 			return false;
 		}
-
-        IniUtil::getIniValue( _ini, m_name.c_str(), "Effect", m_fontEffect, m_serviceProvider );
-
+        
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -120,27 +118,15 @@ namespace Menge
 
 		m_memory = memory;
 
-		m_ascender = static_cast<float>(m_face->size->metrics.ascender >> 6);
+        FT_Pos ascender = m_face->size->metrics.ascender >> 6;
+        FT_Pos descender = m_face->size->metrics.descender >> 6;
+        FT_Pos height = m_face->size->metrics.height >> 6;
 
-        if( m_fontEffect.empty() == false )
-        {
-            //InputStreamInterfacePtr fe_stream = FILE_SERVICE( m_serviceProvider )
-            //    ->openInputFile( m_category, m_fontEffect, false );
-
-            //if( stream == nullptr )
-            //{
-            //    return false;
-            //}
-
-            //MemoryInterfacePtr fe_memory = Helper::createMemoryStream( m_serviceProvider, fe_stream, __FILE__, __LINE__ );
-
-            //const void * fe_memory_buffer = fe_memory->getMemory();
-            //size_t fe_memory_size = fe_memory->getSize();
-
-            //fe_effect_bundle* bundle = fe_bundle_load( (const unsigned char*)fe_memory_buffer, fe_memory_size );
-
-            //m_fe_bundle = bundle;            
-        }
+        m_ascender = static_cast<float>(ascender);
+        m_descender = -static_cast<float>(descender);
+        
+        float fHeight = static_cast<float>(height);
+        m_fontLineSpacing = fHeight - (m_ascender + m_descender);
 
 		return true;
 	}
@@ -187,30 +173,40 @@ namespace Menge
             }
 
         public:
-            void onTextureGlyphFill( uint8_t * _memory, size_t _pitch, uint32_t _channel ) override
+            bool onTextureGlyphFill( uint8_t * _memory, size_t _pitch, uint32_t _channel ) override
             {
                 const uint8_t * glyph_buffer = reinterpret_cast<const uint8_t *>(m_ttfbuffer);
 
-                uint8_t * it_texture_memory = _memory;
+                uint32_t border_width = m_width + 2;
+                uint32_t border_height = m_height + 2;
+
+                uint8_t * it_texture_memory = _memory + _channel;
                 const uint8_t * it_glyph_buffer = glyph_buffer;
 
-                if( m_ttfchannel == 1 && _channel == 4 )
+                it_texture_memory += _pitch;
+
+                                
+                if( _channel == 1 && m_ttfchannel == 4 )
                 {
                     for( uint32_t h = 0; h != m_height; ++h )
                     {
                         for( uint32_t w = 0; w != m_width; ++w )
                         {
-                            *(it_texture_memory + w * 4 + 0) = 255;
-                            *(it_texture_memory + w * 4 + 1) = 255;
-                            *(it_texture_memory + w * 4 + 2) = 255;
-                            *(it_texture_memory + w * 4 + 3) = *(it_glyph_buffer + w);
+                            uint8_t * it_texture_memory_place = it_texture_memory + w * 4;
+
+                            const uint8_t glyph_pixel = *(it_glyph_buffer + w);
+
+                            *it_texture_memory_place++ = 255;
+                            *it_texture_memory_place++ = 255;
+                            *it_texture_memory_place++ = 255;
+                            *it_texture_memory_place++ = glyph_pixel;
                         }
 
                         it_texture_memory += _pitch;
                         it_glyph_buffer += m_ttfpitch;
                     }
                 }
-                else
+                else if( _channel == 4 && m_ttfchannel == 4 )
                 {
                     for( uint32_t h = 0; h != m_height; ++h )
                     {
@@ -220,29 +216,64 @@ namespace Menge
                         it_glyph_buffer += m_ttfpitch;
                     }
                 }
+                else
+                {
+                    return false;
+                }
 
-                //fe_image image;
-                //image.data = _memory;
-                //image.w = m_width;
-                //image.h = m_height;
-                //image.pitch = _pitch;
-                //image.bytespp = _channel;
-                //image.data = _memory;
-                //image.format = _channel == 1 ? FE_IMG_A8 : FE_IMG_R8G8B8A8;
-                //image.free = nullptr;
+                uint8_t * it_top_border_texture_memory = _memory;
+                for( uint32_t w = 0; w != border_width; ++w )
+                {
+                    uint8_t * it_texture_memory_place = it_top_border_texture_memory;
 
-                //fe_im im;
-                //im.image = image;
-                //im.x = 0;
-                //im.y = 0;
+                    *it_texture_memory_place++ = 0;
+                    *it_texture_memory_place++ = 0;
+                    *it_texture_memory_place++ = 0;
+                    *it_texture_memory_place++ = 0;
 
-                //fe_effect * effect = fe_bundle_get_effect( m_febundle, 0 );
+                    it_top_border_texture_memory += _channel;
+                }
 
-                //fe_node * out_node = fe_effect_find_node_by_type( effect, fe_node_type_out );
+                uint8_t * it_bottom_border_texture_memory = _memory + _pitch * border_height - _pitch;
+                for( uint32_t w = 0; w != border_width; ++w )
+                {
+                    uint8_t * it_texture_memory_place = it_bottom_border_texture_memory;
 
-                //fe_im res;
-                //int font_size = 100;
-                //fe_node_apply( 1.0f, &im, out_node, font_size, &res );
+                    *it_texture_memory_place++ = 0;
+                    *it_texture_memory_place++ = 0;
+                    *it_texture_memory_place++ = 0;
+                    *it_texture_memory_place++ = 0;
+
+                    it_bottom_border_texture_memory += _channel;
+                }
+
+                uint8_t * it_left_border_texture_memory = _memory + _pitch;
+                for( uint32_t h = 0; h != m_height; ++h )
+                {
+                    uint8_t * it_texture_memory_place = it_left_border_texture_memory;
+
+                    *it_texture_memory_place++ = 0;
+                    *it_texture_memory_place++ = 0;
+                    *it_texture_memory_place++ = 0;
+                    *it_texture_memory_place++ = 0;
+
+                    it_left_border_texture_memory += _pitch;
+                }
+
+                uint8_t * it_right_border_texture_memory = _memory + _pitch + _channel + m_width * _channel;
+                for( uint32_t h = 0; h != m_height; ++h )
+                {
+                    uint8_t * it_texture_memory_place = it_right_border_texture_memory;
+
+                    *it_texture_memory_place++ = 0;
+                    *it_texture_memory_place++ = 0;
+                    *it_texture_memory_place++ = 0;
+                    *it_texture_memory_place++ = 0;
+
+                    it_right_border_texture_memory += _pitch;
+                }
+
+                return true;
             }
 
         protected:
@@ -344,8 +375,7 @@ namespace Menge
 		}
 
         TTFFontTextureGlyphProvider provider( bitmap_width, bitmap_height, buffer, bitmap_pitch, bitmap_channel );
-
-
+        
 		mt::uv4f uv;
 		RenderTextureInterfacePtr texture = TTFATLAS_SERVICE( m_serviceProvider )
 			->makeTextureGlyph( bitmap_width, bitmap_height, bitmap_channel, &provider, uv );
@@ -360,7 +390,7 @@ namespace Menge
 		g.advance = advance;
 
         g.dx = (float)dx;
-        g.dy = (float)dy + h;
+        g.dy = (float)dy;
         g.w = (float)w;
         g.h = (float)h;
 
@@ -434,9 +464,19 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	float TTFFont::getFontHeight() const
-	{
-		return m_height;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    float TTFFont::getFontAscent() const
+    {
+        return m_ascender;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TTFFont::getFontDescent() const
+    {
+        return m_descender;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TTFFont::getFontLineSpacing() const
+    {
+        return m_fontLineSpacing;
+    }
 }

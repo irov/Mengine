@@ -8,8 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FontBase::FontBase()
-		: m_height( 0.f )
-		, m_params( EFP_NONE )
+		: m_params( EFP_NONE )
 		, m_lineOffset( 0.f )
 		, m_charOffset( 0.f )
 	{

@@ -75,7 +75,7 @@ namespace Menge
 		Rect rect;
         rect.left = index * atlas->dimension;
 		rect.top = 0;
-		rect.right = rect.left + dimension;
+		rect.right = rect.left + border_width;
 		rect.bottom = border_height;
 
         const RenderImageInterfacePtr & texture_image = texture->getImage();
@@ -177,7 +177,7 @@ namespace Menge
         PixelFormat format = PF_A8R8G8B8;
 
 		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE( m_serviceProvider )
-			->createDynamicTexture( m_maxAtlasWidth, _dimension, 4, 1, format );
+			->createDynamicTexture( m_maxAtlasWidth, fixDimension, 4, 1, format );
 
 		new_atlas.texture = texture;
 

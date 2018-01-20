@@ -57,9 +57,7 @@ namespace Menge
 
 	protected:
 		ConstString m_name;
-
-		float m_height;
-
+        
 		uint32_t m_params;
 
 		ColourValue m_colourFont;

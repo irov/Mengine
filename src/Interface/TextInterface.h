@@ -92,7 +92,8 @@ namespace Menge
 	public:
         virtual float getFontAscent() const = 0;
         virtual float getFontDescent() const = 0;
-        virtual float getFontLineSpacing() const = 0;
+        virtual float getFontHeight() const = 0;
+        virtual float getFontSpacing() const = 0;
 
 	public:
 		virtual uint32_t getFontParams() const = 0;

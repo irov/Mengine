@@ -19,8 +19,11 @@ namespace Menge
 	TTFFont::TTFFont()
 		: m_ftlibrary( nullptr )
 		, m_face( nullptr )
-		, m_fontDPI( 0 )
-		, m_ascender( 0.f )
+		, m_ttfDPI( 0 )
+		, m_ttfAscender( 0.f )
+        , m_ttfDescender( 0.f )
+        , m_ttfHeight( 0.f )
+        , m_ttfSpacing( 0.f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -51,7 +54,7 @@ namespace Menge
 			return false;
 		}
 
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_height, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_ttfHeight, m_serviceProvider ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s don't setup Height"
 				, m_name.c_str()
@@ -60,7 +63,7 @@ namespace Menge
 			return false;
 		}
 
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "DPI", m_fontDPI, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "DPI", m_ttfDPI, m_serviceProvider ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s don't setup DPI"
 				, m_name.c_str()
@@ -109,8 +112,8 @@ namespace Menge
 			return false;
 		}
 
-		FT_F26Dot6 fontSizePoints = (FT_F26Dot6)m_height * 64;
-		FT_UInt dpi = (FT_UInt)m_fontDPI;
+		FT_F26Dot6 fontSizePoints = (FT_F26Dot6)m_ttfHeight * 64;
+		FT_UInt dpi = (FT_UInt)m_ttfDPI;
 		if( FT_Set_Char_Size( m_face, fontSizePoints, fontSizePoints, dpi, dpi ) != FT_Err_Ok )
 		{
 			return false;
@@ -122,11 +125,11 @@ namespace Menge
         FT_Pos descender = m_face->size->metrics.descender >> 6;
         FT_Pos height = m_face->size->metrics.height >> 6;
 
-        m_ascender = static_cast<float>(ascender);
-        m_descender = -static_cast<float>(descender);
-        
+        m_ttfAscender = static_cast<float>(ascender);
+        m_ttfDescender = -static_cast<float>(descender);
+
         float fHeight = static_cast<float>(height);
-        m_fontLineSpacing = fHeight - (m_ascender + m_descender);
+        m_ttfSpacing = fHeight - (m_ttfAscender + m_ttfDescender);
 
 		return true;
 	}
@@ -186,7 +189,7 @@ namespace Menge
                 it_texture_memory += _pitch;
 
                                 
-                if( _channel == 1 && m_ttfchannel == 4 )
+                if( m_ttfchannel == 1 && _channel == 4 )
                 {
                     for( uint32_t h = 0; h != m_height; ++h )
                     {
@@ -206,7 +209,7 @@ namespace Menge
                         it_glyph_buffer += m_ttfpitch;
                     }
                 }
-                else if( _channel == 4 && m_ttfchannel == 4 )
+                else if( m_ttfchannel == 4 && _channel == 4 )
                 {
                     for( uint32_t h = 0; h != m_height; ++h )
                     {
@@ -467,16 +470,21 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     float TTFFont::getFontAscent() const
     {
-        return m_ascender;
+        return m_ttfAscender;
     }
     //////////////////////////////////////////////////////////////////////////
     float TTFFont::getFontDescent() const
     {
-        return m_descender;
+        return m_ttfDescender;
     }
     //////////////////////////////////////////////////////////////////////////
-    float TTFFont::getFontLineSpacing() const
+    float TTFFont::getFontHeight() const
     {
-        return m_fontLineSpacing;
+        return m_ttfAscender + m_ttfDescender;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TTFFont::getFontSpacing() const
+    {
+        return m_ttfSpacing;
     }
 }

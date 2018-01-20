@@ -33,7 +33,10 @@ namespace Menge
 		bool getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const override;
 
 	public:
-		float getFontHeight() const override;
+        float getFontAscent() const override;
+        float getFontDescent() const override;
+        float getFontHeight() const override;
+        float getFontSpacing() const override;
 
 	public:
 		bool _prepareGlyph( GlyphCode _code ) override;
@@ -44,6 +47,8 @@ namespace Menge
 		ConstString m_category;
 		FilePath m_pathFontImage;
 		FilePath m_pathOutlineImage;
+
+        float m_height;
 
 		RenderTextureInterfacePtr m_textureFont;
 		RenderTextureInterfacePtr m_textureOutline;

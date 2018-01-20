@@ -155,10 +155,9 @@ namespace Menge
 	{
 		_vertexData.clear();
 		m_chunks.clear();
-				
+		
         float fontAscent = _font->getFontAscent();
-        float fontDescent = _font->getFontDescent();
-        float lastLineHeight = fontAscent + fontDescent;
+        float fontHeight = _font->getFontHeight();
 
 		float lineOffset = this->calcLineOffset();        
 
@@ -178,7 +177,7 @@ namespace Menge
 			{
                 TVectorTextLine::size_type line_count = lines.size();
 
-                offset.y = -(lastLineHeight + lineOffset) * line_count * 0.5f;
+                offset.y = -(fontAscent + lineOffset) * (float(line_count) - 2.f) * 0.5f;
 			}break;
         case ETFVA_TOP:
             {
@@ -271,6 +270,7 @@ namespace Menge
 				}
 			}
 
+            offset.y += fontHeight;
 			offset.y += lineOffset;
 		}
 
@@ -439,12 +439,9 @@ namespace Menge
 			return 0.f;
 		}
 
-        float fontAscent = font->getFontAscent();
-        float fontDescent = font->getFontDescent();
-
-        float lastLineHeight = fontAscent + fontDescent;
-
-		return lastLineHeight;
+        float fontHeight = font->getFontHeight();
+        
+		return fontHeight;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setFontName( const ConstString & _fontName )
@@ -744,20 +741,18 @@ namespace Menge
 
 		m_textSize.x = maxlen;
 
-        float fontAscent = font->getFontAscent();
-        float fontDescent = font->getFontDescent();
+        float fontHeight = font->getFontAscent();
 		float lineOffset = this->calcLineOffset();
-        float lastLineHeight = fontAscent + fontDescent;
 
         TVectorTextLine::size_type lineCount = m_lines.size();
 
         if( lineCount > 0 )
         {
-            m_textSize.y = lineOffset * (lineCount - 1) + lastLineHeight;
+            m_textSize.y = lineOffset * (lineCount - 1) + fontHeight;
         }
         else
         {
-            m_textSize.y = lastLineHeight;
+            m_textSize.y = fontHeight;
         }
 
 		this->invalidateVertices_();
@@ -893,16 +888,13 @@ namespace Menge
 		{
 			uint32_t params = font->getFontParams();
 
-            float fontAscent = font->getFontAscent();
-            float fontDescent = font->getFontDescent();
-
-            float lineHeight = fontAscent + fontDescent;
+            float fontHeight = font->getFontHeight();
 
 			if( params & EFP_LINE_OFFSET )
 			{
 				float value = font->getLineOffset();
 
-				return lineHeight + value;
+				return fontHeight + value;
 			}
 		}
                 

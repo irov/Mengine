@@ -48,12 +48,12 @@ namespace Menge
 		ThreadTaskDummyPtr task = m_factoryTaskDummy->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( 1, task_id, this );
+		task->initialize( task_id, this );
 
 		if( THREAD_SERVICE( m_serviceProvider )
 			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadMockupHttpSystem" ), task ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::getMessage url '%s' invalid add task"
+			LOGGER_ERROR( m_serviceProvider )("MockupHttpSystem::getMessage url '%s' invalid add task"
 				, _url.c_str()
 				);
 
@@ -79,12 +79,12 @@ namespace Menge
 		ThreadTaskDummyPtr task = m_factoryTaskDummy->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( 2, task_id, this );
+		task->initialize( task_id, this );
 
 		if( THREAD_SERVICE( m_serviceProvider )
 			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadMockupHttpSystem" ), task ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::postMessage url '%s' invalid add task"
+			LOGGER_ERROR( m_serviceProvider )("MockupHttpSystem::postMessage url '%s' invalid add task"
 				, _url.c_str()
 				);
 
@@ -109,7 +109,7 @@ namespace Menge
 		if( FILE_SERVICE( m_serviceProvider )
 			->hasFileGroup( _category, nullptr ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::downloadAsset url '%s' not found category '%s' for filepath '%s'"
+			LOGGER_ERROR( m_serviceProvider )("MockupHttpSystem::downloadAsset url '%s' not found category '%s' for filepath '%s'"
 				, _url.c_str()
 				, _category.c_str()
 				, _path.c_str()
@@ -121,7 +121,7 @@ namespace Menge
 		if( FILE_SERVICE( m_serviceProvider )
 			->existFile( _category, _path, nullptr ) == true )
 		{
-			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::downloadAsset url '%s' category '%s' file alredy exist '%s'"
+			LOGGER_ERROR( m_serviceProvider )("MockupHttpSystem::downloadAsset url '%s' category '%s' file alredy exist '%s'"
 				, _url.c_str()
 				, _category.c_str()
 				, _path.c_str()
@@ -135,12 +135,12 @@ namespace Menge
 		ThreadTaskDummyPtr task = m_factoryTaskDummy->createObject();
 
 		task->setServiceProvider( m_serviceProvider );
-		task->initialize( 0, task_id, this );
+		task->initialize( task_id, this );
 		
 		if( THREAD_SERVICE(m_serviceProvider)
 			->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadMockupHttpSystem"), task ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("CurlHttpSystem::downloadAsset url '%s' category '%s' path '%s' invalid add task"
+			LOGGER_ERROR(m_serviceProvider)("MockupHttpSystem::downloadAsset url '%s' category '%s' path '%s' invalid add task"
 				, _url.c_str()
 				, _category.c_str()
 				, _path.c_str()
@@ -158,6 +158,39 @@ namespace Menge
 
 		return task_id;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    HttpRequestID MockupHttpSystem::headerData( const String & _url, const TVectorString & _headers, const String & _data, HttpReceiver * _receiver )
+    {
+        (void)_url;
+        (void)_headers;
+        (void)_data;
+        
+        uint32_t task_id = ++m_enumeratorReceivers;
+        
+        ThreadTaskDummyPtr task = m_factoryTaskDummy->createObject();
+        
+        task->setServiceProvider( m_serviceProvider );
+        task->initialize( task_id, this );
+        
+        if( THREAD_SERVICE( m_serviceProvider )
+           ->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadMockupHttpSystem" ), task ) == false )
+        {
+            LOGGER_ERROR( m_serviceProvider )("MockupHttpSystem::headerData url '%s' invalid add task"
+                                              , _url.c_str()
+                                              );
+            
+            return 0;
+        }
+        
+        HttpReceiverDesc desc;
+        desc.id = task_id;
+        desc.task = task;
+        desc.receiver = _receiver;
+        
+        m_receiverDescs.push_back( desc );
+        
+        return task_id;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool MockupHttpSystem::cancelRequest( HttpRequestID _id )
 	{
@@ -182,7 +215,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MockupHttpSystem::onDownloadAssetComplete( HttpRequestID _id, uint32_t _code, bool _successful )
+	void MockupHttpSystem::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _response, uint32_t _code, bool _successful )
 	{
 		for( TVectorHttpReceiverDesc::iterator
 			it = m_receiverDescs.begin(),
@@ -203,65 +236,9 @@ namespace Menge
 
 			if( receiver != nullptr)
 			{
-				receiver->onDownloadAssetComplete( _id, _code, _successful );
+				receiver->onHttpRequestComplete( _id, _status, _response, _code, _successful );
 			}
 			
-			break;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MockupHttpSystem::onGetMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful )
-	{
-		for( TVectorHttpReceiverDesc::iterator
-			it = m_receiverDescs.begin(),
-			it_end = m_receiverDescs.end();
-			it != it_end;
-			++it )
-		{
-			HttpReceiverDesc & desc = *it;
-
-			if( desc.id != _id )
-			{
-				continue;
-			}
-
-			HttpReceiver * receiver = desc.receiver;
-
-			m_receiverDescs.erase( it );
-
-			if( receiver != nullptr )
-			{
-				receiver->onGetMessageComplete( _id, _response, _code, _successful );
-			}
-
-			break;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MockupHttpSystem::onPostMessageComplete( HttpRequestID _id, const String & _response, uint32_t _code, bool _successful )
-	{
-		for( TVectorHttpReceiverDesc::iterator
-			it = m_receiverDescs.begin(),
-			it_end = m_receiverDescs.end();
-			it != it_end;
-			++it )
-		{
-			HttpReceiverDesc & desc = *it;
-
-			if( desc.id != _id )
-			{
-				continue;
-			}
-
-			HttpReceiver * receiver = desc.receiver;
-
-			m_receiverDescs.erase( it );
-
-			if( receiver != nullptr )
-			{
-				receiver->onPostMessageComplete( _id, _response, _code, _successful );
-			}
-
 			break;
 		}
 	}

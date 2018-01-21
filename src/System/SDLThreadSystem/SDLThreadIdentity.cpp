@@ -101,7 +101,7 @@ namespace Menge
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadIdentity::joinTask()
+    bool SDLThreadIdentity::completeTask()
     {
         bool successful = false;
 

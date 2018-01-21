@@ -111,8 +111,8 @@ endif()
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libcurl )
 	
 if( MENGINE_PLATFORM_IOS )
-    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/libcurl/curl_config.h ${THIRDPARTY_DIR}/libcurl/lib/curl_config.h COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libcurl/curlbuild.h ${THIRDPARTY_DIR}/libcurl/include/curl/curlbuild.h COPYONLY)	
+    #configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/libcurl/curl_config.h ${THIRDPARTY_DIR}/libcurl/lib/curl_config.h COPYONLY)
+    #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libcurl/curlbuild.h ${THIRDPARTY_DIR}/libcurl/include/curl/curlbuild.h COPYONLY)	
 endif()
 
     set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})

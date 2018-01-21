@@ -1,13 +1,12 @@
 @echo off
 
+@echo Starting dependencies build debug configuration...
+
 @pushd ..
-@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\Depends_MinGW" "..\build_temp\build_mingw_dependencies_release" "MinGW Makefiles" Release
+@call vcvarsall_msvc15
+@call build_depends "%CD%\..\CMake\Depends_MinGW" build_mingw_dependencies_release "MinGW Makefiles" Release
 @popd
-
-@pushd ..\..\build_temp\build_mingw_dependencies_release\Release
-mingw32-make.exe
-@popd
-
 
 @echo Done
+
 @pause

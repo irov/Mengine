@@ -15,7 +15,7 @@ namespace Menge
 		ThreadTaskDummy();
 		
 	public:
-		bool initialize( uint32_t _type, HttpRequestID _id, HttpReceiver * _receiver );
+		bool initialize( HttpRequestID _id, HttpReceiver * _receiver );
 
 	protected:
 		bool _onRun() override;
@@ -26,8 +26,7 @@ namespace Menge
 	protected:
 		void _onComplete( bool _successful ) override;
 
-	protected:		
-		uint32_t m_type;
+	protected:
 		HttpRequestID m_id;
 		HttpReceiver * m_receiver;
 	};

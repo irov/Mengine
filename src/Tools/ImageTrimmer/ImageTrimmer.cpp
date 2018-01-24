@@ -380,13 +380,16 @@ namespace Menge
 
             if( channels == 4 )
             {
+                uint32_t copy_width_end = new_width - 1;
+                uint32_t copy_height_end = new_height - 1;
+
                 for( uint32_t i = 0; i != new_width; ++i )
                 {
                     for( uint32_t j = 0; j != new_height; ++j )
                     {
                         uint32_t new_index = i + j * new_width;
 
-                        if( (i == 0 || j == 0 || i == new_width - 1 || j == new_height - 1) )
+                        if( (i == 0 || j == 0 || i == copy_width_end || j == copy_height_end) )
                         {
                             for( uint32_t k = 0; k != channels; ++k )
                             {
@@ -396,9 +399,9 @@ namespace Menge
                     }
                 }
 
-                for( uint32_t i = 0; i != new_width; ++i )
+                for( uint32_t i = 1; i != copy_width_end; ++i )
                 {
-                    for( uint32_t j = 0; j != new_height; ++j )
+                    for( uint32_t j = 1; j != copy_height_end; ++j )
                     {
                         uint32_t new_index = i + j * new_width;
                         uint32_t old_index = (min_i + (i - 1)) + (min_j + (j - 1)) * width;

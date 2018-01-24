@@ -449,7 +449,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initialize()
-	{		
+	{	
 		setlocale( LC_ALL, "C" );
 		//::timeBeginPeriod( 1 );
 

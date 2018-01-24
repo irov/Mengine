@@ -18,11 +18,24 @@ CriticalErrorsMonitor
 	CriticalErrorsMonitor.h
 	CriticalErrorsMonitor.cpp
 )
-	
+
+if(MSVC)
+ADD_FILTER(
+main	
+    win32_main.cpp
+)
+endif()
+
+if(MINGW)
+ADD_FILTER(
+main	
+    mingw32_main.cpp
+)
+endif()
+
+    
 ADD_FILTER(
 src
-	main.cpp	
-
 	WinApplication.cpp
 	WinApplication.h
 )
@@ -61,12 +74,12 @@ TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${APPLICATION_LIBS} )
 
 if(NOT MSVC)
     TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} libole32.a )
-endif(NOT MSVC)
+endif()
 
 if(MSVC)
 	set_target_properties( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS /NODEFAULTLIB:"libci.lib" )
-endif(MSVC)
+endif()
 
 if(MINGW)
 	set_target_properties( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS -Wl,-Map,${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/WinApplication.map )
-endif(MINGW)
+endif()

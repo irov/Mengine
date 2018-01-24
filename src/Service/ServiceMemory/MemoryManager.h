@@ -67,7 +67,6 @@ namespace Menge
 		CacheBufferID m_enumeratorId;
 			
 		ThreadMutexInterfacePtr m_memoryCacheMutex;
-		ThreadMutexInterfacePtr m_memoryFactoryMutex;
 
 		FactoryPtr m_factoryPoolMemoryCacheBuffer;
 		FactoryPtr m_factoryPoolMemoryCacheInput;

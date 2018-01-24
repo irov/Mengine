@@ -27,7 +27,7 @@ namespace Menge
     {
         bool successful = m_observer->onPrefetchRun();
 
-        return true;
+        return successful;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskPrefetch::_onComplete( bool _successful )

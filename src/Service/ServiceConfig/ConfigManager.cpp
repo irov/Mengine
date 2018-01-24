@@ -106,21 +106,34 @@ namespace Menge
 
 			const TVectorConstString & tags = _platform.getTags();
 
-			for( TVectorConstString::const_iterator
-				it = tags.begin(),
-				it_end = tags.end();
-			it != it_end;
-			++it )
+            stdex::array_string<128> platform_section_found;
+
+            for( TVectorConstString::const_iterator
+                it = tags.begin(),
+                it_end = tags.end();
+                it != it_end;
+                ++it )
+            {
+                const ConstString & tag = *it;
+
+                platform_section.append( '-' );
+                platform_section.append( tag );
+
+                if( IniUtil::hasIniValue( _ini, platform_section.c_str(), _key ) == false )
+                {
+                    continue;
+                }
+
+                platform_section_found = platform_section;
+
+                break;
+            }
+
+			if( platform_section_found.empty() == false )
 			{
-				const ConstString & tag = *it;
+                IniUtil::getIniValue( _ini, platform_section_found.c_str(), _key, _value, _serviceProvider );
 
-				platform_section.append( '-' );
-				platform_section.append( tag );
-
-				if( IniUtil::getIniValue( _ini, platform_section.c_str(), _key, _value, _serviceProvider ) == false )
-				{
-					continue;
-				}
+                return;
 			}
 
 			IniUtil::getIniValue( _ini, _section, _key, _value, _serviceProvider );

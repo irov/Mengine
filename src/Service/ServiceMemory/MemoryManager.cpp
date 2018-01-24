@@ -21,23 +21,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryManager::_initialize()
 	{
-		m_memoryCacheMutex = THREAD_SERVICE(m_serviceProvider)
-			->createMutex( __FILE__, __LINE__ );
+        m_memoryCacheMutex = THREAD_SERVICE( m_serviceProvider )
+            ->createMutex( __FILE__, __LINE__ );
 
 		m_factoryPoolMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16>( m_serviceProvider );
 		m_factoryPoolMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16>( m_serviceProvider );
 		m_factoryPoolMemoryProxyInput = new FactoryPool<MemoryProxyInput, 16>( m_serviceProvider );
 		m_factoryPoolMemoryInput = new FactoryPool<MemoryInput, 16>( m_serviceProvider );
 		m_factoryPoolMemory = new FactoryPool<Memory, 16>( m_serviceProvider );
-
-		m_memoryFactoryMutex = THREAD_SERVICE( m_serviceProvider )
+        
+        ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SERVICE( m_serviceProvider )
 			->createMutex( __FILE__, __LINE__ );
 
-		m_factoryPoolMemoryCacheBuffer->setMutex( m_memoryFactoryMutex );
-		m_factoryPoolMemoryCacheInput->setMutex( m_memoryFactoryMutex );
-		m_factoryPoolMemoryProxyInput->setMutex( m_memoryFactoryMutex );
-		m_factoryPoolMemoryInput->setMutex( m_memoryFactoryMutex );
-		m_factoryPoolMemory->setMutex( m_memoryFactoryMutex );
+		m_factoryPoolMemoryCacheBuffer->setMutex( memoryFactoryMutex );
+		m_factoryPoolMemoryCacheInput->setMutex( memoryFactoryMutex );
+		m_factoryPoolMemoryProxyInput->setMutex( memoryFactoryMutex );
+		m_factoryPoolMemoryInput->setMutex( memoryFactoryMutex );
+		m_factoryPoolMemory->setMutex( memoryFactoryMutex );
 
 		return true;
 	}
@@ -47,7 +47,6 @@ namespace Menge
 		this->clearCacheBuffers();
 
 		m_memoryCacheMutex = nullptr;
-		m_memoryFactoryMutex = nullptr;
 
         m_factoryPoolMemoryCacheBuffer = nullptr;
         m_factoryPoolMemoryCacheInput = nullptr;

@@ -66,6 +66,13 @@ namespace Menge
 			return true;
 		}
         //////////////////////////////////////////////////////////////////////////
+        bool hasIniValue( const IniStore & _ini, const Char * _section, const Char * _key )
+        {
+            bool successful = _ini.hasSettingValue( _section, _key );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, WString & _value, ServiceProviderInterface * _serviceProvider )
         {
             const Char * ini_value = _ini.getSettingValue( _section, _key );

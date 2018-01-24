@@ -13,14 +13,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32Socket::initialize( const Char * _ip, const Char * _port )
 	{
-		ADDRINFOA hints;
+        addrinfo hints;
 		ZeroMemory( &hints, sizeof( hints ) );
 
 		hints.ai_family = AF_UNSPEC;
 		hints.ai_socktype = SOCK_STREAM;
 		hints.ai_protocol = IPPROTO_TCP;
 
-		PADDRINFOA addrinfo;
+        addrinfo *addrinfo;
 		INT getaddrinfo_result = ::getaddrinfo( _ip, _port, &hints, &addrinfo );
 
 		if( getaddrinfo_result != 0 )

@@ -18,7 +18,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32SocketSystem::_initialize()
 	{
-		int WSAStartup_result = WSAStartup( WINSOCK_VERSION, &m_wsaData );
+        WORD wVersionRequested = MAKEWORD( 2, 2 );
+
+		int WSAStartup_result = WSAStartup( wVersionRequested, &m_wsaData );
 
 		if( WSAStartup_result != 0 )
 		{

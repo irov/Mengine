@@ -36,6 +36,8 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool loadIni( IniStore & _ini, const ConstString & _category, const FilePath & _path, ServiceProviderInterface * _serviceProvider );
 		bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _input, ServiceProviderInterface * _serviceProvider );
+        //////////////////////////////////////////////////////////////////////////
+        bool hasIniValue( const IniStore & _ini, const Char * _section, const Char * _key );
 		//////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, WString & _value, ServiceProviderInterface * _serviceProvider ); 
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, String & _value, ServiceProviderInterface * _serviceProvider );

@@ -10,6 +10,8 @@
 #	include "Interface/TimerInterface.h"
 #	include "Interface/FileSystemInterface.h"
 
+#   include "Utils/WIN32/WindowsIncluder.h"
+
 #	include "Logger/Logger.h"
 
 #	include <cstdio>
@@ -22,11 +24,6 @@
 #	include <functional>
 
 #	include <sstream>
-
-#   include <WinBase.h>
-#   include <Psapi.h>
-#	include <tlhelp32.h>
-#   include <Shlwapi.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Menge::Win32Platform );
@@ -163,6 +160,14 @@ namespace Menge
 
 			m_touchpad = false;
 		}
+
+        const char * option_platform = GET_OPTION_VALUE( m_serviceProvider, "platform" );
+
+        if( option_platform != nullptr )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, option_platform ) );
+        }
 
 		if( HAS_OPTION( m_serviceProvider, "touchpad" ) )
 		{

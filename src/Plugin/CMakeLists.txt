@@ -27,7 +27,7 @@ if( MENGINE_TARGET_MSVC )
     ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
     ADD_SUBDIRECTORY( MengeWin32FileGroupPlugin )
     
-    ADD_SUBDIRECTORY( GOAPPlugin )
+    #ADD_SUBDIRECTORY( GOAPPlugin )
     
     
     #ADD_SUBDIRECTORY( FFMPEGVideoCodecPlugin )

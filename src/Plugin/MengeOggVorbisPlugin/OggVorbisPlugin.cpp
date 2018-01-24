@@ -1,5 +1,8 @@
 #	include "OggVorbisPlugin.h"
 
+//need for mingw - fseeko64
+#   include <stdio.h>
+
 #	include "SoundDecoderOGGVorbis.h"
 
 #	include "Interface/StringizeInterface.h"

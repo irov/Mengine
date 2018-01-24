@@ -14,7 +14,8 @@ INCLUDE_DIRECTORIES(
     ${THIRDPARTY_DIR}/libvorbis/include
     ${THIRDPARTY_DIR}/libogg/include          
 	)
-
+    
+add_definitions(-DOV_EXCLUDE_STATIC_CALLBACKS)
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 

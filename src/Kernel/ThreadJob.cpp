@@ -32,8 +32,10 @@ namespace Menge
 		{
 			ThreadJobWorkerDesc & desc = m_workers[i];
 			
-			desc.mutex = THREAD_SERVICE(m_serviceProvider)
-				->createMutex( __FILE__, __LINE__ );
+            ThreadMutexInterfacePtr mutex = THREAD_SERVICE( m_serviceProvider )
+                ->createMutex( __FILE__, __LINE__ );
+
+			desc.mutex = mutex;
 
 			desc.worker = nullptr;
 			desc.id = 0;

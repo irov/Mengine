@@ -75,8 +75,15 @@ namespace Menge
 			return false;
 		}
 
-		m_mutex = THREAD_SERVICE(m_serviceProvider)
-			->createMutex( __FILE__, __LINE__ );
+        ThreadMutexInterfacePtr mutex = THREAD_SERVICE( m_serviceProvider )
+            ->createMutex( __FILE__, __LINE__ );
+
+        if( mutex == nullptr )
+        {
+            return false;
+        }
+
+		m_mutex = mutex;
 		
 		return true;
 	}

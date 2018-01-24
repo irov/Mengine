@@ -303,10 +303,13 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/pyexpat.c
                 
                 ${SOURCE_DIR}/Modules/socketmodule.c
-               
+              
+                ${SOURCE_DIR}/Modules/expat/loadlibrary.c
                 ${SOURCE_DIR}/Modules/expat/xmlparse.c
                 ${SOURCE_DIR}/Modules/expat/xmlrole.c
                 ${SOURCE_DIR}/Modules/expat/xmltok.c
+                ${SOURCE_DIR}/Modules/expat/xmltok_impl.c
+                ${SOURCE_DIR}/Modules/expat/xmltok_ns.c
                 
                 ${SOURCE_DIR}/Modules/zlibmodule.c
                 

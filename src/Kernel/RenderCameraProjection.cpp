@@ -21,6 +21,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	void RenderCameraProjection::setCameraPosition( const mt::vec3f & _position )
     {
+        if( m_cameraPosition == _position )
+        {
+            return;
+        }
+
 		m_cameraPosition = _position;
 
         this->invalidateViewMatrix_();
@@ -28,6 +33,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderCameraProjection::setCameraDirection( const mt::vec3f & _direction )
 	{
+        if( m_cameraDirection == _direction )
+        {
+            return;
+        }
+
 		m_cameraDirection = _direction;
 
 		this->invalidateViewMatrix_();
@@ -35,6 +45,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderCameraProjection::setCameraUp( const mt::vec3f & _up )
 	{
+        if( m_cameraUp == _up )
+        {
+            return;
+        }
+
 		m_cameraUp = _up;
 
 		this->invalidateViewMatrix_();
@@ -42,6 +57,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderCameraProjection::setCameraRightSign( float _rightSign )
 	{
+        if( m_cameraRightSign == _rightSign )
+        {
+            return;
+        }
+
 		m_cameraRightSign = _rightSign;
 
 		this->invalidateViewMatrix_();
@@ -49,6 +69,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderCameraProjection::setCameraFOV( float _fov )
 	{
+        if( m_cameraFov == _fov )
+        {
+            return;
+        }
+
 		m_cameraFov = _fov;
 
 		this->invalidateProjectionMatrix_();
@@ -56,6 +81,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderCameraProjection::setCameraAspect( float _aspect )
 	{
+        if( m_cameraAspect == _aspect )
+        {
+            return;
+        }
+
 		m_cameraAspect = _aspect;
 
 		this->invalidateProjectionMatrix_();
@@ -63,6 +93,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderCameraProjection::setCameraNear( float _near )
 	{
+        if( m_cameraNear == _near )
+        {
+            return;
+        }
+
 		m_cameraNear = _near;
 
 		this->invalidateProjectionMatrix_();
@@ -70,6 +105,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderCameraProjection::setCameraFar( float _far )
 	{
+        if( m_cameraFar == _far )
+        {
+            return;
+        }
+
 		m_cameraFar = _far;
 
 		this->invalidateProjectionMatrix_();

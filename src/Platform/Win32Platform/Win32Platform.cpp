@@ -360,6 +360,11 @@ namespace Menge
 	{
 		return m_platformTags;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::hasPlatformTag( const ConstString & _tag ) const
+    {
+        return m_platformTags.hasTag( _tag );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::hasTouchpad() const
 	{

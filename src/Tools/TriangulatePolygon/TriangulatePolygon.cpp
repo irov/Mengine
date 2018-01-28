@@ -196,7 +196,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	vec2f image_base_size = parse_kwds( lpCmdLine, L"--base_size", vec2f(0.0, 0.0) );
 	vec2f image_trim_size = parse_kwds( lpCmdLine, L"--trim_size", vec2f( 0.0, 0.0 ) );
 	vec2f image_trim_offset = parse_kwds( lpCmdLine, L"--trim_offset", vec2f( 0.0, 0.0 ) );
-	bool image_subtract = parse_kwds( lpCmdLine, L"--subtract", false );	
+	bool image_subtract = parse_kwds( lpCmdLine, L"--subtract", false );
 	TVectorPoints points = parse_kwds( lpCmdLine, L"--points", TVectorPoints() );
 
 	size_t points_count = points.size();

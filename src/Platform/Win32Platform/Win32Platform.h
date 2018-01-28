@@ -38,6 +38,7 @@ namespace Menge
 
 	public:
 		const Tags & getPlatformTags() const override;
+        bool hasPlatformTag( const ConstString & _tag ) const override;
 		bool hasTouchpad() const override;
 
 	public:

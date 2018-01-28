@@ -171,7 +171,9 @@ namespace Menge
 		{
 		case ETFVA_BOTTOM:
 			{
-                offset.y = 0.f;
+                TVectorTextLine::size_type line_count = lines.size();
+
+                offset.y = (fontAscent + lineOffset) * (float( line_count ) - 1.f) * 0.5f;
 			}break;
 		case ETFVA_CENTER:
 			{
@@ -181,7 +183,7 @@ namespace Menge
 			}break;
         case ETFVA_TOP:
             {
-                offset.y = fontAscent;
+                offset.y = (fontAscent + lineOffset);
             }break;
 		}
         
@@ -1079,7 +1081,7 @@ namespace Menge
 			return m_verticalAlign;
 		}
 
-		return ETFVA_BOTTOM;
+		return ETFVA_TOP;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::calcCharScale() const

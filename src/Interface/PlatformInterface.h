@@ -37,6 +37,7 @@ namespace Menge
 
 	public:
 		virtual const Tags & getPlatformTags() const = 0;
+        virtual bool hasPlatformTag( const ConstString & _tag ) const = 0;
 
 	public:
 		virtual bool hasTouchpad() const = 0;

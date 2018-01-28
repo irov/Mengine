@@ -4525,6 +4525,14 @@ namespace Menge
 
 			return successful;
 		}
+        //////////////////////////////////////////////////////////////////////////
+        bool s_hasPlatformTag( const ConstString & _tag )
+        {
+            bool successful = PLATFORM_SERVICE( m_serviceProvider )
+                ->hasPlatformTag( _tag );
+
+            return successful;
+        }
 		//////////////////////////////////////////////////////////////////////////
 		bool s_hasTouchpad()
 		{
@@ -8137,6 +8145,7 @@ namespace Menge
 			pybind::def_functor_kernel( kernel, "getResources", nodeScriptMethod, &NodeScriptMethod::s_getResources );
 
 			pybind::def_functor( kernel, "testPlatformTags", nodeScriptMethod, &NodeScriptMethod::s_testPlatformTags );
+            pybind::def_functor( kernel, "hasPlatformTag", nodeScriptMethod, &NodeScriptMethod::s_hasPlatformTag );            
 			pybind::def_functor( kernel, "hasTouchpad", nodeScriptMethod, &NodeScriptMethod::s_hasTouchpad );
 			pybind::def_functor( kernel, "getTimingFactor", nodeScriptMethod, &NodeScriptMethod::s_getTimingFactor );
 			pybind::def_functor( kernel, "setTimingFactor", nodeScriptMethod, &NodeScriptMethod::s_setTimingFactor );

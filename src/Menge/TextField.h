@@ -222,8 +222,8 @@ namespace Menge
 
 		struct Chunk
 		{
-			uint32_t begin;
-			uint32_t count;
+			uint32_t vertex_begin;
+			uint32_t vertex_count;
 
 			RenderMaterialInterfacePtr material;
 		};

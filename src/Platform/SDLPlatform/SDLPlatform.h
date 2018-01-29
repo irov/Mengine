@@ -58,6 +58,7 @@ namespace Menge
         Pointer getWindowHandle() const override;
 
     public:
+        bool hasPlatformTag( const ConstString & _tag ) const override;
         const Tags & getPlatformTags() const override;
 
     public:

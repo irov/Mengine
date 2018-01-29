@@ -429,6 +429,11 @@ namespace Menge
         return m_window;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::hasPlatformTag( const ConstString & _tag ) const
+    {
+        return m_platformName.hasTag( _tag );
+    }
+    //////////////////////////////////////////////////////////////////////////
     const Tags & SDLPlatform::getPlatformTags() const
     {
         return m_platformName;

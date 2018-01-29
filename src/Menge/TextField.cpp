@@ -203,8 +203,8 @@ namespace Menge
 		};
 
 		Chunk chunk;
-		chunk.begin = 0;
-		chunk.count = 0;
+		chunk.vertex_begin = 0;
+		chunk.vertex_count = 0;
 		chunk.material = nullptr;
 
 		for( TVectorTextLine::const_iterator
@@ -254,20 +254,20 @@ namespace Menge
 
 				if( chunk.material == material )
 				{
-					chunk.count += 4;
+					chunk.vertex_count += 4;
 				}
 				else if( chunk.material == nullptr )
 				{
-					chunk.begin = 0;
-					chunk.count = 4;
+					chunk.vertex_begin = 0;
+					chunk.vertex_count = 4;
 					chunk.material = material;
 				}
 				else
 				{
 					m_chunks.push_back( chunk );
 
-					chunk.begin = chunk.begin + chunk.count;
-					chunk.count = 4;
+					chunk.vertex_begin = chunk.vertex_begin + chunk.vertex_count;
+					chunk.vertex_count = 4;
 					chunk.material = material;
 				}
 			}
@@ -276,7 +276,7 @@ namespace Menge
 			offset.y += lineOffset;
 		}
 
-		if( chunk.count != 0 )
+		if( chunk.vertex_count != 0 )
 		{
 			m_chunks.push_back( chunk );
 		}
@@ -318,26 +318,30 @@ namespace Menge
 		{
 			const Chunk & chunk = *it;
 
-			const TVectorRenderVertex2D::value_type * chunk_vertices = vertices + chunk.begin;
+			const TVectorRenderVertex2D::value_type * chunk_vertices = vertices + chunk.vertex_begin;
 
             if( renderCharCount >= m_maxCharCount )
             { 
                 continue;
             }
 
-            uint32_t correctChunkCount = chunk.count;
-            if( renderCharCount + chunk.count >= m_maxCharCount )
+            uint32_t correctChunkVertexCount = chunk.vertex_count;
+
+            uint32_t chunkCharCount = chunk.vertex_count / 4;
+
+            if( renderCharCount + chunkCharCount >= m_maxCharCount )
             {
-                correctChunkCount = (m_maxCharCount - renderCharCount) * 4;
+                correctChunkVertexCount = (m_maxCharCount - renderCharCount) * 4;
+
                 renderCharCount = m_maxCharCount;
             }
             else
             {
-                renderCharCount += chunk.count;
+                renderCharCount += chunkCharCount;
             }            
 
             _renderService
-                ->addRenderQuad( _state, chunk.material, chunk_vertices, correctChunkCount, &bb, false );
+                ->addRenderQuad( _state, chunk.material, chunk_vertices, correctChunkVertexCount, &bb, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

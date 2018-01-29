@@ -399,6 +399,20 @@ namespace Menge
                     surfaceTrackMatte->setResourceImage( resourceImage );
                     surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
 
+                    ae_track_matte_mode_t track_matte_mode = ae_get_movie_layer_data_track_matte_mode( _callbackData->layer );
+                    
+                    switch( track_matte_mode )
+                    {
+                    case AE_MOVIE_TRACK_MATTE_ALPHA:
+                        {
+                            surfaceTrackMatte->setTrackMatteMode( ESTM_MODE_ALPHA );
+                        }break;
+                    case AE_MOVIE_TRACK_MATTE_ALPHA_INVERTED:
+                        {
+                            surfaceTrackMatte->setTrackMatteMode( ESTM_MODE_ALPHA_INVERTED );
+                        }break;
+                    }                    
+
                     EMaterialBlendMode blend_mode = EMB_NORMAL;
 
                     ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
@@ -896,6 +910,7 @@ namespace Menge
     {
         mt::mat4f matrix;
         aeMovieRenderMesh mesh;
+        ae_track_matte_mode_t mode;
     };
     //////////////////////////////////////////////////////////////////////////
     static void * __movie_composition_track_matte_provider( const aeMovieTrackMatteProviderCallbackData * _callbackData, void * _data )
@@ -906,6 +921,7 @@ namespace Menge
 
         desc->matrix.from_f16( _callbackData->matrix );
         desc->mesh = *_callbackData->mesh;
+        desc->mode = _callbackData->track_matte_mode;
 
         return desc;
     }

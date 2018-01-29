@@ -6,6 +6,15 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
+    enum ESurfaceTrackMatteMode
+    {
+        ESTM_MODE_NONE = 0,
+        ESTM_MODE_ALPHA = 1,
+        ESTM_MODE_ALPHA_INVERTED = 2,
+        ESTM_MODE_LUMA = 3,
+        ESTM_MODE_LUMA_INVERTED = 4,
+    };
+    //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class ResourceImage> ResourceImagePtr;
     //////////////////////////////////////////////////////////////////////////
 	class SurfaceTrackMatte
@@ -22,6 +31,10 @@ namespace Menge
 	public:
 		void setResourceTrackMatteImage( const ResourceImagePtr & _resourceTrackMatteImage );
 		const ResourceImagePtr & getResourceTrackMatteImage() const;
+
+    public:
+        void setTrackMatteMode( ESurfaceTrackMatteMode _trackMatteMode );
+        ESurfaceTrackMatteMode getTrackMatteMode() const;
 
     public:
         const mt::vec2f & getMaxSize() const override;
@@ -46,5 +59,7 @@ namespace Menge
 	protected:
 		ResourceHolder<ResourceImage> m_resourceImage;
 		ResourceHolder<ResourceImage> m_resourceTrackMatteImage;
+
+        ESurfaceTrackMatteMode m_trackMatteMode;
 	};
 }

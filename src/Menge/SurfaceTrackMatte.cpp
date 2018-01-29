@@ -10,6 +10,7 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SurfaceTrackMatte::SurfaceTrackMatte()
+        : m_trackMatteMode( ESTM_MODE_NONE )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -50,6 +51,16 @@ namespace	Menge
 	{
 		return m_resourceTrackMatteImage;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceTrackMatte::setTrackMatteMode( ESurfaceTrackMatteMode _trackMatteMode )
+    {
+        m_trackMatteMode = _trackMatteMode;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ESurfaceTrackMatteMode SurfaceTrackMatte::getTrackMatteMode() const
+    {
+        return m_trackMatteMode;
+    }
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceTrackMatte::getMaxSize() const
     {
@@ -164,10 +175,30 @@ namespace	Menge
 		textures[0] = m_resourceImage->getTexture();
 		textures[1] = m_resourceTrackMatteImage->getTexture();
 
-		RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( m_serviceProvider )
-			->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "TrackMatte_Blend" ), PT_TRIANGLELIST, 2, textures );
+        RenderMaterialInterfacePtr material = nullptr;
 
-		return material;
+        switch( m_trackMatteMode )
+        {
+        case ESTM_MODE_ALPHA:
+            {
+                material = RENDERMATERIAL_SERVICE( m_serviceProvider )
+                    ->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "TrackMatte_Blend" ), PT_TRIANGLELIST, 2, textures );
+            }break;
+        case ESTM_MODE_ALPHA_INVERTED:
+            {
+                material = RENDERMATERIAL_SERVICE( m_serviceProvider )
+                    ->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "TrackMatteInverted_Blend" ), PT_TRIANGLELIST, 2, textures );
+            }break;
+        default:
+            {
+                LOGGER_ERROR( m_serviceProvider )("SurfaceTrackMatte::_updateMaterial '%s' invalid support track matte mode '%d'"
+                    , this->getName().c_str()
+                    , m_trackMatteMode
+                    );
+            }break;
+        }
+
+        return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

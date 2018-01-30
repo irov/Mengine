@@ -77,6 +77,8 @@ namespace Menge
 		m_format = _format;
 		m_type = _type;
 
+        m_lockFirst = true;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -205,8 +207,7 @@ namespace Menge
 
 		*_pitch = size / miplevel_height;
 
-		m_lockLevel = _level;
-		m_lockFirst = true;
+		m_lockLevel = _level;		
 
 		return memory;
 	}

@@ -42,7 +42,7 @@ namespace Menge
 	{
 		LOGGER_WARNING(m_serviceProvider)("Initializing OpenGL RenderSystem...");
 
-		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Marmalade" );
+		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "GLES" );
 
 		m_factoryVertexBuffer = new FactoryPool<OpenGLRenderVertexBufferES, 8>( m_serviceProvider );
 		m_factoryIndexBuffer = new FactoryPool<OpenGLRenderIndexBufferES, 8>( m_serviceProvider );

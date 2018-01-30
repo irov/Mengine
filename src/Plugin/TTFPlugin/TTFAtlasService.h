@@ -40,7 +40,7 @@ namespace Menge
 		typedef stdex::vector<TTFAtlas> TVectorAtlases;
 		typedef stdex::vector<TVectorAtlases> TVectorAtlasess;
 		TVectorAtlasess m_atlasess[2];
-
+        
 		uint32_t m_minAtlasPow;
 		uint32_t m_maxAtlasPow;
 		uint32_t m_maxAtlasWidth;

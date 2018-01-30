@@ -3342,7 +3342,7 @@ namespace Menge
 
 				GlyphCode glyphChar = code;
 
-				if( font->hasGlyph( glyphChar ) == false )
+				if( font->validateGlyph( glyphChar ) == false )
 				{
 					_cb.call( "not found glyph ", code, ws_str );
 

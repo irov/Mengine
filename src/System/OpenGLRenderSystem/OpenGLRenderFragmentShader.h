@@ -22,7 +22,8 @@ namespace Menge
         const ConstString & getName() const override;
 
     public:
-        bool initialize( const ConstString & _name, const void * _source, size_t _size, bool _isCompile );
+        bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory );
+        bool compile();
 
     public:
         void attach( GLuint _program );
@@ -34,6 +35,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
         ConstString m_name;
+        MemoryInterfacePtr m_memory;
 
         GLuint m_shaderId;
     };

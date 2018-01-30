@@ -30,6 +30,7 @@ namespace Menge
 
     public:
         bool initialize( const ConstString & _name, const OpenGLRenderVertexShaderPtr & _vertexShader, const OpenGLRenderFragmentShaderPtr & _fragmentShader, uint32_t _samplerCount );
+        bool compile();
 
     public:
         void enable() const;

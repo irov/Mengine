@@ -30,6 +30,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderSystem::OpenGLRenderSystem()
         : m_depthMask( false )
+        , m_renderWindowCreate( false )
         , m_glMaxClipPlanes( 0 )
         , m_glMaxCombinedTextureImageUnits( 0 )
     {
@@ -46,7 +47,7 @@ namespace Menge
     {
         LOGGER_WARNING( m_serviceProvider )("Initializing OpenGL RenderSystem...");
 
-        m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "OpenGL" );
+        m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "GL" );
 
         m_factoryVertexBuffer = new FactoryDefault<OpenGLRenderVertexBuffer>( m_serviceProvider );
         m_factoryIndexBuffer = new FactoryDefault<OpenGLRenderIndexBuffer>( m_serviceProvider );
@@ -153,6 +154,56 @@ namespace Menge
         GLCALL( m_serviceProvider, glDisableClientState, (GL_TEXTURE_COORD_ARRAY) );
 
         m_resolution = _resolution;
+
+        for( TVectorRenderVertexShaders::iterator
+            it = m_deferredCompileVertexShaders.begin(),
+            it_end = m_deferredCompileVertexShaders.end();
+            it != it_end;
+            ++it )
+        {
+            const OpenGLRenderVertexShaderPtr & shader = *it;
+
+            if( shader->compile() == false )
+            {
+                return false;
+            }
+        }
+
+        m_deferredCompileVertexShaders.clear();
+
+        for( TVectorRenderFragmentShaders::iterator
+            it = m_deferredCompileFragmentShaders.begin(),
+            it_end = m_deferredCompileFragmentShaders.end();
+            it != it_end;
+            ++it )
+        {
+            const OpenGLRenderFragmentShaderPtr & shader = *it;
+
+            if( shader->compile() == false )
+            {
+                return false;
+            }
+        }
+
+        m_deferredCompileFragmentShaders.clear();
+
+        for( TVectorRenderPrograms::iterator
+            it = m_deferredCompilePrograms.begin(),
+            it_end = m_deferredCompilePrograms.end();
+            it != it_end;
+            ++it )
+        {
+            const OpenGLRenderProgramPtr & program = *it;
+
+            if( program->compile() == false )
+            {
+                return false;
+            }
+        }
+
+        m_deferredCompilePrograms.clear();
+
+        m_renderWindowCreate = true;
 
         return true;
     }
@@ -270,13 +321,13 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr OpenGLRenderSystem::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
+    RenderFragmentShaderInterfacePtr OpenGLRenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory )
     {
         OpenGLRenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject();
 
         shader->setServiceProvider( m_serviceProvider );
 
-        if( shader->initialize( _name, _buffer, _size, _isCompile ) == false )
+        if( shader->initialize( _name, _memory ) == false )
         {
             LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystem::createFragmentShader invalid initialize shader %s"
                 , _name.c_str()
@@ -285,22 +336,54 @@ namespace Menge
             return nullptr;
         }
 
+        if( m_renderWindowCreate == true )
+        {
+            if( shader->compile() == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("invalid compile shader '%s'"
+                    , _name.c_str()
+                );
+
+                return nullptr;
+            }
+        }
+        else
+        {
+            m_deferredCompileFragmentShaders.push_back( shader );
+        }
+
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr OpenGLRenderSystem::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
+    RenderVertexShaderInterfacePtr OpenGLRenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory )
     {
         OpenGLRenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject();
 
         shader->setServiceProvider( m_serviceProvider );
 
-        if( shader->initialize( _name, _buffer, _size, _isCompile ) == false )
+        if( shader->initialize( _name, _memory ) == false )
         {
             LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystem::createVertexShader invalid initialize shader %s"
                 , _name.c_str()
                 );
 
             return nullptr;
+        }
+
+        if( m_renderWindowCreate == true )
+        {
+            if( shader->compile() == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("invalid compile shader '%s'"
+                    , _name.c_str()
+                );
+
+                return nullptr;
+            }
+        }
+        else
+        {
+            m_deferredCompileVertexShaders.push_back( shader );
         }
 
         return shader;
@@ -319,6 +402,22 @@ namespace Menge
                 );
 
             return nullptr;
+        }
+
+        if( m_renderWindowCreate == true )
+        {
+            if( program->compile() == false )
+            {
+                LOGGER_ERROR( m_serviceProvider )("invalid compile program '%s'"
+                    , _name.c_str()
+                );
+
+                return nullptr;
+            }
+        }
+        else
+        {
+            m_deferredCompilePrograms.push_back( program );
         }
 
         return program;

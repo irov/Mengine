@@ -880,6 +880,8 @@ namespace Menge
                     continue;
                 }
 
+                font->compileFont();
+
                 const String & value = text.getValue();
 
                 const char * text_str = value.c_str();
@@ -930,7 +932,7 @@ namespace Menge
 
                     GlyphCode glyphChar = code;
 
-                    if( font->hasGlyph( glyphChar ) == false )
+                    if( font->validateGlyph( glyphChar ) == false )
                     {
                         LOGGER_ERROR( m_serviceProvider )("Text %s fontName %s not found glyph code '%d'"
                             , textKey.c_str()
@@ -941,6 +943,8 @@ namespace Menge
                         successful = false;
                     }
                 }
+
+                font->releaseFont();
             }
         }
 

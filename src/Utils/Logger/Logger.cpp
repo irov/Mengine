@@ -6,6 +6,8 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+#   define MENGINE_LOGGER_MAX_MESSAGE 8192
 	//////////////////////////////////////////////////////////////////////////
 	LoggerOperator::LoggerOperator( LoggerServiceInterface * _log, EMessageLevel _level, uint32_t _flag )
 		: m_log(_log)
@@ -20,8 +22,8 @@ namespace Menge
 
 		va_start(argList, _format);
 
-		char str[8192] = {0};
-		int size = vsprintf( str, _format, argList );
+        char str[MENGINE_LOGGER_MAX_MESSAGE] = { 0 };
+		int size = vsnprintf( str, MENGINE_LOGGER_MAX_MESSAGE, _format, argList );
         
 		va_end(argList);
 
@@ -45,12 +47,12 @@ namespace Menge
             return *this;
         }
 
-        if( size > (8192 - 2) )
+        if( size > (MENGINE_LOGGER_MAX_MESSAGE - 2) )
         {
-            size = 8192 - 2;
+            size = MENGINE_LOGGER_MAX_MESSAGE - 2;
         }
         
-        str[size] = '\n';
+        str[size + 0] = '\n';
         str[size + 1] = 0;	
 
 		this->logMessage( str, size + 1 );

@@ -85,6 +85,9 @@ namespace Menge
 	public:
 		virtual U32String prepareText( const String & _text ) = 0;
 
+    public:
+        virtual bool validateGlyph( GlyphCode _char ) const = 0;
+
 	public:
 		virtual bool hasGlyph( GlyphCode _char ) const = 0;
 		virtual bool getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const = 0;

@@ -83,11 +83,9 @@ namespace Menge
 		virtual void setCharOffset( float _charOffset ) = 0;
 
 	public:
+        virtual bool validateText( const ConstString & _key, const String & _text ) const = 0;
 		virtual U32String prepareText( const String & _text ) = 0;
-
-    public:
-        virtual bool validateGlyph( GlyphCode _char ) const = 0;
-
+        
 	public:
 		virtual bool hasGlyph( GlyphCode _char ) const = 0;
 		virtual bool getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const = 0;

@@ -3292,7 +3292,7 @@ namespace Menge
 			return has;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool s_validateFont( const ConstString & _fontName, const String & _text, const pybind::object & _cb )
+		bool s_validateFont( const ConstString & _fontName, const String & _text )
 		{
 			TextFontInterfacePtr font;
 			if( TEXT_SERVICE( m_serviceProvider )
@@ -3301,54 +3301,10 @@ namespace Menge
 				return false;
 			}
 
-			WString text_ws;
-
-			if( Helper::utf8ToUnicode( m_serviceProvider, _text, text_ws ) == false )
-			{
-				return false;
-			}
-
-            for( WString::const_iterator
-                it = text_ws.begin(),
-                it_end = text_ws.end();
-                it != it_end;
-                ++it )
+            if( font->validateText( ConstString::none(), _text ) == false )
             {
-                WChar ws_ch = *it;
-                WChar ws_str[2] = { ws_ch, L'\0' };
-
-				Char text_utf8[8];
-				size_t text_utf8_len = 0;
-				if( UNICODE_SYSTEM( m_serviceProvider )
-					->unicodeToUtf8( ws_str, 1, text_utf8, 8, &text_utf8_len ) == false )
-				{
-					_cb.call( "invalid utf8 ", 0, ws_str );
-
-					continue;
-				}
-
-                text_utf8[text_utf8_len] = '\0';
-
-				uint32_t code = 0;
-				const char * test_text = text_utf8;
-				utf8::internal::utf_error err = utf8::internal::validate_next( test_text, test_text + text_utf8_len, code );
-
-				if( err != utf8::internal::UTF8_OK )
-				{
-					_cb.call( "validate utf8 ", code, ws_str );
-
-					continue;
-				}
-
-				GlyphCode glyphChar = code;
-
-				if( font->validateGlyph( glyphChar ) == false )
-				{
-					_cb.call( "not found glyph ", code, ws_str );
-
-					continue;
-				}
-			}
+                return false;
+            }
 
 			return true;
 		}

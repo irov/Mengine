@@ -144,13 +144,6 @@ namespace Menge
 
 		return true;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool BitmapFont::validateGlyph( GlyphCode _code ) const
-    {
-        bool exist = this->hasGlyph( _code );
-
-        return exist;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool BitmapFont::hasGlyph( GlyphCode _code ) const
 	{
@@ -182,6 +175,13 @@ namespace Menge
     float BitmapFont::getFontSpacing() const
     {
         return 0.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool BitmapFont::_validateGlyph( uint32_t _code ) const
+    {
+        bool exist = this->hasGlyph( _code );
+
+        return exist;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool BitmapFont::_prepareGlyph( uint32_t _code )

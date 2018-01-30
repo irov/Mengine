@@ -43,9 +43,6 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-    public:
-        bool validateGlyph( GlyphCode _code ) const override;
-
 	public:
 		bool hasGlyph( GlyphCode _code ) const override;
 		bool getGlyph( GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const override;
@@ -57,6 +54,7 @@ namespace Menge
         float getFontSpacing() const override;
 
 	protected:
+        bool _validateGlyph( GlyphCode _code ) const override;
 		bool _prepareGlyph( GlyphCode _code ) override;
 
 	protected:

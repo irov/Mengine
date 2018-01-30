@@ -880,71 +880,17 @@ namespace Menge
                     continue;
                 }
 
-                font->compileFont();
-
                 const String & value = text.getValue();
 
-                const char * text_str = value.c_str();
-                size_t text_len = value.size();
-
-                for( const char
-                    *text_it = text_str,
-                    *text_end = text_str + text_len + 1;
-                    text_it != text_end;
-                    )
+                if( font->validateText( textKey, value ) == false )
                 {
-                    uint32_t code = 0;
-                    utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
+                    LOGGER_ERROR( m_serviceProvider )("Text %s fontName %s invalid"
+                        , textKey.c_str()
+                        , fontName.c_str()
+                        );
 
-                    if( err != utf8::internal::UTF8_OK )
-                    {
-                        LOGGER_ERROR( m_serviceProvider )("Text %s invalid utf8 |%s| err code %d"
-                            , textKey.c_str()
-                            , text_it
-                            , err
-                            );
-
-                        successful = false;
-
-                        continue;
-                    }
-
-                    if( code == 0 )
-                    {
-                        continue;
-                    }
-                    else if( code == 10 )
-                    {
-                        continue;
-                    }
-                    else if( code == 13 )
-                    {
-                        continue;
-                    }
-                    else if( code == 160 )
-                    {
-                        code = 32;
-                    }
-                    else if( code == 9 )
-                    {
-                        code = 32;
-                    }
-
-                    GlyphCode glyphChar = code;
-
-                    if( font->validateGlyph( glyphChar ) == false )
-                    {
-                        LOGGER_ERROR( m_serviceProvider )("Text %s fontName %s not found glyph code '%d'"
-                            , textKey.c_str()
-                            , fontName.c_str()
-                            , code
-                            );
-
-                        successful = false;
-                    }
+                    successful = false;
                 }
-
-                font->releaseFont();
             }
         }
 

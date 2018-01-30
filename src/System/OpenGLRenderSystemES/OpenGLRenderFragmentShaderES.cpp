@@ -25,10 +25,8 @@ namespace Menge
 		return m_name;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool OpenGLRenderFragmentShaderES::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _isCompile )
-	{
-        (void)_isCompile;
-        
+	bool OpenGLRenderFragmentShaderES::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory )
+	{        
 		m_name = _name;
         
         m_memory = _memory;

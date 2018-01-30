@@ -298,6 +298,9 @@ namespace Menge
 
         if( it_found != glyphs.end() )
         {
+            const TTFGlyph & g = *it_found;
+            (void)g;
+            
             return true;
         }
 

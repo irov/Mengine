@@ -272,7 +272,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderFragmentShaderInterfacePtr OpenGLRenderSystemES::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
+	RenderFragmentShaderInterfacePtr OpenGLRenderSystemES::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory )
 	{
 		OpenGLRenderFragmentShaderESPtr shader = m_factoryRenderFragmentShader->createObject();
 
@@ -287,21 +287,7 @@ namespace Menge
         
 		shader->setServiceProvider( m_serviceProvider );
         
-        MemoryInterfacePtr memory = MEMORY_SERVICE(m_serviceProvider)
-            ->createMemory();
-        
-        if( memory == nullptr )
-        {
-            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createFragmentShader invalid create memory for shader %s"
-                                              , _name.c_str()
-                                              );
-            
-            return nullptr;
-        }
-        
-        memory->setMemory( _buffer, _size, __FILE__, __LINE__ );
-        
-        if( shader->initialize( _name, memory, _isCompile ) == false )
+        if( shader->initialize( _name, _memory ) == false )
         {
             LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createFragmentShader invalid initialize shader %s"
                                               , _name.c_str()
@@ -329,7 +315,7 @@ namespace Menge
         return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderVertexShaderInterfacePtr OpenGLRenderSystemES::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
+	RenderVertexShaderInterfacePtr OpenGLRenderSystemES::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory )
 	{
 		OpenGLRenderVertexShaderESPtr shader = m_factoryRenderVertexShader->createObject();
 
@@ -344,22 +330,8 @@ namespace Menge
 
         
 		shader->setServiceProvider( m_serviceProvider );
-
-        MemoryInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
-        ->createMemory();
-        
-        if( memory == nullptr )
-        {
-            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createVertexShader invalid create memory for shader %s"
-                                              , _name.c_str()
-                                              );
-            
-            return nullptr;
-        }
-        
-        memory->setMemory( _buffer, _size, __FILE__, __LINE__ );
-        
-        if( shader->initialize( _name, memory, _isCompile ) == false )
+       
+        if( shader->initialize( _name, _memory ) == false )
         {
             LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createVertexShader invalid initialize shader %s"
                                               , _name.c_str()

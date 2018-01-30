@@ -28,9 +28,12 @@ namespace Menge
     public:
 		void setGlyph( const BitmapGlyphPtr & _glyph );
 
+    public:
+        bool validateGlyph( GlyphCode _code ) const override;
+
 	public:
-		bool hasGlyph( GlyphCode _char ) const override;
-		bool getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const override;
+		bool hasGlyph( GlyphCode _code ) const override;
+		bool getGlyph( GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const override;
 
 	public:
         float getFontAscent() const override;

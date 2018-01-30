@@ -158,7 +158,7 @@ namespace Menge
             
             if( m_context != nullptr )
             {
-                alcDestroyContext( m_context );                
+                alcDestroyContext( m_context );
                 m_context = nullptr;
             }
 

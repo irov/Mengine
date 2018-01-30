@@ -123,9 +123,9 @@ namespace Menge
 		m_height = m_glyph->getHeight();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BitmapFont::getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const
+	bool BitmapFont::getGlyph( GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const
 	{
-		const BitmapGlyphChar * ch = m_glyph->getGlyphChar( _char );
+		const BitmapGlyphChar * ch = m_glyph->getGlyphChar( _code );
 
 		if( ch == nullptr )
 		{
@@ -139,15 +139,22 @@ namespace Menge
 
 		_glyph->texture = m_textureFont;
 
-		float kerning = m_glyph->getKerning( _char, _next );
+		float kerning = m_glyph->getKerning( _code, _next );
 		_glyph->advance += kerning;
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool BitmapFont::validateGlyph( GlyphCode _code ) const
+    {
+        bool exist = this->hasGlyph( _code );
+
+        return exist;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	bool BitmapFont::hasGlyph( GlyphCode _char ) const
+	bool BitmapFont::hasGlyph( GlyphCode _code ) const
 	{
-		const BitmapGlyphChar * ch = m_glyph->getGlyphChar( _char );
+		const BitmapGlyphChar * ch = m_glyph->getGlyphChar( _code );
 
 		if( ch == nullptr )
 		{

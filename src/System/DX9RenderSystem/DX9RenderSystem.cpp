@@ -1800,7 +1800,7 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderFragmentShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
+	RenderFragmentShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory )
 	{
 		DX9RenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject();
 
@@ -1814,22 +1814,8 @@ namespace Menge
 		}
 
 		shader->setServiceProvider( m_serviceProvider );
-
-		MemoryInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
-			->createMemory();
-
-		if( memory == nullptr )
-		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createFragmentShader invalid create memory for shader %s"
-				, _name.c_str()
-				);
-
-			return nullptr;
-		}
-
-		memory->setMemory( _buffer, _size, __FILE__, __LINE__ );
 				
-		if( shader->initialize( _name, memory, _isCompile ) == false )
+		if( shader->initialize( _name, _memory ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createFragmentShader invalid initialize shader %s"
 				, _name.c_str()
@@ -1857,7 +1843,7 @@ namespace Menge
 		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderVertexShaderInterfacePtr DX9RenderSystem::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
+	RenderVertexShaderInterfacePtr DX9RenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory )
 	{
 		DX9RenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject();
 
@@ -1872,21 +1858,7 @@ namespace Menge
 
 		shader->setServiceProvider( m_serviceProvider );
 
-		MemoryInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
-			->createMemory();
-
-		if( memory == nullptr )
-		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createVertexShader invalid create memory for shader %s"
-				, _name.c_str()
-				);
-
-			return nullptr;
-		}
-
-		memory->setMemory( _buffer, _size, __FILE__, __LINE__ );
-
-		if( shader->initialize( _name, memory, _isCompile ) == false )
+		if( shader->initialize( _name, _memory ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createVertexShader invalid initialize shader %s"
 				, _name.c_str()

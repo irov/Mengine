@@ -78,8 +78,8 @@ namespace Menge
 		uint32_t makeMaterialHash( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const;
 
 	protected:
-		RenderVertexShaderInterfacePtr createVertexShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath, bool isCompile );
-		RenderFragmentShaderInterfacePtr createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath, bool isCompile );
+		RenderVertexShaderInterfacePtr createVertexShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath );
+		RenderFragmentShaderInterfacePtr createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath );
 
 	protected:
 		const RenderVertexShaderInterfacePtr & getVertexShader_( const ConstString & _name ) const;

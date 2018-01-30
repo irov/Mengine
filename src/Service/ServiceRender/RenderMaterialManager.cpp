@@ -195,7 +195,7 @@ namespace Menge
 			bool isCompile = false;
 			meta_FragmentShader.get_File_Compile( isCompile );
 
-			RenderFragmentShaderInterfacePtr shader = this->createFragmentShader_( name, _pakName, filePath, isCompile );
+			RenderFragmentShaderInterfacePtr shader = this->createFragmentShader_( name, _pakName, filePath );
 
 			if( shader == nullptr )
 			{
@@ -236,7 +236,7 @@ namespace Menge
 			bool isCompile = false;
 			meta_VertexShader.get_File_Compile( isCompile );
 
-			RenderVertexShaderInterfacePtr shader = this->createVertexShader_( name, _pakName, filePath, isCompile );
+			RenderVertexShaderInterfacePtr shader = this->createVertexShader_( name, _pakName, filePath );
 
 			if( shader == nullptr )
 			{
@@ -942,38 +942,32 @@ namespace Menge
 		return material_hash;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderVertexShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath, bool isCompile )
+	RenderVertexShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath )
 	{
-		MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, _pakName, _filePath, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryFile( m_serviceProvider, _pakName, _filePath, false, __FILE__, __LINE__ );
 
-		if( data_cache == nullptr )
+		if( memory == nullptr )
 		{
 			return nullptr;
 		}
 
-		const void * buffer = data_cache->getMemory();
-		size_t size = data_cache->getSize();
-
 		RenderVertexShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
-			->createVertexShader( _name, buffer, size, isCompile );
+			->createVertexShader( _name, memory );
 
 		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderFragmentShaderInterfacePtr RenderMaterialManager::createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath, bool isCompile )
+	RenderFragmentShaderInterfacePtr RenderMaterialManager::createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath )
 	{ 
-		MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, _pakName, _filePath, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryFile( m_serviceProvider, _pakName, _filePath, false, __FILE__, __LINE__ );
 		
-		if( data_cache == nullptr )
+		if( memory == nullptr )
 		{
 			return nullptr;
-		}
-				
-		const void * buffer = data_cache->getMemory();
-		size_t size = data_cache->getSize();
+		}				
 
 		RenderFragmentShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
-			->createFragmentShader( _name, buffer, size, isCompile );
+			->createFragmentShader( _name, memory );
 
 		return shader;
 	}

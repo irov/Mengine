@@ -24,10 +24,8 @@ namespace Menge
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderVertexShader::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _isCompile )
+	bool DX9RenderVertexShader::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory )
 	{
-		(void)_isCompile;
-
 		m_name = _name;
 
 		m_memory = _memory;

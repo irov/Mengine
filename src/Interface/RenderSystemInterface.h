@@ -2,6 +2,7 @@
 
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/ServantInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #	include "Config/Typedef.h"
 
@@ -657,8 +658,8 @@ namespace Menge
 		virtual bool setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer ) = 0;
 		
 	public:
-		virtual RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) = 0;
-		virtual RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) = 0;
+		virtual RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory ) = 0;
+		virtual RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory ) = 0;
 						
 		virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount ) = 0;
 		virtual void setProgram( const RenderProgramInterfacePtr & _program ) = 0;

@@ -289,19 +289,19 @@ namespace Menge
         };
 	}
 	//////////////////////////////////////////////////////////////////////////
-    bool TTFFont::_prepareGlyph( GlyphCode _ch )
+    bool TTFFont::_prepareGlyph( GlyphCode _code )
     {
-        uint32_t ch_hash = _ch % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
-        TVectorTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
+        uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
+        TVectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        TVectorTTFGlyphs::iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _ch ) );
+        TVectorTTFGlyphs::iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
 
         if( it_found != glyphs.end() )
         {
             return true;
         }
 
-        FT_UInt glyph_index = FT_Get_Char_Index( m_face, _ch );
+        FT_UInt glyph_index = FT_Get_Char_Index( m_face, _code );
 
         if( FT_Load_Glyph( m_face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
 		{
@@ -362,7 +362,7 @@ namespace Menge
 		if( bitmap_width == 0 || bitmap_height == 0 )
 		{
 			TTFGlyph g;
-			g.ch = _ch;
+			g.ch = _code;
 			g.advance = advance;
 
 			g.dx = 0.f;
@@ -389,7 +389,7 @@ namespace Menge
 		}
 
 		TTFGlyph g;
-		g.ch = _ch;
+		g.ch = _code;
 		g.advance = advance;
 
         g.dx = (float)dx;
@@ -404,13 +404,39 @@ namespace Menge
 		
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TTFFont::hasGlyph( GlyphCode _char ) const
-	{
-		uint32_t ch_hash = _char % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
-		const TVectorTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::validateGlyph( GlyphCode _code ) const
+    {
+        FT_UInt glyph_index = FT_Get_Char_Index( m_face, _code );
 
-		TVectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _char ) );
+        if( FT_Load_Glyph( m_face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
+        {
+            return false;
+        }
+
+        FT_GlyphSlot glyph = m_face->glyph;
+
+        FT_Bitmap bitmap = glyph->bitmap;
+        
+        switch( bitmap.pixel_mode )
+        {
+        case FT_PIXEL_MODE_NONE:
+        case FT_PIXEL_MODE_LCD:
+        case FT_PIXEL_MODE_LCD_V:
+            {
+                return false;
+            }break;
+        };
+
+        return true;
+    }
+	//////////////////////////////////////////////////////////////////////////
+	bool TTFFont::hasGlyph( GlyphCode _code ) const
+	{
+		uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
+		const TVectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
+
+		TVectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
 
 		if( it_found == glyphs.end() )
 		{
@@ -420,12 +446,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TTFFont::getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const
+	bool TTFFont::getGlyph( GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const
 	{
-		uint32_t ch_hash = _char % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
-		const TVectorTTFGlyphs & glyphs = m_glyphsHash[ch_hash];
+		uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
+		const TVectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-		TVectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _char ) );
+		TVectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
 
 		if( it_found == glyphs.end() )
 		{
@@ -454,7 +480,7 @@ namespace Menge
 		}
 
 		FT_Vector ttf_kerning;
-		FT_Get_Kerning( m_face, _char, _next, FT_KERNING_DEFAULT, &ttf_kerning );
+		FT_Get_Kerning( m_face, _code, _next, FT_KERNING_DEFAULT, &ttf_kerning );
 
 		if( ttf_kerning.x == 0 )
 		{

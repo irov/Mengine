@@ -415,6 +415,24 @@ namespace Menge
         FT_Face face;
         FT_Error err_code = FT_New_Memory_Face( m_ftlibrary, memory_byte, memory_size, 0, &face );
 
+        if( err_code != 0 )
+        {
+            return false;
+        }
+
+        if( FT_Select_Charmap( face, FT_ENCODING_UNICODE ) != FT_Err_Ok )
+        {
+            return false;
+        }
+
+        FT_F26Dot6 fontSizePoints = (FT_F26Dot6)m_ttfHeight * 64;
+        FT_UInt dpi = (FT_UInt)m_ttfDPI;
+
+        if( FT_Set_Char_Size( face, fontSizePoints, fontSizePoints, dpi, dpi ) != FT_Err_Ok )
+        {
+            return false;
+        }
+
         FT_UInt glyph_index = FT_Get_Char_Index( face, _code );
 
         if( FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )

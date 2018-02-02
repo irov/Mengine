@@ -56,12 +56,12 @@ namespace Menge
 	{
         const ConstString & category = this->getCategory();
 
-        InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+        InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( category, m_filePath, false );
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile: '%s' - hit file '%s' not found"
+            LOGGER_ERROR("ResourceHIT::_compile: '%s' - hit file '%s' not found"
                 , this->getName().c_str()
                 , m_filePath.c_str()
                 );
@@ -69,12 +69,12 @@ namespace Menge
             return false;
         }
 
-        PickDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
+        PickDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<PickDecoderInterfacePtr>( m_codecType );
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile: '%s' - hit file '%s' invalid create decoder '%s'"
+            LOGGER_ERROR("ResourceHIT::_compile: '%s' - hit file '%s' invalid create decoder '%s'"
                 , this->getName().c_str()
                 , m_filePath.c_str()
                 , m_codecType.c_str()
@@ -85,7 +85,7 @@ namespace Menge
 
 		if( decoder->prepareData( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile: '%s' - hit file '%s' invalid initialize decoder '%s'"
+			LOGGER_ERROR("ResourceHIT::_compile: '%s' - hit file '%s' invalid initialize decoder '%s'"
 				, this->getName().c_str()
 				, m_filePath.c_str()
 				, m_codecType.c_str()
@@ -100,12 +100,12 @@ namespace Menge
         m_height = dataInfo->height;
         m_mipmaplevel = dataInfo->mipmaplevel;
         		
-		MemoryInterfacePtr mipmap = MEMORY_SERVICE( m_serviceProvider )
+		MemoryInterfacePtr mipmap = MEMORY_SERVICE()
 			->createMemory();
 
 		if( mipmap == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ResourceHIT::_compile: '%s' - hit file '%s' invalid create memory"
+			LOGGER_ERROR("ResourceHIT::_compile: '%s' - hit file '%s' invalid create memory"
 				, this->getName().c_str()
 				, m_filePath.c_str()
 				);
@@ -118,7 +118,7 @@ namespace Menge
 
 		if( buffer == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ResourceHIT::_compile: '%s' - hit file '%s' invalid new memory '%u'"
+			LOGGER_ERROR("ResourceHIT::_compile: '%s' - hit file '%s' invalid new memory '%u'"
 				, this->getName().c_str()
 				, m_filePath.c_str()
 				, mipmapsize
@@ -131,7 +131,7 @@ namespace Menge
 
 		if( test_mipmapsize != mipmapsize )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile %s invalid decode hit %s size %d (%d)"
+            LOGGER_ERROR("ResourceHIT::_compile %s invalid decode hit %s size %d (%d)"
                 , this->getName().c_str()
                 , m_filePath.c_str()
                 , (uint32_t)m_mipmapsize
@@ -156,7 +156,7 @@ namespace Menge
     {
         const ConstString & category = this->getCategory();
 
-        bool exist = FILE_SERVICE(m_serviceProvider)
+        bool exist = FILE_SERVICE()
             ->existFile( category, m_filePath, nullptr );
 
         if( exist == false )
@@ -164,12 +164,12 @@ namespace Menge
             return false;
         }
 
-		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( category, m_filePath, false );
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_isValid %s invalid open file %s:%s"
+			LOGGER_ERROR("ResourceHIT::_isValid %s invalid open file %s:%s"
 				, m_name.c_str()
 				, category.c_str()
 				, m_filePath.c_str()
@@ -178,12 +178,12 @@ namespace Menge
 			return false;
 		}
 
-		PickDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
+		PickDecoderInterfacePtr decoder = CODEC_SERVICE()
 			->createDecoderT<PickDecoderInterfacePtr>( m_codecType );
 
 		if( decoder == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_isValid %s file %s:%s invalid decoder %s"
+			LOGGER_ERROR("ResourceHIT::_isValid %s file %s:%s invalid decoder %s"
 				, m_name.c_str()
 				, category.c_str()
 				, m_filePath.c_str()
@@ -195,7 +195,7 @@ namespace Menge
 
 		if( decoder->prepareData( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_isValid %s file %s:%s decoder initialize failed %s"
+			LOGGER_ERROR("ResourceHIT::_isValid %s file %s:%s decoder initialize failed %s"
 				, m_name.c_str()
 				, category.c_str()
 				, m_filePath.c_str()
@@ -299,7 +299,7 @@ namespace Menge
 
         if( alphaBuffer == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceHIT::testRadius %s hit file %s invalid get level buffer %d:%d"
+            LOGGER_ERROR("ResourceHIT::testRadius %s hit file %s invalid get level buffer %d:%d"
                 , this->getName().c_str()
                 , m_filePath.c_str()
                 , level
@@ -350,7 +350,7 @@ namespace Menge
 
         if( bufferOffset >= m_mipmapsize )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceHIT::getHitBuffer_ %s hit file %s invalid get level buffer %d:%d"
+            LOGGER_ERROR("ResourceHIT::getHitBuffer_ %s hit file %s invalid get level buffer %d:%d"
                 , this->getName().c_str()
                 , m_filePath.c_str()
                 , _level

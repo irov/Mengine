@@ -373,6 +373,6 @@ namespace Menge
 	}
 #	endif
 	//////////////////////////////////////////////////////////////////////////
-#   define NOTIFICATION_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::NotificationServiceInterface)
+#   define NOTIFICATION_SERVICE()\
+    SERVICE_GET(Menge::NotificationServiceInterface)
 }

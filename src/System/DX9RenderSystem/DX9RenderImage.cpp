@@ -68,7 +68,7 @@ namespace Menge
 		rect.right = _rect.right;
 
 		D3DLOCKED_RECT TRect;
-		IF_DXCALL( m_serviceProvider, m_d3dTexture, LockRect, (_level, &TRect, &rect, flags) )
+		IF_DXCALL( m_d3dTexture, LockRect, (_level, &TRect, &rect, flags) )
 		{
 			return nullptr;
 		}
@@ -84,7 +84,7 @@ namespace Menge
 	{
 		(void)_successful;
 
-		IF_DXCALL( m_serviceProvider, m_d3dTexture, UnlockRect, (_level) )
+		IF_DXCALL( m_d3dTexture, UnlockRect, (_level) )
 		{
 			return false;
 		}

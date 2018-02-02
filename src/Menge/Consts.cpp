@@ -15,7 +15,7 @@ namespace Menge
     bool Consts::_initialize()
     {
 #	define INIT_CONST( Const ) \
-		c_##Const = STRINGIZE_STRING_LOCAL(m_serviceProvider, #Const )
+		c_##Const = STRINGIZE_STRING_LOCAL(#Const)
 
         INIT_CONST( dir );
         INIT_CONST( pak );
@@ -64,7 +64,7 @@ namespace Menge
         INIT_CONST( ResourceInternalObject );
         INIT_CONST( ResourceMovie );
         INIT_CONST( ResourceHIT );
-            //, c_ResourceSequence = Helper::StringizeString(m_serviceProvider, "ResourceSequence");
+            //, c_ResourceSequence = Helper::stringizeString("ResourceSequence");
         INIT_CONST( ResourceVideo );
 		INIT_CONST( SurfaceVideo );
 		INIT_CONST( SurfaceSound );

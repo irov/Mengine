@@ -55,7 +55,7 @@ namespace Menge
 			mt::vec2f point( _event.x, _event.y );
 
 			mt::vec2f wp;
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->calcGlobalMouseWorldPosition( point, wp );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_KEY, handle )
@@ -64,7 +64,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			handle = PLAYER_SERVICE(m_serviceProvider)
+			handle = PLAYER_SERVICE()
 				->handleKeyEvent( _event );
 		}	
 
@@ -80,7 +80,7 @@ namespace Menge
 			mt::vec2f point( _event.x, _event.y );
 
 			mt::vec2f wp;
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->calcGlobalMouseWorldPosition( point, wp );
 
 			handle = EVENTABLE_METHODR( this, EVENT_GAME_TEXT, handle )
@@ -89,7 +89,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			handle = PLAYER_SERVICE( m_serviceProvider )
+			handle = PLAYER_SERVICE()
 				->handleTextEvent( _event );
 		}
 
@@ -105,17 +105,17 @@ namespace Menge
 			mt::vec2f point( _event.x, _event.y );
 
 			mt::vec2f wp;
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->calcGlobalMouseWorldPosition( point, wp );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON, handle )
                 ->onGameMouseButton( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
-			//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_BUTTON, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
+			//EVENTABLE_ASK( this, EVENT_GAME_MOUSE_BUTTON, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
 		{
-			handle = PLAYER_SERVICE( m_serviceProvider )
+			handle = PLAYER_SERVICE()
 				->handleMouseButtonEvent( _event );
 		}
                     
@@ -131,17 +131,17 @@ namespace Menge
 			mt::vec2f point( _event.x, _event.y );
 
 			mt::vec2f wp;
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->calcGlobalMouseWorldPosition( point, wp );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON_BEGIN, handle )
                 ->onGameMouseButtonBegin( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
-			//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_BUTTON_BEGIN, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
+			//EVENTABLE_ASK( this, EVENT_GAME_MOUSE_BUTTON_BEGIN, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
 		{
-			handle = PLAYER_SERVICE( m_serviceProvider )
+			handle = PLAYER_SERVICE()
 				->handleMouseButtonEventBegin( _event );
 		}	
 
@@ -157,17 +157,17 @@ namespace Menge
 			mt::vec2f point( _event.x, _event.y );
 
 			mt::vec2f wp;
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->calcGlobalMouseWorldPosition( point, wp );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON_END, handle )
                 ->onGameMouseButtonEnd( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
-			//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_BUTTON_END, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
+			//EVENTABLE_ASK( this, EVENT_GAME_MOUSE_BUTTON_END, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
 		{
-			handle = PLAYER_SERVICE( m_serviceProvider )
+			handle = PLAYER_SERVICE()
 				->handleMouseButtonEventEnd( _event );
 		}	
 
@@ -184,21 +184,21 @@ namespace Menge
 			mt::vec2f delta( _event.dx, _event.dy );
 
 			mt::vec2f wp;
-			PLAYER_SERVICE(m_serviceProvider)
+			PLAYER_SERVICE()
 				->calcGlobalMouseWorldPosition( point, wp );
 
 			mt::vec2f wd;
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->calcGlobalMouseWorldDelta( point, delta, wd );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_MOVE, handle )
                 ->onGameMouseMove( _event.touchId, wp.x, wp.y, wd.x, wd.y );
-			//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_MOVE, handle )(_event.touchId, wp.x, wp.y, wd.x, wd.y);
+			//EVENTABLE_ASK( this, EVENT_GAME_MOUSE_MOVE, handle )(_event.touchId, wp.x, wp.y, wd.x, wd.y);
 		}
 
 		if( handle == false )
 		{
-			handle = PLAYER_SERVICE( m_serviceProvider )
+			handle = PLAYER_SERVICE()
 				->handleMouseMove( _event );
 		}
 
@@ -213,12 +213,12 @@ namespace Menge
 		{
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_WHEEL, handle )
                 ->onGameMouseWheel( _event.button, _event.x, _event.y, _event.wheel );
-			//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_MOUSE_WHEEL, handle )(_event.button, _event.x, _event.y, _event.wheel);
+			//EVENTABLE_ASK( this, EVENT_GAME_MOUSE_WHEEL, handle )(_event.button, _event.x, _event.y, _event.wheel);
 		}
 
 		if( handle == false )
 		{
-			handle = PLAYER_SERVICE( m_serviceProvider )
+			handle = PLAYER_SERVICE()
 				->handleMouseWheel( _event );
 		}
 
@@ -230,7 +230,7 @@ namespace Menge
         EVENTABLE_METHOD( this, EVENT_GAME_APP_MOUSE_LEAVE )
             ->onGameAppMouseLeave();
 
-		PLAYER_SERVICE( m_serviceProvider )
+		PLAYER_SERVICE()
 			->onAppMouseLeave( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -239,25 +239,25 @@ namespace Menge
         EVENTABLE_METHOD( this, EVENT_GAME_APP_MOUSE_ENTER )
             ->onGameAppMouseEnter( _event.x, _event.y );
 		
-		PLAYER_SERVICE( m_serviceProvider )
+		PLAYER_SERVICE()
 			->onAppMouseEnter( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::mousePosition( const InputMousePositionEvent & _event )
 	{
-		PLAYER_SERVICE( m_serviceProvider )
+		PLAYER_SERVICE()
 			->onAppMousePosition( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::update()
 	{
 #   ifdef _DEBUG
-        const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE( m_serviceProvider )
+        const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
             ->getDebugInfo();
 
-        float limitFillrate = CONFIG_VALUE( m_serviceProvider, "Limit", "Fillrate", 100.f );
+        float limitFillrate = CONFIG_VALUE( "Limit", "Fillrate", 100.f );
 
-        const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
+        const Resolution & contentResolution = APPLICATION_SERVICE()
             ->getContentResolution();
 
         double sreenFillrate = debugInfo.fillrate / double( contentResolution.getWidth() * contentResolution.getHeight() );
@@ -291,13 +291,13 @@ namespace Menge
 	{
 		float timing = _timing * m_timingFactor;
 		
-		PLAYER_SERVICE( m_serviceProvider )
+		PLAYER_SERVICE()
 			->tick( _time, timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render()
 	{
-		PLAYER_SERVICE( m_serviceProvider )
+		PLAYER_SERVICE()
 			->render();
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -542,36 +542,36 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality()
 	{
-		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+		bool developmentMode = HAS_OPTION( "dev" );
 
-        SCRIPT_SERVICE(m_serviceProvider)
+        SCRIPT_SERVICE()
 			->addGlobalModule( "_DEVELOPMENT", pybind::get_bool( developmentMode ) );
 
 #   ifdef MENGINE_MASTER_RELEASE
-        SCRIPT_SERVICE(m_serviceProvider)
+        SCRIPT_SERVICE()
             ->addGlobalModule( "_MASTER_RELEASE", pybind::get_bool(true) );
 #   else
-        SCRIPT_SERVICE(m_serviceProvider)
+        SCRIPT_SERVICE()
             ->addGlobalModule( "_MASTER_RELEASE", pybind::get_bool(false) );
 #   endif
 
-		if( SCRIPT_SERVICE(m_serviceProvider)
+		if( SCRIPT_SERVICE()
 			->bootstrapModules() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Game::loadPersonality invalid bootstrap modules"
+			LOGGER_ERROR("Game::loadPersonality invalid bootstrap modules"
 				);
 
 			return false;
 		}
 
-		ConstString personality = CONFIG_VALUE( m_serviceProvider, "Game", "PersonalityModule", STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "Personality" ) );
+		ConstString personality = CONFIG_VALUE( "Game", "PersonalityModule", STRINGIZE_FILEPATH_LOCAL( "Personality" ) );
 
-		ScriptModuleInterfacePtr module = SCRIPT_SERVICE( m_serviceProvider )
+		ScriptModuleInterfacePtr module = SCRIPT_SERVICE()
 			->importModule( personality );
 
 		if( module == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Game::loadPersonality invalid import module '%s'"
+			LOGGER_ERROR("Game::loadPersonality invalid import module '%s'"
 				, personality.c_str()
 				);
 
@@ -586,39 +586,39 @@ namespace Menge
 		bool is_debug = false;
 #	endif
 		
-        LOGGER_WARNING(m_serviceProvider)("Preparation debug(%d)"
+        LOGGER_WARNING("Preparation debug(%d)"
             , is_debug
             );
 
         bool result = EVENTABLE_METHODR( this, EVENT_GAME_PREPARATION, true )
             ->onGamePreparation( is_debug );
 		//bool result = true;
-		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_PREPARATION, result )( is_debug );
+		//EVENTABLE_ASK( this, EVENT_GAME_PREPARATION, result )( is_debug );
 
 		if( result == false )
 		{
 			return false;
 		}
 
-		if( SCRIPT_SERVICE( m_serviceProvider )
+		if( SCRIPT_SERVICE()
 			->initializeModules() == false )
 		{
 			return false;
 		}
 
-		m_defaultArrow = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Arrow" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Default" ) );
+		m_defaultArrow = PROTOTYPE_SERVICE()
+			->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), STRINGIZE_STRING_LOCAL( "Default" ) );
 
 		if( m_defaultArrow == nullptr )
 		{
-			LOGGER_WARNING( m_serviceProvider )("Game::initialize failed create defaultArrow 'Default'"
+			LOGGER_WARNING("Game::initialize failed create defaultArrow 'Default'"
 				);
 		}
 		else
 		{
-			m_defaultArrow->setName( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Default" ) );
+			m_defaultArrow->setName( STRINGIZE_STRING_LOCAL( "Default" ) );
 
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->setArrow( m_defaultArrow );
 		}
 
@@ -626,21 +626,21 @@ namespace Menge
             ->onGameInitialize();
 
 		//bool EVENT_INITIALIZE_result = true;
-		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_GAME_INITIALIZE, EVENT_INITIALIZE_result )();
+		//EVENTABLE_ASK( this, EVENT_GAME_INITIALIZE, EVENT_INITIALIZE_result )();
 
 		if( EVENT_INITIALIZE_result == false )
 		{
 			return false;
 		}
 
-		if( ACCOUNT_SERVICE( m_serviceProvider )
+		if( ACCOUNT_SERVICE()
 			->loadAccounts() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Game::initialize failed load accounts"
+			LOGGER_ERROR("Game::initialize failed load accounts"
 				);
 		}
 
-		bool hasGlobalAccount = ACCOUNT_SERVICE( m_serviceProvider )
+		bool hasGlobalAccount = ACCOUNT_SERVICE()
 			->hasGlobalAccount();
 
 		if( hasGlobalAccount == false )
@@ -649,7 +649,7 @@ namespace Menge
 				->onGameCreateGlobalAccount();
 		}
 
-		bool hasCurrentAccount = ACCOUNT_SERVICE( m_serviceProvider )
+		bool hasCurrentAccount = ACCOUNT_SERVICE()
 			->hasCurrentAccount();
 
 		if( hasCurrentAccount == false )
@@ -666,22 +666,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::_initialize()
 	{
-		CONFIG_SECTION( m_serviceProvider, "Params", m_params );
+		CONFIG_SECTION( "Params", m_params );
 
-		SERVICE_CREATE( m_serviceProvider, AccountService );
+		SERVICE_CREATE( AccountService );
 
 		GameAccountProviderPtr accountProvider = new FactorableUnique<GameAccountProvider>();
-		accountProvider->setServiceProvider(m_serviceProvider);
 		accountProvider->setGame(this);
 
-		ACCOUNT_SERVICE(m_serviceProvider)
+		ACCOUNT_SERVICE()
 			->setAccountProviderInterface(accountProvider);
 
 		GameSoundVolumeProviderPtr soundVolumeProvider = new FactorableUnique<GameSoundVolumeProvider>();
-		soundVolumeProvider->setServiceProvider(m_serviceProvider);
 		soundVolumeProvider->setGame(this);
 
-		SOUND_SERVICE( m_serviceProvider )
+		SOUND_SERVICE()
 			->addSoundVolumeProvider(soundVolumeProvider);
 
 		return true;
@@ -692,9 +690,9 @@ namespace Menge
         EVENTABLE_METHOD( this, EVENT_GAME_ACCOUNT_FINALIZE )
             ->onGameAccountFinalize();
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::AccountServiceInterface );
+		SERVICE_FINALIZE( Menge::AccountServiceInterface );
 
-		SCRIPT_SERVICE( m_serviceProvider )
+		SCRIPT_SERVICE()
 			->finalizeModules();
 
         EVENTABLE_METHOD( this, EVENT_GAME_FINALIZE )
@@ -718,7 +716,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::run()
 	{
-		LOGGER_WARNING(m_serviceProvider)("Run game"
+		LOGGER_WARNING("Run game"
 			);
 
 		EVENTABLE_METHOD(this, EVENT_GAME_RUN)
@@ -752,25 +750,25 @@ namespace Menge
 		
 		if( _turn == true )
 		{
-			if( AMPLIFIER_SERVICE( m_serviceProvider ) )
+			if( AMPLIFIER_SERVICE() )
 			{
-				AMPLIFIER_SERVICE( m_serviceProvider )->resume();
+				AMPLIFIER_SERVICE()->resume();
 			}
 		}
 		else
 		{
-			if( AMPLIFIER_SERVICE( m_serviceProvider ) )
+			if( AMPLIFIER_SERVICE() )
 			{
-				AMPLIFIER_SERVICE( m_serviceProvider )->pause();
+				AMPLIFIER_SERVICE()->pause();
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setFocus( bool _focus )
 	{
-		if( SERVICE_EXIST( m_serviceProvider, Menge::PlayerServiceInterface ) == true )
+		if( SERVICE_EXIST( Menge::PlayerServiceInterface ) == true )
 		{
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->onFocus( _focus );
 		}				
 
@@ -780,9 +778,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setFullscreen( const Resolution & _resolution, bool _fullscreen )
 	{
-		if( SERVICE_EXIST( m_serviceProvider, Menge::PlayerServiceInterface ) == true )
+		if( SERVICE_EXIST( Menge::PlayerServiceInterface ) == true )
 		{
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->onFullscreen( _resolution, _fullscreen );
 		}
 
@@ -792,9 +790,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Game::setFixedContentResolution( const Resolution & _resolution, bool _fixed )
     {
-		if( SERVICE_EXIST( m_serviceProvider, Menge::PlayerServiceInterface ) == true )
+		if( SERVICE_EXIST( Menge::PlayerServiceInterface ) == true )
 		{
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->onFixedContentResolution( _resolution, _fixed );
 		}
 
@@ -804,9 +802,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
 	{
-		if( SERVICE_EXIST( m_serviceProvider, Menge::PlayerServiceInterface ) == true )
+		if( SERVICE_EXIST( Menge::PlayerServiceInterface ) == true )
 		{
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->onFixedContentResolution( _resolution, _fixed );
 		}
 
@@ -868,7 +866,7 @@ namespace Menge
 
         if( it_find == m_params.end() )
         {
-            LOGGER_ERROR(m_serviceProvider)("Game::getParam not found param '%s'"
+            LOGGER_ERROR("Game::getParam not found param '%s'"
                 , _paramName.c_str()
                 );
 

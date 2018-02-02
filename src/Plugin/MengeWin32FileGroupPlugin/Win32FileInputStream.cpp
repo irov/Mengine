@@ -56,7 +56,7 @@ namespace Menge
 		{
 			this->close_();
 
-			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid file size"
+			LOGGER_ERROR("Win32InputStream::open %ls invalid file size"
 				, fullPath
 				);
 
@@ -65,7 +65,7 @@ namespace Menge
 
 		if( _offset + _size > size )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid file range %d:%d size %d"
+			LOGGER_ERROR("Win32InputStream::open %ls invalid file range %d:%d size %d"
 				, fullPath
 				, _offset
 				, _size
@@ -90,7 +90,7 @@ namespace Menge
 			{
 				DWORD dwError = ::GetLastError();
 
-				LOGGER_ERROR( m_serviceProvider )("Win32InputStream::open seek offset %d size %d get error '%u'"
+				LOGGER_ERROR("Win32InputStream::open seek offset %d size %d get error '%u'"
 					, m_offset
 					, m_size
 					, dwError
@@ -105,10 +105,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _fullPath )
 	{		
-		if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+		if( WINDOWSLAYER_SERVICE()
 			->concatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open invlalid concatenate filePath '%s':'%s'"
+			LOGGER_ERROR("Win32InputStream::open invlalid concatenate filePath '%s':'%s'"
 				, _folderPath.c_str()
 				, _filePath.c_str()
 				);
@@ -116,7 +116,7 @@ namespace Menge
 			return false;
 		}
 
-		m_hFile = WINDOWSLAYER_SERVICE(m_serviceProvider)->createFile( 
+		m_hFile = WINDOWSLAYER_SERVICE()->createFile( 
 			_fullPath, // file to open
 			GENERIC_READ, // open for reading
 			FILE_SHARE_READ, // share for reading, exclusive for mapping
@@ -125,7 +125,7 @@ namespace Menge
 
 		if ( m_hFile == INVALID_HANDLE_VALUE)
 		{
-			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid open"
+			LOGGER_ERROR("Win32InputStream::open %ls invalid open"
 				, _fullPath
 				);
 
@@ -133,9 +133,9 @@ namespace Menge
 		}
 
 #	ifdef _DEBUG
-		if( SERVICE_EXIST( m_serviceProvider, NotificationServiceInterface ) == true )
+		if( SERVICE_EXIST( NotificationServiceInterface ) == true )
 		{
-			NOTIFICATION_SERVICE( m_serviceProvider )
+			NOTIFICATION_SERVICE()
 				->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str() );
 		}
 #	endif
@@ -239,7 +239,7 @@ namespace Menge
 		{
 			DWORD dwError = GetLastError();
 
-			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read %d:%d get error '%u'"
+			LOGGER_ERROR("Win32InputStream::read %d:%d get error '%u'"
 				, _size
 				, m_size
 				, dwError
@@ -276,7 +276,7 @@ namespace Menge
             {
                 DWORD dwError = ::GetLastError();
 
-                LOGGER_ERROR(m_serviceProvider)("Win32InputStream::seek %d:%d get error '%u'"
+                LOGGER_ERROR("Win32InputStream::seek %d:%d get error '%u'"
                     , _pos
                     , m_size
                     , dwError
@@ -403,7 +403,7 @@ namespace Menge
         {
             DWORD dwError = GetLastError();
 
-            LOGGER_ERROR(m_serviceProvider)("Win32InputStream::time invalid get file time '%d'"
+            LOGGER_ERROR("Win32InputStream::time invalid get file time '%d'"
                 , dwError
                 );
 

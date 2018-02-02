@@ -78,7 +78,7 @@ namespace Menge
 		pybind::interface_<fastpathfinder::graph_node>( kernel, "fastpathfinder::graph_node", true )
 			;
 
-		pybind::superclass_<PathGraphNode, pybind::bases<fastpathfinder::graph_node> >( kernel, "PathGraphNode", (void *)m_serviceProvider, new superclass_new_PathGraphNode, nullptr, false )			
+		pybind::superclass_<PathGraphNode, pybind::bases<fastpathfinder::graph_node> >( kernel, "PathGraphNode", nullptr, (void *)new superclass_new_PathGraphNode, nullptr, false )
 			.def_constructor( pybind::init<>() )
 			.def_bindable()
 			.def( "getWeight", &PathGraphNode::getWeight )
@@ -134,10 +134,10 @@ namespace Menge
 		pybind::def_functor_args( kernel, "createPathFinderWayAffector", this, &ModulePathFinder::createPathFinderWayAffector );
 		pybind::def_functor( kernel, "destroyPathFinderWayAffector", this, &ModulePathFinder::destroyPathFinderWayAffector );
 		
-		SCRIPT_SERVICE(m_serviceProvider)
-			->setWrapper( Helper::stringizeString( m_serviceProvider, "PathGraphNode" ), new ScriptWrapper<PathGraphNode>() );
+		SCRIPT_SERVICE()
+			->setWrapper( Helper::stringizeString( "PathGraphNode" ), new ScriptWrapper<PathGraphNode>() );
 		
-        m_factoryPathFinderWayAffector = new FactoryPool<PathFinderWayAffector, 16>( m_serviceProvider );
+        m_factoryPathFinderWayAffector = new FactoryPool<PathFinderWayAffector, 16>();
 
 		return true;
 	}
@@ -157,8 +157,8 @@ namespace Menge
 
 		m_maps.clear();
 
-		SCRIPT_SERVICE(m_serviceProvider)
-			->removeWrapper(Helper::stringizeString(m_serviceProvider, "PathGraphNode"));
+		SCRIPT_SERVICE()
+			->removeWrapper(Helper::stringizeString("PathGraphNode"));
 
 		m_factoryPathFinderWayAffector = nullptr;
 	}
@@ -167,8 +167,6 @@ namespace Menge
 	{
 		PathFinderMap * map = new PathFinderMap();
 
-		map->setServiceProvider( m_serviceProvider );
-		
 		if( map->initialize() == false )
 		{
 			delete map;
@@ -202,8 +200,6 @@ namespace Menge
 	{
 		PathFinderWayAffector * affector = m_factoryPathFinderWayAffector->createObject();
 
-		affector->setServiceProvider( m_serviceProvider );
-
 		if( affector->initialize( _node, _satellite, _offset, _speed, _way, _preparePosition, _cb, _args ) == false )
 		{
 			affector->destroy();
@@ -233,7 +229,7 @@ namespace Menge
 	bool ModulePathFinder::setMapWeight( PathFinderMap * _map, const ConstString & _resourceName )
 	{		
 		ResourceImageDataPtr resource;
-		if( RESOURCE_SERVICE(m_serviceProvider)
+		if( RESOURCE_SERVICE()
 			->hasResourceT( _resourceName, &resource ) == false )
 		{
 			return false;

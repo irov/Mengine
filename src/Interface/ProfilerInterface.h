@@ -16,6 +16,6 @@ namespace Menge
         virtual size_t getMemoryUsage() const = 0;
     };
 
-#   define PROFILER_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::ProfilerServiceInterface)
+#   define PROFILER_SERVICE()\
+    SERVICE_GET(Menge::ProfilerServiceInterface)
 }

@@ -11,7 +11,6 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TextLocalePack::TextLocalePack()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -19,18 +18,17 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextLocalePack::initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _pakName, const FilePath & _path )
+	bool TextLocalePack::initialize( const ConstString & _pakName, const FilePath & _path )
 	{
-		m_serviceProvider = _serviceProvider;
 		m_pakName = _pakName;
 		m_path = _path;
 
-		InputStreamInterfacePtr xml_text = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr xml_text = FILE_SERVICE()
 			->openInputFile( _pakName, _path, false );
 
 		if( xml_text == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource invalid open file %s:%s"
+			LOGGER_ERROR("TextManager::loadResource invalid open file %s:%s"
 				, _pakName.c_str()
 				, _path.c_str()
 				);
@@ -40,7 +38,7 @@ namespace Menge
 
 		size_t xml_buffer_size = xml_text->size();
 
-		m_memory = MEMORY_SERVICE( m_serviceProvider )
+		m_memory = MEMORY_SERVICE()
 			->createMemory();
 
 		Char * memory_buffer = m_memory->newMemory( xml_buffer_size + 1, __FILE__, __LINE__ );

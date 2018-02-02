@@ -22,8 +22,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveService::registerArchivator( const ConstString & _type, const ArchivatorInterfacePtr & _archivator )
 	{
-		_archivator->setServiceProvider( m_serviceProvider );
-
 		m_archivators.insert( std::make_pair(_type, _archivator) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -33,7 +31,7 @@ namespace Menge
 
 		if( it_found == m_archivators.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ArchiveService::unregisterArchivator: not registry archivator '%s'"
+			LOGGER_ERROR("ArchiveService::unregisterArchivator: not registry archivator '%s'"
 				, _type.c_str() 
 				);
 
@@ -61,7 +59,7 @@ namespace Menge
 
 		if( it_found == m_archivators.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ArchiveService::getArchivator: not registry archivator '%s'"
+			LOGGER_ERROR("ArchiveService::getArchivator: not registry archivator '%s'"
 				, _type.c_str() 
 				);
 
@@ -75,11 +73,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress )
 	{
-		MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( m_serviceProvider, _stream, _size, __FILE__, __LINE__ );
+		MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, _size, __FILE__, __LINE__ );
 
 		if( compress_buffer == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ArchiveService::decomress: invalid compress buffer %d"
+			LOGGER_ERROR("ArchiveService::decomress: invalid compress buffer %d"
 				, _size
 				);
 
@@ -91,7 +89,7 @@ namespace Menge
 		size_t uncompressSize = 0;
 		if( _archivator->decompress( _memory, _capacity, compress_memory, _size, uncompressSize ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ArchiveService::decomress: invalid decompress"
+			LOGGER_ERROR("ArchiveService::decomress: invalid decompress"
 				);
 
 			return false;
@@ -104,11 +102,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInputInterfacePtr ArchiveService::compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, EArchivatorCompress _compress )
 	{
-		MemoryInterfacePtr uncompress_buffer = Helper::createMemoryCacheStream( m_serviceProvider, _stream, __FILE__, __LINE__ );
+		MemoryInterfacePtr uncompress_buffer = Helper::createMemoryCacheStream( _stream, __FILE__, __LINE__ );
 
 		if( uncompress_buffer == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ArchiveService::compressStream: invalid cache buffer"
+			LOGGER_ERROR("ArchiveService::compressStream: invalid cache buffer"
 				);
 
 			return nullptr;
@@ -126,14 +124,14 @@ namespace Menge
 	{
 		size_t compressSize2 = _archivator->compressBound( _size );
 
-		MemoryInputInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
+		MemoryInputInterfacePtr memory = MEMORY_SERVICE()
 			->createMemoryInput();
 
 		void * buffer = memory->newMemory( compressSize2 );
 
 		if( buffer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ArchiveService::compress: invalid new memory"
+			LOGGER_ERROR("ArchiveService::compress: invalid new memory"
 				);
 
 			return nullptr;
@@ -142,7 +140,7 @@ namespace Menge
 		size_t compressSize;
 		if( _archivator->compress( buffer, compressSize2, _buffer, _size, compressSize, _compress ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ArchiveService::compress: invalid compress"
+			LOGGER_ERROR("ArchiveService::compress: invalid compress"
 				);
 
 			return nullptr;
@@ -152,7 +150,7 @@ namespace Menge
 
 		if( new_memory == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ArchiveService::compress: invalid new memory"
+			LOGGER_ERROR("ArchiveService::compress: invalid new memory"
 				);
 
 			return nullptr;

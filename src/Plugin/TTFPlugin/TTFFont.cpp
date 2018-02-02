@@ -45,27 +45,27 @@ namespace Menge
 			return false;
 		}
 
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Path", m_ttfPath, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Path", m_ttfPath ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s don't setup Glyph"
+			LOGGER_ERROR("TextManager::loadFonts invalid font %s don't setup Glyph"
 				, m_name.c_str()
 				);
 
 			return false;
 		}
 
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_ttfHeight, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_ttfHeight ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s don't setup Height"
+			LOGGER_ERROR("TextManager::loadFonts invalid font %s don't setup Height"
 				, m_name.c_str()
 				);
 
 			return false;
 		}
 
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "DPI", m_ttfDPI, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "DPI", m_ttfDPI ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s don't setup DPI"
+			LOGGER_ERROR("TextManager::loadFonts invalid font %s don't setup DPI"
 				, m_name.c_str()
 				);
 
@@ -77,7 +77,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TTFFont::_compile()
 	{
-		MemoryInterfacePtr memory = Helper::createMemoryFile( m_serviceProvider, m_category, m_ttfPath, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, __FILE__, __LINE__ );
 
 		FT_Byte * memory_byte = memory->getMemory();
 		size_t memory_size = memory->getSize();
@@ -91,7 +91,7 @@ namespace Menge
 
 		if( err_code != 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TTFFont::_compile invalid FT_New_Memory_Face font '%s' path '%s'"
+			LOGGER_ERROR("TTFFont::_compile invalid FT_New_Memory_Face font '%s' path '%s'"
 				, m_name.c_str()
 				, m_ttfPath.c_str()
 				);
@@ -375,7 +375,7 @@ namespace Menge
         TTFFontTextureGlyphProvider provider( bitmap_width, bitmap_height, buffer, bitmap_pitch, bitmap_channel );
         
 		mt::uv4f uv;
-		RenderTextureInterfacePtr texture = TTFATLAS_SERVICE( m_serviceProvider )
+		RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
 			->makeTextureGlyph( bitmap_width, bitmap_height, bitmap_channel, &provider, uv );
 
 		if( texture == nullptr )
@@ -402,7 +402,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_validateGlyph( GlyphCode _code ) const
     {
-        MemoryInterfacePtr memory = Helper::createMemoryFile( m_serviceProvider, m_category, m_ttfPath, false, __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, __FILE__, __LINE__ );
 
         FT_Byte * memory_byte = memory->getMemory();
         size_t memory_size = memory->getSize();

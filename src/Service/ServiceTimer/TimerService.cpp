@@ -17,7 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TimerService::resetDeltaTime()
 	{ 
-		uint64_t currentTime = TIMER_SYSTEM( m_serviceProvider )
+		uint64_t currentTime = TIMER_SYSTEM()
 			->getMilliseconds();
 
 		m_prevTime = currentTime;
@@ -25,7 +25,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float TimerService::getDeltaTime()
 	{
-		uint64_t currentTime = TIMER_SYSTEM( m_serviceProvider )
+		uint64_t currentTime = TIMER_SYSTEM()
 			->getMilliseconds();
 
 		uint64_t deltaTime = currentTime - m_prevTime;
@@ -37,7 +37,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint64_t TimerService::getMilliseconds()
 	{
-		uint64_t milliseconds = TIMER_SYSTEM( m_serviceProvider )
+		uint64_t milliseconds = TIMER_SYSTEM()
 			->getMilliseconds();
 
 		return milliseconds;

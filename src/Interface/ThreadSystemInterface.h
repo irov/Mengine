@@ -37,8 +37,8 @@ namespace Menge
 		virtual ptrdiff_t getCurrentThreadId() const = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-#   define THREAD_SYSTEM( serviceProvider )\
-    ((Menge::ThreadSystemInterface*)SERVICE_GET(serviceProvider, Menge::ThreadSystemInterface))
+#   define THREAD_SYSTEM()\
+    ((Menge::ThreadSystemInterface*)SERVICE_GET(Menge::ThreadSystemInterface))
     //////////////////////////////////////////////////////////////////////////
     class ThreadServiceInterface
         : public ServiceInterface
@@ -79,7 +79,7 @@ namespace Menge
 		virtual ptrdiff_t getCurrentThreadId() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define THREAD_SERVICE( serviceProvider )\
-    ((Menge::ThreadServiceInterface*)SERVICE_GET(serviceProvider, Menge::ThreadServiceInterface))
+#   define THREAD_SERVICE()\
+    ((Menge::ThreadServiceInterface*)SERVICE_GET(Menge::ThreadServiceInterface))
     //////////////////////////////////////////////////////////////////////////
 }

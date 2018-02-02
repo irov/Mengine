@@ -29,7 +29,7 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 		
-		m_buffer = Helper::createMemoryFile( m_serviceProvider, category, m_path, false, __FILE__, __LINE__ );
+		m_buffer = Helper::createMemoryFile( category, m_path, false, __FILE__, __LINE__ );
 
 		return true;
 	}

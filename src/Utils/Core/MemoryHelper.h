@@ -12,14 +12,14 @@ namespace Menge
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		MemoryInterfacePtr createMemoryStream( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const char * _file, uint32_t _line );
-		MemoryInterfacePtr createMemoryStreamSize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, size_t _size, const char * _file, uint32_t _line );
-		MemoryInterfacePtr createMemoryFile( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line );
-        MemoryInterfacePtr createMemoryCacheBuffer( ServiceProviderInterface * _serviceProvider, size_t _size, const char * _file, uint32_t _line );
-        MemoryInterfacePtr createMemoryCacheStreamSize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, size_t _size, const char * _file, uint32_t _line );
-        MemoryInterfacePtr createMemoryCacheStream( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const char * _file, uint32_t _line );
-        MemoryInterfacePtr createMemoryCacheFile( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line );
-        MemoryInterfacePtr createMemoryCacheFileString( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line );
+		MemoryInterfacePtr createMemoryStream( const InputStreamInterfacePtr & _stream, const char * _file, uint32_t _line );
+		MemoryInterfacePtr createMemoryStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const char * _file, uint32_t _line );
+		MemoryInterfacePtr createMemoryFile( const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line );
+        MemoryInterfacePtr createMemoryCacheBuffer( size_t _size, const char * _file, uint32_t _line );
+        MemoryInterfacePtr createMemoryCacheStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const char * _file, uint32_t _line );
+        MemoryInterfacePtr createMemoryCacheStream( const InputStreamInterfacePtr & _stream, const char * _file, uint32_t _line );
+        MemoryInterfacePtr createMemoryCacheFile( const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line );
+        MemoryInterfacePtr createMemoryCacheFileString( const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line );
 	}
 }	// namespace Menge
 

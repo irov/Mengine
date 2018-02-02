@@ -24,7 +24,7 @@ namespace Menge
 		virtual RenderTextureInterfacePtr resurrectTexture( const ConstString& _pakName, const FilePath & _path ) = 0;
 	};
 
-#   define GRAVEYARD_SERVICE(serviceProvider)\
-    ((Menge::GraveyardInterface*)SERVICE_GET(serviceProvider, Menge::GraveyardInterface))
+#   define GRAVEYARD_SERVICE()\
+    ((Menge::GraveyardInterface*)SERVICE_GET(Menge::GraveyardInterface))
 }
 

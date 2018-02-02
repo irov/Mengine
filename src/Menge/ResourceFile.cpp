@@ -31,7 +31,7 @@ namespace Menge
     {   
 		const ConstString & category = this->getCategory();
 
-		bool valid = FILE_SERVICE(m_serviceProvider)
+		bool valid = FILE_SERVICE()
 			->existFile( category, m_path, nullptr );
 
 		return valid;

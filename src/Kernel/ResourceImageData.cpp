@@ -38,7 +38,7 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		bool exist = FILE_SERVICE(m_serviceProvider)
+		bool exist = FILE_SERVICE()
 			->existFile( category, m_fileName, nullptr );
 		
 		if( exist == false )
@@ -48,7 +48,7 @@ namespace Menge
 				return true;
 			}
 
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s not exist file %s:%s"
+			LOGGER_ERROR("ResourceImageDefault::_isValid %s not exist file %s:%s"
 				, m_name.c_str()
 				, category.c_str()
 				, m_fileName.c_str()
@@ -57,12 +57,12 @@ namespace Menge
 			return false;
 		}
         
-        InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+        InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( category, m_fileName, false );
 
         if( stream == nullptr )
         {
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s invalid open file %s:%s"
+			LOGGER_ERROR("ResourceImageDefault::_isValid %s invalid open file %s:%s"
 				, m_name.c_str()
 				, category.c_str()
 				, m_fileName.c_str()
@@ -71,12 +71,12 @@ namespace Menge
             return false;
         }
 
-        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
+        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( m_codecType );
 
         if( imageDecoder == nullptr )
         {
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s invalid decoder %s"
+			LOGGER_ERROR("ResourceImageDefault::_isValid %s file %s:%s invalid decoder %s"
 				, m_name.c_str()
 				, category.c_str()
 				, m_fileName.c_str()
@@ -88,7 +88,7 @@ namespace Menge
 
 		if( imageDecoder->prepareData( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s decoder initialize failed %s"
+			LOGGER_ERROR("ResourceImageDefault::_isValid %s file %s:%s decoder initialize failed %s"
 				, m_name.c_str()
 				, category.c_str()
 				, m_fileName.c_str()
@@ -111,7 +111,7 @@ namespace Menge
 
         if( m_codecType.empty() == true )
         {
-            m_codecType = CODEC_SERVICE(m_serviceProvider)
+            m_codecType = CODEC_SERVICE()
                 ->findCodecType( m_fileName );
         }
 		        		
@@ -128,11 +128,11 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 					
 		InputStreamInterfacePtr stream = 
-			FILE_SERVICE(m_serviceProvider)->openInputFile( category, m_fileName, false );
+			FILE_SERVICE()->openInputFile( category, m_fileName, false );
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageData::_compile: Image file '%s:%s' was not found"
+			LOGGER_ERROR("ResourceImageData::_compile: Image file '%s:%s' was not found"
 				, category.c_str()
 				, m_fileName.c_str() 
 				);
@@ -140,12 +140,12 @@ namespace Menge
 			return false;
 		}	
 
-		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
+		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
 			->createDecoderT<ImageDecoderInterfacePtr>( m_codecType );
 
 		if( imageDecoder == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' was not found"
+			LOGGER_ERROR("ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' was not found"
 				, m_codecType.c_str()
 				, category.c_str()
 				, m_fileName.c_str() 
@@ -156,7 +156,7 @@ namespace Menge
 
 		if( imageDecoder->prepareData( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' was not found"
+			LOGGER_ERROR("ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' was not found"
 				, m_codecType.c_str()
 				, category.c_str()
 				, m_fileName.c_str()  
@@ -182,7 +182,7 @@ namespace Menge
 
 		if( imageDecoder->setOptions( &options ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' invalid optionize"
+			LOGGER_ERROR("ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' invalid optionize"
 				, m_codecType.c_str()
 				, category.c_str()
 				, m_fileName.c_str()  
@@ -193,7 +193,7 @@ namespace Menge
 		
 		if( imageDecoder->decode( m_buffer, memorySize ) == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' invalid decode"
+			LOGGER_ERROR("ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' invalid decode"
 				, m_codecType.c_str()
 				, category.c_str()
 				, m_fileName.c_str()  
@@ -215,7 +215,7 @@ namespace Menge
 	{
         m_fileName = _imagePath;
 
-        m_codecType = CODEC_SERVICE(m_serviceProvider)
+        m_codecType = CODEC_SERVICE()
             ->findCodecType( _imagePath );
 
 		m_maxSize = mt::vec2f(0.f, 0.f);

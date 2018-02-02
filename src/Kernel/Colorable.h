@@ -8,6 +8,7 @@ namespace Menge
 	{
 	public:
 		Colorable();
+        ~Colorable();
 
 	public:
 		void setPersonalColor( const ColourValue& _color );

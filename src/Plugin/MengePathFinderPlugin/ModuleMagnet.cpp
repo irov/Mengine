@@ -52,13 +52,13 @@ namespace Menge
 			.def( "addMagnetException", &NodeMagnetActor::addMagnetException )
 			;
 
-		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeMagnetActor" ), new ScriptWrapper<NodeMagnetActor>() );
+		SCRIPT_SERVICE()
+			->setWrapper( Helper::stringizeString( "NodeMagnetActor" ), new ScriptWrapper<NodeMagnetActor>() );
 
-		PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeMagnetActor" ), new NodePrototypeGenerator<NodeMagnetActor, 32> );
+		PROTOTYPE_SERVICE()
+			->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeMagnetActor" ), new NodePrototypeGenerator<NodeMagnetActor, 32> );
 
-        m_factoryMagnetWorld = new FactoryPool<MagnetWorld, 4>( m_serviceProvider );
+        m_factoryMagnetWorld = new FactoryPool<MagnetWorld, 4>();
 
 		return true;
 	}

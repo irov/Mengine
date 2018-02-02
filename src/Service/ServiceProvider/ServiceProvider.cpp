@@ -36,8 +36,6 @@ namespace Menge
             return nullptr;
         }
 
-        service->setServiceProvider( this );
-
         if( service->initialize() == false )
         {
             return nullptr;

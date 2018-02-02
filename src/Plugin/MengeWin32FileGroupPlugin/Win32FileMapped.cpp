@@ -23,7 +23,7 @@ namespace Menge
 			{
 				DWORD uError = GetLastError();
 
-				LOGGER_ERROR(m_serviceProvider)("Win32MappedFileInputStream invalid UnmapViewOfFile %p error %d"
+				LOGGER_ERROR("Win32MappedFileInputStream invalid UnmapViewOfFile %p error %d"
 					, m_memory
 					, uError
 					);
@@ -48,10 +48,10 @@ namespace Menge
 	bool Win32FileMapped::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
 	{
         WChar concatenatePath[MENGINE_MAX_PATH];
-        if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+        if( WINDOWSLAYER_SERVICE()
 			->concatenateFilePath( _relationPath, _folderPath, _filePath, concatenatePath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32MappedInputStream::open invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR("Win32MappedInputStream::open invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()
                 , _filePath.c_str()
                 );
@@ -59,7 +59,7 @@ namespace Menge
             return false;
         }
 
-		m_hFile = WINDOWSLAYER_SERVICE(m_serviceProvider)->createFile( 
+		m_hFile = WINDOWSLAYER_SERVICE()->createFile( 
             concatenatePath, // file to open
 			GENERIC_READ, // open for reading
 			FILE_SHARE_READ, // share for reading, exclusive for mapping
@@ -68,7 +68,7 @@ namespace Menge
 
 		if ( m_hFile == INVALID_HANDLE_VALUE)
 		{
-            LOGGER_ERROR(m_serviceProvider)("Win32MappedInputStream::open %ls invalid open"
+            LOGGER_ERROR("Win32MappedInputStream::open %ls invalid open"
                 , concatenatePath
                 );
 
@@ -81,7 +81,7 @@ namespace Menge
 		{
 			DWORD error = GetLastError();
 
-			LOGGER_ERROR(m_serviceProvider)("Win32MappedInputStream::open invalid create file mapping %ls error %d"
+			LOGGER_ERROR("Win32MappedInputStream::open invalid create file mapping %ls error %d"
 				, concatenatePath
 				, error
 				);
@@ -98,7 +98,7 @@ namespace Menge
 		{
 			DWORD error = GetLastError();
 
-			LOGGER_ERROR(m_serviceProvider)("Win32MappedInputStream::open invalid map view of file %ls error %d"
+			LOGGER_ERROR("Win32MappedInputStream::open invalid map view of file %ls error %d"
 				, concatenatePath
 				, error
 				);
@@ -117,7 +117,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	InputStreamInterfacePtr Win32FileMapped::createFileStream()
 	{
-		MemoryProxyInputInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
+		MemoryProxyInputInterfacePtr memory = MEMORY_SERVICE()
 			->createMemoryProxyInput();
 
 		return memory;

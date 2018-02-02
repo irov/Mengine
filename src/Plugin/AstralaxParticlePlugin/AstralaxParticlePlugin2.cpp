@@ -18,20 +18,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxParticlePlugin2::_initialize()
 	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Particle System 3D..." );
+		LOGGER_INFO( "Initializing Particle System 3D..." );
 
-		SERVICE_CREATE( m_serviceProvider, ParticleSystem );
+		SERVICE_CREATE( ParticleSystem );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticlePlugin2::_finalize()
 	{
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ParticleSystemInterface2 );
+		SERVICE_FINALIZE( Menge::ParticleSystemInterface2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticlePlugin2::_destroy()
 	{
-		SERVICE_DESTROY( m_serviceProvider, Menge::ParticleSystemInterface2 );
+		SERVICE_DESTROY( Menge::ParticleSystemInterface2 );
 	}
 }

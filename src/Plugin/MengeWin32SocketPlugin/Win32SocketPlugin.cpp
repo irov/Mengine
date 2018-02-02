@@ -18,20 +18,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32SocketPlugin::_initialize()
 	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Win32 Socket Plugin" );
+		LOGGER_INFO( "Initializing Win32 Socket Plugin" );
 
-		SERVICE_CREATE( m_serviceProvider, SocketSystem );
+		SERVICE_CREATE( SocketSystem );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32SocketPlugin::_finalize()
 	{
-		SERVICE_FINALIZE( m_serviceProvider, Menge::SocketSystemInterface );
+		SERVICE_FINALIZE( Menge::SocketSystemInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32SocketPlugin::_destroy()
 	{
-		SERVICE_DESTROY( m_serviceProvider, Menge::SocketSystemInterface );
+		SERVICE_DESTROY( Menge::SocketSystemInterface );
 	}
 }

@@ -9,7 +9,7 @@ namespace Menge
 		: m_cancel(false)
 		, m_packetSize(1)
 	{
-		m_factoryPoolTaskPacket = new FactoryPool<ThreadTaskPacket, 4>(m_serviceProvider);
+		m_factoryPoolTaskPacket = new FactoryPool<ThreadTaskPacket, 4>();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ThreadQueue::~ThreadQueue()
@@ -102,8 +102,6 @@ namespace Menge
 
 			ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket->createObject();
 			
-            packet->setServiceProvider( m_serviceProvider );
-
 			if( packet->initialize( m_packetSize ) == false )
 			{
 				return;
@@ -129,7 +127,7 @@ namespace Menge
 
 			if( packet->countTask() > 0 )
 			{
-				if( THREAD_SERVICE(m_serviceProvider)
+				if( THREAD_SERVICE()
 					->addTask( m_threadName, packet ) == false )
 				{
 					uint32_t count = packet->countTask();

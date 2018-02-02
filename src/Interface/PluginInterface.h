@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/ServiceInterface.h"
+#	include "Interface/ServiceProviderInterface.h"
 #	include "Interface/ServantInterface.h"
 
 #	include "Factory/FactorableUnique.h"
@@ -34,7 +35,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<PluginInterface> PluginInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
-	typedef bool( *TPluginCreate )(PluginInterface ** _plugin, bool _dynamic);
+    typedef bool( *TPluginCreate )(ServiceProviderInterface * _serviceProvider, PluginInterface ** _plugin, bool _dynamic);
 	//////////////////////////////////////////////////////////////////////////
 	typedef void * (*TDynamicLibraryFunction)(void *);
 	//////////////////////////////////////////////////////////////////////////
@@ -59,8 +60,8 @@ namespace Menge
 		virtual DynamicLibraryInterfacePtr loadDynamicLibrary( const WString & _dllName ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-#   define PLUGIN_SYSTEM( serviceProvider )\
-    ((Menge::PluginSystemInterface*)SERVICE_GET(serviceProvider, Menge::PluginSystemInterface))
+#   define PLUGIN_SYSTEM()\
+    ((Menge::PluginSystemInterface*)SERVICE_GET(Menge::PluginSystemInterface))
 	//////////////////////////////////////////////////////////////////////////
     class PluginServiceInterface
         : public ServiceInterface
@@ -78,8 +79,8 @@ namespace Menge
 		virtual const PluginInterfacePtr & getPlugin( const Char * _name ) const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-#   define PLUGIN_SERVICE( serviceProvider )\
-    ((Menge::PluginServiceInterface*)SERVICE_GET(serviceProvider, Menge::PluginServiceInterface))
+#   define PLUGIN_SERVICE()\
+    ((Menge::PluginServiceInterface*)SERVICE_GET(Menge::PluginServiceInterface))
 	//////////////////////////////////////////////////////////////////////////
 #   define PLUGIN_DECLARE( Name )\
     public:\
@@ -89,12 +90,12 @@ namespace Menge
 #	define PLUGIN_FUNCTION(Name)\
 	initPlugin##Name
 	//////////////////////////////////////////////////////////////////////////
-#	define PLUGIN_CREATE(serviceProvider, Name)\
-	PLUGIN_SERVICE( serviceProvider )->createPlugin( nullptr, &PLUGIN_FUNCTION( Name ), false )
+#	define PLUGIN_CREATE(Name)\
+	PLUGIN_SERVICE()->createPlugin( nullptr, &PLUGIN_FUNCTION( Name ), false )
 	//////////////////////////////////////////////////////////////////////////
 #	define PLUGIN_FACTORY_STATIC(Name, Type)\
-	extern "C"{bool PLUGIN_FUNCTION(Name)( Menge::PluginInterface ** _plugin, bool _dynamic ){\
-	if( _dynamic == true ){stdex_allocator_initialize();}\
+	extern "C"{bool PLUGIN_FUNCTION(Name)( Menge::ServiceProviderInterface * _serviceProvider, Menge::PluginInterface ** _plugin, bool _dynamic ){\
+	if( _dynamic == true ){SERVICE_PROVIDER_SETUP(_serviceProvider);stdex_allocator_initialize();}\
 	Menge::PluginInterface * plugin = new Menge::FactorableUnique<Type>();\
 	if( plugin == nullptr ){ return false; }\
 	plugin->setDynamicLoad( _dynamic );\
@@ -104,9 +105,9 @@ namespace Menge
 #	define PLUGIN_FACTORY_DYNAMIC(Name, Type)\
 	extern "C"\
 	{\
-		__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )\
+		__declspec(dllexport) bool dllCreatePlugin( Menge::ServiceProviderInterface * _serviceProvider,Menge::PluginInterface ** _plugin )\
 		{\
-			return PLUGIN_FUNCTION(Name)( _plugin, true );\
+			return PLUGIN_FUNCTION(Name)( _serviceProvider, _plugin, true );\
 		}\
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -122,6 +123,6 @@ namespace Menge
 #	define PLUGIN_EXPORT(Name)\
 	extern "C"\
 	{\
-		extern bool PLUGIN_FUNCTION(Name)( Menge::PluginInterface ** _plugin, bool _dynamic );\
+		extern bool PLUGIN_FUNCTION(Name)( Menge::ServiceProviderInterface * _serviceProvider, Menge::PluginInterface ** _plugin, bool _dynamic );\
 	}
 }

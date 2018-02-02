@@ -22,7 +22,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool StringizeService::_initialize()
 	{
-		m_factoryHolderStringMemory = new FactoryPool<ConstStringHolderMemory, 512>(m_serviceProvider);
+		m_factoryHolderStringMemory = new FactoryPool<ConstStringHolderMemory, 512>();
 
 		for (uint32_t i = 0; i != 257; ++i)
 		{

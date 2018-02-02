@@ -187,7 +187,7 @@ namespace Menge
             {
                 if( this->_validateGlyph( code ) == false )
                 {
-                    LOGGER_ERROR( m_serviceProvider )("Text %s fontName %s not found glyph code '%d'"
+                    LOGGER_ERROR("Text %s fontName %s not found glyph code '%d'"
                         , _key.c_str()
                         , this->getName().c_str()
                         , code
@@ -296,25 +296,25 @@ namespace Menge
 	bool FontBase::initializeBase_( const IniUtil::IniStore & _ini )
 	{
 		ColourValue colourFont;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorFont", colourFont, m_serviceProvider ) == true )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorFont", colourFont ) == true )
 		{
 			this->setColourFont( colourFont );
 		}
 
 		ColourValue colourOutline;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorOutline", colourOutline, m_serviceProvider ) == true )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorOutline", colourOutline ) == true )
 		{
 			this->setColourOutline( colourOutline );
 		}
 
 		float lineOffset;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "LineOffset", lineOffset, m_serviceProvider ) == true )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "LineOffset", lineOffset ) == true )
 		{
 			this->setLineOffset( lineOffset );
 		}
 
 		float charOffset;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "CharOffset", charOffset, m_serviceProvider ) == true )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "CharOffset", charOffset ) == true )
 		{
 			this->setCharOffset( charOffset );
 		}

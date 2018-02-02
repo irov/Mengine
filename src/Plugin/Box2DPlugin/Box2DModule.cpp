@@ -83,7 +83,7 @@ namespace Menge
 			{
 				std::string k = it.key();
 
-				LOGGER_ERROR( m_serviceProvider )("setEventListener invalid kwds '%s'\n"
+				LOGGER_ERROR("setEventListener invalid kwds '%s'\n"
 					, k.c_str()
 					);
 			}
@@ -277,38 +277,38 @@ namespace Menge
 			.def( "getBox2DBody", &NodeBox2DBody::getBox2DBody )
 			;
 
-		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeBox2DBody" ), new ScriptWrapper<NodeBox2DBody>() );
+		SCRIPT_SERVICE()
+			->setWrapper( STRINGIZE_STRING_LOCAL( "NodeBox2DBody" ), new ScriptWrapper<NodeBox2DBody>() );
 
-		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DBody" ), new ScriptWrapper<Box2DBody>() );
+		SCRIPT_SERVICE()
+			->setWrapper( STRINGIZE_STRING_LOCAL( "Box2DBody" ), new ScriptWrapper<Box2DBody>() );
 
-		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DJoint" ), new ScriptWrapper<Box2DJoint>() );
+		SCRIPT_SERVICE()
+			->setWrapper( STRINGIZE_STRING_LOCAL( "Box2DJoint" ), new ScriptWrapper<Box2DJoint>() );
 
-		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DWorld" ), new ScriptWrapper<Box2DWorld>() );
+		SCRIPT_SERVICE()
+			->setWrapper( STRINGIZE_STRING_LOCAL( "Box2DWorld" ), new ScriptWrapper<Box2DWorld>() );
 
-		if( PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeBox2DBody" ), new NodePrototypeGenerator<NodeBox2DBody, 128> ) == false )
+		if( PROTOTYPE_SERVICE()
+			->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeBox2DBody" ), new NodePrototypeGenerator<NodeBox2DBody, 128> ) == false )
 		{
 			return false;
 		}
 
-		if( PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2D" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DBody" ), new ScriptablePrototypeGenerator<Box2DBody, 128> ) == false )
+		if( PROTOTYPE_SERVICE()
+			->addPrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ), new ScriptablePrototypeGenerator<Box2DBody, 128> ) == false )
 		{
 			return false;
 		}
 
-		if( PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2D" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DJoint" ), new ScriptablePrototypeGenerator<Box2DJoint, 128> ) == false )
+		if( PROTOTYPE_SERVICE()
+			->addPrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DJoint" ), new ScriptablePrototypeGenerator<Box2DJoint, 128> ) == false )
 		{
 			return false;
 		}
 
-		if( PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2D" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DWorld" ), new ScriptablePrototypeGenerator<Box2DWorld, 128> ) == false )
+		if( PROTOTYPE_SERVICE()
+			->addPrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DWorld" ), new ScriptablePrototypeGenerator<Box2DWorld, 128> ) == false )
 		{
 			return false;
 		}
@@ -336,8 +336,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	Box2DWorld * Box2DModule::createWorld( const mt::vec2f& _gravity, const pybind::object & _update, const pybind::args & _update_args )
     {
-		Box2DWorld * world = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2D" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DWorld" ) );
+		Box2DWorld * world = PROTOTYPE_SERVICE()
+			->generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DWorld" ) );
 
 		if( world->initialize( _gravity, _update, _update_args ) == false )
 		{

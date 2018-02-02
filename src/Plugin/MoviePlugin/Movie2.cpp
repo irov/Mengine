@@ -99,7 +99,7 @@ namespace Menge
     {
         if( m_composition == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("Movie2::setEnableMovieLayers '%s' invalid get layer '%s' not compile"
+            LOGGER_ERROR("Movie2::setEnableMovieLayers '%s' invalid get layer '%s' not compile"
                 , this->getName().c_str()
                 , _name.c_str()
                 );
@@ -160,9 +160,7 @@ namespace Menge
     {
         Movie2 * movie2 = (Movie2 *)_data;
 
-        ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
-
-        ConstString c_name = Helper::stringizeString( serviceProvider, _callbackData->name );
+        ConstString c_name = Helper::stringizeString( _callbackData->name );
 
         Movie2::Camera * old_camera;
         if( movie2->getCamera( c_name, &old_camera ) == true )
@@ -170,8 +168,8 @@ namespace Menge
             return old_camera;
         }
 
-        RenderCameraProjection * renderCameraProjection = NODE_SERVICE( serviceProvider )
-            ->createNodeT<RenderCameraProjection *>( STRINGIZE_STRING_LOCAL( serviceProvider, "RenderCameraProjection" ) );
+        RenderCameraProjection * renderCameraProjection = NODE_SERVICE()
+            ->createNodeT<RenderCameraProjection *>( STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ) );
 
         renderCameraProjection->setName( c_name );
 
@@ -190,8 +188,8 @@ namespace Menge
         renderCameraProjection->setCameraFOV( _callbackData->fov );
         renderCameraProjection->setCameraAspect( aspect );
 
-        RenderViewport * renderViewport = NODE_SERVICE( serviceProvider )
-            ->createNodeT<RenderViewport *>( STRINGIZE_STRING_LOCAL( serviceProvider, "RenderViewport" ) );
+        RenderViewport * renderViewport = NODE_SERVICE()
+            ->createNodeT<RenderViewport *>( STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
 
         renderViewport->setName( c_name );
 
@@ -213,9 +211,7 @@ namespace Menge
     {
         Movie2 * movie2 = (Movie2 *)_data;
 
-        ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
-
-        ConstString c_name = Helper::stringizeString( serviceProvider, _callbackData->name );
+        ConstString c_name = Helper::stringizeString( _callbackData->name );
 
         movie2->removeCamera( c_name );
     }
@@ -243,13 +239,11 @@ namespace Menge
     {
         Movie2 * movie2 = (Movie2 *)_data;
 
-        ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
-
         const aeMovieLayerData * layer = _callbackData->layer;
 
         const char * layer_name = ae_get_movie_layer_data_name( layer );
 
-        ConstString c_name = Helper::stringizeString( serviceProvider, layer_name );
+        ConstString c_name = Helper::stringizeString( layer_name );
 
         ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( layer );
 
@@ -264,8 +258,8 @@ namespace Menge
         {
         case AE_MOVIE_LAYER_TYPE_TEXT:
             {
-                TextField * node = PROTOTYPE_SERVICE( serviceProvider )
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "TextField" ) );
+                TextField * node = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ) );
 
                 node->setName( c_name );
                 node->setExternalRender( true );
@@ -284,8 +278,8 @@ namespace Menge
                 
                 movie2->addText( c_name, node );
 
-                MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
+                MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
 
                 matrixProxy->setName( c_name );
 
@@ -304,8 +298,8 @@ namespace Menge
             }break;
         case AE_MOVIE_LAYER_TYPE_SLOT:
             {
-                Movie2Slot * node = PROTOTYPE_SERVICE( serviceProvider )
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "Movie2Slot" ) );
+                Movie2Slot * node = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ) );
 
                 node->setName( c_name );
                 node->setExternalRender( true );
@@ -316,8 +310,8 @@ namespace Menge
 
                 movie2->addSlot( c_name, node );
 
-                MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
+                MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
 
                 matrixProxy->setName( c_name );
 
@@ -336,8 +330,8 @@ namespace Menge
             }break;
         case AE_MOVIE_LAYER_TYPE_SOCKET:
             {
-                HotSpotPolygon * node = NODE_SERVICE( serviceProvider )
-                    ->createNodeT<HotSpotPolygon *>( STRINGIZE_STRING_LOCAL( serviceProvider, "HotSpotPolygon" ) );
+                HotSpotPolygon * node = NODE_SERVICE()
+                    ->createNodeT<HotSpotPolygon *>( STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
 
                 node->setName( c_name );
                 node->setExternalRender( true );
@@ -362,8 +356,8 @@ namespace Menge
 
                 movie2->addSocketShape( c_name, node );
 
-                MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
+                MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
 
                 matrixProxy->setName( c_name );
 
@@ -388,8 +382,8 @@ namespace Menge
             {
             case AE_MOVIE_LAYER_TYPE_IMAGE:
                 {
-                    SurfaceTrackMatte * surfaceTrackMatte = PROTOTYPE_SERVICE( serviceProvider )
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceTrackMatte" ) );
+                    SurfaceTrackMatte * surfaceTrackMatte = PROTOTYPE_SERVICE()
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceTrackMatte" ) );
 
                     surfaceTrackMatte->setName( c_name );
 
@@ -447,8 +441,8 @@ namespace Menge
             {
             case AE_MOVIE_LAYER_TYPE_PARTICLE:
                 {
-                    ParticleEmitter2 * node = NODE_SERVICE( serviceProvider )
-                        ->createNodeT<ParticleEmitter2 *>( STRINGIZE_STRING_LOCAL( serviceProvider, "ParticleEmitter2" ) );
+                    ParticleEmitter2 * node = NODE_SERVICE()
+                        ->createNodeT<ParticleEmitter2 *>( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
 
                     node->setName( c_name );
                     node->setExternalRender( true );
@@ -485,8 +479,8 @@ namespace Menge
 
                     movie2->addParticle( node );
 
-                    MatrixProxy * matrixProxy = PROTOTYPE_SERVICE( serviceProvider )
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( serviceProvider, "MatrixProxy" ) );
+                    MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
 
                     matrixProxy->setName( c_name );
 
@@ -505,8 +499,8 @@ namespace Menge
                 }break;
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
-                    SurfaceVideo * surfaceVideo = PROTOTYPE_SERVICE( serviceProvider )
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceVideo" ) );
+                    SurfaceVideo * surfaceVideo = PROTOTYPE_SERVICE()
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) );
 
                     surfaceVideo->setName( c_name );
 
@@ -540,8 +534,8 @@ namespace Menge
                 }break;
             case AE_MOVIE_LAYER_TYPE_SOUND:
                 {
-                    SurfaceSound * surfaceSound = PROTOTYPE_SERVICE( serviceProvider )
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( serviceProvider, "SurfaceSound" ) );
+                    SurfaceSound * surfaceSound = PROTOTYPE_SERVICE()
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ) );
 
                     surfaceSound->setName( c_name );
 
@@ -616,10 +610,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     static void __movie_composition_node_update( const aeMovieNodeUpdateCallbackData * _callbackData, void * _data )
     {
-        Movie2 * movie2 = (Movie2 *)_data;
-
-        ServiceProviderInterface * serviceProvider = movie2->getServiceProvider();
-
+        (void)_data;
+            
         aeMovieLayerTypeEnum type = _callbackData->type;
 
         switch( _callbackData->state )
@@ -704,7 +696,7 @@ namespace Menge
 
                         matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
-                        float time = TIMELINE_SERVICE( serviceProvider )
+                        float time = TIMELINE_SERVICE()
                             ->getTime();
 
                         node->setTiming( _callbackData->offset );
@@ -731,7 +723,7 @@ namespace Menge
                     {
                         SurfaceVideo * node = (SurfaceVideo *)_callbackData->element;
 
-                        float time = TIMELINE_SERVICE( serviceProvider )
+                        float time = TIMELINE_SERVICE()
                             ->getTime();
 
                         node->setTiming( _callbackData->offset );
@@ -758,7 +750,7 @@ namespace Menge
                     {
                         SurfaceSound * node = (SurfaceSound *)_callbackData->element;
 
-                        float time = TIMELINE_SERVICE( serviceProvider )
+                        float time = TIMELINE_SERVICE()
                             ->getTime();
 
                         node->setTiming( _callbackData->offset );
@@ -878,7 +870,7 @@ namespace Menge
 
                         matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
-                        float time = TIMELINE_SERVICE( serviceProvider )
+                        float time = TIMELINE_SERVICE()
                             ->getTime();
 
                         node->resume( time );
@@ -887,7 +879,7 @@ namespace Menge
                     {
                         SurfaceVideo * animatable = (SurfaceVideo *)_callbackData->element;
 
-                        float time = TIMELINE_SERVICE( serviceProvider )
+                        float time = TIMELINE_SERVICE()
                             ->getTime();
 
                         animatable->resume( time );
@@ -896,7 +888,7 @@ namespace Menge
                     {
                         SurfaceSound * animatable = (SurfaceSound *)_callbackData->element;
 
-                        float time = TIMELINE_SERVICE( serviceProvider )
+                        float time = TIMELINE_SERVICE()
                             ->getTime();
 
                         animatable->resume( time );
@@ -990,8 +982,6 @@ namespace Menge
 
         if( _callbackData->state == AE_MOVIE_COMPOSITION_END )
         {
-            printf( "AE_MOVIE_COMPOSITION_END\n" );
-
             m2->stop();
         }
     }
@@ -1063,7 +1053,7 @@ namespace Menge
     {
         if( m_resourceMovie2 == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("Movie2::_compile: '%s' can't setup resource"
+            LOGGER_ERROR( "Movie2::_compile: '%s' can't setup resource"
                 , this->getName().c_str()
                 );
 
@@ -1072,7 +1062,7 @@ namespace Menge
 
         if( m_resourceMovie2.compile() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("Movie2::_compile '%s' resource %s not compile"
+            LOGGER_ERROR( "Movie2::_compile '%s' resource %s not compile"
                 , m_name.c_str()
                 , m_resourceMovie2->getName().c_str()
                 );
@@ -1086,7 +1076,7 @@ namespace Menge
 
         if( compositionData == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("Movie2::_compile '%s' resource %s not found composition '%s'"
+            LOGGER_ERROR("Movie2::_compile '%s' resource %s not found composition '%s'"
                 , m_name.c_str()
                 , m_resourceMovie2->getName().c_str()
                 , m_compositionName.c_str()
@@ -1261,12 +1251,12 @@ namespace Menge
 
         if( autoPlay == true )
         {
-            float time = TIMELINE_SERVICE( m_serviceProvider )
+            float time = TIMELINE_SERVICE()
                 ->getTime();
 
             if( this->play( time ) == 0 )
             {
-                LOGGER_ERROR( m_serviceProvider )("Movie2::_afterActivate '%s' resource '%s' auto play return 0"
+                LOGGER_ERROR( "Movie2::_afterActivate '%s' resource '%s' auto play return 0"
                     , this->getName().c_str()
                     , this->m_resourceMovie2->getName().c_str()
                     );
@@ -1317,7 +1307,7 @@ namespace Menge
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("Movie._setLastFrame: '%s' not activate"
+            LOGGER_ERROR( "Movie._setLastFrame: '%s' not activate"
                 , this->getName().c_str()
                 );
 
@@ -1456,7 +1446,7 @@ namespace Menge
                             break;
                         };
 
-                        m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
+                        m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
                         _renderService
                             ->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
@@ -1505,7 +1495,7 @@ namespace Menge
                             break;
                         };
 
-                        m.material = Helper::makeTextureMaterial( m_serviceProvider, nullptr, 0, ConstString::none(), blend_mode, false, false, false );
+                        m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
                         _renderService
                             ->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
@@ -1564,7 +1554,7 @@ namespace Menge
                             break;
                         };
 
-                        m.material = Helper::makeImageMaterial( m_serviceProvider, resource_image, ConstString::none(), blend_mode, false, false );
+                        m.material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
 
                         //printf( "%f %f\n", ae_get_movie_composition_time( m_composition ), mesh.a );
 
@@ -1578,7 +1568,6 @@ namespace Menge
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
-                        //ResourceVideo * resource_video = static_cast<ResourceVideo *>(resource_reference);
                         SurfaceVideo * surfaceVideo = static_cast<SurfaceVideo *>(mesh.element_data);
 
                         m_meshes.push_back( Mesh() );

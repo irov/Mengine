@@ -32,8 +32,8 @@ namespace Menge
 	{
         m_convertExt = ".ptz";
 
-		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
+		m_archivator = ARCHIVE_SERVICE()
+			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
 
 		if( m_archivator == nullptr )
 		{
@@ -46,9 +46,9 @@ namespace Menge
 	bool ParticleConverterPTCToPTZ::convert()
 	{
         FileGroupInterfacePtr fileGroup;
-        if( FILE_SERVICE(m_serviceProvider)->hasFileGroup( m_options.pakName, &fileGroup ) == false )
+        if( FILE_SERVICE()->hasFileGroup( m_options.pakName, &fileGroup ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: not found file group '%s'"
+            LOGGER_ERROR("ParticleConverterPTCToPTZ::convert_: not found file group '%s'"
                 , m_options.pakName.c_str()
                 );
 
@@ -57,10 +57,10 @@ namespace Menge
 
         const FilePath & pakPath = fileGroup->getFolderPath();
 
-		FilePath full_input = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
-		FilePath full_output = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
+		FilePath full_input = Helper::concatenationFilePath( pakPath, m_options.inputFileName );
+		FilePath full_output = Helper::concatenationFilePath( pakPath, m_options.outputFileName );
 		        
-		MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( STRINGIZE_STRING_LOCAL( "dev" ), full_input, false, __FILE__, __LINE__ );
 
 		if( data_cache == nullptr )
 		{
@@ -72,28 +72,28 @@ namespace Menge
 
 		if( data_memory == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: invalid cache memory '%s'"
+			LOGGER_ERROR("ParticleConverterPTCToPTZ::convert_: invalid cache memory '%s'"
 				, full_input.c_str()
 				);
 
 			return false;
 		}
 
-        OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
-            ->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
+        OutputStreamInterfacePtr output = FILE_SERVICE()
+            ->openOutputFile( STRINGIZE_STRING_LOCAL( "dev" ), full_output );
 
 		if( output == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: invalid open '%s'"
+			LOGGER_ERROR("ParticleConverterPTCToPTZ::convert_: invalid open '%s'"
 				, full_output.c_str()
 				);
 
 			return false;
 		}
 
-		if( Helper::writeStreamArchiveData( m_serviceProvider, output, m_archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), false, data_memory, data_size, EAC_BEST ) == false )
+		if( Helper::writeStreamArchiveData( output, m_archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), false, data_memory, data_size, EAC_BEST ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: invalid write '%s'"
+			LOGGER_ERROR("ParticleConverterPTCToPTZ::convert_: invalid write '%s'"
 				, full_output.c_str()
 				);
 
@@ -105,9 +105,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleConverterPTCToPTZ::validateVersion( const InputStreamInterfacePtr & _stream ) const
 	{
-		if( Helper::loadStreamMagicHeader( m_serviceProvider, _stream, GET_MAGIC_NUMBER(MAGIC_PTZ), GET_MAGIC_VERSION(MAGIC_PTZ) ) == false )
+		if( Helper::loadStreamMagicHeader( _stream, GET_MAGIC_NUMBER(MAGIC_PTZ), GET_MAGIC_VERSION(MAGIC_PTZ) ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::validateVersion: invalid magic header"
+			LOGGER_ERROR("ParticleConverterPTCToPTZ::validateVersion: invalid magic header"
 				);
 
 			return false;

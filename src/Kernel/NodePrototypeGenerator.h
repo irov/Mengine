@@ -20,7 +20,7 @@ namespace Menge
     protected:
         bool _initialize() override
         {
-            m_factory = new FactoryPool<Type, Count>( m_serviceProvider );
+            m_factory = new FactoryPool<Type, Count>();
 
             return true;
         }
@@ -32,7 +32,7 @@ namespace Menge
 
 			if( node == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("NodePrototypeGenerator::generate can't generate %s %s"
+				LOGGER_ERROR("NodePrototypeGenerator::generate can't generate %s %s"
 					, m_category.c_str()
 					, m_prototype.c_str()
 					);
@@ -40,7 +40,6 @@ namespace Menge
 				return nullptr;
 			}
 
-			node->setServiceProvider( m_serviceProvider );
 			node->setType( m_prototype );
 			node->setScriptWrapper( m_scriptWrapper );
 

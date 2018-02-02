@@ -188,6 +188,6 @@ namespace Menge
 		virtual bool validate() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-#   define TEXT_SERVICE( serviceProvider )\
-	((Menge::TextServiceInterface*)SERVICE_GET(serviceProvider, Menge::TextServiceInterface))
+#   define TEXT_SERVICE()\
+	((Menge::TextServiceInterface*)SERVICE_GET(Menge::TextServiceInterface))
 }

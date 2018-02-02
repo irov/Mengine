@@ -30,21 +30,21 @@ namespace Menge
 		}
 
 		FilePath glyphPath;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Glyph", glyphPath, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Glyph", glyphPath ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s don't setup Glyph"
+			LOGGER_ERROR("TextManager::loadFonts invalid font %s don't setup Glyph"
 				, m_name.c_str()
 				);
 
 			return false;
 		}
 
-		BitmapGlyphPtr glyph = BITMAPGLYPH_SERVICE(m_serviceProvider)
+		BitmapGlyphPtr glyph = BITMAPGLYPH_SERVICE()
 			->getGlyph( _category, glyphPath );
 
 		if( glyph == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s don't load Glyph %s"
+			LOGGER_ERROR("TextManager::loadFonts invalid font %s don't load Glyph %s"
 				, m_name.c_str()
 				, glyphPath.c_str()
 				);
@@ -56,31 +56,31 @@ namespace Menge
 		
 		m_height = m_glyph->getHeight();
 		
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Image", m_pathFontImage, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Image", m_pathFontImage ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s dont setup Image"
+			LOGGER_ERROR("TextManager::loadFonts invalid font %s dont setup Image"
 				, m_name.c_str()
 				);
 
 			return false;
 		}
 
-		IniUtil::getIniValue( _ini, m_name.c_str(), "Outline", m_pathOutlineImage, m_serviceProvider );
+		IniUtil::getIniValue( _ini, m_name.c_str(), "Outline", m_pathOutlineImage );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool BitmapFont::_compile()
 	{
-		const ConstString & fontImageCodec = CODEC_SERVICE( m_serviceProvider )
+		const ConstString & fontImageCodec = CODEC_SERVICE()
 			->findCodecType( m_pathFontImage );
 
-		m_textureFont = RENDERTEXTURE_SERVICE( m_serviceProvider )
+		m_textureFont = RENDERTEXTURE_SERVICE()
 			->loadTexture( m_category, m_pathFontImage, fontImageCodec );
 
 		if( m_textureFont == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TextFont::_compile '%s' invalid loading font image '%s'"
+			LOGGER_ERROR("TextFont::_compile '%s' invalid loading font image '%s'"
 				, m_name.c_str()
 				, m_pathFontImage.c_str()
 				);
@@ -90,15 +90,15 @@ namespace Menge
 
 		if( m_pathOutlineImage.empty() == false )
 		{
-			const ConstString & outlineImageCodec = CODEC_SERVICE( m_serviceProvider )
+			const ConstString & outlineImageCodec = CODEC_SERVICE()
 				->findCodecType( m_pathOutlineImage );
 
-			m_textureOutline = RENDERTEXTURE_SERVICE( m_serviceProvider )
+			m_textureOutline = RENDERTEXTURE_SERVICE()
 				->loadTexture( m_category, m_pathOutlineImage, outlineImageCodec );
 
 			if( m_textureOutline == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("TextFont::_compile '%s' can't loaded outline image file '%s'"
+				LOGGER_ERROR("TextFont::_compile '%s' can't loaded outline image file '%s'"
 					, m_name.c_str()
 					, m_pathOutlineImage.c_str()
 					);
@@ -134,7 +134,7 @@ namespace Menge
 
 		mt::uv4_from_mask( _glyph->uv, ch->uv );
 		_glyph->offset = ch->offset;
-		_glyph->size = ch->size;		
+		_glyph->size = ch->size;
 		_glyph->advance = ch->advance;
 
 		_glyph->texture = m_textureFont;

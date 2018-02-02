@@ -82,6 +82,6 @@ namespace Menge
 		virtual bool validatePackages() const = 0;
 	};
 
-#   define PACKAGE_SERVICE( serviceProvider )\
-    ((Menge::PackageServiceInterface*)SERVICE_GET(serviceProvider, Menge::PackageServiceInterface))
+#   define PACKAGE_SERVICE()\
+    ((Menge::PackageServiceInterface*)SERVICE_GET(Menge::PackageServiceInterface))
 }

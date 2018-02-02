@@ -30,8 +30,8 @@ namespace Menge
 	{
         m_convertExt = ".mdz";
 
-		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
+		m_archivator = ARCHIVE_SERVICE()
+			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
 
 		if( m_archivator == nullptr )
 		{
@@ -44,9 +44,9 @@ namespace Menge
 	bool ModelConverterMDLToMDZ::convert()
 	{
         FileGroupInterfacePtr fileGroup;
-        if( FILE_SERVICE(m_serviceProvider)->hasFileGroup( m_options.pakName, &fileGroup ) == false )
+        if( FILE_SERVICE()->hasFileGroup( m_options.pakName, &fileGroup ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ModelConverterMDLToMDZ::convert_: not found file group '%s'"
+            LOGGER_ERROR("ModelConverterMDLToMDZ::convert_: not found file group '%s'"
                 , m_options.pakName.c_str()
                 );
 
@@ -55,16 +55,16 @@ namespace Menge
 
         const FilePath & pakPath = fileGroup->getFolderPath();
 
-		FilePath full_input = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
-		FilePath full_output = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
+		FilePath full_input = Helper::concatenationFilePath( pakPath, m_options.inputFileName );
+		FilePath full_output = Helper::concatenationFilePath( pakPath, m_options.outputFileName );
 
-        ConstString c_dev = STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" );
+        ConstString c_dev = STRINGIZE_STRING_LOCAL( "dev" );
 
-		MemoryInterfacePtr cache = Helper::createMemoryCacheFile( m_serviceProvider, c_dev, full_input, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr cache = Helper::createMemoryCacheFile( c_dev, full_input, false, __FILE__, __LINE__ );
 
 		if( cache == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ModelConverterMDLToMDZ::convert_: invalid create memory file '%s'"
+			LOGGER_ERROR("ModelConverterMDLToMDZ::convert_: invalid create memory file '%s'"
 				, full_input.c_str()
 				);
 
@@ -74,21 +74,21 @@ namespace Menge
 		void * data_memory = cache->getMemory();
 		size_t uncompressSize = cache->getSize();
 
-		OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
-			->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
+		OutputStreamInterfacePtr output = FILE_SERVICE()
+			->openOutputFile( STRINGIZE_STRING_LOCAL( "dev" ), full_output );
 
 		if( output == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ModelConverterMDLToMDZ::convert_: invalid open '%s'"
+			LOGGER_ERROR("ModelConverterMDLToMDZ::convert_: invalid open '%s'"
 				, full_output.c_str()
 				);
 
 			return false;
 		}
 
-		if( Helper::writeStreamArchiveData( m_serviceProvider, output, m_archivator, GET_MAGIC_NUMBER( MAGIC_MDL ), GET_MAGIC_VERSION( MAGIC_MDL ), false, data_memory, uncompressSize, EAC_BEST ) == false )
+		if( Helper::writeStreamArchiveData( output, m_archivator, GET_MAGIC_NUMBER( MAGIC_MDL ), GET_MAGIC_VERSION( MAGIC_MDL ), false, data_memory, uncompressSize, EAC_BEST ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ModelConverterMDLToMDZ::convert_: invalid write '%s'"
+			LOGGER_ERROR("ModelConverterMDLToMDZ::convert_: invalid write '%s'"
 				, full_output.c_str()
 				);
 

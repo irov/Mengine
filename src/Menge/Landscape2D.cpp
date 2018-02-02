@@ -34,7 +34,7 @@ namespace	Menge
 	{
 		if( m_images.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Landscape2D::compileResources_ '%s' images is empty"
+			LOGGER_ERROR("Landscape2D::compileResources_ '%s' images is empty"
 				, m_name.c_str() 
 				);
 
@@ -43,7 +43,7 @@ namespace	Menge
 
 		if( m_elementCountX == 0 || m_elementCountY == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Landscape2D::compileResources_ '%s' count X|Y not setup %d:%d"
+			LOGGER_ERROR("Landscape2D::compileResources_ '%s' count X|Y not setup %d:%d"
 				, m_name.c_str() 
 				, m_elementCountX
 				, m_elementCountY
@@ -125,7 +125,7 @@ namespace	Menge
 				{
 					if( el.image->incrementReference() == false )
 					{
-						LOGGER_ERROR(m_serviceProvider)("Landscape2D::_render '%s' image resource %s not compile"
+						LOGGER_ERROR("Landscape2D::_render '%s' image resource %s not compile"
 							, m_name.c_str() 
 							, el.image->getName().c_str()
 							);
@@ -133,11 +133,11 @@ namespace	Menge
 						return;
 					}
 					
-					RenderMaterialInterfacePtr material = this->makeImageMaterial( m_serviceProvider, el.image, false );
+					RenderMaterialInterfacePtr material = this->makeImageMaterial( el.image, false );
 
 					if( material == nullptr )
 					{
-						LOGGER_ERROR(m_serviceProvider)("Landscape2D::_render '%s' invalid get material"
+						LOGGER_ERROR("Landscape2D::_render '%s' invalid get material"
 							, m_name.c_str() 
 							);
 
@@ -197,7 +197,7 @@ namespace	Menge
 
 			if( image == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Landscape2D::setBackParts %s invalid setup image for %d:%d"
+				LOGGER_ERROR("Landscape2D::setBackParts %s invalid setup image for %d:%d"
 					, this->getName().c_str()
 					, i
 					, j

@@ -41,11 +41,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::_initialize()
 	{
-        m_factoryThreadMutexDummy = new FactoryPool<ThreadMutexDummy, 16>( m_serviceProvider );
-        m_factoryThreadQueue = new FactoryPool<ThreadQueue, 4>( m_serviceProvider );
-        m_factoryThreadJob = new FactoryPool<ThreadJob, 16>( m_serviceProvider );
+        m_factoryThreadMutexDummy = new FactoryPool<ThreadMutexDummy, 16>();
+        m_factoryThreadQueue = new FactoryPool<ThreadQueue, 4>();
+        m_factoryThreadJob = new FactoryPool<ThreadJob, 16>();
         
-		bool avaliable = CONFIG_VALUE(m_serviceProvider, "Engine", "ThreadServiceAvaliable", true );
+		bool avaliable = CONFIG_VALUE("Engine", "ThreadServiceAvaliable", true );
 
 		if( avaliable == false )
 		{
@@ -54,14 +54,14 @@ namespace Menge
 			return true;
 		}
 
-		if( SERVICE_EXIST( m_serviceProvider, Menge::ThreadSystemInterface ) == false )
+		if( SERVICE_EXIST( Menge::ThreadSystemInterface ) == false )
 		{
 			m_avaliable = false;
 
 			return true;
 		}
 
-		m_avaliable = THREAD_SYSTEM(m_serviceProvider)
+		m_avaliable = THREAD_SYSTEM()
 			->avaliable();
 
 		if( m_avaliable == false )
@@ -69,9 +69,9 @@ namespace Menge
 			return true;
 		}
 
-		m_threadCount = CONFIG_VALUE( m_serviceProvider, "Engine", "ThreadCount", 16U );
+		m_threadCount = CONFIG_VALUE( "Engine", "ThreadCount", 16U );
 
-		m_mutexAllocatorPool = THREAD_SYSTEM(m_serviceProvider)
+		m_mutexAllocatorPool = THREAD_SYSTEM()
 			->createMutex( __FILE__, __LINE__ );
 
 		stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
@@ -143,12 +143,10 @@ namespace Menge
     ThreadJobPtr ThreadEngine::createJob( uint32_t _sleep )
     {
         ThreadJobPtr threadJob = m_factoryThreadJob->createObject();
-
-        threadJob->setServiceProvider( m_serviceProvider );
-
+        
         if( threadJob->initialize( _sleep ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("ThreadEngine::createJob invalid create"
+            LOGGER_ERROR("ThreadEngine::createJob invalid create"
                 );
 
             return nullptr;
@@ -169,7 +167,7 @@ namespace Menge
 			return false;
 		}
 
-		ThreadIdentityInterfacePtr identity = THREAD_SYSTEM(m_serviceProvider)
+		ThreadIdentityInterfacePtr identity = THREAD_SYSTEM()
 			->createThread( _priority, _file, _line );
 
 		if( identity == nullptr )
@@ -247,7 +245,7 @@ namespace Menge
 
         if( state == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ThreadEngine::addTask invalid run"               
+            LOGGER_ERROR("ThreadEngine::addTask invalid run"               
                 );
 
             return false;
@@ -315,7 +313,6 @@ namespace Menge
 
 		ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject();
 
-		taskQueue->setServiceProvider( m_serviceProvider );
 		taskQueue->setThreadName( _threadName );
 		taskQueue->setThreadCount( _countThread );
 		taskQueue->setPacketSize( _packetSize );
@@ -452,7 +449,7 @@ namespace Menge
 			return mutex_dummy;
 		}
 
-        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM(m_serviceProvider)
+        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
             ->createMutex( _file, _line );
 
         return mutex;
@@ -460,7 +457,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void ThreadEngine::sleep( uint32_t _ms )
     {
-        THREAD_SYSTEM(m_serviceProvider)
+        THREAD_SYSTEM()
             ->sleep( _ms );
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -471,7 +468,7 @@ namespace Menge
 			return 0U;
 		}
 
-		ptrdiff_t id = THREAD_SYSTEM(m_serviceProvider)
+		ptrdiff_t id = THREAD_SYSTEM()
 			->getCurrentThreadId();
 
 		return id;

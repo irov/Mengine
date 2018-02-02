@@ -167,8 +167,8 @@ namespace Menge
 		virtual const ResourceImagePtr & getResourceImage( int _index ) const = 0;
 	};
 
-#   define PARTICLE_SYSTEM2( serviceProvider )\
-	((ParticleSystemInterface2 *)SERVICE_GET(serviceProvider, Menge::ParticleSystemInterface2))
+#   define PARTICLE_SYSTEM2()\
+	((ParticleSystemInterface2 *)SERVICE_GET(Menge::ParticleSystemInterface2))
 
 	class ParticleServiceInterface2
 		: public ServiceInterface
@@ -185,6 +185,6 @@ namespace Menge
 		virtual uint32_t getMaxParticlesCount() const = 0;
 	};
 
-#   define PARTICLE_SERVICE2( serviceProvider )\
-	((ParticleServiceInterface2 *)SERVICE_GET(serviceProvider, Menge::ParticleServiceInterface2))
+#   define PARTICLE_SERVICE2()\
+	((ParticleServiceInterface2 *)SERVICE_GET(Menge::ParticleServiceInterface2))
 }

@@ -30,33 +30,33 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DevelopmentConverterPlugin::_initialize()
 	{
-        Helper::registerConverter<HotspotImageConverterPNGToHIT>( m_serviceProvider, "png2hit" );
-        Helper::registerConverter<SoundConverterFFMPEGToOGG>( m_serviceProvider, "ffmpegToOggSound" );
-        Helper::registerConverter<VideoConverterFFMPEGToWEBM>( m_serviceProvider, "ffmpegToWebM" );
-        Helper::registerConverter<VideoConverterFFMPEGToOGV>( m_serviceProvider, "ffmpegToOGV" );
-        Helper::registerConverter<VideoConverterFFMPEGToOGVA>( m_serviceProvider, "ffmpegToOGVA" );
-        Helper::registerConverter<MovieKeyConverterXMLToAEK>( m_serviceProvider, "xmlToAekMovie" );
-        Helper::registerConverter<ModelConverterMDLToMDZ>( m_serviceProvider, "mdlToMdzModel" );
-        Helper::registerConverter<ParticleConverterPTCToPTZ>( m_serviceProvider, "ptc2ptz" );
-        Helper::registerConverter<ImageConverterPVRToHTF>( m_serviceProvider, "pvr2htf" );
-        Helper::registerConverter<ImageConverterDDSToHTF>( m_serviceProvider, "dds2htf" );
-        Helper::registerConverter<ImageConverterPNGToACF>( m_serviceProvider, "png2acf" );
+        Helper::registerConverter<HotspotImageConverterPNGToHIT>( "png2hit" );
+        Helper::registerConverter<SoundConverterFFMPEGToOGG>( "ffmpegToOggSound" );
+        Helper::registerConverter<VideoConverterFFMPEGToWEBM>( "ffmpegToWebM" );
+        Helper::registerConverter<VideoConverterFFMPEGToOGV>( "ffmpegToOGV" );
+        Helper::registerConverter<VideoConverterFFMPEGToOGVA>( "ffmpegToOGVA" );
+        Helper::registerConverter<MovieKeyConverterXMLToAEK>( "xmlToAekMovie" );
+        Helper::registerConverter<ModelConverterMDLToMDZ>( "mdlToMdzModel" );
+        Helper::registerConverter<ParticleConverterPTCToPTZ>( "ptc2ptz" );
+        Helper::registerConverter<ImageConverterPVRToHTF>( "pvr2htf" );
+        Helper::registerConverter<ImageConverterDDSToHTF>( "dds2htf" );
+        Helper::registerConverter<ImageConverterPNGToACF>( "png2acf" );
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DevelopmentConverterPlugin::_finalize()
 	{
-        Helper::unregisterConverter( m_serviceProvider, "png2hit" );
-        Helper::unregisterConverter( m_serviceProvider, "ffmpegToOggSound" );
-        Helper::unregisterConverter( m_serviceProvider, "ffmpegToWebM" );
-        Helper::unregisterConverter( m_serviceProvider, "ffmpegToOGV" );
-        Helper::unregisterConverter( m_serviceProvider, "ffmpegToOGVA" );
-        Helper::unregisterConverter( m_serviceProvider, "xmlToAekMovie" );
-        Helper::unregisterConverter( m_serviceProvider, "mdlToMdzModel" );
-        Helper::unregisterConverter( m_serviceProvider, "ptc2ptz" );
-        Helper::unregisterConverter( m_serviceProvider, "pvr2htf" );
-        Helper::unregisterConverter( m_serviceProvider, "dds2htf" );
-        Helper::unregisterConverter( m_serviceProvider, "png2acf" );
+        Helper::unregisterConverter( "png2hit" );
+        Helper::unregisterConverter( "ffmpegToOggSound" );
+        Helper::unregisterConverter( "ffmpegToWebM" );
+        Helper::unregisterConverter( "ffmpegToOGV" );
+        Helper::unregisterConverter( "ffmpegToOGVA" );
+        Helper::unregisterConverter( "xmlToAekMovie" );
+        Helper::unregisterConverter( "mdlToMdzModel" );
+        Helper::unregisterConverter( "ptc2ptz" );
+        Helper::unregisterConverter( "pvr2htf" );
+        Helper::unregisterConverter( "dds2htf" );
+        Helper::unregisterConverter( "png2acf" );
 	}
 }

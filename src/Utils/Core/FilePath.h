@@ -44,17 +44,17 @@ namespace Menge
 	{
 		FilePath emptyPath();
 
-		FilePath concatenationFilePath( ServiceProviderInterface * _serviceProvider, const FilePath & _left, const FilePath & _right );
+		FilePath concatenationFilePath( const FilePath & _left, const FilePath & _right );
 		
-		bool makeFullPath( ServiceProviderInterface * _serviceProvider, const ConstString & _fileGroupName, const FilePath & _fileName, FilePath & _fullPath );
-		FilePath getPathFolder( ServiceProviderInterface * _serviceProvider, const FilePath & _fullpath );
+		bool makeFullPath( const ConstString & _fileGroupName, const FilePath & _fileName, FilePath & _fullPath );
+		FilePath getPathFolder( const FilePath & _fullpath );
 
 		//////////////////////////////////////////////////////////////////////////
-		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const Char * _value, ConstString::size_type _size );
-		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const String & _path );
-		FilePath stringizeFilePath( ServiceProviderInterface * _serviceProvider, const PathString & _path );
+		FilePath stringizeFilePath( const Char * _value, ConstString::size_type _size );
+		FilePath stringizeFilePath( const String & _path );
+		FilePath stringizeFilePath( const PathString & _path );
 		//////////////////////////////////////////////////////////////////////////
-		FilePath unicodeToFilePath( ServiceProviderInterface * _serviceProvide, const WString & _unicode );
+		FilePath unicodeToFilePath( const WString & _unicode );
 		//////////////////////////////////////////////////////////////////////////
 		void pathCorrectBackslash( WChar * _out, const WChar * _in );
 		void pathRemoveBackslash( WChar * _path );
@@ -62,6 +62,6 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 	}
 
-#	define STRINGIZE_FILEPATH_LOCAL( serviceProvider, str )\
-	Helper::stringizeFilePath( serviceProvider, str, (sizeof(str) - 1) )
+#	define STRINGIZE_FILEPATH_LOCAL( str )\
+	Helper::stringizeFilePath( str, (sizeof(str) - 1) )
 }  

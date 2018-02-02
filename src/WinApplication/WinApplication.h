@@ -66,9 +66,9 @@ namespace Menge
 	protected:
 		bool makeUserPath_( WString & _wstring ) const;
 
-	private:
-		ServiceProviderInterface * m_serviceProvider;
-		
+    protected:
+        ServiceProviderInterface * m_serviceProvider;
+
         LoggerInterfacePtr m_fileLog;
         LoggerInterfacePtr m_loggerMessageBox;
 	};

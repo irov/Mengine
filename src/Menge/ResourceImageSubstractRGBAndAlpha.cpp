@@ -51,7 +51,7 @@ namespace Menge
 	{	
 		if( m_resourceImageRGBName.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstractRGBAndAlpha::_compile '%s' not setup rgb resource"
+			LOGGER_ERROR("ResourceImageSubstractRGBAndAlpha::_compile '%s' not setup rgb resource"
 				, this->getName().c_str()
 				);
 
@@ -60,19 +60,19 @@ namespace Menge
 
 		if( m_resourceImageAlphaName.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstractRGBAndAlpha::_compile '%s' not setup alpha resource"
+			LOGGER_ERROR("ResourceImageSubstractRGBAndAlpha::_compile '%s' not setup alpha resource"
 				, this->getName().c_str()
 				);
 
 			return false;
 		}
         
-		m_resourceImageRGB = RESOURCE_SERVICE(m_serviceProvider)
+		m_resourceImageRGB = RESOURCE_SERVICE()
 			->getResourceT<ResourceImagePtr>( m_resourceImageRGBName );
 
 		if( m_resourceImageRGB == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstractRGBAndAlpha::_compile '%s' category '%s' group '%s' invalid get rgb resource '%s'"
+			LOGGER_ERROR("ResourceImageSubstractRGBAndAlpha::_compile '%s' category '%s' group '%s' invalid get rgb resource '%s'"
 				, this->getName().c_str()
 				, this->getCategory().c_str()
 				, this->getGroup().c_str()
@@ -82,12 +82,12 @@ namespace Menge
 			return false;
 		}
 
-		m_resourceImageAlpha = RESOURCE_SERVICE(m_serviceProvider)
+		m_resourceImageAlpha = RESOURCE_SERVICE()
 			->getResourceT<ResourceImagePtr>( m_resourceImageAlphaName );
 
 		if( m_resourceImageAlpha == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstractRGBAndAlpha::_compile '%s' category '%s' group '%s' invalid get alpha resource '%s'"
+			LOGGER_ERROR("ResourceImageSubstractRGBAndAlpha::_compile '%s' category '%s' group '%s' invalid get alpha resource '%s'"
 				, this->getName().c_str()
 				, this->getCategory().c_str()
 				, this->getGroup().c_str()

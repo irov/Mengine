@@ -95,7 +95,7 @@ namespace Menge
         
         if( opcall_err < 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_prepareData invalid ov_open_callbacks [%d]"
+            LOGGER_ERROR("SoundDecoderOGGVorbis::_prepareData invalid ov_open_callbacks [%d]"
                 , opcall_err
                 );
 
@@ -109,7 +109,7 @@ namespace Menge
 
         if( vorbisInfo == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_prepareData invalid ov_info"
+            LOGGER_ERROR("SoundDecoderOGGVorbis::_prepareData invalid ov_info"
                 );
 
             return false;
@@ -117,7 +117,7 @@ namespace Menge
 
         if( vorbisInfo->channels != 2 )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_prepareData invalid channels %d need %d"
+            LOGGER_ERROR("SoundDecoderOGGVorbis::_prepareData invalid channels %d need %d"
                 , vorbisInfo->channels
                 , 2
                 );
@@ -179,7 +179,7 @@ namespace Menge
 			
 			if( decodeSize == OV_HOLE )
 			{
-				LOGGER_CRITICAL(m_serviceProvider)("SoundDecoderOGGVorbis::decode ov_read return OV_HOLE"
+				LOGGER_CRITICAL("SoundDecoderOGGVorbis::decode ov_read return OV_HOLE"
 					, decodeSize
 					);
 
@@ -189,7 +189,7 @@ namespace Menge
 
             if( decodeSize < 0 )
             {
-                LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::decode ov_read return [%d]"
+                LOGGER_ERROR("SoundDecoderOGGVorbis::decode ov_read return [%d]"
                     , decodeSize
                     );
 
@@ -223,7 +223,7 @@ namespace Menge
 	{   
         if( _timing >= m_dataInfo.length )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::seek timing %f > total %f"
+            LOGGER_ERROR("SoundDecoderOGGVorbis::seek timing %f > total %f"
                 , _timing
                 , m_dataInfo.length
                 );
@@ -242,7 +242,7 @@ namespace Menge
         if( seek_err != 0 )
         {
 			//OV_ENOSEEK
-            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::seek timing %f is %f error %d"
+            LOGGER_ERROR("SoundDecoderOGGVorbis::seek timing %f is %f error %d"
                 , _timing
 				, m_dataInfo.length
                 , seek_err

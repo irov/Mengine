@@ -25,15 +25,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DataflowMDL::initialize()
 	{
-		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
+		m_archivator = ARCHIVE_SERVICE()
+			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
 
 		if( m_archivator == nullptr )
 		{
 			return false;
 		}
 
-        m_poolModel3DPack = new FactoryPool<Model3DPack, 32>( m_serviceProvider );
+        m_poolModel3DPack = new FactoryPool<Model3DPack, 32>();
 
 		return true;
 	}
@@ -53,9 +53,9 @@ namespace Menge
 	bool DataflowMDL::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
 	{
 		MemoryInterfacePtr binaryBuffer;
-		if( Helper::loadStreamArchiveData( m_serviceProvider, _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_MDL ), GET_MAGIC_VERSION( MAGIC_MDL ), binaryBuffer, __FILE__, __LINE__ ) == false )
+		if( Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_MDL ), GET_MAGIC_VERSION( MAGIC_MDL ), binaryBuffer, __FILE__, __LINE__ ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("DataflowMDL::load: invalid get data"
+			LOGGER_ERROR("DataflowMDL::load: invalid get data"
 				);
 
 			return false;

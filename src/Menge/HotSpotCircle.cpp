@@ -201,7 +201,7 @@ namespace Menge
 			}
 		}
 
-		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
+		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
 			->getDebugMaterial();
 
 		_renderService

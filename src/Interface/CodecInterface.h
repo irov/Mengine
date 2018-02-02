@@ -178,7 +178,7 @@ namespace Menge
 		virtual const ConstString & findCodecType( const FilePath & _path ) const = 0;
 	};
 
-#   define CODEC_SERVICE( serviceProvider )\
-    ((Menge::CodecServiceInterface *)SERVICE_GET(serviceProvider, Menge::CodecServiceInterface))
+#   define CODEC_SERVICE()\
+    ((Menge::CodecServiceInterface *)SERVICE_GET(Menge::CodecServiceInterface))
 }
 

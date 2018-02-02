@@ -527,8 +527,8 @@ namespace Menge
 		virtual ETextureFilter getDefaultTextureFilterMinification() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define RENDERMATERIAL_SERVICE( serviceProvider )\
-    ((Menge::RenderMaterialServiceInterface*)SERVICE_GET(serviceProvider, Menge::RenderMaterialServiceInterface))
+#   define RENDERMATERIAL_SERVICE()\
+    ((Menge::RenderMaterialServiceInterface*)SERVICE_GET(Menge::RenderMaterialServiceInterface))
     //////////////////////////////////////////////////////////////////////////
     class VisitorRenderTextureInterface
     {
@@ -567,8 +567,8 @@ namespace Menge
         virtual void visitTexture( VisitorRenderTextureInterface * _visitor ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define RENDERTEXTURE_SERVICE( serviceProvider )\
-    ((Menge::RenderTextureServiceInterface*)SERVICE_GET(serviceProvider, Menge::RenderTextureServiceInterface))
+#   define RENDERTEXTURE_SERVICE()\
+    ((Menge::RenderTextureServiceInterface*)SERVICE_GET(Menge::RenderTextureServiceInterface))
 	//////////////////////////////////////////////////////////////////////////
 	class RenderViewportInterface
 	{
@@ -738,8 +738,8 @@ namespace Menge
 		virtual uint32_t getTextureCount() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-#   define RENDER_SYSTEM( serviceProvider )\
-    ((Menge::RenderSystemInterface*)SERVICE_GET(serviceProvider, Menge::RenderSystemInterface))
+#   define RENDER_SYSTEM()\
+    ((Menge::RenderSystemInterface*)SERVICE_GET(Menge::RenderSystemInterface))
 	//////////////////////////////////////////////////////////////////////////
     struct RenderServiceDebugInfo
     {
@@ -844,6 +844,6 @@ namespace Menge
         virtual void resetFrameCount() = 0;
 	};
 
-#   define RENDER_SERVICE( serviceProvider )\
-    ((Menge::RenderServiceInterface*)SERVICE_GET(serviceProvider, Menge::RenderServiceInterface))
+#   define RENDER_SERVICE()\
+    ((Menge::RenderServiceInterface*)SERVICE_GET(Menge::RenderServiceInterface))
 }

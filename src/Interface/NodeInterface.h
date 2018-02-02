@@ -40,6 +40,6 @@ namespace Menge
         virtual void clearHomeless() = 0;
     };
 
-#   define NODE_SERVICE( serviceProvider )\
-    ((Menge::NodeServiceInterface *)SERVICE_GET(serviceProvider, Menge::NodeServiceInterface))
+#   define NODE_SERVICE()\
+    ((Menge::NodeServiceInterface *)SERVICE_GET(Menge::NodeServiceInterface))
 }

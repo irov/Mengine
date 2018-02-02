@@ -98,17 +98,17 @@ namespace Menge
 			.def( "getActorUserData", &NodeAOIActor::getActorUserData )
 			;
 
-		SCRIPT_SERVICE(m_serviceProvider)
-			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeAOITrigger" ), new ScriptWrapper<NodeAOITrigger>() );
+		SCRIPT_SERVICE()
+			->setWrapper( Helper::stringizeString( "NodeAOITrigger" ), new ScriptWrapper<NodeAOITrigger>() );
 
-		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeAOIActor" ), new ScriptWrapper<NodeAOIActor>() );
+		SCRIPT_SERVICE()
+			->setWrapper( Helper::stringizeString( "NodeAOIActor" ), new ScriptWrapper<NodeAOIActor>() );
 		
-		PROTOTYPE_SERVICE(m_serviceProvider)
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeAOITrigger" ), new NodePrototypeGenerator<NodeAOITrigger, 32> );
+		PROTOTYPE_SERVICE()
+			->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeAOITrigger" ), new NodePrototypeGenerator<NodeAOITrigger, 32> );
 
-		PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeAOIActor" ), new NodePrototypeGenerator<NodeAOIActor, 32> );
+		PROTOTYPE_SERVICE()
+			->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "NodeAOIActor" ), new NodePrototypeGenerator<NodeAOIActor, 32> );
 
 		return true;
 	}
@@ -120,9 +120,7 @@ namespace Menge
 	AreaOfInterest * ModuleAreaOfInterest::createAOI()
 	{
 		AreaOfInterest * aoi = new AreaOfInterest;
-
-		aoi->setServiceProvider( m_serviceProvider );
-
+        
 		if( aoi->initialize() == false )
 		{
 			return nullptr;

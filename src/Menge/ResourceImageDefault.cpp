@@ -104,7 +104,7 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		bool exist = FILE_SERVICE(m_serviceProvider)
+		bool exist = FILE_SERVICE()
 			->existFile( category, m_filePath, nullptr );
 		
 		if( exist == false )
@@ -114,7 +114,7 @@ namespace Menge
 				return true;
 			}
 
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s not exist file %s:%s"
+			LOGGER_ERROR("ResourceImageDefault::_isValid %s not exist file %s:%s"
 				, m_name.c_str()
 				, category.c_str()
 				, m_filePath.c_str()
@@ -123,12 +123,12 @@ namespace Menge
 			return false;
 		}
         
-        InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+        InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( category, m_filePath, false );
 
         if( stream == nullptr )
         {
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s invalid open file %s:%s"
+			LOGGER_ERROR("ResourceImageDefault::_isValid %s invalid open file %s:%s"
 				, m_name.c_str()
 				, category.c_str()
 				, m_filePath.c_str()
@@ -137,12 +137,12 @@ namespace Menge
             return false;
         }
 
-        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
+        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( m_codecType );
 
         if( imageDecoder == nullptr )
         {
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s invalid decoder %s"
+			LOGGER_ERROR("ResourceImageDefault::_isValid %s file %s:%s invalid decoder %s"
 				, m_name.c_str()
 				, category.c_str()
 				, m_filePath.c_str()
@@ -154,7 +154,7 @@ namespace Menge
 
 		if( imageDecoder->prepareData( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s decoder initialize failed %s"
+			LOGGER_ERROR("ResourceImageDefault::_isValid %s file %s:%s decoder initialize failed %s"
 				, m_name.c_str()
 				, category.c_str()
 				, m_filePath.c_str()
@@ -166,15 +166,15 @@ namespace Menge
 
 		const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
 
-		uint32_t limitTextureWidth = CONFIG_VALUE( m_serviceProvider, "Limit", "TextureWidth", 2048U );
-		uint32_t limitTextureHeight = CONFIG_VALUE( m_serviceProvider, "Limit", "TextureHeight", 2048U );
+		uint32_t limitTextureWidth = CONFIG_VALUE( "Limit", "TextureWidth", 2048U );
+		uint32_t limitTextureHeight = CONFIG_VALUE( "Limit", "TextureHeight", 2048U );
 
 		float width = (float)dataInfo->width;
 		float height = (float)dataInfo->height;
 		
 		if( (width > limitTextureWidth && limitTextureWidth != 0U) || (height > limitTextureHeight && limitTextureHeight != 0U) )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s invalid limit %d:%d texture size %d:%d "
+			LOGGER_ERROR("ResourceImageDefault::_isValid %s file %s:%s invalid limit %d:%d texture size %d:%d "
 				, m_name.c_str()
 				, category.c_str()
 				, m_filePath.c_str()
@@ -201,7 +201,7 @@ namespace Menge
 
 		if( (test_size.x != width || test_size.y != height) && ( test_size.x > 4.f && test_size.y > 4.f ) )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImage::_isValid: '%s' file '%s:%s' incorrect size %f:%f texture %f:%f"
+			LOGGER_ERROR("ResourceImage::_isValid: '%s' file '%s:%s' incorrect size %f:%f texture %f:%f"
 				, this->getName().c_str()
 				, category.c_str()
 				, m_filePath.c_str()
@@ -214,13 +214,13 @@ namespace Menge
 			return false;
 		}
 
-		bool check_imageTransparency = CONFIG_VALUE( m_serviceProvider, "Check", "ImageTransparency", false );
+		bool check_imageTransparency = CONFIG_VALUE( "Check", "ImageTransparency", false );
 
 		if( check_imageTransparency == true && dataInfo->channels == 4 )
 		{
 			size_t texture_size = dataInfo->getSize();
 
-			MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, texture_size, __FILE__, __LINE__ );
+			MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( texture_size, __FILE__, __LINE__ );
 
 			if( buffer == nullptr )
 			{
@@ -235,7 +235,7 @@ namespace Menge
 
 			if( imageDecoder->setOptions( &options ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s invalid optionizing"
+				LOGGER_ERROR("ResourceImageDefault::_isValid %s file %s:%s invalid optionizing"
 					, m_name.c_str()
 					, category.c_str()
 					, m_filePath.c_str()
@@ -247,7 +247,7 @@ namespace Menge
 
 			if( imageDecoder->decode( buffer_memory, texture_size ) == 0 )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s invalid decode %s"
+				LOGGER_ERROR("ResourceImageDefault::_isValid %s file %s:%s invalid decode %s"
 					, m_name.c_str()
 					, category.c_str()
 					, m_filePath.c_str()
@@ -259,7 +259,7 @@ namespace Menge
 
 			if( s_allPixelsTransparency( buffer_memory, texture_size ) == true )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s codec %s all pixels transparency!"
+				LOGGER_ERROR("ResourceImageDefault::_isValid %s file %s:%s codec %s all pixels transparency!"
 					, m_name.c_str()
 					, category.c_str()
 					, m_filePath.c_str()
@@ -269,13 +269,13 @@ namespace Menge
 				return false;
 			}
 
-			bool check_imageRowColumnTransparency = CONFIG_VALUE( m_serviceProvider, "Check", "ImageRowColumnTransparency", false );
+			bool check_imageRowColumnTransparency = CONFIG_VALUE( "Check", "ImageRowColumnTransparency", false );
 
 			if( check_imageRowColumnTransparency == true )
 			{
 				if( s_checkRowColumnTransparency( buffer_memory, dataInfo->width, dataInfo->height ) == true )
 				{
-					LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s codec %s row or column pixels transparency!"
+					LOGGER_ERROR("ResourceImageDefault::_isValid %s file %s:%s codec %s row or column pixels transparency!"
 						, m_name.c_str()
 						, category.c_str()
 						, m_filePath.c_str()
@@ -301,7 +301,7 @@ namespace Menge
 
 		if( m_codecType.empty() == true )
 		{
-			m_codecType = CODEC_SERVICE( m_serviceProvider )
+			m_codecType = CODEC_SERVICE()
 				->findCodecType( m_filePath );
 		}
 
@@ -332,19 +332,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::_compile()
 	{				
-		LOGGER_INFO(m_serviceProvider)("ResourceImageDefault::loadImageFrame_ %s load texture %s"
+		LOGGER_INFO("ResourceImageDefault::loadImageFrame_ %s load texture %s"
 			, this->getName().c_str()
 			, m_filePath.c_str()
 			);
 
 		const ConstString & category = this->getCategory();
 
-		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
+		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
 			->loadTexture( category, m_filePath, m_codecType );
 
 		if( texture == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::loadImageFrame_: '%s' category '%s' group '%s' can't load image file '%s'"
+			LOGGER_ERROR("ResourceImageDefault::loadImageFrame_: '%s' category '%s' group '%s' can't load image file '%s'"
 				, this->getName().c_str()
 				, this->getCategory().c_str()
 				, this->getGroup().c_str()
@@ -389,7 +389,7 @@ namespace Menge
 
 		if( _codecType.empty() == true )
 		{
-			m_codecType = CODEC_SERVICE(m_serviceProvider)
+			m_codecType = CODEC_SERVICE()
 				->findCodecType( m_filePath );
 		}
 

@@ -33,9 +33,6 @@ namespace Menge
 		~PathFinderMap();
 
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-
-	public:
 		bool initialize();
 		void finalize();
 
@@ -91,8 +88,6 @@ namespace Menge
 		};
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		float m_width;
 		float m_height;
 		float m_gridSize;

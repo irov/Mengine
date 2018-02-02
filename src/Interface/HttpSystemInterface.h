@@ -37,6 +37,6 @@ namespace Menge
 		virtual bool cancelRequest( HttpRequestID _id ) = 0;
 	};
 
-#   define HTTP_SYSTEM( serviceProvider )\
-	SERVICE_GET(serviceProvider, Menge::HttpSystemInterface)
+#   define HTTP_SYSTEM()\
+	SERVICE_GET(Menge::HttpSystemInterface)
 }

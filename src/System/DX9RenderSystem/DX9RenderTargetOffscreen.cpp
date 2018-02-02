@@ -17,7 +17,7 @@ namespace Menge
 	bool DX9RenderTargetOffscreen::_initialize()
 	{
 		LPDIRECT3DSURFACE9 surfacePlain;
-		IF_DXCALL( m_serviceProvider, m_device, CreateOffscreenPlainSurface, (m_hwWidth, m_hwHeight, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surfacePlain, NULL) )
+		IF_DXCALL( m_device, CreateOffscreenPlainSurface, (m_hwWidth, m_hwHeight, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surfacePlain, NULL) )
 		{
 			return false;
 		}
@@ -45,10 +45,10 @@ namespace Menge
 			return false;
 		}
 
-		DXCALL( m_serviceProvider, m_device, GetRenderTargetData, (m_surface, m_surfacePlain) );
+		DXCALL( m_device, GetRenderTargetData, (m_surface, m_surfacePlain) );
 
 		D3DLOCKED_RECT LockedRect;
-		DXCALL( m_serviceProvider, m_surfacePlain, LockRect, ( &LockedRect, NULL, 0 ) );
+		DXCALL( m_surfacePlain, LockRect, ( &LockedRect, NULL, 0 ) );
 
 		if( LockedRect.pBits == NULL || LockedRect.Pitch == 0 )
 		{
@@ -66,7 +66,7 @@ namespace Menge
 			srcData += LockedRect.Pitch;
 		}
 
-		DXCALL( m_serviceProvider, m_surfacePlain, UnlockRect, () );
+		DXCALL( m_surfacePlain, UnlockRect, () );
 
 		return true;
 	}

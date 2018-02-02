@@ -33,16 +33,16 @@ namespace Menge
 
         if( this->createDirectory( baseDirectoryPath ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("Win32FileGroupDirectory::initialize: invalid create directory '%s'"
+            LOGGER_ERROR("Win32FileGroupDirectory::initialize: invalid create directory '%s'"
                 , _folderPath.c_str()
                 );
 
             return false;
         }
 
-        m_factoryInputStream = new FactoryPool<Win32FileInputStream, 8>( m_serviceProvider );
-        m_factoryOutputStream = new FactoryPool<Win32FileOutputStream, 4>( m_serviceProvider );
-        m_factoryWin32MappedFile = new FactoryPool<Win32FileMapped, 4>( m_serviceProvider );
+        m_factoryInputStream = new FactoryPool<Win32FileInputStream, 8>();
+        m_factoryOutputStream = new FactoryPool<Win32FileOutputStream, 4>();
+        m_factoryWin32MappedFile = new FactoryPool<Win32FileMapped, 4>();
 
         return true;
     }
@@ -67,10 +67,10 @@ namespace Menge
 	bool Win32FileGroupDirectory::existFile( const FilePath & _fileName ) const
 	{
 		WChar filePath[MENGINE_MAX_PATH];
-		if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+		if( WINDOWSLAYER_SERVICE()
 			->concatenateFilePath( m_relationPath, m_folderPath, _fileName, filePath, MENGINE_MAX_PATH ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::existFile invlalid concatenate filePath '%s':'%s'"
+			LOGGER_ERROR("Win32FileSystem::existFile invlalid concatenate filePath '%s':'%s'"
 				, m_folderPath.c_str()
 				, _fileName.c_str()
 				);
@@ -78,7 +78,7 @@ namespace Menge
 			return false;
 		}
 
-		bool result = WINDOWSLAYER_SERVICE(m_serviceProvider)
+		bool result = WINDOWSLAYER_SERVICE()
 			->fileExists( filePath );
 
         return result;
@@ -96,12 +96,12 @@ namespace Menge
         accountString.append( '/' );
         
         WString unicode_folderPath;
-        if( Helper::utf8ToUnicode( m_serviceProvider, accountString, unicode_folderPath ) == false )
+        if( Helper::utf8ToUnicode( accountString, unicode_folderPath ) == false )
         {
             return false;
         }
 
-        if( PLATFORM_SERVICE( m_serviceProvider )
+        if( PLATFORM_SERVICE()
             ->existDirectory( unicode_folderPath ) == false )
         {
             return false;
@@ -121,18 +121,18 @@ namespace Menge
         accountString.append( _folderName );
 
         WString unicode_folderPath;
-        if( Helper::utf8ToUnicode( m_serviceProvider, accountString, unicode_folderPath ) == false )
+        if( Helper::utf8ToUnicode( accountString, unicode_folderPath ) == false )
         {
             return false;
         }
 
-        if( PLATFORM_SERVICE( m_serviceProvider )
+        if( PLATFORM_SERVICE()
             ->existDirectory( unicode_folderPath ) == true )
         {
             return true;
         }
 
-        if( PLATFORM_SERVICE( m_serviceProvider )
+        if( PLATFORM_SERVICE()
             ->createDirectory( unicode_folderPath ) == false )
         {
             return false;
@@ -147,9 +147,7 @@ namespace Menge
 		(void)_streaming;
 
 		Win32FileInputStream * inputStream = m_factoryInputStream->createObject();
-
-		inputStream->setServiceProvider( m_serviceProvider );
-
+        
 		return inputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -159,7 +157,7 @@ namespace Menge
 
         if( _stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32FileGroupDirectory::openInputFile failed _stream == NULL"
+            LOGGER_ERROR("Win32FileGroupDirectory::openInputFile failed _stream == NULL"
                 );
 
             return false;
@@ -169,7 +167,7 @@ namespace Menge
 
 		if( file->open( m_relationPath, m_folderPath, _filePath, _offset, _size ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32FileGroupDirectory::openInputFile failed open file '%s':'%s'"
+            LOGGER_ERROR("Win32FileGroupDirectory::openInputFile failed open file '%s':'%s'"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
                 );
@@ -184,8 +182,6 @@ namespace Menge
 	{
 		Win32FileOutputStream * outputStream = m_factoryOutputStream->createObject();
 
-		outputStream->setServiceProvider( m_serviceProvider );
-
 		return outputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////	
@@ -193,7 +189,7 @@ namespace Menge
 	{
         if( _stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32FileGroupDirectory::openOutputFile failed _stream == NULL"
+            LOGGER_ERROR("Win32FileGroupDirectory::openOutputFile failed _stream == NULL"
                 );
 
             return false;
@@ -203,7 +199,7 @@ namespace Menge
 
         if( file->open( m_relationPath, m_folderPath, _filePath ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32FileGroupDirectory::openOutputFile failed open file '%s':'%s'"
+            LOGGER_ERROR("Win32FileGroupDirectory::openOutputFile failed open file '%s':'%s'"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
                 );

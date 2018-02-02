@@ -18,7 +18,7 @@ namespace Menge
 
         m_script = EVENTABLE_METHODR( this, EVENT_KEEP_SCRIPT, pybind::object() )
             ->onScriptHolderKeepScript();
-		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEEP_SCRIPT, m_script )();
+		//EVENTABLE_ASK( this, EVENT_KEEP_SCRIPT, m_script )();
 
 		bool successful = m_script.is_valid();
 		
@@ -31,7 +31,7 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_RELEASE_SCRIPT )
             ->onScriptHolderReleaseScript( m_script );
-		//EVENTABLE_CALL(m_serviceProvider, this, EVENT_RELEASE_SCRIPT)( m_script	);
+		//EVENTABLE_CALL(this, EVENT_RELEASE_SCRIPT)( m_script	);
 
 		m_script.reset();
 	}

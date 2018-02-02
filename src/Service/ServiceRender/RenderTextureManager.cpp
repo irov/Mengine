@@ -37,21 +37,21 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::_initialize()
     {
-		m_supportA8 = RENDER_SYSTEM(m_serviceProvider)
+		m_supportA8 = RENDER_SYSTEM()
 			->supportTextureFormat( PF_A8 );
 
-        m_supportL8 = RENDER_SYSTEM( m_serviceProvider )
+        m_supportL8 = RENDER_SYSTEM()
             ->supportTextureFormat( PF_L8 );
 
-		m_supportR8G8B8 = RENDER_SYSTEM(m_serviceProvider)
+		m_supportR8G8B8 = RENDER_SYSTEM()
 			->supportTextureFormat( PF_R8G8B8 );
 
-		m_supportNonPow2 = RENDER_SYSTEM( m_serviceProvider )
+		m_supportNonPow2 = RENDER_SYSTEM()
 			->supportTextureNonPow2();
 
-        m_factoryRenderTexture = Helper::makeFactoryPool<RenderTexture, 128>( m_serviceProvider, this, &RenderTextureManager::onRenderTextureDestroy_ );
+        m_factoryRenderTexture = Helper::makeFactoryPool<RenderTexture, 128>( this, &RenderTextureManager::onRenderTextureDestroy_ );
 
-        m_factoryDecoderRenderImageProvider = new FactoryPool<DecoderRenderImageProvider, 128>( m_serviceProvider );
+        m_factoryDecoderRenderImageProvider = new FactoryPool<DecoderRenderImageProvider, 128>();
 		
 		return true;
     }
@@ -134,12 +134,12 @@ namespace Menge
 
 		this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
-		RenderImageInterfacePtr image = RENDER_SYSTEM( m_serviceProvider )
+		RenderImageInterfacePtr image = RENDER_SYSTEM()
 			->createImage( HWMipmaps, HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
 		if( image == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createTexture_ invalid create image %ux%u"
+			LOGGER_ERROR("RenderTextureManager::createTexture_ invalid create image %ux%u"
 				, HWWidth
 				, HWHeight
 				);
@@ -151,7 +151,7 @@ namespace Menge
 
 		if( texture == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createTexture_ invalid create render texture %ux%u"
+			LOGGER_ERROR("RenderTextureManager::createTexture_ invalid create render texture %ux%u"
 				, _width
 				, _height
 				);
@@ -172,12 +172,12 @@ namespace Menge
 
 		this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
-        RenderImageInterfacePtr image = RENDER_SYSTEM(m_serviceProvider)
+        RenderImageInterfacePtr image = RENDER_SYSTEM()
             ->createDynamicImage( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
         if( image == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createDynamicTexture couldn't create image %dx%d channels %d"
+            LOGGER_ERROR("RenderTextureManager::createDynamicTexture couldn't create image %dx%d channels %d"
                 , HWWidth
                 , HWHeight
                 , HWChannels
@@ -193,12 +193,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::saveImage( const RenderTextureInterfacePtr & _texture, const ConstString & _fileGroupName, const ConstString & _codecName, const FilePath & _fileName )
     {
-        OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+        OutputStreamInterfacePtr stream = FILE_SERVICE()
             ->openOutputFile( _fileGroupName, _fileName );
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::saveImage : can't create file '%s' '%s'"
+            LOGGER_ERROR("RenderTextureManager::saveImage : can't create file '%s' '%s'"
                 , _fileGroupName.c_str()
                 , _fileName.c_str() 
                 );
@@ -206,12 +206,12 @@ namespace Menge
             return false;
         }
 
-        ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE(m_serviceProvider)
+        ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
             ->createEncoderT<ImageEncoderInterfacePtr>( _codecName );
 
         if( imageEncoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::saveImage : can't create encoder for filename '%s'"
+            LOGGER_ERROR("RenderTextureManager::saveImage : can't create encoder for filename '%s'"
                 , _fileName.c_str() 
                 );
 
@@ -220,7 +220,7 @@ namespace Menge
 
 		if( imageEncoder->initialize( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::saveImage : can't initialize encoder for filename '%s'"
+			LOGGER_ERROR("RenderTextureManager::saveImage : can't initialize encoder for filename '%s'"
 				, _fileName.c_str() 
 				);
 
@@ -248,7 +248,7 @@ namespace Menge
 
 		if( buffer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::saveImage : can't lock texture '%s'"
+			LOGGER_ERROR("RenderTextureManager::saveImage : can't lock texture '%s'"
 				, _fileName.c_str() 
 				);
 
@@ -263,7 +263,7 @@ namespace Menge
 
         if( imageEncoder->setOptions( &options ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::saveImage : invalid optionize '%s'"
+			LOGGER_ERROR("RenderTextureManager::saveImage : invalid optionize '%s'"
 				, _fileName.c_str() 
 				);
 
@@ -280,7 +280,7 @@ namespace Menge
 
         if( bytesWritten == 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::saveImage : Error while encoding image data"
+            LOGGER_ERROR("RenderTextureManager::saveImage : Error while encoding image data"
                 );
 
             return false;
@@ -321,7 +321,7 @@ namespace Menge
 
 		textures.insert( std::make_pair( std::make_pair( _pakName, _fileName ), texture_ptr ) );
 
-        LOGGER_INFO(m_serviceProvider)( "RenderTextureManager::cacheFileTexture cache texture %s:%s"
+        LOGGER_INFO( "RenderTextureManager::cacheFileTexture cache texture %s:%s"
 			, _pakName.c_str()
             , _fileName.c_str()
             );
@@ -340,9 +340,9 @@ namespace Menge
             return texture;
         }
 
-		if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+		if( SERVICE_EXIST( Menge::GraveyardInterface ) == true )
 		{
-			RenderTextureInterfacePtr resurrect_texture = GRAVEYARD_SERVICE( m_serviceProvider )
+			RenderTextureInterfacePtr resurrect_texture = GRAVEYARD_SERVICE()
 				->resurrectTexture( _pakName, _fileName );
 
 			if( resurrect_texture != nullptr )
@@ -363,19 +363,18 @@ namespace Menge
 
 		if( imageProvider == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::loadTexture invalid create render image provider");
+			LOGGER_ERROR("RenderTextureManager::loadTexture invalid create render image provider");
 
 			return nullptr;
 		}
 
-        imageProvider->setServiceProvider( m_serviceProvider );
         imageProvider->initialize( _pakName, _fileName, _codecName );
 
 		RenderImageLoaderInterfacePtr imageLoader = imageProvider->getLoader();
 
 		if( imageLoader == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::loadTexture invalid get image loader");
+			LOGGER_ERROR("RenderTextureManager::loadTexture invalid get image loader");
 
 			return nullptr;
 		}
@@ -386,7 +385,7 @@ namespace Menge
 
 		if( new_texture == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::loadTexture create texture '%s:%s' codec '%s'"				
+			LOGGER_ERROR("RenderTextureManager::loadTexture create texture '%s:%s' codec '%s'"				
 				, _pakName.c_str()
 				, _fileName.c_str()
 				, _codecName.c_str()
@@ -399,7 +398,7 @@ namespace Menge
 
 		if( image == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::loadTexture invalid get image"
+			LOGGER_ERROR("RenderTextureManager::loadTexture invalid get image"
 				);
 
 			return nullptr;
@@ -407,7 +406,7 @@ namespace Menge
 
 		if( imageLoader->load( image ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createTexture Invalid decode image"
+			LOGGER_ERROR("RenderTextureManager::createTexture Invalid decode image"
 				);
 
 			image->unlock( 0, false );
@@ -545,9 +544,9 @@ namespace Menge
 
 			textures.erase( std::make_pair( category, fileName ) );
 
-			if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+			if( SERVICE_EXIST( Menge::GraveyardInterface ) == true )
 			{
-				GRAVEYARD_SERVICE( m_serviceProvider )
+				GRAVEYARD_SERVICE()
 					->buryTexture( _texture );
 			}
 		}
@@ -560,9 +559,7 @@ namespace Menge
 	RenderTextureInterfacePtr RenderTextureManager::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height )
 	{
 		RenderTexturePtr texture = m_factoryRenderTexture->createObject();
-
-		texture->setServiceProvider(m_serviceProvider);
-
+        
         uint32_t id = ++m_textureEnumerator;
 
 		texture->initialize( id, _image, _width, _height );

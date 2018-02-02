@@ -22,21 +22,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MockupHttpSystem::_initialize()
 	{
-		if( THREAD_SERVICE( m_serviceProvider )
-			->createThread( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadMockupHttpSystem" ), MENGINE_THREAD_PRIORITY_LOWEST, __FILE__, __LINE__ ) == false )
+		if( THREAD_SERVICE()
+			->createThread( STRINGIZE_STRING_LOCAL( "ThreadMockupHttpSystem" ), MENGINE_THREAD_PRIORITY_LOWEST, __FILE__, __LINE__ ) == false )
 		{
 			return false;
 		}
 
-		m_factoryTaskDummy = new FactoryPool<ThreadTaskDummy, 8>( m_serviceProvider );
+		m_factoryTaskDummy = new FactoryPool<ThreadTaskDummy, 8>();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MockupHttpSystem::_finalize()
 	{
-		THREAD_SERVICE( m_serviceProvider )
-			->destroyThread( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadMockupHttpSystem" ) );
+		THREAD_SERVICE()
+			->destroyThread( STRINGIZE_STRING_LOCAL( "ThreadMockupHttpSystem" ) );
 
 		m_factoryTaskDummy = nullptr;
 	}
@@ -47,13 +47,12 @@ namespace Menge
 
 		ThreadTaskDummyPtr task = m_factoryTaskDummy->createObject();
 
-		task->setServiceProvider( m_serviceProvider );
 		task->initialize( task_id, this );
 
-		if( THREAD_SERVICE( m_serviceProvider )
-			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadMockupHttpSystem" ), task ) == false )
+		if( THREAD_SERVICE()
+			->addTask( STRINGIZE_STRING_LOCAL( "ThreadMockupHttpSystem" ), task ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MockupHttpSystem::getMessage url '%s' invalid add task"
+			LOGGER_ERROR("MockupHttpSystem::getMessage url '%s' invalid add task"
 				, _url.c_str()
 				);
 
@@ -78,13 +77,12 @@ namespace Menge
 
 		ThreadTaskDummyPtr task = m_factoryTaskDummy->createObject();
 
-		task->setServiceProvider( m_serviceProvider );
 		task->initialize( task_id, this );
 
-		if( THREAD_SERVICE( m_serviceProvider )
-			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadMockupHttpSystem" ), task ) == false )
+		if( THREAD_SERVICE()
+			->addTask( STRINGIZE_STRING_LOCAL( "ThreadMockupHttpSystem" ), task ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MockupHttpSystem::postMessage url '%s' invalid add task"
+			LOGGER_ERROR("MockupHttpSystem::postMessage url '%s' invalid add task"
 				, _url.c_str()
 				);
 
@@ -106,10 +104,10 @@ namespace Menge
 		(void)_login;
 		(void)_password;
 
-		if( FILE_SERVICE( m_serviceProvider )
+		if( FILE_SERVICE()
 			->hasFileGroup( _category, nullptr ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MockupHttpSystem::downloadAsset url '%s' not found category '%s' for filepath '%s'"
+			LOGGER_ERROR("MockupHttpSystem::downloadAsset url '%s' not found category '%s' for filepath '%s'"
 				, _url.c_str()
 				, _category.c_str()
 				, _path.c_str()
@@ -118,10 +116,10 @@ namespace Menge
 			return 0;
 		}
 
-		if( FILE_SERVICE( m_serviceProvider )
+		if( FILE_SERVICE()
 			->existFile( _category, _path, nullptr ) == true )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MockupHttpSystem::downloadAsset url '%s' category '%s' file alredy exist '%s'"
+			LOGGER_ERROR("MockupHttpSystem::downloadAsset url '%s' category '%s' file alredy exist '%s'"
 				, _url.c_str()
 				, _category.c_str()
 				, _path.c_str()
@@ -134,13 +132,12 @@ namespace Menge
 		
 		ThreadTaskDummyPtr task = m_factoryTaskDummy->createObject();
 
-		task->setServiceProvider( m_serviceProvider );
 		task->initialize( task_id, this );
 		
-		if( THREAD_SERVICE(m_serviceProvider)
-			->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadMockupHttpSystem"), task ) == false )
+		if( THREAD_SERVICE()
+			->addTask( STRINGIZE_STRING_LOCAL( "ThreadMockupHttpSystem"), task ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MockupHttpSystem::downloadAsset url '%s' category '%s' path '%s' invalid add task"
+			LOGGER_ERROR("MockupHttpSystem::downloadAsset url '%s' category '%s' path '%s' invalid add task"
 				, _url.c_str()
 				, _category.c_str()
 				, _path.c_str()
@@ -169,13 +166,12 @@ namespace Menge
         
         ThreadTaskDummyPtr task = m_factoryTaskDummy->createObject();
         
-        task->setServiceProvider( m_serviceProvider );
         task->initialize( task_id, this );
         
-        if( THREAD_SERVICE( m_serviceProvider )
-           ->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadMockupHttpSystem" ), task ) == false )
+        if( THREAD_SERVICE()
+           ->addTask( STRINGIZE_STRING_LOCAL( "ThreadMockupHttpSystem" ), task ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("MockupHttpSystem::headerData url '%s' invalid add task"
+            LOGGER_ERROR("MockupHttpSystem::headerData url '%s' invalid add task"
                                               , _url.c_str()
                                               );
             

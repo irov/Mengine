@@ -71,8 +71,8 @@ namespace Menge
 		mt::mat4f mvpMat = _worldMatrix * _viewMatrix * _projectionMatrix;
 		mt::mat4f mvpMat_tr;
 		mt::transpose_m4( mvpMat_tr, mvpMat );
-		DXCALL( m_serviceProvider, _pD3DDevice, SetVertexShaderConstantF, (0, mvpMat_tr.buff(), 4) );
+		DXCALL( _pD3DDevice, SetVertexShaderConstantF, (0, mvpMat_tr.buff(), 4) );
 
-		//GLCALL( m_serviceProvider, glUniformMatrix4fv, (m_transformLocation, 1, GL_FALSE, m_mvpMat.buff()) );
+		//GLCALL( glUniformMatrix4fv, (m_transformLocation, 1, GL_FALSE, m_mvpMat.buff()) );
 	}
 }

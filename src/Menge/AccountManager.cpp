@@ -39,17 +39,17 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool AccountManager::_initialize()
     {
-		LOGGER_INFO( m_serviceProvider )("Initializing Account manager..."
+		LOGGER_INFO("Initializing Account manager..."
 			);
 		
-        m_factoryAccounts = new FactoryPool<Account, 8>( m_serviceProvider );
+        m_factoryAccounts = new FactoryPool<Account, 8>();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AccountManager::_finalize()
     {
-        LOGGER_WARNING(m_serviceProvider)("AccountManager::finalize save accounts"
+        LOGGER_WARNING("AccountManager::finalize save accounts"
             );
 
         ConstString lastAccount = m_currentAccountID;
@@ -77,7 +77,7 @@ namespace Menge
 		Stringstream streamAccountID;
 		streamAccountID << "Player_" << new_playerID;
 
-		ConstString accountID = Helper::stringizeString( m_serviceProvider, streamAccountID.str() );
+		ConstString accountID = Helper::stringizeString( streamAccountID.str() );
         
 		AccountInterfacePtr account = this->createAccount_( accountID );
 
@@ -100,7 +100,7 @@ namespace Menge
 		Stringstream streamAccountID;
 		streamAccountID << "Global_" << new_playerID;
 
-		ConstString accountID = Helper::stringizeString( m_serviceProvider, streamAccountID.str() );
+		ConstString accountID = Helper::stringizeString( streamAccountID.str() );
 
 		AccountInterfacePtr account = this->createGlobalAccount_( accountID );
 
@@ -118,7 +118,7 @@ namespace Menge
 
 		if( it_find != m_accounts.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AccountManager::createAccount_: Account with ID '%s' already exist. Account not created"
+			LOGGER_ERROR("AccountManager::createAccount_: Account with ID '%s' already exist. Account not created"
 				, _accountID.c_str() 
 				);
 
@@ -131,7 +131,7 @@ namespace Menge
 
         if( newAccount == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("AccountManager::createAccount_: Account with ID '%s' invalid create. Account not created"
+            LOGGER_ERROR("AccountManager::createAccount_: Account with ID '%s' invalid create. Account not created"
                 , _accountID.c_str() 
                 );
 
@@ -167,7 +167,7 @@ namespace Menge
 
 		if( it_find != m_accounts.end() )
 		{
-			LOGGER_ERROR( m_serviceProvider )("AccountManager::createGlobalAccount_: Account with ID '%s' already exist. Account not created"
+			LOGGER_ERROR("AccountManager::createGlobalAccount_: Account with ID '%s' already exist. Account not created"
 				, _accountID.c_str()
 				);
 
@@ -178,7 +178,7 @@ namespace Menge
 
 		if( newAccount == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("AccountManager::createGlobalAccount_: Account with ID '%s' invalid create. Account not created"
+			LOGGER_ERROR("AccountManager::createGlobalAccount_: Account with ID '%s' invalid create. Account not created"
 				, _accountID.c_str()
 				);
 
@@ -220,18 +220,18 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     AccountInterfacePtr AccountManager::newAccount_( const ConstString& _accountID )
     {
-        FileGroupInterfacePtr fileGroup = FILE_SERVICE( m_serviceProvider )
-            ->getFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ) );
+        FileGroupInterfacePtr fileGroup = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
         PathString accountString;
         accountString.append( _accountID );
         accountString.append( '/' );
 
-        FilePath accountPath = Helper::stringizeFilePath( m_serviceProvider, accountString );
+        FilePath accountPath = Helper::stringizeFilePath( accountString );
 
         if( fileGroup->createDirectory( accountPath ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("AccountManager::createAccount_: Account '%s' failed create directory"
+            LOGGER_ERROR("AccountManager::createAccount_: Account '%s' failed create directory"
                 , accountPath.c_str()
                 );
 
@@ -240,9 +240,7 @@ namespace Menge
 
         AccountPtr newAccount = m_factoryAccounts->createObject();
 
-        newAccount->setServiceProvider( m_serviceProvider );
-
-		uint32_t projectVersion = APPLICATION_SERVICE( m_serviceProvider )
+        uint32_t projectVersion = APPLICATION_SERVICE()
 			->getProjectVersion();
 
 		if( newAccount->initialize( _accountID, accountPath, projectVersion ) == false )
@@ -259,7 +257,7 @@ namespace Menge
 
 		if( it_find == m_accounts.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AccountManager::deleteAccount Can't delete account '%s'. There is no account with such ID"
+			LOGGER_ERROR("AccountManager::deleteAccount Can't delete account '%s'. There is no account with such ID"
 				, _accountID.c_str() 
 				);
 
@@ -290,7 +288,7 @@ namespace Menge
 
 		if( it_find == m_accounts.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AccountManager::selectAccount Can't select account '%s'. There is no account with such ID"
+			LOGGER_ERROR("AccountManager::selectAccount Can't select account '%s'. There is no account with such ID"
 				, _accountID.c_str() 
 				);
 			
@@ -335,7 +333,7 @@ namespace Menge
 		
 		if( it_found == m_accounts.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AccountManager::getAccount account with ID '%s' not found"
+			LOGGER_ERROR("AccountManager::getAccount account with ID '%s' not found"
 				, _accountID.c_str() 
 				);
 
@@ -432,7 +430,7 @@ namespace Menge
 
 		if( this->selectAccount( m_defaultAccountID ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("AccountManager::selectDefaultAccount invalid select account %s"
+            LOGGER_ERROR("AccountManager::selectDefaultAccount invalid select account %s"
                 , m_defaultAccountID.c_str()
                 );
 
@@ -455,7 +453,7 @@ namespace Menge
 
         if( _account->load() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccount_ invalid load account %s"
+            LOGGER_ERROR("AccountManager::loadAccount_ invalid load account %s"
                 , accountID.c_str()
                 );
 
@@ -467,21 +465,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::loadAccounts()
 	{        
-		bool noLoadAccount = HAS_OPTION( m_serviceProvider, "noaccounts" );
+		bool noLoadAccount = HAS_OPTION( "noaccounts" );
 
 		if( noLoadAccount == true )
 		{
 			return true;
 		}
 
-		FilePath accountsPath = CONFIG_VALUE( m_serviceProvider, "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "accounts.ini" ) );
+		FilePath accountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
 
-		bool accountsExist = FILE_SERVICE(m_serviceProvider)
-            ->existFile( CONST_STRING(m_serviceProvider, user), accountsPath, nullptr );
+		bool accountsExist = FILE_SERVICE()
+            ->existFile( CONST_STRING( user), accountsPath, nullptr );
 
 		if( accountsExist == false )
 		{
-			LOGGER_WARNING(m_serviceProvider)( "AccountManager::loadAccounts not exist accounts '%s'"
+			LOGGER_WARNING( "AccountManager::loadAccounts not exist accounts '%s'"
 				, accountsPath.c_str()
 				);
 
@@ -489,9 +487,9 @@ namespace Menge
 		}
         	
 		IniUtil::IniStore ini;
-		if( IniUtil::loadIni( ini, CONST_STRING( m_serviceProvider, user ), accountsPath, m_serviceProvider ) == false )
+		if( IniUtil::loadIni( ini, CONST_STRING( user ), accountsPath ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts parsing accounts failed '%s'"
+			LOGGER_ERROR("AccountManager::loadAccounts parsing accounts failed '%s'"
 				, accountsPath.c_str()
 				);
 
@@ -501,41 +499,41 @@ namespace Menge
 		//unsigned int playerCount;
 
 		//config.getSettingUInt( L"SETTINGS", L"AccountCount", playerCount );
-        if( IniUtil::getIniValue( ini, "SETTINGS", "AccountEnumerator", m_playerEnumerator, m_serviceProvider ) == false )
+        if( IniUtil::getIniValue( ini, "SETTINGS", "AccountEnumerator", m_playerEnumerator ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts get AccountEnumerator failed '%s'"
+            LOGGER_ERROR("AccountManager::loadAccounts get AccountEnumerator failed '%s'"
                 , accountsPath.c_str()
                 );
 
             return false;
         }
 
-		if( IniUtil::getIniValue( ini, "SETTINGS", "GlobalAccountID", m_globalAccountID, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( ini, "SETTINGS", "GlobalAccountID", m_globalAccountID ) == false )
 		{
-			LOGGER_INFO( m_serviceProvider )("AccountManager::loadAccounts get GlobalAccountID failed '%s'"
+			LOGGER_INFO("AccountManager::loadAccounts get GlobalAccountID failed '%s'"
 				, accountsPath.c_str()
 				);
 		}
 
-		if( IniUtil::getIniValue( ini, "SETTINGS", "DefaultAccountID", m_defaultAccountID, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( ini, "SETTINGS", "DefaultAccountID", m_defaultAccountID ) == false )
         {
-            LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get DefaultAccountID failed '%s'"
+            LOGGER_INFO( "AccountManager::loadAccounts get DefaultAccountID failed '%s'"
                 , accountsPath.c_str()
                 );
         }
 
 		ConstString selectAccountID;
-		if( IniUtil::getIniValue( ini, "SETTINGS", "SelectAccountID", selectAccountID, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( ini, "SETTINGS", "SelectAccountID", selectAccountID ) == false )
         {
-            LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get SelectAccountID failed '%s'"
+            LOGGER_INFO( "AccountManager::loadAccounts get SelectAccountID failed '%s'"
                 , accountsPath.c_str()
                 );
         }   
         
         TVectorConstString values;
-		if( IniUtil::getIniValue( ini, "ACCOUNTS", "Account", values, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( ini, "ACCOUNTS", "Account", values ) == false )
         {
-            LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get ACCOUNTS failed '%s'"
+            LOGGER_INFO( "AccountManager::loadAccounts get ACCOUNTS failed '%s'"
                 , accountsPath.c_str()
                 );
         }  
@@ -554,7 +552,7 @@ namespace Menge
 
 			if( account == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("AccountManager::loadAccountsInfo invalid create account %s"
+				LOGGER_ERROR("AccountManager::loadAccountsInfo invalid create account %s"
 					, accountID.c_str()
 					);
 
@@ -565,7 +563,7 @@ namespace Menge
 
             if( this->loadAccount_( account ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccountsInfo invalid load account '%s'"
+                LOGGER_ERROR("AccountManager::loadAccountsInfo invalid load account '%s'"
                     , accountID.c_str()
                     );
 
@@ -577,13 +575,13 @@ namespace Menge
 
 		if( selectAccountID.empty() == false )
 		{
-            LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts select account '%s'"
+            LOGGER_INFO( "AccountManager::loadAccounts select account '%s'"
                 , selectAccountID.c_str()
                 );
 
 			if( this->selectAccount( selectAccountID ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts invalid set select account '%s'"
+                LOGGER_ERROR("AccountManager::loadAccounts invalid set select account '%s'"
                     , selectAccountID.c_str()
                     );
 
@@ -592,13 +590,13 @@ namespace Menge
 		}
         else if( m_defaultAccountID.empty() == false )
         {
-            LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts set default account '%s'"
+            LOGGER_INFO( "AccountManager::loadAccounts set default account '%s'"
                 , m_defaultAccountID.c_str()
                 );
 
             if( this->selectAccount( m_defaultAccountID ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts invalid set default account '%s'"
+                LOGGER_ERROR("AccountManager::loadAccounts invalid set default account '%s'"
                     , m_defaultAccountID.c_str()
                     );
 
@@ -609,13 +607,13 @@ namespace Menge
         {
             const ConstString & accountID = validAccount->getID();
 
-            LOGGER_WARNING(m_serviceProvider)( "AccountManager::loadAccounts set valid account '%s'"
+            LOGGER_WARNING( "AccountManager::loadAccounts set valid account '%s'"
                 , accountID.c_str()
                 );
 
             if( this->selectAccount( accountID ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts invalid set valid account '%s'"
+                LOGGER_ERROR("AccountManager::loadAccounts invalid set valid account '%s'"
                     , accountID.c_str()
                     );
 
@@ -624,7 +622,7 @@ namespace Menge
         }
         else
         {
-            LOGGER_INFO(m_serviceProvider)("AccountManager::loadAccounts invalid set any accounts"
+            LOGGER_INFO("AccountManager::loadAccounts invalid set any accounts"
                 );
         }
 		
@@ -633,43 +631,43 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::saveAccounts()
 	{
-		FilePath accountsPath = CONFIG_VALUE( m_serviceProvider, "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "accounts.ini" ) );
+		FilePath accountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
 
-		OutputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
-            ->openOutputFile( CONST_STRING(m_serviceProvider, user), accountsPath );
+		OutputStreamInterfacePtr file = FILE_SERVICE()
+            ->openOutputFile( CONST_STRING( user), accountsPath );
 
 		if( file == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AccountManager::saveAccountsInfo can't open file for writing. Accounts '%s' settings not saved"
+			LOGGER_ERROR("AccountManager::saveAccountsInfo can't open file for writing. Accounts '%s' settings not saved"
 				, accountsPath.c_str()
 				);
 
 			return false;
 		}
 
-        IniUtil::writeIniSection( m_serviceProvider, file, "[SETTINGS]" );
+        IniUtil::writeIniSection( file, "[SETTINGS]" );
 
 		if( m_globalAccountID.empty() == false )
 		{
-			IniUtil::writeIniSetting( m_serviceProvider, file, "GlobalAccountID", m_globalAccountID );
+			IniUtil::writeIniSetting( file, "GlobalAccountID", m_globalAccountID );
 		}
 
 		if( m_defaultAccountID.empty() == false )
 		{
-            IniUtil::writeIniSetting( m_serviceProvider, file, "DefaultAccountID", m_defaultAccountID );
+            IniUtil::writeIniSetting( file, "DefaultAccountID", m_defaultAccountID );
 		}
 
 		if( m_currentAccountID.empty() == false )
 		{
-            IniUtil::writeIniSetting( m_serviceProvider, file, "SelectAccountID", m_currentAccountID );
+            IniUtil::writeIniSetting( file, "SelectAccountID", m_currentAccountID );
 		}
 
         WString AccountEnumerator;
         Helper::unsignedToWString( m_playerEnumerator, AccountEnumerator );
 
-        IniUtil::writeIniSetting( m_serviceProvider, file, "AccountEnumerator", AccountEnumerator );
+        IniUtil::writeIniSetting( file, "AccountEnumerator", AccountEnumerator );
 
-        IniUtil::writeIniSection( m_serviceProvider, file, "[ACCOUNTS]" );
+        IniUtil::writeIniSection( file, "[ACCOUNTS]" );
 
 		for( TMapAccounts::iterator 
 			it = m_accounts.begin(), 
@@ -679,7 +677,7 @@ namespace Menge
 		{
 			const ConstString & accountID = it->first;
 
-            IniUtil::writeIniSetting( m_serviceProvider, file, "Account", accountID );
+            IniUtil::writeIniSetting( file, "Account", accountID );
 		}
 
         for( TMapAccounts::iterator 
@@ -692,7 +690,7 @@ namespace Menge
 
             if( account->save() == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("AccountManager::finalize invalid save account %s:%s"
+                LOGGER_ERROR("AccountManager::finalize invalid save account %s:%s"
                     , account->getID().c_str()
                     , account->getFolder().c_str()
                     );

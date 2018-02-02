@@ -20,7 +20,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ConverterEngine::registerConverter( const ConstString & _type, const ConverterFactoryInterfacePtr & _factory )
 	{
-        LOGGER_INFO(m_serviceProvider)("ConverterEngine::registerConverter add converter %s"
+        LOGGER_INFO("ConverterEngine::registerConverter add converter %s"
             , _type.c_str()
             );
 
@@ -31,7 +31,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ConverterEngine::unregisterConverter( const ConstString& _type )
 	{
-        LOGGER_INFO(m_serviceProvider)("ConverterEngine::unregisterConverter remove converter %s"
+        LOGGER_INFO("ConverterEngine::unregisterConverter remove converter %s"
             , _type.c_str()
             );
 
@@ -49,7 +49,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ConverterInterfacePtr ConverterEngine::createConverter( const ConstString & _type )
 	{
-        LOGGER_INFO(m_serviceProvider)("ConverterEngine::createConverter %s"
+        LOGGER_INFO("ConverterEngine::createConverter %s"
             , _type.c_str()
             );
 
@@ -57,7 +57,7 @@ namespace Menge
 
 		if( it_find == m_mapConverterSystem.end() )
 		{
-            LOGGER_INFO(m_serviceProvider)("ConverterEngine::createConverter not found converter %s"
+            LOGGER_INFO("ConverterEngine::createConverter not found converter %s"
                 , _type.c_str()
                 );
 
@@ -68,7 +68,7 @@ namespace Menge
 
 		if( factory == nullptr )
 		{
-			LOGGER_INFO( m_serviceProvider )("ConverterEngine::createConverter invalid factory %s is nullptr"
+			LOGGER_INFO("ConverterEngine::createConverter invalid factory %s is nullptr"
 				, _type.c_str()
 				);
 
@@ -79,7 +79,7 @@ namespace Menge
 
 		if( converter == nullptr )
 		{
-            LOGGER_INFO(m_serviceProvider)("ConverterEngine::createConverter invalid create converter %s"
+            LOGGER_INFO("ConverterEngine::createConverter invalid create converter %s"
                 , _type.c_str()
                 );
 
@@ -88,7 +88,7 @@ namespace Menge
 
 		if( converter->initialize() == false )
 		{
-            LOGGER_INFO(m_serviceProvider)("ConverterEngine::createConverter invalid initialize converter %s"
+            LOGGER_INFO("ConverterEngine::createConverter invalid initialize converter %s"
                 , _type.c_str()
                 );
 
@@ -104,7 +104,7 @@ namespace Menge
 
         if ( converter == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert: can't create converter '%s'"
+            LOGGER_ERROR("ConverterEngine::convert: can't create converter '%s'"
                 , _converter.c_str()
                 );
 
@@ -116,10 +116,10 @@ namespace Menge
         options.inputFileName = _in;
 
 
-        if( FILE_SERVICE(m_serviceProvider)
+        if( FILE_SERVICE()
             ->hasFileGroup( _category, nullptr ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert: can't get file system '%s' for converter '%s'"
+            LOGGER_ERROR("ConverterEngine::convert: can't get file system '%s' for converter '%s'"
                 , _category.c_str()
                 , _converter.c_str()
                 );
@@ -136,13 +136,13 @@ namespace Menge
 		const String & ext = converter->getConvertExt();
 		cache_path += ext;
 		
-        options.outputFileName = Helper::stringizeFilePath( m_serviceProvider, cache_path );
+        options.outputFileName = Helper::stringizeFilePath( cache_path );
 
         converter->setOptions( &options );
 
         if( options.inputFileName.empty() == true  )
         {
-            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert input file is empty"
+            LOGGER_ERROR("ConverterEngine::convert input file is empty"
                 );
 
             return false;
@@ -150,16 +150,16 @@ namespace Menge
 
         if( options.outputFileName.empty() == true )
         {
-            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert output file is empty"
+            LOGGER_ERROR("ConverterEngine::convert output file is empty"
                 );
             
             return false;
         }
 
-        if( FILE_SERVICE(m_serviceProvider)
+        if( FILE_SERVICE()
             ->existFile( options.pakName, options.inputFileName, nullptr ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert: input file '%s:%s' not found"
+            LOGGER_ERROR("ConverterEngine::convert: input file '%s:%s' not found"
 				, options.pakName.c_str()
                 , options.inputFileName.c_str()
                 );
@@ -167,15 +167,15 @@ namespace Menge
             return false;
         }
 
-        if( FILE_SERVICE(m_serviceProvider)
+        if( FILE_SERVICE()
             ->existFile( options.pakName, options.outputFileName, nullptr ) == true )
         {			
-            InputStreamInterfacePtr oldFile = FILE_SERVICE(m_serviceProvider)
+            InputStreamInterfacePtr oldFile = FILE_SERVICE()
                 ->openInputFile( options.pakName, options.inputFileName, false );
 
             if( oldFile == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert '%s' can't open input file '%s:%s' (time)"
+                LOGGER_ERROR("ConverterEngine::convert '%s' can't open input file '%s:%s' (time)"
                     , _converter.c_str()
 					, options.pakName.c_str()
                     , options.inputFileName.c_str()
@@ -189,12 +189,12 @@ namespace Menge
 
             oldFile = nullptr;
 
-            InputStreamInterfacePtr newFile = FILE_SERVICE(m_serviceProvider)
+            InputStreamInterfacePtr newFile = FILE_SERVICE()
                 ->openInputFile( options.pakName, options.outputFileName, false );
 
             if( newFile == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert '%s' can't open output file '%s:%s' (time)"
+                LOGGER_ERROR("ConverterEngine::convert '%s' can't open output file '%s:%s' (time)"
                     , _converter.c_str()
 					, options.pakName.c_str()
                     , options.outputFileName.c_str()
@@ -215,14 +215,14 @@ namespace Menge
 	                return true;
 				}
 
-				LOGGER_WARNING(m_serviceProvider)("ConverterEngine::convert invalid version '%s:%s'"
+				LOGGER_WARNING("ConverterEngine::convert invalid version '%s:%s'"
 					, options.pakName.c_str()
 					, options.outputFileName.c_str()
 					);
             }
         }
 
-		LOGGER_WARNING(m_serviceProvider)("ConverterEngine::convert '%s:%s'\nfrom: %s\nto: '%s:%s'\n"
+		LOGGER_WARNING("ConverterEngine::convert '%s:%s'\nfrom: %s\nto: '%s:%s'\n"
 			, _converter.c_str()
 			, options.pakName.c_str()
 			, options.inputFileName.c_str()
@@ -232,7 +232,7 @@ namespace Menge
 
         if( converter->convert() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert can't convert '%s:%s'\nfrom: %s\nto: '%s:%s'\n"
+            LOGGER_ERROR("ConverterEngine::convert can't convert '%s:%s'\nfrom: %s\nto: '%s:%s'\n"
                 , _converter.c_str()
 				, options.pakName.c_str()
                 , options.inputFileName.c_str()

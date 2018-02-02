@@ -37,8 +37,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderHTF::_initialize()
 	{		
-		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
+		m_archivator = ARCHIVE_SERVICE()
+			->getArchivator( STRINGIZE_STRING_LOCAL("lz4") );
 
 		if( m_archivator == nullptr )
 		{
@@ -50,9 +50,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderHTF::_prepareData()
 	{
-		if( Helper::loadStreamMagicHeader( m_serviceProvider, m_stream, GET_MAGIC_NUMBER(MAGIC_HTF), GET_MAGIC_VERSION(MAGIC_HTF) ) == false )
+		if( Helper::loadStreamMagicHeader( m_stream, GET_MAGIC_NUMBER(MAGIC_HTF), GET_MAGIC_VERSION(MAGIC_HTF) ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderHTF::_prepareData invalid load magic header"
+			LOGGER_ERROR("ImageDecoderHTF::_prepareData invalid load magic header"
 				);
 
 			return false;
@@ -82,9 +82,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderHTF::_decode( void * _buffer, size_t _bufferSize )
 	{
-		if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, _buffer, _bufferSize, __FILE__, __LINE__ ) == false )
+		if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, __FILE__, __LINE__ ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ImageDecoderHTF::decode invalid load"
+			LOGGER_ERROR("ImageDecoderHTF::decode invalid load"
 				);
 
 			return 0;

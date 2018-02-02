@@ -10,6 +10,7 @@ namespace Menge
 	{
 	public:
 		Identity();
+        ~Identity();
 
 	public:
 		void setName( const ConstString & _name );

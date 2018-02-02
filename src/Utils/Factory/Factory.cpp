@@ -6,12 +6,11 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Factory::Factory(ServiceProviderInterface * _serviceProvider, const char * _name )
-		: m_serviceProvider(_serviceProvider)
-		, m_name(_name)
+	Factory::Factory( const char * _name )
+		: m_name(_name)
 		, m_count(0)
 	{
-		FACTORY_SERVICE(m_serviceProvider)
+		FACTORY_SERVICE()
             ->registerFactory( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -105,7 +104,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Factory::_destroy()
     {
-        FACTORY_SERVICE( m_serviceProvider )
+        FACTORY_SERVICE()
             ->unregisterFactory( this );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -33,8 +33,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotspotImageConverterPNGToHIT::validateVersion( const InputStreamInterfacePtr & _stream ) const
 	{
-		PickDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-			->createDecoderT<PickDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "hitPick") );
+		PickDecoderInterfacePtr decoder = CODEC_SERVICE()
+			->createDecoderT<PickDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick") );
 
 		if( decoder == nullptr )
 		{
@@ -50,7 +50,7 @@ namespace Menge
 
 		uint32_t bufferSize = (uint32_t)dataInfo->mipmapsize;
 
-		MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( m_serviceProvider, bufferSize, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{
@@ -71,24 +71,24 @@ namespace Menge
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool HotspotImageConverterPNGToHIT::convert()
 	{
-        InputStreamInterfacePtr input_stream = FILE_SERVICE(m_serviceProvider)
+        InputStreamInterfacePtr input_stream = FILE_SERVICE()
             ->openInputFile( m_options.pakName, m_options.inputFileName, false );
 
         if( input_stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_: Image file '%s' was not found"
+            LOGGER_ERROR("HotspotImageConverterPNGToHIT::convert_: Image file '%s' was not found"
                 , m_options.inputFileName.c_str() 
                 );
 
             return false;
         }
 
-        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage") );
+        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
+            ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage") );
 
         if( imageDecoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_: Image decoder for file '%s' was not found"
+            LOGGER_ERROR("HotspotImageConverterPNGToHIT::convert_: Image decoder for file '%s' was not found"
                 , m_options.inputFileName.c_str() 
                 );
 
@@ -97,7 +97,7 @@ namespace Menge
 
 		if( imageDecoder->prepareData( input_stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_: Image initialize for file '%s' was not found"
+			LOGGER_ERROR("HotspotImageConverterPNGToHIT::convert_: Image initialize for file '%s' was not found"
 				, m_options.inputFileName.c_str() 
 				);
 
@@ -123,7 +123,7 @@ namespace Menge
 
 		uint32_t bufferSize = width * height + mimmap_size;
 		
-		MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( m_serviceProvider, bufferSize, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{
@@ -134,7 +134,7 @@ namespace Menge
 
         if( imageDecoder->decode( buffer, bufferSize ) == 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_ Invalid decode %s"
+            LOGGER_ERROR("HotspotImageConverterPNGToHIT::convert_ Invalid decode %s"
                 , m_options.inputFileName.c_str()                
                 );
             
@@ -145,12 +145,12 @@ namespace Menge
 
         this->makeMipMapLevel_( buffer, width, height, mimmap_level );
 
-        OutputStreamInterfacePtr output_stream = FILE_SERVICE(m_serviceProvider)
+        OutputStreamInterfacePtr output_stream = FILE_SERVICE()
             ->openOutputFile( m_options.pakName, m_options.outputFileName );
 
         if( output_stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (open file %s)"
+            LOGGER_ERROR("HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (open file %s)"
                 , m_options.outputFileName.c_str() 
                 , m_options.pakName.c_str()
                 );
@@ -158,12 +158,12 @@ namespace Menge
             return nullptr;
         }
 
-        PickEncoderInterfacePtr encoder = CODEC_SERVICE(m_serviceProvider)
-            ->createEncoderT<PickEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "hitPick") );
+        PickEncoderInterfacePtr encoder = CODEC_SERVICE()
+            ->createEncoderT<PickEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick") );
         
         if( encoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (createEncoder hitPick)"
+            LOGGER_ERROR("HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (createEncoder hitPick)"
                 , m_options.outputFileName.c_str() 
                 );
 			
@@ -172,7 +172,7 @@ namespace Menge
 
 		if( encoder->initialize( output_stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not initialize (createEncoder hitPick)"
+			LOGGER_ERROR("HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not initialize (createEncoder hitPick)"
 				, m_options.outputFileName.c_str() 
 				);
 

@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	bool s_OALErrorCheck( ServiceProviderInterface * _serviceProvider, const char * _file, int _line )
+	bool s_OALErrorCheck( const char * _file, int _line )
 	{
 		ALenum error = alGetError();
 
@@ -17,7 +17,7 @@ namespace Menge
 
 		const char * message = alGetString( error );
 
-		LOGGER_ERROR(_serviceProvider)("OAL Error: (%s %d) %d:%s"
+		LOGGER_ERROR("OAL Error: (%s %d) %d:%s"
 			, _file
 			, _line
             , error

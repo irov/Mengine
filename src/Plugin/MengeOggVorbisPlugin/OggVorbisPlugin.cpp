@@ -21,18 +21,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OggVorbisPlugin::_initialize()
 	{
-        Helper::registerDecoder<SoundDecoderOGGVorbis>( m_serviceProvider, "oggSound" );
-        Helper::registerDecoder<SoundDecoderOGGVorbis>( m_serviceProvider, "ogvSound" );
+        Helper::registerDecoder<SoundDecoderOGGVorbis>( "oggSound" );
+        Helper::registerDecoder<SoundDecoderOGGVorbis>( "ogvSound" );
 	
-		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "ogg", Helper::stringizeString(m_serviceProvider, "oggSound") );
+		CODEC_SERVICE()
+			->registerCodecExt( "ogg", Helper::stringizeString("oggSound") );
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OggVorbisPlugin::_finalize()
 	{
-        Helper::unregisterDecoder( m_serviceProvider, "oggSound" );
-        Helper::unregisterDecoder( m_serviceProvider, "ogvSound" );
+        Helper::unregisterDecoder( "oggSound" );
+        Helper::unregisterDecoder( "ogvSound" );
 	}
 }

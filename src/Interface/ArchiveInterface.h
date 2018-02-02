@@ -52,6 +52,6 @@ namespace Menge
 		virtual MemoryInputInterfacePtr compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress ) = 0;
     };
 
-#   define ARCHIVE_SERVICE( serviceProvider )\
-    ((Menge::ArchiveServiceInterface *)SERVICE_GET(serviceProvider, Menge::ArchiveServiceInterface))
+#   define ARCHIVE_SERVICE()\
+    ((Menge::ArchiveServiceInterface *)SERVICE_GET(Menge::ArchiveServiceInterface))
 }

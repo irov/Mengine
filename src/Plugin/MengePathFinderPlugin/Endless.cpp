@@ -16,8 +16,7 @@ namespace	Menge
 	static const uint32_t ED_ALL = 16;
 	//////////////////////////////////////////////////////////////////////////
 	Endless::Endless()
-		: m_serviceProvider(nullptr)
-		, m_elementCount(0)
+		: m_elementCount(0)
 		, m_elementWidth(0.f)
 		, m_offset(0.f)
 		, m_enumeratorElementId(0)
@@ -47,8 +46,8 @@ namespace	Menge
 
 		for( uint32_t i = 0; i != m_elementCount; ++i )
 		{
-			Parallax * parallax = NODE_SERVICE( m_serviceProvider )
-				->createNodeT<Parallax *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Parallax" ) );
+			Parallax * parallax = NODE_SERVICE() 
+				->createNodeT<Parallax *>( STRINGIZE_STRING_LOCAL( "Parallax" ) );
 
 			parallax->setImmortal( true );
 			

@@ -86,7 +86,7 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_NODE_AOI_TRIGGER_ENTER )
             ->onNodeAOITriggerEnter( enemy, m_iff, enemy_iff );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_TRIGGER_ENTER )(this, enemy, m_iff, enemy_iff);
+		//EVENTABLE_CALL( this, EVENT_TRIGGER_ENTER )(this, enemy, m_iff, enemy_iff);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeAOITrigger::onAOIActorLeave( AOIActorProviderInterface * _enemy )
@@ -97,7 +97,7 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_NODE_AOI_TRIGGER_ENTER )
             ->onNodeAOITriggerLeave( enemy, m_iff, enemy_iff );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_TRIGGER_LEAVE )(this, enemy, m_iff, enemy_iff);
+		//EVENTABLE_CALL( this, EVENT_TRIGGER_LEAVE )(this, enemy, m_iff, enemy_iff);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeAOITrigger::_activate()

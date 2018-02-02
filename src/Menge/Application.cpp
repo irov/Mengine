@@ -227,25 +227,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////	
 	bool Application::_initialize()
 	{   
-		SERVICE_CREATE( m_serviceProvider, Consts );
-		SERVICE_CREATE( m_serviceProvider, PrototypeService );
-		SERVICE_CREATE( m_serviceProvider, NodeService );
-		SERVICE_CREATE( m_serviceProvider, LoaderService );
+		SERVICE_CREATE( Consts );
+		SERVICE_CREATE( PrototypeService );
+		SERVICE_CREATE( NodeService );
+		SERVICE_CREATE( LoaderService );
 
-		SERVICE_CREATE( m_serviceProvider, RenderService );
-		SERVICE_CREATE( m_serviceProvider, RenderMaterialService );
-		SERVICE_CREATE( m_serviceProvider, RenderTextureService );
+		SERVICE_CREATE( RenderService );
+		SERVICE_CREATE( RenderMaterialService );
+		SERVICE_CREATE( RenderTextureService );
 
-		SERVICE_CREATE( m_serviceProvider, ResourceService );
-		SERVICE_CREATE( m_serviceProvider, TextService );
-		SERVICE_CREATE( m_serviceProvider, Watchdog );
-		SERVICE_CREATE( m_serviceProvider, ProfilerService );
-		SERVICE_CREATE( m_serviceProvider, Graveyard );
-		SERVICE_CREATE( m_serviceProvider, PackageService );
-		SERVICE_CREATE( m_serviceProvider, UserdataService );
-		SERVICE_CREATE( m_serviceProvider, PlayerService );
-		SERVICE_CREATE( m_serviceProvider, GameService );
-		SERVICE_CREATE( m_serviceProvider, TimelineService );
+		SERVICE_CREATE( ResourceService );
+		SERVICE_CREATE( TextService );
+		SERVICE_CREATE( Watchdog );
+		SERVICE_CREATE( ProfilerService );
+		SERVICE_CREATE( Graveyard );
+		SERVICE_CREATE( PackageService );
+		SERVICE_CREATE( UserdataService );
+		SERVICE_CREATE( PlayerService );
+		SERVICE_CREATE( GameService );
+		SERVICE_CREATE( TimelineService );
 
 		if( this->registerBaseNodeTypes_() == false )
 		{
@@ -262,21 +262,21 @@ namespace Menge
 			return false;
 		}
 
-        Helper::registerDecoder<ImageDecoderMemory>( m_serviceProvider, "memoryImage" );
-        Helper::registerDecoder<ImageDecoderArchive>( m_serviceProvider, "archiveImage" );
+        Helper::registerDecoder<ImageDecoderMemory>( "memoryImage" );
+        Helper::registerDecoder<ImageDecoderArchive>( "archiveImage" );
 	
-		m_companyName = CONFIG_VALUE(m_serviceProvider, "Project", "Company", L"NONAME");
-		m_projectName = CONFIG_VALUE(m_serviceProvider, "Project", "Name", L"UNKNOWN");
+		m_companyName = CONFIG_VALUE("Project", "Company", L"NONAME");
+		m_projectName = CONFIG_VALUE("Project", "Name", L"UNKNOWN");
 
-		m_projectCodename = CONFIG_VALUE(m_serviceProvider, "Project", "Codename", ConstString::none());
-		m_projectVersion = CONFIG_VALUE(m_serviceProvider, "Project", "Version", 0U);
+		m_projectCodename = CONFIG_VALUE("Project", "Codename", ConstString::none());
+		m_projectVersion = CONFIG_VALUE("Project", "Version", 0U);
 
-        m_contentResolution = CONFIG_VALUE(m_serviceProvider, "Game", "ContentResolution", Resolution(1024, 768));
-        m_fixedContentResolution = CONFIG_VALUE(m_serviceProvider, "Game", "FixedContentResolution", true);
-		m_fixedDisplayResolution = CONFIG_VALUE(m_serviceProvider, "Game", "FixedDisplayResolution", true);
+        m_contentResolution = CONFIG_VALUE("Game", "ContentResolution", Resolution(1024, 768));
+        m_fixedContentResolution = CONFIG_VALUE("Game", "FixedContentResolution", true);
+		m_fixedDisplayResolution = CONFIG_VALUE("Game", "FixedDisplayResolution", true);
 		
 		TVectorAspectRatioViewports aspectRatioViewports;
-		CONFIG_VALUES(m_serviceProvider, "Game", "AspectRatioViewport", aspectRatioViewports);
+		CONFIG_VALUES("Game", "AspectRatioViewport", aspectRatioViewports);
 		
         for( TVectorAspectRatioViewports::const_iterator
             it = aspectRatioViewports.begin(),
@@ -289,26 +289,26 @@ namespace Menge
            m_aspectRatioViewports[aspect] = it->viewport;
         }
 
-		m_locale = CONFIG_VALUE( m_serviceProvider, "Locale", "Default", STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "en" ) );
+        m_locale = CONFIG_VALUE( "Locale", "Default", STRINGIZE_FILEPATH_LOCAL( "en" ) );
 
-		LOGGER_WARNING( m_serviceProvider )("Application::_initialize locale %s"
+		LOGGER_WARNING("Application::_initialize locale %s"
 			, m_locale.c_str()
 			);
 
-		m_windowResolution = CONFIG_VALUE( m_serviceProvider, "Window", "Size", Resolution( 1024, 768 ) );
-		m_bits = CONFIG_VALUE( m_serviceProvider, "Window", "Bits", 32U );
-        m_fullscreen = CONFIG_VALUE( m_serviceProvider, "Window", "Fullscreen", true );
-		m_nofullscreen = CONFIG_VALUE( m_serviceProvider, "Window", "NoFullscreen", false );
-		m_vsync = CONFIG_VALUE( m_serviceProvider, "Window", "VSync", true );
+		m_windowResolution = CONFIG_VALUE( "Window", "Size", Resolution( 1024, 768 ) );
+		m_bits = CONFIG_VALUE( "Window", "Bits", 32U );
+        m_fullscreen = CONFIG_VALUE( "Window", "Fullscreen", true );
+		m_nofullscreen = CONFIG_VALUE( "Window", "NoFullscreen", false );
+		m_vsync = CONFIG_VALUE( "Window", "VSync", true );
 
-		if( HAS_OPTION( m_serviceProvider, "nofullscreen" ) == true )
+		if( HAS_OPTION( "nofullscreen" ) == true )
 		{
 			m_nofullscreen = true;
 		}
 
-		if( HAS_OPTION( m_serviceProvider, "author" ) == true || HAS_OPTION( m_serviceProvider, "support" ) == true )
+		if( HAS_OPTION( "author" ) == true || HAS_OPTION( "support" ) == true )
 		{
-			LOGGER_CRITICAL( m_serviceProvider )("Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru");
+			LOGGER_CRITICAL("Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru");
 		}
 
 		bool fullscreen = this->getFullscreenMode();
@@ -316,7 +316,7 @@ namespace Menge
 		if( fullscreen == true )
 		{
 			Resolution desktopResolution;
-			PLATFORM_SERVICE( m_serviceProvider )
+			PLATFORM_SERVICE()
 				->getDesktopResolution( desktopResolution );
 
 			m_currentResolution = desktopResolution;
@@ -327,10 +327,10 @@ namespace Menge
 		}
 
         const TextEntryInterface * entry;
-        if( TEXT_SERVICE( m_serviceProvider )
-            ->existText( STRINGIZE_STRING_LOCAL( m_serviceProvider, "APPLICATION_TITLE" ), &entry ) == false )
+        if( TEXT_SERVICE()
+            ->existText( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
         {
-            LOGGER_WARNING( m_serviceProvider )("Application not setup title 'APPLICATION_TITLE'"
+            LOGGER_WARNING("Application not setup title 'APPLICATION_TITLE'"
                 );
         }
         else
@@ -338,7 +338,7 @@ namespace Menge
             m_projectTitle = entry->getValue();
         }
 
-		if( CONFIG_VALUE( m_serviceProvider, "Debug", "ShowHotspots", false ) == true )
+		if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
 		{
 			m_debugMask |= MENGE_DEBUG_HOTSPOTS;
 		}
@@ -348,94 +348,94 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::registerBaseNodeTypes_()
 	{	
-#	define NODE_FACTORY( serviceProvider, Type )\
-        if( PROTOTYPE_SERVICE(serviceProvider)\
-            ->addPrototype( STRINGIZE_STRING_LOCAL(serviceProvider, "Node"), STRINGIZE_STRING_LOCAL( serviceProvider, #Type), new NodePrototypeGenerator<Type, 128> ) == false )\
+#	define NODE_FACTORY( Type )\
+        if( PROTOTYPE_SERVICE()\
+            ->addPrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), new NodePrototypeGenerator<Type, 128> ) == false )\
 		{\
 			return false;\
 		}
 
-		LOGGER_WARNING(m_serviceProvider)("Creating Object Factory..." );
+		LOGGER_WARNING("Creating Object Factory..." );
 
-		NODE_FACTORY( m_serviceProvider, Node );
+		NODE_FACTORY( Node );
 
-		NODE_FACTORY( m_serviceProvider, Entity );
-		//NODE_FACTORY( m_serviceProvider, ScriptHolder );
-		NODE_FACTORY( m_serviceProvider, Arrow );
-		NODE_FACTORY( m_serviceProvider, Scene );
+		NODE_FACTORY( Entity );
+		//NODE_FACTORY( ScriptHolder );
+		NODE_FACTORY( Arrow );
+		NODE_FACTORY( Scene );
 
-		NODE_FACTORY( m_serviceProvider, Gyroscope );
-		NODE_FACTORY( m_serviceProvider, Isometric );
-		NODE_FACTORY( m_serviceProvider, Parallax );
-        NODE_FACTORY( m_serviceProvider, MatrixProxy );
+		NODE_FACTORY( Gyroscope );
+		NODE_FACTORY( Isometric );
+		NODE_FACTORY( Parallax );
+        NODE_FACTORY( MatrixProxy );
 		
-		//NODE_FACTORY( m_serviceProvider, ParticleEmitter );
-		NODE_FACTORY( m_serviceProvider, ParticleEmitter2 );
+		//NODE_FACTORY( ParticleEmitter );
+		NODE_FACTORY( ParticleEmitter2 );
 
-		NODE_FACTORY( m_serviceProvider, HotSpotPolygon );
-		NODE_FACTORY( m_serviceProvider, HotSpotCircle );
-		NODE_FACTORY( m_serviceProvider, HotSpotBubbles );
-        NODE_FACTORY( m_serviceProvider, HotSpotImage );
-        NODE_FACTORY( m_serviceProvider, HotSpotShape );
+		NODE_FACTORY( HotSpotPolygon );
+		NODE_FACTORY( HotSpotCircle );
+		NODE_FACTORY( HotSpotBubbles );
+        NODE_FACTORY( HotSpotImage );
+        NODE_FACTORY( HotSpotShape );
 		//NODE_FACTORY( Light2D );
 		//NODE_FACTORY( ShadowCaster2D );
 		//NODE_FACTORY( TilePolygon );
-		NODE_FACTORY( m_serviceProvider, Point );
-		NODE_FACTORY( m_serviceProvider, Line );
+		NODE_FACTORY( Point );
+		NODE_FACTORY( Line );
 		//NODE_FACTORY( RigidBody2D );
 		//NODE_FACTORY( PhysicalBody2D );
-		NODE_FACTORY( m_serviceProvider, SoundEmitter );
-		NODE_FACTORY( m_serviceProvider, Mesh2D );
-		NODE_FACTORY( m_serviceProvider, Grid2D );
-		NODE_FACTORY( m_serviceProvider, TextField );
+		NODE_FACTORY( SoundEmitter );
+		NODE_FACTORY( Mesh2D );
+		NODE_FACTORY( Grid2D );
+		NODE_FACTORY( TextField );
 		//NODE_FACTORY( TileMap );
 		//NODE_FACTORY( Track );
-		NODE_FACTORY( m_serviceProvider, Movie );
-        NODE_FACTORY( m_serviceProvider, MovieSlot );
-        NODE_FACTORY( m_serviceProvider, MovieSceneEffect );
-		NODE_FACTORY( m_serviceProvider, MovieInternalObject );
-        NODE_FACTORY( m_serviceProvider, MovieEvent );
+		NODE_FACTORY( Movie );
+        NODE_FACTORY( MovieSlot );
+        NODE_FACTORY( MovieSceneEffect );
+		NODE_FACTORY( MovieInternalObject );
+        NODE_FACTORY( MovieEvent );
 
-		NODE_FACTORY( m_serviceProvider, Meshget );
+		NODE_FACTORY( Meshget );
 
-		NODE_FACTORY( m_serviceProvider, Model3D );
+		NODE_FACTORY( Model3D );
 		//NODE_FACTORY( Model );
-		NODE_FACTORY( m_serviceProvider, Layer2D );
-		NODE_FACTORY( m_serviceProvider, Landscape2D );
-		//NODE_FACTORY( m_serviceProvider, Layer2DParallax );
-		//NODE_FACTORY( m_serviceProvider, Layer2DIsometric );
-		//NODE_FACTORY( m_serviceProvider, Layer2DPhysic );
+		NODE_FACTORY( Layer2D );
+		NODE_FACTORY( Landscape2D );
+		//NODE_FACTORY( Layer2DParallax );
+		//NODE_FACTORY( Layer2DIsometric );
+		//NODE_FACTORY( Layer2DPhysic );
 		//NODE_FACTORY( Layer2DLoop );
 		//NODE_FACTORY( Layer2DAccumulator );
 		//NODE_FACTORY( Layer2DTexture );
 		//NODE_FACTORY( LayerScene );
 		//NODE_FACTORY( RenderMesh );
-		NODE_FACTORY( m_serviceProvider, RenderViewport );
-		NODE_FACTORY( m_serviceProvider, RenderClipplane );
-		NODE_FACTORY( m_serviceProvider, RenderCameraOrthogonal );
-		NODE_FACTORY( m_serviceProvider, RenderCameraProjection );
-		NODE_FACTORY( m_serviceProvider, RenderCameraOrthogonalTarget );
+		NODE_FACTORY( RenderViewport );
+		NODE_FACTORY( RenderClipplane );
+		NODE_FACTORY( RenderCameraOrthogonal );
+		NODE_FACTORY( RenderCameraProjection );
+		NODE_FACTORY( RenderCameraOrthogonalTarget );
 		//NODE_FACTORY( SceneNode3D );
-		NODE_FACTORY( m_serviceProvider, Window );
+		NODE_FACTORY( Window );
 
-        NODE_FACTORY( m_serviceProvider, ShapeQuadFixed );
-        NODE_FACTORY( m_serviceProvider, ShapeQuadFlex );
+        NODE_FACTORY( ShapeQuadFixed );
+        NODE_FACTORY( ShapeQuadFlex );
 		
 #	undef NODE_FACTORY
 
-#	define SURFACE_FACTORY( serviceProvider, Type )\
-        if( PROTOTYPE_SERVICE(serviceProvider)\
-            ->addPrototype( STRINGIZE_STRING_LOCAL(serviceProvider, "Surface"), STRINGIZE_STRING_LOCAL( serviceProvider, #Type), new SurfacePrototypeGenerator<Type, 128> ) == false )\
+#	define SURFACE_FACTORY(Type)\
+        if( PROTOTYPE_SERVICE()\
+            ->addPrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type), new SurfacePrototypeGenerator<Type, 128> ) == false )\
 						{\
 			return false;\
 						}
 		
-		SURFACE_FACTORY( m_serviceProvider, SurfaceVideo );
-		SURFACE_FACTORY( m_serviceProvider, SurfaceSound );
-        SURFACE_FACTORY( m_serviceProvider, SurfaceImage );
-		SURFACE_FACTORY( m_serviceProvider, SurfaceImageSequence );
-		SURFACE_FACTORY( m_serviceProvider, SurfaceTrackMatte );
-        SURFACE_FACTORY( m_serviceProvider, SurfaceSolidColor );
+		SURFACE_FACTORY( SurfaceVideo );
+		SURFACE_FACTORY( SurfaceSound );
+        SURFACE_FACTORY( SurfaceImage );
+		SURFACE_FACTORY( SurfaceImageSequence );
+		SURFACE_FACTORY( SurfaceTrackMatte );
+        SURFACE_FACTORY( SurfaceSolidColor );
 
 #	undef SURFACE_FACTORY
 
@@ -464,12 +464,12 @@ namespace Menge
         protected:
 			PointerFactorable generate() override
             {
-                Scene * scene = NODE_SERVICE(m_serviceProvider)
-                    ->createNodeT<Scene *>( CONST_STRING(m_serviceProvider, Scene) );
+                Scene * scene = NODE_SERVICE()
+                    ->createNodeT<Scene *>( CONST_STRING( Scene ) );
 
                 if( scene == nullptr )
                 {
-                    LOGGER_ERROR(m_serviceProvider)("SceneCategoryGenerator can't create %s %s"
+                    LOGGER_ERROR("SceneCategoryGenerator can't create %s %s"
                         , m_category.c_str()
                         , m_prototype.c_str()
                         );
@@ -498,12 +498,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::registerSceneGenerator_()
 	{
-		LOGGER_INFO(m_serviceProvider)( "initialize Scene Manager..." );
+		LOGGER_INFO( "initialize Scene Manager..." );
 
         PrototypeGeneratorInterface * generator = new SceneCategoryGenerator;
 
-		if( PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( CONST_STRING( m_serviceProvider, Scene ), ConstString::none(), generator ) == false )
+		if( PROTOTYPE_SERVICE()
+			->addPrototype( CONST_STRING( Scene ), ConstString::none(), generator ) == false )
 		{
 			return false;
 		}
@@ -513,43 +513,43 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::registerBaseResourceTypes_()
 	{
-        LOGGER_INFO(m_serviceProvider)( "Initializing Resource Type..." );
+        LOGGER_INFO( "Initializing Resource Type..." );
 
-#	define RESOURCE_FACTORY( serviceProvider, Type ) \
-		if( PROTOTYPE_SERVICE(serviceProvider)\
-			->addPrototype( STRINGIZE_STRING_LOCAL(serviceProvider, "Resource"), STRINGIZE_STRING_LOCAL(serviceProvider, #Type), new ResourcePrototypeGenerator<Type, 128> ) == false )\
+#	define RESOURCE_FACTORY( Type ) \
+		if( PROTOTYPE_SERVICE()\
+			->addPrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type), new ResourcePrototypeGenerator<Type, 128> ) == false )\
 		{\
 			return false;\
 		}
 
-		RESOURCE_FACTORY( m_serviceProvider, ResourceMusic );
+		RESOURCE_FACTORY( ResourceMusic );
 		
-		RESOURCE_FACTORY( m_serviceProvider, ResourceAnimation );
+		RESOURCE_FACTORY( ResourceAnimation );
 
-		RESOURCE_FACTORY( m_serviceProvider, ResourceParticle );
+		RESOURCE_FACTORY( ResourceParticle );
 
-		//RESOURCE_FACTORY( m_serviceProvider, ResourceFont );
-		//RESOURCE_FACTORY( m_serviceProvider, ResourceGlyph );
+		//RESOURCE_FACTORY( ResourceFont );
+		//RESOURCE_FACTORY( ResourceGlyph );
 		
-        RESOURCE_FACTORY( m_serviceProvider, ResourceImage );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceImageData );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceImageDefault );
-        RESOURCE_FACTORY( m_serviceProvider, ResourceImageSubstract );
-        RESOURCE_FACTORY( m_serviceProvider, ResourceImageSubstractRGBAndAlpha );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceImageSolid );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceMovie );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceModel3D );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceVideo );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceSound );		
-		RESOURCE_FACTORY( m_serviceProvider, ResourceFile );
+        RESOURCE_FACTORY( ResourceImage );
+		RESOURCE_FACTORY( ResourceImageData );
+		RESOURCE_FACTORY( ResourceImageDefault );
+        RESOURCE_FACTORY( ResourceImageSubstract );
+        RESOURCE_FACTORY( ResourceImageSubstractRGBAndAlpha );
+		RESOURCE_FACTORY( ResourceImageSolid );
+		RESOURCE_FACTORY( ResourceMovie );
+		RESOURCE_FACTORY( ResourceModel3D );
+		RESOURCE_FACTORY( ResourceVideo );
+		RESOURCE_FACTORY( ResourceSound );		
+		RESOURCE_FACTORY( ResourceFile );
 
-		RESOURCE_FACTORY( m_serviceProvider, ResourceWindow );
-        RESOURCE_FACTORY( m_serviceProvider, ResourceHIT );
-        RESOURCE_FACTORY( m_serviceProvider, ResourceShape );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceCursorICO );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceCursorSystem );
+		RESOURCE_FACTORY( ResourceWindow );
+        RESOURCE_FACTORY( ResourceHIT );
+        RESOURCE_FACTORY( ResourceShape );
+		RESOURCE_FACTORY( ResourceCursorICO );
+		RESOURCE_FACTORY( ResourceCursorSystem );
 
-		RESOURCE_FACTORY( m_serviceProvider, ResourceInternalObject );
+		RESOURCE_FACTORY( ResourceInternalObject );
 
 #	undef RESOURCE_FACTORY
 		
@@ -565,9 +565,9 @@ namespace Menge
 
         bool fullscreen = this->getFullscreenMode();
 
-		RENDER_SERVICE(m_serviceProvider)->setVSync( m_vsync );
+		RENDER_SERVICE()->setVSync( m_vsync );
 
-		LOGGER_WARNING(m_serviceProvider)( "Application::createRenderWindow current resolution %d %d %s"			
+		LOGGER_WARNING( "Application::createRenderWindow current resolution %d %d %s"			
 			, m_currentResolution.getWidth()
 			, m_currentResolution.getHeight()
             , fullscreen ? "Fullscreen" : "Window"
@@ -575,14 +575,14 @@ namespace Menge
 
 		this->calcRenderViewport_( m_currentResolution, m_renderViewport );
 
-		LOGGER_INFO(m_serviceProvider)( "Application::createRenderWindow render viewport %f %f - %f %f"
+		LOGGER_INFO( "Application::createRenderWindow render viewport %f %f - %f %f"
 			, m_renderViewport.begin.x
 			, m_renderViewport.begin.y
 			, m_renderViewport.getWidth()
 			, m_renderViewport.getHeight()
 			);
 
-        m_createRenderWindow = RENDER_SERVICE( m_serviceProvider )
+        m_createRenderWindow = RENDER_SERVICE()
             ->createRenderWindow( m_currentResolution
                 , m_contentResolution
                 , m_renderViewport
@@ -594,22 +594,22 @@ namespace Menge
 
 		if( m_createRenderWindow == false )
 		{
-            LOGGER_ERROR(m_serviceProvider)("Application::createRenderWindow failed to create render window" 
+            LOGGER_ERROR("Application::createRenderWindow failed to create render window" 
                             );            
 
 			return false;
 		}
 
-        GAME_SERVICE(m_serviceProvider)
+        GAME_SERVICE()
 			->initializeRenderResources();
 
-        PLAYER_SERVICE( m_serviceProvider )
+        PLAYER_SERVICE()
             ->initializeRenderResources();
 
-		NOTIFICATION_SERVICE(m_serviceProvider)
+		NOTIFICATION_SERVICE()
 			->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
 		
-		GAME_SERVICE( m_serviceProvider )
+		GAME_SERVICE()
 			->setRenderViewport( m_renderViewport, m_contentResolution );
 
 		float gameViewportAspect;
@@ -617,7 +617,7 @@ namespace Menge
 
 		this->getGameViewport( gameViewportAspect, gameViewport );
 
-		GAME_SERVICE( m_serviceProvider )
+		GAME_SERVICE()
 			->setGameViewport( gameViewport, gameViewportAspect );
 
 		return true;
@@ -625,46 +625,46 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeGame( const ConstString & _category, const FilePath & _resourceIniPath )
 	{
-		if( SERVICE_EXIST(m_serviceProvider, Menge::GameServiceInterface) == false )
+        if( SERVICE_EXIST( Menge::GameServiceInterface ) == false )
 		{
 			return false;
 		}
 
-		LOGGER_INFO( m_serviceProvider )("Application load resource packs... %s:%s"
+		LOGGER_INFO("Application load resource packs... %s:%s"
 			, _category.c_str()
 			, _resourceIniPath.c_str()
 			);
 
-		if( PACKAGE_SERVICE( m_serviceProvider )
+		if( PACKAGE_SERVICE()
 			->loadPackages( _category, _resourceIniPath ) == false )
 		{
-			LOGGER_CRITICAL( m_serviceProvider )("Application invalid load resource packs"
+			LOGGER_CRITICAL("Application invalid load resource packs"
 				);
 
 			return false;
 		}
 
-		if( HAS_OPTION( m_serviceProvider, "locale" ) == true )
+		if( HAS_OPTION( "locale" ) == true )
 		{
-			const char * option_locale = GET_OPTION_VALUE( m_serviceProvider, "locale" );
+			const char * option_locale = GET_OPTION_VALUE( "locale" );
 
-			m_locale = Helper::stringizeString( m_serviceProvider, option_locale );
+			m_locale = Helper::stringizeString( option_locale );
 
-			LOGGER_WARNING( m_serviceProvider )("Application:initializeGame setup locale '%s'"
+			LOGGER_WARNING("Application:initializeGame setup locale '%s'"
 				, m_locale.c_str()
 				);
 		}
 
-		LOGGER_INFO(m_serviceProvider)( "Application:initializeGame load game resource"
+		LOGGER_INFO( "Application:initializeGame load game resource"
 			);
 
-		const Tags & platformTags = PLATFORM_SERVICE( m_serviceProvider )
+		const Tags & platformTags = PLATFORM_SERVICE()
 			->getPlatformTags();
 
-		if( PACKAGE_SERVICE( m_serviceProvider )
+		if( PACKAGE_SERVICE()
 			->enablePackages( m_locale, platformTags ) == false )
 		{
-            LOGGER_ERROR( m_serviceProvider )("PackageService invalid enable for locale '%s' platform '%s'!"
+            LOGGER_ERROR("PackageService invalid enable for locale '%s' platform '%s'!"
                 , m_locale.c_str()
 				, platformTags.to_str().c_str()
                 );
@@ -672,29 +672,29 @@ namespace Menge
 			return false;
 		}
 
-		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
-		bool noresourceCheck = HAS_OPTION( m_serviceProvider, "noresourcecheck" );
+		bool developmentMode = HAS_OPTION( "dev" );
+		bool noresourceCheck = HAS_OPTION( "noresourcecheck" );
 
 		if( developmentMode == true && noresourceCheck == false )
 		{
-			if( TEXT_SERVICE(m_serviceProvider)
+			if( TEXT_SERVICE()
 				->validate() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("TextService invalid validate!"
+				LOGGER_ERROR("TextService invalid validate!"
 					);
 			}
 
-			if( PACKAGE_SERVICE( m_serviceProvider )
+			if( PACKAGE_SERVICE()
 				->validatePackages() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Resources validation is invalid!!!!!!!!!!!!!"
+				LOGGER_ERROR("Resources validation is invalid!!!!!!!!!!!!!"
 					);
 
-				bool resourceCheckCritical = HAS_OPTION( m_serviceProvider, "noresourcecheckcritical" );
+				bool resourceCheckCritical = HAS_OPTION( "noresourcecheckcritical" );
 
 				if( resourceCheckCritical == false )
 				{
-					LOGGER_CRITICAL(m_serviceProvider)("Fix Resources"
+					LOGGER_CRITICAL("Fix Resources"
 						);
 
 					return false;
@@ -702,19 +702,19 @@ namespace Menge
 			}
 		}
 
-		if( GAME_SERVICE( m_serviceProvider )
+		if( GAME_SERVICE()
 			->loadPersonality() == false )
 		{
 			return false;
 		}
 
-		GAME_SERVICE( m_serviceProvider )
+		GAME_SERVICE()
 			->setCursorMode( m_cursorMode );
 		        
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_printChildren2( ServiceProviderInterface * _serviceProvider, Node * _node, uint32_t _tab )
+	static void s_printChildren2( Node * _node, uint32_t _tab )
 	{
 		TListNodeChild & children = _node->getChildren();
 
@@ -729,7 +729,7 @@ namespace Menge
 				continue;
 			}
 
-			LOGGER_ERROR( _serviceProvider )("%.*s-%s [%s] (%.2f, %.2f) %d"
+			LOGGER_ERROR("%.*s-%s [%s] (%.2f, %.2f) %d"
 				, _tab
 				, "                                         "
 				, child->getName().c_str() 
@@ -739,23 +739,23 @@ namespace Menge
 				, child->isRenderable()
 				);
 
-			s_printChildren2( _serviceProvider, child, _tab + 1 );
+			s_printChildren2( child, _tab + 1 );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_printChildren( ServiceProviderInterface * _serviceProvider, Node * _node )
+	static void s_printChildren( Node * _node )
 	{
 		if( _node == nullptr )
 		{
 			return;
 		}
 
-		s_printChildren2( _serviceProvider, _node, 0 );
+		s_printChildren2( _node, 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::keyEvent( const InputKeyEvent & _event )
 	{
-		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+		bool developmentMode = HAS_OPTION( "dev" );
 
 		if( developmentMode == true )
 		{
@@ -779,12 +779,12 @@ namespace Menge
 
 				if( wireframeMode == true )
 				{
-					RENDER_SYSTEM( m_serviceProvider )
+					RENDER_SYSTEM()
 						->setFillMode( FM_WIREFRAME );
 				}
 				else
 				{
-					RENDER_SYSTEM( m_serviceProvider )
+					RENDER_SYSTEM()
 						->setFillMode( FM_SOLID );
 				}
 			}
@@ -803,7 +803,7 @@ namespace Menge
 
 			if( _event.code == KC_F9 && _event.isDown )
 			{
-				PLAYER_SERVICE( m_serviceProvider )
+				PLAYER_SERVICE()
 					->toggleDebugText();
 			}
 
@@ -821,15 +821,14 @@ namespace Menge
 
 			if( _event.code == KC_F5 && _event.isDown == true )
 			{
-				//RESOURCE_SERVICE(m_serviceProvider)
+				//RESOURCE_SERVICE()
 					//->dumpResources("Application");
                 class VisitorPlayerFactoryManager
                     : public VisitorPrototypeGenerator
                 {
                 public:
-                    VisitorPlayerFactoryManager( ServiceProviderInterface * _serviceProvider, const ConstString & _category, Stringstream & _ss )
-                        : m_serviceProvider( _serviceProvider )
-                        , m_category( _category )
+                    VisitorPlayerFactoryManager( const ConstString & _category, Stringstream & _ss )
+                        : m_category( _category )
                         , m_ss( _ss )
                     {
                     }
@@ -861,42 +860,41 @@ namespace Menge
                     }
 
                 protected:
-                    ServiceProviderInterface * m_serviceProvider;
                     ConstString m_category;
                     Stringstream & m_ss;
                 };
 
                 Stringstream ss;
-                VisitorPlayerFactoryManager pfmv( m_serviceProvider, CONST_STRING( m_serviceProvider, Node ), ss );
+                VisitorPlayerFactoryManager pfmv( CONST_STRING( Node ), ss );
 
-                PROTOTYPE_SERVICE( m_serviceProvider )
+                PROTOTYPE_SERVICE()
                     ->visitGenerators( &pfmv );
 
                 const String & str = ss.str();
 
-                LOGGER_ERROR( m_serviceProvider )("%s", str.c_str() );
+                LOGGER_ERROR( "%s", str.c_str() );
 			}
 
 			if( _event.code == KC_OEM_MINUS && _event.isDown == true )
 			{
-				if( RENDER_SERVICE(m_serviceProvider)
+				if( RENDER_SERVICE()
 					->decrefLimitRenderObjects() == false )
 				{
 					m_debugPause = false;
 
-					RENDER_SERVICE(m_serviceProvider)
+					RENDER_SERVICE()
 						->enableDebugStepRenderMode( false );
 				}				
 			}
 
 			if( _event.code == KC_OEM_PLUS && _event.isDown == true )
 			{
-				RENDER_SERVICE(m_serviceProvider)
+				RENDER_SERVICE()
 					->increfLimitRenderObjects();
 
 				if( m_debugPause == false )
 				{
-					RENDER_SERVICE(m_serviceProvider)
+					RENDER_SERVICE()
 						->enableDebugStepRenderMode( true );
 				}
 
@@ -905,10 +903,10 @@ namespace Menge
 
 			if( _event.code == KC_F12 && _event.isDown == true )
 			{
-				bool enable = RENDER_SERVICE( m_serviceProvider )
+				bool enable = RENDER_SERVICE()
 					->isRedAlertMode();
 
-				RENDER_SERVICE( m_serviceProvider )
+				RENDER_SERVICE()
 					->enableRedAlertMode( !enable );
 			}
 
@@ -918,7 +916,7 @@ namespace Menge
 
 				if( m_debugFileOpen == true )
 				{
-					m_notifyDebugOpenFile = NOTIFICATION_SERVICE( m_serviceProvider )
+					m_notifyDebugOpenFile = NOTIFICATION_SERVICE()
 						->addObserverMethod( NOTIFICATOR_DEBUG_OPEN_FILE, this, &Application::notifyDebugOpenFile_ );
 				}
 				else
@@ -927,57 +925,57 @@ namespace Menge
 				}
 			}
 
-			if( _event.code == KC_P && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
+			if( _event.code == KC_P && _event.isDown == true && INPUT_SERVICE()->isCtrlDown() == true )
 			{
 				static bool s_particle_enable = true;
 
 				s_particle_enable = !s_particle_enable;
 
-				APPLICATION_SERVICE(m_serviceProvider)
+				APPLICATION_SERVICE()
 					->setParticleEnable( s_particle_enable );
 			}
 
-			if( _event.code == KC_T && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
+			if( _event.code == KC_T && _event.isDown == true && INPUT_SERVICE()->isCtrlDown() == true )
 			{
 				static bool s_text_enable = true;
 
 				s_text_enable = !s_text_enable;
 
-				APPLICATION_SERVICE( m_serviceProvider )
+				APPLICATION_SERVICE()
 					->setTextEnable( s_text_enable );
 			}
 
-			if( _event.code == KC_R && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
+			if( _event.code == KC_R && _event.isDown == true && INPUT_SERVICE()->isCtrlDown() == true )
 			{
 				static bool s_text_debug = true;
 
 				s_text_debug = !s_text_debug;
 
-				NOTIFICATION_SERVICE( m_serviceProvider )
+				NOTIFICATION_SERVICE()
 					->notify( NOTIFICATOR_DEBUG_TEXT_MODE, s_text_debug );
 			}
 
-			if( _event.code == KC_E && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
+			if( _event.code == KC_E && _event.isDown == true && INPUT_SERVICE()->isCtrlDown() == true )
 			{
-				NOTIFICATION_SERVICE( m_serviceProvider )
+				NOTIFICATION_SERVICE()
 					->notify( NOTIFICATOR_RELOAD_LOCALE_PREPARE );
 
-				NOTIFICATION_SERVICE( m_serviceProvider )
+				NOTIFICATION_SERVICE()
 					->notify( NOTIFICATOR_RELOAD_LOCALE );
 
-				NOTIFICATION_SERVICE( m_serviceProvider )
+				NOTIFICATION_SERVICE()
 					->notify( NOTIFICATOR_RELOAD_LOCALE_POST );
 				
-				const ConstString & locale = APPLICATION_SERVICE( m_serviceProvider )
+				const ConstString & locale = APPLICATION_SERVICE()
 					->getLocale();
 
-				APPLICATION_SERVICE( m_serviceProvider )
+				APPLICATION_SERVICE()
 					->setLocale( locale );
 			}
 
 			if( _event.code == KC_0 && _event.isDown == true )
 			{
-				static uint32_t batchMode = RENDER_SERVICE(m_serviceProvider)
+				static uint32_t batchMode = RENDER_SERVICE()
 					->getBatchMode();
 
 				++batchMode;
@@ -996,7 +994,7 @@ namespace Menge
 					break;
 				}
 
-				RENDER_SERVICE(m_serviceProvider)
+				RENDER_SERVICE()
 					->setBatchMode( mode );
 			}
 
@@ -1043,14 +1041,14 @@ namespace Menge
 
 			if( _event.code == KC_F2 && _event.isDown == true )
 			{
-				Scene * scene = PLAYER_SERVICE(m_serviceProvider)
+				Scene * scene = PLAYER_SERVICE()
 					->getCurrentScene();
 
-				s_printChildren( m_serviceProvider, scene );
+				s_printChildren( scene );
 			}
 		}
 
-		bool handle = GAME_SERVICE( m_serviceProvider )
+		bool handle = GAME_SERVICE()
 			->handleKeyEvent( _event );
 
 		return handle;
@@ -1058,7 +1056,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::textEvent( const InputTextEvent & _event )
 	{
-		bool handle = GAME_SERVICE( m_serviceProvider )
+		bool handle = GAME_SERVICE()
 			->handleTextEvent( _event );
 
 		return handle;
@@ -1071,13 +1069,13 @@ namespace Menge
 			return false;
 		}
 
-		GAME_SERVICE( m_serviceProvider )
+		GAME_SERVICE()
 			->handleMouseButtonEventBegin( _event );
 
-		bool handle = GAME_SERVICE( m_serviceProvider )
+		bool handle = GAME_SERVICE()
 			->handleMouseButtonEvent( _event );
 
-		GAME_SERVICE( m_serviceProvider )
+		GAME_SERVICE()
 			->handleMouseButtonEventEnd( _event );
 
 		return handle;
@@ -1085,7 +1083,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::mouseMove( const InputMouseMoveEvent& _event )
 	{
-		if( INPUT_SERVICE(m_serviceProvider)
+		if( INPUT_SERVICE()
 			->validCursorPosition( _event.x, _event.y ) == false )
 		{
 			m_mouseEnter = false;
@@ -1105,7 +1103,7 @@ namespace Menge
 			this->mouseEnter( ne );
 		}
 
-		bool handle = GAME_SERVICE( m_serviceProvider )
+		bool handle = GAME_SERVICE()
 			->handleMouseMove( _event );
 
 		return handle;
@@ -1113,7 +1111,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::notifyDebugOpenFile_( const char * _folder, const char * _fileName )
 	{ 
-		LOGGER_WARNING( m_serviceProvider )("open %s:%s"
+		LOGGER_WARNING( "open %s:%s"
 			, _folder
 			, _fileName
 			);
@@ -1121,7 +1119,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::mouseWheel( const InputMouseWheelEvent & _event )
 	{
-		bool handle = GAME_SERVICE( m_serviceProvider )
+		bool handle = GAME_SERVICE()
 			->handleMouseWheel( _event );
 
 		return handle;
@@ -1129,7 +1127,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::mousePosition( const InputMousePositionEvent & _event )
 	{
-		if( INPUT_SERVICE(m_serviceProvider)
+		if( INPUT_SERVICE()
 			->validCursorPosition( _event.x, _event.y ) == false )
 		{
 			m_mouseEnter = false;
@@ -1149,13 +1147,13 @@ namespace Menge
 			this->mouseEnter( ne );
 		}
 
-		GAME_SERVICE( m_serviceProvider )
+		GAME_SERVICE()
 			->mousePosition( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::mouseEnter( const InputMousePositionEvent & _event )
 	{
-		if( INPUT_SERVICE( m_serviceProvider )
+		if( INPUT_SERVICE()
 			->validCursorPosition( _event.x, _event.y ) == false )
 		{
 			return;
@@ -1163,7 +1161,7 @@ namespace Menge
 
 		m_mouseEnter = true;
 
-		GAME_SERVICE( m_serviceProvider )
+		GAME_SERVICE()
 			->mouseEnter( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1171,16 +1169,16 @@ namespace Menge
 	{
 		m_mouseEnter = false;
 
-		GAME_SERVICE( m_serviceProvider )
+		GAME_SERVICE()
 			->mouseLeave( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::quit()	
 	{
-		PLATFORM_SERVICE(m_serviceProvider)
+		PLATFORM_SERVICE()
 			->stop();
 		
-		RENDER_SERVICE(m_serviceProvider)
+		RENDER_SERVICE()
 			->onWindowClose();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1229,7 +1227,7 @@ namespace Menge
 		
 		m_focus = _focus;
 
-		LOGGER_INFO(m_serviceProvider)("Application::setFocus %d (freeze %d)"
+        LOGGER_INFO( "Application::setFocus %d (freeze %d)"
 			, m_focus
 			, m_freeze
 			);
@@ -1239,9 +1237,9 @@ namespace Menge
 			return;
 		}
 
-		if( SERVICE_EXIST(m_serviceProvider, Menge::GameServiceInterface) == true )
+        if( SERVICE_EXIST( Menge::GameServiceInterface ) == true )
 		{
-			GAME_SERVICE( m_serviceProvider )
+			GAME_SERVICE()
 				->setFocus( m_focus );
 		}
 	}
@@ -1255,7 +1253,7 @@ namespace Menge
 
 		m_freeze = _freeze;
 
-		LOGGER_INFO( m_serviceProvider )("Application::setFreeze %d (focus %d)"
+        LOGGER_INFO( "Application::setFreeze %d (focus %d)"
 			, m_freeze
 			, m_focus
 			);
@@ -1265,9 +1263,9 @@ namespace Menge
 			return;
 		}
 
-		if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == true )
+		if( SERVICE_EXIST( Menge::GameServiceInterface ) == true )
 		{
-			GAME_SERVICE( m_serviceProvider )
+			GAME_SERVICE()
 				->setFocus( !m_freeze );
 		}	
 	}
@@ -1284,27 +1282,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::minimizeWindow()
 	{
-		PLATFORM_SERVICE(m_serviceProvider)
+		PLATFORM_SERVICE()
 			->minimizeWindow();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::beginUpdate()
 	{	
-		if( SERVICE_EXIST(m_serviceProvider, Menge::ThreadServiceInterface) == true )
+		if( SERVICE_EXIST(Menge::ThreadServiceInterface) == true )
 		{
-			THREAD_SERVICE(m_serviceProvider)
+			THREAD_SERVICE()
 				->update();
 		}
 
-		if( SERVICE_EXIST( m_serviceProvider, Menge::PrefetcherServiceInterface ) == true )
+		if( SERVICE_EXIST( Menge::PrefetcherServiceInterface ) == true )
 		{
-			PREFETCHER_SERVICE( m_serviceProvider )
+			PREFETCHER_SERVICE()
 				->update();
 		}
 
-		if( SERVICE_EXIST( m_serviceProvider, Menge::ModuleServiceInterface ) == true )
+		if( SERVICE_EXIST( Menge::ModuleServiceInterface ) == true )
 		{
-			MODULE_SERVICE( m_serviceProvider )
+			MODULE_SERVICE()
 				->update( m_focus );
 		}
 
@@ -1313,20 +1311,18 @@ namespace Menge
 			return false;
 		}
 
-		GAME_SERVICE( m_serviceProvider )
+		GAME_SERVICE()
 			->update();
 
-		INPUT_SERVICE(m_serviceProvider)
+		INPUT_SERVICE()
 			->update();
 
-		if( PLAYER_SERVICE( m_serviceProvider )->update() == false )
+		if( PLAYER_SERVICE()->update() == false )
 		{
 			this->quit();
 
 			return false;
 		}
-
-        //EVENT_SERVICE(m_serviceProvider)->update();
 
 		if( m_focus == false && m_update == true )
 		{
@@ -1356,28 +1352,28 @@ namespace Menge
 			timing = m_maxTiming;
 		}
 
-		float time = TIMELINE_SERVICE( m_serviceProvider )
+		float time = TIMELINE_SERVICE()
 			->getTime();
 
-		GAME_SERVICE( m_serviceProvider )
+		GAME_SERVICE()
 			->tick( time, timing );
 
-		MODULE_SERVICE( m_serviceProvider )
+		MODULE_SERVICE()
 			->tick( time, timing );
 
-		if( SERVICE_EXIST(m_serviceProvider, Menge::SoundServiceInterface) == true )
+		if( SERVICE_EXIST(Menge::SoundServiceInterface) == true )
 		{
-			SOUND_SERVICE(m_serviceProvider)
+			SOUND_SERVICE()
 				->tick( time, timing );
 		}
 
-		if( SERVICE_EXIST(m_serviceProvider, Menge::GraveyardInterface) == true )
+		if( SERVICE_EXIST(Menge::GraveyardInterface) == true )
 		{
-			GRAVEYARD_SERVICE(m_serviceProvider)
+			GRAVEYARD_SERVICE()
 				->tick( time, timing );
 		}
 
-		TIMELINE_SERVICE( m_serviceProvider )
+		TIMELINE_SERVICE()
 			->tick( timing );
 		
 		//if( m_physicEngine )
@@ -1393,28 +1389,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::endUpdate()
 	{
-		//PLAYER_SERVICE( m_serviceProvider )
+		//PLAYER_SERVICE()
 		//	->updateChangeScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::render()
 	{
-		if( RENDER_SERVICE(m_serviceProvider)->beginScene() == false )
+		if( RENDER_SERVICE()->beginScene() == false )
 		{
 			return false;
 		}
 
-		GAME_SERVICE( m_serviceProvider )
+        GAME_SERVICE()
 			->render();
 
-		RENDER_SERVICE(m_serviceProvider)->endScene();
+		RENDER_SERVICE()
+            ->endScene();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::flush()
 	{
-		RENDER_SERVICE(m_serviceProvider)
+		RENDER_SERVICE()
             ->swapBuffers();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1422,9 +1419,9 @@ namespace Menge
 	{
 		bool needQuit = true;
 
-		if( SERVICE_EXIST(m_serviceProvider, Menge::GameServiceInterface) == true )
+		if( SERVICE_EXIST(Menge::GameServiceInterface) == true )
 		{
-			needQuit = GAME_SERVICE( m_serviceProvider )
+			needQuit = GAME_SERVICE()
 				->close();
 		}
 
@@ -1438,44 +1435,49 @@ namespace Menge
     {
 		if( _turn == false )
 		{
-			if( SERVICE_EXIST(m_serviceProvider, SoundServiceInterface) == true )
+			if( SERVICE_EXIST(SoundServiceInterface) == true )
 			{
-				SOUND_SERVICE(m_serviceProvider)->onTurnStream( false );
+				SOUND_SERVICE()
+                    ->onTurnStream( false );
 			}
 
-			if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == true )
+			if( SERVICE_EXIST( Menge::GameServiceInterface ) == true )
 			{
-				GAME_SERVICE( m_serviceProvider )
+				GAME_SERVICE()
 					->turnSound( false );
 			}
 
-			if( SERVICE_EXIST(m_serviceProvider, SoundServiceInterface) == true )
+            if( SERVICE_EXIST( SoundServiceInterface ) == true )
 			{
-				SOUND_SERVICE(m_serviceProvider)->onTurnSound( false );
+				SOUND_SERVICE()
+                    ->onTurnSound( false );
 			}
 		}
 		else
 		{
-			if( SERVICE_EXIST(m_serviceProvider, SoundServiceInterface) == true )
+            if( SERVICE_EXIST( SoundServiceInterface ) == true )
 			{
-				SOUND_SERVICE(m_serviceProvider)->onTurnSound( true );
+				SOUND_SERVICE()
+                    ->onTurnSound( true );
 			}
 
-			if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == true )
+			if( SERVICE_EXIST( GameServiceInterface ) == true )
 			{
-				GAME_SERVICE( m_serviceProvider )
+				GAME_SERVICE()
 					->turnSound( true );
 			}
 
-			if( SERVICE_EXIST(m_serviceProvider, SoundServiceInterface) == true )
+            if( SERVICE_EXIST( SoundServiceInterface ) == true )
 			{
-				SOUND_SERVICE(m_serviceProvider)->onTurnStream( true );
+				SOUND_SERVICE()
+                    ->onTurnStream( true );
 			}
 		}
 
-		if( SERVICE_EXIST(m_serviceProvider, SoundServiceInterface) == true )
+        if( SERVICE_EXIST( SoundServiceInterface ) == true )
 		{
-			SOUND_SERVICE(m_serviceProvider)->updateVolume();
+			SOUND_SERVICE()
+                ->updateVolume();
 		}
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -1483,42 +1485,42 @@ namespace Menge
 	{		
 		m_notifyDebugOpenFile = nullptr;
 
-		if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == true )
+		if( SERVICE_EXIST( GameServiceInterface ) == true )
 		{
-			GAME_SERVICE( m_serviceProvider )
+			GAME_SERVICE()
 				->finalizeRenderResources();
 		}
 
-		if( SERVICE_EXIST( m_serviceProvider, Menge::PlayerServiceInterface ) == true )
+		if( SERVICE_EXIST( PlayerServiceInterface ) == true )
 		{
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->finalizeRenderResources();
 		}
 
-		PLAYER_SERVICE( m_serviceProvider )
+		PLAYER_SERVICE()
 			->destroyCurrentScene();
 
 		m_cursorResource = nullptr;
 
-		SERVICE_FINALIZE( m_serviceProvider, GameServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, PlayerServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, PackageServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, UserdataServiceInterface );
+		SERVICE_FINALIZE( GameServiceInterface );
+		SERVICE_FINALIZE( PlayerServiceInterface );
+		SERVICE_FINALIZE( PackageServiceInterface );
+		SERVICE_FINALIZE( UserdataServiceInterface );
 
-		CODEC_SERVICE(m_serviceProvider)
-			->unregisterDecoder( STRINGIZE_STRING_LOCAL(m_serviceProvider, "memoryImage") );
+		CODEC_SERVICE()
+            ->unregisterDecoder( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
 
-		CODEC_SERVICE(m_serviceProvider)
-			->unregisterDecoder( STRINGIZE_STRING_LOCAL( m_serviceProvider, "archiveImage" ) );
+		CODEC_SERVICE()
+            ->unregisterDecoder( STRINGIZE_STRING_LOCAL( "archiveImage" ) );
 
-		SERVICE_FINALIZE( m_serviceProvider, GraveyardInterface );
-		SERVICE_FINALIZE( m_serviceProvider, NodeServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, ResourceServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, RenderServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, RenderMaterialServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, RenderTextureServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, TextServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, PrototypeServiceInterface );
+		SERVICE_FINALIZE( GraveyardInterface );
+		SERVICE_FINALIZE( NodeServiceInterface );
+		SERVICE_FINALIZE( ResourceServiceInterface );
+		SERVICE_FINALIZE( RenderServiceInterface );
+		SERVICE_FINALIZE( RenderMaterialServiceInterface );
+		SERVICE_FINALIZE( RenderTextureServiceInterface );
+		SERVICE_FINALIZE( TextServiceInterface );
+		SERVICE_FINALIZE( PrototypeServiceInterface );
 
 		m_locale.clear();
 		m_projectCodename.clear();
@@ -1527,15 +1529,15 @@ namespace Menge
 	void Application::calcWindowResolution( Resolution & _windowResolution ) const
 	{
 		Resolution dres;
-        PLATFORM_SERVICE(m_serviceProvider)
+        PLATFORM_SERVICE()
 			->getMaxClientResolution( dres );
         
-        LOGGER_WARNING(m_serviceProvider)("Application::calcWindowResolution Max Client Resolution Resolution %u %u"
+        LOGGER_WARNING( "Application::calcWindowResolution Max Client Resolution Resolution %u %u"
                                           , dres.getWidth()
                                           , dres.getHeight()
                                           );
         
-        LOGGER_WARNING(m_serviceProvider)("Application::calcWindowResolution Window Resolution Resolution %u %u"
+        LOGGER_WARNING( "Application::calcWindowResolution Window Resolution Resolution %u %u"
                                           , m_windowResolution.getWidth()
                                           , m_windowResolution.getHeight()
                                           );
@@ -1589,13 +1591,13 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Application::findBestAspectViewport_( float _aspect, float & _bestAspect, Viewport & _viewport ) const
     {
-        LOGGER_INFO(m_serviceProvider)("Application::findBestAspectViewport_ for aspect %f"
+        LOGGER_INFO("Application::findBestAspectViewport_ for aspect %f"
             , _aspect
             );
 
         if( m_aspectRatioViewports.empty() == true )
         {
-            LOGGER_INFO(m_serviceProvider)("Application::findBestAspectViewport_ empty"
+            LOGGER_INFO("Application::findBestAspectViewport_ empty"
                 );
 
             return false;
@@ -1622,7 +1624,7 @@ namespace Menge
             }
         }
 
-        LOGGER_INFO(m_serviceProvider)("Application::findBestAspectViewport_ best aspect %f viewport [%f, %f, %f, %f]"
+        LOGGER_INFO("Application::findBestAspectViewport_ best aspect %f viewport [%f, %f, %f, %f]"
             , _bestAspect
             , _viewport.begin.x
             , _viewport.begin.y
@@ -1635,7 +1637,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::calcRenderViewport_( const Resolution & _resolution, Viewport & _viewport )
 	{
-        LOGGER_INFO(m_serviceProvider)("Application::calcRenderViewport resolution [%d %d]"
+        LOGGER_INFO("Application::calcRenderViewport resolution [%d %d]"
             , _resolution.getWidth()
             , _resolution.getHeight()
             );
@@ -1672,7 +1674,7 @@ namespace Menge
             float areaWidth = ceilf(dw * rw);
             float areaHeight = ceilf(dh * rh);
 
-            LOGGER_INFO(m_serviceProvider)("area [%d %d]"
+            LOGGER_INFO("area [%d %d]"
                 , areaWidth
                 , areaHeight
                 );
@@ -1694,7 +1696,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Application::isValidWindowMode() const
     {
-		bool windowModeCheck = CONFIG_VALUE( m_serviceProvider, "Game", "WindowModeCheck", false );
+		bool windowModeCheck = CONFIG_VALUE( "Game", "WindowModeCheck", false );
 
 		if( windowModeCheck == false )
         {
@@ -1704,7 +1706,7 @@ namespace Menge
         Resolution windowResolution;
         this->calcWindowResolution( windowResolution );
 
-        LOGGER_INFO(m_serviceProvider)("Application::isValidWindowMode resolution %d:%d\n"
+        LOGGER_INFO("Application::isValidWindowMode resolution %d:%d\n"
             , windowResolution.getWidth()
             , windowResolution.getHeight()
             );
@@ -1716,7 +1718,7 @@ namespace Menge
 
         if( this->findBestAspectViewport_( aspect, bestAspect, aspectRatioViewport ) == true )
         {
-            LOGGER_INFO(m_serviceProvider)("Application::isValidWindowMode viewport (1) %f:%f\n"
+            LOGGER_INFO("Application::isValidWindowMode viewport (1) %f:%f\n"
                 , aspectRatioViewport.getWidth()
                 , aspectRatioViewport.getHeight()
                 );
@@ -1729,7 +1731,7 @@ namespace Menge
         }
         else
         {
-            LOGGER_INFO(m_serviceProvider)("Application::isValidWindowMode viewport (2) %d:%d\n"
+            LOGGER_INFO("Application::isValidWindowMode viewport (2) %d:%d\n"
                 , m_contentResolution.getWidth()
                 , m_contentResolution.getHeight()
                 );
@@ -1746,7 +1748,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::changeWindowResolution( const Resolution & _resolution )
 	{
-        LOGGER_ERROR(m_serviceProvider)("Application::changeWindowResolution %u %u -> %u %u"
+        LOGGER_ERROR("Application::changeWindowResolution %u %u -> %u %u"
                                         , m_windowResolution.getWidth()
                                         , m_windowResolution.getHeight()
                                         , _resolution.getWidth()
@@ -1776,7 +1778,7 @@ namespace Menge
 
         bool fullscreen = this->getFullscreenMode();
 		
-		GAME_SERVICE(m_serviceProvider)
+		GAME_SERVICE()
 			->setFullscreen( m_currentResolution, fullscreen );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1802,7 +1804,7 @@ namespace Menge
 		if( fullscreen == true )
 		{
             Resolution desktopResolution;
-            PLATFORM_SERVICE(m_serviceProvider)
+            PLATFORM_SERVICE()
 				->getDesktopResolution( desktopResolution );
 
             m_currentResolution = desktopResolution;
@@ -1812,49 +1814,49 @@ namespace Menge
 			this->calcWindowResolution( m_currentResolution );
 		}
 
-        LOGGER_WARNING(m_serviceProvider)( "Application::invalidateWindow_ %d Current Resolution %d %d"
+        LOGGER_WARNING( "Application::invalidateWindow_ %d Current Resolution %d %d"
             , fullscreen
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
             );
         
-		RENDER_SERVICE(m_serviceProvider)
+		RENDER_SERVICE()
 			->setVSync( m_vsync );
 
-		PLATFORM_SERVICE(m_serviceProvider)
+		PLATFORM_SERVICE()
 			->notifyWindowModeChanged( m_currentResolution, fullscreen );
 
 		this->calcRenderViewport_( m_currentResolution, m_renderViewport );
 		//m_renderEngine->applyRenderViewport( renderViewport );
 
-		LOGGER_WARNING(m_serviceProvider)("Application::invalidateWindow_ Render Viewport %f %f - %f %f"
+		LOGGER_WARNING("Application::invalidateWindow_ Render Viewport %f %f - %f %f"
 			, m_renderViewport.begin.x
 			, m_renderViewport.begin.y
 			, m_renderViewport.getWidth()
 			, m_renderViewport.getHeight()
 			);
 
-		RENDER_SERVICE(m_serviceProvider)
+		RENDER_SERVICE()
             ->changeWindowMode( m_currentResolution, m_contentResolution, m_renderViewport, fullscreen );
 		
-		NOTIFICATION_SERVICE(m_serviceProvider)
+		NOTIFICATION_SERVICE()
 			->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
 
-        if( SERVICE_EXIST(m_serviceProvider, Menge::GameServiceInterface) == true )
+        if( SERVICE_EXIST(Menge::GameServiceInterface) == true )
         {
-			GAME_SERVICE( m_serviceProvider )
+			GAME_SERVICE()
 				->setRenderViewport( m_renderViewport, m_contentResolution );
 
 			float gameViewportAspect;
 			Viewport gameViewport;
 
-			APPLICATION_SERVICE(m_serviceProvider)
+			APPLICATION_SERVICE()
 				->getGameViewport( gameViewportAspect, gameViewport );
 
-			GAME_SERVICE( m_serviceProvider )
+			GAME_SERVICE()
 				->setGameViewport( gameViewport, gameViewportAspect );
 
-			LOGGER_WARNING(m_serviceProvider)("Application::invalidateWindow_ Game Viewport %f %f - %f %f Aspect %f"
+			LOGGER_WARNING("Application::invalidateWindow_ Game Viewport %f %f - %f %f Aspect %f"
 				, gameViewport.begin.x
 				, gameViewport.begin.y
 				, gameViewport.end.x
@@ -1866,13 +1868,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFullscreenMode() const
 	{
-		if( PLATFORM_SERVICE( m_serviceProvider )
+		if( PLATFORM_SERVICE()
 			->getNoFullscreen() == true )
 		{
 			return false;
 		}
 
-		if( PLATFORM_SERVICE( m_serviceProvider )
+		if( PLATFORM_SERVICE()
 			->getAlwaysFullscreen() == true )
 		{
 			return true;
@@ -1908,25 +1910,25 @@ namespace Menge
 			return;
 		}
 
-		if( SERVICE_EXIST( m_serviceProvider, Menge::RenderServiceInterface ) == false )
+		if( SERVICE_EXIST( RenderServiceInterface ) == false )
 		{
 			return;
 		}
 
-		if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == false )
+		if( SERVICE_EXIST( GameServiceInterface ) == false )
 		{
 			return;
 		}
 
-		if( RENDER_SERVICE( m_serviceProvider )->beginScene() == true )
+		if( RENDER_SERVICE()->beginScene() == true )
 		{
-			GAME_SERVICE( m_serviceProvider )
+			GAME_SERVICE()
 				->render();
 
-			RENDER_SERVICE( m_serviceProvider )
+			RENDER_SERVICE()
 				->endScene();
 
-			RENDER_SERVICE( m_serviceProvider )
+			RENDER_SERVICE()
 				->swapBuffers();
 		}
 	}
@@ -1960,7 +1962,7 @@ namespace Menge
 	{
 		if( m_locale == _locale )
 		{
-			LOGGER_WARNING( m_serviceProvider )("Application::setLocale alredy set locale '%s'"
+			LOGGER_WARNING( "Application::setLocale alredy set locale '%s'"
 				, _locale.c_str()
 				);
 
@@ -1971,18 +1973,18 @@ namespace Menge
 
 		m_locale = _locale;
 
-		LOGGER_WARNING( m_serviceProvider )("Application::setLocale new locale '%s' old '%s'"
+		LOGGER_WARNING( "Application::setLocale new locale '%s' old '%s'"
 			, m_locale.c_str()
 			, prevLocale.c_str()
 			);
 
-		NOTIFICATION_SERVICE( m_serviceProvider )
+		NOTIFICATION_SERVICE()
 			->notify( NOTIFICATOR_CHANGE_LOCALE_PREPARE, prevLocale, m_locale );
 
-		NOTIFICATION_SERVICE( m_serviceProvider )
+		NOTIFICATION_SERVICE()
 			->notify( NOTIFICATOR_CHANGE_LOCALE, prevLocale, m_locale );
 
-		NOTIFICATION_SERVICE( m_serviceProvider )
+		NOTIFICATION_SERVICE()
 			->notify( NOTIFICATOR_CHANGE_LOCALE_POST, prevLocale, m_locale );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2007,7 +2009,7 @@ namespace Menge
 
         this->invalidateWindow_();
 
-		GAME_SERVICE( m_serviceProvider )
+		GAME_SERVICE()
 			->setFixedContentResolution( m_currentResolution, m_fixedContentResolution );
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -2027,7 +2029,7 @@ namespace Menge
 
 		this->invalidateWindow_();
 
-		GAME_SERVICE( m_serviceProvider )
+		GAME_SERVICE()
 			->setFixedDisplayResolution( m_currentResolution, m_fixedDisplayResolution );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2101,12 +2103,13 @@ namespace Menge
 	{
 		if( m_invalidateVsync == true )
 		{
-			if( RENDER_SERVICE(m_serviceProvider) != nullptr )
+			if( RENDER_SERVICE() != nullptr )
 			{
-				RENDER_SERVICE(m_serviceProvider)->setVSync( m_vsync );
+				RENDER_SERVICE()
+                    ->setVSync( m_vsync );
 			}
 
-			PLATFORM_SERVICE(m_serviceProvider)
+			PLATFORM_SERVICE()
 				->notifyVsyncChanged( m_vsync );
 
 			m_invalidateVsync = false;
@@ -2114,7 +2117,7 @@ namespace Menge
 
 		if( m_invalidateCursorMode == true )
 		{
-			PLATFORM_SERVICE(m_serviceProvider)
+			PLATFORM_SERVICE()
 				->notifyCursorModeChanged( m_cursorMode );
 
 			m_invalidateCursorMode = false;
@@ -2125,9 +2128,9 @@ namespace Menge
 	{
 		m_cursorMode = _mode;
 
-		if( SERVICE_EXIST(m_serviceProvider, Menge::GameServiceInterface) == true )
+		if( SERVICE_EXIST(GameServiceInterface) == true )
 		{
-			GAME_SERVICE( m_serviceProvider )
+			GAME_SERVICE()
 				->setCursorMode( m_cursorMode );
 		}
 
@@ -2139,7 +2142,7 @@ namespace Menge
 
 			const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
-			PLATFORM_SERVICE(m_serviceProvider)
+			PLATFORM_SERVICE()
 				->notifyCursorIconSetup( name, path, buffer );
 		}
 
@@ -2158,12 +2161,12 @@ namespace Menge
 			m_cursorResource->decrementReference();
 		}
 
-		m_cursorResource = RESOURCE_SERVICE(m_serviceProvider)
+		m_cursorResource = RESOURCE_SERVICE()
 			->getResourceT<ResourceCursorPtr>( _resourceName );
 
 		if( m_cursorResource == nullptr )
 		{
-            LOGGER_ERROR(m_serviceProvider)("Application::setCursorIcon: can't find resource cursor %s"
+            LOGGER_ERROR("Application::setCursorIcon: can't find resource cursor %s"
                 , _resourceName.c_str()
                 );
 
@@ -2180,19 +2183,19 @@ namespace Menge
 
 		const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
-		PLATFORM_SERVICE(m_serviceProvider)
+		PLATFORM_SERVICE()
 			->notifyCursorIconSetup( name, path, buffer );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::showKeyboard()
 	{
-		PLATFORM_SERVICE(m_serviceProvider)
+		PLATFORM_SERVICE()
 			->showKeyboard();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::hideKeyboard()
 	{
-		PLATFORM_SERVICE(m_serviceProvider)
+		PLATFORM_SERVICE()
 			->hideKeyboard();
 	}
 	//////////////////////////////////////////////////////////////////////////

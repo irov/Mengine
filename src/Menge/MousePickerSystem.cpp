@@ -250,7 +250,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::updateTraps()
 	{
-		const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
+		const mt::vec2f & pos = INPUT_SERVICE()
 			->getCursorPosition( 0 );
 
 		TVectorPickerTrapStates states;
@@ -723,7 +723,7 @@ namespace Menge
 			return false;
 		}
 
-        if( INPUT_SERVICE(m_serviceProvider)
+        if( INPUT_SERVICE()
             ->validCursorPosition( _x, _y ) == false )
         {		
             return false;
@@ -732,7 +732,7 @@ namespace Menge
 		PickerVisitor pv(_states);
 		pv.visit( m_viewport, m_camera, m_scene );
 
-		const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
+		const Resolution & contentResolution = APPLICATION_SERVICE()
 			->getContentResolution();
 
 		mt::vec2f adapt_screen_position;

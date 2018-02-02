@@ -32,7 +32,7 @@ namespace Menge
 
 		if( it_found == m_dataflows.end() )
 		{
-			LOGGER_ERROR( m_serviceProvider )("DataManager::getDataflow '%s' don't register"
+			LOGGER_ERROR("DataManager::getDataflow '%s' don't register"
 				, _type.c_str()
 				);
 
@@ -50,7 +50,7 @@ namespace Menge
 
 		if( it_found == m_dataflows.end() )
 		{
-			LOGGER_ERROR( m_serviceProvider )("DataManager::dataflow '%s' don't register"
+			LOGGER_ERROR("DataManager::dataflow '%s' don't register"
 				, _type.c_str()
 				);
 
@@ -63,7 +63,7 @@ namespace Menge
 
 		if( data == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("DataManager::dataflow '%s' invalid create data"
+			LOGGER_ERROR("DataManager::dataflow '%s' invalid create data"
 				, _type.c_str()
 				);
 
@@ -72,7 +72,7 @@ namespace Menge
 
 		if( dataflow->load( data, _stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("DataManager::dataflow '%s' invalid load data"
+			LOGGER_ERROR("DataManager::dataflow '%s' invalid load data"
 				, _type.c_str()
 				);
 

@@ -99,7 +99,7 @@ namespace Menge
         }
 	};
 
-#   define DATA_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::DataServiceInterface)
+#   define DATA_SERVICE()\
+    SERVICE_GET(Menge::DataServiceInterface)
 }
 

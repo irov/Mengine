@@ -114,9 +114,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::mountFileGroup_()
 	{	
-		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( m_name, m_category, m_path, m_type ) == false )
+		if( FILE_SERVICE()->mountFileGroup( m_name, m_category, m_path, m_type ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourcePak::mountFileGroup_ failed to mount pak '%s' path '%s'"
+			LOGGER_ERROR("ResourcePak::mountFileGroup_ failed to mount pak '%s' path '%s'"
 				, m_name.c_str()
 				//, m_baseDir.c_str()
 				, m_path.c_str()
@@ -130,9 +130,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::unmountFileGroup_()
 	{
-		if( FILE_SERVICE( m_serviceProvider )->unmountFileGroup( m_name ) == false )
+		if( FILE_SERVICE()->unmountFileGroup( m_name ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ResourcePak::unmountFileGroup_ failed to mount pak '%s' path '%s'"
+			LOGGER_ERROR("ResourcePak::unmountFileGroup_ failed to mount pak '%s' path '%s'"
 				, m_name.c_str()
 				, m_path.c_str()
 				);
@@ -145,7 +145,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::loadPak_()
 	{
-		if( SERVICE_EXIST( m_serviceProvider, LoaderServiceInterface ) == false )
+		if( SERVICE_EXIST( LoaderServiceInterface ) == false )
 		{
 			return false;
 		}
@@ -158,9 +158,10 @@ namespace Menge
 		Metacode::Meta_Pak pak;
 
 		bool exist = false;
-		if( LOADER_SERVICE(m_serviceProvider)->load( m_name, m_descriptionPath, &pak, exist ) == false )
+		if( LOADER_SERVICE()
+            ->load( m_name, m_descriptionPath, &pak, exist ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourcePak::load Invalid resource file '%s:%s' '%s'"
+			LOGGER_ERROR("ResourcePak::load Invalid resource file '%s:%s' '%s'"
 				, m_path.c_str()
 				, m_name.c_str()
 				, m_descriptionPath.c_str()
@@ -341,7 +342,7 @@ namespace Menge
 	{
 		if( m_enable == true )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Package::enable already enable '%s:%s' '%s'"
+			LOGGER_ERROR("Package::enable already enable '%s:%s' '%s'"
 				, m_path.c_str()
 				, m_name.c_str()
 				, m_descriptionPath.c_str()
@@ -350,10 +351,10 @@ namespace Menge
 			return false;
 		}
 
-		//const Tags & platformTags = PLATFORM_SERVICE( m_serviceProvider )
+		//const Tags & platformTags = PLATFORM_SERVICE()
 		//	->getPlatformTags();
 
-		SCRIPT_SERVICE( m_serviceProvider )
+		SCRIPT_SERVICE()
 			->addModulePath( m_name, m_scriptsPackages );
 
 		for( TVectorPakResourceDesc::const_iterator
@@ -367,10 +368,10 @@ namespace Menge
 
 			const PakResourceDesc & desc = *it;
 
-			if( RESOURCE_SERVICE(m_serviceProvider)
+			if( RESOURCE_SERVICE()
 				->loadResources( m_locale, m_name, desc.path, desc.ignored ) == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("Package::enable '%s:%s' invalid load resource '%s'"
+                LOGGER_ERROR("Package::enable '%s:%s' invalid load resource '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
                     , desc.path.c_str()
@@ -382,7 +383,7 @@ namespace Menge
 			//size_t memory = PROFILER_SERVICE( m_serviceProvider )
 			//	->memoryEnd();
 
-			//LOGGER_ERROR( m_serviceProvider )("resource desc %.04f -- %s"
+			//LOGGER_ERROR("resource desc %.04f -- %s"
 			//	, float( memory ) / (1024.f)
 			//	, desc.path.c_str()
 			//	);
@@ -398,7 +399,7 @@ namespace Menge
 
 			if( this->loadFont_( m_name, desc.path ) == false )
 			{
-                LOGGER_ERROR( m_serviceProvider )("Package::enable '%s:%s' invalid load font '%s'"
+                LOGGER_ERROR("Package::enable '%s:%s' invalid load font '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
 					, desc.path.c_str()
@@ -418,7 +419,7 @@ namespace Menge
 
 			if( this->loadText_( m_name, desc.path ) == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("Package::enable '%s:%s' invalid load text '%s'"
+                LOGGER_ERROR("Package::enable '%s:%s' invalid load text '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
 					, desc.path.c_str()
@@ -438,7 +439,7 @@ namespace Menge
 
 			if( this->addUserData_( m_name, desc.name, desc.path ) == false )
 			{
-                LOGGER_ERROR( m_serviceProvider )("Package::enable '%s:%s' invalid load userdata '%s' path '%s'"
+                LOGGER_ERROR("Package::enable '%s:%s' invalid load userdata '%s' path '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
                     , desc.name.c_str()
@@ -459,7 +460,7 @@ namespace Menge
 
 			if( this->loadMaterials_( m_name, desc.path ) == false )
 			{
-                LOGGER_ERROR( m_serviceProvider )("Package::enable '%s:%s' invalid load material '%s'"
+                LOGGER_ERROR("Package::enable '%s:%s' invalid load material '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
 					, desc.path.c_str()
@@ -491,7 +492,7 @@ namespace Menge
 				continue;
 			}
 
-			if( RESOURCE_SERVICE( m_serviceProvider )
+			if( RESOURCE_SERVICE()
 				->validateResources( m_locale, m_name, desc.path ) == false )
 			{
 				successful = false;
@@ -505,7 +506,7 @@ namespace Menge
 	{
 		if( m_enable == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Package::disable already disable '%s:%s' '%s'"
+			LOGGER_ERROR("Package::disable already disable '%s:%s' '%s'"
 				, m_path.c_str()
 				, m_name.c_str()
 				, m_descriptionPath.c_str()
@@ -516,7 +517,7 @@ namespace Menge
 
 		m_enable = false;
 
-		SCRIPT_SERVICE( m_serviceProvider )
+		SCRIPT_SERVICE()
 			->removeModulePath( m_name, m_scriptsPackages );
 
 		for( TVectorPakResourceDesc::const_iterator
@@ -527,7 +528,7 @@ namespace Menge
 		{
 			const PakResourceDesc & desc = *it;
 
-			if( RESOURCE_SERVICE( m_serviceProvider )
+			if( RESOURCE_SERVICE()
 				->unloadResources( m_locale, m_name, desc.path ) == false )
 			{
 				return false;
@@ -605,7 +606,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	bool Package::loadText_( const ConstString & _pakName, const FilePath & _path )
     {
-        bool result = TEXT_SERVICE(m_serviceProvider)
+        bool result = TEXT_SERVICE()
 			->loadTextEntry( _pakName, _path );
 
         return result;
@@ -613,7 +614,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::unloadText_( const ConstString & _pakName, const FilePath & _path )
 	{
-		bool result = TEXT_SERVICE( m_serviceProvider )
+		bool result = TEXT_SERVICE()
 			->unloadTextEntry( _pakName, _path );
 
 		return result;
@@ -621,7 +622,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::loadFont_( const ConstString & _pakName, const FilePath & _path )
 	{
-		bool result = TEXT_SERVICE(m_serviceProvider)
+		bool result = TEXT_SERVICE()
 			->loadFonts( _pakName, _path );
 
 		return result;
@@ -629,7 +630,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::unloadFont_( const ConstString & _pakName, const FilePath & _path )
 	{
-		bool result = TEXT_SERVICE( m_serviceProvider )
+		bool result = TEXT_SERVICE()
 			->unloadFonts( _pakName, _path );
 
 		return result;
@@ -637,7 +638,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::loadMaterials_( const ConstString & _pakName, const FilePath & _path )
 	{
-		bool result = RENDERMATERIAL_SERVICE( m_serviceProvider )
+		bool result = RENDERMATERIAL_SERVICE()
 			->loadMaterials( _pakName, _path );
 
 		return result;
@@ -645,7 +646,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::unloadMaterials_( const ConstString & _pakName, const FilePath & _path )
 	{
-		bool result = RENDERMATERIAL_SERVICE( m_serviceProvider )
+		bool result = RENDERMATERIAL_SERVICE()
 			->unloadMaterials( _pakName, _path );
 
 		return result;
@@ -653,7 +654,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::addUserData_( const ConstString & _pakName, const ConstString & _name, const FilePath & _path )
 	{
-		bool result = USERDATA_SERVICE(m_serviceProvider)
+		bool result = USERDATA_SERVICE()
 			->addUserdata( _name, _pakName, _path );
 
 		return result;
@@ -661,7 +662,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::removeUserData_( const ConstString & _name )
 	{
-		bool result = USERDATA_SERVICE( m_serviceProvider )
+		bool result = USERDATA_SERVICE()
 			->removeUserdata( _name );
 
 		return result;

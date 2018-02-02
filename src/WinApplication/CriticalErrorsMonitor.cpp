@@ -23,7 +23,6 @@ namespace Menge
 	struct CrashDumpExceptionHandlerData
 	{
 		WString dumpPath;
-		ServiceProviderInterface * serviceProvider;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	static CrashDumpExceptionHandlerData * g_crashDumpExceptionHandlerData = nullptr;
@@ -100,7 +99,7 @@ namespace Menge
 		std::string stack;
 		stdex::get_callstack( stack, pExceptionPointers->ContextRecord );
 
-		LOGGER_CRITICAL( g_crashDumpExceptionHandlerData->serviceProvider )("CriticalErrorsMonitor: catch exception and write dumb %ls\n\n\n %s\n\n\n"
+        LOGGER_CRITICAL( "CriticalErrorsMonitor: catch exception and write dumb %ls\n\n\n %s\n\n\n"
 			, g_crashDumpExceptionHandlerData->dumpPath.c_str()
 			, stack.c_str()
 			);
@@ -108,7 +107,7 @@ namespace Menge
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CriticalErrorsMonitor::run( const WString & _userPath, ServiceProviderInterface * _serviceProvider )
+	void CriticalErrorsMonitor::run( const WString & _userPath )
 	{
 		WString dumpPath;
 		dumpPath += _userPath;
@@ -123,7 +122,6 @@ namespace Menge
 
 		g_crashDumpExceptionHandlerData = new CrashDumpExceptionHandlerData;
 		g_crashDumpExceptionHandlerData->dumpPath = dumpPath;
-		g_crashDumpExceptionHandlerData->serviceProvider = _serviceProvider;
 
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );

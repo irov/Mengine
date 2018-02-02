@@ -5,9 +5,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Win32AlreadyRunningMonitor::Win32AlreadyRunningMonitor( ServiceProviderInterface * _serviceProvider )
-		: m_serviceProvider(_serviceProvider)
-		, m_mutex(INVALID_HANDLE_VALUE)
+	Win32AlreadyRunningMonitor::Win32AlreadyRunningMonitor()
+		: m_mutex(INVALID_HANDLE_VALUE)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -37,7 +36,7 @@ namespace Menge
 			HWND otherHwnd = ::FindWindow( _windowClassName, _title.c_str() );
 			::SetForegroundWindow( otherHwnd );
 
-			LOGGER_ERROR(m_serviceProvider)("AlreadyRunningMonitor FOCUS to other instance of engine"
+			LOGGER_ERROR("AlreadyRunningMonitor FOCUS to other instance of engine"
 				);
 
 			return false;

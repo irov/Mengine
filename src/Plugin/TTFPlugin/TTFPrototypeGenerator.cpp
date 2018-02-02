@@ -26,7 +26,7 @@ namespace Menge
 		(void)_category;
 		(void)_prototype;
 
-		m_factoryFont = new FactoryPool<TTFFont, 8>( m_serviceProvider );
+		m_factoryFont = new FactoryPool<TTFFont, 8>();
 
 		return true;
 	}
@@ -34,9 +34,7 @@ namespace Menge
 	PointerFactorable TTFPrototypeGenerator::generate()
 	{
 		TTFFont * font = m_factoryFont->createObject();
-
-		font->setServiceProvider( m_serviceProvider );
-
+        
 		font->setFTLibrary( m_ftlibrary );
 
 		return font;

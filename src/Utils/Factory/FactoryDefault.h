@@ -12,8 +12,8 @@ namespace Menge
 		: public Factory
 	{
 	public:
-		FactoryDefault( ServiceProviderInterface * _serviceProvider )
-            : Factory( _serviceProvider, typeid(Type).name() )
+		FactoryDefault()
+            : Factory( typeid(Type).name() )
 		{
 		}
 

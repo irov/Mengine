@@ -17,7 +17,7 @@ namespace Menge
     protected:
 		void setDynamicLoad( bool _dynamicLoad ) override;
 		bool isDynamicLoad() const override;
-		
+
     protected:
         bool avaliable() override;
 

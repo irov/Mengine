@@ -75,8 +75,6 @@ namespace Menge
         void setActivate(bool _value);
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
         LoggerInterfacePtr m_loggerMessageBox;
 		LoggerInterfacePtr m_loggerStdio;
         LoggerInterfacePtr m_fileLog;

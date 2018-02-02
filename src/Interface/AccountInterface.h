@@ -121,6 +121,6 @@ namespace Menge
         virtual void visitAccounts( AccountVisitorInterface * _visitor ) const = 0;
     };
 
-#   define ACCOUNT_SERVICE( serviceProvider )\
-    ((AccountServiceInterface*)SERVICE_GET(serviceProvider, Menge::AccountServiceInterface))
+#   define ACCOUNT_SERVICE()\
+    ((AccountServiceInterface*)SERVICE_GET(Menge::AccountServiceInterface))
 }

@@ -67,14 +67,13 @@ namespace Menge
 	static bool ConstString_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
     {
 		(void)_kernel;
-
-		ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(_user);
+        (void)_user;
 
 		ConstString & cstr = *(ConstString*)_place;
 		
 		if( pybind::string_check( _obj ) == true )
 		{
-			if( SCRIPT_SERVICE( serviceProvider )
+			if( SCRIPT_SERVICE()
 				->stringize( _obj, cstr ) == false )
 			{
 				return false;
@@ -150,14 +149,13 @@ namespace Menge
 	static bool FilePath_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
 	{
 		(void)_kernel;
-
-		ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(_user);
+        (void)_user;
 
 		ConstString & cstr = *(ConstString*)_place;
 
 		if( pybind::string_check( _obj ) == true )
 		{
-			if( SCRIPT_SERVICE( serviceProvider )
+			if( SCRIPT_SERVICE()
 				->stringize( _obj, cstr ) == false )
 			{
 				return false;
@@ -175,7 +173,7 @@ namespace Menge
 		return false;
 	}
     //////////////////////////////////////////////////////////////////////////
-	void PythonScriptWrapper::constsWrap( ServiceProviderInterface * _serviceProvider )
+	void PythonScriptWrapper::constsWrap()
 	{
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 
@@ -183,14 +181,14 @@ namespace Menge
 
 		pybind::structhash_<ConstString>( kernel, "ConstString" )
             .def_compare( &s_ConstString_compare )
-            .def_convert( &ConstString_convert, _serviceProvider )
+            .def_convert( &ConstString_convert, nullptr )
             .def_repr( &s_ConstString_repr )
             .def_hash( &s_ConstString_hash )
             ;
 
 		pybind::structhash_<FilePath>( kernel, "FilePath" )
 			.def_compare( &s_FilePath_compare )
-			.def_convert( &FilePath_convert, _serviceProvider )
+			.def_convert( &FilePath_convert, nullptr )
 			.def_repr( &s_FilePath_repr )
 			.def_hash( &s_FilePath_hash )
 			;

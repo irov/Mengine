@@ -40,8 +40,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageEncoderHTF::_initialize()
 	{
-		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
+		m_archivator = ARCHIVE_SERVICE()
+			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
 
 		if( m_archivator == nullptr )
 		{
@@ -55,9 +55,9 @@ namespace Menge
 	{
 		(void)_size;
 
-		if( Helper::writeStreamMagicHeader( m_serviceProvider, m_stream, GET_MAGIC_NUMBER(MAGIC_HTF), GET_MAGIC_VERSION(MAGIC_HTF) ) == false )
+		if( Helper::writeStreamMagicHeader( m_stream, GET_MAGIC_NUMBER(MAGIC_HTF), GET_MAGIC_VERSION(MAGIC_HTF) ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageEncoderHTF::encode invalid write magic header"
+			LOGGER_ERROR("ImageEncoderHTF::encode invalid write magic header"
 				);
 
 			return 0;
@@ -86,9 +86,9 @@ namespace Menge
 		{             
 			size_t mipmap_size = dataInfo->getMipMapSize( i );
 
-			if( Helper::writeStreamArchiveBuffer( m_serviceProvider, m_stream, m_archivator, false, mipmap_buffer, mipmap_size, EAC_BEST ) == false )
+			if( Helper::writeStreamArchiveBuffer( m_stream, m_archivator, false, mipmap_buffer, mipmap_size, EAC_BEST ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ImageEncoderHTF::encode invalid write buffer"
+				LOGGER_ERROR("ImageEncoderHTF::encode invalid write buffer"
 					);
 
 				return 0;

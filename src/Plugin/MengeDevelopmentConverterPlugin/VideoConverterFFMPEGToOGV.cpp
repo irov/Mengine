@@ -28,9 +28,9 @@ namespace Menge
 	bool VideoConverterFFMPEGToOGV::convert()
 	{
         FileGroupInterfacePtr fileGroup;
-        if( FILE_SERVICE(m_serviceProvider)->hasFileGroup( m_options.pakName, &fileGroup ) == false )
+        if( FILE_SERVICE()->hasFileGroup( m_options.pakName, &fileGroup ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToOGV::convert_: not found file group '%s'"
+            LOGGER_ERROR("VideoConverterFFMPEGToOGV::convert_: not found file group '%s'"
                 , m_options.pakName.c_str()
                 );
 
@@ -46,9 +46,9 @@ namespace Menge
         full_output += m_options.outputFileName.c_str();
 
         WString unicode_input;
-        if( Helper::utf8ToUnicode( m_serviceProvider, full_input, unicode_input ) == false )
+        if( Helper::utf8ToUnicode( full_input, unicode_input ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToOGV::convert_: invalid convert input utf8 to unicode %s"
+            LOGGER_ERROR("VideoConverterFFMPEGToOGV::convert_: invalid convert input utf8 to unicode %s"
                 , full_input.c_str()
                 );
 
@@ -56,9 +56,9 @@ namespace Menge
         }
                 
         WString unicode_output;
-        if( Helper::utf8ToUnicode( m_serviceProvider, full_output, unicode_output ) == false )
+        if( Helper::utf8ToUnicode( full_output, unicode_output ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToOGV::convert_: invalid convert output utf8 to unicode %s"
+            LOGGER_ERROR("VideoConverterFFMPEGToOGV::convert_: invalid convert output utf8 to unicode %s"
                 , full_output.c_str()
                 );
             
@@ -67,16 +67,16 @@ namespace Menge
         
         WString buffer = L"ffmpeg -loglevel error -y -threads 4 -i \"" + unicode_input + L"\" -vcodec libtheora -f ogg -map_metadata -1 -an -q 9 -pix_fmt yuv420p \"" + unicode_output + L"\"";
 		
-		LOGGER_WARNING(m_serviceProvider)( "VideoConverterFFMPEGToOGV:: converting file '%ls' to '%ls'\n%ls"
+		LOGGER_WARNING( "VideoConverterFFMPEGToOGV:: converting file '%ls' to '%ls'\n%ls"
 			, unicode_input.c_str()
 			, unicode_output.c_str()
             , buffer.c_str()
 			);
 
-        if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+        if( WINDOWSLAYER_SERVICE()
             ->cmd( buffer ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToOGV::convert_: invalid convert:\n%ls"
+            LOGGER_ERROR("VideoConverterFFMPEGToOGV::convert_: invalid convert:\n%ls"
                 , buffer.c_str()
                 );
 

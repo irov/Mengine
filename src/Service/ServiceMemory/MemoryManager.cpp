@@ -21,16 +21,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryManager::_initialize()
 	{
-        m_memoryCacheMutex = THREAD_SERVICE( m_serviceProvider )
+        m_memoryCacheMutex = THREAD_SERVICE()
             ->createMutex( __FILE__, __LINE__ );
 
-		m_factoryPoolMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16>( m_serviceProvider );
-		m_factoryPoolMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16>( m_serviceProvider );
-		m_factoryPoolMemoryProxyInput = new FactoryPool<MemoryProxyInput, 16>( m_serviceProvider );
-		m_factoryPoolMemoryInput = new FactoryPool<MemoryInput, 16>( m_serviceProvider );
-		m_factoryPoolMemory = new FactoryPool<Memory, 16>( m_serviceProvider );
+		m_factoryPoolMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16>();
+		m_factoryPoolMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16>();
+		m_factoryPoolMemoryProxyInput = new FactoryPool<MemoryProxyInput, 16>();
+		m_factoryPoolMemoryInput = new FactoryPool<MemoryInput, 16>();
+		m_factoryPoolMemory = new FactoryPool<Memory, 16>();
         
-        ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SERVICE( m_serviceProvider )
+        ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SERVICE()
 			->createMutex( __FILE__, __LINE__ );
 
 		m_factoryPoolMemoryCacheBuffer->setMutex( memoryFactoryMutex );
@@ -123,7 +123,7 @@ namespace Menge
 
 			if( memory == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("CacheManager::lockBuffer invalid realloc %p memory %d to %d"
+				LOGGER_ERROR("CacheManager::lockBuffer invalid realloc %p memory %d to %d"
 					, buffer.memory
 					, buffer.size
 					, _size
@@ -147,7 +147,7 @@ namespace Menge
 
 		if( memory == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("CacheManager::lockBuffer invalid malloc memory %d"
+			LOGGER_ERROR("CacheManager::lockBuffer invalid malloc memory %d"
 				, _size
 				);
 
@@ -210,7 +210,7 @@ namespace Menge
 
 			if( buffer.lock == true )
 			{
-				LOGGER_ERROR( m_serviceProvider )("CacheManager::finalize dont unlock buffer %d size %d"
+				LOGGER_ERROR("CacheManager::finalize dont unlock buffer %d size %d"
 					, buffer.id
 					, buffer.size
 					);
@@ -228,8 +228,6 @@ namespace Menge
 	{
 		MemoryCacheBuffer * memoryBuffer = m_factoryPoolMemoryCacheBuffer->createObject();
 
-		memoryBuffer->setServiceProvider( m_serviceProvider );
-
 		memoryBuffer->setMemoryManager( this );
 
 		return memoryBuffer;
@@ -238,8 +236,6 @@ namespace Menge
 	MemoryCacheInputInterfacePtr MemoryManager::createMemoryCacheInput()
 	{
 		MemoryCacheInput * memoryCache = m_factoryPoolMemoryCacheInput->createObject();
-
-		memoryCache->setServiceProvider( m_serviceProvider );
 
 		memoryCache->setMemoryManager( this );
 
@@ -250,8 +246,6 @@ namespace Menge
 	{
 		MemoryProxyInput * memoryProxy = m_factoryPoolMemoryProxyInput->createObject();
 
-		memoryProxy->setServiceProvider( m_serviceProvider );
-
 		return memoryProxy;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -259,16 +253,12 @@ namespace Menge
 	{
 		MemoryInput * memory = m_factoryPoolMemoryInput->createObject();
 
-		memory->setServiceProvider( m_serviceProvider );
-
 		return memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInterfacePtr MemoryManager::createMemory()
 	{
 		Memory * memory = m_factoryPoolMemory->createObject();
-
-		memory->setServiceProvider( m_serviceProvider );
 
 		return memory;
 	}

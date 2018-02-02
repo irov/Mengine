@@ -48,8 +48,8 @@ namespace Menge
 	{
 		m_convertExt = ".aek";
 
-		m_archivator = ARCHIVE_SERVICE( m_serviceProvider )
-			->getArchivator( STRINGIZE_STRING_LOCAL( m_serviceProvider, "lz4" ) );
+		m_archivator = ARCHIVE_SERVICE()
+			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
 
 		if( m_archivator == nullptr )
 		{
@@ -77,8 +77,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieKeyConverterXMLToAEK::validateVersion( const InputStreamInterfacePtr & _stream ) const
 	{
-		MovieFramePackInterfacePtr framePack = DATA_SERVICE( m_serviceProvider )
-			->dataflowT<MovieFramePackInterfacePtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "aekMovie" ), _stream );
+		MovieFramePackInterfacePtr framePack = DATA_SERVICE()
+			->dataflowT<MovieFramePackInterfacePtr>( STRINGIZE_STRING_LOCAL( "aekMovie" ), _stream );
 
 		if( framePack == nullptr )
 		{
@@ -99,20 +99,20 @@ namespace Menge
 		binPath += m_options.inputFileName;
 		binPath.replace_last( "bin" );
 
-		FilePath path_bin = Helper::stringizeFilePath( m_serviceProvider, binPath );
+		FilePath path_bin = Helper::stringizeFilePath( binPath );
 
-		if( LOADER_SERVICE( m_serviceProvider )
+		if( LOADER_SERVICE()
 			->load( m_options.pakName, path_bin, &keyFramesPack, exist ) == false )
 		{
 			if( exist == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("MovieKeyConverter::convert: KeyFramesFile '%s' not found"
+				LOGGER_ERROR("MovieKeyConverter::convert: KeyFramesFile '%s' not found"
 					, m_options.inputFileName.c_str()
 					);
 			}
 			else
 			{
-				LOGGER_ERROR( m_serviceProvider )("MovieKeyConverter::convert: KeyFramesFile invalid parse '%s' "
+				LOGGER_ERROR("MovieKeyConverter::convert: KeyFramesFile invalid parse '%s' "
 					, m_options.inputFileName.c_str()
 					);
 			}
@@ -559,7 +559,7 @@ namespace Menge
 				{
 					if( polygon.intersection( imagePolygon, output ) == false )
 					{
-						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
+						LOGGER_ERROR("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
 							, layerIndex
 							);
 
@@ -570,7 +570,7 @@ namespace Menge
 				{
 					if( imagePolygon.difference( polygon, output ) == false )
 					{
-						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
+						LOGGER_ERROR("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
 							, layerIndex
 							);
 
@@ -620,7 +620,7 @@ namespace Menge
 
 					if( max_points >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
 					{
-						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d vertex overflow %d (max %d)"
+						LOGGER_ERROR("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d vertex overflow %d (max %d)"
 							, layerIndex
 							, max_points
 							, MENGINE_MOVIE_SHAPE_MAX_VERTEX
@@ -713,7 +713,7 @@ namespace Menge
 
 					if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
 					{
-						LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d index overflow %d (max $d)"
+						LOGGER_ERROR("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d index overflow %d (max $d)"
 							, layerIndex
 							, shapeIndicesCount
 							, MENGINE_MOVIE_SHAPE_MAX_INDICES
@@ -788,7 +788,7 @@ namespace Menge
 
 			if( polygon_size >= MENGINE_MOVIE_POLYGON_MAX_VERTEX )
 			{
-				LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d polygon vertex overflow %d (max $d)"
+				LOGGER_ERROR("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d polygon vertex overflow %d (max $d)"
 					, layerIndex
 					, polygon_size
 					, MENGINE_MOVIE_POLYGON_MAX_VERTEX
@@ -817,12 +817,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieKeyConverterXMLToAEK::writeFramePak_( const Blobject & _buffer )
 	{
-		OutputStreamInterfacePtr output_stream = FILE_SERVICE( m_serviceProvider )
+		OutputStreamInterfacePtr output_stream = FILE_SERVICE()
 			->openOutputFile( m_options.pakName, m_options.outputFileName );
 
 		if( output_stream == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::writeFramePak_ invalid open file %s:%s"
+			LOGGER_ERROR("MovieKeyConverterXMLToAEK::writeFramePak_ invalid open file %s:%s"
 				, m_options.pakName.c_str()
 				, m_options.outputFileName.c_str()
 				);
@@ -833,9 +833,9 @@ namespace Menge
 		const void * buffer_memory = &_buffer[0];
 		size_t buffer_size = _buffer.size();
 
-		if( Helper::writeStreamArchiveData( m_serviceProvider, output_stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), false, buffer_memory, buffer_size, EAC_BEST ) == false )
+		if( Helper::writeStreamArchiveData( output_stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), false, buffer_memory, buffer_size, EAC_BEST ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::writeFramePak_ invalid write stream %s:%s"
+			LOGGER_ERROR("MovieKeyConverterXMLToAEK::writeFramePak_ invalid write stream %s:%s"
 				, m_options.pakName.c_str()
 				, m_options.outputFileName.c_str()
 				);

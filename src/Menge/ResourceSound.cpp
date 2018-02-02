@@ -92,12 +92,12 @@ namespace Menge
     {
         const ConstString & category = this->getCategory();
 
-        InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+        InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( category, m_filePath, m_isStreamable );
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceSound::_isValid: '%s' group %s can't open sound file '%s:%s'"
+            LOGGER_ERROR("ResourceSound::_isValid: '%s' group %s can't open sound file '%s:%s'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
                 , category.c_str()
@@ -107,12 +107,12 @@ namespace Menge
             return false;
         }
 
-        SoundDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
+        SoundDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<SoundDecoderInterfacePtr>( m_codecType );
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: '%s' group '%s' can't create sound decoder for file '%s:%s'"
+            LOGGER_ERROR("SoundEngine::_isValid: '%s' group '%s' can't create sound decoder for file '%s:%s'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
                 , category.c_str()
@@ -124,7 +124,7 @@ namespace Menge
 
 		if( decoder->prepareData( stream ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("SoundEngine::_isValid: '%s' group '%s' can't initialize sound decoder for file '%s:%s'"
+			LOGGER_ERROR("SoundEngine::_isValid: '%s' group '%s' can't initialize sound decoder for file '%s:%s'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, category.c_str()
@@ -136,11 +136,11 @@ namespace Menge
 
         const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
-		float limitMinimalStreamSoundDuration = CONFIG_VALUE( m_serviceProvider, "Limit", "MinimalStreamSoundDuration", 500.f ); //4kb
+		float limitMinimalStreamSoundDuration = CONFIG_VALUE( "Limit", "MinimalStreamSoundDuration", 500.f ); //4kb
 
 		if( (dataInfo->length <= limitMinimalStreamSoundDuration && limitMinimalStreamSoundDuration != 0.f) && m_isStreamable == true )
 		{
-			LOGGER_ERROR( m_serviceProvider )("SoundEngine::_isValid: '%s' group '%s' remove stream (time %.4f <= %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"0\"/>"
+			LOGGER_ERROR("SoundEngine::_isValid: '%s' group '%s' remove stream (time %.4f <= %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"0\"/>"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, dataInfo->length
@@ -152,11 +152,11 @@ namespace Menge
 			return false;
 		}
 
-		float limitNoStreamSoundDurationWarning = CONFIG_VALUE( m_serviceProvider, "Limit", "NoStreamSoundDurationWarning", 2000.f ); //4kb
+		float limitNoStreamSoundDurationWarning = CONFIG_VALUE( "Limit", "NoStreamSoundDurationWarning", 2000.f ); //4kb
 						
 		if( (dataInfo->length > limitNoStreamSoundDurationWarning && limitNoStreamSoundDurationWarning != 0.f) && m_isStreamable == false )
 		{
-			LOGGER_WARNING( m_serviceProvider )("SoundEngine::_isValid: '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
+			LOGGER_WARNING("SoundEngine::_isValid: '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, dataInfo->length
@@ -166,11 +166,11 @@ namespace Menge
 				);
 		}
 
-		float limitNoStreamSoundDurationError = CONFIG_VALUE( m_serviceProvider, "Limit", "NoStreamSoundDurationError", 10000.f ); //4kb
+		float limitNoStreamSoundDurationError = CONFIG_VALUE( "Limit", "NoStreamSoundDurationError", 10000.f ); //4kb
 		
 		if( (dataInfo->length > limitNoStreamSoundDurationError && limitNoStreamSoundDurationError != 0.f) && m_isStreamable == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("SoundEngine::_isValid: '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
+			LOGGER_ERROR("SoundEngine::_isValid: '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, dataInfo->length
@@ -189,7 +189,7 @@ namespace Menge
 
         if( buffer == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundEngine::isValid '%s' group '%s' can't create buffer '%s'"
+            LOGGER_ERROR("SoundEngine::isValid '%s' group '%s' can't create buffer '%s'"
                 , this->getName().c_str()
 				, this->getGroup().c_str()
                 , m_filePath.c_str()
@@ -210,12 +210,12 @@ namespace Menge
 
 		const ConstString & category = this->getCategory();
 
-		SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE(m_serviceProvider)
+		SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE()
 			->createSoundBufferFromFile( category, m_filePath, m_codecType, m_isStreamable );
 
 		if( soundBuffer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceSound::createSoundBuffer: '%s' group '%s' can't load sound '%s'"
+			LOGGER_ERROR("ResourceSound::createSoundBuffer: '%s' group '%s' can't load sound '%s'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, m_filePath.c_str()

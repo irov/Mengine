@@ -59,12 +59,12 @@ namespace Menge
 
 		PyObject * module_builtins = pybind::get_builtins();
 
-		m_warninglogger = new XlsScriptLogger( m_serviceProvider, LM_WARNING );
+		m_warninglogger = new XlsScriptLogger( LM_WARNING );
 
 		PyObject * pyWarningLogger = m_warninglogger->embedding( kernel, module_builtins );
         pybind::setStdOutHandle( pyWarningLogger );
 
-		m_errorLogger = new XlsScriptLogger( m_serviceProvider, LM_ERROR );
+		m_errorLogger = new XlsScriptLogger( LM_ERROR );
 
 		PyObject * pyErrorLogger = m_errorLogger->embedding( kernel, module_builtins );
         pybind::setStdErrorHandle( pyErrorLogger );
@@ -100,7 +100,7 @@ namespace Menge
         pybind::def_functor( kernel, "Warning", this, &XlsExportPlugin::warning_, module_builtins );
         pybind::def_functor( kernel, "Error", this, &XlsExportPlugin::error_, module_builtins );
 
-		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
+		m_observerChangeLocale = NOTIFICATION_SERVICE()
 			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE_PREPARE, this, &XlsExportPlugin::notifyChangeLocale );
 				
 		this->proccess_();
@@ -128,7 +128,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool XlsExportPlugin::proccess_()
 	{
-		const ConstString & projectCodename = APPLICATION_SERVICE( m_serviceProvider )
+		const ConstString & projectCodename = APPLICATION_SERVICE()
 			->getProjectCodename();
 
 		if( projectCodename.empty() == true )
@@ -156,9 +156,9 @@ namespace Menge
 	void XlsExportPlugin::warning_(const wchar_t * _msg)
 	{
 		Char utf8_msg[2048];
-        Helper::unicodeToUtf8( m_serviceProvider, _msg, utf8_msg, 2048 );
+        Helper::unicodeToUtf8( _msg, utf8_msg, 2048 );
 
-		LOGGER_WARNING(m_serviceProvider)("%s"
+		LOGGER_WARNING("%s"
 			, utf8_msg
 			);
 
@@ -167,9 +167,9 @@ namespace Menge
 	void XlsExportPlugin::error_( const wchar_t * _msg )
 	{
 		Char utf8_msg[2048];
-        Helper::unicodeToUtf8( m_serviceProvider, _msg, utf8_msg, 2048 );
+        Helper::unicodeToUtf8( _msg, utf8_msg, 2048 );
 
-		LOGGER_ERROR(m_serviceProvider)("%s"
+		LOGGER_ERROR("%s"
 			, utf8_msg
 			);
 	}

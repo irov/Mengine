@@ -165,41 +165,23 @@ namespace Menge
 	class NodeScriptMethod
 	{
 	public:
-		NodeScriptMethod( ServiceProviderInterface * _serviceProvider )
-			: m_serviceProvider( _serviceProvider )
-			, m_creatorAffectorNodeFollowerLocalAlpha( _serviceProvider )
-			, m_creatorAffectorNodeFollowerCustomSize( _serviceProvider )
-			, m_creatorAffectorNodeFollowerTextureUVScale( _serviceProvider )
-			, m_factoryAffectorVelocity2( _serviceProvider )
-			, m_nodeAffectorCreatorInterpolateLinear( _serviceProvider )
-			, m_nodeAffectorCreatorInterpolateLinearFloat( _serviceProvider )
-			, m_nodeAffectorCreatorInterpolateQuadratic( _serviceProvider )
-			, m_nodeAffectorCreatorInterpolateQuadraticBezier( _serviceProvider )
-			, m_nodeAffectorCreatorInterpolateCubicBezier( _serviceProvider )
-			, m_nodeAffectorCreatorInterpolateQuarticBezier( _serviceProvider )
-			, m_nodeAffectorCreatorInterpolateParabolic( _serviceProvider )
-			, m_nodeAffectorCreatorInterpolateQuadraticFloat( _serviceProvider )
-			, m_nodeAffectorCreatorInterpolateLinearColour( _serviceProvider )
-			, m_nodeAffectorCreatorInterpolateLinearVec4( _serviceProvider )
-			, m_nodeAffectorCreatorFollowTo( _serviceProvider )
-			, m_nodeAffectorCreatorFollowToW( _serviceProvider )
-			, m_nodeAffectorCreatorAccumulateLinear( _serviceProvider )
+		NodeScriptMethod()
 		{
-			m_factoryPyObjectTimingListener = new FactoryPool<PyScheduleTimerInterface, 8>( m_serviceProvider );
-			m_factoryPySchedulePipeInterface = new FactoryPool<PySchedulePipeInterface, 8>( m_serviceProvider );
-			m_factoryDelaySchedulePipeInterface = new FactoryPool<DelaySchedulePipeInterface, 8>( m_serviceProvider );
-			m_factoryPyObjectScheduleListener = new FactoryPool<PyScheduleEventInterface, 8>( m_serviceProvider );
-			m_factoryPythonSceneChangeCallback = new FactoryPool<PythonSceneChangeCallback, 8>( m_serviceProvider );
-			m_factoryAffectorGridBurnTransparency = new FactoryPool<AffectorGridBurnTransparency, 4>( m_serviceProvider );
-			m_factoryAffectorUser = new FactoryPool<AffectorUser, 4>( m_serviceProvider );
-			m_factoryNodeAffectorCallback = new FactoryPool<ScriptableAffectorCallback, 4>( m_serviceProvider );
-			m_factoryPyGlobalMouseMoveHandlers = new FactoryPool<PyGlobalMouseMoveHandler, 32>( m_serviceProvider );
-			m_factoryPyGlobalMouseHandlerButtons = new FactoryPool<PyGlobalMouseHandlerButton, 32>( m_serviceProvider );
-			m_factoryPyGlobalMouseHandlerButtonEnds = new FactoryPool<PyGlobalMouseHandlerButtonEnd, 32>( m_serviceProvider );
-			m_factoryPyGlobalMouseHandlerWheels = new FactoryPool<PyGlobalMouseHandlerWheel, 32>( m_serviceProvider );
-			m_factoryPyGlobalMouseHandlerButtonBegins = new FactoryPool<PyGlobalMouseHandlerButtonBegin, 32>( m_serviceProvider );
-			m_factoryPyGlobalKeyHandler = new FactoryPool<PyGlobalKeyHandler, 32>( m_serviceProvider );
-			m_factoryPyGlobalTextHandler = new FactoryPool<PyGlobalTextHandler, 32>( m_serviceProvider );
+			m_factoryPyObjectTimingListener = new FactoryPool<PyScheduleTimerInterface, 8>();
+			m_factoryPySchedulePipeInterface = new FactoryPool<PySchedulePipeInterface, 8>();
+			m_factoryDelaySchedulePipeInterface = new FactoryPool<DelaySchedulePipeInterface, 8>();
+			m_factoryPyObjectScheduleListener = new FactoryPool<PyScheduleEventInterface, 8>();
+			m_factoryPythonSceneChangeCallback = new FactoryPool<PythonSceneChangeCallback, 8>();
+			m_factoryAffectorGridBurnTransparency = new FactoryPool<AffectorGridBurnTransparency, 4>();
+			m_factoryAffectorUser = new FactoryPool<AffectorUser, 4>();
+			m_factoryNodeAffectorCallback = new FactoryPool<ScriptableAffectorCallback, 4>();
+			m_factoryPyGlobalMouseMoveHandlers = new FactoryPool<PyGlobalMouseMoveHandler, 32>();
+			m_factoryPyGlobalMouseHandlerButtons = new FactoryPool<PyGlobalMouseHandlerButton, 32>();
+			m_factoryPyGlobalMouseHandlerButtonEnds = new FactoryPool<PyGlobalMouseHandlerButtonEnd, 32>();
+			m_factoryPyGlobalMouseHandlerWheels = new FactoryPool<PyGlobalMouseHandlerWheel, 32>();
+			m_factoryPyGlobalMouseHandlerButtonBegins = new FactoryPool<PyGlobalMouseHandlerButtonBegin, 32>();
+			m_factoryPyGlobalKeyHandler = new FactoryPool<PyGlobalKeyHandler, 32>();
+			m_factoryPyGlobalTextHandler = new FactoryPool<PyGlobalTextHandler, 32>();
 		}
 
 	public:
@@ -222,7 +204,7 @@ namespace Menge
 					String key;
 					if( pybind::extract_value( _kernel, py_string, key, false ) == false )
 					{
-						LOGGER_ERROR( m_serviceProvider )("textfield_setTextFormatArgs %s invalid get str %s"
+						LOGGER_ERROR("textfield_setTextFormatArgs %s invalid get str %s"
 							, pybind::object_repr( py_string )
 							);
 
@@ -236,7 +218,7 @@ namespace Menge
 					WString key;
 					if( pybind::extract_value( _kernel, py_string, key, false ) == false )
 					{
-						LOGGER_ERROR( m_serviceProvider )("textfield_setTextFormatArgs %s invalid get unicode %s"
+						LOGGER_ERROR( "textfield_setTextFormatArgs %s invalid get unicode %s"
 							, pybind::object_repr( py_string )
 							);
 
@@ -244,7 +226,7 @@ namespace Menge
 					}
 
 					String utf8_arg;
-					Helper::unicodeToUtf8( m_serviceProvider, key, utf8_arg );
+					Helper::unicodeToUtf8( key, utf8_arg );
 
 					cs_args.push_back( utf8_arg );
 				}
@@ -254,7 +236,7 @@ namespace Menge
 
 					if( value == nullptr )
 					{
-						LOGGER_ERROR( m_serviceProvider )("textfield_setTextFormatArgs %s not suport arg %s"
+						LOGGER_ERROR( "textfield_setTextFormatArgs %s not suport arg %s"
 							, pybind::object_repr( py_string )
 							);
 
@@ -288,7 +270,7 @@ namespace Menge
 				const String & str_arg = *it;
 
 				WString unicode;
-				Helper::utf8ToUnicode( m_serviceProvider, str_arg, unicode );
+				Helper::utf8ToUnicode( str_arg, unicode );
 
 				ws_args.push_back( unicode );
 			}
@@ -301,7 +283,7 @@ namespace Menge
 		//	const U32String & utf8 = _textField->getText();
 
 		//	WString unicode;
-		//	Helper::utf8ToUnicode( m_serviceProvider, utf8, unicode );
+		//	Helper::utf8ToUnicode( utf8, unicode );
 
 		//	return unicode;
 		//}
@@ -333,7 +315,7 @@ namespace Menge
 
 			if( resourceMovie == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::getWorldAnchorPoint %s invalid setup resource"
+				LOGGER_ERROR( "Movie::getWorldAnchorPoint %s invalid setup resource"
 					, _movie->getName().c_str()
 					);
 
@@ -365,7 +347,7 @@ namespace Menge
 		{
 			Node * node;
 			Movie * submovie;
-			if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSlot" ), &node, &submovie ) == false )
+			if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
 			{
 				return nullptr;
 			}
@@ -395,7 +377,7 @@ namespace Menge
 		{
 			Node * node;
 			Movie * submovie;
-			bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSlot" ), &node, &submovie );
+			bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie );
 
 			return successful;
 		}
@@ -405,7 +387,7 @@ namespace Menge
 			Node * node;
 			Movie * submovie;
 
-			if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieText" ), &node, &submovie ) == false )
+			if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieText" ), &node, &submovie ) == false )
 			{
 				return nullptr;
 			}
@@ -418,7 +400,7 @@ namespace Menge
 			Node * node;
 			Movie * submovie;
 
-			bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieText" ), &node, &submovie );
+			bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieText" ), &node, &submovie );
 
 			return successful;
 		}
@@ -427,7 +409,7 @@ namespace Menge
 		{
 			Node * node;
 			Movie * submovie;
-			if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( m_serviceProvider, "SubMovie" ), &node, &submovie ) == false )
+			if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( "SubMovie" ), &node, &submovie ) == false )
 			{
 				return nullptr;
 			}
@@ -439,7 +421,7 @@ namespace Menge
 		{
 			Node * node;
 			Movie * submovie;
-			bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( m_serviceProvider, "SubMovie" ), &node, &submovie );
+			bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "SubMovie" ), &node, &submovie );
 
 			return successful;
 		}
@@ -449,17 +431,17 @@ namespace Menge
 			Node * node;
 			Movie * submovie;
 
-			if( _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketImage" ), &node, &submovie ) == true )
+			if( _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), &node, &submovie ) == true )
 			{
 				return node;
 			}
 
-			if( _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketShape" ), &node, &submovie ) == true )
+			if( _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), &node, &submovie ) == true )
 			{
 				return node;
 			}
 
-			LOGGER_ERROR( m_serviceProvider )("Movie::getSocket: movie %s resource %s not found %s"
+			LOGGER_ERROR( "Movie::getSocket: movie %s resource %s not found %s"
 				, _movie->getName().c_str()
 				, _movie->getResourceMovieName().c_str()
 				, _name.c_str()
@@ -473,12 +455,12 @@ namespace Menge
 			Node * node;
 			Movie * submovie;
 
-			if( _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketImage" ), &node, &submovie ) == true )
+			if( _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), &node, &submovie ) == true )
 			{
 				return true;
 			}
 
-			if( _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketShape" ), &node, &submovie ) == true )
+			if( _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), &node, &submovie ) == true )
 			{
 				return true;
 			}
@@ -491,7 +473,7 @@ namespace Menge
 			Node * node;
 			Movie * submovie;
 
-			if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieEvent" ), &node, &submovie ) == false )
+			if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieEvent" ), &node, &submovie ) == false )
 			{
 				return false;
 			}
@@ -508,7 +490,7 @@ namespace Menge
 			Node * node;
 			Movie * submovie;
 
-			if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieEvent" ), &node, &submovie ) == false )
+			if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieEvent" ), &node, &submovie ) == false )
 			{
 				return false;
 			}
@@ -524,7 +506,7 @@ namespace Menge
 		{
 			Node * node;
 			Movie * submovie;
-			bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieEvent" ), &node, &submovie );
+			bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieEvent" ), &node, &submovie );
 
 			return successful;
 		}
@@ -568,7 +550,7 @@ namespace Menge
 			pybind::list py_list( _kernel );
 
 			PythonVisitorMovieSlot visitor( _kernel, py_list );
-			_movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSlot" ), &visitor );
+			_movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSlot" ), &visitor );
 
 			return py_list;
 		}
@@ -608,8 +590,8 @@ namespace Menge
 			pybind::list py_list( _kernel );
 
 			PythonVisitorMovieSocket visitor( _kernel, py_list );
-			_movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketImage" ), &visitor );
-			_movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketShape" ), &visitor );
+			_movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), &visitor );
+			_movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), &visitor );
 
 			return py_list;
 		}
@@ -649,7 +631,7 @@ namespace Menge
 			pybind::list py_list( _kernel );
 
 			PythonVisitorMovieSubMovie visitor( _kernel, py_list );
-			_movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( m_serviceProvider, "SubMovie" ), &visitor );
+			_movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "SubMovie" ), &visitor );
 
 			return py_list;
 		}
@@ -691,7 +673,7 @@ namespace Menge
 
 			if( resourceMovie == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie.getFrameDuration: '%s' not activate"
+				LOGGER_ERROR( "Movie.getFrameDuration: '%s' not activate"
 					, _movie->getName().c_str()
 					);
 
@@ -709,7 +691,7 @@ namespace Menge
 
 			if( resourceMovie == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie.getDuration: '%s' not activate"
+				LOGGER_ERROR( "Movie.getDuration: '%s' not activate"
 					, _movie->getName().c_str()
 					);
 
@@ -727,7 +709,7 @@ namespace Menge
 
 			if( resourceMovie == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie.getFrameCount: '%s' not activate"
+				LOGGER_ERROR( "Movie.getFrameCount: '%s' not activate"
 					, _movie->getName().c_str()
 					);
 
@@ -745,7 +727,7 @@ namespace Menge
 
 			if( resourceMovie == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie.getSize: '%s' not activate"
+				LOGGER_ERROR( "Movie.getSize: '%s' not activate"
 					, _movie->getName().c_str()
 					);
 
@@ -765,7 +747,7 @@ namespace Menge
 			Movie * sub_movie;
 			if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::getLayerPathLength: '%s' not found layer '%s'"
+				LOGGER_ERROR( "Movie::getLayerPathLength: '%s' not found layer '%s'"
 					, _movie->getName().c_str()
 					, _name.c_str()
 					);
@@ -785,7 +767,7 @@ namespace Menge
 			MovieFrameSource start_frame;
 			if( framePack->getLayerFrame( layer->index, 0, start_frame ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::getLayerPathLength: '%s' invalid get layer '%s' frame %d"
+				LOGGER_ERROR( "Movie::getLayerPathLength: '%s' invalid get layer '%s' frame %d"
 					, _movie->getName().c_str()
 					, _name.c_str()
 					, layer->index
@@ -815,7 +797,7 @@ namespace Menge
 			Movie * sub_movie;
 			if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::getLayerPathLength: '%s' not found layer '%s'"
+				LOGGER_ERROR( "Movie::getLayerPathLength: '%s' not found layer '%s'"
 					, _movie->getName().c_str()
 					, _name.c_str()
 					);
@@ -841,7 +823,7 @@ namespace Menge
 
 			if( framePack == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::getLayerPathLength: sub_movie '%s' not found layer '%s' frame pack is null"
+				LOGGER_ERROR( "Movie::getLayerPathLength: sub_movie '%s' not found layer '%s' frame pack is null"
 					, sub_movie->getName().c_str()
 					, _name.c_str()
 					);
@@ -873,7 +855,7 @@ namespace Menge
 			Movie * sub_movie;
 			if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::getLayerPathLength: '%s' not found layer '%s'"
+				LOGGER_ERROR( "Movie::getLayerPathLength: '%s' not found layer '%s'"
 					, _movie->getName().c_str()
 					, _name.c_str()
 					);
@@ -925,7 +907,7 @@ namespace Menge
 			Movie * sub_movie;
 			if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::getLayerPathLength: '%s' not found layer '%s'"
+				LOGGER_ERROR( "Movie::getLayerPathLength: '%s' not found layer '%s'"
 					, _movie->getName().c_str()
 					, _name.c_str()
 					);
@@ -946,7 +928,7 @@ namespace Menge
 			{
 				if( resourceMovie->compile() == false )
 				{
-					LOGGER_ERROR( m_serviceProvider )("Movie::getLayerPathLength: '%s' invalid compile"
+					LOGGER_ERROR( "Movie::getLayerPathLength: '%s' invalid compile"
 						, _movie->getName().c_str()
 						);
 
@@ -987,7 +969,7 @@ namespace Menge
 			Movie * sub_movie;
 			if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::getLayerPathLength: '%s' not found layer '%s'"
+				LOGGER_ERROR("Movie::getLayerPathLength: '%s' not found layer '%s'"
 					, _movie->getName().c_str()
 					, _name.c_str()
 					);
@@ -1008,7 +990,7 @@ namespace Menge
 			{
 				if( resourceMovie->compile() == false )
 				{
-					LOGGER_ERROR( m_serviceProvider )("Movie::getLayerPathLength: '%s' invalid compile"
+					LOGGER_ERROR( "Movie::getLayerPathLength: '%s' invalid compile"
 						, _movie->getName().c_str()
 						);
 
@@ -1045,9 +1027,9 @@ namespace Menge
 		{
 			Node * node;
 			Movie * submovie;
-			if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSlot" ), &node, &submovie ) == false )
+			if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::getMovieSlotWorldPosition %s not found slot '%s"
+				LOGGER_ERROR( "Movie::getMovieSlotWorldPosition %s not found slot '%s"
 					, _movie->getName().c_str()
 					, _slotName.c_str()
 					);
@@ -1064,9 +1046,9 @@ namespace Menge
 		{
 			Node * node;
 			Movie * submovie;
-			if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSlot" ), &node, &submovie ) == false )
+			if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::getMovieSlotOffsetPosition %s not found slot '%s"
+				LOGGER_ERROR( "Movie::getMovieSlotOffsetPosition %s not found slot '%s"
 					, _movie->getName().c_str()
 					, _slotName.c_str()
 					);
@@ -1078,7 +1060,7 @@ namespace Menge
 
 			if( resourceMovie == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::getMovieSlotOffsetPosition %s invalid setup resource"
+				LOGGER_ERROR( "Movie::getMovieSlotOffsetPosition %s invalid setup resource"
 					, _movie->getName().c_str()
 					);
 
@@ -1103,9 +1085,9 @@ namespace Menge
 		{
 			Node * node;
 			Movie * submovie;
-			if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSlot" ), &node, &submovie ) == false )
+			if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::attachMovieSlotNode %s not found slot '%s"
+				LOGGER_ERROR( "Movie::attachMovieSlotNode %s not found slot '%s"
 					, _movie->getName().c_str()
 					, _slotName.c_str()
 					);
@@ -1122,9 +1104,9 @@ namespace Menge
 		{
 			Node * node;
 			Movie * submovie;
-			if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSlot" ), &node, &submovie ) == false )
+			if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::removeAllMovieSlotNode %s not found slot '%s"
+				LOGGER_ERROR( "Movie::removeAllMovieSlotNode %s not found slot '%s"
 					, _movie->getName().c_str()
 					, _slotName.c_str()
 					);
@@ -1163,7 +1145,7 @@ namespace Menge
 
 			if( successful == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceMovie::getLayerPosition %s not found layer '%s'"
+				LOGGER_ERROR("ResourceMovie::getLayerPosition %s not found layer '%s'"
 					, _movie->getName().c_str()
 					, _name.c_str()
 					);
@@ -1181,7 +1163,7 @@ namespace Menge
 
 			if( successful == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceMovie::getLayerIn %s not found layer '%s'"
+				LOGGER_ERROR("ResourceMovie::getLayerIn %s not found layer '%s'"
 					, _movie->getName().c_str()
 					, _name.c_str()
 					);
@@ -1255,7 +1237,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		mt::vec2f s_getScreenPolygonCenter( HotSpotPolygon * _hs )
 		{
-			const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
+			const Resolution & contentResolution = APPLICATION_SERVICE()
 				->getContentResolution();
 
 			const RenderCameraInterface * camera = _hs->getRenderCameraInheritance();
@@ -1321,7 +1303,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_loadPlugin( const WString & _pluginName )
 		{
-			bool successful = PLUGIN_SERVICE( m_serviceProvider )
+			bool successful = PLUGIN_SERVICE()
 				->loadPlugin( _pluginName );
 
 			return successful;
@@ -1329,7 +1311,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_setMousePickerBlockInput( bool _value )
 		{
-			MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE( m_serviceProvider )
+			MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE()
 				->getMousePickerSystem();
 
 			mousePickerSystem->setBlock( _value );
@@ -1337,7 +1319,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_setMousePickerHandleValue( bool _value )
 		{
-			MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE( m_serviceProvider )
+			MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE()
 				->getMousePickerSystem();
 
 			mousePickerSystem->setHandleValue( _value );
@@ -1345,13 +1327,13 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_setInputMouseButtonEventBlock( bool _value )
 		{
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->setInputMouseButtonEventBlock( _value );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool s_getInputMouseButtonEventBlock()
 		{
-			return APPLICATION_SERVICE( m_serviceProvider )
+			return APPLICATION_SERVICE()
 				->getInputMouseButtonEventBlock();
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -1360,7 +1342,6 @@ namespace Menge
 		{
 		public:
 			PyScheduleTimerInterface()
-				: m_serviceProvider( nullptr )
 			{
 			}
 
@@ -1369,9 +1350,8 @@ namespace Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::args & _args )
+			void initialize( const pybind::object & _cb, const pybind::args & _args )
 			{
-				m_serviceProvider = _serviceProvider;
 				m_cb = _cb;
 				m_args = _args;
 			}
@@ -1393,7 +1373,6 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
 			pybind::object m_cb;
 			pybind::args m_args;
 		};
@@ -1405,7 +1384,6 @@ namespace Menge
 		{
 		public:
 			PySchedulePipeInterface()
-				: m_serviceProvider( nullptr )
 			{
 			}
 
@@ -1414,9 +1392,8 @@ namespace Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::args & _args )
+			void initialize( const pybind::object & _cb, const pybind::args & _args )
 			{
-				m_serviceProvider = _serviceProvider;
 				m_cb = _cb;
 				m_args = _args;
 			}
@@ -1430,7 +1407,6 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
 			pybind::object m_cb;
 			pybind::args m_args;
 		};
@@ -1442,8 +1418,7 @@ namespace Menge
 		{
 		public:
 			DelaySchedulePipeInterface()
-				: m_serviceProvider( nullptr )
-				, m_delay( 0.f )
+				: m_delay( 0.f )
 			{
 			}
 
@@ -1452,10 +1427,8 @@ namespace Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, float _delay )
+			void initialize( float _delay )
 			{
-				m_serviceProvider = _serviceProvider;
-
 				m_delay = _delay;
 			}
 
@@ -1469,8 +1442,6 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
-
 			float m_delay;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -1481,7 +1452,6 @@ namespace Menge
 		{
 		public:
 			PyScheduleEventInterface()
-				: m_serviceProvider( nullptr )
 			{
 			}
 
@@ -1490,9 +1460,8 @@ namespace Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::args & _args )
+			void initialize( const pybind::object & _cb, const pybind::args & _args )
 			{
-				m_serviceProvider = _serviceProvider;
 				m_cb = _cb;
 				m_args = _args;
 			}
@@ -1509,7 +1478,6 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
 			pybind::object m_cb;
 			pybind::args m_args;
 		};
@@ -1518,16 +1486,16 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t timing( float _delay, const pybind::object & _listener, const pybind::args & _args )
 		{
-			const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE()
 				->getScheduleManager();
 
 			DelaySchedulePipeInterface * pipe = m_factoryDelaySchedulePipeInterface->createObject();
 
-			pipe->initialize( m_serviceProvider, _delay );
+			pipe->initialize( _delay );
 
 			PyScheduleTimerInterface * listener = m_factoryPyObjectTimingListener->createObject();
 
-			listener->initialize( m_serviceProvider, _listener, _args );
+			listener->initialize( _listener, _args );
 
 			uint32_t id = tm->timing( pipe, listener );
 
@@ -1536,7 +1504,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool timingRemove( uint32_t _id )
 		{
-			const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE()
 				->getScheduleManager();
 
 			bool successful = tm->remove( _id );
@@ -1546,7 +1514,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		ScheduleManagerInterfacePtr createScheduler()
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->createSchedulerManager();
 
 			return sm;
@@ -1556,13 +1524,13 @@ namespace Menge
 		{
 			if( _sm == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Menge.destroyScheduler destroy scheduler is NULL"
+				LOGGER_ERROR( "Menge.destroyScheduler destroy scheduler is NULL"
 					);
 
 				return false;
 			}
 
-			bool successful = PLAYER_SERVICE( m_serviceProvider )
+			bool successful = PLAYER_SERVICE()
 				->destroySchedulerManager( _sm );
 
 			return successful;
@@ -1570,12 +1538,12 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t schedule( float _timing, const pybind::object & _script, const pybind::args & _args )
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManager();
 
 			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener->createObject();
 
-			sl->initialize( m_serviceProvider, _script, _args );
+			sl->initialize( _script, _args );
 
 			uint32_t id = sm->event( _timing, sl );
 
@@ -1586,7 +1554,7 @@ namespace Menge
 		{
 			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener->createObject();
 
-			sl->initialize( m_serviceProvider, _script, _args );
+			sl->initialize( _script, _args );
 
 			uint32_t id = _scheduleManager->event( _timing, sl );
 
@@ -1597,11 +1565,11 @@ namespace Menge
 		{
 			DelaySchedulePipeInterface * pipe = m_factoryDelaySchedulePipeInterface->createObject();
 
-			pipe->initialize( m_serviceProvider, _delay );
+			pipe->initialize( _delay );
 
 			PyScheduleTimerInterface * tl = m_factoryPyObjectTimingListener->createObject();
 
-			tl->initialize( m_serviceProvider, _listener, _args );
+			tl->initialize( _listener, _args );
 
 			uint32_t id = _scheduleManager->timing( pipe, tl );
 
@@ -1612,11 +1580,11 @@ namespace Menge
 		{
 			PySchedulePipeInterface * pipe = m_factoryPySchedulePipeInterface->createObject();
 
-			pipe->initialize( m_serviceProvider, _pipe, _args );
+			pipe->initialize( _pipe, _args );
 
 			PyScheduleTimerInterface * tl = m_factoryPyObjectTimingListener->createObject();
 
-			tl->initialize( m_serviceProvider, _listener, _args );
+			tl->initialize( _listener, _args );
 
 			uint32_t id = _scheduleManager->timing( pipe, tl );
 
@@ -1625,7 +1593,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool scheduleRemove( uint32_t _id )
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1640,7 +1608,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void scheduleRemoveAll()
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1653,7 +1621,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleFreeze( uint32_t _id, bool _freeze )
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1668,7 +1636,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_scheduleFreezeAll()
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1681,7 +1649,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void scheduleResumeAll()
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1694,7 +1662,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleIsFreeze( uint32_t _id )
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1707,7 +1675,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		float s_scheduleTime( uint32_t _id )
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManager();
 
 			if( sm == nullptr )
@@ -1722,7 +1690,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_scheduleGlobal( float _timing, const pybind::object & _script, const pybind::args & _args )
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1732,7 +1700,7 @@ namespace Menge
 
 			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener->createObject();
 
-			sl->initialize( m_serviceProvider, _script, _args );
+			sl->initialize( _script, _args );
 
 			uint32_t id = sm->event( _timing, sl );
 
@@ -1741,7 +1709,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleGlobalRemove( uint32_t _id )
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1756,7 +1724,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_scheduleGlobalRemoveAll()
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1769,7 +1737,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleGlobalFreeze( uint32_t _id, bool _freeze )
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1784,7 +1752,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_scheduleGlobalFreezeAll()
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1797,7 +1765,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_scheduleGlobalResumeAll()
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1810,7 +1778,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_scheduleGlobalIsFreeze( uint32_t _id )
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1825,7 +1793,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		float s_scheduleGlobalTime( uint32_t _id )
 		{
-			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE( m_serviceProvider )
+			const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
 				->getScheduleManagerGlobal();
 
 			if( sm == nullptr )
@@ -1840,13 +1808,13 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_setTimingFactor( float _factor )
 		{
-			GAME_SERVICE( m_serviceProvider )
+			GAME_SERVICE()
 				->setTimingFactor( _factor );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_addHomeless( Node * _node )
 		{
-			NODE_SERVICE( m_serviceProvider )
+			NODE_SERVICE() 
 				->addHomeless( _node );
 
 			_node->release();
@@ -1854,7 +1822,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_isHomeless( Node * _node )
 		{
-			bool is = NODE_SERVICE( m_serviceProvider )
+			bool is = NODE_SERVICE() 
 				->isHomeless( _node );
 
 			return is;
@@ -1862,7 +1830,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		float s_getTimingFactor()
 		{
-			float factor = GAME_SERVICE( m_serviceProvider )
+			float factor = GAME_SERVICE()
 				->getTimingFactor();
 
 			return factor;
@@ -1872,10 +1840,8 @@ namespace Menge
 			: public SceneChangeCallbackInterface
 		{
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::args & _args )
+			void initialize( const pybind::object & _cb, const pybind::args & _args )
 			{
-				m_serviceProvider = _serviceProvider;
-
 				m_cb = _cb;
 				m_args = _args;
 			}
@@ -1903,8 +1869,6 @@ namespace Menge
 			}
 
 		public:
-			ServiceProviderInterface * m_serviceProvider;
-
 			pybind::object m_cb;
 			pybind::args m_args;
 		};
@@ -1917,7 +1881,7 @@ namespace Menge
 		{
             if( _cb.is_callable() == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("setCurrentScene prototype '%s' name '%s' cb '%s' not callable"
+                LOGGER_ERROR( "setCurrentScene prototype '%s' name '%s' cb '%s' not callable"
                     , _prototype.c_str()
                     , _name.c_str()
                     , _cb.repr()
@@ -1926,11 +1890,11 @@ namespace Menge
                 return false;
             }
 
-			LOGGER_INFO( m_serviceProvider )("set current scene '%s'"
+			LOGGER_INFO( "set current scene '%s'"
 				, _name.c_str()
 				);
 
-			//if( PLAYER_SERVICE( m_serviceProvider )
+			//if( PLAYER_SERVICE()
 			//	->isChangedScene() == true )
 			//{
 			//	return false;
@@ -1938,14 +1902,14 @@ namespace Menge
 
 			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject();
 
-			py_cb->initialize( m_serviceProvider, _cb, _args );
+			py_cb->initialize( _cb, _args );
 
-			Scene * currentScene = PLAYER_SERVICE( m_serviceProvider )
+			Scene * currentScene = PLAYER_SERVICE()
 				->getCurrentScene();
 
 			if( currentScene != nullptr && currentScene->getName() == _name )
 			{
-				if( PLAYER_SERVICE( m_serviceProvider )
+				if( PLAYER_SERVICE()
 					->restartCurrentScene( py_cb ) == false )
 				{
 					return false;
@@ -1953,8 +1917,8 @@ namespace Menge
 			}
 			else
 			{
-				Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
-					->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ), _prototype );
+				Scene * scene = PROTOTYPE_SERVICE()
+					->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype );
 
 				if( scene == nullptr )
 				{
@@ -1963,7 +1927,7 @@ namespace Menge
 
 				scene->setName( _name );
 
-				if( PLAYER_SERVICE( m_serviceProvider )
+				if( PLAYER_SERVICE()
 					->setCurrentScene( scene, _destroyOld, py_cb ) == false )
 				{
 					scene->destroy();
@@ -1977,7 +1941,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		Scene * getCurrentScene()
 		{
-			Scene * scene = PLAYER_SERVICE( m_serviceProvider )
+			Scene * scene = PLAYER_SERVICE()
 				->getCurrentScene();
 
 			return scene;
@@ -1985,8 +1949,8 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		Scene * s_createScene( const ConstString & _prototype, const ConstString & _name )
 		{
-			Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
-				->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ), _prototype );
+			Scene * scene = PROTOTYPE_SERVICE()
+				->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype );
 
 			scene->setName( _name );
 
@@ -1995,7 +1959,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool createGlobalScene()
 		{
-			bool successful = PLAYER_SERVICE( m_serviceProvider )
+			bool successful = PLAYER_SERVICE()
 				->createGlobalScene();
 
 			return successful;
@@ -2003,13 +1967,13 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void removeGlobalScene()
 		{
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->removeGlobalScene();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		Scene * getGlobalScene()
 		{
-			Scene * scene = PLAYER_SERVICE( m_serviceProvider )
+			Scene * scene = PLAYER_SERVICE()
 				->getGlobalScene();
 
 			return scene;
@@ -2017,25 +1981,25 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_setArrow( const ConstString & _prototype )
 		{
-			Arrow * arrow = PROTOTYPE_SERVICE( m_serviceProvider )
-				->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Arrow" ), _prototype );
+			Arrow * arrow = PROTOTYPE_SERVICE()
+				->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype );
 
 			if( arrow == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Error: can't setup arrow '%s'"
+				LOGGER_ERROR("Error: can't setup arrow '%s'"
 					, _prototype.c_str()
 					);
 
 				return;
 			}
 
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->setArrow( arrow );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		const pybind::object & s_getArrow()
 		{
-			Arrow * arrow = PLAYER_SERVICE( m_serviceProvider )
+			Arrow * arrow = PLAYER_SERVICE()
 				->getArrow();
 
 			if( arrow == nullptr )
@@ -2050,7 +2014,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_hideArrow( bool _hide )
 		{
-			Arrow * arrow = PLAYER_SERVICE( m_serviceProvider )
+			Arrow * arrow = PLAYER_SERVICE()
 				->getArrow();
 
 			arrow->setLocalHide( _hide );
@@ -2058,25 +2022,25 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		const Resolution & s_getCurrentResolution()
 		{
-			return APPLICATION_SERVICE( m_serviceProvider )
+			return APPLICATION_SERVICE()
 				->getCurrentResolution();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		const Resolution & s_getContentResolution()
 		{
-			return APPLICATION_SERVICE( m_serviceProvider )
+			return APPLICATION_SERVICE()
 				->getContentResolution();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_setNopause( bool _value )
 		{
-			return APPLICATION_SERVICE( m_serviceProvider )
+			return APPLICATION_SERVICE()
 				->setNopause( _value );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool s_getNopause()
 		{
-			return APPLICATION_SERVICE( m_serviceProvider )
+			return APPLICATION_SERVICE()
 				->getNopause();
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -2087,7 +2051,7 @@ namespace Menge
 				return false;
 			}
 
-			Arrow * arrow = PLAYER_SERVICE( m_serviceProvider )
+			Arrow * arrow = PLAYER_SERVICE()
 				->getArrow();
 
 			if( arrow == nullptr )
@@ -2118,7 +2082,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		const mt::vec2f& s_getCamera2DPosition()
 		{
-			const RenderViewportInterface * rv = PLAYER_SERVICE( m_serviceProvider )
+			const RenderViewportInterface * rv = PLAYER_SERVICE()
 				->getRenderViewport();
 
 			const Viewport & vp = rv->getViewport();
@@ -2128,7 +2092,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_Animatable_play( Animatable * _animatable )
 		{
-			float time = TIMELINE_SERVICE( m_serviceProvider )
+			float time = TIMELINE_SERVICE()
 				->getTime();
 
 			uint32_t id = _animatable->play( time );
@@ -2159,7 +2123,7 @@ namespace Menge
 				{
 					std::string k = it.key();
 
-					LOGGER_ERROR( m_serviceProvider )("SurfaceVideo::setEventListener invalid kwds '%s'\n"
+					LOGGER_ERROR("SurfaceVideo::setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 						);
 				}
@@ -2194,7 +2158,7 @@ namespace Menge
 				{
 					std::string k = it.key();
 
-					LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence::setEventListener invalid kwds '%s'\n"
+					LOGGER_ERROR("SurfaceImageSequence::setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 						);
 				}
@@ -2229,7 +2193,7 @@ namespace Menge
 				{
 					std::string k = it.key();
 
-					LOGGER_ERROR( m_serviceProvider )("SurfaceSound::setEventListener invalid kwds '%s'\n"
+					LOGGER_ERROR("SurfaceSound::setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 						);
 				}
@@ -2275,7 +2239,7 @@ namespace Menge
 				{
 					std::string k = it.key();
 
-					LOGGER_ERROR( m_serviceProvider )("Meshget::setEventListener invalid kwds '%s'\n"
+					LOGGER_ERROR("Meshget::setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 						);
 				}
@@ -2310,7 +2274,7 @@ namespace Menge
 				{
 					std::string k = it.key();
 
-					LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::setEventListener invalid kwds '%s'\n"
+					LOGGER_ERROR("ParticleEmitter2::setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 						);
 				}
@@ -2362,7 +2326,7 @@ namespace Menge
 				{
 					std::string k = it.key();
 
-					LOGGER_ERROR( m_serviceProvider )("ScriptHolder::setEventListener invalid kwds '%s'\n"
+					LOGGER_ERROR("ScriptHolder::setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 						);
 				}
@@ -2483,7 +2447,7 @@ namespace Menge
 					++it )
 				{
 					std::string k = it.key();
-					LOGGER_ERROR( m_serviceProvider )("HotSpot::setEventListener %s kwds %s"
+					LOGGER_ERROR("HotSpot::setEventListener %s kwds %s"
 						, _node->getName().c_str()
 						, k.c_str()
 						);
@@ -2553,7 +2517,7 @@ namespace Menge
 				{
 					std::string k = it.key();
 
-					LOGGER_ERROR(m_serviceProvider)( "Movie::setEventListener invalid kwds '%s'\n"
+					LOGGER_ERROR( "Movie::setEventListener invalid kwds '%s'\n"
 						, k.c_str()
 					);
 				}
@@ -2567,7 +2531,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_Animatable_resume( Animatable * _animatable )
 		{
-			float time = TIMELINE_SERVICE( m_serviceProvider )
+			float time = TIMELINE_SERVICE()
 				->getTime();
 
 			_animatable->resume( time );
@@ -2577,7 +2541,7 @@ namespace Menge
 		{
 			if( _node == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Menge.destroyNode invalid take None object"
+				LOGGER_ERROR("Menge.destroyNode invalid take None object"
 					);
 
 				return;
@@ -2589,7 +2553,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		Node * createNode( const ConstString & _type )
 		{
-			Node * node = NODE_SERVICE( m_serviceProvider )
+			Node * node = NODE_SERVICE() 
 				->createNode( _type );
 
 			if( node == nullptr )
@@ -2597,7 +2561,7 @@ namespace Menge
 				return nullptr;
 			}
 
-			NODE_SERVICE( m_serviceProvider )
+			NODE_SERVICE() 
 				->addHomeless( node );
 
 			return node;
@@ -2605,8 +2569,8 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		SurfacePtr createSurface( const ConstString & _type )
 		{
-			SurfacePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-				->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Surface" ), _type );
+			SurfacePtr surface = PROTOTYPE_SERVICE()
+				->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), _type );
 
 			return surface;
 		}
@@ -2615,19 +2579,19 @@ namespace Menge
 		{
 			if( _resource == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' resource is NULL"
+				LOGGER_ERROR("Menge.createSprite: '%s' resource is NULL"
 					, _name.c_str()
 					);
 
 				return nullptr;
 			}
 
-			SurfaceImagePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-				->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Surface" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "SurfaceImage" ) );
+			SurfaceImagePtr surface = PROTOTYPE_SERVICE()
+				->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ) );
 
 			if( surface == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' resource '%s' invalid create surface 'SurfaceImage'"
+				LOGGER_ERROR("Menge.createSprite: '%s' resource '%s' invalid create surface 'SurfaceImage'"
 					, _name.c_str()
 					, _resource->getName().c_str()
 					);
@@ -2638,12 +2602,12 @@ namespace Menge
 			surface->setName( _name );
 			surface->setResourceImage( _resource );
 
-			ShapeQuadFixed * shape = NODE_SERVICE( m_serviceProvider )
-				->createNodeT<ShapeQuadFixed *>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ShapeQuadFixed" ) );
+			ShapeQuadFixed * shape = NODE_SERVICE() 
+				->createNodeT<ShapeQuadFixed *>( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
 
 			if( shape == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Menge.createSprite: '%s' resource '%s' invalid create shape 'ShapeQuadFixed'"
+				LOGGER_ERROR("Menge.createSprite: '%s' resource '%s' invalid create shape 'ShapeQuadFixed'"
 					, _name.c_str()
 					, _resource->getName().c_str()
 					);
@@ -2659,18 +2623,18 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void quitApplication()
 		{
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->quit();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		ResourceReferencePtr createResource( const ConstString& _type )
 		{
-			ResourceReferencePtr resource = RESOURCE_SERVICE( m_serviceProvider )
+			ResourceReferencePtr resource = RESOURCE_SERVICE()
 				->generateResource( _type );
 
 			if( resource == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("createResource: invalid create resource '%s'"
+				LOGGER_ERROR("createResource: invalid create resource '%s'"
 					, _type.c_str()
 					);
 
@@ -2683,10 +2647,10 @@ namespace Menge
 		bool directResourceCompile( const ConstString & _nameResource )
 		{
 			ResourceReferencePtr resource;
-			if( RESOURCE_SERVICE( m_serviceProvider )
+			if( RESOURCE_SERVICE()
 				->hasResource( _nameResource, &resource ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("directResourceCompile: not found resource '%s'"
+				LOGGER_ERROR("directResourceCompile: not found resource '%s'"
 					, _nameResource.c_str()
 					);
 
@@ -2695,7 +2659,7 @@ namespace Menge
 
 			if( resource->incrementReference() == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("directResourceCompile: resource '%s' type '%s' invalid compile"
+				LOGGER_ERROR("directResourceCompile: resource '%s' type '%s' invalid compile"
 					, _nameResource.c_str()
 					, resource->getType().c_str()
 					);
@@ -2709,10 +2673,10 @@ namespace Menge
 		bool directResourceRelease( const ConstString & _nameResource )
 		{
 			ResourceReferencePtr resource;
-			if( RESOURCE_SERVICE( m_serviceProvider )
+			if( RESOURCE_SERVICE()
 				->hasResource( _nameResource, &resource ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("directResourceRelease: not found resource '%s'"
+				LOGGER_ERROR("directResourceRelease: not found resource '%s'"
 					, _nameResource.c_str()
 					);
 
@@ -2721,7 +2685,7 @@ namespace Menge
 
 			if( resource->decrementReference() == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("directResourceCompile: resource '%s' type '%s' invalid release"
+				LOGGER_ERROR("directResourceCompile: resource '%s' type '%s' invalid release"
 					, _nameResource.c_str()
 					, resource->getType().c_str()
 					);
@@ -2734,7 +2698,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool directFontCompile( const ConstString & _fontName )
 		{
-			bool successful = TEXT_SERVICE( m_serviceProvider )
+			bool successful = TEXT_SERVICE()
 				->directFontCompile( _fontName );
 
 			return successful;
@@ -2742,7 +2706,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool directFontRelease( const ConstString & _fontName )
 		{
-			bool successful = TEXT_SERVICE( m_serviceProvider )
+			bool successful = TEXT_SERVICE()
 				->directFontRelease( _fontName );
 
 			return successful;
@@ -2750,12 +2714,12 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		ResourceReferencePtr s_getResourceReference( const ConstString & _name )
 		{
-			const ResourceReferencePtr & resource = RESOURCE_SERVICE( m_serviceProvider )
+			const ResourceReferencePtr & resource = RESOURCE_SERVICE()
 				->getResourceReference( _name );
 
 			if( resource == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Menge.getResourceReference: not exist resource %s"
+				LOGGER_ERROR("Menge.getResourceReference: not exist resource %s"
 					, _name.c_str()
 					);
 
@@ -2772,66 +2736,66 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_joinTask( ThreadTask * _task )
 		{
-			return THREAD_SERVICE( m_serviceProvider )
+			return THREAD_SERVICE()
 				->joinTask( _task );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_setFullscreenMode( bool _fullscreen )
 		{
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->setFullscreenMode( _fullscreen );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool s_getFullscreenMode()
 		{
-			return APPLICATION_SERVICE( m_serviceProvider )
+			return APPLICATION_SERVICE()
 				->getFullscreenMode();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_setFixedContentResolution( bool _fixedContentResolution )
 		{
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->setFixedContentResolution( _fixedContentResolution );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool s_getFixedContentResolution()
 		{
-			return APPLICATION_SERVICE( m_serviceProvider )
+			return APPLICATION_SERVICE()
 				->getFixedContentResolution();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_setFixedDisplayResolution( bool _fixedDisplayResolution )
 		{
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->setFixedDisplayResolution( _fixedDisplayResolution );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool s_getFixedDisplayResolution()
 		{
-			return APPLICATION_SERVICE( m_serviceProvider )
+			return APPLICATION_SERVICE()
 				->getFixedDisplayResolution();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void renderOneFrame()
 		{
-			RENDER_SERVICE( m_serviceProvider )
+			RENDER_SERVICE()
 				->beginScene();
 
-			GAME_SERVICE( m_serviceProvider )
+			GAME_SERVICE()
 				->render();
 
-			RENDER_SERVICE( m_serviceProvider )
+			RENDER_SERVICE()
 				->endScene();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void writeImageToFile( const ConstString& _resource, const FilePath& _fileName )
 		{
-			ResourceImagePtr resource = RESOURCE_SERVICE( m_serviceProvider )
+			ResourceImagePtr resource = RESOURCE_SERVICE()
 				->getResourceT<ResourceImagePtr>( _resource );
 
 			if( resource == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Error: Image resource not getting '%s'"
+				LOGGER_ERROR("Error: Image resource not getting '%s'"
 					, _resource.c_str()
 					);
 
@@ -2840,13 +2804,13 @@ namespace Menge
 
 			const RenderTextureInterfacePtr & texture = resource->getTexture();
 
-			RENDERTEXTURE_SERVICE( m_serviceProvider )
-				->saveImage( texture, STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "pngImage" ), _fileName );
+			RENDERTEXTURE_SERVICE()
+				->saveImage( texture, STRINGIZE_STRING_LOCAL( "user" ), STRINGIZE_STRING_LOCAL( "pngImage" ), _fileName );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void setParticlesEnabled( bool _enabled )
 		{
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->setParticleEnable( _enabled );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -2856,7 +2820,7 @@ namespace Menge
 
 			if( _maxSize.x < 0.f || _maxSize.y < 0.f )
 			{
-				InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
+				InputStreamInterfacePtr stream = FILE_SERVICE()
 					->openInputFile( _pakName, _fileName, false );
 
 				if( stream == nullptr )
@@ -2864,10 +2828,10 @@ namespace Menge
 					return nullptr;
 				}
 
-				ConstString codecType = CODEC_SERVICE( m_serviceProvider )
+				ConstString codecType = CODEC_SERVICE()
 					->findCodecType( _fileName );
 
-				ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE( m_serviceProvider )
+				ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
 					->createDecoderT<ImageDecoderInterfacePtr>( codecType );
 
 				if( imageDecoder == nullptr )
@@ -2890,8 +2854,8 @@ namespace Menge
 				maxSize = _maxSize;
 			}
 
-			ResourceImageDefaultPtr resource = RESOURCE_SERVICE( m_serviceProvider )
-				->generateResourceT<ResourceImageDefaultPtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceImageDefault" ) );
+			ResourceImageDefaultPtr resource = RESOURCE_SERVICE()
+				->generateResourceT<ResourceImageDefaultPtr>( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
 
 			if( resource == nullptr )
 			{
@@ -2910,8 +2874,8 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const ColourValue & _colour, const mt::vec2f & _maxSize )
 		{
-			ResourceImageSolidPtr resource = RESOURCE_SERVICE( m_serviceProvider )
-				->generateResourceT<ResourceImageSolidPtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceImageSolid" ) );
+			ResourceImageSolidPtr resource = RESOURCE_SERVICE()
+				->generateResourceT<ResourceImageSolidPtr>( STRINGIZE_STRING_LOCAL( "ResourceImageSolid" ) );
 
 			if( resource == nullptr )
 			{
@@ -2930,13 +2894,13 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void minimizeWindow()
 		{
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->minimizeWindow();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f & _screen )
 		{
-			Arrow * arrow = PLAYER_SERVICE( m_serviceProvider )
+			Arrow * arrow = PLAYER_SERVICE()
 				->getArrow();
 
 			if( arrow == nullptr )
@@ -2954,7 +2918,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_pushMouseMove( uint32_t _touchId, const mt::vec2f & _pos )
 		{
-			const mt::vec2f & cp = INPUT_SERVICE( m_serviceProvider )
+			const mt::vec2f & cp = INPUT_SERVICE()
 				->getCursorPosition( _touchId );
 
 			mt::vec2f pos_screen;
@@ -2962,7 +2926,7 @@ namespace Menge
 
 			mt::vec2f mp = pos_screen - cp;
 
-			INPUT_SERVICE( m_serviceProvider )
+			INPUT_SERVICE()
 				->pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -2971,19 +2935,19 @@ namespace Menge
 			mt::vec2f pos_screen;
 			this->s_calcMouseScreenPosition( _pos, pos_screen );
 
-			INPUT_SERVICE( m_serviceProvider )
+			INPUT_SERVICE()
 				->pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_platformEvent( const ConstString & _event, const TMapWParams & _params )
 		{
-			PLATFORM_SERVICE( m_serviceProvider )
+			PLATFORM_SERVICE()
 				->onEvent( _event, _params );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		const ConstString & s_getProjectCodename()
 		{
-			const ConstString & codename = APPLICATION_SERVICE( m_serviceProvider )
+			const ConstString & codename = APPLICATION_SERVICE()
 				->getProjectCodename();
 
 			return codename;
@@ -2991,7 +2955,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_sleep( uint32_t _time )
 		{
-			THREAD_SYSTEM( m_serviceProvider )
+			THREAD_SYSTEM()
 				->sleep( _time );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -3019,7 +2983,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		HttpRequestID s_downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _filepath, const pybind::object & _cb, const pybind::args & _args )
 		{
-			uint32_t id = HTTP_SYSTEM( m_serviceProvider )
+			uint32_t id = HTTP_SYSTEM()
 				->downloadAsset( _url, _login, _password, _category, _filepath, new PyHttpReceiver( _cb, _args ) );
 
 			return id;
@@ -3027,7 +2991,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		HttpRequestID s_postMessage( const String & _url, const TMapParams & _params, const pybind::object & _cb, const pybind::args & _args )
 		{
-			HttpRequestID id = HTTP_SYSTEM( m_serviceProvider )
+			HttpRequestID id = HTTP_SYSTEM()
 				->postMessage( _url, _params, new PyHttpReceiver( _cb, _args ) );
 
 			return id;
@@ -3035,7 +2999,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         HttpRequestID s_headerData( const String & _url, const TVectorString & _headers, const String & _data, const pybind::object & _cb, const pybind::args & _args )
         {
-            HttpRequestID id = HTTP_SYSTEM( m_serviceProvider )
+            HttpRequestID id = HTTP_SYSTEM()
                 ->headerData( _url, _headers, _data, new PyHttpReceiver( _cb, _args ) );
 
             return id;
@@ -3043,7 +3007,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		HttpRequestID s_getMessage( const String & _url, const pybind::object & _cb, const pybind::args & _args )
 		{
-			HttpRequestID id = HTTP_SYSTEM( m_serviceProvider )
+			HttpRequestID id = HTTP_SYSTEM()
 				->getMessage( _url, new PyHttpReceiver( _cb, _args ) );
 
 			return id;
@@ -3051,7 +3015,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_cancelRequest( HttpRequestID _id )
 		{
-			HTTP_SYSTEM( m_serviceProvider )
+			HTTP_SYSTEM()
 				->cancelRequest( _id );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -3064,17 +3028,17 @@ namespace Menge
 		)
 		{
 			FileGroupInterfacePtr fileGroup;
-			if( FILE_SERVICE( m_serviceProvider )
+			if( FILE_SERVICE()
 				->hasFileGroup( _fileGroup, &fileGroup ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Menge.loadResourcePak invalid found file group %s"
+				LOGGER_ERROR("Menge.loadResourcePak invalid found file group %s"
 					, _fileGroup.c_str()
 					);
 
 				return false;
 			}
             
-            LOGGER_WARNING(m_serviceProvider)("mountResourcePak name '%s' type '%s' category '%s' path '%s'"
+            LOGGER_WARNING("mountResourcePak name '%s' type '%s' category '%s' path '%s'"
                                               , _name.c_str()
                                               , _type.c_str()
                                               , _category.c_str()
@@ -3094,7 +3058,7 @@ namespace Menge
 			desc.descriptionPath = _descriptionPath;         
 
 
-			bool result = PACKAGE_SERVICE( m_serviceProvider )
+			bool result = PACKAGE_SERVICE()
 				->addPackage( desc );
 
 			return result;
@@ -3102,7 +3066,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_hasPackage( const ConstString & _name )
 		{
-			bool result = PACKAGE_SERVICE( m_serviceProvider )
+			bool result = PACKAGE_SERVICE()
 				->hasPackage( _name );
 
 			return result;
@@ -3110,7 +3074,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_unmountResourcePak( const ConstString & _name )
 		{
-			bool result = PACKAGE_SERVICE( m_serviceProvider )
+			bool result = PACKAGE_SERVICE()
 				->removePackage( _name );
 
 			return result;
@@ -3118,7 +3082,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_existFile( const ConstString & _fileGroup, const FilePath & _path )
 		{
-			bool result = FILE_SERVICE( m_serviceProvider )
+			bool result = FILE_SERVICE()
 				->existFile( _fileGroup, _path, nullptr );
 
 			return result;
@@ -3127,9 +3091,9 @@ namespace Menge
 		bool s_removeFile( const FilePath & _path )
 		{
 			WString unicode_path;
-			Helper::utf8ToUnicode( m_serviceProvider, _path, unicode_path );
+			Helper::utf8ToUnicode( _path, unicode_path );
 
-			bool result = PLATFORM_SERVICE( m_serviceProvider )
+			bool result = PLATFORM_SERVICE()
 				->removeFile( unicode_path );
 
 			return result;
@@ -3138,9 +3102,8 @@ namespace Menge
 		class PythonSaxCallback
 		{
 		public:
-			PythonSaxCallback( ServiceProviderInterface * _serviceProvider, pybind::kernel_interface * _kernel, const pybind::object & _cb )
-				: m_serviceProvider( _serviceProvider )
-				, m_kernel( _kernel )
+			PythonSaxCallback( pybind::kernel_interface * _kernel, const pybind::object & _cb )
+				: m_kernel( _kernel )
 				, m_cb( _cb )
 			{
 			}
@@ -3187,14 +3150,13 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
 			pybind::kernel_interface * m_kernel;
 			pybind::object m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		bool s_parseXml( pybind::kernel_interface * _kernel, const ConstString & _fileGroup, const FilePath & _path, const pybind::object & _cb )
 		{
-			MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( m_serviceProvider, _fileGroup, _path, false, __FILE__, __LINE__ );
+			MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( _fileGroup, _path, false, __FILE__, __LINE__ );
 
 			if( binary_buffer == nullptr )
 			{
@@ -3203,7 +3165,7 @@ namespace Menge
 
 			char * memory = binary_buffer->getMemory();
 
-			PythonSaxCallback pysc( m_serviceProvider, _kernel, _cb );
+			PythonSaxCallback pysc( _kernel, _cb );
 			if( stdex::xml_sax_parse( memory, pysc ) == false )
 			{
 				return false;
@@ -3242,7 +3204,7 @@ namespace Menge
 		{
 			MyVisitorTextFont mvtf( _cb );
 
-			TEXT_SERVICE( m_serviceProvider )
+			TEXT_SERVICE()
 				->visitFonts( &mvtf );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -3277,7 +3239,7 @@ namespace Menge
 			pybind::list l( _kernel );
 			MyVisitorCollectTextFont mvtf( l );
 
-			TEXT_SERVICE( m_serviceProvider )
+			TEXT_SERVICE()
 				->visitFonts( &mvtf );
 
 			return l;
@@ -3286,7 +3248,7 @@ namespace Menge
 		bool s_hasFont( const ConstString & _fontName )
 		{
 			TextFontInterfacePtr font;
-			bool has = TEXT_SERVICE( m_serviceProvider )
+			bool has = TEXT_SERVICE()
 				->existFont( _fontName, font );
 
 			return has;
@@ -3295,7 +3257,7 @@ namespace Menge
 		bool s_validateFont( const ConstString & _fontName, const String & _text )
 		{
 			TextFontInterfacePtr font;
-			if( TEXT_SERVICE( m_serviceProvider )
+			if( TEXT_SERVICE()
 				->existFont( _fontName, font ) == false )
 			{
 				return false;
@@ -3361,9 +3323,8 @@ namespace Menge
 			, public ConcreteVisitor<ResourceMovie>
 		{
 		public:
-			PrefetchResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const PrefetcherObserverInterfacePtr & _observer )
-				: m_serviceProvider( _serviceProvider )
-				, m_category( _category )
+			PrefetchResourceVisitor( const ConstString & _category, const PrefetcherObserverInterfacePtr & _observer )
+				: m_category( _category )
                 , m_observer( _observer )
                 , m_process( false )
 			{
@@ -3385,7 +3346,7 @@ namespace Menge
 				const FilePath & filePath = _resource->getFilePath();
 				const ConstString & codecType = _resource->getCodecType();
 
-                if( PREFETCHER_SERVICE( m_serviceProvider )
+                if( PREFETCHER_SERVICE()
                     ->prefetchImageDecoder( m_category, filePath, codecType, m_observer ) == true )
                 {
                     m_process = true;
@@ -3402,7 +3363,7 @@ namespace Menge
 				const FilePath & filePath = _resource->getFilePath();
 				const ConstString & codecType = _resource->getCodecType();
 
-                if( PREFETCHER_SERVICE( m_serviceProvider )
+                if( PREFETCHER_SERVICE()
                     ->prefetchSoundDecoder( m_category, filePath, codecType, m_observer ) == true )
                 {
                     m_process = true;
@@ -3414,7 +3375,7 @@ namespace Menge
 				const FilePath & filePath = _resource->getFilePath();
 				const ConstString & dataflowType = _resource->getDataflowType();
 
-                if( PREFETCHER_SERVICE( m_serviceProvider )
+                if( PREFETCHER_SERVICE()
                     ->prefetchData( m_category, filePath, dataflowType, m_observer ) == true )
                 {
                     m_process = true;
@@ -3422,7 +3383,6 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
 			ConstString m_category;
             PrefetcherObserverInterfacePtr m_observer;
             bool m_process;
@@ -3430,9 +3390,9 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_prefetchResources( const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb, const pybind::args & _args )
 		{
-			PrefetchResourceVisitor rv_gac( m_serviceProvider, _category, new PyPrefetcherObserver( _cb, _args ) );
+			PrefetchResourceVisitor rv_gac( _category, new PyPrefetcherObserver( _cb, _args ) );
 
-			RESOURCE_SERVICE( m_serviceProvider )
+			RESOURCE_SERVICE()
                 ->visitGroupResources( _category, _groupName, &rv_gac );
 
             bool process = rv_gac.isProcess();
@@ -3448,8 +3408,7 @@ namespace Menge
 			, public ConcreteVisitor<ResourceMovie>
 		{
 		public:
-			UnfetchResourceVisitor( ServiceProviderInterface * _serviceProvider )
-				: m_serviceProvider( _serviceProvider )
+			UnfetchResourceVisitor()
 			{
 			}
 
@@ -3463,7 +3422,7 @@ namespace Menge
 				const ConstString & category = _resource->getCategory();
 				const FilePath & filePath = _resource->getFilePath();
 
-				PREFETCHER_SERVICE( m_serviceProvider )
+				PREFETCHER_SERVICE()
 					->unfetch( category, filePath );
 			}
 
@@ -3477,7 +3436,7 @@ namespace Menge
 				const ConstString & category = _resource->getCategory();
 				const FilePath & filePath = _resource->getFilePath();
 
-				PREFETCHER_SERVICE( m_serviceProvider )
+				PREFETCHER_SERVICE()
 					->unfetch( category, filePath );
 			}
 
@@ -3486,19 +3445,16 @@ namespace Menge
 				const ConstString & category = _resource->getCategory();
 				const FilePath & filePath = _resource->getFilePath();
 
-				PREFETCHER_SERVICE( m_serviceProvider )
+				PREFETCHER_SERVICE()
 					->unfetch( category, filePath );
 			}
-
-		protected:
-			ServiceProviderInterface * m_serviceProvider;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		void s_unfetchResources( const ConstString & _category, const ConstString & _groupName )
 		{
-			UnfetchResourceVisitor rv_gac( m_serviceProvider );
+            UnfetchResourceVisitor rv_gac;
 
-			RESOURCE_SERVICE( m_serviceProvider )
+			RESOURCE_SERVICE()
 				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -3507,8 +3463,7 @@ namespace Menge
 			, public ConcreteVisitor<ResourceReference>
 		{
 		public:
-			CacheResourceVisitor( ServiceProviderInterface * _serviceProvider )
-				: m_serviceProvider( _serviceProvider )
+			CacheResourceVisitor()
 			{
 			}
 
@@ -3537,16 +3492,13 @@ namespace Menge
 
 				_resource->cache();
 			}
-
-		protected:
-			ServiceProviderInterface * m_serviceProvider;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		void s_cacheResources( const ConstString & _category, const ConstString & _groupName )
 		{
-			CacheResourceVisitor rv_gac( m_serviceProvider );
+			CacheResourceVisitor rv_gac;
 
-			RESOURCE_SERVICE( m_serviceProvider )
+			RESOURCE_SERVICE()
 				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -3555,8 +3507,7 @@ namespace Menge
 			, public ConcreteVisitor<ResourceReference>
 		{
 		public:
-			UncacheResourceVisitor( ServiceProviderInterface * _serviceProvider )
-				: m_serviceProvider( _serviceProvider )
+			UncacheResourceVisitor()
 			{
 			}
 
@@ -3590,17 +3541,13 @@ namespace Menge
 
 				_resource->uncache();
 			}
-
-
-		protected:
-			ServiceProviderInterface * m_serviceProvider;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		void s_uncacheResources( const ConstString & _category, const ConstString & _groupName )
 		{
-			UncacheResourceVisitor rv_gac( m_serviceProvider );
+			UncacheResourceVisitor rv_gac;
 
-			RESOURCE_SERVICE( m_serviceProvider )
+			RESOURCE_SERVICE()
 				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -3680,7 +3627,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_copyFile_( const ConstString & _resourceFileName, MemoryInterfacePtr & _blob )
 		{
-			ResourceFilePtr resourceFile = RESOURCE_SERVICE( m_serviceProvider )
+			ResourceFilePtr resourceFile = RESOURCE_SERVICE()
 				->getResourceT<ResourceFilePtr>( _resourceFileName );
 
 			if( resourceFile == nullptr )
@@ -3692,7 +3639,7 @@ namespace Menge
 
 			const FilePath & filePath = resourceFile->getFilePath();
 
-			InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
+			InputStreamInterfacePtr stream = FILE_SERVICE()
 				->openInputFile( category, filePath, false );
 
 			if( stream == nullptr )
@@ -3716,7 +3663,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_copyUserPicture( const ConstString & _resourceFileName, const String & _fileName )
 		{
-			MemoryInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
+			MemoryInterfacePtr memory = MEMORY_SERVICE()
 				->createMemory();
 
 			if( this->s_copyFile_( _resourceFileName, memory ) == false )
@@ -3724,16 +3671,16 @@ namespace Menge
 				return false;
 			}
 
-			const WString & projectName = APPLICATION_SERVICE( m_serviceProvider )
+			const WString & projectName = APPLICATION_SERVICE()
 				->getProjectName();
 
 			WString wc_fileName;
-			if( Helper::utf8ToUnicode( m_serviceProvider, _fileName, wc_fileName ) == false )
+			if( Helper::utf8ToUnicode( _fileName, wc_fileName ) == false )
 			{
 				return false;
 			}
 
-			if( PLATFORM_SERVICE( m_serviceProvider )
+			if( PLATFORM_SERVICE()
 				->createDirectoryUserPicture( projectName, wc_fileName, memory->getMemory(), memory->getSize() ) == false )
 			{
 				return false;
@@ -3744,7 +3691,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_copyUserMusic( const ConstString & _resourceFileName, const String & _fileName )
 		{
-			MemoryInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
+			MemoryInterfacePtr memory = MEMORY_SERVICE()
 				->createMemory();
 
 			if( this->s_copyFile_( _resourceFileName, memory ) == false )
@@ -3752,16 +3699,16 @@ namespace Menge
 				return false;
 			}
 
-			const WString & projectName = APPLICATION_SERVICE( m_serviceProvider )
+			const WString & projectName = APPLICATION_SERVICE()
 				->getProjectName();
 
 			WString wc_fileName;
-			if( Helper::utf8ToUnicode( m_serviceProvider, _fileName, wc_fileName ) == false )
+			if( Helper::utf8ToUnicode( _fileName, wc_fileName ) == false )
 			{
 				return false;
 			}
 
-			if( PLATFORM_SERVICE( m_serviceProvider )
+			if( PLATFORM_SERVICE()
 				->createDirectoryUserMusic( projectName, wc_fileName, memory->getMemory(), memory->getSize() ) == false )
 			{
 				return false;
@@ -3774,7 +3721,7 @@ namespace Menge
 		{
 			if( _arrow == nullptr )
 			{
-				_arrow = PLAYER_SERVICE( m_serviceProvider )
+				_arrow = PLAYER_SERVICE()
 					->getArrow();
 
 				if( _arrow == nullptr )
@@ -3785,13 +3732,13 @@ namespace Menge
 
 			if( _camera == nullptr )
 			{
-				_camera = PLAYER_SERVICE( m_serviceProvider )
+				_camera = PLAYER_SERVICE()
 					->getRenderCamera();
 			}
 
 			if( _viewport == nullptr )
 			{
-				_viewport = PLAYER_SERVICE( m_serviceProvider )
+				_viewport = PLAYER_SERVICE()
 					->getRenderViewport();
 			}
 
@@ -3805,7 +3752,7 @@ namespace Menge
 		{
 			if( _arrow == nullptr )
 			{
-				_arrow = PLAYER_SERVICE( m_serviceProvider )
+				_arrow = PLAYER_SERVICE()
 					->getArrow();
 
 				if( _arrow == nullptr )
@@ -3816,13 +3763,13 @@ namespace Menge
 
 			if( _camera == nullptr )
 			{
-				_camera = PLAYER_SERVICE( m_serviceProvider )
+				_camera = PLAYER_SERVICE()
 					->getRenderCamera();
 			}
 
 			if( _viewport == nullptr )
 			{
-				_viewport = PLAYER_SERVICE( m_serviceProvider )
+				_viewport = PLAYER_SERVICE()
 					->getRenderViewport();
 			}
 
@@ -3840,14 +3787,14 @@ namespace Menge
 			buffer.append( "_" );
 			buffer.append( _movieName );
 
-			ConstString resourceMovieName = Helper::stringizeStringSize( m_serviceProvider, buffer.c_str(), buffer.size() );
+			ConstString resourceMovieName = Helper::stringizeStringSize( buffer.c_str(), buffer.size() );
 
 			ResourceMoviePtr resourceMovie;
 
-			if( RESOURCE_SERVICE( m_serviceProvider )
+			if( RESOURCE_SERVICE()
 				->hasResourceT<ResourceMoviePtr>( resourceMovieName, &resourceMovie ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_getMovieSlotsPosition: not found resource movie %s"
+				LOGGER_ERROR("s_getMovieSlotsPosition: not found resource movie %s"
 					, resourceMovieName.c_str()
 					);
 
@@ -3866,7 +3813,7 @@ namespace Menge
 			{
 				const MovieLayer & layer = *it;
 
-				if( layer.type != STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSlot" ) )
+				if( layer.type != STRINGIZE_STRING_LOCAL( "MovieSlot" ) )
 				{
 					continue;
 				}
@@ -3885,14 +3832,14 @@ namespace Menge
 			buffer.append( "_" );
 			buffer.append( _movieName );
 
-			ConstString resourceMovieName = Helper::stringizeStringSize( m_serviceProvider, buffer.c_str(), buffer.size() );
+			ConstString resourceMovieName = Helper::stringizeStringSize( buffer.c_str(), buffer.size() );
 
 			ResourceMoviePtr resourceMovie;
 
-			if( RESOURCE_SERVICE( m_serviceProvider )
+			if( RESOURCE_SERVICE()
 				->hasResourceT<ResourceMoviePtr>( resourceMovieName, &resourceMovie ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("getMovieSlotPosition: not found resource movie %s"
+				LOGGER_ERROR("getMovieSlotPosition: not found resource movie %s"
 					, resourceMovieName.c_str()
 					);
 
@@ -3902,7 +3849,7 @@ namespace Menge
 			const MovieLayer * layer;
 			if( resourceMovie->hasMovieLayer( _slotName, &layer ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("getMovieSlotPosition: movie %s not found slot %s"
+				LOGGER_ERROR( "getMovieSlotPosition: movie %s not found slot %s"
 					, resourceMovieName.c_str()
 					, _slotName.c_str()
 					);
@@ -4044,7 +3991,6 @@ namespace Menge
 		{
 			AffectorGridBurnTransparency * affector = m_factoryAffectorGridBurnTransparency->createObject();
 
-			affector->setServiceProvider( m_serviceProvider );
 			affector->setAffectorType( ETA_USER );
 
 			affector->initialize( _grid, _pos, _time, _radius, _ellipse, _penumbra, _cb );
@@ -4114,7 +4060,7 @@ namespace Menge
 				return 0;
 			}
 
-			Affectorable * affectorable = PLAYER_SERVICE( m_serviceProvider )
+			Affectorable * affectorable = PLAYER_SERVICE()
 				->getAffectorableGlobal();
 
 			AFFECTOR_ID id = affectorable->addAffector( affector );
@@ -4124,7 +4070,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_removeAffector( AFFECTOR_ID _id )
 		{
-			Affectorable * affectorable = PLAYER_SERVICE( m_serviceProvider )
+			Affectorable * affectorable = PLAYER_SERVICE()
 				->getAffectorableGlobal();
 
 			bool successful = affectorable->stopAffector( _id );
@@ -4265,9 +4211,9 @@ namespace Menge
 		class AffectorNodeFollowerCreator
 		{
 		public:
-			AffectorNodeFollowerCreator( ServiceProviderInterface * _serviceProvider )
+			AffectorNodeFollowerCreator()
 			{
-				m_factory = new FactoryPool<TAffectorNodeFollowerMethod, 4>( _serviceProvider );
+				m_factory = new FactoryPool<TAffectorNodeFollowerMethod, 4>();
 			}
 
 		protected:
@@ -4330,7 +4276,7 @@ namespace Menge
 		{
 			if( _affector == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("removeNodeFollower take NULL affector"
+				LOGGER_ERROR("removeNodeFollower take NULL affector"
 					);
 
 				return;
@@ -4341,7 +4287,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////		
 		void s_moduleMessage( const ConstString & _moduleName, const ConstString & _messageName, const TMapWParams & _params )
 		{
-			MODULE_SERVICE( m_serviceProvider )
+			MODULE_SERVICE()
 				->message( _moduleName, _messageName, _params );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -4378,7 +4324,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_setLocale( const ConstString & _locale )
 		{
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->setLocale( _locale );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -4398,11 +4344,11 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		mt::vec2f s_getTouchPosition( uint32_t _touchId )
 		{
-			const mt::vec2f & pos = INPUT_SERVICE( m_serviceProvider )
+			const mt::vec2f & pos = INPUT_SERVICE()
 				->getCursorPosition( _touchId );
 
 			mt::vec2f wp;
-			PLAYER_SERVICE( m_serviceProvider )
+			PLAYER_SERVICE()
 				->calcGlobalMouseWorldPosition( pos, wp );
 
 			return wp;
@@ -4410,7 +4356,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_isInViewport( const mt::vec2f & _pos )
 		{
-			const RenderViewportInterface * renderViewport = PLAYER_SERVICE( m_serviceProvider )
+			const RenderViewportInterface * renderViewport = PLAYER_SERVICE()
 				->getRenderViewport();
 
 			const Viewport & vp = renderViewport->getViewport();
@@ -4432,7 +4378,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_existText( const ConstString & _key )
 		{
-			bool exist = TEXT_SERVICE( m_serviceProvider )
+			bool exist = TEXT_SERVICE()
 				->existText( _key, nullptr );
 
 			return exist;
@@ -4440,7 +4386,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		pybind::list s_pickHotspot( pybind::kernel_interface * _kernel, const mt::vec2f & _point )
 		{
-			MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE( m_serviceProvider )
+			MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE()
 				->getMousePickerSystem();
 
 			TVectorPickerTraps traps;
@@ -4448,7 +4394,7 @@ namespace Menge
 
 			pybind::list pyret( _kernel );
 
-			bool onFocus = APPLICATION_SERVICE( m_serviceProvider )
+			bool onFocus = APPLICATION_SERVICE()
 				->isFocus();
 
 			if( onFocus == false )
@@ -4474,7 +4420,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_testPlatformTags( const Tags & _tags )
 		{
-			const Tags & platformTags = PLATFORM_SERVICE( m_serviceProvider )
+			const Tags & platformTags = PLATFORM_SERVICE()
 				->getPlatformTags();
 
 			bool successful = platformTags.inTags( _tags );
@@ -4484,7 +4430,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         bool s_hasPlatformTag( const ConstString & _tag )
         {
-            bool successful = PLATFORM_SERVICE( m_serviceProvider )
+            bool successful = PLATFORM_SERVICE()
                 ->hasPlatformTag( _tag );
 
             return successful;
@@ -4492,7 +4438,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_hasTouchpad()
 		{
-			bool touchpad = PLATFORM_SERVICE( m_serviceProvider )
+			bool touchpad = PLATFORM_SERVICE()
 				->hasTouchpad();
 
 			return touchpad;
@@ -4504,7 +4450,7 @@ namespace Menge
 
 			if( surface == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_getSurfaceSize shape %s not setup surface"
+				LOGGER_ERROR("s_getSurfaceSize shape %s not setup surface"
 					, _shape->getName().c_str()
 					);
 
@@ -4522,7 +4468,7 @@ namespace Menge
 
 			if( surface == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_getLocalImageCenter shape %s not setup surface"
+				LOGGER_ERROR("s_getLocalImageCenter shape %s not setup surface"
 					, _shape->getName().c_str()
 					);
 
@@ -4552,7 +4498,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		Node * createChildren( Node * _node, const ConstString & _type )
 		{
-			Node * newNode = NODE_SERVICE( m_serviceProvider )
+			Node * newNode = NODE_SERVICE() 
 				->createNode( _type );
 
 			if( newNode == nullptr )
@@ -4600,8 +4546,7 @@ namespace Menge
 		{
 		public:
 			ScriptableAffectorCallback()
-				: m_serviceProvider( nullptr )
-				, m_scriptable( nullptr )
+				: m_scriptable( nullptr )
 			{
 			}
 
@@ -4610,9 +4555,8 @@ namespace Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, Scriptable * _scriptable, const pybind::object & _cb, const pybind::args & _args )
+			void initialize( Scriptable * _scriptable, const pybind::object & _cb, const pybind::args & _args )
 			{
-				m_serviceProvider = _serviceProvider;
 				m_scriptable = _scriptable;
 				m_cb = _cb;
 				m_args = _args;
@@ -4635,7 +4579,6 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
 			Scriptable * m_scriptable;
 
 			pybind::object m_cb;
@@ -4650,7 +4593,7 @@ namespace Menge
 		{
 			ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback->createObject();
 
-			callback->initialize( m_serviceProvider, _scriptable, _cb, _args );
+			callback->initialize( _scriptable, _cb, _args );
 
 			return callback;
 		}
@@ -4752,10 +4695,9 @@ namespace Menge
 		class FactoryAffectorVelocity2
 		{
 		public:
-			FactoryAffectorVelocity2( ServiceProviderInterface * _serviceProvider )
-				: m_serviceProvider( _serviceProvider )
+			FactoryAffectorVelocity2()
 			{
-				m_factory = new FactoryPool<AffectorVelocity2, 4>( m_serviceProvider );
+				m_factory = new FactoryPool<AffectorVelocity2, 4>();
 			}
 
 		public:
@@ -4764,7 +4706,6 @@ namespace Menge
 			{
 				AffectorVelocity2 * affector = m_factory->createObject();
 
-				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -4777,8 +4718,6 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
-
 			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -5164,10 +5103,9 @@ namespace Menge
 		class FactoryAffectorInterpolateParabolic
 		{
 		public:
-			FactoryAffectorInterpolateParabolic( ServiceProviderInterface * _serviceProvider )
-				: m_serviceProvider( _serviceProvider )
+			FactoryAffectorInterpolateParabolic()
 			{
-				m_factory = new FactoryPool<AffectorCreatorInterpolateParabolic, 4>( m_serviceProvider );
+				m_factory = new FactoryPool<AffectorCreatorInterpolateParabolic, 4>();
 			}
 
 		public:
@@ -5176,7 +5114,6 @@ namespace Menge
 			{
 				AffectorCreatorInterpolateParabolic * affector = m_factory->createObject();
 
-				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -5189,8 +5126,6 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
-
 			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -5398,10 +5333,9 @@ namespace Menge
 		class FactoryAffectorFollowTo
 		{
 		public:
-			FactoryAffectorFollowTo( ServiceProviderInterface * _serviceProvider )
-				: m_serviceProvider( _serviceProvider )
+			FactoryAffectorFollowTo()
 			{
-				m_factory = new FactoryPool<AffectorCreatorFollowTo, 4>( m_serviceProvider );
+				m_factory = new FactoryPool<AffectorCreatorFollowTo, 4>();
 			}
 
 		public:
@@ -5412,7 +5346,6 @@ namespace Menge
 			{
 				AffectorCreatorFollowTo * affector = m_factory->createObject();
 
-				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -5428,8 +5361,6 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
-
 			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -5597,10 +5528,9 @@ namespace Menge
 		class FactoryAffectorFollowToW
 		{
 		public:
-			FactoryAffectorFollowToW( ServiceProviderInterface * _serviceProvider )
-				: m_serviceProvider( _serviceProvider )
+			FactoryAffectorFollowToW()
 			{
-				m_factory = new FactoryPool<AffectorCreatorFollowToW, 4>( m_serviceProvider );
+				m_factory = new FactoryPool<AffectorCreatorFollowToW, 4>();
 			}
 
 		public:
@@ -5609,7 +5539,6 @@ namespace Menge
 			{
 				AffectorCreatorFollowToW * affector = m_factory->createObject();
 
-				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -5625,8 +5554,6 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
-
 			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -5797,7 +5724,7 @@ namespace Menge
 
 			//if( mt::equal_f_z( _scale.x ) == true || mt::equal_f_z( _scale.y ) == true || mt::equal_f_z( _scale.z ) == true )
 			//{
-			//    LOGGER_ERROR(m_serviceProvider)("Node::scaleTo %s scale xyz not zero! (%f %f %f)"
+			//    LOGGER_ERROR("Node::scaleTo %s scale xyz not zero! (%f %f %f)"
 			//        , _node->getName().c_str()
 			//        , _scale.x
 			//        , _scale.y
@@ -5960,7 +5887,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		const RenderCameraInterface * s_getRenderCamera2D()
 		{
-			const RenderCameraInterface * renderCamera = PLAYER_SERVICE( m_serviceProvider )
+			const RenderCameraInterface * renderCamera = PLAYER_SERVICE()
 				->getRenderCamera();
 
 			return renderCamera;
@@ -5968,19 +5895,19 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void showKeyboard()
 		{
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->showKeyboard();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void hideKeyboard()
 		{
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->hideKeyboard();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool hasResource( const ConstString & _name )
 		{
-			return RESOURCE_SERVICE( m_serviceProvider )
+			return RESOURCE_SERVICE()
 				->hasResource( _name, nullptr );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -5988,7 +5915,7 @@ namespace Menge
 		{
             if( _cb.is_callable() == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("removeCurrentScene cb '%s' not callable"
+                LOGGER_ERROR("removeCurrentScene cb '%s' not callable"
                     , _cb.repr()
                     );
 
@@ -5997,9 +5924,9 @@ namespace Menge
 
 			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject();
 
-			py_cb->initialize( m_serviceProvider, _cb, _args );
+			py_cb->initialize( _cb, _args );
 
-            if( PLAYER_SERVICE( m_serviceProvider )
+            if( PLAYER_SERVICE()
                 ->removeCurrentScene( py_cb ) == false )
             {
                 return false;
@@ -6014,7 +5941,6 @@ namespace Menge
 		{
 		public:
 			PyGlobalBaseHandler()
-				: m_serviceProvider( nullptr )
 			{
 			}
 
@@ -6023,9 +5949,8 @@ namespace Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::args & _args )
+			void initialize( const pybind::object & _cb, const pybind::args & _args )
 			{
-				m_serviceProvider = _serviceProvider;
 				m_cb = _cb;
 				m_args = _args;
 			}
@@ -6086,7 +6011,6 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
 			pybind::object m_cb;
 			pybind::args m_args;
 		};
@@ -6101,18 +6025,18 @@ namespace Menge
 				mt::vec2f delta( _event.dx, _event.dy );
 
 				mt::vec2f wp;
-				PLAYER_SERVICE( m_serviceProvider )
+				PLAYER_SERVICE()
 					->calcGlobalMouseWorldPosition( point, wp );
 
 				mt::vec2f wd;
-				PLAYER_SERVICE( m_serviceProvider )
+				PLAYER_SERVICE()
 					->calcGlobalMouseWorldDelta( point, delta, wd );
 
 				pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, wd.x, wd.y, m_args );
 
 				if( py_result.is_none() == false )
 				{
-					LOGGER_ERROR( m_serviceProvider )("PyGlobalMouseMoveHandler %s return value %s not None"
+					LOGGER_ERROR("PyGlobalMouseMoveHandler %s return value %s not None"
 						, m_cb.repr()
 						, py_result.repr()
 						);
@@ -6126,12 +6050,12 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseMoveHandler( const pybind::object & _cb, const pybind::args & _args )
 		{
-			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE()
 				->getGlobalHandleSystem();
 
 			PyGlobalMouseMoveHandler * handler = m_factoryPyGlobalMouseMoveHandlers->createObject();
 
-			handler->initialize( m_serviceProvider, _cb, _args );
+			handler->initialize( _cb, _args );
 
 			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
 
@@ -6147,14 +6071,14 @@ namespace Menge
 				mt::vec2f point( _event.x, _event.y );
 
 				mt::vec2f wp;
-				PLAYER_SERVICE( m_serviceProvider )
+				PLAYER_SERVICE()
 					->calcGlobalMouseWorldPosition( point, wp );
 
 				pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
 
 				if( py_result.is_none() == false )
 				{
-					LOGGER_ERROR( m_serviceProvider )("PyGlobalMouseHandlerButton %s return value %s not None"
+					LOGGER_ERROR("PyGlobalMouseHandlerButton %s return value %s not None"
 						, m_cb.repr()
 						, py_result.repr()
 						);
@@ -6168,12 +6092,12 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseButtonHandler( const pybind::object & _cb, const pybind::args & _args )
 		{
-			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE()
 				->getGlobalHandleSystem();
 
 			PyGlobalMouseHandlerButton * handler = m_factoryPyGlobalMouseHandlerButtons->createObject();
 
-			handler->initialize( m_serviceProvider, _cb, _args );
+			handler->initialize( _cb, _args );
 
 			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
 
@@ -6190,14 +6114,14 @@ namespace Menge
 				mt::vec2f point( _event.x, _event.y );
 
 				mt::vec2f wp;
-				PLAYER_SERVICE( m_serviceProvider )
+				PLAYER_SERVICE()
 					->calcGlobalMouseWorldPosition( point, wp );
 
 				pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
 
 				if( py_result.is_none() == false )
 				{
-					LOGGER_ERROR( m_serviceProvider )("PyGlobalMouseHandlerButtonEnd %s return value %s not None"
+					LOGGER_ERROR("PyGlobalMouseHandlerButtonEnd %s return value %s not None"
 						, m_cb.repr()
 						, py_result.repr()
 						);
@@ -6211,12 +6135,12 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseButtonHandlerEnd( const pybind::object & _cb, const pybind::args & _args )
 		{
-			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE()
 				->getGlobalHandleSystem();
 
 			PyGlobalMouseHandlerButtonEnd * handler = m_factoryPyGlobalMouseHandlerButtonEnds->createObject();
 
-			handler->initialize( m_serviceProvider, _cb, _args );
+			handler->initialize( _cb, _args );
 
 			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
 
@@ -6234,7 +6158,7 @@ namespace Menge
 
 				if( py_result.is_none() == false )
 				{
-					LOGGER_ERROR( m_serviceProvider )("PyGlobalMouseHandlerWheel %s return value %s not None"
+					LOGGER_ERROR("PyGlobalMouseHandlerWheel %s return value %s not None"
 						, m_cb.repr()
 						, py_result.repr()
 						);
@@ -6248,12 +6172,12 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseWheelHandler( const pybind::object & _cb, const pybind::args & _args )
 		{
-			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE()
 				->getGlobalHandleSystem();
 
 			PyGlobalMouseHandlerWheel * handler = m_factoryPyGlobalMouseHandlerWheels->createObject();
 
-			handler->initialize( m_serviceProvider, _cb, _args );
+			handler->initialize( _cb, _args );
 
 			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
 
@@ -6270,14 +6194,14 @@ namespace Menge
 				mt::vec2f point( _event.x, _event.y );
 
 				mt::vec2f wp;
-				PLAYER_SERVICE( m_serviceProvider )
+				PLAYER_SERVICE()
 					->calcGlobalMouseWorldPosition( point, wp );
 
 				pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
 
 				if( py_result.is_none() == false )
 				{
-					LOGGER_ERROR( m_serviceProvider )("PyGlobalMouseHandlerButtonBegin %s return value %s not None"
+					LOGGER_ERROR("PyGlobalMouseHandlerButtonBegin %s return value %s not None"
 						, m_cb.repr()
 						, py_result.repr()
 						);
@@ -6291,12 +6215,12 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseButtonHandlerBegin( const pybind::object & _cb, const pybind::args & _args )
 		{
-			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE()
 				->getGlobalHandleSystem();
 
 			PyGlobalMouseHandlerButtonBegin * handler = m_factoryPyGlobalMouseHandlerButtonBegins->createObject();
 
-			handler->initialize( m_serviceProvider, _cb, _args );
+			handler->initialize( _cb, _args );
 
 			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
 
@@ -6313,7 +6237,7 @@ namespace Menge
 
 				if( py_result.is_none() == false )
 				{
-					LOGGER_ERROR( m_serviceProvider )("PyGlobalKeyHandler %s return value %s not None"
+					LOGGER_ERROR("PyGlobalKeyHandler %s return value %s not None"
 						, m_cb.repr()
 						, py_result.repr()
 						);
@@ -6327,12 +6251,12 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addKeyHandler( const pybind::object & _cb, const pybind::args & _args )
 		{
-			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE()
 				->getGlobalHandleSystem();
 
 			PyGlobalKeyHandler * handler = m_factoryPyGlobalKeyHandler->createObject();
 
-			handler->initialize( m_serviceProvider, _cb, _args );
+			handler->initialize( _cb, _args );
 
 			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
 
@@ -6349,7 +6273,7 @@ namespace Menge
 
 				if( py_result.is_none() == false )
 				{
-					LOGGER_ERROR( m_serviceProvider )("PyGlobalTextHandler %s return value %s not None"
+					LOGGER_ERROR("PyGlobalTextHandler %s return value %s not None"
 						, m_cb.repr()
 						, py_result.repr()
 						);
@@ -6363,12 +6287,12 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addTextHandler( const pybind::object & _cb, const pybind::args & _args )
 		{
-			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE()
 				->getGlobalHandleSystem();
 
 			PyGlobalKeyHandler * handler = m_factoryPyGlobalTextHandler->createObject();
 
-			handler->initialize( m_serviceProvider, _cb, _args );
+			handler->initialize( _cb, _args );
 
 			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
 
@@ -6377,7 +6301,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_removeGlobalHandler( uint32_t _id )
 		{
-			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE()
 				->getGlobalHandleSystem();
 
 			InputSystemHandler * handler = globalHandleSystem->removeGlobalHandler( _id );
@@ -6386,7 +6310,7 @@ namespace Menge
 
 			if( py_handler == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("s_removeKeyHandler %d handler invalid PyGlobalKeyHandler"
+				LOGGER_ERROR("s_removeKeyHandler %d handler invalid PyGlobalKeyHandler"
 					, _id
 					);
 
@@ -6402,7 +6326,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_enableGlobalHandler( uint32_t _id, bool _value )
 		{
-			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE()
 				->getGlobalHandleSystem();
 
 			bool successful = globalHandleSystem->enableGlobalHandler( _id, _value );
@@ -6412,12 +6336,12 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		float s_getMovieDuration( const ConstString & _resourceName )
 		{
-			ResourceMoviePtr resourceMovie = RESOURCE_SERVICE( m_serviceProvider )
+			ResourceMoviePtr resourceMovie = RESOURCE_SERVICE()
 				->getResourceT<ResourceMoviePtr>( _resourceName );
 
 			if( resourceMovie == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Mengine.getMovieDuration invalid movie resource '%s'"
+				LOGGER_ERROR("Mengine.getMovieDuration invalid movie resource '%s'"
 					, _resourceName.c_str()
 					);
 
@@ -6436,7 +6360,7 @@ namespace Menge
 			float aspect;
 			Viewport viewport;
 
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->getGameViewport( aspect, viewport );
 
 			return aspect;
@@ -6447,7 +6371,7 @@ namespace Menge
 			float aspect;
 			Viewport viewport;
 
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->getGameViewport( aspect, viewport );
 
 			return viewport;
@@ -6455,7 +6379,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_hasGameParam( const ConstString & _paramName )
 		{
-			if( GAME_SERVICE( m_serviceProvider )
+			if( GAME_SERVICE()
 				->hasParam( _paramName ) == false )
 			{
 				return false;
@@ -6466,13 +6390,13 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		PyObject * s_getGameParam( pybind::kernel_interface * _kernel, const ConstString & _paramName )
 		{
-			if( GAME_SERVICE( m_serviceProvider )
+			if( GAME_SERVICE()
 				->hasParam( _paramName ) == false )
 			{
 				return pybind::ret_none();
 			}
 
-			const WString & val = GAME_SERVICE( m_serviceProvider )
+			const WString & val = GAME_SERVICE()
 				->getParam( _paramName );
 
 			return pybind::ptr( _kernel, val );
@@ -6480,13 +6404,13 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		PyObject * s_getGameParamFloat( pybind::kernel_interface * _kernel, const ConstString & _paramName )
 		{
-			if( GAME_SERVICE( m_serviceProvider )
+			if( GAME_SERVICE()
 				->hasParam( _paramName ) == false )
 			{
 				return pybind::ret_none();
 			}
 
-			const WString & val = GAME_SERVICE( m_serviceProvider )
+			const WString & val = GAME_SERVICE()
 				->getParam( _paramName );
 
 			float value;
@@ -6497,13 +6421,13 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		PyObject * s_getGameParamInt( pybind::kernel_interface * _kernel, const ConstString & _paramName )
 		{
-			if( GAME_SERVICE( m_serviceProvider )
+			if( GAME_SERVICE()
 				->hasParam( _paramName ) == false )
 			{
 				return pybind::ret_none();
 			}
 
-			const WString & val = GAME_SERVICE( m_serviceProvider )
+			const WString & val = GAME_SERVICE()
 				->getParam( _paramName );
 
 			int value;
@@ -6516,13 +6440,13 @@ namespace Menge
 		{
 			(void)_kernel;
 
-			if( GAME_SERVICE( m_serviceProvider )
+			if( GAME_SERVICE()
 				->hasParam( _paramName ) == false )
 			{
 				return pybind::ret_none();
 			}
 
-			const WString & val = GAME_SERVICE( m_serviceProvider )
+			const WString & val = GAME_SERVICE()
 				->getParam( _paramName );
 
 			int value;
@@ -6535,7 +6459,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_openUrlInDefaultBrowser( const WString & _url )
 		{
-			bool val = PLATFORM_SERVICE( m_serviceProvider )
+			bool val = PLATFORM_SERVICE()
 				->openUrlInDefaultBrowser( _url );
 
 			return val;
@@ -6543,7 +6467,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		ConstString s_getDefaultResourceFontName()
 		{
-			const ConstString & defaultResourceFontName = TEXT_SERVICE( m_serviceProvider )
+			const ConstString & defaultResourceFontName = TEXT_SERVICE()
 				->getDefaultFontName();
 
 			return defaultResourceFontName;
@@ -6553,9 +6477,8 @@ namespace Menge
 			: public VisitorResourceMovie
 		{
 		public:
-			ResourceMovieVisitorNullLayers( ServiceProviderInterface * _serviceProvider, pybind::kernel_interface * _kernel, const pybind::dict & _dictResult, float _frameDuration )
-				: m_serviceProvider( _serviceProvider )
-				, m_kernel( _kernel )
+			ResourceMovieVisitorNullLayers( pybind::kernel_interface * _kernel, const pybind::dict & _dictResult, float _frameDuration )
+				: m_kernel( _kernel )
 				, m_dictResult( _dictResult )
 				, m_frameDuration( _frameDuration )
 			{
@@ -6564,7 +6487,7 @@ namespace Menge
 		protected:
 			void visitLayer( const MovieFramePackInterfacePtr & _framePack, const MovieLayer & _layer ) override
 			{
-				if( _layer.source != STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSlot" ) )
+				if( _layer.source != "MovieSlot" )
 				{
 					return;
 				}
@@ -6598,7 +6521,6 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
 			pybind::kernel_interface * m_kernel;
 			pybind::dict m_dictResult;
 			float m_frameDuration;
@@ -6614,7 +6536,7 @@ namespace Menge
 			pybind::dict py_dict_result( _kernel );
 
 			float frameTime = _resource->getFrameDuration();
-			ResourceMovieVisitorNullLayers visitor( m_serviceProvider, _kernel, py_dict_result, frameTime );
+			ResourceMovieVisitorNullLayers visitor( _kernel, py_dict_result, frameTime );
 
 			_resource->visitResourceMovie( &visitor );
 
@@ -6633,7 +6555,7 @@ namespace Menge
 			{
 				const MovieLayer & layer = *it;
 
-				if( layer.type == STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie" ) )
+				if( layer.type == "Movie" )
 				{
 					if( s_hasMovieElement( layer.source, _slotName, _typeName ) == true )
 					{
@@ -6659,7 +6581,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_hasMovieElement( const ConstString & _resourceName, const ConstString & _slotName, const ConstString & _typeName )
 		{
-			ResourceMoviePtr resource = RESOURCE_SERVICE( m_serviceProvider )
+			ResourceMoviePtr resource = RESOURCE_SERVICE()
 				->getResourceT<ResourceMoviePtr>( _resourceName );
 
 			if( resource == nullptr )
@@ -6676,26 +6598,26 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_hasMovieSlot( const ConstString & _resourceName, const ConstString & _slotName )
 		{
-			bool result = s_hasMovieElement( _resourceName, _slotName, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSlot" ) );
+			bool result = s_hasMovieElement( _resourceName, _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ) );
 
 			return result;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool s_hasMovieSubMovie( const ConstString & _resourceName, const ConstString & _subMovieName )
 		{
-			bool result = s_hasMovieElement( _resourceName, _subMovieName, STRINGIZE_STRING_LOCAL( m_serviceProvider, "SubMovie" ) );
+			bool result = s_hasMovieElement( _resourceName, _subMovieName, STRINGIZE_STRING_LOCAL( "SubMovie" ) );
 
 			return result;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool s_hasMovieSocket( const ConstString & _resourceName, const ConstString & _socketName )
 		{
-			if( s_hasMovieElement( _resourceName, _socketName, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketImage" ) ) == true )
+			if( s_hasMovieElement( _resourceName, _socketName, STRINGIZE_STRING_LOCAL( "MovieSocketImage" ) ) == true )
 			{
 				return true;
 			}
 
-			if( s_hasMovieElement( _resourceName, _socketName, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieSocketShape" ) ) == true )
+			if( s_hasMovieElement( _resourceName, _socketName, STRINGIZE_STRING_LOCAL( "MovieSocketShape" ) ) == true )
 			{
 				return true;
 			}
@@ -6705,7 +6627,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_hasMovieEvent( const ConstString & _resourceName, const ConstString & _eventName )
 		{
-			bool result = s_hasMovieElement( _resourceName, _eventName, STRINGIZE_STRING_LOCAL( m_serviceProvider, "MovieEvent" ) );
+			bool result = s_hasMovieElement( _resourceName, _eventName, STRINGIZE_STRING_LOCAL( "MovieEvent" ) );
 
 			return result;
 		}
@@ -6752,7 +6674,7 @@ namespace Menge
 		{
 			ResourceVisitorGetAlreadyCompiled rv_gac( _cb );
 
-			RESOURCE_SERVICE( m_serviceProvider )
+			RESOURCE_SERVICE()
 				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -6784,7 +6706,7 @@ namespace Menge
 		{
 			MyResourceVisitor rv_gac( _cb );
 
-			RESOURCE_SERVICE( m_serviceProvider )
+			RESOURCE_SERVICE()
 				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -6803,7 +6725,7 @@ namespace Menge
 		{
 			IncrefResourceVisitor rv_gac;
 
-			RESOURCE_SERVICE( m_serviceProvider )
+			RESOURCE_SERVICE()
 				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -6822,7 +6744,7 @@ namespace Menge
 		{
 			DecrementResourceVisitor rv_gac;
 
-			RESOURCE_SERVICE( m_serviceProvider )
+			RESOURCE_SERVICE()
 				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -6861,7 +6783,7 @@ namespace Menge
 		{
 			GetResourceVisitor rv_gac( _kernel );
 
-			RESOURCE_SERVICE( m_serviceProvider )
+			RESOURCE_SERVICE()
 				->visitGroupResources( _category, _groupName, &rv_gac );
 
 			const pybind::list & l = rv_gac.getResult();
@@ -6871,56 +6793,50 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_validResource( const ConstString & _resourceName )
 		{
-			bool valid = RESOURCE_SERVICE( m_serviceProvider )
+			bool valid = RESOURCE_SERVICE()
 				->validResource( _resourceName );
 
 			return valid;
 		}
-
-	protected:
-		ServiceProviderInterface * m_serviceProvider;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	static void classWrapping( ServiceProviderInterface * _serviceProvider )
+	static void classWrapping()
 	{
-# define SCRIPT_CLASS_WRAPPING( serviceProvider, Class )\
-    SCRIPT_SERVICE(serviceProvider)->setWrapper( Helper::stringizeString(serviceProvider, #Class), new ScriptWrapper<Class>() )
+# define SCRIPT_CLASS_WRAPPING( Class )\
+    SCRIPT_SERVICE()->setWrapper( Helper::stringizeString(#Class), new ScriptWrapper<Class>() )
 
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Node );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2D );
-		//SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DParallax );
-		//SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DIsometric );
-		//SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DPhysic );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpot );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotPolygon );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotCircle );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotBubbles );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotImage );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotShape );
+		SCRIPT_CLASS_WRAPPING( Node );
+		SCRIPT_CLASS_WRAPPING( Layer );
+		SCRIPT_CLASS_WRAPPING( Layer2D );
+		SCRIPT_CLASS_WRAPPING( HotSpot );
+		SCRIPT_CLASS_WRAPPING( HotSpotPolygon );
+		SCRIPT_CLASS_WRAPPING( HotSpotCircle );
+		SCRIPT_CLASS_WRAPPING( HotSpotBubbles );
+		SCRIPT_CLASS_WRAPPING( HotSpotImage );
+		SCRIPT_CLASS_WRAPPING( HotSpotShape );
 
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ScriptHolder );
+		SCRIPT_CLASS_WRAPPING( ScriptHolder );
 
 		//SCRIPT_CLASS_WRAPPING( Light2D );
 		//SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Gyroscope );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Isometric );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Arrow );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, TextField );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, SoundEmitter );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ParticleEmitter2 );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Movie );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieSlot );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieInternalObject );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Meshget );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Model3D );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Point );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Line );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Landscape2D );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Grid2D );
+		SCRIPT_CLASS_WRAPPING( Gyroscope );
+		SCRIPT_CLASS_WRAPPING( Isometric );
+		SCRIPT_CLASS_WRAPPING( Arrow );
+		SCRIPT_CLASS_WRAPPING( TextField );
+		SCRIPT_CLASS_WRAPPING( SoundEmitter );
+		SCRIPT_CLASS_WRAPPING( ParticleEmitter2 );
+		SCRIPT_CLASS_WRAPPING( Movie );
+		SCRIPT_CLASS_WRAPPING( MovieSlot );
+		SCRIPT_CLASS_WRAPPING( MovieInternalObject );
+		SCRIPT_CLASS_WRAPPING( Meshget );
+		SCRIPT_CLASS_WRAPPING( Model3D );
+		SCRIPT_CLASS_WRAPPING( Point );
+		SCRIPT_CLASS_WRAPPING( Line );
+		SCRIPT_CLASS_WRAPPING( Landscape2D );
+		SCRIPT_CLASS_WRAPPING( Grid2D );
 
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ShapeQuadFixed );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ShapeQuadFlex );
+		SCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
+		SCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
 
 		//SCRIPT_CLASS_WRAPPING( FFCamera3D );
 		//SCRIPT_CLASS_WRAPPING( DiscreteEntity );
@@ -6932,40 +6848,39 @@ namespace Menge
 		//SCRIPT_CLASS_WRAPPING( SceneNode3D );
 		//SCRIPT_CLASS_WRAPPING( Camera3D );
 		//SCRIPT_CLASS_WRAPPING( RenderMesh );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Window );
+		SCRIPT_CLASS_WRAPPING( Window );
 
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Parallax );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, RenderViewport );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, RenderCameraOrthogonal );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, RenderCameraProjection );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, RenderCameraOrthogonalTarget );
+		SCRIPT_CLASS_WRAPPING( Parallax );
+		SCRIPT_CLASS_WRAPPING( RenderViewport );
+		SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonal );
+		SCRIPT_CLASS_WRAPPING( RenderCameraProjection );
+		SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalTarget );
 		//SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceReference );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImage );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageData );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageDefault );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceAnimation );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceMovie );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceModel3D );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceVideo );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceSound );
+		SCRIPT_CLASS_WRAPPING( ResourceReference );
+		SCRIPT_CLASS_WRAPPING( ResourceImage );
+		SCRIPT_CLASS_WRAPPING( ResourceImageData );
+		SCRIPT_CLASS_WRAPPING( ResourceImageDefault );
+		SCRIPT_CLASS_WRAPPING( ResourceAnimation );
+		SCRIPT_CLASS_WRAPPING( ResourceMovie );
+		SCRIPT_CLASS_WRAPPING( ResourceModel3D );
+		SCRIPT_CLASS_WRAPPING( ResourceVideo );
+		SCRIPT_CLASS_WRAPPING( ResourceSound );
 
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSolid );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceShape );
-		//SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceFont );       
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceWindow );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSubstractRGBAndAlpha );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSubstract );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceInternalObject );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceHIT );
+		SCRIPT_CLASS_WRAPPING( ResourceImageSolid );
+		SCRIPT_CLASS_WRAPPING( ResourceShape );
+		SCRIPT_CLASS_WRAPPING( ResourceWindow );
+		SCRIPT_CLASS_WRAPPING( ResourceImageSubstractRGBAndAlpha );
+		SCRIPT_CLASS_WRAPPING( ResourceImageSubstract );
+		SCRIPT_CLASS_WRAPPING( ResourceInternalObject );
+		SCRIPT_CLASS_WRAPPING( ResourceHIT );
 
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Surface );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceVideo );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceSound );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceImage );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceImageSequence );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, SurfaceSolidColor );
+		SCRIPT_CLASS_WRAPPING( Surface );
+		SCRIPT_CLASS_WRAPPING( SurfaceVideo );
+		SCRIPT_CLASS_WRAPPING( SurfaceSound );
+		SCRIPT_CLASS_WRAPPING( SurfaceImage );
+		SCRIPT_CLASS_WRAPPING( SurfaceImageSequence );
+		SCRIPT_CLASS_WRAPPING( SurfaceSolidColor );
 
 # undef SCRIPT_CLASS_WRAPPING
 	}
@@ -7064,9 +6979,9 @@ namespace Menge
 		}
 	};
 
-	void PythonScriptWrapper::nodeWrap( ServiceProviderInterface * _serviceProvider )
+	void PythonScriptWrapper::nodeWrap()
 	{
-		NodeScriptMethod * nodeScriptMethod = new NodeScriptMethod( _serviceProvider );
+		NodeScriptMethod * nodeScriptMethod = new NodeScriptMethod();
 
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 
@@ -7079,7 +6994,7 @@ namespace Menge
 		pybind::registration_stl_map_type_cast<ConstString, WString, TMapWParams>(kernel);
 		pybind::registration_stl_map_type_cast<ConstString, String, TMapParams>(kernel);
 
-		classWrapping( _serviceProvider );
+		classWrapping();
 
 		pybind::interface_<Affector>( kernel, "Affector", true )
 			.def( "stop", &Affector::stop )

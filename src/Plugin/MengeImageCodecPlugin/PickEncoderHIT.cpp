@@ -22,8 +22,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PickEncoderHIT::_initialize()
 	{
-		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
+		m_archivator = ARCHIVE_SERVICE()
+			->getArchivator( STRINGIZE_STRING_LOCAL("lz4") );
 
 		if( m_archivator == nullptr )
 		{
@@ -37,9 +37,9 @@ namespace Menge
 	{
 		(void)_size;
 
-		if( Helper::writeStreamMagicHeader( m_serviceProvider, m_stream, GET_MAGIC_NUMBER(MAGIC_HIT), GET_MAGIC_VERSION(MAGIC_HIT) ) == false )
+		if( Helper::writeStreamMagicHeader( m_stream, GET_MAGIC_NUMBER(MAGIC_HIT), GET_MAGIC_VERSION(MAGIC_HIT) ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("PickEncoderHIT::encode invalid write magic header"
+			LOGGER_ERROR("PickEncoderHIT::encode invalid write magic header"
 				);
 
 			return 0;
@@ -55,9 +55,9 @@ namespace Menge
 		const void * write_buffer = _buffer;
 		size_t write_size = (size_t)dataInfo->mipmapsize;
               
-		if( Helper::writeStreamArchiveBuffer( m_serviceProvider, m_stream, m_archivator, false, write_buffer, write_size, EAC_BEST ) == false )
+		if( Helper::writeStreamArchiveBuffer( m_stream, m_archivator, false, write_buffer, write_size, EAC_BEST ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("PickEncoderHIT::encode invalid write magic header"
+			LOGGER_ERROR("PickEncoderHIT::encode invalid write magic header"
 				);
 
 			return 0;

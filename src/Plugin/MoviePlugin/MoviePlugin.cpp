@@ -64,6 +64,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void stdex_movie_logerror( void * _data, aeMovieErrorCode _code, const char * _format, ... )
 	{
+        (void)_data;
+
         switch( _code )
         {
         case AE_ERROR_STREAM:
@@ -82,10 +84,7 @@ namespace Menge
 		vsprintf( msg, _format, argList );
 		va_end( argList );
 
-		MoviePlugin * plugin = static_cast<MoviePlugin *>(_data);
-		ServiceProviderInterface * serviceProvider = plugin->getServiceProvider();
-
-		LOGGER_ERROR( serviceProvider )("MoviePlugin error '%s' code '%d'"
+		LOGGER_ERROR( "MoviePlugin error '%s' code '%d'"
 			, msg
 			, _code			
 			);
@@ -118,7 +117,7 @@ namespace Menge
 
                 if( resource == nullptr )
                 {
-                    LOGGER_ERROR( m_serviceProvider )("ResourcePrototypeGenerator can't generate %s %s"
+                    LOGGER_ERROR( "ResourcePrototypeGenerator can't generate %s %s"
                         , m_category.c_str()
                         , m_prototype.c_str()
                         );
@@ -126,7 +125,6 @@ namespace Menge
                     return nullptr;
                 }
 
-                resource->setServiceProvider( m_serviceProvider );
                 resource->setType( m_prototype );
                 resource->setScriptWrapper( m_scriptWrapper );
 
@@ -174,7 +172,7 @@ namespace Menge
             {
                 std::string k = it.key();
 
-                LOGGER_ERROR( m_serviceProvider )("Movie2::setEventListener invalid kwds '%s'\n"
+                LOGGER_ERROR( "Movie2::setEventListener invalid kwds '%s'\n"
                     , k.c_str()
                     );
             }
@@ -188,18 +186,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MoviePlugin::_initialize()
 	{
-        String hashkey = CONFIG_VALUE( m_serviceProvider, "MoviePlugin", "HASHKEY", "" );
+        String hashkey = CONFIG_VALUE( "MoviePlugin", "HASHKEY", "" );
 
         if( hashkey.empty() == true )
         {
-            LOGGER_ERROR( m_serviceProvider )("MoviePlugin::_initialize not setup HASHKEY");
+            LOGGER_ERROR( "MoviePlugin::_initialize not setup HASHKEY");
 
             return false;
         }
 
         if( hashkey.size() != 40 )
         {
-            LOGGER_ERROR( m_serviceProvider )("MoviePlugin::_initialize invalid HASHKEY '%s'"
+            LOGGER_ERROR( "MoviePlugin::_initialize invalid HASHKEY '%s'"
                 , hashkey.c_str()
                 );
 
@@ -244,29 +242,29 @@ namespace Menge
             .def( "getCompositionFrameDuration", &ResourceMovie2::getCompositionFrameDuration )
 			;
 		
-		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2" ), new ScriptWrapper<Movie2>() );
+		SCRIPT_SERVICE()
+			->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2" ), new ScriptWrapper<Movie2>() );
 
-        SCRIPT_SERVICE( m_serviceProvider )
-            ->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2Slot" ), new ScriptWrapper<Movie2Slot>() );
+        SCRIPT_SERVICE()
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new ScriptWrapper<Movie2Slot>() );
 
-		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceMovie2" ), new ScriptWrapper<ResourceMovie2>() );
+		SCRIPT_SERVICE()
+			->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new ScriptWrapper<ResourceMovie2>() );
 
-		if( PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2" ), new NodePrototypeGenerator<Movie2, 128> ) == false )
+		if( PROTOTYPE_SERVICE()
+			->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ), new NodePrototypeGenerator<Movie2, 128> ) == false )
 		{
 			return false;
 		}
 
-        if( PROTOTYPE_SERVICE( m_serviceProvider )
-            ->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2Slot" ), new NodePrototypeGenerator<Movie2Slot, 128> ) == false )
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new NodePrototypeGenerator<Movie2Slot, 128> ) == false )
         {
             return false;
         }
 
-		if( PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Resource" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceMovie2" ), new ResourceMovie2PrototypeGenerator(m_instance) ) == false )
+		if( PROTOTYPE_SERVICE()
+			->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new ResourceMovie2PrototypeGenerator(m_instance) ) == false )
 		{
 			return false;
 		}
@@ -279,19 +277,19 @@ namespace Menge
 		ae_delete_movie_instance( m_instance );
 		m_instance = nullptr;
 
-        SCRIPT_SERVICE( m_serviceProvider )
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2" ) );
+        SCRIPT_SERVICE()
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( "Movie2" ) );
 
-        SCRIPT_SERVICE( m_serviceProvider )
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceMovie2" ) );
+        SCRIPT_SERVICE()
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
 
-        PROTOTYPE_SERVICE( m_serviceProvider )
-            ->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2" ) );
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ) );
 
-        PROTOTYPE_SERVICE( m_serviceProvider )
-            ->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Movie2Slot" ) );
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ) );
 
-        PROTOTYPE_SERVICE( m_serviceProvider )
-            ->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Resource" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceMovie2" ) );
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
 	}
 }

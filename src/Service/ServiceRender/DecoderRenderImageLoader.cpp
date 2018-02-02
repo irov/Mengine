@@ -18,14 +18,14 @@ namespace Menge
     bool DecoderRenderImageLoader::initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecName )
     {
         ImageDecoderInterfacePtr decoder;
-        if( PREFETCHER_SERVICE( m_serviceProvider )
+        if( PREFETCHER_SERVICE()
             ->getImageDecoder( _pakName, _fileName, decoder ) == false )
         {
             decoder = this->createImageDecoder_( _pakName, _fileName, _codecName );
 
             if( decoder == nullptr )
             {
-                LOGGER_ERROR( m_serviceProvider )("DecoderRenderImageProviderInterface::getImageMemory invalid create decoder '%s':'%s' codec '%s'"
+                LOGGER_ERROR("DecoderRenderImageProviderInterface::getImageMemory invalid create decoder '%s':'%s' codec '%s'"
                     , _pakName.c_str()
                     , _fileName.c_str()
                     , _codecName.c_str()
@@ -38,7 +38,7 @@ namespace Menge
         {
             if( decoder->rewind() == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("DecoderRenderImageProviderInterface::loadTexture invalid rewind decoder '%s':'%s' codec '%s'"
+                LOGGER_ERROR("DecoderRenderImageProviderInterface::loadTexture invalid rewind decoder '%s':'%s' codec '%s'"
                     , _pakName.c_str()
                     , _fileName.c_str()
                     , _codecName.c_str()
@@ -98,7 +98,7 @@ namespace Menge
 
 		if( textureBuffer == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("DecoderRenderImageLoader::load Invalid lock mipmap %d rect %d:%d-%d:%d"
+			LOGGER_ERROR("DecoderRenderImageLoader::load Invalid lock mipmap %d rect %d:%d-%d:%d"
 				, 0
 				, rect.left
 				, rect.top
@@ -118,7 +118,7 @@ namespace Menge
 
         if( m_decoder->decode( textureBuffer, mipmap_size ) == 0 )
         {
-            LOGGER_ERROR( m_serviceProvider )("DecoderRenderImageProviderInterface::getImageMemory invalid decode for"
+            LOGGER_ERROR("DecoderRenderImageProviderInterface::getImageMemory invalid decode for"
                 );
 
 			_image->unlock( 0, false );
@@ -157,12 +157,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ImageDecoderInterfacePtr DecoderRenderImageLoader::createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecName ) const
     {
-        InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
+        InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( _pakName, _fileName, false );
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("DecoderRenderImageProviderInterface::createImageDecoder_ invalid open stream '%s:%s' codec '%s'"
+            LOGGER_ERROR("DecoderRenderImageProviderInterface::createImageDecoder_ invalid open stream '%s:%s' codec '%s'"
                 , _pakName.c_str()
                 , _fileName.c_str()
                 , _codecName.c_str()
@@ -171,12 +171,12 @@ namespace Menge
             return nullptr;
         }
 
-        ImageDecoderInterfacePtr decoder = CODEC_SERVICE( m_serviceProvider )
+        ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( _codecName );
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("DecoderRenderImageProviderInterface::createImageDecoder_ invalid create decoder '%s:%s' codec '%s'"
+            LOGGER_ERROR("DecoderRenderImageProviderInterface::createImageDecoder_ invalid create decoder '%s:%s' codec '%s'"
                 , _pakName.c_str()
                 , _fileName.c_str()
                 , _codecName.c_str()
@@ -187,7 +187,7 @@ namespace Menge
 
         if( decoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("DecoderRenderImageProviderInterface::createImageDecoder_ invalid prepare data '%s:%s' codec '%s'"
+            LOGGER_ERROR("DecoderRenderImageProviderInterface::createImageDecoder_ invalid prepare data '%s:%s' codec '%s'"
                 , _pakName.c_str()
                 , _fileName.c_str()
                 , _codecName.c_str()

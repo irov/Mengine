@@ -50,7 +50,7 @@ namespace Menge
     };
 }
 
-#   define PROTOTYPE_SERVICE( serviceProvider )\
-	((PrototypeServiceInterface *)SERVICE_GET(serviceProvider, Menge::PrototypeServiceInterface))
+#   define PROTOTYPE_SERVICE()\
+	((PrototypeServiceInterface *)SERVICE_GET(Menge::PrototypeServiceInterface))
     
 

@@ -15,23 +15,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_handlerError( png_structp png_ptr, const char * _error ) 
 	{
-		png_voidp error_ptr = png_get_error_ptr( png_ptr );		
-		ImageDecoderPNG * imageDecoderPNG = static_cast<ImageDecoderPNG*>(error_ptr);
+        (void)png_ptr;
 
-		ServiceProviderInterface * serviceProvider = imageDecoderPNG->getServiceProvider();
-
-		LOGGER_ERROR(serviceProvider)("ImageDecoderPNG::s_handlerError '%s'"
+		LOGGER_ERROR("ImageDecoderPNG::s_handlerError '%s'"
 			, _error 
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void PNGAPI s_handlerWarning( png_structp png_ptr, const char * _error )
 	{
-		png_voidp error_ptr = png_get_error_ptr( png_ptr );		
-		ImageDecoderPNG * imageDecoderPNG = static_cast<ImageDecoderPNG*>(error_ptr);
-		ServiceProviderInterface * serviceProvider = imageDecoderPNG->getServiceProvider();
-
-		LOGGER_INFO(serviceProvider)("ImageDecoderPNG::s_handlerWarning '%s'"
+        (void)png_ptr;
+	
+		LOGGER_INFO("ImageDecoderPNG::s_handlerWarning '%s'"
 			, _error 
 			);
 	}
@@ -39,7 +34,6 @@ namespace Menge
 	static void PNGAPI s_readProc( png_structp _png_ptr, unsigned char * _data, png_size_t _size )
 	{
 		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-
 		InputStreamInterface * stream = static_cast<InputStreamInterface *>( io_ptr );
 
 		stream->read( _data, _size );
@@ -80,7 +74,7 @@ namespace Menge
 
 		if( m_png_ptr == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't create read structure" 
+			LOGGER_ERROR("ImageDecoderPNG::initialize Can't create read structure" 
 				);
 
 			return false;
@@ -90,7 +84,7 @@ namespace Menge
 
 		if( m_info_ptr == nullptr ) 
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't create info structure" 
+			LOGGER_ERROR("ImageDecoderPNG::initialize Can't create info structure" 
 				);
 
 			png_destroy_write_struct( &m_png_ptr, nullptr );
@@ -113,7 +107,7 @@ namespace Menge
 
 		if( png_sig_cmp(png_check, (png_size_t)0, PNG_BYTES_TO_CHECK) != 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::_prepareData Bad or not PNG file" 
+			LOGGER_ERROR("ImageDecoderPNG::_prepareData Bad or not PNG file" 
 				);
 
 			return false;
@@ -201,7 +195,7 @@ namespace Menge
 	{	
 		if( _bufferSize < m_options.pitch * m_dataInfo.height )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode invalid bufferSize %d != (%d * %d)"
+			LOGGER_ERROR("ImageDecoderPNG::decode invalid bufferSize %d != (%d * %d)"
 				, _bufferSize
 				, m_options.pitch
 				, m_dataInfo.height 
@@ -271,7 +265,7 @@ namespace Menge
 			}			
 			else
 			{
-				LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode DEFAULT not support chanells %d - %d"
+				LOGGER_ERROR("ImageDecoderPNG::decode DEFAULT not support chanells %d - %d"
 					, m_dataInfo.channels
 					, m_options.channels
 					);
@@ -293,7 +287,7 @@ namespace Menge
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 1 )
 			{
-				MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, m_row_bytes, __FILE__, __LINE__ );
+				MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, __FILE__, __LINE__ );
 
 				if( row_buffer == nullptr )
 				{
@@ -319,7 +313,7 @@ namespace Menge
 			}
 			else
 			{
-				LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode DF_READ_ALPHA_ONLY not support chanells %d - %d"
+				LOGGER_ERROR("ImageDecoderPNG::decode DF_READ_ALPHA_ONLY not support chanells %d - %d"
 					, m_dataInfo.channels
 					, m_options.channels
 					);
@@ -331,7 +325,7 @@ namespace Menge
 		{				
 			if( m_dataInfo.channels == 1 && m_options.channels == 4 )
 			{
-				MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, m_row_bytes, __FILE__, __LINE__ );
+				MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, __FILE__, __LINE__ );
 
 				if( row_buffer == nullptr )
 				{
@@ -356,7 +350,7 @@ namespace Menge
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
 			{
-				MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, m_row_bytes, __FILE__, __LINE__ );
+				MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, __FILE__, __LINE__ );
 
 				if( row_buffer == nullptr )
 				{
@@ -381,7 +375,7 @@ namespace Menge
 			}
 			else
 			{
-				LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode DF_WRITE_ALPHA_ONLY not support chanells %d - %d"
+				LOGGER_ERROR("ImageDecoderPNG::decode DF_WRITE_ALPHA_ONLY not support chanells %d - %d"
 					, m_dataInfo.channels
 					, m_options.channels
 					);
@@ -391,7 +385,7 @@ namespace Menge
 		}
 		else 
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode unsupport options flag %d"
+			LOGGER_ERROR("ImageDecoderPNG::decode unsupport options flag %d"
 				, m_options.flags
 				);
 
@@ -414,7 +408,7 @@ namespace Menge
 
 		if( m_png_ptr == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::_rewind Can't create read structure" 
+			LOGGER_ERROR("ImageDecoderPNG::_rewind Can't create read structure" 
 				);
 
 			return false;
@@ -424,7 +418,7 @@ namespace Menge
 
 		if( m_info_ptr == nullptr ) 
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::_rewind Can't create info structure" 
+			LOGGER_ERROR("ImageDecoderPNG::_rewind Can't create info structure" 
 				);
 
 			png_destroy_write_struct( &m_png_ptr, nullptr );

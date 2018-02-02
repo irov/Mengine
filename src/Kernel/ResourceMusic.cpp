@@ -47,7 +47,7 @@ namespace Menge
 
 		if( metadata->swap_File_Codec( m_codec ) == false )
 		{
-			m_codec = CODEC_SERVICE( m_serviceProvider )
+			m_codec = CODEC_SERVICE()
 				->findCodecType( m_path );
 		}
 
@@ -69,10 +69,10 @@ namespace Menge
 		
 		const ConstString & category = this->getCategory();
 
-		if( FILE_SERVICE( m_serviceProvider )
+		if( FILE_SERVICE()
 			->existFile( category, m_path, nullptr ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ResourceMusic::_loader: '%s' music '%s' not exist"
+			LOGGER_ERROR("ResourceMusic::_loader: '%s' music '%s' not exist"
 				, this->getName().c_str()
 				, m_path.c_str()
 				);

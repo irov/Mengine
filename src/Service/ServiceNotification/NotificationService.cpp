@@ -21,7 +21,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool NotificationService::_initialize()
 	{
-        ThreadMutexInterfacePtr mutex = THREAD_SERVICE( m_serviceProvider )
+        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( __FILE__, __LINE__ );
 
         if( mutex == nullptr )
@@ -163,7 +163,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void NotificationService::invalidObserver_( uint32_t _id )
 	{
-		LOGGER_ERROR(m_serviceProvider)("NotificationService: invalid observer %d"
+		LOGGER_ERROR("NotificationService: invalid observer %d"
 			, _id
 			);
 	}

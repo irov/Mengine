@@ -24,11 +24,7 @@ namespace Menge
 
 			(*_cinfo->err->format_message)(_cinfo, buffer);
 
-			ImageDecoderJPEG * imageDecoderJPEG = static_cast<ImageDecoderJPEG *>(_cinfo->client_data);
-
-			ServiceProviderInterface * serviceProvider = imageDecoderJPEG->getServiceProvider();
-
-			LOGGER_ERROR(serviceProvider)("ImageDecoderJPEG::ErrorMessage %s"
+			LOGGER_ERROR("ImageDecoderJPEG::ErrorMessage %s"
 				, buffer
 				);
 		}
@@ -44,12 +40,8 @@ namespace Menge
         char buffer[JMSG_LENGTH_MAX] = { 0 };
 
 		(*_cinfo->err->format_message)(_cinfo, buffer);
-		
-		ImageDecoderJPEG * imageDecoderJPEG = static_cast<ImageDecoderJPEG *>(_cinfo->client_data);
-		
-		ServiceProviderInterface * serviceProvider = imageDecoderJPEG->getServiceProvider();
-
-		LOGGER_ERROR(serviceProvider)("ImageDecoderJPEG::OutputMessage %s"
+				
+		LOGGER_ERROR("ImageDecoderJPEG::OutputMessage %s"
 			, buffer
 			);
 	}
@@ -226,7 +218,7 @@ namespace Menge
 		//		"JCS_BG_YCC"		/* big gamut Y/Cb/Cr, bg-sYCC */
 		//	};
 
-		//	LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::_prepareData unsupport %s (%d) (only RGB)"
+		//	LOGGER_ERROR("ImageDecoderJPEG::_prepareData unsupport %s (%d) (only RGB)"
 		//		, jcs_err[m_jpegObject.jpeg_color_space]
 		//		, m_jpegObject.jpeg_color_space				
 		//		);
@@ -236,7 +228,7 @@ namespace Menge
 		//
 		//if( m_jpegObject.num_components != 3 )
 		//{
-		//	LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::_prepareData invalid color components %d"
+		//	LOGGER_ERROR("ImageDecoderJPEG::_prepareData invalid color components %d"
 		//		, m_jpegObject.num_components
 		//		);
 
@@ -252,7 +244,7 @@ namespace Menge
 	{
         if( _bufferSize < m_options.pitch * m_dataInfo.height )
         {
-            LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::decode error, invalid buffer relation pitch to size bufferSize %d - pitch %d height %d"
+            LOGGER_ERROR("ImageDecoderJPEG::decode error, invalid buffer relation pitch to size bufferSize %d - pitch %d height %d"
                 , _bufferSize
                 , m_options.pitch 
                 , m_dataInfo.height
@@ -295,7 +287,7 @@ namespace Menge
             }
             else
             {
-                LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::decode DEFAULT m_options.channels %d != %d"
+                LOGGER_ERROR("ImageDecoderJPEG::decode DEFAULT m_options.channels %d != %d"
                     , m_options.channels
 					, m_dataInfo.channels
                     );
@@ -313,7 +305,7 @@ namespace Menge
 			}
 			else
 			{
-				LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::decode DF_READ_ALPHA_ONLY m_options.channels %d != 4"
+				LOGGER_ERROR("ImageDecoderJPEG::decode DF_READ_ALPHA_ONLY m_options.channels %d != 4"
 					, m_options.channels
 					);
 

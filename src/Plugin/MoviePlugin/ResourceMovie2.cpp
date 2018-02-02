@@ -174,7 +174,7 @@ namespace Menge
 
 		if( m_filePath.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' group '%s' don`t have Key Frames Pack Path"
+			LOGGER_ERROR("ResourceMovie::_compile: '%s' group '%s' don`t have Key Frames Pack Path"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				);
@@ -184,12 +184,12 @@ namespace Menge
 
 		const ConstString & category = this->getCategory();
 
-		InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
+		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( category, m_filePath, false );
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ResourceMovie2::_compile: '%s' group '%s' can`t open file '%s'"
+			LOGGER_ERROR("ResourceMovie2::_compile: '%s' group '%s' can`t open file '%s'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, m_filePath.c_str()
@@ -206,7 +206,7 @@ namespace Menge
 
 		if( result != AE_RESULT_SUCCESSFUL )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s' result '%d'"
+			LOGGER_ERROR("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s' result '%d'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, m_filePath.c_str()
@@ -260,7 +260,7 @@ namespace Menge
     {
         if( m_filePath.empty() == true )
         {
-            LOGGER_ERROR( m_serviceProvider )("ResourceMovie::_isValid: '%s' group '%s' don`t have Key Frames Pack Path"
+            LOGGER_ERROR("ResourceMovie::_isValid: '%s' group '%s' don`t have Key Frames Pack Path"
                 , this->getName().c_str()
                 , this->getGroup().c_str()
                 );
@@ -270,12 +270,12 @@ namespace Menge
 
         const ConstString & category = this->getCategory();
 
-        InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
+        InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( category, m_filePath, false );
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("ResourceMovie2::_isValid: '%s' group '%s' can`t open file '%s'"
+            LOGGER_ERROR("ResourceMovie2::_isValid: '%s' group '%s' can`t open file '%s'"
                 , this->getName().c_str()
                 , this->getGroup().c_str()
                 , m_filePath.c_str()
@@ -292,7 +292,7 @@ namespace Menge
         {
             const ae_char_t * result_string_info = ae_get_result_string_info( check_result );
 
-            LOGGER_ERROR( m_serviceProvider )("ResourceMovie2::_isValid: '%s' group '%s' file '%s' check movie data invalid '%s'"
+            LOGGER_ERROR("ResourceMovie2::_isValid: '%s' group '%s' file '%s' check movie data invalid '%s'"
                 , this->getName().c_str()
                 , this->getGroup().c_str()
                 , m_filePath.c_str()
@@ -309,8 +309,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceMovie2::createResourceImage_( const ae_string_t _path, float _width, float _height )
 	{
-		ResourceImageDefaultPtr image = RESOURCE_SERVICE( m_serviceProvider )
-			->generateResourceT<ResourceImageDefaultPtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceImageDefault" ) );
+		ResourceImageDefaultPtr image = RESOURCE_SERVICE()
+			->generateResourceT<ResourceImageDefaultPtr>( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
 
 		const ConstString & category = this->getCategory();
 
@@ -318,12 +318,12 @@ namespace Menge
 
 		PathString full_path;
 
-		ConstString folder = Helper::getPathFolder( m_serviceProvider, m_filePath );
+		ConstString folder = Helper::getPathFolder( m_filePath );
 
 		full_path += folder.c_str();
 		full_path += _path;
 
-		FilePath c_path = Helper::stringizeFilePath( m_serviceProvider, full_path );
+		FilePath c_path = Helper::stringizeFilePath( full_path );
 
 		mt::uv4f uv_image;
 		mt::uv4f uv_alpha;
@@ -339,8 +339,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceMovie2::createResourceVideo_( const aeMovieResourceVideo * _resource )
 	{
-		ResourceVideoPtr video = RESOURCE_SERVICE( m_serviceProvider )
-			->generateResourceT<ResourceVideoPtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceVideo" ) );
+		ResourceVideoPtr video = RESOURCE_SERVICE()
+			->generateResourceT<ResourceVideoPtr>( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
 
 		const ConstString & category = this->getCategory();
 
@@ -348,12 +348,12 @@ namespace Menge
 
 		PathString full_path;
 
-		ConstString folder = Helper::getPathFolder( m_serviceProvider, m_filePath );
+		ConstString folder = Helper::getPathFolder( m_filePath );
 
 		full_path += folder.c_str();
 		full_path += _resource->path;
 
-		FilePath fullPath = Helper::stringizeFilePath( m_serviceProvider, full_path );
+		FilePath fullPath = Helper::stringizeFilePath( full_path );
 
 		video->setFilePath( fullPath );
 
@@ -363,12 +363,12 @@ namespace Menge
 		if( _resource->alpha == AE_TRUE )
 		{
 			video->setAlpha( true );
-			video->setCodecType( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ogvaVideo" ) );
+			video->setCodecType( STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
 		}
 		else
 		{
 			video->setAlpha( false );
-			video->setCodecType( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ogvVideo" ) );
+			video->setCodecType( STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
 		}
 
 		m_resources.push_back( video );
@@ -378,8 +378,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceMovie2::createResourceSound_( const aeMovieResourceSound * _resource )
 	{
-		ResourceSoundPtr sound = RESOURCE_SERVICE( m_serviceProvider )
-			->generateResourceT<ResourceSoundPtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceSound" ) );
+		ResourceSoundPtr sound = RESOURCE_SERVICE()
+			->generateResourceT<ResourceSoundPtr>( STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
 
 		const ConstString & category = this->getCategory();
 
@@ -387,16 +387,16 @@ namespace Menge
 
 		PathString full_path;
 
-		ConstString folder = Helper::getPathFolder( m_serviceProvider, m_filePath );
+		ConstString folder = Helper::getPathFolder( m_filePath );
 
 		full_path += folder.c_str();
 		full_path += _resource->path;
 
-		FilePath c_path = Helper::stringizeFilePath( m_serviceProvider, full_path );
+		FilePath c_path = Helper::stringizeFilePath( full_path );
 		
 		sound->setFilePath( c_path );
 		
-		sound->setCodecType( STRINGIZE_STRING_LOCAL( m_serviceProvider, "oggSound" ) );
+		sound->setCodecType( STRINGIZE_STRING_LOCAL( "oggSound" ) );
 
 		m_resources.push_back( sound );
 
@@ -405,8 +405,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ResourceReference * ResourceMovie2::createResourceParticle_( const aeMovieResourceParticle * _resource )
     {
-        ResourceParticlePtr particle = RESOURCE_SERVICE( m_serviceProvider )
-            ->generateResourceT<ResourceParticlePtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceParticle" ) );
+        ResourceParticlePtr particle = RESOURCE_SERVICE()
+            ->generateResourceT<ResourceParticlePtr>( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
 
         const ConstString & category = this->getCategory();
 
@@ -414,12 +414,12 @@ namespace Menge
 
         PathString full_path;
 
-        ConstString folder = Helper::getPathFolder( m_serviceProvider, m_filePath );
+        ConstString folder = Helper::getPathFolder( m_filePath );
 
         full_path += folder.c_str();
         full_path += _resource->path;
 
-        FilePath c_path = Helper::stringizeFilePath( m_serviceProvider, full_path );
+        FilePath c_path = Helper::stringizeFilePath( full_path );
 
         particle->setFilePath( c_path );
 

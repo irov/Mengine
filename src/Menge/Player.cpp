@@ -57,8 +57,7 @@ namespace Menge
         class PlayerResourceUselessCompile
         {
         public:
-            PlayerResourceUselessCompile( ServiceProviderInterface * _serviceProvider )
-                : m_serviceProvider( _serviceProvider )
+            PlayerResourceUselessCompile()
             {
             }
 
@@ -69,10 +68,10 @@ namespace Menge
         public:
             void begin()
             {
-                m_observerResourceCompile = NOTIFICATION_SERVICE( m_serviceProvider )
+                m_observerResourceCompile = NOTIFICATION_SERVICE()
                     ->addObserverMethod( NOTIFICATOR_RESOURCE_COMPILE, this, &PlayerResourceUselessCompile::resourceCompile );
 
-                m_observerResourceRelease = NOTIFICATION_SERVICE( m_serviceProvider )
+                m_observerResourceRelease = NOTIFICATION_SERVICE()
                     ->addObserverMethod( NOTIFICATOR_RESOURCE_RELEASE, this, &PlayerResourceUselessCompile::resourceRelease );
             }
 
@@ -98,7 +97,7 @@ namespace Menge
                     return;
                 }
 
-                LOGGER_PERFORMANCE( m_serviceProvider )("Useless Compile %s %s:%s"
+                LOGGER_PERFORMANCE("Useless Compile %s %s:%s"
                     , _resource->getType().c_str()
                     , _resource->getGroup().c_str()
                     , _resource->getName().c_str()
@@ -108,8 +107,6 @@ namespace Menge
             }
 
         protected:
-            ServiceProviderInterface * m_serviceProvider;
-
             ObserverInterfacePtr m_observerResourceCompile;
             ObserverInterfacePtr m_observerResourceRelease;
 
@@ -160,8 +157,8 @@ namespace Menge
 			return false;
 		}
 
-        MODULE_SERVICE( m_serviceProvider )
-            ->messageAll( STRINGIZE_STRING_LOCAL( m_serviceProvider, "onSceneChange" ), TMapWParams() );
+        MODULE_SERVICE()
+            ->messageAll( STRINGIZE_STRING_LOCAL( "onSceneChange" ), TMapWParams() );
 
         Scene * oldScene = m_scene;
         m_scene = nullptr;
@@ -179,12 +176,12 @@ namespace Menge
         {
             oldScene->destroy();
 
-            //NODE_SERVICE( m_serviceProvider )
+            //NODE_SERVICE() 
             //    ->clearHomeless();
 
-            if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+            if( SERVICE_EXIST( Menge::GraveyardInterface ) == true )
             {
-                GRAVEYARD_SERVICE( m_serviceProvider )
+                GRAVEYARD_SERVICE()
                     ->clearTextures();
             }
         }
@@ -207,7 +204,7 @@ namespace Menge
         }
 
 #   ifndef MENGINE_MASTER_RELEASE
-        PlayerResourceUselessCompile unlessCompile( m_serviceProvider );
+        PlayerResourceUselessCompile unlessCompile;
         unlessCompile.begin();
 #   endif
 
@@ -232,8 +229,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::restartCurrentScene( const SceneChangeCallbackInterfacePtr & _cb )
 	{
-        MODULE_SERVICE( m_serviceProvider )
-            ->messageAll( STRINGIZE_STRING_LOCAL( m_serviceProvider, "onSceneChange" ), TMapWParams() );
+        MODULE_SERVICE()
+            ->messageAll( STRINGIZE_STRING_LOCAL( "onSceneChange" ), TMapWParams() );
 
         if( m_arrow != nullptr )
         {
@@ -246,12 +243,12 @@ namespace Menge
 
         m_scene->disable();
 
-        //NODE_SERVICE( m_serviceProvider )
+        //NODE_SERVICE() 
         //    ->clearHomeless();
 
-        if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+        if( SERVICE_EXIST( Menge::GraveyardInterface ) == true )
         {
-            GRAVEYARD_SERVICE( m_serviceProvider )
+            GRAVEYARD_SERVICE()
                 ->clearTextures();
         }
 
@@ -266,7 +263,7 @@ namespace Menge
         }
 
 #   ifndef MENGINE_MASTER_RELEASE
-        PlayerResourceUselessCompile unlessCompile( m_serviceProvider );
+        PlayerResourceUselessCompile unlessCompile;
         unlessCompile.begin();
 #   endif
 
@@ -306,12 +303,12 @@ namespace Menge
 
             m_scene->release();
 
-            //NODE_SERVICE( m_serviceProvider )
+            //NODE_SERVICE() 
             //    ->clearHomeless();
 
-            if( SERVICE_EXIST( m_serviceProvider, Menge::GraveyardInterface ) == true )
+            if( SERVICE_EXIST( Menge::GraveyardInterface ) == true )
             {
-                GRAVEYARD_SERVICE( m_serviceProvider )
+                GRAVEYARD_SERVICE()
                     ->clearTextures();
             }
 
@@ -349,8 +346,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::createGlobalScene()
 	{
-		Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Scene" ) );
+		Scene * scene = PROTOTYPE_SERVICE()
+			->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ) );
 
 		if( scene == nullptr )
 		{
@@ -422,8 +419,6 @@ namespace Menge
 	{
 		ScheduleManagerInterfacePtr sm = m_factoryScheduleManager->createObject();
 
-		sm->setServiceProvider( m_serviceProvider );
-
 		m_schedulers.push_back( sm );
 
 		return sm;
@@ -435,7 +430,7 @@ namespace Menge
 
 		if( it_found == m_schedulers.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Player::destroySchedulerManager scheduler not found!"
+			LOGGER_ERROR("Player::destroySchedulerManager scheduler not found!"
 				);
 
 			return false;
@@ -478,18 +473,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::_initialize()
 	{
-		m_mousePickerSystem = SERVICE_GENERATE( m_serviceProvider, MousePickerSystem, MousePickerSystemInterface );
-        m_globalHandleSystem = SERVICE_GENERATE( m_serviceProvider, GlobalHandleSystem, GlobalHandleSystemInterface );
+		m_mousePickerSystem = SERVICE_GENERATE( MousePickerSystem, MousePickerSystemInterface );
+        m_globalHandleSystem = SERVICE_GENERATE( GlobalHandleSystem, GlobalHandleSystemInterface );
 
-        m_factoryScheduleManager = new FactoryDefault<ScheduleManager>( m_serviceProvider );
+        m_factoryScheduleManager = new FactoryDefault<ScheduleManager>();
 
 		ScheduleManagerInterfacePtr scheduleManager = m_factoryScheduleManager->createObject();
-        scheduleManager->setServiceProvider( m_serviceProvider );
 
 		m_scheduleManager = scheduleManager;
 
 		ScheduleManagerInterfacePtr scheduleManagerGlobal = m_factoryScheduleManager->createObject();
-        scheduleManagerGlobal->setServiceProvider( m_serviceProvider );
 
 		m_scheduleManagerGlobal = scheduleManagerGlobal;
 
@@ -571,23 +564,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::initializeRenderResources()
 	{
-		m_debugText = NODE_SERVICE(m_serviceProvider)->
-			createNodeT<TextField *>( CONST_STRING( m_serviceProvider, TextField ) );
+		m_debugText = NODE_SERVICE()->
+			createNodeT<TextField *>( CONST_STRING( TextField ) );
 
-		m_debugText->setFontName( STRINGIZE_STRING_LOCAL(m_serviceProvider, "__CONSOLE_FONT__") );
-		m_debugText->setTextID( STRINGIZE_STRING_LOCAL(m_serviceProvider, "__ID_TEXT_CONSOLE") );
+		m_debugText->setFontName( STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__") );
+		m_debugText->setTextID( STRINGIZE_STRING_LOCAL( "__ID_TEXT_CONSOLE") );
 		m_debugText->setLocalColor( ColourValue( 1.0, 0.0, 0.0, 1.0 ) );
 		m_debugText->enable();
 
-		const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
+		const Resolution & contentResolution = APPLICATION_SERVICE()
 			->getContentResolution();
 
 		mt::vec2f cr;
 		contentResolution.calcSize( cr );
 		Viewport vp( 0.f, 0.f, cr.x, cr.y );
 
-		m_camera2D = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
+		m_camera2D = NODE_SERVICE() 
+			->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( RenderCameraOrthogonal ) );
 
 		m_camera2D->setOrthogonalViewport( vp );
 				
@@ -595,16 +588,16 @@ namespace Menge
 
 		this->setRenderCamera( m_camera2D );
 
-		m_viewport2D = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<RenderViewport *>( CONST_STRING( m_serviceProvider, RenderViewport ) );
+		m_viewport2D = NODE_SERVICE() 
+			->createNodeT<RenderViewport *>( CONST_STRING( RenderViewport ) );
 
 		m_viewport2D->setViewport( vp );
 		m_viewport2D->enable();
 
 		this->setRenderViewport( m_viewport2D );
 
-		m_arrowCamera2D = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
+		m_arrowCamera2D = NODE_SERVICE() 
+			->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( RenderCameraOrthogonal ) );
 
 		m_arrowCamera2D->setOrthogonalViewport( vp );
 		m_arrowCamera2D->enable();
@@ -616,8 +609,8 @@ namespace Menge
 			m_arrow->setRenderClipplane( m_renderClipplane );
 		}
 		
-		m_debugCamera2D = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
+		m_debugCamera2D = NODE_SERVICE() 
+			->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( RenderCameraOrthogonal ) );
 
 		m_debugCamera2D->setOrthogonalViewport( vp );
 
@@ -779,12 +772,12 @@ namespace Menge
 		fpsTiming += _timing;
 		if( fpsTiming >= 1000.0f )
 		{
-            const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE( m_serviceProvider )
+            const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
                 ->getDebugInfo();
 
 			m_fps = debugInfo.frameCount;
 
-            RENDER_SERVICE( m_serviceProvider )
+            RENDER_SERVICE()
                 ->resetFrameCount();
 
 			while( fpsTiming >= 1000.0f )
@@ -871,7 +864,7 @@ namespace Menge
 			m_globalHandleSystem->update();
 		}
 
-        NODE_SERVICE( m_serviceProvider )
+        NODE_SERVICE() 
             ->clearHomeless();
 
 		return true;
@@ -929,9 +922,8 @@ namespace Menge
             : public VisitorPrototypeGenerator
         {
         public:
-            VisitorPlayerFactoryManager( ServiceProviderInterface * _serviceProvider, const ConstString & _category, Stringstream & _ss )
-                : m_serviceProvider( _serviceProvider )
-                , m_category( _category )
+            VisitorPlayerFactoryManager( const ConstString & _category, Stringstream & _ss )
+                : m_category( _category )
                 , m_ss( _ss )
             {
             }
@@ -963,7 +955,6 @@ namespace Menge
             }
 
         protected:
-            ServiceProviderInterface * m_serviceProvider;
             ConstString m_category;
             Stringstream & m_ss;
         };
@@ -976,7 +967,7 @@ namespace Menge
 		//	return;
 		//}
 
-        uint32_t debugMask = APPLICATION_SERVICE(m_serviceProvider)
+        uint32_t debugMask = APPLICATION_SERVICE()
             ->getDebugMask();
 
 		RenderObjectState state;
@@ -985,17 +976,17 @@ namespace Menge
 		state.clipplane = m_renderClipplane;
 		state.target = m_renderTarget;
 
-		RenderServiceInterface * renderService = RENDER_SERVICE( m_serviceProvider );
+		RenderServiceInterface * renderService = RENDER_SERVICE();
 
 		if( m_scene != nullptr )
 		{
 			m_scene->render( renderService, &state, debugMask );
 		}
 
-		MODULE_SERVICE(m_serviceProvider)
+		MODULE_SERVICE()
 			->render( &state, debugMask );
 
-		RENDER_SERVICE(m_serviceProvider)
+		RENDER_SERVICE()
 			->endLimitRenderObjects();
 
 		if( m_arrow != nullptr )
@@ -1008,7 +999,7 @@ namespace Menge
 		if( m_showDebugText != 0 )
 		{			
 			const RenderServiceDebugInfo & rdi = 
-				RENDER_SERVICE(m_serviceProvider)->getDebugInfo();
+				RENDER_SERVICE()->getDebugInfo();
 
 			//size_t particlesCount = 
 			//	Holder<ParticleEngine>::get()->getFrameParticlesCount();
@@ -1021,7 +1012,7 @@ namespace Menge
 
 			if( m_showDebugText > 1 )
 			{
-				const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
+				const Resolution & contentResolution = APPLICATION_SERVICE()
 					->getContentResolution();
 
 				double sreenfillrate = rdi.fillrate / double( contentResolution.getWidth() * contentResolution.getHeight() );
@@ -1029,17 +1020,17 @@ namespace Menge
 				ss << "Fillrate " << std::setiosflags(std::ios::fixed) << std::setprecision(2) << sreenfillrate << " (Object " << rdi.object << " Triangle " << rdi.triangle << ")" << std::endl;
 				ss << "DIP: " << rdi.dips << std::endl;
 
-				ERenderBatchMode mode = RENDER_SERVICE(m_serviceProvider)
+				ERenderBatchMode mode = RENDER_SERVICE()
 					->getBatchMode();
 
 				ss << "Smart Batch: " << mode << " " << rdi.batch <<  std::endl;
 
-				uint32_t textureMemoryUse = RENDER_SYSTEM( m_serviceProvider )
+				uint32_t textureMemoryUse = RENDER_SYSTEM()
 					->getTextureMemoryUse();
 
 				ss << "Texture Memory Usage: " << (float)textureMemoryUse / (1024.f*1024.f) << std::endl;
 
-				uint32_t textureCount = RENDER_SYSTEM( m_serviceProvider )
+				uint32_t textureCount = RENDER_SYSTEM()
 					->getTextureCount();
 
 				ss << "Texture Count: " << textureCount << std::endl;
@@ -1082,31 +1073,31 @@ namespace Menge
 
 				CompileResourceVisitor crv;
 
-				RESOURCE_SERVICE(m_serviceProvider)
+				RESOURCE_SERVICE()
 					->visitResources( &crv );
 
 				ss << "Resources: " << crv.getCount() << std::endl;
 
-				PrefetcherDebugInfo pdInfo = PREFETCHER_SERVICE(m_serviceProvider)
+				PrefetcherDebugInfo pdInfo = PREFETCHER_SERVICE()
 					->getDebugInfo();
 
 				ss << "Prefetcher " << pdInfo.receiverCount << std::endl;
 
-				MousePickerSystemInterface * mousePickerSystem = 
-					PLAYER_SERVICE(m_serviceProvider)->getMousePickerSystem();
+				MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE()
+                    ->getMousePickerSystem();
 
 				ss << "PickerTrapCount:" << mousePickerSystem->getPickerTrapCount() << std::endl;
 			}
 			else if( m_showDebugText == 3 )
             {
-			    VisitorPlayerFactoryManager pfmv_node(m_serviceProvider, CONST_STRING(m_serviceProvider, Node), ss);
+			    VisitorPlayerFactoryManager pfmv_node(CONST_STRING( Node), ss);
 
-			    PROTOTYPE_SERVICE(m_serviceProvider)
+			    PROTOTYPE_SERVICE()
 				    ->visitGenerators( &pfmv_node );
 
-				VisitorPlayerFactoryManager pfmv_surface(m_serviceProvider, CONST_STRING(m_serviceProvider, Surface), ss);
+				VisitorPlayerFactoryManager pfmv_surface(CONST_STRING( Surface), ss);
 
-				PROTOTYPE_SERVICE(m_serviceProvider)
+				PROTOTYPE_SERVICE()
 					->visitGenerators(&pfmv_surface);
             }
 			else if( m_showDebugText == 4 )
@@ -1175,15 +1166,15 @@ namespace Menge
             float gameViewportAspect;
             Viewport gameViewport;
 
-            APPLICATION_SERVICE(m_serviceProvider)
+            APPLICATION_SERVICE()
                 ->getGameViewport( gameViewportAspect, gameViewport );
 
             m_debugText->setLocalPosition( mt::vec3f(gameViewport.begin, 0.f) );
 
-			const Resolution & resolution = APPLICATION_SERVICE( m_serviceProvider )
+			const Resolution & resolution = APPLICATION_SERVICE()
 				->getCurrentResolution();
 
-			const Resolution & content = APPLICATION_SERVICE( m_serviceProvider )
+			const Resolution & content = APPLICATION_SERVICE()
 				->getContentResolution();
 
 			mt::vec2f scale;

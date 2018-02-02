@@ -33,13 +33,13 @@ namespace Menge
         D3DFORMAT d3dformat = s_toD3DFormat( _format );
 
 		LPDIRECT3DTEXTURE9 renderTexture;
-		IF_DXCALL( m_serviceProvider, m_device, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &renderTexture, NULL) )
+		IF_DXCALL( m_device, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &renderTexture, NULL) )
 		{
 			return false;
 		}
 
 		D3DSURFACE_DESC texDesc;
-        IF_DXCALL( m_serviceProvider, renderTexture, GetLevelDesc, (0, &texDesc) )
+        IF_DXCALL( renderTexture, GetLevelDesc, (0, &texDesc) )
         {
             return false;
         }
@@ -103,7 +103,7 @@ namespace Menge
 	bool DX9RenderTarget::begin()
 	{
 		LPDIRECT3DSURFACE9 surface;
-		DXCALL( m_serviceProvider, m_renderTexture, GetSurfaceLevel, ( 0, &surface ) );
+		DXCALL( m_renderTexture, GetSurfaceLevel, ( 0, &surface ) );
 
 		if( surface == nullptr )
 		{
@@ -111,10 +111,10 @@ namespace Menge
 		}
 
 		LPDIRECT3DSURFACE9 old_surface;
-		DXCALL( m_serviceProvider, m_device, GetRenderTarget, ( 0, &old_surface ) );
+		DXCALL( m_device, GetRenderTarget, ( 0, &old_surface ) );
 
-		DXCALL( m_serviceProvider, m_device, SetRenderTarget, ( 0, surface ) );
-		
+		DXCALL( m_device, SetRenderTarget, ( 0, surface ) );
+
 		m_oldSurface = old_surface;
 		m_surface = surface;
 
@@ -123,7 +123,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderTarget::end()
 	{
-		DXCALL( m_serviceProvider, m_device, SetRenderTarget, ( 0, m_oldSurface ) );
+		DXCALL( m_device, SetRenderTarget, ( 0, m_oldSurface ) );
 
 		if( m_oldSurface != nullptr )
 		{

@@ -72,7 +72,7 @@ namespace Menge
 
 		SYSTEMTIME tm;
 		GetLocalTime( &tm );
-		LOGGER_INFO( m_serviceProvider )("Date: %02d.%02d.%d, %02d:%02d:%02d"
+		LOGGER_INFO("Date: %02d.%02d.%d, %02d:%02d:%02d"
 			, tm.wDay
 			, tm.wMonth
 			, tm.wYear
@@ -83,93 +83,93 @@ namespace Menge
 
 		MEMORYSTATUSEX mem_st;
 		GlobalMemoryStatusEx( &mem_st );
-		LOGGER_INFO( m_serviceProvider )("Memory: %uK total, %uK free, %uK Page file total, %uK Page file free"
+		LOGGER_INFO("Memory: %uK total, %uK free, %uK Page file total, %uK Page file free"
 			, (uint32_t)(mem_st.ullTotalPhys / 1024UL)
 			, (uint32_t)(mem_st.ullAvailPhys / 1024UL)
 			, (uint32_t)(mem_st.ullTotalPageFile / 1024UL)
 			, (uint32_t)(mem_st.ullAvailPageFile / 1024UL)
 			);
 
-		if( WINDOWSLAYER_SERVICE(m_serviceProvider)->setProcessDPIAware() == false )
+		if( WINDOWSLAYER_SERVICE()->setProcessDPIAware() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Application not setup Process DPI Aware"
+			LOGGER_ERROR("Application not setup Process DPI Aware"
 				);
 		}
 
 		m_hInstance = GetModuleHandle( NULL );
 
-		m_cursors[STRINGIZE_STRING_LOCAL( m_serviceProvider, "IDC_ARROW" )] = LoadCursor( NULL, IDC_ARROW );
-		m_cursors[STRINGIZE_STRING_LOCAL( m_serviceProvider, "IDC_UPARROW" )] = LoadCursor( NULL, IDC_UPARROW );
-		m_cursors[STRINGIZE_STRING_LOCAL( m_serviceProvider, "IDC_HAND" )] = LoadCursor( NULL, IDC_HAND );
-		m_cursors[STRINGIZE_STRING_LOCAL( m_serviceProvider, "IDC_HELP" )] = LoadCursor( NULL, IDC_HELP );
+		m_cursors[STRINGIZE_STRING_LOCAL( "IDC_ARROW" )] = LoadCursor( NULL, IDC_ARROW );
+		m_cursors[STRINGIZE_STRING_LOCAL( "IDC_UPARROW" )] = LoadCursor( NULL, IDC_UPARROW );
+		m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HAND" )] = LoadCursor( NULL, IDC_HAND );
+		m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HELP" )] = LoadCursor( NULL, IDC_HELP );
 
-		m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "PC" ) );
+		m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
 
 #	ifndef _WIN64
-		m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN32" ) );
+		m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
 #	else
-		m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN64" ) );
+		m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
 #	endif
 
 		m_touchpad = false;
 
-		if( HAS_OPTION( m_serviceProvider, "win32" ) )
+		if( HAS_OPTION( "win32" ) )
 		{
 			m_platformTags.clear();
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "PC" ) );
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN32" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
 			
 			m_touchpad = false;
 		}
-		else if( HAS_OPTION( m_serviceProvider, "win64" ) )
+		else if( HAS_OPTION( "win64" ) )
 		{
 			m_platformTags.clear();
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "PC" ) );
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN64" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
 
 			m_touchpad = false;
 		}
-		else if( HAS_OPTION(m_serviceProvider, "ios") )
+		else if( HAS_OPTION("ios") )
 		{ 
 			m_platformTags.clear();
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MOBILE" ) );
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "IOS" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MOBILE" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
 			
 			m_touchpad = true;
 		}
-		else if( HAS_OPTION( m_serviceProvider, "android" ) )
+		else if( HAS_OPTION( "android" ) )
 		{
 			m_platformTags.clear();
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MOBILE" ) );
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ANDROID" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MOBILE" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
 
 			m_touchpad = true;
 		}
-		else if( HAS_OPTION( m_serviceProvider, "wp" ) )
+		else if( HAS_OPTION( "wp" ) )
 		{
 			m_platformTags.clear();
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "MOBILE" ) );
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "WP" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MOBILE" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
 						
 			m_touchpad = true;
 		}
-		else if( HAS_OPTION( m_serviceProvider, "osx" ) )
+		else if( HAS_OPTION( "osx" ) )
 		{
 			m_platformTags.clear();
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, "OSX" ) );
+			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "OSX" ) );
 
 			m_touchpad = false;
 		}
 
-        const char * option_platform = GET_OPTION_VALUE( m_serviceProvider, "platform" );
+        const char * option_platform = GET_OPTION_VALUE( "platform" );
 
         if( option_platform != nullptr )
         {
             m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( m_serviceProvider, option_platform ) );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( option_platform ) );
         }
 
-		if( HAS_OPTION( m_serviceProvider, "touchpad" ) )
+		if( HAS_OPTION( "touchpad" ) )
 		{
 			m_touchpad = true;
 		}
@@ -193,7 +193,7 @@ namespace Menge
 
         if( m_hWnd != NULL )
         {
-            WINDOWSLAYER_SERVICE( m_serviceProvider )
+            WINDOWSLAYER_SERVICE()
                 ->destroyWindow( m_hWnd );
 
             m_hWnd = NULL;
@@ -201,7 +201,7 @@ namespace Menge
 
         if( m_hInstance != NULL )
         {
-            WINDOWSLAYER_SERVICE( m_serviceProvider )
+            WINDOWSLAYER_SERVICE()
                 ->unregisterClass( MENGINE_WINDOW_CLASSNAME, m_hInstance );
 
             m_hInstance = NULL;
@@ -220,10 +220,10 @@ namespace Menge
 	{
 		this->setActive_( true );
 
-		TIMER_SERVICE( m_serviceProvider )
+		TIMER_SERVICE()
 			->resetDeltaTime();
 
-		bool nopause = HAS_OPTION( m_serviceProvider, "nopause" );
+		bool nopause = HAS_OPTION( "nopause" );
 
 #	ifndef _DEBUG
 		try
@@ -231,15 +231,15 @@ namespace Menge
 		{
 			while( m_close == false )
 			{
-				float frameTime = TIMER_SERVICE( m_serviceProvider )
+				float frameTime = TIMER_SERVICE()
 					->getDeltaTime();
 
-				WINDOWSLAYER_SERVICE( m_serviceProvider )
+				WINDOWSLAYER_SERVICE()
 					->updateMessage( NULL );
 
 				m_update = true;
 				
-				bool updating = APPLICATION_SERVICE(m_serviceProvider)
+				bool updating = APPLICATION_SERVICE()
 					->beginUpdate();
 
 				if( updating == true )
@@ -250,7 +250,7 @@ namespace Menge
 						m_pauseUpdatingTime = -1.f;
 					}
 
-					APPLICATION_SERVICE( m_serviceProvider )
+					APPLICATION_SERVICE()
 						->tick( frameTime );
 
 					if( m_fpsMonitor != nullptr )
@@ -267,14 +267,14 @@ namespace Menge
 					::Sleep( 100 );
 				}				
 
-				bool focus = APPLICATION_SERVICE( m_serviceProvider )
+				bool focus = APPLICATION_SERVICE()
 					->isFocus();
 
 				if( focus == true && m_active == true || nopause == true )
 				{
-					if( APPLICATION_SERVICE( m_serviceProvider )->render() == true )
+					if( APPLICATION_SERVICE()->render() == true )
 					{
-						APPLICATION_SERVICE( m_serviceProvider )
+						APPLICATION_SERVICE()
 							->flush();
 					}
 				}
@@ -286,7 +286,7 @@ namespace Menge
 					}
 				}
 
-				APPLICATION_SERVICE( m_serviceProvider )
+				APPLICATION_SERVICE()
 					->endUpdate();
 
 				m_update = false;
@@ -295,7 +295,7 @@ namespace Menge
 #	ifndef _DEBUG
 		catch( const std::exception & ex )
 		{
-			LOGGER_CRITICAL( m_serviceProvider )("Win32Platform std::exception '%s'"
+			LOGGER_CRITICAL("Win32Platform std::exception '%s'"
 				, ex.what()
 				);
 		}
@@ -308,7 +308,7 @@ namespace Menge
 
 		if( m_hWnd != NULL )
 		{
-			WINDOWSLAYER_SERVICE( m_serviceProvider )
+			WINDOWSLAYER_SERVICE()
 				->destroyWindow( m_hWnd );
 
 			m_hWnd = NULL;
@@ -445,12 +445,12 @@ namespace Menge
 			{
 				if( m_update == false )
 				{
-					bool fullscreen = APPLICATION_SERVICE( m_serviceProvider )
+					bool fullscreen = APPLICATION_SERVICE()
 						->getFullscreenMode();
 
 					if( fullscreen == false )
 					{
-						APPLICATION_SERVICE( m_serviceProvider )->paint();
+						APPLICATION_SERVICE()->paint();
 					}
 				}
 			}break;
@@ -480,7 +480,7 @@ namespace Menge
 				}
 				else if( wParam == SIZE_RESTORED /*&& m_application->getFullscreenMode() == true*/ )
 				{
-					bool fullsreenMode = APPLICATION_SERVICE( m_serviceProvider )
+					bool fullsreenMode = APPLICATION_SERVICE()
 						->getFullscreenMode();
 
 					if( fullsreenMode == true )
@@ -512,7 +512,7 @@ namespace Menge
 
 				KeyCode code = (KeyCode)vkc;
 
-				INPUT_SERVICE( m_serviceProvider )
+				INPUT_SERVICE()
 					->pushKeyEvent( point.x, point.y, code, true, false );
 			}break;
 		case WM_SYSKEYUP:
@@ -524,7 +524,7 @@ namespace Menge
 
 				KeyCode code = (KeyCode)vkc;
 
-				INPUT_SERVICE( m_serviceProvider )
+				INPUT_SERVICE()
 					->pushKeyEvent( point.x, point.y, code, false, false );
 			}break;
 		case WM_SYSCOMMAND:
@@ -540,10 +540,10 @@ namespace Menge
 					{
 						if( lParam == 13 )
 						{
-                            bool fullscreen = APPLICATION_SERVICE( m_serviceProvider )
+                            bool fullscreen = APPLICATION_SERVICE()
                                 ->getFullscreenMode();
 
-                            APPLICATION_SERVICE( m_serviceProvider )
+                            APPLICATION_SERVICE()
                                 ->setFullscreenMode( !fullscreen );
 						}
 
@@ -564,7 +564,7 @@ namespace Menge
 			{
 				bool client = LOWORD( lParam ) == HTCLIENT;
 
-				bool focus = APPLICATION_SERVICE( m_serviceProvider )
+				bool focus = APPLICATION_SERVICE()
 					->isFocus();
 
 				if( focus == true && client == true && m_cursorMode == false )
@@ -595,7 +595,7 @@ namespace Menge
 			return input_result;
 		}
 
-		LRESULT result = WINDOWSLAYER_SERVICE(m_serviceProvider)
+		LRESULT result = WINDOWSLAYER_SERVICE()
 			->defWindowProc( hWnd, uMsg, wParam, lParam );
 
 		return result;
@@ -662,7 +662,7 @@ namespace Menge
 					mt::vec2f point;
 					this->calcCursorPosition_( point );
 
-					INPUT_SERVICE( m_serviceProvider )
+					INPUT_SERVICE()
 						->pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
 
 					if( (GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
@@ -690,7 +690,7 @@ namespace Menge
 					InvalidateRect( hWnd, NULL, FALSE );
 					UpdateWindow( hWnd );
 
-					INPUT_SERVICE( m_serviceProvider )
+					INPUT_SERVICE()
 						->pushMouseEnterEvent( 0, point.x, point.y, 0.f );
 				}
 
@@ -700,7 +700,7 @@ namespace Menge
 
 					if( (GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
 					{
-						INPUT_SERVICE( m_serviceProvider )
+						INPUT_SERVICE()
 							->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, false );
 					}
 				}
@@ -753,7 +753,7 @@ namespace Menge
 				//	, int( point.y * 768.f )
 				//	);
 
-				INPUT_SERVICE( m_serviceProvider )
+				INPUT_SERVICE()
 					->pushMouseMoveEvent( 0, point.x, point.y, fdx, fdy, 0.f );
 
 				handle = true;
@@ -768,7 +768,7 @@ namespace Menge
 
 				int wheel = zDelta / WHEEL_DELTA;
 
-				INPUT_SERVICE( m_serviceProvider )
+				INPUT_SERVICE()
 					->pushMouseWheelEvent( point.x, point.y, 0, wheel );
 
 				handle = true;
@@ -788,7 +788,7 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition_( point );
 
-				INPUT_SERVICE( m_serviceProvider )
+				INPUT_SERVICE()
 					->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, true );
 
 				handle = true;
@@ -802,7 +802,7 @@ namespace Menge
 					mt::vec2f point;
 					this->calcCursorPosition_( point );
 
-					INPUT_SERVICE( m_serviceProvider )
+					INPUT_SERVICE()
 						->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, false );
 				}
 
@@ -818,7 +818,7 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition_( point );
 
-				INPUT_SERVICE( m_serviceProvider )
+				INPUT_SERVICE()
 					->pushMouseButtonEvent( 0, point.x, point.y, 1, 0.f, true );
 
 				handle = true;
@@ -831,7 +831,7 @@ namespace Menge
 					mt::vec2f point;
 					this->calcCursorPosition_( point );
 
-					INPUT_SERVICE( m_serviceProvider )
+					INPUT_SERVICE()
 						->pushMouseButtonEvent( 0, point.x, point.y, 1, 0.f, false );
 				}
 
@@ -847,7 +847,7 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition_( point );
 
-				INPUT_SERVICE( m_serviceProvider )
+				INPUT_SERVICE()
 					->pushMouseButtonEvent( 0, point.x, point.y, 2, 0.f, true );
 
 				handle = true;
@@ -858,7 +858,7 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition_( point );
 
-				INPUT_SERVICE( m_serviceProvider )
+				INPUT_SERVICE()
 					->pushMouseButtonEvent( 0, point.x, point.y, 2, 0.f, false );
 
 				handle = true;
@@ -873,7 +873,7 @@ namespace Menge
 
 				KeyCode code = (KeyCode)vkc;
 
-				INPUT_SERVICE( m_serviceProvider )
+				INPUT_SERVICE()
 					->pushKeyEvent( point.x, point.y, code, true, false );
 
 				handle = true;
@@ -888,7 +888,7 @@ namespace Menge
 
 				KeyCode code = (KeyCode)vkc;
 
-				INPUT_SERVICE( m_serviceProvider )
+				INPUT_SERVICE()
 					->pushKeyEvent( point.x, point.y, code, false, false );
 
 				handle = true;
@@ -910,10 +910,10 @@ namespace Menge
 
 					WChar text_code[2];
 					size_t text_code_size;
-                    UNICODE_SYSTEM( m_serviceProvider )
+                    UNICODE_SYSTEM()
 						->utf8ToUnicode( utf8, (size_t)-1, text_code, 2, &text_code_size );
 
-					INPUT_SERVICE( m_serviceProvider )
+					INPUT_SERVICE()
 						->pushTextEvent( point.x, point.y, text_code[0] );
 
 					handle = true;
@@ -927,15 +927,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::createWindow( const Resolution & _resolution, bool _fullscreen )
 	{
-		bool alreadyRunning = CONFIG_VALUE( m_serviceProvider, "Game", "AlreadyRunning", true );
+		bool alreadyRunning = CONFIG_VALUE( "Game", "AlreadyRunning", true );
 
 		if( alreadyRunning == true )
 		{
-			m_alreadyRunningMonitor = new Win32AlreadyRunningMonitor( m_serviceProvider );
+			m_alreadyRunningMonitor = new Win32AlreadyRunningMonitor();
 
 			if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, MENGINE_WINDOW_CLASSNAME, m_projectTitle ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Application invalid running monitor"
+				LOGGER_ERROR("Application invalid running monitor"
 					);
 
 				return false;
@@ -947,7 +947,7 @@ namespace Menge
 		HBRUSH black_brush = (HBRUSH)GetStockObject( BLACK_BRUSH );
 
 		// Register the window class		
-		ATOM result = WINDOWSLAYER_SERVICE( m_serviceProvider )->registerClass(
+		ATOM result = WINDOWSLAYER_SERVICE()->registerClass(
 			s_wndProc,
 			0,
 			0,
@@ -959,7 +959,7 @@ namespace Menge
 
 		if( result == FALSE )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Can't register window class");
+			LOGGER_ERROR("Can't register window class");
 
 			return false;
 		}
@@ -972,7 +972,7 @@ namespace Menge
 		DWORD exStyle = _fullscreen ? WS_EX_TOPMOST : 0;
 		//DWORD exStyle = 0;
 
-		m_hWnd = WINDOWSLAYER_SERVICE( m_serviceProvider )
+		m_hWnd = WINDOWSLAYER_SERVICE()
             ->createWindowEx( exStyle, MENGINE_WINDOW_CLASSNAME, m_projectTitle.c_str(), dwStyle
 			, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
 			, NULL, NULL, m_hInstance, (LPVOID)this );
@@ -986,7 +986,7 @@ namespace Menge
 
 		if( hWndFgnd != m_hWnd )
 		{
-			LOGGER_WARNING( m_serviceProvider )("Setup Foreground Window...");
+			LOGGER_WARNING("Setup Foreground Window...");
 
 			::ShowWindow( m_hWnd, SW_MINIMIZE );
 			::ShowWindow( m_hWnd, SW_RESTORE );
@@ -1013,10 +1013,10 @@ namespace Menge
 
 		m_mouseEvent.initialize( m_hWnd );
 
-		bool vsync = APPLICATION_SERVICE( m_serviceProvider )
+		bool vsync = APPLICATION_SERVICE()
 			->getVSync();
 
-		bool maxfps = HAS_OPTION( m_serviceProvider, "maxfps" );
+		bool maxfps = HAS_OPTION( "maxfps" );
 
 		if( maxfps == false && vsync == false )
 		{
@@ -1037,7 +1037,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32Platform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
 	{
-		LOGGER_WARNING( m_serviceProvider )("WinApplication::notifyWindowModeChanged %d:%d %d"
+		LOGGER_WARNING("WinApplication::notifyWindowModeChanged %d:%d %d"
 			, _resolution.getWidth()
 			, _resolution.getHeight()
 			, _fullscreen
@@ -1049,7 +1049,7 @@ namespace Menge
 
 		RECT rc = this->getWindowsRect_( m_windowResolution, _fullscreen );
 
-		DWORD dwExStyle = WINDOWSLAYER_SERVICE(m_serviceProvider)
+		DWORD dwExStyle = WINDOWSLAYER_SERVICE()
 			->getWindowLong( m_hWnd, GWL_EXSTYLE );
 
 		if( _fullscreen == false )
@@ -1057,10 +1057,10 @@ namespace Menge
 			// When switching back to windowed mode, need to reset window size 
 			// after device has been restored
 
-			WINDOWSLAYER_SERVICE( m_serviceProvider )
+			WINDOWSLAYER_SERVICE()
 				->setWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle & (~WS_EX_TOPMOST) );
 
-			WINDOWSLAYER_SERVICE( m_serviceProvider )
+			WINDOWSLAYER_SERVICE()
 				->setWindowLong( m_hWnd, GWL_STYLE, dwStyle );
 
 			::SetWindowPos(
@@ -1075,10 +1075,10 @@ namespace Menge
 		}
 		else
 		{
-			WINDOWSLAYER_SERVICE( m_serviceProvider )
+			WINDOWSLAYER_SERVICE()
 				->setWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle | WS_EX_TOPMOST );
 
-			WINDOWSLAYER_SERVICE( m_serviceProvider )
+			WINDOWSLAYER_SERVICE()
 				->setWindowLong( m_hWnd, GWL_STYLE, dwStyle );
 
 			::SetWindowPos(
@@ -1141,7 +1141,7 @@ namespace Menge
 		{
 			if( _buffer->empty() == true )
 			{
-				LOGGER_ERROR( m_serviceProvider )("WinApplication::notifyCursorIconSetup %s buffer empty"
+				LOGGER_ERROR("WinApplication::notifyCursorIconSetup %s buffer empty"
 					, _path.c_str()
 					);
 
@@ -1154,14 +1154,14 @@ namespace Menge
             icoFile += _path;
             icoFile += ".ico";
             
-            FilePath c_icoFile = Helper::stringizeFilePath( m_serviceProvider, icoFile );
+            FilePath c_icoFile = Helper::stringizeFilePath( icoFile );
 
-            OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-				->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), c_icoFile );
+            OutputStreamInterfacePtr stream = FILE_SERVICE()
+				->openOutputFile( STRINGIZE_STRING_LOCAL( "user" ), c_icoFile );
 
             if( stream == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Win32Platform::notifyCursorIconSetup name %s path %s can't open output stream '%s'"
+				LOGGER_ERROR("Win32Platform::notifyCursorIconSetup name %s path %s can't open output stream '%s'"
 					, _name.c_str()
 					, _path.c_str()
 					, c_icoFile.c_str()
@@ -1175,7 +1175,7 @@ namespace Menge
 
 			if( stream->write( memory, size ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Win32Platform::notifyCursorIconSetup name %s path %s can't write output stream '%s'"
+				LOGGER_ERROR("Win32Platform::notifyCursorIconSetup name %s path %s can't write output stream '%s'"
 					, _name.c_str()
 					, _path.c_str()
 					, c_icoFile.c_str()
@@ -1188,9 +1188,9 @@ namespace Menge
 			stream = nullptr;
 
 			WString unicode_icoFile;
-			if( Helper::utf8ToUnicode( m_serviceProvider, c_icoFile, unicode_icoFile ) == false )
+			if( Helper::utf8ToUnicode( c_icoFile, unicode_icoFile ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Win32Platform::notifyCursorIconSetup name %s path %s can't file name '%s' to unicode"
+				LOGGER_ERROR("Win32Platform::notifyCursorIconSetup name %s path %s can't file name '%s' to unicode"
 					, _name.c_str()
 					, _path.c_str()
 					, c_icoFile.c_str()
@@ -1207,7 +1207,7 @@ namespace Menge
 
 				if( errCode != 0 )
 				{
-					LOGGER_ERROR( m_serviceProvider )("WinApplication::notifyCursorIconSetup %s for file %ls errCode %d"
+					LOGGER_ERROR("WinApplication::notifyCursorIconSetup %s for file %ls errCode %d"
 						, _name.c_str()
 						, unicode_icoFile.c_str()
 						, errCode
@@ -1398,7 +1398,7 @@ namespace Menge
 				{
 				case ERROR_ALREADY_EXISTS:
 					{
-						LOGGER_WARNING( m_serviceProvider )("Win32Platform::createDirectory %ls alredy exists"
+						LOGGER_WARNING("Win32Platform::createDirectory %ls alredy exists"
 							, path.c_str()
 							);
 
@@ -1406,7 +1406,7 @@ namespace Menge
 					}break;
 				case ERROR_PATH_NOT_FOUND:
 					{
-						LOGGER_WARNING( m_serviceProvider )("Win32Platform::createDirectory %ls not found"
+						LOGGER_WARNING("Win32Platform::createDirectory %ls not found"
 							, path.c_str()
 							);
 
@@ -1414,7 +1414,7 @@ namespace Menge
 					}break;
 				default:
 					{
-						LOGGER_WARNING( m_serviceProvider )("Win32Platform::createDirectory %ls unknown error %d"
+						LOGGER_WARNING("Win32Platform::createDirectory %ls unknown error %d"
 							, path.c_str()
 							, err
 							);
@@ -1444,7 +1444,7 @@ namespace Menge
 		{
 			DWORD err = GetLastError();
 
-			LOGGER_WARNING( m_serviceProvider )("Win32Platform::removeFile '%ls' error '%d'"
+			LOGGER_WARNING("Win32Platform::removeFile '%ls' error '%d'"
 				, fullPath
 				, err
 				);
@@ -1464,7 +1464,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
 	{
-		bool successful = WINDOWSLAYER_SERVICE( m_serviceProvider )
+		bool successful = WINDOWSLAYER_SERVICE()
 			->createDirectoryUserPicture( _path, _file, _data, _size );
 
 		return successful;
@@ -1472,7 +1472,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
 	{
-		bool successful = WINDOWSLAYER_SERVICE( m_serviceProvider )
+		bool successful = WINDOWSLAYER_SERVICE()
 			->createDirectoryUserMusic( _path, _file, _data, _size );
 
 		return successful;
@@ -1518,9 +1518,9 @@ namespace Menge
 	{
 		(void)_len;
 
-		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
-		bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
-		bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );
+		bool developmentMode = HAS_OPTION( "dev" );
+		bool roamingMode = HAS_OPTION( "roaming" );
+		bool noroamingMode = HAS_OPTION( "noroaming" );
 
 		if( developmentMode == true && roamingMode == false || noroamingMode == true )
 		{
@@ -1530,7 +1530,7 @@ namespace Menge
 
 			if( len == 0 )
 			{
-				LOGGER_ERROR( m_serviceProvider )("WinApplication::makeUserPath_: failed to get current directory"
+				LOGGER_ERROR("WinApplication::makeUserPath_: failed to get current directory"
 					);
 
 				return false;
@@ -1559,15 +1559,15 @@ namespace Menge
 			{
 				WString msg;
 
-				if( WINDOWSLAYER_SERVICE( m_serviceProvider )->makeFormatMessage( hr, msg ) == false )
+				if( WINDOWSLAYER_SERVICE()->makeFormatMessage( hr, msg ) == false )
 				{
-					LOGGER_ERROR( m_serviceProvider )("SHGetSpecialFolderLocation invalid %d"
+					LOGGER_ERROR("SHGetSpecialFolderLocation invalid %d"
 						, hr
 						);
 				}
 				else
 				{
-					LOGGER_ERROR( m_serviceProvider )("SHGetSpecialFolderLocation invalid %ls '%d'"
+					LOGGER_ERROR("SHGetSpecialFolderLocation invalid %ls '%d'"
 						, msg.c_str()
 						, hr
 						);
@@ -1581,7 +1581,7 @@ namespace Menge
 
 			if( result == FALSE )
 			{
-				LOGGER_ERROR( m_serviceProvider )("SHGetPathFromIDListW invalid"
+				LOGGER_ERROR("SHGetPathFromIDListW invalid"
 					);
 
 				return false;
@@ -1590,10 +1590,10 @@ namespace Menge
 			CoTaskMemFree( itemIDList );
 
 			wcscat( currentPath, L"\\" );
-			WString wcompany = CONFIG_VALUE( m_serviceProvider, "Project", "Company", L"NONAME" );
+			WString wcompany = CONFIG_VALUE( "Project", "Company", L"NONAME" );
 			wcscat( currentPath, wcompany.c_str() );
 			wcscat( currentPath, L"\\" );
-			WString wname = CONFIG_VALUE( m_serviceProvider, "Project", "Name", L"UNKNOWN" );
+			WString wname = CONFIG_VALUE( "Project", "Name", L"UNKNOWN" );
 			wcscat( currentPath, wname.c_str() );
 			wcscat( currentPath, L"\\" );
 
@@ -1671,7 +1671,7 @@ namespace Menge
 		//	&process_info        // process info structure
 		//	);
 
-		//LOGGER_WARNING( m_serviceProvider )("WinApplication::openUrlInDefaultBrowser %ls %d"
+		//LOGGER_WARNING("WinApplication::openUrlInDefaultBrowser %ls %d"
 		//	, _url.c_str()
 		//	, result
 		//	);
@@ -1713,44 +1713,44 @@ namespace Menge
 		mt::vec2f point;
 		if( this->calcCursorPosition_( point ) == true )
 		{
-			INPUT_SERVICE( m_serviceProvider )
+			INPUT_SERVICE()
 				->pushMousePositionEvent( 0, point.x, point.y, 0.f );
 		}
 
 		if( m_active == false )
 		{
-			INPUT_SERVICE( m_serviceProvider )
+			INPUT_SERVICE()
 				->pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
 		}
 		else
 		{
-			INPUT_SERVICE( m_serviceProvider )
+			INPUT_SERVICE()
 				->pushMouseEnterEvent( 0, point.x, point.y, 0.f );
 		}
 
-		bool nopause = HAS_OPTION( m_serviceProvider, "nopause" );
+		bool nopause = HAS_OPTION( "nopause" );
 
 		if( nopause == false )
 		{
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->setFocus( m_active );
 
-			INPUT_SERVICE( m_serviceProvider )
+			INPUT_SERVICE()
 				->onFocus( m_active );
 
 			bool turnSound = m_active;
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->turnSound( turnSound );
 		}
 		else
 		{
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->setFocus( true );
 
-			INPUT_SERVICE( m_serviceProvider )
+			INPUT_SERVICE()
 				->onFocus( true );
 
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->turnSound( true );
 		}
 

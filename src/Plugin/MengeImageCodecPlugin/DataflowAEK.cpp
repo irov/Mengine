@@ -28,15 +28,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DataflowAEK::initialize()
 	{
-		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
+		m_archivator = ARCHIVE_SERVICE()
+			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
 
 		if( m_archivator == nullptr )
 		{
 			return false;
 		}
 
-        m_poolMovieFramePack = new FactoryPool<MovieFramePack, 32>( m_serviceProvider );
+        m_poolMovieFramePack = new FactoryPool<MovieFramePack, 32>();
 
 		return true;
 	}
@@ -56,9 +56,9 @@ namespace Menge
 	bool DataflowAEK::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
 	{
 		MemoryInterfacePtr binaryBuffer;
-		if( Helper::loadStreamArchiveData( m_serviceProvider, _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), binaryBuffer, __FILE__, __LINE__ ) == false )
+		if( Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), binaryBuffer, __FILE__, __LINE__ ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: invalid get data"
+			LOGGER_ERROR("DataflowAEK::load: invalid get data"
 				);
 
 			return false;
@@ -71,7 +71,7 @@ namespace Menge
 		
 		if( this->loadBuffer_( pack, binaryBuffer_memory, binaryBuffer_size ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("DataflowAEK::load: invalid load buffer"
+			LOGGER_ERROR("DataflowAEK::load: invalid load buffer"
 				);
 
 			return false;
@@ -94,7 +94,7 @@ namespace Menge
 
 			if( true_metacode_version != metacode_version )
 			{
-				LOGGER_ERROR( m_serviceProvider )("DataflowAEK::loadBuffer_: invalid metacode version %d (need %d)"
+				LOGGER_ERROR("DataflowAEK::loadBuffer_: invalid metacode version %d (need %d)"
 					, metacode_version
 					, true_metacode_version
 					);
@@ -107,7 +107,7 @@ namespace Menge
 
 			if( format_version != MOVIE_KEY_FRAME_FORMAT_VERSION )
 			{
-				LOGGER_ERROR( m_serviceProvider )("DataflowAEK::loadBuffer_: invalid format version %d (need %d)"
+				LOGGER_ERROR("DataflowAEK::loadBuffer_: invalid format version %d (need %d)"
 					, format_version
 					, MOVIE_KEY_FRAME_FORMAT_VERSION
 					);

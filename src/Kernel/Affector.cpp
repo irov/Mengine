@@ -4,8 +4,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Affector::Affector()
-		: m_serviceProvider(nullptr)
-		, m_type(ETA_POSITION)
+		: m_type(ETA_POSITION)
 		, m_id(0)
 		, m_speedFactor(1.f)
 		, m_freeze(false)
@@ -14,16 +13,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Affector::~Affector()
 	{
-	}
-    //////////////////////////////////////////////////////////////////////////
-    void Affector::setServiceProvider( ServiceProviderInterface * _serviceProvider )		
-    {
-        m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * Affector::getServiceProvider() const
-	{
-		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Affector::setAffectorType( EAffectorType _type )

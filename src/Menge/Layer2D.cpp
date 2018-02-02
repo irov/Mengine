@@ -91,12 +91,12 @@ namespace	Menge
     {
 		if( m_renderCamera == nullptr )
 		{
-			m_renderCamera = NODE_SERVICE( m_serviceProvider )
-				->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( m_serviceProvider, RenderCameraOrthogonal ) );
+			m_renderCamera = NODE_SERVICE() 
+				->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( RenderCameraOrthogonal ) );
 
 			if( m_renderCamera == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Layer2D::createRenderViewport_ %s invalid create Camera2D"
+				LOGGER_ERROR("Layer2D::createRenderViewport_ %s invalid create Camera2D"
 					, this->getName().c_str()
 					);
 
@@ -108,12 +108,12 @@ namespace	Menge
 
 		if( m_renderViewport == nullptr )
 		{
-			m_renderViewport = NODE_SERVICE( m_serviceProvider )
-				->createNodeT<RenderViewport *>( CONST_STRING( m_serviceProvider, RenderViewport ) );
+			m_renderViewport = NODE_SERVICE() 
+				->createNodeT<RenderViewport *>( CONST_STRING( RenderViewport ) );
 
 			if( m_renderViewport == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Layer2D::createRenderViewport_ %s invalid create RenderViewport"
+				LOGGER_ERROR("Layer2D::createRenderViewport_ %s invalid create RenderViewport"
 					, this->getName().c_str()
 					);
 
@@ -189,15 +189,15 @@ namespace	Menge
             return;
         }
 
-        RenderTargetInterfacePtr renderTarget = RENDER_SYSTEM( m_serviceProvider )
+        RenderTargetInterfacePtr renderTarget = RENDER_SYSTEM()
             ->createRenderTargetTexture( (uint32_t)m_size.x, (uint32_t)m_size.y, PF_A8R8G8B8 );
 
         Node::setRenderTarget( renderTarget );
 
-        RenderImageInterfacePtr renderTargetImage = RENDER_SYSTEM( m_serviceProvider )
+        RenderImageInterfacePtr renderTargetImage = RENDER_SYSTEM()
             ->createRenderTargetImage( renderTarget );
         
-        RenderTextureInterfacePtr renderTargetTexture = RENDERTEXTURE_SERVICE( m_serviceProvider )
+        RenderTextureInterfacePtr renderTargetTexture = RENDERTEXTURE_SERVICE()
             ->createRenderTexture( renderTargetImage, (uint32_t)m_size.x, (uint32_t)m_size.y );
 
         if( m_resourceImageMask.compile() == false )
@@ -211,8 +211,8 @@ namespace	Menge
         texures[0] = renderTargetTexture;
         texures[1] = renderTargetTextureMask;
 
-        RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( m_serviceProvider )
-            ->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "TrackMatte_Blend" ), PT_TRIANGLELIST, 2, texures );
+        RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
+            ->getMaterial( STRINGIZE_STRING_LOCAL( "TrackMatte_Blend" ), PT_TRIANGLELIST, 2, texures );
         
         m_materialImageMask = material;
                 

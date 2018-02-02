@@ -611,10 +611,8 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-	void PythonScriptWrapper::mathWrap( ServiceProviderInterface * _serviceProvider )
+	void PythonScriptWrapper::mathWrap()
 	{
-        (void)_serviceProvider;
-
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 
 		pybind::registration_stl_vector_type_cast<Polygon, stdex::vector<Polygon> >(kernel);

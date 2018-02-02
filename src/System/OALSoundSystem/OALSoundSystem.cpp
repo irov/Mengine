@@ -30,28 +30,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundSystem::_initialize()
 	{
-		LOGGER_INFO(m_serviceProvider)( "Starting OpenAL Sound System..." );
+		LOGGER_INFO( "Starting OpenAL Sound System..." );
 
         m_device = alcOpenDevice( nullptr );
 			
 		if( m_device == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "OALSoundSystem.initialize: Failed to open 'generic software' sound device try default..." );
+			LOGGER_ERROR( "OALSoundSystem.initialize: Failed to open 'generic software' sound device try default..." );
 
             m_device = alcOpenDevice( "Generic Software" );
 
-            OAL_CHECK_ERROR(m_serviceProvider);
+            OAL_CHECK_ERROR();
 
 			if( m_device == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "OALSoundSystem.initialize: Failed to open default sound device try hardware" );
+				LOGGER_ERROR( "OALSoundSystem.initialize: Failed to open default sound device try hardware" );
 
 	    		m_device = alcOpenDevice( "Generic Hardware" );
-                OAL_CHECK_ERROR(m_serviceProvider);
+                OAL_CHECK_ERROR();
 
     			if( m_device == nullptr )
 	    		{
-		    		LOGGER_ERROR(m_serviceProvider)( "OALSoundSystem.initialize: Failed to open hardware sound device.." );
+		    		LOGGER_ERROR( "OALSoundSystem.initialize: Failed to open hardware sound device.." );
 
 				    return false;
 			    }			
@@ -62,10 +62,10 @@ namespace Menge
 
 		if( m_context == nullptr )
 		{
-            LOGGER_ERROR(m_serviceProvider)( "OALSoundSystem: Failed to create context" );
+            LOGGER_ERROR( "OALSoundSystem: Failed to create context" );
 
 			alcCloseDevice( m_device );
-            OAL_CHECK_ERROR(m_serviceProvider);
+            OAL_CHECK_ERROR();
 
 			m_device = nullptr;
 
@@ -73,18 +73,18 @@ namespace Menge
 		}
 
         ALCboolean currentResult = alcMakeContextCurrent( m_context );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        OAL_CHECK_ERROR();
 
 		if( currentResult == ALC_FALSE )
         {
-            LOGGER_ERROR(m_serviceProvider)( "OALSoundSystem: Failed to make context current" );
+            LOGGER_ERROR( "OALSoundSystem: Failed to make context current" );
 
             alcDestroyContext( m_context );
-            OAL_CHECK_ERROR(m_serviceProvider);
+            OAL_CHECK_ERROR();
             m_context = nullptr;
 
             alcCloseDevice( m_device );
-            OAL_CHECK_ERROR(m_serviceProvider);
+            OAL_CHECK_ERROR();
             m_device = nullptr;
 
             return false;
@@ -97,55 +97,55 @@ namespace Menge
 		ALCint minorVersion;
 		alcGetIntegerv( m_device, ALC_MINOR_VERSION, 1, &minorVersion );
 
-		LOGGER_WARNING( m_serviceProvider )("OpenAL version %d.%d"
+		LOGGER_WARNING("OpenAL version %d.%d"
 			, majorVersion
 			, minorVersion
 			);
 
 		const ALCchar* defaultDeviceSprcifier = alcGetString( m_device, ALC_DEVICE_SPECIFIER );
 
-		LOGGER_WARNING( m_serviceProvider )("OpenAL default device specifier [%s]"
+		LOGGER_WARNING("OpenAL default device specifier [%s]"
 			, defaultDeviceSprcifier
 			);
 
 		const ALCchar* captureDeviceSpecifier = alcGetString( m_device, ALC_CAPTURE_DEVICE_SPECIFIER );
 
-		LOGGER_WARNING( m_serviceProvider )("OpenAL capture device specifier [%s]"
+		LOGGER_WARNING("OpenAL capture device specifier [%s]"
 			, captureDeviceSpecifier
 			);
 
-		LOGGER_WARNING(m_serviceProvider)( "OpenAL driver properties" );
+		LOGGER_WARNING( "OpenAL driver properties" );
 
-		LOGGER_WARNING(m_serviceProvider)( "Version: %s"
+		LOGGER_WARNING( "Version: %s"
 			, alGetString( AL_VERSION ) 
 			);
 
-		LOGGER_WARNING(m_serviceProvider)( "Vendor: %s"
+		LOGGER_WARNING( "Vendor: %s"
 			, alGetString( AL_VENDOR ) 
 			);
 
-		LOGGER_WARNING(m_serviceProvider)( "Renderer: %s"
+		LOGGER_WARNING( "Renderer: %s"
 			, alGetString( AL_RENDERER ) 
 			);
 	
 		float lposition[] = { 0.0f, 0.0f, 0.0f };
 		alListenerfv( AL_POSITION, lposition );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        OAL_CHECK_ERROR();
 
         float lvelocity[] = { 0.0f, 0.0f, 0.0f };
 		alListenerfv( AL_VELOCITY, lvelocity );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        OAL_CHECK_ERROR();
 
         float lorient[] = { 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f };
 		alListenerfv( AL_ORIENTATION, lorient );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        OAL_CHECK_ERROR();
 
-		m_threadAvaliable = THREAD_SYSTEM(m_serviceProvider)
+		m_threadAvaliable = THREAD_SYSTEM()
 			->avaliable();
 
-        m_poolOALSoundBuffer = new FactoryPool<OALSoundBufferMemory, 32>( m_serviceProvider );
-        m_poolOALSoundBufferStream = new FactoryPool<OALSoundBufferStream, 32>( m_serviceProvider );
-        m_poolOALSoundSource = new FactoryPool<OALSoundSource, 32>( m_serviceProvider );
+        m_poolOALSoundBuffer = new FactoryPool<OALSoundBufferMemory, 32>();
+        m_poolOALSoundBufferStream = new FactoryPool<OALSoundBufferStream, 32>();
+        m_poolOALSoundSource = new FactoryPool<OALSoundSource, 32>();
 
 		return true;
 	}
@@ -187,18 +187,18 @@ namespace Menge
         //if( _turn == false )
         //{
         //    alcMakeContextCurrent( NULL );
-        //    //OAL_CHECK_ERROR(m_serviceProvider);
+        //    //OAL_CHECK_ERROR();
 
         //    alcSuspendContext( m_context );
-        //    //OAL_CHECK_ERROR(m_serviceProvider);
+        //    //OAL_CHECK_ERROR();
         //}
         //else
         //{
         //    alcMakeContextCurrent( m_context );
-        //    //OAL_CHECK_ERROR(m_serviceProvider);
+        //    //OAL_CHECK_ERROR();
 
         //    alcProcessContext( m_context );
-        //    //OAL_CHECK_ERROR(m_serviceProvider);
+        //    //OAL_CHECK_ERROR();
         //}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -207,7 +207,7 @@ namespace Menge
 		//OALSoundSource* soundSource = m_soundSources.get();
 		OALSoundSource * soundSource = m_poolOALSoundSource->createObject();
 
-        soundSource->initialize( m_serviceProvider, this );
+        soundSource->initialize( this );
         		
 		soundSource->setHeadMode( _isHeadMode );
 		soundSource->setSoundBuffer( _buffer );
@@ -223,7 +223,6 @@ namespace Menge
         {
             OALSoundBufferMemory * buffer = m_poolOALSoundBuffer->createObject();
             
-            buffer->setServiceProvider( m_serviceProvider );
             buffer->initialize( this );
 
             base = buffer;
@@ -232,7 +231,6 @@ namespace Menge
         {
             OALSoundBufferStream * buffer = m_poolOALSoundBufferStream->createObject();
 
-            buffer->setServiceProvider( m_serviceProvider );
             buffer->initialize( this );
 
             base = buffer;
@@ -240,7 +238,7 @@ namespace Menge
 
 		if( base->load( _soundDecoder ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "OALSoundSystem: Failed to create sound buffer from stream" 
+			LOGGER_ERROR( "OALSoundSystem: Failed to create sound buffer from stream" 
 				);
 
             return nullptr;
@@ -253,7 +251,7 @@ namespace Menge
 	{
 		ALuint sourceId = 0;
 		alGenSources( 1, &sourceId );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        OAL_CHECK_ERROR();
 
 		return sourceId;
 	}
@@ -261,14 +259,14 @@ namespace Menge
 	void OALSoundSystem::releaseSourceId( ALuint _sourceId )
 	{
 		alDeleteSources( 1, &_sourceId );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        OAL_CHECK_ERROR();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ALuint OALSoundSystem::genBufferId()
 	{
 		ALuint bufferId = 0;
 		alGenBuffers( 1, &bufferId );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        OAL_CHECK_ERROR();
 
 		return bufferId;
 	}
@@ -276,6 +274,6 @@ namespace Menge
 	void OALSoundSystem::releaseBufferId( ALuint _bufferId )
 	{
 		alDeleteBuffers( 1, &_bufferId );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        OAL_CHECK_ERROR();
 	}
 }	// namespace Menge

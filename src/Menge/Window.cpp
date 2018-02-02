@@ -64,7 +64,7 @@ namespace Menge
 
 		if( m_resourceWindow == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Window::_compile '%s' resource is null" 
+			LOGGER_ERROR("Window::_compile '%s' resource is null" 
 				, this->getName().c_str()
 				);
 
@@ -73,7 +73,7 @@ namespace Menge
 
         if( m_resourceWindow.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Window::_compile '%s' resource '%s' invalid compile" 
+            LOGGER_ERROR("Window::_compile '%s' resource '%s' invalid compile" 
                 , this->getName().c_str()
                 , m_resourceWindow->getName().c_str()
                 );
@@ -159,10 +159,10 @@ namespace Menge
 				textureCount = 0;
 			}
 
-			const ConstString & materialName = RENDERMATERIAL_SERVICE( m_serviceProvider )
+			const ConstString & materialName = RENDERMATERIAL_SERVICE()
 				->getMaterialName( materialId );
 
-			edge.material = RENDERMATERIAL_SERVICE(m_serviceProvider)
+			edge.material = RENDERMATERIAL_SERVICE()
 				->getMaterial( materialName, PT_TRIANGLELIST, textureCount, textures );
 		}
 
@@ -471,7 +471,7 @@ namespace Menge
 	{
 		if( this->hasBackground() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Window::setClientSizeClip: '%s' background not exist"
+			LOGGER_ERROR("Window::setClientSizeClip: '%s' background not exist"
                 , this->getName().c_str()
                 );
 
@@ -511,7 +511,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Window::getWindowSize: '%s' not compiled"
+			LOGGER_ERROR("Window::getWindowSize: '%s' not compiled"
                 , this->getName().c_str()
                 );
 			
@@ -529,7 +529,7 @@ namespace Menge
 	{
 		if( _tile < 0 || _tile > ResourceWindow_Count )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Window::getTileSize: %s invalid tile argument '%d'"
+			LOGGER_ERROR("Window::getTileSize: %s invalid tile argument '%d'"
                 , this->getName().c_str()
 				, _tile 
 				);
@@ -546,7 +546,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Window::setClientSizeInTiles: '%s' not compiled."
+			LOGGER_ERROR("Window::setClientSizeInTiles: '%s' not compiled."
                 , this->getName().c_str()
                 );
 
@@ -555,7 +555,7 @@ namespace Menge
 
 		if( this->hasBackground() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Window::setClientSizeInTiles: '%s' background not exist"
+			LOGGER_ERROR("Window::setClientSizeInTiles: '%s' background not exist"
                 , this->getName().c_str()
                 );
 

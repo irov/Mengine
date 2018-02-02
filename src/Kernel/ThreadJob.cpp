@@ -32,7 +32,7 @@ namespace Menge
 		{
 			ThreadJobWorkerDesc & desc = m_workers[i];
 			
-            ThreadMutexInterfacePtr mutex = THREAD_SERVICE( m_serviceProvider )
+            ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
                 ->createMutex( __FILE__, __LINE__ );
 
 			desc.mutex = mutex;
@@ -91,7 +91,7 @@ namespace Menge
 			return new_id;
 		}
 
-		LOGGER_ERROR(m_serviceProvider)("ThreadJob::addWorker overworkers more %d"
+		LOGGER_ERROR("ThreadJob::addWorker overworkers more %d"
 			, MENGINE_THREAD_JOB_WORK_COUNT
 			);
 
@@ -183,7 +183,7 @@ namespace Menge
 				s_thread_mainWorker( desc );
 			}
 
-			THREAD_SERVICE(m_serviceProvider)
+			THREAD_SERVICE()
 				->sleep( m_sleep );
 		}
 

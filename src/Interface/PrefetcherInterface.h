@@ -55,7 +55,7 @@ namespace Menge
 		virtual PrefetcherDebugInfo getDebugInfo() const = 0;
 	};
 
-#   define PREFETCHER_SERVICE( serviceProvider )\
-	((Menge::PrefetcherServiceInterface*)SERVICE_GET(serviceProvider, Menge::PrefetcherServiceInterface))
+#   define PREFETCHER_SERVICE()\
+	((Menge::PrefetcherServiceInterface*)SERVICE_GET(Menge::PrefetcherServiceInterface))
 }
 

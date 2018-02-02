@@ -19,7 +19,7 @@ namespace Menge
 		~BounceWorld();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider );
+		bool initialize();
 		void finalize();
 
 	public:
@@ -33,9 +33,7 @@ namespace Menge
 		void remove();
 		bool isRemoved() const;
 
-	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
+	protected:		
 		FactoryPtr m_factoryBounceActors;
 
 		typedef stdex::vector<BounceActorPtr> TVectorBounceActors;

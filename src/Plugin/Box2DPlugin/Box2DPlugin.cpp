@@ -22,7 +22,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Box2DPlugin::_initialize()
 	{		
-		this->addModuleFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBox2D" )
+		this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleBox2D" )
 			, new ModuleFactory<Box2DModule>() );
 
 		return true;

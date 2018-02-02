@@ -7,9 +7,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ScriptLogger::ScriptLogger( ServiceProviderInterface * _serviceProvider )
-		: m_serviceProvider(_serviceProvider)
-		, m_level( LM_INFO )
+	ScriptLogger::ScriptLogger()
+		: m_level( LM_INFO )
 		, m_softspace(0)
 	{
 	}
@@ -56,7 +55,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::write( const char * _msg, size_t _size )
 	{		
-		LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE( m_serviceProvider ), m_level ).logMessage( _msg, _size );
+		LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), m_level ).logMessage( _msg, _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::setMessageLevel( EMessageLevel _level )

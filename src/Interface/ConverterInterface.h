@@ -72,6 +72,6 @@ namespace Menge
         virtual bool convert( const ConstString & _converter, const ConstString & _category, const FilePath & _in, FilePath & _out ) = 0;
 	};
 
-#   define CONVERTER_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::ConverterServiceInterface)
+#   define CONVERTER_SERVICE()\
+    SERVICE_GET(Menge::ConverterServiceInterface)
 }	// namespace Menge

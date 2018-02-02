@@ -36,9 +36,9 @@ namespace Menge
 	bool ImageConverterPNGToACF::convert()
 	{
         FileGroupInterfacePtr fileGroup;
-        if( FILE_SERVICE(m_serviceProvider)->hasFileGroup( m_options.pakName, &fileGroup ) == false )
+        if( FILE_SERVICE()->hasFileGroup( m_options.pakName, &fileGroup ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ImageConverterPNGToACF::convert_: not found file group '%s'"
+            LOGGER_ERROR("ImageConverterPNGToACF::convert_: not found file group '%s'"
                 , m_options.pakName.c_str()
                 );
 
@@ -47,27 +47,27 @@ namespace Menge
 
         const FilePath & pakPath = fileGroup->getFolderPath();
 
-		FilePath full_input = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
-		FilePath full_output = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
+		FilePath full_input = Helper::concatenationFilePath( pakPath, m_options.inputFileName );
+		FilePath full_output = Helper::concatenationFilePath( pakPath, m_options.outputFileName );
 		        
-        InputStreamInterfacePtr stream_intput = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false );
+        InputStreamInterfacePtr stream_intput = FILE_SERVICE()
+            ->openInputFile( STRINGIZE_STRING_LOCAL( "dev" ), full_input, false );
 
 		if( stream_intput == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPNGToACF::convert: %s invalid open input file"
+			LOGGER_ERROR("ImageConverterPNGToACF::convert: %s invalid open input file"
 				, m_options.inputFileName.c_str()
 				);
 
 			return false;
 		}
 
-		ImageDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-			->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage") );
+		ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
+			->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage") );
 
 		if( decoder == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPNGToACF::convert: %s invalid create decoder"
+			LOGGER_ERROR("ImageConverterPNGToACF::convert: %s invalid create decoder"
 				, m_options.inputFileName.c_str()
 				);
 
@@ -76,7 +76,7 @@ namespace Menge
 		
 		if( decoder->prepareData( stream_intput ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPNGToACF::convert: %s invalid prepare decoder"
+			LOGGER_ERROR("ImageConverterPNGToACF::convert: %s invalid prepare decoder"
 				, m_options.inputFileName.c_str()
 				);
 
@@ -91,7 +91,7 @@ namespace Menge
 
 		if( decoder->setOptions( &decoder_options ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPNGToACF::convert: %s invalid optionize decoder"
+			LOGGER_ERROR("ImageConverterPNGToACF::convert: %s invalid optionize decoder"
 				, m_options.inputFileName.c_str()
 				);
 
@@ -100,7 +100,7 @@ namespace Menge
 		
 		size_t data_size = dataInfo->getSize();
 
-		MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, data_size, __FILE__, __LINE__ );
+		MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_size, __FILE__, __LINE__ );
 
 		if( data_buffer == nullptr )
 		{
@@ -111,19 +111,19 @@ namespace Menge
 
 		if( decoder->decode( data_memory, data_size ) == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPNGToACF::convert: %s invalid decode"
+			LOGGER_ERROR("ImageConverterPNGToACF::convert: %s invalid decode"
 				, m_options.inputFileName.c_str()
 				);
 
 			return false;
 		}
 
-        OutputStreamInterfacePtr stream_output = FILE_SERVICE(m_serviceProvider)
-            ->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
+        OutputStreamInterfacePtr stream_output = FILE_SERVICE()
+            ->openOutputFile( STRINGIZE_STRING_LOCAL( "dev" ), full_output );
 
 		if( stream_output == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPNGToACF::convert: %s invalid open output %s"
+			LOGGER_ERROR("ImageConverterPNGToACF::convert: %s invalid open output %s"
 				, m_options.inputFileName.c_str()
 				, full_output.c_str()
 				);
@@ -131,12 +131,12 @@ namespace Menge
 			return false;
 		}
 
-		ImageEncoderInterfacePtr encoder = CODEC_SERVICE(m_serviceProvider)
-			->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "acfImage") );
+		ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
+			->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "acfImage") );
 
 		if( encoder == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPNGToACF::convert: %s invalid create encoder"
+			LOGGER_ERROR("ImageConverterPNGToACF::convert: %s invalid create encoder"
 				, m_options.inputFileName.c_str()
 				);
 
@@ -145,7 +145,7 @@ namespace Menge
 
 		if( encoder->initialize( stream_output ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPNGToACF::convert: %s invalid initialize encoder"
+			LOGGER_ERROR("ImageConverterPNGToACF::convert: %s invalid initialize encoder"
 				, m_options.inputFileName.c_str()
 				);
 
@@ -158,7 +158,7 @@ namespace Menge
 
 		if( encoder->setOptions( &encoder_options ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPNGToACF::convert: %s invalid optionize encoder"
+			LOGGER_ERROR("ImageConverterPNGToACF::convert: %s invalid optionize encoder"
 				, m_options.inputFileName.c_str()
 				);
 
@@ -177,7 +177,7 @@ namespace Menge
 
 		if( encode_byte == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPNGToACF::convert: %s invalid encode"
+			LOGGER_ERROR("ImageConverterPNGToACF::convert: %s invalid encode"
 				, m_options.inputFileName.c_str()
 				);
 

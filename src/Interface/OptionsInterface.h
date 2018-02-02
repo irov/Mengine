@@ -21,13 +21,13 @@ namespace Menge
 		virtual const Char * getOptionValue( const Char * _key ) const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-#   define OPTIONS_SERVICE( serviceProvider )\
-    ((Menge::OptionsServiceInterface *)SERVICE_GET(serviceProvider, Menge::OptionsServiceInterface))
+#   define OPTIONS_SERVICE()\
+    ((Menge::OptionsServiceInterface *)SERVICE_GET(Menge::OptionsServiceInterface))
 	//////////////////////////////////////////////////////////////////////////
-#	define HAS_OPTION( serviceProvider, key )\
-	OPTIONS_SERVICE( serviceProvider )->hasOption( key )
+#	define HAS_OPTION( key )\
+	OPTIONS_SERVICE()->hasOption( key )
 	//////////////////////////////////////////////////////////////////////////
-#	define GET_OPTION_VALUE( serviceProvider, key )\
-	OPTIONS_SERVICE( serviceProvider )->getOptionValue( key )
+#	define GET_OPTION_VALUE( key )\
+	OPTIONS_SERVICE()->getOptionValue( key )
 }
 

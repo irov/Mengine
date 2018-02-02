@@ -68,14 +68,14 @@ namespace Menge
 
 		if( this->loadHeader_() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileSystemZip::initialize can't load header %s"
+			LOGGER_ERROR("FileSystemZip::initialize can't load header %s"
 				, m_path.c_str()
 				);
 
 			return false;
 		}
 
-        ThreadMutexInterfacePtr mutex = THREAD_SERVICE( m_serviceProvider )
+        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( __FILE__, __LINE__ );
 
         if( mutex == nullptr )
@@ -91,10 +91,10 @@ namespace Menge
 	bool FileGroupZip::loadHeader_()
 	{
 		FileGroupInterfacePtr zipFileGroup;
-		if( FILE_SERVICE(m_serviceProvider)
+		if( FILE_SERVICE()
 			->hasFileGroup( m_category, &zipFileGroup ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileSystemZip::loadHeader_ can't open file group for path %s"
+			LOGGER_ERROR("FileSystemZip::loadHeader_ can't open file group for path %s"
 				, m_path.c_str()
 				);
 
@@ -103,12 +103,12 @@ namespace Menge
 
 		m_zipFileGroup = zipFileGroup;
 		
-		InputStreamInterfacePtr zipFile = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr zipFile = FILE_SERVICE()
 			->openInputFile( m_category, m_path, false );
 
 		if( zipFile == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileSystemZip::loadHeader_ can't open input stream for path %s"
+			LOGGER_ERROR("FileSystemZip::loadHeader_ can't open input stream for path %s"
 				, m_path.c_str()
 				);
 
@@ -124,7 +124,7 @@ namespace Menge
 
 		if( zipFile->read( endof_central_dir, 22 ) != 22 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileSystemZip::loadHeader_ invalid zip format %s"
+			LOGGER_ERROR("FileSystemZip::loadHeader_ invalid zip format %s"
 				, m_path.c_str()
 				);
 
@@ -135,7 +135,7 @@ namespace Menge
 
 		if( eocd != 0x06054B50 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileSystemZip::loadHeader_ bad 'End of Central Dir' signature zip %s"
+			LOGGER_ERROR("FileSystemZip::loadHeader_ bad 'End of Central Dir' signature zip %s"
 				, m_path.c_str()
 				);
 
@@ -194,11 +194,11 @@ namespace Menge
 				continue;
 			}
 
-			FilePath fileName = Helper::stringizeFilePath(m_serviceProvider, fileNameBuffer, header.fileNameLen);
+			FilePath fileName = Helper::stringizeFilePath(fileNameBuffer, header.fileNameLen);
 			
 			if( header.compressionMethod != Z_NO_COMPRESSION && header.compressionMethod != Z_DEFLATED )
 			{
-				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s invalid compress method %d"
+				LOGGER_ERROR("FileGroupZip::createInputFile: pak %s file %s invalid compress method %d"
 					, m_path.c_str()
 					, fileName.c_str()
 					, header.compressionMethod
@@ -341,7 +341,7 @@ namespace Menge
 			return stream;
 		}
 		
-		MemoryInputInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
+		MemoryInputInterfacePtr memory = MEMORY_SERVICE()
 			->createMemoryInput();
 				
 		return memory;
@@ -351,7 +351,7 @@ namespace Menge
 	{
 		if( _stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openInputFile: pak %s file %s stream is NULL"
+			LOGGER_ERROR("FileGroupZip::openInputFile: pak %s file %s stream is NULL"
 				, m_path.c_str()
 				, _fileName.c_str()
 				);
@@ -363,7 +363,7 @@ namespace Menge
 
 		if( it_found == m_files.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openInputFile: pak %s file %s not found"
+			LOGGER_ERROR("FileGroupZip::openInputFile: pak %s file %s not found"
 				, m_path.c_str()
 				, _fileName.c_str()
 				);
@@ -378,7 +378,7 @@ namespace Menge
 	
 		if( _offset + file_size > fi.file_size )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openInputFile: pak %s file %s invalid open range %d:%d (file size is low %d:%d)"
+			LOGGER_ERROR("FileGroupZip::openInputFile: pak %s file %s invalid open range %d:%d (file size is low %d:%d)"
 				, m_path.c_str()
 				, _fileName.c_str()
 				, _offset
@@ -394,7 +394,7 @@ namespace Menge
 		{
 			if( fi.compr_method != Z_NO_COMPRESSION )
 			{
-				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openInputFile: pak %s file %s invalid open, not support compress + stream"
+				LOGGER_ERROR("FileGroupZip::openInputFile: pak %s file %s invalid open, not support compress + stream"
 					, m_path.c_str()
 					, _fileName.c_str()
 					);
@@ -404,7 +404,7 @@ namespace Menge
 
 			if( m_zipFileGroup->openInputFile( m_path, _stream, file_offset, file_size, true ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openInputFile: pak %s file %s invalid open range %d:%d"
+				LOGGER_ERROR("FileGroupZip::openInputFile: pak %s file %s invalid open range %d:%d"
 					, m_path.c_str()
 					, _fileName.c_str()
 					, fi.seek_pos
@@ -425,7 +425,7 @@ namespace Menge
 
 			if( buffer == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed new memory %d"
+				LOGGER_ERROR("FileGroupZip::createInputFile: pak %s file %s failed new memory %d"
 					, m_path.c_str()
 					, _fileName.c_str()
 					, fi.unz_size
@@ -445,7 +445,7 @@ namespace Menge
 
 			if( buffer == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed new memory %d"
+				LOGGER_ERROR("FileGroupZip::createInputFile: pak %s file %s failed new memory %d"
 					, m_path.c_str()
 					, _fileName.c_str()
 					, fi.unz_size
@@ -454,11 +454,11 @@ namespace Menge
 				return false;
 			}
 
-			MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, fi.file_size, __FILE__, __LINE__ );
+			MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( fi.file_size, __FILE__, __LINE__ );
 			
 			if( compress_buffer == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("FileGroupZip::createInputFile: pak %s file %s failed cache memory %d"
+				LOGGER_ERROR("FileGroupZip::createInputFile: pak %s file %s failed cache memory %d"
 					, m_path.c_str()
 					, _fileName.c_str()
 					, fi.file_size
@@ -476,7 +476,7 @@ namespace Menge
 
 			if( s_inflate_memory( buffer, fi.unz_size, compress_memory, fi.file_size ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed inflate"
+				LOGGER_ERROR("FileGroupZip::createInputFile: pak %s file %s failed inflate"
 					, m_path.c_str()
 					, _fileName.c_str()
 					);
@@ -490,7 +490,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr FileGroupZip::createOutputFile()
     {
-		LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createOutputFile unsupport method"
+		LOGGER_ERROR("FileGroupZip::createOutputFile unsupport method"
 			);
 
         return nullptr;
@@ -501,7 +501,7 @@ namespace Menge
         (void)_fileName;
         (void)_file;
 
-        LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openOutputFile %s unsupport method"
+        LOGGER_ERROR("FileGroupZip::openOutputFile %s unsupport method"
             , _fileName.c_str()
             );
 

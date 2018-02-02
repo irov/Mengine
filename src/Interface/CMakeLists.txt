@@ -3,6 +3,7 @@ set( MY_LIB_NAME Interface )
 ADD_FILTER(
 src     
     ServiceInterface.h
+    ServiceProviderInterface.h
 	ServantInterface.h
 	PluginInterface.h
     ModuleInterface.h

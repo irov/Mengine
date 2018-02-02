@@ -84,6 +84,6 @@ namespace Menge
 		virtual void clearCacheBuffers() = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-#   define MEMORY_SERVICE( serviceProvider )\
-	((Menge::MemoryServiceInterface *)SERVICE_GET(serviceProvider, Menge::MemoryServiceInterface))
+#   define MEMORY_SERVICE()\
+	((Menge::MemoryServiceInterface *)SERVICE_GET(Menge::MemoryServiceInterface))
 }

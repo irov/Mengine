@@ -21,7 +21,7 @@ namespace Menge
 	{
         bool handle = EVENTABLE_METHODRT( m_scriptEventable, EVENT_APP_MOUSE_LEAVE, false, SceneEventReceiver )
             ->onSceneAppMouseLeave( m_object );
-		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_APP_MOUSE_LEAVE, handle )();
+		//EVENTABLE_ASK( this, EVENT_APP_MOUSE_LEAVE, handle )();
 
 		if( handle == false )
 		{
@@ -43,7 +43,7 @@ namespace Menge
 	{
         bool handle = EVENTABLE_METHODRT( m_scriptEventable, EVENT_APP_MOUSE_ENTER, false, SceneEventReceiver )
             ->onSceneAppMouseEnter( m_object );
-		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_APP_MOUSE_ENTER, handle )();
+		//EVENTABLE_ASK( this, EVENT_APP_MOUSE_ENTER, handle )();
 
 		if( handle == false )
 		{
@@ -65,7 +65,7 @@ namespace Menge
 	{
         bool handle = EVENTABLE_METHODRT( m_scriptEventable, EVENT_FOCUS, false, SceneEventReceiver )
             ->onSceneAppFocus( m_object, _focus );
-		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_FOCUS, handle )(_focus);
+		//EVENTABLE_ASK( this, EVENT_FOCUS, handle )(_focus);
 
 		if( handle == false )
 		{

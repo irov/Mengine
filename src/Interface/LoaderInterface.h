@@ -25,6 +25,6 @@ namespace Menge
 		virtual bool validation( const ConstString & _pak, const FilePath & _path ) const = 0;
     };
 
-#   define LOADER_SERVICE( serviceProvider )\
-    ((LoaderServiceInterface *)SERVICE_GET(serviceProvider, Menge::LoaderServiceInterface))
+#   define LOADER_SERVICE()\
+    ((LoaderServiceInterface *)SERVICE_GET(Menge::LoaderServiceInterface))
 }

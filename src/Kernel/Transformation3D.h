@@ -13,6 +13,7 @@ namespace Menge
 	{
 	public:
 		Transformation3D();
+        ~Transformation3D();
 
 	public:
 		void setRelationTransformation( Transformation3D * _relation );

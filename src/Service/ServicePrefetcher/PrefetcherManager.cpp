@@ -23,16 +23,16 @@ namespace Menge
 	{
 		for( uint32_t i = 0; i != MENGINE_PREFETCHER_THREAD_COUNT; ++i )
 		{
-			THREAD_SERVICE(m_serviceProvider)
-				->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadPrefetcherManager"), -1, __FILE__, __LINE__ );
+			THREAD_SERVICE()
+				->createThread( STRINGIZE_STRING_LOCAL( "ThreadPrefetcherManager"), -1, __FILE__, __LINE__ );
 		}
 
-		m_threadQueue = THREAD_SERVICE(m_serviceProvider)
-			->runTaskQueue( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadPrefetcherManager"), MENGINE_PREFETCHER_THREAD_COUNT, MENGINE_PREFETCHER_PACKET_SIZE );
+		m_threadQueue = THREAD_SERVICE()
+			->runTaskQueue( STRINGIZE_STRING_LOCAL( "ThreadPrefetcherManager"), MENGINE_PREFETCHER_THREAD_COUNT, MENGINE_PREFETCHER_PACKET_SIZE );
 
-        m_factoryThreadTaskPrefetchImageDecoder = new FactoryPool<ThreadTaskPrefetchImageDecoder, 16>( m_serviceProvider );
-        m_factoryThreadTaskPrefetchSoundDecoder = new FactoryPool<ThreadTaskPrefetchSoundDecoder, 16>( m_serviceProvider );
-        m_factoryThreadTaskPrefetchDataflow = new FactoryPool<ThreadTaskPrefetchDataflow, 16>( m_serviceProvider );
+        m_factoryThreadTaskPrefetchImageDecoder = new FactoryPool<ThreadTaskPrefetchImageDecoder, 16>();
+        m_factoryThreadTaskPrefetchSoundDecoder = new FactoryPool<ThreadTaskPrefetchSoundDecoder, 16>();
+        m_factoryThreadTaskPrefetchDataflow = new FactoryPool<ThreadTaskPrefetchDataflow, 16>();
 
 		return true;
 	}
@@ -58,7 +58,7 @@ namespace Menge
 		{
 			const PrefetchReceiver & receiver = it->second;
 
-			THREAD_SERVICE( m_serviceProvider )
+			THREAD_SERVICE()
 				->joinTask( receiver.prefetcher );
 		}
 
@@ -66,7 +66,7 @@ namespace Menge
 
 		if( m_threadQueue != nullptr )
 		{
-			THREAD_SERVICE( m_serviceProvider )
+			THREAD_SERVICE()
 				->cancelTaskQueue( m_threadQueue );
 
 			m_threadQueue = nullptr;
@@ -121,7 +121,6 @@ namespace Menge
 	
 		ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder->createObject();
 
-		task->setServiceProvider( m_serviceProvider );
 		task->initialize( _pakName, _filePath, _observer );
 		task->setImageCodec( _codec );
 
@@ -187,7 +186,6 @@ namespace Menge
 
 		ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder->createObject();
 
-		task->setServiceProvider( m_serviceProvider );
 		task->initialize( _pakName, _filePath, _observer );
 		task->setSoundCodec( _codec );
 
@@ -253,7 +251,6 @@ namespace Menge
 
 		ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow->createObject();
 
-		task->setServiceProvider( m_serviceProvider );
 		task->initialize( _pakName, _filePath, _observer );
 		task->setDataflowType( _dataflowType );
 

@@ -36,7 +36,7 @@ namespace Menge
         {
             const Node * node = *it;
 
-            LOGGER_ERROR(m_serviceProvider)("MovieSlot::_destroy slot %s:%s has children %s:%s!! (please remove, before release movie '%s')"
+            LOGGER_ERROR("MovieSlot::_destroy slot %s:%s has children %s:%s!! (please remove, before release movie '%s')"
                 , this->getName().c_str()
                 , this->getType().c_str()
                 , node->getName().c_str()
@@ -84,7 +84,7 @@ namespace Menge
 			return;
 		}
 		
-		LOGGER_ERROR(m_serviceProvider)("MovieSlot::_changeParent slot %s:%s movie %s (please don't change parent it's danger)"
+		LOGGER_ERROR("MovieSlot::_changeParent slot %s:%s movie %s (please don't change parent it's danger)"
 			, this->getName().c_str()
 			, this->getType().c_str()
 			, m_movieName.c_str()
@@ -154,7 +154,7 @@ namespace Menge
 			}
 		}
 
-		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
+		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
 			->getDebugMaterial();
 
 		_renderService->addRenderLine( _state, debugMaterial

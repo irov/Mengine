@@ -33,7 +33,7 @@ namespace Menge
 			{
 				featuresBufferSize += MENGINE_FILE_STREAM_BUFFER_SIZE;
 
-				MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, featuresBufferSize, __FILE__, __LINE__ );
+				MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( featuresBufferSize, __FILE__, __LINE__ );
 				
 				if( buffer == nullptr )
 				{
@@ -44,7 +44,7 @@ namespace Menge
 
 				if( featuresMemory == nullptr )
 				{
-					LOGGER_ERROR(m_serviceProvider)("ImageDecoderWEBP::_prepareData invalid get memory %d"
+					LOGGER_ERROR("ImageDecoderWEBP::_prepareData invalid get memory %d"
 						, featuresBufferSize
 						);
 
@@ -68,7 +68,7 @@ namespace Menge
 
         if( status != VP8_STATUS_OK )
         {
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderWEBP::_prepareData invalid WebPGetFeatures %d"
+			LOGGER_ERROR("ImageDecoderWEBP::_prepareData invalid WebPGetFeatures %d"
 				, status
 				);
 			
@@ -114,11 +114,11 @@ namespace Menge
 		size_t streamSize;
 		if( m_stream->memory( &streamMemory, &streamSize ) == false )
 		{
-			MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_serviceProvider, m_stream, __FILE__, __LINE__ );
+			MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, __FILE__, __LINE__ );
 
 			if( buffer == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ImageDecoderWEBP::decode invalid create memory for stream"
+				LOGGER_ERROR("ImageDecoderWEBP::decode invalid create memory for stream"
 					);
 
 				return false;

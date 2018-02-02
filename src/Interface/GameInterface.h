@@ -65,6 +65,6 @@ namespace Menge
         virtual void turnSound( bool _turn ) = 0;
     };
 
-#   define GAME_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::GameServiceInterface)
+#   define GAME_SERVICE()\
+    SERVICE_GET(Menge::GameServiceInterface)
 }

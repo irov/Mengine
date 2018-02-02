@@ -37,7 +37,7 @@ namespace Menge
 	{
 		const DWORD * dx_source = m_memory->getMemory();
 
-		IF_DXCALL( m_serviceProvider, _pD3DDevice, CreateVertexShader, (dx_source, &m_shader) )
+		IF_DXCALL( _pD3DDevice, CreateVertexShader, (dx_source, &m_shader) )
 		{
 			return false;
 		}
@@ -47,7 +47,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderVertexShader::enable( IDirect3DDevice9 * _pD3DDevice )
 	{
-		IF_DXCALL( m_serviceProvider, _pD3DDevice, SetVertexShader, (m_shader) )
+		IF_DXCALL( _pD3DDevice, SetVertexShader, (m_shader) )
 		{
 			return false;
 		}

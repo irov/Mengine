@@ -54,7 +54,7 @@ namespace Menge
 
         if( zerr != Z_OK )
         {
-            LOGGER_ERROR(m_serviceProvider)("ArchivatorZip::compress invalid compress code [%d]"
+            LOGGER_ERROR("ArchivatorZip::compress invalid compress code [%d]"
                 , zerr
                 );
 
@@ -126,7 +126,7 @@ namespace Menge
 
         if( zerr != Z_OK )
         {
-            LOGGER_ERROR(m_serviceProvider)("ArchivatorZip::decompress invalid uncompress code [%d]"
+            LOGGER_ERROR("ArchivatorZip::decompress invalid uncompress code [%d]"
                 , zerr
                 );
 

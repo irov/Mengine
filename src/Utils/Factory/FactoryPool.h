@@ -14,8 +14,8 @@ namespace Menge
 		: public Factory
 	{
     public:
-        FactoryPool( ServiceProviderInterface * _serviceProvider )
-            : Factory( _serviceProvider, typeid(Type).name() )
+        FactoryPool()
+            : Factory( typeid(Type).name() )
         {
         }
 
@@ -47,9 +47,9 @@ namespace Menge
     {
         //////////////////////////////////////////////////////////////////////////
         template<class Type, size_t Count, class C, class M>
-        FactoryPtr makeFactoryPool( ServiceProviderInterface * _serviceProvider, C * _self, M _method )
+        FactoryPtr makeFactoryPool( C * _self, M _method )
         {
-            FactoryPtr factory = new FactoryPool<Type, Count>( _serviceProvider );
+            FactoryPtr factory = new FactoryPool<Type, Count>();
 
             setupFactoryDestroyListener<Type>( factory, _self, _method );
 

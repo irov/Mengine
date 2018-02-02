@@ -23,9 +23,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TTFAtlasService::_initialize()
 	{
-		m_minAtlasPow = CONFIG_VALUE( m_serviceProvider, "TTF", "MinAtlasPow", 4U );
-		m_maxAtlasPow = CONFIG_VALUE( m_serviceProvider, "TTF", "MaxAtlasPow", 8U );
-		m_maxAtlasWidth = CONFIG_VALUE( m_serviceProvider, "TTF", "MaxAtlasWidth", 2048U );
+		m_minAtlasPow = CONFIG_VALUE( "TTF", "MinAtlasPow", 4U );
+		m_maxAtlasPow = CONFIG_VALUE( "TTF", "MaxAtlasPow", 8U );
+		m_maxAtlasWidth = CONFIG_VALUE( "TTF", "MaxAtlasWidth", 2048U );
 
 		uint32_t mixAtlasPow = m_maxAtlasPow - m_minAtlasPow;
 
@@ -176,7 +176,7 @@ namespace Menge
 
         PixelFormat format = PF_A8R8G8B8;
 
-		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE( m_serviceProvider )
+		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
 			->createDynamicTexture( m_maxAtlasWidth, fixDimension, 4, 1, format );
 
 		new_atlas.texture = texture;

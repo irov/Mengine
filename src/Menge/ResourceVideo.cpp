@@ -86,7 +86,7 @@ namespace Menge
 	{
         if( _decoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceVideo::isValid: group '%s' name '%s' can't create decoder '%s'"
+            LOGGER_ERROR("ResourceVideo::isValid: group '%s' name '%s' can't create decoder '%s'"
 				, this->getGroup().c_str()
                 , this->getName().c_str()
                 , m_filePath.c_str()
@@ -100,7 +100,7 @@ namespace Menge
 		//if( dataInfo->frameWidth % 16 != 0 ||
 		//	dataInfo->frameHeight % 16 != 0 )
 		//{
-		//	LOGGER_ERROR( m_serviceProvider )("ResourceVideo::checkValidVideoDecoder_ invalid width or heigth '%d:%d' need '%d:%d' maybe div 16"
+		//	LOGGER_ERROR("ResourceVideo::checkValidVideoDecoder_ invalid width or heigth '%d:%d' need '%d:%d' maybe div 16"
 		//		, dataInfo->frameWidth
 		//		, dataInfo->frameHeight
 		//		, (dataInfo->frameWidth / 16 + 1) * 16
@@ -110,12 +110,12 @@ namespace Menge
 		//	return false;
 		//}
 
-		uint32_t limitVideoWidth = CONFIG_VALUE( m_serviceProvider, "Limit", "VideoWidth", 2048U );
-		uint32_t limitVideoHeight = CONFIG_VALUE( m_serviceProvider, "Limit", "VideoHeight", 2048U );
+		uint32_t limitVideoWidth = CONFIG_VALUE( "Limit", "VideoWidth", 2048U );
+		uint32_t limitVideoHeight = CONFIG_VALUE( "Limit", "VideoHeight", 2048U );
 
 		if( dataInfo->frameWidth > limitVideoWidth || dataInfo->frameHeight > limitVideoHeight )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ResourceVideo.isValid: group '%s' name '%s' path '%s' invalid size %d:%d limit %d:%d"
+			LOGGER_ERROR("ResourceVideo.isValid: group '%s' name '%s' path '%s' invalid size %d:%d limit %d:%d"
 				, this->getGroup().c_str()
 				, this->getName().c_str()
 				, m_filePath.c_str()
@@ -128,11 +128,11 @@ namespace Menge
 			return false;
 		}
 				
-		uint32_t Limit_VideoFrameRate = CONFIG_VALUE(m_serviceProvider, "Limit", "VideoFrameRate", 30U);
+		uint32_t Limit_VideoFrameRate = CONFIG_VALUE("Limit", "VideoFrameRate", 30U);
 
 		if( dataInfo->fps > Limit_VideoFrameRate && Limit_VideoFrameRate != 0U )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceVideo.isValid: group '%s' name '%s' path '%s' invalid Frame rate %u more that %u"
+			LOGGER_ERROR("ResourceVideo.isValid: group '%s' name '%s' path '%s' invalid Frame rate %u more that %u"
 				, this->getGroup().c_str()
 				, this->getName().c_str()
 				, m_filePath.c_str()
@@ -169,12 +169,12 @@ namespace Menge
 
         const ConstString & category = this->getCategory();
 
-        InputStreamInterfacePtr videoStream = FILE_SERVICE(m_serviceProvider)
+        InputStreamInterfacePtr videoStream = FILE_SERVICE()
 			->openInputFile( category, m_filePath, true );
 
         if( videoStream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder group '%s' name '%s' can't open video file '%s'"
+            LOGGER_ERROR("ResourceVideo::createVideDecoder group '%s' name '%s' can't open video file '%s'"
 				, this->getGroup().c_str()
                 , this->getName().c_str()
                 , m_filePath.c_str()
@@ -183,12 +183,12 @@ namespace Menge
             return nullptr;
         }
 
-        VideoDecoderInterfacePtr videoDecoder = CODEC_SERVICE(m_serviceProvider)
+        VideoDecoderInterfacePtr videoDecoder = CODEC_SERVICE()
             ->createDecoderT<VideoDecoderInterfacePtr>( m_codecType );
 
         if( videoDecoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder group '%s' name '%s' can't create video decoder for file '%s'"
+            LOGGER_ERROR("ResourceVideo::createVideDecoder group '%s' name '%s' can't create video decoder for file '%s'"
 				, this->getGroup().c_str()
                 , this->getName().c_str()
                 , m_filePath.c_str()
@@ -205,7 +205,7 @@ namespace Menge
         }
         else
         {
-			if( RENDER_SYSTEM(m_serviceProvider)->supportTextureFormat( PF_R8G8B8 ) == true )
+			if( RENDER_SYSTEM()->supportTextureFormat( PF_R8G8B8 ) == true )
 			{
 				videoCodecOptions.pixelFormat = PF_R8G8B8;
 			}
@@ -219,12 +219,12 @@ namespace Menge
 		videoCodecOptions.fps = m_frameRate;
 		videoCodecOptions.alpha = m_alpha;
 
-		videoCodecOptions.mock = HAS_OPTION( m_serviceProvider, "novideo" );
+		videoCodecOptions.mock = HAS_OPTION( "novideo" );
         videoCodecOptions.noSeek = m_noSeek;
 
         if( videoDecoder->setOptions( &videoCodecOptions ) == false )
         {
-			LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder group '%s' name '%s' can't setup options for file '%s'"
+			LOGGER_ERROR("ResourceVideo::createVideDecoder group '%s' name '%s' can't setup options for file '%s'"
 				, this->getGroup().c_str()
 				, this->getName().c_str()
 				, m_filePath.c_str()
@@ -235,7 +235,7 @@ namespace Menge
 
 		if( videoDecoder->prepareData( videoStream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder group '%s' name '%s' can't initialize video decoder for file '%s'"
+			LOGGER_ERROR("ResourceVideo::createVideDecoder group '%s' name '%s' can't initialize video decoder for file '%s'"
 				, this->getGroup().c_str()
 				, this->getName().c_str()
 				, m_filePath.c_str()

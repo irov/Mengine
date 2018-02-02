@@ -29,8 +29,7 @@ namespace Menge
 
 			if( m_initialize == true )
 			{
-                ServiceProviderInterface * serviceProvider = this->getServiceProvider();
-				LOGGER_ERROR(serviceProvider)("Decoder::initialize: alredy initialize!"
+				LOGGER_ERROR("Decoder::initialize: alredy initialize!"
 					);
 
 				return false;
@@ -54,8 +53,7 @@ namespace Menge
 
 			if( m_initialize == false )
 			{
-                ServiceProviderInterface * serviceProvider = this->getServiceProvider();
-				LOGGER_ERROR(serviceProvider)("Decoder::initialize: alredy finalize!"
+				LOGGER_ERROR("Decoder::initialize: alredy finalize!"
 					);
 
 				return;

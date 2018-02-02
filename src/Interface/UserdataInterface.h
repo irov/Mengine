@@ -28,6 +28,6 @@ namespace Menge
 		virtual bool writeUserdata( const ConstString & _name, const void * _data, size_t _size ) const = 0;
 	};
 
-#   define USERDATA_SERVICE( serviceProvider )\
-    ((Menge::UserdataServiceInterface*)SERVICE_GET(serviceProvider, Menge::UserdataServiceInterface))
+#   define USERDATA_SERVICE()\
+    ((Menge::UserdataServiceInterface*)SERVICE_GET(Menge::UserdataServiceInterface))
 }

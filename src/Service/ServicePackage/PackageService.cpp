@@ -28,10 +28,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::_initialize()
 	{
-		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
+		m_observerChangeLocale = NOTIFICATION_SERVICE()
 			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale );
 
-        m_factoryPackage = new FactoryPool<Package, 8>(m_serviceProvider);
+        m_factoryPackage = new FactoryPool<Package, 8>();
 
 		return true;
 	}
@@ -48,19 +48,19 @@ namespace Menge
 	bool PackageService::loadPackages( const ConstString & _fileGroup, const FilePath & _resourceIni )
 	{ 
 		IniUtil::IniStore ini;
-		if( IniUtil::loadIni( ini, _fileGroup, _resourceIni, m_serviceProvider ) == false )
+		if( IniUtil::loadIni( ini, _fileGroup, _resourceIni ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("PackageService::loadPackages Invalid load resource settings '%s'"
+			LOGGER_ERROR("PackageService::loadPackages Invalid load resource settings '%s'"
 				, _resourceIni.c_str()
 				);
 
 			return false;
 		}
 
-		ConstString c_dir = STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" );
+		ConstString c_dir = STRINGIZE_STRING_LOCAL( "dir" );
 
 		TVectorString frameworkPacksSettings;
-		IniUtil::getIniValue( ini, "GAME_RESOURCES", "FrameworkPack", frameworkPacksSettings, m_serviceProvider );
+		IniUtil::getIniValue( ini, "GAME_RESOURCES", "FrameworkPack", frameworkPacksSettings );
 
 		for( TVectorString::iterator
 			it = frameworkPacksSettings.begin(),
@@ -79,7 +79,7 @@ namespace Menge
 
 			if( ini.hasSection( resourcePack.c_str() ) == false )
 			{
-				LOGGER_CRITICAL( m_serviceProvider )("PackageService::loadPackages %s invalid load resource pack no found section for '%s'"
+				LOGGER_CRITICAL("PackageService::loadPackages %s invalid load resource pack no found section for '%s'"
 					, _resourceIni.c_str()
 					, resourcePack.c_str()
 					);
@@ -87,15 +87,15 @@ namespace Menge
 				return false;
 			}
 
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", pack.name, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", pack.type, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Category", pack.category, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", pack.locale, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", pack.platform, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.descriptionPath, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", pack.name );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", pack.type );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Category", pack.category );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", pack.locale );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", pack.platform );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.descriptionPath );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload );
 
 			if( this->addPackage( pack ) == false )
 			{
@@ -104,7 +104,7 @@ namespace Menge
 		}
 
 		TVectorString resourcePacksSettings;
-		IniUtil::getIniValue( ini, "GAME_RESOURCES", "ResourcePack", resourcePacksSettings, m_serviceProvider );
+		IniUtil::getIniValue( ini, "GAME_RESOURCES", "ResourcePack", resourcePacksSettings );
 
 		for( TVectorString::iterator
 			it = resourcePacksSettings.begin(),
@@ -123,7 +123,7 @@ namespace Menge
 
 			if( ini.hasSection( resourcePack.c_str() ) == false )
 			{
-				LOGGER_CRITICAL( m_serviceProvider )("PackageService::loadPackages %s invalid load resource pack no found section for '%s'"
+				LOGGER_CRITICAL("PackageService::loadPackages %s invalid load resource pack no found section for '%s'"
 					, _resourceIni.c_str()
 					, resourcePack.c_str()
 					);
@@ -131,15 +131,15 @@ namespace Menge
 				return false;
 			}
 
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", pack.name, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", pack.type, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Category", pack.category, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", pack.locale, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", pack.platform, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.descriptionPath, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", pack.name );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", pack.type );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Category", pack.category );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", pack.locale );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", pack.platform );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.descriptionPath );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload );
 
 			if( this->addPackage( pack ) == false )
 			{
@@ -148,7 +148,7 @@ namespace Menge
 		}
 
 		TVectorString languagePackSettings;
-		IniUtil::getIniValue( ini, "GAME_RESOURCES", "LanguagePack", languagePackSettings, m_serviceProvider );
+		IniUtil::getIniValue( ini, "GAME_RESOURCES", "LanguagePack", languagePackSettings );
 
 		for( TVectorString::iterator
 			it = languagePackSettings.begin(),
@@ -167,7 +167,7 @@ namespace Menge
 
 			if( ini.hasSection( languagePack.c_str() ) == false )
 			{
-				LOGGER_CRITICAL( m_serviceProvider )("PackageService::loadPackages %s invalid load language pack no found section for '%s'"
+				LOGGER_CRITICAL("PackageService::loadPackages %s invalid load language pack no found section for '%s'"
 					, _resourceIni.c_str()
 					, languagePack.c_str()
 					);
@@ -175,15 +175,15 @@ namespace Menge
 				return false;
 			}
 
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Name", pack.name, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Type", pack.type, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Category", pack.category, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Path", pack.path, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Locale", pack.locale, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Platform", pack.platform, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Description", pack.descriptionPath, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Dev", pack.dev, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Name", pack.name );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Type", pack.type );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Category", pack.category );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Path", pack.path );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Locale", pack.locale );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Platform", pack.platform );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Description", pack.descriptionPath );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Dev", pack.dev );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "PreLoad", pack.preload );
 
 			if( this->addPackage( pack ) == false )
 			{
@@ -219,7 +219,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::addPackage( const PackageDesc & _desc )
 	{
-		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+		bool developmentMode = HAS_OPTION( "dev" );
 
 		if( developmentMode == false && _desc.dev == true )
 		{
@@ -227,8 +227,6 @@ namespace Menge
 		}
 
 		PackagePtr package = m_factoryPackage->createObject();
-
-        package->setServiceProvider( m_serviceProvider );
 
 		package->setup( _desc.name
 			, _desc.type
@@ -242,7 +240,7 @@ namespace Menge
 
 		if( package->load() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("PackageService::addPackage invalid load package '%s' path '%s'"
+			LOGGER_ERROR("PackageService::addPackage invalid load package '%s' path '%s'"
 				, package->getName().c_str()
 				, package->getPath().c_str()
 				);
@@ -378,9 +376,9 @@ namespace Menge
 
 		if( this->loadLocalePacksByName_( packages, _locale, _platformTags ) == false )
 		{
-			if( this->loadLocalePacksByName_( packages, STRINGIZE_STRING_LOCAL( m_serviceProvider, "en" ), _platformTags ) == false )
+			if( this->loadLocalePacksByName_( packages, STRINGIZE_STRING_LOCAL( "en" ), _platformTags ) == false )
 			{
-				LOGGER_WARNING( m_serviceProvider )("PackageService::applyPackages not set locale pack"
+				LOGGER_WARNING("PackageService::applyPackages not set locale pack"
 					);
 			}
 		}
@@ -414,7 +412,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::validatePackages() const
 	{
-		LOGGER_WARNING( m_serviceProvider )("Validate Packages..."
+		LOGGER_WARNING("Validate Packages..."
 			);
 
 		bool successful = true;
@@ -535,12 +533,12 @@ namespace Menge
 		(void)_prevLocale;
 		(void)_currentlocale;
 
-		const Tags & platformTags = PLATFORM_SERVICE( m_serviceProvider )
+		const Tags & platformTags = PLATFORM_SERVICE()
 			->getPlatformTags();
 
 		if( this->disableLocalePackage( _prevLocale, platformTags ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("PackageService::notifyChangeLocale invalid disable locale package '%s' platform '%s'"
+			LOGGER_ERROR("PackageService::notifyChangeLocale invalid disable locale package '%s' platform '%s'"
 				, _prevLocale.c_str()
 				, platformTags.to_str().c_str()
 				);
@@ -550,7 +548,7 @@ namespace Menge
 
 		if( this->enableLocalePackage( _currentlocale, platformTags ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("PackageService::notifyChangeLocale invalid enable locale package '%s' platform '%s'"
+			LOGGER_ERROR("PackageService::notifyChangeLocale invalid enable locale package '%s' platform '%s'"
 				, _currentlocale.c_str()
 				, platformTags.to_str().c_str()
 				);

@@ -9,7 +9,7 @@ namespace Menge
 	class ScriptLogger
 	{
 	public:
-		ScriptLogger( ServiceProviderInterface * _serviceProvider );
+		ScriptLogger();
         virtual ~ScriptLogger();
 
 	public:
@@ -26,8 +26,6 @@ namespace Menge
 		int getSoftspace() const;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		EMessageLevel m_level;
 
 		int m_softspace;

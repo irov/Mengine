@@ -38,9 +38,7 @@ namespace Menge
 		// send it to user's message proc
 		//FreeImage_OutputMessageProc(s_format_id, buffer);
 
-		ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface*>(_cinfo->client_data);
-
-		LOGGER_ERROR(serviceProvider)("s_jpegErrorExit %s"
+		LOGGER_ERROR("s_jpegErrorExit %s"
 			, buffer
 			);
 
@@ -68,9 +66,7 @@ namespace Menge
 		// send it to user's message proc
 		//FreeImage_OutputMessageProc(s_format_id, buffer);
 
-        ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface*>(_cinfo->client_data);
-
-		LOGGER_ERROR(serviceProvider)("s_jpegOutputMessage %s"
+		LOGGER_ERROR("s_jpegOutputMessage %s"
             , buffer
             );
 	}
@@ -186,7 +182,7 @@ namespace Menge
 		
 		struct jpeg_compress_struct cinfo = {0};
 		cinfo.err = jpeg_std_error(&errorMgr.pub);
-		cinfo.client_data = (void *)m_serviceProvider;
+		cinfo.client_data = nullptr;
 
 		jpeg_create_compress( &cinfo );
 

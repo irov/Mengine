@@ -103,6 +103,6 @@ namespace Menge
         virtual void toggleDebugText() = 0;
     };
 
-#   define PLAYER_SERVICE( serviceProvider )\
-    ((Menge::PlayerServiceInterface*)SERVICE_GET(serviceProvider, Menge::PlayerServiceInterface))
+#   define PLAYER_SERVICE()\
+    ((Menge::PlayerServiceInterface*)SERVICE_GET(Menge::PlayerServiceInterface))
 }

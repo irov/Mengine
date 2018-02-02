@@ -23,8 +23,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool UserdataService::_initialize()
 	{
-		m_archivator = ARCHIVE_SERVICE( m_serviceProvider )
-			->getArchivator( STRINGIZE_STRING_LOCAL( m_serviceProvider, "lz4" ) );
+		m_archivator = ARCHIVE_SERVICE()
+			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
 
 		if( m_archivator == nullptr )
 		{
@@ -44,7 +44,7 @@ namespace Menge
 
 		if( it_found != m_datas.end() )
 		{
-			LOGGER_ERROR( m_serviceProvider )("UserdataService::addData data %s already exist"
+			LOGGER_ERROR("UserdataService::addData data %s already exist"
 				, _name.c_str()
 				);
 
@@ -85,7 +85,7 @@ namespace Menge
 
 		const UserdataDesc & desc = it_found->second;
 
-		if( FILE_SERVICE( m_serviceProvider )
+		if( FILE_SERVICE()
 			->existFile( desc.category, desc.path, nullptr ) == false )
 		{
 			return false;
@@ -100,7 +100,7 @@ namespace Menge
 
 		if( it_found == m_datas.end() )
 		{
-			LOGGER_ERROR( m_serviceProvider )("UserdataService::loadData: data %s not found"
+			LOGGER_ERROR("UserdataService::loadData: data %s not found"
 				, _name.c_str()
 				);
 
@@ -109,12 +109,12 @@ namespace Menge
 
 		const UserdataDesc & desc = it_found->second;
 
-		InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
+		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( desc.category, desc.path, false );
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("UserdataService::loadData: data %s invalid open file %s"
+			LOGGER_ERROR("UserdataService::loadData: data %s invalid open file %s"
 				, _name.c_str()
 				, desc.path.c_str()
 				);
@@ -123,9 +123,9 @@ namespace Menge
 		}
 
         MemoryInterfacePtr binaryBuffer;
-		if( Helper::loadStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), binaryBuffer, __FILE__, __LINE__ ) == false )
+		if( Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), binaryBuffer, __FILE__, __LINE__ ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("UserdataService::loadData: data %s invalid load stream archive %s"
+			LOGGER_ERROR("UserdataService::loadData: data %s invalid load stream archive %s"
 				, _name.c_str()
 				, desc.path.c_str()
 				);
@@ -142,7 +142,7 @@ namespace Menge
 
 		if( it_found == m_datas.end() )
 		{
-			LOGGER_ERROR( m_serviceProvider )("UserdataService::writeData: data %s not found"
+			LOGGER_ERROR("UserdataService::writeData: data %s not found"
 				, _name.c_str()
 				);
 
@@ -153,7 +153,7 @@ namespace Menge
 
 		if( _data == nullptr || _size == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("UserdataService::writeData: data %s write empty file %s"
+			LOGGER_ERROR("UserdataService::writeData: data %s write empty file %s"
 				, _name.c_str()
 				, desc.path.c_str()
 				);
@@ -161,12 +161,12 @@ namespace Menge
 			return false;
 		}
 
-		OutputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
+		OutputStreamInterfacePtr stream = FILE_SERVICE()
 			->openOutputFile( desc.category, desc.path );
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("UserdataService::writeData: data %s invalid open file %s"
+			LOGGER_ERROR("UserdataService::writeData: data %s invalid open file %s"
 				, _name.c_str()
 				, desc.path.c_str()
 				);
@@ -177,9 +177,9 @@ namespace Menge
 		const void * data_memory = _data;
 		size_t data_size = _size;
 
-		if( Helper::writeStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), true, data_memory, data_size, EAC_NORMAL ) == false )
+		if( Helper::writeStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), true, data_memory, data_size, EAC_NORMAL ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("UserdataService::writeData: data %s invalid write file %s"
+			LOGGER_ERROR("UserdataService::writeData: data %s invalid write file %s"
 				, _name.c_str()
 				, desc.path.c_str()
 				);

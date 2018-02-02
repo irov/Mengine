@@ -34,34 +34,34 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::_initialize()
 	{
-		m_supportStream = THREAD_SERVICE( m_serviceProvider )
+		m_supportStream = THREAD_SERVICE()
 			->avaliable();
 
 		if( m_supportStream == true )
 		{
-			m_threadJobSoundBufferUpdate = THREAD_SERVICE(m_serviceProvider)
+			m_threadJobSoundBufferUpdate = THREAD_SERVICE()
                 ->createJob( 5 );
 
-			THREAD_SERVICE(m_serviceProvider)
-				->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), 0, __FILE__, __LINE__ );
+			THREAD_SERVICE()
+				->createThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate"), 0, __FILE__, __LINE__ );
 
-			THREAD_SERVICE(m_serviceProvider)
-				->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), m_threadJobSoundBufferUpdate );
+			THREAD_SERVICE()
+				->addTask( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate"), m_threadJobSoundBufferUpdate );
 		}
 
-		float commonVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "CommonVolume", 1.f);
-		this->setCommonVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), commonVolume, 0.f );
+		float commonVolume = CONFIG_VALUE("Engine", "CommonVolume", 1.f);
+		this->setCommonVolume( STRINGIZE_STRING_LOCAL( "Generic"), commonVolume, 0.f );
 
-		float soundVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "SoundVolume", 1.f);
-		this->setSoundVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), soundVolume, 0.f );
+		float soundVolume = CONFIG_VALUE("Engine", "SoundVolume", 1.f);
+		this->setSoundVolume( STRINGIZE_STRING_LOCAL( "Generic"), soundVolume, 0.f );
 
-		float musicVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "MusicVolume", 1.f);
-		this->setMusicVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), musicVolume, 0.f );
+		float musicVolume = CONFIG_VALUE("Engine", "MusicVolume", 1.f);
+		this->setMusicVolume( STRINGIZE_STRING_LOCAL( "Generic"), musicVolume, 0.f );
 
-		float voiceVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "VoiceVolume", 1.f);
-		this->setVoiceVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), voiceVolume, 0.f );
+		float voiceVolume = CONFIG_VALUE("Engine", "VoiceVolume", 1.f);
+		this->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic"), voiceVolume, 0.f );
 
-        m_factoryWorkerTaskSoundBufferUpdate = new FactoryPool<ThreadWorkerSoundBufferUpdate, 32>( m_serviceProvider );
+        m_factoryWorkerTaskSoundBufferUpdate = new FactoryPool<ThreadWorkerSoundBufferUpdate, 32>();
 
 		return true;
 	}
@@ -90,7 +90,7 @@ namespace Menge
 
 		if( m_threadJobSoundBufferUpdate != nullptr )
 		{
-			THREAD_SERVICE(m_serviceProvider)
+			THREAD_SERVICE()
 				->joinTask( m_threadJobSoundBufferUpdate );
 
 			m_threadJobSoundBufferUpdate = nullptr;
@@ -148,7 +148,7 @@ namespace Menge
 									
 			if( source->source->play() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("SoundEngine::playSounds_ invalid play"
+				LOGGER_ERROR("SoundEngine::playSounds_ invalid play"
 					);
 
 				continue;
@@ -232,7 +232,7 @@ namespace Menge
 
 		m_turnSound = _turn;
         
-		SOUND_SYSTEM(m_serviceProvider)
+		SOUND_SYSTEM()
             ->onTurnSound( m_turnSound );
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -240,18 +240,18 @@ namespace Menge
 	{
 		if( m_supportStream == false && _streamable == true )
 		{
-			LOGGER_WARNING(m_serviceProvider)("SoundEngine::createSoundSource: unsupport stream sound"
+			LOGGER_WARNING("SoundEngine::createSoundSource: unsupport stream sound"
 				);
 
 			_streamable = false;
 		}
 
-		SoundSourceInterfacePtr sourceInterface = SOUND_SYSTEM(m_serviceProvider)
+		SoundSourceInterfacePtr sourceInterface = SOUND_SYSTEM()
             ->createSoundSource( _isHeadMode, _buffer );
 
 		if( sourceInterface == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundSource: create SoundSource invalid"
+			LOGGER_ERROR("SoundEngine::createSoundSource: create SoundSource invalid"
                 );
 
 			return 0;
@@ -269,7 +269,7 @@ namespace Menge
         source->bufferId = 0;
 		
         source->timing = 0.f;
-		source->volume.setVolume( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Generic" ), 1.f, 1.f );
+		source->volume.setVolume( STRINGIZE_STRING_LOCAL( "Generic" ), 1.f, 1.f );
 
 		source->state = ESS_STOP;
 		source->type = _type;
@@ -336,12 +336,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundDecoderInterfacePtr SoundEngine::createSoundDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _streamable )
 	{
-		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( _pakName, _fileName, _streamable );
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundDecoder_: Can't open sound file %s:%s"
+			LOGGER_ERROR("SoundEngine::createSoundDecoder_: Can't open sound file %s:%s"
 				, _pakName.c_str()
 				, _fileName.c_str() 
 				);
@@ -349,12 +349,12 @@ namespace Menge
 			return nullptr;
 		}
 
-		SoundDecoderInterfacePtr soundDecoder = CODEC_SERVICE(m_serviceProvider)
+		SoundDecoderInterfacePtr soundDecoder = CODEC_SERVICE()
 			->createDecoderT<SoundDecoderInterfacePtr>( _codecType );
 
 		if( soundDecoder == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundDecoder_: Can't create sound decoder for file %s:%s"
+			LOGGER_ERROR("SoundEngine::createSoundDecoder_: Can't create sound decoder for file %s:%s"
 				, _pakName.c_str()
 				, _fileName.c_str() 
 				);
@@ -364,7 +364,7 @@ namespace Menge
 
 		if( soundDecoder->prepareData( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundDecoder_: Can't initialize sound decoder for file %s:%s"
+			LOGGER_ERROR("SoundEngine::createSoundDecoder_: Can't initialize sound decoder for file %s:%s"
 				, _pakName.c_str()
 				, _fileName.c_str() 
 				);
@@ -379,7 +379,7 @@ namespace Menge
 	{
 		if( m_supportStream == false && _streamable == true )
 		{
-			LOGGER_WARNING(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: unsupport stream sound %s:%s"
+			LOGGER_WARNING("SoundEngine::createSoundBufferFromFile: unsupport stream sound %s:%s"
 				, _pakName.c_str()
 				, _fileName.c_str() 
 				);
@@ -390,7 +390,7 @@ namespace Menge
 		SoundDecoderInterfacePtr soundDecoder;
 		if( _streamable == false )
 		{		
-			if( PREFETCHER_SERVICE(m_serviceProvider)
+			if( PREFETCHER_SERVICE()
 				->getSoundDecoder( _pakName, _fileName, soundDecoder ) == false )
 			{
 				soundDecoder = this->createSoundDecoder_( _pakName, _fileName, _codecType, false );
@@ -399,7 +399,7 @@ namespace Menge
 			{
 				if( soundDecoder->rewind() == false )
 				{
-					LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile invalid rewind decoder '%s':'%s'"
+					LOGGER_ERROR("SoundEngine::createSoundBufferFromFile invalid rewind decoder '%s':'%s'"
 						, _pakName.c_str()
 						, _fileName.c_str()
 						);
@@ -415,7 +415,7 @@ namespace Menge
 
 		if( soundDecoder == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile invalid create decoder '%s':'%s' type %s"
+			LOGGER_ERROR("SoundEngine::createSoundBufferFromFile invalid create decoder '%s':'%s' type %s"
 				, _pakName.c_str()
 				, _fileName.c_str()
 				, _codecType.c_str()
@@ -424,12 +424,12 @@ namespace Menge
 			return nullptr;
 		}
 
-		SoundBufferInterfacePtr buffer = SOUND_SYSTEM(m_serviceProvider)
+		SoundBufferInterfacePtr buffer = SOUND_SYSTEM()
             ->createSoundBuffer( soundDecoder, _streamable );
 
         if( buffer == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: Can't create sound buffer for file %s:%s"
+            LOGGER_ERROR("SoundEngine::createSoundBufferFromFile: Can't create sound buffer for file %s:%s"
                 , _pakName.c_str()
                 , _fileName.c_str() 
                 );
@@ -446,7 +446,7 @@ namespace Menge
 		
 		if( it_find == m_soundSourceMap.end() )
 		{
-            LOGGER_ERROR(m_serviceProvider)("SoundEngine::releaseSoundSource not found %d"
+            LOGGER_ERROR("SoundEngine::releaseSoundSource not found %d"
                 , _sourceID
                 );
 
@@ -580,7 +580,7 @@ namespace Menge
 	{
 		(void)_time;
 
-		SOUND_SYSTEM(m_serviceProvider)
+		SOUND_SYSTEM()
 			->update();
 
 		bool process = false;
@@ -728,7 +728,7 @@ namespace Menge
         SoundSourceDesc * source;
 		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine:play not found emitter id %d"
+			LOGGER_ERROR("SoundEngine:play not found emitter id %d"
 				, _emitterId
 				);
 
@@ -755,7 +755,7 @@ namespace Menge
 				{
 					if( source->source->play() == false )
 					{
-						LOGGER_ERROR(m_serviceProvider)("SoundEngine::play invalid play %d"
+						LOGGER_ERROR("SoundEngine::play invalid play %d"
 							, _emitterId
 							);
 
@@ -778,7 +778,7 @@ namespace Menge
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine:pause not found emitter id %d"
+			LOGGER_ERROR("SoundEngine:pause not found emitter id %d"
 				, _emitterId
 				);
 
@@ -817,7 +817,7 @@ namespace Menge
 		SoundSourceDesc * source;
 		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine:pause not found emitter id %d"
+			LOGGER_ERROR("SoundEngine:pause not found emitter id %d"
 				, _emitterId
 				);
 
@@ -841,7 +841,7 @@ namespace Menge
 				{
 					if( source->source->play() == false )
 					{
-						LOGGER_ERROR(m_serviceProvider)("SoundEngine::play invalid play %d"
+						LOGGER_ERROR("SoundEngine::play invalid play %d"
 							, _emitterId
 							);
 
@@ -864,7 +864,7 @@ namespace Menge
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine:stop not found emitter id %d"
+			LOGGER_ERROR("SoundEngine:stop not found emitter id %d"
 				, _emitterId
 				);
 
@@ -904,7 +904,7 @@ namespace Menge
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine:setLoop not found emitter id %d"
+			LOGGER_ERROR("SoundEngine:setLoop not found emitter id %d"
 				, _emitterId
 				);
 
@@ -922,7 +922,7 @@ namespace Menge
 		const SoundSourceDesc * source;
 		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("SoundEngine:getLoop not found emitter id %d"
+			LOGGER_ERROR("SoundEngine:getLoop not found emitter id %d"
 				, _emitterId
 				);
 
@@ -939,7 +939,7 @@ namespace Menge
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitter, &source ) == false )
         {
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine:setSourceListener not found emitter id %d"
+			LOGGER_ERROR("SoundEngine:setSourceListener not found emitter id %d"
 				, _emitter
 				);
 
@@ -1002,14 +1002,14 @@ namespace Menge
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine:setVolume not found emitter id %d"
+			LOGGER_ERROR("SoundEngine:setVolume not found emitter id %d"
 				, _emitterId
 				);
 
 			return false;
 		}
                 
-		source->volume.setVolume( STRINGIZE_STRING_LOCAL( m_serviceProvider, "General" ), _volume, _default );
+		source->volume.setVolume( STRINGIZE_STRING_LOCAL( "General" ), _volume, _default );
 
         this->updateSourceVolume_( source );
 
@@ -1021,7 +1021,7 @@ namespace Menge
         const SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine:getVolume not found emitter id %d"
+			LOGGER_ERROR("SoundEngine:getVolume not found emitter id %d"
 				, _emitterId
 				);
 
@@ -1038,7 +1038,7 @@ namespace Menge
 		SoundSourceDesc * source;
 		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("SoundEngine:setVolume not found emitter id %d"
+			LOGGER_ERROR("SoundEngine:setVolume not found emitter id %d"
 				, _emitterId
 				);
 
@@ -1057,7 +1057,7 @@ namespace Menge
 		const SoundSourceDesc * source;
 		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("SoundEngine:getVolume not found emitter id %d"
+			LOGGER_ERROR("SoundEngine:getVolume not found emitter id %d"
 				, _emitterId
 				);
 
@@ -1074,7 +1074,7 @@ namespace Menge
         const SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitter, &source ) == false )
         {
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine:getLengthMs not found emitter id %d"
+			LOGGER_ERROR("SoundEngine:getLengthMs not found emitter id %d"
 				, _emitter
 				);
 
@@ -1091,7 +1091,7 @@ namespace Menge
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine:setPosMs not found emitter id %d"
+			LOGGER_ERROR("SoundEngine:setPosMs not found emitter id %d"
 				, _emitterId
 				);
 
@@ -1100,7 +1100,7 @@ namespace Menge
 
         if( source->source == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundEngine:setPosMs not setup source %d"
+            LOGGER_ERROR("SoundEngine:setPosMs not setup source %d"
                 , _emitterId
                 );
 
@@ -1111,7 +1111,7 @@ namespace Menge
         
         if( _pos > lengthMs )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundEngine::setPosMs emitter %d pos %f length %f"
+            LOGGER_ERROR("SoundEngine::setPosMs emitter %d pos %f length %f"
                 , _emitterId
                 , _pos
                 , lengthMs
@@ -1160,7 +1160,7 @@ namespace Menge
 
             if( source->source->play() == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("SoundEngine::setPosMs invalid play"
+                LOGGER_ERROR("SoundEngine::setPosMs invalid play"
                     );
 
                 return false;
@@ -1207,7 +1207,7 @@ namespace Menge
 
 		if( _source->worker != nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine::playSoundBufferUpdate_ _source worker is not null"
+			LOGGER_ERROR("SoundEngine::playSoundBufferUpdate_ _source worker is not null"
 				);
 
 			return false;
@@ -1219,7 +1219,6 @@ namespace Menge
 
 			SoundBufferInterfacePtr soundBuffer = _source->source->getSoundBuffer();
 
-            worker->setServiceProvider( m_serviceProvider );
 			worker->initialize( soundBuffer );
 
 			_source->worker = worker;
@@ -1240,7 +1239,7 @@ namespace Menge
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine:getPosMs not found emitter id %d"
+			LOGGER_ERROR("SoundEngine:getPosMs not found emitter id %d"
 				, _emitterId
 				);
 

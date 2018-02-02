@@ -24,25 +24,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PluginPathFinder::_initialize()
 	{		
-		this->addModuleFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModulePathFinder" )
+		this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModulePathFinder" )
 			, new ModuleFactory<ModulePathFinder>() );
 
-		this->addModuleFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleAreaOfInterest" )
+		this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAreaOfInterest" )
 			, new ModuleFactory<ModuleAreaOfInterest>() );
 		
-		this->addModuleFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleCollision" )
+		this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleCollision" )
 			, new ModuleFactory<ModuleCollision>() );
 
-		this->addModuleFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleMagnet" )
+		this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleMagnet" )
 			, new ModuleFactory<ModuleMagnet>() );
 
-		this->addModuleFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleInvader" )
+		this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleInvader" )
 			, new ModuleFactory<ModuleInvader>() );		
 
-		this->addModuleFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBurritoWorld" )
+		this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleBurritoWorld" )
 			, new ModuleFactory<ModuleBurritoWorld>() );
 
-		this->addModuleFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBounce" )
+		this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleBounce" )
 			, new ModuleFactory<ModuleBounce>() );		
 
 		return true;

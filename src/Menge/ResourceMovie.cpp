@@ -116,7 +116,7 @@ namespace Menge
 				continue;
 			}
 			
-			ResourceShapePtr resourceShape = RESOURCE_SERVICE( m_serviceProvider )
+			ResourceShapePtr resourceShape = RESOURCE_SERVICE()
 				->getResourceReferenceT<ResourceShapePtr>( layer.source );
 				
 			return resourceShape;
@@ -185,7 +185,7 @@ namespace Menge
     {
 		if( mt::equal_f_z( m_frameDuration ) == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_isValid: '%s' group '%s' m_frameDuration == 0.f"
+			LOGGER_ERROR("ResourceMovie::_isValid: '%s' group '%s' m_frameDuration == 0.f"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				);
@@ -193,15 +193,15 @@ namespace Menge
 			return false;
 		}
 
-		uint32_t limitMovieWidth = CONFIG_VALUE( m_serviceProvider, "Limit", "MovieWidth", 16384U );
-		uint32_t limitMovieHeight = CONFIG_VALUE( m_serviceProvider, "Limit", "MovieHeight", 16384U );
+		uint32_t limitMovieWidth = CONFIG_VALUE( "Limit", "MovieWidth", 16384U );
+		uint32_t limitMovieHeight = CONFIG_VALUE( "Limit", "MovieHeight", 16384U );
 
 		uint32_t width = (uint32_t)(m_size.x + 0.5f);
 		uint32_t height = (uint32_t)(m_size.y + 0.5f);
 
 		if( (width > limitMovieWidth && limitMovieWidth != 0U) || (height > limitMovieHeight && limitMovieHeight != 0U) )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid '%s' group '%s' invalid limit %d:%d size %d:%d"
+			LOGGER_ERROR("ResourceMovie::isValid '%s' group '%s' invalid limit %d:%d size %d:%d"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, limitMovieWidth
@@ -235,7 +235,7 @@ namespace Menge
             FindResourceMovieValidParent frmvp(layer.parent);
             if( std::find_if( m_layers.begin(), m_layers.end(), frmvp ) == m_layers.end() )
             {
-                LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid '%s' group '%s' layer %s:%d invalid parent %d"
+                LOGGER_ERROR("ResourceMovie::isValid '%s' group '%s' layer %s:%d invalid parent %d"
                     , this->getName().c_str()
 					, this->getGroup().c_str()
                     , layer.name.c_str()
@@ -249,7 +249,7 @@ namespace Menge
 
         if( m_filePath.empty() == true )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' group '%s' don`t have Key Frames Pack Path"
+            LOGGER_ERROR("ResourceMovie::isValid: '%s' group '%s' don`t have Key Frames Pack Path"
                 , this->getName().c_str()
 				, this->getGroup().c_str()
                 );
@@ -259,12 +259,12 @@ namespace Menge
 
 		const ConstString & category = this->getCategory();
 
-		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( category, m_filePath, false );
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' group '%s' invalid open file '%s'"
+			LOGGER_ERROR("ResourceMovie::isValid: '%s' group '%s' invalid open file '%s'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, m_filePath.c_str()
@@ -277,12 +277,12 @@ namespace Menge
 
 		if( dataflowType.empty() == true )
 		{
-			dataflowType = CODEC_SERVICE(m_serviceProvider)
+			dataflowType = CODEC_SERVICE()
 				->findCodecType( m_filePath );
 
 			if( dataflowType.empty() == true )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' group '%s' you must determine codec for file '%s'"
+				LOGGER_ERROR("ResourceMovie::isValid: '%s' group '%s' you must determine codec for file '%s'"
 					, this->getName().c_str()
 					, this->getGroup().c_str()
 					, m_filePath.c_str()
@@ -292,7 +292,7 @@ namespace Menge
 			}
 		}
 
-		MovieFramePackInterfacePtr framePack = DATA_SERVICE(m_serviceProvider)
+		MovieFramePackInterfacePtr framePack = DATA_SERVICE()
 			->dataflowT<MovieFramePackInterfacePtr>( dataflowType, stream );
 
 		if( framePack == nullptr )
@@ -312,7 +312,7 @@ namespace Menge
 
             if( framePack->hasLayer( layer.index ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' group '%s' invalid layer %d '%s' type '%s'"
+                LOGGER_ERROR("ResourceMovie::isValid: '%s' group '%s' invalid layer %d '%s' type '%s'"
                     , this->getName().c_str()
 					, this->getGroup().c_str()
                     , layer.index
@@ -325,11 +325,11 @@ namespace Menge
                 continue;
             }
 
-			if( layer.type == CONST_STRING( m_serviceProvider, MovieSceneEffect ) )
+			if( layer.type == CONST_STRING( MovieSceneEffect ) )
 			{
 				if( layer.isThreeD() == true )
 				{
-					LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d' SceneEffect should not be threeD"
+					LOGGER_ERROR("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d' SceneEffect should not be threeD"
 						, this->getName().c_str()
 						, this->getGroup().c_str()
 						, layer.index
@@ -341,11 +341,11 @@ namespace Menge
 				}
 			}
 
-			float MovieImageScale = CONFIG_VALUE( m_serviceProvider, "Limit", "MovieImageScale", 0.75f );
+			float MovieImageScale = CONFIG_VALUE( "Limit", "MovieImageScale", 0.75f );
 
-			if( layer.type == CONST_STRING(m_serviceProvider, Image)
-				|| layer.type == CONST_STRING( m_serviceProvider, Animation )
-				|| layer.type == CONST_STRING( m_serviceProvider, Video )
+			if( layer.type == CONST_STRING( Image)
+				|| layer.type == CONST_STRING( Animation )
+				|| layer.type == CONST_STRING( Video )
 				)
 			{
 				const MovieLayerFrame & layerFrame = framePack->getLayer( layer.index );
@@ -354,7 +354,7 @@ namespace Menge
 				{
 					if( ::fabsf( layerFrame.source.scale.x ) < MovieImageScale || ::fabsf( layerFrame.source.scale.y ) < MovieImageScale )
 					{
-						LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
+						LOGGER_ERROR("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
 							, this->getName().c_str()
 							, this->getGroup().c_str()
 							, layer.index
@@ -389,7 +389,7 @@ namespace Menge
 
 					if( scale_max_x < MovieImageScale || scale_max_y < MovieImageScale )
 					{
-						LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' minmax and scale %f:%f (please rescale on graphics editor and re-export)"
+						LOGGER_ERROR("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' minmax and scale %f:%f (please rescale on graphics editor and re-export)"
 							, this->getName().c_str()
 							, this->getGroup().c_str()
 							, layer.index
@@ -406,20 +406,20 @@ namespace Menge
 				}
 			}
 
-			if( layer.type == CONST_STRING(m_serviceProvider, MovieSceneEffect) 
-				|| layer.type == CONST_STRING(m_serviceProvider, MovieText)
-				|| layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) 				
-				|| layer.type == CONST_STRING(m_serviceProvider, Sound)
-				|| layer.type == CONST_STRING(m_serviceProvider, SoundId)
-				|| layer.type == CONST_STRING(m_serviceProvider, MovieSprite)
-				|| layer.type == CONST_STRING(m_serviceProvider, MovieSlot)
+			if( layer.type == CONST_STRING( MovieSceneEffect) 
+				|| layer.type == CONST_STRING( MovieText)
+				|| layer.type == CONST_STRING( MovieTextCenter) 				
+				|| layer.type == CONST_STRING( Sound)
+				|| layer.type == CONST_STRING( SoundId)
+				|| layer.type == CONST_STRING( MovieSprite)
+				|| layer.type == CONST_STRING( MovieSlot)
 				)
 			{
 				bool hide = framePack->isLayerPermanentlyHide( layer.index );
 
 				if( hide == true )
 				{
-					LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' permanently hide"
+					LOGGER_ERROR("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' permanently hide"
 						, this->getName().c_str()
 						, this->getGroup().c_str()
 						, layer.index
@@ -433,15 +433,15 @@ namespace Menge
 				}
 			}
 
-			if( layer.type == CONST_STRING(m_serviceProvider, MovieText)
-				|| layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter)
+			if( layer.type == CONST_STRING( MovieText)
+				|| layer.type == CONST_STRING( MovieTextCenter)
 				)
 			{
 				const TextEntryInterface * entry;
-				if( TEXT_SERVICE(m_serviceProvider)
+				if( TEXT_SERVICE()
 					->existText( layer.name, &entry ) == false )
 				{
-					LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' text '%s' not found"
+					LOGGER_ERROR("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' text '%s' not found"
 						, this->getName().c_str()
 						, this->getGroup().c_str()
 						, layer.index
@@ -483,7 +483,7 @@ namespace Menge
 		//FIX THIS
 		if( m_dataflowType.empty() == true )
 		{
-			m_converterType = CONST_STRING(m_serviceProvider, xmlToAekMovie);
+			m_converterType = CONST_STRING( xmlToAekMovie);
 		}
 
         m_layers.clear();
@@ -647,29 +647,29 @@ namespace Menge
 
 			m_maxLayerIndex = m_maxLayerIndex > layer.index ? m_maxLayerIndex : layer.index;
             
-			if( layer.type == CONST_STRING( m_serviceProvider, MovieSlot ) )
+			if( layer.type == CONST_STRING( MovieSlot ) )
             {
 				layer.state |= MOVIE_LAYER_NODE;
             }
-			else if( layer.type == CONST_STRING( m_serviceProvider, MovieSceneEffect ) )
+			else if( layer.type == CONST_STRING( MovieSceneEffect ) )
             {
                 layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_SCENE_EFFECT;
 
                 layer.parent = movie_layer_parent_none;
             }
-            else if( layer.type == CONST_STRING(m_serviceProvider, MovieText) )
+            else if( layer.type == CONST_STRING( MovieText) )
             {
                 layer.state |= MOVIE_LAYER_NODE;
             }
-			else if( layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) )
+			else if( layer.type == CONST_STRING( MovieTextCenter) )
 			{
 				layer.state |= MOVIE_LAYER_NODE;
 			}
-            else if( layer.type == CONST_STRING(m_serviceProvider, MovieNullObject) )
+            else if( layer.type == CONST_STRING( MovieNullObject) )
             {
                 layer.state |= MOVIE_LAYER_NODE;
             }
-            else if( layer.type == CONST_STRING(m_serviceProvider, Image) )
+            else if( layer.type == CONST_STRING( Image) )
             {				
                 layer.state |= MOVIE_LAYER_NODE;
 				
@@ -678,7 +678,7 @@ namespace Menge
 					layer.state |= MOVIE_LAYER_MESH_2D;
 				}
             }
-            else if( layer.type == CONST_STRING(m_serviceProvider, SolidSprite) )
+            else if( layer.type == CONST_STRING( SolidSprite) )
             {
                 layer.state |= MOVIE_LAYER_NODE;
 
@@ -687,65 +687,65 @@ namespace Menge
 					layer.state |= MOVIE_LAYER_MESH_2D;
 				}
             }
-            else if( layer.type == CONST_STRING(m_serviceProvider, MovieSocketImage) )
+            else if( layer.type == CONST_STRING( MovieSocketImage) )
             {
                 layer.state |= MOVIE_LAYER_NODE;
             }
-            else if( layer.type == CONST_STRING(m_serviceProvider, MovieSocketShape) )
+            else if( layer.type == CONST_STRING( MovieSocketShape) )
             {
                 layer.state |= MOVIE_LAYER_NODE;
             }
-            else if( layer.type == CONST_STRING(m_serviceProvider, Animation) )
+            else if( layer.type == CONST_STRING( Animation) )
             {
                 layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
             }
-            else if( layer.type == CONST_STRING(m_serviceProvider, Video) )
+            else if( layer.type == CONST_STRING( Video) )
             {
                 layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
             }
-            else if( layer.type == CONST_STRING(m_serviceProvider, Sound) )
+            else if( layer.type == CONST_STRING( Sound) )
             {
                 layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_AUDIO;
             }
-			else if( layer.type == CONST_STRING(m_serviceProvider, SoundId) )
+			else if( layer.type == CONST_STRING( SoundId) )
 			{
 				layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_AUDIO | MOVIE_LAYER_UNSTOPPABLE;
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, MovieSprite) )
+			else if( layer.type == CONST_STRING( MovieSprite) )
 			{
 				layer.state |= MOVIE_LAYER_NODE;
 			}
-            else if( layer.type == CONST_STRING(m_serviceProvider, ParticleEmitter) )
+            else if( layer.type == CONST_STRING( ParticleEmitter) )
             {
                 layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
             }
-			else if( layer.type == CONST_STRING(m_serviceProvider, ParticleEmitter2) )
+			else if( layer.type == CONST_STRING( ParticleEmitter2) )
 			{
 				layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
 			}
-			else if( layer.type == CONST_STRING( m_serviceProvider, MovieParticle ) )
+			else if( layer.type == CONST_STRING( MovieParticle ) )
 			{
 				//Empty
 			}
-            else if( layer.type == CONST_STRING(m_serviceProvider, Movie) )
+            else if( layer.type == CONST_STRING( Movie) )
             {
                 layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE;
             }
-            else if( layer.type == CONST_STRING(m_serviceProvider, SubMovie) )
+            else if( layer.type == CONST_STRING( SubMovie) )
             {
                 layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE | MOVIE_LAYER_SUB_MOVIE;
             }
-            else if( layer.type == CONST_STRING(m_serviceProvider, MovieInternalObject) )
+            else if( layer.type == CONST_STRING( MovieInternalObject) )
             {
 				layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_INTERNAL;
             }
-            else if( layer.type == CONST_STRING(m_serviceProvider, MovieEvent) )
+            else if( layer.type == CONST_STRING( MovieEvent) )
             {
                 layer.state |= MOVIE_LAYER_EXTRA;
             }
             else
             {
-				LOGGER_ERROR( m_serviceProvider )("ResourceMovie: '%s' group '%s' can't setup layer2d '%s' type '%s'"
+				LOGGER_ERROR("ResourceMovie: '%s' group '%s' can't setup layer2d '%s' type '%s'"
                     , this->getName().c_str()
 					, this->getGroup().c_str()
                     , layer.source.c_str()
@@ -833,12 +833,12 @@ namespace Menge
 			xml_path += m_filePath;
 			xml_path.replace_last( "xml" );
 
-			FilePath c_xml_path = Helper::stringizeFilePath( m_serviceProvider, xml_path );
+			FilePath c_xml_path = Helper::stringizeFilePath( xml_path );
 
-			if( CONVERTER_SERVICE(m_serviceProvider)
+			if( CONVERTER_SERVICE()
 				->convert( m_converterType, m_category, c_xml_path, m_filePath ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' group '%s' can't convert '%s':'%s'"
+				LOGGER_ERROR("ResourceMovie::_convert: '%s' group '%s' can't convert '%s':'%s'"
 					, this->getName().c_str() 
 					, this->getGroup().c_str()
 					, c_xml_path.c_str()
@@ -851,12 +851,12 @@ namespace Menge
 
 		if( m_dataflowType.empty() == true )
 		{
-			m_dataflowType = CODEC_SERVICE(m_serviceProvider)
+			m_dataflowType = CODEC_SERVICE()
 				->findCodecType( m_filePath );
 
 			if( m_dataflowType.empty() == true )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' group '%s' you must determine codec for file '%s'"
+				LOGGER_ERROR("ResourceMovie::_convert: '%s' group '%s' you must determine codec for file '%s'"
 					, this->getName().c_str()
 					, this->getGroup().c_str()
 					, m_filePath.c_str()
@@ -878,7 +878,7 @@ namespace Menge
 
 		if( m_filePath.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' group '%s' don`t have Key Frames Pack Path"
+			LOGGER_ERROR("ResourceMovie::_compile: '%s' group '%s' don`t have Key Frames Pack Path"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				);
@@ -892,7 +892,7 @@ namespace Menge
 
 		if( data == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' group '%s' can` t get frame pack '%s'"
+			LOGGER_ERROR("ResourceMovie::_compile: '%s' group '%s' can` t get frame pack '%s'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, m_filePath.c_str()
@@ -909,7 +909,7 @@ namespace Menge
 	DataInterfacePtr ResourceMovie::compileData_( const ConstString & _category, const FilePath & _path )
 	{
 		DataInterfacePtr prefetch_data;
-		if( PREFETCHER_SERVICE(m_serviceProvider)
+		if( PREFETCHER_SERVICE()
 			->getData( _category, _path, prefetch_data ) == true )
 		{
 			return prefetch_data;
@@ -917,12 +917,12 @@ namespace Menge
 
 		const ConstString & category = this->getCategory();
 				
-		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( category, _path, false );
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::compileData_: '%s' group '%s' don`t open Frames Pack '%s'"
+			LOGGER_ERROR("ResourceMovie::compileData_: '%s' group '%s' don`t open Frames Pack '%s'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, _path.c_str()
@@ -931,12 +931,12 @@ namespace Menge
 			return nullptr;
 		}
 
-		DataInterfacePtr data = DATA_SERVICE(m_serviceProvider)
+		DataInterfacePtr data = DATA_SERVICE()
 			->dataflow( m_dataflowType, stream );
 
 		if( data == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::compileData_: '%s' group '%s' can` t dataflow '%s' from '%s'"
+			LOGGER_ERROR("ResourceMovie::compileData_: '%s' group '%s' can` t dataflow '%s' from '%s'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, m_dataflowType.c_str()
@@ -960,7 +960,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::visitResourceMovie '%s' group '%s' not compile"
+			LOGGER_ERROR("ResourceMovie::visitResourceMovie '%s' group '%s' not compile"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				);

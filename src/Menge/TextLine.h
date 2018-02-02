@@ -33,7 +33,8 @@ namespace Menge
 	class TextLine
 	{
 	public:
-		TextLine( ServiceProviderInterface * _serviceProvider, float _charOffset );
+        TextLine( float _charOffset );
+        ~TextLine();
 
 	public:
 		bool initialize( const TextFontInterfacePtr & _font, const U32String & _text );
@@ -50,8 +51,6 @@ namespace Menge
 		void advanceCharOffset( const CharData & _cd, float _charScale, mt::vec2f & _offset ) const;
 
 	private:
-        ServiceProviderInterface * m_serviceProvider;
-
 		float m_length;
 
 		mutable float m_charOffset;

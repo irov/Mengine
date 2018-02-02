@@ -53,7 +53,7 @@ namespace Menge
 	{
 		if( m_sequence.empty() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_compile: '%s' sequence count is empty"
+			LOGGER_ERROR("ResourceAnimation::_compile: '%s' sequence count is empty"
 				, this->getName().c_str()
 				);
 
@@ -68,12 +68,12 @@ namespace Menge
 		{
 			AnimationSequence & sequence = *(it);
 			
-			ResourceImagePtr resource  = RESOURCE_SERVICE(m_serviceProvider)
+			ResourceImagePtr resource  = RESOURCE_SERVICE()
 				->getResourceT<ResourceImagePtr>( sequence.resourceName );
 
 			if( resource == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_compile: '%s' Image resource not found resource '%s'"
+				LOGGER_ERROR("ResourceAnimation::_compile: '%s' Image resource not found resource '%s'"
 					, this->getName().c_str()
 					, sequence.resourceName.c_str() 
 					);
@@ -115,10 +115,10 @@ namespace Menge
 			const AnimationSequence & sequence = *(it);
 
 			ResourceImagePtr resourceImage;
-			if( RESOURCE_SERVICE(m_serviceProvider)
+			if( RESOURCE_SERVICE()
 				->hasResourceT<ResourceImagePtr>( sequence.resourceName, &resourceImage ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid: '%s' not found image resource '%s'"
+				LOGGER_ERROR("ResourceAnimation::_isValid: '%s' not found image resource '%s'"
 					, this->getName().c_str()
 					, sequence.resourceName.c_str() 
 					);
@@ -128,7 +128,7 @@ namespace Menge
 
             if( resourceImage->isValid() == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("ResourceAnimation::_isValid %s invalid validate sequence resource '%s'"
+                LOGGER_ERROR("ResourceAnimation::_isValid %s invalid validate sequence resource '%s'"
                     , this->getName().c_str()
                     , resourceImage->getName().c_str()
                     );
@@ -157,11 +157,11 @@ namespace Menge
             total_memory += textureSize;
 		}
 
-		uint32_t animationMemoryLimit = CONFIG_VALUE(m_serviceProvider, "Limit", "AnimationMemoryLimit", 4194304U ); //4kb
+		uint32_t animationMemoryLimit = CONFIG_VALUE("Limit", "AnimationMemoryLimit", 4194304U ); //4kb
 		
 		if( total_memory > animationMemoryLimit && animationMemoryLimit != 0U )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid: '%s' overflow %.2fmb max video memory %.2fmb (coeff %f)"
+			LOGGER_ERROR("ResourceAnimation::_isValid: '%s' overflow %.2fmb max video memory %.2fmb (coeff %f)"
 				, this->getName().c_str()
 				, float(total_memory) / (1024.f * 1024.f)
 				, float(animationMemoryLimit) / (1024.f * 1024.f)
@@ -188,7 +188,7 @@ namespace Menge
 
         if( _index >= sequenceCount )
         {
-            LOGGER_ERROR( m_serviceProvider )("ResourceAnimation::getSequenceDelay: '%s' sequence '%u' out of range '%u'"
+            LOGGER_ERROR("ResourceAnimation::getSequenceDelay: '%s' sequence '%u' out of range '%u'"
                 , this->getName().c_str()
                 , _index
                 , sequenceCount
@@ -212,7 +212,7 @@ namespace Menge
 
         if( _index >= sequenceCount )
         {
-            LOGGER_ERROR( m_serviceProvider )("ResourceAnimation::getSequenceResourceName: '%s' sequence '%u' out of range '%u'"
+            LOGGER_ERROR("ResourceAnimation::getSequenceResourceName: '%s' sequence '%u' out of range '%u'"
                 , this->getName().c_str()
                 , _index
                 , sequenceCount
@@ -236,7 +236,7 @@ namespace Menge
 #   ifdef _DEBUG
         if( sequenceCount == 0 )
         {
-            LOGGER_ERROR( m_serviceProvider )("ResourceAnimation::getLastFrameIndex: '%s' invalid get last frame on empty sequences"
+            LOGGER_ERROR("ResourceAnimation::getLastFrameIndex: '%s' invalid get last frame on empty sequences"
                 , this->getName().c_str()
                 );
 
@@ -266,7 +266,7 @@ namespace Menge
 
         if( _index >= sequenceCount )
         {
-            LOGGER_ERROR( m_serviceProvider )("ResourceAnimation::getSequenceResource: '%s' sequence '%u' out of range '%u'"
+            LOGGER_ERROR("ResourceAnimation::getSequenceResource: '%s' sequence '%u' out of range '%u'"
                 , this->getName().c_str()
                 , _index
                 , sequenceCount

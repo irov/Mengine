@@ -8,6 +8,7 @@ namespace Menge
 	{
 	public:
 		BoundingBox();
+        ~BoundingBox();
 
 	public:
 		inline const mt::box2f & getBoundingBox() const;

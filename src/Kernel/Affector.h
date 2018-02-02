@@ -14,8 +14,6 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class ServiceProviderInterface;
-	//////////////////////////////////////////////////////////////////////////
 	class AffectorCallback
 		: public FactorablePtr
 	{
@@ -32,10 +30,6 @@ namespace Menge
 	public:
 		Affector();
 		virtual ~Affector();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-		ServiceProviderInterface * getServiceProvider() const;
 
 	public:
 		void setAffectorType( EAffectorType _type );
@@ -73,8 +67,6 @@ namespace Menge
 		virtual void stop() = 0;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		EAffectorType m_type;
 		AFFECTOR_ID m_id;
 
@@ -341,9 +333,13 @@ namespace Menge
 			typedef MemberAffectorAccumulateLinear<C, M, T, void> AffectorType;
 
         public:
-            NodeAffectorCreatorAccumulateLinear( ServiceProviderInterface * _serviceProvider )
+            NodeAffectorCreatorAccumulateLinear()
             {
-                m_factory = new FactoryPool<AffectorType, 4>( _serviceProvider );
+                m_factory = new FactoryPool<AffectorType, 4>();
+            }
+
+            ~NodeAffectorCreatorAccumulateLinear()
+            {
             }
 
 		public:
@@ -353,7 +349,6 @@ namespace Menge
 			{
 				AffectorType * affector = m_factory->createObject();
 
-				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -369,8 +364,6 @@ namespace Menge
 			}
 
         protected:
-            ServiceProviderInterface * m_serviceProvider;
-
 			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -381,10 +374,13 @@ namespace Menge
 			typedef MemberAffectorInterpolateLinear<C, M, T, MA> AffectorType;
 
         public:
-            NodeAffectorCreatorInterpolateLinear( ServiceProviderInterface * _serviceProvider )
-                : m_serviceProvider( _serviceProvider )
+            NodeAffectorCreatorInterpolateLinear()
             {
-                m_factory = new FactoryPool<AffectorType, 4>( m_serviceProvider );
+                m_factory = new FactoryPool<AffectorType, 4>();
+            }
+
+            ~NodeAffectorCreatorInterpolateLinear()
+            {
             }
 
 		public:
@@ -394,7 +390,6 @@ namespace Menge
 			{
 				AffectorType * affector = m_factory->createObject();
 
-				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -410,8 +405,6 @@ namespace Menge
 			}
 
 		protected:
-            ServiceProviderInterface * m_serviceProvider;
-
             FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -422,11 +415,14 @@ namespace Menge
 			typedef MemberAffectorInterpolateLinear<C, M, T, void> AffectorType;
 
         public:
-            NodeAffectorCreatorInterpolateLinear( ServiceProviderInterface * _serviceProvider )
-                : m_serviceProvider( _serviceProvider )
+            NodeAffectorCreatorInterpolateLinear()
             {
-                m_factory = new FactoryPool<AffectorType, 4>( m_serviceProvider );
+                m_factory = new FactoryPool<AffectorType, 4>();
             }                       
+
+            ~NodeAffectorCreatorInterpolateLinear()
+            {
+            }
             
 		public:
 			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
@@ -435,7 +431,6 @@ namespace Menge
 			{
 				AffectorType * affector = m_factory->createObject();
 
-				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -451,8 +446,6 @@ namespace Menge
 			}
 
 		protected:
-            ServiceProviderInterface * m_serviceProvider;
-
 			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -463,10 +456,13 @@ namespace Menge
 			typedef MemberAffectorInterpolateQuadratic<C, M, T> AffectorType;
 
         public:
-            NodeAffectorCreatorInterpolateQuadratic( ServiceProviderInterface * _serviceProvider )
-                : m_serviceProvider( _serviceProvider )
+            NodeAffectorCreatorInterpolateQuadratic()
             {
-                m_factory = new FactoryPool<AffectorType, 4>( m_serviceProvider );
+                m_factory = new FactoryPool<AffectorType, 4>();
+            }
+
+            ~NodeAffectorCreatorInterpolateQuadratic()
+            {
             }
 
 		public:
@@ -476,7 +472,6 @@ namespace Menge
 			{
 				AffectorType * affector = m_factory->createObject();
 
-				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -492,8 +487,6 @@ namespace Menge
 			}
 
 		protected:
-            ServiceProviderInterface * m_serviceProvider;
-
 			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -504,10 +497,13 @@ namespace Menge
 			typedef MemberAffectorInterpolateBezier<C, M, T, N> AffectorType;
 
         public:
-            NodeAffectorCreatorInterpolateBezier( ServiceProviderInterface * _serviceProvider )
-                : m_serviceProvider( _serviceProvider )
+            NodeAffectorCreatorInterpolateBezier()
             {
-                m_factory = new FactoryPool<AffectorType, 4>( m_serviceProvider );
+                m_factory = new FactoryPool<AffectorType, 4>();
+            }
+
+            ~NodeAffectorCreatorInterpolateBezier()
+            {
             }
 
 		public:
@@ -517,7 +513,6 @@ namespace Menge
 			{
 				AffectorType * affector = m_factory->createObject();
 
-				affector->setServiceProvider( m_serviceProvider );
 				affector->setAffectorType( _type );
 
 				affector->setCallback( _cb );
@@ -533,8 +528,6 @@ namespace Menge
 			}
 
 		protected:
-            ServiceProviderInterface * m_serviceProvider;
-
             FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////

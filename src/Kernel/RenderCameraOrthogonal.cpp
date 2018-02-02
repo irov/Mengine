@@ -110,7 +110,7 @@ namespace	Menge
 			mt::vec3f wm_up;
 			mt::mul_v3_v3_m4_r( wm_up, m_cameraUp, wm );
 
-			RENDER_SERVICE( m_serviceProvider )
+			RENDER_SERVICE()
 				->makeViewMatrixLookAt( m_viewMatrix, wm_position, wm_direction, wm_up, m_cameraRightSign );
 
 			mt::inv_m4_m4( m_viewMatrixInv, m_viewMatrix );
@@ -132,7 +132,7 @@ namespace	Menge
 			float gameViewportAspect;
 			Viewport gameViewport;
 
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->getGameViewport( gameViewportAspect, gameViewport );
 
 			Viewport renderViewportWM;
@@ -155,7 +155,7 @@ namespace	Menge
 			renderViewport = m_orthogonalViewport;
 		}
 
-		RENDER_SERVICE( m_serviceProvider )
+		RENDER_SERVICE()
 			->makeProjectionOrthogonal( m_projectionMatrix, renderViewport, m_cameraNear, m_cameraFar );
 
 		mt::inv_m4_m4( m_projectionMatrixInv, m_projectionMatrix );

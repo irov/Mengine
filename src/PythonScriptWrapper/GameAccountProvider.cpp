@@ -31,20 +31,20 @@ namespace Menge
     {
         EVENTABLE_METHOD( m_game, EVENT_GAME_DELETE_ACCOUNT )
             ->onGameDeleteAccount( _accountID );
-        //EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_DELETE_ACCOUNT)( _accountID );
+        //EVENTABLE_CALL(m_game, EVENT_GAME_DELETE_ACCOUNT)( _accountID );
     }
     //////////////////////////////////////////////////////////////////////////
     void GameAccountProvider::onSelectAccount( const ConstString & _accountID )
     {
         EVENTABLE_METHOD( m_game, EVENT_GAME_SELECT_ACCOUNT )
             ->onGameSelectAccount( _accountID );
-        //EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_SELECT_ACCOUNT)( _accountID );
+        //EVENTABLE_CALL(m_game, EVENT_GAME_SELECT_ACCOUNT)( _accountID );
     }
     //////////////////////////////////////////////////////////////////////////
     void GameAccountProvider::onUnselectAccount( const ConstString & _accountID )
     {
         EVENTABLE_METHOD( m_game, EVENT_GAME_UNSELECT_ACCOUNT )
             ->onGameUselectAccount( _accountID );
-        //EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_UNSELECT_ACCOUNT)( _accountID );
+        //EVENTABLE_CALL(m_game, EVENT_GAME_UNSELECT_ACCOUNT)( _accountID );
     }
 }

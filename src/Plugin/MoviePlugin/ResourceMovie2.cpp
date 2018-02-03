@@ -150,7 +150,7 @@ namespace Menge
 		return compositionData;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceMovie2::setMovieInstance( aeMovieInstance * _instance )
+	void ResourceMovie2::setMovieInstance( const aeMovieInstance * _instance )
 	{
 		m_instance = _instance;
 	}

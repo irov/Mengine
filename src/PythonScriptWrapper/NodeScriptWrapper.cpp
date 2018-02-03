@@ -48,6 +48,8 @@
 #   include "Menge/ResourceImageSubstractRGBAndAlpha.h"
 #   include "Menge/ResourceImageSubstract.h"
 
+#   include "Plugin/MoviePlugin/ResourceMovie2.h"
+
 #   include "Interface/ApplicationInterface.h"
 #   include "Interface/MousePickerSystemInterface.h"
 
@@ -3321,6 +3323,7 @@ namespace Menge
 			, public ConcreteVisitor<ResourceHIT>
 			, public ConcreteVisitor<ResourceSound>
 			, public ConcreteVisitor<ResourceMovie>
+            , public ConcreteVisitor<ResourceMovie2>
 		{
 		public:
 			PrefetchResourceVisitor( const ConstString & _category, const PrefetcherObserverInterfacePtr & _observer )
@@ -3381,6 +3384,21 @@ namespace Menge
                     m_process = true;
                 }
 			}
+
+            void accept( ResourceMovie2 * _resource ) override
+            {
+                (void)_resource;
+                //const FilePath & filePath = _resource->getFilePath();
+                //const ConstString & dataflowType = _resource->getDataflowType();
+
+                //if( PREFETCHER_SERVICE()
+                //    ->prefetchData( m_category, filePath, dataflowType, m_observer ) == true )
+                //{
+                //    m_process = true;
+                //}
+
+                m_process = true;
+            }
 
 		protected:
 			ConstString m_category;

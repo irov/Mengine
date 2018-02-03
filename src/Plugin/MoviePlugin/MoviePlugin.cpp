@@ -101,7 +101,7 @@ namespace Menge
 			: public ResourcePrototypeGenerator<ResourceMovie2, 128>
 		{
 		public:
-			ResourceMovie2PrototypeGenerator( aeMovieInstance * _instance )
+			ResourceMovie2PrototypeGenerator( const aeMovieInstance * _instance )
 				: m_instance( _instance )
 			{
 			}
@@ -134,7 +134,7 @@ namespace Menge
             }
 
 		protected:
-			aeMovieInstance * m_instance;
+            const aeMovieInstance * m_instance;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////

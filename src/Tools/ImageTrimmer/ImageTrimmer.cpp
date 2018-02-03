@@ -56,21 +56,23 @@ SERVICE_EXTERN( PluginService );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-    static bool initializeEngine( Menge::ServiceProviderInterface ** _serviceProvider )
+    static bool initializeEngine()
     {
         Menge::ServiceProviderInterface * serviceProvider;
         SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
 
-        SERVICE_CREATE( serviceProvider, FactoryService );
+        SERVICE_PROVIDER_SETUP( serviceProvider );
 
-        SERVICE_CREATE( serviceProvider, OptionsService );
+        SERVICE_CREATE( FactoryService );
 
-        SERVICE_CREATE( serviceProvider, UnicodeSystem );
+        SERVICE_CREATE( OptionsService );
 
-        SERVICE_CREATE( serviceProvider, StringizeService );
-        SERVICE_CREATE( serviceProvider, ArchiveService );
+        SERVICE_CREATE( UnicodeSystem );
 
-        SERVICE_CREATE( serviceProvider, LoggerService );
+        SERVICE_CREATE( StringizeService );
+        SERVICE_CREATE( ArchiveService );
+
+        SERVICE_CREATE( LoggerService );
 
         class MyLogger
             : public LoggerInterface
@@ -84,16 +86,6 @@ namespace Menge
             void finalize() override
             {
             };
-
-            void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override
-            {
-                m_serviceProvider = _serviceProvider;
-            }
-
-            ServiceProviderInterface * getServiceProvider() const override
-            {
-                return m_serviceProvider;
-            }
 
             MyLogger()
                 : m_verboseLevel( LM_WARNING )
@@ -152,65 +144,60 @@ namespace Menge
         protected:
             EMessageLevel m_verboseLevel;
             uint32_t m_verboseFlag;
-
-        private:
-            ServiceProviderInterface * m_serviceProvider;
         };
 
-        LOGGER_SERVICE( serviceProvider )
+        LOGGER_SERVICE()
             ->setVerboseLevel( LM_WARNING );
 
-        LOGGER_SERVICE( serviceProvider )
+        LOGGER_SERVICE()
             ->registerLogger( new MyLogger );
 
-        SERVICE_CREATE( serviceProvider, CodecService );
-        SERVICE_CREATE( serviceProvider, DataService );
-        SERVICE_CREATE( serviceProvider, ConfigService );
+        SERVICE_CREATE( CodecService );
+        SERVICE_CREATE( DataService );
+        SERVICE_CREATE( ConfigService );
 
-        SERVICE_CREATE( serviceProvider, ThreadSystem );
+        SERVICE_CREATE( ThreadSystem );
 
-        SERVICE_CREATE( serviceProvider, ThreadService );
-        SERVICE_CREATE( serviceProvider, MemoryService );
-        SERVICE_CREATE( serviceProvider, PluginSystem );
-        SERVICE_CREATE( serviceProvider, PluginService );
+        SERVICE_CREATE( ThreadService );
+        SERVICE_CREATE( MemoryService );
+        SERVICE_CREATE( PluginSystem );
+        SERVICE_CREATE( PluginService );
 
-        SERVICE_CREATE( serviceProvider, WindowsLayer );
-        SERVICE_CREATE( serviceProvider, Platform );
-        SERVICE_CREATE( serviceProvider, FileService );
+        SERVICE_CREATE( WindowsLayer );
+        SERVICE_CREATE( Platform );
+        SERVICE_CREATE( FileService );
 
-        PLUGIN_CREATE( serviceProvider, MengeWin32FileGroup );
+        PLUGIN_CREATE( MengeWin32FileGroup );
 
-        PLUGIN_CREATE( serviceProvider, MengeZip );
-        PLUGIN_CREATE( serviceProvider, MengeLZ4 );
-        PLUGIN_CREATE( serviceProvider, MengeImageCodec );
+        PLUGIN_CREATE( MengeZip );
+        PLUGIN_CREATE( MengeLZ4 );
+        PLUGIN_CREATE( MengeImageCodec );
 
-        if( FILE_SERVICE( serviceProvider )
-            ->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), Helper::stringizeString( serviceProvider, "global" ) ) == false )
+        if( FILE_SERVICE()
+            ->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), Helper::stringizeString( "global" ) ) == false )
         {
             return false;
         }
 
-        ConstString dev = Helper::stringizeString( serviceProvider, "dev" );
+        ConstString dev = Helper::stringizeString( "dev" );
 
-        if( FILE_SERVICE( serviceProvider )
-            ->mountFileGroup( dev, ConstString::none(), Helper::emptyPath(), Helper::stringizeString( serviceProvider, "global" ) ) == false )
+        if( FILE_SERVICE()
+            ->mountFileGroup( dev, ConstString::none(), Helper::emptyPath(), Helper::stringizeString( "global" ) ) == false )
         {
             return false;
         }
-
-        *_serviceProvider = serviceProvider;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool trimImage( Menge::ServiceProviderInterface * serviceProvider, const WString & in, const WString & out, const WString & info )
+    static bool trimImage( const WString & in, const WString & out, const WString & info )
     {
         String utf8_in;
-        Helper::unicodeToUtf8( serviceProvider, in, utf8_in );
+        Helper::unicodeToUtf8( in, utf8_in );
 
-        FilePath c_in = Helper::stringizeFilePath( serviceProvider, utf8_in );
+        FilePath c_in = Helper::stringizeFilePath( utf8_in );
 
-        InputStreamInterfacePtr input_stream = FILE_SERVICE( serviceProvider )
+        InputStreamInterfacePtr input_stream = FILE_SERVICE()
             ->openInputFile( ConstString::none(), c_in, false );
 
         if( input_stream == nullptr )
@@ -218,7 +205,7 @@ namespace Menge
             return false;
         }
 
-        const ConstString & codecType = CODEC_SERVICE( serviceProvider )
+        const ConstString & codecType = CODEC_SERVICE()
             ->findCodecType( c_in );
 
         if( codecType.empty() == true )
@@ -226,7 +213,7 @@ namespace Menge
             return false;
         }
 
-        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE( serviceProvider )
+        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( codecType );
 
         if( imageDecoder == nullptr )
@@ -260,7 +247,7 @@ namespace Menge
 
         size_t bufferSize = width * height * channels;
 
-        MemoryInterfacePtr memory_textureBuffer = MEMORY_SERVICE( serviceProvider )
+        MemoryInterfacePtr memory_textureBuffer = MEMORY_SERVICE()
             ->createMemory();
 
         if( memory_textureBuffer == nullptr )
@@ -363,7 +350,7 @@ namespace Menge
         {
             size_t new_bufferSize = new_width * new_height * channels;
 
-            MemoryInterfacePtr buffer = MEMORY_SERVICE( serviceProvider )
+            MemoryInterfacePtr buffer = MEMORY_SERVICE()
                 ->createMemory();
 
             if( buffer == nullptr )
@@ -521,11 +508,11 @@ namespace Menge
             }
 
             String utf8_out;
-            Helper::unicodeToUtf8( serviceProvider, out, utf8_out );
+            Helper::unicodeToUtf8( out, utf8_out );
 
-            FilePath c_out = Helper::stringizeFilePath( serviceProvider, utf8_out );
+            FilePath c_out = Helper::stringizeFilePath( utf8_out );
 
-            OutputStreamInterfacePtr output_stream = FILE_SERVICE( serviceProvider )
+            OutputStreamInterfacePtr output_stream = FILE_SERVICE()
                 ->openOutputFile( ConstString::none(), c_out );
 
             if( output_stream == nullptr )
@@ -533,7 +520,7 @@ namespace Menge
                 return false;
             }
 
-            ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE( serviceProvider )
+            ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
                 ->createEncoderT<ImageEncoderInterfacePtr>( codecType );
 
             if( imageEncoder == nullptr )
@@ -570,11 +557,11 @@ namespace Menge
         if( info.empty() == false )
         {
             String utf8_info;
-            Helper::unicodeToUtf8( serviceProvider, info, utf8_info );
+            Helper::unicodeToUtf8( info, utf8_info );
 
-            FilePath c_info = Helper::stringizeFilePath( serviceProvider, utf8_info );
+            FilePath c_info = Helper::stringizeFilePath( utf8_info );
 
-            OutputStreamInterfacePtr info_stream = FILE_SERVICE( serviceProvider )
+            OutputStreamInterfacePtr info_stream = FILE_SERVICE()
                 ->openOutputFile( ConstString::none(), c_info );
 
             if( info_stream == nullptr )
@@ -654,12 +641,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         info = info.substr( 1, info.size() - 2 );
     }
 
-
-    Menge::ServiceProviderInterface * serviceProvider;
-
     try
     {
-        if( Menge::initializeEngine( &serviceProvider ) == false )
+        if( Menge::initializeEngine() == false )
         {
             message_error( "ImageTrimmer invalid initialize" );
 
@@ -675,7 +659,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return 0;
     }
 
-    if( Menge::trimImage( serviceProvider, in, out, info ) == false )
+    if( Menge::trimImage( in, out, info ) == false )
     {
         message_error( "ImageTrimmer invalid trim %ls"
             , in.c_str()

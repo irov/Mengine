@@ -19,41 +19,39 @@
 
 namespace Menge
 {
-	extern ServiceProviderInterface * serviceProvider;
-
     PyObject * spreadingPngAlpha( const wchar_t * pngPathIn, const wchar_t * pngPathOut )
     {
-        LOGGER_INFO(serviceProvider)("spreadingPngAlpha\n");
+        LOGGER_INFO("spreadingPngAlpha\n");
 
         String utf8_inputFileName;
-        Helper::unicodeToUtf8(serviceProvider, pngPathIn, utf8_inputFileName);
+        Helper::unicodeToUtf8(pngPathIn, utf8_inputFileName);
 
         String utf8_outputFileName;
-        Helper::unicodeToUtf8(serviceProvider, pngPathOut, utf8_outputFileName);
+        Helper::unicodeToUtf8(pngPathOut, utf8_outputFileName);
 
-        FilePath inputFileName = Helper::stringizeFilePath(serviceProvider, utf8_inputFileName);
-		FilePath outputFileName = Helper::stringizeFilePath(serviceProvider, utf8_outputFileName);
+        FilePath inputFileName = Helper::stringizeFilePath(utf8_inputFileName);
+		FilePath outputFileName = Helper::stringizeFilePath(utf8_outputFileName);
 
-        InputStreamInterfacePtr input_stream = FILE_SERVICE(serviceProvider)
+        InputStreamInterfacePtr input_stream = FILE_SERVICE()
 			->openInputFile( ConstString::none(), inputFileName, false );
         
         if( input_stream == nullptr )
         {
-            LOGGER_ERROR(serviceProvider)("spreadingPngAlpha invalid PNG file '%s' not found"
+            LOGGER_ERROR("spreadingPngAlpha invalid PNG file '%s' not found"
                 , inputFileName.c_str()
                 );
 
             return pybind::ret_none();
         }
 
-        ConstString codec = Helper::stringizeString(serviceProvider, "pngImage");
+        ConstString codec = Helper::stringizeString("pngImage");
 
-        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(serviceProvider)
+        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( codec );
 
         if( imageDecoder == nullptr )
         {
-            LOGGER_ERROR(serviceProvider)("spreadingPngAlpha not found decoder for file '%s'"
+            LOGGER_ERROR("spreadingPngAlpha not found decoder for file '%s'"
                 , inputFileName.c_str()
                 );
 
@@ -62,7 +60,7 @@ namespace Menge
 
 		if( imageDecoder->prepareData( input_stream ) == false )
 		{
-			LOGGER_ERROR(serviceProvider)("spreadingPngAlpha not initialize decoder for file '%s'"
+			LOGGER_ERROR("spreadingPngAlpha not initialize decoder for file '%s'"
 				, inputFileName.c_str()
 				);
 
@@ -84,7 +82,7 @@ namespace Menge
 
 		uint32_t bufferSize = width * height * channels;
 
-		MemoryInterfacePtr memory_textureBuffer = MEMORY_SERVICE( serviceProvider )
+		MemoryInterfacePtr memory_textureBuffer = MEMORY_SERVICE()
 			->createMemory();
 		
 		if( memory_textureBuffer == nullptr )
@@ -101,7 +99,7 @@ namespace Menge
 
 		if( imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
 		{
-			LOGGER_ERROR( serviceProvider )("spreadingPngAlpha invalid decode file '%s'"
+			LOGGER_ERROR("spreadingPngAlpha invalid decode file '%s'"
 				, inputFileName.c_str()
 				);
 
@@ -169,24 +167,24 @@ namespace Menge
 			}
 		}
 
-        OutputStreamInterfacePtr output_stream = FILE_SERVICE(serviceProvider)
+        OutputStreamInterfacePtr output_stream = FILE_SERVICE()
 			->openOutputFile( ConstString::none(), outputFileName );
 
         if( output_stream == nullptr )
         {
-            LOGGER_ERROR(serviceProvider)("spreadingPngAlpha invalid create PNG file '%s'"
+            LOGGER_ERROR("spreadingPngAlpha invalid create PNG file '%s'"
                 , outputFileName.c_str()
                 );
 
             return pybind::ret_none();
         }
 
-        ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE(serviceProvider)
+        ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
             ->createEncoderT<ImageEncoderInterfacePtr>( codec );
 
         if( imageEncoder == nullptr )
         {
-            LOGGER_ERROR(serviceProvider)("spreadingPngAlpha not found encoder for file '%s'"
+            LOGGER_ERROR("spreadingPngAlpha not found encoder for file '%s'"
                 , outputFileName.c_str()
                 );
 
@@ -195,7 +193,7 @@ namespace Menge
 
 		if( imageEncoder->initialize( output_stream ) == false )
 		{
-			LOGGER_ERROR(serviceProvider)("spreadingPngAlpha not found encoder for file '%s'"
+			LOGGER_ERROR("spreadingPngAlpha not found encoder for file '%s'"
 				, outputFileName.c_str()
 				);
 
@@ -221,7 +219,7 @@ namespace Menge
 		
         if( bytesWritten == 0 )
         {
-            LOGGER_ERROR(serviceProvider)("spreadingPngAlpha not found encoder for file '%s'"
+            LOGGER_ERROR("spreadingPngAlpha not found encoder for file '%s'"
                 , outputFileName.c_str()
                 );
 

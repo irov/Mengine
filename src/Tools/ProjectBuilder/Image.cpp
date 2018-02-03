@@ -7,11 +7,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	extern ServiceProviderInterface * serviceProvider;
-	//////////////////////////////////////////////////////////////////////////
-	Image::Image( ServiceProviderInterface * _serviceProvider )
-		: m_serviceProvider( _serviceProvider )
-		, m_width(0)
+	Image::Image()
+		: m_width(0)
 		, m_height(0)
 		, m_channels(0)
 		, m_embed(nullptr)
@@ -31,7 +28,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Image::load( const FilePath & _path )
 	{
-		InputStreamInterfacePtr stream = FILE_SERVICE(serviceProvider)
+		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( ConstString::none(), _path, false );
 
 		if( stream == false )
@@ -39,10 +36,10 @@ namespace Menge
 			return false;
 		}
 
-		const ConstString & codecType = CODEC_SERVICE(serviceProvider)
+		const ConstString & codecType = CODEC_SERVICE()
 			->findCodecType( _path );
 
-		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(serviceProvider)
+		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
 			->createDecoderT<ImageDecoderInterfacePtr>( codecType );
 
 		if( imageDecoder == nullptr )
@@ -63,7 +60,7 @@ namespace Menge
 		m_height = dataInfo->height;
 		m_channels = dataInfo->channels;
 
-		m_memory = MEMORY_SERVICE( m_serviceProvider )
+		m_memory = MEMORY_SERVICE()
 			->createMemory();
 
 		if( m_memory == nullptr )
@@ -99,7 +96,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Image::save( const FilePath & _path )
 	{
-		OutputStreamInterfacePtr stream = FILE_SERVICE(serviceProvider)
+		OutputStreamInterfacePtr stream = FILE_SERVICE()
 			->openOutputFile( ConstString::none(), _path );
 
 		if( stream == nullptr )
@@ -107,10 +104,10 @@ namespace Menge
 			return false;
 		}
 
-		const ConstString & codecType = CODEC_SERVICE(serviceProvider)
+		const ConstString & codecType = CODEC_SERVICE()
 			->findCodecType( _path );
 
-		ImageEncoderInterfacePtr encoder = CODEC_SERVICE(serviceProvider)
+		ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
 			->createEncoderT<ImageEncoderInterfacePtr>( codecType );
 
 		if( encoder == nullptr )
@@ -153,7 +150,7 @@ namespace Menge
 		m_height = _height;
 		m_channels = _channel;
 		
-		m_memory = MEMORY_SERVICE( m_serviceProvider )
+		m_memory = MEMORY_SERVICE()
 			->createMemory();
 
 		if( m_memory == nullptr )
@@ -317,7 +314,7 @@ namespace Menge
 	{
 		(void)_angle;
 
-		Image * image = new Image( m_serviceProvider );
+		Image * image = new Image();
 
 		image->create( m_height, m_width, m_channels );
 
@@ -425,10 +422,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	pybind::tuple Image::split() const
 	{
-		Image * imageRGB = new Image( m_serviceProvider );
+		Image * imageRGB = new Image();
 		imageRGB->create(m_width, m_height, 3);
 
-		Image * imageAlpha = new Image( m_serviceProvider );
+		Image * imageAlpha = new Image();
 		imageAlpha->create(m_width, m_height, 1);
 
 		uint8_t * memory_this = m_memory->getMemory();

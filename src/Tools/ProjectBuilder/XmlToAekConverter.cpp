@@ -29,22 +29,20 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	extern ServiceProviderInterface * serviceProvider;
-	//////////////////////////////////////////////////////////////////////////
 	static bool s_writeAek( const WString & _protocolPath, const WString & _xmlPath, const WString & _aekPath )
 	{
 		String utf8_protocolPath;
-		Helper::unicodeToUtf8( serviceProvider, _protocolPath, utf8_protocolPath );
+		Helper::unicodeToUtf8( _protocolPath, utf8_protocolPath );
 
 		String utf8_xmlPath;
-		Helper::unicodeToUtf8( serviceProvider, _xmlPath, utf8_xmlPath );
+		Helper::unicodeToUtf8( _xmlPath, utf8_xmlPath );
 
 		String utf8_aekPath;
-		Helper::unicodeToUtf8( serviceProvider, _aekPath, utf8_aekPath );
+		Helper::unicodeToUtf8( _aekPath, utf8_aekPath );
 		
-		FilePath fp_protocolPath = Helper::stringizeFilePath( serviceProvider, utf8_protocolPath );
+		FilePath fp_protocolPath = Helper::stringizeFilePath( utf8_protocolPath );
 
-		LOADER_SERVICE( serviceProvider )
+		LOADER_SERVICE()
 			->setProtocolPath( fp_protocolPath );
 	
 		String framePackPath( utf8_xmlPath.c_str(), utf8_xmlPath.size() );
@@ -54,20 +52,20 @@ namespace Menge
 		framePackPath[size-2] = L'm';
 		framePackPath[size-1] = L'l';
 
-		FilePath path_xml = Helper::stringizeFilePath( serviceProvider, framePackPath );
+		FilePath path_xml = Helper::stringizeFilePath( framePackPath );
 
 		ConverterOptions options;
 		   
 		options.pakName = ConstString::none();
 		options.inputFileName = path_xml;
-		options.outputFileName = Helper::stringizeFilePath(serviceProvider, utf8_aekPath);
+		options.outputFileName = Helper::stringizeFilePath(utf8_aekPath);
 		
-		ConverterInterfacePtr converter = CONVERTER_SERVICE(serviceProvider)
-			->createConverter( Helper::stringizeString(serviceProvider, "xmlToAekMovie") );
+		ConverterInterfacePtr converter = CONVERTER_SERVICE()
+			->createConverter( Helper::stringizeString("xmlToAekMovie") );
 
 		if( converter == nullptr )
 		{
-			LOGGER_ERROR(serviceProvider)( "writeAek can't create convert '%s'\nfrom: %s\nto: %s\n"
+			LOGGER_ERROR( "writeAek can't create convert '%s'\nfrom: %s\nto: %s\n"
 				, "xmlToAekMovie"
 				, options.inputFileName.c_str()
 				, options.outputFileName.c_str()
@@ -80,8 +78,8 @@ namespace Menge
 		
 		if( converter->convert() == false )
 		{
-			LOGGER_ERROR(serviceProvider)( "ConverterEngine::convert can't convert '%s'\nfrom: %s\nto: %s\n"
-				, Helper::stringizeString(serviceProvider, "xmlToAekMovie").c_str()
+			LOGGER_ERROR( "ConverterEngine::convert can't convert '%s'\nfrom: %s\nto: %s\n"
+				, Helper::stringizeString("xmlToAekMovie").c_str()
 				, options.inputFileName.c_str()
 				, options.outputFileName.c_str()
 				);
@@ -96,7 +94,7 @@ namespace Menge
 	{
 		if( s_writeAek( protocolPath, xmlPath, aekPath ) == false )
 		{
-			LOGGER_ERROR(serviceProvider)("writeAek: error write bin"
+            LOGGER_ERROR( "writeAek: error write bin"
 				);
 
 			return NULL;

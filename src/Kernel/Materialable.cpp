@@ -201,7 +201,14 @@ namespace Menge
 							}
 							else
 							{
-								materialId = EM_TEXTURE_SCREEN;
+                                if( premultiply == false )
+                                {
+                                    materialId = EM_TEXTURE_SCREEN;
+                                }
+                                else
+                                {
+                                    materialId = EM_TEXTURE_SCREEN_PREMULTIPLY;
+                                }
 							}
 						}break;
 					case EMB_MULTIPLY:
@@ -403,7 +410,14 @@ namespace Menge
 							}
 							else
 							{
-								materialId = EM_TEXTURE_SCREEN;
+                                if( _premultiply == false )
+                                {
+                                    materialId = EM_TEXTURE_SCREEN;
+                                }
+                                else
+                                {
+                                    materialId = EM_TEXTURE_SCREEN_PREMULTIPLY;
+                                }
 							}
 						}break;
 					case EMB_MULTIPLY:

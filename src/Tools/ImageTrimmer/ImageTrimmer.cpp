@@ -275,6 +275,9 @@ namespace Menge
         uint32_t max_i;
         uint32_t max_j;
 
+        uint32_t offset_i;
+        uint32_t offset_j;
+
         if( channels == 4 )
         {
             min_i = width;
@@ -334,6 +337,9 @@ namespace Menge
 
             new_width += 2;
             new_height += 2;
+
+            offset_i = min_i + 1;
+            offset_j = min_j + 1;
         }
         else
         {
@@ -344,6 +350,9 @@ namespace Menge
             min_j = 0;
             max_i = width;
             max_j = height;
+
+            offset_i = min_i + 1;
+            offset_j = min_j + 1;
         }
 
         if( out.empty() == false )
@@ -576,8 +585,8 @@ namespace Menge
                 , height
                 , new_width
                 , new_height
-                , min_i
-                , min_j
+                , offset_i
+                , offset_j
             );
 
             size_t info_buffer_size = strlen( info_buffer );
@@ -593,8 +602,8 @@ namespace Menge
             printf( "base_height=%u\n", height );
             printf( "trim_width=%u\n", new_width );
             printf( "trim_height=%u\n", new_height );
-            printf( "offset_x=%u\n", min_i );
-            printf( "offset_y=%u\n", min_j );
+            printf( "offset_x=%u\n", offset_i );
+            printf( "offset_y=%u\n", offset_j );
         }
 
         return true;
@@ -616,7 +625,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     Menge::WString in = parse_kwds( lpCmdLine, L"--in_path", Menge::WString() );
     Menge::WString out = parse_kwds( lpCmdLine, L"--out_path", Menge::WString() );
-    Menge::WString info = parse_kwds( lpCmdLine, L"--info", Menge::WString() );
+    Menge::WString info = parse_kwds( lpCmdLine, L"--info_path", Menge::WString() );
 
     if( in.empty() == true )
     {

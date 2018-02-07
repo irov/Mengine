@@ -678,12 +678,16 @@ namespace Menge
 
 #	undef MENGINE_ADD_PLUGIN
 
-#	ifdef _DEBUG
+#ifdef MENGINE_MASTER_RELEASE
+        bool devplugins = false;
+#else
+#ifdef _DEBUG
 		bool devplugins = true;
-#	else
+#else
 		bool developmentMode = HAS_OPTION( "dev" );
 		bool devplugins = developmentMode;
-#	endif
+#endif
+#endif
 						
 		bool nodevplugins = HAS_OPTION( "nodevplugins" );
 

@@ -95,6 +95,20 @@ namespace Menge
         ae_stop_movie_sub_composition( m_composition, subcomposition );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2::interruptSubComposition( const ConstString & _name, bool _skip )
+    {
+        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
+
+        ae_interrupt_movie_sub_composition( m_composition, subcomposition, _skip );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::setLoopSubComposition( const ConstString & _name, bool _loop )
+    {
+        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
+
+        ae_set_movie_sub_composition_loop( subcomposition, _loop );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Movie2::setEnableMovieLayers( const ConstString & _name, bool _enable )
     {
         if( m_composition == nullptr )
@@ -107,7 +121,7 @@ namespace Menge
             return;
         }
 
-        ae_set_movie_composition_nodes_enable( m_composition, _name.c_str(), AE_MOVIE_LAYER_TYPE_ANY, _enable ? AE_TRUE : AE_FALSE );
+        ae_set_movie_composition_nodes_enable_any( m_composition, _name.c_str(), _enable ? AE_TRUE : AE_FALSE );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::_play( float _time )
@@ -1347,7 +1361,7 @@ namespace Menge
         {
             const SurfacePtr & surface = *it;
 
-            surface->update( _current, _timing );
+            surface->update( _current, _timing  );
         }
     }
     //////////////////////////////////////////////////////////////////////////

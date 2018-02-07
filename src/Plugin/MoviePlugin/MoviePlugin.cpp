@@ -220,6 +220,8 @@ namespace Menge
 			.def( "removeWorkArea", &Movie2::removeWorkArea )
 			.def( "playSubComposition", &Movie2::playSubComposition )
 			.def( "stopSubComposition", &Movie2::stopSubComposition )
+            .def( "interruptSubComposition", &Movie2::interruptSubComposition )
+            .def( "setLoopSubComposition", &Movie2::setLoopSubComposition )
             .def_proxy_native_kernel( "setEventListener", this, &MoviePlugin::Movie2_setEventListener )
             .def( "getSlot", &Movie2::getSlot )
             .def( "hasSlot", &Movie2::hasSlot )

@@ -3285,9 +3285,6 @@ namespace Menge
             {
             }
 
-        public:
-
-
         protected:
             void onPrefetchPreparation() override
             {
@@ -3397,7 +3394,7 @@ namespace Menge
                 //    m_process = true;
                 //}
 
-                m_process = true;
+                //m_process = true;
             }
 
 		protected:

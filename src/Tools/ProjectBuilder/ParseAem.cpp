@@ -17,7 +17,9 @@ namespace Menge
     {
         (void)_data;
 
-        return malloc( _size );
+        void * ptr = malloc( _size );
+
+        return ptr;
     }
     //////////////////////////////////////////////////////////////////////////
     static void * my_movie_alloc_n( void * _data, size_t _size, size_t _count )
@@ -26,7 +28,9 @@ namespace Menge
 
         size_t total = _size * _count;
 
-        return malloc( total );
+        void * ptr = malloc( total );
+
+        return ptr;
     }
     //////////////////////////////////////////////////////////////////////////
     static void my_movie_free( void * _data, const void * _ptr )
@@ -92,7 +96,7 @@ namespace Menge
                 pybind::decref( pypath );
 
                 return AE_NULL;
-            }
+            }break;
         case AE_MOVIE_RESOURCE_SOUND:
             {
                 const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
@@ -102,7 +106,17 @@ namespace Menge
                 pybind::decref( pypath );
 
                 return AE_NULL;
-            }
+            }break;
+        case AE_MOVIE_RESOURCE_PARTICLE:
+            {
+                const aeMovieResourceParticle * resource_particle = (const aeMovieResourceParticle *)_resource;
+
+                PyObject * pypath = pybind::unicode_from_utf8( resource_particle->path );
+                pybind::list_appenditem( pylist, pypath );
+                pybind::decref( pypath );
+
+                return AE_NULL;
+            }break;
         }
 
         return AE_NULL;
@@ -155,7 +169,7 @@ namespace Menge
         String utf8_hash;
         Helper::unicodeToUtf8( hash, utf8_hash );
 
-        aeMovieInstance * movieInstance = ae_create_movie_instance( utf8_hash.c_str()
+        const aeMovieInstance * movieInstance = ae_create_movie_instance( utf8_hash.c_str()
             , &my_movie_alloc
             , &my_movie_alloc_n
             , &my_movie_free

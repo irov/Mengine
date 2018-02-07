@@ -308,7 +308,6 @@ namespace Menge
 
 					GlyphCode glyphCode = cp;
 
-					float ascender = m_glyph->getAscender();
                     offset.y = -offset.y;
 
 					m_glyph->addGlyphChar( glyphCode, uv, offset, advance, size );

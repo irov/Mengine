@@ -17,9 +17,11 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     //uint32_t image_count = parse_kwds( lpCmdLine, L"--image_count", 0U );
 	std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
+    std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );    
+    std::wstring result_path = parse_kwds( lpCmdLine, L"--result_path", std::wstring() );
+	std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker_path", std::wstring() );
     std::wstring log_path = parse_kwds( lpCmdLine, L"--log_path", std::wstring() );
-	std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker", std::wstring() );
-	std::wstring atlas_path = parse_kwds( lpCmdLine, L"--atlas_path", std::wstring() );
+	
 	
 	std::vector<std::wstring> images_path;
 
@@ -87,7 +89,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	ForcePathQuoteSpaces( dataFormatQuote, dataFormat );
 
 	WCHAR sheetFormat[MAX_PATH];
-	PathCombine( sheetFormat, atlas_path.c_str(), L"atlas_{n}.png" );
+	PathCombine( sheetFormat, out_path.c_str(), L"atlas_{n}.png" );
 
 	WCHAR sheetFormatQuote[MAX_PATH];
 	ForcePathQuoteSpaces( sheetFormatQuote, sheetFormat );
@@ -380,6 +382,26 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			atlas_images.push_back( image );
 		}
 	}
+
+    WCHAR infoCanonicalizeQuote[MAX_PATH];
+    ForcePathQuoteSpaces( infoCanonicalizeQuote, result_path.c_str() );
+    PathUnquoteSpaces( infoCanonicalizeQuote );
+
+    FILE * f_result;
+    errno_t err = _wfopen_s( &f_result, infoCanonicalizeQuote, L"wt" );
+
+    if( err != 0 )
+    {
+        message_error( "invalid _wfopen %ls err %d\n"
+            , infoCanonicalizeQuote
+            , err
+        );
+
+        return 0;
+    }
+
+    uint32_t atlasCount = atlas_images.size();
+    fprintf_s( f_result, "images_count=%u\n", atlasCount );
 		
 	for( std::vector<AtlasImageDesc>::const_iterator
 		it = atlas_images.begin(),
@@ -389,8 +411,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	{
 		const AtlasImageDesc & image = *it;
 
-		///////////////n//a//aw///ah///ox///oy///ow///oh///x0///y0...
-		printf( "image=%s;%s;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu\n"
+        fprintf_s( f_result, "image_data=%s;%s;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu\n"
 			, image.name.c_str()
 			, image.atlas.c_str()
 			, image.aw

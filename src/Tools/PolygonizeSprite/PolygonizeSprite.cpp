@@ -14,7 +14,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	(void)nShowCmd;
 
 	std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker", std::wstring() );
-	std::wstring image_path = parse_kwds( lpCmdLine, L"--image", std::wstring() );
+	std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
+    std::wstring result_path = parse_kwds( lpCmdLine, L"--result_path", std::wstring() );
 	uint32_t offset_x = parse_kwds( lpCmdLine, L"--offset_x", 0U );
 	uint32_t offset_y = parse_kwds( lpCmdLine, L"--offset_y", 0U );
 	float width = parse_kwds( lpCmdLine, L"--width", -1.f );
@@ -29,7 +30,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		return 0;
 	}
 
-	if( image_path.empty() == true )
+	if( in_path.empty() == true )
 	{
 		message_error( "not found 'image' param\n"
 			);
@@ -57,7 +58,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	system_cmd += L" ";
 
 	WCHAR ImagePathCanonicalizeQuote[MAX_PATH];
-	ForcePathQuoteSpaces( ImagePathCanonicalizeQuote, image_path );
+	ForcePathQuoteSpaces( ImagePathCanonicalizeQuote, in_path );
 	
 	system_cmd += ImagePathCanonicalizeQuote;
 
@@ -270,10 +271,27 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	uint32_t vertex_count = positions.size() / 2;
 	uint32_t indices_count = indices.size();
 
-	printf( "vertex_count=%u\n", vertex_count );
-	printf( "indices_count=%u\n", indices_count );
+    WCHAR infoCanonicalizeQuote[MAX_PATH];
+    ForcePathQuoteSpaces( infoCanonicalizeQuote, result_path.c_str() );
+    PathUnquoteSpaces( infoCanonicalizeQuote );
 
-	printf( "positions=" );
+    FILE * f_result;
+    errno_t err = _wfopen_s( &f_result, infoCanonicalizeQuote, L"wt" );
+
+    if( err != 0 )
+    {
+        message_error( "invalid _wfopen %ls err %d\n"
+            , infoCanonicalizeQuote
+            , err
+        );
+
+        return 0;
+    }
+
+    fprintf_s( f_result, "vertex_count=%u\n", vertex_count );
+    fprintf_s( f_result, "indices_count=%u\n", indices_count );
+
+    fprintf_s( f_result, "positions=" );
 
 	for( std::vector<float>::const_iterator
 		it = positions.begin(),
@@ -283,12 +301,12 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	{
 		const float v = *it;
 
-		printf( " %12f", v );
+        fprintf_s( f_result, " %12f", v );
 	}
 
-	printf( "\n" );
+    fprintf_s( f_result, "\n" );
 
-	printf( "uvs=" );
+    fprintf_s( f_result, "uvs=" );
 
 	for( std::vector<float>::const_iterator
 		it = uvs.begin(),
@@ -298,12 +316,12 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	{
 		const float v = *it;
 
-		printf( " %12f", v );
+        fprintf_s( f_result, " %12f", v );
 	}
 
-	printf( "\n" );
+    fprintf_s( f_result, "\n" );
 
-	printf( "indices=" );
+    fprintf_s( f_result, "indices=" );
 
 	for( std::vector<uint16_t>::const_iterator
 		it = indices.begin(),
@@ -313,10 +331,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	{
 		const uint16_t v = *it;
 
-		printf( " %u", v );
+        fprintf_s( f_result, " %u", v );
 	}
 
-	printf( "\n" );
+    fprintf_s( f_result, "\n" );
 
 	return 0;
 }

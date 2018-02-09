@@ -190,10 +190,10 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool trimImage( const WString & in, const WString & out, const WString & info )
+    static bool trimImage( const WString & in_path, const WString & out_path, const WString & result_path )
     {
         String utf8_in;
-        Helper::unicodeToUtf8( in, utf8_in );
+        Helper::unicodeToUtf8( in_path, utf8_in );
 
         FilePath c_in = Helper::stringizeFilePath( utf8_in );
 
@@ -355,7 +355,7 @@ namespace Menge
             offset_j = min_j + 1;
         }
 
-        if( out.empty() == false )
+        if( out_path.empty() == false )
         {
             size_t new_bufferSize = new_width * new_height * channels;
 
@@ -517,7 +517,7 @@ namespace Menge
             }
 
             String utf8_out;
-            Helper::unicodeToUtf8( out, utf8_out );
+            Helper::unicodeToUtf8( out_path, utf8_out );
 
             FilePath c_out = Helper::stringizeFilePath( utf8_out );
 
@@ -563,38 +563,31 @@ namespace Menge
             }
         }
 
-        if( info.empty() == false )
+        if( result_path.empty() == false )
         {
-            String utf8_info;
-            Helper::unicodeToUtf8( info, utf8_info );
+            WCHAR infoCanonicalizeQuote[MAX_PATH];
+            ForcePathQuoteSpaces( infoCanonicalizeQuote, result_path.c_str() );
+            PathUnquoteSpaces( infoCanonicalizeQuote );
 
-            FilePath c_info = Helper::stringizeFilePath( utf8_info );
+            FILE * f_result;
+            errno_t err = _wfopen_s( &f_result, infoCanonicalizeQuote, L"wt" );
 
-            OutputStreamInterfacePtr info_stream = FILE_SERVICE()
-                ->openOutputFile( ConstString::none(), c_info );
-
-            if( info_stream == nullptr )
+            if( err != 0 )
             {
-                return false;
+                message_error( "invalid _wfopen %ls err %d\n"
+                    , infoCanonicalizeQuote
+                    , err
+                );
+
+                return 0;
             }
 
-            char info_buffer[1024];
-
-            sprintf( info_buffer, "%u\n%u\n%u\n%u\n%u\n%u\n"
-                , width
-                , height
-                , new_width
-                , new_height
-                , offset_i
-                , offset_j
-            );
-
-            size_t info_buffer_size = strlen( info_buffer );
-
-            if( info_stream->write( info_buffer, info_buffer_size + 1 ) == false )
-            {
-                return false;
-            }
+            fprintf_s( f_result, "base_width=%u\n", width );
+            fprintf_s( f_result, "base_height=%u\n", height );
+            fprintf_s( f_result, "trim_width=%u\n", new_width );
+            fprintf_s( f_result, "trim_height=%u\n", new_height );
+            fprintf_s( f_result, "offset_x=%u\n", offset_i );
+            fprintf_s( f_result, "offset_y=%u\n", offset_j );
         }
         else
         {
@@ -623,11 +616,11 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     stdex_allocator_initialize();
 
-    Menge::WString in = parse_kwds( lpCmdLine, L"--in_path", Menge::WString() );
-    Menge::WString out = parse_kwds( lpCmdLine, L"--out_path", Menge::WString() );
-    Menge::WString info = parse_kwds( lpCmdLine, L"--info_path", Menge::WString() );
+    Menge::WString in_path = parse_kwds( lpCmdLine, L"--in_path", Menge::WString() );
+    Menge::WString out_path = parse_kwds( lpCmdLine, L"--out_path", Menge::WString() );
+    Menge::WString result_path = parse_kwds( lpCmdLine, L"--result_path", Menge::WString() );
 
-    if( in.empty() == true )
+    if( in_path.empty() == true )
     {
         message_error( "not found 'in' param"
         );
@@ -635,19 +628,19 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return 0;
     }
 
-    if( in.front() == L'\"' && in.back() == L'\"' )
+    if( in_path.front() == L'\"' && in_path.back() == L'\"' )
     {
-        in = in.substr( 1, in.size() - 2 );
+        in_path = in_path.substr( 1, in_path.size() - 2 );
     }
 
-    if( out.empty() == false && out.front() == L'\"' && out.back() == L'\"' )
+    if( out_path.empty() == false && out_path.front() == L'\"' && out_path.back() == L'\"' )
     {
-        out = out.substr( 1, out.size() - 2 );
+        out_path = out_path.substr( 1, out_path.size() - 2 );
     }
 
-    if( info.empty() == false && info.front() == L'\"' && info.back() == L'\"' )
+    if( result_path.empty() == false && result_path.front() == L'\"' && result_path.back() == L'\"' )
     {
-        info = info.substr( 1, info.size() - 2 );
+        result_path = result_path.substr( 1, result_path.size() - 2 );
     }
 
     try
@@ -668,10 +661,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return 0;
     }
 
-    if( Menge::trimImage( in, out, info ) == false )
+    if( Menge::trimImage( in_path, out_path, result_path ) == false )
     {
         message_error( "ImageTrimmer invalid trim %ls"
-            , in.c_str()
+            , in_path.c_str()
         );
 
         return 0;

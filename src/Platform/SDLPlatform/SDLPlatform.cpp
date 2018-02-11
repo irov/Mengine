@@ -873,13 +873,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::changeWindow_( const Resolution & _resolution, bool _fullscreen )
     {
-        //RENDER_SERVICE( m_serviceProvider )
-        //    ->destroyRenderWindow();
-
-        //SDL_Window * old_window = m_window;
-        //SDL_HideWindow( old_window );
-        //SDL_GL_MakeCurrent( old_window, nullptr );
-
+#if TARGET_OS_IPHONE
+        RENDER_SYSTEM( m_serviceProvider )
+            ->onWindowChangeFullscreen( _fullscreen );
+#else
 		RENDER_SERVICE( m_serviceProvider )
 			->onDeviceLostPrepare();
 
@@ -894,41 +891,7 @@ namespace Menge
 
         RENDER_SYSTEM( m_serviceProvider )
             ->onWindowChangeFullscreen( _fullscreen );
-
-        //SDL_GL_MakeCurrent( m_window, m_glContext );
-
-        //if( old_window != nullptr )
-        //{
-            //SDL_DestroyWindow( old_window );
-            //old_window = nullptr;
-        //}
-
-        //this->destroyWindow_();
-
-        //const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
-        //    ->getContentResolution();
-
-        //const Viewport & renderViewport = APPLICATION_SERVICE( m_serviceProvider )
-        //    ->getRenderViewport();
-
-        //uint32_t bits = APPLICATION_SERVICE( m_serviceProvider )
-        //    ->getWindowBits();
-
-        //uint32_t FSAAType = APPLICATION_SERVICE( m_serviceProvider )
-        //    ->getWindowFSAAType();
-
-        //uint32_t FSAAQuality = APPLICATION_SERVICE( m_serviceProvider )
-        //    ->getWindowFSAAQuality();
-
-        //RENDER_SERVICE( m_serviceProvider )
-        //    ->createRenderWindow( _resolution
-        //        , contentResolution
-        //        , renderViewport
-        //        , bits
-        //        , _fullscreen
-        //        , FSAAType
-        //        , FSAAQuality
-        //    );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow_( const Resolution & _resolution, bool _fullscreen )
@@ -936,30 +899,28 @@ namespace Menge
         Menge::Char utf8Title[1024] = {0};
         Helper::unicodeToUtf8( m_serviceProvider, m_projectTitle, utf8Title, 1024 );
 
-        SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+        //SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
         SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
         SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
         SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
-        SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
-        SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
+        SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 0 );
 		SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 );
         
         Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
-        windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
-        
 #	if TARGET_OS_IPHONE
 		windowFlags |= SDL_WINDOW_BORDERLESS;
-		windowFlags |= SDL_WINDOW_FULLSCREEN;
+        windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
         
 		SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES );
 		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
+        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 0 );
 
-		SDL_SetHint( SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight" );
+		//SDL_SetHint( SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight" );
 		SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "linear" );
 
 #	else
-		if( _fullscreen )
+		if( _fullscreen == true )
 		{
 			windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
@@ -972,8 +933,8 @@ namespace Menge
         m_window = SDL_CreateWindow( utf8Title
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED
-            , mode.w
-            , mode.h
+            , -1
+            , -1
             , windowFlags
                                     );
 #else
@@ -989,7 +950,7 @@ namespace Menge
                                     , windowFlags
                                     );
 #   endif
-
+        
         if( m_window == nullptr )
         {
             return false;
@@ -1000,17 +961,17 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::destroyWindow_()
     {
+        if( m_glContext != nullptr )
+        {
+            SDL_GL_DeleteContext( m_glContext );
+            m_glContext = nullptr;
+        }
+        
         if( m_window != nullptr )
         {
             SDL_DestroyWindow( m_window );
             m_window = nullptr;
         }
-
-		if( m_glContext != nullptr )
-		{
-			SDL_GL_DeleteContext( m_glContext );
-			m_glContext = nullptr;
-		}
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::processEvents()

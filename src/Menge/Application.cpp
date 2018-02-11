@@ -295,7 +295,11 @@ namespace Menge
 			, m_locale.c_str()
 			);
 
+#if TARGET_OS_IPHONE
+#else
 		m_windowResolution = CONFIG_VALUE( m_serviceProvider, "Window", "Size", Resolution( 1024, 768 ) );
+#endif
+        
 		m_bits = CONFIG_VALUE( m_serviceProvider, "Window", "Bits", 32U );
         m_fullscreen = CONFIG_VALUE( m_serviceProvider, "Window", "Fullscreen", true );
 		m_nofullscreen = CONFIG_VALUE( m_serviceProvider, "Window", "NoFullscreen", false );
@@ -1753,9 +1757,14 @@ namespace Menge
                                         , _resolution.getHeight()
                                         );
         
+        if( m_windowResolution == _resolution )
+        {
+            return;
+        }
+        
 		m_windowResolution = _resolution;
 
-		this->invalidateWindow_();
+        this->invalidateWindow_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setFullscreenMode( bool _fullscreen )

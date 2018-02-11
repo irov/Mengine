@@ -111,7 +111,7 @@ namespace Menge
         m_debugInfo.triangle = 0;
 
 #ifdef _DEBUG
-        m_debugFillrateCalcMode = true;
+        //m_debugFillrateCalcMode = true;
 #endif // _DEBUG
  
 
@@ -1250,7 +1250,7 @@ namespace Menge
 
         m_debugInfo.object += 1;
 
-        if( m_debugFillrateCalcMode = true && _debug == false )
+        if( m_debugFillrateCalcMode == true && _debug == false )
         {
             EPrimitiveType primitiveType = ro_material->getPrimitiveType();
 

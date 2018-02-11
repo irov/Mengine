@@ -108,7 +108,7 @@ if(MENGINE_PLATFORM_IOS)
     #set_source_files_properties(${myApp_DATA} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
     #message(${myApp_DATA})
 
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "~/Desktop/deploy-mac-plist")
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "~/Desktop/deploy-ios-plist")
 
     set(myApp_MEDIA
         ~/Desktop/deploy-ios-media.xcassets

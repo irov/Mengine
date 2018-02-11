@@ -209,7 +209,7 @@ namespace Menge
         float xb = _viewport.begin.x;
         float yb = _viewport.end.y;
 
-        size_t height = m_resolution.getHeight();
+        uint32_t height = m_resolution.getHeight();
 
         GLCALL( m_serviceProvider, glViewport, ( (GLint)xb, (GLint)height - (GLint)(yb), (GLsizei)w, (GLsizei)h ) );
     }

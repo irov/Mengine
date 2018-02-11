@@ -1131,7 +1131,7 @@ namespace Menge
         aeMovieCompositionRenderInfo info;
         ae_calculate_movie_composition_render_info( composition, &info );
 
-        m_meshes.reserve( info.max_render_node );
+        m_meshes.resize( info.max_render_node );
 
         bool loop = this->getLoop();
 
@@ -1367,17 +1367,18 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
     {
-        m_meshes.clear();
+        uint32_t mesh_iterator = 0;
+        Mesh * meshes_buffer = &m_meshes.front();
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
         ae_voidptr_t composition_camera_data = ae_get_movie_composition_camera_data( m_composition );
         (void)composition_camera_data;
 
-        uint32_t mesh_iterator = 0;
+        uint32_t compute_movie_mesh_iterator = 0;
 
         aeMovieRenderMesh mesh;
-        while( ae_compute_movie_mesh( m_composition, &mesh_iterator, &mesh ) == AE_TRUE )
+        while( ae_compute_movie_mesh( m_composition, &compute_movie_mesh_iterator, &mesh ) == AE_TRUE )
         {
             ResourceReference * resource_reference = (ResourceReference *)mesh.resource_data;
 
@@ -1418,8 +1419,7 @@ namespace Menge
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:
                     {
-                        m_meshes.push_back( Mesh() );
-                        Mesh & m = m_meshes.back();
+                        Mesh & m = meshes_buffer[mesh_iterator++];
 
                         m.vertices.resize( mesh.vertexCount );
 
@@ -1467,8 +1467,7 @@ namespace Menge
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOLID:
                     {
-                        m_meshes.push_back( Mesh() );
-                        Mesh & m = m_meshes.back();
+                        Mesh & m = meshes_buffer[mesh_iterator++];
 
                         m.vertices.resize( mesh.vertexCount );
 
@@ -1519,8 +1518,7 @@ namespace Menge
                     {
                         ResourceImage * resource_image = static_cast<ResourceImage *>(resource_reference);
 
-                        m_meshes.push_back( Mesh() );
-                        Mesh & m = m_meshes.back();
+                        Mesh & m = meshes_buffer[mesh_iterator++];
 
                         m.vertices.resize( mesh.vertexCount );
 
@@ -1584,8 +1582,7 @@ namespace Menge
                     {
                         SurfaceVideo * surfaceVideo = static_cast<SurfaceVideo *>(mesh.element_data);
 
-                        m_meshes.push_back( Mesh() );
-                        Mesh & m = m_meshes.back();
+                        Mesh & m = meshes_buffer[mesh_iterator++];
 
                         m.vertices.resize( mesh.vertexCount );
 
@@ -1634,8 +1631,7 @@ namespace Menge
                             return;
                         }
 
-                        m_meshes.push_back( Mesh() );
-                        Mesh & m = m_meshes.back();
+                        Mesh & m = meshes_buffer[mesh_iterator++];
 
                         m.vertices.resize( mesh.vertexCount );
 

@@ -287,7 +287,7 @@ namespace Menge
 				}
 
 				materialName = _materialName;
-			}		
+			}
 
 			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
 				->getMaterial( materialName, PT_TRIANGLELIST, texturesNum, textures );

@@ -143,7 +143,7 @@ namespace Menge
         {
             DWORD err_code = GetLastError();
 
-            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createFile invalid create file %ls err %d"
+            LOGGER_ERROR("VistaWindowsLayer::createFile invalid create file %ls err %d"
                 , pathCorrect
                 , err_code
                 );
@@ -170,7 +170,7 @@ namespace Menge
 
         if( hFind == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR( m_serviceProvider )("File invalid find ??? (%ls)\n"
+            LOGGER_ERROR("File invalid find ??? (%ls)\n"
                 , _path
                 );
         }
@@ -179,7 +179,7 @@ namespace Menge
 
         if( wcscmp( filename, wfd.cFileName ) != 0 )
         {
-            LOGGER_ERROR( m_serviceProvider )("File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
+            LOGGER_ERROR("File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
                 , _path
                 , filename
                 , wfd.cFileName
@@ -423,7 +423,7 @@ namespace Menge
         filePathSize += 1; //Null
 
         WChar filePathW[MENGINE_MAX_PATH];
-        if( UNICODE_SYSTEM( m_serviceProvider )
+        if( UNICODE_SYSTEM()
             ->utf8ToUnicode( filePath, filePathSize, filePathW, _capacity, nullptr ) == false )
         {
             return false;
@@ -442,7 +442,7 @@ namespace Menge
 
         if( err != 0 )
         {
-            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::cmd: command:\n%ls\nerror: %d"
+            LOGGER_ERROR("VistaWindowsLayer::cmd: command:\n%ls\nerror: %d"
                 , _command.c_str()
                 , errno
                 );
@@ -469,10 +469,10 @@ namespace Menge
 
         if( this->fileExists( szPath ) == false )
         {
-            if( PLATFORM_SERVICE( m_serviceProvider )
+            if( PLATFORM_SERVICE()
                 ->createDirectory( szPath ) == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createDirectory %s"
+                LOGGER_ERROR("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createDirectory %s"
                     , pathCorrect
                     , fileCorrect
                     , szPath
@@ -492,7 +492,7 @@ namespace Menge
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createFile %s"
+            LOGGER_ERROR("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createFile %s"
                 , pathCorrect
                 , fileCorrect
                 , szPath
@@ -508,7 +508,7 @@ namespace Menge
 
         if( result == FALSE )
         {
-            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid writeFile %s"
+            LOGGER_ERROR("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid writeFile %s"
                 , pathCorrect
                 , fileCorrect
                 , szPath
@@ -530,7 +530,7 @@ namespace Menge
             , 0
             , szPath ) ) )
         {
-            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createDirectoryUserPicture: '%ls:%ls' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
+            LOGGER_ERROR("VistaWindowsLayer::createDirectoryUserPicture: '%ls:%ls' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
                 , _path.c_str()
                 , _file.c_str()
                 );
@@ -540,7 +540,7 @@ namespace Menge
 
         if( this->createDirectoryUser_( szPath, _path, _file, _data, _size ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createDirectoryUserPicture: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
+            LOGGER_ERROR("VistaWindowsLayer::createDirectoryUserPicture: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
                 , _path.c_str()
                 , _file.c_str()
                 , szPath
@@ -562,7 +562,7 @@ namespace Menge
             , 0
             , szPath ) ) )
         {
-            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createDirectoryUserMusic: %ls:%ls invalid SHGetFolderPath CSIDL_COMMON_MUSIC"
+            LOGGER_ERROR("VistaWindowsLayer::createDirectoryUserMusic: %ls:%ls invalid SHGetFolderPath CSIDL_COMMON_MUSIC"
                 , _path.c_str()
                 , _file.c_str()
                 );
@@ -572,7 +572,7 @@ namespace Menge
 
         if( this->createDirectoryUser_( szPath, _path, _file, _data, _size ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("VistaWindowsLayer::createDirectoryUserMusic: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
+            LOGGER_ERROR("VistaWindowsLayer::createDirectoryUserMusic: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
                 , _path.c_str()
                 , _file.c_str()
                 , szPath

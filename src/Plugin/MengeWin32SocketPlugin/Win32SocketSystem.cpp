@@ -27,7 +27,7 @@ namespace Menge
 			return false;
 		}
 
-		m_poolWin32Socket = new FactoryPool<Win32Socket, 16>( m_serviceProvider );
+		m_poolWin32Socket = new FactoryPool<Win32Socket, 16>();
 
 		return true;
 	}

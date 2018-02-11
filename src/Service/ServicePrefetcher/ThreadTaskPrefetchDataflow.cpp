@@ -30,12 +30,12 @@ namespace Menge
             return false;
         }
 
-		m_group = FILE_SERVICE( m_serviceProvider )
+		m_group = FILE_SERVICE()
 			->getFileGroup( m_pakName );
 
 		if( m_group == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchDataflow::_onRun can't get group '%s'"
+			LOGGER_ERROR("ThreadTaskPrefetchDataflow::_onRun can't get group '%s'"
 				, m_pakName.c_str()
 				);
 
@@ -46,19 +46,19 @@ namespace Menge
 
 		if( m_stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchDataflow::_onRun can't create input file '%s'"
+			LOGGER_ERROR("ThreadTaskPrefetchDataflow::_onRun can't create input file '%s'"
 				, m_pakName.c_str()
 				);
 
 			return false;
 		}
 	
-		m_dataflow = DATA_SERVICE(m_serviceProvider)
+		m_dataflow = DATA_SERVICE()
 			->getDataflow( m_dataflowType );
 			
 		if( m_dataflow == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchDataflow::_onRun: '%s':'%s' invalide get dataflow '%s'"
+			LOGGER_ERROR("ThreadTaskPrefetchDataflow::_onRun: '%s':'%s' invalide get dataflow '%s'"
 				, m_pakName.c_str()
 				, m_filePath.c_str()
 				, m_dataflowType.c_str()
@@ -71,7 +71,7 @@ namespace Menge
 
 		if( m_data == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchDataflow::_onRun: '%s':'%s' dataflow invalid create data '%s'"
+			LOGGER_ERROR("ThreadTaskPrefetchDataflow::_onRun: '%s':'%s' dataflow invalid create data '%s'"
 				, m_pakName.c_str()
 				, m_filePath.c_str()
 				, m_dataflowType.c_str()
@@ -87,7 +87,7 @@ namespace Menge
 	{
 		if( m_group->openInputFile( m_filePath, m_stream, 0, 0, false ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetcherTextureDecoder::_onRun: invalide open file '%s':'%s'"
+			LOGGER_ERROR("ThreadTaskPrefetcherTextureDecoder::_onRun: invalide open file '%s':'%s'"
 				, m_pakName.c_str()
 				, m_filePath.c_str()
 				);
@@ -97,7 +97,7 @@ namespace Menge
 
 		if( m_dataflow->load( m_data, m_stream ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ThreadTaskPrefetcherTextureDecoder::_onRun: invalide load file '%s':'%s'"
+			LOGGER_ERROR("ThreadTaskPrefetcherTextureDecoder::_onRun: invalide load file '%s':'%s'"
 				, m_pakName.c_str()
 				, m_filePath.c_str()
 				);

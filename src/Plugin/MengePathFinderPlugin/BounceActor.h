@@ -30,9 +30,6 @@ namespace Menge
 		~BounceActor();
 
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-		ServiceProviderInterface * getServiceProvider() const;
-
 		void setType( const ConstString & _type );
 		const ConstString & getType() const;
 
@@ -51,7 +48,6 @@ namespace Menge
 		bool isRemoved() const;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
 		ConstString m_type;
 
 		float m_radius;

@@ -383,8 +383,13 @@ namespace mt
 	{
 		return ((p1.x - p0.x) * (p2.y - p0.y) - (p2.x - p0.x) * (p1.y - p0.y));
 	}
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_MATH_FUNCTION_INLINE float cross_v2f( float a, float b, float c, float d )
+    {
+        return a * d - c * b;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_FUNCTION_INLINE float pseudo_cross_v2( const mt::vec2f& a, const mt::vec2f& b )
+	MENGINE_MATH_FUNCTION_INLINE float cross_v2( const mt::vec2f& a, const mt::vec2f& b )
 	{
 		return a.x * b.y - a.y * b.x;
 	}

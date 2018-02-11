@@ -16,7 +16,7 @@ namespace Menge
     protected:
         bool initialize() override
         {
-            m_factory = new FactoryDefault<T>( m_serviceProvider );
+            m_factory = new FactoryDefault<T>();
 
             return true;
         }
@@ -26,11 +26,9 @@ namespace Menge
 		{	
 			DataflowInterfacePtr decoder = m_factory->createObject();
 
-			decoder->setServiceProvider( m_serviceProvider );
-
 			if( decoder->initialize() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("DataflowFactory::createDataflow invalid initalize"
+				LOGGER_ERROR("DataflowFactory::createDataflow invalid initalize"
 					);
 
 				return nullptr;

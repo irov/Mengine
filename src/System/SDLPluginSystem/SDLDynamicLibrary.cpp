@@ -37,7 +37,7 @@ namespace Menge
 
         if (m_instance == nullptr)
         {
-            LOGGER_ERROR(m_serviceProvider)("DynamicLibrary::load %ls failed"
+            LOGGER_ERROR("DynamicLibrary::load %ls failed"
                 , m_name.c_str()
                 );
 

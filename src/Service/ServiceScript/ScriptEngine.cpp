@@ -36,8 +36,7 @@ namespace Menge
 			: public pybind::observer_bind_call
 		{
 		public:
-			My_observer_bind_call( ServiceProviderInterface * _serviceProvider )
-				: m_serviceProvider( _serviceProvider )
+			My_observer_bind_call()
 			{
 			}
 
@@ -49,12 +48,12 @@ namespace Menge
 				(void)_functionName;
 				(void)_className;
 
-				LOGGER_INFO( m_serviceProvider )("pybind call begin %s %s"
+				LOGGER_INFO( "pybind call begin %s %s"
 					, _className
 					, _functionName
 					);
 
-				size_t count = LOGGER_SERVICE( m_serviceProvider )
+				size_t count = LOGGER_SERVICE()
 					->getCountMessage( LM_ERROR );
 
 				m_counts.push_back( count );
@@ -65,12 +64,12 @@ namespace Menge
 				(void)_kwds;
 				(void)_args;
 
-				LOGGER_INFO( m_serviceProvider )("pybind call end %s %s"
+				LOGGER_INFO( "pybind call end %s %s"
 					, _className
 					, _functionName
 					);
 
-				size_t count = LOGGER_SERVICE( m_serviceProvider )
+				size_t count = LOGGER_SERVICE()
 					->getCountMessage( LM_ERROR );
 
 				size_t last_count = m_counts.back();
@@ -91,7 +90,7 @@ namespace Menge
 					return;
 				}
 
-				LOGGER_ERROR( m_serviceProvider )("script call %s::%s and get error!"
+				LOGGER_ERROR( "script call %s::%s and get error!"
 					, _className
 					, _functionName
 					);
@@ -108,8 +107,6 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
-
 			typedef std::vector<size_t> TVectorStackMsgCount;
 			TVectorStackMsgCount m_counts;
 		};
@@ -128,16 +125,16 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_pybind_logger( ServiceProviderInterface * _serviceProvider, const char * _msg )
+	static void s_pybind_logger( const char * _msg )
 	{
-		LOGGER_ERROR( _serviceProvider )("%s"
+		LOGGER_ERROR("%s"
 			, _msg
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::_initialize()
 	{
-		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+		bool developmentMode = HAS_OPTION( "dev" );
 
 		if( developmentMode == true )
         {
@@ -152,7 +149,7 @@ namespace Menge
 
 		if( kernel == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initialize invalid initialize pybind"
+			LOGGER_ERROR("ScriptEngine::initialize invalid initialize pybind"
 				);
 
 			return false;
@@ -160,7 +157,7 @@ namespace Menge
 
 		m_kernel = kernel;
 
-		pybind::set_logger( (pybind::pybind_logger_t)s_pybind_logger, m_serviceProvider);
+        pybind::set_logger( (pybind::pybind_logger_t)s_pybind_logger, nullptr );
 
 #   if defined(WIN32) && defined(_DEBUG)
 		_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_WNDW );
@@ -187,7 +184,7 @@ namespace Menge
 			.def_property( "softspace", &ScriptLogger::getSoftspace, &ScriptLogger::setSoftspace )
 			;
 
-		m_loggerWarning = new ScriptLogger(m_serviceProvider);
+		m_loggerWarning = new ScriptLogger();
 
 		m_loggerWarning->setMessageLevel( LM_WARNING );
 
@@ -195,7 +192,7 @@ namespace Menge
 		pybind::setStdOutHandle( py_logger );
 		pybind::decref( py_logger );
 
-		m_loggerError = new ScriptLogger(m_serviceProvider);
+		m_loggerError = new ScriptLogger();
 
 		m_loggerError->setMessageLevel( LM_ERROR );
 
@@ -203,7 +200,7 @@ namespace Menge
 		pybind::setStdErrorHandle( py_loggerError );
 		pybind::decref( py_loggerError );
 
-		pybind::set_observer_bind_call( new My_observer_bind_call( m_serviceProvider ) );
+		pybind::set_observer_bind_call( new My_observer_bind_call() );
 
 		pybind::interface_<ScriptModuleFinder>( m_kernel, "ScriptModuleFinder", true )
 			.def( "find_module", &ScriptModuleFinder::find_module )
@@ -212,11 +209,9 @@ namespace Menge
         
         m_moduleFinder = new FactorableUnique<ScriptModuleFinder>();
 
-		m_moduleFinder->setServiceProvider( m_serviceProvider );
-
 		if( m_moduleFinder->initialize() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initialize invalid initialize ScriptModuleFinder"
+			LOGGER_ERROR("ScriptEngine::initialize invalid initialize ScriptModuleFinder"
 				);
 
 			return false;
@@ -235,8 +230,8 @@ namespace Menge
 
 		//pybind::call_method( gc, "disable", "()" );
 
-		m_factoryPythonString = new FactoryPool<ConstStringHolderPythonString, 256>( m_serviceProvider );
-		m_factoryScriptModule = new FactoryPool<ScriptModule, 8>( m_serviceProvider );
+		m_factoryPythonString = new FactoryPool<ConstStringHolderPythonString, 256>();
+		m_factoryScriptModule = new FactoryPool<ScriptModule, 8>();
 
         return true;
 	}
@@ -402,7 +397,7 @@ namespace Menge
 
 			if( module == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::bootstrapModules invalid import module %s"
+				LOGGER_ERROR("ScriptEngine::bootstrapModules invalid import module %s"
 					, pak.module.c_str()
 					);
 
@@ -450,7 +445,7 @@ namespace Menge
 
 		if( module == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScriptEngine::initializeModules invalid import module %s"
+			LOGGER_ERROR( "ScriptEngine::initializeModules invalid import module %s"
 				, _pack.module.c_str()
 				);
 
@@ -464,7 +459,7 @@ namespace Menge
 
 		if( module->onInitialize( _pack.initializer ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScriptEngine::initializeModules invalid initialize module %s"
+			LOGGER_ERROR( "ScriptEngine::initializeModules invalid initialize module %s"
 				, _pack.module.c_str()
 				);
 
@@ -505,7 +500,7 @@ namespace Menge
 
 			if( module == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ScriptEngine::finalizeModules invalid import module %s"
+				LOGGER_ERROR( "ScriptEngine::finalizeModules invalid import module %s"
 					, pak.module.c_str()
 					);
 
@@ -514,7 +509,7 @@ namespace Menge
 
 			if( module->onFinalize( pak.finalizer ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ScriptEngine::finalizeModules module '%s' invalid call finalizer"
+				LOGGER_ERROR( "ScriptEngine::finalizeModules module '%s' invalid call finalizer"
 					, pak.module.c_str()
 					);
 
@@ -527,7 +522,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::initModule( const char * _name )
 	{
-		LOGGER_INFO(m_serviceProvider)( "init module '%s'"
+		LOGGER_INFO( "init module '%s'"
 			, _name 
 			);
 
@@ -558,7 +553,7 @@ namespace Menge
 		{
 			ScriptEngine::handleException();
 
-			LOGGER_ERROR(m_serviceProvider)( "ScriptEngine: invalid import module '%s'(c-exception)"
+			LOGGER_ERROR( "ScriptEngine: invalid import module '%s'(c-exception)"
 				, _name.c_str()
 				);
 
@@ -567,7 +562,7 @@ namespace Menge
 
 		if( exist == false )
 		{
-			LOGGER_WARNING(m_serviceProvider)( "ScriptEngine: invalid import module '%s'(not exist)"
+			LOGGER_WARNING( "ScriptEngine: invalid import module '%s'(not exist)"
 				, _name.c_str()
 				);
 
@@ -576,7 +571,7 @@ namespace Menge
 
 		if( py_module == nullptr )
 		{			
-			LOGGER_ERROR(m_serviceProvider)( "ScriptEngine: invalid import module '%s'(script)"
+			LOGGER_ERROR( "ScriptEngine: invalid import module '%s'(script)"
 				, _name.c_str()
 				);
 
@@ -587,7 +582,7 @@ namespace Menge
 
 		if( module->initialize( pybind::module(m_kernel, py_module) ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScriptEngine: invalid import initialize '%s'(script)"
+			LOGGER_ERROR( "ScriptEngine: invalid import initialize '%s'(script)"
 				, _name.c_str()
 				);
 
@@ -624,7 +619,7 @@ namespace Menge
     {
         if( pybind::string_check( _object ) == false )
         {            
-            LOGGER_ERROR(m_serviceProvider)("ScriptEngine::stringize invalid stringize object %s"
+            LOGGER_ERROR( "ScriptEngine::stringize invalid stringize object %s"
                 , pybind::object_repr( _object )
                 );
 
@@ -642,7 +637,7 @@ namespace Menge
 
         holder->setPythonObject( (PyObject*)_object );
 
-        if( STRINGIZE_SERVICE( m_serviceProvider )
+        if( STRINGIZE_SERVICE()
             ->stringizeExternal( holder, _cstr ) == false )
         {
             holder->destroy();
@@ -653,8 +648,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::setWrapper( const ConstString & _type, const ScriptWrapperInterfacePtr & _wrapper )
 	{
-		_wrapper->setServiceProvider( m_serviceProvider );
-
 		if( _wrapper->initialize() == false )
 		{
 			return;
@@ -667,7 +660,7 @@ namespace Menge
     {
         TMapScriptWrapper::iterator it_found = m_scriptWrapper.find(_type);
 
-        if (it_found == m_scriptWrapper.end())
+        if( it_found == m_scriptWrapper.end() )
         {
             return;
         }
@@ -684,7 +677,7 @@ namespace Menge
 
 		if( it_found == m_scriptWrapper.end() )
 		{
-            LOGGER_ERROR(m_serviceProvider)("ScriptEngine::wrap not found type %s"
+            LOGGER_ERROR("ScriptEngine::wrap not found type %s"
                 , _type.c_str()
                 );
 
@@ -713,7 +706,7 @@ namespace Menge
 		{
 			pybind::check_error();
 
-			LOGGER_ERROR( m_serviceProvider )("ScriptEngine::loadModuleSource %s invalid marshal get object"
+			LOGGER_ERROR("ScriptEngine::loadModuleSource %s invalid marshal get object"
 				, str_moduleName
 				);
 
@@ -722,7 +715,7 @@ namespace Menge
 
 		if( pybind::code_check( code ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScriptEngine::loadModuleSource %s marshal get object not code"
+			LOGGER_ERROR( "ScriptEngine::loadModuleSource %s marshal get object not code"
 				, str_moduleName
 				);
 
@@ -774,7 +767,7 @@ namespace Menge
 
 		if( file_magic != py_magic )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScriptEngine::loadModuleBinary %s invalid magic %u need %u"
+			LOGGER_ERROR( "ScriptEngine::loadModuleBinary %s invalid magic %u need %u"
 				, str_moduleName
 				, file_magic
 				, py_magic
@@ -789,7 +782,7 @@ namespace Menge
 		{
 			pybind::check_error();
 
-			LOGGER_ERROR( m_serviceProvider )("ScriptEngine::loadModuleBinary %s invalid marshal get object"
+			LOGGER_ERROR( "ScriptEngine::loadModuleBinary %s invalid marshal get object"
 				, str_moduleName
 				);
 
@@ -798,7 +791,7 @@ namespace Menge
 
 		if( pybind::code_check( code ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScriptEngine::loadModuleBinary %s marshal get object not code"
+			LOGGER_ERROR( "ScriptEngine::loadModuleBinary %s marshal get object not code"
 				, str_moduleName
 				);
 

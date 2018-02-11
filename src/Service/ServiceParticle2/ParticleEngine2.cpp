@@ -27,11 +27,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEngine2::_initialize()
 	{
-		m_available = CONFIG_VALUE( m_serviceProvider, "Engine", "ParticleService2Avaliable", true );
+		m_available = CONFIG_VALUE( "Engine", "ParticleService2Avaliable", true );
 
 		//m_available = false;
 
-		if( SERVICE_EXIST( m_serviceProvider, Menge::ParticleSystemInterface2 ) == false )
+		if( SERVICE_EXIST( Menge::ParticleSystemInterface2 ) == false )
 		{
 			m_available = false;
 		}
@@ -41,15 +41,15 @@ namespace Menge
 			return true;
 		}
 
-		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
+		m_archivator = ARCHIVE_SERVICE()
+			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
 
 		if( m_archivator == nullptr )
 		{
 			return false;
 		}
 
-		m_maxParticlesNum = CONFIG_VALUE( m_serviceProvider, "Engine", "ParticleMaxCount", 10000U );
+		m_maxParticlesNum = CONFIG_VALUE( "Engine", "ParticleMaxCount", 10000U );
 
 		return true;
 	}
@@ -67,18 +67,18 @@ namespace Menge
 	{
 		if( m_available == false )
 		{
-            LOGGER_ERROR( m_serviceProvider )("ParticleEngine2::createEmitterContainerFromFile Particle Engine not available"
+            LOGGER_ERROR("ParticleEngine2::createEmitterContainerFromFile Particle Engine not available"
                 );
 
 			return nullptr;
 		}
 		
-		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( _fileGroupName, _fileName, false );
 		
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEngine2::createEmitterContainerFromFile can't open file %s:%s"
+			LOGGER_ERROR("ParticleEngine2::createEmitterContainerFromFile can't open file %s:%s"
 				, _fileGroupName.c_str()
 				, _fileName.c_str() 
 				);
@@ -86,12 +86,12 @@ namespace Menge
 			return nullptr;
 		}
 
-		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SYSTEM2(m_serviceProvider)
+		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SYSTEM2()
             ->createEmitterContainerFromMemory( stream, m_archivator );
 
 		if( container == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEngine2::createEmitterContainerFromFile can't create emitter container '%s'"
+			LOGGER_ERROR("ParticleEngine2::createEmitterContainerFromFile can't create emitter container '%s'"
 				, _fileName.c_str() 
 				);
 

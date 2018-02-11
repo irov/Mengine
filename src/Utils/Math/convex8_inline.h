@@ -55,14 +55,14 @@ namespace mt
         vec2f dy = y1 - y0;
         vec2f d = x0 - y0;
 
-        float dyx = pseudo_cross_v2( dy, dx );
+        float dyx = cross_v2( dy, dx );
 
         if( mt::equal_f_z( dyx ) == true )
         {
             return 0;
         }
 
-        float dyx2 = pseudo_cross_v2( d, dx ) / dyx;
+        float dyx2 = cross_v2( d, dx ) / dyx;
 
         if( dyx2 <= 0.f || dyx2 >= 1.f )
         {
@@ -79,7 +79,7 @@ namespace mt
     {
         vec2f tmp1 = b - a;
         vec2f tmp2 = c - b;
-        float x = pseudo_cross_v2( tmp1, tmp2 );
+        float x = cross_v2( tmp1, tmp2 );
 
         return x < 0.f ? -1 : (x > 0 ? 1 : 0);
     }

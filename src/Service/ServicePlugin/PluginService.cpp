@@ -57,16 +57,16 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool PluginService::loadPlugin( const WString & _dllName )
     {
-		LOGGER_WARNING( m_serviceProvider )("load Plugin %ls"
+		LOGGER_WARNING("load Plugin %ls"
 			, _dllName.c_str()
             );
 
-		DynamicLibraryInterfacePtr dlib = PLUGIN_SYSTEM( m_serviceProvider )
+		DynamicLibraryInterfacePtr dlib = PLUGIN_SYSTEM()
 			->loadDynamicLibrary( _dllName );
 
 		if( dlib == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin [invalid load]"
+			LOGGER_ERROR("PluginService::loadPlugin can't load %ls plugin [invalid load]"
 				, _dllName.c_str()
 				);
 
@@ -80,7 +80,7 @@ namespace Menge
 
 		if( function_dllCreatePlugin == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin symbol '%s'"
+			LOGGER_ERROR("PluginService::loadPlugin can't load %ls plugin symbol '%s'"
 				, _dllName.c_str()
 				, symbol
 				);
@@ -92,7 +92,7 @@ namespace Menge
 		
 		if( this->createPlugin( dlib, dllCreatePlugin, true ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin [invalid create]"
+			LOGGER_ERROR("PluginService::loadPlugin can't load %ls plugin [invalid create]"
 				, _dllName.c_str()
 				);
 
@@ -109,10 +109,12 @@ namespace Menge
 			return false;
 		}
 
+        ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
+
 		PluginInterface * plugin;
-		if( _create( &plugin, _dynamic ) == false )
+		if( _create( serviceProvider, &plugin, _dynamic ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("PluginService::createPlugin can't create plugin [invalid create]"
+			LOGGER_ERROR("PluginService::createPlugin can't create plugin [invalid create]"
 				);
 
 			return false;
@@ -120,12 +122,12 @@ namespace Menge
 
 		if( plugin == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("PluginService::createPlugin can't create plugin [plugin is NULL]"
+			LOGGER_ERROR("PluginService::createPlugin can't create plugin [plugin is NULL]"
 				);
 
 			return false;
 		}
-
+                
 		if( this->addPlugin( _dlib, plugin ) == false )
 		{
 			return false;
@@ -148,8 +150,6 @@ namespace Menge
 			return false;
 		}
 
-		_plugin->setServiceProvider( m_serviceProvider );
-
 		if( _plugin->avaliable() == false )
 		{
 			return true;
@@ -157,7 +157,7 @@ namespace Menge
 
 		if( _plugin->initialize() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin invalid initialize plugin '%s'"
+			LOGGER_ERROR("PluginService::loadPlugin invalid initialize plugin '%s'"
 				, name
 				);
 

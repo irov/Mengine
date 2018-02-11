@@ -18,7 +18,7 @@ namespace Menge
 
         if( m_options.pitch == 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("ImageDecoder::setOptions pitch == 0"
+            LOGGER_ERROR("ImageDecoder::setOptions pitch == 0"
                 );
 
             return false;
@@ -26,7 +26,7 @@ namespace Menge
 
         if( m_options.channels == 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("ImageDecoder::setOptions channels == 0"
+            LOGGER_ERROR("ImageDecoder::setOptions channels == 0"
                 );
 
             return false;

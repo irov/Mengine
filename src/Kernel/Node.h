@@ -49,14 +49,7 @@ namespace Menge
 	public:
 		Node();
 		~Node();
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-        ServiceProviderInterface * getServiceProvider() const;
-
-    protected:
-        ServiceProviderInterface * m_serviceProvider;
-
+        
 	public:
 		void render( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
 		inline bool isRenderable() const;

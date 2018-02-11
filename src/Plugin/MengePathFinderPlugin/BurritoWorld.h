@@ -54,9 +54,6 @@ namespace Menge
 		~BurritoWorld();
 
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-
-	public:
 		bool initialize();
 		void finalize();
 
@@ -91,8 +88,6 @@ namespace Menge
 		void update( float _time, float _timing );
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-			
 		BurritoBison * m_bison;
 
 		typedef stdex::vector<BurritoGround *> TVectorBurritoGround;

@@ -22,10 +22,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool BitmapFontPlugin::_initialize()
 	{
-		SERVICE_CREATE( m_serviceProvider, BitmapGlyphService );
+		SERVICE_CREATE( BitmapGlyphService );
 
-		PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Font" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Bitmap" )
+		PROTOTYPE_SERVICE()
+			->addPrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "Bitmap" )
 				, new FactorableUnique<BitmapFontPrototypeGenerator>()
 			);
 
@@ -34,9 +34,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void BitmapFontPlugin::_finalize()
 	{
-		PROTOTYPE_SERVICE( m_serviceProvider )
-			->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Font" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Bitmap" ) );
+		PROTOTYPE_SERVICE()
+			->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "Bitmap" ) );
 
-		SERVICE_FINALIZE( m_serviceProvider, BitmapGlyphServiceInterface );
+		SERVICE_FINALIZE( BitmapGlyphServiceInterface );
 	}
 }

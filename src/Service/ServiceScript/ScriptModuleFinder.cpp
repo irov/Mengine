@@ -18,18 +18,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptModuleFinder::initialize()
 	{
-		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip") );
+		m_archivator = ARCHIVE_SERVICE()
+			->getArchivator( STRINGIZE_STRING_LOCAL( "zip") );
 
 		if( m_archivator == nullptr )
 		{
 			return false;
 		}
 
-		m_factoryScriptModuleLoaderCode = new FactoryPool<ScriptModuleLoaderCode, 8>( m_serviceProvider );
+		m_factoryScriptModuleLoaderCode = new FactoryPool<ScriptModuleLoaderCode, 8>();
 
 #   ifndef MENGINE_MASTER_RELEASE
-		m_factoryScriptModuleLoaderSource = new FactoryPool<ScriptModuleLoaderSource, 8>( m_serviceProvider );
+		m_factoryScriptModuleLoaderSource = new FactoryPool<ScriptModuleLoaderSource, 8>();
 #	endif
 
 		return true;
@@ -105,7 +105,6 @@ namespace Menge
 		{
 			ScriptModuleLoaderPtr loaderSource = m_factoryScriptModuleLoaderSource->createObject();
 
-			loaderSource->setServiceProvider( m_serviceProvider );
 			loaderSource->setModule( _module );
 
 			if( this->find_module_source_( _module, loaderSource ) == true )
@@ -122,7 +121,6 @@ namespace Menge
 		{
 			ScriptModuleLoaderPtr loaderCode = m_factoryScriptModuleLoaderCode->createObject();
 
-			loaderCode->setServiceProvider( m_serviceProvider );
 			loaderCode->setModule( _module );
 
 			if( this->find_module_code_( _module, loaderCode ) == true )
@@ -242,7 +240,7 @@ namespace Menge
         {
             const ModulePathes & mp = *it;
 
-			FileGroupInterfacePtr fileGroup = FILE_SERVICE(m_serviceProvider)
+			FileGroupInterfacePtr fileGroup = FILE_SERVICE()
 				->getFileGroup( mp.pack );
 
 			if( fileGroup == nullptr )
@@ -262,7 +260,7 @@ namespace Menge
 				m_cacheFullPath += path;
 				m_cacheFullPath.append( _modulePath, _modulePathLen );
 
-				FilePath c_fullPath = Helper::stringizeFilePath( m_serviceProvider, m_cacheFullPath );
+				FilePath c_fullPath = Helper::stringizeFilePath( m_cacheFullPath );
 				
                 if( fileGroup->existFile( c_fullPath ) == false )
                 {

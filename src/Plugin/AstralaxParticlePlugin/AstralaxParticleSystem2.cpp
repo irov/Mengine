@@ -55,7 +55,7 @@ namespace Menge
 
 		if( strstr( version, MAGIC_API ) == nullptr )
 		{
-			LOGGER_CRITICAL( m_serviceProvider )("Astralax Magic Particles Version: %s but need %s"
+			LOGGER_CRITICAL("Astralax Magic Particles Version: %s but need %s"
 				, version
 				, MAGIC_API
 				);
@@ -63,11 +63,11 @@ namespace Menge
 			return false;
 		}
 
-		LOGGER_WARNING( m_serviceProvider )("Astralax Magic Particles Version: %s"
+		LOGGER_WARNING("Astralax Magic Particles Version: %s"
 			, version
 			);
 
-        m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPool<AstralaxEmitterContainer2, 16>( m_serviceProvider, this, &AstralaxParticleSystem2::onContainerRelease_ );
+        m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPool<AstralaxEmitterContainer2, 16>( this, &AstralaxParticleSystem2::onContainerRelease_ );
 		
 		return true;
 	}
@@ -78,7 +78,7 @@ namespace Menge
 
 		if( count != 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("AstralaxParticleSystem2::finalize have %d container"
+			LOGGER_ERROR("AstralaxParticleSystem2::finalize have %d container"
 				, count
 				);
 		}
@@ -93,17 +93,15 @@ namespace Menge
 
 		if( container == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("AstralaxParticleSystem::createEmitterContainerFromMemory invalid create container"
+			LOGGER_ERROR("AstralaxParticleSystem::createEmitterContainerFromMemory invalid create container"
 				);
 
 			return nullptr;
 		}
 
-		container->setServiceProvider( m_serviceProvider );
-		
 		if( container->initialize( this, _stream, _archivator ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid initialize container"
+			LOGGER_ERROR("AstralaxParticleSystem::createEmitterContainerFromMemory invalid initialize container"
 				);
 			
 			return nullptr;
@@ -158,7 +156,7 @@ namespace Menge
 			MAGIC_MATERIAL m;
 			if( Magic_GetMaterial( i, &m ) != MAGIC_SUCCESS )
 			{
-				LOGGER_ERROR( m_serviceProvider )("AstralaxParticleSystem2::updateMaterial invalid get material %d"
+				LOGGER_ERROR("AstralaxParticleSystem2::updateMaterial invalid get material %d"
 					, i
 					);
 
@@ -211,7 +209,7 @@ namespace Menge
 				textureStage.alphaArg2 = dx_arg[state.argument_alpha2];
 			}
 
-			const RenderMaterialStage * cache_stage = RENDERMATERIAL_SERVICE( m_serviceProvider )
+			const RenderMaterialStage * cache_stage = RENDERMATERIAL_SERVICE()
 				->cacheStage( rs );
 
 			m_stages[i] = cache_stage;
@@ -236,7 +234,7 @@ namespace Menge
 
 		if( atlases_size <= (size_t)_index )
 		{
-			LOGGER_ERROR( m_serviceProvider )("AstralaxParticleSystem2::getResourceImage index %d but size is %d"
+			LOGGER_ERROR("AstralaxParticleSystem2::getResourceImage index %d but size is %d"
 				, _index
 				, atlases_size
 				);

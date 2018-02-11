@@ -99,9 +99,7 @@ SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( LoaderService );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
-{
-	ServiceProviderInterface * serviceProvider = NULL;
-		
+{		
 	//////////////////////////////////////////////////////////////////////////
 	static void createConsole()
 	{
@@ -159,15 +157,18 @@ namespace Menge
 	{
 		stdex_allocator_initialize();
 
+        ServiceProviderInterface * serviceProvider;
 		SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
 
-		SERVICE_CREATE( serviceProvider, FactoryService );
-        SERVICE_CREATE( serviceProvider, OptionsService );
-		SERVICE_CREATE( serviceProvider, UnicodeSystem );		
-		SERVICE_CREATE( serviceProvider, StringizeService );
-		SERVICE_CREATE( serviceProvider, ArchiveService );
-		SERVICE_CREATE( serviceProvider, ArchiveService );
-		SERVICE_CREATE( serviceProvider, LoggerService );
+        SERVICE_PROVIDER_SETUP( serviceProvider );
+
+		SERVICE_CREATE( FactoryService );
+        SERVICE_CREATE( OptionsService );
+		SERVICE_CREATE( UnicodeSystem );		
+		SERVICE_CREATE( StringizeService );
+		SERVICE_CREATE( ArchiveService );
+		SERVICE_CREATE( ArchiveService );
+		SERVICE_CREATE( LoggerService );
 		
 		class MyLoggerInterface
 			: public LoggerInterface
@@ -181,16 +182,6 @@ namespace Menge
 			void finalize() override 
 			{
 			};
-
-			void setServiceProvider(ServiceProviderInterface * _serviceProvider) override 
-			{ 
-				m_serviceProvider = _serviceProvider; 
-			}
-
-			ServiceProviderInterface * getServiceProvider() const override 
-			{ 
-				return m_serviceProvider; 
-			}
 
 			void setVerboseLevel( EMessageLevel _level ) override 
 			{
@@ -226,56 +217,53 @@ namespace Menge
 			void flush() override 
 			{
 			}
-
-		private:
-			ServiceProviderInterface * m_serviceProvider;
 		};
 
-		LOGGER_SERVICE( serviceProvider )
+		LOGGER_SERVICE()
 			->setVerboseLevel( LM_WARNING );
 
-		LOGGER_SERVICE( serviceProvider )
+		LOGGER_SERVICE()
 			->registerLogger( new MyLoggerInterface );
 
-		LOGGER_WARNING(serviceProvider)("Inititalizing Config Manager..." );
+        LOGGER_WARNING( "Inititalizing Config Manager..." );
 		
-		SERVICE_CREATE( serviceProvider, ConfigService );
-		SERVICE_CREATE( serviceProvider, ConverterService );
-		SERVICE_CREATE( serviceProvider, CodecService );
-		SERVICE_CREATE( serviceProvider, DataService );
-		SERVICE_CREATE( serviceProvider, ThreadSystem );
-		SERVICE_CREATE( serviceProvider, ThreadService );
-		SERVICE_CREATE( serviceProvider, MemoryService );
-		SERVICE_CREATE( serviceProvider, PluginSystem );
-		SERVICE_CREATE( serviceProvider, PluginService );
+		SERVICE_CREATE( ConfigService );
+		SERVICE_CREATE( ConverterService );
+		SERVICE_CREATE( CodecService );
+		SERVICE_CREATE( DataService );
+		SERVICE_CREATE( ThreadSystem );
+		SERVICE_CREATE( ThreadService );
+		SERVICE_CREATE( MemoryService );
+		SERVICE_CREATE( PluginSystem );
+		SERVICE_CREATE( PluginService );
 
-		SERVICE_CREATE( serviceProvider, WindowsLayer );
-        SERVICE_CREATE( serviceProvider, Platform );
-		SERVICE_CREATE( serviceProvider, FileService );
+		SERVICE_CREATE( WindowsLayer );
+        SERVICE_CREATE( Platform );
+		SERVICE_CREATE( FileService );
 				
-		PLUGIN_CREATE( serviceProvider, MengeWin32FileGroup );
-		PLUGIN_CREATE( serviceProvider, MengeZip );
-		PLUGIN_CREATE( serviceProvider, MengeLZ4 );
-		PLUGIN_CREATE( serviceProvider, MengeImageCodec );
+		PLUGIN_CREATE( MengeWin32FileGroup );
+		PLUGIN_CREATE( MengeZip );
+		PLUGIN_CREATE( MengeLZ4 );
+		PLUGIN_CREATE( MengeImageCodec );
 
-		SERVICE_CREATE( serviceProvider, LoaderService );
+		SERVICE_CREATE( LoaderService );
 		
-		PLUGIN_SERVICE(serviceProvider)
+		PLUGIN_SERVICE()
 			->loadPlugin( L"MengeDevelopmentConverterPlugin.dll" );
 
-		PLUGIN_SERVICE(serviceProvider)
+		PLUGIN_SERVICE()
 			->loadPlugin( L"MengeXmlCodecPlugin.dll" );
 
-		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), STRINGIZE_STRING_LOCAL( serviceProvider, "global" ) ) == false )
+		if( FILE_SERVICE()
+			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), STRINGIZE_STRING_LOCAL( "global" ) ) == false )
 		{
 			return false;
 		}
 
-		ConstString dev = Helper::stringizeString(serviceProvider, "dev");
+		ConstString dev = Helper::stringizeString("dev");
 
-		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( dev, ConstString::none(), Helper::emptyPath(), STRINGIZE_STRING_LOCAL(serviceProvider, "global") ) == false )
+		if( FILE_SERVICE()
+			->mountFileGroup( dev, ConstString::none(), Helper::emptyPath(), STRINGIZE_STRING_LOCAL("global") ) == false )
 		{
 			return false;
 		}
@@ -286,30 +274,30 @@ namespace Menge
 	static bool s_convert( const WString & _fromPath, const WString & _toPath, const WString & _convertType, const WString & _params )
 	{		
 		String utf8_fromPath;
-		Helper::unicodeToUtf8( serviceProvider, _fromPath, utf8_fromPath );
+		Helper::unicodeToUtf8( _fromPath, utf8_fromPath );
 
 		String utf8_toPath;
-		Helper::unicodeToUtf8( serviceProvider, _toPath, utf8_toPath );
+		Helper::unicodeToUtf8( _toPath, utf8_toPath );
 
 		String utf8_convertType;
-		Helper::unicodeToUtf8( serviceProvider, _convertType, utf8_convertType );
+		Helper::unicodeToUtf8( _convertType, utf8_convertType );
 
 		String utf8_params;
-		Helper::unicodeToUtf8( serviceProvider, _params, utf8_params );		
+		Helper::unicodeToUtf8( _params, utf8_params );		
 
 		ConverterOptions options;
 
 		options.pakName = ConstString::none();
-		options.inputFileName = Helper::stringizeFilePath(serviceProvider, utf8_fromPath);
-		options.outputFileName = Helper::stringizeFilePath(serviceProvider, utf8_toPath);
+		options.inputFileName = Helper::stringizeFilePath(utf8_fromPath);
+		options.outputFileName = Helper::stringizeFilePath(utf8_toPath);
 		options.params = utf8_params;
 
-		ConverterInterfacePtr converter = CONVERTER_SERVICE(serviceProvider)
-			->createConverter( Helper::stringizeString(serviceProvider, utf8_convertType) );
+		ConverterInterfacePtr converter = CONVERTER_SERVICE()
+			->createConverter( Helper::stringizeString(utf8_convertType) );
 
 		if( converter == nullptr )
 		{
-			LOGGER_ERROR(serviceProvider)("convertPVRToHTF can't create convert '%s'\nfrom: %s\nto: %s\n"
+            LOGGER_ERROR( "convertPVRToHTF can't create convert '%s'\nfrom: %s\nto: %s\n"
 				, utf8_convertType.c_str()
 				, options.inputFileName.c_str()
 				, options.outputFileName.c_str()
@@ -322,7 +310,7 @@ namespace Menge
 
 		if( converter->convert() == false )
 		{
-			LOGGER_ERROR(serviceProvider)( "convertPVRToHTF can't convert '%s'\nfrom: %s\nto: %s\n"
+			LOGGER_ERROR( "convertPVRToHTF can't convert '%s'\nfrom: %s\nto: %s\n"
 				, utf8_convertType.c_str()
 				, options.inputFileName.c_str()
 				, options.outputFileName.c_str()
@@ -338,7 +326,7 @@ namespace Menge
 	{
 		if( s_convert( fromPath, toPath, convertType, params ) == false )
 		{
-			LOGGER_ERROR(serviceProvider)("convert: error process %ls to %ls convert %ls"
+            LOGGER_ERROR( "convert: error process %ls to %ls convert %ls"
 				, fromPath
 				, toPath
 				, convertType
@@ -353,14 +341,14 @@ namespace Menge
 	PyObject * isAlphaInImageFile( const wchar_t * _path )
 	{
 		String utf8_path;
-		if( Helper::unicodeToUtf8( serviceProvider, _path, utf8_path ) == false )
+		if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
 		{
 			return NULL;
 		}
 
-		FilePath c_path = Helper::stringizeFilePath(serviceProvider, utf8_path);
+		FilePath c_path = Helper::stringizeFilePath(utf8_path);
 
-		InputStreamInterfacePtr stream = FILE_SERVICE(serviceProvider)
+		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( ConstString::none(), c_path, false );
 		
 		if( stream == nullptr )
@@ -368,10 +356,10 @@ namespace Menge
 			return NULL;
 		}
 
-		const ConstString & codecType = CODEC_SERVICE(serviceProvider)
+		const ConstString & codecType = CODEC_SERVICE()
 				->findCodecType( c_path );
 
-		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(serviceProvider)
+		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
 			->createDecoderT<ImageDecoderInterfacePtr>( codecType );
 
 		if( imageDecoder == nullptr )
@@ -394,22 +382,22 @@ namespace Menge
 	PyObject * isUselessAlphaInImageFile( const wchar_t * _path )
 	{
 		String utf8_path;
-		if( Helper::unicodeToUtf8( serviceProvider, _path, utf8_path ) == false )
+		if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
 		{
-			LOGGER_ERROR(serviceProvider)("isUselessAlphaInImageFile %ls invalid unicodeToUtf8"
+			LOGGER_ERROR("isUselessAlphaInImageFile %ls invalid unicodeToUtf8"
 				, _path
 				);
 
 			return nullptr;
 		}
 
-		FilePath c_path = Helper::stringizeFilePath(serviceProvider, utf8_path);
+		FilePath c_path = Helper::stringizeFilePath(utf8_path);
 
-		Image * image = new Image( serviceProvider );
+		Image * image = new Image();
 
 		if( image->load( c_path ) == false )
 		{
-			LOGGER_ERROR(serviceProvider)("isUselessAlphaInImageFile %ls invalid load"
+			LOGGER_ERROR("isUselessAlphaInImageFile %ls invalid load"
 				, _path
 				);
 			
@@ -431,14 +419,14 @@ namespace Menge
 	Image * loadImage( const wchar_t * _path )
 	{
 		String utf8_path;
-		if( Helper::unicodeToUtf8( serviceProvider, _path, utf8_path ) == false )
+		if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
 		{
 			return nullptr;
 		}
 
-		FilePath c_path = Helper::stringizeFilePath(serviceProvider, utf8_path);
+		FilePath c_path = Helper::stringizeFilePath(utf8_path);
 
-		Image * image = new Image( serviceProvider );
+		Image * image = new Image();
 
 		if( image->load( c_path ) == false )
 		{
@@ -451,12 +439,12 @@ namespace Menge
 	bool saveImage( Image * _image, const wchar_t * _path )
 	{
 		String utf8_path;
-		if( Helper::unicodeToUtf8( serviceProvider, _path, utf8_path ) == false )
+		if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
 		{
 			return false;
 		}
 
-		FilePath c_path = Helper::stringizeFilePath(serviceProvider, utf8_path);
+		FilePath c_path = Helper::stringizeFilePath(utf8_path);
 
 		if( _image->save( c_path ) == false )
 		{
@@ -535,7 +523,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Image * createImage( pybind::kernel_interface * _kernel, uint32_t _width, uint32_t _height, uint32_t _channel, PyObject * _colour )
 	{
-		Image * image = new Image( serviceProvider );
+		Image * image = new Image();
 
 		image->create( _width, _height, _channel );
 		image->fill( color_convert( _kernel, _colour) );
@@ -546,19 +534,19 @@ namespace Menge
 	Menge::WString pathSHA1( const wchar_t * _path )
 	{
 		String utf8_path;
-		if( Helper::unicodeToUtf8( serviceProvider, _path, utf8_path ) == false )
+		if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
 		{
 			return NULL;
 		}
 
-		FilePath c_path = Helper::stringizeFilePath( serviceProvider, utf8_path );
+		FilePath c_path = Helper::stringizeFilePath( utf8_path );
 
-		InputStreamInterfacePtr stream = FILE_SERVICE( serviceProvider )
+		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( ConstString::none(), c_path, false );
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR( serviceProvider )("pathSHA1 %ls invalid open '%s'"
+			LOGGER_ERROR( "pathSHA1 %ls invalid open '%s'"
 				, _path
 				, c_path.c_str()
 				);
@@ -586,9 +574,8 @@ namespace Menge
 	class PythonLogger
 	{
 	public:
-		PythonLogger( ServiceProviderInterface * _serviceProvider )
-			: m_serviceProvider(_serviceProvider)
-			, m_softspace(0)
+		PythonLogger()
+			: m_softspace(0)
 		{
 		}
 
@@ -599,7 +586,8 @@ namespace Menge
 	public:
 		void write( const char * _msg, size_t _size )
 		{
-			LOGGER_ERROR(m_serviceProvider).logMessage( _msg, _size );
+            LOGGER_SERVICE()
+                ->logMessage( LM_ERROR, 0, _msg, _size );
 		}
 
 	public:
@@ -683,17 +671,15 @@ namespace Menge
 		}
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		int m_softspace;
 	};
 }
 //////////////////////////////////////////////////////////////////////////
 static void s_error( const wchar_t * _msg )
 {
-	LOGGER_ERROR(Menge::serviceProvider)("%ls"
-		, _msg
-		);
+    LOGGER_ERROR( "%ls"
+        , _msg
+    );
 }
 //////////////////////////////////////////////////////////////////////////
 static bool getCurrentUserRegValue( const WCHAR * _path, WCHAR * _value, DWORD _size )
@@ -707,7 +693,7 @@ static bool getCurrentUserRegValue( const WCHAR * _path, WCHAR * _value, DWORD _
 
 	if( lRes != ERROR_SUCCESS )
 	{
-		LOGGER_ERROR( Menge::serviceProvider )("getCurrentUserRegValue %ls RegOpenKeyEx get Error %d"
+		LOGGER_ERROR( "getCurrentUserRegValue %ls RegOpenKeyEx get Error %d"
 			, _path
 			, lRes
 			);
@@ -722,7 +708,7 @@ static bool getCurrentUserRegValue( const WCHAR * _path, WCHAR * _value, DWORD _
 
 	if( nError != ERROR_SUCCESS )
 	{
-		LOGGER_ERROR( Menge::serviceProvider )("getCurrentUserRegValue %ls RegQueryValueEx get Error %d"
+		LOGGER_ERROR( "getCurrentUserRegValue %ls RegQueryValueEx get Error %d"
 			, _path
 			, nError
 			);
@@ -757,7 +743,7 @@ bool run()
 		return false;
 	}
 
-	LOGGER_ERROR(Menge::serviceProvider)("Menge::initialize complete");
+    LOGGER_ERROR( "Menge::initialize complete" );
 
 	const WCHAR * szRegPath = L"SOFTWARE\\Python\\PythonCore\\3.6-32\\PythonPath";
 
@@ -765,14 +751,14 @@ bool run()
 		WCHAR szPythonPath[512];
 		if( getCurrentUserRegValue( szRegPath, szPythonPath, 512 ) == false )
 		{
-			LOGGER_ERROR( Menge::serviceProvider )("invalid get reg value '%ls'"
+			LOGGER_ERROR( "invalid get reg value '%ls'"
 				, szRegPath
 				);
 		}
 
 		pybind::set_path( szPythonPath );
 
-		LOGGER_ERROR(Menge::serviceProvider)("set python path '%ls'"
+        LOGGER_ERROR( "set python path '%ls'"
 			, szPythonPath
 			);
 	}	
@@ -784,7 +770,7 @@ bool run()
 		return false;
 	}
 	
-	LOGGER_ERROR(Menge::serviceProvider)("pybind::initialize complete");
+    LOGGER_ERROR( "pybind::initialize complete" );
 
 	PyObject * py_tools_module = pybind::module_init( "ToolsBuilderPlugin" );
 
@@ -795,7 +781,7 @@ bool run()
 		.def_property("errors", &Menge::PythonLogger::getErrors, &Menge::PythonLogger::setErrors )
 		.def_property("encoding", &Menge::PythonLogger::getEncoding, &Menge::PythonLogger::setEncoding )
 		;
-	Menge::PythonLogger * logger = new Menge::PythonLogger(Menge::serviceProvider);
+	Menge::PythonLogger * logger = new Menge::PythonLogger();
 	PyObject * py_logger = pybind::ptr( kernel, logger);
 
 	pybind::setStdOutHandle( py_logger );
@@ -839,7 +825,7 @@ bool run()
 		WCHAR szPythonPath[512];
 		if( getCurrentUserRegValue( szRegPath, szPythonPath, 512 ) == false )
 		{
-			LOGGER_ERROR( Menge::serviceProvider )("invalid get reg value '%ls'"
+			LOGGER_ERROR( "invalid get reg value '%ls'"
 				, szRegPath
 				);
 		}
@@ -879,14 +865,14 @@ bool run()
 	PWSTR szModuleName = szArglist[1];
 
 	Menge::String utf8_ModuleName;
-	Menge::Helper::unicodeToUtf8( Menge::serviceProvider, szModuleName, utf8_ModuleName );
+	Menge::Helper::unicodeToUtf8( szModuleName, utf8_ModuleName );
 
 	PWSTR szFunctionName = szArglist[2];
 
 	Menge::String utf8_FunctionName;
-	Menge::Helper::unicodeToUtf8( Menge::serviceProvider, szFunctionName, utf8_FunctionName );
+	Menge::Helper::unicodeToUtf8( szFunctionName, utf8_FunctionName );
 
-	LOGGER_ERROR( Menge::serviceProvider )("Module '%s' Function '%s'"
+	LOGGER_ERROR( "Module '%s' Function '%s'"
 		, utf8_ModuleName.c_str()
 		, utf8_FunctionName.c_str()
 		);

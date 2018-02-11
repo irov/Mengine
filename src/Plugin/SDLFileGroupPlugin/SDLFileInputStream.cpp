@@ -58,7 +58,7 @@ namespace Menge
         {
             this->close_();
 
-            LOGGER_ERROR( m_serviceProvider )("SDLFileInputStream::open %s invalid file size"
+            LOGGER_ERROR("SDLFileInputStream::open %s invalid file size"
                 , fullPath
                 );
 
@@ -67,7 +67,7 @@ namespace Menge
 
         if( _offset + _size > size )
         {
-            LOGGER_ERROR( m_serviceProvider )("SDLFileInputStream::open %s invalid file range %d:%d size %d"
+            LOGGER_ERROR("SDLFileInputStream::open %s invalid file range %d:%d size %d"
                 , fullPath
                 , _offset
                 , _size
@@ -92,7 +92,7 @@ namespace Menge
             {
                 const char* sdlError = SDL_GetError();
 
-                LOGGER_ERROR( m_serviceProvider )("Win32InputStream::open seek offset %d size %d get error %s"
+                LOGGER_ERROR("Win32InputStream::open seek offset %d size %d get error %s"
                     , m_offset
                     , m_size
                     , sdlError
@@ -107,10 +107,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * _fullPath )
     {
-        if( SDLLAYER_SERVICE( m_serviceProvider )
+        if( SDLLAYER_SERVICE()
             ->concatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()
                 , _filePath.c_str()
                 );
@@ -122,7 +122,7 @@ namespace Menge
 
         if( m_rwops == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("SDLFileInputStream::open %s invalid open"
+            LOGGER_ERROR( "SDLFileInputStream::open %s invalid open"
                 , _fullPath
                 );
 
@@ -130,9 +130,9 @@ namespace Menge
         }
 
 #	ifdef _DEBUG
-        if( SERVICE_EXIST( m_serviceProvider, NotificationServiceInterface ) == true )
+        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_SERVICE( m_serviceProvider )
+            NOTIFICATION_SERVICE()
                 ->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str() );
         }
 #	endif
@@ -237,7 +237,7 @@ namespace Menge
         {
             const char* sdlError = SDL_GetError();
 
-            LOGGER_ERROR( m_serviceProvider )("Win32InputStream::read %d:%d get error %s"
+            LOGGER_ERROR( "Win32InputStream::read %d:%d get error %s"
                 , _size
                 , m_size
                 , sdlError
@@ -274,7 +274,7 @@ namespace Menge
             {
                 const char* sdlError = SDL_GetError();
 
-                LOGGER_ERROR( m_serviceProvider )("Win32InputStream::seek %d:%d get error %s"
+                LOGGER_ERROR( "Win32InputStream::seek %d:%d get error %s"
                     , _pos
                     , m_size
                     , sdlError
@@ -330,10 +330,10 @@ namespace Menge
     {
 #	ifdef _DEBUG
         Char filePath[MENGINE_MAX_PATH];
-        if( SDLLAYER_SERVICE( m_serviceProvider )
+        if( SDLLAYER_SERVICE()
             ->concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
                 );
@@ -342,9 +342,9 @@ namespace Menge
         }
 
         WString unicode_filePath;
-        Helper::utf8ToUnicodeSize( m_serviceProvider, filePath, UNICODE_UNSIZE, unicode_filePath );
+        Helper::utf8ToUnicodeSize( filePath, UNICODE_UNSIZE, unicode_filePath );
 
-        uint64_t ft = PLATFORM_SERVICE( m_serviceProvider )
+        uint64_t ft = PLATFORM_SERVICE()
             ->getFileTime( unicode_filePath );
 
         _time = ft;

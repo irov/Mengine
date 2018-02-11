@@ -9,8 +9,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Node::Node()
-		: m_serviceProvider(nullptr)
-        , m_active(false)
+		: m_active(false)
 		, m_deactivating(false)
 		, m_afterActive(false)
 		, m_enable(true)
@@ -31,16 +30,6 @@ namespace Menge
 	Node::~Node()
 	{		
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Node::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * Node::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
     //////////////////////////////////////////////////////////////////////////
     void Node::setShallowGrave()
     {
@@ -78,7 +67,7 @@ namespace Menge
 	{
 		if( this->isShallowGrave() == true )
 		{
-			NODE_SERVICE(m_serviceProvider)
+			NODE_SERVICE()
 				->addHomeless( this );
 
 			this->release();
@@ -183,7 +172,7 @@ namespace Menge
 
 		if( m_afterActive == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Node::deactivate %s invalid deactivate in 'activate state'"
+			LOGGER_ERROR("Node::deactivate %s invalid deactivate in 'activate state'"
 				, this->getName().c_str()
 				);
 
@@ -335,7 +324,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::isHomeless() const
 	{
-		bool result = NODE_SERVICE( m_serviceProvider )
+		bool result = NODE_SERVICE() 
 			->isHomeless( this );
 
 		return result;
@@ -345,7 +334,7 @@ namespace Menge
 	{
 		if( _node == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Node::addChildren '%s' invalid add NULL node"
+			LOGGER_ERROR("Node::addChildren '%s' invalid add NULL node"
 				, this->getName().c_str()
 				);
 
@@ -359,7 +348,7 @@ namespace Menge
 	{
 		if( _node == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Node::addChildrenFront '%s' invalid add NULL node"
+			LOGGER_ERROR("Node::addChildrenFront '%s' invalid add NULL node"
 				, this->getName().c_str()
 				);
 
@@ -373,7 +362,7 @@ namespace Menge
 	{
 		if( _node == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Node::addChildrenAfter '%s' invalid add NULL node (node)"
+			LOGGER_ERROR("Node::addChildrenAfter '%s' invalid add NULL node (node)"
 				, this->getName().c_str()
 				);
 
@@ -382,7 +371,7 @@ namespace Menge
 
 		if( _after == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Node::addChildrenAfter '%s' invalid add NULL node (after)"
+			LOGGER_ERROR("Node::addChildrenAfter '%s' invalid add NULL node (after)"
 				, this->getName().c_str()
 				);
 
@@ -394,7 +383,7 @@ namespace Menge
 
 		if( it_found == m_children.end() )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Node::addChildrenAfter '%s' after is not child"
+			LOGGER_ERROR("Node::addChildrenAfter '%s' after is not child"
 				, this->getName().c_str()
 				);
 
@@ -509,7 +498,7 @@ namespace Menge
 #	ifdef _DEBUG
 		if( stdex::intrusive_has( m_children.begin(), m_children.end(), _node ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Node::removeChild %s not found children %s"
+            LOGGER_ERROR("Node::removeChild %s not found children %s"
                 , this->getName().c_str()
                 , _node->getName().c_str()
                 );
@@ -530,7 +519,7 @@ namespace Menge
 
         this->removeChild_( _node );
 		
-		//NODE_SERVICE(m_serviceProvider)
+		//NODE_SERVICE()
 		//	->addHomeless( _node );
 
 		return true;
@@ -1274,12 +1263,12 @@ namespace Menge
 			return;
 		}
 
-		RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
+		RenderVertex2D * vertices = RENDER_SERVICE()
 			->getDebugRenderVertex2D( 4 * 2 );
 
 		if( vertices == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Node::_debugRender %s debug vertex overflow"
+			LOGGER_ERROR("Node::_debugRender %s debug vertex overflow"
 				, this->getName().c_str()
 				);
 
@@ -1324,7 +1313,7 @@ namespace Menge
 			vertices[i].uv[1].y = 0.f;
 		}
 
-		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE(m_serviceProvider)
+		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
 			->getDebugMaterial();
 		
 		_renderService

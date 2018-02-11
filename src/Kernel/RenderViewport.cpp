@@ -20,7 +20,7 @@ namespace Menge
 			return true;
 		}
 
-		m_observerChangeWindowResolution = NOTIFICATION_SERVICE(m_serviceProvider)
+		m_observerChangeWindowResolution = NOTIFICATION_SERVICE()
 			->addObserverMethod( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &RenderViewport::notifyChangeWindowResolution );
 
 		this->invalidateViewport_();
@@ -66,10 +66,10 @@ namespace Menge
 		float gameViewportAspect;
 		Viewport gameViewport;
 
-		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
+		const Resolution & contentResolution = APPLICATION_SERVICE()
 			->getContentResolution();
 
-		APPLICATION_SERVICE(m_serviceProvider)
+		APPLICATION_SERVICE()
 			->getGameViewport( gameViewportAspect, gameViewport );
 
 		mt::vec2f contentResolutionSize;

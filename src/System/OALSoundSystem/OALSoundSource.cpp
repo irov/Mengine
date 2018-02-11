@@ -29,9 +29,8 @@ namespace Menge
 		this->releaseSourceId_();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSource::initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem )
+    void OALSoundSource::initialize( OALSoundSystem * _soundSystem )
     {
-        m_serviceProvider = _serviceProvider;
         m_soundSystem = _soundSystem;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -60,7 +59,7 @@ namespace Menge
 
             if( m_soundBuffer->play( m_sourceId, m_loop, m_timing ) == false )
             {
-				LOGGER_ERROR(m_serviceProvider)("OALSoundSource::play invalid buffer play %d loop %d timing %f"
+				LOGGER_ERROR("OALSoundSource::play invalid buffer play %d loop %d timing %f"
 					, m_sourceId
 					, m_loop
 					, m_timing
@@ -110,7 +109,7 @@ namespace Menge
         float timing = 0.f;
         if( m_soundBuffer->getTimePos( m_sourceId, timing ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("OALSoundSource::pause invalid get time pos %d (play %d)"
+            LOGGER_ERROR("OALSoundSource::pause invalid get time pos %d (play %d)"
                 , m_sourceId
                 , m_playing
                 );
@@ -154,7 +153,7 @@ namespace Menge
 		{
 			float gain = ::powf( m_volume, 2.f );
 			alSourcef( m_sourceId, AL_GAIN, gain );
-			OAL_CHECK_ERROR(m_serviceProvider);
+			OAL_CHECK_ERROR();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -177,7 +176,7 @@ namespace Menge
 	{
 		if( m_soundBuffer == nullptr )
 		{
-            LOGGER_ERROR(m_serviceProvider)("OALSoundSource::getLengthMs invalid sound buffer"
+            LOGGER_ERROR("OALSoundSource::getLengthMs invalid sound buffer"
                 );
 
             return 0.f;
@@ -208,7 +207,7 @@ namespace Menge
 		float posms = 0.f;
         if( m_soundBuffer->getTimePos( m_sourceId, posms ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("OALSoundSource::getPosMs invalid get time pos %d (play %d)"
+            LOGGER_ERROR("OALSoundSource::getPosMs invalid get time pos %d (play %d)"
                 , m_sourceId
                 , m_playing
                 );
@@ -238,7 +237,7 @@ namespace Menge
 
         if( posmc > total )
         {
-            LOGGER_ERROR(m_serviceProvider)("OALSoundSource::setPosMs pos %f total %f"
+            LOGGER_ERROR("OALSoundSource::setPosMs pos %f total %f"
                 , _posMs
                 , total
                 );
@@ -252,7 +251,7 @@ namespace Menge
 		//{
 		//	if( m_soundBuffer->setTimePos( m_sourceId, posmc ) == false )
 		//	{
-		//		LOGGER_ERROR(m_serviceProvider)("OALSoundSource::setPosMs invalid set time pos %d time %f (play %d)"
+		//		LOGGER_ERROR("OALSoundSource::setPosMs invalid set time pos %d time %f (play %d)"
 		//			, m_sourceId
 		//			, posmc
 		//			, m_playing
@@ -309,47 +308,47 @@ namespace Menge
 		if( m_headMode == true )
 		{
 			alSourcei( _source, AL_SOURCE_RELATIVE, AL_TRUE );
-			OAL_CHECK_ERROR(m_serviceProvider);
+			OAL_CHECK_ERROR();
 
 			alSourcef( _source, AL_ROLLOFF_FACTOR, 0.f );
-			OAL_CHECK_ERROR(m_serviceProvider);
+			OAL_CHECK_ERROR();
 
 			alSource3f( _source, AL_DIRECTION, 0.f, 0.f, 0.f );
-			OAL_CHECK_ERROR(m_serviceProvider);
+			OAL_CHECK_ERROR();
 		} 
 		else 
 		{
 			alSourcei( _source, AL_SOURCE_RELATIVE, AL_FALSE );
-			OAL_CHECK_ERROR(m_serviceProvider);
+			OAL_CHECK_ERROR();
 
 			alSourcef( _source, AL_ROLLOFF_FACTOR, 1.f );
-			OAL_CHECK_ERROR(m_serviceProvider);
+			OAL_CHECK_ERROR();
 
             alSource3f( _source, AL_DIRECTION, 0.f, 0.f, 0.f );
-            OAL_CHECK_ERROR(m_serviceProvider);
+            OAL_CHECK_ERROR();
 		}
 
 		alSourcei( _source, AL_LOOPING, AL_FALSE );	
-		OAL_CHECK_ERROR(m_serviceProvider);
+		OAL_CHECK_ERROR();
 
 		alSource3f( _source, AL_POSITION, 0.f, 0.f, 0.f );
-		OAL_CHECK_ERROR(m_serviceProvider);
+		OAL_CHECK_ERROR();
 
         alSource3f( _source, AL_VELOCITY, 0.f, 0.f, 0.f);
-        OAL_CHECK_ERROR(m_serviceProvider);
+        OAL_CHECK_ERROR();
 
 		alSourcef( _source, AL_MIN_GAIN, 0.f );
-		OAL_CHECK_ERROR(m_serviceProvider);
+		OAL_CHECK_ERROR();
 
 		alSourcef( _source, AL_MAX_GAIN, 1.f );
-		OAL_CHECK_ERROR(m_serviceProvider);
+		OAL_CHECK_ERROR();
 
         alSourcef( _source, AL_PITCH, 1.f);
-        OAL_CHECK_ERROR(m_serviceProvider);
+        OAL_CHECK_ERROR();
 
 		float gain = ::powf( m_volume, 2.f );
 		alSourcef( _source, AL_GAIN, gain );
-		OAL_CHECK_ERROR(m_serviceProvider);
+		OAL_CHECK_ERROR();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterfacePtr OALSoundSource::getSoundBuffer() const

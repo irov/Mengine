@@ -15,8 +15,6 @@ namespace Menge
 {
 	class OALSoundSource;
 
-	class ServiceProviderInterface;
-
 	class OALSoundSystem
 		: public ServiceBase<SoundSystemInterface>
 	{

@@ -7,9 +7,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	XlsScriptLogger::XlsScriptLogger( ServiceProviderInterface * _serviceProvider, EMessageLevel _level )
-		: m_serviceProvider(_serviceProvider)
-		, m_level(_level)
+	XlsScriptLogger::XlsScriptLogger( EMessageLevel _level )
+		: m_level(_level)
 		, m_softspace(0)
 	{
 	}
@@ -64,7 +63,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void XlsScriptLogger::write( const char * _msg, size_t _size )
 	{
-		LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE( m_serviceProvider ), m_level ).logMessage( _msg, _size );
+		LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), m_level ).logMessage( _msg, _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XlsScriptLogger::setSoftspace( int _softspace )

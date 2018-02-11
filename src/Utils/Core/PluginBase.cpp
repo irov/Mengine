@@ -4,7 +4,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	PluginBase::PluginBase()
-		: m_dynamicLoad( false )
+        : m_dynamicLoad( false )
 		, m_initialize( false )
 	{
 	}
@@ -25,7 +25,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool PluginBase::avaliable()
     {
-        return this->_avaliable();
+        bool successful = this->_avaliable();
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginBase::_avaliable()
@@ -66,7 +68,7 @@ namespace Menge
 		{
 			const ConstString & moduleFactory = *it;
 
-			MODULE_SERVICE(m_serviceProvider)
+			MODULE_SERVICE()
 				->unregisterModule(moduleFactory);
 		}
 	}
@@ -104,9 +106,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PluginBase::addModuleFactory(const ConstString & _name, const ModuleFactoryInterfacePtr & _factory)
 	{	
-		_factory->setServiceProvider(m_serviceProvider);
-
-		if (MODULE_SERVICE(m_serviceProvider)
+		if (MODULE_SERVICE()
 			->registerModule(_name, _factory) == false)
 		{
 			return false;

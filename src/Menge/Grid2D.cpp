@@ -134,7 +134,7 @@ namespace	Menge
 		{
 			if( m_resourceImage.compile() == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Grid2D::compileResource_ '%s' image resource %s not compile"
+				LOGGER_ERROR("Grid2D::compileResource_ '%s' image resource %s not compile"
 					, m_name.c_str()
 					, m_resourceImage->getName().c_str()
 					);
@@ -145,7 +145,7 @@ namespace	Menge
 
 		if( m_countX < 2 || m_countY < 2 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Grid2D::compileResources_ '%s' count X|Y not setup %d:%d"
+			LOGGER_ERROR("Grid2D::compileResources_ '%s' count X|Y not setup %d:%d"
 				, m_name.c_str() 
 				, m_countX
 				, m_countY
@@ -226,11 +226,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr Grid2D::_updateMaterial() const
 	{
-		RenderMaterialInterfacePtr material = this->makeImageMaterial( m_serviceProvider, m_resourceImage, false );
+		RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false );
 
 		if( material == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Grid2D::updateMaterial_ %s m_material is NULL"
+			LOGGER_ERROR("Grid2D::updateMaterial_ %s m_material is NULL"
 				, this->getName().c_str()
 				);
 

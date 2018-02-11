@@ -13,9 +13,6 @@ namespace Menge
 		~Endless();
 
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-
-	public:
 		bool initialize( uint32_t _count, float _width, const mt::vec3f & _parallax, const pybind::object & _cb );
 		void finalize();
 
@@ -27,8 +24,6 @@ namespace Menge
 		void slideLeft_();
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		uint32_t m_elementCount;
 		float m_elementWidth;
 

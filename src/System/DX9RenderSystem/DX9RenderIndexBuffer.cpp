@@ -51,7 +51,7 @@ namespace Menge
 		m_format = s_getD3DIndexFormat();
 
 		IDirect3DIndexBuffer9 * ib = nullptr;
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateIndexBuffer, (m_indexNum * sizeof( RenderIndices ), m_usage, m_format, m_pool, &ib, NULL) )
+		IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (m_indexNum * sizeof( RenderIndices ), m_usage, m_format, m_pool, &ib, NULL) )
 		{
 			return false;
 		}
@@ -65,7 +65,7 @@ namespace Menge
 	{
 		if( _offset + _count > m_indexNum )
 		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderIndexBuffer::lock %d offset %d more max size %d"
+			LOGGER_ERROR("DX9RenderIndexBuffer::lock %d offset %d more max size %d"
 				, _count
 				, _offset
 				, m_indexNum
@@ -77,9 +77,9 @@ namespace Menge
 		DWORD d3d_flag = s_toD3DBufferLock( _flags );
 
 		void * memory = nullptr;
-		IF_DXCALL( m_serviceProvider, m_pIB, Lock, (_offset * sizeof( RenderIndices ), _count * sizeof( RenderIndices ), &memory, d3d_flag) )
+		IF_DXCALL( m_pIB, Lock, (_offset * sizeof( RenderIndices ), _count * sizeof( RenderIndices ), &memory, d3d_flag) )
 		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderIndexBuffer::lock %d offset %d invalid lock"
+			LOGGER_ERROR("DX9RenderIndexBuffer::lock %d offset %d invalid lock"
 				, _count
 				, _offset
 				);
@@ -92,9 +92,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderIndexBuffer::unlock()
 	{
-		IF_DXCALL( m_serviceProvider, m_pIB, Unlock, () )
+		IF_DXCALL( m_pIB, Unlock, () )
 		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderIndexBuffer::unlock invalid"				
+			LOGGER_ERROR("DX9RenderIndexBuffer::unlock invalid"				
 				);
 
 			return false;
@@ -105,7 +105,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderIndexBuffer::enable()
 	{
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetIndices, (m_pIB) )
+		IF_DXCALL( m_pD3DDevice, SetIndices, (m_pIB) )
 		{
 			return false;
 		}

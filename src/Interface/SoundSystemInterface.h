@@ -98,8 +98,8 @@ namespace Menge
 		virtual SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) = 0;		
 	};
 
-#   define SOUND_SYSTEM( serviceProvider )\
-    ((Menge::SoundSystemInterface *)SERVICE_GET(serviceProvider, Menge::SoundSystemInterface))
+#   define SOUND_SYSTEM()\
+    ((Menge::SoundSystemInterface *)SERVICE_GET(Menge::SoundSystemInterface))
 
 	class SoundVolumeProviderInterface
 		: public ServantInterface
@@ -190,6 +190,6 @@ namespace Menge
 		virtual bool isMute() const = 0;
 	};
 
-#   define SOUND_SERVICE( serviceProvider )\
-    ((Menge::SoundServiceInterface *)SERVICE_GET(serviceProvider, Menge::SoundServiceInterface))
+#   define SOUND_SERVICE()\
+    ((Menge::SoundServiceInterface *)SERVICE_GET(Menge::SoundServiceInterface))
 }

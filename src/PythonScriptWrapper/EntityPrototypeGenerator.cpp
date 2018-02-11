@@ -98,7 +98,7 @@ namespace Menge
 
 		if( py_type.is_invalid() == true || py_type.is_none() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("PythonPrototypeGenerator type %s prototype %s invalid type create"
+			LOGGER_ERROR("PythonPrototypeGenerator type %s prototype %s invalid type create"
 				, m_category.c_str()
 				, m_prototype.c_str()
 				);
@@ -112,7 +112,7 @@ namespace Menge
 
 			if( pybind::type_initialize( py_type_ptr ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("PythonPrototypeGenerator prototype %s invalid type initialize"
+				LOGGER_ERROR("PythonPrototypeGenerator prototype %s invalid type initialize"
 					, m_category.c_str()
 					, m_prototype.c_str()
 					);
@@ -157,7 +157,7 @@ namespace Menge
 
 		if( py_entity.is_invalid() == true )
 		{
-			LOGGER_ERROR( m_serviceProvider )("EntityPrototypeGenerator.generate: can't create object '%s' '%s' (invalid create)"
+			LOGGER_ERROR("EntityPrototypeGenerator.generate: can't create object '%s' '%s' (invalid create)"
 				, m_category.c_str()
 				, m_prototype.c_str()
 				);
@@ -165,12 +165,12 @@ namespace Menge
 			return nullptr;
 		}
 
-		Entity * entity = PROTOTYPE_SERVICE( m_serviceProvider )
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), m_category );
+		Entity * entity = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), m_category );
 
 		if( entity == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("EntityPrototypeGenerator can't generate '%s' '%s'"
+			LOGGER_ERROR("EntityPrototypeGenerator can't generate '%s' '%s'"
 				, m_category.c_str()
 				, m_prototype.c_str()
 				);

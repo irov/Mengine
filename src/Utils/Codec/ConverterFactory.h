@@ -17,7 +17,7 @@ namespace Menge
     protected:
         bool initialize() override
         {
-            m_factory = new FactoryPool<T, 8>( m_serviceProvider );
+            m_factory = new FactoryPool<T, 8>();
 
             return true;
         }
@@ -26,8 +26,6 @@ namespace Menge
         ConverterInterfacePtr createConverter() override
         {
 			ConverterInterface * converter = m_factory->createObject();
-
-			converter->setServiceProvider( m_serviceProvider );
 
             return converter;
         }
@@ -45,19 +43,17 @@ namespace Menge
     namespace Helper
     {
         template<class T>
-        inline ConverterFactoryInterfacePtr registerConverter( ServiceProviderInterface * _serviceProvider, const Char * _type )
+        inline ConverterFactoryInterfacePtr registerConverter( const Char * _type )
         {
             ConverterFactoryInterfacePtr converter = new ConverterFactory<T>();
 
-            converter->setServiceProvider( _serviceProvider );
-            
             if( converter->initialize() == false )
             {
                 return nullptr;
             }
 
-            if( CONVERTER_SERVICE( _serviceProvider )
-                ->registerConverter( Helper::stringizeString( _serviceProvider, _type ), converter ) == false )
+            if( CONVERTER_SERVICE()
+                ->registerConverter( Helper::stringizeString( _type ), converter ) == false )
             {
                 return nullptr;
             }
@@ -65,10 +61,10 @@ namespace Menge
             return converter;
         }
         
-        inline void unregisterConverter( ServiceProviderInterface * _serviceProvider, const Char * _type )
+        inline void unregisterConverter( const Char * _type )
         {
-            CONVERTER_SERVICE( _serviceProvider )
-                ->unregisterConverter( Helper::stringizeString( _serviceProvider, _type ) );
+            CONVERTER_SERVICE()
+                ->unregisterConverter( Helper::stringizeString( _type ) );
         }
     }
 }

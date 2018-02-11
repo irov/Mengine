@@ -20,7 +20,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ProfilerService::_initialize()
     {
-        //m_beginMemoryUsage = PLATFORM_SERVICE(m_serviceProvider)
+        //m_beginMemoryUsage = PLATFORM_SERVICE()
         //    ->getMemoryUsage();
         
         return true;
@@ -33,13 +33,13 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void ProfilerService::memoryBegin()
     {
-        //m_checkpoint = PLATFORM_SERVICE(m_serviceProvider)
+        //m_checkpoint = PLATFORM_SERVICE()
         //    ->checkpointMemory();
     }
     //////////////////////////////////////////////////////////////////////////
     size_t ProfilerService::memoryEnd()
     {
-        //size_t memory = PLATFORM_SERVICE(m_serviceProvider)
+        //size_t memory = PLATFORM_SERVICE()
         //    ->diffMemory( m_checkpoint );
 
         m_checkpoint = nullptr;
@@ -49,7 +49,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     size_t ProfilerService::getMemoryUsage() const
     {
-        //size_t memory = PLATFORM_SERVICE(m_serviceProvider)
+        //size_t memory = PLATFORM_SERVICE()
         //    ->getMemoryUsage();
 
         //size_t memory_pr = memory - m_beginMemoryUsage;

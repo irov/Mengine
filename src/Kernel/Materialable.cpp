@@ -9,11 +9,11 @@ namespace Menge
 	namespace Helper
 	{
         //////////////////////////////////////////////////////////////////////////
-        RenderMaterialInterfacePtr makeSolidMaterial( ServiceProviderInterface * _serviceProvider, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _solid )
+        RenderMaterialInterfacePtr makeSolidMaterial( const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _solid )
         {
             if( _materialName.empty() == false )
             {
-                RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( _serviceProvider )
+                RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
                     ->getMaterial( _materialName, PT_TRIANGLELIST, 0, nullptr );
 
                 return material;
@@ -48,16 +48,16 @@ namespace Menge
                 }break;
             }
 
-            const ConstString & materialName = RENDERMATERIAL_SERVICE( _serviceProvider )
+            const ConstString & materialName = RENDERMATERIAL_SERVICE()
                 ->getMaterialName( materialId );
 
-            RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( _serviceProvider )
+            RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
                 ->getMaterial( materialName, PT_TRIANGLELIST, 0, nullptr );
 
             return material;
         }
         //////////////////////////////////////////////////////////////////////////
-		RenderMaterialInterfacePtr makeImageMaterial( ServiceProviderInterface * _serviceProvider, const ResourceImagePtr & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid )
+		RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtr & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid )
 		{
 			uint32_t texturesNum = 0;
 			RenderTextureInterfacePtr textures[2];
@@ -201,7 +201,14 @@ namespace Menge
 							}
 							else
 							{
-								materialId = EM_TEXTURE_SCREEN;
+                                if( premultiply == false )
+                                {
+                                    materialId = EM_TEXTURE_SCREEN;
+                                }
+                                else
+                                {
+                                    materialId = EM_TEXTURE_SCREEN_PREMULTIPLY;
+                                }
 							}
 						}break;
 					case EMB_MULTIPLY:
@@ -265,7 +272,7 @@ namespace Menge
 					}
 				}
 
-				materialName = RENDERMATERIAL_SERVICE( _serviceProvider )
+				materialName = RENDERMATERIAL_SERVICE()
 					->getMaterialName( materialId );
 			}
 			else
@@ -280,15 +287,15 @@ namespace Menge
 				}
 
 				materialName = _materialName;
-			}		
+			}
 
-			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( _serviceProvider )
+			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
 				->getMaterial( materialName, PT_TRIANGLELIST, texturesNum, textures );
 
 			return material;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		RenderMaterialInterfacePtr makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _premultiply, bool _disableTextureColor, bool _solid )
+		RenderMaterialInterfacePtr makeTextureMaterial( const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _premultiply, bool _disableTextureColor, bool _solid )
 		{
 			ConstString materialName;
 
@@ -403,7 +410,14 @@ namespace Menge
 							}
 							else
 							{
-								materialId = EM_TEXTURE_SCREEN;
+                                if( _premultiply == false )
+                                {
+                                    materialId = EM_TEXTURE_SCREEN;
+                                }
+                                else
+                                {
+                                    materialId = EM_TEXTURE_SCREEN_PREMULTIPLY;
+                                }
 							}
 						}break;
 					case EMB_MULTIPLY:
@@ -449,7 +463,7 @@ namespace Menge
 					}
 				}
 
-				materialName = RENDERMATERIAL_SERVICE( _serviceProvider )
+				materialName = RENDERMATERIAL_SERVICE()
 					->getMaterialName( materialId );
 			}
 			else
@@ -457,7 +471,7 @@ namespace Menge
 				materialName = _materialName;
 			}
 
-			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( _serviceProvider )
+			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
 				->getMaterial( materialName, PT_TRIANGLELIST, _textureCount, _textures );
 
 			return material;
@@ -536,23 +550,23 @@ namespace Menge
 		this->invalidateMaterial();
 	}
     //////////////////////////////////////////////////////////////////////////
-    RenderMaterialInterfacePtr Materialable::makeSolidMaterial( ServiceProviderInterface * _serviceProvider, bool _solid ) const
+    RenderMaterialInterfacePtr Materialable::makeSolidMaterial( bool _solid ) const
     {
-        RenderMaterialInterfacePtr material = Helper::makeSolidMaterial( _serviceProvider, m_materialName, m_blendMode, _solid );
+        RenderMaterialInterfacePtr material = Helper::makeSolidMaterial( m_materialName, m_blendMode, _solid );
 
         return material;
     }
 	//////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr Materialable::makeImageMaterial( ServiceProviderInterface * _serviceProvider, const ResourceImagePtr & _resourceImage, bool _solid ) const
+	RenderMaterialInterfacePtr Materialable::makeImageMaterial( const ResourceImagePtr & _resourceImage, bool _solid ) const
 	{
-		RenderMaterialInterfacePtr material = Helper::makeImageMaterial( _serviceProvider, _resourceImage, m_materialName, m_blendMode, m_disableTextureColor, _solid );
+		RenderMaterialInterfacePtr material = Helper::makeImageMaterial( _resourceImage, m_materialName, m_blendMode, m_disableTextureColor, _solid );
 
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr Materialable::makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, bool _solid ) const
+	RenderMaterialInterfacePtr Materialable::makeTextureMaterial( const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, bool _solid ) const
 	{
-		RenderMaterialInterfacePtr material = Helper::makeTextureMaterial( _serviceProvider, _textures, _textureCount, m_materialName, m_blendMode, m_premultiplyAlpha, m_disableTextureColor, _solid );
+		RenderMaterialInterfacePtr material = Helper::makeTextureMaterial( _textures, _textureCount, m_materialName, m_blendMode, m_premultiplyAlpha, m_disableTextureColor, _solid );
 
 		return material;
 	}

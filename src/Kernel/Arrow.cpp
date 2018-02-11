@@ -41,10 +41,10 @@ namespace	Menge
 			return false;
 		}
 
-		INPUT_SERVICE(m_serviceProvider)
+		INPUT_SERVICE()
 			->addMousePositionProvider(this);
 
-		const mt::vec2f & cursor_pos = INPUT_SERVICE(m_serviceProvider)
+		const mt::vec2f & cursor_pos = INPUT_SERVICE()
 			->getCursorPosition( 0 );
 
 		const RenderCameraInterface * renderCamera = this->getRenderCamera();
@@ -77,7 +77,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::_deactivate()
 	{	
-		INPUT_SERVICE(m_serviceProvider)
+		INPUT_SERVICE()
 			->removeMousePositionProvider(this);
 
 		Entity::_deactivate();
@@ -148,7 +148,7 @@ namespace	Menge
 
 		const Viewport & viewport = _viewport->getViewport();
 
-		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
+		const Resolution & contentResolution = APPLICATION_SERVICE()
 			->getContentResolution();
 
 		mt::vec2f contentResolutionSize;
@@ -242,7 +242,7 @@ namespace	Menge
 
 		mt::vec2f p_screen = (p_vm_pm + mt::vec2f(1.f, 1.f)) / 2.f;
 
-		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
+		const Resolution & contentResolution = APPLICATION_SERVICE()
 			->getContentResolution();
 
 		mt::vec2f contentResolutionSize;
@@ -265,10 +265,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::adaptScreenPosition_( const mt::vec2f & _screenPoint, mt::vec2f & _adaptScreenPoint ) const
 	{
-		const Viewport & renderViewport = APPLICATION_SERVICE(m_serviceProvider)
+		const Viewport & renderViewport = APPLICATION_SERVICE()
 			->getRenderViewport();
 
-		const Resolution & currentResolution = APPLICATION_SERVICE(m_serviceProvider)
+		const Resolution & currentResolution = APPLICATION_SERVICE()
 			->getCurrentResolution();
 
 		mt::vec2f renderViewportSize;
@@ -285,10 +285,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::adaptScreenDeltha_( const mt::vec2f & _screenDeltha, mt::vec2f & _adaptScreenDeltha ) const
 	{
-		const Viewport & renderViewport = APPLICATION_SERVICE(m_serviceProvider)
+		const Viewport & renderViewport = APPLICATION_SERVICE()
 			->getRenderViewport();
 
-		const Resolution & currentResolution = APPLICATION_SERVICE(m_serviceProvider)
+		const Resolution & currentResolution = APPLICATION_SERVICE()
 			->getCurrentResolution();
 
 		mt::vec2f renderViewportSize;
@@ -304,10 +304,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::adaptWorldPosition_( const mt::vec2f & _screenPoint, mt::vec2f & _adaptScreenPoint ) const
 	{
-		const Viewport & renderViewport = APPLICATION_SERVICE(m_serviceProvider)
+		const Viewport & renderViewport = APPLICATION_SERVICE()
 			->getRenderViewport();
 
-		const Resolution & currentResolution = APPLICATION_SERVICE(m_serviceProvider)
+		const Resolution & currentResolution = APPLICATION_SERVICE()
 			->getCurrentResolution();
 
 		mt::vec2f renderViewportSize;
@@ -396,7 +396,7 @@ namespace	Menge
 					}
 				}
 
-				const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
+				const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
 					->getDebugMaterial();
 
 				_renderService
@@ -465,7 +465,7 @@ namespace	Menge
 					}
 				}
 
-				const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
+				const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
 					->getDebugMaterial();
 
 				_renderService

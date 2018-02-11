@@ -81,8 +81,8 @@ namespace Menge
         bodyDef.fixedRotation = _fixedRotation;
 		bodyDef.type = _static ? b2_staticBody : b2_dynamicBody;
 
-		Box2DBodyPtr body = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2D" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DBody" ) );
+		Box2DBodyPtr body = PROTOTYPE_SERVICE()
+			->generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ) );
         
 		if( body == nullptr )
 		{
@@ -457,8 +457,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Box2DJointPtr Box2DWorld::createJoint_( const b2JointDef * _jointDef )
 	{ 
-		Box2DJointPtr join = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2D" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Box2DJoint" ) );
+		Box2DJointPtr join = PROTOTYPE_SERVICE()
+			->generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DJoint" ) );
 
 		if( join == nullptr )
 		{

@@ -49,10 +49,10 @@ namespace Menge
 
 		if( m_converterType.empty() == false )
 		{
-			if( CONVERTER_SERVICE(m_serviceProvider)
+			if( CONVERTER_SERVICE()
 				->convert( m_converterType, m_category, m_path, m_path ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceModel3D::_convert: '%s' can't convert '%s':'%s'"
+				LOGGER_ERROR("ResourceModel3D::_convert: '%s' can't convert '%s':'%s'"
 					, this->getName().c_str() 
 					, m_path.c_str()
 					, m_converterType.c_str()
@@ -64,13 +64,13 @@ namespace Menge
 
 		if( m_dataflow.empty() == true )
 		{
-			m_dataflow = CODEC_SERVICE(m_serviceProvider)
+			m_dataflow = CODEC_SERVICE()
 				->findCodecType( m_path );
 		}
 
 		if( m_dataflow.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
+			LOGGER_ERROR("ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
 				, this->getName().c_str()
 				, m_path.c_str()
 				);
@@ -90,7 +90,7 @@ namespace Menge
 
 		const ConstString & category = this->getCategory();
 
-		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( category, m_path, false );
 
 		if( stream == nullptr )
@@ -98,7 +98,7 @@ namespace Menge
 			return false;
 		}
 
-		m_model = DATA_SERVICE(m_serviceProvider)
+		m_model = DATA_SERVICE()
 			->dataflowT<Model3DInterfacePtr>( m_dataflow, stream );
 
 		if( m_model == nullptr )
@@ -106,12 +106,12 @@ namespace Menge
 			return false;
 		}
 
-		ResourceImagePtr resource = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceImagePtr resource = RESOURCE_SERVICE()
 			->getResourceT<ResourceImagePtr>( m_imageResourceName );
 
 		if( resource == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceModel3D::_compile: '%s' not found image resource '%s'"
+			LOGGER_ERROR("ResourceModel3D::_compile: '%s' not found image resource '%s'"
 				, this->getName().c_str()
 				, m_imageResourceName.c_str() 
 				);
@@ -139,7 +139,7 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( category, m_path, false );
 
 		if( stream == nullptr )
@@ -147,7 +147,7 @@ namespace Menge
 			return false;				 
 		}
 
-		Model3DInterfacePtr model = DATA_SERVICE(m_serviceProvider)
+		Model3DInterfacePtr model = DATA_SERVICE()
 			->dataflowT<Model3DInterfacePtr>( m_dataflow, stream );
 
 		if( model == nullptr )

@@ -81,7 +81,7 @@ namespace Menge
 		{
 			if( this->createLayers_() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie.setResourceMovie: %s resource %s can't create layers"
+				LOGGER_ERROR("Movie.setResourceMovie: %s resource %s can't create layers"
 					, m_name.c_str()
 					, m_resourceMovie->getName().c_str()
 					);
@@ -164,7 +164,7 @@ namespace Menge
 	{
 		if( m_resourceMovie.empty() == true )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Movie._setTiming: '%s' not activate"
+			LOGGER_ERROR("Movie._setTiming: '%s' not activate"
 				, this->getName().c_str()
 				);
 
@@ -188,7 +188,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.getTiming: '%s' not compile"
+			LOGGER_ERROR("Movie.getTiming: '%s' not compile"
 				, m_name.c_str()
 				);
 
@@ -211,13 +211,13 @@ namespace Menge
 		{
 			if( this->isHomeless() == true )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::_play: '%s' is homeless"
+				LOGGER_ERROR("Movie::_play: '%s' is homeless"
 					, this->getName().c_str()
 					);
 			}
 			else
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::_play: '%s' play not activate"
+				LOGGER_ERROR("Movie::_play: '%s' play not activate"
 					, this->getName().c_str()
 					);
 			}		
@@ -266,8 +266,8 @@ namespace Menge
         
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
             ->onAnimatableStop( _enumerator );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOVIE_END )(this, _enumerator, false);
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( this, EVENT_MOVIE_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_end( uint32_t _enumerator )
@@ -276,8 +276,8 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
             ->onAnimatableEnd( _enumerator );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOVIE_END )(this, _enumerator, true);
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( this, EVENT_MOVIE_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, uint32_t _frameId, bool _interpolate, bool _first )
@@ -289,7 +289,7 @@ namespace Menge
 #   ifdef _DEBUG
 			if( dynamic_cast<Mesh2D *>( _node ) == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s resource %s layer %s is Mesh2D but node is not Mesh2D %s:%s"
+				LOGGER_ERROR("Movie::updateFrameNode_ %s resource %s layer %s is Mesh2D but node is not Mesh2D %s:%s"
 					, this->getName().c_str()
 					, this->getResourceMovieName().c_str()
 					, _layer.name.c_str()
@@ -378,7 +378,7 @@ namespace Menge
 	{
 		if( m_resourceMovie.empty() == true )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Movie._setFirstFrame: '%s' not activate"
+			LOGGER_ERROR("Movie._setFirstFrame: '%s' not activate"
 				, this->getName().c_str()
 				);
 
@@ -392,7 +392,7 @@ namespace Menge
 	{
 		if( m_resourceMovie.empty() == true )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Movie._setLastFrame: '%s' not activate"
+			LOGGER_ERROR("Movie._setLastFrame: '%s' not activate"
 				, this->getName().c_str()
 				);
 
@@ -409,8 +409,8 @@ namespace Menge
 	{		
 		if( _layer.hasViewport == true )
 		{
-			RenderClipplane * clippane = NODE_SERVICE( m_serviceProvider )
-				->createNodeT<RenderClipplane *>( CONST_STRING( m_serviceProvider, RenderClipplane ) );
+			RenderClipplane * clippane = NODE_SERVICE() 
+				->createNodeT<RenderClipplane *>( CONST_STRING( RenderClipplane ) );
 
 			if( clippane == nullptr )
 			{
@@ -473,7 +473,7 @@ namespace Menge
 	{
 		if( m_resourceMovie == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::filterLayer %s invalid not compile"
+			LOGGER_ERROR("Movie::filterLayer %s invalid not compile"
 				, m_name.c_str()
 				);
 
@@ -528,7 +528,7 @@ namespace Menge
 	{
 		if( m_resourceMovie == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.getMovieNode %s resource %s invalid not compile '%s' type '%s'"
+			LOGGER_ERROR("Movie.getMovieNode %s resource %s invalid not compile '%s' type '%s'"
 				, this->getName().c_str()
 				, this->getResourceMovieName().c_str()
 				, _name.c_str()
@@ -582,7 +582,7 @@ namespace Menge
 			}
 		}
 
-		LOGGER_ERROR(m_serviceProvider)("Movie::getMovieNode: '%s' resource '%s' not found node '%s' type '%s'"
+		LOGGER_ERROR("Movie::getMovieNode: '%s' resource '%s' not found node '%s' type '%s'"
 			, this->getName().c_str()
 			, this->getResourceMovieName().c_str()
 			, _name.c_str()
@@ -596,7 +596,7 @@ namespace Menge
 	{
 		if( m_resourceMovie == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.hasMovieNode %s resource %s invalid not compile (%s:%s)"
+			LOGGER_ERROR("Movie.hasMovieNode %s resource %s invalid not compile (%s:%s)"
 				, this->getName().c_str()
 				, this->getResourceMovieName().c_str()
 				, _name.c_str()
@@ -657,7 +657,7 @@ namespace Menge
 	{
 		if( m_resourceMovie == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::hasLayer %s resource %s invalid get layer %s not compile"
+			LOGGER_ERROR("Movie::hasLayer %s resource %s invalid get layer %s not compile"
 				, this->getName().c_str()
 				, this->getResourceMovieName().c_str()
 				, _name.c_str()
@@ -752,7 +752,7 @@ namespace Menge
 	{
 		if( m_resourceMovie == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Movie::setEnableMovieLayers %s resource %s invalid get layer %s not compile"
+			LOGGER_ERROR("Movie::setEnableMovieLayers %s resource %s invalid get layer %s not compile"
 				, this->getName().c_str()
 				, this->getResourceMovieName().c_str()
 				, _name.c_str()
@@ -802,7 +802,7 @@ namespace Menge
 	{
 		if( m_resourceMovie == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Movie::setEnableMovieLayer %s resource %s invalid get layer %s not compile"
+			LOGGER_ERROR("Movie::setEnableMovieLayer %s resource %s invalid get layer %s not compile"
 				, this->getName().c_str()
 				, this->getResourceMovieName().c_str()
 				, _name.c_str()
@@ -844,7 +844,7 @@ namespace Menge
 			return true;
 		}
 
-		LOGGER_ERROR( m_serviceProvider )("Movie::setEnableMovieLayer %s resource %s not found layer %s"
+		LOGGER_ERROR("Movie::setEnableMovieLayer %s resource %s not found layer %s"
 			, this->getName().c_str()
 			, this->getResourceMovieName().c_str()
 			, _name.c_str()
@@ -857,7 +857,7 @@ namespace Menge
 	{
 		if( m_resourceMovie == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Movie::getEnableMovieLayer %s resource %s invalid get layer %s not compile"
+			LOGGER_ERROR("Movie::getEnableMovieLayer %s resource %s invalid get layer %s not compile"
 				, this->getName().c_str()
 				, this->getResourceMovieName().c_str()
 				, _name.c_str()
@@ -899,7 +899,7 @@ namespace Menge
 			return true;
 		}
 
-		LOGGER_ERROR( m_serviceProvider )("Movie::getEnableMovieLayer %s resource %s not found layer %s"
+		LOGGER_ERROR("Movie::getEnableMovieLayer %s resource %s not found layer %s"
 			, this->getName().c_str()
 			, this->getResourceMovieName().c_str()
 			, _name.c_str()
@@ -912,7 +912,7 @@ namespace Menge
 	{
 		if( m_resourceMovie == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::getLayer %s resource %s invalid get layer %s not compile"
+			LOGGER_ERROR("Movie::getLayer %s resource %s invalid get layer %s not compile"
 				, this->getName().c_str()
 				, this->getResourceMovieName().c_str()
 				, _name.c_str()
@@ -955,7 +955,7 @@ namespace Menge
 			return true;
 		}
 
-		LOGGER_ERROR(m_serviceProvider)("Movie::getLayer %s resource %s not found layer %s"
+		LOGGER_ERROR("Movie::getLayer %s resource %s not found layer %s"
 			, this->getName().c_str()
 			, this->getResourceMovieName().c_str()
 			, _name.c_str()
@@ -980,49 +980,49 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if ( layer.type == CONST_STRING(m_serviceProvider, MovieSlot) )
+			if ( layer.type == CONST_STRING( MovieSlot) )
 			{
 				if( this->createMovieSlot_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
+			else if( layer.type == CONST_STRING( MovieSceneEffect) )
 			{
 				if( this->createMovieSceneEffect_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, MovieText) )
+			else if( layer.type == CONST_STRING( MovieText) )
 			{
 				if( this->createMovieText_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) )
+			else if( layer.type == CONST_STRING( MovieTextCenter) )
 			{
 				if( this->createMovieTextCenter_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, MovieSprite) )
+			else if( layer.type == CONST_STRING( MovieSprite) )
 			{
 				if( this->createMovieExtraSprite_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, MovieNullObject) )
+			else if( layer.type == CONST_STRING( MovieNullObject) )
 			{
 				if( this->createMovieNullObject_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, Image) )
+			else if( layer.type == CONST_STRING( Image) )
 			{
 				if( layer.shape == false )
 				{
@@ -1039,7 +1039,7 @@ namespace Menge
 					}
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, SolidSprite) )
+			else if( layer.type == CONST_STRING( SolidSprite) )
 			{
 				if( layer.shape == false )
 				{
@@ -1056,81 +1056,81 @@ namespace Menge
 					}
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, MovieSocketImage) )
+			else if( layer.type == CONST_STRING( MovieSocketImage) )
 			{
 				if( this->createMovieSocketImage_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, MovieSocketShape) )
+			else if( layer.type == CONST_STRING( MovieSocketShape) )
 			{
 				if( this->createMovieSocketShape_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, Animation) )
+			else if( layer.type == CONST_STRING( Animation) )
 			{
 				if( this->createMovieAnimation_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, Movie) )
+			else if( layer.type == CONST_STRING( Movie) )
 			{
 				if( this->createMovieMovie_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, SubMovie) )
+			else if( layer.type == CONST_STRING( SubMovie) )
 			{
 				if( this->createMovieSubMovie_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, MovieInternalObject) )
+			else if( layer.type == CONST_STRING( MovieInternalObject) )
 			{				
 				if( this->createMovieInternalObject_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, Video) )
+			else if( layer.type == CONST_STRING( Video) )
 			{
 				if( this->createMovieVideo_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, Sound) )
+			else if( layer.type == CONST_STRING( Sound) )
 			{
 				if( this->createMovieSound_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, SoundId) )
+			else if( layer.type == CONST_STRING( SoundId) )
 			{
 				if( this->createMovieSoundId_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, ParticleEmitter2) )
+			else if( layer.type == CONST_STRING( ParticleEmitter2) )
 			{
 				if( this->createMovieParticleEmitter2_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( m_serviceProvider, MovieParticle ) )
+			else if( layer.type == CONST_STRING( MovieParticle ) )
 			{
 				//Empty
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, MovieEvent) )
+			else if( layer.type == CONST_STRING( MovieEvent) )
 			{
 				if( this->createMovieEvent_( layer ) == false )
 				{
@@ -1139,7 +1139,7 @@ namespace Menge
 			}
 			else
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie.createLayers_: %s resource %s can't create layer_node '%s' type '%s'"
+				LOGGER_ERROR("Movie.createLayers_: %s resource %s can't create layer_node '%s' type '%s'"
 					, this->getName().c_str()
 					, this->getResourceMovieName().c_str()
 					, layer.source.c_str()
@@ -1219,14 +1219,14 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if ( layer.type == CONST_STRING(m_serviceProvider, MovieText) )
+			if ( layer.type == CONST_STRING( MovieText) )
 			{
 				if( this->compileMovieText_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if ( layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) )
+			else if ( layer.type == CONST_STRING( MovieTextCenter) )
 			{
 				if( this->compileMovieText_( layer ) == false )
 				{
@@ -1263,8 +1263,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieSlot_( const MovieLayer & _layer )
 	{
-		MovieSlot * layer_slot = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<MovieSlot *>( CONST_STRING( m_serviceProvider, MovieSlot ) );
+		MovieSlot * layer_slot = NODE_SERVICE()
+			->createNodeT<MovieSlot *>( CONST_STRING( MovieSlot ) );
 
 		if( layer_slot == nullptr )
 		{
@@ -1283,8 +1283,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieSceneEffect_( const MovieLayer & _layer )
 	{
-		MovieSceneEffect * sceneeffect_slot = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<MovieSceneEffect *>( CONST_STRING( m_serviceProvider, MovieSceneEffect ) );
+		MovieSceneEffect * sceneeffect_slot = NODE_SERVICE()
+			->createNodeT<MovieSceneEffect *>( CONST_STRING( MovieSceneEffect ) );
 
 		if( sceneeffect_slot == nullptr )
 		{
@@ -1301,8 +1301,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieNullObject_( const MovieLayer & _layer )
 	{
-		Node * layer_slot = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Node *>( CONST_STRING( m_serviceProvider, Node ) );
+		Node * layer_slot = NODE_SERVICE()
+			->createNodeT<Node *>( CONST_STRING( Node ) );
 
 		if( layer_slot == nullptr )
 		{
@@ -1319,7 +1319,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieImage_( const MovieLayer & _layer )
 	{
-		ResourceImagePtr resourceImage = RESOURCE_SERVICE(m_serviceProvider)
+		ResourceImagePtr resourceImage = RESOURCE_SERVICE()
 			->getResourceReferenceT<ResourceImagePtr>( _layer.source );
 
 		if( resourceImage == nullptr )
@@ -1327,8 +1327,8 @@ namespace Menge
 			return false;
 		}
 
-        SurfaceImagePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-            ->generatePrototype( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceImage ) );
+        SurfaceImagePtr surface = PROTOTYPE_SERVICE()
+            ->generatePrototype( CONST_STRING( Surface ), CONST_STRING( SurfaceImage ) );
 
         if( surface == nullptr )
         {
@@ -1342,8 +1342,8 @@ namespace Menge
 			return false;
 		}
 
-        ShapeQuadFixed * layer_sprite = NODE_SERVICE( m_serviceProvider )
-            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( m_serviceProvider, ShapeQuadFixed ) );
+        ShapeQuadFixed * layer_sprite = NODE_SERVICE() 
+            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( ShapeQuadFixed ) );
 
         if( layer_sprite == nullptr )
         {
@@ -1362,7 +1362,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieMesh2D_( const MovieLayer & _layer )
 	{
-		ResourceImagePtr resourceImage = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceImagePtr resourceImage = RESOURCE_SERVICE()
 			->getResourceReferenceT<ResourceImagePtr>( _layer.source );
 
 		if( resourceImage == nullptr )
@@ -1370,8 +1370,8 @@ namespace Menge
 			return false;
 		}
 
-		Mesh2D * layer_mesh = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Mesh2D *>( CONST_STRING( m_serviceProvider, Mesh2D ) );
+		Mesh2D * layer_mesh = NODE_SERVICE()
+			->createNodeT<Mesh2D *>( CONST_STRING( Mesh2D ) );
 
 		if( layer_mesh == nullptr )
 		{
@@ -1395,12 +1395,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieImageSolid_( const MovieLayer & _layer )
 	{
-		ResourceImageSolidPtr resource = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceImageSolidPtr resource = RESOURCE_SERVICE()
 			->getResourceT<ResourceImageSolidPtr>( _layer.source );
 
 		if( resource == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Movie.createMovieImageSolid_: %s resource %s can't compile sprite '%s' imageSolid resource = NULL"
+			LOGGER_ERROR("Movie.createMovieImageSolid_: %s resource %s can't compile sprite '%s' imageSolid resource = NULL"
 				, this->getName().c_str()
 				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()
@@ -1409,8 +1409,8 @@ namespace Menge
 			return false;
 		}
 
-        SurfaceImagePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-            ->generatePrototype( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceImage ) );
+        SurfaceImagePtr surface = PROTOTYPE_SERVICE()
+            ->generatePrototype( CONST_STRING( Surface ), CONST_STRING( SurfaceImage ) );
 
         if( surface == nullptr )
         {
@@ -1424,8 +1424,8 @@ namespace Menge
             return false;
         }
 
-		ShapeQuadFixed * layer_sprite = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<ShapeQuadFixed *>( CONST_STRING( m_serviceProvider, ShapeQuadFixed ) );
+		ShapeQuadFixed * layer_sprite = NODE_SERVICE() 
+			->createNodeT<ShapeQuadFixed *>( CONST_STRING( ShapeQuadFixed ) );
 
 		if( layer_sprite == nullptr )
 		{
@@ -1444,7 +1444,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieMesh2DSolid_( const MovieLayer & _layer )
 	{
-		ResourceImageSolidPtr resourceImage = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceImageSolidPtr resourceImage = RESOURCE_SERVICE()
 			->getResourceReferenceT<ResourceImageSolidPtr>( _layer.source );
 
 		if( resourceImage == nullptr )
@@ -1452,8 +1452,8 @@ namespace Menge
 			return false;
 		}
 
-		Mesh2D * layer_mesh = NODE_SERVICE( m_serviceProvider )
-			->createNodeT<Mesh2D *>( CONST_STRING( m_serviceProvider, Mesh2D ) );
+		Mesh2D * layer_mesh = NODE_SERVICE() 
+			->createNodeT<Mesh2D *>( CONST_STRING( Mesh2D ) );
 
 		if( layer_mesh == nullptr )
 		{
@@ -1477,7 +1477,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieSocketImage_( const MovieLayer & _layer )
 	{
-		ResourceHITPtr resourceHIT = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceHITPtr resourceHIT = RESOURCE_SERVICE()
 			->getResourceReferenceT<ResourceHITPtr>( _layer.source );
 
 		if( resourceHIT == nullptr )
@@ -1485,8 +1485,8 @@ namespace Menge
 			return false;
 		}
 
-        HotSpotImage * layer_hotspotimage = NODE_SERVICE( m_serviceProvider )
-            ->createNodeT<HotSpotImage *>( CONST_STRING( m_serviceProvider, HotSpotImage ) );
+        HotSpotImage * layer_hotspotimage = NODE_SERVICE() 
+            ->createNodeT<HotSpotImage *>( CONST_STRING( HotSpotImage ) );
 
         if( layer_hotspotimage == nullptr )
         {
@@ -1505,15 +1505,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieSocketShape_( const MovieLayer & _layer )
 	{
-		HotSpotShape * layer_hotspotshape = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<HotSpotShape *>( CONST_STRING( m_serviceProvider, HotSpotShape ) );
+		HotSpotShape * layer_hotspotshape = NODE_SERVICE()
+			->createNodeT<HotSpotShape *>( CONST_STRING( HotSpotShape ) );
 
 		if( layer_hotspotshape == nullptr )
 		{
 			return false;
 		}
 
-		ResourceShapePtr resourceShape = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceShapePtr resourceShape = RESOURCE_SERVICE()
 			->getResourceReferenceT<ResourceShapePtr>( _layer.source );
 
 		if( resourceShape == nullptr )
@@ -1533,7 +1533,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieAnimation_( const MovieLayer & _layer )
 	{
-        ResourceAnimationPtr resourceAnimation = RESOURCE_SERVICE( m_serviceProvider )
+        ResourceAnimationPtr resourceAnimation = RESOURCE_SERVICE()
 			->getResourceReferenceT<ResourceAnimationPtr>( _layer.source );
 
 		if( resourceAnimation == nullptr )
@@ -1541,8 +1541,8 @@ namespace Menge
 			return false;
 		}
 
-        SurfaceImageSequencePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-            ->generatePrototype( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceImageSequence ) );
+        SurfaceImageSequencePtr surface = PROTOTYPE_SERVICE()
+            ->generatePrototype( CONST_STRING( Surface ), CONST_STRING( SurfaceImageSequence ) );
 
         if( surface == nullptr )
         {
@@ -1562,8 +1562,8 @@ namespace Menge
 			return false;
 		}
 
-        ShapeQuadFixed * layer_animation = NODE_SERVICE( m_serviceProvider )
-            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( m_serviceProvider, ShapeQuadFixed ) );
+        ShapeQuadFixed * layer_animation = NODE_SERVICE() 
+            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( ShapeQuadFixed ) );
 
         if( layer_animation == nullptr )
         {
@@ -1583,15 +1583,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieMovie_( const MovieLayer & _layer )
 	{
-		Movie * layer_movie = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Movie *>( CONST_STRING( m_serviceProvider, Movie ) );
+		Movie * layer_movie = NODE_SERVICE()
+			->createNodeT<Movie *>( CONST_STRING( Movie ) );
 
 		if( layer_movie == nullptr )
 		{
 			return false;
 		}
 
-		ResourceMoviePtr resourceMovie = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceMoviePtr resourceMovie = RESOURCE_SERVICE()
 			->getResourceReferenceT<ResourceMoviePtr>( _layer.source );
 
 		if( resourceMovie == nullptr )
@@ -1619,15 +1619,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieSubMovie_( const MovieLayer & _layer )
 	{
-		Movie * layer_movie = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Movie *>( CONST_STRING( m_serviceProvider, Movie ) );
+		Movie * layer_movie = NODE_SERVICE()
+			->createNodeT<Movie *>( CONST_STRING( Movie ) );
 
 		if( layer_movie == nullptr )
 		{
 			return false;
 		}
 
-		ResourceMoviePtr resourceMovie = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceMoviePtr resourceMovie = RESOURCE_SERVICE()
 			->getResourceReferenceT<ResourceMoviePtr>( _layer.source );
 
 		if( resourceMovie == nullptr )
@@ -1655,15 +1655,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieInternalObject_( const MovieLayer & _layer )
 	{
-		MovieInternalObject * movie_internal = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<MovieInternalObject *>( CONST_STRING( m_serviceProvider, MovieInternalObject ) );
+		MovieInternalObject * movie_internal = NODE_SERVICE()
+			->createNodeT<MovieInternalObject *>( CONST_STRING( MovieInternalObject ) );
 
 		if( movie_internal == nullptr )
 		{
 			return false;
 		}
 
-		ResourceInternalObjectPtr resourceInternalObject = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceInternalObjectPtr resourceInternalObject = RESOURCE_SERVICE()
 			->getResourceT<ResourceInternalObjectPtr>( _layer.source );
 
 		if( resourceInternalObject == nullptr )
@@ -1684,7 +1684,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieVideo_( const MovieLayer & _layer )
 	{
-		ResourceVideoPtr resourceVideo = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceVideoPtr resourceVideo = RESOURCE_SERVICE()
 			->getResourceReferenceT<ResourceVideoPtr>( _layer.source );
 
 		if( resourceVideo == nullptr )
@@ -1692,8 +1692,8 @@ namespace Menge
 			return false;
 		}
 
-		SurfaceVideoPtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototype( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceVideo ) );
+		SurfaceVideoPtr surface = PROTOTYPE_SERVICE()
+			->generatePrototype( CONST_STRING( Surface ), CONST_STRING( SurfaceVideo ) );
 
 		if( surface == nullptr )
 		{
@@ -1713,8 +1713,8 @@ namespace Menge
 			return false;
 		}
 
-        ShapeQuadFixed * layer_video = NODE_SERVICE( m_serviceProvider )
-            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( m_serviceProvider, ShapeQuadFixed ) );
+        ShapeQuadFixed * layer_video = NODE_SERVICE() 
+            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( ShapeQuadFixed ) );
 
         if( layer_video == nullptr )
         {
@@ -1733,15 +1733,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieSound_( const MovieLayer & _layer )
 	{
-		SoundEmitter * layer_sound = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<SoundEmitter *>( CONST_STRING( m_serviceProvider, SoundEmitter ) );
+		SoundEmitter * layer_sound = NODE_SERVICE()
+			->createNodeT<SoundEmitter *>( CONST_STRING( SoundEmitter ) );
 
 		if( layer_sound == nullptr )
 		{
 			return false;
 		}
 
-		ResourceSoundPtr resourceSound = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceSoundPtr resourceSound = RESOURCE_SERVICE()
 			->getResourceReferenceT<ResourceSoundPtr>( _layer.source );
 
 		if( resourceSound == nullptr )
@@ -1749,8 +1749,8 @@ namespace Menge
 			return false;
 		}
 
-		SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototype( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceSound ) );
+		SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE()
+			->generatePrototype( CONST_STRING( Surface ), CONST_STRING( SurfaceSound ) );
 
 		if( surfaceSound == nullptr )
 		{
@@ -1777,15 +1777,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieSoundId_( const MovieLayer & _layer )
 	{
-		SoundEmitter * layer_sound = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<SoundEmitter *>( CONST_STRING( m_serviceProvider, SoundEmitter ) );
+		SoundEmitter * layer_sound = NODE_SERVICE()
+			->createNodeT<SoundEmitter *>( CONST_STRING( SoundEmitter ) );
 
 		if( layer_sound == nullptr )
 		{
 			return false;
 		}
 
-		ResourceSoundPtr resourceSound = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceSoundPtr resourceSound = RESOURCE_SERVICE()
 			->getResourceReferenceT<ResourceSoundPtr>( _layer.name );
 
 		if( resourceSound == nullptr )
@@ -1793,8 +1793,8 @@ namespace Menge
 			return false;
 		}
 
-		SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototype( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceSound ) );
+		SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE()
+			->generatePrototype( CONST_STRING( Surface ), CONST_STRING( SurfaceSound ) );
 
 		if( surfaceSound == nullptr )
 		{
@@ -1820,8 +1820,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieText_( const MovieLayer & _layer )
 	{
-		TextField * layer_text = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<TextField *>( CONST_STRING( m_serviceProvider, TextField ) );
+		TextField * layer_text = NODE_SERVICE()
+			->createNodeT<TextField *>( CONST_STRING( TextField ) );
 
 		if( layer_text == nullptr )
 		{
@@ -1855,8 +1855,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieTextCenter_( const MovieLayer & _layer )
 	{
-		TextField * layer_text = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<TextField *>( CONST_STRING( m_serviceProvider, TextField ) );
+		TextField * layer_text = NODE_SERVICE()
+			->createNodeT<TextField *>( CONST_STRING( TextField ) );
 
 		if( layer_text == nullptr )
 		{
@@ -1881,12 +1881,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieExtraSprite_( const MovieLayer & _layer )
 	{
-		ResourceImagePtr resourceImage = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceImagePtr resourceImage = RESOURCE_SERVICE()
 			->getResourceReferenceT<ResourceImagePtr>( _layer.name );
 
 		if( resourceImage == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::createMovieSprite_ %s resource %s layer %s invalid get resource for image %s"
+			LOGGER_ERROR("Movie::createMovieSprite_ %s resource %s layer %s invalid get resource for image %s"
 				, this->getName().c_str()
 				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()
@@ -1896,8 +1896,8 @@ namespace Menge
 			return false;
 		}
 
-        SurfaceImagePtr surface = PROTOTYPE_SERVICE( m_serviceProvider )
-            ->generatePrototype( CONST_STRING( m_serviceProvider, Surface ), CONST_STRING( m_serviceProvider, SurfaceImage ) );
+        SurfaceImagePtr surface = PROTOTYPE_SERVICE()
+            ->generatePrototype( CONST_STRING( Surface ), CONST_STRING( SurfaceImage ) );
 
         if( surface == nullptr )
         {
@@ -1911,12 +1911,12 @@ namespace Menge
 			return false;
 		}
 
-        ShapeQuadFixed * layer_sprite = NODE_SERVICE( m_serviceProvider )
-            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( m_serviceProvider, ShapeQuadFixed ) );
+        ShapeQuadFixed * layer_sprite = NODE_SERVICE() 
+            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( ShapeQuadFixed ) );
 
         if( layer_sprite == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("Movie::createMovieSprite_ %s resource %s layer %s invalid create 'Sprite'"
+            LOGGER_ERROR("Movie::createMovieSprite_ %s resource %s layer %s invalid create 'Sprite'"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _layer.name.c_str()
@@ -1952,7 +1952,7 @@ namespace Menge
 #   ifdef _DEBUG
 		if( dynamic_cast<TextField *>( node ) == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::compileMovieText_ %s resource %s layer %s must be 'TextField' but node is %s type %s"
+			LOGGER_ERROR("Movie::compileMovieText_ %s resource %s layer %s must be 'TextField' but node is %s type %s"
 				, this->getName().c_str()
 				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()
@@ -1992,8 +1992,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieEvent_( const MovieLayer & _layer )
 	{
-		MovieEvent * layer_event = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<MovieEvent *>( CONST_STRING( m_serviceProvider, MovieEvent ) );
+		MovieEvent * layer_event = NODE_SERVICE()
+			->createNodeT<MovieEvent *>( CONST_STRING( MovieEvent ) );
 
 		layer_event->setResourceMovie( m_resourceMovie );
 
@@ -2007,15 +2007,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieParticleEmitter2_( const MovieLayer & _layer )
 	{
-		ParticleEmitter2 * layer_particles = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<ParticleEmitter2 *>( CONST_STRING( m_serviceProvider, ParticleEmitter2 ) );
+		ParticleEmitter2 * layer_particles = NODE_SERVICE()
+			->createNodeT<ParticleEmitter2 *>( CONST_STRING( ParticleEmitter2 ) );
 
 		if( layer_particles == nullptr )
 		{
 			return false;
 		}
 
-		ResourceParticlePtr resourceParticle = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceParticlePtr resourceParticle = RESOURCE_SERVICE()
 			->getResourceReferenceT<ResourceParticlePtr>( _layer.source );
 
 		if( resourceParticle == nullptr )
@@ -2057,7 +2057,7 @@ namespace Menge
 	{
 		if( m_resourceMovie == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: '%s' can't setup resource"
+			LOGGER_ERROR("Movie::_compile: '%s' can't setup resource"
 				, this->getName().c_str()
 				);
 
@@ -2066,7 +2066,7 @@ namespace Menge
 
 		if( m_resourceMovie.compile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::_compile '%s' resource %s not compile"
+			LOGGER_ERROR("Movie::_compile '%s' resource %s not compile"
 				, m_name.c_str() 
 				, m_resourceMovie->getName().c_str()
 				);
@@ -2076,7 +2076,7 @@ namespace Menge
 
 		if( this->setupSceneEffect_() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: %s resource %s can't setup scene effect"
+			LOGGER_ERROR("Movie::_compile: %s resource %s can't setup scene effect"
 				, m_name.c_str()
 				, m_resourceMovie->getName().c_str()
 				);
@@ -2086,7 +2086,7 @@ namespace Menge
 
 		if( this->setupParent_() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: %s resource %s can't setup layer parents"
+			LOGGER_ERROR("Movie::_compile: %s resource %s can't setup layer parents"
 				, m_name.c_str()
 				, m_resourceMovie->getName().c_str()
 				);
@@ -2096,7 +2096,7 @@ namespace Menge
 
 		if( this->compileLayers_() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: %s resource %s can't compile layers"
+			LOGGER_ERROR("Movie::_compile: %s resource %s can't compile layers"
 				, m_name.c_str()
 				, m_resourceMovie->getName().c_str()
 				);
@@ -2191,7 +2191,7 @@ namespace Menge
 #   ifdef _DEBUG
 			if( dynamic_cast<MovieSceneEffect *>(node) == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::compileMovieText_ %s resource %s layer %s must be 'MovieSceneEffect' but node is %s type %s"
+				LOGGER_ERROR("Movie::compileMovieText_ %s resource %s layer %s must be 'MovieSceneEffect' but node is %s type %s"
 					, this->getName().c_str()
 					, this->getResourceMovieName().c_str()
 					, l.name.c_str()
@@ -2268,7 +2268,7 @@ namespace Menge
 
 				if( node_parent == nullptr )
 				{
-					LOGGER_ERROR(m_serviceProvider)("Movie::updateParent_ %s resource %s invalid parent node %d"						
+					LOGGER_ERROR("Movie::updateParent_ %s resource %s invalid parent node %d"						
 						, this->getName().c_str()
 						, this->getResourceMovieName().c_str()
 						, layer.parent
@@ -2317,7 +2317,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::stopAnimation_ %s is not compile"
+			LOGGER_ERROR("Movie::stopAnimation_ %s is not compile"
 				, m_name.c_str()
 				);
 
@@ -2372,7 +2372,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::pauseAnimation_ %s is not compile"
+			LOGGER_ERROR("Movie::pauseAnimation_ %s is not compile"
 				, m_name.c_str()
 				);
 
@@ -2419,7 +2419,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::resumeAnimation_ %s is not compile"
+			LOGGER_ERROR("Movie::resumeAnimation_ %s is not compile"
 				, m_name.c_str()
 				);
 
@@ -2457,7 +2457,7 @@ namespace Menge
 			{
 				Animatable * animatable = this->getLayerAnimatable_( layer );
 
-				float time = TIMELINE_SERVICE( m_serviceProvider )
+				float time = TIMELINE_SERVICE()
 					->getTime();
 
 				animatable->resume( time );
@@ -2529,12 +2529,12 @@ namespace Menge
 
 		if( autoPlay == true )
 		{
-			float time = TIMELINE_SERVICE( m_serviceProvider )
+			float time = TIMELINE_SERVICE()
 				->getTime();
 
 			if( this->play( time ) == 0 )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::_afterActivate '%s' resource '%s' auto play return 0"
+				LOGGER_ERROR("Movie::_afterActivate '%s' resource '%s' auto play return 0"
 					, this->getName().c_str()
 					, this->m_resourceMovie->getName().c_str()
 					);
@@ -2730,7 +2730,7 @@ namespace Menge
 #   ifdef _DEBUG
 				if( dynamic_cast<MovieNodeExtra *>(node) == nullptr )
 				{
-					LOGGER_ERROR(m_serviceProvider)("Movie::updateForwardFrame_ %s layer %s must be 'MovieNodeExtra' but node is %s type %s"
+					LOGGER_ERROR("Movie::updateForwardFrame_ %s layer %s must be 'MovieNodeExtra' but node is %s type %s"
 						, this->getName().c_str()
 						, layer.name.c_str()
 						, node->getName().c_str()
@@ -3058,7 +3058,7 @@ namespace Menge
 
 						if( animatable->isPlay() == false )
 						{
-							float playTime = TIMELINE_SERVICE( m_serviceProvider )
+							float playTime = TIMELINE_SERVICE()
 								->getTime();
 
 							animatable->play( playTime );
@@ -3162,8 +3162,8 @@ namespace Menge
 			return;
 		}
 
-		m_renderCameraProjection = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<RenderCameraProjection *>( CONST_STRING( m_serviceProvider, RenderCameraProjection ) );
+		m_renderCameraProjection = NODE_SERVICE()
+			->createNodeT<RenderCameraProjection *>( CONST_STRING( RenderCameraProjection ) );
 
 		const ConstString & name = this->getName();
 		m_renderCameraProjection->setName( name );
@@ -3186,8 +3186,8 @@ namespace Menge
 
 		this->addChild( m_renderCameraProjection );
 
-		m_renderViewport = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<RenderViewport *>( CONST_STRING( m_serviceProvider, RenderViewport ) );
+		m_renderViewport = NODE_SERVICE()
+			->createNodeT<RenderViewport *>( CONST_STRING( RenderViewport ) );
 
 		m_renderViewport->setName( name );
 
@@ -3269,25 +3269,25 @@ namespace Menge
 		{
 			//Empty
 		}
-		else if( _layer.blendingMode == CONST_STRING( m_serviceProvider, BlendingModeScreen ) )
+		else if( _layer.blendingMode == CONST_STRING( BlendingModeScreen ) )
 		{
 			_materiable->setBlendMode( EMB_SCREEN );
 		}
-		else if( _layer.blendingMode == CONST_STRING( m_serviceProvider, BlendingModeMultiply ) )
+		else if( _layer.blendingMode == CONST_STRING( BlendingModeMultiply ) )
 		{
 			_materiable->setBlendMode( EMB_MULTIPLY );
 		}
-		else if( _layer.blendingMode == CONST_STRING( m_serviceProvider, BlendingModeNormal ) )
+		else if( _layer.blendingMode == CONST_STRING( BlendingModeNormal ) )
 		{
 			_materiable->setBlendMode( EMB_NORMAL );
 		}
-		else if( _layer.blendingMode == CONST_STRING( m_serviceProvider, BlendingModeAdd ) )
+		else if( _layer.blendingMode == CONST_STRING( BlendingModeAdd ) )
 		{
 			_materiable->setBlendMode( EMB_ADD );
 		}
 		else
 		{
-			LOGGER_ERROR( m_serviceProvider )("Movie.setupBlendingMode_: %s resource %s layer '%s' blending mode not supported '%s'"
+			LOGGER_ERROR("Movie.setupBlendingMode_: %s resource %s layer '%s' blending mode not supported '%s'"
 				, this->getName().c_str()
 				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()

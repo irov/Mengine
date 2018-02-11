@@ -21,8 +21,8 @@ namespace Menge
             : public Factory
         {
         public:
-            SDLFileGroupDirectoryFactory( ServiceProviderInterface * _serviceProvider, const FilePath & _relationPath )
-                : Factory( _serviceProvider, "SDLFileGroupDirectory" )
+            SDLFileGroupDirectoryFactory( const FilePath & _relationPath )
+                : Factory( "SDLFileGroupDirectory" )
                 , m_relationPath( _relationPath )
             {
             }
@@ -53,23 +53,23 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupPlugin::_initialize()
     {
-        FILE_SERVICE( m_serviceProvider )
-            ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "global" )
-                , new Detail::SDLFileGroupDirectoryFactory( m_serviceProvider, STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "" ) )
+        FILE_SERVICE()
+            ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "global" )
+                , new Detail::SDLFileGroupDirectoryFactory( STRINGIZE_FILEPATH_LOCAL( "" ) )
             );
 
         WChar currentPathW[MENGINE_MAX_PATH];
-        PLATFORM_SERVICE( m_serviceProvider )
+        PLATFORM_SERVICE()
             ->getCurrentPath( currentPathW, MENGINE_MAX_PATH );
 
         String utf8_currentPath;
-        Helper::unicodeToUtf8( m_serviceProvider, currentPathW, utf8_currentPath );
+        Helper::unicodeToUtf8( currentPathW, utf8_currentPath );
 
-        FilePath relationPath = Helper::stringizeFilePath( m_serviceProvider, utf8_currentPath );
+        FilePath relationPath = Helper::stringizeFilePath( utf8_currentPath );
 
-        FILE_SERVICE( m_serviceProvider )
-            ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" )
-                , new Detail::SDLFileGroupDirectoryFactory( m_serviceProvider, relationPath )
+        FILE_SERVICE()
+            ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "dir" )
+                , new Detail::SDLFileGroupDirectoryFactory( relationPath )
             );
 
         return true;
@@ -77,10 +77,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SDLFileGroupPlugin::_finalize()
     {
-        FILE_SERVICE( m_serviceProvider )
-            ->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "global" ) );
+        FILE_SERVICE()
+            ->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL( "global" ) );
 
-        FILE_SERVICE(m_serviceProvider)
-            ->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir") );
+        FILE_SERVICE()
+            ->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL( "dir") );
     }
 }

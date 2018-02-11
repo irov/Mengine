@@ -18,7 +18,7 @@ namespace Menge
 		~TextLocalePack();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _pakName, const FilePath & _path );
+		bool initialize( const ConstString & _pakName, const FilePath & _path );
 		
 	public:
 		const ConstString & getPackName() const;
@@ -28,8 +28,6 @@ namespace Menge
 		MemoryInterfacePtr getXmlBuffer() const;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		ConstString m_pakName;
 		FilePath m_path;
 

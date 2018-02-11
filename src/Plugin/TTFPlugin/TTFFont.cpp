@@ -45,27 +45,27 @@ namespace Menge
 			return false;
 		}
 
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Path", m_ttfPath, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Path", m_ttfPath ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s don't setup Glyph"
+			LOGGER_ERROR("TextManager::loadFonts invalid font %s don't setup Glyph"
 				, m_name.c_str()
 				);
 
 			return false;
 		}
 
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_ttfHeight, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_ttfHeight ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s don't setup Height"
+			LOGGER_ERROR("TextManager::loadFonts invalid font %s don't setup Height"
 				, m_name.c_str()
 				);
 
 			return false;
 		}
 
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "DPI", m_ttfDPI, m_serviceProvider ) == false )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "DPI", m_ttfDPI ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid font %s don't setup DPI"
+			LOGGER_ERROR("TextManager::loadFonts invalid font %s don't setup DPI"
 				, m_name.c_str()
 				);
 
@@ -77,15 +77,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TTFFont::_compile()
 	{
-		InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
-			->openInputFile( m_category, m_ttfPath, false );
-
-		if( stream == nullptr )
-		{
-			return false;
-		}
-
-		MemoryInterfacePtr memory = Helper::createMemoryStream( m_serviceProvider, stream, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, __FILE__, __LINE__ );
 
 		FT_Byte * memory_byte = memory->getMemory();
 		size_t memory_size = memory->getSize();
@@ -99,7 +91,7 @@ namespace Menge
 
 		if( err_code != 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TTFFont::_compile invalid FT_New_Memory_Face font '%s' path '%s'"
+			LOGGER_ERROR("TTFFont::_compile invalid FT_New_Memory_Face font '%s' path '%s'"
 				, m_name.c_str()
 				, m_ttfPath.c_str()
 				);
@@ -383,7 +375,7 @@ namespace Menge
         TTFFontTextureGlyphProvider provider( bitmap_width, bitmap_height, buffer, bitmap_pitch, bitmap_channel );
         
 		mt::uv4f uv;
-		RenderTextureInterfacePtr texture = TTFATLAS_SERVICE( m_serviceProvider )
+		RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
 			->makeTextureGlyph( bitmap_width, bitmap_height, bitmap_channel, &provider, uv );
 
 		if( texture == nullptr )
@@ -408,20 +400,55 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::validateGlyph( GlyphCode _code ) const
+    bool TTFFont::_validateGlyph( GlyphCode _code ) const
     {
-        FT_UInt glyph_index = FT_Get_Char_Index( m_face, _code );
+        MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, __FILE__, __LINE__ );
 
-        if( FT_Load_Glyph( m_face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
+        FT_Byte * memory_byte = memory->getMemory();
+        size_t memory_size = memory->getSize();
+
+        if( memory_byte == nullptr )
         {
             return false;
         }
 
-        FT_GlyphSlot glyph = m_face->glyph;
+        FT_Face face;
+        FT_Error err_code = FT_New_Memory_Face( m_ftlibrary, memory_byte, memory_size, 0, &face );
+
+        if( err_code != 0 )
+        {
+            return false;
+        }
+
+        if( FT_Select_Charmap( face, FT_ENCODING_UNICODE ) != FT_Err_Ok )
+        {
+            return false;
+        }
+
+        FT_F26Dot6 fontSizePoints = (FT_F26Dot6)m_ttfHeight * 64;
+        FT_UInt dpi = (FT_UInt)m_ttfDPI;
+
+        if( FT_Set_Char_Size( face, fontSizePoints, fontSizePoints, dpi, dpi ) != FT_Err_Ok )
+        {
+            return false;
+        }
+
+        FT_UInt glyph_index = FT_Get_Char_Index( face, _code );
+
+        if( FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
+        {
+            return false;
+        }
+
+        FT_GlyphSlot glyph = face->glyph;
 
         FT_Bitmap bitmap = glyph->bitmap;
-        
-        switch( bitmap.pixel_mode )
+
+        unsigned char pixel_mode = bitmap.pixel_mode;
+
+        FT_Done_Face( face );
+
+        switch( pixel_mode )
         {
         case FT_PIXEL_MODE_NONE:
         case FT_PIXEL_MODE_LCD:

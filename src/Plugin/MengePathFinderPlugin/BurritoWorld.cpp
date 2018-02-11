@@ -110,8 +110,7 @@ namespace Menge
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	BurritoWorld::BurritoWorld()
-		: m_serviceProvider(nullptr)
-		, m_bison(nullptr)
+		: m_bison(nullptr)
 		, m_dead(false)
 		, m_freeze(false)
 	{
@@ -119,11 +118,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	BurritoWorld::~BurritoWorld()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BurritoWorld::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{ 
-		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool BurritoWorld::initialize()
@@ -248,7 +242,7 @@ namespace Menge
 			return unit;
 		}
 
-		LOGGER_ERROR( m_serviceProvider )("BurritoWorld::addLayerUnit not found layer %s"
+		LOGGER_ERROR("BurritoWorld::addLayerUnit not found layer %s"
 			, _layerName.c_str()
 			);
 

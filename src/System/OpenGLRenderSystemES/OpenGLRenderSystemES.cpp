@@ -24,10 +24,10 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderSystemES::OpenGLRenderSystemES()
-		: m_depthMask( false )
-        , m_renderWindowCreate(false)
-		, m_glMaxClipPlanes(0)
+		: m_glMaxClipPlanes(0)
 		, m_glMaxCombinedTextureImageUnits(0)
+        , m_renderWindowCreate(false)
+        , m_depthMask( false )
 	{
 		mt::ident_m4( m_worldMatrix );
 		mt::ident_m4( m_viewMatrix );
@@ -40,18 +40,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OpenGLRenderSystemES::_initialize()
 	{
-		LOGGER_WARNING(m_serviceProvider)("Initializing OpenGL RenderSystem...");
+		LOGGER_WARNING("Initializing OpenGL RenderSystem...");
 
-		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "GLES" );
+		m_renderPlatform = STRINGIZE_STRING_LOCAL( "GLES" );
 
-		m_factoryVertexBuffer = new FactoryPool<OpenGLRenderVertexBufferES, 8>( m_serviceProvider );
-		m_factoryIndexBuffer = new FactoryPool<OpenGLRenderIndexBufferES, 8>( m_serviceProvider );
+		m_factoryVertexBuffer = new FactoryPool<OpenGLRenderVertexBufferES, 8>();
+		m_factoryIndexBuffer = new FactoryPool<OpenGLRenderIndexBufferES, 8>();
 
-		m_factoryRenderImage = Helper::makeFactoryPool<OpenGLRenderImageES, 128>( m_serviceProvider, this, &OpenGLRenderSystemES::onRenderImageDestroy_ );
+		m_factoryRenderImage = Helper::makeFactoryPool<OpenGLRenderImageES, 128>( this, &OpenGLRenderSystemES::onRenderImageDestroy_ );
 
-		m_factoryRenderFragmentShader = new FactoryPool<OpenGLRenderFragmentShaderES, 16>( m_serviceProvider );
-		m_factoryRenderVertexShader = new FactoryPool<OpenGLRenderVertexShaderES, 16>( m_serviceProvider );
-		m_factoryRenderProgram = new FactoryPool<OpenGLRenderProgramES, 16>( m_serviceProvider );
+		m_factoryRenderFragmentShader = new FactoryPool<OpenGLRenderFragmentShaderES, 16>();
+		m_factoryRenderVertexShader = new FactoryPool<OpenGLRenderVertexShaderES, 16>();
+		m_factoryRenderProgram = new FactoryPool<OpenGLRenderProgramES, 16>();
 
 		return true;
 	}
@@ -100,25 +100,25 @@ namespace Menge
 
         m_resolution = _resolution;
         
-        OPENGL_RENDER_CHECK_ERROR( m_serviceProvider );
+        OPENGL_RENDER_CHECK_ERROR();
         
-        LOGGER_WARNING(m_serviceProvider)("Vendor      : %s", (const char*)glGetString( GL_VENDOR ) );
-        LOGGER_WARNING(m_serviceProvider)("Renderer    : %s", (const char*)glGetString( GL_RENDERER ) );
-        LOGGER_WARNING(m_serviceProvider)("Version     : %s", (const char*)glGetString( GL_VERSION ) );
-        LOGGER_WARNING(m_serviceProvider)("Extensions  : %s", (const char*)glGetString( GL_EXTENSIONS ) );
+        LOGGER_WARNING("Vendor      : %s", (const char*)glGetString( GL_VENDOR ) );
+        LOGGER_WARNING("Renderer    : %s", (const char*)glGetString( GL_RENDERER ) );
+        LOGGER_WARNING("Version     : %s", (const char*)glGetString( GL_VERSION ) );
+        LOGGER_WARNING("Extensions  : %s", (const char*)glGetString( GL_EXTENSIONS ) );
         
-        OPENGL_RENDER_CHECK_ERROR( m_serviceProvider );
+        OPENGL_RENDER_CHECK_ERROR();
         
-        GLCALL( m_serviceProvider, glFrontFace, ( GL_CW ) );
-        GLCALL( m_serviceProvider, glDisable, ( GL_DEPTH_TEST ) );
-        GLCALL( m_serviceProvider, glDisable, ( GL_STENCIL_TEST ) );
-        GLCALL( m_serviceProvider, glDisable, ( GL_CULL_FACE ) );
+        GLCALL( glFrontFace, ( GL_CW ) );
+        GLCALL( glDisable, ( GL_DEPTH_TEST ) );
+        GLCALL( glDisable, ( GL_STENCIL_TEST ) );
+        GLCALL( glDisable, ( GL_CULL_FACE ) );
 
-        GLCALL( m_serviceProvider, glDisable, ( GL_BLEND ) );
+        GLCALL( glDisable, ( GL_BLEND ) );
         
-        GLCALL( m_serviceProvider, glDisable, ( GL_DITHER ) );
+        GLCALL( glDisable, ( GL_DITHER ) );
         
-        GLCALL( m_serviceProvider, glDepthMask, ( GL_FALSE ) );
+        GLCALL( glDepthMask, ( GL_FALSE ) );
         
         GLint maxClipPlanes;
         glGetIntegerv( GL_MAX_CLIP_PLANES, &maxClipPlanes );
@@ -211,7 +211,7 @@ namespace Menge
 
         uint32_t height = m_resolution.getHeight();
 
-        GLCALL( m_serviceProvider, glViewport, ( (GLint)xb, (GLint)height - (GLint)(yb), (GLsizei)w, (GLsizei)h ) );
+        GLCALL( glViewport, ( (GLint)xb, (GLint)height - (GLint)(yb), (GLsizei)w, (GLsizei)h ) );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setProjectionMatrix( const mt::mat4f & _projection )
@@ -238,7 +238,7 @@ namespace Menge
 	{
 		OpenGLRenderVertexBufferESPtr buffer = m_factoryVertexBuffer->createObject();
 
-		if( buffer->initialize( m_serviceProvider, _verticesNum, _dynamic ) == false )
+		if( buffer->initialize( _verticesNum, _dynamic ) == false )
 		{
 			return nullptr;
 		}
@@ -257,7 +257,7 @@ namespace Menge
 	{
 		OpenGLRenderIndexBufferESPtr buffer = m_factoryIndexBuffer->createObject();
 
-		if( buffer->initialize( m_serviceProvider, _indiciesNum, _dynamic ) == false )
+		if( buffer->initialize( _indiciesNum, _dynamic ) == false )
 		{
 			return nullptr;
 		}
@@ -278,18 +278,16 @@ namespace Menge
 
         if( shader == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createFragmentShader invalid create shader %s"
+            LOGGER_ERROR("OpenGLRenderSystemES::createFragmentShader invalid create shader %s"
                                               , _name.c_str()
                                               );
             
             return nullptr;
         }
         
-		shader->setServiceProvider( m_serviceProvider );
-        
         if( shader->initialize( _name, _memory ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createFragmentShader invalid initialize shader %s"
+            LOGGER_ERROR("OpenGLRenderSystemES::createFragmentShader invalid initialize shader %s"
                                               , _name.c_str()
                                               );
             
@@ -300,7 +298,7 @@ namespace Menge
         {
             if( shader->compile() == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createFragmentShader invalid compile shader %s"
+                LOGGER_ERROR("OpenGLRenderSystemES::createFragmentShader invalid compile shader %s"
                                                   , _name.c_str()
                                                   );
                 
@@ -321,19 +319,16 @@ namespace Menge
 
         if( shader == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createVertexShader invalid create shader %s"
+            LOGGER_ERROR("OpenGLRenderSystemES::createVertexShader invalid create shader %s"
                                               , _name.c_str()
                                               );
             
             return nullptr;
         }
 
-        
-		shader->setServiceProvider( m_serviceProvider );
-       
         if( shader->initialize( _name, _memory ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createVertexShader invalid initialize shader %s"
+            LOGGER_ERROR("OpenGLRenderSystemES::createVertexShader invalid initialize shader %s"
                                               , _name.c_str()
                                               );
             
@@ -344,7 +339,7 @@ namespace Menge
         {
             if( shader->compile() == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createVertexShader invalid compile shader %s"
+                LOGGER_ERROR("OpenGLRenderSystemES::createVertexShader invalid compile shader %s"
                                                   , _name.c_str()
                                                   );
                 
@@ -365,18 +360,16 @@ namespace Menge
         
         if( program == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createProgram invalid create program %s"
+            LOGGER_ERROR("OpenGLRenderSystemES::createProgram invalid create program %s"
                                               , _name.c_str()
                                               );
             
             return nullptr;
         }
 
-		program->setServiceProvider( m_serviceProvider );
-				
         if( program->initialize( _name, _vertex, _fragment, _samplerCount ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createProgram invalid initialize program %s"
+            LOGGER_ERROR("OpenGLRenderSystemES::createProgram invalid initialize program %s"
                                               , _name.c_str()
                                               );
             
@@ -387,7 +380,7 @@ namespace Menge
         {
             if( program->compile() == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createProgram invalid compile program %s"
+                LOGGER_ERROR("OpenGLRenderSystemES::createProgram invalid compile program %s"
                                                   , _name.c_str()
                                                   );
                 
@@ -414,21 +407,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::bindBuffer_( GLuint _vertexId, GLuint _indexId )
 	{
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, _vertexId) );
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, _indexId) );
+		GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, _vertexId) );
+		GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, _indexId) );
 
-		GLCALL( m_serviceProvider, glEnableClientState, (GL_VERTEX_ARRAY) );
-		GLCALL( m_serviceProvider, glVertexPointer, (3, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, position ))) );
+		GLCALL( glEnableClientState, (GL_VERTEX_ARRAY) );
+		GLCALL( glVertexPointer, (3, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, position ))) );
 
-		GLCALL( m_serviceProvider, glEnableClientState, (GL_COLOR_ARRAY) );
-		GLCALL( m_serviceProvider, glColorPointer, (4, GL_UNSIGNED_BYTE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, color ))) );
+		GLCALL( glEnableClientState, (GL_COLOR_ARRAY) );
+		GLCALL( glColorPointer, (4, GL_UNSIGNED_BYTE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, color ))) );
 
-		GLCALL( m_serviceProvider, glEnableClientState, (GL_TEXTURE_COORD_ARRAY) );
+		GLCALL( glEnableClientState, (GL_TEXTURE_COORD_ARRAY) );
 
 		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
 		{
-			GLCALL( m_serviceProvider, glClientActiveTexture, (GL_TEXTURE0 + i) );
-			GLCALL( m_serviceProvider, glTexCoordPointer, (2, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * i)) );
+			GLCALL( glClientActiveTexture, (GL_TEXTURE0 + i) );
+			GLCALL( glTexCoordPointer, (2, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * i)) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -452,28 +445,28 @@ namespace Menge
 		{
 			const TextureStage & textureStage = m_textureStage[i];
 
-			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
+			GLCALL( glActiveTexture, (GL_TEXTURE0 + i) );
 
 			if( textureStage.texture == nullptr )
 			{	
-				GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, 0) );
+				GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
 
 				continue;
 			}
 
 			GLuint texture_uid = textureStage.texture->getUId();
 
-			GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, texture_uid) );
+			GLCALL( glBindTexture, (GL_TEXTURE_2D, texture_uid) );
 
 			if( m_currentProgram != nullptr )
 			{
 				m_currentProgram->bindTexture( i );
 			}
 
-			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS ) );
-			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT ) );
-			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter ) );
-			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter ) );
+			GLCALL( glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS ) );
+			GLCALL( glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT ) );
+			GLCALL( glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter ) );
+			GLCALL( glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter ) );
 		}
 
 		OpenGLRenderIndexBufferES * ib = stdex::intrusive_get<OpenGLRenderIndexBufferES *>(m_currentIndexBuffer);
@@ -482,22 +475,22 @@ namespace Menge
 		OpenGLRenderVertexBufferES * vb = stdex::intrusive_get<OpenGLRenderVertexBufferES *>(m_currentVertexBuffer);
 		vb->enable();
 		
-		GLCALL( m_serviceProvider, glEnableVertexAttribArray, (VERTEX_POSITION_ARRAY) );
-		GLCALL( m_serviceProvider, glEnableVertexAttribArray, (VERTEX_COLOR_ARRAY) );
+		GLCALL( glEnableVertexAttribArray, (VERTEX_POSITION_ARRAY) );
+		GLCALL( glEnableVertexAttribArray, (VERTEX_COLOR_ARRAY) );
 
 		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
 		{
-			GLCALL( m_serviceProvider, glEnableVertexAttribArray, (VERTEX_UV0_ARRAY + i) );
+			GLCALL( glEnableVertexAttribArray, (VERTEX_UV0_ARRAY + i) );
 		}
 		
-		GLCALL( m_serviceProvider, glVertexAttribPointer, (VERTEX_POSITION_ARRAY, 3, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, position ))) );
-		GLCALL( m_serviceProvider, glVertexAttribPointer, (VERTEX_COLOR_ARRAY, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, color ))) );
+		GLCALL( glVertexAttribPointer, (VERTEX_POSITION_ARRAY, 3, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, position ))) );
+		GLCALL( glVertexAttribPointer, (VERTEX_COLOR_ARRAY, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, color ))) );
 
 		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
 		{
 			size_t uv_offset = offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * i;
 
-			GLCALL( m_serviceProvider, glVertexAttribPointer, (VERTEX_UV0_ARRAY + i, 2, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(uv_offset)) );
+			GLCALL( glVertexAttribPointer, (VERTEX_UV0_ARRAY + i, 2, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(uv_offset)) );
 		}
 
         GLenum mode = s_getGLPrimitiveMode( _type );
@@ -506,14 +499,14 @@ namespace Menge
 
 		GLenum indexType = s_getGLIndexType();
 
-		GLCALL( m_serviceProvider, glDrawElements, (mode, _indexCount, indexType, reinterpret_cast<const GLvoid *>(offsetIndex)) );
+		GLCALL( glDrawElements, (mode, _indexCount, indexType, reinterpret_cast<const GLvoid *>(offsetIndex)) );
 
-		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (VERTEX_POSITION_ARRAY) );
-		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (VERTEX_COLOR_ARRAY) );
+		GLCALL( glDisableVertexAttribArray, (VERTEX_POSITION_ARRAY) );
+		GLCALL( glDisableVertexAttribArray, (VERTEX_COLOR_ARRAY) );
 		
 		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
 		{
-			GLCALL( m_serviceProvider, glDisableVertexAttribArray, (VERTEX_UV0_ARRAY + i) );
+			GLCALL( glDisableVertexAttribArray, (VERTEX_UV0_ARRAY + i) );
 		}
 		
 		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
@@ -525,9 +518,9 @@ namespace Menge
 				break;
 			}
 
-			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
+			GLCALL( glActiveTexture, (GL_TEXTURE0 + i) );
 
-			GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, 0) );
+			GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
 		}
 
 		if( m_currentProgram != nullptr )
@@ -535,8 +528,8 @@ namespace Menge
 			m_currentProgram->disable();
 		}
 
-		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, 0 ) );
-		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
+		GLCALL( glBindBuffer, ( GL_ARRAY_BUFFER, 0 ) );
+		GLCALL( glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture )
@@ -570,7 +563,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setTextureFactor( uint32_t _color )
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op )
@@ -579,8 +571,8 @@ namespace Menge
 		GLenum dstBlendFactor = s_toGLBlendFactor( _dst );
 		GLenum blendOp = s_toGLBlendFactor( _op );
 
-		GLCALL( m_serviceProvider, glBlendFunc, ( srcBlendFactor, dstBlendFactor ) );
-		GLCALL( m_serviceProvider, glBlendEquation, (blendOp) );
+		GLCALL( glBlendFunc, ( srcBlendFactor, dstBlendFactor ) );
+		GLCALL( glBlendEquation, (blendOp) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setCullMode( ECullMode _mode )
@@ -597,15 +589,15 @@ namespace Menge
 			enable = false;
 		}
 		
-        GLCALL( m_serviceProvider, glCullFace, ( face ) );
+        GLCALL( glCullFace, ( face ) );
 		
         if( enable == true )
         {
-            GLCALL( m_serviceProvider, glEnable, ( GL_CULL_FACE ) );
+            GLCALL( glEnable, ( GL_CULL_FACE ) );
         }
         else
         {
-            GLCALL( m_serviceProvider, glDisable, ( GL_CULL_FACE ) );
+            GLCALL( glDisable, ( GL_CULL_FACE ) );
         }
 	}
     /////////////////////////////////////////////////////////////////////////
@@ -618,11 +610,11 @@ namespace Menge
 	{
         if( _depthTest == true )
         {
-		    GLCALL( m_serviceProvider, glEnable, ( GL_DEPTH_TEST ) );
+		    GLCALL( glEnable, ( GL_DEPTH_TEST ) );
         }
         else
         {
-            GLCALL( m_serviceProvider, glDisable, ( GL_DEPTH_TEST ) );
+            GLCALL( glDisable, ( GL_DEPTH_TEST ) );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -630,14 +622,14 @@ namespace Menge
 	{
 		m_depthMask = _depthWrite;
 
-		GLCALL( m_serviceProvider, glDepthMask, ( m_depthMask ? GL_TRUE : GL_FALSE ) );
+		GLCALL( glDepthMask, ( m_depthMask ? GL_TRUE : GL_FALSE ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
 	{
 		GLenum cmpFunc = s_toGLCmpFunc( _depthFunction );
 
-		GLCALL( m_serviceProvider, glDepthFunc, ( cmpFunc ) );
+		GLCALL( glDepthFunc, ( cmpFunc ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setFillMode( EFillMode _mode )
@@ -648,24 +640,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
 	{
-		GLCALL( m_serviceProvider, glColorMask, ( _r ? GL_TRUE : GL_FALSE, _g ? GL_TRUE : GL_FALSE, _b ? GL_TRUE : GL_FALSE, _a ? GL_TRUE : GL_FALSE ) );
+		GLCALL( glColorMask, ( _r ? GL_TRUE : GL_FALSE, _g ? GL_TRUE : GL_FALSE, _b ? GL_TRUE : GL_FALSE, _a ? GL_TRUE : GL_FALSE ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setShadeType( EShadeType _sType )
 	{
 		GLenum model = s_toGLShadeMode( _sType );
-		GLCALL( m_serviceProvider, glShadeModel, ( model ) );
+		GLCALL( glShadeModel, ( model ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setAlphaBlendEnable( bool _alphaBlend )
 	{
 		if( _alphaBlend == true )
         {
-            GLCALL( m_serviceProvider, glEnable, ( GL_BLEND ) );
+            GLCALL( glEnable, ( GL_BLEND ) );
         }
         else
         {
-            GLCALL( m_serviceProvider, glDisable, ( GL_BLEND ) );
+            GLCALL( glDisable, ( GL_BLEND ) );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -753,7 +745,7 @@ namespace Menge
 
 		if( textureInternalFormat == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("OpenGLRenderSystemES::createImage invalid get GL Texture Internal format for PF %d"
+			LOGGER_ERROR("OpenGLRenderSystemES::createImage invalid get GL Texture Internal format for PF %d"
 				, hwFormat
 				);
 
@@ -764,7 +756,7 @@ namespace Menge
 
 		if( textureColorFormat == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("OpenGLRenderSystemES::createImage invalid get GL Texture Color format for PF %d"
+			LOGGER_ERROR("OpenGLRenderSystemES::createImage invalid get GL Texture Color format for PF %d"
 				, hwFormat
 				);
 
@@ -775,7 +767,7 @@ namespace Menge
 
 		if( textureColorDataType == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createImage invalid get GL Color Data Type for PF %d"
+			LOGGER_ERROR("OpenGLRenderSystemES::createImage invalid get GL Color Data Type for PF %d"
 				, hwFormat
 				);
 
@@ -786,15 +778,13 @@ namespace Menge
 
 		if( image == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createImage invalid create"
+			LOGGER_ERROR("OpenGLRenderSystemES::createImage invalid create"
 				);
 
 			return nullptr;
 		}
 
-		image->setServiceProvider( m_serviceProvider );
-
-		if( image->initialize( ERIM_NORMAL
+        if( image->initialize( ERIM_NORMAL
 			, _mipmaps
 			, _width
 			, _height
@@ -804,7 +794,7 @@ namespace Menge
 			, textureColorFormat
 			, textureColorDataType ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createImage invalid initialize"
+			LOGGER_ERROR("OpenGLRenderSystemES::createImage invalid initialize"
 				);
 
 			return nullptr;
@@ -855,7 +845,7 @@ namespace Menge
 		{
 			frameBufferFlags |= GL_COLOR_BUFFER_BIT;
 
-			GLCALL( m_serviceProvider, glClearColor, ( 
+			GLCALL( glClearColor, (
 				GET_R_FLOAT_FROM_ARGB32( _color ), 
 				GET_G_FLOAT_FROM_ARGB32( _color ), 
 				GET_B_FLOAT_FROM_ARGB32( _color ), 
@@ -869,24 +859,24 @@ namespace Menge
 
 			if( m_depthMask == false )
 			{
-				GLCALL( m_serviceProvider, glDepthMask, ( GL_TRUE ) );
+				GLCALL( glDepthMask, ( GL_TRUE ) );
 			}
 
-			GLCALL( m_serviceProvider, glClearDepthf, ( _depth ) );
+			GLCALL( glClearDepthf, ( _depth ) );
 		}
 
 		if( (_frameBufferTypes & FBT_STENCIL) != 0 )
 		{
 			frameBufferFlags |= GL_STENCIL_BUFFER_BIT;
 
-			GLCALL( m_serviceProvider, glClearStencil, ( _stencil ) );
+			GLCALL( glClearStencil, ( _stencil ) );
 		}
 
-		GLCALL( m_serviceProvider, glClear, ( frameBufferFlags ) );
+		GLCALL( glClear, ( frameBufferFlags ) );
 
 		if( m_depthMask == false )
 		{
-			GLCALL( m_serviceProvider, glDepthMask, ( GL_FALSE ) );
+			GLCALL( glDepthMask, ( GL_FALSE ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -982,7 +972,7 @@ namespace Menge
 
 		if( textureInternalFormat == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("OpenGLRenderSystemES::createDynamicImage invalid get GL Texture Internal format for PF %d"
+			LOGGER_ERROR("OpenGLRenderSystemES::createDynamicImage invalid get GL Texture Internal format for PF %d"
 				, hwFormat
 				);
 
@@ -993,7 +983,7 @@ namespace Menge
 
 		if( textureColorFormat == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("OpenGLRenderSystemES::createDynamicImage invalid get GL Texture Color format for PF %d"
+			LOGGER_ERROR("OpenGLRenderSystemES::createDynamicImage invalid get GL Texture Color format for PF %d"
 				, hwFormat
 				);
 
@@ -1004,7 +994,7 @@ namespace Menge
 
 		if( textureColorDataType == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createDynamicImage invalid get GL Color Data Type for PF %d"
+			LOGGER_ERROR("OpenGLRenderSystemES::createDynamicImage invalid get GL Color Data Type for PF %d"
 				, hwFormat
 				);
 
@@ -1015,13 +1005,11 @@ namespace Menge
 
 		if( image == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createDynamicImage invalid create"
+			LOGGER_ERROR("OpenGLRenderSystemES::createDynamicImage invalid create"
 				);
 
 			return nullptr;
 		}
-
-		image->setServiceProvider( m_serviceProvider );
 
 		if( image->initialize( ERIM_DYNAMIC
 			, 1
@@ -1033,7 +1021,7 @@ namespace Menge
 			, textureColorFormat
 			, textureColorDataType ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderSystemES::createDynamicImage invalid initialize"
+			LOGGER_ERROR("OpenGLRenderSystemES::createDynamicImage invalid initialize"
 				);
 
 			return nullptr;

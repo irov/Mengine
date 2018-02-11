@@ -16,14 +16,14 @@ namespace Menge
     namespace IniUtil
     {
 		//////////////////////////////////////////////////////////////////////////
-		bool loadIni( IniStore & _ini, const ConstString & _category, const FilePath & _path, ServiceProviderInterface * _serviceProvider )
+		bool loadIni( IniStore & _ini, const ConstString & _category, const FilePath & _path )
 		{
-			InputStreamInterfacePtr stream = FILE_SERVICE( _serviceProvider )
+			InputStreamInterfacePtr stream = FILE_SERVICE()
 				->openInputFile( _category, _path, false );
 
 			if( stream == nullptr )
 			{
-				LOGGER_ERROR( _serviceProvider )("loadIni invalid open ini file '%s:%s'"
+                LOGGER_ERROR( "loadIni invalid open ini file '%s:%s'"
 					, _category.c_str()
 					, _path.c_str()
 					);
@@ -34,16 +34,16 @@ namespace Menge
 			_ini.category = _category;
 			_ini.path = _path;
 
-			return loadIni( _ini, stream, _serviceProvider );
+			return loadIni( _ini, stream );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _input, ServiceProviderInterface * _serviceProvider )
+		bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _input )
 		{
 			size_t size = _input->size();
 
 			if( size >= MENGINE_INI_BUFFER_SIZE )
 			{
-				LOGGER_ERROR(_serviceProvider)("IniUtil::loadIni ini size %u max %u"
+                LOGGER_ERROR( "IniUtil::loadIni ini size %u max %u"
 					, size
 					, MENGINE_INI_BUFFER_SIZE
 					);
@@ -56,7 +56,7 @@ namespace Menge
 
 			if( _ini.load( _ini.buff ) == false )
 			{
-				LOGGER_ERROR(_serviceProvider)("IniUtil::loadIni ini invalid load '%s'"
+                LOGGER_ERROR( "IniUtil::loadIni ini invalid load '%s'"
 					, _ini.getError()
 					);
 
@@ -73,7 +73,7 @@ namespace Menge
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, WString & _value, ServiceProviderInterface * _serviceProvider )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, WString & _value )
         {
             const Char * ini_value = _ini.getSettingValue( _section, _key );
 
@@ -82,7 +82,7 @@ namespace Menge
                 return false;
             }
 
-            if( Helper::utf8ToUnicodeSize( _serviceProvider, ini_value, UNICODE_UNSIZE, _value ) == false )
+            if( Helper::utf8ToUnicodeSize( ini_value, UNICODE_UNSIZE, _value ) == false )
             {
                 return false;
             }
@@ -90,10 +90,8 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, String & _value, ServiceProviderInterface * _serviceProvider )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, String & _value )
         {
-            (void)_serviceProvider;
-
             const Char * ini_value = _ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
@@ -106,7 +104,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ConstString & _value, ServiceProviderInterface * _serviceProvider )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ConstString & _value )
         {
             const Char * ini_value = _ini.getSettingValue( _section, _key );
 
@@ -115,12 +113,12 @@ namespace Menge
                 return false;
             }
 
-            _value = Helper::stringizeString( _serviceProvider, ini_value );
+            _value = Helper::stringizeString( ini_value );
 
             return true;
         }
 		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, FilePath & _value, ServiceProviderInterface * _serviceProvider )
+		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, FilePath & _value )
 		{
 			const Char * ini_value = _ini.getSettingValue( _section, _key );
 
@@ -132,7 +130,7 @@ namespace Menge
 #	ifdef _DEBUG
 			if( strstr( ini_value, "\\" ) != nullptr )
 			{
-				LOGGER_ERROR( _serviceProvider )("get ini '%s:%s' filepath section '%s' key '%s' has invalid slash"
+				LOGGER_ERROR( "get ini '%s:%s' filepath section '%s' key '%s' has invalid slash"
 					, _ini.category.c_str()
 					, _ini.path.c_str()
 					, _section
@@ -150,14 +148,14 @@ namespace Menge
 			}
 #	endif
 
-			const ConstString & cs_value = Helper::stringizeString( _serviceProvider, ini_value );
+			const ConstString & cs_value = Helper::stringizeString( ini_value );
 
 			_value = FilePath( cs_value );
 
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags & _value, ServiceProviderInterface * _serviceProvider )
+		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags & _value )
 		{
 			const Char * ini_value = _ini.getSettingValue( _section, _key );
 
@@ -173,7 +171,7 @@ namespace Menge
 			{
 				const char * str_single_string = single_string.c_str();
 
-				ConstString cstr_value = Helper::stringizeString( _serviceProvider, str_single_string );
+				ConstString cstr_value = Helper::stringizeString( str_single_string );
 
 				_value.addTag( cstr_value );
 			}
@@ -181,7 +179,7 @@ namespace Menge
 			return true;
 		}
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Resolution & _value, ServiceProviderInterface * _serviceProvider )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Resolution & _value )
         {
             const Char * ini_value = _ini.getSettingValue( _section, _key );
 
@@ -194,7 +192,7 @@ namespace Menge
             uint32_t height;
             if( sscanf( ini_value, "%u %u", &width, &height ) != 2 )
             {
-                LOGGER_ERROR(_serviceProvider)("getIniValue section %s key %s value %s invalid parse resolution"
+                LOGGER_ERROR( "getIniValue section %s key %s value %s invalid parse resolution"
                     , _section
                     , _key
                     , ini_value
@@ -209,7 +207,7 @@ namespace Menge
             return true;
         }
 		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ColourValue & _value, ServiceProviderInterface * _serviceProvider )
+		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ColourValue & _value )
 		{
 			const Char * ini_value = _ini.getSettingValue( _section, _key );
 
@@ -224,7 +222,7 @@ namespace Menge
 			float a;
 			if( sscanf( ini_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
 			{
-				LOGGER_ERROR(_serviceProvider)("getIniValue section %s key %s value %s invalid parse ColourValue"
+				LOGGER_ERROR( "getIniValue section %s key %s value %s invalid parse ColourValue"
 					, _section
 					, _key
 					, ini_value
@@ -245,10 +243,8 @@ namespace Menge
 			return true;
 		}
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, bool & _value, ServiceProviderInterface * _serviceProvider )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, bool & _value )
         {
-            (void)_serviceProvider;
-
             const Char * ini_value = _ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
@@ -268,10 +264,8 @@ namespace Menge
             return true;
         }
 		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t & _value, ServiceProviderInterface * _serviceProvider )
+		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t & _value )
 		{
-			(void)_serviceProvider;
-
 			const Char * ini_value = _ini.getSettingValue( _section, _key );
 
 			if( ini_value == nullptr )
@@ -290,10 +284,8 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint32_t & _value, ServiceProviderInterface * _serviceProvider )
+		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint32_t & _value )
 		{
-			(void)_serviceProvider;
-
 			const Char * ini_value = _ini.getSettingValue( _section, _key );
 
 			if( ini_value == nullptr )
@@ -312,10 +304,8 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t & _value, ServiceProviderInterface * _serviceProvider )
+		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t & _value )
 		{
-			(void)_serviceProvider;
-
 			const Char * ini_value = _ini.getSettingValue( _section, _key );
 
 			if( ini_value == nullptr )
@@ -334,10 +324,8 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float & _value, ServiceProviderInterface * _serviceProvider )
+		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float & _value )
 		{
-			(void)_serviceProvider;
-
 			const Char * ini_value = _ini.getSettingValue( _section, _key );
 
 			if( ini_value == nullptr )
@@ -356,10 +344,8 @@ namespace Menge
 			return true;
 		}
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double & _value, ServiceProviderInterface * _serviceProvider )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double & _value )
         {
-            (void)_serviceProvider;
-
             const Char * ini_value = _ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
@@ -378,10 +364,8 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorString & _values, ServiceProviderInterface * _serviceProvider )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorString & _values )
         {
-            (void)_serviceProvider;
-
             uint32_t count = _ini.countSettingValues( _section, _key );
 
             for( uint32_t index = 0; index != count; ++index )
@@ -394,17 +378,15 @@ namespace Menge
             return true;
         }
 		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorConstString & _values, ServiceProviderInterface * _serviceProvider )
+		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorConstString & _values )
 		{
-			(void)_serviceProvider;
-
 			uint32_t count = _ini.countSettingValues( _section, _key );
 
 			for( uint32_t index = 0; index != count; ++index )
 			{
 				const char * value = _ini.getSettingValues( _section, _key, index );
 
-				ConstString cs = Helper::stringizeString( _serviceProvider, value );
+				ConstString cs = Helper::stringizeString( value );
 
 				_values.push_back( cs );
 			}
@@ -412,7 +394,7 @@ namespace Menge
 			return true;
 		}
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorWString & _values, ServiceProviderInterface * _serviceProvider )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorWString & _values )
         {
             uint32_t count = _ini.countSettingValues( _section, _key );
 
@@ -421,7 +403,7 @@ namespace Menge
                 const char * value = _ini.getSettingValues( _section, _key, index );
 
                 WString w_value;
-                Helper::utf8ToUnicodeSize( _serviceProvider, value, UNICODE_UNSIZE, w_value );
+                Helper::utf8ToUnicodeSize( value, UNICODE_UNSIZE, w_value );
 
                 _values.push_back( w_value );
             }
@@ -429,7 +411,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorAspectRatioViewports & _values, ServiceProviderInterface * _serviceProvider )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorAspectRatioViewports & _values )
         {
             uint32_t count = _ini.countSettingValues( _section, _key );
 
@@ -448,7 +430,7 @@ namespace Menge
                     , &arv.viewport.end.y
                     ) != 6 )
                 {
-                    LOGGER_ERROR(_serviceProvider)("getIniValue section %s key %s value %s invalid parse aspect ration"
+                    LOGGER_ERROR( "getIniValue section %s key %s value %s invalid parse aspect ration"
                         , _section
                         , _key
                         , ini_value
@@ -463,7 +445,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniAllSettings( const IniStore & _ini, const Char * _section, TMapWParams & _values, ServiceProviderInterface * _serviceProvider )
+        bool getIniAllSettings( const IniStore & _ini, const Char * _section, TMapWParams & _values )
         {
             uint32_t count = _ini.countSettings( _section );
 
@@ -473,10 +455,10 @@ namespace Menge
                 const char * value;
                 _ini.getSettings( _section, index, &key, &value );
 
-                ConstString c_key = Helper::stringizeString( _serviceProvider, key );
+                ConstString c_key = Helper::stringizeString( key );
                 
                 WString w_value;
-                if( Helper::utf8ToUnicodeSize( _serviceProvider, value, UNICODE_UNSIZE, w_value ) == false )
+                if( Helper::utf8ToUnicodeSize( value, UNICODE_UNSIZE, w_value ) == false )
                 {
                     return false;
                 }
@@ -487,20 +469,16 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool writeIniSection( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _file, const char * _section, uint32_t _sectionSize )
-        {        
-            (void)_serviceProvider;
-
+        bool writeIniSection( const OutputStreamInterfacePtr & _file, const char * _section, uint32_t _sectionSize )
+        {
             _file->write( _section, _sectionSize );
             _file->write( "\n", sizeof("\n") - 1 );
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool writeIniSetting( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _file, const char * _key, const ConstString & _value )
+        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const char * _key, const ConstString & _value )
         {
-            (void)_serviceProvider;
-
             size_t len = strlen( _key );
             _file->write( _key, len );
             _file->write( " = ", sizeof( " = " ) - 1 );
@@ -511,7 +489,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool writeIniSetting( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _file, const char * _key, const WString & _value )
+        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const char * _key, const WString & _value )
         {
             size_t len = strlen(_key);
             _file->write( _key, len );
@@ -520,7 +498,7 @@ namespace Menge
             size_t utf8_size = 0;
 
             Char utf8_value[512];
-            if( UNICODE_SYSTEM(_serviceProvider)
+            if( UNICODE_SYSTEM()
                 ->unicodeToUtf8( _value.c_str(), _value.size(), utf8_value, 512, &utf8_size ) == false )
             {
                 return false;

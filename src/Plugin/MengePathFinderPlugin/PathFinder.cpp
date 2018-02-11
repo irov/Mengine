@@ -95,7 +95,7 @@ namespace Menge
 			return;
 		}
 
-		pybind::kernel_interface * kernel = Helper::getPybindkernel( m_serviceProvider );
+		pybind::kernel_interface * kernel = Helper::getPybindkernel();
 		
 		const fastpathfinder::point_array & pa = m_pathfinder.getPath();
 

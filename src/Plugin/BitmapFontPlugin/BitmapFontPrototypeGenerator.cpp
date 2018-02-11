@@ -12,7 +12,7 @@ namespace Menge
 		(void)_category;
 		(void)_prototype;
 
-		m_factoryFont = new FactoryPool<BitmapFont, 8>( m_serviceProvider );
+		m_factoryFont = new FactoryPool<BitmapFont, 8>();
 
 		return true;
 	}
@@ -20,9 +20,7 @@ namespace Menge
 	PointerFactorable BitmapFontPrototypeGenerator::generate()
 	{
 		BitmapFont * font = m_factoryFont->createObject();
-
-		font->setServiceProvider( m_serviceProvider );
-
+        
 		return font;
 	}
 	//////////////////////////////////////////////////////////////////////////

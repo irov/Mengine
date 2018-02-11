@@ -22,6 +22,10 @@ namespace Menge
 		mt::ident_m4( m_localMatrix );
 		mt::ident_m4( m_worldMatrix );
 	}
+    //////////////////////////////////////////////////////////////////////////
+    Transformation3D::~Transformation3D()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setRelationTransformation( Transformation3D * _relation )
 	{

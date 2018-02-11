@@ -76,6 +76,6 @@ namespace Menge
 		virtual bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
     };
 
-#   define WINDOWSLAYER_SERVICE( serviceProvider )\
-    ((Menge::WindowsLayerInterface*)SERVICE_GET(serviceProvider, Menge::WindowsLayerInterface))
+#   define WINDOWSLAYER_SERVICE()\
+    ((Menge::WindowsLayerInterface*)SERVICE_GET(Menge::WindowsLayerInterface))
 }

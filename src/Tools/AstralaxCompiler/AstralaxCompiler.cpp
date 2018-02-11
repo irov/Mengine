@@ -22,14 +22,14 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	(void)hPrevInstance;
 	(void)nShowCmd;
 
-	std::wstring astralax = parse_kwds( lpCmdLine, L"--astralax", std::wstring() );
-	std::wstring in = parse_kwds( lpCmdLine, L"--in", std::wstring() );
-	std::wstring out = parse_kwds( lpCmdLine, L"--out", std::wstring() );
-	std::wstring csa = parse_kwds( lpCmdLine, L"--csa", std::wstring() );
-	std::wstring info = parse_kwds( lpCmdLine, L"--info", std::wstring() );
+	std::wstring astralax_path = parse_kwds( lpCmdLine, L"--astralax_path", std::wstring() );
+	std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
+	std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );
+	std::wstring csa_path = parse_kwds( lpCmdLine, L"--csa_path", std::wstring() );
+	std::wstring result_path = parse_kwds( lpCmdLine, L"--result_path", std::wstring() );
     std::wstring convert = parse_kwds( lpCmdLine, L"--convert", std::wstring() );
     
-	if( in.empty() == true )
+	if( in_path.empty() == true )
 	{
 		message_error("not found 'in' param\n"
 			);
@@ -37,7 +37,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		return 0;
 	}
 
-	if( csa.empty() == true )
+	if( csa_path.empty() == true )
 	{
 		message_error("not found 'csa' param\n"
 			);
@@ -46,7 +46,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	}
 	
 	WCHAR szBuffer[MAX_PATH];
-	if( astralax.empty() == true )
+	if( astralax_path.empty() == true )
 	{
 		const WCHAR * regPath = L"Software\\Astralax\\Magic Particles 3D Path";
 
@@ -72,10 +72,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	}
 	else
 	{
-		wcscpy_s( szBuffer, astralax.c_str() );
+		wcscpy_s( szBuffer, astralax_path.c_str() );
 	}
 
-    if( out.empty() == true )
+    if( out_path.empty() == true )
     {
         WCHAR tempPath[MAX_PATH];
         GetTempPath( MAX_PATH, tempPath );
@@ -83,8 +83,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         WCHAR tempFileName[MAX_PATH];
         GetTempFileName( tempPath, TEXT( "LibMovieAstralax" ), 0, tempFileName );
 
-        out = tempFileName;
-        out += L".ptc";
+        out_path = tempFileName;
+        out_path += L".ptc";
 
         convert.clear();
     }
@@ -94,19 +94,19 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	system_cmd += L" /c ";
 
 	WCHAR inCanonicalizeQuote[MAX_PATH];	
-	ForcePathQuoteSpaces( inCanonicalizeQuote, in );
+	ForcePathQuoteSpaces( inCanonicalizeQuote, in_path );
 
 	system_cmd += L" ";
 	system_cmd += inCanonicalizeQuote;
         
 	WCHAR outCanonicalizeQuote[MAX_PATH];
-    ForcePathQuoteSpaces( outCanonicalizeQuote, out );
+    ForcePathQuoteSpaces( outCanonicalizeQuote, out_path );
 	
 	system_cmd += L" ";
 	system_cmd += outCanonicalizeQuote;
 	
 	WCHAR csaCanonicalizeQuote[MAX_PATH];
-	ForcePathQuoteSpaces( csaCanonicalizeQuote, csa );
+	ForcePathQuoteSpaces( csaCanonicalizeQuote, csa_path );
 
 	system_cmd += L" ";
 	system_cmd += csaCanonicalizeQuote;
@@ -160,7 +160,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	}
 
     WCHAR outCanonicalize[MAX_PATH];
-    PathCanonicalize( outCanonicalize, out.c_str() );
+    PathCanonicalize( outCanonicalize, out_path.c_str() );
     PathUnquoteSpaces( outCanonicalize );
 
     FILE * f = _wfopen( outCanonicalize, L"rb" );
@@ -243,14 +243,14 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     Magic_CloseFile( mf );
 
-	if( info.empty() == false )
+	if( result_path.empty() == false )
 	{
         WCHAR infoCanonicalizeQuote[MAX_PATH];
-        ForcePathQuoteSpaces( infoCanonicalizeQuote, info.c_str() );
+        ForcePathQuoteSpaces( infoCanonicalizeQuote, result_path.c_str() );
         PathUnquoteSpaces( infoCanonicalizeQuote );
 
-        FILE * f_info;
-        errno_t err = _wfopen_s( &f_info, infoCanonicalizeQuote, L"wt" );
+        FILE * f_result;
+        errno_t err = _wfopen_s( &f_result, infoCanonicalizeQuote, L"wt" );
 
         if( err != 0 )
         {
@@ -263,13 +263,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         }
 
 
-		//CHAR s_atlasCount[16];
-		//sprintf_s( s_atlasCount, 16, "%d", atlasCount );
-
-		//fputs( s_atlasCount, f_info );
-		//fputs( "\n", f_info );
-		//fprintf_s( f_info, "%s\n", emitterName );
-		fprintf_s( f_info, "%d\n", atlasCount );
+ 		fprintf_s( f_result, "%d\n", atlasCount );
 
 		for( TVectorAtlas::const_iterator
 			it = atlas.begin(),
@@ -279,21 +273,21 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		{
 			const AtlasDesc & desc = *it;
 
-			fprintf_s( f_info, "%s\n", desc.path.c_str() );
-            fprintf_s( f_info, "%d\n", 0 );
-            fprintf_s( f_info, "%d\n", 0 );
-			fprintf_s( f_info, "%d\n", desc.width );
-			fprintf_s( f_info, "%d\n", desc.height );
+			fprintf_s( f_result, "%s\n", desc.path.c_str() );
+            fprintf_s( f_result, "%d\n", 0 );
+            fprintf_s( f_result, "%d\n", 0 );
+			fprintf_s( f_result, "%d\n", desc.width );
+			fprintf_s( f_result, "%d\n", desc.height );
 		}
 		
-		fclose( f_info );
+		fclose( f_result );
 	}
 
     if( convert.empty() == false )
     {
-        std::wstring::size_type ext_index = out.find_last_of( L"." );
+        std::wstring::size_type ext_index = out_path.find_last_of( L"." );
 
-        std::wstring outz = out.substr( 0, ext_index ) + L".ptz";
+        std::wstring outz = out_path.substr( 0, ext_index ) + L".ptz";
 
         WCHAR outzCanonicalize[MAX_PATH];
         PathCanonicalize( outzCanonicalize, outz.c_str() );

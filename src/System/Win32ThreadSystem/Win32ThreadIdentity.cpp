@@ -30,17 +30,13 @@ namespace Menge
 #	ifndef _DEBUG
 		catch( const std::exception & ex )
 		{
-			ServiceProviderInterface * serviceProvider = thread->getServiceProvider();
-
-			LOGGER_CRITICAL(serviceProvider)("Win32ThreadIdentity std::exception exception '%s'"
+            LOGGER_CRITICAL( "Win32ThreadIdentity std::exception exception '%s'"
 				, ex.what()
 				);
 		}
 		catch( ... )
 		{
-			ServiceProviderInterface * serviceProvider = thread->getServiceProvider();
-
-			LOGGER_CRITICAL(serviceProvider)("Win32ThreadIdentity unknown exception"
+            LOGGER_CRITICAL( "Win32ThreadIdentity unknown exception"
 				);
 		}
 #	endif
@@ -61,7 +57,7 @@ namespace Menge
 		{
 			DWORD error_code = GetLastError();
 
-			LOGGER_ERROR(m_serviceProvider)("Win32ThreadIdentity::initialize: invalid create thread error code - %d"
+			LOGGER_ERROR("Win32ThreadIdentity::initialize: invalid create thread error code - %d"
 				, error_code
 				);
 

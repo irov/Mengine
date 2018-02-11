@@ -9,7 +9,7 @@
 namespace Menge
 {
 	class OALSoundSystem;
-
+    //////////////////////////////////////////////////////////////////////////
 	class OALSoundSource
 		: public ServantBase<SoundSourceInterface>
 	{
@@ -18,7 +18,7 @@ namespace Menge
 		~OALSoundSource();
         
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem* _soundSystem );
+        void initialize( OALSoundSystem* _soundSystem );
 
 	public:
 		bool play() override;
@@ -51,13 +51,15 @@ namespace Menge
         void releaseSourceId_();
 
     protected:
+        void apply_( ALuint _source );
+
+    protected:
         OALSoundSystem * m_soundSystem;
 
         mt::vec3f m_position;
 		float m_volume;
-		void apply_( ALuint _source );
-
-		ALuint m_sourceId;
+		
+        ALuint m_sourceId;
 		float m_timing;
 
 		OALSoundBufferBasePtr m_soundBuffer;
@@ -67,6 +69,6 @@ namespace Menge
         bool m_pausing;
         bool m_loop;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<OALSoundSource> OALSoundSourcePtr;
 }	// namespace Menge

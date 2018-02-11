@@ -66,16 +66,16 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderEngine::_initialize()
     {
-        m_maxVertexCount = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaxVertexCount", 32000U );
-        m_maxIndexCount = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaxIndexCount", 48000U );
+        m_maxVertexCount = CONFIG_VALUE( "Engine", "RenderMaxVertexCount", 32000U );
+        m_maxIndexCount = CONFIG_VALUE( "Engine", "RenderMaxIndexCount", 48000U );
 
-        uint32_t maxObjects = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaxObject", 8000U );
-        uint32_t maxPasses = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaxPass", 200U );
+        uint32_t maxObjects = CONFIG_VALUE( "Engine", "RenderMaxObject", 8000U );
+        uint32_t maxPasses = CONFIG_VALUE( "Engine", "RenderMaxPass", 200U );
 
-        uint32_t maxQuadBatch = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaxQuadBatch", 2000U );
-        uint32_t maxLineBatch = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaxLineBatch", 4000U );
+        uint32_t maxQuadBatch = CONFIG_VALUE( "Engine", "RenderMaxQuadBatch", 2000U );
+        uint32_t maxLineBatch = CONFIG_VALUE( "Engine", "RenderMaxLineBatch", 4000U );
 
-        m_noShader = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderNoShader", false );
+        m_noShader = CONFIG_VALUE( "Engine", "RenderNoShader", false );
 
         m_renderObjects.reserve( maxObjects );
         m_renderPasses.reserve( maxPasses );
@@ -117,7 +117,7 @@ namespace Menge
 
         //m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
-        uint32_t batchMode = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderServiceBatchMode", 2 );
+        uint32_t batchMode = CONFIG_VALUE( "Engine", "RenderServiceBatchMode", 2 );
 
         switch( batchMode )
         {
@@ -189,7 +189,7 @@ namespace Menge
 
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO( m_serviceProvider )("RenderEngine::createRenderWindow:\nwindow resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
+        LOGGER_INFO("RenderEngine::createRenderWindow:\nwindow resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , m_contentResolution.getWidth()
@@ -201,9 +201,9 @@ namespace Menge
             , m_fullscreen
             );
 
-        uint32_t MultiSampleCount = CONFIG_VALUE( m_serviceProvider, "Render", "MultiSampleCount", 2U );
+        uint32_t MultiSampleCount = CONFIG_VALUE( "Render", "MultiSampleCount", 2U );
 
-        m_windowCreated = RENDER_SYSTEM( m_serviceProvider )
+        m_windowCreated = RENDER_SYSTEM()
             ->createRenderWindow( m_windowResolution, _bits, m_fullscreen, m_vsync, _FSAAType, _FSAAQuality, MultiSampleCount );
 
         if( m_windowCreated == false )
@@ -220,7 +220,7 @@ namespace Menge
 
         if( this->createNullTexture_() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::createRenderWindow invalid create __null__ texture"
+            LOGGER_ERROR("RenderEngine::createRenderWindow invalid create __null__ texture"
                 );
 
             return false;
@@ -228,7 +228,7 @@ namespace Menge
 
         if( this->createWhitePixelTexture_() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::createRenderWindow invalid create WhitePixel texture"
+            LOGGER_ERROR("RenderEngine::createRenderWindow invalid create WhitePixel texture"
                 );
 
             return false;
@@ -247,7 +247,7 @@ namespace Menge
         m_ibHandle2D = nullptr;
         m_vbHandle2D = nullptr;
 
-        //RENDERTEXTURE_SERVICE(m_serviceProvider)
+        //RENDERTEXTURE_SERVICE()
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderEngine::createNullTexture_()
@@ -258,12 +258,12 @@ namespace Menge
         uint32_t null_channels = 3;
         uint32_t null_depth = 1;
 
-        RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE( m_serviceProvider )
+        RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
             ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN );
 
         if( texture == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createNullTexture_ invalid create null texture %d:%d"
+            LOGGER_ERROR("RenderTextureManager::createNullTexture_ invalid create null texture %d:%d"
                 , null_width
                 , null_height
                 );
@@ -284,7 +284,7 @@ namespace Menge
 
         if( textureData == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createNullTexture_ invalid lock null texture %d:%d"
+            LOGGER_ERROR("RenderTextureManager::createNullTexture_ invalid lock null texture %d:%d"
                 , null_width
                 , null_height
                 );
@@ -314,8 +314,8 @@ namespace Menge
 
         image->unlock( 0, true );
 
-        RENDERTEXTURE_SERVICE( m_serviceProvider )
-            ->cacheFileTexture( ConstString::none(), STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "__null__" ), texture );
+        RENDERTEXTURE_SERVICE()
+            ->cacheFileTexture( ConstString::none(), STRINGIZE_FILEPATH_LOCAL( "__null__" ), texture );
 
         m_nullTexture = texture;
 
@@ -330,12 +330,12 @@ namespace Menge
         uint32_t null_channels = 3;
         uint32_t null_depth = 1;
 
-        RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE( m_serviceProvider )
+        RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
             ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN );
 
         if( texture == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createWhitePixelTexture_ invalid create null texture %d:%d"
+            LOGGER_ERROR("RenderTextureManager::createWhitePixelTexture_ invalid create null texture %d:%d"
                 , null_width
                 , null_height
                 );
@@ -356,7 +356,7 @@ namespace Menge
 
         if( textureData == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderTextureManager::createWhitePixelTexture_ invalid lock null texture %d:%d"
+            LOGGER_ERROR("RenderTextureManager::createWhitePixelTexture_ invalid lock null texture %d:%d"
                 , null_width
                 , null_height
                 );
@@ -386,8 +386,8 @@ namespace Menge
 
         image->unlock( 0, true );
 
-        RENDERTEXTURE_SERVICE( m_serviceProvider )
-            ->cacheFileTexture( ConstString::none(), STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "WhitePixel" ), texture );
+        RENDERTEXTURE_SERVICE()
+            ->cacheFileTexture( ConstString::none(), STRINGIZE_FILEPATH_LOCAL( "WhitePixel" ), texture );
 
         m_whitePixelTexture = texture;
 
@@ -402,7 +402,7 @@ namespace Menge
 
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO( m_serviceProvider )("RenderEngine::changeWindowMode:\nwindow resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
+        LOGGER_INFO("RenderEngine::changeWindowMode:\nwindow resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , m_contentResolution.getWidth()
@@ -419,7 +419,7 @@ namespace Menge
             return;
         }
 
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->changeWindowMode( m_windowResolution, m_fullscreen );
 
         //this->restoreRenderSystemStates_();
@@ -429,7 +429,7 @@ namespace Menge
     {
         const RenderImageInterfacePtr & image = _texture->getImage();
 
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->screenshot( image, _rect );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -437,7 +437,7 @@ namespace Menge
     {
         if( m_windowCreated == true )
         {
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->onWindowClose();
         }
     }
@@ -476,12 +476,12 @@ namespace Menge
     {
         this->restoreRenderSystemStates_();
 
-        if( RENDER_SYSTEM( m_serviceProvider )->beginScene() == false )
+        if( RENDER_SYSTEM()->beginScene() == false )
         {
             return false;
         }
 
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->clear( 0x00000000, true );
 
         return true;
@@ -491,7 +491,7 @@ namespace Menge
     {
         this->flushRender_();
 
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->endScene();
 
         m_debugInfo.frameCount += 1;
@@ -499,7 +499,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::swapBuffers()
     {
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->swapBuffers();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -530,7 +530,7 @@ namespace Menge
                 current_texture_stage.addressV = texture_stage.addressV;
                 current_texture_stage.addressBorder = texture_stage.addressBorder;
 
-                RENDER_SYSTEM( m_serviceProvider )->setTextureAddressing( stageId
+                RENDER_SYSTEM()->setTextureAddressing( stageId
                     , current_texture_stage.addressU
                     , current_texture_stage.addressV
                     , current_texture_stage.addressBorder
@@ -545,7 +545,7 @@ namespace Menge
                 current_texture_stage.magnification = texture_stage.magnification;
                 current_texture_stage.minification = texture_stage.minification;
 
-                RENDER_SYSTEM( m_serviceProvider )->setTextureStageFilter( stageId
+                RENDER_SYSTEM()->setTextureStageFilter( stageId
                     , current_texture_stage.minification
                     , current_texture_stage.mipmap
                     , current_texture_stage.magnification
@@ -557,7 +557,7 @@ namespace Menge
         {
             m_alphaBlendEnable = m_currentStage->alphaBlendEnable;
 
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setAlphaBlendEnable( m_alphaBlendEnable );
         }
 
@@ -569,7 +569,7 @@ namespace Menge
             m_currentBlendDst = m_currentStage->blendDst;
             m_currentBlendOp = m_currentStage->blendOp;
 
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
         }
 
@@ -577,7 +577,7 @@ namespace Menge
         {
             m_currentProgram = m_currentStage->program;
 
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setProgram( m_currentProgram );
         }
 
@@ -596,7 +596,7 @@ namespace Menge
                     current_texture_stage.colorArg1 = texture_stage.colorArg1;
                     current_texture_stage.colorArg2 = texture_stage.colorArg2;
 
-                    RENDER_SYSTEM( m_serviceProvider )->setTextureStageColorOp( stageId
+                    RENDER_SYSTEM()->setTextureStageColorOp( stageId
                         , current_texture_stage.colorOp
                         , current_texture_stage.colorArg1
                         , current_texture_stage.colorArg2
@@ -611,7 +611,7 @@ namespace Menge
                     current_texture_stage.alphaArg1 = texture_stage.alphaArg1;
                     current_texture_stage.alphaArg2 = texture_stage.alphaArg2;
 
-                    RENDER_SYSTEM( m_serviceProvider )->setTextureStageAlphaOp( stageId
+                    RENDER_SYSTEM()->setTextureStageAlphaOp( stageId
                         , current_texture_stage.alphaOp
                         , current_texture_stage.alphaArg1
                         , current_texture_stage.alphaArg2
@@ -629,7 +629,7 @@ namespace Menge
             {
                 current_texture_stage.texCoordIndex = texture_stage.texCoordIndex;
 
-                RENDER_SYSTEM( m_serviceProvider )->setTextureStageTexCoordIndex( stageId
+                RENDER_SYSTEM()->setTextureStageTexCoordIndex( stageId
                     , current_texture_stage.texCoordIndex
                 );
             }
@@ -647,7 +647,7 @@ namespace Menge
 
             const RenderImageInterfacePtr & image = _texture->getImage();
 
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setTexture( _stageId, image );
         }
     }
@@ -695,7 +695,7 @@ namespace Menge
 
         if( m_currentProgram != nullptr && m_noShader == false )
         {
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->updateProgram( m_currentProgram );
         }
     }
@@ -715,7 +715,7 @@ namespace Menge
         {
             m_currentIBHandle = _renderObject->ibHandle;
 
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setIndexBuffer( m_currentIBHandle );
         }
 
@@ -723,13 +723,13 @@ namespace Menge
         {
             m_currentVBHandle = _renderObject->vbHandle;
 
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setVertexBuffer( m_currentVBHandle );
         }
 
         EPrimitiveType primitiveType = material->getPrimitiveType();
 
-        RENDER_SYSTEM( m_serviceProvider )->drawIndexedPrimitive(
+        RENDER_SYSTEM()->drawIndexedPrimitive(
             primitiveType,
             _renderObject->baseVertexIndex,
             _renderObject->minIndex,
@@ -753,45 +753,45 @@ namespace Menge
 
         stage.texCoordIndex = _stage;
 
-        stage.mipmap = RENDERMATERIAL_SERVICE( m_serviceProvider )
+        stage.mipmap = RENDERMATERIAL_SERVICE()
             ->getDefaultTextureFilterMipmap();
 
-        stage.minification = RENDERMATERIAL_SERVICE( m_serviceProvider )
+        stage.minification = RENDERMATERIAL_SERVICE()
             ->getDefaultTextureFilterMinification();
 
-        stage.magnification = RENDERMATERIAL_SERVICE( m_serviceProvider )
+        stage.magnification = RENDERMATERIAL_SERVICE()
             ->getDefaultTextureFilterMagnification();
 
         m_currentTexturesID[_stage] = 0;
 
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->setTexture( _stage, nullptr );
 
-        RENDER_SYSTEM( m_serviceProvider )->setTextureAddressing( _stage
+        RENDER_SYSTEM()->setTextureAddressing( _stage
             , stage.addressU
             , stage.addressV
             , stage.addressBorder
         );
 
-        RENDER_SYSTEM( m_serviceProvider )->setTextureStageFilter( _stage
+        RENDER_SYSTEM()->setTextureStageFilter( _stage
             , stage.minification
             , stage.mipmap
             , stage.magnification
         );
 
-        RENDER_SYSTEM( m_serviceProvider )->setTextureStageColorOp( _stage
+        RENDER_SYSTEM()->setTextureStageColorOp( _stage
             , stage.colorOp
             , stage.colorArg1
             , stage.colorArg2
         );
 
-        RENDER_SYSTEM( m_serviceProvider )->setTextureStageAlphaOp( _stage
+        RENDER_SYSTEM()->setTextureStageAlphaOp( _stage
             , stage.alphaOp
             , stage.colorArg1
             , stage.colorArg2
         );
 
-        RENDER_SYSTEM( m_serviceProvider )->setTextureStageTexCoordIndex( _stage
+        RENDER_SYSTEM()->setTextureStageTexCoordIndex( _stage
             , stage.texCoordIndex
         );
     }
@@ -849,54 +849,54 @@ namespace Menge
         mt::mat4f worldTransform;
         mt::ident_m4( worldTransform );
 
-        RENDER_SYSTEM( m_serviceProvider )->setProjectionMatrix( projTransform );
-        RENDER_SYSTEM( m_serviceProvider )->setModelViewMatrix( viewTransform );
-        RENDER_SYSTEM( m_serviceProvider )->setWorldMatrix( worldTransform );
-        RENDER_SYSTEM( m_serviceProvider )->setVertexBuffer( m_currentVBHandle );
-        RENDER_SYSTEM( m_serviceProvider )->setIndexBuffer( m_currentIBHandle );
-        RENDER_SYSTEM( m_serviceProvider )->setProgram( m_currentProgram );
-        RENDER_SYSTEM( m_serviceProvider )->setCullMode( CM_CULL_NONE );
-        //RENDER_SYSTEM( m_serviceProvider )->setFillMode( FM_SOLID );
-        //RENDER_SYSTEM( m_serviceProvider )->setFillMode( FM_WIREFRAME );
-        RENDER_SYSTEM( m_serviceProvider )->setDepthBufferTestEnable( false );
-        RENDER_SYSTEM( m_serviceProvider )->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
-        RENDER_SYSTEM( m_serviceProvider )->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
-        RENDER_SYSTEM( m_serviceProvider )->setAlphaBlendEnable( m_alphaBlendEnable );
-        RENDER_SYSTEM( m_serviceProvider )->setLightingEnable( false );
-        RENDER_SYSTEM( m_serviceProvider )->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
+        RENDER_SYSTEM()->setProjectionMatrix( projTransform );
+        RENDER_SYSTEM()->setModelViewMatrix( viewTransform );
+        RENDER_SYSTEM()->setWorldMatrix( worldTransform );
+        RENDER_SYSTEM()->setVertexBuffer( m_currentVBHandle );
+        RENDER_SYSTEM()->setIndexBuffer( m_currentIBHandle );
+        RENDER_SYSTEM()->setProgram( m_currentProgram );
+        RENDER_SYSTEM()->setCullMode( CM_CULL_NONE );
+        //RENDER_SYSTEM()->setFillMode( FM_SOLID );
+        //RENDER_SYSTEM()->setFillMode( FM_WIREFRAME );
+        RENDER_SYSTEM()->setDepthBufferTestEnable( false );
+        RENDER_SYSTEM()->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
+        RENDER_SYSTEM()->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
+        RENDER_SYSTEM()->setAlphaBlendEnable( m_alphaBlendEnable );
+        RENDER_SYSTEM()->setLightingEnable( false );
+        RENDER_SYSTEM()->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
 
-        LOGGER_INFO( m_serviceProvider )("RenderEngine::restoreRenderSystemStates_ texture stages %d"
+        LOGGER_INFO("RenderEngine::restoreRenderSystemStates_ texture stages %d"
             , MENGE_MAX_TEXTURE_STAGES
             );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport, float zn, float zf )
     {
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->makeProjectionOrthogonal( _projectionMatrix, _viewport, zn, zf );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf )
     {
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->makeProjectionPerspective( _projectionMatrix, _fov, _aspect, zn, zf );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float zn, float zf )
     {
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->makeProjectionFrustum( _projectionMatrix, _viewport, zn, zf );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeViewMatrixFromViewport( mt::mat4f& _viewMatrix, const Viewport & _viewport )
     {
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->makeViewMatrixFromViewport( _viewMatrix, _viewport );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )
     {
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->makeViewMatrixLookAt( _viewMatrix, _eye, _dir, _up, _sign );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1006,7 +1006,7 @@ namespace Menge
             Viewport renderViewport;
             this->calcRenderViewport_( viewport, renderViewport );
 
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setViewport( renderViewport );
         }
         else
@@ -1020,7 +1020,7 @@ namespace Menge
             renderViewport.end.x = (float)width;
             renderViewport.end.y = (float)height;
 
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setViewport( renderViewport );
         }
 
@@ -1028,20 +1028,20 @@ namespace Menge
         {
             uint32_t count = _pass.clipplane->getCount();
 
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setClipplaneCount( count );
 
             for( uint32_t i = 0; i != count; ++i )
             {
                 const mt::planef & p = _pass.clipplane->getPlane( i );
 
-                RENDER_SYSTEM( m_serviceProvider )
+                RENDER_SYSTEM()
                     ->setClipplane( i, p );
             }
         }
         else
         {
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setClipplaneCount( 0 );
         }
 
@@ -1049,17 +1049,17 @@ namespace Menge
         {
             //const mt::mat4f & worldMatrix = _renderPass.camera->getCameraWorldMatrix();
 
-            //RENDER_SYSTEM( m_serviceProvider )
+            //RENDER_SYSTEM()
             //	->setWorldMatrix( worldMatrix );
 
             const mt::mat4f & viewMatrix = _pass.camera->getCameraViewMatrix();
 
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setModelViewMatrix( viewMatrix );
 
             const mt::mat4f & projectionMatrix = _pass.camera->getCameraProjectionMatrix();
 
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setProjectionMatrix( projectionMatrix );
         }
         else
@@ -1067,19 +1067,19 @@ namespace Menge
             //mt::mat4f worldMatrix;
             //mt::ident_m4( worldMatrix );
 
-            //RENDER_SYSTEM( m_serviceProvider )
+            //RENDER_SYSTEM()
             //	->setWorldMatrix( worldMatrix );
 
             mt::mat4f viewMatrix;
             mt::ident_m4( viewMatrix );
 
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setModelViewMatrix( viewMatrix );
 
             mt::mat4f projectionMatrix;
             mt::ident_m4( projectionMatrix );
 
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setProjectionMatrix( projectionMatrix );
         }
 
@@ -1143,7 +1143,7 @@ namespace Menge
 #	ifdef _DEBUG
         if( _state == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::renderObject2D _state == NULL"
+            LOGGER_ERROR("RenderEngine::renderObject2D _state == NULL"
                 );
 
             return;
@@ -1151,7 +1151,7 @@ namespace Menge
 
         if( _state->viewport == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::renderObject2D viewport == NULL"
+            LOGGER_ERROR("RenderEngine::renderObject2D viewport == NULL"
                 );
 
             return;
@@ -1159,7 +1159,7 @@ namespace Menge
 
         if( _state->camera == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::renderObject2D camera == NULL"
+            LOGGER_ERROR("RenderEngine::renderObject2D camera == NULL"
                 );
 
             return;
@@ -1167,7 +1167,7 @@ namespace Menge
 
         if( _material == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::renderObject2D _material == NULL"
+            LOGGER_ERROR("RenderEngine::renderObject2D _material == NULL"
                 );
 
             return;
@@ -1175,7 +1175,7 @@ namespace Menge
 
         if( _vertices == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::renderObject2D _vertices == NULL"
+            LOGGER_ERROR("RenderEngine::renderObject2D _vertices == NULL"
                 );
 
             return;
@@ -1183,7 +1183,7 @@ namespace Menge
 
         if( _indices == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::renderObject2D _indices == NULL"
+            LOGGER_ERROR("RenderEngine::renderObject2D _indices == NULL"
                 );
 
             return;
@@ -1192,7 +1192,7 @@ namespace Menge
 
         if( m_renderObjects.full() == true )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::renderObject2D max render objects %u"
+            LOGGER_ERROR("RenderEngine::renderObject2D max render objects %u"
                 , m_renderObjects.size()
                 );
 
@@ -1270,8 +1270,8 @@ namespace Menge
         {
             if( m_iterateRenderObjects == m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
             {
-                RenderMaterialPtr new_material = RENDERMATERIAL_SERVICE( m_serviceProvider )
-                    ->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Blend" )
+                RenderMaterialPtr new_material = RENDERMATERIAL_SERVICE()
+                    ->getMaterial( STRINGIZE_STRING_LOCAL( "Color_Blend" )
                         , ro_material->getPrimitiveType()
                         , 0
                         , nullptr
@@ -1288,8 +1288,8 @@ namespace Menge
 
         if( m_debugRedAlertMode == true && _debug == false )
         {
-            RenderMaterialInterfacePtr new_material = RENDERMATERIAL_SERVICE( m_serviceProvider )
-                ->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Blend" )
+            RenderMaterialInterfacePtr new_material = RENDERMATERIAL_SERVICE()
+                ->getMaterial( STRINGIZE_STRING_LOCAL( "Color_Blend" )
                     , ro_material->getPrimitiveType()
                     , 0
                     , nullptr
@@ -1350,7 +1350,7 @@ namespace Menge
 
         if( indicesNum >= m_indicesQuad.size() )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::addRenderQuad count %d > max count %d"
+            LOGGER_ERROR("RenderEngine::addRenderQuad count %d > max count %d"
                 , indicesNum
                 , m_indicesQuad.size()
                 );
@@ -1371,7 +1371,7 @@ namespace Menge
 
         if( indicesNum >= m_indicesLine.size() )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::addRenderLine count %d > max count %d"
+            LOGGER_ERROR("RenderEngine::addRenderLine count %d > max count %d"
                 , indicesNum
                 , m_indicesLine.size()
                 );
@@ -1407,7 +1407,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     RenderVertexBufferInterfacePtr RenderEngine::createVertexBuffer( const RenderVertex2D * _buffer, uint32_t _count )
     {
-        RenderVertexBufferInterfacePtr vb = RENDER_SYSTEM( m_serviceProvider )
+        RenderVertexBufferInterfacePtr vb = RENDER_SYSTEM()
             ->createVertexBuffer( _count, false );
 
         if( vb == nullptr )
@@ -1422,7 +1422,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     RenderIndexBufferInterfacePtr RenderEngine::createIndicesBuffer( const RenderIndices * _buffer, uint32_t _count )
     {
-        RenderIndexBufferInterfacePtr ib = RENDER_SYSTEM( m_serviceProvider )
+        RenderIndexBufferInterfacePtr ib = RENDER_SYSTEM()
             ->createIndexBuffer( _count, false );
 
         if( ib == nullptr )
@@ -1441,7 +1441,7 @@ namespace Menge
 
         if( vbuffer == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::updateVertexBuffer failed to lock vertex buffer"
+            LOGGER_ERROR("RenderEngine::updateVertexBuffer failed to lock vertex buffer"
                 );
 
             return false;
@@ -1451,7 +1451,7 @@ namespace Menge
 
         if( _vb->unlock() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::updateVertexBuffer failed to unlock vertex buffer"
+            LOGGER_ERROR("RenderEngine::updateVertexBuffer failed to unlock vertex buffer"
                 );
 
             return false;
@@ -1466,7 +1466,7 @@ namespace Menge
 
         if( ibuffer == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::updateIndicesBuffer failed to lock vertex buffer"
+            LOGGER_ERROR("RenderEngine::updateIndicesBuffer failed to lock vertex buffer"
                 );
 
             return false;
@@ -1476,7 +1476,7 @@ namespace Menge
 
         if( _ib->unlock() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::updateIndicesBuffer: failed to unlock vertex buffer"
+            LOGGER_ERROR("RenderEngine::updateIndicesBuffer: failed to unlock vertex buffer"
                 );
 
             return false;
@@ -1489,7 +1489,7 @@ namespace Menge
     {
         if( m_renderVertexCount >= m_maxVertexCount )
         {
-            LOGGER_WARNING( m_serviceProvider )("RenderEngine::makeBatches_: vertex buffer overflow"
+            LOGGER_WARNING("RenderEngine::makeBatches_: vertex buffer overflow"
                 );
 
             return false;
@@ -1497,7 +1497,7 @@ namespace Menge
 
         if( m_renderIndicesCount >= m_maxIndexCount )
         {
-            LOGGER_WARNING( m_serviceProvider )("RenderEngine::makeBatches_: indices buffer overflow"
+            LOGGER_WARNING("RenderEngine::makeBatches_: indices buffer overflow"
                 );
 
             return false;
@@ -1517,7 +1517,7 @@ namespace Menge
 
         if( vertexBuffer == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::makeBatches_: failed to lock vertex buffer"
+            LOGGER_ERROR("RenderEngine::makeBatches_: failed to lock vertex buffer"
                 );
 
             return false;
@@ -1527,7 +1527,7 @@ namespace Menge
 
         if( indicesBuffer == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::makeBatches_: failed to lock indices buffer"
+            LOGGER_ERROR("RenderEngine::makeBatches_: failed to lock indices buffer"
                 );
 
             return false;
@@ -1537,7 +1537,7 @@ namespace Menge
 
         if( m_ibHandle2D->unlock() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::makeBatches_: failed to unlock indices buffer"
+            LOGGER_ERROR("RenderEngine::makeBatches_: failed to unlock indices buffer"
                 );
 
             return false;
@@ -1545,7 +1545,7 @@ namespace Menge
 
         if( m_vbHandle2D->unlock() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::makeBatches_: failed to unlock vertex buffer"
+            LOGGER_ERROR("RenderEngine::makeBatches_: failed to unlock vertex buffer"
                 );
 
             return false;
@@ -1774,7 +1774,7 @@ namespace Menge
     {
         if( stdex::memorycopy_safe_pod( _vertexBuffer, _vbPos, _vbSize, _renderObject->vertexData, _renderObject->vertexCount ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::insertRenderObject_ vertex buffer overrlow!"
+            LOGGER_ERROR("RenderEngine::insertRenderObject_ vertex buffer overrlow!"
                 );
 
             return false;
@@ -1792,7 +1792,7 @@ namespace Menge
 
         if( _ibPos > _ibSize )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::insertRenderObject_ indices buffer overrlow!"
+            LOGGER_ERROR("RenderEngine::insertRenderObject_ indices buffer overrlow!"
                 );
 
             return false;
@@ -1831,24 +1831,24 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderEngine::create2DBuffers_()
     {
-        m_ibHandle2D = RENDER_SYSTEM( m_serviceProvider )
+        m_ibHandle2D = RENDER_SYSTEM()
             ->createIndexBuffer( m_maxIndexCount, false );
 
         if( m_ibHandle2D == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::recreate2DBuffers_: can't create index buffer for %d indicies"
+            LOGGER_ERROR("RenderEngine::recreate2DBuffers_: can't create index buffer for %d indicies"
                 , m_maxIndexCount
                 );
 
             return false;
         }
 
-        m_vbHandle2D = RENDER_SYSTEM( m_serviceProvider )
+        m_vbHandle2D = RENDER_SYSTEM()
             ->createVertexBuffer( m_maxVertexCount, true );
 
         if( m_vbHandle2D == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("RenderEngine::recreate2DBuffers_: can't create index buffer for %d indicies"
+            LOGGER_ERROR("RenderEngine::recreate2DBuffers_: can't create index buffer for %d indicies"
                 , m_maxIndexCount
                 );
 
@@ -1869,7 +1869,7 @@ namespace Menge
 
         if( m_windowCreated == true )
         {
-            RENDER_SYSTEM( m_serviceProvider )
+            RENDER_SYSTEM()
                 ->setVSync( m_vsync );
         }
     }
@@ -1881,13 +1881,13 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::clear( uint32_t _color )
     {
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->clear( _color, true );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::setSeparateAlphaBlendMode()
     {
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->setSeparateAlphaBlendMode();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1984,8 +1984,8 @@ namespace Menge
             float tric1_area = mt::convex8_area( tric1 );
             float tric2_area = mt::convex8_area( tric2 );
 
-            m_debugInfo.fillrate += (double)tric1_area;
-            m_debugInfo.fillrate += (double)tric2_area;
+            m_debugInfo.fillrate += tric1_area;
+            m_debugInfo.fillrate += tric2_area;
         }
 
         m_debugInfo.triangle += triangleNum2 * 2;
@@ -2021,7 +2021,7 @@ namespace Menge
 
             float tric_area = mt::convex8_area( tric );
 
-            m_debugInfo.fillrate += (double)tric_area;
+            m_debugInfo.fillrate += tric_area;
 
             m_debugInfo.triangle += 1;
         }

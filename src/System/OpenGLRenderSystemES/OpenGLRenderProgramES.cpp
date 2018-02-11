@@ -7,8 +7,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderProgramES::OpenGLRenderProgramES()
-		: m_serviceProvider( nullptr )
-		, m_program( 0 )
+		: m_program( 0 )
 		, m_samplerCount( 0 )
 		, m_transformLocation( -1 )
 	{
@@ -22,19 +21,9 @@ namespace Menge
 	{
 		if( m_program != 0 )
 		{
-			GLCALL( m_serviceProvider, glDeleteProgram, (m_program) );
+			GLCALL( glDeleteProgram, (m_program) );
 			m_program = 0;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OpenGLRenderProgramES::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * OpenGLRenderProgramES::getServiceProvider() const
-	{ 
-		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & OpenGLRenderProgramES::getName() const
@@ -66,7 +55,7 @@ namespace Menge
     {
 		if( m_samplerCount > MENGE_MAX_TEXTURE_STAGES )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderProgramES::initialize %s don't support sampler count %d max %d"
+			LOGGER_ERROR("OpenGLRenderProgramES::initialize %s don't support sampler count %d max %d"
 				, m_name.c_str()
 				, m_samplerCount
 				, MENGE_MAX_TEXTURE_STAGES
@@ -76,11 +65,11 @@ namespace Menge
 		}
 
 		GLuint program;
-		GLCALLR( m_serviceProvider, program, glCreateProgram, () );
+		GLCALLR( program, glCreateProgram, () );
 
 		if( program == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderProgramES::initialize %s invalid create program"
+			LOGGER_ERROR("OpenGLRenderProgramES::initialize %s invalid create program"
 				, m_name.c_str()
 				);
 
@@ -97,28 +86,28 @@ namespace Menge
 			m_fragmentShader->attach( program );
 		}
 		
-		GLCALL( m_serviceProvider, glBindAttribLocation, ( program, VERTEX_POSITION_ARRAY, "inVert" ) );
-		GLCALL( m_serviceProvider, glBindAttribLocation, ( program, VERTEX_COLOR_ARRAY, "inCol" ) );
+		GLCALL( glBindAttribLocation, ( program, VERTEX_POSITION_ARRAY, "inVert" ) );
+		GLCALL( glBindAttribLocation, ( program, VERTEX_COLOR_ARRAY, "inCol" ) );
 
 		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
 		{
 			char attrib[16];
 			sprintf( attrib, "inUV%d", i );
 		
-			GLCALL( m_serviceProvider, glBindAttribLocation, (program, VERTEX_UV0_ARRAY + i, attrib) );
+			GLCALL( glBindAttribLocation, (program, VERTEX_UV0_ARRAY + i, attrib) );
 		}
 
-		GLCALL( m_serviceProvider, glLinkProgram, ( program ) );
+		GLCALL( glLinkProgram, ( program ) );
 
 		GLint linked;
-		GLCALL( m_serviceProvider, glGetProgramiv, ( program, GL_LINK_STATUS, &linked ) );
+		GLCALL( glGetProgramiv, ( program, GL_LINK_STATUS, &linked ) );
 
 		if( linked == GL_FALSE )
 		{
 			GLchar errorLog[1024] = {0};
-			GLCALL( m_serviceProvider, glGetProgramInfoLog, ( program, 1023, NULL, errorLog ) );
+			GLCALL( glGetProgramInfoLog, ( program, 1023, NULL, errorLog ) );
 
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderProgramES::shaderProgram '%s' - shader linking error '%s'"
+			LOGGER_ERROR("OpenGLRenderProgramES::shaderProgram '%s' - shader linking error '%s'"
                 , m_name.c_str()
 				, errorLog
 				);
@@ -127,7 +116,7 @@ namespace Menge
 		}
 				
 		int transformLocation;
-		GLCALLR( m_serviceProvider, transformLocation, glGetUniformLocation, (program, "mvpMat") );
+		GLCALLR( transformLocation, glGetUniformLocation, (program, "mvpMat") );
 
 		m_transformLocation = transformLocation;
 
@@ -137,7 +126,7 @@ namespace Menge
 			sprintf( samplerVar, "inSampler%d", index );
 
 			int location;
-			GLCALLR( m_serviceProvider, location, glGetUniformLocation, (program, samplerVar) );
+			GLCALLR( location, glGetUniformLocation, (program, samplerVar) );
 
 			m_samplerLocation[index] = location;
 		}
@@ -149,26 +138,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderProgramES::enable() const
 	{
-		GLCALL( m_serviceProvider, glUseProgram, (m_program) );
+		GLCALL( glUseProgram, (m_program) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderProgramES::disable() const
 	{
-		GLCALL( m_serviceProvider, glUseProgram, (0) );
+		GLCALL( glUseProgram, (0) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderProgramES::bindMatrix( const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix ) const
 	{
 		m_mvpMat = _worldMatrix * _viewMatrix * _projectionMatrix;
 
-		GLCALL( m_serviceProvider, glUniformMatrix4fv, (m_transformLocation, 1, GL_FALSE, m_mvpMat.buff()) );
+		GLCALL( glUniformMatrix4fv, (m_transformLocation, 1, GL_FALSE, m_mvpMat.buff()) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderProgramES::bindTexture( uint32_t _index ) const
 	{	
 		if( _index >= m_samplerCount )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderProgramES::bindTexture %s invalid support sampler count %d max %d"
+			LOGGER_ERROR("OpenGLRenderProgramES::bindTexture %s invalid support sampler count %d max %d"
 				, m_name.c_str()
 				, _index
 				, m_samplerCount
@@ -179,7 +168,7 @@ namespace Menge
 
 		int location = m_samplerLocation[_index];
 
-		GLCALL( m_serviceProvider, glUniform1i, (location, _index) );
+		GLCALL( glUniform1i, (location, _index) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

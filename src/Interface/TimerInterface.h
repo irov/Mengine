@@ -17,8 +17,8 @@ namespace Menge
         virtual uint64_t getMilliseconds() = 0;
     };
 
-#   define TIMER_SERVICE( serviceProvider )\
-    ((Menge::TimerServiceInterface*)SERVICE_GET(serviceProvider, Menge::TimerServiceInterface))
+#   define TIMER_SERVICE()\
+    ((Menge::TimerServiceInterface*)SERVICE_GET(Menge::TimerServiceInterface))
 
 	class TimerSystemInterface
 		: public ServiceInterface
@@ -29,6 +29,6 @@ namespace Menge
 		virtual uint64_t getMilliseconds() = 0;
 	};
 
-#   define TIMER_SYSTEM( serviceProvider )\
-    ((Menge::TimerSystemInterface*)SERVICE_GET(serviceProvider, Menge::TimerSystemInterface))
+#   define TIMER_SYSTEM()\
+    ((Menge::TimerSystemInterface*)SERVICE_GET(Menge::TimerSystemInterface))
 }

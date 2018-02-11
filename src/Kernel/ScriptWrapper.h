@@ -61,7 +61,7 @@ namespace Menge
 #   ifdef _DEBUG
 			if( dynamic_cast<T *>( _scriptable ) == nullptr )
             {
-				LOGGER_ERROR( m_serviceProvider )("ScriptClassWrapper::wrap invalid type"
+				LOGGER_ERROR("ScriptClassWrapper::wrap invalid type"
 					);
 
                 throw;

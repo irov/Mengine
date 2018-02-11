@@ -55,7 +55,7 @@ namespace Menge
 
 				if( refcount != 0 )
 				{
-					LOGGER_WARNING( m_serviceProvider )("ResourceManager::~ResourceManager resource %s refcount %d"
+					LOGGER_WARNING("ResourceManager::~ResourceManager resource %s refcount %d"
 						, resource->getName().c_str()
 						, refcount
 						);
@@ -77,18 +77,19 @@ namespace Menge
 		Metacode::Meta_DataBlock datablock;
 
 		bool exist = false;
-		if( LOADER_SERVICE(m_serviceProvider)->load( _pakName, _path, &datablock, exist ) == false )
+		if( LOADER_SERVICE()
+            ->load( _pakName, _path, &datablock, exist ) == false )
 		{
 			if( exist == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource: resource '%s:%s' not found"
+				LOGGER_ERROR("ResourceManager::loadResource: resource '%s:%s' not found"
 					, _pakName.c_str()
 					, _path.c_str()
 					);
 			}
 			else
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource: Invalid parse resource '%s:%s'"
+				LOGGER_ERROR("ResourceManager::loadResource: Invalid parse resource '%s:%s'"
                     , _pakName.c_str()
                     , _path.c_str()
 					);
@@ -114,7 +115,7 @@ namespace Menge
 
 			if( this->loadResources( _locale, _pakName, path, _ignored ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource load %s:%s resource invalid load include %s"
+                LOGGER_ERROR("ResourceManager::loadResource load %s:%s resource invalid load include %s"
                     , _pakName.c_str()
                     , _path.c_str()
                     , path.c_str()
@@ -150,7 +151,7 @@ namespace Menge
 
 				const ConstString & resource_category = has_resource->getCategory();
 
-				LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource: path %s already exist resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
+				LOGGER_ERROR("ResourceManager::loadResource: path %s already exist resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
 					, _path.c_str()
 					, name.c_str()
 					, groupName.c_str()
@@ -169,7 +170,7 @@ namespace Menge
 
             if( resource == nullptr )
             {
-				LOGGER_ERROR( m_serviceProvider )("ResourceManager::loadResource: '%s' invalid create resource '%s:%s' name %s type %s"
+				LOGGER_ERROR("ResourceManager::loadResource: '%s' invalid create resource '%s:%s' name %s type %s"
 					, _path.c_str()
                     , _pakName.c_str()
                     , groupName.c_str()
@@ -182,7 +183,7 @@ namespace Menge
 
             if( resource->loader( meta_resource ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
+                LOGGER_ERROR("ResourceManager::loadResource '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
 					, _path.c_str()
 					, _pakName.c_str()
 					, groupName.c_str()
@@ -204,7 +205,7 @@ namespace Menge
 #	ifndef MENGINE_MASTER_RELEASE
 			if( _ignored == false && resource->convert() == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceManager::loadResource %s type [%s] invalid convert"
+				LOGGER_ERROR("ResourceManager::loadResource %s type [%s] invalid convert"
 					, name.c_str()
 					, type.c_str()
 					);
@@ -222,18 +223,19 @@ namespace Menge
 		Metacode::Meta_DataBlock datablock;
 
 		bool exist = false;
-		if( LOADER_SERVICE( m_serviceProvider )->load( _pakName, _path, &datablock, exist ) == false )
+		if( LOADER_SERVICE()
+            ->load( _pakName, _path, &datablock, exist ) == false )
 		{
 			if( exist == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceManager::unloadResource: resource '%s:%s' not found"
+				LOGGER_ERROR("ResourceManager::unloadResource: resource '%s:%s' not found"
 					, _pakName.c_str()
 					, _path.c_str()
 					);
 			}
 			else
 			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceManager::unloadResource: Invalid parse resource '%s:%s'"
+				LOGGER_ERROR("ResourceManager::unloadResource: Invalid parse resource '%s:%s'"
 					, _pakName.c_str()
 					, _path.c_str()
 					);
@@ -259,7 +261,7 @@ namespace Menge
 
 			if( this->unloadResources( _locale, _pakName, path ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceManager::unloadResource load %s:%s resource invalid load include %s"
+				LOGGER_ERROR("ResourceManager::unloadResource load %s:%s resource invalid load include %s"
 					, _pakName.c_str()
 					, _path.c_str()
 					, path.c_str()
@@ -287,7 +289,7 @@ namespace Menge
 			{
 				const ConstString & resource_category = has_resource->getCategory();
 
-				LOGGER_ERROR( m_serviceProvider )("ResourceManager::unloadResource: path %s not found resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
+				LOGGER_ERROR("ResourceManager::unloadResource: path %s not found resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
 					, _path.c_str()
 					, name.c_str()
 					, groupName.c_str()
@@ -303,7 +305,7 @@ namespace Menge
 
 			if( this->removeResource( has_resource ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceManager::unloadResource: '%s' invalid remove resource '%s:%s' name %s type %s"
+				LOGGER_ERROR("ResourceManager::unloadResource: '%s' invalid remove resource '%s:%s' name %s type %s"
 					, _path.c_str()
 					, _pakName.c_str()
 					, groupName.c_str()
@@ -323,18 +325,19 @@ namespace Menge
 		Metacode::Meta_DataBlock datablock;
 
 		bool exist = false;
-		if( LOADER_SERVICE( m_serviceProvider )->load( _pakName, _path, &datablock, exist ) == false )
+		if( LOADER_SERVICE()
+            ->load( _pakName, _path, &datablock, exist ) == false )
 		{
 			if( exist == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceManager::validateResources resource '%s:%s' not found"
+				LOGGER_ERROR("ResourceManager::validateResources resource '%s:%s' not found"
 					, _pakName.c_str()
 					, _path.c_str()
 					);
 			}
 			else
 			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceManager::validateResources Invalid parse resource '%s:%s'"
+				LOGGER_ERROR("ResourceManager::validateResources Invalid parse resource '%s:%s'"
 					, _pakName.c_str()
 					, _path.c_str()
 					);
@@ -362,7 +365,7 @@ namespace Menge
 
 			if( this->validateResources( _locale, _pakName, path ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceManager::validateResources load %s:%s resource invalid load include %s"
+				LOGGER_ERROR("ResourceManager::validateResources load %s:%s resource invalid load include %s"
 					, _pakName.c_str()
 					, _path.c_str()
 					, path.c_str()
@@ -395,7 +398,7 @@ namespace Menge
 
 			if( resource == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceManager::validateResources '%s' invalid create resource '%s:%s' name %s type %s"
+				LOGGER_ERROR("ResourceManager::validateResources '%s' invalid create resource '%s:%s' name %s type %s"
 					, _path.c_str()
 					, _pakName.c_str()
 					, groupName.c_str()
@@ -415,7 +418,7 @@ namespace Menge
 
 			if( resource->loader( meta_resource ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceManager::validateResources '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
+				LOGGER_ERROR("ResourceManager::validateResources '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
 					, _path.c_str()
 					, _pakName.c_str()
 					, groupName.c_str()
@@ -431,7 +434,7 @@ namespace Menge
 #	ifndef MENGINE_MASTER_RELEASE
 			if( resource->convert() == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceManager::validateResources %s type [%s] invalid convert"
+				LOGGER_ERROR("ResourceManager::validateResources %s type [%s] invalid convert"
 					, name.c_str()
 					, type.c_str()
 					);
@@ -444,7 +447,7 @@ namespace Menge
 
 			if( resource->isValid() == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceManager::validateResources %s type [%s] invalidate"
+				LOGGER_ERROR("ResourceManager::validateResources %s type [%s] invalidate"
 					, name.c_str()
 					, type.c_str()
 					);
@@ -460,19 +463,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReferencePtr ResourceManager::generateResource( const ConstString& _type ) const
 	{
-		ResourceReferencePtr resource = PROTOTYPE_SERVICE( m_serviceProvider )
-			->generatePrototype( CONST_STRING( m_serviceProvider, Resource ), _type );
+		ResourceReferencePtr resource = PROTOTYPE_SERVICE()
+			->generatePrototype( CONST_STRING( Resource ), _type );
 
 		if( resource == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ResourceManager::generateResource not registered resource type '%s'"
+			LOGGER_ERROR("ResourceManager::generateResource not registered resource type '%s'"
 				, _type.c_str()
 				);
 
 			return nullptr;
 		}
 
-		LOGGER_INFO( m_serviceProvider )("ResourceManager::generateResource type %s"
+		LOGGER_INFO("ResourceManager::generateResource type %s"
 			, _type.c_str()
 			);
 
@@ -490,7 +493,7 @@ namespace Menge
 
 		if( resource == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ResourceManager createResource: invalid generate resource locale '%s' category '%s' group '%s' name '%s' type '%s'"
+			LOGGER_ERROR("ResourceManager createResource: invalid generate resource locale '%s' category '%s' group '%s' name '%s' type '%s'"
 				, _locale.c_str()
 				, _category.c_str()
 				, _group.c_str()
@@ -656,7 +659,7 @@ namespace Menge
 
 		if( entry->isLocked == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceManager getResource: resource '%s' is alredy LOCK!"
+			LOGGER_ERROR("ResourceManager getResource: resource '%s' is alredy LOCK!"
 				, _name.c_str()
 				);
 
@@ -679,7 +682,7 @@ namespace Menge
 
 		if( entry->isLocked == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceManager getResource: resource '%s' is alredy UNLOCK!"
+			LOGGER_ERROR("ResourceManager getResource: resource '%s' is alredy UNLOCK!"
 				, _name.c_str()
 				);
 
@@ -697,7 +700,7 @@ namespace Menge
 
 		if( entry == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResource: resource '%s' does not exist"
+			LOGGER_ERROR("ResourceManager::getResource: resource '%s' does not exist"
 				, _name.c_str()
 				);
 
@@ -706,7 +709,7 @@ namespace Menge
 
         if( entry->isLocked == true )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResource: resource '%s' is LOCK!"
+            LOGGER_ERROR("ResourceManager::getResource: resource '%s' is LOCK!"
                 , _name.c_str()
                 );
 
@@ -717,7 +720,7 @@ namespace Menge
 
 		if( resource->incrementReference() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResource: resource '%s' '%s' is not compile!"
+			LOGGER_ERROR("ResourceManager::getResource: resource '%s' '%s' is not compile!"
 				, _name.c_str()
                 , resource->getType().c_str()
 				);
@@ -734,7 +737,7 @@ namespace Menge
 
 		if( entry == nullptr )
 		{
-			LOGGER_WARNING(m_serviceProvider)("ResourceManager::getResourceReference: resource '%s' does not exist"
+			LOGGER_WARNING("ResourceManager::getResourceReference: resource '%s' does not exist"
 				, _name.c_str()
 				);
 
@@ -743,7 +746,7 @@ namespace Menge
 		
         if( entry->isLocked == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResourceReference: resource '%s' is LOCK!"
+			LOGGER_ERROR("ResourceManager::getResourceReference: resource '%s' is LOCK!"
 				, _name.c_str()
 				);
 
@@ -761,7 +764,7 @@ namespace Menge
 
 		if( entry == nullptr )
 		{
-			LOGGER_WARNING(m_serviceProvider)("ResourceManager::getResourceType: resource '%s' does not exist"
+			LOGGER_WARNING("ResourceManager::getResourceType: resource '%s' does not exist"
 				, _name.c_str()
 				);
 
@@ -826,8 +829,7 @@ namespace Menge
 		class FResourcesForeachDump
 		{
 		public:
-			FResourcesForeachDump( ServiceProviderInterface * _serviceProvider )
-				: m_serviceProvider(_serviceProvider)
+			FResourcesForeachDump()
 			{
 			}
 
@@ -855,14 +857,11 @@ namespace Menge
 
 				const ConstString & name = _entry->resource->getName();
 
-				LOGGER_ERROR(m_serviceProvider)("Resource %s\n: count - %u"
+				LOGGER_ERROR("Resource %s\n: count - %u"
 					, name.c_str()
 					, count
 					);
 			}
-
-		protected:
-			ServiceProviderInterface * m_serviceProvider;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -871,7 +870,7 @@ namespace Menge
 		(void)_tag;
 
 #	ifdef _DEBUG
-		LOGGER_ERROR(m_serviceProvider)("Dumping resources... %s"
+		LOGGER_ERROR("Dumping resources... %s"
 			, _tag.c_str()
 			);
 
@@ -903,7 +902,7 @@ namespace Menge
 
 				const ConstString & name = entry.resource->getName();
 
-				LOGGER_ERROR( m_serviceProvider )("Resource %s\n: count - %u"
+				LOGGER_ERROR("Resource %s\n: count - %u"
 					, name.c_str()
 					, count
 					);

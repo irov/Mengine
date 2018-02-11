@@ -41,11 +41,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PrototypeManager::addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator )
 	{
-		_generator->setServiceProvider( m_serviceProvider );
-
 		if( _generator->initialize( _category, _prototype ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("PrototypeManager::addPrototype add %s:%s invalid initialize!"
+			LOGGER_ERROR("PrototypeManager::addPrototype add %s:%s invalid initialize!"
 				, _category.c_str()
 				, _prototype.c_str()
 				);
@@ -64,7 +62,7 @@ namespace Menge
 
         prototypes.push_back( key );
 
-        LOGGER_INFO(m_serviceProvider)("PrototypeManager::addPrototype add %s:%s"
+        LOGGER_INFO("PrototypeManager::addPrototype add %s:%s"
             , _category.c_str()
             , _prototype.c_str()
             );
@@ -134,7 +132,7 @@ namespace Menge
         PrototypeGeneratorInterfacePtr generator;
         if( this->hasPrototype( _category, _prototype, generator ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("PrototypeManager::generatePrototype prototype %s:%s not found"
+            LOGGER_ERROR("PrototypeManager::generatePrototype prototype %s:%s not found"
                 , _category.c_str()
                 , _prototype.c_str()
                 );

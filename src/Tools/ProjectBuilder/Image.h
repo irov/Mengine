@@ -13,7 +13,7 @@ namespace Menge
 	class Image
 	{
 	public:
-		Image( ServiceProviderInterface * _serviceProvider );
+		Image();
 		~Image();
 
 	public:
@@ -47,8 +47,6 @@ namespace Menge
 		static void embedding( pybind::kernel_interface * _kernel, PyObject * _module );
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		FilePath m_path;
 
 		MemoryInterfacePtr m_memory;

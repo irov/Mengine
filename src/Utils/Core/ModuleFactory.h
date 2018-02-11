@@ -17,7 +17,7 @@ namespace Menge
     public:
 		ModuleFactory()
         {
-            m_factory = new FactoryDefault<T>( m_serviceProvider );
+            m_factory = new FactoryDefault<T>();
         }
 
 	public:
@@ -25,7 +25,6 @@ namespace Menge
 		{
 			ModuleInterface * module = m_factory->createObject();
 
-			module->setServiceProvider( m_serviceProvider );
 			module->setName(_name);
 
 			return module;

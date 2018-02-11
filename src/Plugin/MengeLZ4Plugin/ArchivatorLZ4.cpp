@@ -53,7 +53,7 @@ namespace Menge
 
 		if( compressSize < 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ArchivatorLZ4::compress invalid compress code [%d]"
+			LOGGER_ERROR("ArchivatorLZ4::compress invalid compress code [%d]"
 				, compressSize
 				);
 
@@ -76,7 +76,7 @@ namespace Menge
 
 		if( decompressSize < 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ArchivatorLZ4::decompress invalid uncompress code [%d]"
+			LOGGER_ERROR("ArchivatorLZ4::decompress invalid uncompress code [%d]"
 				, decompressSize
 				);
 

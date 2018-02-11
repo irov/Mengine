@@ -2,6 +2,8 @@
 
 #   include "Core/IniUtil.h"
 
+#   include "Logger/Logger.h"
+
 #	include "utf8.h"
 
 namespace Menge
@@ -104,6 +106,102 @@ namespace Menge
 	{
 		return m_charOffset;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool FontBase::validateText( const ConstString & _key, const String & _text ) const
+    {
+        bool result = true;
+
+        const char * text_str = _text.c_str();
+        size_t text_len = _text.size();
+
+        for( const char
+            *text_it = text_str,
+            *text_end = text_str + text_len + 1;
+            text_it != text_end;
+            )
+        {
+            uint32_t code = 0;
+            utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
+
+            if( err != utf8::internal::UTF8_OK )
+            {
+                continue;
+            }
+
+            bool control = false;
+
+            if( code == 0 )
+            {
+                continue;
+            }
+            else if( code == 7 )
+            {
+                continue;
+            }
+            else if( code == 8 )
+            {
+                continue;
+            }
+            else if( code == 9 )
+            {
+                continue;
+            }
+            else if( code == 10 )
+            {
+                control = true;
+            }
+            else if( code == 11 )
+            {
+                continue;
+            }
+            else if( code == 12 )
+            {
+                continue;
+            }
+            else if( code == 13 )
+            {
+                control = true;
+            }
+            else if( code == 26 )
+            {
+                continue;
+            }
+            else if( code == 27 )
+            {
+                continue;
+            }
+            else if( code == 127 )
+            {
+                continue;
+            }
+            else if( code == 160 )
+            {
+                code = 32;
+            }
+            else if( code == 9 )
+            {
+                code = 32;
+            }
+
+            if( control == false )
+            {
+                if( this->_validateGlyph( code ) == false )
+                {
+                    LOGGER_ERROR("Text %s fontName %s not found glyph code '%d'"
+                        , _key.c_str()
+                        , this->getName().c_str()
+                        , code
+                        );
+
+                    result = false;
+
+                    continue;
+                }
+            }
+        }
+
+        return result;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	U32String FontBase::prepareText( const String & _text )
 	{
@@ -198,25 +296,25 @@ namespace Menge
 	bool FontBase::initializeBase_( const IniUtil::IniStore & _ini )
 	{
 		ColourValue colourFont;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorFont", colourFont, m_serviceProvider ) == true )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorFont", colourFont ) == true )
 		{
 			this->setColourFont( colourFont );
 		}
 
 		ColourValue colourOutline;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorOutline", colourOutline, m_serviceProvider ) == true )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorOutline", colourOutline ) == true )
 		{
 			this->setColourOutline( colourOutline );
 		}
 
 		float lineOffset;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "LineOffset", lineOffset, m_serviceProvider ) == true )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "LineOffset", lineOffset ) == true )
 		{
 			this->setLineOffset( lineOffset );
 		}
 
 		float charOffset;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "CharOffset", charOffset, m_serviceProvider ) == true )
+		if( IniUtil::getIniValue( _ini, m_name.c_str(), "CharOffset", charOffset ) == true )
 		{
 			this->setCharOffset( charOffset );
 		}

@@ -56,7 +56,7 @@ namespace Menge
 	{
 		if( m_resourceHIT == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("HotSpot::getWidth %s not compiled"
+			LOGGER_ERROR("HotSpot::getWidth %s not compiled"
 				, this->getName().c_str()
 				);
 
@@ -72,7 +72,7 @@ namespace Menge
 	{
 		if( m_resourceHIT == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("HotSpot::getHeight %s not compiled"
+			LOGGER_ERROR("HotSpot::getHeight %s not compiled"
 				, this->getName().c_str()
 				);
 
@@ -93,7 +93,7 @@ namespace Menge
 
         if( m_resourceHIT == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("HotSpotImage::_compile: '%s' resource is null"
+            LOGGER_ERROR("HotSpotImage::_compile: '%s' resource is null"
                 , this->getName().c_str()
                 );
 
@@ -102,7 +102,7 @@ namespace Menge
 
         if( m_resourceHIT.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("HotSpotImage::_compile: '%s' can't compile HIT resource '%s'"
+            LOGGER_ERROR("HotSpotImage::_compile: '%s' can't compile HIT resource '%s'"
                 , this->getName().c_str()
                 , m_resourceHIT->getName().c_str()
                 );
@@ -343,7 +343,7 @@ namespace Menge
 			vertices[i].uv[1].y = 0.f;
 		}
 
-		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
+		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
 			->getDebugMaterial();
 
 		_renderService

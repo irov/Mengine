@@ -22,7 +22,7 @@ namespace Menge
 	{
 		if( m_module.has_attr( _method ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScriptModule::onInitialize invalid has initializer %s"
+			LOGGER_ERROR("ScriptModule::onInitialize invalid has initializer %s"
 				, _method.c_str()
 				);
 
@@ -35,7 +35,7 @@ namespace Menge
 
 		if( py_result.is_invalid() == true )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScriptModule::onInitialize invalid call initializer %s"
+			LOGGER_ERROR("ScriptModule::onInitialize invalid call initializer %s"
 				, _method.c_str()
 				);
 
@@ -44,7 +44,7 @@ namespace Menge
 
 		if( py_result.is_bool() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScriptModule::onInitialize invalid call initializer %s need return bool [True|False] but return is '%s'"
+			LOGGER_ERROR("ScriptModule::onInitialize invalid call initializer %s need return bool [True|False] but return is '%s'"
 				, _method.c_str()
 				, py_result.repr()
 				);
@@ -61,7 +61,7 @@ namespace Menge
 	{
 		if( m_module.has_attr( _method ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScriptModule::onFinalize invalid has finalizer %s"
+			LOGGER_ERROR("ScriptModule::onFinalize invalid has finalizer %s"
 				, _method.c_str()
 				);
 

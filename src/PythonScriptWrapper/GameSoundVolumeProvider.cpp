@@ -26,6 +26,6 @@ namespace Menge
 
         EVENTABLE_METHOD( m_game, EVENT_GAME_CHANGE_SOUND_VOLUME )
             ->onGameChangeSoundVolume( _sound, _music, _voice );
-        //EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_GAME_CHANGE_SOUND_VOLUME)( _sound, _music, _voice );
+        //EVENTABLE_CALL(m_game, EVENT_GAME_CHANGE_SOUND_VOLUME)( _sound, _music, _voice );
     }
 }

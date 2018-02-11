@@ -45,7 +45,7 @@ namespace Menge
 
         if( utf8_size == 0 && _unicodeSize != 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32UnicodeSystem::unicodeToUtf8 %ls WideCharToMultiByte 0"
+            LOGGER_ERROR("Win32UnicodeSystem::unicodeToUtf8 %ls WideCharToMultiByte 0"
                 , _unicode
                 );
 
@@ -90,10 +90,10 @@ namespace Menge
             DWORD err = GetLastError();
 
             WString wstr_err;
-            WINDOWSLAYER_SERVICE(m_serviceProvider)
+            WINDOWSLAYER_SERVICE()
                 ->makeFormatMessage(err, wstr_err);
 
-            LOGGER_ERROR(m_serviceProvider)("Win32UnicodeSystem::utf8ToUnicode %s MultiByteToWideChar %ls"
+            LOGGER_ERROR("Win32UnicodeSystem::utf8ToUnicode %s MultiByteToWideChar %ls"
                 , _utf8
                 , wstr_err.c_str()
                 );

@@ -8,6 +8,7 @@ namespace Menge
 	{
 	public:
 		Resource();
+        ~Resource();
 
 	public:
 		inline bool isCompile() const;

@@ -25,14 +25,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TTFPlugin::_initialize()
 	{
-		SERVICE_CREATE( m_serviceProvider, TTFAtlasService );
+		SERVICE_CREATE( TTFAtlasService );
 
 		FT_Library ftlibrary;
 		FT_Error ft_err = FT_Init_FreeType( &ftlibrary );
 
 		if( ft_err != 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TTFPlugin::_initialize invalid init FreeType '%d'"
+			LOGGER_ERROR("TTFPlugin::_initialize invalid init FreeType '%d'"
 				, ft_err
 				);
 
@@ -43,8 +43,8 @@ namespace Menge
 
 		generator->setFTLibrary( ftlibrary );
 
-		PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Font" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "TTF" )
+		PROTOTYPE_SERVICE()
+			->addPrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" )
 				, generator
 			);
 
@@ -55,10 +55,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TTFPlugin::_finalize()
 	{
-		PROTOTYPE_SERVICE( m_serviceProvider )
-			->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Font" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "TTF" ) );
+		PROTOTYPE_SERVICE()
+			->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
 
-		SERVICE_FINALIZE( m_serviceProvider, TTFAtlasServiceInterface );
+		SERVICE_FINALIZE( TTFAtlasServiceInterface );
 
 		FT_Done_FreeType( m_ftlibrary );
 		m_ftlibrary = nullptr;

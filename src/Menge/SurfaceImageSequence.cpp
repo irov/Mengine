@@ -73,13 +73,13 @@ namespace	Menge
 
                 EVENTABLE_METHOD( this, EVENT_SURFACE_IMAGESEQUENCE_FRAME_END )
                     ->onSurfaceImageSequenceFrameEnd( m_currentFrame );
-				//EVENTABLE_CALL( m_serviceProvider, this, EVENT_FRAME_END )(this, m_currentFrame);
+				//EVENTABLE_CALL( this, EVENT_FRAME_END )(this, m_currentFrame);
 				
 				++m_currentFrame;
 
                 EVENTABLE_METHOD( this, EVENT_SURFACE_IMAGESEQUENCE_FRAME_TICK )
                     ->onSurfaceImageSequenceFrameTick( m_currentFrame, frameCount );
-				//EVENTABLE_CALL( m_serviceProvider, this, EVENT_FRAME_TICK )(this, m_currentFrame, frameCount);
+				//EVENTABLE_CALL( this, EVENT_FRAME_TICK )(this, m_currentFrame, frameCount);
 
                 if( m_currentFrame == frameCount )
                 {
@@ -127,7 +127,7 @@ namespace	Menge
 	{
 		if( m_resourceAnimation == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SurfaceImageSequence::_compile: '%s' resource is null"
+			LOGGER_ERROR("SurfaceImageSequence::_compile: '%s' resource is null"
 				, m_name.c_str()
 				);
 
@@ -136,7 +136,7 @@ namespace	Menge
 
         if( m_resourceAnimation.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Animation::_compile: '%s' resource '%s' is not compile"
+            LOGGER_ERROR("Animation::_compile: '%s' resource '%s' is not compile"
                 , m_name.c_str()
                 , m_resourceAnimation->getName().c_str()
                 );
@@ -148,7 +148,7 @@ namespace	Menge
 
 		if( m_currentFrame >= sequenceCount )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Animation::_compile: '%s' m_frame(%d) >= sequenceCount(%d)"
+			LOGGER_ERROR("Animation::_compile: '%s' m_frame(%d) >= sequenceCount(%d)"
 				, m_name.c_str()
 				, m_currentFrame
 				, sequenceCount
@@ -165,7 +165,7 @@ namespace	Menge
 
 			if (resourceImage->compile() == false)
 			{
-				LOGGER_ERROR(m_serviceProvider)("SurfaceImageSequence::_updateMaterial '%s' invalid compile %d frame"
+				LOGGER_ERROR("SurfaceImageSequence::_updateMaterial '%s' invalid compile %d frame"
 					, this->getName().c_str()
 					, m_currentFrame
 					);
@@ -173,11 +173,11 @@ namespace	Menge
 				return false;
 			}
 
-			RenderMaterialInterfacePtr material = this->makeImageMaterial(m_serviceProvider, resourceImage, false);
+			RenderMaterialInterfacePtr material = this->makeImageMaterial(resourceImage, false);
 
 			if (material == nullptr)
 			{
-				LOGGER_ERROR(m_serviceProvider)("SurfaceImageSequence::updateMaterial_ %s resource %s m_material is NULL"
+				LOGGER_ERROR("SurfaceImageSequence::updateMaterial_ %s resource %s m_material is NULL"
 					, this->getName().c_str()
 					, resourceImage->getName().c_str()
 					);
@@ -232,7 +232,7 @@ namespace	Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Animation: '%s' stop not activate"
+			LOGGER_ERROR("Animation: '%s' stop not activate"
 				, getName().c_str()
 				);
 
@@ -241,15 +241,15 @@ namespace	Menge
         
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
             ->onAnimatableStop( _enumerator );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATION_END )(this, _enumerator, false);
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( this, EVENT_ANIMATION_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceImageSequence::_end( uint32_t _enumerator )
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Animation: '%s' end not activate"
+			LOGGER_ERROR("Animation: '%s' end not activate"
 				, getName().c_str()
 				);
 
@@ -258,8 +258,8 @@ namespace	Menge
         
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
             ->onAnimatableEnd( _enumerator );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATION_END )(this, _enumerator, true);
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( this, EVENT_ANIMATION_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t SurfaceImageSequence::getFrame_( float _timing, float & _delthaTiming ) const
@@ -335,7 +335,7 @@ namespace	Menge
 
             if( _frame >= sequenceCount )
             {
-                LOGGER_ERROR( m_serviceProvider )("Animation.setCurrentFrame: '%s' _frame(%d) >= sequenceCount(%d)"
+                LOGGER_ERROR("Animation.setCurrentFrame: '%s' _frame(%d) >= sequenceCount(%d)"
                     , m_name.c_str()
                     , _frame
                     , sequenceCount
@@ -353,7 +353,7 @@ namespace	Menge
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence.getMaxSize: '%s' not compile"
+            LOGGER_ERROR("SurfaceImageSequence.getMaxSize: '%s' not compile"
                 , this->getName().c_str()
                 );
 
@@ -371,7 +371,7 @@ namespace	Menge
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence.getSize: '%s' not compile"
+            LOGGER_ERROR("SurfaceImageSequence.getSize: '%s' not compile"
                 , this->getName().c_str()
                 );
 
@@ -389,7 +389,7 @@ namespace	Menge
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence.getOffset: '%s' not compile"
+            LOGGER_ERROR("SurfaceImageSequence.getOffset: '%s' not compile"
                 , this->getName().c_str()
                 );
 
@@ -407,7 +407,7 @@ namespace	Menge
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence.getUVCount: '%s' not compile"
+            LOGGER_ERROR("SurfaceImageSequence.getUVCount: '%s' not compile"
                 , this->getName().c_str()
                 );
 
@@ -437,7 +437,7 @@ namespace	Menge
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence.getUV: '%s' not compile"
+            LOGGER_ERROR("SurfaceImageSequence.getUV: '%s' not compile"
                 , this->getName().c_str()
                 );
 
@@ -472,7 +472,7 @@ namespace	Menge
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("SurfaceImageSequence.getColour: '%s' not compile"
+            LOGGER_ERROR("SurfaceImageSequence.getColour: '%s' not compile"
                 , this->getName().c_str()
                 );
 
@@ -506,7 +506,7 @@ namespace	Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Animation._setTiming: '%s' not activate"
+			LOGGER_ERROR("Animation._setTiming: '%s' not activate"
 				, m_name.c_str()
 				);
 
@@ -533,7 +533,7 @@ namespace	Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Animation._getTiming: '%s' not activate"
+			LOGGER_ERROR("Animation._getTiming: '%s' not activate"
 				, m_name.c_str()
 				);
 

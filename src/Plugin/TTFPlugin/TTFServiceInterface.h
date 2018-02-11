@@ -50,8 +50,8 @@ namespace Menge
 	typedef stdex::intrusive_ptr<TTFFontInterface> TTFFontInterfacePtr;
 }
 
-#   define TTFATLAS_SERVICE( serviceProvider )\
-    ((Menge::TTFAtlasServiceInterface *)SERVICE_GET(serviceProvider, Menge::TTFAtlasServiceInterface))
+#   define TTFATLAS_SERVICE()\
+    ((Menge::TTFAtlasServiceInterface *)SERVICE_GET(Menge::TTFAtlasServiceInterface))
 
-#   define TTFFONT_SERVICE( serviceProvider )\
-    ((Menge::TTFFontManagerInterface *)SERVICE_GET(serviceProvider, Menge::TTFFontManagerInterface))
+#   define TTFFONT_SERVICE()\
+    ((Menge::TTFFontManagerInterface *)SERVICE_GET(Menge::TTFFontManagerInterface))

@@ -20,13 +20,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool XmlCodecPlugin::_initialize()
 	{ 	
-        Helper::registerDecoder<XmlToBinDecoder>( m_serviceProvider, "xml2bin" );
+        Helper::registerDecoder<XmlToBinDecoder>( "xml2bin" );
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XmlCodecPlugin::_finalize()
 	{
-        Helper::unregisterDecoder( m_serviceProvider, "xml2bin" );
+        Helper::unregisterDecoder( "xml2bin" );
 	}
 }

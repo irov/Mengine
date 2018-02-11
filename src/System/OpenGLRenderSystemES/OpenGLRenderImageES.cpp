@@ -41,7 +41,7 @@ namespace Menge
 			{
 				if( _width != _height )
 				{
-					LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::initialize not square texture %d:%d"
+					LOGGER_ERROR("OpenGLRenderImageES::initialize not square texture %d:%d"
 						, _width
 						, _height
 						);
@@ -52,11 +52,11 @@ namespace Menge
 		}
 
 		GLuint tuid = 0;
-		GLCALL( m_serviceProvider, glGenTextures, (1, &tuid) );
+		GLCALL( glGenTextures, (1, &tuid) );
 
 		if( tuid == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::initialize invalid gen texture for size %d:%d channel %d PF %d"
+			LOGGER_ERROR("OpenGLRenderImageES::initialize invalid gen texture for size %d:%d channel %d PF %d"
 				, _width
 				, _height
 				, _channels
@@ -129,7 +129,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderImageES::release()
 	{
-		GLCALL( m_serviceProvider, glDeleteTextures, (1, &m_uid) );
+		GLCALL( glDeleteTextures, (1, &m_uid) );
 
 		m_uid = 0;
 	}
@@ -137,7 +137,7 @@ namespace Menge
 	bool OpenGLRenderImageES::reload()
 	{
 		GLuint tuid = 0;
-		GLCALL( m_serviceProvider, glGenTextures, (1, &tuid) );
+		GLCALL( glGenTextures, (1, &tuid) );
 
 		m_uid = tuid;
 
@@ -150,7 +150,7 @@ namespace Menge
 
 		if( loader->load( this ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::createTexture Invalid decode image"
+			LOGGER_ERROR("OpenGLRenderImageES::createTexture Invalid decode image"
 				);
 
 			return false;
@@ -176,12 +176,12 @@ namespace Menge
 
 		size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
-		MemoryInterfacePtr lockMemory = MEMORY_SERVICE( m_serviceProvider )
+		MemoryInterfacePtr lockMemory = MEMORY_SERVICE()
 			->createMemoryCacheBuffer();
 
 		if( lockMemory == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::lock invalid create cache buffer");
+			LOGGER_ERROR("OpenGLRenderImageES::lock invalid create cache buffer");
 
 			return nullptr;
 		}
@@ -190,7 +190,7 @@ namespace Menge
 
 		if( memory == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::lock invalid cache memory %d (l %d w %d h %d c %d f %d)"
+			LOGGER_ERROR("OpenGLRenderImageES::lock invalid cache memory %d (l %d w %d h %d c %d f %d)"
 				, size
 				, _level
 				, miplevel_width
@@ -222,10 +222,10 @@ namespace Menge
 			return true;
 		}
 
-		GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, m_uid) );
+		GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
 
 
-		LOGGER_INFO( m_serviceProvider )("OpenGLRenderImageES::unlock l %d r %d:%d-%d:%d"
+		LOGGER_INFO("OpenGLRenderImageES::unlock l %d r %d:%d-%d:%d"
 			, _level
 			, m_lockRect.left
 			, m_lockRect.top
@@ -253,9 +253,9 @@ namespace Menge
 				{
 					GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_hwwidth, miplevel_hwheight, m_hwChannels, 1, m_hwPixelFormat );
 
-					IF_GLCALL( m_serviceProvider, glCompressedTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, textureMemorySize, memory) )
+					IF_GLCALL( glCompressedTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, textureMemorySize, memory) )
 					{
-						LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
+						LOGGER_ERROR("OpenGLRenderImageES::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
 							, _level
 							, miplevel_hwwidth
 							, miplevel_hwheight
@@ -269,9 +269,9 @@ namespace Menge
 				}break;
 			default:
 				{
-					IF_GLCALL( m_serviceProvider, glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, m_format, m_type, memory) )
+					IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, m_format, m_type, memory) )
 					{
-						LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+						LOGGER_ERROR("OpenGLRenderImageES::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
 							, _level
 							, miplevel_hwwidth
 							, miplevel_hwheight
@@ -311,9 +311,9 @@ namespace Menge
 						uint32_t miplevel_hwwidth = m_hwWidth >> _level;
 						uint32_t miplevel_hwheight = m_hwHeight >> _level;
 
-						IF_GLCALL( m_serviceProvider, glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, m_format, m_type, nullptr) )
+						IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, m_format, m_type, nullptr) )
 						{
-							LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+							LOGGER_ERROR("OpenGLRenderImageES::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
 								, _level
 								, miplevel_hwwidth
 								, miplevel_hwheight
@@ -327,7 +327,7 @@ namespace Menge
 						}
 					}
 
-					IF_GLCALL( m_serviceProvider, glTexSubImage2D, (GL_TEXTURE_2D, m_lockLevel
+					IF_GLCALL( glTexSubImage2D, (GL_TEXTURE_2D, m_lockLevel
 						, miplevel_xoffset
 						, miplevel_yoffset
 						, miplevel_width
@@ -336,7 +336,7 @@ namespace Menge
 						, m_type
 						, memory) )
 					{
-						LOGGER_ERROR( m_serviceProvider )("OpenGLRenderImageES::unlock glTexSubImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+						LOGGER_ERROR("OpenGLRenderImageES::unlock glTexSubImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
 							, _level
 							, miplevel_width
 							, miplevel_height
@@ -361,7 +361,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderImageES::_destroy()
 	{
-		GLCALL( m_serviceProvider, glDeleteTextures, (1, &m_uid) );
+		GLCALL( glDeleteTextures, (1, &m_uid) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	GLuint OpenGLRenderImageES::getUId() const

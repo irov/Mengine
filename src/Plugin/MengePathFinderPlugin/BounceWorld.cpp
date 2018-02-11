@@ -23,8 +23,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BounceWorld::BounceWorld()
-		: m_serviceProvider( nullptr )
-		, m_remove( false )
+		: m_remove( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -32,14 +31,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BounceWorld::initialize( ServiceProviderInterface * _serviceProvider )
+	bool BounceWorld::initialize()
 	{
-		m_serviceProvider = _serviceProvider;
+		m_scriptWrapper = SCRIPT_SERVICE()
+			->getWrapper( STRINGIZE_STRING_LOCAL( "BounceActor" ) );
 
-		m_scriptWrapper = SCRIPT_SERVICE( m_serviceProvider )
-			->getWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "BounceActor" ) );
-
-        m_factoryBounceActors = new FactoryPool<BounceActor, 4>( m_serviceProvider );
+        m_factoryBounceActors = new FactoryPool<BounceActor, 4>();
 
 		return true;
 	}

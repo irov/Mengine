@@ -21,21 +21,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ZipPlugin::_initialize()
 	{
-		FILE_SERVICE(m_serviceProvider)
-			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip"), new FactoryDefault<FileGroupZip>( m_serviceProvider ) );
+		FILE_SERVICE()
+			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "zip"), new FactoryDefault<FileGroupZip>() );
 		
-		ARCHIVE_SERVICE(m_serviceProvider)
-			->registerArchivator( STRINGIZE_STRING_LOCAL( m_serviceProvider, "zip" ), new FactorableUnique<ArchivatorZip>() );
+		ARCHIVE_SERVICE()
+			->registerArchivator( STRINGIZE_STRING_LOCAL( "zip" ), new FactorableUnique<ArchivatorZip>() );
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ZipPlugin::_finalize()
 	{
-		FILE_SERVICE(m_serviceProvider)
-			->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip") );
+		FILE_SERVICE()
+			->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL( "zip") );
 
-		ARCHIVE_SERVICE(m_serviceProvider)
-			->unregisterArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip") );
+		ARCHIVE_SERVICE()
+			->unregisterArchivator( STRINGIZE_STRING_LOCAL( "zip") );
 	}
 }

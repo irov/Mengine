@@ -15,7 +15,7 @@ namespace Menge
 	{
 		if( m_shaderId != 0 )
 		{
-			GLCALL( m_serviceProvider, glDeleteShader, (m_shaderId) );
+			GLCALL( glDeleteShader, (m_shaderId) );
 			m_shaderId = 0;
 		}
 	}
@@ -36,11 +36,11 @@ namespace Menge
     bool OpenGLRenderVertexShaderES::compile()
     {
 		GLuint shaderId;
-		GLCALLR( m_serviceProvider, shaderId, glCreateShader, (GL_VERTEX_SHADER) );
+		GLCALLR( shaderId, glCreateShader, (GL_VERTEX_SHADER) );
 
 		if( shaderId == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OpenGLRenderVertexShaderES::initialize %s invalid create shader"
+			LOGGER_ERROR("OpenGLRenderVertexShaderES::initialize %s invalid create shader"
 				, m_name.c_str()
 				);
 
@@ -50,18 +50,18 @@ namespace Menge
 		const char * str_source = m_memory->getMemory();
 		GLint str_size = (GLint)m_memory->getSize();
 
-		GLCALL( m_serviceProvider, glShaderSource, ( shaderId, 1, &str_source, &str_size ) );
-		GLCALL( m_serviceProvider, glCompileShader, ( shaderId ) );
+		GLCALL( glShaderSource, ( shaderId, 1, &str_source, &str_size ) );
+		GLCALL( glCompileShader, ( shaderId ) );
 
 		GLint status;
-		GLCALL( m_serviceProvider, glGetShaderiv, ( shaderId, GL_COMPILE_STATUS, &status ) );
+		GLCALL( glGetShaderiv, ( shaderId, GL_COMPILE_STATUS, &status ) );
 
 		if( status == GL_FALSE )
 		{
 			GLchar errorLog[1024];
-			GLCALL( m_serviceProvider, glGetShaderInfoLog, ( shaderId, 1023, NULL, errorLog ) );
+			GLCALL( glGetShaderInfoLog, ( shaderId, 1023, NULL, errorLog ) );
 
-			LOGGER_ERROR(m_serviceProvider)("OpenGLRenderVertexShaderES::initialize compilation shader error '%s'"
+			LOGGER_ERROR("OpenGLRenderVertexShaderES::initialize compilation shader error '%s'"
 				, errorLog
 				);			
 
@@ -75,6 +75,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderVertexShaderES::attach( GLuint _program )
 	{ 
-		GLCALL( m_serviceProvider, glAttachShader, ( _program, m_shaderId ) );
+		GLCALL( glAttachShader, ( _program, m_shaderId ) );
 	}
 }	// namespace Menge

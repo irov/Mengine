@@ -34,7 +34,7 @@ namespace Menge
         {
             const FilePath & filePath = m_texture->getFileName();
 
-            LOGGER_INFO(m_serviceProvider)("ResourceImage::_release %s release texture %s"
+            LOGGER_INFO("ResourceImage::_release %s release texture %s"
                 , this->getName().c_str()
                 , filePath.c_str()
                 );
@@ -46,7 +46,7 @@ namespace Menge
         {
             const FilePath & filePath = m_textureAlpha->getFileName();
 
-            LOGGER_INFO(m_serviceProvider)("ResourceImage::_release %s release texture alpha %s"
+            LOGGER_INFO("ResourceImage::_release %s release texture alpha %s"
                 , this->getName().c_str()
                 , filePath.c_str()
                 );

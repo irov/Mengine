@@ -25,6 +25,6 @@ namespace Menge
 		virtual float getPosMs() const = 0;
 	};
 
-#   define AMPLIFIER_SERVICE( serviceProvider )\
-    ((Menge::AmplifierInterface *)SERVICE_GET(serviceProvider, Menge::AmplifierInterface))
+#   define AMPLIFIER_SERVICE()\
+    ((Menge::AmplifierInterface *)SERVICE_GET(Menge::AmplifierInterface))
 }

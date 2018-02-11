@@ -53,6 +53,10 @@ namespace Menge
     public:
 		void playSubComposition( const ConstString & _name );
 		void stopSubComposition( const ConstString & _name );
+        void interruptSubComposition( const ConstString & _name, bool _skip );
+
+    public:
+        void setLoopSubComposition( const ConstString & _name, bool _loop );
 
     public:
         void setEnableMovieLayers( const ConstString & _name, bool _enable );

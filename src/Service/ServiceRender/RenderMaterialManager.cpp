@@ -64,54 +64,55 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::_initialize()
     {
-		m_defaultStages[EM_DEBUG] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" );
+		m_defaultStages[EM_DEBUG] = STRINGIZE_STRING_LOCAL( "Debug" );
 
-		m_defaultStages[EM_TEXTURE_SOLID] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Solid" );
+		m_defaultStages[EM_TEXTURE_SOLID] = STRINGIZE_STRING_LOCAL( "Texture_Solid" );
 		
-		m_defaultStages[EM_TEXTURE_BLEND] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend" );
-		m_defaultStages[EM_TEXTURE_BLEND_WC] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_WC" );
-		m_defaultStages[EM_TEXTURE_BLEND_WW] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_WW" );
-		m_defaultStages[EM_TEXTURE_BLEND_CW] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_CW" );
-		m_defaultStages[EM_TEXTURE_INTENSIVE] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Intensive" );
-		m_defaultStages[EM_TEXTURE_MULTIPLY] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Multiply" );
-		m_defaultStages[EM_TEXTURE_SCREEN] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Screen" );
+		m_defaultStages[EM_TEXTURE_BLEND] = STRINGIZE_STRING_LOCAL( "Texture_Blend" );
+		m_defaultStages[EM_TEXTURE_BLEND_WC] = STRINGIZE_STRING_LOCAL( "Texture_Blend_WC" );
+		m_defaultStages[EM_TEXTURE_BLEND_WW] = STRINGIZE_STRING_LOCAL( "Texture_Blend_WW" );
+		m_defaultStages[EM_TEXTURE_BLEND_CW] = STRINGIZE_STRING_LOCAL( "Texture_Blend_CW" );
+		m_defaultStages[EM_TEXTURE_INTENSIVE] = STRINGIZE_STRING_LOCAL( "Texture_Intensive" );
+		m_defaultStages[EM_TEXTURE_MULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_Multiply" );
+		m_defaultStages[EM_TEXTURE_SCREEN] = STRINGIZE_STRING_LOCAL( "Texture_Screen" );
+        m_defaultStages[EM_TEXTURE_SCREEN_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_Screen_Premultiply" );
 
-		m_defaultStages[EM_TEXTURE_BLEND_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_Premultiply" );
-		m_defaultStages[EM_TEXTURE_INTENSIVE_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Intensive_Premultiply" );
+		m_defaultStages[EM_TEXTURE_BLEND_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_Blend_Premultiply" );
+		m_defaultStages[EM_TEXTURE_INTENSIVE_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_Intensive_Premultiply" );
 
-		m_defaultStages[EM_TEXTURE_BLEND_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_OnlyColor" );
-		m_defaultStages[EM_TEXTURE_INTENSIVE_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Intensive_OnlyColor" );
-		m_defaultStages[EM_TEXTURE_MULTIPLY_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Multiply_OnlyColor" );
-		m_defaultStages[EM_TEXTURE_SCREEN_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Screen_OnlyColor" );
+		m_defaultStages[EM_TEXTURE_BLEND_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Blend_OnlyColor" );
+		m_defaultStages[EM_TEXTURE_INTENSIVE_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Intensive_OnlyColor" );
+		m_defaultStages[EM_TEXTURE_MULTIPLY_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Multiply_OnlyColor" );
+		m_defaultStages[EM_TEXTURE_SCREEN_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Screen_OnlyColor" );
 
-		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_ExternalAlpha" );
-		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_WC] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_ExternalAlpha_WC" );
-		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_WW] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_ExternalAlpha_WW" );
-		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_CW] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_ExternalAlpha_CW" );
-		m_defaultStages[EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Intensive_ExternalAlpha" );
-		m_defaultStages[EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Multiply_ExternalAlpha" );
-		m_defaultStages[EM_TEXTURE_SCREEN_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Screen_ExternalAlpha" );
+		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha" );
+		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_WC] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha_WC" );
+		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_WW] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha_WW" );
+		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_CW] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha_CW" );
+		m_defaultStages[EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_Intensive_ExternalAlpha" );
+		m_defaultStages[EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_Multiply_ExternalAlpha" );
+		m_defaultStages[EM_TEXTURE_SCREEN_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_Screen_ExternalAlpha" );
 
-		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_ExternalAlpha_OnlyColor" );
-		m_defaultStages[EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Intensive_ExternalAlpha_OnlyColor" );
-		m_defaultStages[EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Multiply_ExternalAlpha_OnlyColor" );
-		m_defaultStages[EM_TEXTURE_SCREEN_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Screen_ExternalAlpha_OnlyColor" );
+		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha_OnlyColor" );
+		m_defaultStages[EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Intensive_ExternalAlpha_OnlyColor" );
+		m_defaultStages[EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Multiply_ExternalAlpha_OnlyColor" );
+		m_defaultStages[EM_TEXTURE_SCREEN_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Screen_ExternalAlpha_OnlyColor" );
 
-		m_defaultStages[EM_COLOR_SOLID] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Solid" );
-		m_defaultStages[EM_COLOR_BLEND] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Blend" );
-		m_defaultStages[EM_COLOR_INTENSIVE] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Intensive" );
-		m_defaultStages[EM_COLOR_MULTIPLY] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Multiply" );
-		m_defaultStages[EM_COLOR_SCREEN] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Screen" );
+		m_defaultStages[EM_COLOR_SOLID] = STRINGIZE_STRING_LOCAL( "Color_Solid" );
+		m_defaultStages[EM_COLOR_BLEND] = STRINGIZE_STRING_LOCAL( "Color_Blend" );
+		m_defaultStages[EM_COLOR_INTENSIVE] = STRINGIZE_STRING_LOCAL( "Color_Intensive" );
+		m_defaultStages[EM_COLOR_MULTIPLY] = STRINGIZE_STRING_LOCAL( "Color_Multiply" );
+		m_defaultStages[EM_COLOR_SCREEN] = STRINGIZE_STRING_LOCAL( "Color_Screen" );
 
-		uint32_t defaultTextureFilterMipmap = CONFIG_VALUE( m_serviceProvider, "Engine", "DefaultTextureFilterMipmap", 0U );
-		uint32_t defaultTextureFilterMagnification = CONFIG_VALUE( m_serviceProvider, "Engine", "DefaultTextureFilterMagnification", 2U );
-		uint32_t defaultTextureFilterMinification = CONFIG_VALUE( m_serviceProvider, "Engine", "DefaultTextureFilterMinification", 2U );
+		uint32_t defaultTextureFilterMipmap = CONFIG_VALUE( "Engine", "DefaultTextureFilterMipmap", 0U );
+		uint32_t defaultTextureFilterMagnification = CONFIG_VALUE( "Engine", "DefaultTextureFilterMagnification", 2U );
+		uint32_t defaultTextureFilterMinification = CONFIG_VALUE( "Engine", "DefaultTextureFilterMinification", 2U );
 
 		m_defaultTextureFilterMipmap = parseConfigTextureFilterValue( defaultTextureFilterMipmap );
 		m_defaultTextureFilterMagnification = parseConfigTextureFilterValue( defaultTextureFilterMagnification );
 		m_defaultTextureFilterMinification = parseConfigTextureFilterValue( defaultTextureFilterMinification );
 
-		m_factoryMaterial = Helper::makeFactoryPool<RenderMaterial, 256>(m_serviceProvider, this, &RenderMaterialManager::onRenderMaterialDestroy_);
+		m_factoryMaterial = Helper::makeFactoryPool<RenderMaterial, 256>(this, &RenderMaterialManager::onRenderMaterialDestroy_);
 
 		return true;
     }
@@ -148,19 +149,19 @@ namespace Menge
 		Metacode::Meta_DataBlock datablock;
 
 		bool exist = false;
-		if( LOADER_SERVICE( m_serviceProvider )
+		if( LOADER_SERVICE()
 			->load( _pakName, _fileName, &datablock, exist ) == false )
 		{
 			if( exist == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials: materials '%s:%s' not found"
+				LOGGER_ERROR("RenderMaterialManager::loadMaterials: materials '%s:%s' not found"
 					, _pakName.c_str()
 					, _fileName.c_str()
 					);
 			}
 			else
 			{
-				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials: Invalid parse materials '%s:%s'"
+				LOGGER_ERROR("RenderMaterialManager::loadMaterials: Invalid parse materials '%s:%s'"
 					, _pakName.c_str()
 					, _fileName.c_str()
 					);
@@ -169,7 +170,7 @@ namespace Menge
 			return false;
 		}
 
-		const ConstString & renderPlatformName = RENDER_SYSTEM( m_serviceProvider )
+		const ConstString & renderPlatformName = RENDER_SYSTEM()
 			->getRenderPlatformName();
 
 		const Metacode::Meta_DataBlock::TVectorMeta_FragmentShader & includes_FragmentShader = datablock.get_IncludesFragmentShader();
@@ -199,7 +200,7 @@ namespace Menge
 
 			if( shader == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid load fragment shader %s compile %d"
+				LOGGER_ERROR("RenderMaterialManager::loadMaterials material %s:%s invalid load fragment shader %s compile %d"
 					, _pakName.c_str()
 					, _fileName.c_str()
 					, filePath.c_str()
@@ -240,7 +241,7 @@ namespace Menge
 
 			if( shader == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid load vertex shader %s compile %d"
+				LOGGER_ERROR("RenderMaterialManager::loadMaterials material %s:%s invalid load vertex shader %s compile %d"
 					, _pakName.c_str()
 					, _fileName.c_str()
 					, filePath.c_str()
@@ -282,7 +283,7 @@ namespace Menge
 			
 			if( vertexShader == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s program %s not found vertex shader %s"
+				LOGGER_ERROR("RenderMaterialManager::loadMaterials material %s:%s program %s not found vertex shader %s"
 					, _pakName.c_str()
 					, _fileName.c_str()
 					, name.c_str()
@@ -296,7 +297,7 @@ namespace Menge
 				
 			if( fragmentShader == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s program %s not found fragment shader %s"
+				LOGGER_ERROR("RenderMaterialManager::loadMaterials material %s:%s program %s not found fragment shader %s"
 					, _pakName.c_str()
 					, _fileName.c_str()
 					, name.c_str()
@@ -306,12 +307,12 @@ namespace Menge
 				return false;
 			}
 
-			RenderProgramInterfacePtr program = RENDER_SYSTEM( m_serviceProvider )
+			RenderProgramInterfacePtr program = RENDER_SYSTEM()
 				->createProgram( name, vertexShader, fragmentShader, samplerCount );
 
 			if( program == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid create program vertex %s fragment %s"
+				LOGGER_ERROR("RenderMaterialManager::loadMaterials material %s:%s invalid create program vertex %s fragment %s"
 					, _pakName.c_str()
 					, _fileName.c_str()
 					, vertexShaderName.c_str()
@@ -361,7 +362,7 @@ namespace Menge
 
 				if( program == nullptr )
 				{
-					//LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid get program %s"
+					//LOGGER_ERROR("RenderMaterialManager::loadMaterials material %s:%s invalid get program %s"
 					//	, _pakName.c_str()
 					//	, _fileName.c_str()
 					//	, programName.c_str()
@@ -415,7 +416,7 @@ namespace Menge
 			
 			if( cache_stage == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid create stage group %s"
+				LOGGER_ERROR("RenderMaterialManager::loadMaterials material %s:%s invalid create stage group %s"
 					, _pakName.c_str()
 					, _fileName.c_str()
 					, name.c_str()
@@ -443,19 +444,19 @@ namespace Menge
 		Metacode::Meta_DataBlock datablock;
 
 		bool exist = false;
-		if( LOADER_SERVICE( m_serviceProvider )
+		if( LOADER_SERVICE()
 			->load( _pakName, _fileName, &datablock, exist ) == false )
 		{
 			if( exist == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials: materials '%s:%s' not found"
+				LOGGER_ERROR("RenderMaterialManager::loadMaterials: materials '%s:%s' not found"
 					, _pakName.c_str()
 					, _fileName.c_str()
 					);
 			}
 			else
 			{
-				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials: Invalid parse materials '%s:%s'"
+				LOGGER_ERROR("RenderMaterialManager::loadMaterials: Invalid parse materials '%s:%s'"
 					, _pakName.c_str()
 					, _fileName.c_str()
 					);
@@ -464,7 +465,7 @@ namespace Menge
 			return false;
 		}
 
-		const ConstString & renderPlatformName = RENDER_SYSTEM( m_serviceProvider )
+		const ConstString & renderPlatformName = RENDER_SYSTEM()
 			->getRenderPlatformName();
 
 		const Metacode::Meta_DataBlock::TVectorMeta_FragmentShader & includes_FragmentShader = datablock.get_IncludesFragmentShader();
@@ -752,7 +753,7 @@ namespace Menge
 
 		if( it_found == m_materialStageIndexer.end() )
 		{
-			LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::getMaterial stage %s not found"
+			LOGGER_ERROR("RenderMaterialManager::getMaterial stage %s not found"
 				, _materialName.c_str()
 				);
 
@@ -765,7 +766,7 @@ namespace Menge
 		{
 			if( _textures[i] == nullptr )
 			{
-				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::getMaterial stage %s invalid setup texture %d"
+				LOGGER_ERROR("RenderMaterialManager::getMaterial stage %s invalid setup texture %d"
 					, _materialName.c_str()
 					, i
 					);
@@ -853,7 +854,7 @@ namespace Menge
 	{
 		if( _material == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderMaterialManager::releaseMaterial material is nullptr"
+			LOGGER_ERROR("RenderMaterialManager::releaseMaterial material is nullptr"
 				);
 
 			return;
@@ -894,7 +895,7 @@ namespace Menge
 
 		if( it_found != m_materialStageIndexer.end() )
         {
-            LOGGER_ERROR(m_serviceProvider)("RenderMaterialManager::createRenderStageGroup '%s' is already created"
+            LOGGER_ERROR("RenderMaterialManager::createRenderStageGroup '%s' is already created"
                 , _name.c_str()
                 );
 
@@ -905,7 +906,7 @@ namespace Menge
 
 		if( cache_stage == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::createRenderStageGroup '%s' invalid cache"
+			LOGGER_ERROR("RenderMaterialManager::createRenderStageGroup '%s' invalid cache"
 				, _name.c_str()
 				);
 
@@ -944,14 +945,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertexShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath )
 	{
-		MemoryInterfacePtr memory = Helper::createMemoryFile( m_serviceProvider, _pakName, _filePath, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryFile( _pakName, _filePath, false, __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{
 			return nullptr;
 		}
 
-		RenderVertexShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
+		RenderVertexShaderInterfacePtr shader = RENDER_SYSTEM()
 			->createVertexShader( _name, memory );
 
 		return shader;
@@ -959,14 +960,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderFragmentShaderInterfacePtr RenderMaterialManager::createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath )
 	{ 
-		MemoryInterfacePtr memory = Helper::createMemoryFile( m_serviceProvider, _pakName, _filePath, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryFile( _pakName, _filePath, false, __FILE__, __LINE__ );
 		
 		if( memory == nullptr )
 		{
 			return nullptr;
 		}				
 
-		RenderFragmentShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
+		RenderFragmentShaderInterfacePtr shader = RENDER_SYSTEM()
 			->createFragmentShader( _name, memory );
 
 		return shader;

@@ -92,8 +92,8 @@ namespace Menge
 			m_vertices[i].uv[1].y = 0.f;
 		}
 
-		RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" ), PT_TRIANGLELIST, 0, nullptr );
+		RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
+			->getMaterial( STRINGIZE_STRING_LOCAL( "Debug" ), PT_TRIANGLELIST, 0, nullptr );
 
 		_renderService
 			->addRenderQuad( _state, material, m_vertices, 4, nullptr, false );

@@ -49,7 +49,7 @@ namespace Menge
 			if( id == 0 )
 			{
 				// TODO: report in case of error
-				LOGGER_ERROR( m_serviceProvider )("OALSoundBufferStream::load invalid gen %d buffer ID"
+				LOGGER_ERROR("OALSoundBufferStream::load invalid gen %d buffer ID"
 					, i
 					);
 
@@ -68,7 +68,7 @@ namespace Menge
 
 		if( dataInfo->channels != 2 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OALSoundBufferStream::load invalid channels %d must be %d"
+			LOGGER_ERROR("OALSoundBufferStream::load invalid channels %d must be %d"
 				, dataInfo->channels
 				, 2
 				);
@@ -118,7 +118,7 @@ namespace Menge
 		}
 		else
 		{
-			LOGGER_ERROR( m_serviceProvider )("OALSoundBufferStream::load invalid channels %d"
+			LOGGER_ERROR("OALSoundBufferStream::load invalid channels %d"
 				, m_channels
 				);
 
@@ -137,7 +137,7 @@ namespace Menge
 
 		if( _pos > m_length )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OALSoundBufferStream::play pos %f > length %f"
+			LOGGER_ERROR("OALSoundBufferStream::play pos %f > length %f"
 				, _pos
 				, m_length
 				);
@@ -147,7 +147,7 @@ namespace Menge
 
 		ALint state = 0;
 		alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
-		OAL_CHECK_ERROR( m_serviceProvider );
+		OAL_CHECK_ERROR();
 
 		if( state != AL_STOPPED && state != AL_INITIAL )
 		{
@@ -156,14 +156,14 @@ namespace Menge
 		}
 
 		alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
-		OAL_CHECK_ERROR( m_serviceProvider );
+		OAL_CHECK_ERROR();
 
 		alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
-		OAL_CHECK_ERROR( m_serviceProvider );
+		OAL_CHECK_ERROR();
 
 		if( m_soundDecoder->seek( _pos ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OALSoundBufferStream::play invalid seek '%f'"
+			LOGGER_ERROR("OALSoundBufferStream::play invalid seek '%f'"
 				, _pos
 				);
 
@@ -181,11 +181,11 @@ namespace Menge
 			}
 
 			alSourceQueueBuffers( m_sourceId, 1, &bufferId );
-			OAL_CHECK_ERROR( m_serviceProvider );
+			OAL_CHECK_ERROR();
 		}
 
 		alSourcePlay( m_sourceId );
-		OAL_CHECK_ERROR( m_serviceProvider );
+		OAL_CHECK_ERROR();
 
 		this->setUpdating_( true );
 
@@ -197,7 +197,7 @@ namespace Menge
 		(void)_source;
 
 		alSourcePlay( m_sourceId );
-		OAL_CHECK_ERROR( m_serviceProvider );
+		OAL_CHECK_ERROR();
 
 		this->setUpdating_( true );
 
@@ -209,7 +209,7 @@ namespace Menge
 		this->setUpdating_( false );
 
 		alSourcePause( _source );
-		OAL_CHECK_ERROR( m_serviceProvider );
+		OAL_CHECK_ERROR();
 		//m_soundSystem->clearSourceId( _source );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -220,7 +220,7 @@ namespace Menge
 		ALint process_count = 0;
 		// Получаем количество отработанных буферов
 		alGetSourcei( _source, AL_BUFFERS_PROCESSED, &process_count );
-		OAL_CHECK_ERROR( m_serviceProvider );
+		OAL_CHECK_ERROR();
 
 		// Если таковые существуют то
 		while( process_count-- > 0 )
@@ -229,16 +229,16 @@ namespace Menge
 			ALuint buffer = 0;
 
 			alSourceUnqueueBuffers( _source, 1, &buffer );
-			OAL_CHECK_ERROR( m_serviceProvider );
+			OAL_CHECK_ERROR();
 		}
 
 		alSourceStop( _source );
-		OAL_CHECK_ERROR( m_serviceProvider );
+		OAL_CHECK_ERROR();
 
 		ALint queued_count = 0;
 		// unqueue remaining buffers
 		alGetSourcei( _source, AL_BUFFERS_QUEUED, &queued_count );
-		OAL_CHECK_ERROR( m_serviceProvider );
+		OAL_CHECK_ERROR();
 
 		while( queued_count-- > 0 )
 		{
@@ -246,13 +246,13 @@ namespace Menge
 			ALuint buffer = 0;
 
 			alSourceUnqueueBuffers( _source, 1, &buffer );
-			OAL_CHECK_ERROR( m_serviceProvider );
+			OAL_CHECK_ERROR();
 		}
 
 		alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
 
 		alSourceRewind( _source );
-		OAL_CHECK_ERROR( m_serviceProvider );
+		OAL_CHECK_ERROR();
 		//m_soundDecoder->seek( 0.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -283,7 +283,7 @@ namespace Menge
 
 		if( timeTell > m_length )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OALSoundBufferStream::getTimePos get tell %f > length %f"
+			LOGGER_ERROR("OALSoundBufferStream::getTimePos get tell %f > length %f"
 				, timeTell
 				, m_length
 				);
@@ -306,14 +306,14 @@ namespace Menge
 		//// Check the status of the Source.  If it is not playing, then playback was completed,
 		//// or the Source was starved of audio data, and needs to be restarted.
 		//alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
-		//      OAL_CHECK_ERROR(m_serviceProvider);
+		//      OAL_CHECK_ERROR();
 
 		//int queuedBuffers;
 		//alGetSourcei( m_sourceId, AL_BUFFERS_QUEUED, &queuedBuffers );
 
 		ALint processed = 0;
 		alGetSourcei( m_sourceId, AL_BUFFERS_PROCESSED, &processed );
-		OAL_CHECK_ERROR( m_serviceProvider );
+		OAL_CHECK_ERROR();
 
 		bool end = false;
 		for( ALint curr_processed = 0; curr_processed != processed; ++curr_processed )
@@ -321,7 +321,7 @@ namespace Menge
 			// Исключаем их из очереди
 			ALuint bufferId;
 			alSourceUnqueueBuffers( m_sourceId, 1, &bufferId );
-			OAL_CHECK_ERROR( m_serviceProvider );
+			OAL_CHECK_ERROR();
 
 			// Читаем очередную порцию данных
 			size_t bytesWritten;
@@ -344,7 +344,7 @@ namespace Menge
 			}
 
 			alSourceQueueBuffers( m_sourceId, 1, &bufferId );
-			OAL_CHECK_ERROR( m_serviceProvider );
+			OAL_CHECK_ERROR();
 		}
 
 		if( end == true )
@@ -354,12 +354,12 @@ namespace Menge
 
 		ALint state;
 		alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
-		OAL_CHECK_ERROR( m_serviceProvider );
+		OAL_CHECK_ERROR();
 
 		if( state != AL_PLAYING && state != AL_PAUSED )
 		{
 			alSourcePlay( m_sourceId );
-			OAL_CHECK_ERROR( m_serviceProvider );
+			OAL_CHECK_ERROR();
 		}
 
 		return true;
@@ -368,7 +368,6 @@ namespace Menge
 	bool OALSoundBufferStream::bufferData_( ALuint _alBufferId, size_t & _bytes )
 	{
 		char dataBuffer[OPENAL_STREAM_BUFFER_SIZE];
-
 		size_t bytesWritten = m_soundDecoder->decode( dataBuffer, OPENAL_STREAM_BUFFER_SIZE );
 
 		_bytes = bytesWritten;
@@ -381,9 +380,9 @@ namespace Menge
 		ALsizei al_bytesWritten = (ALsizei)bytesWritten;
 		alBufferData( _alBufferId, m_format, dataBuffer, al_bytesWritten, m_frequency );
 
-		if( OAL_CHECK_ERROR( m_serviceProvider ) == false )
+		if( OAL_CHECK_ERROR() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OALSoundBufferStream::play buffer=%d id=%d format=%d bytes=%d frequency=%d"
+			LOGGER_ERROR("OALSoundBufferStream::play buffer=%d id=%d format=%d bytes=%d frequency=%d"
 				, _alBufferId
 				, m_format
 				, bytesWritten

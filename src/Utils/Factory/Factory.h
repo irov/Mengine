@@ -30,7 +30,7 @@ namespace Menge
         , public MemoryAllocator
 	{
 	public:
-		Factory(ServiceProviderInterface * _serviceProvider, const char * _name);
+		Factory(const char * _name);
 		virtual ~Factory();
 
 	public:
@@ -53,9 +53,7 @@ namespace Menge
         void _destroy() override;
         void destroy() override;
 
-	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
+	protected:		
 		const char * m_name;
 
 		FactoryDestroyListenerInterfacePtr m_destroyListener;

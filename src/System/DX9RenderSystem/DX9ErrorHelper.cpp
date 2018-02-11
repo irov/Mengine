@@ -5,9 +5,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DX9ErrorHelper::DX9ErrorHelper( ServiceProviderInterface * _serviceProvider, const char * _file, uint32_t _line, const char * _method )
-		: m_serviceProvider(_serviceProvider)
-		, m_file(_file)
+	DX9ErrorHelper::DX9ErrorHelper( const char * _file, uint32_t _line, const char * _method )
+		: m_file(_file)
 		, m_line(_line)
 		, m_method(_method)
 	{
@@ -20,7 +19,7 @@ namespace Menge
 			return false;
 		}
 		
-		LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem error file %s line %d DX call '%s' get error '%p'"
+		LOGGER_ERROR("DX9RenderSystem error file %s line %d DX call '%s' get error '%p'"
 			, m_file
 			, m_line
 			, m_method

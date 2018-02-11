@@ -121,7 +121,7 @@ namespace	Menge
 	{
 		if( m_resourceImage == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("SurfaceTrackMatte::_compile: '%s' resource is null"
+			LOGGER_ERROR("SurfaceTrackMatte::_compile: '%s' resource is null"
 				, m_name.c_str()
 				);
 
@@ -130,7 +130,7 @@ namespace	Menge
 
 		if( m_resourceImage.compile() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("SurfaceTrackMatte::_compile: '%s' resource '%s' is not compile"
+			LOGGER_ERROR("SurfaceTrackMatte::_compile: '%s' resource '%s' is not compile"
 				, m_name.c_str()
 				, m_resourceImage->getName().c_str()
 				);
@@ -140,7 +140,7 @@ namespace	Menge
 
 		if( m_resourceTrackMatteImage == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("SurfaceTrackMatte::_compile: '%s' resource is null"
+			LOGGER_ERROR("SurfaceTrackMatte::_compile: '%s' resource is null"
 				, m_name.c_str()
 				);
 
@@ -149,7 +149,7 @@ namespace	Menge
 
 		if( m_resourceTrackMatteImage.compile() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("SurfaceTrackMatte::_compile: '%s' resource '%s' is not compile"
+			LOGGER_ERROR("SurfaceTrackMatte::_compile: '%s' resource '%s' is not compile"
 				, m_name.c_str()
 				, m_resourceTrackMatteImage->getName().c_str()
 				);
@@ -181,17 +181,17 @@ namespace	Menge
         {
         case ESTM_MODE_ALPHA:
             {
-                material = RENDERMATERIAL_SERVICE( m_serviceProvider )
-                    ->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "TrackMatte_Blend" ), PT_TRIANGLELIST, 2, textures );
+                material = RENDERMATERIAL_SERVICE()
+                    ->getMaterial( STRINGIZE_STRING_LOCAL( "TrackMatte_Blend" ), PT_TRIANGLELIST, 2, textures );
             }break;
         case ESTM_MODE_ALPHA_INVERTED:
             {
-                material = RENDERMATERIAL_SERVICE( m_serviceProvider )
-                    ->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "TrackMatteInverted_Blend" ), PT_TRIANGLELIST, 2, textures );
+                material = RENDERMATERIAL_SERVICE()
+                    ->getMaterial( STRINGIZE_STRING_LOCAL( "TrackMatteInverted_Blend" ), PT_TRIANGLELIST, 2, textures );
             }break;
         default:
             {
-                LOGGER_ERROR( m_serviceProvider )("SurfaceTrackMatte::_updateMaterial '%s' invalid support track matte mode '%d'"
+                LOGGER_ERROR("SurfaceTrackMatte::_updateMaterial '%s' invalid support track matte mode '%d'"
                     , this->getName().c_str()
                     , m_trackMatteMode
                     );

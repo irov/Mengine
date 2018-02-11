@@ -15,7 +15,7 @@ namespace Menge
 		m_category = _category;
 		m_prototype = _prototype;
 
-		m_scriptWrapper = SCRIPT_SERVICE( m_serviceProvider )
+		m_scriptWrapper = SCRIPT_SERVICE()
 			->getWrapper( m_prototype );
 
         if( this->_initialize() == false )

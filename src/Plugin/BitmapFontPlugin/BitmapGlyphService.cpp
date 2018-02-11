@@ -18,7 +18,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool BitmapGlyphService::_initialize()
 	{
-		m_factoryTextGlyph = new FactoryPool<BitmapGlyph, 8>( m_serviceProvider );
+		m_factoryTextGlyph = new FactoryPool<BitmapGlyph, 8>();
 
 		return true;
 	}
@@ -40,8 +40,6 @@ namespace Menge
 		}
 
 		BitmapGlyphPtr glyph = m_factoryTextGlyph->createObject();
-
-		glyph->setServiceProvider( m_serviceProvider );
 
 		if( glyph->initialize( _category, _path ) == false )
 		{

@@ -4,8 +4,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	BounceActor::BounceActor()
-		: m_serviceProvider(nullptr)
-		, m_radius(0.f)
+		: m_radius(0.f)
 		, m_mass(1.f)
 		, m_node( nullptr )
 		, m_remove(false)
@@ -14,16 +13,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	BounceActor::~BounceActor()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BounceActor::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * BounceActor::getServiceProvider() const
-	{
-		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BounceActor::setType( const ConstString & _type )

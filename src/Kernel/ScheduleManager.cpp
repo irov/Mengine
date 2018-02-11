@@ -134,7 +134,7 @@ namespace Menge
 
 		if( this->findScheduleEvent_( _id, desc ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScheduleManager::remove not found shedule '%d'"
+			LOGGER_ERROR("ScheduleManager::remove not found shedule '%d'"
 				, _id
 				);
 
@@ -154,7 +154,7 @@ namespace Menge
 
         if( this->findScheduleEvent_( _id, desc ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ScheduleManager::remove not found shedule '%d'"
+            LOGGER_ERROR("ScheduleManager::remove not found shedule '%d'"
                 , _id
                 );
 
@@ -163,7 +163,7 @@ namespace Menge
 
         if( this->removeSchedule_( *desc ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ScheduleManager::remove not alredy remove or complete '%d'"
+			LOGGER_ERROR("ScheduleManager::remove not alredy remove or complete '%d'"
 				, _id
 				);
 
@@ -285,14 +285,14 @@ namespace Menge
 
 					float timeOffset = desc.delay - old_timing;
 
-					TIMELINE_SERVICE( m_serviceProvider )
+					TIMELINE_SERVICE()
 						->beginOffset( timeOffset );
 
 					desc.dead = true;
 
 					desc.event->onScheduleComplete( desc.id );
 
-					TIMELINE_SERVICE( m_serviceProvider )
+					TIMELINE_SERVICE()
 						->endOffset();
 				}break;
 			case EST_TIMER:
@@ -334,12 +334,12 @@ namespace Menge
 						desc.iterate++;
 						desc.iterate_invalide = true;
 
-						TIMELINE_SERVICE( m_serviceProvider )
+						TIMELINE_SERVICE()
 							->beginOffset( timeOffset );
 
 						desc.timer->onScheduleUpdate( desc.id, iterate, desc.delay );
 
-						TIMELINE_SERVICE( m_serviceProvider )
+						TIMELINE_SERVICE()
 							->endOffset();
 
 						if( desc.dead == true )
@@ -360,7 +360,7 @@ namespace Menge
 
         if( this->findScheduleEvent_( _id, event ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ScheduleManager::freeze not found shedule '%d'"
+            LOGGER_ERROR("ScheduleManager::freeze not found shedule '%d'"
                 , _id
                 );
 
@@ -378,7 +378,7 @@ namespace Menge
 
         if( this->findScheduleEvent_( _id, event ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ScheduleManager::isFreeze not found shedule '%d'"
+            LOGGER_ERROR("ScheduleManager::isFreeze not found shedule '%d'"
                 , _id
                 );
 
@@ -404,7 +404,7 @@ namespace Menge
 
 		if( this->findScheduleEvent_( _id, event ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ScheduleManager::time not found shedule '%d'"
+            LOGGER_ERROR("ScheduleManager::time not found shedule '%d'"
                 , _id
                 );
 
@@ -422,7 +422,7 @@ namespace Menge
 
 		if( this->findScheduleEvent_( _id, event ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScheduleManager::time not found shedule '%d'"
+			LOGGER_ERROR("ScheduleManager::time not found shedule '%d'"
 				, _id
 				);
 

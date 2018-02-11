@@ -21,6 +21,6 @@ namespace Menge
 		virtual void tick( float _timing ) = 0;
 	};
 
-#   define TIMELINE_SERVICE( serviceProvider )\
-    ((Menge::TimelineServiceInterface*)SERVICE_GET(serviceProvider, Menge::TimelineServiceInterface))
+#   define TIMELINE_SERVICE()\
+    ((Menge::TimelineServiceInterface*)SERVICE_GET(Menge::TimelineServiceInterface))
 }

@@ -16,7 +16,7 @@ namespace Menge
     protected:
         bool initialize() override
         {
-            m_factory = new FactoryPool<T, 8>( m_serviceProvider );
+            m_factory = new FactoryPool<T, 8>();
 
             return true;
         }
@@ -25,8 +25,6 @@ namespace Menge
         DecoderInterfacePtr createDecoder() override
         {	
             T * decoder = m_factory->createObject();
-
-			decoder->setServiceProvider( m_serviceProvider );
 
             return decoder;
         }
@@ -44,19 +42,17 @@ namespace Menge
     namespace Helper
     {
         template<class T>
-        inline DecoderFactoryInterfacePtr registerDecoder( ServiceProviderInterface * _serviceProvider, const Char * _type )
+        inline DecoderFactoryInterfacePtr registerDecoder( const Char * _type )
         {
             DecoderFactoryInterfacePtr decoder = new DecoderFactory<T>();
 
-            decoder->setServiceProvider( _serviceProvider );
-            
             if( decoder->initialize() == false )
             {
                 return nullptr;
             }
 
-            if( CODEC_SERVICE( _serviceProvider )
-                ->registerDecoder( Helper::stringizeString( _serviceProvider, _type ), decoder ) == false )
+            if( CODEC_SERVICE()
+                ->registerDecoder( Helper::stringizeString( _type ), decoder ) == false )
             {
                 return nullptr;
             }
@@ -64,10 +60,10 @@ namespace Menge
             return decoder;
         }
 
-        inline void unregisterDecoder( ServiceProviderInterface * _serviceProvider, const Char * _type )
+        inline void unregisterDecoder( const Char * _type )
         {
-            CODEC_SERVICE( _serviceProvider )
-                ->unregisterDecoder( Helper::stringizeString( _serviceProvider, _type) );
+            CODEC_SERVICE()
+                ->unregisterDecoder( Helper::stringizeString( _type ) );
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLPluginSystem::_initialize()
     {
-        m_factoryDynamicLibraries = new FactoryPool<SDLDynamicLibrary, 8>( m_serviceProvider );
+        m_factoryDynamicLibraries = new FactoryPool<SDLDynamicLibrary, 8>();
 
         return true;
     }
@@ -36,7 +36,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr SDLPluginSystem::loadDynamicLibrary( const WString & _dynamicLibraryName )
     {
-        LOGGER_WARNING( m_serviceProvider )("SDLPluginSystem::loadDynamicLibrary plugin '%ls'"
+        LOGGER_WARNING("SDLPluginSystem::loadDynamicLibrary plugin '%ls'"
             , _dynamicLibraryName.c_str()
             );
 
@@ -44,18 +44,16 @@ namespace Menge
 
         if( dynamicLibrary == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("SDLPluginSystem::loadDynamicLibrary can't create dynamic library"
+            LOGGER_ERROR("SDLPluginSystem::loadDynamicLibrary can't create dynamic library"
                 );
 
             return nullptr;
         }
 
-        dynamicLibrary->setServiceProvider( m_serviceProvider );
-
         String utf8_dynamicLibraryName;
-        if( Helper::unicodeToUtf8( m_serviceProvider, _dynamicLibraryName, utf8_dynamicLibraryName ) == false )
+        if( Helper::unicodeToUtf8( _dynamicLibraryName, utf8_dynamicLibraryName ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("SDLPluginSystem::loadDynamicLibrary can't get utf8 path"
+            LOGGER_ERROR( "SDLPluginSystem::loadDynamicLibrary can't get utf8 path"
                 );
 
             return nullptr;
@@ -65,7 +63,7 @@ namespace Menge
 
         if( dynamicLibrary->load() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("SDLPluginSystem::loadDynamicLibrary can't load '%ls' plugin [invalid load]"
+            LOGGER_ERROR( "SDLPluginSystem::loadDynamicLibrary can't load '%ls' plugin [invalid load]"
                 , _dynamicLibraryName.c_str()
                 );
 

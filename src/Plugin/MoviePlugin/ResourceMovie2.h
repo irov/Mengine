@@ -17,7 +17,7 @@ namespace Menge
 		~ResourceMovie2();
 
 	public:
-		void setMovieInstance( aeMovieInstance * _instance );
+		void setMovieInstance( const aeMovieInstance * _instance );
 
     public:
         bool hasComposition( const ConstString & _name ) const;
@@ -45,7 +45,7 @@ namespace Menge
         ResourceReference * createResourceParticle_( const aeMovieResourceParticle * _resource );
 
 	protected:
-		aeMovieInstance * m_instance;
+        const aeMovieInstance * m_instance;
 
 		aeMovieData * m_movieData;
 

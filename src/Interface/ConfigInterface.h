@@ -45,19 +45,19 @@ namespace Menge
 		virtual void getSection( const Char * _section, TMapWParams & _params ) const = 0;
 	};
 
-#   define CONFIG_SERVICE( serviceProvider )\
-    ((Menge::ConfigServiceInterface *)SERVICE_GET(serviceProvider, Menge::ConfigServiceInterface))
+#   define CONFIG_SERVICE()\
+    ((Menge::ConfigServiceInterface *)SERVICE_GET(Menge::ConfigServiceInterface))
 
-#	define CONFIG_VALUE( serviceProvider, section, key, default )\
-	(CONFIG_SERVICE( serviceProvider )->getValue( section, key, default ))
+#	define CONFIG_VALUE( section, key, default )\
+	(CONFIG_SERVICE()->getValue( section, key, default ))
 
-#	define CONFIG_SET( serviceProvider, section, key, value )\
-	(CONFIG_SERVICE( serviceProvider )->setValue( section, key, value ))
+#	define CONFIG_SET( section, key, value )\
+	(CONFIG_SERVICE()->setValue( section, key, value ))
 
-#	define CONFIG_VALUES( serviceProvider, section, key, value )\
-	(CONFIG_SERVICE( serviceProvider )->getValues( section, key, value ))
+#	define CONFIG_VALUES( section, key, value )\
+	(CONFIG_SERVICE()->getValues( section, key, value ))
 
-#	define CONFIG_SECTION( serviceProvider, section, params )\
-	(CONFIG_SERVICE( serviceProvider )->getSection( section, params ))
+#	define CONFIG_SECTION( section, params )\
+	(CONFIG_SERVICE()->getSection( section, params ))
 }
 

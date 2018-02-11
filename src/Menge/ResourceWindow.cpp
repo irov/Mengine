@@ -66,12 +66,12 @@ namespace Menge
 				}
 			}
 
-			ResourceImagePtr resource  = RESOURCE_SERVICE(m_serviceProvider)
+			ResourceImagePtr resource  = RESOURCE_SERVICE()
 				->getResourceT<ResourceImagePtr>( m_images[i].resourceName );
 			
 			if( resource == 0 )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceWindow: '%s' Image resource not found resource '%s'"
+				LOGGER_ERROR("ResourceWindow: '%s' Image resource not found resource '%s'"
 					, m_name.c_str()
 					, m_images[i].resourceName.c_str() 
 					);

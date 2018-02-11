@@ -142,6 +142,6 @@ namespace Menge
         virtual void quit() = 0;
 	};
 
-#   define APPLICATION_SERVICE( serviceProvider )\
-    ((Menge::ApplicationInterface*)SERVICE_GET(serviceProvider, Menge::ApplicationInterface))
+#   define APPLICATION_SERVICE()\
+    ((Menge::ApplicationInterface*)SERVICE_GET(Menge::ApplicationInterface))
 }

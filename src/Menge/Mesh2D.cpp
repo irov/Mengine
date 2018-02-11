@@ -46,7 +46,7 @@ namespace Menge
 	{
 		if( m_resourceImage == nullptr )
 		{
-            LOGGER_ERROR(m_serviceProvider)("Mesh::compileResource_ '%s' image resource null"
+            LOGGER_ERROR("Mesh::compileResource_ '%s' image resource null"
                 , m_name.c_str() 
                 );
 
@@ -55,7 +55,7 @@ namespace Menge
 
         if( m_resourceImage.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Mesh::compileResource_ '%s' image resource %s not compile"
+            LOGGER_ERROR("Mesh::compileResource_ '%s' image resource %s not compile"
                 , m_name.c_str() 
                 , m_resourceImage->getName().c_str()
                 );
@@ -94,11 +94,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr Mesh2D::_updateMaterial() const
 	{
-		RenderMaterialInterfacePtr material = this->makeImageMaterial( m_serviceProvider, m_resourceImage, m_solid );
+		RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, m_solid );
 		
 		if( material == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Mesh::updateMaterial_ %s m_material is NULL"
+			LOGGER_ERROR("Mesh::updateMaterial_ %s m_material is NULL"
 				, this->getName().c_str()
 				);
 

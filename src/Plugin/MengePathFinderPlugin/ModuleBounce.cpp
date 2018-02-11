@@ -45,24 +45,24 @@ namespace Menge
 			.def( "getNode", &BounceActor::getNode )
 			;
 
-		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( STRINGIZE_STRING_LOCAL( m_serviceProvider, "BounceActor" ), new ScriptWrapper<BounceActor>() );
+		SCRIPT_SERVICE()
+			->setWrapper( STRINGIZE_STRING_LOCAL( "BounceActor" ), new ScriptWrapper<BounceActor>() );
 
-		PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "BounceActor" ), new DefaultPrototypeGenerator<BounceActor, 32>() );
+		PROTOTYPE_SERVICE()
+			->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "BounceActor" ), new DefaultPrototypeGenerator<BounceActor, 32>() );
 		
-        m_factoryBounceWorlds = new FactoryPool<BounceWorld, 4>( m_serviceProvider );
+        m_factoryBounceWorlds = new FactoryPool<BounceWorld, 4>();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleBounce::_finalize()
 	{
-        SCRIPT_SERVICE(m_serviceProvider)
-            ->removeWrapper(STRINGIZE_STRING_LOCAL(m_serviceProvider, "BounceActor"));
+        SCRIPT_SERVICE()
+            ->removeWrapper(STRINGIZE_STRING_LOCAL( "BounceActor"));
 
-        PROTOTYPE_SERVICE(m_serviceProvider)
-            ->removePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "BounceActor" ) );
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "BounceActor" ) );
 
         m_factoryBounceWorlds = nullptr;
 	}
@@ -71,7 +71,7 @@ namespace Menge
 	{
 		BounceWorldPtr world = m_factoryBounceWorlds->createObject();
 
-		if( world->initialize( m_serviceProvider ) == false )
+		if( world->initialize() == false )
 		{
 			return nullptr;
 		}

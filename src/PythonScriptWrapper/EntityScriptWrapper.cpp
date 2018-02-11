@@ -27,10 +27,9 @@ namespace Menge
 	class EntityScriptMethod
 	{
     public:
-        EntityScriptMethod( ServiceProviderInterface * _serviceProvider )
-            : m_serviceProvider(_serviceProvider)
+        EntityScriptMethod()
         {
-            m_factoryEntityPrototypeGenerator = new FactoryPool<EntityPrototypeGenerator, 64>(m_serviceProvider);
+            m_factoryEntityPrototypeGenerator = new FactoryPool<EntityPrototypeGenerator, 64>();
         }
 
     public:
@@ -41,7 +40,7 @@ namespace Menge
 
             generator->setScriptGenerator(_generator);
 
-			bool successful = PROTOTYPE_SERVICE( m_serviceProvider )
+			bool successful = PROTOTYPE_SERVICE()
 				->addPrototype( _category, _prototype, generator);
 
             return successful;
@@ -49,40 +48,40 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
 		bool s_addEntityPrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
         {
-            bool result = s_addPrototypeFinder(STRINGIZE_STRING_LOCAL(m_serviceProvider, "Entity"), _prototype, _module );
+            bool result = s_addPrototypeFinder(STRINGIZE_STRING_LOCAL( "Entity"), _prototype, _module );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
 		bool s_addScenePrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
         {
-            bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Scene"), _prototype, _module );
+            bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene"), _prototype, _module );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
 		bool s_addArrowPrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
         {
-            bool result = s_addPrototypeFinder(STRINGIZE_STRING_LOCAL(m_serviceProvider, "Arrow"), _prototype, _module );
+            bool result = s_addPrototypeFinder(STRINGIZE_STRING_LOCAL( "Arrow"), _prototype, _module );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
 		const pybind::object & s_createEntity( const ConstString & _prototype )
 		{
-			Entity * entity = PROTOTYPE_SERVICE(m_serviceProvider)
-				->generatePrototype(STRINGIZE_STRING_LOCAL(m_serviceProvider, "Entity"), _prototype );
+			Entity * entity = PROTOTYPE_SERVICE()
+				->generatePrototype(STRINGIZE_STRING_LOCAL( "Entity"), _prototype );
 
 			if( entity == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Error: can't create Entity '%s'"
+				LOGGER_ERROR("Error: can't create Entity '%s'"
 					, _prototype.c_str()
 					);
 
 				return pybind::object::get_invalid();
 			}
 
-			NODE_SERVICE( m_serviceProvider )
+			NODE_SERVICE() 
 				->addHomeless( entity );
 
 			const pybind::object & py_entity = entity->getScriptObject();
@@ -95,10 +94,10 @@ namespace Menge
 			(void)_kernel;
 
             PrototypeGeneratorInterfacePtr generator;
-            if( PROTOTYPE_SERVICE( m_serviceProvider )
-                ->hasPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Entity" ), _prototype, generator ) == false )
+            if( PROTOTYPE_SERVICE()
+                ->hasPrototype( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, generator ) == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("importEntity: can't import 'Entity' '%s'"                    
+                LOGGER_ERROR("importEntity: can't import 'Entity' '%s'"                    
                     , _prototype.c_str()
                     );
 
@@ -115,17 +114,15 @@ namespace Menge
 
     protected:
         FactoryPtr m_factoryEntityPrototypeGenerator;
-
-        ServiceProviderInterface * m_serviceProvider;
 	};
     //////////////////////////////////////////////////////////////////////////
-	static void classWrapping( ServiceProviderInterface * _serviceProvider )
+	static void classWrapping()
 	{
-# define SCRIPT_CLASS_WRAPPING( serviceProvider, Class )\
-    SCRIPT_SERVICE(serviceProvider)->setWrapper( Helper::stringizeString(serviceProvider, #Class), new ScriptWrapper<Class>() )
+# define SCRIPT_CLASS_WRAPPING( Class )\
+    SCRIPT_SERVICE()->setWrapper( Helper::stringizeString(#Class), new ScriptWrapper<Class>() )
 
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Entity );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Scene );
+        SCRIPT_CLASS_WRAPPING( Entity );
+        SCRIPT_CLASS_WRAPPING( Scene );
 
 #	undef SCRIPT_CLASS_WRAPPING
 	}
@@ -137,14 +134,13 @@ namespace Menge
 		void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
 		{
             (void)_kernel;
+            (void)_scope;
 			(void)_obj;
 			(void)_args;
 			(void)_kwds;
 
-			ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
-
-			Entity * entity = NODE_SERVICE( serviceProvider )
-				->createNodeT<Entity *>(STRINGIZE_STRING_LOCAL( serviceProvider, "Entity" ) );
+			Entity * entity = NODE_SERVICE()
+				->createNodeT<Entity *>(STRINGIZE_STRING_LOCAL( "Entity" ) );
 
 			entity->setEmbed( _obj );
 
@@ -161,14 +157,13 @@ namespace Menge
 		void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
 		{
             (void)_kernel;
+            (void)_scope;
 			(void)_obj;
 			(void)_args;
 			(void)_kwds;
 
-			ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
-
-			Arrow * arrow = NODE_SERVICE( serviceProvider )
-				->createNodeT<Arrow *>(STRINGIZE_STRING_LOCAL( serviceProvider, "Arrow" ) );
+			Arrow * arrow = NODE_SERVICE()
+				->createNodeT<Arrow *>(STRINGIZE_STRING_LOCAL( "Arrow" ) );
 
 			arrow->setEmbed( _obj );
 
@@ -185,14 +180,13 @@ namespace Menge
 		void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
 		{
             (void)_kernel;
+            (void)_scope;
 			(void)_obj;
 			(void)_args;
 			(void)_kwds;
 
-			ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
-
-			Scene * scene = NODE_SERVICE( serviceProvider )
-				->createNodeT<Scene *>(STRINGIZE_STRING_LOCAL( serviceProvider, "Scene" ) );
+			Scene * scene = NODE_SERVICE()
+				->createNodeT<Scene *>(STRINGIZE_STRING_LOCAL( "Scene" ) );
 
 			scene->setEmbed( _obj );
 
@@ -202,18 +196,18 @@ namespace Menge
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void PythonScriptWrapper::entityWrap( ServiceProviderInterface * _serviceProvider )
+	void PythonScriptWrapper::entityWrap()
 	{
-		classWrapping( _serviceProvider );
+		classWrapping();
 
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 
-		pybind::superclass_<Entity, pybind::bases<Node> >( kernel, "Entity", (void *)_serviceProvider, new superclass_new_Entity, nullptr, false )
+		pybind::superclass_<Entity, pybind::bases<Node> >( kernel, "Entity", nullptr, new superclass_new_Entity, nullptr, false )
             .def_constructor( pybind::init<>() )
 			.def( "getPrototype", &Entity::getPrototype )
 			;
 
-		pybind::superclass_<Arrow, pybind::bases<Entity> >( kernel, "Arrow", (void *)_serviceProvider, new superclass_new_Arrow, nullptr, false )
+		pybind::superclass_<Arrow, pybind::bases<Entity> >( kernel, "Arrow", nullptr, new superclass_new_Arrow, nullptr, false )
             .def_constructor( pybind::init<>() )
 			.def( "setOffsetClick", &Arrow::setOffsetClick )
 			.def( "getOffsetClick", &Arrow::getOffsetClick )
@@ -223,7 +217,7 @@ namespace Menge
 			.def( "getRadius", &Arrow::getRadius )
 			;
 
-		pybind::superclass_<Scene, pybind::bases<Entity> >( kernel, "Scene", (void *)_serviceProvider, new superclass_new_Scene, nullptr, false )
+		pybind::superclass_<Scene, pybind::bases<Entity> >( kernel, "Scene", nullptr, new superclass_new_Scene, nullptr, false )
             .def_constructor( pybind::init<>() )
 			//.def( "isSubScene", &Scene::isSubScene )
 			//.def( "getParentScene", &Scene::getParentScene )
@@ -235,7 +229,7 @@ namespace Menge
 			//.def( "setMainLayer", &Scene::setMainLayer )
 			;
 
-        EntityScriptMethod * entityScriptMethod = new EntityScriptMethod(_serviceProvider);
+        EntityScriptMethod * entityScriptMethod = new EntityScriptMethod();
 
 		pybind::def_functor( kernel, "addEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addEntityPrototypeFinder );
 		pybind::def_functor( kernel, "addScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addScenePrototypeFinder );

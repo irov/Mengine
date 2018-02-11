@@ -256,7 +256,7 @@ namespace Menge
 
 		if( it_found == m_handlers.end() )
         {
-            LOGGER_ERROR(m_serviceProvider)("GlobalHandleSystem::removeGlobalMouseEventable not found %d"
+            LOGGER_ERROR("GlobalHandleSystem::removeGlobalMouseEventable not found %d"
                 , _id
                 );
 
@@ -286,7 +286,7 @@ namespace Menge
 
 		if( it_found == m_handlers.end() )
 		{
-			LOGGER_ERROR( m_serviceProvider )("GlobalHandleSystem::enableGlobalHandler not found %d"
+			LOGGER_ERROR("GlobalHandleSystem::enableGlobalHandler not found %d"
 				, _id
 				);
 
@@ -311,13 +311,13 @@ namespace Menge
     {
 		if( m_handlers.empty() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("GlobalHandleSystem::clear global handlers is not empty"
+            LOGGER_ERROR("GlobalHandleSystem::clear global handlers is not empty"
                 );
         }
 
 		if( m_handlersAdd.empty() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("GlobalHandleSystem::clear global handlers is not empty (add)"
+            LOGGER_ERROR("GlobalHandleSystem::clear global handlers is not empty (add)"
                 );
         }
     }

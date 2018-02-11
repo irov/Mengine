@@ -41,19 +41,19 @@ namespace Menge
     {
         if( m_resourceImageName.empty() == true )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstract::_compile '%s' not setup image resource"
+            LOGGER_ERROR("ResourceImageSubstract::_compile '%s' not setup image resource"
                 , this->getName().c_str()
                 );
 
             return false;
         }
 
-        m_resourceImage = RESOURCE_SERVICE(m_serviceProvider)
+        m_resourceImage = RESOURCE_SERVICE()
             ->getResourceT<ResourceImagePtr>( m_resourceImageName );
 
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstract::_compile '%s' category '%s' group '%s' invalid get image resource '%s'"
+            LOGGER_ERROR("ResourceImageSubstract::_compile '%s' category '%s' group '%s' invalid get image resource '%s'"
                 , this->getName().c_str()
 				, this->getCategory().c_str()
 				, this->getGroup().c_str()

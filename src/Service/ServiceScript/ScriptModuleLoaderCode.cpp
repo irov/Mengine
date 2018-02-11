@@ -40,7 +40,7 @@ namespace Menge
 
 		if( file_size == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScriptModuleLoaderCode::unmarshal_code_ %s zero size"
+			LOGGER_ERROR("ScriptModuleLoaderCode::unmarshal_code_ %s zero size"
 				, pybind::string_to_char( _module )
 				);
 
@@ -53,7 +53,7 @@ namespace Menge
 		uint32_t compress_size;
 		_stream->read( &compress_size, sizeof( compress_size ) );
 
-		MemoryInterfacePtr code_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, code_size, __FILE__, __LINE__ );
+		MemoryInterfacePtr code_buffer = Helper::createMemoryCacheBuffer( code_size, __FILE__, __LINE__ );
 
 		if( code_buffer == nullptr )
 		{
@@ -63,17 +63,17 @@ namespace Menge
 		uint8_t * code_memory = code_buffer->getMemory();
 
 		size_t uncompress_size;
-		if( ARCHIVE_SERVICE( m_serviceProvider )
+		if( ARCHIVE_SERVICE()
 			->decompressStream( m_archivator, _stream, compress_size, code_memory, code_size, uncompress_size ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ScriptModuleLoaderCode::unmarshal_code_ %s uncompress failed"
+			LOGGER_ERROR("ScriptModuleLoaderCode::unmarshal_code_ %s uncompress failed"
 				, pybind::string_to_char( _module )
 				);
 
 			return nullptr;
 		}
 
-		PyObject * py_module = SCRIPT_SERVICE( m_serviceProvider )
+		PyObject * py_module = SCRIPT_SERVICE()
 			->loadModuleBinary( _module, m_packagePath, code_buffer );
 
         return py_module;

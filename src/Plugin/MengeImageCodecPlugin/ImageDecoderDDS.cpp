@@ -30,7 +30,7 @@ namespace Menge
 
 		if( magic != FOURCC('D', 'D', 'S', ' ') )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDS::initialize invalid dds magic" 
+			LOGGER_ERROR("ImageDecoderDDS::initialize invalid dds magic" 
 				);
 
 			return false;
@@ -42,7 +42,7 @@ namespace Menge
 		//Check valid structure sizes
 		if( header.dwSize != 124 && header.ddspf.dwSize != 32)
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDS::initialize invalid dds file header" 
+			LOGGER_ERROR("ImageDecoderDDS::initialize invalid dds file header" 
                 );
 
 			return false;
@@ -90,7 +90,7 @@ namespace Menge
 		
 		if( (header.ddspf.dwFlags & DDPF_FOURCC) == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDS::initialize dds file no compress" 
+			LOGGER_ERROR("ImageDecoderDDS::initialize dds file no compress" 
 				);
 
 			return false;

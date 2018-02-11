@@ -107,8 +107,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	WinApplication::WinApplication() 
-		: m_serviceProvider(nullptr)
-		, m_loggerMessageBox(nullptr)	
+		: m_loggerMessageBox(nullptr)	
 		, m_fileLog(nullptr)
 	{
 	}
@@ -120,13 +119,13 @@ namespace Menge
 	bool WinApplication::initializeArchiveService_()
 	{
 		{
-			LOGGER_INFO(m_serviceProvider)("Initialize Zip...");
-			PLUGIN_CREATE( m_serviceProvider, MengeZip );
+			LOGGER_INFO("Initialize Zip...");
+			PLUGIN_CREATE( MengeZip );
 		}
 
 		{
-			LOGGER_INFO(m_serviceProvider)("Initialize LZ4...");
-			PLUGIN_CREATE( m_serviceProvider, MengeLZ4 );
+			LOGGER_INFO("Initialize LZ4...");
+			PLUGIN_CREATE( MengeLZ4 );
 		}
 
 		return true;
@@ -134,14 +133,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
 	{
-		FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "application.ini" );
+		FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( "application.ini" );
 
-		InputStreamInterfacePtr applicationInputStream = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr applicationInputStream = FILE_SERVICE()
 			->openInputFile( ConstString::none(), applicationPath, false );
 
 		if( applicationInputStream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeConfigEngine_ Invalid open application settings %s"
+			LOGGER_ERROR("WinApplication::initializeConfigEngine_ Invalid open application settings %s"
 				, applicationPath.c_str()
 				);
 
@@ -149,9 +148,9 @@ namespace Menge
 		}
 
 		IniUtil::IniStore ini;
-		if( IniUtil::loadIni( ini, applicationInputStream, m_serviceProvider ) == false )
+		if( IniUtil::loadIni( ini, applicationInputStream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeConfigEngine_ Invalid load application settings %s"
+			LOGGER_ERROR("WinApplication::initializeConfigEngine_ Invalid load application settings %s"
 				, applicationPath.c_str()
 				);
 
@@ -162,21 +161,21 @@ namespace Menge
 
 		if( gameIniPath == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeConfigEngine_ Not found Game Path %s"
+			LOGGER_ERROR("WinApplication::initializeConfigEngine_ Not found Game Path %s"
 				, applicationPath.c_str()
 				);
 
 			return false;
 		}
 
-		_path = Helper::stringizeString( m_serviceProvider, gameIniPath );
+		_path = Helper::stringizeString( gameIniPath );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeConfigEngine_()
 	{
-		LOGGER_WARNING(m_serviceProvider)("Inititalizing Config Manager..." );
+		LOGGER_WARNING("Inititalizing Config Manager..." );
 				
 		FilePath gameIniPath;
 		if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
@@ -184,10 +183,10 @@ namespace Menge
 			return false;
 		}
 
-		if( CONFIG_SERVICE(m_serviceProvider)
+		if( CONFIG_SERVICE()
 			->loadConfig( ConstString::none(), gameIniPath ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeConfigEngine_ invalid load config %s"				
+			LOGGER_ERROR("WinApplication::initializeConfigEngine_ invalid load config %s"				
 				, gameIniPath.c_str()
 				);
 
@@ -199,49 +198,49 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeFileEngine_()
 	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing File Service..." );
+		LOGGER_INFO( "Inititalizing File Service..." );
 
 		{
-			LOGGER_INFO(m_serviceProvider)("Initialize Win32 file group...");
-			PLUGIN_CREATE( m_serviceProvider, MengeWin32FileGroup );
+			LOGGER_INFO("Initialize Win32 file group...");
+			PLUGIN_CREATE( MengeWin32FileGroup );
 		}
 
 //#	ifndef _MSC_VER
-//			WINDOWSLAYER_SERVICE(m_serviceProvider)
+//			WINDOWSLAYER_SERVICE()
 //				->setModuleCurrentDirectory();
 //#	endif
 
 		WChar currentPath[MENGINE_MAX_PATH];
 
-		size_t currentPathLen = PLATFORM_SERVICE( m_serviceProvider )
+		size_t currentPathLen = PLATFORM_SERVICE()
 			->getCurrentPath( currentPath, MENGINE_MAX_PATH );
 		
 		if( currentPathLen == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to get current directory"
+			LOGGER_ERROR("WinApplication::setupFileService: failed to get current directory"
 				);
 
 			return false;
 		}
 
 		String utf8_currentPath;
-		if( Helper::unicodeToUtf8Size( m_serviceProvider, currentPath, currentPathLen, utf8_currentPath ) == false )
+		if( Helper::unicodeToUtf8Size( currentPath, currentPathLen, utf8_currentPath ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to convert %ls to utf8"
+			LOGGER_ERROR("WinApplication::setupFileService: failed to convert %ls to utf8"
 				, currentPath
 				);
 
 			return false;
 		}
 
-		LOGGER_WARNING(m_serviceProvider)("Current Path %ls"
+		LOGGER_WARNING("Current Path %ls"
 			, currentPath
 			);
 		
 		// mount root		
-        if( FILE_SERVICE( m_serviceProvider )->mountFileGroup( ConstString::none(), ConstString::none(), FilePath( ConstString::none() ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
+        if( FILE_SERVICE()->mountFileGroup( ConstString::none(), ConstString::none(), FilePath( ConstString::none() ), STRINGIZE_STRING_LOCAL( "dir" ) ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount application directory %ls"
+			LOGGER_ERROR("WinApplication::setupFileService: failed to mount application directory %ls"
 				, currentPath
 				);
 
@@ -250,9 +249,9 @@ namespace Menge
 
 #	ifndef MENGINE_MASTER_RELEASE
 		// mount root		
-		if( FILE_SERVICE( m_serviceProvider )->mountFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), ConstString::none(), FilePath( ConstString::none() ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "global" ) ) == false )
+		if( FILE_SERVICE()->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), ConstString::none(), FilePath( ConstString::none() ), STRINGIZE_STRING_LOCAL( "global" ) ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount dev directory %ls"
+			LOGGER_ERROR("WinApplication::setupFileService: failed to mount dev directory %ls"
 				, currentPath
 				);
 
@@ -268,7 +267,7 @@ namespace Menge
 		_wstring.clear();
 
 		WChar userPath[MENGINE_MAX_PATH];
-		size_t userPathLen = PLATFORM_SERVICE( m_serviceProvider )
+		size_t userPathLen = PLATFORM_SERVICE()
 			->getUserPath( userPath, MENGINE_MAX_PATH );
 
 		if( userPathLen == 0 )
@@ -288,9 +287,9 @@ namespace Menge
 		this->makeUserPath_( userPath );
 
 		String utf8_userPath;
-		if( Helper::unicodeToUtf8( m_serviceProvider, userPath, utf8_userPath ) == false )
+		if( Helper::unicodeToUtf8( userPath, utf8_userPath ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication: failed user directory %ls convert to ut8f"
+			LOGGER_ERROR("WinApplication: failed user directory %ls convert to ut8f"
 				, userPath.c_str()
 				);
 
@@ -298,10 +297,10 @@ namespace Menge
 		}
 
 		// mount user directory
-		if( FILE_SERVICE(m_serviceProvider)
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), ConstString::none(), Helper::stringizeFilePath( m_serviceProvider, utf8_userPath ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "global" ) ) == false )
+		if( FILE_SERVICE()
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), ConstString::none(), Helper::stringizeFilePath( utf8_userPath ), STRINGIZE_STRING_LOCAL( "global" ) ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication: failed to mount user directory %ls"
+			LOGGER_ERROR("WinApplication: failed to mount user directory %ls"
 				, userPath.c_str()
 				);
 
@@ -313,7 +312,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeLogFile_()
 	{
-		bool nologs = HAS_OPTION( m_serviceProvider, "nologs" );
+		bool nologs = HAS_OPTION( "nologs" );
 		
 		if( nologs == true )
 		{
@@ -326,9 +325,9 @@ namespace Menge
 		WString unicode_logFilename;
 		unicode_logFilename += L"Game";
 
-		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
-		bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
-		bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );
+		bool developmentMode = HAS_OPTION( "dev" );
+		bool roamingMode = HAS_OPTION( "roaming" );
+		bool noroamingMode = HAS_OPTION( "noroaming" );
 
 		if( developmentMode == true && roamingMode == false || noroamingMode == false )
 		{
@@ -339,28 +338,28 @@ namespace Menge
 		unicode_logFilename += L".log";
 
 		String utf8_logFilename;
-		if( Helper::unicodeToUtf8( m_serviceProvider, unicode_logFilename, utf8_logFilename ) == false )
+		if( Helper::unicodeToUtf8( unicode_logFilename, utf8_logFilename ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication: failed log directory %ls convert to ut8f"
+			LOGGER_ERROR("WinApplication: failed log directory %ls convert to ut8f"
 				, unicode_logFilename.c_str()
 				);
 
 			return false;
 		}
 
-		FilePath logFilename = Helper::stringizeFilePath( m_serviceProvider, utf8_logFilename );
+		FilePath logFilename = Helper::stringizeFilePath( utf8_logFilename );
 
-		OutputStreamInterfacePtr fileLogInterface = FILE_SERVICE( m_serviceProvider )
-			->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), logFilename );
+		OutputStreamInterfacePtr fileLogInterface = FILE_SERVICE()
+			->openOutputFile( STRINGIZE_STRING_LOCAL( "user" ), logFilename );
 
 		if( fileLogInterface != nullptr )
 		{
 			m_fileLog = new FactorableUnique<FileLogger>();
 
-			LOGGER_SERVICE(m_serviceProvider)
+			LOGGER_SERVICE()
 				->registerLogger( m_fileLog );
 
-			LOGGER_INFO(m_serviceProvider)("WinApplication: Starting log to %s"
+			LOGGER_INFO("WinApplication: Starting log to %s"
 				, logFilename.c_str()
 				);
 		}
@@ -370,7 +369,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeLogEngine_()
 	{
-		bool nologs = HAS_OPTION( m_serviceProvider, "nologs" );
+		bool nologs = HAS_OPTION( "nologs" );
 	
 		if( nologs == false )
 		{
@@ -378,15 +377,15 @@ namespace Menge
 
 			m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 
-			LOGGER_SERVICE( m_serviceProvider )
+			LOGGER_SERVICE()
 				->registerLogger( m_loggerMessageBox );
 		}
 				
 		EMessageLevel m_logLevel;
 
-		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
-		bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
-		bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );
+		bool developmentMode = HAS_OPTION( "dev" );
+		bool roamingMode = HAS_OPTION( "roaming" );
+		bool noroamingMode = HAS_OPTION( "noroaming" );
 
 		if( developmentMode == true && roamingMode == false || noroamingMode == true )
 		{
@@ -397,52 +396,52 @@ namespace Menge
 			m_logLevel = LM_ERROR;
 		}
 
-		if( HAS_OPTION( m_serviceProvider, "log:0" ) == true )
+		if( HAS_OPTION( "log:0" ) == true )
 		{
 			m_logLevel = LM_INFO;
 		}
-		else if( HAS_OPTION( m_serviceProvider, "log:1" ) == true )
+		else if( HAS_OPTION( "log:1" ) == true )
 		{
 			m_logLevel = LM_LOG;
 		}
-		else if( HAS_OPTION( m_serviceProvider, "log:2" ) == true )
+		else if( HAS_OPTION( "log:2" ) == true )
 		{
 			m_logLevel = LM_WARNING;
 		}
-		else if( HAS_OPTION( m_serviceProvider, "log:3" ) == true )
+		else if( HAS_OPTION( "log:3" ) == true )
 		{
 			m_logLevel = LM_ERROR;
 		}
-		else if( HAS_OPTION( m_serviceProvider, "log:4" ) == true )
+		else if( HAS_OPTION( "log:4" ) == true )
 		{
 			m_logLevel = LM_CRITICAL;
 		}
-		else if( HAS_OPTION( m_serviceProvider, "log:5" ) == true )
+		else if( HAS_OPTION( "log:5" ) == true )
 		{
 			m_logLevel = LM_FATAL;
 		}
 
-		LOGGER_SERVICE( m_serviceProvider )
+		LOGGER_SERVICE()
 			->setVerboseLevel( m_logLevel );
 
 		uint32_t verboseFlag = 0;
 
-		bool profiler = HAS_OPTION( m_serviceProvider, "profiler" );
+		bool profiler = HAS_OPTION( "profiler" );
 
 		if( profiler == true )
 		{
 			verboseFlag |= 0x00000001;
 		}
 
-		LOGGER_SERVICE( m_serviceProvider )
+		LOGGER_SERVICE()
 			->setVerboseFlag( verboseFlag );
 
-		if( HAS_OPTION( m_serviceProvider, "verbose" ) == true )
+		if( HAS_OPTION( "verbose" ) == true )
 		{
-			LOGGER_SERVICE( m_serviceProvider )
+			LOGGER_SERVICE()
 				->setVerboseLevel( LM_MAX );
 
-			LOGGER_INFO(m_serviceProvider)( "Verbose logging mode enabled" );
+			LOGGER_INFO( "Verbose logging mode enabled" );
 		}
 
 		return true;
@@ -456,11 +455,13 @@ namespace Menge
 		ServiceProviderInterface * serviceProvider;
 		SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
 
+        SERVICE_PROVIDER_SETUP( serviceProvider );
+
 		m_serviceProvider = serviceProvider;
 
-        SERVICE_CREATE( m_serviceProvider, FactoryService );
+        SERVICE_CREATE( FactoryService );
 
-		SERVICE_CREATE( m_serviceProvider, OptionsService );
+		SERVICE_CREATE( OptionsService );
 
 		LPCWSTR lpCmdLine = GetCommandLineW();
 
@@ -506,34 +507,34 @@ namespace Menge
 
 		LocalFree( szArglist );
 
-		OPTIONS_SERVICE( m_serviceProvider )
+		OPTIONS_SERVICE()
 			->setArgs( args );
 
 
-		SERVICE_CREATE( m_serviceProvider, StringizeService );
-		SERVICE_CREATE( m_serviceProvider, LoggerService );
+		SERVICE_CREATE( StringizeService );
+		SERVICE_CREATE( LoggerService );
 
 		if( this->initializeLogEngine_() == false )
 		{
 			return false;
 		}
 
-		SERVICE_CREATE( m_serviceProvider, WindowsLayer );
-		SERVICE_CREATE( m_serviceProvider, Platform );
+		SERVICE_CREATE( WindowsLayer );
+		SERVICE_CREATE( Platform );
 
-		SERVICE_CREATE( m_serviceProvider, UnicodeSystem );
+		SERVICE_CREATE( UnicodeSystem );
 
-		SERVICE_CREATE( m_serviceProvider, PluginSystem );
-		SERVICE_CREATE( m_serviceProvider, PluginService );
+		SERVICE_CREATE( PluginSystem );
+		SERVICE_CREATE( PluginService );
 		
-		SERVICE_CREATE( m_serviceProvider, FileService );
+		SERVICE_CREATE( FileService );
 
 		if( this->initializeFileEngine_() == false )
 		{
 			return false;
 		}
 
-		SERVICE_CREATE( m_serviceProvider, ConfigService );
+		SERVICE_CREATE( ConfigService );
 
 		if( this->initializeConfigEngine_() == false )
 		{
@@ -552,7 +553,7 @@ namespace Menge
 
 
 
-		SERVICE_CREATE( m_serviceProvider, ArchiveService );	
+		SERVICE_CREATE( ArchiveService );	
 
 		if( this->initializeArchiveService_() == false )
 		{
@@ -561,73 +562,73 @@ namespace Menge
 
 		
 		
-		SERVICE_CREATE( m_serviceProvider, ThreadSystem );
-		SERVICE_CREATE( m_serviceProvider, ThreadService );		
+		SERVICE_CREATE( ThreadSystem );
+		SERVICE_CREATE( ThreadService );		
 
-		SERVICE_CREATE( m_serviceProvider, NotificationService );
+		SERVICE_CREATE( NotificationService );
 
-		SERVICE_CREATE( m_serviceProvider, RenderSystem );
+		SERVICE_CREATE( RenderSystem );
 		
 
-		SERVICE_CREATE( m_serviceProvider, SoundSystem );
+		SERVICE_CREATE( SoundSystem );
 		
-		bool muteMode = HAS_OPTION( m_serviceProvider, "mute" );
+		bool muteMode = HAS_OPTION( "mute" );
 		
-		if( muteMode == true || SERVICE_EXIST( m_serviceProvider, Menge::SoundSystemInterface ) == false )
+		if( muteMode == true || SERVICE_EXIST( Menge::SoundSystemInterface ) == false )
 		{
-			SERVICE_CREATE( m_serviceProvider, SilentSoundSystem );
+			SERVICE_CREATE( SilentSoundSystem );
 		}
 
-		SERVICE_CREATE( m_serviceProvider, SoundService );
+		SERVICE_CREATE( SoundService );
 
-		SERVICE_CREATE( m_serviceProvider, ScriptService );
-		SERVICE_CREATE( m_serviceProvider, ModuleService );
-		SERVICE_CREATE( m_serviceProvider, CodecService );
-		SERVICE_CREATE( m_serviceProvider, DataService );
-		SERVICE_CREATE( m_serviceProvider, PrefetcherService );
-		SERVICE_CREATE( m_serviceProvider, MemoryService );
-		SERVICE_CREATE( m_serviceProvider, ConverterService );
-		SERVICE_CREATE( m_serviceProvider, InputService );
+		SERVICE_CREATE( ScriptService );
+		SERVICE_CREATE( ModuleService );
+		SERVICE_CREATE( CodecService );
+		SERVICE_CREATE( DataService );
+		SERVICE_CREATE( PrefetcherService );
+		SERVICE_CREATE( MemoryService );
+		SERVICE_CREATE( ConverterService );
+		SERVICE_CREATE( InputService );
 		
-		SERVICE_CREATE( m_serviceProvider, HttpSystem );
+		SERVICE_CREATE( HttpSystem );
 
-		SERVICE_CREATE( m_serviceProvider, TimerSystem );
-		SERVICE_CREATE( m_serviceProvider, TimerService );
+		SERVICE_CREATE( TimerSystem );
+		SERVICE_CREATE( TimerService );
 
 #	ifdef _DEBUG
 		{
-			bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
-			bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
-			bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );
+			bool developmentMode = HAS_OPTION( "dev" );
+			bool roamingMode = HAS_OPTION( "roaming" );
+			bool noroamingMode = HAS_OPTION( "noroaming" );
 
 			if( developmentMode == true && roamingMode == false || noroamingMode == true )
 			{
 				WString userPath;
 				this->makeUserPath_( userPath );
 
-				CriticalErrorsMonitor::run( userPath, m_serviceProvider );
+				CriticalErrorsMonitor::run( userPath );
 			}
 		}
 #	endif
 
-		PythonScriptWrapper::constsWrap( m_serviceProvider );
-		PythonScriptWrapper::mathWrap( m_serviceProvider );
-		PythonScriptWrapper::nodeWrap( m_serviceProvider );
-		PythonScriptWrapper::helperWrap( m_serviceProvider );
-		PythonScriptWrapper::soundWrap( m_serviceProvider );
-		PythonScriptWrapper::entityWrap( m_serviceProvider );
+		PythonScriptWrapper::constsWrap();
+		PythonScriptWrapper::mathWrap();
+		PythonScriptWrapper::nodeWrap();
+		PythonScriptWrapper::helperWrap();
+		PythonScriptWrapper::soundWrap();
+		PythonScriptWrapper::entityWrap();
 
-		SERVICE_CREATE( m_serviceProvider, Application );
+		SERVICE_CREATE( Application );
 
 		// seed randomizer
 		LARGE_INTEGER randomSeed;
 		::QueryPerformanceCounter(&randomSeed);
 		srand( randomSeed.LowPart );
 
-		LOGGER_WARNING( m_serviceProvider )("initialize Application...");
+		LOGGER_WARNING("initialize Application...");
 	
 		TVectorWString plugins;
-		CONFIG_VALUES(m_serviceProvider, "Plugins", "Name", plugins);
+		CONFIG_VALUES("Plugins", "Name", plugins);
 
 		for( TVectorWString::const_iterator
 			it = plugins.begin(),
@@ -637,10 +638,10 @@ namespace Menge
 		{
 			const WString & pluginName = *it;
 
-			if( PLUGIN_SERVICE(m_serviceProvider)
+			if( PLUGIN_SERVICE()
 				->loadPlugin( pluginName ) == false )
 			{
-				LOGGER_CRITICAL(m_serviceProvider)("Application Failed to load plugin %ls"
+				LOGGER_CRITICAL("Application Failed to load plugin %ls"
 					, pluginName.c_str()
 					);
 
@@ -649,10 +650,10 @@ namespace Menge
 		}
 
 #	define MENGINE_ADD_PLUGIN( Name, Info )\
-		do{LOGGER_INFO(m_serviceProvider)( Info );\
-		if(	PLUGIN_CREATE(m_serviceProvider, Name) == false ){\
-		LOGGER_ERROR(m_serviceProvider)( "Invalid %s", Info );}else{\
-		LOGGER_WARNING(m_serviceProvider)( "Successful %s", Info );}}while(false, false)
+		do{LOGGER_INFO( Info );\
+		if(	PLUGIN_CREATE(Name) == false ){\
+		LOGGER_ERROR( "Invalid %s", Info );}else{\
+		LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
 
         MENGINE_ADD_PLUGIN( MengeImageCodec, "initialize Plugin Image Codec..." );
         MENGINE_ADD_PLUGIN( MengeSoundCodec, "initialize Plugin Sound Codec..." );
@@ -677,19 +678,23 @@ namespace Menge
 
 #	undef MENGINE_ADD_PLUGIN
 
-#	ifdef _DEBUG
+#ifdef MENGINE_MASTER_RELEASE
+        bool devplugins = false;
+#else
+#ifdef _DEBUG
 		bool devplugins = true;
-#	else
-		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+#else
+		bool developmentMode = HAS_OPTION( "dev" );
 		bool devplugins = developmentMode;
-#	endif
+#endif
+#endif
 						
-		bool nodevplugins = HAS_OPTION( m_serviceProvider, "nodevplugins" );
+		bool nodevplugins = HAS_OPTION( "nodevplugins" );
 
 		if( devplugins == true && nodevplugins == false )
 		{
 			TVectorWString devPlugins;
-			CONFIG_VALUES(m_serviceProvider, "DevPlugins", "Name", devPlugins);
+			CONFIG_VALUES("DevPlugins", "Name", devPlugins);
 
 			for( TVectorWString::const_iterator
 				it = devPlugins.begin(),
@@ -699,20 +704,20 @@ namespace Menge
 			{
 				const WString & pluginName = *it;
 
-				if( PLUGIN_SERVICE(m_serviceProvider)
+				if( PLUGIN_SERVICE()
 					->loadPlugin( pluginName ) == false )
 				{
-					LOGGER_WARNING(m_serviceProvider)("Application Failed to load dev plugin %ls"
+					LOGGER_WARNING("Application Failed to load dev plugin %ls"
 						, pluginName.c_str()
 						);
 				}
 			}
 		}
 
-		SERVICE_CREATE( m_serviceProvider, ParticleService );
+		SERVICE_CREATE( ParticleService );
 
 		TVectorString modules;
-		CONFIG_VALUES(m_serviceProvider, "Modules", "Name", modules);
+		CONFIG_VALUES("Modules", "Name", modules);
 
 		for( TVectorString::const_iterator
 			it = modules.begin(),
@@ -722,49 +727,49 @@ namespace Menge
 		{
 			const String & moduleName = *it;
 
-			if( MODULE_SERVICE(m_serviceProvider)
-				->runModule( Helper::stringizeString(m_serviceProvider, moduleName) ) == false )
+			if( MODULE_SERVICE()
+				->runModule( Helper::stringizeString(moduleName) ) == false )
 			{
-				LOGGER_CRITICAL(m_serviceProvider)("Application Failed to run module %s"
+				LOGGER_CRITICAL("Application Failed to run module %s"
 					, moduleName.c_str()
 					);
 			}
 		}
 
-		FilePath renderMaterialsPath = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaterials", FilePath(ConstString::none()) );
+		FilePath renderMaterialsPath = CONFIG_VALUE( "Engine", "RenderMaterials", FilePath(ConstString::none()) );
 
 		if( renderMaterialsPath.empty() == false )
 		{
-			if( RENDERMATERIAL_SERVICE( m_serviceProvider )
+			if( RENDERMATERIAL_SERVICE()
 				->loadMaterials( ConstString::none(), renderMaterialsPath ) == false )
 			{
 				return false;
 			}
 		}
 
-		LOGGER_INFO(m_serviceProvider)( "Application Create..."
+		LOGGER_INFO( "Application Create..."
 			);
 
 		FilePath resourceIniPath;
 		if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
 		{
-			LOGGER_CRITICAL(m_serviceProvider)("Application invalid setup resource path"
+			LOGGER_CRITICAL("Application invalid setup resource path"
 				);
 
 			return false;
 		}
 
-		if( APPLICATION_SERVICE( m_serviceProvider )->initializeGame( ConstString::none(), resourceIniPath ) == false )
+		if( APPLICATION_SERVICE()->initializeGame( ConstString::none(), resourceIniPath ) == false )
 		{
-			LOGGER_CRITICAL(m_serviceProvider)("Application invalid initialize game"
+			LOGGER_CRITICAL("Application invalid initialize game"
 				);
 
 			return false;
 		}
 
-		LOGGER_INFO(m_serviceProvider)( "Creating Render Window..." );
+		LOGGER_INFO( "Creating Render Window..." );
 
-		bool fullscreen = APPLICATION_SERVICE( m_serviceProvider )
+		bool fullscreen = APPLICATION_SERVICE()
 			->getFullscreenMode();
 		
 		//if( m_application->isValidWindowMode() == false )
@@ -772,34 +777,34 @@ namespace Menge
 		//    fullscreen = true;
 		//}
 
-		if( WINDOWSLAYER_SERVICE(m_serviceProvider)->setProcessDPIAware() == false )
+		if( WINDOWSLAYER_SERVICE()->setProcessDPIAware() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Application not setup Process DPI Aware"
+			LOGGER_ERROR("Application not setup Process DPI Aware"
 				);
 		}
 
-		const String & projectTitle = APPLICATION_SERVICE( m_serviceProvider )
+		const String & projectTitle = APPLICATION_SERVICE()
 			->getProjectTitle();
 
 		WString wprojectTitle;
-		if( Helper::utf8ToUnicodeSize( m_serviceProvider, projectTitle.c_str(), projectTitle.size(), wprojectTitle ) == false )
+		if( Helper::utf8ToUnicodeSize( projectTitle.c_str(), projectTitle.size(), wprojectTitle ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Application project title %s not convert to unicode"
+			LOGGER_ERROR("Application project title %s not convert to unicode"
 				, projectTitle.c_str()
 				);
 		}
 
 		Resolution windowResolution;
-		APPLICATION_SERVICE( m_serviceProvider )
+		APPLICATION_SERVICE()
 			->calcWindowResolution( windowResolution );
 
-        PLATFORM_SERVICE( m_serviceProvider )
+        PLATFORM_SERVICE()
             ->setIcon( IDI_MENGE );
 
-        PLATFORM_SERVICE( m_serviceProvider )
+        PLATFORM_SERVICE()
             ->setProjectTitle( wprojectTitle );
 
-		if( PLATFORM_SERVICE( m_serviceProvider )
+		if( PLATFORM_SERVICE()
 			->createWindow( windowResolution, fullscreen ) == false )
 		{
 			return false;
@@ -808,29 +813,29 @@ namespace Menge
 		//mt::vec2f point;
 		//this->calcCursorPosition( point );
 
-		//INPUT_SERVICE( m_serviceProvider )
+		//INPUT_SERVICE()
 		//	->setCursorPosition( 0, point );
 
-		if( APPLICATION_SERVICE( m_serviceProvider )->createRenderWindow() == false )
+		if( APPLICATION_SERVICE()->createRenderWindow() == false )
 		{
-			LOGGER_CRITICAL(m_serviceProvider)("Application not create render window"
+			LOGGER_CRITICAL("Application not create render window"
 				);
 
 			return false;
 		}       
 
-		bool vsync = APPLICATION_SERVICE( m_serviceProvider )
+		bool vsync = APPLICATION_SERVICE()
 			->getVSync();
 
-		bool maxfps = HAS_OPTION( m_serviceProvider, "maxfps" );
+		bool maxfps = HAS_OPTION( "maxfps" );
 	
 		if( maxfps == true && vsync == true )
 		{
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->setVSync( false );
 		}
 
-        GAME_SERVICE( m_serviceProvider )
+        GAME_SERVICE()
             ->run();
 
 		return true;
@@ -838,60 +843,60 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::loop()
 	{
-		PLATFORM_SERVICE( m_serviceProvider )
+		PLATFORM_SERVICE()
 			->update();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::finalize()
 	{
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ModuleServiceInterface );
+		SERVICE_FINALIZE( Menge::ModuleServiceInterface );
 
-		PLATFORM_SERVICE(m_serviceProvider)
+		PLATFORM_SERVICE()
 			->stop();		
 		
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ApplicationInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::HttpSystemInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::PrefetcherServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::DataServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::PluginServiceInterface );		
-		SERVICE_FINALIZE( m_serviceProvider, Menge::InputServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeSystemInterface );
+		SERVICE_FINALIZE( Menge::ApplicationInterface );
+		SERVICE_FINALIZE( Menge::HttpSystemInterface );
+		SERVICE_FINALIZE( Menge::PrefetcherServiceInterface );
+		SERVICE_FINALIZE( Menge::DataServiceInterface );
+		SERVICE_FINALIZE( Menge::PluginServiceInterface );		
+		SERVICE_FINALIZE( Menge::InputServiceInterface );
+		SERVICE_FINALIZE( Menge::UnicodeSystemInterface );
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::FileServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::CodecServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ParticleSystemInterface2 );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ParticleServiceInterface2 );
+		SERVICE_FINALIZE( Menge::FileServiceInterface );
+		SERVICE_FINALIZE( Menge::CodecServiceInterface );
+		SERVICE_FINALIZE( Menge::ParticleSystemInterface2 );
+		SERVICE_FINALIZE( Menge::ParticleServiceInterface2 );
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::SoundServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::SoundSystemInterface );
+		SERVICE_FINALIZE( Menge::SoundServiceInterface );
+		SERVICE_FINALIZE( Menge::SoundSystemInterface );
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::PrototypeServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ScriptServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ConverterServiceInterface );
+		SERVICE_FINALIZE( Menge::PrototypeServiceInterface );
+		SERVICE_FINALIZE( Menge::ScriptServiceInterface );
+		SERVICE_FINALIZE( Menge::ConverterServiceInterface );
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderSystemInterface );
+		SERVICE_FINALIZE( Menge::RenderSystemInterface );
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ConfigServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::StringizeServiceInterface );
+		SERVICE_FINALIZE( Menge::ConfigServiceInterface );
+		SERVICE_FINALIZE( Menge::StringizeServiceInterface );
 		
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ArchiveServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::MemoryServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::NotificationServiceInterface );
+		SERVICE_FINALIZE( Menge::ArchiveServiceInterface );
+		SERVICE_FINALIZE( Menge::MemoryServiceInterface );
+		SERVICE_FINALIZE( Menge::NotificationServiceInterface );
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ThreadServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ThreadSystemInterface );
+		SERVICE_FINALIZE( Menge::ThreadServiceInterface );
+		SERVICE_FINALIZE( Menge::ThreadSystemInterface );
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::TimerServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::TimerSystemInterface );
+		SERVICE_FINALIZE( Menge::TimerServiceInterface );
+		SERVICE_FINALIZE( Menge::TimerSystemInterface );
 
-		SERVICE_FINALIZE(m_serviceProvider, Menge::PlatformInterface);
-		SERVICE_FINALIZE( m_serviceProvider, Menge::WindowsLayerInterface );
+		SERVICE_FINALIZE(Menge::PlatformInterface);
+		SERVICE_FINALIZE( Menge::WindowsLayerInterface );
         
 		if( m_fileLog != nullptr )
 		{
-			if( SERVICE_EXIST( m_serviceProvider, Menge::LoggerServiceInterface ) == true )
+			if( SERVICE_EXIST( Menge::LoggerServiceInterface ) == true )
 			{
-				LOGGER_SERVICE( m_serviceProvider )
+				LOGGER_SERVICE()
 					->unregisterLogger( m_fileLog );
 			}
 
@@ -900,16 +905,16 @@ namespace Menge
 
 		if( m_loggerMessageBox != nullptr )
 		{
-			if( SERVICE_EXIST( m_serviceProvider, Menge::LoggerServiceInterface ) == true )
+			if( SERVICE_EXIST( Menge::LoggerServiceInterface ) == true )
 			{
-				LOGGER_SERVICE( m_serviceProvider )
+				LOGGER_SERVICE()
 					->unregisterLogger( m_loggerMessageBox );
 			}
             
             m_loggerMessageBox = nullptr;
 		}
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::LoggerServiceInterface );
+		SERVICE_FINALIZE( Menge::LoggerServiceInterface );
 
 		SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
 		

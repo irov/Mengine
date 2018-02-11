@@ -35,7 +35,7 @@ namespace Menge
 
         if( err != 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLThreadMutex::lock invalid lock"
+            LOGGER_ERROR("SDLThreadMutex::lock invalid lock"
                 );
         }
     }
@@ -46,7 +46,7 @@ namespace Menge
 
         if( err != 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLThreadMutex::unlock invalid unlock"
+            LOGGER_ERROR("SDLThreadMutex::unlock invalid unlock"
                 );
         }
     }
@@ -63,7 +63,7 @@ namespace Menge
         {
             const char * err_msg = SDL_GetError();
             
-            LOGGER_ERROR( m_serviceProvider )("SDLThreadMutex::lock invalid try lock (msg %s)"
+            LOGGER_ERROR("SDLThreadMutex::lock invalid try lock (msg %s)"
                 , err_msg
                 );
         }

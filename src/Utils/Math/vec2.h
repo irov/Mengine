@@ -101,7 +101,8 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE vec2f perp_left(const vec2f&	in);
 
 	MENGINE_MATH_FUNCTION_INLINE float is_left_v2(const vec2f& P0, const vec2f& P1, const vec2f& P2);
-	MENGINE_MATH_FUNCTION_INLINE float pseudo_cross_v2(const vec2f& a, const vec2f& b);
+    MENGINE_MATH_FUNCTION_INLINE float cross_v2f( float a, float b, float c, float d );
+	MENGINE_MATH_FUNCTION_INLINE float cross_v2(const vec2f& a, const vec2f& b);
 
 	MENGINE_MATH_FUNCTION_INLINE void project_v2_v2(vec2f & out, const vec2f& a, const vec2f& b);
 

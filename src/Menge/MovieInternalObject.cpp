@@ -53,7 +53,7 @@ namespace Menge
     {
 		if( m_movie == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_compile '%s' movie not setup"
+			LOGGER_ERROR("MovieInternalObject::_compile '%s' movie not setup"
 				, m_name.c_str()
 				);
 
@@ -62,7 +62,7 @@ namespace Menge
 
         if( m_resourceInternalObject == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_compile '%s' resource not setup"
+            LOGGER_ERROR("MovieInternalObject::_compile '%s' resource not setup"
                 , m_name.c_str()
                 );
             
@@ -71,7 +71,7 @@ namespace Menge
 
         if( m_resourceInternalObject.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_compile '%s' resource '%s' not compile"
+            LOGGER_ERROR("MovieInternalObject::_compile '%s' resource '%s' not compile"
                 , m_name.c_str()
                 , m_resourceInternalObject->getName().c_str()
                 );
@@ -85,11 +85,11 @@ namespace Menge
         pybind::object py_object = EVENTABLE_METHODR( m_movie, EVENT_MOVIE_GET_INTERNAL, pybind::object() )
             ->onMovieGetInternal( internalGroup, internalName );
 		//pybind::object py_object;
-		//EVENTABLE_ASK( m_serviceProvider, m_movie, EVENT_MOVIE_GET_INTERNAL, py_object )(internalGroup, internalName);
+		//EVENTABLE_ASK( m_movie, EVENT_MOVIE_GET_INTERNAL, py_object )(internalGroup, internalName);
 
 		if( py_object.is_invalid() == true )
         {
-            LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_compile '%s' resource '%s' can't find internal object '%s:%s'"
+            LOGGER_ERROR("MovieInternalObject::_compile '%s' resource '%s' can't find internal object '%s:%s'"
                 , m_name.c_str()
                 , m_resourceInternalObject->getName().c_str()
                 , internalGroup.c_str()
@@ -120,14 +120,14 @@ namespace Menge
 
 		Node * node = EVENTABLE_METHODR( m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, nullptr )
             ->onMovieActivateInternal( m_internalObject );
-		//EVENTABLE_ASK( m_serviceProvider, m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, node )(m_internalObject);
+		//EVENTABLE_ASK( m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, node )(m_internalObject);
 
 		if( node == nullptr )
 		{
 			const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
 			const ConstString & internalName = m_resourceInternalObject->getInternalName();
 
-			LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_activate '%s' resource '%s' invalid get internal node '%s:%s'"
+			LOGGER_ERROR("MovieInternalObject::_activate '%s' resource '%s' invalid get internal node '%s:%s'"
 				, m_name.c_str()
 				, m_resourceInternalObject->getName().c_str()
 				, internalGroup.c_str()
@@ -155,7 +155,7 @@ namespace Menge
 				
         EVENTABLE_METHOD( m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL )
             ->onMovieDeactivateInternal( m_internalObject );
-		//EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL)( m_internalObject );
+		//EVENTABLE_CALL(m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL)( m_internalObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::_setLocalHide( bool _hide )

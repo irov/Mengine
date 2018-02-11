@@ -20,7 +20,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Graveyard::_initialize()
 	{
-		m_graveyardTime = CONFIG_VALUE(m_serviceProvider, "Engine", "GraveyardTime", 1000.f);
+		m_graveyardTime = CONFIG_VALUE("Engine", "GraveyardTime", 1000.f);
 
 		return true;
 	}
@@ -198,7 +198,7 @@ namespace Menge
 
 		RenderTextureGraveEntry & entry = *it_found;
 
-		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE( m_serviceProvider )
+		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
 			->createRenderTexture( entry.image, entry.width, entry.height );
 
 		entry.image = nullptr;

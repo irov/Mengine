@@ -18,18 +18,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PluginAmplifier::_initialize()
 	{
-		SERVICE_CREATE( m_serviceProvider, Amplifier );
+		SERVICE_CREATE( Amplifier );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PluginAmplifier::_finalize()
 	{
-		SERVICE_FINALIZE( m_serviceProvider, Menge::AmplifierInterface );
+		SERVICE_FINALIZE( Menge::AmplifierInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PluginAmplifier::_destroy()
 	{
-		SERVICE_DESTROY( m_serviceProvider, Menge::AmplifierInterface );
+		SERVICE_DESTROY( Menge::AmplifierInterface );
 	}
 }

@@ -57,7 +57,7 @@ namespace Menge
 	{
 		if( m_offsets.empty() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TimelineService::update invalid complete times"
+			LOGGER_ERROR("TimelineService::update invalid complete times"
 				);
 
 			return;

@@ -26,7 +26,7 @@ namespace Menge
 	{
 		if( m_resourceSound == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_compile: '%s' resource is null"
+			LOGGER_ERROR("SoundEmitter::_compile: '%s' resource is null"
 				, this->getName().c_str()				
 				);
 
@@ -35,7 +35,7 @@ namespace Menge
 
         if( m_resourceSound.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_compile: '%s' resource '%s' not compile"
+            LOGGER_ERROR("SoundEmitter::_compile: '%s' resource '%s' not compile"
                 , this->getName().c_str()
                 , m_resourceSound->getName().c_str()
                 );
@@ -47,7 +47,7 @@ namespace Menge
 
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_compile: '%s' sound buffer not create"
+            LOGGER_ERROR("SoundEmitter::_compile: '%s' sound buffer not create"
                 , this->getName().c_str() 
                 );
 
@@ -56,22 +56,22 @@ namespace Menge
 
 		bool streamable = m_resourceSound->isStreamable();
 
-		m_sourceID = SOUND_SERVICE(m_serviceProvider)
+		m_sourceID = SOUND_SERVICE()
 			->createSoundSource( m_isHeadMode, m_soundBuffer, ESST_SOUND, streamable );
 
 		if( m_sourceID == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_compile: sound emitter '%s' not compiled"
+			LOGGER_ERROR("SoundEmitter::_compile: sound emitter '%s' not compiled"
 				, this->getName().c_str() 
 				);
 
 			return false;
 		}
 
-		SOUND_SERVICE(m_serviceProvider)
+		SOUND_SERVICE()
 			->setSourceListener( m_sourceID, this );
 
-		SOUND_SERVICE(m_serviceProvider)
+		SOUND_SERVICE()
 			->setLoop( m_sourceID, m_loop );
 
 		float volume = m_resourceSound->getDefaultVolume();
@@ -82,10 +82,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceSound::_release()
 	{ 
-		if( SOUND_SERVICE(m_serviceProvider)
+		if( SOUND_SERVICE()
 			->releaseSoundSource( m_sourceID ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_release %s emitter invalid release sound %d"
+			LOGGER_ERROR("SoundEmitter::_release %s emitter invalid release sound %d"
 				, this->getName().c_str()
 				, m_sourceID
 				);
@@ -162,7 +162,7 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_PAUSE )
             ->onAnimatablePause( m_enumerator );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_SOUND_PAUSE )(this);
+		//EVENTABLE_CALL( this, EVENT_SOUND_PAUSE )(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceSound::onSoundStop( uint32_t _soundId )
@@ -186,10 +186,10 @@ namespace Menge
 			return false;
 		}
         
-		if( SOUND_SERVICE(m_serviceProvider)
+		if( SOUND_SERVICE()
 			->play( m_sourceID ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_play %s invalid play [%d] resource %s"
+            LOGGER_ERROR("SoundEmitter::_play %s invalid play [%d] resource %s"
                 , this->getName().c_str()
                 , m_sourceID
                 , m_resourceSound->getName().c_str()
@@ -219,7 +219,7 @@ namespace Menge
 			return;
 		}
 		
-		SOUND_SERVICE(m_serviceProvider)
+		SOUND_SERVICE()
 			->pause( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -233,7 +233,7 @@ namespace Menge
 			return;
 		}
 
-		SOUND_SERVICE(m_serviceProvider)
+		SOUND_SERVICE()
 			->resume( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -241,28 +241,28 @@ namespace Menge
 	{
 		if( m_sourceID != 0 )
 		{
-			SOUND_SERVICE(m_serviceProvider)
+			SOUND_SERVICE()
 				->stop( m_sourceID );
 		}
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
             ->onAnimatableStop( _enumerator );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_SOUND_END )(this, _enumerator, false);
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( this, EVENT_SOUND_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceSound::_end( uint32_t _enumerator )
 	{
 		if( m_sourceID != 0 )
 		{
-			SOUND_SERVICE(m_serviceProvider)
+			SOUND_SERVICE()
 				->stop( m_sourceID );
 		}
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
             ->onAnimatableEnd( _enumerator );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_SOUND_END )(this, _enumerator, true);
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( this, EVENT_SOUND_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceSound::_setVolume( float _volume )
@@ -279,10 +279,10 @@ namespace Menge
 			return;
 		}        
 
-		if( SOUND_SERVICE(m_serviceProvider)
+		if( SOUND_SERVICE()
 			->setSourceVolume( m_sourceID, m_volume, 0.f ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEmitter::setVolume invalid %s:%d %f"
+			LOGGER_ERROR("SoundEmitter::setVolume invalid %s:%d %f"
 				, m_resourceSound->getName().c_str()
                 , m_sourceID
                 , m_volume
@@ -304,7 +304,7 @@ namespace Menge
 			return;
 		}
 		
-		SOUND_SERVICE(m_serviceProvider)
+		SOUND_SERVICE()
 			->setLoop( m_sourceID, m_loop );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -315,7 +315,7 @@ namespace Menge
 			return 0.f;
 		}
 
-		float lengthMs = SOUND_SERVICE(m_serviceProvider)
+		float lengthMs = SOUND_SERVICE()
 			->getDuration( m_sourceID );
 	
 		return lengthMs;
@@ -340,7 +340,7 @@ namespace Menge
 			return;
 		}
 
-        float lengthMs = SOUND_SERVICE(m_serviceProvider)
+        float lengthMs = SOUND_SERVICE()
             ->getDuration( m_sourceID );
 
         float pos = _timing;
@@ -349,7 +349,7 @@ namespace Menge
             pos = lengthMs;
         }
 
-		SOUND_SERVICE(m_serviceProvider)
+		SOUND_SERVICE()
 			->setPosMs( m_sourceID, pos );
 	}
 	//////////////////////////////////////////////////////////////////////////

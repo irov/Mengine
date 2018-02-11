@@ -25,10 +25,10 @@ namespace Menge
 	bool Win32FileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath& _filePath )
 	{        
         WChar fullPath[MENGINE_MAX_PATH];
-        if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+        if( WINDOWSLAYER_SERVICE()
 			->concatenateFilePath( _relationPath, _folderPath, _filePath, fullPath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32OutputStream::open invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR("Win32OutputStream::open invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()
                 , _filePath.c_str()
                 );
@@ -36,7 +36,7 @@ namespace Menge
             return false;
         }
 
-		m_hFile = WINDOWSLAYER_SERVICE(m_serviceProvider)->createFile( 
+		m_hFile = WINDOWSLAYER_SERVICE()->createFile( 
             fullPath
             , GENERIC_WRITE
             , FILE_SHARE_READ | FILE_SHARE_WRITE
@@ -45,7 +45,7 @@ namespace Menge
 
 		if ( m_hFile == INVALID_HANDLE_VALUE)
 		{
-            LOGGER_ERROR(m_serviceProvider)("Win32OutputStream::open %ls invalid open"
+            LOGGER_ERROR("Win32OutputStream::open %ls invalid open"
                 , fullPath
                 );
 
@@ -62,7 +62,7 @@ namespace Menge
 
         if( result == FALSE )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32OutputStream::write invalid %d"
+            LOGGER_ERROR("Win32OutputStream::write invalid %d"
 				, _size
                 );
 

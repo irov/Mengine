@@ -20,7 +20,7 @@ namespace Menge
 	class Win32AlreadyRunningMonitor
 	{
 	public:
-		Win32AlreadyRunningMonitor( ServiceProviderInterface * _serviceProvider );
+		Win32AlreadyRunningMonitor();
 		~Win32AlreadyRunningMonitor();
 
 	public:
@@ -28,8 +28,6 @@ namespace Menge
 		void stop();
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		HANDLE m_mutex;		
 	};
 }

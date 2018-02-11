@@ -90,10 +90,10 @@ namespace Menge
 
 		if( _converter.empty() == false )
 		{
-			if( CONVERTER_SERVICE(m_serviceProvider)
+			if( CONVERTER_SERVICE()
 				->convert( _converter, m_category, _path, _out ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceReference::convertDefault_: '%s' can't convert '%s':'%s'"
+				LOGGER_ERROR("ResourceReference::convertDefault_: '%s' can't convert '%s':'%s'"
 					, this->getName().c_str() 
 					, _path.c_str()
 					, _converter.c_str()
@@ -113,12 +113,12 @@ namespace Menge
 			return false;
 		}
 
-		const ConstString & codecType = CODEC_SERVICE( m_serviceProvider )
+		const ConstString & codecType = CODEC_SERVICE()
 			->findCodecType( _path );
 
 		if( codecType.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceReference::convertDefault_: '%s' you must determine codec for file '%s'"
+			LOGGER_ERROR("ResourceReference::convertDefault_: '%s' you must determine codec for file '%s'"
 				, this->getName().c_str()
 				, _path.c_str()
 				);
@@ -135,14 +135,14 @@ namespace Menge
 	{
 		bool result = this->compile();
 
-        //LOGGER_WARNING(m_serviceProvider)("Resource compile %s %s %s"
+        //LOGGER_WARNING("Resource compile %s %s %s"
         //    , this->getName().c_str()
         //    , this->getType().c_str()
         //    , this->getCategory().c_str()
         //    );
 
 #   ifndef MENGINE_MASTER_RELEASE
-        NOTIFICATION_SERVICE(m_serviceProvider)
+        NOTIFICATION_SERVICE()
             ->notify( NOTIFICATOR_RESOURCE_COMPILE, this );
 #   endif
 
@@ -154,7 +154,7 @@ namespace Menge
 		this->release();
 
 #   ifndef MENGINE_MASTER_RELEASE
-        NOTIFICATION_SERVICE(m_serviceProvider)
+        NOTIFICATION_SERVICE()
             ->notify( NOTIFICATOR_RESOURCE_RELEASE, this );
 #	endif
 	}
@@ -163,7 +163,7 @@ namespace Menge
 	{
 		if( this->incrementReference() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceReference::cache: '%s:%s' invalid increment reference"
+			LOGGER_ERROR("ResourceReference::cache: '%s:%s' invalid increment reference"
 				, this->getGroup().c_str()
 				, this->getName().c_str()				
 				);

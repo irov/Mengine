@@ -92,15 +92,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t SDLPlatform::getUserPath( WChar * _path, size_t _len ) const
 	{
-		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
-		bool roamingMode = HAS_OPTION( m_serviceProvider, "roaming" );
-		bool noroamingMode = HAS_OPTION( m_serviceProvider, "noroaming" );
+		bool developmentMode = HAS_OPTION( "dev" );
+		bool roamingMode = HAS_OPTION( "roaming" );
+		bool noroamingMode = HAS_OPTION( "noroaming" );
 
 		FilePath userPath;
 		if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
 		{
 			WChar currentPathW[MENGINE_MAX_PATH];
-			size_t currentPathLen = PLATFORM_SERVICE( m_serviceProvider )
+			size_t currentPathLen = PLATFORM_SERVICE()
 				->getCurrentPath( currentPathW, MENGINE_MAX_PATH );
 
 			if( _len <= currentPathLen + 5 )
@@ -116,19 +116,19 @@ namespace Menge
 		}
 		else
 		{
-			WString Project_Company = CONFIG_VALUE( m_serviceProvider, "Project", "Company", L"NONAME" );
-			WString Project_Name = CONFIG_VALUE( m_serviceProvider, "Project", "Name", L"UNKNOWN" );
+			WString Project_Company = CONFIG_VALUE( "Project", "Company", L"NONAME" );
+			WString Project_Name = CONFIG_VALUE( "Project", "Name", L"UNKNOWN" );
 
 			String utf8_Project_Company;
-			Helper::unicodeToUtf8( m_serviceProvider, Project_Company, utf8_Project_Company );
+			Helper::unicodeToUtf8( Project_Company, utf8_Project_Company );
 
 			String utf8_Project_Name;
-			Helper::unicodeToUtf8( m_serviceProvider, Project_Name, utf8_Project_Name );
+			Helper::unicodeToUtf8( Project_Name, utf8_Project_Name );
 
 			char * sdl_prefPath = SDL_GetPrefPath( utf8_Project_Company.c_str(), utf8_Project_Name.c_str() );
 
 			WString unicode_UserPath;
-			Helper::utf8ToUnicode( m_serviceProvider, sdl_prefPath, unicode_UserPath );
+			Helper::utf8ToUnicode( sdl_prefPath, unicode_UserPath );
 			
 			SDL_free( sdl_prefPath );
 
@@ -160,7 +160,7 @@ namespace Menge
         SDL_Rect rect;
         SDL_GetDisplayBounds( 0, &rect );
         
-        LOGGER_WARNING(m_serviceProvider)("SDLPlatform::getMaxClientResolution w %d h %d"
+        LOGGER_WARNING("SDLPlatform::getMaxClientResolution w %d h %d"
                                           , rect.w
                                           , rect.h
                                           );
@@ -170,11 +170,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void MySDL_LogOutputFunction( void *userdata, int category, SDL_LogPriority priority, const char *message )
 	{
+        (void)userdata;
 		(void)category;
 
-		ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(userdata);
-
-		EMessageLevel level = LM_INFO;
+        EMessageLevel level = LM_INFO;
 
 		switch( priority )
 		{
@@ -200,7 +199,7 @@ namespace Menge
 
 		size_t messageLen = strlen( message );
 
-		LOGGER_SERVICE( serviceProvider )
+		LOGGER_SERVICE()
 			->logMessage( level, 0, message, messageLen );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -224,7 +223,7 @@ namespace Menge
     {
         if( SDL_Init(SDL_INIT_VIDEO) < 0 )
         {
-            LOGGER_CRITICAL(m_serviceProvider)("SDL initialization failed");
+            LOGGER_CRITICAL("SDL initialization failed");
             return false;
         }
 
@@ -234,44 +233,42 @@ namespace Menge
 		if( strcmp( sdlPlatform, "Windows" ) == 0 )
 		{
 			m_touchpad = false;
-			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "PC" ) );
+			m_platformName.addTag( Helper::stringizeString( "PC" ) );
 		}
 		else if( strcmp( sdlPlatform, "Mac OS X" ) == 0 )
 		{
 			m_touchpad = false;
-			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "MAC" ) );
+			m_platformName.addTag( Helper::stringizeString( "MAC" ) );
 		}
 		else if( strcmp( sdlPlatform, "Android" ) == 0 )
 		{
 			m_touchpad = true;
-			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "Android" ) );
+			m_platformName.addTag( Helper::stringizeString( "Android" ) );
 			SDL_SetEventFilter( RemoveMouse_EventFilter, nullptr );
 		}
 		else if( strcmp( sdlPlatform, "iOS" ) == 0 )
 		{
 			m_touchpad = true;
-			m_platformName.addTag( Helper::stringizeString( m_serviceProvider, "IOS" ) );
+			m_platformName.addTag( Helper::stringizeString( "IOS" ) );
 			SDL_SetEventFilter( RemoveMouse_EventFilter, nullptr );
 		}
 		
-        LOGGER_WARNING(m_serviceProvider)("Device info:"
+        LOGGER_WARNING("Device info:"
             );
 
-        LOGGER_WARNING(m_serviceProvider)("Platform: %s"
+        LOGGER_WARNING("Platform: %s"
             , sdlPlatform
             );
 
-        LOGGER_WARNING(m_serviceProvider)("RAM: %d MB"
+        LOGGER_WARNING("RAM: %d MB"
             , sdlRam
             );
 
-		SDL_LogSetOutputFunction( &MySDL_LogOutputFunction, m_serviceProvider );
+		SDL_LogSetOutputFunction( &MySDL_LogOutputFunction, nullptr );
 		SDL_LogSetAllPriority( SDL_LOG_PRIORITY_WARN );
 
         
         m_sdlInput = new FactorableUnique<SDLInput>();
-
-        m_sdlInput->setServiceProvider(m_serviceProvider);
         
         if( !m_sdlInput->initialize() )
         {
@@ -283,12 +280,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::update()
     {
-        TIMER_SERVICE( m_serviceProvider )
+        TIMER_SERVICE()
             ->resetDeltaTime();
 
         while( true )
         {
-            float frameTime = TIMER_SERVICE(m_serviceProvider)
+            float frameTime = TIMER_SERVICE()
                 ->getDeltaTime();
 
             if( m_pause == true )
@@ -304,12 +301,12 @@ namespace Menge
                 break;
             }
 
-            bool updating = APPLICATION_SERVICE( m_serviceProvider )
+            bool updating = APPLICATION_SERVICE()
                 ->beginUpdate();
 
             if( updating == true )
             {                
-                APPLICATION_SERVICE( m_serviceProvider )
+                APPLICATION_SERVICE()
                     ->tick( frameTime );
             }
             else
@@ -317,20 +314,20 @@ namespace Menge
                 SDL_Delay( 20 );
             }
 
-            if( APPLICATION_SERVICE( m_serviceProvider )
+            if( APPLICATION_SERVICE()
                 ->isFocus() == true )
             {
-                if( APPLICATION_SERVICE( m_serviceProvider )
+                if( APPLICATION_SERVICE()
                     ->render() == true )
                 {
-                    APPLICATION_SERVICE( m_serviceProvider )
+                    APPLICATION_SERVICE()
                         ->flush();
 					
 					SDL_GL_SwapWindow( m_window );
                 }
             }
 
-            APPLICATION_SERVICE( m_serviceProvider )
+            APPLICATION_SERVICE()
                 ->endUpdate();
 
             SDL_Delay( 1 );
@@ -386,7 +383,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow( const Resolution & _resolution, bool _fullscreen )
     {
-        LOGGER_WARNING(m_serviceProvider)("SDLPlatform::createWindow w %d h %d fullscreen %d"
+        LOGGER_WARNING("SDLPlatform::createWindow w %d h %d fullscreen %d"
                                           , _resolution.getWidth()
                                           , _resolution.getHeight()
                                           , _fullscreen
@@ -417,7 +414,7 @@ namespace Menge
         ;
         
 #    if TARGET_OS_IPHONE
-        APPLICATION_SERVICE(m_serviceProvider)
+        APPLICATION_SERVICE()
             ->changeWindowResolution(Resolution(dw, dh));
 #    endif
         
@@ -464,7 +461,7 @@ namespace Menge
         SDL_DisplayMode dm;
         if( SDL_GetDesktopDisplayMode( 0, &dm ) != 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLPlatform::getDesktopResolution failed %s"
+            LOGGER_ERROR("SDLPlatform::getDesktopResolution failed %s"
                 , SDL_GetError()
             );
 
@@ -584,17 +581,17 @@ namespace Menge
         PARAM_UNUSED(_params);
     }
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_createDurectoryFullpath( ServiceProviderInterface * _serviceProvider, const WChar * _fullpath )
+	static bool s_createDurectoryFullpath( const WChar * _fullpath )
 	{
 #	ifdef __APPLE__
 		Char utf8_fullpath[MENGINE_MAX_PATH];
-        Helper::unicodeToUtf8( _serviceProvider, _fullpath, utf8_fullpath, MENGINE_MAX_PATH );
+        Helper::unicodeToUtf8( _fullpath, utf8_fullpath, MENGINE_MAX_PATH );
 
 		int status = mkdir( utf8_fullpath, 0700 );
 		
 		if( status != 0 )
 		{
-			LOGGER_WARNING( _serviceProvider )("SDLPlatform::createDirectory %ls alredy exists"
+			LOGGER_WARNING( "SDLPlatform::createDirectory %ls alredy exists"
 				, _fullpath
 				);
 
@@ -613,7 +610,7 @@ namespace Menge
 			{
 			case ERROR_ALREADY_EXISTS:
 				{
-					LOGGER_WARNING( _serviceProvider )("SDLPlatform::createDirectory %ls alredy exists"
+					LOGGER_WARNING( "SDLPlatform::createDirectory %ls alredy exists"
 						, _fullpath
 						);
 
@@ -621,7 +618,7 @@ namespace Menge
 				}break;
 			case ERROR_PATH_NOT_FOUND:
 				{
-					LOGGER_WARNING( _serviceProvider )("SDLPlatform::createDirectory %ls not found"
+					LOGGER_WARNING( "SDLPlatform::createDirectory %ls not found"
 						, _fullpath
 						);
 
@@ -629,7 +626,7 @@ namespace Menge
 				}break;
 			default:
 				{
-					LOGGER_WARNING( _serviceProvider )("SDLPlatform::createDirectory %ls unknown error %d"
+					LOGGER_WARNING( "SDLPlatform::createDirectory %ls unknown error %d"
 						, _fullpath
 						, err
 						);
@@ -643,10 +640,10 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    static bool s_isDirectoryFullpath( ServiceProviderInterface * _serviceProvider, const WChar * _fullpath )
+    static bool s_isDirectoryFullpath( const WChar * _fullpath )
     {
         Char utf8_fullpath[MENGINE_MAX_PATH];        
-        Helper::unicodeToUtf8( _serviceProvider, _fullpath, utf8_fullpath, MENGINE_MAX_PATH );
+        Helper::unicodeToUtf8( _fullpath, utf8_fullpath, MENGINE_MAX_PATH );
         
         struct stat sb;
         if( stat( utf8_fullpath, &sb ) == 0 && ((sb.st_mode)& S_IFMT) == S_IFDIR )
@@ -676,7 +673,7 @@ namespace Menge
 			return true;	// let it be
 		}
 
-		bool exist = s_isDirectoryFullpath( m_serviceProvider, fullPath );
+		bool exist = s_isDirectoryFullpath( fullPath );
 
 		return exist;
 	}
@@ -688,7 +685,7 @@ namespace Menge
 
 		Helper::pathRemoveFileSpec( fullPath );
 		
-		if( s_isDirectoryFullpath( m_serviceProvider, fullPath ) == true )
+		if( s_isDirectoryFullpath( fullPath ) == true )
 		{
 			return true;
 		}
@@ -708,7 +705,7 @@ namespace Menge
 
 			Helper::pathRemoveBackslash( fullPath );
 
-			if( s_isDirectoryFullpath( m_serviceProvider, fullPath ) == true )
+			if( s_isDirectoryFullpath( fullPath ) == true )
 			{
 				break;
 			}
@@ -722,7 +719,7 @@ namespace Menge
 		{
 			const WString & path = *it;
 
-			if( s_createDurectoryFullpath( m_serviceProvider, path.c_str() ) == false )
+			if( s_createDurectoryFullpath( path.c_str() ) == false )
 			{
 				return false;
 			}
@@ -744,7 +741,7 @@ namespace Menge
         wcscat( fullPath, pathCorrect );
         
         Char utf8_fullpath[MENGINE_MAX_PATH];
-        Helper::unicodeToUtf8( m_serviceProvider, fullPath, utf8_fullpath, MENGINE_MAX_PATH );
+        Helper::unicodeToUtf8( fullPath, utf8_fullpath, MENGINE_MAX_PATH );
         
         int result = remove( utf8_fullpath );
         
@@ -874,19 +871,26 @@ namespace Menge
     void SDLPlatform::changeWindow_( const Resolution & _resolution, bool _fullscreen )
     {
 #if TARGET_OS_IPHONE
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->onWindowChangeFullscreen( _fullscreen );
 #else
-		RENDER_SERVICE( m_serviceProvider )
+        //RENDER_SERVICE()
+        //    ->destroyRenderWindow();
+
+        //SDL_Window * old_window = m_window;
+        //SDL_HideWindow( old_window );
+        //SDL_GL_MakeCurrent( old_window, nullptr );
+
+		RENDER_SERVICE()
 			->onDeviceLostPrepare();
 
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->onWindowChangeFullscreenPrepare( _fullscreen );
 
         this->destroyWindow_();
         this->createWindow( _resolution, _fullscreen );
 
-		RENDER_SERVICE( m_serviceProvider )
+		RENDER_SERVICE()
 			->onDeviceLostRestore();
 
         RENDER_SYSTEM( m_serviceProvider )
@@ -897,7 +901,7 @@ namespace Menge
     bool SDLPlatform::createWindow_( const Resolution & _resolution, bool _fullscreen )
     {
         Menge::Char utf8Title[1024] = {0};
-        Helper::unicodeToUtf8( m_serviceProvider, m_projectTitle, utf8Title, 1024 );
+        Helper::unicodeToUtf8( m_projectTitle, utf8Title, 1024 );
 
         //SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
         SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
@@ -1000,10 +1004,10 @@ namespace Menge
                         {
                             if( sdlEvent.key.keysym.mod & KMOD_ALT )
                             {
-                                bool fullscreen = APPLICATION_SERVICE( m_serviceProvider )
+                                bool fullscreen = APPLICATION_SERVICE()
                                     ->getFullscreenMode();
 
-                                APPLICATION_SERVICE( m_serviceProvider )
+                                APPLICATION_SERVICE()
                                     ->setFullscreenMode( !fullscreen );
                             }
                         }break;
@@ -1022,9 +1026,7 @@ namespace Menge
                     {
                     case SDL_WINDOWEVENT_MAXIMIZED:
                         {
-                            break;
-                        }
-
+                        }break;
                     case SDL_WINDOWEVENT_CLOSE:
                         {
                             SDL_Event newEvent;
@@ -1032,8 +1034,7 @@ namespace Menge
                             newEvent.type = SDL_QUIT;
 
                             SDL_PushEvent( &newEvent );
-                            break;
-                        }
+                        }break;
                     }
                 }break;
             case SDL_QUIT:

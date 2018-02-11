@@ -103,7 +103,7 @@ namespace Menge
 			if( this->read_buffer_data_() == 0 )
 			{
 				// кончился файл, на данном этапе это ошибка
-				LOGGER_ERROR( m_serviceProvider )("Theora Codec Error: bad file");
+				LOGGER_ERROR("Theora Codec Error: bad file");
 
 				return false;
 			}
@@ -128,7 +128,7 @@ namespace Menge
 					// закидываем эту страничку в логический видеопоток
 					if( ogg_stream_pagein( &m_oggStreamState, &page ) == -1 )
 					{
-						LOGGER_ERROR( m_serviceProvider )("Theora Codec Error: bad page in");
+						LOGGER_ERROR("Theora Codec Error: bad page in");
 
 						return false;
 					}
@@ -152,7 +152,7 @@ namespace Menge
 				int serialno = ogg_page_serialno( &page );
 				if( ogg_stream_init( &oggStreamStateTest, serialno ) != 0 )
 				{
-					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_init");
+					LOGGER_ERROR("TheoraCodec Error: error during ogg_stream_init");
 
 					return false;
 				}
@@ -160,7 +160,7 @@ namespace Menge
 				// добавляем страницу в тестовый поток
 				if( ogg_stream_pagein( &oggStreamStateTest, &page ) != 0 )
 				{
-					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_pagein");
+					LOGGER_ERROR("TheoraCodec Error: error during ogg_stream_pagein");
 
 					return false;
 				}
@@ -169,7 +169,7 @@ namespace Menge
 				ogg_packet packet;
 				if( ogg_stream_packetout( &oggStreamStateTest, &packet ) == -1 )
 				{
-					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_packetout");
+					LOGGER_ERROR("TheoraCodec Error: error during ogg_stream_packetout");
 
 					return false;
 				}
@@ -227,7 +227,7 @@ namespace Menge
 				if( result < 0 )
 				{
 					// ошибка декодирования, поврежденный поток
-					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_packetout %d"
+					LOGGER_ERROR("TheoraCodec Error: error during ogg_stream_packetout %d"
 						, result
 						);
 
@@ -247,7 +247,7 @@ namespace Menge
 					if( result2 < 0 )
 					{
 						// ошибка декодирования, поврежденный поток
-						LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during theora_decode_header (corrupt stream) %d"
+						LOGGER_ERROR("TheoraCodec Error: error during theora_decode_header (corrupt stream) %d"
 							, result2
 							);
 
@@ -270,7 +270,7 @@ namespace Menge
 				if( ogg_stream_pagein( &m_oggStreamState, &page ) == -1 )
 				{
 					// опять файл кончился!
-					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: invalid page..."
+					LOGGER_ERROR("TheoraCodec Error: invalid page..."
 						);
 
 					return false;
@@ -285,7 +285,7 @@ namespace Menge
 				if( ret == 0 )
 				{
 					// опять файл кончился!
-					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: eof searched. terminate..."
+					LOGGER_ERROR("TheoraCodec Error: eof searched. terminate..."
 						);
 
 					return false;
@@ -300,7 +300,7 @@ namespace Menge
 		{
 			const char * pixelformat[] = {"OC_PF_420", "OC_PF_RSVD", "OC_PF_422", "OC_PF_444"};
 
-			LOGGER_ERROR( m_serviceProvider )("VideoDecoderTheora::_prepareData invalid support pixel format '%s' pls use OC_PF_420"
+			LOGGER_ERROR("VideoDecoderTheora::_prepareData invalid support pixel format '%s' pls use OC_PF_420"
 				, pixelformat[m_theoraInfo.pixelformat]
 				);
 
@@ -310,7 +310,7 @@ namespace Menge
 		//if( m_theoraInfo.width != m_theoraInfo.frame_width ||
 		//	m_theoraInfo.height != m_theoraInfo.frame_height )
 		//{
-		//	LOGGER_ERROR( m_serviceProvider )("VideoDecoderTheora::_prepareData invalid width or heigth '%d:%d' need '%d:%d' maybe div 16"
+		//	LOGGER_ERROR("VideoDecoderTheora::_prepareData invalid width or heigth '%d:%d' need '%d:%d' maybe div 16"
 		//		, m_theoraInfo.frame_width
 		//		, m_theoraInfo.frame_height
 		//		, m_theoraInfo.width
@@ -406,7 +406,7 @@ namespace Menge
 		if( error_code < 0 )
 		{
 			// ошибка декодирования
-			LOGGER_ERROR( m_serviceProvider )("error during theora_decode_YUVout '%d'"
+			LOGGER_ERROR("error during theora_decode_YUVout '%d'"
 											   , error_code
 											   );
 
@@ -758,7 +758,7 @@ namespace Menge
 		}
 		else
 		{
-			LOGGER_ERROR( m_serviceProvider )("VideoDecoderTheora::decodeBuffer_ unsupport format");
+			LOGGER_ERROR("VideoDecoderTheora::decodeBuffer_ unsupport format");
 
 			return false;
 		}

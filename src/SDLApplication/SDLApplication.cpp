@@ -169,30 +169,30 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeFileEngine_()
     {
-        LOGGER_INFO(m_serviceProvider)( "Inititalizing File Service..." );
-        SERVICE_CREATE( m_serviceProvider, FileService );
+        LOGGER_INFO("Inititalizing File Service...");
+        SERVICE_CREATE( FileService );
 
-        LOGGER_INFO( m_serviceProvider )("Initialize SDL file group...");
-        PLUGIN_CREATE( m_serviceProvider, MengeSDLFileGroup );
+        LOGGER_INFO("Initialize SDL file group...");
+        PLUGIN_CREATE( MengeSDLFileGroup );
 
         // mount root
-        ConstString c_dir = Helper::stringizeString(m_serviceProvider, "dir");
-        if( FILE_SERVICE( m_serviceProvider )
+        ConstString c_dir = Helper::stringizeString("dir");
+        if( FILE_SERVICE()
             ->mountFileGroup( ConstString::none(), ConstString::none(), FilePath(ConstString::none()), c_dir ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "SDLApplication::setupFileService: failed to mount application directory"
+            LOGGER_ERROR("SDLApplication::setupFileService: failed to mount application directory"
                 );
 
             return false;
         }
 
 #	ifndef MENGINE_MASTER_RELEASE
-        ConstString c_dev = Helper::stringizeString( m_serviceProvider, "dev" );
+        ConstString c_dev = Helper::stringizeString( "dev" );
         // mount root
-        if( FILE_SERVICE(m_serviceProvider)
+        if( FILE_SERVICE()
             ->mountFileGroup( c_dev, ConstString::none(), FilePath(ConstString::none()), c_dir ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "SDLApplication::setupFileService: failed to mount dev directory"
+            LOGGER_ERROR("SDLApplication::setupFileService: failed to mount dev directory"
                 );
 
             return false;
@@ -204,12 +204,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
     {
-        FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "application.ini" );
+        FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( "application.ini" );
 
         IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, ConstString::none(), applicationPath, m_serviceProvider ) == false )
+        if( IniUtil::loadIni( ini, ConstString::none(), applicationPath ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLApplication::initializeConfigEngine_ Invalid load application settings %s"
+            LOGGER_ERROR("SDLApplication::initializeConfigEngine_ Invalid load application settings %s"
                 , applicationPath.c_str()
                 );
 
@@ -220,22 +220,22 @@ namespace Menge
 
         if( gameIniPath == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLApplication::initializeConfigEngine_ Not found Game Path %s"
+            LOGGER_ERROR("SDLApplication::initializeConfigEngine_ Not found Game Path %s"
                 , applicationPath.c_str()
                 );
 
             return false;
         }
 
-        _path = Helper::stringizeString( m_serviceProvider, gameIniPath );
+        _path = Helper::stringizeString( gameIniPath );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeConfigEngine_()
     {
-        LOGGER_WARNING(m_serviceProvider)("Inititalizing Config Manager..." );
-        SERVICE_CREATE( m_serviceProvider, ConfigService );
+        LOGGER_WARNING("Inititalizing Config Manager..." );
+        SERVICE_CREATE( ConfigService );
 
         FilePath gameIniPath;
         if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
@@ -243,10 +243,10 @@ namespace Menge
             return false;
         }
 
-        if( CONFIG_SERVICE(m_serviceProvider)
+        if( CONFIG_SERVICE()
             ->loadConfig( ConstString::none(), gameIniPath ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLApplication::initializeConfigEngine_ invalid load config %s"
+            LOGGER_ERROR("SDLApplication::initializeConfigEngine_ invalid load config %s"
                 , gameIniPath.c_str()
                 );
 
@@ -259,23 +259,23 @@ namespace Menge
     bool SDLApplication::initializeUserDirectory_()
     {
         WChar userPathW[MENGINE_MAX_PATH];
-        size_t userPathLen = PLATFORM_SERVICE( m_serviceProvider )
+        size_t userPathLen = PLATFORM_SERVICE()
             ->getUserPath( userPathW, MENGINE_MAX_PATH );
 
         Char utf8_userPath[MENGINE_MAX_PATH];
         size_t utf8_userPathLen;
-        UNICODE_SYSTEM( m_serviceProvider )
+        UNICODE_SYSTEM()
             ->unicodeToUtf8( userPathW, userPathLen, utf8_userPath, MENGINE_MAX_PATH, &utf8_userPathLen );
 
         utf8_userPath[utf8_userPathLen] = '\0';
 
-        FilePath cs_userPath = Helper::stringizeFilePath( m_serviceProvider, utf8_userPath, utf8_userPathLen );
+        FilePath cs_userPath = Helper::stringizeFilePath( utf8_userPath, utf8_userPathLen );
 		
         // mount user directory
-        if( FILE_SERVICE( m_serviceProvider )
-            ->mountFileGroup( Helper::stringizeString( m_serviceProvider, "user" ), ConstString::none(), cs_userPath, Helper::stringizeString( m_serviceProvider, "global" ) ) == false )
+        if( FILE_SERVICE()
+            ->mountFileGroup( Helper::stringizeString( "user" ), ConstString::none(), cs_userPath, Helper::stringizeString( "global" ) ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("SDLApplication: failed to mount user directory %s"
+            LOGGER_ERROR("SDLApplication: failed to mount user directory %s"
                 , cs_userPath.c_str()
                 );
 
@@ -287,7 +287,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeLoggerFile_()
     {
-        bool nologs = HAS_OPTION( m_serviceProvider, "nologs" );
+        bool nologs = HAS_OPTION( "nologs" );
 
         if( nologs == true )
         {
@@ -296,7 +296,7 @@ namespace Menge
 
         m_fileLog = new FactorableUnique<FileLogger>();
 
-        LOGGER_SERVICE( m_serviceProvider )
+        LOGGER_SERVICE()
             ->registerLogger( m_fileLog );
 
         return true;
@@ -304,9 +304,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeLoggerEngine_()
     {
-        SERVICE_CREATE( m_serviceProvider, LoggerService );
+        SERVICE_CREATE( LoggerService );
 
-        bool nologs = HAS_OPTION( m_serviceProvider, "nologs" );
+        bool nologs = HAS_OPTION( "nologs" );
 
         if( nologs == true )
         {
@@ -317,19 +317,19 @@ namespace Menge
 
 		m_loggerStdio->setVerboseFlag( LM_LOG );
 
-		LOGGER_SERVICE( m_serviceProvider )
+		LOGGER_SERVICE()
 			->registerLogger( m_loggerStdio );
 
         m_loggerMessageBox = new FactorableUnique<SDLMessageBoxLogger>();
 
         m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 
-        LOGGER_SERVICE(m_serviceProvider)
+        LOGGER_SERVICE()
             ->registerLogger( m_loggerMessageBox );
 
         EMessageLevel m_logLevel;
 
-        bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+        bool developmentMode = HAS_OPTION( "dev" );
 
         if( developmentMode == true  )
         {
@@ -340,7 +340,7 @@ namespace Menge
             m_logLevel = LM_WARNING;
         }        
 
-        const Char * option_log = GET_OPTION_VALUE( m_serviceProvider, "log" );
+        const Char * option_log = GET_OPTION_VALUE( "log" );
         
         if( option_log != nullptr )
         {
@@ -369,15 +369,15 @@ namespace Menge
             }
         }
 
-        LOGGER_SERVICE(m_serviceProvider)
+        LOGGER_SERVICE()
             ->setVerboseLevel( m_logLevel );
 
-        if( HAS_OPTION( m_serviceProvider, "verbose" ) == true )
+        if( HAS_OPTION( "verbose" ) == true )
         {
-            LOGGER_SERVICE(m_serviceProvider)
+            LOGGER_SERVICE()
                 ->setVerboseLevel( LM_MAX );
 
-            LOGGER_INFO(m_serviceProvider)( "Verbose logging mode enabled" );
+            LOGGER_INFO("Verbose logging mode enabled");
         }
 
         return true;
@@ -385,18 +385,18 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeArchiveService_()
     {
-        LOGGER_INFO(m_serviceProvider)( "Inititalizing Archive Service..." );
+        LOGGER_INFO( "Inititalizing Archive Service..." );
 
         {
-            LOGGER_INFO(m_serviceProvider)( "initialize Zip..." );
+            LOGGER_INFO( "initialize Zip..." );
             
-            PLUGIN_CREATE( m_serviceProvider, MengeZip );
+            PLUGIN_CREATE( MengeZip );
         }
 
         {
-            LOGGER_INFO(m_serviceProvider)( "initialize LZ4..." );
+            LOGGER_INFO( "initialize LZ4..." );
 
-            PLUGIN_CREATE( m_serviceProvider, MengeLZ4 );
+            PLUGIN_CREATE( MengeLZ4 );
         }
 
         return true;
@@ -404,19 +404,19 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeRenderEngine_()
     {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Render Service..." );
+        LOGGER_INFO( "Initializing Render Service..." );
 
-        if( SERVICE_CREATE( m_serviceProvider, RenderSystem ) == false )
+        if( SERVICE_CREATE( RenderSystem ) == false )
         {
             return false;
         }
 
-        if( SERVICE_CREATE( m_serviceProvider, RenderTextureService ) == false )
+        if( SERVICE_CREATE( RenderTextureService ) == false )
         {
             return false;
         }
 
-        if( SERVICE_CREATE( m_serviceProvider, RenderMaterialService ) == false )
+        if( SERVICE_CREATE( RenderMaterialService ) == false )
         {
             return false;
         }
@@ -426,20 +426,20 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeSoundEngine_()
     {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Sound Service..." );
+        LOGGER_INFO( "Initializing Sound Service..." );
 
-        SERVICE_CREATE( m_serviceProvider, SoundSystem );
+        SERVICE_CREATE( SoundSystem );
 
-        bool muteMode = HAS_OPTION( m_serviceProvider, "mute" );
+        bool muteMode = HAS_OPTION( "mute" );
 
-        if( muteMode == true || SERVICE_EXIST( m_serviceProvider, Menge::SoundSystemInterface ) == false )
+        if( muteMode == true || SERVICE_EXIST( Menge::SoundSystemInterface ) == false )
         {
-            SERVICE_CREATE( m_serviceProvider, SilentSoundSystem );
+            SERVICE_CREATE( SilentSoundSystem );
         }
 
-        if( SERVICE_CREATE( m_serviceProvider, SoundService ) == false )
+        if( SERVICE_CREATE( SoundService ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLApplication::initializeSoundEngine_ Failed to create Sound Engine"
+            LOGGER_ERROR("SDLApplication::initializeSoundEngine_ Failed to create Sound Engine"
                 );
 
             return false;
@@ -457,12 +457,14 @@ namespace Menge
         {
             return false;
         }
+        
+        SERVICE_PROVIDER_SETUP( serviceProvider );
 
         m_serviceProvider = serviceProvider;
 
-        SERVICE_CREATE( m_serviceProvider, FactoryService );
+        SERVICE_CREATE( FactoryService );
 
-        SERVICE_CREATE( m_serviceProvider, OptionsService );
+        SERVICE_CREATE( OptionsService );
 
 		TVectorString options;
 
@@ -473,23 +475,23 @@ namespace Menge
 			options.push_back( arg );
 		}
 
-		OPTIONS_SERVICE( m_serviceProvider )
+		OPTIONS_SERVICE()
 			->setArgs( options );
 
-        SERVICE_CREATE( m_serviceProvider, StringizeService );
+        SERVICE_CREATE( StringizeService );
 
         if( this->initializeLoggerEngine_() == false )
         {
             return false;
         }
 
-        SERVICE_CREATE( m_serviceProvider, UnicodeSystem );
+        SERVICE_CREATE( UnicodeSystem );
         
-        SERVICE_CREATE( m_serviceProvider, SDLLayer );
-        SERVICE_CREATE( m_serviceProvider, Platform );
+        SERVICE_CREATE( SDLLayer );
+        SERVICE_CREATE( Platform );
 
-        SERVICE_CREATE( m_serviceProvider, PluginSystem );
-        SERVICE_CREATE( m_serviceProvider, PluginService );
+        SERVICE_CREATE( PluginSystem );
+        SERVICE_CREATE( PluginService );
 
         if( this->initializeFileEngine_() == false )
         {
@@ -512,17 +514,17 @@ namespace Menge
         }
 
 
-        SERVICE_CREATE( m_serviceProvider, ArchiveService );
+        SERVICE_CREATE( ArchiveService );
 
         if( this->initializeArchiveService_() == false )
         {
             return false;
         }
 
-        SERVICE_CREATE( m_serviceProvider, ThreadSystem );
-        SERVICE_CREATE( m_serviceProvider, ThreadService );
+        SERVICE_CREATE( ThreadSystem );
+        SERVICE_CREATE( ThreadService );
 
-        SERVICE_CREATE( m_serviceProvider, NotificationService );
+        SERVICE_CREATE( NotificationService );
 
         if( this->initializeRenderEngine_() == false )
         {
@@ -534,34 +536,34 @@ namespace Menge
             return false;
         }
 
-        SERVICE_CREATE( m_serviceProvider, TimerSystem );
-        SERVICE_CREATE( m_serviceProvider, TimerService );
+        SERVICE_CREATE( TimerSystem );
+        SERVICE_CREATE( TimerService );
         
-        SERVICE_CREATE( m_serviceProvider, ScriptService );
-        SERVICE_CREATE( m_serviceProvider, ModuleService );
-		SERVICE_CREATE( m_serviceProvider, CodecService );
-        SERVICE_CREATE( m_serviceProvider, DataService );
-		SERVICE_CREATE( m_serviceProvider, PrefetcherService );
-        SERVICE_CREATE( m_serviceProvider, MemoryService );
-		SERVICE_CREATE( m_serviceProvider, ConverterService );                
-        SERVICE_CREATE( m_serviceProvider, InputService );
+        SERVICE_CREATE( ScriptService );
+        SERVICE_CREATE( ModuleService );
+		SERVICE_CREATE( CodecService );
+        SERVICE_CREATE( DataService );
+		SERVICE_CREATE( PrefetcherService );
+        SERVICE_CREATE( MemoryService );
+		SERVICE_CREATE( ConverterService );
+        SERVICE_CREATE( InputService );
 
-		SERVICE_CREATE( m_serviceProvider, HttpSystem );
+		SERVICE_CREATE( HttpSystem );
 
-        PythonScriptWrapper::constsWrap( m_serviceProvider );
-        PythonScriptWrapper::mathWrap( m_serviceProvider );
-        PythonScriptWrapper::nodeWrap( m_serviceProvider );
-        PythonScriptWrapper::helperWrap( m_serviceProvider );
-        PythonScriptWrapper::soundWrap( m_serviceProvider );
-        PythonScriptWrapper::entityWrap( m_serviceProvider );
+        PythonScriptWrapper::constsWrap();
+        PythonScriptWrapper::mathWrap();
+        PythonScriptWrapper::nodeWrap();
+        PythonScriptWrapper::helperWrap();
+        PythonScriptWrapper::soundWrap();
+        PythonScriptWrapper::entityWrap();
         
-        SERVICE_CREATE( m_serviceProvider, Application );
+        SERVICE_CREATE( Application );
 
 #   define MENGINE_ADD_PLUGIN( Name, Info )\
-        do{LOGGER_INFO(m_serviceProvider)( Info );\
-        if(	PLUGIN_CREATE(m_serviceProvider, Name) == false ){\
-        LOGGER_ERROR(m_serviceProvider)( "Invalid %s", Info );}else{\
-        LOGGER_WARNING(m_serviceProvider)( "Successful %s", Info );}}while(false, false)
+        do{LOGGER_INFO( Info );\
+        if(	PLUGIN_CREATE(Name) == false ){\
+        LOGGER_ERROR( "Invalid %s", Info );}else{\
+        LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
 
         MENGINE_ADD_PLUGIN(MengeImageCodec, "initialize Plugin Image Codec...");
         MENGINE_ADD_PLUGIN(MengeSoundCodec, "initialize Plugin Sound Codec...");
@@ -604,7 +606,7 @@ namespace Menge
 #   undef MENGINE_ADD_PLUGIN
 
         TVectorWString plugins;
-        CONFIG_VALUES(m_serviceProvider, "Plugins", "Name", plugins);
+        CONFIG_VALUES("Plugins", "Name", plugins);
 
         for( TVectorWString::const_iterator
             it = plugins.begin(),
@@ -614,10 +616,10 @@ namespace Menge
         {
             const WString & pluginName = *it;
 
-            if( PLUGIN_SERVICE(m_serviceProvider)
+            if( PLUGIN_SERVICE()
                 ->loadPlugin( pluginName ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("Application Failed to load plugin %ls"
+                LOGGER_ERROR("Application Failed to load plugin %ls"
                     , pluginName.c_str()
                     );
 
@@ -628,16 +630,16 @@ namespace Menge
 #	ifdef _DEBUG
 		bool devplugins = true;
 #	else
-		bool developmentMode = HAS_OPTION( m_serviceProvider, "dev" );
+		bool developmentMode = HAS_OPTION( "dev" );
 		bool devplugins = developmentMode;
 #	endif
 
-		bool nodevplugins = HAS_OPTION( m_serviceProvider, "nodevplugins" );
+		bool nodevplugins = HAS_OPTION( "nodevplugins" );
 
         if( devplugins == true && nodevplugins == false )
         {
             TVectorWString devPlugins;
-            CONFIG_VALUES( m_serviceProvider, "DevPlugins", "Name", devPlugins );
+            CONFIG_VALUES( "DevPlugins", "Name", devPlugins );
 
             for( TVectorWString::const_iterator
                 it = devPlugins.begin(),
@@ -647,20 +649,20 @@ namespace Menge
             {
                 const WString & pluginName = *it;
 
-                if( PLUGIN_SERVICE( m_serviceProvider )
+                if( PLUGIN_SERVICE()
                     ->loadPlugin( pluginName ) == false )
                 {
-                    LOGGER_WARNING( m_serviceProvider )("Application Failed to load dev plugin %ls"
+                    LOGGER_WARNING("Application Failed to load dev plugin %ls"
                         , pluginName.c_str()
                         );
                 }
             }
         }
 
-        SERVICE_CREATE(m_serviceProvider, ParticleService);
+        SERVICE_CREATE(ParticleService);
 
         TVectorString modules;
-        CONFIG_VALUES(m_serviceProvider, "Modules", "Name", modules);
+        CONFIG_VALUES("Modules", "Name", modules);
 
         for( TVectorString::const_iterator
             it = modules.begin(),
@@ -670,10 +672,10 @@ namespace Menge
         {
             const String & moduleName = *it;
 
-            if( MODULE_SERVICE(m_serviceProvider)
-                ->runModule( Helper::stringizeString(m_serviceProvider, moduleName) ) == false )
+            if( MODULE_SERVICE()
+                ->runModule( Helper::stringizeString(moduleName) ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("Application Failed to run module %s"
+                LOGGER_ERROR("Application Failed to run module %s"
                     , moduleName.c_str()
                     );
 
@@ -682,78 +684,78 @@ namespace Menge
         }
 
 		FilePath renderMaterialsPathEmpty;
-        FilePath renderMaterialsPath = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaterials", renderMaterialsPathEmpty );
+        FilePath renderMaterialsPath = CONFIG_VALUE( "Engine", "RenderMaterials", renderMaterialsPathEmpty );
 
         if( renderMaterialsPath.empty() == false )
         {
-            if( RENDERMATERIAL_SERVICE( m_serviceProvider )
+            if( RENDERMATERIAL_SERVICE()
                 ->loadMaterials( ConstString::none(), renderMaterialsPath ) == false )
             {
                 return false;
             }
         }
 
-        LOGGER_INFO( m_serviceProvider )("Application Create...");
+        LOGGER_INFO("Application Create...");
 
         FilePath resourceIniPath;
         if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
         {
-            LOGGER_CRITICAL( m_serviceProvider )("Application invalid setup resource path"
+            LOGGER_CRITICAL("Application invalid setup resource path"
                 );
 
             return false;
         }
 
-        if( APPLICATION_SERVICE( m_serviceProvider )
+        if( APPLICATION_SERVICE()
             ->initializeGame( ConstString::none(), resourceIniPath ) == false )
         {
-            LOGGER_CRITICAL( m_serviceProvider )("Application invalid initialize game"
+            LOGGER_CRITICAL("Application invalid initialize game"
                 );
 
             return false;
         }
                
-        PLATFORM_SERVICE( m_serviceProvider )
+        PLATFORM_SERVICE()
             ->setIcon( 0 );
 
-        const String & projectTitle = APPLICATION_SERVICE(m_serviceProvider)
+        const String & projectTitle = APPLICATION_SERVICE()
             ->getProjectTitle();
 
         WString wprojectTitle;
-        if( Helper::utf8ToUnicode(m_serviceProvider, projectTitle, wprojectTitle) == false )
+        if( Helper::utf8ToUnicode(projectTitle, wprojectTitle) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Application project title %s not convert to unicode"
+            LOGGER_ERROR("Application project title %s not convert to unicode"
                                             , projectTitle.c_str()
                                             );
         }
 
-        PLATFORM_SERVICE( m_serviceProvider )
+        PLATFORM_SERVICE()
             ->setProjectTitle( wprojectTitle );
 
-        const Resolution & windowResolution = APPLICATION_SERVICE(m_serviceProvider)
+        const Resolution & windowResolution = APPLICATION_SERVICE()
             ->getCurrentResolution();
 
-        bool fullscreen = APPLICATION_SERVICE( m_serviceProvider )
+        bool fullscreen = APPLICATION_SERVICE()
             ->getFullscreenMode();
 
-        if( PLATFORM_SERVICE(m_serviceProvider)
+        if( PLATFORM_SERVICE()
             ->createWindow( windowResolution, fullscreen ) == false )
         {
             return false;
         }
 
-        LOGGER_INFO(m_serviceProvider)( "Creating Render Window..." );
+        LOGGER_INFO( "Creating Render Window..." );
 
-        if( APPLICATION_SERVICE( m_serviceProvider )
+        if( APPLICATION_SERVICE()
             ->createRenderWindow() == false )
         {
             return false;
         }
 
-        APPLICATION_SERVICE( m_serviceProvider )
+        APPLICATION_SERVICE()
             ->turnSound( true );
         
-        GAME_SERVICE(m_serviceProvider)
+        GAME_SERVICE()
             ->run();
         
         return true;
@@ -761,60 +763,60 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::loop()
     {
-        PLATFORM_SERVICE( m_serviceProvider )
+        PLATFORM_SERVICE()
             ->update();
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()
     {
-        SERVICE_FINALIZE( m_serviceProvider, ApplicationInterface );
-        SERVICE_FINALIZE( m_serviceProvider, PrefetcherServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, DataServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, PluginServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, ModuleServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, InputServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, UnicodeSystemInterface );
+        SERVICE_FINALIZE( ApplicationInterface );
+        SERVICE_FINALIZE( PrefetcherServiceInterface );
+        SERVICE_FINALIZE( DataServiceInterface );
+        SERVICE_FINALIZE( PluginServiceInterface );
+        SERVICE_FINALIZE( ModuleServiceInterface );
+        SERVICE_FINALIZE( InputServiceInterface );
+        SERVICE_FINALIZE( UnicodeSystemInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, FileServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, CodecServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, ParticleSystemInterface2 );
-        SERVICE_FINALIZE( m_serviceProvider, ParticleServiceInterface2 );
+        SERVICE_FINALIZE( FileServiceInterface );
+        SERVICE_FINALIZE( CodecServiceInterface );
+        SERVICE_FINALIZE( ParticleSystemInterface2 );
+        SERVICE_FINALIZE( ParticleServiceInterface2 );
 
-        SERVICE_FINALIZE( m_serviceProvider, SoundServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, SoundSystemInterface );
+        SERVICE_FINALIZE( SoundServiceInterface );
+        SERVICE_FINALIZE( SoundSystemInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, PrototypeServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, ScriptServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, ConverterServiceInterface );
+        SERVICE_FINALIZE( PrototypeServiceInterface );
+        SERVICE_FINALIZE( ScriptServiceInterface );
+        SERVICE_FINALIZE( ConverterServiceInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, RenderServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, RenderMaterialServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, RenderTextureServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, RenderSystemInterface );
+        SERVICE_FINALIZE( RenderServiceInterface );
+        SERVICE_FINALIZE( RenderMaterialServiceInterface );
+        SERVICE_FINALIZE( RenderTextureServiceInterface );
+        SERVICE_FINALIZE( RenderSystemInterface );
 
-		SERVICE_FINALIZE( m_serviceProvider, HttpSystemInterface );
+		SERVICE_FINALIZE( HttpSystemInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, ConfigServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, StringizeServiceInterface );
+        SERVICE_FINALIZE( ConfigServiceInterface );
+        SERVICE_FINALIZE( StringizeServiceInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, ConfigServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, StringizeServiceInterface );
+        SERVICE_FINALIZE( ConfigServiceInterface );
+        SERVICE_FINALIZE( StringizeServiceInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, ArchiveServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, MemoryServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, NotificationServiceInterface );
+        SERVICE_FINALIZE( ArchiveServiceInterface );
+        SERVICE_FINALIZE( MemoryServiceInterface );
+        SERVICE_FINALIZE( NotificationServiceInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, ThreadServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, ThreadSystemInterface );
+        SERVICE_FINALIZE( ThreadServiceInterface );
+        SERVICE_FINALIZE( ThreadSystemInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, TimerServiceInterface );
-        SERVICE_FINALIZE( m_serviceProvider, TimerSystemInterface );
+        SERVICE_FINALIZE( TimerServiceInterface );
+        SERVICE_FINALIZE( TimerSystemInterface );
 
-        SERVICE_FINALIZE( m_serviceProvider, PlatformInterface );
+        SERVICE_FINALIZE( PlatformInterface );
         
         if( m_fileLog != nullptr )
         {
-            LOGGER_SERVICE( m_serviceProvider )
+            LOGGER_SERVICE()
                 ->unregisterLogger( m_fileLog );
 
             m_fileLog = nullptr;
@@ -822,7 +824,7 @@ namespace Menge
 
 		if( m_loggerStdio != nullptr )
 		{
-			LOGGER_SERVICE( m_serviceProvider )
+			LOGGER_SERVICE()
 				->unregisterLogger( m_loggerStdio );
 
 			m_loggerStdio = nullptr;
@@ -830,13 +832,13 @@ namespace Menge
         
         if( m_loggerMessageBox != nullptr )
         {
-            LOGGER_SERVICE( m_serviceProvider )
+            LOGGER_SERVICE()
                 ->unregisterLogger( m_loggerMessageBox );
 
             m_loggerMessageBox = nullptr;
         }
 
-        SERVICE_FINALIZE( m_serviceProvider, Menge::LoggerServiceInterface );
+        SERVICE_FINALIZE( Menge::LoggerServiceInterface );
 
         SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
     }

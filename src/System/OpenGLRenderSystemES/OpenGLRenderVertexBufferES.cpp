@@ -7,8 +7,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderVertexBufferES::OpenGLRenderVertexBufferES()
-		: m_serviceProvider( nullptr )
-		, m_memory( nullptr )
+		: m_memory( nullptr )
 		, m_vertexNum( 0 )
 		, m_usage( GL_STATIC_DRAW )
 		, m_id( 0 )
@@ -23,17 +22,15 @@ namespace Menge
 	{
 		if( m_id != 0 )
 		{
-			GLCALL( m_serviceProvider, glDeleteBuffers, (1, &m_id) );
+			GLCALL( glDeleteBuffers, (1, &m_id) );
 		}
 
 		Helper::freeMemory( m_memory );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OpenGLRenderVertexBufferES::initialize( ServiceProviderInterface * _serviceProvider, uint32_t _vertexNum, bool _dynamic )
-	{ 
-		m_serviceProvider = _serviceProvider;
-
-		m_memory = Helper::allocateMemory<RenderVertex2D>( _vertexNum );
+	bool OpenGLRenderVertexBufferES::initialize( uint32_t _vertexNum, bool _dynamic )
+	{
+        m_memory = Helper::allocateMemory<RenderVertex2D>( _vertexNum );
 		m_vertexNum = _vertexNum;
 
 		m_usage = GL_STATIC_DRAW;
@@ -44,11 +41,11 @@ namespace Menge
 		}
 
 		GLuint bufId = 0;
-		GLCALL( m_serviceProvider, glGenBuffers, (1, &bufId) );
+		GLCALL( glGenBuffers, (1, &bufId) );
 
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, bufId) );
-		GLCALL( m_serviceProvider, glBufferData, (GL_ARRAY_BUFFER, m_vertexNum * sizeof( RenderVertex2D ), NULL, m_usage) );
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+		GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, bufId) );
+		GLCALL( glBufferData, (GL_ARRAY_BUFFER, m_vertexNum * sizeof( RenderVertex2D ), NULL, m_usage) );
+		GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 
 		m_id = bufId;
 
@@ -77,9 +74,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OpenGLRenderVertexBufferES::unlock()
 	{
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
-		GLCALL( m_serviceProvider, glBufferSubData, (GL_ARRAY_BUFFER, m_lockOffset * sizeof( RenderVertex2D ), m_lockCount * sizeof( RenderVertex2D ), m_lockMemory) );
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+		GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+		GLCALL( glBufferSubData, (GL_ARRAY_BUFFER, m_lockOffset * sizeof( RenderVertex2D ), m_lockCount * sizeof( RenderVertex2D ), m_lockMemory) );
+		GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 
 		m_lockOffset = 0;
 		m_lockCount = 0;
@@ -91,6 +88,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderVertexBufferES::enable()
 	{
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+		GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
 	}
 }

@@ -27,10 +27,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SilentSoundSystem::_initialize()
 	{
-        LOGGER_INFO(m_serviceProvider)( "Starting Silent Sound System..." );
+        LOGGER_INFO( "Starting Silent Sound System..." );
         		
-		m_factorySilentSoundBuffer = new FactoryPool<SilentSoundBuffer, 32>( m_serviceProvider );
-		m_factorySilentSoundSource = new FactoryPool<SilentSoundSource, 32>( m_serviceProvider );
+		m_factorySilentSoundBuffer = new FactoryPool<SilentSoundBuffer, 32>();
+		m_factorySilentSoundSource = new FactoryPool<SilentSoundSource, 32>();
 
 		return true;
 	}
@@ -75,7 +75,7 @@ namespace Menge
 
 		if( buffer->load( _soundDecoder ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SilentSoundSystem::createSoundBuffer: failed to load sound buffer from decoder"
+			LOGGER_ERROR("SilentSoundSystem::createSoundBuffer: failed to load sound buffer from decoder"
 				);
 
             return nullptr;

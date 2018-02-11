@@ -80,11 +80,11 @@ namespace	Menge
 	{	
         bool solid = m_color.isSolid();
 
-		RenderMaterialInterfacePtr material = this->makeSolidMaterial( m_serviceProvider, solid );
+		RenderMaterialInterfacePtr material = this->makeSolidMaterial( solid );
 
 		if( material == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("SurfaceSolidColor::updateMaterial_ %s m_material is NULL"
+			LOGGER_ERROR("SurfaceSolidColor::updateMaterial_ %s m_material is NULL"
 				, this->getName().c_str()
 				);
 

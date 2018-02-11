@@ -27,9 +27,7 @@ namespace Menge
     RenderImageLoaderInterfacePtr DecoderRenderImageProvider::getLoader() const
     {
         DecoderRenderImageLoaderPtr loader = new FactorableUnique<DecoderRenderImageLoader>();
-
-        loader->setServiceProvider( m_serviceProvider );
-
+        
         if( loader->initialize( m_pakName, m_fileName, m_codecName ) == false )
         {
             return nullptr;

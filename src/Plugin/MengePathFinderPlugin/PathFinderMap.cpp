@@ -11,8 +11,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderMap::PathFinderMap()
-		: m_serviceProvider(nullptr)
-		, m_width(0)
+		: m_width(0)
 		, m_height(0)
 		, m_gridSize(16.f)
 		, m_unitSize(20.f)
@@ -25,32 +24,32 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderMap::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::initialize()
 	{
-		THREAD_SERVICE(m_serviceProvider)
-			->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadPathFinderMap"), 0, __FILE__, __LINE__ );
+		THREAD_SERVICE()
+			->createThread( STRINGIZE_STRING_LOCAL( "ThreadPathFinderMap"), 0, __FILE__, __LINE__ );
 
-		m_threadPathFinders = THREAD_SERVICE(m_serviceProvider)
-			->runTaskQueue( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadPathFinderMap"), 1, 1 );
+		m_threadPathFinders = THREAD_SERVICE()
+			->runTaskQueue( STRINGIZE_STRING_LOCAL( "ThreadPathFinderMap"), 1, 1 );
 
 		if( m_threadPathFinders == nullptr )
 		{
 			return false;
 		}
 
-        m_factoryPathFinder = new FactoryPool<PathFinder, 32>(m_serviceProvider);
+        m_factoryPathFinder = new FactoryPool<PathFinder, 32>();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::finalize()
 	{
+        m_factoryPathFinder = nullptr;
 
+        m_threadPathFinders = nullptr;
+
+        THREAD_SERVICE()
+            ->destroyThread( STRINGIZE_STRING_LOCAL( "ThreadPathFinderMap" ) );        
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::setMap( float _width, float _height, float _gridSize, float _unitSize )
@@ -224,7 +223,7 @@ namespace Menge
 	{	
 		if( _polygon.num_points() == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("PathFinderMap::addObstacle polygon is empty!"
+			LOGGER_ERROR("PathFinderMap::addObstacle polygon is empty!"
 				);
 
 			return 0;
@@ -556,7 +555,7 @@ namespace Menge
 
 	//	Polygon::ring_type::size_type vertexCount = numpoints * 2;
 
-	//	RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
+	//	RenderVertex2D * vertices = RENDER_SERVICE()
 	//		->getDebugRenderVertex2D( vertexCount );
 
 	//	if( vertices == nullptr )
@@ -595,10 +594,10 @@ namespace Menge
 	//		v1.uv[1].y = 0.f;
 	//	}
 
-	//	const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
+	//	const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
 	//		->getDebugMaterial();
 
-	//	RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, _clipplane, debugMaterial
+	//	RENDER_SERVICE()->addRenderLine( _viewport, _camera, _clipplane, debugMaterial
 	//		, vertices
 	//		, vertexCount
 	//		, nullptr

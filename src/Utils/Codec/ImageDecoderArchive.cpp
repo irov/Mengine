@@ -36,7 +36,7 @@ namespace Menge
 	{
 		if( _bufferSize < m_options.pitch * m_dataInfo.height )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderMemory::decode invalid bufferSize %d != (%d * %d)"
+			LOGGER_ERROR("ImageDecoderMemory::decode invalid bufferSize %d != (%d * %d)"
 				, _bufferSize
 				, m_options.pitch
 				, m_dataInfo.height
@@ -77,7 +77,7 @@ namespace Menge
 		void * stream_memory;
 		if( m_stream->memory( &stream_memory, &stream_size ) == false )
 		{
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_serviceProvider, m_stream, __FILE__, __LINE__ );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, __FILE__, __LINE__ );
 
 			if( buffer == nullptr )
 			{
@@ -113,7 +113,7 @@ namespace Menge
 		}
 		else
 		{
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, _capacityDest, __FILE__, __LINE__ );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( _capacityDest, __FILE__, __LINE__ );
 
 			if( buffer == nullptr )
 			{

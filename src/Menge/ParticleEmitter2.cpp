@@ -72,7 +72,7 @@ namespace	Menge
 	{      		
 		if( m_resourceParticle == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter2::_compile '%s' resource is null"
+			LOGGER_ERROR("ParticleEmitter2::_compile '%s' resource is null"
 				, m_name.c_str()
 				);
 
@@ -81,7 +81,7 @@ namespace	Menge
 
         if( m_resourceParticle.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter2::_compile '%s' resource '%s' not compile"
+            LOGGER_ERROR("ParticleEmitter2::_compile '%s' resource '%s' not compile"
                 , m_name.c_str()
                 , m_resourceParticle->getName().c_str()
                 );
@@ -93,7 +93,7 @@ namespace	Menge
 
 		if( emitter == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter2::_compile '%s' can't create emitter source '%s'"
+			LOGGER_ERROR("ParticleEmitter2::_compile '%s' can't create emitter source '%s'"
 				, m_name.c_str()
 				, m_resourceParticle->getName().c_str()
 				);
@@ -130,7 +130,7 @@ namespace	Menge
 		{
 			if( emitter->setPositionProvider( this ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
+				LOGGER_ERROR("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
 					, m_resourceParticle->getGroup().c_str()
 					, m_resourceParticle->getName().c_str()
@@ -143,7 +143,7 @@ namespace	Menge
 		{
 			if( emitter->setPositionProvider( nullptr ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
+				LOGGER_ERROR("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
 					, m_resourceParticle->getGroup().c_str()
 					, m_resourceParticle->getName().c_str()
@@ -157,7 +157,7 @@ namespace	Menge
 		{
 			if( emitter->setCameraProvider( this ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
+				LOGGER_ERROR("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
 					, m_resourceParticle->getGroup().c_str()
 					, m_resourceParticle->getName().c_str()
@@ -170,7 +170,7 @@ namespace	Menge
 		{
 			if( emitter->setCameraProvider( nullptr ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
+				LOGGER_ERROR("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
 					, m_resourceParticle->getGroup().c_str()
 					, m_resourceParticle->getName().c_str()
@@ -226,7 +226,7 @@ namespace	Menge
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_RESTART )
             ->onAnimatableRestart( _enumerator, _time );
-		//EVENTABLE_CALL(m_serviceProvider, this, EVENT_PARTICLE_EMITTER_RESTART)( this, _enumerator, false );
+		//EVENTABLE_CALL(this, EVENT_PARTICLE_EMITTER_RESTART)( this, _enumerator, false );
 
 		m_emitter->restart();
 
@@ -270,8 +270,8 @@ namespace	Menge
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
             ->onAnimatableStop( _enumerator );
 
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END )(this, _enumerator, false);
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( this, EVENT_PARTICLE_EMITTER_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_end( uint32_t _enumerator )
@@ -279,8 +279,8 @@ namespace	Menge
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
             ->onAnimatableEnd( _enumerator );
         
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END )(this, _enumerator, true);
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( this, EVENT_PARTICLE_EMITTER_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_setLoop( bool _value )
@@ -299,7 +299,7 @@ namespace	Menge
 
 		if( this->isCompile() == false )
 		{
-            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::_interrupt '%s' can't compile"
+            LOGGER_ERROR("ParticleEmitter::_interrupt '%s' can't compile"
                 , m_name.c_str()
                 );
 
@@ -320,7 +320,7 @@ namespace	Menge
 
 		Node::_update( _current, _timing );
 
-		bool enabled = APPLICATION_SERVICE(m_serviceProvider)
+		bool enabled = APPLICATION_SERVICE()
 			->getParticleEnable();
 
 		if( enabled == false )
@@ -357,7 +357,7 @@ namespace	Menge
 			return;
 		}
 
-		bool enabled = APPLICATION_SERVICE( m_serviceProvider )
+		bool enabled = APPLICATION_SERVICE()
 			->getParticleEnable();
 
 		if( enabled == false )
@@ -415,7 +415,7 @@ namespace	Menge
 			{
 				int textureId = mesh.texture[i];
 
-				const ResourceImagePtr & image = PARTICLE_SYSTEM2( m_serviceProvider )
+				const ResourceImagePtr & image = PARTICLE_SYSTEM2()
 					->getResourceImage( textureId );
 
 				if( image == nullptr )
@@ -433,11 +433,11 @@ namespace	Menge
 				textures[i] = texture;
 			}
 
-			const RenderMaterialStage * stage = PARTICLE_SYSTEM2( m_serviceProvider )
+			const RenderMaterialStage * stage = PARTICLE_SYSTEM2()
 				->getMaterialStage( mesh.material );
 
-			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( m_serviceProvider )
-				->getMaterial2( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ParticleEmitter2"), stage, PT_TRIANGLELIST, mesh.textures, textures );
+			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
+				->getMaterial2( STRINGIZE_STRING_LOCAL( "ParticleEmitter2"), stage, PT_TRIANGLELIST, mesh.textures, textures );
 
 			_renderService
 				->addRenderObject( _state, material, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, &bb, false );
@@ -543,7 +543,7 @@ namespace	Menge
 		{
 			if( m_emitter->setPositionProvider( this ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::setEmitterPositionRelative '%s' group '%s' resource '%s' invalid setup position provider"
+				LOGGER_ERROR("ParticleEmitter2::setEmitterPositionRelative '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
 					, m_resourceParticle->getGroup().c_str()
 					, m_resourceParticle->getName().c_str()
@@ -556,7 +556,7 @@ namespace	Menge
 		{ 
 			if( m_emitter->setPositionProvider( nullptr ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::setEmitterPositionRelative '%s' group '%s' resource '%s' invalid setup position provider"
+				LOGGER_ERROR("ParticleEmitter2::setEmitterPositionRelative '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
 					, m_resourceParticle->getGroup().c_str()
 					, m_resourceParticle->getName().c_str()
@@ -580,7 +580,7 @@ namespace	Menge
 		{
 			if( m_emitter->setCameraProvider( this ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::setEmitterCameraRelative '%s' group '%s' resource '%s' invalid setup position provider"
+				LOGGER_ERROR("ParticleEmitter2::setEmitterCameraRelative '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
 					, m_resourceParticle->getGroup().c_str()
 					, m_resourceParticle->getName().c_str()
@@ -593,7 +593,7 @@ namespace	Menge
 		{
 			if( m_emitter->setCameraProvider( nullptr ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::setEmitterCameraRelative '%s' group '%s' resource '%s' invalid setup position provider"
+				LOGGER_ERROR("ParticleEmitter2::setEmitterCameraRelative '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
 					, m_resourceParticle->getGroup().c_str()
 					, m_resourceParticle->getName().c_str()
@@ -637,12 +637,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter2::compileEmitterImage_( const ParticleEmitterInterfacePtr & _emitter )
 	{
-		ResourceHITPtr resourceHIT = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceHITPtr resourceHIT = RESOURCE_SERVICE()
 			->getResourceT<ResourceHITPtr>( m_emitterImageName );
 
 		if( resourceHIT == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter '%s' can't compile emitter hit %s"
+			LOGGER_ERROR("ParticleEmitter '%s' can't compile emitter hit %s"
 				, m_name.c_str()
 				, m_emitterImageName.c_str()
 				);
@@ -657,7 +657,7 @@ namespace	Menge
         
 		if( _emitter->changeEmitterImage( alphaWidth, alphaHeight, alphaBuffer, 1 ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::setEmitterImage %s changeEmitterImage Error image %s"
+			LOGGER_ERROR("ParticleEmitter::setEmitterImage %s changeEmitterImage Error image %s"
                 , m_name.c_str()
                 , m_emitterImageName.c_str()
                 );
@@ -703,7 +703,7 @@ namespace	Menge
 		TVectorPoints points;
 		if( m_polygon.triangulate( points ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::changeEmitterPolygon '%s' wrong polygon"
+			LOGGER_ERROR("ParticleEmitter::changeEmitterPolygon '%s' wrong polygon"
 				, m_name.c_str()
 				);
 
@@ -712,7 +712,7 @@ namespace	Menge
 
 		if( points.empty() == true )
 		{
-            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::changeEmitterPolygon '%s' empty points"
+            LOGGER_ERROR("ParticleEmitter::changeEmitterPolygon '%s' empty points"
                 , m_name.c_str()
                 );
 
@@ -724,7 +724,7 @@ namespace	Menge
 
 		if( _emitter->changeEmitterModel( triangles_ptr, triangles_size ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::changeEmitterPolygon '%s' changeEmitterModel Error polygon"
+			LOGGER_ERROR("ParticleEmitter::changeEmitterPolygon '%s' changeEmitterModel Error polygon"
 				, m_name.c_str()
 				);
 
@@ -757,7 +757,7 @@ namespace	Menge
 	{
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::getDuration '%s' can't compile"
+            LOGGER_ERROR("ParticleEmitter::getDuration '%s' can't compile"
                 , m_name.c_str()
                 );
 
@@ -807,7 +807,7 @@ namespace	Menge
 
 		if( camera == nullptr )
 		{
-			camera = PLAYER_SERVICE( m_serviceProvider )
+			camera = PLAYER_SERVICE()
 				->getRenderCamera();
 		}
 

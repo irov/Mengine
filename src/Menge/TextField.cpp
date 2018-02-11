@@ -78,10 +78,10 @@ namespace Menge
 	{
 		this->invalidateTextEntry();
 
-		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
+		m_observerChangeLocale = NOTIFICATION_SERVICE()
 			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE_POST, this, &TextField::notifyChangeLocale );
 
-		m_observerDebugMode = NOTIFICATION_SERVICE( m_serviceProvider )
+		m_observerDebugMode = NOTIFICATION_SERVICE()
 			->addObserverMethod( NOTIFICATOR_DEBUG_TEXT_MODE, this, &TextField::notifyDebugMode );
 		
 		return true;
@@ -197,7 +197,7 @@ namespace Menge
 		{
 		case EMB_NORMAL:
 			{
-				materialName = RENDERMATERIAL_SERVICE( m_serviceProvider )
+				materialName = RENDERMATERIAL_SERVICE()
 					->getMaterialName( EM_TEXTURE_BLEND );
 			}break;
 		};
@@ -249,7 +249,7 @@ namespace Menge
 
 				line.advanceCharOffset( cd, charScale, offset );
 
-				RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( m_serviceProvider )
+				RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
 					->getMaterial( materialName, PT_TRIANGLELIST, 1, &cd.texture );
 
 				if( chunk.material == material )
@@ -289,7 +289,7 @@ namespace Menge
 			return;
 		}
 
-		if( APPLICATION_SERVICE(m_serviceProvider)
+		if( APPLICATION_SERVICE()
 			->getTextEnable() == false )
 		{
 			return;
@@ -389,7 +389,7 @@ namespace Menge
 
 		//const mt::box2f & bb = this->getBoundingBox();
 
-  //      RENDER_SERVICE(m_serviceProvider)
+  //      RENDER_SERVICE()
 		//	->addRenderQuad( _state, material, vertices, countVertex, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -397,7 +397,7 @@ namespace Menge
 	{
 		if (this->isCompile() == false)
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::getCharCount '%s' not compile"
+			LOGGER_ERROR("TextField::getCharCount '%s' not compile"
 				, m_name.c_str()
 				);
 
@@ -456,10 +456,10 @@ namespace Menge
 		if( _fontName.empty() == false )
 		{
 			TextFontInterfacePtr font;
-			if( TEXT_SERVICE(m_serviceProvider)
+			if( TEXT_SERVICE()
 				->existFont( _fontName, font ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("TextField::setFontName %s not found font %s"
+				LOGGER_ERROR("TextField::setFontName %s not found font %s"
 					, m_name.c_str()
 					, _fontName.c_str()
 					);
@@ -598,7 +598,7 @@ namespace Menge
 		
 		if( this->updateTextCache_() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ '%s' invalid update text cache %s"
+			LOGGER_ERROR("TextField::updateTextLines_ '%s' invalid update text cache %s"
 				, this->getName().c_str()
 				, m_key.c_str()
 				);
@@ -641,11 +641,11 @@ namespace Menge
 		it != it_end; 
 		++it)
 		{
-			TextLine textLine(m_serviceProvider, charOffset);
+			TextLine textLine(charOffset);
 			            
 			if( textLine.initialize( font, *it ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
+				LOGGER_ERROR("TextField::updateTextLines_ %s textID %s invalid setup line"
 					, this->getName().c_str()
 					, m_key.c_str()
 					);
@@ -668,13 +668,13 @@ namespace Menge
 
 					while( words.empty() == false )
 					{
-						TextLine tl(m_serviceProvider,  charOffset);
+						TextLine tl( charOffset);
 
 						U32String tl_string( newLine + space_delim + words.front() );
 
 						if( tl.initialize( font, tl_string ) == false )
 						{
-							LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
+							LOGGER_ERROR("TextField::updateTextLines_ %s textID %s invalid setup line"
 								, this->getName().c_str()
 								, m_key.c_str()
 								);
@@ -684,11 +684,11 @@ namespace Menge
 
 						if( length > maxLength )
 						{
-							TextLine line(m_serviceProvider, charOffset);
+							TextLine line(charOffset);
 
 							if( line.initialize( font, newLine ) == false )
 							{
-								LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
+								LOGGER_ERROR("TextField::updateTextLines_ %s textID %s invalid setup line"
 									, this->getName().c_str()
 									, m_key.c_str()
 									);
@@ -708,10 +708,10 @@ namespace Menge
 						}
 					}
 
-					TextLine line(m_serviceProvider, charOffset);				
+					TextLine line(charOffset);				
 					if( line.initialize( font, newLine ) == false )
 					{
-						LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
+						LOGGER_ERROR("TextField::updateTextLines_ %s textID %s invalid setup line"
 							, this->getName().c_str()
 							, m_key.c_str()
 							);
@@ -772,7 +772,7 @@ namespace Menge
 
 		if( fontName.empty() == true )
 		{
-			fontName = TEXT_SERVICE(m_serviceProvider)
+			fontName = TEXT_SERVICE()
 				->getDefaultFontName();
 		}
 
@@ -796,12 +796,12 @@ namespace Menge
 			return;
 		}
 
-		m_font = TEXT_SERVICE(m_serviceProvider)
+		m_font = TEXT_SERVICE()
 			->getFont( fontName );
 
 		if( m_font == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::updateFont_ '%s' can't found font '%s'"
+			LOGGER_ERROR("TextField::updateFont_ '%s' can't found font '%s'"
 				, this->getName().c_str()
 				, fontName.c_str()
 				);
@@ -811,7 +811,7 @@ namespace Menge
 
 		if( m_font->compileFont() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TextField::updateFont_ '%s' invalid compile font '%s'"
+			LOGGER_ERROR("TextField::updateFont_ '%s' invalid compile font '%s'"
 				, this->getName().c_str()
 				, fontName.c_str()
 				);
@@ -826,12 +826,12 @@ namespace Menge
 	{
 		m_invalidateTextEntry = false;
 
-		m_textEntry = TEXT_SERVICE( m_serviceProvider )
+		m_textEntry = TEXT_SERVICE()
 			->getTextEntry( m_key );
 
 		if( m_textEntry == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TextField::updateTextEntry_ '%s' can't find text ID '%s'"
+			LOGGER_ERROR("TextField::updateTextEntry_ '%s' can't find text ID '%s'"
 				, this->getName().c_str()
 				, m_key.c_str()
 				);
@@ -858,7 +858,7 @@ namespace Menge
 
 		if( m_fontName.empty() == true )
 		{
-			const ConstString & fontName = TEXT_SERVICE(m_serviceProvider)
+			const ConstString & fontName = TEXT_SERVICE()
 				->getDefaultFontName();
 
 			return fontName;
@@ -1248,7 +1248,7 @@ namespace Menge
 
 		if( textEntry == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::getTextExpectedArgument '%s:%s' not compile"
+			LOGGER_ERROR("TextField::getTextExpectedArgument '%s:%s' not compile"
 				, this->getName().c_str()
 				, m_key.c_str()
 				);
@@ -1270,7 +1270,7 @@ namespace Menge
 		}
 		catch( const boost::io::format_error & _ex )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::getTextExpectedArgument '%s:%s' except error '%s'"
+			LOGGER_ERROR("TextField::getTextExpectedArgument '%s:%s' except error '%s'"
 				, this->getName().c_str()
 				, this->getTextID().c_str()
 				, _ex.what()
@@ -1288,7 +1288,7 @@ namespace Menge
 
 		if( textEntry == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("TextField::updateTextCache_ '%s:%s' invalid get text entry can't setup text ID"
+			LOGGER_ERROR("TextField::updateTextCache_ '%s:%s' invalid get text entry can't setup text ID"
 				, this->getName().c_str()
 				, m_key.c_str()
 				);
@@ -1321,7 +1321,7 @@ namespace Menge
 		}
 		catch( const boost::io::format_error & _ex )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::updateTextCache_ '%s:%s' except error '%s'"
+			LOGGER_ERROR("TextField::updateTextCache_ '%s:%s' except error '%s'"
 				, this->getName().c_str()
 				, this->getTextID().c_str()
 				, _ex.what()

@@ -47,12 +47,14 @@ namespace Menge
 		uint32_t getFontParams() const override;
 
 	public:
+        bool validateText( const ConstString & _key, const String & _text ) const override;
 		U32String prepareText( const String & _text ) override;
 
 	protected:
 		bool initializeBase_( const IniUtil::IniStore & _ini );
 		
 	protected:
+        virtual bool _validateGlyph( uint32_t _code ) const = 0;
 		virtual bool _prepareGlyph( uint32_t _code ) = 0;
 
 	protected:

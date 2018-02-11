@@ -52,7 +52,7 @@ namespace Menge
 	{
 		if( m_resourceModel == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Model3D::compileResource_ '%s' image resource null"
+			LOGGER_ERROR("Model3D::compileResource_ '%s' image resource null"
 				, m_name.c_str() 
 				);
 
@@ -61,7 +61,7 @@ namespace Menge
 
 		if( m_resourceModel.compile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Model3D::compileResource_ '%s' model resource %s not compile"
+			LOGGER_ERROR("Model3D::compileResource_ '%s' model resource %s not compile"
 				, m_name.c_str() 
 				, m_resourceModel->getName().c_str()
 				);
@@ -71,8 +71,8 @@ namespace Menge
 
 		const Model3DInterfacePtr & model = m_resourceModel->getModel();
 
-		m_camera = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<RenderCameraProjection *>( CONST_STRING( m_serviceProvider, RenderCameraProjection ) );
+		m_camera = NODE_SERVICE()
+			->createNodeT<RenderCameraProjection *>( CONST_STRING( RenderCameraProjection ) );
 
 		const ConstString & name = this->getName();
 		m_camera->setName( name );
@@ -137,18 +137,18 @@ namespace Menge
 
 		if( resourceImage == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Mesh::updateMaterial_ %s resourceImage is NULL"
+			LOGGER_ERROR("Mesh::updateMaterial_ %s resourceImage is NULL"
 				, this->getName().c_str()
 				);
 
 			return nullptr;
 		}
 
-		RenderMaterialInterfacePtr material = this->makeImageMaterial( m_serviceProvider, resourceImage, m_solid );
+		RenderMaterialInterfacePtr material = this->makeImageMaterial( resourceImage, m_solid );
 
 		if( material == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Mesh::updateMaterial_ %s m_material is NULL"
+			LOGGER_ERROR("Mesh::updateMaterial_ %s m_material is NULL"
 				, this->getName().c_str()
 				);
 
@@ -393,7 +393,7 @@ namespace Menge
 
 		if( this->isActivate() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Model3D: '%s' play not activate"
+			LOGGER_ERROR("Model3D: '%s' play not activate"
 				, getName().c_str()
 				);
 
@@ -433,7 +433,7 @@ namespace Menge
 
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Animation: '%s' stop not activate"
+			LOGGER_ERROR("Animation: '%s' stop not activate"
 				, getName().c_str()
 				);
 
@@ -447,7 +447,7 @@ namespace Menge
 
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Animation: '%s' end not activate"
+			LOGGER_ERROR("Animation: '%s' end not activate"
 				, getName().c_str()
 				);
 
@@ -502,7 +502,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Animation._setFirstFrame: '%s' not activate"
+			LOGGER_ERROR("Animation._setFirstFrame: '%s' not activate"
 				, m_name.c_str()
 				);
 
@@ -518,7 +518,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Model3D.setCurrentFrame: '%s' not activate"
+			LOGGER_ERROR("Model3D.setCurrentFrame: '%s' not activate"
 				, m_name.c_str()
 				);
 
@@ -531,7 +531,7 @@ namespace Menge
 				
 		if( _frame >= frameCount )	
 		{
-			LOGGER_ERROR(m_serviceProvider)("Model3D.setCurrentFrame: '%s' _frame(%d) >= frameCount(%d)"
+			LOGGER_ERROR("Model3D.setCurrentFrame: '%s' _frame(%d) >= frameCount(%d)"
 				, m_name.c_str()
 				, _frame
 				, frameCount
@@ -550,7 +550,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Animation._setLastFrame: '%s' not activate"
+			LOGGER_ERROR("Animation._setLastFrame: '%s' not activate"
 				, m_name.c_str()
 				);
 
@@ -570,7 +570,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Animation._setTiming: '%s' not activate"
+			LOGGER_ERROR("Animation._setTiming: '%s' not activate"
 				, m_name.c_str()
 				);
 
@@ -586,7 +586,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Animation._getTiming: '%s' not activate"
+			LOGGER_ERROR("Animation._getTiming: '%s' not activate"
 				, m_name.c_str()
 				);
 

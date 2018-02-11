@@ -171,6 +171,6 @@ namespace Menge
         virtual void dumpResources( const String & _tag ) = 0;
     };
 
-#   define RESOURCE_SERVICE( serviceProvider )\
-    ((Menge::ResourceServiceInterface *)SERVICE_GET(serviceProvider, Menge::ResourceServiceInterface))
+#   define RESOURCE_SERVICE()\
+    ((Menge::ResourceServiceInterface *)SERVICE_GET(Menge::ResourceServiceInterface))
 }

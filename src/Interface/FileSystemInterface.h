@@ -104,8 +104,8 @@ namespace Menge
 		virtual OutputStreamInterfacePtr openOutputFile( const ConstString & _name, const FilePath & _fileName ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-#   define FILE_SERVICE( serviceProvider )\
-    ((Menge::FileServiceInterface *)SERVICE_GET(serviceProvider, Menge::FileServiceInterface))
+#   define FILE_SERVICE()\
+    ((Menge::FileServiceInterface *)SERVICE_GET(Menge::FileServiceInterface))
 }
 
 

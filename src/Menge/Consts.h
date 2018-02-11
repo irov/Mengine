@@ -157,10 +157,10 @@ namespace Menge
 #	undef DECL_CONST
 	};
 
-#   define CONSTS_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::Consts)
+#   define CONSTS_SERVICE()\
+    SERVICE_GET(Menge::Consts)
 }
 
-#	define CONST_STRING( ServiceProvider, String )\
-	(CONSTS_SERVICE(ServiceProvider)->c_##String)
+#	define CONST_STRING( String )\
+	(CONSTS_SERVICE()->c_##String)
 

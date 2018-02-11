@@ -73,6 +73,6 @@ namespace Menge
 		virtual void messageAll( const ConstString & _messageName, const TMapWParams & _params ) = 0;
 	};
 
-#   define MODULE_SERVICE( serviceProvider )\
-	((Menge::ModuleServiceInterface *)SERVICE_GET(serviceProvider, Menge::ModuleServiceInterface))
+#   define MODULE_SERVICE()\
+	((Menge::ModuleServiceInterface *)SERVICE_GET(Menge::ModuleServiceInterface))
 }

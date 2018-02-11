@@ -45,7 +45,7 @@ namespace Menge
 	{
 		if( m_picker == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("HotSpot::isMousePickerOver %s not activate picker"
+			LOGGER_ERROR("HotSpot::isMousePickerOver %s not activate picker"
 				, this->getName().c_str()
 				);
 
@@ -91,19 +91,19 @@ namespace Menge
 	{
 		if( m_picker != nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("HotSpot::activatePicker_ '%s' alredy activate picker"
+			LOGGER_ERROR("HotSpot::activatePicker_ '%s' alredy activate picker"
 				, this->getName().c_str()
 				);
 
 			return;
 		}
 
-		MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE(m_serviceProvider)
+		MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE()
 			->getMousePickerSystem();
 
 		if( mousePickerSystem == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("HotSpot::activatePicker_ '%s' invalid get mouse picker system"
+			LOGGER_ERROR("HotSpot::activatePicker_ '%s' invalid get mouse picker system"
 				, this->getName().c_str()
 				);
 
@@ -118,26 +118,26 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_ACTIVATE )
             ->onHotSpotActivate();
-		//EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACTIVATE)();
+		//EVENTABLE_CALL(this, EVENT_ACTIVATE)();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::deactivatePicker_()
 	{
 		if( m_picker == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("HotSpot::activatePicker_ '%s' alredy deactivate picker"
+			LOGGER_ERROR("HotSpot::activatePicker_ '%s' alredy deactivate picker"
 				, this->getName().c_str()
 				);
 
 			return;
 		}
 
-		MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE(m_serviceProvider)
+		MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE()
 			->getMousePickerSystem();
 
 		if( mousePickerSystem == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("HotSpot::activatePicker_ '%s' invalid get mouse picker system"
+			LOGGER_ERROR("HotSpot::activatePicker_ '%s' invalid get mouse picker system"
 				, this->getName().c_str()
 				);
 
@@ -155,7 +155,7 @@ namespace Menge
         
         EVENTABLE_METHOD( this, EVENT_DEACTIVATE )
             ->onHotSpotDeactivate();
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_DEACTIVATE )();
+		//EVENTABLE_CALL( this, EVENT_DEACTIVATE )();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onHandleMouseLeave()
@@ -164,7 +164,7 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_MOUSE_LEAVE )
             ->onHotSpotMouseLeave();
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_LEAVE )(this);
+		//EVENTABLE_CALL( this, EVENT_MOUSE_LEAVE )(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onHandleMouseOverDestroy()
@@ -173,7 +173,7 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_MOUSE_OVER_DESTROY )
             ->onHotSpotMouseOverDestroy();
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_OVER_DESTROY )(this);
+		//EVENTABLE_CALL( this, EVENT_MOUSE_OVER_DESTROY )(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::onHandleMouseEnter( float _x, float _y )
@@ -182,7 +182,7 @@ namespace Menge
 
 		bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_ENTER, m_defaultHandle )
             ->onHotSpotMouseEnter( _x, _y );
-		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_ENTER, handle )(this, _x, _y);
+		//EVENTABLE_ASK( this, EVENT_MOUSE_ENTER, handle )(this, _x, _y);
 
 		return handle;
 	}
@@ -193,7 +193,7 @@ namespace Menge
 				
         bool handle = EVENTABLE_METHODR( this, EVENT_KEY, m_defaultHandle )
             ->onHotSpotKey( _event );
-		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEY, handle )(this, (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat);
+		//EVENTABLE_ASK( this, EVENT_KEY, handle )(this, (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat);
 
 		return handle;
 	}
@@ -204,7 +204,7 @@ namespace Menge
 
 		bool handle = EVENTABLE_METHODR( this, EVENT_TEXT, m_defaultHandle )
 			->onHotSpotText( _event );
-		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEY, handle )(this, (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat);
+		//EVENTABLE_ASK( this, EVENT_KEY, handle )(this, (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat);
 
 		return handle;
 	}
@@ -215,7 +215,7 @@ namespace Menge
 
         bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_BUTTON, m_defaultHandle )
             ->onHotSpotMouseButton( _event );
-		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON, handle )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
+		//EVENTABLE_ASK( this, EVENT_MOUSE_BUTTON, handle )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
 
 		return handle;
 	}
@@ -224,7 +224,7 @@ namespace Menge
 	{
         bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_BUTTON_BEGIN, false )
             ->onHotSpotMouseButtonBegin( _event );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
+		//EVENTABLE_CALL( this, EVENT_MOUSE_BUTTON_BEGIN )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
 
 		return handle;
 	}
@@ -233,7 +233,7 @@ namespace Menge
 	{
         bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_BUTTON_END, false )
             ->onHotSpotMouseButtonEnd( _event );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_BUTTON_END )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
+		//EVENTABLE_CALL( this, EVENT_MOUSE_BUTTON_END )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
 
 		return handle;
 	}
@@ -244,7 +244,7 @@ namespace Menge
             ->onHotSpotMouseMove( _event );
 		//bool handle = m_defaultHandle;
 
-		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_MOVE, handle )(this, _event.touchId, _event.x, _event.y, _event.dx, _event.dy);
+		//EVENTABLE_ASK( this, EVENT_MOUSE_MOVE, handle )(this, _event.touchId, _event.x, _event.y, _event.dx, _event.dy);
 
 		return handle;
 	}
@@ -255,7 +255,7 @@ namespace Menge
             ->onHotSpotMouseWheel( _event );
 		//bool handle = m_defaultHandle;
 				
-		//EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_WHEEL, handle )(this, _event.button, _event.x, _event.y, _event.wheel);
+		//EVENTABLE_ASK( this, EVENT_MOUSE_WHEEL, handle )(this, _event.button, _event.x, _event.y, _event.wheel);
 
 		return handle;
 	}
@@ -309,12 +309,12 @@ namespace Menge
 			return;
 		}
 
-		MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE( m_serviceProvider )
+		MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE()
 			->getMousePickerSystem();
 
 		if( mousePickerSystem == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("HotSpot::activatePicker_ '%s' invalid get mouse picker system"
+			LOGGER_ERROR("HotSpot::activatePicker_ '%s' invalid get mouse picker system"
 				, this->getName().c_str()
 				);
 

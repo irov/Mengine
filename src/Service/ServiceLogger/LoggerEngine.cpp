@@ -99,9 +99,7 @@ namespace Menge
 		{
 			return false;
 		}
-
-		_logger->setServiceProvider( m_serviceProvider );
-
+        
 		if( _logger->initialize() == false )
 		{
 			return false;

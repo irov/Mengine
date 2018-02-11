@@ -58,7 +58,7 @@ namespace Menge
 
 		if( it_found == m_factoryFileGroups.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::unregisterFileGroupFactory: not registry factory '%s'"
+			LOGGER_ERROR("FileEngine::unregisterFileGroupFactory: not registry factory '%s'"
 				, _type.c_str() 
 				);
 
@@ -74,7 +74,7 @@ namespace Menge
 
 		if( it_found == m_factoryFileGroups.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::createFileGroup: not registry factory '%s'"
+			LOGGER_ERROR("FileEngine::createFileGroup: not registry factory '%s'"
 				, _type.c_str() 
 				);
 
@@ -87,21 +87,19 @@ namespace Menge
 
 		if( fileGroup == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::createFileGroup: invalid create file group '%s'"
+			LOGGER_ERROR("FileEngine::createFileGroup: invalid create file group '%s'"
 				, _type.c_str() 
 				);
 
 			return nullptr;
 		}
 
-		fileGroup->setServiceProvider( m_serviceProvider );
-
 		return fileGroup;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::mountFileGroup( const ConstString & _name, const ConstString & _category, const FilePath & _path, const ConstString & _type )
 	{
-		LOGGER_INFO(m_serviceProvider)( "FileEngine:mountFileSystem _fileGroupName '%s' _path '%s' _type '%s'"
+		LOGGER_INFO( "FileEngine:mountFileSystem _fileGroupName '%s' _path '%s' _type '%s'"
 			, _name.c_str() 
 			, _path.c_str()
 			, _type.c_str()
@@ -111,7 +109,7 @@ namespace Menge
 
 		if( it_find != m_fileSystemMap.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem FileSystem with name '%s' is already mount\n"
+			LOGGER_ERROR("FileEngine::mountFileSystem FileSystem with name '%s' is already mount\n"
 				"Remount would be performed"
 				, _name.c_str() 
 				);
@@ -123,7 +121,7 @@ namespace Menge
 
 		if( fs == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem can't create fileGroup '%s' type '%s' for object '%s'"
+			LOGGER_ERROR("FileEngine::mountFileSystem can't create fileGroup '%s' type '%s' for object '%s'"
                 , _name.c_str()
                 , _type.c_str()
 				, _path.c_str() 
@@ -134,7 +132,7 @@ namespace Menge
 
 		if( fs->initialize( _name, _category, _path ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem can't initialize FileSystem '%s' for object '%s'"
+			LOGGER_ERROR("FileEngine::mountFileSystem can't initialize FileSystem '%s' for object '%s'"
 				, _name.c_str()
 				, _path.c_str()
 				);
@@ -152,7 +150,7 @@ namespace Menge
 		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _name );
 		if( it_find == m_fileSystemMap.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::unmountFileGroup '%s' not mount"
+			LOGGER_ERROR("FileEngine::unmountFileGroup '%s' not mount"
 				, _name.c_str() 
 				);
 
@@ -215,7 +213,7 @@ namespace Menge
 
 		if( it_find == m_fileSystemMap.end() )
 		{
-			LOGGER_ERROR( m_serviceProvider )("FileEngine::getFileGroup '%s' not mount"
+			LOGGER_ERROR("FileEngine::getFileGroup '%s' not mount"
 				, _name.c_str()
 				);
 
@@ -233,7 +231,7 @@ namespace Menge
 
 		if( group == nullptr )
 		{
-            LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFile can't get group '%s'"
+            LOGGER_ERROR("FileEngine::openInputFile can't get group '%s'"
                 , _name.c_str()
                 );
 
@@ -244,7 +242,7 @@ namespace Menge
 
 		if( file == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFile can't create input file '%s'"
+			LOGGER_ERROR("FileEngine::openInputFile can't create input file '%s'"
 				, _name.c_str()
 				);
 
@@ -253,7 +251,7 @@ namespace Menge
 
 		if( group->openInputFile( _fileName, file, 0, 0, _streaming ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFile can't open input file '%s' '%s'"
+			LOGGER_ERROR("FileEngine::openInputFile can't open input file '%s' '%s'"
 				, _name.c_str()
 				, _fileName.c_str()
 				);
@@ -270,7 +268,7 @@ namespace Menge
 
         if( group == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("FileEngine::openOutputFile can't get group '%s'"
+            LOGGER_ERROR("FileEngine::openOutputFile can't get group '%s'"
                 , _name.c_str()
                 );
 
@@ -281,7 +279,7 @@ namespace Menge
 
 		if( file == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::openOutputFile can't create output file '%s'"
+			LOGGER_ERROR("FileEngine::openOutputFile can't create output file '%s'"
 				, _name.c_str()
 				);
 
@@ -290,7 +288,7 @@ namespace Menge
 
 		if( group->openOutputFile( _fileName, file ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::openOutputFile can't open output file '%s' '%s'"
+			LOGGER_ERROR("FileEngine::openOutputFile can't open output file '%s' '%s'"
 				, _name.c_str()
 				, _fileName.c_str()
 				);

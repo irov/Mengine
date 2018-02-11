@@ -18,16 +18,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundCodecPlugin::_initialize()
 	{
-        Helper::registerDecoder<SoundDecoderWAV>( m_serviceProvider, "wavSound" );
+        Helper::registerDecoder<SoundDecoderWAV>( "wavSound" );
 		
-		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "wav", Helper::stringizeString(m_serviceProvider, "wavSound") );
+		CODEC_SERVICE()
+			->registerCodecExt( "wav", Helper::stringizeString("wavSound") );
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundCodecPlugin::_finalize()
 	{
-        Helper::unregisterDecoder( m_serviceProvider, "wavSound" );
+        Helper::unregisterDecoder( "wavSound" );
 	}
 }

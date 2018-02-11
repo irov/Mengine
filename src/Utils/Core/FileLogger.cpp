@@ -34,10 +34,10 @@ namespace Menge
 
 		utf8_logFilename += ".log";
 
-		FilePath logFilename = Helper::stringizeFilePath( m_serviceProvider, utf8_logFilename.c_str(), utf8_logFilename.size() );
+		FilePath logFilename = Helper::stringizeFilePath( utf8_logFilename.c_str(), utf8_logFilename.size() );
 
-		m_stream = FILE_SERVICE( m_serviceProvider)
-			->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), logFilename );
+		m_stream = FILE_SERVICE()
+			->openOutputFile( STRINGIZE_STRING_LOCAL( "user" ), logFilename );
 
         if( m_stream == nullptr )
         {

@@ -37,8 +37,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::_initialize()
     {
-		m_factoryTextLocalePak = new FactoryPool<TextLocalePack, 4>( m_serviceProvider );
-		m_factoryLocalString = new FactoryPool<ConstStringHolderLocalString, 128>( m_serviceProvider );
+		m_factoryTextLocalePak = new FactoryPool<TextLocalePack, 4>();
+		m_factoryLocalString = new FactoryPool<ConstStringHolderLocalString, 128>();
 		
         return true;
     }
@@ -56,9 +56,8 @@ namespace Menge
     class TextManager::TextManagerLoadSaxCallback
     {
     public:
-		TextManagerLoadSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _pakName, const FilePath & _path )
-            : m_serviceProvider( _serviceProvider )
-            , m_textManager( _textManager )
+		TextManagerLoadSaxCallback( TextManager * _textManager, const ConstString & _pakName, const FilePath & _path )
+            : m_textManager( _textManager )
             , m_pakName( _pakName )
             , m_path( _path )
         {
@@ -114,7 +113,7 @@ namespace Menge
                 {
                     m_textManager->createLocalString_( str_value, (size_t)-1, text_key );
 
-                    //text_key = Helper::stringizeStringExternal( m_serviceProvider, str_value, (size_t)-1 );
+                    //text_key = Helper::stringizeStringExternal( str_value, (size_t)-1 );
                 }
                 else if( strcmp( str_key, "Value" ) == 0 )
                 {
@@ -125,7 +124,7 @@ namespace Menge
 
                     if( str_value_valid != str_value_end )
                     {
-                        LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read text key %s value |%s| invalid utf8 char |%s|"
+                        LOGGER_ERROR( "TextManager::loadResource %s:%s invalid read text key %s value |%s| invalid utf8 char |%s|"
                             , m_pakName.c_str()
                             , m_path.c_str()
                             , text_key.c_str()
@@ -136,7 +135,7 @@ namespace Menge
                         String str( str_value, str_value_size );
 						utf8::replace_invalid( str.begin(), str.end(), std::back_inserter( text ) );
 
-                        LOGGER_ERROR( m_serviceProvider )("replace to |%s|"
+                        LOGGER_ERROR( "replace to |%s|"
 							, text.c_str()
                             );
                     }
@@ -149,8 +148,6 @@ namespace Menge
                 {
                     m_textManager->createLocalString_( str_value, (size_t)-1, fontName );
 
-                    //fontName = Helper::stringizeStringExternal( m_serviceProvider, str_value, (size_t)-1 );
-
                     params |= EFP_FONT;
                 }
                 else if( strcmp( str_key, "CharOffset" ) == 0 )
@@ -158,7 +155,7 @@ namespace Menge
                     float value = 0.f;
                     if( sscanf( str_value, "%f", &value ) != 1 )
                     {
-                        LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' charOffset '%s'"
+                        LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' charOffset '%s'"
                             , m_pakName.c_str()
                             , m_path.c_str()
                             , text_key.c_str()
@@ -175,7 +172,7 @@ namespace Menge
                     float value = 0.f;
                     if( sscanf( str_value, "%f", &value ) != 1 )
                     {
-                        LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text '%s' lineOffset '%s'"
+                        LOGGER_ERROR( "TextManager::loadResource %s:%s invalid read for text '%s' lineOffset '%s'"
                             , m_pakName.c_str()
                             , m_path.c_str()
                             , text_key.c_str()
@@ -195,7 +192,7 @@ namespace Menge
                     float a;
                     if( sscanf( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
                     {
-                        LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' lineOffset '%s'"
+                        LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' lineOffset '%s'"
                             , m_pakName.c_str()
                             , m_path.c_str()
                             , text_key.c_str()
@@ -215,7 +212,7 @@ namespace Menge
                     float a;
                     if( sscanf( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
                     {
-                        LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' lineOffset '%s'"
+                        LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' lineOffset '%s'"
                             , m_pakName.c_str()
                             , m_path.c_str()
                             , text_key.c_str()
@@ -232,7 +229,7 @@ namespace Menge
                     float value = 0.f;
                     if( sscanf( str_value, "%f", &value ) != 1 )
                     {
-                        LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' Override '%s'"
+                        LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' Override '%s'"
                             , m_pakName.c_str()
                             , m_path.c_str()
                             , text_key.c_str()
@@ -249,7 +246,7 @@ namespace Menge
                     uint32_t value = 0;
                     if( sscanf( str_value, "%d", &value ) != 1 )
                     {
-                        LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' tag 'Override' '%s'"
+                        LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' tag 'Override' '%s'"
                             , m_pakName.c_str()
                             , m_path.c_str()
                             , text_key.c_str()
@@ -275,7 +272,7 @@ namespace Menge
                     }
                     else
                     {
-                        LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' VerticalAlign '%s' [Bottom, Center, Top]"
+                        LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' VerticalAlign '%s' [Bottom, Center, Top]"
                             , m_pakName.c_str()
                             , m_path.c_str()
                             , text_key.c_str()
@@ -301,7 +298,7 @@ namespace Menge
                     }
                     else
                     {
-                        LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' VerticalAlign '%s' [Left, Center, Right]"
+                        LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' VerticalAlign '%s' [Left, Center, Right]"
                             , m_pakName.c_str()
                             , m_path.c_str()
                             , text_key.c_str()
@@ -316,7 +313,7 @@ namespace Menge
                     float value = 0;
                     if( sscanf( str_value, "%f", &value ) != 1 )
                     {
-                        LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' Scale '%s'"
+                        LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' Scale '%s'"
                             , m_pakName.c_str()
                             , m_path.c_str()
                             , text_key.c_str()
@@ -333,7 +330,7 @@ namespace Menge
                     uint32_t value = 0;
                     if( sscanf( str_value, "%d", &value ) != 1 )
                     {
-                        LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid read for text '%s' tag 'Empty' '%s'"
+                        LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' tag 'Empty' '%s'"
                             , m_pakName.c_str()
                             , m_path.c_str()
                             , text_key.c_str()
@@ -345,7 +342,7 @@ namespace Menge
                 }
                 else
                 {
-                    LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid tag '%s' for text '%s'"
+                    LOGGER_ERROR( "TextManager::loadResource %s:%s invalid tag '%s' for text '%s'"
                         , m_pakName.c_str()
                         , m_path.c_str()
                         , str_key
@@ -356,7 +353,7 @@ namespace Menge
 
             if( text.empty() == true && isEmpty == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource '%s:%s' invalid text key '%s' value is empty"
+                LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid text key '%s' value is empty"
                     , m_pakName.c_str()
                     , m_path.c_str()
                     , text_key.c_str()
@@ -372,7 +369,6 @@ namespace Menge
         }
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
         TextManager * m_textManager;
 
         const ConstString & m_pakName;
@@ -383,9 +379,9 @@ namespace Menge
     {
         TextLocalePackPtr pak = m_factoryTextLocalePak->createObject();
 
-        if( pak->initialize( m_serviceProvider, _pakName, _path ) == false )
+        if( pak->initialize( _pakName, _path ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("TextManager::loadTextEntry '%s:%s' invalid initialize pak"
+            LOGGER_ERROR( "TextManager::loadTextEntry '%s:%s' invalid initialize pak"
                 , _pakName.c_str()
                 , _path.c_str()
                 );
@@ -399,10 +395,10 @@ namespace Menge
 
         Char * xml_buff = xml_memory->getMemory();
 
-        TextManagerLoadSaxCallback tmsc( m_serviceProvider, this, _pakName, _path );
+        TextManagerLoadSaxCallback tmsc( this, _pakName, _path );
         if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("TextManager::loadTextEntry '%s:%s' invalid parse pak"
+            LOGGER_ERROR( "TextManager::loadTextEntry '%s:%s' invalid parse pak"
                 , _pakName.c_str()
                 , _path.c_str()
                 );
@@ -417,9 +413,8 @@ namespace Menge
     class TextManager::TextManagerUnloadSaxCallback
     {
     public:
-        TextManagerUnloadSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _pakName, const FilePath & _path )
-            : m_serviceProvider( _serviceProvider )
-            , m_textManager( _textManager )
+        TextManagerUnloadSaxCallback( TextManager * _textManager, const ConstString & _pakName, const FilePath & _path )
+            : m_textManager( _textManager )
             , m_pakName( _pakName )
             , m_path( _path )
         {
@@ -453,7 +448,7 @@ namespace Menge
                 if( strcmp( str_key, "Key" ) == 0 )
                 {
                     m_textManager->createLocalString_( str_value, (size_t)-1, text_key );
-                    //text_key = Helper::stringizeString( m_serviceProvider, str_value, (size_t)-1 );
+                    //text_key = Helper::stringizeString( str_value, (size_t)-1 );
                 }
             }
 
@@ -471,7 +466,6 @@ namespace Menge
         }
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
         TextManager * m_textManager;
 
         const ConstString & m_pakName;
@@ -511,7 +505,7 @@ namespace Menge
     {
         TextLocalePackPtr pak = m_factoryTextLocalePak->createObject();
 
-        if( pak->initialize( m_serviceProvider, _pakName, _path ) == false )
+        if( pak->initialize( _pakName, _path ) == false )
         {
             return false;
         }
@@ -520,7 +514,7 @@ namespace Menge
 
         Char * xml_buff = xml_memory->getMemory();
 
-        TextManagerUnloadSaxCallback tmsc( m_serviceProvider, this, _pakName, _path );
+        TextManagerUnloadSaxCallback tmsc( this, _pakName, _path );
         if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
         {
             return false;
@@ -537,9 +531,9 @@ namespace Menge
     bool TextManager::loadFonts( const ConstString & _pakName, const FilePath & _path )
     {
         IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, _pakName, _path, m_serviceProvider ) == false )
+        if( IniUtil::loadIni( ini, _pakName, _path ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts Invalid load settings %s"
+            LOGGER_ERROR( "TextManager::loadFonts Invalid load settings %s"
                 , _path.c_str()
                 );
 
@@ -547,7 +541,7 @@ namespace Menge
         }
 
         TVectorConstString fonts;
-        IniUtil::getIniValue( ini, "GAME_FONTS", "Font", fonts, m_serviceProvider );
+        IniUtil::getIniValue( ini, "GAME_FONTS", "Font", fonts );
 
         for( TVectorConstString::const_iterator
             it = fonts.begin(),
@@ -559,7 +553,7 @@ namespace Menge
 
             if( ini.hasSection( fontName.c_str() ) == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid %s:%s section for FONT %s"
+                LOGGER_ERROR( "TextManager::loadFonts invalid %s:%s section for FONT %s"
                     , _pakName.c_str()
                     , _path.c_str()
                     , fontName.c_str()
@@ -568,11 +562,11 @@ namespace Menge
                 return false;
             }
 
-			ConstString fontType = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Bitmap" );
-			IniUtil::getIniValue( ini, fontName.c_str(), "Type", fontType, m_serviceProvider );
+			ConstString fontType = STRINGIZE_STRING_LOCAL( "Bitmap" );
+			IniUtil::getIniValue( ini, fontName.c_str(), "Type", fontType );
 
-			TextFontInterfacePtr font = PROTOTYPE_SERVICE( m_serviceProvider )
-				->generatePrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Font" ), fontType );
+			TextFontInterfacePtr font = PROTOTYPE_SERVICE()
+				->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), fontType );
 
 			if( font == nullptr )
 			{
@@ -583,7 +577,7 @@ namespace Menge
 
 			if( font->initialize( _pakName, ini ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid initialize %s:%s font %s"
+				LOGGER_ERROR( "TextManager::loadFonts invalid initialize %s:%s font %s"
 					, _pakName.c_str()
 					, _path.c_str()
 					, fontName.c_str()
@@ -592,7 +586,7 @@ namespace Menge
 				return false;
 			}
 
-			LOGGER_INFO( m_serviceProvider )("TextManager::loadFonts add font %s path '%s:%s'"
+			LOGGER_INFO( "TextManager::loadFonts add font %s path '%s:%s'"
 				, fontName.c_str()
 				, _pakName.c_str()
 				, _path.c_str()
@@ -602,7 +596,7 @@ namespace Menge
         }
 
         ConstString defaultFontName;
-        if( IniUtil::getIniValue( ini, "GAME_FONTS", "Default", defaultFontName, m_serviceProvider ) == true )
+        if( IniUtil::getIniValue( ini, "GAME_FONTS", "Default", defaultFontName ) == true )
         {
             m_defaultFontName = defaultFontName;
         }
@@ -613,9 +607,9 @@ namespace Menge
     bool TextManager::unloadFonts( const ConstString & _pakName, const FilePath & _path )
     {
         IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, _pakName, _path, m_serviceProvider ) == false )
+        if( IniUtil::loadIni( ini, _pakName, _path ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("TextManager::unloadFonts Invalid load settings %s"
+            LOGGER_ERROR( "TextManager::unloadFonts Invalid load settings %s"
                 , _path.c_str()
                 );
 
@@ -623,7 +617,7 @@ namespace Menge
         }
 
         TVectorConstString fonts;
-        IniUtil::getIniValue( ini, "GAME_FONTS", "Font", fonts, m_serviceProvider );
+        IniUtil::getIniValue( ini, "GAME_FONTS", "Font", fonts );
 
         for( TVectorConstString::const_iterator
             it = fonts.begin(),
@@ -635,7 +629,7 @@ namespace Menge
 
             if( ini.hasSection( fontName.c_str() ) == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("TextManager::unloadFonts invalid %s:%s section for FONT %s"
+                LOGGER_ERROR( "TextManager::unloadFonts invalid %s:%s section for FONT %s"
                     , _pakName.c_str()
                     , _path.c_str()
                     , fontName.c_str()
@@ -675,13 +669,13 @@ namespace Menge
                 const String & text = textEntry_has.getValue();
 
                 WString ws_text;
-                Helper::utf8ToUnicode( m_serviceProvider, text, ws_text );
+                Helper::utf8ToUnicode( text, ws_text );
 
-                LOGGER_ERROR( m_serviceProvider )("TextManager::addTextEntry: duplicate key found %s with text:"
+                LOGGER_ERROR( "TextManager::addTextEntry: duplicate key found %s with text:"
                     , _key.c_str()
                     );
 
-                LOGGER_ERROR( m_serviceProvider )("'%ls'"
+                LOGGER_ERROR( "'%ls'"
                     , ws_text.c_str()
                     );
 
@@ -750,7 +744,7 @@ namespace Menge
 
         if( it_found == m_texts.end() )
         {
-            LOGGER_ERROR( m_serviceProvider )("TextManager::getTextEntry: TextManager can't find string associated with key - '%s'"
+            LOGGER_ERROR( "TextManager::getTextEntry: TextManager can't find string associated with key - '%s'"
                 , _key.c_str()
                 );
 
@@ -836,7 +830,7 @@ namespace Menge
 
         if( m_defaultFontName.empty() == true )
         {
-            LOGGER_ERROR( m_serviceProvider )("TextManager::validate not setup default font name!"
+            LOGGER_ERROR( "TextManager::validate not setup default font name!"
                 );
 
             successful = false;
@@ -846,7 +840,7 @@ namespace Menge
             TextFontInterfacePtr font;
             if( this->existFont( m_defaultFontName, font ) == false )
             {
-                LOGGER_ERROR( m_serviceProvider )("TextManager::validate not found default font %s"
+                LOGGER_ERROR( "TextManager::validate not found default font %s"
                     , m_defaultFontName.c_str()
                     );
 
@@ -870,7 +864,7 @@ namespace Menge
                 TextFontInterfacePtr font;
                 if( this->existFont( fontName, font ) == false )
                 {
-                    LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource not found font %s for text %s"
+                    LOGGER_ERROR( "TextManager::loadResource not found font %s for text %s"
                         , fontName.c_str()
                         , textKey.c_str()
                         );
@@ -880,71 +874,17 @@ namespace Menge
                     continue;
                 }
 
-                font->compileFont();
-
                 const String & value = text.getValue();
 
-                const char * text_str = value.c_str();
-                size_t text_len = value.size();
-
-                for( const char
-                    *text_it = text_str,
-                    *text_end = text_str + text_len + 1;
-                    text_it != text_end;
-                    )
+                if( font->validateText( textKey, value ) == false )
                 {
-                    uint32_t code = 0;
-                    utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
+                    LOGGER_ERROR( "Text %s fontName %s invalid"
+                        , textKey.c_str()
+                        , fontName.c_str()
+                        );
 
-                    if( err != utf8::internal::UTF8_OK )
-                    {
-                        LOGGER_ERROR( m_serviceProvider )("Text %s invalid utf8 |%s| err code %d"
-                            , textKey.c_str()
-                            , text_it
-                            , err
-                            );
-
-                        successful = false;
-
-                        continue;
-                    }
-
-                    if( code == 0 )
-                    {
-                        continue;
-                    }
-                    else if( code == 10 )
-                    {
-                        continue;
-                    }
-                    else if( code == 13 )
-                    {
-                        continue;
-                    }
-                    else if( code == 160 )
-                    {
-                        code = 32;
-                    }
-                    else if( code == 9 )
-                    {
-                        code = 32;
-                    }
-
-                    GlyphCode glyphChar = code;
-
-                    if( font->validateGlyph( glyphChar ) == false )
-                    {
-                        LOGGER_ERROR( m_serviceProvider )("Text %s fontName %s not found glyph code '%d'"
-                            , textKey.c_str()
-                            , fontName.c_str()
-                            , code
-                            );
-
-                        successful = false;
-                    }
+                    successful = false;
                 }
-
-                font->releaseFont();
             }
         }
 
@@ -957,7 +897,7 @@ namespace Menge
 
         holder->setup( _text, _size, -1 );
 
-        if( STRINGIZE_SERVICE( m_serviceProvider )
+        if( STRINGIZE_SERVICE()
             ->stringizeExternal( holder, _cstr ) == false )
         {
             holder->destroy();

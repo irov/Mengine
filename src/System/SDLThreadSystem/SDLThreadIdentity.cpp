@@ -40,7 +40,7 @@ namespace Menge
 
         if( thread == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLThreadIdentity::createThread: invalid create thread error code - %s"
+            LOGGER_ERROR("SDLThreadIdentity::createThread: invalid create thread error code - %s"
                 , SDL_GetError()
                 );
 
@@ -137,7 +137,7 @@ namespace Menge
 
         if( status != 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLThreadIdentity::joinThread: invalid join thread error code - %s"
+            LOGGER_ERROR("SDLThreadIdentity::joinThread: invalid join thread error code - %s"
                 , status
                 );
         }

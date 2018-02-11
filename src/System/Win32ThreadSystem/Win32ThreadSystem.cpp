@@ -23,8 +23,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32ThreadSystem::_initialize()		
 	{
-        m_poolWin32ThreadIdentity = new FactoryPool<Win32ThreadIdentity, 16>( m_serviceProvider );
-        m_poolWin32ThreadMutex = new FactoryPool<Win32ThreadMutex, 16>( m_serviceProvider );
+        m_poolWin32ThreadIdentity = new FactoryPool<Win32ThreadIdentity, 16>();
+        m_poolWin32ThreadMutex = new FactoryPool<Win32ThreadMutex, 16>();
 
 		return true;
 	}
@@ -33,14 +33,14 @@ namespace Menge
 	{
 		if( m_poolWin32ThreadIdentity->emptyObject() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Win32ThreadSystem::finalize Win32ThreadIdentity not all remove %d"
+			LOGGER_ERROR("Win32ThreadSystem::finalize Win32ThreadIdentity not all remove %d"
 				, m_poolWin32ThreadIdentity->countObject()
 				);
 		}
 
 		if( m_poolWin32ThreadMutex->emptyObject() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Win32ThreadSystem::finalize Win32ThreadMutex not all remove %d"
+			LOGGER_ERROR("Win32ThreadSystem::finalize Win32ThreadMutex not all remove %d"
 				, m_poolWin32ThreadMutex->countObject()
 				);
 		}
@@ -60,19 +60,17 @@ namespace Menge
 
 		if( identity == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Win32ThreadSystem::createThread invalid create identity"
+			LOGGER_ERROR("Win32ThreadSystem::createThread invalid create identity"
 				);
 
 			return nullptr;
 		}
-
-		identity->setServiceProvider( m_serviceProvider );
-
+        
 		ThreadMutexInterfacePtr mutex = this->createMutex( _file, _line );
 
 		if( mutex == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Win32ThreadSystem::createThread invalid create mutex"
+			LOGGER_ERROR("Win32ThreadSystem::createThread invalid create mutex"
 				);
 
 			return nullptr;
@@ -80,7 +78,7 @@ namespace Menge
 
 		if( identity->initialize( mutex, _priority, _file, _line ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Win32ThreadSystem::createThread invalid initialize"
+			LOGGER_ERROR("Win32ThreadSystem::createThread invalid initialize"
 				);
 			
             return nullptr;
@@ -92,8 +90,6 @@ namespace Menge
 	ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const char * _file, uint32_t _line )
     {
         Win32ThreadMutex * mutex = m_poolWin32ThreadMutex->createObject();
-
-        mutex->setServiceProvider( m_serviceProvider );
 
 		mutex->initialize( _file, _line );
 

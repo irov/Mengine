@@ -76,7 +76,7 @@ namespace Menge
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
-
+        
         LoggerInterfacePtr m_loggerMessageBox;
 		LoggerInterfacePtr m_loggerStdio;
         LoggerInterfacePtr m_fileLog;

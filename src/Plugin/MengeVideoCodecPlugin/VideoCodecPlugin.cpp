@@ -20,16 +20,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoCodecPlugin::_initialize()
 	{	        
-        Helper::registerDecoder<VideoDecoderTheora>( m_serviceProvider, "ogvVideo" );
-        Helper::registerDecoder<VideoDecoderTheora>( m_serviceProvider, "ogvaVideo" );
+        Helper::registerDecoder<VideoDecoderTheora>( "ogvVideo" );
+        Helper::registerDecoder<VideoDecoderTheora>( "ogvaVideo" );
 
-		CODEC_SERVICE( m_serviceProvider )
-			->registerCodecExt( "ogv", STRINGIZE_STRING_LOCAL( m_serviceProvider, "ogvVideo" ) );
+		CODEC_SERVICE()
+			->registerCodecExt( "ogv", STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
 
-		CODEC_SERVICE( m_serviceProvider )
-			->registerCodecExt( "ogva", STRINGIZE_STRING_LOCAL( m_serviceProvider, "ogvaVideo" ) );
+		CODEC_SERVICE()
+			->registerCodecExt( "ogva", STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
 				
-		LOGGER_WARNING( m_serviceProvider )("Video Theora Version: %s"
+		LOGGER_WARNING("Video Theora Version: %s"
 			, theora_version_string()
 			);
         
@@ -38,7 +38,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void VideoCodecPlugin::_finalize()
 	{
-        Helper::unregisterDecoder( m_serviceProvider, "ogvVideo" );
-        Helper::unregisterDecoder( m_serviceProvider, "ogvaVideo" );
+        Helper::unregisterDecoder( "ogvVideo" );
+        Helper::unregisterDecoder( "ogvaVideo" );
 	}
 }

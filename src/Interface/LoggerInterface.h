@@ -73,7 +73,7 @@ namespace Menge
 		virtual bool unregisterLogger( const LoggerInterfacePtr & _logger ) = 0;
 	};
     
-#   define LOGGER_SERVICE( serviceProvider )\
-    ((Menge::LoggerServiceInterface*)SERVICE_GET(serviceProvider, Menge::LoggerServiceInterface))
+#   define LOGGER_SERVICE()\
+    ((Menge::LoggerServiceInterface*)SERVICE_GET(Menge::LoggerServiceInterface))
 }
 

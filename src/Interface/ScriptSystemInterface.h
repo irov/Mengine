@@ -21,7 +21,7 @@
 #	include <stdarg.h>
 
 namespace Menge
-{	    
+{
     class Scriptable;
 	class Eventable;
 	//////////////////////////////////////////////////////////////////////////
@@ -97,19 +97,19 @@ namespace Menge
     public:
         virtual bool stringize( PyObject * _object, ConstString & _str ) = 0;
 	};
-
-#   define SCRIPT_SERVICE( serviceProvider )\
-    ((Menge::ScriptServiceInterface*)SERVICE_GET(serviceProvider, Menge::ScriptServiceInterface))
-
+    //////////////////////////////////////////////////////////////////////////
+#   define SCRIPT_SERVICE()\
+    ((Menge::ScriptServiceInterface*)SERVICE_GET(Menge::ScriptServiceInterface))
+    //////////////////////////////////////////////////////////////////////////
 	namespace Helper
 	{
-		inline pybind::kernel_interface * getPybindkernel( ServiceProviderInterface * _serviceProvider )
+		inline pybind::kernel_interface * getPybindkernel()
 		{
 			static pybind::kernel_interface * kernel = nullptr;
 
 			if( kernel == nullptr )
 			{
-				kernel = SCRIPT_SERVICE( _serviceProvider )
+				kernel = SCRIPT_SERVICE()
 					->getKernel();
 			}
 

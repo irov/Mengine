@@ -27,10 +27,10 @@ namespace Menge
     bool SDLFileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
     {
         Char concatenatePath[MENGINE_MAX_PATH];
-        if( SDLLAYER_SERVICE(m_serviceProvider)
+        if( SDLLAYER_SERVICE()
             ->concatenateFilePath( _relationPath, _folderPath, _filePath, concatenatePath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLFileOutputStream::open invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR("SDLFileOutputStream::open invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()
                 , _filePath.c_str()
                 );
@@ -42,7 +42,7 @@ namespace Menge
 
         if ( m_rwops == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLFileOutputStream::open %s invalid open"
+            LOGGER_ERROR("SDLFileOutputStream::open %s invalid open"
                 , concatenatePath
                 );
 
@@ -58,7 +58,7 @@ namespace Menge
 
         if( written != _size )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLFileOutputStream::write invalid %d"
+            LOGGER_ERROR("SDLFileOutputStream::write invalid %d"
                 , _size
                 );
 

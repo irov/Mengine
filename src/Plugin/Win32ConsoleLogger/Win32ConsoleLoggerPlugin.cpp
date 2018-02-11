@@ -17,14 +17,14 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Win32ConsoleLoggerPlugin::_avaliable()
     {
-        bool nologs = HAS_OPTION( m_serviceProvider, "nologs" );
+        bool nologs = HAS_OPTION( "nologs" );
 
         if( nologs == true )
         {
             return false;
         }
 
-        bool console = HAS_OPTION( m_serviceProvider, "console" );
+        bool console = HAS_OPTION( "console" );
 
         if( console == false )
         {
@@ -38,7 +38,7 @@ namespace Menge
 	{
         m_loggerConsole = new FactorableUnique<Win32ConsoleLogger>();
 
-        LOGGER_SERVICE( m_serviceProvider )
+        LOGGER_SERVICE()
             ->registerLogger( m_loggerConsole );
 
 		return true;
@@ -46,7 +46,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ConsoleLoggerPlugin::_finalize()
 	{
-        LOGGER_SERVICE( m_serviceProvider )
+        LOGGER_SERVICE()
             ->unregisterLogger( m_loggerConsole );
 	}
 }

@@ -266,7 +266,7 @@ namespace Menge
 
         if( it_found == m_mousePositionProviders.end() )
         {
-            LOGGER_ERROR(m_serviceProvider)("InputEngine::removeMousePositionProvider not found provider"
+            LOGGER_ERROR("InputEngine::removeMousePositionProvider not found provider"
                 );
 
             return;
@@ -301,13 +301,13 @@ namespace Menge
 		event.isDown = _params.isDown;
 		event.isRepeat = isRepeat;
 
-		APPLICATION_SERVICE(m_serviceProvider)
+		APPLICATION_SERVICE()
 			->keyEvent( event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::textEvent_( const InputTextEvent & _params )
 	{
-		APPLICATION_SERVICE( m_serviceProvider )
+		APPLICATION_SERVICE()
 			->textEvent( _params );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -317,20 +317,20 @@ namespace Menge
 
 		this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
 
-		APPLICATION_SERVICE(m_serviceProvider)
+		APPLICATION_SERVICE()
 			->mouseButtonEvent( _params );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseMoveEvent_( const InputMouseMoveEvent & _params )
 	{
-		if( PLATFORM_SERVICE( m_serviceProvider )
+		if( PLATFORM_SERVICE()
 			->hasTouchpad() == true )
 		{
 			if( this->isAnyMouseButtonDown() == true )
 			{
 				this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
 
-				APPLICATION_SERVICE( m_serviceProvider )
+				APPLICATION_SERVICE()
 					->mouseMove( _params );
 			}
 		}
@@ -338,14 +338,14 @@ namespace Menge
 		{
 			this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
 
-			APPLICATION_SERVICE( m_serviceProvider )
+			APPLICATION_SERVICE()
 				->mouseMove( _params );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseWheelEvent_( const InputMouseWheelEvent& _params )
 	{
-		APPLICATION_SERVICE(m_serviceProvider)
+		APPLICATION_SERVICE()
 			->mouseWheel( _params );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -353,7 +353,7 @@ namespace Menge
 	{
 		this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
 
-		APPLICATION_SERVICE(m_serviceProvider)
+		APPLICATION_SERVICE()
 			->mousePosition( _params );
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -361,7 +361,7 @@ namespace Menge
     {
 		this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
 
-        APPLICATION_SERVICE(m_serviceProvider)
+        APPLICATION_SERVICE()
 			->mouseEnter( _params );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -369,7 +369,7 @@ namespace Menge
     {
 		this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
 
-        APPLICATION_SERVICE(m_serviceProvider)
+        APPLICATION_SERVICE()
             ->mouseLeave( _params );
     }
 }

@@ -95,6 +95,8 @@ src
     ModuleBase.cpp
     
     ModuleFactory.h
+    
+    Holder.h
    
     Magic.h    
 )

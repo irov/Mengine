@@ -33,8 +33,8 @@ namespace Menge
 		m_category = _category;
         m_folderPath = _folderPath;
 
-        m_factoryInputStream = new FactoryPool<SDLFileInputStream, 8>( m_serviceProvider );
-        m_factoryOutputStream = new FactoryPool<SDLFileOutputStream, 4>( m_serviceProvider );
+        m_factoryInputStream = new FactoryPool<SDLFileInputStream, 8>();
+        m_factoryOutputStream = new FactoryPool<SDLFileOutputStream, 4>();
 
         return true;
     }
@@ -64,10 +64,10 @@ namespace Menge
         // SDL doesn't have this, so we're emulating ... ugly way :(
 
         Char filePath[MENGINE_MAX_PATH];
-        if( SDLLAYER_SERVICE(m_serviceProvider)
+        if( SDLLAYER_SERVICE()
             ->concatenateFilePath( m_relationPath, m_folderPath, _fileName, filePath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR("SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()
                 , _fileName.c_str()
                 );
@@ -102,12 +102,12 @@ namespace Menge
         accountString.append( '/' );
 
         WString unicode_folderPath;
-        if( Helper::utf8ToUnicode( m_serviceProvider, accountString, unicode_folderPath ) == false )
+        if( Helper::utf8ToUnicode( accountString, unicode_folderPath ) == false )
         {
             return false;
         }
 
-        if( PLATFORM_SERVICE( m_serviceProvider )
+        if( PLATFORM_SERVICE()
             ->existDirectory( unicode_folderPath ) == false )
         {
             return false;
@@ -127,18 +127,18 @@ namespace Menge
         accountString.append( _folderName );
 
         WString unicode_folderPath;
-        if( Helper::utf8ToUnicode( m_serviceProvider, accountString, unicode_folderPath ) == false )
+        if( Helper::utf8ToUnicode( accountString, unicode_folderPath ) == false )
         {
             return false;
         }
 
-        if( PLATFORM_SERVICE( m_serviceProvider )
+        if( PLATFORM_SERVICE()
             ->existDirectory( unicode_folderPath ) == true )
         {
             return true;
         }
 
-        if( PLATFORM_SERVICE( m_serviceProvider )
+        if( PLATFORM_SERVICE()
             ->createDirectory( unicode_folderPath ) == false )
         {
             return false;
@@ -154,8 +154,6 @@ namespace Menge
 
         SDLFileInputStreamPtr inputStream = m_factoryInputStream->createObject();
 
-        inputStream->setServiceProvider( m_serviceProvider );
-
         return inputStream;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -165,7 +163,7 @@ namespace Menge
 
         if( _stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLFileGroupDirectory::openInputFile failed _stream == NULL"
+            LOGGER_ERROR("SDLFileGroupDirectory::openInputFile failed _stream == NULL"
                 );
 
             return false;
@@ -175,7 +173,7 @@ namespace Menge
 
         if( file->open( m_relationPath, m_folderPath, _filePath, _offset, _size ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLFileGroupDirectory::openInputFile failed open file '%s':'%s'"
+            LOGGER_ERROR("SDLFileGroupDirectory::openInputFile failed open file '%s':'%s'"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
                 );
@@ -190,8 +188,6 @@ namespace Menge
     {
         SDLFileOutputStreamPtr outputStream = m_factoryOutputStream->createObject();
 
-        outputStream->setServiceProvider( m_serviceProvider );
-
         return outputStream;
     }
     //////////////////////////////////////////////////////////////////////////	
@@ -199,7 +195,7 @@ namespace Menge
     {
         if( _stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLFileGroupDirectory::openOutputFile failed _stream == NULL"
+            LOGGER_ERROR("SDLFileGroupDirectory::openOutputFile failed _stream == NULL"
                 );
 
             return false;
@@ -209,7 +205,7 @@ namespace Menge
 
         if( file->open( m_relationPath, m_folderPath, _filePath ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLFileGroupDirectory::openOutputFile failed open file '%s':'%s'"
+            LOGGER_ERROR("SDLFileGroupDirectory::openOutputFile failed open file '%s':'%s'"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
                 );

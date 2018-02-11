@@ -20,7 +20,7 @@ namespace	Menge
 			return true;
 		}
 
-		m_observerChangeWindowResolution = NOTIFICATION_SERVICE(m_serviceProvider)
+		m_observerChangeWindowResolution = NOTIFICATION_SERVICE()
 			->addObserverMethod( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &RenderCamera::notifyChangeWindowResolution );
 
 		this->invalidateViewMatrix_();

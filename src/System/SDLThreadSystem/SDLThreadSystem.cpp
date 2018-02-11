@@ -23,8 +23,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadSystem::_initialize()
     {	
-        m_poolThreadIdentity = new FactoryPool<SDLThreadIdentity, 16>( m_serviceProvider );
-        m_poolThreadMutex = new FactoryPool<SDLThreadMutex, 16>( m_serviceProvider );
+        m_poolThreadIdentity = new FactoryPool<SDLThreadIdentity, 16>();
+        m_poolThreadMutex = new FactoryPool<SDLThreadMutex, 16>();
 
         return true;
     }
@@ -46,7 +46,7 @@ namespace Menge
 
         if( identity == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("SDLThreadSystem::createThread invalid initialize (doc: '%s:%u')"
+            LOGGER_ERROR("SDLThreadSystem::createThread invalid initialize (doc: '%s:%u')"
                 , _file
 				, _line
                 );
@@ -58,7 +58,7 @@ namespace Menge
 
         if( identity->initialize( mutex, _priority, _file, _line ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLThreadSystem::createThread invalid initialize (doc: '%s:%u')"
+            LOGGER_ERROR("SDLThreadSystem::createThread invalid initialize (doc: '%s:%u')"
                 , _file
 				, _line
                 );
@@ -80,7 +80,7 @@ namespace Menge
         
         if( mutex == nullptr )
         {
-            LOGGER_ERROR( m_serviceProvider )("SDLThreadSystem::createMutex invalid create (doc: '%s:%u')"
+            LOGGER_ERROR("SDLThreadSystem::createMutex invalid create (doc: '%s:%u')"
                 , _file
 				, _line
                 );
@@ -88,11 +88,9 @@ namespace Menge
             return nullptr;
         }
 
-        mutex->setServiceProvider( m_serviceProvider );
-
         if( mutex->initialize( _file, _line ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SDLThreadSystem::createMutex invalid initialize (doc: '%s:%u')"
+            LOGGER_ERROR("SDLThreadSystem::createMutex invalid initialize (doc: '%s:%u')"
                 , _file
 				, _line
                 );

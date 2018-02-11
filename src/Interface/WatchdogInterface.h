@@ -7,6 +7,7 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
     class WatchdogInterface
         : public ServiceInterface
     {
@@ -15,15 +16,14 @@ namespace Menge
     public:
         virtual float watch( const String & _tag ) = 0;
     };
-
-#	define WATCHDOG_SERVICE( serviceProvider )\
-	SERVICE_GET(serviceProvider, Menge::WatchdogInterface)
-
-
+    //////////////////////////////////////////////////////////////////////////
+#	define WATCHDOG_SERVICE()\
+	SERVICE_GET(Menge::WatchdogInterface)
+    //////////////////////////////////////////////////////////////////////////
 #   ifdef MENGINE_MASTER_RELEASE
-#		define WATCHDOG( serviceProvider, tag ) (0.f)
+#		define WATCHDOG( tag ) (0.f)
 #	else
-#		define WATCHDOG( serviceProvider, tag )\
-	(SERVICE_EXIST(serviceProvider, Menge::WatchdogInterface) ? WATCHDOG_SERVICE(serviceProvider)->watch(tag) : 0.f)
+#		define WATCHDOG( tag )\
+	(SERVICE_EXIST(Menge::WatchdogInterface) ? WATCHDOG_SERVICE()->watch(tag) : 0.f)
 #	endif
 }

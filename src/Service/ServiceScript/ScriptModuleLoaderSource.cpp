@@ -38,7 +38,7 @@ namespace Menge
     {
 		size_t file_size = _stream->size();
 
-		MemoryInterfacePtr source_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, file_size + 2, __FILE__, __LINE__ );
+		MemoryInterfacePtr source_buffer = Helper::createMemoryCacheBuffer( file_size + 2, __FILE__, __LINE__ );
 
 		if( source_buffer == nullptr )
 		{
@@ -55,7 +55,7 @@ namespace Menge
 		source_memory[file_size] = '\n';
 		source_memory[file_size + 1] = '\0';
 
-		PyObject * py_module = SCRIPT_SERVICE( m_serviceProvider )
+		PyObject * py_module = SCRIPT_SERVICE()
 			->loadModuleSource( _module, m_packagePath, source_buffer );
 
         return py_module;

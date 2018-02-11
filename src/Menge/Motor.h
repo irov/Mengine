@@ -21,11 +21,7 @@ namespace Menge
 	public:
 		Motor();
 		~Motor();
-
-	public:
-		void setServiceProvider(ServiceProviderInterface * _serviceProvider);
-		ServiceProviderInterface * getServiceProvider() const;
-
+        
 	public:
 		void setNode(Node * _node);
 		Node * getNode() const;
@@ -39,8 +35,6 @@ namespace Menge
 		void _update(float _current, float _timing) override;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		Node * m_node;
 
 		struct VelocityDesc

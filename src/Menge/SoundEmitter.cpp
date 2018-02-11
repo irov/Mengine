@@ -36,7 +36,7 @@ namespace Menge
 	{
 		if( m_surfaceSound == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_compile: '%s' can`t setup sound surface"
+			LOGGER_ERROR("SoundEmitter::_compile: '%s' can`t setup sound surface"
 				, this->getName().c_str()				
 				);
 
@@ -45,7 +45,7 @@ namespace Menge
 
 		if( m_surfaceSound->compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_compile: '%s' can`t compile sound surface '%s'"
+            LOGGER_ERROR("SoundEmitter::_compile: '%s' can`t compile sound surface '%s'"
                 , this->getName().c_str()
 				, m_surfaceSound->getName().c_str()
                 );

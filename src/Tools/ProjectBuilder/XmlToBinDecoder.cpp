@@ -24,25 +24,24 @@
 
 namespace Menge
 {
-    extern ServiceProviderInterface * serviceProvider;
     //////////////////////////////////////////////////////////////////////////
     static bool s_writeBin( const WString & _protocolPath, const WString & _xmlPath, const WString & _binPath )
     {
         String utf8_protocolPath;
-        Helper::unicodeToUtf8( serviceProvider, _protocolPath, utf8_protocolPath );
+        Helper::unicodeToUtf8( _protocolPath, utf8_protocolPath );
 
         String utf8_xmlPath;
-        Helper::unicodeToUtf8( serviceProvider, _xmlPath, utf8_xmlPath );
+        Helper::unicodeToUtf8( _xmlPath, utf8_xmlPath );
 
         String utf8_binPath;
-        Helper::unicodeToUtf8( serviceProvider, _binPath, utf8_binPath );
+        Helper::unicodeToUtf8( _binPath, utf8_binPath );
 
-        XmlDecoderInterfacePtr decoder = CODEC_SERVICE(serviceProvider)
-            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString(serviceProvider, "xml2bin") );
+        XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
+            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString("xml2bin") );
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR(serviceProvider)("writeBin invalid create decoder xml2bin for %s"
+            LOGGER_ERROR("writeBin invalid create decoder xml2bin for %s"
                 , utf8_xmlPath.c_str()
                 );
 
@@ -51,7 +50,7 @@ namespace Menge
 
 		if( decoder->prepareData( nullptr ) == false )
 		{
-			LOGGER_ERROR(serviceProvider)("writeBin invalid initialize decoder xml2bin for %s"
+			LOGGER_ERROR("writeBin invalid initialize decoder xml2bin for %s"
 				, utf8_xmlPath.c_str()
 				);
 
@@ -59,13 +58,13 @@ namespace Menge
 		}
 
         XmlCodecOptions options;
-        options.pathProtocol = Helper::stringizeFilePath( serviceProvider, utf8_protocolPath );
-        options.pathXml = Helper::stringizeFilePath( serviceProvider, utf8_xmlPath );
-        options.pathBin = Helper::stringizeFilePath( serviceProvider, utf8_binPath );
+        options.pathProtocol = Helper::stringizeFilePath( utf8_protocolPath );
+        options.pathXml = Helper::stringizeFilePath( utf8_xmlPath );
+        options.pathBin = Helper::stringizeFilePath( utf8_binPath );
 
         if( decoder->setOptions( &options ) == false )
         {
-            LOGGER_ERROR(serviceProvider)("writeBin invalid setup decoder xml2bin for %s"
+            LOGGER_ERROR("writeBin invalid setup decoder xml2bin for %s"
                 , utf8_xmlPath.c_str()
                 );
 
@@ -74,7 +73,7 @@ namespace Menge
 
         if( decoder->decode( 0, 0 ) == 0 )
         {
-            LOGGER_ERROR(serviceProvider)("writeBin invalid decode %s"
+            LOGGER_ERROR("writeBin invalid decode %s"
                 , utf8_xmlPath.c_str()
                 );
 
@@ -88,7 +87,7 @@ namespace Menge
     {
 		if( s_writeBin( protocolPath, xmlPath, binPath ) == false )
         {
-            LOGGER_ERROR(serviceProvider)("writeBin: error write bin"
+            LOGGER_ERROR("writeBin: error write bin"
                 );
 
             return nullptr;

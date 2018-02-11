@@ -30,11 +30,11 @@ namespace Menge
     {
 		m_particleSystem = _particleSystem;
 
-		MemoryInterfacePtr memory = Helper::loadStreamArchiveMagicMemory( m_serviceProvider, _stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::loadStreamArchiveMagicMemory( _stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::initialize: invalid get data"
+			LOGGER_ERROR("AstralaxEmitterContainer2::initialize: invalid get data"
 				);
 
 			return false;
@@ -65,7 +65,7 @@ namespace Menge
 
 		m_resourceImages.resize( atlasCount );
                 
-        m_factoryPoolAstralaxEmitter = Helper::makeFactoryPool<AstralaxEmitter2, 16>( m_serviceProvider, this, &AstralaxEmitterContainer2::onEmitterRelease_ );
+        m_factoryPoolAstralaxEmitter = Helper::makeFactoryPool<AstralaxEmitter2, 16>( this, &AstralaxEmitterContainer2::onEmitterRelease_ );
         		
         return true;
     }
@@ -82,7 +82,7 @@ namespace Menge
     {
 		if( Magic_HasTextures( m_mf ) == true )
 		{
-			LOGGER_ERROR( m_serviceProvider )("AstralaxEmitterContainer2::isValid: particle textures are stored within the file"
+			LOGGER_ERROR("AstralaxEmitterContainer2::isValid: particle textures are stored within the file"
 				);
 
 			return false;
@@ -120,7 +120,7 @@ namespace Menge
             return image;
 		}
 
-		LOGGER_ERROR( m_serviceProvider )("AstralaxEmitterContainer2::getAtlasResourceImage: not found atlas %s"
+		LOGGER_ERROR("AstralaxEmitterContainer2::getAtlasResourceImage: not found atlas %s"
 			, _file
 			);
 
@@ -135,7 +135,7 @@ namespace Menge
 
 		if( mf == MAGIC_ERROR )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid open file in memory (alredy open)"
+			LOGGER_ERROR("AstralaxParticleSystem::createEmitterContainerFromMemory invalid open file in memory (alredy open)"
 				);
 
 			return false;
@@ -143,7 +143,7 @@ namespace Menge
 
 		if( mf == MAGIC_UNKNOWN )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid open file in memory (invalid format or version)"
+			LOGGER_ERROR("AstralaxParticleSystem::createEmitterContainerFromMemory invalid open file in memory (invalid format or version)"
 				);
 
 			return false;
@@ -167,7 +167,7 @@ namespace Menge
 
 				if( id == 0 )
 				{
-					LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::createEmitterId invalid load emitter %s"
+					LOGGER_ERROR("AstralaxEmitterContainer2::createEmitterId invalid load emitter %s"
 						, magicName
 						);
 
@@ -194,7 +194,7 @@ namespace Menge
 			magicName = Magic_FindNext( m_mf, &find );
 		}
 
-		LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::createEmitterId not found emitter"
+		LOGGER_ERROR("AstralaxEmitterContainer2::createEmitterId not found emitter"
 			);
 
 		return 0;
@@ -210,9 +210,7 @@ namespace Menge
 		}
 
 		AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter->createObject();
-
-        emitter->setServiceProvider( m_serviceProvider );
-
+        
 		if( emitter->initialize( m_particleSystem, this, id ) == false )
 		{
 			return nullptr;

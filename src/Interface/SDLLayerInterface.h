@@ -17,6 +17,6 @@ namespace Menge
         virtual bool concatenateFilePath( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * _concatenatePath, size_t _capacity ) = 0;
     };
 
-#   define SDLLAYER_SERVICE( serviceProvider )\
-    ((Menge::SDLLayerInterface *)SERVICE_GET(serviceProvider, Menge::SDLLayerInterface))
+#   define SDLLAYER_SERVICE()\
+    ((Menge::SDLLayerInterface *)SERVICE_GET(Menge::SDLLayerInterface))
 }

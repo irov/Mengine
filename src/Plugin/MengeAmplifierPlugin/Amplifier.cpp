@@ -42,12 +42,12 @@ namespace Menge
 			this->stop();
 		}
 
-		ResourceMusicPtr resourceMusic = RESOURCE_SERVICE( m_serviceProvider )
+		ResourceMusicPtr resourceMusic = RESOURCE_SERVICE()
 			->getResourceReferenceT<ResourceMusicPtr>( _resourceMusic );
 
 		if( resourceMusic == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Amplifier::playMusic can't found resource '%s'"
+			LOGGER_ERROR("Amplifier::playMusic can't found resource '%s'"
 				, _resourceMusic.c_str()
 				);
 
@@ -60,12 +60,12 @@ namespace Menge
 		bool external = resourceMusic->isExternal();
 		float volume = resourceMusic->getVolume();
 
-		FileGroupInterfacePtr fileGroup = FILE_SERVICE( m_serviceProvider )
+		FileGroupInterfacePtr fileGroup = FILE_SERVICE()
 			->getFileGroup( category );
 
 		if( fileGroup == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Amplifier::playMusic can't found file group '%s'"
+			LOGGER_ERROR("Amplifier::playMusic can't found file group '%s'"
 				, category.c_str()
 				);
 
@@ -76,40 +76,40 @@ namespace Menge
 
 		if( fileGroup->isPacked() == false || external == false )
 		{
-			buffer = SOUND_SERVICE( m_serviceProvider )
+			buffer = SOUND_SERVICE()
 				->createSoundBufferFromFile( category, path, codec, true );
 		}
 		else
 		{
-			buffer = SOUND_SERVICE( m_serviceProvider )
+			buffer = SOUND_SERVICE()
 				->createSoundBufferFromFile( ConstString::none(), path, codec, true );
 		}
 
 		if( buffer == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Amplifier::playMusic can't load sample '%s'"
+			LOGGER_ERROR("Amplifier::playMusic can't load sample '%s'"
 				, path.c_str()
 				);
 
 			return false;
 		}
 
-		m_sourceID = SOUND_SERVICE( m_serviceProvider )
+		m_sourceID = SOUND_SERVICE()
 			->createSoundSource( false, buffer, ESST_MUSIC, true );
 
 		if( m_sourceID == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Amplifier::playMusic can't create sound source '%s'"
+			LOGGER_ERROR("Amplifier::playMusic can't create sound source '%s'"
 				, path.c_str()
 				);
 
 			return false;
 		}
 
-		if( SOUND_SERVICE( m_serviceProvider )
+		if( SOUND_SERVICE()
 			->setSourceVolume( m_sourceID, volume, 0.f ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Amplifier::playMusic can't set sound '%s' volume '%f'"
+			LOGGER_ERROR("Amplifier::playMusic can't set sound '%s' volume '%f'"
 				, path.c_str()
 				, volume
 				);
@@ -117,10 +117,10 @@ namespace Menge
 			return false;
 		}
 
-		if( SOUND_SERVICE( m_serviceProvider )
+		if( SOUND_SERVICE()
 			->setPosMs( m_sourceID, _pos ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Amplifier::playMusic can't set sound '%s' pos '%f'"
+			LOGGER_ERROR("Amplifier::playMusic can't set sound '%s' pos '%f'"
 				, path.c_str()
 				, _pos
 				);
@@ -128,10 +128,10 @@ namespace Menge
 			return false;
 		}
 
-		if( SOUND_SERVICE( m_serviceProvider )
+		if( SOUND_SERVICE()
 			->setLoop( m_sourceID, _looped ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Amplifier::playMusic can't set sound '%s' lood '%d'"
+			LOGGER_ERROR("Amplifier::playMusic can't set sound '%s' lood '%d'"
 				, path.c_str()
 				, _looped
 				);
@@ -139,9 +139,9 @@ namespace Menge
 			return false;
 		}
 
-		if( SOUND_SERVICE( m_serviceProvider )->play( m_sourceID ) == false )
+		if( SOUND_SERVICE()->play( m_sourceID ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Amplifier::playMusic '%s' invalid play %d"
+			LOGGER_ERROR("Amplifier::playMusic '%s' invalid play %d"
 				, path.c_str()
 				, m_sourceID
 				);
@@ -163,10 +163,10 @@ namespace Menge
 			uint32_t sourceId = m_sourceID;
 			m_sourceID = 0;
 
-			SOUND_SERVICE(m_serviceProvider)
+			SOUND_SERVICE()
                 ->stop( sourceId );
 		
-			SOUND_SERVICE(m_serviceProvider)
+			SOUND_SERVICE()
 				->releaseSoundSource( sourceId );
 		}				
 	}
@@ -180,7 +180,7 @@ namespace Menge
 
 		m_play = false;
 
-		SOUND_SERVICE(m_serviceProvider)
+		SOUND_SERVICE()
             ->pause( m_sourceID );
 
 		return true;
@@ -195,7 +195,7 @@ namespace Menge
 
         m_play = true;
 
-        SOUND_SERVICE(m_serviceProvider)
+        SOUND_SERVICE()
             ->play( m_sourceID );
 
 		return true;
@@ -208,7 +208,7 @@ namespace Menge
 			return 0.f;
 		}
 
-		float pos = SOUND_SERVICE( m_serviceProvider )
+		float pos = SOUND_SERVICE()
 			->getDuration( m_sourceID );
 
 		return pos;
@@ -221,7 +221,7 @@ namespace Menge
 			return 0.f;
 		}
 
-		float pos = SOUND_SERVICE(m_serviceProvider)
+		float pos = SOUND_SERVICE()
             ->getPosMs( m_sourceID );
 		
 		return pos;
@@ -234,7 +234,7 @@ namespace Menge
             return;
         }
 		
-        SOUND_SERVICE(m_serviceProvider)
+        SOUND_SERVICE()
             ->setPosMs( m_sourceID, _posMs );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -94,9 +94,7 @@ namespace Metabuf
 
 		if( s != nullptr )
 		{
-			Menge::ServiceProviderInterface * serviceProvider = loader->getServiceProvider();
-
-			LOGGER_ERROR( serviceProvider )("archive_read read FilePath '%s' has invalid slash"
+			LOGGER_ERROR( "archive_read read FilePath '%s' has invalid slash"
 				, test_value
 				);
 
@@ -128,20 +126,19 @@ namespace Metabuf
 	}
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Menge::WChar & _value, void * _userData )
-    {   
+    {
+        (void)_userData;
+
         uint32_t size;
         ar.readSize( size );
 
         Menge::Char utf8[8];
         ar.readBuffer( (void *)utf8, size );
 
-        Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
-        Menge::ServiceProviderInterface * serviceProvider = loader->getServiceProvider();
-
         size_t unicodeSize;
 
         Menge::WChar unicode[2];
-        if( UNICODE_SYSTEM(serviceProvider)
+        if( UNICODE_SYSTEM()
             ->utf8ToUnicode( utf8, size, unicode, 2, &unicodeSize ) == false )
         {
             stdex::throw_memory_reader_exception();
@@ -164,10 +161,7 @@ namespace Metabuf
         static Menge::String utf8;
         archive_read( ar, utf8, _userData );
 
-        Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
-        Menge::ServiceProviderInterface * serviceProvider = loader->getServiceProvider();
-
-        Menge::Helper::utf8ToUnicode( serviceProvider, utf8, _value );
+        Menge::Helper::utf8ToUnicode(  utf8, _value );
 	}
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Menge::ColourValue & _value, void * _userData )

@@ -9,12 +9,10 @@
 
 namespace Menge
 {
-	class ServiceProviderInterface;
-
 	class XlsScriptLogger
 	{
 	public:
-		XlsScriptLogger( ServiceProviderInterface * _serviceProvider, EMessageLevel _level );
+		XlsScriptLogger( EMessageLevel _level );
         virtual ~XlsScriptLogger();
 
 	public:
@@ -32,8 +30,6 @@ namespace Menge
 		virtual PyObject * embedding( pybind::kernel_interface * _kernel, PyObject * _module );
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		EMessageLevel m_level;
 
 		int m_softspace;

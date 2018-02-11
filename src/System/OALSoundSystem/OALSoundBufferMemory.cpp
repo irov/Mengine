@@ -37,7 +37,7 @@ namespace Menge
 
 		if( m_alBufferId == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("OALSoundBuffer::load invalid gen buffer"
+			LOGGER_ERROR("OALSoundBuffer::load invalid gen buffer"
 				);
 
 			return false;
@@ -52,11 +52,11 @@ namespace Menge
 		m_length = dataInfo->length;
 		size_t size = dataInfo->size;
 		
-		MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, size, __FILE__, __LINE__ );
+		MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( size, __FILE__, __LINE__ );
 
 		if( binary_buffer == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("OALSoundBuffer::load invalid sound %d memory %d"
+			LOGGER_ERROR("OALSoundBuffer::load invalid sound %d memory %d"
 				, size
 				);
 
@@ -69,7 +69,7 @@ namespace Menge
         
 		if( decode_size == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("OALSoundBuffer::load invalid sound %d decode %d"
+			LOGGER_ERROR("OALSoundBuffer::load invalid sound %d decode %d"
 				, size
 				);
 
@@ -92,7 +92,7 @@ namespace Menge
 		ALsizei al_decode_size = (ALsizei)decode_size;
 		alBufferData( m_alBufferId, m_format, binary_memory, al_decode_size, m_frequency );
 		
-		if( OAL_CHECK_ERROR(m_serviceProvider) == false )
+		if( OAL_CHECK_ERROR() == false )
 		{
 			return false;
 		}
@@ -104,30 +104,30 @@ namespace Menge
 	{
         ALint state = 0;
         alGetSourcei( _source, AL_SOURCE_STATE, &state );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        OAL_CHECK_ERROR();
 
         if( state == AL_PLAYING )
         {
             //alSourceStop( _source );
             alSourceRewind( _source );
-            OAL_CHECK_ERROR(m_serviceProvider);
+            OAL_CHECK_ERROR();
         }
         
 		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
-		OAL_CHECK_ERROR(m_serviceProvider);
+		OAL_CHECK_ERROR();
 
 		alSourcei( _source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE );
-		OAL_CHECK_ERROR(m_serviceProvider);
+		OAL_CHECK_ERROR();
 
         alSourcei( _source, AL_BUFFER, m_alBufferId );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        OAL_CHECK_ERROR();
 
         float al_pos = _pos * 0.001f;
 		alSourcef( _source, AL_SEC_OFFSET, al_pos );
-		OAL_CHECK_ERROR(m_serviceProvider);
+		OAL_CHECK_ERROR();
 
 		alSourcePlay( _source );
-		OAL_CHECK_ERROR(m_serviceProvider);
+		OAL_CHECK_ERROR();
 
         return true;
 	}
@@ -135,7 +135,7 @@ namespace Menge
     bool OALSoundBufferMemory::resume( ALuint _source )
     {
         alSourcePlay( _source );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        OAL_CHECK_ERROR();
 
         return true;
     }
@@ -143,16 +143,16 @@ namespace Menge
 	void OALSoundBufferMemory::pause( ALuint _source )
 	{
 		alSourcePause( _source );
-		OAL_CHECK_ERROR(m_serviceProvider);
+		OAL_CHECK_ERROR();
 
 		//alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
-		//OAL_CHECK_ERROR(m_serviceProvider);
+		//OAL_CHECK_ERROR();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferMemory::stop( ALuint _source )
 	{		
 		alSourceStop( _source );
-		OAL_CHECK_ERROR(m_serviceProvider);
+		OAL_CHECK_ERROR();
 		
 		{
 			ALint val;
@@ -165,10 +165,10 @@ namespace Menge
 		}
 
 		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
-		OAL_CHECK_ERROR(m_serviceProvider);
+		OAL_CHECK_ERROR();
 
         alSourceRewind( _source );
-		OAL_CHECK_ERROR(m_serviceProvider);	
+		OAL_CHECK_ERROR();	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferMemory::setTimePos( ALuint _source, float _pos ) const
@@ -176,7 +176,7 @@ namespace Menge
 		float al_pos = _pos * 0.001f;
 		alSourcef( _source, AL_SEC_OFFSET, al_pos );
 		
-		if( OAL_CHECK_ERROR(m_serviceProvider) == false )
+		if( OAL_CHECK_ERROR() == false )
 		{
 			return false;
 		}
@@ -190,7 +190,7 @@ namespace Menge
 
 		alGetSourcef( _source, AL_SEC_OFFSET, &al_pos );
 		
-        if( OAL_CHECK_ERROR(m_serviceProvider) == false )
+        if( OAL_CHECK_ERROR() == false )
         {
             return false;
         }

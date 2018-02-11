@@ -90,6 +90,6 @@ namespace Menge
 		virtual bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
     };
 
-#   define PLATFORM_SERVICE( serviceProvider )\
-    ((Menge::PlatformInterface*)SERVICE_GET(serviceProvider, Menge::PlatformInterface))
+#   define PLATFORM_SERVICE()\
+    ((Menge::PlatformInterface*)SERVICE_GET(Menge::PlatformInterface))
 }

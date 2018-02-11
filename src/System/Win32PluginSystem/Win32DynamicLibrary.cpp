@@ -37,7 +37,7 @@ namespace Menge
 		{
 			DWORD le = GetLastError();
 
-			LOGGER_ERROR(m_serviceProvider)("DynamicLibrary::load %ls error code %d"
+			LOGGER_ERROR("DynamicLibrary::load %ls error code %d"
 				, m_name.c_str()
 				, le
 				);

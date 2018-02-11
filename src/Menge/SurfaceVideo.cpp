@@ -134,7 +134,7 @@ namespace Menge
 	{
 		if( m_resourceVideo == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Video::_compile '%s' resource is null"
+			LOGGER_ERROR("Video::_compile '%s' resource is null"
 				, this->getName().c_str()
 				);
 
@@ -143,7 +143,7 @@ namespace Menge
 
 		if( m_resourceVideo.compile() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Video::_compile '%s' resource '%s' is not compile"
+			LOGGER_ERROR("Video::_compile '%s' resource '%s' is not compile"
 				, this->getName().c_str()
 				, m_resourceVideo->getName().c_str()
 				);
@@ -153,7 +153,7 @@ namespace Menge
 
 		if( this->compileDecoder_() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Video::_compile %s can`t create video decoder '%s'"
+			LOGGER_ERROR("Video::_compile %s can`t create video decoder '%s'"
 				, this->getName().c_str()
 				, m_resourceVideo->getName().c_str()
 				);
@@ -174,12 +174,12 @@ namespace Menge
 
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
-		RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE( m_serviceProvider )
+		RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE()
 			->createDynamicTexture( dataInfo->frameWidth, dataInfo->frameHeight, channels, 1, dataInfo->format );
 
 		if( dynamicTexture == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Video::_compile '%s' resource '%s' can`t create dynamic texture"
+			LOGGER_ERROR("Video::_compile '%s' resource '%s' can`t create dynamic texture"
 				, this->getName().c_str()
 				, m_resourceVideo->getName().c_str()
 				);
@@ -208,7 +208,7 @@ namespace Menge
 
 		if( m_videoDecoder == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Video::_compileDecoder '%s' can't create video decoder"
+			LOGGER_ERROR("Video::_compileDecoder '%s' can't create video decoder"
 				, this->getName().c_str()
 				);
 
@@ -273,8 +273,8 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
             ->onAnimatableStop( _enumerator );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_VIDEO_END )(this, _enumerator, false);
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( this, EVENT_VIDEO_END )(this, _enumerator, false);
+		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::_end( uint32_t _enumerator )
@@ -285,8 +285,8 @@ namespace Menge
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
             ->onAnimatableEnd( _enumerator );
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_VIDEO_END )(this, _enumerator, true);
-		//EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( this, EVENT_VIDEO_END )(this, _enumerator, true);
+		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SurfaceVideo::_play( float _time )
@@ -325,7 +325,7 @@ namespace Menge
 		{
 			if( this->fillVideoBuffer_() == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Video::_render %s invalid fill video buffer (%s)"
+				LOGGER_ERROR("Video::_render %s invalid fill video buffer (%s)"
 					, this->getName().c_str()
 					, m_resourceVideo->getName().c_str()
 					);
@@ -387,7 +387,7 @@ namespace Menge
 
 					if( m_videoDecoder->seek( time ) == false )
 					{
-						LOGGER_ERROR( m_serviceProvider )("Video::sync_ %s:%s invalid seek to %f"
+						LOGGER_ERROR("Video::sync_ %s:%s invalid seek to %f"
 							, this->getName().c_str()
 							, m_resourceVideo->getName().c_str()
 							, time
@@ -397,7 +397,7 @@ namespace Menge
 			}
 			else if( state == VDRS_FAILURE )
 			{
-				LOGGER_ERROR( m_serviceProvider )("Video::_sync: '%s' error reading frame timing %4.2f total timing %4.2f"
+				LOGGER_ERROR("Video::_sync: '%s' error reading frame timing %4.2f total timing %4.2f"
 					, this->getName().c_str()
 					, _timing
 					, m_timing
@@ -418,7 +418,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Video::_setTiming %s not compile"
+			LOGGER_ERROR("Video::_setTiming %s not compile"
 				, this->getName().c_str()
 				);
 
@@ -463,7 +463,7 @@ namespace Menge
 
 		if( m_videoDecoder->seek( seek_timing ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Video::_setTiming %s:%s invalid seek to %f"
+			LOGGER_ERROR("Video::_setTiming %s:%s invalid seek to %f"
 				, this->getName().c_str()
 				, m_resourceVideo->getName().c_str()
 				, seek_timing
@@ -525,7 +525,7 @@ namespace Menge
 
 		if( lockRect == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Video::fillVideoBuffer_ %s:%s invalid lock texture %d:%d"
+			LOGGER_ERROR("Video::fillVideoBuffer_ %s:%s invalid lock texture %d:%d"
 				, this->getName().c_str()
 				, m_resourceVideo->getName().c_str()
 				, rect.right
@@ -556,11 +556,11 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr SurfaceVideo::_updateMaterial() const
 	{
-		RenderMaterialInterfacePtr material = this->makeTextureMaterial( m_serviceProvider, m_textures, 1, false );
+		RenderMaterialInterfacePtr material = this->makeTextureMaterial( m_textures, 1, false );
 
 		if( material == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Video::_updateMaterial %s invalid make material"
+			LOGGER_ERROR("Video::_updateMaterial %s invalid make material"
 				, this->getName().c_str()
 				);
 

@@ -51,7 +51,7 @@ namespace Menge
         }
 
 		IDirect3DVertexBuffer9 * pVB = nullptr;
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateVertexBuffer, (m_vertexNum * sizeof( RenderVertex2D ), m_usage, m_vertexDeclaration, m_pool, &pVB, NULL) )
+		IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (m_vertexNum * sizeof( RenderVertex2D ), m_usage, m_vertexDeclaration, m_pool, &pVB, NULL) )
 		{
 			return 0;
 		}
@@ -65,7 +65,7 @@ namespace Menge
 	{
 		if( _offset + _count > m_vertexNum )
 		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderVertexBuffer::lock %d offset %d more max size %d"
+			LOGGER_ERROR("DX9RenderVertexBuffer::lock %d offset %d more max size %d"
 				, _count
 				, _offset
 				, m_vertexNum
@@ -77,9 +77,9 @@ namespace Menge
 		DWORD d3d_flag = s_toD3DBufferLock( _flags );
 
 		void * memory = nullptr;
-		IF_DXCALL( m_serviceProvider, m_pVB, Lock, (_offset * sizeof( RenderVertex2D ), _count * sizeof( RenderVertex2D ), &memory, d3d_flag) )
+		IF_DXCALL( m_pVB, Lock, (_offset * sizeof( RenderVertex2D ), _count * sizeof( RenderVertex2D ), &memory, d3d_flag) )
 		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderVertexBuffer::lock %d offset %d invalid lock"
+			LOGGER_ERROR("DX9RenderVertexBuffer::lock %d offset %d invalid lock"
 				, _count
 				, _offset
 				);
@@ -92,9 +92,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderVertexBuffer::unlock()
 	{
-		IF_DXCALL( m_serviceProvider, m_pVB, Unlock, () )
+		IF_DXCALL( m_pVB, Unlock, () )
 		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderIndexBuffer::unlock invalid"
+			LOGGER_ERROR("DX9RenderIndexBuffer::unlock invalid"
 				);
 
 			return false;
@@ -105,7 +105,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderVertexBuffer::enable()
 	{
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetStreamSource, (0, m_pVB, 0, sizeof( RenderVertex2D )) )
+		IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, m_pVB, 0, sizeof( RenderVertex2D )) )
 		{
 			return false;
 		}

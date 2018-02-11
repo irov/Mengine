@@ -20,5 +20,5 @@ namespace Menge
 	};
 }
 
-#   define BITMAPGLYPH_SERVICE( serviceProvider )\
-    ((Menge::BitmapGlyphServiceInterface *)SERVICE_GET(serviceProvider, Menge::BitmapGlyphServiceInterface))
+#   define BITMAPGLYPH_SERVICE()\
+    ((Menge::BitmapGlyphServiceInterface *)SERVICE_GET(Menge::BitmapGlyphServiceInterface))

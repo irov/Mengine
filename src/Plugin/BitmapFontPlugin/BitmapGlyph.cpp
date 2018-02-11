@@ -86,9 +86,8 @@ namespace Menge
 		class BitmapGlyphSaxCallback
 		{
 		public:
-			BitmapGlyphSaxCallback( ServiceProviderInterface * _serviceProvider, BitmapGlyph * _glyph, const ConstString & _pakName, const FilePath & _path )
-				: m_serviceProvider(_serviceProvider)
-				, m_glyph(_glyph)
+			BitmapGlyphSaxCallback( BitmapGlyph * _glyph, const ConstString & _pakName, const FilePath & _path )
+				: m_glyph(_glyph)
 				, m_pakName(_pakName)
 				, m_path(_path)
 				, m_glyphCode(0)
@@ -137,7 +136,7 @@ namespace Menge
 							float size;
 							if( sscanf( value, "%f", &size ) != 1 )
 							{
-								LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize %s:%s invalid read size %s"
+								LOGGER_ERROR("TextGlyph::initialize %s:%s invalid read size %s"
 									, m_pakName.c_str()
 									, m_path.c_str()
 									, value
@@ -160,7 +159,7 @@ namespace Menge
 							float ascender = 0.f;
 							if( sscanf( value, "%f", &ascender ) != 1 )
 							{
-								LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize %s:%s invalid read ascender %s"
+								LOGGER_ERROR("TextGlyph::initialize %s:%s invalid read ascender %s"
 									, m_pakName.c_str()
 									, m_path.c_str()
 									, value
@@ -174,7 +173,7 @@ namespace Menge
 							float height = 0.f;
 							if( sscanf( value, "%f", &height ) != 1 )
 							{
-								LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize %s:%s invalid read height %s"
+								LOGGER_ERROR("TextGlyph::initialize %s:%s invalid read height %s"
 									, m_pakName.c_str()
 									, m_path.c_str()
 									, value
@@ -188,7 +187,7 @@ namespace Menge
 							float descender = 0.f;
 							if( sscanf( value, "%f", &descender ) != 1 )
 							{
-								LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize %s:%s invalid read descender %s"
+								LOGGER_ERROR("TextGlyph::initialize %s:%s invalid read descender %s"
 									, m_pakName.c_str()
 									, m_path.c_str()
 									, value
@@ -211,7 +210,7 @@ namespace Menge
 							uint32_t width = 0;
 							if( sscanf( value, "%u", &width ) != 1 )
 							{
-								LOGGER_ERROR( m_serviceProvider )("TextGlyph::initialize %s:%s invalid read width %s"
+								LOGGER_ERROR("TextGlyph::initialize %s:%s invalid read width %s"
 									, m_pakName.c_str()
 									, m_path.c_str()
 									, value
@@ -227,7 +226,7 @@ namespace Menge
 							uint32_t height = 0;
 							if( sscanf( value, "%u", &height ) != 1 )
 							{
-								LOGGER_ERROR( m_serviceProvider )("TextGlyph::initialize %s:%s invalid read height %s"
+								LOGGER_ERROR("TextGlyph::initialize %s:%s invalid read height %s"
 									, m_pakName.c_str()
 									, m_path.c_str()
 									, value
@@ -256,7 +255,7 @@ namespace Menge
 						{							
 							if( sscanf( value, "%f", &advance ) != 1 )
 							{
-								LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize %s:%s invalid read width %s"
+								LOGGER_ERROR("TextGlyph::initialize %s:%s invalid read width %s"
 									, m_pakName.c_str()
 									, m_path.c_str()
 									, value
@@ -267,7 +266,7 @@ namespace Menge
 						{
 							if( sscanf( value, "%f %f", &offset.x, &offset.y ) != 2 )
 							{
-								LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize %s:%s invalid read offset %s"
+								LOGGER_ERROR("TextGlyph::initialize %s:%s invalid read offset %s"
 									, m_pakName.c_str()
 									, m_path.c_str()
 									, value
@@ -278,7 +277,7 @@ namespace Menge
 						{
 							if( sscanf( value, "%f %f %f %f", &rect.x, &rect.y, &rect.z, &rect.w ) != 4 )
 							{
-								LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize %s:%s invalid read rect %s"
+								LOGGER_ERROR("TextGlyph::initialize %s:%s invalid read rect %s"
 									, m_pakName.c_str()
 									, m_path.c_str()
 									, value
@@ -300,7 +299,7 @@ namespace Menge
 
 					if( cp == 0 || err_code != utf8::internal::UTF8_OK )
 					{
-						LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize %s:%s invalid utf8 id %s"
+						LOGGER_ERROR("TextGlyph::initialize %s:%s invalid utf8 id %s"
 							, m_pakName.c_str()
 							, m_path.c_str()
 							, id
@@ -309,8 +308,7 @@ namespace Menge
 
 					GlyphCode glyphCode = cp;
 
-					float ascender = m_glyph->getAscender();
-					offset.y = ascender - offset.y;
+                    offset.y = -offset.y;
 
 					m_glyph->addGlyphChar( glyphCode, uv, offset, advance, size );
 
@@ -330,7 +328,7 @@ namespace Menge
 						{					
 							if( sscanf( value, "%f", &advance ) != 1 )
 							{
-								LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize %s:%s invalid read advance %s"
+								LOGGER_ERROR("TextGlyph::initialize %s:%s invalid read advance %s"
 									, m_pakName.c_str()
 									, m_path.c_str()
 									, value
@@ -347,7 +345,7 @@ namespace Menge
 
 							if( cp == 0 || err_code != utf8::internal::UTF8_OK )
 							{
-								LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize %s:%s invalid utf8 code %s"
+								LOGGER_ERROR("TextGlyph::initialize %s:%s invalid utf8 code %s"
 									, m_pakName.c_str()
 									, m_path.c_str()
 									, value
@@ -360,7 +358,7 @@ namespace Menge
 
 					if( m_glyphCode == 0 )
 					{
-						LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize %s:%s invalid kerning m_glyphChar is nullptr"
+						LOGGER_ERROR("TextGlyph::initialize %s:%s invalid kerning m_glyphChar is nullptr"
 							, m_pakName.c_str()
 							, m_path.c_str()
 							);
@@ -384,7 +382,6 @@ namespace Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
 			BitmapGlyph * m_glyph;
 
 			const ConstString & m_pakName;
@@ -397,12 +394,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool BitmapGlyph::initialize( const ConstString & _pakName, const FilePath & _path )
 	{
-		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( _pakName, _path, false );
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize invalid open file %s:%s"
+			LOGGER_ERROR("TextGlyph::initialize invalid open file %s:%s"
 				, _pakName.c_str()
 				, _path.c_str()
 				);
@@ -412,7 +409,7 @@ namespace Menge
 
 		size_t xml_buffer_size = stream->size();
 		
-		MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, xml_buffer_size + 1, __FILE__, __LINE__ );
+		MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( xml_buffer_size + 1, __FILE__, __LINE__ );
 
 		if( buffer == nullptr )
 		{
@@ -424,10 +421,10 @@ namespace Menge
 		stream->read( memory, xml_buffer_size );
 		memory[xml_buffer_size] = '\0';
 
-		BitmapGlyphSaxCallback tmsc(m_serviceProvider, this, _pakName, _path);
+		BitmapGlyphSaxCallback tmsc(this, _pakName, _path);
 		if( stdex::xml_sax_parse( memory, tmsc ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize invalid parse file %s:%s"
+			LOGGER_ERROR("TextGlyph::initialize invalid parse file %s:%s"
 				, _pakName.c_str()
 				, _path.c_str()
 				);
@@ -437,7 +434,7 @@ namespace Menge
 
 		if( tmsc.isValid() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize invalid glyph format %s:%s"
+			LOGGER_ERROR("TextGlyph::initialize invalid glyph format %s:%s"
 				, _pakName.c_str()
 				, _path.c_str()
 				);
@@ -500,7 +497,7 @@ namespace Menge
 	{
 		if( this->existGlyphCode( _code ) == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextGlyph::addGlyphChar code '%u' alredy exist!"
+			LOGGER_ERROR("TextGlyph::addGlyphChar code '%u' alredy exist!"
 				, _code
 				);
 

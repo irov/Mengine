@@ -27,15 +27,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::_initialize()
 	{
-		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
+		m_archivator = ARCHIVE_SERVICE()
+			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
 
 		if( m_archivator == nullptr )
 		{
 			return false;
 		}
 
-		m_protocolPath = CONFIG_VALUE( m_serviceProvider, "Engine", "ProtocolPath", STRINGIZE_FILEPATH_LOCAL( m_serviceProvider, "protocol.xml" ) );
+		m_protocolPath = CONFIG_VALUE( "Engine", "ProtocolPath", STRINGIZE_FILEPATH_LOCAL( "protocol.xml" ) );
 
 		return true;
 	}
@@ -55,14 +55,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const
 	{
-        LOGGER_INFO(m_serviceProvider)( "LoaderEngine::load pak '%s:%s'"
+        LOGGER_INFO( "LoaderEngine::load pak '%s:%s'"
             , _pak.c_str()
             , _path.c_str()
             );
 
 		if( _path.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("LoaderEngine::import invalid open bin '%s' path is empty"
+			LOGGER_ERROR("LoaderEngine::import invalid open bin '%s' path is empty"
 				, _pak.c_str()
 				);
 
@@ -72,7 +72,7 @@ namespace Menge
 		InputStreamInterfacePtr file_bin;
 		if( this->openBin_( _pak, _path, file_bin, _exist ) == false )
 		{
-            LOGGER_ERROR(m_serviceProvider)("LoaderEngine::import invalid open bin '%s':'%s'"
+            LOGGER_ERROR("LoaderEngine::import invalid open bin '%s':'%s'"
                 , _pak.c_str()
                 , _path.c_str()
                 );
@@ -98,11 +98,11 @@ namespace Menge
 			cache_path_xml += _path;			
 			cache_path_xml.replace_last( "xml" );
             			
-            ConstString c_cache_path_xml = Helper::stringizeStringLocal( m_serviceProvider, cache_path_xml.c_str(), c_cache_path_xml.size() );
+            ConstString c_cache_path_xml = Helper::stringizeStringLocal( cache_path_xml.c_str(), c_cache_path_xml.size() );
 
 			if( this->makeBin_( _pak, FilePath(c_cache_path_xml), _path ) == false )
 			{
-                LOGGER_ERROR(m_serviceProvider)("LoaderEngine::import invlid rebild bin %s from xml %s"
+                LOGGER_ERROR("LoaderEngine::import invlid rebild bin %s from xml %s"
                     , _path.c_str()
                     , c_cache_path_xml.c_str()
                     );
@@ -110,7 +110,7 @@ namespace Menge
 				return false;
 			}
 
-			file_bin = FILE_SERVICE(m_serviceProvider)
+			file_bin = FILE_SERVICE()
                 ->openInputFile( _pak, _path, false );
 
 			done = this->importBin_( file_bin, _metadata, nullptr );
@@ -123,7 +123,7 @@ namespace Menge
 	bool LoaderEngine::validation( const ConstString & _pak, const FilePath & _path ) const
 	{
 		InputStreamInterfacePtr stream =
-			FILE_SERVICE( m_serviceProvider )->openInputFile( _pak, _path, false );
+			FILE_SERVICE()->openInputFile( _pak, _path, false );
 
 		if( stream == nullptr )
 		{
@@ -161,7 +161,7 @@ namespace Menge
 
 		if( size == 0 )
 		{
-            LOGGER_ERROR(m_serviceProvider)("LoaderEngine::importBin_ invalid size (empty)"
+            LOGGER_ERROR("LoaderEngine::importBin_ invalid size (empty)"
                 );
 
 			return false;
@@ -181,7 +181,7 @@ namespace Menge
         {
             if( _reimport == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invalid version read %d need %d or protocol %d need %d (Update you protocol file)"
+                LOGGER_ERROR("LoaderEngine::loadBinary invalid version read %d need %d or protocol %d need %d (Update you protocol file)"
                     , readVersion
                     , needVersion
                     , readProtocol
@@ -202,7 +202,7 @@ namespace Menge
         uint32_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
 
-		MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, bin_size, __FILE__, __LINE__ );
+		MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( bin_size, __FILE__, __LINE__ );
 
 		if( binary_buffer == nullptr )
 		{
@@ -212,12 +212,12 @@ namespace Menge
 		uint8_t * binary_memory = binary_buffer->getMemory();
 		
         size_t uncompress_size = 0;
-        if( ARCHIVE_SERVICE(m_serviceProvider)
+        if( ARCHIVE_SERVICE()
 			->decompressStream( m_archivator, _stream, compress_size, binary_memory, bin_size, uncompress_size ) == false )
         {
 			if( _reimport == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid uncompress"
+				LOGGER_ERROR("LoaderEngine::loadBinary invlid uncompress"
 					);
 			}
 			else
@@ -250,18 +250,18 @@ namespace Menge
 
             if( str == nullptr )
             {
-				LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid read string (error)"
+				LOGGER_ERROR("LoaderEngine::loadBinary invlid read string (error)"
 					);
 
                 return false;
             }
 
-            *it = Helper::stringizeStringSizeHash(m_serviceProvider, str, stringSize, stringHash);
+            *it = Helper::stringizeStringSizeHash(str, stringSize, stringHash);
         }
 
         if( _metadata->parseRoot( binary_memory, bin_size, read_size, (void *)this ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid parse (error)"
+            LOGGER_ERROR("LoaderEngine::loadBinary invlid parse (error)"
                 );
 
             return false;
@@ -271,7 +271,7 @@ namespace Menge
 
         if( read_size != bin_size )
         {
-            LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid parse (read != archive)"
+            LOGGER_ERROR("LoaderEngine::loadBinary invlid parse (read != archive)"
                 );
 
             return false;
@@ -287,11 +287,11 @@ namespace Menge
 		cache_path_xml += _path;
 		cache_path_xml.replace_last( "xml" );
         		
-        FilePath c_cache_path_xml = Helper::stringizeFilePath( m_serviceProvider, cache_path_xml );
+        FilePath c_cache_path_xml = Helper::stringizeFilePath( cache_path_xml );
         
-		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, c_cache_path_xml, nullptr ) == false )
+		if( FILE_SERVICE()->existFile( _pak, c_cache_path_xml, nullptr ) == false )
 		{
-			if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr ) == false )
+			if( FILE_SERVICE()->existFile( _pak, _path, nullptr ) == false )
 			{
 				_exist = false;
 
@@ -299,7 +299,7 @@ namespace Menge
 			}
 
 			InputStreamInterfacePtr file_bin = 
-                FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, _path, false );
+                FILE_SERVICE()->openInputFile( _pak, _path, false );
 
 			if( file_bin == nullptr )
 			{
@@ -313,7 +313,7 @@ namespace Menge
 
 		_exist = true;
 
-		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr ) == false )
+		if( FILE_SERVICE()->existFile( _pak, _path, nullptr ) == false )
 		{
 			if( this->makeBin_( _pak, c_cache_path_xml, _path ) == false )
 			{
@@ -323,7 +323,7 @@ namespace Menge
 			}
 		}
 
-		InputStreamInterfacePtr file_bin = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr file_bin = FILE_SERVICE()
 			->openInputFile( _pak, _path, false );
 
 		if( file_bin == nullptr )
@@ -331,7 +331,7 @@ namespace Menge
 			return false;
 		}
 
-		InputStreamInterfacePtr file_xml = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr file_xml = FILE_SERVICE()
 			->openInputFile( _pak, c_cache_path_xml, false );
 
 		if( file_xml == nullptr )
@@ -359,7 +359,7 @@ namespace Menge
 				return false;
 			}
 
-			file_bin = FILE_SERVICE(m_serviceProvider)
+			file_bin = FILE_SERVICE()
                 ->openInputFile( _pak, _path, false );
 		}
 
@@ -370,12 +370,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::makeBin_( const ConstString & _pak, const FilePath & _pathXml, const FilePath & _pathBin ) const
 	{
-		XmlDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "xml2bin") );
+		XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
+            ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin") );
 
 		if( decoder == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("LoaderEngine::makeBin_ invalid create decoder xml2bin for %s:%s"
+			LOGGER_ERROR("LoaderEngine::makeBin_ invalid create decoder xml2bin for %s:%s"
 				, _pak.c_str()
 				, _pathXml.c_str()
 				);
@@ -385,7 +385,7 @@ namespace Menge
 
 		if( decoder->prepareData( nullptr ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("LoaderEngine::makeBin_ invalid initialize decoder xml2bin for %s:%s"
+			LOGGER_ERROR("LoaderEngine::makeBin_ invalid initialize decoder xml2bin for %s:%s"
 				, _pak.c_str()
 				, _pathXml.c_str()
 				);
@@ -396,12 +396,12 @@ namespace Menge
 		XmlCodecOptions options;
         options.pathProtocol = m_protocolPath;
 		
-        FileGroupInterfacePtr fileGroup = FILE_SERVICE(m_serviceProvider)
+        FileGroupInterfacePtr fileGroup = FILE_SERVICE()
             ->getFileGroup( _pak );
 
         if( fileGroup == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("LoaderEngine::makeBin_ invalid get file group %s (%s)"
+            LOGGER_ERROR("LoaderEngine::makeBin_ invalid get file group %s (%s)"
                 , _pak.c_str()
                 , _pathXml.c_str()
                 );
@@ -411,15 +411,15 @@ namespace Menge
 
 		const FilePath & path = fileGroup->getFolderPath();
 
-		options.pathXml = Helper::concatenationFilePath( m_serviceProvider, path, _pathXml );
-		options.pathBin = Helper::concatenationFilePath( m_serviceProvider, path, _pathBin );
+		options.pathXml = Helper::concatenationFilePath( path, _pathXml );
+		options.pathBin = Helper::concatenationFilePath( path, _pathBin );
 
 		if( decoder->setOptions( &options ) == false )
         {
             return false;
         }
 
-		//if( decoder->initialize( m_serviceProvider, 0 ) == false )
+		//if( decoder->initialize( 0 ) == false )
 		//{
 			//decoder->destroy();
 
@@ -437,7 +437,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const
 	{
-		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr ) == false )
+		if( FILE_SERVICE()->existFile( _pak, _path, nullptr ) == false )
 		{
 			_exist = false;
 
@@ -445,7 +445,7 @@ namespace Menge
 		}
 
 		InputStreamInterfacePtr file_bin = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, _path, false );
+            FILE_SERVICE()->openInputFile( _pak, _path, false );
 
 		if( file_bin == nullptr )
 		{

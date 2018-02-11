@@ -22,13 +22,10 @@ namespace	Menge
 	class SoundScriptMethod
 	{
     public:
-        SoundScriptMethod( ServiceProviderInterface * _serviceProvider )
-            : m_serviceProvider(_serviceProvider)
-            , m_affectorCreatorSound(_serviceProvider)
-            , m_affectorCreatorMusic(_serviceProvider)
+        SoundScriptMethod()
         {
-            m_factorySoundAffectorCallback = new FactoryPool<SoundAffectorCallback, 4>(m_serviceProvider);
-            m_factoryMusicAffectorCallback = new FactoryPool<MusicAffectorCallback, 4>(m_serviceProvider);
+            m_factorySoundAffectorCallback = new FactoryPool<SoundAffectorCallback, 4>();
+            m_factoryMusicAffectorCallback = new FactoryPool<MusicAffectorCallback, 4>();
         }
 
     public:
@@ -46,9 +43,8 @@ namespace	Menge
 			}
 
 		public:
-			bool initialize( ServiceProviderInterface * _serviceProvider, const ResourceSoundPtr & _resource, const SoundBufferInterfacePtr & _soundBuffer, const pybind::object & _cb, const pybind::args & _args )
+			bool initialize( const ResourceSoundPtr & _resource, const SoundBufferInterfacePtr & _soundBuffer, const pybind::object & _cb, const pybind::args & _args )
 			{
-				m_serviceProvider = _serviceProvider;
 				m_resource = _resource;
 				m_soundBuffer = _soundBuffer;
 
@@ -72,10 +68,10 @@ namespace	Menge
 					m_cb.call_args( _id, m_args );
 				}
 
-				if( SOUND_SERVICE(m_serviceProvider)
+				if( SOUND_SERVICE()
 					->releaseSoundSource( _id ) == false )
 				{
-					LOGGER_ERROR(m_serviceProvider)("MySoundNodeListenerInterface %s emitter invalid release sound %d"
+					LOGGER_ERROR("MySoundNodeListenerInterface %s emitter invalid release sound %d"
 						, m_resource->getName().c_str()
 						, _id
 						);
@@ -90,7 +86,6 @@ namespace	Menge
 			}
 
 		protected:
-            ServiceProviderInterface * m_serviceProvider;
 			ResourceSoundPtr m_resource;
             SoundBufferInterfacePtr m_soundBuffer;
 			pybind::object m_cb;
@@ -99,8 +94,8 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_hasSound( const ConstString & _resourceName )
 		{
-			if( RESOURCE_SERVICE(m_serviceProvider)
-				->validResourceType( _resourceName, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ResourceSound") ) == false )
+			if( RESOURCE_SERVICE()
+				->validResourceType( _resourceName, STRINGIZE_STRING_LOCAL("ResourceSound") ) == false )
 			{
 				return false;
 			}
@@ -110,7 +105,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceType _type, const pybind::object & _cb, const pybind::args & _args )
 		{
-			ResourceSoundPtr resource = RESOURCE_SERVICE(m_serviceProvider)
+			ResourceSoundPtr resource = RESOURCE_SERVICE()
 				->getResourceT<ResourceSoundPtr>( _resourceName );
 
 			if( resource == nullptr )
@@ -129,7 +124,7 @@ namespace	Menge
 
 			bool streamable = resource->isStreamable();
 
-			uint32_t sourceID = SOUND_SERVICE(m_serviceProvider)
+			uint32_t sourceID = SOUND_SERVICE()
                 ->createSoundSource( true, soundBuffer, _type, streamable );
 
 			if( sourceID == 0 )
@@ -139,15 +134,15 @@ namespace	Menge
 				return 0;
 			}
 
-			SOUND_SERVICE(m_serviceProvider)
+			SOUND_SERVICE()
 				->setLoop( sourceID, _loop );
 
 			float volume = resource->getDefaultVolume();
 
-			if( SOUND_SERVICE(m_serviceProvider)
+			if( SOUND_SERVICE()
 				->setSourceVolume( sourceID, volume, volume ) == false )
 			{                
-				LOGGER_ERROR(m_serviceProvider)("ScriptWrapper::createSoundSource invalid %s setSourceVolume %f"
+				LOGGER_ERROR("ScriptWrapper::createSoundSource invalid %s setSourceVolume %f"
 					, _resourceName.c_str()
                     , volume
 					);
@@ -160,9 +155,9 @@ namespace	Menge
 
 			MySoundNodeListenerInterface * snlistener = new MySoundNodeListenerInterface();
 
-			if( snlistener->initialize( m_serviceProvider, resource, soundBuffer, _cb, _args ) == false )
+			if( snlistener->initialize( resource, soundBuffer, _cb, _args ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ScriptWrapper::createSoundSource invalid %s intialize listener"
+				LOGGER_ERROR("ScriptWrapper::createSoundSource invalid %s intialize listener"
 					, _resourceName.c_str()
 					, volume
 					);
@@ -174,7 +169,7 @@ namespace	Menge
 				return 0;
 			}
 
-			SOUND_SERVICE(m_serviceProvider)
+			SOUND_SERVICE()
 				->setSourceListener( sourceID, snlistener );
 			
 			return sourceID;
@@ -186,17 +181,17 @@ namespace	Menge
 
 			if( sourceID == 0 )
 			{
-				LOGGER_ERROR(m_serviceProvider)("soundPlay: can't get resource '%s'"
+				LOGGER_ERROR("soundPlay: can't get resource '%s'"
 					, _resourceName.c_str()
 					);
 
 				return 0;
 			}
 
-			if( SOUND_SERVICE(m_serviceProvider)
+			if( SOUND_SERVICE()
 				->play( sourceID ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("soundPlay: invalid play '%s'"
+				LOGGER_ERROR("soundPlay: invalid play '%s'"
 					, _resourceName.c_str()
 					);
 
@@ -212,17 +207,17 @@ namespace	Menge
 
             if( sourceID == 0 )
             {
-                LOGGER_ERROR(m_serviceProvider)("voicePlay: can't get resource '%s'"
+                LOGGER_ERROR("voicePlay: can't get resource '%s'"
                     , _resourceName.c_str()
                     );
 
                 return 0;
             }
 
-            if( SOUND_SERVICE(m_serviceProvider)
+            if( SOUND_SERVICE()
                 ->play( sourceID ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("voicePlay: invalid play '%s'"
+				LOGGER_ERROR("voicePlay: invalid play '%s'"
 					, _resourceName.c_str()
 					);
 
@@ -234,7 +229,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_voicePause( uint32_t _soundId )
 		{
-			bool successful = SOUND_SERVICE( m_serviceProvider )
+			bool successful = SOUND_SERVICE()
 				->pause( _soundId );
 
 			return successful;
@@ -242,7 +237,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_voiceResume( uint32_t _soundId )
 		{
-			bool successful = SOUND_SERVICE( m_serviceProvider )
+			bool successful = SOUND_SERVICE()
 				->resume( _soundId );
 
 			return successful;
@@ -254,17 +249,17 @@ namespace	Menge
 
 			if( sourceID == 0 )
 			{
-				LOGGER_ERROR(m_serviceProvider)("soundPlayFromPosition: can't get resource '%s'"
+				LOGGER_ERROR("soundPlayFromPosition: can't get resource '%s'"
 					, _resourceName.c_str()
 					);
 
 				return 0;
 			}
 
-			if( SOUND_SERVICE(m_serviceProvider)
+			if( SOUND_SERVICE()
 				->setPosMs( sourceID, _position ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("soundPlayFromPosition: set pos '%s' '%f'"
+                LOGGER_ERROR("soundPlayFromPosition: set pos '%s' '%f'"
                     , _resourceName.c_str()
                     , _position
                     );
@@ -272,10 +267,10 @@ namespace	Menge
                 return 0;
             }
 			
-			if( SOUND_SERVICE(m_serviceProvider)
+			if( SOUND_SERVICE()
 				->play( sourceID ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("soundPlayFromPosition: play '%s' '%f'"
+                LOGGER_ERROR("soundPlayFromPosition: play '%s' '%f'"
                     , _resourceName.c_str()
                     , _position
                     );
@@ -288,7 +283,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		float s_soundGetPosMs( uint32_t _sourceID )
 		{
-			float pos =	SOUND_SERVICE(m_serviceProvider)
+			float pos =	SOUND_SERVICE()
 				->getPosMs( _sourceID );
 
 			return pos;
@@ -296,7 +291,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_soundSetPosMs( uint32_t _sourceID, float _pos )
 		{
-			SOUND_SERVICE(m_serviceProvider)
+			SOUND_SERVICE()
 				->setPosMs( _sourceID, _pos );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -305,8 +300,7 @@ namespace	Menge
 		{
 		public:
 			SoundAffectorCallback()
-				: m_serviceProvider( nullptr )
-				, m_sourceId(0)
+				: m_sourceId(0)
 			{
 			}
 
@@ -315,9 +309,8 @@ namespace	Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, uint32_t _sourceId, const pybind::object & _cb, const pybind::args & _args )
+			void initialize( uint32_t _sourceId, const pybind::object & _cb, const pybind::args & _args )
 			{
-				m_serviceProvider = _serviceProvider;
 				m_sourceId = _sourceId;
 				m_cb = _cb;
 				m_args = _args;
@@ -328,7 +321,7 @@ namespace	Menge
 			{
 				if( _isEnd == true )
 				{
-					SOUND_SERVICE( m_serviceProvider )
+					SOUND_SERVICE()
 						->stop( m_sourceId );
 				}
 
@@ -346,7 +339,6 @@ namespace	Menge
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
 			uint32_t m_sourceId;
 			pybind::object m_cb;
 			pybind::args m_args;
@@ -358,15 +350,15 @@ namespace	Menge
 		{
 			SoundAffectorCallback * callback = m_factorySoundAffectorCallback->createObject();
 
-			callback->initialize( m_serviceProvider, _sourceId, _cb, _args );
+			callback->initialize( _sourceId, _cb, _args );
 
 			return callback;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void ___soundFade( uint32_t _sourceId, float _volume )
 		{
-			SOUND_SERVICE( m_serviceProvider )
-				->setSourceMixerVolume( _sourceId, STRINGIZE_STRING_LOCAL( m_serviceProvider, "Fade" ), _volume, _volume );
+			SOUND_SERVICE()
+				->setSourceMixerVolume( _sourceId, STRINGIZE_STRING_LOCAL( "Fade" ), _volume, _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////		
 		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<SoundScriptMethod, void (SoundScriptMethod::*)(uint32_t, float), float, uint32_t> m_affectorCreatorSound;
@@ -381,7 +373,7 @@ namespace	Menge
                     , 1.f, 0.f, _time
                 );
 
-			Affectorable * affectorable = PLAYER_SERVICE( m_serviceProvider )
+			Affectorable * affectorable = PLAYER_SERVICE()
 				->getAffectorableGlobal();
 
 			affectorable->addAffector( affector );
@@ -393,17 +385,17 @@ namespace	Menge
 
 			if( sourceId == 0 )
 			{
-				LOGGER_ERROR( m_serviceProvider )("soundPlay: can't get resource '%s'"
+				LOGGER_ERROR( "soundPlay: can't get resource '%s'"
 					, _resourceName.c_str()
 					);
 
 				return 0;
 			}
 
-			if( SOUND_SERVICE( m_serviceProvider )
+			if( SOUND_SERVICE()
 				->play( sourceId ) == false )
 			{
-				LOGGER_ERROR( m_serviceProvider )("soundPlay: invalid play '%s'"
+				LOGGER_ERROR( "soundPlay: invalid play '%s'"
 					, _resourceName.c_str()
 					);
 
@@ -416,7 +408,7 @@ namespace	Menge
                     , 0.f, 1.f, _time
                 );
 
-			Affectorable * affectorable = PLAYER_SERVICE( m_serviceProvider )
+			Affectorable * affectorable = PLAYER_SERVICE()
 				->getAffectorableGlobal();
 
 			affectorable->addAffector( affector );
@@ -426,34 +418,34 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_soundStop( uint32_t _sourceID )
 		{
-			SOUND_SERVICE(m_serviceProvider)
+			SOUND_SERVICE()
 				->stop( _sourceID );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_soundPause( uint32_t _sourceID )
 		{
-			SOUND_SERVICE( m_serviceProvider )
+			SOUND_SERVICE()
 				->pause( _sourceID );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_soundResume( uint32_t _sourceID )
 		{
-			SOUND_SERVICE( m_serviceProvider )
+			SOUND_SERVICE()
 				->resume( _sourceID );
 		}
 		//////////////////////////////////////////////////////////////////////////
         void s_voiceStop( uint32_t _sourceID )
         {
-            SOUND_SERVICE(m_serviceProvider)
+            SOUND_SERVICE()
                 ->stop( _sourceID );
         }
 		//////////////////////////////////////////////////////////////////////////
 		void s_soundSourceSetVolume( uint32_t _sourceID, float _volume )
 		{
-			if( SOUND_SERVICE(m_serviceProvider)
+			if( SOUND_SERVICE()
 				->setSourceVolume( _sourceID, _volume, _volume ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("SoundScriptWrapper::s_soundSourceSetVolume invalid source volume %d"
+				LOGGER_ERROR("SoundScriptWrapper::s_soundSourceSetVolume invalid source volume %d"
 					, _sourceID
 					);
 			}
@@ -461,7 +453,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		float s_soundSourceGetVolume( uint32_t _sourceID )
 		{
-			float volume = SOUND_SERVICE(m_serviceProvider)
+			float volume = SOUND_SERVICE()
 				->getSourceVolume( _sourceID );
 
             return volume;                 
@@ -469,86 +461,86 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_soundSetVolume( float _volume )
 		{
-			SOUND_SERVICE(m_serviceProvider)
-				->setSoundVolume(STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), _volume, 0.f );
+			SOUND_SERVICE()
+				->setSoundVolume(STRINGIZE_STRING_LOCAL("Generic"), _volume, 0.f );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		float s_soundGetVolume()
 		{
-			float volume = SOUND_SERVICE(m_serviceProvider)
-				->getSoundVolume(STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic") );
+			float volume = SOUND_SERVICE()
+				->getSoundVolume(STRINGIZE_STRING_LOCAL("Generic") );
 
             return volume;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_commonSetVolume( float _volume )
 		{
-			SOUND_SERVICE(m_serviceProvider)
-				->setCommonVolume(STRINGIZE_STRING_LOCAL( m_serviceProvider, "Generic" ), _volume, _volume );
+			SOUND_SERVICE()
+				->setCommonVolume(STRINGIZE_STRING_LOCAL( "Generic" ), _volume, _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		float commonGetVolume()
 		{
-			return SOUND_SERVICE(m_serviceProvider)
-				->getCommonVolume(STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic") );
+			return SOUND_SERVICE()
+				->getCommonVolume(STRINGIZE_STRING_LOCAL("Generic") );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void musicPlay( const ConstString & _resourceMusic, float _pos, bool _isLooped )
 		{
-			if( SERVICE_EXIST( m_serviceProvider, AmplifierInterface ) == false )
+			if( SERVICE_EXIST( AmplifierInterface ) == false )
 			{
 				return;
 			}
 
-			AMPLIFIER_SERVICE(m_serviceProvider)
+			AMPLIFIER_SERVICE()
 				->playMusic( _resourceMusic, _pos, _isLooped );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void musicSetVolume( float _volume )
 		{
-			SOUND_SERVICE(m_serviceProvider)
-				->setMusicVolume(STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), _volume, _volume );
+			SOUND_SERVICE()
+				->setMusicVolume(STRINGIZE_STRING_LOCAL("Generic"), _volume, _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		float musicGetVolume()
 		{
-			return SOUND_SERVICE(m_serviceProvider)
-				->getMusicVolume(STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic") );
+			return SOUND_SERVICE()
+				->getMusicVolume(STRINGIZE_STRING_LOCAL("Generic") );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void musicSetVolumeTag( const ConstString & _tag, float _volume, float _default )
 		{
-			SOUND_SERVICE( m_serviceProvider )
+			SOUND_SERVICE()
 				->setMusicVolume( _tag, _volume, _default );
 		}		
 		//////////////////////////////////////////////////////////////////////////
 		float musicGetVolumeTag( const ConstString & _tag )
 		{
-			return SOUND_SERVICE( m_serviceProvider )
+			return SOUND_SERVICE()
 				->getMusicVolume( _tag );
 		}
         //////////////////////////////////////////////////////////////////////////
         void voiceSetVolume( float _volume )
         {
-            SOUND_SERVICE(m_serviceProvider)
-				->setVoiceVolume(STRINGIZE_STRING_LOCAL( m_serviceProvider, "Generic" ), _volume, _volume );
+            SOUND_SERVICE()
+				->setVoiceVolume(STRINGIZE_STRING_LOCAL( "Generic" ), _volume, _volume );
         }
         //////////////////////////////////////////////////////////////////////////
         float voiceGetVolume()
         {
-            return SOUND_SERVICE(m_serviceProvider)
-                ->getVoiceVolume(STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic") );
+            return SOUND_SERVICE()
+                ->getVoiceVolume(STRINGIZE_STRING_LOCAL( "Generic") );
         }
 		//////////////////////////////////////////////////////////////////////////
 		void musicStop()
 		{
-			AMPLIFIER_SERVICE(m_serviceProvider)
+			AMPLIFIER_SERVICE()
 				->stop();
 		}
         //////////////////////////////////////////////////////////////////////////
         bool musicPause()
         {
-            bool successful = AMPLIFIER_SERVICE(m_serviceProvider)
+            bool successful = AMPLIFIER_SERVICE()
                 ->pause();
 
 			return successful;
@@ -556,7 +548,7 @@ namespace	Menge
         //////////////////////////////////////////////////////////////////////////
         bool musicResume()
         {
-            bool successful = AMPLIFIER_SERVICE(m_serviceProvider)
+            bool successful = AMPLIFIER_SERVICE()
                 ->resume();
 
 			return successful;
@@ -564,7 +556,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		float s_musicGetDuration()
 		{
-			float posMs = AMPLIFIER_SERVICE( m_serviceProvider )
+			float posMs = AMPLIFIER_SERVICE()
 				->getDuration();
 
 			return posMs;
@@ -572,7 +564,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		float s_musicGetPosMs()
 		{
-			float posMs = AMPLIFIER_SERVICE(m_serviceProvider)
+			float posMs = AMPLIFIER_SERVICE()
 				->getPosMs();
 
 			return posMs;
@@ -580,14 +572,14 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_musicSetPosMs( float _posMs )
 		{
-			AMPLIFIER_SERVICE(m_serviceProvider)
+			AMPLIFIER_SERVICE()
 				->setPosMs( _posMs );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void ___musicFade( float _volume )
 		{
-			SOUND_SERVICE(m_serviceProvider)
-				->setMusicVolume(STRINGIZE_STRING_LOCAL( m_serviceProvider, "Fade" ), _volume, _volume );
+			SOUND_SERVICE()
+				->setMusicVolume(STRINGIZE_STRING_LOCAL( "Fade" ), _volume, _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class MusicAffectorCallback
@@ -595,7 +587,6 @@ namespace	Menge
 		{
 		public:
 			MusicAffectorCallback()
-				: m_serviceProvider(nullptr)
 			{
 			}
 
@@ -604,9 +595,8 @@ namespace	Menge
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb, const pybind::args & _args )
+			void initialize( const pybind::object & _cb, const pybind::args & _args )
 			{
-				m_serviceProvider = _serviceProvider;
 				m_cb = _cb;
 				m_args = _args;
 			}
@@ -624,14 +614,13 @@ namespace	Menge
 					return;
 				}
 
-				AMPLIFIER_SERVICE( m_serviceProvider )
+				AMPLIFIER_SERVICE()
 					->stop();
 
 				m_cb.call_args( _id, _isEnd, m_args );
 			}
 
 		protected:
-			ServiceProviderInterface * m_serviceProvider;
 			pybind::object m_cb;
 			pybind::args m_args;
 		};
@@ -642,7 +631,7 @@ namespace	Menge
 		{
             MusicAffectorCallback * callback = m_factoryMusicAffectorCallback->createObject();
 
-			callback->initialize( m_serviceProvider, _cb, _args );
+			callback->initialize( _cb, _args );
 
 			return callback; 
 		}
@@ -651,7 +640,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_musicFadeIn( float _time, const pybind::object & _cb, const pybind::args & _args )
 		{
-			if( SERVICE_EXIST( m_serviceProvider, AmplifierInterface ) == false )
+			if( SERVICE_EXIST( AmplifierInterface ) == false )
 			{
 				return 0;
 			}
@@ -664,7 +653,7 @@ namespace	Menge
 				, 1.f, 0.f, _time
 				);
 
-			Affectorable * affectorable = PLAYER_SERVICE(m_serviceProvider)
+			Affectorable * affectorable = PLAYER_SERVICE()
 				->getAffectorableGlobal();
 
 			AFFECTOR_ID id = affectorable->addAffector( affector );
@@ -674,12 +663,12 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_musicFadeOut( const ConstString & _resourceMusic, float _pos, bool _isLooped, float _time )
 		{
-			if( SERVICE_EXIST( m_serviceProvider, AmplifierInterface ) == false )
+			if( SERVICE_EXIST( AmplifierInterface ) == false )
 			{
 				return 0;
 			}
 
-			AMPLIFIER_SERVICE( m_serviceProvider )
+			AMPLIFIER_SERVICE()
 				->playMusic( _resourceMusic, _pos, _isLooped );
 
 			Affector* affector = 
@@ -688,7 +677,7 @@ namespace	Menge
 				, 0.f, 1.f, _time
 				);
 
-			Affectorable * affectorable = PLAYER_SERVICE(m_serviceProvider)
+			Affectorable * affectorable = PLAYER_SERVICE()
 				->getAffectorableGlobal();
 
 			AFFECTOR_ID id = affectorable->addAffector( affector );
@@ -698,13 +687,13 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		void s_soundMute( bool _mute )
 		{
-			SOUND_SERVICE(m_serviceProvider)
+			SOUND_SERVICE()
 				->mute( _mute );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool s_isMute()
 		{
-			bool mute = SOUND_SERVICE(m_serviceProvider)
+			bool mute = SOUND_SERVICE()
 				->isMute();
 
 			return mute;
@@ -712,21 +701,18 @@ namespace	Menge
         //////////////////////////////////////////////////////////////////////////
         bool s_isSilent()
         {
-            bool silent = SOUND_SYSTEM(m_serviceProvider)
+            bool silent = SOUND_SYSTEM()
                 ->isSilent();
 
             return silent;
         }
-
-    protected:
-        ServiceProviderInterface * m_serviceProvider;
 	};
 
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptSoundHelper, Base )
-	void PythonScriptWrapper::soundWrap( ServiceProviderInterface * _serviceProvider )
+	void PythonScriptWrapper::soundWrap()
 	{
-        SoundScriptMethod * soundScriptMethod = new SoundScriptMethod(_serviceProvider);
+        SoundScriptMethod * soundScriptMethod = new SoundScriptMethod();
 
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 

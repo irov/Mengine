@@ -29,5 +29,5 @@ namespace Menge
 	};
 }
 
-#   define FACTORY_SERVICE( serviceProvider )\
-	((FactoryServiceInterface *)SERVICE_GET(serviceProvider, Menge::FactoryServiceInterface))
+#   define FACTORY_SERVICE()\
+	((FactoryServiceInterface *)SERVICE_GET(Menge::FactoryServiceInterface))

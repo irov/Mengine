@@ -30,10 +30,9 @@ namespace Menge
 			return false;
 		}
 
-        m_homeless->setName( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Homeless") );
-        m_homeless->setType( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Node") );
-        m_homeless->setServiceProvider( m_serviceProvider );       
-
+        m_homeless->setName( STRINGIZE_STRING_LOCAL( "Homeless") );
+        m_homeless->setType( STRINGIZE_STRING_LOCAL( "Node") );
+        
 		return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -51,12 +50,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Node * NodeManager::createNode( const ConstString& _type )
 	{
-		Node * node = PROTOTYPE_SERVICE(m_serviceProvider)
-            ->generatePrototype( CONST_STRING(m_serviceProvider, Node), _type );
+		Node * node = PROTOTYPE_SERVICE()
+            ->generatePrototype( CONST_STRING( Node), _type );
 
 		if( node == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("NodeManager::createNode: Invalid Node Type '%s'"
+			LOGGER_ERROR("NodeManager::createNode: Invalid Node Type '%s'"
 				, _type.c_str() 
 				);
 
@@ -70,7 +69,7 @@ namespace Menge
     {
         if( m_homeless == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("NodeManager::addHomeless: not initialize"
+            LOGGER_ERROR("NodeManager::addHomeless: not initialize"
                 );
 
             return;
@@ -82,7 +81,7 @@ namespace Menge
 		{
 			Node * parent = _homeless->getParent();
 
-			LOGGER_WARNING(m_serviceProvider)("NodeManager::addHomeless: '%s:%s' have parent '%s:%s'"
+			LOGGER_WARNING("NodeManager::addHomeless: '%s:%s' have parent '%s:%s'"
 				, _homeless->getName().c_str()
 				, _homeless->getType().c_str()
 				, parent->getName().c_str()

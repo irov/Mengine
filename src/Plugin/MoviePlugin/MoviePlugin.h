@@ -32,7 +32,7 @@ namespace Menge
         PyObject * Movie2_setEventListener( pybind::kernel_interface * _kernel, Movie2 * _node, PyObject * _args, PyObject * _kwds );
 
 	protected:
-		aeMovieInstance * m_instance;
+		const aeMovieInstance * m_instance;
 
 		String m_hashkey;
 	};

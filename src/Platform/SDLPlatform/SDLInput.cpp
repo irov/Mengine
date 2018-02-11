@@ -48,7 +48,7 @@ namespace Menge
                 mt::vec2f point;
                 this->calcCursorPosition_( _event.wheel.x, _event.wheel.y, point );
 
-                INPUT_SERVICE( m_serviceProvider )
+                INPUT_SERVICE()
                     ->pushMouseWheelEvent( point.x, point.y, 0, _event.wheel.y );
             }break;
         case SDL_KEYDOWN:
@@ -72,7 +72,7 @@ namespace Menge
 				
                 m_keyDown[code] = isDown;
 				
-                INPUT_SERVICE( m_serviceProvider )
+                INPUT_SERVICE()
                     ->pushKeyEvent( point.x, point.y, code, isDown, false );
             } break;
 		case SDL_TEXTINPUT:
@@ -86,10 +86,10 @@ namespace Menge
 
                 WChar text_code[8] = { 0 };
 				size_t text_code_size;
-                UNICODE_SYSTEM( m_serviceProvider )
+                UNICODE_SYSTEM()
 					->utf8ToUnicode( _event.text.text, (size_t)-1, text_code, 8, &text_code_size );
 
-				INPUT_SERVICE( m_serviceProvider )
+				INPUT_SERVICE()
 					->pushTextEvent( point.x, point.y, text_code[0] );
 			}break;
         case SDL_MOUSEMOTION:
@@ -100,7 +100,7 @@ namespace Menge
                 mt::vec2f delta;
                 this->calcCursorPosition_( _event.motion.xrel, _event.motion.yrel, delta );
 
-                INPUT_SERVICE( m_serviceProvider )
+                INPUT_SERVICE()
                     ->pushMouseMoveEvent( 0, point.x, point.y, delta.x, delta.y, 0.f );
             }break;
         case SDL_MOUSEBUTTONDOWN:
@@ -127,7 +127,7 @@ namespace Menge
                     break;
                 };
 
-                INPUT_SERVICE( m_serviceProvider )
+                INPUT_SERVICE()
                     ->pushMouseButtonEvent( 0, point.x, point.y, button, 0.f, _event.button.type == SDL_MOUSEBUTTONDOWN );
             }
             break;
@@ -135,7 +135,7 @@ namespace Menge
             {
                 uint32_t touchId = (uint32_t)_event.tfinger.touchId - 1;
 
-                INPUT_SERVICE( m_serviceProvider )
+                INPUT_SERVICE()
                     ->pushMouseMoveEvent( touchId, _event.tfinger.x, _event.tfinger.y, _event.tfinger.dx, _event.tfinger.dy, _event.tfinger.pressure );
             }break;
         case SDL_FINGERDOWN:
@@ -143,7 +143,7 @@ namespace Menge
             {
                 uint32_t touchId = (uint32_t)_event.tfinger.touchId - 1;
 
-                INPUT_SERVICE( m_serviceProvider )
+                INPUT_SERVICE()
                     ->pushMouseButtonEvent( touchId, _event.tfinger.x, _event.tfinger.y, 0, _event.tfinger.pressure, _event.tfinger.type == SDL_FINGERDOWN );
             }
             break;

@@ -567,7 +567,7 @@ namespace Menge
         return AE_NULL;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, void * _data )
+    static ae_void_t __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, void * _data )
     {
         Movie2 * movie2 = (Movie2 *)_data;
         (void)movie2;
@@ -622,7 +622,7 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    static void __movie_composition_node_update( const aeMovieNodeUpdateCallbackData * _callbackData, void * _data )
+    static ae_void_t __movie_composition_node_update( const aeMovieNodeUpdateCallbackData * _callbackData, void * _data )
     {
         (void)_data;
             
@@ -919,7 +919,7 @@ namespace Menge
         ae_track_matte_mode_t mode;
     };
     //////////////////////////////////////////////////////////////////////////
-    static void * __movie_composition_track_matte_provider( const aeMovieTrackMatteProviderCallbackData * _callbackData, void * _data )
+    static ae_voidptr_t __movie_composition_track_matte_provider( const aeMovieTrackMatteProviderCallbackData * _callbackData, void * _data )
     {
         (void)_data;
 
@@ -932,7 +932,7 @@ namespace Menge
         return desc;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void __movie_composition_track_matte_update( const aeMovieTrackMatteUpdateCallbackData * _callbackData, void * _data )
+    static ae_void_t __movie_composition_track_matte_update( const aeMovieTrackMatteUpdateCallbackData * _callbackData, void * _data )
     {
         (void)_data;
 
@@ -955,7 +955,7 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    static void __movie_composition_track_matte_deleter( const aeMovieTrackMatteDeleterCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_void_t __movie_composition_track_matte_deleter( const aeMovieTrackMatteDeleterCallbackData * _callbackData, ae_voidptr_t _data )
     {
         (void)_data;
 
@@ -964,7 +964,7 @@ namespace Menge
         delete desc;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void * __movie_composition_shader_provider( const aeMovieShaderProviderCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_voidptr_t __movie_composition_shader_provider( const aeMovieShaderProviderCallbackData * _callbackData, ae_voidptr_t _data )
     {
         (void)_callbackData;
         (void)_data;
@@ -972,20 +972,20 @@ namespace Menge
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void __movie_composition_shader_property_update( const aeMovieShaderPropertyUpdateCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_void_t __movie_composition_shader_property_update( const aeMovieShaderPropertyUpdateCallbackData * _callbackData, ae_voidptr_t _data )
     {
         (void)_callbackData;
         (void)_data;
 
     }
     //////////////////////////////////////////////////////////////////////////
-    static void __movie_composition_event( const aeMovieCompositionEventCallbackData * _callbackData, void * _data )
+    static ae_void_t __movie_composition_event( const aeMovieCompositionEventCallbackData * _callbackData, void * _data )
     {
         (void)_callbackData;
         (void)_data;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void __movie_composition_state( const aeMovieCompositionStateCallbackData * _callbackData, void * _data )
+    static ae_void_t __movie_composition_state( const aeMovieCompositionStateCallbackData * _callbackData, void * _data )
     {
         if( _callbackData->subcomposition != AE_NULL )
         {
@@ -999,6 +999,21 @@ namespace Menge
             m2->stop();
         }
     }
+    ////////////////////////////////////////////////////////////////////////////
+    //static ae_voidptr_t __movie_scene_effect_provider( const aeMovieCompositionSceneEffectProviderCallbackData * _callbackData, ae_voidptr_t _data )
+    //{
+    //    Movie2 * m2 = (Movie2 *)(_data);
+
+    //    Node * parent = m2->getParent();
+
+    //    return AE_NULL;
+    //}
+    ////////////////////////////////////////////////////////////////////////////
+    //static ae_void_t __movie_scene_effect_update( const aeMovieCompositionSceneEffectUpdateCallbackData * _callbackData, ae_voidptr_t _data )
+    //{
+    //    Movie2 * m2 = (Movie2 *)(_data);
+
+    //}
     //////////////////////////////////////////////////////////////////////////
     Movie2::Camera * Movie2::addCamera( const ConstString & _name, RenderCameraProjection * _projection, RenderViewport * _viewport )
     {
@@ -1119,6 +1134,9 @@ namespace Menge
 
         providers.composition_event = &__movie_composition_event;
         providers.composition_state = &__movie_composition_state;
+
+        //providers.scene_effect_provider = &__movie_scene_effect_provider;
+        //providers.scene_effect_update = &__movie_scene_effect_update;
 
 
         aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, this );

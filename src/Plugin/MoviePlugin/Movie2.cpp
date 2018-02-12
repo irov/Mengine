@@ -1540,13 +1540,13 @@ namespace Menge
 
                             const mt::uv4f & uv_image = resource_image->getUVImage();
 
-                            v.uv[0] = uv;
-                            //mt::multiply_tetragon_uv4_v2( v.uv[0], uv_image, uv );
+                            //v.uv[0] = uv;
+                            mt::multiply_tetragon_uv4_v2( v.uv[0], uv_image, uv );
 
                             const mt::uv4f & uv_alpha = resource_image->getUVAlpha();
 
-                            v.uv[1] = uv;
-                            //mt::multiply_tetragon_uv4_v2( v.uv[1], uv_alpha, uv );
+                            //v.uv[1] = uv;
+                            mt::multiply_tetragon_uv4_v2( v.uv[1], uv_alpha, uv );
 
                             v.color = color;
                         }
@@ -1605,11 +1605,11 @@ namespace Menge
                             const mt::uv4f & uv0 = surfaceVideo->getUV( 0 );
                             const mt::uv4f & uv1 = surfaceVideo->getUV( 1 );
 
-                            v.uv[0] = uv;
-                            //mt::multiply_tetragon_uv4_v2( v.uv[0], uv0, uv );
+                            //v.uv[0] = uv;
+                            mt::multiply_tetragon_uv4_v2( v.uv[0], uv0, uv );
                             
-                            v.uv[1] == uv;
-                            //mt::multiply_tetragon_uv4_v2( v.uv[1], uv1, uv );
+                            //v.uv[1] == uv;
+                            mt::multiply_tetragon_uv4_v2( v.uv[1], uv1, uv );
 
                             v.color = color;
                         }
@@ -1667,8 +1667,8 @@ namespace Menge
 
                             const mt::uv4f & texture_image_uv = texture_image->getUV();
 
-                            v.uv[0] = uv;
-                            //mt::multiply_tetragon_uv4_v2( v.uv[0], texture_image_uv, uv );
+                            //v.uv[0] = uv;
+                            mt::multiply_tetragon_uv4_v2( v.uv[0], texture_image_uv, uv );
 
                             mt::vec2f uv_track_matte;
                             uv_track_matte = calc_point_uv(
@@ -1682,8 +1682,8 @@ namespace Menge
 
                             const mt::uv4f & texture_trackmatte_uv = texture_trackmatte->getUV();
 
-                            v.uv[1] = uv_track_matte;
-                            //mt::multiply_tetragon_uv4_v2( v.uv[1], texture_trackmatte_uv, uv_track_matte );
+                            //v.uv[1] = uv_track_matte;
+                            mt::multiply_tetragon_uv4_v2( v.uv[1], texture_trackmatte_uv, uv_track_matte );
 
                             v.color = color;
                         }

@@ -76,7 +76,7 @@ namespace Menge
 		}
 		else
 		{
-			m_mutex->lock();
+            m_mutex->lock();
 
 			if( m_destroyListener != nullptr )
 			{
@@ -88,7 +88,7 @@ namespace Menge
 			--m_count;
 			intrusive_ptr_dec_ref( this );
 
-			m_mutex->unlock();
+            m_mutex->unlock();
 		}
 	}
     //////////////////////////////////////////////////////////////////////////

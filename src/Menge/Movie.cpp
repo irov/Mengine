@@ -3249,6 +3249,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setVisibleLayer_( const MovieLayer & _layer, bool _visible )
 	{ 
+        if( _layer.isSubMovie() == true )
+        {
+            return;
+        }
+
 		Nodies & nd = m_nodies[_layer.index - 1];
 
 		nd.visible = _visible;

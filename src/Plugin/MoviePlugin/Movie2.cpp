@@ -4,11 +4,14 @@
 #   include "Interface/NodeInterface.h"
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/PrototypeManagerInterface.h"
+#   include "Interface/ResourceInterface.h"
 
+#	include "Menge/SurfaceImage.h"
 #	include "Menge/SurfaceVideo.h"
 #	include "Menge/SurfaceSound.h"
 #	include "Menge/SurfaceTrackMatte.h"
 
+#   include "Menge/ShapeQuadFixed.h"
 #   include "Menge/HotSpotPolygon.h"
 
 #	include "Kernel/Materialable.h"
@@ -263,13 +266,98 @@ namespace Menge
 
         if( is_track_matte == AE_TRUE )
         {
-            return nullptr;
+            return AE_NULL;
         }
 
         aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( layer );
 
         switch( type )
         {
+        case AE_MOVIE_LAYER_TYPE_SPRITE:
+            {
+                ResourceImagePtr resourceImage = RESOURCE_SERVICE()
+                    ->getResourceReferenceT<ResourceImagePtr>( c_name );
+
+                if( resourceImage == nullptr )
+                {
+                    LOGGER_ERROR( "Movie2 '%s' resource '%s' composition '%s' layer '%s' invalid get resource for image %s"
+                        , movie2->getName().c_str()
+                        , movie2->getResourceMovie2()->getName().c_str()
+                        , movie2->getCompositionName().c_str()
+                        , c_name.c_str()
+                        , c_name.c_str()
+                    );
+
+                    return AE_NULL;
+                }
+
+                SurfaceImagePtr surface = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ) );
+
+                if( surface == nullptr )
+                {
+                    return AE_NULL;
+                }
+
+                EMaterialBlendMode blend_mode = EMB_NORMAL;
+
+                ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( layer );
+
+                switch( layer_blend_mode )
+                {
+                case AE_MOVIE_BLEND_ADD:
+                    blend_mode = EMB_ADD;
+                    break;
+                case AE_MOVIE_BLEND_SCREEN:
+                    blend_mode = EMB_SCREEN;
+                    break;
+                case AE_MOVIE_BLEND_MULTIPLY:
+                    blend_mode = EMB_MULTIPLY;
+                    break;
+                };
+
+                surface->setBlendMode( blend_mode );
+
+                surface->setResourceImage( resourceImage );
+
+                ShapeQuadFixed * node = NODE_SERVICE()
+                    ->createNodeT<ShapeQuadFixed *>( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
+                
+                if( node == nullptr )
+                {
+                    LOGGER_ERROR( "Movie::createMovieSprite_ '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
+                        , movie2->getName().c_str()
+                        , movie2->getResourceMovie2()->getName().c_str()
+                        , movie2->getCompositionName().c_str()
+                        , c_name.c_str()
+                    );
+
+                    return false;
+                }
+
+                node->setName( c_name );
+                node->setExternalRender( true );
+
+                node->setSurface( surface );
+                                
+                MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
+
+                matrixProxy->setName( c_name );
+
+                mt::mat4f pm;
+                pm.from_f16( _callbackData->matrix );
+                matrixProxy->setProxyMatrix( pm );
+                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+
+                matrixProxy->addChild( node );
+
+                movie2->addChild( matrixProxy );
+
+                movie2->addMatrixProxy( matrixProxy );
+
+                return node;
+            }break;
         case AE_MOVIE_LAYER_TYPE_TEXT:
             {
                 TextField * node = PROTOTYPE_SERVICE()
@@ -634,6 +722,20 @@ namespace Menge
             {
                 switch( type )
                 {
+                case AE_MOVIE_LAYER_TYPE_SPRITE:
+                    {
+                        ShapeQuadFixed * node = (ShapeQuadFixed *)_callbackData->element;
+
+                        Node * nodeParent = node->getParent();
+
+                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                        mt::mat4f mp;
+                        mp.from_f16( _callbackData->matrix );
+                        matrixProxy->setProxyMatrix( mp );
+
+                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+                    }break;
                 case AE_MOVIE_LAYER_TYPE_TEXT:
                     {
                         TextField * node = (TextField *)_callbackData->element;
@@ -999,21 +1101,64 @@ namespace Menge
             m2->stop();
         }
     }
-    ////////////////////////////////////////////////////////////////////////////
-    //static ae_voidptr_t __movie_scene_effect_provider( const aeMovieCompositionSceneEffectProviderCallbackData * _callbackData, ae_voidptr_t _data )
-    //{
-    //    Movie2 * m2 = (Movie2 *)(_data);
+    //////////////////////////////////////////////////////////////////////////
+    static ae_voidptr_t __movie_scene_effect_provider( const aeMovieCompositionSceneEffectProviderCallbackData * _callbackData, ae_voidptr_t _data )
+    {
+        Movie2 * m2 = (Movie2 *)(_data);
 
-    //    Node * parent = m2->getParent();
+        Node * parent = m2->getParent();
 
-    //    return AE_NULL;
-    //}
-    ////////////////////////////////////////////////////////////////////////////
-    //static ae_void_t __movie_scene_effect_update( const aeMovieCompositionSceneEffectUpdateCallbackData * _callbackData, ae_voidptr_t _data )
-    //{
-    //    Movie2 * m2 = (Movie2 *)(_data);
+        mt::vec3f anchor_point;
+        anchor_point.from_f2( _callbackData->anchor_point );
+        parent->setOrigin( anchor_point );
 
-    //}
+        mt::vec3f position;
+        position.from_f2( _callbackData->position );
+        parent->setLocalPosition( position );
+
+        mt::vec3f scale;
+        scale.from_f2( _callbackData->scale );
+        parent->setScale( scale );
+
+        mt::quatf q;
+        q.x = 0.f;
+        q.y = 0.f;
+        q.z = _callbackData->quaternion[0];
+        q.w = _callbackData->quaternion[1];
+        float angle = quatzw_to_angle( q );
+
+        parent->setOrientationX( angle );
+
+        return AE_NULL;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static ae_void_t __movie_scene_effect_update( const aeMovieCompositionSceneEffectUpdateCallbackData * _callbackData, ae_voidptr_t _data )
+    {
+        Movie2 * m2 = (Movie2 *)(_data);
+
+        Node * parent = m2->getParent();
+
+        mt::vec3f anchor_point;
+        anchor_point.from_f2( _callbackData->anchor_point );
+        parent->setOrigin( anchor_point );
+
+        mt::vec3f position;
+        position.from_f2( _callbackData->position );
+        parent->setLocalPosition( position );
+
+        mt::vec3f scale;
+        scale.from_f2( _callbackData->scale );
+        parent->setScale( scale );
+
+        mt::quatf q;
+        q.x = 0.f;
+        q.y = 0.f;
+        q.z = _callbackData->quaternion[0];
+        q.w = _callbackData->quaternion[1];
+        float angle = quatzw_to_angle( q );
+
+        parent->setOrientationX( angle );
+    }
     //////////////////////////////////////////////////////////////////////////
     Movie2::Camera * Movie2::addCamera( const ConstString & _name, RenderCameraProjection * _projection, RenderViewport * _viewport )
     {
@@ -1135,8 +1280,8 @@ namespace Menge
         providers.composition_event = &__movie_composition_event;
         providers.composition_state = &__movie_composition_state;
 
-        //providers.scene_effect_provider = &__movie_scene_effect_provider;
-        //providers.scene_effect_update = &__movie_scene_effect_update;
+        providers.scene_effect_provider = &__movie_scene_effect_provider;
+        providers.scene_effect_update = &__movie_scene_effect_update;
 
 
         aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, this );
@@ -1425,9 +1570,22 @@ namespace Menge
                 {
                 case AE_MOVIE_LAYER_TYPE_SLOT:
                     {
-                        Movie2Slot * slot = reinterpret_cast<Movie2Slot *>(mesh.element_data);
+                        Movie2Slot * node = reinterpret_cast<Movie2Slot *>(mesh.element_data);
                         
-                        slot->render( _renderService, _state, 0 );
+                        node->render( _renderService, _state, 0 );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SPRITE:
+                    {
+                        ShapeQuadFixed * node = reinterpret_cast<ShapeQuadFixed *>(mesh.element_data);
+
+                        node->render( _renderService, _state, 0 );
+
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_TEXT:
+                    {
+                        TextField * node = reinterpret_cast<TextField *>(mesh.element_data);
+
+                        node->render( _renderService, _state, 0 );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {

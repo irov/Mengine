@@ -452,14 +452,14 @@ namespace mt
 			out[k] = (_rhs[k][i] + _rhs[i][k])*froot;
 		}
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE quatf q_from_rot_m3( const mat3f& _rhs )
 	{
 		quatf out;
 		q_from_rot_m3( out, _rhs );
 		return out;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void q_from_rot_m4( quatf& out, const mat4f& _rhs )
 	{
 		float ftrace = _rhs.v0.x + _rhs.v1.y + _rhs.v2.z;
@@ -499,14 +499,14 @@ namespace mt
 			out[k] = (_rhs[k][i] + _rhs[i][k])*froot;
 		}
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE quatf q_from_rot_m4( const mat4f& _rhs )
 	{
 		quatf out;
 		q_from_rot_m4( out, _rhs );
 		return out;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void q_to_rot_m3( mat3f& out, const quatf& _rhs )
 	{
 		float wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
@@ -521,14 +521,14 @@ namespace mt
 		out[1][0] = xy + wz;			out[1][1] = 1.0f - (xx + zz);		out[1][2] = yz - wx;
 		out[2][0] = xz - wy;			out[2][1] = yz + wx;			out[2][2] = 1.0f - (xx + yy);
 	}
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE mat3f q_to_rot_m3( const quatf& _rhs )
 	{
 		mat3f out;
 		q_to_rot_m3( out, _rhs );
 		return out;
 	}
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void q_from_axes( quatf& out, const vec3f& _x, const vec3f& _y, const vec3f& _z )
 	{
 		//mat3f rot(
@@ -544,14 +544,14 @@ namespace mt
 			);
 		q_from_rot_m3( out, rot );
 	}
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE quatf q_from_axes( const vec3f& _x, const vec3f& _y, const vec3f& _z )
 	{
 		quatf out;
 		q_from_axes( out, _x, _y, _z );
 		return out;
 	}
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void q_to_angle_axis( vec3f& _out, float& _out1, const quatf& _rhs )
 	{
 		float fsqrlen = _rhs[1] * _rhs[1] + _rhs[2] * _rhs[2] + _rhs[3] * _rhs[3];
@@ -571,20 +571,20 @@ namespace mt
 			_out[2] = 0.0f;
 		}
 	}
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE vec3f q_to_angle_axis( float& _out, const quatf& _rhs )
 	{
 		vec3f out;
 		q_to_angle_axis( out, _out, _rhs );
 		return	out;
 	}
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void rotate_q( quatf& _out, const vec3f& axis, float angle )
 	{
 		quatf q = q_from_angle_axis( axis, angle );
 		_out = _out * q;
 	}
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void qpos_to_rot_m4( mat4f& out, const quatf& _rhs, const vec3f& _pos )
 	{
 		float wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
@@ -600,14 +600,14 @@ namespace mt
 		out[2][0] = xz - wy;				out[2][1] = yz + wx;			out[2][2] = 1.f - (xx + yy);	out[2][3] = 0.f;
 		out[3][0] = _pos.x;				out[3][1] = _pos.y;			out[3][2] = _pos.z;			out[3][3] = 1.0f;
 	}
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE mat4f qpos_to_rot_m4( const quatf& _rhs, const vec3f& _pos )
 	{
 		mat4f	out;
 		qpos_to_rot_m4( out, _rhs, _pos );
 		return	out;
 	}
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void make_quat_from_euler( quatf & _out, const mt::vec3f & _euler )
 	{
 		float c1 = cosf_fast( _euler.z * 0.5f );
@@ -625,7 +625,7 @@ namespace mt
 
 		norm_q_q( _out, q );
 	}
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void make_quat_from_angle( quatf & _out, float _angle )
 	{
 		float c = cosf_fast( _angle * 0.5f );
@@ -636,7 +636,7 @@ namespace mt
 		_out.z = s;
 		_out.w = c;
 	}
-
+    //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void quat_to_euler( const quatf & _q, mt::vec3f & _euler )
 	{
 		float sqw = _q.w * _q.w;
@@ -662,4 +662,14 @@ namespace mt
 			}
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_MATH_FUNCTION_INLINE float quatzw_to_angle( const quatf & _q )
+    {
+        float sqw = _q.w * _q.w;
+        float sqz = _q.z * _q.z;
+
+        float angle = atan2f( 2.f * (_q.w * _q.z), -sqz + sqw );
+
+        return angle;
+    }
 }

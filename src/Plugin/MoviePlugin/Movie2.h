@@ -120,7 +120,7 @@ namespace Menge
         void addText( const ConstString & _name, TextField * _text );
         TextField * getText( const ConstString & _name ) const;
         bool hasText( const ConstString & _name ) const;
-
+        
     public:
         void addMatrixProxy( MatrixProxy * _matrixProxy );
         

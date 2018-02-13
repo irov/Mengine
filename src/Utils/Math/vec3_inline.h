@@ -30,37 +30,37 @@ namespace mt
     //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_METHOD_INLINE vec3f& vec3f::operator=(const vec3f& _rhs)
     {
-        x = _rhs.x;
-        y = _rhs.y;
-        z = _rhs.z;     
+        this->x = _rhs.x;
+        this->y = _rhs.y;
+        this->z = _rhs.z;     
 
         return *this;
     }
     //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_METHOD_INLINE float vec3f::operator[](size_t i) const
 	{
-		return (&x)[i];
+        return (&this->x)[i];
 	}
     //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_METHOD_INLINE float& vec3f::operator[](size_t i)
 	{
-		return (&x)[i];
+        return (&this->x)[i];
 	}
     //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_METHOD_INLINE vec3f& vec3f::operator+=(const vec3f& _rhs)
 	{
-		x += _rhs.x;
-		y += _rhs.y;
-		z += _rhs.z;
+		this->x += _rhs.x;
+		this->y += _rhs.y;
+		this->z += _rhs.z;
 
 		return *this;
 	}
     //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_METHOD_INLINE vec3f& vec3f::operator-=(const vec3f& _rhs)
 	{
-		x -= _rhs.x;
-		y -= _rhs.y;
-		z -= _rhs.z;
+		this->x -= _rhs.x;
+		this->y -= _rhs.y;
+		this->z -= _rhs.z;
 
 		return *this;
 	}
@@ -74,16 +74,16 @@ namespace mt
     //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_METHOD_INLINE vec3f& vec3f::operator *= (const float _rhs)
 	{
-		x *= _rhs;
-		y *= _rhs;
-		z *= _rhs;
+		this->x *= _rhs;
+		this->y *= _rhs;
+		this->z *= _rhs;
 
 		return *this;
 	}
     //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_METHOD_INLINE float vec3f::sqrlength()	const
 	{
-		return	x * x + y * y + z * z;
+		return	this->x * this->x + this->y * this->y + this->z * this->z;
 	}
     //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_METHOD_INLINE float vec3f::length()	const
@@ -96,24 +96,30 @@ namespace mt
     //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_METHOD_INLINE vec2f vec3f::to_vec2f() const
 	{
-		return mt::vec2f(x, y);
+        return mt::vec2f( this->x, this->y );
 	}
     //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_METHOD_INLINE void vec3f::from_f3( const float * _v )
 	{
-		x = _v[0];
-		y = _v[1];
-		z = _v[2];
+		this->x = _v[0];
+        this->y = _v[1];
+        this->z = _v[2];
 	}
+    MENGINE_MATH_METHOD_INLINE void vec3f::from_f2( const float * _v )
+    {
+        this->x = _v[0];
+        this->y = _v[1];
+        this->z = 0.f;
+    }
     //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_METHOD_INLINE float * vec3f::buff()
 	{
-		return &x;
+		return &this->x;
 	}
     //////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_METHOD_INLINE const float * vec3f::buff() const
 	{
-		return &x;
+		return &this->x;
 	}
     //////////////////////////////////////////////////////////////////////////
     MENGINE_MATH_METHOD_INLINE const vec3f & vec3f::identity()

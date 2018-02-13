@@ -716,6 +716,9 @@ namespace Menge
 
 		SERVICE_CREATE( ParticleService );
 
+        LOGGER_WARNING( "Modules Run..."
+        );
+
 		TVectorString modules;
 		CONFIG_VALUES("Modules", "Name", modules);
 
@@ -740,6 +743,9 @@ namespace Menge
 
 		if( renderMaterialsPath.empty() == false )
 		{
+            LOGGER_WARNING( "Materials Load..."
+            );
+
 			if( RENDERMATERIAL_SERVICE()
 				->loadMaterials( ConstString::none(), renderMaterialsPath ) == false )
 			{
@@ -747,7 +753,7 @@ namespace Menge
 			}
 		}
 
-		LOGGER_INFO( "Application Create..."
+		LOGGER_WARNING( "Application Create..."
 			);
 
 		FilePath resourceIniPath;
@@ -767,7 +773,7 @@ namespace Menge
 			return false;
 		}
 
-		LOGGER_INFO( "Creating Render Window..." );
+        LOGGER_WARNING( "Creating Render Window..." );
 
 		bool fullscreen = APPLICATION_SERVICE()
 			->getFullscreenMode();

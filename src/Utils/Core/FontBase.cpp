@@ -111,6 +111,8 @@ namespace Menge
     {
         bool result = true;
 
+        U32String ttf_codes;
+
         const char * text_str = _text.c_str();
         size_t text_len = _text.size();
 
@@ -183,24 +185,25 @@ namespace Menge
                 code = 32;
             }
 
-            if( control == false )
+            if( control == true )
             {
-                if( this->_validateGlyph( code ) == false )
-                {
-                    LOGGER_ERROR("Text %s fontName %s not found glyph code '%d'"
-                        , _key.c_str()
-                        , this->getName().c_str()
-                        , code
-                        );
-
-                    result = false;
-
-                    continue;
-                }
+                continue;
             }
+            
+            ttf_codes.push_back( code );            
         }
 
-        return result;
+        if( this->_validateGlyphes( ttf_codes ) == false )
+        {
+            LOGGER_ERROR( "Text '%s' fontName '%s' invalid"
+                , _key.c_str()
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
+        return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	U32String FontBase::prepareText( const String & _text )

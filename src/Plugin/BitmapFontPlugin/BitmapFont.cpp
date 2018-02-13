@@ -177,11 +177,32 @@ namespace Menge
         return 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFont::_validateGlyph( uint32_t _code ) const
+    bool BitmapFont::_validateGlyphes( const U32String & _codes ) const
     {
-        bool exist = this->hasGlyph( _code );
+        bool successful = true;
 
-        return exist;
+        for( U32String::const_iterator
+            it = _codes.begin(),
+            it_end = _codes.end();
+            it != it_end;
+            ++it )
+        {
+            GlyphCode bitmap_code = *it;
+
+            if( this->hasGlyph( bitmap_code ) == false )
+            {
+                LOGGER_ERROR( "bitmap font '%s' not found glyph code '%d'"
+                    , this->getName().c_str()
+                    , bitmap_code
+                );
+
+                successful = false;
+
+                continue;
+            }
+        }
+
+        return successful;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool BitmapFont::_prepareGlyph( uint32_t _code )

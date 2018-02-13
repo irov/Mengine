@@ -54,7 +54,7 @@ namespace Menge
 		bool initializeBase_( const IniUtil::IniStore & _ini );
 		
 	protected:
-        virtual bool _validateGlyph( uint32_t _code ) const = 0;
+        virtual bool _validateGlyphes( const U32String & _codes ) const = 0;
 		virtual bool _prepareGlyph( uint32_t _code ) = 0;
 
 	protected:

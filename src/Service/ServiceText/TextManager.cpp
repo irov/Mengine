@@ -826,6 +826,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::validate() const
     {
+        LOGGER_WARNING( "Validate Texts..."
+        );
+
         bool successful = true;
 
         if( m_defaultFontName.empty() == true )

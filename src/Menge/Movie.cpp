@@ -2771,7 +2771,7 @@ namespace Menge
 
 			this->updateFrameNode_( _layer, _node, frameId, true, false );
 
-			if( _layer.isAnimatable() == true )
+            if( _layer.isAnimatable() == true && _layer.isSubMovie() == false )
 			{
 				if( _layer.timeRemap == false )
 				{
@@ -2840,7 +2840,7 @@ namespace Menge
 			{
 				this->setVisibleLayer_( _layer, false );
 
-				if( _layer.isAnimatable() == true )
+				if( _layer.isAnimatable() == true && _layer.isSubMovie() == false )
 				{
 					Animatable * animatable = this->getLayerAnimatable_( _layer );
 
@@ -2875,7 +2875,7 @@ namespace Menge
 
 				this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut, false );
 
-				if( _layer.isAnimatable() == true )
+				if( _layer.isAnimatable() == true && _layer.isSubMovie() == false )
 				{
 					Animatable * animatable = this->getLayerAnimatable_( _layer );
 

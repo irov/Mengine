@@ -400,7 +400,7 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::_validateGlyph( GlyphCode _code ) const
+    bool TTFFont::_validateGlyphes( const U32String & _codes ) const
     {
         MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, __FILE__, __LINE__ );
 
@@ -433,32 +433,56 @@ namespace Menge
             return false;
         }
 
-        FT_UInt glyph_index = FT_Get_Char_Index( face, _code );
+        bool successful = true;
 
-        if( FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
+        for( U32String::const_iterator
+            it = _codes.begin(),
+            it_end = _codes.end();
+            it != it_end;
+            ++it )
         {
-            return false;
+            FT_ULong ttf_code = (FT_ULong)*it;
+
+            FT_UInt glyph_index = FT_Get_Char_Index( face, ttf_code );
+
+            if( FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
+            {
+                LOGGER_ERROR( "ttf font '%s' not found glyph code '%d'"
+                    , this->getName().c_str()
+                    , ttf_code
+                );
+
+                successful = false;
+
+                continue;
+            }
+
+            FT_GlyphSlot glyph = face->glyph;
+
+            FT_Bitmap bitmap = glyph->bitmap;
+
+            unsigned char pixel_mode = bitmap.pixel_mode;
+
+            switch( pixel_mode )
+            {
+            case FT_PIXEL_MODE_NONE:
+            case FT_PIXEL_MODE_LCD:
+            case FT_PIXEL_MODE_LCD_V:
+                {
+                    LOGGER_ERROR( "ttf font '%s' glyph '%d' unsupport mode '%d'"
+                        , this->getName().c_str()
+                        , ttf_code
+                        , pixel_mode
+                    );
+
+                    successful = false;
+                }break;
+            };
         }
-
-        FT_GlyphSlot glyph = face->glyph;
-
-        FT_Bitmap bitmap = glyph->bitmap;
-
-        unsigned char pixel_mode = bitmap.pixel_mode;
 
         FT_Done_Face( face );
 
-        switch( pixel_mode )
-        {
-        case FT_PIXEL_MODE_NONE:
-        case FT_PIXEL_MODE_LCD:
-        case FT_PIXEL_MODE_LCD_V:
-            {
-                return false;
-            }break;
-        };
-
-        return true;
+        return successful;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool TTFFont::hasGlyph( GlyphCode _code ) const

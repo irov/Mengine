@@ -47,6 +47,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::loadPackages( const ConstString & _fileGroup, const FilePath & _resourceIni )
 	{ 
+        LOGGER_WARNING( "Packages load..."
+        );
+
 		IniUtil::IniStore ini;
 		if( IniUtil::loadIni( ini, _fileGroup, _resourceIni ) == false )
 		{
@@ -69,6 +72,10 @@ namespace Menge
 		++it )
 		{
 			const String & resourcePack = *it;
+
+            LOGGER_WARNING( "Package '%s'"
+                , resourcePack.c_str()
+            );
 
 			PackageDesc pack;
 
@@ -114,6 +121,10 @@ namespace Menge
 		{
 			const String & resourcePack = *it;
 
+            LOGGER_WARNING( "Package '%s'"
+                , resourcePack.c_str()
+            );
+
 			PackageDesc pack;
 
 			pack.dev = false;
@@ -157,6 +168,10 @@ namespace Menge
 		++it )
 		{
 			const String & languagePack = *it;
+
+            LOGGER_WARNING( "Package '%s'"
+                , languagePack.c_str()
+            );
 
 			PackageDesc pack;
 
@@ -347,6 +362,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::enablePackages( const ConstString & _locale, const Tags & _platformTags )
 	{
+        LOGGER_WARNING( "Packages enable..."
+        );
+
 		TVectorPackage packages;
 
 		for( TVectorPackage::const_iterator

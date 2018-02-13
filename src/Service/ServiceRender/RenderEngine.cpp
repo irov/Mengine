@@ -110,11 +110,10 @@ namespace Menge
         m_debugInfo.object = 0;
         m_debugInfo.triangle = 0;
 
-#ifdef _DEBUG
-        //m_debugFillrateCalcMode = true;
+#ifndef MENGINE_MASTER_RELEASE 
+        m_debugFillrateCalcMode = true;
 #endif // _DEBUG
  
-
         //m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
         uint32_t batchMode = CONFIG_VALUE( "Engine", "RenderServiceBatchMode", 2 );

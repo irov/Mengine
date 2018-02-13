@@ -39,7 +39,7 @@ namespace Menge
         float getFontSpacing() const override;
 
 	public:
-        bool _validateGlyph( uint32_t _code ) const override;
+        bool _validateGlyphes( const U32String & _codes ) const override;
 		bool _prepareGlyph( GlyphCode _code ) override;
 
 	protected:

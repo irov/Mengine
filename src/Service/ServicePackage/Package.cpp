@@ -340,6 +340,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::enable()
 	{
+        LOGGER_WARNING( "Package enable... '%s'"
+            , m_name.c_str()
+        );
+
 		if( m_enable == true )
 		{
 			LOGGER_ERROR("Package::enable already enable '%s:%s' '%s'"

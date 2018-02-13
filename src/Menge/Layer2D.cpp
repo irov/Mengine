@@ -212,7 +212,7 @@ namespace	Menge
         texures[1] = renderTargetTextureMask;
 
         RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-            ->getMaterial( STRINGIZE_STRING_LOCAL( "TrackMatte_Blend" ), PT_TRIANGLELIST, 2, texures );
+            ->getMaterial( STRINGIZE_STRING_LOCAL( "AlphaMask_Blend" ), PT_TRIANGLELIST, 2, texures );
         
         m_materialImageMask = material;
                 

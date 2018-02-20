@@ -71,7 +71,7 @@ namespace Menge
 
         exinfo.ThreadId = ::GetCurrentThreadId();
         exinfo.ExceptionPointers = pExceptionPointers;
-        exinfo.ClientPointers = FALSE;
+        exinfo.ClientPointers = TRUE;
 
         HANDLE hProcess = GetCurrentProcess();
         DWORD dwProcessId = GetCurrentProcessId();

@@ -202,7 +202,8 @@ namespace Menge
 
 		aeMovieStream * movie_stream = ae_create_movie_stream( m_instance, &Mengine_read_stream, &Mengine_copy_stream, stream.get() );
 
-        ae_result_t result = ae_load_movie_data( movieData, movie_stream );
+        ae_uint32_t data_version;
+        ae_result_t result = ae_load_movie_data( movieData, movie_stream, &data_version );
 
 		if( result != AE_RESULT_SUCCESSFUL )
 		{
@@ -286,7 +287,8 @@ namespace Menge
 
         aeMovieStream * movie_stream = ae_create_movie_stream( m_instance, &Mengine_read_stream, &Mengine_copy_stream, stream.get() );
 
-        ae_result_t check_result = ae_check_movie_data( movie_stream );
+        ae_uint32_t check_version;
+        ae_result_t check_result = ae_check_movie_data( movie_stream, &check_version );
 
         if( check_result != AE_RESULT_SUCCESSFUL )
         {

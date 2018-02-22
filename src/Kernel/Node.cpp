@@ -624,6 +624,58 @@ namespace Menge
 
 		return nullptr;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    Node * Node::getChildNeighborPrev()
+    {
+        Node * parent = this->getParent();
+
+        if( parent == nullptr )
+        {
+            return nullptr;
+        }
+        
+        TListNodeChild & parent_children = parent->getChildren();
+
+        TListNodeChild::iterator it_found =
+            intrusive_find( parent_children.begin(), parent_children.end(), this );
+
+        if( it_found == parent_children.begin() )
+        {
+            return nullptr;
+        }
+
+        it_found--;
+
+        Node * prev_node = *it_found;
+
+        return prev_node;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Node * Node::getChildNeighborNext()
+    {
+        Node * parent = this->getParent();
+
+        if( parent == nullptr )
+        {
+            return nullptr;
+        }
+
+        TListNodeChild & parent_children = parent->getChildren();
+
+        TListNodeChild::iterator it_found =
+            intrusive_find( parent_children.begin(), parent_children.end(), this );
+
+        it_found++;
+
+        if( it_found == parent_children.end() )
+        {
+            return nullptr;
+        }
+
+        Node * next_node = *it_found;
+
+        return next_node;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::hasChild( const ConstString & _name, bool _recursive ) const
 	{

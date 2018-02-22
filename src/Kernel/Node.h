@@ -122,7 +122,7 @@ namespace Menge
 		void addChild( Node * _node );
 		void addChildFront( Node* _node );
 		bool addChildAfter( Node* _node, Node * _after );
-		bool removeChild( Node * _node );        
+		bool removeChild( Node * _node );
 		void removeChildren();
 		bool removeFromParent();
 
@@ -134,6 +134,8 @@ namespace Menge
 		inline const TListNodeChild & getChildren() const;
 
 		Node * findChild( const ConstString & _name, bool _recursion ) const;
+        Node * getChildNeighborPrev();
+        Node * getChildNeighborNext();
 		bool hasChild( const ConstString & _name, bool _recursive ) const;
 		bool emptyChildren() const;
 

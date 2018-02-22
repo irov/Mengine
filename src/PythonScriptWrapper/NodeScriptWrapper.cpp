@@ -7287,6 +7287,8 @@ namespace Menge
 			.def( "isHomeless", &Node::isHomeless )
 			//.def_static( "getChild", &ScriptMethod::s_getChild )
 			.def( "findChildren", &Node::findChild )
+            .def( "getChildNeighborPrev", &Node::getChildNeighborPrev )
+            .def( "getChildNeighborNext", &Node::getChildNeighborNext )
 			.def( "emptyChild", &Node::emptyChildren )
 			.def( "hasChildren", &Node::hasChild )
 			.def( "update", &Node::update )

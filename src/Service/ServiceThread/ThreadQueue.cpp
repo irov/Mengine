@@ -53,7 +53,8 @@ namespace Menge
 				continue;
 			}
 
-			currentTask->cancel();
+            THREAD_SERVICE()
+                ->joinTask( currentTask );
 			currentTask = nullptr;
 		}
 

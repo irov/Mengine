@@ -23,6 +23,7 @@ namespace Menge
     public:
         virtual void onPrefetchPreparation() = 0;
         virtual bool onPrefetchRun() = 0;
+        virtual void onPrefetchCancel() = 0;
         virtual void onPrefetchComplete( bool _successful ) = 0;
     };
 

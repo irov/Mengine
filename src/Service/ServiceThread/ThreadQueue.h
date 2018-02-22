@@ -26,7 +26,7 @@ namespace Menge
 
 	protected:
 		void addTask( const ThreadTaskInterfacePtr & _task ) override;
-			
+        			
 	protected:
 		void cancel() override;
 

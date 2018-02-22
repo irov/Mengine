@@ -3296,6 +3296,16 @@ namespace Menge
                 return true;
             }
 
+            void onPrefetchCancel() override
+            {
+                m_successful = false;
+
+                if( --m_count == 0 )
+                {
+                    m_cb.call_args( false, m_args );
+                }
+            }
+
             void onPrefetchComplete( bool _successful ) override
             {
                 m_successful &= _successful;
@@ -7287,8 +7297,8 @@ namespace Menge
 			.def( "isHomeless", &Node::isHomeless )
 			//.def_static( "getChild", &ScriptMethod::s_getChild )
 			.def( "findChildren", &Node::findChild )
-            .def( "getChildNeighborPrev", &Node::getChildNeighborPrev )
-            .def( "getChildNeighborNext", &Node::getChildNeighborNext )
+            .def( "getSiblingPrev", &Node::getSiblingPrev )
+            .def( "getSiblingNext", &Node::getSiblingNext )
 			.def( "emptyChild", &Node::emptyChildren )
 			.def( "hasChildren", &Node::hasChild )
 			.def( "update", &Node::update )

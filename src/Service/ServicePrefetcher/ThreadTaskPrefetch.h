@@ -21,6 +21,7 @@ namespace Menge
 	protected:
         void _onPreparation() override;
         bool _onRun() override;
+        void _onCancel() override;
 		void _onComplete( bool _successful ) override;
 		
 	public:

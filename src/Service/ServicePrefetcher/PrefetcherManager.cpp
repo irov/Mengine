@@ -39,30 +39,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PrefetcherManager::_finalize()
 	{
-		for( TMapPrefetchReceiver::const_iterator
-			it = m_prefetchReceiver.begin(),
-			it_end = m_prefetchReceiver.end();
-		it != it_end;
-		++it )
-		{
-			const PrefetchReceiver & receiver = it->second;
+        //for( TMapPrefetchReceiver::const_iterator
+        //    it = m_prefetchReceiver.begin(),
+        //    it_end = m_prefetchReceiver.end();
+        //    it != it_end;
+        //    ++it )
+        //{
+        //    const PrefetchReceiver & receiver = it->second;
 
-			receiver.prefetcher->cancel();
-		}
-
-		for( TMapPrefetchReceiver::const_iterator
-			it = m_prefetchReceiver.begin(),
-			it_end = m_prefetchReceiver.end();
-		it != it_end;
-		++it )
-		{
-			const PrefetchReceiver & receiver = it->second;
-
-			THREAD_SERVICE()
-				->joinTask( receiver.prefetcher );
-		}
-
-		m_prefetchReceiver.clear();
+        //    receiver.prefetcher->cancel();
+        //}
 
 		if( m_threadQueue != nullptr )
 		{
@@ -71,6 +57,8 @@ namespace Menge
 
 			m_threadQueue = nullptr;
 		}
+
+        m_prefetchReceiver.clear();
 
         m_factoryThreadTaskPrefetchImageDecoder = nullptr;
         m_factoryThreadTaskPrefetchSoundDecoder = nullptr;

@@ -36,7 +36,7 @@ namespace Menge
 	{
 	public:
 		virtual void addTask( const ThreadTaskInterfacePtr & _task ) = 0;
-
+        
 	public:
 		virtual void cancel() = 0;
 	};

@@ -625,7 +625,7 @@ namespace Menge
 		return nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
-    Node * Node::getChildNeighborPrev()
+    Node * Node::getSiblingPrev()
     {
         Node * parent = this->getParent();
 
@@ -651,7 +651,7 @@ namespace Menge
         return prev_node;
     }
     //////////////////////////////////////////////////////////////////////////
-    Node * Node::getChildNeighborNext()
+    Node * Node::getSiblingNext()
     {
         Node * parent = this->getParent();
 

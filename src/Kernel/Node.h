@@ -134,8 +134,8 @@ namespace Menge
 		inline const TListNodeChild & getChildren() const;
 
 		Node * findChild( const ConstString & _name, bool _recursion ) const;
-        Node * getChildNeighborPrev();
-        Node * getChildNeighborNext();
+        Node * getSiblingPrev();
+        Node * getSiblingNext();
 		bool hasChild( const ConstString & _name, bool _recursive ) const;
 		bool emptyChildren() const;
 

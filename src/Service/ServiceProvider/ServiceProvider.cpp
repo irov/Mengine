@@ -88,7 +88,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ServiceProvider::finalizeService( const char * _name )
 	{
-		for( size_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+		for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
 		{
 			ServiceDesc & desc = m_services[index];
 
@@ -112,7 +112,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ServiceProvider::destroyService( const char * _name )
 	{
-		for( size_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+		for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
 		{
 			ServiceDesc & desc = m_services[index];
 

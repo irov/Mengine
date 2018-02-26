@@ -129,7 +129,7 @@ namespace Menge
 			}
 
 			unsigned char * buffer_ptr = static_cast<unsigned char *>(_dest);
-			for( size_t j = 0; j != m_dataInfo.height; ++j )
+			for( uint32_t j = 0; j != m_dataInfo.height; ++j )
 			{
 				read_byte += m_stream->read( buffer_ptr, m_dataInfo.width * m_dataInfo.channels );
 

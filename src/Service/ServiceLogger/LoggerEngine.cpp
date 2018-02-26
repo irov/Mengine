@@ -12,7 +12,7 @@ namespace Menge
 		: m_verboseLevel(LM_ERROR)
         , m_verboseFlag(0)
 	{
-		for( size_t i = 0; i != LM_MAX; ++i )
+		for( uint32_t i = 0; i != LM_MAX; ++i )
 		{
 			m_countMessage[i] = 0;
 		}		

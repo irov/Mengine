@@ -271,7 +271,7 @@ namespace	Menge
 			const mt::uv4f & uv_image = el.image->getUVImage();
 			const mt::uv4f & uv_alpha = el.image->getUVAlpha();
 
-			for( size_t i = 0; i != 4; ++i )
+			for( uint32_t i = 0; i != 4; ++i )
 			{
 				// left-upper
 				RenderVertex2D & v = m_verticesWM[vertex_offset + i];

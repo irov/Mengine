@@ -333,7 +333,7 @@ namespace Menge
                         , c_name.c_str()
                     );
 
-                    return false;
+                    return AE_NULL;
                 }
 
                 node->setName( c_name );
@@ -1545,7 +1545,7 @@ namespace Menge
         ae_voidptr_t composition_camera_data = ae_get_movie_composition_camera_data( m_composition );
         (void)composition_camera_data;
 
-        uint32_t compute_movie_mesh_iterator = 0;
+        ae_uint32_t compute_movie_mesh_iterator = 0;
 
         aeMovieRenderMesh mesh;
         while( ae_compute_movie_mesh( m_composition, &compute_movie_mesh_iterator, &mesh ) == AE_TRUE )
@@ -1610,7 +1610,7 @@ namespace Menge
 
                         ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
-                        for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+                        for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
                             RenderVertex2D & v = m.vertices[index];
 
@@ -1658,7 +1658,7 @@ namespace Menge
 
                         ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
-                        for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+                        for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
                             RenderVertex2D & v = m.vertices[index];
 
@@ -1709,7 +1709,7 @@ namespace Menge
 
                         ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
-                        for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+                        for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
                             RenderVertex2D & v = m.vertices[index];
 
@@ -1775,7 +1775,7 @@ namespace Menge
 
                         ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
-                        for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+                        for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
                             RenderVertex2D & v = m.vertices[index];
 

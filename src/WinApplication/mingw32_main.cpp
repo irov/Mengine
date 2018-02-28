@@ -3,7 +3,7 @@
 #	include "WinApplication.h"
 
 //////////////////////////////////////////////////////////////////////////
-int main( int argc, char *argv[], char *environ[] )
+int main( int argc, char *argv[], char *environ )
 {
     (void)argc;
     (void)argv;

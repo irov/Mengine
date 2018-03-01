@@ -41,6 +41,9 @@ namespace Menge
         bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task ) override;
         bool joinTask( const ThreadTaskInterfacePtr & _task ) override;
 
+    public:
+        void stopTasks() override;
+
 	public:
 		ThreadQueueInterfacePtr runTaskQueue( const ConstString & _threadName, uint32_t _countThread, uint32_t _packetSize ) override;
 		void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) override;
@@ -55,9 +58,6 @@ namespace Menge
         void sleep( uint32_t _ms ) override;
 		ptrdiff_t getCurrentThreadId() override;
 
-    protected:
-		
-		
 	protected:
 		ThreadMutexInterfacePtr m_mutexAllocatorPool;
 

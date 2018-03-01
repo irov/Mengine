@@ -23,30 +23,33 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32ThreadSystem::_initialize()		
 	{
-        m_poolWin32ThreadIdentity = new FactoryPool<Win32ThreadIdentity, 16>();
-        m_poolWin32ThreadMutex = new FactoryPool<Win32ThreadMutex, 16>();
+        m_factoryWin32ThreadIdentity = new FactoryPool<Win32ThreadIdentity, 16>();
+        m_factoryWin32ThreadMutex = new FactoryPool<Win32ThreadMutex, 16>();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadSystem::_finalize()
 	{
-		if( m_poolWin32ThreadIdentity->emptyObject() == false )
+		if( m_factoryWin32ThreadIdentity->emptyObject() == false )
 		{
 			LOGGER_ERROR("Win32ThreadSystem::finalize Win32ThreadIdentity not all remove %d"
-				, m_poolWin32ThreadIdentity->countObject()
+				, m_factoryWin32ThreadIdentity->countObject()
 				);
 		}
 
-		if( m_poolWin32ThreadMutex->emptyObject() == false )
+		if( m_factoryWin32ThreadMutex->emptyObject() == false )
 		{
 			LOGGER_ERROR("Win32ThreadSystem::finalize Win32ThreadMutex not all remove %d"
-				, m_poolWin32ThreadMutex->countObject()
+				, m_factoryWin32ThreadMutex->countObject()
 				);
 		}
 
-        m_poolWin32ThreadIdentity = nullptr;
-        m_poolWin32ThreadMutex = nullptr;
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadIdentity );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadMutex );
+
+        m_factoryWin32ThreadIdentity = nullptr;
+        m_factoryWin32ThreadMutex = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32ThreadSystem::avaliable() const
@@ -56,7 +59,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     ThreadIdentityInterfacePtr Win32ThreadSystem::createThread( int _priority, const char * _file, uint32_t _line )
 	{
-		Win32ThreadIdentityPtr identity = m_poolWin32ThreadIdentity->createObject();
+		Win32ThreadIdentityPtr identity = m_factoryWin32ThreadIdentity->createObject();
 
 		if( identity == nullptr )
 		{
@@ -89,7 +92,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const char * _file, uint32_t _line )
     {
-        Win32ThreadMutex * mutex = m_poolWin32ThreadMutex->createObject();
+        Win32ThreadMutex * mutex = m_factoryWin32ThreadMutex->createObject();
 
 		mutex->initialize( _file, _line );
 

@@ -49,6 +49,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Win32FileGroupDirectory::finalize()
     {
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryInputStream );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryOutputStream );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32MappedFile );
+
         m_factoryInputStream = nullptr;
         m_factoryOutputStream = nullptr;
         m_factoryWin32MappedFile = nullptr;

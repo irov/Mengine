@@ -62,6 +62,7 @@ namespace Menge
 		m_currentAccountID.clear();
         m_accounts.clear();
 
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAccounts );
         m_factoryAccounts = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////

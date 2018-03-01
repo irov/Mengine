@@ -78,7 +78,7 @@ namespace Menge
 			, (stdex_allocator_thread_lock_t)&s_stdex_thread_lock
 			, (stdex_allocator_thread_unlock_t)&s_stdex_thread_unlock 
 			);
-        
+                        
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -129,6 +129,10 @@ namespace Menge
 		stdex_allocator_finalize_threadsafe();
 
 		m_mutexAllocatorPool = nullptr;
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadQueue );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadMutexDummy );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadJob );
 
         m_factoryThreadQueue = nullptr;
         m_factoryThreadMutexDummy = nullptr;
@@ -303,6 +307,34 @@ namespace Menge
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadEngine::stopTasks()
+    {
+        for( TVectorThreadTaskDesc::iterator
+            it = m_tasks.begin(),
+            it_end = m_tasks.end();
+            it != it_end;
+            ++it )
+        {
+            const ThreadTaskDesc & desc = *it;
+
+            const ThreadTaskInterfacePtr & task = desc.task;
+
+            task->cancel();
+
+            if( desc.progress == false )
+            {
+                continue;
+            }
+
+            const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
+
+            if( threadIdentity->completeTask() == false )
+            {
+                threadIdentity->join();
+            }
+        }
+    }
 	//////////////////////////////////////////////////////////////////////////
 	ThreadQueueInterfacePtr ThreadEngine::runTaskQueue( const ConstString & _threadName, uint32_t _countThread, uint32_t _packetSize )
 	{

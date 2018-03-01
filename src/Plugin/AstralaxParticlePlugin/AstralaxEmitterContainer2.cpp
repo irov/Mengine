@@ -11,6 +11,7 @@
 #   include "Kernel/ResourceImage.h"
 
 #   include "Factory/FactoryPool.h"
+#   include "Factory/FactoryPoolWithListener.h"
 
 namespace Menge
 {
@@ -65,7 +66,7 @@ namespace Menge
 
 		m_resourceImages.resize( atlasCount );
                 
-        m_factoryPoolAstralaxEmitter = Helper::makeFactoryPool<AstralaxEmitter2, 16>( this, &AstralaxEmitterContainer2::onEmitterRelease_ );
+        m_factoryPoolAstralaxEmitter = Helper::makeFactoryPoolWithListener<AstralaxEmitter2, 16>( this, &AstralaxEmitterContainer2::onEmitterRelease_ );
         		
         return true;
     }
@@ -76,6 +77,10 @@ namespace Menge
 		m_mf = 0;
 		
 		m_memory = nullptr;
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolAstralaxEmitter );
+
+        m_factoryPoolAstralaxEmitter = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitterContainer2::isValid() const

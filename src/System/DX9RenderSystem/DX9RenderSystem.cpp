@@ -10,6 +10,7 @@
 #	include "DX9RenderTargetOffscreen.h"
 
 #   include "Factory/FactoryPool.h"
+#   include "Factory/FactoryPoolWithListener.h"
 #   include "Factory/FactoryDefault.h"
 
 #	include <algorithm>
@@ -188,7 +189,7 @@ namespace Menge
         m_factoryVertexBuffer = new FactoryDefault<DX9RenderVertexBuffer>();
         m_factoryIndexBuffer = new FactoryDefault<DX9RenderIndexBuffer>();
         
-        m_factoryDX9Texture = Helper::makeFactoryPool<DX9RenderImage, 128>( this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
+        m_factoryDX9Texture = Helper::makeFactoryPoolWithListener<DX9RenderImage, 128>( this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
 
         m_factoryDX9TargetTexture = new FactoryDefault<DX9RenderTarget>();
         m_factoryDX9TargetOffscreen = new FactoryDefault<DX9RenderTargetOffscreen>();
@@ -198,17 +199,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::_finalize()
     {
-        m_factoryRenderVertexShader = nullptr;
-        m_factoryRenderFragmentShader = nullptr;
-        m_factoryRenderProgram = nullptr;
-        m_factoryVertexBuffer = nullptr;
-        m_factoryIndexBuffer = nullptr;
-
-        m_factoryDX9Texture = nullptr;
-
-        m_factoryDX9TargetTexture = nullptr;
-        m_factoryDX9TargetOffscreen = nullptr;
-
 		m_deferredCompileVertexShaders.clear();
 		m_deferredCompileFragmentShaders.clear();
 		m_deferredCompilePrograms.clear();
@@ -220,6 +210,26 @@ namespace Menge
             FreeLibrary( m_hd3d9 );
             m_hd3d9 = NULL;
         }
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderFragmentShader );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgram );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryVertexBuffer );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryIndexBuffer );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDX9Texture );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDX9TargetTexture );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDX9TargetOffscreen );
+
+        m_factoryRenderVertexShader = nullptr;
+        m_factoryRenderFragmentShader = nullptr;
+        m_factoryRenderProgram = nullptr;
+        m_factoryVertexBuffer = nullptr;
+        m_factoryIndexBuffer = nullptr;
+
+        m_factoryDX9Texture = nullptr;
+
+        m_factoryDX9TargetTexture = nullptr;
+        m_factoryDX9TargetOffscreen = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, 

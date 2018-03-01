@@ -1961,6 +1961,35 @@ namespace Metacode
                 std::swap(_value, this->Image_UV);
             }
             
+            bool has_Image_UVRotate() const
+            {
+                return Image_UVRotate_successful;
+            }
+            
+            bool get_Image_UVRotate( bool & _value ) const
+            {
+                if( Image_UVRotate_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Image_UVRotate;
+            
+                return true;
+            }
+            
+            bool swap_Image_UVRotate( bool & _value ) const
+            {
+                if( Image_UVRotate_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Image_UVRotate);
+            
+                return true;
+            }
+            
         protected:
             void _parseData( const unsigned char * _buff, size_t _size, size_t & _read ) override;
             void _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
@@ -1979,6 +2008,8 @@ namespace Metacode
             bool Image_Size_successful;
             mutable mt::vec2f Image_Size;
             mutable mt::uv4f Image_UV;
+            bool Image_UVRotate_successful;
+            mutable bool Image_UVRotate;
         };
         
         class Meta_ResourceImageSubstractRGBAndAlpha
@@ -2089,6 +2120,35 @@ namespace Metacode
                 std::swap(_value, this->Image_UVAlpha);
             }
             
+            bool has_Image_UVAlphaRotate() const
+            {
+                return Image_UVAlphaRotate_successful;
+            }
+            
+            bool get_Image_UVAlphaRotate( bool & _value ) const
+            {
+                if( Image_UVAlphaRotate_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Image_UVAlphaRotate;
+            
+                return true;
+            }
+            
+            bool swap_Image_UVAlphaRotate( bool & _value ) const
+            {
+                if( Image_UVAlphaRotate_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Image_UVAlphaRotate);
+            
+                return true;
+            }
+            
             const mt::uv4f & get_Image_UVRGB() const
             {
                 return this->Image_UVRGB;
@@ -2097,6 +2157,35 @@ namespace Metacode
             void swap_Image_UVRGB( mt::uv4f & _value ) const
             {
                 std::swap(_value, this->Image_UVRGB);
+            }
+            
+            bool has_Image_UVRGBRotate() const
+            {
+                return Image_UVRGBRotate_successful;
+            }
+            
+            bool get_Image_UVRGBRotate( bool & _value ) const
+            {
+                if( Image_UVRGBRotate_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Image_UVRGBRotate;
+            
+                return true;
+            }
+            
+            bool swap_Image_UVRGBRotate( bool & _value ) const
+            {
+                if( Image_UVRGBRotate_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Image_UVRGBRotate);
+            
+                return true;
             }
             
         protected:
@@ -2116,7 +2205,11 @@ namespace Metacode
             bool Image_Size_successful;
             mutable mt::vec2f Image_Size;
             mutable mt::uv4f Image_UVAlpha;
+            bool Image_UVAlphaRotate_successful;
+            mutable bool Image_UVAlphaRotate;
             mutable mt::uv4f Image_UVRGB;
+            bool Image_UVRGBRotate_successful;
+            mutable bool Image_UVRGBRotate;
         };
         
         class Meta_ResourceInternalObject

@@ -1709,6 +1709,9 @@ namespace Menge
 
                         ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
+                        const mt::uv4f & uv_image = resource_image->getUVImage();
+                        const mt::uv4f & uv_alpha = resource_image->getUVAlpha();
+
                         for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
                             RenderVertex2D & v = m.vertices[index];
@@ -1723,14 +1726,7 @@ namespace Menge
                             const float * uv2 = mesh.uv[index];
                             uv.from_f2( uv2 );
 
-                            const mt::uv4f & uv_image = resource_image->getUVImage();
-
-                            //v.uv[0] = uv;
                             mt::multiply_tetragon_uv4_v2( v.uv[0], uv_image, uv );
-
-                            const mt::uv4f & uv_alpha = resource_image->getUVAlpha();
-
-                            //v.uv[1] = uv;
                             mt::multiply_tetragon_uv4_v2( v.uv[1], uv_alpha, uv );
 
                             v.color = color;
@@ -1775,6 +1771,9 @@ namespace Menge
 
                         ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
+                        const mt::uv4f & uv0 = surfaceVideo->getUV( 0 );
+                        const mt::uv4f & uv1 = surfaceVideo->getUV( 1 );
+
                         for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
                             RenderVertex2D & v = m.vertices[index];
@@ -1787,13 +1786,7 @@ namespace Menge
                             mt::vec2f uv;
                             uv.from_f2( &mesh.uv[index][0] );
 
-                            const mt::uv4f & uv0 = surfaceVideo->getUV( 0 );
-                            const mt::uv4f & uv1 = surfaceVideo->getUV( 1 );
-
-                            //v.uv[0] = uv;
-                            mt::multiply_tetragon_uv4_v2( v.uv[0], uv0, uv );
-                            
-                            //v.uv[1] == uv;
+                            mt::multiply_tetragon_uv4_v2( v.uv[0], uv0, uv );                            
                             mt::multiply_tetragon_uv4_v2( v.uv[1], uv1, uv );
 
                             v.color = color;
@@ -1834,6 +1827,12 @@ namespace Menge
 
                         const aeMovieRenderMesh * track_matte_mesh = &track_matte_desc->mesh;
 
+                        const RenderTextureInterfacePtr & texture_image = resourceImage->getTexture();
+                        const mt::uv4f & texture_image_uv = texture_image->getUV();
+
+                        const RenderTextureInterfacePtr & texture_trackmatte = resourceTrackMatteImage->getTexture();
+                        const mt::uv4f & texture_trackmatte_uv = texture_trackmatte->getUV();
+
                         for( uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
                             RenderVertex2D & v = m.vertices[index];
@@ -1845,14 +1844,7 @@ namespace Menge
 
                             mt::vec2f uv;
                             uv.from_f2( &mesh.uv[index][0] );
-
-                            //const mt::uv4f & uv_image = resourceImage->getUVImage();
-
-                            const RenderTextureInterfacePtr & texture_image = resourceImage->getTexture();
-
-                            const mt::uv4f & texture_image_uv = texture_image->getUV();
-
-                            //v.uv[0] = uv;
+                            
                             mt::multiply_tetragon_uv4_v2( v.uv[0], texture_image_uv, uv );
 
                             mt::vec2f uv_track_matte;
@@ -1861,13 +1853,7 @@ namespace Menge
                                 mt::vec2f( track_matte_mesh->uv[0] ), mt::vec2f( track_matte_mesh->uv[1] ), mt::vec2f( track_matte_mesh->uv[2] ),
                                 vp.to_vec2f()
                             );
-
-                            //const mt::uv4f & uv_alpha = resourceTrackMatteImage->getUVImage();
-                            const RenderTextureInterfacePtr & texture_trackmatte = resourceTrackMatteImage->getTexture();
-
-                            const mt::uv4f & texture_trackmatte_uv = texture_trackmatte->getUV();
-
-                            //v.uv[1] = uv_track_matte;
+                            
                             mt::multiply_tetragon_uv4_v2( v.uv[1], texture_trackmatte_uv, uv_track_matte );
 
                             v.color = color;

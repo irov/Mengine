@@ -40,7 +40,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DataflowMDL::finalize()
 	{
-		//Empty
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_poolModel3DPack );
+
+        m_poolModel3DPack = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DataInterfacePtr DataflowMDL::create()

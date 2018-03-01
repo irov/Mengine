@@ -274,6 +274,8 @@ namespace Menge
 
 		pybind::finalize();
 
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModule );
+
         m_factoryPythonString = nullptr;
         m_factoryScriptModule = nullptr;
 	}

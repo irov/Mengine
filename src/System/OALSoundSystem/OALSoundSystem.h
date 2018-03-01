@@ -52,9 +52,9 @@ namespace Menge
 		ALCcontext * m_context;
 		ALCdevice * m_device;
 
-        FactoryPtr m_poolOALSoundBuffer;
-        FactoryPtr m_poolOALSoundBufferStream;
-        FactoryPtr m_poolOALSoundSource;
+        FactoryPtr m_factoryOALSoundBuffer;
+        FactoryPtr m_factoryOALSoundBufferStream;
+        FactoryPtr m_factoryOALSoundSource;
 
 		bool m_threadAvaliable;
     };

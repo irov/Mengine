@@ -6082,7 +6082,7 @@ namespace Menge
 
 			handler->initialize( _cb, _args );
 
-			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
+			uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
 
 			return id;
 		}
@@ -6124,7 +6124,7 @@ namespace Menge
 
 			handler->initialize( _cb, _args );
 
-			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
+			uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
 
 			return id;
 		}
@@ -6167,7 +6167,7 @@ namespace Menge
 
 			handler->initialize( _cb, _args );
 
-			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
+			uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
 
 			return id;
 		}
@@ -6204,7 +6204,7 @@ namespace Menge
 
 			handler->initialize( _cb, _args );
 
-			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
+			uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
 
 			return id;
 		}
@@ -6247,7 +6247,7 @@ namespace Menge
 
 			handler->initialize( _cb, _args );
 
-			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
+			uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
 
 			return id;
 		}
@@ -6283,7 +6283,7 @@ namespace Menge
 
 			handler->initialize( _cb, _args );
 
-			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
+			uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
 
 			return id;
 		}
@@ -6319,7 +6319,7 @@ namespace Menge
 
 			handler->initialize( _cb, _args );
 
-			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
+			uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
 
 			return id;
 		}

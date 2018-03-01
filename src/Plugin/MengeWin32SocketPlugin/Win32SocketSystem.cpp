@@ -34,7 +34,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32SocketSystem::_finalize()
 	{
-		WSACleanup();
+        WSACleanup();
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_poolWin32Socket );
+
+        m_poolWin32Socket = nullptr;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SocketInterfacePtr Win32SocketSystem::createSocket()

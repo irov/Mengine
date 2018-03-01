@@ -42,6 +42,8 @@ namespace Menge
 
 		m_packages.clear();
 
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPackage );
+
         m_factoryPackage = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////

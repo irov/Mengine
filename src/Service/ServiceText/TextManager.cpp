@@ -49,6 +49,8 @@ namespace Menge
         m_fonts.clear();
         m_packs.clear();
 
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextLocalePak );
+        
         m_factoryTextLocalePak = nullptr;
         m_factoryLocalString = nullptr;
     }

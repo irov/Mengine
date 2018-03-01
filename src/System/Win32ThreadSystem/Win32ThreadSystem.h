@@ -44,7 +44,7 @@ namespace Menge
 		ptrdiff_t getCurrentThreadId() const override;
         	
 	protected:
-        FactoryPtr m_poolWin32ThreadIdentity;
-        FactoryPtr m_poolWin32ThreadMutex;
+        FactoryPtr m_factoryWin32ThreadIdentity;
+        FactoryPtr m_factoryWin32ThreadMutex;
 	};
 }

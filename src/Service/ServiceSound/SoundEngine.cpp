@@ -96,9 +96,11 @@ namespace Menge
 			m_threadJobSoundBufferUpdate = nullptr;
 		}
 
-        m_factoryWorkerTaskSoundBufferUpdate = nullptr;
-
         m_soundVolumeProviders.clear();
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWorkerTaskSoundBufferUpdate );
+
+        m_factoryWorkerTaskSoundBufferUpdate = nullptr;        
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::supportStreamSound() const

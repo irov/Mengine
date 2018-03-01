@@ -14,6 +14,7 @@ namespace Menge
 		uint32_t id;
 
 		InputSystemHandler * handler;
+        String doc;
 		bool enable;
 		bool dead;
 	};
@@ -25,7 +26,7 @@ namespace Menge
         GlobalHandleSystem();
 
 	public:
-		uint32_t addGlobalHandler( InputSystemHandler * _handler ) override;
+		uint32_t addGlobalHandler( InputSystemHandler * _handler, const String & _doc ) override;
 		InputSystemHandler * removeGlobalHandler( uint32_t _id ) override;
 
 	public:

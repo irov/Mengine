@@ -10,6 +10,10 @@
 #	include "Interface/InputSystemInterface.h"
 #	include "Interface/ConfigInterface.h"
 #	include "Interface/PackageInterface.h"
+#	include "Interface/UserdataInterface.h"
+#   include "Interface/GraveyardInterface.h"
+#   include "Interface/ResourceInterface.h"
+#	include "Interface/TextInterface.h"
 
 #	include "WindowsLayer/VistaWindowsLayer.h"
 #   include "PythonScriptWrapper/PythonScriptWrapper.h"
@@ -79,6 +83,22 @@ SERVICE_EXTERN( TimerSystem );
 SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( HttpSystem );
+SERVICE_EXTERN( PrototypeService );
+SERVICE_EXTERN( NodeService );
+SERVICE_EXTERN( LoaderService );
+SERVICE_EXTERN( RenderService );
+SERVICE_EXTERN( RenderMaterialService );
+SERVICE_EXTERN( RenderTextureService );
+SERVICE_EXTERN( ResourceService );
+SERVICE_EXTERN( TextService );
+SERVICE_EXTERN( Watchdog );
+SERVICE_EXTERN( ProfilerService );
+SERVICE_EXTERN( Graveyard );
+SERVICE_EXTERN( PackageService );
+SERVICE_EXTERN( UserdataService );
+SERVICE_EXTERN( PlayerService );
+SERVICE_EXTERN( GameService );
+SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( Application );
 
 PLUGIN_EXPORT( MengeImageCodec );
@@ -560,8 +580,6 @@ namespace Menge
 			return false;
 		}
 
-		
-		
 		SERVICE_CREATE( ThreadSystem );
 		SERVICE_CREATE( ThreadService );		
 
@@ -617,6 +635,25 @@ namespace Menge
 		PythonScriptWrapper::helperWrap();
 		PythonScriptWrapper::soundWrap();
 		PythonScriptWrapper::entityWrap();
+
+        SERVICE_CREATE( PrototypeService );
+        SERVICE_CREATE( NodeService );
+        SERVICE_CREATE( LoaderService );
+
+        SERVICE_CREATE( RenderService );
+        SERVICE_CREATE( RenderMaterialService );
+        SERVICE_CREATE( RenderTextureService );
+
+        SERVICE_CREATE( ResourceService );
+        SERVICE_CREATE( TextService );
+        SERVICE_CREATE( Watchdog );
+        SERVICE_CREATE( ProfilerService );
+        SERVICE_CREATE( Graveyard );
+        SERVICE_CREATE( PackageService );
+        SERVICE_CREATE( UserdataService );
+        SERVICE_CREATE( PlayerService );
+        SERVICE_CREATE( GameService );
+        SERVICE_CREATE( TimelineService );
 
 		SERVICE_CREATE( Application );
 
@@ -859,16 +896,30 @@ namespace Menge
 
 		PLATFORM_SERVICE()
 			->stop();		
+
+        NOTIFICATION_SERVICE()
+            ->notify( NOTIFICATOR_ENGINE_FINALIZE );
+
+        THREAD_SERVICE()
+            ->stopTasks();
 		
+        SERVICE_FINALIZE( Menge::GameServiceInterface );
+        SERVICE_FINALIZE( Menge::PlayerServiceInterface );
+        SERVICE_FINALIZE( Menge::PackageServiceInterface );
+        SERVICE_FINALIZE( Menge::UserdataServiceInterface );
+        SERVICE_FINALIZE( Menge::GraveyardInterface );
+        SERVICE_FINALIZE( Menge::NodeServiceInterface );
+        SERVICE_FINALIZE( Menge::ResourceServiceInterface );
+        SERVICE_FINALIZE( Menge::TextServiceInterface );
+        SERVICE_FINALIZE( Menge::PrototypeServiceInterface );
 		SERVICE_FINALIZE( Menge::ApplicationInterface );
 		SERVICE_FINALIZE( Menge::HttpSystemInterface );
 		SERVICE_FINALIZE( Menge::PrefetcherServiceInterface );
 		SERVICE_FINALIZE( Menge::DataServiceInterface );
-		SERVICE_FINALIZE( Menge::PluginServiceInterface );		
+		SERVICE_FINALIZE( Menge::PluginServiceInterface );
 		SERVICE_FINALIZE( Menge::InputServiceInterface );
 		SERVICE_FINALIZE( Menge::UnicodeSystemInterface );
 
-		SERVICE_FINALIZE( Menge::FileServiceInterface );
 		SERVICE_FINALIZE( Menge::CodecServiceInterface );
 		SERVICE_FINALIZE( Menge::ParticleSystemInterface2 );
 		SERVICE_FINALIZE( Menge::ParticleServiceInterface2 );
@@ -880,6 +931,9 @@ namespace Menge
 		SERVICE_FINALIZE( Menge::ScriptServiceInterface );
 		SERVICE_FINALIZE( Menge::ConverterServiceInterface );
 
+        SERVICE_FINALIZE( Menge::RenderServiceInterface );
+        SERVICE_FINALIZE( Menge::RenderMaterialServiceInterface );
+        SERVICE_FINALIZE( Menge::RenderTextureServiceInterface );
 		SERVICE_FINALIZE( Menge::RenderSystemInterface );
 
 		SERVICE_FINALIZE( Menge::ConfigServiceInterface );
@@ -920,6 +974,7 @@ namespace Menge
             m_loggerMessageBox = nullptr;
 		}
 
+        SERVICE_FINALIZE( Menge::FileServiceInterface );
 		SERVICE_FINALIZE( Menge::LoggerServiceInterface );
 
 		SERVICE_PROVIDER_FINALIZE( m_serviceProvider );

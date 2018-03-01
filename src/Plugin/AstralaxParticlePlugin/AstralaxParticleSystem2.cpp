@@ -8,6 +8,7 @@
 #   include "Kernel/ResourceImage.h"
 
 #   include "Factory/FactoryPool.h"
+#   include "Factory/FactoryPoolWithListener.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ParticleSystem, Menge::AstralaxParticleSystem2 );
@@ -67,24 +68,19 @@ namespace Menge
 			, version
 			);
 
-        m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPool<AstralaxEmitterContainer2, 16>( this, &AstralaxParticleSystem2::onContainerRelease_ );
+        m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPoolWithListener<AstralaxEmitterContainer2, 16>( this, &AstralaxParticleSystem2::onContainerRelease_ );
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticleSystem2::_finalize()
 	{
-		uint32_t count = m_factoryPoolAstralaxEmitterContainer->countObject();
-
-		if( count != 0 )
-		{
-			LOGGER_ERROR("AstralaxParticleSystem2::finalize have %d container"
-				, count
-				);
-		}
-
 		m_atlases.clear();
 		m_containers.clear();
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolAstralaxEmitterContainer );
+
+        m_factoryPoolAstralaxEmitterContainer = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitterContainerInterface2Ptr AstralaxParticleSystem2::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )

@@ -41,7 +41,9 @@ namespace Menge
 	{
 		for( uint32_t i = 0; i != 2; ++i )
 		{
-			m_atlasess[i].clear();
+            TVectorAtlasess & atlas = m_atlasess[i];
+
+			atlas.clear();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

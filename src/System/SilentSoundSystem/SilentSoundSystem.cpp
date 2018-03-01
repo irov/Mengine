@@ -37,7 +37,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SilentSoundSystem::_finalize()
     {
-        
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySilentSoundBuffer );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySilentSoundSource );
+
+        m_factorySilentSoundBuffer = nullptr;
+        m_factorySilentSoundSource = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void SilentSoundSystem::update()

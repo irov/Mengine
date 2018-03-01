@@ -223,7 +223,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t GlobalHandleSystem::addGlobalHandler( InputSystemHandler * _handler )
+	uint32_t GlobalHandleSystem::addGlobalHandler( InputSystemHandler * _handler, const String & _doc )
 	{
 		GlobalHandlerDesc desc;
 
@@ -231,6 +231,7 @@ namespace Menge
         desc.id = new_id;
 
 		desc.handler = _handler;
+        desc.doc = _doc;
 		desc.enable = true;
 		desc.dead = false;
 
@@ -309,16 +310,25 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void GlobalHandleSystem::clear()
     {
+        this->update();
+        
 		if( m_handlers.empty() == false )
         {
-            LOGGER_ERROR("GlobalHandleSystem::clear global handlers is not empty"
+            LOGGER_ERROR("GlobalHandleSystem::clear global handlers is not empty:"
                 );
-        }
 
-		if( m_handlersAdd.empty() == false )
-        {
-            LOGGER_ERROR("GlobalHandleSystem::clear global handlers is not empty (add)"
+            for( TVectorGlobalHandler::iterator
+                it = m_handlers.begin(),
+                it_end = m_handlers.end();
+                it != it_end;
+                ++it )
+            {
+                const GlobalHandlerDesc & desc = *it;
+
+                LOGGER_ERROR( "%s"
+                    , desc.doc.c_str()
                 );
+            }
         }
     }
 

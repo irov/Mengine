@@ -21,11 +21,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::_initialize()
 	{
-		for( uint32_t i = 0; i != MENGINE_PREFETCHER_THREAD_COUNT; ++i )
-		{
-			THREAD_SERVICE()
-				->createThread( STRINGIZE_STRING_LOCAL( "ThreadPrefetcherManager"), -1, __FILE__, __LINE__ );
-		}
+		THREAD_SERVICE()
+			->createThread( STRINGIZE_STRING_LOCAL( "ThreadPrefetcherManager"), -1, __FILE__, __LINE__ );
 
 		m_threadQueue = THREAD_SERVICE()
 			->runTaskQueue( STRINGIZE_STRING_LOCAL( "ThreadPrefetcherManager"), MENGINE_PREFETCHER_THREAD_COUNT, MENGINE_PREFETCHER_PACKET_SIZE );
@@ -59,6 +56,10 @@ namespace Menge
 		}
 
         m_prefetchReceiver.clear();
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadTaskPrefetchImageDecoder );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadTaskPrefetchSoundDecoder );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadTaskPrefetchDataflow );
 
         m_factoryThreadTaskPrefetchImageDecoder = nullptr;
         m_factoryThreadTaskPrefetchSoundDecoder = nullptr;

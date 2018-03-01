@@ -33,6 +33,10 @@ namespace Menge
     protected:
         void destroy() override
         {
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
+
+            m_factory = nullptr;
+
             delete this;
         }
 

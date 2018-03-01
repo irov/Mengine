@@ -2,6 +2,7 @@
 
 #	include "Interface/AmplifierInterface.h"
 #	include "Interface/SoundSystemInterface.h"
+#	include "Interface/NotificationServiceInterface.h"
 
 #   include "Core/ServiceBase.h"
 
@@ -37,7 +38,12 @@ namespace	Menge
 		void setPosMs( float _posMs ) override;
 		float getPosMs() const override;
 
-	private:
+    protected:
+        void onEngineFinalize();
+
+    protected:
+        ObserverInterfacePtr m_observerEngineFinalize;
+
 		uint32_t m_sourceID;
 		
 		bool m_play;		

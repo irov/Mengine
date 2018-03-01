@@ -2,6 +2,7 @@
 
 #	include "Interface/WatchdogInterface.h"
 #	include "Interface/StringizeInterface.h"
+#	include "Interface/ThreadSystemInterface.h"
 
 #	include "Factory/FactoryPool.h"
 

@@ -11,6 +11,7 @@
 #   include "DecoderRenderImageProvider.h"
 
 #   include "Factory/FactoryPool.h"
+#   include "Factory/FactoryPoolWithListener.h"
 
 #	include "stdex/memorycopy.h"
 
@@ -49,7 +50,7 @@ namespace Menge
 		m_supportNonPow2 = RENDER_SYSTEM()
 			->supportTextureNonPow2();
 
-        m_factoryRenderTexture = Helper::makeFactoryPool<RenderTexture, 128>( this, &RenderTextureManager::onRenderTextureDestroy_ );
+        m_factoryRenderTexture = Helper::makeFactoryPoolWithListener<RenderTexture, 128>( this, &RenderTextureManager::onRenderTextureDestroy_ );
 
         m_factoryDecoderRenderImageProvider = new FactoryPool<DecoderRenderImageProvider, 128>();
 		
@@ -75,6 +76,9 @@ namespace Menge
 
 			textures.clear();
 		}
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderTexture );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDecoderRenderImageProvider );
 
         m_factoryRenderTexture = nullptr;
 		m_factoryDecoderRenderImageProvider = nullptr;

@@ -2,7 +2,6 @@
 
 #   include "Interface/OptionsInterface.h"
 #   include "Interface/PrototypeManagerInterface.h"
-#	include "Interface/TextInterface.h"
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 #	include "Interface/SoundSystemInterface.h"
@@ -27,7 +26,6 @@
 #   include "Interface/WatchdogInterface.h"
 #   include "Interface/GraveyardInterface.h"
 #   include "Interface/PackageInterface.h"
-#	include "Interface/UserdataInterface.h"
 #	include "Interface/TimelineInterface.h"
 
 #	include "Logger/Logger.h"
@@ -165,22 +163,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( Consts );
-SERVICE_EXTERN( PrototypeService );
-SERVICE_EXTERN( NodeService );
-SERVICE_EXTERN( LoaderService );
-SERVICE_EXTERN( RenderService );
-SERVICE_EXTERN( RenderMaterialService );
-SERVICE_EXTERN( RenderTextureService );
-SERVICE_EXTERN( ResourceService );
-SERVICE_EXTERN( TextService );
-SERVICE_EXTERN( Watchdog );
-SERVICE_EXTERN( ProfilerService );
-SERVICE_EXTERN( Graveyard );
-SERVICE_EXTERN( PackageService );
-SERVICE_EXTERN( UserdataService );
-SERVICE_EXTERN( PlayerService );
-SERVICE_EXTERN( GameService );
-SERVICE_EXTERN( TimelineService );
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Application, Menge::Application );
 //////////////////////////////////////////////////////////////////////////
@@ -228,24 +211,6 @@ namespace Menge
 	bool Application::_initialize()
 	{   
 		SERVICE_CREATE( Consts );
-		SERVICE_CREATE( PrototypeService );
-		SERVICE_CREATE( NodeService );
-		SERVICE_CREATE( LoaderService );
-
-		SERVICE_CREATE( RenderService );
-		SERVICE_CREATE( RenderMaterialService );
-		SERVICE_CREATE( RenderTextureService );
-
-		SERVICE_CREATE( ResourceService );
-		SERVICE_CREATE( TextService );
-		SERVICE_CREATE( Watchdog );
-		SERVICE_CREATE( ProfilerService );
-		SERVICE_CREATE( Graveyard );
-		SERVICE_CREATE( PackageService );
-		SERVICE_CREATE( UserdataService );
-		SERVICE_CREATE( PlayerService );
-		SERVICE_CREATE( GameService );
-		SERVICE_CREATE( TimelineService );
 
 		if( this->registerBaseNodeTypes_() == false )
 		{
@@ -1506,25 +1471,11 @@ namespace Menge
 
 		m_cursorResource = nullptr;
 
-		SERVICE_FINALIZE( GameServiceInterface );
-		SERVICE_FINALIZE( PlayerServiceInterface );
-		SERVICE_FINALIZE( PackageServiceInterface );
-		SERVICE_FINALIZE( UserdataServiceInterface );
-
 		CODEC_SERVICE()
             ->unregisterDecoder( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
 
 		CODEC_SERVICE()
             ->unregisterDecoder( STRINGIZE_STRING_LOCAL( "archiveImage" ) );
-
-		SERVICE_FINALIZE( GraveyardInterface );
-		SERVICE_FINALIZE( NodeServiceInterface );
-		SERVICE_FINALIZE( ResourceServiceInterface );
-		SERVICE_FINALIZE( RenderServiceInterface );
-		SERVICE_FINALIZE( RenderMaterialServiceInterface );
-		SERVICE_FINALIZE( RenderTextureServiceInterface );
-		SERVICE_FINALIZE( TextServiceInterface );
-		SERVICE_FINALIZE( PrototypeServiceInterface );
 
 		m_locale.clear();
 		m_projectCodename.clear();

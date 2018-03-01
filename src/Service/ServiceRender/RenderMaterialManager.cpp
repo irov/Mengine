@@ -7,6 +7,7 @@
 #	include "Core/MemoryHelper.h"
 
 #	include "Factory/FactoryPool.h"
+#   include "Factory/FactoryPoolWithListener.h"
 
 #   include "Logger/Logger.h"
 
@@ -112,7 +113,7 @@ namespace Menge
 		m_defaultTextureFilterMagnification = parseConfigTextureFilterValue( defaultTextureFilterMagnification );
 		m_defaultTextureFilterMinification = parseConfigTextureFilterValue( defaultTextureFilterMinification );
 
-		m_factoryMaterial = Helper::makeFactoryPool<RenderMaterial, 256>(this, &RenderMaterialManager::onRenderMaterialDestroy_);
+		m_factoryMaterial = Helper::makeFactoryPoolWithListener<RenderMaterial, 256>(this, &RenderMaterialManager::onRenderMaterialDestroy_);
 
 		return true;
     }
@@ -140,6 +141,8 @@ namespace Menge
 		m_programs.clear();
         
         m_debugMaterial = nullptr;
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMaterial );
 
         m_factoryMaterial = nullptr;
     }

@@ -5,7 +5,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
     static const uint32_t metacode_version = 4;
-    static const uint32_t metacode_protocol = 115;
+    static const uint32_t metacode_protocol = 116;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -1548,6 +1548,7 @@ namespace Metacode
         , Image_Alpha_successful(false)
         , Image_Offset_successful(false)
         , Image_Size_successful(false)
+        , Image_UVRotate_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1571,25 +1572,32 @@ namespace Metacode
     
         switch( _id )
         {
-        case 7:
+        case 8:
             {
                 this->read( _buff, _size, _read, this->Image_Alpha );
     
                 this->Image_Alpha_successful = true;
     
             }break;
-        case 10:
+        case 11:
             {
                 this->read( _buff, _size, _read, this->Image_Offset );
     
                 this->Image_Offset_successful = true;
     
             }break;
-        case 9:
+        case 10:
             {
                 this->read( _buff, _size, _read, this->Image_Size );
     
                 this->Image_Size_successful = true;
+    
+            }break;
+        case 7:
+            {
+                this->read( _buff, _size, _read, this->Image_UVRotate );
+    
+                this->Image_UVRotate_successful = true;
     
             }break;
         }
@@ -1614,6 +1622,8 @@ namespace Metacode
         : Meta_Resource()
         , Image_Offset_successful(false)
         , Image_Size_successful(false)
+        , Image_UVAlphaRotate_successful(false)
+        , Image_UVRGBRotate_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1639,18 +1649,32 @@ namespace Metacode
     
         switch( _id )
         {
-        case 11:
+        case 13:
             {
                 this->read( _buff, _size, _read, this->Image_Offset );
     
                 this->Image_Offset_successful = true;
     
             }break;
-        case 10:
+        case 12:
             {
                 this->read( _buff, _size, _read, this->Image_Size );
     
                 this->Image_Size_successful = true;
+    
+            }break;
+        case 10:
+            {
+                this->read( _buff, _size, _read, this->Image_UVAlphaRotate );
+    
+                this->Image_UVAlphaRotate_successful = true;
+    
+            }break;
+        case 7:
+            {
+                this->read( _buff, _size, _read, this->Image_UVRGBRotate );
+    
+                this->Image_UVRGBRotate_successful = true;
     
             }break;
         }

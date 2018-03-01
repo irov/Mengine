@@ -212,29 +212,31 @@ namespace Menge
         m_verticesLocal[3].x = visOffset.x + 0.f;
         m_verticesLocal[3].y = visOffset.y + percent_size.w;
 
-        
+        mt::uv4f uv_percentVisibility;
+        uv4_from_mask( uv_percentVisibility, m_percentVisibility );
+
+        if( m_flipX == true )
+        {
+            mt::uv4_swap_u( uv_percentVisibility );
+        }
+
+        if( m_flipY == true )
+        {
+            mt::uv4_swap_v( uv_percentVisibility );
+        }
+                
         uint32_t uvCount = m_surface->getUVCount();
 
         for( uint32_t i = 0; i != uvCount; ++i )
 		{
             const mt::uv4f & uv = m_surface->getUV( i );
-
-			mt::uv4f uv_correct;
-			mt::multiply_tetragon_uv4_v4( uv_correct, uv, m_percentVisibility );
-
-			if( m_flipX == true )
-			{
-				mt::uv4_swap_u( uv_correct );
-			}
-
-			if( m_flipY == true )
-			{
-				mt::uv4_swap_v( uv_correct );
-			}
-
+            
 			for( uint32_t v = 0; v != 4; ++v )
 			{
-				m_verticesWM[v].uv[i] = uv[v] * m_textureUVScale + m_textureUVOffset;
+                mt::vec2f uv_correct;
+                mt::multiply_tetragon_uv4_v2( uv_correct, uv, uv_percentVisibility[v] );
+
+				m_verticesWM[v].uv[i] = uv_correct * m_textureUVScale + m_textureUVOffset;
 			}
 		}
     }

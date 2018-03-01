@@ -109,8 +109,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool FontBase::validateText( const ConstString & _key, const String & _text ) const
     {
-        bool result = true;
-
         U32String ttf_codes;
 
         const char * text_str = _text.c_str();

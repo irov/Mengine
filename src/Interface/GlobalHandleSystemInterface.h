@@ -11,7 +11,7 @@ namespace Menge
         SERVICE_DECLARE( "GlobalHandleSystem" )
 
     public:
-		virtual uint32_t addGlobalHandler( InputSystemHandler * _handler ) = 0;
+		virtual uint32_t addGlobalHandler( InputSystemHandler * _handler, const String & _doc ) = 0;
 		virtual InputSystemHandler * removeGlobalHandler (uint32_t _id) = 0;
 
 	public:

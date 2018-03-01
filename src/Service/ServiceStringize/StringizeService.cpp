@@ -132,15 +132,17 @@ namespace Menge
         ConstStringHolder::size_type holder_size = _holder->size();
         ConstStringHolder::hash_type holder_hash = _holder->hash();
 
+        if( holder_size == 0 )
+        {
+            _cstr = ConstString::none();
+
+            return false;
+        }
+
 		if( holder_size == (ConstStringHolder::size_type)(-1) )
         {
             holder_size = strlen( holder_str );
         }
-
-		if (holder_size == 0)
-		{
-			_cstr = ConstString::none();
-		}
 
 		if( holder_hash == (ConstStringHolder::hash_type) (-1) )
         {
@@ -198,6 +200,13 @@ namespace Menge
             ConstStringHolder::hash_type holder_hash = holder->hash();
 
 			if( (int32_t)holder_hash != (int32_t)_hash )
+            {
+                continue;
+            }
+
+            ConstStringHolder::hash_type holder_size = holder->size();
+
+            if( holder_size != _size )
             {
                 continue;
             }

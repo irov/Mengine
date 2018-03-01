@@ -173,6 +173,8 @@ namespace Menge
             LOGGER_ERROR("File invalid find ??? (%ls)\n"
                 , _path
                 );
+
+            return false;
         }
 
         const WChar * filename = PathFindFileName( _path );

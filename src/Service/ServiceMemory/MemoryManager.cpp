@@ -24,11 +24,11 @@ namespace Menge
         m_memoryCacheMutex = THREAD_SERVICE()
             ->createMutex( __FILE__, __LINE__ );
 
-		m_factoryPoolMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16>();
-		m_factoryPoolMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16>();
-		m_factoryPoolMemoryProxyInput = new FactoryPool<MemoryProxyInput, 16>();
-		m_factoryPoolMemoryInput = new FactoryPool<MemoryInput, 16>();
-		m_factoryPoolMemory = new FactoryPool<Memory, 16>();
+		m_factoryPoolMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16, FactoryWithMutex>();
+		m_factoryPoolMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16, FactoryWithMutex>();
+		m_factoryPoolMemoryProxyInput = new FactoryPool<MemoryProxyInput, 16, FactoryWithMutex>();
+		m_factoryPoolMemoryInput = new FactoryPool<MemoryInput, 16, FactoryWithMutex>();
+		m_factoryPoolMemory = new FactoryPool<Memory, 16, FactoryWithMutex>();
         
         ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SERVICE()
 			->createMutex( __FILE__, __LINE__ );
@@ -47,6 +47,12 @@ namespace Menge
 		this->clearCacheBuffers();
 
 		m_memoryCacheMutex = nullptr;
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolMemoryCacheBuffer );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolMemoryCacheInput );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolMemoryProxyInput );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolMemoryInput );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolMemory );
 
         m_factoryPoolMemoryCacheBuffer = nullptr;
         m_factoryPoolMemoryCacheInput = nullptr;

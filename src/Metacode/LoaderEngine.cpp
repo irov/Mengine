@@ -98,7 +98,7 @@ namespace Menge
 			cache_path_xml += _path;			
 			cache_path_xml.replace_last( "xml" );
             			
-            ConstString c_cache_path_xml = Helper::stringizeStringLocal( cache_path_xml.c_str(), c_cache_path_xml.size() );
+            ConstString c_cache_path_xml = Helper::stringizeStringLocal( cache_path_xml.c_str(), cache_path_xml.size() );
 
 			if( this->makeBin_( _pak, FilePath(c_cache_path_xml), _path ) == false )
 			{

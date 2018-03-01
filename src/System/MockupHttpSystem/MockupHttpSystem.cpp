@@ -2,6 +2,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
+#	include "Interface/ThreadSystemInterface.h"
 
 #	include "ThreadTaskDummy.h"
 
@@ -37,6 +38,8 @@ namespace Menge
 	{
 		THREAD_SERVICE()
 			->destroyThread( STRINGIZE_STRING_LOCAL( "ThreadMockupHttpSystem" ) );
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDummy );
 
 		m_factoryTaskDummy = nullptr;
 	}

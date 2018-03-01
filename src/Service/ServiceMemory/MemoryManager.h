@@ -12,7 +12,7 @@
 #	include "MemoryInput.h"
 #	include "Memory.h"
 
-#	include "Factory/Factory.h"
+#	include "Factory/FactoryWithMutex.h"
 
 #	include <stdex/stl_vector.h>
 
@@ -68,10 +68,10 @@ namespace Menge
 			
 		ThreadMutexInterfacePtr m_memoryCacheMutex;
 
-		FactoryPtr m_factoryPoolMemoryCacheBuffer;
-		FactoryPtr m_factoryPoolMemoryCacheInput;
-		FactoryPtr m_factoryPoolMemoryProxyInput;
-		FactoryPtr m_factoryPoolMemoryInput;
-		FactoryPtr m_factoryPoolMemory;
+		FactoryWithMutexPtr m_factoryPoolMemoryCacheBuffer;
+		FactoryWithMutexPtr m_factoryPoolMemoryCacheInput;
+		FactoryWithMutexPtr m_factoryPoolMemoryProxyInput;
+		FactoryWithMutexPtr m_factoryPoolMemoryInput;
+		FactoryWithMutexPtr m_factoryPoolMemory;
 	};
 }

@@ -143,9 +143,9 @@ namespace Menge
 		m_threadAvaliable = THREAD_SYSTEM()
 			->avaliable();
 
-        m_poolOALSoundBuffer = new FactoryPool<OALSoundBufferMemory, 32>();
-        m_poolOALSoundBufferStream = new FactoryPool<OALSoundBufferStream, 32>();
-        m_poolOALSoundSource = new FactoryPool<OALSoundSource, 32>();
+        m_factoryOALSoundBuffer = new FactoryPool<OALSoundBufferMemory, 32>();
+        m_factoryOALSoundBufferStream = new FactoryPool<OALSoundBufferStream, 32>();
+        m_factoryOALSoundSource = new FactoryPool<OALSoundSource, 32>();
 
 		return true;
 	}
@@ -166,9 +166,13 @@ namespace Menge
             m_device = nullptr;
         }
 
-        m_poolOALSoundBuffer = nullptr;
-        m_poolOALSoundBufferStream = nullptr;
-        m_poolOALSoundSource = nullptr;
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryOALSoundBuffer );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryOALSoundBufferStream );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryOALSoundSource );
+
+        m_factoryOALSoundBuffer = nullptr;
+        m_factoryOALSoundBufferStream = nullptr;
+        m_factoryOALSoundSource = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::update()
@@ -205,7 +209,7 @@ namespace Menge
 	SoundSourceInterfacePtr OALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
 	{
 		//OALSoundSource* soundSource = m_soundSources.get();
-		OALSoundSource * soundSource = m_poolOALSoundSource->createObject();
+		OALSoundSource * soundSource = m_factoryOALSoundSource->createObject();
 
         soundSource->initialize( this );
         		
@@ -221,7 +225,7 @@ namespace Menge
 
         if( _isStream == false || m_threadAvaliable == false )
         {
-            OALSoundBufferMemory * buffer = m_poolOALSoundBuffer->createObject();
+            OALSoundBufferMemory * buffer = m_factoryOALSoundBuffer->createObject();
             
             buffer->initialize( this );
 
@@ -229,7 +233,7 @@ namespace Menge
         }
         else
         {
-            OALSoundBufferStream * buffer = m_poolOALSoundBufferStream->createObject();
+            OALSoundBufferStream * buffer = m_factoryOALSoundBufferStream->createObject();
 
             buffer->initialize( this );
 

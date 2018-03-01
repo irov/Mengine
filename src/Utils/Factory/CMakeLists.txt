@@ -8,9 +8,13 @@ src
     FactorableUnique.h
 	Factory.h
 	Factory.cpp
-	FactoryHelper.h
+    FactoryWithListener.h
+    FactoryWithListener.cpp
+    FactoryWithMutex.h
+    FactoryWithMutex.cpp	
     FactoryDefault.h    
     FactoryPool.h
+    FactoryPoolWithListener.h
     FactorablePtr.h
     FactorablePtr.cpp
 )

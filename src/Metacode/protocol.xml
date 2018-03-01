@@ -1,4 +1,4 @@
-<Protocol Version = "115">
+<Protocol Version = "116">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -169,9 +169,11 @@
     <Node Name="ResourceImageSubstractRGBAndAlpha" Inheritance = "Resource">
       <Member Node="Image" Name="NameRGB" Type="Menge::ConstString" Required="1"/>
       <Member Node="Image" Name="UVRGB" Type="mt::uv4f" Required="1"/>
+      <Member Node="Image" Name="UVRGBRotate" Type="bool"/>
 
       <Member Node="Image" Name="NameAlpha" Type="Menge::ConstString" Required="1"/>
       <Member Node="Image" Name="UVAlpha" Type="mt::uv4f" Required="1"/>
+      <Member Node="Image" Name="UVAlphaRotate" Type="bool"/>
 
       <Member Node="Image" Name="MaxSize" Type="mt::vec2f" Required="1"/>
       <Member Node="Image" Name="Size" Type="mt::vec2f"/>
@@ -181,6 +183,7 @@
     <Node Name="ResourceImageSubstract" Inheritance = "Resource">
       <Member Node="Image" Name="Name" Type="Menge::ConstString" Required="1"/>
       <Member Node="Image" Name="UV" Type="mt::uv4f" Required="1"/>
+      <Member Node="Image" Name="UVRotate" Type="bool"/>
       <Member Node="Image" Name="Alpha" Type="bool"/>
 
       <Member Node="Image" Name="MaxSize" Type="mt::vec2f" Required="1"/>

@@ -27,12 +27,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::_initialize()
 	{
+        m_observerEngineFinalize = NOTIFICATION_SERVICE()
+            ->addObserverMethod( NOTIFICATOR_ENGINE_FINALIZE, this, &Amplifier::onEngineFinalize );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::_finalize()
 	{
-		this->stop();
+        m_observerEngineFinalize = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::playMusic( const ConstString& _resourceMusic, float _pos, bool _looped )
@@ -238,4 +241,9 @@ namespace Menge
             ->setPosMs( m_sourceID, _posMs );
 	}
 	//////////////////////////////////////////////////////////////////////////
+    void Amplifier::onEngineFinalize()
+    {
+        this->stop();
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -1,8 +1,9 @@
-#   pragma once
+#	pragma once
+
+#	include "FactoryWithListener.h"
 
 namespace Menge
 {
-    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
@@ -43,11 +44,21 @@ namespace Menge
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, class C, class M>
-        void setupFactoryDestroyListener( const FactoryPtr & _factory, C * _class, M _method )
+        void setupFactoryDestroyListener( const FactoryWithListenerPtr & _factory, C * _class, M _method )
         {
             FactoryDestroyListenerInterfacePtr destroyListener = new MethodFactoryDestroyListener<C, M, T>( _class, _method );
 
             _factory->setDestroyListener( destroyListener );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class Type, size_t Count, class C, class M>
+        FactoryPtr makeFactoryPoolWithListener( C * _self, M _method )
+        {
+            FactoryWithListenerPtr factory = new FactoryPool<Type, Count, FactoryWithListener>();
+
+            setupFactoryDestroyListener<Type>( factory, _self, _method );
+
+            return factory;
         }
     }
 }

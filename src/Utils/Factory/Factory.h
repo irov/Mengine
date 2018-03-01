@@ -1,11 +1,11 @@
 #	pragma once
 
 #	include "Interface/ServiceInterface.h"
-#	include "Interface/ThreadSystemInterface.h"
 
 #   include "Factory/FactorablePtr.h"
 #   include "Factory/FactorablePointer.h"
 
+#   include "Core/Assertion.h"
 #   include "Core/Pointer.h"
 #	include "Core/MemoryAllocator.h"
 
@@ -16,15 +16,6 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-	class FactoryDestroyListenerInterface
-		: public FactorablePtr
-	{
-	public:
-		virtual void onFactoryDestroyObject( Factorable * _object ) = 0;
-	};
-    //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<FactoryDestroyListenerInterface> FactoryDestroyListenerInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
 	class Factory
 		: public FactorablePtr
         , public MemoryAllocator
@@ -33,13 +24,9 @@ namespace Menge
 		Factory(const char * _name);
 		virtual ~Factory();
 
-	public:
-		void setDestroyListener( const FactoryDestroyListenerInterfacePtr & _listener );
-		void setMutex( const ThreadMutexInterfacePtr & _mutex );
-		
-	public:
-        PointerFactorable createObject();
-		void destroyObject( Factorable * _object );
+    public:
+        virtual PointerFactorable createObject();
+        virtual void destroyObject( Factorable * _object );
 
 	public:
         bool emptyObject() const;
@@ -56,14 +43,13 @@ namespace Menge
 	protected:		
 		const char * m_name;
 
-		FactoryDestroyListenerInterfacePtr m_destroyListener;
-		ThreadMutexInterfacePtr m_mutex;
-
-		uint32_t m_count;
+        uint32_t m_count;
 
 		STDEX_THREAD_GUARD_INIT;
 	};
     //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<Factory> FactoryPtr;
+    //////////////////////////////////////////////////////////////////////////
+#   define MENGINE_ASSERTION_FACTORY_EMPTY(F) MENGINE_ASSERTION((F) == nullptr || (F)->emptyObject() == true)
     //////////////////////////////////////////////////////////////////////////
 }

@@ -43,7 +43,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DataflowAEK::finalize()
 	{ 
-		//Empty
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_poolMovieFramePack );
+
+        m_poolMovieFramePack = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DataInterfacePtr DataflowAEK::create()

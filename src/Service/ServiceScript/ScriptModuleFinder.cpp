@@ -39,6 +39,16 @@ namespace Menge
 	{
 		pybind::decref( m_embed );
 		m_embed = nullptr;
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModuleLoaderCode );
+
+        m_factoryScriptModuleLoaderCode = nullptr;
+
+#   ifndef MENGINE_MASTER_RELEASE
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModuleLoaderSource );
+
+        m_factoryScriptModuleLoaderSource = nullptr;
+#   endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptModuleFinder::setEmbed( PyObject * _embed )

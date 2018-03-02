@@ -25,8 +25,7 @@ namespace Menge
     class SurfaceSound
 		: public Surface        
         , public Eventable
-        , public Animatable
-		, public SoundListenerInterface
+        , public Animatable		
 		, public Soundable
 	{
         EVENT_RECEIVER( SurfaceSoundEventReceiver );
@@ -68,10 +67,6 @@ namespace Menge
 
 		float getDuration() const;
 
-    protected:
-		void onSoundPause( uint32_t _soundId ) override;
-		void onSoundStop( uint32_t _soundId ) override;
-		
 	protected:
 		bool _compile() override;
 		void _release() override;
@@ -95,6 +90,8 @@ namespace Menge
 		bool m_isHeadMode;
 
         float m_volume;
+
+        class MySoundListener;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<SurfaceSound> SurfaceSoundPtr;

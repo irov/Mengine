@@ -32,7 +32,7 @@ namespace Menge
 		uint32_t soundId;
 
 		SoundSourceInterfacePtr source;
-		SoundListenerInterface * listener;
+        SoundListenerInterfacePtr listener;
 
 		ThreadWorkerSoundBufferUpdatePtr worker;
         uint32_t bufferId;
@@ -59,6 +59,9 @@ namespace Menge
 		bool _initialize() override;
 		void _finalize() override;
 
+    public:
+        void _stop() override;
+
 	public:
 		bool supportStreamSound() const override;
 
@@ -78,10 +81,10 @@ namespace Menge
 		uint32_t createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceType _type, bool _streamable ) override;
 
     public:
-		SoundBufferInterfacePtr createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _streamable ) override;  
+		SoundBufferInterfacePtr createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codecType, bool _streamable ) override;
 
 	protected:
-		SoundDecoderInterfacePtr createSoundDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _streamable );
+		SoundDecoderInterfacePtr createSoundDecoder_( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codecType, bool _streamable );
 
     public:
 		void setSoundVolume( const ConstString & _type, float _volume, float _default ) override;
@@ -124,7 +127,7 @@ namespace Menge
 		bool getLoop( uint32_t _emitterId ) const override;
 
 	public:
-		void setSourceListener( uint32_t _emitterId, SoundListenerInterface* _listener ) override;
+		void setSourceListener( uint32_t _emitterId, const SoundListenerInterfacePtr & _listener ) override;
 		
 	public:
 		float getDuration( uint32_t _emitterId ) const override;

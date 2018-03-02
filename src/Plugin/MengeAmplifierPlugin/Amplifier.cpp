@@ -27,15 +27,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::_initialize()
 	{
-        m_observerEngineFinalize = NOTIFICATION_SERVICE()
-            ->addObserverMethod( NOTIFICATOR_ENGINE_FINALIZE, this, &Amplifier::onEngineFinalize );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::_finalize()
 	{
-        m_observerEngineFinalize = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::playMusic( const ConstString& _resourceMusic, float _pos, bool _looped )
@@ -157,7 +153,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::stop()
+	void Amplifier::stopMusic()
 	{
 		m_play = false;
 
@@ -174,7 +170,7 @@ namespace Menge
 		}				
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::pause()
+	bool Amplifier::pauseMusic()
 	{
 		if( m_sourceID == 0 )
 		{
@@ -189,7 +185,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::resume()
+	bool Amplifier::resumeMusic()
 	{
 		if( m_sourceID == 0 )
 		{
@@ -241,9 +237,9 @@ namespace Menge
             ->setPosMs( m_sourceID, _posMs );
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void Amplifier::onEngineFinalize()
+    void Amplifier::_stop()
     {
-        this->stop();
+        this->stopMusic();
     }
     //////////////////////////////////////////////////////////////////////////
 }

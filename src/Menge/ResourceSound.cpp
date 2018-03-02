@@ -88,6 +88,14 @@ namespace Menge
 		m_soundBufferNoStreamableCache = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
+    void ResourceSound::_debugIncrementReference()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceSound::_debugDecrementReference()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ResourceSound::_isValid() const
     {
         const ConstString & category = this->getCategory();

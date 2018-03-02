@@ -65,6 +65,19 @@ namespace Menge
             //Empty
         }
 
+
+    protected:
+        void stop() override
+        {
+            this->_stop();
+        }
+
+    protected:
+        virtual void _stop()
+        {
+            //Empty       
+        }
+
     private:
         void destroy() override
         {

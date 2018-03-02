@@ -14,9 +14,9 @@ namespace Menge
 	public:		
 		virtual bool playMusic( const ConstString & _resourceMusic, float _pos, bool _looped ) = 0;
 		
-		virtual void stop() = 0;
-		virtual bool pause() = 0;
-		virtual bool resume() = 0;
+		virtual void stopMusic() = 0;
+		virtual bool pauseMusic() = 0;
+		virtual bool resumeMusic() = 0;
 
 	public:
 		virtual float getDuration() const = 0;

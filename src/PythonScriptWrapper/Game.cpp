@@ -752,14 +752,14 @@ namespace Menge
 		{
 			if( AMPLIFIER_SERVICE() )
 			{
-				AMPLIFIER_SERVICE()->resume();
+				AMPLIFIER_SERVICE()->resumeMusic();
 			}
 		}
 		else
 		{
 			if( AMPLIFIER_SERVICE() )
 			{
-				AMPLIFIER_SERVICE()->pause();
+				AMPLIFIER_SERVICE()->pauseMusic();
 			}
 		}
 	}

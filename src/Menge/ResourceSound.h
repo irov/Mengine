@@ -40,6 +40,10 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
+    protected:
+        virtual void _debugIncrementReference();
+        virtual void _debugDecrementReference();
+
 	protected:
 		FilePath m_filePath;
 

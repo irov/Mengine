@@ -20,18 +20,17 @@ namespace Menge
         ESST_MUSIC,
         ESST_VOICE
     };
-
+    //////////////////////////////////////////////////////////////////////////
 	class SoundListenerInterface
+        : public FactorablePtr
 	{
 	public:
-		SoundListenerInterface(){};
-		virtual ~SoundListenerInterface(){};
-
-	public:
-		virtual void onSoundPause( uint32_t _id ) = 0;
-		virtual void onSoundStop( uint32_t _id ) = 0;
+		virtual void onSoundPause( uint32_t _soundId ) = 0;
+		virtual void onSoundStop( uint32_t _soundId ) = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<SoundListenerInterface> SoundListenerInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
 	class SoundBufferInterface
         : public ServantInterface
 	{
@@ -41,9 +40,9 @@ namespace Menge
 	public:
 		virtual const SoundDecoderInterfacePtr & getDecoder() const = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<SoundBufferInterface> SoundBufferInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	class SoundSourceInterface
         : public ServantInterface
 	{
@@ -68,15 +67,15 @@ namespace Menge
 		virtual void setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) = 0;
 		virtual SoundBufferInterfacePtr getSoundBuffer() const = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<SoundSourceInterface> SoundSourceInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	class SoundSulkCallbackInterface
 	{
 	public:
 		virtual void blow( float _blow ) = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	class SoundSystemInterface
         : public ServiceInterface
     {
@@ -97,19 +96,19 @@ namespace Menge
     public:
 		virtual SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) = 0;		
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 #   define SOUND_SYSTEM()\
     ((Menge::SoundSystemInterface *)SERVICE_GET(Menge::SoundSystemInterface))
-
+    //////////////////////////////////////////////////////////////////////////
 	class SoundVolumeProviderInterface
 		: public ServantInterface
 	{
 	public:
 		virtual void onSoundChangeVolume( float _sound, float _music, float _voice, bool _mute ) = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<SoundVolumeProviderInterface> SoundVolumeProviderInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	class SoundServiceInterface
 		: public ServiceInterface
 	{
@@ -167,7 +166,7 @@ namespace Menge
 		virtual bool validSoundSource( uint32_t _sourceID ) const = 0;
 
 	public:
-		virtual void setSourceListener( uint32_t _emitter, SoundListenerInterface* _listener ) = 0;
+		virtual void setSourceListener( uint32_t _emitter, const SoundListenerInterfacePtr & _listener ) = 0;
 
 	public:
 		virtual bool play( uint32_t _emitter ) = 0;
@@ -189,7 +188,7 @@ namespace Menge
 		virtual void mute( bool _mute ) = 0;
 		virtual bool isMute() const = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 #   define SOUND_SERVICE()\
     ((Menge::SoundServiceInterface *)SERVICE_GET(Menge::SoundServiceInterface))
 }

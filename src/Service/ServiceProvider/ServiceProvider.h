@@ -27,9 +27,9 @@ namespace Menge
 
 		bool destroyService( const char * _name ) override;
 		
-		//bool registryService( const char * _name, ServiceInterface * _service ) override;
-		//bool unregistryService( const char * _name ) override;
-        
+    protected:
+        void stopServices() override;
+
 	protected:
 		void destroy() override;
 

@@ -26,20 +26,26 @@ namespace	Menge
         {
             m_factorySoundAffectorCallback = new FactoryPool<SoundAffectorCallback, 4>();
             m_factoryMusicAffectorCallback = new FactoryPool<MusicAffectorCallback, 4>();
+            m_factorySoundNodeListener = new FactoryPool<MySoundNodeListener, 8>();
         }
 
     public:
 		//////////////////////////////////////////////////////////////////////////
-		class MySoundNodeListenerInterface
+		class MySoundNodeListener
 			: public SoundListenerInterface
 		{
 		public:
-			MySoundNodeListenerInterface()
+			MySoundNodeListener()
 			{
 			}
 
-			~MySoundNodeListenerInterface()
-			{				
+			~MySoundNodeListener()
+			{	
+                if( m_resource != nullptr )
+                {
+                    m_resource->decrementReference();
+                    m_resource = nullptr;
+                }
 			}
 
 		public:
@@ -81,8 +87,6 @@ namespace	Menge
 				m_resource = nullptr;
 
 				m_soundBuffer = nullptr;
-
-				delete this;
 			}
 
 		protected:
@@ -91,6 +95,8 @@ namespace	Menge
 			pybind::object m_cb;
 			pybind::args m_args;
 		};
+        //////////////////////////////////////////////////////////////////////////
+        typedef stdex::intrusive_ptr<MySoundNodeListener> MySoundNodeListenerPtr;
 		//////////////////////////////////////////////////////////////////////////
 		bool s_hasSound( const ConstString & _resourceName )
 		{
@@ -102,6 +108,8 @@ namespace	Menge
 
 			return true;
 		}
+        //////////////////////////////////////////////////////////////////////////
+        FactoryPtr m_factorySoundNodeListener;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceType _type, const pybind::object & _cb, const pybind::args & _args )
 		{
@@ -153,7 +161,7 @@ namespace	Menge
 			}
 
 
-			MySoundNodeListenerInterface * snlistener = new MySoundNodeListenerInterface();
+            MySoundNodeListenerPtr snlistener = m_factorySoundNodeListener->createObject();
 
 			if( snlistener->initialize( resource, soundBuffer, _cb, _args ) == false )
 			{
@@ -162,8 +170,6 @@ namespace	Menge
 					, volume
 					);
 
-				delete snlistener;
-
 				resource->decrementReference();
 
 				return 0;
@@ -171,7 +177,7 @@ namespace	Menge
 
 			SOUND_SERVICE()
 				->setSourceListener( sourceID, snlistener );
-			
+            			
 			return sourceID;
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -535,13 +541,13 @@ namespace	Menge
 		void musicStop()
 		{
 			AMPLIFIER_SERVICE()
-				->stop();
+				->stopMusic();
 		}
         //////////////////////////////////////////////////////////////////////////
         bool musicPause()
         {
             bool successful = AMPLIFIER_SERVICE()
-                ->pause();
+                ->pauseMusic();
 
 			return successful;
         }
@@ -549,7 +555,7 @@ namespace	Menge
         bool musicResume()
         {
             bool successful = AMPLIFIER_SERVICE()
-                ->resume();
+                ->resumeMusic();
 
 			return successful;
         }
@@ -615,7 +621,7 @@ namespace	Menge
 				}
 
 				AMPLIFIER_SERVICE()
-					->stop();
+					->stopMusic();
 
 				m_cb.call_args( _id, _isEnd, m_args );
 			}

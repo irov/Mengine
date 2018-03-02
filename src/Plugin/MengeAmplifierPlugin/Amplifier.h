@@ -2,7 +2,6 @@
 
 #	include "Interface/AmplifierInterface.h"
 #	include "Interface/SoundSystemInterface.h"
-#	include "Interface/NotificationServiceInterface.h"
 
 #   include "Core/ServiceBase.h"
 
@@ -25,12 +24,15 @@ namespace	Menge
 		bool _initialize() override;
 		void _finalize() override;
 
+    protected:
+        void _stop() override;
+
 	public:
         bool playMusic( const ConstString & _resourceMusic, float _pos, bool _looped ) override;
 				
-		void stop() override;
-		bool pause() override;
-		bool resume() override;
+		void stopMusic() override;
+		bool pauseMusic() override;
+		bool resumeMusic() override;
 		
 	public:
 		float getDuration() const override;
@@ -39,11 +41,6 @@ namespace	Menge
 		float getPosMs() const override;
 
     protected:
-        void onEngineFinalize();
-
-    protected:
-        ObserverInterfacePtr m_observerEngineFinalize;
-
 		uint32_t m_sourceID;
 		
 		bool m_play;		

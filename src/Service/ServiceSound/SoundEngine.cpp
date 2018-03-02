@@ -63,7 +63,7 @@ namespace Menge
 
         m_factoryWorkerTaskSoundBufferUpdate = new FactoryPool<ThreadWorkerSoundBufferUpdate, 32>();
 
-		return true;
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::_finalize()
@@ -80,8 +80,11 @@ namespace Menge
 
 			this->stopSoundBufferUpdate_( source );
 
-            source->source->stop();
-            source->source = nullptr;
+            if( source->source != nullptr )
+            {
+                source->source->stop();
+                source->source = nullptr;
+            }
 
             m_poolSoundSourceDesc.destroyT( source );
         }
@@ -202,7 +205,10 @@ namespace Menge
 
 			this->stopSoundBufferUpdate_( source );
 
-			source->source->stop();            
+            if( source->source != nullptr )
+            {
+                source->source->stop();
+            }
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -336,16 +342,21 @@ namespace Menge
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	SoundDecoderInterfacePtr SoundEngine::createSoundDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _streamable )
+	SoundDecoderInterfacePtr SoundEngine::createSoundDecoder_( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
 	{
 		InputStreamInterfacePtr stream = FILE_SERVICE()
-			->openInputFile( _pakName, _fileName, _streamable );
+			->openInputFile( _pakName, _filePath, _streamable );
+
+        if( _filePath == "SFX/02.ogg" )
+        {
+            printf( "1" );
+        }
 
 		if( stream == nullptr )
 		{
 			LOGGER_ERROR("SoundEngine::createSoundDecoder_: Can't open sound file %s:%s"
 				, _pakName.c_str()
-				, _fileName.c_str() 
+				, _filePath.c_str() 
 				);
 
 			return nullptr;
@@ -358,7 +369,7 @@ namespace Menge
 		{
 			LOGGER_ERROR("SoundEngine::createSoundDecoder_: Can't create sound decoder for file %s:%s"
 				, _pakName.c_str()
-				, _fileName.c_str() 
+				, _filePath.c_str() 
 				);
 
 			return nullptr;
@@ -368,7 +379,7 @@ namespace Menge
 		{
 			LOGGER_ERROR("SoundEngine::createSoundDecoder_: Can't initialize sound decoder for file %s:%s"
 				, _pakName.c_str()
-				, _fileName.c_str() 
+				, _filePath.c_str() 
 				);
 
 			return nullptr;
@@ -377,13 +388,13 @@ namespace Menge
 		return soundDecoder;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterfacePtr SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _streamable )
+	SoundBufferInterfacePtr SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
 	{
 		if( m_supportStream == false && _streamable == true )
 		{
 			LOGGER_WARNING("SoundEngine::createSoundBufferFromFile: unsupport stream sound %s:%s"
 				, _pakName.c_str()
-				, _fileName.c_str() 
+				, _filePath.c_str() 
 				);
 
 			_streamable = false;
@@ -393,9 +404,9 @@ namespace Menge
 		if( _streamable == false )
 		{		
 			if( PREFETCHER_SERVICE()
-				->getSoundDecoder( _pakName, _fileName, soundDecoder ) == false )
+				->getSoundDecoder( _pakName, _filePath, soundDecoder ) == false )
 			{
-				soundDecoder = this->createSoundDecoder_( _pakName, _fileName, _codecType, false );
+				soundDecoder = this->createSoundDecoder_( _pakName, _filePath, _codecType, false );
 			}
 			else
 			{
@@ -403,7 +414,7 @@ namespace Menge
 				{
 					LOGGER_ERROR("SoundEngine::createSoundBufferFromFile invalid rewind decoder '%s':'%s'"
 						, _pakName.c_str()
-						, _fileName.c_str()
+						, _filePath.c_str()
 						);
 
 					return nullptr;
@@ -412,14 +423,14 @@ namespace Menge
 		}
 		else
 		{
-			soundDecoder = this->createSoundDecoder_( _pakName, _fileName, _codecType, true );
+			soundDecoder = this->createSoundDecoder_( _pakName, _filePath, _codecType, true );
 		}
 
 		if( soundDecoder == nullptr )
 		{
 			LOGGER_ERROR("SoundEngine::createSoundBufferFromFile invalid create decoder '%s':'%s' type %s"
 				, _pakName.c_str()
-				, _fileName.c_str()
+				, _filePath.c_str()
 				, _codecType.c_str()
 				);
 
@@ -433,7 +444,7 @@ namespace Menge
         {
             LOGGER_ERROR("SoundEngine::createSoundBufferFromFile: Can't create sound buffer for file %s:%s"
                 , _pakName.c_str()
-                , _fileName.c_str() 
+                , _filePath.c_str() 
                 );
 
             return nullptr;
@@ -459,8 +470,11 @@ namespace Menge
 
 		this->stopSoundBufferUpdate_( source );
 		
-        source->source->stop();
-        source->source = nullptr;
+        if( source->source != nullptr )
+        {
+            source->source->stop();
+            source->source = nullptr;
+        }
 
 		source->listener = nullptr;
 
@@ -571,7 +585,7 @@ namespace Menge
 	{
 		struct SoundListenerStopDesc
 		{
-			SoundListenerInterface * listener;
+            SoundListenerInterfacePtr listener;
 			uint32_t id;
 		};
 
@@ -885,8 +899,11 @@ namespace Menge
 					this->stopSoundBufferUpdate_( source );
 				}
 
-				source->source->stop();
-				source->timing = source->source->getPosition();
+                if( source->source != nullptr )
+                {
+                    source->source->stop();
+                    source->timing = source->source->getPosition();
+                }
 
 				if( source->listener != nullptr )
 				{
@@ -936,7 +953,7 @@ namespace Menge
 		return looped;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setSourceListener( uint32_t _emitter, SoundListenerInterface* _listener )
+	void SoundEngine::setSourceListener( uint32_t _emitter, const SoundListenerInterfacePtr & _listener )
 	{
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitter, &source ) == false )
@@ -1270,4 +1287,27 @@ namespace Menge
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
+    void SoundEngine::_stop()
+    {
+        this->stopSounds_();
+
+        for( TMapSoundSource::iterator
+            it = m_soundSourceMap.begin(),
+            it_end = m_soundSourceMap.end();
+            it != it_end;
+            ++it )
+        {
+            SoundSourceDesc * source = it->second;
+
+            this->stopSoundBufferUpdate_( source );
+
+            if( source->source != nullptr )
+            {
+                source->source->stop();
+                source->source = nullptr;
+            }
+
+            m_poolSoundSourceDesc.destroyT( source );
+        }
+    }
 }

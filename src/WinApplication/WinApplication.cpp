@@ -900,6 +900,8 @@ namespace Menge
         NOTIFICATION_SERVICE()
             ->notify( NOTIFICATOR_ENGINE_FINALIZE );
 
+        SERVICE_PROVIDER_STOP();
+
         THREAD_SERVICE()
             ->stopTasks();
 		
@@ -949,7 +951,7 @@ namespace Menge
 		SERVICE_FINALIZE( Menge::TimerServiceInterface );
 		SERVICE_FINALIZE( Menge::TimerSystemInterface );
 
-		SERVICE_FINALIZE(Menge::PlatformInterface);
+        SERVICE_FINALIZE( Menge::PlatformInterface );
 		SERVICE_FINALIZE( Menge::WindowsLayerInterface );
         
 		if( m_fileLog != nullptr )

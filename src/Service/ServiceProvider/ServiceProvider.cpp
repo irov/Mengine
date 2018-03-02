@@ -207,4 +207,19 @@ namespace Menge
             desc.service = nullptr;
         }
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void ServiceProvider::stopServices()
+    {
+        for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+        {
+            ServiceDesc & desc = m_services[index];
+
+            if( desc.service == nullptr )
+            {
+                continue;
+            }
+
+            desc.service->stop();
+        }
+    }
 }

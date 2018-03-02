@@ -11,6 +11,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Reference::incrementReference()
 	{
+#ifdef _DEBUG
+        this->_debugIncrementReference();
+#endif
+
 		if( ++m_refcounter == 1 )
 		{
 			if( this->_incrementZero() == false )
@@ -26,6 +30,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Reference::decrementReference()
 	{
+#ifdef _DEBUG
+        this->_debugDecrementReference();
+#endif
+
 		if( m_refcounter == 0 )
 		{			
 			return false;
@@ -48,4 +56,14 @@ namespace Menge
 	{
 		//Empty
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Reference::_debugIncrementReference()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Reference::_debugDecrementReference()
+    {
+        //Empty
+    }
 }

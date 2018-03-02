@@ -10,6 +10,41 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    class SurfaceSound::MySoundListener
+        : public FactorableUnique<SoundListenerInterface>
+    {
+    public:
+        MySoundListener( uint32_t _id, SurfaceSound * _sound )
+            : m_id( _id )
+            , m_sound( _sound )
+        {
+        }
+
+        ~MySoundListener()
+        {
+        }
+
+    protected:
+        void onSoundPause( uint32_t _soundId ) override
+        {
+            (void)_soundId;
+
+            EVENTABLE_METHOD( m_sound, EVENT_ANIMATABLE_PAUSE )
+                ->onAnimatablePause( m_id );
+        }
+
+        void onSoundStop( uint32_t _soundId ) override
+        {
+            (void)_soundId;
+
+            m_sound->end();
+        }
+
+    protected:
+        uint32_t m_id;
+        SurfaceSound * m_sound;
+    };
 	//////////////////////////////////////////////////////////////////////////
 	SurfaceSound::SurfaceSound()
 		: m_soundBuffer(nullptr)
@@ -69,7 +104,7 @@ namespace Menge
 		}
 
 		SOUND_SERVICE()
-			->setSourceListener( m_sourceID, this );
+            ->setSourceListener( m_sourceID, new MySoundListener( m_enumerator, this ) );
 
 		SOUND_SERVICE()
 			->setLoop( m_sourceID, m_loop );
@@ -155,22 +190,6 @@ namespace Menge
     {
         return ColourValue::identity();
     }
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSound::onSoundPause( uint32_t _soundId )
-	{
-		(void)_soundId;
-
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_PAUSE )
-            ->onAnimatablePause( m_enumerator );
-		//EVENTABLE_CALL( this, EVENT_SOUND_PAUSE )(this);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSound::onSoundStop( uint32_t _soundId )
-	{
-		(void)_soundId;
-
-		this->end();
-	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SurfaceSound::_play( float _time )
 	{

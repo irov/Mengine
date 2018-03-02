@@ -71,6 +71,9 @@ namespace Menge
         virtual bool destroyService( const Char * _name ) = 0;
 
     public:
+        virtual void stopServices() = 0;
+
+    public:
         template<class T>
         bool finalizeServiceT()
         {
@@ -100,6 +103,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 #   define SERVICE_PROVIDER_GET()\
     Menge::Holder<Menge::ServiceProviderInterface>::get()
+    //////////////////////////////////////////////////////////////////////////
+#   define SERVICE_PROVIDER_STOP()\
+    SERVICE_PROVIDER_GET()->stopServices()
     //////////////////////////////////////////////////////////////////////////
 #	define SERVICE_PROVIDER_NAME_CREATE(Name)\
 	__createMengineProvider##Name

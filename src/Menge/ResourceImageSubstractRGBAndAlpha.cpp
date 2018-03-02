@@ -10,10 +10,12 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageSubstractRGBAndAlpha::ResourceImageSubstractRGBAndAlpha()
-		: m_resourceImageRGB(nullptr)
-		, m_resourceImageAlpha(nullptr)
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ResourceImageSubstractRGBAndAlpha::~ResourceImageSubstractRGBAndAlpha()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & ResourceImageSubstractRGBAndAlpha::getResourceRGBName() const
     {
@@ -35,8 +37,11 @@ namespace Menge
         m_resourceImageRGBName = metadata->get_Image_NameRGB();
 		m_resourceImageAlphaName = metadata->get_Image_NameAlpha();
 
-		m_uv_image = metadata->get_Image_UVRGB();
-		m_uv_alpha = metadata->get_Image_UVAlpha();
+		m_uvImage = metadata->get_Image_UVRGB();
+		m_uvAlpha = metadata->get_Image_UVAlpha();
+
+        metadata->get_Image_UVRGBRotate( m_uvImageRotate );
+        metadata->get_Image_UVAlphaRotate( m_uvAlphaRotate );
 
 		m_maxSize = metadata->get_Image_MaxSize();
 

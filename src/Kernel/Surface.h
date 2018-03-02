@@ -37,10 +37,15 @@ namespace Menge
         virtual uint32_t getUVCount() const = 0;
         virtual const mt::uv4f & getUV( uint32_t _index ) const = 0;
 
+        virtual void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) = 0;
+
         virtual const ColourValue & getColour() const = 0;
         
     public:
-        virtual bool update( float _current, float _timing ) = 0;
+        bool update( float _current, float _timing );
+
+    protected:
+        virtual bool _update( float _current, float _timing ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<Surface> SurfacePtr;

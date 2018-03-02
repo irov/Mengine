@@ -103,7 +103,7 @@ namespace Menge
         m_uv.p3 = mt::vec2f( scaleLeft, scaleBottom );
 	}
 	//////////////////////////////////////////////////////////////////////////
-    bool SurfaceVideo::update( float _current, float _timing )
+    bool SurfaceVideo::_update( float _current, float _timing )
 	{
 		if( this->isPlay() == false )
 		{
@@ -258,6 +258,11 @@ namespace Menge
         (void)_index;
 
         return m_uv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceVideo::correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in )
+    {
+        mt::uv4_quad_point( _out, m_uv, _in );
     }
     //////////////////////////////////////////////////////////////////////////
     const ColourValue & SurfaceVideo::getColour() const

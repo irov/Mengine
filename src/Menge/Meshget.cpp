@@ -248,9 +248,6 @@ namespace Menge
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 		
-		const mt::uv4f & uv_image = m_resourceImage->getUVImage();
-		const mt::uv4f & uv_alpha = m_resourceImage->getUVAlpha();
-
 		for( uint32_t i = 0; i != vertexCount; ++i )
 		{
 			const mt::vec3f & pos = m_positions[i];
@@ -259,8 +256,8 @@ namespace Menge
 			mt::vec3f & wm_pos = m_verticesWM[i].position;
 			mt::mul_v3_v3_m4( wm_pos, pos, wm );
 
-			multiply_tetragon_uv4_v2( m_verticesWM[i].uv[0], uv_image, uv );
-			multiply_tetragon_uv4_v2( m_verticesWM[i].uv[1], uv_alpha, uv );
+            m_resourceImage->correctUVImage( m_verticesWM[i].uv[0], uv );
+            m_resourceImage->correctUVAlpha( m_verticesWM[i].uv[1], uv );
 		}
 	}
 }

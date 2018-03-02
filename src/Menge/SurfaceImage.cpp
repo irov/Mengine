@@ -32,14 +32,6 @@ namespace	Menge
 		return m_resourceImage;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceImage::update( float _current, float _timing )
-	{	
-        (void)_current;
-        (void)_timing;
-
-        return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool SurfaceImage::_compile()
 	{
 		if( m_resourceImage == nullptr )
@@ -70,6 +62,14 @@ namespace	Menge
 	{
         m_resourceImage.release();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool SurfaceImage::_update( float _current, float _timing )
+    {
+        (void)_current;
+        (void)_timing;
+
+        return false;
+    }
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceImage::getMaxSize() const
     {
@@ -178,6 +178,33 @@ namespace	Menge
         }
 
         return mt::uv4f::identity();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceImage::correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in )
+    {
+        if( m_resourceImage == nullptr )
+        {
+            LOGGER_ERROR( "SurfaceImage.correctUV: '%s' not setup texture"
+                , this->getName().c_str()
+            );
+
+            return;
+        }
+
+        switch( _index )
+        {
+        case 0:
+            {
+                m_resourceImage->correctUVImage( _out, _in );
+            } break;
+        case 1:
+            {
+                m_resourceImage->correctUVAlpha( _out, _in );                
+            } break;
+        default:
+            {
+            }break;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     const ColourValue & SurfaceImage::getColour() const

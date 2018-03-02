@@ -45,9 +45,11 @@ namespace Menge
         const mt::uv4f & getUV( uint32_t _index ) const override;
 
         const ColourValue & getColour() const override;
+
+        void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) override;
 	
     protected:
-        bool update( float _current, float _timing ) override;
+        bool _update( float _current, float _timing ) override;
 
 	protected:
 		bool _compile() override;

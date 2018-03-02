@@ -7127,6 +7127,8 @@ namespace Menge
 			.def( "getUVAlpha", &ResourceImage::getUVAlpha )
 			.def( "setAlpha", &ResourceImage::setAlpha )
 			.def( "isAlpha", &ResourceImage::hasAlpha )
+            .def( "setPremultiply", &ResourceImage::setPremultiply )
+            .def( "getPremultiply", &ResourceImage::getPremultiply )
 			.def( "setColor", &ResourceImage::setColor )
 			.def( "getColor", &ResourceImage::getColor )
 			;

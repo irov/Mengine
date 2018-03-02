@@ -13,6 +13,7 @@ namespace Menge
 
 	public:
 		ResourceImageSubstractRGBAndAlpha();
+        ~ResourceImageSubstractRGBAndAlpha();
 
 	public:
         const ConstString & getResourceRGBName() const;

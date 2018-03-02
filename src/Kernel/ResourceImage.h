@@ -39,6 +39,12 @@ namespace Menge
 		inline void setUVAlpha( const mt::uv4f & _uv );
         inline const mt::uv4f & getUVAlpha() const;
 
+        inline void setUVImageRotate( bool _rotate );
+        inline bool isUVImageRotate() const;
+
+        inline void setUVAlphaRotate( bool _rotate );
+        inline bool isUVAlphaRotate() const;
+
 		inline void setAlpha( bool _alpha );
 		inline bool hasAlpha() const;
 
@@ -54,6 +60,10 @@ namespace Menge
 
 		inline void setColor( const ColourValue & _colour );
 		inline const ColourValue & getColor() const;
+
+    public:
+        void correctUVImage( mt::vec2f & _out, const mt::vec2f & _in );
+        void correctUVAlpha( mt::vec2f & _out, const mt::vec2f & _in );
         
     protected:
         void _release() override;
@@ -68,9 +78,11 @@ namespace Menge
         mt::vec2f m_size;
 		mt::vec2f m_offset;
         
-		mt::uv4f m_uv_image;
-        mt::uv4f m_uv_alpha;
+		mt::uv4f m_uvImage;
+        mt::uv4f m_uvAlpha;
 
+        bool m_uvImageRotate;
+        bool m_uvAlphaRotate;
         bool m_hasAlpha;
 		bool m_isPremultiply;
 	};
@@ -109,22 +121,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline void ResourceImage::setUVImage( const mt::uv4f & _uv )
 	{
-		m_uv_image = _uv;
+		m_uvImage = _uv;
 	}
     //////////////////////////////////////////////////////////////////////////
     inline const mt::uv4f & ResourceImage::getUVImage() const
     {
-        return m_uv_image;
+        return m_uvImage;
     }
 	//////////////////////////////////////////////////////////////////////////
 	inline void ResourceImage::setUVAlpha( const mt::uv4f & _uv )
 	{
-		m_uv_alpha = _uv;
+		m_uvAlpha = _uv;
 	}
     //////////////////////////////////////////////////////////////////////////
     inline const mt::uv4f & ResourceImage::getUVAlpha() const
     {
-        return m_uv_alpha;
+        return m_uvAlpha;
     }
     //////////////////////////////////////////////////////////////////////////
     inline const RenderTextureInterfacePtr & ResourceImage::getTexture() const
@@ -146,6 +158,26 @@ namespace Menge
 	{
 		return m_textureColor;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    inline void ResourceImage::setUVImageRotate( bool _rotate )
+    {
+        m_uvImageRotate = _rotate;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline bool ResourceImage::isUVImageRotate() const
+    {
+        return m_uvImageRotate;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline void ResourceImage::setUVAlphaRotate( bool _rotate )
+    {
+        m_uvAlphaRotate = _rotate;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline bool ResourceImage::isUVAlphaRotate() const
+    {
+        return m_uvAlphaRotate;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	inline void ResourceImage::setAlpha( bool _alpha )
 	{

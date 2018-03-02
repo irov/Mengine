@@ -229,16 +229,13 @@ namespace Menge
 		m_invalidateVerticesLocal = false;
 
 		const ResourceImagePtr & resourceImage =  m_resourceModel->getResourceImage();
-
-		const mt::uv4f & uv_image = resourceImage->getUVImage();
-		const mt::uv4f & uv_alpha = resourceImage->getUVAlpha();
-
+        		
 		for( uint32_t i = 0; i != m_vertexCount; ++i )
 		{
 			const mt::vec2f & uv = m_frame->uv[i];
 
-			multiply_tetragon_uv4_v2( m_verticesWM[i].uv[0], uv_image, uv );
-			multiply_tetragon_uv4_v2( m_verticesWM[i].uv[1], uv_alpha, uv );
+            resourceImage->correctUVImage( m_verticesWM[i].uv[0], uv );
+            resourceImage->correctUVAlpha( m_verticesWM[i].uv[1], uv );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

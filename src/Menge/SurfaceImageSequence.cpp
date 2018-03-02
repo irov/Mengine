@@ -40,7 +40,7 @@ namespace	Menge
 		return m_resourceAnimation;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceImageSequence::update( float _current, float _timing )
+	bool SurfaceImageSequence::_update( float _current, float _timing )
 	{
 		if( this->isPlay() == false )
 		{
@@ -466,6 +466,35 @@ namespace	Menge
         }
 
         return mt::uv4f::identity();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceImageSequence::correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in )
+    {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( "SurfaceImageSequence::correctUV: '%s' not compile"
+                , this->getName().c_str()
+            );
+
+            return;
+        }
+
+        const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
+
+        switch( _index )
+        {
+        case 0:
+            {
+                resourceImage->correctUVImage( _out, _in );
+            } break;
+        case 1:
+            {
+                resourceImage->correctUVAlpha( _out, _in );
+            } break;
+        default:
+            {
+            }break;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     const ColourValue & SurfaceImageSequence::getColour() const

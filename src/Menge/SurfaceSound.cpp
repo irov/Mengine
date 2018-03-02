@@ -133,7 +133,7 @@ namespace Menge
         m_resourceSound.release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-    bool SurfaceSound::update( float _time, float _timing )
+    bool SurfaceSound::_update( float _time, float _timing )
 	{
 		(void)_time;
 		(void)_timing;
@@ -184,6 +184,13 @@ namespace Menge
         (void)_index;
 
         return mt::uv4f::identity();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceSound::correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in )
+    {
+        (void)_index;
+
+        _out = _in;
     }
     //////////////////////////////////////////////////////////////////////////
     const ColourValue & SurfaceSound::getColour() const

@@ -9,6 +9,8 @@ namespace Menge
         : m_maxSize(0.f, 0.f)
         , m_size(0.f, 0.f)
 		, m_offset(0.f, 0.f)
+        , m_uvImageRotate(false)
+        , m_uvAlphaRotate(false)
         , m_hasAlpha(false)
 		, m_isPremultiply(false)
 	{
@@ -52,6 +54,30 @@ namespace Menge
                 );
 
             m_textureAlpha = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImage::correctUVImage( mt::vec2f & _out, const mt::vec2f & _in )
+    {
+        if( m_uvImageRotate == false )
+        {
+            mt::uv4_quad_point( _out, m_uvImage, _in );
+        }
+        else
+        {
+            mt::multiply_tetragon_uv4_v2( _out, m_uvImage, _in );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImage::correctUVAlpha( mt::vec2f & _out, const mt::vec2f & _in )
+    {
+        if( m_uvAlphaRotate == false )
+        {
+            mt::uv4_quad_point( _out, m_uvAlpha, _in );
+        }
+        else
+        {
+            mt::multiply_tetragon_uv4_v2( _out, m_uvAlpha, _in );
         }
     }
 }

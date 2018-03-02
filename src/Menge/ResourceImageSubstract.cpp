@@ -10,9 +10,12 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageSubstract::ResourceImageSubstract()
-        : m_resourceImage(nullptr)
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ResourceImageSubstract::~ResourceImageSubstract()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstract::_loader( const Metabuf::Metadata * _meta )
     {
@@ -23,8 +26,11 @@ namespace Menge
 
         m_resourceImageName = metadata->get_Image_Name();
 
-		m_uv_image = metadata->get_Image_UV();
-		m_uv_alpha = m_uv_image;
+		m_uvImage = metadata->get_Image_UV();
+		m_uvAlpha = m_uvImage;
+
+        metadata->get_Image_UVRotate( m_uvImageRotate );
+        m_uvAlphaRotate = m_uvImageRotate;
 
         metadata->get_Image_Alpha( m_hasAlpha );
 

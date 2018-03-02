@@ -13,6 +13,7 @@ namespace Menge
 
 	public:
 		ResourceImageSubstract();
+        ~ResourceImageSubstract();
 
 	protected:
 		bool _loader( const Metabuf::Metadata * _parser ) override;

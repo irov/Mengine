@@ -29,8 +29,10 @@ namespace Menge
 
         const ColourValue & getColour() const override;
 
+        void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) override;
+
 	protected:
-		bool update( float _current, float _timing ) override;
+		bool _update( float _current, float _timing ) override;
 
 	protected:
 		RenderMaterialInterfacePtr _updateMaterial() const override;

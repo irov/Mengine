@@ -304,7 +304,7 @@ namespace Menge
 			m_codecType = CODEC_SERVICE()
 				->findCodecType( m_filePath );
 		}
-
+        
 		m_hasAlpha = true;
         metadata->get_File_Alpha( m_hasAlpha );
 
@@ -377,7 +377,7 @@ namespace Menge
 
 		for( size_t i = 0; i != 4; ++i )
 		{
-			m_uv_image[i] *= uv_unscale;
+			m_uvImage[i] *= uv_unscale;
 		}
 
 		ResourceImage::_release();
@@ -393,8 +393,8 @@ namespace Menge
 				->findCodecType( m_filePath );
 		}
 
-        m_uv_image = _uv_image;
-		m_uv_alpha = _uv_alpha;
+        m_uvImage = _uv_image;
+		m_uvAlpha = _uv_alpha;
 
 		m_maxSize = _maxSize;
 		m_size = m_maxSize;
@@ -424,7 +424,7 @@ namespace Menge
 
 		for( size_t i = 0; i != 4; ++i )
 		{
-			m_uv_image[i] *= uv_scale;
+			m_uvImage[i] *= uv_scale;
 		}
 
 		uint32_t hwChannels = image->getHWChannels();

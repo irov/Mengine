@@ -27,14 +27,16 @@ namespace Menge
         uint32_t getUVCount() const override;
         const mt::uv4f & getUV( uint32_t _index ) const override;
 
-        const ColourValue & getColour() const override;
+        void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) override;
 
-	protected:
-		bool update( float _current, float _timing ) override;
+        const ColourValue & getColour() const override;
 
     protected:
 		bool _compile() override;
 		void _release() override;
+
+    protected:
+        bool _update( float _current, float _timing ) override;
 
 	protected:
 		RenderMaterialInterfacePtr _updateMaterial() const override;

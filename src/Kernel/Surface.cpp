@@ -12,4 +12,11 @@ namespace Menge
 	Surface::~Surface()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool Surface::update( float _current, float _timing )
+    {
+        bool successful = this->_update( _current, _timing );
+
+        return successful;
+    }
 }

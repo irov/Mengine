@@ -168,22 +168,12 @@ namespace Menge
 	{
 		m_invalidateVerticesLocal = false;
 
-		const mt::uv4f & uv_image = m_resourceImage->getUVImage();
-		
 		for( uint32_t i = 0; i != m_vertexCount; ++i )
 		{
 			const mt::vec2f & uv = m_shape->uv[i];
 
-			mt::multiply_tetragon_uv4_v2( m_verticesWM[i].uv[0], uv_image, uv );
-		}
-
-		const mt::uv4f & uv_alpha = m_resourceImage->getUVAlpha();
-
-		for( uint32_t i = 0; i != m_vertexCount; ++i )
-		{
-			const mt::vec2f & uv = m_shape->uv[i];
-
-			mt::multiply_tetragon_uv4_v2( m_verticesWM[i].uv[1], uv_alpha, uv );
+            m_resourceImage->correctUVImage( m_verticesWM[i].uv[0], uv );
+            m_resourceImage->correctUVAlpha( m_verticesWM[i].uv[1], uv );
 		}
 	}
     //////////////////////////////////////////////////////////////////////////

@@ -109,7 +109,14 @@ namespace	Menge
         return color;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceTrackMatte::update( float _current, float _timing )
+    void SurfaceTrackMatte::correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in )
+    {
+        (void)_index;
+
+        _out = _in;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SurfaceTrackMatte::_update( float _current, float _timing )
     {
         (void)_current;
         (void)_timing;

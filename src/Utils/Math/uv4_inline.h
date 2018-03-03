@@ -155,7 +155,7 @@ namespace mt
     //////////////////////////////////////////////////////////////////////////
     MENGINE_MATH_FUNCTION_INLINE void uv4_quad_point( mt::vec2f & _out, const mt::uv4f & _uv, const mt::vec2f & _point )
     {
-        _out = _uv[0] + (_uv[1] - _uv[2]) * _point;
+        _out = _uv[0] + (_uv[2] - _uv[0]) * _point;
     }
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void multiply_tetragon_uv4( mt::uv4f & _out, const mt::uv4f & _uv1, const mt::uv4f & _uv2 )

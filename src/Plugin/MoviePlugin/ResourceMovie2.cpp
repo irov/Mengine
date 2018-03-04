@@ -15,7 +15,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static size_t Mengine_read_stream( void * _data, void * _buff, size_t _carriage, size_t _size )
+	static size_t Mengine_read_stream( ae_voidptr_t _data, ae_voidptr_t _buff, size_t _carriage, size_t _size )
 	{
         (void)_carriage;
 
@@ -26,7 +26,7 @@ namespace Menge
 		return bytes;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void Mengine_copy_stream( void * _data, const void * _src, void * _dst, size_t _size )
+	static void Mengine_copy_stream( ae_voidptr_t _data, ae_constvoidptr_t _src, ae_voidptr_t _dst, size_t _size )
 	{
 		(void)_data;
 
@@ -157,10 +157,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie2::_loader( const Metabuf::Metadata * _meta )
 	{
-        const Metacode::Meta_DataBlock::Meta_ResourceMovie2 * metadata
-            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceMovie2 *>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 * metadata
+            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 *>(_meta);
                
-        metadata->swap_File_Path( m_filePath );
+        m_filePath = metadata->get_File_Path();
 
         return true;
 	}
@@ -207,11 +207,13 @@ namespace Menge
 
 		if( result != AE_RESULT_SUCCESSFUL )
 		{
-			LOGGER_ERROR("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s' result '%d'"
+			LOGGER_ERROR("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s' result '%s'\ncurrent version '%d'\nload version '%d'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, m_filePath.c_str()
-                , result
+                , ae_get_result_string_info( result )
+                , AE_MOVIE_SDK_VERSION
+                , data_version
 				);
 
 			return 0;

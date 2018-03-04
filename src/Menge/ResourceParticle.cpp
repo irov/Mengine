@@ -60,25 +60,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceParticle::_loader( const Metabuf::Metadata * _meta )
 	{
-		const Metacode::Meta_DataBlock::Meta_ResourceParticle * metadata
-			= static_cast<const Metacode::Meta_DataBlock::Meta_ResourceParticle *>(_meta);
+		const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle * metadata
+			= static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle *>(_meta);
 
-		metadata->swap_File_Path( m_filePath );
-		metadata->swap_File_Converter( m_converterType );
+        m_filePath = metadata->get_File_Path();
+		metadata->get_File_Converter( &m_converterType );
 
 		uint32_t atlasCount = metadata->get_AtlasCount_Value();
 
 		m_resourceImages.resize( atlasCount );
 
-		const Metacode::Meta_DataBlock::Meta_ResourceParticle::TVectorMeta_Atlas & includes_atlas = metadata->get_IncludesAtlas();
+		const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle::VectorMeta_Atlas & includes_atlas = metadata->get_Includes_Atlas();
 
-		for( Metacode::Meta_DataBlock::Meta_ResourceParticle::TVectorMeta_Atlas::const_iterator
+		for( Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle::VectorMeta_Atlas::const_iterator
 			it = includes_atlas.begin(),
 			it_end = includes_atlas.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas & atlas = *it;
+			const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas & atlas = *it;
 
 			uint32_t index = atlas.get_Index();
 			const ConstString & resourceName = atlas.get_ResourceName();

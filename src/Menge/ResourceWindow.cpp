@@ -26,19 +26,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceWindow::_loader( const Metabuf::Metadata * _meta )
 	{
-        const Metacode::Meta_DataBlock::Meta_ResourceWindow * metadata 
-            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceWindow *>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceWindow * metadata 
+            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceWindow *>(_meta);
 
-        metadata->swap_WindowBackground_ResourceImageName( m_images[ResourceWindow_Background].resourceName );
+        metadata->get_WindowBackground_ResourceImageName( &m_images[ResourceWindow_Background].resourceName );
 
-        metadata->swap_WindowBottom_ResourceImageName( m_images[ResourceWindow_Bottom].resourceName );
-        metadata->swap_WindowLeft_ResourceImageName( m_images[ResourceWindow_Left].resourceName );
-        metadata->swap_WindowLeftBottom_ResourceImageName( m_images[ResourceWindow_LeftBottom].resourceName );
-        metadata->swap_WindowLeftTop_ResourceImageName( m_images[ResourceWindow_LeftTop].resourceName );
-        metadata->swap_WindowRight_ResourceImageName( m_images[ResourceWindow_Right].resourceName );
-        metadata->swap_WindowRightBottom_ResourceImageName( m_images[ResourceWindow_RightBottom].resourceName );
-        metadata->swap_WindowRightTop_ResourceImageName( m_images[ResourceWindow_RightTop].resourceName );
-        metadata->swap_WindowTop_ResourceImageName( m_images[ResourceWindow_Top].resourceName );
+        m_images[ResourceWindow_Bottom].resourceName = metadata->get_WindowBottom_ResourceImageName();
+        m_images[ResourceWindow_Left].resourceName = metadata->get_WindowLeft_ResourceImageName();
+        m_images[ResourceWindow_LeftBottom].resourceName = metadata->get_WindowLeftBottom_ResourceImageName();
+        m_images[ResourceWindow_LeftTop].resourceName = metadata->get_WindowLeftTop_ResourceImageName();
+        m_images[ResourceWindow_Right].resourceName = metadata->get_WindowRight_ResourceImageName();
+        m_images[ResourceWindow_RightBottom].resourceName = metadata->get_WindowRightBottom_ResourceImageName();
+        m_images[ResourceWindow_RightTop].resourceName = metadata->get_WindowRightTop_ResourceImageName();
+        m_images[ResourceWindow_Top].resourceName = metadata->get_WindowTop_ResourceImageName();
         
         m_images[ResourceWindow_Bottom].offset = metadata->get_WindowBottom_Offset();
         m_images[ResourceWindow_Left].offset = metadata->get_WindowLeft_Offset();

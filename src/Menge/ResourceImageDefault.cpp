@@ -292,12 +292,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::_loader( const Metabuf::Metadata * _meta )
 	{
-        const Metacode::Meta_DataBlock::Meta_ResourceImageDefault * metadata 
-            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageDefault *>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageDefault * metadata
+            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageDefault *>(_meta);
 		       
-        metadata->swap_File_Path( m_filePath );
-        metadata->swap_File_Codec( m_codecType );
-		metadata->swap_File_Converter( m_converter );
+        m_filePath = metadata->get_File_Path();
+
+        metadata->get_File_Codec( &m_codecType );
+		metadata->get_File_Converter( &m_converter );
 
 		if( m_codecType.empty() == true )
 		{
@@ -306,19 +307,19 @@ namespace Menge
 		}
         
 		m_hasAlpha = true;
-        metadata->get_File_Alpha( m_hasAlpha );
+        metadata->get_File_Alpha( &m_hasAlpha );
 
 		m_isPremultiply = false;
-		metadata->get_File_Premultiply( m_isPremultiply );
+		metadata->get_File_Premultiply( &m_isPremultiply );
         		
 		m_maxSize = metadata->get_File_MaxSize();
 
 		m_size = m_maxSize;
-		metadata->get_File_Size( m_size );
-		metadata->get_File_Offset( m_offset );
+		metadata->get_File_Size( &m_size );
+		metadata->get_File_Offset( &m_offset );
 
 		m_validNoExist = false;
-		metadata->get_File_NoExist( m_validNoExist );
+		metadata->get_File_NoExist( &m_validNoExist );
 		
         return true;
     }

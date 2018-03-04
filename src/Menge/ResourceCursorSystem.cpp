@@ -13,10 +13,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceCursorSystem::_loader( const Metabuf::Metadata * _meta )
 	{
-        const Metacode::Meta_DataBlock::Meta_ResourceCursorSystem * metadata
-            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceCursorSystem *>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorSystem * metadata
+            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorSystem *>(_meta);
 
-        metadata->swap_File_Path( m_path );
+        m_path = metadata->get_File_Path();
 
         return true;
 	}

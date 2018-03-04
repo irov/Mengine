@@ -17,6 +17,7 @@ namespace Menge
 		, m_updateSpeed( 0.f )
 		, m_leftBorder( 0.0 )
 		, m_rightBorder( 0.0 )
+        , m_duration( 0.0 )
 		, m_time( 0.0 )
 		, m_rect( 0.f, 0.f, 0.f, 0.f )
 		, m_angle( 0.f )
@@ -46,6 +47,9 @@ namespace Menge
         m_leftBorder = Magic_GetInterval1( m_emitterId );
         m_rightBorder = Magic_GetInterval2( m_emitterId );
 
+        m_duration = Magic_GetDuration( m_emitterId );
+        Magic_SetInterval2( m_emitterId, m_duration );
+        
         if( this->setupBasePosition_() == false )
         {
             return false;
@@ -437,7 +441,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float AstralaxEmitter2::getDuration() const
 	{
-		double duration = (m_rightBorder - m_leftBorder) / m_updateSpeed;
+		double duration = m_duration / m_updateSpeed;
 
         float float_duration = (float)duration;
 

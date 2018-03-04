@@ -33,7 +33,7 @@ namespace Menge
 
 	public:
 		bool load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const override;
-		bool validation( const ConstString & _pak, const FilePath & _path ) const override;
+		bool validation( const ConstString & _pak, const FilePath & _path, const Metabuf::Metadata * _metadata ) const override;
 
 	private:
 		bool importBin_( const InputStreamInterfacePtr & _bin, Metabuf::Metadata * _metadata, bool * _reimport ) const;

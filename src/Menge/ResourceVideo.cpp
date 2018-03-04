@@ -49,17 +49,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceVideo::_loader( const Metabuf::Metadata * _meta )
 	{
-        const Metacode::Meta_DataBlock::Meta_ResourceVideo * metadata 
-            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceVideo *>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceVideo * metadata 
+            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceVideo *>(_meta);
 
-        metadata->swap_File_Path( m_filePath );
-        metadata->swap_File_Codec( m_codecType );
-        metadata->swap_File_Converter( m_converterType );        
+        m_filePath = metadata->get_File_Path();
 
-        metadata->get_File_Alpha( m_alpha );
-        metadata->get_File_NoSeek( m_noSeek );
-        metadata->get_File_FrameRate( m_frameRate );
-		metadata->get_File_Duration( m_duration );
+        metadata->get_File_Codec( &m_codecType );
+        metadata->get_File_Converter( &m_converterType );        
+
+        metadata->get_File_Alpha( &m_alpha );
+        metadata->get_File_NoSeek( &m_noSeek );
+        metadata->get_File_FrameRate( &m_frameRate );
+		metadata->get_File_Duration( &m_duration );
 
         return true;
 	}

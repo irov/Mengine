@@ -120,7 +120,7 @@ namespace Menge
 		return done;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::validation( const ConstString & _pak, const FilePath & _path ) const
+	bool LoaderEngine::validation( const ConstString & _pak, const FilePath & _path, const Metabuf::Metadata * _metadata ) const
 	{
 		InputStreamInterfacePtr stream =
 			FILE_SERVICE()->openInputFile( _pak, _path, false );
@@ -146,8 +146,10 @@ namespace Menge
 		uint32_t needVersion;
         uint32_t readProtocol;
         uint32_t needProtocol;
+        uint32_t metaMetaVersion = _metadata->getVersion();
+        uint32_t needMetaVersion;
 
-		if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol ) == false )
+		if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion ) == false )
 		{
 			return false;
 		}
@@ -176,8 +178,10 @@ namespace Menge
         uint32_t needVersion;
         uint32_t readProtocol;
         uint32_t needProtocol;
+        uint32_t metaMetaVersion = _metadata->getVersion();
+        uint32_t needMetaVersion;
 
-        if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol ) == false )
+        if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion ) == false )
         {
             if( _reimport == nullptr )
             {

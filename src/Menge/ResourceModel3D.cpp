@@ -28,14 +28,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceModel3D::_loader( const Metabuf::Metadata * _meta )
 	{
-		const Metacode::Meta_DataBlock::Meta_ResourceModel3D * metadata 
-			= static_cast<const Metacode::Meta_DataBlock::Meta_ResourceModel3D *>(_meta);
+		const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceModel3D * metadata 
+			= static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceModel3D *>(_meta);
 
-		metadata->swap_File_Path( m_path );
-		metadata->swap_File_Dataflow( m_dataflow );
-		metadata->swap_File_Converter( m_converterType );
+        m_path = metadata->get_File_Path();
 
-		metadata->swap_Image_Resource( m_imageResourceName );
+		metadata->get_File_Dataflow( &m_dataflow );
+		metadata->get_File_Converter( &m_converterType );
+
+        m_imageResourceName = metadata->get_Image_Resource();
 		
 		return true;
 	}

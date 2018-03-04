@@ -155,7 +155,7 @@ namespace Menge
 			return true;
 		}
 
-		Metacode::Meta_Pak pak;
+		Metacode::Meta_Data::Meta_Pak pak;
 
 		bool exist = false;
 		if( LOADER_SERVICE()
@@ -172,132 +172,131 @@ namespace Menge
 
         m_resourcesDesc.reserve( 32 );        
 
-		const Metacode::Meta_Pak::TVectorMeta_Scripts & includes_scripts = pak.get_IncludesScripts();
+		const Metacode::Meta_Data::Meta_Pak::VectorMeta_Scripts & includes_scripts = pak.get_Includes_Scripts();
 
-		for( Metacode::Meta_Pak::TVectorMeta_Scripts::const_iterator
+		for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Scripts::const_iterator
 			it = includes_scripts.begin(),
 			it_end = includes_scripts.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_Pak::Meta_Scripts & meta_scripts = *it;
+			const Metacode::Meta_Data::Meta_Pak::Meta_Scripts & meta_scripts = *it;
 
 			const FilePath & Path = meta_scripts.get_Path();
-			
-			ConstString Module;
-			meta_scripts.swap_Module( Module );
 
-			ConstString Initializer;
-			meta_scripts.swap_Initializer( Initializer );
+            ConstString Module;
+            meta_scripts.get_Module( &Module );
+            ConstString Initializer;
+            meta_scripts.get_Initializer( &Initializer );
 
 			ConstString Finalizer;
-			meta_scripts.swap_Finalizer( Finalizer );
+			meta_scripts.get_Finalizer( &Finalizer );
 
 			Tags Platform;
-			meta_scripts.swap_Platform( Platform );
+			meta_scripts.get_Platform( &Platform );
 
 			this->addScriptPak_( Path, Module, Initializer, Finalizer, Platform );
 		}
 
-		const Metacode::Meta_Pak::TVectorMeta_Fonts & includes_fonts = pak.get_IncludesFonts();
+		const Metacode::Meta_Data::Meta_Pak::VectorMeta_Fonts & includes_fonts = pak.get_Includes_Fonts();
 
-		for( Metacode::Meta_Pak::TVectorMeta_Fonts::const_iterator
+		for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Fonts::const_iterator
 			it = includes_fonts.begin(),
 			it_end = includes_fonts.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_Pak::Meta_Fonts & meta_fonts = *it;
+			const Metacode::Meta_Data::Meta_Pak::Meta_Fonts & meta_fonts = *it;
 
 			const FilePath & Path = meta_fonts.get_Path();
 
-			Tags Platform;
-			meta_fonts.swap_Platform( Platform );
+            Tags Platform;
+            meta_fonts.get_Platform( &Platform );
 
 			this->addFontPath_( Path, Platform );
 		}
 
-		const Metacode::Meta_Pak::TVectorMeta_Resources & includes_resources = pak.get_IncludesResources();
+		const Metacode::Meta_Data::Meta_Pak::VectorMeta_Resources & includes_resources = pak.get_Includes_Resources();
 
-		for( Metacode::Meta_Pak::TVectorMeta_Resources::const_iterator
+		for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Resources::const_iterator
 			it = includes_resources.begin(),
 			it_end = includes_resources.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_Pak::Meta_Resources & meta_resources = *it;
+			const Metacode::Meta_Data::Meta_Pak::Meta_Resources & meta_resources = *it;
 
 			bool ignored = false;
-			meta_resources.get_Ignored( ignored );
+			meta_resources.get_Ignored( &ignored );
 
 			Tags platform;
-			meta_resources.get_Platform( platform );
+			meta_resources.get_Platform( &platform );
 
-			const Metacode::Meta_Pak::Meta_Resources::TVectorMeta_Resource & includes_resource = meta_resources.get_IncludesResource();
+			const Metacode::Meta_Data::Meta_Pak::Meta_Resources::VectorMeta_Resource & includes_resource = meta_resources.get_Includes_Resource();
             
-			for( Metacode::Meta_Pak::Meta_Resources::TVectorMeta_Resource::const_iterator
+			for( Metacode::Meta_Data::Meta_Pak::Meta_Resources::VectorMeta_Resource::const_iterator
 				it_include = includes_resource.begin(),
 				it_include_end = includes_resource.end();
 			it_include != it_include_end;
 			++it_include)
 			{
-				const Metacode::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource = *it_include;
+				const Metacode::Meta_Data::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource = *it_include;
 
 				const FilePath & Path = meta_resource.get_Path();
 				this->addResource_( Path, platform, ignored );
 			}
 		}
 
-		const Metacode::Meta_Pak::TVectorMeta_Texts & includes_tests = pak.get_IncludesTexts();
+		const Metacode::Meta_Data::Meta_Pak::VectorMeta_Texts & includes_tests = pak.get_Includes_Texts();
 
-		for( Metacode::Meta_Pak::TVectorMeta_Texts::const_iterator
+		for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Texts::const_iterator
 			it = includes_tests.begin(),
 			it_end = includes_tests.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_Pak::Meta_Texts & meta_texts = *it;
+			const Metacode::Meta_Data::Meta_Pak::Meta_Texts & meta_texts = *it;
 
 			Tags platform;
-			meta_texts.get_Platform( platform );
+			meta_texts.get_Platform( &platform );
 
-			const Metacode::Meta_Pak::Meta_Texts::TVectorMeta_Text & includes_text = meta_texts.get_IncludesText();
+			const Metacode::Meta_Data::Meta_Pak::Meta_Texts::VectorMeta_Text & includes_text = meta_texts.get_Includes_Text();
 
-			for( Metacode::Meta_Pak::Meta_Texts::TVectorMeta_Text::const_iterator
+			for( Metacode::Meta_Data::Meta_Pak::Meta_Texts::VectorMeta_Text::const_iterator
 				it_include = includes_text.begin(),
 				it_include_end = includes_text.end();
 				it_include != it_include_end;
 			++it_include)
 			{
-				const Metacode::Meta_Pak::Meta_Texts::Meta_Text & meta_text = *it_include;
+				const Metacode::Meta_Data::Meta_Pak::Meta_Texts::Meta_Text & meta_text = *it_include;
 
 				const FilePath & Path = meta_text.get_Path();
 				this->addTextPath_( Path, platform );
 			}
 		}
 
-		const Metacode::Meta_Pak::TVectorMeta_Datas & includes_datas = pak.get_IncludesDatas();
+		const Metacode::Meta_Data::Meta_Pak::VectorMeta_Datas & includes_datas = pak.get_Includes_Datas();
 
-		for( Metacode::Meta_Pak::TVectorMeta_Datas::const_iterator
+		for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Datas::const_iterator
 			it = includes_datas.begin(),
 			it_end = includes_datas.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_Pak::Meta_Datas & meta_datas = *it;
+			const Metacode::Meta_Data::Meta_Pak::Meta_Datas & meta_datas = *it;
 
 			Tags platform;
-			meta_datas.get_Platform( platform );
+			meta_datas.get_Platform( &platform );
 
-			const Metacode::Meta_Pak::Meta_Datas::TVectorMeta_Data & includes_data = meta_datas.get_IncludesData();
+			const Metacode::Meta_Data::Meta_Pak::Meta_Datas::VectorMeta_Data & includes_data = meta_datas.get_Includes_Data();
 
-			for( Metacode::Meta_Pak::Meta_Datas::TVectorMeta_Data::const_iterator
+			for( Metacode::Meta_Data::Meta_Pak::Meta_Datas::VectorMeta_Data::const_iterator
 				it_include = includes_data.begin(),
 				it_include_end = includes_data.end();
 				it_include != it_include_end;
 			++it_include)
 			{
-				const Metacode::Meta_Pak::Meta_Datas::Meta_Data & meta_data = *it_include;
+				const Metacode::Meta_Data::Meta_Pak::Meta_Datas::Meta_Data & meta_data = *it_include;
 
 				const ConstString & name = meta_data.get_Name();
 				const FilePath & path = meta_data.get_Path();
@@ -306,28 +305,28 @@ namespace Menge
 			}
 		}
 
-		const Metacode::Meta_Pak::TVectorMeta_Materials & includes_materials = pak.get_IncludesMaterials();
+		const Metacode::Meta_Data::Meta_Pak::VectorMeta_Materials & includes_materials = pak.get_Includes_Materials();
 
-		for( Metacode::Meta_Pak::TVectorMeta_Materials::const_iterator
+		for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Materials::const_iterator
 			it = includes_materials.begin(),
 			it_end = includes_materials.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_Pak::Meta_Materials & meta_materials = *it;
+			const Metacode::Meta_Data::Meta_Pak::Meta_Materials & meta_materials = *it;
 
 			Tags platform;
-			meta_materials.get_Platform( platform );
+			meta_materials.get_Platform( &platform );
 
-			const Metacode::Meta_Pak::Meta_Materials::TVectorMeta_Material & includes_material = meta_materials.get_IncludesMaterial();
+			const Metacode::Meta_Data::Meta_Pak::Meta_Materials::VectorMeta_Material & includes_material = meta_materials.get_Includes_Material();
 
-			for( Metacode::Meta_Pak::Meta_Materials::TVectorMeta_Material::const_iterator
+			for( Metacode::Meta_Data::Meta_Pak::Meta_Materials::VectorMeta_Material::const_iterator
 				it_include = includes_material.begin(),
 				it_include_end = includes_material.end();
 				it_include != it_include_end;
 			++it_include)
 			{
-				const Metacode::Meta_Pak::Meta_Materials::Meta_Material & meta_material = *it_include;
+				const Metacode::Meta_Data::Meta_Pak::Meta_Materials::Meta_Material & meta_material = *it_include;
 
 				const FilePath & path = meta_material.get_Path();
 

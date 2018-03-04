@@ -101,6 +101,7 @@ namespace Menge
 		float m_updateSpeed;
 		double m_leftBorder;
 		double m_rightBorder;
+        double m_duration;
 		
         double m_time;
 

@@ -34,13 +34,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceHIT::_loader( const Metabuf::Metadata * _meta )
 	{
-        const Metacode::Meta_DataBlock::Meta_ResourceHIT * metadata 
-            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceHIT *>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceHIT * metadata 
+            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceHIT *>(_meta);
 
-        metadata->swap_File_Path( m_filePath );
-        metadata->swap_File_Converter( m_converterType );
-        
-        metadata->swap_File_Codec( m_codecType );
+        m_filePath = metadata->get_File_Path();
+        metadata->get_File_Converter( &m_converterType );        
+        metadata->get_File_Codec( &m_codecType );
 
         return true;
 	}

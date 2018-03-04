@@ -19,24 +19,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceAnimation::_loader( const Metabuf::Metadata * _meta )
 	{
-        const Metacode::Meta_DataBlock::Meta_ResourceAnimation * metadata
-            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceAnimation *>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceAnimation * metadata
+            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceAnimation *>(_meta);
 
-        const Metacode::Meta_DataBlock::Meta_ResourceAnimation::TVectorMeta_Sequence & includes_sequence = metadata->get_IncludesSequence();
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceAnimation::VectorMeta_Sequence & includes_sequence = metadata->get_Includes_Sequence();
 
 		m_duration = 0.f;
 
-        for( Metacode::Meta_DataBlock::Meta_ResourceAnimation::TVectorMeta_Sequence::const_iterator
+        for( Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceAnimation::VectorMeta_Sequence::const_iterator
             it = includes_sequence.begin(),
             it_end = includes_sequence.end();
         it != it_end;
         ++it )
         {
-            const Metacode::Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence & meta_sequence = *it;
+            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence & meta_sequence = *it;
 
             AnimationSequence sq;
 
-            meta_sequence.swap_ResourceImageName( sq.resourceName );
+            sq.resourceName = meta_sequence.get_ResourceImageName();
             float delay = meta_sequence.get_Delay();
 
             sq.delay = delay;

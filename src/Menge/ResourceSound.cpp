@@ -36,15 +36,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceSound::_loader( const Metabuf::Metadata * _meta )
 	{
-        const Metacode::Meta_DataBlock::Meta_ResourceSound * metadata 
-            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceSound *>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSound * metadata 
+            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSound *>(_meta);
 
-        metadata->swap_File_Path( m_filePath );
-        metadata->swap_File_Codec( m_codecType );
-        metadata->swap_File_Converter( m_converter );
+        m_filePath = metadata->get_File_Path();
 
-        metadata->get_DefaultVolume_Value( m_defaultVolume );
-        metadata->get_IsStreamable_Value( m_isStreamable );
+        metadata->get_File_Codec( &m_codecType );
+        metadata->get_File_Converter( &m_converter );
+
+        metadata->get_DefaultVolume_Value( &m_defaultVolume );
+        metadata->get_IsStreamable_Value( &m_isStreamable );
 
         return true;
 	}

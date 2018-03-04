@@ -184,7 +184,8 @@ namespace Menge
 
         aeMovieStream * movie_stream = ae_create_movie_stream( movieInstance, &my_read_stream, &my_copy_stream, input_stream.get() );
 
-        ae_result_t successful = ae_load_movie_data( movieData, movie_stream );
+        ae_uint32_t load_version;
+        ae_result_t successful = ae_load_movie_data( movieData, movie_stream, &load_version );
 
         ae_delete_movie_stream( movie_stream );
 

@@ -190,7 +190,9 @@ namespace Menge
         xml_stream->read( &xml_buf[0], xml_size );
         xml_stream = nullptr;
 
-		Metabuf::Xml2Metabuf xml_metabuf(&xml_protocol);
+        const Metabuf::XmlMeta * xml_meta = xml_protocol.getMeta( "Data" );
+
+        Metabuf::Xml2Metabuf xml_metabuf( &xml_protocol, xml_meta );
 
         LOGGER_INFO( "Xml2BinDecoder::decode:\nxml %s\nbin %s"
             , m_options.pathXml.c_str()
@@ -207,7 +209,7 @@ namespace Menge
 		header_buf.resize( Metabuf::header_size );
 
         size_t header_size;
-        if( xml_metabuf.header( &header_buf[0], 16, header_size ) == false )
+        if( xml_metabuf.header( &header_buf[0], 16, xml_meta->getVersion(), header_size ) == false )
         {
             LOGGER_ERROR("Xml2BinDecoder::decode: error header %s error:\n%s"
                 , m_options.pathXml.c_str()

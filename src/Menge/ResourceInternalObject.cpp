@@ -28,11 +28,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceInternalObject::_loader( const Metabuf::Metadata * _meta )
 	{
-        const Metacode::Meta_DataBlock::Meta_ResourceInternalObject * metadata
-            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceInternalObject *>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceInternalObject * metadata
+            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceInternalObject *>(_meta);
 
-        metadata->swap_Internal_Name( m_internalName );
-        metadata->swap_Internal_Group( m_internalGroup );
+        m_internalName = metadata->get_Internal_Name();
+        m_internalGroup = metadata->get_Internal_Group();
 
         return true;
 	}

@@ -92,7 +92,7 @@ namespace Menge
 	{
 		bool exist = false;
 
-		Metacode::Meta_KeyFramesPack keyFramesPack;
+		Metacode::Meta_Data::Meta_KeyFramesPack keyFramesPack;
 
 		PathString binPath;
 
@@ -151,36 +151,36 @@ namespace Menge
 			layer.immutable = 0;
 		}
 
-		const Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames2D & includes_frames2d = keyFramesPack.get_IncludesKeyFrames2D();
+		const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_KeyFrames2D & includes_frames2d = keyFramesPack.get_Includes_KeyFrames2D();
 
-		for( Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames2D::const_iterator
+		for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_KeyFrames2D::const_iterator
 			it = includes_frames2d.begin(),
 			it_end = includes_frames2d.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D & meta_frames2d = *it;
+			const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D & meta_frames2d = *it;
 
 			uint32_t layerIndex = meta_frames2d.get_LayerIndex();
 
 			ConverterMovieLayerFrame & frameLayer = frameLayers[layerIndex - 1];
 
 			bool immutable = false;
-			meta_frames2d.get_Immutable( immutable );
+			meta_frames2d.get_Immutable( &immutable );
 
 			frameLayer.immutable = immutable ? 1 : 0;
 
 			if( frameLayer.immutable == 1 )
 			{
-				const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::TVectorMeta_KeyFrame2D & includes_frame2d = meta_frames2d.get_IncludesKeyFrame2D();
+				const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::VectorMeta_KeyFrame2D & includes_frame2d = meta_frames2d.get_Includes_KeyFrame2D();
 
-				for( Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::TVectorMeta_KeyFrame2D::const_iterator
+				for( Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::VectorMeta_KeyFrame2D::const_iterator
 					it_frame = includes_frame2d.begin(),
 					it_frame_end = includes_frame2d.end();
 				it_frame != it_frame_end;
 				++it_frame )
 				{
-					const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it_frame;
+					const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it_frame;
 
 					mt::vec2f anchorPoint2d( 0.f, 0.f );
 					mt::vec2f position2d( 0.f, 0.f );
@@ -192,13 +192,13 @@ namespace Menge
 
 					float volume = 1.f;
 
-					meta_frame2d.get_AnchorPoint( anchorPoint2d );
-					meta_frame2d.get_Position( position2d );
-					meta_frame2d.get_Scale( scale2d );
-					meta_frame2d.get_Rotation( angle );
-					meta_frame2d.get_Opacity( opacity );
-					meta_frame2d.get_Count( count );
-					meta_frame2d.get_Volume( volume );
+					meta_frame2d.get_AnchorPoint( &anchorPoint2d );
+					meta_frame2d.get_Position( &position2d );
+					meta_frame2d.get_Scale( &scale2d );
+					meta_frame2d.get_Rotation( &angle );
+					meta_frame2d.get_Opacity( &opacity );
+					meta_frame2d.get_Count( &count );
+					meta_frame2d.get_Volume( &volume );
 
 					MovieFrameSource frame;
 					frame.anchorPoint = mt::vec3f( anchorPoint2d, 0.f );
@@ -218,7 +218,7 @@ namespace Menge
 			else
 			{
 				uint32_t count = 0;
-				meta_frames2d.get_Count( count );
+				meta_frames2d.get_Count( &count );
 
 				frameLayer.count = count;
 
@@ -232,15 +232,15 @@ namespace Menge
 
 				bool frameLast = false;
 
-				const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::TVectorMeta_KeyFrame2D & includes_frame2d = meta_frames2d.get_IncludesKeyFrame2D();
+				const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::VectorMeta_KeyFrame2D & includes_frame2d = meta_frames2d.get_Includes_KeyFrame2D();
 
-				for( Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::TVectorMeta_KeyFrame2D::const_iterator
+				for( Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::VectorMeta_KeyFrame2D::const_iterator
 					it_frame = includes_frame2d.begin(),
 					it_frame_end = includes_frame2d.end();
 				it_frame != it_frame_end;
 				++it_frame )
 				{
-					const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it_frame;
+					const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it_frame;
 
 					uint32_t count_frame = 1;
 
@@ -266,13 +266,13 @@ namespace Menge
 						frameLast = true;
 					}
 
-					meta_frame2d.get_AnchorPoint( anchorPoint2d );
-					meta_frame2d.get_Position( position2d );
-					meta_frame2d.get_Scale( scale2d );
-					meta_frame2d.get_Rotation( angle );
-					meta_frame2d.get_Opacity( frame.opacity );
-					meta_frame2d.get_Count( count_frame );
-					meta_frame2d.get_Volume( volume );
+					meta_frame2d.get_AnchorPoint( &anchorPoint2d );
+					meta_frame2d.get_Position( &position2d );
+					meta_frame2d.get_Scale( &scale2d );
+					meta_frame2d.get_Rotation( &angle );
+					meta_frame2d.get_Opacity( &frame.opacity );
+					meta_frame2d.get_Count( &count_frame );
+					meta_frame2d.get_Volume( &volume );
 
 					frame.anchorPoint = mt::vec3f( anchorPoint2d, 0.f );
 					frame.position = mt::vec3f( position2d, 0.f );
@@ -297,27 +297,27 @@ namespace Menge
 			}
 		}
 
-		const Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames3D & includes_frames3d = keyFramesPack.get_IncludesKeyFrames3D();
+		const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_KeyFrames3D & includes_frames3d = keyFramesPack.get_Includes_KeyFrames3D();
 
-		for( Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames3D::const_iterator
+		for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_KeyFrames3D::const_iterator
 			it = includes_frames3d.begin(),
 			it_end = includes_frames3d.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D & meta_frames3d = *it;
+			const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames3D & meta_frames3d = *it;
 
 			uint32_t layerIndex = meta_frames3d.get_LayerIndex();
 
 			ConverterMovieLayerFrame & frameLayer = frameLayers[layerIndex - 1];
 
 			uint32_t count = 0;
-			meta_frames3d.get_Count( count );
+			meta_frames3d.get_Count( &count );
 
 			frameLayer.count = count;
 
 			bool immutable = false;
-			meta_frames3d.get_Immutable( immutable );
+			meta_frames3d.get_Immutable( &immutable );
 
 			frameLayer.immutable = immutable ? 1 : 0;
 
@@ -332,28 +332,28 @@ namespace Menge
 			mt::vec3f rotation( 0.f, 0.f, 0.f );
 			mt::vec3f orientation( 0.f, 0.f, 0.f );
 
-			const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::TVectorMeta_KeyFrame3D & includes_frame3d = meta_frames3d.get_IncludesKeyFrame3D();
+			const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames3D::VectorMeta_KeyFrame3D & includes_frame3d = meta_frames3d.get_Includes_KeyFrame3D();
 
-			for( Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::TVectorMeta_KeyFrame3D::const_iterator
+			for( Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames3D::VectorMeta_KeyFrame3D::const_iterator
 				it_frame = includes_frame3d.begin(),
 				it_frame_end = includes_frame3d.end();
 			it_frame != it_frame_end;
 			++it_frame )
 			{
-				const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & meta_frame3d = *it_frame;
+				const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & meta_frame3d = *it_frame;
 
 				uint32_t count_frame = 1;
 
-				meta_frame3d.get_AnchorPoint( frame.anchorPoint );
-				meta_frame3d.get_Position( frame.position );
-				meta_frame3d.get_Rotation( rotation );
-				meta_frame3d.get_Orientation( orientation );
-				meta_frame3d.get_Scale( frame.scale );
-				meta_frame3d.get_Opacity( frame.opacity );
-				meta_frame3d.get_Count( count_frame );
+				meta_frame3d.get_AnchorPoint( &frame.anchorPoint );
+				meta_frame3d.get_Position( &frame.position );
+				meta_frame3d.get_Rotation( &rotation );
+				meta_frame3d.get_Orientation( &orientation );
+				meta_frame3d.get_Scale( &frame.scale );
+				meta_frame3d.get_Opacity( &frame.opacity );
+				meta_frame3d.get_Count( &count_frame );
 
 				frame.volume = 1.f;
-				meta_frame3d.get_Volume( frame.volume );
+				meta_frame3d.get_Volume( &frame.volume );
 
 				mt::quatf qo;
 				mt::make_quat_from_euler( qo, orientation );
@@ -466,18 +466,18 @@ namespace Menge
 			}
 		}
 
-		const Metacode::Meta_KeyFramesPack::TVectorMeta_TimeRemap & includes_timeremaps = keyFramesPack.get_IncludesTimeRemap();
+		const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_TimeRemap & includes_timeremaps = keyFramesPack.get_Includes_TimeRemap();
 
 		uint32_t remapsSize = (uint32_t)includes_timeremaps.size();
 		aw << remapsSize;
 
-		for( Metacode::Meta_KeyFramesPack::TVectorMeta_TimeRemap::const_iterator
+		for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_TimeRemap::const_iterator
 			it = includes_timeremaps.begin(),
 			it_end = includes_timeremaps.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_KeyFramesPack::Meta_TimeRemap & meta_timeremap = *it;
+			const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_TimeRemap & meta_timeremap = *it;
 
 			uint32_t layerIndex = meta_timeremap.get_LayerIndex();
 
@@ -494,18 +494,18 @@ namespace Menge
 			}
 		}
 
-		const Metacode::Meta_KeyFramesPack::TVectorMeta_ImageShape & includes_imageshapes = keyFramesPack.get_IncludesImageShape();
+		const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_ImageShape & includes_imageshapes = keyFramesPack.get_Includes_ImageShape();
 
 		uint32_t shapesSize = (uint32_t)includes_imageshapes.size();
 		aw << shapesSize;
 
-		for( Metacode::Meta_KeyFramesPack::TVectorMeta_ImageShape::const_iterator
+		for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_ImageShape::const_iterator
 			it = includes_imageshapes.begin(),
 			it_end = includes_imageshapes.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_KeyFramesPack::Meta_ImageShape & meta_imageshape = *it;
+			const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_ImageShape & meta_imageshape = *it;
 
 			uint32_t layerIndex = meta_imageshape.get_LayerIndex();
 
@@ -514,30 +514,30 @@ namespace Menge
 			const mt::vec2f & imageMaxSize = meta_imageshape.get_ImageMaxSize();
 
 			mt::vec2f imageSize;
-			if( meta_imageshape.get_ImageSize( imageSize ) == false )
+			if( meta_imageshape.get_ImageSize( &imageSize ) == false )
 			{
 				imageSize = imageMaxSize;
 			}
 
 			mt::vec2f imageOffset( 0.f, 0.f );
-			meta_imageshape.get_ImageOffset( imageOffset );
+			meta_imageshape.get_ImageOffset( &imageOffset );
 
 			bool subtract = false;
-			meta_imageshape.get_Subtract( subtract );
+			meta_imageshape.get_Subtract( &subtract );
 
-			const Metacode::Meta_KeyFramesPack::Meta_ImageShape::TVectorMeta_Shape & includes_shapes = meta_imageshape.get_IncludesShape();
+			const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_ImageShape::VectorMeta_Shape & includes_shapes = meta_imageshape.get_Includes_Shape();
 
 			uint32_t includes_shapes_size = (uint32_t)includes_shapes.size();
 
 			aw << includes_shapes_size;
 
-			for( Metacode::Meta_KeyFramesPack::Meta_ImageShape::TVectorMeta_Shape::const_iterator
+			for( Metacode::Meta_Data::Meta_KeyFramesPack::Meta_ImageShape::VectorMeta_Shape::const_iterator
 				it_shape = includes_shapes.begin(),
 				it_shape_end = includes_shapes.end();
 			it_shape != it_shape_end;
 			++it_shape )
 			{
-				const Metacode::Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & meta_shape = *it_shape;
+				const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & meta_shape = *it_shape;
 
 				Polygon polygon = meta_shape.get_Polygon();
 				polygon.correct();
@@ -765,18 +765,18 @@ namespace Menge
 			}
 		}
 
-		const Metacode::Meta_KeyFramesPack::TVectorMeta_Polygon & includes_polygons = keyFramesPack.get_IncludesPolygon();
+		const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_Polygon & includes_polygons = keyFramesPack.get_Includes_Polygon();
 
 		uint32_t polygonsSize = (uint32_t)includes_polygons.size();
 		aw << polygonsSize;
 
-		for( Metacode::Meta_KeyFramesPack::TVectorMeta_Polygon::const_iterator
+		for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_Polygon::const_iterator
 			it = includes_polygons.begin(),
 			it_end = includes_polygons.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_KeyFramesPack::Meta_Polygon & meta_polygon = *it;
+			const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_Polygon & meta_polygon = *it;
 
 			uint32_t layerIndex = meta_polygon.get_LayerIndex();
 

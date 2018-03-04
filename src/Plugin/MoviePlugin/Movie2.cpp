@@ -173,7 +173,7 @@ namespace Menge
             ->onAnimatableEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void * __movie_composition_camera_provider( const aeMovieCameraProviderCallbackData * _callbackData, void * _data )
+    static void * __movie_composition_camera_provider( const aeMovieCameraProviderCallbackData * _callbackData, ae_voidptr_t _data )
     {
         Movie2 * movie2 = (Movie2 *)_data;
 
@@ -224,7 +224,7 @@ namespace Menge
         return new_camera;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void __movie_composition_camera_deleter( const aeMovieCameraDeleterCallbackData * _callbackData, void * _data )
+    static void __movie_composition_camera_deleter( const aeMovieCameraDeleterCallbackData * _callbackData, ae_voidptr_t _data )
     {
         Movie2 * movie2 = (Movie2 *)_data;
 
@@ -233,7 +233,7 @@ namespace Menge
         movie2->removeCamera( c_name );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void __movie_composition_camera_update( const aeMovieCameraUpdateCallbackData * _callbackData, void * _data )
+    static void __movie_composition_camera_update( const aeMovieCameraUpdateCallbackData * _callbackData, ae_voidptr_t _data )
     {
         (void)_data;
 
@@ -252,7 +252,7 @@ namespace Menge
         camera->projection->setCameraDirection( cameraDirection );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void * __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, void * _data )
+    static void * __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptr_t _data )
     {
         Movie2 * movie2 = (Movie2 *)_data;
 
@@ -661,7 +661,7 @@ namespace Menge
         return AE_NULL;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, void * _data )
+    static ae_void_t __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, ae_voidptr_t _data )
     {
         Movie2 * movie2 = (Movie2 *)_data;
         (void)movie2;
@@ -716,7 +716,7 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_composition_node_update( const aeMovieNodeUpdateCallbackData * _callbackData, void * _data )
+    static ae_void_t __movie_composition_node_update( const aeMovieNodeUpdateCallbackData * _callbackData, ae_voidptr_t _data )
     {
         (void)_data;
             
@@ -1029,7 +1029,7 @@ namespace Menge
         ae_track_matte_mode_t mode;
     };
     //////////////////////////////////////////////////////////////////////////
-    static ae_voidptr_t __movie_composition_track_matte_provider( const aeMovieTrackMatteProviderCallbackData * _callbackData, void * _data )
+    static ae_voidptr_t __movie_composition_track_matte_provider( const aeMovieTrackMatteProviderCallbackData * _callbackData, ae_voidptr_t _data )
     {
         (void)_data;
 
@@ -1042,7 +1042,7 @@ namespace Menge
         return desc;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_composition_track_matte_update( const aeMovieTrackMatteUpdateCallbackData * _callbackData, void * _data )
+    static ae_void_t __movie_composition_track_matte_update( const aeMovieTrackMatteUpdateCallbackData * _callbackData, ae_voidptr_t _data )
     {
         (void)_data;
 
@@ -1089,13 +1089,13 @@ namespace Menge
 
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_composition_event( const aeMovieCompositionEventCallbackData * _callbackData, void * _data )
+    static ae_void_t __movie_composition_event( const aeMovieCompositionEventCallbackData * _callbackData, ae_voidptr_t _data )
     {
         (void)_callbackData;
         (void)_data;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_composition_state( const aeMovieCompositionStateCallbackData * _callbackData, void * _data )
+    static ae_void_t __movie_composition_state( const aeMovieCompositionStateCallbackData * _callbackData, ae_voidptr_t _data )
     {
         if( _callbackData->subcomposition != AE_NULL )
         {

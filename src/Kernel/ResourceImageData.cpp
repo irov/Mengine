@@ -103,11 +103,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageData::_loader( const Metabuf::Metadata * _meta )
 	{
-        const Metacode::Meta_DataBlock::Meta_ResourceImageData * metadata 
-            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageData *>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageData * metadata 
+            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageData *>(_meta);
 		        
-        metadata->swap_File_Path( m_fileName );
-        metadata->swap_File_Codec( m_codecType );
+        m_fileName = metadata->get_File_Path();
+
+        metadata->get_File_Codec( &m_codecType );
 
         if( m_codecType.empty() == true )
         {
@@ -118,7 +119,7 @@ namespace Menge
 		m_maxSize = metadata->get_File_MaxSize();
 
 		m_validNoExist = false;
-		metadata->get_File_NoExist( m_validNoExist );
+		metadata->get_File_NoExist( &m_validNoExist );
 		
         return true;
     }

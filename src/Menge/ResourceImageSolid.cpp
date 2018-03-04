@@ -15,8 +15,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageSolid::_loader( const Metabuf::Metadata * _meta )
 	{
-        const Metacode::Meta_DataBlock::Meta_ResourceImageSolid * metadata 
-            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageSolid *>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSolid * metadata 
+            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSolid *>(_meta);
         
         m_textureColor = metadata->get_Color_Value();
 

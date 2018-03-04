@@ -40,22 +40,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMusic::_loader( const Metabuf::Metadata * _meta )
 	{
-        const Metacode::Meta_DataBlock::Meta_ResourceMusic * metadata 
-			= static_cast<const Metacode::Meta_DataBlock::Meta_ResourceMusic *>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMusic * metadata 
+			= static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMusic *>(_meta);
 
-		metadata->swap_File_Path( m_path );
+        m_path = metadata->get_File_Path();
 
-		if( metadata->swap_File_Codec( m_codec ) == false )
+		if( metadata->get_File_Codec( &m_codec ) == false )
 		{
 			m_codec = CODEC_SERVICE()
 				->findCodecType( m_path );
 		}
 
-		metadata->swap_File_Converter( m_converter );
-
-		metadata->swap_File_External( m_external );
-
-		metadata->get_DefaultVolume_Value( m_volume );
+		metadata->get_File_Converter( &m_converter );
+		metadata->get_File_External( &m_external );
+		metadata->get_DefaultVolume_Value( &m_volume );
 
         return true;
 	}

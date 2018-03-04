@@ -149,7 +149,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::loadMaterials( const ConstString& _pakName, const FilePath& _fileName )
     {
-		Metacode::Meta_DataBlock datablock;
+		Metacode::Meta_Data::Meta_DataBlock datablock;
 
 		bool exist = false;
 		if( LOADER_SERVICE()
@@ -176,15 +176,15 @@ namespace Menge
 		const ConstString & renderPlatformName = RENDER_SYSTEM()
 			->getRenderPlatformName();
 
-		const Metacode::Meta_DataBlock::TVectorMeta_FragmentShader & includes_FragmentShader = datablock.get_IncludesFragmentShader();
+		const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_FragmentShader & includes_FragmentShader = datablock.get_Includes_FragmentShader();
 
-		for( Metacode::Meta_DataBlock::TVectorMeta_FragmentShader::const_iterator
+		for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_FragmentShader::const_iterator
 			it = includes_FragmentShader.begin(),
 			it_end = includes_FragmentShader.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_DataBlock::Meta_FragmentShader & meta_FragmentShader = *it;
+			const Metacode::Meta_Data::Meta_DataBlock::Meta_FragmentShader & meta_FragmentShader = *it;
 
 			const ConstString & name = meta_FragmentShader.get_Name();
 			const ConstString & renderPlatform = meta_FragmentShader.get_RenderPlatform();
@@ -197,7 +197,7 @@ namespace Menge
 			const FilePath & filePath = meta_FragmentShader.get_File_Path();
 
 			bool isCompile = false;
-			meta_FragmentShader.get_File_Compile( isCompile );
+			meta_FragmentShader.get_File_Compile( &isCompile );
 
 			RenderFragmentShaderInterfacePtr shader = this->createFragmentShader_( name, _pakName, filePath );
 
@@ -216,15 +216,15 @@ namespace Menge
 			m_fragmentShaders.insert( std::make_pair( name, shader ) );
 		}
 
-		const Metacode::Meta_DataBlock::TVectorMeta_VertexShader & includes_VertexShader = datablock.get_IncludesVertexShader();
+		const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_VertexShader & includes_VertexShader = datablock.get_Includes_VertexShader();
 
-		for( Metacode::Meta_DataBlock::TVectorMeta_VertexShader::const_iterator
+		for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_VertexShader::const_iterator
 			it = includes_VertexShader.begin(),
 			it_end = includes_VertexShader.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_DataBlock::Meta_VertexShader & meta_VertexShader = *it;
+			const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexShader & meta_VertexShader = *it;
 
 			const ConstString & renderPlatform = meta_VertexShader.get_RenderPlatform();
 
@@ -238,7 +238,7 @@ namespace Menge
 			const FilePath & filePath = meta_VertexShader.get_File_Path();
 
 			bool isCompile = false;
-			meta_VertexShader.get_File_Compile( isCompile );
+			meta_VertexShader.get_File_Compile( &isCompile );
 
 			RenderVertexShaderInterfacePtr shader = this->createVertexShader_( name, _pakName, filePath );
 
@@ -257,18 +257,18 @@ namespace Menge
 			m_vertexShaders.insert( std::make_pair( name, shader ) );
 		}
 
-		const Metacode::Meta_DataBlock::TVectorMeta_Program & includes_Program = datablock.get_IncludesProgram();
+		const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Program & includes_Program = datablock.get_Includes_Program();
 
-		for( Metacode::Meta_DataBlock::TVectorMeta_Program::const_iterator
+		for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Program::const_iterator
 			it = includes_Program.begin(),
 			it_end = includes_Program.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_DataBlock::Meta_Program & meta_Program = *it;
+			const Metacode::Meta_Data::Meta_DataBlock::Meta_Program & meta_Program = *it;
 
 			ConstString renderPlatform;
-			if( meta_Program.get_RenderPlatform( renderPlatform ) == true )
+			if( meta_Program.get_RenderPlatform( &renderPlatform ) == true )
 			{
 				if( renderPlatform != renderPlatformName )
 				{
@@ -328,20 +328,20 @@ namespace Menge
 			m_programs.insert( std::make_pair( name, program ) );
 		}
 
-		const Metacode::Meta_DataBlock::TVectorMeta_Material & includes_Material = datablock.get_IncludesMaterial();
+		const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Material & includes_Material = datablock.get_Includes_Material();
 
-		for( Metacode::Meta_DataBlock::TVectorMeta_Material::const_iterator
+		for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Material::const_iterator
 			it = includes_Material.begin(),
 			it_end = includes_Material.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_DataBlock::Meta_Material & meta_Material = *it;
+			const Metacode::Meta_Data::Meta_DataBlock::Meta_Material & meta_Material = *it;
 
 			const Menge::ConstString & name = meta_Material.get_Name();
 
 			ConstString renderPlatform;
-			if( meta_Material.get_RenderPlatform( renderPlatform ) == true )
+			if( meta_Material.get_RenderPlatform( &renderPlatform ) == true )
 			{
 				if( renderPlatform != renderPlatformName )
 				{
@@ -350,16 +350,16 @@ namespace Menge
 			}
 
 			bool is_debug = false;
-			meta_Material.get_Debug( is_debug );
+			meta_Material.get_Debug( &is_debug );
 
 			RenderMaterialStage stage;
-			meta_Material.get_AlphaBlend_Enable( stage.alphaBlendEnable );
-			meta_Material.get_BlendFactor_Source( stage.blendSrc );
-			meta_Material.get_BlendFactor_Dest( stage.blendDst );
-			meta_Material.get_BlendFactor_Op( stage.blendOp );
+			meta_Material.get_AlphaBlend_Enable( &stage.alphaBlendEnable );
+			meta_Material.get_BlendFactor_Source( &stage.blendSrc );
+			meta_Material.get_BlendFactor_Dest( &stage.blendDst );
+			meta_Material.get_BlendFactor_Op( &stage.blendOp );
 
 			ConstString programName;
-			if( meta_Material.get_Program_Name( programName ) == true )
+			if( meta_Material.get_Program_Name( &programName ) == true )
 			{
 				const RenderProgramInterfacePtr & program = this->getProgram_( programName );
 
@@ -382,15 +382,15 @@ namespace Menge
                 stage.textureStage[index].texCoordIndex = index;
             }
 
-			const Metacode::Meta_DataBlock::Meta_Material::TVectorMeta_TextureStages & include_TextureStages = meta_Material.get_IncludesTextureStages();
+			const Metacode::Meta_Data::Meta_DataBlock::Meta_Material::VectorMeta_TextureStages & include_TextureStages = meta_Material.get_Includes_TextureStages();
 
-			for( Metacode::Meta_DataBlock::Meta_Material::TVectorMeta_TextureStages::const_iterator
+			for( Metacode::Meta_Data::Meta_DataBlock::Meta_Material::VectorMeta_TextureStages::const_iterator
 				it_include = include_TextureStages.begin(),
 				it_include_end = include_TextureStages.end();
 				it_include != it_include_end;
 			++it_include)
 			{
-				const Metacode::Meta_DataBlock::Meta_Material::Meta_TextureStages & meta_TextureStages = *it_include;
+				const Metacode::Meta_Data::Meta_DataBlock::Meta_Material::Meta_TextureStages & meta_TextureStages = *it_include;
 
 				uint32_t index = meta_TextureStages.get_Stage();
 
@@ -400,19 +400,19 @@ namespace Menge
 				textureStage.magnification = m_defaultTextureFilterMagnification;
 				textureStage.minification = m_defaultTextureFilterMinification;
 
-				meta_TextureStages.get_AddressMode_U( textureStage.addressU );
-				meta_TextureStages.get_AddressMode_V( textureStage.addressV );
-				meta_TextureStages.get_AddressMode_Border( textureStage.addressBorder );
+				meta_TextureStages.get_AddressMode_U( &textureStage.addressU );
+				meta_TextureStages.get_AddressMode_V( &textureStage.addressV );
+				meta_TextureStages.get_AddressMode_Border( &textureStage.addressBorder );
   
-				meta_TextureStages.get_Color_Operator( textureStage.colorOp );
-				meta_TextureStages.get_Color_Arg1( textureStage.colorArg1 );
-				meta_TextureStages.get_Color_Arg2( textureStage.colorArg2 );
+				meta_TextureStages.get_Color_Operator( &textureStage.colorOp );
+				meta_TextureStages.get_Color_Arg1( &textureStage.colorArg1 );
+				meta_TextureStages.get_Color_Arg2( &textureStage.colorArg2 );
 
-				meta_TextureStages.get_Alpha_Operator( textureStage.alphaOp );
-				meta_TextureStages.get_Alpha_Arg1( textureStage.alphaArg1 );
-				meta_TextureStages.get_Alpha_Arg2( textureStage.alphaArg2 );
+				meta_TextureStages.get_Alpha_Operator( &textureStage.alphaOp );
+				meta_TextureStages.get_Alpha_Arg1( &textureStage.alphaArg1 );
+				meta_TextureStages.get_Alpha_Arg2( &textureStage.alphaArg2 );
 
-                meta_TextureStages.get_TextureCoord_Index( textureStage.texCoordIndex );
+                meta_TextureStages.get_TextureCoord_Index( &textureStage.texCoordIndex );
 			}
 
 			const RenderMaterialStage * cache_stage = this->createRenderStageGroup( name, stage );
@@ -444,7 +444,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderMaterialManager::unloadMaterials( const ConstString& _pakName, const FilePath& _fileName )
 	{
-		Metacode::Meta_DataBlock datablock;
+		Metacode::Meta_Data::Meta_DataBlock datablock;
 
 		bool exist = false;
 		if( LOADER_SERVICE()
@@ -471,15 +471,15 @@ namespace Menge
 		const ConstString & renderPlatformName = RENDER_SYSTEM()
 			->getRenderPlatformName();
 
-		const Metacode::Meta_DataBlock::TVectorMeta_FragmentShader & includes_FragmentShader = datablock.get_IncludesFragmentShader();
+		const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_FragmentShader & includes_FragmentShader = datablock.get_Includes_FragmentShader();
 
-		for( Metacode::Meta_DataBlock::TVectorMeta_FragmentShader::const_iterator
+		for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_FragmentShader::const_iterator
 			it = includes_FragmentShader.begin(),
 			it_end = includes_FragmentShader.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_DataBlock::Meta_FragmentShader & meta_FragmentShader = *it;
+			const Metacode::Meta_Data::Meta_DataBlock::Meta_FragmentShader & meta_FragmentShader = *it;
 
 			const ConstString & renderPlatform = meta_FragmentShader.get_RenderPlatform();
 
@@ -493,15 +493,15 @@ namespace Menge
 			m_fragmentShaders.erase( name );
 		}
 
-		const Metacode::Meta_DataBlock::TVectorMeta_VertexShader & includes_VertexShader = datablock.get_IncludesVertexShader();
+		const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_VertexShader & includes_VertexShader = datablock.get_Includes_VertexShader();
 
-		for( Metacode::Meta_DataBlock::TVectorMeta_VertexShader::const_iterator
+		for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_VertexShader::const_iterator
 			it = includes_VertexShader.begin(),
 			it_end = includes_VertexShader.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_DataBlock::Meta_VertexShader & meta_VertexShader = *it;
+			const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexShader & meta_VertexShader = *it;
 
 			const ConstString & renderPlatform = meta_VertexShader.get_RenderPlatform();
 
@@ -515,18 +515,18 @@ namespace Menge
 			m_vertexShaders.erase( name );
 		}
 
-		const Metacode::Meta_DataBlock::TVectorMeta_Program & includes_Program = datablock.get_IncludesProgram();
+		const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Program & includes_Program = datablock.get_Includes_Program();
 
-		for( Metacode::Meta_DataBlock::TVectorMeta_Program::const_iterator
+		for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Program::const_iterator
 			it = includes_Program.begin(),
 			it_end = includes_Program.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_DataBlock::Meta_Program & meta_Program = *it;
+			const Metacode::Meta_Data::Meta_DataBlock::Meta_Program & meta_Program = *it;
 
 			ConstString renderPlatform;
-			if( meta_Program.get_RenderPlatform( renderPlatform ) == true )
+			if( meta_Program.get_RenderPlatform( &renderPlatform ) == true )
 			{
 				if( renderPlatform != renderPlatformName )
 				{
@@ -539,15 +539,15 @@ namespace Menge
 			m_programs.erase( name );
 		}
 
-		const Metacode::Meta_DataBlock::TVectorMeta_Material & includes_Material = datablock.get_IncludesMaterial();
+		const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Material & includes_Material = datablock.get_Includes_Material();
 
-		for( Metacode::Meta_DataBlock::TVectorMeta_Material::const_iterator
+		for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Material::const_iterator
 			it = includes_Material.begin(),
 			it_end = includes_Material.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_DataBlock::Meta_Material & meta_Material = *it;
+			const Metacode::Meta_Data::Meta_DataBlock::Meta_Material & meta_Material = *it;
 
 			const Menge::ConstString & name = meta_Material.get_Name();
 

@@ -295,13 +295,18 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	void SoundEngine::updateSourceVolume_( SoundSourceDesc * _source )
     {
-        const SoundSourceInterfacePtr & sourceInterface = _source->source;
+        const SoundSourceInterfacePtr & source = _source->source;
+
+        if( source == nullptr )
+        {
+            return;
+        }
         
         if( this->isMute() == true || 
 			(m_turnStream == false && _source->streamable == true ) || 
 			(m_turnSound == false && _source->streamable == false) )
         {
-            sourceInterface->setVolume( 0.f );
+            source->setVolume( 0.f );
         }
         else
         {
@@ -318,7 +323,7 @@ namespace Menge
 					mixVolume *= m_soundVolume.mixVolume();
 					mixVolume *= generalVolume.mixVolume();
 
-                    sourceInterface->setVolume( mixVolume );
+                    source->setVolume( mixVolume );
                 }break;
             case ESST_MUSIC:
                 {
@@ -327,7 +332,7 @@ namespace Menge
 					mixVolume *= m_musicVolume.mixVolume();
 					mixVolume *= generalVolume.mixVolume();
 
-                    sourceInterface->setVolume( mixVolume );
+                    source->setVolume( mixVolume );
                 }break;
             case ESST_VOICE:
                 {
@@ -336,7 +341,7 @@ namespace Menge
 					mixVolume *= m_voiceVolume.mixVolume();
 					mixVolume *= generalVolume.mixVolume();
 
-					sourceInterface->setVolume( mixVolume );
+					source->setVolume( mixVolume );
                 }break;
             }
         }

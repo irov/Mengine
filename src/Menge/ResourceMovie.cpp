@@ -462,72 +462,72 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::_loader( const Metabuf::Metadata * _meta )
 	{
-        const Metacode::Meta_DataBlock::Meta_ResourceMovie * metadata
-            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceMovie *>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie * metadata
+            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie *>(_meta);
 
         m_duration = metadata->get_Duration_Value();
         m_frameDuration = metadata->get_FrameDuration_Value();
         m_size.x = metadata->get_Width_Value();
         m_size.y = metadata->get_Height_Value();
         
-		metadata->get_Loop_Segment( m_loopSegment );
+		metadata->get_Loop_Segment( &m_loopSegment );
 
-		m_hasBoundBox = metadata->get_Bounds_Box( m_boundBox );
-		m_hasAnchorPoint = metadata->get_Anchor_Point( m_anchorPoint );
-		m_hasOffsetPoint = metadata->get_Offset_Point( m_offsetPoint );
+		m_hasBoundBox = metadata->get_Bounds_Box( &m_boundBox );
+		m_hasAnchorPoint = metadata->get_Anchor_Point( &m_anchorPoint );
+		m_hasOffsetPoint = metadata->get_Offset_Point( &m_offsetPoint );
                 
-        metadata->swap_KeyFramesPackPath_Path( m_filePath );
-		metadata->swap_KeyFramesPackPath_Codec( m_dataflowType );
-		metadata->swap_KeyFramesPackPath_Converter( m_converterType );
+        m_filePath = metadata->get_KeyFramesPackPath_Path();
+		metadata->get_KeyFramesPackPath_Codec( &m_dataflowType );
+		metadata->get_KeyFramesPackPath_Converter( &m_converterType );
 
 		//FIX THIS
 		if( m_dataflowType.empty() == true )
 		{
-			m_converterType = CONST_STRING( xmlToAekMovie);
+            m_converterType = CONST_STRING( xmlToAekMovie );
 		}
 
         m_layers.clear();
 
-        const Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieLayer2D & includes_layer2d = metadata->get_IncludesMovieLayer2D();
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::VectorMeta_MovieLayer2D & includes_layer2d = metadata->get_Includes_MovieLayer2D();
 
-        for( Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieLayer2D::const_iterator
+        for( Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::VectorMeta_MovieLayer2D::const_iterator
             it = includes_layer2d.begin(),
             it_end = includes_layer2d.end();
         it != it_end;
         ++it )
         {
-            const Metacode::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & meta_layer2d = *it;
+            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & meta_layer2d = *it;
 			
             m_layers.push_back( MovieLayer() );
             MovieLayer & ml = m_layers.back();
 
             ml.state = 0;
 
-            meta_layer2d.swap_Name( ml.name );
-            meta_layer2d.swap_Source( ml.source );
-            meta_layer2d.swap_Type( ml.type );
+            ml.name = meta_layer2d.get_Name();
+            ml.source = meta_layer2d.get_Source();
+            ml.type = meta_layer2d.get_Type();
 			            
             ml.index = meta_layer2d.get_Index();
             ml.in = meta_layer2d.get_In();
             ml.out = meta_layer2d.get_Out();
 
-			meta_layer2d.get_Parent( ml.parent );
-            meta_layer2d.get_StartInterval( ml.startInterval );
-			meta_layer2d.swap_BlendingMode( ml.blendingMode );
+			meta_layer2d.get_Parent( &ml.parent );
+            meta_layer2d.get_StartInterval( &ml.startInterval );
+			meta_layer2d.get_BlendingMode( &ml.blendingMode );
 
-            meta_layer2d.get_TimeRemap( ml.timeRemap );
-            meta_layer2d.get_Shape( ml.shape );
-			meta_layer2d.get_Polygon( ml.polygon );
-            meta_layer2d.get_PlayCount( ml.playCount );
-            meta_layer2d.get_Stretch( ml.stretch );
-			meta_layer2d.get_Switch( ml.switcher );
-			meta_layer2d.get_Loop( ml.loop );
-			meta_layer2d.get_AnchorPoint( ml.anchorPoint );
-			meta_layer2d.get_Position( ml.position );			
-			meta_layer2d.get_Scale( ml.scale );
-			meta_layer2d.get_Rotation( ml.rotation );
-			ml.hasViewport = meta_layer2d.get_Viewport( ml.viewport );
-			meta_layer2d.get_Params( ml.params );
+            meta_layer2d.get_TimeRemap( &ml.timeRemap );
+            meta_layer2d.get_Shape( &ml.shape );
+			meta_layer2d.get_Polygon( &ml.polygon );
+            meta_layer2d.get_PlayCount( &ml.playCount );
+            meta_layer2d.get_Stretch( &ml.stretch );
+			meta_layer2d.get_Switch( &ml.switcher );
+			meta_layer2d.get_Loop( &ml.loop );
+			meta_layer2d.get_AnchorPoint( &ml.anchorPoint );
+			meta_layer2d.get_Position( &ml.position );			
+			meta_layer2d.get_Scale( &ml.scale );
+			meta_layer2d.get_Rotation( &ml.rotation );
+			ml.hasViewport = meta_layer2d.get_Viewport( &ml.viewport );
+			meta_layer2d.get_Params( &ml.params );
 
 			if( ml.loop == false )
 			{
@@ -551,15 +551,15 @@ namespace Menge
 			}
         }
 
-        const Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieLayer3D & includes_layer3d = metadata->get_IncludesMovieLayer3D();
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::VectorMeta_MovieLayer3D & includes_layer3d = metadata->get_Includes_MovieLayer3D();
 
-        for( Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieLayer3D::const_iterator
+        for( Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::VectorMeta_MovieLayer3D::const_iterator
             it = includes_layer3d.begin(),
             it_end = includes_layer3d.end();
         it != it_end;
         ++it )
         {
-            const Metacode::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & meta_layer3d = *it;
+            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & meta_layer3d = *it;
 
             m_layers.push_back( MovieLayer() );
             MovieLayer & ml = m_layers.back();
@@ -568,31 +568,30 @@ namespace Menge
 
             MovieLayerCamera3D camera;
 
-            meta_layer3d.swap_Name( ml.name );
-            meta_layer3d.swap_Source( ml.source );            
-			meta_layer3d.swap_Type( ml.type );
-
-            
+            ml.name = meta_layer3d.get_Name();
+            ml.source = meta_layer3d.get_Source();
+            ml.type = meta_layer3d.get_Type();
+                        
             ml.index = meta_layer3d.get_Index();
             ml.in = meta_layer3d.get_In();
             ml.out = meta_layer3d.get_Out();
 
-			meta_layer3d.get_Parent( ml.parent );
-            meta_layer3d.get_StartInterval( ml.startInterval );
-			meta_layer3d.swap_BlendingMode( ml.blendingMode );
+			meta_layer3d.get_Parent( &ml.parent );
+            meta_layer3d.get_StartInterval( &ml.startInterval );
+			meta_layer3d.get_BlendingMode( &ml.blendingMode );
 
-            meta_layer3d.get_TimeRemap( ml.timeRemap );
-            meta_layer3d.get_Shape( ml.shape );
-			meta_layer3d.get_Polygon( ml.polygon );
-            meta_layer3d.get_PlayCount( ml.playCount );
-            meta_layer3d.get_Stretch( ml.stretch );
-			meta_layer3d.get_Switch( ml.switcher );
-			meta_layer3d.get_Loop( ml.loop );
-			meta_layer3d.get_AnchorPoint( ml.anchorPoint );
-			meta_layer3d.get_Position( ml.position );			
-			meta_layer3d.get_Scale( ml.scale );
-			meta_layer3d.get_Rotation( ml.rotation );
-			meta_layer3d.get_Params( ml.params );
+            meta_layer3d.get_TimeRemap( &ml.timeRemap );
+            meta_layer3d.get_Shape( &ml.shape );
+			meta_layer3d.get_Polygon( &ml.polygon );
+            meta_layer3d.get_PlayCount( &ml.playCount );
+            meta_layer3d.get_Stretch( &ml.stretch );
+			meta_layer3d.get_Switch( &ml.switcher );
+			meta_layer3d.get_Loop( &ml.loop );
+			meta_layer3d.get_AnchorPoint( &ml.anchorPoint );
+			meta_layer3d.get_Position( &ml.position );			
+			meta_layer3d.get_Scale( &ml.scale );
+			meta_layer3d.get_Rotation( &ml.rotation );
+			meta_layer3d.get_Params( &ml.params );
 				
 			if( ml.loop == false )
 			{
@@ -617,15 +616,15 @@ namespace Menge
         }
 
 
-        const Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieCamera3D & includes_camera3d = metadata->get_IncludesMovieCamera3D();
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::VectorMeta_MovieCamera3D & includes_camera3d = metadata->get_Includes_MovieCamera3D();
 
-        for( Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieCamera3D::const_iterator
+        for( Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::VectorMeta_MovieCamera3D::const_iterator
             it = includes_camera3d.begin(),
             it_end = includes_camera3d.end();
         it != it_end;
         ++it )
         {
-            const Metacode::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & meta_camera3d = *it;
+            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & meta_camera3d = *it;
 
             m_camera3D.cameraPosition = meta_camera3d.get_CameraPosition();
             m_camera3D.cameraInterest = meta_camera3d.get_CameraInterest();

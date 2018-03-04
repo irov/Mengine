@@ -74,7 +74,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path, bool _ignored )
 	{
-		Metacode::Meta_DataBlock datablock;
+		Metacode::Meta_Data::Meta_DataBlock datablock;
 
 		bool exist = false;
 		if( LOADER_SERVICE()
@@ -98,18 +98,17 @@ namespace Menge
 			return false;
 		}
 
-        ConstString groupName;
-        datablock.swap_Name( groupName );
+        const ConstString & groupName = datablock.get_Name();
 
-        const Metacode::Meta_DataBlock::TVectorMeta_Include & includes_include = datablock.get_IncludesInclude();
+        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include & includes_include = datablock.get_Includes_Include();
 
-        for( Metacode::Meta_DataBlock::TVectorMeta_Include::const_iterator
+        for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include::const_iterator
             it = includes_include.begin(),
             it_end = includes_include.end();
         it != it_end;
         ++it )
         {
-            const Metacode::Meta_DataBlock::Meta_Include & meta_include = *it;
+            const Metacode::Meta_Data::Meta_DataBlock::Meta_Include & meta_include = *it;
 
             const FilePath & path = meta_include.get_Path();
 
@@ -125,21 +124,21 @@ namespace Menge
             }
         }
 
-        const Metacode::Meta_DataBlock::TVectorMeta_Resource & includes_resource = datablock.get_IncludesResource();
+        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Resource & includes_resource = datablock.get_Includes_Resource();
 
-        for( Metacode::Meta_DataBlock::TVectorMeta_Resource::const_iterator
+        for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Resource::const_iterator
             it = includes_resource.begin(),
             it_end = includes_resource.end();
         it != it_end;
         ++it )
         {
-            const Metacode::Meta_DataBlock::Meta_Resource * meta_resource = *it;
+            const Metacode::Meta_Data::Meta_DataBlock::Meta_Resource * meta_resource = *it;
 
             const ConstString & name = meta_resource->get_Name();
             const ConstString & type = meta_resource->get_Type();
 
 			bool unique = true;
-			meta_resource->get_Unique( unique );
+			meta_resource->get_Unique( &unique );
 
 			ResourceReferencePtr has_resource = nullptr;
 			if( this->hasResource( name, &has_resource ) == true )
@@ -195,7 +194,7 @@ namespace Menge
             }
 
 			bool precompile = false;
-			meta_resource->get_Precompile( precompile );
+			meta_resource->get_Precompile( &precompile );
 
 			if( precompile == true )
 			{
@@ -220,7 +219,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::unloadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
 	{
-		Metacode::Meta_DataBlock datablock;
+		Metacode::Meta_Data::Meta_DataBlock datablock;
 
 		bool exist = false;
 		if( LOADER_SERVICE()
@@ -244,18 +243,17 @@ namespace Menge
 			return false;
 		}
 
-		ConstString groupName;
-		datablock.swap_Name( groupName );
+		const ConstString & groupName = datablock.get_Name();
 
-		const Metacode::Meta_DataBlock::TVectorMeta_Include & includes_include = datablock.get_IncludesInclude();
+		const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include & includes_include = datablock.get_Includes_Include();
 
-		for( Metacode::Meta_DataBlock::TVectorMeta_Include::const_iterator
+		for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include::const_iterator
 			it = includes_include.begin(),
 			it_end = includes_include.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_DataBlock::Meta_Include & meta_include = *it;
+			const Metacode::Meta_Data::Meta_DataBlock::Meta_Include & meta_include = *it;
 
 			const FilePath & path = meta_include.get_Path();
 
@@ -271,15 +269,15 @@ namespace Menge
 			}
 		}
 
-		const Metacode::Meta_DataBlock::TVectorMeta_Resource & includes_resource = datablock.get_IncludesResource();
+		const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Resource & includes_resource = datablock.get_Includes_Resource();
 
-		for( Metacode::Meta_DataBlock::TVectorMeta_Resource::const_iterator
+		for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Resource::const_iterator
 			it = includes_resource.begin(),
 			it_end = includes_resource.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_DataBlock::Meta_Resource * meta_resource = *it;
+			const Metacode::Meta_Data::Meta_DataBlock::Meta_Resource * meta_resource = *it;
 
 			const ConstString & name = meta_resource->get_Name();
 			const ConstString & type = meta_resource->get_Type();
@@ -322,7 +320,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::validateResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) const
     {
-		Metacode::Meta_DataBlock datablock;
+		Metacode::Meta_Data::Meta_DataBlock datablock;
 
 		bool exist = false;
 		if( LOADER_SERVICE()
@@ -348,18 +346,17 @@ namespace Menge
 
 		bool successful = true;
 
-		ConstString groupName;
-		datablock.swap_Name( groupName );
+		const ConstString & groupName = datablock.get_Name();
 
-		const Metacode::Meta_DataBlock::TVectorMeta_Include & includes_include = datablock.get_IncludesInclude();
+		const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include & includes_include = datablock.get_Includes_Include();
 
-		for( Metacode::Meta_DataBlock::TVectorMeta_Include::const_iterator
+		for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include::const_iterator
 			it = includes_include.begin(),
 			it_end = includes_include.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_DataBlock::Meta_Include & meta_include = *it;
+			const Metacode::Meta_Data::Meta_DataBlock::Meta_Include & meta_include = *it;
 
 			const FilePath & path = meta_include.get_Path();
 
@@ -377,21 +374,21 @@ namespace Menge
 			}
 		}
 
-		const Metacode::Meta_DataBlock::TVectorMeta_Resource & includes_resource = datablock.get_IncludesResource();
+		const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Resource & includes_resource = datablock.get_Includes_Resource();
 
-		for( Metacode::Meta_DataBlock::TVectorMeta_Resource::const_iterator
+		for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Resource::const_iterator
 			it = includes_resource.begin(),
 			it_end = includes_resource.end();
 		it != it_end;
 		++it )
 		{
-			const Metacode::Meta_DataBlock::Meta_Resource * meta_resource = *it;
+			const Metacode::Meta_Data::Meta_DataBlock::Meta_Resource * meta_resource = *it;
 
 			const ConstString & name = meta_resource->get_Name();
 			const ConstString & type = meta_resource->get_Type();
 
 			bool unique = true;
-			meta_resource->get_Unique( unique );
+			meta_resource->get_Unique( &unique );
 
 			ResourceReferencePtr resource =
 				this->generateResource( type );

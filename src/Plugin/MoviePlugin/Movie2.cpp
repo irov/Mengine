@@ -1752,8 +1752,6 @@ namespace Menge
 
                         m.material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
 
-                        //printf( "%f %f\n", ae_get_movie_composition_time( m_composition ), mesh.a );
-
                         if( m.vertices.size() == 0 )
                         {
                             continue;
@@ -1872,8 +1870,6 @@ namespace Menge
                         };
 
                         m.material = surfaceTrackMatte->getMaterial();
-
-                        //printf( "%f %f\n", ae_get_movie_composition_time( m_composition ), mesh.a );
 
                         if( m.vertices.size() == 0 )
                         {

@@ -92,19 +92,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setLocalColorRGB( float _r, float _g, float _b )
 	{ 
-		m_colorLocal.setR( _r );
-		m_colorLocal.setG( _g );
-		m_colorLocal.setB( _b );
+        m_colorLocal.setRGB( _r, _g, _b );
 
 		this->invalidateColor();
 	}
     //////////////////////////////////////////////////////////////////////////
     void Colorable::setLocalColorRGBA( float _r, float _g, float _b, float _a )
     {
-        m_colorLocal.setR( _r );
-        m_colorLocal.setG( _g );
-        m_colorLocal.setB( _b );
-        m_colorLocal.setB( _a );
+        m_colorLocal.setRGBA( _r, _g, _b, _a );
 
         this->invalidateColor();
     }

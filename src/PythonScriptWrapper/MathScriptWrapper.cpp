@@ -413,7 +413,7 @@ namespace Menge
 					float b = pybind::tuple_getitem_t( _kernel, _obj, 2 );
 					float a = pybind::tuple_getitem_t( _kernel, _obj, 3 );
 
-					_place->setARGB( a, r, g, b );
+					_place->setRGBA( r, g, b, a );
 				}
 				else if( pybind::tuple_size( _obj ) == 3 )
 				{
@@ -422,7 +422,7 @@ namespace Menge
 					float b = pybind::tuple_getitem_t( _kernel, _obj, 2 );
 					float a = 1.f;
 
-					_place->setARGB( a, r, g, b );
+					_place->setRGBA( r, g, b, a );
 				}
 				else
 				{
@@ -440,7 +440,7 @@ namespace Menge
 					float b = pybind::list_getitem_t( _kernel, _obj, 2 );
 					float a = pybind::list_getitem_t( _kernel, _obj, 3 );
 
-					_place->setARGB( a, r, g, b );
+					_place->setRGBA( r, g, b, a );
 				}				
 				else if( pybind::list_size( _obj ) == 3 )
 				{
@@ -449,7 +449,7 @@ namespace Menge
 					float b = pybind::list_getitem_t( _kernel, _obj, 2 );
 					float a = 1.f;
 
-					_place->setARGB( a, r, g, b );
+					_place->setRGBA( r, g, b, a );
 				}
 				else
 				{

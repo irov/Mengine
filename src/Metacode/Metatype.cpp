@@ -184,7 +184,7 @@ namespace Metabuf
         b *= coef;
         a *= coef;
 
-        _value.setARGB( a, r, g, b );
+        _value.setRGBA( r, g, b, a );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Menge::Polygon & _value, void * _userData )

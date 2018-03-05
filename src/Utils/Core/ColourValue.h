@@ -21,20 +21,20 @@ namespace Menge
 	{
 	public:
 		ColourValue()
-			: m_a( 1.f )
-			, m_r( 1.f )
+			: m_r( 1.f )
 			, m_g( 1.f )
 			, m_b( 1.f )
+            , m_a( 1.f )
 			, m_argb( 0xFFFFFFFF )
 			, m_invalidateARGB( COLOUR_VALUE_INVALIDATE_IDENTITY )
 		{
 		}
 
-		explicit ColourValue( float _a, float _r, float _g, float _b )
-			: m_a( _a )
-			, m_r( _r )
+        explicit ColourValue( float _r, float _g, float _b, float _a )
+			: m_r( _r )
 			, m_g( _g )
 			, m_b( _b )
+            , m_a( _a )
 			, m_argb( 0xFFFFFFFF )
 			, m_invalidateARGB( COLOUR_VALUE_INVALIDATE_TRUE )
 		{
@@ -46,10 +46,10 @@ namespace Menge
 		}
 
 		ColourValue( const ColourValue & _copy )
-			: m_a( _copy.m_a )
-			, m_r( _copy.m_r )
+			: m_r( _copy.m_r )
 			, m_g( _copy.m_g )
 			, m_b( _copy.m_b )
+            , m_a( _copy.m_a )
 			, m_argb( _copy.m_argb )
 			, m_invalidateARGB( _copy.m_invalidateARGB )
 		{
@@ -57,10 +57,10 @@ namespace Menge
 
 		const ColourValue & operator = (const ColourValue & _other)
 		{
-			m_a = _other.m_a;
 			m_r = _other.m_r;
 			m_g = _other.m_g;
 			m_b = _other.m_b;
+            m_a = _other.m_a;
 
 			m_invalidateARGB = _other.m_invalidateARGB;
 			m_argb = _other.m_argb;
@@ -68,8 +68,9 @@ namespace Menge
 			return *this;
 		}
 
-	public:
-		void setARGB( float _a, float _r, float _g, float _b );
+	public:        
+		void setRGBA( float _r, float _g, float _b, float _a );
+        void setRGB( float _r, float _g, float _b );
 
 	public:
 		void setAsARGB( const ColourValue_ARGB _val );
@@ -89,12 +90,12 @@ namespace Menge
 			return !(*this == _rhs);
 		}
 
-		inline ColourValue & operator *= (const float _fScalar)
+		inline ColourValue & operator *= (const float _f)
 		{
-			m_a *= _fScalar;
-			m_r *= _fScalar;
-			m_g *= _fScalar;
-			m_b *= _fScalar;
+			m_r *= _f;
+			m_g *= _f;
+			m_b *= _f;
+            m_a *= _f;
 
 			this->invalidate();
 
@@ -103,7 +104,7 @@ namespace Menge
 
 		inline ColourValue & operator *= (const ColourValue & _rhs)
 		{
-			if( _rhs.getInvalidateARGB_() == COLOUR_VALUE_INVALIDATE_IDENTITY )
+			if( _rhs.getInvalidateRGBA_() == COLOUR_VALUE_INVALIDATE_IDENTITY )
 			{
 				return *this;
 			}
@@ -118,60 +119,57 @@ namespace Menge
 			return *this;
 		}
 
-		inline ColourValue operator + (const ColourValue& _rkVector) const
-		{
-			float a = m_a + _rkVector.m_a;
-			float r = m_r + _rkVector.m_r;
-			float g = m_g + _rkVector.m_g;
-			float b = m_b + _rkVector.m_b;
+		inline ColourValue operator + (const ColourValue& _colour) const
+		{			
+			float r = m_r + _colour.m_r;
+			float g = m_g + _colour.m_g;
+			float b = m_b + _colour.m_b;
+            float a = m_a + _colour.m_a;
 
-			return ColourValue( a, r, g, b );
+			return ColourValue( r, g, b, a );
 		}
 
-		inline ColourValue operator - (const ColourValue & _rkVector) const
-		{
-			float a = m_a - _rkVector.m_a;
-			float r = m_r - _rkVector.m_r;
-			float g = m_g - _rkVector.m_g;
-			float b = m_b - _rkVector.m_b;
+		inline ColourValue operator - (const ColourValue & _colour) const
+		{	
+			float r = m_r - _colour.m_r;
+			float g = m_g - _colour.m_g;
+			float b = m_b - _colour.m_b;
+            float a = m_a - _colour.m_a;
 
-			return ColourValue( a, r, g, b );
+			return ColourValue( r, g, b, a );
 		}
 
-		inline ColourValue operator * (const float _fScalar) const
-		{
-			float a = m_a * _fScalar;
-			float r = m_r * _fScalar;
-			float g = m_g * _fScalar;
-			float b = m_b * _fScalar;
+		inline ColourValue operator * (const float _f) const
+		{			
+			float r = m_r * _f;
+			float g = m_g * _f;
+			float b = m_b * _f;
+            float a = m_a * _f;
 
-			return ColourValue( a, r, g, b );
+			return ColourValue( r, g, b, a );
 		}
 
 		inline ColourValue operator * (const ColourValue & _rhs) const
 		{
-			if( _rhs.getInvalidateARGB_() == COLOUR_VALUE_INVALIDATE_IDENTITY )
+			if( _rhs.getInvalidateRGBA_() == COLOUR_VALUE_INVALIDATE_IDENTITY )
 			{
 				return *this;
 			}
 
-			if( this->getInvalidateARGB_() == COLOUR_VALUE_INVALIDATE_IDENTITY )
+			if( this->getInvalidateRGBA_() == COLOUR_VALUE_INVALIDATE_IDENTITY )
 			{
 				return _rhs;
 			}
 
-			float a = m_a * _rhs.m_a;
 			float r = m_r * _rhs.m_r;
 			float g = m_g * _rhs.m_g;
 			float b = m_b * _rhs.m_b;
+            float a = m_a * _rhs.m_a;
 
-			return ColourValue( a, r, g, b );
+			return ColourValue( r, g, b, a );
 		}
 
 	public:
-		void setA( const float _a );
-		inline float getA() const;
-
 		void setR( const float _r );
 		inline float getR() const;
 
@@ -180,6 +178,9 @@ namespace Menge
 
 		void setB( const float _b );
 		inline float getB() const;
+
+        void setA( const float _a );
+        inline float getA() const;
 
     public:
         inline static const ColourValue & identity();
@@ -194,24 +195,19 @@ namespace Menge
 		inline void invalidate() const;
 
 	protected:
-		void updateARGB_() const;
-		inline uint8_t getInvalidateARGB_() const;
+		void updateRGBA_() const;
+		inline uint8_t getInvalidateRGBA_() const;
 
 	protected:
-		float m_a;
 		float m_r;
 		float m_g;
 		float m_b;
+        float m_a;
 
 		mutable ColourValue_ARGB m_argb;
 
 		mutable uint8_t m_invalidateARGB;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline float ColourValue::getA() const
-	{
-		return m_a;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	inline float ColourValue::getR() const
 	{
@@ -227,7 +223,12 @@ namespace Menge
 	{
 		return m_b;
 	}
-	//////////////////////////////////////////////////////////////////////////	
+    //////////////////////////////////////////////////////////////////////////
+    inline float ColourValue::getA() const
+    {
+        return m_a;
+    }
+    //////////////////////////////////////////////////////////////////////////	
 	inline bool ColourValue::isSolid() const
 	{
 		return mt::equal_f_1( m_a );
@@ -235,16 +236,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline bool ColourValue::isIdentity() const
 	{
-		uint8_t invalidateARGB = this->getInvalidateARGB_();
+		uint8_t invalidateARGB = this->getInvalidateRGBA_();
 
 		return invalidateARGB == COLOUR_VALUE_INVALIDATE_IDENTITY;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline uint8_t ColourValue::getInvalidateARGB_() const
+	inline uint8_t ColourValue::getInvalidateRGBA_() const
 	{
 		if( m_invalidateARGB == COLOUR_VALUE_INVALIDATE_TRUE )
 		{
-			this->updateARGB_();
+			this->updateRGBA_();
 		}
 
 		return m_invalidateARGB;
@@ -259,7 +260,7 @@ namespace Menge
 	{
 		if( m_invalidateARGB == COLOUR_VALUE_INVALIDATE_TRUE )
 		{
-			this->updateARGB_();
+			this->updateRGBA_();
 		}
 
 		return m_argb;

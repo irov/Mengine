@@ -231,7 +231,7 @@ namespace Menge
 		{
 			const mt::vec4f & c = m_colors[i];
 
-			ColourValue v_color( c.w, c.x, c.y, c.z );
+			ColourValue v_color( c.x, c.y, c.z, c.w );
 			v_color *= color;
 			
 			uint32_t argb = v_color.getAsARGB();

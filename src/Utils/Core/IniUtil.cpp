@@ -238,7 +238,7 @@ namespace Menge
 			b *= coef;
 			a *= coef;
 
-			_value.setARGB( a, r, g, b );
+			_value.setRGBA( r, g, b, a );
 
 			return true;
 		}

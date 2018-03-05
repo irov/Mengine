@@ -3972,7 +3972,7 @@ namespace Menge
 								continue;
 							}
 
-							m_grid->setGridColor( i, j, ColourValue( a0, 1.f, 1.f, 1.f ) );
+                            m_grid->setGridColor( i, j, ColourValue( 1.f, 1.f, 1.f, a0 ) );
 						}
 					}
 				}

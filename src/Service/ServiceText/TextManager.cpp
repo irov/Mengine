@@ -202,7 +202,7 @@ namespace Menge
                             );
                     }
 
-                    colorFont.setARGB( a, r, g, b );
+                    colorFont.setRGBA( r, g, b, a );
 
                     params |= EFP_COLOR_FONT;
                 }
@@ -222,7 +222,7 @@ namespace Menge
                             );
                     }
 
-                    colorOutline.setARGB( a, r, g, b );
+                    colorOutline.setRGBA( r, g, b, a );
 
                     params |= EFP_COLOR_OUTLINE;
                 }

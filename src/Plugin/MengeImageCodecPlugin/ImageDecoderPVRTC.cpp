@@ -1,7 +1,6 @@
 #include "ImageDecoderPVRTC.h"
 #include "Utils/Logger/Logger.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/RenderSystemInterface.h"
 
 #	include "Core/PixelFormat.h"
 

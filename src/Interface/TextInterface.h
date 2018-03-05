@@ -1,7 +1,7 @@
 #   pragma once
 
+#   include "Interface/ServantInterface.h"
 #   include "Interface/ServiceInterface.h"
-#	include "Interface/RenderSystemInterface.h"
 
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
@@ -13,6 +13,7 @@
 #   include "Factory/FactorablePtr.h"
 
 #	include "Math/vec4.h"
+#	include "Math/uv4.h"
 
 namespace Menge
 {
@@ -50,6 +51,8 @@ namespace Menge
 		EFP_CHAR_SCALE = 0x00000100,
 		EFP_MAX_VALUE = 0xffffffff
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	struct Glyph
 	{

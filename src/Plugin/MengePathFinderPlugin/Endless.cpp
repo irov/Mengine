@@ -34,7 +34,7 @@ namespace	Menge
 
 		m_elementCb = _cb;
 
-		if( m_elementWidth < mt::m_eps )
+		if( m_elementWidth < mt::constant::eps )
 		{
 			return false;
 		}

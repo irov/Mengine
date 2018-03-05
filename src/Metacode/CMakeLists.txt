@@ -18,7 +18,8 @@ Loader
 INCLUDE_DIRECTORIES( 
     ${Mengine_SOURCE_DIR} 
     ${Mengine_SOURCE_DIR}/Utils 
-    ${THIRDPARTY_DIR}/metabuf
+    ${THIRDPARTY_DIR}/libmath/include
+    ${THIRDPARTY_DIR}/metabuf    
     ${THIRDPARTY_DIR}/boost
     )     
 

@@ -65,7 +65,7 @@ namespace Menge
 		mt::vec3f current_direction;
 		float length = mt::dir_v3_v3_f( current_direction, node_position, follow_position );
 
-		if( length < mt::m_eps )
+		if( length < mt::constant::eps )
 		{
 			return false;
 		}

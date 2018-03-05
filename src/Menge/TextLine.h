@@ -1,6 +1,5 @@
 #	pragma once
 
-#   include "Interface/RenderSystemInterface.h"
 #	include "Interface/TextInterface.h"
 
 #	include "Config/Typedef.h"

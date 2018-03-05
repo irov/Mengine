@@ -2,6 +2,7 @@
 
 #	include "TTFServiceInterface.h"
 
+#	include "Interface/RenderSystemInterface.h"
 #	include "Interface/FileSystemInterface.h"
 
 #	include "Core/MemoryHelper.h"

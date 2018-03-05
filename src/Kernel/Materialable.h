@@ -1,12 +1,12 @@
 #	pragma once
 
-#	include "Interface/RenderSystemInterface.h"
-
 #	include "Core/ConstString.h"
 
 namespace Menge
 {
     typedef stdex::intrusive_ptr<class ResourceImage> ResourceImagePtr;
+    typedef stdex::intrusive_ptr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
+    typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;
 
 	enum EMaterialBlendMode 
 	{	

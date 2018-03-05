@@ -1,6 +1,7 @@
 #	include "BitmapFont.h"
 
 #	include "Interface/CodecInterface.h"
+#	include "Interface/RenderSystemInterface.h"
 
 #	include "BitmapFontInterface.h"
 

@@ -1,11 +1,11 @@
 #   pragma once
 
 #   include "Interface/DataInterface.h"
-#   include "Interface/RenderSystemInterface.h"
 
 #   include "Core/Magic.h"
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
+#   include "Core/RenderIndices.h"
 
 #   include "Factory/Factorable.h"
 

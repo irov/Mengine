@@ -1,6 +1,7 @@
 #	include "ResourceVideo.h"
 
 #   include "Interface/FileSystemInterface.h"
+#   include "Interface/RenderSystemInterface.h"
 #   include "Interface/OptionsInterface.h"
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"

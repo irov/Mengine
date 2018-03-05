@@ -115,7 +115,7 @@ namespace Menge
 
 			float wtf = (((Bx - Ax)*(Cy - Ay)) - ((By - Ay)*(Cx - Ax)));
 
-			if( wtf < mt::m_eps )
+			if( wtf < mt::constant::eps )
 			{
 				return false;
 			}

@@ -1,7 +1,6 @@
 #   include "ImageDecoderETC1.h"
 
 #   include "Interface/FileSystemInterface.h"
-#   include "Interface/RenderSystemInterface.h"
 
 #	include "Logger/Logger.h"
 

@@ -1,5 +1,7 @@
 #	include "SurfaceSolidColor.h"
 
+#	include "Interface/RenderSystemInterface.h"
+
 #	include "Logger/Logger.h"
 
 namespace	Menge

@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Interface/RenderSystemInterface.h"
+#	include "Core/RenderVertex2D.h"
 
 #	include "stdex/memorycopy.h"
 

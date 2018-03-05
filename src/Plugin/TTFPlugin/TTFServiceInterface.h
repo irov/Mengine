@@ -1,12 +1,16 @@
 #	pragma once
 
-#	include "Interface/RenderSystemInterface.h"
+#   include "Interface/ServiceInterface.h"
 
 #	include "Kernel/Servant.h"
 #	include "Config/String.h"
 
+#   include "math/uv4.h"
+
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class TextureGlyphProviderInterface
     {

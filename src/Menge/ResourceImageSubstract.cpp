@@ -1,5 +1,6 @@
 #	include "ResourceImageSubstract.h"
 
+#	include "Interface/RenderSystemInterface.h"
 #	include "Interface/ResourceInterface.h"
 
 #	include "Metacode/Metacode.h"

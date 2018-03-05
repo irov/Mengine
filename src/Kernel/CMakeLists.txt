@@ -164,7 +164,7 @@ Isometric
 )
 
 ADD_FILTER(
-Camera
+RenderCamera
 	RenderCamera.cpp
 	RenderCamera.h
     RenderCameraHelper.cpp
@@ -258,6 +258,7 @@ INCLUDE_DIRECTORIES(
     ${SOURCE_DIR}
     ${SOURCE_DIR}/Utils
     ${THIRDPARTY_DIR}/metabuf
+    ${THIRDPARTY_DIR}/libmath/include
     ${THIRDPARTY_DIR}/pybind/include
     )     
 

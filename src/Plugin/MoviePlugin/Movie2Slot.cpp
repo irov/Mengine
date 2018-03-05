@@ -1,5 +1,7 @@
 #	include "Movie2Slot.h"
 
+#   include "Interface/RenderSystemInterface.h"
+
 #   include "Logger/Logger.h"
 
 namespace Menge

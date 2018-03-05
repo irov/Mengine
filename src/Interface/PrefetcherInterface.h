@@ -2,11 +2,6 @@
 
 #	include "Interface/ServiceInterface.h"
 
-#	include "Interface/ImageCodecInterface.h"
-#	include "Interface/SoundCodecInterface.h"
-#	include "Interface/DataInterface.h"
-#	include "Interface/ParticleSystemInterface.h"
-
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
 
@@ -28,6 +23,10 @@ namespace Menge
     };
 
     typedef stdex::intrusive_ptr<PrefetcherObserverInterface> PrefetcherObserverInterfacePtr;
+
+    typedef stdex::intrusive_ptr<class ImageDecoderInterface> ImageDecoderInterfacePtr;
+    typedef stdex::intrusive_ptr<class SoundDecoderInterface> SoundDecoderInterfacePtr;
+    typedef stdex::intrusive_ptr<class DataInterface> DataInterfacePtr;
 
 	class PrefetcherServiceInterface
 		: public ServiceInterface

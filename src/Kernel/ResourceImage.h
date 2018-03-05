@@ -1,7 +1,6 @@
 #	pragma once
 
 #   include "Interface/StreamInterface.h"
-#   include "Interface/RenderSystemInterface.h"
 #   include "Interface/ImageCodecInterface.h"
 
 #	include "Kernel/ResourceReference.h"
@@ -13,6 +12,8 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceImage
 		: public ResourceReference

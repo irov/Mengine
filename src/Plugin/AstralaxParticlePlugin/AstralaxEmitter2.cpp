@@ -47,6 +47,8 @@ namespace Menge
         m_leftBorder = Magic_GetInterval1( m_emitterId );
         m_rightBorder = Magic_GetInterval2( m_emitterId );
 
+        
+        //m_duration = m_rightBorder - m_leftBorder;
         m_duration = Magic_GetDuration( m_emitterId );
         Magic_SetInterval2( m_emitterId, m_duration );
         
@@ -415,7 +417,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setAngle( float _radians )
 	{
-		m_angle = _radians / mt::m_pi * 180.f;
+        m_angle = MT_RAD2DEG( _radians );
 
 		Magic_SetDiagramAddition( m_emitterId, -1, MAGIC_DIAGRAM_DIRECTION, m_angle );
 		int k_par = Magic_GetParticlesTypeCount( m_emitterId );

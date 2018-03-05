@@ -1,5 +1,6 @@
 #	include "TTFAtlasService.h"
 
+#	include "Interface/RenderSystemInterface.h"
 #	include "Interface/ConfigInterface.h"
 
 #   include "stdex/memorycopy.h"

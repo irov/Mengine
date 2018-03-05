@@ -5,13 +5,14 @@
 
 #   include "Interface/ServiceInterface.h"
 #	include "Interface/StreamInterface.h"
-#	include "Interface/RenderSystemInterface.h"
 #	include "Interface/ArchiveInterface.h"
 
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 #   include "Core/ColourValue.h"
 #	include "Core/Magic.h"
+#	include "Core/RenderVertex2D.h"
+#	include "Core/RenderIndices.h"
 
 #   include "Factory/Factorable.h"
 #   include "Factory/FactorablePtr.h"
@@ -28,8 +29,9 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class ResourceImage> ResourceImagePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	struct ParticleMesh
 	{
 		uint32_t vertexOffset;
@@ -42,7 +44,7 @@ namespace Menge
 
 		int material;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	struct ParticleEmitterRenderFlush
 	{		
 		uint32_t meshCount;
@@ -52,7 +54,7 @@ namespace Menge
 		uint32_t arrays;
 		void * context;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	struct ParticleCamera
 	{
 		mt::vec3f pos;
@@ -67,19 +69,19 @@ namespace Menge
 		float width;
 		float height;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	class ParticlePositionProviderInterface
 	{
 	public:
 		virtual void onProviderEmitterPosition( mt::vec3f & _position ) = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	class ParticleCameraProviderInterface
 	{
 	public:
 		virtual void onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction ) = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	class ParticleEmitterInterface
         : public ServantInterface
 	{
@@ -134,11 +136,11 @@ namespace Menge
 		virtual void setRandomMode( bool _randomMode ) = 0;
 		virtual bool getRandomMode() const = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ParticleEmitterInterface> ParticleEmitterInterfacePtr;
-	
+    //////////////////////////////////////////////////////////////////////////
 	DECLARE_MAGIC_NUMBER( MAGIC_PTZ, 'P', 'T', 'Z', '2', 2 );
-
+    //////////////////////////////////////////////////////////////////////////
 	class ParticleEmitterContainerInterface2
 		: public ServantInterface
 	{
@@ -151,9 +153,11 @@ namespace Menge
 	public:
 		virtual ParticleEmitterInterfacePtr createEmitter() = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ParticleEmitterContainerInterface2> ParticleEmitterContainerInterface2Ptr;
-
+    //////////////////////////////////////////////////////////////////////////
+    struct RenderMaterialStage;
+    //////////////////////////////////////////////////////////////////////////
 	class ParticleSystemInterface2
 		: public ServiceInterface
 	{
@@ -166,10 +170,10 @@ namespace Menge
 		virtual const RenderMaterialStage * getMaterialStage( int _index ) const = 0;
 		virtual const ResourceImagePtr & getResourceImage( int _index ) const = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 #   define PARTICLE_SYSTEM2()\
 	((ParticleSystemInterface2 *)SERVICE_GET(Menge::ParticleSystemInterface2))
-
+    //////////////////////////////////////////////////////////////////////////
 	class ParticleServiceInterface2
 		: public ServiceInterface
 	{
@@ -184,7 +188,7 @@ namespace Menge
 	public:
 		virtual uint32_t getMaxParticlesCount() const = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 #   define PARTICLE_SERVICE2()\
 	((ParticleServiceInterface2 *)SERVICE_GET(Menge::ParticleServiceInterface2))
 }

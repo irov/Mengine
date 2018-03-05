@@ -29,6 +29,8 @@ namespace Menge
 	class RenderViewport;
 	class RenderCameraOrthogonal;
 
+    typedef stdex::intrusive_ptr<class RenderTargetInterface> RenderTargetInterfacePtr;
+
 	class MousePickerSystemInterface;
 	class GlobalHandleSystem;
 

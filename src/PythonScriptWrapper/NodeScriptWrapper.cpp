@@ -952,7 +952,7 @@ namespace Menge
 				mt::vec3f pos;
 				mt::mul_v3_v3_m4( pos, frame.position, wm );
 
-				pos.y *= mt::m_sqrt2;
+				pos.y *= mt::constant::sqrt2;
 
 				py_path[i] = pos;
 			}
@@ -1123,7 +1123,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void Transformation3D_setAngleDeg( Transformation3D * _transformation, float _angle )
 		{
-			float rad = _angle * mt::m_deg2rad;
+			float rad = _angle * mt::constant::deg2rad;
 
 			_transformation->setOrientationX( rad );
 		}
@@ -3591,7 +3591,7 @@ namespace Menge
 				mt::signed_angle( +_vx - _vy )
 			};
 
-			float min_angle = mt::m_two_pi;
+			float min_angle = mt::constant::two_pi;
 			uint32_t isometric_index = 0;
 
 			for( uint32_t i = 0; i != 8; ++i )
@@ -5074,14 +5074,14 @@ namespace Menge
 			{
 				const mt::vec3f & prev_position = m_node->getLocalPosition();
 
-				if( mt::sqrlength_v3_v3( prev_position, _position ) > mt::m_eps )
+				if( mt::sqrlength_v3_v3( prev_position, _position ) > mt::constant::eps )
 				{
 					mt::dir_v3_v3( m_targetDir, prev_position, _position );
 				}
 
 				float length = mt::length_v3_v3( m_targetDir, m_currentDir );
 
-				if( length < mt::m_eps )
+				if( length < mt::constant::eps )
 				{
 					return;
 				}
@@ -5106,7 +5106,7 @@ namespace Menge
 			{
 				const mt::vec3f & prev_position = m_node->getLocalPosition();
 
-				if( mt::sqrlength_v3_v3( prev_position, _position ) < mt::m_eps )
+				if( mt::sqrlength_v3_v3( prev_position, _position ) < mt::constant::eps )
 				{
 					return;
 				}

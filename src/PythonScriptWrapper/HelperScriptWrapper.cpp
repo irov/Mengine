@@ -3,6 +3,7 @@
 #	include "Interface/ThreadSystemInterface.h"
 #   include "Interface/UnicodeInterface.h"
 #	include "Interface/ResourceInterface.h"
+#	include "Interface/RenderSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/TextInterface.h"
 #	include "Interface/TimerInterface.h"
@@ -478,13 +479,13 @@ namespace Menge
 
 		mt::vec2f mt_radius_randf( float _radius )
 		{
-			float rp = mt::randf( mt::m_two_pi );
+			float rp = mt::randf( mt::constant::two_pi );
 			float rr = mt::randf( 1.f );
 
 			float rr2 = sqrtf(rr) * _radius;
 
-			float x = mt::cosf_fast( rp );
-			float y = mt::sinf_fast( rp );
+			float x = math_cosf( rp );
+			float y = math_sinf( rp );
 
 			float xr = x * rr2;
 			float yr = y * rr2;
@@ -510,47 +511,47 @@ namespace Menge
 
 		float mt_sqrtf( float a )
 		{
-			return sqrtf(a);
+			return math_sqrtf(a);
 		}
 
 		float mt_powf( float a, float b )
 		{
-			return powf( a, b );
+			return math_powf( a, b );
 		}
 
 		float mt_absf( float a )
 		{
-			return fabsf(a);
+			return math_fabsf(a);
 		}
 
 		float mt_cosf( float a )
 		{
-			return mt::cosf_fast(a);
+			return math_cosf(a);
 		}
 
 		float mt_sinf( float a )
 		{
-			return mt::sinf_fast(a);
+			return math_sinf(a);
 		}
 
 		float mt_cosf_deg( float a )
 		{
-			return mt::cosf_fast( a * mt::m_deg2rad );
+			return math_cosf( a * mt::constant::deg2rad );
 		}
 
 		float mt_sinf_deg( float a )
 		{
-			return mt::sinf_fast( a * mt::m_deg2rad );
+			return math_sinf( a * mt::constant::deg2rad );
 		}
 
 		float mt_tanf( float a )
 		{
-			return tanf( a );
+			return math_tanf( a );
 		}
 
 		float mt_acosf( float a )
 		{
-			return acosf( a );
+			return math_acosf( a );
 		}
 
 		float mt_atanf( float _x )

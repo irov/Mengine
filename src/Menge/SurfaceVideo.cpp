@@ -262,6 +262,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SurfaceVideo::correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in )
     {
+        (void)_index;
+
         mt::uv4_quad_point( _out, m_uv, _in );
     }
     //////////////////////////////////////////////////////////////////////////

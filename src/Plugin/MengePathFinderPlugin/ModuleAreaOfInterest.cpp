@@ -1,6 +1,5 @@
 #	include "ModuleAreaOfInterest.h"
 
-#	include "Interface/RenderSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/PlayerInterface.h"
 

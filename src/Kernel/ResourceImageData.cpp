@@ -2,7 +2,6 @@
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/ImageCodecInterface.h"
-#	include "Interface/RenderSystemInterface.h"
 #	include "Interface/ConfigInterface.h"
 
 #	include "Metacode/Metacode.h"

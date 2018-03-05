@@ -2,6 +2,7 @@
 
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/ConverterInterface.h"
+#	include "Interface/CodecInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/PrefetcherInterface.h"
 #	include "Interface/ConfigInterface.h"

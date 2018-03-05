@@ -1,7 +1,6 @@
 #	include "ImageDecoderACF.h"
 #   include "ImageVerifyACF.h"
 
-#	include "Interface/RenderSystemInterface.h"
 #	include "Interface/FileSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
 

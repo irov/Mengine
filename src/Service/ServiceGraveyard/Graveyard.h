@@ -6,6 +6,8 @@
 
 namespace Menge
 {
+    typedef stdex::intrusive_ptr<class RenderImageInterface> RenderImageInterfacePtr;
+
 	struct RenderTextureGraveEntry
 	{
 		ConstString category;

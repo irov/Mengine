@@ -41,6 +41,7 @@ INCLUDE_DIRECTORIES(
 	${THIRDPARTY_DIR}/pybind/include
 	${THIRDPARTY_DIR}/stdex/include
 	${THIRDPARTY_DIR}/libmovie/include
+    ${THIRDPARTY_DIR}/libmath/include
 	${THIRDPARTY_DIR}/utf8/source
     ${THIRDPARTY_DIR}/tinyini/include
     ) 

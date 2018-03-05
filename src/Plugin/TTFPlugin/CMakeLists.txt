@@ -16,11 +16,12 @@ src
 #add_definitions(-DMENGE_PLUGIN_DLL)
 
 INCLUDE_DIRECTORIES( 
-        ${Mengine_SOURCE_DIR}/Utils 
+        ${Mengine_SOURCE_DIR}/Utils
         ${THIRDPARTY_DIR}/freetype/include
         ${THIRDPARTY_DIR}/pybind/include
-        ${THIRDPARTY_DIR}/utf8/source        
-        ${THIRDPARTY_DIR}/tinyini/include		
+        ${THIRDPARTY_DIR}/utf8/source
+        ${THIRDPARTY_DIR}/tinyini/include
+        ${THIRDPARTY_DIR}/libmath/include
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

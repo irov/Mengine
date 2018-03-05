@@ -1,13 +1,15 @@
 #	pragma once
 
 #	include "Interface/ServiceInterface.h"
-#	include "Interface/RenderSystemInterface.h"
 
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
 
 namespace Menge
 {	
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
 	class GraveyardInterface
 		: public ServiceInterface
 	{

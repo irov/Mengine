@@ -5,14 +5,13 @@
 
 #   include "ResourceParticle.h"
 
-#	include "../Interface/RenderSystemInterface.h"
-#	include "../Interface/ParticleSystemInterface.h"
+#	include "Interface/ParticleSystemInterface.h"
 
 #	include "Math/mat3.h"
 
 #	include "Core/Polygon.h"
 
-#	include <stdex/stl_vector.h>
+#	include "stdex/stl_vector.h"
 
 #	define MENGINE_PARTICLE_MAX_ATLAS_TEXTURE 8
 

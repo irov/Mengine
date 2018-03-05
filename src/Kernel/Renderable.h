@@ -1,11 +1,12 @@
 #	pragma once
 
-#	include "Interface/RenderSystemInterface.h"
-
 #	include "Core/Viewport.h"
 
 namespace Menge
 {
+    class RenderServiceInterface;
+    struct RenderObjectState;
+
 	class Renderable
 	{
 	public:

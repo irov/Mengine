@@ -5,19 +5,19 @@
 
 #	include "pybind/pybind.hpp"
 
-#	include "Utils/Math/angle.h"
-#	include "Utils/Math/vec4.h"
-#	include "Utils/Math/mat3.h"
-#	include "Utils/Math/mat4.h"
-#	include "Utils/Math/quat.h"
-#	include "Utils/Math/plane.h"
-#	include "Utils/Math/uv4.h"
-#	include "Utils/Math/utils.h"
+#	include "math/angle.h"
+#	include "math/vec4.h"
+#	include "math/mat3.h"
+#	include "math/mat4.h"
+#	include "math/quat.h"
+#	include "math/plane.h"
+#	include "math/uv4.h"
+#	include "math/utils.h"
 
 #	include "Core/ColourValue.h"
 #	include "Core/Resolution.h"
 #	include "Core/Viewport.h"
-#	include "Utils/Core/Polygon.h"
+#	include "Core/Polygon.h"
 #	include "Core/Rect.h"
 
 #	include "pybind/stl_type_cast.hpp"

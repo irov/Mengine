@@ -15,6 +15,7 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 			         ${THIRDPARTY_DIR}/pugixml/src
                      ${THIRDPARTY_DIR}/metabuf
                      ${THIRDPARTY_DIR}/utf8/source
+                     ${THIRDPARTY_DIR}/libmath/include
 )
  
 #ADD_DEPENDENCIES( ${MY_LIB_NAME} LoggerLib )

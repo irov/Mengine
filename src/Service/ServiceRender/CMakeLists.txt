@@ -26,6 +26,7 @@ INCLUDE_DIRECTORIES(
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/metabuf
     ${THIRDPARTY_DIR}/tinyini/include
+    ${THIRDPARTY_DIR}/libmath/include
     ) 
 
 SET( APPLICATION_DEPENDENCIES

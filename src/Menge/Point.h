@@ -2,6 +2,8 @@
 
 #	include "Kernel/Node.h"
 
+#   include "Core/RenderVertex2D.h"
+
 namespace Menge
 {
 	class Point

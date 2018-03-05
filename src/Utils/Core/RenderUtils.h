@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include "Interface/RenderSystemInterface.h"
-
 #	include "Math/box2.h"
 
 namespace Menge

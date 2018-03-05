@@ -2,6 +2,7 @@
 
 #	include "Interface/LoaderInterface.h"
 #	include "Interface/FileSystemInterface.h"
+#	include "Interface/RenderSystemInterface.h"
 #	include "Interface/TextInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/ResourceInterface.h"

@@ -20,6 +20,7 @@ src
 	VideoCodecInterface.h
 	ParticleSystemInterface.h
 	FileSystemInterface.h
+    RenderEnumInterface.h
 	RenderSystemInterface.h
 	PhysicSystemInterface.h
     TextInterface.h

@@ -1,0 +1,13 @@
+#   pragma once
+
+#   include "stdex/stl_vector.h"
+
+#   include <stdint.h>
+
+namespace Menge
+{
+    //////////////////////////////////////////////////////////////////////////
+    typedef uint16_t RenderIndices;
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::vector<RenderIndices> TVectorRenderIndices;
+}

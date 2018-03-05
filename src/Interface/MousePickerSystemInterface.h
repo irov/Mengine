@@ -1,7 +1,6 @@
 #   pragma once
 
 #	include "Interface/InputSystemInterface.h"
-#	include "Interface/RenderSystemInterface.h"
 
 #   include "Math/vec2.h"
 
@@ -21,6 +20,10 @@ namespace Menge
 		bool handle;
 		bool dead;
 	};
+
+    class RenderViewportInterface;
+    class RenderCameraInterface;
+    class RenderClipplaneInterface;
 	
     class MousePickerTrapInterface
         : public InputSystemHandler

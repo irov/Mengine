@@ -1,7 +1,7 @@
 #	pragma once
 
+#	include "Interface/ServantInterface.h"
 #	include "Interface/ServiceInterface.h"
-#	include "Interface/RenderSystemInterface.h"
 
 #   include "Factory/FactorablePtr.h"
 #	include "Core/ConstString.h"
@@ -11,6 +11,9 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    struct RenderObjectState;
+    //////////////////////////////////////////////////////////////////////////
 	class ModuleInterface
 		: public ServantInterface
 	{
@@ -36,18 +39,18 @@ namespace Menge
 		virtual void message( const ConstString & _messageName, const TMapWParams & _params ) = 0;
 		virtual void messageAll( const ConstString & _messageName, const TMapWParams & _params ) = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ModuleInterface> ModuleInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	class ModuleFactoryInterface
 		: public ServantInterface
 	{
 	public:
 		virtual ModuleInterfacePtr createModule( const ConstString & _name ) = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ModuleFactoryInterface> ModuleFactoryInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	class ModuleServiceInterface
 		: public ServiceInterface
 	{
@@ -72,7 +75,7 @@ namespace Menge
 		virtual void message( const ConstString & _moduleName, const ConstString & _messageName, const TMapWParams & _params ) = 0;
 		virtual void messageAll( const ConstString & _messageName, const TMapWParams & _params ) = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 #   define MODULE_SERVICE()\
 	((Menge::ModuleServiceInterface *)SERVICE_GET(Menge::ModuleServiceInterface))
 }

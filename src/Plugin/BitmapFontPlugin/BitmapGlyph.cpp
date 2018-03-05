@@ -7,6 +7,7 @@
 #	include "Interface/MemoryInterface.h"
 
 #	include "Core/MemoryHelper.h"
+#	include "Core/PixelFormat.h"
 
 #	include "Logger/Logger.h"
 

@@ -2,7 +2,6 @@
 #	pragma once
 
 #	include "Interface/CodecInterface.h"
-#	include "Interface/RenderSystemInterface.h"
 
 namespace Menge
 {

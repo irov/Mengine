@@ -1,6 +1,5 @@
 #	include "Scene.h"
 
-#	include "Interface/RenderSystemInterface.h"
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/NodeInterface.h"
 

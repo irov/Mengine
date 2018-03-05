@@ -7,6 +7,9 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
 	class Window
 		: public Node
 		, public FixedVertices<ResourceWindow_Count * 4>

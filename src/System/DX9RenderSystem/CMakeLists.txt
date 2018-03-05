@@ -29,6 +29,7 @@ add_definitions(-DUNICODE)
 
 INCLUDE_DIRECTORIES( 
     ${Mengine_SOURCE_DIR}/Utils
+    ${THIRDPARTY_DIR}/libmath/include
     )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

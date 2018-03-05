@@ -11,6 +11,8 @@
 
 #	include "pybind/object.hpp"
 
+#   include "math/vec2.h"
+
 #	include "stdex/stl_vector.h"
 
 namespace Menge

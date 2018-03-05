@@ -1,5 +1,7 @@
 #	include "NodeMagnetActor.h"
 
+#   include "Interface/RenderSystemInterface.h"
+
 #	include <math.h>
 
 namespace Menge
@@ -170,8 +172,8 @@ namespace Menge
 
 		for( uint32_t i = 0; i != 16; ++i )
 		{
-			v[i].x = m_magnetRadius * ::cosf( mt::m_two_pi / 16.f * i );
-			v[i].y = m_magnetRadius * ::sinf( mt::m_two_pi / 16.f * i );
+			v[i].x = m_magnetRadius * ::cosf( mt::constant::two_pi / 16.f * i );
+			v[i].y = m_magnetRadius * ::sinf( mt::constant::two_pi / 16.f * i );
 		}
 
 		v[16] = v[0];

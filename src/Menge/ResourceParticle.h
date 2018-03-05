@@ -1,6 +1,5 @@
 #	pragma once
 
-#   include "Interface/RenderSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
 
 #	include "Kernel/ResourceReference.h"

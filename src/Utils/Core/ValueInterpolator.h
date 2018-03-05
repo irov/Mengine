@@ -48,7 +48,7 @@ namespace Menge
 			ValueAccumulator<T>::m_delta = _acc * _speed;
 			ValueAccumulator<T>::m_timing = 0.f;
 
-			if( _speed < mt::m_eps ) 
+			if( _speed < mt::constant::eps )
 			{
 				return false;
 			}
@@ -179,7 +179,7 @@ namespace Menge
 			ValueInterpolator<T>::m_time = _time;
 			ValueInterpolator<T>::m_timing = 0.f;
 
-			if( _time < mt::m_eps )
+			if( _time < mt::constant::eps )
 			{
 				return false;
 			}
@@ -213,7 +213,7 @@ namespace Menge
 			
 			m_v0 = _v0;
 
-			if( _time < mt::m_eps )
+			if( _time < mt::constant::eps )
 			{
 				return false;
 			}

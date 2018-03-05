@@ -108,6 +108,7 @@ INCLUDE_DIRECTORIES(
         ${THIRDPARTY_DIR}/zlib
         ${THIRDPARTY_DIR}/libpng
         ${THIRDPARTY_DIR}/libjpeg
+        ${THIRDPARTY_DIR}/libmath/include
         ${THIRDPARTY_DIR}/metabuf
 					
         #${THIRDPARTY_DIR}/libWEBP/Include

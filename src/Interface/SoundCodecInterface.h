@@ -3,7 +3,7 @@
 #	include "Interface/CodecInterface.h"
 #	include "Interface/FileSystemInterface.h"
 
-#	include "Utils/Core/ConstString.h"
+#	include "Core/ConstString.h"
 
 namespace Menge
 {

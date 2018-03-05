@@ -4,11 +4,14 @@
 #   include "Kernel/ResourceImage.h"
 
 #	include "Core/Viewport.h"
+#	include "Core/RenderVertex2D.h"
 
 namespace Menge
 {
 	class RenderCameraOrthogonal;
 	class RenderViewport;
+
+    typedef stdex::intrusive_ptr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
 
 	class Layer2D
 		: public Layer

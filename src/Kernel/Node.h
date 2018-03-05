@@ -24,6 +24,12 @@
 namespace Menge
 {		
 	class MousePickerTrapInterface;
+
+    class RenderViewportInterface;
+    class RenderCameraInterface;
+    class RenderClipplaneInterface;
+
+    typedef stdex::intrusive_ptr<class RenderTargetInterface> RenderTargetInterfacePtr;
 	
 	class Node;
 

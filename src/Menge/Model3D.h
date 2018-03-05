@@ -1,6 +1,5 @@
 #	pragma once
 
-#	include "Interface/RenderSystemInterface.h"
 #	include "Interface/Model3DInterface.h"
 
 #	include "Kernel/Node.h"
@@ -12,6 +11,7 @@
 
 #	include "Core/ColourValue.h"
 #	include "Core/ValueInterpolator.h"
+#   include "Core/RenderVertex2D.h"
 
 #	include "Math/mat3.h"
 #	include "Math/vec4.h"

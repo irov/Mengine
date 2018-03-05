@@ -1,6 +1,5 @@
 #	pragma once
 
-#	include "Interface/RenderSystemInterface.h"
 #	include "Interface/StreamInterface.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/ImageCodecInterface.h"

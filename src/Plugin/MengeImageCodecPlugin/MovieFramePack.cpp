@@ -3,6 +3,7 @@
 #	include "Core/MemoryAllocator.h"
 
 #	include "Math/angle.h"
+#	include "Math/utils.h"
 
 namespace Menge
 {

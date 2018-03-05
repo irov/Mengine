@@ -7,8 +7,8 @@
 
 #	include "Core/ColourValue.h"
 #	include "Core/ValueInterpolator.h"
-
-#	include "Interface/RenderSystemInterface.h"
+#   include "Core/RenderVertex2D.h"
+#   include "Core/RenderIndices.h"
 
 #	include "Math/mat3.h"
 #	include "Math/vec4.h"

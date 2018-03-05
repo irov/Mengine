@@ -1,5 +1,7 @@
 #	include "NodeCollisionActor.h"
 
+#   include "Interface/RenderSystemInterface.h"
+
 #	include <math.h>
 
 namespace Menge
@@ -162,7 +164,7 @@ namespace Menge
 		m_actor = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCollisionActor::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void NodeCollisionActor::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
 		(void)_debugMask;
 
@@ -170,8 +172,8 @@ namespace Menge
 
 		for( uint32_t i = 0; i != 16; ++i )
 		{
-			v[i].x = m_collisionRadius * ::cosf( mt::m_two_pi / 16.f * i );
-			v[i].y = m_collisionRadius * ::sinf( mt::m_two_pi / 16.f * i );
+			v[i].x = m_collisionRadius * ::cosf( mt::constant::two_pi / 16.f * i );
+			v[i].y = m_collisionRadius * ::sinf( mt::constant::two_pi / 16.f * i );
 		}
 
 		v[16] = v[0];

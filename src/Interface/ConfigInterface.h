@@ -8,7 +8,6 @@
 #	include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 #	include "Core/Resolution.h"
-#	include "Core/Viewport.h"
 #	include "Core/AspectRatioViewports.h"
 #	include "Core/ColourValue.h"
 #	include "Core/Params.h"

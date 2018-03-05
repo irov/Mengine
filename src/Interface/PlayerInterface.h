@@ -4,7 +4,6 @@
 #   include "Interface/ScheduleManagerInterface.h"
 #   include "Interface/MousePickerSystemInterface.h"
 #   include "Interface/GlobalHandleSystemInterface.h"
-#   include "Interface/RenderSystemInterface.h"
 #   include "Interface/NodeInterface.h"
 
 namespace Menge
@@ -13,6 +12,9 @@ namespace Menge
     class Scene;
     class Arrow;
 	class Affectorable;
+    class RenderCameraInterface;
+    class RenderViewportInterface;
+    class RenderClipplaneInterface;
 	//////////////////////////////////////////////////////////////////////////
 	class SceneChangeCallbackInterface
 		: public FactorablePtr

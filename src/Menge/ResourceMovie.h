@@ -8,6 +8,7 @@
 #	include "Math/vec3.h"
 #	include "Math/mat4.h"
 
+#   include "Core/Viewport.h"
 #   include "Core/Polygon.h"
 
 #	include <stdex/stl_vector.h>

@@ -9,6 +9,7 @@
 #	include "Core/ColourValue.h"
 #	include "Core/ValueInterpolator.h"
 #	include "Core/ConstString.h"
+#	include "Core/RenderVertex2D.h"
 
 #	include "Math/vec4.h"
 

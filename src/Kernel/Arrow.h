@@ -2,8 +2,6 @@
 
 #	include "Kernel/Entity.h"
 
-#	include "Interface/InputSystemInterface.h"
-
 #	include "Core/Resolution.h"
 
 #	include "Math/vec4.h"
@@ -20,8 +18,7 @@ namespace Menge
 	};
 
 	class Arrow
-		: public Entity
-		, public InputMousePositionProvider
+		: public Entity		
 	{
 	public:
 		Arrow();
@@ -65,12 +62,11 @@ namespace Menge
 
     protected:
 		void _debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
-
-	protected:
-		void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position ) override;
-
+        
 	protected:
 		EArrowType m_arrowType;
+
+        uint32_t m_inputMousePositionProviderId;
 
 		mt::vec2f m_pointClick;
 		float m_radius;
@@ -78,5 +74,7 @@ namespace Menge
 		mutable Polygon m_polygonScreen;
 
 		bool m_hided;
+
+        class ArrowInputMousePositionProvider;
 	};
 }

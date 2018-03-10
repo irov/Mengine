@@ -184,6 +184,7 @@ namespace Menge
 			m_factoryPyGlobalMouseHandlerButtonBegins = new FactoryPool<PyGlobalMouseHandlerButtonBegin, 32>();
 			m_factoryPyGlobalKeyHandler = new FactoryPool<PyGlobalKeyHandler, 32>();
 			m_factoryPyGlobalTextHandler = new FactoryPool<PyGlobalTextHandler, 32>();
+            m_factoryPyInputMousePositionProvider = new FactoryPool<PyInputMousePositionProvider, 8>();
 		}
 
 	public:
@@ -3741,6 +3742,91 @@ namespace Menge
 
 			return true;
 		}
+        //////////////////////////////////////////////////////////////////////////
+        class PyInputMousePositionProvider
+            : public InputMousePositionProviderInterface
+        {
+        public:
+            PyInputMousePositionProvider()
+                : m_arrow( nullptr )
+                , m_renderCamera( nullptr )
+                , m_renderViewport( nullptr )
+            {
+            }
+
+        public:
+            void setup( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const pybind::object & _cb, const pybind::args & _args )                
+            {
+                m_arrow = _arrow;
+                m_renderCamera = _camera;
+                m_renderViewport = _viewport;
+                m_cb = _cb;
+                m_args = _args;
+            }
+
+        protected:
+            void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position ) override
+            {
+                mt::vec2f wp;
+                m_arrow->calcMouseWorldPosition( m_renderCamera, m_renderViewport, _position, wp );
+
+                mt::vec3f v3( wp.x, wp.y, 0.f );
+
+                m_cb.call_args( _touchId, v3, m_args );
+            }
+
+        protected:
+            Arrow * m_arrow;
+            const RenderCameraInterface * m_renderCamera;
+            const RenderViewportInterface * m_renderViewport;
+            pybind::object m_cb;
+            pybind::args m_args;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        typedef stdex::intrusive_ptr<PyInputMousePositionProvider> PyInputMousePositionProviderPtr;
+        //////////////////////////////////////////////////////////////////////////
+        FactoryPtr m_factoryPyInputMousePositionProvider;
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t s_addMousePositionProvider( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const pybind::object & _cb, const pybind::args & _args )
+        {
+            if( _arrow == nullptr )
+            {
+                _arrow = PLAYER_SERVICE()
+                    ->getArrow();
+
+                if( _arrow == nullptr )
+                {
+                    return 0;
+                }
+            }
+
+            if( _camera == nullptr )
+            {
+                _camera = PLAYER_SERVICE()
+                    ->getRenderCamera();
+            }
+
+            if( _viewport == nullptr )
+            {
+                _viewport = PLAYER_SERVICE()
+                    ->getRenderViewport();
+            }
+
+            PyInputMousePositionProviderPtr provider = m_factoryPyInputMousePositionProvider->createObject();
+
+            provider->setup( _arrow, _camera, _viewport, _cb, _args );
+
+            uint32_t id = INPUT_SERVICE()
+                ->addMousePositionProvider( provider );
+
+            return id;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_removeMousePositionProvider( uint32_t _id )
+        {
+            INPUT_SERVICE()
+                ->removeMousePositionProvider( _id );
+        }
 		//////////////////////////////////////////////////////////////////////////
 		mt::vec2f s_screenToWorldPoint( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint )
 		{
@@ -8123,6 +8209,9 @@ namespace Menge
 
 			pybind::def_functor( kernel, "screenToWorldPoint", nodeScriptMethod, &NodeScriptMethod::s_screenToWorldPoint );
 			pybind::def_functor( kernel, "screenToWorldClick", nodeScriptMethod, &NodeScriptMethod::s_screenToWorldClick );
+
+            pybind::def_functor_args( kernel, "addMousePositionProvider", nodeScriptMethod, &NodeScriptMethod::s_addMousePositionProvider );
+            pybind::def_functor( kernel, "removeMousePositionProvider", nodeScriptMethod, &NodeScriptMethod::s_removeMousePositionProvider );            
 
 			pybind::def_functor_kernel( kernel, "getMovieSlotsPosition", nodeScriptMethod, &NodeScriptMethod::s_getMovieSlotsPosition );
 			pybind::def_functor_kernel( kernel, "getMovieSlotPosition", nodeScriptMethod, &NodeScriptMethod::s_getMovieSlotPosition );

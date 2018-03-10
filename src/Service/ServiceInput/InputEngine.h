@@ -44,8 +44,8 @@ namespace Menge
 		const mt::vec2f & getCursorPosition( uint32_t _touchId ) const override;
 		bool validCursorPosition( float _x, float _y ) const override;
 
-		void addMousePositionProvider( InputMousePositionProvider * _provider ) override;
-		void removeMousePositionProvider( InputMousePositionProvider * _provider ) override;
+        uint32_t addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider ) override;
+        void removeMousePositionProvider( uint32_t _id ) override;
 
 	public:
 		void onFocus( bool _focus ) override;
@@ -69,7 +69,15 @@ namespace Menge
 	private:
 		mt::vec2f m_cursorPosition[MENGINE_INPUT_MAX_TOUCH];
 
-		typedef stdex::vector<InputMousePositionProvider *> TVectorMousePositionProviders;
+        struct InputMousePositionProviderDesc
+        {
+            uint32_t id;
+            InputMousePositionProviderInterfacePtr provider;
+        };
+
+        uint32_t m_enumerator;
+
+		typedef stdex::vector<InputMousePositionProviderDesc> TVectorMousePositionProviders;
 		TVectorMousePositionProviders m_mousePositionProviders;
 				
 		typedef stdex::vector<InputUnionEvent> TVectorInputEvent;
@@ -78,5 +86,7 @@ namespace Menge
 
 		bool m_keyBuffer[256];
 		bool m_mouseBuffer[3];
+
+        class FMousePositionProviderFind;
 	};
 }

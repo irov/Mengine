@@ -48,9 +48,9 @@ namespace Menge
         m_rightBorder = Magic_GetInterval2( m_emitterId );
 
         
-        //m_duration = m_rightBorder - m_leftBorder;
-        m_duration = Magic_GetDuration( m_emitterId );
-        Magic_SetInterval2( m_emitterId, m_duration );
+        m_duration = m_rightBorder - m_leftBorder;
+        //m_duration = Magic_GetDuration( m_emitterId );
+        //Magic_SetInterval2( m_emitterId, m_duration );
         
         if( this->setupBasePosition_() == false )
         {

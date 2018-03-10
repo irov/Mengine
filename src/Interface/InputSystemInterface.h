@@ -5,6 +5,8 @@
 
 #	include "Math/vec2.h"
 
+#   include "Factory/FactorablePtr.h"
+
 #	include "Core/Resolution.h"
 #	include "Core/Viewport.h"
 
@@ -349,15 +351,14 @@ namespace Menge
 		virtual bool handleMouseWheel( const InputMouseWheelEvent & _event ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	class InputMousePositionProvider
+	class InputMousePositionProviderInterface
+        : public FactorablePtr
 	{
-	public:
-		InputMousePositionProvider(){};
-		virtual ~InputMousePositionProvider(){};
-
 	public:
 		virtual void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position ) = 0;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<InputMousePositionProviderInterface> InputMousePositionProviderInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class InputServiceInterface
 		: public ServiceInterface
@@ -385,8 +386,8 @@ namespace Menge
 		virtual const mt::vec2f & getCursorPosition( uint32_t _touchId ) const = 0;
 		virtual bool validCursorPosition( float _x, float _y ) const = 0;
 
-		virtual void addMousePositionProvider( InputMousePositionProvider * _provider ) = 0;
-		virtual void removeMousePositionProvider( InputMousePositionProvider * _provider ) = 0;
+		virtual uint32_t addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider ) = 0;
+		virtual void removeMousePositionProvider( uint32_t _id ) = 0;
 
 	public:
 		virtual void onFocus( bool _focus ) = 0;
@@ -397,6 +398,11 @@ namespace Menge
 	public:
 		inline void pushMouseMoveEvent( uint32_t _touchId, float _x, float _y, float _dx, float _dy, float _pressure )
 		{
+            if( this->validCursorPosition( _x, _y ) == false )
+            {
+                return;
+            }
+
 			InputUnionEvent event;
 			event.move.type = IET_MOUSE_MOVE;
 
@@ -412,6 +418,11 @@ namespace Menge
 
 		inline void pushMouseButtonEvent( uint32_t _touchId, float _x, float _y, uint32_t _button, float _pressure, bool _isDown )
 		{
+            if( this->validCursorPosition( _x, _y ) == false )
+            {
+                return;
+            }
+
 			InputUnionEvent event;
 			event.button.type = IET_MOUSE_BUTTON;
 
@@ -494,6 +505,11 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		inline void pushMousePositionEvent( uint32_t _touchId, float _x, float _y, float _pressure )
 		{
+            if( this->validCursorPosition( _x, _y ) == false )
+            {
+                return;
+            }
+
 			InputUnionEvent event;
 			event.position.type = IET_MOUSE_POSITION;
 

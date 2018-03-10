@@ -239,7 +239,11 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				(*it)->onMousePositionChange( _touchId, m_cursorPosition[_touchId] );
+                const InputMousePositionProviderDesc & desc = *it;
+
+                const InputMousePositionProviderInterfacePtr & provider = desc.provider;
+
+                provider->onMousePositionChange( _touchId, point );
 			}
 		}
 	}
@@ -254,15 +258,41 @@ namespace Menge
 		return m_cursorPosition[_touchId];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::addMousePositionProvider( InputMousePositionProvider * _provider )
+	uint32_t InputEngine::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider )
 	{
-		m_mousePositionProviders.push_back( _provider );
+        uint32_t new_id = ++m_enumerator;
+
+        InputMousePositionProviderDesc desc;
+        desc.id = new_id;
+        desc.provider = _provider;
+
+		m_mousePositionProviders.push_back( desc );
+
+        return new_id;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    class InputEngine::FMousePositionProviderFind
+    {
+    public:
+        FMousePositionProviderFind( uint32_t _id )
+            : m_id( _id )
+        {
+        }
+
+    public:
+        bool operator()( const InputEngine::InputMousePositionProviderDesc & _desc ) const
+        {
+            return _desc.id == m_id;
+        }
+
+    protected:
+        uint32_t m_id;
+    };    
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::removeMousePositionProvider( InputMousePositionProvider * _provider )
+    void InputEngine::removeMousePositionProvider( uint32_t _id )
 	{
         TVectorMousePositionProviders::iterator it_found = 
-            std::find( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), _provider );
+            std::find_if( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), FMousePositionProviderFind( _id ) );
 
         if( it_found == m_mousePositionProviders.end() )
         {

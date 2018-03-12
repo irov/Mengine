@@ -1052,8 +1052,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::mouseMove( const InputMouseMoveEvent& _event )
 	{
+        float x = _event.x;
+        float y = _event.y;
+
 		if( INPUT_SERVICE()
-			->validCursorPosition( _event.x, _event.y ) == false )
+			->validCursorPosition( x, y ) == false )
 		{
 			m_mouseEnter = false;
 
@@ -1065,8 +1068,8 @@ namespace Menge
 			InputMousePositionEvent ne;
 			ne.type = IET_MOUSE_ENTER;
 			ne.touchId = _event.touchId;
-			ne.x = _event.x;
-			ne.y = _event.y;
+			ne.x = x;
+			ne.y = y;
 			ne.pressure = _event.pressure;
 
 			this->mouseEnter( ne );
@@ -1096,8 +1099,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::mousePosition( const InputMousePositionEvent & _event )
 	{
+        float x = _event.x;
+        float y = _event.y;
+
 		if( INPUT_SERVICE()
-			->validCursorPosition( _event.x, _event.y ) == false )
+			->validCursorPosition( x, y ) == false )
 		{
 			m_mouseEnter = false;
 
@@ -1109,8 +1115,8 @@ namespace Menge
 			InputMousePositionEvent ne;
 			ne.type = IET_MOUSE_ENTER;
 			ne.touchId = _event.touchId;
-			ne.x = _event.x;
-			ne.y = _event.y;
+			ne.x = x;
+			ne.y = y;
 			ne.pressure = _event.pressure;
 
 			this->mouseEnter( ne );
@@ -1122,8 +1128,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::mouseEnter( const InputMousePositionEvent & _event )
 	{
+        float x = _event.x;
+        float y = _event.y;
+
 		if( INPUT_SERVICE()
-			->validCursorPosition( _event.x, _event.y ) == false )
+			->validCursorPosition( x, y ) == false )
 		{
 			return;
 		}

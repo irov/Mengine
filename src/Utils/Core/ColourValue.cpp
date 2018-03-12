@@ -88,7 +88,7 @@ namespace Menge
         240.f / 255.f, 241.f / 255.f, 242.f / 255.f, 243.f / 255.f, 244.f / 255.f, 245.f / 255.f, 246.f / 255.f, 247.f / 255.f, 248.f / 255.f, 249.f / 255.f,
         250.f / 255.f, 251.f / 255.f, 252.f / 255.f, 253.f / 255.f, 254.f / 255.f, 255.f / 255.f };
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::setAsARGB( const ColourValue_ARGB _val )
+    void ColourValue::setAsARGB( ColourValue_ARGB _val )
     {
         m_argb = _val;
 
@@ -105,14 +105,14 @@ namespace Menge
         }
 
 #   ifdef MENGINE_RENDER_TEXTURE_RGBA		
-        uint8_t b8 = (m_argb >> 16) & 0xFF;
-        uint8_t g8 = (m_argb >> 8) & 0xFF;
         uint8_t r8 = (m_argb >> 0) & 0xFF;
+        uint8_t g8 = (m_argb >> 8) & 0xFF;
+        uint8_t b8 = (m_argb >> 16) & 0xFF;
         uint8_t a8 = (m_argb >> 24) & 0xFF;
 #	else		
-        uint8_t r8 = (m_argb >> 16) & 0xFF;
-        uint8_t g8 = (m_argb >> 8) & 0xFF;
         uint8_t b8 = (m_argb >> 0) & 0xFF;
+        uint8_t g8 = (m_argb >> 8) & 0xFF;
+        uint8_t r8 = (m_argb >> 16) & 0xFF;
         uint8_t a8 = (m_argb >> 24) & 0xFF;
 #	endif
 
@@ -124,28 +124,28 @@ namespace Menge
         m_invalidateARGB = COLOUR_VALUE_INVALIDATE_FALSE;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::setA( const float _a )
+    void ColourValue::setA( float _a )
     {
         m_a = _a;
 
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::setR( const float _r )
+    void ColourValue::setR( float _r )
     {
         m_r = _r;
 
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::setG( const float _g )
+    void ColourValue::setG( float _g )
     {
         m_g = _g;
 
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::setB( const float _b )
+    void ColourValue::setB( float _b )
     {
         m_b = _b;
 

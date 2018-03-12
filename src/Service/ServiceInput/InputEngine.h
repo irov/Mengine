@@ -42,7 +42,7 @@ namespace Menge
 
 		void setCursorPosition( uint32_t _touchId, const mt::vec2f & _point ) override;
 		const mt::vec2f & getCursorPosition( uint32_t _touchId ) const override;
-		bool validCursorPosition( float _x, float _y ) const override;
+        bool validCursorPosition( float & _x, float & _y ) const override;
 
         uint32_t addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider ) override;
         void removeMousePositionProvider( uint32_t _id ) override;

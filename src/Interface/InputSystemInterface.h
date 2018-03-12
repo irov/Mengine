@@ -384,7 +384,7 @@ namespace Menge
 
 		virtual void setCursorPosition( uint32_t _touchId, const mt::vec2f & _point ) = 0;
 		virtual const mt::vec2f & getCursorPosition( uint32_t _touchId ) const = 0;
-		virtual bool validCursorPosition( float _x, float _y ) const = 0;
+		virtual bool validCursorPosition( float & _x, float & _y ) const = 0;
 
 		virtual uint32_t addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider ) = 0;
 		virtual void removeMousePositionProvider( uint32_t _id ) = 0;
@@ -439,6 +439,8 @@ namespace Menge
 
 		inline void pushKeyEvent( float _x, float _y, KeyCode _code, bool _isDown, bool _repeating )
 		{
+            this->validCursorPosition( _x, _y );
+
 			InputUnionEvent event;
 			event.key.type = IET_KEY;
 
@@ -453,6 +455,8 @@ namespace Menge
 
 		inline void pushTextEvent( float _x, float _y, WChar _key )
 		{
+            this->validCursorPosition( _x, _y );
+
 			InputUnionEvent event;
 			event.text.type = IET_TEXT;
 
@@ -465,6 +469,8 @@ namespace Menge
 				
 		inline void pushMouseLeaveEvent( uint32_t _touchId, float _x, float _y, float _pressure )
 		{
+            this->validCursorPosition( _x, _y );
+
 			InputUnionEvent event;
 			event.position.type = IET_MOUSE_LEAVE;
 
@@ -479,6 +485,8 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		inline void pushMouseEnterEvent( uint32_t _touchId, float _x, float _y, float _pressure )
 		{
+            this->validCursorPosition( _x, _y );
+
 			InputUnionEvent event;
 			event.position.type = IET_MOUSE_ENTER;
 
@@ -492,6 +500,8 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		inline void pushMouseWheelEvent( float _x, float _y, uint32_t _button, int _whell )
 		{
+            this->validCursorPosition( _x, _y );
+
 			InputUnionEvent event;
 			event.wheel.type = IET_MOUSE_WHELL;
 

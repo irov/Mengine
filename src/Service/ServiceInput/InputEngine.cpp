@@ -199,19 +199,37 @@ namespace Menge
 		return m_mouseBuffer[_button];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InputEngine::validCursorPosition( float _x, float _y ) const
+	bool InputEngine::validCursorPosition( float & _x, float & _y ) const
 	{
-		if( _x < 0.f || _x > 1.f )
+        bool inside = true;
+
+        if( _x < 0.f )
+        {
+            _x = 0.f;
+
+            inside = false;
+        }
+        else if( _x > 1.f )
+        {
+            _x = 1.f;
+
+            inside = false;
+        }
+
+        if( _y < 0.f )
+        {
+            _y = 0.f;
+
+            inside = false;
+        }
+        else if( _y > 1.f )
 		{
-			return false;
+            _y = 1.f;
+
+            inside = false;
 		}
 
-		if( _y < 0.f || _y > 1.f )
-		{
-			return false;
-		}
-
-		return true;
+        return inside;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::applyCursorPosition_( uint32_t _touchId, float _x, float _y )

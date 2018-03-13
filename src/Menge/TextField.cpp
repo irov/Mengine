@@ -193,14 +193,28 @@ namespace Menge
 		
 		ConstString materialName;
 
-		switch( m_blendMode )
-		{
-		case EMB_NORMAL:
-			{
-				materialName = RENDERMATERIAL_SERVICE()
-					->getMaterialName( EM_TEXTURE_BLEND );
-			}break;
-		};
+        if( _font->getFontPremultiply() == false )
+        {
+            switch( m_blendMode )
+            {
+            case EMB_NORMAL:
+                {
+                    materialName = RENDERMATERIAL_SERVICE()
+                        ->getMaterialName( EM_TEXTURE_BLEND );
+                }break;
+            };
+        }
+        else
+        {
+            switch( m_blendMode )
+            {
+            case EMB_NORMAL:
+                {
+                    materialName = RENDERMATERIAL_SERVICE()
+                        ->getMaterialName( EM_TEXTURE_BLEND_PREMULTIPLY );
+                }break;
+            };
+        }
 
 		Chunk chunk;
 		chunk.vertex_begin = 0;
@@ -631,6 +645,9 @@ namespace Menge
 
 			lines.insert( lines.begin(), u32_key );
 			lines.insert( lines.begin(), u32_font );
+
+            font->prepareText( s_key );
+            font->prepareText( s_font );
 		}
 
 		float charOffset = this->calcCharOffset();

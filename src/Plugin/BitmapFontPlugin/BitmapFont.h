@@ -18,7 +18,7 @@ namespace Menge
 		BitmapFont();
 		~BitmapFont();
 
-	public:
+    protected:
 		bool initialize( const ConstString & _category, const IniUtil::IniStore & _ini ) override;
 
 	protected:
@@ -28,17 +28,20 @@ namespace Menge
     public:
 		void setGlyph( const BitmapGlyphPtr & _glyph );
 
-	public:
+    protected:
 		bool hasGlyph( GlyphCode _code ) const override;
 		bool getGlyph( GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const override;
 
-	public:
+    protected:
         float getFontAscent() const override;
         float getFontDescent() const override;
         float getFontHeight() const override;
         float getFontSpacing() const override;
 
-	public:
+    protected:
+        bool getFontPremultiply() const override;
+
+    protected:
         bool _validateGlyphes( const U32String & _codes ) const override;
 		bool _prepareGlyph( GlyphCode _code ) override;
 

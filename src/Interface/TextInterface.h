@@ -107,6 +107,9 @@ namespace Menge
 
 		virtual float getLineOffset() const = 0;
 		virtual float getCharOffset() const = 0;
+
+    public:
+        virtual bool getFontPremultiply() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<TextFontInterface> TextFontInterfacePtr;

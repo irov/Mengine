@@ -5,6 +5,7 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/FileSystemInterface.h"
 
+#   include "Core/Stream.h"
 #	include "Core/MemoryHelper.h"
 #   include "Core/IniUtil.h"
 
@@ -20,11 +21,12 @@ namespace Menge
 	TTFFont::TTFFont()
 		: m_ftlibrary( nullptr )
 		, m_face( nullptr )
-		, m_ttfDPI( 0 )
 		, m_ttfAscender( 0.f )
         , m_ttfDescender( 0.f )
-        , m_ttfHeight( 0.f )
+        , m_ttfHeight( 0 )
         , m_ttfSpacing( 0.f )
+        , m_ttfFEBundle( nullptr )
+        , m_ttfFEEffect( nullptr )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -48,7 +50,7 @@ namespace Menge
 
 		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Path", m_ttfPath ) == false )
 		{
-			LOGGER_ERROR("TextManager::loadFonts invalid font %s don't setup Glyph"
+			LOGGER_ERROR("TextManager::loadFonts invalid font '%s' don't setup Glyph"
 				, m_name.c_str()
 				);
 
@@ -57,21 +59,24 @@ namespace Menge
 
 		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_ttfHeight ) == false )
 		{
-			LOGGER_ERROR("TextManager::loadFonts invalid font %s don't setup Height"
+			LOGGER_ERROR("TextManager::loadFonts invalid font '%s' don't setup Height"
 				, m_name.c_str()
 				);
 
 			return false;
 		}
 
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "DPI", m_ttfDPI ) == false )
-		{
-			LOGGER_ERROR("TextManager::loadFonts invalid font %s don't setup DPI"
-				, m_name.c_str()
-				);
+        if( IniUtil::getIniValue( _ini, m_name.c_str(), "FEPath", m_ttfFEPath ) == true )
+        {
+            if( IniUtil::getIniValue( _ini, m_name.c_str(), "FEName", m_ttfFEName ) == false )
+            {
+                LOGGER_ERROR( "TextManager::loadFonts invalid font '%s' don't setup FEName"
+                    , m_name.c_str()
+                );
 
-			return false;
-		}
+                return false;
+            }
+        }
         
 		return true;
 	}
@@ -105,12 +110,15 @@ namespace Menge
 			return false;
 		}
 
-		FT_F26Dot6 fontSizePoints = (FT_F26Dot6)m_ttfHeight * 64;
-		FT_UInt dpi = (FT_UInt)m_ttfDPI;
-		if( FT_Set_Char_Size( m_face, fontSizePoints, fontSizePoints, dpi, dpi ) != FT_Err_Ok )
-		{
-			return false;
-		}
+        if( FT_Set_Pixel_Sizes( m_face, 0, m_ttfHeight ) != FT_Err_Ok )
+        {
+            LOGGER_ERROR( "TTFFont::_compile font '%s' invalid set pixel height '%u'"
+                , m_name.c_str()
+                , m_ttfHeight
+            );
+
+            return false;
+        }
 
 		m_memory = memory;
 
@@ -124,6 +132,28 @@ namespace Menge
         float fHeight = static_cast<float>(height);
         m_ttfSpacing = fHeight - (m_ttfAscender + m_ttfDescender);
 
+        if( m_ttfFEPath.empty() == false )
+        {
+            MemoryInterfacePtr ttfEffectMemory = Helper::createMemoryFile( m_category, m_ttfFEPath, false, __FILE__, __LINE__ );
+
+            const void * ttfEffectMemory_buffer = ttfEffectMemory->getMemory();
+            size_t ttfEffectMemory_size = ttfEffectMemory->getSize();
+
+            m_ttfFEBundle = fe_bundle_load( (const uint8_t *)ttfEffectMemory_buffer, ttfEffectMemory_size );
+
+            if( m_ttfFEBundle == nullptr )
+            {
+                return false;
+            }
+
+            m_ttfFEEffect = fe_bundle_get_effect_by_name( m_ttfFEBundle, m_ttfFEName.c_str() );
+            
+            if( m_ttfFEEffect == nullptr )
+            {
+                return false;
+            }
+        }
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -132,6 +162,12 @@ namespace Menge
 		FT_Done_Face( m_face );
 
 		m_memory = nullptr;
+
+        if( m_ttfFEBundle != nullptr )
+        {
+            fe_bundle_free( m_ttfFEBundle );
+            m_ttfFEBundle = nullptr;
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -352,8 +388,7 @@ namespace Menge
         uint32_t bitmap_pitch = bitmap.pitch;
 		uint32_t bitmap_width = bitmap.width;
         uint32_t bitmap_height = bitmap.rows;
-
-		void * buffer = glyph->bitmap.buffer;
+		const void * bitmap_buffer = bitmap.buffer;
 
 		if( bitmap_width == 0 || bitmap_height == 0 )
 		{
@@ -373,7 +408,47 @@ namespace Menge
 			return true;
 		}
 
-        TTFFontTextureGlyphProvider provider( bitmap_width, bitmap_height, buffer, bitmap_pitch, bitmap_channel );
+        
+        fe_im res;
+        if( m_ttfFEEffect != nullptr )
+        {
+            fe_node * effect_node = fe_effect_find_node_by_type( m_ttfFEEffect, fe_node_type_out );
+        
+            fe_im im;
+            im.image.w = bitmap_width;
+            im.image.h = bitmap_height;
+            im.image.pitch = bitmap_pitch;
+            im.image.bytespp = bitmap_channel;
+            im.image.data = static_cast<uint8_t *>(const_cast<void*>(bitmap_buffer));
+            //im.image.data = (uint8_t *)bitmap_buffer;
+
+            switch( bitmap_channel )
+            {
+            case 1:
+                im.image.format = FE_IMG_A8;
+                break;
+            case 4:
+                im.image.format = FE_IMG_R8G8B8A8;
+                break;
+            }
+            
+            im.x = glyph->bitmap_left;
+            im.y = m_ttfHeight - glyph->bitmap_top;
+
+            
+            fe_node_apply( m_ttfHeight, &im, effect_node, &res );
+
+            bitmap_width = res.image.w;
+            bitmap_height = res.image.h;
+            bitmap_buffer = res.image.data;
+            bitmap_pitch = res.image.pitch;
+            bitmap_channel = res.image.bytespp;
+
+            dx = res.x;
+            dy = res.y - m_ttfHeight;
+        }
+        
+        TTFFontTextureGlyphProvider provider( bitmap_width, bitmap_height, bitmap_buffer, bitmap_pitch, bitmap_channel );
         
 		mt::uv4f uv;
 		RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
@@ -383,6 +458,11 @@ namespace Menge
 		{
 			return false;
 		}
+
+        if( m_ttfFEEffect != nullptr )
+        {
+            fe_image_free( &res.image );
+        }
 
 		TTFGlyph g;
 		g.ch = _code;
@@ -426,10 +506,7 @@ namespace Menge
             return false;
         }
 
-        FT_F26Dot6 fontSizePoints = (FT_F26Dot6)m_ttfHeight * 64;
-        FT_UInt dpi = (FT_UInt)m_ttfDPI;
-
-        if( FT_Set_Char_Size( face, fontSizePoints, fontSizePoints, dpi, dpi ) != FT_Err_Ok )
+        if( FT_Set_Pixel_Sizes( face, 0, m_ttfHeight ) != FT_Err_Ok )
         {
             return false;
         }
@@ -562,6 +639,16 @@ namespace Menge
     float TTFFont::getFontHeight() const
     {
         return m_ttfAscender + m_ttfDescender;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::getFontPremultiply() const
+    {
+        if( m_ttfFEEffect != nullptr )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     float TTFFont::getFontSpacing() const

@@ -178,6 +178,11 @@ namespace Menge
         return 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool BitmapFont::getFontPremultiply() const
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::_validateGlyphes( const U32String & _codes ) const
     {
         bool successful = true;

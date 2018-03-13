@@ -18,6 +18,7 @@ namespace Menge
 
 	public:
 		TTFPlugin();
+        ~TTFPlugin();
 
 	protected:
 		bool _initialize() override;

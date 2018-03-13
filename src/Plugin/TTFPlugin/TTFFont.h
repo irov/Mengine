@@ -21,6 +21,8 @@
 
 #	include "stdex/stl_map.h"
 
+#   include "fe/fe.h"
+
 namespace Menge
 {
 #	define MENGINE_TTF_FONT_GLYPH_HASH_SIZE 37
@@ -52,6 +54,9 @@ namespace Menge
         float getFontHeight() const override;
         float getFontSpacing() const override;
 
+    protected:
+        bool getFontPremultiply() const override;
+
 	protected:
         bool _validateGlyphes( const U32String & _codes ) const override;
 		bool _prepareGlyph( GlyphCode _code ) override;
@@ -65,12 +70,15 @@ namespace Menge
 		ConstString m_category;
 		FilePath m_ttfPath;
         
-		uint32_t m_ttfDPI;
-
         float m_ttfAscender;
         float m_ttfDescender;
-        float m_ttfHeight;
+        uint32_t m_ttfHeight;
         float m_ttfSpacing;
+
+        FilePath m_ttfFEPath;
+        ConstString m_ttfFEName;
+        fe_effect_bundle * m_ttfFEBundle;
+        fe_effect * m_ttfFEEffect;
 		
 		typedef stdex::vector<TTFGlyph> TVectorTTFGlyphs;
 		TVectorTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];

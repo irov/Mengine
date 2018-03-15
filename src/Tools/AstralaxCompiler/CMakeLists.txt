@@ -13,6 +13,7 @@ add_definitions(-DMAGIC_3D)
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 			         ${THIRDPARTY_DIR}/astralax
                      ${THIRDPARTY_DIR}/lz4/lib
+                     ${THIRDPARTY_DIR}/libmath/include
                     )
 
 LINK_DIRECTORIES( ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
@@ -21,6 +22,7 @@ ADD_EXECUTABLE( ${MY_LIB_NAME} WIN32 ${SRC_FILES} )
 TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}lz4${MENGINE_LIB_SUFFIX}
+    ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/astralax/magic3d.lib
     ToolUtils
     Shlwapi.lib

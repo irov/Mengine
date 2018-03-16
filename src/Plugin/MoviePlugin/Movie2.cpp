@@ -823,7 +823,7 @@ namespace Menge
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        node->setTiming( _callbackData->offset );
+                        node->setTiming( _callbackData->offset * 1000.f );
 
                         if( _callbackData->loop == AE_TRUE )
                         {
@@ -850,7 +850,7 @@ namespace Menge
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        node->setTiming( _callbackData->offset );
+                        node->setTiming( _callbackData->offset * 1000.f );
 
                         if( _callbackData->loop == AE_TRUE )
                         {
@@ -877,7 +877,7 @@ namespace Menge
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        node->setTiming( _callbackData->offset );
+                        node->setTiming( _callbackData->offset * 1000.f );
 
                         if( _callbackData->loop == AE_TRUE )
                         {

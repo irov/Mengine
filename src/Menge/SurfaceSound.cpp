@@ -51,6 +51,7 @@ namespace Menge
 		: m_soundBuffer(nullptr)
 		, m_sourceID(0)
 		, m_isHeadMode(false)
+        , m_volume( 0.f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -300,14 +301,14 @@ namespace Menge
         }
 
         m_volume = _volume;
-
+                
 		if( m_sourceID == 0 )
 		{
 			return;
 		}        
 
 		if( SOUND_SERVICE()
-			->setSourceVolume( m_sourceID, m_volume, 0.f ) == false )
+			->setSourceVolume( m_sourceID, m_volume, m_volume ) == false )
 		{
 			LOGGER_ERROR("SoundEmitter::setVolume invalid %s:%d %f"
 				, m_resourceSound->getName().c_str()

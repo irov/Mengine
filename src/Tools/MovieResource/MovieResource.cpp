@@ -257,10 +257,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return -1;
     }
 
-    fprintf( f_out, "<DataBlock Name = \"%s\">\n", utf8_movie_name );
-
-    aeMovieData * movie_data = ae_create_movie_data( movie_instance, &my_resource_provider, &my_resource_deleter, f_out );
-
     FILE * f_in = _wfopen( in_path.c_str(), L"rb" );
 
     if( f_in == NULL )
@@ -272,16 +268,20 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return -1;
     }
 
+    fprintf( f_out, "<DataBlock Name = \"%s\">\n", utf8_movie_name );
+
+    aeMovieData * movie_data = ae_create_movie_data( movie_instance, &my_resource_provider, &my_resource_deleter, f_out );
 
     aeMovieStream * movie_stream = ae_create_movie_stream( movie_instance, &my_read_stream, &my_copy_stream, f_in );
 
-    ae_uint32_t load_version;
-    ae_result_t successful = ae_load_movie_data( movie_data, movie_stream, &load_version );
+    ae_uint32_t major_version;
+    ae_uint32_t minor_version;
+    ae_result_t result_load_movie_data = ae_check_movie_data( movie_stream, &major_version, &minor_version );
 
-    if( successful != AE_RESULT_SUCCESSFUL )
+    if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
     {
         message_error( "invalid load movie data '%s'\n"
-            , ae_get_result_string_info( successful )
+            , ae_get_result_string_info( result_load_movie_data )
         );
 
         return -1;

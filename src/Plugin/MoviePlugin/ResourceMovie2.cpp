@@ -202,18 +202,23 @@ namespace Menge
 
 		aeMovieStream * movie_stream = ae_create_movie_stream( m_instance, &Mengine_read_stream, &Mengine_copy_stream, stream.get() );
 
-        ae_uint32_t data_version;
-        ae_result_t result = ae_load_movie_data( movieData, movie_stream, &data_version );
+        ae_uint32_t major_version;
+        ae_uint32_t minor_version;
+        ae_result_t result_load_movie_data = ae_load_movie_data( movieData, movie_stream, &major_version, &minor_version );
 
-		if( result != AE_RESULT_SUCCESSFUL )
+		if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
 		{
-			LOGGER_ERROR("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s' result '%s'\ncurrent version '%d'\nload version '%d'"
+            const ae_char_t * result_string_info = ae_get_result_string_info( result_load_movie_data );
+
+			LOGGER_ERROR("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s' result '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
 				, m_filePath.c_str()
-                , ae_get_result_string_info( result )
-                , AE_MOVIE_SDK_VERSION
-                , data_version
+                , result_string_info
+                , AE_MOVIE_SDK_MAJOR_VERSION
+                , AE_MOVIE_SDK_MINOR_VERSION
+                , major_version
+                , minor_version
 				);
 
 			return 0;
@@ -289,18 +294,23 @@ namespace Menge
 
         aeMovieStream * movie_stream = ae_create_movie_stream( m_instance, &Mengine_read_stream, &Mengine_copy_stream, stream.get() );
 
-        ae_uint32_t check_version;
-        ae_result_t check_result = ae_check_movie_data( movie_stream, &check_version );
+        ae_uint32_t major_version;
+        ae_uint32_t minor_version;
+        ae_result_t result_load_movie_data = ae_check_movie_data( movie_stream, &major_version, &minor_version );
 
-        if( check_result != AE_RESULT_SUCCESSFUL )
+        if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
         {
-            const ae_char_t * result_string_info = ae_get_result_string_info( check_result );
+            const ae_char_t * result_string_info = ae_get_result_string_info( result_load_movie_data );
 
-            LOGGER_ERROR("ResourceMovie2::_isValid: '%s' group '%s' file '%s' check movie data invalid '%s'"
+            LOGGER_ERROR("ResourceMovie2::_isValid: '%s' group '%s' file '%s' check movie data invalid '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
                 , this->getName().c_str()
                 , this->getGroup().c_str()
                 , m_filePath.c_str()
                 , result_string_info
+                , AE_MOVIE_SDK_MAJOR_VERSION
+                , AE_MOVIE_SDK_MINOR_VERSION
+                , major_version
+                , minor_version
                 );
 
             return false;

@@ -184,8 +184,9 @@ namespace Menge
 
         aeMovieStream * movie_stream = ae_create_movie_stream( movieInstance, &my_read_stream, &my_copy_stream, input_stream.get() );
 
-        ae_uint32_t load_version;
-        ae_result_t successful = ae_load_movie_data( movieData, movie_stream, &load_version );
+        ae_uint32_t major_version;
+        ae_uint32_t minor_version;
+        ae_result_t result_load_movie_data = ae_check_movie_data( movie_stream, &major_version, &minor_version );
 
         ae_delete_movie_stream( movie_stream );
 
@@ -193,9 +194,13 @@ namespace Menge
 
         ae_delete_movie_instance( movieInstance );
 
-        if( successful != AE_RESULT_SUCCESSFUL )
+        if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
         {
-            return pybind::ret_none();
+            LOGGER_ERROR( "invalid load movie data '%s'\n"
+                , ae_get_result_string_info( result_load_movie_data )
+            );
+
+            return NULL;
         }
 
         return pylist;

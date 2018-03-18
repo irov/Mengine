@@ -181,8 +181,10 @@ struct Mesh
     std::vector<uint16_t> indices;
 };
 //////////////////////////////////////////////////////////////////////////
-bool polygonize( const vec2f & image_base_size, const vec2f & image_trim_size, const vec2f & image_trim_offset, bool image_bb, bool image_subtract, const TVectorPoints & points, Mesh & mesh )
+static bool polygonize( const vec2f & image_base_size, const vec2f & image_trim_size, const vec2f & image_trim_offset, bool image_bb, bool image_subtract, const TVectorPoints & points, Mesh & mesh )
 {
+    (void)image_base_size;
+
     size_t points_count = points.size();
 
     BoostPolygon polygon_input;

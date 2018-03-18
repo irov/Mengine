@@ -276,7 +276,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     ae_uint32_t major_version;
     ae_uint32_t minor_version;
-    ae_result_t result_load_movie_data = ae_check_movie_data( movie_stream, &major_version, &minor_version );
+    ae_result_t result_load_movie_data = ae_load_movie_data( movie_data, movie_stream, &major_version, &minor_version );
 
     if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
     {

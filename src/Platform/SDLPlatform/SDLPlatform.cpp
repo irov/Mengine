@@ -893,7 +893,7 @@ namespace Menge
 		RENDER_SERVICE()
 			->onDeviceLostRestore();
 
-        RENDER_SYSTEM( m_serviceProvider )
+        RENDER_SYSTEM()
             ->onWindowChangeFullscreen( _fullscreen );
 #endif
     }

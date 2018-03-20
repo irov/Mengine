@@ -50,7 +50,7 @@ namespace Menge
         
         this->setupWriteResponse( _curl );
 
-        if( CONFIG_VALUE( m_serviceProvider, "HTTP", "Log", false ) == true )
+        if( CONFIG_VALUE( "HTTP", "Log", false ) == true )
         {
             std::stringstream ss;
 
@@ -66,7 +66,7 @@ namespace Menge
 
             std::string header_str = ss.str();
 
-            LOGGER_STATISTIC( m_serviceProvider )("HTTP: header data url '%s' header:\n %s"
+            LOGGER_STATISTIC("HTTP: header data url '%s' header:\n %s"
                 , m_url.c_str()
                 , header_str.c_str()
                 );

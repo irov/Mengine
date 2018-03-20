@@ -7,6 +7,11 @@
 #	include "Interface/LoggerInterface.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
+#	include "Interface/PackageInterface.h"
+#	include "Interface/UserdataInterface.h"
+#   include "Interface/GraveyardInterface.h"
+#   include "Interface/ResourceInterface.h"
+#	include "Interface/TextInterface.h"
 #	include "Interface/InputSystemInterface.h"
 #	include "Interface/TimerInterface.h"
 #	include "Interface/OptionsInterface.h"
@@ -118,6 +123,22 @@ SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( TimerSystem );
 SERVICE_EXTERN( TimerService );
 SERVICE_EXTERN( HttpSystem );
+SERVICE_EXTERN( PrototypeService );
+SERVICE_EXTERN( NodeService );
+SERVICE_EXTERN( LoaderService );
+SERVICE_EXTERN( RenderService );
+SERVICE_EXTERN( RenderMaterialService );
+SERVICE_EXTERN( RenderTextureService );
+SERVICE_EXTERN( ResourceService );
+SERVICE_EXTERN( TextService );
+SERVICE_EXTERN( Watchdog );
+SERVICE_EXTERN( ProfilerService );
+SERVICE_EXTERN( Graveyard );
+SERVICE_EXTERN( PackageService );
+SERVICE_EXTERN( UserdataService );
+SERVICE_EXTERN( PlayerService );
+SERVICE_EXTERN( GameService );
+SERVICE_EXTERN( TimelineService );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( MengeImageCodec );
 PLUGIN_EXPORT( MengeSoundCodec );
@@ -535,9 +556,6 @@ namespace Menge
         {
             return false;
         }
-
-        SERVICE_CREATE( TimerSystem );
-        SERVICE_CREATE( TimerService );
         
         SERVICE_CREATE( ScriptService );
         SERVICE_CREATE( ModuleService );
@@ -550,12 +568,34 @@ namespace Menge
 
 		SERVICE_CREATE( HttpSystem );
 
+        SERVICE_CREATE( TimerSystem );
+        SERVICE_CREATE( TimerService );
+
         PythonScriptWrapper::constsWrap();
         PythonScriptWrapper::mathWrap();
         PythonScriptWrapper::nodeWrap();
         PythonScriptWrapper::helperWrap();
         PythonScriptWrapper::soundWrap();
         PythonScriptWrapper::entityWrap();
+
+        SERVICE_CREATE( PrototypeService );
+        SERVICE_CREATE( NodeService );
+        SERVICE_CREATE( LoaderService );
+
+        SERVICE_CREATE( RenderService );
+        SERVICE_CREATE( RenderMaterialService );
+        SERVICE_CREATE( RenderTextureService );
+
+        SERVICE_CREATE( ResourceService );
+        SERVICE_CREATE( TextService );
+        SERVICE_CREATE( Watchdog );
+        SERVICE_CREATE( ProfilerService );
+        SERVICE_CREATE( Graveyard );
+        SERVICE_CREATE( PackageService );
+        SERVICE_CREATE( UserdataService );
+        SERVICE_CREATE( PlayerService );
+        SERVICE_CREATE( GameService );
+        SERVICE_CREATE( TimelineService );
         
         SERVICE_CREATE( Application );
 
@@ -769,50 +809,66 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()
     {
-        SERVICE_FINALIZE( ApplicationInterface );
-        SERVICE_FINALIZE( PrefetcherServiceInterface );
-        SERVICE_FINALIZE( DataServiceInterface );
-        SERVICE_FINALIZE( PluginServiceInterface );
-        SERVICE_FINALIZE( ModuleServiceInterface );
-        SERVICE_FINALIZE( InputServiceInterface );
-        SERVICE_FINALIZE( UnicodeSystemInterface );
+        SERVICE_FINALIZE( Menge::ModuleServiceInterface );
 
-        SERVICE_FINALIZE( FileServiceInterface );
-        SERVICE_FINALIZE( CodecServiceInterface );
-        SERVICE_FINALIZE( ParticleSystemInterface2 );
-        SERVICE_FINALIZE( ParticleServiceInterface2 );
+        PLATFORM_SERVICE()
+            ->stop();
 
-        SERVICE_FINALIZE( SoundServiceInterface );
-        SERVICE_FINALIZE( SoundSystemInterface );
+        NOTIFICATION_SERVICE()
+            ->notify( NOTIFICATOR_ENGINE_FINALIZE );
 
-        SERVICE_FINALIZE( PrototypeServiceInterface );
-        SERVICE_FINALIZE( ScriptServiceInterface );
-        SERVICE_FINALIZE( ConverterServiceInterface );
+        SERVICE_PROVIDER_STOP();
 
-        SERVICE_FINALIZE( RenderServiceInterface );
-        SERVICE_FINALIZE( RenderMaterialServiceInterface );
-        SERVICE_FINALIZE( RenderTextureServiceInterface );
-        SERVICE_FINALIZE( RenderSystemInterface );
+        THREAD_SERVICE()
+            ->stopTasks();
 
-		SERVICE_FINALIZE( HttpSystemInterface );
+        SERVICE_FINALIZE( Menge::GameServiceInterface );
+        SERVICE_FINALIZE( Menge::PlayerServiceInterface );
+        SERVICE_FINALIZE( Menge::PackageServiceInterface );
+        SERVICE_FINALIZE( Menge::UserdataServiceInterface );
+        SERVICE_FINALIZE( Menge::GraveyardInterface );
+        SERVICE_FINALIZE( Menge::NodeServiceInterface );
+        SERVICE_FINALIZE( Menge::ResourceServiceInterface );
+        SERVICE_FINALIZE( Menge::TextServiceInterface );
+        SERVICE_FINALIZE( Menge::PrototypeServiceInterface );
+        SERVICE_FINALIZE( Menge::ApplicationInterface );
+        SERVICE_FINALIZE( Menge::HttpSystemInterface );
+        SERVICE_FINALIZE( Menge::PrefetcherServiceInterface );
+        SERVICE_FINALIZE( Menge::DataServiceInterface );
+        SERVICE_FINALIZE( Menge::PluginServiceInterface );
+        SERVICE_FINALIZE( Menge::InputServiceInterface );
+        SERVICE_FINALIZE( Menge::UnicodeSystemInterface );
 
-        SERVICE_FINALIZE( ConfigServiceInterface );
-        SERVICE_FINALIZE( StringizeServiceInterface );
+        SERVICE_FINALIZE( Menge::CodecServiceInterface );
+        SERVICE_FINALIZE( Menge::ParticleSystemInterface2 );
+        SERVICE_FINALIZE( Menge::ParticleServiceInterface2 );
 
-        SERVICE_FINALIZE( ConfigServiceInterface );
-        SERVICE_FINALIZE( StringizeServiceInterface );
+        SERVICE_FINALIZE( Menge::SoundServiceInterface );
+        SERVICE_FINALIZE( Menge::SoundSystemInterface );
 
-        SERVICE_FINALIZE( ArchiveServiceInterface );
-        SERVICE_FINALIZE( MemoryServiceInterface );
-        SERVICE_FINALIZE( NotificationServiceInterface );
+        SERVICE_FINALIZE( Menge::PrototypeServiceInterface );
+        SERVICE_FINALIZE( Menge::ScriptServiceInterface );
+        SERVICE_FINALIZE( Menge::ConverterServiceInterface );
 
-        SERVICE_FINALIZE( ThreadServiceInterface );
-        SERVICE_FINALIZE( ThreadSystemInterface );
+        SERVICE_FINALIZE( Menge::RenderServiceInterface );
+        SERVICE_FINALIZE( Menge::RenderMaterialServiceInterface );
+        SERVICE_FINALIZE( Menge::RenderTextureServiceInterface );
+        SERVICE_FINALIZE( Menge::RenderSystemInterface );
 
-        SERVICE_FINALIZE( TimerServiceInterface );
-        SERVICE_FINALIZE( TimerSystemInterface );
+        SERVICE_FINALIZE( Menge::ConfigServiceInterface );
+        SERVICE_FINALIZE( Menge::StringizeServiceInterface );
 
-        SERVICE_FINALIZE( PlatformInterface );
+        SERVICE_FINALIZE( Menge::ArchiveServiceInterface );
+        SERVICE_FINALIZE( Menge::MemoryServiceInterface );
+        SERVICE_FINALIZE( Menge::NotificationServiceInterface );
+
+        SERVICE_FINALIZE( Menge::ThreadServiceInterface );
+        SERVICE_FINALIZE( Menge::ThreadSystemInterface );
+
+        SERVICE_FINALIZE( Menge::TimerServiceInterface );
+        SERVICE_FINALIZE( Menge::TimerSystemInterface );
+
+        SERVICE_FINALIZE( Menge::PlatformInterface );
         
         if( m_fileLog != nullptr )
         {
@@ -838,6 +894,7 @@ namespace Menge
             m_loggerMessageBox = nullptr;
         }
 
+        SERVICE_FINALIZE( Menge::FileServiceInterface );
         SERVICE_FINALIZE( Menge::LoggerServiceInterface );
 
         SERVICE_PROVIDER_FINALIZE( m_serviceProvider );

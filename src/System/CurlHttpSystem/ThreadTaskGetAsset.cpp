@@ -25,7 +25,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskGetAsset::_onRun()
 	{
-        FileGroupInterfacePtr fileGroup = FILE_SERVICE( m_serviceProvider )
+        FileGroupInterfacePtr fileGroup = FILE_SERVICE()
             ->getFileGroup( m_category );
 
         if( fileGroup->createDirectory( m_filePath ) == false )
@@ -33,7 +33,7 @@ namespace Menge
             return false;
         }
 
-		m_stream = FILE_SERVICE(m_serviceProvider)
+		m_stream = FILE_SERVICE()
 			->openOutputFile( m_category, m_filePath );
 
 		if( m_stream == nullptr )
@@ -98,9 +98,9 @@ namespace Menge
 		
 		curl_easy_setopt( _curl, CURLOPT_NOPROGRESS, 0L );
 
-        if( CONFIG_VALUE( m_serviceProvider, "HTTP", "Log", false ) == true )
+        if( CONFIG_VALUE( "HTTP", "Log", false ) == true )
         {
-            LOGGER_STATISTIC( m_serviceProvider )("HTTP: get asset url '%s' login '%s' password '%s'\nfile: '%s:%s'"
+            LOGGER_STATISTIC( "HTTP: get asset url '%s' login '%s' password '%s'\nfile: '%s:%s'"
                 , m_url.c_str()
                 , m_login.c_str()
                 , m_password.c_str()

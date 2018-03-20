@@ -142,7 +142,7 @@ namespace Menge
 #	else
 		if( bit_depth == 16 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ImageDecoderPNG::_prepareData not support scale 16 to 8 bit"
+			LOGGER_ERROR("ImageDecoderPNG::_prepareData not support scale 16 to 8 bit"
 				);
 
 			return false;

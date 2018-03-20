@@ -289,6 +289,8 @@ namespace Menge
 
             if( desc.progress == false )
             {
+                m_tasks.erase( it );
+
                 return true;
             }
 

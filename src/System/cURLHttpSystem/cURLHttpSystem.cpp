@@ -1,6 +1,7 @@
 #	include "cURLHttpSystem.h"
 
 #	include "Interface/FileSystemInterface.h"
+#	include "Interface/ThreadSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 
 #	include "ThreadTaskGetMessage.h"
@@ -31,7 +32,7 @@ namespace Menge
 
 		if( code != CURLE_OK )
 		{
-			LOGGER_ERROR(m_serviceProvider)("cURLHttpSystem::initialize invalid initialize curl %d:%s"
+			LOGGER_ERROR("cURLHttpSystem::initialize invalid initialize curl %d:%s"
 				, code
 				, curl_easy_strerror(code)
 				);
@@ -39,24 +40,24 @@ namespace Menge
 			return false;
 		}
 
-		if( THREAD_SERVICE( m_serviceProvider )
-			->createThread( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ), -1, __FILE__, __LINE__ ) == false )
+		if( THREAD_SERVICE()
+			->createThread( STRINGIZE_STRING_LOCAL( "ThreadCurlHttpSystem" ), -1, __FILE__, __LINE__ ) == false )
 		{
 			return false;
 		}
 
-		m_factoryTaskGetMessage = new FactoryPool<ThreadTaskGetMessage, 8>( m_serviceProvider );
-		m_factoryTaskPostMessage = new FactoryPool<ThreadTaskPostMessage, 8>( m_serviceProvider );
-        m_factoryTaskHeaderData = new FactoryPool<ThreadTaskHeaderData, 8>( m_serviceProvider );
-		m_factoryTaskDownloadAsset = new FactoryPool<ThreadTaskGetAsset, 8>( m_serviceProvider );
+		m_factoryTaskGetMessage = new FactoryPool<ThreadTaskGetMessage, 8>();
+		m_factoryTaskPostMessage = new FactoryPool<ThreadTaskPostMessage, 8>();
+        m_factoryTaskHeaderData = new FactoryPool<ThreadTaskHeaderData, 8>();
+		m_factoryTaskDownloadAsset = new FactoryPool<ThreadTaskGetAsset, 8>();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void cURLHttpSystem::_finalize()
 	{
-		THREAD_SERVICE( m_serviceProvider )
-			->destroyThread( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ) );
+		THREAD_SERVICE()
+			->destroyThread( STRINGIZE_STRING_LOCAL( "ThreadCurlHttpSystem" ) );
 		
 		m_factoryTaskDownloadAsset = nullptr;
 		m_factoryTaskPostMessage = nullptr;
@@ -72,15 +73,14 @@ namespace Menge
 
 		ThreadTaskGetMessagePtr task = m_factoryTaskGetMessage->createObject();
 
-		task->setServiceProvider( m_serviceProvider );
         task->setRequestId( task_id );
         task->setReceiver( this );
 		task->initialize( _url );
 
-		if( THREAD_SERVICE( m_serviceProvider )
-			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ), task ) == false )
+		if( THREAD_SERVICE()
+			->addTask( STRINGIZE_STRING_LOCAL( "ThreadCurlHttpSystem" ), task ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("cURLHttpSystem::getMessage url '%s' invalid add task"
+			LOGGER_ERROR("cURLHttpSystem::getMessage url '%s' invalid add task"
 				, _url.c_str()
 				);
 
@@ -103,15 +103,14 @@ namespace Menge
 
 		ThreadTaskPostMessagePtr task = m_factoryTaskPostMessage->createObject();
 
-		task->setServiceProvider( m_serviceProvider );
         task->setRequestId( task_id );
         task->setReceiver( this );
 		task->initialize( _url, _params );
 
-		if( THREAD_SERVICE( m_serviceProvider )
-			->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ), task ) == false )
+		if( THREAD_SERVICE()
+			->addTask( STRINGIZE_STRING_LOCAL( "ThreadCurlHttpSystem" ), task ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("cURLHttpSystem::postMessage url '%s' invalid add task"
+			LOGGER_ERROR("cURLHttpSystem::postMessage url '%s' invalid add task"
 				, _url.c_str()
 				);
 
@@ -134,15 +133,14 @@ namespace Menge
 
         ThreadTaskHeaderDataPtr task = m_factoryTaskHeaderData->createObject();
 
-        task->setServiceProvider( m_serviceProvider );
         task->setRequestId( task_id );
         task->setReceiver( this );
         task->initialize( _url, _headers, _data );
 
-        if( THREAD_SERVICE( m_serviceProvider )
-            ->addTask( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ThreadCurlHttpSystem" ), task ) == false )
+        if( THREAD_SERVICE()
+            ->addTask( STRINGIZE_STRING_LOCAL( "ThreadCurlHttpSystem" ), task ) == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("cURLHttpSystem::headerData url '%s' invalid add task"
+            LOGGER_ERROR("cURLHttpSystem::headerData url '%s' invalid add task"
                 , _url.c_str()
                 );
 
@@ -161,10 +159,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	HttpRequestID cURLHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver )
 	{
-		if( FILE_SERVICE( m_serviceProvider )
+		if( FILE_SERVICE()
 			->hasFileGroup( _category, nullptr ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::downloadAsset url '%s' not found category '%s' for filepath '%s'"
+			LOGGER_ERROR("CurlHttpSystem::downloadAsset url '%s' not found category '%s' for filepath '%s'"
 				, _url.c_str()
 				, _category.c_str()
 				, _path.c_str()
@@ -173,10 +171,10 @@ namespace Menge
 			return 0;
 		}
 
-		if( FILE_SERVICE( m_serviceProvider )
+		if( FILE_SERVICE()
 			->existFile( _category, _path, nullptr ) == true )
 		{
-			LOGGER_ERROR( m_serviceProvider )("CurlHttpSystem::downloadAsset url '%s' category '%s' file alredy exist '%s'"
+			LOGGER_ERROR("CurlHttpSystem::downloadAsset url '%s' category '%s' file alredy exist '%s'"
 				, _url.c_str()
 				, _category.c_str()
 				, _path.c_str()
@@ -189,15 +187,14 @@ namespace Menge
 		
 		ThreadTaskGetAssetPtr task = m_factoryTaskDownloadAsset->createObject();
 
-		task->setServiceProvider( m_serviceProvider );
         task->setRequestId( task_id );
         task->setReceiver( this );
 		task->initialize( _url, _login, _password, _category, _path );
 		
-		if( THREAD_SERVICE(m_serviceProvider)
-			->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), task ) == false )
+		if( THREAD_SERVICE()
+			->addTask( STRINGIZE_STRING_LOCAL("ThreadCurlHttpSystem"), task ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("CurlHttpSystem::downloadAsset url '%s' category '%s' path '%s' invalid add task"
+			LOGGER_ERROR("CurlHttpSystem::downloadAsset url '%s' category '%s' path '%s' invalid add task"
 				, _url.c_str()
 				, _category.c_str()
 				, _path.c_str()

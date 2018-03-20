@@ -32,7 +32,7 @@ namespace Menge
 		return "GL_UNKNOWN";
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool openglRenderErrorCheck( ServiceProviderInterface * _serviceProvider, const char * _method, const char * _file, int _line )
+	bool openglRenderErrorCheck( const char * _method, const char * _file, int _line )
 	{
 		GLenum err = glGetError();
 
@@ -43,7 +43,7 @@ namespace Menge
 
 		const char * err_str = glGetErrorString( err );		
 
-		LOGGER_ERROR( _serviceProvider )("OpenGLRenderError render: method '%s' file '%s:%d' error '%s:%d'"
+		LOGGER_ERROR("OpenGLRenderError render: method '%s' file '%s:%d' error '%s:%d'"
 			, _method
 			, _file
 			, _line			

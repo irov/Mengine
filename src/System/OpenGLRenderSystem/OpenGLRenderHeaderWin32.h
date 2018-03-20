@@ -123,5 +123,5 @@ extern PFNGLGETVERTEXATTRIBPOINTERVPROC     glGetVertexAttribPointerv;
 
 namespace Menge
 {
-    void initialize_GLEXT( ServiceProviderInterface * _serviceProvider );
+    void initialize_GLEXT();
 }

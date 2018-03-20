@@ -15,10 +15,6 @@ namespace Menge
         ~OpenGLRenderFragmentShader();
 
     public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-    
-    public:
         const ConstString & getName() const override;
 
     public:
@@ -32,8 +28,6 @@ namespace Menge
         GLuint createShader_( GLenum type, const char * _source );
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
         ConstString m_name;
         MemoryInterfacePtr m_memory;
 

@@ -23,7 +23,7 @@ namespace Menge
 	{
 		if( m_id != 0 )
 		{
-			GLCALL( m_serviceProvider, glDeleteBuffers, (1, &m_id) );
+			GLCALL( glDeleteBuffers, (1, &m_id) );
 		}
 
 		Helper::freeMemory( m_memory );
@@ -42,11 +42,11 @@ namespace Menge
 		}
 
 		GLuint bufId = 0;
-		GLCALL( m_serviceProvider, glGenBuffers, (1, &bufId) );
+		GLCALL( glGenBuffers, (1, &bufId) );
 
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, bufId) );
-		GLCALL( m_serviceProvider, glBufferData, (GL_ELEMENT_ARRAY_BUFFER, m_indexNum * sizeof( RenderIndices ), nullptr, m_usage) );
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );
+        GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, bufId) );
+        GLCALL( glBufferData, (GL_ELEMENT_ARRAY_BUFFER, m_indexNum * sizeof( RenderIndices ), nullptr, m_usage) );
+        GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );
 
 		m_id = bufId;
 
@@ -75,9 +75,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OpenGLRenderIndexBuffer::unlock()
 	{
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, m_id) );
-		GLCALL( m_serviceProvider, glBufferSubData, (GL_ELEMENT_ARRAY_BUFFER, m_lockOffset * sizeof( RenderIndices ), m_lockCount * sizeof( RenderIndices ), m_lockMemory) );
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );
+		GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, m_id) );
+		GLCALL( glBufferSubData, (GL_ELEMENT_ARRAY_BUFFER, m_lockOffset * sizeof( RenderIndices ), m_lockCount * sizeof( RenderIndices ), m_lockMemory) );
+		GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );
 
 		m_lockOffset = 0;
 		m_lockCount = 0;
@@ -89,6 +89,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderIndexBuffer::enable()
 	{
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, m_id) );
+		GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, m_id) );
 	}
 }

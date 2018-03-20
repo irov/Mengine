@@ -18,10 +18,6 @@ namespace Menge
         ~OpenGLRenderProgram();
 
     public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
-    public:
         const ConstString & getName() const override;
 
     public:
@@ -40,11 +36,6 @@ namespace Menge
         void bindTexture( uint32_t _textureInd ) const;
 
     protected:
-        GLuint createShader_( GLenum type, const char * _source );
-
-    protected:
-        ServiceProviderInterface * m_serviceProvider;
-
         ConstString m_name;
 
         GLuint m_program;

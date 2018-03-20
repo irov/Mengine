@@ -1,4 +1,4 @@
-set( MY_LIB_NAME MengeSDLFileGroupPlugin )
+set( MY_LIB_NAME SDLFileGroupPlugin )
 
 ADD_FILTER(
 src
@@ -17,6 +17,7 @@ src
 INCLUDE_DIRECTORIES(
     ${Mengine_SOURCE_DIR}/Utils
     ${THIRDPARTY_DIR}/SDL2/include
+    ${THIRDPARTY_DIR}/libmath/include
 )
 
 add_definitions(-DUNICODE)

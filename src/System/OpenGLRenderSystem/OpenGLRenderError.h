@@ -4,23 +4,23 @@
 
 namespace Menge
 {
-    bool openglRenderErrorCheck( ServiceProviderInterface * _serviceProvider, const char * _method, const char * _file, int _line );
+    bool openglRenderErrorCheck( const char * _method, const char * _file, int _line );
 }
 
-#   define OPENGL_RENDER_CHECK_ERROR(serviceProvider, Method) Menge::openglRenderErrorCheck( serviceProvider, Method, __FILE__, __LINE__ )
+#   define OPENGL_RENDER_CHECK_ERROR(Method) Menge::openglRenderErrorCheck( Method, __FILE__, __LINE__ )
 
-#   define GLCALL( ServiceProvider, Method, Args )\
+#   define GLCALL( Method, Args )\
     {\
         Method Args;\
-        OPENGL_RENDER_CHECK_ERROR(ServiceProvider, #Method);\
+        OPENGL_RENDER_CHECK_ERROR(#Method);\
     }
 
-#   define GLCALLR( ServiceProvider, R, Method, Args )\
+#   define GLCALLR( R, Method, Args )\
     do{\
         R = Method Args;\
-        OPENGL_RENDER_CHECK_ERROR(ServiceProvider, #Method);\
+        OPENGL_RENDER_CHECK_ERROR(#Method);\
     }while(false);
 
 
-#   define IF_GLCALL( ServiceProvider, Method, Args )\
-    if( Method Args, OPENGL_RENDER_CHECK_ERROR(ServiceProvider, #Method) == true )
+#   define IF_GLCALL( Method, Args )\
+    if( Method Args, OPENGL_RENDER_CHECK_ERROR(#Method) == true )

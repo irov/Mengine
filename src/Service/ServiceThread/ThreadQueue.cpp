@@ -56,6 +56,7 @@ namespace Menge
 
             THREAD_SERVICE()
                 ->joinTask( currentTask );
+
 			currentTask = nullptr;
 		}
 
@@ -109,9 +110,9 @@ namespace Menge
 				return;
 			}
 
-			uint32_t packetSize = m_packetSize;
+			uint32_t packetIterator = m_packetSize;
 						
-			while( m_threadTasks.empty() == false && packetSize > 0 )
+			while( m_threadTasks.empty() == false && packetIterator > 0 )
 			{
 				ThreadTaskInterfacePtr threadTask = m_threadTasks.front();
 				m_threadTasks.pop_front();
@@ -124,7 +125,7 @@ namespace Menge
 
 				packet->addTask( threadTask );
 
-				--packetSize;
+				--packetIterator;
 			}
 
 			if( packet->countTask() > 0 )

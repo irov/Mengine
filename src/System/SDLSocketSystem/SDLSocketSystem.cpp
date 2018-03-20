@@ -29,7 +29,7 @@ namespace Menge
             return false;
         }
 
-        m_poolSDLSocket = new FactoryPool<SDLSocket, 16>( m_serviceProvider );
+        m_poolSDLSocket = new FactoryPool<SDLSocket, 16>();
 
         return true;
     }

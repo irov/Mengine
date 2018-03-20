@@ -53,7 +53,7 @@ namespace Menge
 		/* send all data to this function  */
         this->setupWriteResponse( _curl );
 
-        if( CONFIG_VALUE( m_serviceProvider, "HTTP", "Log", false ) == true )
+        if( CONFIG_VALUE( "HTTP", "Log", false ) == true )
         {
             std::stringstream ss;
 
@@ -69,7 +69,7 @@ namespace Menge
 
             std::string params_str = ss.str();
 
-            LOGGER_STATISTIC( m_serviceProvider )("HTTP: post message url '%s' params:\n %s"
+            LOGGER_STATISTIC( "HTTP: post message url '%s' params:\n %s"
                 , m_url.c_str()
                 , params_str.c_str()
                 );

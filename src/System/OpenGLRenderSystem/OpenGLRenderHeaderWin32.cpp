@@ -107,10 +107,10 @@ PFNGLGETVERTEXATTRIBPOINTERVPROC    glGetVertexAttribPointerv = nullptr;
 
 namespace Menge
 {
-	void initialize_GLEXT( ServiceProviderInterface * _serviceProvider )
+	void initialize_GLEXT()
 	{
-#   define GETGLPROC(ptype, pname) pname = reinterpret_cast<ptype>(SDL_GL_GetProcAddress(#pname)); OPENGL_RENDER_CHECK_ERROR(_serviceProvider, #pname)
-#   define GETGLPROC_(ptype, pname) pname##_ = reinterpret_cast<ptype>(SDL_GL_GetProcAddress(#pname)); OPENGL_RENDER_CHECK_ERROR(_serviceProvider, #pname)
+#   define GETGLPROC(ptype, pname) pname = reinterpret_cast<ptype>(SDL_GL_GetProcAddress(#pname)); OPENGL_RENDER_CHECK_ERROR(#pname)
+#   define GETGLPROC_(ptype, pname) pname##_ = reinterpret_cast<ptype>(SDL_GL_GetProcAddress(#pname)); OPENGL_RENDER_CHECK_ERROR(#pname)
 
 		if( nullptr == glGenBuffers || nullptr == glDeleteProgram )
 		{

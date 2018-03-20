@@ -384,7 +384,7 @@ namespace Menge
                 return false;
             }
 
-			//size_t memory = PROFILER_SERVICE( m_serviceProvider )
+			//size_t memory = PROFILER_SERVICE()
 			//	->memoryEnd();
 
 			//LOGGER_ERROR("resource desc %.04f -- %s"

@@ -19,7 +19,10 @@ src
 
 add_definitions(-DCURL_STATICLIB)
 
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libcurl/include )
+INCLUDE_DIRECTORIES( 
+    ${THIRDPARTY_DIR}/libcurl/include 
+    ${THIRDPARTY_DIR}/libmath/include
+    )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 

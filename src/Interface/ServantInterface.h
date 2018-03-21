@@ -1,10 +1,10 @@
 #   pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
 #   include "Factory/FactorablePtr.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ServantInterface

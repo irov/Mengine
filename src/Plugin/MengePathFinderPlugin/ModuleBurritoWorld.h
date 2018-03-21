@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Core/ModuleBase.h"
+#include "Core/ModuleBase.h"
 
-#	include "BurritoWorld.h"
+#include "BurritoWorld.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ModuleBurritoWorld
 		: public ModuleBase

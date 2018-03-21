@@ -1,10 +1,10 @@
-#	include "Kernel/Transformation3D.h"
+#include "Kernel/Transformation3D.h"
 
-#	include "Math/angle.h"
+#include "math/angle.h"
 
-#	include "Core/Exception.h"
+#include "Core/Exception.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Transformation3D::Transformation3D()

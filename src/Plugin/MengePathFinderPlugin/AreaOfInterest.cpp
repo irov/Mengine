@@ -1,10 +1,10 @@
-#	include "AreaOfInterest.h"
+#include "AreaOfInterest.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#	include <algorithm>
+#include <algorithm>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	AreaOfInterest::AreaOfInterest()

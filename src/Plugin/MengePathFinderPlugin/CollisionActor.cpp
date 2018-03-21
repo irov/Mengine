@@ -1,10 +1,10 @@
-#	include "CollisionActor.h"
+#include "CollisionActor.h"
 
-#	include "Math/utils.h"
+#include "math/utils.h"
 
-#	include <algorithm>
+#include <algorithm>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	CollisionActor::CollisionActor()

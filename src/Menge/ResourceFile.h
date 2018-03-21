@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
-#	include "Core/FilePath.h"
+#include "Core/FilePath.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ResourceFile
 		: public ResourceReference

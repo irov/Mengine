@@ -11,7 +11,7 @@
 
 #   include "SDL.h"
 
-namespace Menge
+namespace Mengine
 {
     class SDLInput
         : public Servant
@@ -34,7 +34,7 @@ namespace Menge
         void showKeyboard( bool _value ); 
 
     public:
-        bool isKeyDown( Menge::KeyCode _code ) const;
+        bool isKeyDown( Mengine::KeyCode _code ) const;
         bool isAnyKeyDown() const;
 
     protected:

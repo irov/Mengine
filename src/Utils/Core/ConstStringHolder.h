@@ -3,10 +3,10 @@
 #   include "Factory/Factorable.h"
 
 #   include "stdex/intrusive_linked.h"
-#	include "stdex/intrusive_ptr.h"
+#include "stdex/intrusive_ptr.h"
 #   include "stdex/const_string2_holder.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
     class ConstStringHolder

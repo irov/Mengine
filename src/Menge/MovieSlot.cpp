@@ -1,10 +1,10 @@
-#	include "MovieSlot.h"
+#include "MovieSlot.h"
 
 #   include "Interface/RenderSystemInterface.h"
 
 #   include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::setMovieName( const ConstString & _movieName )
@@ -82,7 +82,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MovieSlot::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
-		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
+		if( (_debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
 		{
 			return;
 		}

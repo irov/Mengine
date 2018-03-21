@@ -1,8 +1,8 @@
-#	include "Win32AlreadyRunningMonitor.h"
+#include "Win32AlreadyRunningMonitor.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32AlreadyRunningMonitor::Win32AlreadyRunningMonitor()

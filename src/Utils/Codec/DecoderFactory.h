@@ -7,7 +7,7 @@
 
 #   include "Factory/FactoryPool.h"
 
-namespace Menge
+namespace Mengine
 {     
     template<class T>
     class DecoderFactory

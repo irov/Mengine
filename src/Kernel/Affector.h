@@ -1,17 +1,17 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/AffectorType.h"
+#include "Kernel/AffectorType.h"
 
-#	include "Kernel/Scriptable.h"
+#include "Kernel/Scriptable.h"
 
 #   include "Factory/Factorable.h"
 #   include "Factory/FactoryPool.h"
 
-#	include "Core/ValueInterpolator.h"
+#include "Core/ValueInterpolator.h"
 
 #   include "stdex/intrusive_slug_linked.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class AffectorCallback
@@ -532,4 +532,4 @@ namespace Menge
 		};
 		//////////////////////////////////////////////////////////////////////////
 	}
-}	// namespace Menge
+}	

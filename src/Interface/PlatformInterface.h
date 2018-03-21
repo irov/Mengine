@@ -1,19 +1,19 @@
 #   pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 #   include "Config/String.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/Tags.h"
+#include "Core/ConstString.h"
+#include "Core/Tags.h"
 #   include "Core/FilePath.h"
-#	include "Core/Viewport.h"
-#	include "Core/Resolution.h"
-#	include "Core/Params.h"
+#include "Core/Viewport.h"
+#include "Core/Resolution.h"
+#include "Core/Params.h"
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/MemoryInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/MemoryInterface.h"
 
-namespace Menge
+namespace Mengine
 {
     class PlatformInterface
         : public ServiceInterface
@@ -91,5 +91,5 @@ namespace Menge
     };
 
 #   define PLATFORM_SERVICE()\
-    ((Menge::PlatformInterface*)SERVICE_GET(Menge::PlatformInterface))
+    ((Mengine::PlatformInterface*)SERVICE_GET(Mengine::PlatformInterface))
 }

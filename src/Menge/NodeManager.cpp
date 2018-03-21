@@ -1,19 +1,19 @@
-#	include "NodeManager.h"
+#include "NodeManager.h"
 
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/PrototypeManagerInterface.h"
 
 #   include "Logger/Logger.h"
 
-#	include "Kernel/Node.h"
-#	include "Consts.h"
+#include "Kernel/Node.h"
+#include "Consts.h"
 
-#	include <memory>
+#include <memory>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( NodeService, Menge::NodeManager);
+SERVICE_FACTORY( NodeService, Mengine::NodeManager);
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	NodeManager::NodeManager()

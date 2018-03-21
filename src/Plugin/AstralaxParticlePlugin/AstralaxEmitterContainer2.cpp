@@ -1,19 +1,19 @@
-#	include "AstralaxEmitterContainer2.h"
-#	include "AstralaxParticleSystem2.h"
+#include "AstralaxEmitterContainer2.h"
+#include "AstralaxParticleSystem2.h"
 
-#	include "Interface/MemoryInterface.h"
+#include "Interface/MemoryInterface.h"
 
 #   include "Logger/Logger.h"
 
-#	include "Core/String.h"
-#	include "Core/Stream.h"
+#include "Core/String.h"
+#include "Core/Stream.h"
 
 #   include "Kernel/ResourceImage.h"
 
 #   include "Factory/FactoryPool.h"
 #   include "Factory/FactoryPoolWithListener.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitterContainer2::AstralaxEmitterContainer2()

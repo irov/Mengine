@@ -1,6 +1,6 @@
-#	include "Kernel/Soundable.h"
+#include "Kernel/Soundable.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	void Soundable::setVolume( float _volume )

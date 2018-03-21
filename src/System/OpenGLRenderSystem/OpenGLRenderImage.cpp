@@ -1,29 +1,29 @@
-#	include "OpenGLRenderImage.h"
+#include "OpenGLRenderImage.h"
+#include "OpenGLRenderError.h"
 
-#	include "OpenGLRenderError.h"
+#include "Logger/Logger.h"
 
-#	include "Logger/Logger.h"
-
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderImage::OpenGLRenderImage()
-        : m_uid( 0 )
+        : m_uid(0)
+        , m_hwPixelFormat( PF_UNKNOWN )
+        , m_mode( ERIM_NORMAL )
         , m_hwMipmaps( 0 )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
         , m_hwChannels( 0 )
-        , m_hwPixelFormat( PF_UNKNOWN )
+        , m_minFilter( GL_LINEAR )
+        , m_magFilter( GL_LINEAR )
+        , m_wrapS( GL_CLAMP_TO_EDGE )
+        , m_wrapT( GL_CLAMP_TO_EDGE )
         , m_internalFormat( GL_RGB )
         , m_format( GL_RGB )
         , m_type( GL_UNSIGNED_BYTE )
-        , m_wrapS( GL_CLAMP_TO_EDGE )
-        , m_wrapT( GL_CLAMP_TO_EDGE )
-        , m_minFilter( GL_LINEAR )
-        , m_magFilter( GL_LINEAR )
-        , m_mode( ERIM_NORMAL )
         , m_lockLevel( 0 )
         , m_lockFirst( false )
+        , m_pow2( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -41,27 +41,27 @@ namespace Menge
             {
                 if( _width != _height )
                 {
-                    LOGGER_ERROR("OpenGLTexture::initialize not square texture %d:%d"
+                    LOGGER_ERROR( "not square texture %d:%d"
                         , _width
                         , _height
-                        );
+                    );
 
                     return false;
                 }
             }break;
         }
-
+        
         GLuint tuid = 0;
         GLCALL( glGenTextures, (1, &tuid) );
 
         if( tuid == 0 )
         {
-            LOGGER_ERROR("OpenGLTexture::initialize invalid gen texture for size %d:%d channel %d PF %d"
+            LOGGER_ERROR( "invalid gen texture for size %d:%d channel %d PF %d"
                 , _width
                 , _height
                 , _channels
                 , _format
-                );
+            );
 
             return false;
         }
@@ -77,9 +77,17 @@ namespace Menge
         m_format = _format;
         m_type = _type;
 
+        m_pow2 = Helper::isTexturePOW2( m_hwWidth ) && Helper::isTexturePOW2( m_hwHeight );
+
         m_lockFirst = true;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderImage::finalize()
+    {
+        m_renderImageProvider = nullptr;
+        m_lockMemory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     ERenderImageMode OpenGLRenderImage::getMode() const
@@ -129,9 +137,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::release()
     {
-        GLCALL( glDeleteTextures, (1, &m_uid) );
+        if( m_uid != 0 )
+        {
+            GLCALL( glDeleteTextures, (1, &m_uid) );
 
-        m_uid = 0;
+            m_uid = 0;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImage::reload()
@@ -150,8 +161,8 @@ namespace Menge
 
         if( loader->load( this ) == false )
         {
-            LOGGER_ERROR("RenderTextureManager::createTexture Invalid decode image"
-                );
+            LOGGER_ERROR( "OpenGLRenderImage::createTexture Invalid decode image"
+            );
 
             return false;
         }
@@ -176,40 +187,46 @@ namespace Menge
 
         size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
-        MemoryInterfacePtr lockMemory = MEMORY_SERVICE()
-            ->createMemoryCacheBuffer();
+        MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
+            ->createMemoryBuffer();
 
-        if( lockMemory == nullptr )
+        if( memory == nullptr )
         {
-            LOGGER_ERROR("OpenGLTexture::lock invalid create cache buffer");
+            LOGGER_ERROR( "invalid create memory (l %d w %d h %d c %d f %d)"
+                , _level
+                , miplevel_width
+                , miplevel_height
+                , m_hwChannels
+                , m_hwPixelFormat
+            );
 
             return nullptr;
         }
 
-        void * memory = lockMemory->newMemory( size, __FILE__, __LINE__ );
+        void * buffer = memory->newMemory( size, __FILE__, __LINE__ );
 
-        if( memory == nullptr )
+        if( buffer == nullptr )
         {
-            LOGGER_ERROR("OpenGLTexture::lock invalid cache memory %d (l %d w %d h %d c %d f %d)"
+            LOGGER_ERROR( "invalid new memory %d (l %d w %d h %d c %d f %d)"
                 , size
                 , _level
                 , miplevel_width
                 , miplevel_height
                 , m_hwChannels
                 , m_hwPixelFormat
-                );
+            );
 
             return nullptr;
         }
 
-        m_lockMemory = lockMemory;
+        m_lockMemory = memory;
         m_lockRect = _rect;
 
         *_pitch = size / miplevel_height;
 
         m_lockLevel = _level;
 
-        return memory;
+        return buffer;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImage::unlock( uint32_t _level, bool _successful )
@@ -222,11 +239,12 @@ namespace Menge
             return true;
         }
 
+#ifndef HAVE_GLES
         GLCALL( glEnable, (GL_TEXTURE_2D) );
+#endif
         GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
 
-
-        LOGGER_INFO("OpenGLRenderImage::unlock l %d r %d:%d-%d:%d"
+        LOGGER_INFO( "l %d r %d:%d-%d:%d"
             , _level
             , m_lockRect.left
             , m_lockRect.top
@@ -234,45 +252,57 @@ namespace Menge
             , m_lockRect.bottom
             );
 
-        void * memory = m_lockMemory->getMemory();
-
         bool successful = true;
+        
+        uint32_t miplevel_hwwidth = m_hwWidth >> _level;
+        uint32_t miplevel_hwheight = m_hwHeight >> _level;
 
-        if( m_lockRect.full( m_hwWidth, m_hwHeight ) == true )
+        switch( m_internalFormat )
         {
-            uint32_t miplevel_hwwidth = m_hwWidth >> _level;
-            uint32_t miplevel_hwheight = m_hwHeight >> _level;
-
-            switch( m_internalFormat )
-            {
-            case GL_ETC1_RGB8_OES:
-            case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
-            case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+        case GL_ETC1_RGB8_OES:
+        case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+        case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
 #ifdef _WIN32
-            case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 #endif
+            {
+                if( m_lockRect.full( m_hwWidth, m_hwHeight ) == true )
                 {
-                    GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_hwwidth, miplevel_hwheight, m_hwChannels, 1, m_hwPixelFormat );
+                    void * buffer = m_lockMemory->getMemory();
 
-                    IF_GLCALL( mglCompressedTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, textureMemorySize, memory) )
+                    GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_hwwidth, miplevel_hwheight, m_hwChannels, 1, m_hwPixelFormat );
+#ifdef HAVE_GLES
+                    IF_GLCALL( glCompressedTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
+#else
+                    IF_GLCALL( glCompressedTexImage2D_, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
+#endif
                     {
-                        LOGGER_ERROR("OpenGLRenderImage::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
+                        LOGGER_ERROR( "glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
                             , _level
                             , miplevel_hwwidth
                             , miplevel_hwheight
                             , m_internalFormat
                             , m_hwPixelFormat
                             , textureMemorySize
-                            );
+                        );
 
                         successful = false;
                     }
-                }break;
-            default:
+                }
+                else
                 {
-                    IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, m_format, m_type, memory) )
+                    successful = false;
+                }
+            }break;
+        default:
+            {
+                void * buffer = m_lockMemory->getMemory();
+
+                if( m_lockRect.full( m_hwWidth, m_hwHeight ) == true )
+                {
+                    IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, m_format, m_type, buffer) )
                     {
-                        LOGGER_ERROR("OpenGLRenderImage::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+                        LOGGER_ERROR( "glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
                             , _level
                             , miplevel_hwwidth
                             , miplevel_hwheight
@@ -280,27 +310,12 @@ namespace Menge
                             , m_format
                             , m_type
                             , m_hwPixelFormat
-                            );
+                        );
 
                         successful = false;
                     }
-                }break;
-            }
-        }
-        else
-        {
-            switch( m_internalFormat )
-            {
-            case GL_ETC1_RGB8_OES:
-            case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
-            case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
-#ifdef _WIN32
-            case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
-#endif
-                {
-                    successful = false;
-                }break;
-            default:
+                }
+                else
                 {
                     uint32_t miplevel_xoffset = m_lockRect.left >> _level;
                     uint32_t miplevel_yoffset = m_lockRect.top >> _level;
@@ -309,12 +324,9 @@ namespace Menge
 
                     if( m_lockFirst == true )
                     {
-                        uint32_t miplevel_hwwidth = m_hwWidth >> _level;
-                        uint32_t miplevel_hwheight = m_hwHeight >> _level;
-
-                        IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0, m_format, m_type, nullptr) )
+                        IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, m_format, m_type, nullptr) )
                         {
-                            LOGGER_ERROR("OpenGLRenderImage::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+                            LOGGER_ERROR( "glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
                                 , _level
                                 , miplevel_hwwidth
                                 , miplevel_hwheight
@@ -322,24 +334,15 @@ namespace Menge
                                 , m_format
                                 , m_type
                                 , m_hwPixelFormat
-                                );
+                            );
 
                             successful = false;
                         }
-
-                        m_lockFirst = false;
                     }
 
-                    IF_GLCALL( glTexSubImage2D, (GL_TEXTURE_2D, m_lockLevel
-                        , miplevel_xoffset
-                        , miplevel_yoffset
-                        , miplevel_width
-                        , miplevel_height
-                        , m_format
-                        , m_type
-                        , memory) )
+                    IF_GLCALL( glTexSubImage2D, (GL_TEXTURE_2D, m_lockLevel, miplevel_xoffset, miplevel_yoffset, miplevel_width, miplevel_height, m_format, m_type, buffer) )
                     {
-                        LOGGER_ERROR("OpenGLRenderImage::unlock glTexSubImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+                        LOGGER_ERROR( "glTexSubImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
                             , _level
                             , miplevel_width
                             , miplevel_height
@@ -347,24 +350,30 @@ namespace Menge
                             , m_format
                             , m_type
                             , m_hwPixelFormat
-                            );
+                        );
 
                         successful = false;
                     }
-                }break;
-            }
+                }
+            }break;
         }
+
+        m_lockFirst = false;
 
         m_lockMemory = nullptr;
         m_lockLevel = 0;
-        m_lockFirst = false;
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::_destroy()
     {
-        GLCALL( glDeleteTextures, (1, &m_uid) );
+        if( m_uid != 0 )
+        {
+            GLCALL( glDeleteTextures, (1, &m_uid) );
+
+            m_uid = 0;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderImage::getUId() const
@@ -412,4 +421,4 @@ namespace Menge
         m_wrapT = _wrapT;
     }
     //////////////////////////////////////////////////////////////////////////
-}   // namespace Menge
+}

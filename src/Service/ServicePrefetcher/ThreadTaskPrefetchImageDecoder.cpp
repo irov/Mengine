@@ -1,15 +1,15 @@
-#	include "ThreadTaskPrefetchImageDecoder.h"
+#include "ThreadTaskPrefetchImageDecoder.h"
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/CodecInterface.h"
-#	include "Interface/MemoryInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/CodecInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Factory/FactorableUnique.h"
+#include "Factory/FactorableUnique.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTaskPrefetchImageDecoder::ThreadTaskPrefetchImageDecoder()

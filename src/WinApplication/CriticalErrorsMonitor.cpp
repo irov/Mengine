@@ -1,23 +1,23 @@
-#	include "CriticalErrorsMonitor.h"
+#include "CriticalErrorsMonitor.h"
 
-#	include "Core/Date.h"
+#include "Core/Date.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "stdex/stack.h"
+#include "stdex/stack.h"
 
 #   include "WIN32/WindowsIncluder.h"
 #   include "DbgHelp.h"
 
-#	include <cstdio>
+#include <cstdio>
 
-#	include "Interface/WindowsLayerInterface.h"
+#include "Interface/WindowsLayerInterface.h"
 
 #ifdef _MSC_VER
 #	define snprintf _snprintf
 #endif
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	struct CrashDumpExceptionHandlerData

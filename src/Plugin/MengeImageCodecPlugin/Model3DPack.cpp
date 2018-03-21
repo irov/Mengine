@@ -1,6 +1,6 @@
-#	include "Model3DPack.h"
+#include "Model3DPack.h"
 
-namespace Menge
+namespace Mengine
 {
 	///////////////////////////////////////////////////////////////////////
 	Model3DPack::Model3DPack()

@@ -1,8 +1,8 @@
-#	include "InvaderFollowAffector.h"
+#include "InvaderFollowAffector.h"
 
-#	include "Math/angle.h"
+#include "math/angle.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	InvaderFollowAffector::InvaderFollowAffector()

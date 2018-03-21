@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Core/MemoryAllocator.h"
+#include "Core/MemoryAllocator.h"
 
-namespace Menge
+namespace Mengine
 {
 	template<class T>
 	class FactorableUnique

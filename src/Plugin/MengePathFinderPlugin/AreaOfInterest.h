@@ -1,18 +1,18 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Servant.h"
+#include "Kernel/Servant.h"
 
-#	include "Factory/Factorable.h"
-#	include "Factory/Factory.h"
+#include "Factory/Factorable.h"
+#include "Factory/Factory.h"
 
-#	include "AOIInterface.h"
+#include "AOIInterface.h"
 
-#	include "AOIActor.h"
-#	include "AOITrigger.h"
+#include "AOIActor.h"
+#include "AOITrigger.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<AOITriggerPtr> TVectorAOITriggers;

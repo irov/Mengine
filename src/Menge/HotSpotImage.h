@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "HotSpot.h"
+#include "HotSpot.h"
 
 #   include "ResourceHIT.h"
 
-namespace Menge
+namespace Mengine
 {
 	class HotSpotImage
 		: public HotSpot
@@ -44,4 +44,4 @@ namespace Menge
 
 		float m_alphaTest;		
 	};
-}	// namespace Menge
+}	

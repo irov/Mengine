@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Core/ModuleBase.h"
+#include "Core/ModuleBase.h"
 
-#	include "steam/steam_api.h"
-#	include "steam/steam_gameserver.h"
+#include "steam/steam_api.h"
+#include "steam/steam_gameserver.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ModuleSteam
 		: public ModuleBase

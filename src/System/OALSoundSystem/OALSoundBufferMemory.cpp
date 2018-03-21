@@ -1,14 +1,14 @@
-#	include "OALSoundBufferMemory.h"
-#	include "OALSoundSystem.h"
-#	include "OALSoundError.h"
+#include "OALSoundBufferMemory.h"
+#include "OALSoundSystem.h"
+#include "OALSoundError.h"
 
-#	include "Core/MemoryHelper.h"
+#include "Core/MemoryHelper.h"
 
-#	include "Interface/SoundCodecInterface.h"
+#include "Interface/SoundCodecInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBufferMemory::OALSoundBufferMemory()
@@ -209,4 +209,4 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
-#	include "Config/String.h"
+#include "Config/Typedef.h"
+#include "Config/String.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {	
 	namespace Helper
 	{

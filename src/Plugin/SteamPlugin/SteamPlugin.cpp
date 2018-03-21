@@ -1,17 +1,17 @@
-#	include "SteamPlugin.h"
+#include "SteamPlugin.h"
 
-#	include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "ModuleSteam.h"
+#include "ModuleSteam.h"
 
-#	include "Core/ModuleFactory.h"
+#include "Core/ModuleFactory.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( Steam, Menge::SteamPlugin )
+PLUGIN_FACTORY( Steam, Mengine::SteamPlugin )
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	SteamPlugin::SteamPlugin()

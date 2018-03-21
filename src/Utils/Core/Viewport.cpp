@@ -1,10 +1,10 @@
-#	include "Viewport.h"
+#include "Viewport.h"
 
-#	include "Math/utils.h"
+#include "math/utils.h"
 
-#	include <algorithm>
+#include <algorithm>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Viewport::Viewport()

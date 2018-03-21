@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceMusic

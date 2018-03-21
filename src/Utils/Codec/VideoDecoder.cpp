@@ -1,6 +1,6 @@
-#	include "VideoDecoder.h"
+#include "VideoDecoder.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoder::VideoDecoder()

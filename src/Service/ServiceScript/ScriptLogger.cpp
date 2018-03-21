@@ -1,10 +1,10 @@
-#	include "ScriptLogger.h"
+#include "ScriptLogger.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ScriptLogger::ScriptLogger()

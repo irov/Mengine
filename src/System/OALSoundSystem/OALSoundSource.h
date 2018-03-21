@@ -1,12 +1,12 @@
 #   pragma once
 
-#	include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundSystemInterface.h"
 
-#	include "OALSoundBufferBase.h"
+#include "OALSoundBufferBase.h"
 
-#	include "AL/al.h"
+#include "AL/al.h"
 
-namespace Menge
+namespace Mengine
 {
 	class OALSoundSystem;
     //////////////////////////////////////////////////////////////////////////
@@ -71,4 +71,4 @@ namespace Menge
 	};
     //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<OALSoundSource> OALSoundSourcePtr;
-}	// namespace Menge
+}	

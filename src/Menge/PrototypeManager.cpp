@@ -1,11 +1,11 @@
-#	include "PrototypeManager.h"
+#include "PrototypeManager.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( PrototypeService, Menge::PrototypeManager );
+SERVICE_FACTORY( PrototypeService, Mengine::PrototypeManager );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PrototypeManager::PrototypeManager()

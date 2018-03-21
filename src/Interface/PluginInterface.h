@@ -1,15 +1,15 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/ServiceProviderInterface.h"
-#	include "Interface/ServantInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/ServiceProviderInterface.h"
+#include "Interface/ServantInterface.h"
 
-#	include "Factory/FactorableUnique.h"
+#include "Factory/FactorableUnique.h"
 
 #   include "Config/String.h"
 
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class PluginInterface
@@ -61,7 +61,7 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define PLUGIN_SYSTEM()\
-    ((Menge::PluginSystemInterface*)SERVICE_GET(Menge::PluginSystemInterface))
+    ((Mengine::PluginSystemInterface*)SERVICE_GET(Mengine::PluginSystemInterface))
 	//////////////////////////////////////////////////////////////////////////
     class PluginServiceInterface
         : public ServiceInterface
@@ -80,7 +80,7 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define PLUGIN_SERVICE()\
-    ((Menge::PluginServiceInterface*)SERVICE_GET(Menge::PluginServiceInterface))
+    ((Mengine::PluginServiceInterface*)SERVICE_GET(Mengine::PluginServiceInterface))
 	//////////////////////////////////////////////////////////////////////////
 #   define PLUGIN_DECLARE( Name )\
     public:\
@@ -94,9 +94,9 @@ namespace Menge
 	PLUGIN_SERVICE()->createPlugin( nullptr, &PLUGIN_FUNCTION( Name ), false )
 	//////////////////////////////////////////////////////////////////////////
 #	define PLUGIN_FACTORY_STATIC(Name, Type)\
-	extern "C"{bool PLUGIN_FUNCTION(Name)( Menge::ServiceProviderInterface * _serviceProvider, Menge::PluginInterface ** _plugin, bool _dynamic ){\
+	extern "C"{bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, bool _dynamic ){\
 	if( _dynamic == true ){SERVICE_PROVIDER_SETUP(_serviceProvider);stdex_allocator_initialize();}\
-	Menge::PluginInterface * plugin = new Menge::FactorableUnique<Type>();\
+	Mengine::PluginInterface * plugin = new Mengine::FactorableUnique<Type>();\
 	if( plugin == nullptr ){ return false; }\
 	plugin->setDynamicLoad( _dynamic );\
 	*_plugin = plugin;\
@@ -105,13 +105,13 @@ namespace Menge
 #	define PLUGIN_FACTORY_DYNAMIC(Name, Type)\
 	extern "C"\
 	{\
-		__declspec(dllexport) bool dllCreatePlugin( Menge::ServiceProviderInterface * _serviceProvider,Menge::PluginInterface ** _plugin )\
+		__declspec(dllexport) bool dllCreatePlugin( Mengine::ServiceProviderInterface * _serviceProvider,Mengine::PluginInterface ** _plugin )\
 		{\
 			return PLUGIN_FUNCTION(Name)( _serviceProvider, _plugin, true );\
 		}\
 	}
 	//////////////////////////////////////////////////////////////////////////
-#   ifdef MENGE_PLUGIN_DLL
+#   ifdef MENGINE_PLUGIN_DLL
 #	define PLUGIN_FACTORY(Name, Type)\
 	PLUGIN_FACTORY_STATIC(Name, Type)\
 	PLUGIN_FACTORY_DYNAMIC( Name, Type )
@@ -123,6 +123,6 @@ namespace Menge
 #	define PLUGIN_EXPORT(Name)\
 	extern "C"\
 	{\
-		extern bool PLUGIN_FUNCTION(Name)( Menge::ServiceProviderInterface * _serviceProvider, Menge::PluginInterface ** _plugin, bool _dynamic );\
+		extern bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, bool _dynamic );\
 	}
 }

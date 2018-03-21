@@ -1,12 +1,12 @@
-#	include "FontBase.h"
+#include "FontBase.h"
 
 #   include "Core/IniUtil.h"
 
 #   include "Logger/Logger.h"
 
-#	include "utf8.h"
+#include "utf8.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	FontBase::FontBase()

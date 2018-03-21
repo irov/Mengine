@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
 #   include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	template<class TEncoderInterface>
 	class Encoder

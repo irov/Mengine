@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
-#	include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
     enum EResourceWindow
@@ -54,4 +54,4 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ResourceWindow> ResourceWindowPtr;
-}	// namespace Menge
+}	

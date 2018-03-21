@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundSystemInterface.h"
 
-#	include "Kernel/ResourceReference.h"
-#	include "Kernel/ResourceCacher.h"
+#include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceCacher.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ResourceSound
 		: public ResourceReference

@@ -1,18 +1,18 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Affector.h"
-#	include "Kernel/Node.h"
+#include "Kernel/Affector.h"
+#include "Kernel/Node.h"
 
-#	include "Math/vec2.h"
+#include "math/vec2.h"
 
-#	include "Core/ValueFollower.h"
+#include "Core/ValueFollower.h"
 
-#	include "fastpathfinder/pathfinder.h"
-#	include "fastpathfinder/map.h"
+#include "fastpathfinder/pathfinder.h"
+#include "fastpathfinder/map.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class PathFinderWayAffector

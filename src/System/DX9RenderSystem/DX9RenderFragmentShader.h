@@ -5,9 +5,9 @@
 
 #   include "Core/ServantBase.h"
 
-#	include <d3d9.h>
+#include <d3d9.h>
 
-namespace Menge
+namespace Mengine
 {
     class DX9RenderFragmentShader
         : public ServantBase<RenderFragmentShaderInterface>

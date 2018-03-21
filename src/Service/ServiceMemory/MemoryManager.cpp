@@ -1,13 +1,13 @@
-#	include "MemoryManager.h"
+#include "MemoryManager.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( MemoryService, Menge::MemoryManager );
+SERVICE_FACTORY( MemoryService, Mengine::MemoryManager );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	MemoryManager::MemoryManager()
@@ -24,20 +24,23 @@ namespace Menge
         m_memoryCacheMutex = THREAD_SERVICE()
             ->createMutex( __FILE__, __LINE__ );
 
-		m_factoryPoolMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16, FactoryWithMutex>();
-		m_factoryPoolMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16, FactoryWithMutex>();
-		m_factoryPoolMemoryProxyInput = new FactoryPool<MemoryProxyInput, 16, FactoryWithMutex>();
-		m_factoryPoolMemoryInput = new FactoryPool<MemoryInput, 16, FactoryWithMutex>();
-		m_factoryPoolMemory = new FactoryPool<Memory, 16, FactoryWithMutex>();
+		m_factoryMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16, FactoryWithMutex>();
+		m_factoryMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16, FactoryWithMutex>();
+		m_factoryMemoryProxyInput = new FactoryPool<MemoryProxyInput, 16, FactoryWithMutex>();
+		m_factoryMemoryInput = new FactoryPool<MemoryInput, 16, FactoryWithMutex>();
+		m_factoryMemoryBuffer = new FactoryPool<MemoryBuffer, 16, FactoryWithMutex>();
+        m_factoryMemoryProxy = new FactoryPool<MemoryProxy, 16, FactoryWithMutex>();
         
         ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SERVICE()
 			->createMutex( __FILE__, __LINE__ );
 
-		m_factoryPoolMemoryCacheBuffer->setMutex( memoryFactoryMutex );
-		m_factoryPoolMemoryCacheInput->setMutex( memoryFactoryMutex );
-		m_factoryPoolMemoryProxyInput->setMutex( memoryFactoryMutex );
-		m_factoryPoolMemoryInput->setMutex( memoryFactoryMutex );
-		m_factoryPoolMemory->setMutex( memoryFactoryMutex );
+
+        m_factoryMemoryBuffer->setMutex( memoryFactoryMutex );
+        m_factoryMemoryProxy->setMutex( memoryFactoryMutex );
+        m_factoryMemoryCacheBuffer->setMutex( memoryFactoryMutex );
+		m_factoryMemoryCacheInput->setMutex( memoryFactoryMutex );
+		m_factoryMemoryProxyInput->setMutex( memoryFactoryMutex );
+		m_factoryMemoryInput->setMutex( memoryFactoryMutex );
 
 		return true;
 	}
@@ -48,17 +51,19 @@ namespace Menge
 
 		m_memoryCacheMutex = nullptr;
 
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolMemoryCacheBuffer );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolMemoryCacheInput );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolMemoryProxyInput );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolMemoryInput );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolMemory );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryBuffer );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryProxy );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryCacheBuffer );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryCacheInput );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryProxyInput );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryInput );
 
-        m_factoryPoolMemoryCacheBuffer = nullptr;
-        m_factoryPoolMemoryCacheInput = nullptr;
-        m_factoryPoolMemoryProxyInput = nullptr;
-        m_factoryPoolMemoryInput = nullptr;
-        m_factoryPoolMemory = nullptr;
+        m_factoryMemoryBuffer = nullptr;
+        m_factoryMemoryProxy = nullptr;
+        m_factoryMemoryCacheBuffer = nullptr;
+        m_factoryMemoryCacheInput = nullptr;
+        m_factoryMemoryProxyInput = nullptr;
+        m_factoryMemoryInput = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CacheBufferID MemoryManager::lockBuffer( size_t _size, void ** _memory, const char * _file, uint32_t _line )
@@ -125,7 +130,7 @@ namespace Menge
 		{
 			CacheBufferMemory & buffer = m_buffers[minIndex];
 						
-			unsigned char * memory = Helper::reallocateMemory<unsigned char>( buffer.memory, _size );
+			void * memory = Helper::reallocateMemory( buffer.memory, _size );
 
 			if( memory == nullptr )
 			{
@@ -149,7 +154,7 @@ namespace Menge
 			return buffer.id;
 		}
 		
-		unsigned char * memory = Helper::allocateMemory<unsigned char>( _size );
+		uint8_t * memory = Helper::allocateMemoryT<uint8_t>( _size );
 
 		if( memory == nullptr )
 		{
@@ -230,9 +235,9 @@ namespace Menge
 		m_memoryCacheMutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr MemoryManager::createMemoryCacheBuffer()
+    MemoryBufferInterfacePtr MemoryManager::createMemoryCacheBuffer()
 	{
-		MemoryCacheBuffer * memoryBuffer = m_factoryPoolMemoryCacheBuffer->createObject();
+        MemoryCacheBufferPtr memoryBuffer = m_factoryMemoryCacheBuffer->createObject();
 
 		memoryBuffer->setMemoryManager( this );
 
@@ -241,7 +246,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryCacheInputInterfacePtr MemoryManager::createMemoryCacheInput()
 	{
-		MemoryCacheInput * memoryCache = m_factoryPoolMemoryCacheInput->createObject();
+        MemoryCacheInputPtr memoryCache = m_factoryMemoryCacheInput->createObject();
 
 		memoryCache->setMemoryManager( this );
 
@@ -250,22 +255,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryProxyInputInterfacePtr MemoryManager::createMemoryProxyInput()
 	{
-		MemoryProxyInput * memoryProxy = m_factoryPoolMemoryProxyInput->createObject();
+        MemoryProxyInputPtr memoryProxy = m_factoryMemoryProxyInput->createObject();
 
 		return memoryProxy;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInputInterfacePtr MemoryManager::createMemoryInput()
 	{
-		MemoryInput * memory = m_factoryPoolMemoryInput->createObject();
+		MemoryInputPtr memory = m_factoryMemoryInput->createObject();
 
 		return memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryInterfacePtr MemoryManager::createMemory()
+    MemoryBufferInterfacePtr MemoryManager::createMemoryBuffer()
 	{
-		Memory * memory = m_factoryPoolMemory->createObject();
+		MemoryPtr memory = m_factoryMemoryBuffer->createObject();
 
 		return memory;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    MemoryProxyInterfacePtr MemoryManager::createMemoryProxy()
+    {
+        MemoryProxyPtr memory = m_factoryMemoryProxy->createObject();
+
+        return memory;
+    }
 }

@@ -1,10 +1,10 @@
-#	include "SurfaceSolidColor.h"
+#include "SurfaceSolidColor.h"
 
-#	include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace	Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
     SurfaceSolidColor::SurfaceSolidColor()

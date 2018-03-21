@@ -1,15 +1,15 @@
-#	include "StringizeService.h"
+#include "StringizeService.h"
 
-#	include "Core/Hash.h"
+#include "Core/Hash.h"
 
 #   include "Factory/FactoryPool.h"
 
-#	include <string.h>
+#include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( StringizeService, Menge::StringizeService );
+SERVICE_FACTORY( StringizeService, Mengine::StringizeService );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {	
     //////////////////////////////////////////////////////////////////////////
     StringizeService::StringizeService()

@@ -1,14 +1,14 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
 #   include "Interface/ServiceInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Consts
         : public ServiceBase<ServiceInterface>
@@ -158,7 +158,7 @@ namespace Menge
 	};
 
 #   define CONSTS_SERVICE()\
-    SERVICE_GET(Menge::Consts)
+    SERVICE_GET(Mengine::Consts)
 }
 
 #	define CONST_STRING( String )\

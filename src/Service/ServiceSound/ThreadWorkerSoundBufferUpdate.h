@@ -1,9 +1,9 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/SoundSystemInterface.h"
 #   include "Interface/ThreadSystemInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ThreadWorkerSoundBufferUpdate
 		: public ServantBase<ThreadWorkerInterface>
@@ -29,4 +29,4 @@ namespace Menge
 	};
 
 	typedef stdex::intrusive_ptr<ThreadWorkerSoundBufferUpdate> ThreadWorkerSoundBufferUpdatePtr;
-}	// namespace Menge
+}	

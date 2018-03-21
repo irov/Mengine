@@ -1,6 +1,6 @@
-#	include "Kernel/Loadable.h"
+#include "Kernel/Loadable.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
     bool Loadable::loader( const Metabuf::Metadata * _parser )

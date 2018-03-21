@@ -1,18 +1,18 @@
-#	include "DataflowMDL.h"
+#include "DataflowMDL.h"
 
-#	include "Interface/ArchiveInterface.h"
-#	include "Interface/MemoryInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#	include "Core/Stream.h"
+#include "Core/Stream.h"
 
-#	include "stdex/memory_reader.h"
+#include "stdex/memory_reader.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	DataflowMDL::DataflowMDL()
@@ -108,7 +108,7 @@ namespace Menge
 
 			frame.position = _data->allocateMemoryT<mt::vec3f>( vertexCount );
 			frame.uv = _data->allocateMemoryT<mt::vec2f>( vertexCount );
-			frame.indecies = _data->allocateMemoryT<RenderIndices>( indicesCount );
+			frame.indecies = _data->allocateMemoryT<RenderIndex>( indicesCount );
 
 			ar.readPODs( frame.position, vertexCount );
 			ar.readPODs( frame.uv, vertexCount );

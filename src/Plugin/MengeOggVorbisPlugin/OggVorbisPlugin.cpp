@@ -1,18 +1,18 @@
-#	include "OggVorbisPlugin.h"
+#include "OggVorbisPlugin.h"
 
 //need for mingw - fseeko64
 #   include <stdio.h>
 
-#	include "SoundDecoderOGGVorbis.h"
+#include "SoundDecoderOGGVorbis.h"
 
-#	include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
 #   include "Codec/DecoderFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( MengeOggVorbis, Menge::OggVorbisPlugin );
+PLUGIN_FACTORY( MengeOggVorbis, Mengine::OggVorbisPlugin );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	OggVorbisPlugin::OggVorbisPlugin()       

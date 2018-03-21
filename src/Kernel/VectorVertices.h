@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Core/RenderVertex2D.h"
+#include "Core/RenderVertex2D.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	class VectorVertices
 	{

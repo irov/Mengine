@@ -4,9 +4,9 @@
 
 #   include "Core/ServiceBase.h"
 
-#   include <stdex/stl_map.h>
+#   include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
 #	ifndef MENGINE_PLUGIN_NAME_MAX
 #	define MENGINE_PLUGIN_NAME_MAX 32

@@ -1,21 +1,21 @@
-#	include "DataflowAEK.h"
+#include "DataflowAEK.h"
 
-#	include "Interface/ArchiveInterface.h"
-#	include "Interface/MemoryInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#	include "Core/Stream.h"
-#	include "Core/MemoryHelper.h"
+#include "Core/Stream.h"
+#include "Core/MemoryHelper.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "stdex/memory_reader.h"
+#include "stdex/memory_reader.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	DataflowAEK::DataflowAEK()
@@ -254,7 +254,7 @@ namespace Menge
 
 							ar << shape.indexCount;
 							
-							shape.indices = _pack->allocateMemoryT<RenderIndices>( shape.indexCount );
+							shape.indices = _pack->allocateMemoryT<RenderIndex>( shape.indexCount );
 
 							ar.readPODs( shape.indices, shape.indexCount );
 						}

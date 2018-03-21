@@ -1,14 +1,14 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/FileSystemInterface.h"
 
-#	include "Win32FileInputStream.h"
-#	include "Win32FileOutputStream.h"
-#	include "Win32FileMapped.h"
+#include "Win32FileInputStream.h"
+#include "Win32FileOutputStream.h"
+#include "Win32FileMapped.h"
 
 #   include "Factory/Factory.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Win32FileGroupDirectory
 		: public ServantBase<FileGroupInterface>
@@ -57,4 +57,4 @@ namespace Menge
         FactoryPtr m_factoryOutputStream;
         FactoryPtr m_factoryWin32MappedFile;
 	};
-}	// namespace Menge
+}	

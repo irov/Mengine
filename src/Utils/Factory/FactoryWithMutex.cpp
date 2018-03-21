@@ -1,6 +1,6 @@
-#	include "FactoryWithMutex.h"
+#include "FactoryWithMutex.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
     FactoryWithMutex::FactoryWithMutex( const char * _name )

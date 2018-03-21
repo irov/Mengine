@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Codec/ImageDecoder.h"
+#include "Codec/ImageDecoder.h"
 
 #   include "Interface/ArchiveInterface.h"
 
-#	include "Core/Magic.h"
+#include "Core/Magic.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ImageDecoderACF
 		: public ImageDecoder
@@ -27,4 +27,4 @@ namespace Menge
 	private:       
 		ArchivatorInterfacePtr m_archivator;
 	};
-}	// namespace Menge
+}	

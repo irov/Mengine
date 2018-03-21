@@ -1,10 +1,10 @@
-#	include "ThreadJob.h"
+#include "ThreadJob.h"
 
-#	include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge 
+namespace Mengine 
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadJob::ThreadJob()

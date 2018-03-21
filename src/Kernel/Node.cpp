@@ -1,11 +1,11 @@
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-#	include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 #   include "Interface/NodeInterface.h"
 
 #   include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Node::Node()
@@ -99,10 +99,6 @@ namespace Menge
 
         if( this->compile() == false )
         {
-            //MENGE_LOG_INFO( "Error: activation of Node '%s' is failed, because compilation is failed\n"
-            //	, m_name.c_str() 
-            //	);
-
             return false;
         }
 
@@ -144,13 +140,6 @@ namespace Menge
 
 		this->_afterActivate();
 
-		//if( m_active == false )
-		//{
-		//	MENGE_LOG_INFO( "Error: activation of Node '%s' is failed\n"
-		//		, m_name.c_str() 
-		//		);
-		//}
-        
 		this->removeShallowGrave();
 
 		return m_active;
@@ -1310,7 +1299,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
-        if( (_debugMask & MENGE_DEBUG_NODES) == 0 )
+        if( (_debugMask & MENGINE_DEBUG_NODES) == 0 )
 		{
 			return;
 		}

@@ -1,21 +1,21 @@
-﻿#	include "BitmapGlyph.h"
+﻿#include "BitmapGlyph.h"
 
-#	include "Interface/StreamInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/StreamInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/MemoryInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/MemoryInterface.h"
 
-#	include "Core/MemoryHelper.h"
-#	include "Core/PixelFormat.h"
+#include "Core/MemoryHelper.h"
+#include "Core/PixelFormat.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "stdex/xml_sax_parser.h"
+#include "stdex/xml_sax_parser.h"
 
- #	include <utf8.h>
+ #include "utf8.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	BitmapGlyph::BitmapGlyph()

@@ -2,7 +2,7 @@
 
 #	include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLThreadIdentity::SDLThreadIdentity()
@@ -103,6 +103,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadIdentity::completeTask()
     {
+        if( m_exit == true )
+        {
+            return false;
+        }
+
         bool successful = false;
 
         m_mutex->lock();

@@ -1,4 +1,4 @@
-#	pragma once
+#pragma once
 
 #	ifndef MENGINE_FACTORABLE_DEBUG_ENABLE
 #	ifdef _DEBUG
@@ -8,7 +8,7 @@
 #	define MENGINE_FACTORABLE_DEBUG
 #	endif
 
-namespace Menge
+namespace Mengine
 {
 	class Factory;
 

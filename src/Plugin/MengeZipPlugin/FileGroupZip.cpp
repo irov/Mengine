@@ -1,25 +1,25 @@
-#	include "FileGroupZip.h"
+#include "FileGroupZip.h"
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/ArchiveInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/MemoryInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/MemoryInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Core/FilePath.h"
-#	include "Core/String.h"
-#	include "Core/MemoryHelper.h"
+#include "Core/FilePath.h"
+#include "Core/String.h"
+#include "Core/MemoryHelper.h"
 
-#	include <string.h>
+#include <string.h>
 #   include <stdio.h>
 
-#	include "../dependencies/zlib/zlib.h"
+#include "../dependencies/zlib/zlib.h"
 
 #	define ZIP_LOCAL_FILE_HEADER_SIGNATURE	0x04034b50
 #	define ZIP_MAX_FILENAME 1024
 
-namespace Menge
+namespace Mengine
 {
 	struct ZipCentralDirectoryFileHeader
 	{
@@ -506,4 +506,4 @@ namespace Menge
             );
 
         return false;
-    }}	// namespace Menge
+    }}	

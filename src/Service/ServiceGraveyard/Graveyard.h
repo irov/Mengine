@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/GraveyardInterface.h"
+#include "Interface/GraveyardInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-namespace Menge
+namespace Mengine
 {
     typedef stdex::intrusive_ptr<class RenderImageInterface> RenderImageInterfacePtr;
 

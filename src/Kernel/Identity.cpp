@@ -1,6 +1,6 @@
-#	include "Kernel/Identity.h"
+#include "Kernel/Identity.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Identity::Identity()

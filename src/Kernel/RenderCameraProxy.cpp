@@ -1,6 +1,6 @@
-#	include "RenderCameraProxy.h"
+#include "RenderCameraProxy.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderCameraProxy::RenderCameraProxy()

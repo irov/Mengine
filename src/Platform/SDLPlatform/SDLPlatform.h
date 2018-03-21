@@ -29,7 +29,7 @@
 
 #   include "SDL.h"
 
-namespace Menge
+namespace Mengine
 {
     class SDLPlatform
         : public ServiceBase<PlatformInterface>

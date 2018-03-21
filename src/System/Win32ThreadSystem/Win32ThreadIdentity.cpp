@@ -1,10 +1,10 @@
-#	include "Win32ThreadIdentity.h"
+#include "Win32ThreadIdentity.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include <process.h>
+#include <process.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32ThreadIdentity::Win32ThreadIdentity()
@@ -147,6 +147,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32ThreadIdentity::completeTask()
 	{	
+        if( m_exit == true )
+        {
+            return false;
+        }
+
 		bool successful = false;
 
 		m_mutex->lock();

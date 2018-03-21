@@ -1,13 +1,13 @@
-#	include "SilentSoundSource.h"
+#include "SilentSoundSource.h"
 
-#	include "SilentSoundSystem.h"
-#	include "SilentSoundBuffer.h"
+#include "SilentSoundSystem.h"
+#include "SilentSoundBuffer.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #   include <math.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	SilentSoundSource::SilentSoundSource()
@@ -233,4 +233,4 @@ namespace Menge
 		return m_soundBuffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

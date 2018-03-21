@@ -4,18 +4,18 @@
 
 #   include "Config/Floats.h"
 
-#	include "Core/Magic.h"
+#include "Core/Magic.h"
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
-#   include "Core/RenderIndices.h"
+#   include "Core/RenderIndex.h"
 
 #   include "Factory/Factorable.h"
 
-#   include "Math/vec3.h"
+#   include "math/vec3.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	DECLARE_MAGIC_NUMBER(MAGIC_MDL, 'M', 'D', 'L', '1', 2);
 
@@ -27,7 +27,7 @@ namespace Menge
 
 		mt::vec3f * position;
 		mt::vec2f * uv;
-		RenderIndices * indecies;
+		RenderIndex * indecies;
 	};
 
 	class Model3DInterface

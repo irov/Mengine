@@ -1,8 +1,8 @@
 #   pragma once
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-namespace Menge
+namespace Mengine
 {
     class TimerServiceInterface
 		: public ServiceInterface
@@ -18,7 +18,7 @@ namespace Menge
     };
 
 #   define TIMER_SERVICE()\
-    ((Menge::TimerServiceInterface*)SERVICE_GET(Menge::TimerServiceInterface))
+    ((Mengine::TimerServiceInterface*)SERVICE_GET(Mengine::TimerServiceInterface))
 
 	class TimerSystemInterface
 		: public ServiceInterface
@@ -30,5 +30,5 @@ namespace Menge
 	};
 
 #   define TIMER_SYSTEM()\
-    ((Menge::TimerSystemInterface*)SERVICE_GET(Menge::TimerSystemInterface))
+    ((Mengine::TimerSystemInterface*)SERVICE_GET(Mengine::TimerSystemInterface))
 }

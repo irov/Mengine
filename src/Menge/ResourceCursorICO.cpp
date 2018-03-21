@@ -1,14 +1,14 @@
-#	include "ResourceCursorICO.h"
+#include "ResourceCursorICO.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 
-#	include "Core/MemoryHelper.h"
+#include "Core/MemoryHelper.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceCursorICO::ResourceCursorICO()

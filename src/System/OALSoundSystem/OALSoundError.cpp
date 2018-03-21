@@ -1,10 +1,10 @@
-#	include "OALSoundError.h"
+#include "OALSoundError.h"
 
 #   include "AL/al.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	bool s_OALErrorCheck( const char * _file, int _line )
 	{

@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
-#	include "Math/vec4.h"
+#include "math/vec4.h"
 
 #   include "Core/ServantBase.h"
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {
 	class RenderTexture
 		: public ServantBase<RenderTextureInterface>
@@ -72,4 +72,4 @@ namespace Menge
 	{
 		return m_fileName;
 	}
-}	// namespace Menge
+}	

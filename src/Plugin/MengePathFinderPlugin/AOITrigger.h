@@ -1,15 +1,15 @@
-#	pragma once
+#pragma once
 
-#	include "AOIInterface.h"
+#include "AOIInterface.h"
 
-#	include "Factory/FactorablePtr.h"
+#include "Factory/FactorablePtr.h"
 
-#	include "AOIActor.h"
+#include "AOIActor.h"
 
 #   include "stdex/intrusive_ptr.h"
-#	include "stdex/stl_vector.h"
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class AOITrigger

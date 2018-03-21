@@ -1,8 +1,8 @@
-#	include "Eventable.h"
+#include "Eventable.h"
 
 #   include <algorithm>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Eventable::Eventable()

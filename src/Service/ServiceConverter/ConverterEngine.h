@@ -1,14 +1,14 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ConverterInterface.h"
+#include "Interface/ConverterInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
 #   include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ConverterFactoryInterface;
 	class ConverterInterface;

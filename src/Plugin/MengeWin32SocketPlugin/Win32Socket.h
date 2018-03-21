@@ -1,16 +1,16 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/SocketInterface.h"
+#include "Interface/SocketInterface.h"
 
 #   include "Utils/WIN32/WindowsIncluder.h"
 
 #	pragma warning(push, 0) 
-#	include <winsock2.h>
-#	include <ws2tcpip.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #	pragma warning(pop) 
 
 
-namespace Menge
+namespace Mengine
 {
 	class Win32Socket
 		: public SocketInterface

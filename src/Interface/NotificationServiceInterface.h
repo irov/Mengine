@@ -1,16 +1,16 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/NotificatorInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/NotificatorInterface.h"
 
-#	include "Core/MemoryAllocator.h"
+#include "Core/MemoryAllocator.h"
 
 #   include "stdex/intrusive_ptr_base.h"
-#	include "stdex/mpl.h"
+#include "stdex/mpl.h"
 
-namespace Menge
+namespace Mengine
 {
 	class NotificationServiceInterface;
 	//////////////////////////////////////////////////////////////////////////
@@ -374,5 +374,5 @@ namespace Menge
 #	endif
 	//////////////////////////////////////////////////////////////////////////
 #   define NOTIFICATION_SERVICE()\
-    SERVICE_GET(Menge::NotificationServiceInterface)
+    SERVICE_GET(Mengine::NotificationServiceInterface)
 }

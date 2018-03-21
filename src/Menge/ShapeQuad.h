@@ -3,7 +3,7 @@
 #   include "Kernel/Shape.h"
 #   include "Core/RenderVertex2D.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ShapeQuad

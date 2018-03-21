@@ -1,24 +1,24 @@
-#	include "LoaderEngine.h"
+#include "LoaderEngine.h"
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/CodecInterface.h"
-#	include "Interface/ArchiveInterface.h"
-#	include "Interface/XmlCodecInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/ConfigInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/CodecInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/XmlCodecInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/ConfigInterface.h"
 
-#	include "Core/MemoryHelper.h"
-#	include "Core/FilePath.h"
+#include "Core/MemoryHelper.h"
+#include "Core/FilePath.h"
 
-#	include "metabuf/Metadata.hpp"
+#include "metabuf/Metadata.hpp"
 #   include "Metacode.h"
 
 #   include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( LoaderService, Menge::LoaderEngine );
+SERVICE_FACTORY( LoaderService, Mengine::LoaderEngine );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	LoaderEngine::LoaderEngine()		

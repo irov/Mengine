@@ -1,16 +1,16 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/ServiceInterface.h"
-#	include "Interface/StreamInterface.h"
+#include "Interface/StreamInterface.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/FilePath.h"
-#	include "Core/String.h"
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
+#include "Core/String.h"
 
-#	include "Factory/Factorable.h"
-#	include "Factory/Factory.h"
+#include "Factory/Factorable.h"
+#include "Factory/Factory.h"
 
-namespace Menge
+namespace Mengine
 {
 #	ifndef MENGINE_FILE_STREAM_BUFFER_SIZE
 #	define MENGINE_FILE_STREAM_BUFFER_SIZE 4096
@@ -105,7 +105,7 @@ namespace Menge
 	};
     //////////////////////////////////////////////////////////////////////////
 #   define FILE_SERVICE()\
-    ((Menge::FileServiceInterface *)SERVICE_GET(Menge::FileServiceInterface))
+    ((Mengine::FileServiceInterface *)SERVICE_GET(Mengine::FileServiceInterface))
 }
 
 

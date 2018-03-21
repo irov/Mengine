@@ -2,7 +2,7 @@
 #include "png.h"
 #include "Utils/Codec/ImageDecoder.h"
 
-class ImageDecoderPVRTC : public Menge::ImageDecoder
+class ImageDecoderPVRTC : public Mengine::ImageDecoder
 {
 	struct PVRTextureHeader
 	{

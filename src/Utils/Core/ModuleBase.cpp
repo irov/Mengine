@@ -1,6 +1,6 @@
-#	include "ModuleBase.h"
+#include "ModuleBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ModuleBase::ModuleBase()

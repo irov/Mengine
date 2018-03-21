@@ -1,4 +1,4 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/LoaderInterface.h"
 #   include "Interface/StreamInterface.h"
@@ -6,17 +6,17 @@
 
 #   include "Core/ServiceBase.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/ConstStringTypes.h"
+#include "Core/ConstString.h"
+#include "Core/ConstStringTypes.h"
 #   include "Core/String.h"
 
-#	include "Utils/Archive/Archive.hpp"
+#include "Utils/Archive/Archive.hpp"
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#	include "metabuf/Metadata.hpp"
+#include "metabuf/Metadata.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	class LoaderEngine
 		: public ServiceBase<LoaderServiceInterface>

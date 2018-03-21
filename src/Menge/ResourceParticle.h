@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/ParticleSystemInterface.h"
 
-#	include "Kernel/ResourceReference.h"
-#	include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceImage.h"
 
-#	include "Utils/Core/Polygon.h"
+#include "Utils/Core/Polygon.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ResourceParticle
 		: public ResourceReference

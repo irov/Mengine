@@ -1,15 +1,15 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServantInterface.h"
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServantInterface.h"
+#include "Interface/ServiceInterface.h"
 
 #   include "Factory/FactorablePtr.h"
-#	include "Core/ConstString.h"
-#	include "Core/Params.h"
+#include "Core/ConstString.h"
+#include "Core/Params.h"
 
 #   include "stdex/intrusive_ptr.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     struct RenderObjectState;
@@ -77,5 +77,5 @@ namespace Menge
 	};
     //////////////////////////////////////////////////////////////////////////
 #   define MODULE_SERVICE()\
-	((Menge::ModuleServiceInterface *)SERVICE_GET(Menge::ModuleServiceInterface))
+	((Mengine::ModuleServiceInterface *)SERVICE_GET(Mengine::ModuleServiceInterface))
 }

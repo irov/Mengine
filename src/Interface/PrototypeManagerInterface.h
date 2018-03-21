@@ -8,7 +8,7 @@
 
 #   include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
     class PrototypeGeneratorInterface
@@ -51,6 +51,6 @@ namespace Menge
 }
 
 #   define PROTOTYPE_SERVICE()\
-	((PrototypeServiceInterface *)SERVICE_GET(Menge::PrototypeServiceInterface))
+	((PrototypeServiceInterface *)SERVICE_GET(Mengine::PrototypeServiceInterface))
     
 

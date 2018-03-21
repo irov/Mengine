@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Factory/Factory.h"
-#	include "Factory/FactorableUnique.h"
+#include "Factory/Factory.h"
+#include "Factory/FactorableUnique.h"
 
 #   include <typeinfo>
 
-namespace Menge
+namespace Mengine
 {
 	template<class Type>
 	class FactoryDefault

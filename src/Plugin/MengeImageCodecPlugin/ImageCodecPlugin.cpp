@@ -1,46 +1,46 @@
-#	include "ImageCodecPlugin.h"
+#include "ImageCodecPlugin.h"
 
-#	include "Interface/CodecInterface.h"
+#include "Interface/CodecInterface.h"
 #   include "Interface/ImageCodecInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-#	include "ImageDecoderPNG.h"
-#	include "ImageDecoderJPEG.h"
+#include "ImageDecoderPNG.h"
+#include "ImageDecoderJPEG.h"
 
 #	ifdef MENGINE_SUPPORT_DECODER_WEBP
 #		include "ImageDecoderWEBP.h"
 #	endif
 
-#	include "ImageDecoderDDS.h"
-#	include "ImageEncoderDDS.h"
+#include "ImageDecoderDDS.h"
+#include "ImageEncoderDDS.h"
 
-#	include "ImageDecoderPVRTC.h"
-#	include "ImageDecoderETC1.h"
+#include "ImageDecoderPVRTC.h"
+#include "ImageDecoderETC1.h"
 
-//#	include "ImageDecoderCRN.h"
+//#include "ImageDecoderCRN.h"
 
-#	include "ImageDecoderHTF.h"
-#	include "ImageEncoderHTF.h"
-#	include "ImageDecoderACF.h"
-#	include "ImageEncoderACF.h"
+#include "ImageDecoderHTF.h"
+#include "ImageEncoderHTF.h"
+#include "ImageDecoderACF.h"
+#include "ImageEncoderACF.h"
 
-#	include "ImageEncoderPNG.h"
-#	include "ImageEncoderJPEG.h"
+#include "ImageEncoderPNG.h"
+#include "ImageEncoderJPEG.h"
 
 #   include "PickDecoderHIT.h"
 #   include "PickEncoderHIT.h"
 
-#	include "DataflowAEK.h"
-#	include "DataflowMDL.h"
+#include "DataflowAEK.h"
+#include "DataflowMDL.h"
 
 #   include "Codec/DecoderFactory.h"
 #   include "Codec/EncoderFactory.h"
 #   include "Codec/DataflowFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( MengeImageCodec, Menge::ImageCodecPlugin );
+PLUGIN_FACTORY( MengeImageCodec, Mengine::ImageCodecPlugin );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ImageCodecPlugin::ImageCodecPlugin()

@@ -1,10 +1,10 @@
-#	include "ResourceImage.h"
+#include "ResourceImage.h"
 
 #   include "Interface/RenderSystemInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImage::ResourceImage()

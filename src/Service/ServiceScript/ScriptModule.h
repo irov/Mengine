@@ -1,14 +1,14 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ScriptSystemInterface.h"
-#	include "Interface/LoggerInterface.h"
+#include "Interface/ScriptSystemInterface.h"
+#include "Interface/LoggerInterface.h"
 
-#	include "Kernel/Servant.h"
+#include "Kernel/Servant.h"
 
-#	include "pybind/types.hpp"
-#	include "pybind/pybind.hpp"
+#include "pybind/types.hpp"
+#include "pybind/pybind.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	class ScriptModule
 		: public ScriptModuleInterface

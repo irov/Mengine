@@ -4,7 +4,7 @@
 
 #	include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
     class SDLDynamicLibrary 
         : public ServantBase<DynamicLibraryInterface>

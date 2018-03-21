@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/TextInterface.h"
+#include "Interface/TextInterface.h"
 
 #   include "Core/ServantBase.h"
 
 #   include "Kernel/Resource.h"
 #   include "Kernel/Reference.h"
 
-namespace Menge
+namespace Mengine
 {
 	class FontBase
 		: public ServantBase<TextFontInterface>

@@ -1,14 +1,14 @@
-#	include "ResourceWindow.h"
+#include "ResourceWindow.h"
 
 #   include "Interface/ResourceInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceWindow::ResourceWindow()

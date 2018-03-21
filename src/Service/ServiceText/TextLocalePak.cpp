@@ -1,13 +1,13 @@
-#	include "TextLocalePak.h"
+#include "TextLocalePak.h"
 
 #   include "Interface/FileSystemInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include <stdex/xml_sax_parser.h>
+#include "stdex/xml_sax_parser.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	TextLocalePack::TextLocalePack()
@@ -39,7 +39,7 @@ namespace Menge
 		size_t xml_buffer_size = xml_text->size();
 
 		m_memory = MEMORY_SERVICE()
-			->createMemory();
+			->createMemoryBuffer();
 
 		Char * memory_buffer = m_memory->newMemory( xml_buffer_size + 1, __FILE__, __LINE__ );
 

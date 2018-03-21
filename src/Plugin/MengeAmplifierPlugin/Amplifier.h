@@ -1,17 +1,17 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/AmplifierInterface.h"
-#	include "Interface/SoundSystemInterface.h"
+#include "Interface/AmplifierInterface.h"
+#include "Interface/SoundSystemInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#	include <stdex/stl_map.h>
+#include "stdex/stl_map.h"
 
-namespace	Menge
+namespace Mengine
 {
 	class Amplifier
 		: public ServiceBase<AmplifierInterface>

@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/ServiceInterface.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
-#	include "Math/vec2.h"
+#include "math/vec2.h"
 
-namespace Menge
+namespace Mengine
 {
 	class PhysicFixture
 	{
@@ -99,5 +99,5 @@ namespace Menge
 	};
 
 #   define PHYSIC_SYSTEM()\
-    SERVICE_GET(Menge::PhysicSystemInterface)
+    SERVICE_GET(Mengine::PhysicSystemInterface)
 }

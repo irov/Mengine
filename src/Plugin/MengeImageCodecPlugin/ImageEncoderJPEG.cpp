@@ -1,12 +1,12 @@
-#	include "ImageEncoderJPEG.h"
+#include "ImageEncoderJPEG.h"
 
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 
-#	include "Utils/Logger/Logger.h"
+#include "Utils/Logger/Logger.h"
 
 #	define OUTPUT_BUF_SIZE 4096				// choose an efficiently fwrite'able size
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	struct DestinationManager 
@@ -19,7 +19,7 @@ namespace Menge
 		unsigned char * buffer;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef DestinationManager * menge_dst_ptr;
+	typedef DestinationManager * mengine_dst_ptr;
 	//////////////////////////////////////////////////////////////////////////
 	struct EncoderJPEGErrorManager
 	{
@@ -78,7 +78,7 @@ namespace Menge
 
     METHODDEF( void ) init_destination( j_compress_ptr cinfo )
 	{
-		menge_dst_ptr dest = (menge_dst_ptr) cinfo->dest;
+		mengine_dst_ptr dest = (mengine_dst_ptr) cinfo->dest;
 
 		dest->buffer = (unsigned char *)
 			(*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
@@ -99,7 +99,7 @@ namespace Menge
 	//desired.
     METHODDEF( boolean ) empty_output_buffer( j_compress_ptr cinfo )
 	{
-		menge_dst_ptr dest = (menge_dst_ptr) cinfo->dest;
+        mengine_dst_ptr dest = (mengine_dst_ptr) cinfo->dest;
 
 		dest->m_stream->write( dest->buffer, OUTPUT_BUF_SIZE );
 
@@ -115,7 +115,7 @@ namespace Menge
 	//free_in_buffer to determine how much data is in the buffer.
     METHODDEF( void ) term_destination( j_compress_ptr cinfo )
 	{
-		menge_dst_ptr dest = (menge_dst_ptr) cinfo->dest;
+        mengine_dst_ptr dest = (mengine_dst_ptr) cinfo->dest;
 
 		size_t datacount = OUTPUT_BUF_SIZE - dest->pub.free_in_buffer;
 
@@ -131,9 +131,9 @@ namespace Menge
 	//Prepare for output to a stdio stream.
 	//The caller must have already opened the stream, and is responsible
 	//for closing it after finishing compression.
-    GLOBAL( void ) jpeg_menge_dst( j_compress_ptr cinfo, OutputStreamInterface * _stream )
+    GLOBAL( void ) jpeg_mengine_dst( j_compress_ptr cinfo, OutputStreamInterface * _stream )
 	{
-		menge_dst_ptr dest;
+		mengine_dst_ptr dest;
 
 		if( cinfo->dest == nullptr )
 		{
@@ -141,7 +141,7 @@ namespace Menge
 				((j_common_ptr) cinfo, JPOOL_PERMANENT, sizeof(DestinationManager));
 		}
 
-		dest = (menge_dst_ptr) cinfo->dest;
+		dest = (mengine_dst_ptr) cinfo->dest;
 		dest->pub.init_destination = init_destination;
 		dest->pub.empty_output_buffer = empty_output_buffer;
 		dest->pub.term_destination = term_destination;
@@ -186,7 +186,7 @@ namespace Menge
 
 		jpeg_create_compress( &cinfo );
 
-		jpeg_menge_dst( &cinfo, m_stream.get() );
+		jpeg_mengine_dst( &cinfo, m_stream.get() );
 
 		cinfo.image_width = (JDIMENSION)dataInfo->width;
 		cinfo.image_height = (JDIMENSION)dataInfo->height;
@@ -222,4 +222,4 @@ namespace Menge
 
 		return pitch * dataInfo->height;
 	}
-}	// namespace Menge
+}	

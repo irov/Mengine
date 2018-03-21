@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Identity
 	{

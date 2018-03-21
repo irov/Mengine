@@ -1,21 +1,21 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/MemoryInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/MemoryInterface.h"
 
 #   include "Core/ServantBase.h"
 
 #   include "Factory/FactorablePtr.h"
 
-#	include "Core/FilePath.h"
-#	include "Core/ConstString.h"
+#include "Core/FilePath.h"
+#include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {
 	class MemoryManager;
 
 	class MemoryCacheBuffer
-		: public ServantBase<MemoryInterface>
+		: public ServantBase<MemoryBufferInterface>
 	{
 	public:
 		MemoryCacheBuffer();
@@ -60,6 +60,9 @@ namespace Menge
 	{
 		return m_size == 0;
 	}
-}	// namespace Menge
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<MemoryCacheBuffer> MemoryCacheBufferPtr;
+    //////////////////////////////////////////////////////////////////////////
+}	
 
 

@@ -1,15 +1,15 @@
-#	include "LZ4Plugin.h"
+#include "LZ4Plugin.h"
 
 #   include "Interface/StringizeInterface.h"
 
-#	include "ArchivatorLZ4.h"
+#include "ArchivatorLZ4.h"
 
-#	include "Factory/FactorableUnique.h"
+#include "Factory/FactorableUnique.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( MengeLZ4, Menge::LZ4Plugin );
+PLUGIN_FACTORY( MengeLZ4, Mengine::LZ4Plugin );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	LZ4Plugin::LZ4Plugin()

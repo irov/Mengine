@@ -5,7 +5,7 @@
 
 #   include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLFileMapped::SDLFileMapped()
@@ -38,4 +38,4 @@ namespace Menge
         (void)_memory;
         return false;
     }
-}	// namespace Menge
+}	// namespace Mengine

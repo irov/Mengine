@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-#	include "CollisionWorld.h"
-#	include "CollisionActor.h"
+#include "CollisionWorld.h"
+#include "CollisionActor.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class NodeCollisionActorUserData

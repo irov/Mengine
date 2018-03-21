@@ -1,16 +1,16 @@
-#	pragma once
+#pragma once
 
-#	include "Core/PluginBase.h"
+#include "Core/PluginBase.h"
 
-#	include "movie/movie.hpp"
+#include "movie/movie.hpp"
 
-#	include "Movie2.h"
-#	include "ResourceMovie2.h"
+#include "Movie2.h"
+#include "ResourceMovie2.h"
 #   include "Movie2Slot.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class MoviePlugin

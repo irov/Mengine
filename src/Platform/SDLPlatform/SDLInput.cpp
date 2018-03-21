@@ -6,7 +6,7 @@
 
 #	include "Config/String.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLInput::SDLInput()
@@ -163,7 +163,7 @@ namespace Menge
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLInput::isKeyDown( Menge::KeyCode _code ) const
+    bool SDLInput::isKeyDown( Mengine::KeyCode _code ) const
     {
         return m_keyDown[_code];
     }
@@ -195,108 +195,108 @@ namespace Menge
             m_codes[i] = SDL_SCANCODE_UNKNOWN;
         }				
 
-        m_keys[SDL_SCANCODE_RETURN] = Menge::KC_RETURN;
-        m_keys[SDL_SCANCODE_ESCAPE] = Menge::KC_ESCAPE;
-        m_keys[SDL_SCANCODE_BACKSPACE] = Menge::KC_BACK;
-        m_keys[SDL_SCANCODE_TAB] = Menge::KC_TAB;
-        m_keys[SDL_SCANCODE_SPACE] = Menge::KC_SPACE;
+        m_keys[SDL_SCANCODE_RETURN] = Mengine::KC_RETURN;
+        m_keys[SDL_SCANCODE_ESCAPE] = Mengine::KC_ESCAPE;
+        m_keys[SDL_SCANCODE_BACKSPACE] = Mengine::KC_BACK;
+        m_keys[SDL_SCANCODE_TAB] = Mengine::KC_TAB;
+        m_keys[SDL_SCANCODE_SPACE] = Mengine::KC_SPACE;
                     
-        m_keys[SDL_SCANCODE_MENU] = Menge::KC_MENU;
+        m_keys[SDL_SCANCODE_MENU] = Mengine::KC_MENU;
 
         
-        m_keys[SDL_SCANCODE_LSHIFT] = Menge::KC_LSHIFT;
-        m_keys[SDL_SCANCODE_RSHIFT] = Menge::KC_RSHIFT;
-        m_keys[SDL_SCANCODE_LCTRL] = Menge::KC_LCONTROL;
-        m_keys[SDL_SCANCODE_RCTRL] = Menge::KC_RCONTROL;
-        m_keys[SDL_SCANCODE_LALT] = Menge::KC_LMENU;
-        m_keys[SDL_SCANCODE_RALT] = Menge::KC_RMENU;
-        m_keys[SDL_SCANCODE_PAUSE] = Menge::KC_PAUSE;
-        m_keys[SDL_SCANCODE_CAPSLOCK] = Menge::KC_CAPITAL;
+        m_keys[SDL_SCANCODE_LSHIFT] = Mengine::KC_LSHIFT;
+        m_keys[SDL_SCANCODE_RSHIFT] = Mengine::KC_RSHIFT;
+        m_keys[SDL_SCANCODE_LCTRL] = Mengine::KC_LCONTROL;
+        m_keys[SDL_SCANCODE_RCTRL] = Mengine::KC_RCONTROL;
+        m_keys[SDL_SCANCODE_LALT] = Mengine::KC_LMENU;
+        m_keys[SDL_SCANCODE_RALT] = Mengine::KC_RMENU;
+        m_keys[SDL_SCANCODE_PAUSE] = Mengine::KC_PAUSE;
+        m_keys[SDL_SCANCODE_CAPSLOCK] = Mengine::KC_CAPITAL;
         
-        m_keys[SDL_SCANCODE_PAGEUP] = Menge::KC_PRIOR;
-        m_keys[SDL_SCANCODE_PAGEDOWN] = Menge::KC_NEXT;
-        m_keys[SDL_SCANCODE_END] = Menge::KC_END;
-        m_keys[SDL_SCANCODE_HOME] = Menge::KC_HOME;
-        m_keys[SDL_SCANCODE_LEFT] = Menge::KC_LEFT;
-        m_keys[SDL_SCANCODE_UP] = Menge::KC_UP;
-        m_keys[SDL_SCANCODE_RIGHT] = Menge::KC_RIGHT;
-        m_keys[SDL_SCANCODE_DOWN] = Menge::KC_DOWN;
-        m_keys[SDL_SCANCODE_INSERT] = Menge::KC_INSERT;
-        m_keys[SDL_SCANCODE_DELETE] = Menge::KC_DELETE;
+        m_keys[SDL_SCANCODE_PAGEUP] = Mengine::KC_PRIOR;
+        m_keys[SDL_SCANCODE_PAGEDOWN] = Mengine::KC_NEXT;
+        m_keys[SDL_SCANCODE_END] = Mengine::KC_END;
+        m_keys[SDL_SCANCODE_HOME] = Mengine::KC_HOME;
+        m_keys[SDL_SCANCODE_LEFT] = Mengine::KC_LEFT;
+        m_keys[SDL_SCANCODE_UP] = Mengine::KC_UP;
+        m_keys[SDL_SCANCODE_RIGHT] = Mengine::KC_RIGHT;
+        m_keys[SDL_SCANCODE_DOWN] = Mengine::KC_DOWN;
+        m_keys[SDL_SCANCODE_INSERT] = Mengine::KC_INSERT;
+        m_keys[SDL_SCANCODE_DELETE] = Mengine::KC_DELETE;
 
-        m_keys[SDL_SCANCODE_0] = Menge::KC_0;
-        m_keys[SDL_SCANCODE_1] = Menge::KC_1;
-        m_keys[SDL_SCANCODE_2] = Menge::KC_2;
-        m_keys[SDL_SCANCODE_3] = Menge::KC_3;
-        m_keys[SDL_SCANCODE_4] = Menge::KC_4;
-        m_keys[SDL_SCANCODE_5] = Menge::KC_5;
-        m_keys[SDL_SCANCODE_6] = Menge::KC_6;
-        m_keys[SDL_SCANCODE_7] = Menge::KC_7;
-        m_keys[SDL_SCANCODE_8] = Menge::KC_8;
-        m_keys[SDL_SCANCODE_9] = Menge::KC_9;
+        m_keys[SDL_SCANCODE_0] = Mengine::KC_0;
+        m_keys[SDL_SCANCODE_1] = Mengine::KC_1;
+        m_keys[SDL_SCANCODE_2] = Mengine::KC_2;
+        m_keys[SDL_SCANCODE_3] = Mengine::KC_3;
+        m_keys[SDL_SCANCODE_4] = Mengine::KC_4;
+        m_keys[SDL_SCANCODE_5] = Mengine::KC_5;
+        m_keys[SDL_SCANCODE_6] = Mengine::KC_6;
+        m_keys[SDL_SCANCODE_7] = Mengine::KC_7;
+        m_keys[SDL_SCANCODE_8] = Mengine::KC_8;
+        m_keys[SDL_SCANCODE_9] = Mengine::KC_9;
 
-        m_keys[SDL_SCANCODE_A] = Menge::KC_A;
-        m_keys[SDL_SCANCODE_B] = Menge::KC_B;
-        m_keys[SDL_SCANCODE_C] = Menge::KC_C;
-        m_keys[SDL_SCANCODE_D] = Menge::KC_D;
-        m_keys[SDL_SCANCODE_E] = Menge::KC_E;
-        m_keys[SDL_SCANCODE_F] = Menge::KC_F;
-        m_keys[SDL_SCANCODE_G] = Menge::KC_G;
-        m_keys[SDL_SCANCODE_H] = Menge::KC_H;
-        m_keys[SDL_SCANCODE_I] = Menge::KC_I;
-        m_keys[SDL_SCANCODE_J] = Menge::KC_J;
-        m_keys[SDL_SCANCODE_K] = Menge::KC_K;
-        m_keys[SDL_SCANCODE_L] = Menge::KC_L;
-        m_keys[SDL_SCANCODE_M] = Menge::KC_M;
-        m_keys[SDL_SCANCODE_N] = Menge::KC_N;
-        m_keys[SDL_SCANCODE_O] = Menge::KC_O;
-        m_keys[SDL_SCANCODE_P] = Menge::KC_P;
-        m_keys[SDL_SCANCODE_Q] = Menge::KC_Q;
-        m_keys[SDL_SCANCODE_R] = Menge::KC_R;
-        m_keys[SDL_SCANCODE_S] = Menge::KC_S;
-        m_keys[SDL_SCANCODE_T] = Menge::KC_T;
-        m_keys[SDL_SCANCODE_U] = Menge::KC_U;
-        m_keys[SDL_SCANCODE_V] = Menge::KC_V;
-        m_keys[SDL_SCANCODE_W] = Menge::KC_W;
-        m_keys[SDL_SCANCODE_X] = Menge::KC_X;
-        m_keys[SDL_SCANCODE_Y] = Menge::KC_Y;
-        m_keys[SDL_SCANCODE_Z] = Menge::KC_Z;
+        m_keys[SDL_SCANCODE_A] = Mengine::KC_A;
+        m_keys[SDL_SCANCODE_B] = Mengine::KC_B;
+        m_keys[SDL_SCANCODE_C] = Mengine::KC_C;
+        m_keys[SDL_SCANCODE_D] = Mengine::KC_D;
+        m_keys[SDL_SCANCODE_E] = Mengine::KC_E;
+        m_keys[SDL_SCANCODE_F] = Mengine::KC_F;
+        m_keys[SDL_SCANCODE_G] = Mengine::KC_G;
+        m_keys[SDL_SCANCODE_H] = Mengine::KC_H;
+        m_keys[SDL_SCANCODE_I] = Mengine::KC_I;
+        m_keys[SDL_SCANCODE_J] = Mengine::KC_J;
+        m_keys[SDL_SCANCODE_K] = Mengine::KC_K;
+        m_keys[SDL_SCANCODE_L] = Mengine::KC_L;
+        m_keys[SDL_SCANCODE_M] = Mengine::KC_M;
+        m_keys[SDL_SCANCODE_N] = Mengine::KC_N;
+        m_keys[SDL_SCANCODE_O] = Mengine::KC_O;
+        m_keys[SDL_SCANCODE_P] = Mengine::KC_P;
+        m_keys[SDL_SCANCODE_Q] = Mengine::KC_Q;
+        m_keys[SDL_SCANCODE_R] = Mengine::KC_R;
+        m_keys[SDL_SCANCODE_S] = Mengine::KC_S;
+        m_keys[SDL_SCANCODE_T] = Mengine::KC_T;
+        m_keys[SDL_SCANCODE_U] = Mengine::KC_U;
+        m_keys[SDL_SCANCODE_V] = Mengine::KC_V;
+        m_keys[SDL_SCANCODE_W] = Mengine::KC_W;
+        m_keys[SDL_SCANCODE_X] = Mengine::KC_X;
+        m_keys[SDL_SCANCODE_Y] = Mengine::KC_Y;
+        m_keys[SDL_SCANCODE_Z] = Mengine::KC_Z;
 
-        m_keys[SDL_SCANCODE_KP_1] = Menge::KC_NUMPAD0;
-        m_keys[SDL_SCANCODE_KP_2] = Menge::KC_NUMPAD1;
-        m_keys[SDL_SCANCODE_KP_3] = Menge::KC_NUMPAD2;
-        m_keys[SDL_SCANCODE_KP_4] = Menge::KC_NUMPAD3;
-        m_keys[SDL_SCANCODE_KP_5] = Menge::KC_NUMPAD4;
-        m_keys[SDL_SCANCODE_KP_6] = Menge::KC_NUMPAD5;
-        m_keys[SDL_SCANCODE_KP_7] = Menge::KC_NUMPAD6;
-        m_keys[SDL_SCANCODE_KP_8] = Menge::KC_NUMPAD7;
-        m_keys[SDL_SCANCODE_KP_9] = Menge::KC_NUMPAD8;
-        m_keys[SDL_SCANCODE_KP_0] = Menge::KC_NUMPAD9;
+        m_keys[SDL_SCANCODE_KP_1] = Mengine::KC_NUMPAD0;
+        m_keys[SDL_SCANCODE_KP_2] = Mengine::KC_NUMPAD1;
+        m_keys[SDL_SCANCODE_KP_3] = Mengine::KC_NUMPAD2;
+        m_keys[SDL_SCANCODE_KP_4] = Mengine::KC_NUMPAD3;
+        m_keys[SDL_SCANCODE_KP_5] = Mengine::KC_NUMPAD4;
+        m_keys[SDL_SCANCODE_KP_6] = Mengine::KC_NUMPAD5;
+        m_keys[SDL_SCANCODE_KP_7] = Mengine::KC_NUMPAD6;
+        m_keys[SDL_SCANCODE_KP_8] = Mengine::KC_NUMPAD7;
+        m_keys[SDL_SCANCODE_KP_9] = Mengine::KC_NUMPAD8;
+        m_keys[SDL_SCANCODE_KP_0] = Mengine::KC_NUMPAD9;
 
-        m_keys[SDL_SCANCODE_KP_MINUS] = Menge::KC_SUBTRACT;
-        m_keys[SDL_SCANCODE_KP_PLUS] = Menge::KC_ADD;
+        m_keys[SDL_SCANCODE_KP_MINUS] = Mengine::KC_SUBTRACT;
+        m_keys[SDL_SCANCODE_KP_PLUS] = Mengine::KC_ADD;
 
-        m_keys[SDL_SCANCODE_KP_DIVIDE] = Menge::KC_DIVIDE;
+        m_keys[SDL_SCANCODE_KP_DIVIDE] = Mengine::KC_DIVIDE;
 
-        m_keys[SDL_SCANCODE_F1] = Menge::KC_F1;
-        m_keys[SDL_SCANCODE_F2] = Menge::KC_F2;
-        m_keys[SDL_SCANCODE_F3] = Menge::KC_F3;
-        m_keys[SDL_SCANCODE_F4] = Menge::KC_F4;
-        m_keys[SDL_SCANCODE_F5] = Menge::KC_F5;
-        m_keys[SDL_SCANCODE_F6] = Menge::KC_F6;
-        m_keys[SDL_SCANCODE_F7] = Menge::KC_F7;
-        m_keys[SDL_SCANCODE_F8] = Menge::KC_F8;
-        m_keys[SDL_SCANCODE_F9] = Menge::KC_F9;
-        m_keys[SDL_SCANCODE_F10] = Menge::KC_F10;
-        m_keys[SDL_SCANCODE_F11] = Menge::KC_F11;
-        m_keys[SDL_SCANCODE_F12] = Menge::KC_F12;
+        m_keys[SDL_SCANCODE_F1] = Mengine::KC_F1;
+        m_keys[SDL_SCANCODE_F2] = Mengine::KC_F2;
+        m_keys[SDL_SCANCODE_F3] = Mengine::KC_F3;
+        m_keys[SDL_SCANCODE_F4] = Mengine::KC_F4;
+        m_keys[SDL_SCANCODE_F5] = Mengine::KC_F5;
+        m_keys[SDL_SCANCODE_F6] = Mengine::KC_F6;
+        m_keys[SDL_SCANCODE_F7] = Mengine::KC_F7;
+        m_keys[SDL_SCANCODE_F8] = Mengine::KC_F8;
+        m_keys[SDL_SCANCODE_F9] = Mengine::KC_F9;
+        m_keys[SDL_SCANCODE_F10] = Mengine::KC_F10;
+        m_keys[SDL_SCANCODE_F11] = Mengine::KC_F11;
+        m_keys[SDL_SCANCODE_F12] = Mengine::KC_F12;
 
-        m_keys[SDL_SCANCODE_LEFTBRACKET] = Menge::KC_OEM_4;
-        m_keys[SDL_SCANCODE_RIGHTBRACKET] = Menge::KC_OEM_6;
-        m_keys[SDL_SCANCODE_EQUALS] = Menge::KC_OEM_PLUS;
-        m_keys[SDL_SCANCODE_MINUS] = Menge::KC_OEM_MINUS;
+        m_keys[SDL_SCANCODE_LEFTBRACKET] = Mengine::KC_OEM_4;
+        m_keys[SDL_SCANCODE_RIGHTBRACKET] = Mengine::KC_OEM_6;
+        m_keys[SDL_SCANCODE_EQUALS] = Mengine::KC_OEM_PLUS;
+        m_keys[SDL_SCANCODE_MINUS] = Mengine::KC_OEM_MINUS;
 
-        m_keys[SDL_SCANCODE_NUMLOCKCLEAR] = Menge::KC_NUMLOCK;
+        m_keys[SDL_SCANCODE_NUMLOCKCLEAR] = Mengine::KC_NUMLOCK;
 
         for( uint32_t i = 0; i != KC_MAX_CODE; ++i )
         {

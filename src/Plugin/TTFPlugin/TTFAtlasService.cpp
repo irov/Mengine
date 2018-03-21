@@ -1,14 +1,14 @@
-#	include "TTFAtlasService.h"
+#include "TTFAtlasService.h"
 
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/ConfigInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/ConfigInterface.h"
 
 #   include "stdex/memorycopy.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( TTFAtlasService, Menge::TTFAtlasService );
+SERVICE_FACTORY( TTFAtlasService, Mengine::TTFAtlasService );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	TTFAtlasService::TTFAtlasService()

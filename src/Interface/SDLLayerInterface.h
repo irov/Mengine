@@ -2,10 +2,10 @@
 
 #   include "Interface/ServiceInterface.h"
 
-#	include "Config/String.h"
+#include "Config/String.h"
 #   include "Core/FilePath.h"
 
-namespace Menge
+namespace Mengine
 {
     class SDLLayerInterface
         : public ServiceInterface
@@ -18,5 +18,5 @@ namespace Menge
     };
 
 #   define SDLLAYER_SERVICE()\
-    ((Menge::SDLLayerInterface *)SERVICE_GET(Menge::SDLLayerInterface))
+    ((Mengine::SDLLayerInterface *)SERVICE_GET(Mengine::SDLLayerInterface))
 }

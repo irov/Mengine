@@ -1,31 +1,31 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/ServantInterface.h"
-#	include "Interface/MemoryInterface.h"
-#	include "Interface/RenderEnumInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/ServantInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/RenderEnumInterface.h"
 
 #   include "Factory/FactorablePtr.h"
 
-#	include "Core/Viewport.h"
-#	include "Core/Resolution.h"
-#	include "Core/Rect.h"
-#	include "Core/ConstString.h"
-#	include "Core/FilePath.h"
-#	include "Core/PixelFormat.h"
+#include "Core/Viewport.h"
+#include "Core/Resolution.h"
+#include "Core/Rect.h"
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
+#include "Core/PixelFormat.h"
 #   include "Core/Pointer.h"
 #   include "Core/RenderVertex2D.h"
-#   include "Core/RenderIndices.h"
+#   include "Core/RenderIndex.h"
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
 #   include "stdex/intrusive_ptr.h"
 
-#	include "Math/mat4.h"
-#	include "Math/uv4.h"
-#	include "Math/plane.h"
+#include "math/mat4.h"
+#include "math/uv4.h"
+#include "math/plane.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	typedef uint32_t VBHandle; // Vertex Buffer Handle
@@ -51,6 +51,7 @@ namespace Menge
 
 	public:
 		virtual bool load( const RenderImageInterfacePtr & _image ) const = 0;
+        //virtual bool load( void * _buffer, uint32_t _pitch ) const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderImageLoaderInterface> RenderImageLoaderInterfacePtr;
@@ -158,6 +159,23 @@ namespace Menge
 
         uint32_t texCoordIndex;
     };
+    //////////////////////////////////////////////////////////////////////////
+    class RenderVertexAttributeInterface
+        : public ServantInterface
+    {
+    public:
+        virtual const ConstString & getName() const = 0;
+        virtual uint32_t getElementSize() const = 0;
+
+    public:
+        virtual bool enable() = 0;
+        virtual void disable() = 0;
+
+    public:
+        virtual void addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<RenderVertexAttributeInterface> RenderVertexAttributeInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderFragmentShaderInterface
 		: public ServantInterface
@@ -183,7 +201,8 @@ namespace Menge
 	public:
 		virtual const ConstString & getName() const = 0;
 
-	public:
+    public:
+        virtual RenderVertexAttributeInterfacePtr getVertexAttribute() const = 0;
 		virtual RenderVertexShaderInterfacePtr getVertexShader() const = 0;
 		virtual RenderFragmentShaderInterfacePtr getFragmentShader() const = 0;		
 	};
@@ -203,7 +222,7 @@ namespace Menge
 
 		uint32_t id;
 
-		RenderTextureStage textureStage[MENGE_MAX_TEXTURE_STAGES];
+		RenderTextureStage textureStage[MENGINE_MAX_TEXTURE_STAGES];
 
 		RenderProgramInterfacePtr program;
 
@@ -246,9 +265,23 @@ namespace Menge
 	class RenderVertexBufferInterface
 		: public ServantInterface
 	{
+    public:
+        virtual uint32_t getVertexCount() const = 0;
+        virtual uint32_t getVertexSize() const = 0;
+
+    public:
+        virtual bool enable() = 0;
+        virtual void disable() = 0;
+
+    public:
+        virtual bool resize( uint32_t _count ) = 0;
+
 	public:
-		virtual Pointer lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
+		virtual MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
 		virtual bool unlock() = 0;
+
+    public:
+        virtual void draw( const void * _buffer, size_t _size ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderVertexBufferInterface> RenderVertexBufferInterfacePtr;
@@ -256,9 +289,23 @@ namespace Menge
 	class RenderIndexBufferInterface
 		: public ServantInterface
 	{
+    public:
+        virtual uint32_t getIndexCount() const = 0;
+        virtual uint32_t getIndexSize() const = 0;
+
+    public:
+        virtual bool enable() = 0;
+        virtual void disable() = 0;
+
+    public:
+        virtual bool resize( uint32_t _count ) = 0;
+
 	public:
-		virtual Pointer lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
+		virtual MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
 		virtual bool unlock() = 0;
+
+    public:
+        virtual void draw( const void * _buffer, size_t _size ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderIndexBufferInterface> RenderIndexBufferInterfacePtr;
@@ -304,7 +351,7 @@ namespace Menge
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERMATERIAL_SERVICE()\
-    ((Menge::RenderMaterialServiceInterface*)SERVICE_GET(Menge::RenderMaterialServiceInterface))
+    ((Mengine::RenderMaterialServiceInterface*)SERVICE_GET(Mengine::RenderMaterialServiceInterface))
     //////////////////////////////////////////////////////////////////////////
     class VisitorRenderTextureInterface
     {
@@ -344,7 +391,7 @@ namespace Menge
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERTEXTURE_SERVICE()\
-    ((Menge::RenderTextureServiceInterface*)SERVICE_GET(Menge::RenderTextureServiceInterface))
+    ((Mengine::RenderTextureServiceInterface*)SERVICE_GET(Mengine::RenderTextureServiceInterface))
 	//////////////////////////////////////////////////////////////////////////
 	class RenderViewportInterface
 	{
@@ -421,23 +468,25 @@ namespace Menge
 	public:
 		// входные данные: матрица 4 на 4
 		virtual	void setProjectionMatrix( const mt::mat4f & _projection ) = 0;
-		virtual	void setModelViewMatrix( const mt::mat4f & _view ) = 0;
+		virtual	void setViewMatrix( const mt::mat4f & _view ) = 0;
 		virtual	void setWorldMatrix( const mt::mat4f & _view ) = 0;
 
 		virtual void setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture ) = 0;
 
 	public:
-		virtual RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _verticesNum, bool _dynamic ) = 0;
+		virtual RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType ) = 0;
 		virtual bool setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer ) = 0;
 
-		virtual RenderIndexBufferInterfacePtr createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) = 0;
+    public:
+		virtual RenderIndexBufferInterfacePtr createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType ) = 0;
 		virtual bool setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer ) = 0;
 		
 	public:
+        virtual RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name ) = 0;
 		virtual RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory ) = 0;
 		virtual RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory ) = 0;
 						
-		virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount ) = 0;
+		virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount ) = 0;
 		virtual void setProgram( const RenderProgramInterfacePtr & _program ) = 0;
 		virtual void updateProgram( const RenderProgramInterfacePtr & _program ) = 0;
         
@@ -458,6 +507,8 @@ namespace Menge
 		virtual void setShadeType( EShadeType _sType ) = 0;
 		virtual void setAlphaBlendEnable( bool _alphaBlend ) = 0;
 		virtual void setLightingEnable( bool _light ) = 0;
+
+    public:
 		virtual void setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,
 												ETextureArgument _arg1, ETextureArgument _arg2 ) = 0;
 		virtual void setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp,
@@ -515,7 +566,7 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define RENDER_SYSTEM()\
-    ((Menge::RenderSystemInterface*)SERVICE_GET(Menge::RenderSystemInterface))
+    ((Mengine::RenderSystemInterface*)SERVICE_GET(Mengine::RenderSystemInterface))
 	//////////////////////////////////////////////////////////////////////////
     struct RenderServiceDebugInfo
     {
@@ -545,7 +596,7 @@ namespace Menge
     public:
 		virtual void addRenderObject( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
-            , const RenderIndices * _indices, uint32_t _indicesNum
+            , const RenderIndex * _indices, uint32_t _indicesNum
 			, const mt::box2f * _bb, bool _debug ) = 0;
 
 		virtual void addRenderQuad( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
@@ -614,5 +665,5 @@ namespace Menge
 	};
 
 #   define RENDER_SERVICE()\
-    ((Menge::RenderServiceInterface*)SERVICE_GET(Menge::RenderServiceInterface))
+    ((Mengine::RenderServiceInterface*)SERVICE_GET(Mengine::RenderServiceInterface))
 }

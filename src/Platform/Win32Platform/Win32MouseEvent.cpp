@@ -1,6 +1,6 @@
 #include "Win32MouseEvent.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32MouseEvent::Win32MouseEvent()

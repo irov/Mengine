@@ -1,19 +1,19 @@
-#	include "ModuleMagnet.h"
+#include "ModuleMagnet.h"
 
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/PlayerInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/PlayerInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Kernel/ScriptEventReceiver.h"
-#	include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/ScriptEventReceiver.h"
+#include "Kernel/NodePrototypeGenerator.h"
 #   include "Kernel/ScriptWrapper.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ModuleMagnet::ModuleMagnet()

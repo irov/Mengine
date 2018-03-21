@@ -1,8 +1,8 @@
-#	include "Kernel/Animatable.h"
+#include "Kernel/Animatable.h"
 
-#	include "Math/utils.h"
+#include "math/utils.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Animatable::Animatable()

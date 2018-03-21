@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ModuleInterface.h"
+#include "Interface/ModuleInterface.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
-#	include "Factory/FactoryDefault.h"
+#include "Factory/FactoryDefault.h"
 
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	template<class T>

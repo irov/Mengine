@@ -1,30 +1,30 @@
-#	include "TextManager.h"
+#include "TextManager.h"
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/ApplicationInterface.h"
-#	include "Interface/UnicodeInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/UnicodeInterface.h"
 #   include "Interface/FileSystemInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/PrototypeManagerInterface.h"
-#	include "Interface/NotificationServiceInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #   include "Factory/FactoryPool.h"
 
-#	include "Core/String.h"
-#	include "Core/IniUtil.h"
+#include "Core/String.h"
+#include "Core/IniUtil.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "stdex/xml_sax_parser.h"
+#include "stdex/xml_sax_parser.h"
 
-#	include "utf8.h"
+#include "utf8.h"
 
 #   include <stdio.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( TextService, Menge::TextManager );
+SERVICE_FACTORY( TextService, Mengine::TextManager );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TextManager::TextManager()
@@ -143,7 +143,7 @@ namespace Menge
                     }
                     else
                     {
-						text = Menge::String( str_value, str_value_size );
+						text = Mengine::String( str_value, str_value_size );
                     }
                 }
                 else if( strcmp( str_key, "Font" ) == 0 )

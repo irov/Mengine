@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/FilePath.h"
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
 
-namespace Menge
+namespace Mengine
 {
 	struct PrefetcherDebugInfo
 	{
@@ -56,6 +56,6 @@ namespace Menge
 	};
 
 #   define PREFETCHER_SERVICE()\
-	((Menge::PrefetcherServiceInterface*)SERVICE_GET(Menge::PrefetcherServiceInterface))
+	((Mengine::PrefetcherServiceInterface*)SERVICE_GET(Mengine::PrefetcherServiceInterface))
 }
 

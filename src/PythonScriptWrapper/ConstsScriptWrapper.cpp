@@ -1,12 +1,12 @@
-#	include "PythonScriptWrapper.h"
+#include "PythonScriptWrapper.h"
 
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 
 #   include "pybind/pybind.hpp"
-#	include "pybind/stl_type_cast.hpp"
+#include "pybind/stl_type_cast.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
     static bool s_ConstString_compare( pybind::kernel_interface * _kernel, PyObject * _obj, ConstString * _self, PyObject * _compare, pybind::PybindOperatorCompare _op, bool & _result )

@@ -1,17 +1,17 @@
-#	include "Win32ConsoleLogger.h"
+#include "Win32ConsoleLogger.h"
 
-#	include "WIN32/WindowsIncluder.h"
+#include "WIN32/WindowsIncluder.h"
 
-#	include <io.h>
-#	include <cstdio>
-#	include <locale.h>
-#	include <fcntl.h>
+#include <io.h>
+#include <cstdio>
+#include <locale.h>
+#include <fcntl.h>
 
 #   include <iostream>
 
 typedef BOOL( WINAPI *PATTACHCONSOLE )(DWORD);
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32ConsoleLogger::Win32ConsoleLogger()
@@ -176,4 +176,4 @@ namespace Menge
     {
         std::cout.flush();
     }
-}	// namespace Menge
+}	

@@ -1,9 +1,9 @@
-#	pragma once
+#pragma once
 
 #include <stddef.h>
 #include <stdint.h>
  
-namespace Menge
+namespace Mengine
 {
 	namespace Helper
 	{

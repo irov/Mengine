@@ -1,12 +1,12 @@
-#	include "ResourceImageSolid.h"
+#include "ResourceImageSolid.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageSolid::ResourceImageSolid()

@@ -2,11 +2,11 @@
 
 #   include "Interface/ThreadSystemInterface.h"
 
-#	include "WIN32/WindowsIncluder.h"
+#include "WIN32/WindowsIncluder.h"
 
 #   include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
     class Win32ThreadMutex
         : public ServantBase<ThreadMutexInterface>

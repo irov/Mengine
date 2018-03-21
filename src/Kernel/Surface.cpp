@@ -1,8 +1,8 @@
-#	include "Surface.h"
+#include "Surface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Surface::Surface()

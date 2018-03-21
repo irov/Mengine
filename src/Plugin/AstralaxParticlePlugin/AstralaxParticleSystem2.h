@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ParticleSystemInterface.h"
+#include "Interface/ParticleSystemInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "Config/String.h"
+#include "Config/String.h"
 
-#	include "AstralaxEmitterContainer2.h"
-#	include "AstralaxEmitter2.h"
+#include "AstralaxEmitterContainer2.h"
+#include "AstralaxEmitter2.h"
 
 #   include "Factory/Factory.h"
 
@@ -15,15 +15,15 @@
 #	pragma warning(push, 0) 
 #	endif 
 
-#	include "magic.h"
+#include "magic.h"
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(pop) 
 #	endif
 
-#	include "stdex/stl_map.h"
+#include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
 	class AstralaxParticleSystem2 
 		: public ServiceBase<ParticleSystemInterface2>

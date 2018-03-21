@@ -4,7 +4,7 @@
 
 #   include "Core/ServiceBase.h"
 
-namespace Menge
+namespace Mengine
 {
     class C11TimerSystem 
         : public ServiceBase<TimerSystemInterface>

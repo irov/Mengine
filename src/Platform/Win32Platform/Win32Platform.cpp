@@ -1,34 +1,34 @@
-#	include "Win32Platform.h"
+#include "Win32Platform.h"
 
-#	include "Interface/WindowsLayerInterface.h"
-#	include "Interface/OptionsInterface.h"
-#	include "Interface/ApplicationInterface.h"
-#	include "Interface/InputSystemInterface.h"
-#	include "Interface/ConfigInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/UnicodeInterface.h"
-#	include "Interface/TimerInterface.h"
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/WindowsLayerInterface.h"
+#include "Interface/OptionsInterface.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/InputSystemInterface.h"
+#include "Interface/ConfigInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/TimerInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #   include "Utils/WIN32/WindowsIncluder.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include <cstdio>
-#	include <clocale>
+#include <cstdio>
+#include <clocale>
 
 #   include <errno.h>
 
-#	include <ctime>
-#	include <algorithm>
-#	include <functional>
+#include <ctime>
+#include <algorithm>
+#include <functional>
 
-#	include <sstream>
+#include <sstream>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( Platform, Menge::Win32Platform );
+SERVICE_FACTORY( Platform, Mengine::Win32Platform );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	static const float s_activeFrameTime = 1000.f / 60.f;
 	static const float s_inactiveFrameTime = 100.f;
@@ -1768,4 +1768,4 @@ namespace Menge
 			::SetCursor( NULL );
 		}
 	}
-}	// namespace Menge
+}	

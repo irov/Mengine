@@ -1,16 +1,16 @@
-#	include "ConfigManager.h"
+#include "ConfigManager.h"
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/PlatformInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/PlatformInterface.h"
 
-#	include "Core/Exception.h"
+#include "Core/Exception.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ConfigService, Menge::ConfigManager );
+SERVICE_FACTORY( ConfigService, Mengine::ConfigManager );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {	
 	//////////////////////////////////////////////////////////////////////////
 	ConfigManager::ConfigManager()
@@ -19,7 +19,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ConfigManager::_initialize()
 	{
-		if( SERVICE_EXIST( Menge::PlatformInterface ) == true )
+		if( SERVICE_EXIST( Mengine::PlatformInterface ) == true )
 		{
 			const Tags & platformTags = PLATFORM_SERVICE()
 				->getPlatformTags();

@@ -1,10 +1,10 @@
-#	include "BitmapFontPrototypeGenerator.h"
+#include "BitmapFontPrototypeGenerator.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#	include "BitmapFont.h"
+#include "BitmapFont.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	bool BitmapFontPrototypeGenerator::initialize( const ConstString & _category, const ConstString & _prototype )

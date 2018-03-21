@@ -1,9 +1,9 @@
-#	pragma once
+#pragma once
 
-#	include <stdint.h>
-#	include <stddef.h>
+#include <stdint.h>
+#include <stddef.h>
 
-namespace Menge
+namespace Mengine
 {
 	enum PixelFormat
 	{

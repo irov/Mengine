@@ -1,15 +1,15 @@
-#	include "ScheduleManager.h"
+#include "ScheduleManager.h"
 
 #   include "Interface/ServiceInterface.h"
 #   include "Interface/TimelineInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Math/utils.h"
+#include "math/utils.h"
 
-#	include <algorithm>
+#include <algorithm>
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     namespace

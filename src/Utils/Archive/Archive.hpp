@@ -1,9 +1,9 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
-#	include "Config/Blobject.h"
+#include "Config/Typedef.h"
+#include "Config/Blobject.h"
 
-namespace Menge
+namespace Mengine
 {
 	typedef Blobject Archive;
 }

@@ -11,7 +11,7 @@
 #	define MENGINE_RENDER_VERTEX_UV_COUNT 2
 #	endif
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     struct RenderVertex2D

@@ -9,14 +9,14 @@
 
 #   include "Factory/Factory.h"
 
-#	include "Kernel/Servant.h"
+#include "Kernel/Servant.h"
 #   include "Core/ConstString.h"
 #   include "Core/ConstStringTypes.h"
 #   include "Core/FilePath.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-namespace Menge
+namespace Mengine
 {    
 	//////////////////////////////////////////////////////////////////////////
 	struct ModulePathes

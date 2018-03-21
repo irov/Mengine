@@ -1,23 +1,23 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/Model3DInterface.h"
+#include "Interface/Model3DInterface.h"
 
-#	include "Kernel/Node.h"
-#	include "Kernel/Animatable.h"
-#	include "Kernel/Materialable.h"
+#include "Kernel/Node.h"
+#include "Kernel/Animatable.h"
+#include "Kernel/Materialable.h"
 
 #   include "Kernel/ResourceImage.h"
-#	include "ResourceModel3D.h"
+#include "ResourceModel3D.h"
 
-#	include "Core/ColourValue.h"
-#	include "Core/ValueInterpolator.h"
+#include "Core/ColourValue.h"
+#include "Core/ValueInterpolator.h"
 #   include "Core/RenderVertex2D.h"
 
-#	include "Math/mat3.h"
-#	include "Math/vec4.h"
-#	include "Math/mat4.h"
+#include "math/mat3.h"
+#include "math/vec4.h"
+#include "math/mat4.h"
 
-namespace Menge
+namespace Mengine
 {
 	class RenderCameraProjection;
 

@@ -1,10 +1,10 @@
-#	include "SoundEmitter.h"
+#include "SoundEmitter.h"
 
-#	include "SurfaceSound.h"
+#include "SurfaceSound.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	SoundEmitter::SoundEmitter()

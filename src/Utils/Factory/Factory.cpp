@@ -1,9 +1,9 @@
-#	include "Factory.h"
-#	include "Factorable.h"
+#include "Factory.h"
+#include "Factorable.h"
 
-#	include "Interface/FactoryInterface.h"
+#include "Interface/FactoryInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Factory::Factory( const char * _name )

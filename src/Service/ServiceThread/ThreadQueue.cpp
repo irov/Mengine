@@ -1,8 +1,8 @@
-#	include "ThreadQueue.h"
+#include "ThreadQueue.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadQueue::ThreadQueue()

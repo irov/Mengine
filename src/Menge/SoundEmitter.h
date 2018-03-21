@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-#	include "Kernel/Soundable.h"
+#include "Kernel/Soundable.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class SurfaceSound> SurfaceSoundPtr;

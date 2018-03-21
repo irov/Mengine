@@ -1,11 +1,11 @@
 //#   pragma once
 //
 //#   include "Core/Visitor.h"
-//#	include "Core/Resolution.h"
+//#include "Core/Resolution.h"
 //
-//#	include "Math/vec2.h"
+//#include "math/vec2.h"
 //
-//namespace Menge
+//namespace Mengine
 //{
 //    class Arrow;
 //    class HotSpot;

@@ -1,14 +1,14 @@
-#	include "MemoryInput.h"
+#include "MemoryInput.h"
 
-#	include "Memory.h"
+#include "Memory.h"
 
-#	include "Core/MemoryAllocator.h"
+#include "Core/MemoryAllocator.h"
 
-#	include "stdex/memorycopy.h"
+#include "stdex/memorycopy.h"
 
-//#	include <memory.h>
+//#include <memory.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInput::MemoryInput()
@@ -27,7 +27,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Pointer MemoryInput::newMemory( size_t _size )
 	{
-		unsigned char * memory = Helper::reallocateMemory<unsigned char>( m_data, _size );
+		unsigned char * memory = Helper::reallocateMemoryT<unsigned char>( m_data, _size );
 
 		if( memory == nullptr )
 		{
@@ -146,4 +146,4 @@ namespace Menge
 
 		return true;
 	}
-}	// namespace Menge
+}	

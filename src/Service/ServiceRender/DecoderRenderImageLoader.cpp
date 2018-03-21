@@ -1,10 +1,10 @@
 #   include "DecoderRenderImageLoader.h"
 
-#	include "Interface/PrefetcherInterface.h"
+#include "Interface/PrefetcherInterface.h"
 
 #   include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DecoderRenderImageLoader::DecoderRenderImageLoader()
@@ -198,4 +198,4 @@ namespace Menge
 
         return decoder;
     }
-}	// namespace Menge
+}	

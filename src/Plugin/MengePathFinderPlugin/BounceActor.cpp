@@ -1,6 +1,6 @@
-#	include "BounceActor.h"
+#include "BounceActor.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	BounceActor::BounceActor()

@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
-#	include "stdex/pool.h"
+#include "stdex/pool.h"
 
 #   include <typeinfo>
 
-namespace Menge
+namespace Mengine
 {
 	template<class Type, size_t Count, class F = Factory>
 	class FactoryPool

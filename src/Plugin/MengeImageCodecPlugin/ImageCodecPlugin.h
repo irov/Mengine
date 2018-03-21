@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/CodecInterface.h"
-#	include "Interface/DataInterface.h"
+#include "Interface/CodecInterface.h"
+#include "Interface/DataInterface.h"
 
-#	include "Core/PluginBase.h"
+#include "Core/PluginBase.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ImageCodecPlugin
 		: public PluginBase

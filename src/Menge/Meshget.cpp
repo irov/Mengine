@@ -1,12 +1,12 @@
-#	include "Meshget.h" 
+#include "Meshget.h" 
 
-#	include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
-#	include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Meshget::Meshget()
@@ -149,7 +149,7 @@ namespace Menge
 		const RenderMaterialInterfacePtr & material = this->getMaterial();
 
 		const RenderVertex2D * vertices_buff = &vertices[0];
-		const RenderIndices * indices_buff = &m_indices[0];
+		const RenderIndex * indices_buff = &m_indices[0];
 
 		const mt::box2f & bb = this->getBoundingBox();
 

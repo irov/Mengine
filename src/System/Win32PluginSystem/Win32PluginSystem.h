@@ -5,7 +5,7 @@
 #   include "Core/ServiceBase.h"
 #   include "Factory/Factory.h"
 
-namespace Menge
+namespace Mengine
 {
     class Win32PluginSystem
 		: public ServiceBase<PluginSystemInterface>

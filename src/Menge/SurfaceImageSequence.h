@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Surface.h"
-#	include "Kernel/Eventable.h"
-#	include "Kernel/Animatable.h"
-#	include "Kernel/ResourceHolder.h"
+#include "Kernel/Surface.h"
+#include "Kernel/Eventable.h"
+#include "Kernel/Animatable.h"
+#include "Kernel/ResourceHolder.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class ResourceAnimation> ResourceAnimationPtr;

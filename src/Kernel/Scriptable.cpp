@@ -1,8 +1,8 @@
-#	include "Kernel/Scriptable.h"
+#include "Kernel/Scriptable.h"
 
 #   include "Interface/ScriptSystemInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable::Scriptable()

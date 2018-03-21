@@ -1,15 +1,15 @@
-#	include "Win32SocketPlugin.h"
+#include "Win32SocketPlugin.h"
 
-#	include "Interface/SocketInterface.h"
+#include "Interface/SocketInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( SocketSystem );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( Win32SocketPlugin, Menge::Win32SocketPlugin );
+PLUGIN_FACTORY( Win32SocketPlugin, Mengine::Win32SocketPlugin );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32SocketPlugin::Win32SocketPlugin()
@@ -27,11 +27,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32SocketPlugin::_finalize()
 	{
-		SERVICE_FINALIZE( Menge::SocketSystemInterface );
+		SERVICE_FINALIZE( Mengine::SocketSystemInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32SocketPlugin::_destroy()
 	{
-		SERVICE_DESTROY( Menge::SocketSystemInterface );
+		SERVICE_DESTROY( Mengine::SocketSystemInterface );
 	}
 }

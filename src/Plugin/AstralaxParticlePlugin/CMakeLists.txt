@@ -15,7 +15,7 @@ src
 )
 
 if( MENGINE_PLUGIN_ASTRALAX_DLL )
-    add_definitions(-DMENGE_PLUGIN_DLL)
+    add_definitions(-DMENGINE_PLUGIN_DLL)
 endif()
 
 add_definitions(-DMAGIC_3D)

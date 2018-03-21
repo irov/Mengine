@@ -1,17 +1,17 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/ConstStringHolder.h"
-#	include "Core/FilePath.h"
+#include "Core/ConstString.h"
+#include "Core/ConstStringHolder.h"
+#include "Core/FilePath.h"
 
-#	include "Config/Typedef.h"
-#	include "Config/String.h"
+#include "Config/Typedef.h"
+#include "Config/String.h"
 
 #   include "Factory/FactorablePtr.h"
 
-namespace Menge
+namespace Mengine
 {
     class StringizeServiceInterface
         : public ServiceInterface
@@ -27,7 +27,7 @@ namespace Menge
     };
 
 #   define STRINGIZE_SERVICE()\
-    ((Menge::StringizeServiceInterface*)SERVICE_GET(Menge::StringizeServiceInterface))
+    ((Mengine::StringizeServiceInterface*)SERVICE_GET(Mengine::StringizeServiceInterface))
 
     namespace Helper
     {
@@ -73,7 +73,7 @@ namespace Menge
     }
 
 #	define STRINGIZE_STRING_LOCAL( str )\
-	Menge::Helper::stringizeStringLocal( str, (sizeof(str) - 1) )
+	Mengine::Helper::stringizeStringLocal( str, (sizeof(str) - 1) )
 }
 
 

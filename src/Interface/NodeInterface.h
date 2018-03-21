@@ -4,7 +4,7 @@
 
 #   include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {
     class Node;
     class Factory;
@@ -41,5 +41,5 @@ namespace Menge
     };
 
 #   define NODE_SERVICE()\
-    ((Menge::NodeServiceInterface *)SERVICE_GET(Menge::NodeServiceInterface))
+    ((Mengine::NodeServiceInterface *)SERVICE_GET(Mengine::NodeServiceInterface))
 }

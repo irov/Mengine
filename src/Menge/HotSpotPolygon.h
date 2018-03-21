@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "HotSpot.h"
+#include "HotSpot.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Arrow;
 

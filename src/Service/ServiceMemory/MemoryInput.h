@@ -1,20 +1,20 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/MemoryInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/MemoryInterface.h"
 
 #   include "Core/ServantBase.h"
 
-#	include "stdex/thread_guard.h"
+#include "stdex/thread_guard.h"
 
-namespace Menge
+namespace Mengine
 {
 	class MemoryInput
 		: public ServantBase<MemoryInputInterface>
 	{
 	public:
 		MemoryInput();
-		~MemoryInput();
+		~MemoryInput() override;
 
     public:
         Pointer newMemory( size_t _size ) override;
@@ -46,6 +46,9 @@ namespace Menge
 
 		STDEX_THREAD_GUARD_INIT;
 	};
-}	// namespace Menge
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<MemoryInput> MemoryInputPtr;
+    //////////////////////////////////////////////////////////////////////////
+}
 
 

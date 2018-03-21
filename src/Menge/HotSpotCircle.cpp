@@ -1,12 +1,12 @@
-#	include "HotSpotCircle.h"
+#include "HotSpotCircle.h"
 
 #   include "Interface/RenderSystemInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Math/angle.h"
+#include "math/angle.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	HotSpotCircle::HotSpotCircle()
@@ -139,7 +139,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotCircle::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
-		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
+		if( (_debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
 		{
 			return;
 		}
@@ -214,4 +214,4 @@ namespace Menge
 			, true
 			);
 	}
-}	// namespace Menge
+}	

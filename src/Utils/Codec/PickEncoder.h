@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/PickCodecInterface.h"
+#include "Interface/PickCodecInterface.h"
 
-#	include "Codec/Encoder.h"
+#include "Codec/Encoder.h"
 
-namespace Menge
+namespace Mengine
 {
 	class PickEncoder
 		: public Encoder<PickEncoderInterface>

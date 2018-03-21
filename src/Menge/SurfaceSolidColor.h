@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Surface.h"
+#include "Kernel/Surface.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 	class SurfaceSolidColor

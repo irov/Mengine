@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/CodecInterface.h"
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/CodecInterface.h"
+#include "Interface/FileSystemInterface.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {
 	struct SoundCodecDataInfo
 		: public CodecDataInfo

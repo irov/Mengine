@@ -1,6 +1,6 @@
 #   include "ScriptModuleLoader.h"
 
-namespace Menge
+namespace Mengine
 {
 	ScriptModuleLoader::ScriptModuleLoader()
 		: m_module(nullptr)

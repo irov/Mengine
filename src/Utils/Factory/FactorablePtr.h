@@ -1,4 +1,4 @@
-#	pragma once
+#pragma once
 
 #   include "Factory/Factorable.h"
 
@@ -9,7 +9,7 @@
 
 //typedef stdex::intrusive_ptr<Type> TypePtr;
 
-namespace Menge
+namespace Mengine
 {
 	class FactorablePtr
         : public Factorable

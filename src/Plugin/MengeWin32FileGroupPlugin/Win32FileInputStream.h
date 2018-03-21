@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/WindowsLayerInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/WindowsLayerInterface.h"
 
 #   include "Core/ServantBase.h"
 
-#	include "stdex/thread_guard.h"
+#include "stdex/thread_guard.h"
 
-namespace Menge
+namespace Mengine
 {
 
 #	ifndef MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE
@@ -64,4 +64,4 @@ namespace Menge
 		String m_fileName;
 #	endif
 	};
-}	// namespace Menge
+}	

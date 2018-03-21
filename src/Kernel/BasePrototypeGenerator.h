@@ -1,17 +1,17 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeManagerInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-#	include "Core/ServantBase.h"
-#	include "Core/ConstString.h"
+#include "Core/ServantBase.h"
+#include "Core/ConstString.h"
 #   include "Core/MemoryAllocator.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	class BasePrototypeGenerator
 		: public ServantBase<PrototypeGeneratorInterface>

@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Codec/ImageDecoder.h"
+#include "Codec/ImageDecoder.h"
 
-#	include "png.h"
+#include "png.h"
 
-//#	include "stdex/memory_cache.h"
+//#include "stdex/memory_cache.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ImageDecoderPNG
 		: public ImageDecoder
@@ -35,4 +35,4 @@ namespace Menge
 
 		int m_interlace_number_of_passes;
 	};
-}	// namespace Menge
+}	

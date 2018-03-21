@@ -13,7 +13,7 @@ src
     TTFPrototypeGenerator.cpp
 )
 
-#add_definitions(-DMENGE_PLUGIN_DLL)
+#add_definitions(-DMENGINE_PLUGIN_DLL)
 
 INCLUDE_DIRECTORIES( 
         ${Mengine_SOURCE_DIR}/Utils

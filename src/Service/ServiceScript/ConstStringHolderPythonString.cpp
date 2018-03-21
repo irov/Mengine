@@ -1,6 +1,6 @@
 #   include "ConstStringHolderPythonString.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ConstStringHolderPythonString::ConstStringHolderPythonString()

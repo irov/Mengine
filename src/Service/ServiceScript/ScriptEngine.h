@@ -1,28 +1,28 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ScriptSystemInterface.h"
-#	include "Interface/ResourceInterface.h"
-#	include "Interface/PrototypeManagerInterface.h"
+#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/PrototypeManagerInterface.h"
 
 #   include "ConstStringHolderPythonString.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "ScriptLogger.h"
-#	include "ScriptModule.h"
-#	include "ScriptModuleFinder.h"
+#include "ScriptLogger.h"
+#include "ScriptModule.h"
+#include "ScriptModuleFinder.h"
 
-#	include "Kernel/Entity.h"
+#include "Kernel/Entity.h"
 
 #   include "Factory/Factory.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
 #   include "stdex/stl_map.h"
 
-#	include <cstdarg>
+#include <cstdarg>
 
-namespace Menge
+namespace Mengine
 {
 	class ScriptEngine
 		: public ServiceBase<ScriptServiceInterface>

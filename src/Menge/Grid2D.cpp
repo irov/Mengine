@@ -1,21 +1,21 @@
-#	include "Grid2D.h" 
-#	include "Layer2D.h"
+#include "Grid2D.h" 
+#include "Layer2D.h"
 
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/ResourceInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/ResourceInterface.h"
 
-#	include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
-#	include "Consts.h"
+#include "Consts.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Math/box2.h"
-#	include "Math/clamp.h"
+#include "math/box2.h"
+#include "math/clamp.h"
 
-#	include <math.h>
+#include <math.h>
 
-namespace	Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Grid2D::Grid2D()
@@ -197,12 +197,12 @@ namespace	Menge
 				uint32_t i2 = (i + 0) + (j + 1) * m_countX;
 				uint32_t i3 = (i + 1) + (j + 1) * m_countX;
 
-				*indices_iterator++ = (RenderIndices)i0;
-				*indices_iterator++ = (RenderIndices)i2;
-				*indices_iterator++ = (RenderIndices)i1;
-				*indices_iterator++ = (RenderIndices)i1;
-				*indices_iterator++ = (RenderIndices)i2;
-				*indices_iterator++ = (RenderIndices)i3;
+				*indices_iterator++ = (RenderIndex)i0;
+				*indices_iterator++ = (RenderIndex)i2;
+				*indices_iterator++ = (RenderIndex)i1;
+				*indices_iterator++ = (RenderIndex)i1;
+				*indices_iterator++ = (RenderIndex)i2;
+				*indices_iterator++ = (RenderIndex)i3;
 			}
 		}
 
@@ -263,7 +263,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Grid2D::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
-		const RenderIndices * indices = &m_indices[0];
+		const RenderIndex * indices = &m_indices[0];
 		uint32_t indicesCount = (uint32_t)m_indices.size();
 		
 		const RenderVertex2D * vertices = this->getVerticesWM();

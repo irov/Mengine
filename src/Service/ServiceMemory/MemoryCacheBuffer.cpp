@@ -1,11 +1,11 @@
-#	include "MemoryCacheBuffer.h"
+#include "MemoryCacheBuffer.h"
 
-#	include "MemoryManager.h"
+#include "MemoryManager.h"
 
-#	include "Interface/MemoryInterface.h"
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/FileSystemInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	MemoryCacheBuffer::MemoryCacheBuffer()
@@ -60,4 +60,4 @@ namespace Menge
 
         return m_data;
 	}
-}	// namespace Menge
+}	

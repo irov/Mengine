@@ -1,15 +1,15 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/StreamInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/StreamInterface.h"
 
 #   include "Core/ServantBase.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "stdex/thread_guard.h"
+#include "stdex/thread_guard.h"
 
-namespace Menge
+namespace Mengine
 {
 	template<class TDecoderInterface>
 	class Decoder

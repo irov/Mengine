@@ -1,6 +1,6 @@
-#	include "WIN32/WindowsIncluder.h"
+#include "WIN32/WindowsIncluder.h"
 
-#	include "WinApplication.h"
+#include "WinApplication.h"
 
 //////////////////////////////////////////////////////////////////////////
 //							Entry point									//
@@ -19,7 +19,7 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
 	try
 #	endif
 	{
-		Menge::WinApplication winApplication;
+		Mengine::WinApplication winApplication;
 
 		bool initialize = winApplication.initialize();
     

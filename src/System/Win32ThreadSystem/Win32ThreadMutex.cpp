@@ -1,6 +1,6 @@
 #   include "Win32ThreadMutex.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32ThreadMutex::Win32ThreadMutex()

@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include <stdint.h>
+#include <stdint.h>
 
-#	include "math/vec2.h"
+#include "math/vec2.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Resolution
 	{

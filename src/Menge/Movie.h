@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
-#	include "Kernel/Animatable.h"
-#	include "Kernel/Soundable.h"
+#include "Kernel/Node.h"
+#include "Kernel/Animatable.h"
+#include "Kernel/Soundable.h"
 
 #   include "ResourceMovie.h"
 
@@ -10,7 +10,7 @@
 
 #   include "stdex/binary_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	class RenderCameraProjection;
 	class RenderViewport;

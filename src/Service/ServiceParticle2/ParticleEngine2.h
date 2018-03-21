@@ -1,15 +1,15 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ParticleSystemInterface.h"
+#include "Interface/ParticleSystemInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include	"Math/vec3.h"
-#	include "Math/mat3.h"
+#include	"math/vec3.h"
+#include "math/mat3.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class ParticleEngine2

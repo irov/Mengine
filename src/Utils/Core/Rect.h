@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Rect
 	{

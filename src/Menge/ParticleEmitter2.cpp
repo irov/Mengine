@@ -1,29 +1,29 @@
-#	include "ParticleEmitter2.h" 
+#include "ParticleEmitter2.h" 
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/ApplicationInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-#	include "Kernel/Scene.h"
-#	include "Kernel/Layer.h"
+#include "Kernel/Scene.h"
+#include "Kernel/Layer.h"
 
 #   include "Interface/ParticleSystemInterface.h"
 
-#	include "ResourceImageDefault.h"
-#	include "ResourceHIT.h"
+#include "ResourceImageDefault.h"
+#include "ResourceHIT.h"
 
 #   include "Interface/ResourceInterface.h"
 
-#	include "Consts.h"
+#include "Consts.h"
 
-#	include "Math/box2.h"
-#	include "Math/angle.h"
+#include "math/box2.h"
+#include "math/angle.h"
 
-#	include "Core/RenderUtils.h"
+#include "Core/RenderUtils.h"
 
-namespace	Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter2::ParticleEmitter2()
@@ -375,14 +375,14 @@ namespace	Menge
 		{
 			m_vertexCount = flush.vertexCount;
 
-			m_vertices = Helper::reallocateMemory<RenderVertex2D>( m_vertices, m_vertexCount );
+			m_vertices = Helper::reallocateMemoryT<RenderVertex2D>( m_vertices, m_vertexCount );
 		}
 
 		if( m_indexCount < flush.indexCount )
 		{
 			m_indexCount = flush.indexCount;
 
-			m_indicies = Helper::reallocateMemory<RenderIndices>( m_indicies, m_indexCount );
+			m_indicies = Helper::reallocateMemoryT<RenderIndex>( m_indicies, m_indexCount );
 		}
 
 		ParticleMesh meshes[MENGINE_PARTICLE_MAX_MESH];
@@ -409,7 +409,7 @@ namespace	Menge
 		{
 			const ParticleMesh & mesh = meshes[it_mesh];
 
-			RenderTextureInterfacePtr textures[MENGE_MAX_TEXTURE_STAGES];
+			RenderTextureInterfacePtr textures[MENGINE_MAX_TEXTURE_STAGES];
 
 			for( uint32_t i = 0; i != mesh.textures; ++i )
 			{

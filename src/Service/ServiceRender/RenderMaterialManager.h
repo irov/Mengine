@@ -4,22 +4,22 @@
 
 #   include "Core/ServiceBase.h"
 
-#	include "RenderMaterial.h"
+#include "RenderMaterial.h"
 
-#	include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
 #   include "stdex/binary_vector.h"
 #   include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 #	ifndef MENGINE_MATERIAL_RENDER_STAGE_MAX
 #	define MENGINE_MATERIAL_RENDER_STAGE_MAX 256
 #	endif
 
-#	ifndef MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE
-#	define MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE 127
+#	ifndef MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE
+#	define MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE 127
 #	endif
 	//////////////////////////////////////////////////////////////////////////
     class RenderMaterialManager
@@ -78,12 +78,14 @@ namespace Menge
 		uint32_t makeMaterialHash( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const;
 
 	protected:
+        RenderVertexAttributeInterfacePtr createVertexAttribute_( const ConstString & _name );
 		RenderVertexShaderInterfacePtr createVertexShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath );
 		RenderFragmentShaderInterfacePtr createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath );
 
 	protected:
 		const RenderVertexShaderInterfacePtr & getVertexShader_( const ConstString & _name ) const;
 		const RenderFragmentShaderInterfacePtr & getFragmentShader_( const ConstString & _name ) const;
+        const RenderVertexAttributeInterfacePtr & getVertexAttribute_( const ConstString & _name ) const;
 
 		const RenderProgramInterfacePtr & getProgram_( const ConstString & _name ) const;
 
@@ -101,7 +103,7 @@ namespace Menge
 		uint32_t m_stageCount;
 
 		typedef stdex::vector<RenderMaterial *> TVectorRenderMaterial;
-		TVectorRenderMaterial m_materials[MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE];
+		TVectorRenderMaterial m_materials[MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE];
 
 		FactoryPtr m_factoryMaterial;
 
@@ -115,6 +117,9 @@ namespace Menge
 
 		typedef stdex::map<ConstString, RenderFragmentShaderInterfacePtr> TMapRenderFragmentShaders;
 		TMapRenderFragmentShaders m_fragmentShaders;
+
+        typedef stdex::map<ConstString, RenderVertexAttributeInterfacePtr> TMapRenderVertexAttributes;
+        TMapRenderVertexAttributes m_vertexAttributes;
 
 		typedef stdex::map<ConstString, RenderProgramInterfacePtr> TMapRenderPrograms;
 		TMapRenderPrograms m_programs;

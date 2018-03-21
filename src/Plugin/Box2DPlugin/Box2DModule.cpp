@@ -1,18 +1,18 @@
-#	include "Box2DModule.h"
-#	include "Box2DWorld.h"
-#	include "Box2DJoint.h"
-#	include "NodeBox2DBody.h"
+#include "Box2DModule.h"
+#include "Box2DWorld.h"
+#include "Box2DJoint.h"
+#include "NodeBox2DBody.h"
 
-#	include "Kernel/NodePrototypeGenerator.h"
-#	include "Kernel/ScriptablePrototypeGenerator.h"
-#	include "Kernel/ScriptEventReceiver.h"
+#include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/ScriptablePrototypeGenerator.h"
+#include "Kernel/ScriptEventReceiver.h"
 
 #   include "Kernel/ScriptWrapper.h"
 
-#	include <algorithm>
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 	Box2DModule::Box2DModule()

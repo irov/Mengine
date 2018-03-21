@@ -1,19 +1,19 @@
-#	include "BitmapFontPlugin.h"
+#include "BitmapFontPlugin.h"
 
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/PrototypeManagerInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "BitmapGlyphService.h"
-#	include "BitmapFontPrototypeGenerator.h"
+#include "BitmapGlyphService.h"
+#include "BitmapFontPrototypeGenerator.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( BitmapGlyphService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( BitmapFont, Menge::BitmapFontPlugin );
+PLUGIN_FACTORY( BitmapFont, Mengine::BitmapFontPlugin );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	BitmapFontPlugin::BitmapFontPlugin()

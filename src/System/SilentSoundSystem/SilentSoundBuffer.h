@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundSystemInterface.h"
 
 #   include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class SilentSoundBuffer
 		: public ServantBase<SoundBufferInterface>

@@ -1,16 +1,16 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#	include "Interface/PluginInterface.h"
-#	include "Interface/StreamInterface.h"
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/PluginInterface.h"
+#include "Interface/StreamInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #   include "Factory/FactorablePtr.h"
 
 #   include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {	
 	struct ConverterOptions
 	{		
@@ -73,5 +73,5 @@ namespace Menge
 	};
 
 #   define CONVERTER_SERVICE()\
-    SERVICE_GET(Menge::ConverterServiceInterface)
-}	// namespace Menge
+    SERVICE_GET(Mengine::ConverterServiceInterface)
+}	

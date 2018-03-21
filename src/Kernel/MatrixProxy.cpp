@@ -1,6 +1,6 @@
-#	include "MatrixProxy.h"
+#include "MatrixProxy.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MatrixProxy::MatrixProxy()

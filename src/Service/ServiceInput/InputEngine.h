@@ -1,17 +1,17 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/InputSystemInterface.h"
+#include "Interface/InputSystemInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "Core/Resolution.h"
-#	include "Core/Viewport.h"
+#include "Core/Resolution.h"
+#include "Core/Viewport.h"
 
-#	include "Math/vec2.h"
+#include "math/vec2.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	class InputEngine
 		: public ServiceBase<InputServiceInterface>

@@ -1,9 +1,9 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 #   include "Core/RenderVertex2D.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Line
 		: public Node

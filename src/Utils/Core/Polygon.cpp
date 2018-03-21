@@ -1,20 +1,20 @@
-#	include "Polygon.h"
+#include "Polygon.h"
 
-#	include "Core/MemoryAllocator.h"
+#include "Core/MemoryAllocator.h"
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
 #   pragma warning(disable:4800)  
 #   endif
 
-#	include <boost/geometry/geometry.hpp> 
-#	include <boost/geometry/core/tag.hpp> 
-#	include <boost/geometry/geometries/polygon.hpp>
-#	include <boost/geometry/geometries/box.hpp>
-#	include <boost/geometry/geometries/point_xy.hpp>
-#	include <boost/geometry/geometries/segment.hpp>
+#include "boost/geometry/geometry.hpp"
+#include "boost/geometry/core/tag.hpp"
+#include "boost/geometry/geometries/polygon.hpp"
+#include "boost/geometry/geometries/box.hpp"
+#include "boost/geometry/geometries/point_xy.hpp"
+#include "boost/geometry/geometries/segment.hpp"
 
-#	include <boost/geometry/strategies/agnostic/point_in_poly_winding.hpp>
+#include "boost/geometry/strategies/agnostic/point_in_poly_winding.hpp"
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(pop)
@@ -67,7 +67,7 @@ namespace boost
 	}
 }
 
-namespace Menge
+namespace Mengine
 {
 	typedef boost::geometry::model::point<float, 2, boost::geometry::cs::cartesian> BoostPoint;
 	typedef boost::geometry::model::polygon<mt::vec2f, true, true, stdex::vector, stdex::vector, stdex::stl_allocator, stdex::stl_allocator> BoostPolygon;
@@ -186,7 +186,7 @@ namespace Menge
 			return false;
 		}
 
-		uint32_t * V = Helper::allocateMemory<uint32_t>( n );  /* we want a counter-clockwise polygon in V */
+		uint32_t * V = Helper::allocateMemoryT<uint32_t>( n );  /* we want a counter-clockwise polygon in V */
 
 		double area_polygon = boost::geometry::area( THIS_IMPL );
 
@@ -278,7 +278,7 @@ namespace Menge
 			return false;
 		}
 
-		uint32_t *V = Helper::allocateMemory<uint32_t>( n );  /* we want a counter-clockwise polygon in V */
+		uint32_t *V = Helper::allocateMemoryT<uint32_t>( n );  /* we want a counter-clockwise polygon in V */
 
 		double area_polygon = boost::geometry::area( THIS_IMPL );
 

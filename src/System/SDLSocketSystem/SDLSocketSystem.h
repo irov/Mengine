@@ -6,7 +6,7 @@
 
 #   include "Factory/Factory.h"
 
-namespace Menge
+namespace Mengine
 {
     class SDLSocketSystem
         : public ServiceBase<SocketSystemInterface>

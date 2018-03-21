@@ -1,12 +1,12 @@
-#   pragma once
+#pragma once
 
-#   include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
-#   include "Core/ServantBase.h"
+#include "OpenGLRenderExtension.h"
 
-#   include "OpenGLRenderHeader.h"
+#include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
     class OpenGLRenderVertexBuffer
         : public ServantBase<RenderVertexBufferInterface>
@@ -16,18 +16,29 @@ namespace Menge
         ~OpenGLRenderVertexBuffer();
 
     public:
-        bool initialize( uint32_t _verticesNum, bool _dynamic );
+        bool initialize( uint32_t _elementSize, EBufferType _bufferType );
 
     protected:
-        Pointer lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
+        uint32_t getVertexCount() const override;
+        uint32_t getVertexSize() const override;
+
+    protected:
+        bool resize( uint32_t _vertexCount ) override;
+
+    protected:
+        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags ) override;
         bool unlock() override;
 
+    protected:
+        void draw( const void * _buffer, size_t _size ) override;
+        
     public:
-        void enable();
+        bool enable() override;
+        void disable() override;
 
     protected:
-        RenderVertex2D * m_memory;
-        uint32_t m_vertexNum;
+        uint32_t m_vertexCount;
+        uint32_t m_vertexSize;
 
         GLenum m_usage;
 
@@ -35,7 +46,7 @@ namespace Menge
 
         uint32_t m_lockOffset;
         uint32_t m_lockCount;
-        RenderVertex2D * m_lockMemory;
+        MemoryInterfacePtr m_lockMemory;
         EBufferLockFlag m_lockFlags;
     };
     //////////////////////////////////////////////////////////////////////////

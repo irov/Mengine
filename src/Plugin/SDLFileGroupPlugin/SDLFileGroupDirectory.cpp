@@ -16,7 +16,7 @@
 
 #   include "SDL_rwops.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLFileGroupDirectory::SDLFileGroupDirectory()
@@ -221,4 +221,4 @@ namespace Menge
         m_relationPath = _relationPath;
     }
     //////////////////////////////////////////////////////////////////////////
-}   // namespace Menge
+}   // namespace Mengine

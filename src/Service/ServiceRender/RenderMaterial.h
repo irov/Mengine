@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/RenderSystemInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class RenderMaterial
@@ -38,7 +38,7 @@ namespace Menge
 		EPrimitiveType m_primitiveType;
 
 		uint32_t m_textureCount;
-		RenderTextureInterfacePtr m_textures[MENGE_MAX_TEXTURE_STAGES];
+		RenderTextureInterfacePtr m_textures[MENGINE_MAX_TEXTURE_STAGES];
 
 		const RenderMaterialStage * m_stage;
 	};

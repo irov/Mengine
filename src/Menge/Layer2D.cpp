@@ -1,19 +1,19 @@
-#	include "Layer2D.h"
+#include "Layer2D.h"
 
-#	include "Kernel/RenderCameraOrthogonal.h"
+#include "Kernel/RenderCameraOrthogonal.h"
 
-#	include "Kernel/Scene.h"
+#include "Kernel/Scene.h"
 
-#	include "Kernel/RenderViewport.h"
+#include "Kernel/RenderViewport.h"
 
-#	include "Interface/NodeInterface.h"
+#include "Interface/NodeInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Consts.h"
+#include "Consts.h"
 
-namespace	Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Layer2D::Layer2D()

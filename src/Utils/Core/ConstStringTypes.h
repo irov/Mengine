@@ -4,7 +4,7 @@
 
 #   include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	typedef stdex::vector<ConstString> TVectorConstString;
 } 

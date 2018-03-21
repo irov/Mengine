@@ -1,13 +1,13 @@
 #   pragma once
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/ServantInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/ServantInterface.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/Tags.h"
-#	include "Core/FilePath.h"
+#include "Core/ConstString.h"
+#include "Core/Tags.h"
+#include "Core/FilePath.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	struct PackageDesc
@@ -83,5 +83,5 @@ namespace Menge
 	};
 
 #   define PACKAGE_SERVICE()\
-    ((Menge::PackageServiceInterface*)SERVICE_GET(Menge::PackageServiceInterface))
+    ((Mengine::PackageServiceInterface*)SERVICE_GET(Mengine::PackageServiceInterface))
 }

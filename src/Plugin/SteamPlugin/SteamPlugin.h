@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Core/PluginBase.h"
+#include "Core/PluginBase.h"
 
-#	include "steam/steam_api.h"
+#include "steam/steam_api.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class SteamPlugin

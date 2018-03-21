@@ -4,9 +4,9 @@
 #   include "Core/ConstString.h"
 #   include "Core/ConstStringHolder.h"
 
-#   include <pybind/pybind.hpp>
+#   include "pybind/pybind.hpp"
 
-namespace Menge
+namespace Mengine
 {
     class ConstStringHolderPythonString
         : public ConstStringHolder

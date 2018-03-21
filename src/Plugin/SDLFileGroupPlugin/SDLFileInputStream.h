@@ -8,7 +8,7 @@
 
 #   include "SDL_rwops.h"
 
-namespace Menge
+namespace Mengine
 {
     class SDLFileInputStream
         : public ServantBase<FileInputStreamInterface>
@@ -63,4 +63,4 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<SDLFileInputStream> SDLFileInputStreamPtr;
     //////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	// namespace Mengine

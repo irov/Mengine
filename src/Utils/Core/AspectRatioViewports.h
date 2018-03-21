@@ -4,7 +4,7 @@
 
 #   include <vector>
 
-namespace Menge
+namespace Mengine
 {
     struct AspectRatioViewports
     {

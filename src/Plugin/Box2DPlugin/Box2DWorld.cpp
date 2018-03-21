@@ -1,15 +1,15 @@
-#	include "Box2DWorld.h"
-#	include "Box2DBody.h"
-#	include "Box2DJoint.h"
-#	include "Box2DScaler.h"
+#include "Box2DWorld.h"
+#include "Box2DBody.h"
+#include "Box2DJoint.h"
+#include "Box2DScaler.h"
 
-#	include "Interface/PrototypeManagerInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include <algorithm>
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 	Box2DWorld::Box2DWorld()

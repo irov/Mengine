@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 #   include "Kernel/EventReceiver.h"
 
-#   include "Math/vec2.h"
+#   include "math/vec2.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     enum AnimatableEventFlag

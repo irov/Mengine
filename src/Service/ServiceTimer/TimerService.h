@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/TimerInterface.h"
+#include "Interface/TimerInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class TimerService
 		: public ServiceBase<TimerServiceInterface>

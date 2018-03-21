@@ -1,14 +1,14 @@
-#	include "Arrow.h"
+#include "Arrow.h"
 
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/InputSystemInterface.h"
-#	include "Interface/ApplicationInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/InputSystemInterface.h"
+#include "Interface/ApplicationInterface.h"
 
-#	include "Kernel/RenderCameraHelper.h"
+#include "Kernel/RenderCameraHelper.h"
 
 #   include "Factory/FactorableUnique.h"
 
-namespace	Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Arrow::ArrowInputMousePositionProvider
@@ -348,7 +348,7 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     void Arrow::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
     {
-        if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
+        if( (_debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
         {
             return;
         }

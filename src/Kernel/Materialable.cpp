@@ -1,11 +1,11 @@
-#	include "Materialable.h"
+#include "Materialable.h"
 
 #   include "Interface/RenderSystemInterface.h"
 
-#	include "Logger/Logger.h"
-#	include "Kernel/ResourceImage.h"
+#include "Logger/Logger.h"
+#include "Kernel/ResourceImage.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	namespace Helper

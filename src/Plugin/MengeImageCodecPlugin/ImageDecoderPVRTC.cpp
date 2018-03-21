@@ -2,7 +2,7 @@
 #include "Utils/Logger/Logger.h"
 #include "Interface/FileSystemInterface.h"
 
-#	include "Core/PixelFormat.h"
+#include "Core/PixelFormat.h"
 
 enum PixelType
 {
@@ -81,19 +81,19 @@ bool ImageDecoderPVRTC::_prepareData()
 	{
 		case PVRTC4RGB:
 			{
-				m_dataInfo.format = Menge::PF_PVRTC4_RGB;
+				m_dataInfo.format = Mengine::PF_PVRTC4_RGB;
 			}break;
 		case PVRTC4RGBA:
 			{				
-				m_dataInfo.format = Menge::PF_PVRTC4_RGBA;
+				m_dataInfo.format = Mengine::PF_PVRTC4_RGBA;
 			}break;
 		case ETC1:
 			{
-				m_dataInfo.format = Menge::PF_ETC1;
+				m_dataInfo.format = Mengine::PF_ETC1;
 			}break;
 		case DXT1:
 			{
-				m_dataInfo.format = Menge::PF_DXT1;
+				m_dataInfo.format = Mengine::PF_DXT1;
 			}break;
 		default:
 			{

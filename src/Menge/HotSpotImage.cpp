@@ -1,19 +1,19 @@
-#	include "HotSpotImage.h"
+#include "HotSpotImage.h"
 
-#	include "Interface/ResourceInterface.h"
+#include "Interface/ResourceInterface.h"
 #   include "Interface/StringizeInterface.h"
 
 #   include "Kernel/RenderCameraHelper.h"
 
 #   include "ResourceHIT.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Core/String.h"
-#	include "Consts.h"
+#include "Core/String.h"
+#include "Consts.h"
 
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	HotSpotImage::HotSpotImage()
@@ -287,7 +287,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
-		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
+		if( (_debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
 		{
 			return;
 		}
@@ -349,4 +349,4 @@ namespace Menge
 		_renderService
 			->addRenderLine( _state, debugMaterial, vertices, 8, nullptr, true );
 	}
-}	// namespace Menge
+}	

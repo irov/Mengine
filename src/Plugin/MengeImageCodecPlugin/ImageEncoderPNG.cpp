@@ -1,8 +1,8 @@
-#	include "ImageEncoderPNG.h"
+#include "ImageEncoderPNG.h"
 
-#	include "Utils/Logger/Logger.h"
+#include "Utils/Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static void s_handlerError( png_structp _png_ptr, const char * _error )
@@ -145,4 +145,4 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

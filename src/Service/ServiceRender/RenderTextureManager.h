@@ -1,17 +1,17 @@
 #   pragma once
 
 #   include "Interface/RenderSystemInterface.h"
-#	include "Interface/ImageCodecInterface.h"
+#include "Interface/ImageCodecInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
 #   include "Factory/Factory.h"
 
-#	include "stdex/stl_map.h"
+#include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 #	define MENGINE_TEXTURE_MANAGER_HASH_SIZE 4096

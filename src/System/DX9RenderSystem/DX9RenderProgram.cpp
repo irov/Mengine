@@ -1,8 +1,8 @@
 #   include "DX9RenderProgram.h"
 
-#	include "DX9ErrorHelper.h"
+#include "DX9ErrorHelper.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 	DX9RenderProgram::DX9RenderProgram()
@@ -17,6 +17,11 @@ namespace Menge
 	{
 		return m_name;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    RenderVertexAttributeInterfacePtr DX9RenderProgram::getVertexAttribute() const
+    {
+        return m_vertexAttribute;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertexShaderInterfacePtr DX9RenderProgram::getVertexShader() const
 	{
@@ -28,12 +33,13 @@ namespace Menge
 		return m_fragmentShader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderProgram::initialize( const ConstString & _name, const DX9RenderVertexShaderPtr & _vertexShader, const DX9RenderFragmentShaderPtr & _fragmentShader )
+	bool DX9RenderProgram::initialize( const ConstString & _name, const DX9RenderVertexShaderPtr & _vertexShader, const DX9RenderFragmentShaderPtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute )
 	{ 
 		m_name = _name;
 
 		m_vertexShader = _vertexShader;
 		m_fragmentShader = _fragmentShader;
+        m_vertexAttribute = _vertexAttribute;
 
 		return true;
 	}

@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "DX9RenderTarget.h"
+#include "DX9RenderTarget.h"
 
-#	include "Core/ServantBase.h"
+#include "Core/ServantBase.h"
 
-#	include <d3d9.h>
+#include <d3d9.h>
 
-namespace Menge
+namespace Mengine
 {
 	class DX9RenderTargetOffscreen
 		: public DX9RenderTarget

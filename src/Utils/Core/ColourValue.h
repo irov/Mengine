@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#	include "Math/utils.h"
+#include "math/utils.h"
 
-namespace Menge
+namespace Mengine
 {
     typedef uint32_t ColourValue_ARGB;
 

@@ -1,16 +1,16 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeManagerInterface.h"
 
-#	include "Core/ServantBase.h"
+#include "Core/ServantBase.h"
 
-#	include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
-#	include "ft2build.h"
-#	include "freetype/freetype.h"
-#	include "freetype/ftglyph.h"
+#include "ft2build.h"
+#include "freetype/freetype.h"
+#include "freetype/ftglyph.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class TTFPrototypeGenerator

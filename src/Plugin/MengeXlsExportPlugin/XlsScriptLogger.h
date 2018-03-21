@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/LoggerInterface.h"
+#include "Interface/LoggerInterface.h"
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#	include "pybind/types.hpp"
-#	include "pybind/kernel.hpp"
+#include "pybind/types.hpp"
+#include "pybind/kernel.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	class XlsScriptLogger
 	{

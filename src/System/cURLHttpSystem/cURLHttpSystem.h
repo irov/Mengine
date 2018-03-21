@@ -8,7 +8,7 @@
 
 #	include "Kernel/ThreadTask.h"
 
-namespace Menge
+namespace Mengine
 {
 	class cURLHttpSystem
 		: public ServiceBase<HttpSystemInterface>

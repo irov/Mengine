@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/CodecInterface.h"
+#include "Interface/CodecInterface.h"
 
 #   include "Core/FilePath.h"
 
-namespace Menge
+namespace Mengine
 {
 	struct XmlCodecDataInfo
 		: public CodecDataInfo

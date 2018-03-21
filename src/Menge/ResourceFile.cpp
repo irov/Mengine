@@ -1,12 +1,12 @@
-#	include "ResourceFile.h"
+#include "ResourceFile.h"
 
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceFile::ResourceFile()

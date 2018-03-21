@@ -1,26 +1,29 @@
-#   pragma once
+#pragma once
 
-#   include "Interface/ServiceInterface.h"
+#include "Interface/ServiceProviderInterface.h"
 
-namespace Menge
+#include "Config/Char.h"
+
+namespace Mengine
 {
-    bool openglRenderErrorCheck( const char * _method, const char * _file, int _line );
+    bool openglRenderErrorCheck( const Char * _file, int _line );
 }
 
-#   define OPENGL_RENDER_CHECK_ERROR(Method) Menge::openglRenderErrorCheck( Method, __FILE__, __LINE__ )
+#define OPENGL_RENDER_CHECK_ERROR() Mengine::openglRenderErrorCheck( __FILE__, __LINE__ )
 
-#   define GLCALL( Method, Args )\
+#define GLCALL( Method, Args )\
     {\
         Method Args;\
-        OPENGL_RENDER_CHECK_ERROR(#Method);\
+        OPENGL_RENDER_CHECK_ERROR();\
     }
 
-#   define GLCALLR( R, Method, Args )\
+#define GLCALLR( R, Method, Args )\
     do{\
         R = Method Args;\
-        OPENGL_RENDER_CHECK_ERROR(#Method);\
+        OPENGL_RENDER_CHECK_ERROR();\
     }while(false);
 
 
-#   define IF_GLCALL( Method, Args )\
-    if( Method Args, OPENGL_RENDER_CHECK_ERROR(#Method) == true )
+#define IF_GLCALL( Method, Args )\
+    Method Args;\
+    if( OPENGL_RENDER_CHECK_ERROR() == true )

@@ -7,15 +7,15 @@
 #   pragma warning(disable:4800)  
 #   endif
 
-#	include <boost/format.hpp>
+#include "boost/format.hpp"
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(pop) 
 #   endif
 
-#	include <stdex/stl_allocator.h>
+#include "stdex/stl_allocator.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef boost::basic_format<Char, std::char_traits<Char>, stdex::stl_allocator<Char> > StringFormat;

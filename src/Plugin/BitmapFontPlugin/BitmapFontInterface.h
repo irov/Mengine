@@ -1,14 +1,14 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/TextInterface.h"
+#include "Interface/TextInterface.h"
 
-#	include "Kernel/Servant.h"
+#include "Kernel/Servant.h"
 
-#	include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
-#	include "BitmapGlyph.h"
+#include "BitmapGlyph.h"
 
-namespace Menge
+namespace Mengine
 {
 	class BitmapGlyphServiceInterface
 		: public ServiceBase<ServiceInterface>
@@ -21,4 +21,4 @@ namespace Menge
 }
 
 #   define BITMAPGLYPH_SERVICE()\
-    ((Menge::BitmapGlyphServiceInterface *)SERVICE_GET(Menge::BitmapGlyphServiceInterface))
+    ((Mengine::BitmapGlyphServiceInterface *)SERVICE_GET(Mengine::BitmapGlyphServiceInterface))

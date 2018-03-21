@@ -6,9 +6,9 @@
 
 #   include "Core/ServiceBase.h"
 
-#	include "WIN32/WindowsIncluder.h"
+#include "WIN32/WindowsIncluder.h"
 
-namespace Menge
+namespace Mengine
 {
     class VistaWindowsLayer
         : public ServiceBase<WindowsLayerInterface>
@@ -55,8 +55,8 @@ namespace Menge
         int messageBox( HWND _hWnd, const WChar * _text, const WChar * _caption, UINT _type ) override;
 
         bool getModuleFileName( HMODULE hModule, WChar * _moduleFilename, size_t _capacity ) override;
-        //LONG setRegistryValue( HKEY _hKey, const Menge::WString & _lpKeyName, const Menge::WString & _lpValueName, DWORD _dwType, const BYTE* _lpData, DWORD _cbData );
-        //LONG deleteRegistryValue( HKEY _hKey, const Menge::WString & _lpKeyName, const Menge::WString & _lpValueName );
+        //LONG setRegistryValue( HKEY _hKey, const Mengine::WString & _lpKeyName, const Mengine::WString & _lpValueName, DWORD _dwType, const BYTE* _lpData, DWORD _cbData );
+        //LONG deleteRegistryValue( HKEY _hKey, const Mengine::WString & _lpKeyName, const Mengine::WString & _lpValueName );
 
         bool makeFormatMessage( HRESULT _hresult, WString & _out ) override;
         bool concatenateFilePath( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _concatenatePath, size_t _capacity ) override;

@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/TextInterface.h"
+#include "Interface/TextInterface.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/ColourValue.h"
+#include "Core/ConstString.h"
+#include "Core/ColourValue.h"
 
-#	include "stdex/intrusive_tree.h"
+#include "stdex/intrusive_tree.h"
 
-namespace Menge
+namespace Mengine
 {
 	class TextEntry
 		: public TextEntryInterface

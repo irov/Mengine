@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/StreamInterface.h"
+#include "Interface/StreamInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	class OutputStreamWriter
 	{

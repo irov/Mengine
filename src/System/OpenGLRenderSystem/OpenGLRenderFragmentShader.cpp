@@ -1,10 +1,9 @@
-#	include "OpenGLRenderFragmentShader.h"
+#include "OpenGLRenderFragmentShader.h"
+#include "OpenGLRenderError.h"
 
-#	include "OpenGLRenderError.h"
+#include "Logger/Logger.h"
 
-#	include "Logger/Logger.h"
-
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderFragmentShader::OpenGLRenderFragmentShader()
@@ -14,11 +13,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderFragmentShader::~OpenGLRenderFragmentShader()
     {
-        if( m_shaderId != 0 )
-        {
-            GLCALL( glDeleteShader, (m_shaderId) );
-            m_shaderId = 0;
-        }
+        this->release();
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & OpenGLRenderFragmentShader::getName() const
@@ -37,32 +32,33 @@ namespace Menge
     bool OpenGLRenderFragmentShader::compile()
     {
         GLuint shaderId;
-        GLCALLR( shaderId, glCreateShader, ( GL_FRAGMENT_SHADER ) );
+        GLCALLR( shaderId, glCreateShader, (GL_FRAGMENT_SHADER) );
 
         if( shaderId == 0 )
         {
-            LOGGER_ERROR("OpenGLRenderFragmentShader::initialize %s invalid create shader"
+            LOGGER_ERROR("'%s' invalid create shader"
                 , m_name.c_str()
                 );
 
             return false;
         }
 
-        const char * str_source = m_memory->getMemory();
+        const Char * str_source = m_memory->getMemory();
         GLint str_size = (GLint)m_memory->getSize();
 
         GLCALL( glShaderSource, (shaderId, 1, &str_source, &str_size) );
         GLCALL( glCompileShader, (shaderId) );
 
+
         GLint status;
-        GLCALL( glGetShaderiv, ( shaderId, GL_COMPILE_STATUS, &status ) );
+        GLCALL( glGetShaderiv, (shaderId, GL_COMPILE_STATUS, &status) );
 
         if( status == GL_FALSE )
         {
             GLchar errorLog[1024];
-            GLCALL( glGetShaderInfoLog, ( shaderId, sizeof(errorLog) - 1, NULL, errorLog ) );
+            GLCALL( glGetShaderInfoLog, (shaderId, 1023, NULL, errorLog) );
 
-            LOGGER_ERROR("OpenGLRenderFragmentShader::initialize '%s' compilation shader error '%s'"
+            LOGGER_ERROR("compilation shader '%s' error '%s'"
                 , m_name.c_str()
                 , errorLog
                 );
@@ -75,8 +71,17 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderFragmentShader::release()
+    {
+        if( m_shaderId != 0 )
+        {
+            GLCALL( glDeleteShader, (m_shaderId) );
+            m_shaderId = 0;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderFragmentShader::attach( GLuint _program )
     { 
         GLCALL( glAttachShader, ( _program, m_shaderId ) );
     }
-}	// namespace Menge
+}

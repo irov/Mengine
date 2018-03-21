@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "WIN32/WindowsIncluder.h"
+#include "WIN32/WindowsIncluder.h"
 
 #	define UWM_MOUSE_LEAVE (WM_USER+1)
 
 #	define UTIMER_MOUSE_EVENT 1
 
-namespace Menge
+namespace Mengine
 {
 	class Win32MouseEvent
 	{

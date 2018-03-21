@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include <stdex/allocator.h>
+#include "stdex/allocator.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class MemoryAllocator
@@ -55,7 +55,7 @@ namespace Menge
 		}
 
 		template<class T>
-		T * allocateMemory( size_t _count )
+		T * allocateMemoryT( size_t _count )
 		{
 			size_t memory_size = sizeof(T) * _count;
 			void * memory_buffer = stdex_malloc( memory_size );
@@ -64,13 +64,27 @@ namespace Menge
 		}
 
 		template<class T>
-		T * reallocateMemory( void * _buffer, size_t _count )
+		T * reallocateMemoryT( T * _buffer, size_t _count )
 		{
 			size_t memory_size = sizeof(T) * _count;
 			void * memory_buffer = stdex_realloc( _buffer, memory_size );
 
 			return reinterpret_cast<T *>(memory_buffer);
 		}
+
+        inline void * allocateMemory( size_t _size )
+        {
+            void * memory_buffer = stdex_malloc( _size );
+
+            return memory_buffer;
+        }
+
+        inline 	void * reallocateMemory( void * _buffer, size_t _size )
+        {
+            void * memory_buffer = stdex_realloc( _buffer, _size );
+
+            return memory_buffer;
+        }
 
 		inline void freeMemory( void * _memory )
 		{

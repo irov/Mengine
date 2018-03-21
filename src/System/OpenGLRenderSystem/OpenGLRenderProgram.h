@@ -1,32 +1,54 @@
-#   pragma once
+#pragma once
 
-#   include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
-#   include "OpenGLRenderShader.h"
-#   include "OpenGLRenderVertexShader.h"
-#   include "OpenGLRenderFragmentShader.h"
+#include "OpenGLRenderVertexShader.h"
+#include "OpenGLRenderFragmentShader.h"
+#include "OpenGLRenderVertexAttribute.h"
 
-#   include "OpenGLRenderHeader.h"
+#include "OpenGLRenderExtension.h"
 
-namespace Menge
+#include "Core/ServantBase.h"
+
+namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    enum EProgramMatrixLocation
+    {
+        EPML_VIEW = 0,
+        EPML_PROJECTION,
+        EPML_WORLD,
+        EPML_VIEW_PROJECTION,
+        EPML_WORLD_VIEW_PROJECTION,
+        EPML_MAX_COUNT
+    };
+    //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderProgram
-        : public RenderProgramInterface
+        : public ServantBase<RenderProgramInterface>
     {
     public:
         OpenGLRenderProgram();
         ~OpenGLRenderProgram();
 
     public:
+        GLuint getProgram() const;
+
+    public:
         const ConstString & getName() const override;
+
+    public:
+        RenderVertexAttributeInterfacePtr getVertexAttribute() const override;
 
     public:
         RenderFragmentShaderInterfacePtr getFragmentShader() const override;
         RenderVertexShaderInterfacePtr getVertexShader() const override;
 
     public:
-        bool initialize( const ConstString & _name, const OpenGLRenderVertexShaderPtr & _vertexShader, const OpenGLRenderFragmentShaderPtr & _fragmentShader, uint32_t _samplerCount );
+        bool initialize( const ConstString & _name, const OpenGLRenderVertexShaderPtr & _vertexShader, const OpenGLRenderFragmentShaderPtr & _fragmentShader, const OpenGLRenderVertexAttributePtr & _vertexAttribute, uint32_t _samplerCount );
+
+    public:
         bool compile();
+        void release();
 
     public:
         void enable() const;
@@ -42,16 +64,15 @@ namespace Menge
 
         OpenGLRenderVertexShaderPtr m_vertexShader;
         OpenGLRenderFragmentShaderPtr m_fragmentShader;
+        OpenGLRenderVertexAttributePtr m_vertexAttribute;
 
         uint32_t m_samplerCount;
         
-        mutable mt::mat4f m_mvpMat;
-
-        int m_transformLocation;
-        int m_samplerLocation[MENGE_MAX_TEXTURE_STAGES];
+        GLint m_matrixLocation[EPML_MAX_COUNT];
+        GLint m_samplerLocation[MENGINE_MAX_TEXTURE_STAGES];
     };
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<OpenGLRenderProgram> OpenGLRenderProgramPtr;
     //////////////////////////////////////////////////////////////////////////
-}   // namespace Menge
+}
 

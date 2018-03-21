@@ -9,7 +9,7 @@
 
 #	include "stdex/memorycopy.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLFileInputStream::SDLFileInputStream()
@@ -362,4 +362,4 @@ namespace Menge
 
         return false;
     }
-}	// namespace Menge
+}	// namespace Mengine

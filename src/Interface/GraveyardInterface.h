@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/FilePath.h"
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
 
-namespace Menge
+namespace Mengine
 {	
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;
@@ -27,6 +27,6 @@ namespace Menge
 	};
 
 #   define GRAVEYARD_SERVICE()\
-    ((Menge::GraveyardInterface*)SERVICE_GET(Menge::GraveyardInterface))
+    ((Mengine::GraveyardInterface*)SERVICE_GET(Mengine::GraveyardInterface))
 }
 

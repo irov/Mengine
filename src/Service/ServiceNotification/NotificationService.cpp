@@ -1,13 +1,13 @@
-#	include "NotificationService.h"
+#include "NotificationService.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include <algorithm>
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( NotificationService, Menge::NotificationService );
+SERVICE_FACTORY( NotificationService, Mengine::NotificationService );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     NotificationService::NotificationService()

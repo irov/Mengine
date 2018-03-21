@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "DevelopmentConverter.h"
+#include "DevelopmentConverter.h"
 
 #   include "Interface/ArchiveInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ModelConverterMDLToMDZ
 		: public DevelopmentConverter
@@ -25,4 +25,4 @@ namespace Menge
 	protected:
 		ArchivatorInterfacePtr m_archivator;
     };
-}	// namespace Menge
+}	

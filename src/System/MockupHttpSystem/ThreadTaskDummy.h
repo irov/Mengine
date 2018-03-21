@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/HttpSystemInterface.h"
-#	include "Interface/StreamInterface.h"
+#include "Interface/HttpSystemInterface.h"
+#include "Interface/StreamInterface.h"
 
-#	include "Kernel/ThreadTask.h"
+#include "Kernel/ThreadTask.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class ThreadTaskDummy

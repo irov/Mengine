@@ -1,14 +1,14 @@
-#	include "TTFPlugin.h"
+#include "TTFPlugin.h"
 
-#	include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 #   include "Interface/PrototypeManagerInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-#	include "Core/PixelFormat.h"
+#include "Core/PixelFormat.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "TTFPrototypeGenerator.h"
+#include "TTFPrototypeGenerator.h"
 
 #   include "fe/fe.h"
 
@@ -21,9 +21,9 @@ void _debug_image_deleted( fe_image * )
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( TTFAtlasService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( TTF, Menge::TTFPlugin );
+PLUGIN_FACTORY( TTF, Mengine::TTFPlugin );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	TTFPlugin::TTFPlugin()

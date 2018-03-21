@@ -3,12 +3,12 @@
 #include "Logger/Logger.h"
 
 #ifdef _WIN32
-#	include "WIN32/WindowsIncluder.h"
+#include "WIN32/WindowsIncluder.h"
 #endif
 
 #include <stdio.h>
 
-namespace Menge
+namespace Mengine
 {
 #ifdef _DEBUG
     void Assertion( const Char * _message, const Char* _file, int _line )

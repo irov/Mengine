@@ -1,17 +1,17 @@
-#	include "XmlCodecPlugin.h"
+#include "XmlCodecPlugin.h"
 
-#	include "XmlToBinDecoder.h"
+#include "XmlToBinDecoder.h"
 
-#	include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
 #   include "Codec/DecoderFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( MengeXmlCodec, Menge::XmlCodecPlugin )
+PLUGIN_FACTORY( MengeXmlCodec, Mengine::XmlCodecPlugin )
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	XmlCodecPlugin::XmlCodecPlugin()

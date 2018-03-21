@@ -1,13 +1,13 @@
-#	include "ImageDecoderDDS.h"
+#include "ImageDecoderDDS.h"
 
-#	include "ImageCodecDDS.h"
+#include "ImageCodecDDS.h"
 
-#	include "Core/PixelFormat.h"
+#include "Core/PixelFormat.h"
 
-#	include "Core/Magic.h"
-#	include "Logger/Logger.h"
+#include "Core/Magic.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderDDS::ImageDecoderDDS()
@@ -115,4 +115,4 @@ namespace Menge
 		return byte;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

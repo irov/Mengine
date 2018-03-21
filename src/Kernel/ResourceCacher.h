@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	template<class T>
 	class ResourceCacher

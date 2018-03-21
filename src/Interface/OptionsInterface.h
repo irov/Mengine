@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
-#	include "Config/String.h"
+#include "Config/Typedef.h"
+#include "Config/String.h"
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class OptionsServiceInterface
@@ -22,7 +22,7 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define OPTIONS_SERVICE()\
-    ((Menge::OptionsServiceInterface *)SERVICE_GET(Menge::OptionsServiceInterface))
+    ((Mengine::OptionsServiceInterface *)SERVICE_GET(Mengine::OptionsServiceInterface))
 	//////////////////////////////////////////////////////////////////////////
 #	define HAS_OPTION( key )\
 	OPTIONS_SERVICE()->hasOption( key )

@@ -1,12 +1,12 @@
-#   pragma once
+#pragma once
 
-#   include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
-#   include "Core/ServantBase.h"
+#include "OpenGLRenderExtension.h"
 
-#   include "OpenGLRenderHeader.h"
+#include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
     class OpenGLRenderIndexBuffer
         : public ServantBase<RenderIndexBufferInterface>
@@ -16,18 +16,28 @@ namespace Menge
         ~OpenGLRenderIndexBuffer();
 
     public:
-        bool initialize( uint32_t _indexNum, bool _dynamic );
-
-    protected:
-        Pointer lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
-        bool unlock() override;
+        bool initialize( uint32_t _indexSize, EBufferType _bufferType );
 
     public:
-        void enable();
+        uint32_t getIndexCount() const override;
+        uint32_t getIndexSize() const override;
 
     protected:
-        RenderIndices * m_memory;
-        uint32_t m_indexNum;
+        bool enable() override;
+        void disable() override;
+        
+    protected:
+        bool resize( uint32_t _count ) override;
+
+    protected:
+        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags ) override;
+        bool unlock() override;
+        void draw( const void * _buffer, size_t _size ) override;
+
+    protected:
+        void * m_memory;
+        uint32_t m_indexSize;
+        uint32_t m_indexCount;
 
         GLenum m_usage;
 
@@ -35,7 +45,7 @@ namespace Menge
 
         uint32_t m_lockOffset;
         uint32_t m_lockCount;
-        RenderIndices * m_lockMemory;
+        MemoryInterfacePtr m_lockMemory;
         EBufferLockFlag m_lockFlags;
     };
     //////////////////////////////////////////////////////////////////////////

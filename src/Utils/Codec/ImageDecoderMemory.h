@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Codec/ImageDecoder.h"
+#include "Codec/ImageDecoder.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ImageDecoderMemory
 		: public ImageDecoder

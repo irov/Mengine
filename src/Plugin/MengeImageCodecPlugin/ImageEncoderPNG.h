@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Codec/ImageEncoder.h"
+#include "Codec/ImageEncoder.h"
 
-#	include <png.h>
+#include <png.h>
 
-namespace Menge
+namespace Mengine
 {
 	class ImageEncoderPNG
 		: public ImageEncoder
@@ -22,4 +22,4 @@ namespace Menge
 	private:
 		png_structp m_png_ptr;
 	};
-}	// namespace Menge
+}	

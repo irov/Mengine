@@ -1,14 +1,14 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Entity.h"
+#include "Kernel/Entity.h"
 
-#	include "Core/Resolution.h"
+#include "Core/Resolution.h"
 
-#	include "Math/vec4.h"
+#include "math/vec4.h"
 
-#	include "Core/Polygon.h"
+#include "Core/Polygon.h"
 
-namespace Menge
+namespace Mengine
 {
 	enum EArrowType
 	{

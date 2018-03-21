@@ -12,6 +12,8 @@ src
 	DX9RenderTargetOffscreen.cpp
     DX9RenderVertexBuffer.h
     DX9RenderVertexBuffer.cpp
+    DX9RenderVertexAttribute.h
+    DX9RenderVertexAttribute.cpp
     DX9RenderIndexBuffer.h
     DX9RenderIndexBuffer.cpp    
     DX9RenderFragmentShader.h

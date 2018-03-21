@@ -1,8 +1,8 @@
-#	include "Win32DynamicLibrary.h"
+#include "Win32DynamicLibrary.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32DynamicLibrary::Win32DynamicLibrary()

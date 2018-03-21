@@ -1,10 +1,10 @@
-#	include "ResourceCursorSystem.h"
+#include "ResourceCursorSystem.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceCursorSystem::ResourceCursorSystem()

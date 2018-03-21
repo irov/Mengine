@@ -1,22 +1,22 @@
-#	include "ThreadEngine.h"
+#include "ThreadEngine.h"
 
 #   include "Interface/ConfigInterface.h"
 
-#	include "Kernel/ThreadTask.h"
-#	include "Kernel/ThreadTaskPacket.h"
+#include "Kernel/ThreadTask.h"
+#include "Kernel/ThreadTaskPacket.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "stdex/allocator.h"
+#include "stdex/allocator.h"
 
-#	include <algorithm>
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ThreadService, Menge::ThreadEngine );
+SERVICE_FACTORY( ThreadService, Mengine::ThreadEngine );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadEngine::ThreadEngine()
@@ -54,7 +54,7 @@ namespace Menge
 			return true;
 		}
 
-		if( SERVICE_EXIST( Menge::ThreadSystemInterface ) == false )
+		if( SERVICE_EXIST( Mengine::ThreadSystemInterface ) == false )
 		{
 			m_avaliable = false;
 
@@ -507,4 +507,4 @@ namespace Menge
 
 		return id;
 	}
-}	// namespace Menge
+}	

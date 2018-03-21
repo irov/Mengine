@@ -4,12 +4,12 @@
 #   include "Interface/StreamInterface.h"
 #   include "Interface/MemoryInterface.h"
 
-#	include "Factory/FactorablePtr.h"
+#include "Factory/FactorablePtr.h"
 
-#	include "Core/Magic.h"
-#	include "Core/ConstString.h"
+#include "Core/Magic.h"
+#include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {
 	enum EArchivatorCompress
 	{
@@ -53,5 +53,5 @@ namespace Menge
     };
 
 #   define ARCHIVE_SERVICE()\
-    ((Menge::ArchiveServiceInterface *)SERVICE_GET(Menge::ArchiveServiceInterface))
+    ((Mengine::ArchiveServiceInterface *)SERVICE_GET(Mengine::ArchiveServiceInterface))
 }

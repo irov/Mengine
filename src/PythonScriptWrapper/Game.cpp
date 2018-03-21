@@ -1,12 +1,12 @@
-#	include "Game.h"
+#include "Game.h"
 
-#	include "Interface/AmplifierInterface.h"
-#	include "Interface/OptionsInterface.h"
-#	include "Interface/WatchdogInterface.h"
-#	include "Interface/ArchiveInterface.h"
+#include "Interface/AmplifierInterface.h"
+#include "Interface/OptionsInterface.h"
+#include "Interface/WatchdogInterface.h"
+#include "Interface/ArchiveInterface.h"
 
-#	include "Interface/ScriptSystemInterface.h"
-#	include "Interface/ResourceInterface.h"
+#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ResourceInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/AccountInterface.h"
 #   include "Interface/NodeInterface.h"
@@ -22,17 +22,17 @@
 
 #   include "Kernel/Arrow.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Core/String.h"
-#	include "Core/Stream.h"
+#include "Core/String.h"
+#include "Core/Stream.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AccountService );
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( GameService, Menge::Game );
+SERVICE_FACTORY( GameService, Mengine::Game );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 
 	//////////////////////////////////////////////////////////////////////////
@@ -690,7 +690,7 @@ namespace Menge
         EVENTABLE_METHOD( this, EVENT_GAME_ACCOUNT_FINALIZE )
             ->onGameAccountFinalize();
 
-		SERVICE_FINALIZE( Menge::AccountServiceInterface );
+		SERVICE_FINALIZE( Mengine::AccountServiceInterface );
 
 		SCRIPT_SERVICE()
 			->finalizeModules();
@@ -766,7 +766,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setFocus( bool _focus )
 	{
-		if( SERVICE_EXIST( Menge::PlayerServiceInterface ) == true )
+		if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
 		{
 			PLAYER_SERVICE()
 				->onFocus( _focus );
@@ -778,7 +778,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setFullscreen( const Resolution & _resolution, bool _fullscreen )
 	{
-		if( SERVICE_EXIST( Menge::PlayerServiceInterface ) == true )
+		if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
 		{
 			PLAYER_SERVICE()
 				->onFullscreen( _resolution, _fullscreen );
@@ -790,7 +790,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Game::setFixedContentResolution( const Resolution & _resolution, bool _fixed )
     {
-		if( SERVICE_EXIST( Menge::PlayerServiceInterface ) == true )
+		if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
 		{
 			PLAYER_SERVICE()
 				->onFixedContentResolution( _resolution, _fixed );
@@ -802,7 +802,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
 	{
-		if( SERVICE_EXIST( Menge::PlayerServiceInterface ) == true )
+		if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
 		{
 			PLAYER_SERVICE()
 				->onFixedContentResolution( _resolution, _fixed );

@@ -4,7 +4,7 @@
 
 #   include "SDL_loadso.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLDynamicLibrary::SDLDynamicLibrary()

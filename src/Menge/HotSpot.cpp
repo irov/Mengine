@@ -1,21 +1,21 @@
-#	include "HotSpot.h"
+#include "HotSpot.h"
 
 #   include "HotspotMousePickerVisitor.h"
 
-#	include "Interface/MousePickerSystemInterface.h"
-#	include "Interface/PlayerInterface.h"
+#include "Interface/MousePickerSystemInterface.h"
+#include "Interface/PlayerInterface.h"
 
-#	include "Kernel/Scene.h"
-#	include "Layer2D.h"
+#include "Kernel/Scene.h"
+#include "Layer2D.h"
 
-#	include "Kernel/Arrow.h"
+#include "Kernel/Arrow.h"
 
-#	include "pybind/system.hpp"
-#	include "pybind/extract.hpp"
+#include "pybind/system.hpp"
+#include "pybind/extract.hpp"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()

@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ArchiveInterface.h"
+#include "Interface/ArchiveInterface.h"
 
 #   include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ArchivatorZip
 		: public ServantBase<ArchivatorInterface>

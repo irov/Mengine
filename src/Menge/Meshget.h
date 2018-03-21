@@ -1,23 +1,23 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/MovieKeyFrameInterface.h"
+#include "Interface/MovieKeyFrameInterface.h"
 
-#	include "Kernel/Node.h"
-#	include "Kernel/Materialable.h"
+#include "Kernel/Node.h"
+#include "Kernel/Materialable.h"
 
 #   include "Kernel/ResourceImage.h"
 
-#	include "Core/ColourValue.h"
-#	include "Core/ValueInterpolator.h"
+#include "Core/ColourValue.h"
+#include "Core/ValueInterpolator.h"
 #   include "Core/RenderVertex2D.h"
 
-#	include "Math/mat3.h"
-#	include "Math/vec4.h"
-#	include "Math/mat4.h"
+#include "math/mat3.h"
+#include "math/vec4.h"
+#include "math/mat4.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	enum MeshgetEventFlag

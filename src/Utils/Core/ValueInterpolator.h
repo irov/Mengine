@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Math/utils.h"
+#include "math/utils.h"
 
-namespace Menge
+namespace Mengine
 {
 	template <typename T>
 	class ValueAccumulator

@@ -1,7 +1,7 @@
-#	include "NodeBox2DBody.h"
-#	include "Box2DScaler.h"
+#include "NodeBox2DBody.h"
+#include "Box2DScaler.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	NodeBox2DBody::NodeBox2DBody()

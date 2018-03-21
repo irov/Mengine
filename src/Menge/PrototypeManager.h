@@ -1,9 +1,9 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/PrototypeManagerInterface.h"
 
 #   include "Core/ServiceBase.h"
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
 #   include "stdex/stl_vector.h"
 
@@ -11,7 +11,7 @@
 #   define MENGINE_PROTOTYPE_HASH_SIZE 256
 #   endif
 
-namespace Menge
+namespace Mengine
 {
 	class PrototypeManager
         : public ServiceBase<PrototypeServiceInterface>

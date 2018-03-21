@@ -1,19 +1,19 @@
-#	include "ParticleEngine2.h"
+#include "ParticleEngine2.h"
 
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/ConfigInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Core/Viewport.h"
+#include "Core/Viewport.h"
 
-#	include "Math/box2.h"
+#include "math/box2.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ParticleService, Menge::ParticleEngine2 );
+SERVICE_FACTORY( ParticleService, Mengine::ParticleEngine2 );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	ParticleEngine2::ParticleEngine2()
 		: m_maxParticlesNum(10000U)
@@ -31,7 +31,7 @@ namespace Menge
 
 		//m_available = false;
 
-		if( SERVICE_EXIST( Menge::ParticleSystemInterface2 ) == false )
+		if( SERVICE_EXIST( Mengine::ParticleSystemInterface2 ) == false )
 		{
 			m_available = false;
 		}

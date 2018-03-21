@@ -1,6 +1,6 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ApplicationInterface.h"
+#include "Interface/ApplicationInterface.h"
 
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/NotificationServiceInterface.h"
@@ -19,15 +19,15 @@
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/PluginInterface.h"
-#	include "Interface/WindowsLayerInterface.h"
-#	include "Interface/HttpSystemInterface.h"
-#	include "Interface/PrefetcherInterface.h"
-#	include "Interface/ConfigInterface.h"
-#	include "Interface/TimerInterface.h"
+#include "Interface/WindowsLayerInterface.h"
+#include "Interface/HttpSystemInterface.h"
+#include "Interface/PrefetcherInterface.h"
+#include "Interface/ConfigInterface.h"
+#include "Interface/TimerInterface.h"
 
-#   include <stdex/stl_map.h>
+#   include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class WinApplication
@@ -72,4 +72,4 @@ namespace Menge
         LoggerInterfacePtr m_fileLog;
         LoggerInterfacePtr m_loggerMessageBox;
 	};
-}	// namespace Menge
+}	

@@ -1,10 +1,10 @@
-#	include "NodeCollisionActor.h"
+#include "NodeCollisionActor.h"
 
 #   include "Interface/RenderSystemInterface.h"
 
-#	include <math.h>
+#include <math.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	NodeCollisionActor::NodeCollisionActor()

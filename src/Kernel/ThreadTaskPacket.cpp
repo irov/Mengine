@@ -1,8 +1,8 @@
-#	include "ThreadTaskPacket.h"
+#include "ThreadTaskPacket.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTaskPacket::ThreadTaskPacket()

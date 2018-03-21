@@ -1,14 +1,14 @@
-#	include "ResourceModel3D.h"
+#include "ResourceModel3D.h"
 
-#	include "Interface/ConverterInterface.h"
-#	include "Interface/CodecInterface.h"
-#	include "Interface/ResourceInterface.h"
+#include "Interface/ConverterInterface.h"
+#include "Interface/CodecInterface.h"
+#include "Interface/ResourceInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceModel3D::ResourceModel3D()

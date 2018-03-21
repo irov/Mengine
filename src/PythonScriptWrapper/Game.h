@@ -1,21 +1,21 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Scriptable.h"
-#	include "Kernel/Eventable.h"
+#include "Kernel/Scriptable.h"
+#include "Kernel/Eventable.h"
 
 #   include "Interface/GameInterface.h"
-#	include "Interface/ApplicationInterface.h"
+#include "Interface/ApplicationInterface.h"
 #   include "Interface/InputSystemInterface.h"
-#	include "Interface/AccountInterface.h"
-#	include "Interface/SoundSystemInterface.h"
-#	include "Interface/ScriptSystemInterface.h"
+#include "Interface/AccountInterface.h"
+#include "Interface/SoundSystemInterface.h"
+#include "Interface/ScriptSystemInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "Core/Resolution.h"
+#include "Core/Resolution.h"
 #   include "Core/String.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class GameAccountProvider;

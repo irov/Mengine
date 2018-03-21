@@ -7,7 +7,7 @@
 
 #   include "stdex/pool.h"
 
-namespace Menge
+namespace Mengine
 {
     class SDLThreadSystem
         : public ServiceBase<ThreadSystemInterface>

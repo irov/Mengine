@@ -1,13 +1,13 @@
-#	include "BounceWorld.h"
+#include "BounceWorld.h"
 
-#	include "Interface/ScriptSystemInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/ScriptSystemInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#	include <math.h>
+#include <math.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	namespace

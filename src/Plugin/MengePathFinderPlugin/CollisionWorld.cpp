@@ -1,8 +1,8 @@
-#	include "CollisionWorld.h"
+#include "CollisionWorld.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#	include "Math/ccd.h"
+#include "math/ccd.h"
 
 #   include <algorithm>
 
@@ -10,7 +10,7 @@
 #	define MENGINE_COLLISION_WORLD_PENETRATION_COUNT 64
 #	endif
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	namespace

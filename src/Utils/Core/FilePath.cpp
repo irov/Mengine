@@ -4,11 +4,11 @@
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/FileSystemInterface.h"
 
-#	include "Core/FilePath.h"
+#include "Core/FilePath.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	namespace Helper
 	{

@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ArchiveInterface.h"
+#include "Interface/ArchiveInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "stdex/stl_map.h"
+#include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ArchiveService
 		: public ServiceBase<ArchiveServiceInterface>

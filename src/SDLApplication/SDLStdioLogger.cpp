@@ -4,7 +4,7 @@
 
 #   include <iostream>
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 	SDLStdioLogger::SDLStdioLogger()
@@ -68,4 +68,4 @@ namespace Menge
     void SDLStdioLogger::flush()
     {
     }
-}	// namespace Menge
+}	// namespace Mengine

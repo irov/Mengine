@@ -1,65 +1,65 @@
-#	include "PythonScriptWrapper.h"
+#include "PythonScriptWrapper.h"
 
-#	include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 #   include "Interface/UnicodeInterface.h"
-#	include "Interface/ResourceInterface.h"
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/TextInterface.h"
-#	include "Interface/TimerInterface.h"
-#	include "Interface/ApplicationInterface.h"
-#	include "Interface/UserdataInterface.h"
-#	include "Interface/ConfigInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/TextInterface.h"
+#include "Interface/TimerInterface.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/UserdataInterface.h"
+#include "Interface/ConfigInterface.h"
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 #   include "Config/Stringstream.h"
-#	include "Config/Blobject.h"
+#include "Config/Blobject.h"
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-#	include "Math/vec2.h"
-#	include "Math/vec3.h"
-#	include "Math/rand.h"
+#include "math/vec2.h"
+#include "math/vec3.h"
+#include "math/rand.h"
 
-#	include "Core/Polygon.h"
-#	include "Core/ColourValue.h"
-#	include "Core/MemoryHelper.h"
-#	include "Core/UID.h"
+#include "Core/Polygon.h"
+#include "Core/ColourValue.h"
+#include "Core/MemoryHelper.h"
+#include "Core/UID.h"
 
-#	include "Menge/Account.h"
+#include "Menge/Account.h"
 
-#	include "Menge/Movie.h"
-#	include "Menge/HotSpotShape.h"
+#include "Menge/Movie.h"
+#include "Menge/HotSpotShape.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Menge/ResourceAnimation.h"
+#include "Menge/ResourceAnimation.h"
 
-#	include "Menge/Watchdog.h"
+#include "Menge/Watchdog.h"
 
-#	include <ctime>
-#	include <sstream>
-#	include <iomanip>
+#include <ctime>
+#include <sstream>
+#include <iomanip>
 
-#	include "Kernel/ResourceImage.h"
-#	include "Menge/ResourceCursorICO.h"
-#	include "Menge/AccountManager.h"
+#include "Kernel/ResourceImage.h"
+#include "Menge/ResourceCursorICO.h"
+#include "Menge/AccountManager.h"
 
-#	include "Kernel/Affector.h"
+#include "Kernel/Affector.h"
 
-#	include "Core/String.h"
+#include "Core/String.h"
 #   include "Core/CRC32.h"
 
-#	include "Math/angle.h"
+#include "math/angle.h"
 
-#	include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptSystemInterface.h"
 
 #   include "pybind/pybind.hpp"
 #   include "pybind/pickle.hpp"
 
-#	include <math.h>
+#include <math.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class HelperScriptMethod
@@ -2698,7 +2698,7 @@ namespace Menge
 			if( TEXT_SERVICE()
 				->existText( _key, &entry ) == false )
 			{
-				pybind::throw_exception("Menge.getTextByKey invalid get key %s"
+				pybind::throw_exception("Mengine.getTextByKey invalid get key %s"
 					, _key.c_str()
 					);
 			}
@@ -2708,7 +2708,7 @@ namespace Menge
             WString unicode;
             if( Helper::utf8ToUnicode(text, unicode ) == false )
             {
-				pybind::throw_exception("Menge.getTextByKey invalid text key '%s' convert '%s' to unicode"
+				pybind::throw_exception("Mengine.getTextByKey invalid text key '%s' convert '%s' to unicode"
 					, _key.c_str()
 					, text.c_str()
 					);
@@ -2723,7 +2723,7 @@ namespace Menge
 			if( TEXT_SERVICE()
 				->existText( _key, &entry ) == false )
 			{				
-				pybind::throw_exception("Menge.getTextCharCountByKey invalid get key %s"
+				pybind::throw_exception("Mengine.getTextCharCountByKey invalid get key %s"
 					, _key.c_str()
 					);
 			}

@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/VideoCodecInterface.h"
 
-#	include "Kernel/ResourceReference.h"
-#	include "Kernel/ResourceCacher.h"
+#include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceCacher.h"
 
-#	include "Math/vec2.h"
+#include "math/vec2.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ResourceVideo
 		: public ResourceReference

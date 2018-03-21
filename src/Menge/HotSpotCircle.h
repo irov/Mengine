@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "HotSpot.h"
+#include "HotSpot.h"
 
-namespace Menge
+namespace Mengine
 {
 	class HotSpotCircle
 		: public HotSpot
@@ -32,4 +32,4 @@ namespace Menge
 
 		uint32_t m_enumerator;
 	};
-}	// namespace Menge
+}	

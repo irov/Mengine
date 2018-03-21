@@ -1,9 +1,9 @@
-#	include "Point.h"
+#include "Point.h"
 
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Point::Point()
@@ -131,7 +131,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Point::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
-		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
+		if( (_debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
 		{
 			return;
 		}

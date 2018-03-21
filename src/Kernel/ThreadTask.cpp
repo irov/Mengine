@@ -1,6 +1,6 @@
-#	include "ThreadTask.h"
+#include "ThreadTask.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTask::ThreadTask()

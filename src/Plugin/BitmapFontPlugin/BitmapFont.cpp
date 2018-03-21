@@ -1,15 +1,15 @@
-#	include "BitmapFont.h"
+#include "BitmapFont.h"
 
-#	include "Interface/CodecInterface.h"
-#	include "Interface/RenderSystemInterface.h"
+#include "Interface/CodecInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
-#	include "BitmapFontInterface.h"
+#include "BitmapFontInterface.h"
 
 #   include "Core/IniUtil.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	BitmapFont::BitmapFont()

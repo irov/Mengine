@@ -1,10 +1,10 @@
-#	include "Parallax.h"
+#include "Parallax.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include <math.h>
+#include <math.h>
 
-namespace	Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Parallax::Parallax()

@@ -1,6 +1,6 @@
-#	include "CRC32.h"
+#include "CRC32.h"
 
-namespace Menge
+namespace Mengine
 {
     const uint32_t Crc32Table[256] = {
         0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA,

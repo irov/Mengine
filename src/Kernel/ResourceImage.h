@@ -1,16 +1,16 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/StreamInterface.h"
 #   include "Interface/ImageCodecInterface.h"
 
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
-#	include "Core/ColourValue.h"
+#include "Core/ColourValue.h"
 
-#	include "Math/vec4.h"
-#	include "Math/uv4.h"
+#include "math/vec4.h"
+#include "math/uv4.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;

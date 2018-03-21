@@ -6,7 +6,7 @@
 
 #   include <sstream>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
     ThreadTaskPostMessage::ThreadTaskPostMessage()

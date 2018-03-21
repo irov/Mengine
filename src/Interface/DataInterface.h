@@ -1,19 +1,19 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/StreamInterface.h"
-#	include "Interface/MemoryInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/StreamInterface.h"
+#include "Interface/MemoryInterface.h"
 
 #   include "Factory/FactorablePtr.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/FilePath.h"
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
 
-#	include <stdint.h>
+#include <stdint.h>
 
-namespace Menge
+namespace Mengine
 {	
 	class DataInterface
 		: public FactorablePtr
@@ -100,6 +100,6 @@ namespace Menge
 	};
 
 #   define DATA_SERVICE()\
-    SERVICE_GET(Menge::DataServiceInterface)
+    SERVICE_GET(Mengine::DataServiceInterface)
 }
 

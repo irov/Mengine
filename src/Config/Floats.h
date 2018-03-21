@@ -1,10 +1,10 @@
 #   pragma once
 
-#	include <stdint.h>
+#include <stdint.h>
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
     typedef stdex::vector<float> Floats;
 	typedef stdex::vector<int8_t> Int8s;

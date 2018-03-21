@@ -1,21 +1,21 @@
-#	include "PluginPathFinder.h"
+#include "PluginPathFinder.h"
 
-#	include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Core/ModuleFactory.h"
+#include "Core/ModuleFactory.h"
 
-#	include "ModulePathFinder.h"
-#	include "ModuleAreaOfInterest.h"
-#	include "ModuleCollision.h"
-#	include "ModuleMagnet.h"
-#	include "ModuleInvader.h"
-#	include "ModuleBurritoWorld.h"
-#	include "ModuleBounce.h"
+#include "ModulePathFinder.h"
+#include "ModuleAreaOfInterest.h"
+#include "ModuleCollision.h"
+#include "ModuleMagnet.h"
+#include "ModuleInvader.h"
+#include "ModuleBurritoWorld.h"
+#include "ModuleBounce.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( PathFinder, Menge::PluginPathFinder )
+PLUGIN_FACTORY( PathFinder, Mengine::PluginPathFinder )
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {	
 	//////////////////////////////////////////////////////////////////////////
 	PluginPathFinder::PluginPathFinder()

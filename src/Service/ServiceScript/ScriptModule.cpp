@@ -1,10 +1,10 @@
-#	include "ScriptModule.h"
+#include "ScriptModule.h"
 
-#	include "Kernel/Eventable.h"
+#include "Kernel/Eventable.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ScriptModule::ScriptModule()

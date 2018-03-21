@@ -1,28 +1,28 @@
-#	include "PythonScriptWrapper.h"
+#include "PythonScriptWrapper.h"
 
-#	include "Kernel/ScriptEventReceiver.h"
+#include "Kernel/ScriptEventReceiver.h"
 
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/NodeInterface.h"
 
-#	include "Kernel/ScriptWrapper.h"
+#include "Kernel/ScriptWrapper.h"
 
-#	include "Kernel/Entity.h"
-#	include "Kernel/Scene.h"
+#include "Kernel/Entity.h"
+#include "Kernel/Scene.h"
 
-#	include "Kernel/Arrow.h"
+#include "Kernel/Arrow.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#	include "EntityPrototypeGenerator.h"
+#include "EntityPrototypeGenerator.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	class EntityScriptMethod
 	{

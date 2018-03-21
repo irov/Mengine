@@ -1,10 +1,10 @@
 #   include "ConstStringHolderMemory.h"
 
-#	include "Core/MemoryAllocator.h"
+#include "Core/MemoryAllocator.h"
 
-#	include "stdex/memorycopy.h"
+#include "stdex/memorycopy.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ConstStringHolderMemory::ConstStringHolderMemory()
@@ -14,7 +14,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ConstStringHolderMemory::setValue( const char * _value, size_t _size, hash_type _hash )
 	{
-		m_buff = Helper::allocateMemory<char>( _size + 1 );
+		m_buff = Helper::allocateMemoryT<char>( _size + 1 );
 		stdex::memorycopy( m_buff, 0, _value, _size );
 		m_buff[_size] = '\0';
 

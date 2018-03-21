@@ -1,8 +1,8 @@
-#	include "PluginBase.h"
+#include "PluginBase.h"
 
-#	include "Interface/ModuleInterface.h"
+#include "Interface/ModuleInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	PluginBase::PluginBase()

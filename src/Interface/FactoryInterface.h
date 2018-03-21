@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-namespace Menge
+namespace Mengine
 {	
 	//////////////////////////////////////////////////////////////////////////
 	class Factory;
@@ -30,4 +30,4 @@ namespace Menge
 }
 
 #   define FACTORY_SERVICE()\
-	((FactoryServiceInterface *)SERVICE_GET(Menge::FactoryServiceInterface))
+	((FactoryServiceInterface *)SERVICE_GET(Mengine::FactoryServiceInterface))

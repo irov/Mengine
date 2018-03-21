@@ -1,6 +1,6 @@
-#	include "Kernel/BoundingBox.h"
+#include "Kernel/BoundingBox.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	BoundingBox::BoundingBox()

@@ -1,15 +1,15 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundSystemInterface.h"
 
 #   include "Core/ServiceBase.h"
 
 #   include "Factory/Factory.h"
 
-#	include "SilentSoundBuffer.h"
-#	include "SilentSoundSource.h"
+#include "SilentSoundBuffer.h"
+#include "SilentSoundSource.h"
 
-namespace Menge
+namespace Mengine
 {	
 	class SilentSoundSystem
 		: public ServiceBase<SoundSystemInterface>
@@ -51,4 +51,4 @@ namespace Menge
         FactoryPtr m_factorySilentSoundBuffer;
 		FactoryPtr m_factorySilentSoundSource;
 	};
-}	// namespace Menge
+}	

@@ -1,19 +1,19 @@
 # pragma once
 
-#	include "Interface/NotificationServiceInterface.h"
-#	include "Interface/TextInterface.h"
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/TextInterface.h"
 
-#	include "Kernel/Node.h"
-#	include "Kernel/Materialable.h"
+#include "Kernel/Node.h"
+#include "Kernel/Materialable.h"
 
-#	include "Core/ColourValue.h"
-#	include "Core/ValueInterpolator.h"
-#	include "Core/ConstString.h"
-#	include "Core/RenderVertex2D.h"
+#include "Core/ColourValue.h"
+#include "Core/ValueInterpolator.h"
+#include "Core/ConstString.h"
+#include "Core/RenderVertex2D.h"
 
-#	include "Math/vec4.h"
+#include "math/vec4.h"
 
-namespace Menge
+namespace Mengine
 {
     class TextLine;
 	typedef stdex::vector<TextLine> TVectorTextLine;

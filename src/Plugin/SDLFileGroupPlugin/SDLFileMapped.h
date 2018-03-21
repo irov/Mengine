@@ -2,7 +2,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-namespace Menge
+namespace Mengine
 {
     class SDLFileMapped
         : public FileMappedInterface
@@ -18,4 +18,4 @@ namespace Menge
         InputStreamInterfacePtr createFileStream() override;
         bool openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** _memory ) override;
     };
-}	// namespace Menge
+}	// namespace Mengine

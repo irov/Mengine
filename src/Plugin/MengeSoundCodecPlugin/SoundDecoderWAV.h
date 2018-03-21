@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Codec/SoundDecoder.h"
+#include "Codec/SoundDecoder.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 	class SoundDecoderWAV
@@ -27,4 +27,4 @@ namespace Menge
 	protected:
 		uint32_t m_chunkDataPos;
 	};
-}	// namespace Menge
+}	

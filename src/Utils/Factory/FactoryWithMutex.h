@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Factory.h"
+#include "Factory.h"
 
-#	include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 	class FactoryWithMutex

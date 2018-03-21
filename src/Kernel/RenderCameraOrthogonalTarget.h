@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-#	include "Kernel/RenderCameraOrthogonal.h"
+#include "Kernel/RenderCameraOrthogonal.h"
 
-namespace Menge
+namespace Mengine
 {
 	class RenderCameraOrthogonalTarget
 		: public Node

@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeManagerInterface.h"
 
 #   include "Core/ServantBase.h"
 
-#	include "Kernel/Eventable.h"
-#	include "Kernel/Entity.h"
+#include "Kernel/Eventable.h"
+#include "Kernel/Entity.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class EntityPrototypeGenerator

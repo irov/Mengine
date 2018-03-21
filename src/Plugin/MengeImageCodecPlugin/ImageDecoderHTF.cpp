@@ -1,14 +1,14 @@
-#	include "ImageDecoderHTF.h"
+#include "ImageDecoderHTF.h"
 #   include "ImageVerifyHTF.h"
 
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-#	include "Core/Stream.h"
+#include "Core/Stream.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     static PixelFormat s_convertFormat( uint32_t _format )
@@ -92,4 +92,4 @@ namespace Menge
 		return _bufferSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

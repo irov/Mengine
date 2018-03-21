@@ -1,4 +1,4 @@
-#	include "ResourceVideo.h"
+#include "ResourceVideo.h"
 
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/RenderSystemInterface.h"
@@ -9,11 +9,11 @@
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/ConfigInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceVideo::ResourceVideo()

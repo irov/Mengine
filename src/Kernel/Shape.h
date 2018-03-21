@@ -2,7 +2,7 @@
 
 #   include "Kernel/Node.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class Surface> SurfacePtr;

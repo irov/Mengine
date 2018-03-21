@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/AffectorType.h"
+#include "Kernel/AffectorType.h"
 
-#	include "stdex/intrusive_slug_list_size.h"
-#	include "stdex/intrusive_slug.h"
+#include "stdex/intrusive_slug_list_size.h"
+#include "stdex/intrusive_slug.h"
 
-#	include "Math/vec3.h"
+#include "math/vec3.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Affector;
 

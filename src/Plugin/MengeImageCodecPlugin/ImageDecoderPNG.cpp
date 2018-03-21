@@ -1,16 +1,16 @@
-#	include "ImageDecoderPNG.h"
+#include "ImageDecoderPNG.h"
 
-#	include "Interface/MemoryInterface.h"
+#include "Interface/MemoryInterface.h"
 
-#	include "Core/MemoryHelper.h"
+#include "Core/MemoryHelper.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "stdex/allocator.h"
+#include "stdex/allocator.h"
 
 #	define PNG_BYTES_TO_CHECK 8
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static void s_handlerError( png_structp png_ptr, const char * _error ) 

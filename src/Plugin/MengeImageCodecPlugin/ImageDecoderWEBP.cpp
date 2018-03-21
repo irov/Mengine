@@ -1,13 +1,13 @@
-#	include "ImageDecoderWEBP.h"
+#include "ImageDecoderWEBP.h"
 
-#	include "Interface/MemoryInterface.h"
+#include "Interface/MemoryInterface.h"
 
-#	include "Core/MemoryHelper.h"
+#include "Core/MemoryHelper.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderWEBP::ImageDecoderWEBP()
@@ -190,4 +190,4 @@ namespace Menge
 
 		return true;
 	}
-}	// namespace Menge
+}	

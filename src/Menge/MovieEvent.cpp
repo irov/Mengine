@@ -2,7 +2,7 @@
 
 #   include "pybind/pybind.hpp"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MovieEvent::MovieEvent()

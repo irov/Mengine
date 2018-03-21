@@ -1,14 +1,14 @@
-#	include "PathFinderMap.h"
+#include "PathFinderMap.h"
 
-#	include "Interface/WatchdogInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/ThreadSystemInterface.h"
+#include "Interface/WatchdogInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderMap::PathFinderMap()
@@ -610,7 +610,7 @@ namespace Menge
 	{
 		(void)_state;
 
-		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) == 0 )
+		if( ( _debugMask & MENGINE_DEBUG_HOTSPOTS ) == 0 )
 		{
 			return;
 		}

@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/LoggerInterface.h"
+#include "Interface/LoggerInterface.h"
 
 #   include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class MessageBoxLogger
 		: public ServantBase<LoggerInterface>

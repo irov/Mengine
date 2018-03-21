@@ -1,30 +1,30 @@
-#	include "RenderEngine.h"
+#include "RenderEngine.h"
 
-#	include "Interface/CodecInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/ImageCodecInterface.h"
+#include "Interface/CodecInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/ImageCodecInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/WatchdogInterface.h"
 #   include "Interface/ConfigInterface.h"
 
-//#	include "Megatextures.h"
+//#include "Megatextures.h"
 
-#	include "Core/RenderUtils.h"
+#include "Core/RenderUtils.h"
 
-#   include "Math/convex8.h"
+#   include "math/convex8.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "stdex/memorycopy.h"
-#	include "stdex/intrusive_ptr_base.h"
+#include "stdex/memorycopy.h"
+#include "stdex/intrusive_ptr_base.h"
 
-#	include <math.h>
+#include <math.h>
 #   include <memory.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( RenderService, Menge::RenderEngine );
+SERVICE_FACTORY( RenderService, Mengine::RenderEngine );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     static bool hasRenderObjectFlag( const RenderObject * ro, uint32_t _flag )
@@ -50,7 +50,7 @@ namespace Menge
         , m_currentStage( nullptr )
         , m_nullTexture( nullptr )
         , m_renderVertexCount( 0 )
-        , m_renderIndicesCount( 0 )
+        , m_renderIndexCount( 0 )
         , m_batchMode( ERBM_SMART )
         , m_currentMaterialId( 0 )
         , m_iterateRenderObjects( 0 )
@@ -87,7 +87,7 @@ namespace Menge
         {
             uint32_t indexOffset = i * 6;
 
-            RenderIndices vertexOffset = (RenderIndices)i * 4;
+            RenderIndex vertexOffset = (RenderIndex)i * 4;
 
             m_indicesQuad[indexOffset + 0] = vertexOffset + 0;
             m_indicesQuad[indexOffset + 1] = vertexOffset + 3;
@@ -99,7 +99,7 @@ namespace Menge
 
         for( uint32_t i = 0; i != maxLineBatch; ++i )
         {
-            RenderIndices vertexOffset = (RenderIndices)i;
+            RenderIndex vertexOffset = (RenderIndex)i;
 
             m_indicesLine[i] = vertexOffset;
         }
@@ -113,7 +113,7 @@ namespace Menge
 #ifndef MENGINE_MASTER_RELEASE 
         m_debugFillrateCalcMode = true;
 #endif // _DEBUG
- 
+
         //m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
         uint32_t batchMode = CONFIG_VALUE( "Engine", "RenderServiceBatchMode", 2 );
@@ -188,7 +188,7 @@ namespace Menge
 
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO("RenderEngine::createRenderWindow:\nwindow resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
+        LOGGER_INFO( "RenderEngine::createRenderWindow:\nwindow resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , m_contentResolution.getWidth()
@@ -198,7 +198,7 @@ namespace Menge
             , m_renderViewport.end.x
             , m_renderViewport.end.y
             , m_fullscreen
-            );
+        );
 
         uint32_t MultiSampleCount = CONFIG_VALUE( "Render", "MultiSampleCount", 2U );
 
@@ -219,16 +219,16 @@ namespace Menge
 
         if( this->createNullTexture_() == false )
         {
-            LOGGER_ERROR("RenderEngine::createRenderWindow invalid create __null__ texture"
-                );
+            LOGGER_ERROR( "RenderEngine::createRenderWindow invalid create __null__ texture"
+            );
 
             return false;
         }
 
         if( this->createWhitePixelTexture_() == false )
         {
-            LOGGER_ERROR("RenderEngine::createRenderWindow invalid create WhitePixel texture"
-                );
+            LOGGER_ERROR( "RenderEngine::createRenderWindow invalid create WhitePixel texture"
+            );
 
             return false;
         }
@@ -262,10 +262,10 @@ namespace Menge
 
         if( texture == nullptr )
         {
-            LOGGER_ERROR("RenderTextureManager::createNullTexture_ invalid create null texture %d:%d"
+            LOGGER_ERROR( "RenderTextureManager::createNullTexture_ invalid create null texture %d:%d"
                 , null_width
                 , null_height
-                );
+            );
 
             return false;
         }
@@ -283,10 +283,10 @@ namespace Menge
 
         if( textureData == nullptr )
         {
-            LOGGER_ERROR("RenderTextureManager::createNullTexture_ invalid lock null texture %d:%d"
+            LOGGER_ERROR( "RenderTextureManager::createNullTexture_ invalid lock null texture %d:%d"
                 , null_width
                 , null_height
-                );
+            );
 
             return false;
         }
@@ -334,10 +334,10 @@ namespace Menge
 
         if( texture == nullptr )
         {
-            LOGGER_ERROR("RenderTextureManager::createWhitePixelTexture_ invalid create null texture %d:%d"
+            LOGGER_ERROR( "RenderTextureManager::createWhitePixelTexture_ invalid create null texture %d:%d"
                 , null_width
                 , null_height
-                );
+            );
 
             return false;
         }
@@ -355,10 +355,10 @@ namespace Menge
 
         if( textureData == nullptr )
         {
-            LOGGER_ERROR("RenderTextureManager::createWhitePixelTexture_ invalid lock null texture %d:%d"
+            LOGGER_ERROR( "RenderTextureManager::createWhitePixelTexture_ invalid lock null texture %d:%d"
                 , null_width
                 , null_height
-                );
+            );
 
             return false;
         }
@@ -401,7 +401,7 @@ namespace Menge
 
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO("RenderEngine::changeWindowMode:\nwindow resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
+        LOGGER_INFO( "RenderEngine::changeWindowMode:\nwindow resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , m_contentResolution.getWidth()
@@ -411,7 +411,7 @@ namespace Menge
             , m_renderViewport.end.x
             , m_renderViewport.end.y
             , m_fullscreen
-            );
+        );
 
         if( m_windowCreated == false )
         {
@@ -819,7 +819,7 @@ namespace Menge
         m_currentStage = nullptr;
 
         m_renderVertexCount = 0;
-        m_renderIndicesCount = 0;
+        m_renderIndexCount = 0;
 
         m_currentBlendSrc = BF_ONE;
         m_currentBlendDst = BF_ZERO;
@@ -828,12 +828,12 @@ namespace Menge
         m_depthBufferWriteEnable = false;
         m_alphaBlendEnable = false;
 
-        for( int i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+        for( int i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
         {
             this->restoreTextureStage_( i );
         }
 
-        std::fill_n( m_currentTexturesID, MENGE_MAX_TEXTURE_STAGES, 0 );
+        std::fill_n( m_currentTexturesID, MENGINE_MAX_TEXTURE_STAGES, 0 );
 
         m_currentVBHandle = nullptr;
         m_currentIBHandle = nullptr;
@@ -849,7 +849,7 @@ namespace Menge
         mt::ident_m4( worldTransform );
 
         RENDER_SYSTEM()->setProjectionMatrix( projTransform );
-        RENDER_SYSTEM()->setModelViewMatrix( viewTransform );
+        RENDER_SYSTEM()->setViewMatrix( viewTransform );
         RENDER_SYSTEM()->setWorldMatrix( worldTransform );
         RENDER_SYSTEM()->setVertexBuffer( m_currentVBHandle );
         RENDER_SYSTEM()->setIndexBuffer( m_currentIBHandle );
@@ -864,9 +864,9 @@ namespace Menge
         RENDER_SYSTEM()->setLightingEnable( false );
         RENDER_SYSTEM()->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
 
-        LOGGER_INFO("RenderEngine::restoreRenderSystemStates_ texture stages %d"
-            , MENGE_MAX_TEXTURE_STAGES
-            );
+        LOGGER_INFO( "RenderEngine::restoreRenderSystemStates_ texture stages %d"
+            , MENGINE_MAX_TEXTURE_STAGES
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport, float zn, float zf )
@@ -1054,7 +1054,7 @@ namespace Menge
             const mt::mat4f & viewMatrix = _pass.camera->getCameraViewMatrix();
 
             RENDER_SYSTEM()
-                ->setModelViewMatrix( viewMatrix );
+                ->setViewMatrix( viewMatrix );
 
             const mt::mat4f & projectionMatrix = _pass.camera->getCameraProjectionMatrix();
 
@@ -1073,7 +1073,7 @@ namespace Menge
             mt::ident_m4( viewMatrix );
 
             RENDER_SYSTEM()
-                ->setModelViewMatrix( viewMatrix );
+                ->setViewMatrix( viewMatrix );
 
             mt::mat4f projectionMatrix;
             mt::ident_m4( projectionMatrix );
@@ -1136,54 +1136,54 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::addRenderObject( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _verticesNum
-        , const RenderIndices * _indices, uint32_t _indicesNum
+        , const RenderIndex * _indices, uint32_t _indicesNum
         , const mt::box2f * _bb, bool _debug )
     {
 #	ifdef _DEBUG
         if( _state == nullptr )
         {
-            LOGGER_ERROR("RenderEngine::renderObject2D _state == NULL"
-                );
+            LOGGER_ERROR( "RenderEngine::renderObject2D _state == NULL"
+            );
 
             return;
         }
 
         if( _state->viewport == nullptr )
         {
-            LOGGER_ERROR("RenderEngine::renderObject2D viewport == NULL"
-                );
+            LOGGER_ERROR( "RenderEngine::renderObject2D viewport == NULL"
+            );
 
             return;
         }
 
         if( _state->camera == nullptr )
         {
-            LOGGER_ERROR("RenderEngine::renderObject2D camera == NULL"
-                );
+            LOGGER_ERROR( "RenderEngine::renderObject2D camera == NULL"
+            );
 
             return;
         }
 
         if( _material == nullptr )
         {
-            LOGGER_ERROR("RenderEngine::renderObject2D _material == NULL"
-                );
+            LOGGER_ERROR( "RenderEngine::renderObject2D _material == NULL"
+            );
 
             return;
         }
 
         if( _vertices == nullptr )
         {
-            LOGGER_ERROR("RenderEngine::renderObject2D _vertices == NULL"
-                );
+            LOGGER_ERROR( "RenderEngine::renderObject2D _vertices == NULL"
+            );
 
             return;
         }
 
         if( _indices == nullptr )
         {
-            LOGGER_ERROR("RenderEngine::renderObject2D _indices == NULL"
-                );
+            LOGGER_ERROR( "RenderEngine::renderObject2D _indices == NULL"
+            );
 
             return;
         }
@@ -1191,9 +1191,9 @@ namespace Menge
 
         if( m_renderObjects.full() == true )
         {
-            LOGGER_ERROR("RenderEngine::renderObject2D max render objects %u"
+            LOGGER_ERROR( "RenderEngine::renderObject2D max render objects %u"
                 , m_renderObjects.size()
-                );
+            );
 
             return;
         }
@@ -1338,7 +1338,7 @@ namespace Menge
         }
 
         m_renderVertexCount += _verticesNum;
-        m_renderIndicesCount += _indicesNum;
+        m_renderIndexCount += _indicesNum;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::addRenderQuad( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
@@ -1349,15 +1349,15 @@ namespace Menge
 
         if( indicesNum >= m_indicesQuad.size() )
         {
-            LOGGER_ERROR("RenderEngine::addRenderQuad count %d > max count %d"
+            LOGGER_ERROR( "RenderEngine::addRenderQuad count %d > max count %d"
                 , indicesNum
                 , m_indicesQuad.size()
-                );
+            );
 
             return;
         }
 
-        RenderIndices * indices = m_indicesQuad.buff();
+        RenderIndex * indices = m_indicesQuad.buff();
 
         this->addRenderObject( _state, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
     }
@@ -1370,15 +1370,15 @@ namespace Menge
 
         if( indicesNum >= m_indicesLine.size() )
         {
-            LOGGER_ERROR("RenderEngine::addRenderLine count %d > max count %d"
+            LOGGER_ERROR( "RenderEngine::addRenderLine count %d > max count %d"
                 , indicesNum
                 , m_indicesLine.size()
-                );
+            );
 
             return;
         }
 
-        RenderIndices * indices = m_indicesLine.buff();
+        RenderIndex * indices = m_indicesLine.buff();
 
         this->addRenderObject( _state, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
     }
@@ -1407,9 +1407,14 @@ namespace Menge
     RenderVertexBufferInterfacePtr RenderEngine::createVertexBuffer( const RenderVertex2D * _buffer, uint32_t _count )
     {
         RenderVertexBufferInterfacePtr vb = RENDER_SYSTEM()
-            ->createVertexBuffer( _count, false );
+            ->createVertexBuffer( sizeof( RenderVertex2D ), BT_STATIC );
 
         if( vb == nullptr )
+        {
+            return nullptr;
+        }
+
+        if( vb->resize( _count ) == false )
         {
             return nullptr;
         }
@@ -1419,12 +1424,17 @@ namespace Menge
         return vb;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderIndexBufferInterfacePtr RenderEngine::createIndicesBuffer( const RenderIndices * _buffer, uint32_t _count )
+    RenderIndexBufferInterfacePtr RenderEngine::createIndicesBuffer( const RenderIndex * _buffer, uint32_t _count )
     {
         RenderIndexBufferInterfacePtr ib = RENDER_SYSTEM()
-            ->createIndexBuffer( _count, false );
+            ->createIndexBuffer( sizeof( RenderIndex ), BT_STATIC );
 
         if( ib == nullptr )
+        {
+            return nullptr;
+        }
+
+        if( ib->resize( _count ) == false )
         {
             return nullptr;
         }
@@ -1436,22 +1446,24 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderEngine::updateVertexBuffer( const RenderVertexBufferInterfacePtr & _vb, const RenderVertex2D * _buffer, uint32_t _count )
     {
-        RenderVertex2D * vbuffer = _vb->lock( 0, _count, BLF_LOCK_DISCARD );
+        MemoryInterfacePtr memory = _vb->lock( 0, _count, BLF_LOCK_DISCARD );
 
-        if( vbuffer == nullptr )
+        if( memory == nullptr )
         {
-            LOGGER_ERROR("RenderEngine::updateVertexBuffer failed to lock vertex buffer"
-                );
+            LOGGER_ERROR( "RenderEngine::updateVertexBuffer failed to lock vertex buffer"
+            );
 
             return false;
         }
+
+        RenderVertex2D * vbuffer = memory->getMemory();
 
         stdex::memorycopy_pod( vbuffer, 0, _buffer, _count );
 
         if( _vb->unlock() == false )
         {
-            LOGGER_ERROR("RenderEngine::updateVertexBuffer failed to unlock vertex buffer"
-                );
+            LOGGER_ERROR( "RenderEngine::updateVertexBuffer failed to unlock vertex buffer"
+            );
 
             return false;
         }
@@ -1459,24 +1471,26 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::updateIndicesBuffer( const RenderIndexBufferInterfacePtr & _ib, const RenderIndices * _buffer, uint32_t _count )
+    bool RenderEngine::updateIndicesBuffer( const RenderIndexBufferInterfacePtr & _ib, const RenderIndex * _buffer, uint32_t _count )
     {
-        RenderIndices * ibuffer = _ib->lock( 0, _count, BLF_LOCK_DISCARD );
+        MemoryInterfacePtr memory = _ib->lock( 0, _count, BLF_LOCK_DISCARD );
 
-        if( ibuffer == nullptr )
+        if( memory == nullptr )
         {
-            LOGGER_ERROR("RenderEngine::updateIndicesBuffer failed to lock vertex buffer"
-                );
+            LOGGER_ERROR( "RenderEngine::updateIndicesBuffer failed to lock vertex buffer"
+            );
 
             return false;
         }
+
+        RenderIndex * ibuffer = memory->getMemory();
 
         stdex::memorycopy_pod( ibuffer, 0, _buffer, _count );
 
         if( _ib->unlock() == false )
         {
-            LOGGER_ERROR("RenderEngine::updateIndicesBuffer: failed to unlock vertex buffer"
-                );
+            LOGGER_ERROR( "RenderEngine::updateIndicesBuffer: failed to unlock vertex buffer"
+            );
 
             return false;
         }
@@ -1488,16 +1502,16 @@ namespace Menge
     {
         if( m_renderVertexCount >= m_maxVertexCount )
         {
-            LOGGER_WARNING("RenderEngine::makeBatches_: vertex buffer overflow"
-                );
+            LOGGER_WARNING( "RenderEngine::makeBatches_: vertex buffer overflow"
+            );
 
             return false;
         }
 
-        if( m_renderIndicesCount >= m_maxIndexCount )
+        if( m_renderIndexCount >= m_maxIndexCount )
         {
-            LOGGER_WARNING("RenderEngine::makeBatches_: indices buffer overflow"
-                );
+            LOGGER_WARNING( "RenderEngine::makeBatches_: indices buffer overflow"
+            );
 
             return false;
         }
@@ -1507,45 +1521,48 @@ namespace Menge
             return false;
         }
 
-        if( m_renderIndicesCount == 0 )
+        if( m_renderIndexCount == 0 )
         {
             return false;
         }
 
-        RenderVertex2D * vertexBuffer = m_vbHandle2D->lock( 0, m_renderVertexCount, BLF_LOCK_DISCARD );
+        MemoryInterfacePtr vertexMemory = m_vbHandle2D->lock( 0, m_renderVertexCount, BLF_LOCK_DISCARD );
 
-        if( vertexBuffer == nullptr )
+        if( vertexMemory == nullptr )
         {
-            LOGGER_ERROR("RenderEngine::makeBatches_: failed to lock vertex buffer"
-                );
+            LOGGER_ERROR( "RenderEngine::makeBatches_: failed to lock vertex buffer"
+            );
 
             return false;
         }
 
-        RenderIndices * indicesBuffer = m_ibHandle2D->lock( 0, m_renderIndicesCount, BLF_LOCK_NONE );
+        MemoryInterfacePtr indexMemory = m_ibHandle2D->lock( 0, m_renderIndexCount, BLF_LOCK_NONE );
 
-        if( indicesBuffer == nullptr )
+        if( indexMemory == nullptr )
         {
-            LOGGER_ERROR("RenderEngine::makeBatches_: failed to lock indices buffer"
-                );
+            LOGGER_ERROR( "RenderEngine::makeBatches_: failed to lock indices buffer"
+            );
 
             return false;
         }
 
-        this->insertRenderPasses_( vertexBuffer, indicesBuffer, m_renderVertexCount, m_renderIndicesCount );
+        RenderVertex2D * vertexBuffer = vertexMemory->getMemory();
+        RenderIndex * indexBuffer = indexMemory->getMemory();
+
+        this->insertRenderPasses_( vertexBuffer, indexBuffer, m_renderVertexCount, m_renderIndexCount );
 
         if( m_ibHandle2D->unlock() == false )
         {
-            LOGGER_ERROR("RenderEngine::makeBatches_: failed to unlock indices buffer"
-                );
+            LOGGER_ERROR( "RenderEngine::makeBatches_: failed to unlock indices buffer"
+            );
 
             return false;
         }
 
         if( m_vbHandle2D->unlock() == false )
         {
-            LOGGER_ERROR("RenderEngine::makeBatches_: failed to unlock vertex buffer"
-                );
+            LOGGER_ERROR( "RenderEngine::makeBatches_: failed to unlock vertex buffer"
+            );
 
             return false;
         }
@@ -1553,7 +1570,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize )
+    void RenderEngine::insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndex * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize )
     {
         uint32_t vbPos = 0;
         uint32_t ibPos = 0;
@@ -1570,7 +1587,7 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
+    void RenderEngine::batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndex * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
     {
         uint32_t vbPos = _vbPos;
         uint32_t ibPos = _ibPos;
@@ -1643,7 +1660,7 @@ namespace Menge
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::batchRenderObjectSmart_( RenderPass * _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
+    void RenderEngine::batchRenderObjectSmart_( RenderPass * _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndex * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
     {
         uint32_t vbPos = _vbPos;
         uint32_t ibPos = _ibPos;
@@ -1713,7 +1730,7 @@ namespace Menge
         _ibPos = ibPos;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
+    void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, RenderIndex * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
     {
         uint32_t vbPos = _vbPos;
         uint32_t ibPos = _ibPos;
@@ -1769,12 +1786,12 @@ namespace Menge
         _ibPos = ibPos;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t _vbPos, uint32_t _ibPos ) const
+    bool RenderEngine::insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndex * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t _vbPos, uint32_t _ibPos ) const
     {
         if( stdex::memorycopy_safe_pod( _vertexBuffer, _vbPos, _vbSize, _renderObject->vertexData, _renderObject->vertexCount ) == false )
         {
-            LOGGER_ERROR("RenderEngine::insertRenderObject_ vertex buffer overrlow!"
-                );
+            LOGGER_ERROR( "RenderEngine::insertRenderObject_ vertex buffer overrlow!"
+            );
 
             return false;
         }
@@ -1791,19 +1808,19 @@ namespace Menge
 
         if( _ibPos > _ibSize )
         {
-            LOGGER_ERROR("RenderEngine::insertRenderObject_ indices buffer overrlow!"
-                );
+            LOGGER_ERROR( "RenderEngine::insertRenderObject_ indices buffer overrlow!"
+            );
 
             return false;
         }
 
-        RenderIndices * offsetIndicesBuffer = _indicesBuffer + _ibPos;
+        RenderIndex * offsetIndicesBuffer = _indicesBuffer + _ibPos;
 
-        RenderIndices * src = offsetIndicesBuffer;
-        RenderIndices * src_end = offsetIndicesBuffer + _renderObject->indicesCount;
-        const RenderIndices * dst = _renderObject->indicesData;
+        RenderIndex * src = offsetIndicesBuffer;
+        RenderIndex * src_end = offsetIndicesBuffer + _renderObject->indicesCount;
+        const RenderIndex * dst = _renderObject->indicesData;
 
-        RenderIndices indices_offset = (RenderIndices)_vbPos;
+        RenderIndex indices_offset = (RenderIndex)_vbPos;
         while( src != src_end )
         {
             *src = *dst + indices_offset;
@@ -1831,26 +1848,36 @@ namespace Menge
     bool RenderEngine::create2DBuffers_()
     {
         m_ibHandle2D = RENDER_SYSTEM()
-            ->createIndexBuffer( m_maxIndexCount, false );
+            ->createIndexBuffer( sizeof( RenderIndex ), BT_STATIC );
 
         if( m_ibHandle2D == nullptr )
         {
-            LOGGER_ERROR("RenderEngine::recreate2DBuffers_: can't create index buffer for %d indicies"
+            LOGGER_ERROR( "RenderEngine::recreate2DBuffers_: can't create index buffer for %d indicies"
                 , m_maxIndexCount
-                );
+            );
 
             return false;
         }
 
+        if( m_ibHandle2D->resize( m_maxIndexCount ) == false )
+        {
+            return false;
+        }
+
         m_vbHandle2D = RENDER_SYSTEM()
-            ->createVertexBuffer( m_maxVertexCount, true );
+            ->createVertexBuffer( sizeof( RenderVertex2D ), BT_DYNAMIC );
 
         if( m_vbHandle2D == nullptr )
         {
-            LOGGER_ERROR("RenderEngine::recreate2DBuffers_: can't create index buffer for %d indicies"
+            LOGGER_ERROR( "RenderEngine::recreate2DBuffers_: can't create index buffer for %d indicies"
                 , m_maxIndexCount
-                );
+            );
 
+            return false;
+        }
+
+        if( m_vbHandle2D->resize( m_maxVertexCount ) == false )
+        {
             return false;
         }
 
@@ -1990,15 +2017,15 @@ namespace Menge
         m_debugInfo.triangle += triangleNum2 * 2;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum, const RenderIndices * _indices, uint32_t _indicesNum, const Viewport & _viewport )
+    void RenderEngine::calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum, const RenderIndex * _indices, uint32_t _indicesNum, const Viewport & _viewport )
     {
         (void)_vertexNum;
 
         for( uint32_t i = 0; i != (_indicesNum / 3); ++i )
         {
-            RenderIndices i0 = _indices[i + 0];
-            RenderIndices i1 = _indices[i + 1];
-            RenderIndices i2 = _indices[i + 2];
+            RenderIndex i0 = _indices[i + 0];
+            RenderIndex i1 = _indices[i + 1];
+            RenderIndex i2 = _indices[i + 2];
 
             const RenderVertex2D & v0 = _vertex[i0];
             const RenderVertex2D & v1 = _vertex[i1];

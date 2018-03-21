@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "OALSoundBufferMemory.h"
+#include "OALSoundBufferMemory.h"
 
-namespace Menge
+namespace Mengine
 {
 #   define OPENAL_STREAM_BUFFER_COUNT 2
 #   define OPENAL_STREAM_BUFFER_SIZE (44100)
@@ -48,4 +48,4 @@ namespace Menge
 		bool getUpdating_() const;
 	};
 	
-}	// namespace Menge
+}	

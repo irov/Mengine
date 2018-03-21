@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/TextInterface.h"
+#include "Interface/TextInterface.h"
 
-#	include "Kernel/Servant.h"
+#include "Kernel/Servant.h"
 
-namespace Menge
+namespace Mengine
 {
 	struct BitmapGlyphChar
 	{

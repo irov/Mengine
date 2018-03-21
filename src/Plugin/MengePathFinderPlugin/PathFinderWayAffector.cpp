@@ -1,12 +1,12 @@
-#	include "PathFinderWayAffector.h"
+#include "PathFinderWayAffector.h"
 
-#	include "Core/ValueInterpolator.h"
+#include "Core/ValueInterpolator.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-#	include <math.h>
+#include <math.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderWayAffector::PathFinderWayAffector()

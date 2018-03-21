@@ -1,6 +1,6 @@
 #   pragma once
 
-namespace Menge
+namespace Mengine
 {
     typedef wchar_t WChar;
     typedef char Char;

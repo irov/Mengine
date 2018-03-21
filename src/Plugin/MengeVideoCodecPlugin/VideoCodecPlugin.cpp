@@ -1,17 +1,17 @@
-#	include "VideoCodecPlugin.h"
+#include "VideoCodecPlugin.h"
 
 //#   include "VideoDecoderGVF.h"
 //#   include "VideoDecoderVPX.h"
-#	include "VideoDecoderTheora.h"
+#include "VideoDecoderTheora.h"
 
 #   include "Codec/DecoderFactory.h"
 
 #   include "Interface/StringizeInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( MengeVideoCodec, Menge::VideoCodecPlugin );
+PLUGIN_FACTORY( MengeVideoCodec, Mengine::VideoCodecPlugin );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	VideoCodecPlugin::VideoCodecPlugin()

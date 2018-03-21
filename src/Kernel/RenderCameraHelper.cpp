@@ -1,6 +1,6 @@
-#	include "RenderCameraHelper.h"
+#include "RenderCameraHelper.h"
 
-namespace Menge
+namespace Mengine
 {
 	namespace Helper
 	{

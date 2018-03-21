@@ -3,9 +3,9 @@
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/WatchdogInterface.h"
 #   include "Interface/StringizeInterface.h"
-#	include "Interface/PrefetcherInterface.h"
-#	include "Interface/GraveyardInterface.h"
-#	include "Interface/ConfigInterface.h"
+#include "Interface/PrefetcherInterface.h"
+#include "Interface/GraveyardInterface.h"
+#include "Interface/ConfigInterface.h"
 
 #   include "RenderTexture.h"
 #   include "DecoderRenderImageProvider.h"
@@ -13,14 +13,14 @@
 #   include "Factory/FactoryPool.h"
 #   include "Factory/FactoryPoolWithListener.h"
 
-#	include "stdex/memorycopy.h"
+#include "stdex/memorycopy.h"
 
 #   include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( RenderTextureService, Menge::RenderTextureManager );
+SERVICE_FACTORY( RenderTextureService, Mengine::RenderTextureManager );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     RenderTextureManager::RenderTextureManager()
@@ -344,7 +344,7 @@ namespace Menge
             return texture;
         }
 
-		if( SERVICE_EXIST( Menge::GraveyardInterface ) == true )
+		if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
 		{
 			RenderTextureInterfacePtr resurrect_texture = GRAVEYARD_SERVICE()
 				->resurrectTexture( _pakName, _fileName );
@@ -548,7 +548,7 @@ namespace Menge
 
 			textures.erase( std::make_pair( category, fileName ) );
 
-			if( SERVICE_EXIST( Menge::GraveyardInterface ) == true )
+			if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
 			{
 				GRAVEYARD_SERVICE()
 					->buryTexture( _texture );

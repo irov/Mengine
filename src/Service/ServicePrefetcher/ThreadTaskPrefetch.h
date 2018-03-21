@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/PrefetcherInterface.h"
-#	include "Interface/StreamInterface.h"
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/PrefetcherInterface.h"
+#include "Interface/StreamInterface.h"
+#include "Interface/FileSystemInterface.h"
 
-#	include "Kernel/ThreadTask.h"
+#include "Kernel/ThreadTask.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ThreadTaskPrefetch
 		: public ThreadTask

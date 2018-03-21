@@ -1,6 +1,6 @@
-#	pragma once
+#pragma once
 
-namespace Menge
+namespace Mengine
 {
 	static const D3DFORMAT D32SFormats[] = {D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D16, (D3DFORMAT)0};
 	static const D3DFORMAT D32Formats[] = {D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D15S1, (D3DFORMAT)0};
@@ -399,7 +399,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline D3DFORMAT s_getD3DIndexFormat()
 	{
-		switch( sizeof( RenderIndices ) )
+		switch( sizeof( RenderIndex ) )
 		{
 		case 4: return D3DFMT_INDEX32;
 		case 2: return D3DFMT_INDEX16;

@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/StreamInterface.h"
-#	include "Interface/MemoryInterface.h"
+#include "Interface/StreamInterface.h"
+#include "Interface/MemoryInterface.h"
 
 #   include "Core/ServantBase.h"
 
-#	include "stdex/thread_guard.h"
+#include "stdex/thread_guard.h"
 
-namespace Menge
+namespace Mengine
 {
 	class MemoryProxyInput
 		: public ServantBase<MemoryProxyInputInterface>
@@ -46,6 +46,9 @@ namespace Menge
 
 		STDEX_THREAD_GUARD_INIT;
 	};
-}	// namespace Menge
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<MemoryProxyInput> MemoryProxyInputPtr;
+    //////////////////////////////////////////////////////////////////////////
+}
 
 

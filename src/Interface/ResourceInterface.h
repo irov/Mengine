@@ -2,7 +2,7 @@
 
 #   include "Interface/ServiceInterface.h"
 
-#	include "Core/Visitor.h"
+#include "Core/Visitor.h"
 
 #   include "Config/String.h"
 
@@ -11,7 +11,7 @@
 
 #   include "Factory/Factory.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<class ResourceReference> ResourceReferencePtr;
@@ -172,5 +172,5 @@ namespace Menge
     };
 
 #   define RESOURCE_SERVICE()\
-    ((Menge::ResourceServiceInterface *)SERVICE_GET(Menge::ResourceServiceInterface))
+    ((Mengine::ResourceServiceInterface *)SERVICE_GET(Mengine::ResourceServiceInterface))
 }

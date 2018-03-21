@@ -1,8 +1,8 @@
-#	include "RenderTexture.h"
+#include "RenderTexture.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderTexture::RenderTexture()
@@ -96,4 +96,4 @@ namespace Menge
 		return m_pow2;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

@@ -1,15 +1,15 @@
-#	include "CodecEngine.h"
+#include "CodecEngine.h"
 
-#	include "Interface/CodecInterface.h"
+#include "Interface/CodecInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #   include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( CodecService, Menge::CodecEngine );
+SERVICE_FACTORY( CodecService, Mengine::CodecEngine );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	CodecEngine::CodecEngine()

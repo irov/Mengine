@@ -1,6 +1,6 @@
-#	include "Win32FPSMonitor.h"
+#include "Win32FPSMonitor.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static DWORD WINAPI s_threadFrameSignal( LPVOID lpParameter )

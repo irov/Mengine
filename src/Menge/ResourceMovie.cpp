@@ -1,31 +1,31 @@
-#	include "ResourceMovie.h"
+#include "ResourceMovie.h"
 
-#	include "Interface/ResourceInterface.h"
-#	include "Interface/ConverterInterface.h"
-#	include "Interface/CodecInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/PrefetcherInterface.h"
-#	include "Interface/ConfigInterface.h"
-#	include "Interface/TextInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/ConverterInterface.h"
+#include "Interface/CodecInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/PrefetcherInterface.h"
+#include "Interface/ConfigInterface.h"
+#include "Interface/TextInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "ResourceShape.h"
+#include "ResourceShape.h"
 
-#	include "Consts.h"
+#include "Consts.h"
 
-#	include "Core/Stream.h"
+#include "Core/Stream.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Math/mat4.h"
+#include "math/mat4.h"
 
 #   include "Interface/MovieKeyFrameInterface.h"
 
 #   include <algorithm>
 #   include <math.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceMovie::ResourceMovie()

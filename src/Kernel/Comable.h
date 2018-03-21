@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/COMInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Comable
 	{

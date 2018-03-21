@@ -2,7 +2,7 @@
 
 #   include "ShapeQuad.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ShapeQuadFlex

@@ -1,14 +1,14 @@
-#	include "Win32ConsoleLoggerPlugin.h"
+#include "Win32ConsoleLoggerPlugin.h"
 
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/OptionsInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/OptionsInterface.h"
 
 #   include "Win32ConsoleLogger.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( Win32ConsoleLogger, Menge::Win32ConsoleLoggerPlugin )
+PLUGIN_FACTORY( Win32ConsoleLogger, Mengine::Win32ConsoleLoggerPlugin )
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
     Win32ConsoleLoggerPlugin::Win32ConsoleLoggerPlugin()

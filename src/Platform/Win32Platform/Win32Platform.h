@@ -1,14 +1,14 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/PlatformInterface.h"
+#include "Interface/PlatformInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "Win32MouseEvent.h"
-#	include "Win32AlreadyRunningMonitor.h"
-#	include "Win32FPSMonitor.h"
+#include "Win32MouseEvent.h"
+#include "Win32AlreadyRunningMonitor.h"
+#include "Win32FPSMonitor.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Win32Platform
 		: public ServiceBase<PlatformInterface>
@@ -115,7 +115,7 @@ namespace Menge
 		Win32MouseEvent m_mouseEvent;
 
         uint32_t m_icon;
-        Menge::WString m_projectTitle;
+        Mengine::WString m_projectTitle;
 
 		Tags m_platformTags;
 		Resolution m_windowResolution;

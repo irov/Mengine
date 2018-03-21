@@ -1,8 +1,8 @@
-#	include "Kernel/Layer.h"
+#include "Kernel/Layer.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Layer::Layer()

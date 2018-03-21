@@ -1,10 +1,10 @@
-#	include "MemoryProxyInput.h"
+#include "MemoryProxyInput.h"
 
-#	include "stdex/memorycopy.h"
+#include "stdex/memorycopy.h"
 
-#	include <memory.h>
+#include <memory.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	MemoryProxyInput::MemoryProxyInput()
@@ -127,4 +127,4 @@ namespace Menge
 
 		return true;
 	}
-}	// namespace Menge
+}	

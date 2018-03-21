@@ -1,4 +1,4 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/PlayerInterface.h"
 #   include "Interface/NotificationServiceInterface.h"
@@ -7,16 +7,16 @@
 #   include "Interface/ScheduleManagerInterface.h"
 
 #   include "Core/ServiceBase.h"
-#	include "Core/ConstString.h"
-#	include "Core/Resolution.h"
+#include "Core/ConstString.h"
+#include "Core/Resolution.h"
 
 #   include "Factory/Factory.h"
 
-#	include "Math/vec3.h"
+#include "math/vec3.h"
 
-#	include "pybind/types.hpp"
+#include "pybind/types.hpp"
 
-namespace Menge
+namespace Mengine
 {	
     class Game;
 	class Scene;

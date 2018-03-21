@@ -2,9 +2,9 @@
 
 #   include "Interface/AccountInterface.h"
 
-#	include "Core/ServantBase.h"
+#include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class Game;

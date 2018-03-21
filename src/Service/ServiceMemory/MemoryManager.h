@@ -1,22 +1,22 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/MemoryInterface.h"
-#	include "Interface/MemoryInterface.h"
-#	include "Interface/ThreadSystemInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "MemoryCacheBuffer.h"
-#	include "MemoryCacheInput.h"
-#	include "MemoryProxyInput.h"
-#	include "MemoryInput.h"
-#	include "Memory.h"
+#include "MemoryBuffer.h"
+#   include "MemoryProxy.h"
+#include "MemoryCacheBuffer.h"
+#include "MemoryCacheInput.h"
+#include "MemoryProxyInput.h"
+#include "MemoryInput.h"
 
-#	include "Factory/FactoryWithMutex.h"
+#include "Factory/FactoryWithMutex.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	typedef uint32_t CacheBufferID;
 
@@ -41,11 +41,12 @@ namespace Menge
 		void clearCacheBuffers() override;
 
 	public:
-        MemoryInterfacePtr createMemoryCacheBuffer() override;
+        MemoryBufferInterfacePtr createMemoryBuffer() override;
+        MemoryProxyInterfacePtr createMemoryProxy() override;
+        MemoryBufferInterfacePtr createMemoryCacheBuffer() override;
 		MemoryCacheInputInterfacePtr createMemoryCacheInput() override;
 		MemoryProxyInputInterfacePtr createMemoryProxyInput() override;
 		MemoryInputInterfacePtr createMemoryInput() override;
-		MemoryInterfacePtr createMemory() override;
 
 	protected:
 		CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const char * _file, uint32_t _line );
@@ -68,10 +69,11 @@ namespace Menge
 			
 		ThreadMutexInterfacePtr m_memoryCacheMutex;
 
-		FactoryWithMutexPtr m_factoryPoolMemoryCacheBuffer;
-		FactoryWithMutexPtr m_factoryPoolMemoryCacheInput;
-		FactoryWithMutexPtr m_factoryPoolMemoryProxyInput;
-		FactoryWithMutexPtr m_factoryPoolMemoryInput;
-		FactoryWithMutexPtr m_factoryPoolMemory;
+        FactoryWithMutexPtr m_factoryMemoryBuffer;
+        FactoryWithMutexPtr m_factoryMemoryProxy;
+        FactoryWithMutexPtr m_factoryMemoryCacheBuffer;
+		FactoryWithMutexPtr m_factoryMemoryCacheInput;
+		FactoryWithMutexPtr m_factoryMemoryProxyInput;
+		FactoryWithMutexPtr m_factoryMemoryInput;
 	};
 }

@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {
     typedef stdex::intrusive_ptr<class ResourceImage> ResourceImagePtr;
     typedef stdex::intrusive_ptr<class RenderMaterialInterface> RenderMaterialInterfacePtr;

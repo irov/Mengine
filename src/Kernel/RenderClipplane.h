@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Viewport;
 	

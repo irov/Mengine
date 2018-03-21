@@ -7,7 +7,7 @@
 #	include "SDL_thread.h"
 #	include "SDL_timer.h"
 
-namespace Menge
+namespace Mengine
 {
     class SDLThreadIdentity
         : public ServantBase<ThreadIdentityInterface>

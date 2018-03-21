@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-#	include "AreaOfInterest.h"
+#include "AreaOfInterest.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class NodeAOITriggerUserData

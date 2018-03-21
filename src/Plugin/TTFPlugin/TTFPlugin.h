@@ -1,14 +1,14 @@
-#	pragma once
+#pragma once
 
-#	include "Core/PluginBase.h"
+#include "Core/PluginBase.h"
 
-#	include "TTFServiceInterface.h"
+#include "TTFServiceInterface.h"
 
-#	include "ft2build.h"
-#	include "freetype/freetype.h"
-#	include "freetype/ftglyph.h"
+#include "ft2build.h"
+#include "freetype/freetype.h"
+#include "freetype/ftglyph.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class TTFPlugin

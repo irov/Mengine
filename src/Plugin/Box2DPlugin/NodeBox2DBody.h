@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
-#	include "Core/Polygon.h"
+#include "Kernel/Node.h"
+#include "Core/Polygon.h"
 
-#	include "Box2DBody.h"
+#include "Box2DBody.h"
 
-namespace Menge
+namespace Mengine
 {
     class NodeBox2DBody
         : public Node

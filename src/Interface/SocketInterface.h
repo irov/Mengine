@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/ServiceInterface.h"
 
 #   include "Factory/FactorablePtr.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class SocketInterface
@@ -31,5 +31,5 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define TIMELINE_SERVICE( serviceProvider )\
-    ((Menge::TimelineServiceInterface*)SERVICE_GET(serviceProvider, Menge::TimelineServiceInterface))
+    ((Mengine::TimelineServiceInterface*)SERVICE_GET(serviceProvider, Mengine::TimelineServiceInterface))
 }

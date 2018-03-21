@@ -5,11 +5,11 @@
 
 #   include "Core/ServiceBase.h"
 
-#	include "Package.h"
+#include "Package.h"
 
-#	include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
-namespace Menge
+namespace Mengine
 {
     class PackageService
 		: public ServiceBase<PackageServiceInterface>

@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include <d3d9.h>
+#include <d3d9.h>
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class DX9ErrorHelper

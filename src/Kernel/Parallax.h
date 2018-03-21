@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-#	include "Kernel/RenderCameraProxy.h"
+#include "Kernel/RenderCameraProxy.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Parallax
 		: public Node

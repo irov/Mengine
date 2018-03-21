@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
-#	include "Kernel/Animatable.h"
-#	include "Kernel/Surface.h"
+#include "Kernel/Node.h"
+#include "Kernel/Animatable.h"
+#include "Kernel/Surface.h"
 
-#	include "Kernel/RenderCameraProjection.h"
-#	include "Kernel/RenderViewport.h"
+#include "Kernel/RenderCameraProjection.h"
+#include "Kernel/RenderViewport.h"
 #   include "Kernel/MatrixProxy.h"
 
 #   include "Menge/HotSpotPolygon.h"
@@ -17,7 +17,7 @@
 
 #   include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Movie2EventReceiver
@@ -91,7 +91,7 @@ namespace Menge
 		void _update( float _current, float _timing ) override;
 
 	protected:
-		void _render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
+		void _render( Mengine::RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
 
 	protected:
 		void _changeParent( Node * _oldParent, Node * _newParent ) override;

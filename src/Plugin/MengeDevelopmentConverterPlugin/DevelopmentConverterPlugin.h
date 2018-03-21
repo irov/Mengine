@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ConverterInterface.h"
+#include "Interface/ConverterInterface.h"
 
-#	include "Core/PluginBase.h"
+#include "Core/PluginBase.h"
 
-namespace Menge
+namespace Mengine
 {	
 	class DevelopmentConverterPlugin
 		: public PluginBase

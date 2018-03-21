@@ -1,17 +1,17 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/ThreadTask.h"
+#include "Kernel/ThreadTask.h"
 
-#	include "Factory/Factorable.h"
+#include "Factory/Factorable.h"
 
-#	include "fastpathfinder/pathfinder.h"
-#	include "fastpathfinder/map.h"
+#include "fastpathfinder/pathfinder.h"
+#include "fastpathfinder/map.h"
 
-#	include "Math/vec2.h"
+#include "math/vec2.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-namespace Menge
+namespace Mengine
 {	
 	typedef fastpathfinder::pathfinder<fastpathfinder::map_test_wall_none> TPathFinder;
 	typedef fastpathfinder::map TPathMap;

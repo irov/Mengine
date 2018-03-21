@@ -1,6 +1,6 @@
-#	include "ConstStringHolderLocalString.h"
+#include "ConstStringHolderLocalString.h"
 
-namespace Menge
+namespace Mengine
 {
     void ConstStringHolderLocalString::destroyString()
     {

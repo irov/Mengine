@@ -6,7 +6,7 @@
 
 #   include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DecoderRenderImageProvider::DecoderRenderImageProvider()
@@ -35,4 +35,4 @@ namespace Menge
 
         return loader;
     }
-}	// namespace Menge
+}	

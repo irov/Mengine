@@ -1,17 +1,17 @@
-#	include "ImageDecoderACF.h"
+#include "ImageDecoderACF.h"
 #   include "ImageVerifyACF.h"
 
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-#	include "Core/Stream.h"
-#	include "Core/MemoryHelper.h"
+#include "Core/Stream.h"
+#include "Core/MemoryHelper.h"
 
-#	include "stdex/memorycopy.h"
+#include "stdex/memorycopy.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderACF::ImageDecoderACF()
@@ -128,4 +128,4 @@ namespace Menge
 		return _bufferSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

@@ -1,15 +1,15 @@
-#	include "AstralaxParticlePlugin2.h"
+#include "AstralaxParticlePlugin2.h"
 
-#	include "Interface/ParticleSystemInterface.h"
+#include "Interface/ParticleSystemInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ParticleSystem );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( AstralaxParticlePlugin2, Menge::AstralaxParticlePlugin2 );
+PLUGIN_FACTORY( AstralaxParticlePlugin2, Mengine::AstralaxParticlePlugin2 );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxParticlePlugin2::AstralaxParticlePlugin2()
@@ -27,11 +27,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticlePlugin2::_finalize()
 	{
-		SERVICE_FINALIZE( Menge::ParticleSystemInterface2 );
+		SERVICE_FINALIZE( Mengine::ParticleSystemInterface2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticlePlugin2::_destroy()
 	{
-		SERVICE_DESTROY( Menge::ParticleSystemInterface2 );
+		SERVICE_DESTROY( Mengine::ParticleSystemInterface2 );
 	}
 }

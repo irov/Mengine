@@ -1,10 +1,10 @@
-#	include "PathFinder.h"
+#include "PathFinder.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptSystemInterface.h"
 
-namespace Menge
+namespace Mengine
 {	
 	//////////////////////////////////////////////////////////////////////////
 	PathFinder::PathFinder()

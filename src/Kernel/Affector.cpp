@@ -1,6 +1,6 @@
-#	include "Kernel/Affector.h"
+#include "Kernel/Affector.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Affector::Affector()
@@ -124,4 +124,4 @@ namespace Menge
 			m_cb->onAffectorEnd( id, _isEnd );
 		}
 	}
-}	// namespace Menge
+}	

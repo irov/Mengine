@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/Model3DInterface.h"
+#include "Interface/Model3DInterface.h"
 
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
-#	include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ResourceModel3D
 		: public ResourceReference

@@ -1,23 +1,23 @@
-#	include "Package.h"
+#include "Package.h"
 
-#	include "Interface/LoaderInterface.h"
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/TextInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/ResourceInterface.h"
-#	include "Interface/UnicodeInterface.h"
-#	include "Interface/ProfilerInterface.h"
-#	include "Interface/UserdataInterface.h"
-#	include "Interface/PlatformInterface.h"
+#include "Interface/LoaderInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/TextInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/ProfilerInterface.h"
+#include "Interface/UserdataInterface.h"
+#include "Interface/PlatformInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
 #   include "Logger/Logger.h"
 
 #   include <stdio.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Package::Package()

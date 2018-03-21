@@ -1,10 +1,10 @@
-#	include "Movie2Slot.h"
+#include "Movie2Slot.h"
 
 #   include "Interface/RenderSystemInterface.h"
 
 #   include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Movie2Slot::Movie2Slot()
@@ -93,9 +93,9 @@ namespace Menge
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie2Slot::_debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void Movie2Slot::_debugRender( Mengine::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
-		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
+		if( (_debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
 		{
 			return;
 		}

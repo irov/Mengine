@@ -1,17 +1,17 @@
-#	include "HotSpotShape.h"
+#include "HotSpotShape.h"
 
-#	include "Interface/ResourceInterface.h"
+#include "Interface/ResourceInterface.h"
 #   include "Interface/StringizeInterface.h"
 
 #   include "ResourceShape.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Core/String.h"
-#	include "Consts.h"
+#include "Core/String.h"
+#include "Consts.h"
 
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     HotSpotShape::HotSpotShape()
@@ -78,4 +78,4 @@ namespace Menge
     {
         return m_resourceShape;
     }
-}	// namespace Menge
+}	

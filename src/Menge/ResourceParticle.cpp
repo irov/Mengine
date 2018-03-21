@@ -1,18 +1,18 @@
-#	include "ResourceParticle.h"
+#include "ResourceParticle.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "ResourceImageDefault.h"
+#include "ResourceImageDefault.h"
 
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/NodeInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Consts.h"
+#include "Consts.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceParticle::ResourceParticle()

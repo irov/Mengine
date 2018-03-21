@@ -1,26 +1,26 @@
 #   include "MovieKeyConverterXMLToAEK.h"
 
-#	include "Interface/LoaderInterface.h"
-#	include "Interface/ArchiveInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/MovieKeyFrameInterface.h"
+#include "Interface/LoaderInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/MovieKeyFrameInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Archive/ArchiveWrite.hpp"
+#include "Archive/ArchiveWrite.hpp"
 
-#	include "Core/Stream.h"
-#	include "Core/MemoryAllocator.h"
+#include "Core/Stream.h"
+#include "Core/MemoryAllocator.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Math/quat.h"
+#include "math/quat.h"
 
-#	include "poly2tri/poly2tri.h"
+#include "poly2tri/poly2tri.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<MovieFrameSource> TVectorMovieFrameSource;
@@ -725,10 +725,10 @@ namespace Menge
 					shape.vertexCount = (uint16_t)shapeVertexCount;
 					shape.indexCount = (uint16_t)shapeIndicesCount;
 
-					shape.pos = Helper::allocateMemory<mt::vec2f>( shapeVertexCount );
-					shape.uv = Helper::allocateMemory<mt::vec2f>( shapeVertexCount );
+					shape.pos = Helper::allocateMemoryT<mt::vec2f>( shapeVertexCount );
+					shape.uv = Helper::allocateMemoryT<mt::vec2f>( shapeVertexCount );
 
-					shape.indices = Helper::allocateMemory<RenderIndices>( shapeIndicesCount );
+					shape.indices = Helper::allocateMemoryT<RenderIndex>( shapeIndicesCount );
 
 					for( size_t i = 0; i != shapeVertexCount; ++i )
 					{
@@ -743,7 +743,7 @@ namespace Menge
 
 					for( size_t i = 0; i != shapeIndicesCount; ++i )
 					{
-						shape.indices[i] = (RenderIndices)shape_indices[i];
+						shape.indices[i] = (RenderIndex)shape_indices[i];
 					}
 
 					aw << shape.vertexCount;

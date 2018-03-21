@@ -1,16 +1,16 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/StreamInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/StreamInterface.h"
 
 #   include "Factory/FactorablePtr.h"
 
-#	include "Core/Pointer.h"
+#include "Core/Pointer.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-	class MemoryGetterBufferInterface
+	class MemoryInterface
 		: public ServantInterface
 	{ 
 	public:
@@ -19,17 +19,26 @@ namespace Menge
 		virtual bool empty() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<MemoryGetterBufferInterface> MemoryGetterBufferInterfacePtr;
+	typedef stdex::intrusive_ptr<MemoryInterface> MemoryInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
-	class MemoryInterface
-		: public MemoryGetterBufferInterface
+	class MemoryBufferInterface
+		: public MemoryInterface
 	{
 	public:
 		virtual void setMemory( const void * _ptr, size_t _size, const char * _file, uint32_t _line ) = 0;
 		virtual Pointer newMemory( size_t _size, const char * _file, uint32_t _line ) = 0;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<MemoryBufferInterface> MemoryBufferInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class MemoryProxyInterface
+        : public MemoryInterface
+    {
+    public:
+        virtual void setMemory( void * _ptr, size_t _size, const char * _file, uint32_t _line ) = 0;
+    };
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<MemoryInterface> MemoryInterfacePtr;
+	typedef stdex::intrusive_ptr<MemoryProxyInterface> MemoryProxyInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class MemoryGetterStreamInterface
 		: public InputStreamInterface
@@ -72,8 +81,9 @@ namespace Menge
 		SERVICE_DECLARE( "MemoryService" )
 
 	public:
-        virtual MemoryInterfacePtr createMemory() = 0;
-		virtual MemoryInterfacePtr createMemoryCacheBuffer() = 0;
+        virtual MemoryBufferInterfacePtr createMemoryBuffer() = 0;
+        virtual MemoryProxyInterfacePtr createMemoryProxy() = 0;
+		virtual MemoryBufferInterfacePtr createMemoryCacheBuffer() = 0;
 
     public:
 		virtual MemoryCacheInputInterfacePtr createMemoryCacheInput() = 0;
@@ -85,5 +95,5 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define MEMORY_SERVICE()\
-	((Menge::MemoryServiceInterface *)SERVICE_GET(Menge::MemoryServiceInterface))
+	((Mengine::MemoryServiceInterface *)SERVICE_GET(Mengine::MemoryServiceInterface))
 }

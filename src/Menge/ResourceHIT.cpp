@@ -1,17 +1,17 @@
-#	include "ResourceHIT.h"
+#include "ResourceHIT.h"
 
 #   include "Interface/PickCodecInterface.h"
-#	include "Interface/ConverterInterface.h"
-#	include "Interface/ResourceInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/ConverterInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include <math.h>
+#include <math.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceHIT::ResourceHIT()
@@ -99,8 +99,8 @@ namespace Menge
         m_height = dataInfo->height;
         m_mipmaplevel = dataInfo->mipmaplevel;
         		
-		MemoryInterfacePtr mipmap = MEMORY_SERVICE()
-			->createMemory();
+		MemoryBufferInterfacePtr mipmap = MEMORY_SERVICE()
+			->createMemoryBuffer();
 
 		if( mipmap == nullptr )
 		{
@@ -382,4 +382,4 @@ namespace Menge
 
         return buffer;
     }
-}	// namespace Menge
+}	

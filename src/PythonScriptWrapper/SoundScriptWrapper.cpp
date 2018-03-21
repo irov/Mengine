@@ -1,23 +1,23 @@
-#	include "PythonScriptWrapper.h"
+#include "PythonScriptWrapper.h"
 
-#	include "Interface/AmplifierInterface.h"
-#	include "Interface/ResourceInterface.h"
-#	include "Interface/PlayerInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/AmplifierInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/PlayerInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Kernel/Affectorable.h"
-#	include "Kernel/Affector.h"
+#include "Kernel/Affectorable.h"
+#include "Kernel/Affector.h"
 
-#	include "Menge/ResourceSound.h"
-#	include "Factory/FactoryPool.h"
+#include "Menge/ResourceSound.h"
+#include "Factory/FactoryPool.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-#	include <math.h>
+#include <math.h>
 
-namespace	Menge
+namespace Mengine
 {
 	class SoundScriptMethod
 	{

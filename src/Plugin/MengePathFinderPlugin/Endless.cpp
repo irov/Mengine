@@ -1,14 +1,14 @@
-#	include "Endless.h" 
+#include "Endless.h" 
 
-#	include "Interface/NodeInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/NodeInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Kernel/Node.h"
-#	include "Kernel/Parallax.h"
+#include "Kernel/Node.h"
+#include "Kernel/Parallax.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace	Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static const uint32_t ED_RIGHT = 0;

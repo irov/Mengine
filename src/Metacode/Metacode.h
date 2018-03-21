@@ -29,7 +29,7 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
-            const Menge::ConstString & get_Name() const
+            const Mengine::ConstString & get_Name() const
             {
                 return this->m_Name;
             }
@@ -51,12 +51,12 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::ConstString & get_Name() const
+                const Mengine::ConstString & get_Name() const
                 {
                     return this->m_Name;
                 }
                 
-                const Menge::ConstString & get_RenderPlatform() const
+                const Mengine::ConstString & get_RenderPlatform() const
                 {
                     return this->m_RenderPlatform;
                 }
@@ -78,7 +78,7 @@ namespace Metacode
                     return true;
                 }
                 
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -89,11 +89,11 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::ConstString m_Name;
-                Menge::ConstString m_RenderPlatform;
+                Mengine::ConstString m_Name;
+                Mengine::ConstString m_RenderPlatform;
                 bool m_File_Compile_successful;
                 bool m_File_Compile;
-                Menge::FilePath m_File_Path;
+                Mengine::FilePath m_File_Path;
             };
             
             class Meta_Include
@@ -107,7 +107,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::FilePath & get_Path() const
+                const Mengine::FilePath & get_Path() const
                 {
                     return this->m_Path;
                 }
@@ -117,7 +117,7 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::FilePath m_Path;
+                Mengine::FilePath m_Path;
             };
             
             class Meta_Material
@@ -171,7 +171,7 @@ namespace Metacode
                 
                     return true;
                 }
-                const Menge::ConstString & get_Name() const
+                const Mengine::ConstString & get_Name() const
                 {
                     return this->m_Name;
                 }
@@ -181,7 +181,7 @@ namespace Metacode
                     return m_RenderPlatform_successful;
                 }
                 
-                bool get_RenderPlatform( Menge::ConstString * _value ) const
+                bool get_RenderPlatform( Mengine::ConstString * _value ) const
                 {
                     if( m_RenderPlatform_successful == false )
                     {
@@ -193,7 +193,7 @@ namespace Metacode
                     return true;
                 }
                 
-                bool get_RenderPlatform( Menge::ConstString * _value, const Menge::ConstString & _default ) const
+                bool get_RenderPlatform( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                 {
                     if( m_RenderPlatform_successful == false )
                     {
@@ -228,7 +228,7 @@ namespace Metacode
                     return m_BlendFactor_Dest_successful;
                 }
                 
-                bool get_BlendFactor_Dest( Menge::EBlendFactor * _value ) const
+                bool get_BlendFactor_Dest( Mengine::EBlendFactor * _value ) const
                 {
                     if( m_BlendFactor_Dest_successful == false )
                     {
@@ -245,7 +245,7 @@ namespace Metacode
                     return m_BlendFactor_Op_successful;
                 }
                 
-                bool get_BlendFactor_Op( Menge::EBlendOp * _value ) const
+                bool get_BlendFactor_Op( Mengine::EBlendOp * _value ) const
                 {
                     if( m_BlendFactor_Op_successful == false )
                     {
@@ -262,7 +262,7 @@ namespace Metacode
                     return m_BlendFactor_Source_successful;
                 }
                 
-                bool get_BlendFactor_Source( Menge::EBlendFactor * _value ) const
+                bool get_BlendFactor_Source( Mengine::EBlendFactor * _value ) const
                 {
                     if( m_BlendFactor_Source_successful == false )
                     {
@@ -279,7 +279,7 @@ namespace Metacode
                     return m_Program_Name_successful;
                 }
                 
-                bool get_Program_Name( Menge::ConstString * _value ) const
+                bool get_Program_Name( Mengine::ConstString * _value ) const
                 {
                     if( m_Program_Name_successful == false )
                     {
@@ -335,7 +335,7 @@ namespace Metacode
                         return m_AddressMode_U_successful;
                     }
                     
-                    bool get_AddressMode_U( Menge::ETextureAddressMode * _value ) const
+                    bool get_AddressMode_U( Mengine::ETextureAddressMode * _value ) const
                     {
                         if( m_AddressMode_U_successful == false )
                         {
@@ -352,7 +352,7 @@ namespace Metacode
                         return m_AddressMode_V_successful;
                     }
                     
-                    bool get_AddressMode_V( Menge::ETextureAddressMode * _value ) const
+                    bool get_AddressMode_V( Mengine::ETextureAddressMode * _value ) const
                     {
                         if( m_AddressMode_V_successful == false )
                         {
@@ -369,7 +369,7 @@ namespace Metacode
                         return m_Alpha_Arg1_successful;
                     }
                     
-                    bool get_Alpha_Arg1( Menge::ETextureArgument * _value ) const
+                    bool get_Alpha_Arg1( Mengine::ETextureArgument * _value ) const
                     {
                         if( m_Alpha_Arg1_successful == false )
                         {
@@ -386,7 +386,7 @@ namespace Metacode
                         return m_Alpha_Arg2_successful;
                     }
                     
-                    bool get_Alpha_Arg2( Menge::ETextureArgument * _value ) const
+                    bool get_Alpha_Arg2( Mengine::ETextureArgument * _value ) const
                     {
                         if( m_Alpha_Arg2_successful == false )
                         {
@@ -403,7 +403,7 @@ namespace Metacode
                         return m_Alpha_Operator_successful;
                     }
                     
-                    bool get_Alpha_Operator( Menge::ETextureOp * _value ) const
+                    bool get_Alpha_Operator( Mengine::ETextureOp * _value ) const
                     {
                         if( m_Alpha_Operator_successful == false )
                         {
@@ -420,7 +420,7 @@ namespace Metacode
                         return m_Color_Arg1_successful;
                     }
                     
-                    bool get_Color_Arg1( Menge::ETextureArgument * _value ) const
+                    bool get_Color_Arg1( Mengine::ETextureArgument * _value ) const
                     {
                         if( m_Color_Arg1_successful == false )
                         {
@@ -437,7 +437,7 @@ namespace Metacode
                         return m_Color_Arg2_successful;
                     }
                     
-                    bool get_Color_Arg2( Menge::ETextureArgument * _value ) const
+                    bool get_Color_Arg2( Mengine::ETextureArgument * _value ) const
                     {
                         if( m_Color_Arg2_successful == false )
                         {
@@ -454,7 +454,7 @@ namespace Metacode
                         return m_Color_Operator_successful;
                     }
                     
-                    bool get_Color_Operator( Menge::ETextureOp * _value ) const
+                    bool get_Color_Operator( Mengine::ETextureOp * _value ) const
                     {
                         if( m_Color_Operator_successful == false )
                         {
@@ -493,21 +493,21 @@ namespace Metacode
                     bool m_AddressMode_Border_successful;
                     uint32_t m_AddressMode_Border;
                     bool m_AddressMode_U_successful;
-                    Menge::ETextureAddressMode m_AddressMode_U;
+                    Mengine::ETextureAddressMode m_AddressMode_U;
                     bool m_AddressMode_V_successful;
-                    Menge::ETextureAddressMode m_AddressMode_V;
+                    Mengine::ETextureAddressMode m_AddressMode_V;
                     bool m_Alpha_Arg1_successful;
-                    Menge::ETextureArgument m_Alpha_Arg1;
+                    Mengine::ETextureArgument m_Alpha_Arg1;
                     bool m_Alpha_Arg2_successful;
-                    Menge::ETextureArgument m_Alpha_Arg2;
+                    Mengine::ETextureArgument m_Alpha_Arg2;
                     bool m_Alpha_Operator_successful;
-                    Menge::ETextureOp m_Alpha_Operator;
+                    Mengine::ETextureOp m_Alpha_Operator;
                     bool m_Color_Arg1_successful;
-                    Menge::ETextureArgument m_Color_Arg1;
+                    Mengine::ETextureArgument m_Color_Arg1;
                     bool m_Color_Arg2_successful;
-                    Menge::ETextureArgument m_Color_Arg2;
+                    Mengine::ETextureArgument m_Color_Arg2;
                     bool m_Color_Operator_successful;
-                    Menge::ETextureOp m_Color_Operator;
+                    Mengine::ETextureOp m_Color_Operator;
                     bool m_TextureCoord_Index_successful;
                     uint32_t m_TextureCoord_Index;
                 };
@@ -516,19 +516,19 @@ namespace Metacode
             protected:
                 bool m_Debug_successful;
                 bool m_Debug;
-                Menge::ConstString m_Name;
+                Mengine::ConstString m_Name;
                 bool m_RenderPlatform_successful;
-                Menge::ConstString m_RenderPlatform;
+                Mengine::ConstString m_RenderPlatform;
                 bool m_AlphaBlend_Enable_successful;
                 bool m_AlphaBlend_Enable;
                 bool m_BlendFactor_Dest_successful;
-                Menge::EBlendFactor m_BlendFactor_Dest;
+                Mengine::EBlendFactor m_BlendFactor_Dest;
                 bool m_BlendFactor_Op_successful;
-                Menge::EBlendOp m_BlendFactor_Op;
+                Mengine::EBlendOp m_BlendFactor_Op;
                 bool m_BlendFactor_Source_successful;
-                Menge::EBlendFactor m_BlendFactor_Source;
+                Mengine::EBlendFactor m_BlendFactor_Source;
                 bool m_Program_Name_successful;
-                Menge::ConstString m_Program_Name;
+                Mengine::ConstString m_Program_Name;
             public:
                 typedef Metabuf::Vector<Meta_TextureStages> VectorMeta_TextureStages;
             
@@ -552,7 +552,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::ConstString & get_Name() const
+                const Mengine::ConstString & get_Name() const
                 {
                     return this->m_Name;
                 }
@@ -562,7 +562,7 @@ namespace Metacode
                     return m_RenderPlatform_successful;
                 }
                 
-                bool get_RenderPlatform( Menge::ConstString * _value ) const
+                bool get_RenderPlatform( Mengine::ConstString * _value ) const
                 {
                     if( m_RenderPlatform_successful == false )
                     {
@@ -574,7 +574,7 @@ namespace Metacode
                     return true;
                 }
                 
-                bool get_RenderPlatform( Menge::ConstString * _value, const Menge::ConstString & _default ) const
+                bool get_RenderPlatform( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                 {
                     if( m_RenderPlatform_successful == false )
                     {
@@ -587,7 +587,7 @@ namespace Metacode
                 
                     return true;
                 }
-                const Menge::ConstString & get_FragmentShader_Name() const
+                const Mengine::ConstString & get_FragmentShader_Name() const
                 {
                     return this->m_FragmentShader_Name;
                 }
@@ -597,7 +597,12 @@ namespace Metacode
                     return this->m_Sampler_Count;
                 }
                 
-                const Menge::ConstString & get_VertexShader_Name() const
+                const Mengine::ConstString & get_VertexAttribute_Name() const
+                {
+                    return this->m_VertexAttribute_Name;
+                }
+                
+                const Mengine::ConstString & get_VertexShader_Name() const
                 {
                     return this->m_VertexShader_Name;
                 }
@@ -608,12 +613,109 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::ConstString m_Name;
+                Mengine::ConstString m_Name;
                 bool m_RenderPlatform_successful;
-                Menge::ConstString m_RenderPlatform;
-                Menge::ConstString m_FragmentShader_Name;
+                Mengine::ConstString m_RenderPlatform;
+                Mengine::ConstString m_FragmentShader_Name;
                 uint32_t m_Sampler_Count;
-                Menge::ConstString m_VertexShader_Name;
+                Mengine::ConstString m_VertexAttribute_Name;
+                Mengine::ConstString m_VertexShader_Name;
+            };
+            
+            class Meta_VertexAttribute
+                : public Metabuf::Metadata
+            { 
+            public:
+                Meta_VertexAttribute();
+            
+            public:
+                uint32_t getVersion() const override;
+                uint32_t getId() const override;
+            
+            public:
+                const Mengine::ConstString & get_Name() const
+                {
+                    return this->m_Name;
+                }
+                
+                const Mengine::ConstString & get_RenderPlatform() const
+                {
+                    return this->m_RenderPlatform;
+                }
+                
+            protected:
+                void _parseData( const uint8_t * _buff, size_t _size, size_t & _read ) override;
+                void _preparationIncludes( uint32_t _id, uint32_t _count ) override;
+                void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            public:
+                class Meta_Attribute
+                    : public Metabuf::Metadata
+                { 
+                public:
+                    Meta_Attribute();
+                
+                public:
+                    uint32_t getVersion() const override;
+                    uint32_t getId() const override;
+                
+                public:
+                    bool get_Normalized() const
+                    {
+                        return this->m_Normalized;
+                    }
+                    
+                    uint32_t get_Offset() const
+                    {
+                        return this->m_Offset;
+                    }
+                    
+                    uint32_t get_Size() const
+                    {
+                        return this->m_Size;
+                    }
+                    
+                    uint32_t get_Stride() const
+                    {
+                        return this->m_Stride;
+                    }
+                    
+                    Mengine::EVertexAttributeType get_Type() const
+                    {
+                        return this->m_Type;
+                    }
+                    
+                    const Mengine::ConstString & get_Uniform() const
+                    {
+                        return this->m_Uniform;
+                    }
+                    
+                protected:
+                    void _parseData( const uint8_t * _buff, size_t _size, size_t & _read ) override;
+                public:
+                protected:
+                protected:
+                    bool m_Normalized;
+                    uint32_t m_Offset;
+                    uint32_t m_Size;
+                    uint32_t m_Stride;
+                    Mengine::EVertexAttributeType m_Type;
+                    Mengine::ConstString m_Uniform;
+                };
+                
+            protected:
+            protected:
+                Mengine::ConstString m_Name;
+                Mengine::ConstString m_RenderPlatform;
+            public:
+                typedef Metabuf::Vector<Meta_Attribute> VectorMeta_Attribute;
+            
+                const VectorMeta_Attribute & get_Includes_Attribute() const
+                {
+                    return this->includes_Meta_Attribute;
+                }
+            
+            protected:
+                VectorMeta_Attribute includes_Meta_Attribute;
             };
             
             class Meta_VertexShader
@@ -627,12 +729,12 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::ConstString & get_Name() const
+                const Mengine::ConstString & get_Name() const
                 {
                     return this->m_Name;
                 }
                 
-                const Menge::ConstString & get_RenderPlatform() const
+                const Mengine::ConstString & get_RenderPlatform() const
                 {
                     return this->m_RenderPlatform;
                 }
@@ -654,7 +756,7 @@ namespace Metacode
                     return true;
                 }
                 
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -665,11 +767,11 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::ConstString m_Name;
-                Menge::ConstString m_RenderPlatform;
+                Mengine::ConstString m_Name;
+                Mengine::ConstString m_RenderPlatform;
                 bool m_File_Compile_successful;
                 bool m_File_Compile;
-                Menge::FilePath m_File_Path;
+                Mengine::FilePath m_File_Path;
             };
             
             class Meta_Resource
@@ -683,7 +785,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::ConstString & get_Name() const
+                const Mengine::ConstString & get_Name() const
                 {
                     return this->m_Name;
                 }
@@ -728,7 +830,7 @@ namespace Metacode
                 
                     return true;
                 }
-                const Menge::ConstString & get_Type() const
+                const Mengine::ConstString & get_Type() const
                 {
                     return this->m_Type;
                 }
@@ -779,10 +881,10 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::ConstString m_Name;
+                Mengine::ConstString m_Name;
                 bool m_Precompile_successful;
                 bool m_Precompile;
-                Menge::ConstString m_Type;
+                Mengine::ConstString m_Type;
                 bool m_Unique_successful;
                 bool m_Unique;
             };
@@ -818,7 +920,7 @@ namespace Metacode
                         return this->m_Delay;
                     }
                     
-                    const Menge::ConstString & get_ResourceImageName() const
+                    const Mengine::ConstString & get_ResourceImageName() const
                     {
                         return this->m_ResourceImageName;
                     }
@@ -829,7 +931,7 @@ namespace Metacode
                 protected:
                 protected:
                     float m_Delay;
-                    Menge::ConstString m_ResourceImageName;
+                    Mengine::ConstString m_ResourceImageName;
                 };
                 
             protected:
@@ -857,7 +959,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -867,7 +969,7 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::FilePath m_File_Path;
+                Mengine::FilePath m_File_Path;
             };
             
             class Meta_ResourceCal3dMesh
@@ -881,7 +983,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -891,7 +993,7 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::FilePath m_File_Path;
+                Mengine::FilePath m_File_Path;
             };
             
             class Meta_ResourceCal3dSkeleton
@@ -905,7 +1007,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -915,7 +1017,7 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::FilePath m_File_Path;
+                Mengine::FilePath m_File_Path;
             };
             
             class Meta_ResourceCursorICO
@@ -929,7 +1031,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -939,7 +1041,7 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::FilePath m_File_Path;
+                Mengine::FilePath m_File_Path;
             };
             
             class Meta_ResourceCursorSystem
@@ -953,7 +1055,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -963,7 +1065,7 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::FilePath m_File_Path;
+                Mengine::FilePath m_File_Path;
             };
             
             class Meta_ResourceExternal
@@ -994,7 +1096,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -1004,7 +1106,7 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::FilePath m_File_Path;
+                Mengine::FilePath m_File_Path;
             };
             
             class Meta_ResourceHIT
@@ -1023,7 +1125,7 @@ namespace Metacode
                     return m_File_Codec_successful;
                 }
                 
-                bool get_File_Codec( Menge::ConstString * _value ) const
+                bool get_File_Codec( Mengine::ConstString * _value ) const
                 {
                     if( m_File_Codec_successful == false )
                     {
@@ -1040,7 +1142,7 @@ namespace Metacode
                     return m_File_Converter_successful;
                 }
                 
-                bool get_File_Converter( Menge::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
@@ -1052,7 +1154,7 @@ namespace Metacode
                     return true;
                 }
                 
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -1064,10 +1166,10 @@ namespace Metacode
             protected:
             protected:
                 bool m_File_Codec_successful;
-                Menge::ConstString m_File_Codec;
+                Mengine::ConstString m_File_Codec;
                 bool m_File_Converter_successful;
-                Menge::ConstString m_File_Converter;
-                Menge::FilePath m_File_Path;
+                Mengine::ConstString m_File_Converter;
+                Mengine::FilePath m_File_Path;
             };
             
             class Meta_ResourceImageData
@@ -1086,7 +1188,7 @@ namespace Metacode
                     return m_File_Codec_successful;
                 }
                 
-                bool get_File_Codec( Menge::ConstString * _value ) const
+                bool get_File_Codec( Mengine::ConstString * _value ) const
                 {
                     if( m_File_Codec_successful == false )
                     {
@@ -1120,7 +1222,7 @@ namespace Metacode
                     return true;
                 }
                 
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -1132,11 +1234,11 @@ namespace Metacode
             protected:
             protected:
                 bool m_File_Codec_successful;
-                Menge::ConstString m_File_Codec;
+                Mengine::ConstString m_File_Codec;
                 mt::vec2f m_File_MaxSize;
                 bool m_File_NoExist_successful;
                 bool m_File_NoExist;
-                Menge::FilePath m_File_Path;
+                Mengine::FilePath m_File_Path;
             };
             
             class Meta_ResourceImageDefault
@@ -1172,7 +1274,7 @@ namespace Metacode
                     return m_File_Codec_successful;
                 }
                 
-                bool get_File_Codec( Menge::ConstString * _value ) const
+                bool get_File_Codec( Mengine::ConstString * _value ) const
                 {
                     if( m_File_Codec_successful == false )
                     {
@@ -1189,7 +1291,7 @@ namespace Metacode
                     return m_File_Converter_successful;
                 }
                 
-                bool get_File_Converter( Menge::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
@@ -1240,7 +1342,7 @@ namespace Metacode
                     return true;
                 }
                 
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -1288,15 +1390,15 @@ namespace Metacode
                 bool m_File_Alpha_successful;
                 bool m_File_Alpha;
                 bool m_File_Codec_successful;
-                Menge::ConstString m_File_Codec;
+                Mengine::ConstString m_File_Codec;
                 bool m_File_Converter_successful;
-                Menge::ConstString m_File_Converter;
+                Mengine::ConstString m_File_Converter;
                 mt::vec2f m_File_MaxSize;
                 bool m_File_NoExist_successful;
                 bool m_File_NoExist;
                 bool m_File_Offset_successful;
                 mt::vec2f m_File_Offset;
-                Menge::FilePath m_File_Path;
+                Mengine::FilePath m_File_Path;
                 bool m_File_Premultiply_successful;
                 bool m_File_Premultiply;
                 bool m_File_Size_successful;
@@ -1314,7 +1416,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::ColourValue & get_Color_Value() const
+                const Mengine::ColourValue & get_Color_Value() const
                 {
                     return this->m_Color_Value;
                 }
@@ -1329,7 +1431,7 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::ColourValue m_Color_Value;
+                Mengine::ColourValue m_Color_Value;
                 mt::vec2f m_Size_Value;
             };
             
@@ -1366,7 +1468,7 @@ namespace Metacode
                     return this->m_Image_MaxSize;
                 }
                 
-                const Menge::ConstString & get_Image_Name() const
+                const Mengine::ConstString & get_Image_Name() const
                 {
                     return this->m_Image_Name;
                 }
@@ -1436,7 +1538,7 @@ namespace Metacode
                 bool m_Image_Alpha_successful;
                 bool m_Image_Alpha;
                 mt::vec2f m_Image_MaxSize;
-                Menge::ConstString m_Image_Name;
+                Mengine::ConstString m_Image_Name;
                 bool m_Image_Offset_successful;
                 mt::vec2f m_Image_Offset;
                 bool m_Image_Size_successful;
@@ -1462,12 +1564,12 @@ namespace Metacode
                     return this->m_Image_MaxSize;
                 }
                 
-                const Menge::ConstString & get_Image_NameAlpha() const
+                const Mengine::ConstString & get_Image_NameAlpha() const
                 {
                     return this->m_Image_NameAlpha;
                 }
                 
-                const Menge::ConstString & get_Image_NameRGB() const
+                const Mengine::ConstString & get_Image_NameRGB() const
                 {
                     return this->m_Image_NameRGB;
                 }
@@ -1557,8 +1659,8 @@ namespace Metacode
             protected:
             protected:
                 mt::vec2f m_Image_MaxSize;
-                Menge::ConstString m_Image_NameAlpha;
-                Menge::ConstString m_Image_NameRGB;
+                Mengine::ConstString m_Image_NameAlpha;
+                Mengine::ConstString m_Image_NameRGB;
                 bool m_Image_Offset_successful;
                 mt::vec2f m_Image_Offset;
                 bool m_Image_Size_successful;
@@ -1582,12 +1684,12 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::ConstString & get_Internal_Group() const
+                const Mengine::ConstString & get_Internal_Group() const
                 {
                     return this->m_Internal_Group;
                 }
                 
-                const Menge::ConstString & get_Internal_Name() const
+                const Mengine::ConstString & get_Internal_Name() const
                 {
                     return this->m_Internal_Name;
                 }
@@ -1597,8 +1699,8 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::ConstString m_Internal_Group;
-                Menge::ConstString m_Internal_Name;
+                Mengine::ConstString m_Internal_Group;
+                Mengine::ConstString m_Internal_Name;
             };
             
             class Meta_ResourceModel3D
@@ -1617,7 +1719,7 @@ namespace Metacode
                     return m_File_Converter_successful;
                 }
                 
-                bool get_File_Converter( Menge::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
@@ -1634,7 +1736,7 @@ namespace Metacode
                     return m_File_Dataflow_successful;
                 }
                 
-                bool get_File_Dataflow( Menge::ConstString * _value ) const
+                bool get_File_Dataflow( Mengine::ConstString * _value ) const
                 {
                     if( m_File_Dataflow_successful == false )
                     {
@@ -1646,12 +1748,12 @@ namespace Metacode
                     return true;
                 }
                 
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
                 
-                const Menge::ConstString & get_Image_Resource() const
+                const Mengine::ConstString & get_Image_Resource() const
                 {
                     return this->m_Image_Resource;
                 }
@@ -1663,11 +1765,11 @@ namespace Metacode
             protected:
             protected:
                 bool m_File_Converter_successful;
-                Menge::ConstString m_File_Converter;
+                Mengine::ConstString m_File_Converter;
                 bool m_File_Dataflow_successful;
-                Menge::ConstString m_File_Dataflow;
-                Menge::FilePath m_File_Path;
-                Menge::ConstString m_Image_Resource;
+                Mengine::ConstString m_File_Dataflow;
+                Mengine::FilePath m_File_Path;
+                Mengine::ConstString m_Image_Resource;
             };
             
             class Meta_ResourceMovie
@@ -1735,7 +1837,7 @@ namespace Metacode
                     return m_KeyFramesPackPath_Codec_successful;
                 }
                 
-                bool get_KeyFramesPackPath_Codec( Menge::ConstString * _value ) const
+                bool get_KeyFramesPackPath_Codec( Mengine::ConstString * _value ) const
                 {
                     if( m_KeyFramesPackPath_Codec_successful == false )
                     {
@@ -1752,7 +1854,7 @@ namespace Metacode
                     return m_KeyFramesPackPath_Converter_successful;
                 }
                 
-                bool get_KeyFramesPackPath_Converter( Menge::ConstString * _value ) const
+                bool get_KeyFramesPackPath_Converter( Mengine::ConstString * _value ) const
                 {
                     if( m_KeyFramesPackPath_Converter_successful == false )
                     {
@@ -1764,7 +1866,7 @@ namespace Metacode
                     return true;
                 }
                 
-                const Menge::FilePath & get_KeyFramesPackPath_Path() const
+                const Mengine::FilePath & get_KeyFramesPackPath_Path() const
                 {
                     return this->m_KeyFramesPackPath_Path;
                 }
@@ -1914,7 +2016,7 @@ namespace Metacode
                         return m_BlendingMode_successful;
                     }
                     
-                    bool get_BlendingMode( Menge::ConstString * _value ) const
+                    bool get_BlendingMode( Mengine::ConstString * _value ) const
                     {
                         if( m_BlendingMode_successful == false )
                         {
@@ -1926,7 +2028,7 @@ namespace Metacode
                         return true;
                     }
                     
-                    bool get_BlendingMode( Menge::ConstString * _value, const Menge::ConstString & _default ) const
+                    bool get_BlendingMode( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                     {
                         if( m_BlendingMode_successful == false )
                         {
@@ -1989,7 +2091,7 @@ namespace Metacode
                     
                         return true;
                     }
-                    const Menge::ConstString & get_Name() const
+                    const Mengine::ConstString & get_Name() const
                     {
                         return this->m_Name;
                     }
@@ -2289,7 +2391,7 @@ namespace Metacode
                     
                         return true;
                     }
-                    const Menge::ConstString & get_Source() const
+                    const Mengine::ConstString & get_Source() const
                     {
                         return this->m_Source;
                     }
@@ -2454,7 +2556,7 @@ namespace Metacode
                     
                         return true;
                     }
-                    const Menge::ConstString & get_Type() const
+                    const Mengine::ConstString & get_Type() const
                     {
                         return this->m_Type;
                     }
@@ -2464,7 +2566,7 @@ namespace Metacode
                         return m_Viewport_successful;
                     }
                     
-                    bool get_Viewport( Menge::Viewport * _value ) const
+                    bool get_Viewport( Mengine::Viewport * _value ) const
                     {
                         if( m_Viewport_successful == false )
                         {
@@ -2476,7 +2578,7 @@ namespace Metacode
                         return true;
                     }
                     
-                    bool get_Viewport( Menge::Viewport * _value, const Menge::Viewport & _default ) const
+                    bool get_Viewport( Mengine::Viewport * _value, const Mengine::Viewport & _default ) const
                     {
                         if( m_Viewport_successful == false )
                         {
@@ -2498,12 +2600,12 @@ namespace Metacode
                     bool m_AnchorPoint_successful;
                     mt::vec3f m_AnchorPoint;
                     bool m_BlendingMode_successful;
-                    Menge::ConstString m_BlendingMode;
+                    Mengine::ConstString m_BlendingMode;
                     float m_In;
                     uint32_t m_Index;
                     bool m_Loop_successful;
                     bool m_Loop;
-                    Menge::ConstString m_Name;
+                    Mengine::ConstString m_Name;
                     float m_Out;
                     bool m_Params_successful;
                     uint32_t m_Params;
@@ -2521,7 +2623,7 @@ namespace Metacode
                     mt::vec3f m_Scale;
                     bool m_Shape_successful;
                     bool m_Shape;
-                    Menge::ConstString m_Source;
+                    Mengine::ConstString m_Source;
                     bool m_StartInterval_successful;
                     float m_StartInterval;
                     bool m_Stretch_successful;
@@ -2530,9 +2632,9 @@ namespace Metacode
                     bool m_Switch;
                     bool m_TimeRemap_successful;
                     bool m_TimeRemap;
-                    Menge::ConstString m_Type;
+                    Mengine::ConstString m_Type;
                     bool m_Viewport_successful;
-                    Menge::Viewport m_Viewport;
+                    Mengine::Viewport m_Viewport;
                 };
                 
                 class Meta_MovieLayer3D
@@ -2581,7 +2683,7 @@ namespace Metacode
                         return m_BlendingMode_successful;
                     }
                     
-                    bool get_BlendingMode( Menge::ConstString * _value ) const
+                    bool get_BlendingMode( Mengine::ConstString * _value ) const
                     {
                         if( m_BlendingMode_successful == false )
                         {
@@ -2593,7 +2695,7 @@ namespace Metacode
                         return true;
                     }
                     
-                    bool get_BlendingMode( Menge::ConstString * _value, const Menge::ConstString & _default ) const
+                    bool get_BlendingMode( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                     {
                         if( m_BlendingMode_successful == false )
                         {
@@ -2656,7 +2758,7 @@ namespace Metacode
                     
                         return true;
                     }
-                    const Menge::ConstString & get_Name() const
+                    const Mengine::ConstString & get_Name() const
                     {
                         return this->m_Name;
                     }
@@ -2956,7 +3058,7 @@ namespace Metacode
                     
                         return true;
                     }
-                    const Menge::ConstString & get_Source() const
+                    const Mengine::ConstString & get_Source() const
                     {
                         return this->m_Source;
                     }
@@ -3121,7 +3223,7 @@ namespace Metacode
                     
                         return true;
                     }
-                    const Menge::ConstString & get_Type() const
+                    const Mengine::ConstString & get_Type() const
                     {
                         return this->m_Type;
                     }
@@ -3135,12 +3237,12 @@ namespace Metacode
                     bool m_AnchorPoint_successful;
                     mt::vec3f m_AnchorPoint;
                     bool m_BlendingMode_successful;
-                    Menge::ConstString m_BlendingMode;
+                    Mengine::ConstString m_BlendingMode;
                     float m_In;
                     uint32_t m_Index;
                     bool m_Loop_successful;
                     bool m_Loop;
-                    Menge::ConstString m_Name;
+                    Mengine::ConstString m_Name;
                     float m_Out;
                     bool m_Params_successful;
                     uint32_t m_Params;
@@ -3158,7 +3260,7 @@ namespace Metacode
                     mt::vec3f m_Scale;
                     bool m_Shape_successful;
                     bool m_Shape;
-                    Menge::ConstString m_Source;
+                    Mengine::ConstString m_Source;
                     bool m_StartInterval_successful;
                     float m_StartInterval;
                     bool m_Stretch_successful;
@@ -3167,7 +3269,7 @@ namespace Metacode
                     bool m_Switch;
                     bool m_TimeRemap_successful;
                     bool m_TimeRemap;
-                    Menge::ConstString m_Type;
+                    Mengine::ConstString m_Type;
                 };
                 
             protected:
@@ -3180,10 +3282,10 @@ namespace Metacode
                 float m_FrameDuration_Value;
                 float m_Height_Value;
                 bool m_KeyFramesPackPath_Codec_successful;
-                Menge::ConstString m_KeyFramesPackPath_Codec;
+                Mengine::ConstString m_KeyFramesPackPath_Codec;
                 bool m_KeyFramesPackPath_Converter_successful;
-                Menge::ConstString m_KeyFramesPackPath_Converter;
-                Menge::FilePath m_KeyFramesPackPath_Path;
+                Mengine::ConstString m_KeyFramesPackPath_Converter;
+                Mengine::FilePath m_KeyFramesPackPath_Path;
                 bool m_Loop_Segment_successful;
                 mt::vec2f m_Loop_Segment;
                 bool m_Offset_Point_successful;
@@ -3232,7 +3334,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -3242,7 +3344,7 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::FilePath m_File_Path;
+                Mengine::FilePath m_File_Path;
             };
             
             class Meta_ResourceMusic
@@ -3278,7 +3380,7 @@ namespace Metacode
                     return m_File_Codec_successful;
                 }
                 
-                bool get_File_Codec( Menge::ConstString * _value ) const
+                bool get_File_Codec( Mengine::ConstString * _value ) const
                 {
                     if( m_File_Codec_successful == false )
                     {
@@ -3295,7 +3397,7 @@ namespace Metacode
                     return m_File_Converter_successful;
                 }
                 
-                bool get_File_Converter( Menge::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
@@ -3324,7 +3426,7 @@ namespace Metacode
                     return true;
                 }
                 
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -3338,12 +3440,12 @@ namespace Metacode
                 bool m_DefaultVolume_Value_successful;
                 float m_DefaultVolume_Value;
                 bool m_File_Codec_successful;
-                Menge::ConstString m_File_Codec;
+                Mengine::ConstString m_File_Codec;
                 bool m_File_Converter_successful;
-                Menge::ConstString m_File_Converter;
+                Mengine::ConstString m_File_Converter;
                 bool m_File_External_successful;
                 bool m_File_External;
-                Menge::FilePath m_File_Path;
+                Mengine::FilePath m_File_Path;
             };
             
             class Meta_ResourceParticle
@@ -3367,7 +3469,7 @@ namespace Metacode
                     return m_File_Converter_successful;
                 }
                 
-                bool get_File_Converter( Menge::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
@@ -3379,7 +3481,7 @@ namespace Metacode
                     return true;
                 }
                 
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -3406,7 +3508,7 @@ namespace Metacode
                         return this->m_Index;
                     }
                     
-                    const Menge::ConstString & get_ResourceName() const
+                    const Mengine::ConstString & get_ResourceName() const
                     {
                         return this->m_ResourceName;
                     }
@@ -3417,15 +3519,15 @@ namespace Metacode
                 protected:
                 protected:
                     uint32_t m_Index;
-                    Menge::ConstString m_ResourceName;
+                    Mengine::ConstString m_ResourceName;
                 };
                 
             protected:
             protected:
                 uint32_t m_AtlasCount_Value;
                 bool m_File_Converter_successful;
-                Menge::ConstString m_File_Converter;
-                Menge::FilePath m_File_Path;
+                Mengine::ConstString m_File_Converter;
+                Mengine::FilePath m_File_Path;
             public:
                 typedef Metabuf::Vector<Meta_Atlas> VectorMeta_Atlas;
             
@@ -3449,7 +3551,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::Polygon & get_Polygon_Value() const
+                const Mengine::Polygon & get_Polygon_Value() const
                 {
                     return this->m_Polygon_Value;
                 }
@@ -3459,7 +3561,7 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::Polygon m_Polygon_Value;
+                Mengine::Polygon m_Polygon_Value;
             };
             
             class Meta_ResourceSound
@@ -3495,7 +3597,7 @@ namespace Metacode
                     return m_File_Codec_successful;
                 }
                 
-                bool get_File_Codec( Menge::ConstString * _value ) const
+                bool get_File_Codec( Mengine::ConstString * _value ) const
                 {
                     if( m_File_Codec_successful == false )
                     {
@@ -3512,7 +3614,7 @@ namespace Metacode
                     return m_File_Converter_successful;
                 }
                 
-                bool get_File_Converter( Menge::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
@@ -3524,7 +3626,7 @@ namespace Metacode
                     return true;
                 }
                 
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -3555,10 +3657,10 @@ namespace Metacode
                 bool m_DefaultVolume_Value_successful;
                 float m_DefaultVolume_Value;
                 bool m_File_Codec_successful;
-                Menge::ConstString m_File_Codec;
+                Mengine::ConstString m_File_Codec;
                 bool m_File_Converter_successful;
-                Menge::ConstString m_File_Converter;
-                Menge::FilePath m_File_Path;
+                Mengine::ConstString m_File_Converter;
+                Mengine::FilePath m_File_Path;
                 bool m_IsStreamable_Value_successful;
                 bool m_IsStreamable_Value;
             };
@@ -3574,12 +3676,12 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::FilePath & get_Atlas_Path() const
+                const Mengine::FilePath & get_Atlas_Path() const
                 {
                     return this->m_Atlas_Path;
                 }
                 
-                const Menge::FilePath & get_Skeleton_Path() const
+                const Mengine::FilePath & get_Skeleton_Path() const
                 {
                     return this->m_Skeleton_Path;
                 }
@@ -3600,12 +3702,12 @@ namespace Metacode
                     uint32_t getId() const override;
                 
                 public:
-                    const Menge::ConstString & get_Name() const
+                    const Mengine::ConstString & get_Name() const
                     {
                         return this->m_Name;
                     }
                     
-                    const Menge::ConstString & get_Resource() const
+                    const Mengine::ConstString & get_Resource() const
                     {
                         return this->m_Resource;
                     }
@@ -3615,14 +3717,14 @@ namespace Metacode
                 public:
                 protected:
                 protected:
-                    Menge::ConstString m_Name;
-                    Menge::ConstString m_Resource;
+                    Mengine::ConstString m_Name;
+                    Mengine::ConstString m_Resource;
                 };
                 
             protected:
             protected:
-                Menge::FilePath m_Atlas_Path;
-                Menge::FilePath m_Skeleton_Path;
+                Mengine::FilePath m_Atlas_Path;
+                Mengine::FilePath m_Skeleton_Path;
             public:
                 typedef Metabuf::Vector<Meta_Image> VectorMeta_Image;
             
@@ -3668,7 +3770,7 @@ namespace Metacode
                     return m_File_Codec_successful;
                 }
                 
-                bool get_File_Codec( Menge::ConstString * _value ) const
+                bool get_File_Codec( Mengine::ConstString * _value ) const
                 {
                     if( m_File_Codec_successful == false )
                     {
@@ -3685,7 +3787,7 @@ namespace Metacode
                     return m_File_Converter_successful;
                 }
                 
-                bool get_File_Converter( Menge::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
@@ -3748,7 +3850,7 @@ namespace Metacode
                     return true;
                 }
                 
-                const Menge::FilePath & get_File_Path() const
+                const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
                 }
@@ -3762,16 +3864,16 @@ namespace Metacode
                 bool m_File_Alpha_successful;
                 bool m_File_Alpha;
                 bool m_File_Codec_successful;
-                Menge::ConstString m_File_Codec;
+                Mengine::ConstString m_File_Codec;
                 bool m_File_Converter_successful;
-                Menge::ConstString m_File_Converter;
+                Mengine::ConstString m_File_Converter;
                 bool m_File_Duration_successful;
                 float m_File_Duration;
                 bool m_File_FrameRate_successful;
                 float m_File_FrameRate;
                 bool m_File_NoSeek_successful;
                 bool m_File_NoSeek;
-                Menge::FilePath m_File_Path;
+                Mengine::FilePath m_File_Path;
             };
             
             class Meta_ResourceWindow
@@ -3790,7 +3892,7 @@ namespace Metacode
                     return m_WindowBackground_ResourceImageName_successful;
                 }
                 
-                bool get_WindowBackground_ResourceImageName( Menge::ConstString * _value ) const
+                bool get_WindowBackground_ResourceImageName( Mengine::ConstString * _value ) const
                 {
                     if( m_WindowBackground_ResourceImageName_successful == false )
                     {
@@ -3807,7 +3909,7 @@ namespace Metacode
                     return this->m_WindowBottom_Offset;
                 }
                 
-                const Menge::ConstString & get_WindowBottom_ResourceImageName() const
+                const Mengine::ConstString & get_WindowBottom_ResourceImageName() const
                 {
                     return this->m_WindowBottom_ResourceImageName;
                 }
@@ -3817,7 +3919,7 @@ namespace Metacode
                     return this->m_WindowLeft_Offset;
                 }
                 
-                const Menge::ConstString & get_WindowLeft_ResourceImageName() const
+                const Mengine::ConstString & get_WindowLeft_ResourceImageName() const
                 {
                     return this->m_WindowLeft_ResourceImageName;
                 }
@@ -3827,7 +3929,7 @@ namespace Metacode
                     return this->m_WindowLeftBottom_Offset;
                 }
                 
-                const Menge::ConstString & get_WindowLeftBottom_ResourceImageName() const
+                const Mengine::ConstString & get_WindowLeftBottom_ResourceImageName() const
                 {
                     return this->m_WindowLeftBottom_ResourceImageName;
                 }
@@ -3837,7 +3939,7 @@ namespace Metacode
                     return this->m_WindowLeftTop_Offset;
                 }
                 
-                const Menge::ConstString & get_WindowLeftTop_ResourceImageName() const
+                const Mengine::ConstString & get_WindowLeftTop_ResourceImageName() const
                 {
                     return this->m_WindowLeftTop_ResourceImageName;
                 }
@@ -3847,7 +3949,7 @@ namespace Metacode
                     return this->m_WindowRight_Offset;
                 }
                 
-                const Menge::ConstString & get_WindowRight_ResourceImageName() const
+                const Mengine::ConstString & get_WindowRight_ResourceImageName() const
                 {
                     return this->m_WindowRight_ResourceImageName;
                 }
@@ -3857,7 +3959,7 @@ namespace Metacode
                     return this->m_WindowRightBottom_Offset;
                 }
                 
-                const Menge::ConstString & get_WindowRightBottom_ResourceImageName() const
+                const Mengine::ConstString & get_WindowRightBottom_ResourceImageName() const
                 {
                     return this->m_WindowRightBottom_ResourceImageName;
                 }
@@ -3867,7 +3969,7 @@ namespace Metacode
                     return this->m_WindowRightTop_Offset;
                 }
                 
-                const Menge::ConstString & get_WindowRightTop_ResourceImageName() const
+                const Mengine::ConstString & get_WindowRightTop_ResourceImageName() const
                 {
                     return this->m_WindowRightTop_ResourceImageName;
                 }
@@ -3877,7 +3979,7 @@ namespace Metacode
                     return this->m_WindowTop_Offset;
                 }
                 
-                const Menge::ConstString & get_WindowTop_ResourceImageName() const
+                const Mengine::ConstString & get_WindowTop_ResourceImageName() const
                 {
                     return this->m_WindowTop_ResourceImageName;
                 }
@@ -3889,28 +3991,28 @@ namespace Metacode
             protected:
             protected:
                 bool m_WindowBackground_ResourceImageName_successful;
-                Menge::ConstString m_WindowBackground_ResourceImageName;
+                Mengine::ConstString m_WindowBackground_ResourceImageName;
                 mt::vec2f m_WindowBottom_Offset;
-                Menge::ConstString m_WindowBottom_ResourceImageName;
+                Mengine::ConstString m_WindowBottom_ResourceImageName;
                 mt::vec2f m_WindowLeft_Offset;
-                Menge::ConstString m_WindowLeft_ResourceImageName;
+                Mengine::ConstString m_WindowLeft_ResourceImageName;
                 mt::vec2f m_WindowLeftBottom_Offset;
-                Menge::ConstString m_WindowLeftBottom_ResourceImageName;
+                Mengine::ConstString m_WindowLeftBottom_ResourceImageName;
                 mt::vec2f m_WindowLeftTop_Offset;
-                Menge::ConstString m_WindowLeftTop_ResourceImageName;
+                Mengine::ConstString m_WindowLeftTop_ResourceImageName;
                 mt::vec2f m_WindowRight_Offset;
-                Menge::ConstString m_WindowRight_ResourceImageName;
+                Mengine::ConstString m_WindowRight_ResourceImageName;
                 mt::vec2f m_WindowRightBottom_Offset;
-                Menge::ConstString m_WindowRightBottom_ResourceImageName;
+                Mengine::ConstString m_WindowRightBottom_ResourceImageName;
                 mt::vec2f m_WindowRightTop_Offset;
-                Menge::ConstString m_WindowRightTop_ResourceImageName;
+                Mengine::ConstString m_WindowRightTop_ResourceImageName;
                 mt::vec2f m_WindowTop_Offset;
-                Menge::ConstString m_WindowTop_ResourceImageName;
+                Mengine::ConstString m_WindowTop_ResourceImageName;
             };
             
         protected:
         protected:
-            Menge::ConstString m_Name;
+            Mengine::ConstString m_Name;
         public:
             typedef Metabuf::Vector<Meta_FragmentShader> VectorMeta_FragmentShader;
         
@@ -3951,6 +4053,16 @@ namespace Metacode
         
         protected:
             VectorMeta_Program includes_Meta_Program;
+        public:
+            typedef Metabuf::Vector<Meta_VertexAttribute> VectorMeta_VertexAttribute;
+        
+            const VectorMeta_VertexAttribute & get_Includes_VertexAttribute() const
+            {
+                return this->includes_Meta_VertexAttribute;
+            }
+        
+        protected:
+            VectorMeta_VertexAttribute includes_Meta_VertexAttribute;
         public:
             typedef Metabuf::Vector<Meta_VertexShader> VectorMeta_VertexShader;
         
@@ -4217,7 +4329,7 @@ namespace Metacode
                     uint32_t getId() const override;
                 
                 public:
-                    const Menge::Polygon & get_Polygon() const
+                    const Mengine::Polygon & get_Polygon() const
                     {
                         return this->m_Polygon;
                     }
@@ -4227,7 +4339,7 @@ namespace Metacode
                 public:
                 protected:
                 protected:
-                    Menge::Polygon m_Polygon;
+                    Mengine::Polygon m_Polygon;
                 };
                 
             protected:
@@ -5100,7 +5212,7 @@ namespace Metacode
                     return this->m_LayerIndex;
                 }
                 
-                const Menge::Polygon & get_Value() const
+                const Mengine::Polygon & get_Value() const
                 {
                     return this->m_Value;
                 }
@@ -5111,7 +5223,7 @@ namespace Metacode
             protected:
             protected:
                 uint32_t m_LayerIndex;
-                Menge::Polygon m_Value;
+                Mengine::Polygon m_Value;
             };
             
             class Meta_TimeRemap
@@ -5130,7 +5242,7 @@ namespace Metacode
                     return this->m_LayerIndex;
                 }
                 
-                const Menge::Floats & get_Time() const
+                const Mengine::Floats & get_Time() const
                 {
                     return this->m_Time;
                 }
@@ -5141,7 +5253,7 @@ namespace Metacode
             protected:
             protected:
                 uint32_t m_LayerIndex;
-                Menge::Floats m_Time;
+                Mengine::Floats m_Time;
             };
             
         protected:
@@ -5231,7 +5343,7 @@ namespace Metacode
                     return m_Platform_successful;
                 }
                 
-                bool get_Platform( Menge::Tags * _value ) const
+                bool get_Platform( Mengine::Tags * _value ) const
                 {
                     if( m_Platform_successful == false )
                     {
@@ -5243,7 +5355,7 @@ namespace Metacode
                     return true;
                 }
                 
-                bool get_Platform( Menge::Tags * _value, const Menge::Tags & _default ) const
+                bool get_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
                 {
                     if( m_Platform_successful == false )
                     {
@@ -5272,12 +5384,12 @@ namespace Metacode
                     uint32_t getId() const override;
                 
                 public:
-                    const Menge::ConstString & get_Name() const
+                    const Mengine::ConstString & get_Name() const
                     {
                         return this->m_Name;
                     }
                     
-                    const Menge::FilePath & get_Path() const
+                    const Mengine::FilePath & get_Path() const
                     {
                         return this->m_Path;
                     }
@@ -5287,14 +5399,14 @@ namespace Metacode
                 public:
                 protected:
                 protected:
-                    Menge::ConstString m_Name;
-                    Menge::FilePath m_Path;
+                    Mengine::ConstString m_Name;
+                    Mengine::FilePath m_Path;
                 };
                 
             protected:
             protected:
                 bool m_Platform_successful;
-                Menge::Tags m_Platform;
+                Mengine::Tags m_Platform;
             public:
                 typedef Metabuf::Vector<Meta_Data> VectorMeta_Data;
             
@@ -5318,7 +5430,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::FilePath & get_Path() const
+                const Mengine::FilePath & get_Path() const
                 {
                     return this->m_Path;
                 }
@@ -5328,7 +5440,7 @@ namespace Metacode
                     return m_Platform_successful;
                 }
                 
-                bool get_Platform( Menge::Tags * _value ) const
+                bool get_Platform( Mengine::Tags * _value ) const
                 {
                     if( m_Platform_successful == false )
                     {
@@ -5340,7 +5452,7 @@ namespace Metacode
                     return true;
                 }
                 
-                bool get_Platform( Menge::Tags * _value, const Menge::Tags & _default ) const
+                bool get_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
                 {
                     if( m_Platform_successful == false )
                     {
@@ -5359,9 +5471,9 @@ namespace Metacode
             public:
             protected:
             protected:
-                Menge::FilePath m_Path;
+                Mengine::FilePath m_Path;
                 bool m_Platform_successful;
-                Menge::Tags m_Platform;
+                Mengine::Tags m_Platform;
             };
             
             class Meta_Materials
@@ -5380,7 +5492,7 @@ namespace Metacode
                     return m_Platform_successful;
                 }
                 
-                bool get_Platform( Menge::Tags * _value ) const
+                bool get_Platform( Mengine::Tags * _value ) const
                 {
                     if( m_Platform_successful == false )
                     {
@@ -5392,7 +5504,7 @@ namespace Metacode
                     return true;
                 }
                 
-                bool get_Platform( Menge::Tags * _value, const Menge::Tags & _default ) const
+                bool get_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
                 {
                     if( m_Platform_successful == false )
                     {
@@ -5421,7 +5533,7 @@ namespace Metacode
                     uint32_t getId() const override;
                 
                 public:
-                    const Menge::FilePath & get_Path() const
+                    const Mengine::FilePath & get_Path() const
                     {
                         return this->m_Path;
                     }
@@ -5431,13 +5543,13 @@ namespace Metacode
                 public:
                 protected:
                 protected:
-                    Menge::FilePath m_Path;
+                    Mengine::FilePath m_Path;
                 };
                 
             protected:
             protected:
                 bool m_Platform_successful;
-                Menge::Tags m_Platform;
+                Mengine::Tags m_Platform;
             public:
                 typedef Metabuf::Vector<Meta_Material> VectorMeta_Material;
             
@@ -5506,7 +5618,7 @@ namespace Metacode
                     return m_Platform_successful;
                 }
                 
-                bool get_Platform( Menge::Tags * _value ) const
+                bool get_Platform( Mengine::Tags * _value ) const
                 {
                     if( m_Platform_successful == false )
                     {
@@ -5518,7 +5630,7 @@ namespace Metacode
                     return true;
                 }
                 
-                bool get_Platform( Menge::Tags * _value, const Menge::Tags & _default ) const
+                bool get_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
                 {
                     if( m_Platform_successful == false )
                     {
@@ -5547,7 +5659,7 @@ namespace Metacode
                     uint32_t getId() const override;
                 
                 public:
-                    const Menge::FilePath & get_Path() const
+                    const Mengine::FilePath & get_Path() const
                     {
                         return this->m_Path;
                     }
@@ -5557,7 +5669,7 @@ namespace Metacode
                 public:
                 protected:
                 protected:
-                    Menge::FilePath m_Path;
+                    Mengine::FilePath m_Path;
                 };
                 
             protected:
@@ -5565,7 +5677,7 @@ namespace Metacode
                 bool m_Ignored_successful;
                 bool m_Ignored;
                 bool m_Platform_successful;
-                Menge::Tags m_Platform;
+                Mengine::Tags m_Platform;
             public:
                 typedef Metabuf::Vector<Meta_Resource> VectorMeta_Resource;
             
@@ -5594,7 +5706,7 @@ namespace Metacode
                     return m_Finalizer_successful;
                 }
                 
-                bool get_Finalizer( Menge::ConstString * _value ) const
+                bool get_Finalizer( Mengine::ConstString * _value ) const
                 {
                     if( m_Finalizer_successful == false )
                     {
@@ -5606,7 +5718,7 @@ namespace Metacode
                     return true;
                 }
                 
-                bool get_Finalizer( Menge::ConstString * _value, const Menge::ConstString & _default ) const
+                bool get_Finalizer( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                 {
                     if( m_Finalizer_successful == false )
                     {
@@ -5624,7 +5736,7 @@ namespace Metacode
                     return m_Initializer_successful;
                 }
                 
-                bool get_Initializer( Menge::ConstString * _value ) const
+                bool get_Initializer( Mengine::ConstString * _value ) const
                 {
                     if( m_Initializer_successful == false )
                     {
@@ -5636,7 +5748,7 @@ namespace Metacode
                     return true;
                 }
                 
-                bool get_Initializer( Menge::ConstString * _value, const Menge::ConstString & _default ) const
+                bool get_Initializer( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                 {
                     if( m_Initializer_successful == false )
                     {
@@ -5654,7 +5766,7 @@ namespace Metacode
                     return m_Module_successful;
                 }
                 
-                bool get_Module( Menge::ConstString * _value ) const
+                bool get_Module( Mengine::ConstString * _value ) const
                 {
                     if( m_Module_successful == false )
                     {
@@ -5666,7 +5778,7 @@ namespace Metacode
                     return true;
                 }
                 
-                bool get_Module( Menge::ConstString * _value, const Menge::ConstString & _default ) const
+                bool get_Module( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                 {
                     if( m_Module_successful == false )
                     {
@@ -5679,7 +5791,7 @@ namespace Metacode
                 
                     return true;
                 }
-                const Menge::FilePath & get_Path() const
+                const Mengine::FilePath & get_Path() const
                 {
                     return this->m_Path;
                 }
@@ -5689,7 +5801,7 @@ namespace Metacode
                     return m_Platform_successful;
                 }
                 
-                bool get_Platform( Menge::Tags * _value ) const
+                bool get_Platform( Mengine::Tags * _value ) const
                 {
                     if( m_Platform_successful == false )
                     {
@@ -5701,7 +5813,7 @@ namespace Metacode
                     return true;
                 }
                 
-                bool get_Platform( Menge::Tags * _value, const Menge::Tags & _default ) const
+                bool get_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
                 {
                     if( m_Platform_successful == false )
                     {
@@ -5721,14 +5833,14 @@ namespace Metacode
             protected:
             protected:
                 bool m_Finalizer_successful;
-                Menge::ConstString m_Finalizer;
+                Mengine::ConstString m_Finalizer;
                 bool m_Initializer_successful;
-                Menge::ConstString m_Initializer;
+                Mengine::ConstString m_Initializer;
                 bool m_Module_successful;
-                Menge::ConstString m_Module;
-                Menge::FilePath m_Path;
+                Mengine::ConstString m_Module;
+                Mengine::FilePath m_Path;
                 bool m_Platform_successful;
-                Menge::Tags m_Platform;
+                Mengine::Tags m_Platform;
             };
             
             class Meta_Texts
@@ -5747,7 +5859,7 @@ namespace Metacode
                     return m_Platform_successful;
                 }
                 
-                bool get_Platform( Menge::Tags * _value ) const
+                bool get_Platform( Mengine::Tags * _value ) const
                 {
                     if( m_Platform_successful == false )
                     {
@@ -5759,7 +5871,7 @@ namespace Metacode
                     return true;
                 }
                 
-                bool get_Platform( Menge::Tags * _value, const Menge::Tags & _default ) const
+                bool get_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
                 {
                     if( m_Platform_successful == false )
                     {
@@ -5788,7 +5900,7 @@ namespace Metacode
                     uint32_t getId() const override;
                 
                 public:
-                    const Menge::FilePath & get_Path() const
+                    const Mengine::FilePath & get_Path() const
                     {
                         return this->m_Path;
                     }
@@ -5798,13 +5910,13 @@ namespace Metacode
                 public:
                 protected:
                 protected:
-                    Menge::FilePath m_Path;
+                    Mengine::FilePath m_Path;
                 };
                 
             protected:
             protected:
                 bool m_Platform_successful;
-                Menge::Tags m_Platform;
+                Mengine::Tags m_Platform;
             public:
                 typedef Metabuf::Vector<Meta_Text> VectorMeta_Text;
             
@@ -5952,7 +6064,7 @@ namespace Metacode
                     return m_Font_successful;
                 }
                 
-                bool get_Font( Menge::ConstString * _value ) const
+                bool get_Font( Mengine::ConstString * _value ) const
                 {
                     if( m_Font_successful == false )
                     {
@@ -5964,7 +6076,7 @@ namespace Metacode
                     return true;
                 }
                 
-                bool get_Font( Menge::ConstString * _value, const Menge::ConstString & _default ) const
+                bool get_Font( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                 {
                     if( m_Font_successful == false )
                     {
@@ -5977,7 +6089,7 @@ namespace Metacode
                 
                     return true;
                 }
-                const Menge::ConstString & get_Key() const
+                const Mengine::ConstString & get_Key() const
                 {
                     return this->m_Key;
                 }
@@ -6027,7 +6139,7 @@ namespace Metacode
                     return m_Value_successful;
                 }
                 
-                bool get_Value( Menge::WString * _value ) const
+                bool get_Value( Mengine::WString * _value ) const
                 {
                     if( m_Value_successful == false )
                     {
@@ -6039,7 +6151,7 @@ namespace Metacode
                     return true;
                 }
                 
-                bool get_Value( Menge::WString * _value, const Menge::WString & _default ) const
+                bool get_Value( Mengine::WString * _value, const Mengine::WString & _default ) const
                 {
                     if( m_Value_successful == false )
                     {
@@ -6061,12 +6173,12 @@ namespace Metacode
                 bool m_CharOffset_successful;
                 float m_CharOffset;
                 bool m_Font_successful;
-                Menge::ConstString m_Font;
-                Menge::ConstString m_Key;
+                Mengine::ConstString m_Font;
+                Mengine::ConstString m_Key;
                 bool m_LineOffset_successful;
                 float m_LineOffset;
                 bool m_Value_successful;
-                Menge::WString m_Value;
+                Mengine::WString m_Value;
             };
             
         protected:

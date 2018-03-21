@@ -1,30 +1,30 @@
-#	include "TextField.h" 
+#include "TextField.h" 
 
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/ResourceInterface.h"
-#	include "Interface/TextInterface.h"
-#	include "Interface/ApplicationInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/TextInterface.h"
+#include "Interface/ApplicationInterface.h"
 
-#	include "Consts.h"
+#include "Consts.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Core/String.h"
-#	include "Core/StringFormat.h"
+#include "Core/String.h"
+#include "Core/StringFormat.h"
 
-#	include "TextLine.h"
+#include "TextLine.h"
 
-#	include "Math/box2.h"
+#include "math/box2.h"
 
-#	include "pybind/system.hpp"
+#include "pybind/system.hpp"
 
-#	include <algorithm>
+#include <algorithm>
 
-#	include <stdio.h>
+#include <stdio.h>
 
-#	include <math.h>
+#include <math.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()

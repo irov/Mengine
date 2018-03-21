@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/LoggerInterface.h"
+#include "Interface/LoggerInterface.h"
 
-#	include "pybind/types.hpp"
+#include "pybind/types.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	class ScriptLogger
 	{

@@ -2,11 +2,11 @@
 
 #   include "Interface/FileSystemInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include <string.h>
+#include <string.h>
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     static uint16_t readBEUint16( const Char* pIn )

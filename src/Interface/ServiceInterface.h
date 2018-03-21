@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/ServiceProviderInterface.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ServiceInterface
@@ -112,10 +112,10 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
 #	define SERVICE_GET( Type )\
-	(Menge::Helper::getService<Type>(__FILE__, __LINE__))
+	(Mengine::Helper::getService<Type>(__FILE__, __LINE__))
     //////////////////////////////////////////////////////////////////////////
 #	define SERVICE_EXIST( Type )\
-	(Menge::Helper::existService<Type>())
+	(Mengine::Helper::existService<Type>())
     //////////////////////////////////////////////////////////////////////////
 #	define SERVICE_NAME_CREATE(Name)\
 	__createMengineService##Name
@@ -127,14 +127,14 @@ namespace Menge
     protected:
     //////////////////////////////////////////////////////////////////////////
 #   define SERVICE_FACTORY( Name, Implement )\
-    bool SERVICE_NAME_CREATE(Name)(Menge::ServiceInterface**_service){\
+    bool SERVICE_NAME_CREATE(Name)(Mengine::ServiceInterface**_service){\
     if(_service==nullptr){return false;}\
 	try{*_service=new Implement();}catch(...){return false;}\
     return true;}\
 	struct __mengine_dummy_factory##Name{}
     //////////////////////////////////////////////////////////////////////////
 #	define SERVICE_EXTERN(Name)\
-	extern bool SERVICE_NAME_CREATE( Name )(Menge::ServiceInterface**);
+	extern bool SERVICE_NAME_CREATE( Name )(Mengine::ServiceInterface**);
     //////////////////////////////////////////////////////////////////////////
 #   define SERVICE_CREATE( Name )\
 	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_NAME_CREATE(Name))

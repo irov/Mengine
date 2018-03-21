@@ -1,8 +1,8 @@
-#	include "OALSoundBufferBase.h"
+#include "OALSoundBufferBase.h"
 
-#	include "Interface/SoundCodecInterface.h"
+#include "Interface/SoundCodecInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBufferBase::OALSoundBufferBase()
@@ -39,4 +39,4 @@ namespace Menge
 		return m_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

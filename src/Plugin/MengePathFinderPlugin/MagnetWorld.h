@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Servant.h"
+#include "Kernel/Servant.h"
 
-#	include "Factory/Factorable.h"
-#	include "Factory/Factory.h"
+#include "Factory/Factorable.h"
+#include "Factory/Factory.h"
 
-#	include "MagnetActor.h"
+#include "MagnetActor.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<MagnetActorPtr> TVectorMagnetActor;

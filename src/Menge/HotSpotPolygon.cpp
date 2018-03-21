@@ -1,26 +1,26 @@
-#	include "HotSpotPolygon.h"
+#include "HotSpotPolygon.h"
 
 #   include "HotspotMousePickerVisitor.h"
 
-#	include "Interface/MousePickerSystemInterface.h"
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/ResourceInterface.h"
-#	include "Interface/ApplicationInterface.h"
+#include "Interface/MousePickerSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/ApplicationInterface.h"
 
-#	include "Kernel/Scene.h"
-#	include "Layer2D.h"
+#include "Kernel/Scene.h"
+#include "Layer2D.h"
 
-//#	include "Arrow.h"
+//#include "Arrow.h"
 
-#	include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
-#	include "pybind/system.hpp"
-#	include "pybind/extract.hpp"
+#include "pybind/system.hpp"
+#include "pybind/extract.hpp"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	HotSpotPolygon::HotSpotPolygon()
@@ -244,7 +244,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotPolygon::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
 	{
-		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
+		if( (_debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
 		{
 			return;
 		}

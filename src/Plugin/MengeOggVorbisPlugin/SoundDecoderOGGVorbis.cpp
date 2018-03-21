@@ -1,10 +1,10 @@
-#	include "SoundDecoderOGGVorbis.h"
+#include "SoundDecoderOGGVorbis.h"
 
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static size_t s_readOgg( void *_ptr, size_t _size, size_t _nmemb, void *_datasource )
@@ -104,7 +104,6 @@ namespace Menge
 
 		m_oggVorbisFileInitialize = true;
 
-        //MENGE_LOG_INFO( "SoundDecoderOGGVorbis::readHeader_ 2" );
         vorbis_info* vorbisInfo = ov_info( &m_oggVorbisFile, -1 );
 
         if( vorbisInfo == nullptr )
@@ -125,7 +124,6 @@ namespace Menge
             return false;
         }
 
-        //MENGE_LOG_INFO( "SoundDecoderOGGVorbis::readHeader_ 3" );
         ogg_int64_t pcmTotal = ov_pcm_total( &m_oggVorbisFile, -1 );	// number of 16bit samples
 
         size_t size_pcmTotal = (size_t)pcmTotal;
@@ -268,4 +266,4 @@ namespace Menge
 		return float_pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

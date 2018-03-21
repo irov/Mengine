@@ -4,7 +4,7 @@
 
 #   include "SDL_net.h"
 
-namespace Menge
+namespace Mengine
 {
     class SDLSocket
         : public SocketInterface

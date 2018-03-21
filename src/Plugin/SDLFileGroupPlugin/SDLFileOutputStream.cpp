@@ -7,7 +7,7 @@
 
 #   include "SDL_rwops.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLFileOutputStream::SDLFileOutputStream()
@@ -80,4 +80,4 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	// namespace Mengine

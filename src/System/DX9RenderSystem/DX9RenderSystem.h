@@ -1,11 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
 #   include "DX9RenderImage.h"
 #   include "DX9RenderVertexShader.h"
 #   include "DX9RenderFragmentShader.h"
 #   include "DX9RenderProgram.h"
+#   include "DX9RenderVertexAttribute.h"
 #   include "DX9RenderVertexBuffer.h"
 #   include "DX9RenderIndexBuffer.h"
 
@@ -15,9 +16,9 @@
 
 #   include "stdex/stl_map.h"
 
-#	include <d3d9.h>
+#include <d3d9.h>
 
-namespace Menge
+namespace Mengine
 {
 	class DX9RenderSystem
 		: public ServiceBase<RenderSystemInterface>
@@ -49,22 +50,23 @@ namespace Menge
 		bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;
 		// входные данные: матрица 4 на 4
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
-		void setModelViewMatrix( const mt::mat4f & _modelView ) override;
+		void setViewMatrix( const mt::mat4f & _modelView ) override;
 		void setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture ) override;
 		void setWorldMatrix( const mt::mat4f & _world ) override;
 
 	public:
-		RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _verticesNum, bool _dynamic ) override;
+		RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType ) override;
 		bool setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer ) override;
 
-		RenderIndexBufferInterfacePtr createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) override;
+		RenderIndexBufferInterfacePtr createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType ) override;
 		bool setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer ) override;
 
 	public:
+        RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name ) override;
 		RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory ) override;
 		RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory ) override;
 		
-		RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount ) override;
+		RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount ) override;
 		void setProgram( const RenderProgramInterfacePtr & _program ) override;
 		void updateProgram( const RenderProgramInterfacePtr & _program ) override;
 
@@ -209,6 +211,7 @@ namespace Menge
 		DWORD m_fvf;
 		IDirect3DVertexDeclaration9 * m_vertexDeclaration;
 
+        FactoryPtr m_factoryRenderVertexAttribute;
 		FactoryPtr m_factoryRenderVertexShader;
         FactoryPtr m_factoryRenderFragmentShader;
         FactoryPtr m_factoryRenderProgram;
@@ -240,8 +243,8 @@ namespace Menge
 		bool m_vertexBufferEnable;
 		bool m_indexBufferEnable;
 
-        bool m_textureEnable[MENGE_MAX_TEXTURE_STAGES];
+        bool m_textureEnable[MENGINE_MAX_TEXTURE_STAGES];
 		
         bool m_waitForVSync;
 	};
-}	// namespace Menge
+}	

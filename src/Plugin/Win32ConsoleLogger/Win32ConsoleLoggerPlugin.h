@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/LoggerInterface.h"
 
-#	include "Core/PluginBase.h"
+#include "Core/PluginBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class Win32ConsoleLoggerPlugin

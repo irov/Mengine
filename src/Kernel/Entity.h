@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/PrototypeManagerInterface.h"
 
-#	include "Kernel/Node.h"
-#	include "Kernel/Eventable.h"
+#include "Kernel/Node.h"
+#include "Kernel/Eventable.h"
 
 #   include "pybind/object.hpp"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     enum EntityEventFlag

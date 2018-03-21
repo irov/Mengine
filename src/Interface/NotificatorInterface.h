@@ -1,6 +1,6 @@
 #   pragma once
 
-namespace Menge
+namespace Mengine
 {
     enum ENotificatorName
     {

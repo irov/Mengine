@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/StreamInterface.h"
-#	include "Interface/ArchiveInterface.h"
-#	include "Interface/MemoryInterface.h"
+#include "Interface/StreamInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/MemoryInterface.h"
 
-#	include "Core/Magic.h"
+#include "Core/Magic.h"
 
-namespace Menge
+namespace Mengine
 {
 	namespace Helper
 	{

@@ -1,13 +1,13 @@
-#	include "TextLine.h"
+#include "TextLine.h"
 
-#	include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #   include <utf8.h>
-#	include <math.h>
+#include <math.h>
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TextLine::TextLine( float _charOffset )

@@ -1,6 +1,6 @@
-#	include "ImageEncoder.h"
+#include "ImageEncoder.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ImageEncoder::ImageEncoder()

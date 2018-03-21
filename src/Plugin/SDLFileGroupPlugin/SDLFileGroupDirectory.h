@@ -6,7 +6,7 @@
 
 #   include "Factory/Factory.h"
 
-namespace Menge
+namespace Mengine
 {
     class SDLFileGroupDirectory
         : public ServantBase<FileGroupInterface>
@@ -53,4 +53,4 @@ namespace Menge
         FactoryPtr m_factoryInputStream;
         FactoryPtr m_factoryOutputStream;
     };
-}	// namespace Menge
+}	// namespace Mengine

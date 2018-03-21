@@ -1,8 +1,8 @@
 #   pragma once
 
-#	include "Core/ConstStringHolder.h"
+#include "Core/ConstStringHolder.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ConstStringHolderLocalString
 		: public ConstStringHolder

@@ -1,19 +1,19 @@
-#	include "ModuleBurritoWorld.h"
+#include "ModuleBurritoWorld.h"
 
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/PlayerInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/PlayerInterface.h"
 
 #   include "Kernel/ScriptWrapper.h"
 
-#	include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/NodePrototypeGenerator.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-#	include <algorithm>
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	namespace

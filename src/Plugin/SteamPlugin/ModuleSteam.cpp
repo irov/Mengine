@@ -3,18 +3,18 @@
 #   pragma warning(disable:4127)  
 #   endif
 
-#	include "ModuleSteam.h"
+#include "ModuleSteam.h"
 
-#	include "Interface/ConfigInterface.h"
-#	include "Interface/OptionsInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/UnicodeInterface.h"
-#	include "Interface/ApplicationInterface.h"
+#include "Interface/ConfigInterface.h"
+#include "Interface/OptionsInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/ApplicationInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ModuleSteam::ModuleSteam()

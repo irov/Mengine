@@ -1,17 +1,17 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundSystemInterface.h"
 
-#	include "OALSoundBufferBase.h"
-#	include "OALSoundBufferStream.h"
-#	include "OALSoundSource.h"
+#include "OALSoundBufferBase.h"
+#include "OALSoundBufferStream.h"
+#include "OALSoundSource.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "AL/al.h"
-#	include "AL/alc.h"
+#include "AL/al.h"
+#include "AL/alc.h"
 
-namespace Menge
+namespace Mengine
 {
 	class OALSoundSource;
 
@@ -58,4 +58,4 @@ namespace Menge
 
 		bool m_threadAvaliable;
     };
-}	// namespace Menge
+}	

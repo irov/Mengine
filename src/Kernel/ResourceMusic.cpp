@@ -1,15 +1,15 @@
-#	include "ResourceMusic.h"
+#include "ResourceMusic.h"
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/CodecInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/CodecInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Core/String.h"
+#include "Core/String.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceMusic::ResourceMusic()

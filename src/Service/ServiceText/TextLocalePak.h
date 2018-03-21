@@ -1,14 +1,14 @@
 # pragma once
 
-#	include "Interface/MemoryInterface.h"
+#include "Interface/MemoryInterface.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/String.h"
-#	include "Core/FilePath.h"
+#include "Core/ConstString.h"
+#include "Core/String.h"
+#include "Core/FilePath.h"
 
-#	include "Factory/FactorablePtr.h"
+#include "Factory/FactorablePtr.h"
 
-namespace Menge
+namespace Mengine
 {
 	class TextLocalePack
 		: public FactorablePtr
@@ -31,7 +31,7 @@ namespace Menge
 		ConstString m_pakName;
 		FilePath m_path;
 
-		MemoryInterfacePtr m_memory;		
+		MemoryBufferInterfacePtr m_memory;		
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<TextLocalePack> TextLocalePackPtr;

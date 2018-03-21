@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/OptionsInterface.h"
+#include "Interface/OptionsInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "Config/Char.h"
+#include "Config/Char.h"
 
-namespace Menge
+namespace Mengine
 {
 #	ifndef MENGINE_OPTIONS_KEY_SIZE
 #	define MENGINE_OPTIONS_KEY_SIZE 32

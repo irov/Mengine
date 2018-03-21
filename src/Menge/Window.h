@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
-#	include "Kernel/FixedVertices.h"
+#include "Kernel/Node.h"
+#include "Kernel/FixedVertices.h"
 
-#	include "ResourceWindow.h"
+#include "ResourceWindow.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
@@ -58,4 +58,4 @@ namespace Menge
 
 		WindowEdge m_edge[ResourceWindow_Count];
 	};
-}	// namespace Menge
+}	

@@ -1,9 +1,9 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Surface.h"
+#include "Kernel/Surface.h"
 #   include "Kernel/ResourceHolder.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class ResourceImage> ResourceImagePtr;

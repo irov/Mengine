@@ -1,9 +1,9 @@
-#	include "DX9RenderTarget.h"
+#include "DX9RenderTarget.h"
 
-#	include "DX9RenderEnum.h"
-#	include "DX9ErrorHelper.h"
+#include "DX9RenderEnum.h"
+#include "DX9ErrorHelper.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX9RenderTarget::DX9RenderTarget()

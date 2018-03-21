@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ParticleSystemInterface.h"
+#include "Interface/ParticleSystemInterface.h"
 
-#	include "AstralaxEmitter2.h"
+#include "AstralaxEmitter2.h"
 
 #   include "Core/ServantBase.h"
 
@@ -12,13 +12,13 @@
 #	pragma warning(push, 0) 
 #	endif 
 
-#	include "magic.h"
+#include "magic.h"
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(pop) 
 #	endif
 
-namespace Menge
+namespace Mengine
 {
 	class AstralaxParticleSystem2;
 

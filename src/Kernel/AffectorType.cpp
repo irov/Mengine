@@ -1,6 +1,6 @@
-#	include "Kernel/AffectorType.h"
+#include "Kernel/AffectorType.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static const char* s_affectorToString[] = 

@@ -2,7 +2,7 @@
 
 #   include "Interface/ServiceInterface.h"
 
-namespace Menge
+namespace Mengine
 {
     class ProfilerServiceInterface
         : public ServiceInterface
@@ -17,5 +17,5 @@ namespace Menge
     };
 
 #   define PROFILER_SERVICE()\
-    SERVICE_GET(Menge::ProfilerServiceInterface)
+    SERVICE_GET(Mengine::ProfilerServiceInterface)
 }

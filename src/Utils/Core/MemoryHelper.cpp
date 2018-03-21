@@ -1,8 +1,8 @@
-#	include "MemoryHelper.h"
+#include "MemoryHelper.h"
 
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	namespace Helper
 	{
@@ -23,8 +23,8 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		MemoryInterfacePtr createMemoryStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const char * _file, uint32_t _line )
 		{
-			MemoryInterfacePtr memoryBuffer = MEMORY_SERVICE()
-				->createMemory();
+			MemoryBufferInterfacePtr memoryBuffer = MEMORY_SERVICE()
+				->createMemoryBuffer();
 
 			if( memoryBuffer == nullptr )
 			{
@@ -65,7 +65,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
         MemoryInterfacePtr createMemoryCacheBuffer( size_t _size, const char * _file, uint32_t _line )
 		{
-			MemoryInterfacePtr cache = MEMORY_SERVICE()
+            MemoryBufferInterfacePtr cache = MEMORY_SERVICE()
 				->createMemoryCacheBuffer();
 
 			if( cache == nullptr )
@@ -171,4 +171,4 @@ namespace Menge
 			return cache;
 		}
 	}
-}	// namespace Menge
+}	

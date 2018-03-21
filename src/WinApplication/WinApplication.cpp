@@ -1,53 +1,53 @@
-#	include "Config/Config.h"
-#	include "Config/Stringstream.h"
+#include "Config/Config.h"
+#include "Config/Stringstream.h"
 
-#	include "WinApplication.h"
+#include "WinApplication.h"
 
-#	include "Interface/OptionsInterface.h"
-#	include "Interface/LoggerInterface.h"
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/UnicodeInterface.h"
-#	include "Interface/InputSystemInterface.h"
-#	include "Interface/ConfigInterface.h"
-#	include "Interface/PackageInterface.h"
-#	include "Interface/UserdataInterface.h"
+#include "Interface/OptionsInterface.h"
+#include "Interface/LoggerInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/InputSystemInterface.h"
+#include "Interface/ConfigInterface.h"
+#include "Interface/PackageInterface.h"
+#include "Interface/UserdataInterface.h"
 #   include "Interface/GraveyardInterface.h"
 #   include "Interface/ResourceInterface.h"
-#	include "Interface/TextInterface.h"
+#include "Interface/TextInterface.h"
 
-#	include "WindowsLayer/VistaWindowsLayer.h"
+#include "WindowsLayer/VistaWindowsLayer.h"
 #   include "PythonScriptWrapper/PythonScriptWrapper.h"
 
-#	include "Factory/FactorableUnique.h"
-#	include "Factory/FactoryDefault.h"
+#include "Factory/FactorableUnique.h"
+#include "Factory/FactoryDefault.h"
 
-#	include "Core/Date.h"
+#include "Core/Date.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include <cstdio>
-#	include <clocale>
+#include <cstdio>
+#include <clocale>
 
 #   include <errno.h>
 
-#	include "MessageBoxLogger.h"
+#include "MessageBoxLogger.h"
 
-#	include "CriticalErrorsMonitor.h"
+#include "CriticalErrorsMonitor.h"
 
-#	include "Core/FileLogger.h"
-#	include "Core/IniUtil.h"
+#include "Core/FileLogger.h"
+#include "Core/IniUtil.h"
 
-#	include "resource.h"
+#include "resource.h"
 
-#	include <ctime>
-#	include <algorithm>
-#	include <functional>
+#include <ctime>
+#include <algorithm>
+#include <functional>
 
-#	include <sstream>
+#include <sstream>
 
 #   include <WinBase.h>
 #   include <Psapi.h>
-#	include <tlhelp32.h>
+#include <tlhelp32.h>
 
 
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
@@ -123,7 +123,7 @@ PLUGIN_EXPORT( PathFinder );
 PLUGIN_EXPORT( TTF );
 #   endif
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	WinApplication::WinApplication() 
@@ -592,7 +592,7 @@ namespace Menge
 		
 		bool muteMode = HAS_OPTION( "mute" );
 		
-		if( muteMode == true || SERVICE_EXIST( Menge::SoundSystemInterface ) == false )
+		if( muteMode == true || SERVICE_EXIST( Mengine::SoundSystemInterface ) == false )
 		{
 			SERVICE_CREATE( SilentSoundSystem );
 		}
@@ -842,7 +842,7 @@ namespace Menge
 			->calcWindowResolution( windowResolution );
 
         PLATFORM_SERVICE()
-            ->setIcon( IDI_MENGE );
+            ->setIcon( IDI_MENGINE );
 
         PLATFORM_SERVICE()
             ->setProjectTitle( wprojectTitle );
@@ -892,7 +892,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::finalize()
 	{
-		SERVICE_FINALIZE( Menge::ModuleServiceInterface );
+		SERVICE_FINALIZE( Mengine::ModuleServiceInterface );
 
 		PLATFORM_SERVICE()
 			->stop();		
@@ -905,58 +905,58 @@ namespace Menge
         THREAD_SERVICE()
             ->stopTasks();
 		
-        SERVICE_FINALIZE( Menge::GameServiceInterface );
-        SERVICE_FINALIZE( Menge::PlayerServiceInterface );
-        SERVICE_FINALIZE( Menge::PackageServiceInterface );
-        SERVICE_FINALIZE( Menge::UserdataServiceInterface );
-        SERVICE_FINALIZE( Menge::GraveyardInterface );
-        SERVICE_FINALIZE( Menge::NodeServiceInterface );
-        SERVICE_FINALIZE( Menge::ResourceServiceInterface );
-        SERVICE_FINALIZE( Menge::TextServiceInterface );
-        SERVICE_FINALIZE( Menge::PrototypeServiceInterface );
-		SERVICE_FINALIZE( Menge::ApplicationInterface );
-		SERVICE_FINALIZE( Menge::HttpSystemInterface );
-		SERVICE_FINALIZE( Menge::PrefetcherServiceInterface );
-		SERVICE_FINALIZE( Menge::DataServiceInterface );
-		SERVICE_FINALIZE( Menge::PluginServiceInterface );
-		SERVICE_FINALIZE( Menge::InputServiceInterface );
-		SERVICE_FINALIZE( Menge::UnicodeSystemInterface );
+        SERVICE_FINALIZE( Mengine::GameServiceInterface );
+        SERVICE_FINALIZE( Mengine::PlayerServiceInterface );
+        SERVICE_FINALIZE( Mengine::PackageServiceInterface );
+        SERVICE_FINALIZE( Mengine::UserdataServiceInterface );
+        SERVICE_FINALIZE( Mengine::GraveyardInterface );
+        SERVICE_FINALIZE( Mengine::NodeServiceInterface );
+        SERVICE_FINALIZE( Mengine::ResourceServiceInterface );
+        SERVICE_FINALIZE( Mengine::TextServiceInterface );
+        SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
+		SERVICE_FINALIZE( Mengine::ApplicationInterface );
+		SERVICE_FINALIZE( Mengine::HttpSystemInterface );
+		SERVICE_FINALIZE( Mengine::PrefetcherServiceInterface );
+		SERVICE_FINALIZE( Mengine::DataServiceInterface );
+		SERVICE_FINALIZE( Mengine::PluginServiceInterface );
+		SERVICE_FINALIZE( Mengine::InputServiceInterface );
+		SERVICE_FINALIZE( Mengine::UnicodeSystemInterface );
 
-		SERVICE_FINALIZE( Menge::CodecServiceInterface );
-		SERVICE_FINALIZE( Menge::ParticleSystemInterface2 );
-		SERVICE_FINALIZE( Menge::ParticleServiceInterface2 );
+		SERVICE_FINALIZE( Mengine::CodecServiceInterface );
+		SERVICE_FINALIZE( Mengine::ParticleSystemInterface2 );
+		SERVICE_FINALIZE( Mengine::ParticleServiceInterface2 );
 
-		SERVICE_FINALIZE( Menge::SoundServiceInterface );
-		SERVICE_FINALIZE( Menge::SoundSystemInterface );
+		SERVICE_FINALIZE( Mengine::SoundServiceInterface );
+		SERVICE_FINALIZE( Mengine::SoundSystemInterface );
 
-		SERVICE_FINALIZE( Menge::PrototypeServiceInterface );
-		SERVICE_FINALIZE( Menge::ScriptServiceInterface );
-		SERVICE_FINALIZE( Menge::ConverterServiceInterface );
+		SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
+		SERVICE_FINALIZE( Mengine::ScriptServiceInterface );
+		SERVICE_FINALIZE( Mengine::ConverterServiceInterface );
 
-        SERVICE_FINALIZE( Menge::RenderServiceInterface );
-        SERVICE_FINALIZE( Menge::RenderMaterialServiceInterface );
-        SERVICE_FINALIZE( Menge::RenderTextureServiceInterface );
-		SERVICE_FINALIZE( Menge::RenderSystemInterface );
+        SERVICE_FINALIZE( Mengine::RenderServiceInterface );
+        SERVICE_FINALIZE( Mengine::RenderMaterialServiceInterface );
+        SERVICE_FINALIZE( Mengine::RenderTextureServiceInterface );
+		SERVICE_FINALIZE( Mengine::RenderSystemInterface );
 
-		SERVICE_FINALIZE( Menge::ConfigServiceInterface );
-		SERVICE_FINALIZE( Menge::StringizeServiceInterface );
+		SERVICE_FINALIZE( Mengine::ConfigServiceInterface );
+		SERVICE_FINALIZE( Mengine::StringizeServiceInterface );
 		
-		SERVICE_FINALIZE( Menge::ArchiveServiceInterface );
-		SERVICE_FINALIZE( Menge::MemoryServiceInterface );
-		SERVICE_FINALIZE( Menge::NotificationServiceInterface );
+		SERVICE_FINALIZE( Mengine::ArchiveServiceInterface );
+		SERVICE_FINALIZE( Mengine::MemoryServiceInterface );
+		SERVICE_FINALIZE( Mengine::NotificationServiceInterface );
 
-		SERVICE_FINALIZE( Menge::ThreadServiceInterface );
-		SERVICE_FINALIZE( Menge::ThreadSystemInterface );
+		SERVICE_FINALIZE( Mengine::ThreadServiceInterface );
+		SERVICE_FINALIZE( Mengine::ThreadSystemInterface );
 
-		SERVICE_FINALIZE( Menge::TimerServiceInterface );
-		SERVICE_FINALIZE( Menge::TimerSystemInterface );
+		SERVICE_FINALIZE( Mengine::TimerServiceInterface );
+		SERVICE_FINALIZE( Mengine::TimerSystemInterface );
 
-        SERVICE_FINALIZE( Menge::PlatformInterface );
-		SERVICE_FINALIZE( Menge::WindowsLayerInterface );
+        SERVICE_FINALIZE( Mengine::PlatformInterface );
+		SERVICE_FINALIZE( Mengine::WindowsLayerInterface );
         
 		if( m_fileLog != nullptr )
 		{
-			if( SERVICE_EXIST( Menge::LoggerServiceInterface ) == true )
+			if( SERVICE_EXIST( Mengine::LoggerServiceInterface ) == true )
 			{
 				LOGGER_SERVICE()
 					->unregisterLogger( m_fileLog );
@@ -967,7 +967,7 @@ namespace Menge
 
 		if( m_loggerMessageBox != nullptr )
 		{
-			if( SERVICE_EXIST( Menge::LoggerServiceInterface ) == true )
+			if( SERVICE_EXIST( Mengine::LoggerServiceInterface ) == true )
 			{
 				LOGGER_SERVICE()
 					->unregisterLogger( m_loggerMessageBox );
@@ -976,8 +976,8 @@ namespace Menge
             m_loggerMessageBox = nullptr;
 		}
 
-        SERVICE_FINALIZE( Menge::FileServiceInterface );
-		SERVICE_FINALIZE( Menge::LoggerServiceInterface );
+        SERVICE_FINALIZE( Mengine::FileServiceInterface );
+		SERVICE_FINALIZE( Mengine::LoggerServiceInterface );
 
 		SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
 		
@@ -989,4 +989,4 @@ namespace Menge
 		//
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}

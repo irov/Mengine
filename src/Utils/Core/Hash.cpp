@@ -1,6 +1,6 @@
-#	include "Hash.h"
+#include "Hash.h"
 
-namespace Menge
+namespace Mengine
 {
 	namespace Helper
 	{

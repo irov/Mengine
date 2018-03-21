@@ -1,94 +1,137 @@
-#	include "OpenGLRenderVertexBuffer.h"
+#include "OpenGLRenderVertexBuffer.h"
 
-#	include "OpenGLRenderError.h"
+#include "OpenGLRenderError.h"
+#include "OpenGLRenderEnum.h"
 
-#	include "Core/MemoryAllocator.h"
+#include "Core/MemoryAllocator.h"
 
-namespace Menge
+namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	OpenGLRenderVertexBuffer::OpenGLRenderVertexBuffer()
-		: m_memory( nullptr )
-		, m_vertexNum( 0 )
-		, m_usage( GL_STATIC_DRAW )
-		, m_id( 0 )
-		, m_lockOffset(0)
-		, m_lockCount(0)
-		, m_lockMemory(nullptr)
-		, m_lockFlags( BLF_LOCK_NONE )
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	OpenGLRenderVertexBuffer::~OpenGLRenderVertexBuffer()
-	{
-		if( m_id != 0 )
-		{
-			GLCALL( glDeleteBuffers, (1, &m_id) );
-		}
+    //////////////////////////////////////////////////////////////////////////
+    OpenGLRenderVertexBuffer::OpenGLRenderVertexBuffer()
+        : m_vertexCount( 0 )
+        , m_vertexSize( 0 )
+        , m_usage( GL_STATIC_DRAW )
+        , m_id( 0 )
+        , m_lockOffset(0)
+        , m_lockCount(0)
+        , m_lockMemory(nullptr)
+        , m_lockFlags( BLF_LOCK_NONE )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    OpenGLRenderVertexBuffer::~OpenGLRenderVertexBuffer()
+    {
+        if( m_id != 0 )
+        {
+            GLCALL( glDeleteBuffers, (1, &m_id) );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderVertexBuffer::initialize( uint32_t _elementSize, EBufferType _bufferType )
+    {   
+        GLuint bufId = 0;
+        GLCALL( glGenBuffers, (1, &bufId) );
 
-		Helper::freeMemory( m_memory );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool OpenGLRenderVertexBuffer::initialize( uint32_t _vertexNum, bool _dynamic )
-	{ 
-		m_memory = Helper::allocateMemory<RenderVertex2D>( _vertexNum );
-		m_vertexNum = _vertexNum;
+        if( bufId == 0 )
+        {
+            return false;
+        }
+        
+        m_id = bufId;
 
-		m_usage = GL_STATIC_DRAW;
+        m_vertexSize = _elementSize;
+        m_usage = s_getGLBufferType( _bufferType );
 
-		if( _dynamic == true )
-		{
-			m_usage = GL_DYNAMIC_DRAW;
-		}
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t OpenGLRenderVertexBuffer::getVertexCount() const
+    {
+        return m_vertexCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t OpenGLRenderVertexBuffer::getVertexSize() const
+    {
+        return m_vertexSize;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderVertexBuffer::resize( uint32_t _vertexCount )
+    {
+        m_vertexCount = _vertexCount;
 
-		GLuint bufId = 0;
-		GLCALL( glGenBuffers, (1, &bufId) );
+        const uint32_t bufferSize = _vertexCount * m_vertexSize;
+        
+        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+        GLCALL( glBufferData, (GL_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );
+        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 
-		GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, bufId) );
-		GLCALL( glBufferData, (GL_ARRAY_BUFFER, m_vertexNum * sizeof( RenderVertex2D ), nullptr, m_usage) );
-		GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MemoryInterfacePtr OpenGLRenderVertexBuffer::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
+    {
+        if( m_lockMemory != nullptr )
+        {
+            return nullptr;
+        }
 
-		m_id = bufId;
+        if( _offset + _count > m_vertexCount )
+        {
+            return nullptr;
+        }
+                
+        m_lockOffset = _offset;
+        m_lockCount = _count;
+        m_lockFlags = _flags;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-    Pointer OpenGLRenderVertexBuffer::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
-	{
-		if( m_lockMemory != nullptr )
-		{
-			return nullptr;
-		}
+        const uint32_t bufferSize = m_lockCount * m_vertexSize;
 
-		if( _offset + _count > m_vertexNum )
-		{
-			return nullptr;
-		}
-				
-		m_lockOffset = _offset;
-		m_lockCount = _count;
-		m_lockMemory = m_memory + m_lockOffset;
-		m_lockFlags = _flags;
-		
-		return m_lockMemory;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool OpenGLRenderVertexBuffer::unlock()
-	{
-		GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
-		GLCALL( glBufferSubData, (GL_ARRAY_BUFFER, m_lockOffset * sizeof( RenderVertex2D ), m_lockCount * sizeof( RenderVertex2D ), m_lockMemory) );
-		GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
+            ->createMemoryCacheBuffer();
 
-		m_lockOffset = 0;
-		m_lockCount = 0;
-		m_lockMemory = nullptr;
-		m_lockFlags = BLF_LOCK_NONE;
+        memory->newMemory( bufferSize, __FILE__, __LINE__ );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OpenGLRenderVertexBuffer::enable()
-	{
-		GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
-	}
+        m_lockMemory = memory;        
+        
+        return m_lockMemory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderVertexBuffer::unlock()
+    {
+        void * memory_buffer = m_lockMemory->getMemory();
+
+        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+        GLCALL( glBufferSubData, (GL_ARRAY_BUFFER, m_lockOffset * m_vertexSize, m_lockCount * m_vertexSize, memory_buffer) );
+        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+
+        m_lockOffset = 0;
+        m_lockCount = 0;
+        m_lockMemory = nullptr;
+        m_lockFlags = BLF_LOCK_NONE;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderVertexBuffer::draw( const void * _buffer, size_t _size )
+    {
+        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
+        GLCALL( glBufferData, (GL_ARRAY_BUFFER, _size, nullptr, GL_STREAM_DRAW) );
+        GLCALL( glBufferSubData, (GL_ARRAY_BUFFER, 0, _size, _buffer) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderVertexBuffer::enable()
+    {
+        IF_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderVertexBuffer::disable()
+    {
+        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+    }
 }

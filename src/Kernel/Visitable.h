@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
 #   include "Core/Visitor.h"
 
-namespace Menge
+namespace Mengine
 {    
 	class Visitable
 	{

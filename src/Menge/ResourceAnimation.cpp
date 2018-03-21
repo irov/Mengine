@@ -1,16 +1,16 @@
-#	include "ResourceAnimation.h"
+#include "ResourceAnimation.h"
 
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/ConfigInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceAnimation::ResourceAnimation()

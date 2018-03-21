@@ -1,18 +1,18 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
-#	include "Config/String.h"
+#include "Config/Typedef.h"
+#include "Config/String.h"
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 #   include "Core/FilePath.h"
-#	include "Core/Resolution.h"
-#	include "Core/AspectRatioViewports.h"
-#	include "Core/ColourValue.h"
-#	include "Core/Params.h"
+#include "Core/Resolution.h"
+#include "Core/AspectRatioViewports.h"
+#include "Core/ColourValue.h"
+#include "Core/Params.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ConfigServiceInterface
 		: public ServiceInterface
@@ -45,7 +45,7 @@ namespace Menge
 	};
 
 #   define CONFIG_SERVICE()\
-    ((Menge::ConfigServiceInterface *)SERVICE_GET(Menge::ConfigServiceInterface))
+    ((Mengine::ConfigServiceInterface *)SERVICE_GET(Mengine::ConfigServiceInterface))
 
 #	define CONFIG_VALUE( section, key, default )\
 	(CONFIG_SERVICE()->getValue( section, key, default ))

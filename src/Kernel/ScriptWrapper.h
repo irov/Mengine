@@ -1,7 +1,7 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ScriptSystemInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/ScriptSystemInterface.h"
+#include "Interface/StringizeInterface.h"
 
 #   include "Core/ServantBase.h"
 
@@ -9,7 +9,7 @@
 
 #   include "pybind/pybind.hpp"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
@@ -74,9 +74,9 @@ namespace Menge
 
             PyObject * py_obj = kernel->scope_create_holder_t( obj );
 
-			//pybind::set_attr( py_embedded, "Menge_name", pybind::ptr(_node->getName()) );
-			//pybind::set_attr( py_embedded, "Menge_type", pybind::ptr(_node->getType()) );
-			//pybind::set_attr( py_embedded, "Menge_tag", pybind::ptr(_node->getTag()) );
+			//pybind::set_attr( py_embedded, "Mengine_name", pybind::ptr(_node->getName()) );
+			//pybind::set_attr( py_embedded, "Mengine_type", pybind::ptr(_node->getType()) );
+			//pybind::set_attr( py_embedded, "Mengine_tag", pybind::ptr(_node->getTag()) );
 
 			return py_obj;
 		}

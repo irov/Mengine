@@ -1,33 +1,33 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
-#	include "Config/String.h"
+#include "Config/Typedef.h"
+#include "Config/String.h"
 
 #   include "Interface/ServiceInterface.h"
-#	include "Interface/StreamInterface.h"
-#	include "Interface/ArchiveInterface.h"
+#include "Interface/StreamInterface.h"
+#include "Interface/ArchiveInterface.h"
 
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 #   include "Core/ColourValue.h"
-#	include "Core/Magic.h"
-#	include "Core/RenderVertex2D.h"
-#	include "Core/RenderIndices.h"
+#include "Core/Magic.h"
+#include "Core/RenderVertex2D.h"
+#include "Core/RenderIndex.h"
 
 #   include "Factory/Factorable.h"
 #   include "Factory/FactorablePtr.h"
 
-#	include "Math/vec2.h"
-#	include "Math/box2.h"
+#include "math/vec2.h"
+#include "math/box2.h"
 
-#   include "Math/mat4.h"
-#   include "Math/uv4.h"
+#   include "math/mat4.h"
+#   include "math/uv4.h"
 
 #	ifndef MENGINE_PARTICLE_MAX_MESH
 #	define MENGINE_PARTICLE_MAX_MESH 1000
 #	endif
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class ResourceImage> ResourceImagePtr;
@@ -109,7 +109,7 @@ namespace Menge
 
 	public:
 		virtual bool prepareParticles( ParticleEmitterRenderFlush & _flush ) = 0;
-		virtual bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndices * _indices, ParticleEmitterRenderFlush & _flush ) = 0;
+		virtual bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, ParticleEmitterRenderFlush & _flush ) = 0;
         
 	public:
 		virtual const mt::box2f & getBoundingBox() const = 0;
@@ -172,7 +172,7 @@ namespace Menge
 	};
     //////////////////////////////////////////////////////////////////////////
 #   define PARTICLE_SYSTEM2()\
-	((ParticleSystemInterface2 *)SERVICE_GET(Menge::ParticleSystemInterface2))
+	((ParticleSystemInterface2 *)SERVICE_GET(Mengine::ParticleSystemInterface2))
     //////////////////////////////////////////////////////////////////////////
 	class ParticleServiceInterface2
 		: public ServiceInterface
@@ -190,5 +190,5 @@ namespace Menge
 	};
     //////////////////////////////////////////////////////////////////////////
 #   define PARTICLE_SERVICE2()\
-	((ParticleServiceInterface2 *)SERVICE_GET(Menge::ParticleServiceInterface2))
+	((ParticleServiceInterface2 *)SERVICE_GET(Mengine::ParticleServiceInterface2))
 }

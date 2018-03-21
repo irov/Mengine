@@ -1,8 +1,8 @@
-#	include "DX9ErrorHelper.h"
+#include "DX9ErrorHelper.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	DX9ErrorHelper::DX9ErrorHelper( const char * _file, uint32_t _line, const char * _method )

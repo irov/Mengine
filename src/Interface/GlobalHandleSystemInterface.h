@@ -1,8 +1,8 @@
 #   pragma once
 
-#	include "Interface/InputSystemInterface.h"
+#include "Interface/InputSystemInterface.h"
 
-namespace Menge
+namespace Mengine
 {    
     class GlobalHandleSystemInterface
         : public ServiceInterface

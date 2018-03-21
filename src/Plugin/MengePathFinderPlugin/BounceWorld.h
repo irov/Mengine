@@ -1,15 +1,15 @@
-#	pragma once
+#pragma once
 
-#	include "BounceActor.h"
+#include "BounceActor.h"
 
-#	include "Kernel/Scriptable.h"
+#include "Kernel/Scriptable.h"
 
-#	include "Factory/FactorablePtr.h"
-#	include "Factory/Factory.h"
+#include "Factory/FactorablePtr.h"
+#include "Factory/Factory.h"
 
 #   include "stdex/intrusive_ptr.h"
 
-namespace Menge
+namespace Mengine
 {
 	class BounceWorld
 		: public FactorablePtr

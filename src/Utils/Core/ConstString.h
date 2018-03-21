@@ -2,7 +2,7 @@
 
 #   include "stdex/const_string2.h"
 
-namespace Menge
+namespace Mengine
 {
     typedef stdex::const_string2 ConstString;
 
@@ -11,7 +11,7 @@ namespace Menge
 
 namespace std
 {
-	inline void swap( Menge::ConstString & _left, Menge::ConstString & _right )
+	inline void swap( Mengine::ConstString & _left, Mengine::ConstString & _right )
 	{
 		_left.swap( _right );
 	}

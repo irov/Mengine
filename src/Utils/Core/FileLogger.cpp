@@ -1,14 +1,14 @@
-#	include "FileLogger.h"
+#include "FileLogger.h"
 
-#	include "Interface/ApplicationInterface.h"
-#	include "Interface/OptionsInterface.h"
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/UnicodeInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/OptionsInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Core/Date.h"
+#include "Core/Date.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	FileLogger::FileLogger()

@@ -1,10 +1,10 @@
-#	include "Logger.h"
+#include "Logger.h"
 
-#	include <ctime>
-#	include <cstdio>
-#	include <stdarg.h>
+#include <ctime>
+#include <cstdio>
+#include <stdarg.h>
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_LOGGER_MAX_MESSAGE 8192

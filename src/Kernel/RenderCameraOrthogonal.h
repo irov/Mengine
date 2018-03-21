@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/RenderCamera.h"
+#include "Kernel/RenderCamera.h"
 
-namespace Menge
+namespace Mengine
 {
 	class RenderCameraOrthogonal
 		: public RenderCamera

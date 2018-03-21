@@ -5,9 +5,9 @@
 
 #   include "Core/ServantBase.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-namespace Menge
+namespace Mengine
 {
     template<class T>
     class EncoderFactory

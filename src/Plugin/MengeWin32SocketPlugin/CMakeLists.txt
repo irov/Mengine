@@ -14,7 +14,7 @@ src
 if( MENGINE_WIN32_SOCKET_DLL )
     ADD_FILTER(src Win32SocketPlugin.def)
     
-    add_definitions(-DMENGE_PLUGIN_DLL)    
+    add_definitions(-DMENGINE_PLUGIN_DLL)    
 endif()
 
 INCLUDE_DIRECTORIES( 

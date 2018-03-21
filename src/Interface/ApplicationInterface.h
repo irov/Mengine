@@ -1,20 +1,20 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 #   include "Config/String.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 #   include "Core/FilePath.h"
-#	include "Core/Resolution.h"
-#	include "Core/Viewport.h"
+#include "Core/Resolution.h"
+#include "Core/Viewport.h"
 #   include "Core/AspectRatioViewports.h"
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/PlatformInterface.h"
-#	include "Interface/ModuleInterface.h"
-#	include "Interface/GameInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/PlatformInterface.h"
+#include "Interface/ModuleInterface.h"
+#include "Interface/GameInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ApplicationInterface
 		: public ServiceInterface
@@ -143,5 +143,5 @@ namespace Menge
 	};
 
 #   define APPLICATION_SERVICE()\
-    ((Menge::ApplicationInterface*)SERVICE_GET(Menge::ApplicationInterface))
+    ((Mengine::ApplicationInterface*)SERVICE_GET(Mengine::ApplicationInterface))
 }

@@ -1,14 +1,14 @@
-#	include "MemoryCacheInput.h"
+#include "MemoryCacheInput.h"
 
-#	include "MemoryManager.h"
+#include "MemoryManager.h"
 
-#	include "Interface/MemoryInterface.h"
+#include "Interface/MemoryInterface.h"
 
-#	include "stdex/memorycopy.h"
+#include "stdex/memorycopy.h"
 
-//#	include <memory.h>
+//#include <memory.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	MemoryCacheInput::MemoryCacheInput()
@@ -159,4 +159,4 @@ namespace Menge
 
 		return true;
 	}
-}	// namespace Menge
+}	

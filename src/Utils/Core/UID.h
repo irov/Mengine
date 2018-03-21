@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Config/String.h"
+#include "Config/String.h"
 
-namespace Menge
+namespace Mengine
 {
 	namespace Helper
 	{

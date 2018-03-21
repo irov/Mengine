@@ -1,17 +1,17 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "ThreadQueue.h"
-#	include "ThreadMutexDummy.h"
+#include "ThreadQueue.h"
+#include "ThreadMutexDummy.h"
 
-#	include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
-#	include "stdex/stl_vector.h"
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ThreadEngine
         : public ServiceBase<ThreadServiceInterface>
@@ -93,4 +93,4 @@ namespace Menge
 
 		bool m_avaliable;
 	};
-}	// namespace Menge
+}	

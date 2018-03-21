@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
-#	include "Interface/MemoryInterface.h"
+#include "Interface/MemoryInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceCursor

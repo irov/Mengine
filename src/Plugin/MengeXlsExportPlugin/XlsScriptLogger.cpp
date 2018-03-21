@@ -1,10 +1,10 @@
-#	include "XlsScriptLogger.h"
+#include "XlsScriptLogger.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	XlsScriptLogger::XlsScriptLogger( EMessageLevel _level )

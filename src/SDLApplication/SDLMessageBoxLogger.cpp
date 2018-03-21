@@ -4,7 +4,7 @@
 
 #   include <cstdio>
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLMessageBoxLogger::SDLMessageBoxLogger()

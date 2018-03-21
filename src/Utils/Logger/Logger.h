@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/LoggerInterface.h"
+#include "Interface/LoggerInterface.h"
 
-namespace Menge
+namespace Mengine
 {	
 	class LoggerOperator
 	{
@@ -23,26 +23,26 @@ namespace Menge
 }
 
 #	define LOGGER_VERBOSE_LEVEL( LOGGER, LEVEL )\
-	if( LOGGER->validMessage(LEVEL, 0) == false) {} else Menge::LoggerOperator(LOGGER, LEVEL, 0)
+	if( LOGGER->validMessage(LEVEL, 0) == false) {} else Mengine::LoggerOperator(LOGGER, LEVEL, 0)
 
 #	define LOGGER_FATAL\
-	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Menge::LM_FATAL )
+	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Mengine::LM_FATAL )
 
 #	define LOGGER_CRITICAL\
-	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Menge::LM_CRITICAL )
+	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Mengine::LM_CRITICAL )
 
 #	define LOGGER_ERROR\
-	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Menge::LM_ERROR )
+	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Mengine::LM_ERROR )
 
 #	define LOGGER_PERFORMANCE\
-	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Menge::LM_PERFOMANCE )
+	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Mengine::LM_PERFOMANCE )
 
 #	define LOGGER_STATISTIC\
-	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Menge::LM_STATISTIC )
+	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Mengine::LM_STATISTIC )
 
 #	define LOGGER_WARNING\
-	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Menge::LM_WARNING )
+	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Mengine::LM_WARNING )
 	
 #	define LOGGER_INFO\
-	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Menge::LM_INFO )
+	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Mengine::LM_INFO )
 

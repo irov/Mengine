@@ -6,7 +6,7 @@
 
 #	include "Config/String.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class SDLStdioLogger

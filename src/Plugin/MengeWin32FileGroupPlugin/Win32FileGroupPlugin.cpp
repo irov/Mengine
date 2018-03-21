@@ -1,7 +1,7 @@
-#	include "Win32FileGroupPlugin.h"
+#include "Win32FileGroupPlugin.h"
 
 #   include "Interface/StringizeInterface.h"
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/PlatformInterface.h"
 
@@ -9,12 +9,12 @@
 
 #   include "Core/FilePath.h"
 
-#	include "Win32FileGroupDirectory.h"
+#include "Win32FileGroupDirectory.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( MengeWin32FileGroup, Menge::Win32FileGroupPlugin )
+PLUGIN_FACTORY( MengeWin32FileGroup, Mengine::Win32FileGroupPlugin )
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     namespace Detail

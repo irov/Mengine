@@ -1,15 +1,15 @@
-#	include "SoundCodecPlugin.h"
+#include "SoundCodecPlugin.h"
 
-#	include "SoundDecoderWAV.h"
+#include "SoundDecoderWAV.h"
 
-#	include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
 #   include "Codec/DecoderFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( MengeSoundCodec, Menge::SoundCodecPlugin );
+PLUGIN_FACTORY( MengeSoundCodec, Mengine::SoundCodecPlugin );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	SoundCodecPlugin::SoundCodecPlugin()

@@ -1,43 +1,43 @@
-#	include "Player.h"
+#include "Player.h"
 
-#	include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
 #   include "Interface/ResourceInterface.h"
-#	include "Interface/GraveyardInterface.h"
-#	include "Interface/TimelineInterface.h"
+#include "Interface/GraveyardInterface.h"
+#include "Interface/TimelineInterface.h"
 
-#	include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeInterface.h"
 
-#	include "Interface/NotificationServiceInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/PrefetcherInterface.h"
-#	include "Interface/ModuleInterface.h"
-#	include "Interface/ApplicationInterface.h"
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/PrefetcherInterface.h"
+#include "Interface/ModuleInterface.h"
+#include "Interface/ApplicationInterface.h"
 
 #   include "Config/Stringstream.h"
 
-#	include "Kernel/Scene.h"
+#include "Kernel/Scene.h"
 
-#	include "Kernel/RenderViewport.h"
-#	include "Kernel/RenderClipplane.h"
-#	include "Kernel/RenderCameraOrthogonal.h"
-#	include "Kernel/RenderCameraHelper.h"
-#	include "Kernel/Arrow.h"
+#include "Kernel/RenderViewport.h"
+#include "Kernel/RenderClipplane.h"
+#include "Kernel/RenderCameraOrthogonal.h"
+#include "Kernel/RenderCameraHelper.h"
+#include "Kernel/Arrow.h"
 
-#	include "Kernel/ScheduleManager.h"
+#include "Kernel/ScheduleManager.h"
 
 #   include "Factory/FactoryDefault.h"
 
-#	include "Consts.h"
+#include "Consts.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "TextField.h"
+#include "TextField.h"
 
 #   include "Kernel/ResourceReference.h"
 
-#	include "Math/mat3.h"
+#include "math/mat3.h"
 
 #   include "pybind/pybind.hpp"
 
@@ -47,9 +47,9 @@
 SERVICE_EXTERN( MousePickerSystem );
 SERVICE_EXTERN( GlobalHandleSystem );
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( PlayerService, Menge::Player );
+SERVICE_FACTORY( PlayerService, Mengine::Player );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////    
     namespace
@@ -179,7 +179,7 @@ namespace Menge
             //NODE_SERVICE() 
             //    ->clearHomeless();
 
-            if( SERVICE_EXIST( Menge::GraveyardInterface ) == true )
+            if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
             {
                 GRAVEYARD_SERVICE()
                     ->clearTextures();
@@ -246,7 +246,7 @@ namespace Menge
         //NODE_SERVICE() 
         //    ->clearHomeless();
 
-        if( SERVICE_EXIST( Menge::GraveyardInterface ) == true )
+        if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->clearTextures();
@@ -306,7 +306,7 @@ namespace Menge
             //NODE_SERVICE() 
             //    ->clearHomeless();
 
-            if( SERVICE_EXIST( Menge::GraveyardInterface ) == true )
+            if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
             {
                 GRAVEYARD_SERVICE()
                     ->clearTextures();

@@ -1,13 +1,13 @@
-#	include "SurfaceTrackMatte.h"
+#include "SurfaceTrackMatte.h"
 
 #   include "Interface/RenderSystemInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace	Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	SurfaceTrackMatte::SurfaceTrackMatte()

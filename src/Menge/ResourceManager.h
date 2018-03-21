@@ -1,16 +1,16 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/ResourceInterface.h"
 
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#	include <stdex/stl_map.h>
+#include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ResourceVisitor;
 	//////////////////////////////////////////////////////////////////////////

@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "HotSpotPolygon.h"
+#include "HotSpotPolygon.h"
 
 #   include "ResourceShape.h"
 
-namespace Menge
+namespace Mengine
 {
     class HotSpotShape
         : public HotSpotPolygon
@@ -24,4 +24,4 @@ namespace Menge
     private:
         ResourceHolder<ResourceShape> m_resourceShape;
     };
-}	// namespace Menge
+}	

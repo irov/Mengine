@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/PackageInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 
 #   include "Core/ServantBase.h"
-#	include "Core/String.h"
+#include "Core/String.h"
 #   include "Core/FilePath.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Package
 		: public ServantBase<PackageInterface>

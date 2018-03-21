@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "WIN32/WindowsIncluder.h"
+#include "WIN32/WindowsIncluder.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class Win32FPSMonitor

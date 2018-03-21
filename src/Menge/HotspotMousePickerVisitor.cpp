@@ -8,7 +8,7 @@
 //
 //#   include "Interface/RenderSystemInterface.h"
 //
-//namespace Menge
+//namespace Mengine
 //{
 //	//////////////////////////////////////////////////////////////////////////
 //	HotspotMousePickerVisitor::HotspotMousePickerVisitor( HotSpot * _layerspaceHotspot, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Resolution & _contentResolution, const mt::vec2f & _point, Arrow * _arrow )

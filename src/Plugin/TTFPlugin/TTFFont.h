@@ -1,29 +1,29 @@
-#	pragma once
+#pragma once
 
-#	include "TTFServiceInterface.h"
+#include "TTFServiceInterface.h"
 
-#	include "Interface/MemoryInterface.h"
-#	include "Interface/TextInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/TextInterface.h"
 
-#	include "Config/String.h"
+#include "Config/String.h"
 
-#	include "Factory/FactorablePtr.h"
+#include "Factory/FactorablePtr.h"
 
-#	include "Kernel/Servant.h"
+#include "Kernel/Servant.h"
 
 #   include "Core/FontBase.h"
 
-#	include "ft2build.h"
-#	include "freetype/freetype.h"
-#	include "freetype/ftglyph.h"
+#include "ft2build.h"
+#include "freetype/freetype.h"
+#include "freetype/ftglyph.h"
 
-#	include "Math/uv4.h"
+#include "math/uv4.h"
 
-#	include "stdex/stl_map.h"
+#include "stdex/stl_map.h"
 
 #   include "fe/fe.h"
 
-namespace Menge
+namespace Mengine
 {
 #	define MENGINE_TTF_FONT_GLYPH_HASH_SIZE 37
 

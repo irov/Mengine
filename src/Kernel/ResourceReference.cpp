@@ -1,15 +1,15 @@
-#	include "ResourceReference.h"
+#include "ResourceReference.h"
 
 #   include "Interface/ServiceInterface.h"
 
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
 
-#	include "Interface/NotificationServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #   include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference::ResourceReference()

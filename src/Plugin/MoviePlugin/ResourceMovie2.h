@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
-#	include "movie/movie.hpp"
+#include "movie/movie.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceMovie2

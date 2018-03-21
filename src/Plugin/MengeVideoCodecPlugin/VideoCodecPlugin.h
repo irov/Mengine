@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/CodecInterface.h"
+#include "Interface/CodecInterface.h"
 
-#	include "Core/PluginBase.h"
+#include "Core/PluginBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class VideoCodecPlugin
 		: public PluginBase

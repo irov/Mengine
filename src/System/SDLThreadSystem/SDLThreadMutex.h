@@ -6,7 +6,7 @@
 
 #	include "SDL_thread.h"
 
-namespace Menge
+namespace Mengine
 {
     class SDLThreadMutex
         : public ServantBase<ThreadMutexInterface>

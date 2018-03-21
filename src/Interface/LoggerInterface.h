@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#	include "Interface/ServantInterface.h"
+#include "Interface/ServantInterface.h"
 #   include "Interface/ServiceInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	enum EMessageLevel
@@ -65,8 +65,8 @@ namespace Menge
 		virtual bool validMessage( EMessageLevel _level, uint32_t _flag ) const = 0;
 
 	public:
-		virtual void logMessage( Menge::EMessageLevel _level, uint32_t _flag, const char * _message, size_t _size  ) = 0;
-		virtual size_t getCountMessage( Menge::EMessageLevel _level ) = 0;
+		virtual void logMessage( Mengine::EMessageLevel _level, uint32_t _flag, const char * _message, size_t _size  ) = 0;
+		virtual size_t getCountMessage( Mengine::EMessageLevel _level ) = 0;
 
 	public:
 		virtual bool registerLogger( const LoggerInterfacePtr & _logger ) = 0;
@@ -74,6 +74,6 @@ namespace Menge
 	};
     
 #   define LOGGER_SERVICE()\
-    ((Menge::LoggerServiceInterface*)SERVICE_GET(Menge::LoggerServiceInterface))
+    ((Mengine::LoggerServiceInterface*)SERVICE_GET(Mengine::LoggerServiceInterface))
 }
 

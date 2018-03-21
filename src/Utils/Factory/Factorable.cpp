@@ -1,9 +1,9 @@
-#	include "Factorable.h"
-#	include "Factory.h"
+#include "Factorable.h"
+#include "Factory.h"
 
-#	include "Core/Exception.h"
+#include "Core/Exception.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Factorable::Factorable()

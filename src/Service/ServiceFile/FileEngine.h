@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #   include "Core/ServiceBase.h"
 
 #   include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
 	class FileEngine
 		: public ServiceBase<FileServiceInterface>

@@ -14,7 +14,7 @@
 
 #	include "pybind/object.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	DECLARE_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA, 'A', 'C', 'D', '1', 1 );
 
@@ -122,5 +122,5 @@ namespace Menge
     };
 
 #   define ACCOUNT_SERVICE()\
-    ((AccountServiceInterface*)SERVICE_GET(Menge::AccountServiceInterface))
+    ((AccountServiceInterface*)SERVICE_GET(Mengine::AccountServiceInterface))
 }

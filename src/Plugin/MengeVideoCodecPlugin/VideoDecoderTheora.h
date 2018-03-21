@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Codec/VideoDecoder.h"
+#include "Codec/VideoDecoder.h"
 
-#	include "ogg/ogg.h"
-#	include "theora/theora.h"
+#include "ogg/ogg.h"
+#include "theora/theora.h"
 
-namespace Menge
+namespace Mengine
 {
 	class VideoDecoderTheora
 		: public VideoDecoder
@@ -59,4 +59,4 @@ namespace Menge
 		bool decodeBuffer_( const yuv_buffer & _yuvBuffer, unsigned char * _buffer, size_t _pitch );
 		int readFrame_();
 	};
-}	// namespace Menge
+}	

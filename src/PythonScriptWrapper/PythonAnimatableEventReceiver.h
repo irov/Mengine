@@ -3,7 +3,7 @@
 #   include "Kernel/ScriptEventReceiver.h"
 #   include "Kernel/Animatable.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     template<class T_AnimatableEventReceiver = AnimatableEventReceiver>

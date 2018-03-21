@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
-#	include "stdex/stl_vector.h"
-#	include "stdex/stl_string.h"
+#include "stdex/stl_vector.h"
+#include "stdex/stl_string.h"
 
-namespace Menge
+namespace Mengine
 {
 	typedef stdex::vector<ConstString> TVectorConstString;
 
@@ -34,7 +34,7 @@ namespace Menge
 
 namespace std
 {
-	template<> inline void swap( Menge::Tags & _left, Menge::Tags & _right )
+	template<> inline void swap( Mengine::Tags & _left, Mengine::Tags & _right )
 	{
 		_left.swap( _right );
 	}

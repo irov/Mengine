@@ -1,11 +1,11 @@
-#	include "MovieFramePack.h"
+#include "MovieFramePack.h"
 
-#	include "Core/MemoryAllocator.h"
+#include "Core/MemoryAllocator.h"
 
-#	include "Math/angle.h"
-#	include "Math/utils.h"
+#include "math/angle.h"
+#include "math/utils.h"
 
-namespace Menge
+namespace Mengine
 {
 	///////////////////////////////////////////////////////////////////////
 	MovieFramePack::MovieFramePack()
@@ -76,28 +76,28 @@ namespace Menge
     {
 		m_sizeLayers = _size;
 
-		m_layers = Helper::allocateMemory<MovieLayerFrame>( _size );
+		m_layers = Helper::allocateMemoryT<MovieLayerFrame>( _size );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void MovieFramePack::initializeTimeremap( uint32_t _size )
 	{
 		m_sizeTimeremap = _size;
 
-		m_timeremap = Helper::allocateMemory<MovieLayerTimeRemap>( _size );
+		m_timeremap = Helper::allocateMemoryT<MovieLayerTimeRemap>( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieFramePack::initializeShapes( uint32_t _size )
 	{
 		m_sizeShapes = _size;
 
-		m_shapes = Helper::allocateMemory<MovieLayerShapes>( _size );
+		m_shapes = Helper::allocateMemoryT<MovieLayerShapes>( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieFramePack::initializePolygons( uint32_t _size )
 	{
 		m_sizePolygons = _size;
 
-		m_polygons = Helper::allocateMemory<MovieLayerPolygon>( _size );
+		m_polygons = Helper::allocateMemoryT<MovieLayerPolygon>( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MovieLayerFrame & MovieFramePack::initializeLayer( uint32_t _layerIndex, uint32_t _count, bool _immutable )

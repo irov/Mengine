@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/XmlCodecInterface.h"
+#include "Interface/XmlCodecInterface.h"
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/ArchiveInterface.h"
 
 #   include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class XmlToBinDecoder
         : public ServantBase<XmlDecoderInterface>

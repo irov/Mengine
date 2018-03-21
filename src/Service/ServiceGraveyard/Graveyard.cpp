@@ -1,13 +1,13 @@
-#	include "Graveyard.h"
+#include "Graveyard.h"
 
 #   include "Interface/RenderSystemInterface.h"
 
-#	include "Interface/ConfigInterface.h"
+#include "Interface/ConfigInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( Graveyard, Menge::Graveyard );
+SERVICE_FACTORY( Graveyard, Mengine::Graveyard );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Graveyard::Graveyard()

@@ -1,6 +1,6 @@
-#	include "ThreadTaskPrefetch.h"
+#include "ThreadTaskPrefetch.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTaskPrefetch::ThreadTaskPrefetch()

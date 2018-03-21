@@ -42,9 +42,9 @@
 #   define PARAM_UNUSED(x) ((void)x)
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( Platform, Menge::SDLPlatform );
+SERVICE_FACTORY( Platform, Mengine::SDLPlatform );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLPlatform::SDLPlatform()
@@ -900,7 +900,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow_( const Resolution & _resolution, bool _fullscreen )
     {
-        Menge::Char utf8Title[1024] = {0};
+        Mengine::Char utf8Title[1024] = {0};
         Helper::unicodeToUtf8( m_projectTitle, utf8Title, 1024 );
 
         //SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );

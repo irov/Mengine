@@ -1,4 +1,4 @@
-#	include "XmlToBinDecoder.h"
+#include "XmlToBinDecoder.h"
 
 #   include "Interface/LoaderInterface.h"
 #   include "Interface/StringizeInterface.h"
@@ -6,17 +6,17 @@
 
 #   include "Config/Blobject.h"
 
-#	include "Utils/Logger/Logger.h"
+#include "Utils/Logger/Logger.h"
 
-#	include "metabuf/Metadata.hpp"
+#include "metabuf/Metadata.hpp"
 
-#	include "xml2metabuf/Xml2Metabuf.hpp"
-#	include "xml2metabuf/Xml2Metacode.hpp"
+#include "xml2metabuf/Xml2Metabuf.hpp"
+#include "xml2metabuf/Xml2Metacode.hpp"
 
 #   include <stdio.h>
 #   include <utf8.h>
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     static bool s_write_wstring( Metabuf::Xml2Metabuf * _metabuf, const char * _value, void * _user )

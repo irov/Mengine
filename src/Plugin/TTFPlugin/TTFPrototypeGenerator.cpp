@@ -1,10 +1,10 @@
-#	include "TTFPrototypeGenerator.h"
+#include "TTFPrototypeGenerator.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#	include "TTFFont.h"
+#include "TTFFont.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	TTFPrototypeGenerator::TTFPrototypeGenerator()

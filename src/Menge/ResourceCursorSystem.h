@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "ResourceCursor.h"
+#include "ResourceCursor.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ResourceCursorSystem
 		: public ResourceCursor

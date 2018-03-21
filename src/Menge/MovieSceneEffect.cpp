@@ -1,6 +1,6 @@
-#	include "MovieSceneEffect.h"
+#include "MovieSceneEffect.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MovieSceneEffect::MovieSceneEffect()

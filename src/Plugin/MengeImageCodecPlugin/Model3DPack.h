@@ -1,18 +1,18 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/Model3DInterface.h"
+#include "Interface/Model3DInterface.h"
 
-#	include "Config/Floats.h"
+#include "Config/Floats.h"
 
-#	include "Math/vec2.h"
-#	include "Math/vec3.h"
+#include "math/vec2.h"
+#include "math/vec3.h"
 
-#	include <stdex/heap_array.h>
+#include "stdex/heap_array.h"
 
-#	include <stdint.h>
-#	include <memory.h>
+#include <stdint.h>
+#include <memory.h>
 
-namespace Menge
+namespace Mengine
 {       
 	class Model3DPack
 		: public Model3DInterface

@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/CodecInterface.h"
+#include "Interface/CodecInterface.h"
 
-#	include "Core/PixelFormat.h"
+#include "Core/PixelFormat.h"
 
-namespace Menge
+namespace Mengine
 {
 	struct ImageCodecDataInfo
 		: public CodecDataInfo

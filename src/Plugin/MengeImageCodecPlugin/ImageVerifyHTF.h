@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Core/Magic.h"
+#include "Core/Magic.h"
 
-namespace Menge
+namespace Mengine
 {
 	DECLARE_MAGIC_NUMBER(MAGIC_HTF, 'H', 'T', 'F', '1', 2);
 }

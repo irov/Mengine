@@ -1,14 +1,14 @@
-#	pragma once
+#pragma once
 
 #   include "Config/Typedef.h"
 
-#	include "Math/vec2.h"
-#	include "Math/mat4.h"
-#   include "Math/box2.h"
+#include "math/vec2.h"
+#include "math/mat4.h"
+#   include "math/box2.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	typedef stdex::vector<mt::vec2f> TVectorPoints;
 	typedef stdex::vector<uint32_t> TVectorIndices;

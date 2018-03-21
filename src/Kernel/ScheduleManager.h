@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/ScheduleManagerInterface.h"
 
 #   include "Core/ServantBase.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {    
 	//////////////////////////////////////////////////////////////////////////
 	enum ESchduleType

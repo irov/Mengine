@@ -1,24 +1,24 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/StreamInterface.h"
-#	include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundSystemInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "MixerVolume.h"
+#include "MixerVolume.h"
 
 #   include "ThreadWorkerSoundBufferUpdate.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 #   include "Factory/Factory.h"
 
-#	include	"Math/vec3.h"
+#include	"math/vec3.h"
 
 #   include "stdex/stl_map.h"
-#	include "stdex/stl_vector.h"
-#	include "stdex/pool.h"
+#include "stdex/stl_vector.h"
+#include "stdex/pool.h"
 
-namespace Menge
+namespace Mengine
 {
 	enum ESoundSourceState
 	{

@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Codec/ImageDecoder.h"
+#include "Codec/ImageDecoder.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ImageDecoderDDS
 		: public ImageDecoder
@@ -20,4 +20,4 @@ namespace Menge
 	public:
 		size_t _decode( void * _buffer, size_t _bufferSize ) override;
 	};
-}	// namespace Menge
+}	

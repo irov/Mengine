@@ -102,7 +102,7 @@ src
     Holder.h
     
     RenderVertex2D.h
-    RenderIndices.h
+    RenderIndex.h
    
     Magic.h    
 )

@@ -1,10 +1,10 @@
-#	include "MagnetActor.h"
+#include "MagnetActor.h"
 
-#	include "Math/utils.h"
+#include "math/utils.h"
 
-#	include <algorithm>
+#include <algorithm>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	MagnetActor::MagnetActor()

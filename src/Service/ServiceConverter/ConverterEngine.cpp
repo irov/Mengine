@@ -1,13 +1,13 @@
-#	include "ConverterEngine.h"
+#include "ConverterEngine.h"
 
 #   include "Interface/StringizeInterface.h"
 
 #   include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ConverterService, Menge::ConverterEngine );
+SERVICE_FACTORY( ConverterService, Mengine::ConverterEngine );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ConverterEngine::ConverterEngine()

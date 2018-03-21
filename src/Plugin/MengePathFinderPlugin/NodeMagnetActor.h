@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-#	include "MagnetWorld.h"
-#	include "MagnetActor.h"
+#include "MagnetWorld.h"
+#include "MagnetActor.h"
 
-namespace Menge
+namespace Mengine
 {
 	class NodeMagnetActor
 		: public Node
@@ -48,7 +48,7 @@ namespace Menge
 		void _deactivate() override;
 
 	protected:
-		void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
+		void _debugRender( Mengine::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
 
 	protected:
 		MagnetWorldPtr m_magnetWorld;

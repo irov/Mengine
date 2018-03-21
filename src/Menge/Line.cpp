@@ -1,9 +1,9 @@
-#	include "Line.h"
+#include "Line.h"
 
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Line::Line()

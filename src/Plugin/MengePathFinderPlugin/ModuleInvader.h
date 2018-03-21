@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Core/ModuleBase.h"
+#include "Core/ModuleBase.h"
 
-#	include "InvaderFollowAffector.h"
+#include "InvaderFollowAffector.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ModuleInvader
 		: public ModuleBase

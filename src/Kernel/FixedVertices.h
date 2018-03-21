@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Core/RenderVertex2D.h"
+#include "Core/RenderVertex2D.h"
 
-#	include "stdex/memorycopy.h"
+#include "stdex/memorycopy.h"
 
-namespace Menge
+namespace Mengine
 {
 	template<uint32_t VerticesCount>
 	class FixedVertices

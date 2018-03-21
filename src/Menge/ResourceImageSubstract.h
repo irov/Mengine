@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "ResourceImageDefault.h"
+#include "ResourceImageDefault.h"
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-namespace Menge
+namespace Mengine
 {	
 	class ResourceImageSubstract
 		: public ResourceImage

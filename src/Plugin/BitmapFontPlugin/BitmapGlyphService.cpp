@@ -1,11 +1,11 @@
-﻿#	include "BitmapGlyphService.h"
+﻿#include "BitmapGlyphService.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( BitmapGlyphService, Menge::BitmapGlyphService );
+SERVICE_FACTORY( BitmapGlyphService, Mengine::BitmapGlyphService );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	BitmapGlyphService::BitmapGlyphService()

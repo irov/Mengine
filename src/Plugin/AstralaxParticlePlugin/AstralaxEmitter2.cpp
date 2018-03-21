@@ -1,13 +1,13 @@
-#	include "AstralaxEmitter2.h"
+#include "AstralaxEmitter2.h"
 
-#	include "AstralaxParticleSystem2.h"
-#	include "AstralaxEmitterContainer2.h"
+#include "AstralaxParticleSystem2.h"
+#include "AstralaxEmitterContainer2.h"
 
-#	include <Logger/Logger.h>
+#include "Logger/Logger.h"
 
-#	include <limits>
+#include <limits>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitter2::AstralaxEmitter2()
@@ -528,7 +528,7 @@ namespace Menge
 #	endif
 
 		MAGIC_RENDERING_START start;
-		void * context = Magic_PrepareRenderArrays( m_emitterId, &start, 100, color_mode, sizeof( RenderIndices ) == 4 );
+		void * context = Magic_PrepareRenderArrays( m_emitterId, &start, 100, color_mode, sizeof( RenderIndex ) == 4 );
 
 		if( start.vertices == 0 || start.indexes == 0 )
 		{
@@ -543,7 +543,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndices * _indices, ParticleEmitterRenderFlush & _flush )
+	bool AstralaxEmitter2::flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, ParticleEmitterRenderFlush & _flush )
 	{
 		for( uint32_t i = 0; i != _flush.arrays; ++i )
 		{
@@ -554,7 +554,7 @@ namespace Menge
 			{
 			case MAGIC_VERTEX_FORMAT_INDEX:
 				{
-					if( Magic_SetRenderArrayData( _flush.context, i, _indices, 0, sizeof( RenderIndices ) ) == MAGIC_ERROR )
+					if( Magic_SetRenderArrayData( _flush.context, i, _indices, 0, sizeof( RenderIndex ) ) == MAGIC_ERROR )
 					{
 						return false;
 					}
@@ -619,15 +619,15 @@ namespace Menge
 
 			if( mesh.vertexOffset != 0 )
 			{
-				for( RenderIndices
+				for( RenderIndex
 					*it = _indices + mesh.indexOffset,
 					*it_end = _indices + mesh.indexOffset + mesh.indexCount;
 				it != it_end;
 				++it )
 				{
-					RenderIndices & indices = *it;
+					RenderIndex & indices = *it;
 
-					indices -= (RenderIndices)mesh.vertexOffset;
+					indices -= (RenderIndex)mesh.vertexOffset;
 				}
 			}
 

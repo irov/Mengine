@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Core/ModuleBase.h"
+#include "Core/ModuleBase.h"
 
-#	include "CollisionWorld.h"
-#	include "CollisionActor.h"
-#	include "NodeCollisionActor.h"
+#include "CollisionWorld.h"
+#include "CollisionActor.h"
+#include "NodeCollisionActor.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ModuleCollision
 		: public ModuleBase

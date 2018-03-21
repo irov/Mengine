@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Core/PluginBase.h"
+#include "Core/PluginBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Win32SocketPlugin
 		: public PluginBase

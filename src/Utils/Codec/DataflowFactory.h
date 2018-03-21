@@ -5,9 +5,9 @@
 #   include "Core/ServantBase.h"
 #   include "Factory/FactoryDefault.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {     
 	template<class T>
 	class DataflowFactory

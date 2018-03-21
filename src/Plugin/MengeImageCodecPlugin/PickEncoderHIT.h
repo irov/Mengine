@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/ArchiveInterface.h"
 
-#	include "Codec/PickEncoder.h"
+#include "Codec/PickEncoder.h"
 
-namespace Menge
+namespace Mengine
 {
 	class PickEncoderHIT
 		: public PickEncoder
@@ -22,4 +22,4 @@ namespace Menge
 	protected:
 		ArchivatorInterfacePtr m_archivator;
 	};
-}	// namespace Menge
+}	

@@ -1,6 +1,6 @@
-#	include "FactoryWithListener.h"
+#include "FactoryWithListener.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
     FactoryWithListener::FactoryWithListener( const char * _name )

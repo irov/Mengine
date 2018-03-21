@@ -1,16 +1,16 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
-#	include "Config/Char.h"
+#include "Config/Typedef.h"
+#include "Config/Char.h"
 
-#	include "Core/Holder.h"
-#	include "Core/Exception.h"
+#include "Core/Holder.h"
+#include "Core/Exception.h"
 
 #   ifdef _DEBUG
 #	   include <typeinfo>
 #	endif
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ServiceInterface;
@@ -99,10 +99,10 @@ namespace Menge
     };
     //////////////////////////////////////////////////////////////////////////
 #   define SERVICE_PROVIDER_SETUP( Ptr )\
-    Menge::Holder<Menge::ServiceProviderInterface>::keep( (Ptr) )
+    Mengine::Holder<Mengine::ServiceProviderInterface>::keep( (Ptr) )
     //////////////////////////////////////////////////////////////////////////
 #   define SERVICE_PROVIDER_GET()\
-    Menge::Holder<Menge::ServiceProviderInterface>::get()
+    Mengine::Holder<Mengine::ServiceProviderInterface>::get()
     //////////////////////////////////////////////////////////////////////////
 #   define SERVICE_PROVIDER_STOP()\
     SERVICE_PROVIDER_GET()->stopServices()
@@ -111,14 +111,14 @@ namespace Menge
 	__createMengineProvider##Name
     //////////////////////////////////////////////////////////////////////////
 #   define SERVICE_PROVIDER_FACTORY( Name, Implement )\
-    bool SERVICE_PROVIDER_NAME_CREATE(Name)(Menge::ServiceProviderInterface**_serviceProvider){\
+    bool SERVICE_PROVIDER_NAME_CREATE(Name)(Mengine::ServiceProviderInterface**_serviceProvider){\
     if(_serviceProvider==nullptr){return false;}\
 	try{*_serviceProvider=new Implement();}catch(...){return false;}\
     return true;}\
 	struct __mengine_dummy_factory##Name{}
     //////////////////////////////////////////////////////////////////////////
 #	define SERVICE_PROVIDER_EXTERN(Name)\
-	extern bool SERVICE_PROVIDER_NAME_CREATE( Name )(Menge::ServiceProviderInterface**);
+	extern bool SERVICE_PROVIDER_NAME_CREATE( Name )(Mengine::ServiceProviderInterface**);
     //////////////////////////////////////////////////////////////////////////
 #   define SERVICE_PROVIDER_CREATE( Name, Provider )\
 	SERVICE_PROVIDER_NAME_CREATE(Name)(Provider)

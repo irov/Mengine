@@ -1,6 +1,6 @@
-#	include "Gyroscope.h"
+#include "Gyroscope.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Gyroscope::Gyroscope()

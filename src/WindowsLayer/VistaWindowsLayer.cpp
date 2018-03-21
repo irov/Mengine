@@ -8,9 +8,9 @@
 #   include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( WindowsLayer, Menge::VistaWindowsLayer );
+SERVICE_FACTORY( WindowsLayer, Mengine::VistaWindowsLayer );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     VistaWindowsLayer::VistaWindowsLayer()
@@ -329,25 +329,25 @@ namespace Menge
         return true;
     }
     ////////////////////////////////////////////////////////////////////////////
-    //LONG setRegistryValue( HKEY _hKey, const Menge::WString & _lpKeyName, const Menge::WString & _lpValueName, DWORD _dwType, const BYTE* _lpData, DWORD _cbData )
+    //LONG setRegistryValue( HKEY _hKey, const Mengine::WString & _lpKeyName, const Mengine::WString & _lpValueName, DWORD _dwType, const BYTE* _lpData, DWORD _cbData )
     //{
     //    HKEY openedKey; 
     //    LONG result;
 
     //    bool isStringValue = _dwType == REG_SZ || _dwType == REG_MULTI_SZ || _dwType == REG_EXPAND_SZ;
 
-    //    /*Menge::String keyName;
+    //    /*Mengine::String keyName;
     //    size_t separatorIndex = _lpValueName.find_last_of("\\");
     //    keyName = _lpValueName.substr(0, separatorIndex);
     //    _lpValueName = _lpValueName.substr(separatorIndex + 1);*/
 
-    //    Menge::WString lpDataW;
+    //    Mengine::WString lpDataW;
 
     //    ::RegOpenKeyEx(_hKey, _lpKeyName.c_str(), 0, KEY_ALL_ACCESS, &openedKey);
 
     //    if( isStringValue == true )
     //    {
-    //        Menge::String str( reinterpret_cast<const char*>( _lpData ) );
+    //        Mengine::String str( reinterpret_cast<const char*>( _lpData ) );
     //        utf8ToUnicode(str, lpDataW);
     //        _cbData = static_cast<DWORD>( (lpDataW.length()+1) * 2 );
     //        _lpData = reinterpret_cast<const BYTE*>( lpDataW.c_str() );
@@ -360,7 +360,7 @@ namespace Menge
     //    return result;
     //}
     ////////////////////////////////////////////////////////////////////////////
-    //LONG deleteRegistryValue( HKEY _hKey, const Menge::WString & _lpKeyName, const Menge::WString & _lpValueName )
+    //LONG deleteRegistryValue( HKEY _hKey, const Mengine::WString & _lpKeyName, const Mengine::WString & _lpValueName )
     //{
     //    HKEY openedKey;
     //    ::RegOpenKeyEx( _hKey, _lpKeyName.c_str(), 0, KEY_ALL_ACCESS, &openedKey );

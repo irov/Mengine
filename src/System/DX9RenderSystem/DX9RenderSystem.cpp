@@ -1,29 +1,29 @@
-#	include "DX9RenderSystem.h"
+#include "DX9RenderSystem.h"
 
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/PlatformInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/PlatformInterface.h"
 
-#	include "DX9RenderEnum.h"
-#	include "DX9ErrorHelper.h"
+#include "DX9RenderEnum.h"
+#include "DX9ErrorHelper.h"
 
 #   include "DX9RenderTarget.h"
-#	include "DX9RenderTargetOffscreen.h"
+#include "DX9RenderTargetOffscreen.h"
 
 #   include "Factory/FactoryPool.h"
 #   include "Factory/FactoryPoolWithListener.h"
 #   include "Factory/FactoryDefault.h"
 
-#	include <algorithm>
-#	include <cmath>
-#	include <stdio.h>
+#include <algorithm>
+#include <cmath>
+#include <stdio.h>
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( RenderSystem, Menge::DX9RenderSystem );
+SERVICE_FACTORY( RenderSystem, Mengine::DX9RenderSystem );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {    
 	//////////////////////////////////////////////////////////////////////////
 	typedef IDirect3D9* (WINAPI *PDIRECT3DCREATE9)(UINT);
@@ -44,7 +44,7 @@ namespace Menge
 		, m_textureMemoryUse(0U)
 		, m_textureCount(0U)
 	{
-		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
 		{
 			m_textureEnable[i] = false;
 		}
@@ -164,10 +164,10 @@ namespace Menge
 			return false;
 		}
 
-		//if( caps.MaxSimultaneousTextures < MENGE_MAX_TEXTURE_STAGES )
+		//if( caps.MaxSimultaneousTextures < MENGINE_MAX_TEXTURE_STAGES )
 		//{
 		//	LOGGER_ERROR("Render dont't support %d texture stages (%d support)"
-		//		, MENGE_MAX_TEXTURE_STAGES
+		//		, MENGINE_MAX_TEXTURE_STAGES
 		//		, caps.MaxSimultaneousTextures
 		//		);
 
@@ -176,13 +176,14 @@ namespace Menge
 
 		m_dxMaxCombinedTextureImageUnits = caps.MaxSimultaneousTextures;
 
-		if( m_dxMaxCombinedTextureImageUnits > MENGE_MAX_TEXTURE_STAGES )
+		if( m_dxMaxCombinedTextureImageUnits > MENGINE_MAX_TEXTURE_STAGES )
 		{
-			m_dxMaxCombinedTextureImageUnits = MENGE_MAX_TEXTURE_STAGES;
+			m_dxMaxCombinedTextureImageUnits = MENGINE_MAX_TEXTURE_STAGES;
 		}
 	
 		m_renderPlatform = STRINGIZE_STRING_LOCAL( "DX9" );
 
+        m_factoryRenderVertexAttribute = new FactoryPool<DX9RenderVertexAttribute, 8>();
         m_factoryRenderVertexShader = new FactoryPool<DX9RenderVertexShader, 16>();
         m_factoryRenderFragmentShader = new FactoryPool<DX9RenderFragmentShader, 16>();
         m_factoryRenderProgram = new FactoryPool<DX9RenderProgram, 16>();
@@ -211,6 +212,7 @@ namespace Menge
             m_hd3d9 = NULL;
         }
 
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexAttribute );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderFragmentShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgram );
@@ -220,6 +222,7 @@ namespace Menge
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDX9TargetTexture );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDX9TargetOffscreen );
 
+        m_factoryRenderVertexAttribute = nullptr;
         m_factoryRenderVertexShader = nullptr;
         m_factoryRenderFragmentShader = nullptr;
         m_factoryRenderProgram = nullptr;
@@ -327,12 +330,7 @@ namespace Menge
 			m_d3dpp = &m_d3dppW;
 		}
 
-		//_fullscreen ? MENGE_LOG_INFO( "fullscreen mode" ) : MENGE_LOG_INFO( "windowed mode" );
-
-		//MENGE_LOG_INFO( "attempting to create d3ddevice: %dx%dx%d\nBackbuffer format %d\nDepthstencil format %d",
-		//	d3dpp->BackBufferWidth, d3dpp->BackBufferHeight, m_screenBits, d3dpp->BackBufferFormat, d3dpp->AutoDepthStencilFormat );
-
-		// Create D3D Device
+        // Create D3D Device
 
 		D3DCAPS9 caps;
 		IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &caps) )
@@ -552,7 +550,7 @@ namespace Menge
 		m_projectionMatrix = _projectionMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setModelViewMatrix( const mt::mat4f & _modelViewMatrix )
+	void DX9RenderSystem::setViewMatrix( const mt::mat4f & _modelViewMatrix )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -1221,7 +1219,7 @@ namespace Menge
             }
         }
 		
-        for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
         {
 			if( m_textureEnable[i] == false )
 			{
@@ -1326,11 +1324,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderVertexBufferInterfacePtr DX9RenderSystem::createVertexBuffer( uint32_t _verticesNum, bool _dynamic )
+	RenderVertexBufferInterfacePtr DX9RenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType )
 	{
 		DX9RenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject();
 
-		if( buffer->initialize( m_pD3DDevice, m_fvf, _verticesNum, _dynamic ) == false )
+		if( buffer->initialize( m_pD3DDevice, m_fvf, _vertexSize, _bufferType ) == false )
 		{
 			return nullptr;
 		}
@@ -1352,9 +1350,7 @@ namespace Menge
 			return true;
 		}
 
-		DX9RenderVertexBuffer * vb = stdex::intrusive_get<DX9RenderVertexBuffer *>( _vertexBuffer );
-
-		if( vb->enable() == false )
+		if( _vertexBuffer->enable() == false )
 		{
 			return false;
 		}
@@ -1364,11 +1360,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderIndexBufferInterfacePtr DX9RenderSystem::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
+	RenderIndexBufferInterfacePtr DX9RenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType )
 	{
 		DX9RenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject();
 
-		if( buffer->initialize( m_pD3DDevice, _indiciesNum, _dynamic ) == false )
+		if( buffer->initialize( m_pD3DDevice, _indexSize, _bufferType ) == false )
 		{
 			return nullptr;
 		}
@@ -1390,9 +1386,7 @@ namespace Menge
 			return true;
 		}
 
-		DX9RenderIndexBuffer * ib = stdex::intrusive_get<DX9RenderIndexBuffer *>( _indexBuffer );
-
-		if( ib->enable() == false )
+		if( _indexBuffer->enable() == false )
 		{
 			return false;
 		}
@@ -1801,6 +1795,31 @@ namespace Menge
 		DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MIPFILTER, dx_mipmap) );
 		DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );		
 	}
+    //////////////////////////////////////////////////////////////////////////
+    RenderVertexAttributeInterfacePtr DX9RenderSystem::createVertexAttribute( const ConstString & _name )
+    {
+        DX9RenderVertexAttributePtr attribute = m_factoryRenderVertexAttribute->createObject();
+        
+        if( attribute == nullptr )
+        {
+            LOGGER_ERROR( "DX9RenderSystem::createVertexAttribute invalid create attribute %s"
+                , _name.c_str()
+            );
+
+            return nullptr;
+        }
+
+        if( attribute->initialize( _name ) == false )
+        {
+            LOGGER_ERROR( "DX9RenderSystem::createVertexAttribute invalid initialize attribute %s"
+                , _name.c_str()
+            );
+
+            return nullptr;
+        }
+
+        return attribute;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	RenderFragmentShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory )
 	{
@@ -1884,7 +1903,7 @@ namespace Menge
 		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, uint32_t _samplerCount )
+	RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount )
 	{
 		(void)_samplerCount;
 
@@ -1899,7 +1918,7 @@ namespace Menge
 			return nullptr;
 		}
         
-		if( program->initialize( _name, _vertex, _fragment ) == false )
+		if( program->initialize( _name, _vertex, _fragment, _vertexAttribute ) == false )
 		{
 			LOGGER_ERROR("DX9RenderSystem::createProgram invalid initialize program %s"
 				, _name.c_str()
@@ -2075,5 +2094,5 @@ namespace Menge
 
 		//m_textureMemoryUse -= memoryUse;
 	}
-}	// namespace Menge
+}	
 

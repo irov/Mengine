@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ModuleInterface.h"
+#include "Interface/ModuleInterface.h"
 
 #   include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ModuleBase
 		: public ServantBase<ModuleInterface>

@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/SoundCodecInterface.h"
+#include "Interface/SoundCodecInterface.h"
 
-#	include "Codec/Decoder.h"
+#include "Codec/Decoder.h"
 
-namespace Menge
+namespace Mengine
 {
 	class SoundDecoder
 		: public Decoder<SoundDecoderInterface>

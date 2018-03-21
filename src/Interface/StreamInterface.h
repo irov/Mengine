@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#	include "Interface/ServantInterface.h"
+#include "Interface/ServantInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static const size_t INVALID_SIZE = (size_t)-1;

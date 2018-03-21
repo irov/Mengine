@@ -1,9 +1,9 @@
-#	pragma once
+#pragma once
 
-#	include "stdex/mpl.h"
+#include "stdex/mpl.h"
 #   include "stdex/intrusive_ptr.h"
 
-namespace Menge
+namespace Mengine
 {
 	template<class T>
 	class PointerT

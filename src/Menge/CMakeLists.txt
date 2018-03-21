@@ -1,4 +1,4 @@
-set( MY_LIB_NAME Menge )
+set( MY_LIB_NAME Engine )
 
 ADD_FILTER(
 Application

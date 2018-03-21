@@ -2,9 +2,9 @@
 
 #   include "stdex/const_string2_holder.h"
 
-#	include "Core/ConstStringHolder.h"
+#include "Core/ConstStringHolder.h"
 
-namespace Menge
+namespace Mengine
 {
     class ConstStringHolderMemory
         : public ConstStringHolder

@@ -2,7 +2,7 @@
 
 #include "Codec/ImageDecoder.h"
 
-namespace Menge
+namespace Mengine
 {
     class ImageDecoderETC1 
         : public ImageDecoder

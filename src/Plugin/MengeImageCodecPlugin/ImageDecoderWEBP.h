@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Codec/ImageDecoder.h"
+#include "Codec/ImageDecoder.h"
 
-#	include "webp/decode.h"
-#	include "webp/mux.h"
+#include "webp/decode.h"
+#include "webp/mux.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ImageDecoderWEBP
 		: public ImageDecoder

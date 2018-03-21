@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Factory/FactorablePtr.h"
+#include "Factory/FactorablePtr.h"
 
-#	include "Math/vec3.h"
+#include "math/vec3.h"
 
 #   include "stdex/intrusive_ptr.h"
-#	include "stdex/stl_vector.h"
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class MagnetActorProviderInterface

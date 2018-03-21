@@ -1,11 +1,11 @@
-#	include "Scene.h"
+#include "Scene.h"
 
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/NodeInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Scene::Scene()

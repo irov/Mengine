@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/ServiceInterface.h"
 
-#	include "Kernel/Servant.h"
-#	include "Config/String.h"
+#include "Kernel/Servant.h"
+#include "Config/String.h"
 
 #   include "math/uv4.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;
@@ -55,7 +55,7 @@ namespace Menge
 }
 
 #   define TTFATLAS_SERVICE()\
-    ((Menge::TTFAtlasServiceInterface *)SERVICE_GET(Menge::TTFAtlasServiceInterface))
+    ((Mengine::TTFAtlasServiceInterface *)SERVICE_GET(Mengine::TTFAtlasServiceInterface))
 
 #   define TTFFONT_SERVICE()\
-    ((Menge::TTFFontManagerInterface *)SERVICE_GET(Menge::TTFFontManagerInterface))
+    ((Mengine::TTFFontManagerInterface *)SERVICE_GET(Mengine::TTFFontManagerInterface))

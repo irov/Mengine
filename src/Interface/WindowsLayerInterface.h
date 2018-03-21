@@ -4,13 +4,13 @@
 #   include "Config/String.h"
 
 #   include "Interface/ServiceInterface.h"
-#	include "Interface/PluginInterface.h"
+#include "Interface/PluginInterface.h"
 
 #   include "Core/FilePath.h"
 
 #   include <wtypes.h>
 
-namespace Menge
+namespace Mengine
 {
     enum EWindowsType
     {
@@ -64,8 +64,8 @@ namespace Menge
         virtual int messageBox( HWND _hWnd, const WChar * _text, const WChar * _caption, UINT _type ) = 0;
 
         virtual bool getModuleFileName( HMODULE hModule, WChar * _moduleFilename, size_t _capacity ) = 0;
-        //LONG setRegistryValue( HKEY _hKey, const Menge::WString & _lpKeyName, const Menge::WString & _lpValueName, DWORD _dwType, const BYTE* _lpData, DWORD _cbData );
-        //LONG deleteRegistryValue( HKEY _hKey, const Menge::WString & _lpKeyName, const Menge::WString & _lpValueName );
+        //LONG setRegistryValue( HKEY _hKey, const Mengine::WString & _lpKeyName, const Mengine::WString & _lpValueName, DWORD _dwType, const BYTE* _lpData, DWORD _cbData );
+        //LONG deleteRegistryValue( HKEY _hKey, const Mengine::WString & _lpKeyName, const Mengine::WString & _lpValueName );
 
         virtual bool makeFormatMessage( HRESULT _hresult, WString & _out ) = 0;
         virtual bool concatenateFilePath( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _concatenatePath, size_t _capacity ) = 0;
@@ -77,5 +77,5 @@ namespace Menge
     };
 
 #   define WINDOWSLAYER_SERVICE()\
-    ((Menge::WindowsLayerInterface*)SERVICE_GET(Menge::WindowsLayerInterface))
+    ((Mengine::WindowsLayerInterface*)SERVICE_GET(Mengine::WindowsLayerInterface))
 }

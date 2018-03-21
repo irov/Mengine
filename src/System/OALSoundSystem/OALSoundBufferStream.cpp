@@ -1,12 +1,12 @@
-#	include "OALSoundBufferStream.h"
-#	include "OALSoundSystem.h"
-#	include "OALSoundError.h"
+#include "OALSoundBufferStream.h"
+#include "OALSoundSystem.h"
+#include "OALSoundError.h"
 
-#	include "Interface/SoundCodecInterface.h"
+#include "Interface/SoundCodecInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBufferStream::OALSoundBufferStream()
@@ -394,4 +394,4 @@ namespace Menge
 
 		return true;
 	}
-}	// namespace Menge
+}	

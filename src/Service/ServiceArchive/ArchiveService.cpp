@@ -1,15 +1,15 @@
-#	include "ArchiveService.h"
+#include "ArchiveService.h"
 
-#	include "Interface/MemoryInterface.h"
+#include "Interface/MemoryInterface.h"
 
-#	include "Core/MemoryHelper.h"
+#include "Core/MemoryHelper.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ArchiveService, Menge::ArchiveService );
+SERVICE_FACTORY( ArchiveService, Mengine::ArchiveService );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ArchiveService::ArchiveService()

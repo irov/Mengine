@@ -1,21 +1,21 @@
-#	pragma once
+#pragma once
 
-#	include "Codec/ImageDecoder.h"
+#include "Codec/ImageDecoder.h"
 
 extern "C" 
 {
 #	define XMD_H
 #	undef FAR
 
-#	include <setjmp.h>
-#	include "jinclude.h"
-#	include "jpeglib.h"
-#	include "jerror.h"
+#include <setjmp.h>
+#include "jinclude.h"
+#include "jpeglib.h"
+#include "jerror.h"
 #	define JPEG_INTERNALS
-#	include "jmorecfg.h"
+#include "jmorecfg.h"
 }
 
-namespace Menge
+namespace Mengine
 {
 	class ImageDecoderJPEG
 		: public ImageDecoder
@@ -41,4 +41,4 @@ namespace Menge
 		jpeg_decompress_struct m_jpegObject;
 		jpeg_error_mgr m_errorMgr;
 	};
-}	// namespace Menge
+}	

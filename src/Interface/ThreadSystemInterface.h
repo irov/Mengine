@@ -1,4 +1,4 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/ThreadInterface.h"
 
@@ -6,7 +6,7 @@
 
 #   include "Kernel/ThreadJob.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	const int32_t MENGINE_THREAD_PRIORITY_LOWEST = -2;
@@ -38,7 +38,7 @@ namespace Menge
 	};
     //////////////////////////////////////////////////////////////////////////
 #   define THREAD_SYSTEM()\
-    ((Menge::ThreadSystemInterface*)SERVICE_GET(Menge::ThreadSystemInterface))
+    ((Mengine::ThreadSystemInterface*)SERVICE_GET(Mengine::ThreadSystemInterface))
     //////////////////////////////////////////////////////////////////////////
     class ThreadServiceInterface
         : public ServiceInterface
@@ -83,6 +83,6 @@ namespace Menge
     };
     //////////////////////////////////////////////////////////////////////////
 #   define THREAD_SERVICE()\
-    ((Menge::ThreadServiceInterface*)SERVICE_GET(Menge::ThreadServiceInterface))
+    ((Mengine::ThreadServiceInterface*)SERVICE_GET(Mengine::ThreadServiceInterface))
     //////////////////////////////////////////////////////////////////////////
 }

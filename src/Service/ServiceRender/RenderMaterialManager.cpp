@@ -4,21 +4,21 @@
 #   include "Interface/ConfigInterface.h"
 #   include "Interface/LoaderInterface.h"
 
-#	include "Core/MemoryHelper.h"
+#include "Core/MemoryHelper.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 #   include "Factory/FactoryPoolWithListener.h"
 
 #   include "Logger/Logger.h"
 
-#	include <Metacode/Metacode.h>
+#include "Metacode/Metacode.h"
 
-#	include "stdex/hash.h"
+#include "stdex/hash.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( RenderMaterialService, Menge::RenderMaterialManager );
+SERVICE_FACTORY( RenderMaterialService, Mengine::RenderMaterialManager );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static ETextureFilter parseConfigTextureFilterValue( uint32_t _value )
@@ -120,7 +120,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderMaterialManager::_finalize()
     {
-		for( uint32_t i = 0; i != MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE; ++i )
+		for( uint32_t i = 0; i != MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE; ++i )
 		{
 			TVectorRenderMaterial & material = m_materials[i];
 
@@ -136,6 +136,7 @@ namespace Menge
 
         m_materialStageIndexer.clear();
 
+        m_vertexAttributes.clear();
 		m_vertexShaders.clear();
 		m_fragmentShaders.clear();
 		m_programs.clear();
@@ -257,6 +258,44 @@ namespace Menge
 			m_vertexShaders.insert( std::make_pair( name, shader ) );
 		}
 
+        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_VertexAttribute & includes_VertexAttribute = datablock.get_Includes_VertexAttribute();
+
+        for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_VertexAttribute::const_iterator
+            it = includes_VertexAttribute.begin(),
+            it_end = includes_VertexAttribute.end();
+            it != it_end;
+            ++it )
+        {
+            const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexAttribute & meta_VertexAttribute = *it;
+
+            const ConstString & renderPlatform = meta_VertexAttribute.get_RenderPlatform();
+
+            if( renderPlatform != renderPlatformName )
+            {
+                continue;
+            }
+        
+            const ConstString & name = meta_VertexAttribute.get_Name();
+
+            RenderVertexAttributeInterfacePtr vertexAttribute = this->createVertexAttribute_( name );
+
+            const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexAttribute::VectorMeta_Attribute & includes_Attributes = meta_VertexAttribute.get_Includes_Attribute();
+
+            for( const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute & meta_Attribute : includes_Attributes )
+            {
+                const ConstString & attribute_uniform = meta_Attribute.get_Uniform();
+                uint32_t attribute_size = meta_Attribute.get_Size();
+                EVertexAttributeType attribute_type = meta_Attribute.get_Type();
+                bool attribute_normalized = meta_Attribute.get_Normalized();
+                uint32_t attribute_stride = meta_Attribute.get_Stride();
+                uint32_t attribute_offset = meta_Attribute.get_Offset();
+
+                vertexAttribute->addAttribute( attribute_uniform, attribute_size, attribute_type, attribute_normalized, attribute_stride, attribute_offset );
+            }
+
+            m_vertexAttributes.insert( std::make_pair( name, vertexAttribute ) );
+        }
+
 		const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Program & includes_Program = datablock.get_Includes_Program();
 
 		for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Program::const_iterator
@@ -280,6 +319,7 @@ namespace Menge
 
 			const ConstString & vertexShaderName = meta_Program.get_VertexShader_Name();
 			const ConstString & fragmentShaderName = meta_Program.get_FragmentShader_Name();
+            const ConstString & vertexAttributeName = meta_Program.get_VertexAttribute_Name();
 			uint32_t samplerCount = meta_Program.get_Sampler_Count();
 
 			const RenderVertexShaderInterfacePtr & vertexShader = this->getVertexShader_( vertexShaderName );
@@ -310,8 +350,21 @@ namespace Menge
 				return false;
 			}
 
+            const RenderVertexAttributeInterfacePtr & vertexAttribute = this->getVertexAttribute_( vertexAttributeName );
+
+            if( vertexAttribute == nullptr )
+            {
+                LOGGER_ERROR( "material '%s' program '%s' not found vertex attribute '%s'"
+                    , _fileName.c_str()
+                    , name.c_str()
+                    , vertexAttributeName.c_str()
+                );
+
+                return false;
+            }
+
 			RenderProgramInterfacePtr program = RENDER_SYSTEM()
-				->createProgram( name, vertexShader, fragmentShader, samplerCount );
+				->createProgram( name, vertexShader, fragmentShader, vertexAttribute, samplerCount );
 
 			if( program == nullptr )
 			{
@@ -338,7 +391,7 @@ namespace Menge
 		{
 			const Metacode::Meta_Data::Meta_DataBlock::Meta_Material & meta_Material = *it;
 
-			const Menge::ConstString & name = meta_Material.get_Name();
+			const Mengine::ConstString & name = meta_Material.get_Name();
 
 			ConstString renderPlatform;
 			if( meta_Material.get_RenderPlatform( &renderPlatform ) == true )
@@ -377,7 +430,7 @@ namespace Menge
 				stage.program = program;
 			}
 
-            for( uint32_t index = 0; index != MENGE_MAX_TEXTURE_STAGES; ++index )
+            for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
             {
                 stage.textureStage[index].texCoordIndex = index;
             }
@@ -549,7 +602,7 @@ namespace Menge
 		{
 			const Metacode::Meta_Data::Meta_DataBlock::Meta_Material & meta_Material = *it;
 
-			const Menge::ConstString & name = meta_Material.get_Name();
+			const Mengine::ConstString & name = meta_Material.get_Name();
 
 			m_materialStageIndexer.erase( name );
 		}
@@ -688,7 +741,7 @@ namespace Menge
 			return false;
 		}
 
-		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
 		{
 			const RenderTextureStage & src_textureStage = _src.textureStage[i];
 			const RenderTextureStage & dst_textureStage = _dst.textureStage[i];
@@ -791,7 +844,7 @@ namespace Menge
 	{
 		uint32_t material_hash = this->makeMaterialHash( _materialName, _textureCount, _textures );
 
-		uint32_t material_table_index = material_hash % MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE;
+		uint32_t material_table_index = material_hash % MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
 		TVectorRenderMaterial & materials = m_materials[material_table_index];
 
@@ -865,7 +918,7 @@ namespace Menge
 
 		uint32_t material_hash = _material->getHash();
 
-		uint32_t material_table_index = material_hash % MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE;
+		uint32_t material_table_index = material_hash % MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
 		TVectorRenderMaterial & materials = m_materials[material_table_index];
 
@@ -945,6 +998,14 @@ namespace Menge
 
 		return material_hash;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    RenderVertexAttributeInterfacePtr RenderMaterialManager::createVertexAttribute_( const ConstString & _name )
+    {
+        RenderVertexAttributeInterfacePtr vertexAttribute = RENDER_SYSTEM()
+            ->createVertexAttribute( _name );
+
+        return vertexAttribute;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertexShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath )
 	{
@@ -1003,6 +1064,20 @@ namespace Menge
 
 		return shader;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    const RenderVertexAttributeInterfacePtr & RenderMaterialManager::getVertexAttribute_( const ConstString & _name ) const
+    {
+        TMapRenderVertexAttributes::const_iterator it_found = m_vertexAttributes.find( _name );
+
+        if( it_found == m_vertexAttributes.end() )
+        {
+            return RenderVertexAttributeInterfacePtr::none();
+        }
+
+        const RenderVertexAttributeInterfacePtr & vertexAttribute = it_found->second;
+
+        return vertexAttribute;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	const RenderProgramInterfacePtr & RenderMaterialManager::getProgram_( const ConstString & _name ) const
 	{

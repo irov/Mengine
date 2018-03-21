@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/MemoryInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/MemoryInterface.h"
 
-#	include "Core/FilePath.h"
-#	include "Core/ConstString.h"
+#include "Core/FilePath.h"
+#include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	namespace Helper
@@ -21,6 +21,6 @@ namespace Menge
         MemoryInterfacePtr createMemoryCacheFile( const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line );
         MemoryInterfacePtr createMemoryCacheFileString( const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line );
 	}
-}	// namespace Menge
+}	
 
 

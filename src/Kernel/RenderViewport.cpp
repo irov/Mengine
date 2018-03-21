@@ -1,9 +1,9 @@
-#	include "RenderViewport.h"
+#include "RenderViewport.h"
 
-#	include "Interface/GameInterface.h"
-#	include "Interface/ApplicationInterface.h"
+#include "Interface/GameInterface.h"
+#include "Interface/ApplicationInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderViewport::RenderViewport()

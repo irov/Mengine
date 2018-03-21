@@ -1,6 +1,6 @@
-#	include "Isometric.h"
+#include "Isometric.h"
 
-namespace	Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Isometric::Isometric()

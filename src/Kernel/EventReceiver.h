@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
 #   include "Factory/FactorablePtr.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class EventReceiver

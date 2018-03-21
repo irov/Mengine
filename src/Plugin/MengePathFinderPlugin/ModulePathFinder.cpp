@@ -1,19 +1,19 @@
-#	include "ModulePathFinder.h"
+#include "ModulePathFinder.h"
 
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/PlayerInterface.h"
-#	include "Interface/ResourceInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/PlayerInterface.h"
+#include "Interface/ResourceInterface.h"
 
-#	include "PathGraphNode.h"
+#include "PathGraphNode.h"
 
-#	include "Kernel/ResourceImageData.h"
+#include "Kernel/ResourceImageData.h"
 #   include "Kernel/ScriptWrapper.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ModulePathFinder::ModulePathFinder()

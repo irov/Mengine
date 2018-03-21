@@ -1,8 +1,8 @@
-#	include "Motor.h"
+#include "Motor.h"
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Motor::Motor()

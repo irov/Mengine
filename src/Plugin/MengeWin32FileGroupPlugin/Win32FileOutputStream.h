@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/WindowsLayerInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/WindowsLayerInterface.h"
 
 #   include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Win32FileOutputStream
 		: public ServantBase<FileOutputStreamInterface>
@@ -29,4 +29,4 @@ namespace Menge
 
 		size_t m_size;
 	};
-}	// namespace Menge
+}	

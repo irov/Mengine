@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "DevelopmentConverter.h"
+#include "DevelopmentConverter.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ImageConverterDDSToHTF
 		: public DevelopmentConverter
@@ -17,4 +17,4 @@ namespace Menge
     public:
 		bool convert() override;
     };
-}	// namespace Menge
+}	

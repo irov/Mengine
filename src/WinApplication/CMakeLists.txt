@@ -6,13 +6,6 @@ MessageBoxLogger
     MessageBoxLogger.h
 )
 
-#ADD_FILTER(
-#Resources
-#	menge.ico
-#	resource.h
-#	WinApplication.rc
-#)
-
 ADD_FILTER(
 CriticalErrorsMonitor
 	CriticalErrorsMonitor.h

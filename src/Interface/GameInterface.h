@@ -4,11 +4,11 @@
 #   include "Interface/PlayerInterface.h"
 #   include "Interface/MemoryInterface.h"
 
-#	include "Core/Params.h"
+#include "Core/Params.h"
 
-#	include "Core/Magic.h"
+#include "Core/Magic.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class GameServiceInterface
@@ -66,5 +66,5 @@ namespace Menge
     };
 
 #   define GAME_SERVICE()\
-    SERVICE_GET(Menge::GameServiceInterface)
+    SERVICE_GET(Mengine::GameServiceInterface)
 }

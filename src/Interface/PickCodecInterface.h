@@ -1,9 +1,9 @@
 
-#	pragma once
+#pragma once
 
-#	include "Interface/CodecInterface.h"
+#include "Interface/CodecInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	struct PickCodecDataInfo
 		: public CodecDataInfo

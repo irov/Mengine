@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/COMInterface.h"
+#include "Interface/COMInterface.h"
 
-#	include "Math/vec2.h"
-#	include "Math/uv4.h"
-#	include "Core/String.h"
-#	include "Core/FilePath.h"
+#include "math/vec2.h"
+#include "math/uv4.h"
+#include "Core/String.h"
+#include "Core/FilePath.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class COMSurfaceVideoIterface

@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/ThreadSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #   include "Core/ServantBase.h"
 
-#	include "stdex/stl_map.h"
+#include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
 	class FileGroupZip
 		: public ServantBase<FileGroupInterface>
@@ -68,4 +68,4 @@ namespace Menge
 		typedef stdex::map<FilePath, FileInfo> TMapFileInfo;
 		TMapFileInfo m_files;
 	};
-}	// namespace Menge
+}	

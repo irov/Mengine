@@ -1,22 +1,22 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ApplicationInterface.h"
+#include "Interface/ApplicationInterface.h"
 
-#	include "Interface/NotificationServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #   include "Consts.h"
 
-#	include "Core/Resolution.h"
-#	include "Core/Viewport.h"
-#	include "Core/ConstString.h"
+#include "Core/Resolution.h"
+#include "Core/Viewport.h"
+#include "Core/ConstString.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Math/vec4.h"
+#include "math/vec4.h"
 
-#	include <stdex/stl_map.h>
+#include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
 	typedef stdex::intrusive_ptr<class ResourceCursor> ResourceCursorPtr;
 

@@ -1,14 +1,14 @@
-#	include "Interface/PrefetcherInterface.h"
+#include "Interface/PrefetcherInterface.h"
 
-#	include "ThreadTaskPrefetchImageDecoder.h"
-#	include "ThreadTaskPrefetchSoundDecoder.h"
-#	include "ThreadTaskPrefetchDataflow.h"
+#include "ThreadTaskPrefetchImageDecoder.h"
+#include "ThreadTaskPrefetchSoundDecoder.h"
+#include "ThreadTaskPrefetchDataflow.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
-#	include "stdex/stl_map.h"
+#include "stdex/stl_map.h"
 
 #	ifndef MENGINE_PREFETCHER_THREAD_COUNT
 #	define MENGINE_PREFETCHER_THREAD_COUNT 2
@@ -18,7 +18,7 @@
 #	define MENGINE_PREFETCHER_PACKET_SIZE 64
 #	endif
 
-namespace Menge
+namespace Mengine
 {
 	struct PrefetchReceiver
 	{

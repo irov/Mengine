@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-#	include "Utils/Core/ConstString.h"
+#include "Utils/Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {
 	class AmplifierInterface
 		: public ServiceInterface
@@ -26,5 +26,5 @@ namespace Menge
 	};
 
 #   define AMPLIFIER_SERVICE()\
-    ((Menge::AmplifierInterface *)SERVICE_GET(Menge::AmplifierInterface))
+    ((Mengine::AmplifierInterface *)SERVICE_GET(Mengine::AmplifierInterface))
 }

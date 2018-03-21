@@ -1,19 +1,19 @@
-#	include "ResourceImageData.h"
+#include "ResourceImageData.h"
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/ImageCodecInterface.h"
-#	include "Interface/ConfigInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/ImageCodecInterface.h"
+#include "Interface/ConfigInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
 #   include "Logger/Logger.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/String.h"
+#include "Core/ConstString.h"
+#include "Core/String.h"
 
-#	include "Core/MemoryAllocator.h"
+#include "Core/MemoryAllocator.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageData::ResourceImageData()
@@ -174,7 +174,7 @@ namespace Menge
 
 		size_t memorySize = Helper::getTextureMemorySize( width, height, channels, 1, format );
 
-		m_buffer = Helper::allocateMemory<unsigned char>( memorySize );
+		m_buffer = Helper::allocateMemoryT<unsigned char>( memorySize );
 
 		ImageCodecOptions options;
 		options.pitch = width * channels;

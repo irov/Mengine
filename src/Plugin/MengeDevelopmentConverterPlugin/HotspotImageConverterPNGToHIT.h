@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "DevelopmentConverter.h"
+#include "DevelopmentConverter.h"
 
-namespace Menge
+namespace Mengine
 {
 	class HotspotImageConverterPNGToHIT
 		: public DevelopmentConverter
@@ -24,4 +24,4 @@ namespace Menge
 		uint32_t calcMimMapBufferLevelAndSize_( uint32_t _width, uint32_t _height, uint32_t & _level );
 		void makeMipMapLevel_( uint8_t * _buffer, uint32_t _width, uint32_t _height, uint32_t _level );
     };
-}	// namespace Menge
+}	

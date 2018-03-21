@@ -1,6 +1,6 @@
-#	include "MixerVolume.h"
+#include "MixerVolume.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	MixerVolume::MixerVolume()

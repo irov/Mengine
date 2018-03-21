@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Math/plane.h"
+#include "math/plane.h"
 
-#	include "pybind/object.hpp"
+#include "pybind/object.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class BurritoGround

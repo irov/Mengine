@@ -1,25 +1,25 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/TextInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "TextLocalePak.h"
+#include "TextLocalePak.h"
 
-#	include "TextEntry.h"
+#include "TextEntry.h"
 
 #   include "Factory/Factory.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 #   include "Core/ConstStringHolderLocalString.h"
 
-#	include "Core/FilePath.h"
+#include "Core/FilePath.h"
 
 #   include "stdex/stl_map.h"
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-namespace Menge
+namespace Mengine
 {
 	class TextManager
         : public ServiceBase<TextServiceInterface>

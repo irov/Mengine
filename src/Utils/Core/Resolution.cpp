@@ -1,6 +1,6 @@
-#	include "Resolution.h"
+#include "Resolution.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Resolution::Resolution()

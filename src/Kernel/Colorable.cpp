@@ -1,8 +1,8 @@
-#	include "Kernel/Colorable.h"
+#include "Kernel/Colorable.h"
 
-#	include "Math/utils.h"
+#include "math/utils.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Colorable::Colorable()

@@ -1,6 +1,6 @@
-#	include "Servant.h"
+#include "Servant.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Servant::Servant()

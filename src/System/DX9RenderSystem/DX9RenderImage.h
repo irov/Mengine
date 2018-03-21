@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
-#	include "Core/ServantBase.h"
+#include "Core/ServantBase.h"
 
-#	include <d3d9.h>
+#include <d3d9.h>
 
-namespace Menge
+namespace Mengine
 {
 	class DX9RenderImage
 		: public ServantBase<RenderImageInterface>
@@ -57,4 +57,4 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<DX9RenderImage> DX9RenderImagePtr;
-}	// namespace Menge
+}	

@@ -1,19 +1,19 @@
-#	pragma once
+#pragma once
 
-#	include "Factory/FactorablePtr.h"
+#include "Factory/FactorablePtr.h"
 
-#	include "Kernel/Identity.h"
-#	include "Kernel/Servant.h"
+#include "Kernel/Identity.h"
+#include "Kernel/Servant.h"
 #   include "Kernel/Visitable.h"
-#	include "Kernel/Scriptable.h"
+#include "Kernel/Scriptable.h"
 #   include "Kernel/Materialable.h"
-#	include "Kernel/Resource.h"
+#include "Kernel/Resource.h"
 
-#   include "Math/vec2.h"
-#   include "Math/uv4.h"
+#   include "math/vec2.h"
+#   include "math/uv4.h"
 #   include "Core/ColourValue.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Surface
 		: public Servant

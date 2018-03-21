@@ -1,8 +1,8 @@
-#	include "FactorablePtr.h"
+#include "FactorablePtr.h"
 
-#	include "Core/Exception.h"
+#include "Core/Exception.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     FactorablePtr::FactorablePtr()

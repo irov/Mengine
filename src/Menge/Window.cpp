@@ -1,17 +1,17 @@
-#	include "Window.h"
+#include "Window.h"
 
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 
-#	include "Kernel/Materialable.h"
+#include "Kernel/Materialable.h"
 
 #   include "Logger/Logger.h"
 
-#	include "Consts.h"
+#include "Consts.h"
 
-#	include <math.h>
+#include <math.h>
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     const bool c_WindowWrapU[ResourceWindow_Count] =    
@@ -593,4 +593,4 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

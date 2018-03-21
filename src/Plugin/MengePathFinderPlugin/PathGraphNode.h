@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "fastpathfinder/graph.h"
+#include "fastpathfinder/graph.h"
 
-#	include "Kernel/Scriptable.h"
+#include "Kernel/Scriptable.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class PathGraphNode

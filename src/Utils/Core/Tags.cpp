@@ -1,8 +1,8 @@
-#	include "Tags.h"
+#include "Tags.h"
 
-#	include <algorithm>
+#include <algorithm>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	void Tags::addTag( const ConstString & _tag )

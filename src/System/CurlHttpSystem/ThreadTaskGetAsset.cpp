@@ -5,7 +5,7 @@
 
 #	include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTaskGetAsset::ThreadTaskGetAsset()

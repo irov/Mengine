@@ -4,10 +4,10 @@
 
 #   include "Core/ServiceBase.h"
 
-#   include <stdex/stl_map.h>
-#   include <stdex/stl_vector.h>
+#   include "stdex/stl_map.h"
+#   include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
     class ModuleService
         : public ServiceBase<ModuleServiceInterface>

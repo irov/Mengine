@@ -1,25 +1,25 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Loadable.h"
+#include "Kernel/Loadable.h"
 
-#	include "Kernel/Servant.h"
-#	include "Kernel/Resource.h"
-#	include "Kernel/Identity.h"
-#	include "Kernel/Reference.h"
+#include "Kernel/Servant.h"
+#include "Kernel/Resource.h"
+#include "Kernel/Identity.h"
+#include "Kernel/Reference.h"
 
-#	include "Kernel/Scriptable.h"
-#	include "Kernel/Visitable.h"
-#	include "Kernel/Comable.h"
+#include "Kernel/Scriptable.h"
+#include "Kernel/Visitable.h"
+#include "Kernel/Comable.h"
 
-#	include "Kernel/ResourceHolder.h"
+#include "Kernel/ResourceHolder.h"
 
-#	include "Factory/FactorablePtr.h"
-#	include "Factory/Factory.h"
+#include "Factory/FactorablePtr.h"
+#include "Factory/Factory.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 
-namespace Menge
+namespace Mengine
 {
     class ResourceVisitor;
 	

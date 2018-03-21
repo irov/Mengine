@@ -1,10 +1,10 @@
-#	include "ThreadTaskDummy.h"
+#include "ThreadTaskDummy.h"
 
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTaskDummy::ThreadTaskDummy()

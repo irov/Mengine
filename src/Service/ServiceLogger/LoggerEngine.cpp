@@ -1,11 +1,11 @@
-#	include "LoggerEngine.h"
+#include "LoggerEngine.h"
 
-#	include <algorithm>
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( LoggerService, Menge::LoggerEngine );
+SERVICE_FACTORY( LoggerService, Mengine::LoggerEngine );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	LoggerEngine::LoggerEngine()
@@ -83,7 +83,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t LoggerEngine::getCountMessage( Menge::EMessageLevel _level )
+	size_t LoggerEngine::getCountMessage( Mengine::EMessageLevel _level )
 	{
 		size_t count = m_countMessage[_level];
 

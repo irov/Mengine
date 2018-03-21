@@ -7,7 +7,7 @@
 #   include "pybind/object.hpp"
 #   include "pybind/module.hpp"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ScriptEventReceiver

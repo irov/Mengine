@@ -1,13 +1,13 @@
-#	include "SoundDecoderWAV.h"
+#include "SoundDecoderWAV.h"
 
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 
-#	include "Core/Magic.h"
-#	include "Logger/Logger.h"
+#include "Core/Magic.h"
+#include "Logger/Logger.h"
 
-#	include "Math/utils.h"
+#include "math/utils.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	struct WAVE_HEADER
@@ -180,4 +180,4 @@ namespace Menge
 		return length;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

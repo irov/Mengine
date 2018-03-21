@@ -1,16 +1,16 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/SocketInterface.h"
+#include "Interface/SocketInterface.h"
 
 #   include "Core/ServiceBase.h"
 
 #   include "Factory/Factory.h"
 
-#	include "Win32Socket.h"
+#include "Win32Socket.h"
 
-#	include <winsock2.h> 
+#include <winsock2.h> 
 
-namespace Menge
+namespace Mengine
 {
 	class Win32SocketSystem
 		: public ServiceBase<SocketSystemInterface>

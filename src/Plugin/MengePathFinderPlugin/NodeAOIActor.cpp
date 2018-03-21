@@ -1,6 +1,6 @@
-#	include "NodeAOIActor.h"
+#include "NodeAOIActor.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	NodeAOIActor::NodeAOIActor()

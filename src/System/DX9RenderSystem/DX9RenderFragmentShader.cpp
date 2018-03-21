@@ -1,8 +1,8 @@
 #   include "DX9RenderFragmentShader.h"
 
-#	include "DX9ErrorHelper.h"
+#include "DX9ErrorHelper.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 	DX9RenderFragmentShader::DX9RenderFragmentShader()

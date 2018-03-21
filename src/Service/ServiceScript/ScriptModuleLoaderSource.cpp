@@ -1,14 +1,14 @@
 #   include "ScriptModuleLoaderSource.h"
 
-#	include "Interface/ArchiveInterface.h"
-#	include "Interface/MemoryInterface.h"
-#	include "Interface/ScriptSystemInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/ScriptSystemInterface.h"
 
-#	include "Core/MemoryHelper.h"
+#include "Core/MemoryHelper.h"
 
 #   include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ScriptModuleLoaderSource::ScriptModuleLoaderSource()

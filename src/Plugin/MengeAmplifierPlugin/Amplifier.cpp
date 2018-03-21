@@ -1,18 +1,18 @@
-#	include "Amplifier.h"
+#include "Amplifier.h"
 
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-#	include "Kernel/ResourceMusic.h"
+#include "Kernel/ResourceMusic.h"
 
 #   include "Logger/Logger.h"
 
-#	include <cmath>
+#include <cmath>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( Amplifier, Menge::Amplifier);
+SERVICE_FACTORY( Amplifier, Mengine::Amplifier);
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::Amplifier()

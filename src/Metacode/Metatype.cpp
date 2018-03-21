@@ -4,7 +4,7 @@
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #   include "LoaderEngine.h"
 
@@ -49,7 +49,7 @@ namespace Metabuf
 		ar.readPOD( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void archive_read( Reader & ar, Menge::String & _value, void * _userData )
+    void archive_read( Reader & ar, Mengine::String & _value, void * _userData )
 	{
         (void)_userData;
 
@@ -68,9 +68,9 @@ namespace Metabuf
         ar.readPODs( &_value[0], size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::ConstString & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::ConstString & _value, void * _userData )
 	{
-		Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
+		Mengine::LoaderEngine * loader = static_cast<Mengine::LoaderEngine *>(_userData);
 		
 		uint32_t index;
 		ar.readSize( index );
@@ -78,14 +78,14 @@ namespace Metabuf
 		_value = loader->getCacheConstString( index );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::FilePath & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::FilePath & _value, void * _userData )
 	{
-		Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
+		Mengine::LoaderEngine * loader = static_cast<Mengine::LoaderEngine *>(_userData);
 
 		uint32_t index;
 		ar.readSize( index );
 
-		const Menge::ConstString & value = loader->getCacheConstString( index );
+		const Mengine::ConstString & value = loader->getCacheConstString( index );
 				
 #	ifdef _DEBUG
 		const char * test_value = value.c_str();
@@ -104,12 +104,12 @@ namespace Metabuf
 		}
 #	endif
 
-		_value = Menge::FilePath( value );
+		_value = Mengine::FilePath( value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::Tags & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::Tags & _value, void * _userData )
 	{
-		Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
+		Mengine::LoaderEngine * loader = static_cast<Mengine::LoaderEngine *>(_userData);
 
 		uint32_t count;
 		ar.readSize( count );
@@ -119,25 +119,25 @@ namespace Metabuf
 			uint32_t index;
 			ar.readSize( index );
 
-			const Menge::ConstString & tag = loader->getCacheConstString( index );
+			const Mengine::ConstString & tag = loader->getCacheConstString( index );
 
 			_value.addTag( tag );
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( Reader & ar, Menge::WChar & _value, void * _userData )
+    void archive_read( Reader & ar, Mengine::WChar & _value, void * _userData )
     {
         (void)_userData;
 
         uint32_t size;
         ar.readSize( size );
 
-        Menge::Char utf8[8];
+        Mengine::Char utf8[8];
         ar.readBuffer( (void *)utf8, size );
 
         size_t unicodeSize;
 
-        Menge::WChar unicode[2];
+        Mengine::WChar unicode[2];
         if( UNICODE_SYSTEM()
             ->utf8ToUnicode( utf8, size, unicode, 2, &unicodeSize ) == false )
         {
@@ -156,15 +156,15 @@ namespace Metabuf
         _value = unicode[0];
     }
 	//////////////////////////////////////////////////////////////////////////
-    void archive_read( Reader & ar, Menge::WString & _value, void * _userData )
+    void archive_read( Reader & ar, Mengine::WString & _value, void * _userData )
 	{
-        static Menge::String utf8;
+        static Mengine::String utf8;
         archive_read( ar, utf8, _userData );
 
-        Menge::Helper::utf8ToUnicode(  utf8, _value );
+        Mengine::Helper::utf8ToUnicode(  utf8, _value );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( Reader & ar, Menge::ColourValue & _value, void * _userData )
+    void archive_read( Reader & ar, Mengine::ColourValue & _value, void * _userData )
     {
         (void)_userData;
 
@@ -187,7 +187,7 @@ namespace Metabuf
         _value.setRGBA( r, g, b, a );
     }
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( Reader & ar, Menge::Polygon & _value, void * _userData )
+    void archive_read( Reader & ar, Mengine::Polygon & _value, void * _userData )
     {
         (void)_userData;
 
@@ -210,7 +210,7 @@ namespace Metabuf
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::Viewport & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::Viewport & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -220,7 +220,7 @@ namespace Metabuf
 		ar.readPOD( _value.end.y );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( Reader & ar, Menge::Floats & _value, void * _userData )
+    void archive_read( Reader & ar, Mengine::Floats & _value, void * _userData )
     {
         (void)_userData;
 
@@ -239,7 +239,7 @@ namespace Metabuf
         ar.readPODs( &_value[0], count );
     }
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::Int8s & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::Int8s & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -258,7 +258,7 @@ namespace Metabuf
 		ar.readPODs( &_value[0], count );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::Int16s & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::Int16s & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -277,7 +277,7 @@ namespace Metabuf
 		ar.readPODs( &_value[0], count );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::Int32s & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::Int32s & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -296,7 +296,7 @@ namespace Metabuf
 		ar.readPODs( &_value[0], count );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::UInt8s & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::UInt8s & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -315,7 +315,7 @@ namespace Metabuf
 		ar.readPODs( &_value[0], count );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::UInt16s & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::UInt16s & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -334,7 +334,7 @@ namespace Metabuf
 		ar.readPODs( &_value[0], count );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::UInt32s & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::UInt32s & _value, void * _userData )
 	{
 		(void)_userData;
 
@@ -404,53 +404,63 @@ namespace Metabuf
 		ar.readPOD( _value.p3.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::EBlendFactor & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::EBlendFactor & _value, void * _userData )
 	{
 		(void)_userData;
 
 		uint32_t tmp_value;
 		ar.readPOD( tmp_value );
 
-		_value = (Menge::EBlendFactor)tmp_value;
+		_value = (Mengine::EBlendFactor)tmp_value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::EBlendOp & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::EBlendOp & _value, void * _userData )
 	{
 		(void)_userData;
 
 		uint32_t tmp_value;
 		ar.readPOD( tmp_value );
 
-		_value = (Menge::EBlendOp)tmp_value;
+		_value = (Mengine::EBlendOp)tmp_value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::ETextureOp & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::ETextureOp & _value, void * _userData )
 	{
 		(void)_userData;
 
 		uint32_t tmp_value;
 		ar.readPOD( tmp_value );
 
-		_value = (Menge::ETextureOp)tmp_value;
+		_value = (Mengine::ETextureOp)tmp_value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::ETextureArgument & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::ETextureArgument & _value, void * _userData )
 	{
 		(void)_userData;
 
 		uint32_t tmp_value;
 		ar.readPOD( tmp_value );
 
-		_value = (Menge::ETextureArgument)tmp_value;
+		_value = (Mengine::ETextureArgument)tmp_value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Menge::ETextureAddressMode & _value, void * _userData )
+	void archive_read( Reader & ar, Mengine::ETextureAddressMode & _value, void * _userData )
 	{
 		(void)_userData;
 
 		uint32_t tmp_value;
 		ar.readPOD( tmp_value );
 
-		_value = (Menge::ETextureAddressMode)tmp_value;
+		_value = (Mengine::ETextureAddressMode)tmp_value;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::EVertexAttributeType & _value, void * _userData )
+    {
+        (void)_userData;
+
+        uint32_t tmp_value;
+        ar.readPOD( tmp_value );
+
+        _value = (Mengine::EVertexAttributeType)tmp_value;
+    }
 }

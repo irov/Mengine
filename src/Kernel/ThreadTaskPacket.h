@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "ThreadTask.h"
+#include "ThreadTask.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ThreadTaskPacket
 		: public ThreadTask

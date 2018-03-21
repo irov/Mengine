@@ -1,16 +1,16 @@
-#	include "SurfaceVideo.h"
+#include "SurfaceVideo.h"
 
-#	include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
-#	include "Core/RenderUtils.h"
+#include "Core/RenderUtils.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Consts.h"
+#include "Consts.h"
 
-#	include <math.h>
+#include <math.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	SurfaceVideo::SurfaceVideo()

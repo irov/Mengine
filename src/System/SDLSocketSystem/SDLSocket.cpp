@@ -1,6 +1,6 @@
 #	include "SDLSocket.h"
 
-namespace Menge
+namespace Mengine
 {
     SDLSocket::SDLSocket()
         : m_socket(nullptr)

@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "OALSoundBufferBase.h"
+#include "OALSoundBufferBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class OALSoundBufferMemory
 		: public OALSoundBufferBase
@@ -29,4 +29,4 @@ namespace Menge
 	protected:
 		ALuint m_alBufferId;
 	};
-}	// namespace Menge
+}	

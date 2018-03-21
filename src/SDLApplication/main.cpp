@@ -13,7 +13,7 @@ int main( int argc, char * argv[] )
 {
     stdex_allocator_initialize();
 
-    Menge::SDLApplication application;
+    Mengine::SDLApplication application;
 
 #	ifndef _DEBUG
     try

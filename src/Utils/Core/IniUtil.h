@@ -5,22 +5,22 @@
 #   include "Interface/ServiceInterface.h"
 #   include "Interface/StreamInterface.h"
 
-#	include "Core/Params.h"
-#	include "Core/String.h"
-#	include "Core/ConstString.h"
-#	include "Core/ConstStringTypes.h"
-#	include "Core/Tags.h"
+#include "Core/Params.h"
+#include "Core/String.h"
+#include "Core/ConstString.h"
+#include "Core/ConstStringTypes.h"
+#include "Core/Tags.h"
 #   include "Core/FilePath.h"
-#	include "Core/Resolution.h"
-#	include "Core/Viewport.h"
-#	include "Core/AspectRatioViewports.h"
-#	include "Core/ColourValue.h"
+#include "Core/Resolution.h"
+#include "Core/Viewport.h"
+#include "Core/AspectRatioViewports.h"
+#include "Core/ColourValue.h"
 
 #	ifndef MENGINE_INI_BUFFER_SIZE 
 #	define MENGINE_INI_BUFFER_SIZE 16384U
 #	endif
 
-namespace Menge
+namespace Mengine
 {
     namespace IniUtil
     {

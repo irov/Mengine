@@ -1,15 +1,15 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-#	include "Core/String.h"
-#	include "Core/ConstString.h"
-#	include "Core/FilePath.h"
-#	include "Core/Params.h"
+#include "Core/String.h"
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
+#include "Core/Params.h"
 
-#	include "stdex/stl_map.h"
+#include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	typedef uint32_t HttpRequestID;
@@ -38,5 +38,5 @@ namespace Menge
 	};
 
 #   define HTTP_SYSTEM()\
-	SERVICE_GET(Menge::HttpSystemInterface)
+	SERVICE_GET(Mengine::HttpSystemInterface)
 }

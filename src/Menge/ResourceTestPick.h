@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
-#   include "Math/vec2.h"
+#   include "math/vec2.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ResourceTestPick
 		: public ResourceReference
@@ -22,4 +22,4 @@ namespace Menge
     public:
 		virtual uint8_t * getBuffer() const = 0;
 	};
-}	// namespace Menge
+}	

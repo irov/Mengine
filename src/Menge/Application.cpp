@@ -1,23 +1,23 @@
-#	include "Application.h"
+#include "Application.h"
 
 #   include "Interface/OptionsInterface.h"
 #   include "Interface/PrototypeManagerInterface.h"
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/RenderSystemInterface.h"
-#	include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/PhysicSystemInterface.h"
 #   include "Interface/ConfigInterface.h"
 #   include "Interface/PlayerInterface.h"
-#	include "Interface/PrefetcherInterface.h"
+#include "Interface/PrefetcherInterface.h"
 #   include "Interface/StringizeInterface.h"
-#	include "Interface/NotificationServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 #   include "Interface/MousePickerSystemInterface.h"
-#	include "Interface/LoaderInterface.h"
-#	include "Interface/NodeInterface.h"
-#	include "Interface/ThreadSystemInterface.h"
-#	include "Interface/CodecInterface.h"
+#include "Interface/LoaderInterface.h"
+#include "Interface/NodeInterface.h"
+#include "Interface/ThreadSystemInterface.h"
+#include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/AccountInterface.h"
@@ -26,148 +26,148 @@
 #   include "Interface/WatchdogInterface.h"
 #   include "Interface/GraveyardInterface.h"
 #   include "Interface/PackageInterface.h"
-#	include "Interface/TimelineInterface.h"
+#include "Interface/TimelineInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Watchdog.h"
-
-
-#	include "Kernel/Scene.h"
-
-#	include "Factory/FactoryDefault.h"
-#	include "Factory/FactoryPool.h"
+#include "Watchdog.h"
 
 
-#	include "Kernel/Entity.h"
-#	include "Kernel/Arrow.h"
-//#	include "ScriptHolder.h"
+#include "Kernel/Scene.h"
+
+#include "Factory/FactoryDefault.h"
+#include "Factory/FactoryPool.h"
+
+
+#include "Kernel/Entity.h"
+#include "Kernel/Arrow.h"
+//#include "ScriptHolder.h"
 
 // All Node type
-#	include "ParticleEmitter2.h"
-#	include "HotSpot.h"
-#	include "HotSpotPolygon.h"
-#	include "HotSpotCircle.h"
-#	include "HotSpotBubbles.h"
-#	include "HotSpotImage.h"
-#	include "HotSpotShape.h"
-//#	include "Light2D.h"
-#	include "ShadowCaster2D.h"
-#	include "Gyroscope.h"
-#	include "TilePolygon.h"
-#	include "Point.h"
-#	include "Line.h"
-#	include "SoundEmitter.h"
-#	include "Mesh2D.h"
-#	include "Grid2D.h"
-#	include "TextField.h"
-#	include "TileMap.h"
-#	include "Track.h"
-#	include "Meshget.h"
-#	include "Movie.h"
-#	include "MovieSlot.h"
-#	include "MovieSceneEffect.h"
-#	include "MovieInternalObject.h"
+#include "ParticleEmitter2.h"
+#include "HotSpot.h"
+#include "HotSpotPolygon.h"
+#include "HotSpotCircle.h"
+#include "HotSpotBubbles.h"
+#include "HotSpotImage.h"
+#include "HotSpotShape.h"
+//#include "Light2D.h"
+#include "ShadowCaster2D.h"
+#include "Gyroscope.h"
+#include "TilePolygon.h"
+#include "Point.h"
+#include "Line.h"
+#include "SoundEmitter.h"
+#include "Mesh2D.h"
+#include "Grid2D.h"
+#include "TextField.h"
+#include "TileMap.h"
+#include "Track.h"
+#include "Meshget.h"
+#include "Movie.h"
+#include "MovieSlot.h"
+#include "MovieSceneEffect.h"
+#include "MovieInternalObject.h"
 #   include "MovieEvent.h"
-#	include "Model3D.h"
-#	include "Layer2D.h"
-//#	include "Layer2DParallax.h"
-//#	include "Layer2DIsometric.h"
-//#	include "Layer2DLoop.h"
-#	include "Kernel/Isometric.h"
-#	include "Kernel/Isometric.h"
-#	include "Kernel/Parallax.h"
-#	include "Kernel/MatrixProxy.h"
-#	include "Kernel/RenderViewport.h"
-#	include "Kernel/RenderClipplane.h"
-#	include "Kernel/RenderCameraOrthogonal.h"
-#	include "Kernel/RenderCameraProjection.h"
-#	include "Kernel/RenderCameraOrthogonalTarget.h"
+#include "Model3D.h"
+#include "Layer2D.h"
+//#include "Layer2DParallax.h"
+//#include "Layer2DIsometric.h"
+//#include "Layer2DLoop.h"
+#include "Kernel/Isometric.h"
+#include "Kernel/Isometric.h"
+#include "Kernel/Parallax.h"
+#include "Kernel/MatrixProxy.h"
+#include "Kernel/RenderViewport.h"
+#include "Kernel/RenderClipplane.h"
+#include "Kernel/RenderCameraOrthogonal.h"
+#include "Kernel/RenderCameraProjection.h"
+#include "Kernel/RenderCameraOrthogonalTarget.h"
 
-#	include "Layer2DAccumulator.h"
-#	include "Layer3D.h"
-#	include "Window.h"
-#	include "Layer2DTexture.h"
-#	include "Landscape2D.h"
+#include "Layer2DAccumulator.h"
+#include "Layer3D.h"
+#include "Window.h"
+#include "Layer2DTexture.h"
+#include "Landscape2D.h"
 
 #   include "ShapeQuadFixed.h"
 #   include "ShapeQuadFlex.h"
 
 
-#	include "SurfaceVideo.h"
-#	include "SurfaceSound.h"
-#	include "SurfaceImage.h"
-#	include "SurfaceImageSequence.h"
-#	include "SurfaceTrackMatte.h"
+#include "SurfaceVideo.h"
+#include "SurfaceSound.h"
+#include "SurfaceImage.h"
+#include "SurfaceImageSequence.h"
+#include "SurfaceTrackMatte.h"
 #   include "SurfaceSolidColor.h"
 
 
 // All Resource type
-//#	include "ResourceSequence.h"
-#	include "ResourceAnimation.h"
+//#include "ResourceSequence.h"
+#include "ResourceAnimation.h"
 
-#	include "Kernel/ResourceImageData.h"
-#	include "Kernel/ResourceMusic.h"
+#include "Kernel/ResourceImageData.h"
+#include "Kernel/ResourceMusic.h"
 
-#	include "ResourceImageSolid.h"
-#	include "ResourceImageDefault.h"
-#	include "ResourceImageSubstract.h"
-#	include "ResourceImageSubstractRGBAndAlpha.h"
+#include "ResourceImageSolid.h"
+#include "ResourceImageDefault.h"
+#include "ResourceImageSubstract.h"
+#include "ResourceImageSubstractRGBAndAlpha.h"
 
-//#	include "ResourceBinary.h"
-#	include "ResourceFile.h"
-#	include "ResourceMovie.h"
-#	include "ResourceVideo.h"
-#	include "ResourceMesh.h"
-#	include "ResourceSkeleton.h"
-#	include "ResourceSound.h"
-#	include "ResourceTileMap.h"
-#	include "ResourceTileSet.h"
-#	include "ResourceModel3D.h"
-//#	include "ResourceMeshMS3D.h"
-//#	include "ResourceMeshNoise.h"
-#	include "ResourceMaterial.h"
-#	include "ResourceWindow.h"
+//#include "ResourceBinary.h"
+#include "ResourceFile.h"
+#include "ResourceMovie.h"
+#include "ResourceVideo.h"
+#include "ResourceMesh.h"
+#include "ResourceSkeleton.h"
+#include "ResourceSound.h"
+#include "ResourceTileMap.h"
+#include "ResourceTileSet.h"
+#include "ResourceModel3D.h"
+//#include "ResourceMeshMS3D.h"
+//#include "ResourceMeshNoise.h"
+#include "ResourceMaterial.h"
+#include "ResourceWindow.h"
 #   include "ResourceHIT.h"
 #   include "ResourceShape.h"
-#	include "ResourceCursorICO.h"
-#	include "ResourceCursorSystem.h"
-#	include "ResourceInternalObject.h"
+#include "ResourceCursorICO.h"
+#include "ResourceCursorSystem.h"
+#include "ResourceInternalObject.h"
 
-//#	include "ScriptWrapper.h"
+//#include "ScriptWrapper.h"
 
-#	include "Kernel/NodePrototypeGenerator.h"
-#	include "Kernel/ResourcePrototypeGenerator.h"
-#	include "Kernel/SurfacePrototypeGenerator.h"
+#include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/ResourcePrototypeGenerator.h"
+#include "Kernel/SurfacePrototypeGenerator.h"
 
-#	include "Codec/ImageDecoderMemory.h"
-#	include "Codec/ImageDecoderArchive.h"
+#include "Codec/ImageDecoderMemory.h"
+#include "Codec/ImageDecoderArchive.h"
 
-#	include "Codec/DecoderFactory.h"
+#include "Codec/DecoderFactory.h"
 
-#	include "Config/Config.h"
-#	include "Config/Stringstream.h"
+#include "Config/Config.h"
+#include "Config/Stringstream.h"
 
 #   include "Core/String.h"
-#	include "Core/IniUtil.h"
+#include "Core/IniUtil.h"
 
 #   include "../dependencies/SDL2/include/SDL_video.h"
 
 #   include "stdex/allocator.h"
 #   include "stdex/stl_list.h"
 
-#	include <ctime>
-#	include <sstream>
+#include <ctime>
+#include <sstream>
 
-#	include <math.h>
+#include <math.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( Consts );
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( Application, Menge::Application );
+SERVICE_FACTORY( Application, Mengine::Application );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application()
@@ -309,7 +309,7 @@ namespace Menge
 
 		if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
 		{
-			m_debugMask |= MENGE_DEBUG_HOTSPOTS;
+			m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
 		}
 
         return true;
@@ -594,7 +594,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeGame( const ConstString & _category, const FilePath & _resourceIniPath )
 	{
-        if( SERVICE_EXIST( Menge::GameServiceInterface ) == false )
+        if( SERVICE_EXIST( Mengine::GameServiceInterface ) == false )
 		{
 			return false;
 		}
@@ -730,13 +730,13 @@ namespace Menge
 		{
 			if( _event.code == KC_F6 && _event.isDown )
 			{
-				if( ( m_debugMask & MENGE_DEBUG_HOTSPOTS ) != 0 )
+				if( ( m_debugMask & MENGINE_DEBUG_HOTSPOTS ) != 0 )
 				{
-					m_debugMask ^= MENGE_DEBUG_HOTSPOTS;
+					m_debugMask ^= MENGINE_DEBUG_HOTSPOTS;
 				}
 				else
 				{
-					m_debugMask |= MENGE_DEBUG_HOTSPOTS;
+					m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
 				}
 			}
 
@@ -760,13 +760,13 @@ namespace Menge
 
 			if( _event.code == KC_F10 && _event.isDown )
 			{
-				if( ( m_debugMask & MENGE_DEBUG_NODES ) != 0 )
+				if( ( m_debugMask & MENGINE_DEBUG_NODES ) != 0 )
 				{
-					m_debugMask ^= MENGE_DEBUG_NODES;
+					m_debugMask ^= MENGINE_DEBUG_NODES;
 				}
 				else
 				{
-					m_debugMask |= MENGE_DEBUG_NODES;
+					m_debugMask |= MENGINE_DEBUG_NODES;
 				}
 			}
 
@@ -778,13 +778,13 @@ namespace Menge
 
 			if( _event.code == KC_F8 && _event.isDown )
 			{
-				if( ( m_debugMask & MENGE_DEBUG_TILEPOLYGON ) != 0 )
+				if( ( m_debugMask & MENGINE_DEBUG_TILEPOLYGON ) != 0 )
 				{
-					m_debugMask ^= MENGE_DEBUG_TILEPOLYGON;
+					m_debugMask ^= MENGINE_DEBUG_TILEPOLYGON;
 				}
 				else
 				{
-					m_debugMask |= MENGE_DEBUG_TILEPOLYGON;
+					m_debugMask |= MENGINE_DEBUG_TILEPOLYGON;
 				}
 			}
 
@@ -1215,7 +1215,7 @@ namespace Menge
 			return;
 		}
 
-        if( SERVICE_EXIST( Menge::GameServiceInterface ) == true )
+        if( SERVICE_EXIST( Mengine::GameServiceInterface ) == true )
 		{
 			GAME_SERVICE()
 				->setFocus( m_focus );
@@ -1241,7 +1241,7 @@ namespace Menge
 			return;
 		}
 
-		if( SERVICE_EXIST( Menge::GameServiceInterface ) == true )
+		if( SERVICE_EXIST( Mengine::GameServiceInterface ) == true )
 		{
 			GAME_SERVICE()
 				->setFocus( !m_freeze );
@@ -1266,19 +1266,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::beginUpdate()
 	{	
-		if( SERVICE_EXIST(Menge::ThreadServiceInterface) == true )
+		if( SERVICE_EXIST(Mengine::ThreadServiceInterface) == true )
 		{
 			THREAD_SERVICE()
 				->update();
 		}
 
-		if( SERVICE_EXIST( Menge::PrefetcherServiceInterface ) == true )
+		if( SERVICE_EXIST( Mengine::PrefetcherServiceInterface ) == true )
 		{
 			PREFETCHER_SERVICE()
 				->update();
 		}
 
-		if( SERVICE_EXIST( Menge::ModuleServiceInterface ) == true )
+		if( SERVICE_EXIST( Mengine::ModuleServiceInterface ) == true )
 		{
 			MODULE_SERVICE()
 				->update( m_focus );
@@ -1339,13 +1339,13 @@ namespace Menge
 		MODULE_SERVICE()
 			->tick( time, timing );
 
-		if( SERVICE_EXIST(Menge::SoundServiceInterface) == true )
+		if( SERVICE_EXIST(Mengine::SoundServiceInterface) == true )
 		{
 			SOUND_SERVICE()
 				->tick( time, timing );
 		}
 
-		if( SERVICE_EXIST(Menge::GraveyardInterface) == true )
+		if( SERVICE_EXIST(Mengine::GraveyardInterface) == true )
 		{
 			GRAVEYARD_SERVICE()
 				->tick( time, timing );
@@ -1397,7 +1397,7 @@ namespace Menge
 	{
 		bool needQuit = true;
 
-		if( SERVICE_EXIST(Menge::GameServiceInterface) == true )
+		if( SERVICE_EXIST(Mengine::GameServiceInterface) == true )
 		{
 			needQuit = GAME_SERVICE()
 				->close();
@@ -1419,7 +1419,7 @@ namespace Menge
                     ->onTurnStream( false );
 			}
 
-			if( SERVICE_EXIST( Menge::GameServiceInterface ) == true )
+			if( SERVICE_EXIST( Mengine::GameServiceInterface ) == true )
 			{
 				GAME_SERVICE()
 					->turnSound( false );
@@ -1811,7 +1811,7 @@ namespace Menge
 		NOTIFICATION_SERVICE()
 			->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
 
-        if( SERVICE_EXIST(Menge::GameServiceInterface) == true )
+        if( SERVICE_EXIST(Mengine::GameServiceInterface) == true )
         {
 			GAME_SERVICE()
 				->setRenderViewport( m_renderViewport, m_contentResolution );

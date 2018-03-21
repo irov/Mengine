@@ -1,27 +1,27 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Identity.h"
-#	include "Kernel/Scriptable.h"
-#	include "Kernel/Eventable.h"
-#	include "Kernel/Resource.h"
-//#	include "Kernel/GlobalHandleAdapter.h"
-#	include "Kernel/Updatable.h"
-#	include "Kernel/Renderable.h"
-#	include "Kernel/BoundingBox.h"
-#	include "Kernel/Transformation3D.h"
-#	include "Kernel/Colorable.h"
-#	include "Kernel/Affectorable.h"
-#	include "Kernel/Visitable.h"
-#	include "Kernel/Servant.h"
+#include "Kernel/Identity.h"
+#include "Kernel/Scriptable.h"
+#include "Kernel/Eventable.h"
+#include "Kernel/Resource.h"
+//#include "Kernel/GlobalHandleAdapter.h"
+#include "Kernel/Updatable.h"
+#include "Kernel/Renderable.h"
+#include "Kernel/BoundingBox.h"
+#include "Kernel/Transformation3D.h"
+#include "Kernel/Colorable.h"
+#include "Kernel/Affectorable.h"
+#include "Kernel/Visitable.h"
+#include "Kernel/Servant.h"
 
-#	include "Factory/Factorable.h"
+#include "Factory/Factorable.h"
 
-#	include "Core/Viewport.h"
+#include "Core/Viewport.h"
 
 #   include "stdex/intrusive_slug_list_size.h"
 #   include "stdex/intrusive_slug.h"
 
-namespace Menge
+namespace Mengine
 {		
 	class MousePickerTrapInterface;
 

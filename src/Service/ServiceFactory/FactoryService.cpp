@@ -1,13 +1,13 @@
-#	include "FactoryService.h"
+#include "FactoryService.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #   include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY(FactoryService, Menge::FactoryService);
+SERVICE_FACTORY(FactoryService, Mengine::FactoryService);
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	FactoryService::FactoryService()

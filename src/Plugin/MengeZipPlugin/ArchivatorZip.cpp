@@ -1,13 +1,13 @@
-#	include "ArchivatorZip.h"
+#include "ArchivatorZip.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #   include "zlib.h"
 
 #   include "stdex/allocator.h"
 
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ArchivatorZip::ArchivatorZip()

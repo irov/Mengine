@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeManagerInterface.h"
 
-#	include "Core/ServantBase.h"
+#include "Core/ServantBase.h"
 
-#	include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class BitmapFontPrototypeGenerator

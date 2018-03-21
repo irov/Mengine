@@ -6,7 +6,7 @@
 #   include "Interface/GlobalHandleSystemInterface.h"
 #   include "Interface/NodeInterface.h"
 
-namespace Menge
+namespace Mengine
 {
     class Node;
     class Scene;
@@ -106,5 +106,5 @@ namespace Menge
     };
 
 #   define PLAYER_SERVICE()\
-    ((Menge::PlayerServiceInterface*)SERVICE_GET(Menge::PlayerServiceInterface))
+    ((Mengine::PlayerServiceInterface*)SERVICE_GET(Mengine::PlayerServiceInterface))
 }

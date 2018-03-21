@@ -1,10 +1,10 @@
-#	include "RenderCameraProjection.h"
+#include "RenderCameraProjection.h"
 
-#	include "Interface/ApplicationInterface.h"
+#include "Interface/ApplicationInterface.h"
 
-#	include <math.h>
+#include <math.h>
 
-namespace Menge
+namespace Mengine
 {
 	////////////////////////////////////////////////////////////////////////
 	RenderCameraProjection::RenderCameraProjection()

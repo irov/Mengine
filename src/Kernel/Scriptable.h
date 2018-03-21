@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "pybind/bindable.hpp"
+#include "pybind/bindable.hpp"
 
 #   include "stdex/intrusive_ptr.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class ScriptWrapperInterface> ScriptWrapperInterfacePtr;

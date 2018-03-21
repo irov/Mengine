@@ -1,9 +1,9 @@
-#	include "AOITrigger.h"
-#	include "AOIActor.h"
+#include "AOITrigger.h"
+#include "AOIActor.h"
 
-#	include <algorithm>
+#include <algorithm>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	AOITrigger::AOITrigger()

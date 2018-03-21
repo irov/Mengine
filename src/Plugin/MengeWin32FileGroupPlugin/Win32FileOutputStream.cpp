@@ -1,10 +1,10 @@
-#	include "Win32FileOutputStream.h"
+#include "Win32FileOutputStream.h"
 
-#	include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeInterface.h"
 
 #   include "Utils/Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32FileOutputStream::Win32FileOutputStream()		
@@ -89,4 +89,4 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

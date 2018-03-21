@@ -1,6 +1,6 @@
-#	include "Win32Socket.h"
+#include "Win32Socket.h"
 
-namespace Menge
+namespace Mengine
 {
 	Win32Socket::Win32Socket()
 		:m_socket( INVALID_SOCKET )

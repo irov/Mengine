@@ -1,19 +1,19 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/MovieKeyFrameInterface.h"
+#include "Interface/MovieKeyFrameInterface.h"
 
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
-#	include "Math/vec2.h"
-#	include "Math/vec3.h"
-#	include "Math/mat4.h"
+#include "math/vec2.h"
+#include "math/vec3.h"
+#include "math/mat4.h"
 
 #   include "Core/Viewport.h"
 #   include "Core/Polygon.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<class ResourceShape> ResourceShapePtr;

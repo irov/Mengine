@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
 #   include "Interface/MousePickerSystemInterface.h"
 
-#	include "Core/Polygon.h"
+#include "Core/Polygon.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Arrow;
 

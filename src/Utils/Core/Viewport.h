@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Math/box2.h"
+#include "math/box2.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Viewport
 	{

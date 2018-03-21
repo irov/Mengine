@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ConfigInterface.h"
+#include "Interface/ConfigInterface.h"
 
 #   include "Core/ServiceBase.h"
 
 #   include "Core/Tags.h"
 #   include "Core/IniUtil.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ConfigManager
 		: public ServiceBase<ConfigServiceInterface>

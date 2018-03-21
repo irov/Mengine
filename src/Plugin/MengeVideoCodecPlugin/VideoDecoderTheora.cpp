@@ -1,6 +1,6 @@
-#	include "VideoDecoderTheora.h"
+#include "VideoDecoderTheora.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #	define OGG_BUFFER_SIZE 4096
 
@@ -23,7 +23,7 @@
 #define CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
 	rgb_char_buffer = (unsigned char)(MAX( MIN(rgb_color_test, 255), 0 ))
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static int s_YTable[256];
@@ -965,4 +965,4 @@ namespace Menge
 		m_pitch = _pitch;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

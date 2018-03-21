@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/GlobalHandleSystemInterface.h"
+#include "Interface/GlobalHandleSystemInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	struct GlobalHandlerDesc

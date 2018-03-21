@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Win32UnicodeSystem
 		: public ServiceBase<UnicodeSystemInterface>

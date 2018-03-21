@@ -1,14 +1,14 @@
 #   pragma once
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 #   include "Interface/MemoryInterface.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/FilePath.h"
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
 
-#	include "Core/Magic.h"
+#include "Core/Magic.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	DECLARE_MAGIC_NUMBER( MAGIC_USER_DATA, 'G', 'M', 'D', '1', 1 );
@@ -29,5 +29,5 @@ namespace Menge
 	};
 
 #   define USERDATA_SERVICE()\
-    ((Menge::UserdataServiceInterface*)SERVICE_GET(Menge::UserdataServiceInterface))
+    ((Mengine::UserdataServiceInterface*)SERVICE_GET(Mengine::UserdataServiceInterface))
 }

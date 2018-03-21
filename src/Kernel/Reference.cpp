@@ -1,6 +1,6 @@
-#	include "Kernel/Reference.h"
+#include "Kernel/Reference.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Reference::Reference()

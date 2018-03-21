@@ -1,15 +1,15 @@
-#	include "PluginAmplifier.h"
+#include "PluginAmplifier.h"
 
-#	include "Interface/AmplifierInterface.h"
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/AmplifierInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/StringizeInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( Amplifier );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( MengeAmplifier, Menge::PluginAmplifier );
+PLUGIN_FACTORY( MengeAmplifier, Mengine::PluginAmplifier );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	PluginAmplifier::PluginAmplifier()
@@ -25,11 +25,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PluginAmplifier::_finalize()
 	{
-		SERVICE_FINALIZE( Menge::AmplifierInterface );
+		SERVICE_FINALIZE( Mengine::AmplifierInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PluginAmplifier::_destroy()
 	{
-		SERVICE_DESTROY( Menge::AmplifierInterface );
+		SERVICE_DESTROY( Mengine::AmplifierInterface );
 	}
 }

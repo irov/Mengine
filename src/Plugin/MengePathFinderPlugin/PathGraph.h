@@ -1,10 +1,10 @@
-//#	pragma once
+//#pragma once
 //
-//#	include "fastpathfinder/graph.h"
+//#include "fastpathfinder/graph.h"
 //
-//#	include "PathGraphNode.h"
+//#include "PathGraphNode.h"
 //
-//namespace Menge
+//namespace Mengine
 //{
 //	//////////////////////////////////////////////////////////////////////////
 //	class PathGraph

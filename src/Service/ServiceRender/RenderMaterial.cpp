@@ -1,8 +1,8 @@
-#	include "RenderMaterial.h"
+#include "RenderMaterial.h"
 
-#	include "Interface/TextInterface.h"
+#include "Interface/TextInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderMaterial::RenderMaterial()

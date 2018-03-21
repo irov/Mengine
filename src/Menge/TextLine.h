@@ -1,20 +1,20 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/TextInterface.h"
+#include "Interface/TextInterface.h"
 
-#	include "Config/Typedef.h"
-#	include "Config/String.h"
+#include "Config/Typedef.h"
+#include "Config/String.h"
 
-#	include "Core/ColourValue.h"
-#	include "Core/GlyphChar.h"
+#include "Core/ColourValue.h"
+#include "Core/GlyphChar.h"
 
-#	include "Math/vec4.h"
-#	include "Math/mat4.h"
-#	include "Math/uv4.h"
+#include "math/vec4.h"
+#include "math/mat4.h"
+#include "math/uv4.h"
 
-#	include "Math/box2.h"
+#include "math/box2.h"
 
-namespace Menge
+namespace Mengine
 {
 	struct CharData
 	{

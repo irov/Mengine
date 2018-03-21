@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/PluginInterface.h"
+#include "Interface/PluginInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	const uint32_t SERVICE_PROVIDER_NAME_SIZE = 64;
     const uint32_t SERVICE_PROVIDER_COUNT = 64;

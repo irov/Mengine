@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ResourceInternalObject
 		: public ResourceReference

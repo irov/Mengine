@@ -6,12 +6,12 @@
 
 #   include "Logger/Logger.h"
 
-#	include <sstream>
+#include <sstream>
 
 #   include <stdio.h>
 #   include <string.h>
 
-namespace Menge
+namespace Mengine
 {
     namespace IniUtil
     {

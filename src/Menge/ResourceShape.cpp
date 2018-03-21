@@ -1,8 +1,8 @@
 #   include "ResourceShape.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ResourceShape::ResourceShape()

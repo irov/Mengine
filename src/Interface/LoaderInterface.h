@@ -10,7 +10,7 @@ namespace Metabuf
     class Metadata;
 }
 
-namespace Menge
+namespace Mengine
 {
     class LoaderServiceInterface
         : public ServiceInterface
@@ -26,5 +26,5 @@ namespace Menge
     };
 
 #   define LOADER_SERVICE()\
-    ((LoaderServiceInterface *)SERVICE_GET(Menge::LoaderServiceInterface))
+    ((LoaderServiceInterface *)SERVICE_GET(Mengine::LoaderServiceInterface))
 }

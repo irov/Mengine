@@ -4,11 +4,11 @@
 
 #   include "Config/Char.h"
 
-namespace Menge
+namespace Mengine
 {
     void Assertion( const Char* _message, const Char* _file, int _line );
 }
-#   define MENGINE_ASSERTION(Condition) if((Condition) == false){ Menge::Assertion( #Condition, __FILE__, __LINE__ ); } else {}
+#   define MENGINE_ASSERTION(Condition) if((Condition) == false){ Mengine::Assertion( #Condition, __FILE__, __LINE__ ); } else {}
 #else
 #   define MENGINE_ASSERTION(Condition)
 #endif

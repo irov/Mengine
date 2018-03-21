@@ -1,27 +1,15 @@
 set( MY_LIB_NAME OpenGLRenderSystem )
 
-IF(MENGINE_PLATFORM_WIN32)
 ADD_FILTER(
-OpenGLRenderHeader
-    OpenGLRenderHeaderWin32.cpp
-    OpenGLRenderHeaderWin32.h
-)
-ENDIF()
-
-IF(MENGINE_PLATFORM_MAC)
-ADD_FILTER(
-OpenGLRenderHeader
-    OpenGLRenderHeaderMacOS.h
-)
-ENDIF()
-
-ADD_FILTER(
-OpenGLRender
+src
     OpenGLRenderHeader.h
+    OpenGLRenderExtension.cpp
+    OpenGLRenderExtension.h
     OpenGLRenderSystem.cpp
     OpenGLRenderSystem.h
     OpenGLRenderError.cpp
     OpenGLRenderError.h
+    OpenGLRenderEnum.cpp
     OpenGLRenderEnum.h
     OpenGLRenderFragmentShader.cpp
     OpenGLRenderFragmentShader.h
@@ -29,7 +17,8 @@ OpenGLRender
     OpenGLRenderIndexBuffer.h
     OpenGLRenderProgram.cpp
     OpenGLRenderProgram.h
-    OpenGLRenderShader.h
+    OpenGLRenderVertexAttribute.cpp
+    OpenGLRenderVertexAttribute.h
     OpenGLRenderVertexBuffer.cpp
     OpenGLRenderVertexBuffer.h
     OpenGLRenderVertexShader.cpp
@@ -39,17 +28,14 @@ OpenGLRender
 )
 
 include_directories( 
-    ${Mengine_SOURCE_DIR}/Utils
-    ${THIRDPARTY_DIR}/SDL2/include 
+    ${ENGINE_SOURCE_DIR}/Kernel
+    ${THIRDPARTY_DIR}/SDL2/include
     ${THIRDPARTY_DIR}/libmath/include
     )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
-TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} 
-    ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}SDL2${MENGINE_LIB_SUFFIX}
-    ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX}
-    )
+TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${ENGINE_LIB_PREFIX}SDL2${ENGINE_LIB_SUFFIX})
 
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}

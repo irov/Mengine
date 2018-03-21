@@ -1,14 +1,14 @@
-#	include "ThreadWorkerSoundBufferUpdate.h"
+#include "ThreadWorkerSoundBufferUpdate.h"
 
 #   include "Interface/ThreadSystemInterface.h"
 
 #   include "SoundEngine.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include <sstream>
+#include <sstream>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadWorkerSoundBufferUpdate::ThreadWorkerSoundBufferUpdate()
@@ -50,4 +50,4 @@ namespace Menge
 
 		m_done = true;        
 	}
-}	// namespace Menge
+}	

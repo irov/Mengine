@@ -1,9 +1,9 @@
-#	pragma once
+#pragma once
 
 #   include "Config/Typedef.h"
 #   include "Config/String.h"
 
-namespace Menge
+namespace Mengine
 {
 	class CriticalErrorsMonitor
 	{

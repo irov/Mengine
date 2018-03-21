@@ -1,8 +1,8 @@
 #   include "DX9RenderVertexShader.h"
 
-#	include "DX9ErrorHelper.h"
+#include "DX9ErrorHelper.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderVertexShader::DX9RenderVertexShader()

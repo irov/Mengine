@@ -1,18 +1,18 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/AccountInterface.h"
 #   include "Interface/ArchiveInterface.h"
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
 #   include "Core/ServantBase.h"
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
 #   include "stdex/stl_map.h"
 
-#	include "pybind/object.hpp"
+#include "pybind/object.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	class Account
         : public ServantBase<AccountInterface>
@@ -75,4 +75,4 @@ namespace Menge
 	};
 
 	typedef stdex::intrusive_ptr<Account> AccountPtr;
-}	// namespace Menge
+}	

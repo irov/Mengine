@@ -1,15 +1,15 @@
-#	pragma once
+#pragma once
 
-#	include "BasePrototypeGenerator.h"
+#include "BasePrototypeGenerator.h"
 
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
-#	include "Core/ConstString.h"
-#	include "Factory/FactoryPool.h"
+#include "Core/ConstString.h"
+#include "Factory/FactoryPool.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	template<class Type, uint32_t Count>
 	class ResourcePrototypeGenerator

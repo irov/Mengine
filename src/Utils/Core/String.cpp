@@ -1,13 +1,13 @@
-#	include "String.h"
+#include "String.h"
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 #   include "Config/Stringstream.h"
 
 
-#	include <sstream>
-#	include <clocale>
+#include <sstream>
+#include <clocale>
 
-namespace Menge
+namespace Mengine
 {
 	namespace Helper
 	{

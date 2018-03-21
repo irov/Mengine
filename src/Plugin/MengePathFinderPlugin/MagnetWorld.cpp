@@ -1,12 +1,12 @@
-#	include "MagnetWorld.h"
+#include "MagnetWorld.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#	include "Math/ccd.h"
+#include "math/ccd.h"
 
 #   include <algorithm>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	namespace

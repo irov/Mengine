@@ -1,17 +1,17 @@
-#	include "SurfaceImageSequence.h"
+#include "SurfaceImageSequence.h"
 
-#	include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 #   include "Interface/TimelineInterface.h"
 
-#	include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
-#	include "ResourceAnimation.h"
+#include "ResourceAnimation.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #   include <math.h>
 
-namespace	Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	SurfaceImageSequence::SurfaceImageSequence()

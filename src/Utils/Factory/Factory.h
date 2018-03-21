@@ -1,19 +1,19 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
 #   include "Factory/FactorablePtr.h"
 #   include "Factory/FactorablePointer.h"
 
 #   include "Core/Assertion.h"
 #   include "Core/Pointer.h"
-#	include "Core/MemoryAllocator.h"
+#include "Core/MemoryAllocator.h"
 
-#	include "stdex/thread_guard.h"
+#include "stdex/thread_guard.h"
 
 #   include <stddef.h>
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 	class Factory

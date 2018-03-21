@@ -1,26 +1,26 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
-#	include "Interface/PrototypeManagerInterface.h"
-#	include "Interface/MemoryInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/MemoryInterface.h"
 
-#	include "Config/Typedef.h"
-#	include "Config/String.h"
+#include "Config/Typedef.h"
+#include "Config/String.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/FilePath.h"
-#	include "Core/Tags.h"
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
+#include "Core/Tags.h"
 
-#	include "Kernel/Servant.h"
+#include "Kernel/Servant.h"
 
-#	include "pybind/kernel.hpp"
-#	include "pybind/base.hpp"
+#include "pybind/kernel.hpp"
+#include "pybind/base.hpp"
 
-#	include "stdex/stl_vector.h"
+#include "stdex/stl_vector.h"
 
-#	include <stdarg.h>
+#include <stdarg.h>
 
-namespace Menge
+namespace Mengine
 {
     class Scriptable;
 	class Eventable;
@@ -99,7 +99,7 @@ namespace Menge
 	};
     //////////////////////////////////////////////////////////////////////////
 #   define SCRIPT_SERVICE()\
-    ((Menge::ScriptServiceInterface*)SERVICE_GET(Menge::ScriptServiceInterface))
+    ((Mengine::ScriptServiceInterface*)SERVICE_GET(Mengine::ScriptServiceInterface))
     //////////////////////////////////////////////////////////////////////////
 	namespace Helper
 	{

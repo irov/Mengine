@@ -1,18 +1,18 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 #   include "Interface/SoundCodecInterface.h"
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#	include "Factory/Factorable.h"
+#include "Factory/Factorable.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/FilePath.h"
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
 
-#   include <Math/vec3.h>
+#   include "math/vec3.h"
 
-namespace Menge
+namespace Mengine
 {
     enum ESoundSourceType
     {
@@ -98,7 +98,7 @@ namespace Menge
 	};
     //////////////////////////////////////////////////////////////////////////
 #   define SOUND_SYSTEM()\
-    ((Menge::SoundSystemInterface *)SERVICE_GET(Menge::SoundSystemInterface))
+    ((Mengine::SoundSystemInterface *)SERVICE_GET(Mengine::SoundSystemInterface))
     //////////////////////////////////////////////////////////////////////////
 	class SoundVolumeProviderInterface
 		: public ServantInterface
@@ -190,5 +190,5 @@ namespace Menge
 	};
     //////////////////////////////////////////////////////////////////////////
 #   define SOUND_SERVICE()\
-    ((Menge::SoundServiceInterface *)SERVICE_GET(Menge::SoundServiceInterface))
+    ((Mengine::SoundServiceInterface *)SERVICE_GET(Mengine::SoundServiceInterface))
 }

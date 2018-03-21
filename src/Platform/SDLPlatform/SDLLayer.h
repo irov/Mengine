@@ -4,7 +4,7 @@
 
 #   include "Core/ServiceBase.h"
 
-namespace Menge
+namespace Mengine
 {
     class SDLLayer
         : public ServiceBase<SDLLayerInterface>

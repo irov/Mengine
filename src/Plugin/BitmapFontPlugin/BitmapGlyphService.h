@@ -1,16 +1,16 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/TextInterface.h"
+#include "Interface/TextInterface.h"
 
-#	include "BitmapFontInterface.h"
+#include "BitmapFontInterface.h"
 
-#	include "Kernel/Servant.h"
+#include "Kernel/Servant.h"
 
-#	include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
 #   include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
 	class BitmapGlyphService
 		: public ServantBase<BitmapGlyphServiceInterface>

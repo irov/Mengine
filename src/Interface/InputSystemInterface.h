@@ -1,18 +1,18 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
-#	include "Config/String.h"
+#include "Config/Typedef.h"
+#include "Config/String.h"
 
-#	include "Math/vec2.h"
+#include "math/vec2.h"
 
 #   include "Factory/FactorablePtr.h"
 
-#	include "Core/Resolution.h"
-#	include "Core/Viewport.h"
+#include "Core/Resolution.h"
+#include "Core/Viewport.h"
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 #	define MENGINE_INPUT_MAX_TOUCH 16
@@ -533,5 +533,5 @@ namespace Menge
 	};
 
 #   define INPUT_SERVICE()\
-    ((Menge::InputServiceInterface*)SERVICE_GET(Menge::InputServiceInterface))
+    ((Mengine::InputServiceInterface*)SERVICE_GET(Mengine::InputServiceInterface))
 }

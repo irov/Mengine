@@ -1,11 +1,11 @@
-#	include "Stream.h"
+#include "Stream.h"
 
-#	include "Core/MemoryHelper.h"
-#	include "Core/CRC32.h"
+#include "Core/MemoryHelper.h"
+#include "Core/CRC32.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	namespace Helper
 	{
@@ -116,7 +116,7 @@ namespace Menge
 				}
 			}
 
-            MemoryInterfacePtr binaryBuffer = MEMORY_SERVICE()
+            MemoryBufferInterfacePtr binaryBuffer = MEMORY_SERVICE()
 				->createMemoryCacheBuffer();
 
 			if( binaryBuffer == nullptr )
@@ -422,8 +422,8 @@ namespace Menge
 				}
 			}
 
-			MemoryInterfacePtr binary_buffer = MEMORY_SERVICE()
-				->createMemory();
+            MemoryBufferInterfacePtr binary_buffer = MEMORY_SERVICE()
+				->createMemoryBuffer();
 
 			if( binary_buffer == nullptr )
 			{

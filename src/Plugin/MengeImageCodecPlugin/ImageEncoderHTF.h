@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/ArchiveInterface.h"
 
-#	include "Codec/ImageEncoder.h"
+#include "Codec/ImageEncoder.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ImageEncoderHTF
 		: public ImageEncoder
@@ -22,4 +22,4 @@ namespace Menge
 	protected:
 		ArchivatorInterfacePtr m_archivator;
 	};
-}	// namespace Menge
+}	

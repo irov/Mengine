@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/NodeInterface.h"
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
 #   include "Core/ServiceBase.h"
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Node;	
 	class NodeFactory;

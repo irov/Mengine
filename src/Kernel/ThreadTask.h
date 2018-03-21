@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ThreadInterface.h"
+#include "Interface/ThreadInterface.h"
 
 #   include "Core/ServantBase.h"
 
-namespace Menge 
+namespace Mengine 
 {
     //////////////////////////////////////////////////////////////////////////
 	class ThreadTask

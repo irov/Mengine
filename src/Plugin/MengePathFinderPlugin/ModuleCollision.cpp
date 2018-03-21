@@ -1,18 +1,18 @@
-#	include "ModuleCollision.h"
+#include "ModuleCollision.h"
 
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/PlayerInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/PlayerInterface.h"
+#include "Interface/StringizeInterface.h"
 
 #   include "Kernel/ScriptWrapper.h"
-#	include "Kernel/ScriptEventReceiver.h"
+#include "Kernel/ScriptEventReceiver.h"
 
-#	include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/NodePrototypeGenerator.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class PythonNodeCollisionActorEventReceiver

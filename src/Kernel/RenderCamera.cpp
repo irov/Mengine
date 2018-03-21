@@ -1,8 +1,8 @@
-#	include "RenderCamera.h"
+#include "RenderCamera.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace	Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderCamera::RenderCamera()

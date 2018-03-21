@@ -1,12 +1,12 @@
-#	include "SurfaceImage.h"
+#include "SurfaceImage.h"
 
 #   include "Interface/RenderSystemInterface.h"
 
-#	include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace	Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
     SurfaceImage::SurfaceImage()

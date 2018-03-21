@@ -1,19 +1,19 @@
-#	include "Box2DPlugin.h"
+#include "Box2DPlugin.h"
 
-#	include "Interface/PrototypeManagerInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Box2DBody.h"
-#	include "Box2DModule.h"
+#include "Box2DBody.h"
+#include "Box2DModule.h"
 
-#	include "Core/ModuleFactory.h"
+#include "Core/ModuleFactory.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( Box2D, Menge::Box2DPlugin )
+PLUGIN_FACTORY( Box2D, Mengine::Box2DPlugin )
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Box2DPlugin::Box2DPlugin()

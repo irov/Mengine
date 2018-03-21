@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
 #   include "stdex/intrusive_slug_list_size.h"
 #   include "stdex/intrusive_slug.h"
 
-#	include "Math/mat4.h"
+#include "math/mat4.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class Transformation3D

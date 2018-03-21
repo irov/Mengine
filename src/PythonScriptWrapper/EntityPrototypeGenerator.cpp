@@ -1,14 +1,14 @@
-#	include "EntityPrototypeGenerator.h"
+#include "EntityPrototypeGenerator.h"
 
 #   include "Interface/StringizeInterface.h"
 
 #   include "Kernel/ScriptEventReceiver.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     namespace

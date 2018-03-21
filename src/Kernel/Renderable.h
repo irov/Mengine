@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Core/Viewport.h"
+#include "Core/Viewport.h"
 
-namespace Menge
+namespace Mengine
 {
     class RenderServiceInterface;
     struct RenderObjectState;

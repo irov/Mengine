@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
 #   include "Core/ServantBase.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/FilePath.h"
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
 
-namespace Menge
+namespace Mengine
 {
 	class DecoderRenderImageProvider
 		: public ServantBase<RenderImageProviderInterface>
@@ -30,4 +30,4 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<DecoderRenderImageProvider> DecoderRenderImageProviderPtr;
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

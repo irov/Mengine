@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
-#	include "Config/Typedef.h"
-#	include "Core/ColourValue.h"
+#include "Config/Typedef.h"
+#include "Core/ColourValue.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ResourceImageSolid
 		: public ResourceImage

@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Codec/SoundDecoder.h"
+#include "Codec/SoundDecoder.h"
 
-#	include "vorbis/vorbisfile.h"
+#include "vorbis/vorbisfile.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 	class SoundDecoderOGGVorbis
@@ -34,4 +34,4 @@ namespace Menge
 
 		bool m_oggVorbisFileInitialize;
 	};
-}	// namespace Menge
+}	

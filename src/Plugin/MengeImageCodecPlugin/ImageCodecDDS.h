@@ -1,6 +1,6 @@
-#	pragma once
+#pragma once
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static const uint32_t DDS_MAGIC = 0x20534444;
@@ -109,4 +109,4 @@ namespace Menge
 
 		return FOURCC( 'U', 'N', 'K', 'N' );
 	};
-}	// namespace Menge
+}	

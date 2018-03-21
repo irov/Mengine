@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Core/Pointer.h"
+#include "Core/Pointer.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class Factorable;

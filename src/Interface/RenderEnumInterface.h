@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#   ifndef MENGE_MAX_TEXTURE_STAGES
-#	define MENGE_MAX_TEXTURE_STAGES 2
+#   ifndef MENGINE_MAX_TEXTURE_STAGES
+#	define MENGINE_MAX_TEXTURE_STAGES 2
 #   endif
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	enum EBlendFactor 
@@ -81,6 +81,12 @@ namespace Menge
 
 		CMPF_MAX_VALUE
 	};
+    //////////////////////////////////////////////////////////////////////////
+    enum EVertexAttributeType
+    {
+        VAT_FLOAT = 0,
+        VAT_UNSIGNED_BYTE
+    };
 	//////////////////////////////////////////////////////////////////////////
 	enum EFillMode
 	{
@@ -90,6 +96,13 @@ namespace Menge
 
 		FM_MAX_VALUE
 	};
+    //////////////////////////////////////////////////////////////////////////
+    enum EBufferType
+    {
+        BT_STATIC,
+        BT_STREAM,
+        BT_DYNAMIC
+    };
 	//////////////////////////////////////////////////////////////////////////
 	enum EFrameBufferType 
 	{

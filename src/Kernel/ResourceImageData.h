@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#   include "Math/vec2.h"
+#   include "math/vec2.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceImageData

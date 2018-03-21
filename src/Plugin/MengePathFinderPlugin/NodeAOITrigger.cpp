@@ -1,7 +1,7 @@
-#	include "NodeAOITrigger.h"
-#	include "NodeAOIActor.h"
+#include "NodeAOITrigger.h"
+#include "NodeAOIActor.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	NodeAOITrigger::NodeAOITrigger()

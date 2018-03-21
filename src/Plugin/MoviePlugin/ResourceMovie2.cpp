@@ -1,18 +1,18 @@
-#	include "ResourceMovie2.h"
+#include "ResourceMovie2.h"
 
-#	include "Interface/ResourceInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Menge/ResourceImageDefault.h"
-#	include "Menge/ResourceVideo.h"
-#	include "Menge/ResourceSound.h"
-#	include "Menge/ResourceParticle.h"
+#include "Menge/ResourceImageDefault.h"
+#include "Menge/ResourceVideo.h"
+#include "Menge/ResourceSound.h"
+#include "Menge/ResourceParticle.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static size_t Mengine_read_stream( ae_voidptr_t _data, ae_voidptr_t _buff, size_t _carriage, size_t _size )

@@ -1,10 +1,10 @@
-#	include "MessageBoxLogger.h"
+#include "MessageBoxLogger.h"
 
 #   include "Interface/UnicodeInterface.h"
 
 #   include "WIN32/WindowsIncluder.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	MessageBoxLogger::MessageBoxLogger()
@@ -68,4 +68,4 @@ namespace Menge
 	void MessageBoxLogger::flush()
 	{
 	}
-}	// namespace Menge
+}	

@@ -1,6 +1,6 @@
-#	include "RenderCameraOrthogonalTarget.h"
+#include "RenderCameraOrthogonalTarget.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderCameraOrthogonalTarget::RenderCameraOrthogonalTarget()

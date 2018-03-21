@@ -1,6 +1,6 @@
-#	include "TextEntry.h"
+#include "TextEntry.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	TextEntry::TextEntry()

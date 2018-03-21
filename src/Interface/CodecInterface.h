@@ -1,19 +1,19 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#	include "Interface/PluginInterface.h"
-#	include "Interface/StreamInterface.h"
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/PluginInterface.h"
+#include "Interface/StreamInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #   include "Factory/FactorablePtr.h"
 
-#	include "Core/FilePath.h"
+#include "Core/FilePath.h"
 
 #   include "stdex/intrusive_ptr.h"
 #   include "stdex/intrusive_algorithm.h"
 
-namespace Menge
+namespace Mengine
 {
 	struct CodecDataInfo 
 	{		
@@ -179,6 +179,6 @@ namespace Menge
 	};
 
 #   define CODEC_SERVICE()\
-    ((Menge::CodecServiceInterface *)SERVICE_GET(Menge::CodecServiceInterface))
+    ((Mengine::CodecServiceInterface *)SERVICE_GET(Mengine::CodecServiceInterface))
 }
 

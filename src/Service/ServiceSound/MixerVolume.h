@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Core/ConstString.h"
-#	include "Core/ValueFollower.h"
+#include "Core/ConstString.h"
+#include "Core/ValueFollower.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	class MixerVolume
 	{

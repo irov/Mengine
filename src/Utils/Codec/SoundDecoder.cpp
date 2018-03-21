@@ -1,6 +1,6 @@
-#	include "SoundDecoder.h"
+#include "SoundDecoder.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	SoundDecoder::SoundDecoder()

@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/MemoryInterface.h"
+#include "Interface/MemoryInterface.h"
 
-#	include "ResourceTestPick.h"
+#include "ResourceTestPick.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ResourceHIT
 		: public ResourceTestPick
@@ -60,4 +60,4 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ResourceHIT> ResourceHITPtr;
-}	// namespace Menge
+}	

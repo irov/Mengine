@@ -1,15 +1,15 @@
-#	pragma once
+#pragma once
 
-#	include "Core/ModuleBase.h"
+#include "Core/ModuleBase.h"
 
-#	include "PathFinderMap.h"
-#	include "PathFinderWayAffector.h"
+#include "PathFinderMap.h"
+#include "PathFinderWayAffector.h"
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-#	include "fastpathfinder/graph.h"
+#include "fastpathfinder/graph.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ModulePathFinder
 		: public ModuleBase

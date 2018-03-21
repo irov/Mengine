@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Core/ModuleBase.h"
+#include "Core/ModuleBase.h"
 
-#	include "AreaOfInterest.h"
+#include "AreaOfInterest.h"
 
-#	include "fastpathfinder/graph.h"
+#include "fastpathfinder/graph.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ModuleAreaOfInterest
 		: public ModuleBase

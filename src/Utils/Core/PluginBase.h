@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/PluginInterface.h"
+#include "Interface/PluginInterface.h"
 
 #   include "Core/ServantBase.h"
 #   include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class ModuleFactoryInterface> ModuleFactoryInterfacePtr;

@@ -1,12 +1,12 @@
-#	include "ArchivatorLZ4.h"
+#include "ArchivatorLZ4.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #   include "lz4.h"
 #   include "lz4hc.h"
 
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ArchivatorLZ4::ArchivatorLZ4()

@@ -3,13 +3,13 @@
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/ArchiveInterface.h"
 
-#	include "Kernel/Servant.h"
+#include "Kernel/Servant.h"
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
     class ScriptModuleLoader

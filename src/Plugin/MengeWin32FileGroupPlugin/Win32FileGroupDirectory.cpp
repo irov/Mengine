@@ -1,18 +1,18 @@
-#	include "Win32FileGroupDirectory.h"
+#include "Win32FileGroupDirectory.h"
 
-#	include "Interface/MemoryInterface.h"
-#	include "Interface/PlatformInterface.h"
-#	include "Interface/UnicodeInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/PlatformInterface.h"
+#include "Interface/UnicodeInterface.h"
 
 #   include "Factory/FactoryPool.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Core/String.h"
+#include "Core/String.h"
 
-#	include "WIN32/WindowsIncluder.h"
+#include "WIN32/WindowsIncluder.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32FileGroupDirectory::Win32FileGroupDirectory()
@@ -224,4 +224,4 @@ namespace Menge
         return m_relationPath;
     }
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

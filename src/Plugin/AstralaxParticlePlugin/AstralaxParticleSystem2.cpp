@@ -1,4 +1,4 @@
-#	include "AstralaxParticleSystem2.h"
+#include "AstralaxParticleSystem2.h"
 
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
@@ -12,9 +12,9 @@
 #   include "Factory/FactoryPoolWithListener.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ParticleSystem, Menge::AstralaxParticleSystem2 );
+SERVICE_FACTORY( ParticleSystem, Mengine::AstralaxParticleSystem2 );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxParticleSystem2::AstralaxParticleSystem2()

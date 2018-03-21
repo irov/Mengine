@@ -1,9 +1,9 @@
-#	include "DX9RenderTargetOffscreen.h"
+#include "DX9RenderTargetOffscreen.h"
 
-#	include "DX9RenderEnum.h"
-#	include "DX9ErrorHelper.h"
+#include "DX9RenderEnum.h"
+#include "DX9ErrorHelper.h"
 
-namespace Menge
+namespace Mengine
 {
 	DX9RenderTargetOffscreen::DX9RenderTargetOffscreen()
         : m_surfacePlain( nullptr )

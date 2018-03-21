@@ -5,8 +5,11 @@ src
 	MemoryManager.cpp
 	MemoryManager.h
     
-    Memory.h
-    Memory.cpp
+    MemoryBuffer.h
+    MemoryBuffer.cpp
+    
+    MemoryProxy.h
+    MemoryProxy.cpp
 	
 	MemoryInput.h
 	MemoryInput.cpp

@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Layer.h"
+#include "Kernel/Layer.h"
 #   include "Kernel/ResourceImage.h"
 
-#	include "Core/Viewport.h"
-#	include "Core/RenderVertex2D.h"
+#include "Core/Viewport.h"
+#include "Core/RenderVertex2D.h"
 
-namespace Menge
+namespace Mengine
 {
 	class RenderCameraOrthogonal;
 	class RenderViewport;

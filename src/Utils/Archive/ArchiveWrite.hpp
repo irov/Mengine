@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Archive.hpp"
+#include "Archive.hpp"
 
-namespace Menge
+namespace Mengine
 {
 	class ArchiveWrite
 	{

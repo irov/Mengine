@@ -64,6 +64,8 @@ src
     COMMengineInterface.h
 	FactoryInterface.h
     ResourceInterface.h
+    UnicodeInterface.h
+    NotificatorInterface.h
     
 	dummy.cpp
 )

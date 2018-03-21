@@ -1,13 +1,11 @@
-#	pragma once
-
-//#   include <metabuf/Metabuf.hpp>
+#pragma once
 
 namespace Metabuf
 {
 	class Metadata;
 }
 
-namespace Menge
+namespace Mengine
 {
 	class Loadable
 	{

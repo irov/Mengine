@@ -1,21 +1,21 @@
-#	pragma once
+#pragma once
 
-#	include "Factory/FactorablePtr.h"
+#include "Factory/FactorablePtr.h"
 
-#	include "Kernel/Scriptable.h"
-#	include "Kernel/Servant.h"
+#include "Kernel/Scriptable.h"
+#include "Kernel/Servant.h"
 
-#	include "Core/ModuleBase.h"
+#include "Core/ModuleBase.h"
 
-#	include "Box2D/Box2D.h"
+#include "Box2D/Box2D.h"
 
-#	include "pybind/object.hpp"
+#include "pybind/object.hpp"
 
 #   include "math/vec2.h"
 
-#	include "stdex/stl_vector.h"
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	typedef stdex::intrusive_ptr<class Box2DBody> Box2DBodyPtr;
 	typedef stdex::intrusive_ptr<class Box2DJoint> Box2DJointPtr;

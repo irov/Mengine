@@ -1,11 +1,11 @@
-#	include "ResourceInternalObject.h"
+#include "ResourceInternalObject.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Kernel/Scriptable.h"
-#	include "Kernel/Node.h"
+#include "Kernel/Scriptable.h"
+#include "Kernel/Node.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceInternalObject::ResourceInternalObject()

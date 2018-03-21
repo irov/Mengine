@@ -1,20 +1,20 @@
-#	include "ModuleAreaOfInterest.h"
+#include "ModuleAreaOfInterest.h"
 
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/PlayerInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/PlayerInterface.h"
 
-#	include "NodeAOITrigger.h"
-#	include "NodeAOIActor.h"
+#include "NodeAOITrigger.h"
+#include "NodeAOIActor.h"
 
 #   include "Kernel/ScriptWrapper.h"
-#	include "Kernel/ScriptEventReceiver.h"
+#include "Kernel/ScriptEventReceiver.h"
 
-#	include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/NodePrototypeGenerator.h"
 
-#	include <algorithm>
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PythonNodeAOITriggerEventReceiver

@@ -1,11 +1,11 @@
-#	include "Win32FileMapped.h"
+#include "Win32FileMapped.h"
 
-#	include "Interface/MemoryInterface.h"
-#	include "Interface/UnicodeInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/UnicodeInterface.h"
 
 #   include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32FileMapped::Win32FileMapped()
@@ -136,4 +136,4 @@ namespace Menge
 
 		return true;
 	}
-}	// namespace Menge
+}	

@@ -1,14 +1,14 @@
-#	pragma once
+#pragma once
 
-#	include "Core/ModuleBase.h"
+#include "Core/ModuleBase.h"
 
-#	include "MagnetWorld.h"
-#	include "MagnetActor.h"
-#	include "NodeMagnetActor.h"
+#include "MagnetWorld.h"
+#include "MagnetActor.h"
+#include "NodeMagnetActor.h"
 
-#	include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ModuleMagnet
 		: public ModuleBase

@@ -1,13 +1,13 @@
-#	include "ResourceImageSubstract.h"
+#include "ResourceImageSubstract.h"
 
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/ResourceInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/ResourceInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageSubstract::ResourceImageSubstract()

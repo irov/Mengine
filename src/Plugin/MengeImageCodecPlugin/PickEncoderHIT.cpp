@@ -1,15 +1,15 @@
-#	include "PickEncoderHIT.h"
+#include "PickEncoderHIT.h"
 #   include "PickVerifyHIT.h"
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/ArchiveInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Core/Stream.h"
+#include "Core/Stream.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	PickEncoderHIT::PickEncoderHIT()
@@ -66,4 +66,4 @@ namespace Menge
 		return write_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

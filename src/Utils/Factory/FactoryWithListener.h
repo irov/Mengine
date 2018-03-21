@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Factory.h"
+#include "Factory.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 	class FactoryDestroyListenerInterface

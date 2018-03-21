@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-#	include "pybind/object.hpp"
+#include "pybind/object.hpp"
 
-#	include "Math/vec3.h"
+#include "math/vec3.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class BurritoUnit

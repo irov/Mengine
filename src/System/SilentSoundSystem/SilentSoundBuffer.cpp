@@ -1,10 +1,10 @@
-#	include "SilentSoundBuffer.h"
+#include "SilentSoundBuffer.h"
 
-#	include "Interface/SoundCodecInterface.h"
+#include "Interface/SoundCodecInterface.h"
 
 #   include <time.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static float s_getTimeMs()
@@ -123,4 +123,4 @@ namespace Menge
         return m_length;
     }
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

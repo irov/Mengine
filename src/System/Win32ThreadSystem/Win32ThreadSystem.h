@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
-#	include "WIN32/WindowsIncluder.h"
+#include "WIN32/WindowsIncluder.h"
 
-#	include "Win32ThreadIdentity.h"
-#	include "Win32ThreadMutex.h"
+#include "Win32ThreadIdentity.h"
+#include "Win32ThreadMutex.h"
 
 #   include "Factory/Factory.h"
 
@@ -13,9 +13,9 @@
 
 #   include "stdex/pool.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Win32ThreadSystem
 		: public ServiceBase<ThreadSystemInterface>

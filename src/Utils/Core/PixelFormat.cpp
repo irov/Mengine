@@ -1,6 +1,6 @@
-#	include "PixelFormat.h"
+#include "PixelFormat.h"
 
-namespace Menge
+namespace Mengine
 {
 	namespace Helper
 	{

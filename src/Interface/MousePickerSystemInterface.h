@@ -1,10 +1,10 @@
 #   pragma once
 
-#	include "Interface/InputSystemInterface.h"
+#include "Interface/InputSystemInterface.h"
 
-#   include "Math/vec2.h"
+#   include "math/vec2.h"
 
-namespace Menge
+namespace Mengine
 {
     class Arrow;
 	class Scene;

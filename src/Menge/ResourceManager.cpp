@@ -1,22 +1,22 @@
-#	include "ResourceManager.h"
+#include "ResourceManager.h"
 
-#	include "Interface/UnicodeInterface.h"
-#	include "Interface/LoaderInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/LoaderInterface.h"
 #   include "Interface/PrototypeManagerInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Kernel/Loadable.h"
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/Loadable.h"
+#include "Kernel/ResourceReference.h"
 
 #   include "Consts.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ResourceService, Menge::ResourceManager );
+SERVICE_FACTORY( ResourceService, Mengine::ResourceManager );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceManager::ResourceManager()

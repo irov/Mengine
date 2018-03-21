@@ -1,12 +1,12 @@
-#	include "ImageDecoderJPEG.h"
+#include "ImageDecoderJPEG.h"
 
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #	define INPUT_BUF_SIZE  4096				// choose an efficiently fread'able size 
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	struct DecoderJPEGSourceManager
@@ -99,7 +99,7 @@ namespace Menge
         (void)cinfo;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	GLOBAL(void) s_jpeg_menge_src( j_decompress_ptr cinfo, InputStreamInterface * _stream ) 
+	GLOBAL(void) s_jpeg_mengine_src( j_decompress_ptr cinfo, InputStreamInterface * _stream ) 
 	{
 		if( cinfo->src == nullptr )
 		{
@@ -191,7 +191,7 @@ namespace Menge
 	bool ImageDecoderJPEG::_prepareData()
 	{
 		// step 2a: specify data source (eg, a handle)
-		s_jpeg_menge_src( &m_jpegObject, m_stream.get() );
+		s_jpeg_mengine_src( &m_jpegObject, m_stream.get() );
 
 		// step 3: read handle parameters with jpeg_read_header()
 		jpeg_read_header( &m_jpegObject, TRUE );

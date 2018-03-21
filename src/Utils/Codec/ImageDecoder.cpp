@@ -1,8 +1,8 @@
-#	include "ImageDecoder.h"
+#include "ImageDecoder.h"
 
 #   include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoder::ImageDecoder()

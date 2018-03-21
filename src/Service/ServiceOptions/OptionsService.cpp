@@ -1,12 +1,12 @@
-#	include "OptionsService.h"
+#include "OptionsService.h"
 
-#	include <string.h>
+#include <string.h>
 
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( OptionsService, Menge::OptionsService );
+SERVICE_FACTORY( OptionsService, Mengine::OptionsService );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	void OptionsService::setArgs( const TVectorString & _args )

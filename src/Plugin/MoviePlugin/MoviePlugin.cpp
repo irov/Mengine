@@ -1,27 +1,27 @@
-#	include "MoviePlugin.h"
+#include "MoviePlugin.h"
 
-#	include "Interface/PrototypeManagerInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/ScriptSystemInterface.h"
-#	include "Interface/ConfigInterface.h"
+#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ConfigInterface.h"
 
 #   include "Kernel/ScriptWrapper.h"
 
-#	include "Kernel/NodePrototypeGenerator.h"
-#	include "Kernel/ResourcePrototypeGenerator.h"
+#include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/ResourcePrototypeGenerator.h"
 
 #   include "PythonScriptWrapper/PythonAnimatableEventReceiver.h"
 
-#	include "Core/ModuleFactory.h"
+#include "Core/ModuleFactory.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #   include <stdlib.h>
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( Movie, Menge::MoviePlugin )
+PLUGIN_FACTORY( Movie, Mengine::MoviePlugin )
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static void * stdex_movie_alloc( void * _data, size_t _size )

@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Core/ColourValue.h"
+#include "Core/ColourValue.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Colorable
 	{

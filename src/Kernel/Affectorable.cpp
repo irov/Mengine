@@ -1,7 +1,7 @@
-#	include "Kernel/Affectorable.h"
-#	include "Kernel/Affector.h"
+#include "Kernel/Affectorable.h"
+#include "Kernel/Affector.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Affectorable::Affectorable()

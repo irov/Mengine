@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/NotificationServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
-#	include "Core/PluginBase.h"
-#	include "Core/ConstString.h"
+#include "Core/PluginBase.h"
+#include "Core/ConstString.h"
 
 #   include "XlsScriptLogger.h"
 
-namespace Menge
+namespace Mengine
 {
 	class XlsExportPlugin
 		: public PluginBase

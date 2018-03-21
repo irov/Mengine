@@ -1,30 +1,30 @@
-<Protocol Version = "117">
-  <Type Name="Menge::String" Evict="string"/>
-  <Type Name="Menge::WString" Evict="wstring"/>
-  <Type Name="Menge::ConstString" Evict="string"/>
-  <Type Name="Menge::FilePath" Evict="string"/>
-  <Type Name="Menge::Tags" Evict="strings"/>
+<Protocol Version = "118">
+  <Type Name="Mengine::String" Evict="string"/>
+  <Type Name="Mengine::WString" Evict="wstring"/>
+  <Type Name="Mengine::ConstString" Evict="string"/>
+  <Type Name="Mengine::FilePath" Evict="string"/>
+  <Type Name="Mengine::Tags" Evict="strings"/>
   <Type Name="bool" Evict="bool" NCR="1"/>
   <Type Name="uint32_t" Evict="uint32_t" NCR="1"/>
-  <Type Name="Menge::WChar" Evict="wchar_t" NCR="1"/>
+  <Type Name="Mengine::WChar" Evict="wchar_t" NCR="1"/>
   <Type Name="float" Evict="float" NCR="1"/>
   <Type Name="mt::vec2f" Evict="float2"/>
   <Type Name="mt::vec3f" Evict="float3"/>
   <Type Name="mt::vec4f" Evict="float4"/>
   <Type Name="mt::box2f" Evict="float4"/>
   <Type Name="mt::uv4f" Evict="float8"/>  
-  <Type Name="Menge::ColourValue" Evict="float4"/>
-  <Type Name="Menge::Polygon" Evict="floats"/>
-  <Type Name="Menge::Viewport" Evict="float4"/>  
-  <Type Name="Menge::Floats" Evict="floats"/>
-  <Type Name="Menge::Int8s" Evict="int8s"/>
-  <Type Name="Menge::Int16s" Evict="int16s"/>
-  <Type Name="Menge::Int32s" Evict="int32s"/>
-  <Type Name="Menge::UInt8s" Evict="uint8s"/>
-  <Type Name="Menge::UInt16s" Evict="uint16s"/>
-  <Type Name="Menge::UInt32s" Evict="uint32s"/>
+  <Type Name="Mengine::ColourValue" Evict="float4"/>
+  <Type Name="Mengine::Polygon" Evict="floats"/>
+  <Type Name="Mengine::Viewport" Evict="float4"/>  
+  <Type Name="Mengine::Floats" Evict="floats"/>
+  <Type Name="Mengine::Int8s" Evict="int8s"/>
+  <Type Name="Mengine::Int16s" Evict="int16s"/>
+  <Type Name="Mengine::Int32s" Evict="int32s"/>
+  <Type Name="Mengine::UInt8s" Evict="uint8s"/>
+  <Type Name="Mengine::UInt16s" Evict="uint16s"/>
+  <Type Name="Mengine::UInt32s" Evict="uint32s"/>
   
-  <Enum Name="Menge::EBlendFactor">
+  <Enum Name="Mengine::EBlendFactor">
     <ONE/>
     <ZERO/>
     <DEST_COLOUR/>
@@ -37,7 +37,7 @@
     <ONE_MINUS_SOURCE_ALPHA/>
   </Enum>
   
-  <Enum Name="Menge::EBlendOp">
+  <Enum Name="Mengine::EBlendOp">
     <ADD/>
     <SUBTRACT/>
     <REVSUBTRACT/>
@@ -45,7 +45,7 @@
     <MAX/>
   </Enum>
 
-  <Enum Name="Menge::ETextureOp">
+  <Enum Name="Mengine::ETextureOp">
     <DISABLE/>
     <SELECTARG1/>
     <SELECTARG2/>
@@ -56,7 +56,7 @@
     <SUBTRACT/>
   </Enum>
 
-  <Enum Name="Menge::ETextureArgument">
+  <Enum Name="Mengine::ETextureArgument">
     <CURRENT/>
     <DIFFUSE/>
     <SPECULAR/>
@@ -64,7 +64,7 @@
     <TFACTOR/>
   </Enum>
   
-  <Enum Name="Menge::ETextureAddressMode">
+  <Enum Name="Mengine::ETextureAddressMode">
     <WRAP/>
     <MIRROR/>
     <CLAMP/>
@@ -72,91 +72,111 @@
     <MIRRORONCE/>
   </Enum>  
 
+  <Enum Name="Mengine::EVertexAttributeType">
+    <FLOAT/>
+    <UNSIGNED_BYTE/>
+  </Enum>
+  
   <Meta Name="Data" Version="1">
       <Node Name="DataBlock">    
-        <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>    
+        <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>    
 
         <Node Name="Include">
-          <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
+          <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
+        </Node>
+        
+        <Node Name="VertexAttribute">
+          <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
+          <Attribute Name="RenderPlatform" Type="Mengine::ConstString" Required="1"/>
+
+          <Node Name="Attribute">
+            <Attribute Name="Uniform" Type="Mengine::ConstString" Required="1"/>
+            <Attribute Name="Size" Type="uint32_t" Required="1"/>
+            <Attribute Name="Type" Type="Mengine::EVertexAttributeType" Required="1"/>
+            <Attribute Name="Normalized" Type="bool" Required="1"/>
+            <Attribute Name="Stride" Type="uint32_t" Required="1"/>
+            <Attribute Name="Offset" Type="uint32_t" Required="1"/>
+          </Node>
         </Node>
 
         <Node Name="VertexShader">
-          <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
-          <Attribute Name="RenderPlatform" Type="Menge::ConstString" Required="1"/>
+          <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
+          <Attribute Name="RenderPlatform" Type="Mengine::ConstString" Required="1"/>
 
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Compile" Type="bool"/>
         </Node>
 
         <Node Name="FragmentShader">
-          <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
-          <Attribute Name="RenderPlatform" Type="Menge::ConstString" Required="1"/>
+          <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
+          <Attribute Name="RenderPlatform" Type="Mengine::ConstString" Required="1"/>
 
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Compile" Type="bool"/>
         </Node>
 
         <Node Name="Program">
-          <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
-          <Attribute Name="RenderPlatform" Type="Menge::ConstString"/>
+          <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
+          <Attribute Name="RenderPlatform" Type="Mengine::ConstString"/>
 
-          <Member Node="VertexShader" Name="Name" Type="Menge::ConstString" Required="1"/>
-          <Member Node="FragmentShader" Name="Name" Type="Menge::ConstString" Required="1"/>
+          <Member Node="VertexShader" Name="Name" Type="Mengine::ConstString" Required="1"/>
+          <Member Node="FragmentShader" Name="Name" Type="Mengine::ConstString" Required="1"/>
+          <Member Node="VertexAttribute" Name="Name" Type="Mengine::ConstString" Required="1"/>
           
           <Member Node="Sampler" Name="Count" Type="uint32_t" Required="1"/>
         </Node>
 
         <Node Name="Material">
-          <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
-          <Attribute Name="RenderPlatform" Type="Menge::ConstString"/>
+          <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
+          <Attribute Name="RenderPlatform" Type="Mengine::ConstString"/>
           <Attribute Name="Debug" Type="bool"/>
 
-          <Member Node="BlendFactor" Name="Source" Type="Menge::EBlendFactor"/>
-          <Member Node="BlendFactor" Name="Dest" Type="Menge::EBlendFactor"/>
-          <Member Node="BlendFactor" Name="Op" Type="Menge::EBlendOp"/>
+          <Member Node="BlendFactor" Name="Source" Type="Mengine::EBlendFactor"/>
+          <Member Node="BlendFactor" Name="Dest" Type="Mengine::EBlendFactor"/>
+          <Member Node="BlendFactor" Name="Op" Type="Mengine::EBlendOp"/>
 
           <Member Node="AlphaBlend" Name="Enable" Type="bool"/>
 
           <Node Name="TextureStages">
             <Attribute Name="Stage" Type="uint32_t" Required="1"/>
             
-            <Member Node="AddressMode" Name="U" Type="Menge::ETextureAddressMode"/>
-            <Member Node="AddressMode" Name="V" Type="Menge::ETextureAddressMode"/>
+            <Member Node="AddressMode" Name="U" Type="Mengine::ETextureAddressMode"/>
+            <Member Node="AddressMode" Name="V" Type="Mengine::ETextureAddressMode"/>
             <Member Node="AddressMode" Name="Border" Type="uint32_t"/>
 
-            <Member Node="Color" Name="Operator" Type="Menge::ETextureOp"/>
-            <Member Node="Color" Name="Arg1" Type="Menge::ETextureArgument"/>
-            <Member Node="Color" Name="Arg2" Type="Menge::ETextureArgument"/>
+            <Member Node="Color" Name="Operator" Type="Mengine::ETextureOp"/>
+            <Member Node="Color" Name="Arg1" Type="Mengine::ETextureArgument"/>
+            <Member Node="Color" Name="Arg2" Type="Mengine::ETextureArgument"/>
 
-            <Member Node="Alpha" Name="Operator" Type="Menge::ETextureOp"/>
-            <Member Node="Alpha" Name="Arg1" Type="Menge::ETextureArgument"/>
-            <Member Node="Alpha" Name="Arg2" Type="Menge::ETextureArgument"/>
+            <Member Node="Alpha" Name="Operator" Type="Mengine::ETextureOp"/>
+            <Member Node="Alpha" Name="Arg1" Type="Mengine::ETextureArgument"/>
+            <Member Node="Alpha" Name="Arg2" Type="Mengine::ETextureArgument"/>
 
             <Member Node="TextureCoord" Name="Index" Type="uint32_t"/>
           </Node>
 
-          <Member Node="Program" Name="Name" Type="Menge::ConstString"/>
+          <Member Node="Program" Name="Name" Type="Mengine::ConstString"/>
         </Node>
 
         <Node Name="Resource" Generator="Type">
-          <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
-          <Attribute Name="Type" Type="Menge::ConstString" Required="1"/>
+          <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
+          <Attribute Name="Type" Type="Mengine::ConstString" Required="1"/>
           <Attribute Name="Unique" Type="bool"/> 
           <Attribute Name="Precompile" Type="bool"/> 
         </Node>
 
         <Node Name="ResourceImageData" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
-          <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
 
           <Member Node="File" Name="MaxSize" Type="mt::vec2f" Required="1"/>
           <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
 
         <Node Name="ResourceImageDefault" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
-          <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
-          <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
           <Member Node="File" Name="Alpha" Type="bool"/>
           <Member Node="File" Name="Premultiply" Type="bool"/>
           
@@ -168,11 +188,11 @@
         </Node>
 
         <Node Name="ResourceImageSubstractRGBAndAlpha" Inheritance = "Resource">
-          <Member Node="Image" Name="NameRGB" Type="Menge::ConstString" Required="1"/>
+          <Member Node="Image" Name="NameRGB" Type="Mengine::ConstString" Required="1"/>
           <Member Node="Image" Name="UVRGB" Type="mt::uv4f" Required="1"/>
           <Member Node="Image" Name="UVRGBRotate" Type="bool"/>
 
-          <Member Node="Image" Name="NameAlpha" Type="Menge::ConstString" Required="1"/>
+          <Member Node="Image" Name="NameAlpha" Type="Mengine::ConstString" Required="1"/>
           <Member Node="Image" Name="UVAlpha" Type="mt::uv4f" Required="1"/>
           <Member Node="Image" Name="UVAlphaRotate" Type="bool"/>
 
@@ -182,7 +202,7 @@
         </Node>
 
         <Node Name="ResourceImageSubstract" Inheritance = "Resource">
-          <Member Node="Image" Name="Name" Type="Menge::ConstString" Required="1"/>
+          <Member Node="Image" Name="Name" Type="Mengine::ConstString" Required="1"/>
           <Member Node="Image" Name="UV" Type="mt::uv4f" Required="1"/>
           <Member Node="Image" Name="UVRotate" Type="bool"/>
           <Member Node="Image" Name="Alpha" Type="bool"/>
@@ -193,56 +213,56 @@
         </Node>
 
         <Node Name="ResourceParticle" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
-          <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
 
           <Member Node="AtlasCount" Name="Value" Type="uint32_t" Required="1"/>
 
           <Node Name="Atlas">
             <Attribute Name="Index" Type="uint32_t" Required="1"/>
-            <Attribute Name="ResourceName" Type="Menge::ConstString" Required="1"/>
+            <Attribute Name="ResourceName" Type="Mengine::ConstString" Required="1"/>
           </Node>
         </Node>
 
         <Node Name="ResourceCursorSystem" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
 
         <Node Name="ResourceCursorICO" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
         
         <Node Name="ResourceFile" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
         
         <Node Name="ResourceSound" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
-          <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
-          <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
           <Member Node="DefaultVolume" Name="Value" Type="float"/>
           <Member Node="IsStreamable" Name="Value" Type="bool"/>
         </Node>
 
         <Node Name="ResourceMusic" Inheritance = "Resource">
-            <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
-            <Member Node="File" Name="Codec" Type="Menge::ConstString"/>      
-            <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
+            <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+            <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>      
+            <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
             <Member Node="File" Name="External" Type="bool"/>
             <Member Node="DefaultVolume" Name="Value" Type="float"/>
         </Node>
 
         <Node Name="ResourceWindow" Inheritance = "Resource">
-          <Member Node="WindowBackground" Name="ResourceImageName" Type="Menge::ConstString"/>
+          <Member Node="WindowBackground" Name="ResourceImageName" Type="Mengine::ConstString"/>
 
-          <Member Node="WindowLeftTop" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
-          <Member Node="WindowTop" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
-          <Member Node="WindowRightTop" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
-          <Member Node="WindowRight" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
-          <Member Node="WindowRightBottom" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
-          <Member Node="WindowBottom" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
-          <Member Node="WindowLeftBottom" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
-          <Member Node="WindowLeft" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
+          <Member Node="WindowLeftTop" Name="ResourceImageName" Type="Mengine::ConstString" Required="1"/>
+          <Member Node="WindowTop" Name="ResourceImageName" Type="Mengine::ConstString" Required="1"/>
+          <Member Node="WindowRightTop" Name="ResourceImageName" Type="Mengine::ConstString" Required="1"/>
+          <Member Node="WindowRight" Name="ResourceImageName" Type="Mengine::ConstString" Required="1"/>
+          <Member Node="WindowRightBottom" Name="ResourceImageName" Type="Mengine::ConstString" Required="1"/>
+          <Member Node="WindowBottom" Name="ResourceImageName" Type="Mengine::ConstString" Required="1"/>
+          <Member Node="WindowLeftBottom" Name="ResourceImageName" Type="Mengine::ConstString" Required="1"/>
+          <Member Node="WindowLeft" Name="ResourceImageName" Type="Mengine::ConstString" Required="1"/>
 
           <Member Node="WindowLeftTop" Name="Offset" Type="mt::vec2f" Required="1"/>
           <Member Node="WindowTop" Name="Offset" Type="mt::vec2f" Required="1"/>
@@ -255,7 +275,7 @@
         </Node>
 
         <Node Name="ResourceMovie2" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
 
         <Node Name="ResourceMovie" Inheritance = "Resource">
@@ -263,24 +283,24 @@
           <Member Node="Duration" Name="Value" Type="float" Required="1"/>
           <Member Node="Width" Name="Value" Type="float" Required="1"/>
           <Member Node="Height" Name="Value" Type="float" Required="1"/>
-          <Member Node="KeyFramesPackPath" Name="Path" Type="Menge::FilePath" Required="1"/>
-          <Member Node="KeyFramesPackPath" Name="Codec" Type="Menge::ConstString"/>
-          <Member Node="KeyFramesPackPath" Name="Converter" Type="Menge::ConstString"/>
+          <Member Node="KeyFramesPackPath" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="KeyFramesPackPath" Name="Codec" Type="Mengine::ConstString"/>
+          <Member Node="KeyFramesPackPath" Name="Converter" Type="Mengine::ConstString"/>
           <Member Node="Loop" Name="Segment" Type="mt::vec2f"/>
           <Member Node="Anchor" Name="Point" Type="mt::vec3f"/>
           <Member Node="Offset" Name="Point" Type="mt::vec3f"/>
           <Member Node="Bounds" Name="Box" Type="mt::box2f"/>
 
           <Node Name="MovieLayer2D">
-            <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>        
-            <Attribute Name="Source" Type="Menge::ConstString" Required="1"/>
-            <Attribute Name="Type" Type="Menge::ConstString" Required="1"/>
+            <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>        
+            <Attribute Name="Source" Type="Mengine::ConstString" Required="1"/>
+            <Attribute Name="Type" Type="Mengine::ConstString" Required="1"/>
             <Attribute Name="Index" Type="uint32_t" Required="1"/>
             <Attribute Name="In" Type="float" Required="1"/>
             <Attribute Name="Out" Type="float" Required="1"/>
             <Attribute Name="Parent" Type="uint32_t"/>
             <Attribute Name="StartInterval" Type="float"/>
-            <Attribute Name="BlendingMode" Type="Menge::ConstString"/>
+            <Attribute Name="BlendingMode" Type="Mengine::ConstString"/>
             <Attribute Name="TimeRemap" Type="bool"/>
             <Attribute Name="Shape" Type="bool"/>        
             <Attribute Name="Polygon" Type="bool"/>
@@ -292,20 +312,20 @@
             <Attribute Name="Position" Type="mt::vec3f"/>
             <Attribute Name="Scale" Type="mt::vec3f"/>
             <Attribute Name="Rotation" Type="mt::vec3f"/>
-            <Attribute Name="Viewport" Type="Menge::Viewport"/>
+            <Attribute Name="Viewport" Type="Mengine::Viewport"/>
             <Attribute Name="Params" Type="uint32_t"/>
           </Node>
 
           <Node Name="MovieLayer3D">
-            <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>        
-            <Attribute Name="Source" Type="Menge::ConstString" Required="1"/>
-            <Attribute Name="Type" Type="Menge::ConstString" Required="1"/>
+            <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>        
+            <Attribute Name="Source" Type="Mengine::ConstString" Required="1"/>
+            <Attribute Name="Type" Type="Mengine::ConstString" Required="1"/>
             <Attribute Name="Index" Type="uint32_t" Required="1"/>
             <Attribute Name="In" Type="float" Required="1"/>
             <Attribute Name="Out" Type="float" Required="1"/>
             <Attribute Name="Parent" Type="uint32_t"/>
             <Attribute Name="StartInterval" Type="float"/>
-            <Attribute Name="BlendingMode" Type="Menge::ConstString"/>
+            <Attribute Name="BlendingMode" Type="Mengine::ConstString"/>
             <Attribute Name="TimeRemap" Type="bool"/>
             <Attribute Name="Shape" Type="bool"/>
             <Attribute Name="Polygon" Type="bool"/>
@@ -331,10 +351,10 @@
         </Node>
 
         <Node Name="ResourceVideo" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Alpha" Type="bool"/>
-          <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
-          <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
+          <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
           <Member Node="File" Name="NoSeek" Type="bool"/>
           <Member Node="File" Name="FrameRate" Type="float"/>
           <Member Node="File" Name="Duration" Type="float"/>
@@ -342,57 +362,57 @@
 
         <Node Name="ResourceAnimation" Inheritance = "Resource">
           <Node Name="Sequence">
-            <Attribute Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
+            <Attribute Name="ResourceImageName" Type="Mengine::ConstString" Required="1"/>
             <Attribute Name="Delay" Type="float" Required="1"/>
           </Node>
         </Node>
 
         <Node Name="ResourceHIT" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
-          <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
-          <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
         </Node>
 
         <Node Name="ResourceModel3D" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
-          <Member Node="File" Name="Dataflow" Type="Menge::ConstString"/>
-          <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
-          <Member Node="Image" Name="Resource" Type="Menge::ConstString" Required="1"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Dataflow" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+          <Member Node="Image" Name="Resource" Type="Mengine::ConstString" Required="1"/>
         </Node>
 
         <Node Name="ResourceImageSolid" Inheritance = "Resource">
           <Member Node="Size" Name="Value" Type="mt::vec2f" Required="1"/>
-          <Member Node="Color" Name="Value" Type="Menge::ColourValue" Required="1"/>
+          <Member Node="Color" Name="Value" Type="Mengine::ColourValue" Required="1"/>
         </Node>
 
         <Node Name="ResourceInternalObject" Inheritance = "Resource">
-          <Member Node="Internal" Name="Name" Type="Menge::ConstString" Required="1"/>
-          <Member Node="Internal" Name="Group" Type="Menge::ConstString" Required="1"/>
+          <Member Node="Internal" Name="Name" Type="Mengine::ConstString" Required="1"/>
+          <Member Node="Internal" Name="Group" Type="Mengine::ConstString" Required="1"/>
         </Node>
 
         <Node Name="ResourceShape" Inheritance = "Resource">
-          <Member Node="Polygon" Name="Value" Type="Menge::Polygon" Required="1"/>
+          <Member Node="Polygon" Name="Value" Type="Mengine::Polygon" Required="1"/>
         </Node>
 
         <Node Name="ResourceCal3dSkeleton" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
 
         <Node Name="ResourceCal3dAnimation" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
 
         <Node Name="ResourceCal3dMesh" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
           
         <Node Name="ResourceSpine" Inheritance = "Resource">
-          <Member Node="Skeleton" Name="Path" Type="Menge::FilePath" Required="1"/>
-          <Member Node="Atlas" Name="Path" Type="Menge::FilePath" Required="1"/>
+          <Member Node="Skeleton" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="Atlas" Name="Path" Type="Mengine::FilePath" Required="1"/>
           
           <Node Name="Image">
-            <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
-            <Attribute Name="Resource" Type="Menge::ConstString" Required="1"/>
+            <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
+            <Attribute Name="Resource" Type="Mengine::ConstString" Required="1"/>
           </Node>
         </Node>      
         
@@ -402,58 +422,58 @@
 
       <Node Name="Pak">
         <Node Name="Scripts">
-          <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
-          <Attribute Name="Module" Type="Menge::ConstString"/>
-          <Attribute Name="Initializer" Type="Menge::ConstString"/>
-          <Attribute Name="Finalizer" Type="Menge::ConstString"/>
-          <Attribute Name="Platform" Type="Menge::Tags"/>
+          <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Attribute Name="Module" Type="Mengine::ConstString"/>
+          <Attribute Name="Initializer" Type="Mengine::ConstString"/>
+          <Attribute Name="Finalizer" Type="Mengine::ConstString"/>
+          <Attribute Name="Platform" Type="Mengine::Tags"/>
         </Node>
 
         <Node Name="Fonts">
-          <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
-          <Attribute Name="Platform" Type="Menge::Tags"/>
+          <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Attribute Name="Platform" Type="Mengine::Tags"/>
         </Node>
 
         <Node Name="Resources">
           <Attribute Name="Ignored" Type="bool"/>
-          <Attribute Name="Platform" Type="Menge::Tags"/>
+          <Attribute Name="Platform" Type="Mengine::Tags"/>
           
           <Node Name="Resource">
-            <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
+            <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
           </Node>
         </Node>
 
         <Node Name="Texts">
-          <Attribute Name="Platform" Type="Menge::Tags"/>
+          <Attribute Name="Platform" Type="Mengine::Tags"/>
 
           <Node Name="Text">
-            <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
+            <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
           </Node>
         </Node>
 
         <Node Name="Datas">
-          <Attribute Name="Platform" Type="Menge::Tags"/>
+          <Attribute Name="Platform" Type="Mengine::Tags"/>
           
           <Node Name="Data">
-            <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
-            <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
+            <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
+            <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
           </Node>
         </Node>
 
         <Node Name="Materials">
-          <Attribute Name="Platform" Type="Menge::Tags"/>
+          <Attribute Name="Platform" Type="Mengine::Tags"/>
           
           <Node Name="Material">
-            <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
+            <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
           </Node>
         </Node>
       </Node>
 
       <Node Name="Texts">
         <Node Name="Text">
-          <Attribute Name="Key" Type="Menge::ConstString" Required="1"/>
-          <Attribute Name="Value" Type="Menge::WString"/>
-          <Attribute Name="Font" Type="Menge::ConstString"/>
+          <Attribute Name="Key" Type="Mengine::ConstString" Required="1"/>
+          <Attribute Name="Value" Type="Mengine::WString"/>
+          <Attribute Name="Font" Type="Mengine::ConstString"/>
           <Attribute Name="CharOffset" Type="float"/>
           <Attribute Name="LineOffset" Type="float"/>
         </Node>
@@ -465,12 +485,12 @@
 
         <Node Name="TimeRemap">
           <Attribute Name="LayerIndex" Type="uint32_t" Required="1"/>
-          <Attribute Name="Time" Type="Menge::Floats" Required="1"/>
+          <Attribute Name="Time" Type="Mengine::Floats" Required="1"/>
         </Node>
         
         <Node Name="Polygon">
           <Attribute Name="LayerIndex" Type="uint32_t" Required="1"/>
-          <Attribute Name="Value" Type="Menge::Polygon" Required="1"/>
+          <Attribute Name="Value" Type="Mengine::Polygon" Required="1"/>
         </Node>    
 
         <Node Name="ImageShape">
@@ -482,7 +502,7 @@
           <Attribute Name="Subtract" Type="bool"/>
           <Attribute Name="Count" Type="uint32_t"/>
           <Node Name="Shape">
-            <Attribute Name="Polygon" Type="Menge::Polygon" Required="1"/>
+            <Attribute Name="Polygon" Type="Mengine::Polygon" Required="1"/>
           </Node>
         </Node>
 

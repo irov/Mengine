@@ -1,10 +1,10 @@
-#	include "RenderCameraOrthogonal.h"
+#include "RenderCameraOrthogonal.h"
 
-#	include "Interface/ApplicationInterface.h"
+#include "Interface/ApplicationInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace	Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderCameraOrthogonal::RenderCameraOrthogonal()

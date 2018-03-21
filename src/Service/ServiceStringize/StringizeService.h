@@ -1,6 +1,6 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
 #   include "Core/ServiceBase.h"
 
@@ -10,7 +10,7 @@
 
 #   include "stdex/intrusive_list.h"
 
-namespace Menge
+namespace Mengine
 {	
 	//////////////////////////////////////////////////////////////////////////
 	class StringizeService

@@ -5,7 +5,7 @@
 #   include "Core/ServiceBase.h"
 #   include "Factory/Factory.h"
 
-namespace Menge
+namespace Mengine
 {
     class SDLPluginSystem
         : public ServiceBase<PluginSystemInterface>

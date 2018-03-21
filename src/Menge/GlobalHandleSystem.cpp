@@ -1,13 +1,13 @@
-#	include "GlobalHandleSystem.h"
+#include "GlobalHandleSystem.h"
 
 #   include "Logger/Logger.h"
 
-#	include <algorithm>
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( GlobalHandleSystem, Menge::GlobalHandleSystem );
+SERVICE_FACTORY( GlobalHandleSystem, Mengine::GlobalHandleSystem );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     namespace
     {

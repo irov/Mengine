@@ -1,14 +1,14 @@
-#	pragma once
+#pragma once
 
-#	include "Config/Typedef.h"
-#	include "Config/String.h"
+#include "Config/Typedef.h"
+#include "Config/String.h"
 
-#	include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/FilePath.h"
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
 
-namespace Menge
+namespace Mengine
 {
     const size_t UNICODE_UNSIZE = (size_t)-1;
 
@@ -22,9 +22,8 @@ namespace Menge
         virtual bool utf8ToUnicode( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize ) = 0;
     };
 
-
 #   define UNICODE_SYSTEM()\
-    SERVICE_GET(Menge::UnicodeSystemInterface)
+    SERVICE_GET(Mengine::UnicodeSystemInterface)
 
     namespace Helper
     {

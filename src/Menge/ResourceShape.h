@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
 #   include "Core/Polygon.h"
 
-namespace Menge
+namespace Mengine
 {
     class ResourceShape
         : public ResourceReference
@@ -32,4 +32,4 @@ namespace Menge
     };
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ResourceShape> ResourceShapePtr;
-}	// namespace Menge
+}	

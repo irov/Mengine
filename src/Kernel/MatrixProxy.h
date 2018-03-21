@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-namespace Menge
+namespace Mengine
 {
     class MatrixProxy
         : public Node

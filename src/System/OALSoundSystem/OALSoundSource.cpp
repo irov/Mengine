@@ -1,14 +1,14 @@
-#	include "OALSoundSource.h"
+#include "OALSoundSource.h"
 
-#	include "OALSoundSystem.h"
-#	include "OALSoundBufferBase.h"
-#	include "OALSoundError.h"
+#include "OALSoundSystem.h"
+#include "OALSoundBufferBase.h"
+#include "OALSoundError.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #   include <math.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSource::OALSoundSource()
@@ -356,4 +356,4 @@ namespace Menge
 		return m_soundBuffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

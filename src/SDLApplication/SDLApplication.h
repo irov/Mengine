@@ -24,7 +24,7 @@
 
 #   include "Core/FileLogger.h"
 
-namespace Menge
+namespace Mengine
 {
 
     class SDLApplication

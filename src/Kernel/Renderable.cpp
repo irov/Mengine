@@ -1,6 +1,6 @@
-#	include "Kernel/Renderable.h"
+#include "Kernel/Renderable.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Renderable::Renderable()

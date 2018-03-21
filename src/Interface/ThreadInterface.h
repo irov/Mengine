@@ -1,13 +1,13 @@
-#	pragma once
+#pragma once
 
 #   include "Interface/ServantInterface.h"
 
-#	include "Factory/Factorable.h"
-#	include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
+#include "Factory/FactorablePtr.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ThreadTaskInterface

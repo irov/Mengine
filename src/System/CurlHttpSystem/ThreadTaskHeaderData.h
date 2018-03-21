@@ -2,7 +2,7 @@
 
 #	include "ThreadTaskCurl.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class ThreadTaskHeaderData

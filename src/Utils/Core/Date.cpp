@@ -1,11 +1,11 @@
-#	include "Date.h"
+#include "Date.h"
 
-#	include "Config/Stringstream.h"
+#include "Config/Stringstream.h"
 
-#	include <ctime>
-#	include <iomanip>
+#include <ctime>
+#include <iomanip>
 
-namespace Menge
+namespace Mengine
 {
 	namespace Helper
 	{

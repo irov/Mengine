@@ -1,8 +1,8 @@
-#	include "BasePrototypeGenerator.h"
+#include "BasePrototypeGenerator.h"
 
 #   include "Interface/ScriptSystemInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	BasePrototypeGenerator::BasePrototypeGenerator()

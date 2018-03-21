@@ -1,21 +1,21 @@
-#	include "TTFFont.h"
+#include "TTFFont.h"
 
-#	include "TTFServiceInterface.h"
+#include "TTFServiceInterface.h"
 
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #   include "Core/Stream.h"
-#	include "Core/MemoryHelper.h"
+#include "Core/MemoryHelper.h"
 #   include "Core/IniUtil.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "utf8.h"
+#include "utf8.h"
 
-#	include <algorithm>
+#include <algorithm>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	TTFFont::TTFFont()

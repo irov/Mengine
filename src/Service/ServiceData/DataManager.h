@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/DataInterface.h"
+#include "Interface/DataInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include "stdex/stl_map.h"
+#include "stdex/stl_map.h"
 
-namespace Menge
+namespace Mengine
 {
 	class DataManager
 		: public ServiceBase<DataServiceInterface>

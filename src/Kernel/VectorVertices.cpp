@@ -1,6 +1,6 @@
-#	include "Kernel/VectorVertices.h"
+#include "Kernel/VectorVertices.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	VectorVertices::VectorVertices()

@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/WindowsLayerInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/WindowsLayerInterface.h"
 
 #   include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Win32FileMapped
 		: public ServantBase<FileMappedInterface>
@@ -26,4 +26,4 @@ namespace Menge
 		HANDLE m_hMapping;
 		LPVOID m_memory;
 	};
-}	// namespace Menge
+}	

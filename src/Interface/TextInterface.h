@@ -8,14 +8,14 @@
 #   include "Core/GlyphChar.h"
 #   include "Core/ColourValue.h"
 
-#	include "Config/String.h"
+#include "Config/String.h"
 
 #   include "Factory/FactorablePtr.h"
 
-#	include "Math/vec4.h"
-#	include "Math/uv4.h"
+#include "math/vec4.h"
+#include "math/uv4.h"
 
-namespace Menge
+namespace Mengine
 {
     namespace IniUtil
     {
@@ -195,5 +195,5 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define TEXT_SERVICE()\
-	((Menge::TextServiceInterface*)SERVICE_GET(Menge::TextServiceInterface))
+	((Mengine::TextServiceInterface*)SERVICE_GET(Mengine::TextServiceInterface))
 }

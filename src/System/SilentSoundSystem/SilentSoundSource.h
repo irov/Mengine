@@ -1,12 +1,12 @@
 #   pragma once
 
-#	include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundSystemInterface.h"
 
-#	include "SilentSoundBuffer.h"
+#include "SilentSoundBuffer.h"
 
 #   include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class SilentSoundSystem;	
 
@@ -66,4 +66,4 @@ namespace Menge
 	};
 
 	typedef stdex::intrusive_ptr<SilentSoundSource> SilentSoundSourcePtr;
-}	// namespace Menge
+}	

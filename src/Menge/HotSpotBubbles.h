@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "HotSpot.h"
+#include "HotSpot.h"
 
-namespace Menge
+namespace Mengine
 {
 	class HotSpotBubbles
 		: public HotSpot
@@ -44,4 +44,4 @@ namespace Menge
 
 		mutable bool m_invalidateBubbleWM;
 	};
-}	// namespace Menge
+}	

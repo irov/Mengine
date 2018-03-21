@@ -1,10 +1,10 @@
-#	include "Entity.h"
+#include "Entity.h"
 
 #   include "Interface/NodeInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Entity::Entity()

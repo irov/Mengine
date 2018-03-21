@@ -1,21 +1,21 @@
-#	include "Model3D.h" 
+#include "Model3D.h" 
 
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/ResourceInterface.h"
-#	include "Interface/NodeInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/NodeInterface.h"
 
-#	include "Kernel/RenderCameraProjection.h"
+#include "Kernel/RenderCameraProjection.h"
 
-#	include "Consts.h"
+#include "Consts.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Math/box2.h"
-#	include "Math/utils.h"
+#include "math/box2.h"
+#include "math/utils.h"
 
-#	include <math.h>
+#include <math.h>
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Model3D::Model3D()

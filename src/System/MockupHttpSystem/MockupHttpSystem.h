@@ -1,14 +1,14 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/HttpSystemInterface.h"
+#include "Interface/HttpSystemInterface.h"
 
-#	include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
-#	include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
-#	include "Kernel/ThreadTask.h"
+#include "Kernel/ThreadTask.h"
 
-namespace Menge
+namespace Mengine
 {
 	class MockupHttpSystem
 		: public ServiceBase<HttpSystemInterface>

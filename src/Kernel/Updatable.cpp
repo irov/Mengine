@@ -1,6 +1,6 @@
-#	include "Kernel/Updatable.h"
+#include "Kernel/Updatable.h"
 
-namespace Menge
+namespace Mengine
 {
 	void Updatable::update( float _current, float _timing )
 	{

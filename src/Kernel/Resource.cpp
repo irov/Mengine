@@ -1,6 +1,6 @@
-#	include "Resource.h"
+#include "Resource.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Resource::Resource()		

@@ -1,14 +1,14 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Surface.h"
-#	include "Kernel/Eventable.h"
-#	include "Kernel/Animatable.h"
+#include "Kernel/Surface.h"
+#include "Kernel/Eventable.h"
+#include "Kernel/Animatable.h"
 
-#	include "ResourceVideo.h"
+#include "ResourceVideo.h"
 
-#	include "Interface/VideoCodecInterface.h"
+#include "Interface/VideoCodecInterface.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     enum SurfaceVideoEventFlag

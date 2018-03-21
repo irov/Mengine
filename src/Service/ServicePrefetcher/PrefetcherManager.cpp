@@ -1,14 +1,14 @@
-#	include "PrefetcherManager.h"
+#include "PrefetcherManager.h"
 
-#	include "Interface/ThreadSystemInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/ThreadSystemInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( PrefetcherService, Menge::PrefetcherManager );
+SERVICE_FACTORY( PrefetcherService, Mengine::PrefetcherManager );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	PrefetcherManager::PrefetcherManager()

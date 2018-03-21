@@ -4,9 +4,9 @@
 
 #   include "Kernel/Surface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ShapeQuad::ShapeQuad()

@@ -1,20 +1,20 @@
-#	include "ResourceImageDefault.h"
+#include "ResourceImageDefault.h"
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/ImageCodecInterface.h"
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/ConfigInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/ImageCodecInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/ConfigInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Metacode/Metacode.h"
 
-#	include "Core/MemoryHelper.h"
+#include "Core/MemoryHelper.h"
 
 #   include "Logger/Logger.h"
 
-#	include "Core/ConstString.h"
-#	include "Core/String.h"
+#include "Core/ConstString.h"
+#include "Core/String.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDefault::ResourceImageDefault()

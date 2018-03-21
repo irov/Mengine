@@ -1,13 +1,13 @@
-#	include "Win32FileInputStream.h"
+#include "Win32FileInputStream.h"
 
-#	include "Interface/UnicodeInterface.h"
-#	include "Interface/NotificationServiceInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #   include "Utils/Logger/Logger.h"
 
-#	include "stdex/memorycopy.h"
+#include "stdex/memorycopy.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32FileInputStream::Win32FileInputStream()
@@ -424,4 +424,4 @@ namespace Menge
 
         return false;
     }
-}	// namespace Menge
+}	

@@ -1,18 +1,18 @@
-#	include "Mesh2D.h" 
+#include "Mesh2D.h" 
 
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/ResourceInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/ResourceInterface.h"
 
-#	include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
-#	include "Consts.h"
+#include "Consts.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Math/box2.h"
-#	include "Math/utils.h"
+#include "math/box2.h"
+#include "math/utils.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Mesh2D::Mesh2D()

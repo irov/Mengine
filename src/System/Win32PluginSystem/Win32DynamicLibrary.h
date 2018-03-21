@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/WindowsLayerInterface.h"
+#include "Interface/WindowsLayerInterface.h"
 
-#	include "Core/ServantBase.h"
+#include "Core/ServantBase.h"
 
 #   include "Utils/WIN32/WindowsIncluder.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Win32DynamicLibrary 
 		: public ServantBase<DynamicLibraryInterface>

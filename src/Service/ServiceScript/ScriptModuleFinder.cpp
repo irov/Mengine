@@ -1,14 +1,14 @@
 #   include "ScriptModuleFinder.h"
 
 #   include "Interface/StringizeInterface.h"
-#	include "Interface/ArchiveInterface.h"
-#	include "Interface/MemoryInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/MemoryInterface.h"
 
 #   include "Factory/FactoryPool.h"
 
 #   include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ScriptModuleFinder::ScriptModuleFinder()

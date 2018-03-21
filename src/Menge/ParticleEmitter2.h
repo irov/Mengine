@@ -1,21 +1,21 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
-#	include "Kernel/Animatable.h"
+#include "Kernel/Node.h"
+#include "Kernel/Animatable.h"
 
 #   include "ResourceParticle.h"
 
-#	include "Interface/ParticleSystemInterface.h"
+#include "Interface/ParticleSystemInterface.h"
 
-#	include "Math/mat3.h"
+#include "math/mat3.h"
 
-#	include "Core/Polygon.h"
+#include "Core/Polygon.h"
 
-#	include "stdex/stl_vector.h"
+#include "stdex/stl_vector.h"
 
 #	define MENGINE_PARTICLE_MAX_ATLAS_TEXTURE 8
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     enum ParticleEmitter2EventFlag
@@ -117,7 +117,7 @@ namespace Menge
 		RenderVertex2D * m_vertices;
 		uint32_t m_vertexCount;
 
-		RenderIndices * m_indicies;
+		RenderIndex * m_indicies;
 		uint32_t m_indexCount;		
 
 		bool m_emitterTranslateWithParticle;

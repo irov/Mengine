@@ -5,15 +5,15 @@
 #   include "Core/Magic.h"
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
-#   include "Core/RenderIndices.h"
+#   include "Core/RenderIndex.h"
 
 #   include "Factory/Factorable.h"
 
-#   include "Math/vec3.h"
+#   include "math/vec3.h"
 
-#	include <stdint.h>
+#include <stdint.h>
 
-namespace Menge
+namespace Mengine
 {
 	DECLARE_MAGIC_NUMBER(MAGIC_AEK, 'A', 'E', 'K', '1', 37);
 
@@ -74,7 +74,7 @@ namespace Menge
 	{
 		mt::vec2f * pos;
 		mt::vec2f * uv;
-		RenderIndices * indices;
+		RenderIndex * indices;
 
 		uint16_t vertexCount;
 		uint16_t indexCount;

@@ -1,6 +1,6 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/ThreadTask.h"
+#include "Kernel/ThreadTask.h"
 
 #   include <list>
 
@@ -8,7 +8,7 @@
 #	define MENGINE_THREAD_JOB_WORK_COUNT 32
 #	endif
 
-namespace Menge 
+namespace Mengine 
 {
     //////////////////////////////////////////////////////////////////////////
 	class ThreadWorkerInterface

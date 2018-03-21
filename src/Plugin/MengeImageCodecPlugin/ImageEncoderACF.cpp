@@ -1,15 +1,15 @@
-#	include "ImageEncoderACF.h"
+#include "ImageEncoderACF.h"
 #   include "ImageVerifyACF.h"
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/ArchiveInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Core/Stream.h"
+#include "Core/Stream.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ImageEncoderACF::ImageEncoderACF()
@@ -76,4 +76,4 @@ namespace Menge
 		return 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}	

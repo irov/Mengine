@@ -1,14 +1,14 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/LoggerInterface.h"
+#include "Interface/LoggerInterface.h"
 
 #   include "Core/ServiceBase.h"
 
-#	include <Logger/Logger.h>
+#include "Logger/Logger.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	class LoggerEngine
 		: public ServiceBase<LoggerServiceInterface>
@@ -26,14 +26,14 @@ namespace Menge
 
 	public:
 		void logMessage( EMessageLevel _level, uint32_t _flag, const char * _message, size_t _size  ) override;
-		size_t getCountMessage( Menge::EMessageLevel _level ) override;
+		size_t getCountMessage( Mengine::EMessageLevel _level ) override;
 
 	public:
 		bool registerLogger( const LoggerInterfacePtr & _logger ) override;
 		bool unregisterLogger( const LoggerInterfacePtr & _logger ) override;
 	
 	protected:
-		Menge::EMessageLevel m_verboseLevel;
+		Mengine::EMessageLevel m_verboseLevel;
         uint32_t m_verboseFlag;
 
 		typedef stdex::vector<LoggerInterfacePtr> TVectorLoggers;

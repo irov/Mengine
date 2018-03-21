@@ -1,6 +1,6 @@
-#	include "RenderClipplane.h"
+#include "RenderClipplane.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderClipplane::RenderClipplane()

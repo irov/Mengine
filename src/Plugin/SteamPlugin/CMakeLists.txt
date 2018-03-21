@@ -10,7 +10,7 @@ src
 )
 
 if( MENGINE_PLUGIN_STEAM_DLL )
-   add_definitions(-DMENGE_PLUGIN_DLL)
+   add_definitions(-DMENGINE_PLUGIN_DLL)
 endif()
 
 INCLUDE_DIRECTORIES( 

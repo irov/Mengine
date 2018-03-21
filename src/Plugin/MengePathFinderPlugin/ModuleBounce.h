@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Core/ModuleBase.h"
+#include "Core/ModuleBase.h"
 
-#	include "BounceWorld.h"
-#	include "BounceActor.h"
+#include "BounceWorld.h"
+#include "BounceActor.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ModuleBounce
 		: public ModuleBase

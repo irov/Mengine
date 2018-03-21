@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ImageCodecInterface.h"
+#include "Interface/ImageCodecInterface.h"
 
-#	include "Codec/Encoder.h"
+#include "Codec/Encoder.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ImageEncoder
 		: public Encoder<ImageEncoderInterface>

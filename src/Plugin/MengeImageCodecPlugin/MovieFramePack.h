@@ -1,16 +1,16 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/MovieKeyFrameInterface.h"
+#include "Interface/MovieKeyFrameInterface.h"
 
-#	include "Math/vec2.h"
-#	include "Math/vec3.h"
+#include "math/vec2.h"
+#include "math/vec3.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-#	include <stdint.h>
-#	include <memory.h>
+#include <stdint.h>
+#include <memory.h>
 
-namespace Menge
+namespace Mengine
 {       
 	class MovieFramePack
 		: public MovieFramePackInterface

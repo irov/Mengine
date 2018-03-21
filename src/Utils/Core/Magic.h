@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include <stdint.h>
+#include <stdint.h>
 
-namespace Menge
+namespace Mengine
 {
 	typedef uint32_t magic_number_type;
 	typedef uint32_t magic_version_type;

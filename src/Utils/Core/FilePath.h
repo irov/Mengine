@@ -5,15 +5,15 @@
 
 #   include "Core/ConstString.h"
 
-#	include "Config/String.h"
+#include "Config/String.h"
 
-#	include "stdex/array_string.h"
+#include "stdex/array_string.h"
 
-#	include <stdex/stl_vector.h>
+#include "stdex/stl_vector.h"
 
-#	include <stdint.h>
+#include <stdint.h>
 
-namespace Menge
+namespace Mengine
 {
 #   ifndef MENGINE_MAX_PATH
 #   define MENGINE_MAX_PATH 260

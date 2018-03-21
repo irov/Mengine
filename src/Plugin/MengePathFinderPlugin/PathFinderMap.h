@@ -1,17 +1,17 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ModuleInterface.h"
+#include "Interface/ModuleInterface.h"
 
-#	include "PathFinder.h"
-#	include "PathFinderWay.h"
-#	include "ThreadWorkerPathFinder.h"
+#include "PathFinder.h"
+#include "PathFinderWay.h"
+#include "ThreadWorkerPathFinder.h"
 
-#	include "Core/Polygon.h"
-#	include "Factory/Factory.h"
+#include "Core/Polygon.h"
+#include "Factory/Factory.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class RenderCameraInterface;

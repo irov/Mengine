@@ -1,13 +1,13 @@
-#	include "BurritoWorld.h"
+#include "BurritoWorld.h"
 
-#	include "Interface/NodeInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/NodeInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "Math/ccd.h"
+#include "math/ccd.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	namespace

@@ -5,7 +5,7 @@
 #   include "Config/Typedef.h"
 #   include "Config/String.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class WatchdogInterface
@@ -18,12 +18,12 @@ namespace Menge
     };
     //////////////////////////////////////////////////////////////////////////
 #	define WATCHDOG_SERVICE()\
-	SERVICE_GET(Menge::WatchdogInterface)
+	SERVICE_GET(Mengine::WatchdogInterface)
     //////////////////////////////////////////////////////////////////////////
 #   ifdef MENGINE_MASTER_RELEASE
 #		define WATCHDOG( tag ) (0.f)
 #	else
 #		define WATCHDOG( tag )\
-	(SERVICE_EXIST(Menge::WatchdogInterface) ? WATCHDOG_SERVICE()->watch(tag) : 0.f)
+	(SERVICE_EXIST(Mengine::WatchdogInterface) ? WATCHDOG_SERVICE()->watch(tag) : 0.f)
 #	endif
 }

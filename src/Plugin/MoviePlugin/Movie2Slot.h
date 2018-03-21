@@ -1,8 +1,8 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
+#include "Kernel/Node.h"
 
-namespace Menge
+namespace Mengine
 {
 	class Movie2Slot
 		: public Node
@@ -29,7 +29,7 @@ namespace Menge
 		void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
 	protected:
-		void _debugRender( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
+		void _debugRender( Mengine::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
 
     protected:
         ConstString m_movieName;

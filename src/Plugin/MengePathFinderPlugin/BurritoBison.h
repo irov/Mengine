@@ -1,19 +1,19 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
-#	include "Kernel/RenderCameraOrthogonal.h"
+#include "Kernel/Node.h"
+#include "Kernel/RenderCameraOrthogonal.h"
 
-#	include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
-#	include "Core/ValueFollower.h"
+#include "Core/ValueFollower.h"
 
-#	include "Math/vec3.h"
+#include "math/vec3.h"
 
-#	include "pybind/object.hpp"
+#include "pybind/object.hpp"
 
-#	include "stdex/stl_vector.h"
+#include "stdex/stl_vector.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	struct BurritoBisonForce

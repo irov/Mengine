@@ -1,8 +1,8 @@
-#	include "DX9RenderImage.h"
+#include "DX9RenderImage.h"
 
-#	include "DX9ErrorHelper.h"
+#include "DX9ErrorHelper.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderImage::DX9RenderImage()
@@ -131,4 +131,4 @@ namespace Menge
 	{
 		return m_hwMipmaps;
 	}
-}	// namespace Menge
+}	

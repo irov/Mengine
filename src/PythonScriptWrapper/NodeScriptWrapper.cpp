@@ -71,7 +71,6 @@
 #include "Engine/ShapeQuadFlex.h"
 
 //#include "Light2D.h"
-#include "Engine/ShadowCaster2D.h"
 #include "Engine/Gyroscope.h"
 #include "Engine/TextField.h"
 #include "Engine/SoundEmitter.h"
@@ -103,8 +102,6 @@
 
 #include "Engine/Layer2D.h"
 
-
-#include "Engine/TilePolygon.h"
 
 #include "Engine/Movie.h"
 #include "Engine/Meshget.h"

@@ -414,29 +414,36 @@ namespace Mengine
         {
             fe_node * effect_node = fe_effect_find_node_by_type( m_ttfFEEffect, fe_node_type_out );
         
-            fe_im im;
-            im.image.w = bitmap_width;
-            im.image.h = bitmap_height;
-            im.image.pitch = bitmap_pitch;
-            im.image.bytespp = bitmap_channel;
-            im.image.data = static_cast<uint8_t *>(const_cast<void*>(bitmap_buffer));
+            
+            int im_image_w = bitmap_width;
+            int im_image_h = bitmap_height;
+            int im_image_pitch = bitmap_pitch;
+            const void * im_image_data = static_cast<uint8_t *>(const_cast<void*>(bitmap_buffer));
             //im.image.data = (uint8_t *)bitmap_buffer;
 
+            FE_IMAGE_FORMAT im_image_format = TF_UNDEFINED;
             switch( bitmap_channel )
             {
             case 1:
-                im.image.format = FE_IMG_A8;
+                im_image_format = FE_IMG_A8;
                 break;
             case 4:
-                im.image.format = FE_IMG_R8G8B8A8;
+                im_image_format = FE_IMG_R8G8B8A8;
                 break;
             }
             
-            im.x = glyph->bitmap_left;
-            im.y = m_ttfHeight - glyph->bitmap_top;
-
+            int im_x = glyph->bitmap_left;
+            int im_y = m_ttfHeight - glyph->bitmap_top;
             
-            fe_node_apply( m_ttfHeight, &im, effect_node, &res );
+            fe_node_apply( m_ttfHeight
+                , im_x
+                , im_y
+                , im_image_w
+                , im_image_h
+                , im_image_format
+                , im_image_pitch
+                , im_image_data
+                , effect_node, &res );
 
             bitmap_width = res.image.w;
             bitmap_height = res.image.h;

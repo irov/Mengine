@@ -23,9 +23,13 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
                      ${THIRDPARTY_DIR}/libmath/include
 )
 
-add_definitions(-DMENGE_PLUGIN_DLL)
+add_definitions(-DMENGINE_PLUGIN_DLL)
 
 ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
+
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Plugins
+)
 
 SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS}/EXPORT:dllCreatePlugin")
 

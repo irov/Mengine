@@ -1,4 +1,4 @@
-set( MY_LIB_NAME MengeCal3dPlugin )
+set( MY_LIB_NAME Cal3dPlugin )
 
 ADD_FILTER(
 src
@@ -16,7 +16,7 @@ src
     PluginCal3d.cpp
 )
 
-add_definitions(-DMENGE_PLUGIN_DLL)
+add_definitions(-DMENGINE_PLUGIN_DLL)
 
 INCLUDE_DIRECTORIES( 
         ${Mengine_SOURCE_DIR}/Utils
@@ -26,6 +26,10 @@ INCLUDE_DIRECTORIES(
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
+
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Plugins
+)
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

@@ -12,6 +12,10 @@ INCLUDE_DIRECTORIES(
     ${Mengine_SOURCE_DIR} 
     ${Mengine_SOURCE_DIR}/Utils 
     ) 
+    
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Service
+)
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

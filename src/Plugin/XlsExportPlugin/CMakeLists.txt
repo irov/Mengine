@@ -1,4 +1,4 @@
-set( MY_LIB_NAME MengeXlsExportPlugin )
+set( MY_LIB_NAME XlsExportPlugin )
 
 ADD_FILTER(
 src
@@ -27,6 +27,10 @@ add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPYBIND_PYTHON_VERSION=342)
 					 
 ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
+
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Plugins
+)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Logger)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Factory)

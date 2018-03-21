@@ -1,4 +1,4 @@
-set( MY_LIB_NAME MengeDevelopmentConverterPlugin )
+set( MY_LIB_NAME DevelopmentConverterPlugin )
 
 ADD_FILTER(
 src
@@ -44,6 +44,10 @@ INCLUDE_DIRECTORIES(
     
 
 ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
+
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Plugins
+)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Logger )
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Core )

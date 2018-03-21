@@ -1,4 +1,4 @@
-set( MY_LIB_NAME MengeImageCodecPlugin )
+set( MY_LIB_NAME ImageCodecPlugin )
 
 ADD_FILTER(
 src
@@ -91,11 +91,11 @@ mdl
 SET(MENGINE_SUPPORT_DECODER_WEBP ON)
 
 if(MENGINE_SUPPORT_DECODER_WEBP)
-ADD_FILTER(
-webp
-    ImageDecoderWEBP.h
-    ImageDecoderWEBP.cpp 
-)
+    ADD_FILTER(
+        webp
+        ImageDecoderWEBP.h
+        ImageDecoderWEBP.cpp 
+    )
     
     add_definitions(-DMENGINE_SUPPORT_DECODER_WEBP)
     INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libwebp/src )
@@ -116,6 +116,10 @@ INCLUDE_DIRECTORIES(
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
+
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Plugins
+)
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

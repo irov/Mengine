@@ -1,4 +1,4 @@
-set( MY_LIB_NAME MengeVideoCodecPlugin )
+set( MY_LIB_NAME VideoCodecPlugin )
 
 ADD_FILTER(
 src
@@ -29,6 +29,10 @@ INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
 #INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libvpx )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
+
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Plugins
+)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Logger)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Core)

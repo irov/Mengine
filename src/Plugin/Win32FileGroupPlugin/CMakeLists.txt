@@ -1,4 +1,4 @@
-set( MY_LIB_NAME MengeWin32FileGroupPlugin )
+set( MY_LIB_NAME Win32FileGroupPlugin )
 
 ADD_FILTER(
 src
@@ -23,6 +23,10 @@ add_definitions(-DUNICODE)
 add_definitions(-D_UNICODE)
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
+
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Plugins
+)
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

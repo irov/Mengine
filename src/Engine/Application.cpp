@@ -71,9 +71,6 @@
 #include "MovieEvent.h"
 #include "Model3D.h"
 #include "Layer2D.h"
-//#include "Layer2DParallax.h"
-//#include "Layer2DIsometric.h"
-//#include "Layer2DLoop.h"
 #include "Kernel/Isometric.h"
 #include "Kernel/Isometric.h"
 #include "Kernel/Parallax.h"
@@ -103,7 +100,6 @@
 
 
 // All Resource type
-//#include "ResourceSequence.h"
 #include "ResourceAnimation.h"
 
 #include "Kernel/ResourceImageData.h"
@@ -114,7 +110,6 @@
 #include "ResourceImageSubstract.h"
 #include "ResourceImageSubstractRGBAndAlpha.h"
 
-//#include "ResourceBinary.h"
 #include "ResourceFile.h"
 #include "ResourceMovie.h"
 #include "ResourceVideo.h"
@@ -124,8 +119,6 @@
 #include "ResourceTileMap.h"
 #include "ResourceTileSet.h"
 #include "ResourceModel3D.h"
-//#include "ResourceMeshMS3D.h"
-//#include "ResourceMeshNoise.h"
 #include "ResourceMaterial.h"
 #include "ResourceWindow.h"
 #include "ResourceHIT.h"
@@ -133,8 +126,6 @@
 #include "ResourceCursorICO.h"
 #include "ResourceCursorSystem.h"
 #include "ResourceInternalObject.h"
-
-//#include "ScriptWrapper.h"
 
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
@@ -150,8 +141,6 @@
 
 #include "Core/String.h"
 #include "Core/IniUtil.h"
-
-#include "../dependencies/SDL2/include/SDL_video.h"
 
 #include "stdex/allocator.h"
 #include "stdex/stl_list.h"

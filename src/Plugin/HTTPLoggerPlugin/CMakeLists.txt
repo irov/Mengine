@@ -1,4 +1,4 @@
-set( MY_LIB_NAME MengeHTTPLoggerPlugin )
+set( MY_LIB_NAME HTTPLoggerPlugin )
 
 ADD_FILTER(
 src
@@ -17,6 +17,10 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
+
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Plugins
+)
 
 SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS}/EXPORT:dllCreatePlugin")
 

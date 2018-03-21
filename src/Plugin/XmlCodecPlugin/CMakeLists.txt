@@ -1,4 +1,4 @@
-set( MY_LIB_NAME MengeXmlCodecPlugin )
+set( MY_LIB_NAME XmlCodecPlugin )
 
 ADD_FILTER(
 src
@@ -21,6 +21,10 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 #ADD_DEPENDENCIES( ${MY_LIB_NAME} LoggerLib )
 				 
 ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
+
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Plugins
+)
 
 #SET_TARGET_PROPERTIES( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS "/def:XmlCodecPlugin.def" )
 

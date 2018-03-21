@@ -27,6 +27,10 @@ else()
     ADD_LIBRARY( ${MY_LIB_NAME} STATIC ${SRC_FILES} )
 endif()    
 
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Plugins
+)
+
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX} )
 
 if( MINGW )

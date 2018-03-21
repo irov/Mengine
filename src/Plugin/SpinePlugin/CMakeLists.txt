@@ -1,4 +1,4 @@
-set(MY_LIB_NAME MengeSpinePlugin)
+set(MY_LIB_NAME SpinePlugin)
 
 ADD_FILTER(
 src
@@ -18,6 +18,10 @@ INCLUDE_DIRECTORIES(
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
+
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Plugins
+)
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

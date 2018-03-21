@@ -1,4 +1,4 @@
-#   pragma once
+#pragma once
 
 #include "Kernel/ScriptEventReceiver.h"
 #include "Kernel/Animatable.h"

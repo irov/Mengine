@@ -1,4 +1,4 @@
-#   pragma once
+#pragma once
 
 #include "Interface/CodecInterface.h"
 #include "Interface/StringizeInterface.h"

@@ -2,9 +2,9 @@
 
 #include "Interface/SoundSystemInterface.h"
 
-#include "OALSoundBufferBase.h"
-#include "OALSoundBufferStream.h"
-#include "OALSoundSource.h"
+#include "OpenALSoundBufferBase.h"
+#include "OpenALSoundBufferStream.h"
+#include "OpenALSoundSource.h"
 
 #include "Core/ServiceBase.h"
 

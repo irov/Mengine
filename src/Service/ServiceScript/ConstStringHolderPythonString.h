@@ -1,4 +1,4 @@
-#   pragma once
+#pragma once
 
 #include "Factory/Factorable.h"
 #include "Core/ConstString.h"

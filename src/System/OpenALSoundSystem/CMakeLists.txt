@@ -1,19 +1,19 @@
-set( MY_LIB_NAME OALSoundSystem )
+set( MY_LIB_NAME OpenALSoundSystem )
 
 ADD_FILTER(
 src
-	OALSoundBufferBase.cpp
-	OALSoundBufferBase.h
-	OALSoundBufferMemory.cpp
-	OALSoundBufferMemory.h
-	OALSoundBufferStream.cpp
-	OALSoundBufferStream.h
-	OALSoundSource.cpp
-	OALSoundSource.h
-	OALSoundSystem.cpp
-	OALSoundSystem.h
-	OALSoundError.cpp
-	OALSoundError.h	
+	OpenALSoundBufferBase.cpp
+	OpenALSoundBufferBase.h
+	OpenALSoundBufferMemory.cpp
+	OpenALSoundBufferMemory.h
+	OpenALSoundBufferStream.cpp
+	OpenALSoundBufferStream.h
+	OpenALSoundSource.cpp
+	OpenALSoundSource.h
+	OpenALSoundSystem.cpp
+	OpenALSoundSystem.h
+	OpenALSoundError.cpp
+	OpenALSoundError.h	
 )
 
 add_definitions(-DAL_LIBTYPE_STATIC)

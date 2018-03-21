@@ -1,8 +1,8 @@
-#include "OALSoundSource.h"
+#include "OpenALSoundSource.h"
 
-#include "OALSoundSystem.h"
-#include "OALSoundBufferBase.h"
-#include "OALSoundError.h"
+#include "OpenALSoundSystem.h"
+#include "OpenALSoundBufferBase.h"
+#include "OpenALSoundError.h"
 
 #include "Logger/Logger.h"
 

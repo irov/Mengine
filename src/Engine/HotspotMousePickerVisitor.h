@@ -1,4 +1,4 @@
-//#   pragma once
+//#pragma once
 //
 //#include "Core/Visitor.h"
 //#include "Core/Resolution.h"

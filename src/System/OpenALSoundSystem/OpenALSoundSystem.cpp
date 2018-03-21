@@ -1,9 +1,9 @@
-#include "OALSoundSystem.h"
+#include "OpenALSoundSystem.h"
+#include "OpenALSoundError.h"
 
 #include "Interface/UnicodeInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 
-#include "OALSoundError.h"
 #include "Factory/FactoryPool.h"
 #include "Logger/Logger.h"
 

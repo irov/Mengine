@@ -1,4 +1,4 @@
-#   pragma once
+#pragma once
 
 #include "Interface/ServantInterface.h"
 #include "Interface/ServiceInterface.h"

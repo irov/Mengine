@@ -1,4 +1,4 @@
-#   pragma once
+#pragma once
 
 #include "Interface/PackageInterface.h"
 #include "Interface/NotificationServiceInterface.h"

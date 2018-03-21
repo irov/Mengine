@@ -1,6 +1,6 @@
-#include "OALSoundBufferMemory.h"
-#include "OALSoundSystem.h"
-#include "OALSoundError.h"
+#include "OpenALSoundBufferMemory.h"
+#include "OpenALSoundSystem.h"
+#include "OpenALSoundError.h"
 
 #include "Core/MemoryHelper.h"
 

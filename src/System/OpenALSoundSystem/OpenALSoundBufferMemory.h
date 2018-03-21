@@ -1,6 +1,6 @@
 #pragma once
 
-#include "OALSoundBufferBase.h"
+#include "OpenALSoundBufferBase.h"
 
 namespace Mengine
 {

@@ -1,8 +1,8 @@
-#   pragma once
+#pragma once
 
 #include "Interface/SoundSystemInterface.h"
 
-#include "OALSoundBufferBase.h"
+#include "OpenALSoundBufferBase.h"
 
 #include "AL/al.h"
 

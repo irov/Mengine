@@ -1,4 +1,4 @@
-#include "OALSoundError.h"
+#include "OpenALSoundError.h"
 
 #include "AL/al.h"
 

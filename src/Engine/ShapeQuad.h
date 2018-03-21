@@ -1,4 +1,4 @@
-#   pragma once
+#pragma once
 
 #include "Kernel/Shape.h"
 #include "Core/RenderVertex2D.h"

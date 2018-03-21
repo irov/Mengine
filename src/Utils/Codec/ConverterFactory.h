@@ -1,4 +1,4 @@
-#   pragma once
+#pragma once
 
 #include "Interface/ConverterInterface.h"
 #include "Interface/StringizeInterface.h"

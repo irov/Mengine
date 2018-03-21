@@ -1,4 +1,4 @@
-#   pragma once
+#pragma once
 
 #include "stdex/stl_allocator.h"
 #include <sstream>

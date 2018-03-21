@@ -1,4 +1,4 @@
-#   pragma once
+#pragma once
 
 #include "stdex/const_string2_holder.h"
 

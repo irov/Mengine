@@ -1,4 +1,4 @@
-#   pragma once
+#pragma once
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/StreamInterface.h"

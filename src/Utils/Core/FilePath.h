@@ -1,9 +1,9 @@
 #   pragma once
 
-#   include "Interface/ServiceInterface.h"
-#   include "Interface/StringizeInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#   include "Core/ConstString.h"
+#include "Core/ConstString.h"
 
 #include "Config/String.h"
 

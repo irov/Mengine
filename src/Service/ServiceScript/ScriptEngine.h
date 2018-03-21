@@ -4,9 +4,9 @@
 #include "Interface/ResourceInterface.h"
 #include "Interface/PrototypeManagerInterface.h"
 
-#   include "ConstStringHolderPythonString.h"
+#include "ConstStringHolderPythonString.h"
 
-#   include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
 #include "ScriptLogger.h"
 #include "ScriptModule.h"
@@ -14,11 +14,11 @@
 
 #include "Kernel/Entity.h"
 
-#   include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
 #include "pybind/pybind.hpp"
 
-#   include "stdex/stl_map.h"
+#include "stdex/stl_map.h"
 
 #include <cstdarg>
 

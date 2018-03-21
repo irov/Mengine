@@ -1,11 +1,11 @@
 #include "Window.h"
 
-#   include "Interface/ResourceInterface.h"
-#   include "Interface/RenderSystemInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
 #include "Kernel/Materialable.h"
 
-#   include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #include "Consts.h"
 

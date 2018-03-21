@@ -2,14 +2,14 @@
 
 #include "Interface/UnicodeInterface.h"
 #include "Interface/LoaderInterface.h"
-#   include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeManagerInterface.h"
 
 #include "Metacode/Metacode.h"
 
 #include "Kernel/Loadable.h"
 #include "Kernel/ResourceReference.h"
 
-#   include "Consts.h"
+#include "Consts.h"
 
 #include "Logger/Logger.h"
 

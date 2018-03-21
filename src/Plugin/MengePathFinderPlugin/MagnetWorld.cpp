@@ -4,7 +4,7 @@
 
 #include "math/ccd.h"
 
-#   include <algorithm>
+#include <algorithm>
 
 namespace Mengine
 {

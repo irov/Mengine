@@ -1,6 +1,6 @@
 #include "SurfaceTrackMatte.h"
 
-#   include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 
 #include "Kernel/ResourceImage.h"

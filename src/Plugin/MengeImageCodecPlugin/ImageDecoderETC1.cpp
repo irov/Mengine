@@ -1,6 +1,6 @@
-#   include "ImageDecoderETC1.h"
+#include "ImageDecoderETC1.h"
 
-#   include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Logger/Logger.h"
 

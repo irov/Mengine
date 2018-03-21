@@ -5,7 +5,7 @@
 
 #include "math/vec2.h"
 
-#   include "Factory/FactorablePtr.h"
+#include "Factory/FactorablePtr.h"
 
 #include "Core/Resolution.h"
 #include "Core/Viewport.h"

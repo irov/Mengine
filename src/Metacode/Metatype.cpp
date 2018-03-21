@@ -1,12 +1,12 @@
-#   include "Metatype.h"
+#include "Metatype.h"
 
-#   include "Interface/ServiceInterface.h"
-#   include "Interface/UnicodeInterface.h"
-#   include "Interface/StringizeInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/StringizeInterface.h"
 
 #include "Logger/Logger.h"
 
-#   include "LoaderEngine.h"
+#include "LoaderEngine.h"
 
 namespace Metabuf
 {

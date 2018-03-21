@@ -5,7 +5,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/RenderEnumInterface.h"
 
-#   include "Factory/FactorablePtr.h"
+#include "Factory/FactorablePtr.h"
 
 #include "Core/Viewport.h"
 #include "Core/Resolution.h"
@@ -13,13 +13,13 @@
 #include "Core/ConstString.h"
 #include "Core/FilePath.h"
 #include "Core/PixelFormat.h"
-#   include "Core/Pointer.h"
-#   include "Core/RenderVertex2D.h"
-#   include "Core/RenderIndex.h"
+#include "Core/Pointer.h"
+#include "Core/RenderVertex2D.h"
+#include "Core/RenderIndex.h"
 
 #include "Config/Typedef.h"
 
-#   include "stdex/intrusive_ptr.h"
+#include "stdex/intrusive_ptr.h"
 
 #include "math/mat4.h"
 #include "math/uv4.h"

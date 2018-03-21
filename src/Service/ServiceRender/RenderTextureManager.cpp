@@ -1,21 +1,21 @@
-#   include "RenderTextureManager.h"
+#include "RenderTextureManager.h"
 
-#   include "Interface/FileSystemInterface.h"
-#   include "Interface/WatchdogInterface.h"
-#   include "Interface/StringizeInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/WatchdogInterface.h"
+#include "Interface/StringizeInterface.h"
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/GraveyardInterface.h"
 #include "Interface/ConfigInterface.h"
 
-#   include "RenderTexture.h"
-#   include "DecoderRenderImageProvider.h"
+#include "RenderTexture.h"
+#include "DecoderRenderImageProvider.h"
 
-#   include "Factory/FactoryPool.h"
-#   include "Factory/FactoryPoolWithListener.h"
+#include "Factory/FactoryPool.h"
+#include "Factory/FactoryPoolWithListener.h"
 
 #include "stdex/memorycopy.h"
 
-#   include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderTextureService, Mengine::RenderTextureManager );

@@ -1,12 +1,12 @@
 #   pragma once
 
-#   include "Interface/ConverterInterface.h"
-#   include "Interface/StringizeInterface.h"
+#include "Interface/ConverterInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#   include "Core/ServantBase.h"
-#   include "Core/ConstString.h"
+#include "Core/ServantBase.h"
+#include "Core/ConstString.h"
 
-#   include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
 namespace Mengine
 {

@@ -9,7 +9,7 @@
 
 #include "Core/MemoryHelper.h"
 
-#   include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #include "Core/ConstString.h"
 #include "Core/String.h"

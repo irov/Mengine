@@ -1,10 +1,10 @@
 #include "XmlToBinDecoder.h"
 
-#   include "Interface/LoaderInterface.h"
-#   include "Interface/StringizeInterface.h"
-#   include "Interface/ArchiveInterface.h"
+#include "Interface/LoaderInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/ArchiveInterface.h"
 
-#   include "Config/Blobject.h"
+#include "Config/Blobject.h"
 
 #include "Utils/Logger/Logger.h"
 
@@ -13,8 +13,8 @@
 #include "xml2metabuf/Xml2Metabuf.hpp"
 #include "xml2metabuf/Xml2Metacode.hpp"
 
-#   include <stdio.h>
-#   include <utf8.h>
+#include <stdio.h>
+#include <utf8.h>
 
 namespace Mengine
 {

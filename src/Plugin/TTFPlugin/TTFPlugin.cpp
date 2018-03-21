@@ -1,8 +1,8 @@
 #include "TTFPlugin.h"
 
 #include "Interface/StringizeInterface.h"
-#   include "Interface/PrototypeManagerInterface.h"
-#   include "Interface/StringizeInterface.h"
+#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/StringizeInterface.h"
 
 #include "Core/PixelFormat.h"
 
@@ -10,7 +10,7 @@
 
 #include "TTFPrototypeGenerator.h"
 
-#   include "fe/fe.h"
+#include "fe/fe.h"
 
 //////////////////////////////////////////////////////////////////////////
 void _debug_image_created( fe_image * )

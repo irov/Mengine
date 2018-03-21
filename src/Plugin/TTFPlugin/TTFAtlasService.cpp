@@ -3,7 +3,7 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ConfigInterface.h"
 
-#   include "stdex/memorycopy.h"
+#include "stdex/memorycopy.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TTFAtlasService, Mengine::TTFAtlasService );

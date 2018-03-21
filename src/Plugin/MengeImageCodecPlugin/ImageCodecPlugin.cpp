@@ -1,8 +1,8 @@
 #include "ImageCodecPlugin.h"
 
 #include "Interface/CodecInterface.h"
-#   include "Interface/ImageCodecInterface.h"
-#   include "Interface/StringizeInterface.h"
+#include "Interface/ImageCodecInterface.h"
+#include "Interface/StringizeInterface.h"
 
 #include "ImageDecoderPNG.h"
 #include "ImageDecoderJPEG.h"
@@ -27,15 +27,15 @@
 #include "ImageEncoderPNG.h"
 #include "ImageEncoderJPEG.h"
 
-#   include "PickDecoderHIT.h"
-#   include "PickEncoderHIT.h"
+#include "PickDecoderHIT.h"
+#include "PickEncoderHIT.h"
 
 #include "DataflowAEK.h"
 #include "DataflowMDL.h"
 
-#   include "Codec/DecoderFactory.h"
-#   include "Codec/EncoderFactory.h"
-#   include "Codec/DataflowFactory.h"
+#include "Codec/DecoderFactory.h"
+#include "Codec/EncoderFactory.h"
+#include "Codec/DataflowFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( MengeImageCodec, Mengine::ImageCodecPlugin );

@@ -7,11 +7,11 @@
 #include "Win32ThreadIdentity.h"
 #include "Win32ThreadMutex.h"
 
-#   include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
-#   include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
-#   include "stdex/pool.h"
+#include "stdex/pool.h"
 
 #include "stdex/stl_vector.h"
 

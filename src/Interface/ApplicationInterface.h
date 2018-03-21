@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Config/Typedef.h"
-#   include "Config/String.h"
+#include "Config/String.h"
 
 #include "Core/ConstString.h"
-#   include "Core/FilePath.h"
+#include "Core/FilePath.h"
 #include "Core/Resolution.h"
 #include "Core/Viewport.h"
-#   include "Core/AspectRatioViewports.h"
+#include "Core/AspectRatioViewports.h"
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/PlatformInterface.h"

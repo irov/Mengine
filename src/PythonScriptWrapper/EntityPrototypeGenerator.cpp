@@ -1,8 +1,8 @@
 #include "EntityPrototypeGenerator.h"
 
-#   include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#   include "Kernel/ScriptEventReceiver.h"
+#include "Kernel/ScriptEventReceiver.h"
 
 #include "pybind/pybind.hpp"
 

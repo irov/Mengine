@@ -5,9 +5,9 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/FileSystemInterface.h"
 
-#   include "Core/Stream.h"
+#include "Core/Stream.h"
 #include "Core/MemoryHelper.h"
-#   include "Core/IniUtil.h"
+#include "Core/IniUtil.h"
 
 #include "Logger/Logger.h"
 

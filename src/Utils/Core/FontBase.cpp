@@ -1,8 +1,8 @@
 #include "FontBase.h"
 
-#   include "Core/IniUtil.h"
+#include "Core/IniUtil.h"
 
-#   include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #include "utf8.h"
 

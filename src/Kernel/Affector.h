@@ -4,12 +4,12 @@
 
 #include "Kernel/Scriptable.h"
 
-#   include "Factory/Factorable.h"
-#   include "Factory/FactoryPool.h"
+#include "Factory/Factorable.h"
+#include "Factory/FactoryPool.h"
 
 #include "Core/ValueInterpolator.h"
 
-#   include "stdex/intrusive_slug_linked.h"
+#include "stdex/intrusive_slug_linked.h"
 
 namespace Mengine
 {

@@ -1,6 +1,6 @@
 #include "ScriptEngine.h"
 
-#   include "ScriptModuleLoader.h"
+#include "ScriptModuleLoader.h"
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/OptionsInterface.h"
@@ -10,8 +10,8 @@
 #include "Interface/PrototypeManagerInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#   include "Factory/FactoryPool.h"
-#   include "Factory/FactorableUnique.h"
+#include "Factory/FactoryPool.h"
+#include "Factory/FactorableUnique.h"
 
 #include "Logger/Logger.h"
 

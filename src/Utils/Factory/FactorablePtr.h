@@ -1,11 +1,11 @@
 #pragma once
 
-#   include "Factory/Factorable.h"
+#include "Factory/Factorable.h"
 
-#   include "stdex/intrusive_ptr_base.h"
+#include "stdex/intrusive_ptr_base.h"
 
-#   include <stddef.h>
-#   include <stdint.h>
+#include <stddef.h>
+#include <stdint.h>
 
 //typedef stdex::intrusive_ptr<Type> TypePtr;
 

@@ -3,7 +3,7 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/OptionsInterface.h"
 
-#   include "Win32ConsoleLogger.h"
+#include "Win32ConsoleLogger.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Win32ConsoleLogger, Mengine::Win32ConsoleLoggerPlugin )

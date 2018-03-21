@@ -1,7 +1,7 @@
 #include "BitmapFontPlugin.h"
 
-#   include "Interface/StringizeInterface.h"
-#   include "Interface/PrototypeManagerInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/PrototypeManagerInterface.h"
 
 #include "Logger/Logger.h"
 

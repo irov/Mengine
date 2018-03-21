@@ -2,19 +2,19 @@
 
 #include "Interface/RenderSystemInterface.h"
 
-#   include "DX9RenderImage.h"
-#   include "DX9RenderVertexShader.h"
-#   include "DX9RenderFragmentShader.h"
-#   include "DX9RenderProgram.h"
-#   include "DX9RenderVertexAttribute.h"
-#   include "DX9RenderVertexBuffer.h"
-#   include "DX9RenderIndexBuffer.h"
+#include "DX9RenderImage.h"
+#include "DX9RenderVertexShader.h"
+#include "DX9RenderFragmentShader.h"
+#include "DX9RenderProgram.h"
+#include "DX9RenderVertexAttribute.h"
+#include "DX9RenderVertexBuffer.h"
+#include "DX9RenderIndexBuffer.h"
 
-#   include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
-#   include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
-#   include "stdex/stl_map.h"
+#include "stdex/stl_map.h"
 
 #include <d3d9.h>
 

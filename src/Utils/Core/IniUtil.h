@@ -1,16 +1,16 @@
 #   pragma once
 
-#   include "tinyini/tinyini.h"
+#include "tinyini/tinyini.h"
 
-#   include "Interface/ServiceInterface.h"
-#   include "Interface/StreamInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/StreamInterface.h"
 
 #include "Core/Params.h"
 #include "Core/String.h"
 #include "Core/ConstString.h"
 #include "Core/ConstStringTypes.h"
 #include "Core/Tags.h"
-#   include "Core/FilePath.h"
+#include "Core/FilePath.h"
 #include "Core/Resolution.h"
 #include "Core/Viewport.h"
 #include "Core/AspectRatioViewports.h"

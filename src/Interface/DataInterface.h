@@ -6,7 +6,7 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#   include "Factory/FactorablePtr.h"
+#include "Factory/FactorablePtr.h"
 
 #include "Core/ConstString.h"
 #include "Core/FilePath.h"

@@ -7,7 +7,7 @@
 #include "Kernel/ScriptablePrototypeGenerator.h"
 #include "Kernel/ScriptEventReceiver.h"
 
-#   include "Kernel/ScriptWrapper.h"
+#include "Kernel/ScriptWrapper.h"
 
 #include <algorithm>
 

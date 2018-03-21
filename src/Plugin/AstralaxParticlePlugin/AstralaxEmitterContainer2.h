@@ -4,9 +4,9 @@
 
 #include "AstralaxEmitter2.h"
 
-#   include "Core/ServantBase.h"
+#include "Core/ServantBase.h"
 
-#   include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 

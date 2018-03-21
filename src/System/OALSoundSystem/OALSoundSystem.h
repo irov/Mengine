@@ -6,7 +6,7 @@
 #include "OALSoundBufferStream.h"
 #include "OALSoundSource.h"
 
-#   include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
 #include "AL/al.h"
 #include "AL/alc.h"

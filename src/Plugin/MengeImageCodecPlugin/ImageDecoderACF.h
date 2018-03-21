@@ -2,7 +2,7 @@
 
 #include "Codec/ImageDecoder.h"
 
-#   include "Interface/ArchiveInterface.h"
+#include "Interface/ArchiveInterface.h"
 
 #include "Core/Magic.h"
 

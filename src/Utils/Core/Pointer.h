@@ -1,7 +1,7 @@
 #pragma once
 
 #include "stdex/mpl.h"
-#   include "stdex/intrusive_ptr.h"
+#include "stdex/intrusive_ptr.h"
 
 namespace Mengine
 {

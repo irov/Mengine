@@ -1,6 +1,6 @@
 #include "ResourceHIT.h"
 
-#   include "Interface/PickCodecInterface.h"
+#include "Interface/PickCodecInterface.h"
 #include "Interface/ConverterInterface.h"
 #include "Interface/ResourceInterface.h"
 #include "Interface/StringizeInterface.h"

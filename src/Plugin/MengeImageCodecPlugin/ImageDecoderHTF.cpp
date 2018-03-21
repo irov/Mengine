@@ -1,8 +1,8 @@
 #include "ImageDecoderHTF.h"
-#   include "ImageVerifyHTF.h"
+#include "ImageVerifyHTF.h"
 
 #include "Interface/FileSystemInterface.h"
-#   include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
 #include "Core/Stream.h"
 

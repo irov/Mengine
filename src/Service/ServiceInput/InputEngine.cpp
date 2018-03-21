@@ -5,7 +5,7 @@
 
 #include "Logger/Logger.h"
 
-#   include <algorithm>
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( InputService, Mengine::InputEngine );

@@ -1,13 +1,13 @@
 #   pragma once
 
-#   include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
-#   include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
 #include "Core/ConstString.h"
 
-#   include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
 #include "stdex/stl_map.h"
 

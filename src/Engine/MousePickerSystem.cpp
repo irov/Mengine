@@ -1,7 +1,7 @@
 #include "MousePickerSystem.h"
 
-#   include "Interface/InputSystemInterface.h"
-#   include "Interface/ApplicationInterface.h"
+#include "Interface/InputSystemInterface.h"
+#include "Interface/ApplicationInterface.h"
 
 #include "Kernel/Arrow.h"
 #include "Kernel/Scene.h"

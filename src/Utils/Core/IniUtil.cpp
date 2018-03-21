@@ -1,15 +1,15 @@
-#   include "Utils/Core/IniUtil.h"
+#include "Utils/Core/IniUtil.h"
 
-#   include "Interface/UnicodeInterface.h"
-#   include "Interface/FileSystemInterface.h"
-#   include "Interface/StringizeInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#   include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #include <sstream>
 
-#   include <stdio.h>
-#   include <string.h>
+#include <stdio.h>
+#include <string.h>
 
 namespace Mengine
 {

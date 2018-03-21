@@ -1,13 +1,13 @@
 #include "ZipPlugin.h"
 
-#   include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
 #include "Interface/FileSystemInterface.h"
 
 #include "FileGroupZip.h"
 #include "ArchivatorZip.h"
 
-#   include "Factory/FactoryDefault.h"
+#include "Factory/FactoryDefault.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( MengeZip, Mengine::ZipPlugin )

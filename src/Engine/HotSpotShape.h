@@ -2,7 +2,7 @@
 
 #include "HotSpotPolygon.h"
 
-#   include "ResourceShape.h"
+#include "ResourceShape.h"
 
 namespace Mengine
 {

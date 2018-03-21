@@ -14,9 +14,9 @@
 #include "MovieKeyConverterXMLToAEK.h"
 #include "ModelConverterMDLToMDZ.h"
 
-#   include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#   include "Codec/ConverterFactory.h"
+#include "Codec/ConverterFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( DevelopmentConverter, Mengine::DevelopmentConverterPlugin );

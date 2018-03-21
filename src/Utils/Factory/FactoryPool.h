@@ -4,7 +4,7 @@
 
 #include "stdex/pool.h"
 
-#   include <typeinfo>
+#include <typeinfo>
 
 namespace Mengine
 {

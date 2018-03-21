@@ -6,7 +6,7 @@
 
 #include "Core/ConstString.h"
 
-#   include "Codec/DecoderFactory.h"
+#include "Codec/DecoderFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( MengeXmlCodec, Mengine::XmlCodecPlugin )

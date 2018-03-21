@@ -1,9 +1,9 @@
 #include "HotSpotShape.h"
 
 #include "Interface/ResourceInterface.h"
-#   include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#   include "ResourceShape.h"
+#include "ResourceShape.h"
 
 #include "Logger/Logger.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#   include "Interface/SoundCodecInterface.h"
+#include "Interface/SoundCodecInterface.h"
 
 #include "Config/Typedef.h"
 
@@ -10,7 +10,7 @@
 #include "Core/ConstString.h"
 #include "Core/FilePath.h"
 
-#   include "math/vec3.h"
+#include "math/vec3.h"
 
 namespace Mengine
 {

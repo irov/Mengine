@@ -1,4 +1,4 @@
-#   include "DX9RenderVertexShader.h"
+#include "DX9RenderVertexShader.h"
 
 #include "DX9ErrorHelper.h"
 

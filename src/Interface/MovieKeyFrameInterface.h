@@ -1,15 +1,15 @@
 #   pragma once
 
-#   include "Interface/DataInterface.h"
+#include "Interface/DataInterface.h"
 
-#   include "Core/Magic.h"
-#   include "Core/ConstString.h"
-#   include "Core/FilePath.h"
-#   include "Core/RenderIndex.h"
+#include "Core/Magic.h"
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
+#include "Core/RenderIndex.h"
 
-#   include "Factory/Factorable.h"
+#include "Factory/Factorable.h"
 
-#   include "math/vec3.h"
+#include "math/vec3.h"
 
 #include <stdint.h>
 

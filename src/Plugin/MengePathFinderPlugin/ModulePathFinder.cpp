@@ -8,7 +8,7 @@
 #include "PathGraphNode.h"
 
 #include "Kernel/ResourceImageData.h"
-#   include "Kernel/ScriptWrapper.h"
+#include "Kernel/ScriptWrapper.h"
 
 #include "pybind/pybind.hpp"
 

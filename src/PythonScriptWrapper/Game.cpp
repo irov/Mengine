@@ -7,20 +7,20 @@
 
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ResourceInterface.h"
-#   include "Interface/RenderSystemInterface.h"
-#   include "Interface/AccountInterface.h"
-#   include "Interface/NodeInterface.h"
-#   include "Interface/TextInterface.h"
-#   include "Interface/StringizeInterface.h"
-#   include "Interface/ConfigInterface.h"
-#   include "Interface/PlayerInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/AccountInterface.h"
+#include "Interface/NodeInterface.h"
+#include "Interface/TextInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/ConfigInterface.h"
+#include "Interface/PlayerInterface.h"
 
-#   include "GameAccountProvider.h"
-#   include "GameSoundVolumeProvider.h"
+#include "GameAccountProvider.h"
+#include "GameSoundVolumeProvider.h"
 
-#   include "Kernel/ScriptEventReceiver.h"
+#include "Kernel/ScriptEventReceiver.h"
 
-#   include "Kernel/Arrow.h"
+#include "Kernel/Arrow.h"
 
 #include "Logger/Logger.h"
 

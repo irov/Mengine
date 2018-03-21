@@ -1,9 +1,9 @@
 #include "PythonScriptWrapper.h"
 
-#   include "Interface/StringizeInterface.h"
-#   include "Interface/ScriptSystemInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/ScriptSystemInterface.h"
 
-#   include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 #include "pybind/stl_type_cast.hpp"
 
 namespace Mengine

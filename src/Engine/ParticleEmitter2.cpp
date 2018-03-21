@@ -2,19 +2,19 @@
 
 #include "Logger/Logger.h"
 
-#   include "Interface/RenderSystemInterface.h"
-#   include "Interface/ApplicationInterface.h"
-#   include "Interface/StringizeInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/StringizeInterface.h"
 
 #include "Kernel/Scene.h"
 #include "Kernel/Layer.h"
 
-#   include "Interface/ParticleSystemInterface.h"
+#include "Interface/ParticleSystemInterface.h"
 
 #include "ResourceImageDefault.h"
 #include "ResourceHIT.h"
 
-#   include "Interface/ResourceInterface.h"
+#include "Interface/ResourceInterface.h"
 
 #include "Consts.h"
 

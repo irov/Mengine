@@ -1,7 +1,7 @@
 #   pragma once
 
-#   include "Kernel/Shape.h"
-#   include "Core/RenderVertex2D.h"
+#include "Kernel/Shape.h"
+#include "Core/RenderVertex2D.h"
 
 namespace Mengine
 {

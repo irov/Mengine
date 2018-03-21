@@ -6,7 +6,7 @@
 
 #include "Kernel/ScriptEventReceiver.h"
 #include "Kernel/NodePrototypeGenerator.h"
-#   include "Kernel/ScriptWrapper.h"
+#include "Kernel/ScriptWrapper.h"
 
 #include "Factory/FactoryPool.h"
 

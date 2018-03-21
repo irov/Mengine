@@ -1,5 +1,5 @@
 #include "ImageEncoderACF.h"
-#   include "ImageVerifyACF.h"
+#include "ImageVerifyACF.h"
 
 #include "Interface/FileSystemInterface.h"
 #include "Interface/ArchiveInterface.h"

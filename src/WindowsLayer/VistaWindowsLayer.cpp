@@ -1,11 +1,11 @@
-#   include "VistaWindowsLayer.h"
+#include "VistaWindowsLayer.h"
 
-#   include "Interface/UnicodeInterface.h"
-#   include "Interface/PlatformInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/PlatformInterface.h"
 
-#   include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
-#   include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( WindowsLayer, Mengine::VistaWindowsLayer );

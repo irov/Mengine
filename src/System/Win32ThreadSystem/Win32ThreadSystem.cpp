@@ -1,9 +1,9 @@
 #include "Win32ThreadSystem.h"
 
-#   include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 #include "Logger/Logger.h"
 
-#   include <algorithm>
+#include <algorithm>
 
 #include <process.h>
 

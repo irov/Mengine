@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/Layer.h"
-#   include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
 #include "Core/Viewport.h"
 #include "Core/RenderVertex2D.h"

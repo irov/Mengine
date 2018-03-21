@@ -1,10 +1,10 @@
-#   include "DecoderRenderImageProvider.h"
+#include "DecoderRenderImageProvider.h"
 
-#   include "DecoderRenderImageLoader.h"
+#include "DecoderRenderImageLoader.h"
 
-#   include "Factory/FactorableUnique.h"
+#include "Factory/FactorableUnique.h"
 
-#   include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 namespace Mengine
 {

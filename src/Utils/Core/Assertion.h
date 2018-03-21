@@ -2,7 +2,7 @@
 
 #ifdef _DEBUG
 
-#   include "Config/Char.h"
+#include "Config/Char.h"
 
 namespace Mengine
 {

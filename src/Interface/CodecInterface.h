@@ -6,12 +6,12 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/FileSystemInterface.h"
 
-#   include "Factory/FactorablePtr.h"
+#include "Factory/FactorablePtr.h"
 
 #include "Core/FilePath.h"
 
-#   include "stdex/intrusive_ptr.h"
-#   include "stdex/intrusive_algorithm.h"
+#include "stdex/intrusive_ptr.h"
+#include "stdex/intrusive_algorithm.h"
 
 namespace Mengine
 {

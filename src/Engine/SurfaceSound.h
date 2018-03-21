@@ -5,7 +5,7 @@
 #include "Kernel/Animatable.h"
 #include "Kernel/Soundable.h"
 
-#   include "ResourceSound.h"
+#include "ResourceSound.h"
 
 #include "Interface/SoundSystemInterface.h"
 

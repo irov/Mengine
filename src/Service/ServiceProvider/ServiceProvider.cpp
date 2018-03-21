@@ -1,6 +1,6 @@
 #include "ServiceProvider.h"
 
-#   include <string.h>
+#include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_FACTORY( ServiceProvider, Mengine::ServiceProvider );

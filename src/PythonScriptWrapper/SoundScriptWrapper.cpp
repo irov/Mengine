@@ -8,7 +8,7 @@
 #include "Kernel/Affectorable.h"
 #include "Kernel/Affector.h"
 
-#include "Menge/ResourceSound.h"
+#include "Engine/ResourceSound.h"
 #include "Factory/FactoryPool.h"
 
 #include "Logger/Logger.h"
@@ -715,7 +715,6 @@ namespace Mengine
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	//REGISTER_SCRIPT_CLASS( Menge, ScriptSoundHelper, Base )
 	void PythonScriptWrapper::soundWrap()
 	{
         SoundScriptMethod * soundScriptMethod = new SoundScriptMethod();

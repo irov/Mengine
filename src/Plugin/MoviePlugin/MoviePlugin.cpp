@@ -5,18 +5,18 @@
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ConfigInterface.h"
 
-#   include "Kernel/ScriptWrapper.h"
+#include "Kernel/ScriptWrapper.h"
 
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 
-#   include "PythonScriptWrapper/PythonAnimatableEventReceiver.h"
+#include "PythonScriptWrapper/PythonAnimatableEventReceiver.h"
 
 #include "Core/ModuleFactory.h"
 
 #include "Logger/Logger.h"
 
-#   include <stdlib.h>
+#include <stdlib.h>
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Movie, Mengine::MoviePlugin )

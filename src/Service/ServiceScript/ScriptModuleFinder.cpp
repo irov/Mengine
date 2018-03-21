@@ -1,12 +1,12 @@
-#   include "ScriptModuleFinder.h"
+#include "ScriptModuleFinder.h"
 
-#   include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#   include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#   include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 namespace Mengine
 {

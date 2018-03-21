@@ -1,12 +1,12 @@
 #include "VideoCodecPlugin.h"
 
-//#   include "VideoDecoderGVF.h"
-//#   include "VideoDecoderVPX.h"
+//#include "VideoDecoderGVF.h"
+//#include "VideoDecoderVPX.h"
 #include "VideoDecoderTheora.h"
 
-#   include "Codec/DecoderFactory.h"
+#include "Codec/DecoderFactory.h"
 
-#   include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( MengeVideoCodec, Mengine::VideoCodecPlugin );

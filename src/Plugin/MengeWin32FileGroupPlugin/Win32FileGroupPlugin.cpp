@@ -1,13 +1,13 @@
 #include "Win32FileGroupPlugin.h"
 
-#   include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 #include "Interface/FileSystemInterface.h"
-#   include "Interface/UnicodeInterface.h"
-#   include "Interface/PlatformInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/PlatformInterface.h"
 
-#   include "Factory/FactoryDefault.h"
+#include "Factory/FactoryDefault.h"
 
-#   include "Core/FilePath.h"
+#include "Core/FilePath.h"
 
 #include "Win32FileGroupDirectory.h"
 

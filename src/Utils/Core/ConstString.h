@@ -1,6 +1,6 @@
 #   pragma once
 
-#   include "stdex/const_string2.h"
+#include "stdex/const_string2.h"
 
 namespace Mengine
 {

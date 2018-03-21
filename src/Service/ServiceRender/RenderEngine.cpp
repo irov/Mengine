@@ -3,15 +3,15 @@
 #include "Interface/CodecInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/ImageCodecInterface.h"
-#   include "Interface/FileSystemInterface.h"
-#   include "Interface/WatchdogInterface.h"
-#   include "Interface/ConfigInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/WatchdogInterface.h"
+#include "Interface/ConfigInterface.h"
 
 //#include "Megatextures.h"
 
 #include "Core/RenderUtils.h"
 
-#   include "math/convex8.h"
+#include "math/convex8.h"
 
 #include "Logger/Logger.h"
 
@@ -19,7 +19,7 @@
 #include "stdex/intrusive_ptr_base.h"
 
 #include <math.h>
-#   include <memory.h>
+#include <memory.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderService, Mengine::RenderEngine );

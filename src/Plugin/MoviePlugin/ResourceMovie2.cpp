@@ -3,10 +3,10 @@
 #include "Interface/ResourceInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Menge/ResourceImageDefault.h"
-#include "Menge/ResourceVideo.h"
-#include "Menge/ResourceSound.h"
-#include "Menge/ResourceParticle.h"
+#include "Engine/ResourceImageDefault.h"
+#include "Engine/ResourceVideo.h"
+#include "Engine/ResourceSound.h"
+#include "Engine/ResourceParticle.h"
 
 #include "Metacode/Metacode.h"
 

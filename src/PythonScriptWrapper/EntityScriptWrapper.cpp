@@ -2,10 +2,10 @@
 
 #include "Kernel/ScriptEventReceiver.h"
 
-#   include "Interface/StringizeInterface.h"
-#   include "Interface/ResourceInterface.h"
-#   include "Interface/ScriptSystemInterface.h"
-#   include "Interface/NodeInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/ScriptSystemInterface.h"
+#include "Interface/NodeInterface.h"
 
 #include "Kernel/ScriptWrapper.h"
 

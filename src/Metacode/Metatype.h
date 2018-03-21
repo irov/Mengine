@@ -1,10 +1,10 @@
 #   pragma once
 
-#   include "Interface/RenderEnumInterface.h"
+#include "Interface/RenderEnumInterface.h"
 
 #include "metabuf/Metadata.hpp"
 
-#   include "stdex/memory_reader.h"
+#include "stdex/memory_reader.h"
 
 #include "Core/ConstString.h"
 #include "Core/Tags.h"
@@ -15,14 +15,14 @@
 
 #include "Config/Typedef.h"
 #include "Config/String.h"
-#   include "Config/Floats.h"
+#include "Config/Floats.h"
 
-#   include "math/vec2.h"
-#   include "math/vec3.h"
-#   include "math/vec4.h"
+#include "math/vec2.h"
+#include "math/vec3.h"
+#include "math/vec4.h"
 
-#   include "math/box2.h"
-#   include "math/uv4.h"
+#include "math/box2.h"
+#include "math/uv4.h"
 
 namespace Metabuf
 {

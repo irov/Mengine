@@ -3,10 +3,10 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 
-#   include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
 #include "MemoryBuffer.h"
-#   include "MemoryProxy.h"
+#include "MemoryProxy.h"
 #include "MemoryCacheBuffer.h"
 #include "MemoryCacheInput.h"
 #include "MemoryProxyInput.h"

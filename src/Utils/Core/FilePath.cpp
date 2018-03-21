@@ -1,8 +1,8 @@
-#   include "FilePath.h"
+#include "FilePath.h"
 
-#   include "Interface/StringizeInterface.h"
-#   include "Interface/UnicodeInterface.h"
-#   include "Interface/FileSystemInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Core/FilePath.h"
 

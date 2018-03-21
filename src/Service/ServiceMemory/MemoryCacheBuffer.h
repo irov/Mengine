@@ -3,9 +3,9 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#   include "Core/ServantBase.h"
+#include "Core/ServantBase.h"
 
-#   include "Factory/FactorablePtr.h"
+#include "Factory/FactorablePtr.h"
 
 #include "Core/FilePath.h"
 #include "Core/ConstString.h"

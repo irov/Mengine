@@ -4,7 +4,7 @@
 
 #include "Logger/Logger.h"
 
-#   include <string.h>
+#include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( CodecService, Mengine::CodecEngine );

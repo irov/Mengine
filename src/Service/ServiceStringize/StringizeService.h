@@ -2,13 +2,13 @@
 
 #include "Interface/StringizeInterface.h"
 
-#   include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
-#   include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
-#   include "ConstStringHolderMemory.h"
+#include "ConstStringHolderMemory.h"
 
-#   include "stdex/intrusive_list.h"
+#include "stdex/intrusive_list.h"
 
 namespace Mengine
 {	

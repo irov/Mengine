@@ -1,8 +1,8 @@
-#   include "ModuleService.h"
+#include "ModuleService.h"
 
-#   include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#   include <algorithm>
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ModuleService, Mengine::ModuleService );

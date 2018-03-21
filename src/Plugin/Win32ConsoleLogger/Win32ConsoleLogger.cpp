@@ -7,7 +7,7 @@
 #include <locale.h>
 #include <fcntl.h>
 
-#   include <iostream>
+#include <iostream>
 
 typedef BOOL( WINAPI *PATTACHCONSOLE )(DWORD);
 

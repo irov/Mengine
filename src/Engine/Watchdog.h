@@ -1,10 +1,10 @@
 #pragma once
 
-#   include "Interface/WatchdogInterface.h"
+#include "Interface/WatchdogInterface.h"
 
 #include "Config/Typedef.h"
 
-#   include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
 #include "stdex/stl_map.h"
 

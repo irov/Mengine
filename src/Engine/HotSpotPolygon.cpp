@@ -1,6 +1,6 @@
 #include "HotSpotPolygon.h"
 
-#   include "HotspotMousePickerVisitor.h"
+#include "HotspotMousePickerVisitor.h"
 
 #include "Interface/MousePickerSystemInterface.h"
 #include "Interface/RenderSystemInterface.h"

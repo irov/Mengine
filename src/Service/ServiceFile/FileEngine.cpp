@@ -2,9 +2,9 @@
 
 #include "Logger/Logger.h"
 
-#   include "Interface/ServiceInterface.h"
-#   include "Interface/StringizeInterface.h"
-#   include "Interface/MemoryInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/MemoryInterface.h"
 
 #include "Factory/FactoryDefault.h"
 

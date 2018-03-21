@@ -1,9 +1,9 @@
 #   pragma once
 
-#   include "Interface/RenderSystemInterface.h"
-#   include "Interface/MemoryInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/MemoryInterface.h"
 
-#   include "Core/ServantBase.h"
+#include "Core/ServantBase.h"
 
 #include <d3d9.h>
 

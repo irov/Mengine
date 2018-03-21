@@ -11,7 +11,7 @@
 
 #include "Kernel/Servant.h"
 
-#   include "Core/FontBase.h"
+#include "Core/FontBase.h"
 
 #include "ft2build.h"
 #include "freetype/freetype.h"
@@ -21,7 +21,7 @@
 
 #include "stdex/stl_map.h"
 
-#   include "fe/fe.h"
+#include "fe/fe.h"
 
 namespace Mengine
 {

@@ -1,5 +1,5 @@
 #include "ImageEncoderHTF.h"
-#   include "ImageVerifyHTF.h"
+#include "ImageVerifyHTF.h"
 
 #include "Interface/FileSystemInterface.h"
 #include "Interface/ArchiveInterface.h"

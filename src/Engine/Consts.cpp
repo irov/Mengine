@@ -1,6 +1,6 @@
 #include "Consts.h"
 
-#   include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Consts, Mengine::Consts );

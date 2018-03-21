@@ -3,7 +3,7 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
-#   include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
 #include "RenderMaterial.h"
 
@@ -11,10 +11,10 @@
 #include "Core/Resolution.h"
 #include "Core/ConstString.h"
 
-#   include "stdex/static_array.h"
+#include "stdex/static_array.h"
 #include "stdex/heap_array.h"
 
-#   include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
 #include "math/mat4.h"
 #include "math/vec4.h"

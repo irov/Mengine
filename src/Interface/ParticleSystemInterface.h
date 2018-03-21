@@ -3,25 +3,25 @@
 #include "Config/Typedef.h"
 #include "Config/String.h"
 
-#   include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 #include "Interface/StreamInterface.h"
 #include "Interface/ArchiveInterface.h"
 
-#   include "Core/ConstString.h"
-#   include "Core/FilePath.h"
-#   include "Core/ColourValue.h"
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
+#include "Core/ColourValue.h"
 #include "Core/Magic.h"
 #include "Core/RenderVertex2D.h"
 #include "Core/RenderIndex.h"
 
-#   include "Factory/Factorable.h"
-#   include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
+#include "Factory/FactorablePtr.h"
 
 #include "math/vec2.h"
 #include "math/box2.h"
 
-#   include "math/mat4.h"
-#   include "math/uv4.h"
+#include "math/mat4.h"
+#include "math/uv4.h"
 
 #	ifndef MENGINE_PARTICLE_MAX_MESH
 #	define MENGINE_PARTICLE_MAX_MESH 1000

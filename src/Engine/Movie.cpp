@@ -2,18 +2,18 @@
 
 #include "Interface/ResourceInterface.h"
 #include "Interface/PrototypeManagerInterface.h"
-#   include "Interface/TimelineInterface.h"
+#include "Interface/TimelineInterface.h"
 
 #include "ResourceMovie.h"
 
 #include "ResourceImageDefault.h"
 #include "ResourceAnimation.h"
 #include "ResourceImageSolid.h"
-#   include "ResourceHIT.h"
-#   include "ResourceVideo.h"
-#   include "ResourceSound.h"
-#   include "ResourceShape.h"
-#   include "ResourceParticle.h"
+#include "ResourceHIT.h"
+#include "ResourceVideo.h"
+#include "ResourceSound.h"
+#include "ResourceShape.h"
+#include "ResourceParticle.h"
 
 
 #include "Kernel/Layer.h"
@@ -23,26 +23,26 @@
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderClipplane.h"
 
-#   include "ShapeQuadFixed.h"
+#include "ShapeQuadFixed.h"
 #include "Mesh2D.h"
-#   include "TextField.h"
+#include "TextField.h"
 #include "ParticleEmitter2.h"
-#   include "MovieSlot.h"
-#   include "MovieNodeExtra.h"
-#   include "MovieEvent.h"
-#   include "HotSpotImage.h"
-#   include "HotSpotShape.h"
-#   include "MovieSceneEffect.h"
+#include "MovieSlot.h"
+#include "MovieNodeExtra.h"
+#include "MovieEvent.h"
+#include "HotSpotImage.h"
+#include "HotSpotShape.h"
+#include "MovieSceneEffect.h"
 #include "MovieInternalObject.h"
 
-#   include "SurfaceImage.h"
-#   include "SurfaceImageSequence.h"
-#   include "SurfaceVideo.h"
-#   include "SurfaceSound.h"
+#include "SurfaceImage.h"
+#include "SurfaceImageSequence.h"
+#include "SurfaceVideo.h"
+#include "SurfaceSound.h"
 
 #include "SoundEmitter.h"
 
-#   include "Interface/NodeInterface.h"
+#include "Interface/NodeInterface.h"
 
 #include "Logger/Logger.h"
 

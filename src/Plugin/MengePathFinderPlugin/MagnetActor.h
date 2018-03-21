@@ -4,7 +4,7 @@
 
 #include "math/vec3.h"
 
-#   include "stdex/intrusive_ptr.h"
+#include "stdex/intrusive_ptr.h"
 #include "stdex/stl_vector.h"
 
 namespace Mengine

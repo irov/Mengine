@@ -1,15 +1,15 @@
-#   include "RenderMaterialManager.h"
+#include "RenderMaterialManager.h"
 
-#   include "Interface/StringizeInterface.h"
-#   include "Interface/ConfigInterface.h"
-#   include "Interface/LoaderInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/ConfigInterface.h"
+#include "Interface/LoaderInterface.h"
 
 #include "Core/MemoryHelper.h"
 
 #include "Factory/FactoryPool.h"
-#   include "Factory/FactoryPoolWithListener.h"
+#include "Factory/FactoryPoolWithListener.h"
 
-#   include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #include "Metacode/Metacode.h"
 

@@ -6,7 +6,7 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Core/ConstString.h"
-#   include "Core/FilePath.h"
+#include "Core/FilePath.h"
 #include "Core/Resolution.h"
 #include "Core/AspectRatioViewports.h"
 #include "Core/ColourValue.h"

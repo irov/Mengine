@@ -4,16 +4,16 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/StringizeInterface.h"
-#   include "Interface/ArchiveInterface.h"
-#   include "Interface/MemoryInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/MemoryInterface.h"
 
 #include "Logger/Logger.h"
 
-#   include "Core/Magic.h"
-#   include "Core/FilePath.h"
+#include "Core/Magic.h"
+#include "Core/FilePath.h"
 #include "Core/MemoryHelper.h"
 
-#   include "Config/Blobject.h"
+#include "Config/Blobject.h"
 
 namespace Mengine
 {

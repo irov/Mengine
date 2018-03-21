@@ -3,12 +3,12 @@
 #include "Kernel/Node.h"
 #include "Kernel/Materialable.h"
 
-#   include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
 #include "Core/ColourValue.h"
 #include "Core/ValueInterpolator.h"
-#   include "Core/RenderVertex2D.h"
-#   include "Core/RenderIndex.h"
+#include "Core/RenderVertex2D.h"
+#include "Core/RenderIndex.h"
 
 #include "math/mat3.h"
 #include "math/vec4.h"

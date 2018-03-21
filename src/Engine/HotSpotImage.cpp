@@ -1,11 +1,11 @@
 #include "HotSpotImage.h"
 
 #include "Interface/ResourceInterface.h"
-#   include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#   include "Kernel/RenderCameraHelper.h"
+#include "Kernel/RenderCameraHelper.h"
 
-#   include "ResourceHIT.h"
+#include "ResourceHIT.h"
 
 #include "Logger/Logger.h"
 

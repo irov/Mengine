@@ -12,7 +12,7 @@
 #include "Core/MemoryHelper.h"
 
 #include <string.h>
-#   include <stdio.h>
+#include <stdio.h>
 
 #include "../dependencies/zlib/zlib.h"
 

@@ -1,14 +1,14 @@
 #   pragma once
 
-#   include "Config/Typedef.h"
-#   include "Config/String.h"
+#include "Config/Typedef.h"
+#include "Config/String.h"
 
-#   include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 #include "Interface/PluginInterface.h"
 
-#   include "Core/FilePath.h"
+#include "Core/FilePath.h"
 
-#   include <wtypes.h>
+#include <wtypes.h>
 
 namespace Mengine
 {

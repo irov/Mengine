@@ -1,10 +1,10 @@
-#   include "Win32PluginSystem.h"
+#include "Win32PluginSystem.h"
 
-#   include "Win32DynamicLibrary.h"
+#include "Win32DynamicLibrary.h"
 
-#   include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#   include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PluginSystem, Mengine::Win32PluginSystem );

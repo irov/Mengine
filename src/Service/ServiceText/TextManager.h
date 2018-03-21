@@ -1,21 +1,21 @@
 #pragma once
 
-#   include "Interface/TextInterface.h"
+#include "Interface/TextInterface.h"
 
-#   include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
 #include "TextLocalePak.h"
 
 #include "TextEntry.h"
 
-#   include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
 #include "Core/ConstString.h"
-#   include "Core/ConstStringHolderLocalString.h"
+#include "Core/ConstStringHolderLocalString.h"
 
 #include "Core/FilePath.h"
 
-#   include "stdex/stl_map.h"
+#include "stdex/stl_map.h"
 
 #include "Config/Typedef.h"
 

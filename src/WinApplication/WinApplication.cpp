@@ -11,12 +11,12 @@
 #include "Interface/ConfigInterface.h"
 #include "Interface/PackageInterface.h"
 #include "Interface/UserdataInterface.h"
-#   include "Interface/GraveyardInterface.h"
-#   include "Interface/ResourceInterface.h"
+#include "Interface/GraveyardInterface.h"
+#include "Interface/ResourceInterface.h"
 #include "Interface/TextInterface.h"
 
 #include "WindowsLayer/VistaWindowsLayer.h"
-#   include "PythonScriptWrapper/PythonScriptWrapper.h"
+#include "PythonScriptWrapper/PythonScriptWrapper.h"
 
 #include "Factory/FactorableUnique.h"
 #include "Factory/FactoryDefault.h"
@@ -28,7 +28,7 @@
 #include <cstdio>
 #include <clocale>
 
-#   include <errno.h>
+#include <errno.h>
 
 #include "MessageBoxLogger.h"
 
@@ -45,8 +45,8 @@
 
 #include <sstream>
 
-#   include <WinBase.h>
-#   include <Psapi.h>
+#include <WinBase.h>
+#include <Psapi.h>
 #include <tlhelp32.h>
 
 

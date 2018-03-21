@@ -1,11 +1,11 @@
 #include "Amplifier.h"
 
-#   include "Interface/ResourceInterface.h"
-#   include "Interface/StringizeInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/StringizeInterface.h"
 
 #include "Kernel/ResourceMusic.h"
 
-#   include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
 #include <cmath>
 

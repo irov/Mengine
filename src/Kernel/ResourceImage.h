@@ -1,7 +1,7 @@
 #pragma once
 
-#   include "Interface/StreamInterface.h"
-#   include "Interface/ImageCodecInterface.h"
+#include "Interface/StreamInterface.h"
+#include "Interface/ImageCodecInterface.h"
 
 #include "Kernel/ResourceReference.h"
 

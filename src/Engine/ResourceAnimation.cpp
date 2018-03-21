@@ -1,8 +1,8 @@
 #include "ResourceAnimation.h"
 
-#   include "Interface/RenderSystemInterface.h"
-#   include "Interface/ResourceInterface.h"
-#   include "Interface/ConfigInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/ConfigInterface.h"
 
 #include "Metacode/Metacode.h"
 

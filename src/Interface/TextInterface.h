@@ -1,16 +1,16 @@
 #   pragma once
 
-#   include "Interface/ServantInterface.h"
-#   include "Interface/ServiceInterface.h"
+#include "Interface/ServantInterface.h"
+#include "Interface/ServiceInterface.h"
 
-#   include "Core/ConstString.h"
-#   include "Core/FilePath.h"
-#   include "Core/GlyphChar.h"
-#   include "Core/ColourValue.h"
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
+#include "Core/GlyphChar.h"
+#include "Core/ColourValue.h"
 
 #include "Config/String.h"
 
-#   include "Factory/FactorablePtr.h"
+#include "Factory/FactorablePtr.h"
 
 #include "math/vec4.h"
 #include "math/uv4.h"

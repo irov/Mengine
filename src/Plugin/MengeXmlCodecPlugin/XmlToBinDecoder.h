@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Interface/XmlCodecInterface.h"
-#   include "Interface/InputSystemInterface.h"
-#   include "Interface/ArchiveInterface.h"
+#include "Interface/InputSystemInterface.h"
+#include "Interface/ArchiveInterface.h"
 
-#   include "Core/ServantBase.h"
+#include "Core/ServantBase.h"
 
 namespace Mengine
 {

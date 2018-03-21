@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#   include "Core/ServantBase.h"
+#include "Core/ServantBase.h"
 
 #include "stdex/thread_guard.h"
 

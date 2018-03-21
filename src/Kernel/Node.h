@@ -18,8 +18,8 @@
 
 #include "Core/Viewport.h"
 
-#   include "stdex/intrusive_slug_list_size.h"
-#   include "stdex/intrusive_slug.h"
+#include "stdex/intrusive_slug_list_size.h"
+#include "stdex/intrusive_slug.h"
 
 namespace Mengine
 {		

@@ -4,9 +4,9 @@
 
 #include "ResourceImageDefault.h"
 
-#   include "Interface/ResourceInterface.h"
-#   include "Interface/StringizeInterface.h"
-#   include "Interface/NodeInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/NodeInterface.h"
 
 #include "Logger/Logger.h"
 

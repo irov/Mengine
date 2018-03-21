@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Interface/PrototypeManagerInterface.h"
-#   include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptSystemInterface.h"
 
 #include "Kernel/Node.h"
 
 #include "Core/ServantBase.h"
 #include "Core/ConstString.h"
-#   include "Core/MemoryAllocator.h"
+#include "Core/MemoryAllocator.h"
 
 #include "Logger/Logger.h"
 

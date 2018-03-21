@@ -6,12 +6,12 @@
 #include "Kernel/Animatable.h"
 #include "Kernel/Materialable.h"
 
-#   include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 #include "ResourceModel3D.h"
 
 #include "Core/ColourValue.h"
 #include "Core/ValueInterpolator.h"
-#   include "Core/RenderVertex2D.h"
+#include "Core/RenderVertex2D.h"
 
 #include "math/mat3.h"
 #include "math/vec4.h"

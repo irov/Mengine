@@ -3,7 +3,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/Animatable.h"
 
-#   include "ResourceParticle.h"
+#include "ResourceParticle.h"
 
 #include "Interface/ParticleSystemInterface.h"
 

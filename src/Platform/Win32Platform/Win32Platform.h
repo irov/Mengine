@@ -2,7 +2,7 @@
 
 #include "Interface/PlatformInterface.h"
 
-#   include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
 #include "Win32MouseEvent.h"
 #include "Win32AlreadyRunningMonitor.h"

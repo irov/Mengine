@@ -1,10 +1,10 @@
 #   pragma once
 
-#   include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "WIN32/WindowsIncluder.h"
 
-#   include "Core/ServantBase.h"
+#include "Core/ServantBase.h"
 
 namespace Mengine
 {

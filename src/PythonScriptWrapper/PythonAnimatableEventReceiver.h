@@ -1,7 +1,7 @@
 #   pragma once
 
-#   include "Kernel/ScriptEventReceiver.h"
-#   include "Kernel/Animatable.h"
+#include "Kernel/ScriptEventReceiver.h"
+#include "Kernel/Animatable.h"
 
 namespace Mengine
 {

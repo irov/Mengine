@@ -4,7 +4,7 @@
 #include "Interface/PlayerInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#   include "Kernel/ScriptWrapper.h"
+#include "Kernel/ScriptWrapper.h"
 #include "Kernel/ScriptEventReceiver.h"
 
 #include "Kernel/NodePrototypeGenerator.h"

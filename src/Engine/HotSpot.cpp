@@ -1,6 +1,6 @@
 #include "HotSpot.h"
 
-#   include "HotspotMousePickerVisitor.h"
+#include "HotspotMousePickerVisitor.h"
 
 #include "Interface/MousePickerSystemInterface.h"
 #include "Interface/PlayerInterface.h"

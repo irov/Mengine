@@ -1,8 +1,8 @@
 #include "ImageDecoderACF.h"
-#   include "ImageVerifyACF.h"
+#include "ImageVerifyACF.h"
 
 #include "Interface/FileSystemInterface.h"
-#   include "Interface/StringizeInterface.h"
+#include "Interface/StringizeInterface.h"
 
 #include "Core/Stream.h"
 #include "Core/MemoryHelper.h"

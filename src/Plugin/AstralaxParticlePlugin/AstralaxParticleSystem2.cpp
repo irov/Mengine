@@ -1,15 +1,15 @@
 #include "AstralaxParticleSystem2.h"
 
-#   include "Interface/RenderSystemInterface.h"
-#   include "Interface/StringizeInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#   include "Core/String.h"
-#   include "Logger/Logger.h"
+#include "Core/String.h"
+#include "Logger/Logger.h"
 
-#   include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceImage.h"
 
-#   include "Factory/FactoryPool.h"
-#   include "Factory/FactoryPoolWithListener.h"
+#include "Factory/FactoryPool.h"
+#include "Factory/FactoryPoolWithListener.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ParticleSystem, Mengine::AstralaxParticleSystem2 );

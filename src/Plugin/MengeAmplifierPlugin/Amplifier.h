@@ -3,7 +3,7 @@
 #include "Interface/AmplifierInterface.h"
 #include "Interface/SoundSystemInterface.h"
 
-#   include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
 #include "Core/ConstString.h"
 

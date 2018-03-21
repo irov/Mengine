@@ -335,7 +335,6 @@ Utils
 )
 
 INCLUDE_DIRECTORIES( 
-    ${Mengine_SOURCE_DIR}/Menge
     ${Mengine_SOURCE_DIR}/Utils 
     ${THIRDPARTY_DIR}
     ${THIRDPARTY_DIR}/pybind/include

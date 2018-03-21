@@ -1,8 +1,8 @@
-#   include "ShapeQuad.h"
+#include "ShapeQuad.h"
 
-#   include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
-#   include "Kernel/Surface.h"
+#include "Kernel/Surface.h"
 
 #include "Logger/Logger.h"
 

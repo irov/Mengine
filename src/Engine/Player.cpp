@@ -1,9 +1,9 @@
 #include "Player.h"
 
 #include "Interface/RenderSystemInterface.h"
-#   include "Interface/ScriptSystemInterface.h"
-#   include "Interface/ParticleSystemInterface.h"
-#   include "Interface/ResourceInterface.h"
+#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ParticleSystemInterface.h"
+#include "Interface/ResourceInterface.h"
 #include "Interface/GraveyardInterface.h"
 #include "Interface/TimelineInterface.h"
 
@@ -15,7 +15,7 @@
 #include "Interface/ModuleInterface.h"
 #include "Interface/ApplicationInterface.h"
 
-#   include "Config/Stringstream.h"
+#include "Config/Stringstream.h"
 
 #include "Kernel/Scene.h"
 
@@ -27,7 +27,7 @@
 
 #include "Kernel/ScheduleManager.h"
 
-#   include "Factory/FactoryDefault.h"
+#include "Factory/FactoryDefault.h"
 
 #include "Consts.h"
 
@@ -35,13 +35,13 @@
 
 #include "TextField.h"
 
-#   include "Kernel/ResourceReference.h"
+#include "Kernel/ResourceReference.h"
 
 #include "math/mat3.h"
 
-#   include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
-#   include <iomanip>
+#include <iomanip>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( MousePickerSystem );

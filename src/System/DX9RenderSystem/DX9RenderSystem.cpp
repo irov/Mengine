@@ -6,12 +6,12 @@
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"
 
-#   include "DX9RenderTarget.h"
+#include "DX9RenderTarget.h"
 #include "DX9RenderTargetOffscreen.h"
 
-#   include "Factory/FactoryPool.h"
-#   include "Factory/FactoryPoolWithListener.h"
-#   include "Factory/FactoryDefault.h"
+#include "Factory/FactoryPool.h"
+#include "Factory/FactoryPoolWithListener.h"
+#include "Factory/FactoryDefault.h"
 
 #include <algorithm>
 #include <cmath>

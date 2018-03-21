@@ -2,10 +2,10 @@
 
 #include "Interface/TextInterface.h"
 
-#   include "Core/ServantBase.h"
+#include "Core/ServantBase.h"
 
-#   include "Kernel/Resource.h"
-#   include "Kernel/Reference.h"
+#include "Kernel/Resource.h"
+#include "Kernel/Reference.h"
 
 namespace Mengine
 {

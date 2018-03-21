@@ -22,11 +22,11 @@
 #	include "xml2metabuf/Xml2Metabuf.hpp"
 #	include "xml2metabuf/Xml2Metacode.hpp"
 
-#	include "Menge/Consts.h"
+#	include "Engine/Consts.h"
 
 #   include "Config/Typedef.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_writeAek( const WString & _protocolPath, const WString & _xmlPath, const WString & _aekPath )

@@ -7,7 +7,7 @@
 
 #   include "OpenGLRenderHeaderES.h"
 
-namespace Menge
+namespace Mengine
 {
 	class OpenGLRenderImageES
 		: public ServantBase<RenderImageInterface>
@@ -91,4 +91,4 @@ namespace Menge
 	};
 
 	typedef stdex::intrusive_ptr<OpenGLRenderImageES> OpenGLRenderImageESPtr;
-}	// namespace Menge
+}

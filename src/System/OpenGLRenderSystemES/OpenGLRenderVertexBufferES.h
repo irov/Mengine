@@ -6,7 +6,7 @@
 
 #   include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class OpenGLRenderVertexBufferES
 		: public ServantBase<RenderVertexBufferInterface>

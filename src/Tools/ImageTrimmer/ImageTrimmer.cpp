@@ -29,10 +29,10 @@
 #	include "ToolUtils/ToolUtils.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( MengeWin32FileGroup );
-PLUGIN_EXPORT( MengeImageCodec );
-PLUGIN_EXPORT( MengeZip );
-PLUGIN_EXPORT( MengeLZ4 );
+PLUGIN_EXPORT( Win32FileGroup );
+PLUGIN_EXPORT( ImageCodec );
+PLUGIN_EXPORT( Zip );
+PLUGIN_EXPORT( LZ4 );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider )
 
@@ -54,11 +54,11 @@ SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     static bool initializeEngine()
     {
-        Menge::ServiceProviderInterface * serviceProvider;
+        ServiceProviderInterface * serviceProvider;
         SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
@@ -167,11 +167,11 @@ namespace Menge
         SERVICE_CREATE( Platform );
         SERVICE_CREATE( FileService );
 
-        PLUGIN_CREATE( MengeWin32FileGroup );
+        PLUGIN_CREATE( Win32FileGroup );
 
-        PLUGIN_CREATE( MengeZip );
-        PLUGIN_CREATE( MengeLZ4 );
-        PLUGIN_CREATE( MengeImageCodec );
+        PLUGIN_CREATE( Zip );
+        PLUGIN_CREATE( LZ4 );
+        PLUGIN_CREATE( ImageCodec );
 
         if( FILE_SERVICE()
             ->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), Helper::stringizeString( "global" ) ) == false )
@@ -603,9 +603,9 @@ namespace Menge
     }
 }
 //////////////////////////////////////////////////////////////////////////
-static void parse_arg( const std::wstring & _str, Menge::WString & _value )
+static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
 {
-    _value = Menge::WString( _str.begin(), _str.end() );
+    _value = Mengine::WString( _str.begin(), _str.end() );
 }
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
@@ -616,9 +616,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     stdex_allocator_initialize();
 
-    Menge::WString in_path = parse_kwds( lpCmdLine, L"--in_path", Menge::WString() );
-    Menge::WString out_path = parse_kwds( lpCmdLine, L"--out_path", Menge::WString() );
-    Menge::WString result_path = parse_kwds( lpCmdLine, L"--result_path", Menge::WString() );
+    Mengine::WString in_path = parse_kwds( lpCmdLine, L"--in_path", Mengine::WString() );
+    Mengine::WString out_path = parse_kwds( lpCmdLine, L"--out_path", Mengine::WString() );
+    Mengine::WString result_path = parse_kwds( lpCmdLine, L"--result_path", Mengine::WString() );
 
     if( in_path.empty() == true )
     {
@@ -645,7 +645,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     try
     {
-        if( Menge::initializeEngine() == false )
+        if( Mengine::initializeEngine() == false )
         {
             message_error( "ImageTrimmer invalid initialize" );
 
@@ -661,7 +661,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return 0;
     }
 
-    if( Menge::trimImage( in_path, out_path, result_path ) == false )
+    if( Mengine::trimImage( in_path, out_path, result_path ) == false )
     {
         message_error( "ImageTrimmer invalid trim %ls"
             , in_path.c_str()

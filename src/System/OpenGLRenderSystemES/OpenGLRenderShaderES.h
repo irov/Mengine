@@ -1,4 +1,4 @@
-#	pragma once
+    #	pragma once
 
 #	define VERTEX_POSITION_ARRAY			0
 #	define VERTEX_COLOR_ARRAY				1

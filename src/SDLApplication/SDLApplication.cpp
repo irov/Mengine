@@ -2,7 +2,7 @@
 
 #	include "SDLApplication.h"
 
-#	include "Menge/Application.h"
+#	include "Engine/Application.h"
 
 #	include "Interface/LoggerInterface.h"
 #	include "Interface/FileSystemInterface.h"
@@ -140,12 +140,12 @@ SERVICE_EXTERN( PlayerService );
 SERVICE_EXTERN( GameService );
 SERVICE_EXTERN( TimelineService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( MengeImageCodec );
-PLUGIN_EXPORT( MengeSoundCodec );
-PLUGIN_EXPORT( MengeVideoCodec );
-PLUGIN_EXPORT( MengeAmplifier );
-PLUGIN_EXPORT( MengeZip );
-PLUGIN_EXPORT( MengeLZ4 );
+PLUGIN_EXPORT( ImageCodec );
+PLUGIN_EXPORT( SoundCodec );
+PLUGIN_EXPORT( VideoCodec );
+PLUGIN_EXPORT( Amplifier );
+PLUGIN_EXPORT( Zip );
+PLUGIN_EXPORT( LZ4 );
 PLUGIN_EXPORT( BitmapFont );
 #ifdef MENGINE_PLUGIN_TTF
 #ifndef MENGINE_PLUGIN_TTF_DLL
@@ -159,9 +159,9 @@ PLUGIN_EXPORT( Spine );
 #endif
 PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( Box2D );
-PLUGIN_EXPORT( MengeOggVorbis );
+PLUGIN_EXPORT( OggVorbis );
 PLUGIN_EXPORT( PathFinder );
-PLUGIN_EXPORT( MengeSDLFileGroup );
+PLUGIN_EXPORT( SDLFileGroup );
 #ifdef MENGINE_PLUGIN_ASTRALAX
 #ifndef MENGINE_PLUGIN_ASTRALAX_DLL
 PLUGIN_EXPORT( AstralaxParticlePlugin2 );
@@ -194,7 +194,7 @@ namespace Mengine
         SERVICE_CREATE( FileService );
 
         LOGGER_INFO("Initialize SDL file group...");
-        PLUGIN_CREATE( MengeSDLFileGroup );
+        PLUGIN_CREATE( SDLFileGroup );
 
         // mount root
         ConstString c_dir = Helper::stringizeString("dir");
@@ -411,13 +411,13 @@ namespace Mengine
         {
             LOGGER_INFO( "initialize Zip..." );
             
-            PLUGIN_CREATE( MengeZip );
+            PLUGIN_CREATE( Zip );
         }
 
         {
             LOGGER_INFO( "initialize LZ4..." );
 
-            PLUGIN_CREATE( MengeLZ4 );
+            PLUGIN_CREATE( LZ4 );
         }
 
         return true;
@@ -605,11 +605,11 @@ namespace Mengine
         LOGGER_ERROR( "Invalid %s", Info );}else{\
         LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
 
-        MENGINE_ADD_PLUGIN(MengeImageCodec, "initialize Plugin Image Codec...");
-        MENGINE_ADD_PLUGIN(MengeSoundCodec, "initialize Plugin Sound Codec...");
-        MENGINE_ADD_PLUGIN(MengeOggVorbis, "initialize Plugin Ogg Vorbis Codec...");
-        MENGINE_ADD_PLUGIN(MengeAmplifier, "initialize Plugin Amplifier...");
-        MENGINE_ADD_PLUGIN(MengeVideoCodec, "initialize Plugin Video Codec...");
+        MENGINE_ADD_PLUGIN(ImageCodec, "initialize Plugin Image Codec...");
+        MENGINE_ADD_PLUGIN(SoundCodec, "initialize Plugin Sound Codec...");
+        MENGINE_ADD_PLUGIN(OggVorbis, "initialize Plugin Ogg Vorbis Codec...");
+        MENGINE_ADD_PLUGIN(Amplifier, "initialize Plugin Amplifier...");
+        MENGINE_ADD_PLUGIN(VideoCodec, "initialize Plugin Video Codec...");
 
 		MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin TTF..." );
 

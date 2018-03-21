@@ -4,6 +4,7 @@ ADD_FILTER(
 src
 	VideoCodecPlugin.h
 	VideoCodecPlugin.cpp
+    VideoCodecPlugin.def
     
     VideoDecoderTheora.cpp
     VideoDecoderTheora.h

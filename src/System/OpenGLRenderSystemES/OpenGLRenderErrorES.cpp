@@ -3,7 +3,7 @@
 
 #	include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	static const char * glGetErrorString( GLenum _err )

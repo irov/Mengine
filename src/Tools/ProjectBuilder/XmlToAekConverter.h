@@ -2,7 +2,7 @@
 
 #	include <pybind/pybind.hpp>
 
-namespace Menge
+namespace Mengine
 {
 	PyObject * writeAek( const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * aekPath );
 }

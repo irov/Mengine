@@ -3,7 +3,7 @@
 
 #	include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderFragmentShaderES::OpenGLRenderFragmentShaderES()
@@ -79,4 +79,4 @@ namespace Menge
 	{ 
 		GLCALL( glAttachShader, ( _program, m_shaderId ) );
 	}
-}	// namespace Menge
+}

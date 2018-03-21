@@ -18,9 +18,9 @@
 #	define GET_G_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 8) & 0xFF)) / 255.0f )
 #	define GET_B_FLOAT_FROM_ARGB32( argb ) ( (float)(argb & 0xFF) / 255.0f )
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY(RenderSystem, Menge::OpenGLRenderSystemES);
+SERVICE_FACTORY(RenderSystem, Mengine::OpenGLRenderSystemES);
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderSystemES::OpenGLRenderSystemES()
@@ -58,7 +58,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystemES::_finalize()
     {
-		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
 		{
 			TextureStage & stage = m_textureStage[i];
 
@@ -441,7 +441,7 @@ namespace Menge
 			m_currentProgram->bindMatrix( m_worldMatrix, m_viewMatrix, m_projectionMatrix );
 		}
 
-		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
 		{
 			const TextureStage & textureStage = m_textureStage[i];
 
@@ -509,7 +509,7 @@ namespace Menge
 			GLCALL( glDisableVertexAttribArray, (VERTEX_UV0_ARRAY + i) );
 		}
 		
-		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
 		{
 			TextureStage & textureStage = m_textureStage[i];
 
@@ -668,10 +668,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
-        if( _textrueOp == Menge::TOP_SELECTARG2 )
+        if( _textrueOp == TOP_SELECTARG2 )
         {
             _arg1 = _arg2;
-            _textrueOp = Menge::TOP_SELECTARG1;
+            _textrueOp = TOP_SELECTARG1;
         }
 
         m_textureStage[_stage].colorOp = s_getGLTextureOp( _textrueOp );
@@ -681,10 +681,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystemES::setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
-        if( _textrueOp == Menge::TOP_SELECTARG2 )
+        if( _textrueOp == TOP_SELECTARG2 )
         {
             _arg1 = _arg2;
-            _textrueOp = Menge::TOP_SELECTARG1;
+            _textrueOp = TOP_SELECTARG1;
         }
 
         m_textureStage[_stage].alphaOp = s_getGLTextureOp( _textrueOp );
@@ -1131,4 +1131,4 @@ namespace Menge
 		*it_found = m_images.back();
 		m_images.pop_back();
 	}
-}	// namespace Menge
+}

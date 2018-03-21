@@ -9,9 +9,9 @@
 #	define MAX_BODIES 512
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( PhysicService2D, Menge::PhysicService2DInterface, Menge::PhysicEngine2D );
+SERVICE_FACTORY( PhysicService2D, Mengine::PhysicService2DInterface, Mengine::PhysicEngine2D );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	PhysicEngine2D::PhysicEngine2D()
@@ -143,8 +143,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface * PhysicEngine2D::createPrismaticJoint(
-		Menge::PhysicBody2DInterface* _body1
-		, Menge::PhysicBody2DInterface* _body2
+		PhysicBody2DInterface* _body1
+		, PhysicBody2DInterface* _body2
 		, const mt::vec2f& _unitsWorldAxis
 		, bool _collideConnected 
 		, bool _enableLimit
@@ -157,8 +157,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface * PhysicEngine2D::createPulleyJoint(
-		Menge::PhysicBody2DInterface* _body1
-		, Menge::PhysicBody2DInterface* _body2
+		PhysicBody2DInterface* _body1
+		, PhysicBody2DInterface* _body2
 		, const mt::vec2f& _offsetBody1
 		, const mt::vec2f& _offsetBody2
 		, const mt::vec2f& _offsetGroundBody1
@@ -170,10 +170,10 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface * PhysicEngine2D::createGearJoint(
-		Menge::PhysicBody2DInterface * _body1
-		, Menge::PhysicBody2DInterface * _body2
-		, Menge::PhysicJoint2DInterface * _joint1
-		, Menge::PhysicJoint2DInterface * _joint2
+		PhysicBody2DInterface * _body1
+		, PhysicBody2DInterface * _body2
+		, PhysicJoint2DInterface * _joint1
+		, PhysicJoint2DInterface * _joint2
 		, float _ratio
 		, bool _collideConnected)
 	{
@@ -181,8 +181,8 @@ namespace Menge
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface * PhysicEngine2D::createRopeJoint( 
-		Menge::PhysicBody2DInterface * _body1
-		, Menge::PhysicBody2DInterface * _body2
+		PhysicBody2DInterface * _body1
+		, PhysicBody2DInterface * _body2
 		, const mt::vec2f & _localAnchor1
 		, const mt::vec2f & _localAnchor2
 		, float _maxlength
@@ -192,7 +192,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface * PhysicEngine2D::createWheelJoint( 
-		Menge::PhysicBody2DInterface * _body1, Menge::PhysicBody2DInterface * _body2
+		PhysicBody2DInterface * _body1
+        , PhysicBody2DInterface * _body2
 		, const mt::vec2f & _localAnchor1
 		, const mt::vec2f & _localAnchor2
 		, const mt::vec2f & _localAxis1
@@ -237,4 +238,4 @@ namespace Menge
 		return m_phase;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}

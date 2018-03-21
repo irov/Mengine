@@ -4,7 +4,7 @@
 
 #	include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderImageES::OpenGLRenderImageES()
@@ -409,4 +409,4 @@ namespace Menge
 		m_wrapT = _wrapT;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}   // namespace Menge
+}

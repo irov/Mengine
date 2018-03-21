@@ -13,7 +13,7 @@ int main( int argc, char *argv[], char *environ )
 
     try
     {
-        Menge::WinApplication winApplication;
+        Mengine::WinApplication winApplication;
 
         bool initialize = winApplication.initialize();
 

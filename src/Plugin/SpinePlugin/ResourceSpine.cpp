@@ -10,7 +10,7 @@
 
 #	include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceSpine::ResourceSpine()

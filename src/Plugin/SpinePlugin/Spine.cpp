@@ -11,7 +11,7 @@
 #	define MENGINE_SPINE_MAX_VERTICES 512
 #	endif
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Spine::Spine()
@@ -641,7 +641,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Spine::_render( Menge::RenderServiceInterface * _renderService, const RenderObjectState * _state )
+	void Spine::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
 	{
 		//if( this->getResourceSpine()->getName() == "Effect_BuyUpgrade" )
 		//{

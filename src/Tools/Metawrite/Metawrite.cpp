@@ -29,9 +29,9 @@
 #	include "ToolUtils/ToolUtils.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( MengeWin32FileGroup );
-PLUGIN_EXPORT( MengeZip );
-PLUGIN_EXPORT( MengeLZ4 );
+PLUGIN_EXPORT( Win32FileGroup );
+PLUGIN_EXPORT( Zip );
+PLUGIN_EXPORT( LZ4 );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider )
 
@@ -51,11 +51,11 @@ SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {
     static bool initializeEngine()
     {
-        Menge::ServiceProviderInterface * serviceProvider;
+        ServiceProviderInterface * serviceProvider;
         SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
@@ -162,10 +162,10 @@ namespace Menge
         SERVICE_CREATE( WindowsLayer );
         SERVICE_CREATE( FileService );
 
-        PLUGIN_CREATE( MengeWin32FileGroup );
+        PLUGIN_CREATE( Win32FileGroup );
 
-        PLUGIN_CREATE( MengeZip );
-        PLUGIN_CREATE( MengeLZ4 );
+        PLUGIN_CREATE( Zip );
+        PLUGIN_CREATE( LZ4 );
 
         if( FILE_SERVICE()
             ->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), Helper::stringizeString( "dir" ) ) == false )
@@ -185,9 +185,9 @@ namespace Menge
     }
 }
 //////////////////////////////////////////////////////////////////////////
-static void parse_arg( const std::wstring & _str, Menge::WString & _value )
+static void parse_arg( const std::wstring & _str, Mengine::WString & _value )
 {
-    _value = Menge::WString( _str.begin(), _str.end() );
+    _value = Mengine::WString( _str.begin(), _str.end() );
 }
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
@@ -198,9 +198,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     stdex_allocator_initialize();
 
-    Menge::WString protocol = parse_kwds( lpCmdLine, L"--protocol", Menge::WString() );
-    Menge::WString in = parse_kwds( lpCmdLine, L"--in", Menge::WString() );
-    Menge::WString out = parse_kwds( lpCmdLine, L"--out", Menge::WString() );
+    Mengine::WString protocol = parse_kwds( lpCmdLine, L"--protocol", Mengine::WString() );
+    Mengine::WString in = parse_kwds( lpCmdLine, L"--in", Mengine::WString() );
+    Mengine::WString out = parse_kwds( lpCmdLine, L"--out", Mengine::WString() );
 
     if( in.empty() == true )
     {
@@ -212,7 +212,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     try
     {
-        if( Menge::initializeEngine() == false )
+        if( Mengine::initializeEngine() == false )
         {
             message_error( "ImageTrimmer invalid initialize" );
 
@@ -228,18 +228,18 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return 0;
     }
 
-    Menge::FilePath fp_protocol = Menge::Helper::unicodeToFilePath( protocol );
-    Menge::FilePath fp_in = Menge::Helper::unicodeToFilePath( in );
-    Menge::FilePath fp_out = Menge::Helper::unicodeToFilePath( out );
+    Mengine::FilePath fp_protocol = Mengine::Helper::unicodeToFilePath( protocol );
+    Mengine::FilePath fp_in = Mengine::Helper::unicodeToFilePath( in );
+    Mengine::FilePath fp_out = Mengine::Helper::unicodeToFilePath( out );
 
     if( PLUGIN_SERVICE()
-        ->loadPlugin( L"MengeXmlCodecPlugin.dll" ) == false )
+        ->loadPlugin( L"XmlCodecPlugin.dll" ) == false )
     {
         return 0;
     }
 
-    Menge::XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
-        ->createDecoderT<Menge::XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ) );
+    Mengine::XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
+        ->createDecoderT<Mengine::XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ) );
 
     if( decoder == nullptr )
     {
@@ -259,11 +259,11 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return 0;
     }
 
-    Menge::XmlCodecOptions options;
+    Mengine::XmlCodecOptions options;
     options.pathProtocol = fp_protocol;
 
-    Menge::FileGroupInterfacePtr fileGroup = FILE_SERVICE()
-        ->getFileGroup( Menge::ConstString::none() );
+    Mengine::FileGroupInterfacePtr fileGroup = FILE_SERVICE()
+        ->getFileGroup( Mengine::ConstString::none() );
 
     if( fileGroup == nullptr )
     {
@@ -273,10 +273,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return 0;
     }
 
-    const Menge::FilePath & path = fileGroup->getRelationPath();
+    const Mengine::FilePath & path = fileGroup->getRelationPath();
 
-    options.pathXml = Menge::Helper::concatenationFilePath( path, fp_in );
-    options.pathBin = Menge::Helper::concatenationFilePath( path, fp_out );
+    options.pathXml = Mengine::Helper::concatenationFilePath( path, fp_in );
+    options.pathBin = Mengine::Helper::concatenationFilePath( path, fp_out );
 
     if( decoder->setOptions( &options ) == false )
     {

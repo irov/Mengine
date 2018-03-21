@@ -69,10 +69,10 @@
 #	include <io.h>
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( MengeWin32FileGroup );
-PLUGIN_EXPORT( MengeImageCodec );
-PLUGIN_EXPORT( MengeZip );
-PLUGIN_EXPORT( MengeLZ4 );
+PLUGIN_EXPORT( Win32FileGroup );
+PLUGIN_EXPORT( ImageCodec );
+PLUGIN_EXPORT( Zip );
+PLUGIN_EXPORT( LZ4 );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
@@ -98,7 +98,7 @@ SERVICE_EXTERN( WindowsLayer );
 SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( LoaderService );
 //////////////////////////////////////////////////////////////////////////
-namespace Menge
+namespace Mengine
 {		
 	//////////////////////////////////////////////////////////////////////////
 	static void createConsole()
@@ -241,18 +241,18 @@ namespace Menge
         SERVICE_CREATE( Platform );
 		SERVICE_CREATE( FileService );
 				
-		PLUGIN_CREATE( MengeWin32FileGroup );
-		PLUGIN_CREATE( MengeZip );
-		PLUGIN_CREATE( MengeLZ4 );
-		PLUGIN_CREATE( MengeImageCodec );
+		PLUGIN_CREATE( Win32FileGroup );
+		PLUGIN_CREATE( Zip );
+		PLUGIN_CREATE( LZ4 );
+		PLUGIN_CREATE( ImageCodec );
 
 		SERVICE_CREATE( LoaderService );
 		
 		PLUGIN_SERVICE()
-			->loadPlugin( L"MengeDevelopmentConverterPlugin.dll" );
+			->loadPlugin( L"DevelopmentConverterPlugin.dll" );
 
 		PLUGIN_SERVICE()
-			->loadPlugin( L"MengeXmlCodecPlugin.dll" );
+			->loadPlugin( L"XmlCodecPlugin.dll" );
 
 		if( FILE_SERVICE()
 			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), STRINGIZE_STRING_LOCAL( "global" ) ) == false )
@@ -531,7 +531,7 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::WString pathSHA1( const wchar_t * _path )
+    WString pathSHA1( const wchar_t * _path )
 	{
 		String utf8_path;
 		if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
@@ -568,7 +568,7 @@ namespace Menge
 		char hex[41];
 		stdex::sha1_hex( hash, hex );
 
-		return Menge::WString( hex, hex + 40 );
+		return WString( hex, hex + 40 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	class PythonLogger
@@ -723,9 +723,9 @@ bool run()
 {
 	try
 	{
-		if( Menge::initialize() == false )
+		if( Mengine::initialize() == false )
 		{
-			printf("PyInit_ToolsBuilderPlugin Menge::initialize failed\n"
+			printf("PyInit_ToolsBuilderPlugin initialize failed\n"
 				);
 
 			return false;
@@ -743,7 +743,7 @@ bool run()
 		return false;
 	}
 
-    LOGGER_ERROR( "Menge::initialize complete" );
+    LOGGER_ERROR( "initialize complete" );
 
 	const WCHAR * szRegPath = L"SOFTWARE\\Python\\PythonCore\\3.6-32\\PythonPath";
 
@@ -774,36 +774,36 @@ bool run()
 
 	PyObject * py_tools_module = pybind::module_init( "ToolsBuilderPlugin" );
 
-	pybind::interface_<Menge::PythonLogger>( kernel, "XlsScriptLogger", true, py_tools_module)
-		.def_native("write", &Menge::PythonLogger::py_write )
-		.def_native("flush", &Menge::PythonLogger::py_flush )
-		.def_property("softspace", &Menge::PythonLogger::getSoftspace, &Menge::PythonLogger::setSoftspace )
-		.def_property("errors", &Menge::PythonLogger::getErrors, &Menge::PythonLogger::setErrors )
-		.def_property("encoding", &Menge::PythonLogger::getEncoding, &Menge::PythonLogger::setEncoding )
+	pybind::interface_<Mengine::PythonLogger>( kernel, "XlsScriptLogger", true, py_tools_module)
+		.def_native("write", &Mengine::PythonLogger::py_write )
+		.def_native("flush", &Mengine::PythonLogger::py_flush )
+		.def_property("softspace", &Mengine::PythonLogger::getSoftspace, &Mengine::PythonLogger::setSoftspace )
+		.def_property("errors", &Mengine::PythonLogger::getErrors, &Mengine::PythonLogger::setErrors )
+		.def_property("encoding", &Mengine::PythonLogger::getEncoding, &Mengine::PythonLogger::setEncoding )
 		;
-	Menge::PythonLogger * logger = new Menge::PythonLogger();
+    Mengine::PythonLogger * logger = new Mengine::PythonLogger();
 	PyObject * py_logger = pybind::ptr( kernel, logger);
 
 	pybind::setStdOutHandle( py_logger );
 	pybind::setStdErrorHandle( py_logger );
 
-	pybind::def_function( kernel, "spreadingPngAlpha", &Menge::spreadingPngAlpha, py_tools_module );
-	pybind::def_function( kernel, "writeBin", &Menge::writeBin, py_tools_module );
-	pybind::def_function( kernel, "writeAek", &Menge::writeAek, py_tools_module );
-    pybind::def_function( kernel, "parseAem", &Menge::parseAem, py_tools_module );
+	pybind::def_function( kernel, "spreadingPngAlpha", &Mengine::spreadingPngAlpha, py_tools_module );
+	pybind::def_function( kernel, "writeBin", &Mengine::writeBin, py_tools_module );
+	pybind::def_function( kernel, "writeAek", &Mengine::writeAek, py_tools_module );
+    pybind::def_function( kernel, "parseAem", &Mengine::parseAem, py_tools_module );
 
 
-	pybind::def_function( kernel, "convert", &Menge::convert, py_tools_module );
-	pybind::def_function( kernel, "isAlphaInImageFile", &Menge::isAlphaInImageFile, py_tools_module );
-	pybind::def_function( kernel, "isUselessAlphaInImageFile", &Menge::isUselessAlphaInImageFile, py_tools_module );
+	pybind::def_function( kernel, "convert", &Mengine::convert, py_tools_module );
+	pybind::def_function( kernel, "isAlphaInImageFile", &Mengine::isAlphaInImageFile, py_tools_module );
+	pybind::def_function( kernel, "isUselessAlphaInImageFile", &Mengine::isUselessAlphaInImageFile, py_tools_module );
 
-	Menge::Image::embedding( kernel, py_tools_module );
+    Mengine::Image::embedding( kernel, py_tools_module );
 
-	pybind::def_function( kernel, "loadImage", &Menge::loadImage, py_tools_module );
-	pybind::def_function( kernel, "saveImage", &Menge::saveImage, py_tools_module );
-	pybind::def_function_kernel( kernel, "createImage", &Menge::createImage, py_tools_module );
+	pybind::def_function( kernel, "loadImage", &Mengine::loadImage, py_tools_module );
+	pybind::def_function( kernel, "saveImage", &Mengine::saveImage, py_tools_module );
+	pybind::def_function_kernel( kernel, "createImage", &Mengine::createImage, py_tools_module );
 
-	pybind::def_function( kernel, "pathSHA1", &Menge::pathSHA1, py_tools_module );
+	pybind::def_function( kernel, "pathSHA1", &Mengine::pathSHA1, py_tools_module );
 
 	PyObject * module_builtins = pybind::get_builtins();
 
@@ -812,7 +812,7 @@ bool run()
 	pybind::incref( py_tools_module );
 	pybind::module_addobject( module_builtins, "ToolsBuilderPlugin", py_tools_module );
 
-	Menge::WChar currentDirectory[MAX_PATH];
+    Mengine::WChar currentDirectory[MAX_PATH];
 
 	if( ::GetCurrentDirectory( MAX_PATH, currentDirectory ) == 0 )
 	{
@@ -864,13 +864,13 @@ bool run()
 
 	PWSTR szModuleName = szArglist[1];
 
-	Menge::String utf8_ModuleName;
-	Menge::Helper::unicodeToUtf8( szModuleName, utf8_ModuleName );
+	Mengine::String utf8_ModuleName;
+	Mengine::Helper::unicodeToUtf8( szModuleName, utf8_ModuleName );
 
 	PWSTR szFunctionName = szArglist[2];
 
-	Menge::String utf8_FunctionName;
-	Menge::Helper::unicodeToUtf8( szFunctionName, utf8_FunctionName );
+	Mengine::String utf8_FunctionName;
+	Mengine::Helper::unicodeToUtf8( szFunctionName, utf8_FunctionName );
 
 	LOGGER_ERROR( "Module '%s' Function '%s'"
 		, utf8_ModuleName.c_str()
@@ -908,7 +908,7 @@ int CALLBACK WinMain( _In_  HINSTANCE hInstance, _In_  HINSTANCE hPrevInstance, 
 	(void)lpCmdLine;
 	(void)nCmdShow;
 
-	Menge::createConsole();
+    Mengine::createConsole();
 
 	run();
 	

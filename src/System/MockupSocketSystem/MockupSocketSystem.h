@@ -4,14 +4,14 @@
 
 #   include "Core/ServiceBase.h"
 
-namespace Menge
+namespace Mengine
 {
     class MockupSocketSystem
         : public ServiceBase<SocketSystemInterface>
     {
     public:
 		MockupSocketSystem();
-        ~MockupSocketSystem();
+        ~MockupSocketSystem() override;
 
     public:
         bool _initialize() override;

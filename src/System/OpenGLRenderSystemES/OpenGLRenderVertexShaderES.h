@@ -7,7 +7,7 @@
 
 #   include "Core/ServantBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class OpenGLRenderVertexShaderES
@@ -39,4 +39,4 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<OpenGLRenderVertexShaderES> OpenGLRenderVertexShaderESPtr;
-}	// namespace Menge
+}

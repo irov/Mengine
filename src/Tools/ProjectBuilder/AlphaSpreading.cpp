@@ -17,7 +17,7 @@
 
 #   include "Logger\Logger.h"
 
-namespace Menge
+namespace Mengine
 {
     PyObject * spreadingPngAlpha( const wchar_t * pngPathIn, const wchar_t * pngPathOut )
     {

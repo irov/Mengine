@@ -2,12 +2,12 @@
 
 #   include "Interface/ServiceInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	bool openglRenderErrorCheck( const char * _file, int _line );
 }
 
-#	define OPENGL_RENDER_CHECK_ERROR() Menge::openglRenderErrorCheck( __FILE__, __LINE__ )
+#	define OPENGL_RENDER_CHECK_ERROR() Mengine::openglRenderErrorCheck( __FILE__, __LINE__ )
 
 #	define GLCALL( Method, Args )\
 	do{\

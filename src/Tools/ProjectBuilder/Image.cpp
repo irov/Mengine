@@ -4,7 +4,7 @@
 #	include "Interface/ImageCodecInterface.h"
 #	include "Interface/ScriptSystemInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Image::Image()

@@ -10,7 +10,7 @@
 
 #   include "movie/movie.hpp"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     static void * my_movie_alloc( void * _data, size_t _size )

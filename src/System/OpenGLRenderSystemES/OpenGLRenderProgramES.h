@@ -8,7 +8,7 @@
 
 #	include "OpenGLRenderHeaderES.h"
 
-namespace Menge
+namespace Mengine
 {
 	class OpenGLRenderProgramES
 		: public RenderProgramInterface
@@ -51,10 +51,10 @@ namespace Menge
 		mutable mt::mat4f m_mvpMat;
 
 		int m_transformLocation;
-		int m_samplerLocation[MENGE_MAX_TEXTURE_STAGES];
+		int m_samplerLocation[MENGINE_MAX_TEXTURE_STAGES];
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<OpenGLRenderProgramES> OpenGLRenderProgramESPtr;
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}
 

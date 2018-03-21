@@ -304,8 +304,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             return 0;
         }
 
-        Menge::magic_number_type numberz = GET_MAGIC_NUMBER( Menge::MAGIC_PTZ );
-        Menge::magic_version_type versionz = GET_MAGIC_VERSION( Menge::MAGIC_PTZ );
+        Mengine::magic_number_type numberz = GET_MAGIC_NUMBER( Mengine::MAGIC_PTZ );
+        Mengine::magic_version_type versionz = GET_MAGIC_VERSION( Mengine::MAGIC_PTZ );
 
         fwrite( &numberz, sizeof( numberz ), 1, fz );
         fwrite( &versionz, sizeof( versionz ), 1, fz );

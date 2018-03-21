@@ -22,7 +22,7 @@
 
 #   include "Config/Typedef.h"
 
-namespace Menge
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     static bool s_writeBin( const WString & _protocolPath, const WString & _xmlPath, const WString & _binPath )

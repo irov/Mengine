@@ -4,14 +4,14 @@
 
 #   include "Core/ServiceBase.h"
 
-namespace Menge
+namespace Mengine
 {
     class MockupPluginSystem
 		: public ServiceBase<PluginSystemInterface>
     {
     public:
 		MockupPluginSystem();
-		~MockupPluginSystem();
+		~MockupPluginSystem() override;
 
     public:
 		DynamicLibraryInterfacePtr loadDynamicLibrary( const WString & _dynamicLibraryName ) override;

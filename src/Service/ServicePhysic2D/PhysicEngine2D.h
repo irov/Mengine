@@ -7,7 +7,7 @@
 
 #	include <vector>
 
-namespace Menge
+namespace Mengine
 {
 	class PhysicSystem2DInterface;
 	class PhysicBody2DInterface;
@@ -49,8 +49,8 @@ namespace Menge
 		PhysicJoint2DInterface *  createMouseJoint( PhysicBody2DInterface* _body1, int _x, int _y  );
 		
 		PhysicJoint2DInterface * createPrismaticJoint( 
-			Menge::PhysicBody2DInterface* _body1
-			, Menge::PhysicBody2DInterface* _body2
+			PhysicBody2DInterface* _body1
+			, PhysicBody2DInterface* _body2
 			, const mt::vec2f& _unitsWorldAxis
 			, bool _collideConnected
 			, bool _enableLimit 
@@ -60,8 +60,8 @@ namespace Menge
 			, float _motorSpeed);
 
 		PhysicJoint2DInterface * createPulleyJoint(
-			Menge::PhysicBody2DInterface* _body1
-			, Menge::PhysicBody2DInterface* _body2
+			PhysicBody2DInterface* _body1
+			, PhysicBody2DInterface* _body2
 			, const mt::vec2f& _offsetBody1
 			, const mt::vec2f& _offsetBody2
 			, const mt::vec2f& _offsetGroundBody1
@@ -70,24 +70,24 @@ namespace Menge
 			, bool _collideConnected );
 
 		PhysicJoint2DInterface * createGearJoint(
-			Menge::PhysicBody2DInterface * _body1,
-			Menge::PhysicBody2DInterface * _body2,
-			Menge::PhysicJoint2DInterface * _joint1,
-			Menge::PhysicJoint2DInterface * _joint2,
+			PhysicBody2DInterface * _body1,
+			PhysicBody2DInterface * _body2,
+			PhysicJoint2DInterface * _joint1,
+			PhysicJoint2DInterface * _joint2,
 			float _ratio,
 			bool _collideConnected );	
 
 		PhysicJoint2DInterface * createRopeJoint(
-			Menge::PhysicBody2DInterface * _body1,
-			Menge::PhysicBody2DInterface * _body2
+			PhysicBody2DInterface * _body1,
+			PhysicBody2DInterface * _body2
 			, const mt::vec2f & _localAnchor1
 			, const mt::vec2f & _localAnchor2
 			, float _maxlength
 			, bool _collideConnected );	
 
 		PhysicJoint2DInterface * createWheelJoint(
-			Menge::PhysicBody2DInterface * _body1,
-			Menge::PhysicBody2DInterface * _body2
+			PhysicBody2DInterface * _body1,
+			PhysicBody2DInterface * _body2
 			, const mt::vec2f & _localAnchor1
 			, const mt::vec2f & _localAnchor2
 			, const mt::vec2f & _localAxis1
@@ -122,4 +122,4 @@ namespace Menge
 		typedef std::vector<PhysicBody2DInterface*> TVectorBodies;
 		TVectorBodies m_bodies;
 	};
-}	// namespace Menge
+}

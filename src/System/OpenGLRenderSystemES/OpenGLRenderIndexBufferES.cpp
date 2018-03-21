@@ -3,7 +3,7 @@
 
 #	include "Core/MemoryAllocator.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderIndexBufferES::OpenGLRenderIndexBufferES()

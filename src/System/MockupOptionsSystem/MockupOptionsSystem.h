@@ -4,7 +4,7 @@
 
 #	include "Config/Char.h"
 
-namespace Menge
+namespace Mengine
 {
 	class MockupOptionsSystem
 		: public ServiceBase<OptionsSystemInterface>

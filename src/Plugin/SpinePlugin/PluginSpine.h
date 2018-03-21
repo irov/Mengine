@@ -2,7 +2,7 @@
 
 #	include "Core/PluginBase.h"
 
-namespace Menge
+namespace Mengine
 {
 	class PluginSpine
 		: public PluginBase

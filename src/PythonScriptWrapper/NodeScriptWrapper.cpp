@@ -2594,7 +2594,7 @@ namespace Mengine
 
             if( surface == nullptr )
             {
-                LOGGER_ERROR( "Menge.createSprite: '%s' resource '%s' invalid create surface 'SurfaceImage'"
+                LOGGER_ERROR( "createSprite: '%s' resource '%s' invalid create surface 'SurfaceImage'"
                     , _name.c_str()
                     , _resource->getName().c_str()
                 );
@@ -2610,7 +2610,7 @@ namespace Mengine
 
             if( shape == nullptr )
             {
-                LOGGER_ERROR( "Menge.createSprite: '%s' resource '%s' invalid create shape 'ShapeQuadFixed'"
+                LOGGER_ERROR( "Mengine.createSprite: '%s' resource '%s' invalid create shape 'ShapeQuadFixed'"
                     , _name.c_str()
                     , _resource->getName().c_str()
                 );
@@ -2722,7 +2722,7 @@ namespace Mengine
 
             if( resource == nullptr )
             {
-                LOGGER_ERROR( "Menge.getResourceReference: not exist resource %s"
+                LOGGER_ERROR( "Mengine.getResourceReference: not exist resource %s"
                     , _name.c_str()
                 );
 
@@ -3034,7 +3034,7 @@ namespace Mengine
             if( FILE_SERVICE()
                 ->hasFileGroup( _fileGroup, &fileGroup ) == false )
             {
-                LOGGER_ERROR( "Menge.loadResourcePak invalid found file group %s"
+                LOGGER_ERROR( "loadResourcePak invalid found file group %s"
                     , _fileGroup.c_str()
                 );
 
@@ -6452,7 +6452,7 @@ namespace Mengine
 
             if( resourceMovie == nullptr )
             {
-                LOGGER_ERROR( "Mengine.getMovieDuration invalid movie resource '%s'"
+                LOGGER_ERROR( "getMovieDuration invalid movie resource '%s'"
                     , _resourceName.c_str()
                 );
 

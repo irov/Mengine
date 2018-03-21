@@ -37,7 +37,6 @@ if( MENGINE_TARGET_MSVC )
     #ADD_SUBDIRECTORY( ParticleConverterPlugin )
     #ADD_SUBDIRECTORY( VideoCodecPlugin )
 
-    #ADD_SUBDIRECTORY( CURLHTTPSystem )
     #ADD_SUBDIRECTORY( HTTPLoggerPlugin )
 endif()
 

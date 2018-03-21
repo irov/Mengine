@@ -6,7 +6,7 @@
 
 #   include <wtypes.h>
 
-namespace Menge
+namespace Mengine
 {
 	class Win32TimerSystem 
 		: public ServiceBase<TimerSystemInterface>

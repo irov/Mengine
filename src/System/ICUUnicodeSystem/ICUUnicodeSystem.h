@@ -3,7 +3,7 @@
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/LogSystemInterface.h"
 
-namespace Menge
+namespace Mengine
 {
 	class ICUUnicodeSystem
 		: public UnicodeSystemInterface

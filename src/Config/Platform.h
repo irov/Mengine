@@ -33,7 +33,7 @@
 #define __LINUX__	1
 #endif*/
 #if defined(__APPLE__)
-#define MENGE_PLATFORM_MACOSX	1
+#define MENGINE_PLATFORM_MACOSX	1
 #endif
 /*#elif defined(macintosh)
 #undef __MACOS__
@@ -68,5 +68,5 @@
 #define __SOLARIS__	1
 #endif*/
 #if defined(WIN32) || defined(_WIN32)
-#define MENGE_PLATFORM_WIN32	1
+#define MENGINE_PLATFORM_WIN32	1
 #endif

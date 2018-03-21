@@ -13,7 +13,7 @@
 
 #	include "spine/spine.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceSpine

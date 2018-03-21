@@ -3,7 +3,7 @@
 
 #	include "Logger/Logger.h"
 
-namespace Menge
+namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	OpenGLRenderProgramES::OpenGLRenderProgramES()
@@ -11,7 +11,7 @@ namespace Menge
 		, m_samplerCount( 0 )
 		, m_transformLocation( -1 )
 	{
-		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
 		{
 			m_samplerLocation[i] = -1;
 		}		
@@ -53,12 +53,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderProgramES::compile()
     {
-		if( m_samplerCount > MENGE_MAX_TEXTURE_STAGES )
+		if( m_samplerCount > MENGINE_MAX_TEXTURE_STAGES )
 		{
 			LOGGER_ERROR("OpenGLRenderProgramES::initialize %s don't support sampler count %d max %d"
 				, m_name.c_str()
 				, m_samplerCount
-				, MENGE_MAX_TEXTURE_STAGES
+				, MENGINE_MAX_TEXTURE_STAGES
 				);
 
 			return false;
@@ -171,4 +171,4 @@ namespace Menge
 		GLCALL( glUniform1i, (location, _index) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}

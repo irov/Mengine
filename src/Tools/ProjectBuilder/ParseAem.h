@@ -2,7 +2,7 @@
 
 #	include <pybind/pybind.hpp>
 
-namespace Menge
+namespace Mengine
 {
     PyObject * parseAem( const wchar_t * hash, const wchar_t * aemPath );
 }

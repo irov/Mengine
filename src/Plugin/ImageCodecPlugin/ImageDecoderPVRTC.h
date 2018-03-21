@@ -22,7 +22,7 @@ class ImageDecoderPVRTC : public Mengine::ImageDecoder
 
 public:
 	ImageDecoderPVRTC();
-	~ImageDecoderPVRTC();
+	~ImageDecoderPVRTC() override;
 
 public:
 	bool _prepareData() override;

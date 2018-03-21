@@ -14,7 +14,7 @@ namespace Mengine
 	{
 	public:
 		SoundEmitter();
-		~SoundEmitter();
+		~SoundEmitter() override;
 
 	public:
 		void setSurfaceSound( const SurfaceSoundPtr & _surfaceSound );

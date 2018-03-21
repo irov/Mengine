@@ -32,7 +32,7 @@ namespace Mengine
 	{
 	public:
 		TTFFont();
-		~TTFFont();
+		~TTFFont() override;
 
 	public:
 		void setFTLibrary( FT_Library _library );

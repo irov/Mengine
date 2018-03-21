@@ -15,7 +15,7 @@ namespace Mengine
 	{
 	public:
 		TextLocalePack();
-		~TextLocalePack();
+		~TextLocalePack() override;
 
 	public:
 		bool initialize( const ConstString & _pakName, const FilePath & _path );

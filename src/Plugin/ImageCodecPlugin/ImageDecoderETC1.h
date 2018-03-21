@@ -19,7 +19,7 @@ namespace Mengine
 
     public:
         ImageDecoderETC1();
-        ~ImageDecoderETC1();
+        ~ImageDecoderETC1() override;
 
     public:
         bool _prepareData() override;

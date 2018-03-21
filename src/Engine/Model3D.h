@@ -28,7 +28,7 @@ namespace Mengine
 	{
 	public:
 		Model3D();
-		~Model3D();
+		~Model3D() override;
 
 	public:
 		void setResourceModel3D( const ResourceModel3DPtr & _resourceImage );

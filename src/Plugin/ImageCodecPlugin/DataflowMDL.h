@@ -17,7 +17,7 @@ namespace Mengine
 	{
 	public:
 		DataflowMDL();
-		~DataflowMDL();
+		~DataflowMDL() override;
 
 	public:
 		bool initialize() override;

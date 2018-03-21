@@ -17,7 +17,7 @@ namespace Mengine
     {
     public:
         PluginService();
-        ~PluginService();
+        ~PluginService() override;
 
 	public:
 		bool _initialize() override;

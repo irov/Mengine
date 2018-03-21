@@ -12,7 +12,7 @@ namespace Mengine
 	{
 	public:
 		SoundDecoderOGGVorbis();
-		~SoundDecoderOGGVorbis();
+		~SoundDecoderOGGVorbis() override;
 
 	public:
 		bool _initialize() override;

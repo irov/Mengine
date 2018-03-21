@@ -20,7 +20,7 @@ namespace Mengine
     {
     public:
 		Box2DModule();
-		~Box2DModule();
+		~Box2DModule() override;
 
 	public:
 		bool _initialize() override;

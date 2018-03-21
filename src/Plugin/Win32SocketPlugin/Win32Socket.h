@@ -17,7 +17,7 @@ namespace Mengine
 	{
 	public:
 		Win32Socket();
-		~Win32Socket();
+		~Win32Socket() override;
 
 	public:
 		bool initialize( const Char * _ip, const Char * _port );

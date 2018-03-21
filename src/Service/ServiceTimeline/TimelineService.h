@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
 		TimelineService();
-		~TimelineService();
+		~TimelineService() override;
 
 	public:
 		void beginOffset( float _offset ) override;

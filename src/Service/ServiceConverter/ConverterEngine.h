@@ -19,7 +19,7 @@ namespace Mengine
 	{
 	public:
 		ConverterEngine();
-		~ConverterEngine();
+		~ConverterEngine() override;
 
 	public:
 		bool registerConverter( const ConstString & _type, const ConverterFactoryInterfacePtr & _interface ) override;

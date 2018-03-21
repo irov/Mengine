@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
 		ThreadTaskPrefetch();
-        ~ThreadTaskPrefetch();
+        ~ThreadTaskPrefetch() override;
 	
 	public:
 		void initialize( const ConstString& _pakName, const FilePath & _fileName, const PrefetcherObserverInterfacePtr & _observer );

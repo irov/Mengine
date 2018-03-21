@@ -9,7 +9,7 @@ namespace Mengine
 	{
 	public:
 		SoundConverterFFMPEGToOGG();
-		~SoundConverterFFMPEGToOGG();
+		~SoundConverterFFMPEGToOGG() override;
 
 	public:
 		bool initialize() override;

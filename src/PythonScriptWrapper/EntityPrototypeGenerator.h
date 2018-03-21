@@ -16,7 +16,7 @@ namespace Mengine
 	{
 	public:
 		EntityPrototypeGenerator();
-		~EntityPrototypeGenerator();
+		~EntityPrototypeGenerator() override;
 
 	public:
 		void setScriptGenerator( const pybind::object & _generator );

@@ -27,7 +27,7 @@ namespace Mengine
 	{
 	public:
 		BounceActor();
-		~BounceActor();
+		~BounceActor() override;
 
 	public:
 		void setType( const ConstString & _type );

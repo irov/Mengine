@@ -15,7 +15,7 @@ namespace Mengine
 	{
 	public:
 		SilentSoundSource();
-		~SilentSoundSource();
+		~SilentSoundSource() override;
 
 	public:
 		void initialize( SilentSoundSystem * _soundSystem );

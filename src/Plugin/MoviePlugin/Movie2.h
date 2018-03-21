@@ -35,7 +35,7 @@ namespace Mengine
 
 	public:
 		Movie2();
-		~Movie2();
+		~Movie2() override;
 
     public:
 		void setResourceMovie2( const ResourceMovie2Ptr & _resourceMovie );

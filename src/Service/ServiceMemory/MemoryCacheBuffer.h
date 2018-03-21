@@ -19,7 +19,7 @@ namespace Mengine
 	{
 	public:
 		MemoryCacheBuffer();
-		~MemoryCacheBuffer();
+		~MemoryCacheBuffer() override;
 		
 	public:
 		void setMemoryManager( MemoryManager * _memoryManager );

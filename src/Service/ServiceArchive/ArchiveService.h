@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
 		ArchiveService();
-		~ArchiveService();
+		~ArchiveService() override;
 
 	public:
 		void registerArchivator( const ConstString & _type, const ArchivatorInterfacePtr & _archivator ) override;

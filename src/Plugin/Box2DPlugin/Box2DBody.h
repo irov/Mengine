@@ -46,7 +46,7 @@ namespace Mengine
 
     public:
 		Box2DBody();
-		~Box2DBody();
+		~Box2DBody() override;
 
 	public:
 		void setWorld( b2World * _world );

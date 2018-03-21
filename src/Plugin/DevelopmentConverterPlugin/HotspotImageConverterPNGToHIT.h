@@ -9,7 +9,7 @@ namespace Mengine
 	{
 	public:
 		HotspotImageConverterPNGToHIT();
-		~HotspotImageConverterPNGToHIT();
+		~HotspotImageConverterPNGToHIT() override;
 
 	public:
 		bool initialize() override;

@@ -12,7 +12,7 @@ namespace Mengine
 	{
 	public:
 		FileLogger();
-		~FileLogger();
+		~FileLogger() override;
 
 	public:
 		bool initialize() override;

@@ -2773,7 +2773,6 @@ namespace Mengine
     };
 
 	//////////////////////////////////////////////////////////////////////////
-	//REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
 	void PythonScriptWrapper::helperWrap()
 	{
 		pybind::kernel_interface * kernel = pybind::get_kernel();

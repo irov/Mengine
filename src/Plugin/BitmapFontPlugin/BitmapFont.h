@@ -16,7 +16,7 @@ namespace Mengine
 	{
 	public:
 		BitmapFont();
-		~BitmapFont();
+		~BitmapFont() override;
 
     protected:
 		bool initialize( const ConstString & _category, const IniUtil::IniStore & _ini ) override;

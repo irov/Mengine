@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		DevelopmentConverter();
-		~DevelopmentConverter();
+		~DevelopmentConverter() override;
 
 	public:
 		const String & getConvertExt() const override;

@@ -16,7 +16,7 @@ namespace Mengine
 
 	public:
 		ResourceVideo();
-		~ResourceVideo();
+		~ResourceVideo() override;
 
 	public:
 		bool _loader( const Metabuf::Metadata * _parser ) override;

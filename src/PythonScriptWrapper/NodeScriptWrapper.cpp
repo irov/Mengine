@@ -1348,7 +1348,7 @@ namespace Mengine
             {
             }
 
-            ~PyScheduleTimerInterface()
+            ~PyScheduleTimerInterface() override
             {
             }
 
@@ -1390,7 +1390,7 @@ namespace Mengine
             {
             }
 
-            ~PySchedulePipeInterface()
+            ~PySchedulePipeInterface() override
             {
             }
 
@@ -1425,7 +1425,7 @@ namespace Mengine
             {
             }
 
-            ~DelaySchedulePipeInterface()
+            ~DelaySchedulePipeInterface() override
             {
             }
 
@@ -1458,7 +1458,7 @@ namespace Mengine
             {
             }
 
-            ~PyScheduleEventInterface()
+            ~PyScheduleEventInterface() override
             {
             }
 
@@ -3341,7 +3341,7 @@ namespace Mengine
             {
             }
 
-            ~PrefetchResourceVisitor()
+            ~PrefetchResourceVisitor() override
             {
             }
 
@@ -3438,7 +3438,7 @@ namespace Mengine
             {
             }
 
-            ~UnfetchResourceVisitor()
+            ~UnfetchResourceVisitor() override
             {
             }
 
@@ -3493,7 +3493,7 @@ namespace Mengine
             {
             }
 
-            ~CacheResourceVisitor()
+            ~CacheResourceVisitor() override
             {
             }
 
@@ -3537,7 +3537,7 @@ namespace Mengine
             {
             }
 
-            ~UncacheResourceVisitor()
+            ~UncacheResourceVisitor() override
             {
             }
 
@@ -4217,7 +4217,7 @@ namespace Mengine
             {
             }
 
-            ~AffectorNodeFollower()
+            ~AffectorNodeFollower() override
             {
             }
 
@@ -4258,7 +4258,7 @@ namespace Mengine
             {
             }
 
-            ~AffectorNodeFollowerMethod()
+            ~AffectorNodeFollowerMethod() override
             {
             }
 
@@ -4661,7 +4661,7 @@ namespace Mengine
             {
             }
 
-            ~ScriptableAffectorCallback()
+            ~ScriptableAffectorCallback() override
             {
             }
 
@@ -6055,7 +6055,7 @@ namespace Mengine
             {
             }
 
-            ~PyGlobalBaseHandler()
+            ~PyGlobalBaseHandler() override
             {
             }
 
@@ -6762,7 +6762,7 @@ namespace Mengine
             {
             }
 
-            ~ResourceVisitorGetAlreadyCompiled()
+            ~ResourceVisitorGetAlreadyCompiled() override
             {
             }
 
@@ -6799,7 +6799,7 @@ namespace Mengine
             {
             }
 
-            ~MyResourceVisitor()
+            ~MyResourceVisitor() override
             {
             }
 

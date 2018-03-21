@@ -57,7 +57,7 @@ namespace Mengine
 
 	public:
 		HotSpot();
-		~HotSpot();
+		~HotSpot() override;
 
 	public:
 		void setOutward( bool _value );

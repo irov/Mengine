@@ -9,7 +9,7 @@ namespace Mengine
 	{
 	public:
 		VideoConverterFFMPEGToOGV();
-		~VideoConverterFFMPEGToOGV();
+		~VideoConverterFFMPEGToOGV() override;
 
 	public:
 		bool initialize() override;

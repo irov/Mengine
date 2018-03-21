@@ -39,7 +39,7 @@ namespace Mengine
 	{
 	public:
 		ScheduleManager();
-		~ScheduleManager();
+		~ScheduleManager() override;
 
 	public:
 		uint32_t event( float _delay, const ScheduleEventInterfacePtr & _listener ) override;

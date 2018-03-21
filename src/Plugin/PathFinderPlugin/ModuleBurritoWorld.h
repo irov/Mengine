@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		ModuleBurritoWorld();
-		~ModuleBurritoWorld();
+		~ModuleBurritoWorld() override;
 
 	public:
 		bool _initialize() override;

@@ -14,7 +14,7 @@ namespace Mengine
 	{
 	public:
 		FileGroupZip();
-		~FileGroupZip();
+		~FileGroupZip() override;
 
 	public:
 		bool initialize( const ConstString & _name, const ConstString & _category, const FilePath & _path ) override;

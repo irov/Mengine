@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		ImageEncoderPNG();
-		~ImageEncoderPNG();
+		~ImageEncoderPNG() override;
 
 	public:
 		bool _initialize() override;

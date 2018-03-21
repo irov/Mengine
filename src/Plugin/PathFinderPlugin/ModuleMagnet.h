@@ -15,7 +15,7 @@ namespace Mengine
 	{
 	public:
 		ModuleMagnet();
-		~ModuleMagnet();
+		~ModuleMagnet() override;
 
 	public:
 		bool _initialize() override;

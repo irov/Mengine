@@ -15,7 +15,7 @@ namespace Mengine
 	{
 	public:
 		LoggerEngine();
-		~LoggerEngine();
+		~LoggerEngine() override;
 
 	public:
 		void setVerboseLevel( EMessageLevel _level ) override;

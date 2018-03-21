@@ -19,7 +19,7 @@ namespace Mengine
 	{
 	public:
 		Win32FileInputStream();
-		~Win32FileInputStream();
+		~Win32FileInputStream() override;
 
 	public:
 		bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size ) override;

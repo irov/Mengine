@@ -1,2 +1,2 @@
-LIBRARY		"MengeXlsExportPlugin"
+LIBRARY		"XlsExportPlugin"
 EXPORTS 	dllCreatePlugin 	@1

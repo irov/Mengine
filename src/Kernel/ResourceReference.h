@@ -36,7 +36,7 @@ namespace Mengine
 
 	public:
 		ResourceReference();
-		~ResourceReference();
+		~ResourceReference() override;
 
 	public:
 		void setLocale( const ConstString & _locale );

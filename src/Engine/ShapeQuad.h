@@ -11,7 +11,7 @@ namespace Mengine
     {
     public:
         ShapeQuad();
-        ~ShapeQuad();
+        ~ShapeQuad() override;
 		
     protected:
         virtual void updateVerticesLocal() const = 0;

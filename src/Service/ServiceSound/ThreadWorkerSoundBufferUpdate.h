@@ -10,7 +10,7 @@ namespace Mengine
 	{
 	public:
 		ThreadWorkerSoundBufferUpdate();
-		~ThreadWorkerSoundBufferUpdate();
+		~ThreadWorkerSoundBufferUpdate() override;
 
     public:        
         void initialize( const SoundBufferInterfacePtr & _soundSource );

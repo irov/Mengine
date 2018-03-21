@@ -17,7 +17,7 @@ namespace Mengine
     {
 	public:
 		ScriptModuleLoader();
-		~ScriptModuleLoader();
+		~ScriptModuleLoader() override;
 
 	public:
 		void setModule( PyObject * _module );

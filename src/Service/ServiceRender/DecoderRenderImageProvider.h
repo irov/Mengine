@@ -14,7 +14,7 @@ namespace Mengine
 	{
 	public:
         DecoderRenderImageProvider();
-		~DecoderRenderImageProvider();
+		~DecoderRenderImageProvider() override;
 
     public:
         void initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecName );

@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
 		DX9RenderTargetOffscreen();
-		~DX9RenderTargetOffscreen();
+		~DX9RenderTargetOffscreen() override;
 
 	public:
 		bool _initialize() override;

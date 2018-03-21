@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
 		NodeMagnetActor();
-		~NodeMagnetActor();
+		~NodeMagnetActor() override;
 
 	public:
 		void setMagnetRadius( float _collisionRadius );

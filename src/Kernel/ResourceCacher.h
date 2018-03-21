@@ -4,138 +4,155 @@
 
 namespace Mengine
 {
-	template<class T>
-	class ResourceCacher
-	{
-	protected:
-		struct ResourceCacherDesc
-		{
-			T value;
-			bool use;
-			bool lock;
-		};
+    template<class T>
+    class ResourceCacher
+    {
+    public:
+        ResourceCacher()
+        {
+        }
 
-	public:
-		ResourceCacher()
-		{
-		}
+        ~ResourceCacher()
+        {
+        }
 
-		~ResourceCacher()
-		{
-		}
-		
-	public:
-		void addCache( const T & _ptr )
-		{
-			ResourceCacherDesc desc;
-			desc.value = _ptr;
-			desc.use = true;
-			desc.lock = false;
+    public:
+        void addCache( const T & _ptr );
+        void removeCache( const T & _ptr );
 
-			m_cachers.push_back( desc );
-		}
+    public:
+        void lock();
+        void unlock();
+        void clear();
 
-	public:
-		void removeCache( const T & _ptr )
-		{
-			for( typename TVectorResourceCacherDesc::iterator
-				it = m_cachers.begin(),
-				it_end = m_cachers.end();
-			it != it_end;
-			++it )
-			{
-				ResourceCacherDesc & desc = *it;
+    public:
+        T findCache();
 
-				if( desc.value != _ptr )
-				{
-					continue;
-				}
+    protected:
+        struct ResourceCacherDesc
+        {
+            T value;
+            bool use;
+            bool lock;
+        };
 
-				desc.use = false;
+    protected:
+        typedef stdex::vector<ResourceCacherDesc> TVectorResourceCacherDesc;
+        TVectorResourceCacherDesc m_cachers;
 
-				if( desc.lock == true )
-				{
-					continue;
-				}
+        class FEraseCacher;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    class ResourceCacher<T>::FEraseCacher
+    {
+    public:
+        bool operator () ( ResourceCacher<T>::ResourceCacherDesc & _desc )
+        {
+            _desc.lock = false;
 
-				m_cachers.erase( it );
-				break;
-			}
-		}
+            if( _desc.use == true )
+            {
+                return false;
+            }
 
-	public:
-		void lock()
-		{
-			for( typename TVectorResourceCacherDesc::iterator
-				it = m_cachers.begin(),
-				it_end = m_cachers.end();
-			it != it_end;
-			++it )
-			{
-				ResourceCacherDesc & desc = *it;
+            _desc.use = false;
 
-				desc.lock = true;
-			}
-		}
-		//////////////////////////////////////////////////////////////////////////
-		class FEraseCacher
-		{
-		public:
-			bool operator () ( ResourceCacherDesc & _desc )
-			{
-				_desc.lock = false;
+            _desc.value = nullptr;
 
-				if( _desc.use == true )
-				{
-					return false;
-				}
+            return true;
+        }
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    void ResourceCacher<T>::addCache( const T & _ptr )
+    {
+        ResourceCacherDesc desc;
+        desc.value = _ptr;
+        desc.use = true;
+        desc.lock = false;
 
-				_desc.use = false;
+        m_cachers.push_back( desc );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    void ResourceCacher<T>::removeCache( const T & _ptr )
+    {
+        for( typename TVectorResourceCacherDesc::iterator
+            it = m_cachers.begin(),
+            it_end = m_cachers.end();
+            it != it_end;
+            ++it )
+        {
+            ResourceCacherDesc & desc = *it;
 
-				_desc.value = nullptr;
+            if( desc.value != _ptr )
+            {
+                continue;
+            }
 
-				return true;					 
-			}
-		};
-		
-		void unlock()
-		{
-			m_cachers.erase( 
-				std::remove_if( m_cachers.begin(), m_cachers.end(), FEraseCacher() ), m_cachers.end() 
-				);
-		}
+            desc.use = false;
 
-		void clear()
-		{
-			m_cachers.clear();
-		}
+            if( desc.lock == true )
+            {
+                continue;
+            }
 
-	public:
-		T findCache()
-		{
-			for( typename TVectorResourceCacherDesc::iterator
-				it = m_cachers.begin(),
-				it_end = m_cachers.end();
-			it != it_end;
-			++it )
-			{
-				ResourceCacherDesc & desc = *it;
+            m_cachers.erase( it );
+            break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    void ResourceCacher<T>::lock()
+    {
+        for( typename TVectorResourceCacherDesc::iterator
+            it = m_cachers.begin(),
+            it_end = m_cachers.end();
+            it != it_end;
+            ++it )
+        {
+            ResourceCacherDesc & desc = *it;
 
-				if( desc.use == true )
-				{
-					continue;
-				}
+            desc.lock = true;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    void ResourceCacher<T>::unlock()
+    {
+        m_cachers.erase(
+            std::remove_if( m_cachers.begin(), m_cachers.end(), FEraseCacher() ), m_cachers.end()
+        );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    void ResourceCacher<T>::clear()
+    {
+        m_cachers.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    T ResourceCacher<T>::findCache()
+    {
+        for( typename TVectorResourceCacherDesc::iterator
+            it = m_cachers.begin(),
+            it_end = m_cachers.end();
+            it != it_end;
+            ++it )
+        {
+            ResourceCacherDesc & desc = *it;
 
-				desc.use = true;
+            if( desc.use == true )
+            {
+                continue;
+            }
 
-				return desc.value;
-			}
+            desc.use = true;
 
-			return nullptr;
-		}
+            return desc.value;
+        }
 
-	protected:
-		typedef stdex::vector<ResourceCacherDesc> TVectorResourceCacherDesc;
-		TVectorResourceCacherDesc m_cachers;
-	};
+        return nullptr;
+    }
 }

@@ -10,7 +10,7 @@ namespace Mengine
 	{
 	public:
 		SoundDecoderWAV();
-		~SoundDecoderWAV();
+		~SoundDecoderWAV() override;
 
 	public:
 		bool _prepareData() override;

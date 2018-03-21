@@ -14,7 +14,7 @@ namespace Mengine
 	{
 	public:
 		ThreadQueue();
-		~ThreadQueue();
+		~ThreadQueue() override;
 
 	public:
 		void setThreadName( const ConstString & _threadName );

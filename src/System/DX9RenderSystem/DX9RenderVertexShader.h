@@ -14,7 +14,7 @@ namespace Mengine
 	{
 	public:
 		DX9RenderVertexShader();
-		~DX9RenderVertexShader();
+		~DX9RenderVertexShader() override;
 
 	public:
 		const ConstString & getName() const override;

@@ -14,7 +14,7 @@ namespace Mengine
     {
     public:
 		DX9RenderFragmentShader();
-		~DX9RenderFragmentShader();
+		~DX9RenderFragmentShader() override;
 
 	public:
 		const ConstString & getName() const override;

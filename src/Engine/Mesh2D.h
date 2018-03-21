@@ -23,7 +23,7 @@ namespace Mengine
 	{
 	public:
 		Mesh2D();
-		~Mesh2D();
+		~Mesh2D() override;
 
     public:
 		void setResourceImage( const ResourceImagePtr & _resourceImage );

@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		ImageConverterPNGToACF();
-		~ImageConverterPNGToACF();
+		~ImageConverterPNGToACF() override;
 
 	public:
 		bool initialize() override;

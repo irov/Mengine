@@ -10,7 +10,7 @@ namespace Mengine
 	{
 	public:
         SurfaceSolidColor();
-		~SurfaceSolidColor();
+		~SurfaceSolidColor() override;
 
 	public:
 		void setSolidColor( const ColourValue & _color );

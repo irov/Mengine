@@ -18,7 +18,7 @@ namespace Mengine
 	{
 	public:
 		PrototypeManager();
-		~PrototypeManager();
+		~PrototypeManager() override;
 
 	public:
 		bool _initialize() override;

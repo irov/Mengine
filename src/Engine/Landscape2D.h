@@ -38,7 +38,7 @@ namespace Mengine
 	{
 	public:
 		Landscape2D();
-		~Landscape2D();
+		~Landscape2D() override;
 
 	public:
 		void setBackParts( const TVectorResourceImage & _images, uint32_t _countX, uint32_t _countY, float _width, float _height );

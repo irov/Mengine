@@ -17,7 +17,7 @@ namespace Mengine
 	{
 	public:
 		Win32SocketSystem();
-		~Win32SocketSystem();
+		~Win32SocketSystem() override;
 
 	public:
 		bool _initialize() override;

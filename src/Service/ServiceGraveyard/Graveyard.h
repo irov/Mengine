@@ -25,7 +25,7 @@ namespace Mengine
 	{
 	public:
 		Graveyard();
-		~Graveyard();
+		~Graveyard() override;
 
 	public:
 		bool _initialize() override;

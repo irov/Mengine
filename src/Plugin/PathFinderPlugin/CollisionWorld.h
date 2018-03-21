@@ -17,7 +17,7 @@ namespace Mengine
 	{
 	public:
 		CollisionWorld();
-		~CollisionWorld();
+		~CollisionWorld() override;
 
 	public:
 		bool initialize();

@@ -13,7 +13,7 @@ namespace Mengine
 
 	public:
 		HotSpotPolygon();
-		~HotSpotPolygon();
+		~HotSpotPolygon() override;
 
 	public:
 		void setPolygon( const Polygon & _polygon );

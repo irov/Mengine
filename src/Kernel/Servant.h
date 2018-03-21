@@ -10,7 +10,7 @@ namespace Mengine
 	{
 	public:
 		Servant();
-		~Servant();
+		~Servant() override;
 	};
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<Servant> ServantPtr;

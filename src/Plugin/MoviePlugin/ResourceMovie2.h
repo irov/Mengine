@@ -14,7 +14,7 @@ namespace Mengine
 
 	public:
 		ResourceMovie2();
-		~ResourceMovie2();
+		~ResourceMovie2() override;
 
 	public:
 		void setMovieInstance( const aeMovieInstance * _instance );

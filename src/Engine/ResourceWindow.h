@@ -36,7 +36,7 @@ namespace Mengine
 
 	public:
 		ResourceWindow();
-		~ResourceWindow();
+		~ResourceWindow() override;
 		
 	public:
 		bool _loader( const Metabuf::Metadata * _parser ) override;

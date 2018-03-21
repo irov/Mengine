@@ -12,7 +12,7 @@ namespace Mengine
 	{
     public:
         ServiceProvider();
-        ~ServiceProvider();
+        ~ServiceProvider() override;
 
 	public:
 		bool existService( const char * _name ) const override;

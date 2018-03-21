@@ -21,7 +21,7 @@ namespace Mengine
 	{
 	public:
 		CodecEngine();
-		~CodecEngine();
+		~CodecEngine() override;
 
 	public:
 		bool registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _factory ) override;

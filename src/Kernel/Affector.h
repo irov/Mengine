@@ -29,7 +29,7 @@ namespace Mengine
 	{
 	public:
 		Affector();
-		virtual ~Affector();
+		~Affector() override;
 
 	public:
 		void setAffectorType( EAffectorType _type );
@@ -80,7 +80,7 @@ namespace Mengine
 	{
 	public:
 		CallbackAffector();
-		~CallbackAffector();
+		~CallbackAffector() override;
 
 	public:
 		void setCallback( const AffectorCallbackPtr & _cb );
@@ -338,7 +338,7 @@ namespace Mengine
                 m_factory = new FactoryPool<AffectorType, 4>();
             }
 
-            ~NodeAffectorCreatorAccumulateLinear()
+            virtual ~NodeAffectorCreatorAccumulateLinear()
             {
             }
 
@@ -379,7 +379,7 @@ namespace Mengine
                 m_factory = new FactoryPool<AffectorType, 4>();
             }
 
-            ~NodeAffectorCreatorInterpolateLinear()
+            virtual ~NodeAffectorCreatorInterpolateLinear()
             {
             }
 
@@ -420,7 +420,7 @@ namespace Mengine
                 m_factory = new FactoryPool<AffectorType, 4>();
             }                       
 
-            ~NodeAffectorCreatorInterpolateLinear()
+            virtual ~NodeAffectorCreatorInterpolateLinear()
             {
             }
             
@@ -461,7 +461,7 @@ namespace Mengine
                 m_factory = new FactoryPool<AffectorType, 4>();
             }
 
-            ~NodeAffectorCreatorInterpolateQuadratic()
+            virtual ~NodeAffectorCreatorInterpolateQuadratic()
             {
             }
 
@@ -502,7 +502,7 @@ namespace Mengine
                 m_factory = new FactoryPool<AffectorType, 4>();
             }
 
-            ~NodeAffectorCreatorInterpolateBezier()
+            virtual ~NodeAffectorCreatorInterpolateBezier()
             {
             }
 

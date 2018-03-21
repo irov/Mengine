@@ -36,7 +36,7 @@ namespace Mengine
 
 	public:
 		Scene();
-		~Scene();
+		~Scene() override;
 			
 	public:
 		void onAppMouseLeave();

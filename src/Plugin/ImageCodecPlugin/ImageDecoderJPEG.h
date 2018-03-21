@@ -22,7 +22,7 @@ namespace Mengine
 	{
 	public:
 		ImageDecoderJPEG();
-		~ImageDecoderJPEG();
+		~ImageDecoderJPEG() override;
 
 	protected:
 		bool _initialize() override;

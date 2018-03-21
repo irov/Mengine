@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		MessageBoxLogger();
-		~MessageBoxLogger();
+		~MessageBoxLogger() override;
 
 	public:
 		bool initialize() override;

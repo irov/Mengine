@@ -25,7 +25,7 @@ namespace Mengine
 	{
 	public:
 		DX9RenderSystem();
-		~DX9RenderSystem();
+		~DX9RenderSystem() override;
 
 	public:
 		bool _initialize() override;

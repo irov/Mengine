@@ -32,7 +32,7 @@ namespace Mengine
 
 	public:
 		SurfaceSound();
-		~SurfaceSound();
+		~SurfaceSound() override;
 
 	public:
 		void setResourceSound( const ResourceSoundPtr & _resourceSound );

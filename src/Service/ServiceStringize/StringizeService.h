@@ -18,7 +18,7 @@ namespace Mengine
 	{
     public:
         StringizeService();
-        ~StringizeService();
+        ~StringizeService() override;
 
 	public:
 		bool _initialize() override;

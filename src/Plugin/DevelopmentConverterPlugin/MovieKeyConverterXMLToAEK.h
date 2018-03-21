@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
 		MovieKeyConverterXMLToAEK();
-		~MovieKeyConverterXMLToAEK();
+		~MovieKeyConverterXMLToAEK() override;
 
 	public:
 		bool initialize() override;

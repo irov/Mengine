@@ -15,7 +15,7 @@ namespace Mengine
 	{
 	public:
 		OALSoundSource();
-		~OALSoundSource();
+		~OALSoundSource() override;
         
     public:
         void initialize( OALSoundSystem* _soundSystem );

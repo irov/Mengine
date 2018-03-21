@@ -9,7 +9,7 @@ namespace Mengine
 	{
 	public:
 		ImageConverterDDSToHTF();
-		~ImageConverterDDSToHTF();
+		~ImageConverterDDSToHTF() override;
 
 	public:
 		bool initialize() override;

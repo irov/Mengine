@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		PickEncoderHIT();
-		~PickEncoderHIT();
+		~PickEncoderHIT() override;
 
 	public:
 		bool _initialize() override;

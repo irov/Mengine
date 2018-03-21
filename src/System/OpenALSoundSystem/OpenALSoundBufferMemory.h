@@ -9,7 +9,7 @@ namespace Mengine
 	{
 	public:
 		OALSoundBufferMemory();
-		~OALSoundBufferMemory();
+		~OALSoundBufferMemory() override;
         
     public:
         bool update() override;

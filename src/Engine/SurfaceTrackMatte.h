@@ -22,7 +22,7 @@ namespace Mengine
 	{
 	public:
 		SurfaceTrackMatte();
-		~SurfaceTrackMatte();
+		~SurfaceTrackMatte() override;
 
 	public:
 		void setResourceImage( const ResourceImagePtr & _resourceImage );

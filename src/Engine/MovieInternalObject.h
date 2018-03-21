@@ -15,7 +15,7 @@ namespace Mengine
 	{
 	public:
 		MovieInternalObject();
-		~MovieInternalObject();
+		~MovieInternalObject() override;
 
 	public:
 		void setMovie( Movie * _movie );

@@ -11,7 +11,7 @@ namespace Mengine
 
     public:
         MatrixProxy();
-        ~MatrixProxy();
+        ~MatrixProxy() override;
 
     public:
         void setProxyMatrix( const mt::mat4f & _proxyMatrix );

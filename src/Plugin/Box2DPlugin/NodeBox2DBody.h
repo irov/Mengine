@@ -12,7 +12,7 @@ namespace Mengine
     {
     public:
 		NodeBox2DBody();
-		~NodeBox2DBody();
+		~NodeBox2DBody() override;
 
 	public:
 		void setBox2DBody( const Box2DBodyPtr & _body );

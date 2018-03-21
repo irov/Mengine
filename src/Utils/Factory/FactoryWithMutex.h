@@ -12,7 +12,7 @@ namespace Mengine
 	{
 	public:
         FactoryWithMutex(const char * _name);
-		virtual ~FactoryWithMutex();
+		~FactoryWithMutex() override;
 
 	public:
 		void setMutex( const ThreadMutexInterfacePtr & _mutex );

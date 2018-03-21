@@ -22,7 +22,7 @@ namespace Mengine
 	{
 	public:
 		Grid2D();
-		~Grid2D();
+		~Grid2D() override;
 
 	public:
 		void setResourceImage( const ResourceImagePtr & _resourceImage );

@@ -53,7 +53,7 @@ namespace Mengine
 	{
 	public:
 		SoundEngine();
-		~SoundEngine();
+		~SoundEngine() override;
 
     public:
 		bool _initialize() override;

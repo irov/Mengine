@@ -11,7 +11,7 @@ namespace Mengine
     {
     public:
         ProfilerService();
-        ~ProfilerService();
+        ~ProfilerService() override;
 
     protected:
         bool _initialize() override;

@@ -30,7 +30,7 @@ namespace Mengine
 	{
 	public:
 		AstralaxParticleSystem2();
-		~AstralaxParticleSystem2();
+		~AstralaxParticleSystem2() override;
 
 	public:
 		bool _initialize() override;

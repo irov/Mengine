@@ -15,7 +15,7 @@ namespace Mengine
 	{
 	public:
 		Box2DJoint();
-		~Box2DJoint();
+		~Box2DJoint() override;
 
 	public:
 		bool initialize( b2World* _world, const b2JointDef * _jointDef );

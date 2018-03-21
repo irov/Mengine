@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		ModelConverterMDLToMDZ();
-		~ModelConverterMDLToMDZ();
+		~ModelConverterMDLToMDZ() override;
 
 	public:
 		bool initialize() override;

@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		TimerService();
-		~TimerService();
+		~TimerService() override;
 
 	public:
 		void resetDeltaTime() override;

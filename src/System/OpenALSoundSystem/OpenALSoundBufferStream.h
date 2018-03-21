@@ -12,7 +12,7 @@ namespace Mengine
 	{
 	public:
 		OALSoundBufferStream();
-		~OALSoundBufferStream();
+		~OALSoundBufferStream() override;
 
 	public:
 		bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;

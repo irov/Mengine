@@ -9,7 +9,7 @@ namespace Mengine
 	{
 	public:
 		HotSpotBubbles();
-		~HotSpotBubbles();
+		~HotSpotBubbles() override;
 
 	public:
 		uint32_t addBubble( const mt::vec2f & _pos, float _radius, float _ellipse, bool _outward );

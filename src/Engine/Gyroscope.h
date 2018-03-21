@@ -11,7 +11,7 @@ namespace Mengine
 
     public:
         Gyroscope();
-        ~Gyroscope();
+        ~Gyroscope() override;
 
 	protected:
 		void updateWorldMatrix() const override;

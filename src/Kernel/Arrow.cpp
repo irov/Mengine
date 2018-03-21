@@ -20,7 +20,7 @@ namespace Mengine
         {
         }
 
-        ArrowInputMousePositionProvider::~ArrowInputMousePositionProvider()
+        ~ArrowInputMousePositionProvider() override
         {
         }
         

@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
         SurfaceImage();
-		~SurfaceImage();
+		~SurfaceImage() override;
 
 	public:
 		void setResourceImage( const ResourceImagePtr & _resourceImage );

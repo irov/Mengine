@@ -21,7 +21,7 @@ namespace Mengine
 	{
 	public:
 		PathFinderWayAffector();
-		~PathFinderWayAffector();
+		~PathFinderWayAffector() override;
 		
 	public:
 		bool initialize( Node * _node, const pybind::list & _satellite, float _offset, float _speed, const pybind::list & _way, bool _preparePosition, const pybind::object & _cb, const pybind::args & _args );

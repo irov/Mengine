@@ -18,7 +18,7 @@ namespace Mengine
 
 	public:
 		TTFPlugin();
-        ~TTFPlugin();
+        ~TTFPlugin() override;
 
 	protected:
 		bool _initialize() override;

@@ -17,7 +17,7 @@ namespace Mengine
 	{
 	public:
 		BitmapGlyphService();
-		~BitmapGlyphService();
+		~BitmapGlyphService() override;
 
 	public:
 		bool _initialize() override;

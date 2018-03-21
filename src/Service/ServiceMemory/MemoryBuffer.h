@@ -14,7 +14,7 @@ namespace Mengine
 	{
 	public:
 		MemoryBuffer();
-		~MemoryBuffer();
+		~MemoryBuffer() override;
 
     public:
 		void setMemory( const void * _ptr, size_t _size, const char * _file, uint32_t _line ) override;

@@ -11,6 +11,6 @@ namespace Mengine
 
 	public:
 		Layer();
-		~Layer();
+		~Layer() override;
 	};
 }

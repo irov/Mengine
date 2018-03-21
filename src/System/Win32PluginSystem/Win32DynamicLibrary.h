@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
 		Win32DynamicLibrary();
-		~Win32DynamicLibrary();
+		~Win32DynamicLibrary() override;
 
 	public:
 		void setName(const WString & _name);

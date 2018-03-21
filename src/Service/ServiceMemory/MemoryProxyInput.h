@@ -14,7 +14,7 @@ namespace Mengine
 	{
 	public:
 		MemoryProxyInput();
-		~MemoryProxyInput();
+		~MemoryProxyInput() override;
 
     public:
 		Pointer setMemory( void * _memory, size_t _offset, size_t _size ) override;

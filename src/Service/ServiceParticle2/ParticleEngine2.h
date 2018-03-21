@@ -17,7 +17,7 @@ namespace Mengine
 	{
 	public:
 		ParticleEngine2();
-		~ParticleEngine2();
+		~ParticleEngine2() override;
 
 	public:
 		bool _initialize() override;

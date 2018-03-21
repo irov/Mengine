@@ -14,7 +14,7 @@ namespace Mengine
 	{
 	public:
 		NodeAOIActor();
-		~NodeAOIActor();
+		~NodeAOIActor() override;
 
 	public:
 		void setRadius( float _radius );

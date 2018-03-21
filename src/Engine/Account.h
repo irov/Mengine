@@ -19,7 +19,7 @@ namespace Mengine
 	{		
 	public:
 		Account();
-		~Account();
+		~Account() override;
 
 	public:
 		bool initialize( const ConstString & _id, const FilePath & _folder, uint32_t _projectVersion );

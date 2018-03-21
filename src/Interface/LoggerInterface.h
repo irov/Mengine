@@ -26,15 +26,6 @@ namespace Mengine
         : public ServantInterface
 	{
 	public:
-		LoggerInterface()
-		{
-		};
-
-		virtual ~LoggerInterface()
-		{
-		};
-
-	public:
 		virtual bool initialize() = 0;
 		virtual void finalize() = 0;
 

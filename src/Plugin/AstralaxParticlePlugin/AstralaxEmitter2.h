@@ -23,7 +23,7 @@ namespace Mengine
 	{
 	public:
 		AstralaxEmitter2();
-		~AstralaxEmitter2();
+		~AstralaxEmitter2() override;
 
     public:
 		bool initialize( AstralaxParticleSystem2 * _particleSystem, const ParticleEmitterContainerInterface2Ptr & _container, HM_EMITTER _id );

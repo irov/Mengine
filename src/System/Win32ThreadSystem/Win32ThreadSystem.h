@@ -22,7 +22,7 @@ namespace Mengine
 	{
 	public:
 		Win32ThreadSystem();
-		~Win32ThreadSystem();
+		~Win32ThreadSystem() override;
 
 	public:
 		bool _initialize() override;

@@ -37,7 +37,7 @@ namespace Mengine
 
 	public:
 		NodeAOITrigger();
-		~NodeAOITrigger();
+		~NodeAOITrigger() override;
 
 	public:
 		void setRadius( float _radius );

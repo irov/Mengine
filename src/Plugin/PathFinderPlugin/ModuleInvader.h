@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		ModuleInvader();
-		~ModuleInvader();
+		~ModuleInvader() override;
 			
 	public:
 		bool _initialize() override;

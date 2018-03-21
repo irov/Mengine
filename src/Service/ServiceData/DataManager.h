@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
 		DataManager();
-		~DataManager();
+		~DataManager() override;
 
 	public:
 		void registerDataflow( const ConstString& _type, const DataflowInterfacePtr & _dataflow ) override;

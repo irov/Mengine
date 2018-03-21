@@ -14,7 +14,7 @@ namespace Mengine
 	{
 	public:
 		RenderTexture();
-		~RenderTexture();
+		~RenderTexture() override;
 
     public:
         void initialize( uint32_t _id, const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height );

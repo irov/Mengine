@@ -9,7 +9,7 @@ namespace Mengine
 	{
     public:
         Movie2Slot();
-        ~Movie2Slot();
+        ~Movie2Slot() override;
 
     public:
         void setMovieName( const ConstString & _movieName );

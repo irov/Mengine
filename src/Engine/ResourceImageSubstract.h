@@ -13,7 +13,7 @@ namespace Mengine
 
 	public:
 		ResourceImageSubstract();
-        ~ResourceImageSubstract();
+        ~ResourceImageSubstract() override;
 
 	protected:
 		bool _loader( const Metabuf::Metadata * _parser ) override;

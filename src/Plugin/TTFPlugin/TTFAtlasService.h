@@ -24,7 +24,7 @@ namespace Mengine
 	{
 	public:
 		TTFAtlasService();
-		~TTFAtlasService();
+		~TTFAtlasService() override;
 
 	public:
 		bool _initialize() override;

@@ -44,7 +44,7 @@ namespace Mengine
 	{
 	public:
 		ThreadJob();
-		~ThreadJob();
+		~ThreadJob() override;
 
 	public:
 		bool initialize( uint32_t _sleep );

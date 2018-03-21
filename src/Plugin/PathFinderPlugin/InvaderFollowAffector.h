@@ -18,7 +18,7 @@ namespace Mengine
 	{
 	public:
 		InvaderFollowAffector();
-		~InvaderFollowAffector();
+		~InvaderFollowAffector() override;
 
 	public:
 		Node * getNode() const;

@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		SilentSoundBuffer();
-		~SilentSoundBuffer();
+		~SilentSoundBuffer() override;
 
     public:        
         bool update() override;

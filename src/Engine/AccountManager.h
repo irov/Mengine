@@ -19,7 +19,7 @@ namespace Mengine
 	{
 	public:
 		AccountManager();
-		~AccountManager();
+		~AccountManager() override;
         
     public:
         bool _initialize() override;

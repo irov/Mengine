@@ -18,7 +18,7 @@ namespace Mengine
 	{
 	public:
 		ThreadEngine();
-		~ThreadEngine();
+		~ThreadEngine() override;
 
     public:
         bool _initialize() override;

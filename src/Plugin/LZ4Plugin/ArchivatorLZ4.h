@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		ArchivatorLZ4();
-		~ArchivatorLZ4();
+		~ArchivatorLZ4() override;
 
     public:
         size_t compressBound( size_t _size ) const override;

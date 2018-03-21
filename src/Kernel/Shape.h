@@ -12,7 +12,7 @@ namespace Mengine
     {
     public:
         Shape();
-        ~Shape();
+        ~Shape() override;
 		
     public:
         void setSurface( const SurfacePtr & _surface );

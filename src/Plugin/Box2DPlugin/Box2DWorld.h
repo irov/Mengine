@@ -29,7 +29,7 @@ namespace Mengine
     {
     public:
 		Box2DWorld();
-		~Box2DWorld();
+		~Box2DWorld() override;
 
 	public:
 		void setDead();

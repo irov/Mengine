@@ -29,7 +29,7 @@ namespace Mengine
 	{
 	public:
 		ResourceManager();
-		~ResourceManager();
+		~ResourceManager() override;
 
 	public:
 		bool _initialize() override;

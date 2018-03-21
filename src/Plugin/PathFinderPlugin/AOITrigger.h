@@ -17,7 +17,7 @@ namespace Mengine
 	{
 	public:
 		AOITrigger();
-		~AOITrigger();
+		~AOITrigger() override;
 
 	public:
 		void setProvider( AOITriggerProviderInterface * _provider );

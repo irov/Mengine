@@ -101,14 +101,14 @@ SERVICE_EXTERN( GameService );
 SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( Application );
 
-PLUGIN_EXPORT( MengeImageCodec );
-PLUGIN_EXPORT( MengeSoundCodec );
-PLUGIN_EXPORT( MengeVideoCodec );
-PLUGIN_EXPORT( MengeAmplifier );
-PLUGIN_EXPORT( MengeZip );
-PLUGIN_EXPORT( MengeLZ4 );
-PLUGIN_EXPORT( MengeOggVorbis );
-PLUGIN_EXPORT( MengeWin32FileGroup );
+PLUGIN_EXPORT( ImageCodec );
+PLUGIN_EXPORT( SoundCodec );
+PLUGIN_EXPORT( VideoCodec );
+PLUGIN_EXPORT( Amplifier );
+PLUGIN_EXPORT( Zip );
+PLUGIN_EXPORT( LZ4 );
+PLUGIN_EXPORT( OggVorbis );
+PLUGIN_EXPORT( Win32FileGroup );
 PLUGIN_EXPORT( BitmapFont );
 
 #   ifdef MENGINE_PLUGIN_SPINE
@@ -140,12 +140,12 @@ namespace Mengine
 	{
 		{
 			LOGGER_INFO("Initialize Zip...");
-			PLUGIN_CREATE( MengeZip );
+			PLUGIN_CREATE( Zip );
 		}
 
 		{
 			LOGGER_INFO("Initialize LZ4...");
-			PLUGIN_CREATE( MengeLZ4 );
+			PLUGIN_CREATE( LZ4 );
 		}
 
 		return true;
@@ -222,7 +222,7 @@ namespace Mengine
 
 		{
 			LOGGER_INFO("Initialize Win32 file group...");
-			PLUGIN_CREATE( MengeWin32FileGroup );
+			PLUGIN_CREATE( Win32FileGroup );
 		}
 
 //#	ifndef _MSC_VER
@@ -692,11 +692,11 @@ namespace Mengine
 		LOGGER_ERROR( "Invalid %s", Info );}else{\
 		LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
 
-        MENGINE_ADD_PLUGIN( MengeImageCodec, "initialize Plugin Image Codec..." );
-        MENGINE_ADD_PLUGIN( MengeSoundCodec, "initialize Plugin Sound Codec..." );
-        MENGINE_ADD_PLUGIN( MengeOggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
-        MENGINE_ADD_PLUGIN( MengeAmplifier, "initialize Plugin Amplifier..." );
-        MENGINE_ADD_PLUGIN( MengeVideoCodec, "initialize Plugin Video Codec..." );
+        MENGINE_ADD_PLUGIN( ImageCodec, "initialize Plugin Image Codec..." );
+        MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec..." );
+        MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
+        MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier..." );
+        MENGINE_ADD_PLUGIN( VideoCodec, "initialize Plugin Video Codec..." );
 #ifdef MENGINE_PLUGIN_SPINE
         MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine..." );
 #endif

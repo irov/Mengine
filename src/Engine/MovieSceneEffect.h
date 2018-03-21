@@ -9,7 +9,7 @@ namespace Mengine
 	{
     public:
         MovieSceneEffect();
-        ~MovieSceneEffect();
+        ~MovieSceneEffect() override;
 
     public:
         void setPropagateNode( Node * _propagate );

@@ -111,7 +111,7 @@ namespace Mengine
 
 	public:
 		Game();
-		~Game();
+		~Game() override;
 
     public:
         bool _initialize() override;

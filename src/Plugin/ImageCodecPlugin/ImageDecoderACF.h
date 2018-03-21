@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
 		ImageDecoderACF();
-		~ImageDecoderACF();
+		~ImageDecoderACF() override;
 
 	public:
 		bool _initialize() override;

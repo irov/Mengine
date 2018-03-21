@@ -12,7 +12,7 @@ namespace Mengine
     {
     public:
 		Win32PluginSystem();
-		~Win32PluginSystem();
+		~Win32PluginSystem() override;
 
 	public:
 		bool _initialize() override;

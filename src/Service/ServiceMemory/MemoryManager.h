@@ -27,7 +27,7 @@ namespace Mengine
 	{
 	public:
 		MemoryManager();
-		~MemoryManager();
+		~MemoryManager() override;
 
 	public:
 		bool _initialize() override;

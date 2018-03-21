@@ -12,7 +12,7 @@ namespace Mengine
 	{
 	public:
 		ModuleSteam();
-		~ModuleSteam();
+		~ModuleSteam() override;
 
 	protected:
 		bool _avaliable() override;

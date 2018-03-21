@@ -54,7 +54,7 @@ namespace Mengine
 
 	public:
 		Node();
-		~Node();
+		~Node() override;
         
 	public:
 		void render( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;

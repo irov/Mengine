@@ -36,7 +36,7 @@ namespace Mengine
 
 	public:
 		NodeCollisionActor();
-		~NodeCollisionActor();
+		~NodeCollisionActor() override;
 
 	public:
 		void setCollisionRadius( float _collisionRadius );

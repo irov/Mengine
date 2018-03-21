@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
 		FactoryService();
-		~FactoryService();
+		~FactoryService() override;
 
 	public:
 		void registerFactory(const Factory * _factory) override;

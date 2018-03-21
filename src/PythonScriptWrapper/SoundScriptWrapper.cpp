@@ -39,7 +39,7 @@ namespace Mengine
 			{
 			}
 
-			~MySoundNodeListener()
+			~MySoundNodeListener() override
 			{	
                 if( m_resource != nullptr )
                 {
@@ -310,7 +310,7 @@ namespace Mengine
 			{
 			}
 
-			~SoundAffectorCallback()
+			~SoundAffectorCallback() override
 			{
 			}
 
@@ -596,7 +596,7 @@ namespace Mengine
 			{
 			}
 
-			~MusicAffectorCallback()
+			~MusicAffectorCallback() override
 			{
 			}
 

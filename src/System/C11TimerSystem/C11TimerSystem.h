@@ -11,7 +11,7 @@ namespace Mengine
     {
     public:
         C11TimerSystem();
-        ~C11TimerSystem();
+        ~C11TimerSystem() override;
 
     public:
         bool _initialize() override;

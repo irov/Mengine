@@ -39,7 +39,7 @@ namespace Mengine
 
 	public:
 		ParticleEmitter2();
-		~ParticleEmitter2();
+		~ParticleEmitter2() override;
 
 	public:
 		bool _play( float _time ) override;

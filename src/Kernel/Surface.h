@@ -27,7 +27,7 @@ namespace Mengine
 
 	public:
 		Surface();
-		~Surface();
+		~Surface() override;
 
     public:
         virtual const mt::vec2f & getMaxSize() const = 0;

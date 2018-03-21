@@ -16,7 +16,7 @@ namespace Mengine
 	{
 	public:
 		Window();
-		~Window();
+		~Window() override;
 		
 	public:
 		void setClientSize( const mt::vec2f& _clientSize );

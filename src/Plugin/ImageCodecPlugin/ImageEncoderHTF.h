@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		ImageEncoderHTF();
-		~ImageEncoderHTF();
+		~ImageEncoderHTF() override;
 
 	public:
 		bool _initialize() override;

@@ -9,7 +9,7 @@ namespace Mengine
 	{
 	public:
 		HotSpotCircle();
-		~HotSpotCircle();
+		~HotSpotCircle() override;
 
 	public:
 		void setRadius( float _radius );

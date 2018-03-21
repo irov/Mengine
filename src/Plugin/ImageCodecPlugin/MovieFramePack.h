@@ -17,7 +17,7 @@ namespace Mengine
 	{
 	public:
 		MovieFramePack();
-		~MovieFramePack();
+		~MovieFramePack() override;
         
     public:
         void initialize( uint32_t _size );

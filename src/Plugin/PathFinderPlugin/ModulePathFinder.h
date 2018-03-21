@@ -16,7 +16,7 @@ namespace Mengine
 	{
 	public:
 		ModulePathFinder();
-		~ModulePathFinder();
+		~ModulePathFinder() override;
 
 	public:
 		bool _initialize() override;

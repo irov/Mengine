@@ -26,7 +26,7 @@ namespace Mengine
 	{
 	public:
 		TextManager();
-		~TextManager();
+		~TextManager() override;
 
     public:
 		bool _initialize() override;

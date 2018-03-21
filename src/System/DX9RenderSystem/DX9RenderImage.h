@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
 		DX9RenderImage();
-        ~DX9RenderImage();
+        ~DX9RenderImage() override;
 
     public:
         void initialize( LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat );

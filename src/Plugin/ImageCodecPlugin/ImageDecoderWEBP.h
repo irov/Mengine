@@ -12,7 +12,7 @@ namespace Mengine
 	{
 	public:
 		ImageDecoderWEBP();
-		~ImageDecoderWEBP();
+		~ImageDecoderWEBP() override;
 
 	public:
 		bool _initialize() override;

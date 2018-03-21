@@ -25,7 +25,7 @@ namespace Mengine
 	{
 	public:
 		Application();
-		~Application();
+		~Application() override;
 
 	public:
 		bool _initialize() override;

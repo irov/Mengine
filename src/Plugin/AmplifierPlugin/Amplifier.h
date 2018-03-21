@@ -18,7 +18,7 @@ namespace Mengine
 	{
 	public:
 		Amplifier();
-		~Amplifier();
+		~Amplifier() override;
 
 	public:
 		bool _initialize() override;

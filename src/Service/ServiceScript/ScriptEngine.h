@@ -29,7 +29,7 @@ namespace Mengine
 	{
 	public:
 		ScriptEngine();
-		~ScriptEngine();
+		~ScriptEngine() override;
 
 	public:
 		bool _initialize() override;

@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
 		ModuleAreaOfInterest();
-		~ModuleAreaOfInterest();
+		~ModuleAreaOfInterest() override;
 
 	public:
 		bool _initialize() override;

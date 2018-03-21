@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		ModuleBase();
-		~ModuleBase();
+		~ModuleBase() override;
 
 	protected:
 		void setName( const ConstString & _name ) override;

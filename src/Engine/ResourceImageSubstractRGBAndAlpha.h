@@ -13,7 +13,7 @@ namespace Mengine
 
 	public:
 		ResourceImageSubstractRGBAndAlpha();
-        ~ResourceImageSubstractRGBAndAlpha();
+        ~ResourceImageSubstractRGBAndAlpha() override;
 
 	public:
         const ConstString & getResourceRGBName() const;

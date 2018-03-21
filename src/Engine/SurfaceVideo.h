@@ -29,7 +29,7 @@ namespace Mengine
 
 	public:
 		SurfaceVideo();
-		~SurfaceVideo();
+		~SurfaceVideo() override;
 
 	public:
 		void setResourceVideo( const ResourceVideoPtr & _resourceVideo );

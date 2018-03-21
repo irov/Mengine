@@ -20,7 +20,7 @@ namespace Mengine
 	{
 	public:
 		Motor();
-		~Motor();
+		~Motor() override;
         
 	public:
 		void setNode(Node * _node);

@@ -15,7 +15,7 @@ namespace Mengine
         {
         };
 
-        virtual ~ServantInterface()
+        ~ServantInterface() override
         {
         };
     };

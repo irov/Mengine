@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		ArchivatorZip();
-		~ArchivatorZip();
+		~ArchivatorZip() override;
 
     public:
         size_t compressBound( size_t _size ) const override;

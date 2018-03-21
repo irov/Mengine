@@ -44,7 +44,7 @@ namespace Mengine
 	{
     public:
         Entity();
-        ~Entity();
+        ~Entity() override;
 
 	public:
 		void setPrototype( const ConstString & _prototype );

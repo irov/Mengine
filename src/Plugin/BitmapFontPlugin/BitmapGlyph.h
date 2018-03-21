@@ -21,7 +21,7 @@ namespace Mengine
 	{
 	public:
 		BitmapGlyph();
-		~BitmapGlyph();
+		~BitmapGlyph() override;
 
 	public:
 		bool initialize( const ConstString & _pakName, const FilePath & _path );

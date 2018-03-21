@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
 		ModuleCollision();
-		~ModuleCollision();
+		~ModuleCollision() override;
 
 	public:
 		bool _initialize() override;

@@ -11,7 +11,7 @@ namespace Mengine
 	{
     public:
         MovieEvent();
-        ~MovieEvent();
+        ~MovieEvent() override;
 
     public:
 		void setEvent( const pybind::object & _cb, const pybind::args & _args );

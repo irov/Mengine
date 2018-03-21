@@ -15,7 +15,7 @@ namespace Mengine
 	{
 	public:
 		Affectorable();
-		~Affectorable();
+		virtual ~Affectorable();
 
 	public:
 		AFFECTOR_ID addAffector( Affector * _affector );

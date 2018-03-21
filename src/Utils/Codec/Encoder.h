@@ -14,7 +14,7 @@ namespace Mengine
 		{
 		}
 
-		~Encoder()
+		~Encoder() override
 		{
 			this->finalize();
 		}

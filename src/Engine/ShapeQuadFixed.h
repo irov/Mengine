@@ -10,7 +10,7 @@ namespace Mengine
     {
     public:
         ShapeQuadFixed();
-        ~ShapeQuadFixed();
+        ~ShapeQuadFixed() override;
 
     protected:
         void updateVerticesLocal() const override;

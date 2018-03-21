@@ -16,7 +16,7 @@ namespace Mengine
 	{
 	public:
 		FontBase();
-		~FontBase();
+		~FontBase() override;
 
 	public:
 		void setName( const ConstString & _name ) override;

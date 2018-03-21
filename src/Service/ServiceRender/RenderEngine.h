@@ -80,7 +80,7 @@ namespace Mengine
 	{
 	public:
 		RenderEngine();
-		~RenderEngine();
+		~RenderEngine() override;
 
 	public:
 		bool _initialize() override;

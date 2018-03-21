@@ -20,7 +20,7 @@ namespace Mengine
 	{
 	public:
 		OALSoundSystem();
-		~OALSoundSystem();
+		~OALSoundSystem() override;
 
 	public:
 		bool _initialize() override;

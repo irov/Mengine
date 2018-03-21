@@ -17,7 +17,7 @@ namespace Mengine
 	{
 	public:
 		FactorablePtr();
-		~FactorablePtr();
+		~FactorablePtr() override;
 
 	private:
 		void destroy() override;

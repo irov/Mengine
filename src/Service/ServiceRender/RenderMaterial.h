@@ -10,7 +10,7 @@ namespace Mengine
 	{
 	public:
 		RenderMaterial();
-		~RenderMaterial();
+		~RenderMaterial() override;
 
 	public:
 		void initialize( const ConstString & _name, uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderMaterialStage * _stage );

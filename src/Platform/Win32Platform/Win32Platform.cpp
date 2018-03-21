@@ -466,7 +466,6 @@ namespace Mengine
 				//bool fullscreenMode = m_application->getFullscreenMode();
 
 				//this->notifyWindowModeChanged( desktopResolution, fullscreenMode );
-				//m_menge->onWindowMovedOrResized();
 			}break;
 		case WM_SIZE:
 			{

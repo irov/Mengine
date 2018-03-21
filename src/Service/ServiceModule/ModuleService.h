@@ -14,7 +14,7 @@ namespace Mengine
     {
     public:
         ModuleService();
-        ~ModuleService();
+        ~ModuleService() override;
 
 	public:
 		bool _initialize() override;

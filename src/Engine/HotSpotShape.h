@@ -11,7 +11,7 @@ namespace Mengine
     {
     public:
         HotSpotShape();
-        ~HotSpotShape();
+        ~HotSpotShape() override;
 
     public:
 		void setResourceShape( const ResourceShapePtr & _resourceShape );

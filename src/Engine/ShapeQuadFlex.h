@@ -10,7 +10,7 @@ namespace Mengine
     {
     public:
         ShapeQuadFlex();
-        ~ShapeQuadFlex();
+        ~ShapeQuadFlex() override;
 		
     public:
 		void setCustomSize( const mt::vec2f & _customSize );

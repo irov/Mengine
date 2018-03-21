@@ -9,7 +9,7 @@ namespace Mengine
 	{
 	public:
 		ImageDecoderDDS();
-		~ImageDecoderDDS();
+		~ImageDecoderDDS() override;
 
 	public:
 		bool _initialize() override;

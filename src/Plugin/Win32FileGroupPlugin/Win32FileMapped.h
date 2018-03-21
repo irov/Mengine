@@ -12,7 +12,7 @@ namespace Mengine
 	{
 	public:
 		Win32FileMapped();
-		~Win32FileMapped();
+		~Win32FileMapped() override;
 
 	public:
 		bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath ) override;

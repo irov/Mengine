@@ -15,7 +15,7 @@ namespace Mengine
     {
     public:
         DecoderRenderImageLoader();
-        ~DecoderRenderImageLoader();
+        ~DecoderRenderImageLoader() override;
 
     public:
         bool initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecName );

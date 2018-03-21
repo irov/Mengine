@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		HotSpotImage();
-		~HotSpotImage();
+		~HotSpotImage() override;
 
 	public:
 		void setResourceHIT( const ResourceHITPtr & _resourceHIT );

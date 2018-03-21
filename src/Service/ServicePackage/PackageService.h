@@ -16,7 +16,7 @@ namespace Mengine
     {
     public:
 		PackageService();
-		~PackageService();
+		~PackageService() override;
 
 	public:
 		bool _initialize() override;

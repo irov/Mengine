@@ -19,7 +19,7 @@ namespace Mengine
 	{
 	public:
         FactoryWithListener(const char * _name);
-		virtual ~FactoryWithListener();
+		~FactoryWithListener() override;
 
 	public:
 		void setDestroyListener( const FactoryDestroyListenerInterfacePtr & _listener );

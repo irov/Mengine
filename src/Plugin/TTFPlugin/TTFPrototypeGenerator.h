@@ -18,7 +18,7 @@ namespace Mengine
 	{
 	public:
 		TTFPrototypeGenerator();
-		~TTFPrototypeGenerator();
+		~TTFPrototypeGenerator() override;
 
 	public:
 		void setFTLibrary( FT_Library _ftlibrary );

@@ -41,7 +41,7 @@ namespace Mengine
 	{
 	public:
 		Player();
-		~Player();
+		~Player() override;
 
 	public:
         bool _initialize() override;

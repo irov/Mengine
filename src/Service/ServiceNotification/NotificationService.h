@@ -15,7 +15,7 @@ namespace Mengine
 	{
     public:
         NotificationService();
-        ~NotificationService();
+        ~NotificationService() override;
 
 	public:
 		bool _initialize() override;

@@ -12,7 +12,7 @@ namespace Mengine
 	{
 	public:
 		ThreadTask();
-		~ThreadTask();
+		~ThreadTask() override;
 		
 	public:
 		bool isRun() const override;

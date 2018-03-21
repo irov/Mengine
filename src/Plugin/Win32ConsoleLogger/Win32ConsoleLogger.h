@@ -14,7 +14,7 @@ namespace Mengine
     {
     public:
         Win32ConsoleLogger();
-        ~Win32ConsoleLogger();
+        ~Win32ConsoleLogger() override;
 
     public:
         bool initialize() override;

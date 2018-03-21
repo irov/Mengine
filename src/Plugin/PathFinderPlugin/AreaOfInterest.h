@@ -23,7 +23,7 @@ namespace Mengine
 	{
 	public:
 		AreaOfInterest();
-		~AreaOfInterest();
+		~AreaOfInterest() override;
 
     public:
         bool initialize();

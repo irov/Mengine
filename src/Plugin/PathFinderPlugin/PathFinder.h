@@ -21,7 +21,7 @@ namespace Mengine
 	{
 	public:
 		PathFinder();
-		~PathFinder();
+		~PathFinder() override;
 
 	public:
 		bool initialize( TPathMap * _map, const mt::vec2f & _from, const mt::vec2f & _to, float _gridSize );

@@ -33,7 +33,7 @@ namespace Mengine
 
 	public:
 		SurfaceImageSequence();
-		~SurfaceImageSequence();
+		~SurfaceImageSequence() override;
 
 	public:
 		void setResourceAnimation( const ResourceAnimationPtr & _resourceAnimation );

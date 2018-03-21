@@ -27,7 +27,7 @@ namespace Mengine
     {
     public:
         RenderMaterialManager();
-        ~RenderMaterialManager();
+        ~RenderMaterialManager() override;
 
     public:
         bool _initialize() override;

@@ -21,7 +21,7 @@ namespace Mengine
     {
     public:
         RenderTextureManager();
-        ~RenderTextureManager();
+        ~RenderTextureManager() override;
 
     public:
         bool _initialize() override;

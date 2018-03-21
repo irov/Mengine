@@ -15,7 +15,7 @@ namespace Mengine
 	{
 	public:
 		Win32Platform();
-		~Win32Platform();
+		~Win32Platform() override;
 
 	public:
 		bool _initialize() override;

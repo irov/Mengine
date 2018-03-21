@@ -15,7 +15,7 @@ namespace Mengine
 	{
 	public:
 		OALSoundBufferBase();
-		virtual ~OALSoundBufferBase();
+		~OALSoundBufferBase() override;
        
 	public:
 		void initialize( OALSoundSystem * _soundSystem );

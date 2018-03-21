@@ -18,7 +18,7 @@ namespace Mengine
 	{
 	public:
 		InputEngine();
-		~InputEngine();
+		~InputEngine() override;
 
 	public:
 		bool _initialize() override;

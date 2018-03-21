@@ -12,7 +12,7 @@ namespace Mengine
 	{
 	public:
 		VideoDecoderTheora();
-		~VideoDecoderTheora();
+		~VideoDecoderTheora() override;
 
 	public:
 		bool _initialize() override;

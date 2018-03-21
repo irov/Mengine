@@ -17,7 +17,7 @@ namespace Mengine
 	{
 	public:
 		MagnetWorld();
-		~MagnetWorld();
+		~MagnetWorld() override;
 
 	public:
 		bool initialize();

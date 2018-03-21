@@ -1,2 +1,2 @@
-LIBRARY		"MengeXmlCodecPlugin"
+LIBRARY		"XmlCodecPlugin"
 EXPORTS 	dllCreatePlugin 	@1

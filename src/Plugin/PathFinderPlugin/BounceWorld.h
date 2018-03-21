@@ -16,7 +16,7 @@ namespace Mengine
 	{
 	public:
 		BounceWorld();
-		~BounceWorld();
+		~BounceWorld() override;
 
 	public:
 		bool initialize();

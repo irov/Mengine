@@ -11,7 +11,7 @@ namespace Mengine
 
 	public:
 		ResourceInternalObject();
-		~ResourceInternalObject();
+		~ResourceInternalObject() override;
 
 	public:
 		const ConstString & getInternalName() const;

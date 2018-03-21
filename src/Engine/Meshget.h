@@ -43,7 +43,7 @@ namespace Mengine
 
 	public:
 		Meshget();
-		~Meshget();
+		~Meshget() override;
 
 	public:
 		void setResourceImage( const ResourceImagePtr & _resourceImage );

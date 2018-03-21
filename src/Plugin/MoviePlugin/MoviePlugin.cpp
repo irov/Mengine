@@ -106,7 +106,7 @@ namespace Mengine
 			{
 			}
 
-            ~ResourceMovie2PrototypeGenerator()
+            ~ResourceMovie2PrototypeGenerator() override
             {
             }
 

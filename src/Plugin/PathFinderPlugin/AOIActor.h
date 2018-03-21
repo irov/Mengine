@@ -14,7 +14,7 @@ namespace Mengine
 	{
 	public:
 		AOIActor();
-		~AOIActor();
+		~AOIActor() override;
 
 	public:
 		void setProvider( AOIActorProviderInterface * _provider );

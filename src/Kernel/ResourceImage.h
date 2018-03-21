@@ -22,7 +22,7 @@ namespace Mengine
 
 	public:
 		ResourceImage();
-		~ResourceImage();
+		~ResourceImage() override;
 			
 	public:        
 		inline void setMaxSize( const mt::vec2f & _size );

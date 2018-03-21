@@ -15,7 +15,7 @@ namespace Mengine
 	{
 	public:
 		PluginBase();
-		~PluginBase();
+		~PluginBase() override;
 
     protected:
 		void setDynamicLoad( bool _dynamicLoad ) override;

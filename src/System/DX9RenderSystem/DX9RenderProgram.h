@@ -14,7 +14,7 @@ namespace Mengine
 	{
 	public:
 		DX9RenderProgram();
-		~DX9RenderProgram();
+		~DX9RenderProgram() override;
 
 	public:
 		const ConstString & getName() const override;

@@ -11,7 +11,7 @@ namespace Mengine
 	{
 	public:
 		ParticleConverterPTCToPTZ();
-		~ParticleConverterPTCToPTZ();
+		~ParticleConverterPTCToPTZ() override;
 
 	public:
 		bool initialize() override;

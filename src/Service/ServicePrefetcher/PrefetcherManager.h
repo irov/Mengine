@@ -31,7 +31,7 @@ namespace Mengine
 	{
 	public:
 		PrefetcherManager();
-		~PrefetcherManager();
+		~PrefetcherManager() override;
 
 	public:
 		bool _initialize() override;

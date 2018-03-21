@@ -13,7 +13,7 @@ namespace Mengine
 
 	public:
 		ResourceFile();
-		~ResourceFile();
+		~ResourceFile() override;
 
 	public:
 		bool _loader( const Metabuf::Metadata * _parser ) override;

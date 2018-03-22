@@ -1,6 +1,6 @@
 #include "WIN32/WindowsIncluder.h"
 
-#include "WinApplication.h"
+#include "Win32Application.h"
 
 //////////////////////////////////////////////////////////////////////////
 //							Entry point									//

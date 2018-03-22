@@ -1,7 +1,7 @@
 #include "Config/Config.h"
 #include "Config/Stringstream.h"
 
-#include "WinApplication.h"
+#include "Win32Application.h"
 
 #include "Interface/OptionsInterface.h"
 #include "Interface/LoggerInterface.h"

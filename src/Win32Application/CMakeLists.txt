@@ -1,4 +1,4 @@
-set( MY_LIB_NAME WinApplication )
+set( MY_LIB_NAME Win32Application )
 
 ADD_FILTER(
 MessageBoxLogger
@@ -28,9 +28,9 @@ endif()
 
     
 ADD_FILTER(
-src
-	WinApplication.cpp
-	WinApplication.h
+Win32Application
+	Win32Application.cpp
+	Win32Application.h
 )
 
 add_definitions(-DUNICODE)
@@ -39,11 +39,11 @@ if(MINGW)
     # resource compilation for mingw
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/WinApplication_rc.o
                        COMMAND windres.exe -I${CMAKE_CURRENT_SOURCE_DIR}
-                                           -i${CMAKE_CURRENT_SOURCE_DIR}/WinApplication.rc
-                                           -o ${CMAKE_CURRENT_BINARY_DIR}/WinApplication_rc.o)
-    SET(SRC_FILES ${SRC_FILES} ${CMAKE_CURRENT_BINARY_DIR}/WinApplication_rc.o)
+                                           -i${CMAKE_CURRENT_SOURCE_DIR}/Win32Application.rc
+                                           -o ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o)
+    SET(SRC_FILES ${SRC_FILES} ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o)
   else(MINGW)
-    SET(SRC_FILES ${SRC_FILES} WinApplication.rc)
+    SET(SRC_FILES ${SRC_FILES} Win32Application.rc)
   endif(MINGW)
 
 INCLUDE_DIRECTORIES( 
@@ -75,5 +75,5 @@ if(MSVC)
 endif()
 
 if(MINGW)
-	set_target_properties( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS -Wl,-Map,${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/WinApplication.map )
+	set_target_properties( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS -Wl,-Map,${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Win32Application.map )
 endif()

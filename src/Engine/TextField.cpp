@@ -26,316 +26,325 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	TextField::TextField()
-		: m_textSize(0.f, 0.f)
-		, m_invalidateFont(true)
-		, m_fontParams(EFP_NONE)
-		, m_horizontAlign(ETFHA_LEFT)
-		, m_verticalAlign(ETFVA_BOTTOM)
-		, m_charScale(1.f)
-		, m_maxLength(2048.f)
-		, m_maxCharCount(0xFFFFFFFF)
-		, m_charCount(0)
-		, m_charOffset(0.f)
-		, m_lineOffset(0.f)
-		, m_wrap(true)
-		, m_outline(true)
-		, m_pixelsnap(true)
-		, m_debugMode( false )
-		, m_invalidateVertices(true)
-        , m_invalidateVerticesWM(true)
-		, m_invalidateTextLines(true)
-		, m_invalidateTextEntry(true)
-		, m_textEntry(nullptr)
-		, m_observerChangeLocale(nullptr)
-		, m_observerDebugMode(nullptr)		
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	TextField::~TextField()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextField::_activate()
-	{
-		if( Node::_activate() == false )
-		{
-			return false;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    TextField::TextField()
+        : m_textSize( 0.f, 0.f )
+        , m_invalidateFont( true )
+        , m_fontParams( EFP_NONE )
+        , m_horizontAlign( ETFHA_LEFT )
+        , m_verticalAlign( ETFVA_BOTTOM )
+        , m_charScale( 1.f )
+        , m_maxLength( 2048.f )
+        , m_maxCharCount( 0xFFFFFFFF )
+        , m_charCount( 0 )
+        , m_charOffset( 0.f )
+        , m_lineOffset( 0.f )
+        , m_wrap( true )
+        , m_outline( true )
+        , m_pixelsnap( true )
+        , m_debugMode( false )
+        , m_invalidateVertices( true )
+        , m_invalidateVerticesWM( true )
+        , m_invalidateTextLines( true )
+        , m_invalidateTextEntry( true )
+        , m_textEntry( nullptr )
+        , m_observerChangeLocale( nullptr )
+        , m_observerDebugMode( nullptr )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    TextField::~TextField()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::_activate()
+    {
+        if( Node::_activate() == false )
+        {
+            return false;
+        }
 
         this->invalidateTextLines();
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::_deactivate()
-	{
-		Node::_deactivate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextField::_compile()
-	{
-		this->invalidateTextEntry();
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::_deactivate()
+    {
+        Node::_deactivate();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::_compile()
+    {
+        this->invalidateTextEntry();
 
-		m_observerChangeLocale = NOTIFICATION_SERVICE()
-			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE_POST, this, &TextField::notifyChangeLocale );
+        m_observerChangeLocale = NOTIFICATION_SERVICE()
+            ->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE_POST, this, &TextField::notifyChangeLocale );
 
-		m_observerDebugMode = NOTIFICATION_SERVICE()
-			->addObserverMethod( NOTIFICATOR_DEBUG_TEXT_MODE, this, &TextField::notifyDebugMode );
-		
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::_release()
-	{
-		m_observerChangeLocale = nullptr;
-		m_observerDebugMode = nullptr;
+        m_observerDebugMode = NOTIFICATION_SERVICE()
+            ->addObserverMethod( NOTIFICATOR_DEBUG_TEXT_MODE, this, &TextField::notifyDebugMode );
 
-		if( m_font != nullptr )
-		{
-			m_font->releaseFont();
-			m_font = nullptr;
-		}
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::_release()
+    {
+        m_observerChangeLocale = nullptr;
+        m_observerDebugMode = nullptr;
 
-		m_textEntry = nullptr;
+        if( m_font != nullptr )
+        {
+            m_font->releaseFont();
+            m_font = nullptr;
+        }
 
-		U32String cacheText;
-		m_cacheText.swap( cacheText );
+        m_textEntry = nullptr;
 
-		TVectorTextLine lines;
-		m_lines.swap( lines );
+        U32String cacheText;
+        m_cacheText.swap( cacheText );
 
-		TVectorRenderVertex2D vertexDataText;
-		m_vertexDataText.swap( vertexDataText );
+        TVectorTextLineLayout layouts;
+        m_layouts.swap( layouts );
 
-		TVectorRenderVertex2D vertexDataOutline;
-		m_vertexDataOutline.swap( vertexDataOutline );
+        TVectorRenderVertex2D vertexDataText;
+        m_vertexDataText.swap( vertexDataText );
 
-		TVectorRenderVertex2D vertexDataTextWM;
-		m_vertexDataTextWM.swap( vertexDataTextWM );
+        TVectorRenderVertex2D vertexDataOutline;
+        m_vertexDataOutline.swap( vertexDataOutline );
 
-		TVectorRenderVertex2D vertexDataOutlineWM;
-		m_vertexDataOutlineWM.swap( vertexDataOutlineWM );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale )
-	{
-		(void)_prevLocale;
-		(void)_currentlocale;
+        TVectorRenderVertex2D vertexDataTextWM;
+        m_vertexDataTextWM.swap( vertexDataTextWM );
 
-		this->invalidateTextEntry();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::notifyDebugMode( bool _mode )
-	{
-		m_debugMode = _mode;
+        TVectorRenderVertex2D vertexDataOutlineWM;
+        m_vertexDataOutlineWM.swap( vertexDataOutlineWM );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale )
+    {
+        (void)_prevLocale;
+        (void)_currentlocale;
 
-		this->invalidateTextEntry();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TVectorTextLine & TextField::getTextLines() const
-	{
-		if( this->isInvalidateTextLines() == true )
-		{
-			this->updateTextLines_();
-		}
+        this->invalidateTextEntry();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::notifyDebugMode( bool _mode )
+    {
+        m_debugMode = _mode;
 
-		return m_lines;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::_invalidateWorldMatrix()
-	{
-		Node::_invalidateWorldMatrix();
+        this->invalidateTextEntry();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const TVectorTextLineLayout & TextField::getTextLayots() const
+    {
+        if( this->isInvalidateTextLines() == true )
+        {
+            this->updateTextLines_();
+        }
 
-		this->invalidateVerticesWM_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const ColourValue & _color, TVectorRenderVertex2D & _vertexData )
-	{
-		_vertexData.clear();
-		m_chunks.clear();
-		
+        return m_layouts;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::_invalidateWorldMatrix()
+    {
+        Node::_invalidateWorldMatrix();
+
+        this->invalidateVerticesWM_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const ColourValue & _color, TVectorRenderVertex2D & _vertexData )
+    {
+        _vertexData.clear();
+        m_chunks.clear();
+
         float fontAscent = _font->getFontAscent();
         float fontHeight = _font->getFontHeight();
 
-		float lineOffset = this->calcLineOffset();        
+        float lineOffset = this->calcLineOffset();
 
-		const TVectorTextLine & lines = this->getTextLines();
+        const TVectorTextLineLayout & layouts = this->getTextLayots();
 
-		mt::vec2f offset( 0.f, 0.f );
-		
-		ETextVerticalAlign verticalAlign = this->calcVerticalAlign();
-		
-		switch( verticalAlign )
-		{
-		case ETFVA_BOTTOM:
-			{
-                TVectorTextLine::size_type line_count = lines.size();
-
-                offset.y = (fontAscent + lineOffset) * (float( line_count ) - 1.f) * 0.5f;
-			}break;
-		case ETFVA_CENTER:
-			{
-                TVectorTextLine::size_type line_count = lines.size();
-
-                offset.y = -(fontAscent + lineOffset) * (float(line_count) - 2.f) * 0.5f;
-			}break;
-        case ETFVA_TOP:
-            {
-                offset.y = (fontAscent + lineOffset);
-            }break;
-		}
-        
-		float charScale = this->calcCharScale();
-
-		ColourValue_ARGB argb = _color.getAsARGB();
-		
-		ConstString materialName;
-
-        if( _font->getFontPremultiply() == false )
+        for( TVectorTextLineLayout::const_iterator
+            it_layout = layouts.begin(),
+            it_layout_end = layouts.end();
+            it_layout != it_layout_end;
+            ++it_layout )
         {
-            switch( m_blendMode )
+            const TVectorTextLine & lines = *it_layout;
+
+            mt::vec2f offset( 0.f, 0.f );
+
+            ETextVerticalAlign verticalAlign = this->calcVerticalAlign();
+
+            switch( verticalAlign )
             {
-            case EMB_NORMAL:
+            case ETFVA_BOTTOM:
                 {
-                    materialName = RENDERMATERIAL_SERVICE()
-                        ->getMaterialName( EM_TEXTURE_BLEND );
+                    TVectorTextLine::size_type line_count = lines.size();
+
+                    offset.y = (fontAscent + lineOffset) * (float( line_count ) - 1.f) * 0.5f;
                 }break;
-            };
+            case ETFVA_CENTER:
+                {
+                    TVectorTextLine::size_type line_count = lines.size();
+
+                    offset.y = -(fontAscent + lineOffset) * (float( line_count ) - 2.f) * 0.5f;
+                }break;
+            case ETFVA_TOP:
+                {
+                    offset.y = (fontAscent + lineOffset);
+                }break;
+            }
+
+            float charScale = this->calcCharScale();
+
+            ColourValue_ARGB argb = _color.getAsARGB();
+
+            ConstString materialName;
+
+            if( _font->getFontPremultiply() == false )
+            {
+                switch( m_blendMode )
+                {
+                case EMB_NORMAL:
+                    {
+                        materialName = RENDERMATERIAL_SERVICE()
+                            ->getMaterialName( EM_TEXTURE_BLEND );
+                    }break;
+                };
+            }
+            else
+            {
+                switch( m_blendMode )
+                {
+                case EMB_NORMAL:
+                    {
+                        materialName = RENDERMATERIAL_SERVICE()
+                            ->getMaterialName( EM_TEXTURE_BLEND_PREMULTIPLY );
+                    }break;
+                };
+            }
+
+            Chunk chunk;
+            chunk.vertex_begin = 0;
+            chunk.vertex_count = 0;
+            chunk.material = nullptr;
+
+            for( TVectorTextLine::const_iterator
+                it_line = lines.begin(),
+                it_line_end = lines.end();
+                it_line != it_line_end;
+                ++it_line )
+            {
+                const TextLine & line = *it_line;
+
+                float alignOffsetX = this->getHorizontAlignOffset_( line );
+                offset.x = alignOffsetX;
+
+                const TVectorCharData & charData = line.getCharData();
+
+                for( TVectorCharData::const_iterator
+                    it_char = charData.begin(),
+                    it_char_end = charData.end();
+                    it_char != it_char_end;
+                    ++it_char )
+                {
+                    const CharData & cd = *it_char;
+
+                    if( cd.texture == nullptr )
+                    {
+                        line.advanceCharOffset( cd, charScale, offset );
+
+                        continue;
+                    }
+
+                    for( uint32_t i = 0; i != 4; ++i )
+                    {
+                        RenderVertex2D v;
+
+                        line.calcCharPosition( cd, offset, charScale, i, v.position );
+
+                        v.color = argb;
+                        v.uv[0] = cd.uv[i];
+
+                        _vertexData.push_back( v );
+                    }
+
+                    line.advanceCharOffset( cd, charScale, offset );
+
+                    RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
+                        ->getMaterial( materialName, PT_TRIANGLELIST, 1, &cd.texture );
+
+                    if( chunk.material == material )
+                    {
+                        chunk.vertex_count += 4;
+                    }
+                    else if( chunk.material == nullptr )
+                    {
+                        chunk.vertex_begin = 0;
+                        chunk.vertex_count = 4;
+                        chunk.material = material;
+                    }
+                    else
+                    {
+                        m_chunks.push_back( chunk );
+
+                        chunk.vertex_begin = chunk.vertex_begin + chunk.vertex_count;
+                        chunk.vertex_count = 4;
+                        chunk.material = material;
+                    }
+                }
+
+                offset.y += fontHeight;
+                offset.y += lineOffset;
+            }
+
+            if( chunk.vertex_count != 0 )
+            {
+                m_chunks.push_back( chunk );
+            }
         }
-        else
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
+    {
+        if( m_key.empty() == true )
         {
-            switch( m_blendMode )
-            {
-            case EMB_NORMAL:
-                {
-                    materialName = RENDERMATERIAL_SERVICE()
-                        ->getMaterialName( EM_TEXTURE_BLEND_PREMULTIPLY );
-                }break;
-            };
+            return;
         }
 
-		Chunk chunk;
-		chunk.vertex_begin = 0;
-		chunk.vertex_count = 0;
-		chunk.material = nullptr;
+        if( APPLICATION_SERVICE()
+            ->getTextEnable() == false )
+        {
+            return;
+        }
 
-		for( TVectorTextLine::const_iterator
-			it_line = lines.begin(),
-			it_line_end = lines.end();
-		it_line != it_line_end;
-		++it_line )
-		{
-			const TextLine & line = *it_line;
+        const TextFontInterfacePtr & font = this->getFont();
 
-			float alignOffsetX = this->getHorizontAlignOffset_( line );
-			offset.x = alignOffsetX;
+        const TVectorRenderVertex2D & textVertices = this->getTextVertices( font );
 
-			const TVectorCharData & charData = line.getCharData();
+        if( textVertices.empty() == true )
+        {
+            return;
+        }
 
-			for( TVectorCharData::const_iterator
-				it = charData.begin(),
-				it_end = charData.end();
-				it != it_end;
-				++it )
-			{
-				const CharData & cd = *it;
+        const TVectorRenderVertex2D::value_type * vertices = &textVertices.front();
 
-				if( cd.texture == nullptr )
-				{
-					line.advanceCharOffset( cd, charScale, offset );
-
-					continue;
-				}
-
-				for( uint32_t i = 0; i != 4; ++i )
-				{
-					RenderVertex2D v;
-
-					line.calcCharPosition( cd, offset, charScale, i, v.position );
-
-					v.color = argb;
-					v.uv[0] = cd.uv[i];
-
-					_vertexData.push_back( v );
-				}
-
-				line.advanceCharOffset( cd, charScale, offset );
-
-				RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-					->getMaterial( materialName, PT_TRIANGLELIST, 1, &cd.texture );
-
-				if( chunk.material == material )
-				{
-					chunk.vertex_count += 4;
-				}
-				else if( chunk.material == nullptr )
-				{
-					chunk.vertex_begin = 0;
-					chunk.vertex_count = 4;
-					chunk.material = material;
-				}
-				else
-				{
-					m_chunks.push_back( chunk );
-
-					chunk.vertex_begin = chunk.vertex_begin + chunk.vertex_count;
-					chunk.vertex_count = 4;
-					chunk.material = material;
-				}
-			}
-
-            offset.y += fontHeight;
-			offset.y += lineOffset;
-		}
-
-		if( chunk.vertex_count != 0 )
-		{
-			m_chunks.push_back( chunk );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
-	{	
-		if( m_key.empty() == true )
-		{
-			return;
-		}
-
-		if( APPLICATION_SERVICE()
-			->getTextEnable() == false )
-		{
-			return;
-		}
-
-		const TextFontInterfacePtr & font = this->getFont();
-		
-		const TVectorRenderVertex2D & textVertices = this->getTextVertices( font );
-
-		if( textVertices.empty() == true )
-		{
-			return;
-		}
-
-		const TVectorRenderVertex2D::value_type * vertices = &textVertices.front();
-
-		const mt::box2f & bb = this->getBoundingBox();
+        const mt::box2f & bb = this->getBoundingBox();
 
         uint32_t renderCharCount = 0U;
-        
-		for( TVectorChunks::const_iterator
-			it = m_chunks.begin(),
-			it_end = m_chunks.end();
-			it != it_end;
-			++it )
-		{
-			const Chunk & chunk = *it;
 
-			const TVectorRenderVertex2D::value_type * chunk_vertices = vertices + chunk.vertex_begin;
+        for( TVectorChunks::const_iterator
+            it_chunk = m_chunks.begin(),
+            it_chunk_end = m_chunks.end();
+            it_chunk != it_chunk_end;
+            ++it_chunk )
+        {
+            const Chunk & chunk = *it_chunk;
+
+            const TVectorRenderVertex2D::value_type * chunk_vertices = vertices + chunk.vertex_begin;
 
             if( renderCharCount >= m_maxCharCount )
-            { 
+            {
                 continue;
             }
 
@@ -352,422 +361,444 @@ namespace Mengine
             else
             {
                 renderCharCount += chunkCharCount;
-            }            
+            }
 
             _renderService
                 ->addRenderQuad( _state, chunk.material, chunk_vertices, correctChunkVertexCount, &bb, false );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::renderOutline_( const RenderObjectState * _state )
-	{
-		(void)_state;
-		//if( m_outline == false )
-		//{
-		//	return;
-		//}
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::renderOutline_( const RenderObjectState * _state )
+    {
+        (void)_state;
+        //if( m_outline == false )
+        //{
+        //	return;
+        //}
 
-		//const RenderMaterialInterfacePtr & material = this->getMaterialOutline();
+        //const RenderMaterialInterfacePtr & material = this->getMaterialOutline();
 
-		//if( material == nullptr )
-		//{
-		//	return;
-		//}
+        //if( material == nullptr )
+        //{
+        //	return;
+        //}
 
-		//const TextFontInterfacePtr & font = this->getFont();
+        //const TextFontInterfacePtr & font = this->getFont();
 
-		//if( font == nullptr )
-		//{
-		//	return;
-		//}
-		//
-		//TVectorRenderVertex2D & outlineVertices = this->getOutlineVertices( font );
+        //if( font == nullptr )
+        //{
+        //	return;
+        //}
+        //
+        //TVectorRenderVertex2D & outlineVertices = this->getOutlineVertices( font );
 
-		//if( outlineVertices.empty() == true )
-		//{
-		//	return;
-		//}
+        //if( outlineVertices.empty() == true )
+        //{
+        //	return;
+        //}
 
-		//uint32_t countVertex;
+        //uint32_t countVertex;
 
-		//if( m_maxCharCount == (uint32_t)-1 )
-		//{
-		//	countVertex = (uint32_t)outlineVertices.size();
-		//}
-		//else
-		//{
-		//	countVertex = m_maxCharCount * 4;
-		//}
+        //if( m_maxCharCount == (uint32_t)-1 )
+        //{
+        //	countVertex = (uint32_t)outlineVertices.size();
+        //}
+        //else
+        //{
+        //	countVertex = m_maxCharCount * 4;
+        //}
 
-		//TVectorRenderVertex2D::value_type * vertices = &(outlineVertices[0]);
+        //TVectorRenderVertex2D::value_type * vertices = &(outlineVertices[0]);
 
-		//const mt::box2f & bb = this->getBoundingBox();
+        //const mt::box2f & bb = this->getBoundingBox();
 
   //      RENDER_SERVICE()
-		//	->addRenderQuad( _state, material, vertices, countVertex, &bb, false );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t TextField::getCharCount() const
-	{
-		if (this->isCompile() == false)
-		{
-			LOGGER_ERROR("TextField::getCharCount '%s' not compile"
-				, m_name.c_str()
-				);
+        //	->addRenderQuad( _state, material, vertices, countVertex, &bb, false );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t TextField::getCharCount() const
+    {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( "TextField::getCharCount '%s' not compile"
+                , m_name.c_str()
+            );
 
-			return 0;
-		}
+            return 0;
+        }
 
-		if( this->isInvalidateTextLines() == true )
-		{
-			this->updateTextLines_();
-		}
+        if( this->isInvalidateTextLines() == true )
+        {
+            this->updateTextLines_();
+        }
 
-		return m_charCount;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setMaxLength( float _len )
-	{
-		m_maxLength = _len;
+        return m_charCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setMaxLength( float _len )
+    {
+        m_maxLength = _len;
 
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float TextField::getMaxLength() const
-	{
-		return m_maxLength;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setWrap( bool _wrap )
-	{
-		m_wrap = _wrap;
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::getMaxLength() const
+    {
+        return m_maxLength;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setWrap( bool _wrap )
+    {
+        m_wrap = _wrap;
 
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextField::getWrap() const
-	{
-		return m_wrap;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float TextField::getFontHeight() const
-	{
-		const TextFontInterfacePtr & font = this->getFont();
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::getWrap() const
+    {
+        return m_wrap;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::getFontHeight() const
+    {
+        const TextFontInterfacePtr & font = this->getFont();
 
-		if( font == nullptr )
-		{
-			return 0.f;
-		}
+        if( font == nullptr )
+        {
+            return 0.f;
+        }
 
         float fontHeight = font->getFontHeight();
-        
-		return fontHeight;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setFontName( const ConstString & _fontName )
-	{
-#	ifdef _DEBUG
-		if( _fontName.empty() == false )
-		{
-			TextFontInterfacePtr font;
-			if( TEXT_SERVICE()
-				->existFont( _fontName, font ) == false )
-			{
-				LOGGER_ERROR("TextField::setFontName %s not found font %s"
-					, m_name.c_str()
-					, _fontName.c_str()
-					);
 
-				return;
-			}
-		}
+        return fontHeight;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setFontName( const ConstString & _fontName )
+    {
+#	ifdef _DEBUG
+        if( _fontName.empty() == false )
+        {
+            TextFontInterfacePtr font;
+            if( TEXT_SERVICE()
+                ->existFont( _fontName, font ) == false )
+            {
+                LOGGER_ERROR( "TextField::setFontName %s not found font %s"
+                    , m_name.c_str()
+                    , _fontName.c_str()
+                );
+
+                return;
+            }
+        }
 #	endif
 
-		m_fontName = _fontName;
-				
-		m_fontParams |= EFP_FONT;
+        m_fontName = _fontName;
 
-		this->invalidateFont();
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & TextField::getFontName() const
-	{
-		return m_fontName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setFontColor( const ColourValue & _color )
-	{
-		m_colorFont = _color;
+        m_fontParams |= EFP_FONT;
 
-		m_fontParams |= EFP_COLOR_FONT;
+        this->invalidateFont();
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & TextField::getFontName() const
+    {
+        return m_fontName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setFontColor( const ColourValue & _color )
+    {
+        m_colorFont = _color;
 
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ColourValue& TextField::getFontColor() const
-	{
-		return m_colorFont;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::enableOutline( bool _value )
-	{
-		m_outline = _value;
+        m_fontParams |= EFP_COLOR_FONT;
 
-		this->invalidateTextLines();
-		this->invalidateFont();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextField::isOutline() const
-	{
-		return m_outline;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setOutlineColor( const ColourValue & _color )
-	{
-		m_colorOutline = _color;
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ColourValue& TextField::getFontColor() const
+    {
+        return m_colorFont;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::enableOutline( bool _value )
+    {
+        m_outline = _value;
 
-		m_fontParams |= EFP_COLOR_OUTLINE;
+        this->invalidateTextLines();
+        this->invalidateFont();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::isOutline() const
+    {
+        return m_outline;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setOutlineColor( const ColourValue & _color )
+    {
+        m_colorOutline = _color;
 
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ColourValue& TextField::getOutlineColor() const
-	{
-		return m_colorOutline;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setLineOffset( float _offset )
-	{
-		m_lineOffset = _offset;
+        m_fontParams |= EFP_COLOR_OUTLINE;
 
-		m_fontParams |= EFP_LINE_OFFSET;
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ColourValue& TextField::getOutlineColor() const
+    {
+        return m_colorOutline;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setLineOffset( float _offset )
+    {
+        m_lineOffset = _offset;
 
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float TextField::getLineOffset() const
-	{
-		return m_lineOffset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setCharOffset( float _offset )
-	{
-		m_charOffset = _offset;
+        m_fontParams |= EFP_LINE_OFFSET;
 
-		m_fontParams |= EFP_CHAR_OFFSET;
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::getLineOffset() const
+    {
+        return m_lineOffset;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setCharOffset( float _offset )
+    {
+        m_charOffset = _offset;
 
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float TextField::getCharOffset() const
-	{
-		return m_charOffset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setCharScale( float _value )
-	{
-		m_charScale = _value;
+        m_fontParams |= EFP_CHAR_OFFSET;
 
-		m_fontParams |= EFP_CHAR_SCALE;
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::getCharOffset() const
+    {
+        return m_charOffset;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setCharScale( float _value )
+    {
+        m_charScale = _value;
 
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float TextField::getCharScale() const
-	{
-		return m_charScale;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& TextField::getTextSize() const
-	{
-		if( this->isInvalidateTextLines() == true )
-		{
-			this->updateTextLines_();
-		}
+        m_fontParams |= EFP_CHAR_SCALE;
 
-		return m_textSize;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateTextLines_() const
-	{
-		m_invalidateTextLines = false;
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::getCharScale() const
+    {
+        return m_charScale;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f& TextField::getTextSize() const
+    {
+        if( this->isInvalidateTextLines() == true )
+        {
+            this->updateTextLines_();
+        }
 
-		m_lines.clear();		
-		m_textSize.x = 0.f;
-		m_textSize.y = 0.f;
-		m_charCount = 0;
+        return m_textSize;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::updateTextLines_() const
+    {
+        m_invalidateTextLines = false;
 
-		if( m_key.empty() == true )
-		{
-			return;
-		}
+        m_layouts.clear();
+        m_textSize.x = 0.f;
+        m_textSize.y = 0.f;
+        m_charCount = 0;
 
-		const TextFontInterfacePtr & font = this->getFont();
+        if( m_key.empty() == true )
+        {
+            return;
+        }
 
-		if( font == nullptr )
-		{
-			return;
-		}
-		
-		if( this->updateTextCache_() == false )
-		{
-			LOGGER_ERROR("TextField::updateTextLines_ '%s' invalid update text cache %s"
-				, this->getName().c_str()
-				, m_key.c_str()
-				);
+        const TextFontInterfacePtr & font = this->getFont();
 
-			return;
-		}
+        if( font == nullptr )
+        {
+            return;
+        }
 
-		U32String space_delim = U" ";
+        if( this->updateTextCache_() == false )
+        {
+            LOGGER_ERROR( "TextField::updateTextLines_ '%s' invalid update text cache %s"
+                , this->getName().c_str()
+                , m_key.c_str()
+            );
 
-		TVectorU32String line_delims;
-		line_delims.push_back( U"\n" );
-		line_delims.push_back( U"\r\n" );
-		line_delims.push_back( U"\n\r" );
-		line_delims.push_back( U"\n\r\t" );
+            return;
+        }
 
-		TVectorU32String space_delims;
-		space_delims.push_back( U" " );
-		space_delims.push_back( U"\r" );
+        U32String space_delim = U" ";
 
-		TVectorU32String lines;
-		Helper::u32split2( lines, m_cacheText, false, line_delims );
+        TVectorU32String line_delims;
+        line_delims.push_back( U"\n" );
+        line_delims.push_back( U"\r\n" );
+        line_delims.push_back( U"\n\r" );
+        line_delims.push_back( U"\n\r\t" );
 
-		if( m_debugMode == true )
-		{
-			String s_key = m_key.c_str();
-			String s_font = this->calcFontName().c_str();
+        TVectorU32String space_delims;
+        space_delims.push_back( U" " );
+        space_delims.push_back( U"\r" );
 
-			U32String u32_key( s_key.begin(), s_key.end() );
-			U32String u32_font( s_font.begin(), s_font.end() );
+        TVectorU32String text_lines;
+        Helper::u32split2( text_lines, m_cacheText, false, line_delims );
 
-			lines.insert( lines.begin(), u32_key );
-			lines.insert( lines.begin(), u32_font );
+        if( m_debugMode == true )
+        {
+            String s_key = m_key.c_str();
+            String s_font = this->calcFontName().c_str();
+
+            U32String u32_key( s_key.begin(), s_key.end() );
+            U32String u32_font( s_font.begin(), s_font.end() );
+
+            text_lines.insert( text_lines.begin(), u32_key );
+            text_lines.insert( text_lines.begin(), u32_font );
 
             font->prepareText( s_key );
             font->prepareText( s_font );
-		}
+        }
 
-		float charOffset = this->calcCharOffset();
-		
-		for(TVectorU32String::const_iterator 
-			it = lines.begin(),
-			it_end = lines.end(); 
-		it != it_end; 
-		++it)
-		{
-			TextLine textLine(charOffset);
-			            
-			if( textLine.initialize( font, *it ) == false )
-			{
-				LOGGER_ERROR("TextField::updateTextLines_ %s textID %s invalid setup line"
-					, this->getName().c_str()
-					, m_key.c_str()
-					);
+        float charOffset = this->calcCharOffset();
 
-				continue;
-			}
+        uint32_t layoutCount = font->getLayoutCount();
 
-			if( m_wrap == true )
-			{
-				float textLength = textLine.getLength();
-				float maxLength = this->calcMaxLength();
+        for( uint32_t layoutIndex = 0; layoutIndex != layoutCount; ++layoutIndex )
+        {
+            TVectorTextLine lines;
 
-				if( textLength > maxLength )
-				{
-					TVectorU32String words;
-					Helper::u32split2( words, *it, false, space_delims );
+            for( TVectorU32String::const_iterator
+                it_text_line = text_lines.begin(),
+                it_text_line_end = text_lines.end();
+                it_text_line != it_text_line_end;
+                ++it_text_line )
+            {
+                const U32String & text_line = *it_text_line;
 
-					U32String newLine = words.front();
-					words.erase( words.begin() );
+                TextLine textLine( charOffset );
 
-					while( words.empty() == false )
-					{
-						TextLine tl( charOffset);
+                if( textLine.initialize( layoutIndex, font, text_line ) == false )
+                {
+                    LOGGER_ERROR( "TextField::updateTextLines_ %s textID %s invalid setup line"
+                        , this->getName().c_str()
+                        , m_key.c_str()
+                    );
 
-						U32String tl_string( newLine + space_delim + words.front() );
+                    continue;
+                }
 
-						if( tl.initialize( font, tl_string ) == false )
-						{
-							LOGGER_ERROR("TextField::updateTextLines_ %s textID %s invalid setup line"
-								, this->getName().c_str()
-								, m_key.c_str()
-								);
-						}
+                if( m_wrap == true )
+                {
+                    float textLength = textLine.getLength();
+                    float maxLength = this->calcMaxLength();
 
-						float length = tl.getLength();
+                    if( textLength > maxLength )
+                    {
+                        TVectorU32String words;
+                        Helper::u32split2( words, text_line, false, space_delims );
 
-						if( length > maxLength )
-						{
-							TextLine line(charOffset);
+                        U32String newLine = words.front();
+                        words.erase( words.begin() );
 
-							if( line.initialize( font, newLine ) == false )
-							{
-								LOGGER_ERROR("TextField::updateTextLines_ %s textID %s invalid setup line"
-									, this->getName().c_str()
-									, m_key.c_str()
-									);
-							}
+                        while( words.empty() == false )
+                        {
+                            U32String tl_string( newLine + space_delim + words.front() );
 
-							m_lines.push_back( line );
+                            TextLine tl( charOffset );
+                            if( tl.initialize( layoutIndex, font, tl_string ) == false )
+                            {
+                                LOGGER_ERROR( "TextField::updateTextLines_ %s textID %s invalid setup line"
+                                    , this->getName().c_str()
+                                    , m_key.c_str()
+                                );
+                            }
 
-							newLine.clear();
-							newLine = words.front();
+                            float length = tl.getLength();
 
-							words.erase( words.begin() );
-						}
-						else
-						{
-							newLine += space_delim + words.front();
-							words.erase( words.begin() );
-						}
-					}
+                            if( length > maxLength )
+                            {
+                                TextLine line( charOffset );
+                                if( line.initialize( layoutIndex, font, newLine ) == false )
+                                {
+                                    LOGGER_ERROR( "TextField::updateTextLines_ %s textID %s invalid setup line"
+                                        , this->getName().c_str()
+                                        , m_key.c_str()
+                                    );
+                                }
 
-					TextLine line(charOffset);				
-					if( line.initialize( font, newLine ) == false )
-					{
-						LOGGER_ERROR("TextField::updateTextLines_ %s textID %s invalid setup line"
-							, this->getName().c_str()
-							, m_key.c_str()
-							);
-					}
+                                lines.push_back( line );
 
-					m_lines.push_back( line );
-				}
-				else
-				{
-					m_lines.push_back( textLine );
-				}
-			}
-			else
-			{
-				m_lines.push_back( textLine );
-			}
-		}
+                                newLine.clear();
+                                newLine = words.front();
 
-		float maxlen = 0.f;
+                                words.erase( words.begin() );
+                            }
+                            else
+                            {
+                                newLine += space_delim + words.front();
+                                words.erase( words.begin() );
+                            }
+                        }
 
-		for(TVectorTextLine::iterator 
-			it = m_lines.begin(),
-			it_end = m_lines.end(); 
-		it != it_end;
-		++it )
-		{
-			float length = it->getLength();
-			maxlen = (std::max)( maxlen, length );
+                        TextLine line( charOffset );
+                        if( line.initialize( layoutIndex, font, newLine ) == false )
+                        {
+                            LOGGER_ERROR( "TextField::updateTextLines_ %s textID %s invalid setup line"
+                                , this->getName().c_str()
+                                , m_key.c_str()
+                            );
+                        }
 
-			uint32_t chars = it->getCharsDataSize();
-			m_charCount += chars;
-		}
+                        lines.push_back( line );
+                    }
+                    else
+                    {
+                        lines.push_back( textLine );
+                    }
+                }
+                else
+                {
+                    lines.push_back( textLine );
+                }
+            }
 
-		m_textSize.x = maxlen;
+            m_layouts.push_back( lines );
+        }
+
+        float maxlen = 0.f;
+
+        for( TVectorTextLineLayout::const_iterator
+            it_layout = m_layouts.begin(),
+            it_layout_end = m_layouts.end();
+            it_layout != it_layout_end;
+            ++it_layout )
+        {
+            const TVectorTextLine & lines = *it_layout;
+
+            for( TVectorTextLine::const_iterator
+                it_line = lines.begin(),
+                it_line_end = lines.end();
+                it_line != it_line_end;
+                ++it_line )
+            {
+                const TextLine & line = *it_line;
+
+                float length = line.getLength();
+                maxlen = (std::max)(maxlen, length);
+
+                uint32_t chars = line.getCharsDataSize();
+                m_charCount += chars;
+            }
+        }
+
+        m_textSize.x = maxlen;
 
         float fontHeight = font->getFontAscent();
-		float lineOffset = this->calcLineOffset();
+        float lineOffset = this->calcLineOffset();
 
-        TVectorTextLine::size_type lineCount = m_lines.size();
+        const TVectorTextLine & line_begin = m_layouts[0];
+
+        TVectorTextLine::size_type lineCount = line_begin.size();
 
         if( lineCount > 0 )
         {
@@ -778,688 +809,688 @@ namespace Mengine
             m_textSize.y = fontHeight;
         }
 
-		this->invalidateVertices_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateFont_() const
-	{
-		m_invalidateFont = false;
+        this->invalidateVertices_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::updateFont_() const
+    {
+        m_invalidateFont = false;
 
-		ConstString fontName = this->calcFontName();
+        ConstString fontName = this->calcFontName();
 
-		if( fontName.empty() == true )
-		{
-			fontName = TEXT_SERVICE()
-				->getDefaultFontName();
-		}
+        if( fontName.empty() == true )
+        {
+            fontName = TEXT_SERVICE()
+                ->getDefaultFontName();
+        }
 
-		if( m_font != nullptr )
-		{
-			const ConstString & currentFontName = m_font->getName();
+        if( m_font != nullptr )
+        {
+            const ConstString & currentFontName = m_font->getName();
 
-			if( fontName == currentFontName )
-			{
-				return;
-			}
-			else
-			{
-				m_font->releaseFont();
-				m_font = nullptr;
-			}
-		}
+            if( fontName == currentFontName )
+            {
+                return;
+            }
+            else
+            {
+                m_font->releaseFont();
+                m_font = nullptr;
+            }
+        }
 
-		if( fontName.empty() == true )
-		{
-			return;
-		}
+        if( fontName.empty() == true )
+        {
+            return;
+        }
 
-		m_font = TEXT_SERVICE()
-			->getFont( fontName );
+        m_font = TEXT_SERVICE()
+            ->getFont( fontName );
 
-		if( m_font == nullptr )
-		{
-			LOGGER_ERROR("TextField::updateFont_ '%s' can't found font '%s'"
-				, this->getName().c_str()
-				, fontName.c_str()
-				);
+        if( m_font == nullptr )
+        {
+            LOGGER_ERROR( "TextField::updateFont_ '%s' can't found font '%s'"
+                , this->getName().c_str()
+                , fontName.c_str()
+            );
 
-			return;
-		}
+            return;
+        }
 
-		if( m_font->compileFont() == false )
-		{
-			LOGGER_ERROR("TextField::updateFont_ '%s' invalid compile font '%s'"
-				, this->getName().c_str()
-				, fontName.c_str()
-				);
+        if( m_font->compileFont() == false )
+        {
+            LOGGER_ERROR( "TextField::updateFont_ '%s' invalid compile font '%s'"
+                , this->getName().c_str()
+                , fontName.c_str()
+            );
 
-			return;
-		}
+            return;
+        }
 
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateTextEntry_() const
-	{
-		m_invalidateTextEntry = false;
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::updateTextEntry_() const
+    {
+        m_invalidateTextEntry = false;
 
-		m_textEntry = TEXT_SERVICE()
-			->getTextEntry( m_key );
+        m_textEntry = TEXT_SERVICE()
+            ->getTextEntry( m_key );
 
-		if( m_textEntry == nullptr )
-		{
-			LOGGER_ERROR("TextField::updateTextEntry_ '%s' can't find text ID '%s'"
-				, this->getName().c_str()
-				, m_key.c_str()
-				);
+        if( m_textEntry == nullptr )
+        {
+            LOGGER_ERROR( "TextField::updateTextEntry_ '%s' can't find text ID '%s'"
+                , this->getName().c_str()
+                , m_key.c_str()
+            );
 
-			return;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & TextField::calcFontName() const
-	{
-		const TextEntryInterface * textEntry = this->getTextEntry();
+            return;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & TextField::calcFontName() const
+    {
+        const TextEntryInterface * textEntry = this->getTextEntry();
 
-		if( textEntry != nullptr )
-		{
-			uint32_t params = textEntry->getFontParams();
+        if( textEntry != nullptr )
+        {
+            uint32_t params = textEntry->getFontParams();
 
-			if( params & EFP_FONT )
-			{
-				const ConstString & fontName = textEntry->getFontName();
+            if( params & EFP_FONT )
+            {
+                const ConstString & fontName = textEntry->getFontName();
 
-				return fontName;
-			}
-		}
+                return fontName;
+            }
+        }
 
-		if( m_fontName.empty() == true )
-		{
-			const ConstString & fontName = TEXT_SERVICE()
-				->getDefaultFontName();
+        if( m_fontName.empty() == true )
+        {
+            const ConstString & fontName = TEXT_SERVICE()
+                ->getDefaultFontName();
 
-			return fontName;
-		}
+            return fontName;
+        }
 
-		return m_fontName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float TextField::calcLineOffset() const
-	{
-		const TextEntryInterface * textEntry = this->getTextEntry();
+        return m_fontName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::calcLineOffset() const
+    {
+        const TextEntryInterface * textEntry = this->getTextEntry();
 
-		if( textEntry != nullptr )
-		{
-			uint32_t params = textEntry->getFontParams();
+        if( textEntry != nullptr )
+        {
+            uint32_t params = textEntry->getFontParams();
 
-			if( params & EFP_LINE_OFFSET )
-			{
-				float value = textEntry->getLineOffset();
+            if( params & EFP_LINE_OFFSET )
+            {
+                float value = textEntry->getLineOffset();
 
-				return value;
-			}
-		}
+                return value;
+            }
+        }
 
-		if( m_fontParams & EFP_LINE_OFFSET )
-		{
-			return m_lineOffset;
-		}
+        if( m_fontParams & EFP_LINE_OFFSET )
+        {
+            return m_lineOffset;
+        }
 
-		const TextFontInterfacePtr & font = this->getFont();
+        const TextFontInterfacePtr & font = this->getFont();
 
-		if( font != nullptr )
-		{
-			uint32_t params = font->getFontParams();
+        if( font != nullptr )
+        {
+            uint32_t params = font->getFontParams();
 
             float fontHeight = font->getFontHeight();
 
-			if( params & EFP_LINE_OFFSET )
-			{
-				float value = font->getLineOffset();
+            if( params & EFP_LINE_OFFSET )
+            {
+                float value = font->getLineOffset();
 
-				return fontHeight + value;
-			}
-		}
-                
-		return m_lineOffset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float TextField::calcCharOffset() const
-	{
-		const TextEntryInterface * textEntry = this->getTextEntry();
+                return fontHeight + value;
+            }
+        }
 
-		if( textEntry != nullptr )
-		{
-			uint32_t params = textEntry->getFontParams();
+        return m_lineOffset;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::calcCharOffset() const
+    {
+        const TextEntryInterface * textEntry = this->getTextEntry();
 
-			if( params & EFP_CHAR_OFFSET )
-			{
-				float value = textEntry->getCharOffset();
+        if( textEntry != nullptr )
+        {
+            uint32_t params = textEntry->getFontParams();
 
-				return value;
-			}
-		}
+            if( params & EFP_CHAR_OFFSET )
+            {
+                float value = textEntry->getCharOffset();
 
-		if( m_fontParams & EFP_CHAR_OFFSET )
-		{
-			return m_charOffset;
-		}
+                return value;
+            }
+        }
 
-		const TextFontInterfacePtr & font = this->getFont();
+        if( m_fontParams & EFP_CHAR_OFFSET )
+        {
+            return m_charOffset;
+        }
 
-		if( font != nullptr )
-		{
-			uint32_t params = font->getFontParams();
+        const TextFontInterfacePtr & font = this->getFont();
 
-			if( params & EFP_CHAR_OFFSET )
-			{
-				float value = font->getCharOffset();
+        if( font != nullptr )
+        {
+            uint32_t params = font->getFontParams();
 
-				return value;
-			}
-		}
+            if( params & EFP_CHAR_OFFSET )
+            {
+                float value = font->getCharOffset();
 
-		return m_charOffset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float TextField::calcMaxLength() const
-	{
-		const TextEntryInterface * textEntry = this->getTextEntry();
+                return value;
+            }
+        }
 
-		if( textEntry != nullptr )
-		{
-			uint32_t params = textEntry->getFontParams();
+        return m_charOffset;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::calcMaxLength() const
+    {
+        const TextEntryInterface * textEntry = this->getTextEntry();
 
-			if( params & EFP_MAX_LENGTH )
-			{
-				float value = textEntry->getMaxLength();
+        if( textEntry != nullptr )
+        {
+            uint32_t params = textEntry->getFontParams();
 
-				return value;
-			}
-		}
+            if( params & EFP_MAX_LENGTH )
+            {
+                float value = textEntry->getMaxLength();
 
-		return m_maxLength;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ColourValue & TextField::calcColorFont() const
-	{
-		const TextEntryInterface * textEntry = this->getTextEntry();
+                return value;
+            }
+        }
 
-		if( textEntry != nullptr )
-		{
-			uint32_t params = textEntry->getFontParams();
+        return m_maxLength;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ColourValue & TextField::calcColorFont() const
+    {
+        const TextEntryInterface * textEntry = this->getTextEntry();
 
-			if( params & EFP_COLOR_FONT )
-			{
-				const ColourValue & value = textEntry->getColorFont();
+        if( textEntry != nullptr )
+        {
+            uint32_t params = textEntry->getFontParams();
 
-				return value;
-			}
-		}
+            if( params & EFP_COLOR_FONT )
+            {
+                const ColourValue & value = textEntry->getColorFont();
 
-		if( m_fontParams & EFP_COLOR_FONT )
-		{
-			return m_colorFont;
-		}
+                return value;
+            }
+        }
 
-		const TextFontInterfacePtr & font = this->getFont();
+        if( m_fontParams & EFP_COLOR_FONT )
+        {
+            return m_colorFont;
+        }
 
-		if( font != nullptr )
-		{
-			uint32_t params = font->getFontParams();
+        const TextFontInterfacePtr & font = this->getFont();
 
-			if( params & EFP_COLOR_FONT )
-			{
-				const ColourValue & value = font->getColorFont();
+        if( font != nullptr )
+        {
+            uint32_t params = font->getFontParams();
 
-				return value;
-			}
-		}
+            if( params & EFP_COLOR_FONT )
+            {
+                const ColourValue & value = font->getColorFont();
 
-		return m_colorFont;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ColourValue & TextField::calcColorOutline() const
-	{
-		const TextEntryInterface * textEntry = this->getTextEntry();
+                return value;
+            }
+        }
 
-		if( textEntry != nullptr )
-		{
-			uint32_t params = textEntry->getFontParams();
+        return m_colorFont;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ColourValue & TextField::calcColorOutline() const
+    {
+        const TextEntryInterface * textEntry = this->getTextEntry();
 
-			if( params & EFP_COLOR_OUTLINE )
-			{
-				const ColourValue & value = textEntry->getColorOutline();
+        if( textEntry != nullptr )
+        {
+            uint32_t params = textEntry->getFontParams();
 
-				return value;
-			}
-		}
+            if( params & EFP_COLOR_OUTLINE )
+            {
+                const ColourValue & value = textEntry->getColorOutline();
 
-		if( m_fontParams & EFP_COLOR_OUTLINE )
-		{
-			return m_colorOutline;
-		}
+                return value;
+            }
+        }
 
-		const TextFontInterfacePtr & font = this->getFont();
+        if( m_fontParams & EFP_COLOR_OUTLINE )
+        {
+            return m_colorOutline;
+        }
 
-		if( font != nullptr )
-		{
-			uint32_t params = font->getFontParams();
+        const TextFontInterfacePtr & font = this->getFont();
 
-			if( params & EFP_COLOR_OUTLINE )
-			{
-				const ColourValue & value = font->getColorOutline();
+        if( font != nullptr )
+        {
+            uint32_t params = font->getFontParams();
 
-				return value;
-			}
-		}
+            if( params & EFP_COLOR_OUTLINE )
+            {
+                const ColourValue & value = font->getColorOutline();
 
-		return m_colorOutline;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ETextHorizontAlign TextField::calcHorizontalAlign() const
-	{
-		const TextEntryInterface * textEntry = this->getTextEntry();
+                return value;
+            }
+        }
 
-		if( textEntry != nullptr )
-		{
-			uint32_t params = textEntry->getFontParams();
+        return m_colorOutline;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ETextHorizontAlign TextField::calcHorizontalAlign() const
+    {
+        const TextEntryInterface * textEntry = this->getTextEntry();
 
-			if( params & EFP_HORIZONTAL_ALIGN )
-			{
-				ETextHorizontAlign value = textEntry->getHorizontAlign();
+        if( textEntry != nullptr )
+        {
+            uint32_t params = textEntry->getFontParams();
 
-				return value;
-			}
-		}
+            if( params & EFP_HORIZONTAL_ALIGN )
+            {
+                ETextHorizontAlign value = textEntry->getHorizontAlign();
 
-		if( m_fontParams & EFP_HORIZONTAL_ALIGN )
-		{
-			return m_horizontAlign;
-		}
+                return value;
+            }
+        }
 
-		return ETFHA_LEFT;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ETextVerticalAlign TextField::calcVerticalAlign() const
-	{
-		const TextEntryInterface * textEntry = this->getTextEntry();
+        if( m_fontParams & EFP_HORIZONTAL_ALIGN )
+        {
+            return m_horizontAlign;
+        }
 
-		if( textEntry != nullptr )
-		{
-			uint32_t params = textEntry->getFontParams();
+        return ETFHA_LEFT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ETextVerticalAlign TextField::calcVerticalAlign() const
+    {
+        const TextEntryInterface * textEntry = this->getTextEntry();
 
-			if( params & EFP_VERTICAL_ALIGN )
-			{
-				ETextVerticalAlign value = textEntry->getVerticalAlign();
+        if( textEntry != nullptr )
+        {
+            uint32_t params = textEntry->getFontParams();
 
-				return value;
-			}
-		}
+            if( params & EFP_VERTICAL_ALIGN )
+            {
+                ETextVerticalAlign value = textEntry->getVerticalAlign();
 
-		if( m_fontParams & EFP_VERTICAL_ALIGN )
-		{
-			return m_verticalAlign;
-		}
+                return value;
+            }
+        }
 
-		return ETFVA_TOP;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float TextField::calcCharScale() const
-	{
-		const TextEntryInterface * textEntry = this->getTextEntry();
+        if( m_fontParams & EFP_VERTICAL_ALIGN )
+        {
+            return m_verticalAlign;
+        }
 
-		if( textEntry != nullptr )
-		{
-			uint32_t params = textEntry->getFontParams();
+        return ETFVA_TOP;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::calcCharScale() const
+    {
+        const TextEntryInterface * textEntry = this->getTextEntry();
 
-			if( params & EFP_CHAR_SCALE )
-			{
-				float value = textEntry->getCharScale();
+        if( textEntry != nullptr )
+        {
+            uint32_t params = textEntry->getFontParams();
 
-				return value;
-			}
-		}
+            if( params & EFP_CHAR_SCALE )
+            {
+                float value = textEntry->getCharScale();
 
-		if( m_fontParams & EFP_CHAR_SCALE )
-		{
-			return m_charScale;
-		}
+                return value;
+            }
+        }
 
-		return 1.f;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::_updateBoundingBox( mt::box2f & _boundingBox ) const
-	{
-		Node::_updateBoundingBox( _boundingBox );
+        if( m_fontParams & EFP_CHAR_SCALE )
+        {
+            return m_charScale;
+        }
 
-		//mt::vec2f offset = mt::zero_v2;
+        return 1.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::_updateBoundingBox( mt::box2f & _boundingBox ) const
+    {
+        Node::_updateBoundingBox( _boundingBox );
 
-		//const mt::mat4f & wm = this->getWorldMatrix();
+        //mt::vec2f offset = mt::zero_v2;
 
-		//const TListTextLine & lines = this->getTextLines();
+        //const mt::mat4f & wm = this->getWorldMatrix();
 
-		//for( TListTextLine::const_iterator 
-		//	it_line = lines.begin(),
-		//	it_line_end = lines.end(); 
-		//it_line != it_line_end; 
-		//++it_line )
-		//{
-		//	mt::vec2f alignOffset;
+        //const TListTextLine & lines = this->getTextLines();
 
-		//	this->updateAlignOffset_( *it_line, alignOffset );
+        //for( TListTextLine::const_iterator 
+        //	it_line = lines.begin(),
+        //	it_line_end = lines.end(); 
+        //it_line != it_line_end; 
+        //++it_line )
+        //{
+        //	mt::vec2f alignOffset;
 
-		//	offset.x = alignOffset.x;
-		//	offset.y += alignOffset.y;
+        //	this->updateAlignOffset_( *it_line, alignOffset );
 
-		//	it_line->updateBoundingBox( offset, wm, _boundingBox );
+        //	offset.x = alignOffset.x;
+        //	offset.y += alignOffset.y;
 
-		//	offset.y += m_lineOffset;
-		//}		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float TextField::getHorizontAlignOffset_( const TextLine & _line )
-	{
+        //	it_line->updateBoundingBox( offset, wm, _boundingBox );
+
+        //	offset.y += m_lineOffset;
+        //}		
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::getHorizontAlignOffset_( const TextLine & _line )
+    {
         float offset = 0.f;
 
-		ETextHorizontAlign horizontAlign = this->calcHorizontalAlign();
+        ETextHorizontAlign horizontAlign = this->calcHorizontalAlign();
 
-		switch( horizontAlign )
-		{
-		case ETFHA_LEFT:
-			{
-				offset = 0.f;
-			}break;
-		case ETFHA_CENTER:
-			{
-				offset = -_line.getLength() * 0.5f;
-			}break;
-		case ETFHA_RIGHT:
-			{
-				offset = -_line.getLength();
-			}break;
-		}
+        switch( horizontAlign )
+        {
+        case ETFHA_LEFT:
+            {
+                offset = 0.f;
+            }break;
+        case ETFHA_CENTER:
+            {
+                offset = -_line.getLength() * 0.5f;
+            }break;
+        case ETFHA_RIGHT:
+            {
+                offset = -_line.getLength();
+            }break;
+        }
 
         return offset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::_invalidateColor()
-	{
-		Node::_invalidateColor();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::_invalidateColor()
+    {
+        Node::_invalidateColor();
 
-		this->invalidateVertices_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t TextField::getMaxCharCount() const
-	{
-		return m_maxCharCount;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setMaxCharCount( uint32_t _maxCharCount ) 
-	{
-		m_maxCharCount = _maxCharCount;
-
-        this->invalidateTextLines();	
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setTextID( const ConstString & _key )
-	{	
-		m_key = _key;
-
-		m_textFormatArgs.clear();
-
-		this->invalidateTextEntry();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::removeTextID()
-	{
-		m_textEntry = nullptr;
-		m_textFormatArgs.clear();
-
-		this->invalidateTextEntry();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & TextField::getTextID() const
-	{
-		const TextEntryInterface * textEntry = this->getTextEntry();
-
-		if( textEntry == nullptr )
-		{
-			return ConstString::none();
-		}
-
-		const ConstString & key = textEntry->getKey();
-
-		return key;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setTextFormatArgs( const TVectorString & _args )
-	{
-		if( m_textFormatArgs == _args )
-		{
-			return;
-		}
-
-		m_textFormatArgs = _args;
-
-		this->invalidateFont();
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::removeTextFormatArgs()
-	{
-		m_textFormatArgs.clear();
-
-		this->invalidateFont();
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TVectorString & TextField::getTextFormatArgs() const
-	{
-		return m_textFormatArgs;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t TextField::getTextExpectedArgument() const
-	{
-		const TextEntryInterface * textEntry = this->getTextEntry();
-
-		if( textEntry == nullptr )
-		{
-			LOGGER_ERROR("TextField::getTextExpectedArgument '%s:%s' not compile"
-				, this->getName().c_str()
-				, m_key.c_str()
-				);
-
-			return 0;
-		}
-
-		const String & textValue = textEntry->getValue();
-
-		const char * str_textValue = textValue.c_str();
-
-		try
-		{
-			StringFormat fmt(str_textValue);
-
-			int expected_args = fmt.expected_args();
-
-			return (size_t)expected_args;
-		}
-		catch( const boost::io::format_error & _ex )
-		{
-			LOGGER_ERROR("TextField::getTextExpectedArgument '%s:%s' except error '%s'"
-				, this->getName().c_str()
-				, this->getTextID().c_str()
-				, _ex.what()
-				);
-		}
-
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////	
-	bool TextField::updateTextCache_() const
-	{
-		m_cacheText.clear();
-
-		const TextEntryInterface * textEntry = this->getTextEntry();
-
-		if( textEntry == nullptr )
-		{
-			LOGGER_ERROR("TextField::updateTextCache_ '%s:%s' invalid get text entry can't setup text ID"
-				, this->getName().c_str()
-				, m_key.c_str()
-				);
-
-			return false;
-		}
-
-		const String & textValue = textEntry->getValue();
-
-		const char * str_textValue = textValue.c_str();
-		
-		try
-		{
-			StringFormat fmt(str_textValue);
-
-			for( TVectorString::const_iterator
-				it_arg = m_textFormatArgs.begin(),
-				it_arg_end = m_textFormatArgs.end();
-			it_arg != it_arg_end;
-			++it_arg )
-			{
-				const String & arg = *it_arg;
-
-				fmt % arg;
-			}		
-
-			const TextFontInterfacePtr & font = this->getFont();
-
-			m_cacheText = font->prepareText( fmt.str() );
-		}
-		catch( const boost::io::format_error & _ex )
-		{
-			LOGGER_ERROR("TextField::updateTextCache_ '%s:%s' except error '%s'"
-				, this->getName().c_str()
-				, this->getTextID().c_str()
-				, _ex.what()
-				);
-
-			return false;
-		}
-		
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setPixelsnap( bool _pixelsnap )
-	{
-		m_pixelsnap = _pixelsnap;
+        this->invalidateVertices_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t TextField::getMaxCharCount() const
+    {
+        return m_maxCharCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setMaxCharCount( uint32_t _maxCharCount )
+    {
+        m_maxCharCount = _maxCharCount;
 
         this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextField::getPixelsnap() const
-	{
-		return m_pixelsnap;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setVerticalBottomAlign()
-	{
-		m_verticalAlign = ETFVA_BOTTOM;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setTextID( const ConstString & _key )
+    {
+        m_key = _key;
 
-		m_fontParams |= EFP_VERTICAL_ALIGN;
+        m_textFormatArgs.clear();
 
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextField::isVerticalBottomAlign() const
-	{
-		return m_verticalAlign == ETFVA_BOTTOM;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setVerticalCenterAlign()
-	{
-		m_verticalAlign = ETFVA_CENTER;
+        this->invalidateTextEntry();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::removeTextID()
+    {
+        m_textEntry = nullptr;
+        m_textFormatArgs.clear();
 
-		m_fontParams |= EFP_VERTICAL_ALIGN;
+        this->invalidateTextEntry();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & TextField::getTextID() const
+    {
+        const TextEntryInterface * textEntry = this->getTextEntry();
 
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextField::isVerticalCenterAlign() const
-	{
-		return m_verticalAlign == ETFVA_CENTER;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setHorizontalCenterAlign()
-	{
-		m_horizontAlign = ETFHA_CENTER;
+        if( textEntry == nullptr )
+        {
+            return ConstString::none();
+        }
 
-		m_fontParams |= EFP_HORIZONTAL_ALIGN;
+        const ConstString & key = textEntry->getKey();
 
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextField::isHorizontalCenterAlign() const
-	{
-		return m_horizontAlign == ETFHA_CENTER;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setHorizontalRightAlign()
-	{
-		m_horizontAlign = ETFHA_RIGHT;
+        return key;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setTextFormatArgs( const TVectorString & _args )
+    {
+        if( m_textFormatArgs == _args )
+        {
+            return;
+        }
 
-		m_fontParams |= EFP_HORIZONTAL_ALIGN;
+        m_textFormatArgs = _args;
 
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextField::isHorizontalRightAlign() const
-	{
-		return m_horizontAlign == ETFHA_RIGHT;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setHorizontalLeftAlign()
-	{
-		m_horizontAlign = ETFHA_LEFT;
+        this->invalidateFont();
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::removeTextFormatArgs()
+    {
+        m_textFormatArgs.clear();
 
-		m_fontParams |= EFP_HORIZONTAL_ALIGN;
+        this->invalidateFont();
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const TVectorString & TextField::getTextFormatArgs() const
+    {
+        return m_textFormatArgs;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t TextField::getTextExpectedArgument() const
+    {
+        const TextEntryInterface * textEntry = this->getTextEntry();
 
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextField::isHorizontalLeftAlign() const
-	{
-		return m_horizontAlign == ETFHA_LEFT;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::invalidateVertices_() const
-	{
-		m_invalidateVertices = true;
+        if( textEntry == nullptr )
+        {
+            LOGGER_ERROR( "TextField::getTextExpectedArgument '%s:%s' not compile"
+                , this->getName().c_str()
+                , m_key.c_str()
+            );
+
+            return 0;
+        }
+
+        const String & textValue = textEntry->getValue();
+
+        const char * str_textValue = textValue.c_str();
+
+        try
+        {
+            StringFormat fmt( str_textValue );
+
+            int expected_args = fmt.expected_args();
+
+            return (size_t)expected_args;
+        }
+        catch( const boost::io::format_error & _ex )
+        {
+            LOGGER_ERROR( "TextField::getTextExpectedArgument '%s:%s' except error '%s'"
+                , this->getName().c_str()
+                , this->getTextID().c_str()
+                , _ex.what()
+            );
+        }
+
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////	
+    bool TextField::updateTextCache_() const
+    {
+        m_cacheText.clear();
+
+        const TextEntryInterface * textEntry = this->getTextEntry();
+
+        if( textEntry == nullptr )
+        {
+            LOGGER_ERROR( "TextField::updateTextCache_ '%s:%s' invalid get text entry can't setup text ID"
+                , this->getName().c_str()
+                , m_key.c_str()
+            );
+
+            return false;
+        }
+
+        const String & textValue = textEntry->getValue();
+
+        const char * str_textValue = textValue.c_str();
+
+        try
+        {
+            StringFormat fmt( str_textValue );
+
+            for( TVectorString::const_iterator
+                it_arg = m_textFormatArgs.begin(),
+                it_arg_end = m_textFormatArgs.end();
+                it_arg != it_arg_end;
+                ++it_arg )
+            {
+                const String & arg = *it_arg;
+
+                fmt % arg;
+            }
+
+            const TextFontInterfacePtr & font = this->getFont();
+
+            m_cacheText = font->prepareText( fmt.str() );
+        }
+        catch( const boost::io::format_error & _ex )
+        {
+            LOGGER_ERROR( "TextField::updateTextCache_ '%s:%s' except error '%s'"
+                , this->getName().c_str()
+                , this->getTextID().c_str()
+                , _ex.what()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setPixelsnap( bool _pixelsnap )
+    {
+        m_pixelsnap = _pixelsnap;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::getPixelsnap() const
+    {
+        return m_pixelsnap;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setVerticalBottomAlign()
+    {
+        m_verticalAlign = ETFVA_BOTTOM;
+
+        m_fontParams |= EFP_VERTICAL_ALIGN;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::isVerticalBottomAlign() const
+    {
+        return m_verticalAlign == ETFVA_BOTTOM;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setVerticalCenterAlign()
+    {
+        m_verticalAlign = ETFVA_CENTER;
+
+        m_fontParams |= EFP_VERTICAL_ALIGN;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::isVerticalCenterAlign() const
+    {
+        return m_verticalAlign == ETFVA_CENTER;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setHorizontalCenterAlign()
+    {
+        m_horizontAlign = ETFHA_CENTER;
+
+        m_fontParams |= EFP_HORIZONTAL_ALIGN;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::isHorizontalCenterAlign() const
+    {
+        return m_horizontAlign == ETFHA_CENTER;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setHorizontalRightAlign()
+    {
+        m_horizontAlign = ETFHA_RIGHT;
+
+        m_fontParams |= EFP_HORIZONTAL_ALIGN;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::isHorizontalRightAlign() const
+    {
+        return m_horizontAlign == ETFHA_RIGHT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setHorizontalLeftAlign()
+    {
+        m_horizontAlign = ETFHA_LEFT;
+
+        m_fontParams |= EFP_HORIZONTAL_ALIGN;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::isHorizontalLeftAlign() const
+    {
+        return m_horizontAlign == ETFHA_LEFT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::invalidateVertices_() const
+    {
+        m_invalidateVertices = true;
 
         this->invalidateVerticesWM_();
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     void TextField::invalidateVerticesWM_() const
     {
         m_invalidateVerticesWM = true;
 
-		this->invalidateBoundingBox();
+        this->invalidateBoundingBox();
     }
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::invalidateTextLines() const
-	{
-		m_invalidateTextLines = true;
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::invalidateTextLines() const
+    {
+        m_invalidateTextLines = true;
 
-		this->invalidateVertices_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::invalidateTextEntry() const
-	{
-		m_invalidateTextEntry = true;
+        this->invalidateVertices_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::invalidateTextEntry() const
+    {
+        m_invalidateTextEntry = true;
 
-		this->invalidateFont();
-		this->invalidateTextLines();
-	}
+        this->invalidateFont();
+        this->invalidateTextLines();
+    }
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateVerticesWM_( const TextFontInterfacePtr & _font )
     {
@@ -1468,14 +1499,14 @@ namespace Mengine
         if( m_invalidateVertices == true )
         {
             this->updateVertices_( _font );
-        }       
+        }
 
         this->updateVertexDataWM_( m_vertexDataTextWM, m_vertexDataText );
 
-		if( m_outline == true )
-		{
-			this->updateVertexDataWM_( m_vertexDataOutlineWM, m_vertexDataOutline );
-		}
+        if( m_outline == true )
+        {
+            this->updateVertexDataWM_( m_vertexDataOutlineWM, m_vertexDataOutline );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateVertexDataWM_( TVectorRenderVertex2D & _outVertex, const TVectorRenderVertex2D & _fromVertex )
@@ -1485,68 +1516,68 @@ namespace Mengine
         TVectorRenderVertex2D::const_iterator it = _fromVertex.begin();
         TVectorRenderVertex2D::const_iterator it_end = _fromVertex.end();
 
-        TVectorRenderVertex2D::iterator it_w = _outVertex.begin();        
+        TVectorRenderVertex2D::iterator it_w = _outVertex.begin();
 
         mt::mat4f wm = this->getWorldMatrix();
 
-		if( m_pixelsnap == true )
-		{
-			wm.v3.x = ::floorf( wm.v3.x + 0.5f );
-			wm.v3.y = ::floorf( wm.v3.y + 0.5f );
-		}
+        if( m_pixelsnap == true )
+        {
+            wm.v3.x = ::floorf( wm.v3.x + 0.5f );
+            wm.v3.y = ::floorf( wm.v3.y + 0.5f );
+        }
 
-		//float charScale = this->getCharScale();
+        //float charScale = this->getCharScale();
 
-		//if( mt::equal_f_1( charScale ) == false )
-		//{
-		//	mt::vec3f position;
-		//	mt::vec3f origin;
-		//	mt::vec3f scale;
-		//	mt::vec2f skew;
-		//	mt::vec3f orientation;
-		//	this->getTransformation( position, origin, scale, skew, orientation );
+        //if( mt::equal_f_1( charScale ) == false )
+        //{
+        //	mt::vec3f position;
+        //	mt::vec3f origin;
+        //	mt::vec3f scale;
+        //	mt::vec2f skew;
+        //	mt::vec3f orientation;
+        //	this->getTransformation( position, origin, scale, skew, orientation );
 
-		//	mt::mat4f wm;
-		//	this->calcWorldMatrix( wm, position, origin, scale + charScale, skew, orientation );
-		//}
+        //	mt::mat4f wm;
+        //	this->calcWorldMatrix( wm, position, origin, scale + charScale, skew, orientation );
+        //}
 
         for( ; it != it_end; ++it, ++it_w )
         {
             const RenderVertex2D & vertex = *it;
-            
+
             RenderVertex2D & vertex_w = *it_w;
-            
-			mt::mul_v3_v3_m4( vertex_w.position, vertex.position, wm );
+
+            mt::mul_v3_v3_m4( vertex_w.position, vertex.position, wm );
         }
     }
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateVertices_( const TextFontInterfacePtr & _font )
-	{
-		m_invalidateVertices = false;
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::updateVertices_( const TextFontInterfacePtr & _font )
+    {
+        m_invalidateVertices = false;
 
-		ColourValue colorNode;
-		this->calcTotalColor( colorNode );
-		
-		ColourValue colorFont;
+        ColourValue colorNode;
+        this->calcTotalColor( colorNode );
 
-		const ColourValue & paramsColorFont = this->calcColorFont(); 
-		colorFont = colorNode * paramsColorFont;
-		
-		this->updateVertexData_( _font, colorFont, m_vertexDataText );
-		
-		if( m_outline == true )
-		{
-			ColourValue colorOutline;
+        ColourValue colorFont;
 
-			const ColourValue & paramsColorOutline = this->calcColorOutline();
-			colorOutline = colorNode * paramsColorOutline;
-			
-			this->updateVertexData_( _font, colorOutline, m_vertexDataOutline );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr TextField::_updateMaterial() const
-	{
-		return nullptr;
-	}
+        const ColourValue & paramsColorFont = this->calcColorFont();
+        colorFont = colorNode * paramsColorFont;
+
+        this->updateVertexData_( _font, colorFont, m_vertexDataText );
+
+        if( m_outline == true )
+        {
+            ColourValue colorOutline;
+
+            const ColourValue & paramsColorOutline = this->calcColorOutline();
+            colorOutline = colorNode * paramsColorOutline;
+
+            this->updateVertexData_( _font, colorOutline, m_vertexDataOutline );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderMaterialInterfacePtr TextField::_updateMaterial() const
+    {
+        return nullptr;
+    }
 }

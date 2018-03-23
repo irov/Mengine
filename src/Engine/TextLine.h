@@ -36,7 +36,7 @@ namespace Mengine
         ~TextLine();
 
 	public:
-		bool initialize( const TextFontInterfacePtr & _font, const U32String & _text );
+        bool initialize( uint32_t _layout, const TextFontInterfacePtr & _font, const U32String & _text );
 
 	public:
 		const TVectorCharData & getCharData() const;

@@ -167,10 +167,10 @@ namespace Mengine
 		{
 			size_t j = (i + 1) % numpoints;
 
-			float x0 = math_cosf( mt::constant::two_pi / numpoints * i ) * m_radius;
-			float x1 = math_cosf( mt::constant::two_pi / numpoints * j ) * m_radius;
-			float y0 = math_sinf( mt::constant::two_pi / numpoints * i ) * m_radius;
-			float y1 = math_sinf( mt::constant::two_pi / numpoints * j ) * m_radius;
+			float x0 = ::cosf( mt::constant::two_pi / numpoints * i ) * m_radius;
+			float x1 = ::cosf( mt::constant::two_pi / numpoints * j ) * m_radius;
+			float y0 = ::sinf( mt::constant::two_pi / numpoints * i ) * m_radius;
+			float y1 = ::sinf( mt::constant::two_pi / numpoints * j ) * m_radius;
 
 			mt::vec3f trP0;
 			mt::mul_v3_v2_m4( trP0, mt::vec2f( x0, y0 ), wm );

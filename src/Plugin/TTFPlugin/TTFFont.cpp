@@ -25,6 +25,7 @@ namespace Mengine
         , m_ttfDescender( 0.f )
         , m_ttfHeight( 0 )
         , m_ttfSpacing( 0.f )
+        , m_ttfLayoutCount( 1 )
         , m_ttfFEBundle( nullptr )
         , m_ttfFEEffect( nullptr )
 	{
@@ -152,6 +153,35 @@ namespace Mengine
             {
                 return false;
             }
+
+            fe_node * effect_node = fe_effect_find_node_by_type( m_ttfFEEffect, fe_node_type_out );
+
+            if( effect_node->properties_int[0] != 0 )
+            {
+                uint32_t layoutCount = 0;
+
+                for( int i = 0; i < FE_MAX_PINS; ++i )
+                {
+                    const fe_node *left = effect_node->in[FE_MAX_PINS - i - 1].node;
+
+                    if( left != nullptr )
+                    {
+                        ++layoutCount;
+                    }
+                }
+
+                m_ttfLayoutCount = layoutCount;
+            }
+        }
+
+        if( m_ttfLayoutCount > 4 )
+        {
+            LOGGER_ERROR( "TTFFont::_compile font '%s' layout more 4 - '%u'"
+                , m_name.c_str()
+                , m_ttfLayoutCount
+            );
+
+            return false;
         }
 
 		return true;
@@ -170,37 +200,38 @@ namespace Mengine
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-        //////////////////////////////////////////////////////////////////////////
-		class PFindGlyph
-		{
-		public:
-			PFindGlyph( GlyphCode _ch )
-				: m_ch( _ch )
-			{
-			}
+    class TTFFont::PFindGlyph
+    {
+    public:
+        PFindGlyph( GlyphCode _ch )
+            : m_ch( _ch )
+        {
+        }
 
-		public:
-			bool operator () ( const TTFGlyph & _glyph ) const
-			{
-				return m_ch == _glyph.ch;
-			}
+    public:
+        bool operator () ( const TTFGlyph & _glyph ) const
+        {
+            return m_ch == _glyph.ch;
+        }
 
-		protected:
-			GlyphCode m_ch;
-		};
+    protected:
+        GlyphCode m_ch;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    namespace
+    {
         //////////////////////////////////////////////////////////////////////////
         class TTFFontTextureGlyphProvider
             : public TextureGlyphProviderInterface
         {
         public:
-            TTFFontTextureGlyphProvider( uint32_t _width, uint32_t _height, const void * _ttfbuffer, size_t _ttfpitch, uint32_t _ttfchannel )
+            TTFFontTextureGlyphProvider( uint32_t _width, uint32_t _height, const void * _ttfbuffer, size_t _ttfpitch, uint32_t _ttfchannel, bool _rgba )
                 : m_width( _width )
                 , m_height( _height )
                 , m_ttfbuffer( _ttfbuffer )
                 , m_ttfpitch( _ttfpitch )
                 , m_ttfchannel( _ttfchannel )
+                , m_rgba( _rgba )
             {
             }
 
@@ -240,12 +271,37 @@ namespace Mengine
                 }
                 else if( m_ttfchannel == 4 && _channel == 4 )
                 {
-                    for( uint32_t h = 0; h != m_height; ++h )
+                    if( m_rgba == false )
                     {
-                        stdex::memorycopy_pod( it_texture_memory, 0, it_glyph_buffer, m_width * m_ttfchannel );
+                        for( uint32_t h = 0; h != m_height; ++h )
+                        {
+                            stdex::memorycopy_pod( it_texture_memory, 0, it_glyph_buffer, m_width * m_ttfchannel );
 
-                        it_texture_memory += _pitch;
-                        it_glyph_buffer += m_ttfpitch;
+                            it_texture_memory += _pitch;
+                            it_glyph_buffer += m_ttfpitch;
+                        }
+                    }
+                    else
+                    {
+                        for( uint32_t h = 0; h != m_height; ++h )
+                        {
+                            for( uint32_t w = 0; w != m_width; ++w )
+                            {
+                                uint8_t * it_texture_memory_place = it_texture_memory + w * 4;
+
+                                const uint8_t * glyph_pixel = it_glyph_buffer + w * 4;
+
+                                *it_texture_memory_place++ = glyph_pixel[2];
+                                *it_texture_memory_place++ = glyph_pixel[1];
+                                *it_texture_memory_place++ = glyph_pixel[0];
+                                *it_texture_memory_place++ = glyph_pixel[3];
+
+                                glyph_pixel += 4;
+                            }
+
+                            it_texture_memory += _pitch;
+                            it_glyph_buffer += m_ttfpitch;
+                        }
                     }
                 }
                 else
@@ -315,6 +371,8 @@ namespace Mengine
             const void * m_ttfbuffer;
             size_t m_ttfpitch;
             uint32_t m_ttfchannel;
+
+            bool m_rgba;
         };
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -382,108 +440,134 @@ namespace Mengine
         case FT_PIXEL_MODE_LCD_V:
             {
                 return false;
-            }break;                
+            }break;
         };
 
-        uint32_t bitmap_pitch = bitmap.pitch;
-		uint32_t bitmap_width = bitmap.width;
-        uint32_t bitmap_height = bitmap.rows;
-		const void * bitmap_buffer = bitmap.buffer;
+        TTFGlyph g;
+        g.ch = _code;
+        g.advance = advance;
 
-		if( bitmap_width == 0 || bitmap_height == 0 )
+        if( bitmap.width == 0 || bitmap.rows == 0 )
 		{
-			TTFGlyph g;
-			g.ch = _code;
-			g.advance = advance;
+            for( uint32_t index = 0; index != m_ttfLayoutCount; ++index )
+            {
+                g.layout[index].dx = 0.f;
+                g.layout[index].dy = 0.f;
+                g.layout[index].w = 0.f;
+                g.layout[index].h = 0.f;
 
-			g.dx = 0.f;
-			g.dy = 0.f;
-			g.w = 0.f;
-			g.h = 0.f;
-
-			g.texture = nullptr;
+                g.layout[index].texture = nullptr;
+            }
 
 			glyphs.push_back( g );
 
 			return true;
 		}
-
         
         fe_im res;
         if( m_ttfFEEffect != nullptr )
         {
-            fe_node * effect_node = fe_effect_find_node_by_type( m_ttfFEEffect, fe_node_type_out );
-        
-            
-            int im_image_w = bitmap_width;
-            int im_image_h = bitmap_height;
-            int im_image_pitch = bitmap_pitch;
-            const void * im_image_data = static_cast<uint8_t *>(const_cast<void*>(bitmap_buffer));
-            //im.image.data = (uint8_t *)bitmap_buffer;
+            const fe_node * effect_node = fe_effect_find_node_by_type( m_ttfFEEffect, fe_node_type_out );
 
-            FE_IMAGE_FORMAT im_image_format = TF_UNDEFINED;
-            switch( bitmap_channel )
+            const fe_node * effects[4];
+
+            if( effect_node->properties_int[0] != 0 )
             {
-            case 1:
-                im_image_format = FE_IMG_A8;
-                break;
-            case 4:
-                im_image_format = FE_IMG_R8G8B8A8;
-                break;
+                uint32_t layoutCount = 0;
+
+                for( int i = 0; i < FE_MAX_PINS; ++i )
+                {
+                    const fe_node * left = effect_node->in[FE_MAX_PINS - i - 1].node;
+
+                    if( left == nullptr )
+                    {
+                        continue;
+                    }
+                     
+                    effects[layoutCount] = left;
+                    ++layoutCount;                    
+                }
+            }
+            else
+            {
+                effects[0] = effect_node;
+            }
+
+            for( uint32_t layoutIndex = 0; layoutIndex != m_ttfLayoutCount; ++layoutIndex )
+            {
+                int im_image_w = bitmap.width;
+                int im_image_h = bitmap.rows;
+                int im_image_pitch = bitmap.pitch;
+                const void * im_image_data = bitmap.buffer;
+                //im.image.data = (uint8_t *)bitmap_buffer;
+
+                FE_IMAGE_FORMAT im_image_format = TF_UNDEFINED;
+                switch( bitmap_channel )
+                {
+                case 1:
+                    im_image_format = FE_IMG_A8;
+                    break;
+                case 4:
+                    im_image_format = FE_IMG_R8G8B8A8;
+                    break;
+                }
+
+                FT_Int im_x = glyph->bitmap_left;
+                FT_Int im_y = glyph->bitmap_top;
+
+                fe_node_apply( m_ttfHeight
+                    , im_x
+                    , im_y
+                    , im_image_w
+                    , im_image_h
+                    , im_image_format
+                    , im_image_pitch
+                    , im_image_data
+                    , effect_node, &res );
+
+                TTFFontTextureGlyphProvider provider( res.image.w, res.image.h, res.image.data, res.image.pitch, res.image.bytespp, true );
+
+                mt::uv4f uv;
+                RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
+                    ->makeTextureGlyph( res.image.w, res.image.h, res.image.bytespp, &provider, uv );
+
+                if( texture == nullptr )
+                {
+                    return false;
+                }
+
+                fe_image_free( &res.image );
+                
+                g.layout[layoutIndex].dx = (float)res.x;
+                g.layout[layoutIndex].dy = (float)res.y;
+                g.layout[layoutIndex].w = (float)w;
+                g.layout[layoutIndex].h = (float)h;
+                g.layout[layoutIndex].uv = uv;
+                g.layout[layoutIndex].texture = texture;
+            }            
+        }
+        else
+        {
+            TTFFontTextureGlyphProvider provider( bitmap.width, bitmap.rows, bitmap.buffer, bitmap.pitch, bitmap_channel, false );
+
+            mt::uv4f uv;
+            RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
+                ->makeTextureGlyph( bitmap.width, bitmap.rows, bitmap_channel, &provider, uv );
+
+            if( texture == nullptr )
+            {
+                return false;
             }
             
-            int im_x = glyph->bitmap_left;
-            int im_y = m_ttfHeight - glyph->bitmap_top;
-            
-            fe_node_apply( m_ttfHeight
-                , im_x
-                , im_y
-                , im_image_w
-                , im_image_h
-                , im_image_format
-                , im_image_pitch
-                , im_image_data
-                , effect_node, &res );
-
-            bitmap_width = res.image.w;
-            bitmap_height = res.image.h;
-            bitmap_buffer = res.image.data;
-            bitmap_pitch = res.image.pitch;
-            bitmap_channel = res.image.bytespp;
-
-            dx = res.x;
-            dy = res.y - m_ttfHeight;
-        }
-        
-        TTFFontTextureGlyphProvider provider( bitmap_width, bitmap_height, bitmap_buffer, bitmap_pitch, bitmap_channel );
-        
-		mt::uv4f uv;
-		RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-			->makeTextureGlyph( bitmap_width, bitmap_height, bitmap_channel, &provider, uv );
-
-		if( texture == nullptr )
-		{
-			return false;
-		}
-
-        if( m_ttfFEEffect != nullptr )
-        {
-            fe_image_free( &res.image );
+            g.layout[0].dx = (float)dx;
+            g.layout[0].dy = (float)dy;
+            g.layout[0].w = (float)w;
+            g.layout[0].h = (float)h;
+            g.layout[0].uv = uv;
+            g.layout[0].texture = texture;
         }
 
-		TTFGlyph g;
-		g.ch = _code;
-		g.advance = advance;
-
-        g.dx = (float)dx;
-        g.dy = (float)dy;
-        g.w = (float)w;
-        g.h = (float)h;
-
-		g.texture = texture;
-		g.uv = uv;
-
-		glyphs.push_back( g );
+        glyphs.push_back( g );
 		
 		return true;
 	}
@@ -585,7 +669,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TTFFont::getGlyph( GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const
+	bool TTFFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const
 	{
 		uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
 		const TVectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
@@ -600,11 +684,10 @@ namespace Mengine
 		const TTFGlyph & glyph = *it_found;
 
 		_glyph->advance = glyph.advance;
-		_glyph->offset = mt::vec2f( glyph.dx, glyph.dy );
-		_glyph->size = mt::vec2f( glyph.w, glyph.h );
-
-		_glyph->texture = glyph.texture;
-		_glyph->uv = glyph.uv;
+		_glyph->offset = mt::vec2f( glyph.layout[_layout].dx, glyph.layout[_layout].dy );
+		_glyph->size = mt::vec2f( glyph.layout[_layout].w, glyph.layout[_layout].h );
+        _glyph->uv = glyph.layout[_layout].uv;
+		_glyph->texture = glyph.layout[_layout].texture;		
 
 		if( _next == 0 )
 		{
@@ -632,6 +715,11 @@ namespace Mengine
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t TTFFont::getLayoutCount() const
+    {
+        return m_ttfLayoutCount;
+    }
     //////////////////////////////////////////////////////////////////////////
     float TTFFont::getFontAscent() const
     {

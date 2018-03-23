@@ -22,7 +22,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextLine::initialize( const TextFontInterfacePtr & _font, const U32String & _text )
+    bool TextLine::initialize( uint32_t _layout, const TextFontInterfacePtr & _font, const U32String & _text )
     {
         U32String::size_type text_size = _text.length();
         m_charsData.reserve( text_size );
@@ -43,7 +43,7 @@ namespace Mengine
             GlyphCode glyphCharNext = (it_kerning != _text.end()) ? *it_kerning : 0;
 
             Glyph glyph;
-            if( _font->getGlyph( glyphChar, glyphCharNext, &glyph ) == false )
+            if( _font->getGlyph( _layout, glyphChar, glyphCharNext, &glyph ) == false )
             {
                 LOGGER_ERROR("TextLine for fontName %s invalid glyph %u next %u"
                     , _font->getName().c_str()
@@ -62,16 +62,11 @@ namespace Mengine
             }
 
             CharData charData;
-
             charData.code = glyphChar;
-
             charData.uv = glyph.uv;
-
             charData.advance = glyph.advance;
             charData.offset = glyph.offset;
-
             charData.size = glyph.size;
-
             charData.texture = glyph.texture;
 
             m_charsData.push_back( charData );

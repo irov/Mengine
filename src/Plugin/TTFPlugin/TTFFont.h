@@ -46,7 +46,10 @@ namespace Mengine
 
 	public:
 		bool hasGlyph( GlyphCode _code ) const override;
-		bool getGlyph( GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const override;
+		bool getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const override;
+
+    protected:
+        uint32_t getLayoutCount() const override;
 
     protected:
         float getFontAscent() const override;
@@ -75,13 +78,37 @@ namespace Mengine
         uint32_t m_ttfHeight;
         float m_ttfSpacing;
 
+        uint32_t m_ttfLayoutCount;
+
         FilePath m_ttfFEPath;
         ConstString m_ttfFEName;
         fe_effect_bundle * m_ttfFEBundle;
         fe_effect * m_ttfFEEffect;
+
+        struct TTFGlyphQuad
+        {
+            float dx;
+            float dy;
+            float w;
+            float h;
+
+            mt::uv4f uv;
+            RenderTextureInterfacePtr texture;
+        };
+        
+        struct TTFGlyph
+        {
+            uint32_t ch;
+
+            float advance;
+
+            TTFGlyphQuad layout[4];
+        };
 		
 		typedef stdex::vector<TTFGlyph> TVectorTTFGlyphs;
 		TVectorTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];
+
+        class PFindGlyph;
 	};
 
 	typedef stdex::intrusive_ptr<TTFFont> TTFFontPtr;

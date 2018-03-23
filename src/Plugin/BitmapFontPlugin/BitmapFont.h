@@ -25,12 +25,15 @@ namespace Mengine
 		bool _compile() override;
 		void _release() override;
 
+    protected:
+        uint32_t getLayoutCount() const override;
+
     public:
 		void setGlyph( const BitmapGlyphPtr & _glyph );
 
     protected:
 		bool hasGlyph( GlyphCode _code ) const override;
-		bool getGlyph( GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const override;
+		bool getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const override;
 
     protected:
         float getFontAscent() const override;

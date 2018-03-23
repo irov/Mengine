@@ -55,13 +55,13 @@ namespace Mengine
     typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	struct Glyph
-	{
-		mt::uv4f uv;
+	{	
+        float advance;
+
 		mt::vec2f offset;		
-		mt::vec2f size;
+		mt::vec2f size;	
 
-		float advance;
-
+        mt::uv4f uv;
 		RenderTextureInterfacePtr texture;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -79,6 +79,9 @@ namespace Mengine
 		virtual bool compileFont() = 0;
 		virtual void releaseFont() = 0;
 
+    public:
+        virtual uint32_t getLayoutCount() const = 0;
+
 	public:
 		virtual void setColourFont( const ColourValue & _colour ) = 0;
 		virtual void setColourOutline( const ColourValue & _colour ) = 0;
@@ -91,7 +94,7 @@ namespace Mengine
         
 	public:
 		virtual bool hasGlyph( GlyphCode _char ) const = 0;
-		virtual bool getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const = 0;
+		virtual bool getGlyph( uint32_t _layout, GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const = 0;
 
 	public:
         virtual float getFontAscent() const = 0;

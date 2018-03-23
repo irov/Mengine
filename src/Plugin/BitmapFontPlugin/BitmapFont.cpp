@@ -116,6 +116,11 @@ namespace Mengine
 		m_textureFont = nullptr;
 		m_textureOutline = nullptr;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t BitmapFont::getLayoutCount() const
+    {
+        return 1;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void BitmapFont::setGlyph( const BitmapGlyphPtr & _glyph )
 	{
@@ -124,8 +129,10 @@ namespace Mengine
 		m_height = m_glyph->getHeight();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BitmapFont::getGlyph( GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const
+	bool BitmapFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const
 	{
+        (void)_layout;
+
 		const BitmapGlyphChar * ch = m_glyph->getGlyphChar( _code );
 
 		if( ch == nullptr )

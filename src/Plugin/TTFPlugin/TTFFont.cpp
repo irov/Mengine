@@ -225,13 +225,12 @@ namespace Mengine
             : public TextureGlyphProviderInterface
         {
         public:
-            TTFFontTextureGlyphProvider( uint32_t _width, uint32_t _height, const void * _ttfbuffer, size_t _ttfpitch, uint32_t _ttfchannel, bool _rgba )
+            TTFFontTextureGlyphProvider( uint32_t _width, uint32_t _height, const void * _ttfbuffer, size_t _ttfpitch, uint32_t _ttfchannel )
                 : m_width( _width )
                 , m_height( _height )
                 , m_ttfbuffer( _ttfbuffer )
                 , m_ttfpitch( _ttfpitch )
                 , m_ttfchannel( _ttfchannel )
-                , m_rgba( _rgba )
             {
             }
 
@@ -271,37 +270,12 @@ namespace Mengine
                 }
                 else if( m_ttfchannel == 4 && _channel == 4 )
                 {
-                    if( m_rgba == false )
+                    for( uint32_t h = 0; h != m_height; ++h )
                     {
-                        for( uint32_t h = 0; h != m_height; ++h )
-                        {
-                            stdex::memorycopy_pod( it_texture_memory, 0, it_glyph_buffer, m_width * m_ttfchannel );
+                        stdex::memorycopy_pod( it_texture_memory, 0, it_glyph_buffer, m_width * m_ttfchannel );
 
-                            it_texture_memory += _pitch;
-                            it_glyph_buffer += m_ttfpitch;
-                        }
-                    }
-                    else
-                    {
-                        for( uint32_t h = 0; h != m_height; ++h )
-                        {
-                            for( uint32_t w = 0; w != m_width; ++w )
-                            {
-                                uint8_t * it_texture_memory_place = it_texture_memory + w * 4;
-
-                                const uint8_t * glyph_pixel = it_glyph_buffer + w * 4;
-
-                                *it_texture_memory_place++ = glyph_pixel[2];
-                                *it_texture_memory_place++ = glyph_pixel[1];
-                                *it_texture_memory_place++ = glyph_pixel[0];
-                                *it_texture_memory_place++ = glyph_pixel[3];
-
-                                glyph_pixel += 4;
-                            }
-
-                            it_texture_memory += _pitch;
-                            it_glyph_buffer += m_ttfpitch;
-                        }
+                        it_texture_memory += _pitch;
+                        it_glyph_buffer += m_ttfpitch;
                     }
                 }
                 else
@@ -371,8 +345,6 @@ namespace Mengine
             const void * m_ttfbuffer;
             size_t m_ttfpitch;
             uint32_t m_ttfchannel;
-
-            bool m_rgba;
         };
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -525,11 +497,16 @@ namespace Mengine
                     , im_image_data
                     , effect_node, &res );
 
-                TTFFontTextureGlyphProvider provider( res.image.w, res.image.h, res.image.data, res.image.pitch, res.image.bytespp, true );
+                fe_image res_bgra;
+                fe_image_create( &res_bgra, res.image.w, res.image.h, FE_IMG_B8G8R8A8 );
+
+                fe_image_blit( &res.image, &res_bgra );
+
+                TTFFontTextureGlyphProvider provider( res_bgra.w, res_bgra.h, res_bgra.data, res_bgra.pitch, res_bgra.bytespp );
 
                 mt::uv4f uv;
                 RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                    ->makeTextureGlyph( res.image.w, res.image.h, res.image.bytespp, &provider, uv );
+                    ->makeTextureGlyph( res_bgra.w, res_bgra.h, res_bgra.bytespp, &provider, uv );
 
                 if( texture == nullptr )
                 {
@@ -548,7 +525,7 @@ namespace Mengine
         }
         else
         {
-            TTFFontTextureGlyphProvider provider( bitmap.width, bitmap.rows, bitmap.buffer, bitmap.pitch, bitmap_channel, false );
+            TTFFontTextureGlyphProvider provider( bitmap.width, bitmap.rows, bitmap.buffer, bitmap.pitch, bitmap_channel );
 
             mt::uv4f uv;
             RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()

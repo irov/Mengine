@@ -20,7 +20,7 @@ namespace Mengine
 		const ConstString & getName() const override;
 
 	public:
-		bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory );
+		bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile );
 
 	public:
 		bool compile( IDirect3DDevice9 * _pD3DDevice );
@@ -29,11 +29,13 @@ namespace Mengine
 		bool enable( IDirect3DDevice9 * _pD3DDevice );
 
 	protected:
+        IDirect3DPixelShader9 * m_shader;
+
 		ConstString m_name;
 
 		MemoryInterfacePtr m_memory;
 
-		IDirect3DPixelShader9 * m_shader;
+        bool m_compile;		
     };
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<DX9RenderFragmentShader> DX9RenderFragmentShaderPtr;

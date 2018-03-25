@@ -3,253 +3,623 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Core/String.h"
-#include "Logger/Logger.h"
-
 #include "Kernel/ResourceImage.h"
 
 #include "Factory/FactoryPool.h"
 #include "Factory/FactoryPoolWithListener.h"
+
+#include "Core/String.h"
+#include "Logger/Logger.h"
+
+#include "Config/Stringstream.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ParticleSystem, Mengine::AstralaxParticleSystem2 );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	AstralaxParticleSystem2::AstralaxParticleSystem2()
-        : m_stageCount(0)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	AstralaxParticleSystem2::~AstralaxParticleSystem2()
-	{	
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxParticleSystem2::_initialize()
-	{
-		bool states[17];
-		states[MAGIC_RENDER_STATE_BLENDING] = false;
-		states[MAGIC_RENDER_STATE_TEXTURE_COUNT] = false;
-		states[MAGIC_RENDER_STATE_TEXTURE] = true;
-		states[MAGIC_RENDER_STATE_ADDRESS_U] = false;
-		states[MAGIC_RENDER_STATE_ADDRESS_V] = false;
-		states[MAGIC_RENDER_STATE_OPERATION_RGB] = false;
-		states[MAGIC_RENDER_STATE_ARGUMENT1_RGB] = false;
-		states[MAGIC_RENDER_STATE_ARGUMENT2_RGB] = false;
-		states[MAGIC_RENDER_STATE_OPERATION_ALPHA] = false;
-		states[MAGIC_RENDER_STATE_ARGUMENT1_ALPHA] = false;
-		states[MAGIC_RENDER_STATE_ARGUMENT2_ALPHA] = false;
-		states[MAGIC_RENDER_STATE_ZENABLE] = false;
-		states[MAGIC_RENDER_STATE_ZWRITE] = false;
-		states[MAGIC_RENDER_STATE_ALPHATEST_INIT] = false;
-		states[MAGIC_RENDER_STATE_ALPHATEST] = false;
-		states[MAGIC_RENDER_STATE_TECHNIQUE_ON] = false;
-		states[MAGIC_RENDER_STATE_TECHNIQUE_OFF] = false;
+    //////////////////////////////////////////////////////////////////////////
+    AstralaxParticleSystem2::AstralaxParticleSystem2()
+        : m_renderPlatform( RP_UNKNOWN )
+        , m_stageCount( 0 )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    AstralaxParticleSystem2::~AstralaxParticleSystem2()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AstralaxParticleSystem2::_initialize()
+    {
+        bool states[17];
+        states[MAGIC_RENDER_STATE_BLENDING] = false;
+        states[MAGIC_RENDER_STATE_TEXTURE_COUNT] = false;
+        states[MAGIC_RENDER_STATE_TEXTURE] = true;
+        states[MAGIC_RENDER_STATE_ADDRESS_U] = false;
+        states[MAGIC_RENDER_STATE_ADDRESS_V] = false;
+        states[MAGIC_RENDER_STATE_OPERATION_RGB] = false;
+        states[MAGIC_RENDER_STATE_ARGUMENT1_RGB] = false;
+        states[MAGIC_RENDER_STATE_ARGUMENT2_RGB] = false;
+        states[MAGIC_RENDER_STATE_OPERATION_ALPHA] = false;
+        states[MAGIC_RENDER_STATE_ARGUMENT1_ALPHA] = false;
+        states[MAGIC_RENDER_STATE_ARGUMENT2_ALPHA] = false;
+        states[MAGIC_RENDER_STATE_ZENABLE] = false;
+        states[MAGIC_RENDER_STATE_ZWRITE] = false;
+        states[MAGIC_RENDER_STATE_ALPHATEST_INIT] = false;
+        states[MAGIC_RENDER_STATE_ALPHATEST] = false;
+        states[MAGIC_RENDER_STATE_TECHNIQUE_ON] = false;
+        states[MAGIC_RENDER_STATE_TECHNIQUE_OFF] = false;
 
-		Magic_SetRenderStateFilter( states, false );
+        Magic_SetRenderStateFilter( states, false );
 
-		Magic_EnableZBuffer( false );
+        Magic_EnableZBuffer( false );
 
-		Magic_SetAxis( MAGIC_pXnYpZ );
+        Magic_SetAxis( MAGIC_pXnYpZ );
 
-		const char * version = Magic_GetVersion();
+        const char * version = Magic_GetVersion();
 
-		if( strstr( version, MAGIC_API ) == nullptr )
-		{
-			LOGGER_CRITICAL("Astralax Magic Particles Version: %s but need %s"
-				, version
-				, MAGIC_API
-				);
+        if( strstr( version, MAGIC_API ) == nullptr )
+        {
+            LOGGER_CRITICAL( "Astralax Magic Particles Version: %s but need %s"
+                , version
+                , MAGIC_API
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		LOGGER_WARNING("Astralax Magic Particles Version: %s"
-			, version
-			);
+        LOGGER_WARNING( "Astralax Magic Particles Version: %s"
+            , version
+        );
+
+        m_renderPlatform = RENDER_SYSTEM()
+            ->getRenderPlatformType();
 
         m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPoolWithListener<AstralaxEmitterContainer2, 16>( this, &AstralaxParticleSystem2::onContainerRelease_ );
-		
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticleSystem2::_finalize()
-	{
-		m_atlases.clear();
-		m_containers.clear();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AstralaxParticleSystem2::_finalize()
+    {
+        m_atlases.clear();
+        m_containers.clear();
+
+        m_renderFragmentShaderCache.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolAstralaxEmitterContainer );
 
         m_factoryPoolAstralaxEmitterContainer = nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterContainerInterface2Ptr AstralaxParticleSystem2::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
-	{
-		AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer->createObject();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ParticleEmitterContainerInterface2Ptr AstralaxParticleSystem2::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
+    {
+        AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer->createObject();
 
-		if( container == nullptr )
-		{
-			LOGGER_ERROR("AstralaxParticleSystem::createEmitterContainerFromMemory invalid create container"
-				);
+        if( container == nullptr )
+        {
+            LOGGER_ERROR( "AstralaxParticleSystem::createEmitterContainerFromMemory invalid create container"
+            );
 
-			return nullptr;
-		}
+            return nullptr;
+        }
 
-		if( container->initialize( this, _stream, _archivator ) == false )
-		{
-			LOGGER_ERROR("AstralaxParticleSystem::createEmitterContainerFromMemory invalid initialize container"
-				);
-			
-			return nullptr;
-		}
+        if( container->initialize( this, _stream, _archivator ) == false )
+        {
+            LOGGER_ERROR( "AstralaxParticleSystem::createEmitterContainerFromMemory invalid initialize container"
+            );
 
-		uint32_t id = container->getId();
+            return nullptr;
+        }
 
-		m_containers[id] = container.get();
+        uint32_t id = container->getId();
 
-		return container;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxParticleSystem2::updateAtlas()
-	{
-		MAGIC_CHANGE_ATLAS c;
-		while( Magic_GetNextAtlasChange( &c ) == MAGIC_SUCCESS )
-		{
-			switch( c.type )
-			{
-			case MAGIC_CHANGE_ATLAS_LOAD:
-				{
-				}break;
-			case MAGIC_CHANGE_ATLAS_CLEAN:
-				{
-				}break;
-			case MAGIC_CHANGE_ATLAS_CREATE:
-				{
-					AstralaxEmitterContainer2 * container = m_containers[c.ptc_id];
+        m_containers[id] = container.get();
 
-					const ResourceImagePtr & resourceImage = container->getAtlasResourceImage( c.file );
+        return container;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AstralaxParticleSystem2::updateAtlas()
+    {
+        MAGIC_CHANGE_ATLAS c;
+        while( Magic_GetNextAtlasChange( &c ) == MAGIC_SUCCESS )
+        {
+            switch( c.type )
+            {
+            case MAGIC_CHANGE_ATLAS_LOAD:
+                {
+                }break;
+            case MAGIC_CHANGE_ATLAS_CLEAN:
+                {
+                }break;
+            case MAGIC_CHANGE_ATLAS_CREATE:
+                {
+                    AstralaxEmitterContainer2 * container = m_containers[c.ptc_id];
 
-					m_atlases.push_back( resourceImage );
-				}break;
-			case MAGIC_CHANGE_ATLAS_DELETE:
-				{
-					TVectorAtlasDesc::iterator it_remove = m_atlases.begin();
-					std::advance( it_remove, c.index );
-					m_atlases.erase( it_remove );
-				}break;
-			}
-		}
+                    const ResourceImagePtr & resourceImage = container->getAtlasResourceImage( c.file );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticleSystem2::updateMaterial()
-	{
-		int materialCount = Magic_GetMaterialCount();
+                    m_atlases.push_back( resourceImage );
+                }break;
+            case MAGIC_CHANGE_ATLAS_DELETE:
+                {
+                    TVectorAtlasDesc::iterator it_remove = m_atlases.begin();
+                    std::advance( it_remove, c.index );
+                    m_atlases.erase( it_remove );
+                }break;
+            }
+        }
 
-		for( int i = m_stageCount; i != materialCount; ++i )
-		{
-			MAGIC_MATERIAL m;
-			if( Magic_GetMaterial( i, &m ) != MAGIC_SUCCESS )
-			{
-				LOGGER_ERROR("AstralaxParticleSystem2::updateMaterial invalid get material %d"
-					, i
-					);
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AstralaxParticleSystem2::updateMaterial()
+    {
+        int materialCount = Magic_GetMaterialCount();
 
-				return;
-			}
+        for( int i = m_stageCount; i != materialCount; ++i )
+        {
+            MAGIC_MATERIAL m;
+            if( Magic_GetMaterial( i, &m ) != MAGIC_SUCCESS )
+            {
+                LOGGER_ERROR( "AstralaxParticleSystem2::updateMaterial invalid get material %d"
+                    , i
+                );
 
-			RenderMaterialStage rs;
-						
-			switch( m.blending )
-			{
-			case MAGIC_BLENDING_NORMAL:
-				{
-					rs.alphaBlendEnable = true;
-					rs.blendSrc = BF_SOURCE_ALPHA;
-					rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-				}break;
-			case MAGIC_BLENDING_ADD:
-				{
-					rs.alphaBlendEnable = true;
-					rs.blendSrc = BF_SOURCE_ALPHA;
-					rs.blendDst = BF_ONE;
-				}break;
-			case MAGIC_BLENDING_OPACITY:
-				{
-					rs.alphaBlendEnable = false;
-				}break;
-			}
+                return;
+            }
 
-			for( int stage = 0; stage != m.textures; ++stage )
-			{
-				const MAGIC_TEXTURE_STATES & state = m.states[stage];
+            RenderMaterialStage rs;
 
-				const ETextureAddressMode dx_address[] = {TAM_WRAP, TAM_MIRROR, TAM_CLAMP, TAM_BORDER};
+            switch( m.blending )
+            {
+            case MAGIC_BLENDING_NORMAL:
+                {
+                    rs.alphaBlendEnable = true;
+                    rs.blendSrc = BF_SOURCE_ALPHA;
+                    rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+                }break;
+            case MAGIC_BLENDING_ADD:
+                {
+                    rs.alphaBlendEnable = true;
+                    rs.blendSrc = BF_SOURCE_ALPHA;
+                    rs.blendDst = BF_ONE;
+                }break;
+            case MAGIC_BLENDING_OPACITY:
+                {
+                    rs.alphaBlendEnable = false;
+                }break;
+            }
 
-				RenderTextureStage & textureStage = rs.textureStage[stage];
+            const RenderVertexAttributeInterfacePtr & vertexAttribute = RENDERMATERIAL_SERVICE()
+                ->getVertexAttribute( STRINGIZE_STRING_LOCAL( "Vertex2D" ) );
 
-				textureStage.addressU = dx_address[state.address_u];
-				textureStage.addressV = dx_address[state.address_v];
-				textureStage.addressBorder = 0x00000000;
+            const RenderVertexShaderInterfacePtr & vertexShader = RENDERMATERIAL_SERVICE()
+                ->getVertexShader( STRINGIZE_STRING_LOCAL( "Vertex_Blend" ) );
 
-				const ETextureOp dx_operation[] = {TOP_SELECTARG1, TOP_ADD, TOP_SUBTRACT, TOP_MODULATE, TOP_MODULATE2X, TOP_MODULATE4X};
-				const ETextureArgument dx_arg[] = {TARG_CURRENT, TARG_DIFFUSE, TARG_TEXTURE};
 
-				textureStage.colorOp = dx_operation[state.operation_rgb];
-				textureStage.colorArg1 = dx_arg[state.argument_rgb1];
-				textureStage.colorArg2 = dx_arg[state.argument_rgb2];
+            RenderFragmentShaderInterfacePtr fragmentShader = this->cacheFragmentShader_( &m );
+            
+            RenderProgramInterfacePtr program = RENDER_SYSTEM()
+                ->createProgram( STRINGIZE_STRING_LOCAL( "AstralaxProgram" ), vertexShader, fragmentShader, vertexAttribute, m.textures );
 
-				textureStage.alphaOp = dx_operation[state.operation_alpha];
-				textureStage.alphaArg1 = dx_arg[state.argument_alpha1];
-				textureStage.alphaArg2 = dx_arg[state.argument_alpha2];
-			}
+            for( int stage = 0; stage != m.textures; ++stage )
+            {
+                const MAGIC_TEXTURE_STATES & state = m.states[stage];
 
-			const RenderMaterialStage * cache_stage = RENDERMATERIAL_SERVICE()
-				->cacheStage( rs );
+                const ETextureAddressMode dx_address[] = { TAM_WRAP, TAM_MIRROR, TAM_CLAMP, TAM_BORDER };
 
-			m_stages[i] = cache_stage;
-		}
+                RenderTextureStage & textureStage = rs.textureStage[stage];
 
-		m_stageCount = materialCount;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const RenderMaterialStage * AstralaxParticleSystem2::getMaterialStage( int _index ) const
-	{
-		if( _index >= m_stageCount )
-		{
-			return nullptr;
-		}
+                textureStage.addressU = dx_address[state.address_u];
+                textureStage.addressV = dx_address[state.address_v];
+                textureStage.addressBorder = 0x00000000;
 
-		return m_stages[_index];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ResourceImagePtr & AstralaxParticleSystem2::getResourceImage( int _index ) const
-	{
-		size_t atlases_size = m_atlases.size();
+                //const ETextureOp dx_operation[] = {TOP_SELECTARG1, TOP_ADD, TOP_SUBTRACT, TOP_MODULATE, TOP_MODULATE2X, TOP_MODULATE4X};
+                //const ETextureArgument dx_arg[] = {TARG_CURRENT, TARG_DIFFUSE, TARG_TEXTURE};
 
-		if( atlases_size <= (size_t)_index )
-		{
-			LOGGER_ERROR("AstralaxParticleSystem2::getResourceImage index %d but size is %d"
-				, _index
-				, atlases_size
-				);
+    //            textureStage.colorOp = dx_operation[state.operation_rgb];
+    //            textureStage.colorArg1 = dx_arg[state.argument_rgb1];
+    //            textureStage.colorArg2 = dx_arg[state.argument_rgb2];
 
-			return ResourceImagePtr::none();
-		}
+    //            textureStage.alphaOp = dx_operation[state.operation_alpha];
+    //            textureStage.alphaArg1 = dx_arg[state.argument_alpha1];
+    //            textureStage.alphaArg2 = dx_arg[state.argument_alpha2];
+            }
 
-		const ResourceImagePtr & resourceImage = m_atlases[_index];
+            rs.program = program;
 
-		return resourceImage;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticleSystem2::onContainerRelease_( AstralaxEmitterContainer2 * _container )
-	{
-		uint32_t id = _container->getId();
+            const RenderMaterialStage * cache_stage = RENDERMATERIAL_SERVICE()
+                ->cacheStage( rs );
 
-		m_containers.erase( id );
+            m_stages[i] = cache_stage;
+        }
 
-		_container->finalize();
-	}
+        m_stageCount = materialCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderMaterialStage * AstralaxParticleSystem2::getMaterialStage( int _index ) const
+    {
+        if( _index >= m_stageCount )
+        {
+            return nullptr;
+        }
+
+        return m_stages[_index];
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & AstralaxParticleSystem2::getResourceImage( int _index ) const
+    {
+        size_t atlases_size = m_atlases.size();
+
+        if( atlases_size <= (size_t)_index )
+        {
+            LOGGER_ERROR( "AstralaxParticleSystem2::getResourceImage index %d but size is %d"
+                , _index
+                , atlases_size
+            );
+
+            return ResourceImagePtr::none();
+        }
+
+        const ResourceImagePtr & resourceImage = m_atlases[_index];
+
+        return resourceImage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MemoryBufferInterfacePtr AstralaxParticleSystem2::createFragmentShaderDX9Source_( const MAGIC_MATERIAL * m )
+    {
+        MAGIC_VERTEX_FORMAT vertex_format = m->format;
+
+        Stringstream ss;
+
+        int textures = m->textures;
+
+        for( int i = 0; i != textures; ++i )
+        {
+            ss << "sampler2D tex" << i << ";" << std::endl;
+        }
+
+        ss << std::endl;
+
+        ss << "struct v2p {" << std::endl;
+        ss << "  float4 position : POSITION;" << std::endl;
+        ss << "  float4 color : COLOR0;" << std::endl;
+        ss << "  float2 uv0 : TEXCOORD0;" << std::endl;
+        ss << "  float2 uv1 : TEXCOORD1;" << std::endl;
+        ss << "  float2 uv2 : TEXCOORD2;" << std::endl;
+        ss << "  float2 uv3 : TEXCOORD3;" << std::endl;
+        ss << "};" << std::endl;
+
+        ss << std::endl;
+
+        ss << "struct p2f {" << std::endl;
+        ss << "  float4 color : COLOR0;" << std::endl;
+        ss << "};" << std::endl;
+
+        ss << std::endl;
+
+        ss << "void main( in v2p IN, out p2f OUT )" << std::endl;
+        ss << "{" << std::endl;
+
+
+
+        if( textures != 0 )
+        {
+            ss << "  float4 color;" << std::endl;
+            ss << "  float4 arg1;" << std::endl;
+            ss << "  float4 arg2;" << std::endl;
+            ss << "  float4 colorTex;" << std::endl;
+            ss << "  float4 colorVarying=IN.color;" << std::endl;
+
+            for( int i = 0; i != textures; ++i )
+            {
+                ss << std::endl;
+
+                MAGIC_TEXTURE_STATES* s = m->states + i;
+
+                if( s->argument_rgb1 == MAGIC_TEXARG_TEXTURE ||
+                    s->argument_alpha1 == MAGIC_TEXARG_TEXTURE ||
+                    (s->operation_rgb != MAGIC_TEXOP_ARGUMENT1 && s->argument_rgb2 == MAGIC_TEXARG_TEXTURE) ||
+                    (s->operation_alpha != MAGIC_TEXOP_ARGUMENT1 && s->argument_alpha2 == MAGIC_TEXARG_TEXTURE) )
+                {
+                    ss << "  colorTex = tex2D(tex" << i << ", IN.uv" << i << ");" << std::endl;
+                }
+
+                if( s->argument_rgb1 == s->argument_alpha1 )
+                {
+                    switch( s->argument_rgb1 )
+                    {
+                    case MAGIC_TEXARG_CURRENT:
+                        ss << "  arg1 = color;" << std::endl;
+                        break;
+                    case MAGIC_TEXARG_DIFFUSE:
+                        ss << "  arg1 = colorVarying;" << std::endl;
+                        break;
+                    default:
+                        ss << "  arg1 = colorTex;" << std::endl;
+                        break;
+                    }
+                }
+                else
+                {
+                    switch( s->argument_rgb1 )
+                    {
+                    case MAGIC_TEXARG_CURRENT:
+                        ss << "  arg1.xyz = color.xyz;" << std::endl;
+                        break;
+                    case MAGIC_TEXARG_DIFFUSE:
+                        ss << "  arg1.xyz = colorVarying.xyz;" << std::endl;
+                        break;
+                    default:
+                        ss << "  arg1.xyz = colorTex.xyz;" << std::endl;
+                        break;
+                    }
+                    switch( s->argument_alpha1 )
+                    {
+                    case MAGIC_TEXARG_CURRENT:
+                        ss << "  arg1.w = color.w;" << std::endl;
+                        break;
+                    case MAGIC_TEXARG_DIFFUSE:
+                        ss << "  arg1.w = colorVarying.w;" << std::endl;
+                        break;
+                    default:
+                        ss << "  arg1.w = colorTex.w;" << std::endl;
+                        break;
+                    }
+                }
+
+                if( s->argument_rgb2 == s->argument_alpha2 && s->operation_rgb != MAGIC_TEXOP_ARGUMENT1 && s->operation_alpha != MAGIC_TEXOP_ARGUMENT1 )
+                {
+                    switch( s->argument_rgb2 )
+                    {
+                    case MAGIC_TEXARG_CURRENT:
+                        ss << "  arg2 = color;" << std::endl;
+                        break;
+                    case MAGIC_TEXARG_DIFFUSE:
+                        ss << "  arg2 = colorVarying;" << std::endl;
+                        break;
+                    default:
+                        ss << "  arg2 = colorTex;" << std::endl;
+                        break;
+                    }
+                }
+                else
+                {
+                    if( s->operation_rgb != MAGIC_TEXOP_ARGUMENT1 )
+                    {
+                        switch( s->argument_rgb2 )
+                        {
+                        case MAGIC_TEXARG_CURRENT:
+                            ss << "  arg2.xyz = color.xyz;" << std::endl;
+                            break;
+                        case MAGIC_TEXARG_DIFFUSE:
+                            ss << "  arg2.xyz = colorVarying.xyz;" << std::endl;
+                            break;
+                        default:
+                            ss << "  arg2.xyz = colorTex.xyz;" << std::endl;
+                            break;
+                        }
+                    }
+                    if( s->operation_alpha != MAGIC_TEXOP_ARGUMENT1 )
+                    {
+                        switch( s->argument_alpha2 )
+                        {
+                        case MAGIC_TEXARG_CURRENT:
+                            ss << "  arg2.w = color.w;" << std::endl;;
+                            break;
+                        case MAGIC_TEXARG_DIFFUSE:
+                            ss << "  arg2.w = colorVarying.w;" << std::endl;;
+                            break;
+                        default:
+                            ss << "  arg2.w = colorTex.w;" << std::endl;;
+                            break;
+                        }
+                    }
+                }
+
+                if( s->operation_rgb == s->operation_alpha )
+                {
+                    switch( s->operation_rgb )
+                    {
+                    case MAGIC_TEXOP_ARGUMENT1:
+                        ss << "  color = arg1;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_ADD:
+                        ss << "  color = arg1 + arg2;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_SUBTRACT:
+                        ss << "  color = arg1 - arg2;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_MODULATE:
+                        ss << "  color = arg1 * arg2;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_MODULATE2X:
+                        ss << "  color = arg1 * arg2;" << std::endl;;
+                        ss << "  color = 2 * color;" << std::endl;;
+                        break;
+                    default:
+                        ss << "  color = arg1 * arg2;" << std::endl;;
+                        ss << "  color = 4 * color;" << std::endl;;
+                        break;
+                    }
+                }
+                else
+                {
+                    switch( s->operation_rgb )
+                    {
+                    case MAGIC_TEXOP_ARGUMENT1:
+                        ss << "  color.xyz = arg1.xyz;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_ADD:
+                        ss << "  color.xyz = arg1.xyz + arg2.xyz;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_SUBTRACT:
+                        ss << "  color.xyz = arg1.xyz - arg2.xyz;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_MODULATE:
+                        ss << "  color.xyz = arg1.xyz * arg2.xyz;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_MODULATE2X:
+                        ss << "  color.xyz = arg1.xyz * arg2.xyz;" << std::endl;;
+                        ss << "  color.xyz = 2 * color.xyz;" << std::endl;;
+                        break;
+                    default:
+                        ss << "  color.xyz = arg1.xyz * arg2.xyz;" << std::endl;;
+                        ss << "  color.xyz = 4 * color.xyz;" << std::endl;;
+                        break;
+                    }
+
+                    switch( s->operation_alpha )
+                    {
+                    case MAGIC_TEXOP_ARGUMENT1:
+                        ss << "  color.w = arg1.w;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_ADD:
+                        ss << "  color.w = arg1.w + arg2.w;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_SUBTRACT:
+                        ss << "  color.w = arg1.w - arg2.w;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_MODULATE:
+                        ss << "  color.w = arg1.w * arg2.w;" << std::endl;;
+                        break;
+                    case MAGIC_TEXOP_MODULATE2X:
+                        ss << "  color.w = arg1.w * arg2.w;" << std::endl;;
+                        ss << "  color.w = 2 * color.w;" << std::endl;;
+                        break;
+                    default:
+                        ss << "  color.w = arg1.w * arg2.w;" << std::endl;;
+                        ss << "  color.w = 4 * color.w;" << std::endl;;
+                        break;
+                    }
+                }
+            }
+
+            ss << "  OUT.color = IN.color * color;" << std::endl;
+        }
+        else
+        {
+            ss << "  OUT.color = IN.color;" << std::endl;
+        }
+
+        ss << "}" << std::endl;
+
+        String shader_code = ss.str();
+
+        MemoryBufferInterfacePtr memoryBuffer = MEMORY_SERVICE()
+            ->createMemoryBuffer();
+
+        memoryBuffer->setMemory( shader_code.c_str(), shader_code.size(), __FILE__, __LINE__ );
+
+        return memoryBuffer;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderFragmentShaderInterfacePtr AstralaxParticleSystem2::cacheFragmentShader_( const MAGIC_MATERIAL * m )
+    {
+        int textures = m->textures;
+
+        for( TVectorRenderFragmentShaderCache::const_iterator
+            it = m_renderFragmentShaderCache.begin(),
+            it_end = m_renderFragmentShaderCache.end();
+            it != it_end;
+            ++it )
+        {
+            const MagicStatesCache & cache = *it;
+
+            if( cache.textures != textures )
+            {
+                continue;
+            }
+
+            for( int i = 0; i != textures; ++i )
+            {
+                const MAGIC_TEXTURE_STATES * a0 = cache.states + i;
+                const MAGIC_TEXTURE_STATES * a1 = m->states + i;
+
+                if( a0->address_u != a1->address_u )
+                {
+                    continue;
+                }
+
+                if( a0->address_v != a1->address_v )
+                {
+                    continue;
+                }
+
+                if( a0->operation_rgb != a1->operation_rgb )
+                {
+                    continue;
+                }
+
+                if( a0->argument_rgb1 != a1->argument_rgb1 )
+                {
+                    continue;
+                }
+
+                if( a0->argument_rgb2 != a1->argument_rgb2 )
+                {
+                    continue;
+                }
+
+                if( a0->operation_alpha != a1->operation_alpha )
+                {
+                    continue;
+                }
+
+                if( a0->argument_alpha1 != a1->argument_alpha1 )
+                {
+                    continue;
+                }
+
+                if( a0->argument_alpha2 != a1->argument_alpha2 )
+                {
+                    continue;
+                }
+            }
+
+            return cache.fragmentShader;
+        }
+
+
+        MemoryBufferInterfacePtr fragmentShaderBuffer;
+
+        switch( m_renderPlatform )
+        {
+        case RP_DX9:
+            {
+                fragmentShaderBuffer = this->createFragmentShaderDX9Source_( m );
+            }break;
+        }
+
+        RenderFragmentShaderInterfacePtr fragmentShader = RENDER_SYSTEM()
+            ->createFragmentShader( STRINGIZE_STRING_LOCAL( "AstralaxFragmentShader" ), fragmentShaderBuffer, false );
+
+        MagicStatesCache key;
+        key.textures = textures;
+
+        memset( key.states + 0, 0, sizeof( MAGIC_TEXTURE_STATES ) );
+        memset( key.states + 1, 0, sizeof( MAGIC_TEXTURE_STATES ) );
+        memset( key.states + 2, 0, sizeof( MAGIC_TEXTURE_STATES ) );
+        memset( key.states + 3, 0, sizeof( MAGIC_TEXTURE_STATES ) );
+
+        for( int i = 0; i != textures; ++i )
+        {
+            key.states[i] = m->states[i];
+        }
+
+        key.fragmentShader = fragmentShader;
+
+        m_renderFragmentShaderCache.push_back( key );
+
+        return fragmentShader;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AstralaxParticleSystem2::onContainerRelease_( AstralaxEmitterContainer2 * _container )
+    {
+        uint32_t id = _container->getId();
+
+        m_containers.erase( id );
+
+        _container->finalize();
+    }
 }

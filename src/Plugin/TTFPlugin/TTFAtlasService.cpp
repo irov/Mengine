@@ -25,7 +25,7 @@ namespace Mengine
 	bool TTFAtlasService::_initialize()
 	{
 		m_minAtlasPow = CONFIG_VALUE( "TTF", "MinAtlasPow", 4U );
-		m_maxAtlasPow = CONFIG_VALUE( "TTF", "MaxAtlasPow", 8U );
+		m_maxAtlasPow = CONFIG_VALUE( "TTF", "MaxAtlasPow", 16U );
 		m_maxAtlasWidth = CONFIG_VALUE( "TTF", "MaxAtlasWidth", 2048U );
 
 		uint32_t mixAtlasPow = m_maxAtlasPow - m_minAtlasPow;
@@ -134,7 +134,9 @@ namespace Mengine
 
         atlas_index = atlas_index > m_minAtlasPow ? atlas_index - m_minAtlasPow : 0;
 
-		if( atlas_index > m_maxAtlasPow )
+        uint32_t mixAtlasPow = m_maxAtlasPow - m_minAtlasPow;
+
+		if( atlas_index > mixAtlasPow )
 		{
 			return nullptr;
 		}

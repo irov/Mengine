@@ -6,43 +6,53 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	MemoryBuffer::MemoryBuffer()
-		: m_memory(nullptr)
-		, m_size(0)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	MemoryBuffer::~MemoryBuffer()
-	{
-		Helper::freeMemory( m_memory );
-		m_memory = nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MemoryBuffer::setMemory( const void * _ptr, size_t _size, const char * _file, uint32_t _line )
-	{
-		void * buffer = this->newMemory( _size, _file, _line );
+    //////////////////////////////////////////////////////////////////////////
+    MemoryBuffer::MemoryBuffer()
+        : m_memory( nullptr )
+        , m_size( 0 )
+#ifdef _DEBUG
+        , m_file( nullptr )
+        , m_line( 0 )
+#endif
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MemoryBuffer::~MemoryBuffer()
+    {
+        Helper::freeMemory( m_memory );
+        m_memory = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MemoryBuffer::setMemory( const void * _ptr, size_t _size, const Char * _file, uint32_t _line )
+    {
+        void * buffer = this->newMemory( _size, _file, _line );
 
-		stdex::memorycopy( buffer, 0, _ptr, _size );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Pointer MemoryBuffer::newMemory( size_t _size, const char * _file, uint32_t _line )
-	{
-		void * new_memory = Helper::reallocateMemory( m_memory, _size );
+        stdex::memorycopy( buffer, 0, _ptr, _size );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Pointer MemoryBuffer::newMemory( size_t _size, const char * _file, uint32_t _line )
+    {
+        (void)_file;
+        (void)_line;
 
-		if( new_memory == nullptr )
-		{
-			m_memory = nullptr;
-			m_size = 0;
+        void * new_memory = Helper::reallocateMemory( m_memory, _size );
 
-			return nullptr;
-		}
+        if( new_memory == nullptr )
+        {
+            m_memory = nullptr;
+            m_size = 0;
 
-		m_memory = new_memory;
-		m_size = _size;
+            return nullptr;
+        }
+
+        m_memory = new_memory;
+        m_size = _size;
+
+#ifdef _DEBUG
         m_file = _file;
         m_line = _line;
+#endif
 
-		return m_memory;
-	}
+        return m_memory;
+    }
 }

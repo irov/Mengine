@@ -21,7 +21,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	(void)hInstance;
 	(void)hPrevInstance;
 	(void)nShowCmd;
-
+    
 	std::wstring astralax_path = parse_kwds( lpCmdLine, L"--astralax_path", std::wstring() );
 	std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
 	std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );

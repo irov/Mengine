@@ -61,7 +61,7 @@ namespace Mengine
 		m_channels = dataInfo->channels;
 
 		m_memory = MEMORY_SERVICE()
-			->createMemory();
+			->createMemoryBuffer();
 
 		if( m_memory == nullptr )
 		{
@@ -151,7 +151,7 @@ namespace Mengine
 		m_channels = _channel;
 		
 		m_memory = MEMORY_SERVICE()
-			->createMemory();
+			->createMemoryBuffer();
 
 		if( m_memory == nullptr )
 		{

@@ -11,6 +11,8 @@
 #	define WIN32_LEAN_AND_MEAN
 #	include <Windows.h>
 
+#   include "ToolUtils/ToolUtils.h"
+
 #	include <Shlwapi.h>
 #	include <shellapi.h>
 
@@ -73,51 +75,6 @@ typedef struct {
 #pragma pack(pop)
 //////////////////////////////////////////////////////////////////////////
 #   define FOURCC(c0, c1, c2, c3) (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
-//////////////////////////////////////////////////////////////////////////
-static void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )
-{
-	if( _path.empty() == true )
-	{
-		wcscpy_s( _quotePath, 2, L"" );
-
-		return;
-	}
-
-	std::wstring true_path = _path;
-
-	if( _path[0] == L'/' )
-	{
-		true_path[0] = true_path[1];
-		true_path[1] = L':';
-	}
-
-	const WCHAR * pathBuffer = true_path.c_str();
-	size_t pathSize = true_path.size();
-
-	PathCanonicalize( _quotePath, pathBuffer );
-	if( PathQuoteSpaces( _quotePath ) == FALSE )
-	{
-		wmemmove( _quotePath + 1, _quotePath, pathSize );
-		_quotePath[0] = '\"';
-		_quotePath[pathSize + 1] = '\"';
-		_quotePath[pathSize + 2] = 0;
-	}
-};
-//////////////////////////////////////////////////////////////////////////
-static void message_error( const char * _format, ... )
-{
-	va_list argList;
-
-	va_start(argList, _format);
-
-	char str[2048];
-
-	vsnprintf( str, 2048 - 1, _format, argList );
-
-	va_end(argList);
-
-	MessageBoxA( NULL, str, "ExtractorDXT1", MB_OK );
-}
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {

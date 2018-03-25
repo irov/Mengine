@@ -1,4 +1,4 @@
-<Protocol Version = "118">
+<Protocol Version = "119">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -143,16 +143,6 @@
             <Member Node="AddressMode" Name="U" Type="Mengine::ETextureAddressMode"/>
             <Member Node="AddressMode" Name="V" Type="Mengine::ETextureAddressMode"/>
             <Member Node="AddressMode" Name="Border" Type="uint32_t"/>
-
-            <Member Node="Color" Name="Operator" Type="Mengine::ETextureOp"/>
-            <Member Node="Color" Name="Arg1" Type="Mengine::ETextureArgument"/>
-            <Member Node="Color" Name="Arg2" Type="Mengine::ETextureArgument"/>
-
-            <Member Node="Alpha" Name="Operator" Type="Mengine::ETextureOp"/>
-            <Member Node="Alpha" Name="Arg1" Type="Mengine::ETextureArgument"/>
-            <Member Node="Alpha" Name="Arg2" Type="Mengine::ETextureArgument"/>
-
-            <Member Node="TextureCoord" Name="Index" Type="uint32_t"/>
           </Node>
 
           <Member Node="Program" Name="Name" Type="Mengine::ConstString"/>

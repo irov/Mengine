@@ -87,7 +87,6 @@ namespace Mengine
         template<class T>
         inline bool existService()
         {
-            static bool s_initialize = false;
             static bool s_exist = false;
 
             if( s_exist == false )
@@ -98,12 +97,10 @@ namespace Mengine
                     ->existService( serviceName ) == false )
                 {
                     s_exist = false;
-                    s_initialize = false;
                 }
                 else
                 {
                     s_exist = true;
-                    s_initialize = true;
                 }
             }
 

@@ -32,6 +32,7 @@ namespace Mengine
         void _finalize() override;
 
 	public:
+        ERenderPlatform getRenderPlatformType() const override;
 		const ConstString & getRenderPlatformName() const override;
 
 	public:
@@ -63,8 +64,8 @@ namespace Mengine
 
 	public:
         RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name ) override;
-		RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory ) override;
-		RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory ) override;
+		RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile ) override;
+		RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile ) override;
 		
 		RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount ) override;
 		void setProgram( const RenderProgramInterfacePtr & _program ) override;
@@ -95,13 +96,6 @@ namespace Mengine
 		void setShadeType( EShadeType _sType ) override;
 		void setAlphaBlendEnable( bool _alphaBlend ) override;
 		void setLightingEnable( bool _light ) override;
-
-		void setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,
-										ETextureArgument _arg1, ETextureArgument _arg2 ) override;
-		void setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp,
-										ETextureArgument _arg1, ETextureArgument _arg2 ) override;
-
-        void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) override;
 				
 		void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;
 		
@@ -166,7 +160,7 @@ namespace Mengine
         void fixNPOTSupport_( uint32_t & _width, uint32_t & _height ) const;
 
 	private:	
-		ConstString m_renderPlatform;
+		ConstString m_renderPlatformName;
 
 		HMODULE m_hd3d9;
 

@@ -13,16 +13,16 @@ namespace Mengine
     {
     public:
         Win32ThreadMutex();
-        
+
     public:
-        void initialize( const char * _file, uint32_t _line );
+        void initialize( const Char * _file, uint32_t _line );
 
     protected:
         void lock() override;
         void unlock() override;
 
-	protected:
-		bool try_lock() override;
+    protected:
+        bool try_lock() override;
 
     protected:
         void _destroy() override;
@@ -30,7 +30,9 @@ namespace Mengine
     protected:
         CRITICAL_SECTION m_cs;
 
-		const char * m_file;
-		uint32_t m_line;
+#ifdef _DEBUG
+        const char * m_file;
+        uint32_t m_line;
+#endif
     };
 }

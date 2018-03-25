@@ -19,11 +19,13 @@ namespace Mengine
 	struct CharData
 	{
 		GlyphCode code;
-		mt::uv4f uv;
+        
+        float advance;
+        		
 		mt::vec2f offset;
 		mt::vec2f size;
-		float advance;
-
+		
+        mt::uv4f uv;
 		RenderTextureInterfacePtr texture;
 	};
 
@@ -39,7 +41,7 @@ namespace Mengine
         bool initialize( uint32_t _layout, const TextFontInterfacePtr & _font, const U32String & _text );
 
 	public:
-		const TVectorCharData & getCharData() const;
+		const TVectorCharData & getCharsData() const;
 
     public:
 		float getLength() const;

@@ -71,9 +71,10 @@ void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )
 	}
 
 	const WCHAR * pathBuffer = true_path.c_str();
-	size_t pathSize = true_path.size();
 
 	PathCanonicalize( _quotePath, pathBuffer );
+    size_t pathSize = wcslen( _quotePath );
+
 	if( PathQuoteSpaces( _quotePath ) == FALSE )
 	{
 		wmemmove( _quotePath + 1, _quotePath, pathSize );

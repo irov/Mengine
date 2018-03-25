@@ -247,8 +247,8 @@ namespace Mengine
 
         size_t bufferSize = width * height * channels;
 
-        MemoryInterfacePtr memory_textureBuffer = MEMORY_SERVICE()
-            ->createMemory();
+        MemoryBufferInterfacePtr memory_textureBuffer = MEMORY_SERVICE()
+            ->createMemoryBuffer();
 
         if( memory_textureBuffer == nullptr )
         {
@@ -359,8 +359,8 @@ namespace Mengine
         {
             size_t new_bufferSize = new_width * new_height * channels;
 
-            MemoryInterfacePtr buffer = MEMORY_SERVICE()
-                ->createMemory();
+            MemoryBufferInterfacePtr buffer = MEMORY_SERVICE()
+                ->createMemoryBuffer();
 
             if( buffer == nullptr )
             {

@@ -161,7 +161,62 @@ namespace Mengine
 
         float lineOffset = this->calcLineOffset();
 
+        ETextVerticalAlign verticalAlign = this->calcVerticalAlign();
+
         const TVectorTextLineLayout & layouts = this->getTextLayots();
+
+        const TVectorTextLine & layout_base = layouts[0];
+
+        mt::vec2f offset( 0.f, 0.f );
+
+        switch( verticalAlign )
+        {
+        case ETFVA_BOTTOM:
+            {
+                TVectorTextLine::size_type line_count = layout_base.size();
+
+                offset.y = (fontAscent + lineOffset) * (float( line_count ) - 1.f) * 0.5f;
+            }break;
+        case ETFVA_CENTER:
+            {
+                TVectorTextLine::size_type line_count = layout_base.size();
+
+                offset.y = -(fontAscent + lineOffset) * (float( line_count ) - 2.f) * 0.5f;
+            }break;
+        case ETFVA_TOP:
+            {
+                offset.y = (fontAscent + lineOffset);
+            }break;
+        }
+
+        float charScale = this->calcCharScale();
+
+        ColourValue_ARGB argb = _color.getAsARGB();
+
+        ConstString materialName;
+
+        if( _font->getFontPremultiply() == false )
+        {
+            switch( m_blendMode )
+            {
+            case EMB_NORMAL:
+                {
+                    materialName = RENDERMATERIAL_SERVICE()
+                        ->getMaterialName( EM_TEXTURE_BLEND );
+                }break;
+            };
+        }
+        else
+        {
+            switch( m_blendMode )
+            {
+            case EMB_NORMAL:
+                {
+                    materialName = RENDERMATERIAL_SERVICE()
+                        ->getMaterialName( EM_TEXTURE_BLEND_PREMULTIPLY );
+                }break;
+            };
+        }               
 
         for( TVectorTextLineLayout::const_iterator
             it_layout = layouts.begin(),
@@ -170,60 +225,7 @@ namespace Mengine
             ++it_layout )
         {
             const TVectorTextLine & lines = *it_layout;
-
-            mt::vec2f offset( 0.f, 0.f );
-
-            ETextVerticalAlign verticalAlign = this->calcVerticalAlign();
-
-            switch( verticalAlign )
-            {
-            case ETFVA_BOTTOM:
-                {
-                    TVectorTextLine::size_type line_count = lines.size();
-
-                    offset.y = (fontAscent + lineOffset) * (float( line_count ) - 1.f) * 0.5f;
-                }break;
-            case ETFVA_CENTER:
-                {
-                    TVectorTextLine::size_type line_count = lines.size();
-
-                    offset.y = -(fontAscent + lineOffset) * (float( line_count ) - 2.f) * 0.5f;
-                }break;
-            case ETFVA_TOP:
-                {
-                    offset.y = (fontAscent + lineOffset);
-                }break;
-            }
-
-            float charScale = this->calcCharScale();
-
-            ColourValue_ARGB argb = _color.getAsARGB();
-
-            ConstString materialName;
-
-            if( _font->getFontPremultiply() == false )
-            {
-                switch( m_blendMode )
-                {
-                case EMB_NORMAL:
-                    {
-                        materialName = RENDERMATERIAL_SERVICE()
-                            ->getMaterialName( EM_TEXTURE_BLEND );
-                    }break;
-                };
-            }
-            else
-            {
-                switch( m_blendMode )
-                {
-                case EMB_NORMAL:
-                    {
-                        materialName = RENDERMATERIAL_SERVICE()
-                            ->getMaterialName( EM_TEXTURE_BLEND_PREMULTIPLY );
-                    }break;
-                };
-            }
-
+            
             Chunk chunk;
             chunk.vertex_begin = 0;
             chunk.vertex_count = 0;
@@ -240,11 +242,11 @@ namespace Mengine
                 float alignOffsetX = this->getHorizontAlignOffset_( line );
                 offset.x = alignOffsetX;
 
-                const TVectorCharData & charData = line.getCharData();
+                const TVectorCharData & charsData = line.getCharsData();
 
                 for( TVectorCharData::const_iterator
-                    it_char = charData.begin(),
-                    it_char_end = charData.end();
+                    it_char = charsData.begin(),
+                    it_char_end = charsData.end();
                     it_char != it_char_end;
                     ++it_char )
                 {

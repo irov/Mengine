@@ -11,6 +11,8 @@
 #	define WIN32_LEAN_AND_MEAN
 #	include <Windows.h>
 
+#   include "ToolUtils/ToolUtils.h"
+
 #	include <Shlwapi.h>
 #	include <shellapi.h>
 
@@ -49,36 +51,6 @@ const unsigned int PVRTEX_PIXELTYPE = 0xff; // pixel type is always in the last 
 const unsigned int PVRTEX_IDENTIFIER  = 0x21525650;  // the pvr identifier is the characters 'P','V','R'
 
 const unsigned int PVRTEX_V1_HEADER_SIZE = 44; // old header size was 44 for identification purposes
-//////////////////////////////////////////////////////////////////////////
-static void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )
-{
-	if( _path.empty() == true )
-	{
-		wcscpy_s( _quotePath, 2, L"" );
-
-		return;
-	}
-
-	std::wstring true_path = _path;
-
-	if( _path[0] == L'/' )
-	{
-		true_path[0] = true_path[1];
-		true_path[1] = L':';
-	}
-
-	const WCHAR * pathBuffer = true_path.c_str();
-	size_t pathSize = true_path.size();
-
-	PathCanonicalize( _quotePath, pathBuffer );
-	if( PathQuoteSpaces( _quotePath ) == FALSE )
-	{
-		wmemmove( _quotePath + 1, _quotePath, pathSize );
-		_quotePath[0] = '\"';
-		_quotePath[pathSize + 1] = '\"';
-		_quotePath[pathSize + 2] = 0;
-	}
-};
 //////////////////////////////////////////////////////////////////////////
 static void message_error( const char * _format, ... )
 {

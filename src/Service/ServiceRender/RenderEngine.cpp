@@ -579,60 +579,6 @@ namespace Mengine
             RENDER_SYSTEM()
                 ->setProgram( m_currentProgram );
         }
-
-        if( m_currentProgram == nullptr || m_noShader == true )
-        {
-            for( uint32_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
-            {
-                RenderTextureStage & current_texture_stage = m_currentTextureStage[stageId];
-                const RenderTextureStage & texture_stage = m_currentStage->textureStage[stageId];
-
-                if( current_texture_stage.colorOp != texture_stage.colorOp
-                    || current_texture_stage.colorArg1 != texture_stage.colorArg1
-                    || current_texture_stage.colorArg2 != texture_stage.colorArg2 )
-                {
-                    current_texture_stage.colorOp = texture_stage.colorOp;
-                    current_texture_stage.colorArg1 = texture_stage.colorArg1;
-                    current_texture_stage.colorArg2 = texture_stage.colorArg2;
-
-                    RENDER_SYSTEM()->setTextureStageColorOp( stageId
-                        , current_texture_stage.colorOp
-                        , current_texture_stage.colorArg1
-                        , current_texture_stage.colorArg2
-                    );
-                }
-
-                if( current_texture_stage.alphaOp != texture_stage.alphaOp
-                    || current_texture_stage.alphaArg1 != texture_stage.alphaArg1
-                    || current_texture_stage.alphaArg2 != texture_stage.alphaArg2 )
-                {
-                    current_texture_stage.alphaOp = texture_stage.alphaOp;
-                    current_texture_stage.alphaArg1 = texture_stage.alphaArg1;
-                    current_texture_stage.alphaArg2 = texture_stage.alphaArg2;
-
-                    RENDER_SYSTEM()->setTextureStageAlphaOp( stageId
-                        , current_texture_stage.alphaOp
-                        , current_texture_stage.alphaArg1
-                        , current_texture_stage.alphaArg2
-                    );
-                }
-            }
-        }
-
-        for( uint32_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
-        {
-            RenderTextureStage & current_texture_stage = m_currentTextureStage[stageId];
-            const RenderTextureStage & texture_stage = m_currentStage->textureStage[stageId];
-
-            if( current_texture_stage.texCoordIndex != texture_stage.texCoordIndex )
-            {
-                current_texture_stage.texCoordIndex = texture_stage.texCoordIndex;
-
-                RENDER_SYSTEM()->setTextureStageTexCoordIndex( stageId
-                    , current_texture_stage.texCoordIndex
-                );
-            }
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::updateTexture_( uint32_t _stageId, const RenderTextureInterfacePtr & _texture )
@@ -749,9 +695,7 @@ namespace Mengine
         RenderTextureStage & stage = m_currentTextureStage[_stage];
 
         stage = RenderTextureStage();
-
-        stage.texCoordIndex = _stage;
-
+        
         stage.mipmap = RENDERMATERIAL_SERVICE()
             ->getDefaultTextureFilterMipmap();
 
@@ -776,22 +720,6 @@ namespace Mengine
             , stage.minification
             , stage.mipmap
             , stage.magnification
-        );
-
-        RENDER_SYSTEM()->setTextureStageColorOp( _stage
-            , stage.colorOp
-            , stage.colorArg1
-            , stage.colorArg2
-        );
-
-        RENDER_SYSTEM()->setTextureStageAlphaOp( _stage
-            , stage.alphaOp
-            , stage.colorArg1
-            , stage.colorArg2
-        );
-
-        RENDER_SYSTEM()->setTextureStageTexCoordIndex( _stage
-            , stage.texCoordIndex
         );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -4,17 +4,21 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32ThreadMutex::Win32ThreadMutex()
-		: m_file( nullptr )
-		, m_line( 0 )
+#ifdef _DEBUG
+        : m_file( nullptr )
+        , m_line( 0 )
+#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	void Win32ThreadMutex::initialize( const char * _file, uint32_t _line )
+    void Win32ThreadMutex::initialize( const Char * _file, uint32_t _line )
     {
         InitializeCriticalSection( &m_cs );
 
-		m_file = _file;
-		m_line = _line;
+#ifdef _DEBUG
+        m_file = _file;
+        m_line = _line;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadMutex::lock()
@@ -38,18 +42,18 @@ namespace Mengine
             LeaveCriticalSection( &m_cs );
         }
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32ThreadMutex::try_lock()
-	{
-		if( TryEnterCriticalSection( &m_cs ) == FALSE )
-		{
-			return false;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32ThreadMutex::try_lock()
+    {
+        if( TryEnterCriticalSection( &m_cs ) == FALSE )
+        {
+            return false;
+        }
 
         intrusive_ptr_add_ref( this );
 
-		return true; 
-	}
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadMutex::_destroy()
     {

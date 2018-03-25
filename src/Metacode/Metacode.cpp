@@ -1,11 +1,11 @@
-#include "Metacode.h"
+#   include "Metacode.h"
 
 namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
     static const uint32_t metacode_version = 5;
-    static const uint32_t metacode_protocol = 118;
+    static const uint32_t metacode_protocol = 119;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -574,13 +574,6 @@ namespace Metacode
             , m_AddressMode_Border_successful(false)
             , m_AddressMode_U_successful(false)
             , m_AddressMode_V_successful(false)
-            , m_Alpha_Arg1_successful(false)
-            , m_Alpha_Arg2_successful(false)
-            , m_Alpha_Operator_successful(false)
-            , m_Color_Arg1_successful(false)
-            , m_Color_Arg2_successful(false)
-            , m_Color_Operator_successful(false)
-            , m_TextureCoord_Index_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -622,55 +615,6 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_AddressMode_V );
         
                     this->m_AddressMode_V_successful = true;
-        
-                }break;
-            case 9:
-                {
-                    this->read( _buff, _size, _read, this->m_Alpha_Arg1 );
-        
-                    this->m_Alpha_Arg1_successful = true;
-        
-                }break;
-            case 10:
-                {
-                    this->read( _buff, _size, _read, this->m_Alpha_Arg2 );
-        
-                    this->m_Alpha_Arg2_successful = true;
-        
-                }break;
-            case 8:
-                {
-                    this->read( _buff, _size, _read, this->m_Alpha_Operator );
-        
-                    this->m_Alpha_Operator_successful = true;
-        
-                }break;
-            case 6:
-                {
-                    this->read( _buff, _size, _read, this->m_Color_Arg1 );
-        
-                    this->m_Color_Arg1_successful = true;
-        
-                }break;
-            case 7:
-                {
-                    this->read( _buff, _size, _read, this->m_Color_Arg2 );
-        
-                    this->m_Color_Arg2_successful = true;
-        
-                }break;
-            case 5:
-                {
-                    this->read( _buff, _size, _read, this->m_Color_Operator );
-        
-                    this->m_Color_Operator_successful = true;
-        
-                }break;
-            case 11:
-                {
-                    this->read( _buff, _size, _read, this->m_TextureCoord_Index );
-        
-                    this->m_TextureCoord_Index_successful = true;
         
                 }break;
             }

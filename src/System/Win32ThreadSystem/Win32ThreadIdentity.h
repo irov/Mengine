@@ -15,7 +15,7 @@ namespace Mengine
 		Win32ThreadIdentity();
 
 	public:
-        bool initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _file, uint32_t _line );
+        bool initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const Char * _file, uint32_t _line );
 
 	public:
 		void main();
@@ -32,8 +32,10 @@ namespace Mengine
 
 		HANDLE m_handle;
 
-		const char * m_file;
+#ifdef _DEBUG
+		const Char * m_file;
 		uint32_t m_line;
+#endif
 			
         ThreadTaskInterface * m_task;
 

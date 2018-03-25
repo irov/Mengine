@@ -7,6 +7,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderVertexShader::DX9RenderVertexShader()
 		: m_shader( nullptr )
+        , m_compile( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -24,11 +25,12 @@ namespace Mengine
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderVertexShader::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory )
+	bool DX9RenderVertexShader::initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile )
 	{
 		m_name = _name;
 
 		m_memory = _memory;
+        m_compile = _compile;
 
 		return true;
 	}

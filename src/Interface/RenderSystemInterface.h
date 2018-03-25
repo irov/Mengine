@@ -132,13 +132,6 @@ namespace Mengine
 			, addressU(TAM_CLAMP)
 			, addressV(TAM_CLAMP)
 			, addressBorder(0x00000000)
-            , colorOp(TOP_DISABLE)
-            , colorArg1(TARG_TEXTURE)
-            , colorArg2(TARG_DIFFUSE)
-            , alphaOp(TOP_DISABLE)
-            , alphaArg1(TARG_TEXTURE)
-            , alphaArg2(TARG_DIFFUSE)
-            , texCoordIndex(0)
         {
         }
 
@@ -149,15 +142,6 @@ namespace Mengine
 		ETextureAddressMode addressU;
 		ETextureAddressMode addressV;
 		uint32_t addressBorder;
-
-        ETextureOp colorOp;
-        ETextureArgument colorArg1;
-        ETextureArgument colorArg2;
-        ETextureOp alphaOp;
-        ETextureArgument alphaArg1;
-        ETextureArgument alphaArg2;
-
-        uint32_t texCoordIndex;
     };
     //////////////////////////////////////////////////////////////////////////
     class RenderVertexAttributeInterface
@@ -319,6 +303,13 @@ namespace Mengine
         virtual bool loadMaterials( const ConstString& _pakName, const FilePath& _fileName ) = 0;
 		virtual bool unloadMaterials( const ConstString& _pakName, const FilePath& _fileName ) = 0;
 
+    public:
+        virtual const RenderVertexShaderInterfacePtr & getVertexShader( const ConstString & _name ) const = 0;
+        virtual const RenderFragmentShaderInterfacePtr & getFragmentShader( const ConstString & _name ) const = 0;
+        virtual const RenderVertexAttributeInterfacePtr & getVertexAttribute( const ConstString & _name ) const = 0;
+
+        virtual const RenderProgramInterfacePtr & getProgram( const ConstString & _name ) const = 0;
+
 	public:
 		virtual void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) = 0;
 
@@ -448,6 +439,7 @@ namespace Mengine
         SERVICE_DECLARE("RenderSystem")
 
 	public:
+        virtual ERenderPlatform getRenderPlatformType() const = 0;
 		virtual const ConstString & getRenderPlatformName() const = 0;
 
 		virtual bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen,
@@ -483,8 +475,8 @@ namespace Mengine
 		
 	public:
         virtual RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name ) = 0;
-		virtual RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory ) = 0;
-		virtual RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory ) = 0;
+		virtual RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile ) = 0;
+		virtual RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile ) = 0;
 						
 		virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount ) = 0;
 		virtual void setProgram( const RenderProgramInterfacePtr & _program ) = 0;
@@ -509,12 +501,6 @@ namespace Mengine
 		virtual void setLightingEnable( bool _light ) = 0;
 
     public:
-		virtual void setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,
-												ETextureArgument _arg1, ETextureArgument _arg2 ) = 0;
-		virtual void setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp,
-												ETextureArgument _arg1, ETextureArgument _arg2 ) = 0;
-
-        virtual void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) = 0;
 		virtual void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) = 0;
 
     public:

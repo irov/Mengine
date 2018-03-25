@@ -66,11 +66,11 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceConfig ${CMAKE_TEMP_DIR}/Service/
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Platform/Win32Platform ${CMAKE_TEMP_DIR}/Platform/Win32Platform )
 
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeDevelopmentConverterPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeDevelopmentConverterPlugin )
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeImageCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeImageCodecPlugin )
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeXmlCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeXmlCodecPlugin )
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeZipPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeZipPlugin )
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeLZ4Plugin ${CMAKE_TEMP_DIR}/Plugin/MengeLZ4Plugin )
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeWin32FileGroupPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeWin32FileGroupPlugin )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/DevelopmentConverterPlugin ${CMAKE_TEMP_DIR}/Plugin/DevelopmentConverterPlugin )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/ImageCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/ImageCodecPlugin )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/XmlCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/XmlCodecPlugin )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/ZipPlugin ${CMAKE_TEMP_DIR}/Plugin/ZipPlugin )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/LZ4Plugin ${CMAKE_TEMP_DIR}/Plugin/LZ4Plugin )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/Win32FileGroupPlugin ${CMAKE_TEMP_DIR}/Plugin/Win32FileGroupPlugin )
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Tools ${CMAKE_TEMP_DIR}/Tools )

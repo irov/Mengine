@@ -28,8 +28,10 @@ namespace Mengine
         void * m_ptr;
         size_t m_size;
 
+#ifdef _DEBUG
         const Char * m_file;
         uint32_t m_line;
+#endif
 
         STDEX_THREAD_GUARD_INIT;
     };

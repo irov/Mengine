@@ -49,7 +49,7 @@ namespace Mengine
 	protected:
 		FilePath m_path;
 
-		MemoryInterfacePtr m_memory;
+		MemoryBufferInterfacePtr m_memory;
 
 		uint32_t m_width;
 		uint32_t m_height;

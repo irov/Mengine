@@ -37,6 +37,13 @@ namespace Mengine
         bool loadMaterials( const ConstString& _pakName, const FilePath& _fileName ) override;
 		bool unloadMaterials( const ConstString& _pakName, const FilePath& _fileName ) override;
 
+    protected:
+        const RenderVertexShaderInterfacePtr & getVertexShader( const ConstString & _name ) const override;
+        const RenderFragmentShaderInterfacePtr & getFragmentShader( const ConstString & _name ) const override;
+        const RenderVertexAttributeInterfacePtr & getVertexAttribute( const ConstString & _name ) const override;
+
+        const RenderProgramInterfacePtr & getProgram( const ConstString & _name ) const override;
+
 	public:
 		void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) override;
 
@@ -79,15 +86,8 @@ namespace Mengine
 
 	protected:
         RenderVertexAttributeInterfacePtr createVertexAttribute_( const ConstString & _name );
-		RenderVertexShaderInterfacePtr createVertexShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath );
-		RenderFragmentShaderInterfacePtr createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath );
-
-	protected:
-		const RenderVertexShaderInterfacePtr & getVertexShader_( const ConstString & _name ) const;
-		const RenderFragmentShaderInterfacePtr & getFragmentShader_( const ConstString & _name ) const;
-        const RenderVertexAttributeInterfacePtr & getVertexAttribute_( const ConstString & _name ) const;
-
-		const RenderProgramInterfacePtr & getProgram_( const ConstString & _name ) const;
+		RenderVertexShaderInterfacePtr createVertexShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath, bool _compile );
+		RenderFragmentShaderInterfacePtr createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath, bool _compile );
 
     protected:
 		uint32_t m_materialEnumerator;

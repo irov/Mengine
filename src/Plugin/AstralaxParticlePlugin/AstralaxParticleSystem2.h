@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ParticleSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
 #include "Core/ServiceBase.h"
 
@@ -25,41 +26,58 @@
 
 namespace Mengine
 {
-	class AstralaxParticleSystem2 
-		: public ServiceBase<ParticleSystemInterface2>
-	{
-	public:
-		AstralaxParticleSystem2();
-		~AstralaxParticleSystem2() override;
+    class AstralaxParticleSystem2
+        : public ServiceBase<ParticleSystemInterface2>
+    {
+    public:
+        AstralaxParticleSystem2();
+        ~AstralaxParticleSystem2() override;
 
-	public:
-		bool _initialize() override;
-		void _finalize() override;
+    public:
+        bool _initialize() override;
+        void _finalize() override;
 
-	public:
-		ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) override;
+    public:
+        ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) override;
 
-	public:
-		const RenderMaterialStage * getMaterialStage( int _index ) const override;
-		const ResourceImagePtr & getResourceImage( int _index ) const override;
+    public:
+        const RenderMaterialStage * getMaterialStage( int _index ) const override;
+        const ResourceImagePtr & getResourceImage( int _index ) const override;
 
-	public:
-		bool updateAtlas();
-		void updateMaterial();
+    public:
+        bool updateAtlas();
+        void updateMaterial();
 
-	protected:
-		void onContainerRelease_( AstralaxEmitterContainer2 * _container );
+    protected:
+        void onContainerRelease_( AstralaxEmitterContainer2 * _container );
 
-    protected:        
+    protected:
+        ERenderPlatform m_renderPlatform;
+
         FactoryPtr m_factoryPoolAstralaxEmitterContainer;
 
-		typedef stdex::map<uint32_t, AstralaxEmitterContainer2 *> TMapHashEmitterContainers;
-		TMapHashEmitterContainers m_containers;
+        typedef stdex::map<uint32_t, AstralaxEmitterContainer2 *> TMapHashEmitterContainers;
+        TMapHashEmitterContainers m_containers;
 
-		int m_stageCount;
-		const RenderMaterialStage * m_stages[256];
+        int m_stageCount;
+        const RenderMaterialStage * m_stages[256];
 
-		typedef stdex::vector<ResourceImagePtr> TVectorAtlasDesc;
-		TVectorAtlasDesc m_atlases;
+        typedef stdex::vector<ResourceImagePtr> TVectorAtlasDesc;
+        TVectorAtlasDesc m_atlases;
+
+        struct MagicStatesCache
+        {
+            int textures;
+            MAGIC_TEXTURE_STATES states[4];
+
+            RenderFragmentShaderInterfacePtr fragmentShader;
+        };
+
+        typedef stdex::vector<MagicStatesCache> TVectorRenderFragmentShaderCache;
+        TVectorRenderFragmentShaderCache m_renderFragmentShaderCache;
+
+    protected:
+        MemoryBufferInterfacePtr createFragmentShaderDX9Source_( const MAGIC_MATERIAL * m );
+        RenderFragmentShaderInterfacePtr cacheFragmentShader_( const MAGIC_MATERIAL * m );
 	};
 }

@@ -62,11 +62,11 @@ namespace Mengine
             }
 
             CharData charData;
-            charData.code = glyphChar;
-            charData.uv = glyph.uv;
+            charData.code = glyphChar;            
             charData.advance = glyph.advance;
             charData.offset = glyph.offset;
             charData.size = glyph.size;
+            charData.uv = glyph.uv;
             charData.texture = glyph.texture;
 
             m_charsData.push_back( charData );
@@ -91,7 +91,7 @@ namespace Mengine
         return m_length;
     }
     //////////////////////////////////////////////////////////////////////////
-    const TVectorCharData & TextLine::getCharData() const
+    const TVectorCharData & TextLine::getCharsData() const
     {
         return m_charsData;
     }

@@ -200,7 +200,7 @@ namespace Mengine
 			bool isCompile = false;
 			meta_FragmentShader.get_File_Compile( &isCompile );
 
-			RenderFragmentShaderInterfacePtr shader = this->createFragmentShader_( name, _pakName, filePath );
+			RenderFragmentShaderInterfacePtr shader = this->createFragmentShader_( name, _pakName, filePath, isCompile );
 
 			if( shader == nullptr )
 			{
@@ -241,7 +241,7 @@ namespace Mengine
 			bool isCompile = false;
 			meta_VertexShader.get_File_Compile( &isCompile );
 
-			RenderVertexShaderInterfacePtr shader = this->createVertexShader_( name, _pakName, filePath );
+			RenderVertexShaderInterfacePtr shader = this->createVertexShader_( name, _pakName, filePath, isCompile );
 
 			if( shader == nullptr )
 			{
@@ -322,7 +322,7 @@ namespace Mengine
             const ConstString & vertexAttributeName = meta_Program.get_VertexAttribute_Name();
 			uint32_t samplerCount = meta_Program.get_Sampler_Count();
 
-			const RenderVertexShaderInterfacePtr & vertexShader = this->getVertexShader_( vertexShaderName );
+			const RenderVertexShaderInterfacePtr & vertexShader = this->getVertexShader( vertexShaderName );
 			
 			if( vertexShader == nullptr )
 			{
@@ -336,7 +336,7 @@ namespace Mengine
 				return false;
 			}
 
-			const RenderFragmentShaderInterfacePtr & fragmentShader = this->getFragmentShader_( fragmentShaderName );
+			const RenderFragmentShaderInterfacePtr & fragmentShader = this->getFragmentShader( fragmentShaderName );
 				
 			if( fragmentShader == nullptr )
 			{
@@ -350,7 +350,7 @@ namespace Mengine
 				return false;
 			}
 
-            const RenderVertexAttributeInterfacePtr & vertexAttribute = this->getVertexAttribute_( vertexAttributeName );
+            const RenderVertexAttributeInterfacePtr & vertexAttribute = this->getVertexAttribute( vertexAttributeName );
 
             if( vertexAttribute == nullptr )
             {
@@ -414,7 +414,7 @@ namespace Mengine
 			ConstString programName;
 			if( meta_Material.get_Program_Name( &programName ) == true )
 			{
-				const RenderProgramInterfacePtr & program = this->getProgram_( programName );
+				const RenderProgramInterfacePtr & program = this->getProgram( programName );
 
 				if( program == nullptr )
 				{
@@ -429,11 +429,6 @@ namespace Mengine
 
 				stage.program = program;
 			}
-
-            for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
-            {
-                stage.textureStage[index].texCoordIndex = index;
-            }
 
 			const Metacode::Meta_Data::Meta_DataBlock::Meta_Material::VectorMeta_TextureStages & include_TextureStages = meta_Material.get_Includes_TextureStages();
 
@@ -456,16 +451,6 @@ namespace Mengine
 				meta_TextureStages.get_AddressMode_U( &textureStage.addressU );
 				meta_TextureStages.get_AddressMode_V( &textureStage.addressV );
 				meta_TextureStages.get_AddressMode_Border( &textureStage.addressBorder );
-  
-				meta_TextureStages.get_Color_Operator( &textureStage.colorOp );
-				meta_TextureStages.get_Color_Arg1( &textureStage.colorArg1 );
-				meta_TextureStages.get_Color_Arg2( &textureStage.colorArg2 );
-
-				meta_TextureStages.get_Alpha_Operator( &textureStage.alphaOp );
-				meta_TextureStages.get_Alpha_Arg1( &textureStage.alphaArg1 );
-				meta_TextureStages.get_Alpha_Arg2( &textureStage.alphaArg2 );
-
-                meta_TextureStages.get_TextureCoord_Index( &textureStage.texCoordIndex );
 			}
 
 			const RenderMaterialStage * cache_stage = this->createRenderStageGroup( name, stage );
@@ -666,41 +651,6 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_equalTextureStage( const RenderTextureStage & _src, const RenderTextureStage & _dst )
 	{
-		if( _src.colorOp != _dst.colorOp )
-		{
-			return false;
-		}
-
-		if( _src.colorArg1 != _dst.colorArg1 )
-		{
-			return false;
-		}
-
-		if( _src.colorArg2 != _dst.colorArg2 )
-		{
-			return false;
-		}
-
-		if( _src.alphaOp != _dst.alphaOp )
-		{
-			return false;
-		}
-
-		if( _src.alphaArg1 != _dst.alphaArg1 )
-		{
-			return false;
-		}
-
-		if( _src.alphaArg2 != _dst.alphaArg2 )
-		{
-			return false;
-		}
-		
-		if( _src.texCoordIndex != _dst.texCoordIndex )
-		{
-			return false;
-		}
-
 		if( _src.mipmap != _dst.mipmap )
 		{
 			return false;
@@ -1007,7 +957,7 @@ namespace Mengine
         return vertexAttribute;
     }
 	//////////////////////////////////////////////////////////////////////////
-	RenderVertexShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath )
+	RenderVertexShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath, bool _compile )
 	{
 		MemoryInterfacePtr memory = Helper::createMemoryFile( _pakName, _filePath, false, __FILE__, __LINE__ );
 
@@ -1017,12 +967,12 @@ namespace Mengine
 		}
 
 		RenderVertexShaderInterfacePtr shader = RENDER_SYSTEM()
-			->createVertexShader( _name, memory );
+			->createVertexShader( _name, memory, _compile );
 
 		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderFragmentShaderInterfacePtr RenderMaterialManager::createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath )
+	RenderFragmentShaderInterfacePtr RenderMaterialManager::createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath, bool _compile )
 	{ 
 		MemoryInterfacePtr memory = Helper::createMemoryFile( _pakName, _filePath, false, __FILE__, __LINE__ );
 		
@@ -1032,12 +982,12 @@ namespace Mengine
 		}				
 
 		RenderFragmentShaderInterfacePtr shader = RENDER_SYSTEM()
-			->createFragmentShader( _name, memory );
+			->createFragmentShader( _name, memory, _compile );
 
 		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderVertexShaderInterfacePtr & RenderMaterialManager::getVertexShader_( const ConstString & _name ) const
+	const RenderVertexShaderInterfacePtr & RenderMaterialManager::getVertexShader( const ConstString & _name ) const
 	{
 		TMapRenderVertexShaders::const_iterator it_found = m_vertexShaders.find( _name );
 
@@ -1051,7 +1001,7 @@ namespace Mengine
 		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderFragmentShaderInterfacePtr & RenderMaterialManager::getFragmentShader_( const ConstString & _name ) const
+	const RenderFragmentShaderInterfacePtr & RenderMaterialManager::getFragmentShader( const ConstString & _name ) const
 	{
 		TMapRenderFragmentShaders::const_iterator it_found = m_fragmentShaders.find( _name );
 
@@ -1065,7 +1015,7 @@ namespace Mengine
 		return shader;
 	}
     //////////////////////////////////////////////////////////////////////////
-    const RenderVertexAttributeInterfacePtr & RenderMaterialManager::getVertexAttribute_( const ConstString & _name ) const
+    const RenderVertexAttributeInterfacePtr & RenderMaterialManager::getVertexAttribute( const ConstString & _name ) const
     {
         TMapRenderVertexAttributes::const_iterator it_found = m_vertexAttributes.find( _name );
 
@@ -1079,7 +1029,7 @@ namespace Mengine
         return vertexAttribute;
     }
 	//////////////////////////////////////////////////////////////////////////
-	const RenderProgramInterfacePtr & RenderMaterialManager::getProgram_( const ConstString & _name ) const
+	const RenderProgramInterfacePtr & RenderMaterialManager::getProgram( const ConstString & _name ) const
 	{
 		TMapRenderPrograms::const_iterator it_found = m_programs.find( _name );
 

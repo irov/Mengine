@@ -95,9 +95,11 @@ static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_
         {
             const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
 
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
             fprintf( f, "   <Resource Name = \"%s\" Type = \"ResourceImageDefault\" Unique = \"0\">\n"
                 , resource_image->name
             );
+#endif
 
             fprintf( f, "       <File Path = \"%s\" MaxSize = \"%u;%u\"/>\n"
                 , resource_image->path
@@ -111,9 +113,11 @@ static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_
         {
             const aeMovieResourceVideo * resource_video = (const aeMovieResourceVideo *)_resource;
 
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
             fprintf( f, "   <Resource Name = \"%s\" Type = \"ResourceVideo\" Unique = \"0\">\n"
                 , resource_video->name
             );
+#endif
             
             fprintf( f, "       <File Path = \"%s\" Alpha = \"%u\" Codec = \"%s\" FrameRate = \"%f\" Duration = \"%f\"/>\n"
                 , resource_video->path
@@ -129,9 +133,11 @@ static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_
         {
             const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
             
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
             fprintf( f, "   <Resource Name = \"%s\" Type = \"ResourceSound\" Unique = \"0\">\n"
                 , resource_sound->name
             );
+#endif
 
             fprintf( f, "       <File Path = \"%s\"  Codec = \"oggSound\"/>\n"
                 , resource_sound->path
@@ -143,9 +149,11 @@ static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_
         {
             const aeMovieResourceParticle * resource_particle = (const aeMovieResourceParticle *)_resource;
 
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
             fprintf( f, "   <Resource Name = \"%s\" Type = \"ResourceParticle\" Unique = \"0\">\n"
                 , resource_particle->name
             );
+#endif
 
             fprintf( f, "       <File Path = \"%s\"/>\n"
                 , resource_particle->path
@@ -159,10 +167,12 @@ static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_
             {
                 const aeMovieResourceImage * image = resource_particle->images[i];
 
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
                 fprintf( f, "       <Atlas Index = \"%u\" ResourceName = \"%s\"/>\n"
                     , i
                     , image->name
                 );
+#endif
             }
 
             fprintf( f, "   </Resource>\n" );

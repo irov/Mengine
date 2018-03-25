@@ -44,12 +44,17 @@ namespace Mengine
 		return 0;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool Win32ThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _file, uint32_t _line )
+	bool Win32ThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const Char * _file, uint32_t _line )
     {
+        (void)_file;
+        (void)_line;
+
 		m_mutex = _mutex;
 		
+#ifdef _DEBUG
 		m_file = _file;
 		m_line = _line;
+#endif
 
 		m_handle = (HANDLE)_beginthreadex( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
 

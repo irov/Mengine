@@ -84,6 +84,7 @@ namespace Mengine
         ConstString m_ttfFEName;
         fe_effect_bundle * m_ttfFEBundle;
         fe_effect * m_ttfFEEffect;
+        const fe_node * m_ttfEffectNodes[FE_MAX_PINS];
 
         struct TTFGlyphQuad
         {

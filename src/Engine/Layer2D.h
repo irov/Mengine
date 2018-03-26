@@ -34,11 +34,11 @@ namespace Mengine
         void clearViewport_();
 
     public:
-        void setImageMask( const ResourceImagePtr & _resourceImageMask );
+        bool setImageMask( const ResourceImagePtr & _resourceImageMask );
         void removeImageMask();
 
     protected:
-        void createRenderTarget_();
+        bool createRenderTarget_();
         void clearRenderTarget_();
 
     protected:

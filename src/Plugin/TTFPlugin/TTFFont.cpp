@@ -468,7 +468,12 @@ namespace Mengine
                     , effect_node_layout, &res );
 
                 fe_image res_bgra;
+
+#ifdef MENGINE_RENDER_TEXTURE_RGBA
+                fe_image_create( &res_bgra, res.image.w, res.image.h, FE_IMG_R8G8B8A8 );
+#else
                 fe_image_create( &res_bgra, res.image.w, res.image.h, FE_IMG_B8G8R8A8 );
+#endif
 
                 fe_image_blit( &res.image, &res_bgra );
 

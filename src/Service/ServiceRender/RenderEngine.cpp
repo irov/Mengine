@@ -56,7 +56,6 @@ namespace Mengine
         , m_iterateRenderObjects( 0 )
         , m_limitRenderObjects( 0 )
         , m_stopRenderObjects( false )
-        , m_noShader( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -74,8 +73,6 @@ namespace Mengine
 
         uint32_t maxQuadBatch = CONFIG_VALUE( "Engine", "RenderMaxQuadBatch", 2000U );
         uint32_t maxLineBatch = CONFIG_VALUE( "Engine", "RenderMaxLineBatch", 4000U );
-
-        m_noShader = CONFIG_VALUE( "Engine", "RenderNoShader", false );
 
         m_renderObjects.reserve( maxObjects );
         m_renderPasses.reserve( maxPasses );
@@ -572,7 +569,7 @@ namespace Mengine
                 ->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
         }
 
-        if( m_currentProgram != m_currentStage->program && m_noShader == false )
+        if( m_currentProgram != m_currentStage->program )
         {
             m_currentProgram = m_currentStage->program;
 
@@ -638,7 +635,7 @@ namespace Mengine
 
         this->updateStage_( stage );
 
-        if( m_currentProgram != nullptr && m_noShader == false )
+        if( m_currentProgram != nullptr )
         {
             RENDER_SYSTEM()
                 ->updateProgram( m_currentProgram );

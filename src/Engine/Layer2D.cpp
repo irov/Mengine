@@ -42,7 +42,10 @@ namespace Mengine
 
         if( m_hasImageMask == true )
         {
-            this->createRenderTarget_();
+            if( this->createRenderTarget_() == false )
+            {
+                return false;
+            }
         }
 
 		return true;
@@ -161,13 +164,18 @@ namespace Mengine
 		Node::setRenderViewport( nullptr );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Layer2D::setImageMask( const ResourceImagePtr & _resourceImageMask )
+    bool Layer2D::setImageMask( const ResourceImagePtr & _resourceImageMask )
     {
         m_resourceImageMask = _resourceImageMask;
 
         m_hasImageMask = true;
 
-        this->createRenderTarget_();
+        if( this->createRenderTarget_() == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::removeImageMask()
@@ -182,27 +190,37 @@ namespace Mengine
         this->clearRenderTarget_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Layer2D::createRenderTarget_()
+    bool Layer2D::createRenderTarget_()
     {
         if( m_resourceImageMask == nullptr )
         {
-            return;
+            return true;
         }
 
         RenderTargetInterfacePtr renderTarget = RENDER_SYSTEM()
             ->createRenderTargetTexture( (uint32_t)m_size.x, (uint32_t)m_size.y, PF_A8R8G8B8 );
 
+        if( renderTarget == nullptr )
+        {
+            return false;
+        }
+
         Node::setRenderTarget( renderTarget );
 
         RenderImageInterfacePtr renderTargetImage = RENDER_SYSTEM()
             ->createRenderTargetImage( renderTarget );
+
+        if( renderTargetImage == nullptr )
+        {
+            return false;
+        }
         
         RenderTextureInterfacePtr renderTargetTexture = RENDERTEXTURE_SERVICE()
             ->createRenderTexture( renderTargetImage, (uint32_t)m_size.x, (uint32_t)m_size.y );
 
         if( m_resourceImageMask.compile() == false )
         {
-            return;
+            return false;
         }
 
         const RenderTextureInterfacePtr & renderTargetTextureMask = m_resourceImageMask->getTexture();
@@ -213,6 +231,11 @@ namespace Mengine
 
         RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
             ->getMaterial( STRINGIZE_STRING_LOCAL( "AlphaMask_Blend" ), PT_TRIANGLELIST, 2, texures );
+
+        if( material == nullptr )
+        {
+            return false;
+        }
         
         m_materialImageMask = material;
                 
@@ -233,6 +256,8 @@ namespace Mengine
         m_verticesImageMaskWM[1].uv[1] = uv_mask.p1;
         m_verticesImageMaskWM[2].uv[1] = uv_mask.p2;
         m_verticesImageMaskWM[3].uv[1] = uv_mask.p3;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::clearRenderTarget_()

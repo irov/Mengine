@@ -36,7 +36,7 @@ namespace Mengine
 
         if( shaderId == 0 )
         {
-            LOGGER_ERROR("'%s' invalid create shader"
+            LOGGER_ERROR("'%s' invalid create fragment shader"
                 , m_name.c_str()
                 );
 
@@ -58,7 +58,7 @@ namespace Mengine
             GLchar errorLog[1024];
             GLCALL( glGetShaderInfoLog, (shaderId, 1023, NULL, errorLog) );
 
-            LOGGER_ERROR("compilation shader '%s' error '%s'"
+            LOGGER_ERROR("compilation fragment shader '%s' error '%s'"
                 , m_name.c_str()
                 , errorLog
                 );

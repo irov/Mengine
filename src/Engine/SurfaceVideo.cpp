@@ -83,24 +83,22 @@ namespace Mengine
 	////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::updateUV_()
 	{
-		const RenderTextureInterfacePtr & texture = m_textures[0];
+        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
-		const Rect & rect = texture->getRect();
+		const RenderTextureInterfacePtr & texture = m_textures[0];
 
 		const RenderImageInterfacePtr & image = texture->getImage();
 
 		uint32_t hwWidth = image->getHWWidth();
 		uint32_t hwHeight = image->getHWHeight();
 
-		float scaleLeft = float( rect.left ) / float( hwWidth );
-		float scaleTop = float( rect.top ) / float( hwHeight );
-		float scaleRight = float( rect.right ) / float( hwWidth );
-		float scaleBottom = float( rect.bottom ) / float( hwHeight );
+        float u = float( dataInfo->frameWidth ) / float( hwWidth );
+        float v = float( dataInfo->frameHeight ) / float( hwHeight );
 
-		m_uv.p0 = mt::vec2f(scaleLeft, scaleTop);
-        m_uv.p1 = mt::vec2f( scaleRight, scaleTop );
-        m_uv.p2 = mt::vec2f( scaleRight, scaleBottom );
-        m_uv.p3 = mt::vec2f( scaleLeft, scaleBottom );
+        m_uv.p0 = mt::vec2f( 0.f, 0.f );
+        m_uv.p1 = mt::vec2f( u, 0.f );
+        m_uv.p2 = mt::vec2f( u, v );
+        m_uv.p3 = mt::vec2f( 0.f, v );
 	}
 	//////////////////////////////////////////////////////////////////////////
     bool SurfaceVideo::_update( float _current, float _timing )
@@ -175,7 +173,7 @@ namespace Mengine
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
 		RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE()
-			->createDynamicTexture( dataInfo->frameWidth, dataInfo->frameHeight, channels, 1, dataInfo->format );
+            ->createDynamicTexture( dataInfo->width, dataInfo->height, channels, 1, dataInfo->format );
 
 		if( dynamicTexture == nullptr )
 		{
@@ -506,12 +504,11 @@ namespace Mengine
 	{
 		const RenderTextureInterfacePtr & texture = m_textures[0];
 
-		Rect rect;
-
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
         const RenderImageInterfacePtr & image = texture->getImage();
 
+        Rect rect;
 		if( dataInfo->clamp == true )
 		{
 			rect.left = 0;

@@ -48,7 +48,7 @@ namespace Mengine
 
             LPD3DXBUFFER ppShader;
             LPD3DXBUFFER ppErrorMsgs;
-            HRESULT hr = D3DXCompileShader( shader_source_data, shader_source_size, NULL, NULL, "main", "ps_3_0", D3DXSHADER_OPTIMIZATION_LEVEL3 | D3DXSHADER_ENABLE_BACKWARDS_COMPATIBILITY, &ppShader, &ppErrorMsgs, NULL );
+            HRESULT hr = D3DXCompileShader( shader_source_data, shader_source_size, NULL, NULL, "main", "ps_2_0", D3DXSHADER_OPTIMIZATION_LEVEL3 | D3DXSHADER_ENABLE_BACKWARDS_COMPATIBILITY, &ppShader, &ppErrorMsgs, NULL );
 
             if( hr != S_OK )
             {

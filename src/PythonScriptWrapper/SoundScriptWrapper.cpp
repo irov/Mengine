@@ -26,16 +26,19 @@ namespace Mengine
         {
             m_factorySoundAffectorCallback = new FactoryPool<SoundAffectorCallback, 4>();
             m_factoryMusicAffectorCallback = new FactoryPool<MusicAffectorCallback, 4>();
-            m_factorySoundNodeListener = new FactoryPool<MySoundNodeListener, 8>();
         }
 
     public:
 		//////////////////////////////////////////////////////////////////////////
 		class MySoundNodeListener
-			: public SoundListenerInterface
+			: public FactorableUnique<SoundListenerInterface>
 		{
 		public:
-			MySoundNodeListener()
+            MySoundNodeListener( const ResourceSoundPtr & _resource, const SoundBufferInterfacePtr & _soundBuffer, const pybind::object & _cb, const pybind::args & _args )
+                : m_resource( _resource )
+                , m_soundBuffer( _soundBuffer )
+                , m_cb( _cb )
+                , m_args( _args )
 			{
 			}
 
@@ -46,18 +49,6 @@ namespace Mengine
                     m_resource->decrementReference();
                     m_resource = nullptr;
                 }
-			}
-
-		public:
-			bool initialize( const ResourceSoundPtr & _resource, const SoundBufferInterfacePtr & _soundBuffer, const pybind::object & _cb, const pybind::args & _args )
-			{
-				m_resource = _resource;
-				m_soundBuffer = _soundBuffer;
-
-				m_cb = _cb;				
-				m_args = _args;
-
-				return true;
 			}
 
 		protected:
@@ -161,19 +152,7 @@ namespace Mengine
 			}
 
 
-            MySoundNodeListenerPtr snlistener = m_factorySoundNodeListener->createObject();
-
-			if( snlistener->initialize( resource, soundBuffer, _cb, _args ) == false )
-			{
-				LOGGER_ERROR("ScriptWrapper::createSoundSource invalid %s intialize listener"
-					, _resourceName.c_str()
-					, volume
-					);
-
-				resource->decrementReference();
-
-				return 0;
-			}
+            MySoundNodeListenerPtr snlistener = new MySoundNodeListener( resource, soundBuffer, _cb, _args );
 
 			SOUND_SERVICE()
 				->setSourceListener( sourceID, snlistener );

@@ -67,7 +67,7 @@ namespace Mengine
     {
         if( m_samplerCount > MENGINE_MAX_TEXTURE_STAGES )
         {
-            LOGGER_ERROR("'%s' don't support sampler count %d max %d"
+            LOGGER_ERROR("program '%s' don't support sampler count %d max %d"
                 , m_name.c_str()
                 , m_samplerCount
                 , MENGINE_MAX_TEXTURE_STAGES
@@ -81,7 +81,7 @@ namespace Mengine
 
         if( program == 0 )
         {
-            LOGGER_ERROR("'%s' invalid create program"
+            LOGGER_ERROR("invalid create program '%s'"
                 , m_name.c_str()
                 );
 
@@ -110,7 +110,7 @@ namespace Mengine
             GLchar errorLog[1024] = { 0 };
             GLCALL( glGetProgramInfoLog, (program, 1023, NULL, errorLog) );
 
-            LOGGER_ERROR("'%s' - shader linking error '%s'"
+            LOGGER_ERROR("program '%s' linking error '%s'"
                 , m_name.c_str()
                 , errorLog
                 );
@@ -118,7 +118,7 @@ namespace Mengine
             return false;
         }
 
-        const char * matrix_uniforms[] = {"viewMatrix", "projectionMatrix", "worldMatrix", "correctionMatrix", "vpMatrix", "wvpMatrix"};
+        const char * matrix_uniforms[] = {"viewMatrix", "projectionMatrix", "worldMatrix", "vpMatrix", "wvpMatrix"};
 
         for( uint32_t i = 0; i != EPML_MAX_COUNT; ++i )
         {
@@ -137,6 +137,16 @@ namespace Mengine
 
             GLint location;
             GLCALLR( location, glGetUniformLocation, (program, samplerVar) );
+
+            if( location == -1 )
+            {
+                LOGGER_ERROR( "program '%s' not found uniform sampler '%s'"
+                    , m_name.c_str()
+                    , samplerVar
+                );
+
+                return false;
+            }
 
             m_samplerLocation[index] = location;
         }
@@ -165,9 +175,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgram::enable() const
+    bool OpenGLRenderProgram::enable() const
     {
         GLCALL( glUseProgram, (m_program) );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgram::disable() const
@@ -179,50 +191,62 @@ namespace Mengine
     {
         if( m_matrixLocation[EPML_VIEW] != -1 )
         {
-            GLCALL( glUniformMatrix4fv, (m_matrixLocation[EPML_VIEW], 1, GL_FALSE, _viewMatrix.buff()) );
+            GLint location = m_matrixLocation[EPML_VIEW];
+
+            GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, _viewMatrix.buff()) );
         }
 
         if( m_matrixLocation[EPML_PROJECTION] != -1 )
         {
-            GLCALL( glUniformMatrix4fv, (m_matrixLocation[EPML_PROJECTION], 1, GL_FALSE, _projectionMatrix.buff()) );
+            GLint location = m_matrixLocation[EPML_PROJECTION];
+
+            GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, _projectionMatrix.buff()) );
         }
 
         if( m_matrixLocation[EPML_WORLD] != -1 )
         {
-            GLCALL( glUniformMatrix4fv, (m_matrixLocation[EPML_WORLD], 1, GL_FALSE, _worldMatrix.buff()) );
+            GLint location = m_matrixLocation[EPML_WORLD];
+
+            GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, _worldMatrix.buff()) );
         }
 
         if( m_matrixLocation[EPML_VIEW_PROJECTION] != -1 )
         {
             mt::mat4f vpMat = _viewMatrix * _projectionMatrix;
 
-            GLCALL( glUniformMatrix4fv, (m_matrixLocation[EPML_VIEW_PROJECTION], 1, GL_FALSE, vpMat.buff()) );
+            GLint location = m_matrixLocation[EPML_VIEW_PROJECTION];
+
+            GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, vpMat.buff()) );
         }
 
         if( m_matrixLocation[EPML_WORLD_VIEW_PROJECTION] != -1 )
         {
             mt::mat4f wvpMat = _viewMatrix * _projectionMatrix * _worldMatrix;
 
-            GLCALL( glUniformMatrix4fv, (m_matrixLocation[EPML_WORLD_VIEW_PROJECTION], 1, GL_FALSE, wvpMat.buff()) );
+            GLint location = m_matrixLocation[EPML_WORLD_VIEW_PROJECTION];
+
+            GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, wvpMat.buff()) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgram::bindTexture( uint32_t _textureInd ) const
+    bool OpenGLRenderProgram::bindTexture( uint32_t _textureInd ) const
     {   
         if(_textureInd >= m_samplerCount )
         {
-            LOGGER_ERROR("'%s' invalid support sampler count %d max %d"
+            LOGGER_ERROR("program '%s' invalid support sampler count %d max %d"
                 , m_name.c_str()
                 , _textureInd
                 , m_samplerCount
                 );
 
-            return;
+            return false;
         }
 
         int location = m_samplerLocation[_textureInd];
 
         GLCALL( glUniform1i, (location, _textureInd) );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

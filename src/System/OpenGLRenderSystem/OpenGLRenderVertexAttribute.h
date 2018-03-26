@@ -45,7 +45,7 @@ namespace Mengine
             uint32_t stride;
             uint32_t offset;
 
-            bool normalized;
+            GLboolean normalized;
         };
 
         typedef stdex::vector<Attribute> TVectorAttribute;

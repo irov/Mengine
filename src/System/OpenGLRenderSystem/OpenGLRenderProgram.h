@@ -51,11 +51,11 @@ namespace Mengine
         void release();
 
     public:
-        void enable() const;
+        bool enable() const;
         void disable() const;
 
         void bindMatrix( const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix ) const;
-        void bindTexture( uint32_t _textureInd ) const;
+        bool bindTexture( uint32_t _textureInd ) const;
 
     protected:
         ConstString m_name;

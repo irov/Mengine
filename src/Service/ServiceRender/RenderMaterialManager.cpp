@@ -418,13 +418,13 @@ namespace Mengine
 
 				if( program == nullptr )
 				{
-					//LOGGER_ERROR("RenderMaterialManager::loadMaterials material %s:%s invalid get program %s"
-					//	, _pakName.c_str()
-					//	, _fileName.c_str()
-					//	, programName.c_str()
-					//	);
+                    LOGGER_ERROR( "RenderMaterialManager::loadMaterials material %s:%s invalid get program %s"
+                        , _pakName.c_str()
+                        , _fileName.c_str()
+                        , programName.c_str()
+                    );
 
-					//return false;
+                    return false;
 				}
 
 				stage.program = program;

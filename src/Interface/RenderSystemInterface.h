@@ -442,6 +442,7 @@ namespace Mengine
         virtual ERenderPlatform getRenderPlatformType() const = 0;
 		virtual const ConstString & getRenderPlatformName() const = 0;
 
+    public:
 		virtual bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) = 0;
 

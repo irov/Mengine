@@ -324,12 +324,20 @@ namespace Mengine
 		{
 			m_dataInfo.frameWidth = m_theoraInfo.frame_width;
 			m_dataInfo.frameHeight = m_theoraInfo.frame_height / 2;
+
+            m_dataInfo.width = m_theoraInfo.width;
+            m_dataInfo.height = m_theoraInfo.height / 2;
+
 			m_dataInfo.channel = 4;
 		}
 		else
 		{
 			m_dataInfo.frameWidth = m_theoraInfo.frame_width;
 			m_dataInfo.frameHeight = m_theoraInfo.frame_height;
+
+            m_dataInfo.width = m_theoraInfo.width;
+            m_dataInfo.height = m_theoraInfo.height;
+
 			m_dataInfo.channel = 3;
 		}
 

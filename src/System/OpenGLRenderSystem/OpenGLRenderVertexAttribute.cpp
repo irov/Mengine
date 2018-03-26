@@ -55,7 +55,7 @@ namespace Mengine
         attr.uniform = _uniform;
         attr.size = _size;
         attr.type = _type;
-        attr.normalized = _normalized;
+        attr.normalized = _normalized == true ? GL_TRUE : GL_FALSE;
         attr.stride = _stride;
         attr.offset = _offset;
 
@@ -83,7 +83,27 @@ namespace Mengine
 
             GLenum gl_type = s_getGLVertexAttributeType( attribute.type );
 
-            GLCALL( glVertexAttribPointer, (it, attribute.size, gl_type, static_cast<GLboolean>(attribute.normalized), attribute.stride, reinterpret_cast<const GLvoid *>(attribute.offset)) );
+            IF_GLCALL( glVertexAttribPointer, (it
+                , attribute.size
+                , gl_type
+                , attribute.normalized
+                , attribute.stride
+                , reinterpret_cast<const GLvoid *>(attribute.offset)
+                ) )
+            {
+                LOGGER_ERROR( "vertex attribute '%s' invalid setup uniform '%s' index '%u' size '%u' type '%u' normalized '%u' stride '%u' offset '%u'"
+                    , m_name.c_str()
+                    , attribute.uniform.c_str()
+                    , it
+                    , attribute.size
+                    , gl_type
+                    , attribute.normalized
+                    , attribute.stride
+                    , attribute.offset
+                );
+
+                return false;
+            }
         }
 
         return true;

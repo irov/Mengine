@@ -12,6 +12,8 @@
 
 #include "Factory/Factory.h"
 
+#include "Config/Stringstream.h"
+
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
 #	endif 
@@ -77,7 +79,8 @@ namespace Mengine
         TVectorRenderFragmentShaderCache m_renderFragmentShaderCache;
 
     protected:
-        MemoryBufferInterfacePtr createFragmentShaderDX9Source_( const MAGIC_MATERIAL * m );
+        void createFragmentShaderDX9Source_( Stringstream & ss, const MAGIC_MATERIAL * m );
+        void createFragmentShaderGLSource_( Stringstream & ss, const MAGIC_MATERIAL * m );
         RenderFragmentShaderInterfacePtr cacheFragmentShader_( const MAGIC_MATERIAL * m );
 	};
 }

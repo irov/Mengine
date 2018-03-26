@@ -115,14 +115,14 @@ namespace Mengine
 		uint32_t limitVideoWidth = CONFIG_VALUE( "Limit", "VideoWidth", 2048U );
 		uint32_t limitVideoHeight = CONFIG_VALUE( "Limit", "VideoHeight", 2048U );
 
-		if( dataInfo->frameWidth > limitVideoWidth || dataInfo->frameHeight > limitVideoHeight )
+		if( dataInfo->width > limitVideoWidth || dataInfo->height > limitVideoHeight )
 		{
 			LOGGER_ERROR("ResourceVideo.isValid: group '%s' name '%s' path '%s' invalid size %d:%d limit %d:%d"
 				, this->getGroup().c_str()
 				, this->getName().c_str()
 				, m_filePath.c_str()
-				, dataInfo->frameWidth
-				, dataInfo->frameHeight
+				, dataInfo->width
+				, dataInfo->height
 				, limitVideoWidth
 				, limitVideoHeight
 				);

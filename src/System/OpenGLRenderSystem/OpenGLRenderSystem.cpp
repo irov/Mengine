@@ -71,7 +71,7 @@ namespace Mengine
     {
         LOGGER_WARNING( "Initializing OpenGL RenderSystem..." );
 
-#ifndef ENGINE_OPENGLES
+#ifndef HAVE_GLES
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGL" );
 #else
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGLES" );
@@ -129,6 +129,15 @@ namespace Mengine
         m_cacheRenderVertexShaders.clear();
         m_cacheRenderFragmentShaders.clear();
         m_cacheRenderPrograms.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ERenderPlatform OpenGLRenderSystem::getRenderPlatformType() const
+    {
+#ifndef HAVE_GLES
+        return RP_OPENGL;
+#else
+        return RP_OPENGLES;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & OpenGLRenderSystem::getRenderPlatformName() const
@@ -196,7 +205,7 @@ namespace Mengine
         GLCALL( glDepthMask, (GL_FALSE) );
         GLCALL( glDepthFunc, (GL_LESS) );
 
-#ifndef ENGINE_OPENGLES
+#ifndef HAVE_GLES
         GLCALL( glMatrixMode, (GL_MODELVIEW) );
         GLCALL( glLoadIdentity, () );
 
@@ -379,8 +388,10 @@ namespace Mengine
         return vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr OpenGLRenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory )
+    RenderFragmentShaderInterfacePtr OpenGLRenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile )
     {
+        (void)_compile;
+
         OpenGLRenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject();
 
         if( shader == nullptr )
@@ -423,8 +434,10 @@ namespace Mengine
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr OpenGLRenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory )
+    RenderVertexShaderInterfacePtr OpenGLRenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile )
     {
+        (void)_compile;
+
         OpenGLRenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject();
 
         if( shader == nullptr )
@@ -534,7 +547,10 @@ namespace Mengine
             return;
         }
 
-        m_currentProgram->enable();
+        if( m_currentProgram->enable() == false )
+        {
+            return;
+        }
 
         m_currentProgram->bindMatrix( m_worldMatrix, m_viewMatrix, m_projectionMatrix );
 
@@ -560,7 +576,10 @@ namespace Mengine
 
             GLCALL( glBindTexture, (GL_TEXTURE_2D, texture_uid) );
 
-            m_currentProgram->bindTexture( i );
+            if( m_currentProgram->bindTexture( i ) == false )
+            {
+                continue;
+            }
 
             GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS) );
             GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT) );
@@ -568,12 +587,22 @@ namespace Mengine
             GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter) );
         }
 
-        m_currentIndexBuffer->enable();
-        m_currentVertexBuffer->enable();
+        if( m_currentIndexBuffer->enable() == false )
+        {
+            return;
+        }
+
+        if( m_currentVertexBuffer->enable() == false )
+        {
+            return;
+        }
 
         const RenderVertexAttributeInterfacePtr & vertexAttribute = m_currentProgram->getVertexAttribute();
 
-        vertexAttribute->enable();
+        if( vertexAttribute->enable() == false )
+        {
+            return;
+        }
 
         GLenum mode = s_getGLPrimitiveMode( _type );
         const RenderIndex * baseIndex = nullptr;
@@ -765,29 +794,6 @@ namespace Mengine
         {
             GLCALL( glDisable, (GL_LIGHTING) );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp, ETextureArgument _arg1, ETextureArgument _arg2 )
-    {
-        GLUNUSED( _stage );
-        GLUNUSED( _textrueOp );
-        GLUNUSED( _arg1 );
-        GLUNUSED( _arg2 );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp, ETextureArgument _arg1, ETextureArgument _arg2 )
-    {
-        GLUNUSED( _stage );
-        GLUNUSED( _textrueOp );
-        GLUNUSED( _arg1 );
-        GLUNUSED( _arg2 );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index )
-    {
-        GLUNUSED( _stage );
-        GLUNUSED( _index );
-        //m_textureStage[_stage].texCoordIndex = _index;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )

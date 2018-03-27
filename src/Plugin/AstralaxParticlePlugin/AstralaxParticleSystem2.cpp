@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AstralaxParticleSystem2::AstralaxParticleSystem2()
         : m_renderPlatform( RP_UNKNOWN )
-        , m_stageCount( 0 )
+        , m_materialCount( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -150,11 +150,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleSystem2::updateMaterial()
+    bool AstralaxParticleSystem2::updateMaterial()
     {
-        int materialCount = Magic_GetMaterialCount();
+        int newMaterialCount = Magic_GetMaterialCount();
 
-        for( int i = m_stageCount; i != materialCount; ++i )
+        for( int i = m_materialCount; i != newMaterialCount; ++i )
         {
             MAGIC_MATERIAL m;
             if( Magic_GetMaterial( i, &m ) != MAGIC_SUCCESS )
@@ -163,7 +163,7 @@ namespace Mengine
                     , i
                 );
 
-                return;
+                return false;
             }
 
             RenderMaterialStage rs;
@@ -196,6 +196,11 @@ namespace Mengine
 
 
             RenderFragmentShaderInterfacePtr fragmentShader = this->cacheFragmentShader_( &m );
+
+            if( fragmentShader == nullptr )
+            {
+                return false;
+            }
             
             RenderProgramInterfacePtr program = RENDER_SYSTEM()
                 ->createProgram( STRINGIZE_STRING_LOCAL( "AstralaxProgram" ), vertexShader, fragmentShader, vertexAttribute, m.textures );
@@ -232,12 +237,14 @@ namespace Mengine
             m_stages[i] = cache_stage;
         }
 
-        m_stageCount = materialCount;
+        m_materialCount = newMaterialCount;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderMaterialStage * AstralaxParticleSystem2::getMaterialStage( int _index ) const
     {
-        if( _index >= m_stageCount )
+        if( _index >= m_materialCount )
         {
             return nullptr;
         }
@@ -348,6 +355,7 @@ namespace Mengine
                         ss << "  arg1.xyz = colorTex.xyz;" << std::endl;
                         break;
                     }
+
                     switch( s->argument_alpha1 )
                     {
                     case MAGIC_TEXARG_CURRENT:
@@ -792,7 +800,7 @@ namespace Mengine
             return cache.fragmentShader;
         }
 
-
+#ifdef _DEBUG
         Stringstream ss;
         switch( m_renderPlatform )
         {
@@ -809,25 +817,51 @@ namespace Mengine
                 return nullptr;
             }break;
         }
+#endif
 
-        String shader_code = ss.str();
+        RenderFragmentShaderInterfacePtr fragmentShader = nullptr;
 
-        MemoryBufferInterfacePtr memoryBuffer = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+        switch( textures )
+        {
+        case 0:
+            {
+                fragmentShader = RENDERMATERIAL_SERVICE()
+                    ->getFragmentShader( STRINGIZE_STRING_LOCAL( "Fragment_Color" ) );
+            }break;
+        case 1:
+            {
+                MAGIC_TEXTURE_STATES * state = m->states + 0;
 
-        memoryBuffer->setMemory( shader_code.c_str(), shader_code.size(), __FILE__, __LINE__ );
+                if( state->operation_rgb == MAGIC_TEXOP_MODULATE &&
+                    state->argument_rgb1 == MAGIC_TEXARG_DIFFUSE &&
+                    state->argument_rgb2 == MAGIC_TEXARG_TEXTURE &&
+                    state->operation_alpha == MAGIC_TEXOP_MODULATE &&
+                    state->argument_alpha1 == MAGIC_TEXARG_DIFFUSE &&
+                    state->argument_alpha2 == MAGIC_TEXARG_TEXTURE )
+                {
+                    fragmentShader = RENDERMATERIAL_SERVICE()
+                        ->getFragmentShader( STRINGIZE_STRING_LOCAL( "Fragment_Blend" ) );
+                }
+            }break;
+        default:
+            {
+                
+            }break;
+        }
 
-        RenderFragmentShaderInterfacePtr fragmentShader = RENDER_SYSTEM()
-            ->createFragmentShader( STRINGIZE_STRING_LOCAL( "AstralaxFragmentShader" ), memoryBuffer, false );
+        if( fragmentShader == nullptr )
+        {
+            LOGGER_ERROR( "AstralaxParticleSystem2 not support this particle shader" );
+
+            return nullptr;
+        }
 
         MagicStatesCache key;
         key.textures = textures;
 
         memset( key.states + 0, 0, sizeof( MAGIC_TEXTURE_STATES ) );
         memset( key.states + 1, 0, sizeof( MAGIC_TEXTURE_STATES ) );
-        memset( key.states + 2, 0, sizeof( MAGIC_TEXTURE_STATES ) );
-        memset( key.states + 3, 0, sizeof( MAGIC_TEXTURE_STATES ) );
-
+        
         for( int i = 0; i != textures; ++i )
         {
             key.states[i] = m->states[i];

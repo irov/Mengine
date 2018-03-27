@@ -24,10 +24,9 @@
 
 #include "Core/ConstString.h"
 
-#	ifndef MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX
+#ifndef MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX
 #	define MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX 512
-#	endif
-
+#endif
 
 namespace Mengine
 {

@@ -11,16 +11,16 @@
 #include "stdex/binary_vector.h"
 #include "stdex/stl_map.h"
 
+#ifndef MENGINE_MATERIAL_RENDER_STAGE_MAX
+#	define MENGINE_MATERIAL_RENDER_STAGE_MAX 256
+#endif
+
+#ifndef MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE
+#	define MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE 127
+#endif
+
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-#	ifndef MENGINE_MATERIAL_RENDER_STAGE_MAX
-#	define MENGINE_MATERIAL_RENDER_STAGE_MAX 256
-#	endif
-
-#	ifndef MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE
-#	define MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE 127
-#	endif
 	//////////////////////////////////////////////////////////////////////////
     class RenderMaterialManager
 		: public ServiceBase<RenderMaterialServiceInterface>

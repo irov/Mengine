@@ -221,7 +221,10 @@ namespace Mengine
 			return nullptr;
 		}
 
-		m_particleSystem->updateMaterial();
+        if( m_particleSystem->updateMaterial() == false )
+        {
+            return nullptr;
+        }
 
 		return emitter;
 	}

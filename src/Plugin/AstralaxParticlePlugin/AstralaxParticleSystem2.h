@@ -48,7 +48,7 @@ namespace Mengine
 
     public:
         bool updateAtlas();
-        void updateMaterial();
+        bool updateMaterial();
 
     protected:
         void onContainerRelease_( AstralaxEmitterContainer2 * _container );
@@ -61,7 +61,7 @@ namespace Mengine
         typedef stdex::map<uint32_t, AstralaxEmitterContainer2 *> TMapHashEmitterContainers;
         TMapHashEmitterContainers m_containers;
 
-        int m_stageCount;
+        int m_materialCount;
         const RenderMaterialStage * m_stages[256];
 
         typedef stdex::vector<ResourceImagePtr> TVectorAtlasDesc;
@@ -70,7 +70,7 @@ namespace Mengine
         struct MagicStatesCache
         {
             int textures;
-            MAGIC_TEXTURE_STATES states[4];
+            MAGIC_TEXTURE_STATES states[MENGINE_RENDER_VERTEX_UV_COUNT];
 
             RenderFragmentShaderInterfacePtr fragmentShader;
         };

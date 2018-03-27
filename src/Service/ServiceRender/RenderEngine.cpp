@@ -1338,9 +1338,7 @@ namespace Mengine
 
         mt::scale_box( bb_homogenize, vp_scale );
         mt::transpose_box( bb_homogenize, vp.begin );
-
-
-
+        
         RenderMaterialInterfacePtr ro_material = _material;
 
         if( m_debugStepRenderMode == true && _debug == false )

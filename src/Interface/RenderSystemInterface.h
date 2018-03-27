@@ -485,7 +485,7 @@ namespace Mengine
         
 	public:
 		virtual void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
-			uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount ) = 0;
+			uint32_t _minIndex, uint32_t _vertexCount, uint32_t _startIndex, uint32_t _indexCount ) = 0;
 
 		virtual void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) = 0;
 		virtual void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) = 0;
@@ -566,7 +566,7 @@ namespace Mengine
 		uint32_t batch;
     };
 	//////////////////////////////////////////////////////////////////////////
-	struct RenderObjectState
+	struct RenderState
 	{
 		const RenderViewportInterface * viewport;
 		const RenderCameraInterface * camera;
@@ -581,17 +581,22 @@ namespace Mengine
         SERVICE_DECLARE("RenderService")
 
     public:
-		virtual void addRenderObject( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _verticesNum
+        virtual void addRenderMesh( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+            , const RenderVertexBufferInterfacePtr & _vertexBuffer
+            , const RenderIndexBufferInterfacePtr & _indexBuffer
+            , uint32_t _indexCount ) = 0;
+
+		virtual void addRenderObject( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const RenderIndex * _indices, uint32_t _indicesNum
 			, const mt::box2f * _bb, bool _debug ) = 0;
 
-		virtual void addRenderQuad( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _verticesNum
+		virtual void addRenderQuad( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount
 			, const mt::box2f * _bb, bool _debug ) = 0;
 
-		virtual void addRenderLine( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _verticesNum
+		virtual void addRenderLine( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount
 			, const mt::box2f * _bb, bool _debug ) = 0;
 
 	public:

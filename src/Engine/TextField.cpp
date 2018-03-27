@@ -307,7 +307,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
+    void TextField::_render( RenderServiceInterface * _renderService, const RenderState * _state )
     {
         if( m_key.empty() == true )
         {
@@ -370,7 +370,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::renderOutline_( const RenderObjectState * _state )
+    void TextField::renderOutline_( const RenderState * _state )
     {
         (void)_state;
         //if( m_outline == false )

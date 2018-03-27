@@ -75,7 +75,7 @@ namespace Mengine
 		void drawIndexedPrimitive( EPrimitiveType _type
 			, uint32_t _baseVertexIndex
 			, uint32_t _minIndex
-			, uint32_t _verticesNum
+			, uint32_t _vertexCount
 			, uint32_t _startIndex
 			, uint32_t _indexCount ) override;
 

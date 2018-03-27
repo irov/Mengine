@@ -63,7 +63,7 @@ namespace Mengine
 		Node::_destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Point::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
+	void Point::_render( RenderServiceInterface * _renderService, const RenderState * _state )
 	{
 		if( m_linked == nullptr )
 		{
@@ -129,7 +129,7 @@ namespace Mengine
 		_renderService->addRenderQuad( _state, material, m_vertices, 4, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Point::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void Point::_debugRender( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
 	{
 		if( (_debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
 		{

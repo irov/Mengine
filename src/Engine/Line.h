@@ -22,7 +22,7 @@ namespace Mengine
 		float getWidth() const;
 
 	protected:
-		void _render( RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
+		void _render( RenderServiceInterface * _renderService, const RenderState * _state ) override;
 
 	protected:
 		mt::vec3f m_from;

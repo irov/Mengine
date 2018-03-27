@@ -261,7 +261,7 @@ namespace Mengine
 		m_invalidateVerticesWM = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Grid2D::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
+	void Grid2D::_render( RenderServiceInterface * _renderService, const RenderState * _state )
 	{
 		const RenderIndex * indices = &m_indices[0];
 		uint32_t indicesCount = (uint32_t)m_indices.size();

@@ -1539,7 +1539,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_render( Mengine::RenderServiceInterface * _renderService, const RenderObjectState * _state )
+    void Movie2::_render( Mengine::RenderServiceInterface * _renderService, const RenderState * _state )
     {
         uint32_t mesh_iterator = 0;
         Mesh * meshes_buffer = &m_meshes.front();
@@ -1556,7 +1556,7 @@ namespace Mengine
         {
             ResourceReference * resource_reference = (ResourceReference *)mesh.resource_data;
 
-            RenderObjectState state;
+            RenderState state;
 
             if( mesh.camera_data != nullptr )
             {

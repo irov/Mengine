@@ -970,7 +970,7 @@ namespace Mengine
         uint32_t debugMask = APPLICATION_SERVICE()
             ->getDebugMask();
 
-		RenderObjectState state;
+		RenderState state;
 		state.viewport = m_renderViewport;
 		state.camera = m_renderCamera;
 		state.clipplane = m_renderClipplane;

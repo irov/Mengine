@@ -77,7 +77,7 @@ namespace Mengine
 		//void _setEventListener( const pybind::dict & _listener ) override;
 
 	protected:
-		void _debugRender(  RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
+		void _debugRender(  RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask ) override;
 
 	protected:
 		CollisionWorldPtr m_collisionWorld;

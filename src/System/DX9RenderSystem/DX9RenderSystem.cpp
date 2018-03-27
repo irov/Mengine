@@ -1401,8 +1401,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
-        uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount )
+    void DX9RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, uint32_t _vertexBase,
+        uint32_t _minIndex, uint32_t _vertexCount, uint32_t _indexStart, uint32_t _indexCount )
     {
         if( m_pD3DDevice == nullptr )
         {
@@ -1417,7 +1417,7 @@ namespace Mengine
         UINT primCount = s_getPrimitiveCount( _type, _indexCount );
 
         DXCALL( m_pD3DDevice, DrawIndexedPrimitive
-            , (primitiveType, _baseVertexIndex, _minIndex, _verticesNum, _startIndex, primCount)
+            , (primitiveType, _vertexBase, _minIndex, _vertexCount, _indexStart, primCount)
         );
     }
     //////////////////////////////////////////////////////////////////////////

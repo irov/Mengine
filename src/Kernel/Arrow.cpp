@@ -346,7 +346,7 @@ namespace Mengine
         _adaptScreenPoint = _screenPoint * windowScale + windowOffset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+    void Arrow::_debugRender( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
     {
         if( (_debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
         {

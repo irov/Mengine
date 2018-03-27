@@ -57,11 +57,11 @@ namespace Mengine
 		~Node() override;
         
 	public:
-		void render( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
+		void render( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask ) override;
 		inline bool isRenderable() const;
 
     public:
-        virtual void _renderTarget( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask );
+        virtual void _renderTarget( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask );
 		
 	public:
 		void setRenderViewport( const RenderViewportInterface * _viewport );
@@ -96,7 +96,7 @@ namespace Mengine
         void _setExternalRender( bool _externalRender ) override;
 			
 	protected:
-		void _debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
+		void _debugRender( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask ) override;
 	
 	protected:
 		const RenderViewportInterface * m_renderViewport;
@@ -107,7 +107,7 @@ namespace Mengine
         RenderTargetInterfacePtr m_renderTarget;
 
 	protected:
-		void renderChild_( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask );
+		void renderChild_( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask );
 
 	public:
 		void calcScreenPosition( const RenderCameraInterface * _camera, mt::vec2f & _screen );

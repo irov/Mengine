@@ -25,10 +25,10 @@ namespace Mengine
 		void _destroy() override;
 
 	protected:
-		void _render( RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
+		void _render( RenderServiceInterface * _renderService, const RenderState * _state ) override;
 
 	protected:
-		void _debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
+		void _debugRender( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask ) override;
 
 	protected:
 		Point * m_linked;

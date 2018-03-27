@@ -925,7 +925,7 @@ namespace Mengine
         this->deactivate();
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::render( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void Node::render( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
 	{
 		if( this->isRenderable() == false )
 		{
@@ -975,7 +975,7 @@ namespace Mengine
 		//{
 		//	m_cameraRevision = cameraRevision;
 
-		RenderObjectState state;
+		RenderState state;
 		state.viewport = renderViewport;
 		state.camera = renderCamera;
 		state.clipplane = renderClipplane;
@@ -1006,7 +1006,7 @@ namespace Mengine
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Node::_renderTarget( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+    void Node::_renderTarget( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
     {
         (void)_renderService;
         (void)_state;
@@ -1153,7 +1153,7 @@ namespace Mengine
         m_invalidateRendering = true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::renderChild_( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void Node::renderChild_( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
 	{
 		for( TListNodeChild::unslug_iterator
 			it = m_children.ubegin(),
@@ -1297,7 +1297,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void Node::_debugRender( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
 	{
         if( (_debugMask & MENGINE_DEBUG_NODES) == 0 )
 		{

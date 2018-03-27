@@ -606,7 +606,7 @@ namespace Mengine
 	//		);
 	//}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderMap::render( const RenderObjectState * _state, uint32_t _debugMask )
+	void PathFinderMap::render( const RenderState * _state, uint32_t _debugMask )
 	{
 		(void)_state;
 

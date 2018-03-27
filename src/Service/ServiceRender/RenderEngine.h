@@ -14,7 +14,7 @@
 #include "stdex/static_array.h"
 #include "stdex/heap_array.h"
 
-#include "Factory/FactoryPool.h"
+#include "Factory/Factory.h"
 
 #include "math/mat4.h"
 #include "math/vec4.h"
@@ -32,21 +32,29 @@
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////	
-	const uint32_t RO_FLAG_DEBUG = 0x00000001;
+    enum ERenderObjectFlag
+    {
+        RENDER_OBJECT_FLAG_DEBUG = 0x00000001
+    };
+    //////////////////////////////////////////////////////////////////////////
+    enum ERenderPassFlag
+    {
+        RENDER_PASS_FLAG_SINGLE = 0x00000001
+    };
 	//////////////////////////////////////////////////////////////////////////
 	struct RenderObject
     {
 		RenderMaterialInterface * material;
 		uint32_t materialSmartId;
 
-		RenderVertexBufferInterface * vbHandle;
-		RenderIndexBufferInterface * ibHandle;
+		RenderVertexBufferInterface * vertexBuffer;
+		RenderIndexBufferInterface * indexBuffer;
 
 		const RenderVertex2D * vertexData;
 		uint32_t vertexCount;
 
-        const RenderIndex * indicesData;
-        uint32_t indicesCount;
+        const RenderIndex * indexData;
+        uint32_t indexCount;
 
 		mt::box2f bb;
 				
@@ -60,11 +68,35 @@ namespace Mengine
 
 		uint32_t flags;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    struct RenderBatch
+        : public FactorablePtr
+    {
+        RenderVertexAttributeInterfacePtr vertexAttribute;
+
+        RenderVertexBufferInterfacePtr vertexBuffer;
+
+        uint32_t vertexCount;
+        MemoryInterfacePtr vertexMemory;
+
+        RenderIndexBufferInterfacePtr indexBuffer;
+
+        uint32_t indexCount;
+        MemoryInterfacePtr indexMemory;
+
+        uint32_t vbPos;
+        uint32_t ibPos;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<RenderBatch> RenderBatchPtr;
 	//////////////////////////////////////////////////////////////////////////
 	struct RenderPass
+        : public FactorablePtr
 	{
 		uint32_t beginRenderObject;
 		uint32_t countRenderObject;
+
+        RenderBatchPtr batch;
 
 		const RenderViewportInterface * viewport;
 		const RenderCameraInterface * camera;
@@ -73,7 +105,11 @@ namespace Mengine
         RenderTargetInterfacePtr target;
 				
 		const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];
+
+        uint32_t flags;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<RenderPass> RenderPassPtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderEngine
 		: public ServiceBase<RenderServiceInterface>
@@ -96,21 +132,28 @@ namespace Mengine
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
 
 	public:
-		void addRenderObject( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _verticesNum 
-			, const RenderIndex * _indices, uint32_t _indicesNum 
+        void addRenderMesh( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+            , const RenderVertexBufferInterfacePtr & _vertexBuffer
+            , const RenderIndexBufferInterfacePtr & _indexBuffer
+            , uint32_t _indexCount ) override;
+
+		void addRenderObject( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount
+			, const RenderIndex * _indices, uint32_t _indexCount 
 			, const mt::box2f * _bb, bool _debug ) override;
 
-		void addRenderQuad( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
-			, const RenderVertex2D * _vertices, uint32_t _verticesNum 
+		void addRenderQuad( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+			, const RenderVertex2D * _vertices, uint32_t _vertexCount
 			, const mt::box2f * _bb, bool _debug ) override;
 
-		void addRenderLine( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _verticesNum
+		void addRenderLine( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount
 			, const mt::box2f * _bb, bool _debug ) override;
-		
-	protected:
-		void createRenderPass_();
+
+    protected:
+        const RenderBatchPtr & requestRenderBatch_( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount );
+        bool testRenderPass_( const RenderState * _state, const RenderBatchPtr & _renderBatch ) const;
+        const RenderPassPtr & requestRenderPass_( const RenderState * _state, const RenderMaterialInterfacePtr & _material, uint32_t _vertexCount, uint32_t _indexCount );
 
 	public:
 		RenderVertex2D * getDebugRenderVertex2D( size_t _count ) override;
@@ -120,11 +163,11 @@ namespace Mengine
 		ERenderBatchMode getBatchMode() const override;
 
 	public:
-		RenderVertexBufferInterfacePtr createVertexBuffer( const RenderVertex2D * _vertexies, uint32_t _verticesNum );
-		RenderIndexBufferInterfacePtr createIndicesBuffer( const RenderIndex * _buffer, uint32_t _count );
+		RenderVertexBufferInterfacePtr createVertexBuffer( const RenderVertex2D * _vertexData, uint32_t _vertexCount );
+		RenderIndexBufferInterfacePtr createIndicesBuffer( const RenderIndex * _indexData, uint32_t _indexCount );
 		
-		bool updateVertexBuffer( const RenderVertexBufferInterfacePtr & _vb, const RenderVertex2D * _vertexies, uint32_t _verticesNum );
-		bool updateIndicesBuffer( const RenderIndexBufferInterfacePtr & _ib, const RenderIndex * _buffer, uint32_t _count );
+		bool updateVertexBuffer( const RenderVertexBufferInterfacePtr & _vb, const RenderVertex2D * _vertexData, uint32_t _vertexCount );
+		bool updateIndicesBuffer( const RenderIndexBufferInterfacePtr & _ib, const RenderIndex * _indexData, uint32_t _indexCount );
 
 	public:
 		void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) override;
@@ -184,10 +227,10 @@ namespace Mengine
 		void restoreRenderSystemStates_();
 		
 		void renderPasses_();
-		void renderPass_( RenderPass & _renderPass );
+		void renderPass_( const RenderPassPtr & _renderPass );
 
-		void renderObjects_( RenderPass & _renderPass );
-		void renderObject_( RenderObject* _renderObject );
+		void renderObjects_( const RenderPassPtr & _renderPass );
+		void renderObject_( RenderObject * _renderObject );
 
 	protected:
 		void calcRenderViewport_( const Viewport & _viewport, Viewport & _renderViewport ) const;
@@ -196,13 +239,11 @@ namespace Mengine
         bool makeBatches_();
 
 	protected:
-        void insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndex * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize );
-        void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, RenderIndex * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos );
-		bool insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndex * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t _vbPos, uint32_t _ibPos ) const;
+        void insertRenderPasses_();
+        void insertRenderObjects_( const RenderPassPtr & _renderPass, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos );
+		bool insertRenderObject_( const RenderObject * _renderObject, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t _vbPos, uint32_t _ibPos ) const;
 
 		void flushRender_();
-
-		bool create2DBuffers_();
 
     protected:
         void calcQuadSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum, const Viewport & _viewport );
@@ -228,19 +269,13 @@ namespace Mengine
         RenderTextureInterfacePtr m_nullTexture;	// dummy white pixel
 		RenderTextureInterfacePtr m_whitePixelTexture;
 
-		RenderVertexBufferInterfacePtr m_vbHandle2D;
-		RenderIndexBufferInterfacePtr m_ibHandle2D;
-
-		uint32_t m_renderVertexCount;
-		uint32_t m_renderIndexCount;
-
 		ERenderBatchMode m_batchMode;
 
 		uint32_t m_maxVertexCount;
 		uint32_t m_maxIndexCount;
 						
-		RenderVertexBufferInterfacePtr m_currentVBHandle;
-		RenderIndexBufferInterfacePtr m_currentIBHandle;
+		RenderVertexBufferInterfacePtr m_currentVertexBuffer;
+		RenderIndexBufferInterfacePtr m_currentIndexBuffer;
 
 		uint32_t m_currentTextureStages;
 		RenderTextureStage m_currentTextureStage[MENGINE_MAX_TEXTURE_STAGES];
@@ -269,11 +304,17 @@ namespace Mengine
         TArrayRenderIndices m_indicesLine;
 
 		Viewport m_renderViewport;
+
+        FactoryPtr m_factoryRenderBatch;
+        FactoryPtr m_factoryRenderPass;
        
         typedef stdex::heap_array<RenderObject> TArrayRenderObject;
         TArrayRenderObject m_renderObjects;
 
-        typedef stdex::vector<RenderPass> TVectorRenderPass;
+        typedef stdex::vector<RenderBatchPtr> TVectorRenderBatch;
+        TVectorRenderBatch m_renderBatches;
+
+        typedef stdex::vector<RenderPassPtr> TVectorRenderPass;
         TVectorRenderPass m_renderPasses;
 
 		typedef stdex::vector<RenderVertex2D> TArrayRenderVertex2D;
@@ -292,7 +333,7 @@ namespace Mengine
 		uint32_t m_iterateRenderObjects;
 		
 	protected:
-		void batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndex * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos );
-		void batchRenderObjectSmart_( RenderPass * _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndex * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos );
+		void batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos );
+		void batchRenderObjectSmart_( const RenderPassPtr & _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos );
 	};
 }

@@ -79,7 +79,7 @@ namespace Mengine
 		m_verticesWM.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Landscape2D::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
+	void Landscape2D::_render( RenderServiceInterface * _renderService, const RenderState * _state )
 	{
 		TVectorLandscape2DElements & elementsWM = this->getElementWM();
 

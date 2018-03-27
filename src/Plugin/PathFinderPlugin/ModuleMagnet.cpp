@@ -123,7 +123,7 @@ namespace Mengine
 		m_magnetWorlds.erase( it_erase, m_magnetWorlds.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleMagnet::_render( const RenderObjectState * _state, uint32_t _debugMask )
+	void ModuleMagnet::_render( const RenderState * _state, uint32_t _debugMask )
 	{
 		(void)_state;
 		(void)_debugMask;

@@ -28,7 +28,7 @@ namespace Mengine
 		};		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Isometric::render( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void Isometric::render( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
 	{
 		stdex::intrusive_sort_stable( m_children, FIsometricSortY() );
 

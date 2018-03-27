@@ -164,7 +164,7 @@ namespace Mengine
 		m_actor = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeMagnetActor::_debugRender( Mengine::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void NodeMagnetActor::_debugRender( Mengine::RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
 	{
 		(void)_debugMask;
 

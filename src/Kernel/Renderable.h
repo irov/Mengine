@@ -5,7 +5,7 @@
 namespace Mengine
 {
     class RenderServiceInterface;
-    struct RenderObjectState;
+    struct RenderState;
 
 	class Renderable
 	{
@@ -14,11 +14,11 @@ namespace Mengine
         ~Renderable();
 
 	public:
-		virtual void render( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) = 0;
+		virtual void render( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask ) = 0;
 
 	public:
-		virtual void _render( RenderServiceInterface * _renderService, const RenderObjectState * _state );
-		virtual void _debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask );
+		virtual void _render( RenderServiceInterface * _renderService, const RenderState * _state );
+		virtual void _debugRender( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask );
 
 	public:
 		virtual void setHide( bool _hide );

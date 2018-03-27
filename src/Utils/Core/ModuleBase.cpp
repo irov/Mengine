@@ -72,7 +72,7 @@ namespace Mengine
 		this->_tick( _time, _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::render( const RenderObjectState * _state, uint32_t _debugMask )
+	void ModuleBase::render( const RenderState * _state, uint32_t _debugMask )
 	{
 		this->_render( _state, _debugMask );
 	}
@@ -85,7 +85,7 @@ namespace Mengine
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::_render( const RenderObjectState * _state, uint32_t _debugMask )
+	void ModuleBase::_render( const RenderState * _state, uint32_t _debugMask )
 	{
 		(void)_state;
 		(void)_debugMask;

@@ -48,7 +48,7 @@ namespace Mengine
 		void _deactivate() override;
 
 	protected:
-		void _debugRender( Mengine::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask ) override;
+		void _debugRender( Mengine::RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask ) override;
 
 	protected:
 		MagnetWorldPtr m_magnetWorld;

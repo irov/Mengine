@@ -285,7 +285,7 @@ namespace Mengine
 		mt::set_box_from_two_point( _boundingBox, minimal_wm, maximal_wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::_debugRender( RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void HotSpotImage::_debugRender( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
 	{
 		if( (_debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
 		{

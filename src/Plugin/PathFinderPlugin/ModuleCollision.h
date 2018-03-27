@@ -25,7 +25,7 @@ namespace Mengine
 
 	public:
 		void _tick( float _time, float _timing ) override;
-		void _render( const RenderObjectState * _state, uint32_t _debugMask ) override;
+		void _render( const RenderState * _state, uint32_t _debugMask ) override;
 		
 	protected:
 		FactoryPtr m_factoryCollisionWorld;

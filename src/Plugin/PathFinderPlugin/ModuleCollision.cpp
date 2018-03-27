@@ -210,7 +210,7 @@ namespace Mengine
 		m_collisionWorlds.erase( it_erase, m_collisionWorlds.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleCollision::_render( const RenderObjectState * _state, uint32_t _debugMask )
+	void ModuleCollision::_render( const RenderState * _state, uint32_t _debugMask )
 	{
 		(void)_state;
 		(void)_debugMask;

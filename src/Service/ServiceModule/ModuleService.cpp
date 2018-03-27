@@ -160,7 +160,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleService::render( const RenderObjectState * _state, uint32_t _debugMask )
+	void ModuleService::render( const RenderState * _state, uint32_t _debugMask )
 	{
 		for( TVectorModules::iterator
 			it = m_modules.begin(),

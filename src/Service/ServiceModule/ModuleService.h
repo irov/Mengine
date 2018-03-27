@@ -33,7 +33,7 @@ namespace Mengine
 
 	public:
 		void tick( float _time, float _timing ) override;
-		void render( const RenderObjectState * _state, uint32_t _debugMask ) override;
+		void render( const RenderState * _state, uint32_t _debugMask ) override;
 
 	public:
 		void message( const ConstString & _moduleName, const ConstString & _messageName, const TMapWParams & _params ) override;

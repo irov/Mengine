@@ -36,7 +36,7 @@ namespace Mengine
 		bool _compile() override;
 		void _release() override;
 
-		void _render( RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
+		void _render( RenderServiceInterface * _renderService, const RenderState * _state ) override;
 
 		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
         void _invalidateColor() override;

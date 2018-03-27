@@ -158,7 +158,7 @@ namespace Mengine
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
+	void Model3D::_render( RenderServiceInterface * _renderService, const RenderState * _state )
 	{		
 		if( m_frame == nullptr )
 		{

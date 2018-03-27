@@ -135,7 +135,7 @@ namespace Mengine
 		//EVENTABLE_CALL( this, EVENT_MESHGET_UPDATE )(this, _current, _timing);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Meshget::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
+	void Meshget::_render( RenderServiceInterface * _renderService, const RenderState * _state )
 	{
 		if( m_positions.empty() == true )
 		{

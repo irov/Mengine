@@ -93,7 +93,7 @@ namespace Mengine
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie2Slot::_debugRender( Mengine::RenderServiceInterface * _renderService, const RenderObjectState * _state, uint32_t _debugMask )
+	void Movie2Slot::_debugRender( Mengine::RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
 	{
 		if( (_debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
 		{

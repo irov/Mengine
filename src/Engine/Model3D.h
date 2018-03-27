@@ -57,7 +57,7 @@ namespace Mengine
 
 	protected:
 		void _update( float _current, float _timing ) override;
-		void _render( RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
+		void _render( RenderServiceInterface * _renderService, const RenderState * _state ) override;
 
 		bool _activate() override;
 		void _deactivate() override;

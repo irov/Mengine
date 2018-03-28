@@ -275,8 +275,8 @@ namespace Mengine
         uint32_t max_i;
         uint32_t max_j;
 
-        uint32_t offset_i;
-        uint32_t offset_j;
+        int32_t offset_i;
+        int32_t offset_j;
 
         if( channels == 4 )
         {
@@ -338,8 +338,8 @@ namespace Mengine
             new_width += 2;
             new_height += 2;
 
-            offset_i = min_i + 1;
-            offset_j = min_j + 1;
+            offset_i = min_i - 1;
+            offset_j = min_j - 1;
         }
         else
         {
@@ -351,8 +351,8 @@ namespace Mengine
             max_i = width;
             max_j = height;
 
-            offset_i = min_i + 1;
-            offset_j = min_j + 1;
+            offset_i = min_i - 1;
+            offset_j = min_j - 1;
         }
 
         if( out_path.empty() == false )
@@ -586,8 +586,8 @@ namespace Mengine
             fprintf_s( f_result, "base_height=%u\n", height );
             fprintf_s( f_result, "trim_width=%u\n", new_width );
             fprintf_s( f_result, "trim_height=%u\n", new_height );
-            fprintf_s( f_result, "offset_x=%u\n", offset_i );
-            fprintf_s( f_result, "offset_y=%u\n", offset_j );
+            fprintf_s( f_result, "offset_x=%d\n", offset_i );
+            fprintf_s( f_result, "offset_y=%d\n", offset_j );
         }
         else
         {
@@ -595,8 +595,8 @@ namespace Mengine
             printf( "base_height=%u\n", height );
             printf( "trim_width=%u\n", new_width );
             printf( "trim_height=%u\n", new_height );
-            printf( "offset_x=%u\n", offset_i );
-            printf( "offset_y=%u\n", offset_j );
+            printf( "offset_x=%d\n", offset_i );
+            printf( "offset_y=%d\n", offset_j );
         }
 
         return true;

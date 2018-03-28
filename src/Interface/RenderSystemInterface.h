@@ -83,6 +83,10 @@ namespace Mengine
 		virtual uint32_t getHWDepth() const = 0;
 
 		virtual PixelFormat getHWPixelFormat() const = 0;
+
+    public:
+        virtual float getHWWidthInv() const = 0;
+        virtual float getHWHeightInv() const = 0;
 		
 	public:
 		virtual Pointer lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly = true ) = 0;
@@ -114,8 +118,13 @@ namespace Mengine
 		virtual void setFileName( const FilePath & _fileName ) = 0;
 		virtual const FilePath & getFileName() const = 0;
 
+    public:
 		virtual uint32_t getWidth() const = 0;
 		virtual uint32_t getHeight() const = 0;
+
+    public:
+        virtual float getWidthInv() const = 0;
+        virtual float getHeightInv() const = 0;
 
 	public:
 		virtual bool isPow2() const = 0;

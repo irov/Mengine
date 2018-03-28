@@ -162,7 +162,7 @@ namespace Mengine
 
                 for( int i = 0; i < FE_MAX_PINS; ++i )
                 {
-                    const fe_node * effect_node_layout = effect_node_out->in[i].node;
+                    const fe_node * effect_node_layout = effect_node_out->in[FE_MAX_PINS - i - 1].node;
 
                     if( effect_node_layout != nullptr )
                     {
@@ -237,11 +237,11 @@ namespace Mengine
                 uint32_t border_width = m_width + 2;
                 uint32_t border_height = m_height + 2;
 
-                uint8_t * it_texture_memory = _memory + _channel;
+                uint8_t * it_texture_memory = _memory;
                 const uint8_t * it_glyph_buffer = glyph_buffer;
 
-                it_texture_memory += _pitch;
-
+                it_texture_memory += _pitch; //y offset one pixel
+                it_texture_memory += _channel; //x offset one pixel
                                 
                 if( m_ttfchannel == 1 && _channel == 4 )
                 {
@@ -418,12 +418,15 @@ namespace Mengine
 		{
             for( uint32_t index = 0; index != m_ttfLayoutCount; ++index )
             {
-                g.layout[index].dx = 0.f;
-                g.layout[index].dy = 0.f;
-                g.layout[index].w = 0.f;
-                g.layout[index].h = 0.f;
+                TTFGlyphQuad & quad = g.quads[index];
 
-                g.layout[index].texture = nullptr;
+                quad.offset.x = 0.f;
+                quad.offset.y = 0.f;
+                quad.size.x = 0.f;
+                quad.size.y = 0.f;
+
+                mt::uv4_identity( quad.uv );
+                quad.texture = nullptr;
             }
 
 			glyphs.push_back( g );
@@ -492,12 +495,14 @@ namespace Mengine
                     return false;
                 }
 
-                g.layout[layoutIndex].dx = (float)res.x;
-                g.layout[layoutIndex].dy = (float)-res.y;
-                g.layout[layoutIndex].w = (float)w;
-                g.layout[layoutIndex].h = (float)h;
-                g.layout[layoutIndex].uv = uv;
-                g.layout[layoutIndex].texture = texture;
+                TTFGlyphQuad & quad = g.quads[layoutIndex];
+
+                quad.offset.x = (float)res.x;
+                quad.offset.y = (float)-res.y;
+                quad.size.x = (float)res_bgra.w;
+                quad.size.y = (float)res_bgra.h;
+                quad.uv = uv;
+                quad.texture = texture;
             }            
         }
         else
@@ -512,13 +517,15 @@ namespace Mengine
             {
                 return false;
             }
+
+            TTFGlyphQuad & quad = g.quads[0];
             
-            g.layout[0].dx = (float)dx;
-            g.layout[0].dy = (float)-dy;
-            g.layout[0].w = (float)w;
-            g.layout[0].h = (float)h;
-            g.layout[0].uv = uv;
-            g.layout[0].texture = texture;
+            quad.offset.x = (float)dx;
+            quad.offset.y = (float)-dy;
+            quad.size.x = (float)w;
+            quad.size.y = (float)h;
+            quad.uv = uv;
+            quad.texture = texture;
         }
 
         glyphs.push_back( g );
@@ -638,10 +645,13 @@ namespace Mengine
 		const TTFGlyph & glyph = *it_found;
 
 		_glyph->advance = glyph.advance;
-		_glyph->offset = mt::vec2f( glyph.layout[_layout].dx, glyph.layout[_layout].dy );
-		_glyph->size = mt::vec2f( glyph.layout[_layout].w, glyph.layout[_layout].h );
-        _glyph->uv = glyph.layout[_layout].uv;
-		_glyph->texture = glyph.layout[_layout].texture;		
+
+        const TTFGlyphQuad & quad = glyph.quads[_layout];
+
+        _glyph->offset = quad.offset;
+        _glyph->size = quad.size;
+        _glyph->uv = quad.uv;
+        _glyph->texture = quad.texture;
 
 		if( _next == 0 )
 		{

@@ -37,7 +37,7 @@ namespace Mengine
 		m_container = _container;
         m_emitterId = _id;
 
-        Magic_SetRandomMode( m_emitterId, true );
+        Magic_SetRandomMode( m_emitterId, false );
 
         // set interpolation
         Magic_SetInterpolationMode( m_emitterId, true );
@@ -688,7 +688,7 @@ namespace Mengine
                 mt::ident_m4( vm );
 
                 mt::mat4f pm;
-                mt::make_projection_ortho_lh_m4( pm, m_rect.x, m_rect.z, m_rect.w, m_rect.y, -1000.f, 1000.f );
+                mt::make_projection_ortho_lh_m4( pm, m_rect.x, m_rect.z, m_rect.w, m_rect.y, -1024.f, 1024.f );
 
                 mt::mul_m4_m4( vpm, vm, pm );
             }

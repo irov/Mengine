@@ -153,7 +153,7 @@ namespace Mengine
 		, m_debugMask(0)
 		, m_phycisTiming(0.f)
 		, m_resetTiming(false)
-		, m_maxTiming(100.f)
+		, m_maxTiming(33.3333f)
         , m_focus(true)
 		, m_freeze(false)
         , m_update(true)				

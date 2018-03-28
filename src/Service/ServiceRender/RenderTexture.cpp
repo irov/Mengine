@@ -9,7 +9,9 @@ namespace Mengine
 		: m_id( 0 )
 		, m_width( 0 )
 		, m_height( 0 )
-		, m_pow2( false )
+        , m_widthInv( 0.f )
+        , m_heightInv( 0.f )
+		, m_pow2( false )        
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -29,6 +31,9 @@ namespace Mengine
 
         m_width = _width;
         m_height = _height;
+
+        m_widthInv = 1.f / (float)m_width;
+        m_heightInv = 1.f / (float)m_height;
 
         m_rect.left = 0;
         m_rect.top = 0;
@@ -80,6 +85,16 @@ namespace Mengine
 	{
 		return m_height;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    float RenderTexture::getWidthInv() const
+    {
+        return m_widthInv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float RenderTexture::getHeightInv() const
+    {
+        return m_heightInv;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	const Rect & RenderTexture::getRect() const
 	{

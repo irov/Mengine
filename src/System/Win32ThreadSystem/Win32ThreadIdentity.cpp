@@ -8,12 +8,14 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32ThreadIdentity::Win32ThreadIdentity()
-        : m_file(nullptr)
-		, m_line(0)
-		, m_handle(INVALID_HANDLE_VALUE)
+        : m_handle(INVALID_HANDLE_VALUE)
         , m_task(nullptr)
 		, m_complete(true)
 		, m_exit(false)
+#ifdef _DEBUG
+        , m_file( nullptr )
+        , m_line( 0 )
+#endif
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -32,15 +32,15 @@ namespace Mengine
 
 		HANDLE m_handle;
 
-#ifdef _DEBUG
-		const Char * m_file;
-		uint32_t m_line;
-#endif
-			
         ThreadTaskInterface * m_task;
 
 		volatile bool m_complete;
 		volatile bool m_exit;
+
+#ifdef _DEBUG
+        const Char * m_file;
+        uint32_t m_line;
+#endif
 	};
     //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<Win32ThreadIdentity> Win32ThreadIdentityPtr;

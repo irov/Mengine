@@ -364,17 +364,17 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::_release()
 	{
-		float width = (float)m_texture->getWidth();
-		float height = (float)m_texture->getHeight();
+        float width_inv = m_texture->getWidthInv();
+        float height_inv = m_texture->getHeightInv();
 
 		const RenderImageInterfacePtr & image = m_texture->getImage();
 
-		float hwWidth = (float)image->getHWWidth();
-		float hwHeight = (float)image->getHWHeight();
+        float hwWidth = (float)image->getHWWidth();
+        float hwHeight = (float)image->getHWHeight();
 
 		mt::vec2f uv_unscale;
-		uv_unscale.x = hwWidth / width;
-		uv_unscale.y = hwHeight / height;
+        uv_unscale.x = hwWidth * width_inv;
+        uv_unscale.y = hwHeight * height_inv;
 
 		for( size_t i = 0; i != 4; ++i )
 		{
@@ -416,12 +416,12 @@ namespace Mengine
 
 		const RenderImageInterfacePtr & image = m_texture->getImage();
 
-		float hwWidth = (float)image->getHWWidth();
-		float hwHeight = (float)image->getHWHeight();
+		float hwWidthInv = image->getHWWidthInv();
+		float hwHeightInv = image->getHWHeightInv();
 
 		mt::vec2f uv_scale;
-		uv_scale.x = width / hwWidth;
-		uv_scale.y = height / hwHeight;
+		uv_scale.x = width * hwWidthInv;
+		uv_scale.y = height * hwHeightInv;
 
 		for( size_t i = 0; i != 4; ++i )
 		{

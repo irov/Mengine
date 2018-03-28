@@ -42,6 +42,9 @@ namespace Mengine
 		uint32_t getWidth() const override;
 		uint32_t getHeight() const override;
 
+        float getWidthInv() const override;
+        float getHeightInv() const override;
+
 		bool isPow2() const override;
 
 	protected:        
@@ -54,6 +57,9 @@ namespace Mengine
 		
 		uint32_t m_width;
 		uint32_t m_height;
+
+        float m_widthInv;
+        float m_heightInv;
 		
 		Rect m_rect;
 		mt::uv4f m_uv;

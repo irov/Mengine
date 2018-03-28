@@ -167,7 +167,7 @@ namespace Mengine
 
         const TVectorTextLine & layout_base = layouts[0];
 
-        mt::vec2f offset( 0.f, 0.f );
+        mt::vec2f base_offset( 0.f, 0.f );
 
         switch( verticalAlign )
         {
@@ -175,17 +175,17 @@ namespace Mengine
             {
                 TVectorTextLine::size_type line_count = layout_base.size();
 
-                offset.y = (fontAscent + lineOffset) * (float( line_count ) - 1.f) * 0.5f;
+                base_offset.y = (fontAscent + lineOffset) * (float( line_count ) - 1.f) * 0.5f;
             }break;
         case ETFVA_CENTER:
             {
                 TVectorTextLine::size_type line_count = layout_base.size();
 
-                offset.y = -(fontAscent + lineOffset) * (float( line_count ) - 2.f) * 0.5f;
+                base_offset.y = -(fontAscent + lineOffset) * (float( line_count ) - 2.f) * 0.5f;
             }break;
         case ETFVA_TOP:
             {
-                offset.y = (fontAscent + lineOffset);
+                base_offset.y = (fontAscent + lineOffset);
             }break;
         }
 
@@ -218,6 +218,11 @@ namespace Mengine
             };
         }               
 
+        Chunk chunk;
+        chunk.vertex_begin = 0;
+        chunk.vertex_count = 0;
+        chunk.material = nullptr;
+
         for( TVectorTextLineLayout::const_iterator
             it_layout = layouts.begin(),
             it_layout_end = layouts.end();
@@ -226,10 +231,7 @@ namespace Mengine
         {
             const TVectorTextLine & lines = *it_layout;
             
-            Chunk chunk;
-            chunk.vertex_begin = 0;
-            chunk.vertex_count = 0;
-            chunk.material = nullptr;
+            mt::vec2f offset = base_offset;
 
             for( TVectorTextLine::const_iterator
                 it_line = lines.begin(),
@@ -769,28 +771,21 @@ namespace Mengine
 
         float maxlen = 0.f;
 
-        for( TVectorTextLineLayout::const_iterator
-            it_layout = m_layouts.begin(),
-            it_layout_end = m_layouts.end();
-            it_layout != it_layout_end;
-            ++it_layout )
+        const TVectorTextLine & lines = m_layouts[0];
+
+        for( TVectorTextLine::const_iterator
+            it_line = lines.begin(),
+            it_line_end = lines.end();
+            it_line != it_line_end;
+            ++it_line )
         {
-            const TVectorTextLine & lines = *it_layout;
+            const TextLine & line = *it_line;
 
-            for( TVectorTextLine::const_iterator
-                it_line = lines.begin(),
-                it_line_end = lines.end();
-                it_line != it_line_end;
-                ++it_line )
-            {
-                const TextLine & line = *it_line;
+            float length = line.getLength();
+            maxlen = (std::max)(maxlen, length);
 
-                float length = line.getLength();
-                maxlen = (std::max)(maxlen, length);
-
-                uint32_t chars = line.getCharsDataSize();
-                m_charCount += chars;
-            }
+            uint32_t chars = line.getCharsDataSize();
+            m_charCount += chars;
         }
 
         m_textSize.x = maxlen;

@@ -37,6 +37,10 @@ namespace Mengine
 		
         PixelFormat getHWPixelFormat() const override;
 
+    protected:
+        float getHWWidthInv() const override;
+        float getHWHeightInv() const override;
+
 	public:
         Pointer lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
 		bool unlock( uint32_t _level, bool _successful ) override;
@@ -54,6 +58,9 @@ namespace Mengine
         uint32_t m_hwChannels;
 
         PixelFormat m_hwPixelFormat;
+
+        float m_hwWidthInv;
+        float m_hwHeightInv;
 	};
 	//////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<DX9RenderImage> DX9RenderImagePtr;

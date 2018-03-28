@@ -30,7 +30,7 @@ namespace Mengine
 
 		uint32_t mixAtlasPow = m_maxAtlasPow - m_minAtlasPow;
 
-        for( uint32_t i = 0; i != 2; ++i )
+        for( uint32_t i = 0; i != 3; ++i )
         {
             m_atlasess[i].resize( mixAtlasPow );
         }
@@ -40,7 +40,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void TTFAtlasService::_finalize()
 	{
-		for( uint32_t i = 0; i != 2; ++i )
+		for( uint32_t i = 0; i != 3; ++i )
 		{
             TVectorAtlasess & atlas = m_atlasess[i];
 
@@ -88,26 +88,22 @@ namespace Mengine
             return nullptr;
         }
 
-        uint32_t texture_channel = texture_image->getHWChannels();
-
-		const RenderImageInterfacePtr & image = texture->getImage();
-
         size_t texture_pitch;
-		uint8_t * texture_memory = image->lock( &texture_pitch, 0, rect, false );
+		uint8_t * texture_memory = texture_image->lock( &texture_pitch, 0, rect, false );
+
+        uint32_t texture_channel = texture_image->getHWChannels();
 
         bool successful = _provider->onTextureGlyphFill( texture_memory, texture_pitch, texture_channel );
 
-		image->unlock( 0, successful );
+		texture_image->unlock( 0, successful );
 
         if( successful == false )
         {
             return nullptr;
         }
 
-        uint32_t atlas_width = texture->getWidth();
-        uint32_t atlas_height = texture->getHeight();
-        float atlas_width_inv = 1.f / float( atlas_width );
-        float atlas_height_inv = 1.f / float( atlas_height );
+        float atlas_width_inv = texture->getWidthInv();
+        float atlas_height_inv = texture->getHeightInv();
 
         _uv.p0 = mt::vec2f( float( rect.left + 1 ) * atlas_width_inv, float( rect.top + 1 ) * atlas_height_inv );
         _uv.p1 = mt::vec2f( float( rect.left + 1 + _width ) * atlas_width_inv, float( rect.top + 1 ) * atlas_height_inv );
@@ -116,60 +112,49 @@ namespace Mengine
 
 		return texture;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    static uint32_t getnp2( uint32_t _n )
-    {
-        uint32_t atlas_index = 0;
-        while( (_n >>= 1) != 0 )
-        {
-            ++atlas_index;
-        }
-
-        return atlas_index;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	TTFAtlas * TTFAtlasService::getAtlas_( uint32_t _dimension, uint32_t _channel )
 	{
-        uint32_t atlas_index = getnp2( _dimension );
+        uint32_t dimension_np2 = mt::get_np2( _dimension );
 
-        atlas_index = atlas_index > m_minAtlasPow ? atlas_index - m_minAtlasPow : 0;
+        uint32_t atlasIndex = dimension_np2 > m_minAtlasPow ? dimension_np2 - m_minAtlasPow : 0;
 
         uint32_t mixAtlasPow = m_maxAtlasPow - m_minAtlasPow;
 
-		if( atlas_index > mixAtlasPow )
+		if( atlasIndex > mixAtlasPow )
 		{
 			return nullptr;
 		}
 
-        const uint32_t unpow_channel_mask[] = {0, 0, 1, 0, 1};
+        const uint32_t unpow_channel_mask[] = {0, 0, 1, 0, 2};
 
         uint32_t unpow_channel = unpow_channel_mask[_channel];
 
-		TVectorAtlases & atlases = m_atlasess[unpow_channel][atlas_index];
+		TVectorAtlases & atlases = m_atlasess[unpow_channel][atlasIndex];
 
-		for( TVectorAtlases::iterator
-			it = atlases.begin(),
-			it_end = atlases.end();
-		it != it_end;
-		++it )
-		{
-			TTFAtlas & atlas = *it;
+        for( TVectorAtlases::iterator
+            it = atlases.begin(),
+            it_end = atlases.end();
+            it != it_end;
+            ++it )
+        {
+            TTFAtlas & atlas = *it;
 
-			if( atlas.indices.empty() == true )
-			{
-				continue;
-			}
-			
-			return &atlas;
-		}
+            if( atlas.indices.empty() == true )
+            {
+                continue;
+            }
+
+            return &atlas;
+        }
 
         uint32_t minDimension = Helper::Power2( m_minAtlasPow );
         uint32_t fixDimension = Helper::Max( minDimension, _dimension );
 
-		TTFAtlas new_atlas;
+		TTFAtlas newAtlas;
 
-        new_atlas.channel = _channel;
-        new_atlas.dimension = fixDimension;
+        newAtlas.channel = _channel;
+        newAtlas.dimension = fixDimension;
 
 //#   ifdef MENGINE_RENDER_TEXTURE_RGBA
 //        PixelFormat format_select[] = {PF_A8, PF_A8B8G8R8, PF_A8B8G8R8, PF_A8B8G8R8};
@@ -184,18 +169,18 @@ namespace Mengine
 		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
 			->createDynamicTexture( m_maxAtlasWidth, fixDimension, 4, 1, format );
 
-		new_atlas.texture = texture;
+		newAtlas.texture = texture;
 
-		uint32_t max_glyph_count = m_maxAtlasWidth / fixDimension;
+		uint32_t maxGlyphCount = m_maxAtlasWidth / fixDimension;
 
-		new_atlas.indices.reserve( max_glyph_count );
+		newAtlas.indices.reserve( maxGlyphCount );
 
-		for( uint32_t i = max_glyph_count; i != 0; --i )
+		for( uint32_t i = maxGlyphCount; i != 0; --i )
 		{
-			new_atlas.indices.push_back( i - 1 );
+			newAtlas.indices.push_back( i - 1 );
 		}
 
-		atlases.push_back( new_atlas );
+		atlases.push_back( newAtlas );
 		
 		TTFAtlas & atlas = atlases.back();
 

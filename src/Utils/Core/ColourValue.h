@@ -55,7 +55,7 @@ namespace Mengine
         {
         }
 
-        const ColourValue & operator = ( const ColourValue & _other )
+        ColourValue & operator = ( const ColourValue & _other )
         {
             m_r = _other.m_r;
             m_g = _other.m_g;

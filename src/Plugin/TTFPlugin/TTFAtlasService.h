@@ -39,7 +39,7 @@ namespace Mengine
 	public:
 		typedef stdex::vector<TTFAtlas> TVectorAtlases;
 		typedef stdex::vector<TVectorAtlases> TVectorAtlasess;
-		TVectorAtlasess m_atlasess[2];
+		TVectorAtlasess m_atlasess[3];
         
 		uint32_t m_minAtlasPow;
 		uint32_t m_maxAtlasPow;

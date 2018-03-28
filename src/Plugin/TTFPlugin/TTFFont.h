@@ -88,10 +88,8 @@ namespace Mengine
 
         struct TTFGlyphQuad
         {
-            float dx;
-            float dy;
-            float w;
-            float h;
+            mt::vec2f offset;
+            mt::vec2f size;
 
             mt::uv4f uv;
             RenderTextureInterfacePtr texture;
@@ -103,7 +101,7 @@ namespace Mengine
 
             float advance;
 
-            TTFGlyphQuad layout[4];
+            TTFGlyphQuad quads[4];
         };
 		
 		typedef stdex::vector<TTFGlyph> TVectorTTFGlyphs;

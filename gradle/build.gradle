@@ -1,0 +1,53 @@
+buildscript {
+    repositories {
+        google()
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.1.0'
+    }
+}
+
+apply plugin: 'com.android.application'
+
+dependencies {
+}
+
+android {
+    buildToolsVersion "27.0.3"
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.wonderland.mengine.mengine"
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++14 -frtti -fexceptions"
+                arguments "-DANDROID_PLATFORM=android-15",
+                        "-DANDROID_ARM_NEON=TRUE",
+                        "-DANDROID_ABI=armeabi-v7a",
+                        "-DANDROID_STL=c++_shared",
+                        "-DANDROID_TOOLCHAIN=clang",
+                        "-DCMAKE_BUILD_TYPE=Debug",
+                        "-DMENGINE_LIB_DIR=build_android_sdl_Debug"
+            }
+        }
+    }
+    
+    externalNativeBuild {
+        cmake {
+            path "../CMake/Android_SDL/CMakeLists.txt"
+        }
+    }
+    
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDirs = ['res']
+        }
+    }
+}

@@ -302,7 +302,7 @@ namespace Mengine
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32Platform::stop()
+	void Win32Platform::stopPlatform()
 	{
 		m_mouseEvent.stop();
 

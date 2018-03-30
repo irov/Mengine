@@ -14,7 +14,7 @@ namespace Mengine
     {
     public:
         OpenGLRenderVertexAttribute();
-        ~OpenGLRenderVertexAttribute();
+        ~OpenGLRenderVertexAttribute() override;
 
     public:
         bool initialize( const ConstString & _name );

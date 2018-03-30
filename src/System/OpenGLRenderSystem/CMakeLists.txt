@@ -28,7 +28,7 @@ src
 )
 
 include_directories( 
-    ${ENGINE_SOURCE_DIR}/Kernel
+    ${MENGINE_SOURCE_DIR}/Kernel
     ${THIRDPARTY_DIR}/SDL2/include
     ${THIRDPARTY_DIR}/libmath/include
     )
@@ -38,8 +38,6 @@ ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 set_target_properties (${MY_LIB_NAME} PROPERTIES
     FOLDER System
 )
-
-TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${ENGINE_LIB_PREFIX}SDL2${ENGINE_LIB_SUFFIX})
 
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}

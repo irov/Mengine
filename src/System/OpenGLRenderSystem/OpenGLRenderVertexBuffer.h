@@ -13,7 +13,7 @@ namespace Mengine
     {
     public:
         OpenGLRenderVertexBuffer();
-        ~OpenGLRenderVertexBuffer();
+        ~OpenGLRenderVertexBuffer() override;
 
     public:
         bool initialize( uint32_t _elementSize, EBufferType _bufferType );

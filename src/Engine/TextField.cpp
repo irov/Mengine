@@ -204,6 +204,8 @@ namespace Mengine
                     materialName = RENDERMATERIAL_SERVICE()
                         ->getMaterialName( EM_TEXTURE_BLEND );
                 }break;
+            default:
+                break;
             };
         }
         else
@@ -215,6 +217,8 @@ namespace Mengine
                     materialName = RENDERMATERIAL_SERVICE()
                         ->getMaterialName( EM_TEXTURE_BLEND_PREMULTIPLY );
                 }break;
+            default:
+                break;
             };
         }               
 

@@ -44,7 +44,7 @@ namespace Mengine
 
     public:
         void update() override;
-        void stop()	override;
+        void stopPlatform()	override;
 
     public:
         void setIcon( uint32_t _icon ) override;

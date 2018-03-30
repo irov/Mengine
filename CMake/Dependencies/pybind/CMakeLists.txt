@@ -45,10 +45,13 @@ add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPYBIND_PYTHON_VERSION=278)
 
 include_directories(${SOURCE_DIR}/include)
+
 include_directories(${THIRDPARTY_DIR}/Python)
-include_directories(${THIRDPARTY_DIR}/Python/PC)
 include_directories(${THIRDPARTY_DIR}/stdex/include)
 
+if(WIN32)
+    include_directories(${THIRDPARTY_DIR}/Python/PC)
+endif()
 
 add_library( ${PROJECT_NAME} STATIC ${sources} )
 

@@ -252,6 +252,37 @@ namespace Mengine
         camera->projection->setCameraDirection( cameraDirection );
     }
     //////////////////////////////////////////////////////////////////////////
+    static EMaterialBlendMode getMovieBlendMode( ae_blend_mode_t _ae_blend_mode )
+    {
+        EMaterialBlendMode blend_mode = EMB_NORMAL;
+
+        switch( _ae_blend_mode )
+        {
+        case AE_MOVIE_BLEND_ADD:
+            blend_mode = EMB_ADD;
+            break;
+        case AE_MOVIE_BLEND_SCREEN:
+            blend_mode = EMB_SCREEN;
+            break;
+        case AE_MOVIE_BLEND_MULTIPLY:
+            blend_mode = EMB_MULTIPLY;
+            break;
+        default:
+            break;
+        };
+
+        return blend_mode;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static EMaterialBlendMode getMovieLayerBlendMode( const aeMovieLayerData * _layer )
+    {
+        ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _layer );
+
+        EMaterialBlendMode blend_mode = getMovieBlendMode( layer_blend_mode );
+
+        return blend_mode;
+    }
+    //////////////////////////////////////////////////////////////////////////
     static void * __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptr_t _data )
     {
         Movie2 * movie2 = (Movie2 *)_data;
@@ -300,22 +331,7 @@ namespace Mengine
                     return AE_NULL;
                 }
 
-                EMaterialBlendMode blend_mode = EMB_NORMAL;
-
-                ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( layer );
-
-                switch( layer_blend_mode )
-                {
-                case AE_MOVIE_BLEND_ADD:
-                    blend_mode = EMB_ADD;
-                    break;
-                case AE_MOVIE_BLEND_SCREEN:
-                    blend_mode = EMB_SCREEN;
-                    break;
-                case AE_MOVIE_BLEND_MULTIPLY:
-                    blend_mode = EMB_MULTIPLY;
-                    break;
-                };
+                EMaterialBlendMode blend_mode = getMovieLayerBlendMode( layer );
 
                 surface->setBlendMode( blend_mode );
 
@@ -478,6 +494,8 @@ namespace Mengine
 
                 return node;
             }break;
+        default:
+            break;
         };
 
         if( _callbackData->track_matte_layer != AE_NULL )
@@ -509,24 +527,11 @@ namespace Mengine
                         {
                             surfaceTrackMatte->setTrackMatteMode( ESTM_MODE_ALPHA_INVERTED );
                         }break;
+                    default:
+                        break;
                     }                    
 
-                    EMaterialBlendMode blend_mode = EMB_NORMAL;
-
-                    ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
-
-                    switch( layer_blend_mode )
-                    {
-                    case AE_MOVIE_BLEND_ADD:
-                        blend_mode = EMB_ADD;
-                        break;
-                    case AE_MOVIE_BLEND_SCREEN:
-                        blend_mode = EMB_SCREEN;
-                        break;
-                    case AE_MOVIE_BLEND_MULTIPLY:
-                        blend_mode = EMB_MULTIPLY;
-                        break;
-                    };
+                    EMaterialBlendMode blend_mode = getMovieLayerBlendMode( layer );
 
                     surfaceTrackMatte->setBlendMode( blend_mode );
                     
@@ -555,22 +560,7 @@ namespace Mengine
 
                     node->setResourceParticle( resourceParticle );
 
-                    EMaterialBlendMode blend_mode = EMB_NORMAL;
-
-                    ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
-
-                    switch( layer_blend_mode )
-                    {
-                    case AE_MOVIE_BLEND_ADD:
-                        blend_mode = EMB_ADD;
-                        break;
-                    case AE_MOVIE_BLEND_SCREEN:
-                        blend_mode = EMB_SCREEN;
-                        break;
-                    case AE_MOVIE_BLEND_MULTIPLY:
-                        blend_mode = EMB_MULTIPLY;
-                        break;
-                    };
+                    //EMaterialBlendMode blend_mode = getMovieBlendMode( layer );
 
                     ae_float_t layer_stretch = ae_get_movie_layer_data_stretch( _callbackData->layer );
                     node->setStretch( layer_stretch );
@@ -612,22 +602,7 @@ namespace Mengine
 
                     surfaceVideo->setResourceVideo( resourceVideo );
 
-                    EMaterialBlendMode blend_mode = EMB_NORMAL;
-
-                    ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _callbackData->layer );
-
-                    switch( layer_blend_mode )
-                    {
-                    case AE_MOVIE_BLEND_ADD:
-                        blend_mode = EMB_ADD;
-                        break;
-                    case AE_MOVIE_BLEND_SCREEN:
-                        blend_mode = EMB_SCREEN;
-                        break;
-                    case AE_MOVIE_BLEND_MULTIPLY:
-                        blend_mode = EMB_MULTIPLY;
-                        break;
-                    };
+                    EMaterialBlendMode blend_mode = getMovieLayerBlendMode( layer );
 
                     surfaceVideo->setLoop( _callbackData->incessantly );
 
@@ -655,6 +630,8 @@ namespace Mengine
 
                     return surfaceSound;
                 }break;
+            default:
+                break;
             }
         }
 
@@ -712,6 +689,8 @@ namespace Mengine
 
                     //movie2->removeSurface( surfaceSound );
                 }break;
+            default:
+                break;
             }
         }
     }
@@ -800,6 +779,8 @@ namespace Mengine
 
                         matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
                     }break;
+                default:
+                    break;
                 }
             }break;
         case AE_MOVIE_STATE_UPDATE_BEGIN:
@@ -897,6 +878,8 @@ namespace Mengine
                             }
                         }
                     }break;
+                default:
+                    break;
                 }
             }break;
         case AE_MOVIE_STATE_UPDATE_END:
@@ -940,6 +923,8 @@ namespace Mengine
                             animatable->stop();
                         }
                     }break;
+                default:
+                    break;
                 }
             }break;
         case AE_MOVIE_STATE_UPDATE_PAUSE:
@@ -974,6 +959,8 @@ namespace Mengine
 
                         animatable->pause();
                     }break;
+                default:
+                    break;
                 }
             }break;
         case AE_MOVIE_STATE_UPDATE_RESUME:
@@ -1017,6 +1004,8 @@ namespace Mengine
 
                         animatable->resume( time );
                     }break;
+                default:
+                    break;
                 }
             }break;
         }
@@ -1062,6 +1051,8 @@ namespace Mengine
                 desc->matrix.from_f16( _callbackData->matrix );
                 desc->mesh = *_callbackData->mesh;
             }break;
+        default:
+            break;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1527,7 +1518,7 @@ namespace Mengine
         
         ae_update_movie_composition( m_composition, _timing * 0.001f );
 
-        for( TVectorSurfaces::iterator
+        for( TVectorSurfaces::const_iterator
             it = m_surfaces.begin(),
             it_end = m_surfaces.end();
             it != it_end;
@@ -1634,20 +1625,7 @@ namespace Mengine
 
                         m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
 
-                        EMaterialBlendMode blend_mode = EMB_NORMAL;
-
-                        switch( mesh.blend_mode )
-                        {
-                        case AE_MOVIE_BLEND_ADD:
-                            blend_mode = EMB_ADD;
-                            break;
-                        case AE_MOVIE_BLEND_SCREEN:
-                            blend_mode = EMB_SCREEN;
-                            break;
-                        case AE_MOVIE_BLEND_MULTIPLY:
-                            blend_mode = EMB_MULTIPLY;
-                            break;
-                        };
+                        EMaterialBlendMode blend_mode = getMovieBlendMode( mesh.blend_mode );
 
                         m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
@@ -1682,20 +1660,7 @@ namespace Mengine
 
                         m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
 
-                        EMaterialBlendMode blend_mode = EMB_NORMAL;
-
-                        switch( mesh.blend_mode )
-                        {
-                        case AE_MOVIE_BLEND_ADD:
-                            blend_mode = EMB_ADD;
-                            break;
-                        case AE_MOVIE_BLEND_SCREEN:
-                            blend_mode = EMB_SCREEN;
-                            break;
-                        case AE_MOVIE_BLEND_MULTIPLY:
-                            blend_mode = EMB_MULTIPLY;
-                            break;
-                        };
+                        EMaterialBlendMode blend_mode = getMovieBlendMode( mesh.blend_mode );
 
                         m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
@@ -1735,20 +1700,7 @@ namespace Mengine
 
                         m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
 
-                        EMaterialBlendMode blend_mode = EMB_NORMAL;
-
-                        switch( mesh.blend_mode )
-                        {
-                        case AE_MOVIE_BLEND_ADD:
-                            blend_mode = EMB_ADD;
-                            break;
-                        case AE_MOVIE_BLEND_SCREEN:
-                            blend_mode = EMB_SCREEN;
-                            break;
-                        case AE_MOVIE_BLEND_MULTIPLY:
-                            blend_mode = EMB_MULTIPLY;
-                            break;
-                        };
+                        EMaterialBlendMode blend_mode = getMovieBlendMode( mesh.blend_mode );
 
                         m.material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
 
@@ -1795,6 +1747,8 @@ namespace Mengine
                         _renderService
                             ->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
                     }break;
+                default:
+                    break;
                 }
             }
             else
@@ -1854,20 +1808,7 @@ namespace Mengine
 
                         m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
 
-                        EMaterialBlendMode blend_mode = EMB_NORMAL;
-
-                        switch( mesh.blend_mode )
-                        {
-                        case AE_MOVIE_BLEND_ADD:
-                            blend_mode = EMB_ADD;
-                            break;
-                        case AE_MOVIE_BLEND_SCREEN:
-                            blend_mode = EMB_SCREEN;
-                            break;
-                        case AE_MOVIE_BLEND_MULTIPLY:
-                            blend_mode = EMB_MULTIPLY;
-                            break;
-                        };
+                        //EMaterialBlendMode blend_mode = getMovieBlendMode( mesh.blend_mode );
 
                         m.material = surfaceTrackMatte->getMaterial();
 
@@ -1878,7 +1819,9 @@ namespace Mengine
 
                         _renderService
                             ->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
-                    }
+                    }break;
+                default:
+                    break;
                 }
             }
         }

@@ -14,6 +14,8 @@ namespace Mengine
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
         , m_hwChannels( 0 )
+        , m_hwWidthInv( 0.f )
+        , m_hwHeightInv( 0.f )
         , m_minFilter( GL_LINEAR )
         , m_magFilter( GL_LINEAR )
         , m_wrapS( GL_CLAMP_TO_EDGE )
@@ -123,6 +125,16 @@ namespace Mengine
     PixelFormat OpenGLRenderImage::getHWPixelFormat() const
     {
         return m_hwPixelFormat;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float OpenGLRenderImage::getHWWidthInv() const
+    {
+        return m_hwWidthInv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float OpenGLRenderImage::getHWHeightInv() const
+    {
+        return m_hwHeightInv;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
@@ -239,7 +251,7 @@ namespace Mengine
             return true;
         }
 
-#ifndef HAVE_GLES
+#ifndef MENGINE_OPENGL_ES
         GLCALL( glEnable, (GL_TEXTURE_2D) );
 #endif
         GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
@@ -271,7 +283,7 @@ namespace Mengine
                     void * buffer = m_lockMemory->getMemory();
 
                     GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_hwwidth, miplevel_hwheight, m_hwChannels, 1, m_hwPixelFormat );
-#ifdef HAVE_GLES
+#ifdef MENGINE_OPENGL_ES
                     IF_GLCALL( glCompressedTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
 #else
                     IF_GLCALL( glCompressedTexImage2D_, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )

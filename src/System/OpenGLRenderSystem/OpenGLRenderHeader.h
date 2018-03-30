@@ -9,17 +9,22 @@
 
 #if __APPLE__ && !MACOSX
 #   include <TargetConditionals.h>
-#    define GL_GLEXT_PROTOTYPES
+
+#   define GL_GLEXT_PROTOTYPES
 #   include "SDL_opengles.h"
 #   include "SDL_opengles2.h"
+
+#   define MENGINE_OPENGL_ES
 #endif
 
 #if __ANDROID__
-#    define GL_GLEXT_PROTOTYPES
+#   define GL_GLEXT_PROTOTYPES
 #   include "SDL_opengles.h"
 #   include "SDL_opengles2.h"
 #   include "SDL_opengles2_gl2.h"
 #   include "SDL_opengles2_gl2ext.h"
+
+#   define MENGINE_OPENGL_ES
 #endif
 
 #if WIN32 || MACOSX

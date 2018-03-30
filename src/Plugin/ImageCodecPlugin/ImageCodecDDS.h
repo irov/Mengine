@@ -105,6 +105,8 @@ namespace Mengine
 			return FOURCC( 'D', 'X', 'T', '4' );
 		case PF_DXT5:
 			return FOURCC( 'D', 'X', 'T', '5' );
+		default:
+            break;
 		}
 
 		return FOURCC( 'U', 'N', 'K', 'N' );

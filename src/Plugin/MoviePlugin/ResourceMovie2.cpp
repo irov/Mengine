@@ -73,6 +73,8 @@ namespace Mengine
 
                 return data_resource;
             }break;
+		default:
+			break;
         }
 
         return AE_NULL;

@@ -13,7 +13,7 @@ namespace Mengine
     {
     public:
         OpenGLRenderIndexBuffer();
-        ~OpenGLRenderIndexBuffer();
+        ~OpenGLRenderIndexBuffer() override;
 
     public:
         bool initialize( uint32_t _indexSize, EBufferType _bufferType );

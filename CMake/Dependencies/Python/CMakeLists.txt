@@ -95,6 +95,8 @@ configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
 
 if(APPLE)
     configure_file(ModifiedMac/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
+elseif(ANDROID)
+    configure_file(ModifiedAndroid/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
 else()
     configure_file(Modified/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
 endif()
@@ -225,7 +227,7 @@ else()
 endif()
 
 set_source_files_properties(${SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
-set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"2.7.9\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
+set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"\\\" -DEXEC_PREFIX=\\\"\\\" -DVERSION=\\\"2.7.14\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\"\\\" " )
 
 include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Python)

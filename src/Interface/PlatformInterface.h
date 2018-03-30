@@ -22,7 +22,7 @@ namespace Mengine
 		
 	public:
 		virtual void update() = 0;
-		virtual void stop() = 0;
+		virtual void stopPlatform() = 0;
 
     public:
         virtual void setIcon( uint32_t _icon ) = 0;

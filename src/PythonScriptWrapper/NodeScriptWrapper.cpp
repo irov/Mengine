@@ -6764,7 +6764,7 @@ namespace Mengine
             }
 
         protected:
-            void accept( ResourceReference* _resource )
+            void accept( ResourceReference* _resource ) override
             {
                 if( _resource->isCompile() == false )
                 {

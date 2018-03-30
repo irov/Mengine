@@ -812,7 +812,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::ModuleServiceInterface );
 
         PLATFORM_SERVICE()
-            ->stop();
+            ->stopPlatform();
 
         NOTIFICATION_SERVICE()
             ->notify( NOTIFICATOR_ENGINE_FINALIZE );

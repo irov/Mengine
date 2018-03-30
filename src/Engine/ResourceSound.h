@@ -41,8 +41,8 @@ namespace Mengine
 		void _release() override;
 
     protected:
-        virtual void _debugIncrementReference();
-        virtual void _debugDecrementReference();
+        void _debugIncrementReference() override;
+        void _debugDecrementReference() override;
 
 	protected:
 		FilePath m_filePath;

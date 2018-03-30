@@ -28,7 +28,7 @@ namespace Mengine
     {
     public:
         OpenGLRenderProgram();
-        ~OpenGLRenderProgram();
+        ~OpenGLRenderProgram() override;
 
     public:
         GLuint getProgram() const;

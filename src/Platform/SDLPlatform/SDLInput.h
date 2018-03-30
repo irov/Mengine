@@ -3,7 +3,7 @@
 #   include "Interface/ServiceInterface.h"
 #   include "Interface/InputSystemInterface.h"
 
-#   include "Math/vec2.h"
+#   include "math/vec2.h"
 
 #   include "Kernel/Servant.h"
 

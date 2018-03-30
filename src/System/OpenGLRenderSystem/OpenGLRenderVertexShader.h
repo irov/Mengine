@@ -15,7 +15,7 @@ namespace Mengine
     {
     public:
         OpenGLRenderVertexShader();
-        ~OpenGLRenderVertexShader();
+        ~OpenGLRenderVertexShader() override;
 
     public:
         const ConstString & getName() const override;

@@ -45,7 +45,7 @@ namespace Mengine
         case BOP_SUBTRACT: return GL_FUNC_SUBTRACT;
         case BOP_REVSUBTRACT: return GL_FUNC_REVERSE_SUBTRACT;
                 
-#ifdef HAVE_GLES
+#ifdef MENGINE_OPENGL_ES
         case BOP_MIN: return GL_MIN_EXT;
         case BOP_MAX: return GL_MAX_EXT;
 #else
@@ -317,7 +317,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     GLenum s_getGLFillMode( EFillMode _op )
     {
-#ifndef HAVE_GLES
+#ifndef MENGINE_OPENGL_ES
         switch( _op )
         {
         case FM_POINT:

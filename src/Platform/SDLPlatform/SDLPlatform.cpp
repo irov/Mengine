@@ -195,6 +195,8 @@ namespace Mengine
 		case SDL_LOG_PRIORITY_CRITICAL:
 			level = LM_CRITICAL;
 			break;
+        default:
+            break;
 		}
 
 		size_t messageLen = strlen( message );
@@ -355,7 +357,7 @@ namespace Mengine
         m_platformName.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::stop()
+    void SDLPlatform::stopPlatform()
     {
         m_running = false;
         m_shouldQuit = true;
@@ -1035,6 +1037,8 @@ namespace Mengine
 
                             SDL_PushEvent( &newEvent );
                         }break;
+                    default:
+                        break;
                     }
                 }break;
             case SDL_QUIT:

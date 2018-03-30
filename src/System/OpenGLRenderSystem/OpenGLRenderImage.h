@@ -14,7 +14,7 @@ namespace Mengine
     {
     public:
         OpenGLRenderImage();
-        ~OpenGLRenderImage();
+        ~OpenGLRenderImage() override;
 
     public:
         bool initialize( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type );
@@ -44,6 +44,10 @@ namespace Mengine
         PixelFormat getHWPixelFormat() const override;
         
     public:
+        float getHWWidthInv() const override;
+        float getHWHeightInv() const override;
+
+    public:
         void _destroy() override;
 
     public: 
@@ -64,33 +68,36 @@ namespace Mengine
     protected:
         RenderImageProviderInterfacePtr m_renderImageProvider;
 
-        GLuint m_uid = 0;
+        GLuint m_uid;
         
-        PixelFormat m_hwPixelFormat = PF_UNKNOWN;
+        PixelFormat m_hwPixelFormat;
 
-        ERenderImageMode m_mode = ERIM_NORMAL;
+        ERenderImageMode m_mode;
 
-        uint32_t m_hwMipmaps = 0;
-        uint32_t m_hwWidth = 0;
-        uint32_t m_hwHeight = 0;
-        uint32_t m_hwChannels = 0;
+        uint32_t m_hwMipmaps;
+        uint32_t m_hwWidth;
+        uint32_t m_hwHeight;
+        uint32_t m_hwChannels;
 
-        GLenum m_minFilter = GL_LINEAR;
-        GLenum m_magFilter = GL_LINEAR;
-        GLenum m_wrapS = GL_CLAMP_TO_EDGE;
-        GLenum m_wrapT = GL_CLAMP_TO_EDGE;
+        float m_hwWidthInv;
+        float m_hwHeightInv;
 
-        GLint m_internalFormat = GL_RGB;
+        GLenum m_minFilter;
+        GLenum m_magFilter;
+        GLenum m_wrapS;
+        GLenum m_wrapT;
 
-        GLenum m_format = GL_RGB;
-        GLenum m_type = GL_UNSIGNED_BYTE;
+        GLint m_internalFormat;
+
+        GLenum m_format;
+        GLenum m_type;
 
         MemoryInterfacePtr m_lockMemory;
         Rect m_lockRect;
-        uint32_t m_lockLevel = 0;
+        uint32_t m_lockLevel;
         bool m_lockFirst;
 
-        bool m_pow2 = false;
+        bool m_pow2;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<OpenGLRenderImage> OpenGLRenderImagePtr;

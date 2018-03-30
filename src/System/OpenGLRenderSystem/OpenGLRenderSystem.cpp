@@ -71,7 +71,7 @@ namespace Mengine
     {
         LOGGER_WARNING( "Initializing OpenGL RenderSystem..." );
 
-#ifndef HAVE_GLES
+#ifndef MENGINE_OPENGL_ES
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGL" );
 #else
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGLES" );
@@ -133,7 +133,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ERenderPlatform OpenGLRenderSystem::getRenderPlatformType() const
     {
-#ifndef HAVE_GLES
+#ifndef MENGINE_OPENGL_ES
         return RP_OPENGL;
 #else
         return RP_OPENGLES;
@@ -156,16 +156,10 @@ namespace Mengine
 
         m_resolution = _resolution;
 
+#ifndef MENGINE_OPENGL_ES
         Mengine::initialize_GLEXT();
-        /*
-                GLint ver_major = 0, ver_minor = 0;
-                glGetIntegerv( GL_MAJOR_VERSION, &ver_major );
-                glGetIntegerv( GL_MINOR_VERSION, &ver_minor );
+#endif
 
-                LOGGER_WARNING("OpenGL Version: %d.%d", ver_major, ver_minor);
-
-                OPENGL_RENDER_CHECK_ERROR();
-        */
         const char* vendorStr = reinterpret_cast<const char*>(glGetString( GL_VENDOR ));
         const char* rendererStr = reinterpret_cast<const char*>(glGetString( GL_RENDERER ));
         const char* versionStr = reinterpret_cast<const char*>(glGetString( GL_VERSION ));
@@ -205,7 +199,7 @@ namespace Mengine
         GLCALL( glDepthMask, (GL_FALSE) );
         GLCALL( glDepthFunc, (GL_LESS) );
 
-#ifndef HAVE_GLES
+#ifndef MENGINE_OPENGL_ES
         GLCALL( glMatrixMode, (GL_MODELVIEW) );
         GLCALL( glLoadIdentity, () );
 
@@ -557,7 +551,7 @@ namespace Mengine
         for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
         {
             const TextureStage & textureStage = m_textureStage[i];
-#ifdef HAVE_GLES
+#ifdef MENGINE_OPENGL_ES
             GLCALL( glActiveTexture, (GL_TEXTURE0 + i) );
 #else
             GLCALL( glActiveTexture_, (GL_TEXTURE0 + i) );
@@ -625,7 +619,7 @@ namespace Mengine
             {
                 break;
             }
-#ifdef HAVE_GLES
+#ifdef MENGINE_OPENGL_ES
             GLCALL( glActiveTexture, (GL_TEXTURE0 + i) );
 #else
             GLCALL( glActiveTexture_, (GL_TEXTURE0 + i) );
@@ -677,7 +671,7 @@ namespace Mengine
 
         GLCALL( glBlendFunc, (srcBlendFactor, dstBlendFactor) );
 
-#ifdef HAVE_GLES
+#ifdef MENGINE_OPENGL_ES
         GLCALL( glBlendEquation, (blendOp) );
 #else
         GLCALL( glBlendEquation_, (blendOp) );
@@ -752,7 +746,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setFillMode( EFillMode _mode )
     {
-#if !defined(HAVE_GLES) 
+#ifndef MENGINE_OPENGL_ES
         const GLenum mode = s_getGLFillMode( _mode );
         glPolygonMode( GL_FRONT_AND_BACK, mode );
 #endif      
@@ -966,7 +960,7 @@ namespace Mengine
                 GLCALL( glDepthMask, (GL_TRUE) );
             }
 
-#if !defined(HAVE_GLES)
+#ifndef MENGINE_OPENGL_ES
             GLCALL( glClearDepth, (static_cast<GLclampd>(_depth)) );
 #endif          
         }

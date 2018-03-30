@@ -42,7 +42,7 @@ namespace Mengine
     {
     public:
         OpenGLRenderSystem();
-        ~OpenGLRenderSystem();
+        ~OpenGLRenderSystem() override;
 
     public:
         bool _initialize() override;

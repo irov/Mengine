@@ -1,6 +1,6 @@
 #include "OpenGLRenderExtension.h"
 
-#ifndef HAVE_GLES
+#ifndef MENGINE_OPENGL_ES
 
 #include "SDL_video.h"
 
@@ -222,4 +222,4 @@ namespace Mengine
 #undef GETGLPROC_
     }
 }
-#endif //HAVE_GLES
+#endif

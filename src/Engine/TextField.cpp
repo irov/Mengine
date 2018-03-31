@@ -165,6 +165,11 @@ namespace Mengine
 
         const TVectorTextLineLayout & layouts = this->getTextLayots();
 
+        if( layouts.empty() == true )
+        {
+            return;
+        }
+
         const TVectorTextLine & layout_base = layouts[0];
 
         mt::vec2f base_offset( 0.f, 0.f );

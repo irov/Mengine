@@ -73,6 +73,9 @@ namespace Mengine
         void setRGB( float _r, float _g, float _b );
 
     public:
+        void multiplyRGBA( float _r, float _g, float _b, float _a );
+
+    public:
         void setAsARGB( ColourValue_ARGB _val );
         inline ColourValue_ARGB getAsARGB() const;
 

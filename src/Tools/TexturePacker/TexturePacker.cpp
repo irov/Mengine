@@ -22,7 +22,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker_path", std::wstring() );
     std::wstring log_path = parse_kwds( lpCmdLine, L"--log_path", std::wstring() );
 	
-	
 	std::vector<std::wstring> images_path;
 
 	FILE * f_in = _wfopen( in_path.c_str(), L"r" );

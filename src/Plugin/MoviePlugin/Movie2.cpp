@@ -1537,6 +1537,14 @@ namespace Mengine
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
+        ColourValue total_color;
+        this->calcTotalColor( total_color );
+
+        float total_color_r = total_color.getR();
+        float total_color_g = total_color.getG();
+        float total_color_b = total_color.getB();
+        float total_color_a = total_color.getA();
+
         ae_voidptr_t composition_camera_data = ae_get_movie_composition_camera_data( m_composition );
         (void)composition_camera_data;
 
@@ -1565,6 +1573,8 @@ namespace Mengine
                 state.clipplane = _state->clipplane;
                 state.target = _state->target;
             }
+
+            ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
 
             if( mesh.track_matte_data == nullptr )
             {
@@ -1602,9 +1612,7 @@ namespace Mengine
                         Mesh & m = meshes_buffer[mesh_iterator++];
 
                         m.vertices.resize( mesh.vertexCount );
-
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
-
+                                                
                         for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
                             RenderVertex2D & v = m.vertices[index];
@@ -1620,7 +1628,7 @@ namespace Mengine
                             v.uv[0] = uv;
                             v.uv[1] = uv;
 
-                            v.color = color;
+                            v.color = total_mesh_color;
                         }
 
                         m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
@@ -1638,8 +1646,6 @@ namespace Mengine
 
                         m.vertices.resize( mesh.vertexCount );
 
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
-
                         for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
                             RenderVertex2D & v = m.vertices[index];
@@ -1655,7 +1661,7 @@ namespace Mengine
                             v.uv[0] = uv;
                             v.uv[1] = uv;
 
-                            v.color = color;
+                            v.color = total_mesh_color;
                         }
 
                         m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
@@ -1676,8 +1682,6 @@ namespace Mengine
 
                         m.vertices.resize( mesh.vertexCount );
 
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
-
                         for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
                             RenderVertex2D & v = m.vertices[index];
@@ -1695,7 +1699,7 @@ namespace Mengine
                             resource_image->correctUVImage( v.uv[0], uv );
                             resource_image->correctUVAlpha( v.uv[1], uv );
 
-                            v.color = color;
+                            v.color = total_mesh_color;
                         }
 
                         m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
@@ -1720,8 +1724,6 @@ namespace Mengine
 
                         m.vertices.resize( mesh.vertexCount );
 
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
-
                         for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
                             RenderVertex2D & v = m.vertices[index];
@@ -1737,7 +1739,7 @@ namespace Mengine
                             surfaceVideo->correctUV( 0, v.uv[0], uv );
                             surfaceVideo->correctUV( 1, v.uv[1], uv );
 
-                            v.color = color;
+                            v.color = total_mesh_color;
                         }
 
                         m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
@@ -1767,8 +1769,6 @@ namespace Mengine
                         Mesh & m = meshes_buffer[mesh_iterator++];
 
                         m.vertices.resize( mesh.vertexCount );
-
-                        ColourValue_ARGB color = Helper::makeARGB( mesh.color.r, mesh.color.g, mesh.color.b, mesh.opacity );
 
                         const ResourceImagePtr & resourceImage = surfaceTrackMatte->getResourceImage();
                         const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceTrackMatteImage();
@@ -1803,7 +1803,7 @@ namespace Mengine
                             
                             mt::multiply_tetragon_uv4_v2( v.uv[1], texture_trackmatte_uv, uv_track_matte );
 
-                            v.color = color;
+                            v.color = total_mesh_color;
                         }
 
                         m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );

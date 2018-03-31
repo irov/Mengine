@@ -190,7 +190,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool trimImage( const WString & in_path, const WString & out_path, const WString & result_path )
+    static bool trimImage( const WString & in_path, const WString & out_path, const WString & result_path, bool flag_border, bool flag_premultiplied )
     {
         String utf8_in;
         Helper::unicodeToUtf8( in_path, utf8_in );
@@ -335,11 +335,19 @@ namespace Mengine
                 new_height = max_j - min_j + 1;
             }
 
-            new_width += 2;
-            new_height += 2;
+            if( flag_border == true )
+            {
+                new_width += 2;
+                new_height += 2;
 
-            offset_i = min_i - 1;
-            offset_j = min_j - 1;
+                offset_i = min_i - 1;
+                offset_j = min_j - 1;
+            }
+            else
+            {
+                offset_i = min_i;
+                offset_j = min_j;
+            }
         }
         else
         {
@@ -351,8 +359,8 @@ namespace Mengine
             max_i = width;
             max_j = height;
 
-            offset_i = min_i - 1;
-            offset_j = min_j - 1;
+            offset_i = min_i;
+            offset_j = min_j;
         }
 
         if( out_path.empty() == false )
@@ -376,126 +384,202 @@ namespace Mengine
 
             if( channels == 4 )
             {
-                uint32_t copy_width_end = new_width - 1;
-                uint32_t copy_height_end = new_height - 1;
-
-                for( uint32_t i = 0; i != new_width; ++i )
+                if( flag_border == true )
                 {
-                    for( uint32_t j = 0; j != new_height; ++j )
-                    {
-                        uint32_t new_index = i + j * new_width;
+                    uint32_t copy_width_end = new_width - 1;
+                    uint32_t copy_height_end = new_height - 1;
 
-                        if( (i == 0 || j == 0 || i == copy_width_end || j == copy_height_end) )
+                    for( uint32_t i = 0; i != new_width; ++i )
+                    {
+                        for( uint32_t j = 0; j != new_height; ++j )
                         {
-                            for( uint32_t k = 0; k != channels; ++k )
+                            uint32_t new_index = i + j * new_width;
+
+                            if( (i == 0 || j == 0 || i == copy_width_end || j == copy_height_end) )
                             {
-                                new_textureBuffer[new_index * channels + k] = 0;
+                                for( uint32_t k = 0; k != channels; ++k )
+                                {
+                                    new_textureBuffer[new_index * channels + k] = 0;
+                                }
+                            }
+                        }
+                    }
+
+                    if( flag_premultiplied == true )
+                    {
+                        for( uint32_t i = 1; i != copy_width_end; ++i )
+                        {
+                            for( uint32_t j = 1; j != copy_height_end; ++j )
+                            {
+                                uint32_t new_index = i + j * new_width;
+                                uint32_t old_index = (min_i + (i - 1)) + (min_j + (j - 1)) * width;
+
+                                uint32_t r = textureBuffer[old_index * 4 + 0];
+                                uint32_t g = textureBuffer[old_index * 4 + 1];
+                                uint32_t b = textureBuffer[old_index * 4 + 2];
+                                uint32_t a = textureBuffer[old_index * 4 + 3];
+
+                                new_textureBuffer[new_index * 4 + 0] = (uint8_t)(r * a / 255);
+                                new_textureBuffer[new_index * 4 + 1] = (uint8_t)(g * a / 255);
+                                new_textureBuffer[new_index * 4 + 2] = (uint8_t)(b * a / 255);
+                                new_textureBuffer[new_index * 4 + 3] = (uint8_t)a;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for( uint32_t i = 1; i != copy_width_end; ++i )
+                        {
+                            for( uint32_t j = 1; j != copy_height_end; ++j )
+                            {
+                                uint32_t new_index = i + j * new_width;
+                                uint32_t old_index = (min_i + (i - 1)) + (min_j + (j - 1)) * width;
+
+                                new_textureBuffer[new_index * 4 + 0] = textureBuffer[old_index * 4 + 0];
+                                new_textureBuffer[new_index * 4 + 1] = textureBuffer[old_index * 4 + 1];
+                                new_textureBuffer[new_index * 4 + 2] = textureBuffer[old_index * 4 + 2];
+                                new_textureBuffer[new_index * 4 + 3] = textureBuffer[old_index * 4 + 3];
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if( flag_premultiplied == true )
+                    {
+                        for( uint32_t i = 0; i != new_width; ++i )
+                        {
+                            for( uint32_t j = 0; j != new_height; ++j )
+                            {
+                                uint32_t new_index = i + j * new_width;
+                                uint32_t old_index = (min_i + i) + (min_j + j) * width;
+
+                                uint32_t r = textureBuffer[old_index * 4 + 0];
+                                uint32_t g = textureBuffer[old_index * 4 + 1];
+                                uint32_t b = textureBuffer[old_index * 4 + 2];
+                                uint32_t a = textureBuffer[old_index * 4 + 3];
+
+                                new_textureBuffer[new_index * 4 + 0] = (uint8_t)(r * a / 255);
+                                new_textureBuffer[new_index * 4 + 1] = (uint8_t)(g * a / 255);
+                                new_textureBuffer[new_index * 4 + 2] = (uint8_t)(b * a / 255);
+                                new_textureBuffer[new_index * 4 + 3] = (uint8_t)a;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for( uint32_t i = 0; i != new_width; ++i )
+                        {
+                            for( uint32_t j = 0; j != new_height; ++j )
+                            {
+                                uint32_t new_index = i + j * new_width;
+                                uint32_t old_index = (min_i + i) + (min_j + j) * width;
+
+                                new_textureBuffer[new_index * 4 + 0] = textureBuffer[old_index * 4 + 0];
+                                new_textureBuffer[new_index * 4 + 1] = textureBuffer[old_index * 4 + 1];
+                                new_textureBuffer[new_index * 4 + 2] = textureBuffer[old_index * 4 + 2];
+                                new_textureBuffer[new_index * 4 + 3] = textureBuffer[old_index * 4 + 3];
                             }
                         }
                     }
                 }
 
-                for( uint32_t i = 1; i != copy_width_end; ++i )
+                if( flag_premultiplied == false )
                 {
-                    for( uint32_t j = 1; j != copy_height_end; ++j )
+                    for( uint32_t i = 0; i != new_width; ++i )
                     {
-                        uint32_t new_index = i + j * new_width;
-                        uint32_t old_index = (min_i + (i - 1)) + (min_j + (j - 1)) * width;
-
-                        for( uint32_t k = 0; k != channels; ++k )
+                        for( uint32_t j = 0; j != new_height; ++j )
                         {
-                            new_textureBuffer[new_index * channels + k] = textureBuffer[old_index * channels + k];
-                        }
-                    }
-                }
+                            uint32_t new_index = i + j * new_width;
 
-                for( uint32_t i = 0; i != new_width; ++i )
-                {
-                    for( uint32_t j = 0; j != new_height; ++j )
-                    {
-                        uint32_t new_index = i + j * new_width;
+                            uint8_t alpha = new_textureBuffer[new_index * 4 + 3];
 
-                        uint8_t alpha = new_textureBuffer[new_index * channels + 3];
-
-                        if( alpha != 0 )
-                        {
-                            continue;
-                        }
-
-                        uint32_t r = 0;
-                        uint32_t g = 0;
-                        uint32_t b = 0;
-                        uint32_t colorNum = 0;
-
-                        if( i > 0 ) // left pixel
-                        {
-                            uint32_t test_index = (i - 1) + (j + 0) * new_width;
-
-                            uint8_t test_alpha = new_textureBuffer[test_index * channels + 3];
-
-                            if( test_alpha != 0 )
+                            if( alpha != 0 )
                             {
-                                ++colorNum;
-                                r += new_textureBuffer[test_index * channels + 0];
-                                g += new_textureBuffer[test_index * channels + 1];
-                                b += new_textureBuffer[test_index * channels + 2];
+                                continue;
                             }
-                        }
 
-                        if( i < new_width - 1 ) // right pixel
-                        {
-                            uint32_t test_index = (i + 1) + (j + 0) * new_width;
+                            uint32_t r = 0;
+                            uint32_t g = 0;
+                            uint32_t b = 0;
+                            uint32_t colorNum = 0;
 
-                            uint8_t test_alpha = new_textureBuffer[test_index * channels + 3];
-
-                            if( test_alpha != 0 )
+                            if( i > 0 ) // left pixel
                             {
-                                ++colorNum;
-                                r += new_textureBuffer[test_index * channels + 0];
-                                g += new_textureBuffer[test_index * channels + 1];
-                                b += new_textureBuffer[test_index * channels + 2];
+                                uint32_t test_index = (i - 1) + (j + 0) * new_width;
+
+                                uint8_t test_alpha = new_textureBuffer[test_index * 4 + 3];
+
+                                if( test_alpha != 0 )
+                                {
+                                    ++colorNum;
+                                    r += new_textureBuffer[test_index * 4 + 0];
+                                    g += new_textureBuffer[test_index * 4 + 1];
+                                    b += new_textureBuffer[test_index * 4 + 2];
+                                }
                             }
-                        }
 
-                        if( j > 0 ) // top pixel
-                        {
-                            uint32_t test_index = (i + 0) + (j - 1) * new_width;
-
-                            uint8_t test_alpha = new_textureBuffer[test_index * channels + 3];
-
-                            if( test_alpha != 0 )
+                            if( i < new_width - 1 ) // right pixel
                             {
-                                ++colorNum;
-                                r += new_textureBuffer[test_index * channels + 0];
-                                g += new_textureBuffer[test_index * channels + 1];
-                                b += new_textureBuffer[test_index * channels + 2];
+                                uint32_t test_index = (i + 1) + (j + 0) * new_width;
+
+                                uint8_t test_alpha = new_textureBuffer[test_index * 4 + 3];
+
+                                if( test_alpha != 0 )
+                                {
+                                    ++colorNum;
+                                    r += new_textureBuffer[test_index * 4 + 0];
+                                    g += new_textureBuffer[test_index * 4 + 1];
+                                    b += new_textureBuffer[test_index * 4 + 2];
+                                }
                             }
-                        }
 
-                        if( j < new_height - 1 ) // bottom pixel
-                        {
-                            uint32_t test_index = (i + 0) + (j + 1) * new_width;
-
-                            uint8_t test_alpha = new_textureBuffer[test_index * channels + 3];
-
-                            if( test_alpha != 0 )
+                            if( j > 0 ) // top pixel
                             {
-                                ++colorNum;
-                                r += new_textureBuffer[test_index * channels + 0];
-                                g += new_textureBuffer[test_index * channels + 1];
-                                b += new_textureBuffer[test_index * channels + 2];
+                                uint32_t test_index = (i + 0) + (j - 1) * new_width;
+
+                                uint8_t test_alpha = new_textureBuffer[test_index * 4 + 3];
+
+                                if( test_alpha != 0 )
+                                {
+                                    ++colorNum;
+                                    r += new_textureBuffer[test_index * 4 + 0];
+                                    g += new_textureBuffer[test_index * 4 + 1];
+                                    b += new_textureBuffer[test_index * 4 + 2];
+                                }
                             }
-                        }
 
-                        if( colorNum > 0 )
-                        {
-                            r /= colorNum;
-                            g /= colorNum;
-                            b /= colorNum;
+                            if( j < new_height - 1 ) // bottom pixel
+                            {
+                                uint32_t test_index = (i + 0) + (j + 1) * new_width;
 
-                            new_textureBuffer[new_index * channels + 0] = (uint8_t)r;
-                            new_textureBuffer[new_index * channels + 1] = (uint8_t)g;
-                            new_textureBuffer[new_index * channels + 2] = (uint8_t)b;
+                                uint8_t test_alpha = new_textureBuffer[test_index * 4 + 3];
+
+                                if( test_alpha != 0 )
+                                {
+                                    ++colorNum;
+                                    r += new_textureBuffer[test_index * 4 + 0];
+                                    g += new_textureBuffer[test_index * 4 + 1];
+                                    b += new_textureBuffer[test_index * 4 + 2];
+                                }
+                            }
+
+                            if( colorNum > 0 )
+                            {
+                                r /= colorNum;
+                                g /= colorNum;
+                                b /= colorNum;
+
+                                new_textureBuffer[new_index * 4 + 0] = (uint8_t)r;
+                                new_textureBuffer[new_index * 4 + 1] = (uint8_t)g;
+                                new_textureBuffer[new_index * 4 + 2] = (uint8_t)b;
+                            }
+                            else
+                            {
+                                new_textureBuffer[new_index * 4 + 0] = 0;
+                                new_textureBuffer[new_index * 4 + 1] = 0;
+                                new_textureBuffer[new_index * 4 + 2] = 0;
+                            }
                         }
                     }
                 }
@@ -619,6 +703,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     Mengine::WString in_path = parse_kwds( lpCmdLine, L"--in_path", Mengine::WString() );
     Mengine::WString out_path = parse_kwds( lpCmdLine, L"--out_path", Mengine::WString() );
     Mengine::WString result_path = parse_kwds( lpCmdLine, L"--result_path", Mengine::WString() );
+    Mengine::WString border = parse_kwds( lpCmdLine, L"--border", Mengine::WString() );
+    Mengine::WString premultiplied = parse_kwds( lpCmdLine, L"--premultiplied", Mengine::WString() );
 
     if( in_path.empty() == true )
     {
@@ -643,6 +729,18 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         result_path = result_path.substr( 1, result_path.size() - 2 );
     }
 
+    bool flag_border = false;
+    if( border == L"1" )
+    {
+        flag_border = true;
+    }
+
+    bool flag_premultiplied = false;
+    if( premultiplied == L"1" )
+    {
+        flag_premultiplied = true;
+    }
+
     try
     {
         if( Mengine::initializeEngine() == false )
@@ -661,7 +759,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return 0;
     }
 
-    if( Mengine::trimImage( in_path, out_path, result_path ) == false )
+    if( Mengine::trimImage( in_path, out_path, result_path, flag_border, flag_premultiplied ) == false )
     {
         message_error( "ImageTrimmer invalid trim %ls"
             , in_path.c_str()

@@ -51,6 +51,16 @@ namespace Mengine
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
+    void ColourValue::multiplyRGBA( float _r, float _g, float _b, float _a )
+    {
+        m_r *= _r;
+        m_g *= _g;
+        m_b *= _b;
+        m_a *= _a;
+
+        this->invalidate();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ColourValue::setRGB( float _r, float _g, float _b )
     {
         m_r = _r;

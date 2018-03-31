@@ -559,12 +559,9 @@ namespace Mengine
             if( textureStage.texture == nullptr )
             {
                 GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
-                //                GLCALL( glDisable, (GL_TEXTURE_2D) );
 
                 continue;
             }
-
-            //            GLCALL( glEnable, (GL_TEXTURE_2D) );
 
             GLuint texture_uid = textureStage.texture->getUId();
 

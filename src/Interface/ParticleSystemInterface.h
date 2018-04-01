@@ -23,9 +23,9 @@
 #include "math/mat4.h"
 #include "math/uv4.h"
 
-#	ifndef MENGINE_PARTICLE_MAX_MESH
+#ifndef MENGINE_PARTICLE_MAX_MESH
 #	define MENGINE_PARTICLE_MAX_MESH 1000
-#	endif
+#endif
 
 namespace Mengine
 {

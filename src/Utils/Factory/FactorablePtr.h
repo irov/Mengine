@@ -28,10 +28,10 @@ namespace Mengine
 	public:
 		inline static void intrusive_ptr_destroy( FactorablePtr * _ptr );
 
-#	ifdef STDEX_INTRUSIVE_PTR_DEBUG
+#ifdef STDEX_INTRUSIVE_PTR_DEBUG
 	public:
 		inline static bool intrusive_ptr_check_ref( FactorablePtr * _ptr );
-#	endif
+#endif
 		
 #   ifdef MENGINE_FACTORABLE_DEBUG
 	protected:
@@ -44,15 +44,15 @@ namespace Mengine
 		_ptr->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
-#	ifdef STDEX_INTRUSIVE_PTR_DEBUG
+#ifdef STDEX_INTRUSIVE_PTR_DEBUG
 	inline bool FactorablePtr::intrusive_ptr_check_ref( FactorablePtr * _ptr )
 	{
-#   ifdef MENGINE_FACTORABLE_DEBUG
+#ifdef MENGINE_FACTORABLE_DEBUG
 		if( _ptr->isDestroyed() == true )
 		{
 			return false;
 		}
-#	endif
+#endif
 
 		if( _ptr->m_reference == 0 )
 		{
@@ -61,5 +61,5 @@ namespace Mengine
 
 		return true;
 	}
-#	endif
+#endif
 }

@@ -304,7 +304,7 @@ namespace Mengine
 
         switch( type )
         {
-#if AE_MOVIE_SDK_VERSION >= 17
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
         case AE_MOVIE_LAYER_TYPE_SPRITE:
             {
                 ResourceImagePtr resourceImage = RESOURCE_SERVICE()
@@ -707,7 +707,7 @@ namespace Mengine
             {
                 switch( type )
                 {
-#if AE_MOVIE_SDK_VERSION >= 17
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
                 case AE_MOVIE_LAYER_TYPE_SPRITE:
                     {
                         ShapeQuadFixed * node = (ShapeQuadFixed *)_callbackData->element;
@@ -1100,7 +1100,7 @@ namespace Mengine
             m2->stop();
         }
     }
-#if AE_MOVIE_SDK_VERSION >= 17
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
     //////////////////////////////////////////////////////////////////////////
     static ae_voidptr_t __movie_scene_effect_provider( const aeMovieCompositionSceneEffectProviderCallbackData * _callbackData, ae_voidptr_t _data )
     {
@@ -1281,7 +1281,7 @@ namespace Mengine
         providers.composition_event = &__movie_composition_event;
         providers.composition_state = &__movie_composition_state;
 
-#if AE_MOVIE_SDK_VERSION >= 17
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
         providers.scene_effect_provider = &__movie_scene_effect_provider;
         providers.scene_effect_update = &__movie_scene_effect_update;
 #endif
@@ -1586,7 +1586,7 @@ namespace Mengine
                         
                         node->render( _renderService, _state, 0 );
                     }break;
-#if AE_MOVIE_SDK_VERSION >= 17
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
                 case AE_MOVIE_LAYER_TYPE_SPRITE:
                     {
                         ShapeQuadFixed * node = reinterpret_cast<ShapeQuadFixed *>(mesh.element_data);

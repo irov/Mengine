@@ -126,17 +126,17 @@ PLUGIN_EXPORT( TTF );
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-	WinApplication::WinApplication() 
+	Win32Application::Win32Application() 
 		: m_loggerMessageBox(nullptr)	
 		, m_fileLog(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WinApplication::~WinApplication()
+	Win32Application::~Win32Application()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeArchiveService_()
+	bool Win32Application::initializeArchiveService_()
 	{
 		{
 			LOGGER_INFO("Initialize Zip...");
@@ -151,7 +151,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
+	bool Win32Application::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
 	{
 		FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( "application.ini" );
 
@@ -193,7 +193,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeConfigEngine_()
+	bool Win32Application::initializeConfigEngine_()
 	{
 		LOGGER_WARNING("Inititalizing Config Manager..." );
 				
@@ -216,7 +216,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeFileEngine_()
+	bool Win32Application::initializeFileEngine_()
 	{
 		LOGGER_INFO( "Inititalizing File Service..." );
 
@@ -224,11 +224,6 @@ namespace Mengine
 			LOGGER_INFO("Initialize Win32 file group...");
 			PLUGIN_CREATE( Win32FileGroup );
 		}
-
-//#	ifndef _MSC_VER
-//			WINDOWSLAYER_SERVICE()
-//				->setModuleCurrentDirectory();
-//#	endif
 
 		WChar currentPath[MENGINE_MAX_PATH];
 
@@ -282,7 +277,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::makeUserPath_( WString & _wstring ) const
+	bool Win32Application::makeUserPath_( WString & _wstring ) const
 	{ 
 		_wstring.clear();
 
@@ -300,7 +295,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeUserDirectory_()
+	bool Win32Application::initializeUserDirectory_()
 	{
 		//m_tempPath.clear();
 		WString userPath;
@@ -330,7 +325,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeLogFile_()
+	bool Win32Application::initializeLogFile_()
 	{
 		bool nologs = HAS_OPTION( "nologs" );
 		
@@ -387,7 +382,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeLogEngine_()
+	bool Win32Application::initializeLogEngine_()
 	{
 		bool nologs = HAS_OPTION( "nologs" );
 	
@@ -467,7 +462,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initialize()
+	bool Win32Application::initialize()
 	{	
 		setlocale( LC_ALL, "C" );
 		//::timeBeginPeriod( 1 );
@@ -613,7 +608,7 @@ namespace Mengine
 		SERVICE_CREATE( TimerSystem );
 		SERVICE_CREATE( TimerService );
 
-#	ifdef _DEBUG
+#ifdef _DEBUG
 		{
 			bool developmentMode = HAS_OPTION( "dev" );
 			bool roamingMode = HAS_OPTION( "roaming" );
@@ -627,7 +622,7 @@ namespace Mengine
 				CriticalErrorsMonitor::run( userPath );
 			}
 		}
-#	endif
+#endif
 
 		PythonScriptWrapper::constsWrap();
 		PythonScriptWrapper::mathWrap();
@@ -884,13 +879,13 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::loop()
+	void Win32Application::loop()
 	{
 		PLATFORM_SERVICE()
 			->update();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::finalize()
+	void Win32Application::finalize()
 	{
 		SERVICE_FINALIZE( Mengine::ModuleServiceInterface );
 
@@ -944,10 +939,9 @@ namespace Mengine
 		SERVICE_FINALIZE( Mengine::ArchiveServiceInterface );
 		SERVICE_FINALIZE( Mengine::MemoryServiceInterface );
 		SERVICE_FINALIZE( Mengine::NotificationServiceInterface );
-
-		SERVICE_FINALIZE( Mengine::ThreadServiceInterface );
-		SERVICE_FINALIZE( Mengine::ThreadSystemInterface );
-
+                
+        SERVICE_FINALIZE( Mengine::ThreadServiceInterface );
+        
 		SERVICE_FINALIZE( Mengine::TimerServiceInterface );
 		SERVICE_FINALIZE( Mengine::TimerSystemInterface );
 
@@ -975,8 +969,9 @@ namespace Mengine
             
             m_loggerMessageBox = nullptr;
 		}
-
+                
         SERVICE_FINALIZE( Mengine::FileServiceInterface );
+        SERVICE_FINALIZE( Mengine::ThreadSystemInterface );
 		SERVICE_FINALIZE( Mengine::LoggerServiceInterface );
 
 		SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
@@ -984,7 +979,7 @@ namespace Mengine
 		//::timeEndPeriod( 1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::update()
+	void Win32Application::update()
 	{
 		//
 	}

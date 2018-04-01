@@ -1,12 +1,12 @@
 #pragma once
 
-#	ifndef MENGINE_FACTORABLE_DEBUG_ENABLE
-#	ifdef _DEBUG
-#	define MENGINE_FACTORABLE_DEBUG
-#	endif
-#	else
-#	define MENGINE_FACTORABLE_DEBUG
-#	endif
+#ifndef MENGINE_FACTORABLE_DEBUG_ENABLE
+#   ifdef _DEBUG
+#       define MENGINE_FACTORABLE_DEBUG
+#   endif
+#else
+#   define MENGINE_FACTORABLE_DEBUG
+#endif
 
 namespace Mengine
 {

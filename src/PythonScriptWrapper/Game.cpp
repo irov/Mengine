@@ -580,11 +580,11 @@ namespace Mengine
 
 		this->registerEventMethods_( module );
 
-#	ifdef _DEBUG
+#ifdef _DEBUG
 		bool is_debug = true;
-#	else
+#else
 		bool is_debug = false;
-#	endif
+#endif
 		
         LOGGER_WARNING("Preparation debug(%d)"
             , is_debug

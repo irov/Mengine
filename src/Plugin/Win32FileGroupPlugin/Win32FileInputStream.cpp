@@ -38,11 +38,11 @@ namespace Mengine
     {
         STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::open" );
 
-#	ifdef _DEBUG
+#ifdef _DEBUG
         m_relationPath = _relationPath.c_str();
         m_folder = _folderPath.c_str();
         m_fileName = _filePath.c_str();
-#	endif
+#endif
 
         WChar fullPath[MENGINE_MAX_PATH];
         if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
@@ -132,13 +132,13 @@ namespace Mengine
             return false;
         }
 
-#	ifdef _DEBUG
+#ifdef _DEBUG
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_SERVICE()
                 ->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str() );
         }
-#	endif
+#endif
 
         return true;
     }

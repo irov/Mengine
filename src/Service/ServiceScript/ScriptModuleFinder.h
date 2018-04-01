@@ -68,9 +68,9 @@ namespace Mengine
 
 		FactoryPtr m_factoryScriptModuleLoaderCode;
 
-#   ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
 		FactoryPtr m_factoryScriptModuleLoaderSource;
-#	endif
+#endif
 
 		typedef stdex::vector<ScriptModuleLoaderPtr> TMapModuleLoaders;
 		TMapModuleLoaders m_loaders;

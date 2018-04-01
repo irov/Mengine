@@ -24,6 +24,12 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath& _filePath )
 	{        
+#ifdef _DEBUG
+        m_relationPath = _relationPath.c_str();
+        m_folder = _folderPath.c_str();
+        m_fileName = _filePath.c_str();
+#endif
+
         WChar fullPath[MENGINE_MAX_PATH];
         if( WINDOWSLAYER_SERVICE()
 			->concatenateFilePath( _relationPath, _folderPath, _filePath, fullPath, MENGINE_MAX_PATH ) == false )

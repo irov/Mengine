@@ -39,9 +39,9 @@ namespace Mengine
 		bool importBin_( const InputStreamInterfacePtr & _bin, Metabuf::Metadata * _metadata, bool * _reimport ) const;
 		bool openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const;
 
-#	ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
 		bool makeBin_( const ConstString & _pak, const FilePath & _pathXml, const FilePath & _pathBin ) const;
-#	endif
+#endif
 
     public:
         const ConstString & getCacheConstString( uint32_t _index ) const;

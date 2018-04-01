@@ -6,9 +6,9 @@
 
 #include <algorithm>
 
-#	ifndef MENGINE_COLLISION_WORLD_PENETRATION_COUNT
+#ifndef MENGINE_COLLISION_WORLD_PENETRATION_COUNT
 #	define MENGINE_COLLISION_WORLD_PENETRATION_COUNT 64
-#	endif
+#endif
 
 namespace Mengine
 {

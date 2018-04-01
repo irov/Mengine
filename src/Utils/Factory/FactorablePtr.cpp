@@ -11,14 +11,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePtr::~FactorablePtr()
     {
-#   ifdef MENGINE_FACTORABLE_DEBUG
+#ifdef MENGINE_FACTORABLE_DEBUG
 		if( m_reference != 0 )
 		{
 			MENGINE_THROW_EXCEPTION("m_reference %d != 0"
 				, m_reference
 				);
 		}
-#	endif
+#endif
     }
 	//////////////////////////////////////////////////////////////////////////
 	void FactorablePtr::destroy()
@@ -31,7 +31,7 @@ namespace Mengine
         return m_reference;
     }  
     //////////////////////////////////////////////////////////////////////////
-#   ifdef MENGINE_FACTORABLE_DEBUG
+#ifdef MENGINE_FACTORABLE_DEBUG
     void FactorablePtr::_checkDestroy()
     {
         if( m_reference != 0 )
@@ -41,5 +41,5 @@ namespace Mengine
 				);
         }
     }
-#   endif
+#endif
 }

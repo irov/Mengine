@@ -13,12 +13,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadMutex::initialize( const Char * _file, uint32_t _line )
     {
-        InitializeCriticalSection( &m_cs );
+        (void)_file;
+        (void)_line;
 
 #ifdef _DEBUG
         m_file = _file;
         m_line = _line;
 #endif
+
+        InitializeCriticalSection( &m_cs );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadMutex::lock()

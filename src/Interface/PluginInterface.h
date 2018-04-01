@@ -111,16 +111,16 @@ namespace Mengine
 		}\
 	}
 	//////////////////////////////////////////////////////////////////////////
-#   ifdef MENGINE_PLUGIN_DLL
+#ifdef MENGINE_PLUGIN_DLL
 #	define PLUGIN_FACTORY(Name, Type)\
 	PLUGIN_FACTORY_STATIC(Name, Type)\
 	PLUGIN_FACTORY_DYNAMIC( Name, Type )
-#	else
+#else
 #	define PLUGIN_FACTORY(Name, Type)\
 	PLUGIN_FACTORY_STATIC(Name, Type)
-#	endif
+#endif
 	//////////////////////////////////////////////////////////////////////////
-#	define PLUGIN_EXPORT(Name)\
+#define PLUGIN_EXPORT(Name)\
 	extern "C"\
 	{\
 		extern bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, bool _dynamic );\

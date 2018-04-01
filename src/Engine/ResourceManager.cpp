@@ -201,7 +201,7 @@ namespace Mengine
 				resource->incrementReference();
 			}
             
-#	ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
 			if( _ignored == false && resource->convert() == false )
 			{
 				LOGGER_ERROR("ResourceManager::loadResource %s type [%s] invalid convert"
@@ -211,7 +211,7 @@ namespace Mengine
 
 				continue;
 			}
-#	endif
+#endif
         }
 
         return true;
@@ -428,7 +428,7 @@ namespace Mengine
 				continue;
 			}
 
-#	ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
 			if( resource->convert() == false )
 			{
 				LOGGER_ERROR("ResourceManager::validateResources %s type [%s] invalid convert"
@@ -440,7 +440,7 @@ namespace Mengine
 
 				continue;
 			}
-#	endif
+#endif
 
 			if( resource->isValid() == false )
 			{
@@ -866,7 +866,7 @@ namespace Mengine
 	{
 		(void)_tag;
 
-#	ifdef _DEBUG
+#ifdef _DEBUG
 		LOGGER_ERROR("Dumping resources... %s"
 			, _tag.c_str()
 			);
@@ -905,7 +905,7 @@ namespace Mengine
 					);
 			}
 		}
-#	endif
+#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceEntry * ResourceManager::findResource_( const ConstString & _name )

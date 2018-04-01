@@ -87,7 +87,7 @@ namespace Metabuf
 
 		const Mengine::ConstString & value = loader->getCacheConstString( index );
 				
-#	ifdef _DEBUG
+#ifdef _DEBUG
 		const char * test_value = value.c_str();
 
 		const char * s = strstr( test_value, "\\" );
@@ -102,7 +102,7 @@ namespace Metabuf
 				, test_value
 			);
 		}
-#	endif
+#endif
 
 		_value = Mengine::FilePath( value );
 	}

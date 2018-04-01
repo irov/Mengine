@@ -33,9 +33,9 @@ namespace Mengine
 	static const float s_activeFrameTime = 1000.f / 60.f;
 	static const float s_inactiveFrameTime = 100.f;
 	//////////////////////////////////////////////////////////////////////////
-#	ifndef MENGINE_WINDOW_CLASSNAME
+#ifndef MENGINE_WINDOW_CLASSNAME
 #	define MENGINE_WINDOW_CLASSNAME (L"MengineWindow")
-#	endif
+#endif
 	//////////////////////////////////////////////////////////////////////////
 	Win32Platform::Win32Platform()
 		: m_hInstance( NULL )
@@ -105,11 +105,11 @@ namespace Mengine
 
 		m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
 
-#	ifndef _WIN64
+#ifndef _WIN64
 		m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
-#	else
+#else
 		m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
-#	endif
+#endif
 
 		m_touchpad = false;
 
@@ -225,9 +225,9 @@ namespace Mengine
 
 		bool nopause = HAS_OPTION( "nopause" );
 
-#	ifndef _DEBUG
+#ifndef _DEBUG
 		try
-#	endif
+#endif
 		{
 			while( m_close == false )
 			{
@@ -292,14 +292,14 @@ namespace Mengine
 				m_update = false;
 			}
 		}
-#	ifndef _DEBUG
+#ifndef _DEBUG
 		catch( const std::exception & ex )
 		{
 			LOGGER_CRITICAL("Win32Platform std::exception '%s'"
 				, ex.what()
 				);
 		}
-#	endif
+#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32Platform::stopPlatform()

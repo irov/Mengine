@@ -45,7 +45,11 @@ namespace Mengine
             {
                 const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
 
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
+                ResourceReference * data_resource = resourceMovie2->getResource_( resource_image->name );
+#else
                 ResourceReference * data_resource = resourceMovie2->createResourceImage_( resource_image->path, resource_image->trim_width, resource_image->trim_height );
+#endif
 
                 return data_resource;
             }break;
@@ -53,7 +57,11 @@ namespace Mengine
             {
                 const aeMovieResourceVideo * resource_video = (const aeMovieResourceVideo *)_resource;
 
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
+                ResourceReference * data_resource = resourceMovie2->getResource_( resource_video->name );
+#else
                 ResourceReference * data_resource = resourceMovie2->createResourceVideo_( resource_video );
+#endif
 
                 return data_resource;
             }break;
@@ -61,7 +69,11 @@ namespace Mengine
             {
                 const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
 
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
+                ResourceReference * data_resource = resourceMovie2->getResource_( resource_sound->name );
+#else
                 ResourceReference * data_resource = resourceMovie2->createResourceSound_( resource_sound );
+#endif
 
                 return data_resource;
             }break;
@@ -69,7 +81,11 @@ namespace Mengine
             {
                 const aeMovieResourceParticle * resource_particle = (const aeMovieResourceParticle *)_resource;
 
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
+                ResourceReference * data_resource = resourceMovie2->getResource_( resource_particle->name );
+#else
                 ResourceReference * data_resource = resourceMovie2->createResourceParticle_( resource_particle );
+#endif
 
                 return data_resource;
             }break;
@@ -338,8 +354,18 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
+    ResourceReference * ResourceMovie2::getResource_( const ae_string_t _name )
+    {
+        ResourceReferencePtr resource = RESOURCE_SERVICE()
+            ->getResource( Helper::stringizeString( _name ) );
+
+        m_resources.push_back( resource );
+
+        return resource.get();
+    }
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceMovie2::createResourceImage_( const ae_string_t _path, float _width, float _height )
+	ResourceReference * ResourceMovie2::createResourceImage_( const aeMovieResourceImage * _resource )
 	{
 		ResourceImageDefaultPtr image = RESOURCE_SERVICE()
 			->generateResourceT<ResourceImageDefaultPtr>( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
@@ -353,14 +379,14 @@ namespace Mengine
 		ConstString folder = Helper::getPathFolder( m_filePath );
 
 		full_path += folder.c_str();
-		full_path += _path;
+		full_path += _resource->path;
 
 		FilePath c_path = Helper::stringizeFilePath( full_path );
 
 		mt::uv4f uv_image;
 		mt::uv4f uv_alpha;
 
-		mt::vec2f size( _width, _height );
+		mt::vec2f size( _resource->trim_width, _resource->trim_height );
 
 		image->setup( c_path, ConstString::none(), uv_image, uv_alpha, size );
 

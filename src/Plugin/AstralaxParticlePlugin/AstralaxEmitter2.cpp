@@ -521,11 +521,11 @@ namespace Mengine
 
 		m_particleSystem->updateAtlas();
 
-#	ifdef MENGINE_RENDER_TEXTURE_RGBA
+#ifdef MENGINE_RENDER_TEXTURE_RGBA
 		MAGIC_ARGB_ENUM color_mode = MAGIC_ARGB;
-#	else
+#else
 		MAGIC_ARGB_ENUM color_mode = MAGIC_ABGR;
-#	endif
+#endif
 
 		MAGIC_RENDERING_START start;
 		void * context = Magic_PrepareRenderArrays( m_emitterId, &start, 100, color_mode, sizeof( RenderIndex ) == 4 );

@@ -48,10 +48,10 @@ namespace Mengine
 	public:
 		inline static void intrusive_ptr_destroy( ObserverInterface * _ptr );
 
-#	ifdef STDEX_INTRUSIVE_PTR_DEBUG
+#ifdef STDEX_INTRUSIVE_PTR_DEBUG
 	public:
 		inline static bool intrusive_ptr_check_ref( ObserverInterface * _ptr );
-#	endif
+#endif
 
 	protected:
 		NotificationServiceInterface * m_notification;
@@ -364,15 +364,15 @@ namespace Mengine
 		_ptr->m_notification->removeObserver( _ptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
-#	ifdef STDEX_INTRUSIVE_PTR_DEBUG
+#ifdef STDEX_INTRUSIVE_PTR_DEBUG
 	inline bool ObserverInterface::intrusive_ptr_check_ref( ObserverInterface * _ptr )
 	{
 		(void)_ptr;
 
 		return true;
 	}
-#	endif
+#endif
 	//////////////////////////////////////////////////////////////////////////
-#   define NOTIFICATION_SERVICE()\
+#define NOTIFICATION_SERVICE()\
     SERVICE_GET(Mengine::NotificationServiceInterface)
 }

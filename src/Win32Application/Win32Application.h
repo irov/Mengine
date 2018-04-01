@@ -30,11 +30,11 @@
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-	class WinApplication
+	class Win32Application
 	{
 	public:
-		WinApplication();
-		~WinApplication();
+		Win32Application();
+		~Win32Application();
 
 	public:
 		bool initialize();

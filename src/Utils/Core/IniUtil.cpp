@@ -127,7 +127,7 @@ namespace Mengine
 				return false;
 			}
 
-#	ifdef _DEBUG
+#ifdef _DEBUG
 			if( strstr( ini_value, "\\" ) != nullptr )
 			{
 				LOGGER_ERROR( "get ini '%s:%s' filepath section '%s' key '%s' has invalid slash"
@@ -146,7 +146,7 @@ namespace Mengine
 
 				return false;
 			}
-#	endif
+#endif
 
 			const ConstString & cs_value = Helper::stringizeString( ini_value );
 

@@ -64,9 +64,9 @@ namespace Mengine
 		float * times;
     };
 
-#	ifndef MENGINE_MOVIE_SHAPE_MAX_VERTEX
+#ifndef MENGINE_MOVIE_SHAPE_MAX_VERTEX
 #	define MENGINE_MOVIE_SHAPE_MAX_VERTEX 128
-#	endif
+#endif
 
 #	define MENGINE_MOVIE_SHAPE_MAX_INDICES ((MENGINE_MOVIE_SHAPE_MAX_VERTEX - 2) * 3)
 
@@ -88,9 +88,9 @@ namespace Mengine
 		MovieFrameShape * shapes;
 	};
 
-#	ifndef MENGINE_MOVIE_POLYGON_MAX_VERTEX
+#ifndef MENGINE_MOVIE_POLYGON_MAX_VERTEX
 #	define MENGINE_MOVIE_POLYGON_MAX_VERTEX 128
-#	endif
+#endif
 	
 	struct MovieLayerPolygon
 	{

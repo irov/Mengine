@@ -484,7 +484,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::removeChild( Node * _node )
 	{
-#	ifdef _DEBUG
+#ifdef _DEBUG
 		if( stdex::intrusive_has( m_children.begin(), m_children.end(), _node ) == false )
         {
             LOGGER_ERROR("Node::removeChild %s not found children %s"
@@ -494,7 +494,7 @@ namespace Mengine
 
             return false;
         }
-#	endif
+#endif
 
         _node->deactivate();
 

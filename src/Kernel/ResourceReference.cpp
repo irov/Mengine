@@ -141,10 +141,10 @@ namespace Mengine
         //    , this->getCategory().c_str()
         //    );
 
-#   ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
         NOTIFICATION_SERVICE()
             ->notify( NOTIFICATOR_RESOURCE_COMPILE, this );
-#   endif
+#endif
 
 		return result;
 	}
@@ -153,10 +153,10 @@ namespace Mengine
 	{
 		this->release();
 
-#   ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
         NOTIFICATION_SERVICE()
             ->notify( NOTIFICATOR_RESOURCE_RELEASE, this );
-#	endif
+#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceReference::cache()

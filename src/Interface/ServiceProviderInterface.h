@@ -6,9 +6,9 @@
 #include "Core/Holder.h"
 #include "Core/Exception.h"
 
-#   ifdef _DEBUG
-#	   include <typeinfo>
-#	endif
+#ifdef _DEBUG
+#	include <typeinfo>
+#endif
 
 namespace Mengine
 {

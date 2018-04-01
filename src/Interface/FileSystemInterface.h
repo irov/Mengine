@@ -12,9 +12,9 @@
 
 namespace Mengine
 {
-#	ifndef MENGINE_FILE_STREAM_BUFFER_SIZE
+#ifndef MENGINE_FILE_STREAM_BUFFER_SIZE
 #	define MENGINE_FILE_STREAM_BUFFER_SIZE 4096
-#	endif
+#endif
     //////////////////////////////////////////////////////////////////////////
 	class FileInputStreamInterface
 		: public InputStreamInterface

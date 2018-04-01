@@ -23,9 +23,9 @@ namespace Mengine
 	{
 		Win32ThreadIdentity * thread = static_cast<Win32ThreadIdentity*>(_userData);
 
-#	ifndef _DEBUG
+#ifndef _DEBUG
 		try
-#	endif
+#endif
 		{
 			thread->main();
 		}
@@ -41,7 +41,7 @@ namespace Mengine
             LOGGER_CRITICAL( "Win32ThreadIdentity unknown exception"
 				);
 		}
-#	endif
+#endif
 
 		return 0;
 	}

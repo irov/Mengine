@@ -8,9 +8,9 @@
 
 namespace Mengine
 {
-#	ifndef MENGINE_PLUGIN_NAME_MAX
+#ifndef MENGINE_PLUGIN_NAME_MAX
 #	define MENGINE_PLUGIN_NAME_MAX 32
-#	endif
+#endif
 
     class PluginService
         : public ServiceBase<PluginServiceInterface>

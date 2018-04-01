@@ -131,9 +131,9 @@ namespace Mengine
 		{
 			printf("debug!\n");
 
-#	if defined(_MSC_VER) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
+#if defined(_MSC_VER) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
 			_asm int 3;
-#	endif			
+#endif			
 		}
 
 		size_t s_globalmemoryuse()
@@ -986,7 +986,7 @@ namespace Mengine
 			return result;
 		}
 
-#	ifdef PYBIND_VISIT_OBJECTS
+#ifdef PYBIND_VISIT_OBJECTS
 		class MyObjectVisits
 			: public pybind::pybind_visit_objects
 		{
@@ -1005,16 +1005,16 @@ namespace Mengine
 		protected:
 			pybind::list m_py_list;
 		};
-#	endif
+#endif
 
 		pybind::list s_objects( pybind::kernel_interface * _kernel )
 		{
 			pybind::list py_list( _kernel );
 
-#	ifdef PYBIND_VISIT_OBJECTS
+#ifdef PYBIND_VISIT_OBJECTS
 			MyObjectVisits mov(py_list);
 			pybind::visit_objects(&mov);
-#	endif
+#endif
 
 			return py_list;
 		}

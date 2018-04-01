@@ -37,7 +37,7 @@ add_definitions(-DUNICODE)
 
 if(MINGW)
     # resource compilation for mingw
-    ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/WinApplication_rc.o
+    ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o
                        COMMAND windres.exe -I${CMAKE_CURRENT_SOURCE_DIR}
                                            -i${CMAKE_CURRENT_SOURCE_DIR}/Win32Application.rc
                                            -o ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o)

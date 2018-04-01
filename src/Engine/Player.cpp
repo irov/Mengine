@@ -994,8 +994,6 @@ namespace Mengine
 			m_arrow->render( renderService, &state, debugMask );
 		}
 
-//#	ifndef MENGINE_MASTER_RELEASE
-
 		if( m_showDebugText != 0 )
 		{			
 			const RenderServiceDebugInfo & rdi = 
@@ -1184,8 +1182,6 @@ namespace Mengine
 
 			m_debugText->render( renderService, &state, debugMask );
 		}
-//#	endif
-		//m_renderCamera2D->setLocalPosition( pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onAppMouseLeave( const InputMousePositionEvent & _event )
@@ -1261,13 +1257,10 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-//#	ifndef MENGINE_MASTER_RELEASE
-	//////////////////////////////////////////////////////////////////////////
 	void Player::toggleDebugText()
 	{
 		++m_showDebugText;
         m_showDebugText %= 5;
 	}
 	//////////////////////////////////////////////////////////////////////////
-//#	endif
 }

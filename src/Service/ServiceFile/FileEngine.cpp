@@ -32,9 +32,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileEngine::_finalize()
     {
-        for( TMapFileSystem::iterator 
-            it = m_fileSystemMap.begin(),
-            it_end = m_fileSystemMap.end();
+        for( TMapFileSystem::reverse_iterator
+            it = m_fileSystemMap.rbegin(),
+            it_end = m_fileSystemMap.rend();
             it != it_end;
             ++it )
         {

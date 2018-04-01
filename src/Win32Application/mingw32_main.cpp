@@ -1,6 +1,6 @@
 #	include "WIN32/WindowsIncluder.h"
 
-#	include "WinApplication.h"
+#	include "Win32Application.h"
 
 //////////////////////////////////////////////////////////////////////////
 int main( int argc, char *argv[], char *environ )
@@ -13,20 +13,20 @@ int main( int argc, char *argv[], char *environ )
 
     try
     {
-        Mengine::WinApplication winApplication;
+        Mengine::Win32Application app;
 
-        bool initialize = winApplication.initialize();
+        bool initialize = app.initialize();
 
         if( initialize == true )
         {
-            winApplication.loop();
+            app.loop();
         }
         else
         {
             MessageBoxA( NULL, "Mengine invalid initialization", "Mengine", MB_OK );
         }
 
-        winApplication.finalize();
+        app.finalize();
     }
     catch( const std::exception & se )
     {

@@ -4,15 +4,15 @@
 
 #include "Core/ServantBase.h"
 
-#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#  ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
-#	endif 
+#endif 
 
 #include "magic.h"
 
-#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(pop) 
-#	endif
+#endif
 
 namespace Mengine
 {

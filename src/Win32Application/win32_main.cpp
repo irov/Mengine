@@ -15,33 +15,33 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
 	
 	stdex_allocator_initialize();
 
-#	ifndef _DEBUG
+#ifndef _DEBUG
 	try
-#	endif
+#endif
 	{
-		Mengine::WinApplication winApplication;
+		Mengine::Win32Application app;
 
-		bool initialize = winApplication.initialize();
+		bool initialize = app.initialize();
     
 		if( initialize == true )
 		{
-			winApplication.loop();
+			app.loop();
 		}
 		else
 		{
 			MessageBoxA( NULL, "Mengine invalid initialization", "Mengine", MB_OK );
 		}
     
-		winApplication.finalize();
+		app.finalize();
 	}
-#	ifndef _DEBUG
+#ifndef _DEBUG
 	catch( const std::exception & se )
 	{		
 		const char * se_what = se.what();
 
 		MessageBoxA( NULL, se_what, "Mengine exception", MB_OK );
 	}
-#	endif
+#endif
 
 	stdex_allocator_finalize();
 	    

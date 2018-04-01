@@ -488,7 +488,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setFontName( const ConstString & _fontName )
     {
-#	ifdef _DEBUG
+#ifdef _DEBUG
         if( _fontName.empty() == false )
         {
             TextFontInterfacePtr font;
@@ -503,7 +503,7 @@ namespace Mengine
                 return;
             }
         }
-#	endif
+#endif
 
         m_fontName = _fontName;
 

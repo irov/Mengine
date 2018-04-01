@@ -134,12 +134,12 @@ namespace Mengine
 			m_interlace_number_of_passes = png_set_interlace_handling( m_png_ptr );
 		}
 
-#	ifdef PNG_READ_SCALE_16_TO_8_SUPPORTED
+#ifdef PNG_READ_SCALE_16_TO_8_SUPPORTED
 		if( bit_depth == 16 )
 		{
 			png_set_scale_16( m_png_ptr );
 		}
-#	else
+#else
 		if( bit_depth == 16 )
 		{
 			LOGGER_ERROR("ImageDecoderPNG::_prepareData not support scale 16 to 8 bit"
@@ -147,23 +147,23 @@ namespace Mengine
 
 			return false;
 		}
-#	endif
+#endif
 		
 		switch( color_type )
 		{
 		case  PNG_COLOR_TYPE_PALETTE:
 			{
 				png_set_palette_to_rgb( m_png_ptr );
-#   ifndef MENGINE_RENDER_TEXTURE_RGBA
+#ifndef MENGINE_RENDER_TEXTURE_RGBA
 				png_set_bgr( m_png_ptr );
-#   endif
+#endif
 			}break;
 		case PNG_COLOR_TYPE_RGB:
 		case PNG_COLOR_TYPE_RGB_ALPHA:
 			{
-#   ifndef MENGINE_RENDER_TEXTURE_RGBA
+#ifndef MENGINE_RENDER_TEXTURE_RGBA
 				png_set_bgr( m_png_ptr );
-#   endif
+#endif
 			}break;
 		case PNG_COLOR_TYPE_GRAY:
 			{

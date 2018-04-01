@@ -72,7 +72,7 @@ namespace Mengine
 		Helper::registerScriptEventReceiver<PythonBox2DBodyEventReceiver>( py_kwds, _node, "onBox2DBodyPreSolve", EVENT_BOX2DBODY_PRE_SOLVE );
 		Helper::registerScriptEventReceiver<PythonBox2DBodyEventReceiver>( py_kwds, _node, "onBox2DBodyPostSolve", EVENT_BOX2DBODY_POST_SOLVE );
 
-#	ifdef _DEBUG
+#ifdef _DEBUG
 		if( py_kwds.empty() == false )
 		{
 			for( pybind::dict::iterator
@@ -90,7 +90,7 @@ namespace Mengine
 
 			throw;
 		}
-#	endif
+#endif
 
 		return pybind::ret_none();
 	}

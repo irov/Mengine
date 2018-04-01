@@ -28,5 +28,11 @@ namespace Mengine
 		HANDLE m_hFile;
 
 		size_t m_size;
+
+#ifdef _DEBUG
+        String m_relationPath;
+        String m_folder;
+        String m_fileName;
+#endif
 	};
 }	

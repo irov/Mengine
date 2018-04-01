@@ -17,13 +17,13 @@ namespace Mengine
         virtual float watch( const String & _tag ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#	define WATCHDOG_SERVICE()\
+#define WATCHDOG_SERVICE()\
 	SERVICE_GET(Mengine::WatchdogInterface)
     //////////////////////////////////////////////////////////////////////////
-#   ifdef MENGINE_MASTER_RELEASE
-#		define WATCHDOG( tag ) (0.f)
-#	else
-#		define WATCHDOG( tag )\
+#ifdef MENGINE_MASTER_RELEASE
+#	define WATCHDOG( tag ) (0.f)
+#else
+#	define WATCHDOG( tag )\
 	(SERVICE_EXIST(Mengine::WatchdogInterface) ? WATCHDOG_SERVICE()->watch(tag) : 0.f)
-#	endif
+#endif
 }

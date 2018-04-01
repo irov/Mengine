@@ -168,20 +168,8 @@ namespace Mengine
 		
 		Scene * m_switchSceneTo;
 
-		//bool m_switchScene2;
-		//bool m_switchBlock;
-		//bool m_switchScene;
-		//bool m_restartScene;
-		//bool m_removeScene;
-
-		//bool m_destroyOldScene;
-				
-		//SceneChangeCallbackInterfacePtr m_changeSceneCb;
-		//SceneChangeCallbackInterfacePtr m_removeSceneCb;
-
 		uint32_t m_fps;
 
-//#	ifndef MENGINE_MASTER_RELEASE
 	public:
 		void toggleDebugText() override;
 
@@ -189,6 +177,5 @@ namespace Mengine
 		uint32_t m_showDebugText;
 		TextField * m_debugText;
 		RenderCameraOrthogonal * m_debugCamera2D;
-//#	endif
 	};
 }

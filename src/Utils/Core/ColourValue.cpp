@@ -9,17 +9,17 @@ namespace Mengine
         {
             const float rgba_255 = 255.f;
 
-#   ifdef MENGINE_RENDER_TEXTURE_RGBA			
+#ifdef MENGINE_RENDER_TEXTURE_RGBA			
             uint8_t b8 = static_cast<uint8_t>(_r * rgba_255);
             uint8_t g8 = static_cast<uint8_t>(_g * rgba_255);
             uint8_t r8 = static_cast<uint8_t>(_b * rgba_255);
             uint8_t a8 = static_cast<uint8_t>(_a * rgba_255);
-#	else			
+#else			
             uint8_t r8 = static_cast<uint8_t>(_r * rgba_255);
             uint8_t g8 = static_cast<uint8_t>(_g * rgba_255);
             uint8_t b8 = static_cast<uint8_t>(_b * rgba_255);
             uint8_t a8 = static_cast<uint8_t>(_a * rgba_255);
-#	endif
+#endif
 
             ColourValue_ARGB argb = (a8 << 24) | (r8 << 16) | (g8 << 8) | (b8 << 0);
 
@@ -114,17 +114,17 @@ namespace Mengine
             return;
         }
 
-#   ifdef MENGINE_RENDER_TEXTURE_RGBA		
+#ifdef MENGINE_RENDER_TEXTURE_RGBA		
         uint8_t r8 = (m_argb >> 0) & 0xFF;
         uint8_t g8 = (m_argb >> 8) & 0xFF;
         uint8_t b8 = (m_argb >> 16) & 0xFF;
         uint8_t a8 = (m_argb >> 24) & 0xFF;
-#	else		
+#else		
         uint8_t b8 = (m_argb >> 0) & 0xFF;
         uint8_t g8 = (m_argb >> 8) & 0xFF;
         uint8_t r8 = (m_argb >> 16) & 0xFF;
         uint8_t a8 = (m_argb >> 24) & 0xFF;
-#	endif
+#endif
 
         m_r = one_div_255[r8];
         m_g = one_div_255[g8];

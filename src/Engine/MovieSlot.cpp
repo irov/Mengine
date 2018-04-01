@@ -14,7 +14,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_destroy()
     {
-#	ifdef _DEBUG
+#ifdef _DEBUG
         TListNodeChild & child = this->getChildren();
 
         for( TListNodeChild::iterator
@@ -33,7 +33,7 @@ namespace Mengine
                 , m_movieName.c_str()
                 );
         }
-#	endif
+#endif
 
 		Node::_destroy();
     }

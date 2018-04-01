@@ -269,7 +269,7 @@ namespace Mengine
                     rgb_buffer += m_options.pitch;
                 }
 
-#	if RGB_PIXELSIZE == 4
+#if RGB_PIXELSIZE == 4
                 if( (m_options.flags & DF_NOT_ADD_ALPHA) == 0)
                 {
                     JSAMPROW alpha_buffer = (JSAMPROW)_buffer;
@@ -283,7 +283,7 @@ namespace Mengine
                         alpha_buffer += m_options.pitch;
                     }
                 }
-#	endif
+#endif
             }
             else
             {

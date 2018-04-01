@@ -1252,7 +1252,7 @@ namespace Mengine
         , const RenderIndex * _indices, uint32_t _indexCount
         , const mt::box2f * _bb, bool _debug )
     {
-#	ifdef _DEBUG
+#ifdef _DEBUG
         if( _state == nullptr )
         {
             LOGGER_ERROR( "RenderEngine::renderObject2D _state == NULL"
@@ -1300,7 +1300,7 @@ namespace Mengine
 
             return;
         }
-#	endif
+#endif
 
         if( m_renderObjects.full() == true )
         {

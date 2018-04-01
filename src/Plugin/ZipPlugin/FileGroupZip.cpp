@@ -226,8 +226,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileGroupZip::finalize()
     {
+        m_files.clear();
+
         m_zipFileGroup = nullptr;
 		m_zipFile = nullptr;
+
+        m_mutex = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupZip::isPacked() const

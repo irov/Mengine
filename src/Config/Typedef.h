@@ -1,8 +1,8 @@
 #pragma once
 
-#	ifdef _MSC_VER
+#ifdef _MSC_VER
 #	pragma warning(disable:4250) // remove inherits dominance
-#	endif
+#endif
 
 #include "Config.h"
 

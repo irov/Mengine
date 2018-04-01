@@ -8,13 +8,13 @@
 
 namespace Mengine
 {
-#	ifndef MENGINE_OPTIONS_KEY_SIZE
+#ifndef MENGINE_OPTIONS_KEY_SIZE
 #	define MENGINE_OPTIONS_KEY_SIZE 32
-#	endif
+#endif
 
-#	ifndef MENGINE_OPTIONS_VALUE_SIZE
+#ifndef MENGINE_OPTIONS_VALUE_SIZE
 #	define MENGINE_OPTIONS_VALUE_SIZE 32
-#	endif
+#endif
 
 	class OptionsService
 		: public ServiceBase<OptionsServiceInterface>

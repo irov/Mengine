@@ -10,9 +10,9 @@
 namespace Mengine
 {
 
-#	ifndef MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE
+#ifndef MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE
 #	define MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE MENGINE_FILE_STREAM_BUFFER_SIZE
-#	endif
+#endif
 
 	class Win32FileInputStream
 		: public ServantBase<FileInputStreamInterface>
@@ -58,10 +58,10 @@ namespace Mengine
 
 		STDEX_THREAD_GUARD_INIT;
 
-#	ifdef _DEBUG
+#ifdef _DEBUG
         String m_relationPath;
 		String m_folder;
 		String m_fileName;
-#	endif
+#endif
 	};
 }	

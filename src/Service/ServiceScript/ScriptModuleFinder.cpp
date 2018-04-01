@@ -28,9 +28,9 @@ namespace Mengine
 
 		m_factoryScriptModuleLoaderCode = new FactoryPool<ScriptModuleLoaderCode, 8>();
 
-#   ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
 		m_factoryScriptModuleLoaderSource = new FactoryPool<ScriptModuleLoaderSource, 8>();
-#	endif
+#endif
 
 		return true;
 	}

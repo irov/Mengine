@@ -10,13 +10,13 @@
 
 #include "stdex/stl_map.h"
 
-#	ifndef MENGINE_PREFETCHER_THREAD_COUNT
+#ifndef MENGINE_PREFETCHER_THREAD_COUNT
 #	define MENGINE_PREFETCHER_THREAD_COUNT 2
-#	endif
+#endif
 
-#	ifndef MENGINE_PREFETCHER_PACKET_SIZE
+#ifndef MENGINE_PREFETCHER_PACKET_SIZE
 #	define MENGINE_PREFETCHER_PACKET_SIZE 64
-#	endif
+#endif
 
 namespace Mengine
 {

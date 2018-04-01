@@ -330,12 +330,12 @@ namespace Mengine
 	template<class T>
 	inline T static_node_cast( Node * _node )
 	{
-#	ifdef _DEBUG
+#ifdef _DEBUG
 		if( dynamic_cast<T>(_node) == nullptr )
 		{
             throw;
 		}
-#	endif
+#endif
 
 		return static_cast<T>(_node);
 	}
@@ -343,12 +343,12 @@ namespace Mengine
 	template<class T>
 	inline T static_node_cast( const Node * _node )
 	{
-#	ifdef _DEBUG
+#ifdef _DEBUG
 		if( dynamic_cast<T>(_node) == nullptr )
 		{
             throw;
 		}
-#	endif
+#endif
 
 		return static_cast<T>(_node);
 	}

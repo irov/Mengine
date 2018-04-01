@@ -89,7 +89,7 @@ namespace Mengine
 		bool reimport = false;
 		bool done = this->importBin_( file_bin, _metadata, &reimport );
 
-#	ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
 		if( reimport == true )
 		{
             file_bin = nullptr;
@@ -115,7 +115,7 @@ namespace Mengine
 
 			done = this->importBin_( file_bin, _metadata, nullptr );
 		}
-#	endif
+#endif
         
 		return done;
 	}
@@ -283,7 +283,7 @@ namespace Mengine
 
 		return true;
 	}
-#	ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const
 	{
@@ -437,7 +437,7 @@ namespace Mengine
 
 		return true;
 	}
-#	else
+#else
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const
 	{
@@ -460,7 +460,7 @@ namespace Mengine
 
 		return true;
 	}
-#	endif
+#endif
     //////////////////////////////////////////////////////////////////////////
     const ConstString & LoaderEngine::getCacheConstString( uint32_t _index ) const
     {

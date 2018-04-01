@@ -1447,7 +1447,7 @@ namespace Mengine
 
             IDirect3DTexture9 * dx_texture = image->getDXTextureInterface();
 
-#	ifdef _DEBUG
+#ifdef _DEBUG
             DWORD fillmode;
             DXCALL( m_pD3DDevice, GetRenderState, (D3DRS_FILLMODE, &fillmode) );
 
@@ -1455,9 +1455,9 @@ namespace Mengine
             {
                 DXCALL( m_pD3DDevice, SetTexture, (_stage, dx_texture) );
             }
-#	else
+#else
             DXCALL( m_pD3DDevice, SetTexture, (_stage, dx_texture) );
-#	endif			
+#endif			
 
             m_textureEnable[_stage] = true;
         }

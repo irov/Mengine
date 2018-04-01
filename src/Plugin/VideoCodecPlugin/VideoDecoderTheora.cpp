@@ -2,26 +2,26 @@
 
 #include "Logger/Logger.h"
 
-#	define OGG_BUFFER_SIZE 4096
+#define THEORA_OGG_BUFFER_SIZE 4096
 
 //Defines
-#define MAX( a, b ) ((a > b) ? a : b)
-#define MIN( a, b ) ((a < b) ? a : b)
+#define THEORA_MAX( a, b ) ((a > b) ? a : b)
+#define THEORA_MIN( a, b ) ((a < b) ? a : b)
 
-#	ifdef MENGINE_RENDER_TEXTURE_RGBA
-#		define COLOR_R 0
-#		define COLOR_G 1
-#		define COLOR_B 2
-#		define COLOR_A 3
-#	else
-#		define COLOR_R 2
-#		define COLOR_G 1
-#		define COLOR_B 0
-#		define COLOR_A 3
-#	endif
+#ifdef MENGINE_RENDER_TEXTURE_RGBA
+#	define THEORA_COLOR_R 0
+#	define THEORA_COLOR_G 1
+#	define THEORA_COLOR_B 2
+#	define THEORA_COLOR_A 3
+#else
+#	define THEORA_COLOR_R 2
+#	define THEORA_COLOR_G 1
+#	define THEORA_COLOR_B 0
+#	define THEORA_COLOR_A 3
+#endif
 
-#define CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
-	rgb_char_buffer = (unsigned char)(MAX( MIN(rgb_color_test, 255), 0 ))
+#define THEORA_CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
+	rgb_char_buffer = (unsigned char)(THEORA_MAX( THEORA_MIN(rgb_color_test, 255), 0 ))
 
 namespace Mengine
 {
@@ -473,10 +473,10 @@ namespace Mengine
 					int b = (rgbY + bU) >> 13;
 
 					//Clip to RGB values (255 0)
-					CLIP_RGB_COLOR( r, dstBitmap[COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmap[COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmap[COLOR_B] );
-					dstBitmap[COLOR_A] = 255;
+					THEORA_CLIP_RGB_COLOR( r, dstBitmap[THEORA_COLOR_R] );
+					THEORA_CLIP_RGB_COLOR( g, dstBitmap[THEORA_COLOR_G] );
+					THEORA_CLIP_RGB_COLOR( b, dstBitmap[THEORA_COLOR_B] );
+					dstBitmap[THEORA_COLOR_A] = 255;
 
 					//And repeat for other pixels (note, y is unique for each
 					//pixel, while uv are not)
@@ -484,30 +484,30 @@ namespace Mengine
 					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
 					b = (rgbY + bU) >> 13;
-					CLIP_RGB_COLOR( r, dstBitmap[4 + COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmap[4 + COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmap[4 + COLOR_B] );
-					dstBitmap[4 + COLOR_A] = 255;
+					THEORA_CLIP_RGB_COLOR( r, dstBitmap[4 + THEORA_COLOR_R] );
+					THEORA_CLIP_RGB_COLOR( g, dstBitmap[4 + THEORA_COLOR_G] );
+					THEORA_CLIP_RGB_COLOR( b, dstBitmap[4 + THEORA_COLOR_B] );
+					dstBitmap[4 + THEORA_COLOR_A] = 255;
 					++ySrc;
 
 					rgbY = s_YTable[*ySrc2];
 					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
 					b = (rgbY + bU) >> 13;
-					CLIP_RGB_COLOR( r, dstBitmapOffset[COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmapOffset[COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmapOffset[COLOR_B] );
-					dstBitmapOffset[COLOR_A] = 255;
+					THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[THEORA_COLOR_R] );
+					THEORA_CLIP_RGB_COLOR( g, dstBitmapOffset[THEORA_COLOR_G] );
+					THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[THEORA_COLOR_B] );
+					dstBitmapOffset[THEORA_COLOR_A] = 255;
 					++ySrc2;
 
 					rgbY = s_YTable[*ySrc2];
 					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
 					b = (rgbY + bU) >> 13;
-					CLIP_RGB_COLOR( r, dstBitmapOffset[4 + COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmapOffset[4 + COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmapOffset[4 + COLOR_B] );
-					dstBitmapOffset[4 + COLOR_A] = 255;
+					THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[4 + THEORA_COLOR_R] );
+					THEORA_CLIP_RGB_COLOR( g, dstBitmapOffset[4 + THEORA_COLOR_G] );
+					THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[4 + THEORA_COLOR_B] );
+					dstBitmapOffset[4 + THEORA_COLOR_A] = 255;
 					++ySrc2;
 
 					/*dstBitmap[COLOR_G] = 0;
@@ -567,9 +567,9 @@ namespace Mengine
 					int b = (rgbY + bU) >> 13;
 
 					//Clip to RGB values (255 0)
-					CLIP_RGB_COLOR( r, dstBitmap[COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmap[COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmap[COLOR_B] );
+					THEORA_CLIP_RGB_COLOR( r, dstBitmap[THEORA_COLOR_R] );
+					THEORA_CLIP_RGB_COLOR( g, dstBitmap[THEORA_COLOR_G] );
+					THEORA_CLIP_RGB_COLOR( b, dstBitmap[THEORA_COLOR_B] );
 
 					//And repeat for other pixels (note, y is unique for each
 					//pixel, while uv are not)
@@ -577,27 +577,27 @@ namespace Mengine
 					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
 					b = (rgbY + bU) >> 13;
-					CLIP_RGB_COLOR( r, dstBitmap[3 + COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmap[3 + COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmap[3 + COLOR_B] );
+					THEORA_CLIP_RGB_COLOR( r, dstBitmap[3 + THEORA_COLOR_R] );
+					THEORA_CLIP_RGB_COLOR( g, dstBitmap[3 + THEORA_COLOR_G] );
+					THEORA_CLIP_RGB_COLOR( b, dstBitmap[3 + THEORA_COLOR_B] );
 					++ySrc;
 
 					rgbY = s_YTable[*ySrc2];
 					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
 					b = (rgbY + bU) >> 13;
-					CLIP_RGB_COLOR( r, dstBitmapOffset[COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmapOffset[COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmapOffset[COLOR_B] );
+					THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[THEORA_COLOR_R] );
+					THEORA_CLIP_RGB_COLOR( g, dstBitmapOffset[THEORA_COLOR_G] );
+					THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[THEORA_COLOR_B] );
 					++ySrc2;
 
 					rgbY = s_YTable[*ySrc2];
 					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
 					b = (rgbY + bU) >> 13;
-					CLIP_RGB_COLOR( r, dstBitmapOffset[3 + COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmapOffset[3 + COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmapOffset[3 + COLOR_B] );
+					THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[3 + THEORA_COLOR_R] );
+					THEORA_CLIP_RGB_COLOR( g, dstBitmapOffset[3 + THEORA_COLOR_G] );
+					THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[3 + THEORA_COLOR_B] );
 					++ySrc2;
 
 					/*dstBitmap[COLOR_G] = 0;
@@ -661,9 +661,9 @@ namespace Mengine
 					int b = (rgbY + bU) >> 13;
 
 					//Clip to RGB values (255 0)
-					CLIP_RGB_COLOR( r, dstBitmap[COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmap[COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmap[COLOR_B] );
+					THEORA_CLIP_RGB_COLOR( r, dstBitmap[THEORA_COLOR_R] );
+					THEORA_CLIP_RGB_COLOR( g, dstBitmap[THEORA_COLOR_G] );
+					THEORA_CLIP_RGB_COLOR( b, dstBitmap[THEORA_COLOR_B] );
 
 					//And repeat for other pixels (note, y is unique for each
 					//pixel, while uv are not)
@@ -671,27 +671,27 @@ namespace Mengine
 					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
 					b = (rgbY + bU) >> 13;
-					CLIP_RGB_COLOR( r, dstBitmap[4 + COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmap[4 + COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmap[4 + COLOR_B] );
+					THEORA_CLIP_RGB_COLOR( r, dstBitmap[4 + THEORA_COLOR_R] );
+					THEORA_CLIP_RGB_COLOR( g, dstBitmap[4 + THEORA_COLOR_G] );
+					THEORA_CLIP_RGB_COLOR( b, dstBitmap[4 + THEORA_COLOR_B] );
 					++ySrc;
 
 					rgbY = s_YTable[*ySrc2];
 					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
 					b = (rgbY + bU) >> 13;
-					CLIP_RGB_COLOR( r, dstBitmapOffset[COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmapOffset[COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmapOffset[COLOR_B] );
+					THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[THEORA_COLOR_R] );
+					THEORA_CLIP_RGB_COLOR( g, dstBitmapOffset[THEORA_COLOR_G] );
+					THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[THEORA_COLOR_B] );
 					++ySrc2;
 
 					rgbY = s_YTable[*ySrc2];
 					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
 					b = (rgbY + bU) >> 13;
-					CLIP_RGB_COLOR( r, dstBitmapOffset[4 + COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmapOffset[4 + COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmapOffset[4 + COLOR_B] );
+					THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[4 + THEORA_COLOR_R] );
+					THEORA_CLIP_RGB_COLOR( g, dstBitmapOffset[4 + THEORA_COLOR_G] );
+					THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[4 + THEORA_COLOR_B] );
 					++ySrc2;
 
 					/*dstBitmap[COLOR_G] = 0;
@@ -732,23 +732,23 @@ namespace Mengine
 					int r = (rgbY + rV) >> 13;
 
 					//Clip to RGB values (255 0)
-					CLIP_RGB_COLOR( r, dstBitmap[COLOR_A] );
+					THEORA_CLIP_RGB_COLOR( r, dstBitmap[THEORA_COLOR_A] );
 
 					//And repeat for other pixels (note, y is unique for each
 					//pixel, while uv are not)
 					rgbY = s_YTable[*ySrc];
 					r = (rgbY + rV) >> 13;
-					CLIP_RGB_COLOR( r, dstBitmap[4 + COLOR_A] );
+					THEORA_CLIP_RGB_COLOR( r, dstBitmap[4 + THEORA_COLOR_A] );
 					++ySrc;
 
 					rgbY = s_YTable[*ySrc2];
 					r = (rgbY + rV) >> 13;
-					CLIP_RGB_COLOR( r, dstBitmapOffset[COLOR_A] );
+					THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[THEORA_COLOR_A] );
 					++ySrc2;
 
 					rgbY = s_YTable[*ySrc2];
 					r = (rgbY + rV) >> 13;
-					CLIP_RGB_COLOR( r, dstBitmapOffset[4 + COLOR_A] );
+					THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[4 + THEORA_COLOR_A] );
 					++ySrc2;
 
 					//Advance inner loop offsets
@@ -776,14 +776,14 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	size_t VideoDecoderTheora::read_buffer_data_()
 	{
-		char * buffer = ogg_sync_buffer( &m_oggSyncState, OGG_BUFFER_SIZE );
+		char * buffer = ogg_sync_buffer( &m_oggSyncState, THEORA_OGG_BUFFER_SIZE );
 
 		if( buffer == nullptr )
 		{
 			return 0;
 		}
 
-		size_t bytes = m_stream->read( buffer, OGG_BUFFER_SIZE );
+		size_t bytes = m_stream->read( buffer, THEORA_OGG_BUFFER_SIZE );
 
 		long ogg_bytes = (long)bytes;
 

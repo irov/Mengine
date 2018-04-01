@@ -34,46 +34,46 @@ namespace Mengine
 	{
 		(void)_value;
 
-#   ifdef MENGINE_FACTORABLE_DEBUG
+#ifdef MENGINE_FACTORABLE_DEBUG
 		m_immortal = _value;
-#	endif
+#endif
 	}
     //////////////////////////////////////////////////////////////////////////
     void Factorable::destroy()
     {
-#   ifdef MENGINE_FACTORABLE_DEBUG
+#ifdef MENGINE_FACTORABLE_DEBUG
 		if( m_immortal == true )
 		{
 			MENGINE_THROW_EXCEPTION( "m_immortal == true" );
 		}
-#	endif
+#endif
 
-#   ifdef MENGINE_FACTORABLE_DEBUG
+#ifdef MENGINE_FACTORABLE_DEBUG
         if( m_destroy == true )
         {
             MENGINE_THROW_EXCEPTION("m_destroy == true");
         }
 
 		m_destroy = true;
-#   endif
+#endif
 
         this->_destroy();
 
-#   ifdef MENGINE_FACTORABLE_DEBUG
+#ifdef MENGINE_FACTORABLE_DEBUG
 		this->_checkDestroy();
-#   endif
+#endif
 		
-#   ifdef MENGINE_FACTORABLE_DEBUG
+#ifdef MENGINE_FACTORABLE_DEBUG
 		if( m_factory == nullptr )
 		{
 			MENGINE_THROW_EXCEPTION("m_factory == nullptr");
 		}
-#   endif
+#endif
 
 		m_factory->destroyObject( this );
     }
 	//////////////////////////////////////////////////////////////////////////
-#   ifdef MENGINE_FACTORABLE_DEBUG
+#ifdef MENGINE_FACTORABLE_DEBUG
     //////////////////////////////////////////////////////////////////////////
 	bool Factorable::isDestroyed() const
 	{
@@ -84,7 +84,7 @@ namespace Mengine
     {
         //Empty
     }
-#   endif
+#endif
     //////////////////////////////////////////////////////////////////////////
     void Factorable::_destroy()
     {

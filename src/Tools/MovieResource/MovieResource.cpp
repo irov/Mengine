@@ -83,9 +83,17 @@ static void stdlib_movie_logerror( void * _data, aeMovieErrorCode _code, const c
     );
 }
 //////////////////////////////////////////////////////////////////////////
+struct resource_provider_t
+{
+    FILE * f;
+    CHAR movie_name[128];
+};
+//////////////////////////////////////////////////////////////////////////
 static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_voidptr_t _data )
 {
-    FILE * f = (FILE *)_data;
+    resource_provider_t * provider = (resource_provider_t *)_data;
+
+    FILE * f = provider->f;
 
     aeMovieResourceTypeEnum resource_type = _resource->type;
 
@@ -101,7 +109,8 @@ static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_
             );
 #endif
 
-            fprintf( f, "       <File Path = \"%s\" MaxSize = \"%u;%u\"/>\n"
+            fprintf( f, "       <File Path = \"Movies2/%s/%s\" MaxSize = \"%u;%u\"/>\n"
+                , provider->movie_name
                 , resource_image->path
                 , (uint32_t)resource_image->trim_width
                 , (uint32_t)resource_image->trim_height
@@ -119,7 +128,8 @@ static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_
             );
 #endif
             
-            fprintf( f, "       <File Path = \"%s\" Alpha = \"%u\" Codec = \"%s\" FrameRate = \"%f\" Duration = \"%f\"/>\n"
+            fprintf( f, "       <File Path = \"Movie2/%s/%s\" Alpha = \"%u\" Codec = \"%s\" FrameRate = \"%f\" Duration = \"%f\"/>\n"
+                , provider->movie_name
                 , resource_video->path
                 , resource_video->alpha
                 , resource_video->alpha == AE_TRUE ? "ogvaVideo" : "ogvVideo"
@@ -155,7 +165,8 @@ static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_
             );
 #endif
 
-            fprintf( f, "       <File Path = \"%s\"/>\n"
+            fprintf( f, "       <File Path = \"Movie2/%s/%s\"/>\n"
+                , provider->movie_name
                 , resource_particle->path
             );
 
@@ -280,7 +291,11 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     fprintf( f_out, "<DataBlock Name = \"%s\">\n", utf8_movie_name );
 
-    aeMovieData * movie_data = ae_create_movie_data( movie_instance, &my_resource_provider, &my_resource_deleter, f_out );
+    resource_provider_t * provider = new resource_provider_t;
+    provider->f = f_out;
+    strcpy( provider->movie_name, utf8_movie_name );
+
+    aeMovieData * movie_data = ae_create_movie_data( movie_instance, &my_resource_provider, &my_resource_deleter, provider );
 
     aeMovieStream * movie_stream = ae_create_movie_stream( movie_instance, &my_read_stream, &my_copy_stream, f_in );
 
@@ -296,6 +311,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
         return -1;
     }
+
+    delete provider;
     	
     ae_delete_movie_stream( movie_stream );
 

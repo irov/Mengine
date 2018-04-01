@@ -42,8 +42,11 @@ namespace Mengine
     protected:
         bool _isValid() const override;
 
+    public:        
+        ResourceReference * getResource_( const ae_string_t _name );
+
 	public:
-		ResourceReference * createResourceImage_( const ae_string_t _path, float _width, float _height );
+		ResourceReference * createResourceImage_( const aeMovieResourceImage * _resource );
 		ResourceReference * createResourceVideo_( const aeMovieResourceVideo * _resource );
 		ResourceReference * createResourceSound_( const aeMovieResourceSound * _resource );
         ResourceReference * createResourceParticle_( const aeMovieResourceParticle * _resource );

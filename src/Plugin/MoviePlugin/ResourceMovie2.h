@@ -20,6 +20,10 @@ namespace Mengine
 		void setMovieInstance( const aeMovieInstance * _instance );
 
     public:
+        void setFilePath( const FilePath & _filePath );
+        const FilePath & getFilePath() const;
+
+    public:
         bool hasComposition( const ConstString & _name ) const;
         float getCompositionDuration( const ConstString & _name ) const;
         float getCompositionFrameDuration( const ConstString & _name ) const;

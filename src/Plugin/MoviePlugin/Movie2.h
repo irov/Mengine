@@ -42,7 +42,7 @@ namespace Mengine
 		const ResourceMovie2Ptr & getResourceMovie2() const;
 
 	public:
-		void setCompositionName( const ConstString & _name );
+		void setCompositionName( const ConstString & _compositionName );
 		const ConstString & getCompositionName() const;
 
 	public:

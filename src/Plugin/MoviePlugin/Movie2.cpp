@@ -49,9 +49,9 @@ namespace Mengine
         return m_resourceMovie2;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::setCompositionName( const ConstString & _name )
+    void Movie2::setCompositionName( const ConstString & _compositionName )
     {
-        m_compositionName = _name;
+        m_compositionName = _compositionName;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Movie2::getCompositionName() const

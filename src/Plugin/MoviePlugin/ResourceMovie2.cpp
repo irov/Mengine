@@ -93,7 +93,17 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	ResourceMovie2::~ResourceMovie2()
 	{
-	}	
+	}
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceMovie2::setFilePath( const FilePath & _filePath )
+    {
+        m_filePath = _filePath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & ResourceMovie2::getFilePath() const
+    {
+        return m_filePath;
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::hasComposition( const ConstString & _name ) const
     {
@@ -146,6 +156,12 @@ namespace Mengine
 
 		if( compositionData == nullptr )
 		{
+            LOGGER_ERROR( "ResourceMovie2::getCompositionData resource '%s' file '%s' not found composition data '%s'"
+                , this->getName().c_str()
+                , this->getFilePath().c_str()
+                , _name.c_str()
+            );
+
 			return nullptr;
 		}
 				
@@ -192,9 +208,9 @@ namespace Mengine
 		if( stream == nullptr )
 		{
 			LOGGER_ERROR("ResourceMovie2::_compile: '%s' group '%s' can`t open file '%s'"
-				, this->getName().c_str()
-				, this->getGroup().c_str()
-				, m_filePath.c_str()
+                , this->getName().c_str()
+                , this->getGroup().c_str()
+                , this->getFilePath().c_str()
 				);
 
 			return false;
@@ -215,7 +231,7 @@ namespace Mengine
 			LOGGER_ERROR("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s' result '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
 				, this->getName().c_str()
 				, this->getGroup().c_str()
-				, m_filePath.c_str()
+				, this->getFilePath().c_str()
                 , result_string_info
                 , AE_MOVIE_SDK_MAJOR_VERSION
                 , AE_MOVIE_SDK_MINOR_VERSION
@@ -288,7 +304,7 @@ namespace Mengine
             LOGGER_ERROR("ResourceMovie2::_isValid: '%s' group '%s' can`t open file '%s'"
                 , this->getName().c_str()
                 , this->getGroup().c_str()
-                , m_filePath.c_str()
+                , this->getFilePath().c_str()
                 );
 
             return false;
@@ -307,7 +323,7 @@ namespace Mengine
             LOGGER_ERROR("ResourceMovie2::_isValid: '%s' group '%s' file '%s' check movie data invalid '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
                 , this->getName().c_str()
                 , this->getGroup().c_str()
-                , m_filePath.c_str()
+                , this->getFilePath().c_str()
                 , result_string_info
                 , AE_MOVIE_SDK_MAJOR_VERSION
                 , AE_MOVIE_SDK_MINOR_VERSION

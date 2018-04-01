@@ -138,7 +138,7 @@ namespace Mengine
 			return false;
 		}
 
-		if( SOUND_SERVICE()->play( m_sourceID ) == false )
+		if( SOUND_SERVICE()->playEmitter( m_sourceID ) == false )
 		{
 			LOGGER_ERROR("Amplifier::playMusic '%s' invalid play %d"
 				, path.c_str()
@@ -163,7 +163,7 @@ namespace Mengine
 			m_sourceID = 0;
 
 			SOUND_SERVICE()
-                ->stop( sourceId );
+                ->stopEmitter( sourceId );
 		
 			SOUND_SERVICE()
 				->releaseSoundSource( sourceId );
@@ -180,7 +180,7 @@ namespace Mengine
 		m_play = false;
 
 		SOUND_SERVICE()
-            ->pause( m_sourceID );
+            ->pauseEmitter( m_sourceID );
 
 		return true;
 	}
@@ -195,7 +195,7 @@ namespace Mengine
         m_play = true;
 
         SOUND_SERVICE()
-            ->play( m_sourceID );
+            ->playEmitter( m_sourceID );
 
 		return true;
 	}

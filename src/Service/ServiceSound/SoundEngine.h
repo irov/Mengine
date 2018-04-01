@@ -117,10 +117,10 @@ namespace Mengine
 		bool validSoundSource( uint32_t _sourceID ) const override;
 		
 	public:
-		bool play( uint32_t _emitterId ) override;
-		bool pause( uint32_t _emitterId ) override;
-		bool resume( uint32_t _emitterId ) override;
-		bool stop( uint32_t _emitterId ) override;
+		bool playEmitter( uint32_t _emitterId ) override;
+		bool pauseEmitter( uint32_t _emitterId ) override;
+		bool resumeEmitter( uint32_t _emitterId ) override;
+		bool stopEmitter( uint32_t _emitterId ) override;
 
 	public:
 		bool setLoop( uint32_t _emitterId, bool _looped ) override;

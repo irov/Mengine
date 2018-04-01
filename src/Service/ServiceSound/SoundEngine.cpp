@@ -744,7 +744,7 @@ namespace Mengine
 		return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::play( uint32_t _emitterId )
+	bool SoundEngine::playEmitter( uint32_t _emitterId )
 	{
         SoundSourceDesc * source;
 		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
@@ -794,7 +794,7 @@ namespace Mengine
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::pause( uint32_t _emitterId )
+	bool SoundEngine::pauseEmitter( uint32_t _emitterId )
 	{
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
@@ -833,7 +833,7 @@ namespace Mengine
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::resume( uint32_t _emitterId )
+	bool SoundEngine::resumeEmitter( uint32_t _emitterId )
 	{
 		SoundSourceDesc * source;
 		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
@@ -880,7 +880,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::stop( uint32_t _emitterId )
+	bool SoundEngine::stopEmitter( uint32_t _emitterId )
 	{
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )

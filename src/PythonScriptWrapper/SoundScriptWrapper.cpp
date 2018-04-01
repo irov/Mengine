@@ -174,7 +174,7 @@ namespace Mengine
 			}
 
 			if( SOUND_SERVICE()
-				->play( sourceID ) == false )
+				->playEmitter( sourceID ) == false )
 			{
 				LOGGER_ERROR("soundPlay: invalid play '%s'"
 					, _resourceName.c_str()
@@ -200,7 +200,7 @@ namespace Mengine
             }
 
             if( SOUND_SERVICE()
-                ->play( sourceID ) == false )
+                ->playEmitter( sourceID ) == false )
 			{
 				LOGGER_ERROR("voicePlay: invalid play '%s'"
 					, _resourceName.c_str()
@@ -215,7 +215,7 @@ namespace Mengine
 		bool s_voicePause( uint32_t _soundId )
 		{
 			bool successful = SOUND_SERVICE()
-				->pause( _soundId );
+				->pauseEmitter( _soundId );
 
 			return successful;
 		}
@@ -223,7 +223,7 @@ namespace Mengine
 		bool s_voiceResume( uint32_t _soundId )
 		{
 			bool successful = SOUND_SERVICE()
-				->resume( _soundId );
+				->resumeEmitter( _soundId );
 
 			return successful;
 		}
@@ -253,7 +253,7 @@ namespace Mengine
             }
 			
 			if( SOUND_SERVICE()
-				->play( sourceID ) == false )
+				->playEmitter( sourceID ) == false )
             {
                 LOGGER_ERROR("soundPlayFromPosition: play '%s' '%f'"
                     , _resourceName.c_str()
@@ -307,7 +307,7 @@ namespace Mengine
 				if( _isEnd == true )
 				{
 					SOUND_SERVICE()
-						->stop( m_sourceId );
+						->stopEmitter( m_sourceId );
 				}
 
 				if( m_cb.is_invalid() == true )
@@ -378,7 +378,7 @@ namespace Mengine
 			}
 
 			if( SOUND_SERVICE()
-				->play( sourceId ) == false )
+				->playEmitter( sourceId ) == false )
 			{
 				LOGGER_ERROR( "soundPlay: invalid play '%s'"
 					, _resourceName.c_str()
@@ -404,25 +404,25 @@ namespace Mengine
 		void s_soundStop( uint32_t _sourceID )
 		{
 			SOUND_SERVICE()
-				->stop( _sourceID );
+				->stopEmitter( _sourceID );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_soundPause( uint32_t _sourceID )
 		{
 			SOUND_SERVICE()
-				->pause( _sourceID );
+				->pauseEmitter( _sourceID );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_soundResume( uint32_t _sourceID )
 		{
 			SOUND_SERVICE()
-				->resume( _sourceID );
+				->resumeEmitter( _sourceID );
 		}
 		//////////////////////////////////////////////////////////////////////////
         void s_voiceStop( uint32_t _sourceID )
         {
             SOUND_SERVICE()
-                ->stop( _sourceID );
+                ->stopEmitter( _sourceID );
         }
 		//////////////////////////////////////////////////////////////////////////
 		void s_soundSourceSetVolume( uint32_t _sourceID, float _volume )

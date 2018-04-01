@@ -169,10 +169,10 @@ namespace Mengine
 		virtual void setSourceListener( uint32_t _emitter, const SoundListenerInterfacePtr & _listener ) = 0;
 
 	public:
-		virtual bool play( uint32_t _emitter ) = 0;
-		virtual bool pause( uint32_t _emitter ) = 0;
-		virtual bool resume( uint32_t _emitter ) = 0;
-		virtual bool stop( uint32_t _emitter ) = 0;
+		virtual bool playEmitter( uint32_t _emitter ) = 0;
+		virtual bool pauseEmitter( uint32_t _emitter ) = 0;
+		virtual bool resumeEmitter( uint32_t _emitter ) = 0;
+		virtual bool stopEmitter( uint32_t _emitter ) = 0;
 
 	public:
 		virtual bool setLoop( uint32_t _emitter, bool _looped ) = 0;

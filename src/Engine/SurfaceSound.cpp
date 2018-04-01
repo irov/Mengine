@@ -215,7 +215,7 @@ namespace Mengine
 		}
         
 		if( SOUND_SERVICE()
-			->play( m_sourceID ) == false )
+			->playEmitter( m_sourceID ) == false )
         {
             LOGGER_ERROR("SoundEmitter::_play %s invalid play [%d] resource %s"
                 , this->getName().c_str()
@@ -248,7 +248,7 @@ namespace Mengine
 		}
 		
 		SOUND_SERVICE()
-			->pause( m_sourceID );
+			->pauseEmitter( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceSound::_resume( uint32_t _enumerator, float _time )
@@ -262,7 +262,7 @@ namespace Mengine
 		}
 
 		SOUND_SERVICE()
-			->resume( m_sourceID );
+			->resumeEmitter( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceSound::_stop( uint32_t _enumerator )
@@ -270,7 +270,7 @@ namespace Mengine
 		if( m_sourceID != 0 )
 		{
 			SOUND_SERVICE()
-				->stop( m_sourceID );
+				->stopEmitter( m_sourceID );
 		}
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
@@ -284,7 +284,7 @@ namespace Mengine
 		if( m_sourceID != 0 )
 		{
 			SOUND_SERVICE()
-				->stop( m_sourceID );
+				->stopEmitter( m_sourceID );
 		}
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )

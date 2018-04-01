@@ -1637,8 +1637,14 @@ namespace Mengine
 
                         m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
+                        RenderVertex2D * vertexBuffer = &m.vertices[0];
+                        uint32_t vertexSize = (uint32_t)m.vertices.size();
+
+                        RenderIndex * indexBuffer = &m.indices[0];
+                        uint32_t indexSize = (uint32_t)m.indices.size();
+
                         _renderService
-                            ->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+                            ->addRenderObject( &state, m.material, vertexBuffer, vertexSize, indexBuffer, indexSize, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOLID:
                     {
@@ -1670,8 +1676,14 @@ namespace Mengine
 
                         m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
+                        RenderVertex2D * vertexBuffer = &m.vertices[0];
+                        uint32_t vertexSize = (uint32_t)m.vertices.size();
+
+                        RenderIndex * indexBuffer = &m.indices[0];
+                        uint32_t indexSize = (uint32_t)m.indices.size();
+
                         _renderService
-                            ->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+                            ->addRenderObject( &state, m.material, vertexBuffer, vertexSize, indexBuffer, indexSize, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
@@ -1713,8 +1725,14 @@ namespace Mengine
                             continue;
                         }
 
+                        RenderVertex2D * vertexBuffer = &m.vertices[0];
+                        uint32_t vertexSize = (uint32_t)m.vertices.size();
+
+                        RenderIndex * indexBuffer = &m.indices[0];
+                        uint32_t indexSize = (uint32_t)m.indices.size();
+
                         _renderService
-                            ->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+                            ->addRenderObject( &state, m.material, vertexBuffer, vertexSize, indexBuffer, indexSize, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
@@ -1746,8 +1764,14 @@ namespace Mengine
 
                         m.material = surfaceVideo->getMaterial();
 
+                        RenderVertex2D * vertexBuffer = &m.vertices[0];
+                        uint32_t vertexSize = (uint32_t)m.vertices.size();
+
+                        RenderIndex * indexBuffer = &m.indices[0];
+                        uint32_t indexSize = (uint32_t)m.indices.size();
+
                         _renderService
-                            ->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+                            ->addRenderObject( &state, m.material, vertexBuffer, vertexSize, indexBuffer, indexSize, nullptr, false );
                     }break;
                 default:
                     break;
@@ -1817,8 +1841,14 @@ namespace Mengine
                             continue;
                         }
 
+                        RenderVertex2D * vertexBuffer = &m.vertices[0];
+                        uint32_t vertexSize = (uint32_t)m.vertices.size();
+
+                        RenderIndex * indexBuffer = &m.indices[0];
+                        uint32_t indexSize = (uint32_t)m.indices.size();
+
                         _renderService
-                            ->addRenderObject( &state, m.material, &m.vertices[0], m.vertices.size(), &m.indices[0], m.indices.size(), nullptr, false );
+                            ->addRenderObject( &state, m.material, vertexBuffer, vertexSize, indexBuffer, indexSize, nullptr, false );
                     }break;
                 default:
                     break;

@@ -33,11 +33,7 @@ if( MENGINE_TARGET_SDL )
         ADD_SUBDIRECTORY( MockupSocketSystem )
     endif()
 
-    if( MENGINE_PLATFORM_IOS )
-        ADD_SUBDIRECTORY( OpenGLRenderSystemES )
-    else()
-        ADD_SUBDIRECTORY( OpenGLRenderSystem )
-    endif()    
+    ADD_SUBDIRECTORY( OpenGLRenderSystem )
 endif()
 
 if( MENGINE_PLUGIN_CURL )

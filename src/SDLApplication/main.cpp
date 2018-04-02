@@ -1,10 +1,10 @@
-#   include "Config/Config.h"
+#include "Config/Config.h"
 
-#   include "SDLApplication.h"
+#include "SDLApplication.h"
 
-#   include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-#   include "SDL.h"
+#include "SDL.h"
 
 //////////////////////////////////////////////////////////////////////////
 //							Entry point									//
@@ -15,9 +15,9 @@ int main( int argc, char * argv[] )
 
     Mengine::SDLApplication application;
 
-#	ifndef _DEBUG
+#ifndef _DEBUG
     try
-#   endif
+#endif
     {
         bool initialize = application.initialize( argc, argv );
 
@@ -32,14 +32,14 @@ int main( int argc, char * argv[] )
 
         application.finalize();
     }
-#	ifndef _DEBUG
+#ifndef _DEBUG
     catch( const std::exception & se )
     {
         const char * se_what = se.what();
 
         SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine exception", se_what, NULL );
     }
-#   endif
+#endif
 
     return 0;
 }

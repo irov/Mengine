@@ -1292,15 +1292,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderFragmentShaderDestroy_( OpenGLRenderFragmentShader * _fragmentShader )
     {
-        TVectorRenderFragmentShaders::iterator it_found = std::find( m_deferredCompileFragmentShaders.begin(), m_deferredCompileFragmentShaders.end(), _fragmentShader );
+        TVectorCacheRenderFragmentShaders::iterator it_found = std::find( m_cacheRenderFragmentShaders.begin(), m_cacheRenderFragmentShaders.end(), _fragmentShader );
 
-        if( it_found == m_deferredCompileFragmentShaders.end() )
+        if( it_found == m_cacheRenderFragmentShaders.end() )
         {
             return;
         }
 
-        *it_found = m_deferredCompileFragmentShaders.back();
-        m_deferredCompileFragmentShaders.pop_back();
+        *it_found = m_cacheRenderFragmentShaders.back();
+        m_cacheRenderFragmentShaders.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderProgramDestroy_( OpenGLRenderProgram * _program )

@@ -506,7 +506,6 @@ namespace Mengine
 		virtual void setDepthBufferCmpFunc( ECompareFunction _depthFunction ) = 0;
 		virtual void setFillMode( EFillMode _mode ) = 0;
 		virtual void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) = 0;
-		virtual void setShadeType( EShadeType _sType ) = 0;
 		virtual void setAlphaBlendEnable( bool _alphaBlend ) = 0;
 
     public:

@@ -754,14 +754,6 @@ namespace Mengine
         GLCALL( glColorMask, (_r ? GL_TRUE : GL_FALSE, _g ? GL_TRUE : GL_FALSE, _b ? GL_TRUE : GL_FALSE, _a ? GL_TRUE : GL_FALSE) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setShadeType( EShadeType _sType )
-    {
-        //opengles2 don't support glShadeModel function
-        //https://forums.khronos.org/showthread.php/6949-Replacement-for-glShadeModel-on-OpenGL-ES-2-0
-        const GLenum model = s_toGLShadeMode( _sType );
-        GLCALL( glShadeModel, (model) );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setAlphaBlendEnable( bool _alphaBlend )
     {
         if( _alphaBlend == true )

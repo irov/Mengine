@@ -93,7 +93,6 @@ namespace Mengine
         void setDepthBufferCmpFunc( ECompareFunction _depthFunction ) override;
         void setFillMode( EFillMode _mode ) override;
         void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) override;
-        void setShadeType( EShadeType _sType ) override;
         void setAlphaBlendEnable( bool _alphaBlend ) override;
 
     public:

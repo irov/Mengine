@@ -17,7 +17,7 @@ namespace Mengine
 		~DX9RenderVertexAttribute() override;
 
     public:
-        bool initialize( const ConstString & _name );
+        bool initialize( const ConstString & _name, uint32_t _elementSize );
         
     public:
         const ConstString & getName() const override;
@@ -32,6 +32,7 @@ namespace Mengine
 
 	protected:
         ConstString m_name;
+        uint32_t m_elementSize;
 
         struct Attribute
         {

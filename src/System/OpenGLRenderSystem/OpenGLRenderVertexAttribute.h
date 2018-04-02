@@ -17,10 +17,10 @@ namespace Mengine
         ~OpenGLRenderVertexAttribute() override;
 
     public:
-        bool initialize( const ConstString & _name );
+        bool initialize( const ConstString & _name, uint32_t _elementSize );
 
     public:
-        void bind( GLuint _program );
+        bool bind( GLuint _program );
 
     protected:
         const ConstString & getName() const override;
@@ -35,10 +35,12 @@ namespace Mengine
 
     protected:
         ConstString m_name;
+        uint32_t m_elementSize;
 
         struct Attribute
         {
             ConstString uniform;
+            GLint location;
 
             uint32_t size;
             EVertexAttributeType type;

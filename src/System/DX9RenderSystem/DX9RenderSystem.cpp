@@ -1642,21 +1642,6 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_COLORWRITEENABLE, value) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setShadeType( EShadeType _sType )
-    {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::setShadeType device not created"
-            );
-
-            return;
-        }
-
-        D3DSHADEMODE mode = s_toD3DShadeMode( _sType );
-
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SHADEMODE, mode) );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setAlphaBlendEnable( bool _alphaBlend )
     {
         if( m_pD3DDevice == nullptr )
@@ -1670,21 +1655,6 @@ namespace Mengine
         DWORD alphaBlend = _alphaBlend ? TRUE : FALSE;
 
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ALPHABLENDENABLE, alphaBlend) );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setLightingEnable( bool _light )
-    {
-        if( m_pD3DDevice == NULL )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::setLightingEnable device not created"
-            );
-
-            return;
-        }
-
-        DWORD value = _light ? TRUE : FALSE;
-
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_LIGHTING, value) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
@@ -1716,7 +1686,7 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexAttributeInterfacePtr DX9RenderSystem::createVertexAttribute( const ConstString & _name )
+    RenderVertexAttributeInterfacePtr DX9RenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize )
     {
         DX9RenderVertexAttributePtr attribute = m_factoryRenderVertexAttribute->createObject();
 
@@ -1729,7 +1699,7 @@ namespace Mengine
             return nullptr;
         }
 
-        if( attribute->initialize( _name ) == false )
+        if( attribute->initialize( _name, _elementSize ) == false )
         {
             LOGGER_ERROR( "DX9RenderSystem::createVertexAttribute invalid initialize attribute %s"
                 , _name.c_str()

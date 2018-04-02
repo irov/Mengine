@@ -27,7 +27,7 @@ namespace Mengine
         this->release();
     }
     //////////////////////////////////////////////////////////////////////////
-    GLuint OpenGLRenderProgram::getProgram() const
+    GLuint OpenGLRenderProgram::getProgramId() const
     {
         return m_program;
     }
@@ -98,8 +98,6 @@ namespace Mengine
             m_fragmentShader->attach( program );
         }
 
-        m_vertexAttribute->bind( program );
-        
         GLCALL( glLinkProgram, (program) );
 
         GLint linked;
@@ -114,6 +112,15 @@ namespace Mengine
                 , m_name.c_str()
                 , errorLog
                 );
+
+            return false;
+        }
+
+        if( m_vertexAttribute->bind( program ) == false )
+        {
+            LOGGER_ERROR( "invalid program '%s' bind vertex attribute"
+                , m_name.c_str()
+            );
 
             return false;
         }

@@ -1,4 +1,4 @@
-<Protocol Version = "119">
+<Protocol Version = "120">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -88,7 +88,8 @@
         <Node Name="VertexAttribute">
           <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
           <Attribute Name="RenderPlatform" Type="Mengine::ConstString" Required="1"/>
-
+          <Member Node="Element" Name="Size" Type="uint32_t" Required="1"/>
+          
           <Node Name="Attribute">
             <Attribute Name="Uniform" Type="Mengine::ConstString" Required="1"/>
             <Attribute Name="Size" Type="uint32_t" Required="1"/>

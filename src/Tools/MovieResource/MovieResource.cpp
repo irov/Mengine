@@ -128,7 +128,7 @@ static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_
             );
 #endif
             
-            fprintf( f, "       <File Path = \"Movie2/%s/%s\" Alpha = \"%u\" Codec = \"%s\" FrameRate = \"%f\" Duration = \"%f\"/>\n"
+            fprintf( f, "       <File Path = \"Movies2/%s/%s\" Alpha = \"%u\" Codec = \"%s\" FrameRate = \"%f\" Duration = \"%f\"/>\n"
                 , provider->movie_name
                 , resource_video->path
                 , resource_video->alpha
@@ -149,7 +149,8 @@ static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_
             );
 #endif
 
-            fprintf( f, "       <File Path = \"%s\"  Codec = \"oggSound\"/>\n"
+            fprintf( f, "       <File Path = \"Movies2/%s/%s\"  Codec = \"oggSound\"/>\n"
+                , provider->movie_name
                 , resource_sound->path
             );
 
@@ -165,7 +166,7 @@ static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_
             );
 #endif
 
-            fprintf( f, "       <File Path = \"Movie2/%s/%s\"/>\n"
+            fprintf( f, "       <File Path = \"Movies2/%s/%s\"/>\n"
                 , provider->movie_name
                 , resource_particle->path
             );

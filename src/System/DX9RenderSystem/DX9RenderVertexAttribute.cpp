@@ -4,6 +4,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexAttribute::DX9RenderVertexAttribute()
+        : m_elementSize( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -11,9 +12,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexAttribute::initialize( const ConstString & _name )
+    bool DX9RenderVertexAttribute::initialize( const ConstString & _name, uint32_t _elementSize )
     {
         m_name = _name;
+        m_elementSize = _elementSize;
 
         return true;
     }
@@ -25,30 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderVertexAttribute::getElementSize() const
     {
-        uint32_t vertexSize = 0;
-
-        for( TVectorAttribute::const_iterator
-            it = m_attributes.begin(),
-            it_end = m_attributes.end();
-            it != it_end;
-            ++it )
-        {
-            const Attribute & attribute = *it;
-
-            switch( attribute.type )
-            {
-            case VAT_FLOAT:
-                {
-                    vertexSize += attribute.size * sizeof( float );
-                }break;
-            case VAT_UNSIGNED_BYTE:
-                {
-                    vertexSize += attribute.size * sizeof( unsigned char );
-                }break;
-            }
-        }
-
-        return vertexSize;
+        return m_elementSize;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexAttribute::enable()

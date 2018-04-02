@@ -274,10 +274,12 @@ namespace Mengine
             {
                 continue;
             }
+
+            uint32_t elementSize = meta_VertexAttribute.get_Element_Size();
         
             const ConstString & name = meta_VertexAttribute.get_Name();
 
-            RenderVertexAttributeInterfacePtr vertexAttribute = this->createVertexAttribute_( name );
+            RenderVertexAttributeInterfacePtr vertexAttribute = this->createVertexAttribute_( name, elementSize );
 
             const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexAttribute::VectorMeta_Attribute & includes_Attributes = meta_VertexAttribute.get_Includes_Attribute();
 
@@ -949,10 +951,10 @@ namespace Mengine
 		return material_hash;
 	}
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexAttributeInterfacePtr RenderMaterialManager::createVertexAttribute_( const ConstString & _name )
+    RenderVertexAttributeInterfacePtr RenderMaterialManager::createVertexAttribute_( const ConstString & _name, uint32_t _elementSize )
     {
         RenderVertexAttributeInterfacePtr vertexAttribute = RENDER_SYSTEM()
-            ->createVertexAttribute( _name );
+            ->createVertexAttribute( _name, _elementSize );
 
         return vertexAttribute;
     }

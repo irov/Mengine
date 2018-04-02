@@ -484,7 +484,7 @@ namespace Mengine
 		virtual bool setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer ) = 0;
 		
 	public:
-        virtual RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name ) = 0;
+        virtual RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t _elementSize ) = 0;
 		virtual RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile ) = 0;
 		virtual RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile ) = 0;
 						

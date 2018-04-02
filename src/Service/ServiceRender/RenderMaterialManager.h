@@ -85,7 +85,7 @@ namespace Mengine
 		uint32_t makeMaterialHash( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const;
 
 	protected:
-        RenderVertexAttributeInterfacePtr createVertexAttribute_( const ConstString & _name );
+        RenderVertexAttributeInterfacePtr createVertexAttribute_( const ConstString & _name, uint32_t elementSize );
 		RenderVertexShaderInterfacePtr createVertexShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath, bool _compile );
 		RenderFragmentShaderInterfacePtr createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath, bool _compile );
 

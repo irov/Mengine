@@ -9,6 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderVertexAttribute::OpenGLRenderVertexAttribute()
+        : m_elementSize( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -22,37 +23,15 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderVertexAttribute::getElementSize() const
-    {
-        uint32_t vertexSize = 0;
-
-        for( TVectorAttribute::const_iterator
-            it = m_attributes.begin(),
-            it_end = m_attributes.end();
-            it != it_end;
-            ++it )
-        {
-            const Attribute & attribute = *it;
-
-            switch( attribute.type )
-            {
-            case VAT_FLOAT:
-                {
-                    vertexSize += attribute.size * sizeof( float );
-                }break;
-            case VAT_UNSIGNED_BYTE:
-                {
-                    vertexSize += attribute.size * sizeof( unsigned char );
-                }break;
-            }            
-        }
-
-        return vertexSize;
+    {        
+        return m_elementSize;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
     {
         Attribute attr;
         attr.uniform = _uniform;
+        attr.location = -1;
         attr.size = _size;
         attr.type = _type;
         attr.normalized = _normalized == true ? GL_TRUE : GL_FALSE;
@@ -62,28 +41,62 @@ namespace Mengine
         m_attributes.push_back( attr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderVertexAttribute::initialize( const ConstString & _name )
+    bool OpenGLRenderVertexAttribute::initialize( const ConstString & _name, uint32_t _elementSize )
     {
         m_name = _name;
+        m_elementSize = _elementSize;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderVertexAttribute::bind( GLuint _program )
+    {
+        for( TVectorAttribute::iterator
+            it = m_attributes.begin(),
+            it_end = m_attributes.end();
+            it != it_end;
+            ++it )
+        {
+            Attribute & attribute = *it;
+
+            const Char * attribute_uniform_str = attribute.uniform.c_str();
+
+            int location;
+            GLCALLR( location, glGetAttribLocation, (_program, attribute_uniform_str) );
+
+            if( location == -1 )
+            {
+                LOGGER_ERROR( "vertex attribute '%s' invalid get uniform '%s'"
+                    , m_name.c_str()
+                    , attribute.uniform.c_str()
+                );
+
+                return false;
+            }
+
+            attribute.location = location;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexAttribute::enable()
     {
-        for( uint32_t
-            it = 0,
-            it_end = m_attributes.size();
+        for( TVectorAttribute::const_iterator
+            it = m_attributes.begin(),
+            it_end = m_attributes.end();
             it != it_end;
             ++it )
         {
-            const Attribute & attribute = m_attributes[it];
+            const Attribute & attribute = *it;
 
-            GLCALL( glEnableVertexAttribArray, (it) );
+            GLint attribute_location = attribute.location;
+
+            GLCALL( glEnableVertexAttribArray, (attribute_location) );
 
             GLenum gl_type = s_getGLVertexAttributeType( attribute.type );
 
-            IF_GLCALL( glVertexAttribPointer, (it
+            IF_GLCALL( glVertexAttribPointer, (attribute_location
                 , attribute.size
                 , gl_type
                 , attribute.normalized
@@ -91,10 +104,10 @@ namespace Mengine
                 , reinterpret_cast<const GLvoid *>(attribute.offset)
                 ) )
             {
-                LOGGER_ERROR( "vertex attribute '%s' invalid setup uniform '%s' index '%u' size '%u' type '%u' normalized '%u' stride '%u' offset '%u'"
+                LOGGER_ERROR( "vertex attribute '%s' invalid setup uniform '%s' location '%u' size '%u' type '%u' normalized '%u' stride '%u' offset '%u'"
                     , m_name.c_str()
                     , attribute.uniform.c_str()
-                    , it
+                    , attribute.location
                     , attribute.size
                     , gl_type
                     , attribute.normalized
@@ -111,29 +124,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexAttribute::disable()
     {
-        for( uint32_t
-            it = 0,
-            it_end = m_attributes.size();
+        for( TVectorAttribute::const_iterator
+            it = m_attributes.begin(),
+            it_end = m_attributes.end();
             it != it_end;
             ++it )
         {
-            GLCALL( glDisableVertexAttribArray, (it) );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderVertexAttribute::bind( GLuint _program )
-    {
-        for( uint32_t
-            it = 0,
-            it_end = m_attributes.size();
-            it != it_end;
-            ++it )
-        {
-            const Attribute & attribute = m_attributes[it];
+            const Attribute & attribute = *it;
 
-            const char * uniform_str = attribute.uniform.c_str();
-
-            GLCALL( glBindAttribLocation, (_program, it, uniform_str) );
+            GLCALL( glDisableVertexAttribArray, (attribute.location) );
         }
     }
 }

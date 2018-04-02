@@ -510,6 +510,11 @@ namespace Metacode
                     return this->m_RenderPlatform;
                 }
                 
+                uint32_t get_Element_Size() const
+                {
+                    return this->m_Element_Size;
+                }
+                
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read ) override;
                 void _preparationIncludes( uint32_t _id, uint32_t _count ) override;
@@ -573,6 +578,7 @@ namespace Metacode
             protected:
                 Mengine::ConstString m_Name;
                 Mengine::ConstString m_RenderPlatform;
+                uint32_t m_Element_Size;
             public:
                 typedef Metabuf::Vector<Meta_Attribute> VectorMeta_Attribute;
             

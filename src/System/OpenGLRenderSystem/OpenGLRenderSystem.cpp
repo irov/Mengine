@@ -357,7 +357,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexAttributeInterfacePtr OpenGLRenderSystem::createVertexAttribute( const ConstString & _name )
+    RenderVertexAttributeInterfacePtr OpenGLRenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize )
     {
         OpenGLRenderVertexAttributePtr vertexAttribute = m_factoryRenderVertexAttribute->createObject();
 
@@ -370,7 +370,7 @@ namespace Mengine
             return nullptr;
         }
 
-        if( vertexAttribute->initialize( _name ) == false )
+        if( vertexAttribute->initialize( _name, _elementSize ) == false )
         {
             LOGGER_ERROR( "invalid initialize vertex attribute '%s'"
                 , _name.c_str()

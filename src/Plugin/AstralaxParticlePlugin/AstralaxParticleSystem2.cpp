@@ -188,12 +188,49 @@ namespace Mengine
                 }break;
             }
 
-            const RenderVertexAttributeInterfacePtr & vertexAttribute = RENDERMATERIAL_SERVICE()
-                ->getVertexAttribute( STRINGIZE_STRING_LOCAL( "Vertex2D" ) );
+            RenderVertexAttributeInterfacePtr vertexAttribute;
+            RenderVertexShaderInterfacePtr vertexShader;
 
-            const RenderVertexShaderInterfacePtr & vertexShader = RENDERMATERIAL_SERVICE()
-                ->getVertexShader( STRINGIZE_STRING_LOCAL( "Vertex_Blend" ) );
+            switch( m.textures )
+            {
+            case 0:
+                {
+                    vertexAttribute = RENDERMATERIAL_SERVICE()
+                        ->getVertexAttribute( STRINGIZE_STRING_LOCAL( "Vertex2D_UV0" ) );
 
+                    vertexShader = RENDERMATERIAL_SERVICE()
+                        ->getVertexShader( STRINGIZE_STRING_LOCAL( "Vertex_Color" ) );
+                }break;
+            case 1:
+                {
+                    vertexAttribute = RENDERMATERIAL_SERVICE()
+                        ->getVertexAttribute( STRINGIZE_STRING_LOCAL( "Vertex2D_UV1" ) );
+
+                    vertexShader = RENDERMATERIAL_SERVICE()
+                        ->getVertexShader( STRINGIZE_STRING_LOCAL( "Vertex_Blend" ) );                    
+                }break;
+            case 2:
+                {
+                    vertexAttribute = RENDERMATERIAL_SERVICE()
+                        ->getVertexAttribute( STRINGIZE_STRING_LOCAL( "Vertex2D_UV2" ) );
+
+                    vertexShader = RENDERMATERIAL_SERVICE()
+                        ->getVertexShader( STRINGIZE_STRING_LOCAL( "Vertex_Blend_ExternalAlpha" ) );
+                }break;
+            default:
+                return false;
+                break;
+            };
+
+            if( vertexAttribute == nullptr )
+            {
+                return false;
+            }
+
+            if( vertexShader == nullptr )
+            {
+                return false;
+            }
 
             RenderFragmentShaderInterfacePtr fragmentShader = this->cacheFragmentShader_( &m );
 
@@ -201,9 +238,16 @@ namespace Mengine
             {
                 return false;
             }
-            
+
             RenderProgramInterfacePtr program = RENDER_SYSTEM()
                 ->createProgram( STRINGIZE_STRING_LOCAL( "AstralaxProgram" ), vertexShader, fragmentShader, vertexAttribute, m.textures );
+
+            if( program == nullptr )
+            {
+                return false;
+            }
+
+            rs.program = program;
 
             for( int stage = 0; stage != m.textures; ++stage )
             {
@@ -229,7 +273,7 @@ namespace Mengine
     //            textureStage.alphaArg2 = dx_arg[state.argument_alpha2];
             }
 
-            rs.program = program;
+            
 
             const RenderMaterialStage * cache_stage = RENDERMATERIAL_SERVICE()
                 ->cacheStage( rs );

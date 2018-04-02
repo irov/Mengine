@@ -5,7 +5,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
     static const uint32_t metacode_version = 5;
-    static const uint32_t metacode_protocol = 119;
+    static const uint32_t metacode_protocol = 120;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -680,13 +680,14 @@ namespace Metacode
         {
             this->read( _buff, _size, _read, this->m_Name );
             this->read( _buff, _size, _read, this->m_RenderPlatform );
+            this->read( _buff, _size, _read, this->m_Element_Size );
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_VertexAttribute::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             switch( _id )
             {
-            case 3:
+            case 4:
                 {
                     includes_Meta_Attribute.reserve( _count );
                 }break;
@@ -697,7 +698,7 @@ namespace Metacode
         {
             switch( _id )
             {
-            case 3:
+            case 4:
                 {
                     includes_Meta_Attribute.emplace_back( Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute() );
                     Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute & metadata = includes_Meta_Attribute.back();
@@ -720,7 +721,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         uint32_t Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute::getId() const
         {
-            return 3;
+            return 4;
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute::_parseData( const uint8_t * _buff, size_t _size, size_t & _read )

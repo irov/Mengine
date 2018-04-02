@@ -508,7 +508,6 @@ namespace Mengine
 		virtual void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) = 0;
 		virtual void setShadeType( EShadeType _sType ) = 0;
 		virtual void setAlphaBlendEnable( bool _alphaBlend ) = 0;
-		virtual void setLightingEnable( bool _light ) = 0;
 
     public:
 		virtual void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) = 0;

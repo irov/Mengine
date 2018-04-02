@@ -770,7 +770,6 @@ namespace Mengine
         RENDER_SYSTEM()->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
         RENDER_SYSTEM()->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
         RENDER_SYSTEM()->setAlphaBlendEnable( m_alphaBlendEnable );
-        RENDER_SYSTEM()->setLightingEnable( false );
         RENDER_SYSTEM()->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
 
         LOGGER_INFO( "RenderEngine::restoreRenderSystemStates_ texture stages %d"

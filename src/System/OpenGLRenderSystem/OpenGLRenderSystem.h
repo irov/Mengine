@@ -95,7 +95,6 @@ namespace Mengine
         void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) override;
         void setShadeType( EShadeType _sType ) override;
         void setAlphaBlendEnable( bool _alphaBlend ) override;
-        void setLightingEnable( bool _light ) override;
 
     public:
         void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;

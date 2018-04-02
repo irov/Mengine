@@ -774,19 +774,6 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setLightingEnable( bool _light )
-    {
-        if( _light == true )
-        {
-            
-            GLCALL( glEnable, (GL_LIGHTING) );
-        }
-        else
-        {
-            GLCALL( glDisable, (GL_LIGHTING) );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
     {
         TextureStage & tStage = m_textureStage[_stage];

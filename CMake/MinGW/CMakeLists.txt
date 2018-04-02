@@ -1,9 +1,10 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
 INCLUDE( ../macro_template.cmake )
-INCLUDE( ../mingw_template.cmake )
 
 PROJECT( Mengine_MinGW )
+
+INCLUDE( ../mingw_template.cmake )
 
 SET(MENGINE_TARGET "MINGW")
 

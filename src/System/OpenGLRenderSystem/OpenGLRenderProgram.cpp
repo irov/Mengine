@@ -116,7 +116,7 @@ namespace Mengine
             return false;
         }
 
-        if( m_vertexAttribute->bind( program ) == false )
+        if( m_vertexAttribute->compile( program ) == false )
         {
             LOGGER_ERROR( "invalid program '%s' bind vertex attribute"
                 , m_name.c_str()

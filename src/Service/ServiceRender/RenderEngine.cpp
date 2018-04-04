@@ -1504,100 +1504,6 @@ namespace Mengine
         return m_batchMode;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexBufferInterfacePtr RenderEngine::createVertexBuffer( const RenderVertex2D * _vertexData, uint32_t _vertexCount )
-    {
-        RenderVertexBufferInterfacePtr vb = RENDER_SYSTEM()
-            ->createVertexBuffer( sizeof( RenderVertex2D ), BT_STATIC );
-
-        if( vb == nullptr )
-        {
-            return nullptr;
-        }
-
-        if( vb->resize( _vertexCount ) == false )
-        {
-            return nullptr;
-        }
-
-        this->updateVertexBuffer( vb, _vertexData, _vertexCount );
-
-        return vb;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    RenderIndexBufferInterfacePtr RenderEngine::createIndicesBuffer( const RenderIndex * _indexData, uint32_t _indexCount )
-    {
-        RenderIndexBufferInterfacePtr ib = RENDER_SYSTEM()
-            ->createIndexBuffer( sizeof( RenderIndex ), BT_STATIC );
-
-        if( ib == nullptr )
-        {
-            return nullptr;
-        }
-
-        if( ib->resize( _indexCount ) == false )
-        {
-            return nullptr;
-        }
-
-        this->updateIndicesBuffer( ib, _indexData, _indexCount );
-
-        return ib;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::updateVertexBuffer( const RenderVertexBufferInterfacePtr & _vb, const RenderVertex2D * _vertexData, uint32_t _vertexCount )
-    {
-        MemoryInterfacePtr memory = _vb->lock( 0, _vertexCount, BLF_LOCK_DISCARD );
-
-        if( memory == nullptr )
-        {
-            LOGGER_ERROR( "RenderEngine::updateVertexBuffer failed to lock vertex buffer"
-            );
-
-            return false;
-        }
-
-        RenderVertex2D * vbuffer = memory->getMemory();
-
-        stdex::memorycopy_pod( vbuffer, 0, _vertexData, _vertexCount );
-
-        if( _vb->unlock() == false )
-        {
-            LOGGER_ERROR( "RenderEngine::updateVertexBuffer failed to unlock vertex buffer"
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::updateIndicesBuffer( const RenderIndexBufferInterfacePtr & _ib, const RenderIndex * _indexData, uint32_t _indexCount )
-    {
-        MemoryInterfacePtr memory = _ib->lock( 0, _indexCount, BLF_LOCK_DISCARD );
-
-        if( memory == nullptr )
-        {
-            LOGGER_ERROR( "RenderEngine::updateIndicesBuffer failed to lock vertex buffer"
-            );
-
-            return false;
-        }
-
-        RenderIndex * ibuffer = memory->getMemory();
-
-        stdex::memorycopy_pod( ibuffer, 0, _indexData, _indexCount );
-
-        if( _ib->unlock() == false )
-        {
-            LOGGER_ERROR( "RenderEngine::updateIndicesBuffer: failed to unlock vertex buffer"
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool RenderEngine::makeBatches_()
     {
         for( TVectorRenderBatch::const_iterator
@@ -1612,7 +1518,7 @@ namespace Mengine
 
             vertexBuffer->resize( batch->vertexCount );
 
-            MemoryInterfacePtr vertexMemory = vertexBuffer->lock( 0, batch->vertexCount, BLF_LOCK_DISCARD );
+            MemoryInterfacePtr vertexMemory = vertexBuffer->lock( 0, batch->vertexCount );
 
             if( vertexMemory == nullptr )
             {
@@ -1627,7 +1533,7 @@ namespace Mengine
 
             indexBuffer->resize( batch->indexCount );
 
-            MemoryInterfacePtr indexMemory = indexBuffer->lock( 0, batch->indexCount, BLF_LOCK_DISCARD );
+            MemoryInterfacePtr indexMemory = indexBuffer->lock( 0, batch->indexCount );
 
             if( indexMemory == nullptr )
             {

@@ -48,6 +48,11 @@ namespace Mengine
 	{
 		(void)_pD3DDevice;
 
+        if( m_vertexAttribute->compile( _pD3DDevice ) == false )
+        {
+            return false;
+        }
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -60,6 +65,10 @@ namespace Mengine
 				return false;
 			}
 		}
+        else
+        {
+            DXCALL( _pD3DDevice, SetVertexShader, (nullptr) );
+        }
 
 		if( m_fragmentShader != nullptr )
 		{
@@ -68,6 +77,22 @@ namespace Mengine
 				return false;
 			}
 		}
+        else
+        {
+            DXCALL( _pD3DDevice, SetPixelShader, (nullptr) );
+        }
+        
+        if( m_vertexAttribute != nullptr )
+        {
+            if( m_vertexAttribute->enable() == false )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            //DXCALL( _pD3DDevice, SetVertexDeclaration, (nullptr) );            
+        }
 
 		return true;
 	}

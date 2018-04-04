@@ -355,12 +355,28 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ResourceMovie2::storeResource_( const ResourceReferencePtr & _resource )
+    {
+        if( _resource == nullptr )
+        {
+            LOGGER_ERROR( "ResourceMovie2::storeResource_ resource nullptr name '%s' group '%s' path '%s'"
+                , this->getName().c_str()
+                , this->getGroup().c_str()
+                , this->getFilePath().c_str()
+            );
+
+            return;
+        }
+
+        m_resources.push_back( _resource );
+    }
+    //////////////////////////////////////////////////////////////////////////
     ResourceReference * ResourceMovie2::getResource_( const ae_string_t _name )
     {
         ResourceReferencePtr resource = RESOURCE_SERVICE()
             ->getResource( Helper::stringizeString( _name ) );
 
-        m_resources.push_back( resource );
+        this->storeResource_( resource );
 
         return resource.get();
     }
@@ -390,7 +406,7 @@ namespace Mengine
 
 		image->setup( c_path, ConstString::none(), uv_image, uv_alpha, size );
 
-		m_resources.push_back( image );
+        this->storeResource_( image );
 
 		return image.get();
 	}
@@ -429,7 +445,7 @@ namespace Mengine
 			video->setCodecType( STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
 		}
 
-		m_resources.push_back( video );
+        this->storeResource_( video );
 
 		return video.get();
 	}
@@ -456,7 +472,7 @@ namespace Mengine
 		
 		sound->setCodecType( STRINGIZE_STRING_LOCAL( "oggSound" ) );
 
-		m_resources.push_back( sound );
+        this->storeResource_( sound );
 
 		return sound.get();
 	}
@@ -489,8 +505,8 @@ namespace Mengine
             
             particle->addResourceImage( resourceImage );
         }
-
-        m_resources.push_back( particle );
+                
+        this->storeResource_( particle );
 
         return particle.get();
     }

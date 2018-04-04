@@ -10,7 +10,6 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderVertexBuffer::DX9RenderVertexBuffer()
 		: m_pD3DDevice( nullptr )
-		, m_vertexDeclaration( 0 )
         , m_vertexSize( 0 )
 		, m_vertexCount( 0 )
 		, m_usage( 0 )
@@ -30,10 +29,9 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderVertexBuffer::initialize( IDirect3DDevice9 * _pD3DDevice, DWORD _vertexDeclaration, uint32_t _vertexSize, EBufferType _bufferType )
+	bool DX9RenderVertexBuffer::initialize( IDirect3DDevice9 * _pD3DDevice, uint32_t _vertexSize, EBufferType _bufferType )
 	{
 		m_pD3DDevice = _pD3DDevice;
-		m_vertexDeclaration = _vertexDeclaration;
         m_vertexSize = _vertexSize;
         		
         m_bufferType = _bufferType;
@@ -80,7 +78,7 @@ namespace Mengine
         m_vertexCount = _count;
 
         IDirect3DVertexBuffer9 * pVB = nullptr;
-        IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (m_vertexCount * m_vertexSize, m_usage, m_vertexDeclaration, m_pool, &pVB, NULL) )
+        IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (m_vertexCount * m_vertexSize, m_usage, 0, m_pool, &pVB, NULL) )
         {
             return false;
         }
@@ -90,7 +88,7 @@ namespace Mengine
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DX9RenderVertexBuffer::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
+    MemoryInterfacePtr DX9RenderVertexBuffer::lock( uint32_t _offset, uint32_t _count )
 	{
 		if( _offset + _count > m_vertexCount )
 		{
@@ -103,7 +101,18 @@ namespace Mengine
 			return nullptr;
 		}
 
-		DWORD d3d_flag = s_toD3DBufferLock( _flags );
+        DWORD d3d_flag;
+        switch( m_bufferType )
+        {
+        case BT_STATIC:
+            d3d_flag = 0;
+            break;
+        case BT_DYNAMIC:
+            d3d_flag = D3DLOCK_DISCARD;
+            break;
+        default:
+            return nullptr;
+        };
 
 		void * lock_memory = nullptr;
 		IF_DXCALL( m_pVB, Lock, (_offset * m_vertexSize, _count * m_vertexSize, &lock_memory, d3d_flag) )

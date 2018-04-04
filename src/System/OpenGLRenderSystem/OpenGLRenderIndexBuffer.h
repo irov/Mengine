@@ -30,7 +30,7 @@ namespace Mengine
         bool resize( uint32_t _count ) override;
 
     protected:
-        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags ) override;
+        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _count ) override;
         bool unlock() override;
         void draw( const void * _buffer, size_t _size ) override;
 
@@ -46,7 +46,6 @@ namespace Mengine
         uint32_t m_lockOffset;
         uint32_t m_lockCount;
         MemoryInterfacePtr m_lockMemory;
-        EBufferLockFlag m_lockFlags;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<OpenGLRenderIndexBuffer> OpenGLRenderIndexBufferPtr;

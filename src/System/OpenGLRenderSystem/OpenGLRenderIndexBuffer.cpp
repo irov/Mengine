@@ -16,7 +16,6 @@ namespace Mengine
         , m_lockOffset( 0 )
         , m_lockCount( 0 )
         , m_lockMemory( nullptr )
-        , m_lockFlags( BLF_LOCK_NONE )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -69,7 +68,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr OpenGLRenderIndexBuffer::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
+    MemoryInterfacePtr OpenGLRenderIndexBuffer::lock( uint32_t _offset, uint32_t _count )
     {
         if( m_lockMemory != nullptr )
         {
@@ -83,7 +82,6 @@ namespace Mengine
 
         m_lockOffset = _offset;
         m_lockCount = _count;
-        m_lockFlags = _flags;
 
         const uint32_t bufferSize = m_lockCount * m_indexSize;
 
@@ -108,7 +106,6 @@ namespace Mengine
         m_lockOffset = 0;
         m_lockCount = 0;
         m_lockMemory = nullptr;
-        m_lockFlags = BLF_LOCK_NONE;
 
         return true;
     }

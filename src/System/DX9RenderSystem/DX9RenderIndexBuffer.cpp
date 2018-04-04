@@ -91,7 +91,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DX9RenderIndexBuffer::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
+    MemoryInterfacePtr DX9RenderIndexBuffer::lock( uint32_t _offset, uint32_t _count )
     {
         if( _offset + _count > m_indexCount )
         {
@@ -104,7 +104,18 @@ namespace Mengine
             return nullptr;
         }
 
-        DWORD d3d_flag = s_toD3DBufferLock( _flags );
+        DWORD d3d_flag;
+        switch( m_bufferType )
+        {
+        case BT_STATIC:
+            d3d_flag = 0;
+            break;
+        case BT_DYNAMIC:
+            d3d_flag = D3DLOCK_DISCARD;
+            break;
+        default:
+            return nullptr;
+        };
 
         void * lock_memory = nullptr;
         IF_DXCALL( m_pIB, Lock, (_offset * m_indexSize, _count * m_indexSize, &lock_memory, d3d_flag) )

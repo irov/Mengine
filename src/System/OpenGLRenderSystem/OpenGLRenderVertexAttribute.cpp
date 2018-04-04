@@ -49,7 +49,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderVertexAttribute::bind( GLuint _program )
+    bool OpenGLRenderVertexAttribute::compile( GLuint _program )
     {
         for( TVectorAttribute::iterator
             it = m_attributes.begin(),

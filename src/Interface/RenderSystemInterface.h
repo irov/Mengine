@@ -161,11 +161,11 @@ namespace Mengine
         virtual uint32_t getElementSize() const = 0;
 
     public:
-        virtual bool enable() = 0;
-        virtual void disable() = 0;
+        virtual void addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) = 0;
 
     public:
-        virtual void addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) = 0;
+        virtual bool enable() = 0;
+        virtual void disable() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<RenderVertexAttributeInterface> RenderVertexAttributeInterfacePtr;
@@ -270,7 +270,7 @@ namespace Mengine
         virtual bool resize( uint32_t _count ) = 0;
 
 	public:
-		virtual MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
+		virtual MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size ) = 0;
 		virtual bool unlock() = 0;
 
     public:
@@ -294,7 +294,7 @@ namespace Mengine
         virtual bool resize( uint32_t _count ) = 0;
 
 	public:
-		virtual MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
+		virtual MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size ) = 0;
 		virtual bool unlock() = 0;
 
     public:

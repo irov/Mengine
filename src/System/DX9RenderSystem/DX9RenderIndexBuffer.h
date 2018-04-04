@@ -30,7 +30,7 @@ namespace Mengine
         bool resize( uint32_t _count ) override;
 
     protected:
-        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
+        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size ) override;
 		bool unlock() override;
 
     protected:

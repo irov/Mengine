@@ -20,7 +20,11 @@ namespace Mengine
         bool initialize( const ConstString & _name, uint32_t _elementSize );
 
     public:
-        bool bind( GLuint _program );
+        bool compile( GLuint _program );
+
+    public:
+        bool enable() override;
+        void disable() override;
 
     protected:
         const ConstString & getName() const override;
@@ -29,10 +33,6 @@ namespace Mengine
     protected:
         void addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) override;
         
-    protected:
-        bool enable() override;
-        void disable() override;
-
     protected:
         ConstString m_name;
         uint32_t m_elementSize;

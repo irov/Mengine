@@ -38,7 +38,6 @@ namespace Mengine
         , m_oldRenderTarget( nullptr )
         , m_vertexBufferEnable( false )
         , m_indexBufferEnable( false )
-        , m_fvf( 0 )
         , m_frames( 0 )
         , m_dxMaxCombinedTextureImageUnits( 0 )
         , m_textureMemoryUse( 0U )
@@ -252,32 +251,6 @@ namespace Mengine
         m_fullscreen = _fullscreen;
         m_waitForVSync = _waitForVSync;
 
-        ZeroMemory( &m_d3dppW, sizeof( m_d3dppW ) );
-        ZeroMemory( &m_d3dppFS, sizeof( m_d3dppFS ) );
-
-        m_d3dppW.MultiSampleType = D3DMULTISAMPLE_NONE;
-        m_d3dppW.MultiSampleQuality = 0;
-        m_d3dppW.Windowed = TRUE;
-        //m_d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
-
-        m_d3dppW.BackBufferWidth = m_windowResolution.getWidth();
-        m_d3dppW.BackBufferHeight = m_windowResolution.getHeight();
-        m_d3dppW.BackBufferCount = 1;
-
-        HWND windowHandle = PLATFORM_SERVICE()
-            ->getWindowHandle();
-
-        m_d3dppW.hDeviceWindow = windowHandle;
-
-        m_d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
-
-        m_d3dppW.BackBufferFormat = m_displayMode.Format;
-
-        m_d3dppW.EnableAutoDepthStencil = FALSE;
-        m_d3dppW.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
-
-        m_d3dppW.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
-
         D3DMULTISAMPLE_TYPE multiSampleType = s_getMultiSampleType( _MultiSampleCount );
 
         HRESULT hr_checkDeviceMultiSampleType = m_pD3D->CheckDeviceMultiSampleType(
@@ -287,14 +260,44 @@ namespace Mengine
 
         if( FAILED( hr_checkDeviceMultiSampleType ) )
         {
-            LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+            LOGGER_ERROR( "DX9RenderSystem::createRenderWindow can't support multi sample count '%u' error [%p]"
+                , multiSampleType
                 , hr_checkDeviceMultiSampleType
             );
 
             multiSampleType = D3DMULTISAMPLE_NONE;
         }
+        else
+        {
+            multiSampleType = D3DMULTISAMPLE_NONE;
+        }
 
-        multiSampleType = D3DMULTISAMPLE_NONE;
+        ZeroMemory( &m_d3dppW, sizeof( m_d3dppW ) );
+        ZeroMemory( &m_d3dppFS, sizeof( m_d3dppFS ) );
+
+        m_d3dppW.BackBufferWidth = m_windowResolution.getWidth();
+        m_d3dppW.BackBufferHeight = m_windowResolution.getHeight();
+        m_d3dppW.BackBufferFormat = m_displayMode.Format;
+        m_d3dppW.BackBufferCount = 1;
+
+        m_d3dppW.MultiSampleType = D3DMULTISAMPLE_NONE;
+        m_d3dppW.MultiSampleQuality = 0;
+
+        m_d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
+
+        HWND windowHandle = PLATFORM_SERVICE()
+            ->getWindowHandle();
+
+        m_d3dppW.hDeviceWindow = windowHandle;
+
+        m_d3dppW.Windowed = TRUE;
+        
+        m_d3dppW.EnableAutoDepthStencil = FALSE;
+        m_d3dppW.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
+
+        //m_d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+
+        m_d3dppW.FullScreen_RefreshRateInHz = 0;      
 
         m_d3dppFS.MultiSampleType = multiSampleType;
         m_d3dppFS.MultiSampleQuality = 0;
@@ -343,91 +346,106 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_WARNING( "DX9RenderSystem::createRenderWindow VertexShaderVersion [%u] [%u]"
+            , caps.VertexShaderVersion
+            , caps.VertexShaderVersion < D3DVS_VERSION( 1, 1 )
+        );
+
+        LOGGER_WARNING( "DX9RenderSystem::createRenderWindow PixelShaderVersion [%u] [%u] [%u]"
+            , caps.PixelShaderVersion
+            , caps.PixelShaderVersion < D3DPS_VERSION( 1, 1 )
+            , caps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 )
+        );
+
         HRESULT hr;
 
-        DWORD BehaviorFlags = D3DCREATE_FPU_PRESERVE;
-        BehaviorFlags |= caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT ? D3DCREATE_HARDWARE_VERTEXPROCESSING : D3DCREATE_SOFTWARE_VERTEXPROCESSING;
-
-        if( (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 )
+        if( (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 ||
+            caps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) )
         {
-            LOGGER_ERROR( "DX9RenderSystem::createRenderWindow can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_SOFTWARE_VERTEXPROCESSING"
+            LOGGER_ERROR( "DX9RenderSystem::createRenderWindow can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE"
             );
+            
+            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+                D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                m_d3dpp, &m_pD3DDevice );
         }
-
-        hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
-            BehaviorFlags,
-            m_d3dpp, &m_pD3DDevice );
-
-        if( FAILED( hr ) )
+        else
         {
-            LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
-                , hr
-            );
-
-            Sleep( 100 );
             hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
                 D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
                 m_d3dpp, &m_pD3DDevice );
-        }
 
-        if( FAILED( hr ) )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING (hr:%u) Try another"
-                , hr
-            );
+            if( FAILED( hr ) )
+            {
+                LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+                    , hr
+                );
 
-            Sleep( 100 );
-            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
-                D3DCREATE_HARDWARE_VERTEXPROCESSING,
-                m_d3dpp, &m_pD3DDevice );
-        }
+                Sleep( 100 );
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+                    D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
+                    m_d3dpp, &m_pD3DDevice );
+            }
 
-        if( FAILED( hr ) )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
-                , hr
-            );
+            if( FAILED( hr ) )
+            {
+                LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING (hr:%u) Try another"
+                    , hr
+                );
 
-            Sleep( 100 );
-            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
-                D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
-                m_d3dpp, &m_pD3DDevice );
-        }
+                Sleep( 100 );
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+                    D3DCREATE_HARDWARE_VERTEXPROCESSING,
+                    m_d3dpp, &m_pD3DDevice );
+            }
 
-        if( FAILED( hr ) )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING (hr:%u) Try another"
-                , hr
-            );
+            if( FAILED( hr ) )
+            {
+                LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+                    , hr
+                );
 
-            Sleep( 100 );
-            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
-                D3DCREATE_MIXED_VERTEXPROCESSING,
-                m_d3dpp, &m_pD3DDevice );
-        }
+                Sleep( 100 );
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+                    D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
+                    m_d3dpp, &m_pD3DDevice );
+            }
 
-        if( FAILED( hr ) )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
-                , hr
-            );
+            if( FAILED( hr ) )
+            {
+                LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING (hr:%u) Try another"
+                    , hr
+                );
 
-            Sleep( 100 );
-            hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
-                D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
-                m_d3dpp, &m_pD3DDevice );
-        }
+                Sleep( 100 );
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+                    D3DCREATE_MIXED_VERTEXPROCESSING,
+                    m_d3dpp, &m_pD3DDevice );
+            }
 
-        if( FAILED( hr ) )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING (hr:%u) Try another"
-                , hr
-            );
+            if( FAILED( hr ) )
+            {
+                LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+                    , hr
+                );
 
-            Sleep( 100 );
-            hr = m_pD3D->CreateDevice( m_adapterToUse, D3DDEVTYPE_REF, (HWND)windowHandle,
-                D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-                m_d3dpp, &m_pD3DDevice );
+                Sleep( 100 );
+                hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+                    D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
+                    m_d3dpp, &m_pD3DDevice );
+            }
+
+            if( FAILED( hr ) )
+            {
+                LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING (hr:%u) Try another"
+                    , hr
+                );
+
+                Sleep( 100 );
+                hr = m_pD3D->CreateDevice( m_adapterToUse, D3DDEVTYPE_REF, (HWND)windowHandle,
+                    D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                    m_d3dpp, &m_pD3DDevice );
+            }
         }
 
         if( FAILED( hr ) )
@@ -448,34 +466,6 @@ namespace Mengine
             , m_windowResolution.getHeight()
             , s_getD3DFormatName( m_displayMode.Format )
         );
-
-        DWORD FVF_UV = (MENGINE_RENDER_VERTEX_UV_COUNT << D3DFVF_TEXCOUNT_SHIFT) & D3DFVF_TEXCOUNT_MASK;
-
-        m_fvf = D3DFVF_XYZ | D3DFVF_DIFFUSE | FVF_UV;
-
-        DXCALL( m_pD3DDevice, SetFVF, (m_fvf) );
-
-        D3DVERTEXELEMENT9 declaration[2 + MENGINE_RENDER_VERTEX_UV_COUNT + 1];
-
-        declaration[0] = { 0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 };
-        declaration[1] = { 0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 };
-
-        for( BYTE i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
-        {
-            declaration[2 + i] = {
-                0U,
-                16U + 8U * i,
-                D3DDECLTYPE_FLOAT2,
-                D3DDECLMETHOD_DEFAULT,
-                D3DDECLUSAGE_TEXCOORD,
-                i };
-        }
-
-        declaration[2 + MENGINE_RENDER_VERTEX_UV_COUNT] = D3DDECL_END();
-
-        DXCALL( m_pD3DDevice, CreateVertexDeclaration, (declaration, &m_vertexDeclaration) );
-
-        DXCALL( m_pD3DDevice, SetVertexDeclaration, (m_vertexDeclaration) );
 
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ALPHATESTENABLE, FALSE) );
 
@@ -1284,12 +1274,6 @@ namespace Mengine
             return false;
         }
 
-        DWORD FVF_UV = (MENGINE_RENDER_VERTEX_UV_COUNT << D3DFVF_TEXCOUNT_SHIFT) & D3DFVF_TEXCOUNT_MASK;
-
-        m_fvf = D3DFVF_XYZ | D3DFVF_DIFFUSE | FVF_UV;
-
-        DXCALL( m_pD3DDevice, SetFVF, (m_fvf) );
-
         RENDER_SERVICE()
             ->onDeviceLostRestore();
 
@@ -1333,7 +1317,7 @@ namespace Mengine
     {
         DX9RenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject();
 
-        if( buffer->initialize( m_pD3DDevice, m_fvf, _vertexSize, _bufferType ) == false )
+        if( buffer->initialize( m_pD3DDevice, _vertexSize, _bufferType ) == false )
         {
             return nullptr;
         }
@@ -1852,6 +1836,8 @@ namespace Mengine
             DXCALL( m_pD3DDevice, SetVertexShader, (nullptr) );
 
             DXCALL( m_pD3DDevice, SetPixelShader, (nullptr) );
+
+            //DXCALL( m_pD3DDevice, SetVertexDeclaration, (nullptr) );
         }
         //None
     }

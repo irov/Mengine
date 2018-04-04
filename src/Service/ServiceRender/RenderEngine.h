@@ -162,13 +162,6 @@ namespace Mengine
 		ERenderBatchMode getBatchMode() const override;
 
 	public:
-		RenderVertexBufferInterfacePtr createVertexBuffer( const RenderVertex2D * _vertexData, uint32_t _vertexCount );
-		RenderIndexBufferInterfacePtr createIndicesBuffer( const RenderIndex * _indexData, uint32_t _indexCount );
-		
-		bool updateVertexBuffer( const RenderVertexBufferInterfacePtr & _vb, const RenderVertex2D * _vertexData, uint32_t _vertexCount );
-		bool updateIndicesBuffer( const RenderIndexBufferInterfacePtr & _ib, const RenderIndex * _indexData, uint32_t _indexCount );
-
-	public:
 		void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) override;
 
     public:

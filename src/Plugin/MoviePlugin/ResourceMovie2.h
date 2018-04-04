@@ -43,6 +43,7 @@ namespace Mengine
         bool _isValid() const override;
 
     public:        
+        void storeResource_( const ResourceReferencePtr & _resource );
         ResourceReference * getResource_( const ae_string_t _name );
 
 	public:

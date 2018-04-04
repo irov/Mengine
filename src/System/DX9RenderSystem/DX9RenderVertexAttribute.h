@@ -20,12 +20,15 @@ namespace Mengine
         bool initialize( const ConstString & _name, uint32_t _elementSize );
         
     public:
-        const ConstString & getName() const override;
-        uint32_t getElementSize() const override;
+        bool compile( IDirect3DDevice9 * _pD3DDevice );
 
     public:
         bool enable() override;
         void disable() override;
+
+    public:
+        const ConstString & getName() const override;
+        uint32_t getElementSize() const override;
 
     public:
         void addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) override;
@@ -33,6 +36,9 @@ namespace Mengine
 	protected:
         ConstString m_name;
         uint32_t m_elementSize;
+
+        IDirect3DDevice9 * m_pD3DDevice;
+        IDirect3DVertexDeclaration9 * m_vertexDeclaration;
 
         struct Attribute
         {

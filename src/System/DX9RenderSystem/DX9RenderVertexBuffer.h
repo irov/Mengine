@@ -16,7 +16,7 @@ namespace Mengine
 		~DX9RenderVertexBuffer() override;
 
 	public:
-		bool initialize( IDirect3DDevice9 * _pD3DDevice, DWORD _vertexDeclaration, uint32_t _vertexSize, EBufferType _bufferType );
+		bool initialize( IDirect3DDevice9 * _pD3DDevice, uint32_t _vertexSize, EBufferType _bufferType );
 
     protected:
         uint32_t getVertexCount() const override;
@@ -30,7 +30,7 @@ namespace Mengine
         bool resize( uint32_t _count ) override;
 
     protected:
-        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
+        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size ) override;
 		bool unlock() override;
 
     protected:
@@ -38,7 +38,6 @@ namespace Mengine
 
 	protected:
 		IDirect3DDevice9 * m_pD3DDevice;
-		DWORD m_vertexDeclaration;
 
         EBufferType m_bufferType;
         uint32_t m_vertexSize;

@@ -4,6 +4,7 @@
 
 #include "DX9RenderVertexShader.h"
 #include "DX9RenderFragmentShader.h"
+#include "DX9RenderVertexAttribute.h"
 
 #include <d3d9.h>
 
@@ -41,7 +42,7 @@ namespace Mengine
 
 		DX9RenderVertexShaderPtr m_vertexShader;
 		DX9RenderFragmentShaderPtr m_fragmentShader;
-        RenderVertexAttributeInterfacePtr m_vertexAttribute;
+        DX9RenderVertexAttributePtr m_vertexAttribute;
     };
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<DX9RenderProgram> DX9RenderProgramPtr;

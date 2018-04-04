@@ -109,6 +109,15 @@ namespace Mengine
 		uint32_t defaultTextureFilterMagnification = CONFIG_VALUE( "Engine", "DefaultTextureFilterMagnification", 2U );
 		uint32_t defaultTextureFilterMinification = CONFIG_VALUE( "Engine", "DefaultTextureFilterMinification", 2U );
 
+        if( defaultTextureFilterMipmap > 2 )
+        {
+            LOGGER_ERROR( "RenderMaterialManager::_initialize: DefaultTextureFilterMipmap undefined great 2 current '%u'"
+                , defaultTextureFilterMipmap
+            );
+
+            return false;
+        }
+
 		m_defaultTextureFilterMipmap = parseConfigTextureFilterValue( defaultTextureFilterMipmap );
 		m_defaultTextureFilterMagnification = parseConfigTextureFilterValue( defaultTextureFilterMagnification );
 		m_defaultTextureFilterMinification = parseConfigTextureFilterValue( defaultTextureFilterMinification );

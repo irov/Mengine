@@ -130,11 +130,11 @@ namespace Mengine
 			return false;
 		}
 				
-		uint32_t Limit_VideoFrameRate = CONFIG_VALUE("Limit", "VideoFrameRate", 30U);
+		float Limit_VideoFrameRate = CONFIG_VALUE("Limit", "VideoFrameRate", 30.f);
 
-		if( dataInfo->fps > Limit_VideoFrameRate && Limit_VideoFrameRate != 0U )
+        if( dataInfo->fps > Limit_VideoFrameRate && Limit_VideoFrameRate != 0.0 )
 		{
-			LOGGER_ERROR("ResourceVideo.isValid: group '%s' name '%s' path '%s' invalid Frame rate %u more that %u"
+			LOGGER_ERROR("ResourceVideo.isValid: group '%s' name '%s' path '%s' invalid Frame rate %f more that %f"
 				, this->getGroup().c_str()
 				, this->getName().c_str()
 				, m_filePath.c_str()

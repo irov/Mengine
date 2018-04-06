@@ -173,16 +173,18 @@ namespace Mengine
             ->onAnimatableEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void * __movie_composition_camera_provider( const aeMovieCameraProviderCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_bool_t __movie_composition_camera_provider( const aeMovieCameraProviderCallbackData * _callbackData, ae_voidptrptr_t _cd, ae_voidptr_t _ud )
     {
-        Movie2 * movie2 = (Movie2 *)_data;
+        Movie2 * movie2 = (Movie2 *)_ud;
 
         ConstString c_name = Helper::stringizeString( _callbackData->name );
 
         Movie2::Camera * old_camera;
         if( movie2->getCamera( c_name, &old_camera ) == true )
         {
-            return old_camera;
+            *_cd = old_camera;
+
+            return AE_TRUE;
         }
 
         RenderCameraProjection * renderCameraProjection = NODE_SERVICE()
@@ -221,7 +223,9 @@ namespace Mengine
 
         Movie2::Camera * new_camera = movie2->addCamera( c_name, renderCameraProjection, renderViewport );
 
-        return new_camera;
+        *_cd = new_camera;
+
+        return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     static void __movie_composition_camera_deleter( const aeMovieCameraDeleterCallbackData * _callbackData, ae_voidptr_t _data )
@@ -283,9 +287,9 @@ namespace Mengine
         return blend_mode;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void * __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud )
     {
-        Movie2 * movie2 = (Movie2 *)_data;
+        Movie2 * movie2 = (Movie2 *)_ud;
 
         const aeMovieLayerData * layer = _callbackData->layer;
 
@@ -297,7 +301,9 @@ namespace Mengine
 
         if( is_track_matte == AE_TRUE )
         {
-            return AE_NULL;
+            *_nd = AE_NULL;
+
+            return AE_TRUE;
         }
 
         aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( layer );
@@ -320,7 +326,7 @@ namespace Mengine
                         , c_name.c_str()
                     );
 
-                    return AE_NULL;
+                    return AE_FALSE;
                 }
 
                 SurfaceImagePtr surface = PROTOTYPE_SERVICE()
@@ -328,7 +334,7 @@ namespace Mengine
 
                 if( surface == nullptr )
                 {
-                    return AE_NULL;
+                    return AE_FALSE;
                 }
 
                 EMaterialBlendMode blend_mode = getMovieLayerBlendMode( layer );
@@ -349,7 +355,7 @@ namespace Mengine
                         , c_name.c_str()
                     );
 
-                    return AE_NULL;
+                    return AE_FALSE;
                 }
 
                 node->setName( c_name );
@@ -359,6 +365,11 @@ namespace Mengine
                                 
                 MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
+
+                if( matrixProxy == nullptr )
+                {
+                    return AE_FALSE;
+                }
 
                 matrixProxy->setName( c_name );
 
@@ -373,13 +384,20 @@ namespace Mengine
 
                 movie2->addMatrixProxy( matrixProxy );
 
-                return node;
+                *_nd = node;
+
+                return AE_TRUE;
             }break;
 #endif
         case AE_MOVIE_LAYER_TYPE_TEXT:
             {
                 TextField * node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ) );
+
+                if( node == nullptr )
+                {
+                    return AE_FALSE;
+                }
 
                 node->setName( c_name );
                 node->setExternalRender( true );
@@ -401,6 +419,11 @@ namespace Mengine
                 MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
 
+                if( matrixProxy == nullptr )
+                {
+                    return AE_FALSE;
+                }
+
                 matrixProxy->setName( c_name );
 
                 mt::mat4f pm;
@@ -414,12 +437,19 @@ namespace Mengine
 
                 movie2->addMatrixProxy( matrixProxy );
 
-                return node;
+                *_nd = node;
+
+                return AE_TRUE;
             }break;
         case AE_MOVIE_LAYER_TYPE_SLOT:
             {
                 Movie2Slot * node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ) );
+
+                if( node == nullptr )
+                {
+                    return AE_FALSE;
+                }
 
                 node->setName( c_name );
                 node->setExternalRender( true );
@@ -433,6 +463,11 @@ namespace Mengine
                 MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
 
+                if( matrixProxy == nullptr )
+                {
+                    return AE_FALSE;
+                }
+
                 matrixProxy->setName( c_name );
 
                 mt::mat4f pm;
@@ -446,12 +481,19 @@ namespace Mengine
 
                 movie2->addMatrixProxy( matrixProxy );
 
-                return node;
+                *_nd = node;
+
+                return AE_TRUE;
             }break;
         case AE_MOVIE_LAYER_TYPE_SOCKET:
             {
                 HotSpotPolygon * node = NODE_SERVICE()
                     ->createNodeT<HotSpotPolygon *>( STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
+
+                if( node == nullptr )
+                {
+                    return AE_FALSE;
+                }
 
                 node->setName( c_name );
                 node->setExternalRender( true );
@@ -459,7 +501,7 @@ namespace Mengine
                 const ae_polygon_t * polygon;
                 if( ae_get_movie_layer_data_socket_polygon( _callbackData->layer, 0, &polygon ) == AE_FALSE )
                 {
-                    return AE_NULL;
+                    return AE_FALSE;
                 }
 
                 Polygon p;
@@ -479,6 +521,11 @@ namespace Mengine
                 MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
 
+                if( matrixProxy == nullptr )
+                {
+                    return AE_FALSE;
+                }
+
                 matrixProxy->setName( c_name );
 
                 mt::mat4f pm;
@@ -492,7 +539,9 @@ namespace Mengine
 
                 movie2->addMatrixProxy( matrixProxy );
 
-                return node;
+                *_nd = node;
+
+                return AE_TRUE;
             }break;
         default:
             break;
@@ -506,6 +555,11 @@ namespace Mengine
                 {
                     SurfaceTrackMatte * surfaceTrackMatte = PROTOTYPE_SERVICE()
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceTrackMatte" ) );
+
+                    if( surfaceTrackMatte == nullptr )
+                    {
+                        return AE_FALSE;
+                    }
 
                     surfaceTrackMatte->setName( c_name );
 
@@ -537,7 +591,9 @@ namespace Mengine
                     
                     movie2->addSurface( surfaceTrackMatte );
 
-                    return surfaceTrackMatte;
+                    *_nd = surfaceTrackMatte;
+
+                    return AE_TRUE;
                 }break;
             default:
                 {
@@ -552,6 +608,11 @@ namespace Mengine
                 {
                     ParticleEmitter2 * node = NODE_SERVICE()
                         ->createNodeT<ParticleEmitter2 *>( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
+
+                    if( node == nullptr )
+                    {
+                        return AE_FALSE;
+                    }
 
                     node->setName( c_name );
                     node->setExternalRender( true );
@@ -576,6 +637,11 @@ namespace Mengine
                     MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
 
+                    if( matrixProxy == nullptr )
+                    {
+                        return AE_FALSE;
+                    }
+
                     matrixProxy->setName( c_name );
 
                     mt::mat4f pm;
@@ -589,12 +655,19 @@ namespace Mengine
 
                     movie2->addMatrixProxy( matrixProxy );
 
-                    return node;
+                    *_nd = node;
+
+                    return AE_TRUE;
                 }break;
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
                     SurfaceVideo * surfaceVideo = PROTOTYPE_SERVICE()
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) );
+
+                    if( surfaceVideo == nullptr )
+                    {
+                        return AE_FALSE;
+                    }
 
                     surfaceVideo->setName( c_name );
 
@@ -611,12 +684,19 @@ namespace Mengine
                     
                     movie2->addSurface( surfaceVideo );
 
-                    return surfaceVideo;
+                    *_nd = surfaceVideo;
+
+                    return AE_TRUE;
                 }break;
             case AE_MOVIE_LAYER_TYPE_SOUND:
                 {
                     SurfaceSound * surfaceSound = PROTOTYPE_SERVICE()
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ) );
+
+                    if( surfaceSound == nullptr )
+                    {
+                        return AE_FALSE;
+                    }
 
                     surfaceSound->setName( c_name );
 
@@ -628,14 +708,18 @@ namespace Mengine
                     
                     movie2->addSurface( surfaceSound );
 
-                    return surfaceSound;
+                    *_nd = surfaceSound;
+
+                    return AE_TRUE;
                 }break;
             default:
                 break;
             }
         }
 
-        return AE_NULL;
+        *_nd = AE_NULL;
+
+        return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, ae_voidptr_t _data )
@@ -1018,9 +1102,9 @@ namespace Mengine
         ae_track_matte_mode_t mode;
     };
     //////////////////////////////////////////////////////////////////////////
-    static ae_voidptr_t __movie_composition_track_matte_provider( const aeMovieTrackMatteProviderCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_bool_t __movie_composition_track_matte_provider( const aeMovieTrackMatteProviderCallbackData * _callbackData, ae_voidptrptr_t _tmp, ae_voidptr_t _ud )
     {
-        (void)_data;
+        (void)_ud;
 
         TrackMatteDesc * desc = new TrackMatteDesc;
 
@@ -1028,7 +1112,9 @@ namespace Mengine
         desc->mesh = *_callbackData->mesh;
         desc->mode = _callbackData->track_matte_mode;
 
-        return desc;
+        *_tmp = desc;
+
+        return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_track_matte_update( const aeMovieTrackMatteUpdateCallbackData * _callbackData, ae_voidptr_t _data )
@@ -1065,12 +1151,13 @@ namespace Mengine
         delete desc;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_voidptr_t __movie_composition_shader_provider( const aeMovieShaderProviderCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_bool_t __movie_composition_shader_provider( const aeMovieShaderProviderCallbackData * _callbackData, ae_voidptrptr_t _sd, ae_voidptr_t _ud )
     {
         (void)_callbackData;
-        (void)_data;
+        (void)_sd;
+        (void)_ud;
 
-        return nullptr;
+        return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_shader_property_update( const aeMovieShaderPropertyUpdateCallbackData * _callbackData, ae_voidptr_t _data )
@@ -1102,9 +1189,11 @@ namespace Mengine
     }
 #if AE_MOVIE_SDK_MAJOR_VERSION >= 17
     //////////////////////////////////////////////////////////////////////////
-    static ae_voidptr_t __movie_scene_effect_provider( const aeMovieCompositionSceneEffectProviderCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_bool_t __movie_scene_effect_provider( const aeMovieCompositionSceneEffectProviderCallbackData * _callbackData, ae_voidptrptr_t _sed, ae_voidptr_t _ud )
     {
-        Movie2 * m2 = (Movie2 *)(_data);
+        (void)_sed;
+
+        Movie2 * m2 = (Movie2 *)(_ud);
 
         Node * parent = m2->getParent();
 
@@ -1129,7 +1218,7 @@ namespace Mengine
 
         parent->setOrientationX( angle );
 
-        return AE_NULL;
+        return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_scene_effect_update( const aeMovieCompositionSceneEffectUpdateCallbackData * _callbackData, ae_voidptr_t _data )
@@ -1689,6 +1778,16 @@ namespace Mengine
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
                     {
                         ResourceImage * resource_image = static_cast<ResourceImage *>(resource_reference);
+
+                        if( resource_image == nullptr )
+                        {
+                            LOGGER_ERROR( "Movie2::_render '%s' invalid resource for image"
+                                , this->getName().c_str()
+                                , this->getResourceMovie2()->getName().c_str()
+                            );
+
+                            continue;
+                        }
 
                         Mesh & m = meshes_buffer[mesh_iterator++];
 

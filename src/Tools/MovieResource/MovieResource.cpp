@@ -133,7 +133,7 @@ static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_
                 , resource_video->path
                 , resource_video->alpha
                 , resource_video->alpha == AE_TRUE ? "ogvaVideo" : "ogvVideo"
-                , resource_video->frameRate * 1000.0
+                , resource_video->frameRate
                 , resource_video->duration * 1000.0
             );
 

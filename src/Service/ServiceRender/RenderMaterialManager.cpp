@@ -118,6 +118,15 @@ namespace Mengine
             return false;
         }
 
+        if( defaultTextureFilterMagnification > 2 )
+        {
+            LOGGER_ERROR( "RenderMaterialManager::_initialize: DefaultTextureFilterMagnification undefined great 2 current '%u'"
+                , defaultTextureFilterMagnification
+            );
+
+            return false;
+        }
+
 		m_defaultTextureFilterMipmap = parseConfigTextureFilterValue( defaultTextureFilterMipmap );
 		m_defaultTextureFilterMagnification = parseConfigTextureFilterValue( defaultTextureFilterMagnification );
 		m_defaultTextureFilterMinification = parseConfigTextureFilterValue( defaultTextureFilterMinification );

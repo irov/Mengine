@@ -33,9 +33,9 @@ namespace Mengine
 		memcpy( _dst, _src, _size );
 	}
     //////////////////////////////////////////////////////////////////////////
-    static ae_voidptr_t Mengine_resource_provider( const aeMovieResource * _resource, ae_voidptr_t _data )
+    static ae_bool_t Mengine_resource_provider( const aeMovieResource * _resource, ae_voidptrptr_t _rd, ae_voidptr_t _ud )
     {
-        ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_data;
+        ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_ud;
 
         aeMovieResourceTypeEnum resource_type = _resource->type;
 
@@ -51,7 +51,14 @@ namespace Mengine
                 ResourceReference * data_resource = resourceMovie2->createResourceImage_( resource_image->path, resource_image->trim_width, resource_image->trim_height );
 #endif
 
-                return data_resource;
+                if( data_resource == AE_NULL )
+                {
+                    return AE_FALSE;
+                }
+
+                *_rd = data_resource;
+
+                return AE_TRUE;
             }break;
         case AE_MOVIE_RESOURCE_VIDEO:
             {
@@ -63,7 +70,14 @@ namespace Mengine
                 ResourceReference * data_resource = resourceMovie2->createResourceVideo_( resource_video );
 #endif
 
-                return data_resource;
+                if( data_resource == AE_NULL )
+                {
+                    return AE_FALSE;
+                }
+
+                *_rd = data_resource;
+
+                return AE_TRUE;
             }break;
         case AE_MOVIE_RESOURCE_SOUND:
             {
@@ -75,7 +89,14 @@ namespace Mengine
                 ResourceReference * data_resource = resourceMovie2->createResourceSound_( resource_sound );
 #endif
 
-                return data_resource;
+                if( data_resource == AE_NULL )
+                {
+                    return AE_FALSE;
+                }
+
+                *_rd = data_resource;
+
+                return AE_TRUE;
             }break;
         case AE_MOVIE_RESOURCE_PARTICLE:
             {
@@ -87,13 +108,22 @@ namespace Mengine
                 ResourceReference * data_resource = resourceMovie2->createResourceParticle_( resource_particle );
 #endif
 
-                return data_resource;
+                if( data_resource == AE_NULL )
+                {
+                    return AE_FALSE;
+                }
+
+                *_rd = data_resource;
+
+                return AE_TRUE;
             }break;
 		default:
 			break;
         }
 
-        return AE_NULL;
+        *_rd = AE_NULL;
+
+        return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     static void Mengine_resource_deleter( aeMovieResourceTypeEnum _type, ae_voidptr_t _data, ae_voidptr_t _ud )

@@ -48,18 +48,18 @@ namespace Mengine
 
                 ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
 
-#   ifdef _DEBUG
+#ifdef _DEBUG
                 if( serviceProvider == nullptr )
                 {
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service %s invalid get provider"
                         , serviceName
                         );
                 }
-#   endif
+#endif
 
                 ServiceInterface * service = serviceProvider->getService( serviceName );
 
-#   ifdef _DEBUG
+#ifdef _DEBUG
                 if( service == nullptr )
                 {
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service %s not found"
@@ -73,10 +73,8 @@ namespace Mengine
                         , serviceName
                         , typeid(T).name()
                         );
-
-                    throw;
                 }
-#   endif
+#endif
 
                 s_service = static_cast<T *>(service);
             }
@@ -107,41 +105,41 @@ namespace Mengine
             return s_exist;
         }
     }
-    //////////////////////////////////////////////////////////////////////////
-#	define SERVICE_GET( Type )\
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_GET( Type )\
 	(Mengine::Helper::getService<Type>(__FILE__, __LINE__))
-    //////////////////////////////////////////////////////////////////////////
-#	define SERVICE_EXIST( Type )\
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_EXIST( Type )\
 	(Mengine::Helper::existService<Type>())
-    //////////////////////////////////////////////////////////////////////////
-#	define SERVICE_NAME_CREATE(Name)\
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_NAME_CREATE(Name)\
 	__createMengineService##Name
-    //////////////////////////////////////////////////////////////////////////
-#   define SERVICE_DECLARE( ID )\
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_DECLARE( ID )\
     public:\
         inline static const Char * getStaticServiceID(){ return ID; };\
 		inline const Char * getServiceID() const override { return ID; };\
     protected:
-    //////////////////////////////////////////////////////////////////////////
-#   define SERVICE_FACTORY( Name, Implement )\
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_FACTORY( Name, Implement )\
     bool SERVICE_NAME_CREATE(Name)(Mengine::ServiceInterface**_service){\
     if(_service==nullptr){return false;}\
 	try{*_service=new Implement();}catch(...){return false;}\
     return true;}\
 	struct __mengine_dummy_factory##Name{}
-    //////////////////////////////////////////////////////////////////////////
-#	define SERVICE_EXTERN(Name)\
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_EXTERN(Name)\
 	extern bool SERVICE_NAME_CREATE( Name )(Mengine::ServiceInterface**);
-    //////////////////////////////////////////////////////////////////////////
-#   define SERVICE_CREATE( Name )\
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_CREATE( Name )\
 	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_NAME_CREATE(Name))
-    //////////////////////////////////////////////////////////////////////////
-#   define SERVICE_GENERATE( Name, Type )\
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_GENERATE( Name, Type )\
 	SERVICE_PROVIDER_GET()->generateServiceT<Type>(&SERVICE_NAME_CREATE(Name), __FILE__, __LINE__)
-    //////////////////////////////////////////////////////////////////////////
-#   define SERVICE_FINALIZE( Type )\
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_FINALIZE( Type )\
 	SERVICE_PROVIDER_GET()->finalizeServiceT<Type>()
-    //////////////////////////////////////////////////////////////////////////
-#   define SERVICE_DESTROY( Type )\
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_DESTROY( Type )\
 	SERVICE_PROVIDER_GET()->destroyServiceT<Type>()
 }

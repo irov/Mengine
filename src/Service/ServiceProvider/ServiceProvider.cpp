@@ -219,7 +219,7 @@ namespace Mengine
                 continue;
             }
 
-            desc.service->stop();
+            desc.service->stopService();
         }
     }
 }

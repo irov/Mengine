@@ -38,7 +38,7 @@ namespace Mengine
 	{
 		if( m_play == true )
 		{
-			this->stop();
+			this->stopMusic();
 		}
 
 		ResourceMusicPtr resourceMusic = RESOURCE_SERVICE()
@@ -237,7 +237,7 @@ namespace Mengine
             ->setPosMs( m_sourceID, _posMs );
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void Amplifier::_stop()
+    void Amplifier::_stopService()
     {
         this->stopMusic();
     }

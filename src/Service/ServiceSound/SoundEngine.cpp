@@ -1292,7 +1292,7 @@ namespace Mengine
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void SoundEngine::_stop()
+    void SoundEngine::_stopService()
     {
         this->stopSounds_();
 

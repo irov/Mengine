@@ -55,8 +55,10 @@ namespace Mengine
 
 				if( refcount != 0 )
 				{
-					LOGGER_WARNING("ResourceManager::~ResourceManager resource %s refcount %d"
+					LOGGER_WARNING("ResourceManager::~ResourceManager resource '%s' type '%s' group '%s' refcount %d"
 						, resource->getName().c_str()
+                        , resource->getType().c_str()
+                        , resource->getGroup().c_str()
 						, refcount
 						);
 				}

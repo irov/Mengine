@@ -25,7 +25,7 @@ namespace Mengine
 		void _finalize() override;
 
     protected:
-        void _stop() override;
+        void _stopService() override;
 
 	public:
         bool playMusic( const ConstString & _resourceMusic, float _pos, bool _looped ) override;

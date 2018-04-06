@@ -19,7 +19,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     protected:
-        virtual void stop() = 0;
+        virtual void stopService() = 0;
 
     protected:
         virtual bool isInitialize() const = 0;

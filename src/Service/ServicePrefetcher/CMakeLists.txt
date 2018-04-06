@@ -24,6 +24,7 @@ INCLUDE_DIRECTORIES(
     ${Mengine_SOURCE_DIR} 
     ${Mengine_SOURCE_DIR}/Utils 
     ${THIRDPARTY_DIR}/pybind/include
+    ${THIRDPARTY_DIR}/libmath/include
     ) 
 
 SET( APPLICATION_DEPENDENCIES

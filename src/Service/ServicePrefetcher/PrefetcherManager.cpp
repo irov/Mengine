@@ -2,6 +2,7 @@
 
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/StringizeInterface.h"
+#include "Interface/ConfigInterface.h"
 
 #include "Factory/FactoryPool.h"
 
@@ -12,6 +13,7 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	PrefetcherManager::PrefetcherManager()
+        : m_avaliable( true )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -21,11 +23,20 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::_initialize()
 	{
-		THREAD_SERVICE()
-			->createThread( STRINGIZE_STRING_LOCAL( "ThreadPrefetcherManager"), -1, __FILE__, __LINE__ );
+        bool avaliable = CONFIG_VALUE( "Engine", "PrefetcherAvaliable", true );
 
-		m_threadQueue = THREAD_SERVICE()
-			->runTaskQueue( STRINGIZE_STRING_LOCAL( "ThreadPrefetcherManager"), MENGINE_PREFETCHER_THREAD_COUNT, MENGINE_PREFETCHER_PACKET_SIZE );
+        if( avaliable == false )
+        {
+            m_avaliable = false;
+
+            return true;
+        }
+
+        THREAD_SERVICE()
+            ->createThread( STRINGIZE_STRING_LOCAL( "ThreadPrefetcherManager" ), -1, __FILE__, __LINE__ );
+
+        m_threadQueue = THREAD_SERVICE()
+            ->runTaskQueue( STRINGIZE_STRING_LOCAL( "ThreadPrefetcherManager" ), MENGINE_PREFETCHER_THREAD_COUNT, MENGINE_PREFETCHER_PACKET_SIZE );
 
         m_factoryThreadTaskPrefetchImageDecoder = new FactoryPool<ThreadTaskPrefetchImageDecoder, 16>();
         m_factoryThreadTaskPrefetchSoundDecoder = new FactoryPool<ThreadTaskPrefetchSoundDecoder, 16>();
@@ -36,16 +47,10 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void PrefetcherManager::_finalize()
 	{
-        //for( TMapPrefetchReceiver::const_iterator
-        //    it = m_prefetchReceiver.begin(),
-        //    it_end = m_prefetchReceiver.end();
-        //    it != it_end;
-        //    ++it )
-        //{
-        //    const PrefetchReceiver & receiver = it->second;
-
-        //    receiver.prefetcher->cancel();
-        //}
+        if( m_avaliable == false )
+        {
+            return;
+        }
 
 		if( m_threadQueue != nullptr )
 		{
@@ -91,6 +96,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::prefetchImageDecoder( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer )
 	{
+        if( m_avaliable == false )
+        {
+            return false;
+        }
+
 		if( m_threadQueue == nullptr )
 		{
 			return false;
@@ -124,6 +134,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::getImageDecoder( const ConstString & _pakName, const FilePath & _filePath, ImageDecoderInterfacePtr & _decoder ) const
 	{
+        if( m_avaliable == false )
+        {
+            return false;
+        }
+
 		PrefetchReceiver * receiver;
 		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == false )
 		{
@@ -156,6 +171,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::prefetchSoundDecoder( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer )
 	{
+        if( m_avaliable == false )
+        {
+            return false;
+        }
+
 		if( m_threadQueue == nullptr )
 		{
 			return false;
@@ -189,6 +209,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::getSoundDecoder( const ConstString& _pakName, const FilePath & _filePath, SoundDecoderInterfacePtr & _decoder ) const
 	{
+        if( m_avaliable == false )
+        {
+            return false;
+        }
+
 		PrefetchReceiver * receiver;
 		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == false )
 		{
@@ -221,6 +246,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::prefetchData( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _dataflowType, const PrefetcherObserverInterfacePtr & _observer )
 	{
+        if( m_avaliable == false )
+        {
+            return false;
+        }
+
 		if( m_threadQueue == nullptr )
 		{
 			return false;
@@ -254,6 +284,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////			
 	bool PrefetcherManager::getData( const ConstString& _pakName, const FilePath & _filePath, DataInterfacePtr & _data ) const
 	{
+        if( m_avaliable == false )
+        {
+            return false;
+        }
+
 		PrefetchReceiver * receiver;
 		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == false )
 		{

@@ -60,7 +60,7 @@ namespace Mengine
 		void _finalize() override;
 
     public:
-        void _stop() override;
+        void _stopService() override;
 
 	public:
 		bool supportStreamSound() const override;

@@ -71,5 +71,7 @@ namespace Mengine
 		typedef std::pair<ConstString, FilePath> TKeyPrefetchReceiver;
 		typedef stdex::map<TKeyPrefetchReceiver, PrefetchReceiver> TMapPrefetchReceiver;
 		TMapPrefetchReceiver m_prefetchReceiver;
+
+        bool m_avaliable;
 	};
 }

@@ -78,6 +78,8 @@ namespace Mengine
 		
 		m_memory = nullptr;
 
+        m_resourceImages.clear();
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolAstralaxEmitter );
 
         m_factoryPoolAstralaxEmitter = nullptr;

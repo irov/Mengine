@@ -67,13 +67,13 @@ namespace Mengine
 
 
     protected:
-        void stop() override
+        void stopService() override
         {
-            this->_stop();
+            this->_stopService();
         }
 
     protected:
-        virtual void _stop()
+        virtual void _stopService()
         {
             //Empty       
         }

@@ -323,6 +323,17 @@ namespace Mengine
             resource->release();
         }
 
+        for( TVectorResources::const_iterator
+            it = m_resources.begin(),
+            it_end = m_resources.end();
+            it != it_end;
+            ++it )
+        {
+            const ResourceReferencePtr & resource = *it;
+
+            resource->decrementReference();
+        }
+
         m_resources.clear();
 
 		ae_delete_movie_data( m_movieData );

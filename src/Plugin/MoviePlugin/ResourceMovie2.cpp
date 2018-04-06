@@ -323,6 +323,8 @@ namespace Mengine
             resource->release();
         }
 
+        m_resources.clear();
+
 		ae_delete_movie_data( m_movieData );
 
 		ResourceReference::_release();

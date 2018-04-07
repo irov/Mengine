@@ -65,8 +65,6 @@ namespace Mengine
 		}
 
 		m_resourceImages.resize( atlasCount );
-                
-        m_factoryPoolAstralaxEmitter = Helper::makeFactoryPoolWithListener<AstralaxEmitter2, 16>( this, &AstralaxEmitterContainer2::onEmitterRelease_ );
         		
         return true;
     }
@@ -79,10 +77,6 @@ namespace Mengine
 		m_memory = nullptr;
 
         m_resourceImages.clear();
-
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolAstralaxEmitter );
-
-        m_factoryPoolAstralaxEmitter = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitterContainer2::isValid() const
@@ -103,7 +97,7 @@ namespace Mengine
 		return m_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitterContainer2::setAtlasResourceImage( size_t _index, const ResourceImagePtr & _resourceImage )
+	void AstralaxEmitterContainer2::setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage )
 	{
 		m_resourceImages[_index] = _resourceImage;
 	}
@@ -161,7 +155,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HM_EMITTER AstralaxEmitterContainer2::createEmitterId_() const
+	HM_EMITTER AstralaxEmitterContainer2::createEmitterId() const
 	{
 		MAGIC_FIND_DATA find;
 		const char * magicName = Magic_FindFirst( m_mf, &find, MAGIC_FOLDER | MAGIC_EMITTER );
@@ -188,7 +182,7 @@ namespace Mengine
 				const char * currentFolder = Magic_GetCurrentFolder( m_mf );
 				Magic_SetCurrentFolder( m_mf, magicName );
 
-				HM_EMITTER id = this->createEmitterId_();
+				HM_EMITTER id = this->createEmitterId();
 
 				Magic_SetCurrentFolder( m_mf, currentFolder );
 
@@ -205,34 +199,5 @@ namespace Mengine
 			);
 
 		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterInterfacePtr AstralaxEmitterContainer2::createEmitter()
-	{
-		HM_EMITTER id = this->createEmitterId_();
-
-		if( id == 0 )
-		{
-			return nullptr;
-		}
-
-		AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter->createObject();
-        
-		if( emitter->initialize( m_particleSystem, this, id ) == false )
-		{
-			return nullptr;
-		}
-
-        if( m_particleSystem->updateMaterial() == false )
-        {
-            return nullptr;
-        }
-
-		return emitter;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitterContainer2::onEmitterRelease_( AstralaxEmitter2 * _emitter )
-	{
-		_emitter->finalize();
 	}
 }

@@ -3,13 +3,17 @@
 #include "Interface/ThreadInterface.h"
 
 #include "Core/ServantBase.h"
+#include "Kernel/Visitable.h"
 
 namespace Mengine 
 {
     //////////////////////////////////////////////////////////////////////////
 	class ThreadTask
 		: public ServantBase<ThreadTaskInterface>
+        , public Visitable
 	{
+        DECLARE_VISITABLE_BASE();
+
 	public:
 		ThreadTask();
 		~ThreadTask() override;

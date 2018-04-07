@@ -223,7 +223,8 @@ namespace Mengine
 			return nullptr;
 		}
 
-		ParticleEmitterInterfacePtr emitter = m_container->createEmitter();
+        ParticleEmitterInterfacePtr emitter = PARTICLE_SYSTEM2()
+            ->createEmitter( m_container );
 
 		return emitter;
 	}

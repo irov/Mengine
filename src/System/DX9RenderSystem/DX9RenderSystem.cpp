@@ -283,7 +283,7 @@ namespace Mengine
         m_d3dppW.MultiSampleType = D3DMULTISAMPLE_NONE;
         m_d3dppW.MultiSampleQuality = 0;
 
-        m_d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
+        m_d3dppW.SwapEffect = D3DSWAPEFFECT_FLIP;
 
         HWND windowHandle = PLATFORM_SERVICE()
             ->getWindowHandle();
@@ -324,8 +324,6 @@ namespace Mengine
         m_d3dppFS.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
 
         m_d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
-
-        m_screenBits = s_getD3DFormatBits( m_displayMode.Format );
 
         this->updateVSyncDPP_();
 
@@ -726,8 +724,6 @@ namespace Mengine
             }
 
             m_d3dppW.BackBufferFormat = Mode.Format;
-
-            m_screenBits = s_getD3DFormatBits( Mode.Format );
         }
 
         if( this->restore_() == false )
@@ -1953,9 +1949,9 @@ namespace Mengine
 
         dxTexture->initialize( _d3dInterface, _mode, _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwPixelFormat );
 
-        //size_t memoryUse = dxTexture->getMemoryUse();
+        uint32_t memoryUse = Helper::getTextureMemorySize( _hwWidth, _hwHeight, _hwChannels, 1, _hwPixelFormat );
 
-        //m_textureMemoryUse += memoryUse;
+        m_textureMemoryUse += memoryUse;
 
         return dxTexture;
     }
@@ -1966,9 +1962,14 @@ namespace Mengine
 
         m_textureCount--;
 
-        //size_t memoryUse = _image->getMemoryUse();
+        uint32_t hwWidth = _image->getHWWidth();
+        uint32_t hwHeight = _image->getHWHeight();
+        uint32_t hwChannels = _image->getHWChannels();
+        PixelFormat hwPixelFormat = _image->getHWPixelFormat();
 
-        //m_textureMemoryUse -= memoryUse;
+        uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwChannels, 1, hwPixelFormat );
+
+        m_textureMemoryUse -= memoryUse;
     }
 }
 

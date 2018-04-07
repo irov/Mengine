@@ -41,12 +41,12 @@ namespace Mengine
         intrusive_ptr_dec_ref( this );
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool Factory::emptyObject() const
+    bool Factory::isEmptyObjects() const
     {
         return m_count == 0;
     }
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t Factory::countObject() const
+	uint32_t Factory::getCountObject() const
 	{
 		return m_count;
 	}

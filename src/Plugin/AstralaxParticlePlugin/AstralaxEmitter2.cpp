@@ -31,11 +31,19 @@ namespace Mengine
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::initialize( AstralaxParticleSystem2 * _particleSystem, const ParticleEmitterContainerInterface2Ptr & _container, HM_EMITTER _id )
+	bool AstralaxEmitter2::initialize( AstralaxParticleSystem2 * _particleSystem, const ParticleEmitterContainerInterface2Ptr & _container )
     {
 		m_particleSystem = _particleSystem;
-		m_container = _container;
-        m_emitterId = _id;
+
+        AstralaxEmitterContainer2Ptr astralaxContainer = stdex::intrusive_static_cast<AstralaxEmitterContainer2Ptr>(_container);
+        HM_EMITTER emitterId = astralaxContainer->createEmitterId();
+
+        if( emitterId == 0 )
+        {
+            return false;
+        }
+
+        m_emitterId = emitterId;
 
         Magic_SetRandomMode( m_emitterId, false );
 
@@ -68,8 +76,6 @@ namespace Mengine
 	void AstralaxEmitter2::finalize()
 	{
 		Magic_UnloadEmitter( m_emitterId );
-
-		m_container = nullptr;
 
 		m_emitterId = 0;
 	}

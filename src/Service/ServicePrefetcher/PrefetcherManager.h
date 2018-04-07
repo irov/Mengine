@@ -56,7 +56,7 @@ namespace Mengine
 		void unfetch( const ConstString& _pakName, const FilePath & _fileName ) override;
 
 	public:
-		PrefetcherDebugInfo getDebugInfo() const override;
+        void visitPrefetches( Visitor * _visitor ) const override;
 
 	protected:
 		bool hasPrefetch( const ConstString& _pakName, const FilePath & _fileName, PrefetchReceiver ** _receiver ) const;

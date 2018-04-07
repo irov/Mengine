@@ -46,7 +46,7 @@ namespace Mengine
 
 		uint32_t count() const override
 		{
-			uint32_t count = m_factory->countObject();
+			uint32_t count = m_factory->getCountObject();
 
 			return count;
 		}

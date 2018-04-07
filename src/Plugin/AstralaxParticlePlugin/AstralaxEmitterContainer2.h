@@ -40,21 +40,17 @@ namespace Mengine
 		uint32_t getId() const;
 
 	public:
-		void setAtlasResourceImage( size_t _index, const ResourceImagePtr & _resourceImage ) override;
+		void setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) override;
 
 	public:
 		const ResourceImagePtr & getAtlasResourceImage( const char * _file ) const;
 
 	public:
-		ParticleEmitterInterfacePtr createEmitter() override;
-
-	protected:
-		void onEmitterRelease_( AstralaxEmitter2 * _emitter );
+        HM_EMITTER createEmitterId() const;
 
 	protected:
 		bool loadContainer_( const unsigned char * _buffer, size_t _size, HM_FILE & _mf ) const;
-		HM_EMITTER createEmitterId_() const;
-			
+					
     protected:
 		AstralaxParticleSystem2 * m_particleSystem;
 
@@ -63,8 +59,6 @@ namespace Mengine
 		uint32_t m_id;
 		
 		MemoryInterfacePtr m_memory;
-
-        FactoryPtr m_factoryPoolAstralaxEmitter;
 
 		typedef stdex::vector<ResourceImagePtr> TVectorResourceImage;
 		TVectorResourceImage m_resourceImages;

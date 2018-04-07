@@ -163,7 +163,6 @@ namespace Mengine
 		HMODULE m_hd3d9;
 
 		Resolution m_windowResolution;
-		int m_screenBits;
 		bool m_fullscreen;
 
         IDirect3D9 * m_pD3D;
@@ -228,7 +227,7 @@ namespace Mengine
 
 		uint32_t m_dxMaxCombinedTextureImageUnits;
 
-		size_t m_textureMemoryUse;
+        uint32_t m_textureMemoryUse;
 		uint32_t m_textureCount;
 
 		bool m_vertexBufferEnable;

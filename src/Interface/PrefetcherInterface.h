@@ -4,14 +4,11 @@
 
 #include "Core/ConstString.h"
 #include "Core/FilePath.h"
+#include "Core/Visitor.h"
 
 namespace Mengine
 {
-	struct PrefetcherDebugInfo
-	{
-		uint32_t receiverCount;
-	};
-
+    //////////////////////////////////////////////////////////////////////////
     class PrefetcherObserverInterface
         : public FactorablePtr
     {
@@ -21,13 +18,13 @@ namespace Mengine
         virtual void onPrefetchCancel() = 0;
         virtual void onPrefetchComplete( bool _successful ) = 0;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<PrefetcherObserverInterface> PrefetcherObserverInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class ImageDecoderInterface> ImageDecoderInterfacePtr;
     typedef stdex::intrusive_ptr<class SoundDecoderInterface> SoundDecoderInterfacePtr;
     typedef stdex::intrusive_ptr<class DataInterface> DataInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	class PrefetcherServiceInterface
 		: public ServiceInterface
 	{
@@ -52,10 +49,11 @@ namespace Mengine
 		virtual void unfetch( const ConstString& _pakName, const FilePath& _fileName ) = 0;
 
 	public:
-		virtual PrefetcherDebugInfo getDebugInfo() const = 0;
+        virtual void visitPrefetches( Visitor * _visitor ) const = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 #   define PREFETCHER_SERVICE()\
 	((Mengine::PrefetcherServiceInterface*)SERVICE_GET(Mengine::PrefetcherServiceInterface))
+    //////////////////////////////////////////////////////////////////////////
 }
 

@@ -148,11 +148,8 @@ namespace Mengine
 		virtual bool isValid() const = 0;
 
 	public:
-		virtual void setAtlasResourceImage( size_t _index, const ResourceImagePtr & _resourceImage ) = 0;
-
-	public:
-		virtual ParticleEmitterInterfacePtr createEmitter() = 0;
-	};
+		virtual void setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) = 0;
+    };
     //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ParticleEmitterContainerInterface2> ParticleEmitterContainerInterface2Ptr;
     //////////////////////////////////////////////////////////////////////////
@@ -165,10 +162,14 @@ namespace Mengine
 
 	public:
 		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
+        virtual ParticleEmitterInterfacePtr createEmitter( const ParticleEmitterContainerInterface2Ptr & _container ) = 0;
 
 	public:
 		virtual const RenderMaterialStage * getMaterialStage( int _index ) const = 0;
 		virtual const ResourceImagePtr & getResourceImage( int _index ) const = 0;
+
+    public:
+        virtual uint32_t getEmitterCount() const = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
 #   define PARTICLE_SYSTEM2()\

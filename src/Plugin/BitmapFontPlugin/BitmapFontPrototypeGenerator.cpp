@@ -26,7 +26,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t BitmapFontPrototypeGenerator::count() const
 	{
-		uint32_t count = m_factoryFont->countObject();
+		uint32_t count = m_factoryFont->getCountObject();
 
 		return count;
 	}

@@ -29,8 +29,8 @@ namespace Mengine
         virtual void destroyObject( Factorable * _object );
 
 	public:
-        bool emptyObject() const;
-		uint32_t countObject() const;
+        bool isEmptyObjects() const;
+		uint32_t getCountObject() const;
 
 	protected:
 		virtual Factorable * _createObject() = 0;
@@ -50,6 +50,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<Factory> FactoryPtr;
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_ASSERTION_FACTORY_EMPTY(F) MENGINE_ASSERTION((F) == nullptr || (F)->emptyObject() == true)
+#   define MENGINE_ASSERTION_FACTORY_EMPTY(F) MENGINE_ASSERTION((F) == nullptr || (F)->isEmptyObjects() == true)
     //////////////////////////////////////////////////////////////////////////
 }

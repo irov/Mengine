@@ -31,17 +31,17 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadSystem::_finalize()
 	{
-		if( m_factoryWin32ThreadIdentity->emptyObject() == false )
+		if( m_factoryWin32ThreadIdentity->isEmptyObjects() == false )
 		{
 			LOGGER_ERROR("Win32ThreadSystem::finalize Win32ThreadIdentity not all remove %d"
-				, m_factoryWin32ThreadIdentity->countObject()
+				, m_factoryWin32ThreadIdentity->getCountObject()
 				);
 		}
 
-		if( m_factoryWin32ThreadMutex->emptyObject() == false )
+		if( m_factoryWin32ThreadMutex->isEmptyObjects() == false )
 		{
 			LOGGER_ERROR("Win32ThreadSystem::finalize Win32ThreadMutex not all remove %d"
-				, m_factoryWin32ThreadMutex->countObject()
+				, m_factoryWin32ThreadMutex->getCountObject()
 				);
 		}
 

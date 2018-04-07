@@ -39,24 +39,30 @@ namespace Mengine
         bool _initialize() override;
         void _finalize() override;
 
-    public:
+    public:        
         ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) override;
+        ParticleEmitterInterfacePtr createEmitter( const ParticleEmitterContainerInterface2Ptr & _container ) override;
 
     public:
         const RenderMaterialStage * getMaterialStage( int _index ) const override;
         const ResourceImagePtr & getResourceImage( int _index ) const override;
 
     public:
+        uint32_t getEmitterCount() const override;
+
+    public:
         bool updateAtlas();
         bool updateMaterial();
 
     protected:
-        void onContainerRelease_( AstralaxEmitterContainer2 * _container );
+        void onEmitterContainerRelease_( AstralaxEmitterContainer2 * _container );
+        void onEmitterRelease_( AstralaxEmitter2 * _emitter );
 
     protected:
         ERenderPlatform m_renderPlatform;
 
         FactoryPtr m_factoryPoolAstralaxEmitterContainer;
+        FactoryPtr m_factoryPoolAstralaxEmitter;
 
         typedef stdex::map<uint32_t, AstralaxEmitterContainer2 *> TMapHashEmitterContainers;
         TMapHashEmitterContainers m_containers;

@@ -73,7 +73,8 @@ namespace Mengine
         m_renderPlatform = RENDER_SYSTEM()
             ->getRenderPlatformType();
 
-        m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPoolWithListener<AstralaxEmitterContainer2, 16>( this, &AstralaxParticleSystem2::onContainerRelease_ );
+        m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPoolWithListener<AstralaxEmitterContainer2, 16>( this, &AstralaxParticleSystem2::onEmitterContainerRelease_ );
+        m_factoryPoolAstralaxEmitter = Helper::makeFactoryPoolWithListener<AstralaxEmitter2, 16>( this, &AstralaxParticleSystem2::onEmitterRelease_ );
 
         return true;
     }
@@ -86,8 +87,10 @@ namespace Mengine
         m_renderFragmentShaderCache.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolAstralaxEmitterContainer );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolAstralaxEmitter );
 
         m_factoryPoolAstralaxEmitterContainer = nullptr;
+        m_factoryPoolAstralaxEmitter = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     ParticleEmitterContainerInterface2Ptr AstralaxParticleSystem2::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
@@ -115,6 +118,23 @@ namespace Mengine
         m_containers[id] = container.get();
 
         return container;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ParticleEmitterInterfacePtr AstralaxParticleSystem2::createEmitter( const ParticleEmitterContainerInterface2Ptr & _container )
+    {
+        AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter->createObject();
+        
+        if( emitter->initialize( this, _container ) == false )
+        {
+            return nullptr;
+        }
+
+        if( this->updateMaterial() == false )
+        {
+            return nullptr;
+        }
+
+        return emitter;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxParticleSystem2::updateAtlas()
@@ -298,9 +318,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & AstralaxParticleSystem2::getResourceImage( int _index ) const
     {
-        size_t atlases_size = m_atlases.size();
+        TVectorAtlasDesc::size_type atlases_size = m_atlases.size();
 
-        if( atlases_size <= (size_t)_index )
+        if( atlases_size <= (TVectorAtlasDesc::size_type)_index )
         {
             LOGGER_ERROR( "AstralaxParticleSystem2::getResourceImage index %d but size is %d"
                 , _index
@@ -313,6 +333,13 @@ namespace Mengine
         const ResourceImagePtr & resourceImage = m_atlases[_index];
 
         return resourceImage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t AstralaxParticleSystem2::getEmitterCount() const
+    {
+        uint32_t countObject = m_factoryPoolAstralaxEmitter->getCountObject();
+
+        return countObject;
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticleSystem2::createFragmentShaderDX9Source_( Stringstream & ss, const MAGIC_MATERIAL * m )
@@ -918,12 +945,17 @@ namespace Mengine
         return fragmentShader;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleSystem2::onContainerRelease_( AstralaxEmitterContainer2 * _container )
+    void AstralaxParticleSystem2::onEmitterContainerRelease_( AstralaxEmitterContainer2 * _container )
     {
         uint32_t id = _container->getId();
 
         m_containers.erase( id );
 
         _container->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AstralaxParticleSystem2::onEmitterRelease_( AstralaxEmitter2 * _emitter )
+    {
+        _emitter->finalize();
     }
 }

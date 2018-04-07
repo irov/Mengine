@@ -26,7 +26,7 @@ namespace Mengine
 		~AstralaxEmitter2() override;
 
     public:
-		bool initialize( AstralaxParticleSystem2 * _particleSystem, const ParticleEmitterContainerInterface2Ptr & _container, HM_EMITTER _id );
+		bool initialize( AstralaxParticleSystem2 * _particleSystem, const ParticleEmitterContainerInterface2Ptr & _container );
 		void finalize(); 
 		
 	public:
@@ -90,8 +90,6 @@ namespace Mengine
 		
 	protected:
 		AstralaxParticleSystem2 * m_particleSystem;
-
-		ParticleEmitterContainerInterface2Ptr m_container;
 		
 		HM_EMITTER m_emitterId;
 

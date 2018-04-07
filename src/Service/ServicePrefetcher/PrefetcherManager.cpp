@@ -339,31 +339,47 @@ namespace Mengine
 
 		m_prefetchReceiver.erase( it_found );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	PrefetcherDebugInfo PrefetcherManager::getDebugInfo() const
-	{
-		PrefetcherDebugInfo info;
+    //////////////////////////////////////////////////////////////////////////
+    void PrefetcherManager::visitPrefetches( Visitor * _visitor ) const
+    {
+        for( TMapPrefetchReceiver::const_iterator
+            it = m_prefetchReceiver.begin(),
+            it_end = m_prefetchReceiver.end();
+            it != it_end;
+            ++it )
+        {
+            const PrefetchReceiver & receiver = it->second;
 
-		info.receiverCount = 0;
+            const ThreadTaskPrefetchPtr & prefetcher = receiver.prefetcher;
 
-		for( TMapPrefetchReceiver::const_iterator
-			it = m_prefetchReceiver.begin(),
-			it_end = m_prefetchReceiver.end();
-		it != it_end;
-		++it )
-		{
-			const PrefetchReceiver & receiver = it->second;
+            prefetcher->visit( _visitor );
+        }
+    }
+	////////////////////////////////////////////////////////////////////////////
+	//PrefetcherDebugInfo PrefetcherManager::getDebugInfo() const
+	//{
+	//	PrefetcherDebugInfo info;
 
-			if( receiver.prefetcher->isComplete() == false )
-			{
-				continue;
-			}
+	//	info.receiverCount = 0;
 
-			++info.receiverCount;
-		}
-		
-		return info;
-	}
+	//	for( TMapPrefetchReceiver::const_iterator
+	//		it = m_prefetchReceiver.begin(),
+	//		it_end = m_prefetchReceiver.end();
+	//	it != it_end;
+	//	++it )
+	//	{
+	//		const PrefetchReceiver & receiver = it->second;
+
+	//		if( receiver.prefetcher->isComplete() == false )
+	//		{
+	//			continue;
+	//		}
+
+	//		++info.receiverCount;
+	//	}
+	//	
+	//	return info;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::hasPrefetch( const ConstString& _pakName, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
 	{ 

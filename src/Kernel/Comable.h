@@ -16,7 +16,7 @@ namespace Mengine
 		T * getCOMInterfaceT()
 		{
 			COMInterface * com = this->getCOMInterface();
-#ifdef _DEBUG
+#ifndef NDEBUG
 			if(dynamic_cast<T *>(com) == nullptr)
 			{
                 throw;

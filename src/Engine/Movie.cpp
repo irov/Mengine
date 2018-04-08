@@ -286,7 +286,7 @@ namespace Mengine
 
 		if( _layer.isMesh2D() == true )
 		{
-#   ifdef _DEBUG
+#ifndef NDEBUG
 			if( dynamic_cast<Mesh2D *>( _node ) == nullptr )
 			{
 				LOGGER_ERROR("Movie::updateFrameNode_ %s resource %s layer %s is Mesh2D but node is not Mesh2D %s:%s"
@@ -299,7 +299,7 @@ namespace Mengine
 
 				return false;
 			}
-#   endif
+#endif
 
 			Mesh2D * mesh2D = static_cast<Mesh2D *>( _node );
 
@@ -1949,7 +1949,7 @@ namespace Mengine
 			return false;
 		}
 
-#   ifdef _DEBUG
+#ifndef NDEBUG
 		if( dynamic_cast<TextField *>( node ) == nullptr )
 		{
 			LOGGER_ERROR("Movie::compileMovieText_ %s resource %s layer %s must be 'TextField' but node is %s type %s"
@@ -1962,7 +1962,7 @@ namespace Mengine
 
 			return false;
 		}
-#   endif
+#endif
 
 		TextField * layer_text = static_cast<TextField *>(node);
 
@@ -2188,7 +2188,7 @@ namespace Mengine
 
 			Node * node = this->getLayerNode_( l );
 
-#   ifdef _DEBUG
+#ifndef NDEBUG
 			if( dynamic_cast<MovieSceneEffect *>(node) == nullptr )
 			{
 				LOGGER_ERROR("Movie::compileMovieText_ %s resource %s layer %s must be 'MovieSceneEffect' but node is %s type %s"
@@ -2201,7 +2201,7 @@ namespace Mengine
 
 				return false;
 			}
-#   endif
+#endif
 
 			MovieSceneEffect * sceneEffect = static_cast<MovieSceneEffect *>(node);
 
@@ -2727,7 +2727,7 @@ namespace Mengine
 			}
 			else if( layer.isExtra() == true )
 			{
-#   ifdef _DEBUG
+#ifndef NDEBUG
 				if( dynamic_cast<MovieNodeExtra *>(node) == nullptr )
 				{
 					LOGGER_ERROR("Movie::updateForwardFrame_ %s layer %s must be 'MovieNodeExtra' but node is %s type %s"
@@ -2739,7 +2739,7 @@ namespace Mengine
 
 					continue;
 				}
-#   endif
+#endif
 
 				MovieNodeExtra * extra = static_cast<MovieNodeExtra *>(node);
 

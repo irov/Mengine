@@ -667,12 +667,12 @@ namespace Mengine
             }
         }
 
-#	ifdef _DEBUG
+#ifndef NDEBUG
 		bool devplugins = true;
-#	else
+#else
 		bool developmentMode = HAS_OPTION( "dev" );
 		bool devplugins = developmentMode;
-#	endif
+#endif
 
 		bool nodevplugins = HAS_OPTION( "nodevplugins" );
 

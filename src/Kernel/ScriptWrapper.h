@@ -58,7 +58,7 @@ namespace Mengine
 	protected:
         PyObject * wrap( Scriptable * _scriptable ) override
 		{
-#   ifdef _DEBUG
+#ifndef NDEBUG
 			if( dynamic_cast<T *>( _scriptable ) == nullptr )
             {
 				LOGGER_ERROR("ScriptClassWrapper::wrap invalid type"
@@ -66,7 +66,7 @@ namespace Mengine
 
                 throw;
             }
-#   endif
+#endif
 
             T * obj = static_cast<T *>( _scriptable );
 

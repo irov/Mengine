@@ -10,7 +10,7 @@ namespace Mengine
     MemoryBuffer::MemoryBuffer()
         : m_memory( nullptr )
         , m_size( 0 )
-#ifdef _DEBUG
+#ifndef NDEBUG
         , m_file( nullptr )
         , m_line( 0 )
 #endif
@@ -48,7 +48,7 @@ namespace Mengine
         m_memory = new_memory;
         m_size = _size;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
         m_file = _file;
         m_line = _line;
 #endif

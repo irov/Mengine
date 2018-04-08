@@ -34,12 +34,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Eventable::registerEventReceiver( uint32_t _event, const EventReceiverPtr & _receiver )
     {
-#   ifdef _DEBUG
+#ifndef NDEBUG
         if( _event >= (sizeof( m_flag ) * 8 - 1) )
         {
             throw;
         }
-#   endif
+#endif
 
         TMapEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), FEventReciver( _event ) );
 
@@ -63,12 +63,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Eventable::removeEventReceiver( uint32_t _event )
     {
-#   ifdef _DEBUG
+#ifndef NDEBUG
         if( _event >= (sizeof( m_flag ) * 8) )
         {
             throw;
         }
-#   endif
+#endif
 
         TMapEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), FEventReciver( _event ) );
 
@@ -84,12 +84,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const EventReceiverPtr & Eventable::getEventReciever( uint32_t _event ) const
     {
-#   ifdef _DEBUG
+#ifndef NDEBUG
         if( _event >= (sizeof( m_flag ) * 8) )
         {
             throw;
         }
-#   endif
+#endif
 
         TMapEventReceivers::const_iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), FEventReciver( _event ) );
 
@@ -105,12 +105,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Eventable::hasEventReceiver( uint32_t _event ) const
     {
-#   ifdef _DEBUG
+#ifndef NDEBUG
         if( _event >= (sizeof( m_flag ) * 8) )
         {
             throw;
         }
-#   endif
+#endif
 
         return (m_flag & (1ULL << _event)) != 0;
     }

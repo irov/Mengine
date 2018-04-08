@@ -28,7 +28,7 @@ namespace Mengine
         void * m_ptr;
         size_t m_size;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
         const Char * m_file;
         uint32_t m_line;
 #endif

@@ -81,7 +81,7 @@ namespace Mengine
         {
             DataInterfacePtr data = this->dataflow( _type, _stream );
 
-#   ifdef _DEBUG
+#ifndef NDEBUG
 			if (data == nullptr)
 			{
 				return nullptr;
@@ -91,7 +91,7 @@ namespace Mengine
 			{
                 throw;
 			}
-#   endif
+#endif
 
             T t = stdex::intrusive_static_cast<T>(data);
 

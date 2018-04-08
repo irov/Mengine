@@ -40,11 +40,11 @@ namespace Mengine
     {
         STDEX_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::open" );
 
-#	ifdef _DEBUG
+#ifndef NDEBUG
         m_relationPath = _relationPath;
         m_folderPath = _folderPath;
         m_filePath = _filePath;
-#	endif
+#endif
 
         Char fullPath[MENGINE_MAX_PATH];
         if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
@@ -129,13 +129,13 @@ namespace Mengine
             return false;
         }
 
-#	ifdef _DEBUG
+#ifndef NDEBUG
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_SERVICE()
                 ->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str() );
         }
-#	endif
+#endif
 
         return true;
     }
@@ -328,7 +328,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::time( uint64_t & _time ) const
     {
-#	ifdef _DEBUG
+#ifndef NDEBUG
         Char filePath[MENGINE_MAX_PATH];
         if( SDLLAYER_SERVICE()
             ->concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH ) == false )
@@ -349,10 +349,10 @@ namespace Mengine
 
         _time = ft;
         return true;
-#	else
+#else
         _time = 0;
         return false;
-#	endif
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::memory( void ** _memory, size_t * _size )

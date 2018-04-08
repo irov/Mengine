@@ -28,7 +28,7 @@ namespace Mengine
 		template<class U>
 		operator U * () const
 		{
-#ifdef _DEBUG
+#ifndef NDEBUG
 			if( stdex::mpl::is_dynamic_cast<U *>::test( m_pointer ) == false )
 			{
                 throw;
@@ -43,7 +43,7 @@ namespace Mengine
 		template<class U>
 		operator stdex::intrusive_ptr<U> () const
 		{
-#ifdef _DEBUG
+#ifndef NDEBUG
 			if (stdex::mpl::is_dynamic_cast<U *>::test(m_pointer) == false)
 			{
 				throw;

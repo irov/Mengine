@@ -10,7 +10,7 @@
 
 namespace Mengine
 {
-#ifdef _DEBUG
+#ifndef NDEBUG
     void Assertion( const Char * _message, const Char* _file, int _line )
     {
         Char assert_message[2048];

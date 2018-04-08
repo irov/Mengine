@@ -871,7 +871,7 @@ namespace Mengine
             return cache.fragmentShader;
         }
 
-#ifdef _DEBUG
+#ifndef NDEBUG
         Stringstream ss;
         switch( m_renderPlatform )
         {

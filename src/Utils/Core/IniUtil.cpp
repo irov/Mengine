@@ -127,7 +127,7 @@ namespace Mengine
 				return false;
 			}
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 			if( strstr( ini_value, "\\" ) != nullptr )
 			{
 				LOGGER_ERROR( "get ini '%s:%s' filepath section '%s' key '%s' has invalid slash"

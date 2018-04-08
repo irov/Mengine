@@ -15,7 +15,7 @@ int main( int argc, char * argv[] )
 
     Mengine::SDLApplication application;
 
-#ifndef _DEBUG
+#ifdef NDEBUG
     try
 #endif
     {
@@ -32,7 +32,7 @@ int main( int argc, char * argv[] )
 
         application.finalize();
     }
-#ifndef _DEBUG
+#ifdef NDEBUG
     catch( const std::exception & se )
     {
         const char * se_what = se.what();

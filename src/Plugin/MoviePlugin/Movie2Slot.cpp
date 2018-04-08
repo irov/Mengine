@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2Slot::_destroy()
     {
-#ifdef _DEBUG
+#ifndef NDEBUG
         TListNodeChild & child = this->getChildren();
 
         for( TListNodeChild::iterator

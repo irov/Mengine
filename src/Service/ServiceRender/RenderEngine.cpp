@@ -108,7 +108,7 @@ namespace Mengine
 
 #ifndef MENGINE_MASTER_RELEASE 
         m_debugFillrateCalcMode = true;
-#endif // _DEBUG
+#endif
 
         //m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
@@ -1143,107 +1143,6 @@ namespace Mengine
         (void)_vertexBuffer;
         (void)_indexBuffer;
         (void)_indexCount;
-            
-            
-//#ifdef _DEBUG
-//        if( _state == nullptr )
-//        {
-//            LOGGER_ERROR( "_state == NULL"
-//            );
-//
-//            return;
-//        }
-//
-//        if( _state->viewport == nullptr )
-//        {
-//            LOGGER_ERROR( "viewport == NULL"
-//            );
-//
-//            return;
-//        }
-//
-//        if( _state->camera == nullptr )
-//        {
-//            LOGGER_ERROR( "camera == NULL"
-//            );
-//
-//            return;
-//        }
-//
-//        if( _material == nullptr )
-//        {
-//            LOGGER_ERROR( "_material == NULL"
-//            );
-//
-//            return;
-//        }
-//
-//        if( _vertexBuffer == nullptr )
-//        {
-//            LOGGER_ERROR( "_vertices == NULL"
-//            );
-//
-//            return;
-//        }
-//
-//        if( _indexBuffer == nullptr )
-//        {
-//            LOGGER_ERROR( "_indices == NULL"
-//            );
-//
-//            return;
-//        }
-//#endif
-//
-//        if( m_renderObjects.full() == true )
-//        {
-//            LOGGER_ERROR( "max render objects %u"
-//                , m_renderObjects.size()
-//            );
-//
-//            return;
-//        }
-//
-//        const RenderMaterialStage * stage = _material->getStage();
-//
-//        const RenderProgramInterfacePtr & program = stage->program;
-//
-//        const RenderVertexAttributeInterfacePtr & vertexAttribute = program->getVertexAttribute();
-//
-//        RenderBatchPtr batch = this->requestRenderBatch_( vertexAttribute, _vertexCount );
-//
-//        const RenderPassPtr & rp = this->requestRenderPass_( _state, nullptr, _vertexBuffer, _indexBuffer, vertexAttribute );
-//
-//        rp->flags = RP_FLAG_SINGLE;
-//
-//        ++rp->countRenderObject;
-//
-//        RenderObject & ro = m_renderObjects.emplace();
-//
-//        IntrusivePtrSetup( ro.material, _material );
-//
-//        ro.materialSmartId = 0;
-//
-//        ro.vertexData = nullptr;
-//        ro.vertexCount = 0;
-//
-//        ro.indexData = nullptr;
-//        ro.indexCount = 0;
-//
-//        mt::box2f bb;
-//        bb.minimum.x = (std::numeric_limits<float>::lowest)();
-//        bb.minimum.y = (std::numeric_limits<float>::lowest)();
-//        bb.maximum.x = (std::numeric_limits<float>::max)();
-//        bb.maximum.y = (std::numeric_limits<float>::max)();
-//
-//        ro.bb = bb;
-//
-//        ro.minIndex = 0;
-//        ro.startIndex = 0;
-//        ro.baseVertexIndex = 0;
-//
-//        ro.dipVerticesNum = 0;
-//        ro.dipIndiciesNum = _indexCount;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::addRenderObject( const RenderState * _state, const RenderMaterialInterfacePtr & _material
@@ -1251,7 +1150,7 @@ namespace Mengine
         , const RenderIndex * _indices, uint32_t _indexCount
         , const mt::box2f * _bb, bool _debug )
     {
-#ifdef _DEBUG
+#ifndef NDEBUG
         if( _state == nullptr )
         {
             LOGGER_ERROR( "RenderEngine::renderObject2D _state == NULL"

@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef MENGINE_FACTORABLE_DEBUG_ENABLE
-#   ifdef _DEBUG
+#   ifndef NDEBUG
 #       define MENGINE_FACTORABLE_DEBUG
 #   endif
 #else

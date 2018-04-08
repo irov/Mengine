@@ -11,7 +11,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Reference::incrementReference()
 	{
-#ifdef _DEBUG
+#ifndef NDEBUG
         this->_debugIncrementReference();
 #endif
 
@@ -30,7 +30,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Reference::decrementReference()
 	{
-#ifdef _DEBUG
+#ifndef NDEBUG
         this->_debugDecrementReference();
 #endif
 

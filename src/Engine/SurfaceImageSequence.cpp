@@ -329,7 +329,7 @@ namespace Mengine
 		m_currentFrame = _frame;
 		m_frameTiming = 0.f;
 
-#       ifdef _DEBUG
+#ifndef NDEBUG
         if( this->isCompile() == true )
         {
             uint32_t sequenceCount = m_resourceAnimation->getSequenceCount();
@@ -345,7 +345,7 @@ namespace Mengine
                 return;
             }
         }
-#   endif
+#endif
 
 		this->invalidateMaterial();
 	}

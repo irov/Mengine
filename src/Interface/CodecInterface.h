@@ -131,7 +131,7 @@ namespace Mengine
         {
             DecoderInterfacePtr decoder = this->createDecoder( _type );
 
-#   ifdef _DEBUG
+#ifndef NDEBUG
 			if (decoder == nullptr)
 			{
 				return nullptr;
@@ -141,7 +141,7 @@ namespace Mengine
 			{
                 throw;
 			}
-#   endif
+#endif
 
             T t = stdex::intrusive_static_cast<T>(decoder);
 
@@ -156,7 +156,7 @@ namespace Mengine
         {
             EncoderInterfacePtr encoder = this->createEncoder( _type );
 
-#   ifdef _DEBUG
+#ifndef NDEBUG
 			if (encoder == nullptr)
 			{
 				return nullptr;
@@ -166,7 +166,7 @@ namespace Mengine
             {
                 throw;
             }
-#   endif
+#endif
 
             T t = stdex::intrusive_static_cast<T>(encoder);
 

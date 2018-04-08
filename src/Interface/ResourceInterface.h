@@ -34,7 +34,7 @@ namespace Mengine
 		{
 			ResourceReferencePtr resource = this->generateResource( _type );
 
-#   ifdef _DEBUG
+#ifndef NDEBUG
 			if( resource == nullptr )
 			{
 				return nullptr;
@@ -44,7 +44,7 @@ namespace Mengine
 			{
 				throw;
 			}
-#   endif
+#endif
 
 			T t = stdex::intrusive_static_cast<T>(resource);
 
@@ -60,7 +60,7 @@ namespace Mengine
         {
 			ResourceReferencePtr resource = this->createResource( _locale, _category, _group, _name, _type );
 
-#   ifdef _DEBUG
+#ifdef NDEBUG
 			if( resource == nullptr )
 			{
 				return nullptr;
@@ -70,7 +70,7 @@ namespace Mengine
 			{
 				throw;
 			}
-#   endif
+#endif
 
 			T t = stdex::intrusive_static_cast<T>(resource);
 
@@ -88,7 +88,7 @@ namespace Mengine
         {
 			ResourceReferencePtr resource = this->getResource( _name );
 
-#   ifdef _DEBUG
+#ifndef NDEBUG
 			if( resource == nullptr )
 			{
 				return nullptr;
@@ -98,7 +98,7 @@ namespace Mengine
             {
 				throw;
             }
-#   endif
+#endif
 
 			T t = stdex::intrusive_static_cast<T>(resource);
 
@@ -112,7 +112,7 @@ namespace Mengine
         {
 			ResourceReferencePtr resource = this->getResourceReference( _name );
 
-#   ifdef _DEBUG
+#ifndef NDEBUG
 			if( resource == nullptr )
 			{
 				return nullptr;
@@ -140,17 +140,17 @@ namespace Mengine
 				return false;
 			}
 			
-#   ifdef _DEBUG
+#ifndef NDEBUG
 			if( resource == nullptr )
 			{
-				return nullptr;
+				return false;
 			}
 
 			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
 			{
 				throw;
 			}
-#   endif
+#endif
 
 			*_resource = stdex::intrusive_static_cast<T>(resource);
 

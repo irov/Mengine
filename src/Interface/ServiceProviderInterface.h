@@ -6,7 +6,7 @@
 #include "Core/Holder.h"
 #include "Core/Exception.h"
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 #	include <typeinfo>
 #endif
 
@@ -37,7 +37,7 @@ namespace Mengine
         {
             ServiceInterface * service = this->generateService( _generator );
 
-#   ifdef _DEBUG
+#ifndef NDEBUG
             const Char * serviceName = T::getStaticServiceID();
 
             if( service == nullptr )

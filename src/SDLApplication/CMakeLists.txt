@@ -85,7 +85,19 @@ if(MENGINE_PLATFORM_MAC OR MENGINE_PLATFORM_WIN32 OR MENGINE_PLATFORM_IOS)
 endif()
 
 if(MENGINE_PLATFORM_ANDROID)
-    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}SDL2${MENGINE_SO_SUFFIX})
+    add_library( SDL2
+            SHARED
+            IMPORTED )
+             
+    set_target_properties( # Specifies the target library.
+            SDL2
+            # Specifies the parameter you want to define.
+            PROPERTIES IMPORTED_LOCATION
+
+            # Provides the path to the library you want to import.
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}SDL2${MENGINE_SO_SUFFIX} )             
+
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} SDL2)
 endif()
 
 if(MENGINE_PLATFORM_MAC OR MENGINE_PLATFORM_WIN32 OR MENGINE_PLATFORM_ANDROID)

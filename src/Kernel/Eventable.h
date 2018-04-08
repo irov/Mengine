@@ -41,12 +41,12 @@ namespace Mengine
 
             EventReceiver * r = reciever.get();
             
-#   ifdef _DEBUG            
+#ifndef NDEBUG            
             if( dynamic_cast<T>(r) == nullptr )
             {
                 throw;
             }
-#   endif
+#endif
 
             T t = static_cast<T>(r);
 

@@ -184,7 +184,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	float ResourceAnimation::getSequenceDelay( uint32_t _index ) const
 	{
-#   ifdef _DEBUG
+#ifndef NDEBUG
         uint32_t sequenceCount = this->getSequenceCount();
 
         if( _index >= sequenceCount )
@@ -197,7 +197,7 @@ namespace Mengine
 
             return 0.f;
         }
-#   endif
+#endif
 
         const AnimationSequence & sequence = m_sequence[_index];
 
@@ -208,7 +208,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourceAnimation::getSequenceResourceName( uint32_t _index ) const
 	{
-#   ifdef _DEBUG
+#ifndef NDEBUG
         uint32_t sequenceCount = this->getSequenceCount();
 
         if( _index >= sequenceCount )
@@ -221,7 +221,7 @@ namespace Mengine
 
             return ConstString::none();
         }
-#   endif
+#endif
 
         const AnimationSequence & sequence = m_sequence[_index];
 
@@ -234,7 +234,7 @@ namespace Mengine
 	{
         uint32_t sequenceCount = this->getSequenceCount();
 
-#   ifdef _DEBUG
+#ifndef NDEBUG
         if( sequenceCount == 0 )
         {
             LOGGER_ERROR("ResourceAnimation::getLastFrameIndex: '%s' invalid get last frame on empty sequences"
@@ -243,7 +243,7 @@ namespace Mengine
 
             return 0;
         }
-#   endif
+#endif
 
 		uint32_t lastIndex = sequenceCount - 1;
 
@@ -262,7 +262,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	const ResourceImagePtr & ResourceAnimation::getSequenceResource( uint32_t _index ) const
 	{
-#   ifdef _DEBUG
+#ifndef NDEBUG
         uint32_t sequenceCount = this->getSequenceCount();
 
         if( _index >= sequenceCount )
@@ -275,7 +275,7 @@ namespace Mengine
 
             return ResourceImagePtr::none();
         }
-#   endif
+#endif
 
         const AnimationSequence & sequence = m_sequence[_index];
 

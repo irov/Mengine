@@ -868,7 +868,7 @@ namespace Mengine
 	{
 		(void)_tag;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 		LOGGER_ERROR("Dumping resources... %s"
 			, _tag.c_str()
 			);

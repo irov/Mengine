@@ -22,12 +22,12 @@ namespace Mengine
         {
             Node * node = this->createNode( _type );
 
-#   ifdef _DEBUG
+#ifndef NDEBUG
             if( dynamic_cast<T>(node) == nullptr )
             {
                 throw;
             }
-#   endif
+#endif
 
             T t = static_cast<T>(node);
 

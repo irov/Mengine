@@ -54,11 +54,11 @@ namespace Mengine
 
         STDEX_THREAD_GUARD_INIT;
 
-#	ifdef _DEBUG
+#ifndef NDEBUG
         FilePath m_relationPath;
 		FilePath m_folderPath;
 		FilePath m_filePath;
-#	endif
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<SDLFileInputStream> SDLFileInputStreamPtr;

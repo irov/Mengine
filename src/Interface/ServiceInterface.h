@@ -48,7 +48,7 @@ namespace Mengine
 
                 ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
 
-#ifdef _DEBUG
+#ifndef NDEBUG
                 if( serviceProvider == nullptr )
                 {
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service %s invalid get provider"
@@ -59,7 +59,7 @@ namespace Mengine
 
                 ServiceInterface * service = serviceProvider->getService( serviceName );
 
-#ifdef _DEBUG
+#ifndef NDEBUG
                 if( service == nullptr )
                 {
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service %s not found"

@@ -48,9 +48,9 @@ namespace Mengine
                 _eventable->registerEventReceiver( _event, receiver );
             }
 
-#   ifdef _DEBUG
+#ifndef NDEBUG
             _kwds.remove( _method );
-#   endif
+#endif
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>

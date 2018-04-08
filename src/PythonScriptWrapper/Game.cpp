@@ -251,7 +251,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Game::update()
 	{
-#   ifdef _DEBUG
+#ifndef NDEBUG
         const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
             ->getDebugInfo();
 
@@ -267,7 +267,7 @@ namespace Mengine
             EVENTABLE_METHOD( this, EVENT_GAME_OVER_FILLRATE )
                 ->onGameOverFillrate( sreenFillrate );
         }
-#   endif
+#endif
 
 		m_userEvents.insert( m_userEvents.end(), m_userEventsAdd.begin(), m_userEventsAdd.end() );
 		m_userEventsAdd.clear();
@@ -580,7 +580,7 @@ namespace Mengine
 
 		this->registerEventMethods_( module );
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 		bool is_debug = true;
 #else
 		bool is_debug = false;

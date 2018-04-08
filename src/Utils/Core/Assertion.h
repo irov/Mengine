@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 
 #include "Config/Char.h"
 

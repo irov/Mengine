@@ -198,7 +198,7 @@ namespace Mengine
 
         ColourValue_ARGB argb = _color.getAsARGB();
 
-        ConstString materialName;
+        EMaterial materialId;
 
         if( _font->getFontPremultiply() == false )
         {
@@ -206,8 +206,7 @@ namespace Mengine
             {
             case EMB_NORMAL:
                 {
-                    materialName = RENDERMATERIAL_SERVICE()
-                        ->getMaterialName( EM_TEXTURE_BLEND );
+                    materialId = EM_TEXTURE_BLEND;
                 }break;
             default:
                 break;
@@ -219,8 +218,7 @@ namespace Mengine
             {
             case EMB_NORMAL:
                 {
-                    materialName = RENDERMATERIAL_SERVICE()
-                        ->getMaterialName( EM_TEXTURE_BLEND_PREMULTIPLY );
+                    materialId = EM_TEXTURE_BLEND_PREMULTIPLY;
                 }break;
             default:
                 break;
@@ -285,7 +283,7 @@ namespace Mengine
                     line.advanceCharOffset( cd, charScale, offset );
 
                     RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-                        ->getMaterial( materialName, PT_TRIANGLELIST, 1, &cd.texture );
+                        ->getMaterial3( materialId, PT_TRIANGLELIST, 1, &cd.texture );
 
                     if( chunk.material == material )
                     {

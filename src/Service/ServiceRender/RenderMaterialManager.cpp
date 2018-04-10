@@ -65,45 +65,65 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::_initialize()
     {
-		m_defaultStages[EM_DEBUG] = STRINGIZE_STRING_LOCAL( "Debug" );
+		m_defaultStageNames[EM_DEBUG] = STRINGIZE_STRING_LOCAL( "Debug" );
 
-		m_defaultStages[EM_TEXTURE_SOLID] = STRINGIZE_STRING_LOCAL( "Texture_Solid" );
+		m_defaultStageNames[EM_TEXTURE_SOLID] = STRINGIZE_STRING_LOCAL( "Texture_Solid" );
 		
-		m_defaultStages[EM_TEXTURE_BLEND] = STRINGIZE_STRING_LOCAL( "Texture_Blend" );
-		m_defaultStages[EM_TEXTURE_BLEND_WC] = STRINGIZE_STRING_LOCAL( "Texture_Blend_WC" );
-		m_defaultStages[EM_TEXTURE_BLEND_WW] = STRINGIZE_STRING_LOCAL( "Texture_Blend_WW" );
-		m_defaultStages[EM_TEXTURE_BLEND_CW] = STRINGIZE_STRING_LOCAL( "Texture_Blend_CW" );
-		m_defaultStages[EM_TEXTURE_INTENSIVE] = STRINGIZE_STRING_LOCAL( "Texture_Intensive" );
-		m_defaultStages[EM_TEXTURE_MULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_Multiply" );
-		m_defaultStages[EM_TEXTURE_SCREEN] = STRINGIZE_STRING_LOCAL( "Texture_Screen" );
-        m_defaultStages[EM_TEXTURE_SCREEN_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_Screen_Premultiply" );
+		m_defaultStageNames[EM_TEXTURE_BLEND] = STRINGIZE_STRING_LOCAL( "Texture_Blend" );
+		m_defaultStageNames[EM_TEXTURE_BLEND_WC] = STRINGIZE_STRING_LOCAL( "Texture_Blend_WC" );
+		m_defaultStageNames[EM_TEXTURE_BLEND_WW] = STRINGIZE_STRING_LOCAL( "Texture_Blend_WW" );
+		m_defaultStageNames[EM_TEXTURE_BLEND_CW] = STRINGIZE_STRING_LOCAL( "Texture_Blend_CW" );
+		m_defaultStageNames[EM_TEXTURE_INTENSIVE] = STRINGIZE_STRING_LOCAL( "Texture_Intensive" );
+		m_defaultStageNames[EM_TEXTURE_MULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_Multiply" );
+        m_defaultStageNames[EM_TEXTURE_MULTIPLY_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_Multiply_Premultiply" );
+		m_defaultStageNames[EM_TEXTURE_SCREEN] = STRINGIZE_STRING_LOCAL( "Texture_Screen" );
+        m_defaultStageNames[EM_TEXTURE_SCREEN_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_Screen_Premultiply" );
 
-		m_defaultStages[EM_TEXTURE_BLEND_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_Blend_Premultiply" );
-		m_defaultStages[EM_TEXTURE_INTENSIVE_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_Intensive_Premultiply" );
+		m_defaultStageNames[EM_TEXTURE_BLEND_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_Blend_Premultiply" );
+		m_defaultStageNames[EM_TEXTURE_INTENSIVE_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_Intensive_Premultiply" );
 
-		m_defaultStages[EM_TEXTURE_BLEND_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Blend_OnlyColor" );
-		m_defaultStages[EM_TEXTURE_INTENSIVE_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Intensive_OnlyColor" );
-		m_defaultStages[EM_TEXTURE_MULTIPLY_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Multiply_OnlyColor" );
-		m_defaultStages[EM_TEXTURE_SCREEN_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Screen_OnlyColor" );
+		m_defaultStageNames[EM_TEXTURE_BLEND_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Blend_OnlyColor" );
+		m_defaultStageNames[EM_TEXTURE_INTENSIVE_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Intensive_OnlyColor" );
+		m_defaultStageNames[EM_TEXTURE_MULTIPLY_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Multiply_OnlyColor" );
+		m_defaultStageNames[EM_TEXTURE_SCREEN_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Screen_OnlyColor" );
 
-		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha" );
-		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_WC] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha_WC" );
-		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_WW] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha_WW" );
-		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_CW] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha_CW" );
-		m_defaultStages[EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_Intensive_ExternalAlpha" );
-		m_defaultStages[EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_Multiply_ExternalAlpha" );
-		m_defaultStages[EM_TEXTURE_SCREEN_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_Screen_ExternalAlpha" );
+		m_defaultStageNames[EM_TEXTURE_BLEND_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha" );
+		m_defaultStageNames[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_WC] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha_WC" );
+		m_defaultStageNames[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_WW] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha_WW" );
+		m_defaultStageNames[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_CW] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha_CW" );
+		m_defaultStageNames[EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_Intensive_ExternalAlpha" );
+		m_defaultStageNames[EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_Multiply_ExternalAlpha" );
+		m_defaultStageNames[EM_TEXTURE_SCREEN_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_Screen_ExternalAlpha" );
 
-		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha_OnlyColor" );
-		m_defaultStages[EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Intensive_ExternalAlpha_OnlyColor" );
-		m_defaultStages[EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Multiply_ExternalAlpha_OnlyColor" );
-		m_defaultStages[EM_TEXTURE_SCREEN_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Screen_ExternalAlpha_OnlyColor" );
+		m_defaultStageNames[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Blend_ExternalAlpha_OnlyColor" );
+		m_defaultStageNames[EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Intensive_ExternalAlpha_OnlyColor" );
+		m_defaultStageNames[EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Multiply_ExternalAlpha_OnlyColor" );
+		m_defaultStageNames[EM_TEXTURE_SCREEN_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( "Texture_Screen_ExternalAlpha_OnlyColor" );
 
-		m_defaultStages[EM_COLOR_SOLID] = STRINGIZE_STRING_LOCAL( "Color_Solid" );
-		m_defaultStages[EM_COLOR_BLEND] = STRINGIZE_STRING_LOCAL( "Color_Blend" );
-		m_defaultStages[EM_COLOR_INTENSIVE] = STRINGIZE_STRING_LOCAL( "Color_Intensive" );
-		m_defaultStages[EM_COLOR_MULTIPLY] = STRINGIZE_STRING_LOCAL( "Color_Multiply" );
-		m_defaultStages[EM_COLOR_SCREEN] = STRINGIZE_STRING_LOCAL( "Color_Screen" );
+        m_defaultStageNames[EM_TEXTURE_TRACKMATTE_BLEND] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatte_Blend" );
+        m_defaultStageNames[EM_TEXTURE_TRACKMATTE_BLEND_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatte_Blend_Premultiply" );
+        m_defaultStageNames[EM_TEXTURE_TRACKMATTE_INVERTED_BLEND] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatteInverted_Blend" );
+        m_defaultStageNames[EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatteInverted_Blend_Premultiply" );
+
+        m_defaultStageNames[EM_TEXTURE_ALPHAMASK_BLEND] = STRINGIZE_STRING_LOCAL( "Texture_AlphaMask_Blend" );
+        
+		m_defaultStageNames[EM_COLOR_SOLID] = STRINGIZE_STRING_LOCAL( "Color_Solid" );
+		m_defaultStageNames[EM_COLOR_BLEND] = STRINGIZE_STRING_LOCAL( "Color_Blend" );
+		m_defaultStageNames[EM_COLOR_INTENSIVE] = STRINGIZE_STRING_LOCAL( "Color_Intensive" );
+		m_defaultStageNames[EM_COLOR_MULTIPLY] = STRINGIZE_STRING_LOCAL( "Color_Multiply" );
+		m_defaultStageNames[EM_COLOR_SCREEN] = STRINGIZE_STRING_LOCAL( "Color_Screen" );
+
+        for( uint32_t i = 0; i != EM_MATERIAL_COUNT; ++i )
+        {
+            const ConstString & name = m_defaultStageNames[i];
+
+            m_defaultStagesEnum[name] = (EMaterial)i;
+        }
+
+        for( uint32_t i = 0; i != EM_MATERIAL_COUNT; ++i )
+        {
+            m_defaultStages[i] = nullptr;
+        }
 
 		uint32_t defaultTextureFilterMipmap = CONFIG_VALUE( "Engine", "DefaultTextureFilterMipmap", 0U );
 		uint32_t defaultTextureFilterMagnification = CONFIG_VALUE( "Engine", "DefaultTextureFilterMagnification", 2U );
@@ -488,6 +508,15 @@ namespace Mengine
 
 			m_materialStageIndexer.insert( std::make_pair( name, cache_stage ) );
 
+            TMapDefaultStagesName::const_iterator it_stage_found = m_defaultStagesEnum.find( name );
+
+            if( it_stage_found != m_defaultStagesEnum.end() )
+            {
+                EMaterial materialId = it_stage_found->second;
+
+                m_defaultStages[materialId] = cache_stage;
+            }
+
 			if( is_debug == true )
 			{
 				RenderMaterialInterfacePtr debugMaterial = 
@@ -655,18 +684,6 @@ namespace Mengine
 		m_defaultTextureFilterMipmap = _mipmap;
 		m_defaultTextureFilterMagnification = _magnification;
 		m_defaultTextureFilterMinification = _minification;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & RenderMaterialManager::getMaterialName( EMaterial _materialId ) const
-	{
-		if( _materialId >= EM_MATERIAL_COUNT )
-		{
-			return ConstString::none();
-		}
-
-		const ConstString & materialName = m_defaultStages[_materialId];
-
-		return materialName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_equalTextureStage( const RenderTextureStage & _src, const RenderTextureStage & _dst )
@@ -850,6 +867,53 @@ namespace Mengine
 
 		return material;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    RenderMaterialInterfacePtr RenderMaterialManager::getMaterial3( EMaterial _materialId
+        , EPrimitiveType _primitiveType
+        , uint32_t _textureCount
+        , const RenderTextureInterfacePtr * _textures )
+    {
+        const RenderMaterialStage * stage = m_defaultStages[_materialId];
+        const ConstString & materialName = m_defaultStageNames[_materialId];
+
+        uint32_t material_hash = this->makeMaterialHash( materialName, _textureCount, _textures );
+
+        uint32_t material_table_index = material_hash % MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE;
+
+        TVectorRenderMaterial & materials = m_materials[material_table_index];
+
+        for( TVectorRenderMaterial::iterator
+            it = materials.begin(),
+            it_end = materials.end();
+            it != it_end;
+            ++it )
+        {
+            RenderMaterial * material = *it;
+
+            uint32_t test_material_hash = material->getHash();
+
+            if( test_material_hash != material_hash )
+            {
+                continue;
+            }
+
+            if( s_equalMaterial( material, _primitiveType, _textureCount, _textures, stage ) == false )
+            {
+                continue;
+            }
+
+            return material;
+        }
+
+        RenderMaterial * material = m_factoryMaterial->createObject();
+
+        uint32_t id = this->makeMaterialIndex_();
+        material->initialize( materialName, id, material_hash, _primitiveType, _textureCount, _textures, stage );
+
+        materials.push_back( material );
+
+        return material;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMaterialManager::setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial )
 	{

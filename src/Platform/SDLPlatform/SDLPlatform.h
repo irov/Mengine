@@ -120,6 +120,9 @@ namespace Mengine
         bool processEvents();
 
     protected:
+        void setActive_( bool _active );
+
+    protected:
         Tags m_platformName;
 
         SDL_Window * m_window;

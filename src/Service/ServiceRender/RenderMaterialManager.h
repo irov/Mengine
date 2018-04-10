@@ -48,22 +48,24 @@ namespace Mengine
 		void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) override;
 
 	public:
-		const ConstString & getMaterialName( EMaterial _materialId ) const override;
-
-	public:
 		const RenderMaterialStage * cacheStage( const RenderMaterialStage & _other ) override;
 
 	public:
 		RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
 			, EPrimitiveType _primitiveType
 			, uint32_t _textureCount
-			, const RenderTextureInterfacePtr * _textures ) override;       
+			, const RenderTextureInterfacePtr * _textures ) override;
 
 		RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
 			, const RenderMaterialStage * _stage
 			, EPrimitiveType _primitiveType
 			, uint32_t _textureCount
 			, const RenderTextureInterfacePtr * _textures ) override;
+
+        RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
+            , EPrimitiveType _primitiveType
+            , uint32_t _textureCount
+            , const RenderTextureInterfacePtr * _textures ) override;
 
 	public:
 		void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) override;
@@ -124,6 +126,10 @@ namespace Mengine
 		typedef stdex::map<ConstString, RenderProgramInterfacePtr> TMapRenderPrograms;
 		TMapRenderPrograms m_programs;
 
-		ConstString m_defaultStages[EM_MATERIAL_COUNT];
+        const RenderMaterialStage * m_defaultStages[EM_MATERIAL_COUNT];
+		ConstString m_defaultStageNames[EM_MATERIAL_COUNT];
+
+        typedef stdex::map<ConstString, EMaterial> TMapDefaultStagesName;
+        TMapDefaultStagesName m_defaultStagesEnum;
     };
 }

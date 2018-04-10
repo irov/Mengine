@@ -183,19 +183,37 @@ namespace Mengine
 		textures[0] = m_resourceImage->getTexture();
 		textures[1] = m_resourceTrackMatteImage->getTexture();
 
+        bool premultiply = m_resourceImage->getPremultiply();
+
         RenderMaterialInterfacePtr material = nullptr;
 
         switch( m_trackMatteMode )
         {
         case ESTM_MODE_ALPHA:
             {
-                material = RENDERMATERIAL_SERVICE()
-                    ->getMaterial( STRINGIZE_STRING_LOCAL( "TrackMatte_Blend" ), PT_TRIANGLELIST, 2, textures );
+                if( premultiply == false )
+                {
+                    material = RENDERMATERIAL_SERVICE()
+                        ->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND, PT_TRIANGLELIST, 2, textures );
+                }
+                else
+                {
+                    material = RENDERMATERIAL_SERVICE()
+                        ->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
+                }
             }break;
         case ESTM_MODE_ALPHA_INVERTED:
             {
-                material = RENDERMATERIAL_SERVICE()
-                    ->getMaterial( STRINGIZE_STRING_LOCAL( "TrackMatteInverted_Blend" ), PT_TRIANGLELIST, 2, textures );
+                if( premultiply == false )
+                {
+                    material = RENDERMATERIAL_SERVICE()
+                        ->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND, PT_TRIANGLELIST, 2, textures );
+                }
+                else
+                {
+                    material = RENDERMATERIAL_SERVICE()
+                        ->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
+                }
             }break;
         default:
             {

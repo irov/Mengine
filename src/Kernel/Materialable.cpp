@@ -50,11 +50,8 @@ namespace Mengine
                 }break;
             }
 
-            const ConstString & materialName = RENDERMATERIAL_SERVICE()
-                ->getMaterialName( materialId );
-
             RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-                ->getMaterial( materialName, PT_TRIANGLELIST, 0, nullptr );
+                ->getMaterial3( materialId, PT_TRIANGLELIST, 0, nullptr );
 
             return material;
         }
@@ -74,407 +71,413 @@ namespace Mengine
 				premultiply = _resourceImage->getPremultiply();
 			}
 			else
-			{ 
+			{
 				textures[0] = nullptr;
 				textures[1] = nullptr;
 			}
 
-			ConstString materialName;
+            if( _materialName.empty() == false )
+            {
+                if( textures[0] != nullptr )
+                {
+                    texturesNum = 1;
+                }
+                else if( textures[1] != nullptr )
+                {
+                    texturesNum = 2;
+                }
 
-			if( _materialName.empty() == true )
-			{
-				EMaterial materialId = EM_DEBUG;
+                RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
+                    ->getMaterial( _materialName, PT_TRIANGLELIST, texturesNum, textures );
 
-				if( textures[1] != nullptr )
-				{
-					texturesNum = 2;
+                return material;
+            }
 
-					switch( _blendMode )
-					{
-					case EMB_NORMAL:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA_ONLYCOLOR;
-							}
-							else
-							{
-								materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA;
-							}
-						}break;
-					case EMB_ADD:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA_ONLYCOLOR;
-							}
-							else
-							{
-								materialId = EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA;
-							}
-						}break;
-					case EMB_SCREEN:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_SCREEN_EXTERNAL_ALPHA_ONLYCOLOR;
-							}
-							else
-							{
-								materialId = EM_TEXTURE_SCREEN_EXTERNAL_ALPHA;
-							}
-						}
-					case EMB_MULTIPLY:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA_ONLYCOLOR;
-							}
-							else
-							{
-								materialId = EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA;
-							}
-						}
-					default:
-						break;
-					}
-				}
-				else if( textures[0] != nullptr )
-				{
-					texturesNum = 1;
+            EMaterial materialId = EM_DEBUG;
 
-					switch( _blendMode )
-					{
-					case EMB_NORMAL:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_BLEND_ONLYCOLOR;
-							}
-							else
-							{
-								bool isAlpha = true;
+            if( textures[1] != nullptr )
+            {
+                texturesNum = 2;
 
-								if( _resourceImage != nullptr )
-								{
-									isAlpha = _resourceImage->hasAlpha();
-								}
+                switch( _blendMode )
+                {
+                case EMB_NORMAL:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA;
+                        }
+                    }break;
+                case EMB_ADD:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            materialId = EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA;
+                        }
+                    }break;
+                case EMB_SCREEN:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_SCREEN_EXTERNAL_ALPHA_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            materialId = EM_TEXTURE_SCREEN_EXTERNAL_ALPHA;
+                        }
+                    }
+                case EMB_MULTIPLY:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            materialId = EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA;
+                        }
+                    }
+                default:
+                    break;
+                }
+            }
+            else if( textures[0] != nullptr )
+            {
+                texturesNum = 1;
 
-								if( isAlpha == true || _solid == false )
-								{
-									if( premultiply == false )
-									{
-										materialId = EM_TEXTURE_BLEND;
-									}
-									else
-									{
-										materialId = EM_TEXTURE_BLEND_PREMULTIPLY;
-									}
-								}
-								else
-								{
-									materialId = EM_TEXTURE_SOLID;
-								}
-							}
-						}break;
-					case EMB_ADD:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_INTENSIVE_ONLYCOLOR;
-							}
-							else
-							{
-								if( premultiply == false )
-								{
-									materialId = EM_TEXTURE_INTENSIVE;
-								}
-								else
-								{
-									materialId = EM_TEXTURE_INTENSIVE_PREMULTIPLY;
-								}
-							}
-						}break;
-					case EMB_SCREEN:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_SCREEN_ONLYCOLOR;
-							}
-							else
-							{
+                switch( _blendMode )
+                {
+                case EMB_NORMAL:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_BLEND_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            bool isAlpha = true;
+
+                            if( _resourceImage != nullptr )
+                            {
+                                isAlpha = _resourceImage->hasAlpha();
+                            }
+
+                            if( isAlpha == true || _solid == false )
+                            {
                                 if( premultiply == false )
                                 {
-                                    materialId = EM_TEXTURE_SCREEN;
+                                    materialId = EM_TEXTURE_BLEND;
                                 }
                                 else
                                 {
-                                    materialId = EM_TEXTURE_SCREEN_PREMULTIPLY;
+                                    materialId = EM_TEXTURE_BLEND_PREMULTIPLY;
                                 }
-							}
-						}break;
-					case EMB_MULTIPLY:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_MULTIPLY_ONLYCOLOR;
-							}
-							else
-							{
-								materialId = EM_TEXTURE_MULTIPLY;
-							}
-						}break;
-					}
-				}
-				else
-				{
-					texturesNum = 0;
+                            }
+                            else
+                            {
+                                materialId = EM_TEXTURE_SOLID;
+                            }
+                        }
+                    }break;
+                case EMB_ADD:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_INTENSIVE_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            if( premultiply == false )
+                            {
+                                materialId = EM_TEXTURE_INTENSIVE;
+                            }
+                            else
+                            {
+                                materialId = EM_TEXTURE_INTENSIVE_PREMULTIPLY;
+                            }
+                        }
+                    }break;
+                case EMB_SCREEN:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_SCREEN_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            if( premultiply == false )
+                            {
+                                materialId = EM_TEXTURE_SCREEN;
+                            }
+                            else
+                            {
+                                materialId = EM_TEXTURE_SCREEN_PREMULTIPLY;
+                            }
+                        }
+                    }break;
+                case EMB_MULTIPLY:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_MULTIPLY_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            if( premultiply == false )
+                            {
+                                materialId = EM_TEXTURE_MULTIPLY;
+                            }
+                            else
+                            {
+                                materialId = EM_TEXTURE_MULTIPLY_PREMULTIPLY;
+                            }
+                        }
+                    }break;
+                }
+            }
+            else
+            {
+                texturesNum = 0;
 
-					switch( _blendMode )
-					{
-					case EMB_NORMAL:
-						{
-							if( _resourceImage != nullptr )
-							{
-								const ColourValue & colour = _resourceImage->getColor();
+                switch( _blendMode )
+                {
+                case EMB_NORMAL:
+                    {
+                        if( _resourceImage != nullptr )
+                        {
+                            const ColourValue & colour = _resourceImage->getColor();
 
-								if( colour.isSolid() == false || _solid == false )
-								{
-									materialId = EM_COLOR_BLEND;
-								}
-								else
-								{
-									materialId = EM_COLOR_SOLID;
-								}
-							}
-							else
-							{
-								if( _solid == false )
-								{
-									materialId = EM_COLOR_BLEND;
-								}
-								else
-								{
-									materialId = EM_COLOR_SOLID;
-								}
-							}
-						}break;
-					case EMB_ADD:
-						{
-							materialId = EM_COLOR_INTENSIVE;
-						}break;
-					case EMB_SCREEN:
-						{
-							materialId = EM_COLOR_SCREEN;
-						}break;
-					case EMB_MULTIPLY:
-						{
-							materialId = EM_COLOR_MULTIPLY;
-						}break;
-					}
-				}
-
-				materialName = RENDERMATERIAL_SERVICE()
-					->getMaterialName( materialId );
-			}
-			else
-			{
-				if( textures[0] != nullptr )
-				{
-					texturesNum = 1;
-				}
-				else if( textures[1] != nullptr )
-				{
-					texturesNum = 2;
-				}
-
-				materialName = _materialName;
-			}
+                            if( colour.isSolid() == false || _solid == false )
+                            {
+                                materialId = EM_COLOR_BLEND;
+                            }
+                            else
+                            {
+                                materialId = EM_COLOR_SOLID;
+                            }
+                        }
+                        else
+                        {
+                            if( _solid == false )
+                            {
+                                materialId = EM_COLOR_BLEND;
+                            }
+                            else
+                            {
+                                materialId = EM_COLOR_SOLID;
+                            }
+                        }
+                    }break;
+                case EMB_ADD:
+                    {
+                        materialId = EM_COLOR_INTENSIVE;
+                    }break;
+                case EMB_SCREEN:
+                    {
+                        materialId = EM_COLOR_SCREEN;
+                    }break;
+                case EMB_MULTIPLY:
+                    {
+                        materialId = EM_COLOR_MULTIPLY;
+                    }break;
+                }
+            }
 
 			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-				->getMaterial( materialName, PT_TRIANGLELIST, texturesNum, textures );
+				->getMaterial3( materialId, PT_TRIANGLELIST, texturesNum, textures );
 
 			return material;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		RenderMaterialInterfacePtr makeTextureMaterial( const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _premultiply, bool _disableTextureColor, bool _solid )
 		{
-			ConstString materialName;
+            if( _materialName.empty() == false )
+            {
+                RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
+                    ->getMaterial( _materialName, PT_TRIANGLELIST, _textureCount, _textures );
 
-			if( _materialName.empty() == true )
-			{
-				EMaterial materialId = EM_DEBUG;
+                return material;
+            }
 
-				if( _textureCount == 2 )
-				{
-					switch( _blendMode )
-					{
-					case EMB_NORMAL:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA_ONLYCOLOR;
-							}
-							else
-							{
-								materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA;
-							}
-						}break;
-					case EMB_ADD:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA_ONLYCOLOR;
-							}
-							else
-							{
-								materialId = EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA;
-							}
-						}break;
-					case EMB_SCREEN:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_SCREEN_EXTERNAL_ALPHA_ONLYCOLOR;
-							}
-							else
-							{
-								materialId = EM_TEXTURE_SCREEN_EXTERNAL_ALPHA;
-							}
-						}
-					case EMB_MULTIPLY:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA_ONLYCOLOR;
-							}
-							else
-							{
-								materialId = EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA;
-							}
-						}
-					default:
-						break;
-					}
-				}
-				else if( _textureCount == 1 )
-				{
-					switch( _blendMode )
-					{
-					case EMB_NORMAL:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_BLEND_ONLYCOLOR;
-							}
-							else
-							{
-								if( _solid == false )
-								{
-									if( _premultiply == false )
-									{
-										materialId = EM_TEXTURE_BLEND;
-									}
-									else
-									{
-										materialId = EM_TEXTURE_BLEND_PREMULTIPLY;
-									}
-								}
-								else
-								{
-									materialId = EM_TEXTURE_SOLID;
-								}
-							}
-						}break;
-					case EMB_ADD:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_INTENSIVE_ONLYCOLOR;
-							}
-							else
-							{
-								if( _premultiply == false )
-								{
-									materialId = EM_TEXTURE_INTENSIVE;
-								}
-								else
-								{
-									materialId = EM_TEXTURE_INTENSIVE_PREMULTIPLY;
-								}
-							}
-						}break;
-					case EMB_SCREEN:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_SCREEN_ONLYCOLOR;
-							}
-							else
-							{
+            EMaterial materialId = EM_DEBUG;
+
+            if( _textureCount == 2 )
+            {
+                switch( _blendMode )
+                {
+                case EMB_NORMAL:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA;
+                        }
+                    }break;
+                case EMB_ADD:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            materialId = EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA;
+                        }
+                    }break;
+                case EMB_SCREEN:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_SCREEN_EXTERNAL_ALPHA_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            materialId = EM_TEXTURE_SCREEN_EXTERNAL_ALPHA;
+                        }
+                    }
+                case EMB_MULTIPLY:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            materialId = EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA;
+                        }
+                    }
+                default:
+                    break;
+                }
+            }
+            else if( _textureCount == 1 )
+            {
+                switch( _blendMode )
+                {
+                case EMB_NORMAL:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_BLEND_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            if( _solid == false )
+                            {
                                 if( _premultiply == false )
                                 {
-                                    materialId = EM_TEXTURE_SCREEN;
+                                    materialId = EM_TEXTURE_BLEND;
                                 }
                                 else
                                 {
-                                    materialId = EM_TEXTURE_SCREEN_PREMULTIPLY;
+                                    materialId = EM_TEXTURE_BLEND_PREMULTIPLY;
                                 }
-							}
-						}break;
-					case EMB_MULTIPLY:
-						{
-							if( _disableTextureColor == true )
-							{
-								materialId = EM_TEXTURE_MULTIPLY_ONLYCOLOR;
-							}
-							else
-							{
-								materialId = EM_TEXTURE_MULTIPLY;
-							}
-						}break;
-					}
-				}
-				else
-				{
-					switch( _blendMode )
-					{
-					case EMB_NORMAL:
-						{
-							if( _solid == false )
-							{
-								materialId = EM_COLOR_BLEND;
-							}
-							else
-							{
-								materialId = EM_COLOR_SOLID;
-							}
-						}break;
-					case EMB_ADD:
-						{
-							materialId = EM_COLOR_INTENSIVE;
-						}break;
-					case EMB_SCREEN:
-						{
-							materialId = EM_COLOR_SCREEN;
-						}break;
-					case EMB_MULTIPLY:
-						{
-							materialId = EM_COLOR_MULTIPLY;
-						}break;
-					}
-				}
+                            }
+                            else
+                            {
+                                materialId = EM_TEXTURE_SOLID;
+                            }
+                        }
+                    }break;
+                case EMB_ADD:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_INTENSIVE_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            if( _premultiply == false )
+                            {
+                                materialId = EM_TEXTURE_INTENSIVE;
+                            }
+                            else
+                            {
+                                materialId = EM_TEXTURE_INTENSIVE_PREMULTIPLY;
+                            }
+                        }
+                    }break;
+                case EMB_SCREEN:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_SCREEN_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            if( _premultiply == false )
+                            {
+                                materialId = EM_TEXTURE_SCREEN;
+                            }
+                            else
+                            {
+                                materialId = EM_TEXTURE_SCREEN_PREMULTIPLY;
+                            }
+                        }
+                    }break;
+                case EMB_MULTIPLY:
+                    {
+                        if( _disableTextureColor == true )
+                        {
+                            materialId = EM_TEXTURE_MULTIPLY_ONLYCOLOR;
+                        }
+                        else
+                        {
+                            if( _premultiply == false )
+                            {
+                                materialId = EM_TEXTURE_MULTIPLY;
+                            }
+                            else
+                            {
+                                materialId = EM_TEXTURE_MULTIPLY_PREMULTIPLY;
+                            }
+                        }
+                    }break;
+                }
+            }
+            else
+            {
+                switch( _blendMode )
+                {
+                case EMB_NORMAL:
+                    {
+                        if( _solid == false )
+                        {
+                            materialId = EM_COLOR_BLEND;
+                        }
+                        else
+                        {
+                            materialId = EM_COLOR_SOLID;
+                        }
+                    }break;
+                case EMB_ADD:
+                    {
+                        materialId = EM_COLOR_INTENSIVE;
+                    }break;
+                case EMB_SCREEN:
+                    {
+                        materialId = EM_COLOR_SCREEN;
+                    }break;
+                case EMB_MULTIPLY:
+                    {
+                        materialId = EM_COLOR_MULTIPLY;
+                    }break;
+                }
+            }
 
-				materialName = RENDERMATERIAL_SERVICE()
-					->getMaterialName( materialId );
-			}
-			else
-			{
-				materialName = _materialName;
-			}
-
-			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-				->getMaterial( materialName, PT_TRIANGLELIST, _textureCount, _textures );
+            RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
+                ->getMaterial3( materialId, PT_TRIANGLELIST, _textureCount, _textures );
 
 			return material;
 		}

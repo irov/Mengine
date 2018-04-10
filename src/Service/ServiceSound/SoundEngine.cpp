@@ -700,7 +700,9 @@ namespace Mengine
 		++it )
 		{
 			const SoundListenerStopDesc & desc = *it;
-			desc.listener->onSoundStop( desc.id );
+
+            SoundListenerInterfacePtr listener = desc.listener;
+			listener->onSoundStop( desc.id );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -822,7 +824,8 @@ namespace Mengine
 
 				if( source->listener != nullptr )
 				{
-					source->listener->onSoundPause( source->soundId );
+                    SoundListenerInterfacePtr listener = source->listener;					
+                    listener->onSoundPause( source->soundId );
 				}
 			}
 		default:
@@ -882,8 +885,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::stopEmitter( uint32_t _emitterId )
 	{
-        SoundSourceDesc * source;
-        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
+        SoundSourceDesc * desc;
+        if( this->getSoundSourceDesc_( _emitterId, &desc ) == false )
         {
 			LOGGER_ERROR("SoundEngine:stop not found emitter id %d"
 				, _emitterId
@@ -892,27 +895,30 @@ namespace Mengine
 			return false;
 		}
         
-		switch( source->state )
+		switch( desc->state )
 		{
 		case ESS_PLAY:
 		case ESS_PAUSE:
 			{
-				source->state = ESS_STOP;
+				desc->state = ESS_STOP;
 
-				if( source->turn == true )
+				if( desc->turn == true )
 				{
-					this->stopSoundBufferUpdate_( source );
+					this->stopSoundBufferUpdate_( desc );
 				}
 
-                if( source->source != nullptr )
+                if( desc->source != nullptr )
                 {
-                    source->source->stop();
-                    source->timing = source->source->getPosition();
+                    SoundSourceInterfacePtr source = desc->source;
+                    
+                    source->stop();
+                    desc->timing = source->getPosition();
                 }
 
-				if( source->listener != nullptr )
+				if( desc->listener != nullptr )
 				{
-					source->listener->onSoundStop( source->soundId );
+                    SoundListenerInterfacePtr listener = desc->listener;
+                    listener->onSoundStop( desc->soundId );
 				}
 			}
 		default:

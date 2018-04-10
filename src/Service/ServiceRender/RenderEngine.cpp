@@ -1270,7 +1270,7 @@ namespace Mengine
             if( m_iterateRenderObjects == m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
             {
                 RenderMaterialPtr new_material = RENDERMATERIAL_SERVICE()
-                    ->getMaterial( STRINGIZE_STRING_LOCAL( "Color_Blend" )
+                    ->getMaterial3( EM_COLOR_BLEND
                         , ro_material->getPrimitiveType()
                         , 0
                         , nullptr
@@ -1288,7 +1288,7 @@ namespace Mengine
         if( m_debugRedAlertMode == true && _debug == false )
         {
             RenderMaterialInterfacePtr new_material = RENDERMATERIAL_SERVICE()
-                ->getMaterial( STRINGIZE_STRING_LOCAL( "Color_Blend" )
+                ->getMaterial3( EM_COLOR_BLEND
                     , ro_material->getPrimitiveType()
                     , 0
                     , nullptr

@@ -159,11 +159,8 @@ namespace Mengine
 				textureCount = 0;
 			}
 
-			const ConstString & materialName = RENDERMATERIAL_SERVICE()
-				->getMaterialName( materialId );
-
 			edge.material = RENDERMATERIAL_SERVICE()
-				->getMaterial( materialName, PT_TRIANGLELIST, textureCount, textures );
+				->getMaterial3( materialId, PT_TRIANGLELIST, textureCount, textures );
 		}
 
 		this->invalidateVertices();

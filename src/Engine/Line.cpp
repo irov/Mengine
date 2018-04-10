@@ -93,7 +93,7 @@ namespace Mengine
 		}
 
 		RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-			->getMaterial( STRINGIZE_STRING_LOCAL( "Debug" ), PT_TRIANGLELIST, 0, nullptr );
+			->getMaterial3( EM_DEBUG, PT_TRIANGLELIST, 0, nullptr );
 
 		_renderService
 			->addRenderQuad( _state, material, m_vertices, 4, nullptr, false );

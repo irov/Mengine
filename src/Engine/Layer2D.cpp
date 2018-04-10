@@ -230,7 +230,7 @@ namespace Mengine
         texures[1] = renderTargetTextureMask;
 
         RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-            ->getMaterial( STRINGIZE_STRING_LOCAL( "AlphaMask_Blend" ), PT_TRIANGLELIST, 2, texures );
+            ->getMaterial3( EM_TEXTURE_ALPHAMASK_BLEND, PT_TRIANGLELIST, 2, texures );
 
         if( material == nullptr )
         {

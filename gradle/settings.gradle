@@ -1,0 +1,3 @@
+include ':app'
+include ':OpenAL32'
+include ':SDL2'

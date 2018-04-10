@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+
+android {
+    buildToolsVersion "27.0.3"
+    compileSdkVersion 26
+
+    defaultConfig {
+        applicationId "org.Mengine.Build"
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+        
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++14 -frtti -fexceptions"
+                arguments "-DANDROID_PLATFORM=android-15",
+                        "-DANDROID_ARM_NEON=TRUE",
+                        "-DANDROID_ABI=armeabi-v7a",
+                        "-DANDROID_STL=c++_shared",
+                        "-DANDROID_TOOLCHAIN=clang",
+                        "-DCMAKE_BUILD_TYPE=Debug",
+                        "-DMENGINE_LIB_DIR=build_android_sdl_Debug"
+            }
+        }
+    }
+    
+    externalNativeBuild {
+        cmake {
+            path "../../CMake/Android_SDL/CMakeLists.txt"
+        }
+    }
+    
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src', '../../dependencies/SDL2/android-project/app/src/main/java/']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['data']
+        }
+    }
+    
+    aaptOptions {
+        noCompress 'pak', 'bin'
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    
+    compile project(':SDL2')
+    compile project(':OpenAL32')
+}

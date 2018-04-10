@@ -1,0 +1,5 @@
+*.iml
+/data
+/build
+/captures
+.externalNativeBuild

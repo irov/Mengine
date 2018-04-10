@@ -1,0 +1,50 @@
+apply plugin: 'com.android.library'
+
+android {    
+    buildToolsVersion "27.0.3"
+    compileSdkVersion 26
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+        
+        externalNativeBuild {
+            cmake {
+                arguments "-DLIBTYPE=SHARED",
+                        "-DALSOFT_NO_UID_DEFS:BOOLEAN=OFF",
+                        "-DALSOFT_DLOPEN:BOOLEAN=OFF",
+                        "-DALSOFT_WERROR:BOOLEAN=OFF",
+                        "-DALSOFT_UTILS:BOOLEAN=OFF",
+                        "-DALSOFT_NO_CONFIG_UTIL:BOOLEAN=OFF",
+                        "-DALSOFT_EXAMPLES:BOOLEAN=OFF",
+                        "-DALSOFT_TESTS:BOOLEAN=OFF",
+                        "-DALSOFT_CONFIG:BOOLEAN=OFF",
+                        "-DALSOFT_HRTF_DEFS:BOOLEAN=OFF",
+                        "-DALSOFT_INSTALL:BOOLEAN=OFF"
+            }
+        }        
+    }
+    
+    externalNativeBuild {
+        cmake {
+            path "../../dependencies/openal-soft/CMakeLists.txt"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}

@@ -1168,7 +1168,7 @@
 #define _GNU_SOURCE 1
 
 /* This must be defined on some systems to enable large file support. */
-#define _LARGEFILE_SOURCE 0
+/* #undef _LARGEFILE_SOURCE */
 
 /* This must be defined on AIX systems to enable large file support. */
 /* #undef _LARGE_FILES */

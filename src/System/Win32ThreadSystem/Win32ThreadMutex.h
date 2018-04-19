@@ -30,7 +30,7 @@ namespace Mengine
     protected:
         CRITICAL_SECTION m_cs;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
         const char * m_file;
         uint32_t m_line;
 #endif

@@ -10,8 +10,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TextLine::TextLine( float _charOffset )
-        : m_length( 0.f )
+    TextLine::TextLine( uint32_t _layout, float _charOffset )
+        : m_layout( _layout )
+        , m_length( 0.f )
         , m_charOffset( _charOffset )
         , m_offset( 0.f )
         , m_invalidateTextLine( true )
@@ -22,9 +23,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextLine::initialize( uint32_t _layout, const TextFontInterfacePtr & _font, const U32String & _text )
+    bool TextLine::initialize( uint32_t _fontId, const TextFontInterfacePtr & _font, const U32String & _text )
     {
-        U32String::size_type text_size = _text.length();
+        U32String::size_type text_size = _text.size();
         m_charsData.reserve( text_size );
 
         bool successful = true;
@@ -35,7 +36,7 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            GlyphCode glyphChar = *it;
+            GlyphCode glyphChar = (GlyphCode)*it;
 
             U32String::const_iterator it_kerning = it;
             std::advance( it_kerning, 1 );
@@ -43,7 +44,7 @@ namespace Mengine
             GlyphCode glyphCharNext = (it_kerning != _text.end()) ? *it_kerning : 0;
 
             Glyph glyph;
-            if( _font->getGlyph( _layout, glyphChar, glyphCharNext, &glyph ) == false )
+            if( _font->getGlyph( m_layout, glyphChar, glyphCharNext, &glyph ) == false )
             {
                 LOGGER_ERROR("TextLine for fontName %s invalid glyph %u next %u"
                     , _font->getName().c_str()
@@ -67,9 +68,10 @@ namespace Mengine
             charData.offset = glyph.offset;
             charData.size = glyph.size;
             charData.uv = glyph.uv;
+            charData.fontId = _fontId;
             charData.texture = glyph.texture;
 
-            m_charsData.push_back( charData );
+            m_charsData.emplace_back( charData );
 
             m_length += charData.advance + m_charOffset;
         }

@@ -33,7 +33,7 @@ namespace Mengine
 		mx.follower.follow( _value );
 		mx.follower.setSpeed( 0.0005f );
 
-		m_mixer.push_back( mx );
+		m_mixer.emplace_back( mx );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float MixerVolume::getVolume( const ConstString & _type ) const

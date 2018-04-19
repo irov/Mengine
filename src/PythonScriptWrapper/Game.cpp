@@ -838,7 +838,7 @@ namespace Mengine
 		ev.id = _id;
 		ev.params = _params;
 
-		m_userEvents.push_back( ev );
+		m_userEvents.emplace_back( ev );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setCursorMode( bool _mode )

@@ -49,7 +49,7 @@ namespace Mengine
             desc.event = _event;
             desc.receiver = _receiver;
 
-            m_receivers.push_back( desc );
+            m_receivers.emplace_back( desc );
 
             m_flag |= (1ULL << _event);
         }

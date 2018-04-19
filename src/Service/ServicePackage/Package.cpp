@@ -679,7 +679,7 @@ namespace Mengine
 		desc.platform = _platform;
 		desc.ignored = _ignored;
 
-		m_resourcesDesc.push_back( desc );
+		m_resourcesDesc.emplace_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Package::addTextPath_( const FilePath & _path, const Tags & _platform )
@@ -688,7 +688,7 @@ namespace Mengine
 		desc.path = _path;
 		desc.platform = _platform;
 
-		m_pathTexts.push_back( desc );
+		m_pathTexts.emplace_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Package::addScriptPak_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform )
@@ -700,7 +700,7 @@ namespace Mengine
 		pak.finalizer = _finalizer;
 		pak.platform = _platform;
 
-		m_scriptsPackages.push_back( pak );
+		m_scriptsPackages.emplace_back( pak );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Package::addFontPath_( const FilePath & _path, const Tags & _platform )
@@ -709,7 +709,7 @@ namespace Mengine
 		desc.path = _path;
 		desc.platform = _platform;
 
-		m_pathFonts.push_back( desc );
+		m_pathFonts.emplace_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Package::addData_( const ConstString & _name, const FilePath & _path, const Tags & _platform )
@@ -719,7 +719,7 @@ namespace Mengine
 		desc.path = _path;
 		desc.platform = _platform;
 
-		m_datas.push_back( desc );
+		m_datas.emplace_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Package::addMaterial_( const FilePath & _path, const Tags & _platform )
@@ -728,6 +728,6 @@ namespace Mengine
 		desc.path = _path;
 		desc.platform = _platform;
 
-		m_pathMaterials.push_back( desc );
+		m_pathMaterials.emplace_back( desc );
 	}
 }

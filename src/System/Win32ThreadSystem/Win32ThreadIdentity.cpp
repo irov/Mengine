@@ -12,7 +12,7 @@ namespace Mengine
         , m_task(nullptr)
 		, m_complete(true)
 		, m_exit(false)
-#ifdef _DEBUG
+#ifndef NDEBUG
         , m_file( nullptr )
         , m_line( 0 )
 #endif
@@ -23,13 +23,13 @@ namespace Mengine
 	{
 		Win32ThreadIdentity * thread = static_cast<Win32ThreadIdentity*>(_userData);
 
-#ifndef _DEBUG
+#ifdef NDEBUG
 		try
 #endif
 		{
 			thread->main();
 		}
-#	ifndef _DEBUG
+#ifdef NDEBUG
 		catch( const std::exception & ex )
 		{
             LOGGER_CRITICAL( "Win32ThreadIdentity std::exception exception '%s'"
@@ -53,7 +53,7 @@ namespace Mengine
 
 		m_mutex = _mutex;
 		
-#ifdef _DEBUG
+#ifndef NDEBUG
 		m_file = _file;
 		m_line = _line;
 #endif

@@ -125,7 +125,7 @@ namespace Mengine
 			return nullptr;
 		}
 
-		m_aois.push_back( aoi );
+		m_aois.emplace_back( aoi );
 
 		return aoi;
 	}

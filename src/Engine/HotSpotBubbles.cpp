@@ -29,7 +29,7 @@ namespace Mengine
 		b.ellipse = _ellipse;
 		b.outward = _outward;
 
-		m_bubbles.push_back( b );
+		m_bubbles.emplace_back( b );
 
 		return new_id;
 	}

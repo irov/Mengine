@@ -89,7 +89,7 @@ struct resource_provider_t
     CHAR movie_name[128];
 };
 //////////////////////////////////////////////////////////////////////////
-static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_voidptr_t _data )
+static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voidptrptr_t _rd, ae_voidptr_t _data )
 {
     resource_provider_t * provider = (resource_provider_t *)_data;
 
@@ -109,12 +109,24 @@ static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_
             );
 #endif
 
-            fprintf( f, "       <File Path = \"Movies2/%s/%s\" MaxSize = \"%u;%u\"/>\n"
-                , provider->movie_name
-                , resource_image->path
-                , (uint32_t)resource_image->trim_width
-                , (uint32_t)resource_image->trim_height
-            );
+            if( strstr( resource_image->name, ".ptc_" ) == nullptr )
+            {
+                fprintf( f, "       <File Path = \"Movies2/%s/%s\" MaxSize = \"%u;%u\"/>\n"
+                    , provider->movie_name
+                    , resource_image->path
+                    , (uint32_t)resource_image->trim_width
+                    , (uint32_t)resource_image->trim_height
+                );
+            }
+            else
+            {
+                fprintf( f, "       <File Path = \"Movies2/%s/%s\" NoConvert = \"1\" NoAtlas = \"1\" MaxSize = \"%u;%u\"/>\n"
+                    , provider->movie_name
+                    , resource_image->path
+                    , (uint32_t)resource_image->trim_width
+                    , (uint32_t)resource_image->trim_height
+                );
+            }
 
             fprintf( f, "   </Resource>\n" );
         }break;
@@ -191,7 +203,8 @@ static ae_voidptr_t my_resource_provider( const aeMovieResource * _resource, ae_
         }break;
     }
 
-    return AE_NULL;
+    *_rd = AE_NULL;
+    return AE_TRUE;
 }
 //////////////////////////////////////////////////////////////////////////
 static void my_resource_deleter( aeMovieResourceTypeEnum _type, ae_voidptr_t _data, ae_voidptr_t _ud )

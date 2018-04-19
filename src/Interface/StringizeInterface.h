@@ -23,7 +23,7 @@ namespace Mengine
 
     public:
         virtual void stringizeInternal( const Char * _str, ConstString::size_type _size, ConstString & _cstr ) = 0;
-        virtual bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) = 0;
+        virtual bool stringizeExternal( const ConstStringHolderPtr & _holder, ConstString & _cstr ) = 0;
     };
 
 #   define STRINGIZE_SERVICE()\
@@ -58,6 +58,22 @@ namespace Mengine
         inline ConstString stringizeString( const String & _value )
         {
             ConstString cstr = stringizeStringSize( _value.c_str(), _value.size() );
+
+            return cstr;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        inline ConstString stringizeString( const WString & _value )
+        {
+            String buffer_value( _value.begin(), _value.end() );
+            ConstString cstr = stringizeStringSize( buffer_value.c_str(), buffer_value.size() );
+
+            return cstr;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        inline ConstString stringizeString( const U32String & _value )
+        {
+            String buffer_value( _value.begin(), _value.end() );
+            ConstString cstr = stringizeStringSize( buffer_value.c_str(), buffer_value.size() );
 
             return cstr;
         }

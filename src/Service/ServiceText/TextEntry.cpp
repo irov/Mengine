@@ -18,7 +18,6 @@ namespace Mengine
 		, const String & _text
 		, const ConstString & _fontName
 		, const ColourValue & _colorFont
-		, const ColourValue & _colorOutline
 		, float _lineOffset
 		, float _charOffset
 		, float _maxLength
@@ -33,7 +32,6 @@ namespace Mengine
 		m_fontName = _fontName;
 
 		m_colorFont = _colorFont;
-		m_colorOutline = _colorOutline;
 
 		m_lineOffset = _lineOffset;
 		m_charOffset = _charOffset;
@@ -65,11 +63,6 @@ namespace Mengine
 	const ColourValue & TextEntry::getColorFont() const
 	{
 		return m_colorFont;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ColourValue & TextEntry::getColorOutline() const
-	{
-		return m_colorOutline;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextEntry::getLineOffset() const

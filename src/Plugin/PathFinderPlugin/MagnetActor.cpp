@@ -79,7 +79,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void MagnetActor::addException( const MagnetActorPtr & _actor )
 	{
-		m_exceptions.push_back( _actor );
+		m_exceptions.emplace_back( _actor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MagnetActor::removeException( const MagnetActorPtr & _actor )

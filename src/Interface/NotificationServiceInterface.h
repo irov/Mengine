@@ -16,7 +16,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	class ObserverInterface
 		: public MemoryAllocator
-		, public stdex::intrusive_ptr_base<ObserverInterface>
+		, public stdex::intrusive_ptr_base
 	{
 	public:
 		ObserverInterface()
@@ -46,7 +46,7 @@ namespace Mengine
 		virtual void destroy() = 0;
 
 	public:
-		inline static void intrusive_ptr_destroy( ObserverInterface * _ptr );
+		inline void destroy_intrusive_ptr() override;
 
 #ifdef STDEX_INTRUSIVE_PTR_DEBUG
 	public:
@@ -359,9 +359,9 @@ namespace Mengine
 		friend class ObserverInterface;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline void ObserverInterface::intrusive_ptr_destroy( ObserverInterface * _ptr )
+	inline void ObserverInterface::destroy_intrusive_ptr()
 	{
-		_ptr->m_notification->removeObserver( _ptr );
+        m_notification->removeObserver( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 #ifdef STDEX_INTRUSIVE_PTR_DEBUG

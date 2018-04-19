@@ -36,7 +36,7 @@ namespace Mengine
 	{
         _task->preparation();
 
-		m_threadTasks.push_back( _task );
+		m_threadTasks.emplace_back( _task );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadQueue::cancel()
@@ -139,7 +139,7 @@ namespace Mengine
 					{
 						const ThreadTaskPtr & task = packet->getTask( i );
 
-						m_threadTasks.push_back( task );
+						m_threadTasks.emplace_back( task );
 					}
 
 					return;

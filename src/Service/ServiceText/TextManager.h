@@ -41,8 +41,8 @@ namespace Mengine
 		bool unloadFonts( const ConstString & _pakName, const FilePath & _path ) override;
 
 	public:
-		bool existText( const ConstString & _key, const TextEntryInterface ** _entry ) const override;
-		const TextEntryInterface * getTextEntry( const ConstString& _key ) const override;
+		bool existText( const ConstString & _key, TextEntryInterfacePtr * _entry ) const override;
+		const TextEntryInterfacePtr & getTextEntry( const ConstString& _key ) const override;
 		
 	public:
 		bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const override;
@@ -62,7 +62,6 @@ namespace Mengine
 			, const String & _text
 			, const ConstString & _font
 			, const ColourValue & _colorFont
-			, const ColourValue & _colorOutline
 			, float _lineOffset
 			, float _charOffset
 			, float _maxLength
@@ -79,7 +78,7 @@ namespace Mengine
 		bool directFontRelease( const ConstString & _name ) override;
 
     protected:
-		typedef stdex::map<ConstString, TextEntry> TMapTextEntry;		
+		typedef stdex::map<ConstString, TextEntryInterfacePtr> TMapTextEntry;
 		TMapTextEntry m_texts;
 
 		typedef stdex::map<ConstString, TextFontInterfacePtr> TMapTextFont;
@@ -90,6 +89,7 @@ namespace Mengine
 		
 		ConstString m_defaultFontName;
 
+        FactoryPtr m_factoryTextEntry;
 		FactoryPtr m_factoryTextLocalePak;
 		FactoryPtr m_factoryLocalString;
 

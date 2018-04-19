@@ -11,6 +11,8 @@
 
 #include "pybind/pybind.hpp"
 
+#include <algorithm>
+
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -76,7 +78,7 @@ namespace Mengine
 			return nullptr;
 		}
 
-		m_bounceWorlds.push_back( world );
+		m_bounceWorlds.emplace_back( world );
 
 		return world;
 	}

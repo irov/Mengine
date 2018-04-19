@@ -8,6 +8,8 @@
 
 #include "Logger/Logger.h"
 
+#include <algorithm>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -64,7 +66,7 @@ namespace Mengine
         mp.pack = _pack;
         mp.pathes = _pathes;
 
-        m_modulePaths.push_back( mp );
+        m_modulePaths.emplace_back( mp );
     }
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -119,7 +121,7 @@ namespace Mengine
 
 			if( this->find_module_source_( _module, loaderSource ) == true )
 			{
-				m_loaders.push_back( loaderSource );
+				m_loaders.emplace_back( loaderSource );
 
 				pybind::incref( m_embed );
 
@@ -135,7 +137,7 @@ namespace Mengine
 
 			if( this->find_module_code_( _module, loaderCode ) == true )
 			{
-				m_loaders.push_back( loaderCode );
+				m_loaders.emplace_back( loaderCode );
 
 				pybind::incref( m_embed );
 

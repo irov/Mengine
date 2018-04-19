@@ -43,7 +43,7 @@ namespace Mengine
 	{
 		if( m_visiting != 0 )
 		{
-			m_add.push_back( _observer );
+			m_add.emplace_back( _observer );
 
 			return;
 		}
@@ -61,14 +61,14 @@ namespace Mengine
 
 		TVectorObservers & observers = it_find->second;
 
-		observers.push_back( _observer );
+		observers.emplace_back( _observer );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NotificationService::removeObserver( ObserverInterface * _observer )
 	{
 		if( m_visiting != 0 )
 		{
-			m_remove.push_back( _observer );
+			m_remove.emplace_back( _observer );
 
 			return;
 		}

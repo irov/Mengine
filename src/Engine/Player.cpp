@@ -43,6 +43,7 @@
 #include "pybind/pybind.hpp"
 
 #include <iomanip>
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( MousePickerSystem );
@@ -85,7 +86,7 @@ namespace Mengine
         protected:
             void resourceCompile( ResourceReference * _resource )
             {
-                m_resources.push_back( _resource );
+                m_resources.emplace_back( _resource );
             }
 
             void resourceRelease( ResourceReference * _resource )
@@ -420,7 +421,7 @@ namespace Mengine
     {
         ScheduleManagerInterfacePtr sm = m_factoryScheduleManager->createObject();
 
-        m_schedulers.push_back( sm );
+        m_schedulers.emplace_back( sm );
 
         return sm;
     }
@@ -1157,7 +1158,7 @@ namespace Mengine
 
                         String name = _scope->get_name();
 
-                        m_scopes[count].push_back( name );
+                        m_scopes[count].emplace_back( name );
                     }
 
                 public:
@@ -1218,7 +1219,7 @@ namespace Mengine
             String text = ss.str();
 
             TVectorString args;
-            args.push_back( text );
+            args.emplace_back( text );
             m_debugText->setTextFormatArgs( args );
 
             float gameViewportAspect;

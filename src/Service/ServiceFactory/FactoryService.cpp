@@ -20,7 +20,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     void FactoryService::registerFactory( const Factory * _factory )
 	{
-        m_factories.push_back( _factory );
+        m_factories.emplace_back( _factory );
 	}
 	//////////////////////////////////////////////////////////////////////////
     void FactoryService::unregisterFactory( const Factory * _factory )

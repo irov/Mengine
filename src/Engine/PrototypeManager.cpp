@@ -60,7 +60,7 @@ namespace Mengine
         key.prototype = _prototype;
         key.generator = _generator;
 
-        prototypes.push_back( key );
+        prototypes.emplace_back( key );
 
         LOGGER_INFO("PrototypeManager::addPrototype add %s:%s"
             , _category.c_str()

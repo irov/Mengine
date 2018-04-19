@@ -137,6 +137,16 @@ namespace Mengine
         {
             MemoryInterfacePtr ttfEffectMemory = Helper::createMemoryFile( m_category, m_ttfFEPath, false, __FILE__, __LINE__ );
 
+            if( ttfEffectMemory == nullptr )
+            {
+                LOGGER_ERROR( "TTFFont::_compile font '%s' invalid get FE '%s'"
+                    , m_name.c_str()
+                    , m_ttfFEPath.c_str()
+                );
+
+                return false;
+            }
+
             const void * ttfEffectMemory_buffer = ttfEffectMemory->getMemory();
             size_t ttfEffectMemory_size = ttfEffectMemory->getSize();
 
@@ -429,7 +439,7 @@ namespace Mengine
                 quad.texture = nullptr;
             }
 
-			glyphs.push_back( g );
+			glyphs.emplace_back( g );
 
 			return true;
 		}        
@@ -528,7 +538,7 @@ namespace Mengine
             quad.texture = texture;
         }
 
-        glyphs.push_back( g );
+        glyphs.emplace_back( g );
 		
 		return true;
 	}

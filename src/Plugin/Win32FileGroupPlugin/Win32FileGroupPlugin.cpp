@@ -30,7 +30,7 @@ namespace Mengine
             }
 
         protected:
-            Factorable * _createObject() override
+            FactorablePtr * _createObject() override
             {
                 Win32FileGroupDirectory * t = Helper::allocateT<Win32FileGroupDirectory>();
 

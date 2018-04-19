@@ -15,7 +15,7 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
 	
 	stdex_allocator_initialize();
 
-#ifndef _DEBUG
+#ifdef NDEBUG
 	try
 #endif
 	{
@@ -34,7 +34,7 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
     
 		app.finalize();
 	}
-#ifndef _DEBUG
+#ifdef NDEBUG
 	catch( const std::exception & se )
 	{		
 		const char * se_what = se.what();

@@ -13,14 +13,14 @@ namespace Mengine
     {
     public:
         ConstStringHolderPythonString();
+        ~ConstStringHolderPythonString() override;
         
     public:
         void setPythonObject( PyObject * _value );
-
-    protected:
-        void destroyString() override;
-
+        
     protected:			
         PyObject * m_value;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<ConstStringHolderPythonString> ConstStringHolderPythonStringPtr;
 }

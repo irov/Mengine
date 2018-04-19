@@ -115,7 +115,7 @@ namespace Mengine
 				desc.viewport = m_currentViewport;
 				desc.camera = m_currentCamera;
 
-				m_traps.push_back( desc );
+				m_traps.emplace_back( desc );
 			}
 
 		protected:
@@ -204,7 +204,7 @@ namespace Mengine
 			}
 			
 			MousePickerTrapInterface * trap = state->trap;					
-			_traps.push_back( trap );
+			_traps.emplace_back( trap );
 		}
 
 		return true;
@@ -240,7 +240,7 @@ namespace Mengine
 		state.handle = false;
 		state.dead = false;
 
-		m_pickerTrapState.push_back( state );
+		m_pickerTrapState.emplace_back( state );
 		PickerTrapState & refState = m_pickerTrapState.back();
 
 		++m_pickerTrapCount;

@@ -71,7 +71,7 @@ namespace Mengine
 		
 		actor->initialize();
 
-		m_actorsAdd.push_back( actor );
+		m_actorsAdd.emplace_back( actor );
 
 		return actor;
 	}

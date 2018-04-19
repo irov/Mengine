@@ -47,7 +47,7 @@ namespace Mengine
 
 	public:
 		float getDuration() const;
-		void setWorkAreaFromEvent( const ConstString & _eventName );
+		bool setWorkAreaFromEvent( const ConstString & _eventName );
 		void removeWorkArea();
 
     public:

@@ -29,12 +29,12 @@ namespace Mengine
 
 				if( pos == String::npos )
 				{
-					_outStrings.push_back( _str.substr( start ) );
+					_outStrings.emplace_back( _str.substr( start ) );
 					break;
 				}
 				else
 				{
-					_outStrings.push_back( _str.substr( start, pos - start ) );
+					_outStrings.emplace_back( _str.substr( start, pos - start ) );
 					start = pos + 1;
 				}
 
@@ -76,12 +76,12 @@ namespace Mengine
 
 				if( pos == T::npos )
 				{
-					_outStrings.push_back( _str.substr( start ) );
+					_outStrings.emplace_back( _str.substr( start ) );
 					break;
 				}
 				else
 				{
-					_outStrings.push_back( _str.substr( start, pos - start ) );
+					_outStrings.emplace_back( _str.substr( start, pos - start ) );
 					start = pos + 1;
 				}
 
@@ -119,6 +119,60 @@ namespace Mengine
 		{
 			t_split2( _outStrings, _str, _trimDelims, _delims );
 		}
+        //////////////////////////////////////////////////////////////////////////
+        template<class T, class C = stdex::vector<T> >
+        static bool t_split3( C & _outStrings, const T & _str, const C & _delims )
+        {
+            typename T::size_type start = 0;
+            typename T::size_type pos = 0;
+
+            do
+            {
+                pos = T::npos;
+
+                for( typename C::const_iterator
+                    it = _delims.begin(),
+                    it_end = _delims.end();
+                    it != it_end;
+                    ++it )
+                {
+                    const T & delim = *it;
+
+                    typename T::size_type pos_delim = _str.find_first_of( delim, start );
+
+                    if( pos > pos_delim )
+                    {
+                        pos = pos_delim;
+                    }
+                }
+
+                if( pos == T::npos )
+                {
+                    if( start != 0 )
+                    {
+                        _outStrings.emplace_back( _str.substr( start ) );
+
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    _outStrings.emplace_back( _str.substr( start, pos - start ) );
+                    start = pos + 1;
+                }
+            } while( pos != T::npos );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool u32split3( TVectorU32String & _outStrings, const U32String& _str, const TVectorU32String & _delims )
+        {
+            return t_split3( _outStrings, _str, _delims );
+        }
 		//////////////////////////////////////////////////////////////////////////
 		void wsplit( TVectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delims )
 		{
@@ -132,12 +186,12 @@ namespace Mengine
 			
 				if (pos == WString::npos )
 				{
-					_outStrings.push_back( _str.substr(start) );
+					_outStrings.emplace_back( _str.substr(start) );
 					break;
 				}
 				else
 				{
-					_outStrings.push_back( _str.substr(start, pos - start) );
+					_outStrings.emplace_back( _str.substr(start, pos - start) );
 					start = pos + 1;
 				}
 

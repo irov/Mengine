@@ -66,17 +66,24 @@ namespace Mengine
         return duration;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::setWorkAreaFromEvent( const ConstString & _eventName )
+    bool Movie2::setWorkAreaFromEvent( const ConstString & _eventName )
     {
+        if( m_composition == nullptr )
+        {
+            return false;
+        }
+
         float a, b;
         ae_bool_t ok = ae_get_movie_composition_node_in_out_time( m_composition, _eventName.c_str(), AE_MOVIE_LAYER_TYPE_EVENT, &a, &b );
 
         if( ok == AE_FALSE )
         {
-            return;
+            return false;
         }
 
         ae_set_movie_composition_work_area( m_composition, a, b );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::removeWorkArea()
@@ -1387,6 +1394,14 @@ namespace Mengine
 
         m_meshes.resize( info.max_render_node );
 
+        if( info.max_render_node == 0 )
+        {
+            LOGGER_WARNING( "Movie2::_compile '%s' resource '%s' zero render node"
+                , this->getName().c_str()
+                , m_resourceMovie2->getName().c_str()
+            );
+        }
+
         bool loop = this->getLoop();
 
         ae_set_movie_composition_loop( composition, loop ? AE_TRUE : AE_FALSE );
@@ -1621,6 +1636,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_render( Mengine::RenderServiceInterface * _renderService, const RenderState * _state )
     {
+        if( m_meshes.empty() == true )
+        {
+            return;
+        }
+
         uint32_t mesh_iterator = 0;
         Mesh * meshes_buffer = &m_meshes.front();
 
@@ -1711,11 +1731,10 @@ namespace Mengine
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
-                            mt::vec2f uv;
-                            uv.from_f2( &mesh.uv[index][0] );
-
-                            v.uv[0] = uv;
-                            v.uv[1] = uv;
+                            v.uv[0].x = 0.f;
+                            v.uv[0].y = 0.f;
+                            v.uv[1].x = 0.f;
+                            v.uv[1].y = 0.f;
 
                             v.color = total_mesh_color;
                         }
@@ -1749,12 +1768,11 @@ namespace Mengine
                             vp.from_f3( &mesh.position[index][0] );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
-
-                            mt::vec2f uv;
-                            uv.from_f2( &mesh.uv[index][0] );
-
-                            v.uv[0] = uv;
-                            v.uv[1] = uv;
+                            
+                            v.uv[0].x = 0.f;
+                            v.uv[0].y = 0.f;
+                            v.uv[1].x = 0.f;
+                            v.uv[1].y = 0.f;
 
                             v.color = total_mesh_color;
                         }
@@ -1791,6 +1809,11 @@ namespace Mengine
 
                         Mesh & m = meshes_buffer[mesh_iterator++];
 
+                        if( mesh.vertexCount == 0 )
+                        {
+                            continue;
+                        }
+
                         m.vertices.resize( mesh.vertexCount );
 
                         for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
@@ -1818,11 +1841,6 @@ namespace Mengine
                         EMaterialBlendMode blend_mode = getMovieBlendMode( mesh.blend_mode );
 
                         m.material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
-
-                        if( m.vertices.size() == 0 )
-                        {
-                            continue;
-                        }
 
                         RenderVertex2D * vertexBuffer = &m.vertices[0];
                         uint32_t vertexSize = (uint32_t)m.vertices.size();
@@ -1969,7 +1987,7 @@ namespace Mengine
     {
         _surface->compile();
 
-        m_surfaces.push_back( _surface );
+        m_surfaces.emplace_back( _surface );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::removeSurface( const SurfacePtr & _surface )
@@ -1983,7 +2001,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addParticle( ParticleEmitter2 * _particleEmitter )
     {
-        m_particleEmitters.push_back( _particleEmitter );
+        m_particleEmitters.emplace_back( _particleEmitter );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::removeParticle( ParticleEmitter2 * _particleEmitter )
@@ -2090,6 +2108,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addMatrixProxy( MatrixProxy * _matrixProxy )
     {
-        m_matrixProxies.push_back( _matrixProxy );
+        m_matrixProxies.emplace_back( _matrixProxy );
     }
 }

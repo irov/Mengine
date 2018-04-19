@@ -422,7 +422,7 @@ namespace Mengine
 
 			_node->setRenderClipplane( clippane );
 
-			m_clipplanes.push_back( clippane );
+			m_clipplanes.emplace_back( clippane );
 
 			this->addChild( clippane );
 		}

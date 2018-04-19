@@ -20,14 +20,16 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
 	enum ESoundSourceState
 	{
 		ESS_STOP = 0,	    // currently stopped
 		ESS_PLAY = 2,		// currently playing
 		ESS_PAUSE = 4,			// currently paused
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	struct SoundSourceDesc
+        : public FactorablePtr
 	{
 		uint32_t soundId;
 
@@ -47,7 +49,9 @@ namespace Mengine
 		bool looped;
 		bool turn;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<SoundSourceDesc> SoundSourceDescPtr;
+    //////////////////////////////////////////////////////////////////////////
 	class SoundEngine
 		: public ServiceBase<SoundServiceInterface>
 	{
@@ -143,11 +147,10 @@ namespace Mengine
 
     protected:
 		void updateSoundVolumeProvider_( const SoundVolumeProviderInterfacePtr & _provider );
-		void updateSourceVolume_( SoundSourceDesc * _source );
+		void updateSourceVolume_( const SoundSourceDescPtr & _source );
 
     protected:
-        bool getSoundSourceDesc_( uint32_t _emitterId, SoundSourceDesc ** _desc );
-        bool getSoundSourceDesc_( uint32_t _emitterId, const SoundSourceDesc ** _desc ) const;
+        bool getSoundSourceDesc_( uint32_t _emitterId, SoundSourceDescPtr * _desc ) const;
 
     protected:
         void playSounds_();
@@ -155,8 +158,8 @@ namespace Mengine
         void stopSounds_();      
         
     protected:
-        bool stopSoundBufferUpdate_( SoundSourceDesc * _source );
-        bool playSoundBufferUpdate_( SoundSourceDesc * _source );
+        bool stopSoundBufferUpdate_( const SoundSourceDescPtr & _source );
+        bool playSoundBufferUpdate_( const SoundSourceDescPtr & _source );
 
 	protected:
         MixerVolume m_commonVolume;
@@ -166,10 +169,9 @@ namespace Mengine
 
         uint32_t m_enumerator;
 
-        typedef stdex::template_pool<SoundSourceDesc, 32> TPoolSoundSourceDesc;
-        TPoolSoundSourceDesc m_poolSoundSourceDesc;
+        FactoryPtr m_factorySoundSourceDesc;
 
-		typedef stdex::map<uint32_t, SoundSourceDesc *> TMapSoundSource;
+		typedef stdex::map<uint32_t, SoundSourceDescPtr> TMapSoundSource;
 		TMapSoundSource m_soundSourceMap;
 		
         ThreadJobPtr m_threadJobSoundBufferUpdate;

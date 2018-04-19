@@ -48,7 +48,7 @@ namespace Mengine
 #if AE_MOVIE_SDK_MAJOR_VERSION >= 17
                 ResourceReference * data_resource = resourceMovie2->getResource_( resource_image->name );
 #else
-                ResourceReference * data_resource = resourceMovie2->createResourceImage_( resource_image->path, resource_image->trim_width, resource_image->trim_height );
+                ResourceReference * data_resource = resourceMovie2->createResourceImage_( resource_image );
 #endif
 
                 if( data_resource == AE_NULL )
@@ -411,7 +411,7 @@ namespace Mengine
             return;
         }
 
-        m_resources.push_back( _resource );
+        m_resources.emplace_back( _resource );
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceReference * ResourceMovie2::getResource_( const ae_string_t _name )
@@ -438,7 +438,7 @@ namespace Mengine
 		ConstString folder = Helper::getPathFolder( m_filePath );
 
 		full_path += folder.c_str();
-		full_path += _resource->path;
+        full_path += _resource->path;
 
 		FilePath c_path = Helper::stringizeFilePath( full_path );
 

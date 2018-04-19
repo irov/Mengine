@@ -75,7 +75,7 @@ namespace Mengine
 		desc.freeze = false;
 		desc.iterate_invalide = true;
 
-		m_schedulesAdd.push_back( desc );
+		m_schedulesAdd.emplace_back( desc );
 
 		return new_id;
     }
@@ -102,7 +102,7 @@ namespace Mengine
 		desc.freeze = false;		
 		desc.iterate_invalide = true;
 
-		m_schedulesAdd.push_back( desc );
+		m_schedulesAdd.emplace_back( desc );
 
 		return new_id;
 	}

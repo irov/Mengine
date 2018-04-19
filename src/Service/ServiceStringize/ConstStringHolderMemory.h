@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdex/const_string2_holder.h"
+#include "Config/String.h"
 
 #include "Core/ConstStringHolder.h"
 
@@ -11,15 +11,13 @@ namespace Mengine
     {
 	public:
 		ConstStringHolderMemory();
+        ~ConstStringHolderMemory() override;
 
 	public:
-		void setValue( const char * _value, size_t _size, hash_type _hash );
-
-    protected:
-		void destroyString() override;
-
+		void setValue( const Char * _value, size_t _size, hash_type _hash );
+        
     protected:			
-		char * m_buff;
+		Char * m_buff;
     };
 
     typedef stdex::intrusive_ptr<ConstStringHolderMemory> ConstStringHolderMemoryPtr;

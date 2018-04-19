@@ -60,7 +60,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionActor::addException( const CollisionActorPtr & _actor )
 	{
-		m_exceptions.push_back( _actor );
+		m_exceptions.emplace_back( _actor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionActor::removeException( const CollisionActorPtr & _actor )

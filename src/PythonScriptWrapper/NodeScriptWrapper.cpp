@@ -211,7 +211,7 @@ namespace Mengine
                         return pybind::ret_false();
                     }
 
-                    cs_args.push_back( key );
+                    cs_args.emplace_back( key );
                 }
                 else if( pybind::unicode_check( py_string ) == true )
                 {
@@ -228,7 +228,7 @@ namespace Mengine
                     String utf8_arg;
                     Helper::unicodeToUtf8( key, utf8_arg );
 
-                    cs_args.push_back( utf8_arg );
+                    cs_args.emplace_back( utf8_arg );
                 }
                 else
                 {
@@ -243,7 +243,7 @@ namespace Mengine
                         return pybind::ret_false();
                     }
 
-                    cs_args.push_back( String( value ) );
+                    cs_args.emplace_back( String( value ) );
                 }
             }
 
@@ -272,7 +272,7 @@ namespace Mengine
                 WString unicode;
                 Helper::utf8ToUnicode( str_arg, unicode );
 
-                ws_args.push_back( unicode );
+                ws_args.emplace_back( unicode );
             }
 
             return ws_args;
@@ -6044,7 +6044,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PyGlobalBaseHandler
-            : public InputSystemHandler
+            : public InputHandlerInterface
             , public Factorable
         {
         public:
@@ -6398,7 +6398,7 @@ namespace Mengine
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE()
                 ->getGlobalHandleSystem();
 
-            PyGlobalKeyHandler * handler = m_factoryPyGlobalTextHandler->createObject();
+            PyGlobalBaseHandler * handler = m_factoryPyGlobalTextHandler->createObject();
 
             handler->initialize( _cb, _args );
 
@@ -6412,7 +6412,7 @@ namespace Mengine
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE()
                 ->getGlobalHandleSystem();
 
-            InputSystemHandler * handler = globalHandleSystem->removeGlobalHandler( _id );
+            InputHandlerInterface * handler = globalHandleSystem->removeGlobalHandler( _id );
 
             PyGlobalBaseHandler * py_handler = dynamic_cast<PyGlobalBaseHandler *>(handler);
 
@@ -7679,10 +7679,6 @@ namespace Mengine
                     .def( "setWrap", &TextField::setWrap )
                     .def( "getWrap", &TextField::getWrap )
 
-                    .def( "enableOutline", &TextField::enableOutline )
-                    .def( "isOutline", &TextField::isOutline )
-                    .def( "setOutlineColor", &TextField::setOutlineColor )
-                    .def( "getOutlineColor", &TextField::getOutlineColor )
                     .def( "setFontColor", &TextField::setFontColor )
                     .def( "getFontColor", &TextField::getFontColor )
 

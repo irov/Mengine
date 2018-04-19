@@ -376,7 +376,7 @@ namespace Mengine
 					continue;
 				}
 
-				points.push_back( v );
+				points.emplace_back( v );
 			}
 
 			if( points.empty() == true )
@@ -1126,7 +1126,7 @@ namespace Mengine
 			{
 				const ConstString & name = _account->getID();
 
-				m_accounts.push_back( name );
+				m_accounts.emplace_back( name );
 			}
 
 		protected:
@@ -2694,7 +2694,7 @@ namespace Mengine
 
 		WString s_getTextByKey( const ConstString& _key )
 		{
-			const TextEntryInterface * entry;				
+			TextEntryInterfacePtr entry;
 			if( TEXT_SERVICE()
 				->existText( _key, &entry ) == false )
 			{
@@ -2719,7 +2719,7 @@ namespace Mengine
 
 		uint32_t s_getTextCharCountByKey( const ConstString& _key )
 		{
-			const TextEntryInterface * entry;
+			TextEntryInterfacePtr entry;
 			if( TEXT_SERVICE()
 				->existText( _key, &entry ) == false )
 			{				

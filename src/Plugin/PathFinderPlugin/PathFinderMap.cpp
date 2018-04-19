@@ -8,6 +8,8 @@
 
 #include "Logger/Logger.h"
 
+#include <algorithm>
+
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -253,7 +255,7 @@ namespace Mengine
 
 		this->obstacleCellMask_( obstacle, 1 );
 				
-		m_obstacles.push_back( obstacle );
+		m_obstacles.emplace_back( obstacle );
 
 		return id;
 	}
@@ -435,7 +437,7 @@ namespace Mengine
 		desc.complete = false;
 		desc.successful = false;
 
-		m_pathfinders.push_back( desc );
+		m_pathfinders.emplace_back( desc );
 
 		return id;
 	}
@@ -506,7 +508,7 @@ namespace Mengine
 				continue;
 			}
 			
-			pathcomplete.push_back( desc );
+			pathcomplete.emplace_back( desc );
 			
 			desc.finder = nullptr;
 			desc.complete = true;

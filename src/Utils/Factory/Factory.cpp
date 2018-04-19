@@ -5,21 +5,21 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	Factory::Factory( const char * _name )
-		: m_name(_name)
-		, m_count(0)
-	{
-		FACTORY_SERVICE()
+    //////////////////////////////////////////////////////////////////////////
+    Factory::Factory( const Char * _name )
+        : m_name( _name )
+        , m_count( 0 )
+    {
+        FACTORY_SERVICE()
             ->registerFactory( this );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Factory::~Factory()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Factory::~Factory()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     PointerFactorable Factory::createObject()
-	{
+    {
         STDEX_THREAD_GUARD_CHECK( this, "Factory::createObject" );
 
         ++m_count;
@@ -28,28 +28,28 @@ namespace Mengine
         Factorable * object = this->_createObject();
         object->setFactory( this );
 
-		return object;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Factory::destroyObject( Factorable * _object )
-	{	
+        return object;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Factory::destroyObject( Factorable * _object )
+    {
         STDEX_THREAD_GUARD_CHECK( this, "Factory::destroyObject" );
 
         this->_destroyObject( _object );
 
         --m_count;
         intrusive_ptr_dec_ref( this );
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Factory::isEmptyObjects() const
     {
         return m_count == 0;
     }
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t Factory::getCountObject() const
-	{
-		return m_count;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Factory::getCountObject() const
+    {
+        return m_count;
+    }
     //////////////////////////////////////////////////////////////////////////
     void Factory::_destroy()
     {

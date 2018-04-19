@@ -11,6 +11,8 @@
 
 #include "pybind/pybind.hpp"
 
+#include <algorithm>
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -163,7 +165,7 @@ namespace Mengine
 			return nullptr;
 		}
 
-		m_collisionWorlds.push_back( collision );
+		m_collisionWorlds.emplace_back( collision );
 
 		return collision;
 	}

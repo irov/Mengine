@@ -61,13 +61,6 @@ namespace Mengine
 		m_params |= EFP_COLOR_FONT;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FontBase::setColourOutline( const ColourValue & _colour )
-	{
-		m_colourOutline = _colour;
-
-		m_params |= EFP_COLOR_OUTLINE;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void FontBase::setLineOffset( float _lineOffset )
 	{
 		m_lineOffset = _lineOffset;
@@ -87,14 +80,9 @@ namespace Mengine
 		return m_params;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ColourValue & FontBase::getColorFont() const
+	const ColourValue & FontBase::getFontColor() const
 	{
 		return m_colourFont;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ColourValue & FontBase::getColorOutline() const
-	{
-		return m_colourOutline;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float FontBase::getLineOffset() const
@@ -142,10 +130,6 @@ namespace Mengine
             {
                 continue;
             }
-            else if( code == 9 )
-            {
-                continue;
-            }
             else if( code == 10 )
             {
                 control = true;
@@ -188,7 +172,7 @@ namespace Mengine
                 continue;
             }
             
-            ttf_codes.push_back( code );            
+            ttf_codes.push_back( code );
         }
 
         if( this->_validateGlyphes( ttf_codes ) == false )
@@ -208,7 +192,7 @@ namespace Mengine
 	{
 		U32String result;
 
-		const char * text_str = _text.c_str();
+		const Char * text_str = _text.c_str();
 		size_t text_len = _text.size();
 
 		for( const char
@@ -225,74 +209,59 @@ namespace Mengine
 				continue;
 			}
 
-			bool control = false;
-
-			if( code == 0 )
-			{
-				continue;
-			}
-			else if( code == 7 )
-			{
-				continue;
-			}
-			else if( code == 8 )
-			{
-				continue;
-			}
-			else if( code == 9 )
-			{
-				continue;
-			}
-			else if( code == 10 )
-			{
-				control = true;
-			}
-			else if( code == 11 )
-			{
-				continue;
-			}
-			else if( code == 12 )
-			{
-				continue;
-			}
-			else if( code == 13 )
-			{
-				control = true;
-			}
-			else if( code == 26 )
-			{
-				continue;
-			}
-			else if( code == 27 )
-			{
-				continue;
-			}
-			else if( code == 127 )
-			{
-				continue;
-			}
-			else if( code == 160 )
-			{
-				code = 32;
-			}
-			else if( code == 9 )
-			{
-				code = 32;
-			}
-
-			if( control == false )
-			{
-				if( this->_prepareGlyph( code ) == false )
-				{
-					continue;
-				}
-			}
+            switch( code )
+            {
+            case 0:
+            case 7:
+            case 8:
+            case 11:
+            case 12:
+            case 26:
+            case 27:
+            case 127:
+                {
+                    continue;
+                }break;
+            case 160:
+                {
+                    code = 32;
+                }break;
+            case 9:
+                {
+                    code = 32;
+                }break;
+            }
 
 			result.push_back( (char32_t)code );
 		}
 
 		return result;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool FontBase::prepareGlyph( const U32String & _text )
+    {
+        for( Char32 code : _text )
+        {
+            switch( code )
+            {
+            case 10:
+            case 13:
+                {
+                    continue;
+                }break;
+            default:
+                {
+                }break;
+            };
+
+            if( this->_prepareGlyph( code ) == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool FontBase::initializeBase_( const IniUtil::IniStore & _ini )
 	{
@@ -300,12 +269,6 @@ namespace Mengine
 		if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorFont", colourFont ) == true )
 		{
 			this->setColourFont( colourFont );
-		}
-
-		ColourValue colourOutline;
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorOutline", colourOutline ) == true )
-		{
-			this->setColourOutline( colourOutline );
 		}
 
 		float lineOffset;

@@ -286,7 +286,7 @@ namespace Mengine
 
 					for( uint32_t i = 0; i != count_frame; ++i )
 					{
-						frameLayer.frames.push_back( frame );
+						frameLayer.frames.emplace_back( frame );
 					}
 				}
 
@@ -370,7 +370,7 @@ namespace Mengine
 				{
 					for( uint32_t i = 0; i != count_frame; ++i )
 					{
-						frameLayer.frames.push_back( frame );
+						frameLayer.frames.emplace_back( frame );
 					}
 				}
 				else
@@ -649,10 +649,10 @@ namespace Mengine
 						{
 							const mt::vec2f & v = shape_vertex.outer_point( index );
 
-							p2t_points.push_back( p2t::Point( v.x, v.y ) );
+							p2t_points.emplace_back( p2t::Point( v.x, v.y ) );
 							p2t::Point * p = &p2t_points.back();
 
-							p2t_polygon.push_back( p );
+							p2t_polygon.emplace_back( p );
 						}
 
 						p2t::CDT * cdt = new p2t::CDT( p2t_polygon );
@@ -669,10 +669,10 @@ namespace Mengine
 							{
 								const mt::vec2f & v = shape_vertex.inner_point( index_inners, index_inner );
 
-								p2t_points.push_back( p2t::Point( v.x, v.y ) );
+								p2t_points.emplace_back( p2t::Point( v.x, v.y ) );
 								p2t::Point * p = &p2t_points.back();
 
-								p2t_hole.push_back( p );
+								p2t_hole.emplace_back( p );
 							}
 
 							cdt->AddHole( p2t_hole );
@@ -700,9 +700,9 @@ namespace Mengine
 							uint32_t i1 = (uint32_t)std::distance( pb, p1 );
 							uint32_t i2 = (uint32_t)std::distance( pb, p2 );
 
-							shape_indices.push_back( i0 );
-							shape_indices.push_back( i1 );
-							shape_indices.push_back( i2 );
+							shape_indices.emplace_back( i0 );
+							shape_indices.emplace_back( i1 );
+							shape_indices.emplace_back( i2 );
 						}
 
 						delete cdt;

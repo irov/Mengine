@@ -103,6 +103,6 @@ namespace Mengine
         attr.stride = _stride;
         attr.offset = _offset;
 
-        m_attributes.push_back( attr );
+        m_attributes.emplace_back( attr );
     }
 }

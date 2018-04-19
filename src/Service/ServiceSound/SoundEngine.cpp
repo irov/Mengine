@@ -12,6 +12,7 @@
 #include "Logger/Logger.h"
 
 #include "math/utils.h"
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SoundService, Mengine::SoundEngine );
@@ -62,6 +63,7 @@ namespace Mengine
 		this->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic"), voiceVolume, 0.f );
 
         m_factoryWorkerTaskSoundBufferUpdate = new FactoryPool<ThreadWorkerSoundBufferUpdate, 32>();
+        m_factorySoundSourceDesc = new FactoryPool<SoundSourceDesc, 32>();
 
         return true;
 	}
@@ -76,7 +78,12 @@ namespace Mengine
 		it != it_end;
 		++it )
         {
-			SoundSourceDesc * source = it->second;
+            const SoundSourceDescPtr & source = it->second;
+
+            if( source == nullptr )
+            {
+                continue;
+            }
 
 			this->stopSoundBufferUpdate_( source );
 
@@ -85,8 +92,6 @@ namespace Mengine
                 source->source->stop();
                 source->source = nullptr;
             }
-
-            m_poolSoundSourceDesc.destroyT( source );
         }
 
         m_soundSourceMap.clear();
@@ -101,8 +106,10 @@ namespace Mengine
 
         m_soundVolumeProviders.clear();
 
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundSourceDesc );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWorkerTaskSoundBufferUpdate );
 
+        m_factorySoundSourceDesc = nullptr;
         m_factoryWorkerTaskSoundBufferUpdate = nullptr;        
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -113,7 +120,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::addSoundVolumeProvider(const SoundVolumeProviderInterfacePtr & _soundVolumeProvider )
 	{
-		m_soundVolumeProviders.push_back( _soundVolumeProvider );
+		m_soundVolumeProviders.emplace_back( _soundVolumeProvider );
 
 		this->updateSoundVolumeProvider_( _soundVolumeProvider );
 	}
@@ -140,7 +147,12 @@ namespace Mengine
 		it != it_end;
 		++it )
 		{
-			SoundSourceDesc * source = it->second;
+            const SoundSourceDescPtr & source = it->second;
+
+            if( source == nullptr )
+            {
+                continue;
+            }
 			
 			source->turn = true;
 
@@ -171,7 +183,12 @@ namespace Mengine
         it != it_end;
         ++it )
         {
-			SoundSourceDesc * source = it->second;
+            const SoundSourceDescPtr & source = it->second;
+
+            if( source == nullptr )
+            {
+                continue;
+            }
 			
 			source->turn = false;
 
@@ -194,7 +211,12 @@ namespace Mengine
 		it != it_end;
 		++it )
 		{
-            SoundSourceDesc * source = it->second;
+            const SoundSourceDescPtr & source = it->second;
+
+            if( source == nullptr )
+            {
+                continue;
+            }
 
 			source->turn = false;
 
@@ -265,7 +287,7 @@ namespace Mengine
 			return 0;
 		}
 
-		SoundSourceDesc * source = m_poolSoundSourceDesc.createT();
+        SoundSourceDescPtr source = m_factorySoundSourceDesc->createObject();
 
 		++m_enumerator;
 		uint32_t soundId = m_enumerator;
@@ -293,7 +315,7 @@ namespace Mengine
 		return soundId;
 	}
     //////////////////////////////////////////////////////////////////////////
-	void SoundEngine::updateSourceVolume_( SoundSourceDesc * _source )
+	void SoundEngine::updateSourceVolume_( const SoundSourceDescPtr & _source )
     {
         const SoundSourceInterfacePtr & source = _source->source;
 
@@ -471,7 +493,12 @@ namespace Mengine
 			return false;
 		}
 
-		SoundSourceDesc * source = it_find->second;
+        const SoundSourceDescPtr & source = it_find->second;
+
+        if( source == nullptr )
+        {
+            return true;
+        }
 
 		this->stopSoundBufferUpdate_( source );
 		
@@ -485,8 +512,6 @@ namespace Mengine
 
 		m_soundSourceMap.erase( it_find );
         
-        m_poolSoundSourceDesc.destroyT( source );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -634,7 +659,12 @@ namespace Mengine
 		it != it_end;
 		++it )
 		{
-			SoundSourceDesc * source = it->second;
+            const SoundSourceDescPtr & source = it->second;
+
+            if( source == nullptr )
+            {
+                continue;
+            }
 
 			if( source->state != ESS_PLAY )
 			{
@@ -679,7 +709,7 @@ namespace Mengine
 					desc.listener = source->listener;
 					desc.id = source->soundId;
 
-					m_listeners.push_back( desc );
+					m_listeners.emplace_back( desc );
 				}
 			}
 			else
@@ -718,21 +748,7 @@ namespace Mengine
 		return m_muted;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool SoundEngine::getSoundSourceDesc_( uint32_t _emitterId, SoundSourceDesc ** _desc )
-    {
-		TMapSoundSource::iterator it_found = m_soundSourceMap.find( _emitterId );
-
-		if( it_found == m_soundSourceMap.end() )
-		{
-			return false;
-		}
-
-		*_desc = it_found->second;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SoundEngine::getSoundSourceDesc_( uint32_t _emitterId, const SoundSourceDesc ** _desc ) const
+    bool SoundEngine::getSoundSourceDesc_( uint32_t _emitterId, SoundSourceDescPtr * _desc ) const
     {
 		TMapSoundSource::const_iterator it_found = m_soundSourceMap.find( _emitterId );
 
@@ -743,12 +759,12 @@ namespace Mengine
 
 		*_desc = it_found->second;
 
-		return true;
+        return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::playEmitter( uint32_t _emitterId )
 	{
-        SoundSourceDesc * source;
+        SoundSourceDescPtr source;
 		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
 		{
 			LOGGER_ERROR("SoundEngine:play not found emitter id %d"
@@ -798,7 +814,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::pauseEmitter( uint32_t _emitterId )
 	{
-        SoundSourceDesc * source;
+        SoundSourceDescPtr source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR("SoundEngine:pause not found emitter id %d"
@@ -838,7 +854,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::resumeEmitter( uint32_t _emitterId )
 	{
-		SoundSourceDesc * source;
+		SoundSourceDescPtr source;
 		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
 		{
 			LOGGER_ERROR("SoundEngine:pause not found emitter id %d"
@@ -885,7 +901,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::stopEmitter( uint32_t _emitterId )
 	{
-        SoundSourceDesc * desc;
+        SoundSourceDescPtr desc;
         if( this->getSoundSourceDesc_( _emitterId, &desc ) == false )
         {
 			LOGGER_ERROR("SoundEngine:stop not found emitter id %d"
@@ -894,7 +910,12 @@ namespace Mengine
 
 			return false;
 		}
-        
+
+        if( desc == nullptr )
+        {
+            return true;
+        }
+                
 		switch( desc->state )
 		{
 		case ESS_PLAY:
@@ -931,7 +952,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::setLoop( uint32_t _emitterId, bool _looped )
 	{
-        SoundSourceDesc * source;
+        SoundSourceDescPtr source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR("SoundEngine:setLoop not found emitter id %d"
@@ -949,7 +970,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::getLoop( uint32_t _emitterId ) const
 	{
-		const SoundSourceDesc * source;
+		SoundSourceDescPtr source;
 		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
 		{
 			LOGGER_ERROR("SoundEngine:getLoop not found emitter id %d"
@@ -966,7 +987,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setSourceListener( uint32_t _emitter, const SoundListenerInterfacePtr & _listener )
 	{
-        SoundSourceDesc * source;
+        SoundSourceDescPtr source;
         if( this->getSoundSourceDesc_( _emitter, &source ) == false )
         {
 			LOGGER_ERROR("SoundEngine:setSourceListener not found emitter id %d"
@@ -1010,7 +1031,12 @@ namespace Mengine
 		it != it_end;
 		++it )
 		{
-            SoundSourceDesc * source = it->second;
+            const SoundSourceDescPtr & source = it->second;
+
+            if( source == nullptr )
+            {
+                continue;
+            }
 
             this->updateSourceVolume_( source );
 		}
@@ -1029,7 +1055,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::setSourceVolume( uint32_t _emitterId, float _volume, float _default )
 	{
-        SoundSourceDesc * source;
+        SoundSourceDescPtr source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR("SoundEngine:setVolume not found emitter id %d"
@@ -1048,7 +1074,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getSourceVolume( uint32_t _emitterId ) const
 	{
-        const SoundSourceDesc * source;
+        SoundSourceDescPtr source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR("SoundEngine:getVolume not found emitter id %d"
@@ -1065,7 +1091,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::setSourceMixerVolume( uint32_t _emitterId, const ConstString & _mixer, float _volume, float _default )
 	{
-		SoundSourceDesc * source;
+		SoundSourceDescPtr source;
 		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
 		{
 			LOGGER_ERROR("SoundEngine:setVolume not found emitter id %d"
@@ -1084,7 +1110,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getSourceMixerVolume( uint32_t _emitterId, const ConstString & _mixer ) const
 	{
-		const SoundSourceDesc * source;
+		SoundSourceDescPtr source;
 		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
 		{
 			LOGGER_ERROR("SoundEngine:getVolume not found emitter id %d"
@@ -1101,7 +1127,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getDuration( uint32_t _emitter ) const
 	{
-        const SoundSourceDesc * source;
+        SoundSourceDescPtr source;
         if( this->getSoundSourceDesc_( _emitter, &source ) == false )
         {
 			LOGGER_ERROR("SoundEngine:getLengthMs not found emitter id %d"
@@ -1118,7 +1144,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::setPosMs( uint32_t _emitterId, float _pos )
 	{
-        SoundSourceDesc * source;
+        SoundSourceDescPtr source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR("SoundEngine:setPosMs not found emitter id %d"
@@ -1205,7 +1231,7 @@ namespace Mengine
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool SoundEngine::stopSoundBufferUpdate_( SoundSourceDesc * _source )
+    bool SoundEngine::stopSoundBufferUpdate_( const SoundSourceDescPtr & _source )
     {
 		if( _source->streamable == false )
 		{
@@ -1228,7 +1254,7 @@ namespace Mengine
 		return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundEngine::playSoundBufferUpdate_( SoundSourceDesc * _source )
+    bool SoundEngine::playSoundBufferUpdate_( const SoundSourceDescPtr & _source )
     {
 		if( _source->streamable == false )
 		{
@@ -1266,7 +1292,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getPosMs( uint32_t _emitterId )
 	{
-        SoundSourceDesc * source;
+        SoundSourceDescPtr source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR("SoundEngine:getPosMs not found emitter id %d"
@@ -1308,7 +1334,7 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            SoundSourceDesc * source = it->second;
+            const SoundSourceDescPtr & source = it->second;
 
             this->stopSoundBufferUpdate_( source );
 
@@ -1318,7 +1344,7 @@ namespace Mengine
                 source->source = nullptr;
             }
 
-            m_poolSoundSourceDesc.destroyT( source );
+            it->second = nullptr;
         }
     }
 }

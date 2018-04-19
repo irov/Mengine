@@ -12,6 +12,7 @@
 #include "Logger/Logger.h"
 
 #include <math.h>
+#include <algorithm>
 
 namespace Mengine
 {

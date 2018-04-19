@@ -17,11 +17,11 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace IniUtil
     {
         struct IniStore;
     }
-
 	//////////////////////////////////////////////////////////////////////////
 	enum ETextHorizontAlign
 	{
@@ -42,7 +42,6 @@ namespace Mengine
 		EFP_NONE = 0x00000000,
 		EFP_FONT = 0x00000001,
 		EFP_COLOR_FONT = 0x00000002,
-		EFP_COLOR_OUTLINE = 0x00000004,
 		EFP_LINE_OFFSET = 0x00000008,
 		EFP_CHAR_OFFSET = 0x00000010,
 		EFP_MAX_LENGTH = 0x00000020,
@@ -53,7 +52,7 @@ namespace Mengine
 	};
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 	struct Glyph
 	{	
         float advance;
@@ -84,13 +83,13 @@ namespace Mengine
 
 	public:
 		virtual void setColourFont( const ColourValue & _colour ) = 0;
-		virtual void setColourOutline( const ColourValue & _colour ) = 0;
 		virtual void setLineOffset( float _lineOffset ) = 0;
 		virtual void setCharOffset( float _charOffset ) = 0;
 
 	public:
         virtual bool validateText( const ConstString & _key, const String & _text ) const = 0;
 		virtual U32String prepareText( const String & _text ) = 0;
+        virtual bool prepareGlyph( const U32String & _code ) = 0;
         
 	public:
 		virtual bool hasGlyph( GlyphCode _char ) const = 0;
@@ -105,8 +104,7 @@ namespace Mengine
 	public:
 		virtual uint32_t getFontParams() const = 0;
 
-		virtual const ColourValue & getColorFont() const = 0;
-		virtual const ColourValue & getColorOutline() const = 0;
+		virtual const ColourValue & getFontColor() const = 0;
 
 		virtual float getLineOffset() const = 0;
 		virtual float getCharOffset() const = 0;
@@ -118,7 +116,7 @@ namespace Mengine
 	typedef stdex::intrusive_ptr<TextFontInterface> TextFontInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class TextEntryInterface
-		: public Factorable
+		: public FactorablePtr
 	{
 	public:
 		virtual const ConstString & getKey() const = 0;
@@ -127,7 +125,6 @@ namespace Mengine
 	public:
 		virtual const ConstString & getFontName() const = 0;
 		virtual const ColourValue & getColorFont() const = 0;
-		virtual const ColourValue & getColorOutline() const = 0;
 		virtual float getLineOffset() const = 0;
 		virtual float getCharOffset() const = 0;
 		virtual float getMaxLength() const = 0;
@@ -140,6 +137,8 @@ namespace Mengine
 	public:
 		virtual uint32_t getFontParams() const = 0;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<TextEntryInterface> TextEntryInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class VisitorTextFontInterface
 	{
@@ -165,7 +164,6 @@ namespace Mengine
 			, const String & _text
 			, const ConstString & _font
 			, const ColourValue & _colorFont
-			, const ColourValue & _colorOutline
 			, float _lineOffset
 			, float _charOffset
 			, float _maxLength
@@ -176,8 +174,8 @@ namespace Mengine
 			, bool _isOverride ) = 0;
 
 	public:
-		virtual bool existText( const ConstString& _key, const TextEntryInterface ** _entry ) const = 0;
-		virtual const TextEntryInterface * getTextEntry( const ConstString& _key ) const = 0;
+		virtual bool existText( const ConstString& _key, TextEntryInterfacePtr* _entry ) const = 0;
+		virtual const TextEntryInterfacePtr & getTextEntry( const ConstString& _key ) const = 0;
 
 	public:
 		virtual bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const = 0;

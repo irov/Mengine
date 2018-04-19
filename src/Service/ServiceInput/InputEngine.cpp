@@ -284,7 +284,7 @@ namespace Mengine
         desc.id = new_id;
         desc.provider = _provider;
 
-		m_mousePositionProviders.push_back( desc );
+		m_mousePositionProviders.emplace_back( desc );
 
         return new_id;
 	}
@@ -332,7 +332,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::pushEvent( const InputUnionEvent & _event )
 	{
-		m_eventsAdd.push_back( _event );
+		m_eventsAdd.emplace_back( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::keyEvent_( const InputKeyEvent & _params )

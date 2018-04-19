@@ -2,7 +2,7 @@
 
 #include "Factory/Factorable.h"
 
-#include "stdex/intrusive_ptr_base.h"
+#include "Core/Mixin.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -13,7 +13,7 @@ namespace Mengine
 {
 	class FactorablePtr
         : public Factorable
-		, public stdex::intrusive_ptr_base<FactorablePtr>
+		, public Mixin
 	{
 	public:
 		FactorablePtr();
@@ -22,11 +22,11 @@ namespace Mengine
 	private:
 		void destroy() override;
 
-	public:
-        uint32_t getReference() const;
+    protected:
+        void destroy_intrusive_ptr() override;
 
 	public:
-		inline static void intrusive_ptr_destroy( FactorablePtr * _ptr );
+        uint32_t getReference() const;
 
 #ifdef STDEX_INTRUSIVE_PTR_DEBUG
 	public:
@@ -38,11 +38,6 @@ namespace Mengine
         void _checkDestroy() override;
 #   endif
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline void FactorablePtr::intrusive_ptr_destroy( FactorablePtr * _ptr )
-	{
-		_ptr->destroy();
-	}
 	//////////////////////////////////////////////////////////////////////////
 #ifdef STDEX_INTRUSIVE_PTR_DEBUG
 	inline bool FactorablePtr::intrusive_ptr_check_ref( FactorablePtr * _ptr )

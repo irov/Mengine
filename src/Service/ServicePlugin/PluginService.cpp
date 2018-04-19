@@ -169,7 +169,7 @@ namespace Mengine
 		desc.dlib = _dlib;
 		desc.plugin = _plugin;
 
-		m_plugins.push_back( desc );
+		m_plugins.emplace_back( desc );
 
 		return true;
 	}

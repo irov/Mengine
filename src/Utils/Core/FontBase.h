@@ -32,10 +32,7 @@ namespace Mengine
 
 	public:
 		void setColourFont( const ColourValue & _colour ) override;
-		const ColourValue & getColorFont() const override;
-
-		void setColourOutline( const ColourValue & _colour ) override;
-		const ColourValue & getColorOutline() const override;
+		const ColourValue & getFontColor() const override;
 
 		void setLineOffset( float _lineOffset ) override;
 		float getLineOffset() const override;
@@ -49,13 +46,14 @@ namespace Mengine
 	public:
         bool validateText( const ConstString & _key, const String & _text ) const override;
 		U32String prepareText( const String & _text ) override;
+        bool prepareGlyph( const U32String & _text ) override;
 
 	protected:
 		bool initializeBase_( const IniUtil::IniStore & _ini );
 		
 	protected:
         virtual bool _validateGlyphes( const U32String & _codes ) const = 0;
-		virtual bool _prepareGlyph( uint32_t _code ) = 0;
+		virtual bool _prepareGlyph( GlyphCode _code ) = 0;
 
 	protected:
 		ConstString m_name;
@@ -63,7 +61,6 @@ namespace Mengine
 		uint32_t m_params;
 
 		ColourValue m_colourFont;
-		ColourValue m_colourOutline;
 
 		float m_lineOffset;
 		float m_charOffset;

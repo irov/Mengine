@@ -29,7 +29,7 @@ namespace Mengine
 
 	public:
 		void stringizeInternal(const Char * _str, ConstString::size_type _size, ConstString & _cstr) override;
-        bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) override;
+        bool stringizeExternal( const ConstStringHolderPtr & _holder, ConstString & _cstr ) override;
 		
     protected:	
 		FactoryPtr m_factoryHolderStringMemory;

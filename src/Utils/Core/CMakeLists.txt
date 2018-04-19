@@ -77,7 +77,9 @@ src
     Pointer.h
 	
     ConstString.h
+    ConstString.cpp
 	ConstStringHolder.h
+    ConstStringHolder.cpp
 	ConstStringHolderLocalString.h
 	ConstStringHolderLocalString.cpp
 	ConstStringTypes.h
@@ -105,6 +107,7 @@ src
     RenderIndex.h
    
     Magic.h    
+    Mixin.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

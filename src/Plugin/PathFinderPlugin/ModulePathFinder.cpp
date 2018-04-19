@@ -174,7 +174,7 @@ namespace Mengine
 			return nullptr;
 		}
 
-		m_maps.push_back( map );
+		m_maps.emplace_back( map );
 
 		return map;
 	}

@@ -60,7 +60,7 @@ namespace Mengine
 			el.node = parallax;
 			el.id = ++m_enumeratorElementId;
 
-			m_elements.push_back( el );
+			m_elements.emplace_back( el );
 
 			m_elementCb.call( true, ED_ALL, i, el.node, el.id );
 		}

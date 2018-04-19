@@ -111,7 +111,7 @@ namespace Mengine
 		force.direction = _direction;
 		force.value = _value;
 
-		m_forces.push_back( force );
+		m_forces.emplace_back( force );
 
 		return true;
 	}
@@ -140,7 +140,7 @@ namespace Mengine
 		impulse.time = _time;
 		impulse.timing = _time;
 
-		m_impulses.push_back( impulse );
+		m_impulses.emplace_back( impulse );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node * BurritoBison::getNode() const
@@ -504,7 +504,7 @@ namespace Mengine
 		desc.test = this->testVelocityEvent_( desc );
 		desc.dead = false;
 			
-		m_velocityEventsAdd.push_back( desc );
+		m_velocityEventsAdd.emplace_back( desc );
 
 		return desc.id;
 	}
@@ -560,7 +560,7 @@ namespace Mengine
 		desc.test = this->testHeightEvent_( desc );
 		desc.dead = false;
 
-		m_heightEventsAdd.push_back( desc );
+		m_heightEventsAdd.emplace_back( desc );
 
 		return desc.id;
 	}
@@ -613,7 +613,7 @@ namespace Mengine
 		desc.cb = _cb;
 		desc.dead = false;
 
-		m_distanceEventsAdd.push_back( desc );
+		m_distanceEventsAdd.emplace_back( desc );
 
 		return desc.id;
 	}

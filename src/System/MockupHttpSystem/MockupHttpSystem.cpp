@@ -67,7 +67,7 @@ namespace Mengine
 		desc.task = task;
 		desc.receiver = _receiver;
 
-		m_receiverDescs.push_back( desc );
+		m_receiverDescs.emplace_back( desc );
 
 		return task_id;
 	}
@@ -97,7 +97,7 @@ namespace Mengine
 		desc.task = task;
 		desc.receiver = _receiver;
 
-		m_receiverDescs.push_back( desc );
+		m_receiverDescs.emplace_back( desc );
 
 		return task_id;
 	}
@@ -154,7 +154,7 @@ namespace Mengine
 		desc.task = task;
 		desc.receiver = _receiver;
 
-		m_receiverDescs.push_back( desc );
+		m_receiverDescs.emplace_back( desc );
 
 		return task_id;
 	}
@@ -186,7 +186,7 @@ namespace Mengine
         desc.task = task;
         desc.receiver = _receiver;
         
-        m_receiverDescs.push_back( desc );
+        m_receiverDescs.emplace_back( desc );
         
         return task_id;
     }

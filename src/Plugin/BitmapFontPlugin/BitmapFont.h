@@ -53,7 +53,6 @@ namespace Mengine
 		
 		ConstString m_category;
 		FilePath m_pathFontImage;
-		FilePath m_pathOutlineImage;
 
         float m_height;
 

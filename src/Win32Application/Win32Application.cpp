@@ -487,7 +487,7 @@ namespace Mengine
 
 		int pNumArgs;
 		LPWSTR * szArglist = CommandLineToArgvW( lpCmdLine, &pNumArgs );
-
+        
 		if( szArglist == NULL )
 		{
 			return false;
@@ -506,7 +506,7 @@ namespace Mengine
 
 			CHAR utf_arg[1024];
 
-			::WideCharToMultiByte(
+            int utf_arg_size = ::WideCharToMultiByte(
 				CP_UTF8
 				, dwConversionFlags
 				, arg
@@ -517,14 +517,17 @@ namespace Mengine
 				, NULL
 				);
 
-			args.push_back( utf_arg );
-		}
+            if( utf_arg_size <= 0 )
+            {
+                return false;
+            }
 
+			args.push_back( utf_arg );
+        }
 		LocalFree( szArglist );
 
 		OPTIONS_SERVICE()
 			->setArgs( args );
-
 
 		SERVICE_CREATE( StringizeService );
 		SERVICE_CREATE( LoggerService );
@@ -566,8 +569,6 @@ namespace Mengine
 			return false;
 		}
 
-
-
 		SERVICE_CREATE( ArchiveService );	
 
 		if( this->initializeArchiveService_() == false )
@@ -608,7 +609,7 @@ namespace Mengine
 		SERVICE_CREATE( TimerSystem );
 		SERVICE_CREATE( TimerService );
 
-#ifdef _DEBUG
+#ifndef NDEBUG
 		{
 			bool developmentMode = HAS_OPTION( "dev" );
 			bool roamingMode = HAS_OPTION( "roaming" );
@@ -720,7 +721,7 @@ namespace Mengine
 		bool devplugins = developmentMode;
 #endif
 #endif
-						
+
 		bool nodevplugins = HAS_OPTION( "nodevplugins" );
 
 		if( devplugins == true && nodevplugins == false )
@@ -847,7 +848,7 @@ namespace Mengine
 		{
 			return false;
 		}
-		
+
 		//mt::vec2f point;
 		//this->calcCursorPosition( point );
 

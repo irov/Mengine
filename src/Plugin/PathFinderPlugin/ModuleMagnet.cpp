@@ -12,6 +12,8 @@
 
 #include "pybind/pybind.hpp"
 
+#include <algorithm>
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -76,7 +78,7 @@ namespace Mengine
 			return nullptr;
 		}
 
-		m_magnetWorlds.push_back( magnet );
+		m_magnetWorlds.emplace_back( magnet );
 
 		return magnet;
 	}

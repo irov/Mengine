@@ -58,7 +58,7 @@ namespace Mengine
 
 		STDEX_THREAD_GUARD_INIT;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
         String m_relationPath;
 		String m_folder;
 		String m_fileName;

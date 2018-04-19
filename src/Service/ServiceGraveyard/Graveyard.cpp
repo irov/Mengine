@@ -4,6 +4,8 @@
 
 #include "Interface/ConfigInterface.h"
 
+#include <algorithm>
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Graveyard, Mengine::Graveyard );
 //////////////////////////////////////////////////////////////////////////
@@ -133,7 +135,7 @@ namespace Mengine
 
 		entry.timing = m_graveyardTime;
 
-		m_textures.push_back( entry );
+		m_textures.emplace_back( entry );
 
 		return true;
 	}

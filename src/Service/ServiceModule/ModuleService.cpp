@@ -110,7 +110,7 @@ namespace Mengine
 			return false;
 		}
 
-		m_modules.push_back( module );
+		m_modules.emplace_back( module );
 
 		return true;
 	}

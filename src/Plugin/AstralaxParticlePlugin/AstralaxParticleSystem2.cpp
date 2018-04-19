@@ -156,7 +156,7 @@ namespace Mengine
 
                     const ResourceImagePtr & resourceImage = container->getAtlasResourceImage( c.file );
 
-                    m_atlases.push_back( resourceImage );
+                    m_atlases.emplace_back( resourceImage );
                 }break;
             case MAGIC_CHANGE_ATLAS_DELETE:
                 {
@@ -809,14 +809,8 @@ namespace Mengine
     {
         int textures = m->textures;
 
-        for( TVectorRenderFragmentShaderCache::const_iterator
-            it = m_renderFragmentShaderCache.begin(),
-            it_end = m_renderFragmentShaderCache.end();
-            it != it_end;
-            ++it )
+        for( const MagicStatesCache & cache : m_renderFragmentShaderCache )
         {
-            const MagicStatesCache & cache = *it;
-
             if( cache.textures != textures )
             {
                 continue;
@@ -940,7 +934,7 @@ namespace Mengine
 
         key.fragmentShader = fragmentShader;
 
-        m_renderFragmentShaderCache.push_back( key );
+        m_renderFragmentShaderCache.emplace_back( key );
 
         return fragmentShader;
     }

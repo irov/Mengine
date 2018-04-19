@@ -372,7 +372,7 @@ namespace Mengine
             {
                 const char * value = _ini.getSettingValues( _section, _key, index );
 
-                _values.push_back( String(value) );
+                _values.emplace_back( String(value) );
             }
 
             return true;
@@ -388,7 +388,7 @@ namespace Mengine
 
 				ConstString cs = Helper::stringizeString( value );
 
-				_values.push_back( cs );
+				_values.emplace_back( cs );
 			}
 
 			return true;
@@ -405,7 +405,7 @@ namespace Mengine
                 WString w_value;
                 Helper::utf8ToUnicodeSize( value, UNICODE_UNSIZE, w_value );
 
-                _values.push_back( w_value );
+                _values.emplace_back( w_value );
             }
 
             return true;
@@ -439,7 +439,7 @@ namespace Mengine
                     return false;
                 }
 
-                _values.push_back( arv );
+                _values.emplace_back( arv );
             }
 
             return true;

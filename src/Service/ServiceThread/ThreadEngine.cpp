@@ -183,7 +183,7 @@ namespace Mengine
 		td.name = _threadName;
 		td.identity = identity;
 
-		m_threads.push_back( td );
+		m_threads.emplace_back( td );
 
 		return true;
 	}
@@ -263,7 +263,7 @@ namespace Mengine
 		desc.progress = false;
 		desc.complete = false;
 
-        m_tasks.push_back( desc );
+        m_tasks.emplace_back( desc );
 
         return true;
 	}
@@ -351,7 +351,7 @@ namespace Mengine
 		taskQueue->setThreadCount( _countThread );
 		taskQueue->setPacketSize( _packetSize );
 
-		m_threadQueues.push_back( taskQueue );
+		m_threadQueues.emplace_back( taskQueue );
 
 		return taskQueue;
 	}

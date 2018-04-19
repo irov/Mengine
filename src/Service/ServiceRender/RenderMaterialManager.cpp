@@ -863,7 +863,7 @@ namespace Mengine
 		uint32_t id = this->makeMaterialIndex_();
 		material->initialize( _materialName, id, material_hash, _primitiveType, _textureCount, _textures, _stage );
 		
-		materials.push_back( material );
+		materials.emplace_back( material );
 
 		return material;
 	}
@@ -910,7 +910,7 @@ namespace Mengine
         uint32_t id = this->makeMaterialIndex_();
         material->initialize( materialName, id, material_hash, _primitiveType, _textureCount, _textures, stage );
 
-        materials.push_back( material );
+        materials.emplace_back( material );
 
         return material;
     }
@@ -976,7 +976,7 @@ namespace Mengine
 		}
 
 		uint32_t materialId = _material->getId();
-		m_materialEnumerators.push_back( materialId );
+		m_materialEnumerators.emplace_back( materialId );
 	}
     //////////////////////////////////////////////////////////////////////////
 	const RenderMaterialStage * RenderMaterialManager::createRenderStageGroup( const ConstString & _name, const RenderMaterialStage & _stage )

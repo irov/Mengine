@@ -17,6 +17,8 @@
 
 #include "pybind/debug.hpp"
 
+#include <algorithm>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -56,7 +58,7 @@ namespace Mengine
                 size_t count = LOGGER_SERVICE()
                     ->getCountMessage( LM_ERROR );
 
-                m_counts.push_back( count );
+                m_counts.emplace_back( count );
             }
 
             void end_bind_call( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
@@ -302,7 +304,7 @@ namespace Mengine
         {
             const ScriptModulePack & pak = *it;
 
-            pathes.push_back( pak.path );
+            pathes.emplace_back( pak.path );
         }
 
         m_moduleFinder->addModulePath( _pak, pathes );
@@ -635,15 +637,12 @@ namespace Mengine
             return true;
         }
 
-        ConstStringHolderPythonString * holder = m_factoryPythonString->createObject();
+        ConstStringHolderPythonStringPtr holder = m_factoryPythonString->createObject();
 
         holder->setPythonObject( (PyObject*)_object );
 
-        if( STRINGIZE_SERVICE()
-            ->stringizeExternal( holder, _cstr ) == false )
-        {
-            holder->destroy();
-        }
+        STRINGIZE_SERVICE()
+            ->stringizeExternal( holder, _cstr );
 
         return true;
     }

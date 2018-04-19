@@ -6,6 +6,7 @@
 #include "Factory/FactoryPool.h"
 
 #include <math.h>
+#include <algorithm>
 
 namespace Mengine
 {
@@ -57,7 +58,7 @@ namespace Mengine
 		actor->setMass( _mass );
 		actor->setNode( _node );
 
-		m_actorsAdd.push_back( actor );
+		m_actorsAdd.emplace_back( actor );
 
 		return actor;
 	}

@@ -175,7 +175,7 @@ namespace Mengine
         buffer.line = _line;
 		buffer.lock = true;
 
-		m_buffers.push_back( buffer );
+		m_buffers.emplace_back( buffer );
 
 		*_memory = buffer.memory;
 

@@ -538,7 +538,7 @@ namespace Mengine
             return;
         }
 
-        DXCALL( m_pD3DDevice, SetTransform, (D3DTS_PROJECTION, (D3DMATRIX*)_projectionMatrix.buff()) );
+        //DXCALL( m_pD3DDevice, SetTransform, (D3DTS_PROJECTION, (D3DMATRIX*)_projectionMatrix.buff()) );
 
         m_projectionMatrix = _projectionMatrix;
     }
@@ -553,7 +553,7 @@ namespace Mengine
             return;
         }
 
-        DXCALL( m_pD3DDevice, SetTransform, (D3DTS_VIEW, (D3DMATRIX*)_modelViewMatrix.buff()) );
+        //DXCALL( m_pD3DDevice, SetTransform, (D3DTS_VIEW, (D3DMATRIX*)_modelViewMatrix.buff()) );
 
         m_modelViewMatrix = _modelViewMatrix;
     }
@@ -568,7 +568,7 @@ namespace Mengine
             return;
         }
 
-        DXCALL( m_pD3DDevice, SetTransform, (D3DTS_WORLD, (D3DMATRIX*)_worldMatrix.buff()) );
+        //DXCALL( m_pD3DDevice, SetTransform, (D3DTS_WORLD, (D3DMATRIX*)_worldMatrix.buff()) );
 
         m_worldMatrix = _worldMatrix;
     }
@@ -1427,7 +1427,7 @@ namespace Mengine
 
             IDirect3DTexture9 * dx_texture = image->getDXTextureInterface();
 
-#ifdef _DEBUG
+#ifndef NDEBUG
             DWORD fillmode;
             DXCALL( m_pD3DDevice, GetRenderState, (D3DRS_FILLMODE, &fillmode) );
 
@@ -1726,7 +1726,7 @@ namespace Mengine
         }
         else
         {
-            m_deferredCompileFragmentShaders.push_back( shader );
+            m_deferredCompileFragmentShaders.emplace_back( shader );
         }
 
         return shader;
@@ -1767,7 +1767,7 @@ namespace Mengine
         }
         else
         {
-            m_deferredCompileVertexShaders.push_back( shader );
+            m_deferredCompileVertexShaders.emplace_back( shader );
         }
 
         return shader;
@@ -1810,7 +1810,7 @@ namespace Mengine
         }
         else
         {
-            m_deferredCompilePrograms.push_back( program );
+            m_deferredCompilePrograms.emplace_back( program );
         }
 
         return program;

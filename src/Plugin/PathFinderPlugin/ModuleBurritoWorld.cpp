@@ -136,7 +136,7 @@ namespace Mengine
 			return nullptr;
 		}
 
-		m_worldsAdd.push_back( world );
+		m_worldsAdd.emplace_back( world );
 
 		return world;
 	}

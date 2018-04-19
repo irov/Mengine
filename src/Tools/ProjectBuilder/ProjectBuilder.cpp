@@ -470,7 +470,7 @@ namespace Mengine
 				float b = pybind::extract<float>( _kernel, i2);
 				float a = pybind::extract<float>( _kernel, i3);
 
-				return ColourValue( a, r, g, b );
+				return ColourValue( r, g, b, a );
 			}
 			else if( pybind::tuple_size( _obj ) == 3 )
 			{
@@ -483,7 +483,7 @@ namespace Mengine
 				float b = pybind::extract<float>( _kernel, i2);
 				float a = 1.f;
 
-				return ColourValue( a, r, g, b );
+				return ColourValue( r, g, b, a );
 			}
 		}
 		else if( pybind::list_check( _obj ) == true )
@@ -500,7 +500,7 @@ namespace Mengine
 				float b = pybind::extract<float>( _kernel, i2);
 				float a = pybind::extract<float>( _kernel, i3);
 
-				return ColourValue( a, r, g, b );
+				return ColourValue( r, g, b, a );
 			}				
 			else if( pybind::list_size( _obj ) == 3 )
 			{
@@ -514,7 +514,7 @@ namespace Mengine
 				float b = pybind::extract<float>( _kernel, i2);
 				float a = 1.f;
 
-				return ColourValue( a, r, g, b );
+				return ColourValue( r, g, b, a );
 			}
 		}
 
@@ -790,7 +790,6 @@ bool run()
 	pybind::def_function( kernel, "spreadingPngAlpha", &Mengine::spreadingPngAlpha, py_tools_module );
 	pybind::def_function( kernel, "writeBin", &Mengine::writeBin, py_tools_module );
 	pybind::def_function( kernel, "writeAek", &Mengine::writeAek, py_tools_module );
-    pybind::def_function( kernel, "parseAem", &Mengine::parseAem, py_tools_module );
 
 
 	pybind::def_function( kernel, "convert", &Mengine::convert, py_tools_module );

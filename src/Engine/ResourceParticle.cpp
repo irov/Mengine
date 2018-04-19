@@ -41,7 +41,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceParticle::addResourceImage( const ResourceImagePtr & _resourceImage )
     {
-        m_resourceImages.push_back( _resourceImage );
+        m_resourceImages.emplace_back( _resourceImage );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t ResourceParticle::getResourceImageCount() const
@@ -116,7 +116,7 @@ namespace Mengine
 		{
 			return true;
 		}
-
+   
 		const ConstString & category = this->getCategory();
 
 		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SERVICE2()
@@ -180,7 +180,7 @@ namespace Mengine
 
                 return false;
             }
-                        
+
 			container->setAtlasResourceImage( it, resourceImage );
 		}
 

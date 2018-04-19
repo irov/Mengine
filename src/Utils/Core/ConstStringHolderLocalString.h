@@ -7,7 +7,7 @@ namespace Mengine
 	class ConstStringHolderLocalString
 		: public ConstStringHolder
 	{	
-	protected:
-        void destroyString() override;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<ConstStringHolderLocalString> ConstStringHolderLocalStringPtr;
 }

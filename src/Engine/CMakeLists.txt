@@ -194,6 +194,8 @@ Object\\\\TextField
 	TextField.h
 	TextLine.cpp
 	TextLine.h
+    TextChar.cpp
+    TextChar.h
 )
 
 ADD_FILTER(

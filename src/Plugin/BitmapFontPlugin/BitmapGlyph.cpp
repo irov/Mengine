@@ -451,14 +451,8 @@ namespace Mengine
         uint32_t hash_code = _code % 257;
         const TVectorGlyphChar & glyps = m_chars[hash_code];
 
-        for( TVectorGlyphChar::const_iterator
-            it = glyps.begin(),
-            it_end = glyps.end();
-            it != it_end;
-            ++it )
-        {
-            const BitmapGlyphChar & glyph = *it;
-			
+        for( const BitmapGlyphChar & glyph : glyps )
+        {			
             if( glyph.code != _code )
             {
                 continue;
@@ -475,14 +469,8 @@ namespace Mengine
         uint32_t hash_code = _code % 257;
         const TVectorGlyphChar & glyps = m_chars[hash_code];
 
-        for( TVectorGlyphChar::const_iterator
-            it = glyps.begin(), 
-            it_end = glyps.end();
-            it != it_end;
-            ++it )
-        {
-            const BitmapGlyphChar & glyph = *it;
-			
+        for( const BitmapGlyphChar & glyph : glyps )
+        {			
             if( glyph.code != _code )
             {
                 continue;
@@ -515,7 +503,7 @@ namespace Mengine
         uint32_t hash_code = _code % 257;
         TVectorGlyphChar & glyps = m_chars[hash_code];
 
-        glyps.push_back( glyphChar );
+        glyps.emplace_back( glyphChar );
 
 		return true;
 	}
@@ -530,7 +518,7 @@ namespace Mengine
         desc.next = _next;
         desc.kerning = _kerning;
 
-        kerning.push_back( desc );
+        kerning.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
     float BitmapGlyph::getKerning( GlyphCode _char, GlyphCode _next ) const

@@ -177,10 +177,10 @@ namespace Mengine
 
 		for( uint32_t i = maxGlyphCount; i != 0; --i )
 		{
-			newAtlas.indices.push_back( i - 1 );
+			newAtlas.indices.emplace_back( i - 1 );
 		}
 
-		atlases.push_back( newAtlas );
+		atlases.emplace_back( newAtlas );
 		
 		TTFAtlas & atlas = atlases.back();
 

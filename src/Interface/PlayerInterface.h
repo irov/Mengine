@@ -27,7 +27,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     class PlayerServiceInterface
         : public ServiceInterface
-		, public InputSystemHandler
+		, public InputHandlerInterface
     {
         SERVICE_DECLARE("PlayerService")
 

@@ -53,6 +53,7 @@ namespace Mengine
 		m_mf = mf;
 
 		m_memory = memory;
+        //stdex::intrusive_this_acquire( m_memory.get() );
 
 		int atlasCount = Magic_GetStaticAtlasCount( m_mf );
 

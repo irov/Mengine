@@ -4,7 +4,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32ThreadMutex::Win32ThreadMutex()
-#ifdef _DEBUG
+#ifndef NDEBUG
         : m_file( nullptr )
         , m_line( 0 )
 #endif
@@ -16,7 +16,7 @@ namespace Mengine
         (void)_file;
         (void)_line;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
         m_file = _file;
         m_line = _line;
 #endif

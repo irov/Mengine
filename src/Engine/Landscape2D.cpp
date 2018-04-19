@@ -243,7 +243,7 @@ namespace Mengine
 				++j;
 			}
 
-			m_elements.push_back( el );
+			m_elements.emplace_back( el );
 		}	
 
 		this->recompile();

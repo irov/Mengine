@@ -30,7 +30,7 @@ namespace Mengine
 
 		trigger->setProvider( _provider );
 
-		m_triggersAdd.push_back( trigger );
+		m_triggersAdd.emplace_back( trigger );
 
 		AOITriggerProviderInterface * triggerProvider = trigger->getProvider();
 
@@ -99,7 +99,7 @@ namespace Mengine
 
 		actor->setProvider( _provider );
 
-		m_actorsAdd.push_back( actor );
+		m_actorsAdd.emplace_back( actor );
 
 		AOIActorProviderInterface * actorProvider = actor->getProvider();
 

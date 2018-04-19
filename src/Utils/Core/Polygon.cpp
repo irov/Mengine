@@ -244,9 +244,9 @@ namespace Mengine
 				uint32_t b = V[v];
 				uint32_t c = V[w];
 
-				_result.push_back( (TVectorIndices::value_type)a );
-				_result.push_back( (TVectorIndices::value_type)b );
-				_result.push_back( (TVectorIndices::value_type)c );
+				_result.emplace_back( (TVectorIndices::value_type)a );
+				_result.emplace_back( (TVectorIndices::value_type)b );
+				_result.emplace_back( (TVectorIndices::value_type)c );
 
 				m++;
 
@@ -340,9 +340,9 @@ namespace Mengine
 				const mt::vec2f & Cb = countour[b];
 				const mt::vec2f & Cc = countour[c];
 
-				_result.push_back( Ca );
-				_result.push_back( Cb );
-				_result.push_back( Cc );
+				_result.emplace_back( Ca );
+				_result.emplace_back( Cb );
+				_result.emplace_back( Cc );
 
 				m++;
 
@@ -376,7 +376,7 @@ namespace Mengine
 	{
 		const BoostPolygon::ring_type & ring = OTHER_IMPL( _polygon ).outer();
 
-		boost::geometry::interior_rings( THIS_IMPL ).push_back( ring );
+		boost::geometry::interior_rings( THIS_IMPL ).emplace_back( ring );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Polygon::correct()
@@ -775,7 +775,7 @@ namespace Mengine
 		{
 			const BoostPolygon & polygon = *it;
 
-			_out.push_back( Polygon( &polygon ) );
+			_out.emplace_back( &polygon );
 		}
 
 		return true;
@@ -802,7 +802,7 @@ namespace Mengine
 		{
 			const BoostPolygon & polygon = *it;
 
-			_out.push_back( Polygon( &polygon ) );
+			_out.emplace_back( &polygon );
 		}
 
 		return true;

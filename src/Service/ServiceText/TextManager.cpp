@@ -20,6 +20,7 @@
 #include "utf8.h"
 
 #include <stdio.h>
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TextService, Mengine::TextManager );
@@ -37,6 +38,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::_initialize()
     {
+        m_factoryTextEntry = new FactoryPool<TextEntry, 128>();
 		m_factoryTextLocalePak = new FactoryPool<TextLocalePack, 4>();
 		m_factoryLocalString = new FactoryPool<ConstStringHolderLocalString, 128>();
 		
@@ -49,8 +51,10 @@ namespace Mengine
         m_fonts.clear();
         m_packs.clear();
 
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextEntry );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextLocalePak );
         
+        m_factoryTextEntry = nullptr;
         m_factoryTextLocalePak = nullptr;
         m_factoryLocalString = nullptr;
     }
@@ -99,7 +103,6 @@ namespace Mengine
             float charScale = 1.f;
 
             ColourValue colorFont;
-            ColourValue colorOutline;
 
             bool isOverride = false;
             bool isEmpty = false;
@@ -205,26 +208,6 @@ namespace Mengine
                     colorFont.setRGBA( r, g, b, a );
 
                     params |= EFP_COLOR_FONT;
-                }
-                else if( strcmp( str_key, "ColorOutline" ) == 0 )
-                {
-                    float r;
-                    float g;
-                    float b;
-                    float a;
-                    if( sscanf( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
-                    {
-                        LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' lineOffset '%s'"
-                            , m_pakName.c_str()
-                            , m_path.c_str()
-                            , text_key.c_str()
-                            , str_value
-                            );
-                    }
-
-                    colorOutline.setRGBA( r, g, b, a );
-
-                    params |= EFP_COLOR_OUTLINE;
                 }
                 else if( strcmp( str_key, "MaxLength" ) == 0 )
                 {
@@ -362,7 +345,7 @@ namespace Mengine
                     );
             }
 
-            m_textManager->addTextEntry( text_key, text, fontName, colorFont, colorOutline, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride );
+            m_textManager->addTextEntry( text_key, text, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride );
         }
 
         void callback_end_node( const char * _node )
@@ -391,7 +374,7 @@ namespace Mengine
             return false;
         }
 
-        m_packs.push_back( pak );
+        m_packs.emplace_back( pak );
 
         MemoryInterfacePtr xml_memory = pak->getXmlBuffer();
 
@@ -650,7 +633,6 @@ namespace Mengine
         , const String & _text
         , const ConstString & _font
         , const ColourValue & _colorFont
-        , const ColourValue & _colorOutline
         , float _lineOffset
         , float _charOffset
         , float _maxLength
@@ -664,11 +646,11 @@ namespace Mengine
 
         if( it_found != m_texts.end() )
         {
-            TextEntry & textEntry_has = it_found->second;
+            const TextEntryPtr & textEntry_has = it_found->second;
 
             if( _isOverride == false )
             {
-                const String & text = textEntry_has.getValue();
+                const String & text = textEntry_has->getValue();
 
                 WString ws_text;
                 Helper::utf8ToUnicode( text, ws_text );
@@ -684,14 +666,14 @@ namespace Mengine
                 return false;
             }
 
-            textEntry_has.initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params );
+            textEntry_has->initialize( _key, _text, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params );
 
             return true;
         }
 
-        TextEntry textEntry;
+        TextEntryPtr textEntry = m_factoryTextEntry->createObject();
 
-        textEntry.initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params );
+        textEntry->initialize( _key, _text, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params );
 
         m_texts.insert( std::make_pair( _key, textEntry ) );
 
@@ -707,7 +689,7 @@ namespace Mengine
             return false;
         }
 
-        m_texts.erase( _key );
+        m_texts.erase( it_found );
 
         return true;
     }
@@ -740,7 +722,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    const TextEntryInterface * TextManager::getTextEntry( const ConstString& _key ) const
+    const TextEntryInterfacePtr & TextManager::getTextEntry( const ConstString& _key ) const
     {
         TMapTextEntry::const_iterator it_found = m_texts.find( _key );
 
@@ -750,15 +732,15 @@ namespace Mengine
                 , _key.c_str()
                 );
 
-            return nullptr;
+            return TextEntryInterfacePtr::none();
         }
 
-        const TextEntry & textEntry = it_found->second;
+        const TextEntryInterfacePtr & textEntry = it_found->second;
 
-        return &textEntry;
+        return textEntry;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextManager::existText( const ConstString& _key, const TextEntryInterface ** _entry ) const
+    bool TextManager::existText( const ConstString& _key, TextEntryInterfacePtr * _entry ) const
     {
         TMapTextEntry::const_iterator it_found = m_texts.find( _key );
 
@@ -767,11 +749,11 @@ namespace Mengine
             return false;
         }
 
-        const TextEntry & textEntry = it_found->second;
+        const TextEntryPtr & textEntry = it_found->second;
 
         if( _entry != nullptr )
         {
-            *_entry = &textEntry;
+            *_entry = textEntry;
         }
 
         return true;
@@ -859,10 +841,10 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            const TextEntry & text = it->second;
+            const TextEntryPtr & text = it->second;
 
-            const ConstString & textKey = text.getKey();
-            const ConstString & fontName = text.getFontName();
+            const ConstString & textKey = text->getKey();
+            const ConstString & fontName = text->getFontName();
 
             if( fontName.empty() == false )
             {
@@ -879,7 +861,7 @@ namespace Mengine
                     continue;
                 }
 
-                const String & value = text.getValue();
+                const String & value = text->getValue();
 
                 if( font->validateText( textKey, value ) == false )
                 {
@@ -898,14 +880,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextManager::createLocalString_( const Char * _text, size_t _size, ConstString & _cstr )
     {
-        ConstStringHolderLocalString * holder = m_factoryLocalString->createObject();
+        ConstStringHolderLocalStringPtr holder = m_factoryLocalString->createObject();
 
         holder->setup( _text, _size, -1 );
 
-        if( STRINGIZE_SERVICE()
-            ->stringizeExternal( holder, _cstr ) == false )
-        {
-            holder->destroy();
-        }
+        STRINGIZE_SERVICE()
+            ->stringizeExternal( holder, _cstr );
     }
 }

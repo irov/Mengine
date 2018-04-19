@@ -2,6 +2,8 @@
 
 #include "Interface/TextInterface.h"
 
+#include "TextChar.h"
+
 #include "Config/Typedef.h"
 #include "Config/String.h"
 
@@ -16,6 +18,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
 	struct CharData
 	{
 		GlyphCode code;
@@ -26,19 +29,21 @@ namespace Mengine
 		mt::vec2f size;
 		
         mt::uv4f uv;
+
+        uint32_t fontId;
 		RenderTextureInterfacePtr texture;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<CharData> TVectorCharData;
-
+    //////////////////////////////////////////////////////////////////////////
 	class TextLine
 	{
 	public:
-        TextLine( float _charOffset );
+        TextLine( uint32_t _layout, float _charOffset );
         ~TextLine();
 
 	public:
-        bool initialize( uint32_t _layout, const TextFontInterfacePtr & _font, const U32String & _text );
+        bool initialize( uint32_t _fontId, const TextFontInterfacePtr & _font, const U32String & _text );
 
 	public:
 		const TVectorCharData & getCharsData() const;
@@ -52,6 +57,7 @@ namespace Mengine
 		void advanceCharOffset( const CharData & _cd, float _charScale, mt::vec2f & _offset ) const;
 
 	private:
+        uint32_t m_layout;
 		float m_length;
 
 		mutable float m_charOffset;

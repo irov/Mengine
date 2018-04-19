@@ -45,7 +45,7 @@ namespace Mengine
 			return;
 		}
 
-		m_actors.push_back( _actor );
+		m_actors.emplace_back( _actor );
 
 		AOIActorProviderInterface * actorProvider = _actor->getProvider();
 		

@@ -333,11 +333,11 @@ namespace Mengine
 		InputMousePositionEvent position;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	class InputSystemHandler
+	class InputHandlerInterface
 	{
 	public:
-		InputSystemHandler(){};
-		virtual ~InputSystemHandler(){};
+		InputHandlerInterface(){};
+		virtual ~InputHandlerInterface(){};
 
 	public:
 		virtual bool handleKeyEvent( const InputKeyEvent & _event ) = 0;

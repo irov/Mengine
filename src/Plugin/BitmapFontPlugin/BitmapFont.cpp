@@ -66,8 +66,6 @@ namespace Mengine
 			return false;
 		}
 
-		IniUtil::getIniValue( _ini, m_name.c_str(), "Outline", m_pathOutlineImage );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -87,25 +85,6 @@ namespace Mengine
 				);
 
 			return false;
-		}
-
-		if( m_pathOutlineImage.empty() == false )
-		{
-			const ConstString & outlineImageCodec = CODEC_SERVICE()
-				->findCodecType( m_pathOutlineImage );
-
-			m_textureOutline = RENDERTEXTURE_SERVICE()
-				->loadTexture( m_category, m_pathOutlineImage, outlineImageCodec );
-
-			if( m_textureOutline == nullptr )
-			{
-				LOGGER_ERROR("TextFont::_compile '%s' can't loaded outline image file '%s'"
-					, m_name.c_str()
-					, m_pathOutlineImage.c_str()
-					);
-
-				return false;
-			}
 		}
 
 		return true;

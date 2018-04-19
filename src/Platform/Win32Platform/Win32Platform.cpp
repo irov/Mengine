@@ -225,7 +225,7 @@ namespace Mengine
 
 		bool nopause = HAS_OPTION( "nopause" );
 
-#ifndef _DEBUG
+#ifdef NDEBUG
 		try
 #endif
 		{
@@ -292,7 +292,7 @@ namespace Mengine
 				m_update = false;
 			}
 		}
-#ifndef _DEBUG
+#ifdef NDEBUG
 		catch( const std::exception & ex )
 		{
 			LOGGER_CRITICAL("Win32Platform std::exception '%s'"
@@ -1364,7 +1364,7 @@ namespace Mengine
 
 		for( ;; )
 		{
-			paths.push_back( fullPath );
+			paths.emplace_back( fullPath );
 
 			if( Helper::pathRemoveFileSpec( fullPath ) == false )
 			{

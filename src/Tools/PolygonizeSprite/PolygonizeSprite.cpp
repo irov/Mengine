@@ -178,8 +178,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	std::stringstream ss_vertices( vertices );
 
-	//Sleep( 10000 );
-
 	std::vector<float> positions;
 
 	for( ;; )

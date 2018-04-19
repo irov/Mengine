@@ -20,7 +20,6 @@ namespace Mengine
 			, const String & _text
 			, const ConstString & _font
 			, const ColourValue & _colorFont
-			, const ColourValue & _colorOutline
 			, float _lineOffset
 			, float _charOffset
 			, float _maxLength
@@ -36,7 +35,6 @@ namespace Mengine
 	public:
 		const ConstString & getFontName() const override;
 		const ColourValue & getColorFont() const override;
-		const ColourValue & getColorOutline() const override;
 		float getLineOffset() const override;
 		float getCharOffset() const override;
 		float getMaxLength() const override;
@@ -54,7 +52,6 @@ namespace Mengine
 		ConstString m_fontName;
 
 		ColourValue m_colorFont;
-		ColourValue m_colorOutline;
 
 		float m_lineOffset;
 		float m_charOffset;

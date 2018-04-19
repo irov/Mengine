@@ -94,7 +94,7 @@ namespace Mengine
 
 		const MagnetActorPtr & exception_actor = _actor->m_actor;
 
-		m_exceptions.push_back( exception_actor );
+		m_exceptions.emplace_back( exception_actor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeMagnetActor::setMagnetWorld( const MagnetWorldPtr & _magnet )

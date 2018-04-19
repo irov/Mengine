@@ -151,7 +151,7 @@ namespace Mengine
             return INVALID_HANDLE_VALUE;
         }
 
-#ifdef _DEBUG
+#ifndef NDEBUG
         if( this->validateFile_( pathCorrect ) == false )
         {
             ::CloseHandle( handle );

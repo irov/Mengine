@@ -65,7 +65,7 @@ namespace Mengine
 		actor->setIFF( _iff );
 		actor->setActive( _active );
 
-		m_actorsAdd.push_back( actor );
+		m_actorsAdd.emplace_back( actor );
 
 		return actor;
 	}

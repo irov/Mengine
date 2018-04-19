@@ -620,12 +620,6 @@ namespace Mengine
         const RenderMaterialStage * stage = _material->getStage();
 
         this->updateStage_( stage );
-
-        if( m_currentProgram != nullptr )
-        {
-            RENDER_SYSTEM()
-                ->updateProgram( m_currentProgram );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::renderObject_( RenderObject * _renderObject )
@@ -638,6 +632,9 @@ namespace Mengine
         RenderMaterialInterface * material = _renderObject->material;
 
         this->updateMaterial_( material );
+
+        RENDER_SYSTEM()
+            ->updateProgram( m_currentProgram );
 
         if( m_currentIndexBuffer != _renderObject->indexBuffer )
         {
@@ -708,8 +705,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::restoreRenderSystemStates_()
     {
-        m_renderPasses.clear();
         m_renderBatches.clear();
+        m_renderPasses.clear();
         m_renderObjects.clear();
 
         m_debugVertices.clear();
@@ -1067,7 +1064,7 @@ namespace Mengine
         new_batch->vbPos = 0;
         new_batch->ibPos = 0;
 
-        m_renderBatches.push_back( new_batch );
+        m_renderBatches.emplace_back( new_batch );
 
         const RenderBatchPtr & batch = m_renderBatches.back();
 
@@ -1384,7 +1381,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertex2D * RenderEngine::getDebugRenderVertex2D( size_t _count )
     {
-        m_debugVertices.push_back( TArrayRenderVertex2D() );
+        m_debugVertices.emplace_back( TArrayRenderVertex2D() );
         TArrayRenderVertex2D & vertices_array = m_debugVertices.back();
         vertices_array.resize( _count );
 

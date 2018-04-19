@@ -26,7 +26,7 @@ namespace Mengine
     class RenderClipplaneInterface;
 	
     class MousePickerTrapInterface
-        : public InputSystemHandler
+        : public InputHandlerInterface
     {
     public:
 		virtual bool pick( const mt::vec2f& _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Resolution & _contentResolution, Arrow * _arrow ) = 0;
@@ -45,7 +45,7 @@ namespace Mengine
 
     class MousePickerSystemInterface
         : public ServiceInterface
-        , public InputSystemHandler
+        , public InputHandlerInterface
     {
         SERVICE_DECLARE( "MousePickerSystem" )
 

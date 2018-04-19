@@ -13,7 +13,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class GameServiceInterface
         : public ServiceInterface
-        , public InputSystemHandler
+        , public InputHandlerInterface
     {
         SERVICE_DECLARE("GameService")
 

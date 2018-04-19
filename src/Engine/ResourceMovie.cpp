@@ -438,7 +438,7 @@ namespace Mengine
 				|| layer.type == CONST_STRING( MovieTextCenter)
 				)
 			{
-				const TextEntryInterface * entry;
+				TextEntryInterfacePtr entry;
 				if( TEXT_SERVICE()
 					->existText( layer.name, &entry ) == false )
 				{
@@ -499,7 +499,7 @@ namespace Mengine
         {
             const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & meta_layer2d = *it;
 			
-            m_layers.push_back( MovieLayer() );
+            m_layers.emplace_back( MovieLayer() );
             MovieLayer & ml = m_layers.back();
 
             ml.state = 0;
@@ -562,7 +562,7 @@ namespace Mengine
         {
             const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & meta_layer3d = *it;
 
-            m_layers.push_back( MovieLayer() );
+            m_layers.emplace_back( MovieLayer() );
             MovieLayer & ml = m_layers.back();
 
             ml.state |= MOVIE_LAYER_THREED;

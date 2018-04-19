@@ -318,14 +318,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 	void Box2DModule::_finalize()
     {
-		for( TVectorWorlds::iterator
-			it = m_worlds.begin(),
-			it_end = m_worlds.end();
-		it != it_end;
-		++it )
+		for( Box2DWorld * world : m_worlds )
 		{
-			Box2DWorld * world = *it;
-
 			world->finalize();
 
 			delete world;
@@ -344,7 +338,7 @@ namespace Mengine
 			return nullptr;
 		}
 
-		m_worldsAdd.push_back( world );
+		m_worldsAdd.emplace_back( world );
 
 		return world;
     }
@@ -370,14 +364,8 @@ namespace Mengine
 		m_worlds.insert( m_worlds.end(), m_worldsAdd.begin(), m_worldsAdd.end() );
 		m_worldsAdd.clear();
 
-		for( TVectorWorlds::iterator
-			it = m_worlds.begin(),
-			it_end = m_worlds.end();
-		it != it_end;
-		++it )
+		for( Box2DWorld * world : m_worlds )
 		{
-			Box2DWorld * world = *it;
-
 			if( world->isDead() == true )
 			{
 				continue;

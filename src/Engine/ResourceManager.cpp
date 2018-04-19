@@ -530,7 +530,7 @@ namespace Mengine
 		
 		TVectorResources & cahce_resources = it_cache_found->second;
 
-		cahce_resources.push_back( resource );
+		cahce_resources.emplace_back( resource );
 
 		if( insert_result.second == false )
 		{

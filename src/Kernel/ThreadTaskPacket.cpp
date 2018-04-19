@@ -18,7 +18,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskPacket::addTask( const ThreadTaskPtr & _task )
 	{
-		m_tasks.push_back( _task );	
+		m_tasks.emplace_back( _task );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ThreadTaskPtr & ThreadTaskPacket::getTask( uint32_t _index ) const

@@ -83,7 +83,7 @@ namespace Mengine
 
 		const CollisionActorPtr & exception_actor = _actor->m_actor;
 
-		m_exceptions.push_back( exception_actor );
+		m_exceptions.emplace_back( exception_actor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCollisionActor::setCollisionWorld( const CollisionWorldPtr & _collision )

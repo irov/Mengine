@@ -2,8 +2,4 @@
 
 namespace Mengine
 {
-    void ConstStringHolderLocalString::destroyString()
-    {
-        this->destroy();
-    }
 }

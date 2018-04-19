@@ -105,7 +105,7 @@ namespace Mengine
 			return false;
 		}
 
-		m_loggers.push_back( _logger );
+		m_loggers.emplace_back( _logger );
 
 		return true;
 	}

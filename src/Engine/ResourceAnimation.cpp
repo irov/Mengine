@@ -44,7 +44,7 @@ namespace Mengine
 
             m_duration += delay;
 
-            m_sequence.push_back( sq );
+            m_sequence.emplace_back( sq );
         }
 
         return true;

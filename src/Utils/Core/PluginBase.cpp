@@ -114,7 +114,7 @@ namespace Mengine
 			return false;
 		}
 
-		m_moduleFactories.push_back(_name);
+		m_moduleFactories.emplace_back(_name);
 
 		return true;
 	}

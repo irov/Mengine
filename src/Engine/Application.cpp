@@ -272,7 +272,7 @@ namespace Mengine
 			this->calcWindowResolution( m_currentResolution );
 		}
 
-        const TextEntryInterface * entry;
+        TextEntryInterfacePtr entry;
         if( TEXT_SERVICE()
             ->existText( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
         {

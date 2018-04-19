@@ -7,6 +7,8 @@
 
 #include "math/ccd.h"
 
+#include <algorithm>
+
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -186,7 +188,7 @@ namespace Mengine
 		
 		ground->initialize( p, _cb );
 
-		m_grounds.push_back( ground );
+		m_grounds.emplace_back( ground );
 
 		return ground;
 	}
@@ -198,7 +200,7 @@ namespace Mengine
 		bound.less = _less;
 		bound.cb = _cb;
 
-		m_unitBounds.push_back( bound );
+		m_unitBounds.emplace_back( bound );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoWorld::createLayer( const ConstString & _layerName, const mt::vec3f & _parallax, uint32_t _count, float _width, const pybind::object & _cb )
@@ -211,7 +213,7 @@ namespace Mengine
 
 		layer.endless->initialize( _count, _width, _parallax, _cb );
 
-		m_layers.push_back( layer );
+		m_layers.emplace_back( layer );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BurritoUnit * BurritoWorld::addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, const pybind::object & _cb )
@@ -237,7 +239,7 @@ namespace Mengine
 			BurritoUnit * unit = new BurritoUnit;
 			unit->initialize( _node, _position, _velocity, _radius, _collide, _cb );
 			
-			layer.unitsAdd.push_back( unit );
+			layer.unitsAdd.emplace_back( unit );
 
 			return unit;
 		}
@@ -303,7 +305,7 @@ namespace Mengine
 			bound.less = _less;
 			bound.cb = _cb;
 
-			layer.unitBounds.push_back( bound );
+			layer.unitBounds.emplace_back( bound );
 
 			return true;
 		}

@@ -11,6 +11,10 @@ namespace Mengine
 
 	class Tags
 	{
+    public:
+        Tags();
+        ~Tags();
+
 	public:
 		void addTag( const ConstString & _tag );		
 		bool hasTag( const ConstString & _tag ) const;

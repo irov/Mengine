@@ -2,6 +2,8 @@
 
 #include "stdex/stl_vector.h"
 
+#include <algorithm>
+
 namespace Mengine
 {
     template<class T>
@@ -47,7 +49,7 @@ namespace Mengine
     class ResourceCacher<T>::FEraseCacher
     {
     public:
-        bool operator () ( ResourceCacher<T>::ResourceCacherDesc & _desc )
+        bool operator () ( ResourceCacher<T>::ResourceCacherDesc & _desc ) const
         {
             _desc.lock = false;
 
@@ -72,7 +74,7 @@ namespace Mengine
         desc.use = true;
         desc.lock = false;
 
-        m_cachers.push_back( desc );
+        m_cachers.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>
@@ -106,14 +108,8 @@ namespace Mengine
     template<class T>
     void ResourceCacher<T>::lock()
     {
-        for( typename TVectorResourceCacherDesc::iterator
-            it = m_cachers.begin(),
-            it_end = m_cachers.end();
-            it != it_end;
-            ++it )
+        for( ResourceCacherDesc & desc : m_cachers )
         {
-            ResourceCacherDesc & desc = *it;
-
             desc.lock = true;
         }
     }
@@ -135,14 +131,8 @@ namespace Mengine
     template<class T>
     T ResourceCacher<T>::findCache()
     {
-        for( typename TVectorResourceCacherDesc::iterator
-            it = m_cachers.begin(),
-            it_end = m_cachers.end();
-            it != it_end;
-            ++it )
+        for( ResourceCacherDesc & desc : m_cachers )
         {
-            ResourceCacherDesc & desc = *it;
-
             if( desc.use == true )
             {
                 continue;

@@ -26,6 +26,11 @@ namespace Mengine
 		Factorable::destroy();
 	}
     //////////////////////////////////////////////////////////////////////////
+    void FactorablePtr::destroy_intrusive_ptr()
+    {
+        this->destroy();
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t FactorablePtr::getReference() const
     {
         return m_reference;

@@ -265,7 +265,7 @@ namespace Mengine
 			return false;
 		}
 				
-		m_packages.push_back( package );
+		m_packages.emplace_back( package );
 		
 		if( _desc.immediately == true )
 		{
@@ -354,7 +354,7 @@ namespace Mengine
 				continue;
 			}
 
-			_packs.push_back( package );
+			_packs.emplace_back( package );
 
 			hasLocale = true;
 		}
@@ -391,7 +391,7 @@ namespace Mengine
 				continue;
 			}
 
-			packages.push_back( pack );
+			packages.emplace_back( pack );
 		}
 
 		if( this->loadLocalePacksByName_( packages, _locale, _platformTags ) == false )
@@ -482,7 +482,7 @@ namespace Mengine
 				continue;
 			}
 
-			packages.push_back( package );
+			packages.emplace_back( package );
 		}
 
 		for( TVectorPackage::const_iterator
@@ -528,7 +528,7 @@ namespace Mengine
 				continue;
 			}
 
-			packages.push_back( package );
+			packages.emplace_back( package );
 		}
 
 		for( TVectorPackage::const_iterator

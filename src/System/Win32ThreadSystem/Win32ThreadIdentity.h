@@ -37,7 +37,7 @@ namespace Mengine
 		volatile bool m_complete;
 		volatile bool m_exit;
 
-#ifdef _DEBUG
+#ifndef NDEBUG
         const Char * m_file;
         uint32_t m_line;
 #endif

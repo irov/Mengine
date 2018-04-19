@@ -126,7 +126,7 @@ namespace Mengine
 		_cstr = ConstString(holder);
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool StringizeService::stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr )
+    bool StringizeService::stringizeExternal( const ConstStringHolderPtr & _holder, ConstString & _cstr )
     {
         const ConstStringHolder::value_type * holder_str = _holder->c_str();
         ConstStringHolder::size_type holder_size = _holder->size();
@@ -160,7 +160,7 @@ namespace Mengine
             return false;
         }
 
-		this->addHolder_( _holder, holder_hash );
+		this->addHolder_( _holder.get(), holder_hash );
 
 		_cstr = ConstString(_holder);
 

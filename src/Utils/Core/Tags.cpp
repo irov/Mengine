@@ -4,10 +4,18 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    Tags::Tags()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Tags::~Tags()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Tags::addTag( const ConstString & _tag )
 	{
-		m_tags.push_back( _tag );
+		m_tags.emplace_back( _tag );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Tags::hasTag( const ConstString & _tag ) const
@@ -19,14 +27,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Tags::inTags( const Tags & _tag ) const
 	{
-		for( TVectorConstString::const_iterator
-			it = _tag.m_tags.begin(),
-			it_end = _tag.m_tags.end();
-		it != it_end;
-		++it )
+		for( const ConstString & tag : _tag.m_tags )
 		{
-			const ConstString & tag = *it;
-
 			if( this->hasTag( tag ) == false )
 			{
 				return false;

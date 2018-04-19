@@ -166,6 +166,11 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
                 , resource_sound->path
             );
 
+            if( resource_sound->duration > 3.f )
+            {
+                fprintf( f, "       <IsStreamable Value = \"1\"/>" );
+            }
+
             fprintf( f, "   </Resource>\n" );
         }break;
     case AE_MOVIE_RESOURCE_PARTICLE:

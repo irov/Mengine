@@ -1223,6 +1223,16 @@ namespace Mengine
             m_textureEnable[i] = false;
         }
 
+        IF_DXCALL( m_pD3DDevice, SetVertexShader, (nullptr) )
+        {
+            return false;
+        }
+
+        IF_DXCALL( m_pD3DDevice, SetPixelShader, (nullptr) )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

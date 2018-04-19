@@ -89,10 +89,6 @@ namespace Mengine
                 return false;
             }
         }
-        else
-        {
-            //DXCALL( _pD3DDevice, SetVertexDeclaration, (nullptr) );            
-        }
 
 		return true;
 	}

@@ -1750,10 +1750,10 @@ namespace Mengine
 
                         m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
-                        RenderVertex2D * vertexBuffer = &m.vertices[0];
+                        const RenderVertex2D * vertexBuffer = &m.vertices[0];
                         uint32_t vertexSize = (uint32_t)m.vertices.size();
 
-                        RenderIndex * indexBuffer = &m.indices[0];
+                        const RenderIndex * indexBuffer = &m.indices[0];
                         uint32_t indexSize = (uint32_t)m.indices.size();
 
                         _renderService
@@ -1793,10 +1793,10 @@ namespace Mengine
 
                         m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
-                        RenderVertex2D * vertexBuffer = &m.vertices[0];
+                        const RenderVertex2D * vertexBuffer = &m.vertices[0];
                         uint32_t vertexSize = (uint32_t)m.vertices.size();
 
-                        RenderIndex * indexBuffer = &m.indices[0];
+                        const RenderIndex * indexBuffer = &m.indices[0];
                         uint32_t indexSize = (uint32_t)m.indices.size();
 
                         _renderService
@@ -1842,10 +1842,10 @@ namespace Mengine
 
                         m.material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
 
-                        RenderVertex2D * vertexBuffer = &m.vertices[0];
+                        const RenderVertex2D * vertexBuffer = &m.vertices[0];
                         uint32_t vertexSize = (uint32_t)m.vertices.size();
 
-                        RenderIndex * indexBuffer = &m.indices[0];
+                        const RenderIndex * indexBuffer = &m.indices[0];
                         uint32_t indexSize = (uint32_t)m.indices.size();
 
                         _renderService
@@ -1886,10 +1886,10 @@ namespace Mengine
 
                         m.material = surfaceVideo->getMaterial();
 
-                        RenderVertex2D * vertexBuffer = &m.vertices[0];
+                        const RenderVertex2D * vertexBuffer = &m.vertices[0];
                         uint32_t vertexSize = (uint32_t)m.vertices.size();
 
-                        RenderIndex * indexBuffer = &m.indices[0];
+                        const RenderIndex * indexBuffer = &m.indices[0];
                         uint32_t indexSize = (uint32_t)m.indices.size();
 
                         _renderService
@@ -1960,10 +1960,10 @@ namespace Mengine
 
                         m.material = surfaceTrackMatte->getMaterial();
 
-                        RenderVertex2D * vertexBuffer = &m.vertices[0];
+                        const RenderVertex2D * vertexBuffer = &m.vertices[0];
                         uint32_t vertexSize = (uint32_t)m.vertices.size();
 
-                        RenderIndex * indexBuffer = &m.indices[0];
+                        const RenderIndex * indexBuffer = &m.indices[0];
                         uint32_t indexSize = (uint32_t)m.indices.size();
 
                         _renderService

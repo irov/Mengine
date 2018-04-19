@@ -538,8 +538,6 @@ namespace Mengine
             return;
         }
 
-        //DXCALL( m_pD3DDevice, SetTransform, (D3DTS_PROJECTION, (D3DMATRIX*)_projectionMatrix.buff()) );
-
         m_projectionMatrix = _projectionMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -553,8 +551,6 @@ namespace Mengine
             return;
         }
 
-        //DXCALL( m_pD3DDevice, SetTransform, (D3DTS_VIEW, (D3DMATRIX*)_modelViewMatrix.buff()) );
-
         m_modelViewMatrix = _modelViewMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -567,8 +563,6 @@ namespace Mengine
 
             return;
         }
-
-        //DXCALL( m_pD3DDevice, SetTransform, (D3DTS_WORLD, (D3DMATRIX*)_worldMatrix.buff()) );
 
         m_worldMatrix = _worldMatrix;
     }

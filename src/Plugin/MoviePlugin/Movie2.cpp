@@ -1718,6 +1718,11 @@ namespace Mengine
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:
                     {
+                        if( mesh.vertexCount == 0 )
+                        {
+                            continue;
+                        }
+
                         Mesh & m = meshes_buffer[mesh_iterator++];
 
                         m.vertices.resize( mesh.vertexCount );
@@ -1756,6 +1761,11 @@ namespace Mengine
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOLID:
                     {
+                        if( mesh.vertexCount == 0 )
+                        {
+                            continue;
+                        }
+
                         Mesh & m = meshes_buffer[mesh_iterator++];
 
                         m.vertices.resize( mesh.vertexCount );
@@ -1795,24 +1805,14 @@ namespace Mengine
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
                     {
-                        ResourceImage * resource_image = static_cast<ResourceImage *>(resource_reference);
-
-                        if( resource_image == nullptr )
-                        {
-                            LOGGER_ERROR( "Movie2::_render '%s' invalid resource for image"
-                                , this->getName().c_str()
-                                , this->getResourceMovie2()->getName().c_str()
-                            );
-
-                            continue;
-                        }
-
-                        Mesh & m = meshes_buffer[mesh_iterator++];
-
                         if( mesh.vertexCount == 0 )
                         {
                             continue;
                         }
+
+                        ResourceImage * resource_image = static_cast<ResourceImage *>(resource_reference);
+
+                        Mesh & m = meshes_buffer[mesh_iterator++];
 
                         m.vertices.resize( mesh.vertexCount );
 
@@ -1853,6 +1853,11 @@ namespace Mengine
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
+                        if( mesh.vertexCount == 0 )
+                        {
+                            continue;
+                        }
+
                         SurfaceVideo * surfaceVideo = static_cast<SurfaceVideo *>(mesh.element_data);
 
                         Mesh & m = meshes_buffer[mesh_iterator++];
@@ -1900,12 +1905,12 @@ namespace Mengine
                 {
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
                     {
-                        const SurfaceTrackMatte * surfaceTrackMatte = static_cast<const SurfaceTrackMatte *>(mesh.element_data);
-
-                        if( surfaceTrackMatte == nullptr )
+                        if( mesh.vertexCount == 0 )
                         {
-                            return;
+                            continue;
                         }
+
+                        const SurfaceTrackMatte * surfaceTrackMatte = static_cast<const SurfaceTrackMatte *>(mesh.element_data);
 
                         Mesh & m = meshes_buffer[mesh_iterator++];
 
@@ -1918,8 +1923,8 @@ namespace Mengine
 
                         const aeMovieRenderMesh * track_matte_mesh = &track_matte_desc->mesh;
 
-                        const RenderTextureInterfacePtr & texture_trackmatte = resourceTrackMatteImage->getTexture();
-                        const mt::uv4f & texture_trackmatte_uv = texture_trackmatte->getUV();
+                        //const RenderTextureInterfacePtr & texture_trackmatte = resourceTrackMatteImage->getTexture();
+                        //const mt::uv4f & texture_trackmatte_uv = texture_trackmatte->getUV();
 
                         for( uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
@@ -1941,8 +1946,10 @@ namespace Mengine
                                 mt::vec2f( track_matte_mesh->uv[0] ), mt::vec2f( track_matte_mesh->uv[1] ), mt::vec2f( track_matte_mesh->uv[2] ),
                                 vp.to_vec2f()
                             );
+
+                            resourceTrackMatteImage->correctUVImage( v.uv[1], uv_track_matte );
                             
-                            mt::multiply_tetragon_uv4_v2( v.uv[1], texture_trackmatte_uv, uv_track_matte );
+                            //mt::multiply_tetragon_uv4_v2( v.uv[1], texture_trackmatte_uv, uv_track_matte );
 
                             v.color = total_mesh_color;
                         }
@@ -1952,11 +1959,6 @@ namespace Mengine
                         //EMaterialBlendMode blend_mode = getMovieBlendMode( mesh.blend_mode );
 
                         m.material = surfaceTrackMatte->getMaterial();
-
-                        if( m.vertices.size() == 0 )
-                        {
-                            continue;
-                        }
 
                         RenderVertex2D * vertexBuffer = &m.vertices[0];
                         uint32_t vertexSize = (uint32_t)m.vertices.size();

@@ -44,8 +44,8 @@ namespace Mengine
 	public:
 		bool isLayerPermanentlyHide( uint32_t _layerIndex ) const override;
 
-	public:
-		Pointer allocateMemory( size_t _size ) const override;
+    public:
+        Pointer allocateMemory( size_t _size ) const override;
 
 	public:
         MovieLayerTimeRemap & mutableLayerTimeRemap( uint32_t _index );

@@ -131,6 +131,7 @@
 #include "Core/IniUtil.h"
 
 #include "stdex/allocator.h"
+#include "stdex/allocator_report.h"
 #include "stdex/stl_list.h"
 
 #include <ctime>
@@ -946,43 +947,22 @@ namespace Mengine
 
 			if( _event.code == KC_F3 && _event.isDown == true )
             {
-				stdex_memory_info_t mi[25];
-                size_t count = stdex_allocator_memoryinfo( mi, 25 );
-
-				size_t pool_now = 0;
-				size_t pool_max = 0;
+                size_t count = stdex_allocator_report_count();
 
 				for( size_t i = 0; i != count; ++i )
 				{
-					const stdex_memory_info_t & m = mi[i];
+                    stdex_memory_report_t * report = stdex_allocator_report_info( i );
 
-					pool_now += m.block_size * m.block_count;
-					pool_max += m.block_size * m.block_total * m.chunk_count;
-
-					printf("block %u:%u %u alloc %u:%u over %.2f\n"
-						, (uint32_t)m.block_size
-						, (uint32_t)m.chunk_count
-						, (uint32_t)m.block_count
-						, (uint32_t)(m.block_size * m.block_count)
-						, (uint32_t)(m.block_size * m.block_total * m.chunk_count)
-						, ( m.block_count > 0 ) ? float(m.block_size * m.block_total * m.chunk_count) / float(m.block_size * m.block_count) : 0.f
+                    LOGGER_ERROR( "block %s size [%u]"
+                        , report->name
+                        , report->count
 						);
 				}
 
-				float pool_now_mb = float(pool_now / (1024.f * 1024.f));
-				float pool_max_mb = float(pool_max / (1024.f * 1024.f));
-				printf("-------------------------------------\n");
-				printf("pool %.3f:%.3f\n", pool_now_mb, pool_max_mb);
-
 				size_t global = stdex_allocator_globalmemoryuse();
 				float global_mb = float(global / (1024.f * 1024.f));
-				printf("-------------------------------------\n");
-				printf("global %.3f\n", global_mb);
-
-				float total_now_mb = pool_now_mb + global_mb;;
-				float total_max_mb = pool_max_mb + global_mb;
-				printf("-------------------------------------\n");
-				printf("total %.3f:%.3f\n", total_now_mb, total_max_mb);
+                LOGGER_ERROR("-------------------------------------");
+                LOGGER_ERROR("global %.3f", global_mb);
             }
 
 			if( _event.code == KC_F2 && _event.isDown == true )

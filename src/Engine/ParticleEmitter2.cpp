@@ -191,11 +191,11 @@ namespace Mengine
 
         m_resourceParticle.release();
 
-		Helper::freeMemory( m_vertices );
+		Helper::freeMemoryT( m_vertices );
 		m_vertices = nullptr;
 		m_vertexCount = 0;
 
-		Helper::freeMemory( m_indicies );
+		Helper::freeMemoryT( m_indicies );
 		m_indicies = nullptr;
 		m_indexCount = 0;		
 	}

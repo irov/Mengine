@@ -8,22 +8,22 @@
 
 namespace Mengine
 {
-	class FactoryService
-		: public ServiceBase<FactoryServiceInterface>
-	{
-	public:
-		FactoryService();
-		~FactoryService() override;
+    class FactoryService
+        : public ServiceBase<FactoryServiceInterface>
+    {
+    public:
+        FactoryService();
+        ~FactoryService() override;
 
-	public:
-		void registerFactory(const Factory * _factory) override;
-		void unregisterFactory( const Factory * _factory) override;
+    public:
+        void registerFactory( const Factory * _factory ) override;
+        void unregisterFactory( const Factory * _factory ) override;
 
-	public:
-		void visitFactories(VisitorFactoryService * _visitor) override;
+    public:
+        void visitFactories( VisitorFactoryService * _visitor ) override;
 
-	protected:
-		typedef stdex::vector<const Factory *> TVectorFactories;
-		TVectorFactories m_factories;
-	};
+    protected:
+        typedef stdex::vector<const Factory *> TVectorFactories;
+        TVectorFactories m_factories;
+    };
 }

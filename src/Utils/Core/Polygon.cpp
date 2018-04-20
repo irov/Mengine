@@ -261,7 +261,7 @@ namespace Mengine
 			}
 		}
 
-		Helper::freeMemory( V );
+		Helper::freeMemoryT( V );
 
 		return true;
 	}
@@ -357,7 +357,7 @@ namespace Mengine
 			}
 		}
 
-		Helper::freeMemory( V );
+		Helper::freeMemoryT( V );
 
 		return true;
 	}

@@ -20,7 +20,7 @@
 #include "jpeglib.h"
 #include "jmemsys.h"		/* import the system-dependent declarations */
 
-#	include "stdex/allocator.h"
+#include "stdex/allocator.h"
 
 
 /*
@@ -33,7 +33,7 @@ jpeg_get_small (j_common_ptr cinfo, size_t sizeofobject)
 {
 	(void)cinfo;
 
-  return (void *) stdex_malloc(sizeofobject);
+  return (void *) stdex_malloc(sizeofobject, "jpeg_small");
 }
 
 GLOBAL(void)
@@ -42,7 +42,7 @@ jpeg_free_small (j_common_ptr cinfo, void * object, size_t sizeofobject)
 	(void)cinfo;
 	(void)sizeofobject;
 
-	stdex_free( object );
+	stdex_free( object, "jpeg_small" );
 }
 
 
@@ -58,7 +58,7 @@ jpeg_get_large (j_common_ptr cinfo, size_t sizeofobject)
 {
 	(void)cinfo;
 
-	return (void FAR *) stdex_malloc( sizeofobject );
+	return (void FAR *) stdex_malloc( sizeofobject, "jpeg_large" );
 }
 
 GLOBAL(void)
@@ -67,7 +67,7 @@ jpeg_free_large (j_common_ptr cinfo, void FAR * object, size_t sizeofobject)
 	(void)cinfo;
 	(void)sizeofobject;
 
-	stdex_free( object );
+    stdex_free( object, "jpeg_large" );
 }
 
 

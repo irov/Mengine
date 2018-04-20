@@ -130,7 +130,7 @@ namespace Mengine
 		{
 			CacheBufferMemory & buffer = m_buffers[minIndex];
 						
-			void * memory = Helper::reallocateMemory( buffer.memory, _size );
+			void * memory = Helper::reallocateMemory( buffer.memory, _size, "MemoryManager" );
 
 			if( memory == nullptr )
 			{
@@ -154,7 +154,7 @@ namespace Mengine
 			return buffer.id;
 		}
 		
-		uint8_t * memory = Helper::allocateMemoryT<uint8_t>( _size );
+		uint8_t * memory = (uint8_t *)Helper::allocateMemory( _size, "MemoryManager" );
 
 		if( memory == nullptr )
 		{
@@ -227,7 +227,7 @@ namespace Mengine
 					);
 			}
 
-			Helper::freeMemory( buffer.memory );
+			Helper::freeMemory( buffer.memory, "MemoryManager" );
 		}
 
 		m_buffers.clear();

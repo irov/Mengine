@@ -18,6 +18,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const Char * Factory::getName() const
+    {
+        return m_name;
+    }
+    //////////////////////////////////////////////////////////////////////////
     PointerFactorable Factory::createObject()
     {
         STDEX_THREAD_GUARD_CHECK( this, "Factory::createObject" );

@@ -21,10 +21,10 @@
 
  /* make it easy on the folks that want to compile the libs with a
     different malloc than stdlib */
-#define _ogg_malloc  (stdex_malloc)
-#define _ogg_calloc  (stdex_calloc)
-#define _ogg_realloc (stdex_realloc)
-#define _ogg_free    (stdex_free)
+#define _ogg_malloc(n)  (stdex_malloc(n, "ogg"))
+#define _ogg_calloc(m,n)  (stdex_calloc(m,n,"ogg"))
+#define _ogg_realloc(p,n) (stdex_realloc(p,n,"ogg"))
+#define _ogg_free(p)    (stdex_free(p, "ogg"))
 
 #if defined(_WIN32) 
 

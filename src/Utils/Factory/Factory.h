@@ -24,6 +24,9 @@ namespace Mengine
         virtual ~Factory();
 
     public:
+        const Char * getName() const;
+
+    public:
         virtual PointerFactorable createObject();
         virtual void destroyObject( Factorable * _object );
 

@@ -108,6 +108,8 @@ src
    
     Magic.h    
     Mixin.h
+    
+    Typename.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

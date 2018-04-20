@@ -51,7 +51,7 @@ namespace Mengine
             {
                 MENGINE_THROW_EXCEPTION_FL( _file, _line )("Genereate service %s invalid cast to '%s'"
                     , serviceName
-                    , typeid(T).name()
+                    , Typename<T>::value
                     );
 
                 throw;

@@ -70,14 +70,14 @@ namespace Mengine
 	{
 		(void)opaque;
 
-		return stdex_malloc( items * size );
+		return stdex_malloc( items * size, "ArchivatorZip" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void my_free_func( voidpf opaque, voidpf address )
 	{
 		(void)opaque;
 
-		stdex_free( address );
+		stdex_free( address, "ArchivatorZip" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static int my_uncompress( Bytef *dest, uLong *destLen, const Bytef *source, uLong sourceLen )

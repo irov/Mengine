@@ -758,9 +758,9 @@ namespace Mengine
 						aw.writePODs( shape.indices, shape.indexCount );
 					}
 
-					Helper::freeMemory( shape.pos );
-					Helper::freeMemory( shape.uv );
-					Helper::freeMemory( shape.indices );
+					Helper::freeMemoryT( shape.pos );
+					Helper::freeMemoryT( shape.uv );
+					Helper::freeMemoryT( shape.indices );
 				}
 			}
 		}

@@ -14,7 +14,7 @@ namespace Mengine
 	{
     public:
         FactoryPool()
-            : F( typeid(Type).name() )
+            : F( Typename<Type>::value )
         {
         }
 

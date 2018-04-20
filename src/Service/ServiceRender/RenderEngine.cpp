@@ -135,7 +135,7 @@ namespace Mengine
         }
 
         m_factoryRenderBatch = new FactoryPool<RenderBatch, 16>();
-        m_factoryRenderPass = new FactoryPool<RenderPass, 32>();
+        m_factoryRenderPass = new FactoryPool<RenderPass, 128>();
 
         return true;
     }

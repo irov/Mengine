@@ -15,7 +15,7 @@ namespace Mengine
 {
 	class BasePrototypeGenerator
 		: public ServantBase<PrototypeGeneratorInterface>
-		, public MemoryAllocator
+		, public MemoryAllocator<BasePrototypeGenerator>
 	{
 	public:
 		BasePrototypeGenerator();

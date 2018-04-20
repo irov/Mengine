@@ -279,7 +279,7 @@ namespace Mengine
 	{
 		(void)opaque;
 
-		void * memory = stdex_malloc( items * size );
+		void * memory = stdex_malloc( items * size, "FileGroupZip" );
 
 		return memory;
 	}
@@ -288,7 +288,7 @@ namespace Mengine
 	{
 		(void)opaque;
 
-		stdex_free( address );
+		stdex_free( address, "FileGroupZip" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_inflate_memory( void * _buffer, size_t _capacity, const void * _src, size_t _size )

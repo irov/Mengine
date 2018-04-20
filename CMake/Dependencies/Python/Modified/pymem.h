@@ -17,11 +17,11 @@ PyAPI_FUNC(void *) PyMem_Realloc(void *, size_t);
 PyAPI_FUNC(void) PyMem_Free(void *);
 
 #define PyMem_MALLOC(n)		((size_t)(n) > (size_t)PY_SSIZE_T_MAX ? NULL \
-    : stdex_malloc((n) ? (n) : 1))
+    : stdex_malloc((n) ? (n) : 1, "Python"))
 #define PyMem_REALLOC(p, n)	((size_t)(n) > (size_t)PY_SSIZE_T_MAX  ? NULL \
-    : stdex_realloc((p), (n) ? (n) : 1))
+    : stdex_realloc((p), (n) ? (n) : 1, "Python"))
 
-#define PyMem_FREE		stdex_free
+#define PyMem_FREE(p)		stdex_free(p, "Python")
 
 
 #define PyMem_New(type, n) \

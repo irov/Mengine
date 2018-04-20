@@ -23,6 +23,5 @@ namespace Mengine
 
 	protected:
 		DataflowFactoryInterfacePtr m_factoryAEK;
-		DataflowFactoryInterfacePtr m_factoryMDL;
 	};
 }

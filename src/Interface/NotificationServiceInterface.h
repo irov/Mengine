@@ -15,8 +15,8 @@ namespace Mengine
 	class NotificationServiceInterface;
 	//////////////////////////////////////////////////////////////////////////
 	class ObserverInterface
-		: public MemoryAllocator
-		, public stdex::intrusive_ptr_base
+		: public stdex::intrusive_ptr_base
+        , public MemoryAllocator<ObserverInterface>
 	{
 	public:
 		ObserverInterface()

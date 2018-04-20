@@ -2,6 +2,8 @@
 
 #include "Interface/ServiceProviderInterface.h"
 
+#include "Core/Typename.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -71,7 +73,7 @@ namespace Mengine
                 {
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service %s invalid cast to %s"
                         , serviceName
-                        , typeid(T).name()
+                        , Typename<T>::value
                         );
                 }
 #endif

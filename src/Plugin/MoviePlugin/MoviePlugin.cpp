@@ -28,7 +28,7 @@ namespace Mengine
 	{
 		(void)_data;
 
-		return stdex_malloc( _size );
+		return stdex_malloc( _size, "Movie" );
 		//return new uint8_t[_size];
 		//return malloc( _size );
 	}
@@ -39,7 +39,7 @@ namespace Mengine
 
 		size_t total = _size * _count;
 
-		return stdex_malloc( total );
+		return stdex_malloc( total, "Movie" );
 		//return new uint8_t[total];
 		//return malloc( total );
 	}
@@ -48,7 +48,7 @@ namespace Mengine
 	{
 		(void)_data;
 
-		stdex_free( (void *)_ptr );
+		stdex_free( (void *)_ptr, "Movie" );
 		//delete[] _ptr;
 		//free( (void *)_ptr );
 	}
@@ -57,7 +57,7 @@ namespace Mengine
 	{
 		(void)_data;
 
-		stdex_free( (void *)_ptr );
+		stdex_free( (void *)_ptr, "Movie" );
 		//delete[] _ptr;
 		//free( (void *)_ptr );
 	}

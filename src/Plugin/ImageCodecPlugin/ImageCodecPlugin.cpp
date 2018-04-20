@@ -122,17 +122,6 @@ namespace Mengine
 		CODEC_SERVICE()
 			->registerCodecExt( "aek", STRINGIZE_STRING_LOCAL("aekMovie") );
 
-		m_factoryMDL = new DataflowFactory<DataflowMDL>();
-        m_factoryMDL->initialize();
-
-		DataflowInterfacePtr mdl = m_factoryMDL->createDataflow();
-
-		DATA_SERVICE()
-			->registerDataflow( STRINGIZE_STRING_LOCAL("mdzModel"), mdl );
-
-		CODEC_SERVICE()
-			->registerCodecExt( "mdz", STRINGIZE_STRING_LOCAL("mdzModel") );
-
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -163,8 +152,5 @@ namespace Mengine
 
 		DATA_SERVICE()
 			->unregisterDataflow( STRINGIZE_STRING_LOCAL("aekMovie") );
-
-		DATA_SERVICE()
-			->unregisterDataflow( STRINGIZE_STRING_LOCAL("mdzModel") );
 	}
 }

@@ -43,14 +43,14 @@ namespace Mengine
 	{
 		(void)_png;
 
-		return stdex_malloc( _size );
+		return stdex_malloc( _size, "png" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void PNGAPI s_png_free_ptr( png_structp _png, png_voidp _ptr )
 	{
 		(void)_png;
 
-		stdex_free( _ptr );
+		stdex_free( _ptr, "png" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::ImageDecoderPNG()

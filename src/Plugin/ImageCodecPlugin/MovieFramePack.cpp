@@ -26,21 +26,21 @@ namespace Mengine
 		{
 			const MovieLayerFrame & layer = m_layers[index];
 
-			Helper::freeMemory( layer.anchorPoint );
-			Helper::freeMemory( layer.position );
-			Helper::freeMemory( layer.rotation_x );
-			Helper::freeMemory( layer.rotation_y );
-			Helper::freeMemory( layer.rotation_z );
-			Helper::freeMemory( layer.scale );
-			Helper::freeMemory( layer.opacity );
-			Helper::freeMemory( layer.volume );
+			Helper::freeMemory( layer.anchorPoint, "MovieFramePack" );
+			Helper::freeMemory( layer.position, "MovieFramePack" );
+			Helper::freeMemory( layer.rotation_x, "MovieFramePack" );
+			Helper::freeMemory( layer.rotation_y, "MovieFramePack" );
+			Helper::freeMemory( layer.rotation_z, "MovieFramePack" );
+			Helper::freeMemory( layer.scale, "MovieFramePack" );
+			Helper::freeMemory( layer.opacity, "MovieFramePack" );
+			Helper::freeMemory( layer.volume, "MovieFramePack" );
 		}
 
 		for( uint32_t index = 0; index != m_sizeTimeremap; ++index )
 		{
 			const MovieLayerTimeRemap & layer = m_timeremap[index];
 
-			Helper::freeMemory( layer.times );
+			Helper::freeMemory( layer.times, "MovieFramePack" );
 		}
 
 		for( uint32_t index = 0; index != m_sizeShapes; ++index )
@@ -51,25 +51,25 @@ namespace Mengine
 			{
 				const MovieFrameShape & frame_shape = layer_shape.shapes[j];
 				
-				Helper::freeMemory( frame_shape.pos );
-				Helper::freeMemory( frame_shape.uv );
-				Helper::freeMemory( frame_shape.indices );
+				Helper::freeMemory( frame_shape.pos, "MovieFramePack" );
+				Helper::freeMemory( frame_shape.uv, "MovieFramePack" );
+				Helper::freeMemory( frame_shape.indices, "MovieFramePack" );
 			}
 
-			Helper::freeMemory( layer_shape.shapes );
+			Helper::freeMemory( layer_shape.shapes, "MovieFramePack" );
 		}
 
 		for( uint32_t index = 0; index != m_sizePolygons; ++index )
 		{
 			const MovieLayerPolygon & polygon = m_polygons[index];
 
-			Helper::freeMemory( polygon.polygon );
+			Helper::freeMemory( polygon.polygon, "MovieFramePack" );
 		}
 
-		Helper::freeMemory( m_layers );
-		Helper::freeMemory( m_timeremap );
-		Helper::freeMemory( m_shapes );
-		Helper::freeMemory( m_polygons );
+		Helper::freeMemoryT( m_layers );
+		Helper::freeMemoryT( m_timeremap );
+		Helper::freeMemoryT( m_shapes );
+		Helper::freeMemoryT( m_polygons );
 	}
     //////////////////////////////////////////////////////////////////////////
     void MovieFramePack::initialize( uint32_t _size )
@@ -396,6 +396,6 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	Pointer MovieFramePack::allocateMemory( size_t _size ) const
 	{
-		return stdex_malloc( _size );
+		return stdex_malloc( _size, "MovieFramePack" );
 	}
 }

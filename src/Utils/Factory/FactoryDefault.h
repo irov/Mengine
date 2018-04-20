@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	public:
 		FactoryDefault()
-            : Factory( typeid(Type).name() )
+            : Factory( Typename<Type>::value )
 		{
 		}
 
@@ -27,7 +27,7 @@ namespace Mengine
 
         void _destroyObject( Factorable * _obj ) override
 		{
-			Helper::freeT( _obj );
+            Helper::freeT<Type>( static_cast<Type*>(_obj) );
 		}
 	};
 }

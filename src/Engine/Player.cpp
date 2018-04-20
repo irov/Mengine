@@ -6,6 +6,7 @@
 #include "Interface/ResourceInterface.h"
 #include "Interface/GraveyardInterface.h"
 #include "Interface/TimelineInterface.h"
+#include "Interface/FactoryInterface.h"
 
 #include "Interface/UnicodeInterface.h"
 
@@ -41,6 +42,7 @@
 #include "math/mat3.h"
 
 #include "pybind/pybind.hpp"
+#include "stdex/allocator_report.h"
 
 #include <iomanip>
 #include <algorithm>
@@ -919,47 +921,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
-        //////////////////////////////////////////////////////////////////////////
-        class VisitorPlayerFactoryManager
-            : public VisitorPrototypeGenerator
-        {
-        public:
-            VisitorPlayerFactoryManager( const ConstString & _category, Stringstream & _ss )
-                : m_category( _category )
-                , m_ss( _ss )
-            {
-            }
 
-        private:
-            VisitorPlayerFactoryManager & operator = ( const VisitorPlayerFactoryManager & _vpfm )
-            {
-                (void)_vpfm;
-
-                return *this;
-            }
-
-        protected:
-            void visit( const ConstString & _category, const ConstString & _type, const PrototypeGeneratorInterfacePtr & _generator ) override
-            {
-                if( m_category != _category )
-                {
-                    return;
-                }
-
-                uint32_t count = _generator->count();
-
-                if( count == 0 )
-                {
-                    return;
-                }
-
-                m_ss << "Factory Object " << _type.c_str() << ": " << count << "\n";
-            }
-
-        protected:
-            ConstString m_category;
-            Stringstream & m_ss;
-        };
     }
     //////////////////////////////////////////////////////////////////////////
     void Player::render()
@@ -1121,15 +1083,103 @@ namespace Mengine
             }
             else if( m_showDebugText == 3 )
             {
-                VisitorPlayerFactoryManager pfmv_node( CONST_STRING( Node ), ss );
+                //////////////////////////////////////////////////////////////////////////
+                class VisitorPlayerFactoryManager
+                    : public VisitorPrototypeGenerator
+                {
+                public:
+                    VisitorPlayerFactoryManager( const ConstString & _category )
+                        : m_category( _category )
+                    {
+                    }
+
+                private:
+                    VisitorPlayerFactoryManager & operator = ( const VisitorPlayerFactoryManager & _vpfm )
+                    {
+                        (void)_vpfm;
+
+                        return *this;
+                    }
+
+                protected:
+                    void visit( const ConstString & _category, const ConstString & _type, const PrototypeGeneratorInterfacePtr & _generator ) override
+                    {
+                        if( m_category != _category )
+                        {
+                            return;
+                        }
+
+                        uint32_t count = _generator->count();
+
+                        if( count == 0 )
+                        {
+                            return;
+                        }
+
+                        m_scopes[count].emplace_back( _type );
+                    }
+
+                public:
+                    String getMsg() const
+                    {
+                        Stringstream ss;
+
+                        uint32_t iterator = 0;
+
+                        for( TMapPybindScope::const_reverse_iterator
+                            it = m_scopes.rbegin(),
+                            it_end = m_scopes.rend();
+                            it != it_end;
+                            ++it )
+                        {
+                            uint32_t c = it->first;
+                            const stdex::vector<ConstString> & l = it->second;
+
+                            for( stdex::vector<ConstString>::const_iterator
+                                it_list = l.begin(),
+                                it_list_end = l.end();
+                                it_list != it_list_end;
+                                ++it_list )
+                            {
+                                const ConstString & s = *it_list;
+
+                                ss << "Prototype: " << s.c_str() << " " << c << std::endl;
+
+                                if( iterator++ == 15 )
+                                {
+                                    break;
+                                }
+                            }
+
+                            if( iterator == 15 )
+                            {
+                                break;
+                            }
+                        }
+
+                        return ss.str();
+                    }
+
+                protected:
+                    ConstString m_category;
+                    typedef stdex::map<uint32_t, stdex::vector<ConstString>> TMapPybindScope;
+                    TMapPybindScope m_scopes;
+                };
+
+
+                VisitorPlayerFactoryManager pfmv_node( CONST_STRING( Node ) );
 
                 PROTOTYPE_SERVICE()
                     ->visitGenerators( &pfmv_node );
 
-                VisitorPlayerFactoryManager pfmv_surface( CONST_STRING( Surface ), ss );
+                ss << pfmv_node.getMsg() << std::endl;
+
+                VisitorPlayerFactoryManager pfmv_surface( CONST_STRING( Surface ) );
 
                 PROTOTYPE_SERVICE()
                     ->visitGenerators( &pfmv_surface );
+
+                ss << pfmv_surface.getMsg() << std::endl;
             }
             else if( m_showDebugText == 4 )
             {
@@ -1213,6 +1263,141 @@ namespace Mengine
                 kernel->visit_types_scope( &mvcts );
 
                 String msg_python = mvcts.getMsg();
+                ss << msg_python << std::endl;
+            }
+            else if( m_showDebugText == 5 )
+            {
+                class MyVisitorFactoryService
+                    : public VisitorFactoryService
+                {
+                public:
+                    MyVisitorFactoryService()
+                    {
+                    }
+
+                protected:
+                    void operator = ( const MyVisitorFactoryService & )
+                    {
+                    }
+
+                protected:
+                    void visit( const Factory * _factory )
+                    {
+                        uint32_t count = _factory->getCountObject();
+
+                        if( count == 0 )
+                        {
+                            return;
+                        }
+
+                        String name = _factory->getName();
+
+                        m_scopes[count].emplace_back( name );
+                    }
+
+                public:
+                    String getMsg() const
+                    {
+                        Stringstream ss;
+
+                        uint32_t iterator = 0;
+
+                        for( TMapPybindScope::const_reverse_iterator
+                            it = m_scopes.rbegin(),
+                            it_end = m_scopes.rend();
+                            it != it_end;
+                            ++it )
+                        {
+                            uint32_t c = it->first;
+                            const stdex::vector<String> & l = it->second;
+
+                            for( stdex::vector<String>::const_iterator
+                                it_list = l.begin(),
+                                it_list_end = l.end();
+                                it_list != it_list_end;
+                                ++it_list )
+                            {
+                                const String & s = *it_list;
+
+                                ss << "Factory: " << s << " " << c << std::endl;
+
+                                if( iterator++ == 15 )
+                                {
+                                    break;
+                                }
+                            }
+
+                            if( iterator == 15 )
+                            {
+                                break;
+                            }
+                        }
+
+                        return ss.str();
+                    }
+
+                protected:
+                    typedef stdex::map<uint32_t, stdex::vector<String>> TMapPybindScope;
+                    TMapPybindScope m_scopes;
+                };
+                
+                MyVisitorFactoryService mvcts;
+                FACTORY_SERVICE()
+                    ->visitFactories( &mvcts );
+
+                String msg_python = mvcts.getMsg();
+                ss << msg_python << std::endl;
+            }
+            else if( m_showDebugText == 6 )
+            {
+                typedef stdex::map<int32_t, stdex::vector<String>> TMapPybindScope;
+                TMapPybindScope scopes;
+
+                size_t count = stdex_allocator_report_count();
+
+                for( size_t i = 0; i != count; ++i )
+                {
+                    stdex_memory_report_t * report = stdex_allocator_report_info( i );
+
+                    scopes[report->count].emplace_back( report->name );
+                }
+
+                Stringstream ss2;
+
+                uint32_t iterator = 0;
+
+                for( TMapPybindScope::const_reverse_iterator
+                    it = scopes.rbegin(),
+                    it_end = scopes.rend();
+                    it != it_end;
+                    ++it )
+                {
+                    int32_t c = it->first;
+                    const stdex::vector<String> & l = it->second;
+
+                    for( stdex::vector<String>::const_iterator
+                        it_list = l.begin(),
+                        it_list_end = l.end();
+                        it_list != it_list_end;
+                        ++it_list )
+                    {
+                        const String & s = *it_list;
+
+                        ss2 << "Memory: " << s << " " << c << std::endl;
+
+                        if( iterator++ == 15 )
+                        {
+                            break;
+                        }
+                    }
+
+                    if( iterator == 15 )
+                    {
+                        break;
+                    }
+                }
+
+                String msg_python = ss2.str();
                 ss << msg_python << std::endl;
             }
 
@@ -1321,7 +1506,7 @@ namespace Mengine
     void Player::toggleDebugText()
     {
         ++m_showDebugText;
-        m_showDebugText %= 5;
+        m_showDebugText %= 7;
     }
     //////////////////////////////////////////////////////////////////////////
 }

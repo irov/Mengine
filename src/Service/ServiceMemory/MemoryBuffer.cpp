@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryBuffer::~MemoryBuffer()
     {
-        Helper::freeMemory( m_memory );
+        Helper::freeMemory( m_memory, "MemoryBuffer" );
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,7 @@ namespace Mengine
         (void)_file;
         (void)_line;
 
-        void * new_memory = Helper::reallocateMemory( m_memory, _size );
+        void * new_memory = Helper::reallocateMemory( m_memory, _size, "MemoryBuffer" );
 
         if( new_memory == nullptr )
         {

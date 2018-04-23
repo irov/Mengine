@@ -273,18 +273,6 @@ namespace Mengine
 			this->calcWindowResolution( m_currentResolution );
 		}
 
-        TextEntryInterfacePtr entry;
-        if( TEXT_SERVICE()
-            ->existText( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
-        {
-            LOGGER_WARNING("Application not setup title 'APPLICATION_TITLE'"
-                );
-        }
-        else
-        {
-            m_projectTitle = entry->getValue();
-        }
-
 		if( CONFIG_VALUE( "Debug", "ShowHotspots", false ) == true )
 		{
 			m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
@@ -1862,11 +1850,6 @@ namespace Mengine
 	const WString & Application::getProjectName() const
 	{
 		return m_projectName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-    const String & Application::getProjectTitle() const
-	{
-		return m_projectTitle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Application::getProjectCodename() const

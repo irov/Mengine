@@ -58,7 +58,6 @@ namespace Mengine
 		virtual const WString & getProjectName() const = 0;
 
 	public:
-		virtual const String & getProjectTitle() const = 0;
 		virtual const ConstString & getProjectCodename() const = 0;
 		virtual uint32_t getProjectVersion() const = 0;
 		

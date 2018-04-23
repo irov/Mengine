@@ -822,8 +822,19 @@ namespace Mengine
 				);
 		}
 
-		const String & projectTitle = APPLICATION_SERVICE()
-			->getProjectTitle();
+		String projectTitle;
+
+        TextEntryInterfacePtr entry;
+        if( TEXT_SERVICE()
+            ->existText( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
+        {
+            LOGGER_WARNING( "Application not setup title 'APPLICATION_TITLE'"
+            );
+        }
+        else
+        {
+            projectTitle = entry->getValue();
+        }
 
 		WString wprojectTitle;
 		if( Helper::utf8ToUnicodeSize( projectTitle.c_str(), projectTitle.size(), wprojectTitle ) == false )
@@ -833,15 +844,15 @@ namespace Mengine
 				);
 		}
 
+        PLATFORM_SERVICE()
+            ->setProjectTitle( wprojectTitle );
+
 		Resolution windowResolution;
 		APPLICATION_SERVICE()
 			->calcWindowResolution( windowResolution );
 
         PLATFORM_SERVICE()
             ->setIcon( IDI_MENGINE );
-
-        PLATFORM_SERVICE()
-            ->setProjectTitle( wprojectTitle );
 
 		if( PLATFORM_SERVICE()
 			->createWindow( windowResolution, fullscreen ) == false )

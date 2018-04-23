@@ -127,7 +127,6 @@ namespace Mengine
 		const WString & getProjectName() const override;
 
 	public:
-		const String & getProjectTitle() const override;
 		const ConstString & getProjectCodename() const override;
 		uint32_t getProjectVersion() const override;
 
@@ -221,7 +220,6 @@ namespace Mengine
 
 		ResourceCursorPtr m_cursorResource;
 
-        String m_projectTitle;
 		WString m_companyName;
 		WString m_projectName;
 

@@ -792,106 +792,26 @@ namespace Mengine
             
         aeMovieLayerTypeEnum type = _callbackData->type;
 
-        switch( _callbackData->state )
+        switch( type )
         {
-        case AE_MOVIE_STATE_UPDATE_PROCESS:
+        case AE_MOVIE_LAYER_TYPE_PARTICLE:
             {
-                switch( type )
+                ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
+
+                Node * nodeParent = node->getParent();
+
+                MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                mt::mat4f mp;
+                mp.from_f16( _callbackData->matrix );
+                matrixProxy->setProxyMatrix( mp );
+
+                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+
+                switch( _callbackData->state )
                 {
-#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
-                case AE_MOVIE_LAYER_TYPE_SPRITE:
+                case AE_MOVIE_STATE_UPDATE_BEGIN:
                     {
-                        ShapeQuadFixed * node = (ShapeQuadFixed *)_callbackData->element;
-
-                        Node * nodeParent = node->getParent();
-
-                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
-
-                        mt::mat4f mp;
-                        mp.from_f16( _callbackData->matrix );
-                        matrixProxy->setProxyMatrix( mp );
-
-                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
-                    }break;
-#endif
-                case AE_MOVIE_LAYER_TYPE_TEXT:
-                    {
-                        TextField * node = (TextField *)_callbackData->element;
-
-                        Node * nodeParent = node->getParent();
-
-                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
-
-                        mt::mat4f mp;
-                        mp.from_f16( _callbackData->matrix );
-                        matrixProxy->setProxyMatrix( mp );
-
-                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
-                    }break;
-                case AE_MOVIE_LAYER_TYPE_PARTICLE:
-                    {
-                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
-
-                        Node * nodeParent = node->getParent();
-
-                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
-
-                        mt::mat4f mp;
-                        mp.from_f16( _callbackData->matrix );
-                        matrixProxy->setProxyMatrix( mp );
-
-                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
-                    }break;
-                case AE_MOVIE_LAYER_TYPE_SLOT:
-                    {
-                        Movie2Slot * node = (Movie2Slot *)_callbackData->element;
-
-                        Node * nodeParent = node->getParent();
-
-                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>( nodeParent );
-
-                        mt::mat4f mp;
-                        mp.from_f16( _callbackData->matrix );
-                        matrixProxy->setProxyMatrix( mp );
-
-                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
-                    }break;
-                case AE_MOVIE_LAYER_TYPE_SOCKET:
-                    {
-                        HotSpotPolygon * node = (HotSpotPolygon *)_callbackData->element;
-
-                        Node * nodeParent = node->getParent();
-
-                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
-
-                        mt::mat4f mp;
-                        mp.from_f16( _callbackData->matrix );
-                        matrixProxy->setProxyMatrix( mp );
-
-                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
-                    }break;
-                default:
-                    break;
-                }
-            }break;
-        case AE_MOVIE_STATE_UPDATE_BEGIN:
-            {
-                switch( type )
-                {
-                case AE_MOVIE_LAYER_TYPE_PARTICLE:
-                    {
-                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
-
-                        Node * nodeParent = node->getParent();
-
-                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
-
-                        mt::mat4f mp;
-                        mp.from_f16( _callbackData->matrix );
-                        matrixProxy->setProxyMatrix( mp );
-
-                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
-
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
@@ -915,189 +835,194 @@ namespace Mengine
                             }
                         }
                     }break;
-                case AE_MOVIE_LAYER_TYPE_VIDEO:
+                case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
-                        SurfaceVideo * node = (SurfaceVideo *)_callbackData->element;
-
-                        float time = TIMELINE_SERVICE()
-                            ->getTime();
-
-                        node->setTiming( _callbackData->offset * 1000.f );
-
-                        if( _callbackData->loop == AE_TRUE )
-                        {
-                            if( node->isPlay() == false )
-                            {
-                                if( node->play( time ) == 0 )
-                                {
-                                    return;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if( node->play( time ) == 0 )
-                            {
-                                return;
-                            }
-                        }
                     }break;
-                case AE_MOVIE_LAYER_TYPE_SOUND:
+                case AE_MOVIE_STATE_UPDATE_END:
                     {
-                        SurfaceSound * node = (SurfaceSound *)_callbackData->element;
-
-                        float time = TIMELINE_SERVICE()
-                            ->getTime();
-
-                        node->setTiming( _callbackData->offset * 1000.f );
-
-                        if( _callbackData->loop == AE_TRUE )
-                        {
-                            if( node->isPlay() == false )
-                            {
-                                if( node->play( time ) == 0 )
-                                {
-                                    return;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if( node->play( time ) == 0 )
-                            {
-                                return;
-                            }
-                        }
-                    }break;
-                default:
-                    break;
-                }
-            }break;
-        case AE_MOVIE_STATE_UPDATE_END:
-            {
-                switch( type )
-                {
-                case AE_MOVIE_LAYER_TYPE_PARTICLE:
-                    {
-                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
-
-                        Node * nodeParent = node->getParent();
-
-                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
-
-                        mt::mat4f mp;
-                        mp.from_f16( _callbackData->matrix );
-                        matrixProxy->setProxyMatrix( mp );
-
-                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
-
                         if( _callbackData->loop == AE_FALSE )
                         {
                             node->stop();
                         }
                     }break;
-                case AE_MOVIE_LAYER_TYPE_VIDEO:
+                case AE_MOVIE_STATE_UPDATE_PAUSE:
                     {
-                        SurfaceVideo * animatable = (SurfaceVideo *)_callbackData->element;
-
-                        if( _callbackData->loop == AE_FALSE )
-                        {
-                            animatable->stop();
-                        }
-                    }break;
-                case AE_MOVIE_LAYER_TYPE_SOUND:
-                    {
-                        SurfaceSound * animatable = (SurfaceSound *)_callbackData->element;
-
-                        if( _callbackData->loop == AE_FALSE )
-                        {
-                            animatable->stop();
-                        }
-                    }break;
-                default:
-                    break;
-                }
-            }break;
-        case AE_MOVIE_STATE_UPDATE_PAUSE:
-            {
-                switch( type )
-                {
-                case AE_MOVIE_LAYER_TYPE_PARTICLE:
-                    {
-                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
-
-                        Node * nodeParent = node->getParent();
-
-                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
-
-                        mt::mat4f mp;
-                        mp.from_f16( _callbackData->matrix );
-                        matrixProxy->setProxyMatrix( mp );
-
-                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
-
                         node->pause();
                     }break;
-                case AE_MOVIE_LAYER_TYPE_VIDEO:
+                case AE_MOVIE_STATE_UPDATE_RESUME:
                     {
-                        SurfaceVideo * animatable = (SurfaceVideo *)_callbackData->element;
-
-                        animatable->pause();
-                    }break;
-                case AE_MOVIE_LAYER_TYPE_SOUND:
-                    {
-                        SurfaceSound * animatable = (SurfaceSound *)_callbackData->element;
-
-                        animatable->pause();
-                    }break;
-                default:
-                    break;
-                }
-            }break;
-        case AE_MOVIE_STATE_UPDATE_RESUME:
-            {
-                switch( type )
-                {
-                case AE_MOVIE_LAYER_TYPE_PARTICLE:
-                    {
-                        ParticleEmitter2 * node = (ParticleEmitter2 *)_callbackData->element;
-
-                        Node * nodeParent = node->getParent();
-
-                        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
-
-                        mt::mat4f mp;
-                        mp.from_f16( _callbackData->matrix );
-                        matrixProxy->setProxyMatrix( mp );
-
-                        matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
-
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
                         node->resume( time );
                     }break;
-                case AE_MOVIE_LAYER_TYPE_VIDEO:
-                    {
-                        SurfaceVideo * animatable = (SurfaceVideo *)_callbackData->element;
-
-                        float time = TIMELINE_SERVICE()
-                            ->getTime();
-
-                        animatable->resume( time );
-                    }break;
-                case AE_MOVIE_LAYER_TYPE_SOUND:
-                    {
-                        SurfaceSound * animatable = (SurfaceSound *)_callbackData->element;
-
-                        float time = TIMELINE_SERVICE()
-                            ->getTime();
-
-                        animatable->resume( time );
-                    }break;
-                default:
-                    break;
                 }
+            }break;
+        case AE_MOVIE_LAYER_TYPE_VIDEO:
+            {
+                SurfaceVideo * surface = (SurfaceVideo *)_callbackData->element;
+
+                switch( _callbackData->state )
+                {
+                case AE_MOVIE_STATE_UPDATE_BEGIN:
+                    {
+                        float time = TIMELINE_SERVICE()
+                            ->getTime();
+
+                        surface->setTiming( _callbackData->offset * 1000.f );
+
+                        if( _callbackData->loop == AE_TRUE )
+                        {
+                            if( surface->isPlay() == false )
+                            {
+                                if( surface->play( time ) == 0 )
+                                {
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if( surface->play( time ) == 0 )
+                            {
+                                return;
+                            }
+                        }
+                    }break;
+                case AE_MOVIE_STATE_UPDATE_PROCESS:
+                    {
+                    }break;
+                case AE_MOVIE_STATE_UPDATE_END:
+                    {
+                        if( _callbackData->loop == AE_FALSE )
+                        {
+                            surface->stop();
+                        }
+                    }break;
+                case AE_MOVIE_STATE_UPDATE_PAUSE:
+                    {
+                        surface->pause();
+                    }break;
+                case AE_MOVIE_STATE_UPDATE_RESUME:
+                    {
+                        float time = TIMELINE_SERVICE()
+                            ->getTime();
+
+                        surface->resume( time );
+                    }break;
+                }
+            }break;
+        case AE_MOVIE_LAYER_TYPE_SOUND:
+            {
+                SurfaceSound * surface = (SurfaceSound *)_callbackData->element;
+
+                switch( _callbackData->state )
+                {
+                case AE_MOVIE_STATE_UPDATE_BEGIN:
+                    {
+                        float time = TIMELINE_SERVICE()
+                            ->getTime();
+
+                        surface->setTiming( _callbackData->offset * 1000.f );
+
+                        if( _callbackData->loop == AE_TRUE )
+                        {
+                            if( surface->isPlay() == false )
+                            {
+                                if( surface->play( time ) == 0 )
+                                {
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if( surface->play( time ) == 0 )
+                            {
+                                return;
+                            }
+                        }
+                    }break;
+                case AE_MOVIE_STATE_UPDATE_PROCESS:
+                    {
+                    }break;
+                case AE_MOVIE_STATE_UPDATE_END:
+                    {
+                        if( _callbackData->loop == AE_FALSE )
+                        {
+                            surface->stop();
+                        }
+                    }break;
+                case AE_MOVIE_STATE_UPDATE_PAUSE:
+                    {
+                        surface->pause();
+                    }break;
+                case AE_MOVIE_STATE_UPDATE_RESUME:
+                    {
+                        float time = TIMELINE_SERVICE()
+                            ->getTime();
+
+                        surface->resume( time );
+                    }break;
+                }
+            }break;
+        case AE_MOVIE_LAYER_TYPE_SLOT:
+            {
+                Movie2Slot * node = (Movie2Slot *)_callbackData->element;
+
+                Node * nodeParent = node->getParent();
+
+                MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                mt::mat4f mp;
+                mp.from_f16( _callbackData->matrix );
+                matrixProxy->setProxyMatrix( mp );
+
+                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+            }break;
+#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
+        case AE_MOVIE_LAYER_TYPE_SPRITE:
+            {
+                ShapeQuadFixed * node = (ShapeQuadFixed *)_callbackData->element;
+
+                Node * nodeParent = node->getParent();
+
+                MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                mt::mat4f mp;
+                mp.from_f16( _callbackData->matrix );
+                matrixProxy->setProxyMatrix( mp );
+
+                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+            }break;
+#endif
+        case AE_MOVIE_LAYER_TYPE_TEXT:
+            {
+                TextField * node = (TextField *)_callbackData->element;
+
+                Node * nodeParent = node->getParent();
+
+                MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                mt::mat4f mp;
+                mp.from_f16( _callbackData->matrix );
+                matrixProxy->setProxyMatrix( mp );
+
+                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+            }break;
+        case AE_MOVIE_LAYER_TYPE_SOCKET:
+            {
+                HotSpotPolygon * node = (HotSpotPolygon *)_callbackData->element;
+
+                Node * nodeParent = node->getParent();
+
+                MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+                mt::mat4f mp;
+                mp.from_f16( _callbackData->matrix );
+                matrixProxy->setProxyMatrix( mp );
+
+                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
             }break;
         }
     }

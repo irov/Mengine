@@ -296,6 +296,216 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
     return AE_TRUE;
 }
 //////////////////////////////////////////////////////////////////////////
+struct node_provider_t
+{
+    pugi::xml_node * xmlComposition;
+    CHAR movie_name[128];
+};
+//////////////////////////////////////////////////////////////////////////
+static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud )
+{
+    node_provider_t * np = (node_provider_t *)_ud;
+
+    const aeMovieLayerData * layer = _callbackData->layer;
+
+    const char * layer_name = ae_get_movie_layer_data_name( layer );
+    
+    ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( layer );
+
+    if( is_track_matte == AE_TRUE )
+    {
+        *_nd = AE_NULL;
+
+        return AE_TRUE;
+    }
+
+    aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( layer );
+
+    switch( type )
+    {
+    case AE_MOVIE_LAYER_TYPE_TEXT:
+        {
+            pugi::xml_node xmlNodeText = np->xmlComposition->append_child( "Node" );
+
+            xmlNodeText.append_attribute( "Name" ).set_value( layer_name );
+            xmlNodeText.append_attribute( "Type" ).set_value( "TextField" );
+
+            char xmlMatrix[256];
+            sprintf( xmlMatrix, "%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"
+                , _callbackData->matrix[4 * 0 + 0]
+                , _callbackData->matrix[4 * 0 + 1]
+                , _callbackData->matrix[4 * 0 + 2]
+                , _callbackData->matrix[4 * 0 + 3]
+                , _callbackData->matrix[4 * 1 + 0]
+                , _callbackData->matrix[4 * 1 + 1]
+                , _callbackData->matrix[4 * 1 + 2]
+                , _callbackData->matrix[4 * 1 + 3]
+                , _callbackData->matrix[4 * 2 + 0]
+                , _callbackData->matrix[4 * 2 + 1]
+                , _callbackData->matrix[4 * 2 + 2]
+                , _callbackData->matrix[4 * 2 + 3] 
+                , _callbackData->matrix[4 * 3 + 0]
+                , _callbackData->matrix[4 * 3 + 1]
+                , _callbackData->matrix[4 * 3 + 2]
+                , _callbackData->matrix[4 * 3 + 3] 
+            );
+
+            xmlNodeText.append_attribute( "Matrix" ).set_value( xmlMatrix );
+
+            char xmlColor[256];
+            sprintf( xmlColor, "%f;%f;%f;%f"
+                , _callbackData->color.r
+                , _callbackData->color.g
+                , _callbackData->color.b
+                , _callbackData->opacity
+            );
+            
+            xmlNodeText.append_attribute( "Color" ).set_value( xmlColor );
+
+            if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_HORIZONTAL_CENTER ) == AE_TRUE )
+            {
+                xmlNodeText.append_attribute( "AlignHorizontalCenter" ).set_value( 1U );
+            }
+
+            if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_VERTICAL_CENTER ) == AE_TRUE )
+            {
+                xmlNodeText.append_attribute( "AlignVerticalCenter" ).set_value( 1U );
+            }
+
+            *_nd = AE_NULL;
+
+            return AE_TRUE;
+        }break;
+    case AE_MOVIE_LAYER_TYPE_SLOT:
+        {
+            pugi::xml_node xmlNodeText = np->xmlComposition->append_child( "Node" );
+
+            xmlNodeText.append_attribute( "Name" ).set_value( layer_name );
+            xmlNodeText.append_attribute( "Type" ).set_value( "Movie2Slot" );
+
+            char xmlMatrix[256];
+            sprintf( xmlMatrix, "%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"
+                , _callbackData->matrix[4 * 0 + 0]
+                , _callbackData->matrix[4 * 0 + 1]
+                , _callbackData->matrix[4 * 0 + 2]
+                , _callbackData->matrix[4 * 0 + 3]
+                , _callbackData->matrix[4 * 1 + 0]
+                , _callbackData->matrix[4 * 1 + 1]
+                , _callbackData->matrix[4 * 1 + 2]
+                , _callbackData->matrix[4 * 1 + 3]
+                , _callbackData->matrix[4 * 2 + 0]
+                , _callbackData->matrix[4 * 2 + 1]
+                , _callbackData->matrix[4 * 2 + 2]
+                , _callbackData->matrix[4 * 2 + 3]
+                , _callbackData->matrix[4 * 3 + 0]
+                , _callbackData->matrix[4 * 3 + 1]
+                , _callbackData->matrix[4 * 3 + 2]
+                , _callbackData->matrix[4 * 3 + 3]
+            );
+
+            xmlNodeText.append_attribute( "Matrix" ).set_value( xmlMatrix );
+
+            char xmlColor[256];
+            sprintf( xmlColor, "%f;%f;%f;%f"
+                , _callbackData->color.r
+                , _callbackData->color.g
+                , _callbackData->color.b
+                , _callbackData->opacity
+            );
+
+            xmlNodeText.append_attribute( "Color" ).set_value( xmlColor );
+            
+            *_nd = AE_NULL;
+
+            return AE_TRUE;
+        }break;
+    case AE_MOVIE_LAYER_TYPE_SOCKET:
+        {
+            pugi::xml_node xmlNodeText = np->xmlComposition->append_child( "Node" );
+
+            xmlNodeText.append_attribute( "Name" ).set_value( layer_name );
+            xmlNodeText.append_attribute( "Type" ).set_value( "Movie2Slot" );
+
+            char xmlMatrix[256];
+            sprintf( xmlMatrix, "%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"
+                , _callbackData->matrix[4 * 0 + 0]
+                , _callbackData->matrix[4 * 0 + 1]
+                , _callbackData->matrix[4 * 0 + 2]
+                , _callbackData->matrix[4 * 0 + 3]
+                , _callbackData->matrix[4 * 1 + 0]
+                , _callbackData->matrix[4 * 1 + 1]
+                , _callbackData->matrix[4 * 1 + 2]
+                , _callbackData->matrix[4 * 1 + 3]
+                , _callbackData->matrix[4 * 2 + 0]
+                , _callbackData->matrix[4 * 2 + 1]
+                , _callbackData->matrix[4 * 2 + 2]
+                , _callbackData->matrix[4 * 2 + 3]
+                , _callbackData->matrix[4 * 3 + 0]
+                , _callbackData->matrix[4 * 3 + 1]
+                , _callbackData->matrix[4 * 3 + 2]
+                , _callbackData->matrix[4 * 3 + 3]
+            );
+
+            xmlNodeText.append_attribute( "Matrix" ).set_value( xmlMatrix );
+
+            char xmlColor[256];
+            sprintf( xmlColor, "%f;%f;%f;%f"
+                , _callbackData->color.r
+                , _callbackData->color.g
+                , _callbackData->color.b
+                , _callbackData->opacity
+            );
+
+            xmlNodeText.append_attribute( "Color" ).set_value( xmlColor );
+
+            //HotSpotPolygon * node = NODE_SERVICE()
+            //    ->createNodeT<HotSpotPolygon *>( STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
+
+            //if( node == nullptr )
+            //{
+            //    return AE_FALSE;
+            //}
+
+            //node->setName( c_name );
+            //node->setExternalRender( true );
+
+            const ae_polygon_t * polygon;
+            if( ae_get_movie_layer_data_socket_polygon( _callbackData->layer, 0, &polygon ) == AE_FALSE )
+            {
+                return AE_FALSE;
+            }
+
+            std::stringstream ss;
+            
+            for( ae_uint32_t index = 0; index != polygon->point_count; ++index )
+            {
+                if( index == 0 )
+                {
+                    ss << ";";
+                }
+                
+                const ae_vector2_t * v = polygon->points + index;
+
+                ss << v[0] << ";" << v[1];
+            }
+
+            std::string s = ss.str();
+
+            xmlNodeText.append_attribute( "Polygon" ).set_value( s.c_str() );
+            
+            *_nd = AE_NULL;
+
+            return AE_TRUE;
+        }break;
+    default:
+        break;
+    };
+    
+    *_nd = AE_NULL;
+
+    return AE_TRUE;
+}
+//////////////////////////////////////////////////////////////////////////
 static void my_resource_deleter( aeMovieResourceTypeEnum _type, ae_voidptr_t _data, ae_voidptr_t _ud )
 {
     (void)_type;
@@ -354,7 +564,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     CHAR utf8_movie_name[128];
     unicode_to_utf8( utf8_movie_name, 128, movie_name.c_str(), movie_name.size() );
     
-    const aeMovieInstance *  movie_instance = ae_create_movie_instance( utf8_hash
+    const aeMovieInstance *  movieInstance = ae_create_movie_instance( utf8_hash
         , &stdlib_movie_alloc
         , &stdlib_movie_alloc_n
         , &stdlib_movie_free
@@ -362,7 +572,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         , 0
         , &stdlib_movie_logerror, AE_NULL );
 
-    if( movie_instance == nullptr )
+    if( movieInstance == nullptr )
     {
         message_error( "invalid create movie instance\n"
         );
@@ -387,27 +597,82 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     pugi::xml_attribute xmlDataBlockName = xmlDataBlock.append_attribute( "Name" );
     xmlDataBlockName.set_value( utf8_movie_name );
     
-    resource_provider_t * provider = new resource_provider_t;
-    provider->xmlDataBlock = &xmlDataBlock;
-    strcpy( provider->movie_name, utf8_movie_name );
+    resource_provider_t rp;
+    rp.xmlDataBlock = &xmlDataBlock;
+    strcpy( rp.movie_name, utf8_movie_name );
 
-    aeMovieData * movie_data = ae_create_movie_data( movie_instance, &my_resource_provider, &my_resource_deleter, provider );
+    aeMovieData * movieData = ae_create_movie_data( movieInstance, &my_resource_provider, &my_resource_deleter, &rp );
 
-    aeMovieStream * movie_stream = ae_create_movie_stream( movie_instance, &my_read_stream, &my_copy_stream, f_in );
+    aeMovieStream * movieStream = ae_create_movie_stream( movieInstance, &my_read_stream, &my_copy_stream, f_in );
 
     ae_uint32_t major_version;
     ae_uint32_t minor_version;
-    ae_result_t result_load_movie_data = ae_load_movie_data( movie_data, movie_stream, &major_version, &minor_version );
+    ae_result_t result_load_movie_data = ae_load_movie_data( movieData, movieStream, &major_version, &minor_version );
 
-    delete provider;
-    	
-    ae_delete_movie_stream( movie_stream );
+#if 0
+    pugi::xml_node xmlDataResource = xmlDataBlock.append_child( "Resource" );
+
+    char xmlMovieName[256];
+    sprintf( xmlMovieName, "Movies2_%s"
+        , utf8_movie_name
+    );
+
+    xmlDataResource.append_attribute( "Name" ).set_value( xmlMovieName );
+    xmlDataResource.append_attribute( "Type" ).set_value( "ResourceMovie2" );
+        
+    pugi::xml_node xmlDataResourceFile = xmlDataResource.append_child( "File" );
+
+    char xmlMoviePath[MAX_PATH];
+    sprintf( xmlMoviePath, "Movies2/%s/%s.aem"
+        , utf8_movie_name
+        , utf8_movie_name
+    );
+
+    xmlDataResourceFile.append_attribute( "Path" ).set_value( xmlMoviePath );
+
+    ae_uint32_t movieDataCount = ae_get_movie_composition_data_count( movieData );
+
+    for( ae_uint32_t index = 0; index != movieDataCount; ++index )
+    {
+        const aeMovieCompositionData * compositionData = ae_get_movie_composition_data_by_index( movieData, index );
+
+        if( ae_is_movie_composition_data_master( compositionData ) == AE_FALSE )
+        {
+            continue;
+        }
+
+        const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( compositionData );
+
+        pugi::xml_node xmlDataResourceComposition = xmlDataResource.append_child( "Composition" );
+
+        xmlDataResourceComposition.append_attribute( "Name" ).set_value( compositionDataName );
+
+        aeMovieCompositionProviders providers;
+        ae_initialize_movie_composition_providers( &providers );
+
+        providers.node_provider = &__movie_composition_node_provider;
+
+        //<Resource Name = "Movie2_01_CrusaderVault" Type = "ResourceMovie2">
+        //    <File Path = "Movies2/01_CrusaderVault/01_CrusaderVault.aem" / >
+        //    < / Resource>
+
+        node_provider_t np;
+        np.xmlComposition = &xmlDataResourceComposition;
+        strcpy( np.movie_name, utf8_movie_name );
+
+        aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, &np );
+
+        ae_delete_movie_composition( composition );
+    }
+#endif
+
+    ae_delete_movie_stream( movieStream );
 
     fclose( f_in );
 
-    ae_delete_movie_data( movie_data );
+    ae_delete_movie_data( movieData );
 
-    ae_delete_movie_instance( movie_instance );
+    ae_delete_movie_instance( movieInstance );
     
     if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
     {

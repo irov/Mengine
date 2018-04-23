@@ -136,20 +136,6 @@ namespace Mengine
 #endif			
 		}
 
-		size_t s_globalmemoryuse()
-		{
-			size_t mu = stdex_allocator_globalmemoryuse();
-
-			return mu;
-		}
-
-		size_t s_memoryuse()
-		{
-			size_t gmu = stdex_allocator_memoryuse();
-
-			return gmu;
-		}
-
 		bool s_hasGameData( const ConstString & _name )
 		{
 			bool result = USERDATA_SERVICE()
@@ -3006,8 +2992,6 @@ namespace Mengine
         pybind::def_functor( kernel, "setCursorPosition", helperScriptMethod, &HelperScriptMethod::s_setCursorPosition );
 
 		pybind::def_functor( kernel, "debug", helperScriptMethod, &HelperScriptMethod::s_debug );
-		pybind::def_functor( kernel, "globalmemoryuse", helperScriptMethod, &HelperScriptMethod::s_globalmemoryuse );
-		pybind::def_functor( kernel, "memoryuse", helperScriptMethod, &HelperScriptMethod::s_memoryuse );
 
 		pybind::def_functor( kernel, "hasGameData", helperScriptMethod, &HelperScriptMethod::s_hasGameData );
 		pybind::def_functor_kernel( kernel, "writeGameData", helperScriptMethod, &HelperScriptMethod::s_writeGameData );

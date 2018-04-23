@@ -1,29 +1,27 @@
-#	include <Windows.h>
+#ifdef _WIN32_WINNT	
+#   undef _WIN32_WINNT
+#   define _WIN32_WINNT 0x0500
+#endif
 
-#	include <shellapi.h>
+#ifdef _WIN32_WINDOWS
+#   undef _WIN32_WINDOWS
+#   define _WIN32_WINDOWS 0x0500
+#endif
 
-#	include <stdio.h>
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 
-#	include <string>
-#	include <vector>
+#include "ToolUtils/ToolUtils.h"
 
-#	include "stdex/sha1.h"
+#include <shellapi.h>
 
-//////////////////////////////////////////////////////////////////////////
-static void message_error( const char * _format, ... )
-{
-	va_list argList;
+#include <stdio.h>
 
-	va_start( argList, _format );
+#include <string>
+#include <vector>
 
-	char str[2048];
+#include "stdex/sha1.h"
 
-	vsnprintf( str, 2048 - 1, _format, argList );
-
-	va_end( argList );
-
-	printf( str );
-}
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {

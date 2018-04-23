@@ -53,7 +53,7 @@ namespace Mengine
         ResourceReference * createResourceParticle_( const aeMovieResourceParticle * _resource );
 
 	protected:
-        const aeMovieInstance * m_instance;
+        const aeMovieInstance * m_movieInstance;
 
 		aeMovieData * m_movieData;
 

@@ -216,7 +216,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie2::setMovieInstance( const aeMovieInstance * _instance )
 	{
-		m_instance = _instance;
+		m_movieInstance = _instance;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie2::_loader( const Metabuf::Metadata * _meta )
@@ -262,9 +262,9 @@ namespace Mengine
 			return false;
 		}
 
-		aeMovieData * movieData = ae_create_movie_data( m_instance, &Mengine_resource_provider, &Mengine_resource_deleter, this );
+		aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &Mengine_resource_provider, &Mengine_resource_deleter, this );
 
-		aeMovieStream * movie_stream = ae_create_movie_stream( m_instance, &Mengine_read_stream, &Mengine_copy_stream, stream.get() );
+		aeMovieStream * movie_stream = ae_create_movie_stream( m_movieInstance, &Mengine_read_stream, &Mengine_copy_stream, stream.get() );
 
         ae_uint32_t major_version;
         ae_uint32_t minor_version;
@@ -340,6 +340,36 @@ namespace Mengine
 
 		ResourceReference::_release();
 	}
+    //////////////////////////////////////////////////////////////////////////    
+    ae_bool_t Mengine_movie_layer_data_visitor( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layerData, ae_voidptr_t _ud )
+    {
+        ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_ud;
+        
+        const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( _compositionData );
+        const ae_char_t * layerDataName = ae_get_movie_layer_data_name( _layerData );
+
+        aeMovieLayerTypeEnum layerType = ae_get_movie_layer_data_type( _layerData );
+
+        switch( layerType )
+        {
+        case AE_MOVIE_LAYER_TYPE_TEXT:
+            {
+                if( ae_test_movie_layer_data_opacity_transparent( _layerData ) == AE_TRUE )
+                {
+                    LOGGER_ERROR( "ResourceMovie2::_isValid '%s' composition '%s' text layer '%s' opacity transparent"
+                        , resourceMovie2->getName().c_str()
+                        , compositionDataName
+                        , layerDataName
+                    );
+                }
+            }break;
+        default:
+            {
+            }break;
+        }
+
+        return AE_TRUE;
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::_isValid() const
     {
@@ -369,11 +399,13 @@ namespace Mengine
             return false;
         }
 
-        aeMovieStream * movie_stream = ae_create_movie_stream( m_instance, &Mengine_read_stream, &Mengine_copy_stream, stream.get() );
+        aeMovieData * movieData = ae_create_movie_data( m_movieInstance, 0, 0, AE_NULL );
+
+        aeMovieStream * movieStream = ae_create_movie_stream( m_movieInstance, &Mengine_read_stream, &Mengine_copy_stream, stream.get() );
 
         ae_uint32_t major_version;
         ae_uint32_t minor_version;
-        ae_result_t result_load_movie_data = ae_check_movie_data( movie_stream, &major_version, &minor_version );
+        ae_result_t result_load_movie_data = ae_load_movie_data( movieData, movieStream, &major_version, &minor_version );
 
         if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
         {
@@ -393,7 +425,10 @@ namespace Mengine
             return false;
         }
 
-        ae_delete_movie_stream( movie_stream );
+        ae_visit_movie_layer_data( movieData, &Mengine_movie_layer_data_visitor, (ae_voidptr_t)this );
+
+        ae_delete_movie_data( movieData );
+        ae_delete_movie_stream( movieStream );
 
         return true;
     }

@@ -52,21 +52,6 @@ const unsigned int PVRTEX_IDENTIFIER  = 0x21525650;  // the pvr identifier is th
 
 const unsigned int PVRTEX_V1_HEADER_SIZE = 44; // old header size was 44 for identification purposes
 //////////////////////////////////////////////////////////////////////////
-static void message_error( const char * _format, ... )
-{
-	va_list argList;
-
-	va_start(argList, _format);
-
-	char str[2048];
-
-	vsnprintf( str, 2048 - 1, _format, argList );
-
-	va_end(argList);
-
-	MessageBoxA( NULL, str, "ExtractorETC1", MB_OK );
-}
-//////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
 	(void)hInstance;

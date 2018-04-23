@@ -78,7 +78,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	STARTUPINFO lpStartupInfo;
 	ZeroMemory( &lpStartupInfo, sizeof( STARTUPINFOW ) );
 	lpStartupInfo.cb = sizeof( lpStartupInfo );
-	lpStartupInfo.wShowWindow = SW_HIDE;
 
 	PROCESS_INFORMATION lpProcessInformation;
 	ZeroMemory( &lpProcessInformation, sizeof( PROCESS_INFORMATION ) );

@@ -1145,7 +1145,7 @@ namespace Mengine
 
                                 ss << "Prototype: " << s.c_str() << " " << c << std::endl;
 
-                                if( iterator++ == 15 )
+                                if( ++iterator == 15 )
                                 {
                                     break;
                                 }
@@ -1237,7 +1237,7 @@ namespace Mengine
 
                                 ss << "Python: " << s << " " << c << std::endl;
 
-                                if( iterator++ == 15 )
+                                if( ++iterator == 15 )
                                 {
                                     break;
                                 }
@@ -1321,7 +1321,7 @@ namespace Mengine
 
                                 ss << "Factory: " << s << " " << c << std::endl;
 
-                                if( iterator++ == 15 )
+                                if( ++iterator == 15 )
                                 {
                                     break;
                                 }

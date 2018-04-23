@@ -958,11 +958,6 @@ namespace Mengine
                         , report->count
 						);
 				}
-
-				size_t global = stdex_allocator_globalmemoryuse();
-				float global_mb = float(global / (1024.f * 1024.f));
-                LOGGER_ERROR("-------------------------------------");
-                LOGGER_ERROR("global %.3f", global_mb);
             }
 
 			if( _event.code == KC_F2 && _event.isDown == true )

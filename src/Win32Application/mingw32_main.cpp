@@ -3,7 +3,7 @@
 #	include "Win32Application.h"
 
 //////////////////////////////////////////////////////////////////////////
-int main( int argc, char *argv[], char *environ )
+int main( int argc, char *argv[] )
 {
     (void)argc;
     (void)argv;
@@ -11,7 +11,9 @@ int main( int argc, char *argv[], char *environ )
 
     stdex_allocator_initialize();
 
+#ifdef NDEBUG
     try
+#endif
     {
         Mengine::Win32Application app;
 
@@ -28,12 +30,16 @@ int main( int argc, char *argv[], char *environ )
 
         app.finalize();
     }
+#ifdef NDEBUG
     catch( const std::exception & se )
     {
         const char * se_what = se.what();
 
         MessageBoxA( NULL, se_what, "Mengine exception", MB_OK );
     }
+#endif
 
     stdex_allocator_finalize();
+
+    return 0;
 }

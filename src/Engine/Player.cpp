@@ -31,8 +31,6 @@
 
 #include "Factory/FactoryDefault.h"
 
-#include "Consts.h"
-
 #include "Logger/Logger.h"
 
 #include "TextField.h"
@@ -569,7 +567,7 @@ namespace Mengine
     void Player::initializeRenderResources()
     {
         m_debugText = NODE_SERVICE()->
-            createNodeT<TextField *>( CONST_STRING( TextField ) );
+            createNodeT<TextField *>( STRINGIZE_STRING_LOCAL( "TextField" ) );
 
         m_debugText->setFontName( STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ) );
         m_debugText->setTextID( STRINGIZE_STRING_LOCAL( "__ID_TEXT_CONSOLE" ) );
@@ -584,7 +582,7 @@ namespace Mengine
         Viewport vp( 0.f, 0.f, cr.x, cr.y );
 
         m_camera2D = NODE_SERVICE()
-            ->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( RenderCameraOrthogonal ) );
+            ->createNodeT<RenderCameraOrthogonal *>( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
 
         m_camera2D->setOrthogonalViewport( vp );
 
@@ -593,7 +591,7 @@ namespace Mengine
         this->setRenderCamera( m_camera2D );
 
         m_viewport2D = NODE_SERVICE()
-            ->createNodeT<RenderViewport *>( CONST_STRING( RenderViewport ) );
+            ->createNodeT<RenderViewport *>( STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
 
         m_viewport2D->setViewport( vp );
         m_viewport2D->enable();
@@ -601,7 +599,7 @@ namespace Mengine
         this->setRenderViewport( m_viewport2D );
 
         m_arrowCamera2D = NODE_SERVICE()
-            ->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( RenderCameraOrthogonal ) );
+            ->createNodeT<RenderCameraOrthogonal *>( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
 
         m_arrowCamera2D->setOrthogonalViewport( vp );
         m_arrowCamera2D->enable();
@@ -614,7 +612,7 @@ namespace Mengine
         }
 
         m_debugCamera2D = NODE_SERVICE()
-            ->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( RenderCameraOrthogonal ) );
+            ->createNodeT<RenderCameraOrthogonal *>( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
 
         m_debugCamera2D->setOrthogonalViewport( vp );
 
@@ -1167,14 +1165,14 @@ namespace Mengine
                 };
 
 
-                VisitorPlayerFactoryManager pfmv_node( CONST_STRING( Node ) );
+                VisitorPlayerFactoryManager pfmv_node( STRINGIZE_STRING_LOCAL( "Node" ) );
 
                 PROTOTYPE_SERVICE()
                     ->visitGenerators( &pfmv_node );
 
                 ss << pfmv_node.getMsg() << std::endl;
 
-                VisitorPlayerFactoryManager pfmv_surface( CONST_STRING( Surface ) );
+                VisitorPlayerFactoryManager pfmv_surface( STRINGIZE_STRING_LOCAL( "Surface" ) );
 
                 PROTOTYPE_SERVICE()
                     ->visitGenerators( &pfmv_surface );

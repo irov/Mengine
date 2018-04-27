@@ -9,8 +9,6 @@
 #include "Kernel/Loadable.h"
 #include "Kernel/ResourceReference.h"
 
-#include "Consts.h"
-
 #include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -463,7 +461,7 @@ namespace Mengine
 	ResourceReferencePtr ResourceManager::generateResource( const ConstString& _type ) const
 	{
 		ResourceReferencePtr resource = PROTOTYPE_SERVICE()
-			->generatePrototype( CONST_STRING( Resource ), _type );
+			->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), _type );
 
 		if( resource == nullptr )
 		{
@@ -811,14 +809,8 @@ namespace Mengine
 
 		const TVectorResources & resources = it_cache_found->second;
 
-		for( TVectorResources::const_iterator
-			it = resources.begin(),
-			it_end = resources.end();
-		it != it_end;
-		++it )
+		for( const ResourceReferencePtr & resource : resources )
 		{
-			const ResourceReferencePtr & resource = *it;
-
 			resource->visit( _visitor );
 		}
 	}

@@ -139,14 +139,8 @@ namespace Mengine
 		TVectorConverterMovieFrameLayer frameLayers;
 		frameLayers.resize( maxIndex );
 
-		for( TVectorConverterMovieFrameLayer::iterator
-			it = frameLayers.begin(),
-			it_end = frameLayers.end();
-		it != it_end;
-		++it )
+		for( ConverterMovieLayerFrame & layer : frameLayers )
 		{
-			ConverterMovieLayerFrame & layer = *it;
-
 			layer.count = 0;
 			layer.immutable = 0;
 		}
@@ -389,14 +383,8 @@ namespace Mengine
 			}
 		}
 
-		for( TVectorConverterMovieFrameLayer::const_iterator
-			it = frameLayers.begin(),
-			it_end = frameLayers.end();
-		it != it_end;
-		++it )
+		for( const ConverterMovieLayerFrame & frame : frameLayers )
 		{
-			const ConverterMovieLayerFrame & frame = (*it);
-
 			aw << frame.count;
 			aw << frame.immutable;
 
@@ -596,14 +584,8 @@ namespace Mengine
 
 					size_t max_points = 0;
 
-					for( TVectorPolygon::const_iterator
-						it_polygon = output.begin(),
-						it_polygon_end = output.end();
-					it_polygon != it_polygon_end;
-					++it_polygon)
+                    for( const Polygon & shape_vertex : output )
 					{
-						const Polygon & shape_vertex = *it_polygon;
-
 						size_t outer_count = shape_vertex.outer_count();
 
 						max_points += outer_count - 1;
@@ -633,14 +615,8 @@ namespace Mengine
 
 					TVectorIndices shape_indices;
 
-					for( TVectorPolygon::const_iterator
-						it_polygon = output.begin(),
-						it_polygon_end = output.end();
-					it_polygon != it_polygon_end;
-					++it_polygon)
+                    for( const Polygon & shape_vertex : output )
 					{
-						const Polygon & shape_vertex = *it_polygon;
-
 						std::vector<p2t::Point*> p2t_polygon;
 
 						size_t outer_count = shape_vertex.outer_count();

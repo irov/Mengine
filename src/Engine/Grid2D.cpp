@@ -6,8 +6,6 @@
 
 #include "Kernel/ResourceImage.h"
 
-#include "Consts.h"
-
 #include "Logger/Logger.h"
 
 #include "math/box2.h"
@@ -244,14 +242,8 @@ namespace Mengine
 	{
 		(void)_current;
 
-		for( TVectorRenderVertex2D::iterator
-			it = m_vertices.begin(),
-			it_end = m_vertices.end();
-		it != it_end;
-		++it )
+		for( RenderVertex2D & v : m_vertices )
 		{
-			RenderVertex2D & v = *it;
-
 			v.uv[0].x += 0.00001f * _timing * cosf( m_angle );
 			v.uv[0].y += 0.00001f * _timing * sinf( m_angle );
 			v.uv[1].x += 0.00001f * _timing * cosf( m_angle );

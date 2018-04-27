@@ -325,10 +325,10 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
     {
     case AE_MOVIE_LAYER_TYPE_TEXT:
         {
-            pugi::xml_node xmlNodeText = np->xmlComposition->append_child( "Node" );
+            pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
 
-            xmlNodeText.append_attribute( "Name" ).set_value( layer_name );
-            xmlNodeText.append_attribute( "Type" ).set_value( "TextField" );
+            xmlLayer.append_attribute( "Name" ).set_value( layer_name );
+            xmlLayer.append_attribute( "Type" ).set_value( "TextField" );
 
             char xmlMatrix[256];
             sprintf( xmlMatrix, "%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"
@@ -350,7 +350,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
                 , _callbackData->matrix[4 * 3 + 3] 
             );
 
-            xmlNodeText.append_attribute( "Matrix" ).set_value( xmlMatrix );
+            xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
 
             char xmlColor[256];
             sprintf( xmlColor, "%f;%f;%f;%f"
@@ -360,17 +360,17 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
                 , _callbackData->opacity
             );
             
-            xmlNodeText.append_attribute( "Color" ).set_value( xmlColor );
+            xmlLayer.append_attribute( "Color" ).set_value( xmlColor );
 
-            if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_HORIZONTAL_CENTER ) == AE_TRUE )
-            {
-                xmlNodeText.append_attribute( "AlignHorizontalCenter" ).set_value( 1U );
-            }
+            //if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_HORIZONTAL_CENTER ) == AE_TRUE )
+            //{
+            //    xmlNodeText.append_attribute( "AlignHorizontalCenter" ).set_value( 1U );
+            //}
 
-            if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_VERTICAL_CENTER ) == AE_TRUE )
-            {
-                xmlNodeText.append_attribute( "AlignVerticalCenter" ).set_value( 1U );
-            }
+            //if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_VERTICAL_CENTER ) == AE_TRUE )
+            //{
+            //    xmlNodeText.append_attribute( "AlignVerticalCenter" ).set_value( 1U );
+            //}
 
             *_nd = AE_NULL;
 
@@ -378,10 +378,10 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
         }break;
     case AE_MOVIE_LAYER_TYPE_SLOT:
         {
-            pugi::xml_node xmlNodeText = np->xmlComposition->append_child( "Node" );
+            pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
 
-            xmlNodeText.append_attribute( "Name" ).set_value( layer_name );
-            xmlNodeText.append_attribute( "Type" ).set_value( "Movie2Slot" );
+            xmlLayer.append_attribute( "Name" ).set_value( layer_name );
+            xmlLayer.append_attribute( "Type" ).set_value( "Movie2Slot" );
 
             char xmlMatrix[256];
             sprintf( xmlMatrix, "%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"
@@ -403,7 +403,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
                 , _callbackData->matrix[4 * 3 + 3]
             );
 
-            xmlNodeText.append_attribute( "Matrix" ).set_value( xmlMatrix );
+            xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
 
             char xmlColor[256];
             sprintf( xmlColor, "%f;%f;%f;%f"
@@ -413,7 +413,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
                 , _callbackData->opacity
             );
 
-            xmlNodeText.append_attribute( "Color" ).set_value( xmlColor );
+            xmlLayer.append_attribute( "Color" ).set_value( xmlColor );
             
             *_nd = AE_NULL;
 
@@ -421,10 +421,10 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
         }break;
     case AE_MOVIE_LAYER_TYPE_SOCKET:
         {
-            pugi::xml_node xmlNodeText = np->xmlComposition->append_child( "Node" );
+            pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
 
-            xmlNodeText.append_attribute( "Name" ).set_value( layer_name );
-            xmlNodeText.append_attribute( "Type" ).set_value( "Movie2Slot" );
+            xmlLayer.append_attribute( "Name" ).set_value( layer_name );
+            xmlLayer.append_attribute( "Type" ).set_value( "HotSpotPolygon" );
 
             char xmlMatrix[256];
             sprintf( xmlMatrix, "%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"
@@ -446,7 +446,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
                 , _callbackData->matrix[4 * 3 + 3]
             );
 
-            xmlNodeText.append_attribute( "Matrix" ).set_value( xmlMatrix );
+            xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
 
             char xmlColor[256];
             sprintf( xmlColor, "%f;%f;%f;%f"
@@ -456,43 +456,94 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
                 , _callbackData->opacity
             );
 
-            xmlNodeText.append_attribute( "Color" ).set_value( xmlColor );
+            xmlLayer.append_attribute( "Color" ).set_value( xmlColor );
+          
+            *_nd = AE_NULL;
 
-            //HotSpotPolygon * node = NODE_SERVICE()
-            //    ->createNodeT<HotSpotPolygon *>( STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
+            return AE_TRUE;
+        }break;
+    case AE_MOVIE_LAYER_TYPE_PARTICLE:
+        {
+            pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
 
-            //if( node == nullptr )
-            //{
-            //    return AE_FALSE;
-            //}
+            xmlLayer.append_attribute( "Name" ).set_value( layer_name );
+            xmlLayer.append_attribute( "Type" ).set_value( "ParticleEmitter2" );
 
-            //node->setName( c_name );
-            //node->setExternalRender( true );
+            char xmlMatrix[256];
+            sprintf( xmlMatrix, "%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"
+                , _callbackData->matrix[4 * 0 + 0]
+                , _callbackData->matrix[4 * 0 + 1]
+                , _callbackData->matrix[4 * 0 + 2]
+                , _callbackData->matrix[4 * 0 + 3]
+                , _callbackData->matrix[4 * 1 + 0]
+                , _callbackData->matrix[4 * 1 + 1]
+                , _callbackData->matrix[4 * 1 + 2]
+                , _callbackData->matrix[4 * 1 + 3]
+                , _callbackData->matrix[4 * 2 + 0]
+                , _callbackData->matrix[4 * 2 + 1]
+                , _callbackData->matrix[4 * 2 + 2]
+                , _callbackData->matrix[4 * 2 + 3]
+                , _callbackData->matrix[4 * 3 + 0]
+                , _callbackData->matrix[4 * 3 + 1]
+                , _callbackData->matrix[4 * 3 + 2]
+                , _callbackData->matrix[4 * 3 + 3]
+            );
 
-            const ae_polygon_t * polygon;
-            if( ae_get_movie_layer_data_socket_polygon( _callbackData->layer, 0, &polygon ) == AE_FALSE )
-            {
-                return AE_FALSE;
-            }
+            xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
 
-            std::stringstream ss;
-            
-            for( ae_uint32_t index = 0; index != polygon->point_count; ++index )
-            {
-                if( index == 0 )
-                {
-                    ss << ";";
-                }
-                
-                const ae_vector2_t * v = polygon->points + index;
+            char xmlColor[256];
+            sprintf( xmlColor, "%f;%f;%f;%f"
+                , _callbackData->color.r
+                , _callbackData->color.g
+                , _callbackData->color.b
+                , _callbackData->opacity
+            );
 
-                ss << v[0] << ";" << v[1];
-            }
+            xmlLayer.append_attribute( "Color" ).set_value( xmlColor );
 
-            std::string s = ss.str();
+            *_nd = AE_NULL;
 
-            xmlNodeText.append_attribute( "Polygon" ).set_value( s.c_str() );
-            
+            return AE_TRUE;
+        }break;
+    case AE_MOVIE_LAYER_TYPE_SPRITE:
+        {
+            pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
+
+            xmlLayer.append_attribute( "Name" ).set_value( layer_name );
+            xmlLayer.append_attribute( "Type" ).set_value( "ShapeQuadFixed" );
+
+            char xmlMatrix[256];
+            sprintf( xmlMatrix, "%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"
+                , _callbackData->matrix[4 * 0 + 0]
+                , _callbackData->matrix[4 * 0 + 1]
+                , _callbackData->matrix[4 * 0 + 2]
+                , _callbackData->matrix[4 * 0 + 3]
+                , _callbackData->matrix[4 * 1 + 0]
+                , _callbackData->matrix[4 * 1 + 1]
+                , _callbackData->matrix[4 * 1 + 2]
+                , _callbackData->matrix[4 * 1 + 3]
+                , _callbackData->matrix[4 * 2 + 0]
+                , _callbackData->matrix[4 * 2 + 1]
+                , _callbackData->matrix[4 * 2 + 2]
+                , _callbackData->matrix[4 * 2 + 3]
+                , _callbackData->matrix[4 * 3 + 0]
+                , _callbackData->matrix[4 * 3 + 1]
+                , _callbackData->matrix[4 * 3 + 2]
+                , _callbackData->matrix[4 * 3 + 3]
+            );
+
+            xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
+
+            char xmlColor[256];
+            sprintf( xmlColor, "%f;%f;%f;%f"
+                , _callbackData->color.r
+                , _callbackData->color.g
+                , _callbackData->color.b
+                , _callbackData->opacity
+            );
+
+            xmlLayer.append_attribute( "Color" ).set_value( xmlColor );
+
             *_nd = AE_NULL;
 
             return AE_TRUE;
@@ -502,6 +553,20 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
     };
     
     *_nd = AE_NULL;
+
+    return AE_TRUE;
+}
+//////////////////////////////////////////////////////////////////////////
+static ae_bool_t __visit_sub_composition( const aeMovieComposition * _compositionData, const ae_char_t * _name, const aeMovieSubComposition * _subcomposition, ae_voidptr_t _ud )
+{
+    (void)_compositionData;
+    (void)_subcomposition;
+
+    node_provider_t * np = (node_provider_t *)_ud;
+
+    pugi::xml_node xmlSubComposition = np->xmlComposition->append_child( "SubComposition" );
+
+    xmlSubComposition.append_attribute( "Name" ).set_value( _name );
 
     return AE_TRUE;
 }
@@ -609,11 +674,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     ae_uint32_t minor_version;
     ae_result_t result_load_movie_data = ae_load_movie_data( movieData, movieStream, &major_version, &minor_version );
 
-#if 0
     pugi::xml_node xmlDataResource = xmlDataBlock.append_child( "Resource" );
 
     char xmlMovieName[256];
-    sprintf( xmlMovieName, "Movies2_%s"
+    sprintf( xmlMovieName, "Movie2_%s"
         , utf8_movie_name
     );
 
@@ -642,29 +706,31 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         }
 
         const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( compositionData );
+        ae_float_t duration = ae_get_movie_composition_data_duration( compositionData );
+        ae_float_t frame_duration = ae_get_movie_composition_data_frame_duration( compositionData );
 
         pugi::xml_node xmlDataResourceComposition = xmlDataResource.append_child( "Composition" );
 
         xmlDataResourceComposition.append_attribute( "Name" ).set_value( compositionDataName );
+        xmlDataResourceComposition.append_attribute( "Duration" ).set_value( duration );
+        xmlDataResourceComposition.append_attribute( "FrameDuration" ).set_value( frame_duration );       
+        
 
         aeMovieCompositionProviders providers;
-        ae_initialize_movie_composition_providers( &providers );
+        ae_clear_movie_composition_providers( &providers );
 
         providers.node_provider = &__movie_composition_node_provider;
-
-        //<Resource Name = "Movie2_01_CrusaderVault" Type = "ResourceMovie2">
-        //    <File Path = "Movies2/01_CrusaderVault/01_CrusaderVault.aem" / >
-        //    < / Resource>
 
         node_provider_t np;
         np.xmlComposition = &xmlDataResourceComposition;
         strcpy( np.movie_name, utf8_movie_name );
 
         aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, &np );
+        
+        ae_visit_movie_sub_composition( composition, __visit_sub_composition, &np );
 
         ae_delete_movie_composition( composition );
     }
-#endif
 
     ae_delete_movie_stream( movieStream );
 

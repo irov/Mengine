@@ -16,8 +16,6 @@
 
 #include "Interface/ResourceInterface.h"
 
-#include "Consts.h"
-
 #include "math/box2.h"
 #include "math/angle.h"
 
@@ -200,8 +198,9 @@ namespace Mengine
 		m_indexCount = 0;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter2::_play( float _time )
+	bool ParticleEmitter2::_play( uint32_t _enumerator, float _time )
 	{
+        (void)_enumerator;
         (void)_time;
 
 		if( this->isActivate() == false )

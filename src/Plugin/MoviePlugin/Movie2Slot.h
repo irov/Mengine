@@ -4,6 +4,8 @@
 
 namespace Mengine
 {
+    class Movie2;
+
 	class Movie2Slot
 		: public Node
 	{
@@ -12,8 +14,8 @@ namespace Mengine
         ~Movie2Slot() override;
 
     public:
-        void setMovieName( const ConstString & _movieName );
-        const ConstString & getMovieName() const;
+        void setMovie( Movie2 * _movie );
+        Movie2 * getMovie() const;
 
     protected:
         void _destroy() override;
@@ -32,6 +34,6 @@ namespace Mengine
 		void _debugRender( Mengine::RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask ) override;
 
     protected:
-        ConstString m_movieName;
+        Movie2 * m_movie;
 	};
 }

@@ -6,8 +6,6 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/ArchiveInterface.h"
 
-#include "Consts.h"
-
 #include "Logger/Logger.h"
 
 #include "Core/IniUtil.h"
@@ -242,7 +240,7 @@ namespace Mengine
 	bool Account::save()
 	{
 		OutputStreamInterfacePtr file = FILE_SERVICE()
-            ->openOutputFile( CONST_STRING( user), m_settingsPath );
+            ->openOutputFile( STRINGIZE_STRING_LOCAL( "user" ), m_settingsPath );
 
 		if( file == nullptr )
 		{
@@ -314,7 +312,7 @@ namespace Mengine
 		FilePath fullpath = Helper::stringizeFilePath( path );
 
 		InputStreamInterfacePtr stream = 
-			FILE_SERVICE()->openInputFile( CONST_STRING( user), fullpath, false );
+            FILE_SERVICE()->openInputFile( STRINGIZE_STRING_LOCAL( "user" ), fullpath, false );
 
 		if( stream == nullptr )
 		{
@@ -339,7 +337,7 @@ namespace Mengine
 		FilePath fullpath = Helper::stringizeFilePath( path );
 
 		OutputStreamInterfacePtr stream = FILE_SERVICE()
-			->openOutputFile( CONST_STRING( user), fullpath );
+            ->openOutputFile( STRINGIZE_STRING_LOCAL( "user" ), fullpath );
 
 		if( stream == nullptr )
 		{
@@ -432,7 +430,7 @@ namespace Mengine
 		FilePath fullpath = Helper::stringizeFilePath( path );
 
 		bool exist = FILE_SERVICE()
-			->existFile( CONST_STRING( user), fullpath, nullptr );
+            ->existFile( STRINGIZE_STRING_LOCAL( "user" ), fullpath, nullptr );
 
 		return exist;
 	}

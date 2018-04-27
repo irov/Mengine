@@ -6,8 +6,6 @@
 
 #include "Kernel/ResourceImage.h"
 
-#include "Consts.h"
-
 #include "Logger/Logger.h"
 
 #include "math/box2.h"
@@ -57,14 +55,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Landscape2D::_release()
 	{
-		for( TVectorLandscape2DElements::iterator
-			it = m_elements.begin(),
-			it_end = m_elements.end();
-		it != it_end;
-		++it )
-		{
-			Landscape2DElement & el = *it;
-			
+		for( Landscape2DElement & el : m_elements )
+		{			
 			if( el.material != nullptr )
 			{
 				el.image->decrementReference();
@@ -86,14 +78,8 @@ namespace Mengine
 		mt::vec2f min_screen( 0.f, 0.f );
 		mt::vec2f max_screen( 1.f, 1.f );
 
-		for( TVectorLandscape2DElements::iterator
-			it = elementsWM.begin(),
-			it_end = elementsWM.end();
-		it != it_end;
-		++it )
+		for( Landscape2DElement & el : elementsWM )
 		{
-			Landscape2DElement & el = *it;
-
 			const mt::mat4f & vpm = _state->camera->getCameraViewProjectionMatrix();
 
 			mt::vec2f v_wvp_minimum;
@@ -151,14 +137,8 @@ namespace Mengine
 		
 		uint32_t elementVertexOffset = 0;
 
-		for( TVectorLandscape2DElements::const_iterator
-			it = elementsWM.begin(),
-			it_end = elementsWM.end();
-		it != it_end;
-		++it )
+		for( const Landscape2DElement & el : elementsWM )
 		{
-			const Landscape2DElement & el = *it;
-
 			if( el.material != nullptr )
 			{
 				const RenderVertex2D * vertices = this->getVerticesWM( elementVertexOffset );
@@ -187,14 +167,8 @@ namespace Mengine
 		m_elements.reserve( elementCount );
 		m_verticesWM.resize( elementCount * 4 );
 
-		for( TVectorResourceImage::iterator
-			it = m_images.begin(),
-			it_end = m_images.end();
-		it != it_end;
-		++it )
+        for( ResourceImage * image : m_images )
 		{
-			ResourceImage * image = *it;
-
 			if( image == nullptr )
 			{
 				LOGGER_ERROR("Landscape2D::setBackParts %s invalid setup image for %d:%d"
@@ -260,14 +234,8 @@ namespace Mengine
 
 		uint32_t vertex_offset = 0;
 
-		for( TVectorLandscape2DElements::iterator
-			it = m_elements.begin(),
-			it_end = m_elements.end();
-		it != it_end;
-		++it )
+		for( Landscape2DElement & el : m_elements )
 		{
-			Landscape2DElement & el = *it;
-
 			const mt::uv4f & uv_image = el.image->getUVImage();
 			const mt::uv4f & uv_alpha = el.image->getUVAlpha();
 
@@ -298,14 +266,8 @@ namespace Mengine
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
-		for( TVectorLandscape2DElements::iterator
-			it = m_elements.begin(),
-			it_end = m_elements.end();
-		it != it_end;
-		++it )
+        for( Landscape2DElement & el : m_elements )
 		{
-			Landscape2DElement & el = *it;
-
 			mt::mul_v2_v2_m4( el.bb_wm.minimum, el.bb.minimum, wm );
 			mt::mul_v2_v2_m4( el.bb_wm.maximum, el.bb.maximum, wm );
 		}

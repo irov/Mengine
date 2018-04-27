@@ -1,4 +1,4 @@
-<Protocol Version = "120">
+<Protocol Version = "123">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -11,9 +11,11 @@
   <Type Name="mt::vec2f" Evict="float2"/>
   <Type Name="mt::vec3f" Evict="float3"/>
   <Type Name="mt::vec4f" Evict="float4"/>
+  <Type Name="mt::mat4f" Evict="float16"/>
   <Type Name="mt::box2f" Evict="float4"/>
   <Type Name="mt::uv4f" Evict="float8"/>  
-  <Type Name="Mengine::ColourValue" Evict="float4"/>
+  <Type Name="Color255" Type="Mengine::ColourValue" Evict="float4inv255"/>
+  <Type Name="Color" Type="Mengine::ColourValue" Evict="float4"/>
   <Type Name="Mengine::Polygon" Evict="floats"/>
   <Type Name="Mengine::Viewport" Evict="float4"/>  
   <Type Name="Mengine::Floats" Evict="floats"/>
@@ -267,6 +269,23 @@
 
         <Node Name="ResourceMovie2" Inheritance = "Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          
+          <Node Name="Composition">
+            <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
+            <Attribute Name="Duration" Type="float" Required="1"/>
+            <Attribute Name="FrameDuration" Type="float" Required="1"/>
+            
+            <Node Name="Layer">
+              <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
+              <Attribute Name="Type" Type="Mengine::ConstString" Required="1"/>
+              <Attribute Name="Matrix" Type="mt::mat4f" Required="1"/>
+              <Attribute Name="Color" Type="Color" Required="1"/>
+            </Node>
+            
+            <Node Name="SubComposition">
+                <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
+            </Node>
+          </Node>
         </Node>
 
         <Node Name="ResourceMovie" Inheritance = "Resource">
@@ -373,7 +392,7 @@
 
         <Node Name="ResourceImageSolid" Inheritance = "Resource">
           <Member Node="Size" Name="Value" Type="mt::vec2f" Required="1"/>
-          <Member Node="Color" Name="Value" Type="Mengine::ColourValue" Required="1"/>
+          <Member Node="Color" Name="Value" Type="Color255" Required="1"/>
         </Node>
 
         <Node Name="ResourceInternalObject" Inheritance = "Resource">

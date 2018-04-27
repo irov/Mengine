@@ -5,8 +5,6 @@
 
 #include "Kernel/ResourceImage.h"
 
-#include "Consts.h"
-
 #include "Logger/Logger.h"
 
 #include "math/box2.h"

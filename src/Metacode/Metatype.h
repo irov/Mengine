@@ -20,6 +20,7 @@
 #include "math/vec2.h"
 #include "math/vec3.h"
 #include "math/vec4.h"
+#include "math/mat4.h"
 
 #include "math/box2.h"
 #include "math/uv4.h"
@@ -52,6 +53,7 @@ namespace Metabuf
 	void archive_read( Reader & ar, mt::vec2f & _value, void * _userData );
     void archive_read( Reader & ar, mt::vec3f & _value, void * _userData );
     void archive_read( Reader & ar, mt::vec4f & _value, void * _userData );
+    void archive_read( Reader & ar, mt::mat4f & _value, void * _userData );
 	void archive_read( Reader & ar, mt::box2f & _value, void * _userData );
 	void archive_read( Reader & ar, mt::uv4f & _value, void * _userData );
 	//////////////////////////////////////////////////////////////////////////

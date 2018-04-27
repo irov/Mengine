@@ -98,6 +98,11 @@ namespace Mengine
 
 		m_hInstance = GetModuleHandle( NULL );
 
+        constexpr HashType hash = Helper::makeHash( "IDC_ARROW", (sizeof( "IDC_ARROW" ) - 1) );
+        Mengine::Helper::stringizeStringSizeHash( "IDC_ARROW", (sizeof( "IDC_ARROW" ) - 1), hash );
+    
+        STRINGIZE_STRING_LOCAL( "IDC_ARROW" );
+
 		m_cursors[STRINGIZE_STRING_LOCAL( "IDC_ARROW" )] = LoadCursor( NULL, IDC_ARROW );
 		m_cursors[STRINGIZE_STRING_LOCAL( "IDC_UPARROW" )] = LoadCursor( NULL, IDC_UPARROW );
 		m_cursors[STRINGIZE_STRING_LOCAL( "IDC_HAND" )] = LoadCursor( NULL, IDC_HAND );
@@ -166,7 +171,7 @@ namespace Mengine
         if( option_platform != nullptr )
         {
             m_platformTags.clear();
-            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( option_platform ) );
+            m_platformTags.addTag( Helper::stringizeString( option_platform ) );
         }
 
 		if( HAS_OPTION( "touchpad" ) )

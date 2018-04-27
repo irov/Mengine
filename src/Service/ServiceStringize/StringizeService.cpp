@@ -10,7 +10,7 @@
 SERVICE_FACTORY( StringizeService, Mengine::StringizeService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
-{	
+{
     //////////////////////////////////////////////////////////////////////////
     StringizeService::StringizeService()
     {
@@ -19,27 +19,27 @@ namespace Mengine
     StringizeService::~StringizeService()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool StringizeService::_initialize()
-	{
-		m_factoryHolderStringMemory = new FactoryPool<ConstStringHolderMemory, 512>();
+    //////////////////////////////////////////////////////////////////////////
+    bool StringizeService::_initialize()
+    {
+        m_factoryHolderStringMemory = new FactoryPool<ConstStringHolderMemory, 512>();
 
-		for (uint32_t i = 0; i != 257; ++i)
-		{
-			for (uint32_t j = 0; j != 8; ++j)
-			{
-				InternalHolder & holder = m_internals[i][j];
+        for( uint32_t i = 0; i != 257; ++i )
+        {
+            for( uint32_t j = 0; j != 8; ++j )
+            {
+                InternalHolder & holder = m_internals[i][j];
 
-				holder.str = nullptr;
-				holder.holder = nullptr;				
-			}
-		}
+                holder.str = nullptr;
+                holder.holder = nullptr;
+            }
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void StringizeService::_finalize()
-	{
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void StringizeService::_finalize()
+    {
         for( uint32_t i = 0; i != 257; ++i )
         {
             for( uint32_t j = 0; j != 8; ++j )
@@ -52,79 +52,80 @@ namespace Mengine
         }
 
         m_factoryHolderStringMemory = nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void StringizeService::stringize( const char * _str, size_t _size, ConstString::hash_type _hash, ConstString & _cstr )
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void StringizeService::stringize( const char * _str, size_t _size, ConstString::hash_type _hash, ConstString & _cstr )
+    {
         if( _size == (size_t)-1 )
-		{
-			_size = strlen(_str);
-		}
+        {
+            _size = strlen( _str );
+        }
 
-		if (_size == 0)
-		{
-			_cstr = ConstString::none();
+        if( _size == 0 )
+        {
+            _cstr = ConstString::none();
 
-			return;
-		}
+            return;
+        }
 
-		if( _hash == (ConstString::hash_type)(-1) )
+        if( _hash == (ConstString::hash_type)(-1) )
         {
             _hash = Helper::makeHash( _str, _size );
         }
 
-		ConstStringHolder * holder = this->stringizeHolder_(_str, _size, _hash);
+        ConstStringHolder * holder = this->stringizeHolder_( _str, _size, _hash );
 
-		_cstr = ConstString(holder);
+        _cstr = ConstString( holder );
     }
-	//////////////////////////////////////////////////////////////////////////
-	void StringizeService::stringizeInternal(const Char * _str, ConstString::size_type _size, ConstString & _cstr)
-	{
-		if (_size == 0)
-		{
-			_cstr = ConstString::none();
+    //////////////////////////////////////////////////////////////////////////
+    void StringizeService::stringizeInternal( const Char * _str, ConstString::size_type _size, ConstString::hash_type _hash, ConstString & _cstr )
+    {
+        if( _size == 0 )
+        {
+            _cstr = ConstString::none();
 
-			return;
-		}
+            return;
+        }
 
-		ptrdiff_t ptr_diff = reinterpret_cast<ptrdiff_t>(_str);
+        if( _hash == (ConstString::hash_type)(-1) )
+        {
+            _hash = Helper::makeHash( _str, _size );
+        }
 
-		uint32_t ptr_hash = (ptr_diff / sizeof(ptrdiff_t)) % 257;
+        ptrdiff_t ptr_diff = reinterpret_cast<ptrdiff_t>(_str);
 
-		for (uint32_t i = 0; i != 8; ++i)
-		{
-			InternalHolder & inter = m_internals[ptr_hash][i];
+        uint32_t ptr_hash = (ptr_diff / sizeof( ptrdiff_t )) % 257;
 
-			if (inter.str == _str)
-			{
-				_cstr = ConstString(inter.holder);
+        for( uint32_t i = 0; i != 8; ++i )
+        {
+            InternalHolder & inter = m_internals[ptr_hash][i];
 
-				return;
-			}
+            if( inter.str == _str )
+            {
+                _cstr = ConstString( inter.holder );
 
-			if (inter.holder != nullptr)
-			{
-				continue;
-			}
+                return;
+            }
 
-			ConstString::hash_type _hash = Helper::makeHash(_str, _size);
-			
-			ConstStringHolder * holder = this->stringizeHolder_(_str, _size, _hash);
+            if( inter.holder != nullptr )
+            {
+                continue;
+            }
 
-			inter.str = _str;
-			inter.holder = holder;
+            ConstStringHolder * holder = this->stringizeHolder_( _str, _size, _hash );
 
-			_cstr = ConstString(holder);
+            inter.str = _str;
+            inter.holder = holder;
 
-			return;
-		}
+            _cstr = ConstString( holder );
 
-		ConstString::hash_type hash = Helper::makeHash(_str, _size);
+            return;
+        }
 
-		ConstStringHolder * holder = this->stringizeHolder_(_str, _size, hash);
+        ConstStringHolder * holder = this->stringizeHolder_( _str, _size, _hash );
 
-		_cstr = ConstString(holder);
-	}
+        _cstr = ConstString( holder );
+    }
     //////////////////////////////////////////////////////////////////////////
     bool StringizeService::stringizeExternal( const ConstStringHolderPtr & _holder, ConstString & _cstr )
     {
@@ -139,20 +140,20 @@ namespace Mengine
             return false;
         }
 
-		if( holder_size == (ConstStringHolder::size_type)(-1) )
+        if( holder_size == (ConstStringHolder::size_type)(-1) )
         {
             holder_size = strlen( holder_str );
         }
 
-		if( holder_hash == (ConstStringHolder::hash_type) (-1) )
+        if( holder_hash == (ConstStringHolder::hash_type) (-1) )
         {
             holder_hash = Helper::makeHash( holder_str, holder_size );
         }
 
-		_holder->setup( holder_str, holder_size, holder_hash );
-		
+        _holder->setup( holder_str, holder_size, holder_hash );
+
         ConstStringHolder * test = this->testHolder_( holder_str, holder_size, holder_hash );
-        
+
         if( test != nullptr )
         {
             _cstr = ConstString( test );
@@ -160,30 +161,30 @@ namespace Mengine
             return false;
         }
 
-		this->addHolder_( _holder.get(), holder_hash );
+        this->addHolder_( _holder.get(), holder_hash );
 
-		_cstr = ConstString(_holder);
+        _cstr = ConstString( _holder );
 
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	ConstStringHolder * StringizeService::stringizeHolder_(const char * _str, size_t _size, ConstString::hash_type _hash)
-	{
-		ConstStringHolder * test = this->testHolder_(_str, _size, _hash);
+    //////////////////////////////////////////////////////////////////////////
+    ConstStringHolder * StringizeService::stringizeHolder_( const char * _str, size_t _size, ConstString::hash_type _hash )
+    {
+        ConstStringHolder * test = this->testHolder_( _str, _size, _hash );
 
-		if (test != nullptr)
-		{
-			return test;
-		}
+        if( test != nullptr )
+        {
+            return test;
+        }
 
-		ConstStringHolderMemory * holder = m_factoryHolderStringMemory->createObject();
+        ConstStringHolderMemory * holder = m_factoryHolderStringMemory->createObject();
 
-		holder->setValue(_str, _size, _hash);
+        holder->setValue( _str, _size, _hash );
 
-		this->addHolder_(holder, _hash);
+        this->addHolder_( holder, _hash );
 
-		return holder;
-	}
+        return holder;
+    }
     //////////////////////////////////////////////////////////////////////////
     ConstStringHolder * StringizeService::testHolder_( const char * _str, ConstString::size_type _size, ConstString::hash_type _hash )
     {
@@ -199,7 +200,7 @@ namespace Mengine
 
             ConstStringHolder::hash_type holder_hash = holder->hash();
 
-			if( (int32_t)holder_hash != (int32_t)_hash )
+            if( (int32_t)holder_hash != (int32_t)_hash )
             {
                 continue;
             }
@@ -224,9 +225,9 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-	void StringizeService::addHolder_( ConstStringHolder * _holder, ConstString::hash_type _hash )
+    void StringizeService::addHolder_( ConstStringHolder * _holder, ConstString::hash_type _hash )
     {
-		TIntrusiveListConstStringHolder & list = this->getList_( _hash );
+        TIntrusiveListConstStringHolder & list = this->getList_( _hash );
 
         list.push_back( _holder );
     }

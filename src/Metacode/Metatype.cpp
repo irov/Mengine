@@ -168,23 +168,10 @@ namespace Metabuf
     {
         (void)_userData;
 
-        float r;
-		float g;
-		float b;
-		float a;
-        ar.readPOD( r );
-        ar.readPOD( g );
-        ar.readPOD( b );
-        ar.readPOD( a );
+        float rgba[4];
+        ar.readPODs( rgba, 4 );
 
-        float coef = 1.f / 255.f;
-
-        r *= coef;
-        g *= coef;
-        b *= coef;
-        a *= coef;
-
-        _value.setRGBA( r, g, b, a );
+        _value.setRGBA( rgba[0], rgba[1], rgba[2], rgba[3] );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Polygon & _value, void * _userData )
@@ -214,10 +201,7 @@ namespace Metabuf
 	{
 		(void)_userData;
 
-		ar.readPOD( _value.begin.x );
-		ar.readPOD( _value.begin.y );
-		ar.readPOD( _value.end.x );
-		ar.readPOD( _value.end.y );
+		ar.readPODs( &_value.begin.x, 4 );
 	}
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Floats & _value, void * _userData )
@@ -357,51 +341,42 @@ namespace Metabuf
 	{
         (void)_userData;
 
-		ar.readPOD( _value.x );
-		ar.readPOD( _value.y );
+		ar.readPODs( &_value.x, 2 );
 	}
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, mt::vec3f & _value, void * _userData )
     {
         (void)_userData;
 
-        ar.readPOD( _value.x );
-        ar.readPOD( _value.y );
-        ar.readPOD( _value.z );
+        ar.readPODs( &_value.x, 3 );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, mt::vec4f & _value, void * _userData )
     {
         (void)_userData;
 
-        ar.readPOD( _value.x );
-        ar.readPOD( _value.y );
-        ar.readPOD( _value.z );
-        ar.readPOD( _value.w );
+        ar.readPODs( &_value.x, 4 );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, mt::mat4f & _value, void * _userData )
+    {
+        (void)_userData;
+
+        ar.readPODs( &_value.v0.x, 16 );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void archive_read( Reader & ar, mt::box2f & _value, void * _userData )
 	{
 		(void)_userData;
 
-		ar.readPOD( _value.minimum.x );
-		ar.readPOD( _value.minimum.y );
-		ar.readPOD( _value.maximum.x );
-		ar.readPOD( _value.maximum.y );
+		ar.readPODs( &_value.minimum.x, 4 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void archive_read( Reader & ar, mt::uv4f & _value, void * _userData )
 	{
 		(void)_userData;
 
-		ar.readPOD( _value.p0.x );
-		ar.readPOD( _value.p0.y );
-		ar.readPOD( _value.p1.x );
-		ar.readPOD( _value.p1.y );
-		ar.readPOD( _value.p2.x );
-		ar.readPOD( _value.p2.y );
-		ar.readPOD( _value.p3.x );
-		ar.readPOD( _value.p3.y );
+		ar.readPODs( &_value.p0.x, 8 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void archive_read( Reader & ar, Mengine::EBlendFactor & _value, void * _userData )

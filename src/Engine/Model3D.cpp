@@ -6,8 +6,6 @@
 
 #include "Kernel/RenderCameraProjection.h"
 
-#include "Consts.h"
-
 #include "Logger/Logger.h"
 
 #include "math/box2.h"
@@ -72,7 +70,7 @@ namespace Mengine
 		const Model3DInterfacePtr & model = m_resourceModel->getModel();
 
 		m_camera = NODE_SERVICE()
-			->createNodeT<RenderCameraProjection *>( CONST_STRING( RenderCameraProjection ) );
+			->createNodeT<RenderCameraProjection *>( STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ) );
 
 		const ConstString & name = this->getName();
 		m_camera->setName( name );
@@ -384,8 +382,9 @@ namespace Mengine
 		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Model3D::_play( float _time )
+	bool Model3D::_play( uint32_t _enumerator, float _time )
 	{
+        (void)_enumerator;
 		(void)_time;
 
 		if( this->isActivate() == false )

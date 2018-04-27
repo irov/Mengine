@@ -161,7 +161,7 @@ namespace Mengine
 
         pybind::set_logger( (pybind::pybind_logger_t)s_pybind_logger, nullptr );
 
-#if defined(WIN32) && defined(_DEBUG)
+#if defined(WIN32) && defined(_DEBUG) && !defined(__MINGW32__)
         _CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_WNDW );
         _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_WNDW );
         _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_WNDW );

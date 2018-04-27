@@ -28,7 +28,7 @@ namespace Mengine
 		void stringize( const char * _str, size_t _size, ConstString::hash_type _hash, ConstString & _cstr ) override;
 
 	public:
-		void stringizeInternal(const Char * _str, ConstString::size_type _size, ConstString & _cstr) override;
+		void stringizeInternal(const Char * _str, ConstString::size_type _size, ConstString::hash_type _hash, ConstString & _cstr) override;
         bool stringizeExternal( const ConstStringHolderPtr & _holder, ConstString & _cstr ) override;
 		
     protected:	

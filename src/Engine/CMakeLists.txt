@@ -21,12 +21,6 @@ Layer2D
 )
 
 ADD_FILTER(
-Consts
-	Consts.h
-	Consts.cpp
-)
-
-ADD_FILTER(
 Motor\\\\Motor
 	Motor.cpp
 	Motor.h

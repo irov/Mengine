@@ -3214,10 +3214,146 @@ namespace Metacode
                 
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read ) override;
+                void _preparationIncludes( uint32_t _id, uint32_t _count ) override;
+                void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
             public:
+                class Meta_Composition
+                    : public Metabuf::Metadata
+                { 
+                public:
+                    Meta_Composition();
+                
+                public:
+                    uint32_t getVersion() const override;
+                    uint32_t getId() const override;
+                
+                public:
+                    float get_Duration() const
+                    {
+                        return this->m_Duration;
+                    }
+                    
+                    float get_FrameDuration() const
+                    {
+                        return this->m_FrameDuration;
+                    }
+                    
+                    const Mengine::ConstString & get_Name() const
+                    {
+                        return this->m_Name;
+                    }
+                    
+                protected:
+                    void _parseData( const uint8_t * _buff, size_t _size, size_t & _read ) override;
+                    void _preparationIncludes( uint32_t _id, uint32_t _count ) override;
+                    void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+                public:
+                    class Meta_Layer
+                        : public Metabuf::Metadata
+                    { 
+                    public:
+                        Meta_Layer();
+                    
+                    public:
+                        uint32_t getVersion() const override;
+                        uint32_t getId() const override;
+                    
+                    public:
+                        const Mengine::ColourValue & get_Color() const
+                        {
+                            return this->m_Color;
+                        }
+                        
+                        const mt::mat4f & get_Matrix() const
+                        {
+                            return this->m_Matrix;
+                        }
+                        
+                        const Mengine::ConstString & get_Name() const
+                        {
+                            return this->m_Name;
+                        }
+                        
+                        const Mengine::ConstString & get_Type() const
+                        {
+                            return this->m_Type;
+                        }
+                        
+                    protected:
+                        void _parseData( const uint8_t * _buff, size_t _size, size_t & _read ) override;
+                    public:
+                    protected:
+                    protected:
+                        Mengine::ColourValue m_Color;
+                        mt::mat4f m_Matrix;
+                        Mengine::ConstString m_Name;
+                        Mengine::ConstString m_Type;
+                    };
+                    
+                    class Meta_SubComposition
+                        : public Metabuf::Metadata
+                    { 
+                    public:
+                        Meta_SubComposition();
+                    
+                    public:
+                        uint32_t getVersion() const override;
+                        uint32_t getId() const override;
+                    
+                    public:
+                        const Mengine::ConstString & get_Name() const
+                        {
+                            return this->m_Name;
+                        }
+                        
+                    protected:
+                        void _parseData( const uint8_t * _buff, size_t _size, size_t & _read ) override;
+                    public:
+                    protected:
+                    protected:
+                        Mengine::ConstString m_Name;
+                    };
+                    
+                protected:
+                protected:
+                    float m_Duration;
+                    float m_FrameDuration;
+                    Mengine::ConstString m_Name;
+                public:
+                    typedef Metabuf::Vector<Meta_Layer> VectorMeta_Layer;
+                
+                    const VectorMeta_Layer & get_Includes_Layer() const
+                    {
+                        return this->includes_Meta_Layer;
+                    }
+                
+                protected:
+                    VectorMeta_Layer includes_Meta_Layer;
+                public:
+                    typedef Metabuf::Vector<Meta_SubComposition> VectorMeta_SubComposition;
+                
+                    const VectorMeta_SubComposition & get_Includes_SubComposition() const
+                    {
+                        return this->includes_Meta_SubComposition;
+                    }
+                
+                protected:
+                    VectorMeta_SubComposition includes_Meta_SubComposition;
+                };
+                
             protected:
             protected:
                 Mengine::FilePath m_File_Path;
+            public:
+                typedef Metabuf::Vector<Meta_Composition> VectorMeta_Composition;
+            
+                const VectorMeta_Composition & get_Includes_Composition() const
+                {
+                    return this->includes_Meta_Composition;
+                }
+            
+            protected:
+                VectorMeta_Composition includes_Meta_Composition;
             };
             
             class Meta_ResourceMusic

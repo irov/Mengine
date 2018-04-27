@@ -469,14 +469,8 @@ namespace Mengine
 
         LOGGER_WARNING( "DX9RenderSystem initalized successfully!" );
 
-        for( TVectorRenderVertexShaders::iterator
-            it = m_deferredCompileVertexShaders.begin(),
-            it_end = m_deferredCompileVertexShaders.end();
-            it != it_end;
-            ++it )
+        for( const DX9RenderVertexShaderPtr & shader : m_deferredCompileVertexShaders )
         {
-            const DX9RenderVertexShaderPtr & shader = *it;
-
             if( shader->compile( m_pD3DDevice ) == false )
             {
                 return false;
@@ -485,14 +479,8 @@ namespace Mengine
 
         m_deferredCompileVertexShaders.clear();
 
-        for( TVectorRenderFragmentShaders::iterator
-            it = m_deferredCompileFragmentShaders.begin(),
-            it_end = m_deferredCompileFragmentShaders.end();
-            it != it_end;
-            ++it )
+        for( const DX9RenderFragmentShaderPtr & shader : m_deferredCompileFragmentShaders )
         {
-            const DX9RenderFragmentShaderPtr & shader = *it;
-
             if( shader->compile( m_pD3DDevice ) == false )
             {
                 return false;
@@ -501,14 +489,8 @@ namespace Mengine
 
         m_deferredCompileFragmentShaders.clear();
 
-        for( TVectorRenderPrograms::iterator
-            it = m_deferredCompilePrograms.begin(),
-            it_end = m_deferredCompilePrograms.end();
-            it != it_end;
-            ++it )
+        for( const DX9RenderProgramPtr & program : m_deferredCompilePrograms )
         {
-            const DX9RenderProgramPtr & program = *it;
-
             if( program->compile( m_pD3DDevice ) == false )
             {
                 return false;

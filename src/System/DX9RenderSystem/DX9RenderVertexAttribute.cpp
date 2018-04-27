@@ -32,14 +32,8 @@ namespace Mengine
 
         DWORD declaration_iterator = 0;
 
-        for( TVectorAttribute::const_iterator
-            it = m_attributes.begin(),
-            it_end = m_attributes.end();
-            it != it_end;
-            ++it )
+        for( const Attribute & attribute : m_attributes )
         {
-            const Attribute & attribute = *it;
-
             if( attribute.uniform == STRINGIZE_STRING_LOCAL( "inVert" ) )
             {
                 declaration[declaration_iterator++] = { 0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 };

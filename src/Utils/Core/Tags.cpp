@@ -54,14 +54,8 @@ namespace Mengine
 
 		str += '[';
 
-		for( TVectorConstString::const_iterator
-			it = m_tags.begin(),
-			it_end = m_tags.end();
-		it != it_end;
-		++it )
+		for( const ConstString & tag : m_tags )
 		{
-			const ConstString & tag = *it;
-
 			str.append( tag.c_str(), tag.size() );
 
 			str += ' ';

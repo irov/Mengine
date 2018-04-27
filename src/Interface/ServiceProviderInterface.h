@@ -5,6 +5,7 @@
 
 #include "Core/Holder.h"
 #include "Core/Exception.h"
+#include "Core/Typename.h"
 
 #ifndef NDEBUG
 #	include <typeinfo>

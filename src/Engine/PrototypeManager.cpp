@@ -76,7 +76,7 @@ namespace Mengine
 
         TVectorPrototypes & prototypes = m_prototypes[hash_id];
 
-        for( TVectorPrototypes::iterator
+        for( TVectorPrototypes::iterator 
             it = prototypes.begin(),
             it_end = prototypes.end();
             it != it_end;
@@ -105,14 +105,8 @@ namespace Mengine
 
         const TVectorPrototypes & prototypes = m_prototypes[hash_id];
 
-		for( TVectorPrototypes::const_iterator
-            it = prototypes.begin(),
-            it_end = prototypes.end();
-            it != it_end;
-            ++it )
+		for( const CategoryKey & key : prototypes )
 		{
-            const CategoryKey & key = *it;
-
             if( key.category != _category ||
                 key.prototype != _prototype )
             {
@@ -151,14 +145,8 @@ namespace Mengine
         {
             const TVectorPrototypes & prototypes = m_prototypes[index];
 
-            for( TVectorPrototypes::const_iterator
-                it = prototypes.begin(),
-                it_end = prototypes.end();
-                it != it_end;
-                ++it )
+            for( const CategoryKey & key : prototypes )
             {
-                const CategoryKey & key = *it;
-
                 _visitor->visit( key.category, key.prototype, key.generator );
             }
         }

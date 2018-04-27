@@ -5,8 +5,6 @@
 #include "Interface/TextInterface.h"
 #include "Interface/ApplicationInterface.h"
 
-#include "Consts.h"
-
 #include "Logger/Logger.h"
 
 #include "Core/String.h"

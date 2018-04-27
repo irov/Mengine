@@ -203,8 +203,9 @@ namespace Mengine
 		m_play = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceImageSequence::_play( float _time )
+	bool SurfaceImageSequence::_play( uint32_t _enumerator, float _time )
 	{
+        (void)_enumerator;
         (void)_time;
 
 		return true;

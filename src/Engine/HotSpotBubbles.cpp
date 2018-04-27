@@ -51,14 +51,8 @@ namespace Mengine
 
 		this->updateBubbleWM_();
 
-		for( TVectorBubbles::const_iterator
-			it = m_bubbles.begin(),
-			it_end = m_bubbles.end();
-		it != it_end;
-		++it )
+		for( const Bubble & b : m_bubbles )
 		{
-			const Bubble & b = *it;
-
 			mt::vec2f v = pointIn1 - b.pos_wm;
 
 			v.y /= b.ellipse;
@@ -91,14 +85,8 @@ namespace Mengine
 
 		this->updateBubbleWM_();
 
-		for( TVectorBubbles::const_iterator
-			it = m_bubbles.begin(),
-			it_end = m_bubbles.end();
-		it != it_end;
-		++it )
+		for( const Bubble & b : m_bubbles )
 		{
-			const Bubble & b = *it;
-
 			mt::vec2f v = pointIn1 - b.pos_wm;
 
 			v.y /= b.ellipse;
@@ -152,14 +140,8 @@ namespace Mengine
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
-		for( TVectorBubbles::const_iterator
-			it = m_bubbles.begin(),
-			it_end = m_bubbles.end();
-		it != it_end;
-		++it )
+        for( const Bubble & b : m_bubbles )
 		{
-			const Bubble & b = *it;
-
 			mt::mul_v2_v2_m4( b.pos_wm, b.pos, wm );
 		}
 	}

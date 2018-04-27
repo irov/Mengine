@@ -526,14 +526,8 @@ namespace Mengine
         uint32_t hash_code = (_char + _next) % 257;
         const TVectorKerning & kerning = m_kernings[hash_code];
 
-        for( TVectorKerning::const_iterator
-            it = kerning.begin(),
-            it_end = kerning.end();
-            it != it_end;
-            ++it )
+        for( const KerningDesc & desc : kerning )
         {
-            const KerningDesc & desc = *it;
-
             if( desc.code != _char || desc.next != _next )
             {
                 continue;

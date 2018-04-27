@@ -12,8 +12,6 @@
 
 #include "Logger/Logger.h"
 
-#include "Consts.h"
-
 #include "Core/IniUtil.h"
 #include "Core/String.h"
 #include "Core/UID.h"
@@ -476,7 +474,7 @@ namespace Mengine
 		FilePath accountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
 
 		bool accountsExist = FILE_SERVICE()
-            ->existFile( CONST_STRING( user), accountsPath, nullptr );
+            ->existFile( STRINGIZE_STRING_LOCAL( "user" ), accountsPath, nullptr );
 
 		if( accountsExist == false )
 		{
@@ -488,7 +486,7 @@ namespace Mengine
 		}
         	
 		IniUtil::IniStore ini;
-		if( IniUtil::loadIni( ini, CONST_STRING( user ), accountsPath ) == false )
+        if( IniUtil::loadIni( ini, STRINGIZE_STRING_LOCAL( "user" ), accountsPath ) == false )
 		{
 			LOGGER_ERROR("AccountManager::loadAccounts parsing accounts failed '%s'"
 				, accountsPath.c_str()
@@ -541,14 +539,8 @@ namespace Mengine
 
         AccountInterfacePtr validAccount = nullptr;
 
-		for( TVectorConstString::const_iterator
-			it = values.begin(), 
-			it_end = values.end();
-		it != it_end;
-		++it )
+        for( const ConstString & accountID : values )
 		{
-			const ConstString & accountID = *it;
-
 			AccountInterfacePtr account = this->newAccount_( accountID );
 
 			if( account == nullptr )
@@ -635,7 +627,7 @@ namespace Mengine
 		FilePath accountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
 
 		OutputStreamInterfacePtr file = FILE_SERVICE()
-            ->openOutputFile( CONST_STRING( user), accountsPath );
+            ->openOutputFile( STRINGIZE_STRING_LOCAL( "user" ), accountsPath );
 
 		if( file == nullptr )
 		{

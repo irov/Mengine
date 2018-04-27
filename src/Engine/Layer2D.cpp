@@ -11,8 +11,6 @@
 
 #include "Logger/Logger.h"
 
-#include "Consts.h"
-
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -95,7 +93,7 @@ namespace Mengine
 		if( m_renderCamera == nullptr )
 		{
 			m_renderCamera = NODE_SERVICE() 
-				->createNodeT<RenderCameraOrthogonal *>( CONST_STRING( RenderCameraOrthogonal ) );
+				->createNodeT<RenderCameraOrthogonal *>( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
 
 			if( m_renderCamera == nullptr )
 			{
@@ -112,7 +110,7 @@ namespace Mengine
 		if( m_renderViewport == nullptr )
 		{
 			m_renderViewport = NODE_SERVICE() 
-				->createNodeT<RenderViewport *>( CONST_STRING( RenderViewport ) );
+				->createNodeT<RenderViewport *>( STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
 
 			if( m_renderViewport == nullptr )
 			{

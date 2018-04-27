@@ -46,8 +46,6 @@
 
 #include "Logger/Logger.h"
 
-#include "Consts.h"
-
 #include "math/angle.h"
 
 #include "pybind/system.hpp"
@@ -202,9 +200,10 @@ namespace Mengine
 		return timing;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::_play( float _time )
+	bool Movie::_play( uint32_t _enumerator, float _time )
 	{
 		//return false;
+        (void)_enumerator;
 		(void)_time;
 
 		if( this->isActivate() == false )
@@ -410,7 +409,7 @@ namespace Mengine
 		if( _layer.hasViewport == true )
 		{
 			RenderClipplane * clippane = NODE_SERVICE() 
-				->createNodeT<RenderClipplane *>( CONST_STRING( RenderClipplane ) );
+				->createNodeT<RenderClipplane *>( STRINGIZE_STRING_LOCAL( "RenderClipplane" ) );
 
 			if( clippane == nullptr )
 			{
@@ -482,14 +481,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( _type.empty() == false && layer.type != _type )
 			{
 				continue;
@@ -500,14 +493,8 @@ namespace Mengine
 			_visitor->visitMovieNode( this, node );
 		}
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.isMovie() == false || layer.isSubMovie() == true )
 			{
 				continue;
@@ -540,14 +527,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+        for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.name != _name || (layer.type != _type && _type.empty() == false) )
 			{
 				continue;
@@ -561,14 +542,8 @@ namespace Mengine
 			return true;
 		}
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.isMovie() == false || layer.isSubMovie() == true )
 			{
 				continue;
@@ -608,14 +583,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.name != _name || (layer.type != _type && _type.empty() == false) )
 			{
 				continue;
@@ -629,14 +598,8 @@ namespace Mengine
 			return true;
 		}
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.isMovie() == false || layer.isSubMovie() == true )
 			{
 				continue;
@@ -674,14 +637,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.isMovie() == false || layer.isSubMovie() == true )
 			{
 				continue;
@@ -702,14 +659,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::getMovieClipplane( const ConstString & _name, RenderClipplane ** _clipplane )
 	{
-		for( TVectorClipplane::iterator
-			it = m_clipplanes.begin(),
-			it_end = m_clipplanes.end();
-			it != it_end;
-			++it )
+		for( RenderClipplane * clipplane : m_clipplanes )
 		{
-			RenderClipplane * clipplane = *it;
-
 			const ConstString & name = clipplane->getName();
 
 			if( name != _name )
@@ -727,14 +678,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::hasMovieClipplane( const ConstString & _name )
 	{
-		for( TVectorClipplane::const_iterator
-			it = m_clipplanes.begin(),
-			it_end = m_clipplanes.end();
-			it != it_end;
-			++it )
+		for( const RenderClipplane * clipplane : m_clipplanes )
 		{
-			const RenderClipplane * clipplane = *it;
-
 			const ConstString & name = clipplane->getName();
 
 			if( name != _name )
@@ -763,14 +708,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.name != _name )
 			{
 				continue;
@@ -779,14 +718,8 @@ namespace Mengine
 			this->setEnableLayer_( layer, _enable );
 		}			
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.isMovie() == false || layer.isSubMovie() == true )
 			{
 				continue;
@@ -821,14 +754,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.isMovie() == false || layer.isSubMovie() == true )
 			{
 				continue;
@@ -876,14 +803,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.isMovie() == false || layer.isSubMovie() == true )
 			{
 				continue;
@@ -932,14 +853,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.isMovie() == false || layer.isSubMovie() == true )
 			{
 				continue;
@@ -972,57 +887,51 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
-			if ( layer.type == CONST_STRING( MovieSlot) )
+            if( layer.type == STRINGIZE_STRING_LOCAL( "MovieSlot" ) )
 			{
 				if( this->createMovieSlot_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( MovieSceneEffect) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ) )
 			{
 				if( this->createMovieSceneEffect_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( MovieText) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieText" ) )
 			{
 				if( this->createMovieText_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( MovieTextCenter) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieTextCenter" ) )
 			{
 				if( this->createMovieTextCenter_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( MovieSprite) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieSprite" ) )
 			{
 				if( this->createMovieExtraSprite_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( MovieNullObject) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieNullObject" ) )
 			{
 				if( this->createMovieNullObject_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( Image) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "Image" ) )
 			{
 				if( layer.shape == false )
 				{
@@ -1039,7 +948,7 @@ namespace Mengine
 					}
 				}
 			}
-			else if( layer.type == CONST_STRING( SolidSprite) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "SolidSprite" ) )
 			{
 				if( layer.shape == false )
 				{
@@ -1056,81 +965,81 @@ namespace Mengine
 					}
 				}
 			}
-			else if( layer.type == CONST_STRING( MovieSocketImage) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieSocketImage" ) )
 			{
 				if( this->createMovieSocketImage_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( MovieSocketShape) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieSocketShape" ) )
 			{
 				if( this->createMovieSocketShape_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( Animation) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "Animation" ) )
 			{
 				if( this->createMovieAnimation_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( Movie) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "Movie" ) )
 			{
 				if( this->createMovieMovie_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( SubMovie) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "SubMovie" ) )
 			{
 				if( this->createMovieSubMovie_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( MovieInternalObject) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieInternalObject" ) )
 			{				
 				if( this->createMovieInternalObject_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( Video) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "Video" ) )
 			{
 				if( this->createMovieVideo_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( Sound) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "Sound" ) )
 			{
 				if( this->createMovieSound_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( SoundId) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "SoundId" ) )
 			{
 				if( this->createMovieSoundId_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( ParticleEmitter2) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) )
 			{
 				if( this->createMovieParticleEmitter2_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING( MovieParticle ) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieParticle" ) )
 			{
 				//Empty
 			}
-			else if( layer.type == CONST_STRING( MovieEvent) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieEvent" ) )
 			{
 				if( this->createMovieEvent_( layer ) == false )
 				{
@@ -1211,22 +1120,16 @@ namespace Mengine
 	{
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+        for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
-			if ( layer.type == CONST_STRING( MovieText) )
+            if( layer.type == STRINGIZE_STRING_LOCAL( "MovieText" ) )
 			{
 				if( this->compileMovieText_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if ( layer.type == CONST_STRING( MovieTextCenter) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "MovieTextCenter" ) )
 			{
 				if( this->compileMovieText_( layer ) == false )
 				{
@@ -1240,14 +1143,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::destroyLayers_()
 	{
-		for( TVectorNodies::const_iterator 
-			it = m_nodies.begin(),
-			it_end = m_nodies.end();
-		it != it_end;
-		++it )
+		for( const Nodies & ns : m_nodies )
 		{
-			const Nodies & ns = *it;
-
 			if( ns.node == nullptr )
 			{
 				continue;
@@ -1264,7 +1161,7 @@ namespace Mengine
 	bool Movie::createMovieSlot_( const MovieLayer & _layer )
 	{
 		MovieSlot * layer_slot = NODE_SERVICE()
-			->createNodeT<MovieSlot *>( CONST_STRING( MovieSlot ) );
+            ->createNodeT<MovieSlot *>( STRINGIZE_STRING_LOCAL( "MovieSlot" ) );
 
 		if( layer_slot == nullptr )
 		{
@@ -1284,7 +1181,7 @@ namespace Mengine
 	bool Movie::createMovieSceneEffect_( const MovieLayer & _layer )
 	{
 		MovieSceneEffect * sceneeffect_slot = NODE_SERVICE()
-			->createNodeT<MovieSceneEffect *>( CONST_STRING( MovieSceneEffect ) );
+            ->createNodeT<MovieSceneEffect *>( STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ) );
 
 		if( sceneeffect_slot == nullptr )
 		{
@@ -1302,7 +1199,7 @@ namespace Mengine
 	bool Movie::createMovieNullObject_( const MovieLayer & _layer )
 	{
 		Node * layer_slot = NODE_SERVICE()
-			->createNodeT<Node *>( CONST_STRING( Node ) );
+            ->createNodeT<Node *>( STRINGIZE_STRING_LOCAL( "Node" ) );
 
 		if( layer_slot == nullptr )
 		{
@@ -1328,7 +1225,7 @@ namespace Mengine
 		}
 
         SurfaceImagePtr surface = PROTOTYPE_SERVICE()
-            ->generatePrototype( CONST_STRING( Surface ), CONST_STRING( SurfaceImage ) );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ) );
 
         if( surface == nullptr )
         {
@@ -1343,7 +1240,7 @@ namespace Mengine
 		}
 
         ShapeQuadFixed * layer_sprite = NODE_SERVICE() 
-            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( ShapeQuadFixed ) );
+            ->createNodeT<ShapeQuadFixed *>( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
 
         if( layer_sprite == nullptr )
         {
@@ -1371,7 +1268,7 @@ namespace Mengine
 		}
 
 		Mesh2D * layer_mesh = NODE_SERVICE()
-			->createNodeT<Mesh2D *>( CONST_STRING( Mesh2D ) );
+            ->createNodeT<Mesh2D *>( STRINGIZE_STRING_LOCAL( "Mesh2D" ) );
 
 		if( layer_mesh == nullptr )
 		{
@@ -1410,7 +1307,7 @@ namespace Mengine
 		}
 
         SurfaceImagePtr surface = PROTOTYPE_SERVICE()
-            ->generatePrototype( CONST_STRING( Surface ), CONST_STRING( SurfaceImage ) );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ) );
 
         if( surface == nullptr )
         {
@@ -1425,7 +1322,7 @@ namespace Mengine
         }
 
 		ShapeQuadFixed * layer_sprite = NODE_SERVICE() 
-			->createNodeT<ShapeQuadFixed *>( CONST_STRING( ShapeQuadFixed ) );
+            ->createNodeT<ShapeQuadFixed *>( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
 
 		if( layer_sprite == nullptr )
 		{
@@ -1453,7 +1350,7 @@ namespace Mengine
 		}
 
 		Mesh2D * layer_mesh = NODE_SERVICE() 
-			->createNodeT<Mesh2D *>( CONST_STRING( Mesh2D ) );
+            ->createNodeT<Mesh2D *>( STRINGIZE_STRING_LOCAL( "Mesh2D" ) );
 
 		if( layer_mesh == nullptr )
 		{
@@ -1486,7 +1383,7 @@ namespace Mengine
 		}
 
         HotSpotImage * layer_hotspotimage = NODE_SERVICE() 
-            ->createNodeT<HotSpotImage *>( CONST_STRING( HotSpotImage ) );
+            ->createNodeT<HotSpotImage *>( STRINGIZE_STRING_LOCAL( "HotSpotImage" ) );
 
         if( layer_hotspotimage == nullptr )
         {
@@ -1506,7 +1403,7 @@ namespace Mengine
 	bool Movie::createMovieSocketShape_( const MovieLayer & _layer )
 	{
 		HotSpotShape * layer_hotspotshape = NODE_SERVICE()
-			->createNodeT<HotSpotShape *>( CONST_STRING( HotSpotShape ) );
+            ->createNodeT<HotSpotShape *>( STRINGIZE_STRING_LOCAL( "HotSpotShape" ) );
 
 		if( layer_hotspotshape == nullptr )
 		{
@@ -1542,7 +1439,7 @@ namespace Mengine
 		}
 
         SurfaceImageSequencePtr surface = PROTOTYPE_SERVICE()
-            ->generatePrototype( CONST_STRING( Surface ), CONST_STRING( SurfaceImageSequence ) );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImageSequence" ) );
 
         if( surface == nullptr )
         {
@@ -1563,7 +1460,7 @@ namespace Mengine
 		}
 
         ShapeQuadFixed * layer_animation = NODE_SERVICE() 
-            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( ShapeQuadFixed ) );
+            ->createNodeT<ShapeQuadFixed *>( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
 
         if( layer_animation == nullptr )
         {
@@ -1584,7 +1481,7 @@ namespace Mengine
 	bool Movie::createMovieMovie_( const MovieLayer & _layer )
 	{
 		Movie * layer_movie = NODE_SERVICE()
-			->createNodeT<Movie *>( CONST_STRING( Movie ) );
+            ->createNodeT<Movie *>( STRINGIZE_STRING_LOCAL( "Movie" ) );
 
 		if( layer_movie == nullptr )
 		{
@@ -1620,7 +1517,7 @@ namespace Mengine
 	bool Movie::createMovieSubMovie_( const MovieLayer & _layer )
 	{
 		Movie * layer_movie = NODE_SERVICE()
-			->createNodeT<Movie *>( CONST_STRING( Movie ) );
+			->createNodeT<Movie *>( STRINGIZE_STRING_LOCAL( "Movie" ) );
 
 		if( layer_movie == nullptr )
 		{
@@ -1656,7 +1553,7 @@ namespace Mengine
 	bool Movie::createMovieInternalObject_( const MovieLayer & _layer )
 	{
 		MovieInternalObject * movie_internal = NODE_SERVICE()
-			->createNodeT<MovieInternalObject *>( CONST_STRING( MovieInternalObject ) );
+            ->createNodeT<MovieInternalObject *>( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ) );
 
 		if( movie_internal == nullptr )
 		{
@@ -1693,7 +1590,7 @@ namespace Mengine
 		}
 
 		SurfaceVideoPtr surface = PROTOTYPE_SERVICE()
-			->generatePrototype( CONST_STRING( Surface ), CONST_STRING( SurfaceVideo ) );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) );
 
 		if( surface == nullptr )
 		{
@@ -1714,7 +1611,7 @@ namespace Mengine
 		}
 
         ShapeQuadFixed * layer_video = NODE_SERVICE() 
-            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( ShapeQuadFixed ) );
+            ->createNodeT<ShapeQuadFixed *>( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
 
         if( layer_video == nullptr )
         {
@@ -1734,7 +1631,7 @@ namespace Mengine
 	bool Movie::createMovieSound_( const MovieLayer & _layer )
 	{
 		SoundEmitter * layer_sound = NODE_SERVICE()
-			->createNodeT<SoundEmitter *>( CONST_STRING( SoundEmitter ) );
+            ->createNodeT<SoundEmitter *>( STRINGIZE_STRING_LOCAL( "SoundEmitter" ) );
 
 		if( layer_sound == nullptr )
 		{
@@ -1750,7 +1647,7 @@ namespace Mengine
 		}
 
 		SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE()
-			->generatePrototype( CONST_STRING( Surface ), CONST_STRING( SurfaceSound ) );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ) );
 
 		if( surfaceSound == nullptr )
 		{
@@ -1778,7 +1675,7 @@ namespace Mengine
 	bool Movie::createMovieSoundId_( const MovieLayer & _layer )
 	{
 		SoundEmitter * layer_sound = NODE_SERVICE()
-			->createNodeT<SoundEmitter *>( CONST_STRING( SoundEmitter ) );
+            ->createNodeT<SoundEmitter *>( STRINGIZE_STRING_LOCAL( "SoundEmitter" ) );
 
 		if( layer_sound == nullptr )
 		{
@@ -1794,7 +1691,7 @@ namespace Mengine
 		}
 
 		SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE()
-			->generatePrototype( CONST_STRING( Surface ), CONST_STRING( SurfaceSound ) );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ) );
 
 		if( surfaceSound == nullptr )
 		{
@@ -1821,7 +1718,7 @@ namespace Mengine
 	bool Movie::createMovieText_( const MovieLayer & _layer )
 	{
 		TextField * layer_text = NODE_SERVICE()
-			->createNodeT<TextField *>( CONST_STRING( TextField ) );
+            ->createNodeT<TextField *>( STRINGIZE_STRING_LOCAL( "TextField" ) );
 
 		if( layer_text == nullptr )
 		{
@@ -1856,7 +1753,7 @@ namespace Mengine
 	bool Movie::createMovieTextCenter_( const MovieLayer & _layer )
 	{
 		TextField * layer_text = NODE_SERVICE()
-			->createNodeT<TextField *>( CONST_STRING( TextField ) );
+            ->createNodeT<TextField *>( STRINGIZE_STRING_LOCAL( "TextField" ) );
 
 		if( layer_text == nullptr )
 		{
@@ -1897,7 +1794,7 @@ namespace Mengine
 		}
 
         SurfaceImagePtr surface = PROTOTYPE_SERVICE()
-            ->generatePrototype( CONST_STRING( Surface ), CONST_STRING( SurfaceImage ) );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ) );
 
         if( surface == nullptr )
         {
@@ -1912,7 +1809,7 @@ namespace Mengine
 		}
 
         ShapeQuadFixed * layer_sprite = NODE_SERVICE() 
-            ->createNodeT<ShapeQuadFixed *>( CONST_STRING( ShapeQuadFixed ) );
+            ->createNodeT<ShapeQuadFixed *>( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
 
         if( layer_sprite == nullptr )
         {
@@ -1993,7 +1890,7 @@ namespace Mengine
 	bool Movie::createMovieEvent_( const MovieLayer & _layer )
 	{
 		MovieEvent * layer_event = NODE_SERVICE()
-			->createNodeT<MovieEvent *>( CONST_STRING( MovieEvent ) );
+            ->createNodeT<MovieEvent *>( STRINGIZE_STRING_LOCAL( "MovieEvent" ) );
 
 		layer_event->setResourceMovie( m_resourceMovie );
 
@@ -2008,7 +1905,7 @@ namespace Mengine
 	bool Movie::createMovieParticleEmitter2_( const MovieLayer & _layer )
 	{
 		ParticleEmitter2 * layer_particles = NODE_SERVICE()
-			->createNodeT<ParticleEmitter2 *>( CONST_STRING( ParticleEmitter2 ) );
+			->createNodeT<ParticleEmitter2 *>( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
 
 		if( layer_particles == nullptr )
 		{
@@ -2127,14 +2024,8 @@ namespace Mengine
 	{
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator 
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
@@ -2173,14 +2064,8 @@ namespace Mengine
 
 		Node * parent = s_findNodeScene( this );
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & l : layers )
 		{
-			const MovieLayer & l = *it;
-
 			if( l.isSceneEffect() == false )
 			{
 				continue;
@@ -2215,14 +2100,8 @@ namespace Mengine
 	{
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 		
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+        for( const MovieLayer & l : layers )
 		{
-			const MovieLayer & l = *it;
-
 			if( l.isSceneEffect() == false )
 			{
 				continue;
@@ -2242,14 +2121,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator 
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
@@ -2288,14 +2161,8 @@ namespace Mengine
 	{
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator 
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
@@ -2326,14 +2193,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+        for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
@@ -2381,14 +2242,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
@@ -2428,14 +2283,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
@@ -2469,14 +2318,8 @@ namespace Mengine
 	{
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.isAnimatable() == false )
 			{
 				continue;
@@ -2550,14 +2393,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie::_destroy()
     {
-        for( TVectorNodies::const_iterator
-            it = m_nodies.begin(),
-            it_end = m_nodies.end();
-            it != it_end;
-            ++it )
+        for( const Nodies & ns : m_nodies )
         {
-            const Nodies & ns = *it;
-
             if( ns.node == nullptr )
             {
                 continue;
@@ -2608,14 +2445,8 @@ namespace Mengine
 	{
 		if( m_interruptEnd == true )
 		{
-			for( TVectorNodies::const_iterator
-				it = m_nodies.begin(),
-				it_end = m_nodies.end();
-			it != it_end;
-			++it )
+            for( const Nodies & node : m_nodies )
 			{
-				const Nodies & node = *it;
-
 				if( node.animatable == nullptr )
 				{
 					continue;
@@ -2706,14 +2537,8 @@ namespace Mengine
 	{
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+        for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
@@ -2926,14 +2751,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
@@ -2998,14 +2817,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+        for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
@@ -3122,14 +2935,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+        for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
@@ -3163,7 +2970,7 @@ namespace Mengine
 		}
 
 		m_renderCameraProjection = NODE_SERVICE()
-			->createNodeT<RenderCameraProjection *>( CONST_STRING( RenderCameraProjection ) );
+			->createNodeT<RenderCameraProjection *>( STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ) );
 
 		const ConstString & name = this->getName();
 		m_renderCameraProjection->setName( name );
@@ -3187,7 +2994,7 @@ namespace Mengine
 		this->addChild( m_renderCameraProjection );
 
 		m_renderViewport = NODE_SERVICE()
-			->createNodeT<RenderViewport *>( CONST_STRING( RenderViewport ) );
+			->createNodeT<RenderViewport *>( STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
 
 		m_renderViewport->setName( name );
 
@@ -3217,14 +3024,8 @@ namespace Mengine
 			m_renderViewport = nullptr;
 		}
 
-		for( TVectorClipplane::iterator
-			it = m_clipplanes.begin(),
-			it_end = m_clipplanes.end();
-		it != it_end;
-		++it )
+        for( RenderClipplane * clipplane : m_clipplanes )
 		{
-			RenderClipplane * clipplane = *it;
-
 			clipplane->destroy();
 		}
 
@@ -3274,19 +3075,19 @@ namespace Mengine
 		{
 			//Empty
 		}
-		else if( _layer.blendingMode == CONST_STRING( BlendingModeScreen ) )
+		else if( _layer.blendingMode == STRINGIZE_STRING_LOCAL( "BlendingModeScreen" ) )
 		{
 			_materiable->setBlendMode( EMB_SCREEN );
 		}
-		else if( _layer.blendingMode == CONST_STRING( BlendingModeMultiply ) )
+		else if( _layer.blendingMode == STRINGIZE_STRING_LOCAL( "BlendingModeMultiply" ) )
 		{
 			_materiable->setBlendMode( EMB_MULTIPLY );
 		}
-		else if( _layer.blendingMode == CONST_STRING( BlendingModeNormal ) )
+		else if( _layer.blendingMode == STRINGIZE_STRING_LOCAL( "BlendingModeNormal" ) )
 		{
 			_materiable->setBlendMode( EMB_NORMAL );
 		}
-		else if( _layer.blendingMode == CONST_STRING( BlendingModeAdd ) )
+		else if( _layer.blendingMode == STRINGIZE_STRING_LOCAL( "BlendingModeAdd" ) )
 		{
 			_materiable->setBlendMode( EMB_ADD );
 		}
@@ -3319,14 +3120,8 @@ namespace Mengine
 	{
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+        for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.isSubMovie() == true )
 			{
 				continue;
@@ -3362,14 +3157,8 @@ namespace Mengine
 	{
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+        for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.isSubMovie() == true )
 			{
 				continue;
@@ -3392,14 +3181,8 @@ namespace Mengine
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		for( const MovieLayer & layer : layers )
 		{
-			const MovieLayer & layer = *it;
-
 			if( layer.isSubMovie() == true )
 			{
 				continue;

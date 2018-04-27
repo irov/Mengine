@@ -6,8 +6,6 @@
 
 #include "Logger/Logger.h"
 
-#include "Consts.h"
-
 #include <math.h>
 
 namespace Mengine
@@ -294,8 +292,9 @@ namespace Mengine
 		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceVideo::_play( float _time )
+	bool SurfaceVideo::_play( uint32_t _enumerator, float _time )
 	{
+        (void)_enumerator;
 		(void)_time;
 
 		m_timing = 0.f;

@@ -1,11 +1,42 @@
 #pragma once
 
 #include "Kernel/ResourceReference.h"
+#include "Core/ColourValue.h"
+
+#include "math/mat4.h"
 
 #include "movie/movie.hpp"
 
+#include "stdex/stl_map.h"
+
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    struct ResourceMovie2CompositionLayer
+    {
+        ConstString name;
+        ConstString type;
+        mt::mat4f matrix;
+        ColourValue color;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::vector<ResourceMovie2CompositionLayer> ResourceMovie2CompositionLayers;
+    //////////////////////////////////////////////////////////////////////////
+    struct ResourceMovie2CompositionSubComposition
+    {
+        ConstString name;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::vector<ResourceMovie2CompositionSubComposition> ResourceMovie2CompositionSubCompositions;
+    //////////////////////////////////////////////////////////////////////////
+    struct ResourceMovie2Composition
+    {
+        float duration;
+        float frameDuration;
+
+        ResourceMovie2CompositionLayers layers;
+        ResourceMovie2CompositionSubCompositions subcompositions;
+    };
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceMovie2
 		: public ResourceReference
@@ -31,6 +62,9 @@ namespace Mengine
 	public:
 		const aeMovieData * getMovieData() const;
 		const aeMovieCompositionData * getCompositionData( const ConstString & _name ) const;
+
+    public:
+        const ResourceMovie2Composition * getCompositionDesc( const ConstString & _name ) const;
 
 	protected:
 		bool _loader( const Metabuf::Metadata * _parser ) override;
@@ -61,6 +95,9 @@ namespace Mengine
 
 		typedef stdex::vector<ResourceReferencePtr> TVectorResources;
 		TVectorResources m_resources;
+
+        typedef stdex::map<ConstString, ResourceMovie2Composition> TMapCompositions;
+        TMapCompositions m_compositions;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ResourceMovie2> ResourceMovie2Ptr;

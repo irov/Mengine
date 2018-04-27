@@ -23,10 +23,10 @@ option(WEBP_BUILD_CWEBP "Build the cwebp command line tool." OFF)
 option(WEBP_BUILD_DWEBP "Build the dwebp command line tool." OFF)
 option(WEBP_BUILD_GIF2WEBP "Build the gif2webp conversion tool." OFF)
 option(WEBP_BUILD_IMG2WEBP "Build the img2webp animation tool." OFF)
+option(WEBP_BUILD_VWEBP "Build the vwebp viewer tool." OFF)
 option(WEBP_BUILD_WEBPINFO "Build the webpinfo command line tool." OFF)
 option(WEBP_BUILD_WEBP_JS "Emscripten build of webp.js." OFF)
 option(WEBP_ENABLE_NEAR_LOSSLESS "Enable near-lossless encoding" OFF)
-option(WEBP_EXPERIMENTAL_FEATURES "Build with experimental features." OFF)
 option(WEBP_ENABLE_SWAP_16BIT_CSP "Enable byte swap for 16 bit colorspaces." OFF)
 
 ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libwebp )
@@ -237,11 +237,15 @@ if( (MENGINE_TARGET_MSVC OR MENGINE_TARGET_MINGW OR MENGINE_TARGET_SDL) AND (MEN
         SET(FORCE_STATIC_VCRT ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
     endif()
     
+    if(MENGINE_TARGET_MINGW)
+        SET(ALSOFT_STATIC_LIBGCC ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
+    endif()
+        
+    
     if(MENGINE_PLATFORM_ANDROID)
         SET(LIBTYPE SHARED)
     endif()
     
-    SET(ALSOFT_NO_UID_DEFS OFF CACHE BOOL "Do not define GUIDs, IIDs, CLSIDs, or PropertyKeys" FORCE)
     SET(ALSOFT_DLOPEN OFF CACHE BOOL "Check for the dlopen API for loading optional libs" FORCE)
     SET(ALSOFT_WERROR OFF CACHE BOOL "Treat compile warnings as errors" FORCE)
     SET(ALSOFT_UTILS OFF CACHE BOOL "Build and install utility programs" FORCE)
@@ -250,7 +254,12 @@ if( (MENGINE_TARGET_MSVC OR MENGINE_TARGET_MINGW OR MENGINE_TARGET_SDL) AND (MEN
     SET(ALSOFT_TESTS OFF CACHE BOOL "Build and install test programs" FORCE)
     SET(ALSOFT_CONFIG OFF CACHE BOOL "Install alsoft.conf sample configuration file" FORCE)
     SET(ALSOFT_HRTF_DEFS OFF CACHE BOOL "Install HRTF definition files" FORCE)
-    SET(ALSOFT_INSTALL OFF CACHE BOOL "Install headers and libraries" FORCE)    
+    SET(ALSOFT_AMBDEC_PRESETS OFF CACHE BOOL "Install AmbDec preset files" FORCE)
+    SET(ALSOFT_INSTALL OFF CACHE BOOL "Install headers and libraries" FORCE)
+    SET(ALSOFT_NO_UID_DEFS OFF CACHE BOOL "Do not define GUIDs, IIDs, CLSIDs, or PropertyKeys" FORCE)
+    SET(ALSOFT_EMBED_HRTF_DATA OFF CACHE BOOL "Embed the HRTF data files (increases library footprint)" FORCE)
+    SET(ALSOFT_BUILD_IMPORT_LIB OFF CACHE BOOL "Build an import .lib using dlltool (requires sed)" FORCE)
+    SET(ALSOFT_BACKEND_WAVE OFF CACHE BOOL "Enable Wave Writer backend" FORCE)
     
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/openal-soft )
     set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})

@@ -19,7 +19,9 @@ namespace Mengine
                 it != it_end;
                 ++it )
             {
-                if( it->font != _font )
+                const CacheFont & cache = *it;
+
+                if( cache.font != _font )
                 {
                     continue;
                 }

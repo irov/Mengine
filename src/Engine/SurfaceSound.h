@@ -51,7 +51,7 @@ namespace Mengine
         const ColourValue & getColour() const override;
 
 	protected:
-		bool _play( float _time ) override;
+		bool _play( uint32_t _enumerator, float _time ) override;
 		bool _restart( uint32_t _enumerator, float _time ) override;
 		void _pause( uint32_t _enumerator ) override;
 		void _resume( uint32_t _enumerator, float _time ) override;

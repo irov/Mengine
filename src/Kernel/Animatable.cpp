@@ -162,16 +162,18 @@ namespace Mengine
 		
 		m_playIterator = m_playCount;
 
+        uint32_t id = ++m_enumerator;
+
 		if( m_play == true )
 		{
-			if( this->_restart( m_enumerator, _time ) == false )
+			if( this->_restart( id, _time ) == false )
 			{
 				return 0;
 			}
 		}
 		else
 		{
-			if( this->_play( _time ) == false )
+			if( this->_play( id, _time ) == false )
 			{
 				return 0;
 			}
@@ -181,9 +183,7 @@ namespace Mengine
 
 		m_playTime = _time;
 
-		m_play = true;
-
-		uint32_t id = ++m_enumerator;
+		m_play = true;        	
 
 		return id;
 	}

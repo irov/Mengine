@@ -8,6 +8,7 @@
 #include "Kernel/RenderViewport.h"
 #include "Kernel/MatrixProxy.h"
 
+#include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/ParticleEmitter2.h"
 #include "Engine/TextField.h"
@@ -24,6 +25,12 @@ namespace Mengine
         : public AnimatableEventReceiver
     {
     public:
+    };
+    //////////////////////////////////////////////////////////////////////////
+    class VisitorMovie2Layer
+    {
+    public:
+        virtual void visitMovieLayer( class Movie2 * _movie, const ConstString & _name, Node * _node ) = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
 	class Movie2
@@ -42,7 +49,7 @@ namespace Mengine
 		const ResourceMovie2Ptr & getResourceMovie2() const;
 
 	public:
-		void setCompositionName( const ConstString & _compositionName );
+		bool setCompositionName( const ConstString & _compositionName );
 		const ConstString & getCompositionName() const;
 
 	public:
@@ -51,6 +58,7 @@ namespace Mengine
 		void removeWorkArea();
 
     public:
+        bool hasSubComposition( const ConstString & _name ) const;
 		void playSubComposition( const ConstString & _name );
 		void stopSubComposition( const ConstString & _name );
         void interruptSubComposition( const ConstString & _name, bool _skip );
@@ -62,7 +70,7 @@ namespace Mengine
         void setEnableMovieLayers( const ConstString & _name, bool _enable );
 
 	protected:
-		bool _play( float _time ) override;
+		bool _play( uint32_t _enumerator, float _time ) override;
 		bool _restart( uint32_t _enumerator, float _time ) override;
 		void _pause( uint32_t _enumerator ) override;
 		void _resume( uint32_t _enumerator, float _time ) override;
@@ -103,8 +111,14 @@ namespace Mengine
         void removeSurface( const SurfacePtr & _surface );
 
     public:
-        void addParticle( ParticleEmitter2 * _particleEmitter );
-        void removeParticle( ParticleEmitter2 * _particleEmitter );
+        void addSprite( const ConstString & _name, ShapeQuadFixed * _sprite );
+        ShapeQuadFixed * getSprite( const ConstString & _name ) const;
+        bool hasSprite( const ConstString & _name ) const;
+
+    public:
+        void addParticle( const ConstString & _name, ParticleEmitter2 * _particleEmitter );
+        ParticleEmitter2 * getParticle( const ConstString & _name ) const;
+        bool hasParticle( const ConstString & _name ) const;
 
     public:
         void addSlot( const ConstString & _name, Movie2Slot * _slot );
@@ -112,9 +126,10 @@ namespace Mengine
         bool hasSlot( const ConstString & _name ) const;
 
     public:
-        void addSocketShape( const ConstString & _name, HotSpotPolygon * _hotspot );
-        HotSpot * getSocket( const ConstString & _name ) const;
+        void addSocket( const ConstString & _name, HotSpotPolygon * _hotspot );
+        HotSpotPolygon * getSocket( const ConstString & _name ) const;
         bool hasSocket( const ConstString & _name ) const;
+        void visitSockets( VisitorMovie2Layer * _visitor );
 
     public:
         void addText( const ConstString & _name, TextField * _text );
@@ -136,6 +151,13 @@ namespace Mengine
 		bool hasCamera( const ConstString & _name ) const;
 
 		bool getCamera( const ConstString & _name, Camera ** _camera );
+
+    protected:
+        bool createCompositionLayers_();
+        void destroyCompositionLayers_();
+
+    protected:
+        void _destroy() override;
 
 	public:
 		ResourceHolder<ResourceMovie2> m_resourceMovie2;
@@ -164,14 +186,17 @@ namespace Mengine
         typedef stdex::map<ConstString, Movie2Slot *> TMapSlots;
         TMapSlots m_slots;
 
-        typedef stdex::map<ConstString, HotSpot *> TMapSockets;
+        typedef stdex::map<ConstString, HotSpotPolygon *> TMapSockets;
         TMapSockets m_sockets;
 
         typedef stdex::map<ConstString, TextField *> TMapTexts;
         TMapTexts m_texts;
 
-        typedef stdex::vector<ParticleEmitter2 *> TVectorParticleEmitter2s;
-        TVectorParticleEmitter2s m_particleEmitters;
+        typedef stdex::map<ConstString, ShapeQuadFixed *> TMapSprites;
+        TMapSprites m_sprites;
+
+        typedef stdex::map<ConstString, ParticleEmitter2 *> TMapParticleEmitter2s;
+        TMapParticleEmitter2s m_particleEmitters;
 
         typedef stdex::vector<MatrixProxy *> TVectorMatrixProxies;
         TVectorMatrixProxies m_matrixProxies;

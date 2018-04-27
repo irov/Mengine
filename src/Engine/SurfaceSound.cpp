@@ -200,8 +200,9 @@ namespace Mengine
         return ColourValue::identity();
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceSound::_play( float _time )
+	bool SurfaceSound::_play( uint32_t _enumerator, float _time )
 	{
+        (void)_enumerator;
         (void)_time;
 
 		if( this->isCompile() == false )

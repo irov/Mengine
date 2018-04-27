@@ -326,11 +326,52 @@ namespace Mengine
 	{
 		return m_children;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    struct reinterpret_node_cast_void_t
+    {
+        typedef void * type;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<class U>
+    struct reinterpret_node_cast_void_t<const U *>
+    {
+        typedef const void * type;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    inline T reinterpret_node_cast( void * _node )
+    {
+#ifndef NDEBUG
+        if( _node == nullptr )
+        {
+            return nullptr;
+        }
+
+        try {
+            if( dynamic_cast<typename reinterpret_node_cast_void_t<T>::type>(static_cast<T>(_node)) == nullptr )
+            {
+                throw;
+            }
+        }
+        catch( const std::exception & )
+        {
+            throw;
+        }
+#endif
+
+        return reinterpret_cast<T>(_node);
+    }
 	//////////////////////////////////////////////////////////////////////////
 	template<class T>
 	inline T static_node_cast( Node * _node )
 	{
 #ifndef NDEBUG
+        if( _node == nullptr )
+        {
+            return nullptr;
+        }
+
 		if( dynamic_cast<T>(_node) == nullptr )
 		{
             throw;
@@ -344,6 +385,11 @@ namespace Mengine
 	inline T static_node_cast( const Node * _node )
 	{
 #ifndef NDEBUG
+        if( _node == nullptr )
+        {
+            return nullptr;
+        }
+
 		if( dynamic_cast<T>(_node) == nullptr )
 		{
             throw;

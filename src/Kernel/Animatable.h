@@ -110,7 +110,7 @@ namespace Mengine
 		inline float getPlayTime() const;
 
 	protected:
-		virtual bool _play( float _time ) = 0;
+		virtual bool _play( uint32_t _enumerator, float _time ) = 0;
 		virtual bool _restart( uint32_t _enumerator, float _time ) = 0;
 		virtual void _pause( uint32_t _enumerator ) = 0;
 		virtual void _resume( uint32_t _enumerator, float _time ) = 0;

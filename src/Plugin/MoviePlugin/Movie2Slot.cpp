@@ -1,4 +1,5 @@
 #include "Movie2Slot.h"
+#include "Movie2.h"
 
 #include "Interface/RenderSystemInterface.h"
 
@@ -8,6 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Movie2Slot::Movie2Slot()
+        : m_movie( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -15,14 +17,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2Slot::setMovieName( const ConstString & _movieName )
+    void Movie2Slot::setMovie( Movie2 * _movie )
     {
-        m_movieName = _movieName;
+        m_movie = _movie;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & Movie2Slot::getMovieName() const
+    Movie2 * Movie2Slot::getMovie() const
     {
-        return m_movieName;
+        return m_movie;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2Slot::_destroy()
@@ -38,12 +40,12 @@ namespace Mengine
         {
             const Node * node = *it;
 
-            LOGGER_ERROR("MovieSlot::_destroy slot %s:%s has children %s:%s!! (please remove, before release movie '%s')"
+            LOGGER_ERROR("Movie2Slot::_destroy slot %s:%s has children %s:%s!! (please remove, before release movie '%s')"
                 , this->getName().c_str()
                 , this->getType().c_str()
                 , node->getName().c_str()
                 , node->getType().c_str()
-                , m_movieName.c_str()
+                , m_movie->getName().c_str()
                 );
         }
 #endif
@@ -89,7 +91,7 @@ namespace Mengine
 		LOGGER_ERROR("MovieSlot::_changeParent slot %s:%s movie %s (please don't change parent it's danger)"
 			, this->getName().c_str()
 			, this->getType().c_str()
-			, m_movieName.c_str()
+			, m_movie->getName().c_str()
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////

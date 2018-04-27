@@ -1,4 +1,3 @@
-
 set( MY_LIB_NAME Core )
 
 ADD_FILTER(
@@ -39,8 +38,7 @@ src
     IniUtil.cpp
     
     Hash.h
-    Hash.cpp
-    
+   
     FilePath.h
     FilePath.cpp
     

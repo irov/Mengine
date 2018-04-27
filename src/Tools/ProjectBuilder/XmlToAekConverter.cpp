@@ -22,8 +22,6 @@
 #	include "xml2metabuf/Xml2Metabuf.hpp"
 #	include "xml2metabuf/Xml2Metacode.hpp"
 
-#	include "Engine/Consts.h"
-
 #   include "Config/Typedef.h"
 
 namespace Mengine

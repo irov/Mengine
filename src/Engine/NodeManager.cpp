@@ -6,7 +6,6 @@
 #include "Logger/Logger.h"
 
 #include "Kernel/Node.h"
-#include "Consts.h"
 
 #include <memory>
 
@@ -51,7 +50,7 @@ namespace Mengine
 	Node * NodeManager::createNode( const ConstString& _type )
 	{
 		Node * node = PROTOTYPE_SERVICE()
-            ->generatePrototype( CONST_STRING( Node), _type );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type );
 
 		if( node == nullptr )
 		{

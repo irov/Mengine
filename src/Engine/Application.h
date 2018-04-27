@@ -4,11 +4,10 @@
 
 #include "Interface/NotificationServiceInterface.h"
 
-#include "Consts.h"
-
 #include "Core/Resolution.h"
 #include "Core/Viewport.h"
 #include "Core/ConstString.h"
+#include "Core/ServiceBase.h"
 
 #include "Logger/Logger.h"
 

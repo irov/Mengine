@@ -663,14 +663,8 @@ namespace Mengine
 		TVectorWString plugins;
 		CONFIG_VALUES("Plugins", "Name", plugins);
 
-		for( TVectorWString::const_iterator
-			it = plugins.begin(),
-			it_end = plugins.end();
-		it != it_end;
-		++it )
+        for( const WString & pluginName : plugins )
 		{
-			const WString & pluginName = *it;
-
 			if( PLUGIN_SERVICE()
 				->loadPlugin( pluginName ) == false )
 			{
@@ -729,14 +723,8 @@ namespace Mengine
 			TVectorWString devPlugins;
 			CONFIG_VALUES("DevPlugins", "Name", devPlugins);
 
-			for( TVectorWString::const_iterator
-				it = devPlugins.begin(),
-				it_end = devPlugins.end();
-			it != it_end;
-			++it )
+            for( const WString & pluginName : devPlugins )
 			{
-				const WString & pluginName = *it;
-
 				if( PLUGIN_SERVICE()
 					->loadPlugin( pluginName ) == false )
 				{
@@ -755,14 +743,8 @@ namespace Mengine
 		TVectorString modules;
 		CONFIG_VALUES("Modules", "Name", modules);
 
-		for( TVectorString::const_iterator
-			it = modules.begin(),
-			it_end = modules.end();
-		it != it_end;
-		++it )
+        for( const String & moduleName : modules )
 		{
-			const String & moduleName = *it;
-
 			if( MODULE_SERVICE()
 				->runModule( Helper::stringizeString(moduleName) ) == false )
 			{

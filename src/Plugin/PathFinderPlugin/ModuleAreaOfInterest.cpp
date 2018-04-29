@@ -150,14 +150,8 @@ namespace Mengine
 		(void)_time;
 		(void)_timing;
 
-		for( TVectorAreaOfInterest::iterator 
-			it = m_aois.begin(),
-			it_end = m_aois.end();
-		it != it_end;
-		++it )
+        for( AreaOfInterest * aoi : m_aois )
 		{
-			AreaOfInterest * aoi = *it;
-
 			aoi->update();
 		}
 	}

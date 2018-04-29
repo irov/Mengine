@@ -186,14 +186,8 @@ namespace Mengine
 	{
 		m_memoryCacheMutex->lock();
 
-		for( TVectorCacheBufferMemory::iterator
-			it = m_buffers.begin(),
-			it_end = m_buffers.end();
-		it != it_end;
-		++it )
+        for( CacheBufferMemory & buffer : m_buffers )
 		{
-			CacheBufferMemory & buffer = *it;
-
 			if( buffer.id != _bufferId )
 			{
 				continue;
@@ -211,14 +205,8 @@ namespace Mengine
 	{
 		m_memoryCacheMutex->lock();
 
-		for( TVectorCacheBufferMemory::iterator
-			it = m_buffers.begin(),
-			it_end = m_buffers.end();
-		it != it_end;
-		++it )
+        for( const CacheBufferMemory & buffer : m_buffers )
 		{
-			const CacheBufferMemory & buffer = *it;
-
 			if( buffer.lock == true )
 			{
 				LOGGER_ERROR("CacheManager::finalize dont unlock buffer %d size %d"

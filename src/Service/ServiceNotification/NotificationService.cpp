@@ -113,14 +113,8 @@ namespace Mengine
 
 		++m_visiting;
 		
-		for( TVectorObservers::iterator
-			it = observers.begin(),
-			it_end = observers.end();
-		it != it_end;
-		++it )
+        for( ObserverInterface * observer : observers )
 		{
-			ObserverInterface * observer = *it;
-
 			if( _visitor->visit( observer ) == false )
 			{
 				this->invalidObserver_( _id );
@@ -131,27 +125,15 @@ namespace Mengine
 
 		if( m_visiting == 0 )
 		{
-			for( TVectorAddObservers::iterator
-				it = m_add.begin(),
-				it_end = m_add.end();
-			it != it_end;
-			++it )
+            for( ObserverInterface * observer : m_add )
 			{
-				ObserverInterface * observer = *it;
-
 				this->addObserver( observer );
 			}
 
 			m_add.clear();
 
-			for( TVectorAddObservers::iterator
-				it = m_remove.begin(),
-				it_end = m_remove.end();
-			it != it_end;
-			++it )
+            for( ObserverInterface * observer : m_remove )
 			{
-				ObserverInterface * observer = *it;
-
 				this->removeObserver( observer );
 			}
 

@@ -73,14 +73,8 @@ namespace Mengine
 		m_actors.insert( m_actors.end(), m_actorsAdd.begin(), m_actorsAdd.end() );
 		m_actorsAdd.clear();
 
-		for( TVectorBounceActors::iterator
-			it = m_actors.begin(),
-			it_end = m_actors.end();
-		it != it_end;
-		++it )
+		for( const BounceActorPtr & actor : m_actors )
 		{
-			const BounceActorPtr & actor = *it;
-
 			if( actor->isRemoved() == true )
 			{
 				continue;
@@ -93,14 +87,8 @@ namespace Mengine
 
 			const mt::vec3f & actor_position = actor_node->getWorldPosition();
 
-			for( TVectorBounceActors::iterator
-				it_test = m_actors.begin(),
-				it_test_end = m_actors.end();
-			it_test != it_test_end;
-			++it_test )
+            for( const BounceActorPtr & test : m_actors )
 			{
-				const BounceActorPtr & test = *it_test;
-
 				if( test->isRemoved() == true )
 				{
 					continue;

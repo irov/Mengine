@@ -135,14 +135,8 @@ namespace Mengine
 
 		const MagnetActorPtr & actor = m_magnetWorld->createActor( this, m_magnetRadius, m_magnetForce, m_iff, m_magnetActive );
 
-		for( TVectorActorException::iterator
-			it = m_exceptions.begin(),
-			it_end = m_exceptions.end();
-		it != it_end;
-		++it )
+        for( const MagnetActorPtr & exception : m_exceptions )
 		{
-			const MagnetActorPtr & exception = *it;
-
 			actor->addException( exception );
 		}
 

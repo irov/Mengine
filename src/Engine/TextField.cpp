@@ -277,14 +277,8 @@ namespace Mengine
 
                     const TVectorCharData & charsData = line.getCharsData();
 
-                    for( TVectorCharData::const_iterator
-                        it_char = charsData.begin(),
-                        it_char_end = charsData.end();
-                        it_char != it_char_end;
-                        ++it_char )
+                    for( const CharData & cd : charsData )
                     {
-                        const CharData & cd = *it_char;
-
                         if( cd.texture == nullptr )
                         {
                             line.advanceCharOffset( cd, charScale, offset2 );
@@ -373,14 +367,8 @@ namespace Mengine
 
         uint32_t renderCharCount = 0U;
 
-        for( TVectorChunks::const_iterator
-            it_chunk = m_chunks.begin(),
-            it_chunk_end = m_chunks.end();
-            it_chunk != it_chunk_end;
-            ++it_chunk )
+        for( const Chunk & chunk : m_chunks )
         {
-            const Chunk & chunk = *it_chunk;
-
             const TVectorRenderVertex2D::value_type * chunk_vertices = vertices + chunk.vertex_begin;
 
             if( renderCharCount >= m_maxCharCount )
@@ -1332,14 +1320,8 @@ namespace Mengine
         {
             StringFormat fmt( str_textValue );
 
-            for( TVectorString::const_iterator
-                it_arg = m_textFormatArgs.begin(),
-                it_arg_end = m_textFormatArgs.end();
-                it_arg != it_arg_end;
-                ++it_arg )
+            for( const String & arg : m_textFormatArgs )
             {
-                const String & arg = *it_arg;
-
                 fmt % arg;
             }
 

@@ -36,14 +36,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Graveyard::clearTextures()
 	{
-		for( TVectorTextureGrave::iterator
-			it = m_textures.begin(),
-			it_end = m_textures.end();
-		it != it_end;
-		++it )
+        for( RenderTextureGraveEntry & entry : m_textures )
 		{
-			RenderTextureGraveEntry & entry = *it;
-
 			m_count--;
 
 			entry.image = nullptr;

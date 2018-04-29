@@ -430,7 +430,10 @@ set(HAVE_PTH 0) # GNU PTH threads
 
 set(HAVE_PTHREAD_DESTRUCTOR 0) # for Solaris 2.6
 add_cond(CFG_HEADERS HAVE_PTHREAD_H pthread.h)
-add_cond(CMAKE_REQUIRED_LIBRARIES HAVE_LIBPTHREAD ${HAVE_LIBPTHREAD})
+
+if(HAVE_LIBPTHREAD)
+    add_cond(CMAKE_REQUIRED_LIBRARIES HAVE_LIBPTHREAD ${HAVE_LIBPTHREAD})
+endif()
 
 check_symbol_exists(pthread_init "${CFG_HEADERS}" HAVE_PTHREAD_INIT)
 check_symbol_exists(pthread_sigmask "${CFG_HEADERS}" HAVE_PTHREAD_SIGMASK)

@@ -261,14 +261,8 @@ namespace Mengine
             size_t args_count = str_args.size();
             ws_args.reserve( args_count );
 
-            for( TVectorString::const_iterator
-                it = str_args.begin(),
-                it_end = str_args.end();
-                it != it_end;
-                ++it )
+            for( const String & str_arg : str_args )
             {
-                const String & str_arg = *it;
-
                 WString unicode;
                 Helper::utf8ToUnicode( str_arg, unicode );
 
@@ -3624,14 +3618,8 @@ namespace Mengine
 
             Polygon correct_polygon;
 
-            for( TVectorHotSpotPolygon::const_iterator
-                it = _overlap.begin(),
-                it_end = _overlap.end();
-                it != it_end;
-                ++it )
+            for( const HotSpotPolygon * overlap_hotspot : _overlap )
             {
-                const HotSpotPolygon * overlap_hotspot = *it;
-
                 const Polygon & overlap_polygon = overlap_hotspot->getPolygon();
 
                 TVectorPolygon output;
@@ -3913,14 +3901,8 @@ namespace Mengine
 
             const TVectorMovieLayers & layers = resourceMovie->getLayers();
 
-            for( TVectorMovieLayers::const_iterator
-                it = layers.begin(),
-                it_end = layers.end();
-                it != it_end;
-                ++it )
+            for( const MovieLayer & layer : layers )
             {
-                const MovieLayer & layer = *it;
-
                 if( layer.type != STRINGIZE_STRING_LOCAL( "MovieSlot" ) )
                 {
                     continue;
@@ -4510,14 +4492,8 @@ namespace Mengine
                 return pyret;
             }
 
-            for( TVectorPickerTraps::iterator
-                it = traps.begin(),
-                it_end = traps.end();
-                it != it_end;
-                ++it )
+            for( MousePickerTrapInterface * mousePickerTrap : traps )
             {
-                MousePickerTrapInterface * mousePickerTrap = (*it);
-
                 Scriptable * scriptable = mousePickerTrap->propagatePickerScriptable();
 
                 pyret.append( scriptable );
@@ -6655,14 +6631,8 @@ namespace Mengine
         {
             const TVectorMovieLayers & layers = _resource->getLayers();
 
-            for( TVectorMovieLayers::const_iterator
-                it = layers.begin(),
-                it_end = layers.end();
-                it != it_end;
-                ++it )
+            for( const MovieLayer & layer : layers )
             {
-                const MovieLayer & layer = *it;
-
                 if( layer.type == "Movie" )
                 {
                     if( s_hasMovieElement( layer.source, _slotName, _typeName ) == true )
@@ -7068,14 +7038,8 @@ namespace Mengine
 
             PyObject * py_tags = pybind::list_new( 0 );
 
-            for( TVectorConstString::const_iterator
-                it = tags.begin(),
-                it_end = tags.end();
-                it != it_end;
-                ++it )
+            for( const ConstString & tag : tags )
             {
-                const ConstString & tag = *it;
-
                 PyObject * py_tag = pybind::ptr( _kernel, tag );
 
                 pybind::list_appenditem( py_tags, py_tag );

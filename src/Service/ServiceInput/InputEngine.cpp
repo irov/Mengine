@@ -48,14 +48,8 @@ namespace Mengine
 		m_events = m_eventsAdd;
 		m_eventsAdd.clear();
         
-		for( TVectorInputEvent::const_iterator
-			it = m_events.begin(),
-			it_end = m_events.end();
-		it != it_end;
-		++it )
+        for( const InputUnionEvent & event : m_events )
 		{
-			const InputUnionEvent & event = (*it);
-
 			switch( event.type )
 			{
 			case IET_KEY:
@@ -251,14 +245,8 @@ namespace Mengine
 		
 		if( change == true )
 		{
-			for( TVectorMousePositionProviders::iterator
-				it = m_mousePositionProviders.begin(),
-				it_end = m_mousePositionProviders.end();
-			it != it_end;
-			++it )
+            for( const InputMousePositionProviderDesc & desc : m_mousePositionProviders )
 			{
-                const InputMousePositionProviderDesc & desc = *it;
-
                 const InputMousePositionProviderInterfacePtr & provider = desc.provider;
 
                 provider->onMousePositionChange( _touchId, point );

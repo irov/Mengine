@@ -193,14 +193,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool MockupHttpSystem::cancelRequest( HttpRequestID _id )
 	{
-		for( TVectorHttpReceiverDesc::iterator
-			it = m_receiverDescs.begin(),
-			it_end = m_receiverDescs.end();
-			it != it_end;
-			++it )
+        for( HttpReceiverDesc & desc : m_receiverDescs )
 		{
-			HttpReceiverDesc & desc = *it;
-
 			if( desc.id != _id )
 			{
 				continue;
@@ -216,8 +210,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void MockupHttpSystem::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _response, uint32_t _code, bool _successful )
 	{
-		for( TVectorHttpReceiverDesc::iterator
-			it = m_receiverDescs.begin(),
+        for( TVectorHttpReceiverDesc::iterator
+            it = m_receiverDescs.begin(),
 			it_end = m_receiverDescs.end();
 		it != it_end;
 		++it )

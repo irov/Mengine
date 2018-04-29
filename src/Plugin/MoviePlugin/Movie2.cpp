@@ -93,7 +93,7 @@ namespace Mengine
 
                 node->setPixelsnap( false );
 
-                this->addText( layer.name, node );
+                this->addText_( layer.index, node );
 
                 MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
@@ -129,7 +129,7 @@ namespace Mengine
 
                 node->setMovie( this );
 
-                this->addSlot( layer.name, node );
+                this->addSlot_( layer.index, node );
 
                 MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
@@ -163,7 +163,7 @@ namespace Mengine
                 node->setName( layer.name );
                 node->setExternalRender( true );
 
-                this->addSocket( layer.name, node );
+                this->addSocket_( layer.index, node );
 
                 MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
@@ -201,7 +201,7 @@ namespace Mengine
                 node->setEmitterCameraRelative( false );
                 node->setEmitterTranslateWithParticle( false );
 
-                this->addParticle( layer.name, node );
+                this->addParticle_( layer.index, node );
 
                 MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
@@ -270,7 +270,7 @@ namespace Mengine
 
                 node->setSurface( surface );
 
-                this->addSprite( layer.name, node );
+                this->addSprite_( layer.index, node );
 
                 MatrixProxy * matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
@@ -609,15 +609,14 @@ namespace Mengine
         return blend_mode;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud )
+    ae_bool_t Movie2::__movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud )
     {
         Movie2 * movie2 = (Movie2 *)_ud;
 
         const aeMovieLayerData * layer = _callbackData->layer;
 
-        const char * layer_name = ae_get_movie_layer_data_name( layer );
-
-        ConstString c_name = Helper::stringizeString( layer_name );
+        ae_uint32_t node_index = _callbackData->index;
+        const ae_char_t * layer_name = ae_get_movie_layer_data_name( layer );
 
         ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( layer );
 
@@ -635,7 +634,7 @@ namespace Mengine
 #if AE_MOVIE_SDK_MAJOR_VERSION >= 17
         case AE_MOVIE_LAYER_TYPE_SPRITE:
             {
-                ShapeQuadFixed * node = movie2->getSprite( c_name );
+                ShapeQuadFixed * node = movie2->getSprite_( node_index );
                 
                 if( node == nullptr )
                 {
@@ -643,7 +642,7 @@ namespace Mengine
                         , movie2->getName().c_str()
                         , movie2->getResourceMovie2()->getName().c_str()
                         , movie2->getCompositionName().c_str()
-                        , c_name.c_str()
+                        , layer_name
                     );
 
                     return AE_FALSE;
@@ -662,7 +661,7 @@ namespace Mengine
 #endif
         case AE_MOVIE_LAYER_TYPE_TEXT:
             {
-                TextField * node = movie2->getText( c_name );
+                TextField * node = movie2->getText_( node_index );
 
                 if( node == nullptr )
                 {
@@ -685,7 +684,7 @@ namespace Mengine
             }break;
         case AE_MOVIE_LAYER_TYPE_SLOT:
             {
-                Movie2Slot * node = movie2->getSlot( c_name );
+                Movie2Slot * node = movie2->getSlot_( node_index );
 
                 if( node == nullptr )
                 {
@@ -698,7 +697,7 @@ namespace Mengine
             }break;
         case AE_MOVIE_LAYER_TYPE_SOCKET:
             {
-                HotSpotPolygon * node = movie2->getSocket( c_name );
+                HotSpotPolygon * node = movie2->getSocket_( node_index );
 
                 if( node == nullptr )
                 {
@@ -729,7 +728,7 @@ namespace Mengine
             }break;
         case AE_MOVIE_LAYER_TYPE_PARTICLE:
             {
-                ParticleEmitter2 * node = movie2->getParticle( c_name );
+                ParticleEmitter2 * node = movie2->getParticle_( node_index );
 
                 if( node == nullptr )
                 {
@@ -769,6 +768,7 @@ namespace Mengine
                         return AE_FALSE;
                     }
 
+                    ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
 
                     ResourceImage * resourceImage = reinterpret_node_cast<ResourceImage *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
@@ -822,6 +822,7 @@ namespace Mengine
                         return AE_FALSE;
                     }
 
+                    ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceVideo->setName( c_name );
 
                     ResourceVideo * resourceVideo = reinterpret_node_cast<ResourceVideo *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
@@ -851,6 +852,7 @@ namespace Mengine
                         return AE_FALSE;
                     }
 
+                    ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceSound->setName( c_name );
 
                     surfaceSound->setLoop( _callbackData->incessantly );
@@ -1434,7 +1436,7 @@ namespace Mengine
         providers.camera_deleter = &__movie_composition_camera_deleter;
         providers.camera_update = &__movie_composition_camera_update;
 
-        providers.node_provider = &__movie_composition_node_provider;
+        providers.node_provider = &Movie2::__movie_composition_node_provider;
         providers.node_deleter = &__movie_composition_node_deleter;
         providers.node_update = &__movie_composition_node_update;
 
@@ -1505,14 +1507,8 @@ namespace Mengine
         m_meshes.clear();
         m_cameras.clear();
 
-        for( TVectorSurfaces::const_iterator
-            it = m_surfaces.begin(),
-            it_end = m_surfaces.end();
-            it != it_end;
-            ++it )
+        for( const SurfacePtr & surface : m_surfaces )
         {
-            const SurfacePtr & surface = *it;
-
             surface->release();
         }
 
@@ -1660,14 +1656,8 @@ namespace Mengine
         
         ae_update_movie_composition( m_composition, _timing * 0.001f );
 
-        for( TVectorSurfaces::const_iterator
-            it = m_surfaces.begin(),
-            it_end = m_surfaces.end();
-            it != it_end;
-            ++it )
+        for( const SurfacePtr & surface : m_surfaces )
         {
-            const SurfacePtr & surface = *it;
-
             surface->update( _current, _timing  );
         }
     }
@@ -2025,14 +2015,14 @@ namespace Mengine
         m_surfaces.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::addSprite( const ConstString & _name, ShapeQuadFixed * _sprite )
+    void Movie2::addSprite_( uint32_t _index, ShapeQuadFixed * _sprite )
     {
-        m_sprites.insert( std::make_pair( _name, _sprite ) );
+        m_sprites.insert( std::make_pair( _index, _sprite ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    ShapeQuadFixed * Movie2::getSprite( const ConstString & _name ) const
+    ShapeQuadFixed * Movie2::getSprite_( uint32_t _index ) const
     {
-        TMapSprites::const_iterator it_found = m_sprites.find( _name );
+        TMapSprites::const_iterator it_found = m_sprites.find( _index );
 
         if( it_found == m_sprites.end() )
         {
@@ -2044,26 +2034,48 @@ namespace Mengine
         return sprite;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::hasSprite( const ConstString & _name ) const
+    ShapeQuadFixed * Movie2::findSprite( const ConstString & _name ) const
     {
-        TMapSprites::const_iterator it_found = m_sprites.find( _name );
-
-        if( it_found == m_sprites.end() )
+        for( const TMapSprites::value_type & value : m_sprites )
         {
-            return false;
+            ShapeQuadFixed * sprite = value.second;
+
+            if( sprite->getName() != _name )
+            {
+                continue;
+            }
+
+            return sprite;
         }
 
-        return true;
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::addParticle( const ConstString & _name, ParticleEmitter2 * _particleEmitter )
+    bool Movie2::hasSprite( const ConstString & _name ) const
     {
-        m_particleEmitters.insert( std::make_pair( _name, _particleEmitter ) );
+        for( const TMapSprites::value_type & value : m_sprites )
+        {
+            ShapeQuadFixed * sprite = value.second;
+
+            if( sprite->getName() != _name )
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    ParticleEmitter2 * Movie2::getParticle( const ConstString & _name ) const
+    void Movie2::addParticle_( uint32_t _index, ParticleEmitter2 * _particleEmitter )
     {
-        TMapParticleEmitter2s::const_iterator it_found = m_particleEmitters.find( _name );
+        m_particleEmitters.insert( std::make_pair( _index, _particleEmitter ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ParticleEmitter2 * Movie2::getParticle_( uint32_t _index ) const
+    {
+        TMapParticleEmitter2s::const_iterator it_found = m_particleEmitters.find( _index );
 
         if( it_found == m_particleEmitters.end() )
         {
@@ -2075,26 +2087,48 @@ namespace Mengine
         return particleEmitter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::hasParticle( const ConstString & _name ) const
+    ParticleEmitter2 * Movie2::findParticle( const ConstString & _name ) const
     {
-        TMapParticleEmitter2s::const_iterator it_found = m_particleEmitters.find( _name );
-
-        if( it_found == m_particleEmitters.end() )
+        for( const TMapParticleEmitter2s::value_type & value : m_particleEmitters )
         {
-            return false;
+            ParticleEmitter2 * particle = value.second;
+
+            if( particle->getName() != _name )
+            {
+                continue;
+            }
+
+            return particle;
         }
 
-        return true;
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::addSlot( const ConstString & _name, Movie2Slot * _slot )
+    bool Movie2::hasParticle( const ConstString & _name ) const
     {
-        m_slots.insert( std::make_pair( _name, _slot ) );
+        for( const TMapParticleEmitter2s::value_type & value : m_particleEmitters )
+        {
+            ParticleEmitter2 * particle = value.second;
+
+            if( particle->getName() != _name )
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    Movie2Slot * Movie2::getSlot( const ConstString & _name ) const
+    void Movie2::addSlot_( uint32_t _index, Movie2Slot * _slot )
     {
-        TMapSlots::const_iterator it_found = m_slots.find( _name );
+        m_slots.insert( std::make_pair( _index, _slot ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Movie2Slot * Movie2::getSlot_( uint32_t _index ) const
+    {
+        TMapSlots::const_iterator it_found = m_slots.find( _index );
 
         if( it_found == m_slots.end() )
         {
@@ -2106,26 +2140,48 @@ namespace Mengine
         return slot;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::hasSlot( const ConstString & _name ) const
+    Movie2Slot * Movie2::findSlot( const ConstString & _name ) const
     {
-        TMapSlots::const_iterator it_found = m_slots.find( _name );
-
-        if( it_found == m_slots.end() )
+        for( const TMapSlots::value_type & value : m_slots )
         {
-            return false;
+            Movie2Slot * slot = value.second;
+
+            if( slot->getName() != _name )
+            {
+                continue;
+            }
+
+            return slot;
         }
 
-        return true;
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::addSocket( const ConstString & _name, HotSpotPolygon * _hotspot )
+    bool Movie2::hasSlot( const ConstString & _name ) const
     {
-        m_sockets.insert( std::make_pair( _name, _hotspot ) );
+        for( const TMapSlots::value_type & value : m_slots )
+        {
+            Movie2Slot * slot = value.second;
+
+            if( slot->getName() != _name )
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    HotSpotPolygon * Movie2::getSocket( const ConstString & _name ) const
+    void Movie2::addSocket_( uint32_t _index, HotSpotPolygon * _hotspot )
     {
-        TMapSockets::const_iterator it_found = m_sockets.find( _name );
+        m_sockets.insert( std::make_pair( _index, _hotspot ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HotSpotPolygon * Movie2::getSocket_( uint32_t _index ) const
+    {
+        TMapSockets::const_iterator it_found = m_sockets.find( _index );
 
         if( it_found == m_sockets.end() )
         {
@@ -2137,16 +2193,38 @@ namespace Mengine
         return hotspot;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::hasSocket( const ConstString & _name ) const
+    HotSpotPolygon * Movie2::findSocket( const ConstString & _name ) const
     {
-        TMapSockets::const_iterator it_found = m_sockets.find( _name );
-
-        if( it_found == m_sockets.end() )
+        for( const TMapSockets::value_type & value : m_sockets )
         {
-            return false;
+            HotSpotPolygon * socket = value.second;
+
+            if( socket->getName() != _name )
+            {
+                continue;
+            }
+
+            return socket;
         }
 
-        return true;
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::hasSocket( const ConstString & _name ) const
+    {
+        for( const TMapSockets::value_type & value : m_sockets )
+        {
+            HotSpotPolygon * socket = value.second;
+
+            if( socket->getName() != _name )
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::visitSockets( VisitorMovie2Layer * _visitor )
@@ -2157,14 +2235,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::addText( const ConstString & _name, TextField * _text )
+    void Movie2::addText_( uint32_t _index, TextField * _text )
     {
-        m_texts.insert( std::make_pair( _name, _text ) );
+        m_texts.insert( std::make_pair( _index, _text ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    TextField * Movie2::getText( const ConstString & _name ) const
+    TextField * Movie2::getText_( uint32_t _index ) const
     {
-        TMapTexts::const_iterator it_found = m_texts.find( _name );
+        TMapTexts::const_iterator it_found = m_texts.find( _index );
 
         if( it_found == m_texts.end() )
         {
@@ -2176,16 +2254,38 @@ namespace Mengine
         return text;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::hasText( const ConstString & _name ) const
+    TextField * Movie2::findText( const ConstString & _name ) const
     {
-        TMapTexts::const_iterator it_found = m_texts.find( _name );
-
-        if( it_found == m_texts.end() )
+        for( const TMapTexts::value_type & value : m_texts )
         {
-            return false;
+            TextField * text = value.second;
+
+            if( text->getName() != _name )
+            {
+                continue;
+            }
+
+            return text;
         }
 
-        return true;
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::hasText( const ConstString & _name ) const
+    {
+        for( const TMapTexts::value_type & value : m_texts )
+        {
+            TextField * text = value.second;
+
+            if( text->getName() != _name )
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addMatrixProxy( MatrixProxy * _matrixProxy )

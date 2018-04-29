@@ -1,46 +1,44 @@
-#	include "Config/Config.h"
+#include "Config/Config.h"
 
-#	include "SDLApplication.h"
+#include "SDLApplication.h"
 
-#	include "Engine/Application.h"
+#include "Engine/Application.h"
 
-#	include "Interface/LoggerInterface.h"
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/UnicodeInterface.h"
-#	include "Interface/PackageInterface.h"
-#	include "Interface/UserdataInterface.h"
-#   include "Interface/GraveyardInterface.h"
-#   include "Interface/ResourceInterface.h"
-#	include "Interface/TextInterface.h"
-#	include "Interface/InputSystemInterface.h"
-#	include "Interface/TimerInterface.h"
-#	include "Interface/OptionsInterface.h"
-#	include "Interface/HttpSystemInterface.h"
+#include "Interface/LoggerInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/PackageInterface.h"
+#include "Interface/UserdataInterface.h"
+#include "Interface/GraveyardInterface.h"
+#include "Interface/ResourceInterface.h"
+#include "Interface/TextInterface.h"
+#include "Interface/InputSystemInterface.h"
+#include "Interface/TimerInterface.h"
+#include "Interface/OptionsInterface.h"
+#include "Interface/HttpSystemInterface.h"
 
-#   include "PythonScriptWrapper/PythonScriptWrapper.h"
+#include "PythonScriptWrapper/PythonScriptWrapper.h"
 
-#	include <cstdio>
-#	include <clocale>
+#include <cstdio>
+#include <clocale>
 
-#	include "Factory/FactorableUnique.h"
-#	include "Factory/FactoryDefault.h"
+#include "Factory/FactorableUnique.h"
+#include "Factory/FactoryDefault.h"
 
-#	include "Core/FileLogger.h"
-#	include "Core/IniUtil.h"
-#	include "Core/Date.h"
+#include "Core/FileLogger.h"
+#include "Core/IniUtil.h"
+#include "Core/Date.h"
 
-#   include "SDLMessageBoxLogger.h"
-#   include "SDLStdioLogger.h"
+#include "SDLMessageBoxLogger.h"
+#include "SDLStdioLogger.h"
 
-//#	include "resource.h"
+#include <ctime>
+#include <algorithm>
 
-#	include <ctime>
-#	include <algorithm>
+#include <sstream>
+#include <iomanip>
 
-#	include <sstream>
-#	include <iomanip>
-
-#   include "SDL_filesystem.h"
+#include "SDL_filesystem.h"
 
 #ifdef WIN32
 #	ifdef _WIN32_WINNT	
@@ -758,15 +756,26 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->setIcon( 0 );
 
-        const String & projectTitle = APPLICATION_SERVICE()
-            ->getProjectTitle();
+        String projectTitle;
+
+        TextEntryInterfacePtr entry;
+        if( TEXT_SERVICE()
+            ->existText( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
+        {
+            LOGGER_WARNING( "Application not setup title 'APPLICATION_TITLE'"
+            );
+        }
+        else
+        {
+            projectTitle = entry->getValue();
+        }
 
         WString wprojectTitle;
-        if( Helper::utf8ToUnicode(projectTitle, wprojectTitle) == false )
+        if( Helper::utf8ToUnicodeSize( projectTitle.c_str(), projectTitle.size(), wprojectTitle ) == false )
         {
-            LOGGER_ERROR("Application project title %s not convert to unicode"
-                                            , projectTitle.c_str()
-                                            );
+            LOGGER_ERROR( "Application project title %s not convert to unicode"
+                , projectTitle.c_str()
+            );
         }
 
         PLATFORM_SERVICE()

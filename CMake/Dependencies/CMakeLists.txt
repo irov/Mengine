@@ -18,7 +18,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libwebp)    
-option(WEBP_ENABLE_SIMD "Enable any SIMD optimization." ON)
+option(WEBP_ENABLE_SIMD "Enable any SIMD optimization." OFF)
 option(WEBP_BUILD_CWEBP "Build the cwebp command line tool." OFF)
 option(WEBP_BUILD_DWEBP "Build the dwebp command line tool." OFF)
 option(WEBP_BUILD_GIF2WEBP "Build the gif2webp conversion tool." OFF)

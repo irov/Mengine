@@ -361,16 +361,10 @@ namespace Mengine
 		SCRIPT_SERVICE()
 			->addModulePath( m_name, m_scriptsPackages );
 
-		for( TVectorPakResourceDesc::const_iterator
-			it = m_resourcesDesc.begin(),
-			it_end = m_resourcesDesc.end();
-		it != it_end;
-		++it )
+        for( const PakResourceDesc & desc : m_resourcesDesc )
 		{
             //PROFILER_SERVICE(m_serviceProvider)
             //    ->memoryBegin();
-
-			const PakResourceDesc & desc = *it;
 
 			if( RESOURCE_SERVICE()
 				->loadResources( m_locale, m_name, desc.path, desc.ignored ) == false )
@@ -393,14 +387,8 @@ namespace Mengine
 			//	);
 		}
 
-		for( TVectorPakFontDesc::const_iterator
-			it = m_pathFonts.begin(),
-			it_end = m_pathFonts.end();
-		it != it_end;
-		++it )
+        for( const PakFontDesc & desc : m_pathFonts )
 		{
-			const PakFontDesc & desc = *it;
-
 			if( this->loadFont_( m_name, desc.path ) == false )
 			{
                 LOGGER_ERROR("Package::enable '%s:%s' invalid load font '%s'"
@@ -413,14 +401,8 @@ namespace Mengine
 			}
 		}
 
-		for( TVectorPakTextDesc::iterator
-			it = m_pathTexts.begin(),
-			it_end = m_pathTexts.end();
-		it != it_end;
-		++it )
+        for( const PakTextDesc & desc : m_pathTexts )
 		{
-			const PakTextDesc & desc = *it;
-
 			if( this->loadText_( m_name, desc.path ) == false )
             {
                 LOGGER_ERROR("Package::enable '%s:%s' invalid load text '%s'"
@@ -433,14 +415,8 @@ namespace Mengine
             }
 		}
 
-		for( TVectorPakDataDesc::iterator
-			it = m_datas.begin(),
-			it_end = m_datas.end();
-		it != it_end;
-		++it )
+        for( const PakDataDesc & desc : m_datas )
 		{
-			const PakDataDesc & desc = *it;
-
 			if( this->addUserData_( m_name, desc.name, desc.path ) == false )
 			{
                 LOGGER_ERROR("Package::enable '%s:%s' invalid load userdata '%s' path '%s'"
@@ -454,14 +430,8 @@ namespace Mengine
 			}
 		}
 
-		for( TVectorPakMaterialDesc::iterator
-			it = m_pathMaterials.begin(),
-			it_end = m_pathMaterials.end();
-		it != it_end;
-		++it )
+        for( const PakMaterialDesc & desc : m_pathMaterials )
 		{
-			const PakMaterialDesc & desc = *it;
-
 			if( this->loadMaterials_( m_name, desc.path ) == false )
 			{
                 LOGGER_ERROR("Package::enable '%s:%s' invalid load material '%s'"
@@ -483,14 +453,8 @@ namespace Mengine
 	{
 		bool successful = true;
 
-		for( TVectorPakResourceDesc::const_iterator
-			it = m_resourcesDesc.begin(),
-			it_end = m_resourcesDesc.end();
-		it != it_end;
-		++it )
+        for( const PakResourceDesc & desc : m_resourcesDesc )
 		{
-			const PakResourceDesc & desc = *it;
-
 			if( desc.ignored == true )
 			{
 				continue;
@@ -524,14 +488,8 @@ namespace Mengine
 		SCRIPT_SERVICE()
 			->removeModulePath( m_name, m_scriptsPackages );
 
-		for( TVectorPakResourceDesc::const_iterator
-			it = m_resourcesDesc.begin(),
-			it_end = m_resourcesDesc.end();
-		it != it_end;
-		++it )
+        for( const PakResourceDesc & desc : m_resourcesDesc )
 		{
-			const PakResourceDesc & desc = *it;
-
 			if( RESOURCE_SERVICE()
 				->unloadResources( m_locale, m_name, desc.path ) == false )
 			{
@@ -539,56 +497,32 @@ namespace Mengine
 			}
 		}
 
-		for( TVectorPakFontDesc::iterator
-			it = m_pathFonts.begin(),
-			it_end = m_pathFonts.end();
-		it != it_end;
-		++it )
+        for( const PakFontDesc & desc : m_pathFonts )
 		{
-			const PakFontDesc & desc = *it;
-
 			if( this->unloadFont_( m_name, desc.path ) == false )
 			{
 				return false;
 			}
 		}
 
-		for( TVectorPakTextDesc::iterator
-			it = m_pathTexts.begin(),
-			it_end = m_pathTexts.end();
-		it != it_end;
-		++it )
+        for( const PakTextDesc & desc : m_pathTexts )
 		{
-			const PakTextDesc & desc = *it;
-
 			if( this->unloadText_( m_name, desc.path ) == false )
 			{
 				return false;
 			}
 		}
 
-		for( TVectorPakDataDesc::iterator
-			it = m_datas.begin(),
-			it_end = m_datas.end();
-		it != it_end;
-		++it )
+        for( const PakDataDesc & desc : m_datas )
 		{
-			const PakDataDesc & desc = *it;
-
 			if( this->removeUserData_( desc.name ) == false )
 			{
 				return false;
 			}
 		}
 
-		for( TVectorPakMaterialDesc::iterator
-			it = m_pathMaterials.begin(),
-			it_end = m_pathMaterials.end();
-		it != it_end;
-		++it )
+        for( const PakMaterialDesc & desc : m_pathMaterials )
 		{
-			const PakMaterialDesc & desc = *it;
-
 			if( this->unloadMaterials_( m_name, desc.path ) == false )
 			{
 				return false;

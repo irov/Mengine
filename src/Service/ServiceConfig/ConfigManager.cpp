@@ -71,14 +71,8 @@ namespace Mengine
 			
 			const TVectorConstString & tags = _platform.getTags();
 
-			for( TVectorConstString::const_iterator
-				it = tags.begin(),
-				it_end = tags.end();
-			it != it_end;
-			++it )
+            for( const ConstString & tag : tags )
 			{
-				const ConstString & tag = *it;
-
 				platform_section.append( '-' );
 				platform_section.append( tag );
 
@@ -108,14 +102,8 @@ namespace Mengine
 
             stdex::array_string<128> platform_section_found;
 
-            for( TVectorConstString::const_iterator
-                it = tags.begin(),
-                it_end = tags.end();
-                it != it_end;
-                ++it )
+            for( const ConstString & tag : tags )
             {
-                const ConstString & tag = *it;
-
                 platform_section.append( '-' );
                 platform_section.append( tag );
 

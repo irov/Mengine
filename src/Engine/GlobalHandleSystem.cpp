@@ -43,14 +43,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool GlobalHandleSystem::handleKeyEvent( const InputKeyEvent & _event )
 	{
-		for( TVectorGlobalHandler::iterator
-            it = m_handlers.begin(),
-			it_end = m_handlers.end();
-        it != it_end;
-		++it )
+        for( const GlobalHandlerDesc & desc : m_handlers )
         {
-			const GlobalHandlerDesc & desc = *it;
-
             if( desc.dead == true )
             {
                 continue;
@@ -69,14 +63,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool GlobalHandleSystem::handleTextEvent( const InputTextEvent & _event )
 	{
-		for( TVectorGlobalHandler::iterator
-			it = m_handlers.begin(),
-			it_end = m_handlers.end();
-			it != it_end;
-			++it )
+		for( const GlobalHandlerDesc & desc : m_handlers )
 		{
-			const GlobalHandlerDesc & desc = *it;
-
 			if( desc.dead == true )
 			{
 				continue;
@@ -95,14 +83,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool GlobalHandleSystem::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
 	{
-		for( TVectorGlobalHandler::iterator
-			it = m_handlers.begin(),
-			it_end = m_handlers.end();
-		it != it_end;
-		++it )
+		for( const GlobalHandlerDesc & desc : m_handlers )
 		{
-			const GlobalHandlerDesc & desc = *it;
-
             if( desc.dead == true )
             {
                 continue;
@@ -121,14 +103,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool GlobalHandleSystem::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
 	{
-		for( TVectorGlobalHandler::iterator
-			it = m_handlers.begin(),
-			it_end = m_handlers.end();
-		it != it_end;
-		++it )
+		for( const GlobalHandlerDesc & desc : m_handlers )
 		{
-			const GlobalHandlerDesc & desc = *it;
-
 			if( desc.dead == true )
 			{
 				continue;
@@ -147,14 +123,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool GlobalHandleSystem::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
 	{
-		for( TVectorGlobalHandler::iterator
-			it = m_handlers.begin(),
-			it_end = m_handlers.end();
-		it != it_end;
-		++it )
+        for( const GlobalHandlerDesc & desc : m_handlers )
 		{
-			const GlobalHandlerDesc & desc = *it;
-
 			if( desc.dead == true )
 			{
 				continue;
@@ -173,14 +143,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool GlobalHandleSystem::handleMouseMove( const InputMouseMoveEvent & _event )
 	{
-		for( TVectorGlobalHandler::iterator
-			it = m_handlers.begin(),
-			it_end = m_handlers.end();
-		it != it_end;
-		++it )
+        for( const GlobalHandlerDesc & desc : m_handlers )
 		{
-			const GlobalHandlerDesc & desc = *it;
-
             if( desc.dead == true )
             {
                 continue;
@@ -199,14 +163,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool GlobalHandleSystem::handleMouseWheel( const InputMouseWheelEvent & _event )
 	{
-		for( TVectorGlobalHandler::iterator
-			it = m_handlers.begin(),
-			it_end = m_handlers.end();
-		it != it_end;
-		++it )
+        for( const GlobalHandlerDesc & desc : m_handlers )
 		{
-			const GlobalHandlerDesc & desc = *it;
-
 			if( desc.dead == true )
 			{
 				continue;
@@ -317,14 +275,8 @@ namespace Mengine
             LOGGER_ERROR("GlobalHandleSystem::clear global handlers is not empty:"
                 );
 
-            for( TVectorGlobalHandler::iterator
-                it = m_handlers.begin(),
-                it_end = m_handlers.end();
-                it != it_end;
-                ++it )
+            for( const GlobalHandlerDesc & desc : m_handlers )
             {
-                const GlobalHandlerDesc & desc = *it;
-
                 LOGGER_ERROR( "%s"
                     , desc.doc.c_str()
                 );

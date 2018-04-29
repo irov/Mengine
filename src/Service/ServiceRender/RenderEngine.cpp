@@ -889,14 +889,8 @@ namespace Mengine
             return;
         }
 
-        for( TVectorRenderPass::const_iterator
-            it = m_renderPasses.begin(),
-            it_end = m_renderPasses.end();
-            it != it_end;
-            ++it )
+        for( const RenderPassPtr & renderPass : m_renderPasses )
         {
-            const RenderPassPtr & renderPass = *it;
-
             this->renderPass_( renderPass );
         }
     }
@@ -1022,14 +1016,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const RenderBatchPtr & RenderEngine::requestRenderBatch_( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount )
     {
-        for( TVectorRenderBatch::const_iterator
-            it = m_renderBatches.begin(),
-            it_end = m_renderBatches.end();
-            it != it_end;
-            ++it )
+        for( const RenderBatchPtr & batch : m_renderBatches )
         {
-            const RenderBatchPtr & batch = *it;
-
             if( batch->vertexAttribute != _vertexAttribute )
             {
                 continue;
@@ -1402,14 +1390,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderEngine::makeBatches_()
     {
-        for( TVectorRenderBatch::const_iterator
-            it = m_renderBatches.begin(),
-            it_end = m_renderBatches.end();
-            it != it_end;
-            ++it )
+        for( const RenderBatchPtr & batch : m_renderBatches )
         {
-            const RenderBatchPtr & batch = *it;
-
             const RenderVertexBufferInterfacePtr & vertexBuffer = batch->vertexBuffer;
 
             vertexBuffer->resize( batch->vertexCount );
@@ -1443,14 +1425,8 @@ namespace Mengine
 
         this->insertRenderPasses_();
 
-        for( TVectorRenderBatch::const_iterator
-            it = m_renderBatches.begin(),
-            it_end = m_renderBatches.end();
-            it != it_end;
-            ++it )
+        for( const RenderBatchPtr & batch : m_renderBatches )
         {
-            const RenderBatchPtr & batch = *it;
-
             const RenderVertexBufferInterfacePtr & vertexBuffer = batch->vertexBuffer;
 
             if( vertexBuffer->unlock() == false )
@@ -1475,14 +1451,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::insertRenderPasses_()
     {
-        for( TVectorRenderPass::const_iterator
-            it = m_renderPasses.begin(),
-            it_end = m_renderPasses.end();
-            it != it_end;
-            ++it )
+        for( const RenderPassPtr & pass : m_renderPasses )
         {
-            const RenderPassPtr & pass = *it;
-
             if( pass->flags & RENDER_PASS_FLAG_SINGLE )
             {
                 continue;

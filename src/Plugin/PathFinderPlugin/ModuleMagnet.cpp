@@ -110,14 +110,8 @@ namespace Mengine
 		(void)_time;
 		(void)_timing;
 		
-		for( TVectorMagnetWorlds::iterator
-			it = m_magnetWorlds.begin(),
-			it_end = m_magnetWorlds.end();
-		it != it_end;
-		++it )
+        for( const MagnetWorldPtr & magnet : m_magnetWorlds )
 		{
-			const MagnetWorldPtr & magnet = *it;
-
 			magnet->update( _time, _timing );
 		}
 

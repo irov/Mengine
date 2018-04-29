@@ -105,14 +105,8 @@ namespace Mengine
 		(void)_time;
 		(void)_timing;
 
-		for( TVectorBounceWorlds::iterator
-			it = m_bounceWorlds.begin(),
-			it_end = m_bounceWorlds.end();
-		it != it_end;
-		++it )
+		for( const BounceWorldPtr & world : m_bounceWorlds )
 		{
-			const BounceWorldPtr & world = *it;
-
 			world->update( _timing );
 		}
 

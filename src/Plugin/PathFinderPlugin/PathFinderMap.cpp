@@ -285,13 +285,9 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testHolesPolygon_( const Polygon & _polygon ) const
 	{
-		for( TVectorObstacles::const_iterator
-			it = m_obstacles.begin(),
-			it_end = m_obstacles.end();
-		it != it_end;
-		++it )
+        for( Obstacle * o : m_obstacles )
 		{
-			const Polygon & p = (*it)->hole;
+			const Polygon & p = o->hole;
 
 			bool intersect = _polygon.intersects( p );
 
@@ -306,13 +302,9 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testBigHolesPolygon_( const Polygon & _polygon ) const
 	{
-		for( TVectorObstacles::const_iterator
-			it = m_obstacles.begin(),
-			it_end = m_obstacles.end();
-		it != it_end;
-		++it )
+        for( Obstacle * o : m_obstacles )
 		{
-			const Polygon & p = (*it)->hole;
+			const Polygon & p = o->hole;
 
 			bool intersect = _polygon.intersects( p );
 
@@ -371,13 +363,9 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testHolesSegment_( const mt::vec2f & _p0, const mt::vec2f & _p1 ) const
 	{
-		for( TVectorObstacles::const_iterator
-			it = m_obstacles.begin(),
-			it_end = m_obstacles.end();
-		it != it_end;
-		++it )
+        for( Obstacle * o : m_obstacles )
 		{
-			const Polygon & p = (*it)->hole;
+			const Polygon & p = o->hole;
 
 			if( p.intersects( _p0, _p1 ) == true )
 			{
@@ -390,13 +378,9 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testHolesPoint_( const mt::vec2f & _p ) const
 	{
-		for( TVectorObstacles::const_iterator
-			it = m_obstacles.begin(),
-			it_end = m_obstacles.end();
-		it != it_end;
-		++it )
+        for( Obstacle * o : m_obstacles )
 		{
-			const Polygon & p = (*it)->hole;
+			const Polygon & p = o->hole;
 
 			bool intersect = p.intersects( _p );
 
@@ -490,14 +474,8 @@ namespace Mengine
 	{
 		TVectorPathFinderDesc pathcomplete;
 
-		for( TVectorPathFinderDesc::iterator
-			it = m_pathfinders.begin(),
-			it_end = m_pathfinders.end();
-		it != it_end;
-		++it )
+        for( PathFinderDesc & desc : m_pathfinders )
 		{
-			PathFinderDesc & desc = *it;
-
 			if( desc.finder->isComplete() == false )
 			{
 				continue;
@@ -517,14 +495,8 @@ namespace Mengine
 		TVectorPathFinderDesc::iterator it_erase = std::remove_if( m_pathfinders.begin(), m_pathfinders.end(), FPathFinderDead());
 		m_pathfinders.erase( it_erase, m_pathfinders.end() );
 		
-		for( TVectorPathFinderDesc::iterator
-			it = pathcomplete.begin(),
-			it_end = pathcomplete.end();
-		it != it_end;
-		++it )
+        for( PathFinderDesc & desc : pathcomplete )
 		{
-			PathFinderDesc & desc = *it;
-
 			if( desc.finder->isSuccessful() == false )
 			{
 				desc.cb.call( desc.id, false, pybind::ret_none() );

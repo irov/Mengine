@@ -11,14 +11,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void OptionsService::setArgs( const TVectorString & _args )
 	{
-		for( TVectorString::const_iterator
-			it = _args.begin(),
-			it_end = _args.end();
-		it != it_end;
-		++it )
+        for( const String & arg : _args )
 		{
-			const String & arg = *it;
-
 			const Char * option_str = arg.c_str();
 
 			const Char * option_key_str = strchr( option_str, '-' );
@@ -65,14 +59,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool OptionsService::hasOption( const Char * _key ) const
 	{
-		for( TVectorOptions::const_iterator
-			it = m_options.begin(),
-			it_end = m_options.end();
-		it != it_end;
-		++it )
+        for( const Option & op : m_options )
 		{
-			const Option & op = *it;
-
 			if( strcmp( op.key, _key ) != 0 )
 			{
 				continue;
@@ -86,14 +74,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	const Char * OptionsService::getOptionValue( const Char * _key ) const
 	{
-		for( TVectorOptions::const_iterator
-			it = m_options.begin(),
-			it_end = m_options.end();
-		it != it_end;
-		++it )
+        for( const Option & op : m_options )
 		{
-			const Option & op = *it;
-
 			if( strcmp( op.key, _key ) != 0 )
 			{
 				continue;

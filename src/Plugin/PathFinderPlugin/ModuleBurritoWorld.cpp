@@ -151,14 +151,8 @@ namespace Mengine
 		m_worlds.insert( m_worlds.end(), m_worldsAdd.begin(), m_worldsAdd.end() );
 		m_worldsAdd.clear();
 
-		for( TVectorBurritoWorld::iterator 
-			it = m_worlds.begin(),
-			it_end = m_worlds.end();
-		it != it_end;
-		++it )
+        for( BurritoWorld * world : m_worlds )
 		{
-			BurritoWorld * world = *it;
-
 			world->update( _time, _timing );
 		}
 

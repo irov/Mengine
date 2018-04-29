@@ -5,7 +5,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
     static const uint32_t metacode_version = 5;
-    static const uint32_t metacode_protocol = 123;
+    static const uint32_t metacode_protocol = 124;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -2060,6 +2060,7 @@ namespace Metacode
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer::_parseData( const uint8_t * _buff, size_t _size, size_t & _read )
         {
             this->read( _buff, _size, _read, this->m_Color );
+            this->read( _buff, _size, _read, this->m_Index );
             this->read( _buff, _size, _read, this->m_Matrix );
             this->read( _buff, _size, _read, this->m_Name );
             this->read( _buff, _size, _read, this->m_Type );
@@ -2083,6 +2084,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition::_parseData( const uint8_t * _buff, size_t _size, size_t & _read )
         {
+            this->read( _buff, _size, _read, this->m_Index );
             this->read( _buff, _size, _read, this->m_Name );
         }
         //////////////////////////////////////////////////////////////////////////

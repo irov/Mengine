@@ -14,6 +14,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct ResourceMovie2CompositionLayer
     {
+        uint32_t index;
         ConstString name;
         ConstString type;
         mt::mat4f matrix;
@@ -24,6 +25,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct ResourceMovie2CompositionSubComposition
     {
+        uint32_t index;
         ConstString name;
     };
     //////////////////////////////////////////////////////////////////////////

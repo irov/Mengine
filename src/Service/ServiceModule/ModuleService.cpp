@@ -25,14 +25,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleService::_finalize()
 	{
-		for( TVectorModules::iterator
-			it = m_modules.begin(),
-			it_end = m_modules.end();
-			it != it_end;
-			++it )
+        for( const ModuleInterfacePtr & module : m_modules )
 		{
-			const ModuleInterfacePtr & module = *it;
-
 			module->finalize();
 		}
 
@@ -134,42 +128,24 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleService::update( bool _focus )
 	{
-		for( TVectorModules::iterator
-			it = m_modules.begin(),
-			it_end = m_modules.end();
-		it != it_end;
-		++it )
+        for( const ModuleInterfacePtr & module : m_modules )
 		{
-			const ModuleInterfacePtr & module = *it;
-
 			module->update( _focus );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleService::tick( float _time, float _timing )
 	{
-		for( TVectorModules::iterator
-			it = m_modules.begin(),
-			it_end = m_modules.end();
-		it != it_end;
-		++it )
+        for( const ModuleInterfacePtr & module : m_modules )
 		{
-			const ModuleInterfacePtr & module = *it;
-
-			module->tick( _time, _timing );
+            module->tick( _time, _timing );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleService::render( const RenderState * _state, uint32_t _debugMask )
 	{
-		for( TVectorModules::iterator
-			it = m_modules.begin(),
-			it_end = m_modules.end();
-		it != it_end;
-		++it )
+        for( const ModuleInterfacePtr & module : m_modules )
 		{
-			const ModuleInterfacePtr & module = *it;
-
 			module->render( _state, _debugMask );
 		}
 	}
@@ -188,28 +164,16 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleService::messageAll( const ConstString & _messageName, const TMapWParams & _params )
 	{
-		for( TVectorModules::const_iterator
-			it = m_modules.begin(),
-			it_end = m_modules.end();
-		it != it_end;
-		++it )
+        for( const ModuleInterfacePtr & module : m_modules )
 		{
-			const ModuleInterfacePtr & module = *it;
-
 			module->messageAll( _messageName, _params );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////		
 	const ModuleInterfacePtr & ModuleService::findModule( const ConstString & _moduleName ) const
 	{
-		for( TVectorModules::const_iterator
-			it = m_modules.begin(),
-			it_end = m_modules.end();
-		it != it_end;
-		++it )
+        for( const ModuleInterfacePtr & module : m_modules )
 		{
-			const ModuleInterfacePtr & module = *it;
-
 			if( module->getName() != _moduleName )
 			{
 				continue;

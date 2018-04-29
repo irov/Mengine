@@ -1540,14 +1540,8 @@ namespace Mengine
 			
 			WString setting_value;
 
-			for( TVectorWString::const_iterator
-				it = _values.begin(),
-				it_end = _values.end();
-				it != it_end;
-				++it )
+            for( const WString & value : _values )
 			{
-				const WString & value = *it;
-
 				if( setting_value.empty() == false )
 				{
 					setting_value += L" ,,, ";

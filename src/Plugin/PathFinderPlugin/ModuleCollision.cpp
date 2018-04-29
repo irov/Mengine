@@ -197,14 +197,8 @@ namespace Mengine
 		(void)_time;
 		(void)_timing;
 		
-		for( TVectorCollisionWorlds::iterator
-			it = m_collisionWorlds.begin(),
-			it_end = m_collisionWorlds.end();
-		it != it_end;
-		++it )
+        for( const CollisionWorldPtr & collision : m_collisionWorlds )
 		{
-			const CollisionWorldPtr & collision = *it;
-
 			collision->update();
 		}
 

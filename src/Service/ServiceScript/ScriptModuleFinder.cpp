@@ -244,14 +244,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ScriptModuleFinder::findModule_( const char * _modulePath, size_t _modulePathLen, const ScriptModuleLoaderPtr & _loader ) const
     {
-        for( TVectorModulePathes::const_iterator
-            it = m_modulePaths.begin(),
-            it_end = m_modulePaths.end();
-        it != it_end;
-        ++it )
+        for( const ModulePathes & mp : m_modulePaths )
         {
-            const ModulePathes & mp = *it;
-
 			FileGroupInterfacePtr fileGroup = FILE_SERVICE()
 				->getFileGroup( mp.pack );
 
@@ -260,14 +254,8 @@ namespace Mengine
 				continue;
 			}
 
-            for( TVectorConstString::const_iterator
-                it_path = mp.pathes.begin(),
-                it_path_end = mp.pathes.end();
-            it_path != it_path_end;
-            ++it_path )
-            {
-                const ConstString & path = *it_path;
-				
+            for( const ConstString & path : mp.pathes )
+            {				
 				m_cacheFullPath.clear();
 				m_cacheFullPath += path;
 				m_cacheFullPath.append( _modulePath, _modulePathLen );

@@ -18,14 +18,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PluginService::~PluginService()
     {
-		for( TVectorPlugins::iterator
-            it = m_plugins.begin(),
-            it_end = m_plugins.end();
-        it != it_end;
-        ++it )
+        for( PluginDesc & desc : m_plugins )
         {
-            PluginDesc & desc = *it;
-
 			desc.plugin->finalize();
         }
 
@@ -41,14 +35,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void PluginService::_finalize()
 	{
-		for( TVectorPlugins::iterator
-			it = m_plugins.begin(),
-			it_end = m_plugins.end();
-		it != it_end;
-		++it )
+        for( PluginDesc & desc : m_plugins )
 		{
-			PluginDesc & desc = *it;
-
 			desc.plugin->finalize();
 		}
 
@@ -206,14 +194,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PluginService::hasPlugin( const Char * _name ) const
 	{
-		for( TVectorPlugins::const_iterator
-			it = m_plugins.begin(),
-			it_end = m_plugins.end();
-		it != it_end;
-		++it )
+        for( const PluginDesc & desc : m_plugins )
 		{
-			const PluginDesc & desc = *it;
-
 			if( desc.plugin == nullptr )
 			{
 				continue;
@@ -232,14 +214,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	const PluginInterfacePtr & PluginService::getPlugin( const Char * _name ) const
 	{
-		for( TVectorPlugins::const_iterator
-			it = m_plugins.begin(),
-			it_end = m_plugins.end();
-		it != it_end;
-		++it )
+        for( const PluginDesc & desc : m_plugins )
 		{
-			const PluginDesc & desc = *it;
-
 			if( desc.plugin == nullptr )
 			{
 				continue;

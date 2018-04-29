@@ -1384,14 +1384,8 @@ namespace Mengine
 			}
 		}
 
-		for( TVectorWString::reverse_iterator
-			it = paths.rbegin(),
-			it_end = paths.rend();
-			it != it_end;
-			++it )
+        for( const WString & path : paths )
 		{
-			const WString & path = *it;
-
 			BOOL successful = CreateDirectory( path.c_str(), NULL );
 
 			if( successful == FALSE )

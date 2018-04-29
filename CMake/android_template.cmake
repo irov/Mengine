@@ -4,6 +4,8 @@ SET( MENGINE_SO_SUFFIX ".so" CACHE STRING "MENGINE_SO_SUFFIX" FORCE )
 
 SET( CMAKE_DEBUG_POSTFIX "" CACHE STRING "Set debug library postfix" FORCE )
 
+set(CMAKE_CXX_STANDARD 14)
+
 #SET( CMAKE_C_FLAGS "-std=c11 -Wa,-mimplicit-it=thumb" )
 #SET( CMAKE_CXX_FLAGS "-std=c++14 -frtti -fexceptions -Wa,-mimplicit-it=thumb" )
 

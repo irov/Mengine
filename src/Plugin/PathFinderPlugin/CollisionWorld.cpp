@@ -106,14 +106,8 @@ namespace Mengine
 		m_actors.insert( m_actors.end(), m_actorsAdd.begin(), m_actorsAdd.end() );
 		m_actorsAdd.clear();
 
-		for( TVectorCollisionActor::iterator
-			it = m_actors.begin(),
-			it_end = m_actors.end();
-		it != it_end;
-		++it )
-		{
-			const CollisionActorPtr & actor = *it;
-			
+        for( const CollisionActorPtr & actor : m_actors )
+		{			
 			if( actor->isRemoved() == true )
 			{
 				continue;
@@ -122,14 +116,8 @@ namespace Mengine
 			actor->update();
 		}
 
-		for( TVectorCollisionActor::iterator
-			it = m_actors.begin(),
-			it_end = m_actors.end();
-		it != it_end;
-		++it )
+        for( const CollisionActorPtr & actor : m_actors )
 		{
-			const CollisionActorPtr & actor = *it;
-
 			if( actor->isRemoved() == true )
 			{
 				continue;
@@ -152,14 +140,8 @@ namespace Mengine
 			uint32_t collision_count = 0;
 			collision_desc collisions[MENGINE_COLLISION_WORLD_PENETRATION_COUNT];
 			
-			for( TVectorCollisionActor::iterator
-				it_test = m_actors.begin(),
-				it_test_end = m_actors.end();
-			it_test != it_test_end;
-			++it_test )
+            for( const CollisionActorPtr & actor_test : m_actors )
 			{
-				const CollisionActorPtr & actor_test = *it_test;
-
 				if( actor_test->isRemoved() == true )
 				{
 					continue;

@@ -832,14 +832,8 @@ namespace Mengine
             m_scheduleManagerGlobal->update( _time, _timing );
         }
 
-        for( TVectorUserScheduler::iterator
-            it = m_schedulers.begin(),
-            it_end = m_schedulers.end();
-            it != it_end;
-            ++it )
+        for( const ScheduleManagerInterfacePtr & sm : m_schedulers )
         {
-            const ScheduleManagerInterfacePtr & sm = *it;
-
             sm->update( _time, _timing );
         }
 

@@ -30,7 +30,7 @@ namespace Mengine
     class VisitorMovie2Layer
     {
     public:
-        virtual void visitMovieLayer( class Movie2 * _movie, const ConstString & _name, Node * _node ) = 0;
+        virtual void visitMovieLayer( class Movie2 * _movie, uint32_t _index, Node * _node ) = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
 	class Movie2
@@ -110,30 +110,45 @@ namespace Mengine
 		void addSurface( const SurfacePtr & _surface );
         void removeSurface( const SurfacePtr & _surface );
 
+    protected:
+        void addSprite_( uint32_t _index, ShapeQuadFixed * _sprite );
+        ShapeQuadFixed * getSprite_( uint32_t _index ) const;
+
     public:
-        void addSprite( const ConstString & _name, ShapeQuadFixed * _sprite );
-        ShapeQuadFixed * getSprite( const ConstString & _name ) const;
+        ShapeQuadFixed * findSprite( const ConstString & _name ) const;
         bool hasSprite( const ConstString & _name ) const;
 
+    protected:
+        void addParticle_( uint32_t _index, ParticleEmitter2 * _particleEmitter );
+        ParticleEmitter2 * getParticle_( uint32_t _index ) const;
+
     public:
-        void addParticle( const ConstString & _name, ParticleEmitter2 * _particleEmitter );
-        ParticleEmitter2 * getParticle( const ConstString & _name ) const;
+        ParticleEmitter2 * findParticle( const ConstString & _name ) const;
         bool hasParticle( const ConstString & _name ) const;
 
-    public:
-        void addSlot( const ConstString & _name, Movie2Slot * _slot );
-        Movie2Slot * getSlot( const ConstString & _name ) const;
-        bool hasSlot( const ConstString & _name ) const;
+    protected:
+        void addSlot_( uint32_t _index, Movie2Slot * _slot );
+        Movie2Slot * getSlot_( uint32_t _index ) const;
 
     public:
-        void addSocket( const ConstString & _name, HotSpotPolygon * _hotspot );
-        HotSpotPolygon * getSocket( const ConstString & _name ) const;
+        Movie2Slot * findSlot( const ConstString & _name ) const;
+        bool hasSlot( const ConstString & _name ) const;
+
+    protected:
+        void addSocket_( uint32_t _index, HotSpotPolygon * _hotspot );
+        HotSpotPolygon * getSocket_( uint32_t _index ) const;
+
+    public:
+        HotSpotPolygon * findSocket( const ConstString & _name ) const;
         bool hasSocket( const ConstString & _name ) const;
         void visitSockets( VisitorMovie2Layer * _visitor );
 
+    protected:
+        void addText_( uint32_t _index, TextField * _text );
+        TextField * getText_( uint32_t _index ) const;
+
     public:
-        void addText( const ConstString & _name, TextField * _text );
-        TextField * getText( const ConstString & _name ) const;
+        TextField * findText( const ConstString & _name ) const;
         bool hasText( const ConstString & _name ) const;
         
     public:
@@ -183,22 +198,25 @@ namespace Mengine
 		typedef stdex::vector<SurfacePtr> TVectorSurfaces;
 		TVectorSurfaces m_surfaces;
 
-        typedef stdex::map<ConstString, Movie2Slot *> TMapSlots;
+        typedef stdex::map<uint32_t, Movie2Slot *> TMapSlots;
         TMapSlots m_slots;
 
-        typedef stdex::map<ConstString, HotSpotPolygon *> TMapSockets;
+        typedef stdex::map<uint32_t, HotSpotPolygon *> TMapSockets;
         TMapSockets m_sockets;
 
-        typedef stdex::map<ConstString, TextField *> TMapTexts;
+        typedef stdex::map<uint32_t, TextField *> TMapTexts;
         TMapTexts m_texts;
 
-        typedef stdex::map<ConstString, ShapeQuadFixed *> TMapSprites;
+        typedef stdex::map<uint32_t, ShapeQuadFixed *> TMapSprites;
         TMapSprites m_sprites;
 
-        typedef stdex::map<ConstString, ParticleEmitter2 *> TMapParticleEmitter2s;
+        typedef stdex::map<uint32_t, ParticleEmitter2 *> TMapParticleEmitter2s;
         TMapParticleEmitter2s m_particleEmitters;
 
         typedef stdex::vector<MatrixProxy *> TVectorMatrixProxies;
         TVectorMatrixProxies m_matrixProxies;
+
+    protected:
+        static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud );
 	};
 }

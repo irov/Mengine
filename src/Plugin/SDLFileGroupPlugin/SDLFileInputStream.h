@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 
-#   include "Core/ServantBase.h"
+#include "Core/ServantBase.h"
 
-#	include "stdex/thread_guard.h"
+#include "stdex/thread_guard.h"
 
-#   include "SDL_rwops.h"
+#include "SDL_rwops.h"
 
 namespace Mengine
 {

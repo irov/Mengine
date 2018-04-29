@@ -41,14 +41,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadQueue::cancel()
 	{
-		for( TVectorCurrentThreadTask::iterator
-			it = m_currentTasks.begin(),
-			it_end = m_currentTasks.end();
-		it != it_end;
-		++it )
+        for( ThreadTaskInterfacePtr & currentTask : m_currentTasks )
 		{
-			ThreadTaskInterfacePtr & currentTask = *it;
-
 			if( currentTask == nullptr )
 			{
 				continue;
@@ -80,14 +74,8 @@ namespace Mengine
 			return true;
 		}
 
-		for( TVectorCurrentThreadTask::iterator
-			it = m_currentTasks.begin(),
-			it_end = m_currentTasks.end();
-		it != it_end;
-		++it )
+        for( ThreadTaskInterfacePtr & currentTask : m_currentTasks )
 		{
-			ThreadTaskInterfacePtr & currentTask = *it;
-
 			this->updateCurrentTask_( currentTask );
 		}
 

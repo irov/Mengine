@@ -20,14 +20,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	LoggerEngine::~LoggerEngine()
 	{
-		for( TVectorLoggers::iterator 
-			it = m_loggers.begin(), 
-			it_end = m_loggers.end();
-		it != it_end;
-		++it )
+        for( const LoggerInterfacePtr & logger : m_loggers )
 		{
-            const LoggerInterfacePtr & logger = *it;
-
 			logger->flush();
 		}
 	}
@@ -66,14 +60,8 @@ namespace Mengine
 	{
 		++m_countMessage[_level];
 
-		for( TVectorLoggers::iterator 
-			it = m_loggers.begin(), 
-			it_end = m_loggers.end();
-		it != it_end;
-		++it )
+        for( const LoggerInterfacePtr & logger : m_loggers )
 		{
-			const LoggerInterfacePtr & logger = *it;
-
 			if( logger->validMessage( _level, _flag ) == false )
 			{
 				continue;

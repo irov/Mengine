@@ -132,14 +132,8 @@ namespace Mengine
 
 		TVectorAtlases & atlases = m_atlasess[unpow_channel][atlasIndex];
 
-        for( TVectorAtlases::iterator
-            it = atlases.begin(),
-            it_end = atlases.end();
-            it != it_end;
-            ++it )
+        for( TTFAtlas & atlas : atlases )
         {
-            TTFAtlas & atlas = *it;
-
             if( atlas.indices.empty() == true )
             {
                 continue;

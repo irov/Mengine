@@ -260,12 +260,14 @@ namespace Mengine
 
             for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer & meta_layer : includes_layer )
             {
+                uint32_t layerIndex = meta_layer.get_Index();
                 const ConstString & layerName = meta_layer.get_Name();
                 const ConstString & layerType = meta_layer.get_Type();
                 const mt::mat4f & layerMatrix = meta_layer.get_Matrix();
                 const ColourValue & layerColor = meta_layer.get_Color();
 
                 ResourceMovie2CompositionLayer layer;
+                layer.index = layerIndex;
                 layer.name = layerName;
                 layer.type = layerType;
                 layer.matrix = layerMatrix;
@@ -278,9 +280,11 @@ namespace Mengine
 
             for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition & meta_subcomposition : includes_subcomposition )
             {
+                uint32_t subcompositionIndex = meta_subcomposition.get_Index();
                 const ConstString & subcompositionName = meta_subcomposition.get_Name();
 
                 ResourceMovie2CompositionSubComposition subcomposition;
+                subcomposition.index = subcompositionIndex;
                 subcomposition.name = subcompositionName;
 
                 composition.subcompositions.emplace_back( subcomposition );
@@ -354,14 +358,8 @@ namespace Mengine
 		m_movieData = movieData;
 		stream = nullptr;
 	
-		for( TVectorResources::const_iterator
-			it = m_resources.begin(),
-			it_end = m_resources.end();
-		it != it_end;
-		++it )
+        for( const ResourceReferencePtr & resource : m_resources )
 		{
-			const ResourceReferencePtr & resource = *it;
-
 			if( resource->compile() == false )
 			{
 				return false;
@@ -373,25 +371,13 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie2::_release()
 	{
-        for( TVectorResources::const_iterator
-            it = m_resources.begin(),
-            it_end = m_resources.end();
-            it != it_end;
-            ++it )
+        for( const ResourceReferencePtr & resource : m_resources )
         {
-            const ResourceReferencePtr & resource = *it;
-
             resource->release();
         }
 
-        for( TVectorResources::const_iterator
-            it = m_resources.begin(),
-            it_end = m_resources.end();
-            it != it_end;
-            ++it )
+        for( const ResourceReferencePtr & resource : m_resources )
         {
-            const ResourceReferencePtr & resource = *it;
-
             resource->decrementReference();
         }
 

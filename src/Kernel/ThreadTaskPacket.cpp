@@ -35,14 +35,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskPacket::_onMain()
 	{
-		for( TVectorThreadTasks::iterator
-			it = m_tasks.begin(),
-			it_end = m_tasks.end();
-		it != it_end;
-		++it )
+        for( const ThreadTaskPtr & task : m_tasks )
 		{
-			const ThreadTaskPtr & task = *it;
-
 			task->main();
 		}
 
@@ -51,14 +45,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskPacket::_onRun()
 	{
-		for( TVectorThreadTasks::iterator
-			it = m_tasks.begin(),
-			it_end = m_tasks.end();
-		it != it_end;
-		++it )
+        for( const ThreadTaskPtr & task : m_tasks )
 		{
-			const ThreadTaskPtr & task = *it;
-
 			task->run();
 		}
 
@@ -67,28 +55,16 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskPacket::_onCancel()
 	{
-		for( TVectorThreadTasks::iterator
-			it = m_tasks.begin(),
-			it_end = m_tasks.end();
-		it != it_end;
-		++it )
+        for( const ThreadTaskPtr & task : m_tasks )
 		{
-			const ThreadTaskPtr & task = *it;
-
 			task->cancel();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskPacket::_onUpdate()
 	{
-		for( TVectorThreadTasks::iterator
-			it = m_tasks.begin(),
-			it_end = m_tasks.end();
-		it != it_end;
-		++it )
+        for( const ThreadTaskPtr & task : m_tasks )
 		{
-			const ThreadTaskPtr & task = *it;
-
 			if( task->isCancel() == true ||
 				task->isComplete() == true )
 			{

@@ -1,4 +1,4 @@
-<Protocol Version = "123">
+<Protocol Version = "124">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -276,6 +276,7 @@
             <Attribute Name="FrameDuration" Type="float" Required="1"/>
             
             <Node Name="Layer">
+              <Attribute Name="Index" Type="uint32_t" Required="1"/>
               <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
               <Attribute Name="Type" Type="Mengine::ConstString" Required="1"/>
               <Attribute Name="Matrix" Type="mt::mat4f" Required="1"/>
@@ -283,7 +284,8 @@
             </Node>
             
             <Node Name="SubComposition">
-                <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
+              <Attribute Name="Index" Type="uint32_t" Required="1"/>
+              <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
             </Node>
           </Node>
         </Node>

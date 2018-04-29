@@ -272,14 +272,8 @@ namespace Mengine
 		m_userEvents.insert( m_userEvents.end(), m_userEventsAdd.begin(), m_userEventsAdd.end() );
 		m_userEventsAdd.clear();
 
-		for( TVectorUserEvents::const_iterator
-			it = m_userEvents.begin(),
-			it_end = m_userEvents.end();
-		it != it_end;
-		++it )
+        for( const UserEvent & ev : m_userEvents )
 		{
-			const UserEvent & ev = *it;
-
             EVENTABLE_METHOD( this, EVENT_GAME_USER )
                 ->onGameUser( ev.id, ev.params );
 		}

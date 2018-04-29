@@ -723,14 +723,8 @@ namespace Mengine
 			this->updateVolume();
 		}
 
-		for( TVectorSoundListeners::iterator
-			it = m_listeners.begin(),
-			it_end = m_listeners.end();
-		it != it_end;
-		++it )
+        for( const SoundListenerStopDesc & desc : m_listeners )
 		{
-			const SoundListenerStopDesc & desc = *it;
-
             SoundListenerInterfacePtr listener = desc.listener;
 			listener->onSoundStop( desc.id );
 		}
@@ -1041,14 +1035,8 @@ namespace Mengine
             this->updateSourceVolume_( source );
 		}
 
-		for( TVectorSoundVolumeProviders::iterator
-			it = m_soundVolumeProviders.begin(),
-			it_end = m_soundVolumeProviders.end();
-		it != it_end;
-		++it )
+        for( const SoundVolumeProviderInterfacePtr & provider : m_soundVolumeProviders )
 		{
-			const SoundVolumeProviderInterfacePtr & provider = *it;
-
 			this->updateSoundVolumeProvider_( provider );
 		}
 	}

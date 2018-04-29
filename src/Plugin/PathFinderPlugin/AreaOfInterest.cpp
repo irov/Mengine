@@ -34,14 +34,8 @@ namespace Mengine
 
 		AOITriggerProviderInterface * triggerProvider = trigger->getProvider();
 
-		for( TVectorAOIActors::iterator
-			it_actor = m_actors.begin(),
-			it_actor_end = m_actors.end();
-		it_actor != it_actor_end;
-		++it_actor )
+        for( const AOIActorPtr & actor : m_actors )
 		{
-			const AOIActorPtr & actor = *it_actor;
-
 			if( actor->isRemoved() == true )
 			{
 				continue;
@@ -76,14 +70,8 @@ namespace Mengine
 
 		_trigger->remove();
 
-		for( TVectorAOIActors::iterator
-			it_actor = m_actors.begin(),
-			it_actor_end = m_actors.end();
-		it_actor != it_actor_end;
-		++it_actor )
+		for( const AOIActorPtr & actor : m_actors )
 		{
-			const AOIActorPtr & actor = *it_actor;
-
 			if( actor->isRemoved() == true )
 			{
 				continue;
@@ -103,14 +91,8 @@ namespace Mengine
 
 		AOIActorProviderInterface * actorProvider = actor->getProvider();
 
-		for( TVectorAOITriggers::iterator
-			it_trigger = m_triggers.begin(),
-			it_trigger_end = m_triggers.end();
-		it_trigger != it_trigger_end;
-		++it_trigger )
+        for( const AOITriggerPtr & trigger : m_triggers )
 		{
-			const AOITriggerPtr & trigger = *it_trigger;
-
 			if( trigger->isRemoved() == true )
 			{
 				continue;
@@ -140,14 +122,8 @@ namespace Mengine
 
 		_actor->remove();
 
-		for( TVectorAOITriggers::iterator
-			it_trigger = m_triggers.begin(),
-			it_trigger_end = m_triggers.end();
-		it_trigger != it_trigger_end;
-		++it_trigger )
+        for( const AOITriggerPtr & trigger : m_triggers )
 		{
-			const AOITriggerPtr & trigger = *it_trigger;
-
 			if( trigger->isRemoved() == true )
 			{
 				continue;
@@ -200,14 +176,8 @@ namespace Mengine
 		m_triggers.insert( m_triggers.end(), m_triggersAdd.begin(), m_triggersAdd.end() );
 		m_triggersAdd.clear();
 
-		for( TVectorAOIActors::iterator
-			it_actor = m_actors.begin(),
-			it_actor_end = m_actors.end();
-		it_actor != it_actor_end;
-		++it_actor )
+		for( const AOIActorPtr & actor : m_actors )
 		{
-			const AOIActorPtr & actor = *it_actor;
-
 			if( actor->isRemoved() == true )
 			{
 				continue;
@@ -215,14 +185,8 @@ namespace Mengine
 
 			AOIActorProviderInterface * actorProvider = actor->getProvider();
 
-			for( TVectorAOITriggers::iterator
-				it_trigger = m_triggers.begin(),
-				it_trigger_end = m_triggers.end();
-			it_trigger != it_trigger_end;
-			++it_trigger )
+            for( const AOITriggerPtr & trigger : m_triggers )
 			{
-				const AOITriggerPtr & trigger = *it_trigger;
-
 				if( trigger->isRemoved() == true )
 				{
 					continue;

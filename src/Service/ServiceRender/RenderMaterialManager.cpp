@@ -835,14 +835,8 @@ namespace Mengine
 
 		TVectorRenderMaterial & materials = m_materials[material_table_index];
 
-		for( TVectorRenderMaterial::iterator
-			it = materials.begin(),
-			it_end = materials.end();
-		it != it_end;
-		++it )
+        for( RenderMaterial * material : materials )
 		{
-			RenderMaterial * material = *it;
-
 			uint32_t test_material_hash = material->getHash();
 
 			if(test_material_hash != material_hash )
@@ -882,14 +876,8 @@ namespace Mengine
 
         TVectorRenderMaterial & materials = m_materials[material_table_index];
 
-        for( TVectorRenderMaterial::iterator
-            it = materials.begin(),
-            it_end = materials.end();
-            it != it_end;
-            ++it )
+        for( RenderMaterial * material : materials )
         {
-            RenderMaterial * material = *it;
-
             uint32_t test_material_hash = material->getHash();
 
             if( test_material_hash != material_hash )

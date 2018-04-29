@@ -61,14 +61,8 @@ namespace Mengine
 			return false;
 		}
 		
-		for( TVectorAnimationSequence::iterator
-			it = m_sequence.begin(),
-			it_end = m_sequence.end();
-		it != it_end;
-		++it )
-		{
-			AnimationSequence & sequence = *(it);
-			
+        for( AnimationSequence & sequence : m_sequence )
+		{			
 			ResourceImagePtr resource  = RESOURCE_SERVICE()
 				->getResourceT<ResourceImagePtr>( sequence.resourceName );
 
@@ -90,14 +84,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimation::_release()
 	{
-		for( TVectorAnimationSequence::iterator
-			it = m_sequence.begin(),
-			it_end = m_sequence.end();
-		it != it_end;
-		++it )
-		{
-			AnimationSequence & sequence = *(it);
-            		
+		for( AnimationSequence & sequence : m_sequence )
+		{            		
 			sequence.resource->decrementReference();
 			sequence.resource = nullptr;
 		}
@@ -107,14 +95,8 @@ namespace Mengine
 	{
         size_t total_memory = 0;
 
-		for( TVectorAnimationSequence::const_iterator
-			it = m_sequence.begin(),
-			it_end = m_sequence.end();
-		it != it_end;
-		++it )
+        for( const AnimationSequence & sequence : m_sequence )
 		{
-			const AnimationSequence & sequence = *(it);
-
 			ResourceImagePtr resourceImage;
 			if( RESOURCE_SERVICE()
 				->hasResourceT<ResourceImagePtr>( sequence.resourceName, &resourceImage ) == false )

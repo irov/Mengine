@@ -3264,6 +3264,11 @@ namespace Metacode
                             return this->m_Color;
                         }
                         
+                        uint32_t get_Index() const
+                        {
+                            return this->m_Index;
+                        }
+                        
                         const mt::mat4f & get_Matrix() const
                         {
                             return this->m_Matrix;
@@ -3285,6 +3290,7 @@ namespace Metacode
                     protected:
                     protected:
                         Mengine::ColourValue m_Color;
+                        uint32_t m_Index;
                         mt::mat4f m_Matrix;
                         Mengine::ConstString m_Name;
                         Mengine::ConstString m_Type;
@@ -3301,6 +3307,11 @@ namespace Metacode
                         uint32_t getId() const override;
                     
                     public:
+                        uint32_t get_Index() const
+                        {
+                            return this->m_Index;
+                        }
+                        
                         const Mengine::ConstString & get_Name() const
                         {
                             return this->m_Name;
@@ -3311,6 +3322,7 @@ namespace Metacode
                     public:
                     protected:
                     protected:
+                        uint32_t m_Index;
                         Mengine::ConstString m_Name;
                     };
                     

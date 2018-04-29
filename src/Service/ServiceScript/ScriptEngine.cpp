@@ -296,14 +296,8 @@ namespace Mengine
 
         TVectorConstString pathes;
 
-        for( TVectorScriptModulePack::const_iterator
-            it = _modules.begin(),
-            it_end = _modules.end();
-            it != it_end;
-            ++it )
+        for( const ScriptModulePack & pak : _modules )
         {
-            const ScriptModulePack & pak = *it;
-
             pathes.emplace_back( pak.path );
         }
 
@@ -314,14 +308,8 @@ namespace Mengine
 
         if( m_initializeModules == true )
         {
-            for( TVectorScriptModulePack::const_iterator
-                it = _modules.begin(),
-                it_end = _modules.end();
-                it != it_end;
-                ++it )
+            for( const ScriptModulePack & pack : _modules )
             {
-                const ScriptModulePack & pack = *it;
-
                 this->initializeModule_( pack );
             }
         }
@@ -367,14 +355,8 @@ namespace Mengine
     {
         m_moduleFinder->removeModulePath( _pack );
 
-        for( TVectorScriptModulePack::const_iterator
-            it = _modules.begin(),
-            it_end = _modules.end();
-            it != it_end;
-            ++it )
+        for( const ScriptModulePack & pack : _modules )
         {
-            const ScriptModulePack & pack = *it;
-
             m_bootstrapperModules.erase(
                 std::remove_if( m_bootstrapperModules.begin(), m_bootstrapperModules.end(), FBootstrapperModuleRemove( pack ) )
                 , m_bootstrapperModules.end()
@@ -384,14 +366,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ScriptEngine::bootstrapModules()
     {
-        for( TVectorScriptModulePack::const_iterator
-            it = m_bootstrapperModules.begin(),
-            it_end = m_bootstrapperModules.end();
-            it != it_end;
-            ++it )
+        for( const ScriptModulePack & pak : m_bootstrapperModules )
         {
-            const ScriptModulePack & pak = *it;
-
             if( pak.module.empty() == true )
             {
                 continue;
@@ -419,14 +395,8 @@ namespace Mengine
             return false;
         }
 
-        for( TVectorScriptModulePack::const_iterator
-            it = m_bootstrapperModules.begin(),
-            it_end = m_bootstrapperModules.end();
-            it != it_end;
-            ++it )
+        for( const ScriptModulePack & pak : m_bootstrapperModules )
         {
-            const ScriptModulePack & pak = *it;
-
             if( this->initializeModule_( pak ) == false )
             {
                 return false;
@@ -482,14 +452,8 @@ namespace Mengine
 
         m_initializeModules = false;
 
-        for( TVectorScriptModulePack::const_reverse_iterator
-            it = m_bootstrapperModules.rbegin(),
-            it_end = m_bootstrapperModules.rend();
-            it != it_end;
-            ++it )
+        for( const ScriptModulePack & pak : m_bootstrapperModules )
         {
-            const ScriptModulePack & pak = *it;
-
             if( pak.module.empty() == true )
             {
                 continue;

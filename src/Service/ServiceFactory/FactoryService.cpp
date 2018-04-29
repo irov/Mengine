@@ -37,14 +37,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FactoryService::visitFactories( VisitorFactoryService * _visitor )
     {
-        for( TVectorFactories::const_iterator
-            it = m_factories.begin(),
-            it_end = m_factories.end();
-            it != it_end;
-            ++it )
+        for( const Factory * factory : m_factories )
         {
-            const Factory * factory = *it;
-
             _visitor->visit( factory );
         }
     }

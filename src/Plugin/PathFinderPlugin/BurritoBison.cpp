@@ -264,25 +264,13 @@ namespace Mengine
 		{
 			mt::vec3f force_velocity( 0.f, 0.f, 0.f );
 
-			for( TVectorBurritoBisonForce::const_iterator
-				it = m_forces.begin(),
-				it_end = m_forces.end();
-			it != it_end;
-			++it )
+            for( const BurritoBisonForce & force : m_forces )
 			{
-				const BurritoBisonForce & force = *it;
-
 				force_velocity += force.direction * force.value * _timing;
 			}
 
-			for( TVectorBurritoBisonImpulse::const_iterator
-				it = m_impulses.begin(),
-				it_end = m_impulses.end();
-			it != it_end;
-			++it )
+            for( const BurritoBisonImpulse & impulse : m_impulses )
 			{
-				const BurritoBisonImpulse & impulse = *it;
-
 				if( impulse.timing <= 0.f )
 				{
 					continue;
@@ -318,14 +306,8 @@ namespace Mengine
 			m_velocityEvents.insert( m_velocityEvents.end(), m_velocityEventsAdd.begin(), m_velocityEventsAdd.end() );
 			m_velocityEventsAdd.clear();
 
-			for( TVectorVelocityEventDesc::iterator
-				it = m_velocityEvents.begin(),
-				it_end = m_velocityEvents.end();
-			it != it_end;
-			++it )
+			for( VelocityEventDesc & desc : m_velocityEvents )
 			{
-				VelocityEventDesc & desc = *it;
-
 				if( desc.dead == true )
 				{
 					continue;
@@ -351,14 +333,8 @@ namespace Mengine
 			m_distanceEvents.insert( m_distanceEvents.end(), m_distanceEventsAdd.begin(), m_distanceEventsAdd.end() );
 			m_distanceEventsAdd.clear();
 
-			for( TVectorDistanceEventDesc::iterator
-				it = m_distanceEvents.begin(),
-				it_end = m_distanceEvents.end();
-			it != it_end;
-			++it )
+            for( DistanceEventDesc & desc : m_distanceEvents )
 			{
-				DistanceEventDesc & desc = *it;
-
 				if( desc.dead == true )
 				{
 					continue;
@@ -413,14 +389,8 @@ namespace Mengine
 	{ 
 		m_position += _translate;
 
-		for( TVectorHeightEventDesc::iterator
-			it = m_heightEvents.begin(),
-			it_end = m_heightEvents.end();
-		it != it_end;
-		++it )
+        for( HeightEventDesc & desc : m_heightEvents )
 		{
-			HeightEventDesc & desc = *it;
-
 			if( desc.dead == true )
 			{
 				continue;
@@ -511,14 +481,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool BurritoBison::removeVelocityEvent( uint32_t _eventId )
 	{
-		for( TVectorVelocityEventDesc::iterator
-			it = m_velocityEvents.begin(),
-			it_end = m_velocityEvents.end();
-		it != it_end;
-		++it )
+        for( VelocityEventDesc & desc : m_velocityEvents )
 		{
-			VelocityEventDesc & desc = *it;
-
 			if( desc.id != _eventId )
 			{
 				continue;
@@ -534,14 +498,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::removeAllVelocityEvents()
 	{ 
-		for( TVectorVelocityEventDesc::iterator
-			it = m_velocityEvents.begin(),
-			it_end = m_velocityEvents.end();
-		it != it_end;
-		++it )
+        for( VelocityEventDesc & desc : m_velocityEvents )
 		{
-			VelocityEventDesc & desc = *it;
-
 			desc.dead = true;
 		}
 
@@ -567,14 +525,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool BurritoBison::removeHeightEvent( uint32_t _eventId )
 	{
-		for( TVectorHeightEventDesc::iterator
-			it = m_heightEvents.begin(),
-			it_end = m_heightEvents.end();
-		it != it_end;
-		++it )
+        for( HeightEventDesc & desc : m_heightEvents )
 		{
-			HeightEventDesc & desc = *it;
-
 			if( desc.id != _eventId )
 			{
 				continue;
@@ -590,14 +542,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::removeAllHeightEvents()
 	{
-		for( TVectorHeightEventDesc::iterator
-			it = m_heightEvents.begin(),
-			it_end = m_heightEvents.end();
-		it != it_end;
-		++it )
+        for( HeightEventDesc & desc : m_heightEvents )
 		{
-			HeightEventDesc & desc = *it;
-
 			desc.dead = true;
 		}
 
@@ -620,14 +566,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool BurritoBison::removeDistanceEvent( uint32_t _eventId )
 	{
-		for( TVectorDistanceEventDesc::iterator
-			it = m_distanceEvents.begin(),
-			it_end = m_distanceEvents.end();
-		it != it_end;
-		++it )
+        for( DistanceEventDesc & desc : m_distanceEvents )
 		{
-			DistanceEventDesc & desc = *it;
-
 			if( desc.id != _eventId )
 			{
 				continue;
@@ -643,14 +583,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::removeAllDistanceEvents()
 	{
-		for( TVectorDistanceEventDesc::iterator
-			it = m_distanceEvents.begin(),
-			it_end = m_distanceEvents.end();
-		it != it_end;
-		++it )
+        for( DistanceEventDesc & desc : m_distanceEvents )
 		{
-			DistanceEventDesc & desc = *it;
-
 			desc.dead = true;
 		}
 

@@ -67,14 +67,8 @@ namespace Mengine
 		TVectorString frameworkPacksSettings;
 		IniUtil::getIniValue( ini, "GAME_RESOURCES", "FrameworkPack", frameworkPacksSettings );
 
-		for( TVectorString::iterator
-			it = frameworkPacksSettings.begin(),
-			it_end = frameworkPacksSettings.end();
-		it != it_end;
-		++it )
+        for( const String & resourcePack : frameworkPacksSettings )
 		{
-			const String & resourcePack = *it;
-
             LOGGER_WARNING( "Package '%s'"
                 , resourcePack.c_str()
             );
@@ -115,14 +109,8 @@ namespace Mengine
 		TVectorString resourcePacksSettings;
 		IniUtil::getIniValue( ini, "GAME_RESOURCES", "ResourcePack", resourcePacksSettings );
 
-		for( TVectorString::iterator
-			it = resourcePacksSettings.begin(),
-			it_end = resourcePacksSettings.end();
-		it != it_end;
-		++it )
+        for( const String & resourcePack : resourcePacksSettings )
 		{
-			const String & resourcePack = *it;
-
             LOGGER_WARNING( "Package '%s'"
                 , resourcePack.c_str()
             );
@@ -163,14 +151,8 @@ namespace Mengine
 		TVectorString languagePackSettings;
 		IniUtil::getIniValue( ini, "GAME_RESOURCES", "LanguagePack", languagePackSettings );
 
-		for( TVectorString::iterator
-			it = languagePackSettings.begin(),
-			it_end = languagePackSettings.end();
-		it != it_end;
-		++it )
+        for( const String & languagePack : languagePackSettings )
 		{
-			const String & languagePack = *it;
-
             LOGGER_WARNING( "Package '%s'"
                 , languagePack.c_str()
             );
@@ -213,14 +195,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::hasPackage( const ConstString & _name ) const
 	{
-		for( TVectorPackage::const_iterator
-			it = m_packages.begin(),
-			it_end = m_packages.end();
-			it != it_end;
-			++it )
+        for( const PackagePtr & package : m_packages )
 		{
-			const PackagePtr & package = *it;
-
 			const ConstString & packName = package->getName();
 
 			if( packName != _name )
@@ -307,14 +283,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	PackageInterfacePtr PackageService::getPackage( const ConstString & _name ) const
 	{
-		for( TVectorPackage::const_iterator
-			it = m_packages.begin(),
-			it_end = m_packages.end();
-		it != it_end;
-		++it )
+        for( const PackagePtr & package : m_packages )
 		{
-			const PackagePtr & package = *it;
-
 			const ConstString & packName = package->getName();
 
 			if( packName != _name )
@@ -332,14 +302,8 @@ namespace Mengine
 	{
 		bool hasLocale = false;
 
-		for( TVectorPackage::const_iterator
-			it = m_packages.begin(),
-			it_end = m_packages.end();
-		it != it_end;
-		++it )
+        for( const PackagePtr & package : m_packages )
 		{
-			const PackagePtr & package = *it;
-
 			const ConstString & packageLocale = package->getLocale();
 
 			if( packageLocale != _locale )
@@ -369,14 +333,8 @@ namespace Mengine
 
 		TVectorPackage packages;
 
-		for( TVectorPackage::const_iterator
-			it = m_packages.begin(),
-			it_end = m_packages.end();
-		it != it_end;
-		++it )
+        for( const PackagePtr & pack : m_packages )
 		{
-			const PackagePtr & pack = *it;
-
 			const Tags & packPlatform = pack->getPlatfromTags();
 
 			if( _platformTags.inTags( packPlatform ) == false )
@@ -403,14 +361,8 @@ namespace Mengine
 			}
 		}
 
-		for( TVectorPackage::const_iterator
-			it = packages.begin(),
-			it_end = packages.end();
-		it != it_end;
-		++it )
+        for( const PackagePtr & package : packages )
 		{
-			const PackagePtr & package = *it;
-
 			if( package->isPreload() == false )
 			{
 				continue;
@@ -437,14 +389,8 @@ namespace Mengine
 
 		bool successful = true;
 
-		for( TVectorPackage::const_iterator
-			it = m_packages.begin(),
-			it_end = m_packages.end();
-		it != it_end;
-		++it )
+        for( const PackagePtr & package : m_packages )
 		{
-			const PackagePtr & package = *it;
-
 			if( package->validate() == false )
 			{
 				successful = false;
@@ -460,14 +406,8 @@ namespace Mengine
 	{ 
 		TVectorPackage packages;
 
-		for( TVectorPackage::const_iterator
-			it = m_packages.begin(),
-			it_end = m_packages.end();
-		it != it_end;
-		++it )
+        for( const PackagePtr & package : m_packages )
 		{
-			const PackagePtr & package = *it;
-
 			const Tags & platformTags = package->getPlatfromTags();
 
 			if( _platformTag.inTags( platformTags ) == false )
@@ -485,14 +425,8 @@ namespace Mengine
 			packages.emplace_back( package );
 		}
 
-		for( TVectorPackage::const_iterator
-			it = packages.begin(),
-			it_end = packages.end();
-		it != it_end;
-		++it )
+        for( const PackagePtr & package : packages )
 		{
-			const PackagePtr & package = *it;
-
 			if( package->enable() == false )
 			{
 				return false;
@@ -506,14 +440,8 @@ namespace Mengine
 	{
 		TVectorPackage packages;
 
-		for( TVectorPackage::const_iterator
-			it = m_packages.begin(),
-			it_end = m_packages.end();
-		it != it_end;
-		++it )
+        for( const PackagePtr & package : m_packages )
 		{
-			const PackagePtr & package = *it;
-
 			const Tags & platformTags = package->getPlatfromTags();
 
 			if( _platformTag.inTags( platformTags ) == false )
@@ -531,14 +459,8 @@ namespace Mengine
 			packages.emplace_back( package );
 		}
 
-		for( TVectorPackage::const_iterator
-			it = packages.begin(),
-			it_end = packages.end();
-		it != it_end;
-		++it )
+        for( const PackagePtr & package : packages )
 		{
-			const PackagePtr & package = *it;
-
 			if( package->disable() == false )
 			{
 				return false;

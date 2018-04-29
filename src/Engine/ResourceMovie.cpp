@@ -102,14 +102,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceShapePtr ResourceMovie::getSocketResourceShape( const ConstString & _socketName ) const
     {
-        for( TVectorMovieLayers::const_iterator
-            it = m_layers.begin(),
-            it_end = m_layers.end();
-            it != it_end;
-            ++it )
+        for( const MovieLayer & layer : m_layers )
         {
-            const MovieLayer & layer = *it;
-
             if( layer.name != _socketName )
             {
                 continue;
@@ -213,14 +207,8 @@ namespace Mengine
         }
 
 
-        for( TVectorMovieLayers::const_iterator
-            it = m_layers.begin(),
-            it_end = m_layers.end();
-            it != it_end;
-            ++it )
+        for( const MovieLayer & layer : m_layers )
         {
-            const MovieLayer & layer = *it;
-
             if( layer.parent == 0 )
             {
                 continue;
@@ -301,14 +289,8 @@ namespace Mengine
 
         bool layers_successful = true;
 
-        for( TVectorMovieLayers::const_iterator
-            it = m_layers.begin(),
-            it_end = m_layers.end();
-            it != it_end;
-            ++it )
+        for( const MovieLayer & layer : m_layers )
         {
-            const MovieLayer & layer = *it;
-
             if( framePack->hasLayer( layer.index ) == false )
             {
                 LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid layer %d '%s' type '%s'"
@@ -635,14 +617,8 @@ namespace Mengine
             m_hasCamera3D = true;
         }
 
-        for( TVectorMovieLayers::iterator
-            it = m_layers.begin(),
-            it_end = m_layers.end();
-            it != it_end;
-            ++it )
+        for( MovieLayer & layer : m_layers )
         {
-            MovieLayer & layer = *it;
-
             m_maxLayerIndex = m_maxLayerIndex > layer.index ? m_maxLayerIndex : layer.index;
 
             if( layer.type == STRINGIZE_STRING_LOCAL( "MovieSlot" ) )
@@ -761,14 +737,8 @@ namespace Mengine
             }
         }
 
-        for( TVectorMovieLayers::iterator
-            it = m_layers.begin(),
-            it_end = m_layers.end();
-            it != it_end;
-            ++it )
+        for( MovieLayer & layer : m_layers )
         {
-            MovieLayer & layer = *it;
-
             if( this->isThreeDNode( layer.index ) == true )
             {
                 layer.state |= MOVIE_LAYER_THREED;
@@ -782,14 +752,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie::isThreeDNode( uint32_t _index ) const
     {
-        for( TVectorMovieLayers::const_iterator
-            it = m_layers.begin(),
-            it_end = m_layers.end();
-            it != it_end;
-            ++it )
+        for( const MovieLayer & layer : m_layers )
         {
-            const MovieLayer & layer = *it;
-
             if( layer.index != _index )
             {
                 continue;
@@ -964,28 +928,16 @@ namespace Mengine
             );
         }
 
-        for( TVectorMovieLayers::iterator
-            it = m_layers.begin(),
-            it_end = m_layers.end();
-            it != it_end;
-            ++it )
+        for( const MovieLayer & layer : m_layers )
         {
-            const MovieLayer & layer = *it;
-
             _visitor->visitLayer( m_keyFramePack, layer );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie::hasMovieLayer( const ConstString & _name, const MovieLayer ** _layer ) const
     {
-        for( TVectorMovieLayers::const_iterator
-            it = m_layers.begin(),
-            it_end = m_layers.end();
-            it != it_end;
-            ++it )
+        for( const MovieLayer & layer : m_layers )
         {
-            const MovieLayer & layer = *it;
-
             if( layer.name != _name )
             {
                 continue;
@@ -1001,14 +953,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie::hasMovieLayerType( const ConstString & _name, const ConstString & _type, const MovieLayer ** _layer ) const
     {
-        for( TVectorMovieLayers::const_iterator
-            it = m_layers.begin(),
-            it_end = m_layers.end();
-            it != it_end;
-            ++it )
+        for( const MovieLayer & layer : m_layers )
         {
-            const MovieLayer & layer = *it;
-
             if( layer.name != _name )
             {
                 continue;

@@ -308,7 +308,8 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
 
     const aeMovieLayerData * layer = _callbackData->layer;
 
-    const char * layer_name = ae_get_movie_layer_data_name( layer );
+    ae_uint32_t node_index = _callbackData->index;
+    const ae_char_t * layer_name = ae_get_movie_layer_data_name( layer );
     
     ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( layer );
 
@@ -327,6 +328,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
         {
             pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
 
+            xmlLayer.append_attribute( "Index" ).set_value( node_index );
             xmlLayer.append_attribute( "Name" ).set_value( layer_name );
             xmlLayer.append_attribute( "Type" ).set_value( "TextField" );
 
@@ -380,6 +382,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
         {
             pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
 
+            xmlLayer.append_attribute( "Index" ).set_value( node_index );
             xmlLayer.append_attribute( "Name" ).set_value( layer_name );
             xmlLayer.append_attribute( "Type" ).set_value( "Movie2Slot" );
 
@@ -423,6 +426,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
         {
             pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
 
+            xmlLayer.append_attribute( "Index" ).set_value( node_index );
             xmlLayer.append_attribute( "Name" ).set_value( layer_name );
             xmlLayer.append_attribute( "Type" ).set_value( "HotSpotPolygon" );
 
@@ -466,6 +470,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
         {
             pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
 
+            xmlLayer.append_attribute( "Index" ).set_value( node_index );
             xmlLayer.append_attribute( "Name" ).set_value( layer_name );
             xmlLayer.append_attribute( "Type" ).set_value( "ParticleEmitter2" );
 
@@ -509,6 +514,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
         {
             pugi::xml_node xmlLayer = np->xmlComposition->append_child( "Layer" );
 
+            xmlLayer.append_attribute( "Index" ).set_value( node_index );
             xmlLayer.append_attribute( "Name" ).set_value( layer_name );
             xmlLayer.append_attribute( "Type" ).set_value( "ShapeQuadFixed" );
 

@@ -1,13 +1,15 @@
-#	include "SDLFileInputStream.h"
+#include "SDLFileInputStream.h"
 
-#	include "Interface/UnicodeInterface.h"
-#	include "Interface/NotificationServiceInterface.h"
-#   include "Interface/SDLLayerInterface.h"
-#   include "Interface/PlatformInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/SDLLayerInterface.h"
+#include "Interface/PlatformInterface.h"
 
-#   include "Utils/Logger/Logger.h"
+#include "Utils/Logger/Logger.h"
 
-#	include "stdex/memorycopy.h"
+#include "stdex/memorycopy.h"
+
+#include <algorithm>
 
 namespace Mengine
 {

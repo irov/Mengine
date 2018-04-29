@@ -102,14 +102,8 @@ namespace Mengine
 		m_actors.insert( m_actors.end(), m_actorsAdd.begin(), m_actorsAdd.end() );
 		m_actorsAdd.clear();
 
-		for( TVectorMagnetActor::iterator
-			it = m_actors.begin(),
-			it_end = m_actors.end();
-		it != it_end;
-		++it )
+        for( const MagnetActorPtr & actor : m_actors )
 		{
-			const MagnetActorPtr & actor = *it;
-
 			if( actor->isRemoved() == true )
 			{
 				continue;
@@ -128,14 +122,8 @@ namespace Mengine
 			float actor_radius;
 			actor->getSphere( actor_position, actor_radius );
 
-			for( TVectorMagnetActor::iterator
-				it_test = m_actors.begin(),
-				it_test_end = m_actors.end();
-			it_test != it_test_end;
-			++it_test )
+            for( const MagnetActorPtr & actor_test : m_actors )
 			{
-				const MagnetActorPtr & actor_test = *it_test;
-
 				if( actor_test->isRemoved() == true )
 				{
 					continue;
@@ -180,14 +168,8 @@ namespace Mengine
 			}
 		}
 
-		for( TVectorMagnetActor::iterator
-			it = m_actors.begin(),
-			it_end = m_actors.end();
-		it != it_end;
-		++it )
+        for( const MagnetActorPtr & actor : m_actors )
 		{
-			const MagnetActorPtr & actor = *it;
-
 			if( actor->isRemoved() == true )
 			{
 				continue;

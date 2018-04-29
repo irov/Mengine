@@ -198,8 +198,10 @@ namespace Mengine
             }
 
         protected:
-            void visitMovieLayer( Movie2 * _movie, const ConstString & _name, Node * _node ) override
+            void visitMovieLayer( Movie2 * _movie, uint32_t _index, Node * _node ) override
             {
+                (void)_index;
+
                 HotSpotPolygon * hotspot = static_node_cast<HotSpotPolygon *>(_node);
 
                 if( hotspot == nullptr )
@@ -207,7 +209,9 @@ namespace Mengine
                     return;
                 }
 
-                m_list.append( pybind::make_tuple_t( m_kernel, _movie, _name, hotspot ) );
+                const ConstString & name = _node->getName();
+                
+                m_list.append( pybind::make_tuple_t( m_kernel, _movie, name, hotspot ) );
             }
 
         protected:
@@ -236,8 +240,10 @@ namespace Mengine
             }
 
         protected:
-            void visitMovieLayer( Movie2 * _movie, const ConstString & _name, Node * _node ) override
+            void visitMovieLayer( Movie2 * _movie, uint32_t _index, Node * _node ) override
             {
+                (void)_index;
+
                 Movie2Slot * hotspot = static_node_cast<Movie2Slot *>(_node);
 
                 if( hotspot == nullptr )
@@ -245,7 +251,9 @@ namespace Mengine
                     return;
                 }
 
-                m_list.append( pybind::make_tuple_t( m_kernel, _movie, _name, hotspot ) );
+                const ConstString & name = _node->getName();
+
+                m_list.append( pybind::make_tuple_t( m_kernel, _movie, name, hotspot ) );
             }
 
         protected:
@@ -306,15 +314,15 @@ namespace Mengine
             .def_static_native_kernel( "setEventListener", &External::Movie2_setEventListener )
             .def_static_kernel( "getSockets", &External::Movie2_getSockets )
             .def_static_kernel( "getSlots", &External::Movie2_getSlots )
-            .def( "getSprite", &Movie2::getSprite )
+            .def( "findSprite", &Movie2::findSprite )
             .def( "hasSprite", &Movie2::hasSprite )
-            .def( "getParticle", &Movie2::getParticle )
+            .def( "findParticle", &Movie2::findParticle )
             .def( "hasParticle", &Movie2::hasParticle )
-            .def( "getSlot", &Movie2::getSlot )
+            .def( "findSlot", &Movie2::findSlot )
             .def( "hasSlot", &Movie2::hasSlot )
-            .def( "getSocket", &Movie2::getSocket )
+            .def( "findSocket", &Movie2::findSocket )
             .def( "hasSocket", &Movie2::hasSocket )
-            .def( "getText", &Movie2::getText )
+            .def( "findText", &Movie2::findText )
             .def( "hasText", &Movie2::hasText )
             .def( "setEnableMovieLayers", &Movie2::setEnableMovieLayers )
             ;

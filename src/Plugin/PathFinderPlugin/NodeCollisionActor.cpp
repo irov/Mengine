@@ -140,14 +140,8 @@ namespace Mengine
 
 		const CollisionActorPtr & actor = m_collisionWorld->createActor( this, m_collisionRadius, m_collisionRaycastDirection, m_collisionIFF, m_collisionActive );
 
-		for( TVectorActorException::iterator
-			it = m_exceptions.begin(),
-			it_end = m_exceptions.end();
-		it != it_end;
-		++it )
+        for( const CollisionActorPtr & exception : m_exceptions )
 		{
-			const CollisionActorPtr & exception = *it;
-
 			actor->addException( exception );
 		}
 

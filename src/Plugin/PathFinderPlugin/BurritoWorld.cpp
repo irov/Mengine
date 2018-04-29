@@ -129,14 +129,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoWorld::finalize()
 	{
-		for( TVectorBurritoGround::iterator
-			it = m_grounds.begin(),
-			it_end = m_grounds.end();
-		it != it_end;
-		++it )
+        for( BurritoGround * ground : m_grounds )
 		{
-			BurritoGround * ground = *it;
-
 			delete ground;
 		}
 
@@ -223,14 +217,8 @@ namespace Mengine
 			return nullptr;
 		}
 
-		for( TVectorBurritoLayer::iterator
-			it = m_layers.begin(),
-			it_end = m_layers.end();
-		it != it_end;
-		++it )
+        for( BurritoLayer & layer : m_layers )
 		{
-			BurritoLayer & layer = *it;
-
 			if( layer.name != _layerName )
 			{
 				continue;
@@ -253,14 +241,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoWorld::removeLayerUnit( const ConstString & _layerName, Node * _node )
 	{
-		for( TVectorBurritoLayer::iterator
-			it = m_layers.begin(),
-			it_end = m_layers.end();
-		it != it_end;
-		++it )
+        for( BurritoLayer & layer : m_layers )
 		{
-			BurritoLayer & layer = *it;
-
 			if( layer.name != _layerName )
 			{
 				continue;
@@ -287,14 +269,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool BurritoWorld::addLayerBounds( const ConstString & _layerName, float _value, bool _less, const pybind::object & _cb )
 	{ 
-		for( TVectorBurritoLayer::iterator
-			it = m_layers.begin(),
-			it_end = m_layers.end();
-		it != it_end;
-		++it )
+        for( BurritoLayer & layer : m_layers )
 		{
-			BurritoLayer & layer = *it;
-
 			if( layer.name != _layerName )
 			{
 				continue;
@@ -350,22 +326,10 @@ namespace Mengine
 					bool collision = false;
 					float collisionTiming = 0.f;
 
-					for( TVectorBurritoLayer::const_iterator
-						it = m_layers.begin(),
-						it_end = m_layers.end();
-					it != it_end;
-					++it )
+					for( const BurritoLayer & layer : m_layers )
 					{
-						const BurritoLayer & layer = *it;
-
-						for( TVectorBurritoUnit::const_iterator
-							it_unit = layer.units.begin(),
-							it_unit_end = layer.units.end();
-						it_unit != it_unit_end;
-						++it_unit )
+                        for( const BurritoUnit * unit : layer.units )
 						{
-							const BurritoUnit * unit = *it_unit;
-
 							mt::vec3f collision_velocity = velocity * layer.parallax;
 
 							if( unit->check_collision( iterate_timing, position, bison_radius, collision_velocity, collisionTiming ) == true )
@@ -379,14 +343,8 @@ namespace Mengine
 
 					if( collision == false )
 					{
-						for( TVectorBurritoGround::iterator
-							it = m_grounds.begin(),
-							it_end = m_grounds.end();
-						it != it_end;
-						++it )
+                        for( BurritoGround * ground : m_grounds )
 						{
-							BurritoGround * ground = *it;
-
 							if( ground->check_collision( iterate_timing, position, bison_radius, velocity, collisionTiming ) == true )
 							{
 								collision = true;
@@ -410,50 +368,26 @@ namespace Mengine
 
 				translate_position = -bison_translate.x;				
 				
-				for( TVectorBurritoLayer::iterator
-					it = m_layers.begin(),
-					it_end = m_layers.end();
-				it != it_end;
-				++it )
+                for( BurritoLayer & layer : m_layers )
 				{
-					BurritoLayer & layer = *it;
-
-					float layer_translate_position = translate_position * layer.parallax.x;
+                    float layer_translate_position = translate_position * layer.parallax.x;
 
 					layer.endless->slide( layer_translate_position );
 				}
 			}
 
-			for( TVectorBurritoLayer::iterator
-				it = m_layers.begin(),
-				it_end = m_layers.end();
-			it != it_end;
-			++it )
+            for( BurritoLayer & layer : m_layers )
 			{
-				BurritoLayer & layer = *it;
-
 				layer.units.insert( layer.units.end(), layer.unitsAdd.begin(), layer.unitsAdd.end() );
 				layer.unitsAdd.clear();
 			}
 
-			for( TVectorBurritoLayer::iterator
-				it = m_layers.begin(),
-				it_end = m_layers.end();
-			it != it_end;
-			++it )
+            for( BurritoLayer & layer : m_layers )
 			{
-				BurritoLayer & layer = *it;
-
 				float layer_translate_position = translate_position * layer.parallax.x;
 
-				for( TVectorBurritoUnit::iterator
-					it_unit = layer.units.begin(),
-					it_unit_end = layer.units.end();
-				it_unit != it_unit_end;
-				++it_unit )
+                for( BurritoUnit * unit : layer.units )
 				{
-					BurritoUnit * unit = *it_unit;
-
 					if( unit->isDead() == true )
 					{
 						continue;
@@ -463,58 +397,34 @@ namespace Mengine
 
 					mt::vec3f unit_translate = unit_velocity * iterate_timing + mt::vec3f( layer_translate_position, 0.f, 0.f );
 					
-					for( TVectorBurritoUnitBounds::const_iterator
-						it_bound = layer.unitBounds.begin(),
-						it_bound_end = layer.unitBounds.end();
-					it_bound != it_bound_end;
-					++it_bound )
+                    for( const BurritoUnitBound & bound : layer.unitBounds )
 					{
 						if( unit->isBound() == false )
 						{
 							break;
 						}
-
-						const BurritoUnitBound & bound = *it_bound;
 
 						s_burritoUnitBounds( bound, unit, unit_translate );
 					}
 
-					for( TVectorBurritoUnitBounds::const_iterator
-						it_bound = m_unitBounds.begin(),
-						it_bound_end = m_unitBounds.end();
-					it_bound != it_bound_end;
-					++it_bound )
+                    for( const BurritoUnitBound & bound : m_unitBounds )
 					{
 						if( unit->isBound() == false )
 						{
 							break;
 						}
-
-						const BurritoUnitBound & bound = *it_bound;
 
 						s_burritoUnitBounds( bound, unit, unit_translate );
 					}
 				}
 			}
 
-			for( TVectorBurritoLayer::iterator
-				it = m_layers.begin(),
-				it_end = m_layers.end();
-			it != it_end;
-			++it )
+            for( BurritoLayer & layer : m_layers )
 			{
-				BurritoLayer & layer = *it;
-
 				float layer_translate_position = translate_position * layer.parallax.x;
 
-				for( TVectorBurritoUnit::iterator
-					it_unit = layer.units.begin(),
-					it_unit_end = layer.units.end();
-				it_unit != it_unit_end;
-				++it_unit )
+                for( BurritoUnit * unit : layer.units )
 				{
-					BurritoUnit * unit = *it_unit;
-
 					if( unit->isDead() == true )
 					{
 						continue;
@@ -528,14 +438,8 @@ namespace Mengine
 				}
 			}
 
-			for( TVectorBurritoLayer::iterator
-				it = m_layers.begin(),
-				it_end = m_layers.end();
-			it != it_end;
-			++it )
+            for( BurritoLayer & layer : m_layers )
 			{
-				BurritoLayer & layer = *it;
-
 				TVectorBurritoUnit::iterator it_erase = std::remove_if( layer.units.begin(), layer.units.end(), FBurritoUnitDead() );
 				layer.units.erase( it_erase, layer.units.end() );
 			}

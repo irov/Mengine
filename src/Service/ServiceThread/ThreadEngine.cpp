@@ -84,14 +84,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadEngine::_finalize()
 	{	
-		for( TVectorThreadTaskDesc::iterator 
-			it =  m_tasks.begin(),
-			it_end = m_tasks.end();
-		it != it_end;
-		++it )
+        for( const ThreadTaskDesc & desc : m_tasks )
 		{
-            const ThreadTaskDesc & desc = *it;
-
             const ThreadTaskInterfacePtr & task = desc.task;
 
             task->cancel();
@@ -113,14 +107,8 @@ namespace Mengine
 
         m_threadQueues.clear();
 
-		for( TVectorThreads::iterator
-			it = m_threads.begin(),
-			it_end = m_threads.end();
-		it != it_end;
-		++it )
+        for( ThreadDesc & desc : m_threads )
 		{
-			ThreadDesc & desc = *it;
-
 			desc.identity->join();
 		}
 
@@ -216,14 +204,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::hasThread( const ConstString & _name ) const
 	{
-		for( TVectorThreads::const_iterator
-			it = m_threads.begin(),
-			it_end = m_threads.end();
-		it != it_end;
-		++it )
+        for( const ThreadDesc & td : m_threads )
 		{
-			const ThreadDesc & td = *it;
-
 			if( td.name == _name )
 			{
 				return true;
@@ -312,14 +294,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadEngine::stopTasks()
     {
-        for( TVectorThreadTaskDesc::iterator
-            it = m_tasks.begin(),
-            it_end = m_tasks.end();
-            it != it_end;
-            ++it )
+        for( const ThreadTaskDesc & desc : m_tasks )
         {
-            const ThreadTaskDesc & desc = *it;
-
             const ThreadTaskInterfacePtr & task = desc.task;
 
             task->cancel();
@@ -382,14 +358,8 @@ namespace Mengine
 	///////////////////////////////////////////////////////////////////////////
 	void ThreadEngine::update()
 	{
-		for( TVectorThreadTaskDesc::iterator
-			it_task = m_tasks.begin(),
-			it_task_end = m_tasks.end();
-		it_task != it_task_end;
-		++it_task )
+        for( ThreadTaskDesc & desc_task : m_tasks )
 		{
-			ThreadTaskDesc & desc_task = *it_task;
-
 			if( desc_task.complete == true )
 			{
 				continue;
@@ -407,14 +377,8 @@ namespace Mengine
 			{
 				ThreadTaskInterface * task = desc_task.task.get();
 
-				for( TVectorThreads::iterator
-					it_thread = m_threads.begin(),
-					it_thread_end = m_threads.end();
-				it_thread != it_thread_end;
-				++it_thread )
+                for( ThreadDesc & desc_thread : m_threads )
 				{
-					ThreadDesc & desc_thread = *it_thread;
-
 					if( desc_thread.name != desc_task.threadName )
 					{
 						continue;

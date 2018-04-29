@@ -528,14 +528,8 @@ namespace Mengine
         TVectorConstString fonts;
         IniUtil::getIniValue( ini, "GAME_FONTS", "Font", fonts );
 
-        for( TVectorConstString::const_iterator
-            it = fonts.begin(),
-            it_end = fonts.end();
-            it != it_end;
-            ++it )
+        for( const ConstString & fontName : fonts )
         {
-            const ConstString & fontName = *it;
-
             if( ini.hasSection( fontName.c_str() ) == false )
             {
                 LOGGER_ERROR( "TextManager::loadFonts invalid %s:%s section for FONT %s"
@@ -604,14 +598,8 @@ namespace Mengine
         TVectorConstString fonts;
         IniUtil::getIniValue( ini, "GAME_FONTS", "Font", fonts );
 
-        for( TVectorConstString::const_iterator
-            it = fonts.begin(),
-            it_end = fonts.end();
-            it != it_end;
-            ++it )
+        for( const ConstString & fontName : fonts )
         {
-            const ConstString & fontName = *it;
-
             if( ini.hasSection( fontName.c_str() ) == false )
             {
                 LOGGER_ERROR( "TextManager::unloadFonts invalid %s:%s section for FONT %s"

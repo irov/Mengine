@@ -124,9 +124,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool test( TVectorTextChunks & _out, const U32String & _in, TVectorCacheFonts & _cacheFonts, uint32_t _font )
         {
-            U32String tag_pre = U"<Font=";
-            U32String tag_post = U">";
-            U32String tag_end = U"</Font>";
+            U32String tag_pre = U"{{font=";
+            U32String tag_post = U"}}";
+            U32String tag_end = U"{{font}}";
             U32String::size_type offset = 0;
             U32String::size_type size = _in.size();
 

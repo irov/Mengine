@@ -104,47 +104,72 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
         {
             const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
 
-            pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
-            xmlResource.append_attribute( "Name" ).set_value( resource_image->name );
-            xmlResource.append_attribute( "Type" ).set_value( "ResourceImageDefault" );
-            xmlResource.append_attribute( "Unique" ).set_value( 0U );
-
-            //fprintf( f, "   <Resource Name = \"%s\" Type = \"ResourceImageDefault\" Unique = \"0\">\n"
-                //, resource_image->name
-            //);
-
-            pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
-
-            char xmlFilePath[MAX_PATH];
-            sprintf( xmlFilePath, "Movies2/%s/%s"
-                , provider->movie_name
-                , resource_image->path
-            );
-
-            xmlResourceFile.append_attribute( "Path" ).set_value( xmlFilePath );
-
-            char xmlMaxSize[256];
-            sprintf( xmlMaxSize, "%u;%u"
-                , (uint32_t)resource_image->trim_width
-                , (uint32_t)resource_image->trim_height
-            );
-
-            xmlResourceFile.append_attribute( "MaxSize" ).set_value( xmlMaxSize );
-
-            if( strstr( resource_image->name, ".ptc_" ) != nullptr )
+            if( resource_image->atlas_image == AE_NULL )
             {
-                xmlResourceFile.append_attribute( "NoConvert" ).set_value( 1U );
-                xmlResourceFile.append_attribute( "NoAtlas" ).set_value( 1U );
+                pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
+                xmlResource.append_attribute( "Name" ).set_value( resource_image->name );
+                xmlResource.append_attribute( "Type" ).set_value( "ResourceImageDefault" );
+                xmlResource.append_attribute( "Unique" ).set_value( 0U );
+
+                pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
+
+                char xmlFilePath[MAX_PATH];
+                sprintf( xmlFilePath, "Movies2/%s/%s"
+                    , provider->movie_name
+                    , resource_image->path
+                );
+
+                xmlResourceFile.append_attribute( "Path" ).set_value( xmlFilePath );
+
+                char xmlMaxSize[256];
+                sprintf( xmlMaxSize, "%u;%u"
+                    , (uint32_t)resource_image->trim_width
+                    , (uint32_t)resource_image->trim_height
+                );
+
+                xmlResourceFile.append_attribute( "MaxSize" ).set_value( xmlMaxSize );
+
+                if( strstr( resource_image->name, ".ptc_" ) != nullptr )
+                {
+                    xmlResourceFile.append_attribute( "NoConvert" ).set_value( 1U );
+                    xmlResourceFile.append_attribute( "NoAtlas" ).set_value( 1U );
+                }
             }
+            else
+            {
+                pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
+                xmlResource.append_attribute( "Name" ).set_value( resource_image->name );
+                xmlResource.append_attribute( "Type" ).set_value( "ResourceImageSubstract" );
+                xmlResource.append_attribute( "Unique" ).set_value( 0U );
 
-            //fprintf( f, "       <File Path = \"Movies2/%s/%s\" NoConvert = \"1\" NoAtlas = \"1\" MaxSize = \"%u;%u\"/>\n"
-            //    , provider->movie_name
-            //    , resource_image->path
-            //    , (uint32_t)resource_image->trim_width
-            //    , (uint32_t)resource_image->trim_height
-            //);
+                pugi::xml_node xmlResourceImage = xmlResource.append_child( "Image" );
+                xmlResourceImage.append_attribute( "Alpha" ).set_value( "1" );
 
-            //fprintf( f, "   </Resource>\n" );
+                char xmlMaxSize[256];
+                sprintf( xmlMaxSize, "%u;%u"
+                    , (uint32_t)resource_image->trim_width
+                    , (uint32_t)resource_image->trim_height
+                );
+                xmlResourceImage.append_attribute( "MaxSize" ).set_value( xmlMaxSize );
+
+                xmlResourceImage.append_attribute( "Name" ).set_value( resource_image->atlas_image->name );
+
+                char xmlUV[256];
+                sprintf( xmlUV, "%.16f;%.16f;%.16f;%.16f;%.16f;%.16f;%.16f;%.16f"
+                    , resource_image->uv[0][0]
+                    , resource_image->uv[0][1]
+                    , resource_image->uv[1][0]
+                    , resource_image->uv[1][1]
+                    , resource_image->uv[2][0]
+                    , resource_image->uv[2][1]
+                    , resource_image->uv[3][0]
+                    , resource_image->uv[3][1]
+                );
+
+                xmlResourceImage.append_attribute( "UV" ).set_value( xmlUV );
+
+                xmlResourceImage.append_attribute( "UVRotate" ).set_value( resource_image->atlas_rotate );                
+            }
         }break;
     case AE_MOVIE_RESOURCE_VIDEO:
         {
@@ -154,13 +179,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             xmlResource.append_attribute( "Name" ).set_value( resource_video->name );
             xmlResource.append_attribute( "Type" ).set_value( "ResourceVideo" );
             xmlResource.append_attribute( "Unique" ).set_value( 0U );
-
-//#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
-//            fprintf( f, "   <Resource Name = \"%s\" Type = \"ResourceVideo\" Unique = \"0\">\n"
-//                , resource_video->name
-//            );
-//#endif
-            
+           
             pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
             char xmlFilePath[MAX_PATH];
@@ -184,16 +203,6 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             xmlResourceFile.append_attribute( "FrameRate" ).set_value( resource_video->frameRate );
             xmlResourceFile.append_attribute( "Duration" ).set_value( resource_video->duration * 1000.0 );
 
-            //fprintf( f, "       <File Path = \"Movies2/%s/%s\" Alpha = \"%u\" Codec = \"%s\" FrameRate = \"%f\" Duration = \"%f\"/>\n"
-            //    , provider->movie_name
-            //    , resource_video->path
-            //    , resource_video->alpha
-            //    , resource_video->alpha == AE_TRUE ? "ogvaVideo" : "ogvVideo"
-            //    , resource_video->frameRate
-            //    , resource_video->duration * 1000.0
-            //);
-
-            //fprintf( f, "   </Resource>\n" );
         }break;
     case AE_MOVIE_RESOURCE_SOUND:
         {
@@ -203,12 +212,6 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             xmlResource.append_attribute( "Name" ).set_value( resource_sound->name );
             xmlResource.append_attribute( "Type" ).set_value( "ResourceSound" );
             xmlResource.append_attribute( "Unique" ).set_value( 0U );
-
-//#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
-//            fprintf( f, "   <Resource Name = \"%s\" Type = \"ResourceSound\" Unique = \"0\">\n"
-//                , resource_sound->name
-//            );
-//#endif
 
             pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
@@ -222,15 +225,9 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
             xmlResourceFile.append_attribute( "Codec" ).set_value( "oggSound" );
 
-            //fprintf( f, "       <File Path = \"Movies2/%s/%s\"  Codec = \"oggSound\"/>\n"
-            //    , provider->movie_name
-            //    , resource_sound->path
-            //);
-
             if( resource_sound->duration > 3.f )
             {
                 xmlResource.append_child( "IsStreamable" ).append_attribute( "Value" ).set_value( 1U );
-                //fprintf( f, "       <IsStreamable Value = \"1\"/>" );
             }
 
             //fprintf( f, "   </Resource>\n" );
@@ -244,12 +241,6 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             xmlResource.append_attribute( "Type" ).set_value( "ResourceParticle" );
             xmlResource.append_attribute( "Unique" ).set_value( 0U );
 
-//#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
-//            fprintf( f, "   <Resource Name = \"%s\" Type = \"ResourceParticle\" Unique = \"0\">\n"
-//                , resource_particle->name
-//            );
-//#endif
-
             pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
             char xmlFilePath[MAX_PATH];
@@ -260,16 +251,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
             xmlResourceFile.append_attribute( "Path" ).set_value( xmlFilePath );
 
-            //fprintf( f, "       <File Path = \"Movies2/%s/%s\"/>\n"
-            //    , provider->movie_name
-            //    , resource_particle->path
-            //);
-
             xmlResource.append_child( "AtlasCount" ).append_attribute( "Value" ).set_value( resource_particle->image_count );
-
-            //fprintf( f, "       <AtlasCount Value = \"%u\"/>\n"
-            //    , resource_particle->image_count
-            //);
             
             for( uint32_t i = 0; i != resource_particle->image_count; ++i )
             {
@@ -279,16 +261,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
                 
                 xmlResourceAtlas.append_attribute( "Index" ).set_value( i );
                 xmlResourceAtlas.append_attribute( "ResourceName" ).set_value( image->name );
-
-//#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
-//                fprintf( f, "       <Atlas Index = \"%u\" ResourceName = \"%s\"/>\n"
-//                    , i
-//                    , image->name
-//                );
-//#endif
             }
-
-            //fprintf( f, "   </Resource>\n" );
         }break;
     }
 

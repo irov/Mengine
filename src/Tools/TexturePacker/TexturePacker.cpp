@@ -76,7 +76,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	GetTempPath( MAX_PATH, tempPath );
 
 	WCHAR libmovieTempDir[MAX_PATH];
-	PathCombine( libmovieTempDir, tempPath, L"libmovie\\TexturePacker\\" );
+	PathCombine( libmovieTempDir, tempPath, L".libmovie\\TexturePacker\\" );
 
 	WCHAR dataTempDir[MAX_PATH];
 	PathCombine( dataTempDir, libmovieTempDir, L"data\\" );
@@ -244,6 +244,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		json_int_t y2;
 		json_int_t x3;
 		json_int_t y3;
+
+        bool rotated;
 	};
 
 	std::vector<AtlasImageDesc> atlas_images;
@@ -377,6 +379,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 				image.x3 = x + 0;
 				image.y3 = y + h;
 			}
+
+            image.rotated = rotated;
 			
 			atlas_images.push_back( image );
 		}
@@ -410,25 +414,26 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	{
 		const AtlasImageDesc & image = *it;
 
-        fprintf_s( f_result, "image_data=%s;%s;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu\n"
-			, image.name.c_str()
-			, image.atlas.c_str()
-			, image.aw
-			, image.ah
-			, image.ox
-			, image.oy
-			, image.ow
-			, image.oh
-			, image.fw
-			, image.fh
-			, image.x0
-			, image.y0
-			, image.x1
-			, image.y1
-			, image.x2
-			, image.y2
-			, image.x3
-			, image.y3
+        fprintf_s( f_result, "image_data=%s;%s;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%u\n"
+            , image.name.c_str()
+            , image.atlas.c_str()
+            , image.aw
+            , image.ah
+            , image.ox
+            , image.oy
+            , image.ow
+            , image.oh
+            , image.fw
+            , image.fh
+            , image.x0
+            , image.y0
+            , image.x1
+            , image.y1
+            , image.x2
+            , image.y2
+            , image.x3
+            , image.y3
+            , image.rotated == true ? 1 : 0
 		);
 	}
 

@@ -1056,6 +1056,23 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
+                bool has_File_Alpha() const
+                {
+                    return m_File_Alpha_successful;
+                }
+                
+                bool get_File_Alpha( bool * _value ) const
+                {
+                    if( m_File_Alpha_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_Alpha;
+                
+                    return true;
+                }
+                
                 bool has_File_Codec() const
                 {
                     return m_File_Codec_successful;
@@ -1095,9 +1112,60 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_File_Offset() const
+                {
+                    return m_File_Offset_successful;
+                }
+                
+                bool get_File_Offset( mt::vec2f * _value ) const
+                {
+                    if( m_File_Offset_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_Offset;
+                
+                    return true;
+                }
+                
                 const Mengine::FilePath & get_File_Path() const
                 {
                     return this->m_File_Path;
+                }
+                
+                bool has_File_Premultiply() const
+                {
+                    return m_File_Premultiply_successful;
+                }
+                
+                bool get_File_Premultiply( bool * _value ) const
+                {
+                    if( m_File_Premultiply_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_Premultiply;
+                
+                    return true;
+                }
+                
+                bool has_File_Size() const
+                {
+                    return m_File_Size_successful;
+                }
+                
+                bool get_File_Size( mt::vec2f * _value ) const
+                {
+                    if( m_File_Size_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_Size;
+                
+                    return true;
                 }
                 
             protected:
@@ -1106,12 +1174,20 @@ namespace Metacode
             public:
             protected:
             protected:
+                bool m_File_Alpha_successful;
+                bool m_File_Alpha;
                 bool m_File_Codec_successful;
                 Mengine::ConstString m_File_Codec;
                 mt::vec2f m_File_MaxSize;
                 bool m_File_NoExist_successful;
                 bool m_File_NoExist;
+                bool m_File_Offset_successful;
+                mt::vec2f m_File_Offset;
                 Mengine::FilePath m_File_Path;
+                bool m_File_Premultiply_successful;
+                bool m_File_Premultiply;
+                bool m_File_Size_successful;
+                mt::vec2f m_File_Size;
             };
             
             class Meta_ResourceImageDefault
@@ -1363,6 +1439,23 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_Image_Premultiply() const
+                {
+                    return m_Image_Premultiply_successful;
+                }
+                
+                bool get_Image_Premultiply( bool * _value ) const
+                {
+                    if( m_Image_Premultiply_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_Image_Premultiply;
+                
+                    return true;
+                }
+                
                 bool has_Image_Size() const
                 {
                     return m_Image_Size_successful;
@@ -1414,6 +1507,8 @@ namespace Metacode
                 Mengine::ConstString m_Image_Name;
                 bool m_Image_Offset_successful;
                 mt::vec2f m_Image_Offset;
+                bool m_Image_Premultiply_successful;
+                bool m_Image_Premultiply;
                 bool m_Image_Size_successful;
                 mt::vec2f m_Image_Size;
                 mt::uv4f m_Image_UV;
@@ -1460,6 +1555,23 @@ namespace Metacode
                     }
                 
                     *_value = this->m_Image_Offset;
+                
+                    return true;
+                }
+                
+                bool has_Image_Premultiply() const
+                {
+                    return m_Image_Premultiply_successful;
+                }
+                
+                bool get_Image_Premultiply( bool * _value ) const
+                {
+                    if( m_Image_Premultiply_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_Image_Premultiply;
                 
                     return true;
                 }
@@ -1536,6 +1648,8 @@ namespace Metacode
                 Mengine::ConstString m_Image_NameRGB;
                 bool m_Image_Offset_successful;
                 mt::vec2f m_Image_Offset;
+                bool m_Image_Premultiply_successful;
+                bool m_Image_Premultiply;
                 bool m_Image_Size_successful;
                 mt::vec2f m_Image_Size;
                 mt::uv4f m_Image_UVAlpha;

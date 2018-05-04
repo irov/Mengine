@@ -190,7 +190,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool trimImage( const WString & in_path, const WString & out_path, const WString & result_path, bool flag_border, bool flag_premultiplied )
+    static bool trimImage( const WString & in_path, const WString & out_path, const WString & result_path, bool flag_border, bool flag_trim, bool flag_premultiplied )
     {
         String utf8_in;
         Helper::unicodeToUtf8( in_path, utf8_in );
@@ -278,7 +278,7 @@ namespace Mengine
         int32_t offset_i;
         int32_t offset_j;
 
-        if( channels == 4 )
+        if( channels == 4 && flag_trim == true )
         {
             min_i = width;
             min_j = height;
@@ -384,7 +384,7 @@ namespace Mengine
 
             if( channels == 4 )
             {
-                if( flag_border == true )
+                if( flag_border == true && flag_trim == true )
                 {
                     uint32_t copy_width_end = new_width - 1;
                     uint32_t copy_height_end = new_height - 1;
@@ -704,6 +704,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     Mengine::WString out_path = parse_kwds( lpCmdLine, L"--out_path", Mengine::WString() );
     Mengine::WString result_path = parse_kwds( lpCmdLine, L"--result_path", Mengine::WString() );
     Mengine::WString border = parse_kwds( lpCmdLine, L"--border", Mengine::WString() );
+    Mengine::WString trim = parse_kwds( lpCmdLine, L"--trim", Mengine::WString() );
     Mengine::WString premultiplied = parse_kwds( lpCmdLine, L"--premultiplied", Mengine::WString() );
 
     if( in_path.empty() == true )
@@ -735,6 +736,12 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         flag_border = true;
     }
 
+    bool flag_trim = false;
+    if( trim == L"1" )
+    {
+        flag_trim = true;
+    }
+
     bool flag_premultiplied = false;
     if( premultiplied == L"1" )
     {
@@ -759,7 +766,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return 0;
     }
 
-    if( Mengine::trimImage( in_path, out_path, result_path, flag_border, flag_premultiplied ) == false )
+    if( Mengine::trimImage( in_path, out_path, result_path, flag_border, flag_trim, flag_premultiplied ) == false )
     {
         message_error( "ImageTrimmer invalid trim %ls"
             , in_path.c_str()

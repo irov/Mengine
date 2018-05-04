@@ -21,6 +21,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     std::wstring result_path = parse_kwds( lpCmdLine, L"--result_path", std::wstring() );
 	std::wstring texturepacker_path = parse_kwds( lpCmdLine, L"--texturepacker_path", std::wstring() );
     std::wstring log_path = parse_kwds( lpCmdLine, L"--log_path", std::wstring() );
+    std::wstring premultiply = parse_kwds( lpCmdLine, L"--premultiply", std::wstring() );
 	
 	std::vector<std::wstring> images_path;
 
@@ -103,6 +104,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	system_cmd += L" --format json-array ";	
 	system_cmd += L" --texture-format png ";
+    system_cmd += L" --alpha-handling PremultiplyAlpha ";
 	system_cmd += L" --max-width 2048 ";
 	system_cmd += L" --max-height 2048 ";
 	system_cmd += L" --max-size 2048 ";
@@ -359,12 +361,12 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 			if( rotated == true )
 			{
-				image.x0 = x + w;
+				image.x0 = x + h;
 				image.y0 = y + 0;
-				image.x1 = x + w;
-				image.y1 = y + h;
+				image.x1 = x + h;
+				image.y1 = y + w;
 				image.x2 = x + 0;
-				image.y2 = y + h;
+				image.y2 = y + w;
 				image.x3 = x + 0;
 				image.y3 = y + 0;
 			}

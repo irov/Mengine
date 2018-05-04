@@ -1,4 +1,4 @@
-<Protocol Version = "124">
+<Protocol Version = "125">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -161,8 +161,12 @@
         <Node Name="ResourceImageData" Inheritance = "Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
-
+          <Member Node="File" Name="Alpha" Type="bool"/>
+          <Member Node="File" Name="Premultiply" Type="bool"/>
+          
           <Member Node="File" Name="MaxSize" Type="mt::vec2f" Required="1"/>
+          <Member Node="File" Name="Size" Type="mt::vec2f"/>
+          <Member Node="File" Name="Offset" Type="mt::vec2f"/>
           <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
 
@@ -183,11 +187,13 @@
         <Node Name="ResourceImageSubstractRGBAndAlpha" Inheritance = "Resource">
           <Member Node="Image" Name="NameRGB" Type="Mengine::ConstString" Required="1"/>
           <Member Node="Image" Name="UVRGB" Type="mt::uv4f" Required="1"/>
-          <Member Node="Image" Name="UVRGBRotate" Type="bool"/>
+          <Member Node="Image" Name="UVRGBRotate" Type="bool"/>          
 
           <Member Node="Image" Name="NameAlpha" Type="Mengine::ConstString" Required="1"/>
           <Member Node="Image" Name="UVAlpha" Type="mt::uv4f" Required="1"/>
           <Member Node="Image" Name="UVAlphaRotate" Type="bool"/>
+          
+          <Member Node="Image" Name="Premultiply" Type="bool"/>
 
           <Member Node="Image" Name="MaxSize" Type="mt::vec2f" Required="1"/>
           <Member Node="Image" Name="Size" Type="mt::vec2f"/>
@@ -199,6 +205,7 @@
           <Member Node="Image" Name="UV" Type="mt::uv4f" Required="1"/>
           <Member Node="Image" Name="UVRotate" Type="bool"/>
           <Member Node="Image" Name="Alpha" Type="bool"/>
+          <Member Node="Image" Name="Premultiply" Type="bool"/>
 
           <Member Node="Image" Name="MaxSize" Type="mt::vec2f" Required="1"/>
           <Member Node="Image" Name="Size" Type="mt::vec2f"/>

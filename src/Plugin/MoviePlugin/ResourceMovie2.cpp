@@ -15,7 +15,7 @@
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-	static size_t Mengine_read_stream( ae_voidptr_t _data, ae_voidptr_t _buff, size_t _carriage, size_t _size )
+	static size_t __movie_read_stream( ae_voidptr_t _data, ae_voidptr_t _buff, size_t _carriage, size_t _size )
 	{
         (void)_carriage;
 
@@ -26,14 +26,14 @@ namespace Mengine
 		return bytes;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void Mengine_copy_stream( ae_voidptr_t _data, ae_constvoidptr_t _src, ae_voidptr_t _dst, size_t _size )
+	static void __movie_copy_stream( ae_voidptr_t _data, ae_constvoidptr_t _src, ae_voidptr_t _dst, size_t _size )
 	{
 		(void)_data;
 
 		memcpy( _dst, _src, _size );
 	}
     //////////////////////////////////////////////////////////////////////////
-    static ae_bool_t Mengine_resource_provider( const aeMovieResource * _resource, ae_voidptrptr_t _rd, ae_voidptr_t _ud )
+    static ae_bool_t __movie_resource_provider( const aeMovieResource * _resource, ae_voidptrptr_t _rd, ae_voidptr_t _ud )
     {
         ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_ud;
 
@@ -327,9 +327,9 @@ namespace Mengine
 			return false;
 		}
 
-		aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &Mengine_resource_provider, &Mengine_resource_deleter, this );
+		aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &__movie_resource_provider, &Mengine_resource_deleter, this );
 
-		aeMovieStream * movie_stream = ae_create_movie_stream( m_movieInstance, &Mengine_read_stream, &Mengine_copy_stream, stream.get() );
+		aeMovieStream * movie_stream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, stream.get() );
 
         ae_uint32_t major_version;
         ae_uint32_t minor_version;
@@ -388,7 +388,7 @@ namespace Mengine
 		ResourceReference::_release();
 	}
     //////////////////////////////////////////////////////////////////////////    
-    ae_bool_t Mengine_movie_layer_data_visitor( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layerData, ae_voidptr_t _ud )
+    static ae_bool_t Mengine_movie_layer_data_visitor( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layerData, ae_voidptr_t _ud )
     {
         ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_ud;
         
@@ -448,7 +448,7 @@ namespace Mengine
 
         aeMovieData * movieData = ae_create_movie_data( m_movieInstance, 0, 0, AE_NULL );
 
-        aeMovieStream * movieStream = ae_create_movie_stream( m_movieInstance, &Mengine_read_stream, &Mengine_copy_stream, stream.get() );
+        aeMovieStream * movieStream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, stream.get() );
 
         ae_uint32_t major_version;
         ae_uint32_t minor_version;

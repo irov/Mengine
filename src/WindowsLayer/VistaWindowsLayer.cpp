@@ -328,49 +328,6 @@ namespace Mengine
 
         return true;
     }
-    ////////////////////////////////////////////////////////////////////////////
-    //LONG setRegistryValue( HKEY _hKey, const Mengine::WString & _lpKeyName, const Mengine::WString & _lpValueName, DWORD _dwType, const BYTE* _lpData, DWORD _cbData )
-    //{
-    //    HKEY openedKey; 
-    //    LONG result;
-
-    //    bool isStringValue = _dwType == REG_SZ || _dwType == REG_MULTI_SZ || _dwType == REG_EXPAND_SZ;
-
-    //    /*Mengine::String keyName;
-    //    size_t separatorIndex = _lpValueName.find_last_of("\\");
-    //    keyName = _lpValueName.substr(0, separatorIndex);
-    //    _lpValueName = _lpValueName.substr(separatorIndex + 1);*/
-
-    //    Mengine::WString lpDataW;
-
-    //    ::RegOpenKeyEx(_hKey, _lpKeyName.c_str(), 0, KEY_ALL_ACCESS, &openedKey);
-
-    //    if( isStringValue == true )
-    //    {
-    //        Mengine::String str( reinterpret_cast<const char*>( _lpData ) );
-    //        utf8ToUnicode(str, lpDataW);
-    //        _cbData = static_cast<DWORD>( (lpDataW.length()+1) * 2 );
-    //        _lpData = reinterpret_cast<const BYTE*>( lpDataW.c_str() );
-    //    }
-
-    //    result = ::RegSetValueEx( _hKey, _lpValueName.c_str(), 0, _dwType, _lpData, _cbData );
-
-    //    ::RegCloseKey( openedKey );
-
-    //    return result;
-    //}
-    ////////////////////////////////////////////////////////////////////////////
-    //LONG deleteRegistryValue( HKEY _hKey, const Mengine::WString & _lpKeyName, const Mengine::WString & _lpValueName )
-    //{
-    //    HKEY openedKey;
-    //    ::RegOpenKeyEx( _hKey, _lpKeyName.c_str(), 0, KEY_ALL_ACCESS, &openedKey );
-
-    //    LONG result = ::RegDeleteValue( openedKey, _lpValueName.c_str() );
-
-    //    ::RegCloseKey( openedKey );
-
-    //    return result;
-    //}
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::makeFormatMessage( HRESULT _hresult, WString & _out )
     {

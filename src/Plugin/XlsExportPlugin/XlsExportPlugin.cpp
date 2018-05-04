@@ -43,7 +43,7 @@ namespace Mengine
         {
 			WChar exportPath[MENGINE_MAX_PATH];
             wcscpy( exportPath, currentPath );
-            wcscat( exportPath, L"Python3Lib\\" );
+            wcscat( exportPath, L"Python3Lib/" );
 
 			WChar shortpath[MENGINE_MAX_PATH];
             GetShortPathName( exportPath, shortpath, MENGINE_MAX_PATH );
@@ -74,7 +74,7 @@ namespace Mengine
 		{
             WChar stdPath[MENGINE_MAX_PATH];
             wcscpy( stdPath, currentPath );
-            wcscat( stdPath, L"Python3Lib\\" );
+            wcscat( stdPath, L"Python3Lib/" );
 
             WChar shortpath[MENGINE_MAX_PATH];
             GetShortPathName( stdPath, shortpath, MENGINE_MAX_PATH );
@@ -85,7 +85,7 @@ namespace Mengine
 		{
             WChar xlsxPath[MENGINE_MAX_PATH];
             wcscpy( xlsxPath, currentPath );
-            wcscat( xlsxPath, L"XlsxExport\\" );
+            wcscat( xlsxPath, L"XlsxExport/" );
 
 			WChar shortpath[MENGINE_MAX_PATH];
             GetShortPathName( xlsxPath, shortpath, MENGINE_MAX_PATH );

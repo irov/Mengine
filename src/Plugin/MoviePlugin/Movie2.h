@@ -181,6 +181,9 @@ namespace Mengine
 
 		aeMovieComposition * m_composition;
 
+        float m_duration;
+        float m_frameDuration;
+
 		struct Mesh
 		{
 			TVectorRenderVertex2D vertices;

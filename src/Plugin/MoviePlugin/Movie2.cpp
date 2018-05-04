@@ -12,6 +12,9 @@
 #include "Engine/SurfaceTrackMatte.h"
 
 #include "Kernel/Materialable.h"
+#include "Kernel/Layer.h"
+
+#include "Core/NodeHelper.h"
 
 #include "Logger/Logger.h"
 
@@ -22,6 +25,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Movie2::Movie2()
         : m_composition( nullptr )
+        , m_duration( 0.f )
+        , m_frameDuration( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -71,8 +76,16 @@ namespace Mengine
 
         if( composition == nullptr )
         {
-            return true;
+            LOGGER_ERROR( "Movie2::createCompositionLayers_ '%s' invalid get composition desc '%s'"
+                , this->getName().c_str()
+                , m_compositionName.c_str()
+            );
+
+            return false;
         }
+
+        m_duration = composition->duration * 1000.f;
+        m_frameDuration = composition->frameDuration * 1000.f;
 
         for( const ResourceMovie2CompositionLayer & layer : composition->layers )
         {
@@ -353,15 +366,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float Movie2::getDuration() const
     {
-        float duration = ae_get_movie_composition_duration( m_composition );
-
-        return duration;
+        return m_duration;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::setWorkAreaFromEvent( const ConstString & _eventName )
     {
         if( m_composition == nullptr )
         {
+            LOGGER_ERROR( "Movie2::setWorkAreaFromEvent '%s' invalid setup '%s' not compile"
+                , this->getName().c_str()
+                , _eventName.c_str()
+            );
+
             return false;
         }
 
@@ -385,6 +401,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSubComposition( const ConstString & _name ) const
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "Movie2::hasSubComposition '%s' invalid has '%s' not compile"
+                , this->getName().c_str()
+                , _name.c_str()
+            );
+
+            return false;
+        }
+
         if( ae_has_movie_sub_composition( m_composition, _name.c_str() ) == AE_FALSE )
         {
             return false;
@@ -395,6 +421,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::playSubComposition( const ConstString & _name )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "Movie2::playSubComposition '%s' invalid play '%s' not compile"
+                , this->getName().c_str()
+                , _name.c_str()
+            );
+
+            return;
+        }
+
         const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
 
         ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
@@ -402,6 +438,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::stopSubComposition( const ConstString & _name )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "Movie2::stopSubComposition '%s' invalid stop '%s' not compile"
+                , this->getName().c_str()
+                , _name.c_str()
+            );
+
+            return;
+        }
+
         const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
 
         ae_stop_movie_sub_composition( m_composition, subcomposition );
@@ -409,6 +455,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::interruptSubComposition( const ConstString & _name, bool _skip )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "Movie2::interruptSubComposition '%s' invalid interrupt '%s' not compile"
+                , this->getName().c_str()
+                , _name.c_str()
+            );
+
+            return;
+        }
+
         const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
 
         ae_interrupt_movie_sub_composition( m_composition, subcomposition, _skip );
@@ -416,6 +472,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::setLoopSubComposition( const ConstString & _name, bool _loop )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "Movie2::setLoopSubComposition '%s' invalid loop '%s' not compile"
+                , this->getName().c_str()
+                , _name.c_str()
+            );
+
+            return;
+        }
+
         const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
 
         ae_set_movie_sub_composition_loop( subcomposition, _loop );
@@ -578,35 +644,39 @@ namespace Mengine
         camera->projection->setCameraDirection( cameraDirection );
     }
     //////////////////////////////////////////////////////////////////////////
-    static EMaterialBlendMode getMovieBlendMode( ae_blend_mode_t _ae_blend_mode )
+    namespace Helper
     {
-        EMaterialBlendMode blend_mode = EMB_NORMAL;
-
-        switch( _ae_blend_mode )
+        //////////////////////////////////////////////////////////////////////////
+        static EMaterialBlendMode getMovieBlendMode( ae_blend_mode_t _ae_blend_mode )
         {
-        case AE_MOVIE_BLEND_ADD:
-            blend_mode = EMB_ADD;
-            break;
-        case AE_MOVIE_BLEND_SCREEN:
-            blend_mode = EMB_SCREEN;
-            break;
-        case AE_MOVIE_BLEND_MULTIPLY:
-            blend_mode = EMB_MULTIPLY;
-            break;
-        default:
-            break;
-        };
+            EMaterialBlendMode blend_mode = EMB_NORMAL;
 
-        return blend_mode;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static EMaterialBlendMode getMovieLayerBlendMode( const aeMovieLayerData * _layer )
-    {
-        ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _layer );
+            switch( _ae_blend_mode )
+            {
+            case AE_MOVIE_BLEND_ADD:
+                blend_mode = EMB_ADD;
+                break;
+            case AE_MOVIE_BLEND_SCREEN:
+                blend_mode = EMB_SCREEN;
+                break;
+            case AE_MOVIE_BLEND_MULTIPLY:
+                blend_mode = EMB_MULTIPLY;
+                break;
+            default:
+                break;
+            };
 
-        EMaterialBlendMode blend_mode = getMovieBlendMode( layer_blend_mode );
+            return blend_mode;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static EMaterialBlendMode getMovieLayerBlendMode( const aeMovieLayerData * _layer )
+        {
+            ae_blend_mode_t layer_blend_mode = ae_get_movie_layer_data_blend_mode( _layer );
 
-        return blend_mode;
+            EMaterialBlendMode blend_mode = getMovieBlendMode( layer_blend_mode );
+
+            return blend_mode;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     ae_bool_t Movie2::__movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud )
@@ -650,7 +720,7 @@ namespace Mengine
 
                 const SurfacePtr & surface = node->getSurface();
 
-                EMaterialBlendMode blend_mode = getMovieLayerBlendMode( layer );
+                EMaterialBlendMode blend_mode = Helper::getMovieLayerBlendMode( layer );
 
                 surface->setBlendMode( blend_mode );
 
@@ -793,7 +863,7 @@ namespace Mengine
                         break;
                     }                    
 
-                    EMaterialBlendMode blend_mode = getMovieLayerBlendMode( layer );
+                    EMaterialBlendMode blend_mode = Helper::getMovieLayerBlendMode( layer );
 
                     surfaceTrackMatte->setBlendMode( blend_mode );
                     
@@ -829,7 +899,7 @@ namespace Mengine
 
                     surfaceVideo->setResourceVideo( resourceVideo );
 
-                    EMaterialBlendMode blend_mode = getMovieLayerBlendMode( layer );
+                    EMaterialBlendMode blend_mode = Helper::getMovieLayerBlendMode( layer );
 
                     surfaceVideo->setLoop( _callbackData->incessantly );
 
@@ -1275,19 +1345,19 @@ namespace Mengine
 
         Movie2 * m2 = reinterpret_node_cast<Movie2 *>(_ud);
 
-        Node * parent = m2->getParent();
+        Layer * parent_layer = Helper::findParentNodeT<Layer *>( m2 );
 
         mt::vec3f anchor_point;
-        anchor_point.from_f2( _callbackData->anchor_point );
-        parent->setOrigin( anchor_point );
+        anchor_point.from_f2( _callbackData->anchor_point, 0.f );
+        parent_layer->setOrigin( anchor_point );
 
         mt::vec3f position;
-        position.from_f2( _callbackData->position );
-        parent->setLocalPosition( position );
+        position.from_f2( _callbackData->position, 0.f );
+        parent_layer->setLocalPosition( position );
 
         mt::vec3f scale;
-        scale.from_f2( _callbackData->scale );
-        parent->setScale( scale );
+        scale.from_f2( _callbackData->scale, 1.f );
+        parent_layer->setScale( scale );
 
         mt::quatf q;
         q.x = 0.f;
@@ -1296,28 +1366,30 @@ namespace Mengine
         q.w = _callbackData->quaternion[1];
         float angle = quatzw_to_angle( q );
 
-        parent->setOrientationX( angle );
+        parent_layer->setOrientationX( angle );
+
+        *_sed = parent_layer;
 
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_scene_effect_update( const aeMovieCompositionSceneEffectUpdateCallbackData * _callbackData, ae_voidptr_t _data )
     {
-        Movie2 * m2 = reinterpret_node_cast<Movie2 *>(_data);
+        (void)_data;
 
-        Node * parent = m2->getParent();
+        Layer * parent_layer = reinterpret_node_cast<Layer *>(_callbackData->scene_effect_data);
 
         mt::vec3f anchor_point;
-        anchor_point.from_f2( _callbackData->anchor_point );
-        parent->setOrigin( anchor_point );
+        anchor_point.from_f2( _callbackData->anchor_point, 0.f );
+        parent_layer->setOrigin( anchor_point );
 
         mt::vec3f position;
-        position.from_f2( _callbackData->position );
-        parent->setLocalPosition( position );
+        position.from_f2( _callbackData->position, 0.f );
+        parent_layer->setLocalPosition( position );
 
         mt::vec3f scale;
-        scale.from_f2( _callbackData->scale );
-        parent->setScale( scale );
+        scale.from_f2( _callbackData->scale, 1.f );
+        parent_layer->setScale( scale );
 
         mt::quatf q;
         q.x = 0.f;
@@ -1326,7 +1398,7 @@ namespace Mengine
         q.w = _callbackData->quaternion[1];
         float angle = quatzw_to_angle( q );
 
-        parent->setOrientationX( angle );
+        parent_layer->setOrientationX( angle );
     }
 #endif
     //////////////////////////////////////////////////////////////////////////
@@ -1597,6 +1669,10 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
+            LOGGER_ERROR( "Movie2::_setTiming '%s' invalid compile"
+                , this->getName().c_str()
+            );
+
             return;
         }
 
@@ -1774,7 +1850,7 @@ namespace Mengine
 
                         m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
 
-                        EMaterialBlendMode blend_mode = getMovieBlendMode( mesh.blend_mode );
+                        EMaterialBlendMode blend_mode = Helper::getMovieBlendMode( mesh.blend_mode );
 
                         m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
@@ -1817,7 +1893,7 @@ namespace Mengine
 
                         m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
 
-                        EMaterialBlendMode blend_mode = getMovieBlendMode( mesh.blend_mode );
+                        EMaterialBlendMode blend_mode = Helper::getMovieBlendMode( mesh.blend_mode );
 
                         m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
@@ -1866,7 +1942,7 @@ namespace Mengine
 
                         m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
 
-                        EMaterialBlendMode blend_mode = getMovieBlendMode( mesh.blend_mode );
+                        EMaterialBlendMode blend_mode = Helper::getMovieBlendMode( mesh.blend_mode );
 
                         m.material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
 

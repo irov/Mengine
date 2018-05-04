@@ -3,6 +3,7 @@
 #include "Interface/ResourceInterface.h"
 #include "Interface/PrototypeManagerInterface.h"
 #include "Interface/TimelineInterface.h"
+#include "Interface/NodeInterface.h"
 
 #include "ResourceMovie.h"
 
@@ -42,7 +43,7 @@
 
 #include "SoundEmitter.h"
 
-#include "Interface/NodeInterface.h"
+#include "Core/NodeHelper.h"
 
 #include "Logger/Logger.h"
 
@@ -2041,28 +2042,11 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static Node * s_findNodeScene( Node * _node )
-	{
-		Node * parent = _node->getParent();
-
-		while( parent != nullptr )
-		{
-			if( dynamic_cast<Layer *>(parent) != nullptr )
-			{
-				return parent;
-			}
-
-			parent = parent->getParent();
-		}
-
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Movie::setupSceneEffect_()
 	{
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		Node * parent = s_findNodeScene( this );
+        Node * parent = Helper::findParentNodeT<Layer *>( this );
 
 		for( const MovieLayer & l : layers )
 		{

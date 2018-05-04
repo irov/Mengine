@@ -1354,16 +1354,25 @@ namespace Mengine
 	bool Win32Platform::createDirectory( const WString & _path )
 	{
 		WChar fullPath[MENGINE_MAX_PATH];
-		Helper::pathCorrectBackslash( fullPath, _path.c_str() );
-        	
-		Helper::pathRemoveFileSpec( fullPath );
+        
+        if( _path.empty() == false )
+        {
+            Helper::pathCorrectBackslash( fullPath, _path.c_str() );
 
-		if( PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY )
-		{
-			return true;
-		}
+            Helper::pathRemoveFileSpec( fullPath );
 
-		Helper::pathRemoveBackslash( fullPath );
+            Helper::pathRemoveBackslash( fullPath );
+
+            if( PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY )
+            {
+                return true;
+            }
+        }
+        else
+        {
+            fullPath[0] = L'.';
+            fullPath[1] = L'\0';        	
+        }
 
 		TVectorWString paths;
 
@@ -1384,8 +1393,14 @@ namespace Mengine
 			}
 		}
 
-        for( const WString & path : paths )
+        for( TVectorWString::const_reverse_iterator
+            it = paths.rbegin(),
+            it_end = paths.rend();
+            it != it_end;
+            ++it )
 		{
+            const WString & path = *it;
+
 			BOOL successful = CreateDirectory( path.c_str(), NULL );
 
 			if( successful == FALSE )
@@ -1506,7 +1521,7 @@ namespace Mengine
 			return 0;
 		}
 
-		_path[len] = L'\\';
+		_path[len] = L'/';
 		_path[len + 1] = L'\0';
 
 		return (size_t)len + 1;
@@ -1534,11 +1549,11 @@ namespace Mengine
 				return false;
 			}
 
-			currentPath[len] = L'\\';
+			currentPath[len] = L'/';
 			currentPath[len + 1] = L'\0';
 
 			wcscat( currentPath, L"User" );
-			wcscat( currentPath, L"\\" );
+			wcscat( currentPath, L"/" );
 
 			Helper::pathCorrectBackslash( _path , currentPath );
 
@@ -1587,17 +1602,17 @@ namespace Mengine
 
 			CoTaskMemFree( itemIDList );
 
-			wcscat( currentPath, L"\\" );
+			wcscat( currentPath, L"/" );
 			WString wcompany = CONFIG_VALUE( "Project", "Company", L"NONAME" );
 			wcscat( currentPath, wcompany.c_str() );
-			wcscat( currentPath, L"\\" );
+			wcscat( currentPath, L"/" );
 			WString wname = CONFIG_VALUE( "Project", "Name", L"UNKNOWN" );
 			wcscat( currentPath, wname.c_str() );
-			wcscat( currentPath, L"\\" );
+			wcscat( currentPath, L"/" );
 
 			Helper::pathCorrectBackslash( _path, currentPath );
 
-			size_t currentPathLen = wcslen( currentPath );
+			size_t currentPathLen = wcslen( _path );
 
 			return currentPathLen;
 		}

@@ -154,17 +154,30 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
                 xmlResourceImage.append_attribute( "Name" ).set_value( resource_image->atlas_image->name );
 
+                //char xmlUV[256];
+                //sprintf( xmlUV, "%.126g;%.126g;%.126g;%.126g;%.126g;%.126g;%.126g;%.126g"
+                //    , resource_image->uv[0][0]
+                //    , resource_image->uv[0][1]
+                //    , resource_image->uv[1][0]
+                //    , resource_image->uv[1][1]
+                //    , resource_image->uv[2][0]
+                //    , resource_image->uv[2][1]
+                //    , resource_image->uv[3][0]
+                //    , resource_image->uv[3][1]
+                //);
+
                 char xmlUV[256];
-                sprintf( xmlUV, "%.16f;%.16f;%.16f;%.16f;%.16f;%.16f;%.16f;%.16f"
-                    , resource_image->uv[0][0]
-                    , resource_image->uv[0][1]
-                    , resource_image->uv[1][0]
-                    , resource_image->uv[1][1]
-                    , resource_image->uv[2][0]
-                    , resource_image->uv[2][1]
-                    , resource_image->uv[3][0]
-                    , resource_image->uv[3][1]
+                sprintf( xmlUV, "%.126g;%.126g;%.126g;%.126g;%.126g;%.126g;%.126g;%.126g"
+                    , 0.f
+                    , 0.f
+                    , 1.f
+                    , 0.f
+                    , 1.f
+                    , 1.f
+                    , 0.f
+                    , 1.f
                 );
+
 
                 xmlResourceImage.append_attribute( "UV" ).set_value( xmlUV );
 
@@ -306,7 +319,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Type" ).set_value( "TextField" );
 
             char xmlMatrix[256];
-            sprintf( xmlMatrix, "%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"
+            sprintf( xmlMatrix, "%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"
                 , _callbackData->matrix[4 * 0 + 0]
                 , _callbackData->matrix[4 * 0 + 1]
                 , _callbackData->matrix[4 * 0 + 2]
@@ -328,7 +341,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
 
             char xmlColor[256];
-            sprintf( xmlColor, "%f;%f;%f;%f"
+            sprintf( xmlColor, "%.126g;%.126g;%.126g;%.126g"
                 , _callbackData->color.r
                 , _callbackData->color.g
                 , _callbackData->color.b
@@ -360,7 +373,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Type" ).set_value( "Movie2Slot" );
 
             char xmlMatrix[256];
-            sprintf( xmlMatrix, "%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"
+            sprintf( xmlMatrix, "%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"
                 , _callbackData->matrix[4 * 0 + 0]
                 , _callbackData->matrix[4 * 0 + 1]
                 , _callbackData->matrix[4 * 0 + 2]
@@ -382,7 +395,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
 
             char xmlColor[256];
-            sprintf( xmlColor, "%f;%f;%f;%f"
+            sprintf( xmlColor, "%.126g;%.126g;%.126g;%.126g"
                 , _callbackData->color.r
                 , _callbackData->color.g
                 , _callbackData->color.b
@@ -404,7 +417,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Type" ).set_value( "HotSpotPolygon" );
 
             char xmlMatrix[256];
-            sprintf( xmlMatrix, "%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"
+            sprintf( xmlMatrix, "%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"
                 , _callbackData->matrix[4 * 0 + 0]
                 , _callbackData->matrix[4 * 0 + 1]
                 , _callbackData->matrix[4 * 0 + 2]
@@ -426,7 +439,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
 
             char xmlColor[256];
-            sprintf( xmlColor, "%f;%f;%f;%f"
+            sprintf( xmlColor, "%.126g;%.126g;%.126g;%.126g"
                 , _callbackData->color.r
                 , _callbackData->color.g
                 , _callbackData->color.b
@@ -448,7 +461,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Type" ).set_value( "ParticleEmitter2" );
 
             char xmlMatrix[256];
-            sprintf( xmlMatrix, "%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"
+            sprintf( xmlMatrix, "%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"
                 , _callbackData->matrix[4 * 0 + 0]
                 , _callbackData->matrix[4 * 0 + 1]
                 , _callbackData->matrix[4 * 0 + 2]
@@ -470,7 +483,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
 
             char xmlColor[256];
-            sprintf( xmlColor, "%f;%f;%f;%f"
+            sprintf( xmlColor, "%.126g;%.126g;%.126g;%.126g"
                 , _callbackData->color.r
                 , _callbackData->color.g
                 , _callbackData->color.b
@@ -492,7 +505,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Type" ).set_value( "ShapeQuadFixed" );
 
             char xmlMatrix[256];
-            sprintf( xmlMatrix, "%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"";""%f;%f;%f;%f"
+            sprintf( xmlMatrix, "%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"";""%.126g;%.126g;%.126g;%.126g"
                 , _callbackData->matrix[4 * 0 + 0]
                 , _callbackData->matrix[4 * 0 + 1]
                 , _callbackData->matrix[4 * 0 + 2]
@@ -514,7 +527,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
 
             char xmlColor[256];
-            sprintf( xmlColor, "%f;%f;%f;%f"
+            sprintf( xmlColor, "%.126g;%.126g;%.126g;%.126g"
                 , _callbackData->color.r
                 , _callbackData->color.g
                 , _callbackData->color.b

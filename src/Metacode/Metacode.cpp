@@ -5,7 +5,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
     static const uint32_t metacode_version = 5;
-    static const uint32_t metacode_protocol = 124;
+    static const uint32_t metacode_protocol = 125;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -1089,8 +1089,12 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceImageData::Meta_ResourceImageData()
             : Meta_Resource()
+            , m_File_Alpha_successful(false)
             , m_File_Codec_successful(false)
             , m_File_NoExist_successful(false)
+            , m_File_Offset_successful(false)
+            , m_File_Premultiply_successful(false)
+            , m_File_Size_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1118,6 +1122,13 @@ namespace Metacode
         
             switch( _id )
             {
+            case 7:
+                {
+                    this->read( _buff, _size, _read, this->m_File_Alpha );
+        
+                    this->m_File_Alpha_successful = true;
+        
+                }break;
             case 6:
                 {
                     this->read( _buff, _size, _read, this->m_File_Codec );
@@ -1125,11 +1136,32 @@ namespace Metacode
                     this->m_File_Codec_successful = true;
         
                 }break;
-            case 8:
+            case 12:
                 {
                     this->read( _buff, _size, _read, this->m_File_NoExist );
         
                     this->m_File_NoExist_successful = true;
+        
+                }break;
+            case 11:
+                {
+                    this->read( _buff, _size, _read, this->m_File_Offset );
+        
+                    this->m_File_Offset_successful = true;
+        
+                }break;
+            case 8:
+                {
+                    this->read( _buff, _size, _read, this->m_File_Premultiply );
+        
+                    this->m_File_Premultiply_successful = true;
+        
+                }break;
+            case 10:
+                {
+                    this->read( _buff, _size, _read, this->m_File_Size );
+        
+                    this->m_File_Size_successful = true;
         
                 }break;
             }
@@ -1253,6 +1285,7 @@ namespace Metacode
             : Meta_Resource()
             , m_Image_Alpha_successful(false)
             , m_Image_Offset_successful(false)
+            , m_Image_Premultiply_successful(false)
             , m_Image_Size_successful(false)
             , m_Image_UVRotate_successful(false)
         {
@@ -1290,14 +1323,21 @@ namespace Metacode
                     this->m_Image_Alpha_successful = true;
         
                 }break;
-            case 11:
+            case 12:
                 {
                     this->read( _buff, _size, _read, this->m_Image_Offset );
         
                     this->m_Image_Offset_successful = true;
         
                 }break;
-            case 10:
+            case 9:
+                {
+                    this->read( _buff, _size, _read, this->m_Image_Premultiply );
+        
+                    this->m_Image_Premultiply_successful = true;
+        
+                }break;
+            case 11:
                 {
                     this->read( _buff, _size, _read, this->m_Image_Size );
         
@@ -1318,6 +1358,7 @@ namespace Metacode
         Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha::Meta_ResourceImageSubstractRGBAndAlpha()
             : Meta_Resource()
             , m_Image_Offset_successful(false)
+            , m_Image_Premultiply_successful(false)
             , m_Image_Size_successful(false)
             , m_Image_UVAlphaRotate_successful(false)
             , m_Image_UVRGBRotate_successful(false)
@@ -1351,14 +1392,21 @@ namespace Metacode
         
             switch( _id )
             {
-            case 13:
+            case 14:
                 {
                     this->read( _buff, _size, _read, this->m_Image_Offset );
         
                     this->m_Image_Offset_successful = true;
         
                 }break;
-            case 12:
+            case 11:
+                {
+                    this->read( _buff, _size, _read, this->m_Image_Premultiply );
+        
+                    this->m_Image_Premultiply_successful = true;
+        
+                }break;
+            case 13:
                 {
                     this->read( _buff, _size, _read, this->m_Image_Size );
         
